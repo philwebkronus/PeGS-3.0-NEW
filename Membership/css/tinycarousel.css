@@ -1,0 +1,87 @@
+/* Tiny Carousel */
+#slider { height: 1%; overflow:hidden; padding: 0 0 10px;   }
+
+#slider .viewport { float: left; width: 640px; height: 370px; overflow: hidden; position: relative; }
+#slider .buttons { background:url("../images/buttons.png") no-repeat scroll 0 0 transparent; display: block; margin: 150px 10px 0 0; background-position: 0 -38px; text-indent: -999em; float: left; width: 39px; height: 37px; overflow: hidden; position: relative; }
+#slider .next { background-position: 0 0; margin: 150px 0 0 10px;  }
+#slider .disable { visibility: hidden; }
+
+#slider .overview { list-style: none; position: absolute; padding: 0; margin: 0; width: 640px; left: 0; top: 0; }
+#slider .overview li{ float: left; margin: 0 20px 0 0; padding: 1px; height: 345px; border: 1px solid #dcdcdc; width: 640px;}
+
+#slider .pager { overflow:hidden; list-style: none; clear: both; margin: 0 0 0 45px; }
+#slider .pager li { float: left; }
+#slider .pagenum { background-color: #fff; text-decoration: none; text-align: center; padding: 5px; color: #555555; font-size: 14px; font-weight: bold; display: block; }
+#slider .active { color: #fff; background-color:  #555555; }
+
+#moreitems .viewmore {position: absolute; padding: 4px; background-color: #ccc; width: 100px; float: left; left:24%; top:360px;}
+
+#carousel {
+    height: 1%;
+    overflow:hidden;
+    padding: 0 0 10px;  
+}
+#carousel .viewport
+{
+  margin-top: 80px;
+  float: left;
+  width: 640px;
+  height: 200px;
+  overflow: hidden;
+  position: relative;
+  /*background-color: red;*/
+  margin-left: 50px;
+}
+#carousel .buttons
+{
+    background:url("../images/buttons.png") no-repeat scroll 0 0 transparent;
+    display: block;
+    margin-right: -150px;
+    margin-left:10px;
+    margin-top: 150px;
+    background-position: 0 -38px;
+    text-indent: -999em;
+    float: left;
+    width: 39px;
+    height: 37px;
+    overflow: hidden;
+    position: relative;
+}
+#carousel .next
+{
+    background-position: 0 0;
+    margin: 150px 0 0 10px; 
+}
+#carousel .disable
+{
+    visibility: hidden;
+}
+#carousel .overview
+{
+    list-style: none;
+    position: absolute;
+    padding: 0;
+    margin: 0;
+    width: 200px;
+    left: 0;
+    top: 0;
+}
+#carousel .overview li
+{
+    float: left;
+    margin: 0 20px 0 0;
+    padding: 1px;
+    height: 150px;
+    border: 1px solid #dcdcdc;
+    width: 210px;
+}
+ 
+#carousel .overview p
+{
+    font-family: Arial, Geneva, SunSans-Regular, sans-serif;
+    font-size: 14px;
+    margin-top: 4px;
+    color: black;
+    text-align: center;
+}
+
