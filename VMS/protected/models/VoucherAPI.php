@@ -322,24 +322,41 @@ class VoucherAPI extends CFormModel
          * If VOID and parameter ALLOW_VOID_TICKET set to TRUE
          * then accept VOID TICKET on DEPOSIT or RELOAD
          */
-        $query = "SELECT *
-                    FROM
-                      vouchers v
-                    INNER JOIN terminals t
-                    ON v.TerminalID = t.TerminalID
-                    INNER JOIN sites s
-                    ON s.SiteID = t.SiteID
-                    INNER JOIN siteaccounts sa
-                    ON s.SiteID = sa.SiteID
-                    WHERE
-                      sa.AID =:AID
-                    AND v.VoucherCode =:vouchercode";
+        
+        //Check voucher type
+        if($this->checkVoucherType($voucherCode) == self::VOUCHER_TYPE_TICKET)
+        {
+            $query = "SELECT *
+                        FROM
+                          vouchers v
+                        INNER JOIN terminals t
+                        ON v.TerminalID = t.TerminalID
+                        INNER JOIN sites s
+                        ON s.SiteID = t.SiteID
+                        INNER JOIN siteaccounts sa
+                        ON s.SiteID = sa.SiteID
+                        WHERE
+                          sa.AID =:AID
+                        AND v.VoucherCode =:vouchercode";
 
-        $sql = Yii::app()->db->createCommand($query);
-        $sql->bindValues(array(
-                ":vouchercode"=>$voucherCode,
-                ":AID"=>$AID,
-            ));
+            $sql = Yii::app()->db->createCommand($query);
+            $sql->bindValues(array(
+                    ":vouchercode"=>$voucherCode,
+                    ":AID"=>$AID,
+                ));
+        }
+        else
+        {
+            $query = "SELECT *
+                        FROM
+                          vouchers
+                       WHERE VoucherCode =:vouchercode";
+
+            $sql = Yii::app()->db->createCommand($query);
+            $sql->bindValues(array(
+                    ":vouchercode"=>$voucherCode
+                ));
+        }
       
                 
         $result = $sql->queryAll();
