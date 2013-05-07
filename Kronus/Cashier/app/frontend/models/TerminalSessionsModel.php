@@ -3,7 +3,7 @@
 /**
  * Date Created 11 7, 11 11:38:11 AM <pre />
  * Description of TerminalSessionsModel
- * @author Bryan Salazar
+ * @author Bryan Salazar, elperez
  */
 class TerminalSessionsModel extends MI_Model {
     
@@ -146,7 +146,8 @@ class TerminalSessionsModel extends MI_Model {
      */
     public function getLastSessionDetails($terminalID){
         
-        $sql = "SELECT LoyaltyCardNumber, MID, UserMode, UBServiceLogin, UBServicePassword, ServiceID FROM terminalsessions
+        $sql = "SELECT LoyaltyCardNumber, MID, UserMode, UBServiceLogin, UBServicePassword, 
+                ServiceID, UBHashedServicePassword FROM terminalsessions
                 WHERE TerminalID = :terminal_id";
         
         $param = array(":terminal_id"=>$terminalID);

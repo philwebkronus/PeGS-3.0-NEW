@@ -3,7 +3,7 @@
 /**
  * Date Created 10 28, 11 1:11:44 PM <pre />
  * Description of TerminalsModel
- * @author Bryan Salazar
+ * @author Bryan Salazar, elperez
  */
 class TerminalsModel extends MI_Model {
     
@@ -289,7 +289,8 @@ class TerminalsModel extends MI_Model {
     }
    
     public function getTerminalPassword($terminal_id, $service_id){
-        $sql = "SELECT t.ServicePassword FROM terminalservices t WHERE t.TerminalID = :terminal_id AND ServiceID = :service_id AND t.Status = 1";
+        $sql = "SELECT t.ServicePassword, t.HashedServicePassword FROM terminalservices t 
+                WHERE t.TerminalID = :terminal_id AND ServiceID = :service_id AND t.Status = 1";
         $param = array(':terminal_id'=>$terminal_id,':service_id'=>$service_id);
         $this->exec($sql,$param);
         return $this->find();

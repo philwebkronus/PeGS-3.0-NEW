@@ -8,7 +8,7 @@ Mirage::loadModels('SiteBalanceModel');
 /**
  * Date Created 10 27, 11 10:07:34 AM <pre />
  * Description of FrontendController
- * @author Bryan Salazar
+ * @author Bryan Salazar, elperez
  */
 class FrontendController extends MI_Controller {
     
@@ -428,6 +428,7 @@ class FrontendController extends MI_Controller {
         foreach ($casinoUBDetails as $val){
             $casinoUsername = $val['UBServiceLogin'];
             $casinoPassword = $val['UBServicePassword'];
+            $casinoHashedPwd = $val['UBHashedServicePassword'];
             $mid = $val['MID'];
             $loyaltyCardNo = $val['LoyaltyCardNumber'];
             $casinoUserMode = $val['UserMode'];
@@ -439,7 +440,7 @@ class FrontendController extends MI_Controller {
              $login_acct = $terminalName;
              $terminal_pwd = $terminalsmodel->getTerminalPassword($startSessionFormModel->terminal_id, 
                                 $service_id);
-             $login_pwd = $terminal_pwd;
+             $login_pwd = $terminal_pwd['HashedServicePassword'];
              $result = $commonRedeem->redeem($startSessionFormModel->terminal_id, $this->site_id, $bcf, 
                             $service_id, $startSessionFormModel->amount, $paymentType, $this->acc_id, 
                             $loyaltyCardNo, $mid, $casinoUserMode,$casinoUsername,
@@ -449,7 +450,7 @@ class FrontendController extends MI_Controller {
         //checking if casino is user based
         if($ref_service['UserMode'] == 1){
              $login_acct = $casinoUsername;
-             $login_pwd  = $casinoPassword;
+             $login_pwd  = $casinoHashedPwd;
              $result = $commonUBRedeem->redeem($startSessionFormModel->terminal_id, $this->site_id, $bcf, 
                             $service_id, $startSessionFormModel->amount, $paymentType, $this->acc_id, 
                             $loyaltyCardNo, $mid, $casinoUserMode,$casinoUsername,
@@ -474,16 +475,19 @@ class FrontendController extends MI_Controller {
         }
         
         
-        //call Spyder API
-        $commandId = 1; //unlock
-        $spyder_req_id = $spyderRequestLogsModel->insert($terminalName, $commandId);
-        $computerName = substr($terminalName, strlen("ICSA-")); //removes the "icsa-
-        
-        $params = array('r'=>'spyder/run','TerminalName'=>$computerName,'CommandID'=>$commandId,
-                        'UserName'=>$login_acct,'Password'=>$login_pwd,'Type'=> Mirage::app()->param['SAPI_Type'],
-                        'SpyderReqID'=>$spyder_req_id,'CasinoID'=>$service_id);
-                    
-        $asynchronousRequest->curl_request_async(Mirage::app()->param['Asynchronous_URI'], $params);
+        //if spyder call was enabled in cashier config, call SAPI
+        if(Mirage::app()->param['enable_spyder_call']){
+            $commandId = 1; //lock
+            $spyder_req_id = $spyderRequestLogsModel->insert($terminalName, $commandId);
+            $terminal = substr($terminalName, strlen("ICSA-")); //removes the "icsa-
+            $computerName = str_replace("VIP", '', $terminal);
+            
+            $params = array('r'=>'spyder/run','TerminalName'=>$computerName,'CommandID'=>$commandId,
+                            'UserName'=>$login_acct,'Password'=>$login_pwd,'Type'=> Mirage::app()->param['SAPI_Type'],
+                            'SpyderReqID'=>$spyder_req_id,'CasinoID'=>$service_id);
+
+            $asynchronousRequest->curl_request_async(Mirage::app()->param['Asynchronous_URI'], $params);
+        }
         
         echo json_encode($result);
         Mirage::app()->end();        
@@ -601,7 +605,7 @@ class FrontendController extends MI_Controller {
                                     if($ref_service['UserMode'] == 0){
                                         $login_acct = $terminalname;
                                         $terminal_pwd = $terminalsmodel->getTerminalPassword($terminal_id, $startSessionFormModel->casino);
-                                        $login_pwd = $terminal_pwd['ServicePassword'];
+                                        $login_pwd = $terminal_pwd['HashedServicePassword'];
                                         $result = $commonStartSession->start($terminal_id, $siteid, 'D', $paymentType, $startSessionFormModel->casino,
                                                            toInt($this->getSiteBalance()),toInt($amount),$accid,$card_number, 
                                                            $startSessionFormModel->voucher_code, $trackingId, $casinoUsername,
@@ -612,7 +616,7 @@ class FrontendController extends MI_Controller {
                                     if($ref_service['UserMode'] == 1)
                                     {
                                         $login_acct = $casinoUsername;
-                                        $login_pwd = $casinoPassword;
+                                        $login_pwd = $casinoHashedPassword;
                                         //check if isVIP of chosen casino is match with the isVIP parameter thrown by loyalty getCardInfo function.
                                         if($casinoIsVIP != $isVIP) {
                                             $message = 'Please choose the appropriate regular/vip terminal classification for this card.';
@@ -673,7 +677,11 @@ class FrontendController extends MI_Controller {
                                                     //check if the useVoucher is successful, if success insert to vmsrequestlogs and status = 1 else 2
                                                     $vmsrequestlogs->updateVMSRequestLogs($vmsrequestlogsID, 1);
                                             }
-                                        } 
+                                        } else {
+                                            $message = 'VMS: '.$verifyVoucherResult['VerifyVoucher']['TransMsg'];
+                                            logger($message);
+                                            $this->throwError($message);
+                                        }
                                     } else {
                                         //check if the useVoucher is successful, if success insert to vmsrequestlogs and status = 1 else 2
                                         $vmsrequestlogs->updateVMSRequestLogs($vmsrequestlogsID, 1);
@@ -737,7 +745,7 @@ class FrontendController extends MI_Controller {
                     if($ref_service['UserMode'] == 0){
                         $login_acct = $terminalname;
                         $terminal_pwd = $terminalsmodel->getTerminalPassword($terminal_id, $startSessionFormModel->casino);
-                        $login_pwd = $terminal_pwd['ServicePassword'];
+                        $login_pwd = $terminal_pwd['HashedServicePassword'];
                         $result = $commonStartSession->start($terminal_id, $siteid, 'D', $paymentType, $startSessionFormModel->casino,
                                            toInt($this->getSiteBalance()),toInt($amount),$accid,$card_number, 
                                            $vouchercode, $trackingId, $casinoUsername,
@@ -748,7 +756,7 @@ class FrontendController extends MI_Controller {
                     if($ref_service['UserMode'] == 1)
                     {
                         $login_acct = $casinoUsername;
-                        $login_pwd = $casinoPassword;
+                        $login_pwd = $casinoHashedPassword;
                         //check if isVIP of chosen casino is match with the isVIP parameter thrown by loyalty getCardInfo function.
                         if($casinoIsVIP != $isVIP) {
                             $message = 'Please choose the appropriate regular/vip terminal classification for this card.';
@@ -794,16 +802,19 @@ class FrontendController extends MI_Controller {
             return $result;
         }
         
-        //call Spyder API
-        $commandId = 0; //unlock
-        $spyder_req_id = $spyderReqLogsModel->insert($terminalname, $commandId);
-        $computerName = substr($terminalname, strlen("ICSA-")); //removes the "icsa-
-        
-        $params = array('r'=>'spyder/run','TerminalName'=>$computerName,'CommandID'=>$commandId,
-                        'UserName'=>$login_acct,'Password'=>$login_pwd,'Type'=> Mirage::app()->param['SAPI_Type'],
-                        'SpyderReqID'=>$spyder_req_id,'CasinoID'=>$startSessionFormModel->casino);
-                    
-        $asynchronousRequest->curl_request_async(Mirage::app()->param['Asynchronous_URI'], $params);
+        //if spyder call was enabled in cashier config, call SAPI
+        if(Mirage::app()->param['enable_spyder_call']){
+            $commandId = 0; //unlock
+            $spyder_req_id = $spyderReqLogsModel->insert($terminalname, $commandId);
+            $terminal = substr($terminalname, strlen("ICSA-")); //removes the "icsa-
+            $computerName = str_replace("VIP", '', $terminal);
+            
+            $params = array('r'=>'spyder/run','TerminalName'=>$computerName,'CommandID'=>$commandId,
+                            'UserName'=>$login_acct,'Password'=>$login_pwd,'Type'=> Mirage::app()->param['SAPI_Type'],
+                            'SpyderReqID'=>$spyder_req_id,'CasinoID'=>$startSessionFormModel->casino);
+
+            $asynchronousRequest->curl_request_async(Mirage::app()->param['Asynchronous_URI'], $params);
+        }
         
         echo json_encode($result);
         Mirage::app()->end();
