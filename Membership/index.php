@@ -162,7 +162,7 @@ $arrRewardItems = $_Rewards->getRewardItems($cardtypeid);
                 <?php foreach ($path as $image) {
                     ?>
                     <a class="popup" href="imageinfo.php?PathID=<?php echo $image['id']; ?>&CardTypeID=<?php echo $cardtypeid; ?>">
-                        <li><img src ="images/rewarditems/<?php echo $image['path']; ?>"  width="200" height="100"  /></br>
+                        <li><center><img src ="images/rewarditems/<?php echo $image['path']; ?>"  width="195" height="100"  /></center>
                             <p><strong><u><?php echo $image['RewardName']; ?></u></strong></p></li></a>
                     <?php }
                 ?>
