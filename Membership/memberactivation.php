@@ -161,6 +161,7 @@ $arrNationantilyID = $arrNationality['NationalityID'];
 
 $oldCardInfo = $_OldCards->getOldCardInfo($LoyatyCardNumber);
 $ArrMemberInfo = $oldCardInfo [0];
+$oldCardNumber = $ArrMemberInfo['CardNumber'];
 $oldCardName = $ArrMemberInfo['MemberName'];
 $oldCardBirthdate = $ArrMemberInfo['Birthdate'];
 $oldCardGender = $ArrMemberInfo['Gender'];
@@ -187,7 +188,14 @@ $txtplayername->Text = $oldCardName;
         if ($fproc->IsPostBack) {
             if ($ConfirmButton->SubmittedValue == "Confirm") {
                 $dateCreated = "now_usec()";
-                $Memberstable["UserName"] = $oldCardEmail;
+                if(empty($oldCardEmail))
+                {
+                    $Memberstable["UserName"] = $oldCardNumber;
+                }
+                else
+                {
+                    $Memberstable["UserName"] = $oldCardEmail;
+                }
                 $Memberstable["AccountTypeID"] = $_Helper->GetAccountTypeIDByName('Member');
                 $Memberstable['DateCreated'] = $dateCreated;
                 $Memberstable['Status'] = '1';
@@ -216,7 +224,14 @@ $txtplayername->Text = $oldCardName;
                 $_Members->Migrate($Memberstable, $MemberInfo, false);
 
                 if (!App::HasError()) {
-                    $UserName = $oldCardEmail;
+                    if(empty($oldCardEmail))
+                    {
+                        $UserName = $oldCardNumber;
+                    }
+                    else
+                    {
+                        $UserName = $oldCardEmail;
+                    }
                     $getMID = $_Members->getMID($UserName);
                     $arrgetMID = $getMID[0];
                     $ArrCardID = $_OldCards->getOldCardDetails($LoyatyCardNumber);
