@@ -8,6 +8,8 @@
 
 class Members extends BaseEntity
 {
+    public $hashpassword;
+    public $password;
 
     function Members()
     {
@@ -35,8 +37,12 @@ class Members extends BaseEntity
              */
             if(!$isTemp)
             {
-                $password = $randomizer->GenerateAlphaNumeric(8);     
-                $arrMembers['Password'] = $password;
+                $password = $randomizer->GenerateAlphaNumeric(8);
+                $hashpassword = md5($password);
+                $arrMembers['Password'] = $hashpassword;
+                
+                $this->password = $password;
+                $this->hashpassword = $hashpassword;
             }
             
             $this->Insert($arrMembers);        

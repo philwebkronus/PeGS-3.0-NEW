@@ -190,7 +190,7 @@ $txtplayername->Text = $oldCardName;
                 $dateCreated = "now_usec()";
                 if(empty($oldCardEmail))
                 {
-                    $Memberstable["UserName"] = $oldCardNumber;
+                    $Memberstable["UserName"] = $NewMembershipCardNumber;
                 }
                 else
                 {
@@ -222,11 +222,12 @@ $txtplayername->Text = $oldCardName;
                 $rdoGroupGender->SubmittedValue == 1 ? $MemberInfo['Gender'] = 1 : $MemberInfo['Gender'] = 2;
 
                 $_Members->Migrate($Memberstable, $MemberInfo, false);
+                
 
                 if (!App::HasError()) {
                     if(empty($oldCardEmail))
                     {
-                        $UserName = $oldCardNumber;
+                        $UserName = $NewMembershipCardNumber;
                     }
                     else
                     {
@@ -289,7 +290,7 @@ $txtplayername->Text = $oldCardName;
 
                 $ActivationDialogOpen = 'true';
 
-                $displayPassword = $arrgetMID['Password'];
+                $displayPassword = $_Members->password; //$arrgetMID['Password'];
             }
         }
      }
