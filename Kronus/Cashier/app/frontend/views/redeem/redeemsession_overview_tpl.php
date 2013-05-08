@@ -227,7 +227,7 @@
                                         total_reload += parseFloat(json.trans_details[i].Amount);
                                     }
                                     tbody+='<td class="amount">'+toMoney(json.trans_details[i].Amount,'no')+'</td>';
-                                    tbody+='<td>'+json.trans_details[i].DateStarted+'</td>';
+                                    tbody+='<td>'+json.trans_details[i].DateCreated+'</td>';
                                     tbody+='</tr>';
                                 }
                             }
