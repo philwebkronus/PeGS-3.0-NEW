@@ -28,13 +28,14 @@ class CommonUBStartSession {
         
         Mirage::loadComponents('CasinoApi');
         Mirage::loadModels(array('TerminalsModel','SiteBalanceModel','CommonTransactionsModel',
-                                 'PendingUserTransactionCountModel'));
+                                 'PendingUserTransactionCountModel','RefServicesModel'));
         
         $casinoApi = new CasinoApi();
         $terminalsModel = new TerminalsModel();
         $siteBalance = new SiteBalanceModel();
         $commonTransactionsModel = new CommonTransactionsModel();
         $pendingUserTransCountModel = new PendingUserTransactionCountModel();
+        $refServicesModel = new RefServicesModel();
          
         if($terminalsModel->isPartnerAlreadyStarted($terminal_id)) {
             $message = 'Error: '. $terminalsModel->terminal_code . ' terminal already started';
@@ -61,7 +62,8 @@ class CommonUBStartSession {
         }
         
         if($terminal_balance != 0) {
-            $message = 'Error: Please inform customer service for manual redemption.';
+            $alias = $refServicesModel->getAliasById($service_id);
+            $message = 'Error: Only one active session for '.$alias. ' casino is allowed for this card.';
             logger($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id);
             CasinoApi::throwError($message);
         }
