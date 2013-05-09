@@ -1,42 +1,98 @@
 <?php
-
-/*
- * @Date Jan 31, 2013
- * @Author owliber
- * 
- */
-?>
-<?php
 $this->breadcrumbs=array(
-	'Voucher Reports','Voucher Usage',
-);
+	'VoucherUsage',
+);?>
+<?php
+$voucherusagemodel = new VoucherUsageForm;
+if(isset($_POST['VoucherUsageForm']))
+{
+    $model->attributes=$_POST['VoucherUsageForm'];
+}
+else
+{
+    $model->from = date('Y-m-d');
+    $model->to = date('Y-m-d', strtotime('+1 Day', strtotime(date('Y-m-d'))));
+}
+
 ?>
-<h4>Voucher Usage</h4>
+<h2>Voucher Usage Report</h2>
 
-<div id="search" style="display: block">
-    <div class="search-form">
-        <!-- Render search filter -->
-        <?php echo $this->renderPartial('_search'); ?>
-    </div>  
-</div>
-
-<div id="results-grid">
-    <!--<div class="headsummary"><strong>Total Amount</strong> - <span class="emphasize"><php echo number_format($totalAmount,2); ?></span> <strong>Total Count</strong> - <span class="emphasize"><php echo $totalCount; ?></span></div>-->
-    <?php $this->renderPartial('_lists',array('dataProvider'=>$dataProvider)); ?>
-</div>
-
-<?php $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
-        'id'=>'ajaxloader',
-        'options'=>array(
-            'title'=>'Loading',
-            'modal'=>true,
-            'width'=>'200',
-            'height'=>'45',
-            'resizable'=>false,
-            'autoOpen'=>false,
-        ),
+<div class="row" style="padding: 10px 5px; background: #EFEFEF;">
+<?php $form=$this->beginWidget('CActiveForm', array(
+    'enableClientValidation'=>true,
+    'clientOptions'=>array(
+    'validateOnSubmit'=>true,
+    ),
 )); ?>
-
-<div class="loading"></div><div class="loadingtext">Loading, please wait...</div>
-
-<?php $this->endWidget('zii.widgets.jui.CJuiDialog'); ?>
+    <?php echo $form->errorSummary($model); ?>
+    <table style="width:500px">
+        <tr>
+            <td>
+                <?php echo $form->labelEx($model,'from: ');
+                           $this->widget('zii.widgets.jui.CJuiDatePicker', array(
+                           'id'=>'datefrom',
+                           'model'=>$model,
+                           'attribute'=>'from',
+                           //'value'=>$model->from,
+                           'value'=>date('Y-m-d'),
+                           // additional javascript options for the date picker plugin
+                           'options'=>array(
+                                'showAnim'=>'fold',
+                                'showOn'=>'button',
+                                'buttonText'=>Yii::t('ui','from'), 
+                                'buttonImage'=>Yii::app()->request->baseUrl.'/images/calendar.png', 
+                                'buttonImageOnly'=>true,
+                                'autoSize'=>true,
+                                'dateFormat'=>'yy-mm-dd',
+                                //'defaultDate'=>$model->from,
+                           ),
+                           'htmlOptions'=>array('readonly'=>true),
+                           ));
+                ?>
+            </td>
+            <td>
+                <?php echo $form->labelEx($model,'to: ');
+                           $this->widget('zii.widgets.jui.CJuiDatePicker', array(
+                           'id'=>'dateto',
+                           'model'=>$model,
+                           'attribute'=>'to',
+                           //'value'=>$model->to,
+                           'value'=>date('Y-m-d'),
+                           // additional javascript options for the date picker plugin
+                           'options'=>array(
+                                'showAnim'=>'fold',
+                                'showOn'=>'button',
+                                'buttonText'=>Yii::t('ui','to'), 
+                                'buttonImage'=>Yii::app()->request->baseUrl.'/images/calendar.png', 
+                                'buttonImageOnly'=>true,
+                                'autoSize'=>true,
+                                'dateFormat'=>'yy-mm-dd',
+                                //'defaultDate'=>$model->to,
+                           ),
+                           'htmlOptions'=>array('readonly'=>true),
+                           ));
+                ?>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <?php echo $form->labelEx($model,'voucher type: ').$form->dropDownList($model, 'vouchertype',$voucherusagemodel->getVoucherType(), array('id'=>'vouchertype')); ?>
+            </td>
+            <td>
+                <?php echo $form->labelEx($model, 'site:').$form->dropDownList($model, 'site', $voucherusagemodel->getSite(), array('id'=>'site')); ?>
+            </td>
+            <td>
+                <?php echo $form->labelEx($model,'status: ').$form->dropDownList($model, 'status',$voucherusagemodel->getVoucherStatus(), array('id'=>'status')); ?>
+            </td>
+        </tr>
+        <tr>
+            <td>
+               <?php echo CHtml::submitButton("Submit"); ?>
+            </td>
+        </tr>
+    </table>
+</div>
+<div>
+    <?php $this->actionVoucherUsageDataTable(Yii::app()->session['rawData']); ?>
+</div>
+<?php $this->endWidget(); ?>

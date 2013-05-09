@@ -1,4 +1,5 @@
 <div <?php echo 'style="display:'.Yii::app()->session['display'].';"'; ?>>
+    <a href="exporttocsv"><b>Export To CSV</b></a>
 <?php
 
         $grid = array(

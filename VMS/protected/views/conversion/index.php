@@ -35,27 +35,49 @@ else
     <table style="width:500px">
         <tr>
             <td>
-                <?php echo $form->labelEx($model,'from: ').$form->textField($model,'from', array('id'=>'txtfrom','readonly'=>'true', /*'value'=>date('Y-m-d'),*/ 'style'=>'width: 80px;')).
-                      CHtml::image(Yii::app()->request->baseUrl."/images/calendar.png","calendar", array("id"=>"calbutton","class"=>"pointer","style"=>"cursor: pointer;"));
-                      $this->widget('application.extensions.calendar.SCalendar',
-                      array(
-                      'inputField'=>'txtfrom',
-                      'button'=>'calbutton',
-                      //'showsTime'=>true,
-                      'ifFormat'=>'%Y-%m-%d',
-                      ));                
+                <?php echo $form->labelEx($model,'from: ');
+                           $this->widget('zii.widgets.jui.CJuiDatePicker', array(
+                           'id'=>'datefrom',
+                           'model'=>$model,
+                           'attribute'=>'from',
+                           //'value'=>$model->from,
+                           'value'=>date('Y-m-d'),
+                           // additional javascript options for the date picker plugin
+                           'options'=>array(
+                               'showAnim'=>'fold',
+                               'showOn'=>'button',
+                               'buttonText'=>Yii::t('ui','from'), 
+                               'buttonImage'=>Yii::app()->request->baseUrl.'/images/calendar.png', 
+                               'buttonImageOnly'=>true,
+                               'autoSize'=>true,
+                               'dateFormat'=>'yy-mm-dd',
+                               //'defaultDate'=>$model->from,
+                           ),
+                           'htmlOptions'=>array('readonly'=>true),
+                           ));
                 ?>
             </td>
             <td>
-              <?php echo $form->labelEx($model,'to: ').$form->textField($model,'to', array('id'=>'txtto','readonly'=>'true', /*'value'=>date('Y-m-d', strtotime('+1 Day', strtotime(date('Y-m-d')))),*/ 'style'=>'width: 80px;')).
-                    CHtml::image(Yii::app()->request->baseUrl."/images/calendar.png","calendar", array("id"=>"calbutton2","class"=>"pointer","style"=>"cursor: pointer;"));
-                    $this->widget('application.extensions.calendar.SCalendar',
-                    array(
-                    'inputField'=>'txtto',
-                    'button'=>'calbutton2',
-                    //'showsTime'=>true,
-                    'ifFormat'=>'%Y-%m-%d',
-                    ));                
+              <?php echo $form->labelEx($model,'to: ');
+                         $this->widget('zii.widgets.jui.CJuiDatePicker', array(
+                         'id'=>'dateto',
+                         'model'=>$model,
+                         'attribute'=>'to',
+                         //'value'=>$model->to,
+                         'value'=>date('Y-m-d'),
+                         // additional javascript options for the date picker plugin
+                         'options'=>array(
+                             'showAnim'=>'fold',
+                             'showOn'=>'button',
+                             'buttonText'=>Yii::t('ui','to'), 
+                             'buttonImage'=>Yii::app()->request->baseUrl.'/images/calendar.png', 
+                             'buttonImageOnly'=>true,
+                             'autoSize'=>true,
+                             'dateFormat'=>'yy-mm-dd',
+                             //'defaultDate'=>$model->to,
+                         ),
+                         'htmlOptions'=>array('readonly'=>true),
+                         ));
                 ?>
             </td>
             <td>

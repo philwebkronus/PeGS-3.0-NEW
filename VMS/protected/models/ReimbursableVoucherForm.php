@@ -39,7 +39,7 @@ class ReimbursableVoucherForm extends CFormModel
                 $where = " and s.SiteCode='".$site."' and t.TerminalCode='".$terminal."'";
             }
         }
-        $sql = "select case VoucherTypeID when 1 then 'Ticket' when 2 then 'Voucher' end As VoucherType, 
+        $sql = "select v.VoucherID as `id`, case v.VoucherTypeID when 1 then 'Ticket' when 2 then 'Voucher' end As VoucherType, 
                 v.VoucherCode, t.TerminalCode, v.Amount, 
                 ifnull(v.DateCreated, '-') as DateCreated, ifnull(v.DateUsed,'-') as DateUsed, 
                 ifnull(v.DateClaimed, '-') as DateClaimed, ifnull(v.DateExpiry,'-') as DateExpiry
@@ -59,6 +59,29 @@ class ReimbursableVoucherForm extends CFormModel
         $result = $command->queryAll();
         
         return $result;
+    }
+    public function getReimburseVoucher($vouchercode)
+    {
+        $connection = Yii::app()->db;
+        $trans = $connection->beginTransaction();
+        try
+        {
+            $sql = "update vouchers set Status = 5, DateReimbursed = now_usec(), ReimbursedByAID = ".Yii::app()->user->getId()." where VoucherCode in (".$vouchercode.")";
+            $command = $connection->createCommand($sql);
+            $result = $command->execute();
+	    $vouchers = array();
+            $vouchers = Yii::app()->session['reimburselist'];
+            foreach($vouchers as $v)
+            {
+                AuditLog::logTransactions(29,"Voucher Code: ".$v);
+            }
+            $trans->commit();
+        }
+        catch (Exeption $e)
+        {
+            $trans->rollback();
+        }
+        
     }
     
    public function getSite()

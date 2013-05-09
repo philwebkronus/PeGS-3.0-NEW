@@ -12,8 +12,8 @@ else
 {
     if(isset($_GET['page']))
     {
-        $model->from=Yii::app()->session['from'];
-        $model->to=Yii::app()->session['from'];
+        $model->from=Yii::app()->session['vfrom'];
+        $model->to=Yii::app()->session['vto'];
         $model->site=Yii::app()->session['site'];
         $model->terminal=Yii::app()->session['terminal'];
         $model->vouchercode=Yii::app()->session['vouchercode'];
@@ -31,7 +31,7 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseURL.'/js/j
         $('#site').live('change', function(){
         var ddlsite = document.getElementById('site')
         $.ajax({
-            url: 'http://localhost/VMS/index.php/validation/ajaxGetTerminal?site='+ddlsite.value,
+            url: 'http://192.168.30.97/VMS/index.php/validation/ajaxGetTerminal?site='+ddlsite.value,
             type: 'post',
             dataType: 'json',
             success: function(data)
@@ -47,8 +47,8 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseURL.'/js/j
         });
     });
 </script>
-<h4>Voucher Validation</h4>
-<div id="search-form" class="row filterbg">
+<h2>Voucher Validation</h2>
+<div class="row" style="padding: 10px 5px; background: #EFEFEF;">
     
 <?php $form=$this->beginWidget('CActiveForm', array(
         'enableClientValidation'=>true,
@@ -57,39 +57,83 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseURL.'/js/j
         ),
 )); ?>
     <?php echo $form->errorSummary($model); ?>
-    
-        <?php echo $form->labelEx($model,'from: ').$form->textField($model,'from', array('id'=>'txtfrom','readonly'=>'true', 'style'=>'width: 100px;')).
-              CHtml::image(Yii::app()->request->baseUrl."/images/calendar.png","calendar", array("id"=>"calbutton","class"=>"pointer","style"=>"cursor: pointer;"));
-              $this->widget('application.extensions.calendar.SCalendar',
-              array(
-              'inputField'=>'txtfrom',
-              'button'=>'calbutton',
-              'showsTime'=>true,
-              'ifFormat'=>'%Y-%m-%d %H:%M',
-                ));                
-        ?>
-        <?php 
-            echo $form->labelEx($model,'to: ').$form->textField($model, 'to',  array('id'=>'txtto','readonly'=>'true', 'style'=>'width: 100px;')).
-            CHtml::image(Yii::app()->request->baseUrl."/images/calendar.png","calendar", array("id"=>"calbutton2","class"=>"pointer","style"=>"cursor: pointer;"));
-            $this->widget('application.extensions.calendar.SCalendar',
-            array(
-            'inputField'=>'txtto',
-            'button'=>'calbutton2',
-            'showsTime'=>true,
-            'ifFormat'=>'%Y-%m-%d %H:%M',
-            ));                            
-        ?>
-    
-        <?php echo $form->labelEx($model, 'site:').$form->dropDownList($model, 'site', $validationmodel->getSite(), array('id'=>'site',)); ?>  
-        
-        <?php echo $form->labelEx($model,'terminal:').$form->dropDownList($model, 'terminal', array('All'=>'All'), array('id'=>'terminal', 'style'=>'width: 100px;'));
-              //echo 'Terminal: '.CHtml::dropDownList('terminal', '',array("0" => "All"));
-        ?>
-        <br />
-        <?php echo $form->labelEx($model, 'voucher code:').$form->textField($model,'vouchercode', array('id'=> 'txtvouchercode')); ?>
-
-        <?php echo CHtml::submitButton("Submit"); ?>
-          
+    <table style="width: 600px">
+        <tr>
+            <td>
+                <?php echo $form->labelEx($model,'from: ');
+                           Yii::import('application.extensions.CJuiDateTimePicker.CJuiDateTimePicker');
+                           $this->widget('CJuiDateTimePicker',array(
+                           'id'=>'DateFrom',
+                           'model'=>$model,
+                           'attribute'=>'from',
+                           //'value'=>$model->from,
+                           'value'=>date('Y-m-d H:i'),
+                           'mode'=>'datetime', //use "time","date" or "datetime" (default)
+                            'options'=>array(
+                                 'dateFormat'=>'yy-mm-dd',
+                                 'timeFormat'=> 'hh:mm',
+                                 'showAnim'=>'fold', // 'show' (the default), 'slideDown', 'fadeIn', 'fold'
+                                 'showOn'=>'button', // 'focus', 'button', 'both'
+                                 'buttonText'=>Yii::t('ui','from'), 
+                                 'buttonImage'=>Yii::app()->request->baseUrl.'/images/calendar.png', 
+                                 'buttonImageOnly'=>true,
+                                 //'autoSize'=>true,
+                                 //'defaultDate'=>$model->from,
+                           ),// jquery plugin options
+                           'htmlOptions'=>array('readonly'=>true, 'style'=>'width: 110px;'),
+                           'language'=>'',
+                           ));
+                ?>
+            </td>
+            <td>
+                <?php echo $form->labelEx($model,'to: ');
+                           Yii::import('application.extensions.CJuiDateTimePicker.CJuiDateTimePicker');
+                           $this->widget('CJuiDateTimePicker',array(
+                           'id'=>'DateTo',
+                           'model'=>$model,
+                           'attribute'=>'to',
+                           //'value'=>$model->from,
+                           'value'=>date('Y-m-d H:i'),
+                           'mode'=>'datetime', //use "time","date" or "datetime" (default)
+                           'options'=>array(
+                                'dateFormat'=>'yy-mm-dd',
+                                'timeFormat'=> 'hh:mm',
+                                'showAnim'=>'fold', // 'show' (the default), 'slideDown', 'fadeIn', 'fold'
+                                'showOn'=>'button', // 'focus', 'button', 'both'
+                                'buttonText'=>Yii::t('ui','to'), 
+                                'buttonImage'=>Yii::app()->request->baseUrl.'/images/calendar.png', 
+                                'buttonImageOnly'=>true,
+                                //'autoSize'=>true,
+                                //'defaultDate'=>$model->from,
+                           ),// jquery plugin options
+                           'htmlOptions'=>array('readonly'=>true, 'style'=>'width: 110px;'),
+                           'language'=>'',
+                           ));
+                ?>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <?php echo $form->labelEx($model, 'site:').$form->dropDownList($model, 'site', $validationmodel->getSite(), array('id'=>'site',)); 
+                ?>  
+            </td>
+            <td>
+                <?php echo $form->labelEx($model,'terminal:').$form->dropDownList($model, 'terminal', array('All'=>'All'), array('id'=>'terminal', 'style'=>'width: 135px;'));
+                      //echo 'Terminal: '.CHtml::dropDownList('terminal', '',array("0" => "All"));
+                ?>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <?php echo $form->labelEx($model, 'voucher code:').$form->textField($model,'vouchercode', array('id'=> 'txtvouchercode')); ?>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <?php echo CHtml::submitButton("Submit"); ?>
+            </td>
+        </tr>
+    </table>
 </div>
 <div>
     <?php $this->actionValidationDataTable(Yii::app()->session['rawData']);  ?>

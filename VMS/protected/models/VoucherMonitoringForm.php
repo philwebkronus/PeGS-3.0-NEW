@@ -5,6 +5,7 @@ class VoucherMonitoringForm extends CFormModel
     public $from;
     public $to;
     public $status;
+    public $vouchertype;
     public $site;
     public $terminal;
     public $vouchercode;
@@ -17,7 +18,11 @@ class VoucherMonitoringForm extends CFormModel
     CONST VOUCHER_STATUS_REIMBURSED = 5;
     CONST VOUCHER_STATUS_CLAIMED = 4;    
     CONST VOUCHER_STATUS_EXPIRED = 6;
-    CONST VOUCHER_STATUS_CANCELLED = 7;   
+    CONST VOUCHER_STATUS_CANCELLED = 7; 
+    
+    CONST VOUCHER_TYPE_ALL = 'All';
+    CONST VOUCHER_TYPE_TICKET = 1;
+    CONST VOUCHER_TYPE_VOUCHER = 2;
     
     public static function model($className=__CLASS__)
     {
@@ -27,7 +32,7 @@ class VoucherMonitoringForm extends CFormModel
     public function rules()
     {
         return array(
-            array('from, to, status, site, terminal','required'),
+            array('from, to, status, vouchertype, site, terminal','required'),
             array('vouchercode', 'length', 'allowEmpty'=>true),
             array('to', 'compare', 'compareAttribute'=>'from', 'operator'=>'>','message'=>'Invalid Date Range.')
         );        
@@ -57,7 +62,7 @@ class VoucherMonitoringForm extends CFormModel
         return $sql->queryAll();
     }    
     
-    public function getVouchersByRangeStatus($datefrom,$dateto,$status,$site,$terminal,$vouchercode)
+    public function getVouchersByRangeStatus($datefrom,$dateto,$status,$vouchertype,$site,$terminal,$vouchercode)
     {
         if($status != 'All')
         {
@@ -74,16 +79,25 @@ class VoucherMonitoringForm extends CFormModel
             }
             $where = ' AND v.Status IN ('.$status.')';
         }
+
+        if($vouchertype=='All')
+        {
+            $where2 = "";
+        }
+        else
+        {
+            $where2 = " AND v.VoucherTypeID =".$vouchertype;
+        }
         
         if($site == 'All')
         {
             if(empty($vouchercode))
             {
-                $where2 = "";
+                $where3 = "";
             }
             else
             {
-                $where2 = "AND v.VoucherCode ='".$vouchercode."'";
+                $where3 = "AND v.VoucherCode ='".$vouchercode."'";
             }
         }
         else
@@ -92,22 +106,22 @@ class VoucherMonitoringForm extends CFormModel
             {
                 if(empty($vouchercode))
                 {
-                    $where2 = "AND s.SiteCode = '".$site."'";
+                    $where3 = "AND s.SiteCode = '".$site."'";
                 }
                 else
                 {
-                    $where2 = "AND s.SiteCode = '".$site."' AND v.VoucherCode ='".$vouchercode."'";
+                    $where3 = "AND s.SiteCode = '".$site."' AND v.VoucherCode ='".$vouchercode."'";
                 }
             }
             else
             {
                 if(empty($vouchercode))
                 {
-                    $where2 = " AND t.TerminalCode = '".$terminal."'";
+                    $where3 = " AND t.TerminalCode = '".$terminal."'";
                 }
                 else
                 {
-                    $where2 = " AND t.TerminalCode = '".$terminal."' 
+                    $where3 = " AND t.TerminalCode = '".$terminal."' 
                                 AND v.VoucherCode ='".$vouchercode."'";
                 }
                 
@@ -115,11 +129,17 @@ class VoucherMonitoringForm extends CFormModel
         }
         
         $query = "SELECT v.VoucherID AS `id`
+                        , CASE v.VoucherTypeID
+                          WHEN 1 THEN
+                            'Ticket'
+                          WHEN 2 THEN
+                            'Voucher'
+                          END AS `VoucherType`
                         , v.VoucherCode
                         , t.TerminalCode
                         , v.Amount
-                        , v.DateCreated
-                        , v.DateExpiry
+                        , ifnull(v.DateCreated, '-') as DateCreated, ifnull(v.DateUsed,'-') as DateUsed, ifnull(v.DateClaimed,'-') as DateClaimed
+                        , ifnull(v.DateReimbursed,'-') as DateReimbursed, ifnull(v.DateExpiry, '-') as DateExpiry, ifnull(v.DateCancelled, '-') as DateCancelled
                         , CASE v.Status
                           WHEN 0 THEN
                             'Inactive'
@@ -146,9 +166,9 @@ class VoucherMonitoringForm extends CFormModel
                   WHERE v.DateCreated >=:dateFrom
                       AND v.DateCreated <:dateTo "
                   //   AND `Status` =:status"
-                  .$where." ".$where2;
-        //print_r($where." ".$where2);
-        
+                  .$where." ".$where2." ".$where3;
+        //print_r($where." ".$where2. " ".$where3);
+
         $sql = Yii::app()->db->createCommand($query);
         $sql->bindParam(":dateFrom", $datefrom);
         $sql->bindParam(":dateTo", $dateto);
@@ -185,6 +205,15 @@ class VoucherMonitoringForm extends CFormModel
         ); 
         }
 
+    }
+    
+    public function getVoucherType()
+    {
+        return array(
+            self::VOUCHER_TYPE_ALL => 'All',
+            self::VOUCHER_TYPE_TICKET => 'Ticket',
+            self::VOUCHER_TYPE_VOUCHER => 'Voucher',
+        );
     }
     
     public function getSite()

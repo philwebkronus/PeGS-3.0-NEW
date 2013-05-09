@@ -1,6 +1,6 @@
 <?php
 
-class ReimbursablevoucherController extends VMSBaseIdentity
+class ReimbursableVoucherController extends Controller
 {
 	public function actionIndex()
 	{
@@ -11,18 +11,14 @@ class ReimbursablevoucherController extends VMSBaseIdentity
                 $data=$model->attributes;
                 Yii::app()->session['rvfrom'] = $data['from']. ' 06:00:00';
                 Yii::app()->session['rvto'] = $data['to']. ' 06:00:00';
-                Yii::app()->session['site'] = $data['site'];
-                Yii::app()->session['terminal'] = $data['terminal'];
                 
                 $from = Yii::app()->session['rvfrom'];
                 $to = Yii::app()->session['rvto'];
-                $site = Yii::app()->session['site'];
-                $terminal = Yii::app()->session['terminal'];
-                //print_r($_POST['ReimbursableVoucherForm']['from']);
+                
                 if($model->validate())
                 {
                     //echo 'test';
-                    $rawData = $model->getReimbursableVoucher($from, $to, $site, $terminal);
+                    $rawData = $model->getReimbursableVoucher($from, $to);
                     Yii::app()->session['rawData'] = $rawData;
                     $display = 'block';
                     Yii::app()->session['display'] = $display;
@@ -34,10 +30,8 @@ class ReimbursablevoucherController extends VMSBaseIdentity
                 {
                     $from = Yii::app()->session['rvfrom'];
                     $to = Yii::app()->session['rvto'];
-                    $site = Yii::app()->session['site'];
-                    $terminal = Yii::app()->session['terminal'];
                     
-                    $rawData = $model->getReimbursableVoucher($from, $to, $site, $terminal);
+                    $rawData = $model->getReimbursableVoucher($from, $to);
                     Yii::app()->session['rawData'] = $rawData;
                     $display = 'block';
                     Yii::app()->session['display'] = $display;
@@ -56,6 +50,7 @@ class ReimbursablevoucherController extends VMSBaseIdentity
         public function actionReimbursableVoucherDataTable($rawData)
         {
             $arrayDataProvider = new CArrayDataProvider($rawData, array(
+		'keyField'=>'id',
                 /*'id'=>'reimbursablevoucher-grid',
                 'sort'=>array(
                     'attributes'=>array('DateCreated','DateExpiry','Status'),
@@ -85,28 +80,6 @@ class ReimbursablevoucherController extends VMSBaseIdentity
             $model = new ReimbursableVoucherForm();
             $terminal = $model->getTerminal($site);
             echo $terminal;
-        }
-        
-        public function actionExportToCSV()
-        {
-            Yii::import('ext.ECSVExport');
-            $model = new ReimbursableVoucherForm();
-            
-            $rawData = Yii::app()->session['rawData'];
-            
-            //$currentdir = dirname(__FILE__) . '/';
-            //$rootdir = realpath($currentdir . '../') . '/';
-            $filename = "Reimbursable_Vouchers_".Date('Y_m_d').".csv";
-            
-            $csv = new ECSVExport($rawData);
-            
-            $csv->toCSV($filename);
-            
-            $content = file_get_contents($filename);
-            
-            Yii::app()->getRequest()->sendFile($filename, $content, "text/csv", false);
-            exit();
-            //unlink($filename.'csv');
         }
 
 	// Uncomment the following methods and override them if needed

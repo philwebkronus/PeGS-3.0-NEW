@@ -4,6 +4,7 @@ class ValidationController extends VMSBaseIdentity
 {
 	public function actionIndex()
 	{
+            AuditLog::logTransactions(27);
             $model = new ValidationForm();
             if(isset($_POST['ValidationForm']))
             {
@@ -59,6 +60,7 @@ class ValidationController extends VMSBaseIdentity
         public function actionValidationDataTable($rawData)
         {
            $arrayDataProvider = new CArrayDataProvider($rawData, array(
+		'keyField'=>'VoucherType',
                 /*'id'=>'vouchers-grid',
                 'sort'=>array(
                     'attributes'=>array('DateCreated','DateExpiry','Status'),
@@ -88,6 +90,25 @@ class ValidationController extends VMSBaseIdentity
             $model = new VoucherMonitoringForm();
             $terminal = $model->getTerminal($site);
             echo $terminal;
+        }
+        
+        public function actionExportToCSV()
+        {
+            AuditLog::logTransactions(28);
+            Yii::import('ext.ECSVExport');
+            $model = new ValidationForm();
+
+            $rawData = Yii::app()->session['rawData'];
+
+            $filename = "Voucher_Validation_".Date('Y_m_d');
+
+            $csv = new ECSVExport($rawData);
+            $csv->toCSV($filename);
+
+            $content = file_get_contents($filename);
+
+            Yii::app()->getRequest()->sendFile($filename, $content, "text/csv", false);
+            exit();
         }
 
 	// Uncomment the following methods and override them if needed

@@ -41,7 +41,7 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseURL.'/js/j
     $(document).ready(function(){
         var acctype = <?php echo Yii::app()->session['AccountType']; ?>;
         //alert(acctype);
-        if (acctype == 4)
+        if (acctype == 2||acctype == 3||acctype == 4)
             {
                 //var sitecode = 'ICSA-TSTID';
                 var sitecode = '<?php echo Yii::app()->session['SiteCode']; ?>';

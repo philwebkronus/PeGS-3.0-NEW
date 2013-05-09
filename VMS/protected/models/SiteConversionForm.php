@@ -27,7 +27,7 @@ class SiteConversionForm extends CFormModel
         }
         else
         {
-            $where = " and SiteCode='".$site."'";
+            $where = " and s.SiteCode='".$site."'";
         }
         $sql = "select v.VoucherTypeID, s.SiteCode, sum(v.Amount) as TotalAmountReimbursed, count(v.VoucherCode) as TotalCount
                 from vouchers v
@@ -35,12 +35,11 @@ class SiteConversionForm extends CFormModel
                 on v.TerminalID = t.TerminalID
                 inner join sites s
                 on t.SiteID = s.SiteID
-                where v.DateCreated >= :from
-                and v.DateCreated < :to
-                and v.VoucherTypeID = 2
+                where v.DateReimbursed >= :from
+                and v.DateReimbursed < :to
                 and v.Status = 5"
                 .$where.
-                " group by v.VoucherTypeID, s.SiteCode";
+                " group by s.SiteCode";
         $command = $connection->createCommand($sql);
         $command->bindValue(":from", $from);
         $command->bindValue(":to", $to);

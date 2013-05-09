@@ -4,6 +4,7 @@ class ConversionController extends VMSBaseIdentity
 {
 	public function actionIndex()
 	{
+            AuditLog::logTransactions(19);
             $model = new SiteConversionForm();
             if(isset($_POST['SiteConversionForm']))
             {
@@ -54,6 +55,7 @@ class ConversionController extends VMSBaseIdentity
         public function actionSiteConversionDataTable($rawData)
         {
             $arrayDataProvider = new CArrayDataProvider($rawData, array(
+		'keyField'=>'VoucherTypeID',
                 /*'id'=>'siteconversion-grid',
                 'sort'=>array(
                     'attributes'=>array('DateCreated','DateExpiry','Status'),
@@ -80,6 +82,7 @@ class ConversionController extends VMSBaseIdentity
         
         public function actionExportToCSV()
         {
+            AuditLog::logTransactions(20);
             Yii::import('ext.ECSVExport');
             $model = new SiteConversionForm();
             

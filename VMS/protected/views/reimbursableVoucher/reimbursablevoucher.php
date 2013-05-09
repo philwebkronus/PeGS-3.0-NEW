@@ -38,16 +38,14 @@
         array('id'=>'forreimburse',
         'class'=>'CCheckBoxColumn',
         'checked'=>'0',
-        'value'=>'$data["VoucherCode"]'),    
+        'value'=>'CHtml::encode($data["VoucherCode"])'),    
         
         );
         
         $this->widget('zii.widgets.grid.CGridView', array(
-        'id'=>'reimbursegrid',
         'dataProvider' => $arrayDataProvider,
         'enablePagination' => true,
         'selectableRows'=>2,
-        'ajaxUpdate'=>true,
         //'htmlOptions' => array('style'=>'width: 630px;'),
         'columns' => $grid
         ));

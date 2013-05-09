@@ -1,126 +1,103 @@
 <?php
-
-/*
- * @Date Feb 1, 2013
- * @Author owliber
- * 
- */
-?>
-
-<?php
-
 class UsageController extends VMSBaseIdentity
 {
-    public $dateFrom;
-    public $dateTo;
-    public $status;
-    public $vouchertype = 'All';
-    public $egmmachine = 'All';
-    public $site = 'All';
-    
     public function actionIndex()
     {
-        $this->dateFrom = date('Y-m-d');
-        $this->dateTo = date('Y-m-d',strtotime ('+1 day' , strtotime($this->dateFrom)));
-        
-        $totalAmount = 0;
-        $totalCount = 0;
-            
-        if($this->egmmachine == 'All')
+        //AuditLog::logTransactions(23);
+        $model = new VoucherUsageForm();
+        if(isset($_POST['VoucherUsageForm']))
         {
-            if(Yii::app()->user->isPerSite())
+            $model->attributes=$_POST['VoucherUsageForm'];
+            $data=$model->attributes;
+            Yii::app()->session['vufrom'] = $data['from']. ' 06:00:00';
+            Yii::app()->session['vuto'] = $data['to']. ' 06:00:00';
+            Yii::app()->session['vouchertype'] = $data['vouchertype'];
+            Yii::app()->session['site'] = $data['site'];
+            Yii::app()->session['status'] = $data['status'];
+            
+            $from = Yii::app()->session['vufrom'];
+            $to = Yii::app()->session['vuto'];
+            $vouchertype = Yii::app()->session['vouchertype'];
+            $site = Yii::app()->session['site'];
+            $status = Yii::app()->session['status'];
+            
+            if($model->validate())
             {
-                $this->site = Yii::app()->user->getSiteID();
-                $total = $model->getSummaryBySite($this->site);
-
-                foreach($total as $row)
+                //echo 'validate';
+                $rawData = $model->getVoucherUsageStatus($from, $to, $vouchertype, $site, $status);
+                Yii::app()->session['rawData'] = $rawData;
+                $display = 'block';
+                Yii::app()->session['display'] = $display;
+            }
+            /*else
                 {
-                    $totalCount = $row['TotalCount'];
-                    $totalAmount = $row['TotalAmount'];
-                }
-                
-                $egmmachines = Stacker::activeEGMMachinesBySite($this->site);
-                
-            }
-            else
-            {
-                $egmmachines = Stacker::activeEGMMachines();
-            }
-                        
-
-            foreach($egmmachines as $value)
-            {
-                $egmmachine[] = $value['EGMMachineInfoId_PK'];
-            }
-
-            $egmmachines = $egmmachine;
-
+                    $arr = $model->getErrors();     
+                    foreach ($arr as &$value) 
+                    {
+                        $arr2 = $value;
+                        foreach ($arr2 as &$value2) 
+                        {
+                            //$this->displayPopup("Invalid Data", $value2,260);
+                            echo $value2;
+                        }
+                    }
+                }*/
         }
         else
-            $egmmachines = $this->egmmachine;
-            
-        $model = new Usage();
-
-        $voucherusage = $model->getUsage($this->dateFrom, $this->dateTo, $this->vouchertype, $this->status, $egmmachines);
-
-        $dataProvider = new CArrayDataProvider($voucherusage, array(
-            'keyField'=>'VoucherID',
-            'pagination'=>array(
-                'pageSize'=>25,
-            ),
+        {
+            $rawData = array(1);
+            Yii::app()->session['rawData'] = $rawData;
+            $display = 'none';
+            Yii::app()->session['display'] = $display;
+        }
+        $this->render('index', array('model'=>$model));
+    }
+    public function actionVoucherUsageDataTable($rawData)
+    {
+        $arrayDataProvider = new CArrayDataProvider($rawData, array(
+	'keyField'=>'VoucherType',
+        //'id'=>'voucherusage-grid',
+        /*'sort'=>array(
+            'attributes'=>array('DateCreated','DateExpiry','Status'),
+            'defaultOrder'=>array('DateCreated'=>true, 'DateExpiry'=>false),
+            ),*/
+        'pagination'=>array(
+            'pageSize'=>15,
+        ),
         ));
         
-        $this->render('index',array(
-            'totalAmount'=>$totalAmount,
-            'totalCount'=>$totalCount,
-            'dataProvider'=>$dataProvider,
-        ));
-    }
-    
-    public function actionAjaxVoucherUsage()
-    {
-        if(Yii::app()->request->isAjaxRequest)
-        {
-            $this->dateFrom = $_GET['DateFrom'];
-            $this->dateTo = $_GET['DateTo'];
+        $params =array(
+                 'arrayDataProvider'=>$arrayDataProvider,
+                    
+            );
             
-            if(Yii::app()->user->isPerSite())
-                $this->site = Yii::app()->user->getSiteID();
-            else
-                $this->site = $_GET['Site'];
-            
-            if($this->egmmachine == 'All')
+            if(!isset($_GET['ajax']))
             {
-                $egmmachines = Stacker::activeEGMMachinesBySite($this->site);
-
-                foreach($egmmachines as $value)
-                {
-                    $egmmachine[] = $value['EGMMachineInfoId_PK'];
-                }
-
-                $egmmachines = $egmmachine;
-
+                  $this->renderPartial('voucherusage', $params);
             }
             else
-                $egmmachines = $this->egmmachine;
-        
-            $model = new Usage();
-            
-            $voucherusage = $model->getUsage($this->dateFrom, $this->dateTo, $this->vouchertype, $this->status, $egmmachines);
+            {
+                  $this->renderPartial('voucherusage', $params);
+            }
+    }
+    
+    public function actionExportToCSV()
+    {
+        AuditLog::logTransactions(24);
+        Yii::import('ext.ECSVExport');
+        $model = new VoucherUsageForm();
 
-            $dataProvider = new CArrayDataProvider($voucherusage, array(
-                'keyField'=>'VoucherID',
-                'pagination'=>array(
-                    'pageSize'=>25,
-                ),
-            ));
+        $rawData = Yii::app()->session['rawData'];
 
-            $this->renderPartial('_lists',array(
-                'dataProvider'=>$dataProvider,
-            ));
+        $filename = "Voucher_Usage_".Date('Y_m_d');
 
-            Yii::app()->end();
-        }
+        $csv = new ECSVExport($rawData);
+        $csv->toCSV($filename);
+
+        $content = file_get_contents($filename);
+
+        Yii::app()->getRequest()->sendFile($filename, $content, "text/csv", false);
+        exit();
     }
 }
 ?>
