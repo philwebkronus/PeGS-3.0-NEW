@@ -48,7 +48,8 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseURL.'/js/j
                 $('#site').val(sitecode);
                 $('#tsite').hide();
                 $.ajax({
-                url: 'http://192.168.30.97/VMS/index.php/monitoring/ajaxGetTerminal?site='+sitecode,
+                //url: 'http://192.168.30.97/VMS/index.php/monitoring/ajaxGetTerminal?site='+sitecode,
+                url: 'http://<?php echo $_SERVER["HTTP_HOST"]; ?>/index.php/monitoring/ajaxGetTerminal?site='+sitecode,
                 type: 'post',
                 dataType: 'json',
                 success: function(data)
@@ -67,7 +68,8 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseURL.'/js/j
                 $('#site').live('change', function(){
                 var ddlsite = document.getElementById('site')
                 $.ajax({
-                    url: 'http://192.168.30.97/VMS/index.php/monitoring/ajaxGetTerminal?site='+ddlsite.value,
+                    //url: 'http://192.168.30.97/VMS/index.php/monitoring/ajaxGetTerminal?site='+ddlsite.value,
+                    url: 'http://<?php echo $_SERVER["HTTP_HOST"]; ?>/index.php/monitoring/ajaxGetTerminal?site='+ddlsite.value,
                     type: 'post',
                     dataType: 'json',
                     success: function(data)
