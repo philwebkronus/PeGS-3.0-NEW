@@ -5,7 +5,7 @@
  * @date : 2013-05-03
  */
 
-require_once("include/core/init.inc.php");
+require_once("init.inc.php");
 
 App::LoadCore("URL.class.php");
 session_destroy();
