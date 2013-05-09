@@ -82,17 +82,17 @@ return array(
                             'CJuiDialog' => array(
                                 'cssFile'=>'jquery-ui-1.9.2.custom.css',
                                 'theme'=>'redmond',
-                                'themeUrl'=>'css', 
+                                'themeUrl'=>'/css', 
                             ),
                             'CJuiDatePicker' => array(
                                 'cssFile'=>'jquery-ui-1.9.2.custom.css',
                                 'theme'=>'redmond',
-                                'themeUrl'=>'css', 
+                                'themeUrl'=>'/css', 
                             ),
                             'CJuiDateTimePicker' => array(
                                 'cssFile'=>'jquery-ui-1.9.2.custom.css',
                                 'theme'=>'redmond',
-                                'themeUrl'=>'css', 
+                                'themeUrl'=>'/css', 
                             ),
                         ),
                  ),
