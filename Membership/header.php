@@ -55,7 +55,7 @@ $timezone = $curdate->GetCurrentDateFormat('O (T)');
             
         </script>
     </head>
-    <body>
+    <body onload="$('#carousel').hide()">
       
         <form action="" method="post" name="MainForm" id="MainForm" <?php echo $autocompletestring; ?> >
             <div id="dashboard-messagebox" title="Message Box" style="display: none;">

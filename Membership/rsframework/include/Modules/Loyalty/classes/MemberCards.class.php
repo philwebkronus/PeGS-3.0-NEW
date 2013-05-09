@@ -75,5 +75,46 @@ class MemberCards extends BaseEntity
         
         return $result;
     }
+    
+    public function getActiveMemberCardInfo( $MID )
+    {
+        $query = "SELECT * 
+            FROM membercards 
+            WHERE MID = $MID and Status = 1";
+       
+        $result = parent::RunQuery($query);
+        
+        return $result;
+    }
+    
+    public function processMemberCard($arrMemberCards, $arrTempMemberCards)
+    {
+        $this->StartTransaction();
+        try
+        {
+            $this->Insert($arrMemberCards);
+            if(!App::HasError())
+            {
+                $this->UpdateByArray($arrTempMemberCards);
+                if(!App::HasError())
+                {
+                    $this->CommitTransaction();
+                }
+                else
+                {
+                    $this->RollBackTransaction();
+                }
+            }
+            else
+            {
+                $this->RollBackTransaction();
+            }
+        }
+        catch(Exception $e)
+        {
+            $this->RollBackTransaction();
+            App::SetErrorMessage($e->getMessage());
+        }
+    }
 }
 ?>

@@ -42,7 +42,7 @@ class Helper extends BaseEntity
         $mailer->Body .= "Please keep and use this temporary account code for you to be able to earn points.\n\n";
         $mailer->Body .= "Temporary Account Code: <strong>$tempcode</strong>\n\n";
         $mailer->Body .= "Verify your account by clicking the link below:\n";
-        $mailer->Body .= "Link: http://192.168.20.8:8092/verify.php?email=$email&tempcode=$tempcode\n\n"; 
+        $mailer->Body .= "Link: http://".$_SERVER['HTTP_HOST']."/verify.php?email=$email&tempcode=$tempcode\n\n"; 
         $mailer->Body .= "Thank you.\n";
         $mailer->Body .= "Philweb Corporation";
 

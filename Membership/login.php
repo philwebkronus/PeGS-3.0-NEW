@@ -76,7 +76,7 @@ if($fproc->IsPostBack)
             $enddate = $membersessions["DateEnded"];
             
             $_MemberCards = new MemberCards();
-            $mcresults = $_MemberCards->getMemberCardInfo($members["MID"]);
+            $mcresults = $_MemberCards->getActiveMemberCardInfo($members["MID"]);
             $membercards = $mcresults[0];
             $cardid = $membercards["CardID"];
             $cardnumber = $membercards["CardNumber"];

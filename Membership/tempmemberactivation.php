@@ -272,6 +272,7 @@ if((isset($_GET["tempnumber"]) && (htmlentities($_GET["tempnumber"]))) &&
                         $tempmemcardresult = $_MemberCards->getMemberCardInfoByCard($tempAccountCode);
                         $tempmemcard = $tempmemcardresult[0];
                         $tempmemcardmid = $tempmemcard["MID"];
+                        $tempmemcardid = $tempmemcard["MemberCardID"];
 
                         $arrMemberCards["MID"] = $tempmemcardmid;
                         $arrMemberCards["CardID"]= $arrchecknewcard["CardID"];
@@ -281,9 +282,16 @@ if((isset($_GET["tempnumber"]) && (htmlentities($_GET["tempnumber"]))) &&
                         $arrMemberCards["CurrentPoints"] = "0";
                         $arrMemberCards["RedeemedPoints"] = "0";
                         $arrMemberCards["DateCreated"] = $datecreated;
-                        $arrMemberCards["CreatedByAID"] = $tempmemcardmid;
+                        $arrMemberCards["CreatedByAID"] = $AID;
                         $arrMemberCards["Status"] = "1";
-                        $_MemberCards->Insert($arrMemberCards);
+                        //$_MemberCards->Insert($arrMemberCards);
+                        
+                        $arrTempMemberCards["MemberCardID"] = $tempmemcardid;
+                        $arrTempMemberCards["Status"] = CardStatus::TEMPORARY_MIGRATED;
+                        $arrTempMemberCards["UpdatedByAID"] = $AID;
+                        $arrTempMemberCards["DateUpdated"] = $datecreated;
+                        //App::Pr($arrTempMemberCards);
+                        $_MemberCards->processMemberCard($arrMemberCards, $arrTempMemberCards);
 
                         $newstatus = CardStatus::ACTIVE;
                         $arrNewCard["CardID"] = $arrchecknewcard["CardID"];
@@ -307,7 +315,7 @@ if((isset($_GET["tempnumber"]) && (htmlentities($_GET["tempnumber"]))) &&
                             $arrTempCard["UpdatedByAID"] = $AID;
                             $arrTempCard["DateUpdated"] = $datecreated;
                             $arrTempCard["Status"]= $tempstatus;
-
+                            
                             $_Cards->updateCardStatus($arrNewCard, $arrTempCard);
                         }                
 
