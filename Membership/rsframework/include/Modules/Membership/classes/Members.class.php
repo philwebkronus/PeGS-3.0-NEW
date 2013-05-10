@@ -111,8 +111,36 @@ class Members extends BaseEntity
     
     function Authenticate($username, $password, $hashing='')
     {
-        $retval = false;
+        App::LoadModuleClass("Loyalty", "MemberCards");
+        App::LoadCore("Validation.class.php");
+        $validate = new Validation();
+                
+        if($validate->validateEmail($username))
+        {
+            $query = "select * from members where username='$username'";
+            $result = parent::RunQuery($query);
+        }
+        else
+        {
+            $membercards = new MemberCards();
+            $cardinfo = $membercards->getMIDByCard($username);
+            
+            if(is_array($cardinfo) && count($cardinfo) > 0)
+            {
+                $MID = $cardinfo[0]['MID'];            
+                $query = "select * from members where MID='$MID'";
+                $result = parent::RunQuery($query);
+            }
+            else
+            {
+                $result = array();
+            }
+            
+        }
+            
+        $retval = "";
         $strpass = $password;
+        
         if($hashing != '')
         {
             App::LoadCore("Hashing.class.php");
@@ -121,12 +149,12 @@ class Members extends BaseEntity
                 $strpass = md5($password);
             }
         }
-        $query = "select * from members where username='".$username."' -- and password='".$password."'";
-        $result = parent::RunQuery($query);
-        if(isset($result) && count($result) >0)
+        
+        if(is_array($result) && count($result) > 0)
         {
             $row = $result[0];
             $mid = $row["MID"];
+            
             if($row["Status"] == 1)
             {
                 if($row["Password"] != $strpass)

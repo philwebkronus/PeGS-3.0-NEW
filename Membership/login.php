@@ -78,7 +78,7 @@ if($fproc->IsPostBack)
             $_MemberCards = new MemberCards();
             $mcresults = $_MemberCards->getActiveMemberCardInfo($members["MID"]);
             $membercards = $mcresults[0];
-            $cardid = $membercards["CardID"];
+            //$cardid = $membercards["CardID"];
             $cardnumber = $membercards["CardNumber"];
             
             $_Cards = new Cards();
@@ -98,6 +98,12 @@ if($fproc->IsPostBack)
 }
     
 ?>  
+<script language="javascript" type="text/javascript">
+    $(document).ready(function() 
+    {
+        $("#loginForm").validationEngine();
+    });        
+</script>
 <form name="loginForm" method="post" action="" id="loginForm" />
 <?php echo $txtUsername; ?><br/>
 <?php echo $txtPassword; ?><br/>
