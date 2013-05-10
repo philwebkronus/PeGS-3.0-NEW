@@ -232,8 +232,8 @@ class CasinoApi {
 //            $this->_doCasinoRules($casinoApiHandler,$service_name, $casinoUsername);
             
             $udate = CasinoApi::udate('YmdHisu');
-            
-            $transRegLogsId = $transReqLogsModel->insert($udate, 0, 'W', $terminal_id, 
+            $paymentType = 1; //always cash upon withdrawal
+            $transRegLogsId = $transReqLogsModel->insert($udate, 0, 'W', $paymentType, $terminal_id, 
                     $site_id, $service_id, $loyaltyCardNo, $mid, $casinoUserMode);
             
             $transactionSummaryModel->updateRedeem($trans_summary_id, 0);
@@ -365,8 +365,8 @@ class CasinoApi {
             
             
             $udate = CasinoApi::udate('YmdHisu');
-            
-            $transRegLogsId = $transReqLogsModel->insert($udate, 0, 'W', $terminal_id, 
+            $paymentType = 1; //always cash upon withdrawal
+            $transRegLogsId = $transReqLogsModel->insert($udate, 0, 'W', $paymentType, $terminal_id, 
                     $site_id, $service_id, $loyaltyCardNo, $mid, $casinoUserMode);
             
             $transactionSummaryModel->updateRedeem($trans_summary_id, 0);
@@ -413,6 +413,7 @@ class CasinoApi {
         // get terminalname or terminal code
         $terminal_name = $terminalsModel->getTerminalName($terminal_id);
         $service_name = $refServicesModel->getAliasById($service_id);
+        
         switch($service_name) {
             // RTG
             case 'Magic Macau':
@@ -425,7 +426,7 @@ class CasinoApi {
                 MI_Database::close();
                 $balanceinfo = $casinoApiHandler->GetBalance($terminal_name);
                 break;
-            case 'Rockin\' Reno':
+            case 'Swinging Singapore':
                 $casinoApiHandler = $this->configurePT($terminal_id, $service_id);
                 MI_Database::close();
                 $balanceinfo = $casinoApiHandler->GetBalance($terminal_name);
@@ -471,7 +472,8 @@ class CasinoApi {
         
             $udate = CasinoApi::udate('YmdHisu');
             
-            $transRegLogsId = $transReqLogsModel->insert($udate, 0, 'W', $terminal_id, 
+            $paymentType = 1; //always cash upon withdrawal
+            $transRegLogsId = $transReqLogsModel->insert($udate, 0, 'W', $paymentType, $terminal_id, 
                     $site_id, $service_id, $loyaltyCardNo, $mid, $casinoUserMode);
             
             $transactionSummaryModel->updateRedeem($trans_summary_id, 0);
@@ -606,7 +608,7 @@ class CasinoApi {
                 MI_Database::close();
                 $balanceinfo = $casinoApiHandler->GetBalance($casinoUsername);
                 break;
-            case 'Rockin\' Reno':
+            case 'Swinging Singapore':
                 $casinoApiHandler = $this->configurePT($terminal_id, $service_id);
                 MI_Database::close();
                 $balanceinfo = $casinoApiHandler->GetBalance($casinoUsername);
@@ -652,7 +654,8 @@ class CasinoApi {
         
             $udate = CasinoApi::udate('YmdHisu');
             
-            $transRegLogsId = $transReqLogsModel->insert($udate, 0, 'W', $terminal_id, 
+            $paymentType = 1; //always cash upon withdrawal
+            $transRegLogsId = $transReqLogsModel->insert($udate, 0, 'W', $paymentType, $terminal_id, 
                     $site_id, $service_id, $loyaltyCardNo, $mid, $casinoUserMode);
             
             $transactionSummaryModel->updateRedeem($trans_summary_id, 0);
