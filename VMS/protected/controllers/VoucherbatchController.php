@@ -173,7 +173,7 @@ class VoucherbatchController extends VMSBaseIdentity
         
         $rawData = $model->getAllGeneratedVoucherBatch();
         
-        $arrayDataProvider = new CArrayDataProvider($rawData, array(
+        $dataProvider = new CArrayDataProvider($rawData, array(
             'keyField'=>'VoucherBatchID',
             'sort'=>array(
                 'attributes'=>array('BatchNumber','Quantity','Amount','DateGenerated','DateExpiry'),
@@ -228,11 +228,10 @@ class VoucherbatchController extends VMSBaseIdentity
             }
             
             $voucherinfo = $model->getAllGeneratedVoucherBatchByBatchNo($_POST['BatchNo']);
-        }
-        
+        }        
         
         $this->render('index',array(
-            'arrayDataProvider'=>$arrayDataProvider,
+            'dataProvider'=>$dataProvider,
             'voucherinfo'=>$voucherinfo,
             
         ));

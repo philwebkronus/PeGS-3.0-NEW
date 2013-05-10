@@ -333,7 +333,7 @@ $this->breadcrumbs=array(
             'buttons'=>array(
                 'Close'=>'js:function(){
                     $("#generate-message").dialog("close");
-                    document.location="manage";
+                    window.location="manage";
                 }'
             ),
         ),
@@ -429,6 +429,7 @@ $this->breadcrumbs=array(
             'buttons'=>array(
                 'Close'=>'js:function(){
                     $(this).dialog("close");
+                    window.location="manage";
                 }'
             )
         ),
