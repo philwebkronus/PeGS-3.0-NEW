@@ -85,7 +85,7 @@ $fproc->AddControl($txtAlternateMobileNumber);
 
 $txtPassword = new TextBox("txtPassword", "txtPassword", "Password");
 $txtPassword->ShowCaption = false;
-$txtPassword->Length = 30;
+$txtPassword->Length = 40;
 $txtPassword->Size = 15;
 $txtPassword->Password = true;
 $txtPassword->CssClass = "validate[required, minSize[5]]";
@@ -94,7 +94,7 @@ $fproc->AddControl($txtPassword);
 
 $txtConfirmPassword = new TextBox("txtConfirmPassword", "txtConfirmPassword", "ConfirmPassword");
 $txtConfirmPassword->ShowCaption = false;
-$txtConfirmPassword->Length = 30;
+$txtConfirmPassword->Length = 40;
 $txtConfirmPassword->Size = 15;
 $txtConfirmPassword->Password = true;
 $txtConfirmPassword->CssClass = "validate[required, equals[txtPassword]]";
@@ -131,7 +131,7 @@ $txtAddress1 = new TextBox("txtAddress1", "txtAddress1", "Address1");
 $txtAddress1->ShowCaption = false;
 $txtAddress1->Length = 30;
 $txtAddress1->Size = 15;
-$txtAddress1->CssClass = "validate[required]";
+//$txtAddress1->CssClass = "validate[required]";
 $fproc->AddControl($txtAddress1);
 
 $txtAddress2 = new TextBox("txtAddress2", "txtAddress2", "Address2");
