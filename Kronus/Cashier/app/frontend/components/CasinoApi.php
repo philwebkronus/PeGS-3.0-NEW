@@ -125,10 +125,11 @@ class CasinoApi {
     
     
     /**
-     * @todo apply separate call for User Based here
+     * Get Balance method for user-based
+     * Purpose : to separate logic from terminal based for future changes
      */
     public function getBalanceUB($terminal_id, $site_id, $transtype='D', $service_id = '', $acct_id = '', 
-            $casinoUsername= ' ', $casinoPassword = ''){
+            $casinoUsername= ' ', $casinoPassword = '', $casinoHashedPwd = ''){
         Mirage::loadModels(array('TerminalSessionsModel','TerminalsModel','TransactionSummaryModel',
             'RefServicesModel','TransactionRequestLogsModel','TransactionDetailsModel'));
         
@@ -144,6 +145,23 @@ class CasinoApi {
         // get service id
         if(!$service_id)
             $service_id = $terminalSessionsModel->getServiceId($terminal_id);
+        
+        //verify if terminal has an active session
+        if($transtype == 'R' || $transtype == 'W'){
+            $is_terminal_active = $terminalSessionsModel->isSessionActive($terminal_id);
+
+            if($is_terminal_active === false) {
+                $message = 'Error: Can\'t get status.';
+                logger($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id);
+                CasinoApi::throwError($message);
+            }
+
+            if($is_terminal_active < 1) {
+                $message = 'Error: Terminal has no active session.';
+                logger($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id);
+                CasinoApi::throwError($message);
+            }
+        }
         
         $service_name = $refServicesModel->getServiceNameById($service_id);
         
@@ -206,7 +224,6 @@ class CasinoApi {
         
         // delete terminal session if balance if zero
         if($terminal_balance == 0 && $transtype != 'R' && $transtype != 'D') {
-            
             //Get Last Transaction Summary ID
             $trans_summary_id = $terminalSessionsModel->getLastSessSummaryID($terminal_id);
             
@@ -226,10 +243,8 @@ class CasinoApi {
                 $mid = $val['MID'];
                 $loyaltyCardNo = $val['LoyaltyCardNumber'];
                 $casinoUserMode = $val['UserMode'];
-                $serviceID = $val['ServiceID'];
+                $casinoHashedPwd = $val['UBHashedServicePassword'];
             }
-            
-//            $this->_doCasinoRules($casinoApiHandler,$service_name, $casinoUsername);
             
             $udate = CasinoApi::udate('YmdHisu');
             $paymentType = 1; //always cash upon withdrawal
@@ -244,6 +259,8 @@ class CasinoApi {
             $terminalSessionsModel->deleteTerminalSessionById($terminal_id);
             
             $transReqLogsModel->updateTransReqLogDueZeroBal($terminal_id, $site_id, $transtype, $transRegLogsId);
+            
+            $this->callSpyderAPI($commandId = 1, $terminal_id, $casinoUsername, $casinoHashedPwd, $service_id);
         }
         
         $terminalSessionsModel->updateTerminalSessionById($terminal_id, $service_id, $terminal_balance);
@@ -258,7 +275,7 @@ class CasinoApi {
      * @param int $service_id
      * @return array  array($terminal_balance,$service_name,$terminalSessionsModel,$transReqLogsModel,$redeemable_amount,$casinoApiHandler,$mgaccount)
      */
-    public function getBalance($terminal_id,$site_id,$transtype='D',$service_id=null, $acct_id=null) {
+    public function getBalance($terminal_id,$site_id,$transtype='D',$service_id= '', $acct_id= '') {
         Mirage::loadModels(array('TerminalSessionsModel','TerminalsModel','TransactionSummaryModel',
             'RefServicesModel','TransactionRequestLogsModel','TransactionDetailsModel'));
         
@@ -271,10 +288,27 @@ class CasinoApi {
         $transactionSummaryModel = new TransactionSummaryModel();
         
         $mgaccount = '';
-        
+                
         // get service id
         if(!$service_id)
             $service_id = $terminalSessionsModel->getServiceId($terminal_id);
+        
+        //verify if terminal has an active session
+        if($transtype == 'R' || $transtype == 'W'){
+            $is_terminal_active = $terminalSessionsModel->isSessionActive($terminal_id);
+
+            if($is_terminal_active === false) {
+                $message = 'Error: Can\'t get status.';
+                logger($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id);
+                CasinoApi::throwError($message);
+            }
+
+            if($is_terminal_active < 1) {
+                $message = 'Error: Terminal has no active session.';
+                logger($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id);
+                CasinoApi::throwError($message);
+            }
+        }
         
         // get terminalname or terminal code
         $terminal_name = $terminalsModel->getTerminalName($terminal_id);
@@ -313,7 +347,7 @@ class CasinoApi {
         
        if(!isset($balanceinfo['BalanceInfo']['Balance'])) {
             $message = 'Error: Can\'t get balance';
-            logger($message. ' TerminalID='.$terminal_id . ' ServiceID='.$service_id.
+            logger($message. ' TerminalID= '.$terminal_id .' ServiceID= '.$service_id.
                              ' ErrorMessage='.$balanceinfo['ErrorMessage']);
             self::throwError($message);
         }
@@ -355,12 +389,9 @@ class CasinoApi {
             $casinoUBDetails = $terminalSessionsModel->getLastSessionDetails($terminal_id);
        
             foreach ($casinoUBDetails as $val){
-                $casinoUsername = $val['UBServiceLogin'];
-                $casinoPassword = $val['UBServicePassword'];
                 $mid = $val['MID'];
                 $loyaltyCardNo = $val['LoyaltyCardNumber'];
                 $casinoUserMode = $val['UserMode'];
-                $serviceID = $val['ServiceID'];
             }
             
             
@@ -377,6 +408,11 @@ class CasinoApi {
             $terminalSessionsModel->deleteTerminalSessionById($terminal_id);
             
             $transReqLogsModel->updateTransReqLogDueZeroBal($terminal_id, $site_id, $transtype, $transRegLogsId);
+            
+            $terminal_pwd = $terminalsModel->getTerminalPassword($terminal_id, $service_id);
+            $login_pwd = $terminal_pwd['HashedServicePassword'];
+            
+            $this->callSpyderAPI($commandId = 1, $terminal_id, $terminal_name, $login_pwd, $service_id);
         }
         
         $terminalSessionsModel->updateTerminalSessionById($terminal_id, $service_id, $terminal_balance);
@@ -493,85 +529,15 @@ class CasinoApi {
     }
     
     /**
-     * Description: end the program and send a message with a header of 404
-     */
-    public static function throwError($message) {
-        header('HTTP/1.0 404 Not Found');
-            echo $message;
-            Mirage::app()->end();
-    }
-    
-    /**
-     * Description: this will return date with milliseconds
-     * @param string $format date format to be return
-     * @param string $utimestamp
-     * @return string date 
-     */
-    public static function udate($format, $utimestamp = null) {
-        if (is_null($utimestamp))
-            $utimestamp = microtime(true);
-
-        $timestamp = floor($utimestamp);
-        $milliseconds = round(($utimestamp - $timestamp) * 1000000);
-
-        return date(preg_replace('`(?<!\\\\)u`', $milliseconds, $format), $timestamp);
-    }
-    
-    /**
-     * Additional casino rules before session ending
-     * @param str $service_name
-     * @param str $terminal_name 
-     */
-    public function _doCasinoRules($terminal_id, $service_id,$username = '')
-    {
-        
-        Mirage::loadModels(array('TerminalsModel','RefServicesModel'));
-        if($username == null) {
-                $terminalModels = new TerminalsModel();
-                $username = $terminalModels->getTerminalName($terminal_id);
-        }
-
-        $refservicesmodel = new RefServicesModel();
-        $service_name = $refservicesmodel->getServiceNameById($service_id);
-
-        //if PT, freeze and force logout its account
-        if(strpos($service_name, 'PT') !== false || strpos($service_name, 'Rockin\' Reno') !== false) {
-
-            $casinoApiHandler = $this->configurePT($terminal_id, $service_id);
-            MI_Database::close();
-
-            $kickPlayerResult = $casinoApiHandler->KickPlayer($username);
-            
-            $changeStatusResult = $casinoApiHandler->ChangeAccountStatus($username, 1);
-
-            if(!$changeStatusResult['IsSucceed']){
-                $message = $changeStatusResult['ErrorMessage'];
-                logger($message);
-                CasinoApi::throwError($message);
-            }
-
-            if(!$kickPlayerResult['IsSucceed']){
-                $message = $kickPlayerResult['ErrorMessage'];
-                logger($message);
-                CasinoApi::throwError($message);
-            }
-        }
-    }
-    
-    public function GetPendingGames($terminal_id, $serverid, $PID){
-        $casinoAPIHandler = $this->configureRTG($terminal_id, $serverid,2);
-        $pendingGames = $casinoAPIHandler->GetPendingGames($PID);
-        return $pendingGames;
-    }
-    
-    /**
+     * Purpose : to separate logic from terminal based for future changes
      * Description: This get balance use for refresh. It will continue to next terminal to get balance
      *  even the previews casino was failed to get balance
      * @param int $terminal_id
      * @param int $site_id
      * @param int $transtype
      * @param int $service_id
-     * @return array array($terminal_balance,$service_name,$terminalSessionsModel,$transReqLogsModel,$redeemable_amount,$casinoApiHandler,$mgaccount) 
+     * @return array array($terminal_balance,$service_name,$terminalSessionsModel,$transReqLogsModel,
+     *                    $redeemable_amount,$casinoApiHandler,$mgaccount) 
      */
     public function getUBBalanceContinue($terminal_id, $site_id, $transtype='D', $service_id = '', $acct_id = '', 
             $casinoUsername= ' ', $casinoPassword = '') {
@@ -674,6 +640,92 @@ class CasinoApi {
         return array($terminal_balance,$service_name,$terminalSessionsModel,$transReqLogsModel,$redeemable_amount,$casinoApiHandler,$mgaccount);
     }
     
+    /**
+     * Description: end the program and send a message with a header of 404
+     */
+    public static function throwError($message) {
+        header('HTTP/1.0 404 Not Found');
+            echo $message;
+            Mirage::app()->end();
+    }
+    
+    /**
+     * Description: this will return date with milliseconds
+     * @param string $format date format to be return
+     * @param string $utimestamp
+     * @return string date 
+     */
+    public static function udate($format, $utimestamp = null) {
+        if (is_null($utimestamp))
+            $utimestamp = microtime(true);
+
+        $timestamp = floor($utimestamp);
+        $milliseconds = round(($utimestamp - $timestamp) * 1000000);
+
+        return date(preg_replace('`(?<!\\\\)u`', $milliseconds, $format), $timestamp);
+    }
+    
+    /**
+     * PlayTech : Additional casino rules before session ending
+     * @param str $service_name
+     * @param str $terminal_name 
+     */
+    public function _doCasinoRules($terminal_id, $service_id,$username = '')
+    {
+        
+        Mirage::loadModels(array('TerminalsModel','RefServicesModel'));
+        if($username == null) {
+                $terminalModels = new TerminalsModel();
+                $username = $terminalModels->getTerminalName($terminal_id);
+        }
+
+        $refservicesmodel = new RefServicesModel();
+        $service_name = $refservicesmodel->getServiceNameById($service_id);
+
+        //if PT, freeze and force logout its account
+        if(strpos($service_name, 'PT') !== false || strpos($service_name, 'Rockin\' Reno') !== false) {
+
+            $casinoApiHandler = $this->configurePT($terminal_id, $service_id);
+            MI_Database::close();
+
+            $kickPlayerResult = $casinoApiHandler->KickPlayer($username);
+            
+            $changeStatusResult = $casinoApiHandler->ChangeAccountStatus($username, 1);
+
+            if(!$changeStatusResult['IsSucceed']){
+                $message = $changeStatusResult['ErrorMessage'];
+                logger($message);
+                CasinoApi::throwError($message);
+            }
+
+            if(!$kickPlayerResult['IsSucceed']){
+                $message = $kickPlayerResult['ErrorMessage'];
+                logger($message);
+                CasinoApi::throwError($message);
+            }
+        }
+    }
+    
+    /**
+     * Get RTG Pending games
+     * @param int $terminal_id
+     * @param int $serverid
+     * @param str $PID
+     * @return obj
+     */
+    public function GetPendingGames($terminal_id, $serverid, $PID){
+        $casinoAPIHandler = $this->configureRTG($terminal_id, $serverid,2);
+        $pendingGames = $casinoAPIHandler->GetPendingGames($PID);
+        return $pendingGames;
+    }
+    
+    /**
+     * Reverts PT Pending games
+     * @param int $terminal_id
+     * @param int $service_id
+     * @param str $username
+     * @return type
+     */
     public function RevertBrokenGamesAPI($terminal_id,$service_id,$username)
     {
         $isRevert = 1; //0-No, 1-Yes
@@ -684,4 +736,38 @@ class CasinoApi {
         return $response;
     }
     
+    /**
+     * Call sapi to lock | unlock lp terminal
+     * @param int $commandId lock | unlock
+     * @param int $terminal_id
+     * @param str $login_uname
+     * @param str $login_pwd
+     * @param int $service_id
+     */
+    public function callSpyderAPI($commandId, $terminal_id, $login_uname, $login_pwd,
+                                     $service_id)
+    {
+        //if spyder call was enabled in cashier config, call SAPI
+        if(Mirage::app()->param['enable_spyder_call']){
+            
+            Mirage::loadComponents('AsynchronousRequest.class');
+            Mirage::loadModels(array('TerminalsModel','SpyderRequestLogsModel'));
+            
+            $terminalsModel = new TerminalsModel();
+            $spyderRequestLogsModel = new SpyderRequestLogsModel(); 
+            $asynchronousRequest = new AsynchronousRequest();
+
+            $terminalName = $terminalsModel->getTerminalName($terminal_id);
+            $spyder_req_id = $spyderRequestLogsModel->insert($terminalName, $commandId);
+
+            $terminal = substr($terminalName, strlen("ICSA-")); //removes the "icsa-
+            $computerName = str_replace("VIP", '', $terminal);
+
+            $params = array('r'=>'spyder/run','TerminalName'=>$computerName,'CommandID'=>$commandId,
+                            'UserName'=>$login_uname,'Password'=>$login_pwd,'Type'=> Mirage::app()->param['SAPI_Type'],
+                            'SpyderReqID'=>$spyder_req_id,'CasinoID'=>$service_id);
+                        
+            $asynchronousRequest->curl_request_async(Mirage::app()->param['Asynchronous_URI'], $params);
+        }
+    }
 }

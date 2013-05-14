@@ -19,7 +19,7 @@ class CommonRedeem {
      * @param int $acct_id
      * @return array 
      */
-    public function redeem($terminal_id,$site_id,$bcf,$service_id,$amount, $paymentType,$acct_id,
+    public function redeem($login_pwd, $terminal_id,$site_id,$bcf,$service_id,$amount, $paymentType,$acct_id,
             $loyalty_card, $mid = '', $userMode = '') {
         Mirage::loadComponents('CasinoApi');
         Mirage::loadModels(array('TerminalsModel', 'CommonTransactionsModel',
@@ -29,14 +29,20 @@ class CommonRedeem {
         $terminalsModel = new TerminalsModel();
         $commonTransactionsModel = new CommonTransactionsModel();
         $pendingTerminalTransactionCountModel = new PendingTerminalTransactionCountModel();
-        
+                
         $terminalname = $terminalsModel->getTerminalName($terminal_id);
         
+        //call SAPI, lock launchpad terminal
+        $casinoApi->callSpyderAPI($commandId = 1, $terminal_id, $terminalname, $login_pwd, $service_id);
+        
+        //call PT, freeze and force logout of session
         $casinoApi->_doCasinoRules($terminal_id, $service_id, $terminalname);
         
         list($terminal_balance,$service_name,$terminalSessionsModel,
-                $transReqLogsModel,$redeemable_amount,$casinoApiHandler,$mgaccount,$currentbet) = $casinoApi->getBalance($terminal_id, $site_id,'W',$service_id,$acct_id);
-
+                $transReqLogsModel,$redeemable_amount,$casinoApiHandler,$mgaccount,$currentbet) = $casinoApi->getBalance(
+                        $terminal_id, $site_id,'W',$service_id,$acct_id,$login_pwd);
+        
+        //check if amount is greater than 0
         if($redeemable_amount > 0){
             $is_terminal_active = $terminalSessionsModel->isSessionActive($terminal_id);
         
@@ -62,6 +68,8 @@ class CommonRedeem {
             if($currentbet > 0){
             $result = $casinoApi->RevertBrokenGamesAPI($terminal_id, $service_id, $terminal_name);
             if($result['RevertBrokenGamesReponse'][0] == false){
+                //unlock launchpad gaming terminal
+                $casinoApi->callSpyderAPI($commandId = 0, $terminal_id, $terminalname, $login_pwd, $service_id);
                 CasinoApi::throwError("Unable to revert bet on hand.");
             }
         }
@@ -79,6 +87,8 @@ class CommonRedeem {
                 $message = "Info: There was a pending game bet on  ";
                 logger($message.$pendingGames['PendingGames']['GetPendingGamesByPIDResult']['Gamename'].'.' . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id);
                 $message = "Info: There was a pending game bet. ";
+                //unlock launchpad gaming terminal
+                $casinoApi->callSpyderAPI($commandId = 0, $terminal_id, $terminalname, $login_pwd, $service_id);
                 CasinoApi::throwError($message);   
             }
             
@@ -141,6 +151,8 @@ class CommonRedeem {
                 $transReqLogsModel->update($trans_req_log_last_id, 'false', 2,null,$terminal_id);
                 $message = 'Can\'t connect to casino';
                 logger($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id);
+                //unlock launchpad gaming terminal
+                $casinoApi->callSpyderAPI($commandId = 0, $terminal_id, $terminalname, $login_pwd, $service_id);
                 CasinoApi::throwError($message);
             }
 
@@ -148,7 +160,7 @@ class CommonRedeem {
                 /************************ WITHDRAW ************************************/
                 $resultwithdraw = $casinoApiHandler->Withdraw($terminal_name, $amount, 
                     $tracking1, $tracking2, $tracking3, $tracking4, $terminal_pwd, $event_id, $transaction_id);   
-
+                
                 //check if Withdraw API reply is null
                 if(is_null($resultwithdraw)){
 
@@ -157,6 +169,8 @@ class CommonRedeem {
                         $transReqLogsModel->update($trans_req_log_last_id, 'false', 2,null,$terminal_id);
                         $message = 'Can\'t connect to casino';
                         logger($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id);
+                        //unlock launchpad gaming terminal
+                        $casinoApi->callSpyderAPI($commandId = 0, $terminal_id, $terminalname, $login_pwd, $service_id);
                         CasinoApi::throwError($message);
                     }
 
@@ -169,7 +183,10 @@ class CommonRedeem {
                     {
                         $transReqLogsModel->update($trans_req_log_last_id, 'false', 2,null,$terminal_id);
                         $message = 'Error: Request denied. Please try again.';
-                        logger($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id.' ErrorMessage='.$transSearchInfo['ErrorMessage']);
+                        logger($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id.
+                               ' ErrorMessage='.$transSearchInfo['ErrorMessage']);
+                        //unlock launchpad gaming terminal
+                        $casinoApi->callSpyderAPI($commandId = 0, $terminal_id, $terminalname, $login_pwd, $service_id);
                         CasinoApi::throwError($message);
                     }
 
@@ -201,7 +218,10 @@ class CommonRedeem {
                     if(isset($resultwithdraw['IsSucceed']) && $resultwithdraw['IsSucceed'] == false) {
                             $transReqLogsModel->update($trans_req_log_last_id, $apiresult, 2,null,$terminal_id);
                             $message = 'Error: Request denied. Please try again.';
-                            logger($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id.' ErrorMessage='.$resultwithdraw['ErrorMessage']);
+                            logger($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id.
+                                   ' ErrorMessage='.$resultwithdraw['ErrorMessage']);
+                            //unlock launchpad gaming terminal
+                            $casinoApi->callSpyderAPI($commandId = 0, $terminal_id, $terminalname, $login_pwd, $service_id);
                             CasinoApi::throwError($message);
                     }
 
@@ -255,43 +275,15 @@ class CommonRedeem {
                     $transReqLogsModel->update($trans_req_log_last_id, $apiresult, 2,null,$terminal_id);
                     $message = 'Error: Request denied. Please try again.';
                     logger($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id);
+                    //unlock launchpad gaming terminal
+                    $casinoApi->callSpyderAPI($commandId = 0, $terminal_id, $terminalname, $login_pwd, $service_id);
                     CasinoApi::throwError($message);
                 } 
 
         } else {
-            
-            $this->_doCasinoRules($service_name, $terminal_name);
-            
+                        
             return array('message'=>'Info: Session has been ended.',
                          'amount'=>$redeemable_amount);
         }    
-    }
-    
-    /**
-     * Additional casino rules before session ending
-     * @param str $service_name
-     * @param str $terminal_name 
-     */
-    private function _doCasinoRules($casinoApiHandler, $service_name, $terminal_name){
-        
-        //if PT, freeze and force logout its account
-        if(strpos($service_name, 'PT') !== false) {
-
-            $kickPlayerResult = $casinoApiHandler->KickPlayer($terminal_name);
-             
-            $changeStatusResult = $casinoApiHandler->ChangeAccountStatus($terminal_name, 1);
-
-            if(!$changeStatusResult['IsSucceed']){
-                $message = "PT : Failed to lock the terminal.";
-                logger($message);
-                CasinoApi::throwError($message);
-            }
-
-            if(!$kickPlayerResult['IsSucceed']){
-                $message = "PT : Failed to end gaming session";
-                logger($message);
-                CasinoApi::throwError($message);
-            }
-        }
     }
 }

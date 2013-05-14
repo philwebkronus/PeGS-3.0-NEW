@@ -8,7 +8,7 @@ Mirage::loadModels('SiteBalanceModel');
 /**
  * Date Created 10 27, 11 10:07:34 AM <pre />
  * Description of FrontendController
- * @author Bryan Salazar, elperez
+ * @author Bryan Salazar
  */
 class FrontendController extends MI_Controller {
     
@@ -412,8 +412,8 @@ class FrontendController extends MI_Controller {
         $terminalsmodel = new TerminalsModel();
         $asynchronousRequest = new AsynchronousRequest();
         
-        $paymentType = 1;
-        $isCreditable = 1;
+        $paymentType = 1; //always cash upon withdrawal
+        $isCreditable = 1; 
         
         $bcf = $this->getSiteBalance();
         
@@ -441,7 +441,7 @@ class FrontendController extends MI_Controller {
              $terminal_pwd = $terminalsmodel->getTerminalPassword($startSessionFormModel->terminal_id, 
                                 $service_id);
              $login_pwd = $terminal_pwd['HashedServicePassword'];
-             $result = $commonRedeem->redeem($startSessionFormModel->terminal_id, $this->site_id, $bcf, 
+             $result = $commonRedeem->redeem($login_pwd, $startSessionFormModel->terminal_id, $this->site_id, $bcf, 
                             $service_id, $startSessionFormModel->amount, $paymentType, $this->acc_id, 
                             $loyaltyCardNo, $mid, $casinoUserMode,$casinoUsername,
                             $casinoPassword,$casinoServiceID);
@@ -451,7 +451,7 @@ class FrontendController extends MI_Controller {
         if($ref_service['UserMode'] == 1){
              $login_acct = $casinoUsername;
              $login_pwd  = $casinoHashedPwd;
-             $result = $commonUBRedeem->redeem($startSessionFormModel->terminal_id, $this->site_id, $bcf, 
+             $result = $commonUBRedeem->redeem($login_pwd, $startSessionFormModel->terminal_id, $this->site_id, $bcf, 
                             $service_id, $startSessionFormModel->amount, $paymentType, $this->acc_id, 
                             $loyaltyCardNo, $mid, $casinoUserMode,$casinoUsername,
                             $casinoPassword,$casinoServiceID);
@@ -472,21 +472,6 @@ class FrontendController extends MI_Controller {
             $loyaltyrequestlogs->updateLoyaltyRequestLogs($loyaltyrequestlogsID,1);
         } else {
             $loyaltyrequestlogs->updateLoyaltyRequestLogs($loyaltyrequestlogsID,2);
-        }
-        
-        
-        //if spyder call was enabled in cashier config, call SAPI
-        if(Mirage::app()->param['enable_spyder_call']){
-            $commandId = 1; //lock
-            $spyder_req_id = $spyderRequestLogsModel->insert($terminalName, $commandId);
-            $terminal = substr($terminalName, strlen("ICSA-")); //removes the "icsa-
-            $computerName = str_replace("VIP", '', $terminal);
-            
-            $params = array('r'=>'spyder/run','TerminalName'=>$computerName,'CommandID'=>$commandId,
-                            'UserName'=>$login_acct,'Password'=>$login_pwd,'Type'=> Mirage::app()->param['SAPI_Type'],
-                            'SpyderReqID'=>$spyder_req_id,'CasinoID'=>$service_id);
-
-            $asynchronousRequest->curl_request_async(Mirage::app()->param['Asynchronous_URI'], $params);
         }
         
         echo json_encode($result);
@@ -525,13 +510,17 @@ class FrontendController extends MI_Controller {
         $trackingId = '';
         $ref_service = $refService->getServiceById($startSessionFormModel->casino);        
         $terminalname = $terminalsmodel->getTerminalName($terminal_id);
-       
-       $isVIP = '';
-       if(preg_match("/vip$/i", $terminalname, $results)){
-           $isVIP = "1";
-       } else {
+        
+        $isVIP = '0';
+        
+        if(isset($_POST['isvip']))
             $isVIP = $_POST['isvip'];
-       }
+    
+        if(preg_match("/vip$/i", $terminalname, $results)){
+           $isVIP = "1";
+        } else {
+            $isVIP = $isVIP;
+        }
          
         //check if voucher
         if(isset($startSessionFormModel->voucher_code) && $startSessionFormModel->voucher_code !='')
@@ -736,10 +725,6 @@ class FrontendController extends MI_Controller {
                                 $casinoIsVIP = $casinos[$ctr]['isVIP'];
                             }
                     }
-                    
-                    /**
-                     * @todo add checking here if casino status is active
-                     */
                     
                     //checking if casino is terminal based
                     if($ref_service['UserMode'] == 0){
