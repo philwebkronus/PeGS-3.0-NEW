@@ -232,6 +232,7 @@ $fproc->AddControl($rdoGroupSmoker);
 $fproc->ProcessForms();
 
 $datecreated = "now_usec()";
+$isEmailUnique = true;
 
 App::GetErrorMessage();
 
@@ -242,45 +243,55 @@ if ($fproc->IsPostBack)
         $arrMembers["UserName"] = $txtEmail->SubmittedValue;
         $arrMembers["Password"] = md5($txtPassword->SubmittedValue);
         $arrMembers["AccountTypeID"] = $_Helper->GetAccountTypeIDByName('Member');
-        $arrMembers["ForChangePassword"] = 1; 
-        $arrMembers["DateCreated"] = $datecreated; 
+        $arrMembers["ForChangePassword"] = 1;
+        $arrMembers["DateCreated"] = $datecreated;
         $arrMembers["Status"] = 1;
-                
+
         $arrMemberInfo["FirstName"] = $txtFirstName->SubmittedValue;
         $arrMemberInfo["MiddleName"] = $txtMiddleName->SubmittedValue;
 
         //$arrMemberInfo['Password'] = '288472173';
-        $arrMemberInfo['LastName'] = $txtLastName->SubmittedValue;    
+        $arrMemberInfo['LastName'] = $txtLastName->SubmittedValue;
         $arrMemberInfo['Address1'] = $txtAddress1->SubmittedValue;
-        $arrMemberInfo['Address2'] = $txtAddress2->SubmittedValue;  
+        $arrMemberInfo['Address2'] = $txtAddress2->SubmittedValue;
         $arrMemberInfo['IdentificationNumber'] = $txtIDPresented->SubmittedValue;
-        $arrMemberInfo['IdentificationID'] = $cboIDSelection->SubmittedValue;        
+        $arrMemberInfo['IdentificationID'] = $cboIDSelection->SubmittedValue;
         $arrMemberInfo['NickName'] = $txtNickName->SubmittedValue;
         $arrMemberInfo['MobileNumber'] = $txtMobileNumber->SubmittedValue;
-        $arrMemberInfo['AlternateMobileNumber'] = $txtAlternateMobileNumber->SubmittedValue;        
+        $arrMemberInfo['AlternateMobileNumber'] = $txtAlternateMobileNumber->SubmittedValue;
         $arrMemberInfo['Email'] = $txtEmail->SubmittedValue;
-        $arrMemberInfo['AlternateEmail'] = $txtAlternateEmail->SubmittedValue;                          
+        $arrMemberInfo['AlternateEmail'] = $txtAlternateEmail->SubmittedValue;
         $arrMemberInfo['Birthdate'] = $dtBirthDate->SubmittedValue;
         $arrMemberInfo['NationalityID'] = $cboNationality->SubmittedValue;
         $arrMemberInfo['OccupationID'] = $cboOccupation->SubmittedValue;
 
-        $arrMemberInfo['Gender'] = $rdoGroupGender->SubmittedValue;     
-        $arrMemberInfo['IsSmoker'] = $rdoGroupSmoker->SubmittedValue;  
-        
+        $arrMemberInfo['Gender'] = $rdoGroupGender->SubmittedValue;
+        $arrMemberInfo['IsSmoker'] = $rdoGroupSmoker->SubmittedValue;
+
         $arrMemberInfo['DateCreated'] = 'now_usec()';
-        
-        $chkEmailNotification->SubmittedValue == 1 ? $arrMemberInfo['EmailSubscription'] = 1 : $arrMemberInfo['EmailSubscription'] = 0;        
+
+        $chkEmailNotification->SubmittedValue == 1 ? $arrMemberInfo['EmailSubscription'] = 1 : $arrMemberInfo['EmailSubscription'] = 0;
         $chkSMSNotification->SubmittedValue == 1 ? $arrMemberInfo['SMSSubscription'] = 1 : $arrMemberInfo['SMSSubscription'] = 0;
 
-        $_Members->Register($arrMembers,$arrMemberInfo);
-        
-        if (!App::HasError())
-            $isSuccess = true;
-        else
-            $isSuccess = false;
-        
+        $_Members->Register($arrMembers, $arrMemberInfo);
+
         $isOpen = 'true';
-       
+        if (!App::HasError())
+        {
+            $isSuccess = true;
+        }
+        else
+        {
+            $isSuccess = false;
+            if (strpos(App::GetErrorMessage(), " Integrity constraint violation: 1062 Duplicate entry") > 0)
+            {
+                $isEmailUnique = false;
+                App::SetErrorMessage("Email already exists. Please choose a different email address.");
+                $isOpen = false;
+            }
+        }
+
+        
     }
 }
 ?>
@@ -397,28 +408,40 @@ if ($fproc->IsPostBack)
 </table>
 
 <div id="SuccessDialog" name="SuccessDialog">
-    <?php if($isOpen == 'true') 
-    {?>
-        <?php if($isSuccess)
-        {?>
+    <?php if ($isOpen == 'true')
+    { ?>
+        <?php if ($isSuccess)
+        { ?>
             <p>
                 You have successfully registered! <br /><br />
-                An Active Temporary Account will be sent to your email address or mobile number,
+                An active Temporary Account will be sent to your email address or mobile number,
                 which can be used to start session/credit points in the absence of Membership Card.<br /><br />
                 Please note that your Registered Account and Temporary Account will be activated only
                 after 24 hours.<br />
             </p>
-        <?php 
-        } 
-        else 
-        { 
-        ?>
-            <p>
-                A problem encountered while trying to register your account. <br /> We are very sorry for the inconvenience. Please try again later.<br />
-            </p>
-        <?php
-        }?>
-    <?php
-    }?>
+            <?php
+        }
+        else
+        {
+            if ($isEmailUnique)
+            {
+                ?>
+                <p>
+                    Registration Failed. A problem was encountered during registration. Please retry or contact Customer Support.
+                </p>
+                <?php
+            }
+            if (!$isEmailUnique)
+            {
+                ?>
+                <p>
+                    Registration Failed<br /><br />
+                    Email already exists. Please choose a different email address.
+                </p>
+                <?php
+            }
+        }
+    }
+    ?>
 </div>
 <?php include 'footer.php'; ?>
