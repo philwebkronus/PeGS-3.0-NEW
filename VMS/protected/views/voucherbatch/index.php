@@ -181,6 +181,12 @@ $this->breadcrumbs=array(
     /* Get the maximum quantity and amount for batch generation of vouchers */
     $max_qty = Utilities::getParameters('MAX_VOUCHER_BATCH_QTY');
     $max_amt = Utilities::getParameters('MAX_VOUCHER_BATCH_AMT');
+    
+    /* Get the minimum quantity and amount */
+    
+    $min_qty = Utilities::getParameters('MIN_VOUCHER_BATCH_QTY');
+    $min_amt = Utilities::getParameters('MIN_VOUCHER_BATCH_AMT');
+    
 ?>
 
 <!-- Generate Bulk Voucher dialog box -->
@@ -206,7 +212,7 @@ $this->breadcrumbs=array(
         function checkInput( o, n, min, max ) {
             if ( o.val() > max || o.val() < min) {
                 o.addClass( \'ui-state-error\' );
-                updateTips( \'Value of \' + n + \' should not be 0 and not greater than \'+ max);
+                updateTips( \'Value of \' + n + \' should not be 0 and not less than \' + min +\' but not greater than \'+ max);
                 return false;
             } else {
                 return true;
@@ -230,16 +236,14 @@ $this->breadcrumbs=array(
                 'Generate'=>'js:function(){                    
                     var bValid = true;
                     allFields.removeClass( "ui-state-error" );                    
-                    bValid = bValid && checkInput(quantity, "quantity", 1, '.$max_qty.');
-                    bValid = bValid && checkInput(amount, "amount", 1, '.$max_amt.');
+                    bValid = bValid && checkInput(quantity, "quantity", '.$min_qty.', '.$max_qty.');
+                    bValid = bValid && checkInput(amount, "amount", '.$min_amt.', '.$max_amt.');
                     
                     if ( bValid )
                     {
                         $("#confirm-message").dialog("open");
                         $("#generate-voucher").dialog("close");
                     }
-                    
-                   
                    
                 }',
                 'Cancel'=>'js:function(){
