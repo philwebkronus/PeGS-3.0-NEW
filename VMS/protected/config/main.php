@@ -117,6 +117,9 @@ return array(
 				*/
 			),
 		),
+                'file'=>array(
+                    'class'=>'application.extensions.file.CFile',
+                ),
 	),
 
 	// application-level parameters that can be accessed
