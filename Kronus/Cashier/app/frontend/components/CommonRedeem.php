@@ -10,17 +10,24 @@
  */
 class CommonRedeem {
     
-    /**
-     * @param int $terminal_id
+     /**
+     * Redeem method for terminal based
+     * @param str $login_pwd [Terminal Password (Hashed)]
+     * @param int $terminal_id 
      * @param int $site_id
-     * @param [int,string] $bcf
+     * @param str $bcf
      * @param int $service_id
-     * @param int $amount
-     * @param int $acct_id
-     * @return array 
+     * @param str $amount
+     * @param int $paymentType [((1)Cash, (2)Voucher)]
+     * @param int $acct_id [cashier id]
+     * @param str $loyalty_card [membership card]
+     * @param int $mid [membership id]
+     * @param int $userMode [(0)Terminal, (1)User Based]
+     * @return array result
      */
-    public function redeem($login_pwd, $terminal_id,$site_id,$bcf,$service_id,$amount, $paymentType,$acct_id,
+     public function redeem($login_pwd, $terminal_id,$site_id,$bcf,$service_id,$amount, $paymentType,$acct_id,
             $loyalty_card, $mid = '', $userMode = '') {
+        
         Mirage::loadComponents('CasinoApi');
         Mirage::loadModels(array('TerminalsModel', 'CommonTransactionsModel',
                                  'PendingTerminalTransactionCountModel'));
@@ -42,30 +49,27 @@ class CommonRedeem {
                 $transReqLogsModel,$redeemable_amount,$casinoApiHandler,$mgaccount,$currentbet) = $casinoApi->getBalance(
                         $terminal_id, $site_id,'W',$service_id,$acct_id,$login_pwd);
         
-        //check if amount is greater than 0
-        if($redeemable_amount > 0){
-            $is_terminal_active = $terminalSessionsModel->isSessionActive($terminal_id);
+        $is_terminal_active = $terminalSessionsModel->isSessionActive($terminal_id);
         
-            if($is_terminal_active === false) {
-                $message = 'Error: Can\'t get status.';
-                logger($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id);
-                CasinoApi::throwError($message);
-            }
+        if($is_terminal_active === false) {
+            $message = 'Error: Can\'t get status.';
+            logger($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id);
+            CasinoApi::throwError($message);
+        }
 
-            if($is_terminal_active < 1) {
-                $message = 'Error: Terminal has no active session.';
-                logger($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id);
-                CasinoApi::throwError($message);
-            }
-            
+        if($is_terminal_active < 1) {
+            $message = 'Error: Terminal has no active session.';
+            logger($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id);
+            CasinoApi::throwError($message);
+        }
 
-            if($mgaccount != '') {
-                $terminal_name = $mgaccount;
-            } else {
-                $terminal_name = $terminalname;
-            }
-            
-            if($currentbet > 0){
+        if($mgaccount != '') {
+            $terminal_name = $mgaccount;
+        } else {
+            $terminal_name = $terminalname;
+        }
+
+        if($currentbet > 0){
             $result = $casinoApi->RevertBrokenGamesAPI($terminal_id, $service_id, $terminal_name);
             if($result['RevertBrokenGamesReponse'][0] == false){
                 //unlock launchpad gaming terminal
@@ -73,73 +77,77 @@ class CommonRedeem {
                 CasinoApi::throwError("Unable to revert bet on hand.");
             }
         }
-            
-            //check if there was a pending game bet for RTG
-            if(strpos($service_name, 'RTG') !== false) {
-                $PID = $casinoApiHandler->GetPIDLogin($terminal_name);
-                $pendingGames = $casinoApi->GetPendingGames($terminal_id, $service_id,$PID);    
-            } else {
-                $pendingGames = '';
-            }
 
-            //Display message
-            if(is_array($pendingGames) && $pendingGames['IsSucceed'] == true){
-                $message = "Info: There was a pending game bet on  ";
-                logger($message.$pendingGames['PendingGames']['GetPendingGamesByPIDResult']['Gamename'].'.' . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id);
-                $message = "Info: There was a pending game bet. ";
-                //unlock launchpad gaming terminal
-                $casinoApi->callSpyderAPI($commandId = 0, $terminal_id, $terminalname, $login_pwd, $service_id);
-                CasinoApi::throwError($message);   
-            }
-            
-            
-            //Get Last Transaction Summary ID
-            $trans_summary_id = $terminalSessionsModel->getLastSessSummaryID($terminal_id);
-            if(!$trans_summary_id){
-                $terminalSessionsModel->deleteTerminalSessionById($terminal_id);
-                $message = 'Redeem Session Failed. Please check if the terminal
-                            has a valid start session.';
-                logger($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id);
+        //check if there was a pending game bet for RTG
+        if(strpos($service_name, 'RTG') !== false) {
+            $PID = $casinoApiHandler->GetPIDLogin($terminal_name);
+            $pendingGames = $casinoApi->GetPendingGames($terminal_id, $service_id,$PID);    
+        } else {
+            $pendingGames = '';
+        }
+
+        //Display message
+        if(is_array($pendingGames) && $pendingGames['IsSucceed'] == true){
+            $message = "Info: There was a pending game bet on  ";
+            logger($message.$pendingGames['PendingGames']['GetPendingGamesByPIDResult']['Gamename'].'.' . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id);
+            $message = "Info: There was a pending game bet. ";
+            //unlock launchpad gaming terminal
+            $casinoApi->callSpyderAPI($commandId = 0, $terminal_id, $terminalname, $login_pwd, $service_id);
+            CasinoApi::throwError($message);   
+        }
+
+
+        //Get Last Transaction Summary ID
+        $trans_summary_id = $terminalSessionsModel->getLastSessSummaryID($terminal_id);
+        if(!$trans_summary_id){
+            $terminalSessionsModel->deleteTerminalSessionById($terminal_id);
+            $message = 'Redeem Session Failed. Please check if the terminal
+                        has a valid start session.';
+            logger($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id);
+            CasinoApi::throwError($message);
+        }
+
+        //get last transaction ID if service is MG
+        if(strpos($service_name, 'MG') !== false) {
+            $trans_origin_id = 0; //cashier origin Id
+            $transaction_id = $terminalsModel->insertserviceTransRef($service_id, $trans_origin_id);
+            if(!$transaction_id){
+                $message = "Error: Failed to insert record in servicetransactionref";
+                logger($message);
                 CasinoApi::throwError($message);
             }
+        } else {
+            $transaction_id = '';
+        }
 
-            //get last transaction ID if service is MG
-            if(strpos($service_name, 'MG') !== false) {
-                $trans_origin_id = 0; //cashier origin Id
-                $transaction_id = $terminalsModel->insertserviceTransRef($service_id, $trans_origin_id);
-                if(!$transaction_id){
-                    $message = "Error: Failed to insert record in servicetransactionref";
-                    logger($message);
-                    CasinoApi::throwError($message);
-                }
-            } else {
-                $transaction_id = '';
-            }
+        $terminal_pwd_res = $terminalsModel->getTerminalPassword($terminal_id, $service_id);
+        $terminal_pwd = $terminal_pwd_res['ServicePassword'];
 
-            $terminal_pwd_res = $terminalsModel->getTerminalPassword($terminal_id, $service_id);
-            $terminal_pwd = $terminal_pwd_res['ServicePassword'];
+        $udate = CasinoApi::udate('YmdHisu');
 
-            $udate = CasinoApi::udate('YmdHisu');
-
-            //insert into transaction request log
-            $trans_req_log_last_id = $transReqLogsModel->insert($udate, $amount, 'W', $paymentType,
-                    $terminal_id, $site_id, $service_id,$loyalty_card, $mid, $userMode);
+        //insert into transaction request log
+        $trans_req_log_last_id = $transReqLogsModel->insert($udate, $amount, 'W', $paymentType,
+                $terminal_id, $site_id, $service_id,$loyalty_card, $mid, $userMode);
 
 
-            if(!$trans_req_log_last_id) {
-                $pendingTerminalTransactionCountModel->updatePendingTerminalCount($terminal_id);
-                $message = 'There was a pending transaction for this user / terminal.';
-                logger($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id);
-                CasinoApi::throwError($message);
-            }
+        if(!$trans_req_log_last_id) {
+            $pendingTerminalTransactionCountModel->updatePendingTerminalCount($terminal_id);
+            $message = 'There was a pending transaction for this user / terminal.';
+            logger($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id);
+            CasinoApi::throwError($message);
+        }
 
-            if(toMoney($amount) != toMoney(toInt($redeemable_amount))) {
-                $transReqLogsModel->update($trans_req_log_last_id, false, 2,null,$terminal_id);
-                $message = 'Error: Redeemable amount is not equal.';
-                logger($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id);
-                CasinoApi::throwError($message);
-            }
-
+        if(toMoney($amount) != toMoney(toInt($redeemable_amount))) {
+            $transReqLogsModel->update($trans_req_log_last_id, false, 2,null,$terminal_id);
+            $message = 'Error: Redeemable amount is not equal.';
+            logger($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id);
+            CasinoApi::throwError($message);
+        }
+        
+        //check if redeemable amount is greater than 0, else skip on calling Withdraw
+        //API method
+        if($redeemable_amount > 0){
+            
             $tracking1 = $trans_req_log_last_id;
             $tracking2 = 'W';
             $tracking3 = $terminal_id;
@@ -254,8 +262,6 @@ class CommonRedeem {
                 //if Withdraw / TransactionSearchInfo API status is approved
                 if ($apiresult == "true" || $apiresult == 'TRANSACTIONSTATUS_APPROVED' || $apiresult == 'approved'){
 
-                    //$trans_summary_id = $transactionSummaryModel->getLastTransSummaryId($terminal_id, $site_id);
-
                     $isredeemed = $commonTransactionsModel->redeemTransaction($amount, $trans_summary_id, $udate, 
                                         $site_id, $terminal_id, 'W', $paymentType,$service_id, $acct_id, $transstatus,
                                         $loyalty_card, $mid);
@@ -281,9 +287,23 @@ class CommonRedeem {
                 } 
 
         } else {
+            
+            $isredeemed = $commonTransactionsModel->redeemTransaction($amount, $trans_summary_id, $udate, 
+                                        $site_id, $terminal_id, 'W', $paymentType,$service_id, $acct_id, 1,
+                                        $loyalty_card, $mid);
+            
+            
+            $transReqLogsModel->updateTransReqLogDueZeroBal($terminal_id, $site_id, 'W', $trans_req_log_last_id);
                         
+            if(!$isredeemed){
+                $message = 'Error: Failed update records in transaction tables';
+                logger($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id);
+                CasinoApi::throwError($message);
+            }
+                    
             return array('message'=>'Info: Session has been ended.',
-                         'amount'=>$redeemable_amount);
+                        'trans_summary_id'=>$trans_summary_id,'udate'=>$udate,'amount'=>$amount,'terminal_login'=>$terminal_name,
+                        'terminal_name'=>$terminal_name,'trans_details_id'=>$isredeemed);
         }    
     }
 }

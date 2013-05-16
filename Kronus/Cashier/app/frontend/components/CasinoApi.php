@@ -10,8 +10,11 @@ Mirage::loadComponents(array(
 
 /**
  * Date Created 11 4, 11 9:41:13 AM <pre />
- * Description of CasinoApi
+ * Date Modified May 6, 2013
+ * Casino configuration settings, Get Balance and other common api calls
  * @author Bryan Salazar
+ * @author Edson Perez <elperez@philweb.com.ph>
+ * @version Kronus UB
  */
 class CasinoApi {
     
@@ -99,14 +102,14 @@ class CasinoApi {
         } else {
                 $url = Mirage::app()->param['revertbroken_api']['URI'];
                 $configuration = array('URI'=>'',
-                                        'URI_RBAPI'=>$url,
+                                       'URI_RBAPI'=>$url,
                                        'isCaching'=>FALSE,
                                        'isDebug'=>TRUE,
-                                        'REVERT_BROKEN_GAME_MODE' => Mirage::app()->param['revertbroken_api']['REVERT_BROKEN_GAME_MODE'],
-                                        'CASINO_NAME' => Mirage::app()->param['revertbroken_api']['CASINO_NAME'],
-                                        "PLAYER_MODE" => Mirage::app()->param['revertbroken_api']['PLAYER_MODE'],
-                                        'certFilePath' => Mirage::app()->param['pt_cert_dir'].$server_id.'/cert.pem',
-                                        'keyFilePath' => Mirage::app()->param['pt_cert_dir'].$server_id.'/key.pem' 
+                                       'REVERT_BROKEN_GAME_MODE' => Mirage::app()->param['revertbroken_api']['REVERT_BROKEN_GAME_MODE'],
+                                       'CASINO_NAME' => Mirage::app()->param['revertbroken_api']['CASINO_NAME'],
+                                       'PLAYER_MODE' => Mirage::app()->param['revertbroken_api']['PLAYER_MODE'],
+                                       'certFilePath' => Mirage::app()->param['pt_cert_dir'].$server_id.'/cert.pem',
+                                       'keyFilePath' => Mirage::app()->param['pt_cert_dir'].$server_id.'/key.pem' 
                                       );
 
                 $_CasinoAPIHandler = new CasinoCAPIHandler(CasinoCAPIHandler::PT, $configuration);
@@ -130,15 +133,13 @@ class CasinoApi {
      */
     public function getBalanceUB($terminal_id, $site_id, $transtype='D', $service_id = '', $acct_id = '', 
             $casinoUsername= ' ', $casinoPassword = '', $casinoHashedPwd = ''){
-        Mirage::loadModels(array('TerminalSessionsModel','TerminalsModel','TransactionSummaryModel',
-            'RefServicesModel','TransactionRequestLogsModel','TransactionDetailsModel'));
+        Mirage::loadModels(array('TerminalSessionsModel','TerminalsModel',
+                                 'RefServicesModel','TransactionRequestLogsModel'));
         
         // instance of model
         $terminalSessionsModel = new TerminalSessionsModel();
         $refServicesModel = new RefServicesModel();
         $transReqLogsModel = new TransactionRequestLogsModel();
-        $transactionDetailsModel = new TransactionDetailsModel();
-        $transactionSummaryModel = new TransactionSummaryModel();
         
         $mgaccount = '';
         
@@ -222,47 +223,6 @@ class CasinoApi {
             }
         }
         
-        // delete terminal session if balance if zero
-        if($terminal_balance == 0 && $transtype != 'R' && $transtype != 'D') {
-            //Get Last Transaction Summary ID
-            $trans_summary_id = $terminalSessionsModel->getLastSessSummaryID($terminal_id);
-            
-            if(!$trans_summary_id){
-                $terminalSessionsModel->deleteTerminalSessionById($terminal_id);
-                $message = 'Redeem Session Failed. Please check if the terminal
-                            has a valid start session.';
-                logger($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id);
-                self::throwError($message);
-            }
-            
-            $casinoUBDetails = $terminalSessionsModel->getLastSessionDetails($terminal_id);
-       
-            foreach ($casinoUBDetails as $val){
-                $casinoUsername = $val['UBServiceLogin'];
-                $casinoPassword = $val['UBServicePassword'];
-                $mid = $val['MID'];
-                $loyaltyCardNo = $val['LoyaltyCardNumber'];
-                $casinoUserMode = $val['UserMode'];
-                $casinoHashedPwd = $val['UBHashedServicePassword'];
-            }
-            
-            $udate = CasinoApi::udate('YmdHisu');
-            $paymentType = 1; //always cash upon withdrawal
-            $transRegLogsId = $transReqLogsModel->insert($udate, 0, 'W', $paymentType, $terminal_id, 
-                    $site_id, $service_id, $loyaltyCardNo, $mid, $casinoUserMode);
-            
-            $transactionSummaryModel->updateRedeem($trans_summary_id, 0);
-            
-            $transactionDetailsModel->insert($udate, $trans_summary_id, $site_id, 
-                    $terminal_id, 'W', 0, $service_id, $acct_id, '1', $loyaltyCardNo, $mid);
-            
-            $terminalSessionsModel->deleteTerminalSessionById($terminal_id);
-            
-            $transReqLogsModel->updateTransReqLogDueZeroBal($terminal_id, $site_id, $transtype, $transRegLogsId);
-            
-            $this->callSpyderAPI($commandId = 1, $terminal_id, $casinoUsername, $casinoHashedPwd, $service_id);
-        }
-        
         $terminalSessionsModel->updateTerminalSessionById($terminal_id, $service_id, $terminal_balance);
         return array($terminal_balance,$service_name,$terminalSessionsModel,$transReqLogsModel,$redeemable_amount,$casinoApiHandler,$mgaccount,$currentbet);
     }
@@ -276,16 +236,14 @@ class CasinoApi {
      * @return array  array($terminal_balance,$service_name,$terminalSessionsModel,$transReqLogsModel,$redeemable_amount,$casinoApiHandler,$mgaccount)
      */
     public function getBalance($terminal_id,$site_id,$transtype='D',$service_id= '', $acct_id= '') {
-        Mirage::loadModels(array('TerminalSessionsModel','TerminalsModel','TransactionSummaryModel',
-            'RefServicesModel','TransactionRequestLogsModel','TransactionDetailsModel'));
+        Mirage::loadModels(array('TerminalSessionsModel','TerminalsModel',
+                                 'RefServicesModel','TransactionRequestLogsModel'));
         
         // instance of model
         $terminalSessionsModel = new TerminalSessionsModel();
         $terminalsModel = new TerminalsModel();
         $refServicesModel = new RefServicesModel();
         $transReqLogsModel = new TransactionRequestLogsModel();
-        $transactionDetailsModel = new TransactionDetailsModel();
-        $transactionSummaryModel = new TransactionSummaryModel();
         
         $mgaccount = '';
                 
@@ -372,49 +330,6 @@ class CasinoApi {
                 
         }
         
-        // delete terminal session if balance if zero
-        if($terminal_balance == 0 && $transtype != 'R' && $transtype != 'D') {
-            
-            //Get Last Transaction Summary ID
-            $trans_summary_id = $terminalSessionsModel->getLastSessSummaryID($terminal_id);
-            
-            if(!$trans_summary_id){
-                $terminalSessionsModel->deleteTerminalSessionById($terminal_id);
-                $message = 'Redeem Session Failed. Please check if the terminal
-                            has a valid start session.';
-                logger($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id);
-                self::throwError($message);
-            }
-            
-            $casinoUBDetails = $terminalSessionsModel->getLastSessionDetails($terminal_id);
-       
-            foreach ($casinoUBDetails as $val){
-                $mid = $val['MID'];
-                $loyaltyCardNo = $val['LoyaltyCardNumber'];
-                $casinoUserMode = $val['UserMode'];
-            }
-            
-            
-            $udate = CasinoApi::udate('YmdHisu');
-            $paymentType = 1; //always cash upon withdrawal
-            $transRegLogsId = $transReqLogsModel->insert($udate, 0, 'W', $paymentType, $terminal_id, 
-                    $site_id, $service_id, $loyaltyCardNo, $mid, $casinoUserMode);
-            
-            $transactionSummaryModel->updateRedeem($trans_summary_id, 0);
-            
-            $transactionDetailsModel->insert($udate, $trans_summary_id, $site_id, 
-                    $terminal_id, 'W', 0, $service_id, $acct_id, '1', $loyaltyCardNo, $mid);
-            
-            $terminalSessionsModel->deleteTerminalSessionById($terminal_id);
-            
-            $transReqLogsModel->updateTransReqLogDueZeroBal($terminal_id, $site_id, $transtype, $transRegLogsId);
-            
-            $terminal_pwd = $terminalsModel->getTerminalPassword($terminal_id, $service_id);
-            $login_pwd = $terminal_pwd['HashedServicePassword'];
-            
-            $this->callSpyderAPI($commandId = 1, $terminal_id, $terminal_name, $login_pwd, $service_id);
-        }
-        
         $terminalSessionsModel->updateTerminalSessionById($terminal_id, $service_id, $terminal_balance);
         return array($terminal_balance,$service_name,$terminalSessionsModel,$transReqLogsModel,$redeemable_amount,$casinoApiHandler,$mgaccount, $currentbet);
     }
@@ -430,15 +345,13 @@ class CasinoApi {
      */
     public function getBalanceContinue($terminal_id,$site_id,$transtype='D',$service_id=null,$acct_id=null) {
         Mirage::loadModels(array('TerminalSessionsModel','TerminalsModel','RefServicesModel',
-            'TransactionRequestLogsModel','TransactionDetailsModel','TransactionSummaryModel'));
+                                 'TransactionRequestLogsModel'));
         
         // instance of model
         $terminalSessionsModel = new TerminalSessionsModel();
         $terminalsModel = new TerminalsModel();
         $refServicesModel = new RefServicesModel();
         $transReqLogsModel = new TransactionRequestLogsModel();
-        $transactionDetailsModel = new TransactionDetailsModel();
-        $transactionSummaryModel = new TransactionSummaryModel();
         
         $mgaccount = '';
         
@@ -482,47 +395,44 @@ class CasinoApi {
         }
         
         // delete terminal session if balance if zero
-        if($terminal_balance == 0 && $transtype != 'R' && $transtype != 'D') {
-            
-            //Get Last Transaction Summary ID
-            $trans_summary_id = $terminalSessionsModel->getLastSessSummaryID($terminal_id);
-            
-            if(!$trans_summary_id){
-                $message = 'Redeem Session Failed. Please check if the terminal
-                            has a valid start session.';
-                logger($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id);
-            }
-            
-            $casinoUBDetails = $terminalSessionsModel->getLastSessionDetails($terminal_id);
-       
-            foreach ($casinoUBDetails as $val){
-                $casinoUsername = $val['UBServiceLogin'];
-                $casinoPassword = $val['UBServicePassword'];
-                $mid = $val['MID'];
-                $loyaltyCardNo = $val['LoyaltyCardNumber'];
-                $casinoUserMode = $val['UserMode'];
-                $serviceID = $val['ServiceID'];
-            }
-            
-            $this->_doCasinoRules($casinoApiHandler, $service_name, $terminal_name);
-        
-            $udate = CasinoApi::udate('YmdHisu');
-            
-            $paymentType = 1; //always cash upon withdrawal
-            $transRegLogsId = $transReqLogsModel->insert($udate, 0, 'W', $paymentType, $terminal_id, 
-                    $site_id, $service_id, $loyaltyCardNo, $mid, $casinoUserMode);
-            
-            $transactionSummaryModel->updateRedeem($trans_summary_id, 0);
-            
-             $transactionDetailsModel->insert($udate, $trans_summary_id, $site_id, 
-                    $terminal_id, 'W', 0, $service_id, $acct_id, '1', $loyaltyCardNo, $mid);
-            
-            $terminalSessionsModel->deleteTerminalSessionById($terminal_id);
-            
-            $transReqLogsModel->updateTransReqLogDueZeroBal($terminal_id, $site_id, $transtype, $transRegLogsId);
-            
-            return false;
-        }
+//        if($terminal_balance == 0 && $transtype != 'R' && $transtype != 'D') {
+//            
+//            //Get Last Transaction Summary ID
+//            $trans_summary_id = $terminalSessionsModel->getLastSessSummaryID($terminal_id);
+//            
+//            if(!$trans_summary_id){
+//                $message = 'Redeem Session Failed. Please check if the terminal
+//                            has a valid start session.';
+//                logger($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id);
+//            }
+//            
+//            $casinoUBDetails = $terminalSessionsModel->getLastSessionDetails($terminal_id);
+//       
+//            foreach ($casinoUBDetails as $val){
+//                $mid = $val['MID'];
+//                $loyaltyCardNo = $val['LoyaltyCardNumber'];
+//                $casinoUserMode = $val['UserMode'];
+//            }
+//            
+//            $this->_doCasinoRules($casinoApiHandler, $service_name, $terminal_name);
+//        
+//            $udate = CasinoApi::udate('YmdHisu');
+//            
+//            $paymentType = 1; //always cash upon withdrawal
+//            $transRegLogsId = $transReqLogsModel->insert($udate, 0, 'W', $paymentType, $terminal_id, 
+//                    $site_id, $service_id, $loyaltyCardNo, $mid, $casinoUserMode);
+//            
+//            $transactionSummaryModel->updateRedeem($trans_summary_id, 0);
+//            
+//             $transactionDetailsModel->insert($udate, $trans_summary_id, $site_id, 
+//                    $terminal_id, 'W', 0, $service_id, $acct_id, '1', $loyaltyCardNo, $mid);
+//            
+//            $terminalSessionsModel->deleteTerminalSessionById($terminal_id);
+//            
+//            $transReqLogsModel->updateTransReqLogDueZeroBal($terminal_id, $site_id, $transtype, $transRegLogsId);
+//            
+//            return false;
+//        }
         
         $terminalSessionsModel->updateTerminalSessionById($terminal_id, $service_id, $terminal_balance);
         return array($terminal_balance,$service_name,$terminalSessionsModel,$transReqLogsModel,$redeemable_amount,$casinoApiHandler,$mgaccount);
@@ -542,16 +452,13 @@ class CasinoApi {
     public function getUBBalanceContinue($terminal_id, $site_id, $transtype='D', $service_id = '', $acct_id = '', 
             $casinoUsername= ' ', $casinoPassword = '') {
         
-        Mirage::loadModels(array('TerminalSessionsModel','TerminalsModel','RefServicesModel',
-            'TransactionRequestLogsModel','TransactionDetailsModel','TransactionSummaryModel'));
+        Mirage::loadModels(array('TerminalSessionsModel','RefServicesModel',
+                                 'TransactionRequestLogsModel'));
         
         // instance of model
         $terminalSessionsModel = new TerminalSessionsModel();
-        $terminalsModel = new TerminalsModel();
         $refServicesModel = new RefServicesModel();
         $transReqLogsModel = new TransactionRequestLogsModel();
-        $transactionDetailsModel = new TransactionDetailsModel();
-        $transactionSummaryModel = new TransactionSummaryModel();
         
         $mgaccount = '';
         
@@ -591,49 +498,6 @@ class CasinoApi {
             $redeemable_amount = $balanceinfo['BalanceInfo']['Redeemable'];
         } else {
             $redeemable_amount = $terminal_balance;
-        }
-        
-        // delete terminal session if balance if zero
-        if($terminal_balance == 0 && $transtype != 'R' && $transtype != 'D') {
-            
-            //Get Last Transaction Summary ID
-            $trans_summary_id = $terminalSessionsModel->getLastSessSummaryID($terminal_id);
-            
-            if(!$trans_summary_id){
-                $message = 'Redeem Session Failed. Please check if the terminal
-                            has a valid start session.';
-                logger($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id);
-            }
-            
-            $casinoUBDetails = $terminalSessionsModel->getLastSessionDetails($terminal_id);
-       
-            foreach ($casinoUBDetails as $val){
-                $casinoUsername = $val['UBServiceLogin'];
-                $casinoPassword = $val['UBServicePassword'];
-                $mid = $val['MID'];
-                $loyaltyCardNo = $val['LoyaltyCardNumber'];
-                $casinoUserMode = $val['UserMode'];
-                $serviceID = $val['ServiceID'];
-            }
-            
-            $this->_doCasinoRules($casinoApiHandler, $service_name, $casinoUsername);
-        
-            $udate = CasinoApi::udate('YmdHisu');
-            
-            $paymentType = 1; //always cash upon withdrawal
-            $transRegLogsId = $transReqLogsModel->insert($udate, 0, 'W', $paymentType, $terminal_id, 
-                    $site_id, $service_id, $loyaltyCardNo, $mid, $casinoUserMode);
-            
-            $transactionSummaryModel->updateRedeem($trans_summary_id, 0);
-            
-             $transactionDetailsModel->insert($udate, $trans_summary_id, $site_id, 
-                    $terminal_id, 'W', 0, $service_id, $acct_id, '1', $loyaltyCardNo, $mid);
-            
-            $terminalSessionsModel->deleteTerminalSessionById($terminal_id);
-            
-            $transReqLogsModel->updateTransReqLogDueZeroBal($terminal_id, $site_id, $transtype, $transRegLogsId);
-            
-            return false;
         }
         
         $terminalSessionsModel->updateTerminalSessionById($terminal_id, $service_id, $terminal_balance);

@@ -283,39 +283,43 @@ $(document).ready(function(){
         
         var amount = $('#redeem_terminal_balance').html().substr(3);
             amount = amount.replace(/,/g,"");
-        if(eval(amount) > 0){
-            if(!confirm('Are you sure you want to redeem the amount of ' + $('#redeem_terminal_balance').html() + '?')) {
-                return false;
-            }
-            var data = $('#frmredeem').serialize();
-            var terminal_balance = $('#redeem_terminal_balance').html();
-            data += '&StartSessionFormModel[amount]='+ terminal_balance.substr(3);
-            showLightbox(function(){
-                $.ajax({
-                    url : '<?php echo Mirage::app()->createUrl('terminal/redeemhk') ?>',
-                    type : 'post',
-                    data : data,
-                    success : function(data){
-                        try {
-                            var json = $.parseJSON(data);
-                            alert(json.message);
-                            location.reload(true);
-                        }catch(e) {
-                            updateLightbox(data, 'REDEEM');
-                        }
-
-                    }, 
-                    error : function(e) {
-                        displayError(e);
-                    } 
-                });
-            });
-        }else{
-            showLightbox(function(){
-                alert("Terminal Session already been ended");
-                location.reload(true); 
-            });
+            
+        if(!confirm('Are you sure you want to redeem the amount of ' + $('#redeem_terminal_balance').html() + '?')) {
+            return false;
         }
+        var data = $('#frmredeem').serialize();
+        var terminal_balance = $('#redeem_terminal_balance').html();
+        data += '&StartSessionFormModel[amount]='+ terminal_balance.substr(3);
+        showLightbox(function(){
+            $.ajax({
+                url : '<?php echo Mirage::app()->createUrl('terminal/redeemhk') ?>',
+                type : 'post',
+                data : data,
+                success : function(data){
+                    try {
+                        var json = $.parseJSON(data);
+                        alert(json.message);
+                        location.reload(true);
+                    }catch(e) {
+                        updateLightbox(data, 'REDEEM');
+                    }
+
+                }, 
+                error : function(e) {
+                    displayError(e);
+                } 
+            });
+        });
+        
+//        if(eval(amount) > 0){
+//            
+//        }
+//        else{
+//            showLightbox(function(){
+//                alert("Terminal Session already been ended");
+//                location.reload(true); 
+//            });
+//        }
         
         //get terminal code for blocking
         var preffixCode = '<?php echo $_SESSION['last_code']; ?>';

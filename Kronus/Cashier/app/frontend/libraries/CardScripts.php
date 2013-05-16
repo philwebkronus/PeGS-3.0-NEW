@@ -42,7 +42,7 @@ function identifyCard()
                                 showLightbox(function(){
 
                                     //check if the card number has a value, if none return invalid message
-                                    if(StatusValue != '' &&StatusValue != undefined && json.CardInfo.StatusCode != 100 && json.CardInfo.StatusCode != 8 ){
+                                    if(StatusValue != '' &&StatusValue != undefined && json.CardInfo.StatusCode != 100 && json.CardInfo.StatusCode != 8 && json.CardInfo.DateVerified != null ){
 
                                         if(StatusValue == "Old"){
                                             updateLightbox( '<div id = "popup">Migration Account: '  + 
@@ -73,7 +73,7 @@ function identifyCard()
                                             
                                             //get date difference between date today and the dateverified
                                             var datediff = getDateDiff(date,servertime);
-                                            
+
                                             if(datediff != "false" && datediff != "true") {
                                                 updateLightbox( '<center><label  style="font-size: 24px; color: red; font-weight: bold;">Temporary Account is INACTIVE.</label>' + 
                                                                                 '<br /><br /><label style="font-size: 20px;">PAGCOR requires 24-hour Cooling Period.</label>' + 

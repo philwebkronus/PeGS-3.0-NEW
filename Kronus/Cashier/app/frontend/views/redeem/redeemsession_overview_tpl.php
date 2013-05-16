@@ -93,37 +93,38 @@
             terminalCode = terminalCode.replace(/vip/i,'');
             terminalCode = preffixCode+terminalCode;
             
-            if(eval(amount) > 0){
-                if(!confirm('Are you sure you want to redeem the amount of PhP ' + amount + '?')) {
-                    return false;
-                }
-                showLightbox(function(){
-                    var url = '<?php echo Mirage::app()->createUrl('redeem') ?>';
-                    var data =  $('#frmredeemsa').serialize()+'&StartSessionFormModel[amount]='+amount;
-                    $.ajax({
-                        type: 'post',
-                        data : data,
-                        success : function(data) {
-                            try {
-                                var json = $.parseJSON(data);
-                                alert(json.message);
-                            }catch(e) {
-                                alert('Oops! Something went wrong');
-                            }
-                            location.reload(true);
-                        },
-                        error : function(e) {
-                            displayError(e);
+            if(!confirm('Are you sure you want to redeem the amount of PhP ' + amount + '?')) {
+                return false;
+            }
+            showLightbox(function(){
+                var url = '<?php echo Mirage::app()->createUrl('redeem') ?>';
+                var data =  $('#frmredeemsa').serialize()+'&StartSessionFormModel[amount]='+amount;
+                $.ajax({
+                    type: 'post',
+                    data : data,
+                    success : function(data) {
+                        try {
+                            var json = $.parseJSON(data);
+                            alert(json.message);
+                        }catch(e) {
+                            alert('Oops! Something went wrong');
                         }
-                    });
+                        location.reload(true);
+                    },
+                    error : function(e) {
+                        displayError(e);
+                    }
                 });
-            }
-            else{
-                showLightbox(function(){
-                   alert("Terminal Session already been ended");
-                   location.reload(true); 
-                });
-            }
+            });
+//            if(eval(amount) > 0){
+//                
+//            }
+//            else{
+//                showLightbox(function(){
+//                   alert("Terminal Session already been ended");
+//                   location.reload(true); 
+//                });
+//            }
             
             <?php if(Mirage::app()->param['enable_screenblocking']): ?>
             try {

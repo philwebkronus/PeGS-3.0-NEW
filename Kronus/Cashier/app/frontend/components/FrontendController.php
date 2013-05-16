@@ -510,18 +510,18 @@ class FrontendController extends MI_Controller {
         $trackingId = '';
         $ref_service = $refService->getServiceById($startSessionFormModel->casino);        
         $terminalname = $terminalsmodel->getTerminalName($terminal_id);
-        
-        $isVIP = '0';
-        
-        if(isset($_POST['isvip']))
+       
+       $isVIP = '';
+       if(!isset($_POST['isvip'])){
+            if(preg_match("/vip$/i", $terminalname, $results)){
+                $isVIP = "1";
+            } else {
+                $isVIP = '0';
+            }
+       } else {
             $isVIP = $_POST['isvip'];
-    
-        if(preg_match("/vip$/i", $terminalname, $results)){
-           $isVIP = "1";
-        } else {
-            $isVIP = $isVIP;
-        }
-         
+       }
+       
         //check if voucher
         if(isset($startSessionFormModel->voucher_code) && $startSessionFormModel->voucher_code !='')
         {
@@ -589,7 +589,7 @@ class FrontendController extends MI_Controller {
                                                 $casinoIsVIP = $casinos[$ctr]['isVIP'];
                                             }
                                     }
-
+                                    
                                     //checking if casino is terminal based
                                     if($ref_service['UserMode'] == 0){
                                         $login_acct = $terminalname;
