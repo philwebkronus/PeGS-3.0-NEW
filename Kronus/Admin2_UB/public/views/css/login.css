@@ -1,0 +1,137 @@
+/* 
+    Document   : login
+    Created on : 07 13, 11, 10:18:57 AM
+    Author     : gino
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+/* 
+   TODO customize this sample style
+   Syntax recommendation http://www.w3.org/TR/REC-CSS2/
+*/
+
+html {
+    font-family: Arial, Helvetica, sans-serif; 
+    font-size: 100%;
+    background-color: #d9d9d9;
+}
+
+body{
+    margin: 0px;
+    padding: 0px;
+}
+
+fieldset {
+    border: 2px solid #205623;
+    background-color: #eaf0e0;
+    display: block;
+    width:350px;
+    height:250px;
+    position: relative;
+    left: 50%;
+    margin: 150px 0 0 -200px;
+    font-size: 0.9em;
+    padding-top:30px;
+/*    text-align: center;*/
+}
+fieldset table {
+  
+    text-align: center;
+}
+
+legend
+{
+    color: #000;
+    background: #d5e5a3;
+    border: 1px solid #205623;
+    padding: 3px 7px;
+    /* text-align: center; */
+    font-weight: Bold;
+    margin-left:5px;
+}
+.legend
+{
+    color: #000;
+    background: #d5e5a3;
+    border: 1px solid #205623;
+    padding: 3px 7px;
+    /* text-align: center; */
+    font-weight: Bold;
+    margin-left:5px;
+    position:absolute;
+    top: -10px;
+    margin:0px 0px 0px 10px;
+}
+
+label {
+  float:left;
+  width:30%;
+  margin-right:0.5em;
+  padding-top:0.2em;
+  text-align:right;
+}
+
+fieldset input {
+    border: 1px solid Gray;
+    text-align: center;
+    padding-top: 0.2em;
+    padding-bottom: 0.2em;
+    color: #011373;
+    font-weight: Bold;
+}
+
+.submit {
+    width: 100%;
+    text-align: center;
+}
+
+.submit input {
+/*    margin-left: 27%;*/
+    color: #000;
+    border: 1px solid #000;
+    cursor: pointer;
+    font-weight: normal;
+    padding-top: 5px;
+    padding-bottom: 0;
+}
+
+p {
+/*    padding-left: 20px;*/
+}
+
+.submit input:hover {
+    background-color: #fdcf57;
+}
+
+.otherlink {
+    text-align: center;
+/*    font-size: 0.9em;*/
+}
+
+.otherlink a {
+    color: #0000FF;
+}
+
+.otherlink a:hover {
+    background-color: #fdcf57;
+}
+
+/**
+*Added: July 2, 2012
+*Removes Fieldset Legend Bleed
+*
+*/
+#login-container fieldset legend{
+    background: none repeat scroll 0 0 #D5E5A3;
+    border: 1px solid #205623;
+    font-weight: bold;  
+    text-align: center;
+    padding: 0 7px;
+    position:absolute;
+    top: -.5em;
+    left: .5em;
+}
+
+::-ms-clear{ display: none; }
+::-ms-reveal{ display: none; }
