@@ -189,23 +189,33 @@ function btnSubmit(){
                         showLightbox(function(){                            
                             if(StatusValue == "Inactive Temporary"){
                                 
-                                //formatting dateverified
-                                var dateStr= json.CardInfo.DateVerified;
-                                var a=dateStr.split(" ");
-                                var d=a[0].split("-");
-                                var t=a[1].split(":");
-                                var date = new Date(d[0],(d[1]-1),d[2],t[0],t[1],t[2]);
+                                if(json.CardInfo.DateVerified != null && json.CardInfo.DateVerified != undefined && json.CardInfo.DateVerified != "") {
+                                    
+                                        //formatting dateverified
+                                        var dateStr= json.CardInfo.DateVerified;
+                                        var a=dateStr.split(" ");
+                                        var d=a[0].split("-");
+                                        var t=a[1].split(":");
+                                        var date = new Date(d[0],(d[1]-1),d[2],t[0],t[1],t[2]);
 
-                                //get date difference between date today and the dateverified
-                                var datediff = getDateDiff(date,servertime);
-                                
-                                updateLightbox( '<center><label  style="font-size: 24px; color: red; font-weight: bold;">Temporary Account is INACTIVE.</label>' + 
-                                                                '<br /><br /><label style="font-size: 20px;">PAGCOR requires 24-hour Cooling Period.</label>' + 
-                                                                '<br /><label style="font-size: 20px;">Account <b>' + json.CardInfo.CardNumber + '</b> will be activated on</label>' + 
-                                                                '<br /><label style="font-size: 20px;  font-weight: bold;">'+ datediff +'.</label></center>' +
-                                                                '<br /><input type="button" style="float: right; width: 50px; height: 25px;"  value="Ok" class="btnClose" />',
-                                                                ''          
-                                ); 
+                                        //get date difference between date today and the dateverified
+                                        var datediff = getDateDiff(date,servertime);
+
+                                        updateLightbox( '<center><label  style="font-size: 24px; color: red; font-weight: bold;">Temporary Account is INACTIVE.</label>' + 
+                                                                        '<br /><br /><label style="font-size: 20px;">PAGCOR requires 24-hour Cooling Period.</label>' + 
+                                                                        '<br /><label style="font-size: 20px;">Account <b>' + json.CardInfo.CardNumber + '</b> will be activated on</label>' + 
+                                                                        '<br /><label style="font-size: 20px;  font-weight: bold;">'+ datediff +'.</label></center>' +
+                                                                        '<br /><input type="button" style="float: right; width: 50px; height: 25px;"  value="Ok" class="btnClose" />',
+                                                                        ''          
+                                        ); 
+                                } else {
+                                    updateLightbox( '<center><label  style="font-size: 24px; color: red; font-weight: bold;">Card Number is INVALID.</label>' + 
+                                                                    '<br /><br /><label style="font-size: 20px;  font-weight: bold;">Please contact Philweb Customer</label>' + 
+                                                                    '<br /><label style="font-size: 20px;  font-weight: bold;">Service Hotline 338-3388.</label></center>' + 
+                                                                    '<br /><input type="button" style="float: right; width: 50px; height: 25px;"  value="Ok" class="btnClr" />',
+                                                                    ''          
+                                    );     
+                                }
                             } else {
                                 updateLightbox( '<center><label  style="font-size: 24px; color: red; font-weight: bold;">Card Number is INVALID.</label>' + 
                                                                 '<br /><br /><label style="font-size: 20px;  font-weight: bold;">Please contact Philweb Customer</label>' + 

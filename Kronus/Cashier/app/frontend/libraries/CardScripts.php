@@ -42,8 +42,8 @@ function identifyCard()
                                 showLightbox(function(){
 
                                     //check if the card number has a value, if none return invalid message
-                                    if(StatusValue != '' &&StatusValue != undefined && json.CardInfo.StatusCode != 100 && json.CardInfo.StatusCode != 8 && json.CardInfo.DateVerified != null ){
-
+                                    if(StatusValue != '' &&StatusValue != undefined && json.CardInfo.StatusCode != 100 && json.CardInfo.StatusCode != 8  ){
+                                        
                                         if(StatusValue == "Old"){
                                             updateLightbox( '<div id = "popup">Migration Account: '  + 
                                                                             '<br /> Please tap Membership Card' + 
@@ -60,29 +60,38 @@ function identifyCard()
                                                                             '<br /><br /><center><label id="cardStatus" style="display:block;"></div></label>' + 
                                                                             '<input type="button" style="font-size: 14px; margin-left:60px; width: 80px; height: 27px;"  value="Clear" class="btnClear"/>' +
                                                                             '<input type="button" style="font-size: 14px; margin-left:10px; width: 80px; height: 27px;"  disabled="disabled" value="Proceed" onClick="javascript: btnProceed();" class="btnProceed"/></div>',
-                                                                        '<a href="javascript:void();" class = "btnClose" id="fancyClose"></a>',function(){ $("#txtCardNumber").focus(); }
+                                                                        '<a  class = "btnClose" id="fancyClose"></a>',function(){ $("#txtCardNumber").focus(); }
                                             ); 
                                         } else if(StatusValue == "Inactive Temporary"){
-                                            
-                                            //formatting dateverified
-                                            var dateStr= json.CardInfo.DateVerified;
-                                            var a=dateStr.split(" ");
-                                            var d=a[0].split("-");
-                                            var t=a[1].split(":");
-                                            var date = new Date(d[0],(d[1]-1),d[2],t[0],t[1],t[2]);
-                                            
-                                            //get date difference between date today and the dateverified
-                                            var datediff = getDateDiff(date,servertime);
 
-                                            if(datediff != "false" && datediff != "true") {
-                                                updateLightbox( '<center><label  style="font-size: 24px; color: red; font-weight: bold;">Temporary Account is INACTIVE.</label>' + 
-                                                                                '<br /><br /><label style="font-size: 20px;">PAGCOR requires 24-hour Cooling Period.</label>' + 
-                                                                                '<br /><label style="font-size: 20px;">Account <b>' + json.CardInfo.CardNumber + '</b> will be activated on</label>' + 
-                                                                                '<br /><label style="font-size: 20px;  font-weight: bold;">'+ datediff +'.</label></center>' +
-                                                                                '<br /><input type="button" style="float: right; width: 50px; height: 25px;"  value="Ok" class="btnClose" />',
-                                                                                ''          
-                                                );  
-                                            } else if(datediff == "false") {
+                                            if(json.CardInfo.DateVerified != null && json.CardInfo.DateVerified != undefined && json.CardInfo.DateVerified != "") {
+                                                    //formatting dateverified
+                                                    var dateStr= json.CardInfo.DateVerified;
+                                                    var a=dateStr.split(" ");
+                                                    var d=a[0].split("-");
+                                                    var t=a[1].split(":");
+                                                    var date = new Date(d[0],(d[1]-1),d[2],t[0],t[1],t[2]);
+
+                                                    //get date difference between date today and the dateverified
+                                                    var datediff = getDateDiff(date,servertime);
+
+                                                    if(datediff != "false" && datediff != "true") {
+                                                        updateLightbox( '<center><label  style="font-size: 24px; color: red; font-weight: bold;">Temporary Account is INACTIVE.</label>' + 
+                                                                                        '<br /><br /><label style="font-size: 20px;">PAGCOR requires 24-hour Cooling Period.</label>' + 
+                                                                                        '<br /><label style="font-size: 20px;">Account <b>' + json.CardInfo.CardNumber + '</b> will be activated on</label>' + 
+                                                                                        '<br /><label style="font-size: 20px;  font-weight: bold;">'+ datediff +'.</label></center>' +
+                                                                                        '<br /><input type="button" style="float: right; width: 50px; height: 25px;"  value="Ok" class="btnClose" />',
+                                                                                        ''          
+                                                        );  
+                                                    } else if(datediff == "false") {
+                                                        updateLightbox( '<center><label  style="font-size: 24px; color: red; font-weight: bold;">Card Number is INVALID.</label>' + 
+                                                                                        '<br /><br /><label style="font-size: 20px;  font-weight: bold;">Please contact Philweb Customer</label>' + 
+                                                                                        '<br /><label style="font-size: 20px;  font-weight: bold;">Service Hotline 338-3388.</label></center>' + 
+                                                                                        '<br /><input type="button" style="float: right; width: 50px; height: 25px;"  value="Ok" class="btnClose" />',
+                                                                                        ''          
+                                                        ); 
+                                                    }
+                                            } else {
                                                 updateLightbox( '<center><label  style="font-size: 24px; color: red; font-weight: bold;">Card Number is INVALID.</label>' + 
                                                                                 '<br /><br /><label style="font-size: 20px;  font-weight: bold;">Please contact Philweb Customer</label>' + 
                                                                                 '<br /><label style="font-size: 20px;  font-weight: bold;">Service Hotline 338-3388.</label></center>' + 
@@ -90,6 +99,7 @@ function identifyCard()
                                                                                 ''          
                                                 ); 
                                             }
+
 
                                         } else if(StatusValue == "Inactive"){
                                                 updateLightbox( '<div id = "popup"><br/><br />Please input Temporary Account Code. '  + 
@@ -103,7 +113,7 @@ function identifyCard()
                                                                                 '<input type= "hidden" id="url_tempactivate" value ="' + url_tempactivate + '" />' +
                                                                                 '<br /><br /><input type="button" style="font-size: 14px; margin-left:80px; width: 80px; height: 27px;"  value="Clear" class="btnClear"/>' +
                                                                                 '<input type="button" style="font-size: 14px; margin-left:10px; width: 80px; height: 27px;"  value="Submit" onclick="javascript: btnSubmit();" class="btnSubmit"/></div>',
-                                                                                '<a href="javascript:void();" class = "btnClose" id="fancyClose"></a>' , function(){ $("#txtCardNumber").focus(); }         
+                                                                                '<a  class = "btnClose" id="fancyClose"></a>' , function(){ $("#txtCardNumber").focus(); }         
                                                 ); 
                                         } else if(StatusValue == "Deactivated"){
                                                 updateLightbox( '<center><label  style="font-size: 24px; color: red; font-weight: bold;">Card Number is DEACTIVATED.</label>' + 
