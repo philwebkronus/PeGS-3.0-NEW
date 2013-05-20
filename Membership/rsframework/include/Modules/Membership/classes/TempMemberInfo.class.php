@@ -19,7 +19,7 @@ class TempMemberInfo extends BaseEntity
     
     public function getMembersByAccount( $TempAccountCode )
     {
-        $query = "SELECT * FROM members WHERE TemporaryAccountCode = '$TempAccountCode'";
+        $query = "SELECT * FROM members WHERE TemporaryAccountCode LIKE BINARY '$TempAccountCode'";
         
         $result = parent::RunQuery($query);
         

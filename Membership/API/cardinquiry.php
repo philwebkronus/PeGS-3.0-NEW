@@ -17,7 +17,9 @@ App::LoadModuleClass("Loyalty", "GetCardInfoAPI"); //API Wrapper
 App::LoadModuleClass("Loyalty", "Cards");
 App::LoadModuleClass("Loyalty", "OldCards");
 App::LoadModuleClass("Loyalty", "CardStatus");
+App::LoadModuleClass("Loyalty", "CardVersion");
 App::LoadModuleClass("Membership", "TempMemberInfo");
+
 
 /*
  * Load Core for API Response
@@ -50,7 +52,7 @@ if((isset( $_GET['cardnumber'] ) && ctype_alnum( $_GET['cardnumber'] ))
         
     switch ($version)
     {
-        case 1: // Old version
+        case CardVersion::OLD: // Old version
             $result = $_OldCards->getOldCardInfo( $cardNumber );
         
             if(count($result) > 0)
@@ -72,7 +74,7 @@ if((isset( $_GET['cardnumber'] ) && ctype_alnum( $_GET['cardnumber'] ))
             
             break;
         
-        case 2: // Temporary
+        case CardVersion::TEMPORARY: // Temporary
             
             $result = $_TempMembers->getMembersByAccount( $cardNumber );
             
@@ -119,7 +121,7 @@ if((isset( $_GET['cardnumber'] ) && ctype_alnum( $_GET['cardnumber'] ))
             
             break;
             
-        case 3: // User-based
+        case CardVersion::USERBASED: // User-based
             
             $result = $_Cards->getCardInfo( $cardNumber );
             

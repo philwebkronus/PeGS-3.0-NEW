@@ -33,7 +33,7 @@ if((isset($_GET['cardnumber']) && ctype_alnum($_GET['cardnumber'])) //The member
         && isset($_GET['vouchercode']))//The voucher code if is creditable is true) //True if voucher is used
 {    
     $cardnumber = trim($_GET['cardnumber']);
-    $transdate = trim(urldecode($_GET['transdate']));
+    $transdate = trim($_GET['transdate']);
     $paymenttype = trim($_GET['paymenttype']);   
     $transactiontype = trim($_GET['transtype']);
     $amount = trim($_GET['amount']);
