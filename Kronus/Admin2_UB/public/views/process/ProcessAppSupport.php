@@ -190,40 +190,50 @@ if($connected)
 
                     $statuscode = $obj_result->CardInfo->StatusCode;
 
-                    //allow active memeebership card and active temp account
-                    if($statuscode == 1 || $statuscode == 5){
+                    if(!is_null($statuscode))
+                    {
+                       //allow active memeebership card and active temp account
+                        if($statuscode == 1 || $statuscode == 5){
 
-                        $casinoarray_count = count($obj_result->CardInfo->CasinoArray);
-            
-      
-                        if($casinoarray_count != 0)
-                            for($ctr = 0; $ctr < $casinoarray_count;$ctr++) {   
-                                $service = $oas->getServices($obj_result->CardInfo->CasinoArray[$ctr]->ServiceID);
-                                foreach ($service as $value) {
-                                    $casinoname = $value['ServiceName'];
-                                }
+                            $casinoarray_count = count($obj_result->CardInfo->CasinoArray);
 
-                                $casinoinfo = array(
-                                            array(
-                                              'UserName'  => $obj_result->CardInfo->MemberName,
-                                              'MobileNumber'  => $obj_result->CardInfo->MobileNumber,
-                                              'Email'  => $obj_result->CardInfo->Email,
-                                              'Birthdate' => $obj_result->CardInfo->Birthdate,
-                                              'Casino' => $casinoname,
-                                              'Login' => $obj_result->CardInfo->CasinoArray[$ctr]->ServiceUsername,
-                                              'CardNumber' => $obj_result->CardInfo->Username,
-                                            )
-                                );
 
-                                $_SESSION['CasinoArray'] = $obj_result->CardInfo->CasinoArray;
-                                $_SESSION['MID'] = $obj_result->CardInfo->MemberID;
+                            if($casinoarray_count != 0)
+                                for($ctr = 0; $ctr < $casinoarray_count;$ctr++) {   
+                                    $service = $oas->getServices($obj_result->CardInfo->CasinoArray[$ctr]->ServiceID);
+                                    foreach ($service as $value) {
+                                        $casinoname = $value['ServiceName'];
+                                    }
 
-                                echo json_encode($casinoinfo);
-                            }    
-                    } else {
-                       $statusmsg = $oas->membershipcardStatus($statuscode);
-                       echo "Error: ".$statusmsg;
+                                    $casinoinfo = array(
+                                                array(
+                                                  'UserName'  => $obj_result->CardInfo->MemberName,
+                                                  'MobileNumber'  => $obj_result->CardInfo->MobileNumber,
+                                                  'Email'  => $obj_result->CardInfo->Email,
+                                                  'Birthdate' => $obj_result->CardInfo->Birthdate,
+                                                  'Casino' => $casinoname,
+                                                  'Login' => $obj_result->CardInfo->CasinoArray[$ctr]->ServiceUsername,
+                                                  'CardNumber' => $obj_result->CardInfo->Username,
+                                                )
+                                    );
+
+                                    $_SESSION['CasinoArray'] = $obj_result->CardInfo->CasinoArray;
+                                    $_SESSION['MID'] = $obj_result->CardInfo->MemberID;
+
+                                    echo json_encode($casinoinfo);
+                                }    
+                        } else {
+                           $statusmsg = $oas->membershipcardStatus($statuscode);
+                           echo "Error: ".$statusmsg;
+                        } 
                     }
+                    else
+                    {
+                        $statuscode = 100;
+                        $statusmsg = $oas->membershipcardStatus($statuscode);
+                           echo "Error: ".$statusmsg;
+                    }    
+                    
                 } else {
                     echo "Error: Invalid input detected";
                 }

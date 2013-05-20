@@ -282,7 +282,7 @@ if(isset($_SESSION['acctype']))
         <div id="pagetitle"><?php echo $pagetitle; ?></div>
         <br />
         <input type="hidden" name="chkbalance" id="chkbalance" value="CheckBalance" />
-        <form method="post" action="#" id="frmredemption" name="frmcs">
+        <form method="post" action="#" id="frmredemption" name="frmcs" class="frmmembership">
             <input type="hidden" name="page" id="page" value="ManualRedemptionUB" />
             <input type="hidden" name="txtterminal" id="txtterminal"/>
             <input type="hidden" name="txtservices" id="txtservices" />
@@ -341,7 +341,7 @@ if(isset($_SESSION['acctype']))
                 <tr>
                 <td>Card Number</td>
                 <td>
-                    <input type="text" size="30" class="allowpaste" id="txtcardnumber" name="txtcardnumber" maxlength="30" size="30" onkeypress="return loyaltycardnumber(event);" disabled/>
+                    <input type="text" size="30" class="txtmembership" id="txtcardnumber" name="txtcardnumber" maxlength="30" size="30" onkeypress="return loyaltycardnumber(event);" disabled/>
                     <div for="txtcardnumber" align='center'>Membership | Temporary</div>
                 </td>
                 </tr>

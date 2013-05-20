@@ -232,7 +232,7 @@ if($connected)
                         }               
 
                         $response->rows[$i]['id']=$vtranstype;
-                        $response->rows[$i]['cell']=array($vview['LoyaltyCard'],$vtranstype,$vview['ServiceName'], number_format($vview['Amount'],2),$vview['DateCreated']);
+                        $response->rows[$i]['cell']=array($vtranstype,$vview['ServiceName'], number_format($vview['Amount'],2),$vview['DateCreated']);
                         $i++;
                      }
                 }
@@ -353,7 +353,7 @@ if($connected)
                      foreach($ofindetails as $vview)
                      {                     
                         $response->rows[$i]['id']=$vview['TransactionSummaryID'];
-                        $response->rows[$i]['cell']=array($vview['TransactionSummaryID'], $vview['SiteID'], $vview['TerminalID'],  $vview['LoyaltyCard'], $vview['TerminalCode'], number_format($vview['Deposit'], 2), number_format($vview['Reload'],2), number_format($vview['Withdrawal'], 2), $vview['DateStarted'], $vview['DateEnded']);
+                        $response->rows[$i]['cell']=array($vview['TransactionSummaryID'], $vview['SiteID'], $vview['TerminalID'],  $vview['TerminalCode'], number_format($vview['Deposit'], 2), number_format($vview['Reload'],2), number_format($vview['Withdrawal'], 2), $vview['DateStarted'], $vview['DateEnded']);
                         $i++;
                      }
                 }

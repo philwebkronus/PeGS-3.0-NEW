@@ -268,7 +268,7 @@ class MicrogamingCAPI
     {
         $xmlData = array( 'Method' => array(
             '@attributes' => array(
-                'Name' => 'ChangeBalanceEvents',
+                'Name' => 'ChangeBalanceEx',
                 'LayerName' => $this->_layerName,
                 'ServerID' => $this->_serverID ),
             'Auth' => array( '@attributes' => array(
@@ -288,7 +288,7 @@ class MicrogamingCAPI
 
         return $this->ProcessXMLRequest( $xmlData );
     }
-    
+   
     public function ChangeBalanceEx( $loginName, $password, $amount, $transactionID, $eventID )
     {
         $xmlData = array( 'Method' => array(

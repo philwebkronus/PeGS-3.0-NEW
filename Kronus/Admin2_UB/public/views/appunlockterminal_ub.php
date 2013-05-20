@@ -29,7 +29,7 @@ if(isset($_SESSION['acctype']))
 
 <div id="workarea">
     <div id="pagetitle"><?php echo $pagetitle; ?></div>
-    <form method="post" action="process/ProcessAppSupport.php">
+    <form method="post" action="process/ProcessAppSupport.php" class="frmmembership">
         <input type="hidden" name="page2" value="UnlockMGTerminalUB" />
         <input type="hidden" name="txtterminalcode" id="txtterminalcode" />
         <input type="hidden" name="txtsitecode" id="txtsitecode" />
@@ -38,7 +38,7 @@ if(isset($_SESSION['acctype']))
             <tr>
                 <td>Card Number</td>
                 <td>
-                    <input type="text" size="30"  id="txtcardnumber" name="txtcardnumber" value="" maxlength="30" size="30" onkeypress="return loyaltycardnumber(event);" />
+                    <input type="text" size="30"  class="txtmembership" id="txtcardnumber" name="txtcardnumber" value="" maxlength="30" size="30" onkeypress="return loyaltycardnumber(event);" />
                     <div for="txtcardnumber" align='center'>Membership | Temporary</div>
                 </td>
             </tr>

@@ -363,13 +363,13 @@ $vaccesspages = array('9');
     </script>
         <div id="pagetitle">UB Transaction Tracking</div>
         <br />
-        <form method="post" action="" id="frmapps" name="frmapps">
+        <form method="post" action="" id="frmapps" name="frmapps" class="frmmembership">
             <input type="hidden" name="paginate" id="paginate" value="ViewSupportUB" />
             <table>
                 <tr>
                 <td>Card Number</td>
                 <td>
-                    <input type="text" size="30"  id="txtcardnumber" name="txtcardnumber" value="" maxlength="30" size="30" onkeypress="return loyaltycardnumber(event);" />
+                    <input type="text" size="30" class="txtmembership" id="txtcardnumber" name="txtcardnumber" value="" maxlength="30" size="30" onkeypress="return loyaltycardnumber(event);" />
                 </td>
                 <td>
                     Membership | Temporary

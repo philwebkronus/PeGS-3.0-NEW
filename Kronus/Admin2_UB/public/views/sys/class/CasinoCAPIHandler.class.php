@@ -206,12 +206,16 @@ class CasinoCAPIHandler
     public function Deposit( $login, $amount, $tracking1 = '', $tracking2 = '', $tracking3 = '', $tracking4 = '' )
     {
         if ( $this->_gamingProvider == self::MG )
-        {
+        {   
             return $this->_API->Deposit( $login, $tracking1, $amount, $tracking2, $tracking3, $tracking4 );
         }
         else if ( $this->_gamingProvider == self::RTG )
         {
             return $this->_API->Deposit( $login, $amount, $tracking1, $tracking2, $tracking3, $tracking4 );
+        }
+        else if ( $this->_gamingProvider == self::PT )
+        {
+            return $this->_API->Deposit( $login, $tracking1, $amount, $tracking4 );
         }
     }
     
@@ -262,6 +266,10 @@ class CasinoCAPIHandler
         else if ( $this->_gamingProvider == self::MG )
         {
             return $this->_API->GetMethodStatus( $tracking4 );
+        }
+        elseif ( $this->_gamingProvider == self::PT ) 
+        {
+            return $this->_API->CheckTransaction($tracking1);
         }
     }
     

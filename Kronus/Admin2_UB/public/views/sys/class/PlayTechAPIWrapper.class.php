@@ -112,19 +112,50 @@ class PlayTechAPIWrapper {
     public function Deposit($loginName, $password, $amount, $externalTranId){
         
         $response = $this->_API->ExternalDeposit($loginName, $password, $amount, $externalTranId);
-        
+        $status  = 'false';
         if ( !$this->_API->GetError() )
         {   
             if ( is_array( $response ) )
             {
                 if ( !isset($response['error']) )
                 {
-                    return array( 'IsSucceed' => true, 'ErrorCode' => 0, 'ErrorMessage' => null, 
-                                  'TransactionInfo' => array("PT"=>$response));
+                        if(isset($response['status']))
+                            $status = $response['status'];
+                        
+                        return array( 'IsSucceed' => true, 'ErrorCode' => 0, 'ErrorMessage' => null, 
+                                      'TransactionInfo' => array(
+                                      "PT"=>array("TransactionStatus"=>$status,
+                                                  "TransactionId"=>$response['tranid'])));
                 }
                 else
                 {
-                    return array( 'IsSucceed' => false, 'ErrorCode' => $response[ "error" ], 'ErrorMessage' => "(" . $response[ "error" ] . ") " . $response[ "status" ] );
+                    switch ($response[ "error" ]){
+                        case 1 :
+                            $errorMsg = "Incorrect password or username.";
+                            return array( 'IsSucceed' => false, 'ErrorCode' => $response[ "error" ], 
+                                          'ErrorMessage' => $errorMsg,
+                                          'TransactionInfo'=> array(
+                                              'PT'=>array('TransactionStatus'=>$response['status'],
+                                                          'TransactionId'=>null)));
+                            break;
+                        case 16 :
+                            $errorMsg = "Account has been frozen.";
+                            return array( 'IsSucceed' => false, 'ErrorCode' => $response[ "error" ], 
+                                          'ErrorMessage' => $errorMsg,
+                                          'TransactionInfo'=> array(
+                                              'PT'=>array('TransactionStatus'=>$response['status'],
+                                                          'TransactionId'=>$response['tranid'])));
+                            break;
+                        default :
+                            $errorMsg = $response[ "status" ];
+                            return array( 'IsSucceed' => false, 'ErrorCode' => $response[ "error" ], 
+                                          'ErrorMessage' => $errorMsg,
+                                          'TransactionInfo'=> array(
+                                              'PT'=>array('TransactionStatus'=>$response['status'],
+                                                          'TransactionId'=>null)));
+                            break;
+                    }
+                    
                 }
             }
             else

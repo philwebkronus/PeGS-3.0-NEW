@@ -160,7 +160,7 @@ class MicrogamingCAPIWrapper
     public function Deposit( $loginName, $password, $amount, $transactionID, $eventID, $ticketID )
     {
         $this->_API->SetTicketID( $ticketID );
-
+        
         // All balances in the system are stored as cent units - 1/100th of a credit unit.
         $amount = $amount * 100;
 
@@ -270,13 +270,81 @@ class MicrogamingCAPIWrapper
     public function GetMethodStatus( $ticketID )
     {
         $response = $this->_API->GetMethodStatus( $ticketID );
-
+        
         if ( !$this->_API->GetError() )
         {
             if ( is_array( $response ) )
             {
-                // TODO
-                return $response;
+                if ( $response["Result"]["@attributes"]["Success"] == 1 )
+                {
+                    if ( $response["Result"]["@attributes"]["Name"] == "AddUser" )
+                    {
+                        return array
+                        (
+                            'IsSucceed' => true,
+                            'ErrorCode' => 0,
+                            'ErrorMessage' => null,
+                            'MethodName' => $response["Result"]["@attributes"]["Name"],
+                            'AccountInfo' => array
+                                (
+                                    'UserID' => $response[ "Result" ][ "Returnset" ][ "UserID" ][ "@attributes" ][ "Value" ]
+                                )
+                        );
+                    }
+                    elseif ( ( $response["Result"]["@attributes"]["Name"] == "ChangeBalanceEx" ) || ( $response["Result"]["@attributes"]["Name"] == "ChangeBalanceEvents" ) )
+                    {
+                        return array
+                        (
+                            'IsSucceed' => true,
+                            'ErrorCode' => 0,
+                            'ErrorMessage' => null,
+                            'MethodName' => $response["Result"]["@attributes"]["Name"],
+                            'TransactionInfo' => array
+                                (                     
+                                    'MG'=> array
+                                        (
+                                            'TransactionAmount' => null,
+                                            'TransactionId' => $ticketID,
+                                            'TransactionStatus'=>'true',
+                                            'Balance' => abs( $response[ "Result" ][ "Returnset" ]
+                                                            [ "Balance" ][ "@attributes" ][ "Value" ] / 100 )
+                                        )
+                                )
+                        );
+                    }
+                    elseif ( $response["Result"]["@attributes"]["Name"] == "GetBalance" )
+                    {
+                        return array
+                        (
+                            'IsSucceed' => true,
+                            'ErrorCode' => 0,
+                            'ErrorMessage' => null,
+                            'MethodName' => $response["Result"]["@attributes"]["Name"],
+                            'BalanceInfo' => array( 'Balance' => abs( $response[ "Result" ][ "Returnset" ][ "Balance" ][ "@attributes" ][ "Value" ] / 100 ) )
+                        );
+                    }
+                    else
+                    {
+                        return array
+                        (
+                            'IsSucceed' => true,
+                            'ErrorCode' => 0,
+                            'ErrorMessage' => null,
+                            'MethodName' => $response["Result"]["@attributes"]["Name"],
+                            'ResponseInfo' => $response
+                        );
+                    }
+                }
+                else
+                {
+                    return array
+                    (
+                        'IsSucceed' => false,
+                        'ErrorCode' => 1,
+                        'ErrorMessage' => "(" . $response[ "Result" ][ "Returnset" ][ "ErrorCode" ][ "@attributes" ][ "Value" ] . ") " . $response[ "Result" ][ "Returnset" ][ "Error" ][ "@attributes" ][ "Value" ],
+                        'MethodName' => $response["Result"]["@attributes"]["Name"]
+                    );
+                }
             }
             else
             {

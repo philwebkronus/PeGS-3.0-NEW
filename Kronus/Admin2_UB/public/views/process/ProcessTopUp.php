@@ -291,36 +291,49 @@ if($connected)
 
                     $statuscode = $obj_result->CardInfo->StatusCode;
                     
-                    if($statuscode == 1 || $statuscode == 5){
-                        
-                     $casinoarray_count = count($obj_result->CardInfo->CasinoArray);
-            
-                        if($casinoarray_count != 0)
-                            for($ctr = 0; $ctr < $casinoarray_count;$ctr++) {   
-                                $casinoinfo = array(
-                                    array(
-                                          'UserName'  => $obj_result->CardInfo->MemberName,
-                                          'MobileNumber'  => $obj_result->CardInfo->MobileNumber,
-                                          'Email'  => $obj_result->CardInfo->Email,
-                                          'Birthdate' => $obj_result->CardInfo->Birthdate,
-                                          'Casino' => $obj_result->CardInfo->CasinoArray[$ctr]->ServiceID,
-                                          'CardNumber' => $obj_result->CardInfo->CardNumber,
-                                      ),
-                                );
+                    if(!is_null($statuscode))
+                    {
+                            if($statuscode == 1 || $statuscode == 5){
 
-                                $_SESSION['CasinoArray'] = $obj_result->CardInfo->CasinoArray;
-                                $_SESSION['MID'] = $obj_result->CardInfo->MemberID;
-                                echo json_encode($casinoinfo);
-                            }
+                            $casinoarray_count = count($obj_result->CardInfo->CasinoArray);
+
+                               if($casinoarray_count != 0)
+                                   for($ctr = 0; $ctr < $casinoarray_count;$ctr++) {   
+                                       $casinoinfo = array(
+                                           array(
+                                                 'UserName'  => $obj_result->CardInfo->MemberName,
+                                                 'MobileNumber'  => $obj_result->CardInfo->MobileNumber,
+                                                 'Email'  => $obj_result->CardInfo->Email,
+                                                 'Birthdate' => $obj_result->CardInfo->Birthdate,
+                                                 'Casino' => $obj_result->CardInfo->CasinoArray[$ctr]->ServiceID,
+                                                 'CardNumber' => $obj_result->CardInfo->CardNumber,
+                                             ),
+                                       );
+
+                                       $_SESSION['CasinoArray'] = $obj_result->CardInfo->CasinoArray;
+                                       $_SESSION['MID'] = $obj_result->CardInfo->MemberID;
+                                       echo json_encode($casinoinfo);
+                                   }
+                           }
+                           else
+                           {  
+                               //check membership card status
+                               $statusmsg = $otopup->membershipcardStatus($statuscode);
+                               $services = "User Based Redemption: ".$statusmsg;
+                              echo "$services";
+
+                           }                        
+                        
                     }
                     else
-                    {  
+                    {
+                        $statuscode = 100;
                         //check membership card status
-                        $statusmsg = $otopup->membershipcardStatus($statuscode);
-                        $services = "User Based Redemption: ".$statusmsg;
-                       echo "$services";
-
+                           $statusmsg = $otopup->membershipcardStatus($statuscode);
+                           $services = "User Based Redemption: ".$statusmsg;
+                          echo "$services";
                     }
+                    
                 }
                 else {
                     echo "User Based Redemption: Invalid input detected.";

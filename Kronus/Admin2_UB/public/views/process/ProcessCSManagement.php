@@ -182,35 +182,46 @@ if($connected)
                      $obj_result = json_decode($loyaltyResult);
 
                      $statuscode = $obj_result->CardInfo->StatusCode;
+                     
+                     if(!is_null($statuscode))
+                     {
+                         //allows active membership and temp card
+                        if($statuscode == 1 || $statuscode == 5){
 
-                     //allows active membership and temp card
-                     if($statuscode == 1 || $statuscode == 5){
-                        
-                        $casinoarray_count = count($obj_result->CardInfo->CasinoArray);
-                        
-                        //if casino array from getcardinfo APi returns multiple casino
-                        if($casinoarray_count != 0)
-                        for($ctr = 0; $ctr < $casinoarray_count;$ctr++) {   
-                                $casinoinfo = array(
-                                    array(
-                                          'UserName'  => $obj_result->CardInfo->MemberName,
-                                          'MobileNumber'  => $obj_result->CardInfo->MobileNumber,
-                                          'Email'  => $obj_result->CardInfo->Email,
-                                          'Birthdate' => $obj_result->CardInfo->Birthdate,
-                                          'Casino' => $obj_result->CardInfo->CasinoArray[$ctr]->ServiceID,
-                                          'CardNumber' => $obj_result->CardInfo->CardNumber,
-                                      ),
-                                );
+                           $casinoarray_count = count($obj_result->CardInfo->CasinoArray);
 
-                                $_SESSION['CasinoArray'] = $obj_result->CardInfo->CasinoArray;
-                                $_SESSION['MID'] = $obj_result->CardInfo->MemberID;
-                                echo json_encode($casinoinfo);
-                        }
-                    } else {
-                       $statusmsg = $ocs->membershipcardStatus($statuscode);
-                       $services = "User Based Redemption: $statusmsg";
-                       echo "$services";
-                    }
+                           //if casino array from getcardinfo APi returns multiple casino
+                           if($casinoarray_count != 0)
+                           for($ctr = 0; $ctr < $casinoarray_count;$ctr++) {   
+                                   $casinoinfo = array(
+                                       array(
+                                             'UserName'  => $obj_result->CardInfo->MemberName,
+                                             'MobileNumber'  => $obj_result->CardInfo->MobileNumber,
+                                             'Email'  => $obj_result->CardInfo->Email,
+                                             'Birthdate' => $obj_result->CardInfo->Birthdate,
+                                             'Casino' => $obj_result->CardInfo->CasinoArray[$ctr]->ServiceID,
+                                             'CardNumber' => $obj_result->CardInfo->CardNumber,
+                                         ),
+                                   );
+
+                                   $_SESSION['CasinoArray'] = $obj_result->CardInfo->CasinoArray;
+                                   $_SESSION['MID'] = $obj_result->CardInfo->MemberID;
+                                   echo json_encode($casinoinfo);
+                           }
+                       } else {
+                          $statusmsg = $ocs->membershipcardStatus($statuscode);
+                          $services = "User Based Redemption: $statusmsg";
+                          echo "$services";
+                       }
+                     }
+                     else
+                     {
+                         $statuscode = 100;
+                         $statusmsg = $ocs->membershipcardStatus($statuscode);
+                          $services = "User Based Redemption: $statusmsg";
+                          echo "$services";
+                     }
+                     
                  } 
                  else 
                      echo "User Based Redemption: Invalid input detected.";
