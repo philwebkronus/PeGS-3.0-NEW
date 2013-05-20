@@ -386,6 +386,8 @@ class LobbyController extends CController
             Yii::app()->user->setState('terminalPwd', $terminalPassword['ServicePassword']); // get current password by current service ID
             Yii::app()->user->setState('encryptPwd', $terminalPassword['HashedServicePassword']); //get encrypted password by current service ID
             
+            $tracking = array('LP'.$transRequestLogLPID,'RD',$this->getTerminalID(),$this->getSiteID());
+            
             /************************** REDEPOSIT *****************************/
             if(!$this->deposit($lpTransactionID,$currentServiceID, $currentServiceType, $currentBalance, $tracking, $wcasinoApiHandler)) {
                 if(!LPTransactionRequestLogsLp::model()->update(0, $this->_casinoTransactionID, $this->_apiActualResult, date('Y-m-d H:i:s'), $referenceID, $transRequestLogLPID))
