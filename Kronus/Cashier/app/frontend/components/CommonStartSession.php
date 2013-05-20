@@ -112,7 +112,7 @@ class CommonStartSession {
         //insert into transaction request log
         $trans_req_log_last_id = $transReqLogsModel->insert($udate, $initial_deposit, 'D', $paymentType, 
                 $terminal_id, $site_id, $service_id,$loyalty_card, $mid, $userMode, 
-                $trackingid, $voucher_code);
+                $trackingid, $voucher_code, $transaction_id);
         
         if(!$trans_req_log_last_id) {
             $pendingTerminalTransactionCountModel->updatePendingTerminalCount($terminal_id);
@@ -152,7 +152,7 @@ class CommonStartSession {
         /************************* DEPOSIT ************************************/
         $resultdeposit = $casinoApiHandler->Deposit($terminal_name, $initial_deposit, 
             $tracking1, $tracking2, $tracking3, $tracking4, $terminal_pwd, $event_id, $transaction_id);
-           
+           exit;
         //check if Deposit API reply is null
         if(is_null($resultdeposit)){
             

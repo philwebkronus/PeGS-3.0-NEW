@@ -96,7 +96,7 @@ class CommonReload {
         
         //insert into transaction request log
         $trans_req_log_last_id = $transReqLogsModel->insert($udate, $amount, 'R', $paymentType,$terminal_id, 
-                $site_id, $service_id,$loyalty_card, $mid, $userMode, $trackingid, $voucher_code);
+                $site_id, $service_id,$loyalty_card, $mid, $userMode, $trackingid, $voucher_code, $transaction_id);
         
         if(!$trans_req_log_last_id) {
             $pendingTerminalTransactionCountModel->updatePendingTerminalCount($terminal_id);

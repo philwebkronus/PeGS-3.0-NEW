@@ -41,16 +41,18 @@ class TransactionRequestLogsModel extends MI_Model{
      * @return boolean
      */
     public function insert($trans_ref_id,$amount,$trans_type, $paymentType,$terminal_id,$site_id, $service_id, 
-                           $loyalty_card, $mid, $user_mode, $trackingid = '',$voucher_code = '') {
+                           $loyalty_card, $mid, $user_mode, $trackingid = '',$voucher_code = '', $mg_ticket_id = '') {
         
         try {
             $this->beginTransaction();
             $stmt = $this->dbh->prepare('INSERT INTO transactionrequestlogs (TransactionReferenceID,
                                          Amount, StartDate, TransactionType, TerminalID, Status, 
-                                         SiteID, ServiceID, LoyaltyCardNumber, MID, UserMode, PaymentType, PaymentTrackingID, Option1 )
+                                         SiteID, ServiceID, LoyaltyCardNumber, MID, UserMode, PaymentType, 
+                                         PaymentTrackingID, Option1, ServiceTransactionID)
                                          VALUES (:trans_ref_id, :amount, now_usec(), :trans_type, 
                                          :terminal_id, \'0\', :site_id, :service_id, :loyalty_card, 
-                                         :mid, :user_mode, :paymentType ,:trackingID, :voucher_code)');
+                                         :mid, :user_mode, :paymentType ,:trackingID, :voucher_code, 
+                                         :service_trans_id)');
             
             $stmt->bindValue(':trans_ref_id', $trans_ref_id);
             $stmt->bindValue(':amount', $amount);
@@ -64,6 +66,7 @@ class TransactionRequestLogsModel extends MI_Model{
             $stmt->bindValue(':mid', $mid);
             $stmt->bindValue(':user_mode', $user_mode);
             $stmt->bindValue(':paymentType', $paymentType);
+            $stmt->bindValue(':service_trans_id', $mg_ticket_id);
             
             $stmt->execute();
             $trans_req_log_last_id = $this->getLastInsertId();
