@@ -3,7 +3,7 @@
 /**
  * Description of LPRefServices
  * @package application.modules.launchpad.models
- * @author Bryan Salazar
+ * @author Bryan Salazar, elperez
  */
 class LPRefServices extends LPModel
 {
