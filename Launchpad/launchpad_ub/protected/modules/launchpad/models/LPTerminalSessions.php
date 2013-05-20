@@ -3,7 +3,7 @@
 /**
  * Description of LPTerminalSessions
  * @package application.modules.launchpad.models
- * @author Bryan Salazar
+ * @author Bryan Salazar, elperez
  */
 class LPTerminalSessions extends LPModel
 {

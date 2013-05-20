@@ -3,7 +3,7 @@
 /**
  * Description of LPTerminals
  * @package application.modules.launchpad.models
- * @author Bryan Salazar
+ * @author Bryan Salazar, elperez
  */
 class LPTerminals extends LPModel
 {
