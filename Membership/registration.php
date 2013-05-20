@@ -44,42 +44,42 @@ $txtFirstName = new TextBox("txtFirstName", "txtFirstName", "FirstName");
 $txtFirstName->ShowCaption = false;
 $txtFirstName->Length = 30;
 $txtFirstName->Size = 15;
-$txtFirstName->CssClass = "validate[required, minSize[2]]";
+$txtFirstName->CssClass = "validate[required, custom[onlyLetterSp], minSize[2]]";
 $fproc->AddControl($txtFirstName);
 
 $txtMiddleName = new TextBox("txtMiddleName", "txtMiddleName", "MiddleName");
 $txtMiddleName->ShowCaption = false;
 $txtMiddleName->Length = 30;
 $txtMiddleName->Size = 15;
-$txtMiddleName->CssClass = "";
+$txtMiddleName->CssClass = "validate[custom[MiddleName]]";
 $fproc->AddControl($txtMiddleName);
 
 $txtLastName = new TextBox("txtLastName", "txtLastName", "LastName");
 $txtLastName->ShowCaption = false;
 $txtLastName->Length = 30;
 $txtLastName->Size = 15;
-$txtLastName->CssClass = "validate[required, minSize[2]]";
+$txtLastName->CssClass = "validate[required, custom[onlyLetterSp], minSize[2]]";
 $fproc->AddControl($txtLastName);
 
 $txtNickName = new TextBox("txtNickName", "txtNickName", "NickName");
 $txtNickName->ShowCaption = false;
 $txtNickName->Length = 30;
 $txtNickName->Size = 15;
-//$txtNickName->CssClass = "validate[required]";
+$txtNickName->CssClass = "validate[custom[onlyLetterSp]]";
 $fproc->AddControl($txtNickName);
 
 $txtMobileNumber = new TextBox("txtMobileNumber", "txtMobileNumber", "MobileNumber");
 $txtMobileNumber->ShowCaption = false;
 $txtMobileNumber->Length = 30;
 $txtMobileNumber->Size = 15;
-$txtMobileNumber->CssClass = "validate[required, minSize[9]]";
+$txtMobileNumber->CssClass = "validate[required, custom[onlyNumber], minSize[9]]";
 $fproc->AddControl($txtMobileNumber);
 
 $txtAlternateMobileNumber = new TextBox("txtAlternateMobileNumber", "txtAlternateMobileNumber", "AlternateMobileNumber");
 $txtAlternateMobileNumber->ShowCaption = false;
 $txtAlternateMobileNumber->Length = 30;
 $txtAlternateMobileNumber->Size = 15;
-//$txtAlternateMobileNumber->CssClass = "validate[required]";
+$txtMobileNumber->CssClass = "validate[custom[onlyNumber], minSize[9]]";
 $txtAlternateMobileNumber->AutoComplete = false;
 $fproc->AddControl($txtAlternateMobileNumber);
 
@@ -88,7 +88,7 @@ $txtPassword->ShowCaption = false;
 $txtPassword->Length = 40;
 $txtPassword->Size = 15;
 $txtPassword->Password = true;
-$txtPassword->CssClass = "validate[required, minSize[5]]";
+$txtPassword->CssClass = "validate[required, custom[onlyLetterNumber], minSize[5]]";
 $txtPassword->AutoComplete = false;
 $fproc->AddControl($txtPassword);
 
@@ -97,7 +97,7 @@ $txtConfirmPassword->ShowCaption = false;
 $txtConfirmPassword->Length = 40;
 $txtConfirmPassword->Size = 15;
 $txtConfirmPassword->Password = true;
-$txtConfirmPassword->CssClass = "validate[required, equals[txtPassword]]";
+$txtConfirmPassword->CssClass = "validate[required, custom[onlyLetterNumber], equals[txtPassword]]";
 $fproc->AddControl($txtConfirmPassword);
 
 $txtEmail = new TextBox("txtEmail", "txtEmail", "Email");
@@ -111,7 +111,7 @@ $txtAlternateEmail = new TextBox("txtAlternateEmail", "txtAlternateEmail", "User
 $txtAlternateEmail->ShowCaption = false;
 $txtAlternateEmail->Length = 30;
 $txtAlternateEmail->Size = 15;
-//$txtAlternateEmail->CssClass = "validate[required]";
+$txtAlternateEmail->CssClass = "validate[custom[email]]";
 $fproc->AddControl($txtAlternateEmail);
 
 $dsmaxdate->AddYears(-21);
@@ -145,7 +145,7 @@ $txtIDPresented = new TextBox("txtIDPresented", "txtIDPresented", "IDPresented")
 $txtIDPresented->ShowCaption = false;
 $txtIDPresented->Length = 30;
 $txtIDPresented->Size = 15;
-$txtIDPresented->CssClass = "validate[required]";
+$txtIDPresented->CssClass = "validate[required, custom[onlyLetterNumberSp]]";
 $fproc->AddControl($txtIDPresented);
 
 $btnSubmit = new Button("btnSubmit", "btnSubmit", "Register");

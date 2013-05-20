@@ -124,12 +124,24 @@
                     "regex": /^[0-9\ ]+$/,
                     "alertText": "* Numbers only"
                 },
+                "onlyNumber": {
+                    "regex": /^[0-9]+$/,
+                    "alertText": "* Numbers only"
+                },
+                "MiddleName": {
+                    "regex": /^[a-zA-Z\ \'\.]+$/,
+                    "alertText": "* Letters only"
+                },
                 "onlyLetterSp": {
                     "regex": /^[a-zA-Z\ \']+$/,
                     "alertText": "* Letters only"
                 },
                 "onlyLetterNumber": {
                     "regex": /^[0-9a-zA-Z]+$/,
+                    "alertText": "* No special characters allowed"
+                },
+                "onlyLetterNumberSp": {
+                    "regex": /^[0-9a-zA-Z\ ]+$/,
                     "alertText": "* No special characters allowed"
                 },
                 "Username": {
