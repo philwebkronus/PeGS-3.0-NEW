@@ -180,13 +180,20 @@ $this->breadcrumbs=array(
 <?php
     /* Get the maximum quantity and amount for batch generation of vouchers */
     $max_qty = Utilities::getParameters('MAX_VOUCHER_BATCH_QTY');
-    $max_amt = Utilities::getParameters('MAX_VOUCHER_BATCH_AMT');
+    //$max_amt = Utilities::getParameters('MAX_VOUCHER_BATCH_AMT');
     
     /* Get the minimum quantity and amount */
     
     $min_qty = Utilities::getParameters('MIN_VOUCHER_BATCH_QTY');
-    $min_amt = Utilities::getParameters('MIN_VOUCHER_BATCH_AMT');
     
+    /* Get the array of amounts */
+    
+    $amt_list = trim(Utilities::getParameters('VOUCHER_AMT_LIST'));
+    for( $i = 0 ; $i < count($amt_list); $i++ ){
+        $arrlist = explode(",", $amt_list);
+        $amt_list = '"'.implode('","', $arrlist).'"'; 
+    }
+       
 ?>
 
 <!-- Generate Bulk Voucher dialog box -->
@@ -194,11 +201,21 @@ $this->breadcrumbs=array(
 <?php Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl.'/js/custom.js'); ?>
 
 <?php Yii::app()->clientScript->registerScript('validation','
-        
+       
+        var arrlist = new Array('.$amt_list.');
+            
         var quantity = $( \'#Quantity\' ),
             amount = $( \'#Amount\' ),
             allFields = $( [] ).add( quantity ).add( amount ),
             tips = $( \'.validateTips\' );
+            
+        function inArray(needle, haystack) {
+            var length = haystack.length;
+            for(var i = 0; i < length; i++) {
+                if(haystack[i] == needle) return true;
+            }
+            return false;
+        }
 
         function updateTips( t ) {
             tips
@@ -212,14 +229,24 @@ $this->breadcrumbs=array(
         function checkInput( o, n, min, max ) {
             if ( o.val() > max || o.val() < min) {
                 o.addClass( \'ui-state-error\' );
-                updateTips( \'Value of \' + n + \' should not be 0 and not less than \' + min +\' but not greater than \'+ max);
+                updateTips( \'Quantity should be between \' + min + \' and \'+ max);
                 return false;
             } else {
                 return true;
             }
         }
+        
+        function checkAmount(o) {
+            //var n = new Array(n);
+            if(inArray(o.val(), arrlist)){
+                return true;
+            } else {
+                o.addClass( \'ui-state-error\' );
+                updateTips( \'Amount only accepts \' + arrlist + \' denominations.\');
+                return false;
+            }
+        }   
        
-   
  ');
  ?>
 
@@ -237,7 +264,7 @@ $this->breadcrumbs=array(
                     var bValid = true;
                     allFields.removeClass( "ui-state-error" );                    
                     bValid = bValid && checkInput(quantity, "quantity", '.$min_qty.', '.$max_qty.');
-                    bValid = bValid && checkInput(amount, "amount", '.$min_amt.', '.$max_amt.');
+                    bValid = bValid && checkAmount(amount, '.$amt_list.');
                     
                     if ( bValid )
                     {
@@ -247,9 +274,11 @@ $this->breadcrumbs=array(
                    
                 }',
                 'Cancel'=>'js:function(){
+                    amount.val("");
+                    quantity.val("");
                     $(this).dialog("close");
-               }',
-            )
+               }',               
+            ),
         ),
 )); ?>
 
