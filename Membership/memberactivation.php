@@ -59,70 +59,64 @@ $CardPoints = "";
 $CardName = "";
 $SiteName = "";
 
+$dtBirthDate = new DatePicker("dtBirthDate", "dtBirthDate", "Birth Date: ");
+$dtBirthDate->MaxDate = $dsmaxdate->CurrentDate;
+$dtBirthDate->MinDate = $dsmindate->CurrentDate;
+$dtBirthDate->ShowCaption = false;
 
+$dtBirthDate->YearsToDisplay = "-100";
+$dtBirthDate->CssClass = "validate[required]";
+$dtBirthDate->isRenderJQueryScript = true;
+$fproc->AddControl($dtBirthDate);
 
+$txtplayername = new TextBox("txtplayername", "txtplayername", "Name: "); 
+$txtplayername->CssClass = "validate[required,custom[onlyLetterSp]]";
+$fproc->AddControl($txtplayername);
+$txtplayerage = new TextBox("txtplayerage", "txtplayerage", "Age: ");
+$fproc->AddControl($txtplayerage);
+$txtplayerIDNumber = new TextBox("txtplayerIDNumber", "txtplayerIDNumber", "I.D: ");
+$txtplayerIDNumber->CssClass = "validate[required,custom[onlyLetterNumber]]";
+$fproc->AddControl($txtplayerIDNumber);
 
-        $dtBirthDate = new DatePicker("dtBirthDate", "dtBirthDate", "Birth Date: ");
-        $dtBirthDate->MaxDate = $dsmaxdate->CurrentDate;
-        $dtBirthDate->MinDate = $dsmindate->CurrentDate;
-        $dtBirthDate->ShowCaption = false;
+$ConfirmButton = new Button("ConfirmButton", "ConfirmButton", "Confirm");
+$ConfirmButton->IsSubmit = true;
+$ConfirmButton->CssClass = "btnDefault roundedcorners";
+$fproc->AddControl($ConfirmButton);
+
+$CancelButton = new Button("CancelButton", "CancelButton", "Cancel");
+$CancelButton->Args = "onclick='window.close()'";
+$CancelButton->CssClass = "btnDefault roundedcorners";
+$fproc->AddControl($CancelButton);
+
+$txtAge = new TextBox("txtAge", "txtAge", "Age");
+$txtAge->ShowCaption = false;
+$txtAge->Length = 30;
+$txtAge->Size = 3;
+$txtAge->CssClass = "validate[required]";
+$fproc->AddControl($txtAge);
+
+$arrid = $_Identification->SelectAll();
+$ComboID = new ComboBox('ComboID', 'ComboID');
+$ComboID->DataSource = $arrid;
+$ComboID->DataSourceText = "IdentificationName";
+$ComboID->DataSourceValue = "IdentificationID";
+$ComboID->DataBind();
+$fproc->AddControl($ComboID);
+
+$rdoGroupGender = new RadioGroup("rdoGender", "rdoGender", "Gender");
+$rdoGroupGender->AddRadio("1", "Male");
+$rdoGroupGender->AddRadio("2", "Female", true);
+$rdoGroupGender->ShowCaption = true;
+$rdoGroupGender->Initialize();
+$fproc->AddControl($rdoGroupGender);
+
+$fproc->ProcessForms();
         
-        $dtBirthDate->YearsToDisplay = "-100";
-        $dtBirthDate->CssClass = "validate[required]";
-        $dtBirthDate->isRenderJQueryScript = true;
-        $fproc->AddControl($dtBirthDate);
-
-        $txtplayername = new TextBox("txtplayername", "txtplayername", "Name: "); 
-        $txtplayername->CssClass = "validate[required,custom[onlyLetterSp]]";
-        $fproc->AddControl($txtplayername);
-        $txtplayerage = new TextBox("txtplayerage", "txtplayerage", "Age: ");
-        $fproc->AddControl($txtplayerage);
-        $txtplayerIDNumber = new TextBox("txtplayerIDNumber", "txtplayerIDNumber", "I.D: ");
-        $txtplayerIDNumber->CssClass = "validate[required,custom[onlyLetterNumber]]";
-        $fproc->AddControl($txtplayerIDNumber);
-
-        $ConfirmButton = new Button("ConfirmButton", "ConfirmButton", "Confirm");
-        $ConfirmButton->IsSubmit = true;
-        $ConfirmButton->CssClass = "btnDefault roundedcorners";
-        $fproc->AddControl($ConfirmButton);
-
-        $CancelButton = new Button("CancelButton", "CancelButton", "Cancel");
-        $CancelButton->Args = "onclick='window.close()'";
-        $CancelButton->CssClass = "btnDefault roundedcorners";
-        $fproc->AddControl($CancelButton);
-
-        $txtAge = new TextBox("txtAge", "txtAge", "Age");
-        $txtAge->ShowCaption = false;
-        $txtAge->Length = 30;
-        $txtAge->Size = 3;
-        $txtAge->CssClass = "validate[required]";
-        $fproc->AddControl($txtAge);
-
-        $arrid = $_Identification->SelectAll();
-        $ComboID = new ComboBox('ComboID', 'ComboID');
-        $ComboID->DataSource = $arrid;
-        $ComboID->DataSourceText = "IdentificationName";
-        $ComboID->DataSourceValue = "IdentificationName";
-        $ComboID->DataBind();
-        $fproc->AddControl($ComboID);
-
-        $rdoGroupGender = new RadioGroup("rdoGender", "rdoGender", "Gender");
-        $rdoGroupGender->AddRadio("1", "Male");
-        $rdoGroupGender->AddRadio("2", "Female", true);
-        $rdoGroupGender->ShowCaption = true;
-        $rdoGroupGender->Initialize();
-        $fproc->AddControl($rdoGroupGender);
-        
-         
-
-        $fproc->ProcessForms();
-        
-if ((isset($_GET["oldnumber"]) && (htmlentities($_GET["oldnumber"]))) &&
-(isset($_GET["newnumber"]) && (htmlentities($_GET["newnumber"]))) &&
-(isset($_GET["site"]) && (htmlentities($_GET["site"]))) &&
-(isset($_GET["AID"]) && (htmlentities($_GET["AID"])))) 
+if ((isset($_GET["oldnumber"]) && (htmlentities($_GET["oldnumber"]))) 
+   && (isset($_GET["newnumber"]) && (htmlentities($_GET["newnumber"]))) 
+   && (isset($_GET["site"]) && (htmlentities($_GET["site"]))) 
+   && (isset($_GET["AID"]) && (htmlentities($_GET["AID"])))) 
 {
-
 
 $LoyatyCardNumber = $_GET["oldnumber"];
 $NewMembershipCardNumber = $_GET["newnumber"];
@@ -132,8 +126,7 @@ $AID = $_GET["AID"];
 $oldcardresult = $_OldCards->getOldCardInfo($LoyatyCardNumber);
 $OldCardStatus = $oldcardresult[0];
 $CardStatus = $OldCardStatus['CardStatus'];
-
-
+$CardTypeID = $OldCardStatus['CardTypeID'];
 
 switch ($CardStatus)
 {
@@ -148,27 +141,13 @@ switch ($CardStatus)
      break;
 }
 
-
-////Set Default Occupation//
-$where = " where Name = 'Employee' ";
-$arrOccu = $_Occupation->SelectByWhere($where);
-$arrOcupation = $arrOccu[0];
-$arrOcupationID = $arrOcupation['OccupationID'];
-
-////Set the Default Nationality//
-$Nationality = "where Name = 'Filipino'";
-$arrNation = $_Nationality->SelectByWhere($Nationality);
-$arrNationality = $arrNation[0];
-$arrNationantilyID = $arrNationality['NationalityID'];
-
 $oldCardInfo = $_OldCards->getOldCardInfo($LoyatyCardNumber);
 $ArrMemberInfo = $oldCardInfo [0];
-$oldCardNumber = $ArrMemberInfo['CardNumber'];
+//$oldCardNumber = $ArrMemberInfo['CardNumber'];
 $oldCardName = $ArrMemberInfo['MemberName'];
 $oldCardBirthdate = $ArrMemberInfo['Birthdate'];
 $oldCardGender = $ArrMemberInfo['Gender'];
 $oldCardEmail = $ArrMemberInfo['Email'];
-
 
 $OldLoyaltyDetails = $_OldCards->getOldCardDetails($LoyatyCardNumber);
 $arrOldLoyaltyDetails = $OldLoyaltyDetails[0];
@@ -182,13 +161,14 @@ $site = $arraysite['SiteName'];
 $dtBirthDate->SelectedDate = $oldCardBirthdate;
 $txtplayername->Text = $oldCardName;    
         
-     if($isValid)
-     { 
-         
+    if($isValid)
+    {
         $rdoGroupGender->SetSelectedValue($oldCardGender);
-        
+
         if ($fproc->IsPostBack) {
+            
             if ($ConfirmButton->SubmittedValue == "Confirm") {
+                
                 $dateCreated = "now_usec()";
                 if(empty($oldCardEmail))
                 {
@@ -198,15 +178,10 @@ $txtplayername->Text = $oldCardName;
                 {
                     $Memberstable["UserName"] = $oldCardEmail;
                 }
+                
                 $Memberstable["AccountTypeID"] = $_Helper->GetAccountTypeIDByName('Member');
                 $Memberstable['DateCreated'] = $dateCreated;
                 $Memberstable['Status'] = '1';
-
-                $ValidIDName = $ComboID->SubmittedValue;
-                $ValidIdentificationID = " where IdentificationName  = '$ValidIDName'";
-                $arrValid = $_Identification->SelectByWhere($ValidIdentificationID);
-                $ArrValidationID = $arrValid[0];
-                $ValidIdentificationIDNumber = $ArrValidationID['IdentificationID'];
 
                 $PlayerName = $txtplayername->SubmittedValue;
 
@@ -216,17 +191,17 @@ $txtplayername->Text = $oldCardName;
                 $MemberInfo ["LastName"] = $lname;
                 $MemberInfo ["Birthdate"] = $dtBirthDate->SubmittedValue;
                 $MemberInfo ["Email"] = $Memberstable["UserName"];
-                $MemberInfo ["NationalityID"] = $arrNationantilyID;
-                $MemberInfo ["OccupationID"] = $arrOcupationID;
-                $MemberInfo["IdentificationID"] = $ValidIdentificationIDNumber;
+                $MemberInfo ["NationalityID"] = 1;
+                $MemberInfo ["OccupationID"] = 1;
+                $MemberInfo["IdentificationID"] = $ComboID->SubmittedValue;
                 $MemberInfo ["IdentificationNumber"] = $txtplayerIDNumber->SubmittedValue;
                 $MemberInfo ["DateCreated"] = $dateCreated;
                 $rdoGroupGender->SubmittedValue == 1 ? $MemberInfo['Gender'] = 1 : $MemberInfo['Gender'] = 2;
 
                 $_Members->Migrate($Memberstable, $MemberInfo, false);
-                
 
                 if (!App::HasError()) {
+                    
                     if(empty($oldCardEmail))
                     {
                         $UserName = $NewMembershipCardNumber;
@@ -235,6 +210,7 @@ $txtplayername->Text = $oldCardName;
                     {
                         $UserName = $oldCardEmail;
                     }
+                    
                     $getMID = $_Members->getMID($UserName);
                     $arrgetMID = $getMID[0];
                     $ArrCardID = $_OldCards->getOldCardDetails($LoyatyCardNumber);
@@ -270,7 +246,7 @@ $txtplayername->Text = $oldCardName;
 
                     if (!App::HasError()) {
                         $MemberServiceMID = $arrgetMID['MID'];
-                        $arrServices = $_CasinoServices->generateCasinoAccounts($MemberServiceMID);
+                        $arrServices = $_CasinoServices->generateCasinoAccounts($MemberServiceMID, $CardTypeID);
 
                         $_MemberServices->CreateCasinoAccount($arrServices);
 
@@ -295,13 +271,13 @@ $txtplayername->Text = $oldCardName;
                 $displayPassword = $_Members->password; //$arrgetMID['Password'];
             }
         }
-     }
-     else //Not valid
-     {
-         $InvalidDialogOpen = 'true';
-         $IsInvalidCard = true;
-         
-     }
+    }
+    else //Not valid
+    {
+     $InvalidDialogOpen = 'true';
+     $IsInvalidCard = true;
+
+    }
 }
 else //Parameters not set
 {

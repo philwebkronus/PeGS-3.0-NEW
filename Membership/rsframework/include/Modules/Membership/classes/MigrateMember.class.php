@@ -210,8 +210,7 @@ class MigrateMember extends BaseEntity
         App::LoadModuleClass("CasinoProvider", "PlayTechAPI");
         App::LoadModuleClass("Membership", "MemberInfo");
         App::LoadModuleClass("Membership", "MemberServices");
-        App::LoadModuleClass("Kronus", "CasinoServices");
-                
+        App::LoadModuleClass("Kronus", "CasinoServices");                
         
         /*
          * Instantiate Models
@@ -238,7 +237,9 @@ class MigrateMember extends BaseEntity
         $countryCode = 'PH';
         (!empty($memberinfo[0]['MobileNumber'])) ? $phone = str_replace(' ','',$memberinfo[0]['MobileNumber']) : $phone = '338-3838';
         $zip = 'NA';
-        $vipLevel = 1; //1-reg ; 2-vip
+        
+        $memberservices[0]['isVIP'] == 0 ? $vipLevel = 1 : $vipLevel = 2;
+        //$vipLevel = 1; //1-reg ; 2-vip
         
         foreach( $casinoservices as $casinoservice )
         {

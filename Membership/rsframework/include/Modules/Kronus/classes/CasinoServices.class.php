@@ -35,13 +35,12 @@ class CasinoServices extends BaseEntity
         return $result;
     }
     
-    public function generateCasinoAccounts( $MID )
+    public function generateCasinoAccounts( $MID, $CardTypeID = 0 )
     {
         App::LoadModuleClass("CasinoProvider", "CasinoProviders");
         App::LoadCore("Randomizer.class.php");
         $_Randomizer = new Randomizer();
-                
-        //$casinoServices = $this->getCasinoServices();                
+                             
         $casinoServices = $this->getUserBasedCasinoServices();
 
         foreach($casinoServices as $val)
@@ -53,7 +52,7 @@ class CasinoServices extends BaseEntity
             $services['HashedServicePassword'] = $services['ServicePassword'];
             $services['UserMode'] = $val['UserMode'];
             $services['DateCreated'] = 'now_usec()';
-            $services['isVIP'] = 0;
+            $services['isVIP'] = $CardTypeID;
             $services['Status'] = 1;
 
             $newservices[] = $services;
