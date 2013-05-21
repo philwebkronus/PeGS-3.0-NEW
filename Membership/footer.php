@@ -4,7 +4,7 @@
  * Date Created: 2013-04-08
  * Company: Philweb
  * ***************** */
+
 ?>
 </form>
-</body>
-</html>
+<?php require_once 'templates/footertemplate.php';
