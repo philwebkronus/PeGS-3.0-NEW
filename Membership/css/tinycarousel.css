@@ -1,7 +1,7 @@
 /* Tiny Carousel */
-#slider { height: 1%; overflow:hidden; padding: 0 0 10px;   }
+#slider { height: 1%; overflow:hidden; padding: 0 0 10px; }
 
-#slider .viewport { float: left; width: 640px; height: 340px; overflow: hidden; position: relative; }
+#slider .viewport { float: left; width: 400px; height: 340px; overflow: hidden; position: relative; }
 #slider .buttons { background:url("../images/buttons.png") no-repeat scroll 0 0 transparent; display: block; margin: 150px 10px 0 0; background-position: 0 -38px; text-indent: -999em; float: left; width: 39px; height: 37px; overflow: hidden; position: relative; }
 #slider .next { background-position: 0 0; margin: 150px 0 0 10px;  }
 #slider .disable { visibility: hidden; }
@@ -16,14 +16,17 @@
 
 #moreitems .viewmore 
 {
-    position: absolute;
-    margin-left: 240px;
+    
     padding: 4px; 
     background-color: #ccc; 
-    width: 100px; 
+    width: 100px;
+    /* 
+    position: absolute;
+    margin-left: 240px;
     float: left; 
     left:24%; 
     top:360px;
+    */
 }
 
 #carousel {

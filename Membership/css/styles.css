@@ -1,0 +1,21 @@
+/* 
+    Document   : styles
+    Created on : Apr 8, 2013, 5:48:57 PM
+    Author     : USER
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+/* 
+   TODO customize this sample style
+   Syntax recommendation http://www.w3.org/TR/REC-CSS2/
+*/
+
+root { 
+    display: block;
+}
+
+body
+{
+    font: 10pt Arial;
+}

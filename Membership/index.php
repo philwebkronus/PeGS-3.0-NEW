@@ -159,7 +159,7 @@ else
                         </ul>
                     </div>
                     <a class="buttons next" href="#">right</a>
-                    <div id="moreitems"><input class="viewmore" type="button" name="more" value="View More" /></div>
+                    <div id="moreitems" align="right"><input class="viewmore" type="button" name="more" value="View More" /></div>
                 </div>
 
                 <div id="carousel">
