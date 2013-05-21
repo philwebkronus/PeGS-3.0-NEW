@@ -1,8 +1,8 @@
 <?php 
-$pagetitle = "Application Support";  
+$pagetitle = "UB Transaction Tracking";  
 include "process/ProcessAppSupport.php";
 include "header.php";
-$vaccesspages = array('9');
+$vaccesspages = array('9','6');
     $vctr = 0;
     if(isset($_SESSION['acctype']))
     {

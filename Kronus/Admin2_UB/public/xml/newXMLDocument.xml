@@ -101,6 +101,7 @@
       <submenu id="61" name='Unlock Account' path='accountunlock.php' pagename="20" group=' '/>
       <submenu id="73" name='Passkey Retrieval' path='csviewpasskey.php' pagename="20" group=' '/> 
       <submenu id="74" pagename="20" path="applptracking_cs.php" name="E-City Tracking" group=" "/>
+      <submenu id ="51" name='UB Transaction Tracking' path='appsupportviewub.php' group=' ' pagename="20" />
    </menu>
    <menu id ="19" name='Reports' path='blank.php' pagename="19">
        <submenu id="67" name='User Based Redemptions' path='csuserbasedredemptions.php' pagename="19" group='Redemptions' />
