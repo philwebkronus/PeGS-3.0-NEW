@@ -216,6 +216,19 @@ $this->breadcrumbs=array(
             }
             return false;
         }
+        
+        function resetForm ( ) {
+            tips
+                .text ( "All form fields are required." )
+                .addClass("validateTips")
+
+            amount.val("");
+            quantity.val("");
+            $("p").removeClass("validateTips");
+            $("input").removeClass("ui-state-error");
+            
+
+        }
 
         function updateTips( t ) {
             tips
@@ -237,7 +250,6 @@ $this->breadcrumbs=array(
         }
         
         function checkAmount(o) {
-            //var n = new Array(n);
             if(inArray(o.val(), arrlist)){
                 return true;
             } else {
@@ -274,8 +286,7 @@ $this->breadcrumbs=array(
                    
                 }',
                 'Cancel'=>'js:function(){
-                    amount.val("");
-                    quantity.val("");
+                    resetForm();
                     $(this).dialog("close");
                }',               
             ),
