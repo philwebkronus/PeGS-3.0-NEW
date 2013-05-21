@@ -72,11 +72,13 @@ $SiteName = "";
         $dtBirthDate->isRenderJQueryScript = true;
         $fproc->AddControl($dtBirthDate);
 
-        $txtplayername = new TextBox("txtplayername", "txtplayername", "Name: ");        
+        $txtplayername = new TextBox("txtplayername", "txtplayername", "Name: "); 
+        $txtplayername->CssClass = "validate[required,custom[onlyLetterSp]]";
         $fproc->AddControl($txtplayername);
         $txtplayerage = new TextBox("txtplayerage", "txtplayerage", "Age: ");
         $fproc->AddControl($txtplayerage);
         $txtplayerIDNumber = new TextBox("txtplayerIDNumber", "txtplayerIDNumber", "I.D: ");
+        $txtplayerIDNumber->CssClass = "validate[required,custom[onlyLetterNumber]]";
         $fproc->AddControl($txtplayerIDNumber);
 
         $ConfirmButton = new Button("ConfirmButton", "ConfirmButton", "Confirm");

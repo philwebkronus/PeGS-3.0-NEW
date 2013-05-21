@@ -53,7 +53,7 @@ $dtBirthDate->MaxDate = $dsmaxdate->CurrentDate;
 $dtBirthDate->MinDate = $dsmindate->CurrentDate;
 $dtBirthDate->ShowCaption = false;
 $dtBirthDate->YearsToDisplay = "-100";
-$dtBirthDate->CssClass = "validate[required]";
+$dtBirthDate->CssClass = "validate[required, custom[onlyLetterSp]";
 $dtBirthDate->isRenderJQueryScript = true;
 
 $fproc->AddControl($dtBirthDate);
@@ -62,7 +62,7 @@ $txtIDPresented = new TextBox("txtIDPresented", "txtIDPresented", "IDPresented")
 $txtIDPresented->ShowCaption = false;
 $txtIDPresented->Length = 30;
 $txtIDPresented->Size = 15;
-$txtIDPresented->CssClass = "validate[required]";
+$txtIDPresented->CssClass = "validate[required, custom[onlyLetterNumber]";
 $fproc->AddControl($txtIDPresented);
 
 $_identifications = new Identifications();
