@@ -223,7 +223,7 @@ $rdoGroupSmoker = new RadioGroup("rdoGroupSmoker", "rdoGroupSmoker", "rdoGroupSm
 $rdoGroupSmoker->AddRadio("1", "Smoker", true);
 $rdoGroupSmoker->AddRadio("2", "Non-Smoker");
 $rdoGroupSmoker->ShowCaption = true;
-$rdoGroupGender->SetSelectedValue($row['IsSmoker']);
+$rdoGroupSmoker->SetSelectedValue($row['IsSmoker']);
 $rdoGroupSmoker->Initialize();
 $rdoGroupGender->Args="onclick='\"window.close()\"'";
 $fproc->AddControl($rdoGroupSmoker);
