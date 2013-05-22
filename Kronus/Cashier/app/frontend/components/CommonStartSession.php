@@ -152,7 +152,7 @@ class CommonStartSession {
         /************************* DEPOSIT ************************************/
         $resultdeposit = $casinoApiHandler->Deposit($terminal_name, $initial_deposit, 
             $tracking1, $tracking2, $tracking3, $tracking4, $terminal_pwd, $event_id, $transaction_id);
-           exit;
+           
         //check if Deposit API reply is null
         if(is_null($resultdeposit)){
             
