@@ -79,7 +79,7 @@ $txtAlternateMobileNumber = new TextBox("txtAlternateMobileNumber", "txtAlternat
 $txtAlternateMobileNumber->ShowCaption = false;
 $txtAlternateMobileNumber->Length = 30;
 $txtAlternateMobileNumber->Size = 15;
-$txtMobileNumber->CssClass = "validate[custom[onlyNumber], minSize[9]]";
+$txtAlternateMobileNumber->CssClass = "validate[custom[onlyNumber], minSize[9]]";
 $txtAlternateMobileNumber->AutoComplete = false;
 $fproc->AddControl($txtAlternateMobileNumber);
 
@@ -145,7 +145,7 @@ $txtIDPresented = new TextBox("txtIDPresented", "txtIDPresented", "IDPresented")
 $txtIDPresented->ShowCaption = false;
 $txtIDPresented->Length = 30;
 $txtIDPresented->Size = 15;
-$txtIDPresented->CssClass = "validate[required, custom[onlyLetterNumberSp]]";
+$txtIDPresented->CssClass = "validate[required, custom[onlyLetterNumber]]";
 $fproc->AddControl($txtIDPresented);
 
 $btnSubmit = new Button("btnSubmit", "btnSubmit", "Register");
@@ -326,13 +326,13 @@ if ($fproc->IsPostBack)
         });
     });
 </script>
-<h1>Registration</h1>
-<table>
+<span class="pagesubtitle">Registration</span>
+<table class="registrationtable">
     <tr>
-        <td>First Name*</td>
-        <td><?php echo $txtFirstName; ?></td>
-        <td>Nickname</td>
-        <td><?php echo $txtNickName; ?></td>
+        <td width="20%">First Name*</td>
+        <td width="30%"><?php echo $txtFirstName; ?></td>
+        <td width="20%">Nickname</td>
+        <td width="30%"><?php echo $txtNickName; ?></td>
     </tr>
     <tr>
         <td>Middle Name</td>
@@ -359,11 +359,11 @@ if ($fproc->IsPostBack)
         <td><?php echo $txtAlternateEmail; ?></td>
     </tr>
     <tr>
-        <td>Permanent Address*</td>
+        <td>Permanent Address</td>
         <td><?php echo $txtAddress1; ?><br/>
             <?php echo $txtAddress2; ?><br/></td>
         <td>Gender</td>
-        <td><?php echo $rdoGroupGender->Radios[0]; ?><?php echo $rdoGroupGender->Radios[1]; ?></td>
+        <td><?php echo $rdoGroupGender->Radios[0]; ?> <?php echo $rdoGroupGender->Radios[1]; ?></td>
     </tr>
     <tr>
         <td>ID Presented*</td>

@@ -22,7 +22,7 @@ $stylesheets[] = "css/ui.theme.css";
 $stylesheets[] = "css/jquery-ui.css";
 $stylesheets[] = "css/smoothness/jquery-ui-1.8.16.custom.css";
 $stylesheets[] = "css/validationEngine.jquery.css";
-
+$stylesheets[] = "css/styles.css";
 $headerinfo = "";
 if (isset($javascripts) && count($javascripts) > 0)
 {

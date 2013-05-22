@@ -15,7 +15,45 @@ root {
     display: block;
 }
 
-body
+body, table
 {
     font: 10pt Arial;
+}
+
+.registrationtable td
+{
+    padding: 3px 3px 3px 3px;
+}
+
+.registrationtable
+{
+    width: 95%;
+}
+
+.registrationtable label
+{
+    display: inline;
+    margin-bottom: 0px;
+    vertical-align: middle;
+/*    line-height: inherit;
+    vertical-align: middle;*/
+}
+
+.pagesubtitle
+{
+    font-size: 12pt;
+    font-weight: bold;
+}
+
+#rightcol{
+    
+    background-color: #eee;
+    width: 200px;
+    height: 330px;
+    padding: 50px 0 0 40px;
+/*  position:absolute;
+float: right; 
+    right: 0;
+    top: 0;
+    */
 }

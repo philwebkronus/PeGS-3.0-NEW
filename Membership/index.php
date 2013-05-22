@@ -34,6 +34,7 @@ App::LoadControl("RadioGroup");
 App::LoadControl("Radio");
 App::LoadControl("CheckBox");
 
+
 $_Rewards = new Rewards();
 
 /**
@@ -56,8 +57,6 @@ foreach ($arrRewardItems as $item)
 ?>
 
 <?php include "header.php"; ?> 
-
-<link rel="stylesheet" type="text/css" href="css/style.css">
 
 <script type="text/javascript" language="javascript">
     
@@ -102,7 +101,7 @@ if (isset($_SESSION["MemberInfo"]))
                             //$(event.target).parent().css('top', '5%');
                             //$(event.target).parent().css('left', '20%');
                         }
-                                        
+                                            
                     });
                 }
     <?php

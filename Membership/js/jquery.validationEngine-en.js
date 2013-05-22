@@ -138,7 +138,7 @@
                 },
                 "onlyLetterNumber": {
                     "regex": /^[0-9a-zA-Z]+$/,
-                    "alertText": "* No special characters allowed"
+                    "alertText": "* No special characters and spaces allowed"
                 },
                 "onlyLetterNumberSp": {
                     "regex": /^[0-9a-zA-Z\ ]+$/,

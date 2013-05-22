@@ -1915,7 +1915,7 @@
 		// did one of the validation fail ? kept global to stop further ajax validations
 		isError: false,
 		// Limit how many displayed errors a field can have
-		maxErrorsPerField: false,
+		maxErrorsPerField: 1,
 		
 		// Caches field validation status, typically only bad status are created.
 		// the array is used during ajax form validation to detect issues early and prevent an expensive submit
