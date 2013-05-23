@@ -40,10 +40,10 @@ $dsmindate = new DateSelector();
 
 $txtName = new TextBox("txtName", "txtName", "Name");
 $txtName->ShowCaption = false;
-$txtName->Length = 30;
+$txtName->Length = 90;
 $txtName->Size = 30;
 
-$txtName->CssClass = "validate[required, custom[onlyLetterSp]]";
+$txtName->CssClass = "validate[required, custom[onlyLetterSp], minSize[2]]";
 
 $dsmaxdate->AddYears(-21);
 $dsmindate->AddYears(-100);
@@ -107,6 +107,7 @@ $tempAccountCode = "";
 $createdon = "";
 $MembershipCardNumber = "";
 $sitecode = "";
+$sitename ="";
 $currentpoints = "";
 $isSubmitted = false;
     
@@ -148,7 +149,8 @@ if((isset($_GET["tempnumber"]) && (htmlentities($_GET["tempnumber"]))) &&
             $tempAccountCode = "";
             $createdon = "";
             $MembershipCardNumber = "";
-            $site = "";
+            $sitecode = "";
+            $sitename ="";
             $currentpoints = "";
             $isSuccess = false;
 
@@ -160,6 +162,7 @@ if((isset($_GET["tempnumber"]) && (htmlentities($_GET["tempnumber"]))) &&
             $createdon = "";
             $MembershipCardNumber = "";
             $sitecode= "";
+            $sitename ="";
             $currentpoints = "";
             $isSuccess = false;
 
@@ -171,6 +174,7 @@ if((isset($_GET["tempnumber"]) && (htmlentities($_GET["tempnumber"]))) &&
             $createdon = "";
             $MembershipCardNumber = "";
             $sitecode = "";
+            $sitename ="";
             $currentpoints = "";
             $isSuccess = false;
 
@@ -238,6 +242,7 @@ if((isset($_GET["tempnumber"]) && (htmlentities($_GET["tempnumber"]))) &&
                 $createdon = "";
                 $MembershipCardNumber = "";
                 $sitecode = "";
+                $sitename ="";
                 $currentpoints = "";
                 
                 if($verifynewcard == CardStatus::ACTIVE)
@@ -388,6 +393,10 @@ else
         dob = new Date(dob1.substr(0, 4), parseInt(dob1.substr(5, 2)) -1, dob1.substr(8, 2));
         var today = new Date();
         var age = Math.floor((today-dob) / (365.25 * 24 * 60 * 60 * 1000));
+        if(isNaN(age))
+            {
+                var age = '';
+            }
         $('#txtAge').val(age);
         
         $('#dialog').dialog(

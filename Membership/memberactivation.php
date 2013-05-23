@@ -70,7 +70,7 @@ $dtBirthDate->isRenderJQueryScript = true;
 $fproc->AddControl($dtBirthDate);
 
 $txtplayername = new TextBox("txtplayername", "txtplayername", "Name: "); 
-$txtplayername->CssClass = "validate[required,custom[onlyLetterSp]]";
+$txtplayername->CssClass = "validate[required,custom[onlyLetterSp], minSize[2]]";
 $fproc->AddControl($txtplayername);
 $txtplayerage = new TextBox("txtplayerage", "txtplayerage", "Age: ");
 $fproc->AddControl($txtplayerage);
@@ -298,6 +298,10 @@ else //Parameters not set
         dob = new Date(dob1.substr(0, 4), parseInt(dob1.substr(5, 2)) -1, dob1.substr(8, 2));
         var today = new Date();
         var age = Math.floor((today-dob) / (365.25 * 24 * 60 * 60 * 1000));
+        if(isNaN(age))
+            {
+                var age = '';
+            }
         $('#txtAge').val(age);
         $('#dtBirthDate').change(function()
         {
