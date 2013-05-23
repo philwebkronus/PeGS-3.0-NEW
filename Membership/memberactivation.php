@@ -126,7 +126,7 @@ $AID = $_GET["AID"];
 $oldcardresult = $_OldCards->getOldCardInfo($LoyatyCardNumber);
 $OldCardStatus = $oldcardresult[0];
 $CardStatus = $OldCardStatus['CardStatus'];
-$CardTypeID = $OldCardStatus['CardTypeID'];
+$isVIP = $OldCardStatus['IsVIP'];
 
 switch ($CardStatus)
 {
@@ -246,7 +246,7 @@ $txtplayername->Text = $oldCardName;
 
                     if (!App::HasError()) {
                         $MemberServiceMID = $arrgetMID['MID'];
-                        $arrServices = $_CasinoServices->generateCasinoAccounts($MemberServiceMID, $CardTypeID);
+                        $arrServices = $_CasinoServices->generateCasinoAccounts($MemberServiceMID, $isVIP);
 
                         $_MemberServices->CreateCasinoAccount($arrServices);
 
