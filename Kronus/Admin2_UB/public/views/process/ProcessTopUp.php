@@ -291,13 +291,14 @@ if($connected)
 
                     $statuscode = $obj_result->CardInfo->StatusCode;
                     
-                    if(!is_null($statuscode))
+                    if(!is_null($statuscode) ||$statuscode == '')
                     {
-                            if($statuscode == 1 || $statuscode == 5){
-
-                            $casinoarray_count = count($obj_result->CardInfo->CasinoArray);
+                            if($statuscode == 1 || $statuscode == 5)
+                            {
+                               $casinoarray_count = count($obj_result->CardInfo->CasinoArray);
 
                                if($casinoarray_count != 0)
+                               {
                                    for($ctr = 0; $ctr < $casinoarray_count;$ctr++) {   
                                        $casinoinfo = array(
                                            array(
@@ -314,6 +315,12 @@ if($connected)
                                        $_SESSION['MID'] = $obj_result->CardInfo->MemberID;
                                        echo json_encode($casinoinfo);
                                    }
+                              }
+                              else
+                              {
+                               $services = "User Based Redemption: Casino is empty";
+                               echo "$services";
+                              }
                            }
                            else
                            {  
