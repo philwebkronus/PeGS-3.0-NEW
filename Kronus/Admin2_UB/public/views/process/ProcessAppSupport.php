@@ -198,7 +198,7 @@ if($connected)
                             $casinoarray_count = count($obj_result->CardInfo->CasinoArray);
 
 
-                            if($casinoarray_count != 0)
+                            if($casinoarray_count != 0){
                                 for($ctr = 0; $ctr < $casinoarray_count;$ctr++) {   
                                     $service = $oas->getServices($obj_result->CardInfo->CasinoArray[$ctr]->ServiceID);
                                     foreach ($service as $value) {
@@ -221,7 +221,14 @@ if($connected)
                                     $_SESSION['MID'] = $obj_result->CardInfo->MemberID;
 
                                     echo json_encode($casinoinfo);
-                                }    
+                                }
+                          }
+                          else 
+                          {
+                              $services = "Error: Casino is empty";
+                              echo "$services";
+                          }  
+ 
                         } else {
                            $statusmsg = $oas->membershipcardStatus($statuscode);
                            echo "Error: ".$statusmsg;
@@ -640,7 +647,7 @@ if($connected)
                         $results = preg_split("/\-/",$vview['TerminalCode']);
                         $results2 = preg_split("/\ID/", $results[1]); 
                         $responce->rows[$i]['id']=$vview['TransactionReferenceID'];
-                        $responce->rows[$i]['cell']=array($vview['LoyaltyCard'],$vview['TransactionReferenceID'],$vview['TransactionSummaryID'],$vview['POSAccountNo'], $results2[1],$vtranstype,$vview['ServiceName'], number_format($vview['Amount'],2),$vview['DateCreated'],$vview['UserName'], $vstatus);
+                        $responce->rows[$i]['cell']=array($vview['TransactionReferenceID'],$vview['TransactionSummaryID'],$vview['POSAccountNo'], $results2[1],$vtranstype,$vview['ServiceName'], number_format($vview['Amount'],2),$vview['DateCreated'],$vview['UserName'], $vstatus);
                         $i++;
                      }
                 }
@@ -705,7 +712,7 @@ if($connected)
                         $results = preg_split("/\-/",$vview['TerminalCode']);
                         $results2 = preg_split("/\ID/", $results[1]); 
                         $responce->rows[$i]['id']=$vview['TransactionsSummaryID'];
-                        $responce->rows[$i]['cell']=array($vview['LoyaltyCard'],$vview['TransactionsSummaryID'],$vview['POSAccountNo'], $results2[1],  number_format($vview['Deposit'], 2), number_format($vview['Reload'],2), number_format($vview['Withdrawal'], 2), $vview['DateStarted'], $vview['DateEnded'], $vview['UserName']);
+                        $responce->rows[$i]['cell']=array($vview['TransactionsSummaryID'],$vview['POSAccountNo'], $results2[1],  number_format($vview['Deposit'], 2), number_format($vview['Reload'],2), number_format($vview['Withdrawal'], 2), $vview['DateStarted'], $vview['DateEnded'], $vview['UserName']);
                         $i++;
                      }
                 }
@@ -2414,6 +2421,53 @@ if($connected)
            $oas->close();
            exit;
            break;
+           //Update Spyder 
+           case 'SpyderEnable':
+               
+           $site = $_POST['cmbsite'];
+           $txtspyder = $_POST['txtspyder'];
+           $txtoldspyder = $_POST['txtoldspyder'];
+  
+           if($site != '-1' || $txtspyder = '' || $txtoldspyder = ''){
+               //check number of sessions in a certain site
+               $count = $oas->checkAccountSessions($site);
+               
+               if($count > 0)
+               {
+                   $msg = 'Enabling of Spyder: Failed to Update Spyder, There is an existing session';
+               }
+               else
+               {    
+                   //check if spyder status has changed
+                    if($txtspyder == $txtoldspyder){
+                      $msg = 'Enabling of Spyder: Spyder status did not change';  
+                    }
+                    else
+                    {
+                        //update spyder status in sites table
+                         $upspy = $oas->updateSpyder($txtspyder, $site);
+                         if($upspy > 0){
+                             $msg = 'Enabling of Spyder: Update Successful';
+                             
+                             $vtransdetails = "Site ID ".$site;
+                             $vauditfuncID = 74;
+                             $oas->logtoaudit($new_sessionid, $aid, $vtransdetails, $vdate, $vipaddress, $vauditfuncID); //insert in audittrail
+                         }
+                         else
+                         {
+                             $msg = 'Enabling of Spyder: Failed to Update Spyder';
+                         }    
+                    }    
+               }    
+           }
+           else
+           {
+               $msg = 'Enabling of Spyder: All Details are Required';
+           }    
+               echo json_encode($msg);
+               unset($count,$site,$txtoldspyder,$txtspyder);
+           exit;    
+           break;    
            default :
                 $msg = "Page not found";
                 $_SESSION['mess'] = $msg;
@@ -2662,6 +2716,18 @@ if($connected)
             echo "No Terminal Assigned";
         }
     }
+    //get Spyder from selected site
+    elseif(isset ($_POST['cmbsites']))
+    {
+        $vsiteID = $_POST['cmbsites'];
+        $rresult = $oas->getSpyder($vsiteID);
+        $rresult = $rresult['Spyder'];
+        echo json_encode($rresult);
+        unset($rresult);
+        $oas->close();
+        exit;
+    }
+    
     else
     {
     }

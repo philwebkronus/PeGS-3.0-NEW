@@ -310,6 +310,7 @@ if($connected)
             
       
                         if($casinoarray_count != 0)
+                        {
                             for($ctr = 0; $ctr < $casinoarray_count;$ctr++) {
 
                                 $casinoinfo = array(
@@ -328,6 +329,12 @@ if($connected)
                                 $_SESSION['MID'] = $obj_result->CardInfo->MID;
                                 $_SESSION['CasinoArray'] = $obj_result->CardInfo->CasinoArray;
                             }
+                      }
+                      else 
+                      {
+                          $services = "Manual Casino Fulfillment: Casino is empty";
+                          echo "$services";
+                      }
                 }
     
           }    
