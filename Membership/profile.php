@@ -55,7 +55,7 @@ $txtFirstName = new TextBox("txtFirstName", "txtFirstName", "FirstName");
 $txtFirstName->ShowCaption = false;
 $txtFirstName->Length = 30;
 $txtFirstName->Size = 15;
-$txtFirstName->CssClass = "validate[required, minSize[2]]";
+$txtFirstName->CssClass = "validate[required, custom[onlyLetterSp], minSize[2]]";
 $txtFirstName->Text = $row['FirstName'];
 $fproc->AddControl($txtFirstName);
 
@@ -63,7 +63,7 @@ $txtMiddleName = new TextBox("txtMiddleName", "txtMiddleName", "MiddleName");
 $txtMiddleName->ShowCaption = false;
 $txtMiddleName->Length = 30;
 $txtMiddleName->Size = 15;
-$txtMiddleName->CssClass = "";
+$txtMiddleName->CssClass = "validate[custom[onlyLetterSp], minSize[2]]";;
 $txtMiddleName->Text = $row['MiddleName'];
 $fproc->AddControl($txtMiddleName);
 
@@ -71,7 +71,7 @@ $txtLastName = new TextBox("txtLastName", "txtLastName", "LastName");
 $txtLastName->ShowCaption = false;
 $txtLastName->Length = 30;
 $txtLastName->Size = 15;
-$txtLastName->CssClass = "validate[required, minSize[2]]";
+$txtLastName->CssClass = "validate[required, custom[onlyLetterSp], minSize[2]]";;
 $txtLastName->Text = $row['LastName'];
 $fproc->AddControl($txtLastName);
 
@@ -80,13 +80,14 @@ $txtNickName->ShowCaption = false;
 $txtNickName->Length = 30;
 $txtNickName->Size = 15;
 $txtNickName->Text = $row['NickName'];
+$txtNickName->CssClass = "validate[custom[onlyLetterSp]]";
 $fproc->AddControl($txtNickName);
 
 $txtMobileNumber = new TextBox("txtMobileNumber", "txtMobileNumber", "MobileNumber");
 $txtMobileNumber->ShowCaption = false;
 $txtMobileNumber->Length = 30;
 $txtMobileNumber->Size = 15;
-$txtMobileNumber->CssClass = "validate[required, minSize[9]]";
+$txtMobileNumber->CssClass = "validate[required, custom[onlyNumber], minSize[9]]";
 $txtMobileNumber->Text = $row['MobileNumber'];
 $fproc->AddControl($txtMobileNumber);
 
@@ -95,7 +96,7 @@ $txtAlternateMobileNumber->ShowCaption = false;
 $txtAlternateMobileNumber->Length = 30;
 $txtAlternateMobileNumber->Size = 15;
 $txtAlternateMobileNumber->AutoComplete = false;
-$txtAlternateMobileNumber->Text = $row['AlternateMobileNumber'];
+$txtAlternateMobileNumber->CssClass = "validate[custom[onlyNumber], minSize[9]]";
 $fproc->AddControl($txtAlternateMobileNumber);
 
 $txtPassword = new TextBox("txtPassword", "txtPassword", "Password");
@@ -103,8 +104,7 @@ $txtPassword->ShowCaption = false;
 $txtPassword->Length = 30;
 $txtPassword->Size = 15;
 $txtPassword->Password = true;
-$txtPassword->CssClass = "validate[minSize[5]]";
-//$txtPassword->Text = $row['Password'];
+$txtPassword->CssClass = "validate[custom[onlyLetterNumber], minSize[5]]";
 $txtPassword->AutoComplete = false;
 $fproc->AddControl($txtPassword);
 
@@ -114,7 +114,6 @@ $txtConfirmPassword->Length = 30;
 $txtConfirmPassword->Size = 15;
 $txtConfirmPassword->Password = true;
 $txtConfirmPassword->CssClass = "validate[equals[txtPassword]]";
-//$txtConfirmPassword->Text = $row['Password'];
 $fproc->AddControl($txtConfirmPassword);
 
 $txtEmail = new TextBox("txtEmail", "txtEmail", "Email");
@@ -131,6 +130,7 @@ $txtAlternateEmail->ShowCaption = false;
 $txtAlternateEmail->Length = 30;
 $txtAlternateEmail->Size = 15;
 $txtAlternateEmail->Text = $row['AlternateEmail'];
+$txtAlternateEmail->CssClass = "validate[custom[email]]";
 $fproc->AddControl($txtAlternateEmail);
 
 $dsmaxdate->AddYears(-21);
@@ -143,7 +143,6 @@ $dtBirthDate->SelectedDate = $row['Birthdate'];
 $dtBirthDate->ShowCaption = false;
 $dtBirthDate->YearsToDisplay = "-100";
 $dtBirthDate->CssClass = "validate[required]";
-
 $dtBirthDate->isRenderJQueryScript = true;
 $fproc->AddControl($dtBirthDate);
 
@@ -151,7 +150,6 @@ $txtAddress1 = new TextBox("txtAddress1", "txtAddress1", "Address1");
 $txtAddress1->ShowCaption = false;
 $txtAddress1->Length = 30;
 $txtAddress1->Size = 15;
-$txtAddress1->CssClass = "validate[required]";
 $txtAddress1->Text = $row['Address1'];
 $fproc->AddControl($txtAddress1);
 
@@ -291,18 +289,18 @@ if ($fproc->IsPostBack)
     $arrMemberInfo['Gender'] = $rdoGroupGender->SubmittedValue;     
     $arrMemberInfo['IsSmoker'] = $rdoGroupSmoker->SubmittedValue;  
   
-    if(isset($_FILES['ScannedID']['name']))
-    {
-        $allowedsize = 4194304; //4MB
-        $allowedext = array("jpg","gif","tif","png");
-        $extension = end(explode(".", $_FILES["ScannedID"]["name"]));
-        //$filename = prev(explode(".", $_FILES["ScannedID"]["name"]));
-        $upload_dir = "/home/webadmin/www/membershipsystem/memberfiles/"; // remote
-        //$upload_dir = "C:\Apache2\htdocs\philweb\membership\memberfiles\\";
-
-        $tmpFile = $_FILES["ScannedID"]["tmp_name"];
-        //$scannedFile = str_replace(" ", "_", $_FILES["ScannedID"]["name"]);
-        $IDFile = 'ID' . str_pad($MID, 5, 0, STR_PAD_LEFT) . '.' . $extension;
+//    if(isset($_FILES['ScannedID']['name']))
+//    {
+//        $allowedsize = 4194304; //4MB
+//        $allowedext = array("jpg","gif","tif","png");
+//        $extension = end(explode(".", $_FILES["ScannedID"]["name"]));
+//        //$filename = prev(explode(".", $_FILES["ScannedID"]["name"]));
+//        $upload_dir = "/home/webadmin/www/membershipsystem/memberfiles/"; // remote
+//        //$upload_dir = "C:\Apache2\htdocs\philweb\membership\memberfiles\\";
+//
+//        $tmpFile = $_FILES["ScannedID"]["tmp_name"];
+//        //$scannedFile = str_replace(" ", "_", $_FILES["ScannedID"]["name"]);
+//        $IDFile = 'ID' . str_pad($MID, 5, 0, STR_PAD_LEFT) . '.' . $extension;
         
 //        if(!in_array($extension, $allowedext))
 //        {
@@ -310,22 +308,22 @@ if ($fproc->IsPostBack)
 //        }
 //        else
 //        {
-            if($_FILES["ScannedID"]["size"] > $allowedsize && in_array($extension, $allowedext))
-            {
-                App::SetErrorMessage("File error.");
-            }
-
-            if($_FILES["ScannedID"]["size"] < $allowedsize)
-            {
-                if(move_uploaded_file($tmpFile, $upload_dir . $IDFile))
-                    $arrMemberInfo["PhotoFileName"] = $IDFile;
-                
-
-            }
-        //}
-        
-
-    }
+//            if($_FILES["ScannedID"]["size"] > $allowedsize && in_array($extension, $allowedext))
+//            {
+//                App::SetErrorMessage("File error.");
+//            }
+//
+//            if($_FILES["ScannedID"]["size"] < $allowedsize)
+//            {
+//                if(move_uploaded_file($tmpFile, $upload_dir . $IDFile))
+//                    $arrMemberInfo["PhotoFileName"] = $IDFile;
+//                
+//
+//            }
+//        //}
+//        
+//
+//    }
     
     //Proceed with the update profile
     $_MemberInfo->updateProfile($arrMembers,$arrMemberInfo);
@@ -389,7 +387,7 @@ if ($fproc->IsPostBack)
             autoOpen: <?php echo $isOpen; ?>,
             modal: true,
             width: '400',
-            title : 'Registration',
+            title : 'Update Profile',
             closeOnEscape: true,            
             buttons: {
                 "Ok": function() {
@@ -429,10 +427,10 @@ if ($fproc->IsPostBack)
     <br />
     <table>
     <tr>
-        <td>First Name*</td>
-        <td><?php echo $txtFirstName; ?></td>
-        <td>Nickname</td>
-        <td><?php echo $txtNickName; ?></td>
+        <td width="20%">First Name*</td>
+        <td width="30%"><?php echo $txtFirstName; ?></td>
+        <td width="20%">Nickname</td>
+        <td width="30%"><?php echo $txtNickName; ?></td>
     </tr>
     <tr>
         <td>Middle Name</td>
@@ -459,7 +457,7 @@ if ($fproc->IsPostBack)
         <td><?php echo $txtAlternateEmail; ?></td>
     </tr>
     <tr>
-        <td>Permanent Address*</td>
+        <td>Permanent Address</td>
         <td><?php echo $txtAddress1; ?><br/>
             <?php echo $txtAddress2; ?><br/></td>
         <td>Gender</td>
@@ -469,12 +467,16 @@ if ($fproc->IsPostBack)
         <td colspan="2"></td>
         <td>Birthdate*</td>
         <td><?php echo $dtBirthDate; ?></td>
-    </tr>            
+    </tr>      
+    
     <tr>
-        <td colspan="2">Attached scanned ID/<br />Supporting Documents <br />
+<!--        <td colspan="2">Attached scanned ID/<br />Supporting Documents <br />
             <input type="file" name="ScannedID" id="ScannedID" value="" /><br />
-            <em><?php echo $memberfile; ?></em>
-        </td>
+            <em><php echo $memberfile; ?></em>
+        </td>-->
+        <td>ID Presented*</td>
+        <td><?php echo $txtIDPresented; ?><br/>
+            <?php echo $cboIDSelection; ?></td>
         <td>Age</td>
         <td><?php echo $txtAge; ?></td>
     </tr>
@@ -511,7 +513,7 @@ if ($fproc->IsPostBack)
         { 
         ?>
             <p>
-                A problem encountered while trying to update your profile. <br /> We are very sorry for the inconvenience. Please try again later.<br />
+                Update profile failed.
             </p>
         <?php
         }?>

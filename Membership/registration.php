@@ -51,7 +51,7 @@ $txtMiddleName = new TextBox("txtMiddleName", "txtMiddleName", "MiddleName");
 $txtMiddleName->ShowCaption = false;
 $txtMiddleName->Length = 30;
 $txtMiddleName->Size = 15;
-$txtMiddleName->CssClass = "validate[custom[MiddleName]]";
+$txtMiddleName->CssClass = "validate[custom[onlyLetterSp], minSize[2]]";
 $fproc->AddControl($txtMiddleName);
 
 $txtLastName = new TextBox("txtLastName", "txtLastName", "LastName");
@@ -138,7 +138,6 @@ $txtAddress2 = new TextBox("txtAddress2", "txtAddress2", "Address2");
 $txtAddress2->ShowCaption = false;
 $txtAddress2->Length = 30;
 $txtAddress2->Size = 15;
-//$txtAddress2->CssClass = "validate[required]";
 $fproc->AddControl($txtAddress2);
 
 $txtIDPresented = new TextBox("txtIDPresented", "txtIDPresented", "IDPresented");

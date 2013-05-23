@@ -50,9 +50,6 @@ $timezone = $curdate->GetCurrentDateFormat('O (T)');
             $(document).ready(
             function() 
             {
-                //$("#MainForm").validationEngine();
-                $("#frmProfile").validationEngine();      
-                
                 $("#menu li").click(function() {
                         //	First remove class "active" from currently active tab
                         //$("#menu li").removeClass('active');

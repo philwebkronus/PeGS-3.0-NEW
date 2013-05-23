@@ -38,16 +38,29 @@ $fp = new FormsProcessor();
 $evt = new EventListener($fp);
 $dsmaxdate = new DateSelector();
 $dsmindate = new DateSelector();
+
 $autocomplete = false;
 $isOpen = 'false'; //Hide dialog box
-
-
+$showcardinfo = false;
 
 $txtSearch = new TextBox('txtSearch', 'txtSearch', 'Search ');
 $txtSearch->ShowCaption = false;
 $txtSearch->CssClass = 'validate[required]';
-$txtSearch->Style = 'color: #666';
-$txtSearch->Text = $txtSearch->SubmittedValue;
+$txtSearch->Style = 'color: #666;';
+$txtSearch->Size = 30;
+
+if(!empty($txtSearch->SubmittedValue) || isset($_SESSION['CardInfo']))
+{
+    (!empty($txtSearch->SubmittedValue)) ? 
+        $txtSearch->Text = $txtSearch->SubmittedValue : 
+        $txtSearch->Text = $_SESSION['CardInfo']['CardNumber'];
+}
+else
+{
+    $txtSearch->Text = "Card Number or Username";
+    $txtSearch->Args = "onclick=\"$(this).val('')\"";
+}
+
 $fp->AddControl($txtSearch);
 
 $btnSearch = new Button('btnSearch', 'btnSearch', 'Search');
@@ -62,34 +75,35 @@ $txtFirstName = new TextBox("txtFirstName", "txtFirstName", "FirstName");
 $txtFirstName->ShowCaption = false;
 $txtFirstName->Length = 30;
 $txtFirstName->Size = 15;
-$txtFirstName->CssClass = "validate[required, minSize[2]]";
+$txtFirstName->CssClass = "validate[required, custom[onlyLetterSp], minSize[2]]";
 $fp->AddControl($txtFirstName);
 
 $txtMiddleName = new TextBox("txtMiddleName", "txtMiddleName", "MiddleName");
 $txtMiddleName->ShowCaption = false;
 $txtMiddleName->Length = 30;
 $txtMiddleName->Size = 15;
-$txtMiddleName->CssClass = "";
+$txtMiddleName->CssClass = "validate[custom[onlyLetterSp], minSize[2]]";
 $fp->AddControl($txtMiddleName);
 
 $txtLastName = new TextBox("txtLastName", "txtLastName", "LastName");
 $txtLastName->ShowCaption = false;
 $txtLastName->Length = 30;
 $txtLastName->Size = 15;
-$txtLastName->CssClass = "validate[required, minSize[2]]";
+$txtLastName->CssClass = "validate[required, custom[onlyLetterSp], minSize[2]]";
 $fp->AddControl($txtLastName);
 
 $txtNickName = new TextBox("txtNickName", "txtNickName", "NickName");
 $txtNickName->ShowCaption = false;
 $txtNickName->Length = 30;
 $txtNickName->Size = 15;
+$txtNickName->CssClass = "validate[custom[onlyLetterSp]]";
 $fp->AddControl($txtNickName);
 
 $txtMobileNumber = new TextBox("txtMobileNumber", "txtMobileNumber", "MobileNumber");
 $txtMobileNumber->ShowCaption = false;
 $txtMobileNumber->Length = 30;
 $txtMobileNumber->Size = 15;
-$txtMobileNumber->CssClass = "validate[required, minSize[9]]";
+$txtMobileNumber->CssClass = "validate[required, custom[onlyNumber], minSize[9]]";
 $fp->AddControl($txtMobileNumber);
 
 $txtAlternateMobileNumber = new TextBox("txtAlternateMobileNumber", "txtAlternateMobileNumber", "AlternateMobileNumber");
@@ -97,24 +111,8 @@ $txtAlternateMobileNumber->ShowCaption = false;
 $txtAlternateMobileNumber->Length = 30;
 $txtAlternateMobileNumber->Size = 15;
 $txtAlternateMobileNumber->AutoComplete = false;
+$txtAlternateMobileNumber->CssClass = "validate[custom[onlyNumber], minSize[9]]";
 $fp->AddControl($txtAlternateMobileNumber);
-
-$txtPassword = new TextBox("txtPassword", "txtPassword", "Password");
-$txtPassword->ShowCaption = false;
-$txtPassword->Length = 30;
-$txtPassword->Size = 15;
-$txtPassword->Password = true;
-$txtPassword->CssClass = "validate[minSize[5]]";
-$txtPassword->AutoComplete = false;
-$fp->AddControl($txtPassword);
-
-$txtConfirmPassword = new TextBox("txtConfirmPassword", "txtConfirmPassword", "ConfirmPassword");
-$txtConfirmPassword->ShowCaption = false;
-$txtConfirmPassword->Length = 30;
-$txtConfirmPassword->Size = 15;
-$txtConfirmPassword->Password = true;
-$txtConfirmPassword->CssClass = "validate[equals[txtPassword]]";
-$fp->AddControl($txtConfirmPassword);
 
 $txtEmail = new TextBox("txtEmail", "txtEmail", "Email");
 $txtEmail->ShowCaption = false;
@@ -128,6 +126,7 @@ $txtAlternateEmail = new TextBox("txtAlternateEmail", "txtAlternateEmail", "User
 $txtAlternateEmail->ShowCaption = false;
 $txtAlternateEmail->Length = 30;
 $txtAlternateEmail->Size = 15;
+$txtAlternateEmail->CssClass = "validate[custom[email]]";
 $fp->AddControl($txtAlternateEmail);
 
 $dsmaxdate->AddYears(-21);
@@ -158,7 +157,7 @@ $txtIDPresented = new TextBox("txtIDPresented", "txtIDPresented", "IDPresented")
 $txtIDPresented->ShowCaption = false;
 $txtIDPresented->Length = 30;
 $txtIDPresented->Size = 15;
-$txtIDPresented->CssClass = "validate[required]";
+$txtIDPresented->CssClass = "validate[required, custom[onlyLetterNumber]]";
 $fp->AddControl($txtIDPresented);
 
 $_identifications = new Identifications();
@@ -229,6 +228,8 @@ $fp->ProcessForms();
 
 if($fp->IsPostBack)
 {
+    $showcardinfo = true;
+    
     if($btnSearch->SubmittedValue == 'Search')
     {
         unset($_SESSION['CardInfo']);
@@ -328,6 +329,8 @@ if($fp->IsPostBack)
 
 if(isset($_SESSION['CardInfo']))
 {
+    $showcardinfo = true;
+    
     if(isset($_SESSION['CardInfo']['Username']))
     {
         $result = $_MemberInfo->getMemberInfoByUsername($_SESSION['CardInfo']['Username']);
@@ -389,6 +392,9 @@ if(isset($_SESSION['CardInfo']))
                 }
             }
         });
+        
+        $("#frmProfile").validationEngine(); 
+        
     });
 </script>
 <div class="main">
@@ -397,6 +403,7 @@ if(isset($_SESSION['CardInfo']))
            echo $txtSearch . $btnSearch;
         ?>
         </form>
+        <?php if($showcardinfo) include('cardinfo.php'); ?>
         <?php include('menu.php'); ?>
         <form name="frmProfile" id="frmProfile" method="post" action="" />
         <div class="result">             
@@ -408,7 +415,7 @@ if(isset($_SESSION['CardInfo']))
                     <tr>
                         <td>First Name*</td>
                         <td><?php echo $txtFirstName; ?></td>
-                        <td>Primary Email Address</td>
+                        <td>Primary Email Address*</td>
                         <td><?php echo $txtEmail; ?></td>
                     </tr>
                     <tr>
@@ -423,13 +430,13 @@ if(isset($_SESSION['CardInfo']))
                         <td>Mobile Number*</td>
                         <td><?php echo $txtMobileNumber; ?></td>
                     <tr>                        
-                        <td>Nick Name*</td>
+                        <td>Nick Name</td>
                         <td><?php echo $txtNickName; ?></td>
                         <td>Alternate Mobile Number</td>
                         <td><?php echo $txtAlternateMobileNumber; ?></td>
                     </tr>
                     <tr>
-                        <td>Permanent Address*</td>
+                        <td>Permanent Address</td>
                         <td><?php echo $txtAddress1; ?><br/>
                             <?php echo $txtAddress2; ?><br/></td>
                         <td>Gender</td>
