@@ -2424,49 +2424,50 @@ if($connected)
            //Update Spyder 
            case 'SpyderEnable':
                
-           $site = $_POST['cmbsite'];
-           $txtspyder = $_POST['txtspyder'];
-           $txtoldspyder = $_POST['txtoldspyder'];
-  
-           if($site != '-1' || $txtspyder = '' || $txtoldspyder = ''){
-               //check number of sessions in a certain site
-               $count = $oas->checkAccountSessions($site);
-               
-               if($count > 0)
-               {
-                   $msg = 'Enabling of Spyder: Failed to Update Spyder, There is an existing session';
-               }
-               else
-               {    
-                   //check if spyder status has changed
-                    if($txtspyder == $txtoldspyder){
-                      $msg = 'Enabling of Spyder: Spyder status did not change';  
-                    }
-                    else
-                    {
-                        //update spyder status in sites table
-                         $upspy = $oas->updateSpyder($txtspyder, $site);
-                         if($upspy > 0){
-                             $msg = 'Enabling of Spyder: Update Successful';
-                             
-                             $vtransdetails = "Site ID ".$site;
-                             $vauditfuncID = 74;
-                             $oas->logtoaudit($new_sessionid, $aid, $vtransdetails, $vdate, $vipaddress, $vauditfuncID); //insert in audittrail
+                $site = $_POST['cmbsite'];
+                $txtspyder = $_POST['txtspyder'];
+                $txtoldspyder = $_POST['txtoldspyder'];
+
+                if($site != '-1' || $txtspyder = '' || $txtoldspyder = ''){
+                    
+//                    $count = $oas->checkAccountSessions($site);
+
+//                    //check number of sessions in a certain site
+//                    if($count > 0)
+//                    {
+//                        $msg = 'Enabling of Spyder: Failed to Update Spyder, There is an existing cashier session for this site.';
+//                    }
+//                    else
+//                    {    
+                        //check if spyder status has changed
+                         if($txtspyder == $txtoldspyder){
+                           $msg = 'Enabling of Spyder: Spyder status did not change';  
                          }
                          else
                          {
-                             $msg = 'Enabling of Spyder: Failed to Update Spyder';
+                             //update spyder status in sites table
+                              $upspy = $oas->updateSpyder($txtspyder, $site);
+                              if($upspy > 0){
+                                  $msg = 'Enabling of Spyder: Update Successful';
+
+                                  $vtransdetails = "Site ID ".$site;
+                                  $vauditfuncID = 74;
+                                  $oas->logtoaudit($new_sessionid, $aid, $vtransdetails, $vdate, $vipaddress, $vauditfuncID); //insert in audittrail
+                              }
+                              else
+                              {
+                                  $msg = 'Enabling of Spyder: Failed to Update Spyder';
+                              }    
                          }    
-                    }    
-               }    
-           }
-           else
-           {
-               $msg = 'Enabling of Spyder: All Details are Required';
-           }    
-               echo json_encode($msg);
-               unset($count,$site,$txtoldspyder,$txtspyder);
-           exit;    
+//                    }    
+                }
+                else
+                {
+                    $msg = 'Enabling of Spyder: All Details are Required';
+                }    
+                    echo json_encode($msg);
+                    unset($count,$site,$txtoldspyder,$txtspyder);
+                exit;    
            break;    
            default :
                 $msg = "Page not found";
