@@ -80,7 +80,7 @@ class CommonReload {
             $trans_origin_id = 0; //cashier origin Id
             $transaction_id = $terminalsModel->insertserviceTransRef($service_id, $trans_origin_id);
             if(!$transaction_id){
-                $message = "Error: Failed to insert record in servicetransactionref";
+                $message = "Error: Failed to insert record in transaction table [0001].";
                 logger($message);
                 CasinoApi::throwError($message);
             }

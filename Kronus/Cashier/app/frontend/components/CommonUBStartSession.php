@@ -85,7 +85,7 @@ class CommonUBStartSession {
             $trans_origin_id = 0; //cashier origin Id
             $transaction_id = $terminalsModel->insertserviceTransRef($service_id, $trans_origin_id);
             if(!$transaction_id){
-                $message = "Error: Failed to insert record in servicetransactionref";
+                $message = "Error: Failed to insert record in transaction table [0001].";
                 logger($message);
                 CasinoApi::throwError($message);
             }
@@ -142,7 +142,7 @@ class CommonUBStartSession {
             if(!$changeStatusResult['IsSucceed']){
                 $transReqLogsModel->update($trans_req_log_last_id, 'false', 2,null,$terminal_id);
                 $terminalSessionsModel->deleteTerminalSessionById($terminal_id);
-                $message = "PT: Failed to unlock the user account.";
+                $message = "Info: Failed to unlock the user account in Swinging Singapore.";
                 logger($message);
                 CasinoApi::throwError($message);
             }
