@@ -1,27 +1,22 @@
 <?php
 require_once("init.inc.php");
+
 $pagetitle = "Membership Activation";
 
 $javascripts[] = "js/jquery.min.js";
 $javascripts[] = "js/jquery-ui.min.js";
-$stylesheets[] = "css/ui.themes.css";
+$stylesheets[] = "css/ui.theme.css";
 $stylesheets[] = "css/jquery-ui.css";
 $stylesheets[] = "css/smoothness/jquery-ui-1.8.16.custom.css";
-$stylesheets[] = "css/tabbed.css";
+
+$customtags[] = "<BASE target=\"_self\" />";
 
 App::LoadModuleClass("Membership", "Helper");
 App::LoadModuleClass("Membership", "Members");
-App::LoadModuleClass("Membership", "Occupation");
 App::LoadModuleClass("Membership", "Identifications");
-App::LoadModuleClass("Membership", "Nationality");
-App::LoadModuleClass("Membership", "MemberServices");
-App::LoadModuleClass("Membership", "MigrateMember");
 App::LoadModuleClass("Loyalty", "OldCards");
-App::LoadModuleClass("Loyalty", "Cards");
 App::LoadModuleClass("Loyalty", "CardStatus");
-App::LoadModuleClass("Loyalty", "LoyaltyPointsTransferFromOld");
-App::LoadModuleClass("Kronus", "CasinoServices");
-App::LoadModuleClass("Kronus","Sites");
+App::LoadModuleClass("Kronus", "Sites");
 
 App::LoadControl("TextBox");
 App::LoadControl("Button");
@@ -31,15 +26,9 @@ App::LoadControl("DatePicker");
 
 $_Helper = new Helper();
 $_Members = new Members();
-$_Occupation = new Occupation();
+
 $_Identification = new Identifications();
-$_Nationality = new Nationality();
 $_OldCards = new OldCards();
-$_Cards = new Cards();
-$_LoyaltyPoints = new LoyaltyPointsTransferFromOld();
-$_CasinoServices = new CasinoServices();
-$_MemberServices = new MemberServices();
-$_MigrateMembers = new MigrateMember();
 $_Sites = new Sites();
 
 $fproc = new FormsProcessor();
@@ -52,6 +41,7 @@ $ActivationDialogOpen = 'false';
 $InvalidDialogOpen = 'false';
 $IsInvalidCard = false;
 $HasParamError = false;
+$useCustomHeader = false;
 
 $LoyatyCardNumber = "";
 $NewMembershipCardNumber = "";
@@ -69,7 +59,7 @@ $dtBirthDate->CssClass = "validate[required]";
 $dtBirthDate->isRenderJQueryScript = true;
 $fproc->AddControl($dtBirthDate);
 
-$txtplayername = new TextBox("txtplayername", "txtplayername", "Name: "); 
+$txtplayername = new TextBox("txtplayername", "txtplayername", "Name: ");
 $txtplayername->CssClass = "validate[required,custom[onlyLetterSp], minSize[2]]";
 $fproc->AddControl($txtplayername);
 $txtplayerage = new TextBox("txtplayerage", "txtplayerage", "Age: ");
@@ -111,74 +101,67 @@ $rdoGroupGender->Initialize();
 $fproc->AddControl($rdoGroupGender);
 
 $fproc->ProcessForms();
-        
-if ((isset($_GET["oldnumber"]) && (htmlentities($_GET["oldnumber"]))) 
-   && (isset($_GET["newnumber"]) && (htmlentities($_GET["newnumber"]))) 
-   && (isset($_GET["site"]) && (htmlentities($_GET["site"]))) 
-   && (isset($_GET["AID"]) && (htmlentities($_GET["AID"])))) 
-{
 
-$LoyatyCardNumber = $_GET["oldnumber"];
-$NewMembershipCardNumber = $_GET["newnumber"];
-$SiteName = $_GET["site"];
-$AID = $_GET["AID"];
+if ((isset($_GET["oldnumber"]) && (htmlentities($_GET["oldnumber"])))
+        && (isset($_GET["newnumber"]) && (htmlentities($_GET["newnumber"])))
+        && (isset($_GET["site"]) && (htmlentities($_GET["site"])))
+        && (isset($_GET["AID"]) && (htmlentities($_GET["AID"])))) {
 
-$oldcardresult = $_OldCards->getOldCardInfo($LoyatyCardNumber);
-$OldCardStatus = $oldcardresult[0];
-$CardStatus = $OldCardStatus['CardStatus'];
-$isVIP = $OldCardStatus['IsVIP'];
+    $LoyatyCardNumber = $_GET["oldnumber"];
+    $NewMembershipCardNumber = $_GET["newnumber"];
+    $SiteName = $_GET["site"];
+    $AID = $_GET["AID"];
 
-switch ($CardStatus)
-{
- case CardStatus::OLD:
-     $isValid = true;
-     break;
- case CardStatus::OLD_MIGRATED:
-     $isValid = false;
-     break;
- default:
-     $isValid = false;
-     break;
-}
+    $oldcardresult = $_OldCards->getOldCardInfo($LoyatyCardNumber);
+    $OldCardStatus = $oldcardresult[0];
+    $CardStatus = $OldCardStatus['CardStatus'];
+    $isVIP = $OldCardStatus['IsVIP'];
 
-$oldCardInfo = $_OldCards->getOldCardInfo($LoyatyCardNumber);
-$ArrMemberInfo = $oldCardInfo [0];
-//$oldCardNumber = $ArrMemberInfo['CardNumber'];
-$oldCardName = $ArrMemberInfo['MemberName'];
-$oldCardBirthdate = $ArrMemberInfo['Birthdate'];
-$oldCardGender = $ArrMemberInfo['Gender'];
-$oldCardEmail = $ArrMemberInfo['Email'];
+    switch ($CardStatus) {
+        case CardStatus::OLD:
+            $isValid = true;
+            break;
+        case CardStatus::OLD_MIGRATED:
+            $isValid = false;
+            break;
+        default:
+            $isValid = false;
+            break;
+    }
 
-$OldLoyaltyDetails = $_OldCards->getOldCardDetails($LoyatyCardNumber);
-$arrOldLoyaltyDetails = $OldLoyaltyDetails[0];
-$CardName = $arrOldLoyaltyDetails['CardName'];
-$CardPoints = $arrOldLoyaltyDetails['CurrentPoints'];
+    $oldCardInfo = $_OldCards->getOldCardInfo($LoyatyCardNumber);
+    $ArrMemberInfo = $oldCardInfo [0];
+    $oldCardName = $ArrMemberInfo['MemberName'];
+    $oldCardBirthdate = $ArrMemberInfo['Birthdate'];
+    $oldCardGender = $ArrMemberInfo['Gender'];
+    $oldCardEmail = $ArrMemberInfo['Email'];
 
-$siteresult = $_Sites->getSiteByCode($SiteName);
-$arraysite = $siteresult[0];
-$site = $arraysite['SiteName'];
+    $OldLoyaltyDetails = $_OldCards->getOldCardDetails($LoyatyCardNumber);
+    $arrOldLoyaltyDetails = $OldLoyaltyDetails[0];
+    $CardName = $arrOldLoyaltyDetails['CardName'];
+    $CardPoints = $arrOldLoyaltyDetails['CurrentPoints'];
 
-$dtBirthDate->SelectedDate = $oldCardBirthdate;
-$txtplayername->Text = $oldCardName;    
-        
-    if($isValid)
-    {
+    $siteresult = $_Sites->getSiteByCode($SiteName);
+    $arraysite = $siteresult[0];
+    $site = $arraysite['SiteName'];
+
+    $dtBirthDate->SelectedDate = $oldCardBirthdate;
+    $txtplayername->Text = $oldCardName;
+
+    if ($isValid) {
         $rdoGroupGender->SetSelectedValue($oldCardGender);
 
         if ($fproc->IsPostBack) {
-            
+
             if ($ConfirmButton->SubmittedValue == "Confirm") {
-                
+
                 $dateCreated = "now_usec()";
-                if(empty($oldCardEmail))
-                {
+                if (empty($oldCardEmail)) {
                     $Memberstable["UserName"] = $NewMembershipCardNumber;
-                }
-                else
-                {
+                } else {
                     $Memberstable["UserName"] = $oldCardEmail;
                 }
-                
+
                 $Memberstable["AccountTypeID"] = $_Helper->GetAccountTypeIDByName('Member');
                 $Memberstable['DateCreated'] = $dateCreated;
                 $Memberstable['Status'] = '1';
@@ -188,79 +171,22 @@ $txtplayername->Text = $oldCardName;
                 list($fname, $lname) = explode(' ', $PlayerName, 2);
 
                 $MemberInfo["FirstName"] = $fname;
-                $MemberInfo ["LastName"] = $lname;
-                $MemberInfo ["Birthdate"] = $dtBirthDate->SubmittedValue;
-                $MemberInfo ["Email"] = $Memberstable["UserName"];
-                $MemberInfo ["NationalityID"] = 1;
-                $MemberInfo ["OccupationID"] = 1;
+                $MemberInfo["LastName"] = $lname;
+                $MemberInfo["Birthdate"] = $dtBirthDate->SubmittedValue;
+                $MemberInfo["Email"] = $Memberstable["UserName"];
+                $MemberInfo["NationalityID"] = 1;
+                $MemberInfo["OccupationID"] = 1;
                 $MemberInfo["IdentificationID"] = $ComboID->SubmittedValue;
-                $MemberInfo ["IdentificationNumber"] = $txtplayerIDNumber->SubmittedValue;
-                $MemberInfo ["DateCreated"] = $dateCreated;
+                $MemberInfo["IdentificationNumber"] = $txtplayerIDNumber->SubmittedValue;
+                $MemberInfo["DateCreated"] = $dateCreated;
                 $rdoGroupGender->SubmittedValue == 1 ? $MemberInfo['Gender'] = 1 : $MemberInfo['Gender'] = 2;
 
-                $_Members->Migrate($Memberstable, $MemberInfo, false);
-
-                if (!App::HasError()) {
-                    
-                    if(empty($oldCardEmail))
-                    {
-                        $UserName = $NewMembershipCardNumber;
-                    }
-                    else
-                    {
-                        $UserName = $oldCardEmail;
-                    }
-                    
-                    $getMID = $_Members->getMID($UserName);
-                    $arrgetMID = $getMID[0];
-                    $ArrCardID = $_OldCards->getOldCardDetails($LoyatyCardNumber);
-                    $ArrayOldCardID = $ArrCardID[0];
-                    $ArrNewCardID = $_Cards->getCardInfo($NewMembershipCardNumber);
-                    $ArrayNewCardID = $ArrNewCardID[0];
-
-                    $arrMemberCards['MID'] = $arrgetMID['MID'];
-                    $arrMemberCards['CardID'] = $ArrayNewCardID['CardID'];
-                    $arrMemberCards['CardNumber'] = $ArrayNewCardID['CardNumber'];
-                    $arrMemberCards['MemberCardName'] = $txtplayername->SubmittedValue;
-                    $arrMemberCards['LifetimePoints'] = $ArrayOldCardID['LifetimePoints'];
-                    $arrMemberCards['CurrentPoints'] = $ArrayOldCardID['CurrentPoints'];
-                    $arrMemberCards['RedeemedPoints'] = $ArrayOldCardID['RedeemedPoints'];
-                    $arrMemberCards['DateCreated'] = $dateCreated;
-                    $arrMemberCards['CreatedByAID'] = $AID;
-                    $arrMemberCards['Status'] = '1';
-
-                    $arrCards['Status'] = '1';
-
-                    $arrOldCards['CardStatus'] = '4';
-
-                    $arrCardPointsTransfer['MID'] = $arrgetMID['MID'];
-                    $arrCardPointsTransfer['FromOldCardID'] = $ArrayOldCardID['OldCardID'];
-                    $arrCardPointsTransfer['LifeTimePoints'] = $ArrayOldCardID['LifetimePoints'];
-                    $arrCardPointsTransfer['CurrentPoints'] = $ArrayOldCardID['CurrentPoints'];
-                    $arrCardPointsTransfer['RedeemedPoints'] = $ArrayOldCardID['RedeemedPoints'];
-                    $arrCardPointsTransfer['DateTransferred'] = $dateCreated;
-                    $arrCardPointsTransfer['TransferredByAID'] = '1';
-                    $arrCardPointsTransfer['OldToNew'] = '1';
-
-                    $_LoyaltyPoints->ProcessCardPointsTransferOld($arrMemberCards, $arrCardPointsTransfer, $arrCards, $arrOldCards);
-
-                    if (!App::HasError()) {
-                        $MemberServiceMID = $arrgetMID['MID'];
-                        $arrServices = $_CasinoServices->generateCasinoAccounts($MemberServiceMID, $isVIP);
-
-                        $_MemberServices->CreateCasinoAccount($arrServices);
-
-                        if (!App::HasError()) {
-                            $_MigrateMembers->processCasinoAccount($MemberServiceMID);
-                        }
-                    }
-
+                $result = $_Members->Migrate($Memberstable, $MemberInfo, $AID, $LoyatyCardNumber, $NewMembershipCardNumber, $oldCardEmail, $isVIP, false);
+                
+                if ($result)
                     $isSuccess = true;
-                } 
-                else 
-                {
+                else
                     $isSuccess = false;
-                }
 
                 /*
                  * Load message dialog box
@@ -272,24 +198,17 @@ $txtplayername->Text = $oldCardName;
             }
         }
     }
-    else //Not valid
-    {
-     $InvalidDialogOpen = 'true';
-     $IsInvalidCard = true;
-
+    else { //Not valid
+        $InvalidDialogOpen = 'true';
+        $IsInvalidCard = true;
     }
-}
-else //Parameters not set
-{
+} else { //Parameters not set
     $InvalidDialogOpen = 'true';
     $HasParamError = true;
-    
 }
 ?>
 
 <?php include 'header.php'; ?>
-<?php echo $headerinfo; ?>
-<?php //echo $dtBirthDate->renderJQueryScript(); ?>
 <script language="javascript" type="text/javascript">   
     $(document).ready(
     function() 
@@ -299,9 +218,9 @@ else //Parameters not set
         var today = new Date();
         var age = Math.floor((today-dob) / (365.25 * 24 * 60 * 60 * 1000));
         if(isNaN(age))
-            {
-                var age = '';
-            }
+        {
+            var age = '';
+        }
         $('#txtAge').val(age);
         $('#dtBirthDate').change(function()
         {
@@ -325,15 +244,15 @@ else //Parameters not set
         });
         
         $( "#ActivationDialog" ).dialog({
-        modal: true,
-        autoOpen: <?php echo $ActivationDialogOpen; ?>,
-        buttons: {
-            Ok: function() {
-                $( this ).dialog( "close" );
-                window.close();
+            modal: true,
+            autoOpen: <?php echo $ActivationDialogOpen; ?>,
+            buttons: {
+                Ok: function() {
+                    $( this ).dialog( "close" );
+                    window.close();
+                }
             }
-        }
-    });
+        });
         
     });
 
@@ -373,84 +292,91 @@ else //Parameters not set
     }
 
 </script>   
-<h1> Membership Card Activation </h1>
 <div id ="membersactivation">
+    <h1> Membership Card Activation </h1>
     <table>
         <tr>
-            <td> VIP Rewards Card Number: <?php echo $LoyatyCardNumber; ?> </td>
-            <td>Membership Card Number: <?php echo $NewMembershipCardNumber; ?></td>
-            <td></td>
+            <td width="20%"> VIP Rewards Card Number: </td>
+            <td width="30%"><strong><?php echo $LoyatyCardNumber; ?></strong></td>
+            <td width="20%"> Membership Card Number:</td>
+            <td width="30%"><strong><?php echo $NewMembershipCardNumber; ?></strong></td>
         </tr>
         <tr>
-            <td>Card Type: <?php echo $CardName; ?>
-            </td>
-            <td>Issuing Cafe:<?php echo $site; ?> </td>
-
+            <td>Card Type: </td>
+            <td><strong><?php echo $CardName; ?></strong></td>
+            <td>Issuing Cafe:</td>
+            <td><strong><?php echo $site; ?></strong></td>
         </tr>
         <tr>
-            <td>Current Point Balance: <?php echo $CardPoints; ?></td>
-
-            <td>Date and Time: <span id="servertime"></span> </td>
-
+            <td>Current Point Balance: </td>
+            <td><strong><?php echo $CardPoints; ?></strong></td>
+            <td>Date and Time: </td>
+            <td><strong><span id="servertime"></span></strong></td>
         </tr>
     </table>
-    </br>
-    <table>
+        <hr />
+     <table>
         <tr>
-            <td>Name:  <?php echo $txtplayername; ?></td>
-            <td></td>
+            <td>Name</td>
+            <td><?php echo $txtplayername; ?></td>
+            <td colspan="2">&nbsp;</td>
         </tr>
         <tr>
-            <td>Birthdate: <?php echo $dtBirthDate; ?></td>
-            <td>I.D: <?php echo $txtplayerIDNumber; echo $ComboID;?> </td>
+            <td>Birthdate</td>
+            <td><?php echo $dtBirthDate; ?></td>
+            <td>I.D</td>
+            <td><?php echo $txtplayerIDNumber . '<br />' . $ComboID; ?></td>
         </tr>
         <tr>
-            <td>Age: <?php echo $txtAge; ?></td>
-            <td> </td>
+            <td>Age</td>
+            <td><?php echo $txtAge; ?></td>           
+            <td colspan="2">&nbsp;</td>
         </tr>
         <tr>
-            <td>Gender: <?php echo $rdoGroupGender->Radios[0]; ?> <?php echo $rdoGroupGender->Radios[1]; ?> </td>
+            <td>Gender</td>
+            <td><?php echo $rdoGroupGender->Radios[0]; ?> <?php echo $rdoGroupGender->Radios[1]; ?></td>
+            <td>&nbsp;</td>
             <td><?php echo $CancelButton; ?> <?php echo $ConfirmButton; ?> </td>
         </tr>
     </table>
 </div>
 </form>
 
-<?php if ($ActivationDialogOpen == 'true') 
-{?>
+<?php if ($ActivationDialogOpen == 'true') {
+    ?>
     <div id="ActivationDialog" title="Member Card Activation">
-    <?php if ($isSuccess) 
-    {?>
+    <?php if ($isSuccess) {
+        ?>
 
             <p><span class="ui-icon ui-icon-circle-check" style="float: left; margin: 0 7px 50px 0;"></span>
                 Account Migration Successful! <br />                    
                 Temporary Password for the Membership website is  <b> <?php echo $displayPassword; ?></b>.</p>
 
-     <?php 
-     } else {?>
+        <?php } else {
+        ?>
             <p><span class="ui-icon" style="float: left; margin: 0 7px 50px 0;"></span>
-                Account Migration Failed! Please try again later. </p>
-     <?php
-     }?>
-     </div>
- <?php 
-}?>
+                Account Migration Failed! </p>
+            <?php }
+        ?>
+    </div>
+    <?php }
+?>
 
-<?php if ($InvalidDialogOpen == 'true') 
-{?>
+    <?php if ($InvalidDialogOpen == 'true') {
+        ?>
     <div id="InvalidDialog" title="Member Card Activation">
-    <?php if ($IsInvalidCard) 
-    {?>
+        <?php if ($IsInvalidCard) {
+            ?>
             <p><span class="ui-icon ui-icon-circle-check" style="float: left; margin: 0 7px 50px 0;"></span>
                 The Card is either invalid or already migrated.</p>
 
-     <?php 
-     } elseif ($HasParamError) {?>
+        <?php } elseif ($HasParamError) {
+        ?>
             <p><span class="ui-icon" style="float: left; margin: 0 7px 50px 0;"></span>
                 Incomplete parameters, please contact administrator.</p>
-     <?php
-     }?>
-     </div>
- <?php 
-}?>
-<?php include 'footer.php'; ?>
+            <?php }
+        ?>
+    </div>
+    <?php }
+?>
+    <?php include 'nofooter.php'; ?>

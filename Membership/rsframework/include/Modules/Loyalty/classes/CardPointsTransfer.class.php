@@ -9,7 +9,7 @@ class CardPointsTransfer extends BaseEntity
 {
     function CardPointsTransfer()
     {
-        $this->TableName = "cardpointstransfer";
+        $this->TableName = "loyaltydb.cardpointstransfer";
         $this->ConnString = "loyalty";
         $this->Identity = "CardPointsTransferID";
         $this->DatabaseType = DatabaseTypes::PDO;

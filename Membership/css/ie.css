@@ -3,14 +3,15 @@
 
 
 #slider { height: 1%; overflow:hidden; padding: 0 0 10%; }
-
-#slider .viewport { float: left; width: 560px; height: 350px; overflow: hidden; position: relative; }
+#slider .viewport { float: left; width: 500px; height: 400px; overflow: hidden; position: relative; }
+#slider .viewmore{margin-top: 0; margin-right: 60px;}
 #slider .buttons { background:url("../images/buttons.png") no-repeat scroll 0 0 transparent; display: block; margin: 150px 10px 0 0; background-position: 0 -38px; text-indent: -999em; float: left; width: 39px; height: 37px; overflow: hidden; position: relative; }
 #slider .next { background-position: 0 0; margin: 150px 0 0 10px;  }
 #slider .disable { visibility: hidden; }
 
 #slider .overview { list-style: none; position: absolute; padding: 0; margin: 0; width: 640px; left: 0; top: 0; }
 #slider .overview li{ float: left; margin: 0 20px 0 0; padding: 1px; height: 345px; border: 1px solid #dcdcdc; width: 640px;}
+#slider .overview img {width: 640px; height: 345px;}
 
 #slider .pager { overflow:hidden; list-style: none; clear: both; margin: 0 0 0 45px; }
 #slider .pager li { float: left; }
@@ -20,24 +21,26 @@
 #slider .viewmore{  
     float: right;
     width: 100px;
-    margin-right: 50px;
 }
 #carousel {
     height: 1%;
     overflow:hidden;
-    padding: 0 0 10px;  
+    padding: 0 0 5px;  
+
 }
 #carousel .viewport
 {
-    margin-top:10px;
+
     float: left;
-    width: 560px;
-    height: 135px;
+    width: 500px;
+    height: 150px;
     overflow: hidden;
     position: relative;
     /*background-color: red;*/
     margin-left: 50px;
-    margin-bottom: 150px;
+    
+ margin-bottom: 150px;
+   
 }
 #carousel .buttons
 {
@@ -80,7 +83,7 @@
     padding: 0px;
     height: 130px;
     border: 1px solid #dcdcdc;
-    width: 180px;
+    width: 160px;
 
 }
 
@@ -88,7 +91,7 @@
 {
     margin-top: 5px; 
     height: 100px;
-    width: 170px;
+    width: 150px;
 }
 
 
@@ -101,33 +104,21 @@
     text-align: center;
     padding-bottom: 30px;
 }
-
-
 #rewardinfo{
     margin: 0 auto;
 }
 #picture{
     float: left;
-    margin-left: 30px;
-}
-#picture li {
 
-    font-size: 40px;
-    color: #999;
-    text-align: center;
-    display: block;
-    width: 300px;
-    height: 228px;
-    padding: 0;
-    margin: 6px;
-    float: left;
-    position: relative;  
 }
-#picture img
+
+#picture img 
 {
     width: 200px;
     height: 150px;
+    background-color: red;
 }
+
 
 #Info
 {
@@ -142,10 +133,8 @@
     color: #333;  
 }
 
-#rewardsinfo .Details
+#Details
 {
     margin-left:270px;  
 }
-
-
 

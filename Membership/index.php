@@ -1,10 +1,15 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 require_once("init.inc.php");
 
 $pagetitle = "Membership";
 
 $customjavascripts[] = "js/jquery.tinycarousel.min.js";
 $stylesheets[] = "css/tinycarousel.css";
+
+$useCustomHeader = true;
 
 App::LoadCore("URL.class.php");
 App::LoadCore("Hashing.class.php");
@@ -34,7 +39,6 @@ App::LoadControl("RadioGroup");
 App::LoadControl("Radio");
 App::LoadControl("CheckBox");
 
-
 $_Rewards = new Rewards();
 
 /**
@@ -47,8 +51,7 @@ $viewbutton->CssClass = "btnDefault roundedcorners";
 
 $arrRewardItems = $_Rewards->getRewardItems($cardtypeid);
 
-foreach ($arrRewardItems as $item)
-{
+foreach ($arrRewardItems as $item) {
     $items['path'] = $item['ImagePath'];
     $items['id'] = $item['RewardItemID'];
     $items['RewardName'] = $item['RewardItemName'];
@@ -57,31 +60,30 @@ foreach ($arrRewardItems as $item)
 ?>
 
 <?php include "header.php"; ?> 
-
+<link rel="stylesheet" type="text/css" href="css/style.css">
 <script type="text/javascript" language="javascript">
-    
     $(document).ready(function() {
-        $('#carousel').hide();
-        
+        function init() {
+            $('#carousel').hide();
+        }
+        window.onload = init;
+   
+        $('#carousel').tinycarousel({ display: 3});
         $('#slider').tinycarousel({
             interval: true,
             intervaltime: 3000,
             animation: true,
             duration: 1000
         });
-               
-               
         $('#slider').tinycarousel_start();
-                
         $(".popup").click(function (e) {
             InitializeDialog($("#detailbox"), $(this).attr("href"));
             e.preventDefault();
             $("#detailbox").dialog("open");
         });
-        
+                
 <?php
-if (isset($_SESSION["MemberInfo"]))
-{
+if (isset($_SESSION["MemberInfo"])) {
     ?>
                 function InitializeDialog($element, page) {
                     $element.dialog({
@@ -98,16 +100,12 @@ if (isset($_SESSION["MemberInfo"]))
                         },              
                         open: function (event, ui) {
                             $element.load(page);                        
-                            //$(event.target).parent().css('top', '5%');
-                            //$(event.target).parent().css('left', '20%');
                         }
-                                            
+                                                
                     });
                 }
     <?php
-}
-else
-{
+} else {
     ?>
                 function InitializeDialog($element, page) {
                     $element.dialog({
@@ -133,63 +131,65 @@ else
 <?php } ?>
     
         $('#slider .viewmore').click(function(){
-            $("#slider").hide();    
+            $("#slider").hide(); 
             $("#carousel").show();
             $("#carousel").css("display","inline");
         });
-        
-        $('#carousel').tinycarousel({ display: 3});
+     
                         
     });
 </script>
 </form>
 <div id="main" style="display: inline-block; vertical-align: top;">
-    <table>
-        <tr>
-            <td>
-                <div id="slider">
-                    <a class="buttons prev" href="#">left</a>
-                    <div class="viewport">
-                        <ul class="overview">
-                            <?php foreach ($path as $image)
-                            { ?>
-                                <li><img src ="images/rewarditems/<?php echo $image['path']; ?>" height="350" width="640" /></li>
-                            <?php } ?>
-                        </ul>
+ 
+        <table>
+            <tr>
+                <td>
+                    <div id="slider">
+                        <a class="buttons prev" href="#">left</a>
+                        <div class="viewport">
+                            <ul class="overview">
+                                <?php foreach ($path as $image) {
+                                    ?>
+                                    <li><img src ="images/rewarditems/<?php echo $image['path']; ?>" height="350" width="550" /></li>
+                                <?php } ?>
+                            </ul>
+                        </div>
+                        <a class="buttons next" href="#">right</a>
+                        <div id="moreitems" align="right"><input class="viewmore" type="button" name="more" value="View More" /></div>
                     </div>
-                    <a class="buttons next" href="#">right</a>
-                    <div id="moreitems" align="right"><input class="viewmore" type="button" name="more" value="View More" /></div>
-                </div>
 
-                <div id="carousel">
-                    <a class="buttons prev" href="#">left</a>
-                    <div class="viewport">
-                        <ul class="overview">
-                            <?php foreach ($path as $image)
-                            { ?>
-                                <a class="popup" href="imageinfo.php?PathID=<?php echo $image['id']; ?>&CardTypeID=<?php echo $cardtypeid; ?>">
-                                    <li><center><img src ="images/rewarditems/<?php echo $image['path']; ?>"  width="195" height="100"  /></center>
-                                    <p><strong><u><?php echo $image['RewardName']; ?></u></strong></p></li></a>
-                            <?php } ?>
-                        </ul>
+                    <!--Carousel-->
+                    <div id="carousel">
+                        <a class="buttons prev" href="#">left</a>
+                        <div class="viewport">
+                            <ul class="overview">
+                                <?php foreach ($path as $image) { ?>
+                                    <a class="popup" href="imageinfo.php?PathID=<?php echo $image['id']; ?>&CardTypeID=<?php echo $cardtypeid; ?>">
+                                        <li><center><img src ="images/rewarditems/<?php echo $image['path']; ?>" /></center>
+                                        <p><strong><u><?php echo $image['RewardName']; ?></u></strong></p></li></a>
+                                <?php } ?>
+                            </ul>
+                        </div>
+                        <a class="buttons next" href="#">right</a>
                     </div>
-                    <a class="buttons next" href="#">right</a>
-                </div>
-                <!-- End Carousel Wrapper -->
-            </td>
-            <td>
-                <div id="rightcol">
-                    <?php
-                    if (isset($_SESSION["MemberInfo"]))
-                        include('profile.php');
-                    else
-                        include('login.php');
-                    ?>
-                </div>
-                <!-- End Login Wrapper -->
-            </td>
-        </tr>
-    </table>
+                    <!-- End Carousel Wrapper -->
+                </td>
+                <td>
+                    <div id="rightcol">
+                        <?php
+                        if (isset($_SESSION["MemberInfo"]))
+                            include('profile.php');
+                        else
+                            include('login.php');
+                        ?>
+
+                    </div>
+                    <!-- End Login Wrapper -->
+                </td>
+            </tr>
+        </table>
+ 
     <div id="detailbox"></div>
 </div>
 <?php include "footer.php"; ?>

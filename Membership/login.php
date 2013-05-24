@@ -105,9 +105,9 @@ if($fproc->IsPostBack)
     });        
 </script>
 <form name="loginForm" method="post" action="" id="loginForm" />
-<?php echo $txtUsername; ?><br/>
-<?php echo $txtPassword; ?><br/>
+Username: <?php echo $txtUsername; ?><br/>
+Password: <?php echo $txtPassword; ?><br/>
 <?php echo $btnLogin; ?>
 </form>
 
-<div>Not yet a member? Register <a id="register" href="#" onclick="window.showModalDialog('registration.php', '', 'dialogWidth=800, dialogHeight=300, center=0, status=0, edge=sunken')">here</a>.</div>
+<div>Not yet a member? <a id="register" href="registration.php" title="Register here">Register here</a>.</div>

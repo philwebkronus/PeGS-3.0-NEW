@@ -45,12 +45,13 @@ body, table
     font-weight: bold;
 }
 
-#rightcol{
-    
-    background-color: #eee;
-    width: 200px;
-    height: 330px;
-    padding: 50px 0 0 40px;
+#rightcol
+{
+/*    background-color: #fcefa1;*/
+    width: 250px;
+    height: 470px;
+    padding: 5% 0 0 4%;
+    border-left: 1px solid #d7c265;
 }
 
 #cardinfo table { width: 50%; margin-top: 20px; }
@@ -151,4 +152,9 @@ body, table
 .pad5 
 {
     padding: 5px;
+}
+
+#membersactivation{
+    background-color: #f2e2ae;
+    padding: 20px;
 }

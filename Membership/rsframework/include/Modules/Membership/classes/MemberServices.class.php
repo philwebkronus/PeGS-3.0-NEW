@@ -10,7 +10,8 @@ class MemberServices extends BaseEntity
     public function MemberServices()
     {
         $this->ConnString = 'membership';
-        $this->TableName='memberservices';
+        $this->TableName = 'membership.memberservices';
+        $this->DatabaseType = DatabaseTypes::PDO;
     }
     
     public function CreateCasinoAccount ($arrMemberServices)

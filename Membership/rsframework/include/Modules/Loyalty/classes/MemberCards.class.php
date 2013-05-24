@@ -9,7 +9,7 @@ class MemberCards extends BaseEntity
 {
     public function MemberCards()
     {
-        $this->TableName = "membercards";
+        $this->TableName = "loyaltydb.membercards";
         $this->ConnString = 'loyalty';
         $this->Identity = "MemberCardID";
         $this->DatabaseType = DatabaseTypes::PDO;
@@ -115,6 +115,20 @@ class MemberCards extends BaseEntity
             $this->RollBackTransaction();
             App::SetErrorMessage($e->getMessage());
         }
+    }
+    
+    public function updateMemberCardName( $MID, $name )
+    {
+        $this->StartTransaction();
+        
+        $query = "UPDATE loyaltydb.membercards SET MemberCardName = '$name' WHERE MID = $MID";
+        
+        $this->ExecuteQuery($query);
+        
+        if(!App::HasError())
+            $this->CommitTransaction();
+        else
+            $this->RollBackTransaction ();
     }
 }
 ?>

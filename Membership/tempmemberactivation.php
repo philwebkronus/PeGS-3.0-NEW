@@ -20,9 +20,11 @@ App::LoadControl("ComboBox");
 App::LoadControl("Button");
 App::LoadControl("RadioGroup");
 
-
+$useCustomHeader = false;
 //$tempAccountCode = "eGamesLPGHT";
 //$MembershipCardNumber = "UB62027560322460";
+
+$customtags[] = "<BASE target=\"_self\" />";
 
 $_Members = new Members();
 $_Occupation = new Occupation();
@@ -478,19 +480,26 @@ else
         setInterval("displaytime()", 1000)
     }
 </script>
+<div id="membersactivation">
 <h1>Membership Card Activation</h1>
 <table>
     <tr>
-        <td>Temporary Account Code: <?php echo $tempAccountCode; ?></td>
-        <td>Membership Card Number: <?php echo $MembershipCardNumber; ?></td>
+        <td>Temporary Account Code: </td>
+        <td><?php echo $tempAccountCode; ?></td>
+        <td>Membership Card Number: </td>
+        <td><?php echo $MembershipCardNumber; ?></td>
     </tr>
     <tr>
-        <td>Created on: <?php echo $createdon; ?></td>
-        <td>Issuing Cafe: <?php echo $sitename; ?></td>
+        <td>Created on: </td>
+        <td><?php echo $createdon; ?></td>
+        <td>Issuing Cafe: </td>
+        <td><?php echo $sitename; ?></td>
     </tr>
     <tr>
-        <td>Current Points Balance: <?php  echo $currentpoints; ?></td>
-        <td>Date and Time: <span id="servertime"></span></td>
+        <td>Current Points Balance: </td>
+        <td><?php  echo $currentpoints; ?></td>
+        <td>Date and Time: </td>
+        <td><span id="servertime"></span></td>
     </tr>
 </table>
 <hr>
@@ -498,20 +507,18 @@ else
     <tr>
         <td>Name:</td>
         <td><?php echo $txtName; ?></td>
-        <td>&nbsp</td>
-        <td>&nbsp</td>
+        <td colspan="2">&nbsp</td>
     </tr>
     <tr>
         <td>Birthdate:</td>
         <td><?php echo $dtBirthDate; ?></td>
         <td>ID:</td>
-        <td><?php echo $txtIDPresented; ?><?php echo $cboIDSelection; ?></td>
+        <td><?php echo $txtIDPresented; ?> <br /> <?php echo $cboIDSelection; ?></td>
     </tr>
     <tr>
         <td>Age:</td>
         <td><?php echo $txtAge; ?></td>
-        <td>&nbsp</td>
-        <td>&nbsp</td>
+        <td colspan="2">&nbsp</td>
     </tr>
     <tr>
         <td>Gender:</td>
@@ -520,6 +527,7 @@ else
         <td><?php echo $btnCancel; ?><?php echo $btnSubmit; ?></td>
     </tr>
 </table>
+</div>
 <?php 
 if($isSubmitted){
 
@@ -549,4 +557,4 @@ else
     }
 
 }?>
-<?php include 'footer.php'; ?>
+<?php include 'nofooter.php'; ?>

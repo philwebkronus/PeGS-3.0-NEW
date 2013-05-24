@@ -31,6 +31,7 @@ $dsmaxdate = new DateSelector();
 $dsmindate = new DateSelector();
 $autocomplete = false;
 $isOpen = 'false';
+$useCustomHeader = true;
 
 $_Members = new TempMembers();
 $_Helper = new Helper();

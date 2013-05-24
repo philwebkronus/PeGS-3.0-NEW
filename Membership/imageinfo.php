@@ -22,12 +22,13 @@ $arrCode = $arr['RewardCode'];
 $arrStartDate = $arr['StartDate'];
 $arrEndDate = $arr['EndDate'];
 $arrCardName = $arr['CardName'];
+$source = "images/rewarditems/$arrPath";
 
 ?>
-<link rel="stylesheet" type="text/css" href="css/style.css">    
+<link rel="stylesheet" type="text/css" href="css/styles.css">    
 <div id="rewardinfo">
     <div id ="picture">
-        <img src ="images/rewarditems/<?php echo $arrPath; ?>" width='200' height='150'/>
+        <img src ="images/rewarditems/<?php echo $arrPath; ?>"/>
     </div>
     <div id="Info">
         <p><strong><u><center><?php echo $arrName . "/" . $arrCode; ?></center></u></strong></p>

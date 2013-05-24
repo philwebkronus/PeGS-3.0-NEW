@@ -23,6 +23,7 @@ class CardStatus
     const TEMPORARY_MIGRATED = 8; //Temporay card has availed new membership card
     
     const NOT_EXIST = 100; 
+    const MIGRATION_ERROR = 101;
     
     public function CardStatus()
     {

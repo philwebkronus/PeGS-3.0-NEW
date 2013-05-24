@@ -25,7 +25,7 @@ class GetCardInfoAPI extends BaseEntity
         App::LoadModuleClass("Membership", "TempMembers");
         App::LoadModuleClass("Membership", "MemberServices");        
         App::LoadModuleClass("Membership", "MigrateMember");  
-        
+        App::LoadModuleClass("Membership", "ActivateMember");
         App::LoadModuleClass('Loyalty', "MemberCards");
         App::LoadModuleClass("Loyalty", "Cards");   
         
@@ -33,9 +33,11 @@ class GetCardInfoAPI extends BaseEntity
         $_MemberInfo = new MemberInfo();
         $_TempMembers = new TempMembers();
         $_MemberServices = new MemberServices();
-        $_MigrateMember = new MigrateMember();
+        //$_MigrateMember = new MigrateMember();
         $_MemberCards = new MemberCards();
         $_Cards = new Cards();
+        
+        $_ActivateMember = new ActivateMember();
                 
         switch ( $status )
         {
@@ -233,70 +235,29 @@ class GetCardInfoAPI extends BaseEntity
                      * Generate Casino Accounts to local database
                      * Insert generated Casino Account to backend
                      */
-                    $result = $_MigrateMember->Migrate( $cardnumber );
                     
-                    //echo App::GetErrorMessage();
+                    $activation = $_ActivateMember->Migrate( $cardnumber );
                     
-                    if(!App::HasError() && count( $result ) > 0)
+                    if(count ( $activation ) > 0 )
                     {
-                        $MID = $result['MID'];                                 
+                        $status = $activation['status'];
                         
-                        //Generate card
-                        $_MigrateMember->createCard( $cardnumber );
-
-                        //echo App::GetErrorMessage();
-                        
-                        if(!App::HasError())
+                        if($status == 'OK')
                         {
-                            $_MigrateMember->createMemberServices( $MID );
+                            $MID = $activation['MID'];                                 
+                        
+                            $casinoAccounts = $_MemberServices->getCasinoAccounts( $MID );                            
+                            $memberInfo = $_MemberInfo->getMemberInfo( $MID );
+                            $row = $memberInfo[0];
 
-                            if(!App::HasError())
-                            {
-                                $_MigrateMember->processCasinoAccount( $MID );
-                                
-                                if(!App::HasError())
-                                {
-                                    $casinoAccounts = $_MemberServices->getCasinoAccounts( $MID );                            
-                                    $memberInfo = $_MemberInfo->getMemberInfo( $MID );
-                                    $row = $memberInfo[0];
-                                    
-                                    $result = $_MemberCards->getMemberCardInfoByCard( $cardnumber );
-                                    $points = $result[0];
-                                }
-                                
-                            }
+                            $cardinfo = $_MemberCards->getMemberCardInfoByCard( $cardnumber );
+                            $points = $cardinfo[0];
+
+                            $cardName = $row['FirstName'] . ' ' . $row['LastName'];
+
+                            $_MemberCards->updateMemberCardName( $MID, $cardName );
                             
-                        }
-                    }
-                                                           
-                    
-                }
-                else
-                {
-
-                    /*
-                     * Member has already Card Account using the issued temporary account code
-                     * Member has already Casino Accounts created from the permanent database
-                     */
-                    $result = $_MemberCards->getMemberCardInfoByCard( $cardnumber );
-                    //$result = $_MemberCards->getMemberPoints( $cardnumber );
-                    
-                    if(!App::HasError() && count( $result ) > 0)
-                    {
-                        $points = $result[0];
-                        $MID = $points['MID'];
-                                                
-                        $memberInfo = $_MemberInfo->getMemberInfo( $MID );                        
-                        $row = $memberInfo[0];
-                        
-                        $casinoAccounts = $_MemberServices->getCasinoAccounts( $MID );
-                        
-                    }
-                    
-                }
-                
-                                
-                $result = array("CardInfo"=>array(
+                            $result = array("CardInfo"=>array(
                                          "MID"              => $MID,
                                          "Username"         => "",
                                          "CardNumber"       => $cardnumber,//$row['CardNumber'],
@@ -320,7 +281,112 @@ class GetCardInfoAPI extends BaseEntity
                                          "StatusMsg"        => 'Active Temporary Account',
                                          )
                             );
-                
+                        }
+                        else
+                        {
+                            $result = array("CardInfo"=>array(
+                                         "MID"              => "",
+                                         "Username"         => "",
+                                         "CardNumber"       => $cardnumber,//$row['CardNumber'],
+                                         "MemberUsername"   => "",
+                                         "CardType"         => "",
+                                         "MemberName"       => "",
+                                         "RegistrationDate" => "",
+                                         "Birthdate"        => "",
+                                         "CurrentPoints"    => "",
+                                         "LifetimePoints"   => "",
+                                         "RedeemedPoints"   => "",
+                                         "IsCompleteInfo"   => "",
+                                         "MemberID"         => "",                                                                     
+                                         "CasinoArray"      => "",
+                                         "CardStatus"       => intval(CardStatus::ACTIVE_TEMPORARY),
+                                         "DateVerified"     => "",
+                                         "MobileNumber"     => "",
+                                         "Email"            => $row['Email'],                                         
+                                         "IsReg"            => intval($isreg),
+                                         "StatusCode"       => intval(CardStatus::MIGRATION_ERROR),
+                                         "StatusMsg"        => 'Migration Error',
+                                         )
+                            );
+                        }
+                    }
+                    else
+                    {
+                       $result = array("CardInfo"=>array(
+                                     "MID"              => "",
+                                     "Username"         => "",
+                                     "CardNumber"       => $cardnumber,//$row['CardNumber'],
+                                     "MemberUsername"   => "",
+                                     "CardType"         => "",
+                                     "MemberName"       => "",
+                                     "RegistrationDate" => "",
+                                     "Birthdate"        => "",
+                                     "CurrentPoints"    => "",
+                                     "LifetimePoints"   => "",
+                                     "RedeemedPoints"   => "",
+                                     "IsCompleteInfo"   => "",
+                                     "MemberID"         => "",                                                                     
+                                     "CasinoArray"      => "",
+                                     "CardStatus"       => intval(CardStatus::ACTIVE_TEMPORARY),
+                                     "DateVerified"     => "",
+                                     "MobileNumber"     => "",
+                                     "Email"            => $row['Email'],                                         
+                                     "IsReg"            => intval($isreg),
+                                     "StatusCode"       => intval(CardStatus::MIGRATION_ERROR),
+                                     "StatusMsg"        => 'Migration Error',
+                                     )
+                        ); 
+                    }                                                         
+                    
+                }
+                else
+                {
+
+                    /*
+                     * Member has already Card Account using the issued temporary account code
+                     * Member has already Casino Accounts created from the permanent database
+                     */
+                    $cardinfo = $_MemberCards->getMemberCardInfoByCard( $cardnumber );
+                    //$result = $_MemberCards->getMemberPoints( $cardnumber );
+                    
+                    if(!App::HasError() && count( $cardinfo ) > 0)
+                    {
+                        $points = $cardinfo[0];
+                        $MID = $points['MID'];
+                                                
+                        $memberInfo = $_MemberInfo->getMemberInfo( $MID );                        
+                        $row = $memberInfo[0];
+                        
+                        $casinoAccounts = $_MemberServices->getCasinoAccounts( $MID );
+                        
+                    }
+                    
+                    $result = array("CardInfo"=>array(
+                                         "MID"              => $MID,
+                                         "Username"         => "",
+                                         "CardNumber"       => $cardnumber,//$row['CardNumber'],
+                                         "MemberUsername"   => $row['UserName'],
+                                         "CardType"         => "",
+                                         "MemberName"       => $row['FirstName'] . ' ' . $row['LastName'],
+                                         "RegistrationDate" => $row['DateCreated'],
+                                         "Birthdate"        => $row['Birthdate'],
+                                         "CurrentPoints"    => $points['CurrentPoints'],
+                                         "LifetimePoints"   => $points['LifetimePoints'],
+                                         "RedeemedPoints"   => $points['RedeemedPoints'],
+                                         "IsCompleteInfo"   => $row['IsCompleteInfo'],
+                                         "MemberID"         => $MID,                                                                     
+                                         "CasinoArray"      => $casinoAccounts,
+                                         "CardStatus"       => intval(CardStatus::ACTIVE_TEMPORARY),
+                                         "DateVerified"     => $row['DateVerified'],
+                                         "MobileNumber"     => $row['MobileNumber'],
+                                         "Email"            => $row['Email'],                                         
+                                         "IsReg"            => intval($isreg),
+                                         "StatusCode"       => intval(CardStatus::ACTIVE_TEMPORARY),
+                                         "StatusMsg"        => 'Active Temporary Account',
+                                         )
+                            );
+                    
+                }
                 
                 return $result;
                 break;
