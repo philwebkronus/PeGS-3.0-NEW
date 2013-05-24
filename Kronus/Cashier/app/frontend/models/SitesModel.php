@@ -32,4 +32,18 @@ class SitesModel extends MI_Model {
         
         return false;
     }    
+    
+    /**
+     * Get Spyder status on per site basis OFF (0), ON (1)
+     * @author Edson Perez <elperez@philweb.com.ph>
+     * @param int $siteid
+     * @return obj spyder
+     */
+    public function getSpyderStatus($siteid){
+        $sql = 'SELECT Spyder FROM sites WHERE SiteID = :site_id AND Status = 1';
+        $param = array(':site_id'=>$siteid);
+        $this->exec($sql, $param);
+        $result = $this->find();
+        return $result['Spyder'];
+    }
 }

@@ -20,14 +20,6 @@
     $(document).ready(function(){
         <?php if(!isIEBrowser()): ?>
             $.fancybox("Please use Internet Explorer",{modal:true});
-        <?php else: ?>    
-            <?php if(Mirage::app()->param['enable_screenblocking']): ?>
-            try {
-                var oaxPSMAC = new ActiveXObject("PEGS.StationManager.ActiveX.Controller");
-            } catch(e) {
-                $.fancybox("<?php echo Mirage::app()->param['pegsstationerrormsg'] ?>",{modal:true});
-            }
-            <?php endif; ?>
         <?php endif; ?>
     });
     </script>

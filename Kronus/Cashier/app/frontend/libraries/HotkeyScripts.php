@@ -330,7 +330,7 @@ $(document).ready(function(){
         
         terminalCode = terminalCode.replace(/vip/i,'');
         terminalCode = preffixCode+terminalCode;
-        <?php if(Mirage::app()->param['enable_screenblocking']): ?>
+        <?php if($_SESSION['spyder_enabled'] == 0): ?>
         try {
             var oaxPSMAC = new ActiveXObject("PEGS.StationManager.ActiveX.Controller");
             if(oaxPSMAC.LockScreen(terminalCode,<?php echo Mirage::app()->param['port'] ?>) != 1) {
@@ -428,7 +428,7 @@ $(document).ready(function(){
                             success : function(data) {
                                 try {
                                     var json = $.parseJSON(data);
-                                    <?php if(Mirage::app()->param['enable_screenblocking']): ?>
+                                    <?php if($_SESSION['spyder_enabled'] == 0): ?>
                                     try {
                                         var oaxPSMAC = new ActiveXObject("PEGS.StationManager.ActiveX.Controller");
                                         if(oaxPSMAC.UnlockScreen(terminalCode,<?php echo Mirage::app()->param['port'] ?>) != 1) {

@@ -107,20 +107,23 @@ class FrontendController extends MI_Controller {
         $accountSessionsModel = new AccountSessionsModel();
         $sitesModel = new SitesModel();  
         $siteAccountsModel = new SiteAccountsModel();
+        
         $detail = $sitesModel->getPosAccntAndAccntName($_SESSION['AccountSiteID']);
         $_SESSION['pos_account'] = $detail['POSAccountNo'];
         $_SESSION['account_name'] = $detail['Name'];
+        
         $session_id = $accountSessionsModel->getSessionId($_SESSION['userid']);
         if($session_id != $_SESSION['sessionID']) {
             Mirage::app()->error401();
         }
         
         if(!isset($_SESSION['site_code'])) {
-            //Mirage::loadModels('SiteAccountsModel');
-            //$siteAccountsModel = new SiteAccountsModel();
             $_SESSION['site_code'] = $siteAccountsModel->getSiteCodeByAccId($_SESSION['accID']);            
+        }
         
-        }       
+        //session variable for value of Spyder status if it is ON / OFF
+        $_SESSION['spyder_enabled'] = $sitesModel->getSpyderStatus($_SESSION['AccountSiteID']);
+        
         $bgiOwner = Mirage::app()->param['BGI_ownerID'];    
         $isBGI = $siteAccountsModel->getSiteGroup($_SESSION['AccountSiteID'], $bgiOwner);
         $_SESSION['isbgi'] = $isBGI['ctrbgi']; //session variable for bgi and non-bgi
@@ -788,7 +791,7 @@ class FrontendController extends MI_Controller {
         }
         
         //if spyder call was enabled in cashier config, call SAPI
-        if(Mirage::app()->param['enable_spyder_call']){
+        if($_SESSION['spyder_enabled'] == 1){
             $commandId = 0; //unlock
             $spyder_req_id = $spyderReqLogsModel->insert($terminalname, $commandId);
             $terminal = substr($terminalname, strlen("ICSA-")); //removes the "icsa-

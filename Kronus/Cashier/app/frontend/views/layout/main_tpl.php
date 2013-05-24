@@ -87,11 +87,11 @@
                 }
             }, <?php echo Mirage::app()->param['heartbeat_rate'] ?>);
             
-            <?php if(Mirage::app()->param['enable_screenblocking']): ?>
+            <?php if($_SESSION['spyder_enabled'] == 0): ?>
             try {
                 var axo = new ActiveXObject("PEGS.StationManager.ActiveX.Controller");
             } catch(e) {
-                $.fancybox("<?php echo Mirage::app()->param['pegsstationerrormsg'] ?>",{modal:true});
+                $.fancybox("<?php echo Mirage::app()->param['pegsstationerrormsg'] ?>",{modal:false});
             }
             <?php endif; ?>
         });

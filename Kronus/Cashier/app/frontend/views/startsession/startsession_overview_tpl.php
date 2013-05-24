@@ -86,7 +86,7 @@
                             success : function(data){
                                 try {
                                     var json = $.parseJSON(data);
-                                    <?php if(Mirage::app()->param['enable_screenblocking']): ?>
+                                    <?php if($_SESSION['spyder_enabled'] == 0): ?>
                                     try {
                                         var oaxPSMAC = new ActiveXObject("PEGS.StationManager.ActiveX.Controller");
                                         if(oaxPSMAC.UnlockScreen(terminalCode,<?php echo Mirage::app()->param['port'] ?>) != 1) {

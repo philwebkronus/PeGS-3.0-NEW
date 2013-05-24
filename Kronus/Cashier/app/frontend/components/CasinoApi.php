@@ -612,7 +612,7 @@ class CasinoApi {
                                      $service_id)
     {
         //if spyder call was enabled in cashier config, call SAPI
-        if(Mirage::app()->param['enable_spyder_call']){
+        if($_SESSION['spyder_enabled'] == 1){
             
             Mirage::loadComponents('AsynchronousRequest.class');
             Mirage::loadModels(array('TerminalsModel','SpyderRequestLogsModel'));
