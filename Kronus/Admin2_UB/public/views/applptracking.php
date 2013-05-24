@@ -217,9 +217,8 @@ $vaccesspages = array('9');
                                 paginate: function() {return 'LPTransactionSummary';}
                                   },
                         datatype: "json",
-                        colNames:['Loyalty Card','Transaction Summary ID', 'POS Account No', 'Terminal Code', 'Deposit', 'Reload', 'Withdraw','Date Started', 'Date Ended', 'Created By'],
+                        colNames:['Transaction Summary ID', 'POS Account No', 'Terminal Code', 'Deposit', 'Reload', 'Withdraw','Date Started', 'Date Ended', 'Created By'],
                         colModel:[
-                                {name:'LoyaltyCard',index:'LoyaltyCard',align:'center'},
                                 {name:'TransactionSummaryID',index:'TransactionsSummaryID',align:'center'},
                                 {name:'POSAccountNo',index:'POSAccountNo',align:'center'},
                                 {name:'TerminalCode',index:'TerminalCode', align: 'center'},
@@ -322,10 +321,9 @@ $vaccesspages = array('9');
                             summaryID: function() {return value;}
                               },
                     datatype: "json",
-                    colNames:['Loyalty Card','Transaction Reference ID','Transaction Summary ID', 'POS Account No', 'Terminal Code', 'Transaction Type', 'Service Name', 'Amount','Transaction Date', 'Created By','Status'],
+                    colNames:['Transaction Reference ID','Transaction Summary ID', 'POS Account No', 'Terminal Code', 'Transaction Type', 'Service Name', 'Amount','Transaction Date', 'Created By','Status'],
                     colModel:[
                             {name:'TransactionReferenceID',index:'TransactionReferenceID',align: 'center'},
-                            {name:'LoyaltyCard',index:'LoyaltyCard',align:'center'},
                             {name:'TransactionSummaryID',index:'TransactionSummaryID',align:'center'},
                             {name:'POSAccountNo',index:'POSAccountNo',align:'center'},
                             {name:'TerminalCode',index:'TerminalCode', align: 'center'},

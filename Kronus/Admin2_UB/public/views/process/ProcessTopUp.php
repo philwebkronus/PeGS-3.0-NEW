@@ -401,19 +401,51 @@ if($connected)
               else
               {
                   $balance = 0;
-              }              
-
+              }
               
-               switch (true){
+              $vsiteID = $siteID;
+              $vterminalID = $ubterminalID;
+              $vreportedAmt = $ramount;
+              $vactualAmt = 0;
+              $vtransactionDate = $otopup->getDate();
+              $vreqByAID = $aid;
+              $vprocByAID = $aid;
+              //$vremarks = $rremarks;
+              $vdateEffective = $vdate;
+              $vstatus = 0;
+              $vtransactionID = 0;
+              $vremarks = $remarksub;
+              $vticket = $ticketub;
+              $cmbServerID = $ubserviceID; #Added on July 2, 2012
+                                    
+              $vtransStatus = '';
+              $transsummaryid = $otopup->getLastSummaryID($vterminalID);
+              $transsummaryid = $transsummaryid['summaryID'];
+              
+              $trans_req_log_last_id = $otopup->getMaxTransreqlogid($loyaltycardnumber, $ubserviceID);
+              
+              $lastmrid = $otopup->insertmanualredemptionub($vsiteID, $vterminalID,
+                                $vreportedAmt, $vactualAmt, $vtransactionDate, 
+                                $vreqByAID, $vprocByAID, $vremarks, $vdateEffective, 
+                                $vstatus, $vtransactionID, $transsummaryid,$vticket,$cmbServerID, 
+                        $vtransStatus, $loyaltycardnumber, $mid, $usermode);
+              
+              if($lastmrid > 0)
+              {
+                switch (true){
                     case strstr($servername, "RTG"): //if provider is PT, then
                         $url = $_ServiceAPI[$ubserviceID-1];
                         $capiusername = $_CAPIUsername;
                         $capipassword = $_CAPIPassword;
                         $capiplayername = $_CAPIPlayerName;
                         $capiserverID = '';
+                        $tracking1 = $trans_req_log_last_id;
+                        $tracking2 = "MR"."$lastmrid";
+                        $tracking3 = $vterminalID;
                         $withdraw = array();
                         //withdraw rtg casino
-                        $withdraw = $CasinoGamingCAPI->Withdraw($servername, $ubserviceID, $url, $login, $capiusername, $capipassword, $capiplayername, $capiserverID, $ramount, $tracking1 = '', $tracking2 = '', $tracking3 = '', $tracking4 = '', $methodname = '');
+                        $withdraw = $CasinoGamingCAPI->Withdraw($servername, $ubserviceID, $url, $login, $capiusername, $capipassword, 
+                                $capiplayername, $capiserverID, $ramount, $tracking1, $tracking2, $tracking3, $tracking4 = '', $methodname = '');
                         break;
                     case strstr($servername, "MG"): //if provider is MG, then
                         $vterminalID = $otopup->viewTerminalID($login);
@@ -439,20 +471,19 @@ if($connected)
                             $capiserverID = $mgserverID;
                             $withdraw = array();  
                             //withdraw mg casino
-                            $withdraw = $CasinoGamingCAPI->Withdraw($servername, $ubserviceID, $url, $login, $capiusername, $capipassword, $capiplayername, $capiserverID, $ramount, $servicePwdResult['ServicePassword'], $transactionID, $eventID, $transactionID, $methodname);
+                            $withdraw = $CasinoGamingCAPI->Withdraw($servername, $ubserviceID, $url, $login, 
+                                    $capiusername, $capipassword, $capiplayername, $capiserverID, $ramount, $servicePwdResult['ServicePassword'], $transactionID, $eventID, $transactionID, $methodname);
 
                         }   
                         break;
                     case strstr($servername, "PT"): //if provider is PT, then
                         $originID = 2;
-                        //insert service transaction reference
-                        $manualredemptionID = $otopup->insertserviceTransRef($ubserviceID, $originID);
-                        if(!$manualredemptionID){
-                              $msg = "Manual Redemption: Error on inserting servicetransactionref";
-                        } 
-                        else 
-                        {
-                          $tracking2 = $manualredemptionID;  
+                        //insert service transaction reference pass to casino 
+                        $manualredemptionID = "MR"."$lastmrid";
+                        
+                          $tracking2 = $manualredemptionID; 
+                          $tracking1 = $trans_req_log_last_id;
+                          $tracking3 = $vterminalID;
                           $vterminalID = '';
                           $vsiteID = '';
                           $vterminalID = $ubterminalID;
@@ -473,8 +504,9 @@ if($connected)
                           $capiserverID = '';
                           $withdraw = array();
                           //withdraw pt casino
-                          $withdraw = $CasinoGamingCAPI->Withdraw($servername, $ubserviceID, $url, $login, $capiusername, $capipassword, $capiplayername, $capiserverID, $ramount, $tracking1, $tracking2, $tracking3='', $tracking4='', $methodname='');
-                        }
+                          $withdraw = $CasinoGamingCAPI->Withdraw($servername, $ubserviceID, $url, $login, $capiusername, 
+                                  $capipassword, $capiplayername, $capiserverID, $ramount, $tracking1, $tracking2, $tracking3='', $tracking4='', $methodname='');
+                        
                         break;
                     default :
                         echo "Error: Invalid Casino Provider";
@@ -519,11 +551,8 @@ if($connected)
                                         $vtransStatus = $rremarks;
                                         $transsummaryid = $otopup->getLastSummaryID($vterminalID);
                                         $transsummaryid = $transsummaryid['summaryID'];
-                                        $issucess = $otopup->insertmanualredemptionub($vsiteID, $vterminalID,
-                                                        $vreportedAmt, $vactualAmt, $vtransactionDate, 
-                                                        $vreqByAID, $vprocByAID, $vremarks, $vdateEffective, 
-                                                        $vstatus, $vtransactionID, $transsummaryid,$vticket,$cmbServerID, 
-                                                $vtransStatus, $loyaltycardnumber, $mid, $usermode);
+                                        $issucess = $otopup->updateManualRedemptionub($vstatus, $vactualAmt, 
+                                                $vtransactionID, $fmteffdate, $vtransStatus, $lastmrid);
 
                                         if($issucess > 0)
                                         {
@@ -595,11 +624,8 @@ if($connected)
                                         $vtransStatus = "Transaction Approved";
                                         $transsummaryid = $otopup->getLastSummaryID($vterminalID);
                                         $transsummaryid = $transsummaryid['summaryID'];
-                                        $issucess = $otopup->insertmanualredemptionub($vsiteID, $vterminalID,
-                                                        $vreportedAmt, $vactualAmt, $vtransactionDate, 
-                                                        $vreqByAID, $vprocByAID, $vremarks, $vdateEffective, 
-                                                        $vstatus, $vtransactionID, $transsummaryid,$vticket, 
-                                                $cmbServerID,$vtransStatus, $loyaltycardnumber, $mid, $usermode);
+                                        $issucess = $otopup->updateManualRedemptionub($vstatus, $vactualAmt, 
+                                                $vtransactionID, $vtransactionDate, $riswithdraw, $lastmrid);
 
                                         //check if successfully inserted on DB
                                         if($issucess > 0)
@@ -661,9 +687,8 @@ if($connected)
                                           $transsummaryid = $otopup->getLastSummaryID($vterminalID);
                                           $transsummaryid = $transsummaryid['summaryID'];
 
-                                          $issucess = $otopup->insertmanualredemptionub($vsiteID, $vterminalID, $vreportedAmt, $vactualAmt, $vtransactionDate, 
-                                                  $vreqByAID, $vprocByAID, $vremarks, $vdateEffective, $vstatus, $vtransactionID, $transsummaryid, 
-                                                  $vticket, $cmbServerID, $vtransStatus, $loyaltycardnumber, $mid, $usermode);
+                                          $issucess = $otopup->updateManualRedemptionub($vstatus, $vactualAmt, 
+                                                $vtransactionID, $vtransactionDate, $vtransStatus, $lastmrid);
 
                                           //check if successfully inserted on DB
                                           if ($issucess > 0) 
@@ -693,7 +718,14 @@ if($connected)
                             default :
                                 echo "Error: Invalid Casino Provider";
                                 break;
-                        }
+                     }  
+              }    
+              else
+              {
+                  $msg = "Error: Failed to insert in Manual Redemptions Table";
+              }    
+              
+               
                         
                 echo json_encode($msg);
                 $otopup->close();

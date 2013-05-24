@@ -162,9 +162,11 @@
         <submenu id="65" name='Switching of Servers' path='appswitchserver.php' group='Terminal' pagename="17" />
         <submenu id="66" name="Removing of Casino" path='appremoveserver.php' group='Terminal'  pagename="17" />
         <submenu id="84" name="Change Terminal Password" path='appbatchpassword.php' group='Terminal'  pagename="17" />
+        <submenu id="90" name="Enabling of Spyder" path='enablingofspyder.php' group='Terminal'  pagename="17" />
         <submenu id="88" name="Reset Casino Account Terminal Based" path='appunlockterminal.php' group='Reset Casino Account'  pagename="17" />
         <submenu id="88" name="Reset Casino Account User Based" path='appunlockterminal_ub.php' group='Reset Casino Account'  pagename="17" />
-        <submenu id="89" name="Manual API Fulfillment" path='manualAPIfulfillment.php' group=' '  pagename="17" />
+        <submenu id="89" name="Manual Casino Fulfillment" path='manualAPIfulfillment.php' group=' '  pagename="17" />
+        
       </menu>
      <menu id ="19" name='Reports' path='blank.php' pagename="19">
         <submenu id ="54" name='Audit Trail' path='rptaudittrail.php' pagename="19"/>      

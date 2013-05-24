@@ -1098,12 +1098,12 @@ function chktopup()
             document.getElementById('txtminbal').focus();
             return false;
         }
-    else if(document.getElementById('txttopupamt').value.length == 0)
-        {
-            alert("Please input top-up amount");
-            document.getElementById('txttopupamt').focus();
-            return false;
-        }
+//    else if(document.getElementById('txttopupamt').value.length == 0)
+//        {
+//            alert("Please input top-up amount");
+//            document.getElementById('txttopupamt').focus();
+//            return false;
+//        }
     else if( eval(minbal) > eval(amount) )    
         {
             alert("Minimum balance must be less than or equal to amount");
@@ -1149,11 +1149,11 @@ function chkupdtopup()
     var minbal = document.getElementById('txtminbal').value;
     var maxbal = document.getElementById('txtmaxbal').value;
     var amount = document.getElementById('txtamount').value;
-    var topupamt = document.getElementById('txttopupamt').value;
+    //var topupamt = document.getElementById('txttopupamt').value;
         minbal = minbal.replace(/,/g,"");
         maxbal = maxbal.replace(/,/g,"");
         amount = amount.replace(/,/g,"");
-        topupamt = topupamt.replace(/,/g,"");
+        //topupamt = topupamt.replace(/,/g,"");
         
     if(document.getElementById('txtminbal').value.length == 0)
         {
@@ -1176,12 +1176,12 @@ function chkupdtopup()
             document.getElementById('txtmaxbal').focus();
             return false;
         }
-    else if(topupamt.length == 0)
-    {
-        alert("Please input top-up amount");
-        document.getElementById('txttopupamt').focus();
-        return false;
-    }
+//    else if(topupamt.length == 0)
+//    {
+//        alert("Please input top-up amount");
+//        document.getElementById('txttopupamt').focus();
+//        return false;
+//    }
    else if( eval(maxbal) < eval(minbal))
         {
             alert("Maximum balance must be greater than or equal to minimum balance");

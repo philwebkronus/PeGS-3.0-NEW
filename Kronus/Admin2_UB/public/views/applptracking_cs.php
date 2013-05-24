@@ -262,9 +262,8 @@ $vaccesspages = array('6');
                                         paginate: function() {return 'LPTransactionSummary';}
                                         },
                                 datatype: "json",
-                                colNames:['Loyalty Card','Transaction Summary ID', 'POS Acct No.', 'Terminal Code', 'Deposit', 'Reload', 'Withdraw','Date Started', 'Date Ended', 'Created By'],
+                                colNames:['Transaction Summary ID', 'POS Acct No.', 'Terminal Code', 'Deposit', 'Reload', 'Withdraw','Date Started', 'Date Ended', 'Created By'],
                                 colModel:[
-                                        {name:'LoyaltyCard',index:'LoyaltyCard',align:'center'},
                                         {name:'TransactionSummaryID',index:'TransactionsSummaryID',align:'center'},
                                         {name:'SiteID',index:'SiteID',align:'center'},
                                         {name:'TerminalCode',index:'TerminalCode', align: 'center'},

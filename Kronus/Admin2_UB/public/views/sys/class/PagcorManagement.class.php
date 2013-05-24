@@ -763,11 +763,11 @@ class PagcorManagement extends DBHandler
                             if(($qr2[$ctr3]['datecredit'] >= $qr1[$ctr]['reportdate']) && ($qr2[$ctr3]['datecredit'] < $qr1[$ctr]['cutoff']))
                             {
                                 if($qr1[$ctr]['replenishment'] == 0) 
-                                    $qr1[$ctr]['replenishment'] = $qr2[$ctr3]['replenishment'];
+                                    $qr1[$ctr]['replenishment'] = $qr2[$ctr3]['amount'];
                                 else
                                 {
                                     $amount = $qr1[$ctr]['replenishment'];
-                                    $qr1[$ctr]['replenishment'] = $amount + $qr2[$ctr3]['replenishment'];
+                                    $qr1[$ctr]['replenishment'] = $amount + $qr2[$ctr3]['amount'];
                                 }                         
                             }                   
                         }
@@ -1321,11 +1321,11 @@ class PagcorManagement extends DBHandler
                             if(($qr2[$ctr3]['datecredit'] >= $qr1[$ctr]['reportdate']) && ($qr2[$ctr3]['datecredit'] < $qr1[$ctr]['cutoff']))
                             {
                                 if($qr1[$ctr]['replenishment'] == 0) 
-                                    $qr1[$ctr]['replenishment'] = $qr2[$ctr3]['replenishment'];
+                                    $qr1[$ctr]['replenishment'] = $qr2[$ctr3]['amount'];
                                 else
                                 {
                                     $amount = $qr1[$ctr]['replenishment'];
-                                    $qr1[$ctr]['replenishment'] = $amount + $qr2[$ctr3]['replenishment'];
+                                    $qr1[$ctr]['replenishment'] = $amount + $qr2[$ctr3]['amount'];
                                 }                         
                             }                   
                         }

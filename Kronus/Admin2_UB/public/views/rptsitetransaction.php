@@ -96,7 +96,7 @@ if(isset($_SESSION['acctype']))
                         sitecode: function(){return $('#cmbsite').find("option:selected").text();}
                      },
            datatype: "json",
-           colNames:['TransactionSummaryID', 'SiteCode','TerminalCode', 'Deposit','Reload','Redemption','DateStarted','DateEnded'],
+           colNames:['Transaction Summary ID', 'Site Code','Terminal Code', 'Deposit','Reload','Redemption','Date Started','Date Ended'],
            colModel:[
                      {name:'TransactionSummaryID',index:'TransactionsSummaryID',align: 'center', sortable: false},
                      {name:'SiteCode', index:'SiteCode', align:'center', sortable: false},

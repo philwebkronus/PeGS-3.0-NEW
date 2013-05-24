@@ -57,9 +57,9 @@ if(isset($_SESSION['acctype']))
                         },
                         colNames : ["Terminal ID", "Terminal Code", "Playing Balance",],
                         colModel : [
-                            {name:'TerminalID',index:'TerminalID', width: 100},
-                            {name:'TerminalCode',index:'TerminalCode', width: 300},
-                            {name:'PlayingBalance',index:'PlayingBalance', width: 400}
+                            {name:'TerminalID',index:'TerminalID', width: 300, sortable:false},
+                            {name:'TerminalCode',index:'TerminalCode', width: 300, sortable:false},
+                            {name:'PlayingBalance',index:'PlayingBalance', width: 400, align: 'right', sortable:false}
                         ],
                         rowNum : 10,
                         rowList:[10,20,30], 

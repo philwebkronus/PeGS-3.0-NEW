@@ -134,11 +134,11 @@ class TopUp extends DBHandler
                             if(($qr2[$ctr3]['datecredit'] >= $qr1[$ctr]['reportdate']) && ($qr2[$ctr3]['datecredit'] < $qr1[$ctr]['cutoff']))
                             {
                                 if($qr1[$ctr]['replenishment'] == 0) 
-                                    $qr1[$ctr]['replenishment'] = $qr2[$ctr3]['replenishment'];
+                                    $qr1[$ctr]['replenishment'] = $qr2[$ctr3]['amount'];
                                 else
                                 {
                                     $amount = $qr1[$ctr]['replenishment'];
-                                    $qr1[$ctr]['replenishment'] = $amount + $qr2[$ctr3]['replenishment'];
+                                    $qr1[$ctr]['replenishment'] = $amount + $qr2[$ctr3]['amount'];
                                 }                         
                             }                   
                         }
@@ -291,11 +291,11 @@ class TopUp extends DBHandler
                             if(($qr2[$ctr3]['datecredit'] >= $qr1[$ctr]['reportdate']." ".BaseProcess::$cutoff) && ($qr2[$ctr3]['datecredit'] < $qr1[$ctr]['cutoff']))
                             {
                                 if($qr1[$ctr]['replenishment'] == 0) 
-                                    $qr1[$ctr]['replenishment'] = $qr2[$ctr3]['replenishment'];
+                                    $qr1[$ctr]['replenishment'] = $qr2[$ctr3]['amount'];
                                 else
                                 {
                                     $amount = $qr1[$ctr]['replenishment'];
-                                    $qr1[$ctr]['replenishment'] = $amount + $qr2[$ctr3]['replenishment'];
+                                    $qr1[$ctr]['replenishment'] = $amount + $qr2[$ctr3]['amount'];
                                 }                         
                             }                   
                         }
@@ -1986,14 +1986,36 @@ class TopUp extends DBHandler
           $this->bindparameter(18, $usermode);
           if($this->execute())
            {
+              $lastid = $this->insertedid();
               $this->committrans();
-              return 1;
+              return $lastid;
            }
           else
            {
                $this->rollbacktrans();
                return 0;
            }
+      }
+      
+     /**
+     * @author Gerardo V. Jagolino Jr.
+     * @param $status, $actualamount, $transid, $dateff, $transstatus, $manid
+     * @return array 
+     * update manual redemptions table with status 1
+     */
+      function updateManualRedemptionub($status, $actualamount, $transid, $dateff, $transstatus, $manid)
+      {
+        $this->prepare("UPDATE manualredemptions SET Status = ?, ActualAmount = ?, 
+                        TransactionID = ?, DateEffective = ?, TransactionStatus = ? 
+                        WHERE ManualRedemptionsID = ?");
+        $this->bindparameter(1,$status);
+        $this->bindparameter(2,$actualamount);
+        $this->bindparameter(3,$transid);
+        $this->bindparameter(4,$dateff);
+        $this->bindparameter(5,$transstatus);
+        $this->bindparameter(6,$manid);
+        $this->execute();
+        return $this->rowCount();
       }
       
      /**

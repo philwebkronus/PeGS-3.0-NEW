@@ -34,37 +34,37 @@
             var url = 'process/ProcessTopUp.php';
             
             //oncheck event of with membership card checkbox
-            $("#checkbox1").change(function() 
-            {          
-                    
-                if($('#checkbox1').attr("checked")){
-                    document.getElementById('cmbsite').value="-1";
-                    document.getElementById('cmbterminal').value="-1";
-                    document.getElementById('txtcardnumber').value="";
-                    document.getElementById('txtsitename').textContent = "";
-                    document.getElementById('txtposaccno').textContent="";
-                    document.getElementById('txttermname').textContent="";
-                    
-                    document.getElementById('cmbsite').disabled=true;
-                    document.getElementById('cmbterminal').disabled=true;
-                    document.getElementById('txtcardnumber').disabled=false;
-                    document.getElementById('txtcardnumber').readOnly=false;
-                }
-                else{
-                    document.getElementById('cmbsite').value="-1";
-                    document.getElementById('cmbterminal').value="-1";
-                    document.getElementById('txtcardnumber').value="";
-                    document.getElementById('txtsitename').textContent="";
-                    document.getElementById('txtposaccno').textContent="";
-                    document.getElementById('txttermname').textContent="";
-                    
-                    document.getElementById('cmbsite').disabled=false;
-                    document.getElementById('cmbterminal').disabled=false;
-                    document.getElementById('txtcardnumber').disabled=true;
-                    document.getElementById('txtcardnumber').readOnly=true;
-                }
-                
-            });
+//            $("#checkbox1").change(function() 
+//            {          
+//                    
+//                if($('#checkbox1').attr("checked")){
+//                    document.getElementById('cmbsite').value="-1";
+//                    document.getElementById('cmbterminal').value="-1";
+//                    document.getElementById('txtcardnumber').value="";
+//                    document.getElementById('txtsitename').textContent = "";
+//                    document.getElementById('txtposaccno').textContent="";
+//                    document.getElementById('txttermname').textContent="";
+//                    
+//                    document.getElementById('cmbsite').disabled=true;
+//                    document.getElementById('cmbterminal').disabled=true;
+//                    document.getElementById('txtcardnumber').disabled=false;
+//                    document.getElementById('txtcardnumber').readOnly=false;
+//                }
+//                else{
+//                    document.getElementById('cmbsite').value="-1";
+//                    document.getElementById('cmbterminal').value="-1";
+//                    document.getElementById('txtcardnumber').value="";
+//                    document.getElementById('txtsitename').textContent="";
+//                    document.getElementById('txtposaccno').textContent="";
+//                    document.getElementById('txttermname').textContent="";
+//                    
+//                    document.getElementById('cmbsite').disabled=false;
+//                    document.getElementById('cmbterminal').disabled=false;
+//                    document.getElementById('txtcardnumber').disabled=true;
+//                    document.getElementById('txtcardnumber').readOnly=true;
+//                }
+//                
+//            });
 
             $('#cmbsite').live('change', function()
             {
@@ -265,31 +265,31 @@
              */
              $('#btnSubmit').click(function()
              {   
-                //check if checkbox is checked
-                var checkbox = document.getElementById('checkbox1').checked;
-                
-                //without membership card number
-                if(checkbox == false)
-                {
-                    if(document.getElementById('cmbsite').value == "-1")
-                    {
-                        alert("Please select site");
-                        document.getElementById('cmbsite').focus();
-                        return false;
-                    }
-                    if(document.getElementById('cmbterminal').value == "-1")
-                    {
-                        alert("Please select terminal");
-                        document.getElementById('cmbterminal').focus();
-                        return false;
-                    }
-
-                    //call method to display card and balance information
-                    getMembershipAndCasinoInfo(url);
-                }
-                //if membership card checkbox was enabled
-                else
-                {
+//                //check if checkbox is checked
+//                var checkbox = document.getElementById('checkbox1').checked;
+//                
+//                //without membership card number
+//                if(checkbox == false)
+//                {
+//                    if(document.getElementById('cmbsite').value == "-1")
+//                    {
+//                        alert("Please select site");
+//                        document.getElementById('cmbsite').focus();
+//                        return false;
+//                    }
+//                    if(document.getElementById('cmbterminal').value == "-1")
+//                    {
+//                        alert("Please select terminal");
+//                        document.getElementById('cmbterminal').focus();
+//                        return false;
+//                    }
+//
+//                    //call method to display card and balance information
+//                    getMembershipAndCasinoInfo(url);
+//                }
+//                //if membership card checkbox was enabled
+//                else
+//                {
                     if(document.getElementById('txtcardnumber').value == "" || document.getElementById('txtcardnumber').length == 0)
                     {
                         alert("Please Input Membership Card Number");
@@ -299,7 +299,7 @@
                     
                     //call method to display card and balance information
                     getMembershipAndCasinoInfo(url);
-                }
+//                }
 
             });
       });
@@ -468,7 +468,7 @@
                 <input type="hidden" name="txtmid" id="txtmid" />
                 <input type="hidden" name="txtisvip" id="txtisvip" />
                 <table>
-                    <tr>
+<!--                    <tr>
                         <div id="check1">
                         <input type="checkbox" name="checkbox1" id="checkbox1" value="1" > With Membership Card Number
                         </div>
@@ -477,34 +477,34 @@
                     <tr>
                         <td width="130px">Site / PEGS</td>
                         <td>
-                        <?php
-                            $vsite = $_SESSION['sites'];
-                            echo "<select id=\"cmbsite\" name=\"cmbsite\">";
-                            echo "<option value=\"-1\">Please Select</option>";
-
-                            foreach ($vsite as $result)
-                            {
-                                 $vsiteID = $result['SiteID'];
-                                 $vorigcode = $result['SiteCode'];
-
-                                 //search if the sitecode was found on the terminalcode
-                                 if(strstr($vorigcode, $terminalcode) == false)
-                                 {
-                                    $vcode = $vorigcode;
-                                 }
-
-                                 else
-                                 {
-                                   //removes the "icsa-"
-                                   $vcode = substr($vorigcode, strlen($terminalcode));
-                                 }
-                                 if($vsiteID <> 1)
-                                 {
-                                    echo "<option value=\"".$vsiteID."\">".$vcode."</option>"; 
-                                 }
-                            }
-                            echo "</select>";
-                        ?>
+                        //<?php
+//                            $vsite = $_SESSION['sites'];
+//                            echo "<select id=\"cmbsite\" name=\"cmbsite\">";
+//                            echo "<option value=\"-1\">Please Select</option>";
+//
+//                            foreach ($vsite as $result)
+//                            {
+//                                 $vsiteID = $result['SiteID'];
+//                                 $vorigcode = $result['SiteCode'];
+//
+//                                 //search if the sitecode was found on the terminalcode
+//                                 if(strstr($vorigcode, $terminalcode) == false)
+//                                 {
+//                                    $vcode = $vorigcode;
+//                                 }
+//
+//                                 else
+//                                 {
+//                                   //removes the "icsa-"
+//                                   $vcode = substr($vorigcode, strlen($terminalcode));
+//                                 }
+//                                 if($vsiteID <> 1)
+//                                 {
+//                                    echo "<option value=\"".$vsiteID."\">".$vcode."</option>"; 
+//                                 }
+//                            }
+//                            echo "</select>";
+//                        ?>
                             <label id="txtsitename"></label><label id="txtposaccno"></label>
                         </td>
                     </tr>
@@ -516,11 +516,11 @@
                             </select>
                             <label id="txttermname"></label>
                         </td>
-                    </tr>
+                    </tr>-->
                     <tr>
-                    <td>Card Number</td>
                     <td>
-                        <input type="input" size="30"  id="txtcardnumber" class="txtmembership" name="txtcardnumber" maxlength="30" size="30" onkeypress="return loyaltycardnumber(event);" disabled/>
+                        Card Number
+                        <input type="input" size="30"  id="txtcardnumber" class="txtmembership" name="txtcardnumber" maxlength="30" size="30" onkeypress="return loyaltycardnumber(event);"/>
                         <div for="txtcardnumber" align='center'>Membership | Temporary</div>
                     </td>
                     </tr>

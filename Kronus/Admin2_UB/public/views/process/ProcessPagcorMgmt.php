@@ -689,7 +689,6 @@ if($connected)
                         $vtranssummaryID = $arrcomplsum[$ctr]['TransactionSummaryID'];
                         $vssiteID = $arrcomplsum[$ctr]['SiteID'];
                         $vsterminalID = $arrcomplsum[$ctr]['TerminalID'];
-                        $loyaltyCard = $arrcomplsum[$ctr]['LoyaltyCard'];
                         $vsterminalCode = $arrcomplsum[$ctr]['TerminalCode'];
                         $vsdeposit = $arrcomplsum[$ctr]['Deposit'];
                         $vsreload = $arrcomplsum[$ctr]['Reload'];
@@ -700,7 +699,6 @@ if($connected)
                         if($vtranssummaryID == $arrcompldet[$ctr2]["TransactionSummaryID"])
                         {         
                             $vdsummaryID = $arrcompldet[$ctr2]['TransactionSummaryID'];
-                            $vdloyaltycrd = $arrcompldet[$ctr2]['LoyaltyCard'];
                             $vdtranstype = $arrcompldet[$ctr2]['TransactionType'];
                             $vdservicename = $arrcompldet[$ctr2]['ServiceName'];
                             $vdamount = $arrcompldet[$ctr2]['Amount'];
@@ -709,16 +707,16 @@ if($connected)
                             if($vfirst == 1)
                             {
                                 //push transaction summary header
-                                array_push($arrcomplete, array('Loyalty Card','Terminal Code', 'Deposit', 
+                                array_push($arrcomplete, array('Terminal Code', 'Deposit', 
                                         'Reload', 'Withdraw','Date Started','Date Ended'));
                                 //push transaction summary results
-                                array_push($arrcomplete, array($loyaltyCard, $vsterminalCode, $vsdeposit, 
+                                array_push($arrcomplete, array($vsterminalCode, $vsdeposit, 
                                         $vsreload, $vswithdraw, $vsdatestart, $vsdateend));
                                 //push transaction details header
-                                array_push($arrcomplete, array(' ', 'Loyalty Card','Transaction Type', 'Service', 
+                                array_push($arrcomplete, array(' ', 'Transaction Type', 'Service', 
                                         'Amount', 'Transaction Date'));
                                 //push transcation details results
-                                array_push($arrcomplete, array(' ',$vdloyaltycrd, $vdtranstype, $vdservicename, $vdamount, 
+                                array_push($arrcomplete, array(' ', $vdtranstype, $vdservicename, $vdamount, 
                                         $vddatecrated));
                                 
                                 $vfirst = 2;

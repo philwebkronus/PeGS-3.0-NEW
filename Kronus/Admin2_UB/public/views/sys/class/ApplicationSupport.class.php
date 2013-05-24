@@ -171,7 +171,7 @@ class ApplicationSupport extends DBHandler
           $this->executeQuery($stmt);
           return $this->fetchAllData();
       }
-      
+     
       //count all transactions to paginate, validate if status and transtype was selected
       function counttransactiondetails($zSiteID,$zTerminalID,$ztransstatus, $ztranstype, $zFrom,$zTo)
       {           
@@ -596,7 +596,58 @@ class ApplicationSupport extends DBHandler
            $this->execute();
            return $this->fetchAllData();
      }
-       
+     
+    /**
+    * @author Gerardo V. Jagolino Jr.
+    * @param $zsiteID
+    * @return string
+    * get spyder status if enable or disable
+    */ 
+     function getSpyder($zsiteID)
+     {
+           $stmt = "SELECT Spyder FROM sites WHERE SiteID = ?";
+           $this->prepare($stmt);
+           $this->bindparameter(1, $zsiteID);
+           $this->execute($stmt);
+           return $this->fetchData();
+     }
+     
+    /**
+    * @author Gerardo V. Jagolino Jr.
+    * @param $zsiteID
+    * @return int
+    * check the number of cashier sessions enable in a certain site
+    */ 
+     function checkAccountSessions($zsiteID)
+     {
+           $stmt = "SELECT COUNT(AtS.SessionID) count FROM accountsessions AtS
+                INNER JOIN siteaccounts SA ON AtS.AID = SA.AID
+                INNER JOIN accounts AC ON AC.AID = AtS.AID 
+                WHERE SA.SiteID = ? AND AC.Status = 1";
+           $this->prepare($stmt);
+           $this->bindparameter(1, $zsiteID);
+           $this->execute($stmt);
+           $count =  $this->fetchData();
+           return $count['count'];
+     }
+     
+    /**
+    * @author Gerardo V. Jagolino Jr.
+    * @param $spyder, $zsiteID
+    * @return int
+    * update spyder status
+    */ 
+     function updateSpyder($spyder, $zsiteID)
+     {
+           $stmt = "UPDATE sites SET Spyder = ? WHERE SiteID = ?";
+           $this->prepare($stmt);
+           $this->bindparameter(1, $spyder);
+           $this->bindparameter(2, $zsiteID);
+           $this->execute($stmt);
+           return $this->rowCount();
+     }
+     
+     
      //get terminalID of regular and vip by terminalcode
      function getterminalID($zterminalcode, $zsiteID, $zsitecode)
      {

@@ -32,38 +32,38 @@ if(isset($_SESSION['acctype']))
     <script type="text/javascript">
             $(document).ready(function(){
                 
-                $("#checkbox1").change(function() 
-                {                
-                    if($('#checkbox1').attr("checked"))
-                    {
-                        document.getElementById('cmbsite').value="-1";
-                        document.getElementById('cmbterminal').value="-1";
-                        document.getElementById('txtcardnumber').value="";
-                        document.getElementById('txtsitename').textContent = "";
-                        document.getElementById('txtposaccno').textContent="";                    
-                        document.getElementById('txttermname').textContent="";
-
-                        document.getElementById('cmbsite').disabled=true;
-                        document.getElementById('cmbterminal').disabled=true;
-                        document.getElementById('txtcardnumber').disabled=false;
-                        document.getElementById('txtcardnumber').readOnly=false;
-                    }
-                    else
-                    {
-                        document.getElementById('cmbsite').value="-1";
-                        document.getElementById('cmbterminal').value="-1";
-                        document.getElementById('txtcardnumber').value="";
-                        document.getElementById('txtsitename').textContent="";
-                        document.getElementById('txtposaccno').textContent="";                    
-                        document.getElementById('txttermname').textContent="";
-
-                        document.getElementById('cmbsite').disabled=false;
-                        document.getElementById('cmbterminal').disabled=false;
-                        document.getElementById('txtcardnumber').disabled=true;
-                        document.getElementById('txtcardnumber').readOnly=true;
-                    }
-                
-                });
+//                $("#checkbox1").change(function() 
+//                {                
+//                    if($('#checkbox1').attr("checked"))
+//                    {
+//                        document.getElementById('cmbsite').value="-1";
+//                        document.getElementById('cmbterminal').value="-1";
+//                        document.getElementById('txtcardnumber').value="";
+//                        document.getElementById('txtsitename').textContent = "";
+//                        document.getElementById('txtposaccno').textContent="";                    
+//                        document.getElementById('txttermname').textContent="";
+//
+//                        document.getElementById('cmbsite').disabled=true;
+//                        document.getElementById('cmbterminal').disabled=true;
+//                        document.getElementById('txtcardnumber').disabled=false;
+//                        document.getElementById('txtcardnumber').readOnly=false;
+//                    }
+//                    else
+//                    {
+//                        document.getElementById('cmbsite').value="-1";
+//                        document.getElementById('cmbterminal').value="-1";
+//                        document.getElementById('txtcardnumber').value="";
+//                        document.getElementById('txtsitename').textContent="";
+//                        document.getElementById('txtposaccno').textContent="";                    
+//                        document.getElementById('txttermname').textContent="";
+//
+//                        document.getElementById('cmbsite').disabled=false;
+//                        document.getElementById('cmbterminal').disabled=false;
+//                        document.getElementById('txtcardnumber').disabled=true;
+//                        document.getElementById('txtcardnumber').readOnly=true;
+//                    }
+//                
+//                });
                 
                 
                 $('#cmbsite').live('change', function()
@@ -157,26 +157,26 @@ if(isset($_SESSION['acctype']))
                     var url = 'process/ProcessCSManagement.php';
                     
                     //check if checkbox is checked
-                    var checkbox = document.getElementById('checkbox1').checked;
-                    if(checkbox == false)
-                    {
-                            if(document.getElementById('cmbsite').value == "-1")
-                            {
-                                alert("Please select site");
-                                document.getElementById('cmbsite').focus();
-                                return false;
-                            }
-                            if(document.getElementById('cmbterminal').value == "-1")
-                            {
-                                alert("Please select terminal");
-                                document.getElementById('cmbterminal').focus();
-                                return false;
-                            }
-                            
-                             getMembershipandCasinoInfo(url);            
-                    } 
-                    //with membership card provided
-                    else {
+//                    var checkbox = document.getElementById('checkbox1').checked;
+//                    if(checkbox == false)
+//                    {
+//                            if(document.getElementById('cmbsite').value == "-1")
+//                            {
+//                                alert("Please select site");
+//                                document.getElementById('cmbsite').focus();
+//                                return false;
+//                            }
+//                            if(document.getElementById('cmbterminal').value == "-1")
+//                            {
+//                                alert("Please select terminal");
+//                                document.getElementById('cmbterminal').focus();
+//                                return false;
+//                            }
+//                            
+//                             getMembershipandCasinoInfo(url);            
+//                    } 
+//                    //with membership card provided
+//                    else {
                             
                             if(document.getElementById('txtcardnumber').value == "" || document.getElementById('txtcardnumber').length == 0)
                             {
@@ -186,7 +186,7 @@ if(isset($_SESSION['acctype']))
                             }
 
                             getMembershipandCasinoInfo(url);
-                    }
+//                    }
                 });
                 
                 
@@ -288,7 +288,7 @@ if(isset($_SESSION['acctype']))
             <input type="hidden" name="txtservices" id="txtservices" />
             <input type="hidden" name="terminalcode" id="terminalcode" />
             <table>
-                <tr>
+<!--                <tr>
                     <div id="check1">
                     <input type="checkbox" name="checkbox1" id="checkbox1" value="1" > With Membership Card Number
                     </div>
@@ -296,36 +296,36 @@ if(isset($_SESSION['acctype']))
                 </tr>
                     <td width="130px">Site / PEGS</td>
                     <td>
-                    <?php
-                    
-                        $siteList = $_SESSION['siteids'];
-                        $vsite = $siteList;
-                        echo "<select id=\"cmbsite\" name=\"cmbsite\">";
-                        echo "<option value=\"-1\">Please Select</option>";
-
-                        foreach ($vsite as $result)
-                        {
-                             $vsiteID = $result['SiteID'];
-                             $vorigcode = $result['SiteCode'];
-                             
-                             //search if the sitecode was found on the terminalcode
-                             if(strstr($vorigcode, $terminalcode) == false)
-                             {
-                                $vcode = $vorigcode;
-                             }
-                                    
-                             else
-                             {
-                               //removes the "icsa-"
-                               $vcode = substr($vorigcode, strlen($terminalcode));
-                             }
-                             if($vsiteID <> 1)
-                             {
-                               echo "<option value=\"".$vsiteID."\">".$vcode."</option>";  
-                             }
-                        }
-                        echo "</select>";
-                    ?>
+                    //<?php
+//                    
+//                        $siteList = $_SESSION['siteids'];
+//                        $vsite = $siteList;
+//                        echo "<select id=\"cmbsite\" name=\"cmbsite\">";
+//                        echo "<option value=\"-1\">Please Select</option>";
+//
+//                        foreach ($vsite as $result)
+//                        {
+//                             $vsiteID = $result['SiteID'];
+//                             $vorigcode = $result['SiteCode'];
+//                             
+//                             //search if the sitecode was found on the terminalcode
+//                             if(strstr($vorigcode, $terminalcode) == false)
+//                             {
+//                                $vcode = $vorigcode;
+//                             }
+//                                    
+//                             else
+//                             {
+//                               //removes the "icsa-"
+//                               $vcode = substr($vorigcode, strlen($terminalcode));
+//                             }
+//                             if($vsiteID <> 1)
+//                             {
+//                               echo "<option value=\"".$vsiteID."\">".$vcode."</option>";  
+//                             }
+//                        }
+//                        echo "</select>";
+//                    ?>
                         <label id="txtsitename"></label><label id="txtposaccno"></label>
                     </td>
                 </tr>
@@ -337,11 +337,11 @@ if(isset($_SESSION['acctype']))
                         </select>
                         <label id="txttermname"></label>
                     </td>
-                </tr>
+                </tr>-->
                 <tr>
-                <td>Card Number</td>
                 <td>
-                    <input type="text" size="30" class="txtmembership" id="txtcardnumber" name="txtcardnumber" maxlength="30" size="30" onkeypress="return loyaltycardnumber(event);" disabled/>
+                    Card Number
+                    <input type="text" size="30" class="txtmembership" id="txtcardnumber" name="txtcardnumber" maxlength="30" size="30" onkeypress="return loyaltycardnumber(event);" />
                     <div for="txtcardnumber" align='center'>Membership | Temporary</div>
                 </td>
                 </tr>

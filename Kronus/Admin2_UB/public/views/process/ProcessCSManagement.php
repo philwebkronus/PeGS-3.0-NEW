@@ -837,6 +837,7 @@ if($connected)
                 $start = $limit * $page - $limit;
                 $start < 0 ? $start = 0 : $start = $start; //Added on June 14, 2012 to Handle negative starting page
                 $limit = (int)$limit;   
+                
                 $result = $ocs->gettransactionsummary($vSiteID, $vTerminalID, $vFrom, $vTo, $start, $limit, $sort, $direction);
                 
                 if(count($result) > 0)
