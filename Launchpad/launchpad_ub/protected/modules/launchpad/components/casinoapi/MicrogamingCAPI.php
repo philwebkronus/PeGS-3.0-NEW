@@ -163,8 +163,10 @@ class MicrogamingCAPI
                 )
             )
         );
-
-        $message = $string = preg_replace('/\s+/', ' ', print_r($xmlData,true));
+        
+        $msg = $xmlData;
+        unset($msg['Method']['Auth']['@attributes']['Password']);
+        $message = $string = preg_replace('/\s+/', ' ', print_r($msg,true));
         $this->log($message, 'REQUEST');
         return $this->ProcessXMLRequest( $xmlData );
     }
@@ -188,7 +190,9 @@ class MicrogamingCAPI
             )
         );
         
-        $message = $string = preg_replace('/\s+/', ' ', print_r($xmlData,true));
+        $msg = $xmlData;
+        unset($msg['Method']['Auth']['@attributes']['Password']);
+        $message = $string = preg_replace('/\s+/', ' ', print_r($msg,true));
         $this->log($message, 'REQUEST');
         return $this->ProcessXMLRequest( $xmlData );
     }
@@ -252,7 +256,9 @@ class MicrogamingCAPI
             )
         );
         
-        $message = $string = preg_replace('/\s+/', ' ', print_r($xmlData,true));
+        $msg = $xmlData;
+        unset($msg['Method']['Auth']['@attributes']['Password']);
+        $message = $string = preg_replace('/\s+/', ' ', print_r($msg,true));
         $this->log($message, 'REQUEST');
         return $this->ProcessXMLRequest( $xmlData );
     }
@@ -276,7 +282,9 @@ class MicrogamingCAPI
             )
         );
 
-        $message = $string = preg_replace('/\s+/', ' ', print_r($xmlData,true));
+        $msg = $xmlData;
+        unset($msg['Method']['Auth']['@attributes']['Password']);
+        $message = $string = preg_replace('/\s+/', ' ', print_r($msg,true));
         $this->log($message, 'REQUEST');
         return $this->ProcessXMLRequest( $xmlData );
     }
@@ -303,7 +311,9 @@ class MicrogamingCAPI
             )
         );
 
-        $message = $string = preg_replace('/\s+/', ' ', print_r($xmlData,true));
+        $msg = $xmlData;
+        unset($msg['Method']['Auth']['@attributes']['Password']);
+        $message = $string = preg_replace('/\s+/', ' ', print_r($msg,true));
         $this->log($message, 'REQUEST');
         return $this->ProcessXMLRequest( $xmlData );
     }
@@ -330,7 +340,9 @@ class MicrogamingCAPI
             )
         );
 
-        $message = $string = preg_replace('/\s+/', ' ', print_r($xmlData,true));
+        $msg = $xmlData;
+        unset($msg['Method']['Auth']['@attributes']['Password']);
+        $message = $string = preg_replace('/\s+/', ' ', print_r($msg,true));
         $this->log($message, 'REQUEST');
         return $this->ProcessXMLRequest( $xmlData );
     }
@@ -355,7 +367,9 @@ class MicrogamingCAPI
             )
         );
 
-        $message = $string = preg_replace('/\s+/', ' ', print_r($xmlData,true));
+        $msg = $xmlData;
+        unset($msg['Method']['Auth']['@attributes']['Password']);
+        $message = $string = preg_replace('/\s+/', ' ', print_r($msg,true));
         $this->log($message, 'REQUEST');
         return $this->ProcessXMLRequest( $xmlData );
     }
@@ -378,7 +392,9 @@ class MicrogamingCAPI
             )
         );
 
-        $message = $string = preg_replace('/\s+/', ' ', print_r($xmlData,true));
+        $msg = $xmlData;
+        unset($msg['Method']['Auth']['@attributes']['Password']);
+        $message = $string = preg_replace('/\s+/', ' ', print_r($msg,true));
         $this->log($message, 'REQUEST');
         return $this->ProcessXMLRequest( $xmlData );
     }
@@ -402,7 +418,9 @@ class MicrogamingCAPI
             )
         );
 
-        $message = $string = preg_replace('/\s+/', ' ', print_r($xmlData,true));
+        $msg = $xmlData;
+        unset($msg['Method']['Auth']['@attributes']['Password']);
+        $message = $string = preg_replace('/\s+/', ' ', print_r($msg,true));
         $this->log($message, 'REQUEST');
         return $this->ProcessXMLRequest( $xmlData );
     }
@@ -424,7 +442,9 @@ class MicrogamingCAPI
             )
         );
 
-        $message = $string = preg_replace('/\s+/', ' ', print_r($xmlData,true));
+        $msg = $xmlData;
+        unset($msg['Method']['Auth']['@attributes']['Password']);
+        $message = $string = preg_replace('/\s+/', ' ', print_r($msg,true));
         $this->log($message, 'REQUEST');
         return $this->ProcessXMLRequest( $xmlData );
     }
@@ -447,7 +467,9 @@ class MicrogamingCAPI
             )
         );
 
-        $message = $string = preg_replace('/\s+/', ' ', print_r($xmlData,true));
+        $msg = $xmlData;
+        unset($msg['Method']['Auth']['@attributes']['Password']);
+        $message = $string = preg_replace('/\s+/', ' ', print_r($msg,true));
         $this->log($message, 'REQUEST');
         return $this->ProcessXMLRequest( $xmlData );
     }
@@ -470,7 +492,9 @@ class MicrogamingCAPI
             )
         );
 
-        $message = $string = preg_replace('/\s+/', ' ', print_r($xmlData,true));
+        $msg = $xmlData;
+        unset($msg['Method']['Auth']['@attributes']['Password']);
+        $message = $string = preg_replace('/\s+/', ' ', print_r($msg,true));
         $this->log($message, 'REQUEST');
         return $this->ProcessXMLRequest( $xmlData );
     }
@@ -494,7 +518,9 @@ class MicrogamingCAPI
             )
         );
 
-        $message = $string = preg_replace('/\s+/', ' ', print_r($xmlData,true));
+        $msg = $xmlData;
+        unset($msg['Method']['Auth']['@attributes']['Password']);
+        $message = $string = preg_replace('/\s+/', ' ', print_r($msg,true));
         $this->log($message, 'REQUEST');
         return $this->ProcessXMLRequest( $xmlData );
     }
@@ -517,7 +543,9 @@ class MicrogamingCAPI
             )
         );
 
-        $message = $string = preg_replace('/\s+/', ' ', print_r($xmlData,true));
+        $msg = $xmlData;
+        unset($msg['Method']['Auth']['@attributes']['Password']);
+        $message = $string = preg_replace('/\s+/', ' ', print_r($msg,true));
         $this->log($message, 'REQUEST');
         return $this->ProcessXMLRequest( $xmlData );
     }    
@@ -541,7 +569,9 @@ class MicrogamingCAPI
             )
         );
 
-        $message = $string = preg_replace('/\s+/', ' ', print_r($xmlData,true));
+        $msg = $xmlData;
+        unset($msg['Method']['Auth']['@attributes']['Password']);
+        $message = $string = preg_replace('/\s+/', ' ', print_r($msg,true));
         $this->log($message, 'REQUEST');
         return $this->ProcessXMLRequest( $xmlData );
     }    

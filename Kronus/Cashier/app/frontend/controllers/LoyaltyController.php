@@ -13,7 +13,11 @@ class LoyaltyController extends FrontendController {
             
         Mirage::loadComponents('LoyaltyAPIWrapper.class');
         $loyalty = new LoyaltyAPIWrapper(); 
-        $result = $loyalty->getCardInfo($_POST['card_number'], false, $_POST['isreg']);
+        if(isset($_POST['card_number']) && isset($_POST['isreg'])){
+            $cardnumber = $_POST['card_number'];
+            $isreg = $_POST['isreg'];
+            $result = $loyalty->getCardInfo($cardnumber, false, $isreg);
+        }
         Mirage::app()->end();
     }
 
@@ -23,7 +27,13 @@ class LoyaltyController extends FrontendController {
             
         Mirage::loadComponents('LoyaltyAPIWrapper.class');
         $loyalty = new LoyaltyAPIWrapper(); 
-        $result = $loyalty->transferPoints($_POST['oldnumber'], $_POST['newnumber'], $_POST['aid'],false);
+        if(isset($_POST['oldnumber']) && isset($_POST['newnumber']) && isset($_POST['aid'])){
+            $oldnumber = $_POST['oldnumber'];
+            $newnumber = $_POST['newnumber'];
+            $aid = $_POST['aid'];
+            $result = $loyalty->transferPoints($oldnumber , $newnumber, $aid,false);
+        }
+        
         Mirage::app()->end();
     }
     

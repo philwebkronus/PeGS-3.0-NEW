@@ -9,6 +9,29 @@
 class SpyderController extends MI_Controller{
     
     /**
+     * Set caching of connection
+     * @var boolean
+     */
+    private $_caching = FALSE;
+
+    /**
+     * User agent
+     * @var string
+     */
+    private $_userAgent = 'PEGS Station Manager';
+
+    /**
+     * Maximum number of seconds to wait while trying to connect
+     * @var integer
+     */
+    private $_connectionTimeout = 10;
+
+    /**
+     * Maximum number of seconds before a call timeouts
+     * @var integer
+     */
+    private $_timeout = 500;
+    /**
      * Call lock | unlock sapi api method
      * @param str $terminalName
      * @param int $commandId
