@@ -285,8 +285,8 @@ class FrontendController extends MI_Controller {
 
                                     //Insert to loyaltyrequestlogs
                                     $loyaltyrequestlogsID = $loyaltyrequestlogs->insert($mid, 'R', $terminal_id, $amount, $result["trans_details_id"], $paymentType, $isCreditable);
-
-                                        $isSuccessful = $loyalty->processPoints($loyaltyCardNo, $result['udate'], 2, 'R', $amount,$siteid, $result["trans_details_id"],
+                                    $transdate = CasinoApi::udate('Y-m-d H:i:s.u');
+                                    $isSuccessful = $loyalty->processPoints($loyaltyCardNo, $transdate, 2, 'R', $amount,$siteid, $result["trans_details_id"],
                                                                                                                 $result['terminal_name'], $isCreditable,$startSessionFormModel->voucher_code, 7,1);
                                         
                                      //check if the loyaltydeposit is successful, if success insert to loyaltyrequestlogs and status = 1 else 2
@@ -376,8 +376,8 @@ class FrontendController extends MI_Controller {
 
                 //Insert to loyaltyrequestlogs
                 $loyaltyrequestlogsID = $loyaltyrequestlogs->insert($mid, 'R', $terminal_id, $amount, $result["trans_details_id"], $paymentType, $isCreditable);
-               
-                $isSuccessful = $loyalty->processPoints($loyaltyCardNo, $result['udate'], 1, 'R', $amount,$siteid, $result["trans_details_id"],
+               $transdate = CasinoApi::udate('Y-m-d H:i:s.u');
+                $isSuccessful = $loyalty->processPoints($loyaltyCardNo, $transdate, 1, 'R', $amount,$siteid, $result["trans_details_id"],
                                                                                                                 $result['terminal_name'], $isCreditable,$startSessionFormModel->voucher_code, 7, 1);
                 
                 
@@ -466,8 +466,8 @@ class FrontendController extends MI_Controller {
         
         //Insert to loyaltyrequestlogs
         $loyaltyrequestlogsID = $loyaltyrequestlogs->insert($mid, 'W', $startSessionFormModel->terminal_id, $startSessionFormModel->amount, $result["trans_details_id"],$paymentType,$isCreditable);
-        
-        $isSuccessful = $loyalty->processPoints($loyaltyCardNo, $result['udate'], 1, 'W', $startSessionFormModel->amount,$this->site_id, $result["trans_details_id"],
+        $transdate = CasinoApi::udate('Y-m-d H:i:s.u');
+        $isSuccessful = $loyalty->processPoints($loyaltyCardNo, $transdate, 1, 'W', $startSessionFormModel->amount,$this->site_id, $result["trans_details_id"],
                                                                                                                 $result['terminal_name'], $isCreditable,'', 7, 1);
         
          //check if the loyaltydeposit is successful, if success insert to loyaltyrequestlogs and status = 1 else 2
@@ -628,9 +628,9 @@ class FrontendController extends MI_Controller {
                                     
                                     //Insert to loyaltyrequestlogs
                                     $loyaltyrequestlogsID = $loyaltyrequestlogs->insert($mid, 'D', $terminal_id, $amount, $result["trans_details_id"], $paymentType, $isCreditable);
-                                    
+                                    $transdate = CasinoApi::udate('Y-m-d H:i:s.u');
                                     if($is_loyalty) {
-                                        $isSuccessful = $loyalty->processPoints($startSessionFormModel->loyalty_card, $result['udate'], 2, 'D', $amount,$siteid, $result["trans_details_id"],
+                                        $isSuccessful = $loyalty->processPoints($startSessionFormModel->loyalty_card, $transdate, 2, 'D', $amount,$siteid, $result["trans_details_id"],
                                                                                                                 $result['terminal_name'], $isCreditable,$startSessionFormModel->voucher_code, 7, 1);
                                     }
                                                                 
@@ -764,9 +764,9 @@ class FrontendController extends MI_Controller {
                     
                     //Insert to loyaltyrequestlogs
                     $loyaltyrequestlogsID = $loyaltyrequestlogs->insert($mid, 'D', $terminal_id, $amount, $result["trans_details_id"], $paymentType,$isCreditable);
-                    
+                    $transdate = CasinoApi::udate('Y-m-d H:i:s.u');
                     if($is_loyalty) {
-                        $isSuccessful = $loyalty->processPoints($startSessionFormModel->loyalty_card, $result['udate'], 1, 'D', $amount,$siteid, $result["trans_details_id"],
+                        $isSuccessful = $loyalty->processPoints($startSessionFormModel->loyalty_card, $transdate, 1, 'D', $amount,$siteid, $result["trans_details_id"],
                                                                                                 $result['terminal_name'], $isCreditable,$startSessionFormModel->voucher_code, 7, 1);
                     }
                     
