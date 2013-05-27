@@ -47,7 +47,7 @@ $LoyatyCardNumber = "";
 $NewMembershipCardNumber = "";
 $CardPoints = "";
 $CardName = "";
-$SiteName = "";
+$site = "";
 
 $dtBirthDate = new DatePicker("dtBirthDate", "dtBirthDate", "Birth Date: ");
 $dtBirthDate->MaxDate = $dsmaxdate->CurrentDate;
@@ -61,12 +61,11 @@ $fproc->AddControl($dtBirthDate);
 
 $txtplayername = new TextBox("txtplayername", "txtplayername", "Name: ");
 $txtplayername->CssClass = "validate[required,custom[onlyLetterSp], minSize[2]]";
+$txtplayername->Length = 90;
+
 $fproc->AddControl($txtplayername);
 $txtplayerage = new TextBox("txtplayerage", "txtplayerage", "Age: ");
 $fproc->AddControl($txtplayerage);
-$txtplayerIDNumber = new TextBox("txtplayerIDNumber", "txtplayerIDNumber", "I.D: ");
-$txtplayerIDNumber->CssClass = "validate[required,custom[onlyLetterNumber]]";
-$fproc->AddControl($txtplayerIDNumber);
 
 $ConfirmButton = new Button("ConfirmButton", "ConfirmButton", "Confirm");
 $ConfirmButton->IsSubmit = true;
@@ -83,7 +82,13 @@ $txtAge->ShowCaption = false;
 $txtAge->Length = 30;
 $txtAge->Size = 3;
 $txtAge->CssClass = "validate[required]";
+$txtAge->ReadOnly = true;
 $fproc->AddControl($txtAge);
+
+$txtplayerIDNumber = new TextBox("txtplayerIDNumber", "txtplayerIDNumber", "I.D: ");
+$txtplayerIDNumber->Length = 30;
+$txtplayerIDNumber->CssClass = "validate[required,custom[onlyLetterNumber]]";
+$fproc->AddControl($txtplayerIDNumber);
 
 $arrid = $_Identification->SelectAll();
 $ComboID = new ComboBox('ComboID', 'ComboID');
@@ -95,8 +100,9 @@ $fproc->AddControl($ComboID);
 
 $rdoGroupGender = new RadioGroup("rdoGender", "rdoGender", "Gender");
 $rdoGroupGender->AddRadio("1", "Male");
-$rdoGroupGender->AddRadio("2", "Female", true);
+$rdoGroupGender->AddRadio("2", "Female");
 $rdoGroupGender->ShowCaption = true;
+$rdoGroupGender->CssClass = "validate[required]";
 $rdoGroupGender->Initialize();
 $fproc->AddControl($rdoGroupGender);
 
@@ -109,7 +115,7 @@ if ((isset($_GET["oldnumber"]) && (htmlentities($_GET["oldnumber"])))
 
     $LoyatyCardNumber = $_GET["oldnumber"];
     $NewMembershipCardNumber = $_GET["newnumber"];
-    $SiteName = $_GET["site"];
+    $site = $_GET["site"];
     $AID = $_GET["AID"];
 
     $oldcardresult = $_OldCards->getOldCardInfo($LoyatyCardNumber);
@@ -141,7 +147,7 @@ if ((isset($_GET["oldnumber"]) && (htmlentities($_GET["oldnumber"])))
     $CardName = $arrOldLoyaltyDetails['CardName'];
     $CardPoints = $arrOldLoyaltyDetails['CurrentPoints'];
 
-    $siteresult = $_Sites->getSiteByCode($SiteName);
+    $siteresult = $_Sites->getSiteByCode($site);
     $arraysite = $siteresult[0];
     $site = $arraysite['SiteName'];
 
@@ -150,7 +156,7 @@ if ((isset($_GET["oldnumber"]) && (htmlentities($_GET["oldnumber"])))
 
     if ($isValid) {
         $rdoGroupGender->SetSelectedValue($oldCardGender);
-
+        
         if ($fproc->IsPostBack) {
 
             if ($ConfirmButton->SubmittedValue == "Confirm") {

@@ -42,14 +42,6 @@ if (isset($stylesheets) && count($stylesheets) > 0)
     }
 }
 
-if (isset($customtags) && count($customtags) > 0)
-{
-    for ($i = 0; $i < count($customtags); $i++)
-    {
-        $headerinfo .= $customtags[$i] . "\r\n";
-    }
-}
-
 $pagetitle = (isset($pagetitle) && $pagetitle != "" ) ? $pagetitle : "Dashboard V2";
 $curdate = new DateSelector('now', 'Y,m,d, H,i,s');
 $curdate->SetTimeZone("Asia/Manila");
@@ -66,6 +58,14 @@ if (isset($useCustomHeader) && $useCustomHeader)
     $arrheaders = explode("<head>", $headerstring);
 
     echo $arrheaders[0];
+}
+
+if (isset($customtags) && count($customtags) > 0)
+{
+    for ($i = 0; $i < count($customtags); $i++)
+    {
+        $headerinfo .= $customtags[$i] . "\r\n";
+    }
 }
 
 ?>

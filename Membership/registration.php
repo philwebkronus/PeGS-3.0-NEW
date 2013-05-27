@@ -178,6 +178,7 @@ $txtAge->ShowCaption = false;
 $txtAge->Length = 30;
 $txtAge->Size = 15;
 $txtAge->CssClass = "validate[required]";
+$txtAge->ReadOnly = true;
 $fproc->AddControl($txtAge);
 
 $_nationality = new Nationality();

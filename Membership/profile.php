@@ -95,6 +95,7 @@ $txtAlternateMobileNumber = new TextBox("txtAlternateMobileNumber", "txtAlternat
 $txtAlternateMobileNumber->ShowCaption = false;
 $txtAlternateMobileNumber->Length = 30;
 $txtAlternateMobileNumber->Size = 15;
+$txtAlternateMobileNumber->Text = $row['AlternateMobileNumber'];
 $txtAlternateMobileNumber->AutoComplete = false;
 $txtAlternateMobileNumber->CssClass = "validate[custom[onlyNumber], minSize[9]]";
 $fproc->AddControl($txtAlternateMobileNumber);
@@ -164,7 +165,7 @@ $txtIDPresented = new TextBox("txtIDPresented", "txtIDPresented", "IDPresented")
 $txtIDPresented->ShowCaption = false;
 $txtIDPresented->Length = 30;
 $txtIDPresented->Size = 15;
-$txtIDPresented->CssClass = "validate[required]";
+$txtIDPresented->CssClass = "validate[required, custom[onlyLetterNumber]]";
 $txtIDPresented->Text = $row['IdentificationNumber'];
 $fproc->AddControl($txtIDPresented);
 
@@ -210,19 +211,19 @@ $cboOccupation->SetSelectedValue($row['OccupationID']);
 $fproc->AddControl($cboOccupation);
 
 $rdoGroupGender = new RadioGroup("rdoGender", "rdoGender", "Gender");
-$rdoGroupGender->AddRadio("1", "Male", true);
+$rdoGroupGender->AddRadio("1", "Male");
 $rdoGroupGender->AddRadio("2", "Female");
 $rdoGroupGender->ShowCaption = true;
-$rdoGroupGender->SetSelectedValue($row['Gender']);
 $rdoGroupGender->Initialize();
+$rdoGroupGender->SetSelectedValue($row['Gender']);
 $fproc->AddControl($rdoGroupGender);
 
 $rdoGroupSmoker = new RadioGroup("rdoGroupSmoker", "rdoGroupSmoker", "rdoGroupSmoker");
-$rdoGroupSmoker->AddRadio("1", "Smoker", true);
+$rdoGroupSmoker->AddRadio("1", "Smoker");
 $rdoGroupSmoker->AddRadio("2", "Non-Smoker");
 $rdoGroupSmoker->ShowCaption = true;
-$rdoGroupSmoker->SetSelectedValue($row['IsSmoker']);
 $rdoGroupSmoker->Initialize();
+$rdoGroupSmoker->SetSelectedValue($row['IsSmoker']);
 $rdoGroupGender->Args="onclick='\"window.close()\"'";
 $fproc->AddControl($rdoGroupSmoker);
 
@@ -237,6 +238,7 @@ $fproc->AddControl($rdoGroupSmoker);
 $btnUpdate = new Button('btnUpdate', 'btnUpdate', 'Update Profile');
 $btnUpdate->IsSubmit = false;
 $btnUpdate->ShowCaption = true;
+$btnUpdate->CssClass = "yellow-btn";
 $fproc->AddControl($btnUpdate);
 
 $btnClose = new Button('close','close','Close');
@@ -267,7 +269,7 @@ echo App::GetErrorMessage();
 if ($fproc->IsPostBack)
 {
     //Check if password was changed.
-    (!empty($txtPassword->SubmittedValue)) ? $arrMembers["Password"] = $txtPassword->SubmittedValue : "";
+    (!empty($txtPassword->SubmittedValue)) ? $arrMembers["Password"] = md5($txtPassword->SubmittedValue) : "";
     $arrMembers["DateUpdated"] = $dateupdated;
     $arrMembers["MID"] = $MID;
 
@@ -285,6 +287,8 @@ if ($fproc->IsPostBack)
     $arrMemberInfo['Birthdate'] = $dtBirthDate->SubmittedValue;
     $arrMemberInfo['NationalityID'] = $cboNationality->SubmittedValue;
     $arrMemberInfo['OccupationID'] = $cboOccupation->SubmittedValue;
+    $arrMemberInfo['IdentificationID'] = $cboIDSelection->SubmittedValue;
+    $arrMemberInfo['IdentificationNumber'] = $txtIDPresented->SubmittedValue;
 
     $arrMemberInfo['Gender'] = $rdoGroupGender->SubmittedValue;     
     $arrMemberInfo['IsSmoker'] = $rdoGroupSmoker->SubmittedValue;  
@@ -339,11 +343,35 @@ if ($fproc->IsPostBack)
     $isOpen = 'true';
          
 }
+
 ?>
 
 <script language="javascript" type="text/javascript">
     
     $(document).ready(function() {
+        
+        function loadprofile() {
+            $("#home-latest-news").addClass('profile-box');
+            $("#carousel").hide();
+//            $("#home-login-box").addClass('profile-wrapper');
+        }
+        
+        window.onload = loadprofile;
+        
+        function reloadProfile() {
+            parent.window.location.href='index.php';
+        }
+        
+        $("#txtPassword").blur(function(){
+            txtpass = $('#txtPassword').val();
+
+            if(txtpass != "")
+            {
+                $('#txtConfirmPassword').addClass('validate[required, custom[onlyLetterNumber], equals[txtPassword]]');
+            }
+        });
+        
+        
         
         $('#dtBirthDate').change(function()
         {
@@ -391,6 +419,7 @@ if ($fproc->IsPostBack)
             closeOnEscape: true,            
             buttons: {
                 "Ok": function() {
+                    reloadProfile();
                     $(this).dialog("close");
                 }
             }
@@ -399,27 +428,32 @@ if ($fproc->IsPostBack)
     });                   
 
 </script>
+<div id="home-login-box">      
+    <div id="home-login-wrapper">
+        <!--<div id="home-page-login-form">-->
+            <div class="profile">
+            <p>Hi <?php echo strtoupper($nick); ?>! [<a href="logout.php">Logout</a>]</p>
+            <ul style="list-style: none;">
+                <li><strong><?php echo strtoupper($memberName); ?></strong></li>
+                <li>Card Number: <?php echo $cardNumber; ?></li>
+                <li>Mobile Number: <?php echo $mobileNumber; ?></li>
+                <li>Email Address: <?php echo $email; ?></li>
+            </ul>
+            <ul style="list-style: none;">
+                <li>Current Points: <?php echo $currentPoints; ?></li>
+                <li>Bonus Points: <?php echo $bonusPoints; ?></li>
+                <li>Redeemed Points: <?php echo $redeemedPoints; ?></li>
+                <li>Lifetime Points: <?php echo $lifetimePoints; ?></li>
+            </ul>
 
-<p>Hi <?php echo strtoupper($nick); ?>! <a href="logout.php">Logout</a></p>
-<ul style="list-style: none;">
-    <li><strong><?php echo strtoupper($memberName); ?></strong></li>
-    <li>Card Number: <?php echo $cardNumber; ?></li>
-    <li>Mobile Number: <?php echo $mobileNumber; ?></li>
-    <li>Email Address: <?php echo $email; ?></li>
-</ul>
-<ul style="list-style: none;">
-    <li>Current Points: <?php echo $currentPoints; ?></li>
-    <li>Bonus Points: <?php echo $bonusPoints; ?></li>
-    <li>Redeemed Points: <?php echo $redeemedPoints; ?></li>
-    <li>Lifetime Points: <?php echo $lifetimePoints; ?></li>
-</ul>
+            <?php echo $lastPlay; ?>
+            <?php echo $btnUpdate; ?>
 
-<?php echo $lastPlay; ?>
-
-    <?php echo $btnUpdate; ?>
-
-</form> <!-- End form declared in the header -->
-
+        </form> <!-- End form declared in the header -->
+            </div>
+        <!--</div>-->
+    </div>
+<!--</div>-->
 <form name="SubForm" id="SubForm" method="post" action="" enctype="multipart/form-data" >
 
 <!-- Update Profile page holder -->

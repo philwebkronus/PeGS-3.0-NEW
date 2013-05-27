@@ -1878,7 +1878,7 @@
 	// LEAK GLOBAL OPTIONS
 	$.validationEngine= {fieldIdCounter: 0,defaults:{
 
-		// Name of the event triggering field validation
+		// Name of the event triggering field validation, default "blur"
 		validationEventTrigger: "submit",
 		// Automatically scroll viewport to the first error
 		scroll: true,

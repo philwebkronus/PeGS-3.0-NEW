@@ -60,14 +60,14 @@ foreach ($arrRewardItems as $item) {
 ?>
 
 <?php include "header.php"; ?> 
-<link rel="stylesheet" type="text/css" href="css/style.css">
 <script type="text/javascript" language="javascript">
     $(document).ready(function() {
+        
         function init() {
             $('#carousel').hide();
         }
         window.onload = init;
-   
+        
         $('#carousel').tinycarousel({ display: 3});
         $('#slider').tinycarousel({
             interval: true,
@@ -140,8 +140,7 @@ if (isset($_SESSION["MemberInfo"])) {
     });
 </script>
 </form>
-<div id="main" style="display: inline-block; vertical-align: top;">
- 
+<div id="main"> 
         <table>
             <tr>
                 <td>
@@ -151,12 +150,12 @@ if (isset($_SESSION["MemberInfo"])) {
                             <ul class="overview">
                                 <?php foreach ($path as $image) {
                                     ?>
-                                    <li><img src ="images/rewarditems/<?php echo $image['path']; ?>" height="350" width="550" /></li>
+                                    <li><img src ="images/rewarditems/<?php echo $image['path']; ?>" height="350" width="600" /></li>
                                 <?php } ?>
                             </ul>
                         </div>
                         <a class="buttons next" href="#">right</a>
-                        <div id="moreitems" align="right"><input class="viewmore" type="button" name="more" value="View More" /></div>
+                        <div id="moreitems" align="right"><input class="yellow-btn viewmore" type="button" name="more" value="View More" /></div>
                     </div>
 
                     <!--Carousel-->
@@ -183,7 +182,38 @@ if (isset($_SESSION["MemberInfo"])) {
                         else
                             include('login.php');
                         ?>
+                        <div id="home-latest-news">
 
+                                <h3>Latest Events</h3>
+
+                                <div id="home-latest-wrapper">                                    
+                                                                        
+                                                                            
+                                        <div>&#187; <a href="http://staging.pegs.com/events/sfdgsdfg/">sfdgsdfg</a></div>
+                                    
+                                                                            
+                                        <div>&#187; <a href="http://staging.pegs.com/events/4th-event-testing/">4th Event testing</a></div>
+                                    
+                                                                            
+                                        <div>&#187; <a href="http://staging.pegs.com/events/third-event-testing/">Third Event Testing</a></div>
+                                    
+                                    
+                               </div>
+                                
+                            </div>
+
+                        </div><!-- #home-login-box -->
+                        <div id="social-buttons-container" style="text-align:right;">
+                            <div class="row-fluid">
+
+                                <div class="span4 pull-right">
+                                    <a href="http://www.twitter.com"><img src="http://staging.pegs.com/wp-content/themes/pegs_theme/img/twitter_icon.png" alt="Twitter" title="Twitter"></a>
+                                    <a href="http://www.facebook.com"><img src="http://staging.pegs.com/wp-content/themes/pegs_theme/img/fb_icon.png" alt="Facebook" title="Facebook"></a>
+                                </div>
+
+                            </div>
+
+                        </div><!-- #social-buttons-container --> 
                     </div>
                     <!-- End Login Wrapper -->
                 </td>

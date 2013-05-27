@@ -10,7 +10,7 @@ $txtUsername = new TextBox("txtUsername", "txtUsername", "Username:");
 $txtUsername->Length = 30;
 $txtUsername->Size = 30;
 $txtUsername->ShowCaption = false;
-$txtUsername->CssClass = "validate[required]";
+$txtUsername->CssClass = "validate[required] login-field";
 $fproc->AddControl($txtUsername);
 
 $txtPassword = new TextBox("txtPassword", "txtPassword", "Password:");
@@ -18,11 +18,12 @@ $txtPassword->Length = 30;
 $txtPassword->Size = 30;
 $txtPassword->Password = true;
 $txtPassword->ShowCaption = false;
-$txtPassword->CssClass = "validate[required]";
+$txtPassword->CssClass = "validate[required] login-field";
 $fproc->AddControl($txtPassword);
 
 $btnLogin = new Button("btnSubmit", "btnSubmit", "Login");
 $btnLogin->IsSubmit = true;
+$btnLogin->CssClass = "yellow-btn";
 $fproc->AddControl($btnLogin);
 
 $fproc->ProcessForms();
@@ -51,11 +52,12 @@ if($fproc->IsPostBack)
         $_Members = new Members();
         $members = $_Members->Authenticate($username, $password, Hashing::MD5);
         
-        if($members == false)
-        {
-            echo App::GetErrorMessage();
-        }
-        else
+//        if($members == false)
+//        {
+//            echo App::GetErrorMessage();
+//        }
+//        else
+        if($members)
         {
             $_MemberSessions = new MemberSessions();
             
@@ -105,9 +107,32 @@ if($fproc->IsPostBack)
     });        
 </script>
 <form name="loginForm" method="post" action="" id="loginForm" />
-Username: <?php echo $txtUsername; ?><br/>
-Password: <?php echo $txtPassword; ?><br/>
-<?php echo $btnLogin; ?>
+<div class="login-error"><?php echo App::GetErrorMessage(); ?></div>
+<div id="home-login-box">    
+    <div id="home-login-wrapper">
+        <div id="home-page-login-form">
+            <div class="home-login-form-wrapper">
+                <div class="home-login-form-label">Username</div>
+                <div class="home-login-form-input"><?php echo $txtUsername; ?></div>
+                <div class="clearfix"></div>
+            </div>
+            
+            <div class="home-login-form-wrapper">
+                <div class="home-login-form-label">Password:</div>
+                <div class="home-login-form-input"><?php echo $txtPassword; ?></div>
+                <div class="clearfix"></div>
+            </div>
+            
+            <div class="home-login-form-wrapper">
+                <div class="home-login-form-label">&nbsp;</div>
+                <div class="home-login-form-input"><?php echo $btnLogin; ?></div>
+                <div class="clearfix"></div>
+            </div>
+            
+            <div id="home-login-form-link">Not yet a member? Sign up <a href="registration.php">here</a></div>
+            
+        </div>
+    </div>
+<!--</div>-->
 </form>
 
-<div>Not yet a member? <a id="register" href="registration.php" title="Register here">Register here</a>.</div>
