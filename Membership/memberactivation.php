@@ -189,10 +189,17 @@ if ((isset($_GET["oldnumber"]) && (htmlentities($_GET["oldnumber"])))
 
                 $result = $_Members->Migrate($Memberstable, $MemberInfo, $AID, $LoyatyCardNumber, $NewMembershipCardNumber, $oldCardEmail, $isVIP, false);
                 
-                if ($result)
+                $status = $result['status'];
+                
+                if ($status == 'OK')
+                {
                     $isSuccess = true;
+                }
                 else
+                {
                     $isSuccess = false;
+                    $error = $result['error'];
+                }
 
                 /*
                  * Load message dialog box
@@ -240,6 +247,8 @@ if ((isset($_GET["oldnumber"]) && (htmlentities($_GET["oldnumber"])))
         
         $( "#InvalidDialog" ).dialog({
             modal: true,
+            height: 250,
+            width: 350,
             autoOpen: <?php echo $InvalidDialogOpen; ?>,
             buttons: {
                 Ok: function() {
@@ -251,6 +260,8 @@ if ((isset($_GET["oldnumber"]) && (htmlentities($_GET["oldnumber"])))
         
         $( "#ActivationDialog" ).dialog({
             modal: true,
+            height: 250,
+            width: 350,
             autoOpen: <?php echo $ActivationDialogOpen; ?>,
             buttons: {
                 Ok: function() {
@@ -354,14 +365,16 @@ if ((isset($_GET["oldnumber"]) && (htmlentities($_GET["oldnumber"])))
     <?php if ($isSuccess) {
         ?>
 
-            <p><span class="ui-icon ui-icon-circle-check" style="float: left; margin: 0 7px 50px 0;"></span>
-                Account Migration Successful! <br />                    
-                Temporary Password for the Membership website is  <b> <?php echo $displayPassword; ?></b>.</p>
+            <p>Account migration is successful. <br />                    
+                Temporary password for the membership website is  <b> <?php echo $displayPassword; ?></b>.
+            </p>
 
         <?php } else {
         ?>
-            <p><span class="ui-icon" style="float: left; margin: 0 7px 50px 0;"></span>
-                Account Migration Failed! </p>
+            <p>Account migration has failed. <br />
+                <?php echo $error; ?>.<br />
+                Contact customer service for assistance.
+            </p>
             <?php }
         ?>
     </div>
@@ -373,13 +386,13 @@ if ((isset($_GET["oldnumber"]) && (htmlentities($_GET["oldnumber"])))
     <div id="InvalidDialog" title="Member Card Activation">
         <?php if ($IsInvalidCard) {
             ?>
-            <p><span class="ui-icon ui-icon-circle-check" style="float: left; margin: 0 7px 50px 0;"></span>
-                The Card is either invalid or already migrated.</p>
+            <p>The card number is invalid.<br />
+               Contact customer service for assistance.
+            </p>
 
         <?php } elseif ($HasParamError) {
         ?>
-            <p><span class="ui-icon" style="float: left; margin: 0 7px 50px 0;"></span>
-                Incomplete parameters, please contact administrator.</p>
+            <p>Incomplete parameters. <br />Contact customer service for assistance..</p>
             <?php }
         ?>
     </div>

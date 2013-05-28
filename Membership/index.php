@@ -112,6 +112,7 @@ if (isset($_SESSION["MemberInfo"])) {
                         modal: true,
                         autoOpen: true,
                         width: 600,
+                        height: "auto",
                         title: "Reward Item",
                         closeOnEscape: true,
                         position: "center",
@@ -122,8 +123,8 @@ if (isset($_SESSION["MemberInfo"])) {
                         },              
                         open: function (event, ui) {
                             $element.load(page);                        
-                            $(event.target).parent().css('top', '5%');
-                            $(event.target).parent().css('left', '20%');
+                            //$(event.target).parent().css('top', '5%');
+                            //$(event.target).parent().css('left', '20%');
                         }
 
                     });

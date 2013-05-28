@@ -191,42 +191,42 @@ class Members extends BaseEntity {
                                         
                                         if ($result == 'OK') {
                                             $this->CommitTransaction();
-                                            return true;
+                                            return array('status'=>'OK','error'=>'');
                                         } else {
                                             $this->RollBackTransaction();
-                                            return false;
+                                            return array('status'=>'ERROR','error'=>$apiResult['error']);
                                         }
                                     } else {
                                         $this->RollBackTransaction();
-                                        return false;
+                                        return array('status'=>'ERROR','error'=>'Failed creating member services.');
                                     }
                                 } else {
                                     $this->RollBackTransaction();
-                                    return false;
+                                    return array('status'=>'ERROR','error'=>'Failed updating old cards.');
                                 }
                             } else {
                                 $this->RollBackTransaction();
-                                return false;
+                                return array('status'=>'ERROR','error'=>'Failed transfering points.');
                             }
                         } else {
                             $this->RollBackTransaction();
-                            return false;
+                            return array('status'=>'ERROR','error'=>'Failed updating card status.');
                         }
                     } else {
                         $this->RollBackTransaction();
-                        return false;
+                        return array('status'=>'ERROR','error'=>'Failed inserting to member cards.');
                     }
                 } else {
                     $this->RollBackTransaction();
-                    return false;
+                    return array('status'=>'ERROR','error'=>'Failed migrating member details.');
                 }
             } else {
                 $this->RollBackTransaction();
-                return false;
+                return array('status'=>'ERROR','error'=>'Failed migrating member records.');
             }
         } catch (Exception $e) {
             $this->RollBackTransaction();
-            App::SetErrorMessage($e->getMessage());
+            return array('status'=>'ERROR','error'=>$e->getMessage());
         }
     }
 
