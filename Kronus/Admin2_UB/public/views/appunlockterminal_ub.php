@@ -91,6 +91,18 @@ if(isset($_SESSION['acctype']))
 <script type="text/javascript">
     $(document).ready(function(){
         var url = 'process/ProcessAppSupport.php'; 
+        
+        $("#txtcardnumber").focus(function(){
+                    $("#txtcardnumber").bind('paste', function(event) {
+                        setTimeout(function(event) {
+                            var data = $("#txtcardnumber").val();
+                            if(!specialcharacter(data)){
+                                $("#txtcardnumber").val("");
+                                $("#txtcardnumber").focus();
+                            }
+                        }, 0);
+                    });
+            });
        
             //submit button event to display loyalty card info
             jQuery("#btnconfirm").click(function()

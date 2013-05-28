@@ -2573,3 +2573,17 @@ function chkOverride(){
                 return false;
             }
         }
+        
+        function specialcharacter(elementvalue)
+        {
+            var iChars = "!`@#$%^&*()+=-[]\\\';,./{}|\":<>?~_";   
+            var data = elementvalue;
+            for (var i = 0; i < data.length; i++)
+            {      
+                if (iChars.indexOf(data.charAt(i)) != -1)
+                {    
+                    return false; 
+                } 
+            }
+            return true;
+        }

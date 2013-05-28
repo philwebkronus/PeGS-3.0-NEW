@@ -31,6 +31,19 @@ $vaccesspages = array('9','6');
         <script type="text/javascript">
         $(document).ready(function()
         {  
+            
+            $("#txtcardnumber").focus(function(){
+                    $("#txtcardnumber").bind('paste', function(event) {
+                        setTimeout(function(event) {
+                            var data = $("#txtcardnumber").val();
+                            if(!specialcharacter(data)){
+                                $("#txtcardnumber").val("");
+                                $("#txtcardnumber").focus();
+                            }
+                        }, 0);
+                    });
+            });
+            
             //source combo box event
             $("#cmbsource").change(function() 
             {
@@ -176,7 +189,7 @@ $vaccesspages = array('9','6');
                                     {name:'TerminalCode',index:'TerminalCode',align: 'center', width:120},
                                     {name:'ServiceName',index:'ServiceName',align: 'center', width:120},
                                     {name:'TransactionType',index:'TransactionType', align: 'center', width:150},
-                                    {name:'TransactionReferenceID',index:'TransactionReferenceID', align: 'center'},
+                                    {name:'ServiceTransactionID',index:'ServiceTransactionID', align: 'center'},
                                     {name:'Amount',index:'Amount', align: 'center', width:100, align: 'right'},
                                     {name:'DateCreated',index:'DateCreated', align: 'right', width:210},
                                     {name:'DateEnded',index:'DateEnded', align: 'right', width:150},

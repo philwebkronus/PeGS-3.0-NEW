@@ -32,6 +32,18 @@
         $(document).ready(function(){
 
             var url = 'process/ProcessTopUp.php';
+
+            $("#txtcardnumber").focus(function(){
+                    $("#txtcardnumber").bind('paste', function(event) {
+                        setTimeout(function(event) {
+                            var data = $("#txtcardnumber").val();
+                            if(!specialcharacter(data)){
+                                $("#txtcardnumber").val("");
+                                $("#txtcardnumber").focus();
+                            }
+                        }, 0);
+                    });
+            });
             
             //oncheck event of with membership card checkbox
 //            $("#checkbox1").change(function() 

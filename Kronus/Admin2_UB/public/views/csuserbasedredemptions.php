@@ -32,6 +32,18 @@ if(isset($_SESSION['acctype']))
     <script type="text/javascript">
             $(document).ready(function(){
                 
+            $("#txtcardnumber").focus(function(){
+                    $("#txtcardnumber").bind('paste', function(event) {
+                        setTimeout(function(event) {
+                            var data = $("#txtcardnumber").val();
+                            if(!specialcharacter(data)){
+                                $("#txtcardnumber").val("");
+                                $("#txtcardnumber").focus();
+                            }
+                        }, 0);
+                    });
+            });
+                
 //                $("#checkbox1").change(function() 
 //                {                
 //                    if($('#checkbox1').attr("checked"))
