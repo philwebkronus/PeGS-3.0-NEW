@@ -45,6 +45,30 @@
                     });
             });
             
+            $("#txtticketub").focus(function(){
+                    $("#txtticketub").bind('paste', function(event) {
+                        setTimeout(function(event) {
+                            var data = $("#txtticketub").val();
+                            if(!specialcharacter(data)){
+                                $("#txtticketub").val("");
+                                $("#txtticketub").focus();
+                            }
+                        }, 0);
+                    });
+            });
+            
+            $("#txtremarksub").focus(function(){
+                    $("#txtremarksub").bind('paste', function(event) {
+                        setTimeout(function(event) {
+                            var data = $("#txtremarksub").val();
+                            if(!specialcharacter(data)){
+                                $("#txtremarksub").val("");
+                                $("#txtremarksub").focus();
+                            }
+                        }, 0);
+                    });
+            });
+            
             //oncheck event of with membership card checkbox
 //            $("#checkbox1").change(function() 
 //            {          

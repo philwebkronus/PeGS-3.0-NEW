@@ -154,9 +154,9 @@ $vaccesspages = array('9');
                                     paginate: function() {return $("#paginate").val();}
                                       },
                             datatype: "json",
-                            colNames:['Loyalty Card','Transaction Reference ID', 'Terminal Code', 'Transaction Type', 'Service Reference ID', 'Amount','Transaction Date','Status','Created By'],
+                            colNames:['Transaction Reference ID', 'Terminal Code', 'Transaction Type', 'Service Reference ID', 'Amount','Transaction Date','Status','Created By'],
                             colModel:[
-                                    {name:'LoyaltyCard',index:'LoyaltyCard', align: 'center', width:150},
+                                    //{name:'LoyaltyCard',index:'LoyaltyCard', align: 'center', width:150},
                                     {name:'TransactionReferenceID',index:'TransactionReferenceID',align: 'left', width:210},
                                     {name:'TerminalID',index:'TerminalID', align: 'center', width:140},
                                     {name:'TransactionType',index:'TransactionType', align: 'left'},

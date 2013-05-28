@@ -2576,7 +2576,7 @@ function chkOverride(){
         
         function specialcharacter(elementvalue)
         {
-            var iChars = "!`@#$%^&*()+=-[]\\\';,./{}|\":<>?~_";   
+            var iChars = "!`@#$%^&*()+=[]\\\';,./{}|\":<>?~_";   
             var data = elementvalue;
             for (var i = 0; i < data.length; i++)
             {      

@@ -116,14 +116,6 @@ $vaccesspages = array('9');
              //On Click function of Submit button    
             $('#btnOK').click(function()
             {
-                document.getElementById('loading').style.display='none';
-                document.getElementById('light2').style.display='block';
-                document.getElementById('fade2').style.display='block';    
-            });
-             
-            //On Click function of YES button    
-            $('#btnSubmit').click(function()
-            {
                 if(document.getElementById('cmbsite').value == "-1")
                 {
                     alert("Please select site");
@@ -131,7 +123,17 @@ $vaccesspages = array('9');
                     return false;
                 }
                 else
-                {    
+                {
+                document.getElementById('loading').style.display='none';
+                document.getElementById('light2').style.display='block';
+                document.getElementById('fade2').style.display='block';
+                }
+            });
+             
+            //On Click function of YES button    
+            $('#btnSubmit').click(function()
+            {
+                    
                     jQuery.ajax({
                         url: url,
                         type: 'post',
@@ -160,7 +162,7 @@ $vaccesspages = array('9');
                             }
                         }
                     });
-                }    
+                    
             });
 });
     </script>
@@ -230,7 +232,7 @@ $vaccesspages = array('9');
             <div align="right">
                 <input type="button" id="btnSubmit" value="YES" onclick="document.getElementById('light2').style.display='none';document.getElementById('fade2').style.display='none'" />
                 
-                <input type="button" id="btnok" value=" NO" onclick="document.getElementById('light2').style.display='none';document.getElementById('fade2').style.display='none'" />
+                <input type="button" id="btnCancel" value=" NO" onclick="document.getElementById('light2').style.display='none';document.getElementById('fade2').style.display='none'" />
             </div>        
             </div>
             <div id="fade2" class="black_overlay"></div>

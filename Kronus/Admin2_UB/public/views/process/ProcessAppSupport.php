@@ -339,7 +339,7 @@ if($connected)
                                 $results = preg_split("/\-/",$vview['TerminalCode']);
                                 $results2 = preg_split("/\ID/", $results[1]);
                                 $responce->rows[$i]['id']=$vview['TransactionDetailsID'];
-                                $responce->rows[$i]['cell']=array($vview['LoyaltyCard'],$vview['TransactionReferenceID'],$results2[1],$vtranstype,$vview['ServiceName'], number_format($vview['Amount'],2),$vview['DateCreated'],$vstatus, $vview['UserName']);
+                                $responce->rows[$i]['cell']=array($vview['TransactionReferenceID'],$results2[1],$vtranstype,$vview['ServiceTransactionID'], number_format($vview['Amount'],2),$vview['DateCreated'],$vstatus, $vview['UserName']);
                                 $i++;
                              }
                         }
@@ -432,7 +432,7 @@ if($connected)
                                                list($sites, $sitecodez) = split("-", $vview['SiteCode']);
                                                $results = substr($vview['TerminalCode'], strlen($vview['SiteCode']));
                                                $responce->rows[$i]['id']=$vview['TransactionReferenceID'];
-                                               $responce->rows[$i]['cell']=array($sitecodez,$results,$vview['ServiceName'],$vtranstype,$vview['TransactionReferenceID'], 
+                                               $responce->rows[$i]['cell']=array($sitecodez,$results,$vview['ServiceName'],$vtranstype,$vview['ServiceTransactionID'], 
                                                    number_format($vview['Amount'],2),$vview['StartDate'],$vview['EndDate'],$vstatus, $user);
                                                $i++;
 
@@ -2017,7 +2017,7 @@ if($connected)
                                     
                                     $isaudit = $oas->logtoaudit($new_sessionid, $vaccID, $vtransdetails, $vdate, $vipaddress, $vauditfuncID);
                                     
-                                    $txtfile = "TerminalPasswords.txt";
+                                    $txtfile = __DIR__."/../sys/log/TerminalPasswords.txt";
                                     //Write the result/s in a Log file
                                     $writetologs = $oas->createTerminalPwdLogs($arrsuccess, $arrerror, $txtfile);
                                     
@@ -2145,9 +2145,13 @@ if($connected)
                 exit;
             break;
             case 'ShowTerminalPassword':
-                $vfile = ROOT_DIR."TerminalPasswords.txt";
+                $vfile = ROOT_DIR."sys/log/TerminalPasswords.txt";
                 $rresult = $oas->getfilecontents($vfile);
-                echo json_encode($rresult);
+                if($rresult)
+                    echo json_encode($rresult);
+                else 
+                    echo 'Change Terminal Password Logs: Log file/s not found';
+                
                 $oas->close();
                 exit;
             break;

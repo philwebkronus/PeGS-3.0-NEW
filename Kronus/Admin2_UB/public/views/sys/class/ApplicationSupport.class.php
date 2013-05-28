@@ -889,20 +889,25 @@ class ApplicationSupport extends DBHandler
     //Logs Monitoring: get log file contents
     function getfilecontents($zfile)
     {
-        $file = fopen($zfile, "r") or die("Cannot read file");  
-        $arrcontent = array();
-        while (!feof($file))   
-        {
-           $display = fgets($file, filesize($zfile));
-           
-           if($display <> false)
-           {
-               $arrdisplay = array($display);  
-               array_push($arrcontent, $display);
-           }
-        }  
-        fclose($file);  
-        return $arrcontent;
+        if(file_exists($zfile)){
+            $file = fopen($zfile, "r");  
+            $arrcontent = array();
+            while (!feof($file))   
+            {
+               $display = fgets($file, filesize($zfile));
+
+               if($display <> false)
+               {
+                   $arrdisplay = array($display);  
+                   array_push($arrcontent, $display);
+               }
+            }  
+            fclose($file); 
+            return $arrcontent;
+        }
+        else
+            return false;
+       
     }
     
     //Logs Monitoring: get cashier's logs path

@@ -306,12 +306,11 @@ $vaccesspages = array('12');
                             sitecode : function(){return jQuery("#cmbsite").find("option:selected").text();}
                          },
                datatype: "json",
-               colNames:['TransactionSummaryID', 'SiteCode','TerminalCode','Loyalty Card','ServiceName','Deposit','Reload','Withdrawal','DateStarted','DateEnded'],
+               colNames:['TransactionSummaryID', 'SiteCode','TerminalCode','ServiceName','Deposit','Reload','Withdrawal','DateStarted','DateEnded'],
                colModel:[
                          {name:'TransactionSummaryID',index:'TransactionsSummaryID',align: 'center', sortable: false},
                          {name:'SiteCode', index:'SiteCode', align:'center', sortable: false},
                          {name:'TerminalCode',index:'TerminalCode', align: 'center', sortable: false},
-                         {name:'LoyaltyCard',index:'LoyaltyCard', align: 'center', sortable: false},
                          {name:'ServiceName',index:'ServiceName', align: 'center', sortable: false},
                          {name:'Deposit',index:'Deposit', align: 'right', sortable: false},
                          {name:'Reload',index:'Reload', align: 'right', sortable: false},

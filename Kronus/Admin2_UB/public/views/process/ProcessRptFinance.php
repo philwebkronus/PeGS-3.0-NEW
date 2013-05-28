@@ -166,7 +166,7 @@ if($connected)
                          $vreload = $vview['Reload'];
                          $vwithdraw = $vview['Withdrawal'];
                          $response->rows[$i]['id']=$vview['TransactionSummaryID'];
-                         $response->rows[$i]['cell']=array($vview['TransactionSummaryID'], $_POST['sitecode'], $rterminalCode, $vview['LoyaltyCard'], $vview['ServiceName'],
+                         $response->rows[$i]['cell']=array($vview['TransactionSummaryID'], $_POST['sitecode'], $rterminalCode, $vview['ServiceName'],
                             number_format($vdeposit, 2), number_format($vreload, 2), number_format($vwithdraw, 2),
                             $vview['DateStarted'], $vview['DateEnded']);
                          $i++;
@@ -420,7 +420,7 @@ if($connected)
                 //create the instance of the exportexcel format
                 $excel_obj = new ExportExcel("$fn");
 
-                $header = array('TransactionSummaryID', 'SiteCode','TerminalCode','Loyalty Card','Service Name',
+                $header = array('TransactionSummaryID', 'SiteCode','TerminalCode','Service Name',
                     'Deposit','Reload','Withdrawal','DateStarted','DateEnded');
                 
                 $result = $orptfinance->showtranstracking($type="export",$vSiteID, $vTerminalID, $vtranstype, $vdatefrom, $vdateto);
@@ -440,7 +440,6 @@ if($connected)
                                 'TerminalID'=>$value['TerminalID'],
                                 'SiteID'=>$value['SiteID'],
                                 'TerminalCode'=>$value['TerminalCode'],
-                                'LoyaltyCard'=>$value['LoyaltyCard'], 
                                 'ServiceName'=>$value['ServiceName'],
                                 'Withdrawal'=>'0.00',
                                 'Deposit'=>'0.00',
@@ -481,13 +480,12 @@ if($connected)
                       $excelvalues = array(0 => $vview['TransactionSummaryID'],
                                            1 => $sitecode,
                                            2 => $rterminalCode,
-                                           3 => $vview['LoyaltyCard'],
-                                           4 => $vview['ServiceName'],
-                                           5 => number_format($vdeposit, 2, '.', ','), 
-                                           6 => number_format($vreload, 2, '.', ','), 
-                                           7 => number_format($vwithdraw, 2, '.', ','), 
-                                           8 => $vview['DateStarted'],
-                                           9 => $vview['DateEnded']
+                                           3 => $vview['ServiceName'],
+                                           4 => number_format($vdeposit, 2, '.', ','), 
+                                           5 => number_format($vreload, 2, '.', ','), 
+                                           6 => number_format($vwithdraw, 2, '.', ','), 
+                                           7 => $vview['DateStarted'],
+                                           8 => $vview['DateEnded']
                                          );
                       array_push($completeexcelvalues,$excelvalues); //push the values for site transactions per day
                       array_push($arrdeposit, $vdeposit);
@@ -551,7 +549,7 @@ if($connected)
                 $pdf->c_setHeader('Transaction Tracking');
                 $pdf->html.='<div style="text-align:center;">As of ' . $vdatefrom . '</div>';
                 $pdf->SetFontSize(10);
-                $pdf->c_tableHeader(array('TransactionSummaryID', 'SiteCode','TerminalCode','Loyalty Card','Service Name',
+                $pdf->c_tableHeader(array('TransactionSummaryID', 'SiteCode','TerminalCode','Service Name',
                     'Deposit','Reload','Withdrawal','DateStarted','DateEnded'));
 
                 $result = $orptfinance->showtranstracking($type="export",$vSiteID, $vTerminalID, $vtranstype, $vdatefrom, $vdateto);
@@ -571,7 +569,6 @@ if($connected)
                                 'TerminalID'=>$value['TerminalID'],
                                 'SiteID'=>$value['SiteID'],
                                 'TerminalCode'=>$value['TerminalCode'],
-                                'LoyaltyCard'=>$value['LoyaltyCard'],
                                 'ServiceName'=>$value['ServiceName'],
                                 'Withdrawal'=>'0.00',
                                 'Deposit'=>'0.00',
@@ -613,13 +610,12 @@ if($connected)
                       $pdf->c_tableRow(array(0 => $vview['TransactionSummaryID'],
                                              1 => $sitecode,
                                              2 => $rterminalCode,
-                                             3 => $vview['LoyaltyCard'],
-                                             4 => $vview['ServiceName'],
-                                             5 => number_format($vdeposit, 2, '.', ','), 
-                                             6 => number_format($vreload, 2, '.', ','), 
-                                             7 => number_format($vwithdraw, 2, '.', ','), 
-                                             8 => $vview['DateStarted'],
-                                             9 => $vview['DateEnded']
+                                             3 => $vview['ServiceName'],
+                                             4 => number_format($vdeposit, 2, '.', ','), 
+                                             5 => number_format($vreload, 2, '.', ','), 
+                                             6 => number_format($vwithdraw, 2, '.', ','), 
+                                             7 => $vview['DateStarted'],
+                                             8 => $vview['DateEnded']
                                       ));
 
                       array_push($arrdeposit, $vdeposit);
