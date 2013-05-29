@@ -57,15 +57,14 @@ $dtBirthDate->ShowCaption = false;
 $dtBirthDate->YearsToDisplay = "-100";
 $dtBirthDate->CssClass = "validate[required]";
 $dtBirthDate->isRenderJQueryScript = true;
+$dtBirthDate->Size = 27;
 $fproc->AddControl($dtBirthDate);
 
 $txtplayername = new TextBox("txtplayername", "txtplayername", "Name: ");
 $txtplayername->CssClass = "validate[required,custom[onlyLetterSp], minSize[2]]";
 $txtplayername->Length = 90;
-
+$txtplayername->Size = 30;
 $fproc->AddControl($txtplayername);
-$txtplayerage = new TextBox("txtplayerage", "txtplayerage", "Age: ");
-$fproc->AddControl($txtplayerage);
 
 $ConfirmButton = new Button("ConfirmButton", "ConfirmButton", "Confirm");
 $ConfirmButton->IsSubmit = true;
@@ -80,13 +79,14 @@ $fproc->AddControl($CancelButton);
 $txtAge = new TextBox("txtAge", "txtAge", "Age");
 $txtAge->ShowCaption = false;
 $txtAge->Length = 30;
-$txtAge->Size = 3;
+$txtAge->Size = 2;
 $txtAge->CssClass = "validate[required]";
 $txtAge->ReadOnly = true;
 $fproc->AddControl($txtAge);
 
 $txtplayerIDNumber = new TextBox("txtplayerIDNumber", "txtplayerIDNumber", "I.D: ");
 $txtplayerIDNumber->Length = 30;
+$txtplayerIDNumber->Size = 31;
 $txtplayerIDNumber->CssClass = "validate[required,custom[onlyLetterNumber]]";
 $fproc->AddControl($txtplayerIDNumber);
 
@@ -313,21 +313,21 @@ if ((isset($_GET["oldnumber"]) && (htmlentities($_GET["oldnumber"])))
     <h1> Membership Card Activation </h1>
     <table>
         <tr>
-            <td width="20%"> VIP Rewards Card Number: </td>
-            <td width="30%"><strong><?php echo $LoyatyCardNumber; ?></strong></td>
-            <td width="20%"> Membership Card Number:</td>
+            <td width="20%" align="right"> VIP Card No </td>
+            <td width="20%"><strong><?php echo $LoyatyCardNumber; ?></strong></td>
+            <td width="30%" align="right"> Membership Card No:</td>
             <td width="30%"><strong><?php echo $NewMembershipCardNumber; ?></strong></td>
         </tr>
         <tr>
-            <td>Card Type: </td>
+            <td align="right">Card Type </td>
             <td><strong><?php echo $CardName; ?></strong></td>
-            <td>Issuing Cafe:</td>
+            <td align="right">Issuing Cafe</td>
             <td><strong><?php echo $site; ?></strong></td>
         </tr>
         <tr>
-            <td>Current Point Balance: </td>
+            <td align="right">Current Points </td>
             <td><strong><?php echo $CardPoints; ?></strong></td>
-            <td>Date and Time: </td>
+            <td align="right">Date and Time </td>
             <td><strong><span id="servertime"></span></strong></td>
         </tr>
     </table>
@@ -336,12 +336,12 @@ if ((isset($_GET["oldnumber"]) && (htmlentities($_GET["oldnumber"])))
         <tr>
             <td>Name</td>
             <td><?php echo $txtplayername; ?></td>
-            <td colspan="2">&nbsp;</td>
+            <td colspan="2">&nbsp;&nbsp;ID Number</td>
         </tr>
         <tr>
             <td>Birthdate</td>
             <td><?php echo $dtBirthDate; ?></td>
-            <td>I.D</td>
+            <td>&nbsp;</td>
             <td><?php echo $txtplayerIDNumber . '<br />' . $ComboID; ?></td>
         </tr>
         <tr>

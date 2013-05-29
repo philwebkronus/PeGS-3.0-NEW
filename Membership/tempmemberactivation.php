@@ -57,13 +57,13 @@ $dtBirthDate->ShowCaption = false;
 $dtBirthDate->YearsToDisplay = "-100";
 $dtBirthDate->CssClass = "validate[required]";
 $dtBirthDate->isRenderJQueryScript = true;
-
+$dtBirthDate->Size = 27;
 $fproc->AddControl($dtBirthDate);
 
 $txtIDPresented = new TextBox("txtIDPresented", "txtIDPresented", "IDPresented");
 $txtIDPresented->ShowCaption = false;
 $txtIDPresented->Length = 30;
-$txtIDPresented->Size = 15;
+$txtIDPresented->Size = 31;
 $txtIDPresented->CssClass = "validate[required, custom[onlyLetterNumber]]";
 $fproc->AddControl($txtIDPresented);
 
@@ -80,7 +80,7 @@ $fproc->AddControl($cboIDSelection);
 $txtAge = new TextBox("txtAge", "txtAge", "Age");
 $txtAge->ReadOnly = true;
 $txtAge->Length = 30;
-$txtAge->Size = 15;
+$txtAge->Size = 2;
 $fproc->AddControl($txtAge);
 
 $rdoGroupGender = new RadioGroup("rdoGender", "rdoGender", "Gender");
@@ -484,44 +484,44 @@ else
 <h1>Membership Card Activation</h1>
 <table>
     <tr>
-        <td>Temporary Account Code: </td>
-        <td><?php echo $tempAccountCode; ?></td>
-        <td>Membership Card Number: </td>
-        <td><?php echo $MembershipCardNumber; ?></td>
+        <td width="20%">Temp Account Code </td>
+        <td width="30%"><?php echo $tempAccountCode; ?></td>
+        <td width="20%">Membership Card No </td>
+        <td width="30%"><?php echo $MembershipCardNumber; ?></td>
     </tr>
     <tr>
-        <td>Created on: </td>
+        <td>Created On </td>
         <td><?php echo $createdon; ?></td>
-        <td>Issuing Cafe: </td>
+        <td>Issuing Cafe </td>
         <td><?php echo $sitename; ?></td>
     </tr>
     <tr>
-        <td>Current Points Balance: </td>
+        <td>Current Points </td>
         <td><?php  echo $currentpoints; ?></td>
-        <td>Date and Time: </td>
+        <td>Date and Time </td>
         <td><span id="servertime"></span></td>
     </tr>
 </table>
 <hr>
 <table>
     <tr>
-        <td>Name:</td>
+        <td>Name</td>
         <td><?php echo $txtName; ?></td>
-        <td colspan="2">&nbsp</td>
+        <td colspan="2">&nbsp;&nbsp;ID Number</td>
     </tr>
     <tr>
-        <td>Birthdate:</td>
+        <td>Birthdate</td>
         <td><?php echo $dtBirthDate; ?></td>
-        <td>ID:</td>
+        <td>&nbsp;</td>
         <td><?php echo $txtIDPresented; ?> <br /> <?php echo $cboIDSelection; ?></td>
     </tr>
     <tr>
-        <td>Age:</td>
+        <td>Age</td>
         <td><?php echo $txtAge; ?></td>
         <td colspan="2">&nbsp</td>
     </tr>
     <tr>
-        <td>Gender:</td>
+        <td>Gender</td>
         <td><?php echo $rdoGroupGender->Radios[0]; ?><?php echo $rdoGroupGender->Radios[1]; ?></td>
         <td>&nbsp</td>
         <td><?php echo $btnCancel; ?><?php echo $btnSubmit; ?></td>
