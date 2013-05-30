@@ -152,7 +152,7 @@ function btnProceed(){
     } else if(status == "Inactive"){
             hideLightbox();
             window.showModalDialog(url_activate+'?oldnumber='+loyaltycard+'&newnumber='+membershipcard+
-                                                                '&site='+sitecode+'&AID='+aid,"MigrateAccount",'resizable:no; dialogHeight:380px; dialogWidth:600px;');
+                                                                '&site='+sitecode+'&AID='+aid,"MigrateAccount",'scroll: no;resizable:no; dialogHeight:380px; dialogWidth:600px;');
     }
 }
 
@@ -184,7 +184,7 @@ function btnSubmit(){
                     {
                         hideLightbox();
                         window.showModalDialog(url_tempactivate+'?tempnumber='+temp_card+'&newnumber='+memcard+
-                                                                '&mid='+json.CardInfo.MID+'&site='+sitecode+'&aid='+aid+'&isreg=1','MigrateAccount','resizable:no; dialogHeight:380px; dialogWidth:600px; ');
+                                                                '&mid='+json.CardInfo.MID+'&site='+sitecode+'&aid='+aid+'&isreg=1','MigrateAccount','scroll: no;resizable:no; dialogHeight:380px; dialogWidth:600px; ');
                     } else {
                         showLightbox(function(){                            
                             if(StatusValue == "Inactive Temporary"){

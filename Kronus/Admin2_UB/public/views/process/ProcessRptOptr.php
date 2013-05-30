@@ -7,6 +7,7 @@
  */
 
 include __DIR__."/../sys/class/RptOperator.class.php";
+include __DIR__."/../sys/class/LoyaltyUBWrapper.class.php";
 require __DIR__.'/../sys/core/init.php';
 require_once __DIR__.'/../sys/class/CTCPDF.php';
 require_once __DIR__."/../sys/class/class.export_excel.php";
@@ -22,6 +23,7 @@ if(isset($_SESSION['accID']))
 }
 
 $orptoptr = new RptOperator($_DBConnectionString[0]);
+$loyalty= new LoyaltyUBWrapper();
 $connected = $orptoptr->open();
 $nopage = 0;
 if($connected)
@@ -489,7 +491,7 @@ if($connected)
        $siteID = strip_tags($_POST["siteID"]);
        
        $actionType = $_POST["ActiveSessionAction"];
-       
+      
        $data = "";
        
        switch($actionType) {
@@ -506,6 +508,15 @@ if($connected)
                        $_CAPIUsername, $_CAPIPassword, $_CAPIPlayerName, $_MicrogamingCurrency, $_ptcasinoname,$_PlayerAPI,$_ptsecretkey);
                
                break;
+           //for user based report
+           case "sessionrecordub":
+              
+               $cardnumber = $_POST["txtcardnumber"];
+               
+               $data = $orptoptr->getActiveSessionPlayingBalanceub($cardnumber, $_SESSION['ServiceUserName'], $_ServiceAPI, 
+                       $_CAPIUsername, $_CAPIPassword, $_CAPIPlayerName, $_MicrogamingCurrency, $_ptcasinoname,$_PlayerAPI,$_ptsecretkey);
+               
+               break;
            
        }
        
@@ -514,6 +525,81 @@ if($connected)
        unset($data);
        
    }
+   //get membersihp card details
+   else if(isset($_POST["pageub"]) == 'GetLoyaltyCard') {
+       
+       $cardnumber = $_POST['txtcardnumber'];
+       
+       
+        if(strlen($cardnumber) > 0) {
+            $loyaltyResult = $loyalty->getCardInfo2($cardnumber, $cardinfo, 1);
+
+            $obj_result = json_decode($loyaltyResult);
+
+            $statuscode = $obj_result->CardInfo->StatusCode;
+
+            if(!is_null($statuscode) ||$statuscode == '')
+            {
+                    if($statuscode == 1 || $statuscode == 5)
+                    {
+                       $casinoarray_count = count($obj_result->CardInfo->CasinoArray);
+
+                       if($casinoarray_count != 0)
+                       {
+                           for($ctr = 0; $ctr < $casinoarray_count;$ctr++) {
+                               $servicename = $orptoptr->getServiceName($obj_result->CardInfo->CasinoArray[$ctr]->ServiceID);
+                               $casinoinfo = array(
+                                   array(
+                                         'UserName'  => $obj_result->CardInfo->MemberName,
+                                         'MobileNumber'  => $obj_result->CardInfo->MobileNumber,
+                                         'Email'  => $obj_result->CardInfo->Email,
+                                         'Birthdate' => $obj_result->CardInfo->Birthdate,
+                                         'Casino' => $servicename,
+                                         'CardNumber' => $obj_result->CardInfo->CardNumber,
+                                         'Login' => $obj_result->CardInfo->CasinoArray[$ctr]->ServiceUsername,
+                                     ),
+                               );
+
+                               $_SESSION['ServiceUserName'] = $obj_result->CardInfo->CasinoArray[$ctr]->ServiceUsername;
+                               $_SESSION['MID'] = $obj_result->CardInfo->MemberID;
+                               echo json_encode($casinoinfo);
+                           }
+                      }
+                      else
+                      {
+                       $services = "Error: Casino is empty";
+                       echo "$services";
+                      }
+                   }
+                   else
+                   {  
+                       //check membership card status
+                       $statusmsg = $orptoptr->membershipcardStatus($statuscode);
+                       $services = "Error: ".$statusmsg;
+                      echo "$services";
+
+                   }                        
+
+            }
+            else
+            {
+                $statuscode = 100;
+                //check membership card status
+                   $statusmsg = $orptoptr->membershipcardStatus($statuscode);
+                   $services = "Error: ".$statusmsg;
+                  echo "$services";
+            }
+
+        }
+        else {
+            echo "Error: Invalid input detected.";
+        }
+       
+   }
+   
+   
+   
+   
    /***************************** EXPORTING EXCEL STARTS HERE *******************************/
    elseif(isset($_GET['excel']) == "sitetrans")
    {

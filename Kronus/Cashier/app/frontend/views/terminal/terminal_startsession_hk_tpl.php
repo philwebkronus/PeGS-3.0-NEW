@@ -52,7 +52,8 @@ $(document).ready(function(){
                 <th><?php echo MI_HTML::label($startSessionFormModel, 'loyalty_card', 'Membership Card:') ?></th><td><?php echo MI_HTML::inputPassword($startSessionFormModel, 'loyalty_card') ?></td>
             </tr>
             <tr>
-                <th><a href="javascript:void(0);" id="get_info_card">Get Card Info</a></th><td><b><a href="javascript:void(0);" id="register">Register</a></b></td>
+                <th colspan ="2"><center><a href="javascript:void(0);" id="get_info_card">Get Card Info</a></center></th>
+                <!--<td><b><a href="javascript:void(0);" id="register">Register</a></b></td>-->
             </tr>    
             <tr>
                 <th><input id="btnInitailDepositHk" type="button" value="Submit" /></th>

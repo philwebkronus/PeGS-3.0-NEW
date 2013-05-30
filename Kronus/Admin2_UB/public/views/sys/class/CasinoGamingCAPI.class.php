@@ -208,6 +208,9 @@ class CasinoGamingCAPI {
                         $hashedPassword, $agentID, $currentPosition, $thirdPartyPID);
                         break;
                 case strstr($vprovidername, "PT"):
+                        
+                        /**
+                         * Disable creation of terminal based account in PT 05/29/13
                         $casinoApiHandler = $this->configurePT($url, $capiusername, $capipassword);
                         $createTerminalResult = $casinoApiHandler->CreateTerminalAccount($login, $password,
                         $aid, $currency, $email, $fname, $lname, $dayphone, $evephone,
@@ -215,6 +218,12 @@ class CasinoGamingCAPI {
                         $birthdate, $fax, $occupation, $sex, $alias, $casinoID, $ip,
                         $mac, $downloadID, $clientID, $putInAffPID, $calledFromCasino,
                         $hashedPassword, $agentID, $currentPosition, $thirdPartyPID,$isVIP);
+                         * 
+                         **/
+                    
+                         //always pass true in order to mapped PT casino in a
+                         //specific terminal
+                         $createTerminalResult = array("IsSucceed"=>true); 
                         break;
                 default:
                         echo 'Invalid Casino Name.';
@@ -257,8 +266,16 @@ class CasinoGamingCAPI {
                 $changePwdResult = $casinoApiHandler->ChangeTerminalPassword($casinoID, $login, $oldpassword, $newpassword);
                 break;
             case (strstr($vprovidername, "PT")):
+                
+                /** Disable change of terminal based account password in PT 05/29/13
                 $casinoApiHandler = $this->configurePT($url, $capiusername, $capipassword);
                 $changePwdResult = $casinoApiHandler->ChangeTerminalPassword($casinoID, $login, $oldpassword, $newpassword);
+                 */
+                
+                //always pass true in order to mapped PT casino in a specific terminal
+                $changePwdResult = array('IsSucceed'=>true,'PlayerInfo'=>array('transaction'=>
+                                   array('@attributes'=>array('result'=>'OK')))); 
+                //['PlayerInfo']['transaction']['@attributes']['result'] != "OK"
                 break;
             default :
                 echo 'Invalid Provider Name';

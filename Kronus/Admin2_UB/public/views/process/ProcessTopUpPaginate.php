@@ -336,6 +336,88 @@ class ProcessTopUpPaginate extends BaseProcess {
         $topup->close();
     }
     
+    //this will render on Playing Balance Page User Based
+    public function playingBalanceub() 
+    {  
+        include_once __DIR__.'/../sys/class/TopUp.class.php';
+        $topup = new TopUp($this->getConnection());
+        $topup->open();   
+        $this->render('topup/topup_playing_balance_ub');     
+        $topup->close();
+    }
+    
+    
+    //check loyalty card number
+    public function getCardNumber() 
+    {  
+        include_once __DIR__.'/../sys/class/LoyaltyUBWrapper.class.php';
+        include_once __DIR__.'/../sys/class/TopUp.class.php';
+        $topup = new TopUp($this->getConnection());
+        $loyalty = new LoyaltyUBWrapper();
+        $topup->open();
+        $cardnumber = $_POST['cardnumber'];
+        $cardinfo = BaseProcess::$cardinfo;
+        $loyaltyResult = $loyalty->getCardInfo2($cardnumber, $cardinfo, 1);
+        
+        $obj_result = json_decode($loyaltyResult);
+
+        $statuscode = $obj_result->CardInfo->StatusCode;
+                    
+        if(!is_null($statuscode) ||$statuscode == '')
+        {
+                if($statuscode == 1 || $statuscode == 5)
+                {
+                   $casinoarray_count = count($obj_result->CardInfo->CasinoArray);
+
+                   if($casinoarray_count != 0)
+                   {
+                       for($ctr = 0; $ctr < $casinoarray_count;$ctr++) {
+                           $serviceid = $obj_result->CardInfo->CasinoArray[$ctr]->ServiceID;
+                           
+                           $servicename = $topup->getServiceName($serviceid);
+                           
+                           $casinoinfo = array(
+                               array(
+                                     'UserName'  => $obj_result->CardInfo->MemberName,
+                                     'MobileNumber'  => $obj_result->CardInfo->MobileNumber,
+                                     'Email'  => $obj_result->CardInfo->Email,
+                                     'Birthdate' => $obj_result->CardInfo->Birthdate,
+                                     'Casino' => $servicename,
+                                     'CardNumber' => $obj_result->CardInfo->CardNumber,
+                                     'Login' => $obj_result->CardInfo->CasinoArray[$ctr]->ServiceUsername,
+                                 ),
+                           );
+
+                           $_SESSION['ServiceUsername'] = $obj_result->CardInfo->CasinoArray[$ctr]->ServiceUsername;
+                           $_SESSION['MID'] = $obj_result->CardInfo->MemberID;
+                           echo json_encode($casinoinfo);
+                       }
+                  }
+                  else
+                  {
+                   $services = "User Based Redemption: Casino is empty";
+                   echo "$services";
+                  }
+               }
+               else
+               {  
+                   //check membership card status
+                   $statusmsg = $topup->membershipcardStatus($statuscode);
+                   $services = "User Based Redemption: ".$statusmsg;
+                   echo "$services";
+               }
+        }
+        else
+        {
+            $statuscode = 100;
+            //check membership card status
+            $statusmsg = $topup->membershipcardStatus($statuscode);
+            $services = "User Based Redemption: ".$statusmsg;
+            echo "$services";
+        }
+     $topup->close();      
+    }
+    
      //pagination for Playing Balance: get active terminals only
     public function getActiveTerminals() {
         include_once __DIR__.'/../sys/class/TopUp.class.php';
@@ -356,6 +438,59 @@ class ProcessTopUpPaginate extends BaseProcess {
         
         foreach($rows as $key => $row) {
             $balance = $this->getBalance($row);
+            /********************* GET BALANCE API ****************************/
+            
+            if(is_string($balance['Balance'])) {
+                $rows[$key]['PlayingBalance'] = (float)$balance['Balance'];
+            }  else {
+                $rows[$key]['PlayingBalance'] = number_format($balance['Balance'],2);
+            }
+        }
+        foreach($rows as $row) {
+            $temp_pbal = explode('.', $row['PlayingBalance']);
+            if(count($temp_pbal) != 2) {
+                if(is_string($row['PlayingBalance'])) {
+                    $row['PlayingBalance'] = $row['PlayingBalance'];
+                }
+                else
+                {
+                    $row['PlayingBalance'] = number_format($row['PlayingBalance'], 2);
+                }
+            }
+            $jqgrid->rows[] = array('id'=>$row['TerminalID'],'cell'=>array(
+                substr($row['SiteCode'], strlen(BaseProcess::$sitecode)),
+                $row['SiteName'], 
+                substr($row['TerminalCode'], strlen($row['SiteCode'])),
+                $row['PlayingBalance'], 
+                $row['ServiceName'],
+            ));
+        }
+        echo json_encode($jqgrid);
+        $topup->close();
+        unset($total_row, $params, $sort, $jqgrid, $rows, $jqgrid);
+        exit;
+    }
+    
+     //pagination for Playing Balance: get active terminals only user based
+    public function getActiveTerminalsUb() {
+        include_once __DIR__.'/../sys/class/TopUp.class.php';
+        //include_once __DIR__.'/../sys/class/CasinoAPIHandler.class.php';
+        include_once __DIR__.'/../sys/class/CasinoGamingCAPI.class.php';
+        
+        $topup = new TopUp($this->getConnection());
+        $topup->open();   
+        
+        $total_row = $topup->getActiveTerminalsTotalub();
+        $params = $this->getJqgrid($total_row, 's.SiteName');
+        $jqgrid = $params['jqgrid'];
+        if(isset($_GET['sidx']) && $_GET['sidx'] !=  '')
+            $sort = $_GET['sidx'];
+        else
+            $sort = 't.TerminalCode';
+        $rows = $topup->getActiveTerminalsub($params['sort'], $params['dir'], $params['start'], $params['limit']);
+        
+        foreach($rows as $key => $row) {
+            $balance = $this->getBalanceUB($row);
             /********************* GET BALANCE API ****************************/
             
             if(is_string($balance['Balance'])) {
@@ -568,6 +703,81 @@ class ProcessTopUpPaginate extends BaseProcess {
         $balance = $CasinoGamingCAPI->getBalance($providername, $row['ServiceID'], $url, 
                             $row['TerminalCode'], $capiusername, $capipassword, $capiplayername, 
                             $capiserverID);
+       
+        return array("Balance"=>$balance, "Casino"=>$providername);    
+        $topup->close();
+    }
+    
+    //method for get balance through API (Playing Balance)
+    protected function getBalanceUB($row) {
+        
+        include_once __DIR__.'/../sys/class/helper/common.class.php';
+        $topup = new TopUp($this->getConnection());
+        $topup->open(); 
+        $providername = $this->CasinoType($row['ServiceID']);
+        
+        switch (true)
+        {
+                case (strstr($providername, "RTG")):
+                    $url = self::$service_api[$row['ServiceID'] - 1];
+                    $capiusername = '';
+                    $capipassword = '';
+                    $capiplayername = '';
+                    $capiserverID = '';
+                    break;
+                case (strstr($providername, "MG")):
+                    $_MGCredentials = self::$service_api[$row['ServiceID'] - 1];
+                    list($mgurl, $mgserverID) =  $_MGCredentials;
+                    $url = $mgurl;
+                    $capiusername = self::$capi_username;
+                    $capipassword = self::$capi_password;
+                    $capiplayername = self::$capi_player;
+                    $capiserverID = $mgserverID;
+                    break;
+                case (strstr($providername, "PT")):
+                    $url = self::$player_api[$row['ServiceID'] - 1];
+                    $capiusername = self::$ptcasinoname;
+                    $capipassword = self::$ptSecretKey;
+                    $capiplayername = '';
+                    $capiserverID = '';
+                    break;
+        }
+        
+        
+        switch (true)
+        {
+                case (strstr($providername, "RTG")):
+                    $CasinoGamingCAPI = new CasinoGamingCAPI();
+                    $balance = $CasinoGamingCAPI->getBalance($providername, $row['ServiceID'], $url, 
+                            $row['TerminalCode'], $capiusername, $capipassword, $capiplayername, 
+                            $capiserverID);
+                    break;
+                case (strstr($providername, "MG")):
+                    $CasinoGamingCAPI = new CasinoGamingCAPI();
+                    $balance = $CasinoGamingCAPI->getBalance($providername, $row['ServiceID'], $url, 
+                            $row['TerminalCode'], $capiusername, $capipassword, $capiplayername, 
+                            $capiserverID);
+                    break;
+                case (strstr($providername, "PT")):
+                    $CasinoGamingCAPI = new CasinoGamingCAPI();
+                    $usermode = $topup->checkUserMode($row['ServiceID']);
+                    if($usermode == 0){
+                        $balance = $CasinoGamingCAPI->getBalance($providername, $row['ServiceID'], $url, 
+                            $row['TerminalCode'], $capiusername, $capipassword, $capiplayername, 
+                            $capiserverID);
+                    }
+                    else
+                    {
+                        $balance = $CasinoGamingCAPI->getBalance($providername, $row['ServiceID'], $url, 
+                            $_SESSION['ServiceUsername'], $capiusername, $capipassword, $capiplayername, 
+                            $capiserverID);   
+                    }    
+                    
+                    
+                    break;
+        }
+      
+        
        
         return array("Balance"=>$balance, "Casino"=>$providername);    
         $topup->close();

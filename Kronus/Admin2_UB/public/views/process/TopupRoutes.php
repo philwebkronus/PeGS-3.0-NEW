@@ -48,8 +48,17 @@ switch($_GET['action']) {
     case 'playingbalance':
         $process->playingBalance();
         break;
+    case 'playingbalanceub':
+        $process->playingBalanceub();
+        break;
     case 'getactiveterminals':
         $process->getActiveTerminals();
+        break;
+    case 'getcardnumber':
+        $process->getCardNumber();
+        break;
+    case 'getactiveterminalsub':
+        $process->getActiveTerminalsUb();
         break;
     case 'bettingcredit':
         $process->bettingCredit();

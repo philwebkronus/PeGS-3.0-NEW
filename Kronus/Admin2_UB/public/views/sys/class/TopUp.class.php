@@ -1421,10 +1421,10 @@ class TopUp extends DBHandler
                 at.UserName,
                 rs.ServiceName
                 FROM manualredemptions mr 
-                JOIN sites st ON mr.SiteID = st.SiteID 
-                JOIN terminals tm ON mr.TerminalID = tm.TerminalID
-                JOIN accounts at ON mr.ProcessedByAID = at.AID 
-                JOIN ref_services rs ON mr.ServiceID = rs.ServiceID
+                INNER JOIN sites st ON mr.SiteID = st.SiteID 
+                INNER JOIN terminals tm ON mr.TerminalID = tm.TerminalID
+                INNER JOIN accounts at ON mr.ProcessedByAID = at.AID 
+                LEFT JOIN ref_services rs ON mr.ServiceID = rs.ServiceID
                 WHERE mr.TransactionDate BETWEEN '$startdate' AND '$enddate'
                 ORDER BY $sort $dir LIMIT $start,$limit";
             $this->prepare($query);
@@ -1467,12 +1467,72 @@ class TopUp extends DBHandler
               $total_row = $rows[0]['totalrow'];
           unset($rows, $query, $condition, $sitecode);
           return $total_row;
-      }     
+      }
+      
+      /**
+      * @author Gerardo V. Jagolino Jr.
+      * @return array
+      * get total count rows by selecting active terminals via card number
+      */
+      public function getActiveTerminalsTotalub() {
+          $cardnumber = $_GET['cardnumber'];
+          $condition = " WHERE ts.LoyaltyCardNumber = '$cardnumber' ";
+          if($_GET['cardnumber'] == 'all') {
+              $condition = '';
+          }
+          $total_row = 0;
+          $query = "SELECT count(ts.TerminalID) AS totalrow FROM terminalsessions ts " .
+              "left join (terminals as t, sites as s) on (ts.TerminalID = t.terminalID and t.SiteID = s.SiteID) $condition " . 
+              "ORDER BY s.SiteCode ASC";
+          $this->prepare($query);
+          $this->execute();
+          $rows = $this->fetchAllData();
+          if($rows[0]['totalrow'])
+              $total_row = $rows[0]['totalrow'];
+          unset($rows, $query, $condition, $cardnumber);
+          return $total_row;
+      }
       
       public function getActiveTerminals($sort, $dir, $start, $limit) {
           $sitecode = $_GET['sitecode'];
           $condition = " WHERE s.SiteCode = '$sitecode' ";
           if($_GET['sitecode'] == 'all') {
+              $condition = '';
+          }
+          
+          $query = "SELECT ts.TerminalID, t.TerminalName,s.SiteName, s.POSAccountNo, s.SiteCode,ts.ServiceID,
+                            t.TerminalCode, rs.ServiceName FROM terminalsessions ts
+                            INNER JOIN terminals as t ON ts.TerminalID = t.terminalID 
+                            INNER JOIN sites as s ON t.SiteID = s.SiteID 
+                            INNER JOIN ref_services rs ON ts.ServiceID = rs.ServiceID
+                            $condition
+                            ORDER BY $sort $dir LIMIT $start,$limit";
+          $this->prepare($query);
+          $this->execute();
+          return $this->fetchAllData();
+      }
+      
+    //get service name
+    public function getServiceName($serviceID)
+    {
+        $sql = "SELECT ServiceName FROM ref_services WHERE ServiceID = ?";
+        $this->prepare($sql);
+        $this->bindparameter(1, $serviceID);
+        $this->execute();
+        $servicename = $this->fetchData();
+        return $servicename = $servicename['ServiceName'];
+    }
+    
+      /**
+      * @author Gerardo V. Jagolino Jr.
+      * @return array
+      *  selecting active terminals via card number
+      */
+      public function getActiveTerminalsub($sort, $dir, $start, $limit) {
+          $cardnumber = $_GET['cardnumber'];
+          
+          $condition = " WHERE ts.LoyaltyCardNumber = '$cardnumber' ";
+          if($_GET['cardnumber'] == 'all') {
               $condition = '';
           }
           
@@ -2018,6 +2078,22 @@ class TopUp extends DBHandler
         return $this->rowCount();
       }
       
+      
+      /**
+     * @author Gerardo V. Jagolino Jr.
+     * @param $status, $actualamount, $transid, $dateff, $transstatus, $manid
+     * @return array 
+     * update manual redemptions table with status 1
+     */
+      function updateManualRedemptionFailedub($status, $manid)
+      {
+        $this->prepare("UPDATE manualredemptions SET Status = ? WHERE ManualRedemptionsID = ?");
+        $this->bindparameter(1,$status);
+        $this->bindparameter(2,$manid);
+        $this->execute();
+        return $this->rowCount();
+      }
+      
      /**
      * @author Gerardo V. Jagolino Jr.
      * @param $array, $index, $search
@@ -2156,6 +2232,22 @@ class TopUp extends DBHandler
             $this->execute();
             return $this->fetchAllData();
         }
+        
+        /**
+         * @author Gerardo V. Jagolino Jr.
+         * @param $casino
+         * @return string 
+         * get UserMode of a certain casino service
+         */
+        public function checkUserMode($casino){
+        $sql = "SELECT UserMode FROM ref_services WHERE ServiceID = ?";
+        $this->prepare($sql);
+        $this->bindparameter(1, $casino);
+        $this->execute();
+        $usermode = $this->fetchData();
+        $usermode = $usermode['UserMode'];
+        return $usermode;
+    }
         
 }
 ?>

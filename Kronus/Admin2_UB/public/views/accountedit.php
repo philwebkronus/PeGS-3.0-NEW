@@ -182,13 +182,13 @@ if(isset($_SESSION['acctype']))
                     <td>With Passkey</td>
                      <?php  if($rpasskey == 1){ ?>
                         <td>
-                           Yes<input type="radio" id="optpkeyyes" name="optpkey" value="1" checked = "checked" readonly="readonly" />
-                           No<input type="radio" id="optpkeyno" name="optpkey" value="0" readonly="readonly" />
+                           Yes<input type="radio" id="optpkeyyes" name="optpkey" value="1" checked = "checked" readonly="readonly" disabled />
+                           No<input type="radio" id="optpkeyno" name="optpkey" value="0" readonly="readonly" disabled />
                         </td>
                       <?php } else { ?>
                         <td>
-                           Yes<input type="radio" id="optpkeyyes" name="optpkey" value="1" readonly="readonly" />
-                           No<input type="radio" id="optpkeyno" name="optpkey" value="0" checked = "checked" readonly="readonly" />
+                           Yes<input type="radio" id="optpkeyyes" name="optpkey" value="1" readonly="readonly" disabled />
+                           No<input type="radio" id="optpkeyno" name="optpkey" value="0" checked = "checked" readonly="readonly" disabled />
                         </td>
                        <?php  }  ?>
                 </tr>

@@ -582,6 +582,55 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         $topreport->close();
     }
     
+    //Playing Balance History Report (PDF)
+    public function playingBalancePdfUB() {
+        include_once __DIR__.'/../sys/class/CasinoGamingCAPI.class.php';
+        //$rows = $_SESSION['playing_balance'];
+        $topreport = new TopUpReportQuery($this->getConnection());
+        $topreport->open();
+        $cardnumber = $_POST['txtcardnumber'];
+        $rows = $topreport->getRptActiveTerminalsUB($cardnumber);
+        
+        foreach($rows as $key => $row) {
+            $balance = $this->getBalanceUB($row);
+            
+            /********************* GET BALANCE API ****************************/
+            if(is_string($balance['Balance'])) {
+                $rows[$key]['PlayingBalance'] = number_format($balance['Balance'],2);
+            } else {
+                $rows[$key]['PlayingBalance'] = number_format($balance['Balance'],2);
+            }
+        }
+        
+        $pdf = CTCPDF::c_getInstance();
+        $pdf->c_commonReportFormat();
+        $pdf->c_setHeader('Playing Balance');
+        $pdf->html.='<div style="text-align:center;">As of ' . date('l') . ', ' .
+              date('F d, Y') . ' ' . date('H:i:s A') .'</div>';
+        $pdf->SetFontSize(5);
+        $pdf->c_tableHeader2(array(
+                array('value'=>'Site / PEGS Code'),
+                array('value'=>'Site / PEGS Name'),
+                array('value'=>'POS Account'),
+                array('value'=>'Terminal Code'),
+                array('value'=>'Playing Balance'),
+                array('value'=>'Service Name')
+             ));
+        foreach($rows as $row) {
+            $pdf->c_tableRow2(array(
+                array('value'=>substr($row['SiteCode'], strlen(BaseProcess::$sitecode))), //removes ICSA-
+                array('value'=>$row['SiteName']),
+                array('value'=>$row['POSAccountNo']),
+                array('value'=>substr($row['TerminalCode'], strlen($row['SiteCode']))), //removes ICSA-($row['SiteCode'])
+                array('value'=>$row['PlayingBalance'],'align'=>'right'),
+                array('value'=>$row['ServiceName']),
+             ));
+        }
+        $pdf->c_tableEnd();
+        $pdf->c_generatePDF('PlayingBalance.pdf');
+        $topreport->close();
+    }
+    
     //Playing Balance History Report (Excel)
     public function playingBalanceExcel() {
         include_once __DIR__.'/../sys/class/CasinoGamingCAPI.class.php';
@@ -589,7 +638,7 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         //$rows = $_SESSION['playing_balance'];
         $topreport = new TopUpReportQuery($this->getConnection());
         $topreport->open();
-        $vsitecode = $_POST['selsite'];
+        $vsitecode = $_POST['txtcardnumber'];
         $rows = $topreport->getRptActiveTerminals($vsitecode);
         
         foreach($rows as $key => $row) {
@@ -624,6 +673,51 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         include 'ProcessTopUpExcel.php';  
         $topreport->close();
     }
+    
+    
+    //Playing Balance History Report (Excel)
+    public function playingBalanceExcelUB() {
+        include_once __DIR__.'/../sys/class/CasinoGamingCAPI.class.php';
+        $_SESSION['report_header'] = array('Site / PEGS Code','Site / PEGS Name', 'POS Account','Terminal Code','Playing Balance','Service Name');
+        //$rows = $_SESSION['playing_balance'];
+        $topreport = new TopUpReportQuery($this->getConnection());
+        $topreport->open();
+        $cardnumber = $_POST['txtcardnumber'];
+        $rows = $topreport->getRptActiveTerminalsUB($cardnumber);
+        
+        foreach($rows as $key => $row) {
+            $balance = $this->getBalanceUB($row);
+            
+            /********************* GET BALANCE API ****************************/
+            
+            $rows[$key]['PlayingBalance'] = $balance['Balance'];
+        }
+        
+        $actualBalance = 0;
+        $new_rows = array();
+        foreach($rows as $row) {
+            
+            if(is_string($row['PlayingBalance'])) {
+                $actualBalance = (float)$row['PlayingBalance'];
+            } else {
+                $actualBalance = $row['PlayingBalance'];
+            }
+            
+            $new_rows[] = array(
+                    substr($row['SiteCode'], strlen(BaseProcess::$sitecode)),
+                    $row['SiteName'],
+                    $row['POSAccountNo'],
+                    substr($row['TerminalCode'], strlen($row['SiteCode'])),
+                    number_format($actualBalance,2),
+                    $row['ServiceName']
+                );
+        }
+        $_SESSION['report_values'] = $new_rows;
+        $_GET['fn'] = 'PlayingBalance';
+        include 'ProcessTopUpExcel.php';  
+        $topreport->close();
+    }
+    
     
     //Replenishment History Report (PDF)
     public function replenishPdf() {
@@ -913,6 +1007,125 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         return array("Balance"=>$balance, "Casino"=>$providername);    
     }
     
+    //check loyalty card number
+    public function getCardNumber() 
+    {  
+        include_once __DIR__.'/../sys/class/LoyaltyUBWrapper.class.php';       
+        $loyalty = new LoyaltyUBWrapper();
+        $cardnumber = $_POST['txtcardnumber'];
+        $cardinfo = BaseProcess::$cardinfo;
+        $loyaltyResult = $loyalty->getCardInfo2($cardnumber, $cardinfo, 1);
+        
+        $obj_result = json_decode($loyaltyResult);
+
+        $statuscode = $obj_result->CardInfo->StatusCode;
+                    
+        if(!is_null($statuscode) ||$statuscode == '')
+        {
+                if($statuscode == 1 || $statuscode == 5)
+                {
+                   $casinoarray_count = count($obj_result->CardInfo->CasinoArray);
+
+                   if($casinoarray_count != 0)
+                   {
+                       for($ctr = 0; $ctr < $casinoarray_count;$ctr++) {   
+                          
+                           $_SESSION['ServiceUsername'] = $obj_result->CardInfo->CasinoArray[$ctr]->ServiceUsername;
+                           $_SESSION['MID'] = $obj_result->CardInfo->MemberID;
+                           $_SESSION['UserMode'] = $obj_result->CardInfo->CasinoArray[$ctr]->UserMode;
+                           return true;
+                       }
+                  }
+                  else
+                  {
+                   return false;
+                  }
+               }
+               else
+               {  
+                   return false;
+               }
+        }
+        else
+        {
+            return false;
+        }
+        
+    }
+    
+    
+    protected function getBalanceUB($row) {
+      
+        include_once __DIR__.'/../sys/class/helper/common.class.php';
+        
+        $providername = $this->CasinoRptType($row['ServiceID']);  
+        $this->getCardNumber();
+       switch (true)
+        {
+            case (strstr($providername, "RTG")):
+               $url = self::$service_api[$row['ServiceID'] - 1];
+               $capiusername = '';
+               $capipassword = '';
+               $capiplayername = '';
+               $capiserverID = '';
+                break;
+            case (strstr($providername, "MG")):
+                $_MGCredentials = self::$service_api[$row['ServiceID'] - 1];
+               list($mgurl, $mgserverID) =  $_MGCredentials;
+               $url = $mgurl;
+               $capiusername = self::$capi_username;
+               $capipassword = self::$capi_password;
+               $capiplayername = self::$capi_player;
+               $capiserverID = $mgserverID;
+                break;
+            case (strstr($providername, "PT")):
+               $url = self::$player_api[$row['ServiceID'] - 1];
+               $capiusername =  self::$ptcasinoname;
+               $capipassword = self::$ptSecretKey;
+               $capiplayername = '';
+               $capiserverID = '';
+                break;
+        }
+        
+        
+        switch (true)
+        {
+                case (strstr($providername, "RTG")):
+                    $CasinoGamingCAPI = new CasinoGamingCAPI();
+                    $balance = $CasinoGamingCAPI->getBalance($providername, $row['ServiceID'], $url, 
+                            $row['TerminalCode'], $capiusername, $capipassword, $capiplayername, 
+                            $capiserverID);
+                    break;
+                case (strstr($providername, "MG")):
+                    $CasinoGamingCAPI = new CasinoGamingCAPI();
+                    $balance = $CasinoGamingCAPI->getBalance($providername, $row['ServiceID'], $url, 
+                            $row['TerminalCode'], $capiusername, $capipassword, $capiplayername, 
+                            $capiserverID);
+                    break;
+                case (strstr($providername, "PT")):
+                    $CasinoGamingCAPI = new CasinoGamingCAPI();
+                    $usermode = $_SESSION['UserMode'];
+                    if($usermode == 0){
+                        $CasinoGamingCAPI = new CasinoGamingCAPI();
+                        $balance = $CasinoGamingCAPI->getBalance($providername, $row['ServiceID'], $url, 
+                            $row['TerminalCode'], $capiusername, $capipassword, $capiplayername, 
+                            $capiserverID);
+                    }
+                    else
+                    {
+                        $balance = $CasinoGamingCAPI->getBalance($providername, $row['ServiceID'], $url, 
+                            $_SESSION['ServiceUsername'], $capiusername, $capipassword, $capiplayername, 
+                            $capiserverID);   
+                    }    
+                    
+                    
+                    break;
+        }
+        
+        return array("Balance"=>$balance, "Casino"=>$providername);    
+  
+    }
+    
     function CasinoRptType($serviceId) {
         $topreport = new TopUpReportQuery($this->getConnection());
         $topreport->open(); 
@@ -983,8 +1196,14 @@ switch($_GET['action']) {
     case 'playingbalpdf':
         $reports->playingBalancePdf();
         break;
+    case 'playingbalpdfub':
+        $reports->playingBalancePdfUB();
+        break;
     case 'playingbalexcel':
         $reports->playingBalanceExcel();
+        break;
+    case 'playingbalexcelub':
+        $reports->playingBalanceExcelUB();
         break;
     case 'grossholdbalancepdf':
         $reports->grossHoldCutoffPdf();

@@ -52,22 +52,30 @@ $vaccesspages = array('9','6');
                 //source is Manual redemption
                 if(source == "3") {
                     document.getElementById('cmbtranstype').disabled=true;
+                    $("#cmbstatus option[value='3']").attr('disabled','disabled');
+                    $("#cmbstatus option[value='4']").attr('disabled','disabled');
                 } 
                 //source is Cashier
                 else if(source == "1"){
                     $("#cmbtranstype option[value='RD']").attr('disabled','disabled');
                     $("#cmbtranstype option[value='R']").attr('disabled',false);
+                    $("#cmbstatus option[value='3']").attr('disabled',false);
+                    $("#cmbstatus option[value='4']").attr('disabled',false);
                     document.getElementById('cmbtranstype').disabled=false;
                 }
                 //source is Launchpad
                 else if(source == "2"){
                     $("#cmbtranstype option[value='R']").attr('disabled','disabled');
                     $("#cmbtranstype option[value='RD']").attr('disabled',false);
+                    $("#cmbstatus option[value='3']").attr('disabled',false);
+                    $("#cmbstatus option[value='4']").attr('disabled',false);
                     document.getElementById('cmbtranstype').disabled=false;
                 }
                 else {
                     $("#cmbtranstype option[value='RD']").attr('disabled',false);
                     $("#cmbtranstype option[value='R']").attr('disabled',false);
+                    $("#cmbstatus option[value='3']").attr('disabled',false);
+                    $("#cmbstatus option[value='4']").attr('disabled',false);
                     document.getElementById('cmbtranstype').disabled=false;
                 }
             });
@@ -388,6 +396,17 @@ $vaccesspages = array('9','6');
                     Membership | Temporary
                 </td>   
             </tr>
+            <tr>
+                <td>Source</td>
+                <td>
+                    <select id="cmbsource" name="cmbsource">
+                        <option value="-1">Please Select</option>
+                        <option value="1">Cashier</option>
+                        <option value="2">Launchpad</option>
+                        <option value="3">Manual Redemption</option>
+                    </select>
+                </td>
+                </tr>
                 <tr>
                     <td>Transaction Status</td>
                     <td>
@@ -396,23 +415,13 @@ $vaccesspages = array('9','6');
                             <option value="0">Pending</option>
                             <option value="1">Successful</option>
                             <option value="2">Failed</option>
-                            <option value="4">Fulfillment Approved</option>
-                            <option value="5">Fulfillment Denied</option>
+                            <option value="3">Fulfillment Approved</option>
+                            <option value="4">Fulfillment Denied</option>
                             <option value="All">All</option>
                         </select>
                     </td>
                 </tr>
-                <tr>
-                    <td>Source</td>
-                    <td>
-                        <select id="cmbsource" name="cmbsource">
-                            <option value="-1">Please Select</option>
-                            <option value="1">Cashier</option>
-                            <option value="2">Launchpad</option>
-                            <option value="3">Manual Redemption</option>
-                        </select>
-                    </td>
-                </tr>
+                
                 <tr>
                     <td>Transaction Type</td>
                     <td>
@@ -431,12 +440,14 @@ $vaccesspages = array('9','6');
                 <td>Date Range</td>
                 <td>
                 From: 
-                 <input name="txtDate1" id="popupDatepicker1" readonly value="<?php echo date('Y-m-d')." "."06:00:00"; ?>"/>
+                 <input name="txtDate1" id="popupDatepicker1" readonly value="<?php $thestime = date('Y-m-d H:i:s');;
+$datetime_from = date("Y-m-d H:i:s",strtotime("-24 hours",strtotime($thestime)));
+echo $datetime_from; ?>"/>
                  <img name="cal" src="images/cal.gif" width="16" height="16" border="0" alt="Pick a date" onClick="javascript:NewCssCal('popupDatepicker1','yyyyMMdd','dropdown',true,'24',true)"/>
                 </td>
                 <td>
                 To:
-                <input name="txtDate2" id="popupDatepicker2" readonly value="<?php echo date('Y-m-d')." "."06:00:00"; ?>"/>
+                <input name="txtDate2" id="popupDatepicker2" readonly value="<?php echo date('Y-m-d H:i:s'); ?>"/>
                 <img name="cal" src="images/cal.gif" width="16" height="16" border="0" alt="Pick a date" onClick="javascript:NewCssCal('popupDatepicker2','yyyyMMdd','dropdown',true,'24',true)"/>
                 </td>
             </tr>

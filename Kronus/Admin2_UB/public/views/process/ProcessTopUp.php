@@ -575,12 +575,16 @@ if($connected)
                                         }
                                         else
                                         {
+                                            $status = 2;
+                                            $otopup->updateManualRedemptionFailedub($status, $lastmrid);
                                             $msg = $riserror; //error message when calling the withdrawal result
                                         }
                                     }
                                 }
                                 else
                                 {
+                                    $status = 2;
+                                    $otopup->updateManualRedemptionFailedub($status, $lastmrid);
                                     $msg = $withdraw['ErrorMessage']; //error message when initially calling the RTG API
                                 }
                                 break;
@@ -643,11 +647,15 @@ if($connected)
                                     }
                                     else
                                     {
+                                        $status = 2;
+                                        $otopup->updateManualRedemptionFailedub($status, $lastmrid);
                                         $msg = $rerrormsg; //error message when calling the withdrawal result
                                     }
                                 }
                                 else
                                 {
+                                    $status = 2;
+                                    $otopup->updateManualRedemptionFailedub($status, $lastmrid);
                                     $msg = $withdraw['ErrorMessage']; //error message when initially calling the MG API
                                 }
                                 break;
@@ -706,12 +714,16 @@ if($connected)
                                     } 
                                     else 
                                     {
+                                        $status = 2;
+                                        $otopup->updateManualRedemptionFailedub($status, $lastmrid);
                                         $msg = $rerrormsg; //error message when calling the withdrawal result.
                                     }
 
                                 } 
                                 else 
                                 {
+                                    $status = 2;
+                                    $otopup->updateManualRedemptionFailedub($status, $lastmrid);
                                     $msg = $withdraw['ErrorMessage']; //error message when calling the withdrawal result
                                 }
                                 break;

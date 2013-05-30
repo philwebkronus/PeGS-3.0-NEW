@@ -23,6 +23,7 @@ class BaseProcess {
    public static $capi_player;
    public static $ptSecretKey;
    public static $ptcasinoname;
+   public static $cardinfo;
    public $conn;
    
    public function getConnection() {
@@ -73,7 +74,7 @@ class BaseProcess {
     public static function setConfig($_ServiceAPI,$_PlayerAPI,$_ServiceAPICaching,
                                      $_MicrogamingCurrency, $terminalcode, $cutoff_time,
                                      $gaddeddate, $_CAPIUsername, $_CAPIPassword, 
-                                     $_CAPIPlayerName, $_ptsecretkey, $_ptcasinoname) {
+                                     $_CAPIPlayerName, $_ptsecretkey, $_ptcasinoname, $cardinfo) {
         self::$service_api = $_ServiceAPI;
         self::$player_api = $_PlayerAPI;
         self::$service_api_caching = $_ServiceAPICaching;
@@ -87,6 +88,7 @@ class BaseProcess {
         self::$capi_player = $_CAPIPlayerName;
         self::$ptSecretKey = $_ptsecretkey;
         self::$ptcasinoname = $_ptcasinoname;
+        self::$cardinfo = $cardinfo;
     }
 }
 
@@ -100,4 +102,4 @@ class jQGrid {
 BaseProcess::setConnection($_DBConnectionString[0]);
 BaseProcess::setConfig($_ServiceAPI,$_PlayerAPI,$_ServiceAPICaching,$_MicrogamingCurrency, 
                        $terminalcode, $cutoff_time, $gaddeddate, $_CAPIUsername, $_CAPIPassword, 
-                       $_CAPIPlayerName,$_ptsecretkey,$_ptcasinoname);
+                       $_CAPIPlayerName,$_ptsecretkey,$_ptcasinoname, $cardinfo);

@@ -320,6 +320,147 @@ return $this->fetchAllData();
         
     }
     
+    
+    /**
+     *This method returns an array composed of:
+     * 1. Terminal ID
+     * 2. Terminal Code
+     * 3. Service ID
+     * 4. Service Name
+     * 5. Playing Balance
+     * 
+     * This is used by the Active Session and Terminal Balance Per Site Module
+     * 
+     * @param String $cardnumber
+     * @param Mixed $_ServiceAPI
+     * @param String $_CAPIUsername
+     * @param String $_CAPIPassword
+     * @param String $_CAPIPlayerName
+     * @param String $_MicrogamingCurrency
+     * @return Mixed 
+     */
+    public final function getActiveSessionPlayingBalanceub ($cardnumber, $serviceusername, $_ServiceAPI,$_CAPIUsername, $_CAPIPassword, $_CAPIPlayerName, $_MicrogamingCurrency, $_ptcasinoname,$_PlayerAPI,$_ptsecretkey) {
+        
+        include_once __DIR__.'/../../sys/class/CasinoCAPIHandler.class.php';
+        
+        $row = new stdClass();
+        
+        $row->page = 1;
+        
+        $query = "
+                  SELECT  
+                    t.TerminalID, 
+                    t.TerminalCode, 
+                    rs.ServiceID,
+                    rs.ServiceName
+                  FROM 
+                    terminalsessions as ts, 
+                    terminals as t,
+                    ref_services as rs
+                  WHERE
+                    t.TerminalID = ts.TerminalID
+                    AND
+                    ts.ServiceID = rs.ServiceID
+                    AND
+                    ts.LoyaltyCardNumber = :cardnum
+                  ORDER BY
+                    t.TerminalID ASC";
+        
+        $this->prepare($query);
+        
+        $this->bindParam(":cardnum", $cardnumber);
+        
+        $this->execute();
+        
+        $record = $this->fetchAllData();
+
+        $newRecord = array();
+        
+        $ctr = 0;
+        
+        foreach($record as $r) {
+            
+            if(preg_match("/RTG/", $r["ServiceName"])) {
+                
+                $configuration = self::getConfigurationForRTGCAPI(
+                                    strpos($_ServiceAPI[(int)$r["ServiceID"]-1], "ECFTEST"), 
+                                    $_ServiceAPI[(int)$r["ServiceID"]-1], 
+                                    $r["ServiceID"]);
+                
+                $_CasinoAPIHandler = new CasinoCAPIHandler( CasinoCAPIHandler::RTG, $configuration );
+                
+                $data = $_CasinoAPIHandler->GetBalance($r["TerminalCode"]);
+                
+                if(array_key_exists("BalanceInfo", $data))
+                {
+                    $r["PlayingBalance"] = $data["BalanceInfo"]["Balance"];
+                }
+                else{
+                    $r["PlayingBalance"] = 0;
+                }
+                
+            }
+            else if (preg_match("/MG/", $r["ServiceName"])) {
+
+                $configuration = self::getConfigurationForMGCAPI($r["ServiceID"], 
+                                $_ServiceAPI, $_CAPIUsername, $_CAPIPassword, 
+                                $_CAPIPlayerName, $_MicrogamingCurrency);
+                
+                $_CasinoAPIHandler = new CasinoCAPIHandler( CasinoCAPIHandler::MG, $configuration );
+                
+                $data = $_CasinoAPIHandler->GetBalance($r["TerminalCode"]);
+
+                if(array_key_exists("BalanceInfo", $data))
+                {
+                    $r["PlayingBalance"] = $data["BalanceInfo"]["Balance"];
+                } 
+                else{
+                    $r["PlayingBalance"] = 0;
+                }
+                
+            }
+            else if (preg_match("/PT/", $r["ServiceName"])) {
+                $usermode = $this->checkUserMode($r["ServiceName"]);
+                
+                $url = $_PlayerAPI[(int)$r["ServiceID"]-1];
+                $configuration = self::getConfigurationForPTCAPI( $url,$_ptcasinoname,$_ptsecretkey);
+                
+                $_CasinoAPIHandler = new CasinoCAPIHandler( CasinoCAPIHandler::PT, $configuration );
+                
+                if($usermode == 0){
+                    $data = $_CasinoAPIHandler->GetBalance($r["TerminalCode"]);
+                }
+                else
+                {
+                    $data = $_CasinoAPIHandler->GetBalance($serviceusername);
+                }    
+                
+                if(array_key_exists("BalanceInfo", $data))
+                {
+                    $r["PlayingBalance"] = $data["BalanceInfo"]["Balance"];
+                }
+                else{
+                    $r["PlayingBalance"] = 0;
+                }
+            }
+            
+            $row->rows[$ctr]["id"] = $r["TerminalID"];
+            
+            $row->rows[$ctr]["cell"] = array(
+                $r["TerminalID"],
+                $r["TerminalCode"],
+                number_format($r["PlayingBalance"], 2, '.',',')
+            );
+            
+            $ctr++;
+            
+        }
+        
+        return json_encode($row);
+        
+    }
+    
+    
     /**
      *This return the configuration RTG
      * 
@@ -393,6 +534,28 @@ return $this->fetchAllData();
         
         return $configuration;
         
+    }
+    
+    //fget service name
+    function getServiceName($serviceID)
+    {
+        $stmt = "SELECT ServiceName FROM ref_services WHERE ServiceID = ?";
+        $this->prepare($stmt);
+        $this->bindparameter(1, $serviceID);
+        $this->execute();
+        $servicename = $this->fetchData();
+        return $servicename = $servicename['ServiceName'];
+    }
+    
+    
+    public function checkUserMode($casino){
+        $sql = "SELECT UserMode FROM ref_services WHERE ServiceName LIKE ?";
+        $this->prepare($sql);
+        $this->bindparameter(1, $casino);
+        $this->execute();
+        $usermode = $this->fetchData();
+        $usermode = $usermode['UserMode'];
+        return $usermode;
     }
     
 }

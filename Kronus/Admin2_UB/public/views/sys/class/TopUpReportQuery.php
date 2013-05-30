@@ -383,10 +383,10 @@ class TopUpReportQuery extends DBHandler{
                 st.POSAccountNo,
                 rs.ServiceName
                 FROM manualredemptions mr 
-                JOIN sites st ON mr.SiteID = st.SiteID 
-                JOIN terminals tm ON mr.TerminalID = tm.TerminalID
-                JOIN accounts at ON mr.ProcessedByAID = at.AID
-                JOIN ref_services rs ON mr.ServiceID = rs.ServiceID
+                INNER JOIN sites st ON mr.SiteID = st.SiteID 
+                INNER JOIN terminals tm ON mr.TerminalID = tm.TerminalID
+                INNER JOIN accounts at ON mr.ProcessedByAID = at.AID
+                LEFT JOIN ref_services rs ON mr.ServiceID = rs.ServiceID
                 WHERE mr.TransactionDate BETWEEN '$startdate' AND '$enddate' ORDER BY mr.ManualRedemptionsID ASC";
             $this->prepare($query);
             $this->execute();
@@ -823,9 +823,11 @@ class TopUpReportQuery extends DBHandler{
           //if site was selected All
           if($zsitecode == "all")
           {
-              $query = "SELECT ts.TerminalID,s.SiteName, s.POSAccountNo, s.SiteCode,ts.ServiceID, t.TerminalCode 
-                        FROM terminalsessions ts 
-                        LEFT JOIN (terminals as t, sites as s) ON (ts.TerminalID = t.terminalID AND t.SiteID = s.SiteID)";
+              $query = "SELECT ts.TerminalID, t.TerminalName,s.SiteName, s.POSAccountNo, s.SiteCode,ts.ServiceID,
+                        t.TerminalCode, rs.ServiceName FROM terminalsessions ts
+                        INNER JOIN terminals as t ON ts.TerminalID = t.terminalID 
+                        INNER JOIN sites as s ON t.SiteID = s.SiteID 
+                        INNER JOIN ref_services rs ON ts.ServiceID = rs.ServiceID";
               $this->prepare($query);
           }
           else
@@ -839,6 +841,27 @@ class TopUpReportQuery extends DBHandler{
               $this->prepare($query);
           }
                    
+          $this->execute();
+          return $this->fetchAllData();
+    }
+    
+     /**
+     * @author Gerardo V. Jagolino Jr.
+      *@params $cardnumber
+     * @return array
+     * selecting active terminals via card number
+     */    
+     public function getRptActiveTerminalsUB($cardnumber) 
+    {
+          
+              $query = "SELECT ts.TerminalID, t.TerminalName,s.SiteName, s.POSAccountNo, s.SiteCode,ts.ServiceID,
+                        t.TerminalCode, rs.ServiceName FROM terminalsessions ts
+                        INNER JOIN terminals as t ON ts.TerminalID = t.terminalID 
+                        INNER JOIN sites as s ON t.SiteID = s.SiteID 
+                        INNER JOIN ref_services rs ON ts.ServiceID = rs.ServiceID
+                        WHERE ts.LoyaltyCardNumber = '".$cardnumber."'";
+              $this->prepare($query);
+             
           $this->execute();
           return $this->fetchAllData();
     }

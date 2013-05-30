@@ -41,17 +41,19 @@
        <submenu id="61" name='Unlock Account' path='accountunlock.php' group=' ' pagename="2" />
      </menu>
     <menu id ="19" name='Reports' path='blank.php' pagename="19">
+        <submenu id="55" name='Active Session and Terminal Balance Terminal Based' path='rptActiveSessionAndTerminalBalance.php' pagename="19" group='Active Session And Terminal Balance'/>
+       <submenu id="56" name='Active Session and Terminal Balance User Based' path='rptActiveSessionAndTerminalBalanceUB.php' pagename="19" group='Active Session And Terminal Balance'/>
        <submenu id="5" name='BCF Per Site' path='rptbcfpersite.php' pagename="19" group=' '/>
        <submenu id="6" name='Site Transactions' path='rptsitetransaction.php' pagename="19" group=' '/>
-       <submenu id="54" name='Audit Trail' path='rptaudittrail.php' pagename="19" group=' '/>
-       <submenu id="55" name='Active Session and Terminal Balance Per Site' path='rptActiveSessionAndTerminalBalance.php' pagename="19" group=' '/>
+       <submenu id="54" name='Audit Trail' path='rptaudittrail.php' pagename="19" group=' '/>  
     </menu>
 </right>
 <right id="3">   
      <menu id ="19" name='Reports' path='blank.php' pagename="19">
+         <submenu id="55" name='Active Session and Terminal Balance Terminal Based' path='rptActiveSessionAndTerminalBalance.php' pagename="19" group='Active Session And Terminal Balance'/>
+       <submenu id="56" name='Active Session and Terminal Balance User Based' path='rptActiveSessionAndTerminalBalanceUB.php' pagename="19" group='Active Session And Terminal Balance'/>
        <submenu id="9" name="Gross Hold" path="rptsupgrosshold.php" pagename="19" group=' '/>
-       <submenu id="54" name='Audit Trail' path='rptaudittrail.php' pagename="19" group=' '/>
-       <submenu id="55" name='Active Session and Terminal Balance Per Site' path='rptActiveSessionAndTerminalBalance.php' pagename="19" group=' '/>
+       <submenu id="54" name='Audit Trail' path='rptaudittrail.php' pagename="19" group=' '/> 
      </menu>
 </right>
 <right id="4">   
@@ -80,7 +82,8 @@
     </menu>
     <menu id ="19" name='Reports' path='blank.php' pagename="19">   
       <submenu id="72" name="GH Balance Per Cut-off" path="GrossHoldBalance.php" group= "Site Monitoring" pagename="19" />
-      <submenu id="51" name='Playing Balance' path='PlayingBalance.php' group= "Site Monitoring" pagename="19" />
+      <submenu id="51" name='Terminal Based Playing Balance' path='PlayingBalance.php' group= "Playing Balance" pagename="19" />
+      <submenu id="52" name='User Based Playing Balance' path='PlayingBalanceub.php' group= "Playing Balance" pagename="19" />
       <!--<submenu id="60" name='Betting Credit' path='BettingCredit.php' group= "Site Monitoring" pagename="19" />-->
       <!-- Added on 06/04/2012 for BCF Report Separation -->
       <submenu id="60" name='Critical BCF' path='BettingCredit.php?report=critical' group= "Site Monitoring" pagename="19" />
@@ -105,9 +108,10 @@
    </menu>
    <menu id ="19" name='Reports' path='blank.php' pagename="19">
        <submenu id="67" name='User Based Redemptions' path='csuserbasedredemptions.php' pagename="19" group='Redemptions' />
-      <submenu id="68" name='Terminal Based Redemptions' path='csredemptions.php' pagename="19" group='Redemptions'/>
-      <submenu id ="54" name='Audit Trail' path='rptaudittrail.php' pagename="19" group=' '/>      
-      <submenu id="51" name='Playing Balance' path='PlayingBalance.php' pagename="19" group=' ' />
+      <submenu id="68" name='Terminal Based Redemptions' path='csredemptions.php' pagename="19" group='Redemptions'/>     
+      <submenu id="51" name='Terminal Based Playing Balance' path='PlayingBalance.php' pagename="19" group='Playing Balance' />
+      <submenu id="52" name='User Based Playing Balance' path='PlayingBalanceub.php' group= "Playing Balance" pagename="19" />
+      <submenu id ="54" name='Audit Trail' path='rptaudittrail.php' pagename="19" group=' '/> 
    </menu>
 </right>
 <right id="7">   
