@@ -1886,7 +1886,7 @@
 		focusFirstField:true,
 		// Opening box position, possible locations are: topLeft,
 		// topRight, bottomLeft, centerRight, bottomRight
-		promptPosition: "topRight",
+		promptPosition: "topLeft",
 		bindMethod:"bind",
 		// internal, automatically set to true when it parse a _ajax rule
 		inlineAjax: false,
@@ -1948,7 +1948,7 @@
 	 // Only show one message per error prompt
 	 showOneMessage: true
 	}};
-	$(function(){$.validationEngine.defaults.promptPosition = methods.isRTL()?'topLeft':"topRight"});
+	$(function(){$.validationEngine.defaults.promptPosition = methods.isRTL()?'topRight':"topLeft"});
 })(jQuery);
 
 

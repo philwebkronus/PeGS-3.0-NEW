@@ -24,7 +24,7 @@ class CardTransactions extends BaseEntity
                     WHERE
                       mc.CardNumber = '$cardnumber'
                     ORDER BY
-                      ct.TransactionDate DESC
+                      ct.CardTransactionID DESC
                     LIMIT
                       1;";
         

@@ -157,6 +157,10 @@ body, table
 #membersactivation{
     background-color: #f2e2ae;
     padding: 20px;
+    height: 380px;
+    width: 600px;
+    max-height: 380px;
+    max-width: 600px;
 }
 
 .login-error
