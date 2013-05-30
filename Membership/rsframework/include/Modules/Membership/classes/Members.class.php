@@ -141,15 +141,16 @@ class Members extends BaseEntity {
                                          */
                                         $userName = $arrServices[0]['ServiceUsername'];
                                         $password = $arrServices[0]['ServicePassword'];
-                                        $email = str_replace(' ', '_', $arrMemberInfo['Email']);
-                                        $firstName = str_replace(' ', '', $arrMemberInfo['FirstName']);
-                                        $lastName = str_replace(' ', '_', $arrMemberInfo['LastName']);
-                                        $birthDate = date('Y-m-d', strtotime($arrMemberInfo['Birthdate']));
-                                        (!empty($arrMemberInfo['Address1'])) ? $address = str_replace(' ', '_', $arrMemberInfo['Address1']) : $address = 'NA';
-                                        (!empty($arrMemberInfo['Address2'])) ? $city = str_replace(' ', '_', $arrMemberInfo['Address2']) : $city = "NA";
-                                        $countryCode = 'PH';
-                                        (!empty($arrMemberInfo['MobileNumber'])) ? $phone = str_replace(' ', '', $arrMemberInfo['MobileNumber']) : $phone = '338-3838';
+                                                                                
+                                        (!empty($arrMemberInfo['Email'])) ? $email = str_replace(' ','_',$arrMemberInfo['Email']) : $email = "noemail_".$this->MID."@gmail.com";
+                                        (!empty($arrMemberInfo['FirstName'])) ? $firstName = str_replace(' ','',$arrMemberInfo['FirstName']) : $firstName = "NA";
+                                        (!empty($arrMemberInfo['LastName'])) ? $lastName = str_replace(' ','',$arrMemberInfo['LastName']) : $lastName = "NA";
+                                        (!empty($arrMemberInfo['Birthdate'])) ? $birthDate = date('Y-m-d',strtotime($arrMemberInfo['Birthdate'])) : $birthDate = "1970-01-01";
+                                        (!empty($arrMemberInfo['Address1'])) ? $address = str_replace(' ','',$arrMemberInfo['Address1']) : $address = 'NA';
+                                        (!empty($arrMemberInfo['Address2'])) ? $city = str_replace(' ','',$arrMemberInfo['Address2']) : $city = "NA";
+                                        (!empty($arrMemberInfo['MobileNumber'])) ? $phone = str_replace(' ','',$arrMemberInfo['MobileNumber']) : $phone = '123-4567';
                                         $zip = 'NA';
+                                        $countryCode = 'PH';
 
                                         $arrServices[0]['isVIP'] == 0 ? $vipLevel = 1 : $vipLevel = 2;
 

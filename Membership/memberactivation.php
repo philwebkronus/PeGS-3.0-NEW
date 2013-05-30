@@ -174,10 +174,10 @@ if ((isset($_GET["oldnumber"]) && (htmlentities($_GET["oldnumber"])))
 
                 $PlayerName = $txtplayername->SubmittedValue;
 
-                list($fname, $lname) = explode(' ', $PlayerName, 2);
-
-                $MemberInfo["FirstName"] = $fname;
-                $MemberInfo["LastName"] = $lname;
+                //list($fname, $lname) = explode(' ', $PlayerName, 2);
+                
+                $MemberInfo["FirstName"] = $PlayerName;
+                $MemberInfo["LastName"] = "NA";
                 $MemberInfo["Birthdate"] = $dtBirthDate->SubmittedValue;
                 $MemberInfo["Email"] = $Memberstable["UserName"];
                 $MemberInfo["NationalityID"] = 1;
