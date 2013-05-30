@@ -129,7 +129,7 @@ if(isset($_SESSION['acctype']))
                                 jQuery.each(data, function(){
                                     terminal.append($("<option />").val(this.ServiceID).text(this.ServiceName));
                                 });
-                                //terminal.append($("<option />").val("All").text("All"));
+                                //terminal.append($("<option />").val("All").text("All"));.
                                 showCardInfoTable();
                             },
                             error: function(XMLHttpRequest, e){

@@ -187,7 +187,7 @@ if(isset($_SESSION['acctype']))
 //                            
 //                             getMembershipandCasinoInfo(url);            
 //                    } 
-//                    //with membership card provided
+//                    //with membership card provided.
 //                    else {
                             
                             if(document.getElementById('txtcardnumber').value == "" || document.getElementById('txtcardnumber').length == 0)
