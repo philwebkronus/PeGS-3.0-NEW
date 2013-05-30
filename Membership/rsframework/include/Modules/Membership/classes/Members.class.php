@@ -142,7 +142,7 @@ class Members extends BaseEntity {
                                         $userName = $arrServices[0]['ServiceUsername'];
                                         $password = $arrServices[0]['ServicePassword'];
                                                                                 
-                                        (!empty($arrMemberInfo['Email'])) ? $email = str_replace(' ','_',$arrMemberInfo['Email']) : $email = "noemail_".$this->MID."@gmail.com";
+                                        (!empty($arrMemberInfo['Email'])) ? $email = str_replace(' ','_',$arrMemberInfo['Email']) : $email = "noemail_".$MID."@gmail.com";
                                         (!empty($arrMemberInfo['FirstName'])) ? $firstName = str_replace(' ','',$arrMemberInfo['FirstName']) : $firstName = "NA";
                                         (!empty($arrMemberInfo['LastName'])) ? $lastName = str_replace(' ','',$arrMemberInfo['LastName']) : $lastName = "NA";
                                         (!empty($arrMemberInfo['Birthdate'])) ? $birthDate = date('Y-m-d',strtotime($arrMemberInfo['Birthdate'])) : $birthDate = "1970-01-01";
