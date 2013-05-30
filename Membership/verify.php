@@ -15,6 +15,7 @@ App::LoadModuleClass("Membership", "TempMembers");
 
 $_TempMembers = new TempMembers();
 $isOpen = false; //Prevent dialog to open 
+$useCustomHeader = false;
 
 if(isset($_GET['email']) && isset($_GET['tempcode']))
 {
@@ -51,7 +52,7 @@ else
             buttons: {
                 "Close": function() {
                     $(this).dialog("close");
-                    alert('Redirect to the member page');
+                    window.location="index.php";
                 }
             }
         });
@@ -64,10 +65,10 @@ else
     {?>
         <div id="StatusDialog">You have successfully verified your email. Please wait for 24 hours in order for your account to be activated.</div>
     <?php }else{ ?>
-        <div id="StatusDialog">There is a problem verifying your email account. Please contact customer service at (02) 338 3388. Thank you.</div>
+        <div id="StatusDialog">Verification failed. <br />Please contact customer service at (02) 338 3388.</div>
     <?php
     }?>
 <?php
 }?>
 
-<?php include('footer.php'); ?>
+<?php include('nofooter.php'); ?>

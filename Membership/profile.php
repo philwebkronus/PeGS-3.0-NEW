@@ -102,7 +102,7 @@ $fproc->AddControl($txtAlternateMobileNumber);
 
 $txtPassword = new TextBox("txtPassword", "txtPassword", "Password");
 $txtPassword->ShowCaption = false;
-$txtPassword->Length = 30;
+$txtPassword->Length = 40;
 $txtPassword->Size = 15;
 $txtPassword->Password = true;
 $txtPassword->CssClass = "validate[custom[onlyLetterNumber], minSize[5]]";
@@ -111,7 +111,7 @@ $fproc->AddControl($txtPassword);
 
 $txtConfirmPassword = new TextBox("txtConfirmPassword", "txtConfirmPassword", "ConfirmPassword");
 $txtConfirmPassword->ShowCaption = false;
-$txtConfirmPassword->Length = 30;
+$txtConfirmPassword->Length = 40;
 $txtConfirmPassword->Size = 15;
 $txtConfirmPassword->Password = true;
 $txtConfirmPassword->CssClass = "validate[equals[txtPassword]]";
@@ -144,6 +144,7 @@ $dtBirthDate->SelectedDate = $row['Birthdate'];
 $dtBirthDate->ShowCaption = false;
 $dtBirthDate->YearsToDisplay = "-100";
 $dtBirthDate->CssClass = "validate[required]";
+$dtBirthDate->Size = 20;
 $dtBirthDate->isRenderJQueryScript = true;
 $fproc->AddControl($dtBirthDate);
 
@@ -182,9 +183,8 @@ $fproc->AddControl($cboIDSelection);
 
 $txtAge = new TextBox("txtAge", "txtAge", "Age");
 $txtAge->ShowCaption = false;
-$txtAge->Length = 30;
-$txtAge->Size = 15;
 $txtAge->CssClass = "validate[required]";
+$txtAge->ReadOnly = true;
 $txtAge->Text = number_format((abs(strtotime($row['Birthdate']) - strtotime(date('Y-m-d'))) / 60 / 60 / 24 / 365),0);
 $fproc->AddControl($txtAge);
 
