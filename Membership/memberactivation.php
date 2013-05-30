@@ -168,7 +168,7 @@ if ((isset($_GET["oldnumber"]) && (htmlentities($_GET["oldnumber"])))
                     $Memberstable["UserName"] = $oldCardEmail;
                 }
 
-                $Memberstable["AccountTypeID"] = $_Helper->GetAccountTypeIDByName('Member');
+                $Memberstable["AccountTypeID"] = $_Helper->GetAccountTypeIDByName('Player');
                 $Memberstable['DateCreated'] = $dateCreated;
                 $Memberstable['Status'] = '1';
 

@@ -144,6 +144,9 @@ class ActivateMember extends BaseEntity
                                 
                                 App::LoadModuleClass("CasinoProvider", "PlayTechAPI");
                                 App::LoadModuleClass("Kronus", "CasinoServices");
+                                App::LoadCore("Validation.class.php");
+                                        
+                                $validate = new Validation();
                                 $_CasinoServices = new CasinoServices();        
       
                                 $casinoservices = $_CasinoServices->getUserBasedCasinoServices();
@@ -154,17 +157,17 @@ class ActivateMember extends BaseEntity
                                $userName = $casinoAccounts[0]['ServiceUsername'];                               
                                $password = $casinoAccounts[0]['ServicePassword'];
                                
-                               (!empty($arrMemberInfo['Email'])) ? $email = str_replace(' ','_',$arrMemberInfo['Email']) : $email = "noemail_".$this->MID."@gmail.com";
+                               (!empty($arrMemberInfo['Email']) && $validate->validateEmail($arrMemberInfo['Email'])) ? $email = $arrMemberInfo['Email'] : $email = "noemail_".$this->MID."@gmail.com";
                                (!empty($arrMemberInfo['FirstName'])) ? $firstName = str_replace(' ','',$arrMemberInfo['FirstName']) : $firstName = "NA";
-                               (!empty($arrMemberInfo['LastName'])) ? $lastName = str_replace(' ','',$arrMemberInfo['LastName']) : $lastName = "NA";
                                (!empty($arrMemberInfo['Birthdate'])) ? $birthDate = date('Y-m-d',strtotime($arrMemberInfo['Birthdate'])) : $birthDate = "1970-01-01";
                                (!empty($arrMemberInfo['Address1'])) ? $address = str_replace(' ','',$arrMemberInfo['Address1']) : $address = 'NA';
                                (!empty($arrMemberInfo['Address2'])) ? $city = str_replace(' ','',$arrMemberInfo['Address2']) : $city = "NA";
                                (!empty($arrMemberInfo['MobileNumber'])) ? $phone = str_replace(' ','',$arrMemberInfo['MobileNumber']) : $phone = '123-4567';
+                               $lastName = "NA";
                                $zip = 'NA';
                                $countryCode = 'PH';
                                $casinoAccounts[0]['isVIP'] == 0 ? $vipLevel = 1 : $vipLevel = 2;
-
+                               
                                foreach( $casinoservices as $casinoservice )
                                {
 

@@ -20,6 +20,7 @@ $fproc = new FormsProcessor();
 $evt = new EventListener($fproc);
 $dsmaxdate = new DateSelector();
 $dsmindate = new DateSelector();
+$validate = new Validation();
 $autocomplete = false;
 $isOpen = 'false'; //Hide dialog box
 
@@ -122,8 +123,13 @@ $txtEmail->ShowCaption = false;
 $txtEmail->Length = 30;
 $txtEmail->Size = 15;
 $txtEmail->CssClass = "validate[required, custom[email]]";
+
+if($validate->validateEmail($row['Email']))
+    $txtEmail->ReadOnly = true;
+else
+    $txtEmail->ReadOnly = false;
+
 $txtEmail->Text = $row['Email'];
-$txtEmail->ReadOnly = true;
 $fproc->AddControl($txtEmail);
 
 $txtAlternateEmail = new TextBox("txtAlternateEmail", "txtAlternateEmail", "Username");

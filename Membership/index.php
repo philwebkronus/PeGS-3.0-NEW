@@ -13,7 +13,8 @@ $useCustomHeader = true;
 
 App::LoadCore("URL.class.php");
 App::LoadCore("Hashing.class.php");
-
+App::LoadCore("Validation.class.php");
+                                        
 App::LoadModuleClass("Membership", "Members");
 App::LoadModuleClass("Membership", "MemberInfo");
 App::LoadModuleClass("Membership", "MemberSessions");
