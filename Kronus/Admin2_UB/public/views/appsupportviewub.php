@@ -48,12 +48,14 @@ $vaccesspages = array('9','6');
             $("#cmbsource").change(function() 
             {
                 var source = document.getElementById('cmbsource').value;           
+                document.getElementById("cmbstatus").selectedIndex = 0;
+                document.getElementById("cmbtranstype").selectedIndex = 0;
                 
                 //source is Manual redemption
                 if(source == "3") {
                     document.getElementById('cmbtranstype').disabled=true;
                     $("#cmbstatus option[value='3']").attr('disabled','disabled');
-                    $("#cmbstatus option[value='4']").attr('disabled','disabled');
+                    $("#cmbstatus option[value='4']").attr('disabled','disabled');                    
                 } 
                 //source is Cashier
                 else if(source == "1"){
