@@ -16,7 +16,7 @@ $stylesheets[] = "css/ie.css";
 $stylesheets[] = "css/style.css";
 $stylesheets[] = "css/datagrid.css";
 $stylesheets[] = "css/validationEngine.jquery.css";
-
+$stylesheets[] = "css/jquery-ui.css";
 
 $headerinfo = "";
 if (isset($javascripts) && count($javascripts) > 0)
