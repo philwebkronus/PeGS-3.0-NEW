@@ -82,12 +82,12 @@
     </menu>
     <menu id ="19" name='Reports' path='blank.php' pagename="19">   
       <submenu id="72" name="GH Balance Per Cut-off" path="GrossHoldBalance.php" group= "Site Monitoring" pagename="19" />
-      <submenu id="51" name='Terminal Based Playing Balance' path='PlayingBalance.php' group= "Playing Balance" pagename="19" />
-      <submenu id="52" name='User Based Playing Balance' path='PlayingBalanceub.php' group= "Playing Balance" pagename="19" />
       <!--<submenu id="60" name='Betting Credit' path='BettingCredit.php' group= "Site Monitoring" pagename="19" />-->
       <!-- Added on 06/04/2012 for BCF Report Separation -->
       <submenu id="60" name='Critical BCF' path='BettingCredit.php?report=critical' group= "Site Monitoring" pagename="19" />
       <submenu id="60" name='Non-Critical BCF' path='BettingCredit.php?report=safe' group= "Site Monitoring" pagename="19" />
+       <submenu id="51" name='Terminal Based Playing Balance' path='PlayingBalance.php' group= "Playing Balance" pagename="19" />
+      <submenu id="52" name='User Based Playing Balance' path='PlayingBalanceub.php' group= "Playing Balance" pagename="19" />
       <!-- End Modification -->
 <!--      <submenu id="60" name='List of Pegs Subject for Top-up' path='ListPegsSubject.php' group= "Site Monitoring" pagename="19" />-->
       <submenu id="24" name='Collection History' path='PostedDeposit.php' group="Posting" pagename="19" />

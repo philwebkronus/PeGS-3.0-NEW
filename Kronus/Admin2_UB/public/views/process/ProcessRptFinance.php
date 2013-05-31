@@ -420,8 +420,8 @@ if($connected)
                 //create the instance of the exportexcel format
                 $excel_obj = new ExportExcel("$fn");
 
-                $header = array('TransactionSummaryID', 'SiteCode','TerminalCode','Service Name',
-                    'Deposit','Reload','Withdrawal','DateStarted','DateEnded');
+                $header = array('Transaction Summary ID', 'Site Code','Terminal Code','Service Name',
+                    'Deposit','Reload','Withdrawal','Date Started','Date Ended');
                 
                 $result = $orptfinance->showtranstracking($type="export",$vSiteID, $vTerminalID, $vtranstype, $vdatefrom, $vdateto);
                 $completeexcelvalues = array();
@@ -549,8 +549,8 @@ if($connected)
                 $pdf->c_setHeader('Transaction Tracking');
                 $pdf->html.='<div style="text-align:center;">As of ' . $vdatefrom . '</div>';
                 $pdf->SetFontSize(10);
-                $pdf->c_tableHeader(array('TransactionSummaryID', 'SiteCode','TerminalCode','Service Name',
-                    'Deposit','Reload','Withdrawal','DateStarted','DateEnded'));
+                $pdf->c_tableHeader(array('Transaction Summary ID', 'Site Code','Terminal Code','Service Name',
+                    'Deposit','Reload','Withdrawal','Date Started','Date Ended'));
 
                 $result = $orptfinance->showtranstracking($type="export",$vSiteID, $vTerminalID, $vtranstype, $vdatefrom, $vdateto);
                 
