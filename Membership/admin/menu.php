@@ -6,13 +6,32 @@
  */
 
 include('sessionmanager.php');
-       
 ?>
-<div id="menu_container">
-    <ul id="menu">
-          <li><a href="index.php">Player Profile</a></li>
-          <li><a href="redemption.php">Redemption</a></li>
-          <li><a href="transactionhistory.php">Transaction History</a></li>
+<div align="right" id="menu_container">
+    <ul class="dropdown">
+        <?php foreach($usermenu as $menu)
+        {?>
+          <li><a href="<?php echo $menu['Link']; ?>"><?php echo $menu['Name']; ?></a>
+          <?php 
+          //Check if current menu has submenus
+          
+          $menuid = $menu['MenuID'];
+          $submenus = $accessrights->getSubMenus($menuid, $accounttypeid);
+          
+          if(is_array($submenus) && count($submenus) > 0)
+          {?>
+          <ul class="sub_menu">
+              <?php foreach($submenus as $submenu)
+              {?>
+              <li><a href="<?php echo $submenu['Link']; ?>"><?php echo $submenu['Name']; ?></a></li>
+              <?php
+              }?>
+          </ul>
+          <?php 
+          }?>
+        <?php
+        }?>
+          </li>
           <li><a href="logout.php">Logout</a></li>
     </ul>
 </div>

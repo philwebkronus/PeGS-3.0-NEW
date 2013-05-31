@@ -62,7 +62,7 @@ $fproc->AddControl($dtBirthDate);
 
 $txtplayername = new TextBox("txtplayername", "txtplayername", "Name: ");
 $txtplayername->CssClass = "validate[required,custom[onlyLetterSp], minSize[2]]";
-$txtplayername->Length = 90;
+$txtplayername->Length = 60;
 $txtplayername->Size = 30;
 $fproc->AddControl($txtplayername);
 
@@ -163,8 +163,10 @@ if ((isset($_GET["oldnumber"]) && (htmlentities($_GET["oldnumber"])))
 
                 $dateCreated = "now_usec()";
                 if (empty($oldCardEmail)) {
+                    $noemail = true;
                     $Memberstable["UserName"] = $NewMembershipCardNumber;
                 } else {
+                    $noemail = false;
                     $Memberstable["UserName"] = $oldCardEmail;
                 }
 
@@ -177,9 +179,8 @@ if ((isset($_GET["oldnumber"]) && (htmlentities($_GET["oldnumber"])))
                 //list($fname, $lname) = explode(' ', $PlayerName, 2);
                 
                 $MemberInfo["FirstName"] = $PlayerName;
-                $MemberInfo["LastName"] = "NA";
                 $MemberInfo["Birthdate"] = $dtBirthDate->SubmittedValue;
-                $MemberInfo["Email"] = $Memberstable["UserName"];
+                if(!$noemail) $MemberInfo["Email"] = $Memberstable["UserName"];
                 $MemberInfo["NationalityID"] = 1;
                 $MemberInfo["OccupationID"] = 1;
                 $MemberInfo["IdentificationID"] = $ComboID->SubmittedValue;

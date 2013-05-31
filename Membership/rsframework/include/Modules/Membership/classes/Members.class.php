@@ -75,7 +75,7 @@ class Members extends BaseEntity {
                     $arrMemberCards['MID'] = $arrgetMID['MID'];
                     $arrMemberCards['CardID'] = $ArrayNewCardID['CardID'];
                     $arrMemberCards['CardNumber'] = $ArrayNewCardID['CardNumber'];
-                    $arrMemberCards['MemberCardName'] = $arrMemberInfo['FirstName'] . ' ' . $arrMemberInfo['LastName'];
+                    $arrMemberCards['MemberCardName'] = $arrMemberInfo['FirstName'];
                     $arrMemberCards['LifetimePoints'] = $ArrayOldCardID['LifetimePoints'];
                     $arrMemberCards['CurrentPoints'] = $ArrayOldCardID['CurrentPoints'];
                     $arrMemberCards['RedeemedPoints'] = $ArrayOldCardID['RedeemedPoints'];

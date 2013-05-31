@@ -23,13 +23,6 @@ class Accounts extends BaseEntity
         
         return $result[0]['Status'];  
         
-        
-        
-//        if( $status == AccountStatus::Active)        
-//            return true;
-//        else
-//            return false;
-        
     }
     
     public function authenticate($username, $password)
@@ -40,12 +33,15 @@ class Accounts extends BaseEntity
         
         $result = parent::RunQuery($query);
         
-        if(count($result) > 0)
-            return true;
-        else
-            return false;
+        return $result;
+        
+//        if(count($result) > 0)
+//            return true;
+//        else
+//            return false;
     }
     
+        
     public function getAccountStatus($username)
     {
         $query = "SELECT * FROM accounts WHERE UserName = '$username'";

@@ -144,11 +144,14 @@ if (!empty($page) || isset($_SESSION['CardInfo']['CardNumber'])) {
 ?>
 <?php include("header.php"); ?>
 
-<div class="content">    
+<div id="page-wrap">       
 <?php echo $txtSearch . $btnSearch; ?>
 </form>
 <?php if($showcardinfo) include('cardinfo.php'); ?>
 <?php include("menu.php"); ?>
+</div>
+<div id="page-wrap">  
+    <div class="title">Transaction History</div>
 <?php if($showresult)
 {?>
     <div align="right" class="pad5">

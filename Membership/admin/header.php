@@ -5,16 +5,17 @@
  * Company: Philweb
  * ***************** */
 
-$javascripts[] = "../js/jquery.min.js";
-$javascripts[] = "../js/jquery-ui.min.js";
-$javascripts[] = "../js/jquery.validationEngine.js";
-$javascripts[] = "../js/jquery.validationEngine-en.js";
-$stylesheets[] = "../css/ui.theme.css";
-$stylesheets[] = "../css/jquery-ui.css";
-$stylesheets[] = "../css/smoothness/jquery-ui-1.8.16.custom.css";
-$stylesheets[] = "../css/validationEngine.jquery.css";
-$stylesheets[] = "../css/styles.css";
-$stylesheets[] = "../css/paging.css";
+$javascripts[] = "js/jquery.min.js";
+$javascripts[] = "js/jquery-ui.min.js";
+$javascripts[] = "js/jquery.validationEngine.js";
+$javascripts[] = "js/jquery.validationEngine-en.js";
+$javascripts[] = "js/jquery.dropdown.js";
+$javascripts[] = "js/hoverIntent.js";
+$stylesheets[] = "css/paging.css";
+$stylesheets[] = "css/ie.css";
+$stylesheets[] = "css/style.css";
+$stylesheets[] = "css/datagrid.css";
+$stylesheets[] = "css/validationEngine.jquery.css";
 
 
 $headerinfo = "";
@@ -23,7 +24,7 @@ if (isset($javascripts) && count($javascripts) > 0)
     for ($i = 0; $i < count($javascripts); $i++)
     {
         $js = $javascripts[$i];
-        $headerinfo .= "<script language='javascript' type='text/javascript' src='$js'></script>\r\n";
+        $headerinfo .= "<script language='javascript' type='text/javascript' src='$js' media='screen, projection'></script>\r\n";
     }
 }
 if (isset($stylesheets) && count($stylesheets) > 0)
@@ -31,7 +32,7 @@ if (isset($stylesheets) && count($stylesheets) > 0)
     for ($i = 0; $i < count($stylesheets); $i++)
     {
         $css = $stylesheets[$i];
-        $headerinfo .= "<link rel='stylesheet' type='text/css' href='$css' />\r\n";
+        $headerinfo .= "<link rel='stylesheet' type='text/css' media='screen' href='$css' />\r\n";
     }
 }
 $pagetitle = (isset($pagetitle) && $pagetitle != "" ) ? $pagetitle : "Admin";
@@ -46,33 +47,9 @@ $timezone = $curdate->GetCurrentDateFormat('O (T)');
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title><?php echo $pagetitle; ?></title>
         <?php echo $headerinfo; ?>
-        <script language="javascript" type="text/javascript">
-            $(document).ready(
-            function() 
-            {
-                $("#menu li").click(function() {
-                        //	First remove class "active" from currently active tab
-                        //$("#menu li").removeClass('active');
-
-                        //	Now add class "active" to the selected/clicked tab
-                        //$(this).addClass("active");
-
-                        //	Hide all tab content
-                        //$(".tab_content").hide();
-
-                        //	Here we get the href value of the selected tab
-                        var selected_tab = $(this).find("a").attr("href");
-                        
-                        //	Show the selected tab content
-                        //$(selected_tab).fadeIn();
-
-                        //	At the end, we add return false so that the click on the link is not executed
-                        return true;
-                });
-            });
-            
-            
-        </script>
+        <!--[if lte IE 7]>
+            <link rel="stylesheet" type="text/css" href="css/ie.css" media="screen" />
+        <![endif]-->
     </head>
     <body>        
         <form action="" method="post" name="MainForm" id="MainForm" <?php echo $autocompletestring; ?> >

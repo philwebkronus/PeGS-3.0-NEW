@@ -42,6 +42,7 @@ $dsmindate = new DateSelector();
 $autocomplete = false;
 $isOpen = 'false'; //Hide dialog box
 $showcardinfo = false;
+$showprofile = false;
 
 $txtSearch = new TextBox('txtSearch', 'txtSearch', 'Search ');
 $txtSearch->ShowCaption = false;
@@ -51,9 +52,7 @@ $txtSearch->Size = 30;
 
 if(!empty($txtSearch->SubmittedValue) || isset($_SESSION['CardInfo']))
 {
-    (!empty($txtSearch->SubmittedValue)) ? 
-        $txtSearch->Text = $txtSearch->SubmittedValue : 
-        $txtSearch->Text = $_SESSION['CardInfo']['CardNumber'];
+    (!empty($txtSearch->SubmittedValue)) ? $txtSearch->Text = $txtSearch->SubmittedValue :  $txtSearch->Text = $_SESSION['CardInfo']['CardNumber'];
 }
 else
 {
@@ -241,47 +240,78 @@ if($fp->IsPostBack)
         if($validate->validateEmail($searchValue))
         {
             $result = $_MemberInfo->getMemberInfoByUsername($searchValue);
-            $_SESSION['CardInfo']['Username'] = $searchValue;
-            $MID = $result[0]['MID'];
             
-            $cardInfo = $_MemberCards->getActiveMemberCardInfo($MID);
-            $_SESSION['CardInfo']['CardNumber'] = $cardInfo[0]['CardNumber'];
+            if(count($result) > 0)
+            {
+                $validKey = true;                
+                $showprofile = true;
+                $_SESSION['CardInfo']['Username'] = $searchValue;
+                $MID = $result[0]['MID'];
+
+                $cardInfo = $_MemberCards->getActiveMemberCardInfo($MID);
+                $_SESSION['CardInfo']['CardNumber'] = $cardInfo[0]['CardNumber'];
+            }
+            else
+            {
+                $validKey = false;
+                $showcardinfo = false;
+                $showprofile = false;
+                App::SetErrorMessage('Username not found');
+            }
+            
             
         }
         else
         {            
             $membercards = $_MemberCards->getMemberCardInfoByCard($searchValue);
-            $MID = $membercards[0]['MID'];
             
-            $result = $_MemberInfo->getMemberInfo($MID);
+            if(count($membercards) > 0)
+            {
+                $validKey = true;
+                $showprofile = true;
+                
+                $MID = $membercards[0]['MID'];
             
-            $_SESSION['CardInfo']['CardNumber'] = $txtSearch->SubmittedValue;
+                $result = $_MemberInfo->getMemberInfo($MID);
+
+                $_SESSION['CardInfo']['CardNumber'] = $txtSearch->SubmittedValue;
+            }
+            else
+            {
+                $validKey = false;
+                $showcardinfo = false;
+                $showprofile = false;
+                App::SetErrorMessage('Invalid card number');
+            }
             
         }
         
-        $_SESSION['CardInfo']['MID'] = $MID;
-        
-        $row = $result[0];
-        
-        $hdnMID->Text = $MID;
-        $txtFirstName->Text = $row['FirstName'];
-        $txtMiddleName->Text = $row['MiddleName'];
-        $txtLastName->Text = $row['LastName'];
-        $txtNickName->Text = $row['NickName'];
-        $txtMobileNumber->Text = $row['MobileNumber'];
-        $txtAlternateMobileNumber->Text = $row['AlternateMobileNumber'];
-        $rdoGroupGender->SetSelectedValue($row['Gender']);
-        $rdoGroupSmoker->SetSelectedValue($row['IsSmoker']);
-        $dtBirthDate->SelectedDate = $row['Birthdate'];
-        $txtEmail->Text = $row['Email'];
-        $txtAlternateEmail->Text = $row['AlternateEmail'];
-        $txtAddress1->Text = $row['Address1'];
-        $txtAddress2->Text = $row['Address2'];
-        $txtIDPresented->Text = $row['IdentificationNumber'];
-        $cboIDSelection->SetSelectedValue($row['IdentificationID']);
-        $cboOccupation->SetSelectedValue($row['OccupationID']);
-        $txtAge->Text = number_format((abs(strtotime($row['Birthdate']) - strtotime(date('Y-m-d'))) / 60 / 60 / 24 / 365),0);
-        $cboNationality->SetSelectedValue($row['NationalityID']);
+        if($validKey)
+        {
+            $_SESSION['CardInfo']['MID'] = $MID;
+
+            $row = $result[0];
+
+            $hdnMID->Text = $MID;
+            $txtFirstName->Text = $row['FirstName'];
+            $txtMiddleName->Text = $row['MiddleName'];
+            $txtLastName->Text = $row['LastName'];
+            $txtNickName->Text = $row['NickName'];
+            $txtMobileNumber->Text = $row['MobileNumber'];
+            $txtAlternateMobileNumber->Text = $row['AlternateMobileNumber'];
+            $rdoGroupGender->SetSelectedValue($row['Gender']);
+            $rdoGroupSmoker->SetSelectedValue($row['IsSmoker']);
+            $dtBirthDate->SelectedDate = $row['Birthdate'];
+            $txtEmail->Text = $row['Email'];
+            $txtAlternateEmail->Text = $row['AlternateEmail'];
+            $txtAddress1->Text = $row['Address1'];
+            $txtAddress2->Text = $row['Address2'];
+            $txtIDPresented->Text = $row['IdentificationNumber'];
+            $cboIDSelection->SetSelectedValue($row['IdentificationID']);
+            $cboOccupation->SetSelectedValue($row['OccupationID']);
+            $txtAge->Text = number_format((abs(strtotime($row['Birthdate']) - strtotime(date('Y-m-d'))) / 60 / 60 / 24 / 365),0);
+            $cboNationality->SetSelectedValue($row['NationalityID']);
+        }
         
     }
     
@@ -330,6 +360,7 @@ if($fp->IsPostBack)
 if(isset($_SESSION['CardInfo']))
 {
     $showcardinfo = true;
+    $showprofile = true;
     
     if(isset($_SESSION['CardInfo']['Username']))
     {
@@ -397,103 +428,105 @@ if(isset($_SESSION['CardInfo']))
         
     });
 </script>
-<div class="main">
- <div class="content"> 
-        <?php
-           echo $txtSearch . $btnSearch;
-        ?>
-        </form>
-        <?php if($showcardinfo) include('cardinfo.php'); ?>
-        <?php include('menu.php'); ?>
-        <form name="frmProfile" id="frmProfile" method="post" action="" />
-        <div class="result">             
+
+<div id="page-wrap">
+    <?php
+       echo $txtSearch . $btnSearch;
+    ?>
+    </form>
+    <?php if($showcardinfo) include('cardinfo.php'); ?>
+    <?php include('menu.php'); ?>
+</div>
+<div id="page-wrap">
+    <form name="frmProfile" id="frmProfile" method="post" action="" />
+
+    <div class="result">             
+    <?php 
+    if((!empty($btnSearch->SubmittedValue) || !empty($btnUpdate->SubmittedValue) || isset($_SESSION['CardInfo'])) && $showprofile) 
+    {?>
+        <div class="title">Account Information</div>
+        <table>
+                <tr>
+                    <td>First Name*</td>
+                    <td><?php echo $txtFirstName; ?></td>
+                    <td>Primary Email Address*</td>
+                    <td><?php echo $txtEmail; ?></td>
+                </tr>
+                <tr>
+                    <td>Middle Name</td>
+                    <td><?php echo $txtMiddleName; ?></td>
+                    <td>Secondary Email Address</td>
+                    <td><?php echo $txtAlternateEmail; ?></td>
+                </tr>
+                <tr>                        
+                    <td>Last Name*</td>
+                    <td><?php echo $txtLastName; ?></td>
+                    <td>Mobile Number*</td>
+                    <td><?php echo $txtMobileNumber; ?></td>
+                <tr>                        
+                    <td>Nick Name</td>
+                    <td><?php echo $txtNickName; ?></td>
+                    <td>Alternate Mobile Number</td>
+                    <td><?php echo $txtAlternateMobileNumber; ?></td>
+                </tr>
+                <tr>
+                    <td>Permanent Address</td>
+                    <td><?php echo $txtAddress1; ?><br/>
+                        <?php echo $txtAddress2; ?><br/></td>
+                    <td>Gender</td>
+                    <td><?php echo $rdoGroupGender->Radios[0]; ?><br />
+                        <?php echo $rdoGroupGender->Radios[1]; ?>
+                    </td>
+                </tr>
+                <tr>
+                    <td>ID Presented*</td>
+                    <td><?php echo $txtIDPresented; ?><br/>
+                        <?php echo $cboIDSelection; ?></td>
+                    <td>Birthdate*</td>
+                    <td><?php echo $dtBirthDate; ?></td>
+                </tr>
+                <tr>
+                    <td>Nationality</td>
+                    <td><?php echo $cboNationality; ?></td>
+                    <td>Age</td>
+                    <td><?php echo $txtAge; ?></td>
+                </tr>
+                <tr>
+                    <td>Occupation</td>
+                    <td><?php echo $cboOccupation; ?></td>
+                    <td><?php echo $rdoGroupSmoker->Radios[0]; ?></td>
+                    <td><?php echo $rdoGroupSmoker->Radios[1]; ?></td>
+                </tr>
+                <tr>
+                    <td colspan="4">
+                        <?php echo $btnUpdate; ?>
+                        <?php echo $hdnMID; ?>
+                    </td>
+                </tr>
+            </table> 
+    <?php
+    }?>
+    </div>
+</div>
+<div id="SuccessDialog" name="SuccessDialog">
+    <?php if($isOpen == 'true') 
+    {?>
+        <?php if($isSuccess)
+        {?>
+            <p>
+                Update successful.
+            </p>
         <?php 
-        if(!empty($btnSearch->SubmittedValue) || !empty($btnUpdate->SubmittedValue) || isset($_SESSION['CardInfo'])) 
-        {?>
-            <h2>Account Information</h2>
-            <table>
-                    <tr>
-                        <td>First Name*</td>
-                        <td><?php echo $txtFirstName; ?></td>
-                        <td>Primary Email Address*</td>
-                        <td><?php echo $txtEmail; ?></td>
-                    </tr>
-                    <tr>
-                        <td>Middle Name</td>
-                        <td><?php echo $txtMiddleName; ?></td>
-                        <td>Secondary Email Address</td>
-                        <td><?php echo $txtAlternateEmail; ?></td>
-                    </tr>
-                    <tr>                        
-                        <td>Last Name*</td>
-                        <td><?php echo $txtLastName; ?></td>
-                        <td>Mobile Number*</td>
-                        <td><?php echo $txtMobileNumber; ?></td>
-                    <tr>                        
-                        <td>Nick Name</td>
-                        <td><?php echo $txtNickName; ?></td>
-                        <td>Alternate Mobile Number</td>
-                        <td><?php echo $txtAlternateMobileNumber; ?></td>
-                    </tr>
-                    <tr>
-                        <td>Permanent Address</td>
-                        <td><?php echo $txtAddress1; ?><br/>
-                            <?php echo $txtAddress2; ?><br/></td>
-                        <td>Gender</td>
-                        <td><?php echo $rdoGroupGender->Radios[0]; ?><br />
-                            <?php echo $rdoGroupGender->Radios[1]; ?>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>ID Presented*</td>
-                        <td><?php echo $txtIDPresented; ?><br/>
-                            <?php echo $cboIDSelection; ?></td>
-                        <td>Birthdate*</td>
-                        <td><?php echo $dtBirthDate; ?></td>
-                    </tr>
-                    <tr>
-                        <td>Nationality</td>
-                        <td><?php echo $cboNationality; ?></td>
-                        <td>Age</td>
-                        <td><?php echo $txtAge; ?></td>
-                    </tr>
-                    <tr>
-                        <td>Occupation</td>
-                        <td><?php echo $cboOccupation; ?></td>
-                        <td><?php echo $rdoGroupSmoker->Radios[0]; ?></td>
-                        <td><?php echo $rdoGroupSmoker->Radios[1]; ?></td>
-                    </tr>
-                    <tr>
-                        <td colspan="4">
-                            <?php echo $btnUpdate; ?>
-                            <?php echo $hdnMID; ?>
-                        </td>
-                    </tr>
-                </table> 
+        } 
+        else 
+        { 
+        ?>
+            <p>
+                Update failed.
+            </p>
         <?php
         }?>
-        </div>
-    </div>
-    <div id="SuccessDialog" name="SuccessDialog">
-        <?php if($isOpen == 'true') 
-        {?>
-            <?php if($isSuccess)
-            {?>
-                <p>
-                    Update successful.
-                </p>
-            <?php 
-            } 
-            else 
-            { 
-            ?>
-                <p>
-                    Update failed.
-                </p>
-            <?php
-            }?>
-        <?php
-        }?>
-    </div>
+    <?php
+    }?>
 </div>
 <?php include('footer.php'); ?>

@@ -54,106 +54,6 @@ body, table
     /*border-left: 1px solid #d7c265;*/
 }
 
-#cardinfo table { width: 50%; margin-top: 20px; }
-#cardinfo table, #cardinfo td
-{
-    border: 1px solid #eee;
-    border-collapse: collapse;
-}
-
-/* Menu */
-
-#menu_container {
-	border-bottom: 1px solid #ccc;
-        width: 100%;
-        background:#FFFFFF;
-}
-
-#menu {
-	list-style: none;
-	/*padding: 5px 0 4px 0;*/
-        padding: 0 0 3px 60%;
-	margin: 0 0 0 10px;
-	font: 1em arial;
-}
-#menu li {
-	display: inline;
-}
-#menu li a {
-	border: 1px solid #ccc;
-	padding: 4px 6px;
-	text-decoration: none;
-	background-color: #eeeeee;
-	border-bottom: none;
-	outline: none;
-/*	border-radius: 5px 5px 0 0;
-	-moz-border-radius: 5px 5px 0 0;
-	-webkit-border-top-left-radius: 5px;
-	-webkit-border-top-right-radius: 5px;*/
-        color:#000;
-        /*font-weight: bold;*/
-}
-#menu li a:hover {
-	background-color: #dddddd;
-	padding: 4px 6px;
-}
-#menu li.active a {
-	border-bottom: 1px solid #fff;
-	background-color: #fff;
-	padding: 4px 6px 5px 6px;
-	border-bottom: none;
-}
-#menu li.active a:hover {
-	background-color: #eeeeee;
-	padding: 4px 6px 5px 6px;
-	border-bottom: none;
-}
-
-.bg_tableheader2, .bg_tableheader2 td
-{
-    background-color: #99CCFF;
-    padding-left: 5px;
-    padding-right: 5px;
-    padding-top: 3px;
-    padding-bottom: 3px;
-    text-align: center;
-    font-weight: bold;
-    width: 100px;
-    white-space: nowrap;
-    background-image: url('../images/menubg.jpg');
-    background-repeat: repeat-x;
-
-    text-shadow: 0px 1px 0px #BBB;
-    text-shadow: 1px 1px 0 #FFFFFF;
-}
-
-/* for DataTable Control */
-.reporttable
-{
-    background-color: #FFFFFF;
-    /* width: 600px; */
-    width: 100%;
-    border-collapse: collapse;
-}
-
-.reporttable td
-{
-    padding: 5px 5px 5px 5px;
-}
-
-.reporttable td
-{
-    border-width: 1px;
-    border-style: solid;
-    border-collapse: collapse;
-    border-color: #999999;
-}
-
-.pad5 
-{
-    padding: 5px;
-}
-
 #membersactivation{
     background-color: #f2e2ae;
     padding: 20px;
@@ -165,9 +65,6 @@ body, table
 
 .login-error
 {
-    /*border: 1px solid #FF0000;*/
-/*    -moz-border-radius: 10px; 
-    border-radius: 10px;*/
     margin-bottom: 5px;
     text-align: center;
     font-weight: bold;

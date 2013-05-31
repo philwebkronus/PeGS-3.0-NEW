@@ -51,13 +51,15 @@ else
 
 ?>
 <?php include('header.php'); ?>
-<div class="content">    
+<div id="page-wrap">    
      <?php
        echo $txtSearch . $btnSearch;
     ?>
     </form>
     <?php if($showcardinfo) include('cardinfo.php'); ?>
     <?php include('menu.php'); ?>
-    <h2>Redemption</h2>
+</div>
+<div id="page-wrap">    
+    <div class="title">Redemption</div>
 </div>
 <?php include('footer.php'); ?>

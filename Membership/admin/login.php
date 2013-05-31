@@ -10,6 +10,7 @@ $pagetitle = "Admin Login";
 
 App::LoadModuleClass("Admin","Accounts");
 App::LoadModuleClass("Admin", "AccountStatus");
+App::LoadModuleClass("Admin", "AccessRights");
 
 App::LoadCore("URL.class.php");
 App::LoadCore("Hashing.class.php");
@@ -18,6 +19,7 @@ App::LoadControl("TextBox");
 App::LoadControl("Button");
 
 $accounts = new Accounts();
+$accessrights = new AccessRights();
 
 $fproc = new FormsProcessor();
 
@@ -52,19 +54,36 @@ if($fproc->IsPostBack)
     // Valid and active account
     if($status == AccountStatus::Active)
     {
+        $result = $accounts->authenticate($username,$password);
         
-        //Authenticate
-        if($accounts->authenticate($username,$password))
-        {
-            $_SESSION['Username'] = $username;
-            $_SESSION['AID'] = 1;
+        if(count($result) > 0)
+        {            
+            //Get account info
+            $row = $result[0];
+
+            $accounttypeid = $row['AccountTypeID'];
+            $_SESSION['userinfo']['Username'] = $username;
+            $_SESSION['userinfo']['AID'] = $row['AID'];
+            $_SESSION['userinfo']['AccountTypeID'] = 
             
-            URL::Redirect('index.php');
+            //Get user access
+            $access = $accessrights->getAccessRights($accounttypeid);
+            $_SESSION['menus'] = $access;
+            
+            $defaultpage = $accessrights->getDefaultPage($accounttypeid);
+            
+            if(isset($defaultpage) && count($defaultpage) > 0)
+            {
+                $link = $defaultpage[0]['Link'];
+                URL::Redirect($link);
+            }
+
         }
         else
         {
             App::SetErrorMessage('Invalid Account');
         }
+        
         
     }
     elseif ($status != AccountStatus::Active)
@@ -96,7 +115,10 @@ if($fproc->IsPostBack)
 }
 ?>  
 <?php include('header.php'); ?>
+<div id="login">
+    <h3>Admin Login</h3><br />
 <?php echo $txtUsername; ?><br/>
 <?php echo $txtPassword; ?><br/>
 <?php echo $btnLogin; ?>
+</div>
 <?php include('footer.php'); ?>
