@@ -290,7 +290,7 @@ $this->breadcrumbs=array(
                     $(this).dialog("close");
                }',               
             ),
-            'close'=>'js:function(){
+            'open'=>'js:function(){
                 resetForm();
             }',
         ),
