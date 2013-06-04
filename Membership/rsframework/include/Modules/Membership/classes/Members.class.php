@@ -75,7 +75,6 @@ class Members extends BaseEntity {
                     $arrMemberCards['MID'] = $arrgetMID['MID'];
                     $arrMemberCards['CardID'] = $ArrayNewCardID['CardID'];
                     $arrMemberCards['CardNumber'] = $ArrayNewCardID['CardNumber'];
-                    $arrMemberCards['MemberCardName'] = $arrMemberInfo['FirstName'];
                     $arrMemberCards['LifetimePoints'] = $ArrayOldCardID['LifetimePoints'];
                     $arrMemberCards['CurrentPoints'] = $ArrayOldCardID['CurrentPoints'];
                     $arrMemberCards['RedeemedPoints'] = $ArrayOldCardID['RedeemedPoints'];
@@ -155,6 +154,11 @@ class Members extends BaseEntity {
                                         $zip = 'NA';
                                         $countryCode = 'PH';
 
+                                        if(strlen($firstName) > 15)
+                                        {
+                                            $firstName = substr($firstName, 0, 15);
+                                        }
+                                        
                                         $arrServices[0]['isVIP'] == 0 ? $vipLevel = 1 : $vipLevel = 2;
                                                                                 
                                         foreach ($casinoservices as $casinoservice) {

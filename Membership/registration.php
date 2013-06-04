@@ -10,6 +10,7 @@ $pagetitle = "Membership Registration";
 App::LoadModuleClass("Membership", "TempMembers");
 App::LoadModuleClass("Membership", "TempMemberInfo");
 App::LoadModuleClass("Membership", "Identifications");
+App::LoadModuleClass("Membership", "AccountTypes");
 App::LoadModuleClass("Membership", "Nationality");
 App::LoadModuleClass("Membership", "Occupation");
 App::LoadModuleClass("Membership", "Referrer");
@@ -150,7 +151,7 @@ $fproc->AddControl($txtIDPresented);
 
 $btnSubmit = new Button("btnSubmit", "btnSubmit", "Register");
 $btnSubmit->IsSubmit = true;
-$btnSubmit->CssClass = "btnDefault roundedcorners";
+$btnSubmit->CssClass = "btnDefault roundedcorners yellow-btn";
 $fproc->AddControl($btnSubmit);
 
 $_identifications = new Identifications();
@@ -243,7 +244,7 @@ if ($fproc->IsPostBack)
     {
         $arrMembers["UserName"] = $txtEmail->SubmittedValue;
         $arrMembers["Password"] = md5($txtPassword->SubmittedValue);
-        $arrMembers["AccountTypeID"] = $_Helper->GetAccountTypeIDByName('Member');
+        $arrMembers["AccountTypeID"] = $_Helper->GetAccountTypeIDByName(AccountTypes::Member);
         $arrMembers["ForChangePassword"] = 1;
         $arrMembers["DateCreated"] = $datecreated;
         $arrMembers["Status"] = 1;
@@ -321,7 +322,7 @@ if ($fproc->IsPostBack)
             buttons: {
                 "Ok": function() {
                     $(this).dialog("close");
-                    //alert('Redirect to the member page');
+                    window.location = "index.php";
                 }
             }
         });

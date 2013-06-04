@@ -3,6 +3,7 @@ require_once("init.inc.php");
 $pagetitle = "Temporary Membership Activation";
 
 App::LoadModuleClass("Membership", "Members");
+App::LoadModuleClass("Membership", "MemberInfo");
 App::LoadModuleClass("Membership", "Occupation");
 App::LoadModuleClass("Membership", "Identifications");
 App::LoadModuleClass("Membership", "Nationality");
@@ -27,12 +28,8 @@ $useCustomHeader = false;
 $customtags[] = "<BASE target=\"_self\" />";
 
 $_Members = new Members();
-$_Occupation = new Occupation();
-$_Identification = new Identifications();
-$_Nationality = new Nationality();
-$_TempMembers = new TempMembers();
+$_MemberInfo = new MemberInfo();
 $_Cards = new Cards();
-$_ProcessPointsAPI = new ProcessPointsAPI();
 $_MemberCards = new MemberCards();
 $_Sites = new Sites();
 
@@ -44,7 +41,6 @@ $txtName = new TextBox("txtName", "txtName", "Name");
 $txtName->ShowCaption = false;
 $txtName->Length = 90;
 $txtName->Size = 30;
-
 $txtName->CssClass = "validate[required, custom[onlyLetterSp], minSize[2]]";
 
 $dsmaxdate->AddYears(-21);
@@ -128,228 +124,129 @@ if((isset($_GET["tempnumber"]) && (htmlentities($_GET["tempnumber"]))) &&
     $AID = $_GET["aid"];
     $isreg = $_GET["isreg"];
     
-    if($isreg == "1")
-    {
-        //Set Default Occupation//
-        $where = " where Name = 'Employee' ";
-        $arrOccu = $_Occupation->SelectByWhere($where);
-        $arrOcupation = $arrOccu[0];
-        $arrOcupationID  = $arrOcupation['OccupationID'];
-        //Set the Default Nationality//
-        $Nationality = "where Name = 'Filipino'";
-        $arrNation = $_Nationality->SelectByWhere($Nationality);
-        $arrNationality = $arrNation[0];
-        $arrNationantilyID = $arrNationality['NationalityID'];
-
-        $tempmemberresult = $_TempMembers->getTempMemberInfo($tempAccountCode);
-        $newcardresult = $_Cards->getCardInfo($MembershipCardNumber);
+    if($isreg == 1)
+    {    
+        $memberinfo = $_MemberInfo->getMemberInfo($MID);
         $siteresult = $_Sites->getSiteByCode($sitecode);
-        
-        //Check if temp & new cards exists
-        if(empty($tempmemberresult))
-        {
-            $tempAccountCode = "";
-            $createdon = "";
-            $MembershipCardNumber = "";
-            $sitecode = "";
-            $sitename ="";
-            $currentpoints = "";
-            $isSuccess = false;
+                
+        $row = $memberinfo[0];
+  
+        $username = $row["UserName"];
+        $membername = $row["FirstName"]." ".$row["MiddleName"]." ".$row["LastName"];
+        $createdon = date("m-d-Y h:i A", strtotime($row["DateCreated"]));
+        $birthdate = $row["Birthdate"];
+        $gender = $row["Gender"];
 
-            $error = "Temporary Card Not Found!.";
-        }
-        elseif(empty($newcardresult))
-        {
-            $tempAccountCode = "";
-            $createdon = "";
-            $MembershipCardNumber = "";
-            $sitecode= "";
-            $sitename ="";
-            $currentpoints = "";
-            $isSuccess = false;
+        $site = $siteresult[0];
+        $sitename = $site["SiteName"];
 
-            $error = "Membership Card Not Found!";
-        }
-        elseif(empty($siteresult))
-        {
-            $tempAccountCode = "";
-            $createdon = "";
-            $MembershipCardNumber = "";
-            $sitecode = "";
-            $sitename ="";
-            $currentpoints = "";
-            $isSuccess = false;
+        $cardinfo = $_MemberCards->getMemberCardInfo($MID);
 
-            $error = "Site Not Found!";
+        if(count($cardinfo) > 0)
+        {
+            $currentpoints = $cardinfo[0]["CurrentPoints"];
         }
-        //proceed to migration
         else
+        {            
+            $currentpoints = "0";
+        }
+            
+        $txtName->Text = $membername;
+        $dtBirthDate->SelectedDate = $birthdate;
+        $rdoGroupGender->SetSelectedValue($gender);
+
+        if($fproc->IsPostBack)
         {
-            $tempmember = $tempmemberresult[0];
-            $username = $tempmember["UserName"];
-            $membername = $tempmember["FirstName"]." ".$tempmember["MiddleName"]." ".$tempmember["LastName"];
-            $createdon = date("m-d-Y h:i A", strtotime($tempmember["DateCreated"]));
-            $birthdate = $tempmember["Birthdate"];
-            $gender = $tempmember["Gender"];
-            
-            $site = $siteresult[0];
-            $sitename = $site["SiteName"];
+            $isSubmitted = true;
 
-            $newcard = $newcardresult[0];
-            $arrchecknewcard["CardID"] = $newcard["CardID"];
-            $arrchecknewcard["CardNumber"] = $newcard["CardNumber"];
-
-            //check if temp card exist in cards table
-            $tempcardresult1 = $_Cards->getCardInfo($tempAccountCode);
-            if(empty($tempcardresult1))
+            if($btnSubmit->SubmittedValue == "Confirm")
             {
-                $currentpoints = "0";
-            }
-            else
-            {
-                $tempcardnum = $tempcardresult1[0]["CardNumber"];
-                $currentpointsresult = $_MemberCards->getMemberCardInfoByCard($tempcardnum);
-
-                if(empty($currentpointsresult))
-                {
-                    $currentpoints = "0";
-                }
-                else
-                {
-                    $currentpoints = $currentpointsresult[0]["CurrentPoints"];
-                }
-            }
-            
-            $verifytempcard = $tempcardresult1[0]["Status"];
-            $verifynewcard = $newcard["Status"];
-            
-            //verify card status
-            if($verifytempcard != CardStatus::ACTIVE_TEMPORARY)
-            {
-                $tempAccountCode = "";
-                $createdon = "";
-                $MembershipCardNumber = "";
-                $sitecode = "";
-                $currentpoints = "";
+                $datecreated = "now_usec()";
                 
-                if($verifytempcard == CardStatus::TEMPORARY_MIGRATED)
-                {
-                    $isSuccess = false;
-                    $error = "Migrated Temp Card!";
-                }
-            }
-            elseif($verifynewcard != CardStatus::INACTIVE)
-            {
-                $tempAccountCode = "";
-                $createdon = "";
-                $MembershipCardNumber = "";
-                $sitecode = "";
-                $sitename ="";
-                $currentpoints = "";
+                $tempcardresult = $_Cards->getCardInfo($tempAccountCode); //getMemberCardInfoByCard($MembershipCardNumber);
+                $tempcardinfo = $tempcardresult[0];
+                $tempcardid = $tempcardinfo["CardID"];
                 
-                if($verifynewcard == CardStatus::ACTIVE)
-                {
-                    $isSuccess = false;
-                    $error = "Membership card already Active!";
-                }
-                elseif($verifynewcard == CardStatus::DEACTIVATED)
-                {
-                    $isSuccess = false;
-                    $error = "Membership card Deactived!";
-                }
-                elseif($verifynewcard == CardStatus::NEW_MIGRATED)
-                {
-                    $isSuccess = false;
-                    $error = "Membership card already Migrated!";
-                }
-            }
-            else
-            {
-                $txtName->Text = $membername;
-                $dtBirthDate->SelectedDate = $birthdate;
-                $rdoGroupGender->SetSelectedValue($gender);
-                if($fproc->IsPostBack)
-                {
-                    $isSubmitted = true;
+                $cardresult = $_Cards->getCardInfo($MembershipCardNumber); //getMemberCardInfoByCard($MembershipCardNumber);
+                $cardinfo = $cardresult[0];
+                $cardid = $cardinfo["CardID"];
 
-                    if($btnSubmit->SubmittedValue == "Confirm")
+                $arrMemberCards["MID"] = $MID;
+                $arrMemberCards["CardID"]= $cardid;
+                $arrMemberCards["CardNumber"] = $MembershipCardNumber;
+                $arrMemberCards["LifetimePoints"] = "0";
+                $arrMemberCards["CurrentPoints"] = "0";
+                $arrMemberCards["RedeemedPoints"] = "0";
+                $arrMemberCards["DateCreated"] = $datecreated;
+                $arrMemberCards["CreatedByAID"] = $AID;
+                $arrMemberCards["Status"] = CardStatus::ACTIVE;
+                
+                $arrTempMemberCards["MemberCardID"] = $tempcardid;
+                $arrTempMemberCards["Status"] = CardStatus::TEMPORARY_MIGRATED;
+                $arrTempMemberCards["UpdatedByAID"] = $AID;
+                $arrTempMemberCards["DateUpdated"] = $datecreated;
+                
+                $_MemberCards->processMemberCard($arrMemberCards, $arrTempMemberCards);
+
+                if(!App::HasError())
+                {
+                    $arrNewCard["CardID"] = $cardid;
+                    $arrNewCard["UpdatedByAID"] = $AID;
+                    $arrNewCard["DateUpdated"] = $datecreated;
+                    $arrNewCard["Status"]= CardStatus::ACTIVE;
+
+                    $arrTempCard["CardID"] = $tempcardid;
+                    $arrTempCard["UpdatedByAID"] = $AID;
+                    $arrTempCard["DateUpdated"] = $datecreated;
+                    $arrTempCard["Status"]= CardStatus::TEMPORARY_MIGRATED;
+
+                    $_Cards->updateCardStatus($arrNewCard, $arrTempCard);
+                    
+                    if(!App::HasError())
                     {
-                        $datecreated = "now_usec()";
-
-                        $tempmemcardresult = $_MemberCards->getMemberCardInfoByCard($tempAccountCode);
-                        $tempmemcard = $tempmemcardresult[0];
-                        $tempmemcardmid = $tempmemcard["MID"];
-                        $tempmemcardid = $tempmemcard["MemberCardID"];
-
-                        $arrMemberCards["MID"] = $tempmemcardmid;
-                        $arrMemberCards["CardID"]= $arrchecknewcard["CardID"];
-                        $arrMemberCards["CardNumber"] = $arrchecknewcard["CardNumber"];
-                        $arrMemberCards["MemberCardName"] = $txtName->SubmittedValue;
-                        $arrMemberCards["LifetimePoints"] = "0";
-                        $arrMemberCards["CurrentPoints"] = "0";
-                        $arrMemberCards["RedeemedPoints"] = "0";
-                        $arrMemberCards["DateCreated"] = $datecreated;
-                        $arrMemberCards["CreatedByAID"] = $AID;
-                        $arrMemberCards["Status"] = "1";
-                        //$_MemberCards->Insert($arrMemberCards);
-                        
-                        $arrTempMemberCards["MemberCardID"] = $tempmemcardid;
-                        $arrTempMemberCards["Status"] = CardStatus::TEMPORARY_MIGRATED;
-                        $arrTempMemberCards["UpdatedByAID"] = $AID;
-                        $arrTempMemberCards["DateUpdated"] = $datecreated;
-                        //App::Pr($arrTempMemberCards);
-                        $_MemberCards->processMemberCard($arrMemberCards, $arrTempMemberCards);
-
-                        $newstatus = CardStatus::ACTIVE;
-                        $arrNewCard["CardID"] = $arrchecknewcard["CardID"];
-                        $arrNewCard["UpdatedByAID"] = $AID;
-                        $arrNewCard["DateUpdated"] = $datecreated;
-                        $arrNewCard["Status"]= $newstatus;
-
-                        $tempcardresult2 = $_Cards->getCardInfo($tempAccountCode);
-                        //$tempcardresult = $_Cards->getMemberCardInfo("eGamesXH8S2");
-                        if(empty($tempcardresult2))
-                        {
-                            $_Cards->updateCardStatus($arrNewCard);
-                        }
-                        else
-                        {
-                            $tempstatus = CardStatus::TEMPORARY_MIGRATED;
-                            $tempcard = $tempcardresult2[0];
-                            $arrchecktempcard["CardID"] = $tempcard["CardID"];
-
-                            $arrTempCard["CardID"] = $arrchecktempcard["CardID"];
-                            $arrTempCard["UpdatedByAID"] = $AID;
-                            $arrTempCard["DateUpdated"] = $datecreated;
-                            $arrTempCard["Status"]= $tempstatus;
-                            
-                            $_Cards->updateCardStatus($arrNewCard, $arrTempCard);
-                        }                
-
-
-                        //$valididname = $cboIDSelection->SubmittedValue;
-                        //App::Pr($valididname);
-                        //$valididentificationid = " where IdentificationName  = '$valididname'";
-                        //$validresult = $_Identification->SelectByWhere($valididentificationid);
-                        //$arrValid = $validresult[0];
-                        //$validid["IdentificationID"] = $arrValid["IdentificationID"];        
-                        //App::Pr($validid["IdentificationID"]);
                         $playername = $txtName->SubmittedValue;
-                        list($fname, $mname, $lname) = explode(' ', $playername, 3);
-                        $arrMemberInfo["MID"] = $tempmemcardmid;
+                        $list = explode(' ', $playername, 3);
+                        
+                        if(count($list) == 1)
+                        {
+                            $fname = $list[0];
+                            $mname = "";
+                            $lname = "";
+                        }
+                        
+                        if(count($list) == 2)
+                        {
+                            $fname = $list[0];
+                            $mname = $list[1];
+                            $lname = "";
+                        }
+                        
+                        if(count($list) == 3)
+                        {
+                            $fname = $list[0];
+                            $mname = $list[1];
+                            $lname = $list[2];
+                        }
+                        
+                        if(count($list) > 3)
+                        {
+                            $fname = $list[0];
+                            $mname = $list[1];
+                            $lname = $list[2] . ' ' . $list[3];
+                        }
+                        
+                        $arrMemberInfo["MID"] = $MID;
                         $arrMemberInfo["FirstName"] = $fname;
                         $arrMemberInfo["MiddleName"] = $mname;
-                        $arrMemberInfo ["LastName"] = $lname;
-                        $arrMemberInfo ["Birthdate"] = $dtBirthDate->SubmittedValue;
-                        $arrMemberInfo ["Email"] = $username;
-                        $arrMemberInfo ["NationalityID"] = $arrNationantilyID;
-                        $arrMemberInfo ["OccupationID"] = $arrOcupationID;
+                        $arrMemberInfo["LastName"] = $lname;
+                        $arrMemberInfo["Birthdate"] = $dtBirthDate->SubmittedValue;
+                        $arrMemberInfo["Email"] = $username;
                         $arrMemberInfo["IdentificationID"] = $cboIDSelection->SubmittedValue;
-                        $arrMemberInfo ["IdentificationNumber"] = $txtIDPresented->SubmittedValue;
-                        $arrMemberInfo ["DateUpdated"] = $datecreated;
-                        $arrMemberInfo["UpdatedByMID"] = $MID;
+                        $arrMemberInfo["IdentificationNumber"] = $txtIDPresented->SubmittedValue;
+                        $arrMemberInfo["DateUpdated"] = $datecreated;
+                        $arrMemberInfo["UpdatedByAID"] = $AID;
                         $rdoGroupGender->SubmittedValue == 1 ? $arrMemberInfo['Gender'] = 1 : $arrMemberInfo['Gender'] = 2; 
-                        
+
                         $_Members->UpdateProfile($arrMemberInfo);
 
                         if(!App::HasError()){
@@ -361,26 +258,26 @@ if((isset($_GET["tempnumber"]) && (htmlentities($_GET["tempnumber"]))) &&
                             $isSuccess = false;
                         }
                     }
+                    else
+                    {
+                        $isSuccess = false;
+                    }                    
                 }
                 else
                 {
-                    $isSubmitted = false;
+                    $isSuccess = false;
                 }
+                
             }
         }
+        else
+        {
+            $isSubmitted = false;
+        }
     }
-}
-else
-{
-    $isSuccess = false;
-    if((!isset($_GET["tempnumber"]) || $_GET["tempnumber"] == "") || 
-       (!isset($_GET["newnumber"]) || $_GET["newnumber"] == "") ||
-       (!isset($_GET["mid"]) || $_GET["mid"] == "") ||
-       (!isset($_GET["site"]) || $_GET["site"] == "") ||
-       (!isset($_GET["aid"]) || $_GET["aid"] == "") ||
-       (!isset($_GET["isreg"]) || $_GET["isreg"] == "")
-      )
+    else
     {
+        $isSuccess = false;
         $error = "One or more parameters have no values.";
     }
 }
@@ -485,21 +382,21 @@ else
 <table>
     <tr>
         <td width="20%">Temp Account Code </td>
-        <td width="30%"><?php echo $tempAccountCode; ?></td>
-        <td width="20%">Membership Card No </td>
-        <td width="30%"><?php echo $MembershipCardNumber; ?></td>
+        <td width="30%"><strong><?php echo $tempAccountCode; ?></strong></td>
+        <td width="25%">Membership Card No </td>
+        <td width="25%"><strong><?php echo $MembershipCardNumber; ?></strong></td>
     </tr>
     <tr>
         <td>Created On </td>
-        <td><?php echo $createdon; ?></td>
+        <td><strong><?php echo $createdon; ?></strong></td>
         <td>Issuing Cafe </td>
-        <td><?php echo $sitename; ?></td>
+        <td><strong><?php echo $sitename; ?></strong></td>
     </tr>
     <tr>
         <td>Current Points </td>
-        <td><?php  echo $currentpoints; ?></td>
+        <td><strong><?php  echo $currentpoints; ?></strong></td>
         <td>Date and Time </td>
-        <td><span id="servertime"></span></td>
+        <td><strong><span id="servertime"></span></strong></td>
     </tr>
 </table>
 <hr>

@@ -38,18 +38,20 @@ class Helper extends BaseEntity
         $mailer->IsHTML(true);
         
         $mailer->Body = "Dear $name,\n\n";
-        $mailer->Body .= "Thank you for registering to Philweb Loyalty Program\n\n";
-        $mailer->Body .= "Please keep and use this temporary account code for you to be able to earn points.\n\n";
-        $mailer->Body .= "Temporary Account Code: <strong>$tempcode</strong>\n\n";
-        $mailer->Body .= "Verify your account by clicking the link below:\n";
-        $mailer->Body .= "Link: http://".$_SERVER['HTTP_HOST']."/verify.php?email=$email&tempcode=$tempcode\n\n"; 
-        $mailer->Body .= "Thank you.\n";
-        $mailer->Body .= "Philweb Corporation";
-
+                
+        $mailer->Body .= "Thank you for signing up! This is to inform you that your User Account has been successfully created on this date ".date('m/d/Y',time())." and time (".date('H:i:s',time())."). Your Temporary Account Code is $tempcode. Present this code and one (1) government-issued ID at any e-Games cafe near you. ";
+        $mailer->Body .= "\n\nTo verify your account, please click this link http://".$_SERVER['HTTP_HOST']."/verify.php?email=$email&tempcode=$tempcode";
+        $mailer->Body .= "\nTo read the Terms & Conditions, please click this link _________.";
+        $mailer->Body .= "\nTo locate the e-Games cafes near you, please click this link ________. ";
+        $mailer->Body .= "\n\nPlease be advised that your Temporary Account Code will be activated only after 24 hours.";
+        $mailer->Body .= "For inquiries, please call our 24-hour Customer Service Hotlines at (02) 338-3388 / Toll Free 1800-10-7445932. You can also send an email to our Customer Service Team at customerservice@philweb.com.ph.";
+        $mailer->Body .= "\n\nRegards,";
+        $mailer->Body .= "\ne-Games";
+        
         $mailer->From = "membership@philweb.com.ph";
         $mailer->FromName = "Philweb Membership";
         $mailer->Host = "localhost";
-        $mailer->Subject = "Philweb Membership Verification";
+        $mailer->Subject = "E-GAMES CASINO MEMBERSHIP NOTIFICATION";
         $mailer->Send();
     }
     

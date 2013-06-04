@@ -166,6 +166,12 @@ class ActivateMember extends BaseEntity
                                $lastName = "NA";
                                $zip = 'NA';
                                $countryCode = 'PH';
+                               
+                               if(strlen($firstName) > 15)
+                                {
+                                    $firstName = substr($firstName, 0, 15);
+                                }
+                                        
                                $casinoAccounts[0]['isVIP'] == 0 ? $vipLevel = 1 : $vipLevel = 2;
                                
                                foreach( $casinoservices as $casinoservice )

@@ -117,18 +117,5 @@ class MemberCards extends BaseEntity
         }
     }
     
-    public function updateMemberCardName( $MID, $name )
-    {
-        $this->StartTransaction();
-        
-        $query = "UPDATE loyaltydb.membercards SET MemberCardName = '$name' WHERE MID = $MID";
-        
-        $this->ExecuteQuery($query);
-        
-        if(!App::HasError())
-            $this->CommitTransaction();
-        else
-            $this->RollBackTransaction ();
-    }
 }
 ?>

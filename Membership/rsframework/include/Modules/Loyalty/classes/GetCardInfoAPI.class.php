@@ -252,10 +252,6 @@ class GetCardInfoAPI extends BaseEntity
 
                             $cardinfo = $_MemberCards->getMemberCardInfoByCard( $cardnumber );
                             $points = $cardinfo[0];
-
-                            $cardName = $row['FirstName'] . ' ' . $row['LastName'];
-
-                            $_MemberCards->updateMemberCardName( $MID, $cardName );
                             
                             $result = array("CardInfo"=>array(
                                          "MID"              => $MID,

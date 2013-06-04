@@ -85,12 +85,13 @@ class Cards extends BaseEntity
         }
     }
     
-    public function updateCardStatus($arrNewCard, $arrTempCard='')
+    public function updateCardStatus($arrNewCard, $arrTempCard)
     {
         $this->StartTransaction();
         try
         {
-            if(empty($arrTempCard))
+            $this->UpdateByArray($arrTempCard);
+            if(!App::HasError())
             {
                 $this->UpdateByArray($arrNewCard);
                 if(!App::HasError())
@@ -104,23 +105,7 @@ class Cards extends BaseEntity
             }
             else
             {
-                $this->UpdateByArray($arrTempCard);
-                if(!App::HasError())
-                {
-                    $this->UpdateByArray($arrNewCard);
-                    if(!App::HasError())
-                    {
-                        $this->CommitTransaction();
-                    }
-                    else
-                    {
-                        $this->RollBackTransaction();
-                    }
-                }
-                else
-                {
-                    $this->RollBackTransaction();
-                }
+                $this->RollBackTransaction();
             }
         }
         catch(Exception $e)

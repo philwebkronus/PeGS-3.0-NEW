@@ -14,6 +14,7 @@ $customtags[] = "<BASE target=\"_self\" />";
 App::LoadModuleClass("Membership", "Helper");
 App::LoadModuleClass("Membership", "Members");
 App::LoadModuleClass("Membership", "Identifications");
+App::LoadModuleClass("Membership", "AccountTypes");
 App::LoadModuleClass("Loyalty", "OldCards");
 App::LoadModuleClass("Loyalty", "CardStatus");
 App::LoadModuleClass("Kronus", "Sites");
@@ -170,7 +171,7 @@ if ((isset($_GET["oldnumber"]) && (htmlentities($_GET["oldnumber"])))
                     $Memberstable["UserName"] = $oldCardEmail;
                 }
 
-                $Memberstable["AccountTypeID"] = $_Helper->GetAccountTypeIDByName('Player');
+                $Memberstable["AccountTypeID"] = $_Helper->GetAccountTypeIDByName(AccountTypes::Member);
                 $Memberstable['DateCreated'] = $dateCreated;
                 $Memberstable['Status'] = '1';
 
