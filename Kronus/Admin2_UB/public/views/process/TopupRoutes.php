@@ -48,6 +48,24 @@ switch($_GET['action']) {
     case 'playingbalance':
         $process->playingBalance();
         break;
+    case 'sessioncount':
+        $process->CountSession();
+        break;
+    case 'sessioncountter':
+        $process->CountSessionTer();
+        break;
+    case 'sessioncountub':
+        $process->CountSessionUB();
+        break;
+    case 'sessioncount1':
+        $process->CountSession1();
+        break;
+    case 'sessioncountter1':
+        $process->CountSessionTer1();
+        break;
+    case 'sessioncountub1':
+        $process->CountSessionUB1();
+        break;
     case 'playingbalanceub':
         $process->playingBalanceub();
         break;

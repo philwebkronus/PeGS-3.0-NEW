@@ -55,11 +55,11 @@ if(isset($_SESSION['acctype']))
                             ActiveSession : true,
                             ActiveSessionAction : "sessionrecord"
                         },
-                        colNames : ["Terminal ID", "Terminal Code", "Playing Balance",],
+                        colNames : ["Terminal Code", "Playing Balance","User Mode"],
                         colModel : [
-                            {name:'TerminalID',index:'TerminalID', width: 300, sortable:false},
                             {name:'TerminalCode',index:'TerminalCode', width: 300, sortable:false},
-                            {name:'PlayingBalance',index:'PlayingBalance', width: 400, align: 'right', sortable:false}
+                            {name:'PlayingBalance',index:'PlayingBalance', width: 400, align: 'right', sortable:false},
+                            {name:'UserMode',index:'UserMode', width: 400, align: 'center', sortable:false}
                         ],
                         rowNum : 10,
                         rowList:[10,20,30], 
@@ -92,6 +92,46 @@ if(isset($_SESSION['acctype']))
                                 },
                           success: function(data){
                               $("#activeSession").val(data);
+                              
+                              jQuery.ajax({
+                                            url: url,
+                                            type: 'POST',
+                                            data: {
+                                                      siteID: function(){return jQuery("#cmbsite").val();},
+                                                      ActiveSession : true,
+                                                      ActiveSessionAction : "sessioncountter"
+                                                  },
+                                            success: function(data){
+                                                $("#activeSessionter").val(data);
+                                                
+                                                jQuery.ajax({
+                                                            url: url,
+                                                            type: 'POST',
+                                                            data: {
+                                                                      siteID: function(){return jQuery("#cmbsite").val();},
+                                                                      ActiveSession : true,
+                                                                      ActiveSessionAction : "sessioncountub"
+                                                                  },
+                                                            success: function(data){
+                                                                $("#activeSessionub").val(data);
+                                                            },
+                                                            error: function(XMLHttpRequest, e){
+                                                              alert(XMLHttpRequest.responseText);
+                                                              if(XMLHttpRequest.status == 401)
+                                                              {
+                                                                  window.location.reload();
+                                                              }
+                                                            }
+                                                      }); 
+                                            },
+                                            error: function(XMLHttpRequest, e){
+                                              alert(XMLHttpRequest.responseText);
+                                              if(XMLHttpRequest.status == 401)
+                                              {
+                                                  window.location.reload();
+                                              }
+                                            }
+                                      });
                           },
                           error: function(XMLHttpRequest, e){
                             alert(XMLHttpRequest.responseText);
@@ -100,13 +140,13 @@ if(isset($_SESSION['acctype']))
                                 window.location.reload();
                             }
                           }
-                    }); 
+                    });
                     
             }
             else {
-            
-                $("#activeSession").val('');
-            
+                document.getElementById('activeSession').value = '';
+                 document.getElementById('activeSessionter').value = '';
+                 document.getElementById('activeSessionub').value = '';            
             }
        });
 
@@ -178,9 +218,21 @@ if(isset($_SESSION['acctype']))
                <label id="txtsitename"></label><label id="txtposaccno"></label>
            </td>
            <tr>
-                <td>No. of Active Session</td>
+                <td>Total no. of Active Session</td>
                 <td>
                     <input type="text" id="activeSession" value="" readOnly ="readOnly" style="width:50px;" />
+                </td>
+           </tr>
+           <tr>
+                <td>No. of Active Session (Terminal Based)</td>
+                <td>
+                    <input type="text" id="activeSessionter" value="" readOnly ="readOnly" style="width:50px;" />
+                </td>
+           </tr>
+           <tr>
+                <td>No. of Active Session (User Based)</td>
+                <td>
+                    <input type="text" id="activeSessionub" value="" readOnly ="readOnly" style="width:50px;" />
                 </td>
            </tr>
         </tr>

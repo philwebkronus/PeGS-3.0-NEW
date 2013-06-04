@@ -850,7 +850,7 @@ if($connected)
                      {                     
                         $responce->rows[$i]['id']=$vview['TransactionsSummaryID'];
                         $responce->rows[$i]['cell']=array($vview['TransactionsSummaryID'],
-                            $vview['SiteID'], $vview['TerminalID'],  
+                            $vview['POSAccountNo'], $vview['TerminalID'],  
                             number_format($vview['Deposit'], 2), 
                             number_format($vview['Reload'],2), 
                             number_format($vview['Withdrawal'], 2), 

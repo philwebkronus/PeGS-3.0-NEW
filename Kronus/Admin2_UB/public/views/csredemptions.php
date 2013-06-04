@@ -1,5 +1,5 @@
 <?php 
-$pagetitle = "Redemption";  
+$pagetitle = "Terminal Based Redemption";  
 include "process/ProcessCSManagement.php";
 include "header.php";
 $vaccesspages = array('6');
@@ -33,38 +33,51 @@ if(isset($_SESSION['acctype']))
             $(document).ready(function(){
                 $('#cmbsite').live('change', function()
                 {
-                    jQuery("#txttermname").text(" ");
-                    sendSiteID2($(this).val());
-                    $('#cmbterminal').empty();
-                    $('#cmbterminal').append($("<option />").val("-1").text("Please Select"));
-                    $('#cmbservices').empty();
-                    $('#cmbservices').append($("<option />").val("-1").text("Please Select"));
-                    var url = 'process/ProcessCSManagement.php';
-                    jQuery.ajax({
-                          url: url,
-                          type: 'post',
-                          data: {cmbsitename: function(){return jQuery("#cmbsite").val();}},
-                          dataType: 'json',
-                          success: function(data){
-                              if(jQuery("#cmbsite").val() > 0)
-                              {
-                                jQuery("#txtsitename").text(data.SiteName+" / ");
-                                jQuery("#txtposaccno").text(data.POS);
-                              }
-                              else
-                              {   
-                                jQuery("#txtsitename").text(" ");
-                                jQuery("#txtposaccno").text(" ");
-                              }
-                          },
-                          error: function(XMLHttpRequest, e){
-                            alert(XMLHttpRequest.responseText);
-                            if(XMLHttpRequest.status == 401)
-                            {
-                                window.location.reload();
-                            }
-                          }
-                    }); 
+                    var site = $('#cmbsite').val();
+                    if(site == "-1"){
+                        $('#cmbterminal').empty();
+                        $('#cmbterminal').append($("<option />").val("-1").text("Please Select"));
+                        $('#cmbservices').empty();
+                        $('#cmbservices').append($("<option />").val("-1").text("Please Select"));
+                        jQuery("#txtsitename").text(" ");
+                        jQuery("#txtposaccno").text(" ");
+                        jQuery("#txttermname").text("");
+                    }
+                    else{
+                        jQuery("#txttermname").text(" ");
+                            sendSiteID2($(this).val());
+                            $('#cmbterminal').empty();
+                            $('#cmbterminal').append($("<option />").val("-1").text("Please Select"));
+                            $('#cmbservices').empty();
+                            $('#cmbservices').append($("<option />").val("-1").text("Please Select"));
+                            var url = 'process/ProcessCSManagement.php';
+                            jQuery.ajax({
+                                  url: url,
+                                  type: 'post',
+                                  data: {cmbsitename: function(){return jQuery("#cmbsite").val();}},
+                                  dataType: 'json',
+                                  success: function(data){
+                                      if(jQuery("#cmbsite").val() > 0)
+                                      {
+                                        jQuery("#txtsitename").text(data.SiteName+" / ");
+                                        jQuery("#txtposaccno").text(data.POSAccNo);
+                                      }
+                                      else
+                                      {   
+                                        jQuery("#txtsitename").text(" ");
+                                        jQuery("#txtposaccno").text(" ");
+                                      }
+                                  },
+                                  error: function(XMLHttpRequest, e){
+                                    alert(XMLHttpRequest.responseText);
+                                    if(XMLHttpRequest.status == 401)
+                                    {
+                                        window.location.reload();
+                                    }
+                                  }
+                        });
+                    }
+                     
                 });
                 
                 $('#cmbterminal').live('change', function(){

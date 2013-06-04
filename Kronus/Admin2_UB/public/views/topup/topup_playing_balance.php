@@ -1,5 +1,5 @@
 <?php 
-$pagetitle = "Playing Balance";
+$pagetitle = "Playing Balance Per Site";
 include "header.php";
 $vaccesspages = array('5','6');
     $vctr = 0;
@@ -27,14 +27,14 @@ $vaccesspages = array('5','6');
 ?>
 <div id="workarea">
     <form id="frmexport" method="post" />
-        <div id="pagetitle">Playing Balance</div>
+        <div id="pagetitle"><?php echo $pagetitle; ?></div>
         <br />
         <table>
             <tr>
                 <td>Sites / PEGS</td>
                 <td>
                     <select id="selsite" name="selsite">
-                        <option value="">Select Site</option>
+                        <option value="-1">Select Site</option>
                         <option value="all">All</option>
                         <?php foreach($param['sites'] as $site): ?>
                             <?php if($site['SiteCode'] != 'SiteHO'): ?>
@@ -47,8 +47,30 @@ $vaccesspages = array('5','6');
                     </select> <label id="lblsitename"></label>
                 </td>
             </tr>
+            <tr>
+                <td>Total no. of Active Session</td>
+                <td>
+                    <input type="text" id="activeSession" value="" readOnly ="readOnly" style="width:50px;" />
+                </td>
+           </tr>
+           <tr>
+                <td>No. of Active Session (Terminal Based)</td>
+                <td>
+                    <input type="text" id="activeSessionter" value="" readOnly ="readOnly" style="width:50px;" />
+                </td>
+           </tr>
+           <tr>
+                <td>No. of Active Session (User Based)</td>
+                <td>
+                    <input type="text" id="activeSessionub" value="" readOnly ="readOnly" style="width:50px;" />
+                </td>
+           </tr>
         </table>
         <br />
+        <div id="loading"></div>
+                <div id="submitarea"> 
+                    <input type="button" value="Submit" id="btnSubmit"/>
+                </div>
         <div align="center" id="pagination">
             <div id="gridwrapper" style="display: none">
                 <table id="playingbal" >
@@ -77,23 +99,92 @@ $vaccesspages = array('5','6');
         });
         
         jQuery('#selsite').change(function(){
-            jQuery('#lblsitename').html(jQuery(this).children('option:selected').attr('label'));
-            if(jQuery(this).val() == '') {
+            
+            if(jQuery(this).val() == '-1') {
+                jQuery('#lblsitename').html(jQuery('').children('option:selected').attr('label'));
                 jQuery('#gridwrapper').hide();
                 jQuery('#senchaexport1').hide();
+                 document.getElementById('activeSession').value = '';
+                 document.getElementById('activeSessionter').value = '';
+                 document.getElementById('activeSessionub').value = '';
                 return false;
             }
-            var sitecode = jQuery(this).val();
-            jQuery('#gridwrapper').show();
-             jQuery('#senchaexport1').show();
-            jQuery("#playingbal").jqGrid('setGridParam',{url:"process/ProcessTopUpPaginate.php?action=getactiveterminals&sitecode="+sitecode,
-                page:1}).trigger("reloadGrid");  
+            else{
+                jQuery('#lblsitename').html(jQuery(this).children('option:selected').attr('label'));
+                jQuery.ajax({
+                          url: "process/ProcessTopUpPaginate.php?action=sessioncount",
+                          type: 'POST',
+                          data: {
+                                    siteID: function(){return jQuery("#selsite").val();},
+                                    ActiveSession : true,
+                                    ActiveSessionAction : "sessioncount"
+                                },
+                          success: function(data){
+                              $("#activeSession").val(data);
+                              
+                              jQuery.ajax({
+                                            url: "process/ProcessTopUpPaginate.php?action=sessioncountter",
+                                            type: 'POST',
+                                            data: {
+                                                      siteID: function(){return jQuery("#selsite").val();},
+                                                      ActiveSession : true,
+                                                      ActiveSessionAction : "sessioncountter"
+                                                  },
+                                            success: function(data){
+                                                $("#activeSessionter").val(data);
+                                                
+                                                jQuery.ajax({
+                                                            url: "process/ProcessTopUpPaginate.php?action=sessioncountub",
+                                                            type: 'POST',
+                                                            data: {
+                                                                      siteID: function(){return jQuery("#selsite").val();},
+                                                                      ActiveSession : true,
+                                                                      ActiveSessionAction : "sessioncountub"
+                                                                  },
+                                                            success: function(data){
+                                                                $("#activeSessionub").val(data);
+                                                            },
+                                                            error: function(XMLHttpRequest, e){
+                                                              alert(XMLHttpRequest.responseText);
+                                                              if(XMLHttpRequest.status == 401)
+                                                              {
+                                                                  window.location.reload();
+                                                              }
+                                                            }
+                                                      }); 
+                                            },
+                                            error: function(XMLHttpRequest, e){
+                                              alert(XMLHttpRequest.responseText);
+                                              if(XMLHttpRequest.status == 401)
+                                              {
+                                                  window.location.reload();
+                                              }
+                                            }
+                                      });
+                          },
+                          error: function(XMLHttpRequest, e){
+                            alert(XMLHttpRequest.responseText);
+                            if(XMLHttpRequest.status == 401)
+                            {
+                                window.location.reload();
+                            }
+                          }
+                    });
+            }       
         });
+        
+        jQuery('#btnSubmit').click(function(){
+            var sitecode = jQuery("#selsite").val();
+            jQuery('#gridwrapper').show();
+            jQuery('#senchaexport1').show();
+            jQuery("#playingbal").jqGrid('setGridParam',{url:"process/ProcessTopUpPaginate.php?action=getactiveterminals&sitecode="+sitecode,
+            page:1}).trigger("reloadGrid"); 
+        })
         
         jQuery("#playingbal").jqGrid({
             url : 'process/ProcessTopUpPaginate.php?action=getplayingbalance',
             datatype: "json",
-            colNames:['Site / PEGS Code', 'Site / PEGS Name', 'Terminal Code', 'Playing Balance','Service Name'],
+            colNames:['Site / PEGS Code', 'Site / PEGS Name', 'Terminal Code', 'Playing Balance','Service Name', 'User Mode'],
             rowNum:10,
             height: 280,
             width: 1200,
@@ -101,13 +192,14 @@ $vaccesspages = array('5','6');
             pager: '#pager2',
             viewrecords: true,
             sortorder: "asc",
-            caption:"Playing Balance",
+            caption:"Playing Balance Per Site",
             colModel:[
                 {name:'SiteCode',index:'SiteCode',align:'left'},
                 {name:'SiteName',index:'SiteName',align:'left'},
                 {name:'TerminalCode',index:'TerminalCode',align:'center'},
                 {name:'PlayingBalance',index:'PlayingBalance',align:'right',sortable:false},
                 {name:'ServiceName', index:'ServiceName', align:'center', sortable:false},
+                {name:'UserMode', index:'UserMode', align:'center', sortable:false},
             ],     
             resizable:true
         });        

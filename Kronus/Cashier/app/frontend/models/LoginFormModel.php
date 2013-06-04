@@ -149,7 +149,7 @@ class LoginFormModel extends MI_Model{
         $siteid = $siteAccountsModel->getSiteID($login_result['AID']);
         $_SESSION['AccountSiteID'] = $siteid; 
         
-
+        $transdetails = $this->username;
         if($login_result['WithPasskey'] > 0) {
             // redirect to pass key
             $_SESSION['haspasskey'] = true;
@@ -158,7 +158,6 @@ class LoginFormModel extends MI_Model{
                 if($attempt_count > 0)
                     $attempt_count--;
                 $new_sessionid = session_id();
-                $transdetails = $this->username;
                 $accountsModel->updateLoginAttempt($attempt_count, $login_result['AID']);
                 if (isset($login_result['AID'])){  
                 $auditTrailModel->logToAudit($new_sessionid, $login_result['AID'], $transdetails, $date, gethostbyaddr($_SERVER['REMOTE_ADDR']), '65');

@@ -41,8 +41,8 @@
        <submenu id="61" name='Unlock Account' path='accountunlock.php' group=' ' pagename="2" />
      </menu>
     <menu id ="19" name='Reports' path='blank.php' pagename="19">
-        <submenu id="55" name='Active Session and Terminal Balance Terminal Based' path='rptActiveSessionAndTerminalBalance.php' pagename="19" group='Active Session And Terminal Balance'/>
-       <submenu id="56" name='Active Session and Terminal Balance User Based' path='rptActiveSessionAndTerminalBalanceUB.php' pagename="19" group='Active Session And Terminal Balance'/>
+        <submenu id="55" name='Active Session and Terminal Balance Per Site' path='rptActiveSessionAndTerminalBalance.php' pagename="19" group='Active Session And Terminal Balance'/>
+       <submenu id="56" name='Active Session and Terminal Balance Per Membership Card' path='rptActiveSessionAndTerminalBalanceUB.php' pagename="19" group='Active Session And Terminal Balance'/>
        <submenu id="5" name='BCF Per Site' path='rptbcfpersite.php' pagename="19" group=' '/>
        <submenu id="6" name='Site Transactions' path='rptsitetransaction.php' pagename="19" group=' '/>
        <submenu id="54" name='Audit Trail' path='rptaudittrail.php' pagename="19" group=' '/>  
@@ -50,8 +50,8 @@
 </right>
 <right id="3">   
      <menu id ="19" name='Reports' path='blank.php' pagename="19">
-         <submenu id="55" name='Active Session and Terminal Balance Terminal Based' path='rptActiveSessionAndTerminalBalance.php' pagename="19" group='Active Session And Terminal Balance'/>
-       <submenu id="56" name='Active Session and Terminal Balance User Based' path='rptActiveSessionAndTerminalBalanceUB.php' pagename="19" group='Active Session And Terminal Balance'/>
+         <submenu id="55" name='Active Session and Terminal Balance Per Site' path='rptActiveSessionAndTerminalBalance.php' pagename="19" group='Active Session And Terminal Balance'/>
+       <submenu id="56" name='Active Session and Terminal Balance Per Membership Card' path='rptActiveSessionAndTerminalBalanceUB.php' pagename="19" group='Active Session And Terminal Balance'/>
        <submenu id="9" name="Gross Hold" path="rptsupgrosshold.php" pagename="19" group=' '/>
        <submenu id="54" name='Audit Trail' path='rptaudittrail.php' pagename="19" group=' '/> 
      </menu>
@@ -75,7 +75,6 @@
       <submenu id="13" name='Posting of Collection' path='cashierdeposit.php' group='Posting' pagename="11" />
       <submenu id="69" name='Replenishment Platform' path='topupreplenishment.php' group='Posting' pagename="11" />
       <submenu id="64" name='PeGs Confirmation' path='pegsconfirmation.php' group='Posting' pagename="11" />
-<!--      <submenu id="65" name='Batch Upload per Bank' path='BatchUploadperBank.php' group='Posting' pagename="11" />-->
       <submenu id ="13" name='Terminal Based Manual Redemption' path='manualredemption.php' group="Manual Redemption" pagename="11" />
       <submenu id ="14" name='User Based Manual Redemption' path='manualredemption_ub.php' group="Manual Redemption" pagename="11" />
       <submenu id="38" name='Freeze Accounts' path='suspendaccount.php' group=' ' pagename="11" />
@@ -86,8 +85,8 @@
       <!-- Added on 06/04/2012 for BCF Report Separation -->
       <submenu id="60" name='Critical BCF' path='BettingCredit.php?report=critical' group= "Site Monitoring" pagename="19" />
       <submenu id="60" name='Non-Critical BCF' path='BettingCredit.php?report=safe' group= "Site Monitoring" pagename="19" />
-       <submenu id="51" name='Terminal Based Playing Balance' path='PlayingBalance.php' group= "Playing Balance" pagename="19" />
-      <submenu id="52" name='User Based Playing Balance' path='PlayingBalanceub.php' group= "Playing Balance" pagename="19" />
+       <submenu id="51" name='Playing Balance Per Site' path='PlayingBalance.php' group= "Playing Balance" pagename="19" />
+      <submenu id="52" name='Playing Balance Per Membership Card' path='PlayingBalanceub.php' group= "Playing Balance" pagename="19" />
       <!-- End Modification -->
 <!--      <submenu id="60" name='List of Pegs Subject for Top-up' path='ListPegsSubject.php' group= "Site Monitoring" pagename="19" />-->
       <submenu id="24" name='Collection History' path='PostedDeposit.php' group="Posting" pagename="19" />
@@ -107,10 +106,10 @@
       <submenu id ="51" name='UB Transaction Tracking' path='appsupportviewub.php' group=' ' pagename="20" />
    </menu>
    <menu id ="19" name='Reports' path='blank.php' pagename="19">
-       <submenu id="67" name='User Based Redemptions' path='csuserbasedredemptions.php' pagename="19" group='Redemptions' />
-      <submenu id="68" name='Terminal Based Redemptions' path='csredemptions.php' pagename="19" group='Redemptions'/>     
-      <submenu id="51" name='Terminal Based Playing Balance' path='PlayingBalance.php' pagename="19" group='Playing Balance' />
-      <submenu id="52" name='User Based Playing Balance' path='PlayingBalanceub.php' group= "Playing Balance" pagename="19" />
+       <submenu id="67" name='User Based Redemption' path='csuserbasedredemptions.php' pagename="19" group='Redemptions' />
+      <submenu id="68" name='Terminal Based Redemption' path='csredemptions.php' pagename="19" group='Redemptions'/>     
+      <submenu id="51" name='Playing Balance Per Site' path='PlayingBalance.php' pagename="19" group='Playing Balance' />
+      <submenu id="52" name='Playing Balance Per Membership Card' path='PlayingBalanceub.php' group= "Playing Balance" pagename="19" />
       <submenu id ="54" name='Audit Trail' path='rptaudittrail.php' pagename="19" group=' '/> 
    </menu>
 </right>
@@ -134,12 +133,6 @@
         <submenu id="36" name='Terminal Creation' path='terminalcreation.php' group='PT Terminal Maintenance' pagename="15" />
         <submenu id="41" name='Update Terminal Profile' path='terminalview.php' group='PT Terminal Maintenance' pagename="15" />
         <submenu id="42" name='Terminal Provider Assignment' path='serviceassignment.php' group='PT Terminal Maintenance' pagename="15" />
-
-<!--        <submenu id="57" name='MG Agent Creation' path='serviceagentcreation.php' group='MG Terminal Maintenance' pagename="15" />
-        <submenu id="48" name='Update MG Agent' path='serviceagentview.php' group='MG Terminal Maintenance' pagename="15" />
-        <submenu id="44" name='MG OC Account Creation' path='serviceterminalcreation.php' group='MG Terminal Maintenance' pagename="15" />
-        <submenu id="47" name='Update MG OC Account Status' path='serviceterminalview.php' group='MG Terminal Maintenance' pagename="15" />
-        <submenu id="45" name='Terminal Mapping' path='terminalmapping.php' group='MG Terminal Maintenance' pagename="15" />-->
         <submenu id='63' name='Batch Terminal Creation' path='batchterminalcreation.php' group=' ' pagename="15" />
         <submenu id="61" name='Unlock Account' path='accountunlock.php' group=' ' pagename="15"/>
         <submenu id='67' name='Terminate Account' path='terminateaccount.php' group=' ' pagename="15" />
@@ -161,6 +154,7 @@
         <submenu id ='74' name='E-City Tracking' path='applptracking.php' group='Tracking' pagename='17' />
         <submenu id ='75' name='Logs Tracking' path='applogsmonitor.php' group='Tracking' pagename='17' />
         <submenu id ='75' name='E-City Logs Tracking' path='launchPadLogsMonitor.php' group='Tracking' pagename='17' />
+<!--        <submenu id ='76' name='Admin Logs Tracking' path='appadminlogsmonitor.php' group='Tracking' pagename='17' />-->
         <submenu id ="62" name='Disabling of Cashier Terminal' path='appdisableterminal.php' group='Terminal' pagename="17" />   
         <submenu id ="81" name='Adjust Cashier Terminal' path='appadjustterminal.php' group='Terminal' pagename="17" />   
         <submenu id="65" name='Switching of Servers' path='appswitchserver.php' group='Terminal' pagename="17" />
@@ -181,11 +175,8 @@
 <right id="11">
      <menu id ="10" name='Gross Hold Monitoring' path='GHMonitoring.php' pagename="10"></menu>
      <menu id="19" name='Reports' path='blank.php' pagename="19">
-     <!-- remove comment on: 07/19/12 prior to 07/18/12 request from PEGSOps to enable this -->
         <submenu id ='76' name='E-City Report' path='pagcorecityreport.php' pagename='19' />
         <submenu id ='83' name='GH Balance Per Cut-off' path='pagcorghbal.php' pagename='19' />
-<!--        <submenu id ='77' name='Extract Transaction Details' path='pagcortdetails.php' pagename='19' />
-        <submenu id ='78' name='Extract E-City Logs' path='pagcorecitylogs.php' pagename='19' />-->
         <submenu id="54" name='Audit Trail' path='rptaudittrail.php' pagename="19" />
         <submenu id="84" name='Casino Gross Hold' path='casinogrosshold.php' pagename="19" />
      </menu>

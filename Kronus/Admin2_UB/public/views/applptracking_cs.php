@@ -329,7 +329,7 @@ $vaccesspages = array('6');
                             summaryID: function() {return summaryid;}
                               },
                     datatype: "json",
-                    colNames:['Transaction Logs ID', 'Transaction Reference ID', 'Site ID', 'Terminal ID', 'Transaction Type', 'Service Transaction ID', 'Service Status','Amount','Service ID','Date Started', 'Date Ended', 'Status'],
+                    colNames:['Transaction Logs ID', 'Transaction Reference ID', 'Site ID', 'Terminal ID', 'Transaction Type', 'Service Transaction ID', 'Service Status','Amount','Service Name','Date Started', 'Date Ended', 'Status'],
                     colModel:[
                             {name:'TransactionRequestLogLPID',index:'TransactionRequestLogLPID',align:'center'},
                             {name:'TransactionReferenceID',index:'TransactionReferenceID',align:'center', hidden: true},
@@ -376,7 +376,7 @@ $vaccesspages = array('6');
                             summaryID: function() {return value;}
                               },
                     datatype: "json",
-                    colNames:['Transaction Reference ID','Transaction Summary ID', 'Site ID', 'Terminal ID', 'Transaction Type', 'Service ID', 'Amount','Transaction Date', 'Created By','Status'],
+                    colNames:['Transaction Reference ID','Transaction Summary ID', 'Site ID', 'Terminal ID', 'Transaction Type', 'Service Name', 'Amount','Transaction Date', 'Created By','Status'],
                     colModel:[
                             {name:'TransactionReferenceID',index:'TransactionReferenceID',align: 'center', hidden: true},
                             {name:'TransactionSummaryID',index:'TransactionSummaryID',align:'center'},

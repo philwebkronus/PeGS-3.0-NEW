@@ -1432,6 +1432,174 @@ class TopUp extends DBHandler
             return $this->fetchAllData();      
       }
       
+      /**
+      * @author Gerardo V. Jagolino Jr.
+      * @return array
+      * get siteID using gicen sitecode
+      */
+      public final function getSiteID ($siteID) {
+       
+        $query = "
+                  SELECT  
+                    SiteID
+                  FROM 
+                    sites
+                  WHERE
+                    SiteCODE LIKE :siteID";
+        
+        $this->prepare($query);
+        
+        $this->bindParam(":siteID", $siteID);
+        
+        $this->execute();
+        
+        $record = $this->fetchData();
+        
+        return $record["SiteID"];
+        
+    }
+      
+    /**
+      * @author Gerardo V. Jagolino Jr.
+      * @return array
+      * get active session count using siteid or cardnumber
+      */
+      public final function getActiveSessionCount ($siteID, $cardnumber) {
+        if($cardnumber == ''){
+            if($siteID == 'all')
+            {
+                $query = "
+                  SELECT  
+                    count(t.TerminalID) as ActiveSession
+                  FROM 
+                    terminalsessions as ts, 
+                    terminals as t
+                  WHERE
+                    t.TerminalID = ts.TerminalID";
+        
+                $this->prepare($query);
+            }
+            else{
+                $query = "
+                  SELECT  
+                    count(t.TerminalID) as ActiveSession
+                  FROM 
+                    terminalsessions as ts, 
+                    terminals as t
+                  WHERE
+                    t.TerminalID = ts.TerminalID
+                    AND
+                    t.SiteID = :siteID";
+        
+        $this->prepare($query);
+        
+        $this->bindParam(":siteID", $siteID);
+            }
+            
+        }
+        else{
+            $query = "
+                  SELECT  
+                    count(t.TerminalID) as ActiveSession
+                  FROM 
+                    terminalsessions as ts, 
+                    terminals as t
+                  WHERE
+                    t.TerminalID = ts.TerminalID
+                    AND
+                    ts.LoyaltyCardNumber = :cardnumber";
+        
+                $this->prepare($query);
+        
+                $this->bindParam(":cardnumber", $cardnumber);
+            
+            
+        }
+        
+        
+        $this->execute();
+        
+        $record = $this->fetchAllData();
+        
+        return $record[0]["ActiveSession"];
+        
+    }
+    
+ 
+    
+    /**
+      * @author Gerardo V. Jagolino Jr.
+      * @return array
+      * get active session count using siteid with user mode
+      */
+    public final function getActiveSessionCountMod ($siteID, $cardnumber, $usermode) {
+        if($cardnumber == ''){
+            
+            if($siteID == 'all')
+            {
+                $query = "
+                  SELECT  
+                    count(t.TerminalID) as ActiveSession
+                  FROM 
+                    terminalsessions as ts, 
+                    terminals as t
+                  WHERE
+                    t.TerminalID = ts.TerminalID
+                    AND ts.UserMode = :usermode";
+        
+                $this->prepare($query);
+                $this->bindParam(":usermode", $usermode); 
+            }
+            else{
+                $query = "
+                  SELECT  
+                    count(t.TerminalID) as ActiveSession
+                  FROM 
+                    terminalsessions as ts, 
+                    terminals as t
+                  WHERE
+                    t.TerminalID = ts.TerminalID
+                    AND
+                    t.SiteID = :siteID
+                    AND ts.UserMode = :usermode";
+        
+        $this->prepare($query);
+        
+        $this->bindParam(":siteID", $siteID);
+        $this->bindParam(":usermode", $usermode); 
+            }
+           
+        }
+        else{
+            $query = "
+                  SELECT  
+                    count(t.TerminalID) as ActiveSession
+                  FROM 
+                    terminalsessions as ts, 
+                    terminals as t
+                  WHERE
+                    t.TerminalID = ts.TerminalID
+                    AND
+                    ts.LoyaltyCardNumber = :cardnumber
+                    AND ts.UserMode = :usermode";
+        
+        $this->prepare($query);
+        
+        $this->bindParam(":cardnumber", $cardnumber);
+        $this->bindParam(":usermode", $usermode);
+        }
+        
+        
+        $this->execute();
+        
+        $record = $this->fetchAllData();
+        
+        return $record[0]["ActiveSession"];
+        
+    }
+    
+      
+      
       public function getAllSiteCode() {
             $query = "SELECT SiteID, SiteName, SiteCode, POSAccountNo from sites WHERE Status = 1 AND SiteID <> 1 ORDER BY SiteCode ASC";
             $this->prepare($query);
@@ -1501,7 +1669,7 @@ class TopUp extends DBHandler
           }
           
           $query = "SELECT ts.TerminalID, t.TerminalName,s.SiteName, s.POSAccountNo, s.SiteCode,ts.ServiceID,
-                            t.TerminalCode, rs.ServiceName FROM terminalsessions ts
+                            t.TerminalCode, rs.ServiceName, ts.UserMode FROM terminalsessions ts
                             INNER JOIN terminals as t ON ts.TerminalID = t.terminalID 
                             INNER JOIN sites as s ON t.SiteID = s.SiteID 
                             INNER JOIN ref_services rs ON ts.ServiceID = rs.ServiceID
@@ -1510,6 +1678,18 @@ class TopUp extends DBHandler
           $this->prepare($query);
           $this->execute();
           return $this->fetchAllData();
+      }
+      
+      
+      public function getUBServiceLogin($terminalid) {
+
+          $query = "SELECT UBServiceLogin FROM terminalsessions WHERE TerminalID = ?";
+          $this->prepare($query);
+          $this->bindparameter(1, $terminalid);
+          $this->execute();
+          $ublogin = $this->fetchData();
+          $ublogin = $ublogin['UBServiceLogin'];
+          return $ublogin;
       }
       
     //get service name
@@ -1537,7 +1717,7 @@ class TopUp extends DBHandler
           }
           
           $query = "SELECT ts.TerminalID, t.TerminalName,s.SiteName, s.POSAccountNo, s.SiteCode,ts.ServiceID,
-                            t.TerminalCode, rs.ServiceName FROM terminalsessions ts
+                            t.TerminalCode, rs.ServiceName, ts.UserMode FROM terminalsessions ts
                             INNER JOIN terminals as t ON ts.TerminalID = t.terminalID 
                             INNER JOIN sites as s ON t.SiteID = s.SiteID 
                             INNER JOIN ref_services rs ON ts.ServiceID = rs.ServiceID

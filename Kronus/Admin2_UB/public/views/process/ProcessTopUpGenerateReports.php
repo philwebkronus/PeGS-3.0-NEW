@@ -547,9 +547,9 @@ class ProcessTopUpGenerateReports extends BaseProcess{
             
             /********************* GET BALANCE API ****************************/
             if(is_string($balance['Balance'])) {
-                $rows[$key]['PlayingBalance'] = (float)$balance['Balance'];
+                $rows[$key]['PlayingBalance'] = number_format((double)$balance['Balance'],2, '.', ',');
             } else {
-                $rows[$key]['PlayingBalance'] = number_format($balance['Balance'],2);
+                $rows[$key]['PlayingBalance'] = number_format($balance['Balance'],2, '.', ',');
             }
         }
         
@@ -565,9 +565,20 @@ class ProcessTopUpGenerateReports extends BaseProcess{
                 array('value'=>'POS Account'),
                 array('value'=>'Terminal Code'),
                 array('value'=>'Playing Balance'),
-                array('value'=>'Service Name')
+                array('value'=>'Service Name'),
+                array('value'=>'User Mode')
              ));
         foreach($rows as $row) {
+            if($row['UserMode'] == 0){
+                $row['UserMode'] = "Terminal Based";
+            }
+            else{
+                $row['UserMode'] = "User Based";
+            }
+            
+            if($row['PlayingBalance'] == 0){
+                    $row['PlayingBalance'] = "N/A";
+            }
             $pdf->c_tableRow2(array(
                 array('value'=>substr($row['SiteCode'], strlen(BaseProcess::$sitecode))), //removes ICSA-
                 array('value'=>$row['SiteName']),
@@ -575,6 +586,7 @@ class ProcessTopUpGenerateReports extends BaseProcess{
                 array('value'=>substr($row['TerminalCode'], strlen($row['SiteCode']))), //removes ICSA-($row['SiteCode'])
                 array('value'=>$row['PlayingBalance'],'align'=>'right'),
                 array('value'=>$row['ServiceName']),
+                array('value'=>$row['UserMode']),
              ));
         }
         $pdf->c_tableEnd();
@@ -596,9 +608,9 @@ class ProcessTopUpGenerateReports extends BaseProcess{
             
             /********************* GET BALANCE API ****************************/
             if(is_string($balance['Balance'])) {
-                $rows[$key]['PlayingBalance'] = number_format($balance['Balance'],2);
+                $rows[$key]['PlayingBalance'] = number_format((double)$balance['Balance'],2, '.', ',');
             } else {
-                $rows[$key]['PlayingBalance'] = number_format($balance['Balance'],2);
+                $rows[$key]['PlayingBalance'] = number_format($balance['Balance'],2, '.', ',');
             }
         }
         
@@ -614,9 +626,21 @@ class ProcessTopUpGenerateReports extends BaseProcess{
                 array('value'=>'POS Account'),
                 array('value'=>'Terminal Code'),
                 array('value'=>'Playing Balance'),
-                array('value'=>'Service Name')
+                array('value'=>'Service Name'),
+                array('value'=>'User Mode')
              ));
         foreach($rows as $row) {
+            if($row['UserMode'] == 0){
+                $row['UserMode'] = "Terminal Based";
+            }
+            else{
+                $row['UserMode'] = "User Based";
+            }
+            
+            if($row['PlayingBalance'] == 0){
+                    $row['PlayingBalance'] = "N/A";
+            }
+                
             $pdf->c_tableRow2(array(
                 array('value'=>substr($row['SiteCode'], strlen(BaseProcess::$sitecode))), //removes ICSA-
                 array('value'=>$row['SiteName']),
@@ -624,6 +648,7 @@ class ProcessTopUpGenerateReports extends BaseProcess{
                 array('value'=>substr($row['TerminalCode'], strlen($row['SiteCode']))), //removes ICSA-($row['SiteCode'])
                 array('value'=>$row['PlayingBalance'],'align'=>'right'),
                 array('value'=>$row['ServiceName']),
+                array('value'=>$row['UserMode']),
              ));
         }
         $pdf->c_tableEnd();
@@ -634,11 +659,11 @@ class ProcessTopUpGenerateReports extends BaseProcess{
     //Playing Balance History Report (Excel)
     public function playingBalanceExcel() {
         include_once __DIR__.'/../sys/class/CasinoGamingCAPI.class.php';
-        $_SESSION['report_header'] = array('Site / PEGS Code','Site / PEGS Name', 'POS Account','Terminal Code','Playing Balance','Service Name');
+        $_SESSION['report_header'] = array('Site / PEGS Code','Site / PEGS Name', 'POS Account','Terminal Code','Playing Balance','Service Name', 'User Mode');
         //$rows = $_SESSION['playing_balance'];
         $topreport = new TopUpReportQuery($this->getConnection());
         $topreport->open();
-        $vsitecode = $_POST['txtcardnumber'];
+        $vsitecode = $_POST['selsite'];
         $rows = $topreport->getRptActiveTerminals($vsitecode);
         
         foreach($rows as $key => $row) {
@@ -658,14 +683,27 @@ class ProcessTopUpGenerateReports extends BaseProcess{
             } else {
                 $actualBalance = $row['PlayingBalance'];
             }
+            if($row['UserMode'] == 0){
+                $row['UserMode'] = "Terminal Based";
+            }
+            else{
+                $row['UserMode'] = "User Based";
+            }
             
+            if($actualBalance == 0){
+                    $actualBalance = "N/A";
+            }
+            else{
+                $actualBalance = number_format($actualBalance,2, '.', ',');
+            }
             $new_rows[] = array(
                     substr($row['SiteCode'], strlen(BaseProcess::$sitecode)),
                     $row['SiteName'],
                     $row['POSAccountNo'],
                     substr($row['TerminalCode'], strlen($row['SiteCode'])),
-                    number_format($actualBalance,2),
-                    $row['ServiceName']
+                   $actualBalance,
+                    $row['ServiceName'],
+                    $row['UserMode']
                 );
         }
         $_SESSION['report_values'] = $new_rows;
@@ -678,7 +716,7 @@ class ProcessTopUpGenerateReports extends BaseProcess{
     //Playing Balance History Report (Excel)
     public function playingBalanceExcelUB() {
         include_once __DIR__.'/../sys/class/CasinoGamingCAPI.class.php';
-        $_SESSION['report_header'] = array('Site / PEGS Code','Site / PEGS Name', 'POS Account','Terminal Code','Playing Balance','Service Name');
+        $_SESSION['report_header'] = array('Site / PEGS Code','Site / PEGS Name', 'POS Account','Terminal Code','Playing Balance','Service Name', 'User Mode');
         //$rows = $_SESSION['playing_balance'];
         $topreport = new TopUpReportQuery($this->getConnection());
         $topreport->open();
@@ -702,14 +740,27 @@ class ProcessTopUpGenerateReports extends BaseProcess{
             } else {
                 $actualBalance = $row['PlayingBalance'];
             }
+            if($row['UserMode'] == 0){
+                $row['UserMode'] = "Terminal Based";
+            }
+            else{
+                $row['UserMode'] = "User Based";
+            }
             
+            if($actualBalance == 0){
+                    $actualBalance = "N/A";
+            }
+            else{
+                $actualBalance = number_format($actualBalance,2, '.', ',');
+            }
             $new_rows[] = array(
                     substr($row['SiteCode'], strlen(BaseProcess::$sitecode)),
                     $row['SiteName'],
                     $row['POSAccountNo'],
                     substr($row['TerminalCode'], strlen($row['SiteCode'])),
-                    number_format($actualBalance,2),
-                    $row['ServiceName']
+                    $actualBalance,
+                    $row['ServiceName'],
+                    $row['UserMode']
                 );
         }
         $_SESSION['report_values'] = $new_rows;
@@ -999,11 +1050,42 @@ class ProcessTopUpGenerateReports extends BaseProcess{
                $capiserverID = '';
                 break;
         }
-        
-        $CasinoGamingCAPI = new CasinoGamingCAPI();
-        $balance = $CasinoGamingCAPI->getBalance($providername, $row['ServiceID'], $url, 
+        switch (true)
+        {
+                case (strstr($providername, "RTG")):
+                    $CasinoGamingCAPI = new CasinoGamingCAPI();
+                    $balance = $CasinoGamingCAPI->getBalance($providername, $row['ServiceID'], $url, 
                             $row['TerminalCode'], $capiusername, $capipassword, $capiplayername, 
                             $capiserverID);
+                    break;
+                case (strstr($providername, "MG")):
+                    $CasinoGamingCAPI = new CasinoGamingCAPI();
+                    $balance = $CasinoGamingCAPI->getBalance($providername, $row['ServiceID'], $url, 
+                            $row['TerminalCode'], $capiusername, $capipassword, $capiplayername, 
+                            $capiserverID);
+                    break;
+                case (strstr($providername, "PT")):
+                    $CasinoGamingCAPI = new CasinoGamingCAPI();
+
+                    if($row['UserMode'] == 0){
+                        $balance = $CasinoGamingCAPI->getBalance($providername, $row['ServiceID'], $url, 
+                            $row['TerminalCode'], $capiusername, $capipassword, $capiplayername, 
+                            $capiserverID);
+                    }
+                    else
+                    {
+                        $topreport = new TopUpReportQuery($this->getConnection());
+                        $topreport->open();
+                        $serviceusername = $topreport->getUBServiceLogin($row['TerminalID']);
+                        $topreport->close();
+                        $balance = $CasinoGamingCAPI->getBalance($providername, $row['ServiceID'], $url, 
+                            $serviceusername, $capiusername, $capipassword, $capiplayername, 
+                            $capiserverID); 
+                    }    
+                    
+                    break;
+        }
+        
         return array("Balance"=>$balance, "Casino"=>$providername);    
     }
     
@@ -1113,9 +1195,9 @@ class ProcessTopUpGenerateReports extends BaseProcess{
                     }
                     else
                     {
-                        $balance = $CasinoGamingCAPI->getBalance($providername, $row['ServiceID'], $url, 
+                         $balance = $CasinoGamingCAPI->getBalance($providername, $row['ServiceID'], $url, 
                             $_SESSION['ServiceUsername'], $capiusername, $capipassword, $capiplayername, 
-                            $capiserverID);   
+                            $capiserverID);    
                     }    
                     
                     

@@ -43,12 +43,14 @@ class CSManagement extends DBHandler{
           {
               $stmt = "SELECT DISTINCT a.ServiceID, b.ServiceName FROM terminalservices AS a 
                   INNER JOIN ref_services AS b ON a.ServiceID = b.ServiceID 
-                  WHERE a.TerminalID = '".$zTerminalID."' AND a.Status = 1 ORDER BY ServiceName ASC";
+                  WHERE a.TerminalID = '".$zTerminalID."' AND a.Status = 1 AND b.UserMode = 0
+                  ORDER BY ServiceName ASC";
           }
           else
           {
               $stmt = "SELECT DISTINCT a.ServiceID, b.ServiceName FROM terminalservices AS a 
-                  INNER JOIN ref_services AS b ON a.ServiceID = b.ServiceID ORDER BY ServiceName ASC";
+                       INNER JOIN ref_services AS b ON a.ServiceID = b.ServiceID 
+                       WHERE b.UserMode = 0 ORDER BY ServiceName ASC";
           }
           $this->executeQuery($stmt);
           return $this->fetchAllData();
@@ -448,11 +450,12 @@ class CSManagement extends DBHandler{
         //E-City Transaction Summary, get details
         function gettransactionsummary($zsiteID, $zterminalID, $zdatefrom, $zdateto, $zstart, $zlimit, $zsort, $zdirection)
         {
-            $stmt = "SELECT ts.TransactionsSummaryID, ts.SiteID, ts.TerminalID, tm.TerminalCode, ts.Deposit, ts.Reload, ts.Option1 AS LoyaltyCard,
-                    ts.Withdrawal, ts.DateStarted, ts.DateEnded, acc.UserName
+            $stmt = "SELECT ts.TransactionsSummaryID, ts.SiteID, ts.TerminalID, tm.TerminalCode, ts.Deposit, ts.Reload,
+                    ts.Withdrawal, ts.DateStarted, ts.DateEnded, acc.UserName, s.POSAccountNo
                     FROM transactionsummary ts
                     INNER JOIN accounts acc ON ts.CreatedByAID = acc.AID
                     INNER JOIN terminals tm ON ts.TerminalID = tm.TerminalID
+                    INNER JOIN sites s ON ts.SiteID = s.SiteID
                     WHERE ts.SiteID = ? AND ts.TerminalID = ? AND ts.DateStarted >= ?
                     AND ts.DateStarted <= ? ORDER BY ".$zsort." ".$zdirection." LIMIT ".$zstart.",".$zlimit."";
             $this->prepare($stmt);

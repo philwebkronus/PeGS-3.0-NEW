@@ -498,12 +498,44 @@ if($connected)
            
            case "sessioncount":
                
-               $data = $orptoptr->getActiveSessionCount($siteID);
+               $data = $orptoptr->getActiveSessionCount($siteID, $cardnumber = '');
+               
+               break;
+           
+           case "sessioncountter":
+               $usermode = 0;
+               $data = $orptoptr->getActiveSessionCountMod($cardnumber = '', $usermode, $siteID);
+               
+               break;
+           
+           case "sessioncountub":
+               $usermode = 1;
+               $data = $orptoptr->getActiveSessionCountMod($cardnumber = '', $usermode, $siteID);
+               
+               break;
+           
+           case "sessioncount1":
+               $cardnumber = $_POST["txtcardnumber"];
+               $data = $orptoptr->getActiveSessionCount($siteID = '', $cardnumber);
+               
+               break;
+           
+           case "sessioncountter1":
+               $cardnumber = $_POST["txtcardnumber"];
+               $usermode = 0;
+               $data = $orptoptr->getActiveSessionCountMod($cardnumber, $usermode, $siteID = '');
+               
+               break;
+           
+           case "sessioncountub1":
+               $cardnumber = $_POST["txtcardnumber"];
+               $usermode = 1;
+               $data = $orptoptr->getActiveSessionCountMod($cardnumber, $usermode, $siteID = '');
                
                break;
            
            case "sessionrecord":
-              
+                     
                $data = $orptoptr->getActiveSessionPlayingBalance($siteID, $_ServiceAPI, 
                        $_CAPIUsername, $_CAPIPassword, $_CAPIPlayerName, $_MicrogamingCurrency, $_ptcasinoname,$_PlayerAPI,$_ptsecretkey);
                

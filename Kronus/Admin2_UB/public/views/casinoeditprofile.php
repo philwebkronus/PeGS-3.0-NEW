@@ -1,5 +1,5 @@
 <?php
-$pagetitle = "Casino Services Maintenance";
+$pagetitle = "Casino Services Profile Management";
 include 'process/ProcessCasinoMgmt.php';
 include "header.php";
 $vaccesspages = array('8');

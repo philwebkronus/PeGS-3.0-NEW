@@ -1,5 +1,5 @@
 <?php 
-$pagetitle = "Active Session and Terminal Balance Per Site";
+$pagetitle = "Active Session and Terminal Balance Per Membership Card";
 include 'process/ProcessRptOptr.php';
 include 'header.php';
 
@@ -32,7 +32,7 @@ if(isset($_SESSION['acctype']))
     
     jQuery(document).ready(function()
     {  
-        
+        $('#activesessionnumber').hide();
         $("#txtcardnumber").focus(function(){
                     $("#txtcardnumber").bind('paste', function(event) {
                         setTimeout(function(event) {
@@ -48,7 +48,7 @@ if(isset($_SESSION['acctype']))
        //on click function for 2nd Submit button     
        jQuery('#btnsubmit').click(function(){
        
-                   
+                   $('#activesessionnumber').show();
                    unloadDataGrid();
                    
                    var url = "process/ProcessRptOptr.php";
@@ -63,11 +63,12 @@ if(isset($_SESSION['acctype']))
                             ActiveSession : true,
                             ActiveSessionAction : "sessionrecordub"
                         },
-                        colNames : ["Terminal ID", "Terminal Code", "Playing Balance",],
+                        colNames : ["Terminal Code", "Playing Balance","User Mode"],
                         colModel : [
-                            {name:'TerminalID',index:'TerminalID', width: 300, sortable:false},
+                           
                             {name:'TerminalCode',index:'TerminalCode', width: 300, sortable:false},
-                            {name:'PlayingBalance',index:'PlayingBalance', width: 400, align: 'right', sortable:false}
+                            {name:'PlayingBalance',index:'PlayingBalance', width: 400, align: 'right', sortable:false},
+                            {name:'UserMode',index:'UserMode', width: 400, align: 'center', sortable:false}
                         ],
                         rowNum : 10,
                         rowList:[10,20,30], 
@@ -75,23 +76,92 @@ if(isset($_SESSION['acctype']))
                         loadonce : true,
                         width: 800,
                         height: 230,
-                        caption : "Active Session and Terminal Balance Per Site",
+                        caption : "Active Session and Terminal Balance Per Membership Card",
                         viewrecords: true
                    });
        });
        
        //on click function for 1st Submit button
        jQuery('#btnOK').click(function(){
-       
+                $('#activesessionnumber').hide();
                if(document.getElementById('txtcardnumber').value == "")
                {
-                   alert("Please Enter Membership Card Number");
+                    document.getElementById('activeSession').value = '';
+                    document.getElementById('activeSessionter').value = '';
+                    document.getElementById('activeSessionub').value = '';   
+                    alert("Please Enter Membership Card Number");
+                    unloadDataGrid();
                    return false;
                }
                else
                {
                 showCardInfoTable();
                 unloadDataGrid();
+                
+                var url = 'process/ProcessRptOptr.php';
+                
+                jQuery.ajax({
+                          url: url,
+                          type: 'POST',
+                          data: {
+                                    txtcardnumber: function(){return jQuery("#txtcardnumber").val();},
+                                    siteID: '',
+                                    ActiveSession : true,
+                                    ActiveSessionAction : "sessioncount1"
+                                },
+                          success: function(data){
+                              $("#activeSession").val(data);
+                              
+                              jQuery.ajax({
+                                            url: url,
+                                            type: 'POST',
+                                            data: {
+                                                      txtcardnumber: function(){return jQuery("#txtcardnumber").val();},
+                                                      siteID: '',
+                                                      ActiveSession : true,
+                                                      ActiveSessionAction : "sessioncountter1"
+                                                  },
+                                            success: function(data){
+                                                $("#activeSessionter").val(data);
+                                                
+                                                jQuery.ajax({
+                                                            url: url,
+                                                            type: 'POST',
+                                                            data: {
+                                                                      txtcardnumber: function(){return jQuery("#txtcardnumber").val();},
+                                                                      siteID: '',
+                                                                      ActiveSession : true,
+                                                                      ActiveSessionAction : "sessioncountub1"
+                                                                  },
+                                                            success: function(data){
+                                                                $("#activeSessionub").val(data);
+                                                            },
+                                                            error: function(XMLHttpRequest, e){
+                                                              alert(XMLHttpRequest.responseText);
+                                                              if(XMLHttpRequest.status == 401)
+                                                              {
+                                                                  window.location.reload();
+                                                              }
+                                                            }
+                                                      }); 
+                                            },
+                                            error: function(XMLHttpRequest, e){
+                                              alert(XMLHttpRequest.responseText);
+                                              if(XMLHttpRequest.status == 401)
+                                              {
+                                                  window.location.reload();
+                                              }
+                                            }
+                                      });
+                          },
+                          error: function(XMLHttpRequest, e){
+                            alert(XMLHttpRequest.responseText);
+                            if(XMLHttpRequest.status == 401)
+                            {
+                                window.location.reload();
+                            }
+                          }
+                    });
                }
        });
        
@@ -193,13 +263,33 @@ if(isset($_SESSION['acctype']))
   <form method="post" action="#" class="frmmembership">
     <input type="hidden" name="paginate" id="paginate" value="DailySiteTransaction" />  
     <table> 
-       <tr>
+       
             <td>
                 Card Number
                 <input type="input" size="30" id="txtcardnumber" class="txtmembership" name="txtcardnumber" maxlength="30" size="30" onkeypress="return loyaltycardnumber(event);"/>
                 <div for="txtcardnumber" align='center'>Membership | Temporary</div>
             </td>
-            </tr>
+            </table>
+    <table id="activesessionnumber"> 
+            <tr>
+                <td>Total no. of Active Session</td>
+                <td>
+                    <input type="text" id="activeSession" value="" readOnly ="readOnly" style="width:50px;" />
+                </td>
+           </tr>
+           <tr>
+                <td>No. of Active Session (Terminal Based)</td>
+                <td>
+                    <input type="text" id="activeSessionter" value="" readOnly ="readOnly" style="width:50px;" />
+                </td>
+           </tr>
+           <tr>
+                <td>No. of Active Session (User Based)</td>
+                <td>
+                    <input type="text" id="activeSessionub" value="" readOnly ="readOnly" style="width:50px;" />
+                </td>
+           </tr>
+           
     </table>
     <div id="submitarea">
         <input type="button" value="Display Active Session" id="btnOK" />

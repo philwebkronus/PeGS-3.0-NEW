@@ -1,5 +1,5 @@
 <?php 
-$pagetitle = "User Based Playing Balance";
+$pagetitle = "Playing Balance Per Membership Card";
 include "header.php";
 $vaccesspages = array('5','6');
     $vctr = 0;
@@ -27,7 +27,7 @@ $vaccesspages = array('5','6');
 ?>
 <div id="workarea">
     <form id="frmexport" method="post" class="frmmembership">
-         <div id="pagetitle"><?php echo "$pagetitle";?></div>
+         <div id="pagetitle"><?php echo $pagetitle; ?></div>
         <br />
         <table>
             <tr>
@@ -38,6 +38,27 @@ $vaccesspages = array('5','6');
             </td>
             </tr>
         </table>
+        <table id="activesessionnumber"> 
+            <tr>
+                <td>Total no. of Active Session</td>
+                <td>
+                    <input type="text" id="activeSession" value="" readOnly ="readOnly" style="width:50px;" />
+                </td>
+           </tr>
+           <tr>
+                <td>No. of Active Session (Terminal Based)</td>
+                <td>
+                    <input type="text" id="activeSessionter" value="" readOnly ="readOnly" style="width:50px;" />
+                </td>
+           </tr>
+           <tr>
+                <td>No. of Active Session (User Based)</td>
+                <td>
+                    <input type="text" id="activeSessionub" value="" readOnly ="readOnly" style="width:50px;" />
+                </td>
+           </tr>
+           
+    </table>
         <br />
         <div id="loading"></div>
                 <div id="submitarea"> 
@@ -86,7 +107,7 @@ $vaccesspages = array('5','6');
 
 <script type="text/javascript">
     jQuery(document).ready(function(){
-        
+        $('#activesessionnumber').hide();
         $("#txtcardnumber").focus(function(){
                     $("#txtcardnumber").bind('paste', function(event) {
                         setTimeout(function(event) {
@@ -112,7 +133,7 @@ $vaccesspages = array('5','6');
         
         jQuery('#btnOK').click(function(){
             var cardnumber = jQuery('#txtcardnumber').val();
-            
+            $('#activesessionnumber').show();
             jQuery('#gridwrapper').show();
             jQuery('#senchaexport1').show();
             jQuery('#playingbal').show();
@@ -122,10 +143,15 @@ $vaccesspages = array('5','6');
         
         
         jQuery('#btnSubmit').click(function(){
-            
+            $('#activesessionnumber').hide();
             if(document.getElementById('txtcardnumber').value == "")
            {
                alert("Please Enter Membership Card Number");
+               document.getElementById('activeSession').value = '';
+               document.getElementById('activeSessionter').value = '';
+               document.getElementById('activeSessionub').value = '';
+               jQuery('#gridwrapper').hide();
+               jQuery('#senchaexport1').hide();
                return false;
            }
            else
@@ -133,6 +159,66 @@ $vaccesspages = array('5','6');
             jQuery('#gridwrapper').hide();
             jQuery('#senchaexport1').hide();
             
+            jQuery.ajax({
+                          url: "process/ProcessTopUpPaginate.php?action=sessioncount1",
+                          type: 'POST',
+                          data: {
+                                    txtcardnumber: jQuery("#txtcardnumber").val(),
+                                    ActiveSession : true,
+                                    ActiveSessionAction : "sessioncount1"
+                                },
+                          success: function(data){
+                              $("#activeSession").val(data);
+                              
+                              jQuery.ajax({
+                                            url: "process/ProcessTopUpPaginate.php?action=sessioncountter1",
+                                            type: 'POST',
+                                            data: {
+                                                      txtcardnumber: jQuery("#txtcardnumber").val(),
+                                                      ActiveSession : true,
+                                                      ActiveSessionAction : "sessioncountter1"
+                                                  },
+                                            success: function(data){
+                                                $("#activeSessionter").val(data);
+                                                
+                                                jQuery.ajax({
+                                                            url: "process/ProcessTopUpPaginate.php?action=sessioncountub1",
+                                                            type: 'POST',
+                                                            data: {
+                                                                      txtcardnumber: jQuery("#txtcardnumber").val(),
+                                                                      ActiveSession : true,
+                                                                      ActiveSessionAction : "sessioncountub1"
+                                                                  },
+                                                            success: function(data){
+                                                                $("#activeSessionub").val(data);
+                                                            },
+                                                            error: function(XMLHttpRequest, e){
+                                                              alert(XMLHttpRequest.responseText);
+                                                              if(XMLHttpRequest.status == 401)
+                                                              {
+                                                                  window.location.reload();
+                                                              }
+                                                            }
+                                                      }); 
+                                            },
+                                            error: function(XMLHttpRequest, e){
+                                              alert(XMLHttpRequest.responseText);
+                                              if(XMLHttpRequest.status == 401)
+                                              {
+                                                  window.location.reload();
+                                              }
+                                            }
+                                      });
+                          },
+                          error: function(XMLHttpRequest, e){
+                            alert(XMLHttpRequest.responseText);
+                            if(XMLHttpRequest.status == 401)
+                            {
+                                window.location.reload();
+                            }
+                          }
+                    });
+                    
             showCardInfoTable();
            }
             
@@ -142,7 +228,7 @@ $vaccesspages = array('5','6');
         jQuery("#playingbal").jqGrid({
             url : 'process/ProcessTopUpPaginate.php?action=getplayingbalance',
             datatype: "json",
-            colNames:['Site / PEGS Code', 'Site / PEGS Name', 'Terminal Code', 'Playing Balance','Service Name'],
+            colNames:['Site / PEGS Code', 'Site / PEGS Name', 'Terminal Code', 'Playing Balance','Service Name', 'User Mode'],
             rowNum:10,
             height: 280,
             width: 1200,
@@ -150,13 +236,14 @@ $vaccesspages = array('5','6');
             pager: '#pager2',
             viewrecords: true,
             sortorder: "asc",
-            caption:"Playing Balance User Based",
+            caption:"Playing Balance Per Membership Card",
             colModel:[
                 {name:'SiteCode',index:'SiteCode',align:'left',sortable:false},
                 {name:'SiteName',index:'SiteName',align:'left',sortable:false},
                 {name:'TerminalCode',index:'TerminalCode',align:'center',sortable:false},
                 {name:'PlayingBalance',index:'PlayingBalance',align:'right',sortable:false},
                 {name:'ServiceName', index:'ServiceName', align:'center', sortable:false},
+                {name:'UserMode', index:'UserMode', align:'center', sortable:false},
             ],     
             resizable:true
         });        

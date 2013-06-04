@@ -1,5 +1,5 @@
 <?php 
-$pagetitle = "Manual Redemption";  
+$pagetitle = "Terminal Based Manual Redemption";  
 include "process/ProcessTopUp.php";
 include "header.php";
 $vaccesspages = array('5');
@@ -49,34 +49,47 @@ $vaccesspages = array('5');
 
             $('#cmbsite').live('change', function()
             {
-                jQuery("#txttermname").text(" ");
-                sendSiteID2($(this).val()); // function to get TerminalID, TerminalCode
+                var site = $('#cmbsite').val();
+                    if(site == "-1"){
+                        $('#cmbterminal').empty();
+                        $('#cmbterminal').append($("<option />").val("-1").text("Please Select"));
+                        $('#cmbservices').empty();
+                        $('#cmbservices').append($("<option />").val("-1").text("Please Select"));
+                        jQuery("#txtsitename").text(" ");
+                        jQuery("#txtposaccno").text(" ");
+                        jQuery("#txttermname").text("");
+                    }
+                    else{
+                        jQuery("#txttermname").text(" ");
+                            sendSiteID2($(this).val()); // function to get TerminalID, TerminalCode
 
-                // this clears out sites data on combo boxes upon change of combo box
-                $('#cmbterminal').empty();
-                $('#cmbterminal').append($("<option />").val("-1").text("Please Select"));
-                $('#cmbservices').empty();
-                $('#cmbservices').append($("<option />").val("-1").text("Please Select"));
+                            // this clears out sites data on combo boxes upon change of combo box
+                            $('#cmbterminal').empty();
+                            $('#cmbterminal').append($("<option />").val("-1").text("Please Select"));
+                            $('#cmbservices').empty();
+                            $('#cmbservices').append($("<option />").val("-1").text("Please Select"));
 
-                //for displaying of site name
-                jQuery.ajax({
-                      url: url,
-                      type: 'post',
-                      data: {cmbsitename: function(){return jQuery("#cmbsite").val();}},
-                      dataType: 'json',
-                      success: function(data){
-                          if(jQuery("#cmbsite").val() > 0)
-                          {
-                            jQuery("#txtsitename").text(data.SiteName+" / ");
-                            jQuery("#txtposaccno").text(data.POSAccNo);
-                          }
-                          else
-                          {   
-                            jQuery("#txtsitename").text(" ");
-                            jQuery("#txtposaccno").text(" ");
-                          }
-                      }
-                }); 
+                            //for displaying of site name
+                            jQuery.ajax({
+                                  url: url,
+                                  type: 'post',
+                                  data: {cmbsitename: function(){return jQuery("#cmbsite").val();}},
+                                  dataType: 'json',
+                                  success: function(data){
+                                      if(jQuery("#cmbsite").val() > 0)
+                                      {
+                                        jQuery("#txtsitename").text(data.SiteName+" / ");
+                                        jQuery("#txtposaccno").text(data.POSAccNo);
+                                      }
+                                      else
+                                      {   
+                                        jQuery("#txtsitename").text(" ");
+                                        jQuery("#txtposaccno").text(" ");
+                                      }
+                                  }
+                                });
+                    }
+                 
             });
 
             $('#cmbterminal').live('change', function(){
@@ -241,7 +254,7 @@ $vaccesspages = array('5');
           });
 </script>
 <div id="workarea"> 
-        <div id="pagetitle">Manual Redemption</div>
+        <div id="pagetitle"><?php echo $pagetitle; ?></div>
         <br />
         <input type="hidden" name="chkbalance" id="chkbalance" value="CheckBalance" />
         <form method="post" action="process/ProcessTopUp.php" id="frmredemption" name="frmcs">

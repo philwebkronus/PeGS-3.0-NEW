@@ -336,6 +336,104 @@ class ProcessTopUpPaginate extends BaseProcess {
         $topup->close();
     }
     
+    public function CountSession() 
+    {
+        include_once __DIR__.'/../sys/class/TopUp.class.php';
+        $topup = new TopUp($this->getConnection());
+        $topup->open();   
+        $siteID = $_POST['siteID'];
+        if($siteID == 'all'){
+            $siteID = $_POST['siteID'];
+        }
+        else{
+            $siteID = $topup->getSiteID($siteID);
+        }
+
+        $count = $topup->getActiveSessionCount($siteID, $txtcardnumber = '');
+        echo "$count";
+        $topup->close();
+        unset($count);
+    }
+    
+    
+    public function CountSessionTer() 
+    {
+        include_once __DIR__.'/../sys/class/TopUp.class.php';
+        $topup = new TopUp($this->getConnection());
+        $topup->open();
+        $siteID = $_POST['siteID'];
+        if($siteID == 'all'){
+            $siteID = $_POST['siteID'];
+        }
+        else{
+            $siteID = $topup->getSiteID($siteID);
+        }
+        $usermode = 0;
+        $count = $topup->getActiveSessionCountMod($siteID, $cardnumber = '', $usermode);
+        echo "$count";
+        $topup->close();
+        unset($count);
+    }
+    
+    
+    public function CountSessionUB() 
+    {
+        include_once __DIR__.'/../sys/class/TopUp.class.php';
+        $topup = new TopUp($this->getConnection());
+        $topup->open();  
+        $siteID = $_POST['siteID'];
+        if($siteID == 'all'){
+            $siteID = $_POST['siteID'];
+        }
+        else{
+            $siteID = $topup->getSiteID($siteID);
+        }
+        $usermode = 1;
+        $count = $topup->getActiveSessionCountMod($siteID, $cardnumber = '', $usermode);
+        echo "$count";
+        $topup->close();
+        unset($count);
+    }
+    
+    public function CountSessionUB1() 
+    {
+        include_once __DIR__.'/../sys/class/TopUp.class.php';
+        $topup = new TopUp($this->getConnection());
+        $topup->open();  
+        $txtcardnumber = $_POST['txtcardnumber'];
+        $usermode = 1;
+        $count = $topup->getActiveSessionCountMod($siteID = '', $txtcardnumber, $usermode);
+        echo "$count";
+        $topup->close();
+        unset($count);
+    }
+    
+    
+    public function CountSession1() 
+    {
+        include_once __DIR__.'/../sys/class/TopUp.class.php';
+        $topup = new TopUp($this->getConnection());
+        $topup->open();  
+        $txtcardnumber = $_POST['txtcardnumber'];
+        $count = $topup->getActiveSessionCount($siteID = '', $txtcardnumber);
+        echo "$count";
+        $topup->close();
+        unset($count);
+    }
+    
+    public function CountSessionTer1() 
+    {
+        include_once __DIR__.'/../sys/class/TopUp.class.php';
+        $topup = new TopUp($this->getConnection());
+        $topup->open();  
+        $txtcardnumber = $_POST['txtcardnumber'];
+        $usermode = 0;
+        $count = $topup->getActiveSessionCountMod($siteID = '', $txtcardnumber, $usermode);
+        echo "$count";
+        $topup->close();
+        unset($count);
+    }
+    
     //this will render on Playing Balance Page User Based
     public function playingBalanceub() 
     {  
@@ -428,7 +526,7 @@ class ProcessTopUpPaginate extends BaseProcess {
         $topup->open();   
         
         $total_row = $topup->getActiveTerminalsTotal();
-        $params = $this->getJqgrid($total_row, 's.SiteName');
+        $params = $this->getJqgrid($total_row, 's.SiteCode, t.TerminalCode');
         $jqgrid = $params['jqgrid'];
         if(isset($_GET['sidx']) && $_GET['sidx'] !=  '')
             $sort = $_GET['sidx'];
@@ -441,9 +539,9 @@ class ProcessTopUpPaginate extends BaseProcess {
             /********************* GET BALANCE API ****************************/
             
             if(is_string($balance['Balance'])) {
-                $rows[$key]['PlayingBalance'] = (float)$balance['Balance'];
+                $rows[$key]['PlayingBalance'] = number_format((double)$balance['Balance'],2, '.', ',');
             }  else {
-                $rows[$key]['PlayingBalance'] = number_format($balance['Balance'],2);
+                $rows[$key]['PlayingBalance'] = number_format($balance['Balance'],2, '.', ',');
             }
         }
         foreach($rows as $row) {
@@ -454,8 +552,21 @@ class ProcessTopUpPaginate extends BaseProcess {
                 }
                 else
                 {
-                    $row['PlayingBalance'] = number_format($row['PlayingBalance'], 2);
+                    $row['PlayingBalance'] = number_format($row['PlayingBalance'], 2, '.', ',');
                 }
+                
+            }
+            
+            if($row['PlayingBalance'] == 0 || $row['PlayingBalance'] == "0.00"){
+                    $row['PlayingBalance'] = "N/A";
+            }
+                
+             
+            if($row['UserMode'] == 0){
+                $row['UserMode'] = "Terminal Based";
+            }
+            else{
+                $row['UserMode'] = "User Based";
             }
             $jqgrid->rows[] = array('id'=>$row['TerminalID'],'cell'=>array(
                 substr($row['SiteCode'], strlen(BaseProcess::$sitecode)),
@@ -463,6 +574,7 @@ class ProcessTopUpPaginate extends BaseProcess {
                 substr($row['TerminalCode'], strlen($row['SiteCode'])),
                 $row['PlayingBalance'], 
                 $row['ServiceName'],
+                $row['UserMode'],
             ));
         }
         echo json_encode($jqgrid);
@@ -481,12 +593,14 @@ class ProcessTopUpPaginate extends BaseProcess {
         $topup->open();   
         
         $total_row = $topup->getActiveTerminalsTotalub();
-        $params = $this->getJqgrid($total_row, 's.SiteName');
+        $params = $this->getJqgrid($total_row, 'ts.TerminalID');
         $jqgrid = $params['jqgrid'];
-        if(isset($_GET['sidx']) && $_GET['sidx'] !=  '')
-            $sort = $_GET['sidx'];
-        else
+        if(isset($_GET['sidx']) && $_GET['sidx'] !=  ''){
+             $sort = $_GET['sidx'];
+        }
+        else{
             $sort = 't.TerminalCode';
+        }
         $rows = $topup->getActiveTerminalsub($params['sort'], $params['dir'], $params['start'], $params['limit']);
         
         foreach($rows as $key => $row) {
@@ -496,7 +610,7 @@ class ProcessTopUpPaginate extends BaseProcess {
             if(is_string($balance['Balance'])) {
                 $rows[$key]['PlayingBalance'] = (float)$balance['Balance'];
             }  else {
-                $rows[$key]['PlayingBalance'] = number_format($balance['Balance'],2);
+                $rows[$key]['PlayingBalance'] = number_format($balance['Balance'],2, '.', ',');
             }
         }
         foreach($rows as $row) {
@@ -507,8 +621,18 @@ class ProcessTopUpPaginate extends BaseProcess {
                 }
                 else
                 {
-                    $row['PlayingBalance'] = number_format($row['PlayingBalance'], 2);
+                    $row['PlayingBalance'] = number_format($row['PlayingBalance'], 2, '.', ',');
                 }
+                
+                if($row['PlayingBalance'] == 0){
+                    $row['PlayingBalance'] = "N/A";
+                }
+            }
+            if($row['UserMode'] == 0){
+                $row['UserMode'] = "Terminal Based";
+            }
+            else{
+                $row['UserMode'] = "User Based";
             }
             $jqgrid->rows[] = array('id'=>$row['TerminalID'],'cell'=>array(
                 substr($row['SiteCode'], strlen(BaseProcess::$sitecode)),
@@ -516,6 +640,7 @@ class ProcessTopUpPaginate extends BaseProcess {
                 substr($row['TerminalCode'], strlen($row['SiteCode'])),
                 $row['PlayingBalance'], 
                 $row['ServiceName'],
+                $row['UserMode'],
             ));
         }
         echo json_encode($jqgrid);
@@ -698,11 +823,40 @@ class ProcessTopUpPaginate extends BaseProcess {
                     $capiserverID = '';
                     break;
         }
-        
-        $CasinoGamingCAPI = new CasinoGamingCAPI();
-        $balance = $CasinoGamingCAPI->getBalance($providername, $row['ServiceID'], $url, 
+        $serviceusername = $topup->getUBServiceLogin($row['TerminalID']);
+       switch (true)
+        {
+                case (strstr($providername, "RTG")):
+                    $CasinoGamingCAPI = new CasinoGamingCAPI();
+                    $balance = $CasinoGamingCAPI->getBalance($providername, $row['ServiceID'], $url, 
                             $row['TerminalCode'], $capiusername, $capipassword, $capiplayername, 
                             $capiserverID);
+                    break;
+                case (strstr($providername, "MG")):
+                    $CasinoGamingCAPI = new CasinoGamingCAPI();
+                    $balance = $CasinoGamingCAPI->getBalance($providername, $row['ServiceID'], $url, 
+                            $row['TerminalCode'], $capiusername, $capipassword, $capiplayername, 
+                            $capiserverID);
+                    break;
+                case (strstr($providername, "PT")):
+                    $CasinoGamingCAPI = new CasinoGamingCAPI();
+                    if($row['UserMode'] == 0){
+                        $balance = $CasinoGamingCAPI->getBalance($providername, $row['ServiceID'], $url, 
+                            $row['TerminalCode'], $capiusername, $capipassword, $capiplayername, 
+                            $capiserverID);
+                    }
+                    else
+                    {
+                        $balance = $CasinoGamingCAPI->getBalance($providername, $row['ServiceID'], $url, 
+                            $serviceusername, $capiusername, $capipassword, $capiplayername, 
+                            $capiserverID);   
+                    }    
+                    
+                    
+                    break;
+        }
+       
+        
        
         return array("Balance"=>$balance, "Casino"=>$providername);    
         $topup->close();
@@ -760,8 +914,8 @@ class ProcessTopUpPaginate extends BaseProcess {
                     break;
                 case (strstr($providername, "PT")):
                     $CasinoGamingCAPI = new CasinoGamingCAPI();
-                    $usermode = $topup->checkUserMode($row['ServiceID']);
-                    if($usermode == 0){
+
+                    if($row['UserMode'] == 0){
                         $balance = $CasinoGamingCAPI->getBalance($providername, $row['ServiceID'], $url, 
                             $row['TerminalCode'], $capiusername, $capipassword, $capiplayername, 
                             $capiserverID);

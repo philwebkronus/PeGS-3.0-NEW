@@ -164,9 +164,30 @@ return $this->fetchAllData();
         return $res;
     }
     
-    public final function getActiveSessionCount ($siteID) {
+    /**
+      * @author Gerardo V. Jagolino Jr.
+      * @return array
+      * get active session count using siteid and cardnumber
+      */
+    public final function getActiveSessionCount ($siteID, $cardnumber) {
+        if($siteID == ''){
+            $query = "
+                  SELECT  
+                    count(t.TerminalID) as ActiveSession
+                  FROM 
+                    terminalsessions as ts, 
+                    terminals as t
+                  WHERE
+                    t.TerminalID = ts.TerminalID
+                    AND
+                    ts.LoyaltyCardNumber = :cardnumber";
         
-        $query = "
+        $this->prepare($query);
+        
+        $this->bindParam(":cardnumber", $cardnumber);
+        }
+        else{
+            $query = "
                   SELECT  
                     count(t.TerminalID) as ActiveSession
                   FROM 
@@ -180,6 +201,8 @@ return $this->fetchAllData();
         $this->prepare($query);
         
         $this->bindParam(":siteID", $siteID);
+        }
+        
         
         $this->execute();
         
@@ -188,6 +211,78 @@ return $this->fetchAllData();
         return $record[0]["ActiveSession"];
         
     }
+    
+
+    /**
+      * @author Gerardo V. Jagolino Jr.
+      * @return array
+      * get active session count using siteid and cardnumber and usermode
+      */
+    public final function getActiveSessionCountMod ($cardnumber, $usermode, $siteID) {
+        if($siteID == ''){
+        $query = "
+                  SELECT  
+                    count(t.TerminalID) as ActiveSession
+                  FROM 
+                    terminalsessions as ts, 
+                    terminals as t
+                  WHERE
+                    t.TerminalID = ts.TerminalID
+                    AND
+                    ts.LoyaltyCardNumber = :cardnumber
+                    AND ts.UserMode = :usermode";
+        
+        $this->prepare($query);
+        
+        $this->bindParam(":cardnumber", $cardnumber);
+        $this->bindParam(":usermode", $usermode);
+        }
+        else{
+        
+            $query = "
+                  SELECT  
+                    count(t.TerminalID) as ActiveSession
+                  FROM 
+                    terminalsessions as ts, 
+                    terminals as t
+                  WHERE
+                    t.TerminalID = ts.TerminalID
+                    AND
+                    t.SiteID = :siteID
+                    AND ts.UserMode = :usermode";
+        
+        $this->prepare($query);
+        
+        $this->bindParam(":siteID", $siteID);
+        $this->bindParam(":usermode", $usermode);
+        }
+        
+        $this->execute();
+        
+        $record = $this->fetchAllData();
+        
+        return $record[0]["ActiveSession"];
+        
+    }
+    
+  
+    /**
+      * @author Gerardo V. Jagolino Jr.
+      * @return array
+      * get UserLogin for getBalance using terminalid
+      */
+    public function getLoyaltycardNumberLogin($terminal){
+        $stmt = "SELECT UBServiceLogin FROM terminalsessions WHERE TerminalID = ?";
+        $this->prepare($stmt);
+        $this->bindparameter(1, $terminal);
+        $this->execute();
+        $card = $this->fetchData();
+        $card = $card['UBServiceLogin'];
+        return $card;
+    }
+
+
+    
     
     /**
      *This method returns an array composed of:
@@ -220,7 +315,8 @@ return $this->fetchAllData();
                     t.TerminalID, 
                     t.TerminalCode, 
                     rs.ServiceID,
-                    rs.ServiceName
+                    rs.ServiceName,
+                    ts.UserMode
                   FROM 
                     terminalsessions as ts, 
                     terminals as t,
@@ -288,12 +384,23 @@ return $this->fetchAllData();
                 
             }
             else if (preg_match("/PT/", $r["ServiceName"])) {
+          
                 $url = $_PlayerAPI[(int)$r["ServiceID"]-1];
                 $configuration = self::getConfigurationForPTCAPI( $url,$_ptcasinoname,$_ptsecretkey);
                 
                 $_CasinoAPIHandler = new CasinoCAPIHandler( CasinoCAPIHandler::PT, $configuration );
                 
-                $data = $_CasinoAPIHandler->GetBalance($r["TerminalCode"]);
+                //if user mode is terminal based, get each balances of each terminal
+                if($r["UserMode"] == 0){
+                    $data = $_CasinoAPIHandler->GetBalance($r["TerminalCode"]);
+                }
+                //if user mode is user based, get each balances of each casino mapped to a card
+                else
+                {
+                    $serviceusername = $this->getLoyaltycardNumberLogin($r["TerminalID"]);   
+                    
+                    $data = $_CasinoAPIHandler->GetBalance($serviceusername);
+                }    
                 
                 if(array_key_exists("BalanceInfo", $data))
                 {
@@ -304,12 +411,28 @@ return $this->fetchAllData();
                 }
             }
             
+            if($r["UserMode"]== 0){
+                $r["UserMode"] = "Terminal Based";
+            }
+            else{
+                $r["UserMode"] = "User Based";
+            }
+            
+            if($r["PlayingBalance"] == 0){
+               
+                $r["PlayingBalance"] = "N/A";
+            }
+            else{
+                $r["PlayingBalance"] = number_format($r['PlayingBalance'], 2);
+            }
+            
+            
             $row->rows[$ctr]["id"] = $r["TerminalID"];
             
             $row->rows[$ctr]["cell"] = array(
-                $r["TerminalID"],
                 $r["TerminalCode"],
-                number_format($r["PlayingBalance"], 2, '.',',')
+                $r["PlayingBalance"],
+                $r["UserMode"],
             );
             
             $ctr++;
@@ -352,7 +475,8 @@ return $this->fetchAllData();
                     t.TerminalID, 
                     t.TerminalCode, 
                     rs.ServiceID,
-                    rs.ServiceName
+                    rs.ServiceName,
+                    ts.UserMode
                   FROM 
                     terminalsessions as ts, 
                     terminals as t,
@@ -420,14 +544,13 @@ return $this->fetchAllData();
                 
             }
             else if (preg_match("/PT/", $r["ServiceName"])) {
-                $usermode = $this->checkUserMode($r["ServiceName"]);
                 
                 $url = $_PlayerAPI[(int)$r["ServiceID"]-1];
                 $configuration = self::getConfigurationForPTCAPI( $url,$_ptcasinoname,$_ptsecretkey);
                 
                 $_CasinoAPIHandler = new CasinoCAPIHandler( CasinoCAPIHandler::PT, $configuration );
                 
-                if($usermode == 0){
+                if($r["UserMode"] == 0){
                     $data = $_CasinoAPIHandler->GetBalance($r["TerminalCode"]);
                 }
                 else
@@ -442,14 +565,33 @@ return $this->fetchAllData();
                 else{
                     $r["PlayingBalance"] = 0;
                 }
+                
+                
             }
+            //check if user mode is terminal or user based
+            if($r["UserMode"] == '0'){
+                $r["UserMode"] = "Terminal Based";
+            }
+            else{
+                $r["UserMode"] = "User Based";
+            }
+
+            if($r["PlayingBalance"] ==  0){
+
+                $r["PlayingBalance"] == "N/A";
+            }
+            else{
+                $r["PlayingBalance"] = number_format($r['PlayingBalance'], 2);
+            }
+            
             
             $row->rows[$ctr]["id"] = $r["TerminalID"];
             
             $row->rows[$ctr]["cell"] = array(
-                $r["TerminalID"],
                 $r["TerminalCode"],
-                number_format($r["PlayingBalance"], 2, '.',',')
+                $r["PlayingBalance"],
+                $r["UserMode"]
+                
             );
             
             $ctr++;

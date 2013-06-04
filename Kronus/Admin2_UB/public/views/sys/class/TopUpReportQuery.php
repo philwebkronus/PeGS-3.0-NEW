@@ -824,20 +824,21 @@ class TopUpReportQuery extends DBHandler{
           if($zsitecode == "all")
           {
               $query = "SELECT ts.TerminalID, t.TerminalName,s.SiteName, s.POSAccountNo, s.SiteCode,ts.ServiceID,
-                        t.TerminalCode, rs.ServiceName FROM terminalsessions ts
+                        t.TerminalCode, rs.ServiceName, ts.UserMode FROM terminalsessions ts
                         INNER JOIN terminals as t ON ts.TerminalID = t.terminalID 
                         INNER JOIN sites as s ON t.SiteID = s.SiteID 
-                        INNER JOIN ref_services rs ON ts.ServiceID = rs.ServiceID";
+                        INNER JOIN ref_services rs ON ts.ServiceID = rs.ServiceID
+                        ORDER BY s.SiteCode, t.TerminalCode  ASC";
               $this->prepare($query);
           }
           else
           {
               $query = "SELECT ts.TerminalID, t.TerminalName,s.SiteName, s.POSAccountNo, s.SiteCode,ts.ServiceID,
-                        t.TerminalCode, rs.ServiceName FROM terminalsessions ts
+                        t.TerminalCode, rs.ServiceName, ts.UserMode FROM terminalsessions ts
                         INNER JOIN terminals as t ON ts.TerminalID = t.terminalID 
                         INNER JOIN sites as s ON t.SiteID = s.SiteID 
                         INNER JOIN ref_services rs ON ts.ServiceID = rs.ServiceID
-                        WHERE s.SiteCode = '".$zsitecode."'";
+                        WHERE s.SiteCode = '".$zsitecode."' ORDER BY s.SiteCode, t.TerminalCode ASC";
               $this->prepare($query);
           }
                    
@@ -855,16 +856,27 @@ class TopUpReportQuery extends DBHandler{
     {
           
               $query = "SELECT ts.TerminalID, t.TerminalName,s.SiteName, s.POSAccountNo, s.SiteCode,ts.ServiceID,
-                        t.TerminalCode, rs.ServiceName FROM terminalsessions ts
+                        t.TerminalCode, rs.ServiceName, ts.UserMode FROM terminalsessions ts
                         INNER JOIN terminals as t ON ts.TerminalID = t.terminalID 
                         INNER JOIN sites as s ON t.SiteID = s.SiteID 
                         INNER JOIN ref_services rs ON ts.ServiceID = rs.ServiceID
-                        WHERE ts.LoyaltyCardNumber = '".$cardnumber."'";
+                        WHERE ts.LoyaltyCardNumber = '".$cardnumber."' ORDER BY s.SiteCode, t.TerminalCode ASC";
               $this->prepare($query);
              
           $this->execute();
           return $this->fetchAllData();
     }
+    
+    public function getUBServiceLogin($terminalid) {
+
+          $query = "SELECT UBServiceLogin FROM terminalsessions WHERE TerminalID = ?";
+          $this->prepare($query);
+          $this->bindparameter(1, $terminalid);
+          $this->execute();
+          $ublogin = $this->fetchData();
+          $ublogin = $ublogin['UBServiceLogin'];
+          return $ublogin;
+      }
     
     public function getAgentSessionGuid($terminalid) {
             $query = "SELECT C.ServiceAgentSessionID FROM serviceterminals A INNER JOIn terminalmapping B ON A.ServiceTerminalID = B.ServiceTerminalID
