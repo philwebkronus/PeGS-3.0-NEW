@@ -136,6 +136,7 @@ if((isset($_GET["tempnumber"]) && (htmlentities($_GET["tempnumber"]))) &&
         $createdon = date("m-d-Y h:i A", strtotime($row["DateCreated"]));
         $birthdate = $row["Birthdate"];
         $gender = $row["Gender"];
+        $idpresented = $row['IdentificationNumber'];
 
         $site = $siteresult[0];
         $sitename = $site["SiteName"];
@@ -154,6 +155,7 @@ if((isset($_GET["tempnumber"]) && (htmlentities($_GET["tempnumber"]))) &&
         $txtName->Text = $membername;
         $dtBirthDate->SelectedDate = $birthdate;
         $rdoGroupGender->SetSelectedValue($gender);
+        $txtIDPresented->Text = $idpresented;
 
         if($fproc->IsPostBack)
         {
