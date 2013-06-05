@@ -91,6 +91,11 @@ function getMemInfo(){
                                                             ''
                         );
                     });
+                } else if(StatusValue == "Banned Card") {
+                        message = "<p style='color:red;'>Card is BANNED.</p>";
+                        $(".btnProceed").attr('disabled','disabled');
+                        $("#statusvalue").val(StatusValue);
+                        $("#cardStatus").html(message);
                 } else {
                     if(StatusValue == "Active"){
                             message = "<p style='color:green;'>Card is already active. Do you wish to transfer points from VIP Rewards Card to Membership Card?</p>";
@@ -185,6 +190,13 @@ function btnSubmit(){
                         hideLightbox();
                         window.showModalDialog(url_tempactivate+'?tempnumber='+temp_card+'&newnumber='+memcard+
                                                                 '&mid='+json.CardInfo.MID+'&site='+sitecode+'&aid='+aid+'&isreg=1','MigrateAccount','scroll: no;resizable:no; dialogHeight:380px; dialogWidth:600px; ');
+                    } else if(StatusValue == "Banned Card") {
+                        updateLightbox( '<center><label  style="font-size: 24px; color: red; font-weight: bold;">Card is BANNED.</label>' + 
+                                                        '<br /><br /><label style="font-size: 20px;  font-weight: bold;">Please contact Philweb Customer</label>' + 
+                                                        '<br /><label style="font-size: 20px;  font-weight: bold;">Service Hotline 338-3388.</label></center>' + 
+                                                        '<br /><input type="button" style="float: right; width: 50px; height: 25px;"  value="Ok" class="btnClose" />',
+                                                        ''          
+                        ); 
                     } else {
                         showLightbox(function(){                            
                             if(StatusValue == "Inactive Temporary"){

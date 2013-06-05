@@ -213,6 +213,9 @@ function getStatusValue(cardstatus){
             case 8:
                 StatusValue = 'Migrated Temporary';
                 break;
+            case 9:
+                StatusValue = 'Banned Card';
+                break;
             default:
                 StatusValue = "Invalid";
                 break;

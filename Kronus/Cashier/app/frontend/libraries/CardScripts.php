@@ -34,9 +34,16 @@ function identifyCard()
                             
                             //get status value
                              var StatusValue = getStatusValue(json.CardInfo.StatusCode);
-                             
+
                             if(StatusValue == "Active" || StatusValue == "Active Temporary" || StatusValue == "New Migrated"){
                                     response = "false";
+                            } else if (StatusValue == 'Banned Card'){
+                                    updateLightbox( '<center><label  style="font-size: 24px; color: red; font-weight: bold;">Card is BANNED.</label>' + 
+                                                                    '<br /><br /><label style="font-size: 20px;  font-weight: bold;">Please contact Philweb Customer</label>' + 
+                                                                    '<br /><label style="font-size: 20px;  font-weight: bold;">Service Hotline 338-3388.</label></center>' + 
+                                                                    '<br /><input type="button" style="float: right; width: 50px; height: 25px;"  value="Ok" class="btnClose" />',
+                                                                    ''          
+                                    ); 
                             } else {
 
                                 showLightbox(function(){
