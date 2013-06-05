@@ -87,13 +87,20 @@ class Cards extends BaseEntity
     
     public function updateCardStatus($arrNewCard, $arrTempCard)
     {
+        
         $this->StartTransaction();
         try
         {
+            $tempstatus = $arrTempCard['Status'];
+            $tempcardid = $arrTempCard['CardID'];
+            
             $this->UpdateByArray($arrTempCard);
+            $this->ExecuteQuery("UPDATE membercards SET Status = $tempstatus WHERE CardID = $tempcardid");
+            
             if(!App::HasError())
             {
                 $this->UpdateByArray($arrNewCard);
+                
                 if(!App::HasError())
                 {
                     $this->CommitTransaction();

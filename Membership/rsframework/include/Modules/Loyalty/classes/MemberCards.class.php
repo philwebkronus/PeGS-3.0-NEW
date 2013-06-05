@@ -51,12 +51,11 @@ class MemberCards extends BaseEntity
                      SUM(BonusPoints) AS `BonusPoints`,
                      SUM(RedeemedBonusPoints) AS `RedeemedBonusPoints`,
                      MID
-                     -- membercards.*
               FROM
                 membercards
               WHERE
                 MID = $MID
-                AND Status IN (1,7,8)
+                AND `Status` IN (1,7,8)
               GROUP BY
                 MID;";
         

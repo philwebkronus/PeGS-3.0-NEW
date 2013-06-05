@@ -27,7 +27,10 @@ $isOpen = 'false'; //Hide dialog box
 $memberinfo = $_MemberInfo->getMemberInfo( $MID );
 $row = $memberinfo[0];
 
-$points = $_MemberCards->getMemberCardInfo( $MID );
+$cardinfo = $_MemberCards->getActiveMemberCardInfo($MID);
+$cardNumber = $cardinfo[0]['CardNumber'];
+
+$points = $_MemberCards->getMemberPoints( $cardNumber );
 
 (!empty($row['NickName']) ? $nick = $row['NickName'] : $nick = $row['FirstName']);
 
@@ -35,7 +38,6 @@ $points = $_MemberCards->getMemberCardInfo( $MID );
  * Member Info
  */
 $memberName = $row['FirstName'] . ' ' . $row['MiddleName'] . ' ' . $row['LastName'];
-$cardNumber = $points[0]['CardNumber'];
 $mobileNumber = $row['MobileNumber'];
 $email = $row['Email'];
 
