@@ -212,8 +212,9 @@ $chkSMSNotification->ShowCaption = true;
 $chkSMSNotification->Value = 1;
 $fproc->AddControl($chkSMSNotification);
 
-$chkConfirmAge = new CheckBox("chkConfirmAge", "chkConfirmAge", "I hereby confirm that I am above 21 years and have read and accepted the Terms and Conditions.");
+$chkConfirmAge = new CheckBox("chkConfirmAge", "chkConfirmAge", "");
 $chkConfirmAge->ShowCaption = true;
+$chkConfirmAge->Caption = "I hereby confirm that I am above 21 years and have read and accepted the <a href='#'>Terms and Conditions</a>.";
 $chkConfirmAge->CssClass = 'validate[required]';
 $fproc->AddControl($chkConfirmAge);
 

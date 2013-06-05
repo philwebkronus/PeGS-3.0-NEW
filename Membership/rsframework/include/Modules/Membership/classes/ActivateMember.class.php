@@ -118,7 +118,7 @@ class ActivateMember extends BaseEntity
                         $arrEntries['CardTypeID'] = Helper::getCardTypeByName('Temporary');
                         $arrEntries['DateCreated'] = 'now_usec()';
                         $arrEntries['CreatedByAID'] = 1;
-                        $arrEntries['Status'] = CardStatus::ACTIVE;
+                        $arrEntries['Status'] = CardStatus::ACTIVE_TEMPORARY;
 
                         $this->Insert($arrEntries);
                         $this->CardID = $this->LastInsertID;
@@ -134,19 +134,16 @@ class ActivateMember extends BaseEntity
                             $arrMemberCard['SiteID'] = 1; //To be supplied from the cashier
                             $arrMemberCard['DateCreated'] = 'now_usec()';
                             $arrMemberCard['CreatedByAID'] = 1; //To be supplied from the cashier
-                            $arrMemberCard['Status'] = 1; //Active card
+                            $arrMemberCard['Status'] = CardStatus::ACTIVE_TEMPORARY;; //Active card
 
                             $this->Insert($arrMemberCard);
                                                         
                             if(!App::HasError())
                             {
                                 
-                                
                                 App::LoadModuleClass("CasinoProvider", "PlayTechAPI");
                                 App::LoadModuleClass("Kronus", "CasinoServices");
-                                App::LoadCore("Validation.class.php");
-                                        
-                                $validate = new Validation();
+                                
                                 $_CasinoServices = new CasinoServices();        
       
                                 $casinoservices = $_CasinoServices->getUserBasedCasinoServices();
