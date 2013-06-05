@@ -44,21 +44,18 @@ class MemberCards extends BaseEntity
         
         $MID = $row[0]['MID'];
         
-        $query = "SELECT 
-                    SUM(CurrentPoints) AS `CurrentPoints`,
-                     SUM(LifetimePoints) AS `LifetimePoints`,
-                     SUM(RedeemedPoints) AS `RedeemedPoints`,
-                     SUM(BonusPoints) AS `BonusPoints`,
-                     SUM(RedeemedBonusPoints) AS `RedeemedBonusPoints`,
-                     MID
-              FROM
-                membercards
-              WHERE
-                MID = $MID
-                AND `Status` IN (1,7,8)
-              GROUP BY
-                MID;";
-        
+        $query = "SELECT
+                    COALESCE(SUM(CurrentPoints), 0) AS `CurrentPoints`,
+                    COALESCE(SUM(LifetimePoints), 0) AS `LifetimePoints`,
+                    COALESCE(SUM(RedeemedPoints), 0) AS `RedeemedPoints`,
+                    COALESCE(SUM(BonusPoints), 0) AS `BonusPoints`,
+                    COALESCE(SUM(RedeemedBonusPoints), 0) AS `RedeemedBonusPoints`,
+                    MID
+                  FROM loyaltydb.membercards
+                  WHERE MID = $MID
+                  AND `Status` IN (1,5,7, 8)
+                  GROUP BY MID;";
+                
         $result = parent::RunQuery($query);
         return $result;
     }
@@ -79,7 +76,7 @@ class MemberCards extends BaseEntity
     {
         $query = "SELECT * 
             FROM membercards 
-            WHERE MID = $MID and Status = 1";
+            WHERE MID = $MID and Status IN (1,5)";
        
         $result = parent::RunQuery($query);
         
