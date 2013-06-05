@@ -213,7 +213,7 @@ class VoucherAPIController extends Controller
                                                                                     "VoucherTypeID"=>"",
                                                                                     "Amount"=>floatval(0),
                                                                                     "DateCreated"=>"",
-                                                                                    "TransMsg"=>"Parameter error",
+                                                                                    "TransMsg"=>"Voucher is invalid",
                                                                                     "ErrorCode"=>intval(12)
                                                                                 )
                                                         )
