@@ -144,20 +144,16 @@ class Members extends BaseEntity {
                                         $userName = $arrServices[0]['ServiceUsername'];
                                         $password = $arrServices[0]['ServicePassword'];
                                                                                 
-                                        (!empty($arrMemberInfo['Email']) && $validate->validateEmail($arrMemberInfo['Email'])) ? $email = $arrMemberInfo['Email'] : $email = "noemail_".$MID."@gmail.com";
-                                        (!empty($arrMemberInfo['FirstName'])) ? $firstName = str_replace(' ','',$arrMemberInfo['FirstName']) : $firstName = "NA";
-                                        (!empty($arrMemberInfo['Birthdate'])) ? $birthDate = date('Y-m-d',strtotime($arrMemberInfo['Birthdate'])) : $birthDate = "1970-01-01";
-                                        (!empty($arrMemberInfo['Address1'])) ? $address = str_replace(' ','',$arrMemberInfo['Address1']) : $address = 'NA';
-                                        (!empty($arrMemberInfo['Address2'])) ? $city = str_replace(' ','',$arrMemberInfo['Address2']) : $city = "NA";
-                                        (!empty($arrMemberInfo['MobileNumber'])) ? $phone = str_replace(' ','',$arrMemberInfo['MobileNumber']) : $phone = '123-4567';
+                                        //Create fake info based on MID
+                                        $email = $MID."@philweb.com.ph";                                        
+                                        $firstName = "NA";
                                         $lastName = "NA";
+                                        $birthDate = "1970-01-01";
+                                        $address = "NA";
+                                        $city = "NA";
+                                        $phone = '123-4567';                                        
                                         $zip = 'NA';
                                         $countryCode = 'PH';
-
-                                        if(strlen($firstName) > 15)
-                                        {
-                                            $firstName = substr($firstName, 0, 15);
-                                        }
                                         
                                         $arrServices[0]['isVIP'] == 0 ? $vipLevel = 1 : $vipLevel = 2;
                                                                                 
