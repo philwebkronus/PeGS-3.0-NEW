@@ -22,6 +22,7 @@ class CardStatus
     const NEW_MIGRATED = 7; //Status of the new card migrated to the new member card  
     const TEMPORARY_MIGRATED = 8; //Temporay card has availed new membership card
     
+    const BANNED = 9; //Banned cards
     const NOT_EXIST = 100; 
     const MIGRATION_ERROR = 101;
     

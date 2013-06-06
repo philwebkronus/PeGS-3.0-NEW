@@ -552,6 +552,36 @@ class GetCardInfoAPI extends BaseEntity
                 
                 return $result;
                 break;
+            
+            case CardStatus::BANNED:
+                
+                $result = array("CardInfo"=>array(
+                                        "MID"              => "",
+                                        "Username"         => "",
+                                        "CardNumber"       => "",
+                                        "MemberUsername"   => "",
+                                        "CardType"         => "",
+                                        "MemberName"       => "",
+                                        "RegistrationDate" => "",
+                                        "Birthdate"        => "",
+                                        "CurrentPoints"    => "",
+                                        "LifetimePoints"   => "",
+                                        "RedeemedPoints"   => "",
+                                        "IsCompleteInfo"   => "",
+                                        "MemberID"         => "",                                                                     
+                                        "CasinoArray"      => "",
+                                        "CardStatus"       => intval(CardStatus::BANNED),
+                                        "DateVerified"     => "",
+                                        "MobileNumber"     => "",
+                                        "Email"            => "",                                        
+                                        "IsReg"            => intval($isreg),
+                                        "StatusCode"       => intval(CardStatus::BANNED),
+                                        "StatusMsg"        => 'Card Is Banned',
+                                        )
+                           );
+                
+                return $result;
+                break;
                     
         }
         

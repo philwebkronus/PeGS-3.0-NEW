@@ -141,6 +141,9 @@ if((isset( $_GET['cardnumber'] ) && ctype_alnum( $_GET['cardnumber'] ))
                     case 7:
                         $status = CardStatus::NEW_MIGRATED;
                         break;
+                    case 9:
+                        $status = CardStatus::BANNED;
+                        break;
                 }
             }
             else
