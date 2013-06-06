@@ -11,6 +11,7 @@ $pagetitle = "Admin Login";
 App::LoadModuleClass("Admin","Accounts");
 App::LoadModuleClass("Admin", "AccountStatus");
 App::LoadModuleClass("Admin", "AccessRights");
+App::LoadModuleClass("Admin","SiteAccounts");
 
 App::LoadCore("URL.class.php");
 App::LoadCore("Hashing.class.php");
@@ -20,6 +21,7 @@ App::LoadControl("Button");
 
 $accounts = new Accounts();
 $accessrights = new AccessRights();
+$_SiteAccounts = new SiteAccounts();
 
 $fproc = new FormsProcessor();
 
@@ -64,7 +66,14 @@ if($fproc->IsPostBack)
             $accounttypeid = $row['AccountTypeID'];
             $_SESSION['userinfo']['Username'] = $username;
             $_SESSION['userinfo']['AID'] = $row['AID'];
-            $_SESSION['userinfo']['AccountTypeID'] = 
+            $_SESSION['userinfo']['AccountTypeID'] = $accounttypeid;
+            
+            if ($accounttypeid == 4) //Cashier
+            {
+                $arrsiteaccounts = $_SiteAccounts->getSiteIDByAID($row['AID']);
+                $siteaccount = $arrsiteaccounts[0];
+                $_SESSION['userinfo']['SiteID'] = $siteaccount['SiteID'];
+            }
             
             //Get user access
             $access = $accessrights->getAccessRights($accounttypeid);
