@@ -14,7 +14,7 @@
             
             var card_number = $('#StartSessionFormModel_loyalty_card').val();
             if(card_number == '') {
-                alert('Please barcode scan the Loyalty Card.');
+                alert('Please barcode scan the VIP Reward Card.');
                 return false;
             }
 

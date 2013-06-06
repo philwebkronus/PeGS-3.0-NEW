@@ -27,7 +27,7 @@
                         <?php endif; ?>
                     </div>
                     <div class="clear"></div>
-                    <div id="head-spacer"><div>PAGCOR e-Games Station Manager</div></div>
+                    <div id="head-spacer"><div>e-Games Station Manager</div></div>
                     <div id="main-menu">
                     <?php
                         echo Menu::display(array(

@@ -63,7 +63,7 @@ $(document).ready(function(){
         
         //check loyalty card if empty
         if(loyalty_card == ''){
-            alert('Please enter loyalty card number');
+            alert('Please enter VIP reward card number');
             return false;
         }
         

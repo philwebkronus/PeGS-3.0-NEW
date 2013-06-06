@@ -130,23 +130,22 @@ function addCommas(number)
 /*@Param dateverified
 *Description: Get the difference between the passed date parameter and the date today
 */
-function getDateDiff(dateverified,servertime){
+function getDateDiff(dateverified,servertime, cooling_period){
         var date2 = new Date(servertime);
-        var oneDay = 24*60*60*1000;     // hours*minutes*seconds*milliseconds
-
+        var coolingtime = 1*60*60*1000;     // hours*minutes*seconds*milliseconds
+        
         //check if the parameter value
         if(dateverified == null || dateverified == undefined || dateverified == ""){
             return "false";
         } else {
             var date1 = new Date(dateverified);
-            var diffDays = Math.abs((date1.getTime() - date2.getTime())/(oneDay));
-            //var diffDays = Math.abs((date1.getTime() - date2)/(oneDay));
-
-            //check if the date difference between the date verified and the date now is greater than/equal to one day.
-            if(diffDays >= 1) {
+            var diffDays = (date2.getTime() - date1.getTime())/(coolingtime);
+            
+            //check if the date difference between the date verified and the date now is greater than/equal to cooling period.
+            if(diffDays >= cooling_period) {
                      return "true";
              } else {
-                 var actdate = date1.getTime() + oneDay;
+                 var actdate = date1.getTime() + (coolingtime*cooling_period);
 
                  //formatting date return
                  var activationdate = new Date(actdate);

@@ -78,13 +78,14 @@ function identifyCard()
                                                     var d=a[0].split("-");
                                                     var t=a[1].split(":");
                                                     var date = new Date(d[0],(d[1]-1),d[2],t[0],t[1],t[2]);
+                                                    var cooling_period =  json.CardInfo.CoolingPeriod;
 
                                                     //get date difference between date today and the dateverified
-                                                    var datediff = getDateDiff(date,servertime);
+                                                    var datediff = getDateDiff(date,servertime, cooling_period);
 
                                                     if(datediff != "false" && datediff != "true") {
                                                         updateLightbox( '<center><label  style="font-size: 24px; color: red; font-weight: bold;">Temporary Account is INACTIVE.</label>' + 
-                                                                                        '<br /><br /><label style="font-size: 20px;">PAGCOR requires 24-hour Cooling Period.</label>' + 
+                                                                                        '<br /><br /><label style="font-size: 20px;">PAGCOR requires '+cooling_period+'-hour Cooling Period.</label>' + 
                                                                                         '<br /><label style="font-size: 20px;">Account <b>' + json.CardInfo.CardNumber + '</b> will be activated on</label>' + 
                                                                                         '<br /><label style="font-size: 20px;  font-weight: bold;">'+ datediff +'.</label></center>' +
                                                                                         '<br /><input type="button" style="float: right; width: 50px; height: 25px;"  value="Ok" class="btnClose" />',
