@@ -1,5 +1,5 @@
 * 									{ margin: 0; padding: 0; }
-body								{ font: 14px Helvetica, Sans-Serif; } 
+body								{ font: 12px Helvetica, Sans-Serif; } 
 #page-wrap							{ width: 1000px; margin: 25px 0 0 0 ; } 
 a									{ text-decoration: none; }
 ul									{ list-style: none; }
@@ -18,6 +18,12 @@ p                                   { margin: 15px 0; }
     width: 80px;
 }
 
+#btnClear
+{
+    height: 35px;
+    width: 80px;
+}
+
 #login
 {
     margin: 10% 0 0 40%;
@@ -30,7 +36,7 @@ p                                   { margin: 15px 0; }
 
 .title{
     font-size: 24px;
-    padding: 4px;
+    padding: 2px;
 }
 /* 
         LEVEL ONE
@@ -64,7 +70,7 @@ ul.dropdown ul li {
     font-weight: normal; 
     background: #ccc; 
     color: #000; 
-/*    border-bottom: 1px solid #ccc; float: none; }*/
+    /*    border-bottom: 1px solid #ccc; float: none; }*/
 }
 /* IE 6 & 7 Needs Inline Block */
 ul.dropdown ul li a { border-right: none; width: 100%; display: inline-block; } 
@@ -93,3 +99,4 @@ ul.dropdown li:hover > ul 			{ visibility: visible; }
     border-collapse: collapse;
     padding: 4px;
 }
+
