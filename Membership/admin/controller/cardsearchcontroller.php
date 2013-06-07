@@ -33,7 +33,9 @@ $redeemedPoints = 0;
 $CardNumber = "";
 $siteName = "";
 $transDate = "";
+$showcardinfo = true;
 $defaultsearchvalue = "Enter Card Number or Username";
+
 
 if (!isset($fproc))
 {
@@ -128,7 +130,7 @@ if (isset($_SESSION['CardInfo']))
     unset($arrCards);
     $CardTypeID = $cardinfo["CardTypeID"];
     $_SESSION['CardInfo']["CardTypeID"] = $CardTypeID;
-    $loyaltyinfo = $_MemberCards->getMemberCardInfo($MID);
+    $loyaltyinfo = $_MemberCards->getActiveMemberCardInfo($MID);
     $loyaltyinfo = $loyaltyinfo[0];
     $currentPoints = $loyaltyinfo['CurrentPoints'];
     $lifetimePoints = $loyaltyinfo['LifetimePoints'];

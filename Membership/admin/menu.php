@@ -10,7 +10,7 @@ include('sessionmanager.php');
     Membership Administration
 </div>
 <div class="mainmenu">
-    <ul>
+    <ul class="dropdown">
         <?php foreach ($usermenu as $menu)
         { ?>
             <li><a href="<?php echo $menu['Link']; ?>" class="<?php echo $currentpage == $menu['Name']? "selectedmenu": ""; ?>"><?php echo $menu['Name']; ?></a>

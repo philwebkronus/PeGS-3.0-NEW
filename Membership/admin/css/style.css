@@ -1,6 +1,6 @@
 * 									{ margin: 0; padding: 0; }
 body								{ font: 12px Helvetica, Sans-Serif; } 
-#page-wrap							{ width: 1000px; margin: 25px 0 0 0 ; } 
+#page-wrap							{ width: 1000px; /*margin: 25px 0 0 0 ; */} 
 a									{ text-decoration: none; }
 ul									{ list-style: none; }
 p                                   { margin: 15px 0; }
@@ -41,16 +41,15 @@ p                                   { margin: 15px 0; }
 /* 
         LEVEL ONE
 */
-ul.dropdown                         { position: relative; float: right; text-align: left; }
-ul.dropdown li                      { font-weight: bold; float: left; zoom: 1; background: #ccc; }
-ul.dropdown a:hover		            { color: #fff; }
-ul.dropdown a:active                { color: #ffa500; }
-ul.dropdown li a                    { display: block; padding: 4px 8px; border-right: 1px solid #eee;
-                                      color: #222; }
+ul.dropdown                         { position: relative; float: left; text-align: left; margin-left: 20px;}
+ul.dropdown li                      { font-weight: bold; float: left; zoom: 1;  padding: 8px 14px;}
+/*ul.dropdown a:hover		    { color: #fbec88; }*/
+ul.dropdown a:active                { color: #000; padding: 8px; }
+ul.dropdown li a                    { display: block; color: #fff; }
 ul.dropdown li:last-child a         { border-right: none; border-bottom: none; } /* Doesn't work in IE */
-ul.dropdown li.hover,
-ul.dropdown li:hover                { background: #ffa500; color: black; position: relative; }
-ul.dropdown li.hover a              { color: black; }
+/*ul.dropdown li.hover,*/
+ul.dropdown li:hover                { background: #fbec88;  height: 19px; position: relative;}
+/*ul.dropdown li.hover a              { color: black; }*/
 
 
 /* 
@@ -62,18 +61,18 @@ ul.dropdown ul {
     position: absolute; 
     top: 100%; 
     left: 0; 
-    background: #ccc; 
+    background: #c3d9ff; 
     /*border: 1px solid #ccc;*/
     border-bottom: 1px solid #ccc; float: none;
 }
 ul.dropdown ul li { 
     font-weight: normal; 
-    background: #ccc; 
-    color: #000; 
+    background: #c3d9ff; 
+    color: #1A597C; 
     /*    border-bottom: 1px solid #ccc; float: none; }*/
 }
 /* IE 6 & 7 Needs Inline Block */
-ul.dropdown ul li a { border-right: none; width: 100%; display: inline-block; } 
+ul.dropdown ul li a { border-right: none; width: 100%; display: inline-block; color: #1A597C; } 
 
 /* 
         LEVEL THREE

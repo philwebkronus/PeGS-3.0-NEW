@@ -9,6 +9,7 @@ require_once("../init.inc.php");
 include('sessionmanager.php');
 
 $pagetitle = "Banned Players";
+$currentpage = "Banned Players";
 
 App::LoadControl("TextBox");
 App::LoadControl("Button");
@@ -18,11 +19,15 @@ App::LoadModuleClass("Admin", "Players");
 
 $players = new Players();
 
-$fp = new FormsProcessor();
+$fproc = new FormsProcessor();
 
 /*
  * Search Objects
  */
+
+$defaultsearchvalue = "Enter Card Number or Username";
+
+
 $txtSearch = new TextBox('txtSearch', 'txtSearch', 'Search ');
 $txtSearch->ShowCaption = false;
 $txtSearch->CssClass = 'validate[required]';
@@ -40,14 +45,19 @@ else
     $txtSearch->Text = "Card Number, Username, Fname or Lname";
     $txtSearch->Args = "onclick=\"$(this).val('')\"";
 }
-$fp->AddControl($txtSearch);
+$fproc->AddControl($txtSearch);
 
 $btnSearch = new Button('btnSearch', 'btnSearch', 'Search');
 $btnSearch->ShowCaption = true;
 $btnSearch->IsSubmit = true;
-$fp->AddControl($btnSearch);
+$fproc->AddControl($btnSearch);
 
-$fp->ProcessForms();
+$btnClear = new Button('btnClear', 'btnClear', 'Clear');
+$btnClear->ShowCaption = true;
+$btnClear->IsSubmit = true;
+$fproc->AddControl($btnClear);
+
+$fproc->ProcessForms();
 
 //Display banned players on page load
 $bannedplayers = $players->getBannedPlayers();
@@ -58,7 +68,7 @@ $datagrid->AddColumn("Card Number", "CardNumber", DataGridColumnType::Text, Data
 $datagrid->AddColumn("First Name", "FirstName", DataGridColumnType::Text, DataGridColumnAlignment::Center);
 $datagrid->AddColumn("Last Name", "LastName", DataGridColumnType::Text, DataGridColumnAlignment::Center);
 
-if($fp->IsPostBack) 
+if($fproc->IsPostBack) 
 {
     $searchValue = $txtSearch->SubmittedValue;
     $bannedplayers = $players->getBannedPlayersByFilter($searchValue);
@@ -71,18 +81,58 @@ $resultdata = $datagrid->Render();
 
 ?>
 <?php include('header.php'); ?>
-<div id="page-wrap">    
-     <?php
-       echo $txtSearch . $btnSearch;
-    ?>
-    </form>
-    <?php include('menu.php'); ?>
-</div>
-<div id="page-wrap">
-    <div class="title">Banned Players</div>
-    <?php
-    echo $resultdata;
+<script language="javascript" type="text/javascript">
+    $(document).ready(
+    function()
+    {
+        defaultvalue = "<?php echo $defaultsearchvalue; ?>";
+        $("#txtSearch").click(function(){
+            $("#txtSearch").change();
+            if ($("#txtSearch").val() == defaultvalue)
+            {
+                $("#txtSearch").val("");
+                $("#btnSearch").attr("disabled", "disabled");
+            }
+        });
+        $("#txtSearch").keyup(function(){
+            $("#txtSearch").change();
+        });
+        $("#txtSearch").blur(function(){
+            $("#txtSearch").change();
+        });
+        $("#txtSearch").change(function(){
+            if ($("#txtSearch").val() == "" || $("#txtSearch").val() == defaultvalue)
+            {
+                $("#btnSearch").attr("disabled", "disabled");
+                $("#txtSearch").val(defaultvalue);
+            }
+            else
+            {
+                $("#btnSearch").removeAttr("disabled");
+            }
+            
+        });
+        $("#btnClear").click(function(){
+            $("#txtSearch").val("");
+            $("#txtSearch").change();
+        });
+        
     
-    ?>
+    });
+</script>
+<div align="center">
+    <div class="maincontainer">
+        <?php include('menu.php'); ?>
+        <div class="content">   
+            <?php
+            echo $txtSearch . $btnSearch . $btnClear;
+            ?>
+            </form>
+            <div class="title">Banned Players</div>
+            <?php
+            echo $resultdata;
+            ?>
+        </div>
+    </div>
 </div>
 <?php include('footer.php'); ?>

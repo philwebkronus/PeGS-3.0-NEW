@@ -10,8 +10,6 @@ include('sessionmanager.php');
 $pagetitle = "Redemption";
 $currentpage = "Redemption";
 
-$stylesheets[] = "css/themedstyle.css";
-
 App::LoadModuleClass('Loyalty', 'RewardItems');
 App::LoadModuleClass('Loyalty', 'RewardOffers');
 App::LoadModuleClass('Loyalty', 'MemberCards');
@@ -372,7 +370,7 @@ if ($fproc->IsPostBack)
                 unset($arrCards);
                 $CardTypeID = $cardinfo["CardTypeID"];
                 $_SESSION['CardInfo']["CardTypeID"] = $CardTypeID;
-                $loyaltyinfo = $_MemberCards->getMemberCardInfo($MID);
+                $loyaltyinfo = $_MemberCards->getActiveMemberCardInfo($MID);
                 $loyaltyinfo = $loyaltyinfo[0];
                 $currentPoints = $loyaltyinfo['CurrentPoints'];
                 $lifetimePoints = $loyaltyinfo['LifetimePoints'];

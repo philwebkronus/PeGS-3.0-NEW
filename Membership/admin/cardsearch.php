@@ -49,7 +49,7 @@
 </div>
 </form>
 <?php
-if (isset($MID) && $MID != "")
+if (isset($MID) && $MID != "" && $showcardinfo)
 {
     ?>
     <div id="cardinfo">

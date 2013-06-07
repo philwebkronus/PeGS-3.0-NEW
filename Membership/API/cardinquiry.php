@@ -185,6 +185,7 @@ else
                                     "MobileNumber"     => "",
                                     "Email"            => "",
                                     "IsRegs"           => 0,
+                                    "CoolingPeriod"    => "",
                                     "StatusCode"       => CardStatus::NOT_EXIST,
                                     "StatusMsg"        => 'Card Not Found',
                                     )

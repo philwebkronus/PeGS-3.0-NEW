@@ -30,7 +30,8 @@ if(isset($_SESSION['CardInfo']['MID']))
     //App::Pr($arrCards);
     $cardinfo = $arrCards[0];
     $_SESSION['CardInfo']["CardTypeID"] = $cardinfo["CardTypeID"];
-    $points = $_MemberCards->getMemberCardInfo($_SESSION['CardInfo']['MID'] );
+    //$points = $_MemberCards->getMemberCardInfo($_SESSION['CardInfo']['MID'] );
+    $points = $_MemberCards->getActiveMemberCardInfo($_SESSION['CardInfo']['MID'] );
     $row = $points[0];
     /**
     * Loyalty Points

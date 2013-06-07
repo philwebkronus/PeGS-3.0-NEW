@@ -3,6 +3,7 @@ require_once("../init.inc.php");
 include('sessionmanager.php');
 
 $pagetitle = "Card Transaction History";
+$currentpage = "Reports";
 
 App::LoadModuleClass("Loyalty", "Cards");
 App::LoadModuleClass("Loyalty", "MemberCards");
@@ -18,42 +19,9 @@ App::LoadControl("Button");
 
 App::LoadCore('Validation.class.php');
 
-$fp = new FormsProcessor();
-
-/*
- * Search Objects
- */
-$txtSearch = new TextBox('txtSearch', 'txtSearch', 'Search ');
-$txtSearch->ShowCaption = false;
-$txtSearch->CssClass = 'validate[required]';
-$txtSearch->Style = 'color: #666;';
-$txtSearch->Size = 30;
-
-if(!empty($txtSearch->SubmittedValue) || isset($_SESSION['CardInfo']))
-{
-    (!empty($txtSearch->SubmittedValue)) ? 
-        $txtSearch->Text = $txtSearch->SubmittedValue : 
-        $txtSearch->Text = $_SESSION['CardInfo']['CardNumber'];
-}
-else
-{
-    $txtSearch->Text = "Card Number or Username";
-    $txtSearch->Args = "onclick=\"$(this).val('')\"; ";
-    
-}
-$fp->AddControl($txtSearch);
-
-
-$btnSearch = new Button('btnSearch', 'btnSearch', 'Search');
-$btnSearch->ShowCaption = true;
-$btnSearch->IsSubmit = true;
-$fp->AddControl($btnSearch);
-
 $_MemberCards = new MemberCards();
 $_CardTransactions = new CardTransactions();
 $_MemberInfo = new MemberInfo();
-
-$fp->ProcessForms();
 
 $showresult = false;
 $showcardinfo = false;
@@ -68,8 +36,12 @@ $stylePageOn = "pageOn";
 $styleErrors = "paginationErrors";
 $styleSelect = "paginationSelect";
 
+$fproc = new FormsProcessor();
+include_once("controller/cardsearchcontroller.php");
 
-if ($fp->IsPostBack) {
+$fproc->ProcessForms();
+
+if ($fproc->IsPostBack) {
     
     $showresult = true;
     $showcardinfo = true;
@@ -144,23 +116,23 @@ if (!empty($page) || isset($_SESSION['CardInfo']['CardNumber'])) {
 ?>
 <?php include("header.php"); ?>
 
-<div id="page-wrap">       
-<?php echo $txtSearch . $btnSearch; ?>
-</form>
-<?php if($showcardinfo) include('cardinfo.php'); ?>
-<?php include("menu.php"); ?>
-</div>
-<div id="page-wrap">  
-    <div class="title">Transaction History</div>
-<?php if($showresult)
-{?>
-    <div align="right" class="pad5">
-    <?php echo $Pagination->display(); ?>
+<div align="center">
+    <div class="maincontainer">
+        <?php include('menu.php'); ?>
+        <div class="content">
+            <?php include('cardsearch.php'); ?>
+        <?php if($showresult)
+        {?>
+            <div class="title">Transaction History</div>
+            <div align="right" class="pad5">
+            <?php echo $Pagination->display(); ?>
+            </div>
+            <div align="right" class="pad5">
+                <?php echo $dgtransactionhistory; ?>
+            </div>
+        <?php
+        }?>
+        </div>
     </div>
-    <div align="right" class="pad5">
-        <?php echo $dgtransactionhistory; ?>
-    </div>
-<?php
-}?>
 </div>
 <?php include("footer.php"); ?>
