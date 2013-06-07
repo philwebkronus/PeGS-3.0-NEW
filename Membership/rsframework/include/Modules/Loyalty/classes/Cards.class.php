@@ -58,15 +58,17 @@ class Cards extends BaseEntity
         return $result;
     }
     
-    public function generateCard( $cardnumber )
+    public function generateCard( $cardnumber, $AID )
     {
-        $this->StartTransaction();
+        App::LoadModuleClass("Loyalty", "CardTypes");
+        $_CardTypes = new CardTypes();
         
-        App::LoadModuleClass("Membership", "Helper");
+        $this->StartTransaction();        
+        
         $arrEntries['CardNumber'] = $cardnumber;
-        $arrEntries['CardTypeID'] = 3; //Helper::getCardTypeByName('Temporary');
-        $arrEntries['DateCreated'] = 'now_usec';
-        $arrEntries['CreatedByAID'] = 1;
+        $arrEntries['CardTypeID'] = $_CardTypes->getCardTypeByName('Temporary');
+        $arrEntries['DateCreated'] = 'now_usec()';
+        $arrEntries['CreatedByAID'] = $AID;
         $arrEntries['Status'] = CardStatus::ACTIVE;
         
         $this->Insert($arrEntries);

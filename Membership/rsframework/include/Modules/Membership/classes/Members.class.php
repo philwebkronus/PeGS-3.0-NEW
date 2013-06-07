@@ -19,7 +19,7 @@ class Members extends BaseEntity {
         $this->DatabaseType = DatabaseTypes::PDO;
     }
 
-    function Migrate($arrMembers, $arrMemberInfo, $AID, $loyaltyCard, $newCard, $oldCardEmail, $isVIP, $isTemp = true) 
+    function Migrate($arrMembers, $arrMemberInfo, $AID, $siteid, $loyaltyCard, $newCard, $oldCardEmail, $isVIP, $isTemp = true) 
     {
         $this->StartTransaction();
 
@@ -70,17 +70,19 @@ class Members extends BaseEntity {
                     $ArrNewCardID = $_Cards->getCardInfo($newCard);
                     $ArrayNewCardID = $ArrNewCardID[0];
                                         
+                    App::LoadModuleClass("Loyalty", "CardStatus");
                     $this->TableName = "loyaltydb.membercards";
                      
                     $arrMemberCards['MID'] = $arrgetMID['MID'];
                     $arrMemberCards['CardID'] = $ArrayNewCardID['CardID'];
+                    $arrMemberCards['SiteID'] = $siteid;
                     $arrMemberCards['CardNumber'] = $ArrayNewCardID['CardNumber'];
                     $arrMemberCards['LifetimePoints'] = $ArrayOldCardID['LifetimePoints'];
                     $arrMemberCards['CurrentPoints'] = $ArrayOldCardID['CurrentPoints'];
                     $arrMemberCards['RedeemedPoints'] = $ArrayOldCardID['RedeemedPoints'];
                     $arrMemberCards['DateCreated'] = $datecreated;
                     $arrMemberCards['CreatedByAID'] = $AID;
-                    $arrMemberCards['Status'] = '1';
+                    $arrMemberCards['Status'] = CardStatus::ACTIVE;
 
                     $this->Insert($arrMemberCards);
                     
@@ -131,10 +133,7 @@ class Members extends BaseEntity {
                                     if (!App::HasError()) {
                                         App::LoadModuleClass("CasinoProvider", "PlayTechAPI");
                                         App::LoadModuleClass("Kronus", "CasinoServices");
-                                        App::LoadCore("Validation.class.php");
-                                        
-                                        $validate = new Validation();
-                                        
+                                       
                                         $_CasinoServices = new CasinoServices();
                                         $casinoservices = $_CasinoServices->getUserBasedCasinoServices();
 

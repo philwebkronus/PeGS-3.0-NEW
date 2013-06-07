@@ -11,6 +11,8 @@ require_once("../init.inc.php");
  * Load Module Classes
  */
 App::LoadModuleClass("Loyalty", "ProcessPointsAPI");
+App::LoadModuleClass("Membership", "AuditTrail");
+App::LoadModuleClass("Membership", "AuditFunctions");
 
 /*
  * Load Core for API Response
@@ -19,6 +21,7 @@ App::LoadCore('JSONAPIResponse.class.php');
 
 $_ProcessPoints = new ProcessPointsAPI();
 $_JSONAPIResponse = new JSONAPIResponse();
+$_Log = new AuditTrail();
 
 if((isset($_GET['cardnumber']) && ctype_alnum($_GET['cardnumber'])) //The members' member card number
         && isset($_GET['transdate']) //The date and time of the transaction
@@ -55,6 +58,8 @@ if((isset($_GET['cardnumber']) && ctype_alnum($_GET['cardnumber'])) //The member
                                     "StatusMsg"     => 'Proccess points is successful',
                                     )
                         );
+        
+        $_Log->logAPI(AuditFunctions::PROCESS_POINTS, $cardnumber.':'.$amount.':'.$transactiontype.':Success', $siteid);
     
     }
     else
@@ -65,6 +70,8 @@ if((isset($_GET['cardnumber']) && ctype_alnum($_GET['cardnumber'])) //The member
                                     "StatusMsg"     => 'Proccess points has failed',
                                     )
                         );
+        
+        $_Log->logAPI(AuditFunctions::PROCESS_POINTS, $cardnumber.':'.$amount.':'.$transactiontype.':Failed', $siteid);
     
         
     }

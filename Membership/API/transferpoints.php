@@ -10,11 +10,15 @@ App::LoadModuleClass("Loyalty", "PointsTransferAPI");
 App::LoadModuleClass("Loyalty", "OldCards");
 App::LoadModuleClass("Loyalty", "MemberCards");
 App::LoadModuleClass("Loyalty", "CardStatus");
+App::LoadModuleClass("Membership", "AuditTrail");
+App::LoadModuleClass("Membership", "AuditFunctions");
+        
 
 $_PointsTransferAPI = new PointsTransferAPI();
 $_JSONAPIResponse = new JSONAPIResponse();
 $_OldCards = new OldCards();
 $_MemberCards = new MemberCards();
+$_Log = new AuditTrail();
 
 if((isset($_GET["oldnumber"]) && ctype_alnum($_GET["oldnumber"])) && 
    (isset($_GET["newnumber"]) && ctype_alnum( $_GET["newnumber"])) &&
@@ -144,10 +148,12 @@ if((isset($_GET["oldnumber"]) && ctype_alnum($_GET["oldnumber"])) &&
             $membercardnewpoints = $updatedrow["LifetimePoints"] - $updatedrow["RedeemedPoints"];
 
             $_JSONAPIResponse->_sendResponse(200, json_encode(array("CardPoints"=>array("LoyaltyCardPoints"=>$loyaltyoldpoints, "MembershipCardPoints"=>$membercardnewpoints, "StatusCode"=>(int)1, "StatusMsg"=>"Successful"))));
+            $_Log->logAPI(AuditFunctions::TRANSFER_POINTS, $newrow["MID"] . ':' . $arrOldCards["OldCardID"] .':'.$arrCardPoints["MemberCardID"].':Success',$AID);
         }
         else
         {
             $_JSONAPIResponse->_sendResponse(200, json_encode(array("CardPoints"=>array("LoyaltyCardPoints"=>"", "MembershipCardPoints"=>"", "StatusCode"=>(int)0, "StatusMsg"=>"Failed"))));
+            $_Log->logAPI(AuditFunctions::TRANSFER_POINTS, $newrow["MID"] . ':' . $arrOldCards["OldCardID"] .':'.$arrCardPoints["MemberCardID"].':Failed',$AID);
         }
     }
 }

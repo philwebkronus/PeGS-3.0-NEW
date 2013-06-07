@@ -13,6 +13,8 @@ App::LoadModuleClass("Loyalty", "ProcessPointsAPI");
 App::LoadModuleClass("Loyalty", "MemberCards");
 App::LoadModuleClass("Loyalty", "CardStatus");
 App::LoadModuleClass("Kronus", "Sites");
+App::LoadModuleClass("Membership", "AuditTrail");
+App::LoadModuleClass("Membership", "AuditFunctions");
 
 //Load Controls
 App::LoadControl("DatePicker");
@@ -32,6 +34,7 @@ $_MemberInfo = new MemberInfo();
 $_Cards = new Cards();
 $_MemberCards = new MemberCards();
 $_Sites = new Sites();
+$_Log = new AuditTrail();
 
 $fproc = new FormsProcessor();
 $dsmaxdate = new DateSelector();
@@ -140,6 +143,7 @@ if((isset($_GET["tempnumber"]) && (htmlentities($_GET["tempnumber"]))) &&
 
         $site = $siteresult[0];
         $sitename = $site["SiteName"];
+        $siteid = $site["SiteID"];
 
         $cardinfo = $_MemberCards->getMemberCardInfo($MID);
 
@@ -175,6 +179,7 @@ if((isset($_GET["tempnumber"]) && (htmlentities($_GET["tempnumber"]))) &&
 
                 $arrMemberCards["MID"] = $MID;
                 $arrMemberCards["CardID"]= $cardid;
+                $arrMemberCards["SiteID"]= $siteid;
                 $arrMemberCards["CardNumber"] = $MembershipCardNumber;
                 $arrMemberCards["LifetimePoints"] = "0";
                 $arrMemberCards["CurrentPoints"] = "0";
@@ -254,20 +259,24 @@ if((isset($_GET["tempnumber"]) && (htmlentities($_GET["tempnumber"]))) &&
                         if(!App::HasError()){
 
                             $isSuccess = true;
+                            $_Log->logAPI(AuditFunctions::MIGRATE_TEMP, $tempAccountCode.':'.$MembershipCardNumber.':Success', $sitecode, $AID);
 
                         }else
                         {
                             $isSuccess = false;
+                            $_Log->logAPI(AuditFunctions::MIGRATE_TEMP, $tempAccountCode.':'.$MembershipCardNumber.':Failed', $sitecode, $AID);
                         }
                     }
                     else
                     {
                         $isSuccess = false;
+                        $_Log->logAPI(AuditFunctions::MIGRATE_TEMP, $tempAccountCode.':'.$MembershipCardNumber.':Failed', $sitecode, $AID);
                     }                    
                 }
                 else
                 {
                     $isSuccess = false;
+                    $_Log->logAPI(AuditFunctions::MIGRATE_TEMP, $tempAccountCode.':'.$MembershipCardNumber.':Failed', $sitecode, $AID);
                 }
                 
             }
@@ -281,6 +290,7 @@ if((isset($_GET["tempnumber"]) && (htmlentities($_GET["tempnumber"]))) &&
     {
         $isSuccess = false;
         $error = "One or more parameters have no values.";
+        $_Log->logAPI(AuditFunctions::MIGRATE_TEMP, $tempAccountCode.':'.$MembershipCardNumber.':Failed', $sitecode, $AID);
     }
 }
 ?>

@@ -14,7 +14,6 @@ App::LoadModuleClass("Membership", "AccountTypes");
 App::LoadModuleClass("Membership", "Nationality");
 App::LoadModuleClass("Membership", "Occupation");
 App::LoadModuleClass("Membership", "Referrer");
-App::LoadModuleClass("Membership", "Helper");
 
 // Load Controls
 App::LoadControl("DatePicker");
@@ -35,7 +34,7 @@ $isOpen = 'false';
 $useCustomHeader = true;
 
 $_Members = new TempMembers();
-$_Helper = new Helper();
+$_AccountTypes = new AccountTypes();
 
 $txtUserName = new TextBox("txtUserName", "txtUserName", "Username");
 $txtUserName->ShowCaption = false;
@@ -245,7 +244,7 @@ if ($fproc->IsPostBack)
     {
         $arrMembers["UserName"] = $txtEmail->SubmittedValue;
         $arrMembers["Password"] = md5($txtPassword->SubmittedValue);
-        $arrMembers["AccountTypeID"] = $_Helper->GetAccountTypeIDByName(AccountTypes::Member);
+        $arrMembers["AccountTypeID"] = $_AccountTypes->GetAccountTypeIDByName(AccountTypes::MEMBER);
         $arrMembers["ForChangePassword"] = 1;
         $arrMembers["DateCreated"] = $datecreated;
         $arrMembers["Status"] = 1;

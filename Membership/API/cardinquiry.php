@@ -19,6 +19,7 @@ App::LoadModuleClass("Loyalty", "OldCards");
 App::LoadModuleClass("Loyalty", "CardStatus");
 App::LoadModuleClass("Loyalty", "CardVersion");
 App::LoadModuleClass("Membership", "TempMemberInfo");
+App::LoadModuleClass("Membership", "Helper");
 
 
 /*
@@ -34,7 +35,7 @@ $_Cards = new Cards();
 $_OldCards = new OldCards();
 $_TempMembers = new TempMemberInfo();
 $_JSONAPIResponse = new JSONAPIResponse();
-
+$_Helper = new Helper();
 
 /*
  * Validate input if barcode has value and is alphanumeric
@@ -102,8 +103,8 @@ if((isset( $_GET['cardnumber'] ) && ctype_alnum( $_GET['cardnumber'] ))
                     }
                     else
                     {
-                       // Check 24 hours cooling period
-                        ( $hours > 23 ) ?  $status = CardStatus::ACTIVE_TEMPORARY : $status = CardStatus::INACTIVE_TEMPORARY; 
+                       // Check cooling period
+                        ( $hours > $_Helper->getParameterValue('COOLING_PERIOD') ) ?  $status = CardStatus::ACTIVE_TEMPORARY : $status = CardStatus::INACTIVE_TEMPORARY; 
                     }
                     
                     

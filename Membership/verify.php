@@ -25,10 +25,22 @@ if(isset($_GET['email']) && isset($_GET['tempcode']))
     $result = $_TempMembers->verifyEmailAccount($email, $tempcode);
     
     if($result == 1)
+    {
         $isSuccess = true;
+        $result = "Success";        
+    }
     else
+    {
         $isSuccess = false;
+        $result = "Failed";
+    }
     
+    App::LoadModuleClass("Membership", "AuditTrail");
+    App::LoadModuleClass("Membership", "AuditFunctions");
+
+    $_Log = new AuditTrail();
+    $_Log->logAPI(AuditFunctions::VERIFY_EMAIL, $result, $email);
+        
     //Load status dialog box
     $isOpen = true;
 }

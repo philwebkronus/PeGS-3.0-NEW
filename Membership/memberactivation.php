@@ -11,13 +11,14 @@ $stylesheets[] = "css/smoothness/jquery-ui-1.8.16.custom.css";
 
 $customtags[] = "<BASE target=\"_self\" />";
 
-App::LoadModuleClass("Membership", "Helper");
 App::LoadModuleClass("Membership", "Members");
 App::LoadModuleClass("Membership", "Identifications");
 App::LoadModuleClass("Membership", "AccountTypes");
 App::LoadModuleClass("Loyalty", "OldCards");
 App::LoadModuleClass("Loyalty", "CardStatus");
 App::LoadModuleClass("Kronus", "Sites");
+App::LoadModuleClass("Membership", "AuditTrail");
+App::LoadModuleClass("Membership", "AuditFunctions");
 
 App::LoadControl("TextBox");
 App::LoadControl("Button");
@@ -25,12 +26,13 @@ App::LoadControl("ComboBox");
 App::LoadControl("RadioGroup");
 App::LoadControl("DatePicker");
 
-$_Helper = new Helper();
 $_Members = new Members();
+$_AccountTypes = new AccountTypes();
 
 $_Identification = new Identifications();
 $_OldCards = new OldCards();
 $_Sites = new Sites();
+$_Log = new AuditTrail();
 
 $fproc = new FormsProcessor();
 $dsmaxdate = new DateSelector();
@@ -48,7 +50,7 @@ $LoyatyCardNumber = "";
 $NewMembershipCardNumber = "";
 $CardPoints = "";
 $CardName = "";
-$site = "";
+$siteName = "";
 
 $dtBirthDate = new DatePicker("dtBirthDate", "dtBirthDate", "Birth Date: ");
 $dtBirthDate->MaxDate = $dsmaxdate->CurrentDate;
@@ -116,7 +118,7 @@ if ((isset($_GET["oldnumber"]) && (htmlentities($_GET["oldnumber"])))
 
     $LoyatyCardNumber = $_GET["oldnumber"];
     $NewMembershipCardNumber = $_GET["newnumber"];
-    $site = $_GET["site"];
+    $siteCode = $_GET["site"];
     $AID = $_GET["AID"];
 
     $oldcardresult = $_OldCards->getOldCardInfo($LoyatyCardNumber);
@@ -148,9 +150,10 @@ if ((isset($_GET["oldnumber"]) && (htmlentities($_GET["oldnumber"])))
     $CardName = $arrOldLoyaltyDetails['CardName'];
     $CardPoints = $arrOldLoyaltyDetails['CurrentPoints'];
 
-    $siteresult = $_Sites->getSiteByCode($site);
+    $siteresult = $_Sites->getSiteByCode($siteCode);
     $arraysite = $siteresult[0];
-    $site = $arraysite['SiteName'];
+    $siteName = $arraysite['SiteName'];
+    $siteid = $arraysite['SiteID'];
 
     $dtBirthDate->SelectedDate = $oldCardBirthdate;
     $txtplayername->Text = $oldCardName;
@@ -171,13 +174,11 @@ if ((isset($_GET["oldnumber"]) && (htmlentities($_GET["oldnumber"])))
                     $Memberstable["UserName"] = $oldCardEmail;
                 }
 
-                $Memberstable["AccountTypeID"] = $_Helper->GetAccountTypeIDByName(AccountTypes::Member);
+                $Memberstable["AccountTypeID"] = $_AccountTypes->GetAccountTypeIDByName(AccountTypes::MEMBER);
                 $Memberstable['DateCreated'] = $dateCreated;
                 $Memberstable['Status'] = '1';
 
                 $PlayerName = $txtplayername->SubmittedValue;
-
-                //list($fname, $lname) = explode(' ', $PlayerName, 2);
                 
                 $MemberInfo["FirstName"] = $PlayerName;
                 $MemberInfo["Birthdate"] = $dtBirthDate->SubmittedValue;
@@ -189,18 +190,20 @@ if ((isset($_GET["oldnumber"]) && (htmlentities($_GET["oldnumber"])))
                 $MemberInfo["DateCreated"] = $dateCreated;
                 $rdoGroupGender->SubmittedValue == 1 ? $MemberInfo['Gender'] = 1 : $MemberInfo['Gender'] = 2;
 
-                $result = $_Members->Migrate($Memberstable, $MemberInfo, $AID, $LoyatyCardNumber, $NewMembershipCardNumber, $oldCardEmail, $isVIP, false);
+                $result = $_Members->Migrate($Memberstable, $MemberInfo, $AID, $siteid, $LoyatyCardNumber, $NewMembershipCardNumber, $oldCardEmail, $isVIP, false);
                 
                 $status = $result['status'];
                 
                 if ($status == 'OK')
                 {
                     $isSuccess = true;
+                    $_Log->logAPI(AuditFunctions::MIGRATE_OLD, $LoyatyCardNumber.':'.$NewMembershipCardNumber.':'.$_Members->password.':Success',$siteCode, $AID);
                 }
                 else
                 {
                     $isSuccess = false;
                     $error = $result['error'];
+                    $_Log->logAPI(AuditFunctions::MIGRATE_OLD, $LoyatyCardNumber.':'.$NewMembershipCardNumber.':Failed', $siteCode, $AID);
                 }
 
                 /*
@@ -324,7 +327,7 @@ if ((isset($_GET["oldnumber"]) && (htmlentities($_GET["oldnumber"])))
             <td align="right">Card Type </td>
             <td><strong><?php echo $CardName; ?></strong></td>
             <td align="right">Issuing Cafe</td>
-            <td><strong><?php echo $site; ?></strong></td>
+            <td><strong><?php echo $siteName; ?></strong></td>
         </tr>
         <tr>
             <td align="right">Current Points </td>

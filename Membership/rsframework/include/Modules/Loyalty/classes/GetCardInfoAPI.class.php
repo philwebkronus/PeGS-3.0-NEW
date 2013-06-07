@@ -26,8 +26,10 @@ class GetCardInfoAPI extends BaseEntity
         App::LoadModuleClass("Membership", "MemberServices");        
         App::LoadModuleClass("Membership", "MigrateMember");  
         App::LoadModuleClass("Membership", "ActivateMember");
+        App::LoadModuleClass("Membership", "Helper");
         App::LoadModuleClass('Loyalty', "MemberCards");
         App::LoadModuleClass("Loyalty", "Cards");   
+        
         
         //Instantiate Models
         $_MemberInfo = new MemberInfo();
@@ -38,6 +40,7 @@ class GetCardInfoAPI extends BaseEntity
         $_Cards = new Cards();
         
         $_ActivateMember = new ActivateMember();
+        $_Helper = new Helper();
                 
         switch ( $status )
         {
@@ -62,6 +65,7 @@ class GetCardInfoAPI extends BaseEntity
                                         "MobileNumber"     => "",
                                         "Email"            => "",
                                         "IsReg"            => intval($isreg),
+                                        "CoolingPeriod"    => "",
                                         "StatusCode"       => intval(CardStatus::INACTIVE),
                                         "StatusMsg"        => 'Inactive Card',
                                         )
@@ -102,6 +106,7 @@ class GetCardInfoAPI extends BaseEntity
                                          "MobileNumber"     => $row['MobileNumber'],
                                          "Email"            => $row['Email'],
                                          "IsReg"            => intval($isreg),
+                                         "CoolingPeriod"    => "",
                                          "StatusCode"       => intval(CardStatus::ACTIVE),
                                          "StatusMsg"        => 'Active Card',
                                          )
@@ -132,6 +137,7 @@ class GetCardInfoAPI extends BaseEntity
                                         "MobileNumber"     => "",
                                         "Email"            => "",                                        
                                         "IsReg"            => intval($isreg),
+                                        "CoolingPeriod"    => "",
                                         "StatusCode"       => intval(CardStatus::DEACTIVATED),
                                         "StatusMsg"        => 'Deactivated Card',
                                         )
@@ -185,6 +191,7 @@ class GetCardInfoAPI extends BaseEntity
                                          "MobileNumber"     => $row[0]['MobileNumber'],
                                          "Email"            => $row[0]['Email'],                    
                                          "IsReg"            => intval($isreg),
+                                         "CoolingPeriod"    => "",
                                          "StatusCode"       => intval(CardStatus::OLD),
                                          "StatusMsg"        => 'Old Loyalty Card',
                                          )
@@ -215,6 +222,7 @@ class GetCardInfoAPI extends BaseEntity
                                         "MobileNumber"     => "",
                                         "Email"            => "",                                        
                                         "IsReg"            => intval($isreg),
+                                        "CoolingPeriod"    => "",
                                         "StatusCode"       => intval(CardStatus::OLD_MIGRATED),
                                         "StatusMsg"        => 'Migrated Old Loyalty Card',
                                         )
@@ -228,6 +236,10 @@ class GetCardInfoAPI extends BaseEntity
                 //Member has no card records yet
                 if(!$_Cards->isExist( $cardnumber ))
                 {  
+                    
+                    App::LoadModuleClass("Membership", "AuditTrail");
+                    App::LoadModuleClass("Membership", "AuditFunctions");
+                    
                     /**
                      * MIGRATE MEMBER ACCOUNTS
                      * Transfer temporary member information to permanent database.
@@ -235,6 +247,8 @@ class GetCardInfoAPI extends BaseEntity
                      * Generate Casino Accounts to local database
                      * Insert generated Casino Account to backend
                      */
+                    
+                    $_Log = new AuditTrail();
                     
                     $activation = $_ActivateMember->Migrate( $cardnumber );
                     
@@ -244,7 +258,7 @@ class GetCardInfoAPI extends BaseEntity
                         
                         if($status == 'OK')
                         {
-                            $MID = $activation['MID'];                                 
+                            $MID = $activation['MID'];   
                         
                             $casinoAccounts = $_MemberServices->getCasinoAccounts( $MID );                            
                             $memberInfo = $_MemberInfo->getMemberInfo( $MID );
@@ -273,10 +287,13 @@ class GetCardInfoAPI extends BaseEntity
                                          "MobileNumber"     => $row['MobileNumber'],
                                          "Email"            => $row['Email'],                                         
                                          "IsReg"            => intval($isreg),
+                                         "CoolingPeriod"    => $_Helper->getParameterValue('COOLING_PERIOD'),
                                          "StatusCode"       => intval(CardStatus::ACTIVE_TEMPORARY),
                                          "StatusMsg"        => 'Active Temporary Account',
                                          )
                             );
+                            
+                            $_Log->logAPI(AuditFunctions::MIGRATE_TEMP, $cardnumber.':Success', $cardnumber);
                         }
                         else
                         {
@@ -300,10 +317,14 @@ class GetCardInfoAPI extends BaseEntity
                                          "MobileNumber"     => "",
                                          "Email"            => "",                                         
                                          "IsReg"            => intval($isreg),
+                                         "CoolingPeriod"    => "",
                                          "StatusCode"       => intval(CardStatus::MIGRATION_ERROR),
                                          "StatusMsg"        => 'Migration Error',
                                          )
                             );
+                            
+                            $_Log->logAPI(AuditFunctions::MIGRATE_TEMP, $cardnumber.':Failed', $cardnumber);
+                            
                         }
                     }
                     else
@@ -328,10 +349,13 @@ class GetCardInfoAPI extends BaseEntity
                                      "MobileNumber"     => "",
                                      "Email"            => "",                                         
                                      "IsReg"            => intval($isreg),
+                                     "CoolingPeriod"    => "",
                                      "StatusCode"       => intval(CardStatus::MIGRATION_ERROR),
                                      "StatusMsg"        => 'Migration Error',
                                      )
                         ); 
+                       
+                        $_Log->logAPI(AuditFunctions::MIGRATE_TEMP, $cardnumber.':Error', $cardnumber);
                     }                                                         
                     
                 }
@@ -377,6 +401,7 @@ class GetCardInfoAPI extends BaseEntity
                                          "MobileNumber"     => $row['MobileNumber'],
                                          "Email"            => $row['Email'],                                         
                                          "IsReg"            => intval($isreg),
+                                         "CoolingPeriod"    => $_Helper->getParameterValue('COOLING_PERIOD'),
                                          "StatusCode"       => intval(CardStatus::ACTIVE_TEMPORARY),
                                          "StatusMsg"        => 'Active Temporary Account',
                                          )
@@ -413,6 +438,7 @@ class GetCardInfoAPI extends BaseEntity
                                          "MobileNumber"     => $row[0]['MobileNumber'],
                                          "Email"            => $row[0]['Email'],
                                          "IsReg"            => intval($isreg),
+                                         "CoolingPeriod"    => $_Helper->getParameterValue('COOLING_PERIOD'),
                                          "StatusCode"       => intval(CardStatus::INACTIVE_TEMPORARY),
                                          "StatusMsg"        => 'Inactive Temporary Account',
                                          )
@@ -466,6 +492,7 @@ class GetCardInfoAPI extends BaseEntity
                                          "MobileNumber"     => $row['MobileNumber'],
                                          "Email"            => $row['Email'],                    
                                          "IsReg"            => intval($isreg),
+                                         "CoolingPeriod"    => "",
                                          "StatusCode"       => intval(CardStatus::NEW_MIGRATED),
                                          "StatusMsg"        => 'Migrated New Card',
                                          )
@@ -514,6 +541,7 @@ class GetCardInfoAPI extends BaseEntity
                                          "MobileNumber"     => "",
                                          "Email"            => "",                                         
                                          "IsReg"            => intval($isreg),
+                                         "CoolingPeriod"    => "",
                                          "StatusCode"       => intval(CardStatus::TEMPORARY_MIGRATED),
                                          "StatusMsg"        => 'Migrated Temporary Account',
                                          )
@@ -545,6 +573,7 @@ class GetCardInfoAPI extends BaseEntity
                                         "MobileNumber"     => "",
                                         "Email"            => "",                                        
                                         "IsReg"            => intval($isreg),
+                                        "CoolingPeriod"    => "",
                                         "StatusCode"       => intval(CardStatus::NOT_EXIST),
                                         "StatusMsg"        => 'Card Not Found',
                                         )
@@ -575,6 +604,7 @@ class GetCardInfoAPI extends BaseEntity
                                         "MobileNumber"     => "",
                                         "Email"            => "",                                        
                                         "IsReg"            => intval($isreg),
+                                        "CoolingPeriod"    => "",
                                         "StatusCode"       => intval(CardStatus::BANNED),
                                         "StatusMsg"        => 'Card Is Banned',
                                         )

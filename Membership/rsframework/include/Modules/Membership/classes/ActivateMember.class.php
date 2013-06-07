@@ -33,9 +33,11 @@ class ActivateMember extends BaseEntity
         
         App::LoadModuleClass("Membership", "TempMembers");
         App::LoadModuleClass("Membership", "TempMemberInfo");
+        App::LoadModuleClass("Loyalty", "CardTypes");
         
         $_TempMembers = new TempMembers();
         $_TempMemberInfo = new TempMemberInfo();
+        $_CardTypes = new CardTypes();
                 
         $queryMember = "SELECT UserName, Password, AccountTypeID, DateCreated, DateVerified
                         FROM membership_temp.members
@@ -115,7 +117,7 @@ class ActivateMember extends BaseEntity
                         $this->CardNumber = $cardnumber;
 
                         $arrEntries['CardNumber'] = $this->CardNumber;
-                        $arrEntries['CardTypeID'] = Helper::getCardTypeByName('Temporary');
+                        $arrEntries['CardTypeID'] = $_CardTypes->getCardTypeByName('Temporary');
                         $arrEntries['DateCreated'] = 'now_usec()';
                         $arrEntries['CreatedByAID'] = 1;
                         $arrEntries['Status'] = CardStatus::ACTIVE_TEMPORARY;

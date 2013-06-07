@@ -18,17 +18,20 @@ App::LoadCore("Validation.class.php");
 App::LoadModuleClass("Membership", "Members");
 App::LoadModuleClass("Membership", "MemberInfo");
 App::LoadModuleClass("Membership", "MemberSessions");
+App::LoadModuleClass("Membership", "Identifications");
+App::LoadModuleClass("Membership", "Nationality");
+App::LoadModuleClass("Membership", "Occupation");
+App::LoadModuleClass("Membership", "Referrer");
+App::LoadModuleClass("Membership", "AuditTrail");
+App::LoadModuleClass("Membership", "AuditFunctions");
+App::LoadModuleClass("Membership", "AccountTypes");
+
 App::LoadModuleClass("Loyalty", "MemberCards");
 App::LoadModuleClass("Loyalty", "Cards");
 App::LoadModuleClass("Loyalty", "CardTypes");
 App::LoadModuleClass("Loyalty", "Rewards");
-App::LoadModuleClass("Membership", "Identifications");
-
-App::LoadModuleClass("Membership", "Nationality");
-App::LoadModuleClass("Membership", "Occupation");
-App::LoadModuleClass("Membership", "Referrer");
-App::LoadModuleClass("Membership", "Helper");
 App::LoadModuleClass("Loyalty", "CardTransactions");
+
 App::LoadModuleClass("Kronus", "Sites");
 
 App::LoadControl("DatePicker");
@@ -41,6 +44,7 @@ App::LoadControl("Radio");
 App::LoadControl("CheckBox");
 
 $_Rewards = new Rewards();
+
 
 /**
  * Carousel Controls 
@@ -124,8 +128,6 @@ if (isset($_SESSION["MemberInfo"])) {
                         },              
                         open: function (event, ui) {
                             $element.load(page);                        
-                            //$(event.target).parent().css('top', '5%');
-                            //$(event.target).parent().css('left', '20%');
                         }
 
                     });

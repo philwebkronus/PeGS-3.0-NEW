@@ -11,22 +11,14 @@ class Helper extends BaseEntity
     {
         $this->ConnString = 'membership';
     }
-            
-    function GetAccountTypeIDByName($accountName)
+        
+    public function getParameterValue( $paramName )
     {
-        $this->TableName = "ref_accounttypes";
-        $where = " WHERE Name = '$accountName'";
+        $this->TableName = "ref_parameters";
+        $where = " WHERE ParamName = '$paramName' ";
         $result = parent::SelectByWhere($where);
-        return $result[0]['AccountTypeID'];
-    }
-    
-    function getCardTypeByName ( $cardtypename )
-    {
-        App::LoadModuleClass("Loyalty", "CardTypes");
-        $_CardTypes = new CardTypes();
-        $where = " WHERE CardTypeName = '$cardtypename'";
-        $result = $_CardTypes->SelectByWhere($where);
-        return $result[0]['CardTypeID'];
+        
+        return $result[0]['ParamValue'];
     }
     
     public function sendEmailVerification( $email, $name, $tempcode)

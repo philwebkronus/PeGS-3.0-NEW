@@ -15,6 +15,14 @@ class CardTypes extends BaseEntity
     {
         $this->ConnString = "loyalty";
         $this->TableName = "ref_cardtypes";
+        $this->Identity = "CardTypeID";
+    }
+    
+    public function getCardTypeByName ( $cardtypename )
+    {
+        $where = " WHERE CardTypeName = '$cardtypename'";
+        $result = parent::SelectByWhere($where);
+        return $result[0]['CardTypeID'];
     }
 }
 ?>

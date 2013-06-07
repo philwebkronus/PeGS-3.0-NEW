@@ -301,49 +301,31 @@ if ($fproc->IsPostBack)
     $arrMemberInfo['Gender'] = $rdoGroupGender->SubmittedValue;     
     $arrMemberInfo['IsSmoker'] = $rdoGroupSmoker->SubmittedValue;  
   
-//    if(isset($_FILES['ScannedID']['name']))
-//    {
-//        $allowedsize = 4194304; //4MB
-//        $allowedext = array("jpg","gif","tif","png");
-//        $extension = end(explode(".", $_FILES["ScannedID"]["name"]));
-//        //$filename = prev(explode(".", $_FILES["ScannedID"]["name"]));
-//        $upload_dir = "/home/webadmin/www/membershipsystem/memberfiles/"; // remote
-//        //$upload_dir = "C:\Apache2\htdocs\philweb\membership\memberfiles\\";
-//
-//        $tmpFile = $_FILES["ScannedID"]["tmp_name"];
-//        //$scannedFile = str_replace(" ", "_", $_FILES["ScannedID"]["name"]);
-//        $IDFile = 'ID' . str_pad($MID, 5, 0, STR_PAD_LEFT) . '.' . $extension;
-        
-//        if(!in_array($extension, $allowedext))
-//        {
-//            App::SetErrorMessage("Invalid file extension.");
-//        }
-//        else
-//        {
-//            if($_FILES["ScannedID"]["size"] > $allowedsize && in_array($extension, $allowedext))
-//            {
-//                App::SetErrorMessage("File error.");
-//            }
-//
-//            if($_FILES["ScannedID"]["size"] < $allowedsize)
-//            {
-//                if(move_uploaded_file($tmpFile, $upload_dir . $IDFile))
-//                    $arrMemberInfo["PhotoFileName"] = $IDFile;
-//                
-//
-//            }
-//        //}
-//        
-//
-//    }
-    
     //Proceed with the update profile
     $_MemberInfo->updateProfile($arrMembers,$arrMemberInfo);
     
     if(!App::HasError())
+    {
         $isSuccess = true;
+        
+        if(isset($_SESSION['MemberInfo']))
+        {
+            App::LoadModuleClass("Membership", "AuditTrail");
+            App::LoadModuleClass("Membership", "AuditFunctions");
+
+            $username = $_SESSION['MemberInfo']['UserName'];
+            $accounttypeid = $_SESSION['MemberInfo']['AccountTypeID'];
+            $id = $_SESSION['MemberInfo']['MID'];
+            $sessionid = $_SESSION['MemberInfo']['SessionID'];
+
+            $_Log = new AuditTrail();
+            $_Log->logEvent(AuditFunctions::UPDATE_PROFILE, $username, $accounttypeid, array('ID'=>$id, 'SessionID'=>$sessionid));
+        }
+    }
     else
+    {
         $isSuccess = false;
+    }
         
     /*
      * Load message dialog box
