@@ -113,5 +113,32 @@ class MemberCards extends BaseEntity
         }
     }
     
+    public function updateMemberCardName( $MID, $name )
+    {
+        $this->StartTransaction();
+        
+        $query = "UPDATE loyaltydb.membercards SET MemberCardName = '$name' WHERE MID = $MID";
+        
+        $this->ExecuteQuery($query);
+        
+        if(!App::HasError())
+            $this->CommitTransaction();
+        else
+            $this->RollBackTransaction ();
+    }
+    
+    public function Redeem($MID, $CardNumber, $redeemTotalPoints)
+    {
+        $query = "Update $this->TableName set RedeemedPoints = RedeemedPoints + $redeemTotalPoints, 
+                CurrentPoints = CurrentPoints - $redeemTotalPoints WHERE MID = $MID and CardNumber = '$CardNumber'
+                and CurrentPoints >= $redeemTotalPoints and Status = 1;";
+        $this->LastQuery = $query;
+        $retval = parent::ExecuteQuery($query);
+        if ($this->AffectedRows <= 0)
+        {
+            App::SetErrorMessage("Failed to redeem: Card may have insufficient points.");
+        }
+        return $retval;
+    }
 }
 ?>
