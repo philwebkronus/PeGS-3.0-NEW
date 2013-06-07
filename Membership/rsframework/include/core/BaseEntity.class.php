@@ -41,13 +41,13 @@ class BaseEntity extends BaseObject
      * @example DatabaseTypes::MySQL, DatabaseTypes::PDO, DatabaseTypes::ODBC 
      */
     public $DatabaseType;
-    private $PDOConnection = null;
+    public $PDODB = null;
     private $isStartTransaction = false;
     public $LastQuery;
 
     function __construct()
     {
-        $this->PDOConnection = null;
+        $this->PDODB = null;
     }
 
     /**
@@ -380,16 +380,16 @@ class BaseEntity extends BaseObject
                     $mydb->DatabaseType = $this->PDODatabaseType;
                 }
 
-//$this->PDOConnection = null;
-                if ($this->PDOConnection == null)
+//$this->PDODB = null;
+                if ($this->PDODB == null)
                 {
 //App::Pr("Creating PDO:");
-                    $this->PDOConnection = $mydb;
+                    $this->PDODB = $mydb;
                 }
                 else
                 {
 //App::Pr("Existing PDO:");
-                    $mydb = $this->PDOConnection;
+                    $mydb = $this->PDODB;
                 }
 
                 if ($this->isStartTransaction == true)
@@ -463,7 +463,7 @@ class BaseEntity extends BaseObject
     {
         if ($this->DatabaseType == DatabaseTypes::PDO)
         {
-            $this->PDOConnection->commit();
+            $this->PDODB->commit();
         }
     }
 
@@ -471,15 +471,15 @@ class BaseEntity extends BaseObject
     {
         if ($this->DatabaseType == DatabaseTypes::PDO)
         {
-            $this->PDOConnection->rollBack();
+            $this->PDODB->rollBack();
         }
     }
     
     function getPDOConnection()
     {
-        if ($this->DatabaseType == DatabaseTypes::PDO && isset($this->PDOConnection) && $this->PDOConnection != null)
+        if ($this->DatabaseType == DatabaseTypes::PDO && isset($this->PDODB) && $this->PDODB != null)
         {
-            return $this->PDOConnection;
+            return $this->PDODB;
         }
         else
         {
@@ -491,7 +491,7 @@ class BaseEntity extends BaseObject
     {
         if (isset($CommonPDOConnection) && $CommonPDOConnection != null)
         {
-            $this->PDOConnection = $CommonPDOConnection;
+            $this->PDODB = $CommonPDOConnection;
         }
     }
 
