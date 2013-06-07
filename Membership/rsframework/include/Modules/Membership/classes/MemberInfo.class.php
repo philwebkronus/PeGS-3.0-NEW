@@ -94,7 +94,7 @@ class MemberInfo extends BaseEntity
     
     function updateProfileForCouponAjax($arrEntries)
     {
-        session_unregister("PreviousRemdeption");
+        unset($_SESSION["PreviousRemdeption"]);
         $this->Identity = "MemberInfoID";
         parse_str($arrEntries, $entries);
         if (isset($entries["TermsAndConditions"]))

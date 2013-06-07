@@ -66,7 +66,7 @@ if ($fproc->IsPostBack)
 {
     if ($btnSearch->SubmittedValue == "Search" && $txtSearch->SubmittedValue != "")
     {
-        session_unregister("CardInfo");
+        unset($_SESSION["CardInfo"]);
         $validate = new Validation();
         $searchValue = $txtSearch->SubmittedValue;
         if ($validate->validateEmail($searchValue))
@@ -107,7 +107,7 @@ if ($fproc->IsPostBack)
 
     if ($btnClear->SubmittedValue == "Clear")
     {
-        session_unregister('CardInfo');
+        unset($_SESSION['CardInfo']);
         $txtSearch->Text = $defaultsearchvalue;
     }
 }
