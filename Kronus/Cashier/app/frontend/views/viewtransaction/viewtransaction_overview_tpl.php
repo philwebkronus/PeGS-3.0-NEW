@@ -33,7 +33,6 @@ $(document).ready(function(){
         <tr>
             <th style="width: 300px">Datetime</th>
             <th style="width: 200px">Terminal</th>
-            <th style="width: 200px">Loyalty Card</th>
             <th style="width: 200px">Transaction Type</th>
             <th style="width: 200px">Amount</th>
         </tr>

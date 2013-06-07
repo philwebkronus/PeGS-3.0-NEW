@@ -9,7 +9,7 @@
 class BaseEntity extends BaseObject
 {
 
-    /**
+   /**
      * The Identity field of the model. Relates to the Identity of a table.
      * @var String 
      */
@@ -41,15 +41,19 @@ class BaseEntity extends BaseObject
      * @example DatabaseTypes::MySQL, DatabaseTypes::PDO, DatabaseTypes::ODBC 
      */
     public $DatabaseType;
-    public $PDODB = null;
+    private $PDOConnection = null;
     private $isStartTransaction = false;
     public $LastQuery;
 
     function __construct()
     {
-        $this->PDODB = null;
+        $this->PDOConnection = null;
     }
 
+    /**
+     * Returns the Database Name of the model from the application connection string
+     * @return string the Database Name of the Model 
+     */
     function GetDBName()
     {
         $pdodb = App::getDBParam($this->ConnString);
@@ -63,6 +67,11 @@ class BaseEntity extends BaseObject
         }
     }
 
+    /**
+     * Inserts a single record into the table.
+     * @param array $arrEntries an array of fields and values. The array keys correspond to the table fields.
+     * @return integer If a table has an auto increment field, the Last Inserted ID is returned. 
+     */
     function Insert($arrEntries)
     {
         $mydb = $this->InitDatabase();
@@ -74,6 +83,7 @@ class BaseEntity extends BaseObject
             $this->setError($mydb->getError());
         }
         $this->LastInsertID = $mydb->LastInsertID;
+        ;
         $this->AffectedRows = $mydb->AffectedRows;
         return $mydb->LastInsertID;
     }
@@ -162,7 +172,7 @@ class BaseEntity extends BaseObject
         $mydb = $this->InitDatabase();
         $mydb->Open();
         $query = "Select * from `$this->TableName` where `$this->Identity` = '$id'";
-//$result = $mydb->Query($query);
+
         $rows = null;
         if ($this->DatabaseType == DatabaseTypes::MySQL)
         {
@@ -185,7 +195,7 @@ class BaseEntity extends BaseObject
         $mydb = $this->InitDatabase();
         $mydb->Open();
         $query = "Select * from `$this->TableName`";
-//$result = $mydb->Query($query);
+
         $rows = null;
         if ($this->DatabaseType == DatabaseTypes::MySQL)
         {
@@ -196,9 +206,10 @@ class BaseEntity extends BaseObject
             $rows = $mydb->RunQuery($query);
         }
         $mydb->Close();
-        if ($mydb->HasError)
+        if ($mydb->getError())
         {
             $this->setError($mydb->getError());
+            App::SetErrorMessage($mydb->getError());
         }
         return $rows;
     }
@@ -208,7 +219,7 @@ class BaseEntity extends BaseObject
         $mydb = $this->InitDatabase();
         $mydb->Open();
         $query = "Select * from `$this->TableName` limit $itemfrom, $rowcount";
-//$result = $mydb->Query($query);
+
         $rows = null;
         if ($this->DatabaseType == DatabaseTypes::MySQL)
         {
@@ -256,7 +267,7 @@ class BaseEntity extends BaseObject
         $mydb = $this->InitDatabase();
         $mydb->Open();
         $query = "Select * from `$this->TableName` WHERE `Status` = '$status'";
-//$result = $mydb->Query($query);
+
         $rows = null;
 
         if ($this->DatabaseType == DatabaseTypes::MySQL)
@@ -358,43 +369,50 @@ class BaseEntity extends BaseObject
     private function InitDatabase()
     {
         $mydb = false;
-        if ($this->DatabaseType == DatabaseTypes::PDO)
+        if ($this->isValidConnectionString())
         {
-            App::LoadDataClass("PDOHandler.php");
-            $mydb = new PDOHandler($this->ConnString);
-            if (isset($this->PDODatabaseType))
+            if ($this->DatabaseType == DatabaseTypes::PDO)
             {
-                $mydb->DatabaseType = $this->PDODatabaseType;
-            }
+                App::LoadDataClass("PDOHandler.php");
+                $mydb = new PDOHandler($this->ConnString);
+                if (isset($this->PDODatabaseType))
+                {
+                    $mydb->DatabaseType = $this->PDODatabaseType;
+                }
 
-            //$this->PDODB = null;
-            if ($this->PDODB == null)
+//$this->PDOConnection = null;
+                if ($this->PDOConnection == null)
+                {
+//App::Pr("Creating PDO:");
+                    $this->PDOConnection = $mydb;
+                }
+                else
+                {
+//App::Pr("Existing PDO:");
+                    $mydb = $this->PDOConnection;
+                }
+
+                if ($this->isStartTransaction == true)
+                {
+                    $mydb->isStartTransaction = $this->isStartTransaction;
+                    $this->isStartTransaction = false;
+                }
+            }
+            elseif ($this->DatabaseType == DatabaseTypes::ODBC)
             {
-                //App::Pr("Creating PDO:");
-                $this->PDODB = $mydb;
+                App::LoadDataClass("ODBCDatabase.php");
+                $mydb = new ODBCDatabase($this->ConnString);
             }
             else
             {
-                //App::Pr("Existing PDO:");
-                $mydb = $this->PDODB;
+                $this->DatabaseType = DatabaseTypes::MySQL;
+                App::LoadDataClass("MySQLDatabase.php");
+                $mydb = new MySQLDatabase($this->ConnString);
             }
-
-            if ($this->isStartTransaction == true)
-            {
-                $mydb->isStartTransaction = $this->isStartTransaction;
-                $this->isStartTransaction = false;
-            }
-        }
-        elseif ($this->DatabaseType == DatabaseTypes::ODBC)
-        {
-            App::LoadDataClass("ODBCDatabase.php");
-            $mydb = new ODBCDatabase($this->ConnString);
         }
         else
         {
-            $this->DatabaseType = DatabaseTypes::MySQL;
-            App::LoadDataClass("MySQLDatabase.php");
-            $mydb = new MySQLDatabase($this->ConnString);
+            die("Module Class: " . get_class($this) . " ; Error: " . $this->getError());
         }
 
         return $mydb;
@@ -445,7 +463,7 @@ class BaseEntity extends BaseObject
     {
         if ($this->DatabaseType == DatabaseTypes::PDO)
         {
-            $this->PDODB->commit();
+            $this->PDOConnection->commit();
         }
     }
 
@@ -453,10 +471,35 @@ class BaseEntity extends BaseObject
     {
         if ($this->DatabaseType == DatabaseTypes::PDO)
         {
-            $this->PDODB->rollBack();
+            $this->PDOConnection->rollBack();
+        }
+    }
+    
+    function getPDOConnection()
+    {
+        if ($this->DatabaseType == DatabaseTypes::PDO && isset($this->PDOConnection) && $this->PDOConnection != null)
+        {
+            return $this->PDOConnection;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    
+    function setPDOConnection($CommonPDOConnection)
+    {
+        if (isset($CommonPDOConnection) && $CommonPDOConnection != null)
+        {
+            $this->PDOConnection = $CommonPDOConnection;
         }
     }
 
+    /**
+     * Removes numeric indexed array item from a database resultset
+     * @param array $result The raw database resultset
+     * @return array The non-ordinal indexed array from the resultset 
+     */
     private function ClearNumericFields($result)
     {
         $retval = $result;
@@ -479,6 +522,32 @@ class BaseEntity extends BaseObject
             }
         }
         return $retval;
+    }
+
+    /**
+     * Checks the connection string of the model if valid
+     * @return boolean Returns true if connection string is valid. Retruns false if otherwise.
+     */
+    private function isValidConnectionString()
+    {
+        if (App::getDBParam($this->ConnString) != false)
+        {
+            $connectionstring = App::getDBParam($this->ConnString);
+            if (is_array($connectionstring) && isset($connectionstring["username"]) && $connectionstring["username"] != "" && isset($connectionstring["dbname"]) && $connectionstring["dbname"] != "")
+            {
+                return true;
+            }
+            else
+            {
+                $this->setError("Invalid Connection String \"" . $this->ConnString . "\". Please ensure that a valid credential (username, password and database name) is supplied on your dbsettings.(" . App::getParam("settingsdir") . ")");
+                return false;
+            }
+        }
+        else
+        {
+            $this->setError("Connection String \"" . $this->ConnString . "\" does not exist. Please check your dbsettings (" . App::getParam("settingsdir") . ")");
+            return false;
+        }
     }
 
 }
