@@ -64,7 +64,7 @@ if($fproc->IsPostBack)
             $accounttypeid = $row['AccountTypeID'];
             $_SESSION['userinfo']['Username'] = $username;
             $_SESSION['userinfo']['AID'] = $row['AID'];
-            $_SESSION['userinfo']['AccountTypeID'] = 
+            $_SESSION['userinfo']['AccountTypeID'] = $accounttypeid;
             
             //Get user access
             $access = $accessrights->getAccessRights($accounttypeid);
