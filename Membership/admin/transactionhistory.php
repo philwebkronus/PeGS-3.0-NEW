@@ -50,16 +50,25 @@ if ($fproc->IsPostBack) {
     $end = $Pagination->getEntryEnd();
 
     $result = $_CardTransactions->getTransactions($CardNumber, $start, $end);
+    
+    foreach($result as $val)
+    {
+        $row = $val;
+        $row['TerminalLogin'] = trim(str_replace(range(0,9),'',$row['TerminalLogin']));
+        $newrow[] = $row;
+    }
          
+    $result = $newrow;
+        
     $dgth = new DataGrid();
-    $dgth->AddColumn("Site", "Site", DataGridColumnType::Text, DataGridColumnAlignment::Center, '', "Total");
+    $dgth->AddColumn("Site", "TerminalLogin", DataGridColumnType::Text, DataGridColumnAlignment::Center, '', "Total");
     $dgth->AddColumn("Transaction Type", "TransactionType", DataGridColumnType::Text, DataGridColumnAlignment::Center);
     $dgth->AddColumn("Amount", "Amount", DataGridColumnType::Money, DataGridColumnAlignment::Right, '', '', DataGridFooterCalculation::Sum);
     $dgth->AddColumn("Transaction Date", "TransactionDate", DataGridColumnType::Text, DataGridColumnAlignment::Center);
     $dgth->DataItems = $result;
     $dgtransactionhistory = $dgth->Render();
     
-    if($result > 0 && $totalEntries > 0)
+    if($newrow > 0 && $totalEntries > 0)
     {
         $showresult = true;
         $showcardinfo = true;
