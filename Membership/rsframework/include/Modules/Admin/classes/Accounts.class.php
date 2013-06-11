@@ -21,7 +21,7 @@ class Accounts extends BaseEntity
         $query = "SELECT Status FROM accounts WHERE UserName = '$username'";
         $result = parent::RunQuery($query);
         
-        return $result[0]['Status'];  
+        return $result;  
         
     }
     

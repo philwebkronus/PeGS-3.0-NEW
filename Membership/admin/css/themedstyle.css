@@ -84,9 +84,10 @@ body
 {
     /*color: #E6C52C;*/
     /*color: #FFF36D;*/
-    text-shadow: -1px -1px 0 #fbec88;
-    color: #1A597C;
+    /*text-shadow: -1px -1px 0 #FFF36D;*/
+    /*color: #1A597C;*/
     /*background: #fbec88;*/
+    color: #ff0000;
 }
 
 .searchbar

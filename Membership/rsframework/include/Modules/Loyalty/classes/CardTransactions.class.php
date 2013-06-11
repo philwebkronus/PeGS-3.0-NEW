@@ -30,33 +30,19 @@ class CardTransactions extends BaseEntity
         
         return parent::RunQuery($query);
     }
-    
-    //public function getTransacation($cardnumber, $itemcount = 100, $itemfrom = 0)
-    public function getTransacation($cardnumber)
-    {
-        //$itemfrom = $itemfrom - 1;
-        $query = "SELECT ct.SiteID, ct.CardID, ct.Amount, ct.TransactionType, left(ct.TerminalLogin,8) as Site, ct.TransactionDate
-                    FROM
-                      cardtransactions ct
-                    INNER JOIN membercards mc
-                    ON ct.CardID = mc.CardID
-                    WHERE
-                      mc.CardNumber = '$cardnumber'";
-                    // LIMIT $itemfrom, $itemcount;";
-
-        return parent::RunQuery($query);
-    }
-    
+        
     public function getTransactions($cardnumber, $start, $end)
     {
         
-        $query = "SELECT ct.SiteID, ct.CardID, ct.Amount, ct.TransactionType, left(ct.TerminalLogin,8) as Site, ct.TransactionDate
+        $query = "SELECT ct.SiteID, ct.CardID, ct.Amount, ct.TransactionType, ct.TerminalLogin, 
+                   DATE_FORMAT(ct.TransactionDate, '%M %d, %Y %H:%i:%s.%f') AS TransactionDate
                     FROM
                       cardtransactions ct
                     INNER JOIN membercards mc
                     ON ct.CardID = mc.CardID
                     WHERE
                       mc.CardNumber = '$cardnumber'
+                    ORDER BY ct.CardTransactionID DESC
                     LIMIT $start, $end;";
 
         return parent::RunQuery($query);

@@ -19,6 +19,10 @@ if(isset($_SESSION['sessionID']))
 {
     $new_sessionid = $_SESSION['sessionID'];
 }
+else 
+{
+    $new_sessionid = '';
+}
 if(isset($_SESSION['accID']))
 {
     $aid = $_SESSION['accID'];
@@ -53,8 +57,43 @@ if($connected)
       session_destroy();
       $msg = "Not Connected";
       $oas->close();
-      header("Location: login.php?mess=".$msg);
+      if($oas->isAjaxRequest())
+       {
+          header('HTTP/1.1 401 Unauthorized');
+          echo "Session Expired";
+          exit;
+       }
+       header("Location: login.php?mess=".$msg);
    }
+   else
+   {
+          //get all services 
+        $rserviceall = array();
+        $rserviceall = $oas->getallservices("ServiceName");
+        $_SESSION['serviceall'] = $rserviceall;
+
+        //get all sites
+        $sitelist = array();
+        $sitelist = $oas->getallsites();
+        $_SESSION['siteids'] = $sitelist; //session variable for the sites name selection
+
+        //for services --> RTG Servers only
+        $rservice = array();
+        $rservice = $oas->getallservices("ServiceName");
+        $rservices = array();
+        foreach($rservice as $row)
+        {
+            $rserverID = $row['ServiceID'];
+            $rservername = $row['ServiceName'];
+
+            if(strstr($rservername, "RTG"))
+            {
+               $newarr = array('ServiceID' => $rserverID, 'ServiceName' => $rservername);
+               array_push($rservices, $newarr);   
+            }
+        }
+        $_SESSION['getservices'] = $rservices; //session variable for RTG Servers selection
+   }    
 /********** END SESSION CHECKING **********/   
    
    //checks if account was locked 
@@ -71,32 +110,7 @@ if($connected)
 //      }
 //   }
    
-    //get all services 
-    $rserviceall = array();
-    $rserviceall = $oas->getallservices("ServiceName");
-    $_SESSION['serviceall'] = $rserviceall;
-
-    //get all sites
-    $sitelist = array();
-    $sitelist = $oas->getallsites();
-    $_SESSION['siteids'] = $sitelist; //session variable for the sites name selection
-
-    //for services --> RTG Servers only
-    $rservice = array();
-    $rservice = $oas->getallservices("ServiceName");
-    $rservices = array();
-    foreach($rservice as $row)
-    {
-        $rserverID = $row['ServiceID'];
-        $rservername = $row['ServiceName'];
-
-        if(strstr($rservername, "RTG"))
-        {
-           $newarr = array('ServiceID' => $rserverID, 'ServiceName' => $rservername);
-           array_push($rservices, $newarr);   
-        }
-    }
-    $_SESSION['getservices'] = $rservices; //session variable for RTG Servers selection
+ 
     if(isset($_POST['page']))
     {
        $vpage = $_POST['page'];
@@ -225,24 +239,105 @@ if($connected)
                           }
                           else 
                           {
-                              $services = "Error: Casino is empty";
+                              $services = "Reset Casino Account: Casino is empty";
                               echo "$services";
                           }  
  
                         } else {
                            $statusmsg = $oas->membershipcardStatus($statuscode);
-                           echo "Error: ".$statusmsg;
+                           echo "Reset Casino Account: ".$statusmsg;
                         } 
                     }
                     else
                     {
                         $statuscode = 100;
                         $statusmsg = $oas->membershipcardStatus($statuscode);
-                           echo "Error: ".$statusmsg;
+                           echo "Reset Casino Account: ".$statusmsg;
                     }    
                     
                 } else {
-                    echo "Error: Invalid input detected";
+                    echo "Reset Casino Account: Invalid input detected";
+                }
+                
+                unset($loyaltyResult, $casino);
+                $oas->close();
+                exit;
+          break;
+          
+          
+           //show loyalty card information on a pop up box  
+         case "GetLoyaltyCard2":
+             
+                //validate if card number field was empty
+                $cardnumber = $_POST['txtcardnumber'];
+                
+                if(strlen($cardnumber) > 0) {
+                    $loyaltyResult = $loyalty->getCardInfo2($cardnumber, $cardinfo, 1);
+                
+                    $obj_result = json_decode($loyaltyResult);
+
+                    $statuscode = $obj_result->CardInfo->StatusCode;
+
+                    if(!is_null($statuscode))
+                    {
+                       //allow active memeebership card and active temp account
+                        if($statuscode == 1 || $statuscode == 5){
+
+                            $casinoarray_count = count($obj_result->CardInfo->CasinoArray);
+
+
+                            if($casinoarray_count != 0){
+                                for($ctr = 0; $ctr < $casinoarray_count;$ctr++) {   
+                                    $service = $oas->getServices($obj_result->CardInfo->CasinoArray[$ctr]->ServiceID);
+                                    foreach ($service as $value) {
+                                        $casinoname = $value['ServiceName'];
+                                    }
+
+                                    $casinoinfo = array(
+                                                array(
+                                                  'UserName'  => $obj_result->CardInfo->MemberName,
+                                                  'MobileNumber'  => $obj_result->CardInfo->MobileNumber,
+                                                  'Email'  => $obj_result->CardInfo->Email,
+                                                  'Birthdate' => $obj_result->CardInfo->Birthdate,
+                                                  'Casino' => $casinoname,
+                                                  'Login' => $obj_result->CardInfo->CasinoArray[$ctr]->ServiceUsername,
+                                                  'CardNumber' => $obj_result->CardInfo->Username,
+                                                )
+                                    );
+
+                                    $_SESSION['CasinoArray'] = $obj_result->CardInfo->CasinoArray;
+                                    $_SESSION['MID'] = $obj_result->CardInfo->MemberID;
+
+                                    echo json_encode($casinoinfo);
+                                }
+                          }
+                          else 
+                          {
+                              $services = "UB Transaction Tracking: Casino is empty";
+                              echo "$services";
+                          }  
+ 
+                        } else {
+                            if($statuscode == 8){
+                                echo json_encode($statuscode);
+                            }
+                            else
+                            {
+                                $statusmsg = $oas->membershipcardStatus($statuscode);
+                           echo "UB Transaction Tracking: ".$statusmsg;
+                            }    
+                           
+                        } 
+                    }
+                    else
+                    {
+                        $statuscode = 100;
+                        $statusmsg = $oas->membershipcardStatus($statuscode);
+                           echo "UB Transaction Tracking: ".$statusmsg;
+                    }    
+                    
+                } else {
+                    echo "UB Transaction Tracking: Invalid input detected";
                 }
                 
                 unset($loyaltyResult, $casino);
@@ -1379,6 +1474,35 @@ if($connected)
                 $oas->close();
                 exit;
             break;
+            //Get log files upon loading of page
+            case 'GetAdminLogFile':
+                $vrealfolder = $oas->getadminlogspath($adminlogpath);
+                if(is_dir($vrealfolder))
+                {
+                    $listfiles  = scandir($vrealfolder);
+                    $vfiles = array();
+                    foreach($listfiles as $file)
+                    {
+                        //hides (.), (..), (index), and temporary files upon viewing
+                        if(($file != '..') && ($file != '.') && (strstr($file, "index") == false) && 
+                                (strstr($file, "tmp") == false) && (strstr($file, "dev_application") == false))
+                        {
+                            $newarr = array(substr($file, 0, strrpos($file, ".")));
+                            array_push($vfiles, $newarr);
+                        }
+                    }
+                    arsort($vfiles); //arrange files by ascending
+                    echo json_encode($vfiles);
+                    unset($vfiles);
+                    unset($listfiles);
+                }
+                else
+                {
+                    echo "The logs directory does not exist";
+                }
+                $oas->close();
+                exit;
+            break;
             //show log's content upon clicking of file
             case 'ShowLogContent':
                 $vrealfolder = $oas->getlogspath($cashierlogpath);
@@ -1430,6 +1554,53 @@ if($connected)
             //show Launch Pad log's content upon clicking of file
             case 'ShowLaunchPadLogContent':
                 $vrealfolder = $oas->getlogspath($launchPadLogPath);
+                $vfile = $_POST['logfile']; 
+                $vfullpath = $vrealfolder.$vfile.".log";
+                $vdatenow = date("Y-m-d");
+                //check first if file exists
+                if(file_exists($vfullpath))   
+                {
+                    //then check if file is not empty
+                    if(filesize($vfullpath) > 0)
+                    {
+                        $datemodified = date("Y-m-d", filemtime($vfullpath)); //get file modification/creation date
+                        //check if date today is the same with date modification of file, then create temp file
+                        if($vdatenow == $datemodified)
+                        {
+                            $tmpfile = $vrealfolder."tmp".$vdatenow.".log";
+                            //validate if temp file was exists
+                            if(file_exists($tmpfile) == true)
+                            {
+                                unlink($tmpfile); //removes the temp file if exists
+                                file_put_contents($tmpfile, file_get_contents($vfullpath), FILE_APPEND | LOCK_EX); //re-create the temp file
+                                $rcontent = $oas->getfilecontents($tmpfile);
+                            }
+                            else
+                            {
+                                file_put_contents($tmpfile, file_get_contents($vfullpath), FILE_APPEND | LOCK_EX); //create the temp file
+                                $rcontent = $oas->getfilecontents($tmpfile); //get contents
+                            }
+                        }
+                        else
+                        {
+                            $rcontent = $oas->getfilecontents($vfullpath);
+                        }
+                    }
+                    else
+                    {
+                       $rcontent = "";
+                    }
+                    echo json_encode($rcontent);
+                }   
+                else   
+                {  
+                    $errmsg->error = "Log file does not exists";
+                    echo json_encode($errmsg);
+                } 
+                exit;
+            break;
+            case 'ShowAdminLogContent':
+                $vrealfolder = $oas->getadminlogspath($adminlogpath);
                 $vfile = $_POST['logfile']; 
                 $vfullpath = $vrealfolder.$vfile.".log";
                 $vdatenow = date("Y-m-d");
@@ -2103,7 +2274,7 @@ if($connected)
                 }   
                 else   
                 {  
-                    $errmsg->error = "Log file does not exists";
+                    $errmsg->error = "Logs Tracking: Log file does not exists";
                     echo json_encode($errmsg);
                 } 
                 exit;

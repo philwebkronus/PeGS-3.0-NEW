@@ -8,7 +8,7 @@
 require_once("../init.inc.php");
 include('sessionmanager.php');
 
-$pagetitle = "Membership Adminitration";
+$pagetitle = "Membership Administration";
 $currentpage = "Player Profile";
 
 App::LoadModuleClass('Membership','MemberInfo');
