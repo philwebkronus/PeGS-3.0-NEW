@@ -19,3 +19,10 @@ Spyder\SAPI\amqp.php Deleted
 Spyder\SAPI\amqpwire.php Deleted
 Spyder\SAPI\hexdump.php Deleted
 Spyder\SAPI\index.php Modified
+
+Version 1.0.0.3 June 11, 2013
+-----------------------------
+- update socket connection
+
+File changes:
+Spyder\SAPI\index.php Modified

@@ -1,12 +1,14 @@
 <?php
-$dbhost="192.168.30.135";
-$dbusername="root";
-$dbpassword="password";
+$dbhost="172.16.102.158";
+$dbusername="spyderconn";
+$dbpassword="4PAUREbNHj=mJ0&W";
 $dbname="spyder";
-$spyderhost="127.0.0.1";
+$spyderhost="172.16.102.111";
 $spyderport="35000";
 
 function getroutingkey($terminal) {
+
+    global $dbhost,$dbusername,$dbpassword,$dbname,$spyderhost,$spyderport;
     $con = new mysqli($dbhost, $dbusername, $dbpassword, $dbname);
     if ($con->connect_errno) {
         echo "Failed to connect to MySQL: (" . $con->connect_errno . ") " . $con->connect_error;
@@ -40,19 +42,21 @@ function getroutingkey($terminal) {
 
 function sendtospyder($str, $channel) {
 //Connect to Server
-    $command="/send?clientid={$channel}&msg={$str}\n\r";
+    global $spyderhost,$spyderport;
+    $command="/send?clientid={$channel}&msg={$str}\r\n";
 
-    $socket = stream_socket_client("tcp://{$spyderhost}:{$spyderport}", $errno, $errstr, 30);
-		
+	echo $command;
+
+    $socket = stream_socket_client("ssl://{$spyderhost}:{$spyderport}", $errno, $errstr, 30);
     if ($socket) {
 
         //Start SSL
 
-        stream_set_blocking($socket, true);
+        //stream_set_blocking($socket, true);
 
-        stream_socket_enable_crypto($socket, true, STREAM_CRYPTO_METHOD_SSLv3_CLIENT);
+        //stream_socket_enable_crypto($socket, true, STREAM_CRYPTO_METHOD_SSLv3_CLIENT);
 
-        stream_set_blocking($socket, false);
+        //stream_set_blocking($socket, false);
         //Send a command
 
         fwrite($socket, $command);
@@ -60,16 +64,17 @@ function sendtospyder($str, $channel) {
         $buf = null;
 
         //Receive response from server. Loop until the response is finished
-//        while (!feof($socket)) {
-//
-//            $buf .= fread($socket, 20240);
-//        }
-        //close connection
+        while (!feof($socket)) {
 
+            $buf .= fread($socket, 20240);
+        }
+
+        //close connection
+	sleep(5);
         fclose($socket);
         //echo our command response
 
-        echo $buf;
+        //echo $buf;
     } else {
         echo $errno;
     }
