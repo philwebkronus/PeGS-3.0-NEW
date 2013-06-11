@@ -42,33 +42,7 @@ include_once("controller/cardsearchcontroller.php");
 $fproc->ProcessForms();
 
 if ($fproc->IsPostBack) {
-    
-    $showresult = true;
-    $showcardinfo = true;
-    
-    unset($_SESSION['CardInfo']);
-
-    $searchValue = $txtSearch->SubmittedValue;
-
-    $validate = new Validation();
-    
-    if ($validate->validateEmail($searchValue)) {
-        $result = $_MemberInfo->getMemberInfoByUsername($searchValue);
-        $_SESSION['CardInfo']['Username'] = $searchValue;
-        $MID = $result[0]['MID'];
-        $cardInfo = $_MemberCards->getActiveMemberCardInfo($MID);
-        $CardNumber = $cardInfo[0]['CardNumber'];
-        $_SESSION['CardInfo']['CardNumber'] = $CardNumber;
-    } else {
-        $membercards = $_MemberCards->getMemberCardInfoByCard($searchValue);
-        $MID = $membercards[0]['MID'];
-        $CardNumber = $membercards[0]['CardNumber'];
-
-        $_SESSION['CardInfo']['CardNumber'] = $searchValue;
-    }
-
-    $_SESSION['CardInfo']['MID'] = $MID;
-
+        
     $totalEntries = $_CardTransactions->getTransactionCount($CardNumber);
 
     $Pagination = new Pagination($totalEntries, $pagesPerSection, $options, $paginationID, $stylePageOff, $stylePageOn, $styleErrors, $styleSelect);
@@ -76,20 +50,25 @@ if ($fproc->IsPostBack) {
     $end = $Pagination->getEntryEnd();
 
     $result = $_CardTransactions->getTransactions($CardNumber, $start, $end);
-
+         
     $dgth = new DataGrid();
     $dgth->AddColumn("Site", "Site", DataGridColumnType::Text, DataGridColumnAlignment::Center, '', "Total");
     $dgth->AddColumn("Transaction Type", "TransactionType", DataGridColumnType::Text, DataGridColumnAlignment::Center);
     $dgth->AddColumn("Amount", "Amount", DataGridColumnType::Money, DataGridColumnAlignment::Right, '', '', DataGridFooterCalculation::Sum);
-    $dgth->AddColumn("Transaction Date", "TransactionDate", DataGridColumnType::Text, DataGridColumnAlignment::Center);
+    $dgth->AddColumn("Transaction Date", "NewDate", DataGridColumnType::Text, DataGridColumnAlignment::Center);
     $dgth->DataItems = $result;
-    //$dgth->ShowFooter = true;
     $dgtransactionhistory = $dgth->Render();
+    
+    if($result > 0 && $totalEntries > 0)
+    {
+        $showresult = true;
+        $showcardinfo = true;
+    }
 }
 
 $page = QueryString::GetQueryString("trans-page");
 
-if (!empty($page) || isset($_SESSION['CardInfo']['CardNumber'])) {
+if (!empty($page) && isset($_SESSION['CardInfo']['CardNumber'])) {
     
     $showresult = true;
     $showcardinfo = true;

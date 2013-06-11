@@ -38,10 +38,24 @@ class AccessRights extends BaseEntity
                   FROM membership.accessrights a
                     INNER JOIN membership.menus m ON a.MenuID = m.MenuID
                   WHERE a.AccountTypeID = $accounttypeid
-                  AND `Default` = 1
+                  AND a.`Default` = 1
                   AND a.Status = 1
                   ;";
+        return parent::RunQuery($query);
         
+    }
+    
+    public function getLandingSubPage($accounttypeid)
+    {
+       $query = "SELECT
+                    s.Link
+                  FROM membership.accessrights a
+                    -- INNER JOIN membership.menus m ON a.MenuID = m.MenuID
+                    INNER JOIN membership.submenus s ON a.SubMenuID = s.SubMenuID                    
+                  WHERE a.AccountTypeID = $accounttypeid
+                  AND a.`Default` = 1
+                  AND a.Status = 1
+                  ;";
         return parent::RunQuery($query);
     }
     

@@ -99,6 +99,7 @@ if ($fproc->IsPostBack)
                 $result = $_MemberInfo->getMemberInfo($MID);
                 $_SESSION['CardInfo']['CardNumber'] = $searchValue;
                 $_SESSION['CardInfo']['MID'] = $MID;
+                $CardNumber = $searchValue;
             }
             else
             {

@@ -50,7 +50,8 @@ class CardTransactions extends BaseEntity
     public function getTransactions($cardnumber, $start, $end)
     {
         
-        $query = "SELECT ct.SiteID, ct.CardID, ct.Amount, ct.TransactionType, left(ct.TerminalLogin,8) as Site, ct.TransactionDate
+        $query = "SELECT ct.SiteID, ct.CardID, ct.Amount, ct.TransactionType, left(ct.TerminalLogin,8) as Site, 
+                   DATE_FORMAT(ct.TransactionDate, '%M %d, %Y %H:%i:%s.%f') AS TransactionDate
                     FROM
                       cardtransactions ct
                     INNER JOIN membercards mc

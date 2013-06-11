@@ -51,6 +51,20 @@ $timezone = $curdate->GetCurrentDateFormat('O (T)');
         <!--[if lte IE 7]>
             <link rel="stylesheet" type="text/css" href="css/ie.css" media="screen" />
         <![endif]-->
+        <script language="javascript" type="text/javascript">
+            $(document).ready(
+            function() 
+            {
+                $("#MainForm").validationEngine();
+            });
+            
+            window.setTimeout("fadeErrorMsg();", 5000);
+            
+            function fadeErrorMsg() {
+                $("#errormessage").fadeOut('slow');
+            }
+            
+        </script>
     </head>
     <body>        
         <form action="" method="post" name="MainForm" id="MainForm" <?php echo $autocompletestring; ?> >
@@ -66,7 +80,7 @@ $timezone = $curdate->GetCurrentDateFormat('O (T)');
             if (App::HasError())
             {
                 ?>
-                <div id="errormessage" title="Error Message" style="background-color: #FF0000; color: #FFFFFF; padding: 5px 5px 5px 5px; font-size: 12pt;">
+                <div id="errormessage" title="Error Message" style="text-align: center; background-color: #FF0000; color: #FFFFFF; padding: 5px 5px 5px 5px; font-size: 12pt;">
                 <?php echo App::GetErrorMessage(); ?>
                 </div>
                 <?php

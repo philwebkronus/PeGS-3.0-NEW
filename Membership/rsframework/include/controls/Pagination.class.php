@@ -189,8 +189,8 @@ class Pagination
 	
 	public function display()				// displays the pagination bar
 	{	
-		if($this->_isError())						// If error encountered, do not display, but display errors
-			return $this->displayErrors();
+//		if($this->_isError())						// If error encountered, do not display, but display errors
+//			return $this->displayErrors();
 
 		$firstPage = 1;
 		$previousPage = $this->_currentPage - 1;

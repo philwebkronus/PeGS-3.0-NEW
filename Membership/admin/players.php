@@ -9,7 +9,7 @@ require_once("../init.inc.php");
 include('sessionmanager.php');
 
 $pagetitle = "Banned Players";
-$currentpage = "Banned Players";
+$currentpage = "Reports";
 
 App::LoadControl("TextBox");
 App::LoadControl("Button");
