@@ -55,7 +55,7 @@ if ($fproc->IsPostBack) {
     $dgth->AddColumn("Site", "Site", DataGridColumnType::Text, DataGridColumnAlignment::Center, '', "Total");
     $dgth->AddColumn("Transaction Type", "TransactionType", DataGridColumnType::Text, DataGridColumnAlignment::Center);
     $dgth->AddColumn("Amount", "Amount", DataGridColumnType::Money, DataGridColumnAlignment::Right, '', '', DataGridFooterCalculation::Sum);
-    $dgth->AddColumn("Transaction Date", "NewDate", DataGridColumnType::Text, DataGridColumnAlignment::Center);
+    $dgth->AddColumn("Transaction Date", "TransactionDate", DataGridColumnType::Text, DataGridColumnAlignment::Center);
     $dgth->DataItems = $result;
     $dgtransactionhistory = $dgth->Render();
     
