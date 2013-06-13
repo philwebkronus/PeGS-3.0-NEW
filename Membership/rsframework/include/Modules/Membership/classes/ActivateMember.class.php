@@ -98,127 +98,120 @@ class ActivateMember extends BaseEntity
                 
                 if(!App::HasError())
                 {
-                    $this->TableName = "membership.memberservices";
-                    
-                    App::LoadModuleClass("Kronus", "CasinoServices");
-                    $_CasinoServices = new CasinoServices();
-                                       
-                    $casinoAccounts = $_CasinoServices->generateCasinoAccounts( $this->MID );
-                                        
-                    $this->InsertMultiple($casinoAccounts);
-                    
+                    $this->TableName = "loyaltydb.cards";
+
+                    App::LoadModuleClass("Loyalty", "CardStatus");
+                    App::LoadModuleClass("Membership", "Helper");
+
+                    $this->CardNumber = $cardnumber;
+
+                    $arrEntries['CardNumber'] = $this->CardNumber;
+                    $arrEntries['CardTypeID'] = $_CardTypes->getCardTypeByName('Temporary');
+                    $arrEntries['DateCreated'] = 'now_usec()';
+                    $arrEntries['CreatedByAID'] = 1;
+                    $arrEntries['Status'] = CardStatus::ACTIVE_TEMPORARY;
+
+                    $this->Insert($arrEntries);
+                    $this->CardID = $this->LastInsertID;
+
                     if(!App::HasError())
                     {
-                        $this->TableName = "loyaltydb.cards";
-                        
-                        App::LoadModuleClass("Loyalty", "CardStatus");
-                        App::LoadModuleClass("Membership", "Helper");
-                                                
-                        $this->CardNumber = $cardnumber;
+                        $this->TableName = "loyaltydb.membercards";
 
-                        $arrEntries['CardNumber'] = $this->CardNumber;
-                        $arrEntries['CardTypeID'] = $_CardTypes->getCardTypeByName('Temporary');
-                        $arrEntries['DateCreated'] = 'now_usec()';
-                        $arrEntries['CreatedByAID'] = 1;
-                        $arrEntries['Status'] = CardStatus::ACTIVE_TEMPORARY;
+                        $arrMemberCard['MID'] = $this->MID;
+                        $arrMemberCard['CardID'] = $this->CardID;
+                        $arrMemberCard['CardNumber'] = $this->CardNumber;
 
-                        $this->Insert($arrEntries);
-                        $this->CardID = $this->LastInsertID;
-                    
+                        $arrMemberCard['SiteID'] = 1; //To be supplied from the cashier
+                        $arrMemberCard['DateCreated'] = 'now_usec()';
+                        $arrMemberCard['CreatedByAID'] = 1; //To be supplied from the cashier
+                        $arrMemberCard['Status'] = CardStatus::ACTIVE_TEMPORARY;; //Active card
+
+                        $this->Insert($arrMemberCard);
+
                         if(!App::HasError())
                         {
-                            $this->TableName = "loyaltydb.membercards";
 
-                            $arrMemberCard['MID'] = $this->MID;
-                            $arrMemberCard['CardID'] = $this->CardID;
-                            $arrMemberCard['CardNumber'] = $this->CardNumber;
-                            
-                            $arrMemberCard['SiteID'] = 1; //To be supplied from the cashier
-                            $arrMemberCard['DateCreated'] = 'now_usec()';
-                            $arrMemberCard['CreatedByAID'] = 1; //To be supplied from the cashier
-                            $arrMemberCard['Status'] = CardStatus::ACTIVE_TEMPORARY;; //Active card
+                           App::LoadModuleClass("CasinoProvider", "PlayTechAPI");
+                           App::LoadModuleClass("CasinoProvider", "CasinoProviders");
+                           App::LoadModuleClass("Kronus", "CasinoServices");
 
-                            $this->Insert($arrMemberCard);
-                                                        
-                            if(!App::HasError())
-                            {
-                                
-                                App::LoadModuleClass("CasinoProvider", "PlayTechAPI");
-                                App::LoadModuleClass("Kronus", "CasinoServices");
-                                
-                                $_CasinoServices = new CasinoServices();        
-      
-                                $casinoservices = $_CasinoServices->getUserBasedCasinoServices();
-                                
-                               /*
-                                * Member account info
-                                */
-                               $userName = $casinoAccounts[0]['ServiceUsername'];                               
-                               $password = $casinoAccounts[0]['ServicePassword'];
-                               
-                               //Create fake info base on MID
-                               $email = $this->MID."@philweb.com.ph";
-                               $lastName = "NA";
-                               $firstName = "NA";
-                               $birthDate = "1970-01-01";
-                               $address = "NA";
-                               $city = "NA";
-                               $phone = '123-4567';                               
-                               $zip = 'NA';
-                               $countryCode = 'PH';
-                                        
-                               $casinoAccounts[0]['isVIP'] == 0 ? $vipLevel = 1 : $vipLevel = 2;
-                               
-                               foreach( $casinoservices as $casinoservice )
+                           $_CasinoServices = new CasinoServices();        
+
+                           $casinoservices = $_CasinoServices->getUserBasedCasinoServices();
+
+                           $this->TableName = "membership.memberservices";
+
+                           foreach( $casinoservices as $casinoservice )
+                           {
+
+                              $serviceID = $casinoservice['ServiceID'];
+
+                              switch( $serviceID )
                                {
+                                   case CasinoProviders::PT;
 
-                                  switch( $casinoservice['ServiceID'] )
-                                   {
-                                       default:
-                                       case CasinoProviders::PT;
+                                        $casinoAccounts = $_CasinoServices->generateCasinoAccounts( $this->MID, $serviceID );
 
-                                            /*
-                                             * PlayTech Configurations
-                                             */
-                                           $URI = 'https://extdev-devhead-cashier.extdev.eu';
-                                           $casino = 'playtech800041';
-                                           $playerSecretKey = 'PhilWeb123';
-                                           //$depositSecretKey = 'PhilWeb123';
-                                           //$withdrawSecretkey = 'PhilWeb123';                
+                                        $this->InsertMultiple($casinoAccounts);
 
-                                           $playtechAPI = new PlayTechAPI($URI, $casino, $playerSecretKey);                
+                                       /*
+                                        * Member account info
+                                        */
+                                       $userName = $casinoAccounts[0]['ServiceUsername'];                               
+                                       $password = $casinoAccounts[0]['ServicePassword'];
 
-                                           /*
-                                            * Create account
-                                            */
-                                           $apiResult = $playtechAPI->NewPlayer($userName, $password, $email, $firstName, 
-                                                           $lastName, $birthDate, $address, $city, $countryCode, $phone, 
-                                                           $zip, $vipLevel);
-                                           break;
+                                       //Create fake info base on MID
+                                       $email = $this->MID."@philweb.com.ph";
+                                       $lastName = "NA";
+                                       $firstName = "NA";
+                                       $birthDate = "1970-01-01";
+                                       $address = "NA";
+                                       $city = "NA";
+                                       $phone = '123-4567';                               
+                                       $zip = 'NA';
+                                       $countryCode = 'PH';
 
-                                       case CasinoProviders::MG;
-                                           break;
-                                       case CasinoProviders::RTG_ALPHA;
-                                           break;
-                                       case CasinoProviders::RTG_GAMMA;
-                                           break;
-                                       case CasinoProviders::RTG_SIGMA;
-                                           break;
-                                   }   
-                               }
-                                
-                                $result = $apiResult['transaction']['@attributes']['result'];                                
-                               
-                                if($result == 'OK')              
-                                {
-                                    $this->CommitTransaction();
-                                    return array("MID"=>$this->MID,"status"=>'OK');
-                                }
-                                else
-                                {
-                                    $this->RollBackTransaction();
-                                    return array("MID"=>$this->MID,"status"=>'error');
-                                }
+                                       $casinoAccounts[0]['isVIP'] == 0 ? $vipLevel = 1 : $vipLevel = 2;
+
+                                        /*
+                                         * PlayTech Configurations
+                                         */
+                                       $URI = 'https://extdev-devhead-cashier.extdev.eu';
+                                       $casino = 'playtech800041';
+                                       $playerSecretKey = 'PhilWeb123';
+                                       //$depositSecretKey = 'PhilWeb123';
+                                       //$withdrawSecretkey = 'PhilWeb123';                
+
+                                       $playtechAPI = new PlayTechAPI($URI, $casino, $playerSecretKey);                
+
+                                       /*
+                                        * Create account
+                                        */
+                                       $apiResult = $playtechAPI->NewPlayer($userName, $password, $email, $firstName, 
+                                                       $lastName, $birthDate, $address, $city, $countryCode, $phone, 
+                                                       $zip, $vipLevel);
+                                       break;
+
+                                   case CasinoProviders::MG;
+                                       break;
+                                   case CasinoProviders::RTG_ALPHA_11;
+                                       break;
+                                   case CasinoProviders::RTG_GAMMA_11;
+                                       break;
+                                   case CasinoProviders::RTG_SIGMA_11;
+                                       break;
+                                   default:
+                                       break;
+                               }   
+                           }
+
+                            $result = $apiResult['transaction']['@attributes']['result'];                                
+
+                            if($result == 'OK')              
+                            {
+                                $this->CommitTransaction();
+                                return array("MID"=>$this->MID,"status"=>'OK');
                             }
                             else
                             {

@@ -29,9 +29,10 @@ class MemberCards extends BaseEntity
     function getMemberCardInfoByCard($cardnumber)
     {
 
-        $query = "SELECT * 
-                  FROM membercards 
-                  WHERE CardNumber='$cardnumber'";
+        $query = "SELECT m.*, c.CardTypeID 
+                  FROM membercards m
+                    INNER JOIN cards c ON m.CardID = c.CardID AND m.CardNumber = c.CardNumber
+                  WHERE m.CardNumber='$cardnumber'";
         
         
         $result = parent::RunQuery($query);

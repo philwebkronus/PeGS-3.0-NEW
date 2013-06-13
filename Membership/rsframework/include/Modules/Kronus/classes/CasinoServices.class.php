@@ -9,7 +9,9 @@ class CasinoServices extends BaseEntity
 {
     public function CasinoServices()
     {
-        $this->ConnString = 'kronus';
+        $this->ConnString = "kronus";
+        $this->TableName = "ref_services";
+        $this->Identity = "ServiceID";
     }
     
     /**
@@ -35,29 +37,23 @@ class CasinoServices extends BaseEntity
         return $result;
     }
     
-    public function generateCasinoAccounts( $MID, $isVIP = 0 )
+    public function generateCasinoAccounts( $MID, $serviceID, $isVIP = 0 )
     {
         App::LoadModuleClass("CasinoProvider", "CasinoProviders");
         App::LoadCore("Randomizer.class.php");
         $_Randomizer = new Randomizer();
-                             
-        $casinoServices = $this->getUserBasedCasinoServices();
+        
+        $services['ServiceID'] = $serviceID;
+        $services['MID'] = $MID;
+        $services['ServiceUsername'] = str_pad($MID, 12, '0', STR_PAD_LEFT); 
+        $services['ServicePassword'] = strtoupper($_Randomizer->GenerateAlphaNumeric(8));  
+        $services['HashedServicePassword'] = $services['ServicePassword'];
+        $services['UserMode'] = 1;
+        $services['DateCreated'] = 'now_usec()';
+        $services['isVIP'] = $isVIP;
+        $services['Status'] = 1;
 
-        foreach($casinoServices as $val)
-        {
-            $services['ServiceID'] = $val['ServiceID'];
-            $services['MID'] = $MID;
-            $services['ServiceUsername'] = str_pad($MID, 12, '0', STR_PAD_LEFT); 
-            $services['ServicePassword'] = strtoupper($_Randomizer->GenerateAlphaNumeric(8));  
-            $services['HashedServicePassword'] = $services['ServicePassword'];
-            $services['UserMode'] = $val['UserMode'];
-            $services['DateCreated'] = 'now_usec()';
-            $services['isVIP'] = $isVIP;
-            $services['Status'] = 1;
-
-            $newservices[] = $services;
-
-        }
+        $newservices[] = $services;
         
         return $newservices;
     }

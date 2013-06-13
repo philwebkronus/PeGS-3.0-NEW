@@ -35,7 +35,6 @@ class GetCardInfoAPI extends BaseEntity
         $_MemberInfo = new MemberInfo();
         $_TempMembers = new TempMembers();
         $_MemberServices = new MemberServices();
-        //$_MigrateMember = new MigrateMember();
         $_MemberCards = new MemberCards();
         $_Cards = new Cards();
         
@@ -470,8 +469,7 @@ class GetCardInfoAPI extends BaseEntity
                 
                 //Get Member's casino services
                 $casinoAccounts = $_MemberServices->getCasinoAccounts( $row['MID'] );
-                //$casino = $_MemberInfo->getCasinoServices($row['MID']);
-            
+                            
                 $result = array("CardInfo"=>array(
                                          "MID"              => "",
                                          "Username"         => "",
@@ -584,25 +582,35 @@ class GetCardInfoAPI extends BaseEntity
             
             case CardStatus::BANNED:
                 
+                $cardinfo = $_MemberCards->getMemberCardInfoByCard( $cardnumber );
+                $card = $cardinfo[0];
+                
+                $MID = $card['MID'];
+                
+                $memberinfo = $_MemberInfo->getMemberInfo($MID);
+                $row = $memberinfo[0];
+                
+                $casinoAccounts = $_MemberServices->getCasinoAccounts( $MID );
+                
                 $result = array("CardInfo"=>array(
-                                        "MID"              => "",
-                                        "Username"         => "",
-                                        "CardNumber"       => "",
-                                        "MemberUsername"   => "",
-                                        "CardType"         => "",
-                                        "MemberName"       => "",
-                                        "RegistrationDate" => "",
-                                        "Birthdate"        => "",
-                                        "CurrentPoints"    => "",
-                                        "LifetimePoints"   => "",
-                                        "RedeemedPoints"   => "",
+                                        "MID"              => $MID,
+                                        "Username"         => $row['UserName'],
+                                        "CardNumber"       => $card['CardNumber'],
+                                        "MemberUsername"   => $row['UserName'],
+                                        "CardType"         => $card['CardTypeID'],
+                                        "MemberName"       => $row['FirstName'] . ' ' . $row['LastName'],
+                                        "RegistrationDate" => $row['DateCreated'],
+                                        "Birthdate"        => $row['Birthdate'],
+                                        "CurrentPoints"    => $card['CurrentPoints'],
+                                        "LifetimePoints"   => $card['LifetimePoints'],
+                                        "RedeemedPoints"   => $card['RedeemedPoints'],
                                         "IsCompleteInfo"   => "",
-                                        "MemberID"         => "",                                                                     
-                                        "CasinoArray"      => "",
+                                        "MemberID"         => $MID,                                                                     
+                                        "CasinoArray"      => $casinoAccounts,
                                         "CardStatus"       => intval(CardStatus::BANNED),
-                                        "DateVerified"     => "",
-                                        "MobileNumber"     => "",
-                                        "Email"            => "",                                        
+                                        "DateVerified"     => $row['DateVerified'],
+                                        "MobileNumber"     => $row['MobileNumber'],
+                                        "Email"            => $row['Email'],                                        
                                         "IsReg"            => intval($isreg),
                                         "CoolingPeriod"    => "",
                                         "StatusCode"       => intval(CardStatus::BANNED),

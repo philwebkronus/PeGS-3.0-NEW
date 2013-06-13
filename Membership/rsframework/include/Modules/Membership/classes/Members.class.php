@@ -120,88 +120,86 @@ class Members extends BaseEntity {
                                 
                                 if (!App::HasError()) {
                                     
+                                    App::LoadModuleClass("CasinoProvider", "PlayTechAPI");
+                                    App::LoadModuleClass("CasinoProvider", "CasinoProviders");
                                     App::LoadModuleClass("Kronus", "CasinoServices");
 
                                     $_CasinoServices = new CasinoServices();
-                                    $MemberServiceMID = $arrgetMID['MID'];
-                                    $arrServices = $_CasinoServices->generateCasinoAccounts($MemberServiceMID, $isVIP);
+                                    $casinoservices = $_CasinoServices->getUserBasedCasinoServices();
 
-                                    $this->TableName = "membership.memberservices";
+                                    foreach ($casinoservices as $casinoservice) {
 
-                                    $this->InsertMultiple($arrServices);
-                                                                        
-                                    if (!App::HasError()) {
-                                        App::LoadModuleClass("CasinoProvider", "PlayTechAPI");
-                                        App::LoadModuleClass("Kronus", "CasinoServices");
-                                       
-                                        $_CasinoServices = new CasinoServices();
-                                        $casinoservices = $_CasinoServices->getUserBasedCasinoServices();
+                                        $serviceID = $casinoservice['ServiceID'];
+                                        $MemberServiceMID = $arrgetMID['MID'];
 
-                                        /*
-                                         * Member account info
-                                         */
-                                        $userName = $arrServices[0]['ServiceUsername'];
-                                        $password = $arrServices[0]['ServicePassword'];
-                                                                                
-                                        //Create fake info based on MID
-                                        $email = $MID."@philweb.com.ph";                                        
-                                        $firstName = "NA";
-                                        $lastName = "NA";
-                                        $birthDate = "1970-01-01";
-                                        $address = "NA";
-                                        $city = "NA";
-                                        $phone = '123-4567';                                        
-                                        $zip = 'NA';
-                                        $countryCode = 'PH';
-                                        
-                                        $arrServices[0]['isVIP'] == 0 ? $vipLevel = 1 : $vipLevel = 2;
-                                                                                
-                                        foreach ($casinoservices as $casinoservice) {
+                                        $this->TableName = "membership.memberservices";
 
-                                            switch ($casinoservice['ServiceID']) {
-                                                default:
-                                                case CasinoProviders::PT;
+                                        switch ($serviceID) {
 
-                                                    /*
-                                                     * PlayTech Configurations
-                                                     */
-                                                    $URI = 'https://extdev-devhead-cashier.extdev.eu';
-                                                    $casino = 'playtech800041';
-                                                    $playerSecretKey = 'PhilWeb123';
-                                                    //$depositSecretKey = 'PhilWeb123';
-                                                    //$withdrawSecretkey = 'PhilWeb123';                
+                                            case CasinoProviders::PT;                                                    
 
-                                                    $playtechAPI = new PlayTechAPI($URI, $casino, $playerSecretKey);
+                                                $arrServices = $_CasinoServices->generateCasinoAccounts($MemberServiceMID, $serviceID, $isVIP);
 
-                                                    /*
-                                                     * Create account
-                                                     */
-                                                    $apiResult = $playtechAPI->NewPlayer($userName, $password, $email, $firstName, $lastName, $birthDate, $address, $city, $countryCode, $phone, $zip, $vipLevel);
-                                                    break;
+                                                $this->InsertMultiple($arrServices);                                            
 
-                                                case CasinoProviders::MG;
-                                                    break;
-                                                case CasinoProviders::RTG_ALPHA;
-                                                    break;
-                                                case CasinoProviders::RTG_GAMMA;
-                                                    break;
-                                                case CasinoProviders::RTG_SIGMA;
-                                                    break;
-                                            }
+                                               /*
+                                                * Member account info
+                                                */
+                                                $userName = $arrServices[0]['ServiceUsername'];
+                                                $password = $arrServices[0]['ServicePassword'];
+                                                
+                                                //Create fake info base on MID
+                                                $email = $MID."@philweb.com.ph";                                        
+                                                $firstName = "NA";
+                                                $lastName = "NA";
+                                                $birthDate = "1970-01-01";
+                                                $address = "NA";
+                                                $city = "NA";
+                                                $phone = '123-4567';                                        
+                                                $zip = 'NA';
+                                                $countryCode = 'PH';
+
+                                                $arrServices[0]['isVIP'] == 0 ? $vipLevel = 1 : $vipLevel = 2;
+
+                                                /*
+                                                 * PlayTech Configurations
+                                                 */
+                                                $URI = 'https://extdev-devhead-cashier.extdev.eu';
+                                                $casino = 'playtech800041';
+                                                $playerSecretKey = 'PhilWeb123';
+                                                //$depositSecretKey = 'PhilWeb123';
+                                                //$withdrawSecretkey = 'PhilWeb123';                
+
+                                                $playtechAPI = new PlayTechAPI($URI, $casino, $playerSecretKey);
+
+                                                /*
+                                                 * Create account
+                                                 */
+                                                $apiResult = $playtechAPI->NewPlayer($userName, $password, $email, $firstName, $lastName, $birthDate, $address, $city, $countryCode, $phone, $zip, $vipLevel);
+
+                                                break;
+
+                                            case CasinoProviders::MG;
+                                                break;
+                                            case CasinoProviders::RTG_ALPHA_11;
+                                                break;
+                                            case CasinoProviders::RTG_GAMMA_11;
+                                                break;
+                                            case CasinoProviders::RTG_SIGMA_11;
+                                                break;
+                                            default:
+                                                break;
                                         }
-                                        
-                                        $result = $apiResult['transaction']['@attributes']['result'];
-                                        
-                                        if ($result == 'OK') {
-                                            $this->CommitTransaction();
-                                            return array('status'=>'OK','error'=>'');
-                                        } else {
-                                            $this->RollBackTransaction();
-                                            return array('status'=>'ERROR','error'=>$apiResult['error']);
-                                        }
+                                    }
+
+                                    $result = $apiResult['transaction']['@attributes']['result'];
+
+                                    if ($result == 'OK') {
+                                        $this->CommitTransaction();
+                                        return array('status'=>'OK','error'=>'');
                                     } else {
                                         $this->RollBackTransaction();
-                                        return array('status'=>'ERROR','error'=>'Failed creating member services.');
+                                        return array('status'=>'ERROR','error'=>$apiResult['error']);
                                     }
                                 } else {
                                     $this->RollBackTransaction();

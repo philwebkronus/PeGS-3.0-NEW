@@ -148,12 +148,12 @@ if((isset($_GET["oldnumber"]) && ctype_alnum($_GET["oldnumber"])) &&
             $membercardnewpoints = $updatedrow["LifetimePoints"] - $updatedrow["RedeemedPoints"];
 
             $_JSONAPIResponse->_sendResponse(200, json_encode(array("CardPoints"=>array("LoyaltyCardPoints"=>$loyaltyoldpoints, "MembershipCardPoints"=>$membercardnewpoints, "StatusCode"=>(int)1, "StatusMsg"=>"Successful"))));
-            $_Log->logAPI(AuditFunctions::TRANSFER_POINTS, $newrow["MID"] . ':' . $arrOldCards["OldCardID"] .':'.$arrCardPoints["MemberCardID"].':Success',$AID);
+            $_Log->logAPI(AuditFunctions::TRANSFER_POINTS, $newrow["MID"] . ':' . $oldcardnumber .':'. $newcardnumber .':Success',$AID);
         }
         else
         {
             $_JSONAPIResponse->_sendResponse(200, json_encode(array("CardPoints"=>array("LoyaltyCardPoints"=>"", "MembershipCardPoints"=>"", "StatusCode"=>(int)0, "StatusMsg"=>"Failed"))));
-            $_Log->logAPI(AuditFunctions::TRANSFER_POINTS, $newrow["MID"] . ':' . $arrOldCards["OldCardID"] .':'.$arrCardPoints["MemberCardID"].':Failed',$AID);
+            $_Log->logAPI(AuditFunctions::TRANSFER_POINTS, $newrow["MID"] . ':' . $oldcardnumber .':'. $newcardnumber .':Failed',$AID);
         }
     }
 }
