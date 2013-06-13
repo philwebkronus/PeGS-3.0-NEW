@@ -27,3 +27,4 @@ class CasinoProviders
     CONST RTG_SIGMA_12 = 18;    
 }
     
+?>
