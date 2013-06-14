@@ -39,7 +39,7 @@ class ActivateMember extends BaseEntity
         $_TempMemberInfo = new TempMemberInfo();
         $_CardTypes = new CardTypes();
                 
-        $queryMember = "SELECT UserName, Password, AccountTypeID, DateCreated, DateVerified
+        $queryMember = "SELECT UserName, Password, DateCreated, DateVerified
                         FROM membership_temp.members
                         WHERE TemporaryAccountCode = '$this->CardNumber'";
         
@@ -47,7 +47,6 @@ class ActivateMember extends BaseEntity
         
         $arrMembers['UserName'] = $result[0]['UserName'];
         $arrMembers['Password'] = $result[0]['Password'];
-        $arrMembers['AccountTypeID'] = $result[0]['AccountTypeID'];
         $arrMembers['DateCreated'] = 'now_usec()';
         
         $queryMemberInfo = "SELECT FirstName, MiddleName, LastName, NickName, Birthdate, Gender, Email,

@@ -5,7 +5,6 @@
  * ***************** */
 
 $_Log = new AuditTrail();
-$_AccountTypes = new AccountTypes();
 
 $fproc = new FormsProcessor();
 
@@ -85,7 +84,6 @@ if($fproc->IsPostBack)
             $cresult = $_Cards->getCardInfo($cardnumber);
             $cards = $cresult[0];
             $cardtypeid = $cards["CardTypeID"]; 
-            $accounttypeid = $_AccountTypes->GetAccountTypeIDByName(AccountTypes::MEMBER);
             
             $_SESSION["MemberInfo"]["MID"] = $members["MID"];
             $_SESSION["MemberInfo"]["UserName"] = $username;
@@ -93,10 +91,9 @@ if($fproc->IsPostBack)
             $_SESSION["MemberInfo"]["SessionID"] = $sessionid;
             $_SESSION["MemberInfo"]["CardTypeID"] = $cardtypeid;
             $_SESSION["MemberInfo"]["DateEnded"] = $enddate;
-            $_SESSION["MemberInfo"]["AccountTypeID"] = $accounttypeid;
                 
             //Log to audittrail
-            $_Log->logEvent(AuditFunctions::LOGIN, $username, $accounttypeid, array('ID'=>$members["MID"], 'SessionID'=>$sessionid));
+            $_Log->logEvent(AuditFunctions::LOGIN, $username, array('ID'=>$members["MID"], 'SessionID'=>$sessionid));
             
             reloadParent();
         }

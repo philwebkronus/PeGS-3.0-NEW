@@ -24,8 +24,6 @@ App::LoadControl("Button");
 App::LoadControl("RadioGroup");
 
 $useCustomHeader = false;
-//$tempAccountCode = "eGamesLPGHT";
-//$MembershipCardNumber = "UB62027560322460";
 
 $customtags[] = "<BASE target=\"_self\" />";
 

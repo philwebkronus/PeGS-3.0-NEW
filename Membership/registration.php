@@ -244,7 +244,7 @@ if ($fproc->IsPostBack)
     {
         $arrMembers["UserName"] = $txtEmail->SubmittedValue;
         $arrMembers["Password"] = md5($txtPassword->SubmittedValue);
-        $arrMembers["AccountTypeID"] = $_AccountTypes->GetAccountTypeIDByName(AccountTypes::MEMBER);
+        //$arrMembers["AccountTypeID"] = $_AccountTypes->GetAccountTypeIDByName(AccountTypes::MEMBER);
         $arrMembers["ForChangePassword"] = 1;
         $arrMembers["DateCreated"] = $datecreated;
         $arrMembers["Status"] = 1;

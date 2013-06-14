@@ -7,6 +7,7 @@
 
 class AccountStatus
 {
+    const Pending = 0;
     const Active = 1;
     const Suspended = 2;
     const Locked_Attempts = 3;

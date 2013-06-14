@@ -18,6 +18,8 @@ App::LoadModuleClass("Membership", "Identifications");
 App::LoadModuleClass("Membership", "Nationality");
 App::LoadModuleClass("Membership", "Occupation");
 App::LoadModuleClass("Membership", "Referrer");
+App::LoadModuleClass("Membership", "AuditFunctions");
+App::LoadModuleClass("Membership", "AuditTrail");
 
 App::LoadCore('Validation.class.php');
 
@@ -33,6 +35,7 @@ App::LoadControl("Hidden");
 
 $_MemberInfo = new MemberInfo();
 $_MemberCards = new MemberCards();
+$_Log = new AuditTrail();
 
 $fproc = new FormsProcessor();
 
@@ -269,9 +272,15 @@ if($fproc->IsPostBack)
         $_MemberInfo->updateProfile($arrMembers,$arrMemberInfo);
         
         if(!App::HasError())
+        {
             $isSuccess = true;
+            $_Log->logEvent(AuditFunctions::UPDATE_PROFILE, 'MID:'.$arrMembers["MID"].':Successful', array('ID'=>$_SESSION['userinfo']['AID'], 'SessionID'=>$_SESSION['userinfo']['SessionID']));
+        }
         else
+        {
             $isSuccess = false;
+            $_Log->logEvent(AuditFunctions::UPDATE_PROFILE, 'MID:'.$arrMembers["MID"].':Successful', array('ID'=>$_SESSION['userinfo']['AID'], 'SessionID'=>$_SESSION['userinfo']['SessionID']));
+        }
 
         /*
          * Load message dialog box
@@ -310,7 +319,17 @@ if(isset($_SESSION['CardInfo']))
     $rdoGroupGender->SetSelectedValue($row['Gender']);
     $rdoGroupSmoker->SetSelectedValue($row['IsSmoker']);
     $dtBirthDate->SelectedDate = $row['Birthdate'];
-    $txtEmail->Text = $row['Email'];
+    
+    if(!empty($row['Email']))
+    {
+        $txtEmail->Text = $row['Email'];
+    }
+    else
+    {
+        $txtEmail->Text = $row['Email'];
+        $txtEmail->ReadOnly = false;
+    }
+    
     $txtAlternateEmail->Text = $row['AlternateEmail'];
     $txtAddress1->Text = $row['Address1'];
     $txtAddress2->Text = $row['Address2'];

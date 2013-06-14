@@ -24,7 +24,6 @@ App::LoadModuleClass("Membership", "Occupation");
 App::LoadModuleClass("Membership", "Referrer");
 App::LoadModuleClass("Membership", "AuditTrail");
 App::LoadModuleClass("Membership", "AuditFunctions");
-App::LoadModuleClass("Membership", "AccountTypes");
 
 App::LoadModuleClass("Loyalty", "MemberCards");
 App::LoadModuleClass("Loyalty", "Cards");

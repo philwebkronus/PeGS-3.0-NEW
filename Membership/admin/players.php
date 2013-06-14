@@ -26,30 +26,21 @@ $fproc = new FormsProcessor();
  */
 
 $defaultsearchvalue = "Enter Card Number or Username";
-
+$showresult = false;
 
 $txtSearch = new TextBox('txtSearch', 'txtSearch', 'Search ');
 $txtSearch->ShowCaption = false;
 $txtSearch->CssClass = 'validate[required]';
 $txtSearch->Style = 'color: #666';
-$txtSearch->Size = 40;
-
-if(!empty($txtSearch->SubmittedValue) || isset($_SESSION['CardInfo']))
-{
-    (!empty($txtSearch->SubmittedValue)) ? 
-        $txtSearch->Text = $txtSearch->SubmittedValue : 
-        $txtSearch->Text = $_SESSION['CardInfo']['CardNumber'];
-}
-else
-{
-    $txtSearch->Text = "Card Number, Username, Fname or Lname";
-    $txtSearch->Args = "onclick=\"$(this).val('')\"";
-}
+$txtSearch->Size = 30;
+$txtSearch->Text = $defaultsearchvalue;
+$txtSearch->AutoComplete = false;
 $fproc->AddControl($txtSearch);
 
 $btnSearch = new Button('btnSearch', 'btnSearch', 'Search');
 $btnSearch->ShowCaption = true;
 $btnSearch->IsSubmit = true;
+$btnSearch->Enabled = false;
 $fproc->AddControl($btnSearch);
 
 $btnClear = new Button('btnClear', 'btnClear', 'Clear');
@@ -70,10 +61,23 @@ $datagrid->AddColumn("Last Name", "LastName", DataGridColumnType::Text, DataGrid
 
 if($fproc->IsPostBack) 
 {
-    $searchValue = $txtSearch->SubmittedValue;
-    $bannedplayers = $players->getBannedPlayersByFilter($searchValue);
+    if($btnSearch->SubmittedValue == "Search")
+    {
+        $searchValue = $txtSearch->SubmittedValue;
+        $bannedplayers = $players->getBannedPlayersByFilter($searchValue);
+
+        $showresult = true;
+    }    
+    
+    if ($btnClear->SubmittedValue == "Clear")
+    {
+        unset($_SESSION['CardInfo']);
+        $txtSearch->Text = $defaultsearchvalue;
+    }
     
 }
+
+
 
 $datagrid->DataItems = $bannedplayers;
 $datagrid->Style = "width: 80%";
@@ -123,15 +127,21 @@ $resultdata = $datagrid->Render();
 <div align="center">
     <div class="maincontainer">
         <?php include('menu.php'); ?>
-        <div class="content">   
-            <?php
-            echo $txtSearch . $btnSearch . $btnClear;
-            ?>
-            </form>
+        <div class="content">  
+            <div class="searchbar formstyle">
+                <?php
+                echo $txtSearch . $btnSearch . $btnClear;
+                ?>
+                </form>
+            </div>
+            <?php if($showresult || count($bannedplayers) > 0)
+            {?>
             <div class="title">Banned Players</div>
             <?php
             echo $resultdata;
             ?>
+            <?php
+            }?>
         </div>
     </div>
 </div>

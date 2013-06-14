@@ -319,7 +319,7 @@ if ($fproc->IsPostBack)
             $sessionid = $_SESSION['MemberInfo']['SessionID'];
 
             $_Log = new AuditTrail();
-            $_Log->logEvent(AuditFunctions::UPDATE_PROFILE, $username, $accounttypeid, array('ID'=>$id, 'SessionID'=>$sessionid));
+            $_Log->logEvent(AuditFunctions::UPDATE_PROFILE, $username, array('ID'=>$id, 'SessionID'=>$sessionid));
         }
     }
     else

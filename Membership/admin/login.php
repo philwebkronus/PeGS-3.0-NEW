@@ -8,10 +8,14 @@ require_once("../init.inc.php");
 
 $pagetitle = "Membership Administration ";
 
-App::LoadModuleClass("Admin","Accounts");
 App::LoadModuleClass("Admin", "AccountStatus");
 App::LoadModuleClass("Admin", "AccessRights");
 App::LoadModuleClass("Admin","SiteAccounts");
+App::LoadModuleClass("Admin", "AccountSessions");
+App::LoadModuleClass("Kronus", "Accounts");
+App::LoadModuleClass("Kronus", "AccountTypes");
+App::LoadModuleClass("Membership", "AuditFunctions");
+App::LoadModuleClass("Membership", "AuditTrail");
 
 App::LoadCore("URL.class.php");
 App::LoadCore("Hashing.class.php");
@@ -22,6 +26,8 @@ App::LoadControl("Button");
 $accounts = new Accounts();
 $accessrights = new AccessRights();
 $_SiteAccounts = new SiteAccounts();
+$_AccountSessions = new AccountSessions();
+$_Log = new AuditTrail();
 
 $fproc = new FormsProcessor();
 
@@ -72,7 +78,7 @@ if($fproc->IsPostBack)
                 $_SESSION['userinfo']['AID'] = $row['AID'];
                 $_SESSION['userinfo']['AccountTypeID'] = $accounttypeid;
 
-                if ($accounttypeid == 4) //Cashier
+                if ($accounttypeid == AccountTypes::Cashier) //Cashier
                 {
                     $arrsiteaccounts = $_SiteAccounts->getSiteIDByAID($row['AID']);
                     $siteaccount = $arrsiteaccounts[0];
@@ -81,29 +87,53 @@ if($fproc->IsPostBack)
 
                 //Get user access
                 $access = $accessrights->getAccessRights($accounttypeid);
-                $_SESSION['menus'] = $access;
-
-                $defaultpage = $accessrights->getDefaultPage($accounttypeid);
-
-                if(isset($defaultpage) && count($defaultpage) > 0)
+                
+                if(count($access) > 0)
                 {
-                    $link = $defaultpage[0]['Link'];
+                    // Insert into account session
+                    $arrEntry['SessionID'] = uniqid();
+                    $arrEntry['AID'] = $row['AID'];
+                    $arrEntry['RemoteIP'] = $_SERVER['REMOTE_ADDR'];
+                    $arrEntry['DateStarted'] = "now_usec()";
+                    
+                    $_AccountSessions->Insert($arrEntry);
+                    
+                    $_SESSION['menus'] = $access;
+                    $_SESSION['userinfo']['SessionID'] = $arrEntry['SessionID'];
+                   
+                    $defaultpage = $accessrights->getDefaultPage($accounttypeid);
 
-                    if($link == '#')
+                    if(isset($defaultpage) && count($defaultpage) > 0)
                     {
-                        //Get landing submenu page
-                        $defaultpage = $accessrights->getLandingSubPage($accounttypeid);
                         $link = $defaultpage[0]['Link'];
 
-                    }
+                        if($link == '#')
+                        {
+                            //Get landing submenu page
+                            $defaultpage = $accessrights->getLandingSubPage($accounttypeid);
+                            $link = $defaultpage[0]['Link'];
 
-                    URL::Redirect($link);
+                        }
+
+                        URL::Redirect($link);
+                    }
+                    
+                    $_Log->logEvent(AuditFunctions::LOGIN, $username . ':Successful', array('ID'=>$row['AID'], 'SessionID'=>$arrEntry['SessionID']));
                 }
+                else
+                {
+                    App::SetErrorMessage('Account has no access rights');
+                    $_Log->logEvent(AuditFunctions::LOGIN, $username .':No access rights', array('ID'=>$row['AID'], 'SessionID'=>$arrEntry['SessionID']));
+                }
+                
+                
+                
 
             }
             else
             {
                 App::SetErrorMessage('Invalid Account');
+                $_Log->logEvent(AuditFunctions::LOGIN, $username . ':Invalid account', array('ID'=>"", 'SessionID'=>""));
             }
 
         }
@@ -111,20 +141,29 @@ if($fproc->IsPostBack)
         {       
             switch ( $status )
             {
+                case AccountStatus::Pending:
+                    App::SetErrorMessage('Pending Account');
+                    $_Log->logEvent(AuditFunctions::LOGIN, $username . ':Pending account', array('ID'=>"", 'SessionID'=>""));
+                    break;
                 case AccountStatus::Suspended:
                     App::SetErrorMessage('Suspended Account');
+                    $_Log->logEvent(AuditFunctions::LOGIN, $username . ':Suspended account', array('ID'=>"", 'SessionID'=>""));
                     break;
                 case AccountStatus::Locked_Attempts:
                     App::SetErrorMessage('Account Locked');
+                    $_Log->logEvent(AuditFunctions::LOGIN, $username . ':Account Locked', array('ID'=>"", 'SessionID'=>""));
                     break;
                 case AccountStatus::Locked_Admin:
                     App::SetErrorMessage('Admin Locked');
+                    $_Log->logEvent(AuditFunctions::LOGIN, $username . ':Admin Locked', array('ID'=>"", 'SessionID'=>""));
                     break;
                 case AccountStatus::Banned:
                     App::SetErrorMessage('Banned Account');
+                    $_Log->logEvent(AuditFunctions::LOGIN, $username . ':Banned Account', array('ID'=>"", 'SessionID'=>""));
                     break;
                 case AccountStatus::Terminated;
                     App::SetErrorMessage('Terminated Account');
+                    $_Log->logEvent(AuditFunctions::LOGIN, $username . ':Terminated Account', array('ID'=>"", 'SessionID'=>""));
                     break;
             }
 
@@ -132,11 +171,13 @@ if($fproc->IsPostBack)
         else
         {
             App::SetErrorMessage('Invalid Account');
+            $_Log->logEvent(AuditFunctions::LOGIN, $username . ':Invalid Account', array('ID'=>"", 'SessionID'=>""));
         }
     }
     else
     {
         App::SetErrorMessage('Invalid Account');
+        $_Log->logEvent(AuditFunctions::LOGIN, $username . ':Invalid Account', array('ID'=>"", 'SessionID'=>""));
     }
     
 }

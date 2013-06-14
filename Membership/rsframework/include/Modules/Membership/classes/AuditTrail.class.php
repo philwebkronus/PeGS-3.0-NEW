@@ -14,12 +14,10 @@ class AuditTrail extends BaseEntity
         $this->Identity = "AuditTrailID";
     }
     
-    public function logEvent($auditfunctionid, $details, $accountypeid, $info)
+    public function logEvent($auditfunctionid, $details, $info)
     {
-        App::LoadModuleClass("Membership", "AccountTypes");
         App::LoadModuleClass("Membership", "AuditFunctions");
         
-        $_AccountTypes = new AccountTypes();
         $_AuditFunction = new AuditFunctions();
         
         if(is_array($info) && count($info) > 0)
@@ -28,15 +26,9 @@ class AuditTrail extends BaseEntity
             $sessionid = $info['SessionID'];
         }
                 
-        $remoteIP = $_SERVER['REMOTE_ADDR'];
+        $remoteIP = $_SERVER['REMOTE_ADDR'];        
         
-        $accounttype = $_AccountTypes->GetAccountTypeNameByID($accountypeid);
-                
-        if( $accounttype == AccountTypes::MEMBER )        
-            $arrEntries['MID'] = $id;
-        else
-            $arrEntries['AID'] = $id;
-        
+        $arrEntries['ID'] = $id;        
         $arrEntries['AuditFunctionID'] = $auditfunctionid;
         $arrEntries['SessionID'] = $sessionid;
         $arrEntries['TransactionDetails'] = $_AuditFunction->getAuditFunctions($auditfunctionid) . ':' . $details;

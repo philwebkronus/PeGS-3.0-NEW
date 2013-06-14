@@ -21,7 +21,7 @@ if(isset($_SESSION['MemberInfo']))
     $sessionid = $_SESSION['MemberInfo']['SessionID'];
             
     $_Log = new AuditTrail();
-    $_Log->logEvent(AuditFunctions::LOGOUT, $username, $accounttypeid, array('ID'=>$id, 'SessionID'=>$sessionid));
+    $_Log->logEvent(AuditFunctions::LOGOUT, $username, array('ID'=>$id, 'SessionID'=>$sessionid));
 }
     
 session_destroy();

@@ -250,7 +250,7 @@ class GetCardInfoAPI extends BaseEntity
                     $_Log = new AuditTrail();
                     
                     $activation = $_ActivateMember->Migrate( $cardnumber );
-                    
+                                        
                     if(count ( $activation ) > 0 )
                     {
                         $status = $activation['status'];
