@@ -75,9 +75,14 @@ class MemberCards extends BaseEntity
     
     public function getActiveMemberCardInfo( $MID )
     {
-        $query = "SELECT * 
-            FROM membercards 
-            WHERE MID = $MID and Status IN (1,5)";
+        $query = "SELECT m.*,
+                    CASE c.CardTypeID
+                        WHEN 1 THEN 'Gold'
+                        WHEN 2 THEN 'Green'
+                    END AS CardType
+            FROM membercards m
+                INNER JOIN cards c ON m.CardID = m.CardID AND m.CardNumber = c.CardNumber
+            WHERE m.MID = $MID and m.Status IN (1,5)";
        
         $result = parent::RunQuery($query);
         

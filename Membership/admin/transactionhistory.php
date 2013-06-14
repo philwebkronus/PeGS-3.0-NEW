@@ -37,42 +37,58 @@ $styleErrors = "paginationErrors";
 $styleSelect = "paginationSelect";
 
 $fproc = new FormsProcessor();
+
 include_once("controller/cardsearchcontroller.php");
 
 $fproc->ProcessForms();
 
-if ($fproc->IsPostBack) {
-        
-    $totalEntries = $_CardTransactions->getTransactionCount($CardNumber);
+if ($fproc->IsPostBack) 
+{
+    if($btnSearch->SubmittedValue == 'Search')
+    {        
+        $totalEntries = $_CardTransactions->getTransactionCount($CardNumber);
 
-    $Pagination = new Pagination($totalEntries, $pagesPerSection, $options, $paginationID, $stylePageOff, $stylePageOn, $styleErrors, $styleSelect);
-    $start = $Pagination->getEntryStart();
-    $end = $Pagination->getEntryEnd();
+        $Pagination = new Pagination($totalEntries, $pagesPerSection, $options, $paginationID, $stylePageOff, $stylePageOn, $styleErrors, $styleSelect);
+        $start = $Pagination->getEntryStart();
+        $end = $Pagination->getEntryEnd();
 
-    $result = $_CardTransactions->getTransactions($CardNumber, $start, $end);
-    
-    foreach($result as $val)
-    {
-        $row = $val;
-        $row['TerminalLogin'] = trim(str_replace(range(0,9),'',$row['TerminalLogin']));
-        $newrow[] = $row;
+        $trans = $_CardTransactions->getTransactions($CardNumber, $start, $end);
+
+        if($totalEntries > 0)
+        {
+            foreach($trans as $val)
+            {
+                $row = $val;
+                $row['TerminalLogin'] = trim(str_replace(range(0,9),'',$row['TerminalLogin']));
+                $newrow[] = $row;
+            }
+
+            $result = $newrow;
+
+            $dgth = new DataGrid();
+            $dgth->AddColumn("Site", "TerminalLogin", DataGridColumnType::Text, DataGridColumnAlignment::Center, '', "Total");
+            $dgth->AddColumn("Transaction Type", "TransactionType", DataGridColumnType::Text, DataGridColumnAlignment::Center);
+            $dgth->AddColumn("Amount", "Amount", DataGridColumnType::Money, DataGridColumnAlignment::Right, '', '', DataGridFooterCalculation::Sum);
+            $dgth->AddColumn("Transaction Date", "TransactionDate", DataGridColumnType::Text, DataGridColumnAlignment::Center);
+            $dgth->DataItems = $result;
+            $dgtransactionhistory = $dgth->Render();
+
+            if($newrow > 0 && $totalEntries > 0)
+            {
+                $showresult = true;
+                $showcardinfo = true;
+            }
+        }
+        else
+        {
+            
+            if(isset($result) && count($result) > 0 )
+                App::SetErrorMessage ('No transactions found');
+            else
+                App::SetErrorMessage('Invalid Card');
+        }
     }
-         
-    $result = $newrow;
-        
-    $dgth = new DataGrid();
-    $dgth->AddColumn("Site", "TerminalLogin", DataGridColumnType::Text, DataGridColumnAlignment::Center, '', "Total");
-    $dgth->AddColumn("Transaction Type", "TransactionType", DataGridColumnType::Text, DataGridColumnAlignment::Center);
-    $dgth->AddColumn("Amount", "Amount", DataGridColumnType::Money, DataGridColumnAlignment::Right, '', '', DataGridFooterCalculation::Sum);
-    $dgth->AddColumn("Transaction Date", "TransactionDate", DataGridColumnType::Text, DataGridColumnAlignment::Center);
-    $dgth->DataItems = $result;
-    $dgtransactionhistory = $dgth->Render();
     
-    if($newrow > 0 && $totalEntries > 0)
-    {
-        $showresult = true;
-        $showcardinfo = true;
-    }
 }
 
 $page = QueryString::GetQueryString("trans-page");
@@ -90,15 +106,41 @@ if (!empty($page) && isset($_SESSION['CardInfo']['CardNumber'])) {
     $start = $Pagination->getEntryStart();
     $end = $Pagination->getEntryEnd();
 
-    $result = $_CardTransactions->getTransactions($CardNumber, $start, $end);
+    $trans = $_CardTransactions->getTransactions($CardNumber, $start, $end);
+    
+    if($totalEntries > 0)
+    {        
+        foreach($trans as $val)
+        {
+            $row = $val;
+            $row['TerminalLogin'] = trim(str_replace(range(0,9),'',$row['TerminalLogin']));
+            $newrow[] = $row;
+        }
 
-    $dgth = new DataGrid();
-    $dgth->AddColumn("Site", "Site", DataGridColumnType::Text, DataGridColumnAlignment::Center, '', "Total");
-    $dgth->AddColumn("Transaction Type", "TransactionType", DataGridColumnType::Text, DataGridColumnAlignment::Center);
-    $dgth->AddColumn("Amount", "Amount", DataGridColumnType::Money, DataGridColumnAlignment::Right, '', '', DataGridFooterCalculation::Sum);
-    $dgth->AddColumn("Transaction Date", "TransactionDate", DataGridColumnType::Text, DataGridColumnAlignment::Center);
-    $dgth->DataItems = $result;
-    $dgtransactionhistory = $dgth->Render();
+        $result = $newrow;
+
+        $dgth = new DataGrid();
+        $dgth->AddColumn("Site", "TerminalLogin", DataGridColumnType::Text, DataGridColumnAlignment::Center, '', "Total");
+        $dgth->AddColumn("Transaction Type", "TransactionType", DataGridColumnType::Text, DataGridColumnAlignment::Center);
+        $dgth->AddColumn("Amount", "Amount", DataGridColumnType::Money, DataGridColumnAlignment::Right, '', '', DataGridFooterCalculation::Sum);
+        $dgth->AddColumn("Transaction Date", "TransactionDate", DataGridColumnType::Text, DataGridColumnAlignment::Center);
+        $dgth->DataItems = $result;
+        $dgtransactionhistory = $dgth->Render();
+        
+        if($newrow > 0 && $totalEntries > 0)
+        {
+            $showresult = true;
+            $showcardinfo = true;
+        }
+    }
+    else
+    {
+        if(isset($result) && count($result) > 0 )
+            App::SetErrorMessage ('No transactions found');
+        else
+            App::SetErrorMessage('Invalid Card');
+    }
+    
 }
 
 ?>

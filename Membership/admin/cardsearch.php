@@ -44,6 +44,8 @@
     
     });
 </script>
+</form>
+<form name="frmSearch" id="frmSearch" method="post" action="" >
 <div class="searchbar formstyle">
         <?php echo $txtSearch; ?><?php echo $btnSearch; ?><?php echo $btnClear; ?>
 </div>
@@ -58,8 +60,10 @@ if (isset($MID) && $MID != "" && $showcardinfo)
                 <td colspan="4"><span class="title">Card Point Information</span></td>
             </tr>
             <tr>
-                <td colspan="2" class="alternatingcolor">Card Number</td>
-                <td colspan="2" class="alternatingcolor"><?php echo $CardNumber; ?></td>
+                <td class="alternatingcolor">Card Number</td>
+                <td align="right" class="alternatingcolor"><?php echo $CardNumber; ?></td>
+                <td class="alternatingcolor">Card Type</td>
+                <td align="right" class="alternatingcolor"><?php echo $cardType; ?></td>
             </tr>
             <tr>
                 <td>Current Points</td>

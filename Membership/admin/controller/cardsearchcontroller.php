@@ -133,6 +133,7 @@ if (isset($_SESSION['CardInfo']))
     $_SESSION['CardInfo']["CardTypeID"] = $CardTypeID;
     $loyaltyinfo = $_MemberCards->getActiveMemberCardInfo($MID);
     $loyaltyinfo = $loyaltyinfo[0];
+    $cardType = $loyaltyinfo['CardType'];
     $currentPoints = $loyaltyinfo['CurrentPoints'];
     $lifetimePoints = $loyaltyinfo['LifetimePoints'];
     $bonusPoints = $loyaltyinfo['BonusPoints'];
