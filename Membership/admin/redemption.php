@@ -223,7 +223,7 @@ if ($fproc->IsPostBack)
         $redeemRewardITemID = $hdnRewardItemID->SubmittedValue;
         $redeemQuantity = $txtQuantity->SubmittedValue;
         $_RewardOffers = new RewardOffers();
-        $arrRedeemItem = $_RewardOffers->getRewardItemDetailsByRewardItemID($redeemRewardITemID);
+        $arrRedeemItem = $_RewardOffers->getRewardItemDetailsByRewardItemID($redeemRewardITemID, $CardTypeID);
         $redeemItem = $arrRedeemItem[0];
         $pointsPerItem = $redeemItem["RequiredPoints"];
         $totalRedeemPoints = $pointsPerItem * $redeemQuantity;

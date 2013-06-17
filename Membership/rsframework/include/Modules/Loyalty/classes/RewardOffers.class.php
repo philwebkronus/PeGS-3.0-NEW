@@ -16,9 +16,9 @@ class RewardOffers extends BaseEntity
         $this->Identity = "RewardOfferID";
     }
     
-    function getRewardItemDetailsByRewardItemID($rewarditemid)
+    function getRewardItemDetailsByRewardItemID($rewarditemid, $cardtypeid)
     {
-        $query = "select * from $this->TableName where RewardItemID = $rewarditemid;";
+        $query = "select * from $this->TableName where RewardItemID = $rewarditemid and CardTypeID = $cardtypeid and Status = 1;";
         return parent::RunQuery($query);
     }
 }
