@@ -12,8 +12,8 @@ App::LoadCore("File.class.php");
 
 //$header = "http://192.168.29.212/pegs/header.php";
 //$footer = "http://192.168.29.212/pegs/footer.php";
-$header = "http://staging.pegs.com/header.php";
-$footer = "http://staging.pegs.com/footer.php";
+$header = "http://www.egamescasino.ph/header.php";
+$footer = "http://www.egamescasino.ph/footer.php";
 
 $headerfile = $curdir . "/../templates/headertemplate.php";
 $footerfile = $curdir . "/../templates/footertemplate.php";

@@ -47,5 +47,9 @@ class Helper extends BaseEntity
         $mailer->Send();
     }
     
+    public static function removeDash($str){
+        return str_replace("-", "", $str);
+    }
+    
 }
 ?>
