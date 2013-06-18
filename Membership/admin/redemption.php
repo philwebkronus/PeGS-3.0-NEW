@@ -266,7 +266,7 @@ if ($fproc->IsPostBack)
             $redemptioninfo = $_RaffleCoupons->getCouponRedemptionInfo($CouponRedemptionLogID);
 
             /* Prepare player and redemption information for display */
-            $playername = $arrmemberinfo["FirstName"] . " " . $arrmemberinfo["LastName"];
+            $playername = trim($arrmemberinfo["FirstName"]) . " " . trim($arrmemberinfo["LastName"]);
             $address = $arrmemberinfo["Address1"];
             $cityid = $arrmemberinfo["CityID"];
             $regionid = $arrmemberinfo["RegionID"];
