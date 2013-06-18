@@ -36,6 +36,13 @@ class RaffleCoupons extends BaseEntity
             App::SetErrorMessage($this->getError());
             return false;
         }
+        else
+        {
+            if ($this->AffectedRows == 0)
+            {
+                App::SetErrorMessage("Redemption Failed. Current points may not be sufficient or Item may not be available.");
+            }
+        }
         
         $query = "unlock tables;";
         parent::ExecuteQuery($query);

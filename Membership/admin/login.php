@@ -10,7 +10,7 @@ $pagetitle = "Membership Administration ";
 
 App::LoadModuleClass("Admin", "AccountStatus");
 App::LoadModuleClass("Admin", "AccessRights");
-App::LoadModuleClass("Admin","SiteAccounts");
+App::LoadModuleClass("Kronus","SiteAccounts");
 App::LoadModuleClass("Admin", "AccountSessions");
 App::LoadModuleClass("Kronus", "Accounts");
 App::LoadModuleClass("Kronus", "AccountTypes");
