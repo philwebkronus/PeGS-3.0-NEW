@@ -47,7 +47,7 @@ class AuditTrail extends BaseEntity
         $remoteIP = $_SERVER['REMOTE_ADDR'];
                 
         $arrEntries['AuditFunctionID'] = $auditfunctionid;
-        $arrEntries['AID'] = $AID;
+        $arrEntries['ID'] = $AID;
         $arrEntries['SessionID'] = $sessionid;
         $arrEntries['TransactionDetails'] = $_AuditFunction->getAuditFunctions($auditfunctionid) . ':' . $details;
         $arrEntries['TransactionDateTime'] = "now_usec()";
