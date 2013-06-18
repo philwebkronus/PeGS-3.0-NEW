@@ -130,7 +130,7 @@ class MicrogamingCAPI
         $this->_timeout = $timeout;
     }
 
-    /** API Web Methods **/
+    /** API Web Method **/
 
     public function SetTicketID( $ticketID )
     {
