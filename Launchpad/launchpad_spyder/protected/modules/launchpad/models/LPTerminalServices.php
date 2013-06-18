@@ -3,7 +3,7 @@
 /**
  * Description of LPTerminalServices
  * @package application.modules.launchpad.models
- * @author Bryan Salazar, elperez
+ * @author Bryan Salazar
  */
 class LPTerminalServices extends LPModel 
 {
@@ -45,7 +45,7 @@ class LPTerminalServices extends LPModel
         $rows = $command->queryAll(true,$param);
         
         if(!$rows) 
-            $this->log ($command->getText().$command->getBound() . "Can't get available casino", 'launchpad.models.LPTerminalServices');
+            $this->log ("Can't get available casino", 'launchpad.models.LPTerminalServices');
         
         $casinos = array();
         $casinoType = LPConfig::app()->params['casino_type'];

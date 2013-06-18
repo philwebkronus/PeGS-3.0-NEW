@@ -245,8 +245,9 @@ class LobbyController extends CController
         }
         
         if($currentBet > 0){
-            $this->log('[ServiceID: ' . $this->getCurrentServiceID() .'] There was a pending game bet.');
-            throw new CHttpException(404, 'Unable to process request. There was a pending game bet.');
+            $ptcurrentBet = $currentBet;
+        } else {
+            $ptcurrentBet = 0;
         }
         
         //check if there was a pending game bet for RTG
@@ -283,7 +284,7 @@ class LobbyController extends CController
         // die if failed to insert to servicetransferhistory
         if(!LPServiceTransferHistory::model()->insert($currentBalance, $pickServiceID)) {
             $this->log("[CurrentServiceID:$currentServiceID, PickServiceID:$pickServiceID] failed to insert to servicetransferhistory");
-            throw new CHttpException(404, "Unable to process request. Server is Busy. Please try again. [CurrentServiceID:$currentServiceID, PickServiceID:$pickServiceID] failed to insert to servicetransferhistory");
+            throw new CHttpException(404, "Unable to process request. Server is Busy. Please try again. [CurrentServiceID:$currentServiceID, PickServiceID:$pickServiceID] failed to insert to transaction table [0003].");
         }
         
         //get membership card number
@@ -304,7 +305,7 @@ class LobbyController extends CController
         if(!LPTransactionRequestLogsLp::model()->insert($currentBalance, $lastServID, 'W', 
                 $currentServiceID, $loyaltyCardNo, $mid, $userMode, $lpTransactionID)) {
             $this->log("[CurrentServiceID:$currentServiceID, PickServiceID:$pickServiceID] failed to insert to transactionrequestlogslp");
-            throw new CHttpException(404, "Unable to process request. Server is Busy. Please try again. [CurrentServiceID:$currentServiceID, PickServiceID:$pickServiceID] failed to insert to transactionrequestlogslp");           
+            throw new CHttpException(404, "Unable to process request. Server is Busy. Please try again. [CurrentServiceID:$currentServiceID, PickServiceID:$pickServiceID] failed to insert to transaction table [0002].");           
         }
         
         $transRequestLogLPID = LPTransactionRequestLogsLp::model()->getLastInsertID();
@@ -317,7 +318,7 @@ class LobbyController extends CController
         //get last inserted id from transactionrequestlogslp
 
         /********************************* WITHDRAW ***************************/
-        if(!$this->withdraw($lpTransactionID,$currentServiceID, $currentServiceType, $currentBalance, $tracking, $wcasinoApiHandler)) {
+        if(!$this->withdraw($lpTransactionID,$currentServiceID, $currentServiceType, $currentBalance, $tracking, $wcasinoApiHandler, $ptcurrentBet)) {
             $this->log("[CurrentServiceID:$currentServiceID, PickServiceID:$pickServiceID] failed to withdraw");
             
             //update servicetransferhistory
@@ -342,7 +343,7 @@ class LobbyController extends CController
         if(!LPTransactionRequestLogsLp::model()->insert($currentBalance, $lastServID, 'D', 
                 $pickServiceID, $loyaltyCardNo, $mid, $userMode,$lpTransactionID)) {
             $this->log("[CurrentServiceID:$currentServiceID, PickServiceID:$pickServiceID] failed to insert to transactionrequestlogslp for deposit"); 
-            throw new CHttpException(404, "Unable to process request. Server is Busy. Please try again. [CurrentServiceID:$currentServiceID, PickServiceID:$pickServiceID] failed to insert to transactionrequestlogslp for deposit");
+            throw new CHttpException(404, "Unable to process request. Server is Busy. Please try again. [CurrentServiceID:$currentServiceID, PickServiceID:$pickServiceID] failed to insert to transaction table for deposit [0002].");
             
         }
         
@@ -372,7 +373,7 @@ class LobbyController extends CController
             if(!LPTransactionRequestLogsLp::model()->insert($currentBalance, $lastServID, 'RD', 
                     $currentServiceID, $loyaltyCardNo, $mid, $userMode, $lpTransactionID)) { 
                 $this->log("[CurrentServiceID:$currentServiceID, PickServiceID:$pickServiceID] failed to insert to transactionrequestlogslp for redeposit");
-                throw new CHttpException(404, "Unable to process request. Server is Busy. Please try again. [CurrentServiceID:$currentServiceID, PickServiceID:$pickServiceID] failed to insert to transactionrequestlogslp for redeposit");
+                throw new CHttpException(404, "Unable to process request. Server is Busy. Please try again. [CurrentServiceID:$currentServiceID, PickServiceID:$pickServiceID] failed to insert to transaction table for redeposit [0002].");
                 
             }
             
@@ -554,8 +555,9 @@ class LobbyController extends CController
      * @param object $casinoApiHandler
      * @return bool  
      */
-    protected function withdraw($lpTransactionID, $serviceID,$serviceType,$amount, array $tracking, $casinoApiHandler)
+    protected function withdraw($lpTransactionID, $serviceID,$serviceType,$amount, array $tracking, $casinoApiHandler, $currentbet = 0)
     {
+        
         $status = false;
         $apiresult = 'false';
         $transrefid = '';
@@ -595,9 +597,9 @@ class LobbyController extends CController
                 
                 // die if failed to insert to servicetransferref
                 if(!$lpTransactionID) {
-                    $this->log("[CurrentServiceID:$serviceID, OriginID:$origin_id] failed to insert to servicetransactionref"); 
+                    $this->log("[CurrentServiceID:$serviceID, OriginID:$origin_id] failed to insert to transaction table[0001]"); 
                     throw new CHttpException(404, "Unable to process request. Server is Busy. Please try again. 
-                                [CurrentServiceID:$serviceID, OriginID:$origin_id] failed to insert to servicetransactionref");
+                                [CurrentServiceID:$serviceID, OriginID:$origin_id] failed to insert to transaction table[0001]");
                 }
                 
                 $withdrawResult = $casinoApiHandler->Withdraw($login, Lib::moneyToDecimal($amount), 
@@ -618,11 +620,20 @@ class LobbyController extends CController
                 $eventid = '';
                 
                 $kickPlayerResult = $casinoApiHandler->KickPlayer($login);
-             
+                
                 $changeStatusResult = $casinoApiHandler->ChangeAccountStatus($login, 1);
                 
-                $withdrawResult = $casinoApiHandler->Withdraw($login, Lib::moneyToDecimal($amount), $tracking[0], $tracking[1], 
-                              $tracking[2], $tracking[3], $plainPassword, 
+//                if($currentbet > 0){
+//                    $casinoAPI = new CasinoApi();
+//                    $revertbrokengames = $casinoAPI->RevertBrokenGamesAPI($this->getTerminalID(), $serviceID, $login);
+//                    if($revertbrokengames['RevertBrokenGamesReponse'][0] == false){
+//                        $this->log('[ServiceID: ' . $this->getCurrentServiceID() .'] Unable to revert bet on hand.');
+//                        throw new CHttpException(404, 'Unable to revert bet on hand.');
+//                    }
+//                }
+                
+                $withdrawResult = $casinoApiHandler->Withdraw($this->getTerminalCode(), Lib::moneyToDecimal($amount), $tracking[0], $tracking[1], 
+                              $tracking[2], $tracking[3], $this->getCurrentTerminalPassword(), 
                               $eventid, $lpTransactionID);
                 
                 $status = $withdrawResult['IsSucceed'];
@@ -698,7 +709,7 @@ class LobbyController extends CController
                 // die if failed to insert to servicetransferref
                 if(!$lpTransactionID) {
                     $this->log("[CurrentServiceID:$serviceID, OriginID:$origin_id] failed to insert to servicetransactionref");
-                    throw new CHttpException(404, "Unable to process request. Server is Busy. Please try again. [CurrentServiceID:$serviceID, OriginID:$origin_id] failed to insert to servicetransactionref");
+                    throw new CHttpException(404, "Unable to process request. Server is Busy. Please try again. [CurrentServiceID:$serviceID, OriginID:$origin_id] failed to insert to transaction table[0001]");
                     
                 }
                 

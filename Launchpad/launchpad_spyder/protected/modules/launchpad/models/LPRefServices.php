@@ -3,7 +3,7 @@
 /**
  * Description of LPRefServices
  * @package application.modules.launchpad.models
- * @author Bryan Salazar, elperez
+ * @author Bryan Salazar
  */
 class LPRefServices extends LPModel
 {
@@ -40,7 +40,7 @@ class LPRefServices extends LPModel
         $command = $this->_connection->createCommand($query);
         $row =  $command->queryRow(true,array(':serviceID'=>$serviceID));
         if(!$row) {
-            $this->log($command->getText().$command->getBound(), 'launchpad.models.LPRefServices');
+            $this->log('','launchpad.models.LPRefServices');
             throw new CHttpException(404, 'Service ID not found');
         }
             

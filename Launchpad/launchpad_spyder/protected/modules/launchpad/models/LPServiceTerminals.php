@@ -3,7 +3,7 @@
 /**
  * Description of LPServiceTerminals
  * @package application.modules.launchpad.models
- * @author Bryan Salazar, elperez
+ * @author Bryan Salazar
  */
 class LPServiceTerminals extends LPModel
 {
@@ -59,7 +59,7 @@ class LPServiceTerminals extends LPModel
         $command = $this->_connection->createCommand($query);
         $row =  $command->queryRow(true,array(':terminalID'=>$terminalID));
         if(!$row) {
-            $this->log($command->getText().$command->getBound()." Can't get session guid or MgAccount", 'launchpad.models.LPServiceTerminals');
+            $this->log(''," Can't get session guid or MgAccount", 'launchpad.models.LPServiceTerminals');
             throw new CHttpException(404, 'Can\'t get session guid');
         }
         return array('mgAccount'=>$row['ServiceTerminalAccount'],'sessionGuid'=>$row['ServiceAgentSessionID']);

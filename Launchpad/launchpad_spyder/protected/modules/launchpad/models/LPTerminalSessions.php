@@ -3,7 +3,7 @@
 /**
  * Description of LPTerminalSessions
  * @package application.modules.launchpad.models
- * @author Bryan Salazar, elperez
+ * @author Bryan Salazar
  */
 class LPTerminalSessions extends LPModel
 {
@@ -77,7 +77,7 @@ class LPTerminalSessions extends LPModel
         $command=$this->_connection->createCommand($query);
         $row=$command->queryRow(true, array(':terminalCode'=>$terminalCode));
         if(!$row) {
-            $this->log($command->getText().$command->getBound() . "Can't get current casino", 'launchpad.models.LPTerminalSessions');
+            $this->log("Can't get current casino", 'launchpad.models.LPTerminalSessions');
             throw new CHttpException(404, "Can't get current casino");
         }
             
@@ -97,7 +97,7 @@ class LPTerminalSessions extends LPModel
         $command=$this->_connection->createCommand($query);
         $row=$command->queryRow(true, array(':terminalID'=>$terminalID));
         if(!$row) {
-            $this->log($command->getText().$command->getBound() . "Can't get current casino", 'launchpad.models.LPTerminalSessions');
+            $this->log("Can't get current casino", 'launchpad.models.LPTerminalSessions');
             throw new CHttpException(404, "Can't get current casino");
         }
         return $row;
@@ -119,7 +119,7 @@ class LPTerminalSessions extends LPModel
         $command = $this->_connection->createCommand($query);
         $n = $command->execute($data);
         if(!$n) {
-            $this->log($command->getText().$command->getBound()." failed to update servicetransferhistory", 'launchpad.models.LPTerminalSessions');
+            $this->log(" failed to update servicetransferhistory", 'launchpad.models.LPTerminalSessions');
         }
         return $n;
     }
@@ -137,7 +137,7 @@ class LPTerminalSessions extends LPModel
         $command=$this->_connection->createCommand($query);
         $row=$command->queryRow(true, $data);
         if(!$row) {
-            $this->log($command->getText().$command->getBound() . "Can't get casino password", 'launchpad.models.LPTerminalSessions');
+            $this->log("Can't get casino password", 'launchpad.models.LPTerminalSessions');
             //throw new CHttpException(404, "Can't get casino password");
         }
         return $row;
@@ -150,7 +150,7 @@ class LPTerminalSessions extends LPModel
         $row = $command->queryRow(true, $data);
         if(!$row) {
             $message = "Can't get session ID";
-            $this->log($command->getText().$command->getBound() . $message, 'launchpad.models.LPTerminalSessions');
+            $this->log($message, 'launchpad.models.LPTerminalSessions');
             throw new CHttpException(404, $message);
         }
         return $row['TransactionSummaryID'];
@@ -163,7 +163,7 @@ class LPTerminalSessions extends LPModel
         $row = $command->queryRow(true, $data);
         if(!$row) {
             $message = "Can't get session ID";
-            $this->log($command->getText().$command->getBound() . $message, 'launchpad.models.LPTerminalSessions');
+            $this->log($message, 'launchpad.models.LPTerminalSessions');
             throw new CHttpException(404, $message);
         }
         return $row;

@@ -3,7 +3,7 @@
 /**
  * Description of LPTerminals
  * @package application.modules.launchpad.models
- * @author Bryan Salazar, elperez
+ * @author Bryan Salazar
  */
 class LPTerminals extends LPModel
 {
@@ -36,7 +36,7 @@ class LPTerminals extends LPModel
         $command=$this->_connection->createCommand($query);
         $row=$command->queryRow(true, array(':terminalCode'=>$terminalCode));
         if(!$row) {
-            $this->log($command->getText().$command->getBound(), 'launchpad.models.LPTerminals');
+            $this->log('', 'launchpad.models.LPTerminals');
             throw new CHttpException(404,"Can't get terminal ID");
         }
             
