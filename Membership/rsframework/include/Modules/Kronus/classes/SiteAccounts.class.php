@@ -12,8 +12,8 @@ class SiteAccounts extends BaseEntity
     function SiteAccounts()
     {
 
-        $this->ConnString = "membership";
-        $this->TableName = "membership.siteaccounts";
+        $this->ConnString = "kronus";
+        $this->TableName = "siteaccounts";
         $this->Identity = "SiteAccountID";
         $this->DatabaseType = DatabaseTypes::PDO;
     }

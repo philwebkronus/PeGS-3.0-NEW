@@ -235,19 +235,25 @@ if ($fproc->IsPostBack)
         $_MemberCards->Redeem($redeemMID, $CardNumber, $totalRedeemPoints);
         $CommonPDOConnection = $_MemberCards->getPDOConnection();
 
-        $_CouponRedemptionLogs = new CouponRedemptionLogs();
-        $_CouponRedemptionLogs->setPDOConnection($CommonPDOConnection);
-        $_CouponRedemptionLogs->Redeem($redeemMID, $redeemRewardITemID, $redeemQuantity, 1, 1);
-        $CouponRedemptionLogID = $_CouponRedemptionLogs->LastInsertID;
-
-        $_RaffleCoupons = new RaffleCoupons();
-        $_RaffleCoupons->setPDOConnection($CommonPDOConnection);
-        $_RaffleCoupons->Redeem($CouponRedemptionLogID, $redeemRewardITemID, $redeemQuantity);
-
+        if (!App::HasError())
+        {
+            $_CouponRedemptionLogs = new CouponRedemptionLogs();
+            $_CouponRedemptionLogs->setPDOConnection($CommonPDOConnection);
+            $_CouponRedemptionLogs->Redeem($redeemMID, $redeemRewardITemID, $redeemQuantity, 1, 1);
+            $CouponRedemptionLogID = $_CouponRedemptionLogs->LastInsertID;
+        }
+        
+        if (!App::HasError())
+        {
+            $_RaffleCoupons = new RaffleCoupons();
+            $_RaffleCoupons->setPDOConnection($CommonPDOConnection);
+            $_RaffleCoupons->Redeem($CouponRedemptionLogID, $redeemRewardITemID, $redeemQuantity);
+        }
+        
         if (App::HasError())
         {
             $_MemberCards->RollBackTransaction();
-            App::SetErrorMessage($errormessage);
+            //App::SetErrorMessage($errormessage);
         }
         else
         {
@@ -267,9 +273,9 @@ if ($fproc->IsPostBack)
             $birthdate = $arrmemberinfo["Birthdate"];
             $email = $arrmemberinfo["Email"];
             $contactno = $arrmemberinfo["MobileNumber"];
-            if (isset($site["SiteCode"]))
+            if (isset($site["SiteName"]))
             {
-                $sitecode = $site["SiteCode"];
+                $sitecode = $site["SiteName"];
             }
             $arrcouponredemptionloginfo = $redemptioninfo[0];
             $mincouponnumber = str_pad($arrcouponredemptionloginfo["MinCouponNumber"], 7, "0", STR_PAD_LEFT);
@@ -577,13 +583,13 @@ if ($showcouponredemptionwindow == true)
                 if ($("#couponmessagebody").dialog( "isOpen" ) !== true)
                 {
                     $("#couponmessagebody").dialog({
-                                                                                                                                                                                                                                        
+                                                                                                                                                                                                                                            
                         modal: true,
                         buttons: {
                             "Print" : function() 
                             {
                                 window.print();
-                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                
                             },
                             "Close": function() {
                                 $(this).dialog("close");
