@@ -96,7 +96,7 @@ class Lib {
                 $image='vibrant_vegas';
                 break;
             case 'SS':
-                $image='rockin_reno';
+                $image='swinging_singapore';
                 break;
         }
         return $image;

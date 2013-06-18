@@ -3,7 +3,7 @@
 /**
  * Description of LPServiceTransferHistory
  * @package application.modules.launchpad.models
- * @author Bryan Salazar, elperez
+ * @author Bryan Salazar
  */
 class LPServiceTransferHistory  extends LPModel
 {
@@ -51,7 +51,7 @@ class LPServiceTransferHistory  extends LPModel
         );    
         $n = $command->execute($data);
         if(!$n) {
-            $this->log($command->getText().$command->getBound(), 'launchpad.models.LPServiceTransferHistory');
+            $this->log('', 'launchpad.models.LPServiceTransferHistory');
         }
         return $n;
     }
@@ -73,7 +73,7 @@ class LPServiceTransferHistory  extends LPModel
         $command = $this->_connection->createCommand($query);
         $n = $command->execute($data);
         if(!$n) {
-            $this->log($command->getText().$command->getBound()." failed to update servicetransferhistory", 'launchpad.models.LPServiceTransferHistory');
+            $this->log(" failed to update servicetransferhistory", 'launchpad.models.LPServiceTransferHistory');
         }
         return $n;
     }
@@ -106,7 +106,7 @@ class LPServiceTransferHistory  extends LPModel
             );
             $n = $command->execute($data);
             if(!$n) {
-                $this->log($command->getText().$command->getBound()." failed to insert servicetransactionref", 'launchpad.models.LPServiceTransferHistory');
+                $this->log(" failed to insert servicetransactionref", 'launchpad.models.LPServiceTransferHistory');
             }
             $transaction_id = $this->getLastInsertID();
             $beginTrans->commit();
