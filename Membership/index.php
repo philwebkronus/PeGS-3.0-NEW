@@ -192,13 +192,10 @@ if (isset($_SESSION["MemberInfo"])) {
                                 <div id="home-latest-wrapper">                                    
                                                                         
                                                                             
-                                        <div>&#187; <a href="http://staging.pegs.com/events/sfdgsdfg/">sfdgsdfg</a></div>
+                                        <div>&#187; <a href="http://www.egamescasino.ph/events/luxury-knows-no-limits-raffle-promo/">Luxury Knows No Limits Raffle</a></div>
                                     
                                                                             
-                                        <div>&#187; <a href="http://staging.pegs.com/events/4th-event-testing/">4th Event testing</a></div>
-                                    
-                                                                            
-                                        <div>&#187; <a href="http://staging.pegs.com/events/third-event-testing/">Third Event Testing</a></div>
+                                        <div>&#187; <a href="http://www.egamescasino.ph/events/12th-e-games-operators-meeting/">Bar Tour Activations</a></div>
                                     
                                     
                                </div>

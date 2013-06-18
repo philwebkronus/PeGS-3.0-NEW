@@ -65,8 +65,12 @@ if($fproc->IsPostBack)
     {
         $searchValue = $txtSearch->SubmittedValue;
         $bannedplayers = $players->getBannedPlayersByFilter($searchValue);
-
-        $showresult = true;
+        
+        if(count($bannedplayers) > 0)
+            $showresult = true;
+        else
+            App::SetErrorMessage ('No match found');
+            
     }    
     
     if ($btnClear->SubmittedValue == "Clear")
@@ -76,8 +80,6 @@ if($fproc->IsPostBack)
     }
     
 }
-
-
 
 $datagrid->DataItems = $bannedplayers;
 $datagrid->Style = "width: 80%";

@@ -37,15 +37,44 @@ $_TempMembers = new TempMemberInfo();
 $_JSONAPIResponse = new JSONAPIResponse();
 $_Helper = new Helper();
 
+if(!isset($_GET['cardnumber']) || !isset( $_GET['isreg'])){
+    $result = array("CardInfo"=>array(
+                                    "Username"         => "",
+                                    "CardNumber"       => "",
+                                    "MemberUsername"   => "",
+                                    "CardType"         => "",
+                                    "MemberName"       => "",
+                                    "RegistrationDate" => "",
+                                    "Birthdate"        => "",
+                                    "CurrentPoints"    => "",
+                                    "LifetimePoints"   => "",
+                                    "RedeemedPoints"   => "",
+                                    "IsCompleteInfo"   => "",
+                                    "MemberID"         => "",                                                                     
+                                    "CasinoArray"      => "",
+                                    "CardStatus"       => CardStatus::NOT_EXIST,
+                                    "DateVerified"     => "",
+                                    "MobileNumber"     => "",
+                                    "Email"            => "",
+                                    "IsRegs"           => 0,
+                                    "CoolingPeriod"    => "",
+                                    "StatusCode"       => CardStatus::NOT_EXIST,
+                                    "StatusMsg"        => 'Card Not Found',
+                                    )
+                        );
+    
+    $_JSONAPIResponse->_sendResponse(200, json_encode($result));
+    exit;
+}
+
+$cardNumber = Helper::removeDash($_GET['cardnumber']);
+$isReg = $_GET['isreg'];
+
 /*
  * Validate input if barcode has value and is alphanumeric
  */
-if((isset( $_GET['cardnumber'] ) && ctype_alnum( $_GET['cardnumber'] )) 
-    && (isset( $_GET['isreg'] ) && ctype_digit( $_GET['isreg']) ))
+if((ctype_alnum( $cardNumber )) && (ctype_digit( $isReg ) ))
 {
-    $cardNumber = $_GET['cardnumber'];
-    $isReg = $_GET['isreg'];
-        
     /*
      * Check card version from OLD, UB and TEMPORARY
      */
@@ -192,7 +221,7 @@ else
                         );
     
     $_JSONAPIResponse->_sendResponse(200, json_encode($result));
-    
+    exit;
 }
 
 
