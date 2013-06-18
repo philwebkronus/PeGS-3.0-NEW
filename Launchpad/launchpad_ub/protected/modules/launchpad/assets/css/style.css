@@ -14,7 +14,7 @@ body{background-color:#0e0209;overflow: hidden}
 #slots-world-container{width: 301px; height:260px; float:left; background:url(../images/slots_world.png) no-repeat;}
 #magic-macau-container{width: 306px; height:333px; float:left; background:url(../images/magic_macau_bg.png) no-repeat;}
 #vibrant-vegas-container{width: 304px; height:333px; float:left; background:url(../images/vibrant_vegas_bg.png) no-repeat;}
-#swinging-singapore-container{width: 305px; height:333px; float:left; background:url(../images/rockin_reno_bg.png) no-repeat;}
+#swinging-singapore-container{width: 305px; height:333px; float:left; background:url(../images/swinging_singapore_bg.png) no-repeat;}
 
 .disabled{display:none;}
 #egames-logo-container{height: 45px; width: 159px; margin:4px auto 0 auto;}
@@ -45,7 +45,7 @@ body{background-color:#0e0209;overflow: hidden}
 #link-slots-world{width: 155px; height:155px; margin-left: 74px; background: url(../images/slots_world_hover.png) no-repeat;}
 #link-magic-macau{width: 244px; height:278px; margin-left: 28px; background: url(../images/magic_macau_hover.jpg) no-repeat;}
 #link-vibrant-vegas{width: 244px; height:278px;  margin-left: 31px; background: url(../images/vibrant_vegas_hover.jpg) no-repeat;}
-#link-swinging-singapore{width: 244px; height:278px;  margin-left: 31px; background: url(../images/rockin_reno_hover.jpg) no-repeat;}
+#link-swinging-singapore{width: 244px; height:278px;  margin-left: 31px; background: url(../images/swinging_singapore_hover.jpg) no-repeat;}
 
 .link-container a, .link-container a:link, .link-container a:visited {
 display:block;

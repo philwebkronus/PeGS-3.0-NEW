@@ -3,7 +3,7 @@
 /**
  * Description of LPTransactionRequestLogsLp
  * @package application.modules.launchpad.models
- * @author Bryan Salazar, elperez
+ * @author Bryan Salazar
  */
 class LPTransactionRequestLogsLp extends LPModel
 {
@@ -84,13 +84,13 @@ class LPTransactionRequestLogsLp extends LPModel
             $n = $command->execute();
 
             if(!$n) {
-                $this->log($command->getText().$command->getBound() . ' failed to insert to transactionrequestlogslp', 'launchpad.models.LPTransactionRequestLogsLp');
+                $this->log(' failed to insert to transactionrequestlogslp', 'launchpad.models.LPTransactionRequestLogsLp');
                 throw new CHttpException(404, 'There was a pending transaction for this user / terminal.');
             }
             return $n;
         
         }  catch (Exception $e) {
-            $this->log($command->getText().$command->getBound() . ' failed to insert to transactionrequestlogslp', 'launchpad.models.LPTransactionRequestLogsLp');
+            $this->log(' failed to insert to transactionrequestlogslp', 'launchpad.models.LPTransactionRequestLogsLp');
             throw new CHttpException(404, 'There was a pending transaction for this user / terminal.');
         }
         
@@ -128,7 +128,7 @@ class LPTransactionRequestLogsLp extends LPModel
         $n = $command->execute();
         
         if(!$n) {
-            $this->log($command->getText() . $command->getBound() . ' failed to update to transactionrequestlogslp', 'launchpad.models.LPTransactionRequestLogsLp');
+            $this->log(' failed to update to transactionrequestlogslp', 'launchpad.models.LPTransactionRequestLogsLp');
         }
         return $n;
     }

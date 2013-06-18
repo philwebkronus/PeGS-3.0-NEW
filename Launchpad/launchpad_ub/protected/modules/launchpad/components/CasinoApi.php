@@ -53,7 +53,7 @@ class CasinoApi
         // check if connected
         if (!(bool)$_CasinoAPIHandler->IsAPIServerOK()) {
             $message = 'Can\'t connect to RTG';
-            Yii::log($message . ' TerminalCode='.$terminalCode. ' ServiceID='.$serviceID);
+            $this->log($message . ' TerminalCode='.$terminalCode. ' ServiceID='.$serviceID);
             throw new CHttpException(404, $message);
         }
         
@@ -92,7 +92,7 @@ class CasinoApi
         // check if connected
         if (!(bool)$_CasinoAPIHandler->IsAPIServerOK()) {
             $message = 'Can\'t connect to MG';
-            Yii::log($message . ' TerminalCode='.$terminalCode . ' ServiceID='.$serviceID);
+            $this->log($message . ' TerminalCode='.$terminalCode . ' ServiceID='.$serviceID);
             throw new CHttpException(404, $message);
         }
         
@@ -113,8 +113,8 @@ class CasinoApi
         // check if connected
         if (!(bool)$_CasinoAPIHandler->IsAPIServerOK()) {
             $message = 'Can\'t connect to PT';
-            logger($message . ' TerminalID='.$terminal_id . ' ServiceID='.$serverid);
-            self::throwError($message);
+            $this->log($message . ' TerminalID='.$terminal_id . ' ServiceID='.$serverid);
+            throw new CHttpException(404, $message);
         }
         
         return $_CasinoAPIHandler;
@@ -142,7 +142,7 @@ class CasinoApi
         
         if(!isset($balanceInfo['BalanceInfo']['Balance'])){
             $message = 'Error: Can\'t get balance';
-            Yii::log($message . ' TerminalCode='.$terminalCode . ' ServiceID='.$serviceID);
+            $this->log($message . ' TerminalCode='.$terminalCode . ' ServiceID='.$serviceID);
             return 'N/A';
         }
         
@@ -170,4 +170,16 @@ class CasinoApi
         $pendingGames = $casinoAPIHandler->GetPendingGames($PID);
         return $pendingGames;
     }
+    
+    /**
+     *
+     * @param string $message 
+     */
+    protected function log($message) 
+    {
+        Yii::log( '[HTTP_REFERER='.$_SERVER['HTTP_REFERER'].'] '.'[TerminalID='.
+                Yii::app()->user->getState('terminalID') . ' TerminalCode='.
+                Yii::app()->user->getState('terminalCode').'] '.$message, 'error', 
+                'launchpad.components.CasinoApi');
+    }  
 }
