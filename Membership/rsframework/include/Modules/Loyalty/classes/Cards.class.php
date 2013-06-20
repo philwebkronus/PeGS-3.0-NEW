@@ -22,18 +22,18 @@ class Cards extends BaseEntity
         
         $cardnumber = trim($cardnumber);
         
-        if(strpos($cardnumber, '000') !== false)
+        if(strpos(substr($cardnumber, 0,3), '000') !== false)
         {
             return CardVersion::OLD;
             
         }
         
-        if(strpos($cardnumber, 'eGames') !== false)
+        if(strpos(substr($cardnumber, 0,6), 'eGames') !== false)
         {
             return CardVersion::TEMPORARY;
         }
         
-        if(strpos($cardnumber, 'UB') !== false)
+        if(strpos(substr($cardnumber, 0,2), 'UB') !== false)
         {
             return CardVersion::USERBASED;
         }

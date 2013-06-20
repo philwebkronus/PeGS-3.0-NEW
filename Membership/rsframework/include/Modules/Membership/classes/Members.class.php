@@ -344,6 +344,12 @@ class Members extends BaseEntity {
         return parent::ExecuteQuery($query);
     }
 
+    public function getUserName($MID)
+    {
+        $query = "SELECT UserName FROM members WHERE MID = $MID";
+        $result = parent::RunQuery($query);
+        return $result[0]['UserName'];
+    }
 }
 
 ?>

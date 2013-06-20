@@ -16,6 +16,7 @@ $MID = $_SESSION["MemberInfo"]["Member"]["MID"];
  * Load Models
  */
 $_MemberInfo = new MemberInfo();
+$_Members = new Members();
 $_MemberCards = new MemberCards();
 $_CardTransactions = new CardTransactions();
 $_Sites = new Sites();
@@ -293,6 +294,13 @@ if ($fproc->IsPostBack)
     (!empty($txtPassword->SubmittedValue)) ? $arrMembers["Password"] = md5($txtPassword->SubmittedValue) : "";
     $arrMembers["DateUpdated"] = $dateupdated;
     $arrMembers["MID"] = $MID;
+    
+    $username = $_Members->getUserName($MID);
+    if(!$validate->validateEmail($username))
+    {
+        if(!empty($txtEmail->SubmittedValue))
+            $arrMembers["UserName"] = $txtEmail->SubmittedValue;
+    }
 
     $arrMemberInfo["FirstName"] = $txtFirstName->SubmittedValue;
     $arrMemberInfo["MiddleName"] = $txtMiddleName->SubmittedValue;
@@ -327,7 +335,6 @@ if ($fproc->IsPostBack)
             App::LoadModuleClass("Membership", "AuditFunctions");
 
             $username = $_SESSION['MemberInfo']['UserName'];
-            $accounttypeid = $_SESSION['MemberInfo']['AccountTypeID'];
             $id = $_SESSION['MemberInfo']['MID'];
             $sessionid = $_SESSION['MemberInfo']['SessionID'];
 
