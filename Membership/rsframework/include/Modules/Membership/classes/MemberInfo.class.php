@@ -49,6 +49,38 @@ class MemberInfo extends BaseEntity
         
     }
     
+    /*
+     * Description: Get Member Info using name that match either the firstname, middlename or the lastname.
+     * @author: aqdepliyan
+     * DateCreated: 2013-06-17 05:40:20PM
+     */
+    public function getMemberInfoByName( $name )
+    {
+        
+        $query = "SELECT mi.MID, mi.FirstName, mi.LastName , mi.Birthdate, mi.IdentificationNumber, ri.IdentificationName
+                            FROM memberinfo as mi
+                            INNER JOIN ref_identifications as ri ON ri.IdentificationID = mi.IdentificationID
+                            WHERE CONCAT(mi.FirstName, ' ', mi.LastName) LIKE  '%".$name."%'";
+        return parent::RunQuery($query);
+    }
+    
+    /*
+     * Description: Get Member Info using MID with a status limit only to active, active temporary and banned cards..
+     * @author: aqdepliyan
+     * DateCreated: 2013-06-17 05:40:20PM
+     */
+    public function getMemberInfoByMID( $MID )
+    {
+        
+        $query = "SELECT m.Status, mi.FirstName, mi.LastName, mi.Birthdate, mi.IdentificationNumber, ri. IdentificationName
+                            FROM members as m
+                            INNER JOIN memberinfo as mi ON mi.MID = m.MID
+                            INNER JOIN ref_identifications as ri ON ri.IdentificationID = mi.IdentificationID
+                            WHERE m.MID =".$MID;
+        
+        return parent::RunQuery($query);
+    }
+    
     public function updateProfile( $arrMembers, $arrMemberInfo)
     {
         

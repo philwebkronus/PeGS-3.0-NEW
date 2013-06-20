@@ -15,6 +15,8 @@ class AuditFunctions extends BaseEntity
     CONST TRANSFER_POINTS = 6;
     CONST MIGRATE_OLD = 7;
     CONST MIGRATE_TEMP = 8;
+    CONST BAN_PLAYER = 9;
+    CONST UNBAN_PLAYER = 10;
     
     public function AuditFunctions()
     {

@@ -125,6 +125,19 @@ class Validation extends BaseObject
             return false;
         }
     }
+    
+    function validateAlphaSpaceDashAndDot($input)
+    {
+        $result = preg_match ("/^[A-Za-z\s-.]+$/", $input);
+        if ($result)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
 
     function validateAlphaNumeric($input)
     {

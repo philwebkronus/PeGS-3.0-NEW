@@ -252,6 +252,15 @@ class Members extends BaseEntity {
             $this->RollBackTransaction();
         }
     }
+    
+    public function updateMemberStatusUsingMID($status,$MID){
+        $query = "UPDATE ".$this->TableName." SET Status = ".$status." WHERE MID = ".$MID;
+        parent::ExecuteQuery($query);
+        if($this->HasError){
+            App::SetErrorMessage($this->getError());
+            return false;
+        }
+    }
 
     function Authenticate($username, $password, $hashing = '') {
         App::LoadModuleClass("Loyalty", "MemberCards");

@@ -5,6 +5,10 @@
  * @date : 2013-04-19
  */
 
+if(!isset($_SESSION["MemberInfo"]["Member"]["MID"])){
+    App::SetErrorMessage("Account Banned");
+    reloadParent();
+}
 
 $MID = $_SESSION["MemberInfo"]["Member"]["MID"];
 
@@ -28,6 +32,15 @@ $memberinfo = $_MemberInfo->getMemberInfo( $MID );
 $row = $memberinfo[0];
 
 $cardinfo = $_MemberCards->getActiveMemberCardInfo($MID);
+
+if(!isset($cardinfo[0]['CardNumber'])){
+    
+    //session_destroy();
+    unset($_SESSION['MemberInfo']);
+    App::SetErrorMessage("Account Banned");
+    reloadParent();
+}
+
 $cardNumber = $cardinfo[0]['CardNumber'];
 
 $points = $_MemberCards->getMemberPoints( $cardNumber );

@@ -34,10 +34,10 @@ $fproc->ProcessForms();
  * Reload parent (index) page upon successful login
  */
 
-function reloadParent()
-{
-    echo "<script>parent.window.location.href='index.php';</script>";
-}
+//function reloadParent()
+//{
+//    echo "<script>parent.window.location.href='index.php';</script>";
+//}
 
 if($fproc->IsPostBack)
 {

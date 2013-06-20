@@ -61,6 +61,11 @@ foreach ($arrRewardItems as $item) {
     $items['RewardName'] = $item['RewardItemName'];
     $path[] = $items;
 }
+
+function reloadParent()
+{
+    echo "<script>parent.window.location.href='index.php';</script>";
+}
 ?>
 
 <?php include "header.php"; ?> 

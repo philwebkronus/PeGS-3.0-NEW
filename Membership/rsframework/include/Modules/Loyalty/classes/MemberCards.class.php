@@ -89,6 +89,68 @@ class MemberCards extends BaseEntity
         return $result;
     }
     
+    /*
+     * Description: Get MemberCard Info using MID with a status limit only to active, active temporary and banned cards.
+     * @author: aqdepliyan
+     * DateCreated: 2013-06-17 05:38:40PM
+     */
+    public function getMemberCardInfoByMID( $MID )
+    {
+        $query = "SELECT m.Status, mc.MemberCardID, mc.CardNumber
+                            FROM membership.members as m
+                            INNER JOIN ".$this->TableName." as mc ON mc.MID = m.MID
+                            WHERE mc.Status IN(1,5,9) AND m.MID =".$MID;
+       
+        $result = parent::RunQuery($query);
+        return $result;
+    }
+    
+    /*
+     * Description: Get MemberCard Info using CardNumber with a status limit only to active, active temporary and banned cards.
+     * @author: aqdepliyan
+     * DateCreated: 2013-06-17 06:02:35PM
+     */
+    public function getMemberCardInfoByCardNumber( $cardnumber )
+    {
+        $query = "SELECT MemberCardID, MID
+                            FROM ".$this->TableName."
+                            WHERE CardNumber ='".$cardnumber."'";
+       
+        $result = parent::RunQuery($query);
+        return $result;
+    }
+    
+    /*
+     * Description: Get MemberCard Info with a status limit only to banned cards.
+     * @author: aqdepliyan
+     * DateCreated: 2013-06-19 06:02:35PM
+     */
+    public function getAllBannedMemberCardInfo( )
+    {
+        $query = "SELECT MemberCardID, MID, CardNumber
+                            FROM ".$this->TableName."
+                            WHERE Status = 9";
+       
+        $result = parent::RunQuery($query);
+        return $result;
+    }
+    
+    public function updateMemberCardStatusUsingCardNumber($status,$CardNumber){
+        $query = "UPDATE ".$this->TableName." SET Status = ".$status." WHERE CardNumber = '".$CardNumber."'";
+        parent::ExecuteQuery($query);
+        if($this->HasError){
+            App::SetErrorMessage($this->getError());
+            return false;
+        } else {
+            $query = "UPDATE loyaltydb.cards SET Status = ".$status." WHERE CardNumber = '".$CardNumber."'";
+            parent::ExecuteQuery($query);
+            if($this->HasError){
+                App::SetErrorMessage($this->getError());
+                return false;
+            }
+        }
+    }
+    
     public function processMemberCard($arrMemberCards, $arrTempMemberCards)
     {
         $this->StartTransaction();
