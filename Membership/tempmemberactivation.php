@@ -312,6 +312,7 @@ if((isset($_GET["tempnumber"]) && (htmlentities($_GET["tempnumber"]))) &&
         {
             modal: true,
             show: 'fade',
+            width: 350,
             hide: 'fade',
             resizable: false,
             draggable: false,
@@ -324,6 +325,8 @@ if((isset($_GET["tempnumber"]) && (htmlentities($_GET["tempnumber"]))) &&
             modal: true,
             //show: 'fade',
             //hide: 'fade',
+            height: 250,
+            width: 350,
             resizable: false,
             draggable: false,
             buttons: {OK: function(){$(this).dialog('close'); window.close()}}
@@ -442,14 +445,14 @@ if($isSubmitted){
     {?>
 
     <!-- <script>alert('Temporary Account Migration Successful!'); </script>-->
-    <div id="dialog" title="Membership" style="display:none">
-    <center><h2><?php echo "Temporary Account Migration Successful!"; ?></h2></center>
+    <div id="dialog" title="Membership">
+    <center><p><b>Temporary Account Migration Successful!</b></p></center>
     </div>
     <?php
     }else{?>
         <!-- <script>alert('Temporary Account Migration Failed!');</script>-->
-    <div id="dialog1" title="Membership" style="display:none">
-    <center><h2><?php echo "Temporary Account Migration Failed!"; ?></h2></center>
+    <div id="dialog1" title="Membership">
+    <center><p><b>Temporary Account Migration Failed!</b></p></center>
     </div>
     <?php
     }
