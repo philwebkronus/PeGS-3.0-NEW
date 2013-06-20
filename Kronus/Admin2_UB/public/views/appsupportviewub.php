@@ -155,7 +155,102 @@ $vaccesspages = array('9','6');
                 //submit button event to display jqgrid
             $('#btnSubmit').click(function()
             {      
-                   $('#results').show();
+                   showjqgrid();
+            });
+        });
+        
+        
+        function showCardInfoTable()
+        {
+            var url = 'process/ProcessAppSupport.php';
+            $('#results').hide();
+            var date = "<?php echo date("Ymd");?>"
+            var isValidDateTime = validateDateTime(date);
+            if(isValidDateTime == true ) 
+            {
+                //for displaying site / pegs information
+                jQuery.ajax(
+                {
+                   url: url,
+                   type: 'post',
+                   data: {page: function(){ return "GetLoyaltyCard2";},
+                          txtcardnumber: function(){return jQuery("#txtcardnumber").val();}
+                         },
+                   dataType : 'json',     
+                   success: function(data)
+                   {
+                       if(data == "8"){
+                           alert("Migrated Temporary Card");
+                           showjqgrid();
+                       }
+                       else{
+                           var tblRow = "<thead>"
+                                     +"<tr>"
+                                     +"<th colspan='6' class='header'>Member Information </th>"
+                                     +"</tr>"
+                                     +"<tr>"
+                                     +"<th>Member Name</th>"
+                                     +"<th>Mobile No</th>"
+                                     +"<th>Email Address</th>"
+                                     +"<th>Birth Date</th>"
+                                     +"<th>Casino</th>"
+                                     +"<th>Login</th>"
+                                     +"</tr>"
+                                     +"</thead>";
+
+                          $.each(data, function(i,user)
+                          {
+                               if(this.CardNumber == null)
+                              {
+                                  alert("Invalid Card Number");
+                                  $('#light').hide();
+                                  $('#fade').hide();
+                              }
+                              else
+                              {
+                                  if(this.MobileNumber == null){
+                                      this.MobileNumber = '';
+                                  }
+                                  if(this.StatusCode == 9){
+                                      alert("Card is Banned");
+                                  }
+                                 document.getElementById('light').style.display='block';
+                                 document.getElementById('fade').style.display='block';
+                             
+                             
+                                tblRow +=
+                                         "<tbody>"
+                                         +"<tr>"
+                                         +"<td>"+this.UserName+"</td>"   
+                                         +"<td>"+this.MobileNumber+"</td>"
+                                         +"<td>"+this.Email+"</td>"
+                                         +"<td>"+this.Birthdate+"</td>"
+                                         +"<td>"+this.Casino+"</td>"
+                                         +"<td>"+this.Login+"</td>"
+                                         +"</tr>"
+                                         +"</tbody>";
+                                         $('#userdata2').html(tblRow);
+                                         
+                               }
+                          });
+                       }
+                      
+                       
+                   },
+                   error: function(XMLHttpRequest, e)
+                   {
+                         alert(XMLHttpRequest.responseText);
+                         if(XMLHttpRequest.status == 401)
+                         {
+                             window.location.reload();
+                         }
+                   }
+                });
+            }
+        }
+        
+        function showjqgrid(){
+            $('#results').show();
                    $('#userdata').GridUnload();
                    $('#userdata3').GridUnload();
                    $('#userdata4').GridUnload();
@@ -301,87 +396,6 @@ $vaccesspages = array('9','6');
                         jQuery("#userdata4").jqGrid('navGrid','#pager2',{edit:false,add:false,del:false, search:false, refresh: true});
                         $('#userdata4').trigger("reloadGrid");
                     }
-            });
-        });
-        
-        
-        function showCardInfoTable()
-        {
-            var url = 'process/ProcessAppSupport.php';
-            $('#results').hide();
-            var date = "<?php echo date("Ymd");?>"
-            var isValidDateTime = validateDateTime(date);
-            if(isValidDateTime == true ) 
-            {
-                //for displaying site / pegs information
-                jQuery.ajax(
-                {
-                   url: url,
-                   type: 'post',
-                   data: {page: function(){ return "GetLoyaltyCard";},
-                          txtcardnumber: function(){return jQuery("#txtcardnumber").val();}
-                         },
-                   dataType : 'json',     
-                   success: function(data)
-                   {
-                      var tblRow = "<thead>"
-                                     +"<tr>"
-                                     +"<th colspan='6' class='header'>Member Information </th>"
-                                     +"</tr>"
-                                     +"<tr>"
-                                     +"<th>Member Name</th>"
-                                     +"<th>Mobile No</th>"
-                                     +"<th>Email Address</th>"
-                                     +"<th>Birth Date</th>"
-                                     +"<th>Casino</th>"
-                                     +"<th>Login</th>"
-                                     +"</tr>"
-                                     +"</thead>";
-
-                          $.each(data, function(i,user)
-                          {
-                               if(this.CardNumber == null)
-                              {
-                                  alert("Invalid Card Number");
-                                  $('#light').hide();
-                                  $('#fade').hide();
-                              }
-                              else
-                              {
-                                  if(this.MobileNumber == null){
-                                      this.MobileNumber = '';
-                                  }
-                                 document.getElementById('light').style.display='block';
-                                 document.getElementById('fade').style.display='block';
-                             
-                             
-                                tblRow +=
-                                         "<tbody>"
-                                         +"<tr>"
-                                         +"<td>"+this.UserName+"</td>"   
-                                         +"<td>"+this.MobileNumber+"</td>"
-                                         +"<td>"+this.Email+"</td>"
-                                         +"<td>"+this.Birthdate+"</td>"
-                                         +"<td>"+this.Casino+"</td>"
-                                         +"<td>"+this.Login+"</td>"
-                                         +"</tr>"
-                                         +"</tbody>";
-                                         $('#userdata2').html(tblRow);
-                                         
-                               }
-                          });
-                       
-                   },
-                   error: function(XMLHttpRequest, e)
-                   {
-                         alert(XMLHttpRequest.responseText);
-                         if(XMLHttpRequest.status == 401)
-                         {
-                             window.location.reload();
-                         }
-                   }
-                });
-            }
         }
     </script>
         <div id="pagetitle">UB Transaction Tracking</div>

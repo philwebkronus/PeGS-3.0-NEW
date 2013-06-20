@@ -15,6 +15,10 @@ if(isset($_SESSION['sessionID']))
 {
     $new_sessionid = $_SESSION['sessionID'];
 }
+else 
+{
+    $new_sessionid = '';
+}
 if(isset($_SESSION['accID']))
 {
     $aid = $_SESSION['accID'];
@@ -58,14 +62,13 @@ if($connected)
        }
        header("Location: login.php?mess=".$msg);
    }
-/********** END SESSION CHECKING **********/   
-
-
+   else{
     //get all sites
     $sitelist = array();
     $sitelist = $maf->getallsites();
     $_SESSION['siteids'] = $sitelist; //session variable for the sites name selection
-
+   }
+/********** END SESSION CHECKING **********/   
 
     if(isset($_POST['page']))
     {
@@ -83,7 +86,7 @@ if($connected)
                if($usermode == 'terminal')
                {
                    //get details from pending terminal trans table
-                   $trlc = $maf->getTransactionReferenceIDterminal($terminal);
+                    $trlc = $maf->getTransactionReferenceIDterminal($terminal);
                }
                if($usermode == 'user')
                {
@@ -108,11 +111,11 @@ if($connected)
                             else
                             {
                                 foreach ($transreqlog as $row) {
-                                $amount = $row['Amount'];
-                                $transrefid = $row['TransactionReferenceID'];
-                                $transtype = $row['TransactionType'];
-                                $serviceid = $row['ServiceID'];
-                                $usermode = $row['UserMode'];
+                                    $amount = $row['Amount'];
+                                    $transrefid = $row['TransactionReferenceID'];
+                                    $transtype = $row['TransactionType'];
+                                    $serviceid = $row['ServiceID'];
+                                    $usermode = $row['UserMode'];
                                 }
                             }    
                             
@@ -128,13 +131,13 @@ if($connected)
                             }
                             else
                             {
-                            foreach ($transreqlog as $row) {
-                                $amount = $row['Amount'];
-                                $transrefid = $row['TransactionReferenceID'];
-                                $transtype = $row['TransactionType'];
-                                $serviceid = $row['ServiceID'];
-                                $usermode = $row['UserMode'];
-                                $transsummaryid = $row['TransactionSummaryID'];
+                                foreach ($transreqlog as $row) {
+                                    $amount = $row['Amount'];
+                                    $transrefid = $row['TransactionReferenceID'];
+                                    $transtype = $row['TransactionType'];
+                                    $serviceid = $row['ServiceID'];
+                                    $usermode = $row['UserMode'];
+                                    $transsummaryid = $row['TransactionSummaryID'];
                                 }
                             }
                         break;    
@@ -301,7 +304,7 @@ if($connected)
                          $cardnumber = $value['LoyaltyCardNumber'];
                          $source = $value['RequestSource'];
                      }
-
+                  
                      $loyaltyResult = $loyalty->getCardInfo2($cardnumber, $cardinfo, 1);
                      
                      $obj_result = json_decode($loyaltyResult);
@@ -335,7 +338,7 @@ if($connected)
                           $services = "Manual Casino Fulfillment: Casino is empty";
                           echo "$services";
                       }
-                }
+                      }
     
           }    
              unset($loyaltyResult);
@@ -989,17 +992,17 @@ if($connected)
                                                     }
                                                     else
                                                     {
-                                                       $msg = 'Manual Casino Filfillment: Failed to Update Terminal Sessions';
+                                                       $msg = 'Manual Casino Fulfillment: Failed to Update Terminal Sessions';
                                                     }
                                             }
                                             else
                                             {
-                                                $msg = 'Manual Casino Filfillment: Failed to Insert/Update Transactional Tables';
+                                                $msg = 'Manual Casino Fulfillment: Failed to Insert/Update Transactional Tables';
                                             }
                                     }
                                     else 
                                     {
-                                        $msg = 'Manual Casino Filfillment: Failed to Update Transactional Tables';
+                                        $msg = 'Manual Casino Fulfillment: Failed to Update Transactional Tables';
                                     }
                                     
                                 }
@@ -1057,17 +1060,17 @@ if($connected)
                                 }
                                 else
                                 {
-                                   $msg = 'Manual Casino Filfillment: Failed to Update Terminal Sessions';
+                                   $msg = 'Manual Casino Fulfillment: Failed to Update Terminal Sessions';
                                 }    
                             }
                             else
                             {
-                                $msg = 'Manual Casino Filfillment: Failed to Update Transaction Status';
+                                $msg = 'Manual Casino Fulfillment: Failed to Update Transaction Status';
                             }
                       }
                       else
                       {
-                          $msg = 'Manual Casino Filfillment: Invalid transaction type';
+                          $msg = 'Manual Casino Fulfillment: Invalid transaction type';
                       }
                   }
               }
@@ -1103,11 +1106,11 @@ if($connected)
                           $ztransdetails = 'Casino Service = '."$serviceid".' Status = '."$status".' TerminalID = '."$cmbterm".' UserMode = '."$usermode";
                           $zauditfunctionID = 73;
                           $maf->logtoaudit($new_sessionid, $zaid, $ztransdetails, $zdate, $vipaddress, $zauditfunctionID);
-                          $msg = 'Manual Casino Filfillment: Successfully Updated. Transaction Tag as Failed';
+                          $msg = 'Manual Casino Fulfillment: Successfully Updated. Transaction Tag as Failed';
                         }
                         else
                         {
-                          $msg = 'Manual Casino Filfillment: Failed to Update Transaction Status';
+                          $msg = 'Manual Casino Fulfillment: Failed to Update Transaction Status';
                         }
                   }
                   elseif($txtsource == 'Launchpad')
@@ -1144,11 +1147,11 @@ if($connected)
                                    $zauditfunctionID = 73;
                                    $maf->logtoaudit($new_sessionid, $zaid, $ztransdetails, $zdate, $vipaddress, $zauditfunctionID);   
 
-                                   $msg = 'Manual Casino Filfillment: Successfully Updated. Transaction Tag as Failed';
+                                   $msg = 'Manual Casino Fulfillment: Successfully Updated. Transaction Tag as Failed';
                                 }
                                 else
                                 {
-                                   $msg = 'Manual Casino Filfillment: Failed to Update Terminal Sessions';
+                                   $msg = 'Manual Casino Fulfillment: Failed to Update Terminal Sessions';
                                 }    
                             }
                             else
@@ -1355,19 +1358,19 @@ if($connected)
                                                     }
                                                     else
                                                     {
-                                                       $msg = 'Manual Casino Filfillment: Failed to Update Terminal Sessions';
+                                                       $msg = 'Manual Casino Fulfillment: Failed to Update Terminal Sessions';
                                                     }
 
 
                                             }
                                             else
                                             {
-                                                $msg = 'Manual Casino Filfillment: Failed to Insert/Update Transactional Tables';
+                                                $msg = 'Manual Casino Fulfillment: Failed to Insert/Update Transactional Tables';
                                             }
                                         }
                                         else
                                         {
-                                            $msg = 'Manual Casino Filfillment: Failed to Update Transactional Tables';
+                                            $msg = 'Manual Casino Fulfillment: Failed to Update Transactional Tables';
                                         }    
                                         
                                 }
@@ -1391,7 +1394,7 @@ if($connected)
                         }
                         else 
                         {
-                            $msg = 'Manual Casino Filfillment: Invalid transaction type';
+                            $msg = 'Manual Casino Fulfillment: Invalid transaction type';
                         }
                   }       
               }

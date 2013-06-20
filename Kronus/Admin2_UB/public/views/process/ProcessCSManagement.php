@@ -20,6 +20,10 @@ if(isset($_SESSION['sessionID']))
 {
     $new_sessionid = $_SESSION['sessionID'];
 }
+else 
+{
+    $new_sessionid = '';
+}
 if(isset($_SESSION['accID']))
 {
     $aid = $_SESSION['accID'];
@@ -186,7 +190,7 @@ if($connected)
                      if(!is_null($statuscode) ||$statuscode == '')
                      {
                          //allows active membership and temp card
-                        if($statuscode == 1 || $statuscode == 5)
+                        if($statuscode == 1 || $statuscode == 5 || $statuscode == 9)
                         {
 
                            $casinoarray_count = count($obj_result->CardInfo->CasinoArray);
@@ -202,6 +206,7 @@ if($connected)
                                              'Birthdate' => $obj_result->CardInfo->Birthdate,
                                              'Casino' => $obj_result->CardInfo->CasinoArray[$ctr]->ServiceID,
                                              'CardNumber' => $obj_result->CardInfo->CardNumber,
+                                             'StatusCode' => $obj_result->CardInfo->StatusCode,
                                          ),
                                    );
 

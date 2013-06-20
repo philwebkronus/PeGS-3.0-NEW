@@ -276,6 +276,10 @@ $vaccesspages = array('5','6');
 
                           $.each(data, function(i,user)
                           {
+                              if(this.StatusCode == 9){
+                                  alert("Card is Banned")
+                              }
+                              
                                if(this.CardNumber == null)
                               {
                                   alert("Invalid Card Number");

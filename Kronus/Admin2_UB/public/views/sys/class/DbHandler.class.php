@@ -432,7 +432,10 @@ class DBHandler
                     $zstatusname = "New Migrated Membership Card";
                 break;
                 case 8:
-                    $zstatusname = "Migrated Temporary Card";
+                    $zstatusname = "Migrated Temporary Card. Please supply the membership card";
+                break;
+                case 9:
+                    $zstatusname = "Card Is Banned";
                 break;
                 default:
                     $zstatusname = "Card Not Found";

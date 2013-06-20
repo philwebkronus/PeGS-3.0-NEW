@@ -184,7 +184,7 @@ $vaccesspages = array('9');
         <br/>
             <table>
                 <tr>
-                    <td><b>Please a choice: </b></td>
+                    <td><b>Please select a choice: </b></td>
                 </tr
                 <tr>
                     <td>

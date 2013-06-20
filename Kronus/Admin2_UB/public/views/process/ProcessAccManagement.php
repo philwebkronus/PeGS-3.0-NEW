@@ -14,6 +14,10 @@ if(isset($_SESSION['sessionID']))
 {
     $new_sessionid = $_SESSION['sessionID'];
 }
+else 
+{
+    $new_sessionid = '';
+}
 if(isset($_SESSION['accID']))
 {
     $aid = $_SESSION['accID'];
@@ -1235,6 +1239,9 @@ if($connected)
            //check access right ID to distinguish audit trail function ID
            switch($_SESSION['acctype'])
            {
+               case 1: //admin
+                   $vauditfunctionID = 75;
+               break;
                case 3: //supervisor
                    $vauditfunctionID = 47;
                break;

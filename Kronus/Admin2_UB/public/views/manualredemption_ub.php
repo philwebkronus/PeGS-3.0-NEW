@@ -380,10 +380,11 @@
                     dataType : 'json',  
                     success : function(data)
                     {
-                          document.getElementById('loading').style.display='block';
-                          document.getElementById('fade3').style.display='block';
                         $.each(data, function(i,user)
                         {
+                            if(this.StatusCode == 9){
+                                alert("Card is Banned");
+                            }
                             //catch if membsership card number is invalid
                             if(this.CardNumber == null)
                             {
@@ -395,6 +396,8 @@
                             }
                             else
                             {
+                                document.getElementById('loading').style.display='block';
+                                document.getElementById('fade3').style.display='block';
                                   /* if membership card is valid, get casino array
                                    * then display pop-up box showing the card information
                                    * as well as its actual balance

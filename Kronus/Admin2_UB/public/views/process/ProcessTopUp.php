@@ -293,7 +293,7 @@ if($connected)
                     
                     if(!is_null($statuscode) ||$statuscode == '')
                     {
-                            if($statuscode == 1 || $statuscode == 5)
+                            if($statuscode == 1 || $statuscode == 5  || $statuscode == 9)
                             {
                                $casinoarray_count = count($obj_result->CardInfo->CasinoArray);
 
@@ -308,6 +308,7 @@ if($connected)
                                                  'Birthdate' => $obj_result->CardInfo->Birthdate,
                                                  'Casino' => $obj_result->CardInfo->CasinoArray[$ctr]->ServiceID,
                                                  'CardNumber' => $obj_result->CardInfo->CardNumber,
+                                                 'StatusCode' => $obj_result->CardInfo->StatusCode,
                                              ),
                                        );
 
@@ -585,7 +586,7 @@ if($connected)
                                 {
                                     $status = 2;
                                     $otopup->updateManualRedemptionFailedub($status, $lastmrid);
-                                    $msg = $withdraw['ErrorMessage']; //error message when initially calling the RTG API
+                                    $msg = "Manual Redemption: ".$withdraw['ErrorMessage']; //error message when initially calling the RTG API
                                 }
                                 break;
                             case strstr($servername, "MG"): //if provider is MG, then
@@ -656,7 +657,7 @@ if($connected)
                                 {
                                     $status = 2;
                                     $otopup->updateManualRedemptionFailedub($status, $lastmrid);
-                                    $msg = $withdraw['ErrorMessage']; //error message when initially calling the MG API
+                                    $msg = "Manual Redemption: ".$withdraw['ErrorMessage']; //error message when initially calling the MG API
                                 }
                                 break;
                             case strstr($servername, "PT"): //if provider is PT, then
@@ -724,7 +725,7 @@ if($connected)
                                 {
                                     $status = 2;
                                     $otopup->updateManualRedemptionFailedub($status, $lastmrid);
-                                    $msg = $withdraw['ErrorMessage']; //error message when calling the withdrawal result
+                                    $msg = "Manual Redemption: ".$withdraw['ErrorMessage']; //error message when calling the withdrawal result
                                 }
                                 break;
                             default :

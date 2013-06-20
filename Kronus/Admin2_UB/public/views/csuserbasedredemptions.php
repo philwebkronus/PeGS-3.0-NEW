@@ -187,7 +187,7 @@ if(isset($_SESSION['acctype']))
 //                            
 //                             getMembershipandCasinoInfo(url);            
 //                    } 
-//                    //with membership card provided.
+//                    //with membership card provided
 //                    else {
                             
                             if(document.getElementById('txtcardnumber').value == "" || document.getElementById('txtcardnumber').length == 0)
@@ -215,6 +215,9 @@ if(isset($_SESSION['acctype']))
                     dataType : 'json',  
                     success : function(data){
                         $.each(data, function(i,user){
+                            if(this.StatusCode == 9){
+                                      alert("Card is Banned");
+                            }
                             if(this.CardNumber == null)
                             {
                                 alert("User Based Redemption: Invalid Card Number");

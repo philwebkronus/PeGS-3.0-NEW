@@ -1104,7 +1104,7 @@ class ProcessTopUpGenerateReports extends BaseProcess{
                     
         if(!is_null($statuscode) ||$statuscode == '')
         {
-                if($statuscode == 1 || $statuscode == 5)
+                if($statuscode == 1 || $statuscode == 5 || $statuscode == 9)
                 {
                    $casinoarray_count = count($obj_result->CardInfo->CasinoArray);
 

@@ -212,6 +212,9 @@ if(isset($_SESSION['acctype']))
 
                           $.each(data, function(i,user)
                           {
+                              if(this.StatusCode == 9){
+                                  alert("Card is Banned")
+                              }
                                if(this.CardNumber == null)
                               {
                                   alert("Invalid Card Number");

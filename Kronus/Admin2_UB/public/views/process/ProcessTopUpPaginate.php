@@ -463,7 +463,7 @@ class ProcessTopUpPaginate extends BaseProcess {
                     
         if(!is_null($statuscode) ||$statuscode == '')
         {
-                if($statuscode == 1 || $statuscode == 5)
+                if($statuscode == 1 || $statuscode == 5 || $statuscode == 9)
                 {
                    $casinoarray_count = count($obj_result->CardInfo->CasinoArray);
 
@@ -483,6 +483,7 @@ class ProcessTopUpPaginate extends BaseProcess {
                                      'Casino' => $servicename,
                                      'CardNumber' => $obj_result->CardInfo->CardNumber,
                                      'Login' => $obj_result->CardInfo->CasinoArray[$ctr]->ServiceUsername,
+                                     'StatusCode' => $obj_result->CardInfo->StatusCode,
                                  ),
                            );
 
@@ -493,7 +494,7 @@ class ProcessTopUpPaginate extends BaseProcess {
                   }
                   else
                   {
-                   $services = "User Based Redemption: Casino is empty";
+                   $services = "Playing Balance per Membership Card: Casino is empty";
                    echo "$services";
                   }
                }
@@ -501,7 +502,7 @@ class ProcessTopUpPaginate extends BaseProcess {
                {  
                    //check membership card status
                    $statusmsg = $topup->membershipcardStatus($statuscode);
-                   $services = "User Based Redemption: ".$statusmsg;
+                   $services = "Playing Balance per Membership Card: ".$statusmsg;
                    echo "$services";
                }
         }
@@ -510,7 +511,7 @@ class ProcessTopUpPaginate extends BaseProcess {
             $statuscode = 100;
             //check membership card status
             $statusmsg = $topup->membershipcardStatus($statuscode);
-            $services = "User Based Redemption: ".$statusmsg;
+            $services = "Playing Balance per Membership Card: ".$statusmsg;
             echo "$services";
         }
      $topup->close();      

@@ -17,6 +17,10 @@ if(isset($_SESSION['sessionID']))
 {
     $new_sessionid = $_SESSION['sessionID'];
 }
+else 
+{
+    $new_sessionid = '';
+}
 if(isset($_SESSION['accID']))
 {
     $aid = $_SESSION['accID'];
@@ -572,7 +576,7 @@ if($connected)
 
             if(!is_null($statuscode) ||$statuscode == '')
             {
-                    if($statuscode == 1 || $statuscode == 5)
+                    if($statuscode == 1 || $statuscode == 5 || $statuscode == 9)
                     {
                        $casinoarray_count = count($obj_result->CardInfo->CasinoArray);
 
@@ -589,6 +593,7 @@ if($connected)
                                          'Casino' => $servicename,
                                          'CardNumber' => $obj_result->CardInfo->CardNumber,
                                          'Login' => $obj_result->CardInfo->CasinoArray[$ctr]->ServiceUsername,
+                                         'StatusCode' => $obj_result->CardInfo->StatusCode,
                                      ),
                                );
 
@@ -599,7 +604,7 @@ if($connected)
                       }
                       else
                       {
-                       $services = "Error: Casino is empty";
+                       $services = "Active Session and Terminal Balance: Casino is empty";
                        echo "$services";
                       }
                    }
@@ -607,7 +612,7 @@ if($connected)
                    {  
                        //check membership card status
                        $statusmsg = $orptoptr->membershipcardStatus($statuscode);
-                       $services = "Error: ".$statusmsg;
+                       $services = "Active Session and Terminal Balance: ".$statusmsg;
                       echo "$services";
 
                    }                        
@@ -618,13 +623,13 @@ if($connected)
                 $statuscode = 100;
                 //check membership card status
                    $statusmsg = $orptoptr->membershipcardStatus($statuscode);
-                   $services = "Error: ".$statusmsg;
+                   $services = "Active Session and Terminal Balance: ".$statusmsg;
                   echo "$services";
             }
 
         }
         else {
-            echo "Error: Invalid input detected.";
+            echo "Active Session and Terminal Balance: Invalid input detected.";
         }
        
    }

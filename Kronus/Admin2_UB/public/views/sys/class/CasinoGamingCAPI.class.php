@@ -371,7 +371,7 @@ class CasinoGamingCAPI {
     {
         $casinoApiHandler = $this->configureMG($serviceID, $url, $capiusername, 
                                                $capipassword, $capiplayername, $capiserverID);
-        $accExists = $casinoApiHandler->GetAccountInfo($login);
+        $accExists = $casinoApiHandler->GetAccountInfo($login,$password = '');
         return $accExists;
     }
     

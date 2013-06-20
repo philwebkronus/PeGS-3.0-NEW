@@ -129,7 +129,7 @@ if($connected)
                     $statuscode = $obj_result->CardInfo->StatusCode;
 
                     //validate if membership card is invalid
-                    if($statuscode == 1 || $statuscode == 5){
+                    if($statuscode == 1 || $statuscode == 5 || $statuscode == 9){
                         
                         $casino = $obj_result->CardInfo->CasinoArray;
                         $casinoarray_count = count($casino);
@@ -207,7 +207,7 @@ if($connected)
                     if(!is_null($statuscode))
                     {
                        //allow active memeebership card and active temp account
-                        if($statuscode == 1 || $statuscode == 5){
+                        if($statuscode == 1 || $statuscode == 5 || $statuscode == 9){
 
                             $casinoarray_count = count($obj_result->CardInfo->CasinoArray);
 
@@ -228,6 +228,7 @@ if($connected)
                                                   'Casino' => $casinoname,
                                                   'Login' => $obj_result->CardInfo->CasinoArray[$ctr]->ServiceUsername,
                                                   'CardNumber' => $obj_result->CardInfo->Username,
+                                                  'StatusCode' => $obj_result->CardInfo->StatusCode,  
                                                 )
                                     );
 
@@ -281,7 +282,7 @@ if($connected)
                     if(!is_null($statuscode))
                     {
                        //allow active memeebership card and active temp account
-                        if($statuscode == 1 || $statuscode == 5){
+                        if($statuscode == 1 || $statuscode == 5 || $statuscode == 9){
 
                             $casinoarray_count = count($obj_result->CardInfo->CasinoArray);
 
@@ -302,6 +303,7 @@ if($connected)
                                                   'Casino' => $casinoname,
                                                   'Login' => $obj_result->CardInfo->CasinoArray[$ctr]->ServiceUsername,
                                                   'CardNumber' => $obj_result->CardInfo->Username,
+                                                  'StatusCode' => $obj_result->CardInfo->StatusCode,
                                                 )
                                     );
 

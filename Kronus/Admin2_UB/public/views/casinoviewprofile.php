@@ -97,7 +97,7 @@ $vaccesspages = array('8');
                                     +"<th>Service Alias</th>"
                                     +"<th>Service Code</th>"
                                     +"<th>Service Description</th>"
-                                    +"<th>User Mode</th>"
+                                    +"<th>Mode</th>"
                                     +"<th>Status</th>"
                                     +"<th>Casino</th>"
                                     +"<th>Action</th>"
