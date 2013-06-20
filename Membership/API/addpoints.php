@@ -49,7 +49,7 @@ if((isset($_GET['cardnumber']) && ctype_alnum($_GET['cardnumber'])) //The member
     
     $iscreditable = trim($_GET['iscreditable']);
     
-    $APIResult = $_ProcessPoints->AddPoints( $cardnumber, $transactionid, $transdate, $paymenttype, $transactiontype, $amount, $siteid, $serviceid, $terminallogin, $vouchercode, $iscreditable=0 );
+    $APIResult = $_ProcessPoints->AddPoints( $cardnumber, $transactionid, $transdate, $paymenttype, $transactiontype, $amount, $siteid, $serviceid, $terminallogin, $iscreditable, $vouchercode );
     
     if($APIResult && !App::HasError())
     {

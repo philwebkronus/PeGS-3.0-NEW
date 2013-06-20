@@ -14,7 +14,7 @@ class ProcessPointsAPI extends BaseEntity
         $this->DatabaseType = DatabaseTypes::PDO;
     }
     
-    public function AddPoints( $cardnumber, $transactionid, $transdate, $paymenttype, $transactiontype, $amount, $siteid, $serviceid, $terminallogin, $vouchercode="", $iscreditable=0)
+    public function AddPoints( $cardnumber, $transactionid, $transdate, $paymenttype, $transactiontype, $amount, $siteid, $serviceid, $terminallogin, $iscreditable, $vouchercode="")
     {
         
         if(is_array($this->GetCardInfo( $cardnumber )))
@@ -31,19 +31,31 @@ class ProcessPointsAPI extends BaseEntity
             $arrEntries['TransactionType'] = $transactiontype;
             $arrEntries['TerminalLogin'] = $terminallogin;
             
-            $iscreditable == 1 ? $arrEntries['VoucherCode'] = $vouchercode : "";            
+            //$isVoucher == 1 ? $arrEntries['VoucherCode'] = $vouchercode : "";
+            if(isset($vouchercode) && !empty($vouchercode))
+                $hasVoucher = true;
+            else
+                $hasVoucher = false;
+            
             $arrEntries['IsCreditable'] = $iscreditable;            
             
             $arrEntries['Amount'] = $amount;
             $arrEntries['SiteID'] = $siteid;
             $arrEntries['ServiceID'] = $serviceid;
-            
-            //Points conversion = ;
-            $conversion = $this->GetPointsConversion(); 
-            $PointValue = $conversion[0]['Value'];
-            $EquivalentPoint = $conversion[0]['EquivalentPoints'];
-            
-            $Points = ( $amount / $PointValue) * $EquivalentPoint;
+           
+            if(($hasVoucher && $iscreditable == 2) || $transactiontype == 'W')
+            {
+                $Points = 0;
+            } 
+            else
+            {
+                //Points conversion ;
+                $conversion = $this->GetPointsConversion(); 
+                $PointValue = $conversion[0]['Value'];
+                $EquivalentPoint = $conversion[0]['EquivalentPoints'];
+
+                $Points = ( $amount / $PointValue) * $EquivalentPoint;
+            }
             
             $arrEntries['Points'] = $Points;
             
