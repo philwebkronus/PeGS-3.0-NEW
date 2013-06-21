@@ -332,8 +332,12 @@ if($connected)
                                         break;
                                     }   
                                     
-                                          //convert current balance to number format
-                                          $balance = number_format($balance,2,'.',',');
+                                        //convert current balance to number format
+                                        if(is_string($balance['Balance'])) {
+                                        $balance = number_format((double)$balance,2, '.', ',');
+                                        }  else {
+                                            $balance = number_format($balance,2, '.', ',');
+                                        }
 
                                           //convert status code to status name
                                           switch ($serviceStatus){
