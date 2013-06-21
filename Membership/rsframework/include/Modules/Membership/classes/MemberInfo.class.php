@@ -60,7 +60,8 @@ class MemberInfo extends BaseEntity
         $query = "SELECT mi.MID, mi.FirstName, mi.LastName , mi.Birthdate, mi.IdentificationNumber, ri.IdentificationName
                             FROM memberinfo as mi
                             INNER JOIN ref_identifications as ri ON ri.IdentificationID = mi.IdentificationID
-                            WHERE CONCAT(mi.FirstName, ' ', mi.LastName) LIKE  '%".$name."%'";
+                            WHERE mi.FirstName like '%".$name."%' OR mi.LastName like '%".$name."%' OR
+                            CONCAT(mi.FirstName, ' ', mi.LastName) LIKE  '%".$name."%'";
         return parent::RunQuery($query);
     }
     

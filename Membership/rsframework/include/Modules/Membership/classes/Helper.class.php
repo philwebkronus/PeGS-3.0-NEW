@@ -40,10 +40,10 @@ class Helper extends BaseEntity
         $mailer->Body .= "<br /><br />Regards,";
         $mailer->Body .= "<br />e-Games";
         
-        $mailer->From = "membership@philweb.com.ph";
+        $mailer->From = "membership@egamescasino.ph";
         $mailer->FromName = "Philweb Membership";
         $mailer->Host = "localhost";
-        $mailer->Subject = "E-GAMES CASINO MEMBERSHIP NOTIFICATION";
+        $mailer->Subject = "E-Games Membership";
         $mailer->Send();
     }
     
