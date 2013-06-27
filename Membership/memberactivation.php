@@ -91,6 +91,7 @@ $txtEmail = new TextBox("txtEmail", "txtEmail", "Email");
 $txtEmail->ShowCaption = false;
 $txtEmail->Length = 60;
 $txtEmail->Size = 30;
+$txtEmail->CssClass = "validate[custom[email]]";
 $fproc->AddControl($txtEmail);
 
 $txtMobile = new TextBox("txtMobile", "txtMobile", "Mobile Number");

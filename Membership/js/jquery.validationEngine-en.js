@@ -86,6 +86,12 @@
                     "regex": /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/,
                     "alertText": "* Invalid email address"
                 },
+                "emailAlphanumeric": {
+                    // HTML5 compatible email regex ( http://www.whatwg.org/specs/web-apps/current-work/multipage/states-of-the-type-attribute.html#    e-mail-state-%28type=email%29 )
+                    //"regex": /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
+                    "regex": /^([_a-zA-Z0-9\'-]+(\.[_a-zA-Z0-9\'-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.(([0-9]{1,3})|([a-zA-Z]{2,3})?|(name))|[a-zA-Z0-9]+)$/,
+                    "alertText": "* Invalid Input, must be an email or alphanumeric input"
+                },
                 "integer": {
                     "regex": /^[\-\+]?\d+$/,
                     "alertText": "* Not a valid integer"
