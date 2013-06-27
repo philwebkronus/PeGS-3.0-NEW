@@ -374,7 +374,11 @@ class PlayTechAPI
 		
 		$this->_fullUri = $this->_fullUri . '/' . $_methodFileName . $this->_queryString;
                 
-		
+                
+                
+		/** 
+                 * Disable creation of PT Account 06/25/13
+                 * prior to deployment rules that no pt transactions must be made
 		$response = $this->SubmitData( $this->_fullUri );	
                 
                 if($response[0] == 200){
@@ -385,6 +389,12 @@ class PlayTechAPI
                     
                     $this->_error = $response[0];
                 }
+                * 
+                */
+                
+                //always pass OK, to continue transaction in membership, remove this
+                //if PT will be deployed 06/25/13
+                $this->_APIresponse = array('transaction'=>array('@attributes'=>array('result'=>'OK')));
                 
                 return $this->_APIresponse;	
 	}	

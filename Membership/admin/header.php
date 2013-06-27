@@ -52,10 +52,7 @@ $timezone = $curdate->GetCurrentDateFormat('O (T)');
             <link rel="stylesheet" type="text/css" href="css/ie.css" media="screen" />
         <![endif]-->
         <script language="javascript" type="text/javascript">
-            $(document).ready(
-            
-            function() 
-            {
+            $(document).ready(function() {
                 $("#MainForm").validationEngine();
             });
             
@@ -64,7 +61,16 @@ $timezone = $curdate->GetCurrentDateFormat('O (T)');
 //            function fadeErrorMsg() {
 //                $("#errormessage").fadeOut('slow');
 //            }
-            
+
+        function preventBackandForward()
+        {
+            window.history.forward();
+        }
+        
+        preventBackandForward();
+        window.inhibited_load=preventBackandForward;
+        window.onpageshow=function(evt){if(evt.persisted)preventBackandForward();};
+        window.inhibited_unload=function(){void(0);};
         </script>
     </head>
     <body>        

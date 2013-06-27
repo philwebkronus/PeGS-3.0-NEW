@@ -61,6 +61,17 @@ class MemberCards extends BaseEntity
         return $result;
     }
     
+    public function getCardNumberUsingMID( $MID )
+    {
+        $query = "SELECT mc.CardNumber
+                            FROM membercards mc
+                            INNER JOIN cards c ON c.CardID = mc.CardID
+                            WHERE mc.MID = $MID AND mc.Status IN(1,5)";
+        
+        $result = parent::RunQuery($query);
+        return $result[0]['CardNumber'];
+    }
+    
     public function getMIDByCard( $cardnumber )
     {
         $query = "SELECT mc.MID
@@ -81,8 +92,8 @@ class MemberCards extends BaseEntity
                         WHEN 2 THEN 'Green'
                     END AS CardType
             FROM membercards m
-                INNER JOIN cards c ON m.CardID = m.CardID AND m.CardNumber = c.CardNumber
-            WHERE m.MID = $MID and m.Status IN (1,5)";
+                INNER JOIN cards c ON c.CardID = m.CardID AND m.CardNumber = c.CardNumber
+            WHERE m.MID = $MID";
        
         $result = parent::RunQuery($query);
         
@@ -99,7 +110,7 @@ class MemberCards extends BaseEntity
         $query = "SELECT m.Status, mc.MemberCardID, mc.CardNumber
                             FROM membership.members as m
                             INNER JOIN ".$this->TableName." as mc ON mc.MID = m.MID
-                            WHERE mc.Status IN(1,5,9) AND m.MID =".$MID;
+                            WHERE mc.Status IN(1,5,9) AND m.Status IN(1,5) AND m.MID =".$MID;
        
         $result = parent::RunQuery($query);
         return $result;

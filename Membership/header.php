@@ -81,12 +81,20 @@ if (isset($customtags) && count($customtags) > 0)
                 <link rel="stylesheet" type="text/css" href="css/ie9.css" />
     <![endif]-->
     <script language="javascript" type="text/javascript">
-        $(document).ready(
-        function() 
-        {
+        $(document).ready(function(){
             $("#MainForm").validationEngine();
         });
-            
+        
+        function preventBackandForward()
+        {
+            window.history.forward();
+        }
+        
+        preventBackandForward();
+        window.inhibited_load=preventBackandForward;
+        window.onpageshow=function(evt){if(evt.persisted)preventBackandForward();};
+        window.inhibited_unload=function(){void(0);};
+
     </script>
     <?php 
     if($useCustomHeader)

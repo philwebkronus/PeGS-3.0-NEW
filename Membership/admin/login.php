@@ -66,74 +66,88 @@ if($fproc->IsPostBack)
         // Valid and active account
         if($status == AccountStatus::Active)
         {
-            $result = $accounts->authenticate($username,$password);
-
-            if(count($result) > 0)
-            {            
-                //Get account info
-                $row = $result[0];
-
-                $accounttypeid = $row['AccountTypeID'];
-                $_SESSION['userinfo']['Username'] = $username;
-                $_SESSION['userinfo']['AID'] = $row['AID'];
-                $_SESSION['userinfo']['AccountTypeID'] = $accounttypeid;
-
-                if ($accounttypeid == AccountTypes::Cashier) //Cashier
-                {
-                    $arrsiteaccounts = $_SiteAccounts->getSiteIDByAID($row['AID']);
-                    $siteaccount = $arrsiteaccounts[0];
-                    $_SESSION['userinfo']['SiteID'] = $siteaccount['SiteID'];
-                }
-
-                //Get user access
-                $access = $accessrights->getAccessRights($accounttypeid);
+            //check account number of login attempts
+            $loginattempts = $accounts->getAttemptCount($username);
+            if($loginattempts >= 3)
+            {
+                App::SetErrorMessage('Access Denied. Please contact system administrator to have your account unlocked.');
+                $_Log->logEvent(AuditFunctions::LOGIN, $username . ':Account Locked', array('ID'=>"", 'SessionID'=>""));  
+            } else {
                 
-                if(count($access) > 0)
-                {
-                    // Insert into account session
-                    $arrEntry['SessionID'] = uniqid();
-                    $arrEntry['AID'] = $row['AID'];
-                    $arrEntry['RemoteIP'] = $_SERVER['REMOTE_ADDR'];
-                    $arrEntry['DateStarted'] = "now_usec()";
-                    
-                    $_AccountSessions->Insert($arrEntry);
-                    
-                    $_SESSION['menus'] = $access;
-                    $_SESSION['userinfo']['SessionID'] = $arrEntry['SessionID'];
-                   
-                    $defaultpage = $accessrights->getDefaultPage($accounttypeid);
+                $result = $accounts->authenticate($username,$password);
 
-                    if(isset($defaultpage) && count($defaultpage) > 0)
+                if(count($result) > 0)
+                {            
+                    //Get account info
+                    $row = $result[0];
+
+                    $accounttypeid = $row['AccountTypeID'];
+                    $_SESSION['userinfo']['Username'] = $username;
+                    $_SESSION['userinfo']['AID'] = $row['AID'];
+                    $_SESSION['userinfo']['AccountTypeID'] = $accounttypeid;
+
+                    if ($accounttypeid == AccountTypes::Cashier) //Cashier
                     {
-                        $link = $defaultpage[0]['Link'];
+                        $arrsiteaccounts = $_SiteAccounts->getSiteIDByAID($row['AID']);
+                        $siteaccount = $arrsiteaccounts[0];
+                        $_SESSION['userinfo']['SiteID'] = $siteaccount['SiteID'];
+                    }
 
-                        if($link == '#')
+                    //Get user access
+                    $access = $accessrights->getAccessRights($accounttypeid);
+
+                    if(count($access) > 0)
+                    {
+                        // Insert into account session
+                        $arrEntry['SessionID'] = uniqid();
+                        $arrEntry['AID'] = $row['AID'];
+                        $arrEntry['RemoteIP'] = $_SERVER['REMOTE_ADDR'];
+                        $arrEntry['DateStarted'] = "now_usec()";
+
+                        $_AccountSessions->Insert($arrEntry);
+
+                        $_SESSION['menus'] = $access;
+                        $_SESSION['userinfo']['SessionID'] = $arrEntry['SessionID'];
+
+                        $updateresults = $accounts->updateAttemptcounts(0, $username);
+                        
+                        $defaultpage = $accessrights->getDefaultPage($accounttypeid);
+
+                        if(isset($defaultpage) && count($defaultpage) > 0)
                         {
-                            //Get landing submenu page
-                            $defaultpage = $accessrights->getLandingSubPage($accounttypeid);
                             $link = $defaultpage[0]['Link'];
 
+                            if($link == '#')
+                            {
+                                //Get landing submenu page
+                                $defaultpage = $accessrights->getLandingSubPage($accounttypeid);
+                                $link = $defaultpage[0]['Link'];
+
+                            }
+
+                            URL::Redirect($link);
                         }
 
-                        URL::Redirect($link);
+                        $_Log->logEvent(AuditFunctions::LOGIN, $username . ':Successful', array('ID'=>$row['AID'], 'SessionID'=>$arrEntry['SessionID']));
                     }
-                    
-                    $_Log->logEvent(AuditFunctions::LOGIN, $username . ':Successful', array('ID'=>$row['AID'], 'SessionID'=>$arrEntry['SessionID']));
+                    else
+                    {
+                        App::SetErrorMessage('Account has no access rights');
+                        $_Log->logEvent(AuditFunctions::LOGIN, $username .':No access rights', array('ID'=>$row['AID'], 'SessionID'=>$arrEntry['SessionID']));
+                    }
                 }
                 else
                 {
-                    App::SetErrorMessage('Account has no access rights');
-                    $_Log->logEvent(AuditFunctions::LOGIN, $username .':No access rights', array('ID'=>$row['AID'], 'SessionID'=>$arrEntry['SessionID']));
+                    $loginattempts+=1;
+                    $updateresults = $accounts->updateAttemptcounts($loginattempts, $username);
+                    if($loginattempts >=3 ){
+                        App::SetErrorMessage('Access Denied. Please contact system administrator to have your account unlocked.');
+                        $_Log->logEvent(AuditFunctions::LOGIN, $username . ':Account Locked', array('ID'=>"", 'SessionID'=>""));
+                    } else {
+                        App::SetErrorMessage('Invalid Account');
+                        $_Log->logEvent(AuditFunctions::LOGIN, $username . ':Invalid account', array('ID'=>"", 'SessionID'=>""));
+                    }
                 }
-                
-                
-                
-
-            }
-            else
-            {
-                App::SetErrorMessage('Invalid Account');
-                $_Log->logEvent(AuditFunctions::LOGIN, $username . ':Invalid account', array('ID'=>"", 'SessionID'=>""));
             }
 
         }

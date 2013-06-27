@@ -35,6 +35,24 @@ class MemberInfo extends BaseEntity
         
     }
     
+    public function getMIDFNameUsingEmail( $email )
+    {
+        
+        $query = "SELECT MID, FirstName, LastName FROM ".$this->TableName."
+                  WHERE Email = '$email' ";
+        $result = parent::RunQuery($query);
+        return $result;
+    }
+    
+    public function getEmailFNameUsingMID( $MID )
+    {
+        
+        $query = "SELECT Email, FirstName, LastName FROM ".$this->TableName."
+                  WHERE MID = $MID ";
+        $result = parent::RunQuery($query);
+        return $result;
+    }
+    
     public function getMemberInfoByUsername( $Username )
     {
         

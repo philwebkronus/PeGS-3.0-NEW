@@ -18,6 +18,35 @@ class Members extends BaseEntity {
         $this->Identity = "MID";
         $this->DatabaseType = DatabaseTypes::PDO;
     }
+    
+    public function updatePasswordUsingMID($MID,$password)
+    {
+        $query = "UPDATE $this->TableName SET Password = md5('$password') WHERE MID = $MID";
+        parent::ExecuteQuery($query);
+        if($this->HasError){
+            App::SetErrorMessage($this->getError());
+            return false;
+        }
+    }
+    
+    public function updateForChangePasswordUsingMID($MID, $changepassword)
+    {
+        $query = "UPDATE $this->TableName SET ForChangePassword = $changepassword WHERE MID = $MID";
+        parent::ExecuteQuery($query);
+        if($this->HasError){
+            App::SetErrorMessage($this->getError());
+            return false;
+        }
+    }
+    
+    public function getForChangePasswordUsingCardNumber($CardNumber)
+    {
+        $query = "SELECT m.ForChangePassword FROM $this->TableName m
+                            INNER JOIN loyaltydb.membercards mc ON mc.MID =m.MID
+                            WHERE mc.CardNumber = '$CardNumber' ";
+        $result = parent::RunQuery($query);
+        return $result[0]['ForChangePassword'];
+    }
 
     function Migrate($arrMembers, $arrMemberInfo, $AID, $siteid, $loyaltyCard, $newCard, $oldCardEmail, $isVIP, $isTemp = true) 
     {
@@ -219,7 +248,18 @@ class Members extends BaseEntity {
                     }
                 } else {
                     $this->RollBackTransaction();
-                    return array('status'=>'ERROR','error'=>'Failed migrating member details.');
+                    
+                    if (strpos(App::GetErrorMessage(), " Integrity constraint violation: 1062 Duplicate entry") > 0)
+                    {
+                        App::SetErrorMessage("Email already exists. Please choose a different email address.");
+                        
+                        return array('status'=>'ERROR','error'=>'Failed migrating member details');               
+                    }
+                    else
+                    {
+                        return array('status'=>'ERROR','error'=>'Failed migrating member details.');                        
+                    }
+
                 }
             } else {
                 $this->RollBackTransaction();

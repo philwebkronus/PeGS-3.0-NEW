@@ -129,8 +129,10 @@ if($fproc->IsPostBack)
                 <div class="home-login-form-input"><?php echo $btnLogin; ?></div>
                 <div class="clearfix"></div>
             </div>
-            
-            <div id="home-login-form-link">Not yet a member? Sign up <a href="registration.php">here</a></div>
+            <div id="home-login-form-link">
+                <a href="forgotpassword.php">Forgot Password?</a><br/>
+                Not yet a member? Sign up <a href="registration.php">here</a>
+            </div>
             
         </div>
     </div>

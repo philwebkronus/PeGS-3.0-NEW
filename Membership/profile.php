@@ -401,7 +401,7 @@ if ($fproc->IsPostBack)
         $("#UpdateProfileDialog").dialog({
             autoOpen: false,
             modal: true,
-            width: '800',
+            width: '850',
             title : 'PROFILE UPDATE',
             closeOnEscape: true,
             
@@ -441,22 +441,21 @@ if ($fproc->IsPostBack)
 <div id="home-login-box">      
     <div id="home-login-wrapper">
         <!--<div id="home-page-login-form">-->
-            <div class="profile">
+            <div class="profile" >
             <p>Hi <?php echo strtoupper($nick); ?>! [<a href="logout.php">Logout</a>]</p>
-            <ul style="list-style: none;">
+            <ul style="text-indent: -20px;  list-style: none;">
                 <li><strong><?php echo strtoupper($memberName); ?></strong></li>
                 <li>Card Number: <?php echo $cardNumber; ?></li>
                 <li>Mobile Number: <?php echo $mobileNumber; ?></li>
                 <li>Email Address: <?php echo $email; ?></li>
-            </ul>
-            <ul style="list-style: none;">
+<!--            </ul>
+            <ul style="list-style: none;">-->
                 <li>Current Points: <?php echo $currentPoints; ?></li>
                 <li>Bonus Points: <?php echo $bonusPoints; ?></li>
                 <li>Redeemed Points: <?php echo $redeemedPoints; ?></li>
                 <li>Lifetime Points: <?php echo $lifetimePoints; ?></li>
+                <li><?php echo $lastPlay; ?></li>
             </ul>
-
-            <?php echo $lastPlay; ?>
             <?php echo $btnUpdate; ?>
 
         </form> <!-- End form declared in the header -->
@@ -508,7 +507,8 @@ if ($fproc->IsPostBack)
         <td><?php echo $rdoGroupGender->Radios[0]; ?><?php echo $rdoGroupGender->Radios[1]; ?></td>
     </tr>
     <tr>
-        <td colspan="2"></td>
+        <td>ID No.*</td>
+        <td><?php echo $txtIDPresented; ?></td>
         <td>Birthdate*</td>
         <td><?php echo $dtBirthDate; ?></td>
     </tr>      
@@ -519,8 +519,7 @@ if ($fproc->IsPostBack)
             <em><php echo $memberfile; ?></em>
         </td>-->
         <td>ID Presented*</td>
-        <td><?php echo $txtIDPresented; ?><br/>
-            <?php echo $cboIDSelection; ?></td>
+        <td><?php echo $cboIDSelection; ?></td>
         <td>Age</td>
         <td><?php echo $txtAge; ?></td>
     </tr>

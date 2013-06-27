@@ -10,7 +10,8 @@ include('sessionmanager.php');
     Membership Administration
 </div>
 <div class="mainmenu">
-    <ul class="dropdown">
+    <div class="nav">
+    <ul>
         <?php foreach ($usermenu as $menu)
         { ?>
             <li><a href="<?php echo $menu['Link']; ?>" class="<?php echo $currentpage == $menu['Name']? "selectedmenu": ""; ?>"><?php echo $menu['Name']; ?></a>
@@ -23,7 +24,7 @@ include('sessionmanager.php');
                 if (is_array($submenus) && count($submenus) > 0)
                 {
                     ?>
-                    <ul class="sub_menu">
+                    <ul>
                         <?php foreach ($submenus as $submenu)
                         { ?>
                             <li><a href="<?php echo $submenu['Link']; ?>" ><?php echo $submenu['Name']; ?></a></li>
@@ -34,6 +35,7 @@ include('sessionmanager.php');
         </li>
         <li><a href="logout.php">Logout</a></li>
     </ul>
+    </div>
 </div>
 <!-- div align="right" id="menu_container">
     <ul class="dropdown">

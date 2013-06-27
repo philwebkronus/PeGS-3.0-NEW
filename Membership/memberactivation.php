@@ -87,6 +87,18 @@ $txtAge->CssClass = "validate[required]";
 $txtAge->ReadOnly = true;
 $fproc->AddControl($txtAge);
 
+$txtEmail = new TextBox("txtEmail", "txtEmail", "Email");
+$txtEmail->ShowCaption = false;
+$txtEmail->Length = 60;
+$txtEmail->Size = 30;
+$fproc->AddControl($txtEmail);
+
+$txtMobile = new TextBox("txtMobile", "txtMobile", "Mobile Number");
+$txtMobile->ShowCaption = false;
+$txtMobile->Length = 13;
+$txtMobile->Size = 30;
+$fproc->AddControl($txtMobile);
+
 $txtplayerIDNumber = new TextBox("txtplayerIDNumber", "txtplayerIDNumber", "I.D: ");
 $txtplayerIDNumber->Length = 30;
 $txtplayerIDNumber->Size = 31;
@@ -186,6 +198,8 @@ if ((isset($_GET["oldnumber"]) && (htmlentities($_GET["oldnumber"])))
                 $MemberInfo["OccupationID"] = 1;
                 $MemberInfo["IdentificationID"] = $ComboID->SubmittedValue;
                 $MemberInfo["IdentificationNumber"] = $txtplayerIDNumber->SubmittedValue;
+                $MemberInfo["Email"] = $txtEmail->SubmittedValue;
+                $MemberInfo["MobileNumber"] = $txtMobile->SubmittedValue;
                 $MemberInfo["DateCreated"] = $dateCreated;
                 $rdoGroupGender->SubmittedValue == 1 ? $MemberInfo['Gender'] = 1 : $MemberInfo['Gender'] = 2;
 
@@ -302,10 +316,10 @@ if ((isset($_GET["oldnumber"]) && (htmlentities($_GET["oldnumber"])))
     }
 
     function displaytime(){
-        serverdate.setSeconds(serverdate.getSeconds()+1)
-        var datestring=montharray[serverdate.getMonth()]+"-"+padlength(serverdate.getDate())+"-"+serverdate.getFullYear()
-        var timestring=padlength(serverdate.getHours())+":"+padlength(serverdate.getMinutes())+" "+dn
-        document.getElementById("servertime").innerHTML=datestring+" "+timestring
+        serverdate.setSeconds(serverdate.getSeconds()+1);
+        var datestring=montharray[serverdate.getMonth()]+"-"+padlength(serverdate.getDate())+"-"+serverdate.getFullYear();
+        var timestring=padlength(serverdate.getHours())+":"+padlength(serverdate.getMinutes());
+        document.getElementById("servertime").innerHTML=datestring+" "+timestring;
     }
 
     window.onload=function(){
@@ -317,21 +331,21 @@ if ((isset($_GET["oldnumber"]) && (htmlentities($_GET["oldnumber"])))
     <h1> Membership Card Activation </h1>
     <table>
         <tr>
-            <td width="20%" align="right"> VIP Card No </td>
+            <td align="left"> VIP Card No :</td>
             <td width="20%"><strong><?php echo $LoyatyCardNumber; ?></strong></td>
-            <td width="30%" align="right"> Membership Card No:</td>
+            <td width="30%" align="left"> &nbsp;&nbsp;&nbsp;Membership Card No :</td>
             <td width="30%"><strong><?php echo $NewMembershipCardNumber; ?></strong></td>
         </tr>
         <tr>
-            <td align="right">Card Type </td>
+            <td align="left">Card Type :</td>
             <td><strong><?php echo $CardName; ?></strong></td>
-            <td align="right">Issuing Cafe</td>
+            <td align="left">&nbsp;&nbsp;&nbsp;Issuing Cafe :</td>
             <td><strong><?php echo $siteName; ?></strong></td>
         </tr>
         <tr>
-            <td align="right">Current Points </td>
+            <td align="left">Current Points :</td>
             <td><strong><?php echo $CardPoints; ?></strong></td>
-            <td align="right">Date and Time </td>
+            <td align="left">&nbsp;&nbsp;&nbsp;Date and Time :</td>
             <td><strong><span id="servertime"></span></strong></td>
         </tr>
     </table>
@@ -340,22 +354,30 @@ if ((isset($_GET["oldnumber"]) && (htmlentities($_GET["oldnumber"])))
         <tr>
             <td>Name</td>
             <td><?php echo $txtplayername; ?></td>
-            <td colspan="2">&nbsp;&nbsp;ID Number</td>
+            <td>ID No</td>
+            <td><?php echo $txtplayerIDNumber . '<br />' . $ComboID; ?></td>
         </tr>
         <tr>
             <td>Birthdate</td>
             <td><?php echo $dtBirthDate; ?></td>
-            <td>&nbsp;</td>
-            <td><?php echo $txtplayerIDNumber . '<br />' . $ComboID; ?></td>
+            <td>Email Address</td>
+            <td><?php echo $txtEmail; ?></td>
+            <td colspan="2">&nbsp;</td>
         </tr>
         <tr>
             <td>Age</td>
-            <td><?php echo $txtAge; ?></td>           
-            <td colspan="2">&nbsp;</td>
+            <td><?php echo $txtAge; ?></td>  
+            <td>Mobile Number</td>
+            <td><?php echo $txtMobile; ?></td>
+            <td>&nbsp;</td>
         </tr>
         <tr>
             <td>Gender</td>
             <td><?php echo $rdoGroupGender->Radios[0]; ?> <?php echo $rdoGroupGender->Radios[1]; ?></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
             <td>&nbsp;</td>
             <td><?php echo $CancelButton; ?> <?php echo $ConfirmButton; ?> </td>
         </tr>

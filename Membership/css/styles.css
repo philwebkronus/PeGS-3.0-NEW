@@ -90,3 +90,8 @@ body, table
 #main td{
     vertical-align: top;
 }
+
+td.labelname {
+    font-size: 14px; 
+    /*font-weight: bold;*/
+}

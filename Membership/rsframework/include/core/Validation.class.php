@@ -141,7 +141,7 @@ class Validation extends BaseObject
 
     function validateAlphaNumeric($input)
     {
-        $result = ereg ("^[A-Za-z0-9]+$", $input);
+        $result = preg_match ("/^[A-Za-z0-9]+$/", $input);
         if ($result)
         {
             return true;

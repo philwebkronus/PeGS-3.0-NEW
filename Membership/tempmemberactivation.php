@@ -134,7 +134,7 @@ if((isset($_GET["tempnumber"]) && (htmlentities($_GET["tempnumber"]))) &&
   
         $username = $row["UserName"];
         $membername = $row["FirstName"]." ".$row["MiddleName"]." ".$row["LastName"];
-        $createdon = date("m-d-Y h:i A", strtotime($row["DateCreated"]));
+        $createdon = date("m-d-Y H:i", strtotime($row["DateCreated"]));
         $birthdate = $row["Birthdate"];
         $gender = $row["Gender"];
         $idpresented = $row['IdentificationNumber'];
@@ -311,9 +311,10 @@ if((isset($_GET["tempnumber"]) && (htmlentities($_GET["tempnumber"]))) &&
         $('#dialog').dialog(
         {
             modal: true,
-            show: 'fade',
+            //show: 'fade',
+            height: 250,
             width: 350,
-            hide: 'fade',
+            //hide: 'fade',
             resizable: false,
             draggable: false,
             buttons: {OK: function(){$(this).dialog('close'); window.close()}}
@@ -382,7 +383,7 @@ if((isset($_GET["tempnumber"]) && (htmlentities($_GET["tempnumber"]))) &&
     function displaytime(){
         serverdate.setSeconds(serverdate.getSeconds()+1)
         var datestring=montharray[serverdate.getMonth()]+"-"+padlength(serverdate.getDate())+"-"+serverdate.getFullYear()
-        var timestring=padlength(serverdate.getHours())+":"+padlength(serverdate.getMinutes())+" "+dn
+        var timestring=padlength(serverdate.getHours())+":"+padlength(serverdate.getMinutes())
         document.getElementById("servertime").innerHTML=datestring+" "+timestring
     }
 
@@ -394,21 +395,21 @@ if((isset($_GET["tempnumber"]) && (htmlentities($_GET["tempnumber"]))) &&
 <h1>Membership Card Activation</h1>
 <table>
     <tr>
-        <td width="20%">Temp Account Code </td>
-        <td width="30%"><strong><?php echo $tempAccountCode; ?></strong></td>
-        <td width="25%">Membership Card No </td>
-        <td width="25%"><strong><?php echo $MembershipCardNumber; ?></strong></td>
+        <td align="left" width="20%">Temp Acct Code :</td>
+        <td width="20%"><strong><?php echo $tempAccountCode; ?></strong></td>
+        <td width="30%" align="left">&nbsp;&nbsp;&nbsp;&nbsp;Membership Card No :</td>
+        <td width="30%"><strong><?php echo $MembershipCardNumber; ?></strong></td>
     </tr>
     <tr>
-        <td>Created On </td>
-        <td><strong><?php echo $createdon; ?></strong></td>
-        <td>Issuing Cafe </td>
+        <td align="left">Created On :</td>
+        <td width="25%"><strong><?php echo $createdon; ?></strong></td>
+        <td align="left">&nbsp;&nbsp;&nbsp;&nbsp;Issuing Cafe :</td>
         <td><strong><?php echo $sitename; ?></strong></td>
     </tr>
     <tr>
-        <td>Current Points </td>
+        <td align="left">Current Points :</td>
         <td><strong><?php  echo $currentpoints; ?></strong></td>
-        <td>Date and Time </td>
+        <td align="left">&nbsp;&nbsp;&nbsp;&nbsp;Date and Time :</td>
         <td><strong><span id="servertime"></span></strong></td>
     </tr>
 </table>
@@ -417,18 +418,17 @@ if((isset($_GET["tempnumber"]) && (htmlentities($_GET["tempnumber"]))) &&
     <tr>
         <td>Name</td>
         <td><?php echo $txtName; ?></td>
-        <td colspan="2">&nbsp;&nbsp;ID Number</td>
+        <td>ID No</td>
+        <td><?php echo $txtIDPresented; ?> <br /> <?php echo $cboIDSelection; ?></td>
     </tr>
     <tr>
         <td>Birthdate</td>
         <td><?php echo $dtBirthDate; ?></td>
-        <td>&nbsp;</td>
-        <td><?php echo $txtIDPresented; ?> <br /> <?php echo $cboIDSelection; ?></td>
+
     </tr>
     <tr>
         <td>Age</td>
         <td><?php echo $txtAge; ?></td>
-        <td colspan="2">&nbsp</td>
     </tr>
     <tr>
         <td>Gender</td>
@@ -446,13 +446,13 @@ if($isSubmitted){
 
     <!-- <script>alert('Temporary Account Migration Successful!'); </script>-->
     <div id="dialog" title="Membership">
-    <center><p><b>Temporary Account Migration Successful!</b></p></center>
+        <p>Temporary Account Migration Successful!</p>
     </div>
     <?php
     }else{?>
         <!-- <script>alert('Temporary Account Migration Failed!');</script>-->
     <div id="dialog1" title="Membership">
-    <center><p><b>Temporary Account Migration Failed!</b></p></center>
+        <p>Temporary Account Migration Failed!</p>
     </div>
     <?php
     }

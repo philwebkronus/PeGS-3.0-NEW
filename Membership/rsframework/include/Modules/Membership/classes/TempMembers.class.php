@@ -163,7 +163,23 @@ class TempMembers extends BaseEntity
         
     }
     
-
+    /**
+     * Check if email was already verified in temp db
+     * @author elperez
+     * @date 06/25/13
+     * @param str $email
+     * @return obj
+     */
+    public function chkTmpVerifiedEmailAddress($email){
+        $query = "SELECT COUNT(m.MID) ctrexist FROM membership_temp.members m 
+                INNER JOIN membership_temp.memberinfo mi ON m.MID = mi.MID
+                WHERE m.IsVerified = 1 AND mi.Email = '$email'";
+        
+        $result = parent::RunQuery($query);
+        
+        return $result;
+    }
+    
 }
 
 ?>

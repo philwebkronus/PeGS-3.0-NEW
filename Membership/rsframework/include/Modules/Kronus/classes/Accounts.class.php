@@ -43,5 +43,20 @@ class Accounts extends BaseEntity
         
         return $result[0]['Status']; 
     }
+    
+    public function getAttemptCount($username){
+        $query = "SELECT LoginAttempts FROM accounts WHERE UserName = '$username'";
+        $result = parent::RunQuery($query); 
+        return $result[0]['LoginAttempts']; 
+    }
+    
+    public function updateAttemptcounts($loginattempts,$username){
+        $query = "UPDATE accounts SET LoginAttempts = ".$loginattempts." WHERE UserName = '$username'";
+        parent::ExecuteQuery($query);
+        if($this->HasError){
+            App::SetErrorMessage($this->getError());
+            return false;
+        }
+    }
 }
 ?>

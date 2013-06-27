@@ -213,7 +213,7 @@ $fproc->AddControl($chkSMSNotification);
 
 $chkConfirmAge = new CheckBox("chkConfirmAge", "chkConfirmAge", "");
 $chkConfirmAge->ShowCaption = true;
-$chkConfirmAge->Caption = "I hereby confirm that I am above 21 years and have read and accepted the <a href='#'>Terms and Conditions</a>.";
+$chkConfirmAge->Caption = "I hereby confirm that I am 21 years old and above and have read and accepted the <a href='#'>Terms and Conditions</a>.";
 $chkConfirmAge->CssClass = 'validate[required]';
 $fproc->AddControl($chkConfirmAge);
 
@@ -368,20 +368,20 @@ if ($fproc->IsPostBack)
         <td><?php echo $rdoGroupGender->Radios[0]; ?> <?php echo $rdoGroupGender->Radios[1]; ?></td>
     </tr>
     <tr>
-        <td>ID Presented*</td>
-        <td><?php echo $txtIDPresented; ?><br/>
-            <?php echo $cboIDSelection; ?></td>
+        <td>ID No.*</td>
+        <td><?php echo $txtIDPresented; ?></td>
         <td>Birthdate*</td>
         <td><?php echo $dtBirthDate; ?></td>
     </tr>
     <tr>
-        <td colspan="2">How did you hear about e-Games?<br/>
-            <?php echo $cboHowDidYouHear; ?></td>
+        <td>ID Presented*</td>
+        <td><?php echo $cboIDSelection; ?></td>
         <td>Age</td>
         <td><?php echo $txtAge; ?></td>
     </tr>
     <tr>
-        <td colspan="2">&nbsp;</td>
+        <td colspan="2">How did you hear about e-Games?<br/>
+            <?php echo $cboHowDidYouHear; ?></td>
         <td>Nationality</td>
         <td><?php echo $cboNationality; ?></td>
     </tr>
@@ -414,7 +414,7 @@ if ($fproc->IsPostBack)
     { ?>
         <?php if ($isSuccess)
         { ?>
-            <p>
+            <p style="text-align: justify; text-justify: inter-word;">
                 You have successfully registered! <br /><br />
                 An active Temporary Account will be sent to your email address or mobile number,
                 which can be used to start session/credit points in the absence of Membership Card.<br /><br />
@@ -428,7 +428,7 @@ if ($fproc->IsPostBack)
             if ($isEmailUnique)
             {
                 ?>
-                <p>
+                <p style="text-align: justify; text-justify: inter-word;">
                     Registration Failed. A problem was encountered during registration. Please retry or contact Customer Support.
                 </p>
                 <?php
@@ -436,7 +436,7 @@ if ($fproc->IsPostBack)
             if (!$isEmailUnique)
             {
                 ?>
-                <p>
+                <p style="text-align: justify; text-justify: inter-word;">
                     Registration Failed<br /><br />
                     Email already exists. Please choose a different email address.
                 </p>
