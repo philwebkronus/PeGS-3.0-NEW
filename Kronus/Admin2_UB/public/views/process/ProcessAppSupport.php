@@ -1187,7 +1187,7 @@ if($connected)
 
 
                                    //Call API to get Account Info, for RTG casino
-                                   $vapiResult = $_CasinoGamingPlayerAPI->getCasinoAccountInfo($login, $vserviceID, $cashierurl);
+                                   $vapiResult = $_CasinoGamingPlayerAPI->getCasinoAccountInfo($login, $vserviceID, $cashierurl,'');
 
                                    //Verify if API Call was successful
                                    if(isset($vapiResult['IsSucceed']) && $vapiResult['IsSucceed'] == true)
@@ -2037,7 +2037,7 @@ if($connected)
 
 
                                    //Call API to get Account Info, for RTG casino
-                                   $vapiResult = $_CasinoGamingPlayerAPI->getCasinoAccountInfo($login, $vserviceID, $cashierurl);
+                                   $vapiResult = $_CasinoGamingPlayerAPI->getCasinoAccountInfo($login, $vserviceID, $cashierurl,'');
 
                                    //Verify if API Call was successful
                                    if(isset($vapiResult['IsSucceed']) && $vapiResult['IsSucceed'] == true)
@@ -2645,7 +2645,47 @@ if($connected)
                     echo json_encode($msg);
                     unset($count,$site,$txtoldspyder,$txtspyder);
                 exit;    
-           break;    
+           break;
+           //Update Casher Version
+           case 'UpCashierVersion':
+               
+                $site = $_POST['cmbsite'];
+                $txtcversion = $_POST['txtcversion'];
+                $txtoldcversion = $_POST['txtoldcversion'];
+
+                if($site != '-1' || $txtcversion = '' || $txtoldcversion = ''){
+                        //check if spyder status has changed
+                         if($txtcversion == $txtoldcversion){
+                           $msg = 'Cashier URL Management: Cashier Version did not change';  
+                         }
+                         else
+                         {
+                             //update spyder status in sites table
+                              $upspy = $oas->updateCashierVersion($txtcversion, $site);
+                              if($upspy > 0)
+                              {
+                                  $msg = 'Cashier URL Management: Update Successful';
+
+                                  $vtransdetails = "Cashier URL Management: Update Cashier Version of Site ID ".$site;
+                                  $vauditfuncID = 76;
+                                  $oas->logtoaudit($new_sessionid, $aid, $vtransdetails, $vdate, $vipaddress, $vauditfuncID); //insert in audittrail
+                              }
+                              else
+                              {
+                                  $msg = 'Cashier URL Management: Failed to Update Cashier Version';
+                              }    
+                         }  
+                                      
+                }
+                else
+                {
+                    $msg = 'Cashier URL Management: All Details are Required';
+                }    
+                    echo json_encode($msg);
+                    unset($site,$txtcversion,$txtoldcversion);
+                exit;    
+           break; 
+           
            default :
                 $msg = "Page not found";
                 $_SESSION['mess'] = $msg;
@@ -2900,6 +2940,20 @@ if($connected)
         $vsiteID = $_POST['cmbsites'];
         $rresult = $oas->getSpyder($vsiteID);
         $rresult = $rresult['Spyder'];
+        echo json_encode($rresult);
+        unset($rresult);
+        $oas->close();
+        exit;
+    }
+    
+    elseif(isset ($_POST['cmbsitez']))
+    {
+        $vsiteID = $_POST['cmbsitez'];
+        $rresult = $oas->getCashierVersion($vsiteID);
+        $rresult = $rresult['CashierVersion'];
+        if($rresult == null){
+            $rresult = 0;
+        }
         echo json_encode($rresult);
         unset($rresult);
         $oas->close();

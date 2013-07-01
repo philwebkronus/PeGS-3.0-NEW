@@ -612,6 +612,21 @@ class ApplicationSupport extends DBHandler
            return $this->fetchData();
      }
      
+     /**
+    * @author Gerardo V. Jagolino Jr.
+    * @param $zsiteID
+    * @return int
+    * get Cashier version of a certain site
+    */ 
+     function getCashierVersion($zsiteID)
+     {
+           $stmt = "SELECT CashierVersion FROM sites WHERE SiteID = ?";
+           $this->prepare($stmt);
+           $this->bindparameter(1, $zsiteID);
+           $this->execute($stmt);
+           return $this->fetchData();
+     }
+     
     /**
     * @author Gerardo V. Jagolino Jr.
     * @param $zsiteID
@@ -642,6 +657,22 @@ class ApplicationSupport extends DBHandler
            $stmt = "UPDATE sites SET Spyder = ? WHERE SiteID = ?";
            $this->prepare($stmt);
            $this->bindparameter(1, $spyder);
+           $this->bindparameter(2, $zsiteID);
+           $this->execute($stmt);
+           return $this->rowCount();
+     }
+     
+     /**
+    * @author Gerardo V. Jagolino Jr.
+    * @param $spyder, $zsiteID
+    * @return int
+    * update spyder status
+    */ 
+     function updateCashierVersion($cversion, $zsiteID)
+     {
+           $stmt = "UPDATE sites SET CashierVersion = ? WHERE SiteID = ?";
+           $this->prepare($stmt);
+           $this->bindparameter(1, $cversion);
            $this->bindparameter(2, $zsiteID);
            $this->execute($stmt);
            return $this->rowCount();
@@ -917,6 +948,12 @@ class ApplicationSupport extends DBHandler
 //        $zroot = realpath($zdirectory . '../../../../../' ) . '/';
 //        $zrealfolder = $zroot . $cashierlogpath;  
         return $cashierlogpath; //modified 02/23/11, get the realpath from web.config.php
+    }
+    
+        //Admin Logs Monitoring: get admin's logs path
+    function getadminlogspath($adminlogpath)
+    {
+        return $adminlogpath; //modified 05/31/13, get the realpath from web.config.php
     }
     
     //for switching of servers
