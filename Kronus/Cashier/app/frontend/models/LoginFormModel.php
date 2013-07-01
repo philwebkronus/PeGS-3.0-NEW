@@ -54,7 +54,9 @@ class LoginFormModel extends MI_Model{
             'CashierMachineInfoModel',
             'RefAccountTypesModel',
             'SiteAccountsModel',
+            'SitesModel',
             ));
+        
         $accountsModel = new AccountsModel();
         $accountSessionsModel = new AccountSessionsModel();
         $accountDetailsModel = new AccountDetailsModel();
@@ -63,6 +65,7 @@ class LoginFormModel extends MI_Model{
         $cashierMachineInfoModel = new CashierMachineInfoModel();
         $cashierMachineCountsModel = new CashierMachineCountsModel();
         $auditTrailModel = new AuditTrailModel();
+        $sitesModel = new SitesModel();
         
         $login_result = $accountsModel->login($this->username, $this->password);
         $attempt_count = $accountsModel->queryattempt($this->username);
@@ -148,6 +151,17 @@ class LoginFormModel extends MI_Model{
         
         $siteid = $siteAccountsModel->getSiteID($login_result['AID']);
         $_SESSION['AccountSiteID'] = $siteid; 
+        
+        $cashierVersion = $sitesModel->getCashierVersion($siteid);
+        
+        //check if cashier version accessed by cashier was valid
+        if(Mirage::app()->param['cashier_version'] != $cashierVersion){
+            $accountSessionsModel->deleteSession($login_result['AID']);
+            session_destroy();          
+            $this->close();
+            $this->setAttributeErrorMessage('message', "You are trying to access the system using a wrong URL/web address. Please use the specific URL/web address assigned to your site specifically to access the system.");
+            return false; 
+        }
         
         $transdetails = $this->username;
         if($login_result['WithPasskey'] > 0) {

@@ -46,4 +46,19 @@ class SitesModel extends MI_Model {
         $result = $this->find();
         return $result['Spyder'];
     }
+    
+    /**
+     * Get cashier version used per site
+     * @author Edson Perez
+     * @date 06-28-13
+     * @param int $siteid
+     * @return int cashier version
+     */
+    public function getCashierVersion($siteid){
+        $sql = 'SELECT CashierVersion FROM sites WHERE SiteID = :site_id';
+        $param = array(':site_id'=>$siteid);
+        $this->exec($sql,$param);
+        $result = $this->find();
+        return $result['CashierVersion'];
+    }
 }

@@ -100,6 +100,7 @@ return array(
             array('https://api18.valueactive.eu/philweb1_CAPI/CasinoAPI.aspx', 2238), //test environment
             array('https://api18.valueactive.eu/philweb1_CAPI/CasinoAPI.aspx', 2238), // MG Server 1 (NCR)
             array('https://api18.valueactive.eu/philweb1_CAPI/CasinoAPI.aspx', 2238), // MG Server 2 (Provincial)
+			'https://202.44.103.231/GPRIMESZNVJFROAPSERT/processor/ProcessorAPI/Cashier.asmx',
         ),
         'game_api' => array(
             'https://202.44.102.31/ECFTESTFDGUFTUGEHVHF/CasinoAPI/Games.asmx',
@@ -179,7 +180,8 @@ return array(
         'orange'=>array(400000,600000),
         'blue'=>600000,
         'red'=>200000,
-        'sys_version'=>'cashier_ub.pagcoregames.com'
+        'sys_version'=>'cashier_ub.pagcoregames.com',
+		'cashier_version'=>3 //current kronus cashier version
     ),
 );
 
