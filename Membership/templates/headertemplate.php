@@ -63,7 +63,7 @@
 
             <div id="header-image-container">
 
-                <img src="http://staging.pegs.com/wp-content/themes/pegs_theme/img/banner.jpg">                    
+                <img src="http://www.egamescasino.ph/wp-content/themes/pegs_theme/img/banner.jpg">                    
             </div>
 
             <div id="main-content">
