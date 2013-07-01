@@ -14,6 +14,7 @@ App::LoadModuleClass("Membership", "AccountTypes");
 App::LoadModuleClass("Membership", "Nationality");
 App::LoadModuleClass("Membership", "Occupation");
 App::LoadModuleClass("Membership", "Referrer");
+App::LoadModuleClass("Membership", "Members");
 
 // Load Controls
 App::LoadControl("DatePicker");
@@ -33,7 +34,8 @@ $autocomplete = false;
 $isOpen = 'false';
 $useCustomHeader = true;
 
-$_Members = new TempMembers();
+$_TempMembers = new TempMembers();
+$_Members = new Members();
 $_AccountTypes = new AccountTypes();
 
 $txtUserName = new TextBox("txtUserName", "txtUserName", "Username");
@@ -275,7 +277,21 @@ if ($fproc->IsPostBack)
         $chkEmailNotification->SubmittedValue == 1 ? $arrMemberInfo['EmailSubscription'] = 1 : $arrMemberInfo['EmailSubscription'] = 0;
         $chkSMSNotification->SubmittedValue == 1 ? $arrMemberInfo['SMSSubscription'] = 1 : $arrMemberInfo['SMSSubscription'] = 0;
 
-        $_Members->Register($arrMembers, $arrMemberInfo);
+        //check if email is active and existing in live membership db
+        $activeEmail = $_Members->chkActiveVerifiedEmailAddress(trim($arrMemberInfo['Email']));
+        if($activeEmail > 0){
+            App::SetErrorMessage("Email already exists. Please choose a different email address.");
+            $isSuccess = false;
+        }
+        
+        //check if email is already verified in temp table
+        $tempEmail = $_TempMembers->chkTmpVerifiedEmailAddress(trim($arrMemberInfo['Email']));
+        if($tempEmail > 0){
+            App::SetErrorMessage("Email already verified. Please choose a different email address.");
+            $isSuccess = false;
+        }
+        
+        $_TempMembers->Register($arrMembers, $arrMemberInfo);
 
         $isOpen = 'true';
         if (!App::HasError())

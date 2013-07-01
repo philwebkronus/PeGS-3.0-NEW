@@ -168,16 +168,16 @@ class TempMembers extends BaseEntity
      * @author elperez
      * @date 06/25/13
      * @param str $email
-     * @return obj
+     * @return int
      */
     public function chkTmpVerifiedEmailAddress($email){
-        $query = "SELECT COUNT(m.MID) ctrexist FROM membership_temp.members m 
-                INNER JOIN membership_temp.memberinfo mi ON m.MID = mi.MID
+        $query = "SELECT COUNT(m.MID) ctrtemp FROM members m 
+                INNER JOIN memberinfo mi ON m.MID = mi.MID
                 WHERE m.IsVerified = 1 AND mi.Email = '$email'";
         
         $result = parent::RunQuery($query);
         
-        return $result;
+        return $result[0]['ctrtemp'];
     }
     
 }

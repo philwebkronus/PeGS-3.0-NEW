@@ -390,6 +390,21 @@ class Members extends BaseEntity {
         $result = parent::RunQuery($query);
         return $result[0]['UserName'];
     }
+    
+    /**
+     * Check if email was already verified in live membership db
+     * @author elperez
+     * @date 06/25/13
+     * @param str $email
+     * @return int
+     */
+    public function chkActiveVerifiedEmailAddress($email){
+        $query = "SELECT COUNT(mi.MID) ctractive FROM memberinfo mi
+                  WHERE mi.Email = '$email'";       
+        $result = parent::RunQuery($query);
+        
+        return $result[0]['ctractive'];
+    }
 }
 
 ?>

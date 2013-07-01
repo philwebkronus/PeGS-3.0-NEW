@@ -100,6 +100,108 @@ class MemberInfo extends BaseEntity
         return parent::RunQuery($query);
     }
     
+    /*
+     * Description: Get All Members' Info with locked status
+     * @author: Junjun S. Hernandez
+     * DateCreated: June 24, 2013 04:02:50PM
+     */
+    public function getLockedMemberInfo()
+    {
+        
+        $query = "SELECT m.MID, m.UserName, m.Status, mi.FirstName, mi.MiddleName, mi.LastName
+                            FROM members AS m
+                            INNER JOIN memberinfo AS mi
+                            ON m.MID = mi.MID
+                            WHERE m.Status = 3";
+        
+        return parent::RunQuery($query);
+    }
+    
+    /*
+     * Description: Get Member Info using MID with a locked status
+     * @author: Junjun S. Hernandez
+     * DateCreated: June 24, 2013 04:10:03PM
+     */
+    public function getLockedMemberInfoByMID( $MID )
+    {
+        
+        $query = "SELECT m.MID, m.UserName, m.Status, mi.FirstName, mi.MiddleName, mi.LastName
+                            FROM members AS m
+                            INNER JOIN memberinfo AS mi
+                            ON m.MID = mi.MID
+                            WHERE m.Status = 3
+                            AND mi.MID = $MID";
+        
+        return parent::RunQuery($query);
+    }
+    
+    /*
+     * Description: Get the number of Active Account Status
+     * @author: Junjun S. Hernandez
+     * DateCreated: June 27, 2013 11:40:05AM
+     */
+    public function getActiveAccountStatus()
+    {
+        
+        $query = "SELECT COUNT(MID), Status FROM members WHERE Status = 1";
+        
+        return parent::RunQuery($query);
+    }
+    
+    /*
+     * Description: Get the number of Banned Account Status
+     * @author: Junjun S. Hernandez
+     * DateCreated: June 27, 2013 11:41:43AM
+     */
+    public function getBannedAccountStatus()
+    {
+        
+        $query = "SELECT COUNT(MID), Status FROM members WHERE Status = 5";
+        
+        return parent::RunQuery($query);
+    }
+    
+    /*
+     * Description: Get the number of both Active and Banned Account Status
+     * @author: Junjun S. Hernandez
+     * DateCreated: June 27, 2013 01:07:35PM
+     */
+    public function getActiveAndBannedAccountStatus()
+    {
+        
+        $query = "SELECT COUNT(MID) FROM members WHERE Status IN (1, 5)";
+        
+        return parent::RunQuery($query);
+    }
+    
+    /*
+     * Description: Get the number of both Active and Banned Account Status
+     * @author: Junjun S. Hernandez
+     * DateCreated: June 27, 2013 01:07:35PM
+     */
+    public function getBannedAccounts($MID)
+    {
+        $query = "SELECT mi.MID, mi.DateVerified, m.DateCreated FROM memberinfo AS mi
+                            INNER JOIN banninghistory AS m
+                            ON mi.MID = m.MID WHERE mi.MID = $MID";
+        
+        return parent::RunQuery($query);
+    }
+    
+    /*
+     * Description: Get the number of both Active and Banned Account Status
+     * @author: Junjun S. Hernandez
+     * DateCreated: June 27, 2013 01:07:35PM
+     */
+    public function getBannedAccountsDetails($MID)
+    {
+        $query = "SELECT mi.Birthdate, mi.Gender, n.Name FROM memberinfo AS mi
+                            INNER JOIN ref_nationality AS n
+                            ON mi.NationalityID = n.NationalityID WHERE mi.MID = $MID";
+        
+        return parent::RunQuery($query);
+    }
+    
     public function updateProfile( $arrMembers, $arrMemberInfo)
     {
         
