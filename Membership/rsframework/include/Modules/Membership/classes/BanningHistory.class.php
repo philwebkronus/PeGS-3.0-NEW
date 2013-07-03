@@ -24,5 +24,22 @@ class BanningHistory extends BaseEntity
         return parent::RunQuery($query);
     }
     
+    public function getMaxBannedDate($MID)
+    {
+        $query = "SELECT DateCreated FROM $this->TableName
+                        WHERE MID = ".$MID." AND Status = 1 
+                        ORDER BY DateCreated desc LIMIT 1";
+        $result = parent::RunQuery($query);
+        return $result[0]['DateCreated'];
+    }
+    
+    public function getBanningHistoryUsingMemCardID($MemCardID)
+    {
+        $query = "SELECT MemberCardID, Status, DateCreated, Remarks
+                            FROM membership.banninghistory
+                            WHERE MemberCardID =".$MemCardID;
+        return parent::RunQuery($query);
+    }
+    
 }
 ?>

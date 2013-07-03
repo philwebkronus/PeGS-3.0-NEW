@@ -39,6 +39,19 @@ class Members extends BaseEntity {
         }
     }
     
+    public function getAllBannedAccountsInfo()
+    {
+        $query = "SELECT m.MID, mc.MemberCardID, mc.CardNumber, mi.DateCreated as DateCreated, YEAR(current_date)-YEAR(mi.Birthdate) as Age, 
+                            mi.Gender, rn.Name as Nationality
+                            FROM $this->TableName m
+                            INNER JOIN loyaltydb.membercards mc ON mc.MID = m.MID
+                            INNER JOIN membership.memberinfo mi ON mi.MID = mc.MID
+                            INNER JOIN membership.ref_nationality rn ON rn.NationalityID = mi.NationalityID
+                            WHERE m.Status = 5 AND mc.Status = 9 ORDER BY mc.CardNumber ASC;";
+        $result = parent::RunQuery($query);
+        return $result;
+    }
+
     public function getForChangePasswordUsingCardNumber($CardNumber)
     {
         $query = "SELECT m.ForChangePassword FROM $this->TableName m

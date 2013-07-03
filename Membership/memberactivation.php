@@ -170,6 +170,7 @@ if ((isset($_GET["oldnumber"]) && (htmlentities($_GET["oldnumber"])))
 
     $dtBirthDate->SelectedDate = $oldCardBirthdate;
     $txtplayername->Text = $oldCardName;
+    $txtEmail->Text = $oldCardEmail;
 
     if ($isValid) {
         $rdoGroupGender->SetSelectedValue($oldCardGender);

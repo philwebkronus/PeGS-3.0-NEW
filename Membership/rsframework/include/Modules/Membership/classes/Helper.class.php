@@ -75,8 +75,8 @@ class Helper extends BaseEntity
         $mailer->Subject = "E-Games Membership";
         $mailer->Send();
     }
-
-        public static function removeDash($str){
+    
+    public static function removeDash($str){
         return str_replace("-", "", $str);
     }
     

@@ -100,40 +100,6 @@ class MemberInfo extends BaseEntity
         return parent::RunQuery($query);
     }
     
-    /*
-     * Description: Get All Members' Info with locked status
-     * @author: Junjun S. Hernandez
-     * DateCreated: June 24, 2013 04:02:50PM
-     */
-    public function getLockedMemberInfo()
-    {
-        
-        $query = "SELECT m.MID, m.UserName, m.Status, mi.FirstName, mi.MiddleName, mi.LastName
-                            FROM members AS m
-                            INNER JOIN memberinfo AS mi
-                            ON m.MID = mi.MID
-                            WHERE m.Status = 3";
-        
-        return parent::RunQuery($query);
-    }
-    
-    /*
-     * Description: Get Member Info using MID with a locked status
-     * @author: Junjun S. Hernandez
-     * DateCreated: June 24, 2013 04:10:03PM
-     */
-    public function getLockedMemberInfoByMID( $MID )
-    {
-        
-        $query = "SELECT m.MID, m.UserName, m.Status, mi.FirstName, mi.MiddleName, mi.LastName
-                            FROM members AS m
-                            INNER JOIN memberinfo AS mi
-                            ON m.MID = mi.MID
-                            WHERE m.Status = 3
-                            AND mi.MID = $MID";
-        
-        return parent::RunQuery($query);
-    }
     
     /*
      * Description: Get the number of Active Account Status
@@ -170,34 +136,6 @@ class MemberInfo extends BaseEntity
     {
         
         $query = "SELECT COUNT(MID) FROM members WHERE Status IN (1, 5)";
-        
-        return parent::RunQuery($query);
-    }
-    
-    /*
-     * Description: Get the number of both Active and Banned Account Status
-     * @author: Junjun S. Hernandez
-     * DateCreated: June 27, 2013 01:07:35PM
-     */
-    public function getBannedAccounts($MID)
-    {
-        $query = "SELECT mi.MID, mi.DateVerified, m.DateCreated FROM memberinfo AS mi
-                            INNER JOIN banninghistory AS m
-                            ON mi.MID = m.MID WHERE mi.MID = $MID";
-        
-        return parent::RunQuery($query);
-    }
-    
-    /*
-     * Description: Get the number of both Active and Banned Account Status
-     * @author: Junjun S. Hernandez
-     * DateCreated: June 27, 2013 01:07:35PM
-     */
-    public function getBannedAccountsDetails($MID)
-    {
-        $query = "SELECT mi.Birthdate, mi.Gender, n.Name FROM memberinfo AS mi
-                            INNER JOIN ref_nationality AS n
-                            ON mi.NationalityID = n.NationalityID WHERE mi.MID = $MID";
         
         return parent::RunQuery($query);
     }
@@ -277,6 +215,85 @@ class MemberInfo extends BaseEntity
         return $retval;
     }
     
+    /**
+      * @author Gerardo V. Jagolino Jr.
+      * @return object array
+      * get member information of age 21 to 30
+     */
+    public function getAge21to30($gender, $fromdate, $todate)
+    {
+        
+        $query = "SELECT COUNT(mi.MemberInfoID) AS Count FROM memberinfo mi INNER JOIN members m ON m.MID = mi.MID 
+            WHERE YEAR(CURDATE())-YEAR(mi.BirthDate) BETWEEN 21 AND 30 AND mi.Gender = $gender
+                AND mi.DateVerified >= '$fromdate' AND mi.DateVerified <= '$todate' AND m.Status IN (1,5);";
+        
+        return parent::RunQuery($query);
+        
+    }
+    
+    /**
+      * @author Gerardo V. Jagolino Jr.
+      * @return object array
+      * get member information of age 31 to 40
+     */
+    public function getAge31to40($gender, $fromdate, $todate)
+    {
+        
+        $query = "SELECT COUNT(mi.MemberInfoID) AS Count FROM memberinfo mi INNER JOIN members m ON m.MID = mi.MID 
+            WHERE YEAR(CURDATE())-YEAR(mi.BirthDate) BETWEEN 31 AND 40 AND mi.Gender = $gender
+                AND mi.DateVerified >= '$fromdate' AND mi.DateVerified <= '$todate' AND m.Status IN (1,5);";
+        
+        return parent::RunQuery($query);
+        
+    }
+    
+    /**
+      * @author Gerardo V. Jagolino Jr.
+      * @return object array
+      * get member information of age 41 to 50
+     */
+    public function getAge41to50($gender, $fromdate, $todate)
+    {
+        
+        $query = "SELECT COUNT(mi.MemberInfoID) AS Count FROM memberinfo mi INNER JOIN members m ON m.MID = mi.MID 
+            WHERE YEAR(CURDATE())-YEAR(mi.BirthDate) BETWEEN 41 AND 50 AND mi.Gender = $gender
+                AND mi.DateVerified >= '$fromdate' AND mi.DateVerified <= '$todate' AND m.Status IN (1,5);";
+        
+        return parent::RunQuery($query);
+        
+    }
+    
+    /**
+      * @author Gerardo V. Jagolino Jr.
+      * @return object array
+      * get member information of age 51 to 60
+     */
+    public function getAge51to60($gender, $fromdate, $todate)
+    {
+        
+        $query = "SELECT COUNT(mi.MemberInfoID) AS Count FROM memberinfo mi INNER JOIN members m ON m.MID = mi.MID 
+            WHERE YEAR(CURDATE())-YEAR(mi.BirthDate) BETWEEN 51 AND 60 AND mi.Gender = $gender
+                AND mi.DateVerified >= '$fromdate' AND mi.DateVerified <= '$todate' AND m.Status IN (1,5);";
+        
+        return parent::RunQuery($query);
+        
+    }
+    
+    /**
+      * @author Gerardo V. Jagolino Jr.
+      * @return object array
+      * get member information of age 61 and up
+     */
+    public function getAge61andup($gender, $fromdate, $todate)
+    {
+        
+        $query = "SELECT COUNT(mi.MemberInfoID) AS Count FROM memberinfo mi INNER JOIN members m ON m.MID = mi.MID 
+            WHERE YEAR(CURDATE())-YEAR(mi.BirthDate) >= 60 AND mi.Gender = $gender
+                AND mi.DateVerified >= '$fromdate' AND mi.DateVerified <= '$todate' AND m.Status IN (1,5);";
+        
+        return parent::RunQuery($query);
+        
+    }
     
 }
 ?>

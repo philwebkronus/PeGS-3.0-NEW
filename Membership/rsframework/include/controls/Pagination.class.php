@@ -308,7 +308,11 @@ class Pagination
 	/*******************************************************
 	  SET FUNCTIONS
 	*******************************************************/
-	
+	public function gotoFirstPage()
+        {
+            header("Location: ". $this->_getURL(1));
+			exit;
+        }
 	public function setCurrentPage()				// sets the currently accessed page from GET value
 	{
 		$idVar = $this->_getIDGETVarName();

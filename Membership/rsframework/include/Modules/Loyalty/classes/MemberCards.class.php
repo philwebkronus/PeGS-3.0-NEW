@@ -39,6 +39,21 @@ class MemberCards extends BaseEntity
         return $result;
     }
     
+    /*
+     * Description: Get Card Status
+     * @author: gvjagolino
+     * result: object array
+     * DateCreated: 2013-07-01
+     */
+    function getStatusByCard($cardnumber)
+    {
+
+        $query = "SELECT Status FROM membercards WHERE CardNumber='$cardnumber'";
+        
+        $result = parent::RunQuery($query);
+        return $result;
+    }
+    
     public function getMemberPoints( $cardnumber )
     {
         $row = $this->getMIDByCard( $cardnumber );

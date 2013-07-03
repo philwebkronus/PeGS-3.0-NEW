@@ -13,6 +13,7 @@ class FormsProcessor
     var $HasGetVars = false;
     var $arrControls;
     var $ShowCaptions = false;
+    var $IsFormProcessed = false;
 
     function FormsProcessor()
     {
@@ -72,6 +73,7 @@ class FormsProcessor
                     }
                 }
             }
+            $this->IsFormProcessed = true;
         }
         //App::Pr(strpos($_SERVER["HTTP_REFERER"], $_SERVER["REQUEST_URI"]));
         if (isset($_SERVER["HTTP_REFERER"]) && strpos($_SERVER["HTTP_REFERER"], $_SERVER["REQUEST_URI"])=== false || !$this->IsPostBack)

@@ -20,16 +20,16 @@ class RaffleCoupons extends BaseEntity
     
     function Redeem($CouponRedemptionLogID, $rewarditemid, $quantity)
     {
-        $query = "LOCK TABLES rafflecoupons WRITE;";
+        $query = "LOCK TABLES $this->TableName WRITE;";
         parent::ExecuteQuery($query);
         if ($this->HasError)
         {
             App::SetErrorMessage($this->getError());
             return false;
         }
-        
-        $query = "update rafflecoupons set CouponRedemptionLogID = $CouponRedemptionLogID, Status = 1
-               where Status = 0 and RewardItemID = $rewarditemid order by CouponNumber limit $quantity;";
+
+        $query = "update $this->TableName set CouponRedemptionLogID = $CouponRedemptionLogID, Status = 1
+               where Status = 0 and RewardItemID = $rewarditemid order by CouponNumber limit $quantity";
         parent::ExecuteQuery($query);
         if ($this->HasError)
         {

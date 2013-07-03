@@ -177,3 +177,54 @@ div.nav ul ul ul {
     padding: 4px;
 }
 
+
+/*------------------List Of Banned Accounts Popup CSS for table---------------------*/
+
+#card-table {
+    float: left;
+    margin-left: 12px;
+    margin-top: 5px;
+    width: 200px;
+    border: 1px solid gray;
+}
+
+#card-table th {
+    border: 1px solid gray;
+    color:  white;
+    padding: 5px;
+    background-color: #1A597C;
+    text-align: left;
+}
+
+#card-table td {
+    /*border: 1px solid gray;*/
+    padding: 5px;
+    text-align: left;
+}
+
+#accountprofile {
+    float: left;
+    display: block;
+    margin-left: 12px;
+    margin-top: 10px;
+    width: 500px;
+    border: 1px solid gray;
+}
+
+#accountprofile th {
+    border: 1px solid gray;
+    color:  white;
+    padding: 5px;
+    width: 496px;
+    background-color: #1A597C;
+    text-align: left;
+}
+
+#accountprofile td {
+    /*border: 1px solid gray;*/
+    padding: 3px;
+    text-align: left;
+}
+
+/*-----------------------------------------------------------------------------------------------------*/
+

@@ -99,13 +99,30 @@ if($fproc->IsPostBack)
                     if(count($access) > 0)
                     {
                         // Insert into account session
-                        $arrEntry['SessionID'] = uniqid();
+                        $arrEntry['SessionID'] = session_id();
                         $arrEntry['AID'] = $row['AID'];
                         $arrEntry['RemoteIP'] = $_SERVER['REMOTE_ADDR'];
                         $arrEntry['DateStarted'] = "now_usec()";
-
-                        $_AccountSessions->Insert($arrEntry);
-
+                        
+                        $activesession = $_AccountSessions->checkSession($row['AID']);
+                        foreach ($activesession as $value) {
+                            foreach ($value as $value2) {
+                                $activesession = $value2['Count'];
+                            }
+                        }
+                        
+                        if($activesession > 0)
+                        {
+                            $_AccountSessions->updateSession($arrEntry['SessionID'], $row['AID'], 
+                                    $arrEntry['RemoteIP'], $arrEntry['DateStarted']);
+                        }
+                        else{
+                            $_AccountSessions->Insert($arrEntry);
+                        }
+                
+                        $_SESSION['sessionID'] = $arrEntry['SessionID'];
+                        $_SESSION['aID'] = $row['AID'];
+                        
                         $_SESSION['menus'] = $access;
                         $_SESSION['userinfo']['SessionID'] = $arrEntry['SessionID'];
 
@@ -133,7 +150,7 @@ if($fproc->IsPostBack)
                     else
                     {
                         App::SetErrorMessage('Account has no access rights');
-                        $_Log->logEvent(AuditFunctions::LOGIN, $username .':No access rights', array('ID'=>$row['AID'], 'SessionID'=>$arrEntry['SessionID']));
+                        $_Log->logEvent(AuditFunctions::LOGIN, $username .':No access rights', array('ID'=>$row['AID'], 'SessionID'=>''));
                     }
                 }
                 else
@@ -205,4 +222,18 @@ if($fproc->IsPostBack)
     <div class="inputfield"><?php echo $txtPassword; ?></div>
     <div class="inputfield"><?php echo $btnLogin; ?></div>
 </div>
+<!--  For Javascript Alert Dialog (Errors)  -->        
+<?php
+    if(isset($_GET['mess']))
+       {
+        $msg = $_GET['mess'];
+?>
+<script type="text/javascript" language="javascript">
+    $(document).ready(function(){
+        <?php echo "alert('".$msg."');"; ?>
+    });
+</script>
+<?php
+      }
+?>
 <?php include('footer.php'); ?>

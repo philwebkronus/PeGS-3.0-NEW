@@ -91,6 +91,11 @@ body, table
     vertical-align: top;
 }
 
+.formlabel
+{
+    display: inline;
+}
+
 td.labelname {
     font-size: 14px; 
     /*font-weight: bold;*/

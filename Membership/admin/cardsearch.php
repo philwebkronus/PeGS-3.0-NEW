@@ -51,7 +51,7 @@
 </div>
 </form>
 <?php
-if (isset($MID) && $MID != "" && $showcardinfo)
+if (isset($MID) && $MID != "" && $showcardinfo && $loyaltyinfo != null)
 {
     ?>
     <div id="cardinfo">

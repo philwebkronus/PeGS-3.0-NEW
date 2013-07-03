@@ -44,7 +44,8 @@ body
     height: 35px;
     width: 1000px;
     vertical-align: middle;
-
+    position:relative;
+    z-index: 3;
 }
 
 /*.mainmenu li

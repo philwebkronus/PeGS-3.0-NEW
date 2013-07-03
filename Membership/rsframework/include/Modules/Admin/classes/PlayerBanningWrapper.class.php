@@ -24,11 +24,10 @@ Class PlayerBanningWrapper {
         
         $banningdata['MemberCardID'] = $entries['MemberCardID'];
         $banningdata['MID'] = $entries['MID'];
-        $banningdata['Status'] = $entries['Status'] == "5" ? 1:2;
+        $banningdata['Status'] = $entries['Status'] == "5" ? "1":"0";
         $banningdata['Remarks'] = $entries['txtRemarks'];
         $banningdata['DateCreated'] = 'now_usec()';
         $banningdata['CreatedByAID'] = $entries['AID'];
-        
         $_BanningHistory = new BanningHistory();
         $_BanningHistory->StartTransaction();
         $_BanningHistory->Insert($banningdata);

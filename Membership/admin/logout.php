@@ -18,9 +18,17 @@ if(isset($_SESSION['userinfo']['SessionID']))
     
     $_Log = new AuditTrail();
     $_AccountSessions = new AccountSessions();
-    
+    $aid = $_SESSION['aID'];
     $sessionid = $_SESSION['userinfo']['SessionID'];
-    $_AccountSessions->ExecuteQuery("UPDATE accountsessions SET DateEnded = 'now_usec()' WHERE SessionID = '$sessionid'");
+    $session = $_AccountSessions->checkifsessionexist($aid, $sessionid);
+        foreach ($session as $value) {
+        foreach ($value as $value2) {
+            $sessioncount = $value2['Count'];
+        }
+    }
+    if($sessioncount > 0){
+        $_AccountSessions->deleteifsessionexist($aid, $sessionid);
+    }
     $_Log->logEvent(AuditFunctions::LOGOUT, $_SESSION['userinfo']['Username'] .':Successful', array('ID'=>$_SESSION['userinfo']['AID'], 'SessionID'=>$sessionid));
 }
 

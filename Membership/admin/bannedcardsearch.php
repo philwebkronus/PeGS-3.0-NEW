@@ -1,9 +1,9 @@
 <?php
-/* * ***************** 
- * Author: Roger Sanchez
- * Date Created: 2013-06-04
- * Company: Philweb
- * ***************** */
+/*
+* Description: Card Search for banned cards.
+* @author: aqdepliyan
+* DateCreated: 2013-06-20 09:16:20 AM
+*/
 ?>
 <script language="javascript" type="text/javascript">
     $(document).ready(
@@ -44,9 +44,6 @@
     
     });
 </script>
-</form>
-<form name="frmSearch" id="frmSearch" method="post" action="" >
 <div class="searchbar formstyle">
         <?php echo $txtSearch; ?><?php echo $btnSearch; ?><?php echo $btnClear; ?>
 </div>
-</form>

@@ -30,7 +30,7 @@ if (isset($javascripts) && count($javascripts) > 0)
     for ($i = 0; $i < count($javascripts); $i++)
     {
         $js = $javascripts[$i];
-        $headerinfo .= "<script language='javascript' type='text/javascript' src='$js'></script>\r\n";
+        $headerinfo .= "<script language='javascript' type='text/javascript' src='$js'  media='screen, projection'></script>\r\n";
     }
 }
 if (isset($stylesheets) && count($stylesheets) > 0)
@@ -54,9 +54,10 @@ if (isset($useCustomHeader) && $useCustomHeader)
     App::LoadCore("File.class.php");
     $headerfile = "templates/headertemplate.php";
     $headerfp = new File($headerfile);
-    $headerstring = $headerfp->ReadToEnd();
-    $arrheaders = explode("<head>", $headerstring);
-
+    $headerstring = trim($headerfp->ReadToEnd());
+    $headerstring = str_replace("Page not found &laquo; PEGS Website", "Membership System", $headerstring);
+    $arrheaders = explode("</head>", $headerstring);
+    $arrbody = explode("<body>", $arrheaders[1]);
     echo $arrheaders[0];
 }
 
@@ -70,7 +71,6 @@ if (isset($customtags) && count($customtags) > 0)
 
 ?>
 
-<head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title><?php echo $pagetitle; ?></title>
     <?php echo $headerinfo; ?> 
@@ -99,10 +99,12 @@ if (isset($customtags) && count($customtags) > 0)
     <?php 
     if($useCustomHeader)
     {
-        echo $arrheaders[1]; 
+        echo $arrbody[0]; 
+        echo $arrbody[1];
     }
     ?>
-
+</head>
+<body>
 <form action="" method="post" name="MainForm" id="MainForm" <?php echo $autocompletestring; ?> >
     <div id="dashboard-messagebox" title="Message Box" style="display: none;">
         <p>

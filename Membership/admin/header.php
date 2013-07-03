@@ -54,6 +54,7 @@ $timezone = $curdate->GetCurrentDateFormat('O (T)');
         <script language="javascript" type="text/javascript">
             $(document).ready(function() {
                 $("#MainForm").validationEngine();
+                $("#updatestatus").validationEngine();
             });
             
 //            window.setTimeout("fadeErrorMsg();", 5000);
