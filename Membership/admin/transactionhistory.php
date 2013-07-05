@@ -24,6 +24,7 @@ App::LoadCore('Validation.class.php');
 $_MemberCards = new MemberCards();
 $_CardTransactions = new CardTransactions();
 $_MemberInfo = new MemberInfo();
+$_Cards = new Cards();
 
 $showresult = false;
 $showcardinfo = false;
@@ -50,7 +51,7 @@ if ($fproc->IsPostBack)
     if($btnSearch->SubmittedValue == 'Search')
     {
         $totalEntries = $_CardTransactions->getTransactionCount($CardNumber);
-
+        $checkCardExist = $_Cards->isExist($CardNumber);
         $Pagination = new Pagination($totalEntries, $pagesPerSection, $options, $paginationID, $stylePageOff, $stylePageOn, $styleErrors, $styleSelect);
         $Pagination->gotoFirstPage();
         $start = $Pagination->getEntryStart();
@@ -68,7 +69,6 @@ if ($fproc->IsPostBack)
             }
 
             $result = $newrow;
-
             $dgth = new DataGrid();
             $dgth->AddColumn("Site", "TerminalLogin", DataGridColumnType::Text, DataGridColumnAlignment::Center, '', "Total");
             $dgth->AddColumn("Transaction Type", "TransactionType", DataGridColumnType::Text, DataGridColumnAlignment::Center);
@@ -105,9 +105,8 @@ if (!empty($page) && isset($_SESSION['CardInfo']['CardNumber']) && $btnSearch->S
     
     
     $CardNumber = $_SESSION['CardInfo']['CardNumber'];
-
+    $checkCardExist = $_Cards->isExist($CardNumber);
     $totalEntries = $_CardTransactions->getTransactionCount($CardNumber);
-
     $Pagination = new Pagination($totalEntries, $pagesPerSection, $options, $paginationID, $stylePageOff, $stylePageOn, $styleErrors, $styleSelect);
     $start = $Pagination->getEntryStart();
     $end = $Pagination->getEntryEnd();
@@ -124,7 +123,6 @@ if (!empty($page) && isset($_SESSION['CardInfo']['CardNumber']) && $btnSearch->S
         }
 
         $result = $newrow;
-        
         $dgth = new DataGrid();
         $dgth->AddColumn("Site", "TerminalLogin", DataGridColumnType::Text, DataGridColumnAlignment::Center, '', "Total");
         $dgth->AddColumn("Transaction Type", "TransactionType", DataGridColumnType::Text, DataGridColumnAlignment::Center);
@@ -141,10 +139,11 @@ if (!empty($page) && isset($_SESSION['CardInfo']['CardNumber']) && $btnSearch->S
     }
     else
     {
-        if(isset($result) && count($result) > 0 )
-            App::SetErrorMessage ('No transactions found');
+        //App::pr($result);exit;
+        if($totalEntries == 0)
+                App::SetErrorMessage ('No transactions found');
         else
-            App::SetErrorMessage('Invalid Card');
+                App::SetErrorMessage('Invalid Card');
     }
     
 }

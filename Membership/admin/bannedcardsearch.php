@@ -3,6 +3,7 @@
 * Description: Card Search for banned cards.
 * @author: aqdepliyan
 * DateCreated: 2013-06-20 09:16:20 AM
+* @modified mgesguerra
 */
 ?>
 <script language="javascript" type="text/javascript">
@@ -12,23 +13,23 @@
         defaultvalue = "<?php echo $defaultsearchvalue; ?>";
         $("#txtSearch").click(function(){
             $("#txtSearch").change();
-            if ($("#txtSearch").val() == defaultvalue)
+            if ($("#txtSearch").val() === "")
             {
                 $("#txtSearch").val("");
-                $("#btnSearch").attr("disabled", "disabled");
             }
         });
         $("#txtSearch").keyup(function(){
             $("#txtSearch").change();
+            $("#btnSearch").removeAttr("disabled");
         });
         $("#txtSearch").blur(function(){
             $("#txtSearch").change();
         });
         $("#txtSearch").change(function(){
-            if ($("#txtSearch").val() == "" || $("#txtSearch").val() == defaultvalue)
+            if ($("#txtSearch").val() === "")
             {
                 $("#btnSearch").attr("disabled", "disabled");
-                $("#txtSearch").val(defaultvalue);
+                $("#txtSearch").val("");
             }
             else
             {
@@ -38,7 +39,6 @@
         });
         $("#btnClear").click(function(){
             $("#txtSearch").val("");
-            $("#txtSearch").change();
         });
         
     

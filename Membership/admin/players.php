@@ -20,7 +20,7 @@ $txtSearch->ShowCaption = false;
 $txtSearch->CssClass = 'validate[required]';
 $txtSearch->Style = 'color: #666';
 $txtSearch->Size = 30;
-$txtSearch->Text = $defaultsearchvalue;
+$txtSearch->Args = 'placeholder="Enter Card Number or Player Name"';
 $txtSearch->AutoComplete = false;
 $fproc->AddControl($txtSearch);
 
@@ -41,12 +41,9 @@ if ($fproc->IsPostBack)
     if ($btnClear->SubmittedValue == "Clear")
     {
         unset($_SESSION['CardData']);
-        $txtSearch->Text = $defaultsearchvalue;
+        $txtSearch->Text = "";
     }
 }
-
- 
-
 ?>
 <?php include("header.php"); ?>
 <script type='text/javascript' src='js/jquery.jqGrid.js' media='screen, projection'></script>
@@ -55,7 +52,6 @@ if ($fproc->IsPostBack)
 <script type='text/javascript'>
     
     $(document).ready(function(){
-        
         function loadData(){
             var carddata = '<?php echo isset($_SESSION['CardData']); ?>';
             if(carddata != ''){
@@ -67,7 +63,7 @@ if ($fproc->IsPostBack)
                                                     $txtSearch->Text = $_SESSION['CardData']['CardNumber'];
                                                     echo $_SESSION['CardData']['CardNumber'];
                                                 }
-                                            ?>');
+                                            ?>////');
             } else {
                 getPlayerDetails('');
             }
@@ -76,7 +72,13 @@ if ($fproc->IsPostBack)
         loadData();
         
         $('#btnSearch').live('click', function(){
-            getPlayerDetails($("#txtSearch").val());
+            var txtsearch = $("#txtSearch").val();
+            if (txtsearch.substr(0,1) === " "){
+                alert("Trailing space/s is/are not allowed");
+            }
+            else{
+                getPlayerDetails($("#txtSearch").val());
+            }    
         });
         
         

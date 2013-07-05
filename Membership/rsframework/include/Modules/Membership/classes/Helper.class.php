@@ -80,5 +80,82 @@ class Helper extends BaseEntity
         return str_replace("-", "", $str);
     }
     
+    /**
+     * Reference method for card types
+     * @author Kenneth
+     * @date 07-04-13
+     * @param int $cardtype
+     * @return string
+     */
+    public static function DetermineCardTypes($cardtype)
+    {
+        switch ($cardtype)
+        {
+            case 1: return "Gold Member Card";
+                    break;
+            case 2: return "Green Member Card";
+                    break;
+            case 3: return "Temporary Card";
+                    break;
+            default: return "Invalid Card Type";
+                    break;
+        }
+    }
+    
+    public static function CheckCardTypeStatus($cardTypeStatus)
+    {
+        switch($cardTypeStatus)
+        {
+            case 0: return "Inactive";
+                    break;
+            case 1: return "Active";
+                    break;
+            case 2: return "Deactivated";
+                    break;
+        }
+    }
+    public static function DetermineCardStatus($cardstatus)
+    {
+        switch ($cardstatus)
+        {
+            case 0: return "Inactive";
+                    break;
+            case 1: return "Active";
+                    break;
+            case 2: return "Deactived";
+                    break;
+            case 5: return "Active Temporary";
+                    break;
+            case 7: return "New Migrated";
+                    break;
+            case 8: return "Temporary Migrated";
+                    break;
+            case 9: return "Banned Card";
+        }
+    }
+    
+    /**
+     * @author Kenneth
+     * @param int $cardstatus card status
+     * @return string
+     */
+    public static function SetErrorMsgForCardStatus($cardstatus)
+    {
+        switch ($cardstatus)
+        {
+            case 0: return App::setErrorMessage("Membership Card is Inactive");
+                    break;
+            case 2: return App::setErrorMessage("Membership Card is Deactived ");
+                    break;
+            case 7: return App::setErrorMessage("Membership Card is New Migrated ");
+                    break;
+            case 8: return App::setErrorMessage("Membership Card is Temporary Migrated");
+                    break;
+            case 9: return App::setErrorMessage("Membership Card is Banned");
+                    break;
+            default: return App::setErrorMessage("Membership Card is Invalid");
+                    break;
+        }
+    }
 }
 ?>

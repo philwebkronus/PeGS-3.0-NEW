@@ -305,6 +305,9 @@ else{
     <form name="bannedplayerlists" id="bannedplayerlists" method="POST">
         <div class="maincontainer">
             <?php include('menu.php'); ?>
+            <br />
+            <div style="float: left;" class="title">Membership Demographics:</div>
+            <br />
             <table>
             <tr></tr>
             <tr></tr>
@@ -329,7 +332,6 @@ else{
                     <?php if($showresult)
                     {?>
                         <div align="right" class="pad5">
-                        <div style="float: left;" class="title">Membership Demographics:</div>
 
                         </div>
                         <div align="right" class="pad5">

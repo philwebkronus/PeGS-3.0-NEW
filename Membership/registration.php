@@ -155,6 +155,11 @@ $btnSubmit->IsSubmit = true;
 $btnSubmit->CssClass = "btnDefault roundedcorners yellow-btn";
 $fproc->AddControl($btnSubmit);
 
+$btnCancel = new Button("btnCancel", "btnCancel", "Cancel");
+$btnCancel->IsSubmit = false;
+$btnCancel->CssClass = "btnDefault roundedcorners yellow-btn";
+$fproc->AddControl($btnCancel);
+
 $_identifications = new Identifications();
 $arrids = $_identifications->SelectAll();
 $cboIDSelection = new ComboBox("cboIDSelection", "cboIDSelection", "cboIDSelection");
@@ -239,7 +244,6 @@ $datecreated = "now_usec()";
 $isEmailUnique = true;
 
 App::GetErrorMessage();
-
 if ($fproc->IsPostBack)
 {
     if ($btnSubmit->SubmittedValue == "Register")
@@ -308,8 +312,6 @@ if ($fproc->IsPostBack)
                 $isOpen = false;
             }
         }
-
-        
     }
 }
 ?>
@@ -319,6 +321,9 @@ if ($fproc->IsPostBack)
     $(document).ready(
     function() 
     {
+        $("#btnCancel").click(function(){
+           window.location = "index.php";
+        });
         $('#dtBirthDate').change(function()
         {
             //alert($('#dtBirthDate').val());
@@ -367,7 +372,7 @@ if ($fproc->IsPostBack)
     <tr>
         <td>Password*</td>
         <td><?php echo $txtPassword; ?></td>
-        <td>Email Address*</td>
+        <td>Email Address*<span style="font-size: 10px; float: left;">(This will serve as your Username.)</span></td>
         <td><?php echo $txtEmail; ?></td>
     </tr>
     <tr>
@@ -422,6 +427,7 @@ if ($fproc->IsPostBack)
     </tr>
     <tr>
         <td colspan="4"><?php echo $btnSubmit; ?></td>
+        <td colspan="4"><?php echo $btnCancel; ?></td>
     </tr>
 </table>
 

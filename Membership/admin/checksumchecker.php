@@ -2,140 +2,133 @@
 /* * ***************** 
  * Author: Roger Sanchez
  * Date Created: 2013-03-06
+ * Modified by: Mark Kenneth Esguerra
+ * Date Modified: 2013-07-05
+ * Additional validation, put under marketing access rights
  * Company: Philweb
  * ***************** */
 require_once("../init.inc.php");
-//include('sessionmanager.php');
+include('sessionmanager.php');
 
 App::LoadControl("TextBox");
 $fproc = new FormsProcessor();
 
-
 if ($fproc->IsPostBack && $_POST["SubmitButton"] == "Check")
 {
     $checkstring = $_POST["checkstring"];
-    $checkstring = str_replace("\r", "", $checkstring);
-    $arrinfo = explode("\n", $checkstring);
-    $pairs = "";
-    for ($i = 0; $i < count($arrinfo); $i++)
+    //check if the message is empty. If empty display Error Message
+    if(strlen($checkstring) == 0)
     {
-        $line = $arrinfo[$i];
-        $pair = explode(":", $line);
-        $pair[0] = trim($pair[0]);
-        if (isset($pair[1]))
-        {
-            $pair[1] = trim($pair[1]);
-        }
-        else
-        {
-            $pair[1] = "";
-        }
-        $pairs[] = $pair;
-        switch ($pair[0])
-        {
-            case "e-Coupon Series": $couponseries = $pair[1];
-                break;
-            case "No. of Coupons": $quantity = $pair[1];
-                break;
-            case "Card Number": $cardno = $pair[1];
-                break;
-            case "Name": $playername = $pair[1];
-                break;
-            case "Birthday": $birthdate = $pair[1];
-                break;
-            case "E-mail Address": $email = $pair[1];
-                break;
-            case "Contact Number": $contactno = $pair[1];
-                break;
-            case "Control Number": $refchecksum = $pair[1];
-                break;
-        }
-    }
-
-    $refcheckstring = $couponseries . $quantity . $cardno . $playername . $birthdate . $email . $contactno;
-    $checksum = crc32($refcheckstring);
-    if ($checksum == $refchecksum)
-    {
-        App::SetSuccessMessage("Checksum is Valid");
-    }
+        App::SetErrorMessage("Please enter message for checking");        
+    } 
     else
     {
-        App::SetErrorMessage("Invalid Checksum");
+        $checkstring = str_replace("\r", "", $checkstring);
+        $arrinfo = explode("\n", $checkstring);
+        $pairs = "";
+        for ($i = 0; $i < count($arrinfo); $i++)
+        {
+            $line = $arrinfo[$i];
+            $pair = explode(":", $line);
+            $pair[0] = trim($pair[0]);
+            if (isset($pair[1]))
+            {
+                $pair[1] = trim($pair[1]);
+            }
+            else
+            {
+                $pair[1] = "";
+            }
+            $pairs[] = $pair;
+            switch ($pair[0])
+            {
+                case "e-Coupon Series": $couponseries = $pair[1];
+                    break;
+                case "No. of Coupons": $quantity = $pair[1];
+                    break;
+                case "Card Number": $cardno = $pair[1];
+                    break;
+                case "Name": $playername = $pair[1];
+                    break;
+                case "Birthday": $birthdate = $pair[1];
+                    break;
+                case "E-mail Address": $email = $pair[1];
+                    break;
+                case "Contact Number": $contactno = $pair[1];
+                    break;
+                case "Control Number": $refchecksum = $pair[1];
+                    break;
+                default :
+                     App::SetErrorMessage("Invalid Checksum");
+                    break;
+            }
+        }
+        //If following details are not set due to invalid message, an Error message is display
+        if((!isset($couponseries)) || (!isset($quantity)) || (!isset($cardno)) || 
+                (!isset($playername)) || (!isset($birthdate)) || (!isset($email))
+                || (!(isset($contactno)))) 
+        {
+            App::SetErrorMessage("Invalid Checksum");
+        } 
+        else 
+        {
+            $refcheckstring = $couponseries . $quantity . $cardno . $playername . $birthdate . $email . $contactno;
+            $checksum = crc32($refcheckstring);
+            if ($checksum == $refchecksum)
+            {
+                App::SetSuccessMessage("Checksum is Valid");
+            }
+            else
+            {
+                App::SetErrorMessage("Invalid Checksum");
+            }
+        } 
     }
-}
-else
-{
-    App::SetSuccessMessage("Please enter message for checking");
 }
 ?>
 <?php include('header.php'); ?>
-<?php //include('menu.php'); ?>
-<style>
-    .couponmessagebody table 
-    {
-        font-family: arial;
-        font-size: 9pt;
-    }
 
-    .couponmessagebody td 
-    {
-        vertical-align: top;
-    }
+<div align="center">
+    <div class="maincontainer">
+    <?php include('menu.php'); ?>
+            <br />
+            <div class="title">Checksum Validator</div>
+            <br />
+            <b>Message:</b><br/>
+            <div align="center">
+                <textarea name="checkstring" cols="100" rows="10"></textarea><br/>
+                <input type="submit" name="SubmitButton" value="Check" class="btnDisable"/><br/><br/>
+            </div>
+            <center>
+                <div align="left" style="width:600px;">
+                    <b>Sample Message:</b>
+                    <pre>
+                        e-Coupon Series:	0000804
+                        No. of Coupons :	1
+                        Issuing Cafe:	TST
+                        Date Redeemed:	March 22, 2013, 7:49 am
 
-    .couponmessagebody .serialcode
-    {
-        font-size: 11pt;
-    }
+                        Promo Code:	13001
+                        Promo Title:	Summer Raffle
+                        Promo Period:	March 30 to April 30, 2013
+                        Draw Date:	May 10, 2013 4PM
 
-</style>
+                        Card Number:	000000005NA5
+                        Name:	Bennette Manrique
+                        Address:	asdfasdf 
+                        Quezon City 
+                        NCR (National Capital Region)
 
-<div id="Menu">
-    <table width="900" cellpadding="5" cellspacing="0" class="mainmenu">
-        <tr>
-
-            <td class="<?php echo $page == "Coupon Checker" ? "selectedmenuitem" : "menuitem"; ?>">
-                <a href="checksumchecker.php">Coupon Checker</a>
-            </td>
-            <td class="<?php echo $page == "Serial Number Checker" ? "selectedmenuitem" : "menuitem"; ?>">
-                <a href="serialnumberchecker.php">Serial Number Checker</a>
-            </td>
-        </tr>
-    </table>
+                        Birthday:	March 15, 1905
+                        E-mail Address:	juandelacruz@gmail.com
+                        Contact Number:	632121231
+                        Control Number:	-1664495788
+                    </pre>
+                </div>
+            </center>
+        </form>
+    </div>
 </div>
-<?php //include("menu.php"); ?>
-<?php //include("message.php"); ?>
 
-<div class="maincontent">
-    <b>Message:</b><br/>
-    <textarea name="checkstring" cols="100" rows="10"></textarea><br/>
-    <input type="submit" name="SubmitButton" value="Check" class="btnDisable"/><br/><br/>
-    <center>
-        <div align="left" style="width:600px;">
-            <b>Sample Message:</b>
-            <pre>
-e-Coupon Series:	0000804
-No. of Coupons :	1
-Issuing Cafe:	TST
-Date Redeemed:	March 22, 2013, 7:49 am
- 
-Promo Code:	13001
-Promo Title:	Summer Raffle
-Promo Period:	March 30 to April 30, 2013
-Draw Date:	May 10, 2013 4PM
- 
-Card Number:	000000005NA5
-Name:	Bennette Manrique
-Address:	asdfasdf 
-Quezon City 
-NCR (National Capital Region)
- 
-Birthday:	March 15, 1905
-E-mail Address:	juandelacruz@gmail.com
-Contact Number:	632121231
-Control Number:	-1664495788
-            </pre></div>
-    </center>
-</div>
-</form>
-</body>
-</html>
+
+<?php include("footer.php"); ?>

@@ -22,8 +22,8 @@ $txtSearch->ShowCaption = false;
 $txtSearch->CssClass = 'validate[required, custom[emailAlphanumeric]]';
 $txtSearch->Style = 'color: #666';
 $txtSearch->Size = 30;
-$txtSearch->Text = $defaultsearchvalue;
 $txtSearch->AutoComplete = false;
+$txtSearch->Args = 'placeholder="Enter Card Number or Player Name"';
 $fproc->AddControl($txtSearch);
 
 $hdnAID = new Hidden("AID", "AID", "AID: ");
@@ -73,7 +73,7 @@ if ($fproc->IsPostBack)
     if ($btnClear->SubmittedValue == "Clear")
     {
         unset($_SESSION['CardData']);
-        $txtSearch->Text = $defaultsearchvalue;
+        $txtSearch->Text = "";
     }
 }
 
@@ -104,7 +104,14 @@ if ($fproc->IsPostBack)
         loadData();
         
         $('#btnSearch').live('click', function(){
-            getPlayerDetails($("#txtSearch").val());
+            var txtsearch = $("#txtSearch").val();
+            if (txtsearch.substr(0,1) === " "){
+                alert("Trailing space/s is/are not allowed");
+            }
+            else
+            {
+                getPlayerDetails($("#txtSearch").val());
+            }    
         });
         
         

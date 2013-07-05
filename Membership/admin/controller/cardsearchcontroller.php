@@ -34,7 +34,7 @@ $CardNumber = "";
 $siteName = "";
 $transDate = "";
 $showcardinfo = true;
-$defaultsearchvalue = "Enter Card Number or Username";
+$defaultsearchvalue = "Enter Card Number";
 
 
 if (!isset($fproc))
@@ -47,8 +47,8 @@ $txtSearch->ShowCaption = false;
 $txtSearch->CssClass = 'validate[required]';
 $txtSearch->Style = 'color: #666';
 $txtSearch->Size = 30;
-$txtSearch->Text = $defaultsearchvalue;
 $txtSearch->AutoComplete = false;
+$txtSearch->Args = 'placeholder="Enter Card Number"';
 $fproc->AddControl($txtSearch);
 
 $btnSearch = new Button('btnSearch', 'btnSearch', 'Search');
@@ -92,7 +92,6 @@ if ($fproc->IsPostBack)
         else
         {
             $membercards = $_MemberCards->getMemberCardInfoByCard($searchValue);
-
             if (count($membercards) > 0)
             {
                 $MID = $membercards[0]['MID'];

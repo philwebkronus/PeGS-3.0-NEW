@@ -89,7 +89,7 @@ class MemberCards extends BaseEntity
     
     public function getMIDByCard( $cardnumber )
     {
-        $query = "SELECT mc.MID
+        $query = "SELECT mc.MID, c.Status
                   FROM membercards mc
                     INNER JOIN cards c ON mc.CardID = c.CardID
                   WHERE c.CardNumber = '$cardnumber'";

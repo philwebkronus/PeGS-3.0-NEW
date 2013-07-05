@@ -12,7 +12,7 @@
         defaultvalue = "<?php echo $defaultsearchvalue; ?>";
         $("#txtSearch").click(function(){
             $("#txtSearch").change();
-            if ($("#txtSearch").val() == defaultvalue)
+            if ($("#txtSearch").val() == "")
             {
                 $("#txtSearch").val("");
                 $("#btnSearch").attr("disabled", "disabled");
@@ -25,10 +25,10 @@
             $("#txtSearch").change();
         });
         $("#txtSearch").change(function(){
-            if ($("#txtSearch").val() == "" || $("#txtSearch").val() == defaultvalue)
+            if ($("#txtSearch").val() == "")
             {
                 $("#btnSearch").attr("disabled", "disabled");
-                $("#txtSearch").val(defaultvalue);
+                $("#txtSearch").val("");
             }
             else
             {

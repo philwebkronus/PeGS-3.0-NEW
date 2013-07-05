@@ -118,12 +118,12 @@ if((isset($_GET["tempnumber"]) && (htmlentities($_GET["tempnumber"]))) &&
 (isset($_GET["isreg"]) && htmlentities($_GET["isreg"])))
 {
     $isSuccess = true;
-    $tempAccountCode = $_GET["tempnumber"];
-    $MembershipCardNumber = $_GET["newnumber"];
-    $MID = $_GET["mid"];
-    $sitecode = $_GET["site"];
-    $AID = $_GET["aid"];
-    $isreg = $_GET["isreg"];
+    $tempAccountCode = trim($_GET["tempnumber"]);
+    $MembershipCardNumber = trim($_GET["newnumber"]);
+    $MID = trim($_GET["mid"]);
+    $sitecode = trim($_GET["site"]);
+    $AID = trim($_GET["aid"]);
+    $isreg = trim($_GET["isreg"]);
     
     if($isreg == 1)
     {    

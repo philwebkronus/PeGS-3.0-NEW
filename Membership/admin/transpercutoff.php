@@ -356,25 +356,28 @@ else{
     <form name="bannedplayerlists" id="bannedplayerlists" method="POST">
         <div class="maincontainer">
             <?php include('menu.php'); ?>
-<div align="left">
-    <table align="left">
-        <tr>
-        <td><?php echo $cboSiteID; ?></td>
-        <td>From</td>
-            <td><?php echo $fromdateverified; ?></td>
-            <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;To</td>
-            <td><?php echo $todateverified; ?></td>
-        </tr>
-        <tr>
-        <td></td>
-        <td></td><td></td>
-        <td></td><td></td>
-        <td></td><td></td>
-        <td></td><td></td>    
-        <td align ="right"><?php echo $btnSubmit; ?> </td>    
-        </tr>    
-    </table>
-</div>
+            <br />
+            <div class="title">Member Deposit/Withdraw Transaction per Cut-off</div>
+            <br />
+            <div align="left">
+                <table align="left">
+                    <tr>
+                    <td><?php echo $cboSiteID; ?></td>
+                    <td>From</td>
+                        <td><?php echo $fromdateverified; ?></td>
+                        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;To</td>
+                        <td><?php echo $todateverified; ?></td>
+                    </tr>
+                    <tr>
+                    <td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>
+                    <td></td><td></td>    
+                    <td align ="right"><?php echo $btnSubmit; ?> </td>    
+                    </tr>    
+                </table>
+            </div>
             <div id="dateRange" style="float: left;">
                 &nbsp;&nbsp;&nbsp;&nbsp;<label id="dRange"></label>
             </div>

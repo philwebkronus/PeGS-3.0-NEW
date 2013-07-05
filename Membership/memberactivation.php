@@ -98,6 +98,7 @@ $txtMobile = new TextBox("txtMobile", "txtMobile", "Mobile Number");
 $txtMobile->ShowCaption = false;
 $txtMobile->Length = 13;
 $txtMobile->Size = 30;
+$txtMobile->Args = "onkeypress=\"javascript: return isNumber(event);\"";
 $fproc->AddControl($txtMobile);
 
 $txtplayerIDNumber = new TextBox("txtplayerIDNumber", "txtplayerIDNumber", "I.D: ");
@@ -129,10 +130,10 @@ if ((isset($_GET["oldnumber"]) && (htmlentities($_GET["oldnumber"])))
         && (isset($_GET["site"]) && (htmlentities($_GET["site"])))
         && (isset($_GET["AID"]) && (htmlentities($_GET["AID"])))) {
 
-    $LoyatyCardNumber = $_GET["oldnumber"];
-    $NewMembershipCardNumber = $_GET["newnumber"];
-    $siteCode = $_GET["site"];
-    $AID = $_GET["AID"];
+    $LoyatyCardNumber = trim($_GET["oldnumber"]);
+    $NewMembershipCardNumber = trim($_GET["newnumber"]);
+    $siteCode = trim($_GET["site"]);
+    $AID = trim($_GET["AID"]);
 
     $oldcardresult = $_OldCards->getOldCardInfo($LoyatyCardNumber);
     $OldCardStatus = $oldcardresult[0];
@@ -242,7 +243,17 @@ if ((isset($_GET["oldnumber"]) && (htmlentities($_GET["oldnumber"])))
 ?>
 
 <?php include 'header.php'; ?>
-<script language="javascript" type="text/javascript">   
+<script language="javascript" type="text/javascript"> 
+    // number only
+    // MKGE |07-04-2013
+    function isNumber(evt) {
+      var charCode = (evt.which) ? evt.which : event.keyCode;
+      if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+         return false;
+      }
+      return true;
+    }
+    
     $(document).ready(
     function() 
     {
@@ -290,7 +301,6 @@ if ((isset($_GET["oldnumber"]) && (htmlentities($_GET["oldnumber"])))
                 }
             }
         });
-        
     });
 
     var currenttime = '<?php print $curdate->GetCurrentDateFormat("F d, Y H:i:s"); ?>' //PHP method of getting server date
@@ -354,27 +364,27 @@ if ((isset($_GET["oldnumber"]) && (htmlentities($_GET["oldnumber"])))
         <hr />
      <table>
         <tr>
-            <td>Name</td>
+            <td>Name*</td>
             <td><?php echo $txtplayername; ?></td>
-            <td>ID No</td>
+            <td>ID No*</td>
             <td><?php echo $txtplayerIDNumber . '<br />' . $ComboID; ?></td>
         </tr>
         <tr>
-            <td>Birthdate</td>
+            <td>Birthdate*</td>
             <td><?php echo $dtBirthDate; ?></td>
             <td>Email Address</td>
             <td><?php echo $txtEmail; ?></td>
             <td colspan="2">&nbsp;</td>
         </tr>
         <tr>
-            <td>Age</td>
+            <td>Age*</td>
             <td><?php echo $txtAge; ?></td>  
             <td>Mobile Number</td>
             <td><?php echo $txtMobile; ?></td>
             <td>&nbsp;</td>
         </tr>
         <tr>
-            <td>Gender</td>
+            <td>Gender*</td>
             <td><?php echo $rdoGroupGender->Radios[0]; ?> <?php echo $rdoGroupGender->Radios[1]; ?></td>
         </tr>
         <tr>

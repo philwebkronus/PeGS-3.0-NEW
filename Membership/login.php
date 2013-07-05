@@ -5,7 +5,7 @@
     });        
 </script>
 <form name="loginForm" method="post" action="" id="loginForm" />
-<div class="login-error"><?php echo App::GetErrorMessage(); ?></div>
+<div class="login-error"><?php //echo App::GetErrorMessage(); ?></div>
 <div id="home-login-box">    
     <div id="home-login-wrapper">
         <div id="home-page-login-form">
