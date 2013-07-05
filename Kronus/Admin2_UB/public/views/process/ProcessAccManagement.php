@@ -79,7 +79,7 @@ if($connected)
            $accountypes=array_merge($accountypes,$oaccount->getallaccounttypes(8)); //PEGS
            $accountypes=array_merge($accountypes,$oaccount->getallaccounttypes(9)); //AS
            $accountypes=array_merge($accountypes,$oaccount->getallaccounttypes(12)); //Finance
-           //$accountypes=array_merge($accountypes,$oaccount->getallaccounttypes(13)); //Marketing
+           $accountypes=array_merge($accountypes,$oaccount->getallaccounttypes(13)); //Marketing
        break;
        case 2:
            //Operator

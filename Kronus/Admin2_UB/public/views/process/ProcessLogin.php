@@ -133,7 +133,15 @@ if($openconn)
                                         $result=$ologin->insertsession($aid, $new_sessionid, $date);     
                                         if($result > 0)
                                         {    
-                                            $path = $ologin->getpath($_SESSION['acctype']);                                    
+                                            $path = $ologin->getpath($_SESSION['acctype']);        
+                                            
+                                            if(is_bool($path) && !$path){
+                                                $msg = "No Access Found in Kronus";
+                                                //close connection redirect to login page
+                                                $ologin->close();
+                                                header("Location: ../login.php?mess=".$msg);
+                                            }
+                                            
                                             //insert to audittrail table
                                             $transdetails = $gsysversion;
                                             $ologin->logtoaudit($new_sessionid, $aid, $transdetails, $date, $ipaddress,'1');
