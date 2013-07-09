@@ -40,7 +40,8 @@ App::LoadModuleClass("Membership", "AuditTrail");
 App::LoadModuleClass("Membership", "AuditFunctions");
 App::LoadModuleClass('Membership', 'Cities');
 App::LoadModuleClass('Membership', 'Regions');
-
+App::LoadModuleClass("Membership", "AuditTrail");
+App::LoadModuleClass("Membership", "AuditFunctions");
 
 App::LoadModuleClass("Loyalty", "MemberCards");
 App::LoadModuleClass("Loyalty", "Cards");
@@ -65,10 +66,18 @@ App::LoadControl("Radio");
 App::LoadControl("CheckBox");
 App::LoadControl("Hidden");
 
+//Load Core
+App::LoadCore('ErrorLogger.php');
+
 $_Rewards = new Rewards();
 $_RewardItems = new RewardItems();
 $cities = new Cities();
 $regions = new Regions();
+$_Log = new AuditTrail();
+
+$logger = new ErrorLogger();
+$logdate = $logger->logdate;
+$logtype = "Error ";
 
 
 $arrcities = $cities->SelectAll();
@@ -287,8 +296,7 @@ if ($fproc->IsPostBack)
         {
             $_SESSION["PreviousRemdeption"] = $CouponRedemptionLogID;
             $_MemberCards->CommitTransaction();
-
-
+            
             $hdnRewardItemID->Text = "";
 
             $redemptioninfo = $_RaffleCoupons->getCouponRedemptionInfo($CouponRedemptionLogID);
@@ -384,7 +392,7 @@ if ($fproc->IsPostBack)
                 //$pm->AddAddress($email, $playername);
                 $pm->Body = $emailmessage;
                 $pm->IsHTML(true);
-
+                
                 $pm->From = "loyaltyadmin@pagcoregames.com";
                 $pm->FromName = "Loyalty Admin";
                 $pm->Host = "localhost";
@@ -536,7 +544,13 @@ else
                                                                             var datalength = data.length;
                                                                             if (data != "Profile Updated Successfully.")
                                                                             {
-                                                                                alert("Error updating profile. Please try again.");
+                                                                                if(data == 'Session Expired'){
+                                                                                    alert(data);
+                                                                                    window.location.href = "index.php";
+                                                                                }
+                                                                                else{
+                                                                                    alert("Error updating profile. Please try again.");
+                                                                                }
                                                                             }
                                                                             else
                                                                             {
@@ -701,7 +715,11 @@ else
             Promo Period: May to July, 2013<br/>
         </strong>
         <hr width="500" / -->
-        Card Number: <?php echo $cardNumber; ?><br/>
+        Card Number: <?php 
+        if(!isset($cardNumber)){
+            $cardNumber = '';
+        }
+        echo $cardNumber; ?><br/>
         <br/>
         <?php echo $hdnMemberInfoID; ?>
         First Name: <?php echo $txtRedeemFirstName; ?><br/>

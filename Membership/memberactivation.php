@@ -26,6 +26,8 @@ App::LoadControl("ComboBox");
 App::LoadControl("RadioGroup");
 App::LoadControl("DatePicker");
 
+App::LoadCore('ErrorLogger.php');
+
 $_Members = new Members();
 $_AccountTypes = new AccountTypes();
 
@@ -37,6 +39,10 @@ $_Log = new AuditTrail();
 $fproc = new FormsProcessor();
 $dsmaxdate = new DateSelector();
 $dsmindate = new DateSelector();
+
+$logger = new ErrorLogger();
+$logdate = $logger->logdate;
+$logtype = "Error ";
 
 $dsmaxdate->AddYears(-21);
 $dsmindate->AddYears(-100);
@@ -220,6 +226,7 @@ if ((isset($_GET["oldnumber"]) && (htmlentities($_GET["oldnumber"])))
                     $isSuccess = false;
                     $error = $result['error'];
                     $_Log->logAPI(AuditFunctions::MIGRATE_OLD, $LoyatyCardNumber.':'.$NewMembershipCardNumber.':Failed', $siteCode, $AID);
+                    $logger->logger($logdate, $logtype, $error);
                 }
 
                 /*
@@ -235,10 +242,14 @@ if ((isset($_GET["oldnumber"]) && (htmlentities($_GET["oldnumber"])))
     else { //Not valid
         $InvalidDialogOpen = 'true';
         $IsInvalidCard = true;
+        $error = "Invalid Card Status";
+        $logger->logger($logdate, $logtype, $error);
     }
 } else { //Parameters not set
     $InvalidDialogOpen = 'true';
     $HasParamError = true;
+    $error = "Parameters not set";
+    $logger->logger($logdate, $logtype, $error);
 }
 ?>
 

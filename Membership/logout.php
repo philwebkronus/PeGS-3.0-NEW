@@ -17,10 +17,10 @@ if(isset($_SESSION['MemberInfo']))
     App::LoadModuleClass("Membership", "MemberSessions");
     
     $username = $_SESSION['MemberInfo']['UserName'];
-    $accounttypeid = $_SESSION['MemberInfo']['AccountTypeID'];
+    //$accounttypeid = $_SESSION['MemberInfo']['AccountTypeID'];
     $id = $_SESSION['MemberInfo']['MID'];
     $sessionid = $_SESSION['MemberInfo']['SessionID'];
-            
+           
     $_MemberSessions = new MemberSessions();
     $session = $_MemberSessions->checkifsessionexist($id, $sessionid);
         foreach ($session as $value) {

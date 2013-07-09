@@ -15,6 +15,8 @@ App::LoadModuleClass("Membership", "Nationality");
 App::LoadModuleClass("Membership", "Occupation");
 App::LoadModuleClass("Membership", "Referrer");
 App::LoadModuleClass("Membership", "Members");
+App::LoadModuleClass("Membership", "AuditTrail");
+App::LoadModuleClass("Membership", "AuditFunctions");
 
 // Load Controls
 App::LoadControl("DatePicker");
@@ -25,6 +27,9 @@ App::LoadControl("Button");
 App::LoadControl("RadioGroup");
 App::LoadControl("Radio");
 App::LoadControl("CheckBox");
+
+//Load Core
+App::LoadCore('ErrorLogger.php');
 
 $fproc = new FormsProcessor();
 $evt = new EventListener($fproc);
@@ -37,6 +42,11 @@ $useCustomHeader = true;
 $_TempMembers = new TempMembers();
 $_Members = new Members();
 $_AccountTypes = new AccountTypes();
+$_Log = new AuditTrail();
+
+$logger = new ErrorLogger();
+$logdate = $logger->logdate;
+$logtype = "Error ";
 
 $txtUserName = new TextBox("txtUserName", "txtUserName", "Username");
 $txtUserName->ShowCaption = false;
@@ -285,14 +295,20 @@ if ($fproc->IsPostBack)
         $activeEmail = $_Members->chkActiveVerifiedEmailAddress(trim($arrMemberInfo['Email']));
         if($activeEmail > 0){
             App::SetErrorMessage("Email already exists. Please choose a different email address.");
+            $_Log->logAPI(AuditFunctions::PLAYER_EMAIL_VERIFICATION, $activeEmail.':'.$arrMemberInfo['Email'].':Failed', 0, 0);
             $isSuccess = false;
+            $error = "Email already exists. Please choose a different email address.";
+            $logger->logger($logdate, $logtype, $error);
         }
         
         //check if email is already verified in temp table
         $tempEmail = $_TempMembers->chkTmpVerifiedEmailAddress(trim($arrMemberInfo['Email']));
         if($tempEmail > 0){
             App::SetErrorMessage("Email already verified. Please choose a different email address.");
+            $_Log->logAPI(AuditFunctions::PLAYER_EMAIL_VERIFICATION, $tempEmail.':'.$arrMemberInfo['Email'].':Failed', 0, 0);
             $isSuccess = false;
+            $error = "Email already exists. Please choose a different email address.";
+            $logger->logger($logdate, $logtype, $error);
         }
         
         $_TempMembers->Register($arrMembers, $arrMemberInfo);
@@ -301,6 +317,9 @@ if ($fproc->IsPostBack)
         if (!App::HasError())
         {
             $isSuccess = true;
+            $id = $_SESSION['MemberInfo']['MID'];
+            $sessionid = $_SESSION['MemberInfo']['SessionID'];
+            $_Log->logEvent(AuditFunctions::PLAYER_REGISTRATION, $arrMemberInfo['UserName'], array('ID' => $id, 'SessionID' => $sessionid));
         }
         else
         {
@@ -309,7 +328,16 @@ if ($fproc->IsPostBack)
             {
                 $isEmailUnique = false;
                 App::SetErrorMessage("Email already exists. Please choose a different email address.");
+                $_Log->logAPI(AuditFunctions::PLAYER_EMAIL_VERIFICATION, $tempEmail.':'.$arrMemberInfo['Email'].':Failed', 0, 0);
                 $isOpen = false;
+                $error = "Email already exists. Please choose a different email address.";
+                $logger->logger($logdate, $logtype, $error);
+            }
+            else{
+                $isOpen = false;
+                App::SetErrorMessage("Registration Failed, Please try again.");
+                $error = "Failed to register new player.";
+                $logger->logger($logdate, $logtype, $error);
             }
         }
     }

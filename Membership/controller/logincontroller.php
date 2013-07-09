@@ -69,12 +69,27 @@ if ($fproc->IsPostBack && $btnLogin->SubmittedValue == "Login")
             $remoteip = $_SERVER['REMOTE_ADDR'];
 
             $arrMemberSessions["MID"] = $members["MID"];
-            $arrMemberSessions["SessionID"] = "UUID()";
+            $arrMemberSessions["SessionID"] = session_id();
             $arrMemberSessions["RemoteIP"] = $remoteip;
             $arrMemberSessions["DateStarted"] = $datenow;
             $arrMemberSessions["TransactionDate"] = $datenow;
 
-            $_MemberSessions->Insert($arrMemberSessions);
+            $activesession = $_MemberSessions->checkSession($members["MID"]);
+            foreach ($activesession as $value) {
+                foreach ($value as $value2) {
+                    $activesession = $value2['Count'];
+                }
+            }
+            
+            if($activesession > 0)
+            {
+                $_MemberSessions->updateSession($arrMemberSessions["SessionID"], $members["MID"],$arrMemberSessions["RemoteIP"]);
+            }
+            else{
+                $_MemberSessions->Insert($arrMemberSessions);
+            }
+            $_SESSION['sessionID'] = $arrMemberSessions["SessionID"];
+            $_SESSION['MID'] = $members["MID"];
 
             $msresult = $_MemberSessions->getMemberSessions($members["MID"]);
             $membersessions = $msresult[0];

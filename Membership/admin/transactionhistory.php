@@ -20,11 +20,16 @@ App::LoadControl("TextBox");
 App::LoadControl("Button");
 
 App::LoadCore('Validation.class.php');
+App::LoadCore('ErrorLogger.php');
 
 $_MemberCards = new MemberCards();
 $_CardTransactions = new CardTransactions();
 $_MemberInfo = new MemberInfo();
 $_Cards = new Cards();
+
+$logger = new ErrorLogger();
+$logdate = $logger->logdate;
+$logtype = "Error ";
 
 $showresult = false;
 $showcardinfo = false;
@@ -86,10 +91,16 @@ if ($fproc->IsPostBack)
         else
         {
             
-            if(isset($result) && count($result) > 0 )
+            if(isset($result) && count($result) > 0 ){
                 App::SetErrorMessage ('No transactions found');
-            else
+                $error = "No transactions found";
+                $logger->logger($logdate, $logtype, $error);
+            }
+            else{
                 App::SetErrorMessage('Invalid Card');
+                $error = "Invalid Card";
+                $logger->logger($logdate, $logtype, $error);
+            }
         }
     }
     
@@ -140,10 +151,12 @@ if (!empty($page) && isset($_SESSION['CardInfo']['CardNumber']) && $btnSearch->S
     else
     {
         //App::pr($result);exit;
-        if($totalEntries == 0)
+        if($totalEntries == 0){
                 App::SetErrorMessage ('No transactions found');
-        else
+        }
+        else{
                 App::SetErrorMessage('Invalid Card');
+        }
     }
     
 }

@@ -1,7 +1,8 @@
 <?php
 error_reporting(E_ALL);
-ini_set('display_errors','On');
+
 session_start();
+$datenow = date('Y_m_d');
 $coredir = dirname(__FILE__) . "/";
 $basepath = realpath($coredir . "../../") . "/";
 $includedir = $basepath . "include/";
@@ -12,6 +13,8 @@ $dataclassdir = $includedir . "datalayer/";
 $moduledir = $includedir . "Modules/";
 $controlsdir = $includedir . "controls/";
 $librarydir = $includedir . "lib/";
+
+define ( 'ROOT_DIR', $basepath );
 
 global $_CONFIG;
 $_CONFIG["EnableMagicQuotes"] = true;
@@ -42,10 +45,34 @@ App::LoadCore("EventListener.class.php");
 if (App::getParam("devmode") == true)
 {
     App::LoadSettings("dbsettingsdev.inc.php");
+    
+    ini_set( 'display_startup_errors', 'on' );
+    ini_set('display_errors','On');
+    ini_set( 'html_errors', 'on' );
+    ini_set( 'log_errors', 'on' );
+    ini_set( 'ignore_repeated_errors', 'off' );
+    ini_set( 'ignore_repeated_source', 'off' );
+    ini_set( 'report_memleaks', 'on' );
+    ini_set( 'track_errors', 'on' );
+    ini_set( 'docref_root', 0 );
+    ini_set( 'docref_ext', 0 );
+    ini_set( 'error_log', $basepath . 'include/log/'.$datenow.'.log' );
 }
 else
 {
     App::LoadSettings("dbsettings.inc.php");
+    
+    ini_set( 'display_startup_errors', 'off' );
+    ini_set( 'display_errors', 'off' );
+    ini_set( 'html_errors', 'off' );
+    ini_set( 'log_errors', 'on' );
+    ini_set( 'ignore_repeated_errors', 'off' );
+    ini_set( 'ignore_repeated_source', 'off' );
+    ini_set( 'report_memleaks', 'on' );
+    ini_set( 'track_errors', 'on' );
+    ini_set( 'docref_root', 0 );
+    ini_set( 'docref_ext', 0 );
+    ini_set( 'error_log', $basepath . 'include/log/'.$datenow.'.log' );
 }
 
 ?>

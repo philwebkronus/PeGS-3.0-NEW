@@ -5,7 +5,7 @@
   Date Created: May 12, 2010
   Company: Philweb
  * ************************************************ */
-
+App::LoadCore('ErrorLogger.php');
 class MySQLDatabase extends BaseObject
 {
 
@@ -48,17 +48,24 @@ class MySQLDatabase extends BaseObject
 
     function Open()
     {
+        $logger = new ErrorLogger();
+        $logdate = $logger->logdate;
+        $logtype = "MySQL Error ";
+        
         $this->conn = mysql_connect($this->host . ":" . $this->port, $this->username, $this->password, false, 65536);
         if (mysql_error())
         {
+            $logger->logger($logdate, $logtype, mysql_error());
             $this->setError(mysql_error());
+            die(mysql_error());
         }
 
         mysql_select_db($this->dbname);
         if (mysql_error())
         {
+            $logger->logger($logdate, $logtype, mysql_error());
             $this->setError(mysql_error());
-            
+            die(mysql_error());
         }
     }
 
@@ -81,25 +88,40 @@ class MySQLDatabase extends BaseObject
 
     function Query($query)
     {
+        $logger = new ErrorLogger();
+        $logdate = $logger->logdate;
+        $logtype = "MySQL Error ";
+        
         if ($this->conn)
         {
-
+            
             $query = $this->CleanQuery($query);
-
+            
             if ($this->DieOnError == true)
             {
-                $result = mysql_query($query) or die(mysql_error());
+                $result = mysql_query($query) or mysql_error();
+                
+                if($result != 1){
+                    $logger->logger($logdate, $logtype, mysql_error());
+                    return mysql_error();
+                }
             }
             else
             {
-                $result = mysql_query($query);
+                $result = mysql_query($query) or mysql_error();
+                if($result != 1){
+                    $logger->logger($logdate, $logtype, mysql_error());
+                    return mysql_error();
+                }
             }
             $this->AffectedRows = mysql_affected_rows();
             $this->LastInsertID = mysql_insert_id();
             $this->LastQuery = $query;
             if (mysql_error())
                 $this->setError(mysql_error());
+            
             return $result;
+            
         }
         else
         {
@@ -109,21 +131,35 @@ class MySQLDatabase extends BaseObject
 
     function RunQuery($query)
     {
+        $logger = new ErrorLogger();
+        $logdate = $logger->logdate;
+        $logtype = "MySQL Error ";
+        
         if ($this->conn)
         {
             $rows = null;
 
             $query = $this->CleanQuery($query);
-
-            $result = mysql_query($query) or die(mysql_error());
-            if (mysql_error())
-                $this->setError(mysql_error());
-            while ($row = mysql_fetch_array($result))
-            {
-                $rows[] = $row;
+            
+            $result = mysql_query($query) or (mysql_error());
+            
+            if($result == false){
+                $logger->logger($logdate, $logtype, mysql_error());
+                return mysql_error();
             }
-            mysql_free_result($result);
-            return $rows;
+            else{
+                if (mysql_error()){
+                    $logger->logger($logdate, $logtype, mysql_error());
+                    $this->setError(mysql_error());
+                    return mysql_error();
+                }
+                while ($row = mysql_fetch_array($result))
+                {
+                    $rows[] = $row;
+                }
+                mysql_free_result($result);
+                return $rows;
+            }            
         }
         else
         {
@@ -133,14 +169,18 @@ class MySQLDatabase extends BaseObject
 
     function Execute($query)
     {
+        $logger = new ErrorLogger();
+        $logdate = $logger->logdate;
+        $logtype = "MySQL Error ";
         if ($this->conn)
         {
 
             $query = $this->CleanQuery($query);
 
-            mysql_query($query) or die(mysql_error());
+            mysql_query($query) or mysql_error();          
             if (mysql_error())
             {
+                $logger->logger($logdate, $logtype, mysql_error());
                 $this->setError(mysql_error());
                 return false;
             }

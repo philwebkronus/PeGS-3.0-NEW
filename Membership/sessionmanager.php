@@ -5,9 +5,7 @@ require_once("init.inc.php");
 App::LoadCore("URL.class.php");
 App::LoadModuleClass("Membership", "MemberSessions");
 
-if(isset($_SESSION["MemberInfo"]) && is_array($_SESSION['MemberInfo']) 
-    && count($_SESSION['MemberInfo']) > 0)
-{
+
    if(isset($_SESSION['sessionID'])){
         $sessionid = $_SESSION['sessionID'];
         $aid = $_SESSION['MID'];
@@ -37,9 +35,5 @@ if(isset($_SESSION["MemberInfo"]) && is_array($_SESSION['MemberInfo'])
         session_destroy();
        echo'<script> alert("Session Expired"); window.location="index.php"; </script> ';
     }
-}
-else
-{
-    echo'<script> alert("Session Expired"); window.location="index.php"; </script> ';
-}
+
 ?>

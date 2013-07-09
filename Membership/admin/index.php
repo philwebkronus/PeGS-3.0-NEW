@@ -9,7 +9,7 @@ require_once("../init.inc.php");
 include('sessionmanager.php');
 
 $pagetitle = "Membership Administration";
-$currentpage = "Player Profile";
+$currentpage = "Membership Profile";
 
 App::LoadModuleClass('Membership','MemberInfo');
 App::LoadModuleClass('Loyalty', 'CardVersion');
@@ -33,6 +33,8 @@ App::LoadControl("Radio");
 App::LoadControl("CheckBox");
 App::LoadControl("Hidden");
 
+App::LoadCore('ErrorLogger.php');
+
 $_MemberInfo = new MemberInfo();
 $_MemberCards = new MemberCards();
 $_Log = new AuditTrail();
@@ -48,10 +50,24 @@ $isOpen = 'false'; //Hide dialog box
 $showcardinfo = false;
 $showprofile = false;
 
+$readonly = true;
+$isenabled = false;
+$accounttypeid = $_SESSION['userinfo']['AccountTypeID'];
+
+$logger = new ErrorLogger();
+$logdate = $logger->logdate;
+$logtype = "Error ";
+
+//only pegs ops and marketing are allowed to update player profile
+if($accounttypeid == 8 || $accounttypeid == 13){
+        $readonly = false;
+        $isenabled = true;
+}
 /*
  * Profile Objects
  */
 $txtFirstName = new TextBox("txtFirstName", "txtFirstName", "FirstName");
+$txtFirstName->ReadOnly = $readonly;
 $txtFirstName->ShowCaption = false;
 $txtFirstName->Length = 30;
 $txtFirstName->Size = 15;
@@ -59,6 +75,7 @@ $txtFirstName->CssClass = "validate[required, custom[onlyLetterSp], minSize[2]]"
 $fproc->AddControl($txtFirstName);
 
 $txtMiddleName = new TextBox("txtMiddleName", "txtMiddleName", "MiddleName");
+$txtMiddleName->ReadOnly = $readonly;
 $txtMiddleName->ShowCaption = false;
 $txtMiddleName->Length = 30;
 $txtMiddleName->Size = 15;
@@ -66,6 +83,7 @@ $txtMiddleName->CssClass = "validate[custom[onlyLetterSp], minSize[2]]";
 $fproc->AddControl($txtMiddleName);
 
 $txtLastName = new TextBox("txtLastName", "txtLastName", "LastName");
+$txtLastName->ReadOnly = $readonly;
 $txtLastName->ShowCaption = false;
 $txtLastName->Length = 30;
 $txtLastName->Size = 15;
@@ -73,6 +91,7 @@ $txtLastName->CssClass = "validate[required, custom[onlyLetterSp], minSize[2]]";
 $fproc->AddControl($txtLastName);
 
 $txtNickName = new TextBox("txtNickName", "txtNickName", "NickName");
+$txtNickName->ReadOnly = $readonly;
 $txtNickName->ShowCaption = false;
 $txtNickName->Length = 30;
 $txtNickName->Size = 15;
@@ -80,6 +99,7 @@ $txtNickName->CssClass = "validate[custom[onlyLetterSp]]";
 $fproc->AddControl($txtNickName);
 
 $txtMobileNumber = new TextBox("txtMobileNumber", "txtMobileNumber", "MobileNumber");
+$txtMobileNumber->ReadOnly = $readonly;
 $txtMobileNumber->ShowCaption = false;
 $txtMobileNumber->Length = 30;
 $txtMobileNumber->Size = 15;
@@ -87,6 +107,7 @@ $txtMobileNumber->CssClass = "validate[required, custom[onlyNumber], minSize[9]]
 $fproc->AddControl($txtMobileNumber);
 
 $txtAlternateMobileNumber = new TextBox("txtAlternateMobileNumber", "txtAlternateMobileNumber", "AlternateMobileNumber");
+$txtAlternateMobileNumber->ReadOnly = $readonly;
 $txtAlternateMobileNumber->ShowCaption = false;
 $txtAlternateMobileNumber->Length = 30;
 $txtAlternateMobileNumber->Size = 15;
@@ -95,6 +116,7 @@ $txtAlternateMobileNumber->CssClass = "validate[custom[onlyNumber], minSize[9]]"
 $fproc->AddControl($txtAlternateMobileNumber);
 
 $txtEmail = new TextBox("txtEmail", "txtEmail", "Email");
+$txtEmail->ReadOnly = $readonly;
 $txtEmail->ShowCaption = false;
 $txtEmail->Length = 30;
 $txtEmail->Size = 15;
@@ -103,6 +125,7 @@ $txtEmail->ReadOnly = true;
 $fproc->AddControl($txtEmail);
 
 $txtAlternateEmail = new TextBox("txtAlternateEmail", "txtAlternateEmail", "Username");
+$txtAlternateEmail->ReadOnly = $readonly;
 $txtAlternateEmail->ShowCaption = false;
 $txtAlternateEmail->Length = 30;
 $txtAlternateEmail->Size = 15;
@@ -122,18 +145,21 @@ $dtBirthDate->isRenderJQueryScript = true;
 $fproc->AddControl($dtBirthDate);
 
 $txtAddress1 = new TextBox("txtAddress1", "txtAddress1", "Address1");
+$txtAddress1->ReadOnly = $readonly;
 $txtAddress1->ShowCaption = false;
 $txtAddress1->Length = 30;
 $txtAddress1->Size = 15;
 $fproc->AddControl($txtAddress1);
 
 $txtAddress2 = new TextBox("txtAddress2", "txtAddress2", "Address2");
+$txtAddress2->ReadOnly = $readonly;
 $txtAddress2->ShowCaption = false;
 $txtAddress2->Length = 30;
 $txtAddress2->Size = 15;
 $fproc->AddControl($txtAddress2);
 
 $txtIDPresented = new TextBox("txtIDPresented", "txtIDPresented", "IDPresented");
+$txtIDPresented->ReadOnly = $readonly;
 $txtIDPresented->ShowCaption = false;
 $txtIDPresented->Length = 30;
 $txtIDPresented->Size = 15;
@@ -147,10 +173,12 @@ $cboIDSelection->ShowCaption = false;
 $cboIDSelection->DataSource = $arrids;
 $cboIDSelection->DataSourceText = "IdentificationName";
 $cboIDSelection->DataSourceValue = "IdentificationID";
+$cboIDSelection->Enabled= $isenabled;
 $cboIDSelection->DataBind();
 $fproc->AddControl($cboIDSelection);
 
 $txtAge = new TextBox("txtAge", "txtAge", "Age");
+$txtAge->ReadOnly = $readonly;
 $txtAge->ShowCaption = false;
 $txtAge->Length = 30;
 $txtAge->Size = 15;
@@ -164,6 +192,7 @@ $cboNationality->ShowCaption = false;
 $cboNationality->DataSource = $arrnationality;
 $cboNationality->DataSourceText = "Name";
 $cboNationality->DataSourceValue = "NationalityID";
+$cboNationality->Enabled = $isenabled;
 $cboNationality->DataBind(); 
 $fproc->AddControl($cboNationality);
 
@@ -174,6 +203,7 @@ $cboOccupation->ShowCaption = false;
 $cboOccupation->DataSource = $arrOccupation;
 $cboOccupation->DataSourceText = "Name";
 $cboOccupation->DataSourceValue = "OccupationID";
+$cboOccupation->Enabled = $isenabled;
 $cboOccupation->DataBind();
 $fproc->AddControl($cboOccupation);
 
@@ -181,6 +211,8 @@ $rdoGroupGender = new RadioGroup("rdoGender", "rdoGender", "Gender");
 $rdoGroupGender->AddRadio("1", "Male", true);
 $rdoGroupGender->AddRadio("2", "Female");
 $rdoGroupGender->ShowCaption = true;
+$rdoGroupGender->Enabled = $isenabled;
+$rdoGroupGender->ReadOnly = $readonly;
 $rdoGroupGender->Initialize();
 $fproc->AddControl($rdoGroupGender);
 
@@ -188,6 +220,7 @@ $rdoGroupSmoker = new RadioGroup("rdoGroupSmoker", "rdoGroupSmoker", "rdoGroupSm
 $rdoGroupSmoker->AddRadio("1", "Smoker", true);
 $rdoGroupSmoker->AddRadio("2", "Non-Smoker");
 $rdoGroupSmoker->ShowCaption = true;
+$rdoGroupSmoker->Enabled = $isenabled;
 $rdoGroupSmoker->Initialize();
 $rdoGroupGender->Args="onclick='\"window.close()\"'";
 $fproc->AddControl($rdoGroupSmoker);
@@ -195,6 +228,7 @@ $fproc->AddControl($rdoGroupSmoker);
 $btnUpdate = new Button('btnUpdate', 'btnUpdate', 'Update');
 $btnUpdate->ShowCaption = true;
 $btnUpdate->IsSubmit = true;
+$btnUpdate->Enabled = $isenabled;
 $fproc->AddControl($btnUpdate);
 
 $hdnMID = new Hidden('hdnMID', 'hdnMID');
@@ -279,7 +313,9 @@ if($fproc->IsPostBack)
         else
         {
             $isSuccess = false;
-            $_Log->logEvent(AuditFunctions::UPDATE_PROFILE, 'MID:'.$arrMembers["MID"].':Successful', array('ID'=>$_SESSION['userinfo']['AID'], 'SessionID'=>$_SESSION['userinfo']['SessionID']));
+            $_Log->logEvent(AuditFunctions::UPDATE_PROFILE, 'MID:'.$arrMembers["MID"].':Failed', array('ID'=>$_SESSION['userinfo']['AID'], 'SessionID'=>$_SESSION['userinfo']['SessionID']));
+            $error = "Failed to update account profile";
+            $logger->logger($logdate, $logtype, $error);
         }
 
         /*

@@ -5,7 +5,7 @@
  * Date Created: 08 15, 10
  * Company: Philweb
  * *************************** */
-
+App::LoadCore('ErrorLogger.php');
 class BaseEntity extends BaseObject
 {
 
@@ -74,6 +74,10 @@ class BaseEntity extends BaseObject
      */
     function Insert($arrEntries)
     {
+        $logger = new ErrorLogger();
+        $logdate = $logger->logdate;
+        $logtype = "MySQL Error ";
+        
         $mydb = $this->InitDatabase();
         $mydb->Open();
         $mydb->InsertSingle($this->TableName, $arrEntries);
@@ -81,6 +85,7 @@ class BaseEntity extends BaseObject
         if ($mydb->getError())
         {
             $this->setError($mydb->getError());
+            $logger->logger($logdate, $logtype, $mydb->getError());
         }
         $this->LastInsertID = $mydb->LastInsertID;
         ;
@@ -90,6 +95,10 @@ class BaseEntity extends BaseObject
 
     function InsertMultiple($arrEntries)
     {
+        $logger = new ErrorLogger();
+        $logdate = $logger->logdate;
+        $logtype = "MySQL Error ";
+        
         $mydb = $this->InitDatabase();
         $mydb->Open();
         $mydb->InsertMultiple($this->TableName, $arrEntries);
@@ -97,6 +106,7 @@ class BaseEntity extends BaseObject
         if ($mydb->getError())
         {
             $this->setError($mydb->getError());
+            $logger->logger($logdate, $logtype, $mydb->getError());
         }
         $this->AffectedRows = $mydb->AffectedRows;
         return $mydb->AffectedRows;
@@ -140,6 +150,10 @@ class BaseEntity extends BaseObject
 
     protected function Update()
     {
+        $logger = new ErrorLogger();
+        $logdate = $logger->logdate;
+        $logtype = "MySQL Error ";
+        
         $mydb = $this->InitDatabase();
         $mydb->Open();
         $mydb->Update($this->ConvertToArray(), $this->Identity, $this->TableName);
@@ -147,6 +161,7 @@ class BaseEntity extends BaseObject
         if ($mydb->getError())
         {
             $this->setError($mydb->getError());
+            $logger->logger($logdate, $logtype, $mydb->getError());
         }
         $this->AffectedRows = $mydb->AffectedRows;
         return $mydb->AffectedRows;
@@ -154,6 +169,10 @@ class BaseEntity extends BaseObject
 
     function UpdateByArray($arrEntries)
     {
+        $logger = new ErrorLogger();
+        $logdate = $logger->logdate;
+        $logtype = "MySQL Error ";
+        
         $mydb = $this->InitDatabase();
         $mydb->Open();
         $mydb->Update($arrEntries, $this->Identity, $this->TableName);
@@ -162,6 +181,7 @@ class BaseEntity extends BaseObject
         if ($mydb->getError())
         {
             $this->setError($mydb->getError());
+            $logger->logger($logdate, $logtype, $mydb->getError());
         }
         $this->AffectedRows = $mydb->AffectedRows;
         return $mydb->AffectedRows;
@@ -169,6 +189,10 @@ class BaseEntity extends BaseObject
 
     function SelectByID($id)
     {
+        $logger = new ErrorLogger();
+        $logdate = $logger->logdate;
+        $logtype = "MySQL Error ";
+        
         $mydb = $this->InitDatabase();
         $mydb->Open();
         $query = "Select * from `$this->TableName` where `$this->Identity` = '$id'";
@@ -186,12 +210,17 @@ class BaseEntity extends BaseObject
         if ($mydb->getError())
         {
             $this->setError($mydb->getError());
+            $logger->logger($logdate, $logtype, $mydb->getError());
         }
         return $rows;
     }
 
     function SelectAll()
     {
+        $logger = new ErrorLogger();
+        $logdate = $logger->logdate;
+        $logtype = "MySQL Error ";
+        
         $mydb = $this->InitDatabase();
         $mydb->Open();
         $query = "Select * from `$this->TableName`";
@@ -210,12 +239,17 @@ class BaseEntity extends BaseObject
         {
             $this->setError($mydb->getError());
             App::SetErrorMessage($mydb->getError());
+            $logger->logger($logdate, $logtype, $mydb->getError());
         }
         return $rows;
     }
 
     function SelectLimit($itemfrom, $rowcount)
     {
+        $logger = new ErrorLogger();
+        $logdate = $logger->logdate;
+        $logtype = "MySQL Error ";
+        
         $mydb = $this->InitDatabase();
         $mydb->Open();
         $query = "Select * from `$this->TableName` limit $itemfrom, $rowcount";
@@ -234,12 +268,17 @@ class BaseEntity extends BaseObject
         if ($mydb->getError())
         {
             $this->setError($mydb->getError());
+            $logger->logger($logdate, $logtype, $mydb->getError());
         }
         return $rows;
     }
 
     function SelectByWhere($where)
     {
+        $logger = new ErrorLogger();
+        $logdate = $logger->logdate;
+        $logtype = "MySQL Error ";
+        
         $mydb = $this->InitDatabase();
         $mydb->Open();
         $query = "Select * from `$this->TableName` $where";
@@ -258,12 +297,17 @@ class BaseEntity extends BaseObject
         if ($mydb->getError())
         {
             $this->setError($mydb->getError());
+            $logger->logger($logdate, $logtype, $mydb->getError());
         }
         return $rows;
     }
 
     function SelectByStatus($status)
     {
+        $logger = new ErrorLogger();
+        $logdate = $logger->logdate;
+        $logtype = "MySQL Error ";
+        
         $mydb = $this->InitDatabase();
         $mydb->Open();
         $query = "Select * from `$this->TableName` WHERE `Status` = '$status'";
@@ -283,12 +327,17 @@ class BaseEntity extends BaseObject
         if ($mydb->getError())
         {
             $this->setError($mydb->getError());
+            $logger->logger($logdate, $logtype, $mydb->getError());
         }
         return $rows;
     }
 
     function RunQuery($query, $queryonlynamedfields = false)
     {
+        $logger = new ErrorLogger();
+        $logdate = $logger->logdate;
+        $logtype = "MySQL Error ";
+        
         $mydb = $this->InitDatabase();
         $mydb->Open();
         $result = $mydb->RunQuery($query);
@@ -300,6 +349,7 @@ class BaseEntity extends BaseObject
         if ($mydb->getError())
         {
             $this->setError($mydb->getError());
+            $logger->logger($logdate, $logtype, $mydb->getError());
         }
         $this->AffectedRows = $mydb->AffectedRows;
         return $result;
@@ -307,6 +357,10 @@ class BaseEntity extends BaseObject
 
     function RunQueryProc($procname, $params = '')
     {
+        $logger = new ErrorLogger();
+        $logdate = $logger->logdate;
+        $logtype = "MySQL Error ";
+        
         $mydb = $this->InitDatabase();
         $mydb->Open();
         $result = $mydb->RunQueryProc($procname, $params);
@@ -314,6 +368,7 @@ class BaseEntity extends BaseObject
         if ($mydb->getError())
         {
             $this->setError($mydb->getError());
+            $logger->logger($logdate, $logtype, $mydb->getError());
         }
         $this->AffectedRows = $mydb->AffectedRows;
         return $result;
@@ -321,6 +376,10 @@ class BaseEntity extends BaseObject
 
     function ExecuteQuery($query)
     {
+        $logger = new ErrorLogger();
+        $logdate = $logger->logdate;
+        $logtype = "MySQL Error ";
+        
         $mydb = $this->InitDatabase();
         $mydb->Open();
         $result = $mydb->Execute($query);
@@ -329,12 +388,17 @@ class BaseEntity extends BaseObject
         if ($mydb->getError())
         {
             $this->setError($mydb->getError());
+            $logger->logger($logdate, $logtype, $mydb->getError());
         }
         return $result;
     }
 
     function ExecuteProc($procname, $params = '')
     {
+        $logger = new ErrorLogger();
+        $logdate = $logger->logdate;
+        $logtype = "MySQL Error ";
+        
         $mydb = $this->InitDatabase();
         $mydb->Open();
         $result = $mydb->ExecuteProc($procname, $params);
@@ -342,6 +406,7 @@ class BaseEntity extends BaseObject
         if ($mydb->getError())
         {
             $this->setError($mydb->getError());
+            $logger->logger($logdate, $logtype, $mydb->getError());
         }
         $this->AffectedRows = $mydb->AffectedRows;
         return $result;
@@ -349,6 +414,10 @@ class BaseEntity extends BaseObject
 
     function DeleteByID($id)
     {
+        $logger = new ErrorLogger();
+        $logdate = $logger->logdate;
+        $logtype = "MySQL Error ";
+        
         $mydb = $this->InitDatabase();
         $mydb->Open();
         $query = "DELETE from `$this->TableName` where `$this->Identity` = '$id'";
@@ -362,6 +431,7 @@ class BaseEntity extends BaseObject
         if ($mydb->getError())
         {
             $this->setError($mydb->getError());
+            $logger->logger($logdate, $logtype, $mydb->getError());
         }
         return $rows;
     }
@@ -530,6 +600,10 @@ class BaseEntity extends BaseObject
      */
     private function isValidConnectionString()
     {
+        $logger = new ErrorLogger();
+        $logdate = $logger->logdate;
+        $logtype = "MySQL Error ";
+        
         if (App::getDBParam($this->ConnString) != false)
         {
             $connectionstring = App::getDBParam($this->ConnString);
@@ -540,12 +614,14 @@ class BaseEntity extends BaseObject
             else
             {
                 $this->setError("Invalid Connection String \"" . $this->ConnString . "\". Please ensure that a valid credential (username, password and database name) is supplied on your dbsettings.(" . App::getParam("settingsdir") . ")");
+                $logger->logger($logdate, $logtype, "Invalid Connection String \"" . $this->ConnString . "\". Please ensure that a valid credential (username, password and database name) is supplied on your dbsettings.(" . App::getParam("settingsdir") . ")");
                 return false;
             }
         }
         else
         {
             $this->setError("Connection String \"" . $this->ConnString . "\" does not exist. Please check your dbsettings (" . App::getParam("settingsdir") . ")");
+            $logger->logger($logdate, $logtype, "Connection String \"" . $this->ConnString . "\" does not exist. Please check your dbsettings (" . App::getParam("settingsdir") . ")");
             return false;
         }
     }

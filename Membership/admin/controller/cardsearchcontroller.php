@@ -16,6 +16,7 @@ App::LoadModuleClass('Loyalty', 'CardTransactions');
 App::LoadModuleClass('Kronus', 'Sites');
 
 App::LoadCore('Validation.class.php');
+App::LoadCore('ErrorLogger.php');
 
 App::LoadControl("TextBox");
 App::LoadControl("Button");
@@ -24,6 +25,10 @@ $_MemberCards = new MemberCards();
 $_CardTransactions = new CardTransactions();
 $_Sites = new Sites();
 $_Cards = new Cards();
+
+$logger = new ErrorLogger();
+$logdate = $logger->logdate;
+$logtype = "Error ";
 
 $MID = "";
 $currentPoints = 0;
@@ -87,6 +92,8 @@ if ($fproc->IsPostBack)
             else
             {
                 App::SetErrorMessage('Username not found');
+                $error = "Username not found";
+                $logger->logger($logdate, $logtype, $error);
             }
         }
         else
@@ -103,6 +110,8 @@ if ($fproc->IsPostBack)
             else
             {
                 App::SetErrorMessage('Invalid card number');
+                $error = "Invalid card number";
+                $logger->logger($logdate, $logtype, $error);
             }
         }
     }

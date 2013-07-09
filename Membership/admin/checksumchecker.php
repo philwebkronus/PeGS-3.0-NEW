@@ -10,8 +10,17 @@
 require_once("../init.inc.php");
 include('sessionmanager.php');
 
+$pagetitle = "Checksum Validator";
+$currentpage = "Administration";
+
+App::LoadCore('ErrorLogger.php');
+
 App::LoadControl("TextBox");
 $fproc = new FormsProcessor();
+
+$logger = new ErrorLogger();
+$logdate = $logger->logdate;
+$logtype = "Error ";
 
 if ($fproc->IsPostBack && $_POST["SubmitButton"] == "Check")
 {
@@ -69,6 +78,8 @@ if ($fproc->IsPostBack && $_POST["SubmitButton"] == "Check")
                 || (!(isset($contactno)))) 
         {
             App::SetErrorMessage("Invalid Checksum");
+            $error = "Invalid Checksum";
+            $logger->logger($logdate, $logtype, $error);
         } 
         else 
         {
@@ -81,6 +92,8 @@ if ($fproc->IsPostBack && $_POST["SubmitButton"] == "Check")
             else
             {
                 App::SetErrorMessage("Invalid Checksum");
+                $error = "Invalid Checksum";
+                $logger->logger($logdate, $logtype, $error);
             }
         } 
     }

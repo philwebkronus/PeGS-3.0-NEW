@@ -63,38 +63,9 @@ class Members extends BaseEntity {
 
     function Migrate($arrMembers, $arrMemberInfo, $AID, $siteid, $loyaltyCard, $newCard, $oldCardEmail, $isVIP, $isTemp = true) 
     {
-        $firstname = preg_split("/\ /", $arrMemberInfo['FirstName']);
-        //count split array name    
-        $fncount = count($firstname);
-        
-        //check if input name is complete or full
-        if($fncount > 1){
-                if($fncount == 2){
-                    list($firstname, $lastname) = preg_split("/\ /", $arrMemberInfo['FirstName']);
-                }
-                elseif($fncount >= 3){
-                    switch (true){
-                        case strstr($arrMemberInfo['FirstName'], "Jr"): 
-                            list($firstname, $lastname, $suffix) = preg_split("/\ /", $arrMemberInfo['FirstName']);
-                        break;
 
-                        case strstr($arrMemberInfo['FirstName'], "Sr"): 
-                            list($firstname, $lastname, $suffix) = preg_split("/\ /", $arrMemberInfo['FirstName']);
-                        break;
-
-                        case strstr($arrMemberInfo['FirstName'], "III"): 
-                            list($firstname, $lastname, $suffix) = preg_split("/\ /", $arrMemberInfo['FirstName']);
-                        break;
-
-                        case strstr($arrMemberInfo['FirstName'], "IV"): 
-                            list($firstname, $lastname, $suffix) = preg_split("/\ /", $arrMemberInfo['FirstName']);
-                        break;
-                    }
-                }
                 list($year,$month,$day) = preg_split("/\-/", $arrMemberInfo['Birthdate']);
-                
                 $this->StartTransaction();
-        
             try {
                 App::LoadCore('Randomizer.class.php');
                 $randomizer = new Randomizer();
@@ -105,7 +76,7 @@ class Members extends BaseEntity {
                 if (!$isTemp) {
 
 
-                    $password = $lastname.$year;
+                    $password = $month.$day.$year;
                     $hashpassword = md5($password);
                     $arrMembers['Password'] = $hashpassword;
 
@@ -285,10 +256,22 @@ class Members extends BaseEntity {
                                 }
                             } else {
                                 $this->RollBackTransaction();
+                                if (strpos(App::GetErrorMessage(), " Integrity constraint violation: 1062 Duplicate entry") > 0)
+                        {
+                            App::SetErrorMessage("Card ID already exists. Please retry the transaction.");
+
+                            return array('status'=>'ERROR','error'=>'Failed migrating member details');               
+                        }else
                                 return array('status'=>'ERROR','error'=>'Failed updating card status.');
                             }
                         } else {
                             $this->RollBackTransaction();
+                            if (strpos(App::GetErrorMessage(), " Integrity constraint violation: 1062 Duplicate entry") > 0)
+                        {
+                            App::SetErrorMessage("Card ID already exists. Please retry the transaction.");
+
+                            return array('status'=>'ERROR','error'=>'Failed migrating member details');               
+                        }else
                             return array('status'=>'ERROR','error'=>'Failed inserting to member cards.');
                         }
                     } else {
@@ -308,17 +291,23 @@ class Members extends BaseEntity {
                     }
                 } else {
                     $this->RollBackTransaction();
-                    return array('status'=>'ERROR','error'=>'Failed migrating member records.');
+                    if (strpos(App::GetErrorMessage(), " Integrity constraint violation: 1062 Duplicate entry") > 0)
+                        {
+                            App::SetErrorMessage("Email already exists. Please choose a different email address.");
+
+                            return array('status'=>'ERROR','error'=>'Failed migrating member details');               
+                        }
+                        else
+                        {
+                            return array('status'=>'ERROR','error'=>'Failed migrating member details.');                        
+                        }
                 }
             } catch (Exception $e) {
                 $this->RollBackTransaction();
                 return array('status'=>'ERROR','error'=>$e->getMessage());
             }
            
-        }
-        if($fncount < 2){
-            return array('status'=>'ERROR','error'=>'Please input complete name');
-        }
+        
         
     }
 

@@ -23,6 +23,9 @@ App::LoadControl("ComboBox");
 App::LoadControl("Button");
 App::LoadControl("RadioGroup");
 
+//Load Core
+App::LoadCore('ErrorLogger.php');
+
 $useCustomHeader = false;
 
 $customtags[] = "<BASE target=\"_self\" />";
@@ -37,6 +40,10 @@ $_Log = new AuditTrail();
 $fproc = new FormsProcessor();
 $dsmaxdate = new DateSelector();
 $dsmindate = new DateSelector();
+
+$logger = new ErrorLogger();
+$logdate = $logger->logdate;
+$logtype = "Error ";
 
 $txtName = new TextBox("txtName", "txtName", "Name");
 $txtName->ShowCaption = false;
@@ -263,18 +270,24 @@ if((isset($_GET["tempnumber"]) && (htmlentities($_GET["tempnumber"]))) &&
                         {
                             $isSuccess = false;
                             $_Log->logAPI(AuditFunctions::MIGRATE_TEMP, $tempAccountCode.':'.$MembershipCardNumber.':Failed', $sitecode, $AID);
+                            $error = "Failed to update member profile in memberinfo table";
+                            $logger->logger($logdate, $logtype, $error);
                         }
                     }
                     else
                     {
                         $isSuccess = false;
                         $_Log->logAPI(AuditFunctions::MIGRATE_TEMP, $tempAccountCode.':'.$MembershipCardNumber.':Failed', $sitecode, $AID);
+                        $error = "Failed to update card status";
+                        $logger->logger($logdate, $logtype, $error);
                     }                    
                 }
                 else
                 {
                     $isSuccess = false;
                     $_Log->logAPI(AuditFunctions::MIGRATE_TEMP, $tempAccountCode.':'.$MembershipCardNumber.':Failed', $sitecode, $AID);
+                    $error = "Failed to insert in membercards table";
+                    $logger->logger($logdate, $logtype, $error);
                 }
                 
             }
@@ -282,6 +295,8 @@ if((isset($_GET["tempnumber"]) && (htmlentities($_GET["tempnumber"]))) &&
         else
         {
             $isSubmitted = false;
+            $error = "Values not submitted";
+            $logger->logger($logdate, $logtype, $error);
         }
     }
     else
@@ -289,6 +304,9 @@ if((isset($_GET["tempnumber"]) && (htmlentities($_GET["tempnumber"]))) &&
         $isSuccess = false;
         $error = "One or more parameters have no values.";
         $_Log->logAPI(AuditFunctions::MIGRATE_TEMP, $tempAccountCode.':'.$MembershipCardNumber.':Failed', $sitecode, $AID);
+        $isSubmitted = false;
+        $error = "Parameters are not set";
+        $logger->logger($logdate, $logtype, $error);
     }
 }
 ?>

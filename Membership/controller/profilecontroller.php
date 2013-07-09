@@ -3,6 +3,7 @@
  * @author : owliber
  * @date : 2013-04-19
  */
+include 'sessionmanager.php';
 
 if (!isset($_SESSION["MemberInfo"]["Member"]["MID"]))
 {
@@ -19,6 +20,10 @@ $_MemberInfo = new MemberInfo();
 $_MemberCards = new MemberCards();
 $_CardTransactions = new CardTransactions();
 $_Sites = new Sites();
+
+$logger = new ErrorLogger();
+$logdate = $logger->logdate;
+$logtype = "Error ";
 
 if (!isset($fproc))
 {
@@ -332,8 +337,35 @@ if ($fproc->IsPostBack)
         $arrMemberInfo['Gender'] = $rdoGroupGender->SubmittedValue;
         $arrMemberInfo['IsSmoker'] = $rdoGroupSmoker->SubmittedValue;
 
-        //Proceed with the update profile
-        $_MemberInfo->updateProfile($arrMembers, $arrMemberInfo);
+        if(isset($_SESSION['sessionID']) || isset($_SESSION['MID'])){
+            $sessionid = $_SESSION['sessionID'];
+            $aid = $_SESSION['MID'];
+        }
+        else{
+            $sessionid = 0;
+            $aid = 0;
+        }
+        //Check restricted page
+
+        $_MemberSessions = new MemberSessions();
+
+        $sessioncount = $_MemberSessions->checkifsessionexist($aid, $sessionid);
+        foreach ($sessioncount as $value) {
+            foreach ($value as $value2) {
+                $sessioncount = $value2['Count'];
+            }
+        }
+        if($sessioncount > 0)
+        {
+            //Proceed with the update profile
+            $_MemberInfo->updateProfile($arrMembers, $arrMemberInfo);
+        }
+        else 
+        {
+            session_destroy();
+            echo'<script> alert("Session Expired"); window.location="index.php"; </script> ';
+        }
+        
 
         if (!App::HasError())
         {
@@ -355,6 +387,8 @@ if ($fproc->IsPostBack)
         }
         else
         {
+            $error = "Failed to update player profile.";
+            $logger->logger($logdate, $logtype, $error);
             $isSuccess = false;
         }
 

@@ -19,6 +19,8 @@ App::LoadModuleClass('Membership', 'Cities');
 App::LoadModuleClass('Membership', 'Regions');
 App::LoadModuleClass('Membership', 'MemberInfo');
 App::LoadModuleClass('Kronus', 'Sites');
+App::LoadModuleClass("Membership", "AuditTrail");
+App::LoadModuleClass("Membership", "AuditFunctions");
 
 App::LoadCore("PHPMailer.class.php");
 
@@ -28,6 +30,8 @@ App::LoadControl("ComboBox");
 App::LoadControl("CheckBox");
 App::LoadControl("DatePicker");
 App::LoadControl("Hidden");
+
+App::LoadCore('ErrorLogger.php');
 
 /* Initialize variables and default values */
 $sendemailtoadmin = false;
@@ -41,6 +45,11 @@ $dsmaxdate = new DateSelector();
 $dsmindate = new DateSelector();
 $dsmaxdate->AddYears(-21);
 $dsmindate->AddYears(-100);
+$_Log = new AuditTrail();
+
+$logger = new ErrorLogger();
+$logdate = $logger->logdate;
+$logtype = "Error ";
 
 /* Initialize models */
 $_RewardItems = new RewardItems();
@@ -81,6 +90,7 @@ $fproc->AddControl($txtQuantity);
 $txtFirstName = new TextBox("FirstName", "FirstName", "First Name: ");
 $txtFirstName->ShowCaption = true;
 $txtFirstName->Length = 30;
+$txtQuantity->ReadOnly = false;
 $txtFirstName->Size = 15;
 $txtFirstName->CssClass = "validate[required, custom[onlyLetterSp], minSize[2]]";
 $fproc->AddControl($txtFirstName);
@@ -254,12 +264,15 @@ if ($fproc->IsPostBack)
         {
             $_MemberCards->RollBackTransaction();
             //App::SetErrorMessage($errormessage);
+            $error = "Redemption Failed";
+            $logger->logger($logdate, $logtype, $error);
+            $_Log->logEvent(AuditFunctions::MARKETING_REDEMPTION, 'MID:'.$MID.':Failed', array('ID'=>$_SESSION['userinfo']['AID'], 'SessionID'=>$_SESSION['userinfo']['SessionID']));
         }
         else
         {
             $_SESSION["PreviousRemdeption"] = $CouponRedemptionLogID;
             $_MemberCards->CommitTransaction();
-
+            $_Log->logEvent(AuditFunctions::MARKETING_REDEMPTION, 'MID:'.$MID.':Success', array('ID'=>$_SESSION['userinfo']['AID'], 'SessionID'=>$_SESSION['userinfo']['SessionID']));
 
             $hdnRewardItemID->Text = "";
 
@@ -276,6 +289,9 @@ if ($fproc->IsPostBack)
             if (isset($site["SiteName"]))
             {
                 $sitecode = $site["SiteName"];
+            }
+            else{
+                $sitecode = '';
             }
             $arrcouponredemptionloginfo = $redemptioninfo[0];
             $mincouponnumber = str_pad($arrcouponredemptionloginfo["MinCouponNumber"], 7, "0", STR_PAD_LEFT);
@@ -296,6 +312,8 @@ if ($fproc->IsPostBack)
                 $couponseries = "";
                 $showcouponredemptionwindow = false;
                 App::SetErrorMessage("Insufficient Raffle Coupons. Please Try Again Later");
+                $error = "Insufficient Raffle Coupons. Please Try Again Later";
+                $logger->logger($logdate, $logtype, $error);
             }
             else
             {
@@ -333,31 +351,17 @@ if ($fproc->IsPostBack)
                 $emailmessage = str_replace('$actualcity', $actualcities[1], $emailmessage);
                 $emailmessage = str_replace('$actualregion', $actualregions[1], $emailmessage);
                 $emailmessage = str_replace('$imagesdir', $imagesdir, $emailmessage);
+                
+                //send emailof redemption coupon
+                Helper::sendRedemptionCoupon($emailmessage);
 
-//                eval('$emailmsg = $emailmessage; ');
-//                App::Pr($emailmessage);
-//                $filename = dirname(__FILE__) . "/posts.txt";
-//                $fp = new File($filename);
-//                $fp->Write($emailmessage);
-
-                $pm = new PHPMailer();
-
-                if ($sendemailtoadmin == 1)
-                {
-                    $pm->AddAddress("rpsanchez@philweb.com.ph", "Roger Sanchez");
-                    $pm->AddAddress("itqa@philweb.com.ph", "IT QA");
-                    $pm->AddAddress("mmdapula@philweb.com.ph", "Mikko Dapula");
-                    $pm->AddAddress("ammarcos@philweb.com.ph", "Maan Marcos");
-                }
-                //$pm->AddAddress($email, $playername);
-                $pm->Body = $emailmessage;
-                $pm->IsHTML(true);
-
-                $pm->From = "loyaltyadmin@pagcoregames.com";
-                $pm->FromName = "Loyalty Admin";
-                $pm->Host = "localhost";
-                $pm->Subject = "Loyalty Coupon Redemption";
-                //$pm->Send();
+//                if ($sendemailtoadmin == 1)
+//                {
+//                    $pm->AddAddress("rpsanchez@philweb.com.ph", "Roger Sanchez");
+//                    $pm->AddAddress("itqa@philweb.com.ph", "IT QA");
+//                    $pm->AddAddress("mmdapula@philweb.com.ph", "Mikko Dapula");
+//                    $pm->AddAddress("ammarcos@philweb.com.ph", "Maan Marcos");
+//                }
             }
 
             if (isset($_SESSION['CardInfo']))
