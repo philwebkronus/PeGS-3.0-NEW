@@ -180,6 +180,29 @@ class TempMembers extends BaseEntity
         return $result[0]['ctrtemp'];
     }
     
+    /**
+     * @author Edson Perez
+     * @date 7/10/2013
+     * @purpose count if account is exist in temp db
+     * @param str $username email | card
+     * @return int count
+     */
+    public function chkTempUser($username){
+        App::LoadCore("Validation.class.php");
+        $validate = new Validation();
+        
+        //if supplied username is email
+        if ($validate->validateEmail($username)) {
+            $query = "SELECT COUNT(MID) as ctruser FROM members WHERE UserName='$username'";
+            
+        } else {
+            $query = "SELECT COUNT(MID) as ctruser FROM members WHERE TemporaryAccountCode='$username'";
+        }
+        
+        $result = parent::RunQuery($query);
+        return $result[0]['ctruser'];
+    }
+    
 }
 
 ?>

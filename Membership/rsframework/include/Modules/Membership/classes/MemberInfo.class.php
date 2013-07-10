@@ -140,6 +140,20 @@ class MemberInfo extends BaseEntity
         return parent::RunQuery($query);
     }
     
+    /*
+     * Description: Get the number of both Active and Banned Account Status
+     * @author: Junjun S. Hernandez
+     * DateCreated: June 27, 2013 01:07:35PM
+     */
+    
+        public function getMemberInfoByID($MID)
+    {
+        $query = "SELECT YEAR(current_date)-YEAR(mi.Birthdate) as Age, Gender, m.Status FROM memberinfo mi
+                    INNER JOIN members m ON mi.MID = m.MID
+                  WHERE m.MID = $MID";
+        return parent::RunQuery($query);
+    }
+    
     public function updateProfile( $arrMembers, $arrMemberInfo)
     {
         

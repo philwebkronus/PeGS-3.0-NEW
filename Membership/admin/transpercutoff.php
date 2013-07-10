@@ -52,7 +52,7 @@ $dsmindate = new DateSelector();
 $dsmaxdate->AddYears(+21);
 $dsmindate->AddYears(-100);
 $thestime = date('Y-m-d H:i:s'); 
-$datetime_from = date("Y-m-d",strtotime("-1 months",strtotime($thestime)));
+$datetime_from = date("Y-m-d",strtotime("-1 week",strtotime($thestime)));
 $fromdateverified = new DatePicker("fromDateverified", "fromDateverified", "From");
 $fromdateverified->MaxDate = $dsmaxdate->CurrentDate;
 $fromdateverified->MinDate = $dsmindate->CurrentDate;
@@ -130,7 +130,7 @@ else{
             var time1 = " <?php echo App::getParam("cutofftime");?>";
             var time2 = " <?php echo App::getParam("cutofftime");?>";
             var datez1 = $("#fromDateverified").val().concat(time1);
-            var datez2 = $("#toDateverified").val().concat(" 05:59:59");
+            var datez2 = $("#toDateverified").val().concat(' 05:59:59');
             var separator = " to ";
             if(isValidDateTime == true){
                 if(site == -1){
@@ -149,6 +149,13 @@ else{
                 else if((datenow) < (document.getElementById('toDateverified').value))
                 {
                    alert("Queried date must not be greater than today");
+                   jQuery('#players').GridUnload();
+                   $("#dRange").html("");
+                   return false;         
+                }
+                else if(datez2 < datez1)
+                {
+                   alert("Queried End Date must me greater than Start Date");
                    jQuery('#players').GridUnload();
                    $("#dRange").html("");
                    return false;         
@@ -223,6 +230,7 @@ else{
             var toDatez = toDateTime[0].split("-");
             
             var year = parseInt(fromDate[0], 10);
+            var year2 = parseInt(toDatez[0], 10);
             var month = parseInt(fromDate[1], 10);
             var month2 = parseInt(toDatez[1], 10);
             var day = parseInt(fromDate[2], 10);
@@ -296,34 +304,90 @@ else{
                 }
 
             }
-                
-                if(monthsum == 0 || monthsum == 1){
-                    if(monthsum == 1){
-                        var daydiff = 31 - day;
-                        var daysum = daydiff + day2;
-                        
-                        if(daysum <= 31){
+            
+            if(month2 < month){
+                alert("End Date must be greater than the Start Date");
+                jQuery('#players').GridUnload();
+                $("#dRange").html("");
+                return false;
+            }
+            else{
+                var monthresult = month2 - month;
+                if(monthresult > 1){
+                    alert("Your Starting and Ending Date and Time must be within 1-Week Frame");
+                    jQuery('#players').GridUnload();
+                    $("#dRange").html("");
+                    return false;
+                }
+                else{                
+                            
+                if(year == year2 ){
+                    
+                    if(month == month2){
+                        var daydiff = day2 - day;
+                  
+                        if(daydiff <= 7){
                             return true;
                         }
                         else{
-                            alert("Your Starting and Ending Date and Time must be within 1-Month Frame");
+                            alert("Your Starting and Ending Date and Time must be within 1-Week Frame");
                             jQuery('#players').GridUnload();
                             $("#dRange").html("");
                             return false;
                         }
                     }
-                    else if(monthsum == 0){
-                        return true;
-                    }
-                }
-                else{
-                    alert("Your Starting and Ending Date and Time must be within 1-Month Frame");
-                    jQuery('#players').GridUnload();
-                    $("#dRange").html("");
-                    return false;
-                }
+                    else{
+                        if(month == 1 || month == 3 || month == 5 || month == 7 || month == 8 || month == 10 || month == 12)
+                        {
+                            //31
+                            var result = 31 - day;
+                            var result2 = result + day2;
+                            if(result2 <= 7){
+                                return true;
+                            }
+                            
+                            else
+                            {
+                                alert("Your Starting and Ending Date and Time must be within 1-Week Frame");
+                                jQuery('#players').GridUnload();
+                                $("#dRange").html("");
+                                return false;
+                            }
+                        }
+                        else if(month == 4 || month == 6 || month == 9 || month == 11)
+                        {
+                            //30
+                            var result = 30 - day;
+                            var result2 = result + day2;
+                            if(result2 <= 7){
+                                return true;
+                            }
+                            else{
+                                alert("Your Starting and Ending Date and Time must be within 1-Week Frame");
+                                jQuery('#players').GridUnload();
+                                $("#dRange").html("");
+                                return false;
+                            }
 
-            
+                        }
+                        else{
+                            alert("Your Starting and Ending Date and Time must be within 1-Week Frame");
+                                jQuery('#players').GridUnload();
+                                $("#dRange").html("");
+                                return false;
+                        } 
+                    }
+                    
+                       
+                  }
+                  else{
+                      alert("Your Starting and Ending Date and Time must be within 1-Week Frame");
+                            jQuery('#players').GridUnload();
+                            $("#dRange").html("");
+                            return false;
+                  }
+               }
+            }
             
 
                 if((fromDateAsInt > toDate) ) {
@@ -341,7 +405,7 @@ else{
                 }
                 else {
 
-                    alert("Your Starting and Ending Date and Time must be within 1-Month Frame");
+                    alert("Your Starting and Ending Date and Time must be within 1-Week Frame2");
                     return false;
                 }
 

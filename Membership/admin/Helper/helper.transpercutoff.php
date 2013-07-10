@@ -49,7 +49,7 @@ if(isset($_POST['Sites']) && $_POST['Sites'] != ''){
     $start = $limit * $page - $limit;
     $limit = (int)$limit;
 
-        $result = $_TransactionSummary->getTransSummary($site, $fromdate, $todate);
+        $result = $_TransactionSummary->getDistinctCard($site, $fromdate, $todate);
        
         if(count($result[0]) > 0)
         {
@@ -60,6 +60,7 @@ if(isset($_POST['Sites']) && $_POST['Sites'] != ''){
              $responce->records = $count;                    
              foreach($result as $vview)
              {                     
+                
                 $status= $_MemberCards->getStatusByCard($vview['LoyaltyCardNumber']);
                 
                 foreach ($status as $value) {
@@ -75,11 +76,39 @@ if(isset($_POST['Sites']) && $_POST['Sites'] != ''){
                     case 8: $vstatus = 'Temporary Migrated';  break;
                     case 9: $vstatus = 'Banned';  break;
                     default: $vstatus = 'Card Not Found'; break;
-                } 
-                $playernetwin = $vview['Deposit'] + $vview['Reload'] - $vview['Withdrawal'];
-                $responce->rows[$i]['id']=$vview['TransactionsSummaryID'];
-                $responce->rows[$i]['cell']=array($vview['LoyaltyCardNumber'],$vstatus,number_format($vview['Deposit'],2),
-                    number_format($vview['Reload'],2),number_format($vview['Withdrawal'],2) ,number_format($playernetwin,2));
+                }
+                $result2 = $_TransactionSummary->getTransSummaryperCard($site, $fromdate, $todate, $vview['LoyaltyCardNumber']);
+             
+             
+                        $ctr1 = 0;
+                        $arrdeposit = array();
+                        $arrreload = array();
+                        $arrwithdraw = array();
+                        while($ctr1 < count($result2))
+                        {
+                            
+                                array_push($arrdeposit, $result2[$ctr1]['Deposit']);
+                                array_push($arrreload, $result2[$ctr1]['Reload']);
+                                array_push($arrwithdraw, $result2[$ctr1]['Withdrawal']);
+                                
+                            
+                           $ctr1++; 
+                        }     
+                        
+
+                        /**** GET Total Summary *****/
+                        $granddeposit = array_sum($arrdeposit);
+                        $grandreload = array_sum($arrreload);
+                        $grandwithdraw = array_sum($arrwithdraw);
+                        
+                        $arrgrand = array("Deposit" => $granddeposit, 
+                                "Reload" => $grandreload, "Withdraw" => $grandwithdraw);
+                        
+                $playernetwin = $arrgrand['Deposit'] + $arrgrand['Reload'] - $arrgrand['Withdraw'];
+                $responce->rows[$i]['id']=$vview['LoyaltyCardNumber'];
+                $responce->rows[$i]['cell']=array($vview['LoyaltyCardNumber'],$vstatus,number_format($arrgrand['Deposit'],2),
+                    number_format($arrgrand['Reload'],2),number_format($arrgrand['Withdraw'],2) ,number_format($playernetwin,2));
+                
                 $i++;
              }
         }

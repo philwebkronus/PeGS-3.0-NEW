@@ -1,0 +1,271 @@
+<?php
+
+/*
+ * Description: Fetching and encoding data into JSON array to be displayed in JQGRID for list of Member Activity.
+ * @Author: Junjun S. Hernandez
+ * Date Created: 07-02-2013 05:00 PM
+ */
+
+//Attach and Initialize framework
+require_once("../../init.inc.php");
+
+
+//Load Modules to be use.
+App::LoadModuleClass("Loyalty", "MemberCards");
+App::LoadModuleClass("Membership", "MemberInfo");
+App::LoadModuleClass("Kronus", "TransactionSummary");
+App::LoadModuleClass("Kronus", "Sites");
+
+//Load Needed Core Class.
+App::LoadCore('Validation.class.php');
+
+//Initialize Modules
+$_MemberCards = new MemberCards();
+$_MemberInfo = new MemberInfo();
+$_TransactionSummary = new TransactionSummary();
+$_Sites = new Sites();
+$profile = null;
+$response = null;
+
+
+if (isset($_POST['pager'])) {
+    $vpage = $_POST['pager'];
+    switch ($vpage) {
+        //for Card Number dropdown
+        case "ProfileData":
+            if (isset($_POST['Card']) && $_POST['Card'] != '') {
+                $cardnumber = $_POST['Card'];
+                $MIDResult = $_MemberCards->getMIDByCard($cardnumber);
+                $countMD = count($MIDResult);
+                
+                if($countMD == 0){
+                    $profile->MID = '';
+                    $profile->Age = '';
+                    $profile->Gender = '';
+                    $profile->Status = '';
+                    echo json_encode($profile);
+            }
+                    else{
+                    $MemberInfoResult = $_MemberInfo->getMemberInfoByID($MIDResult[0]['MID']);
+                    $memberinfovalue['Age'] = $MemberInfoResult[0]['Age'];
+                    $memberinfovalue['Gender'] = $MemberInfoResult[0]['Gender'] == 1 ? "Male" : "Female";
+                    $memberinfovalue['Status'] = $MemberInfoResult[0]['Status'] == 1 ? "Banned" : "Active";
+                    $profile->MID = $MIDResult[0]['MID'];
+                    $profile->Age = $memberinfovalue['Age'];
+                    $profile->Gender = $memberinfovalue['Gender'];
+                    $profile->Status = $memberinfovalue['Status'];
+                    echo json_encode($profile);
+                    }
+            }
+            break;
+
+        //for Query button, get the Transaction Summary details to populate the grid
+        case "ActivityReport":
+            if (isset($_POST['Card']) && $_POST['Card'] != '') {
+                $cardnumber = $_POST['Card'];
+                $MIDResult = $_MemberCards->getMIDByCard($cardnumber);
+                $countMD = count($MIDResult);
+                $startdate = $_POST['fromTransDate'] . " " . 'cutofftime';
+                $enddate = $_POST['toTransDate'] . " " . 'cutofftime';
+                
+                $countMD = count($MIDResult);
+                
+                if($countMD == 0){
+                    $page = $_POST['page'];
+                    $limit = $_POST['rows'];
+                    $response->page = $page;
+                    $response->total = $countMD;
+                    $response->records = $countMD;
+                    echo json_encode($response);
+                    exit;
+                }
+                else{
+                if ((isset($startdate) != '') AND (isset($enddate) != '')) {
+
+                    $MID = $MIDResult[0]['MID'];
+                    $TransactionResult = $_TransactionSummary->getTransSummaryByMID($MID, $startdate, $enddate);
+                    $count = count($TransactionResult);
+                    $page = $_POST['page'];
+                    $limit = $_POST['rows'];
+
+                    $total_pages = ceil($count / $limit);
+                    if ($page > $total_pages) {
+                        $page = $total_pages;
+                    }
+                    
+                    $response->page = $page;
+                    $response->total = $total_pages;
+                    $response->records = $count;
+                    if ($count > 0) {
+                        
+                        $total_pages = ceil($count / $limit);
+                    if ($page > $total_pages) {
+                        $page = $total_pages;
+                    }
+                        
+                        $response->page = $page;
+                        $response->total = $total_pages;
+                        $response->records = count($TransactionResult);
+
+                        $ctr = 0;
+                        do {
+                            $siteid = $TransactionResult[$ctr]['SiteID'];
+                            $SitesResult = $_Sites->getSiteName($siteid);
+                            $SiteName = $SitesResult[0]['SiteName'];
+                            if ($TransactionResult[$ctr]['PlayingTime'] != '') {
+                                $pTime = $TransactionResult[$ctr]['PlayingTime'];
+                                $PlayingTime = date('H:i:s', strtotime($pTime));
+                                $startD = $TransactionResult[$ctr]['DateStarted'];
+                                $endD = $TransactionResult[$ctr]['DateEnded'];
+
+                                $total_time[] = $PlayingTime;
+                            } else {
+                                $PlayingTime = '';
+                                $total_time[] = 0;
+                            }
+
+                            if (is_null($total_time[$ctr]) || $total_time[$ctr] == '') {
+                                $totalsecs = 0;
+                            } else {
+
+                                list($hr, $min, $sec) = preg_split("/\:/", $total_time[$ctr]);
+
+                                if ($min > 0) {
+                                    $minnew = $min * 60;
+                                } else {
+                                    $minnew = $min;
+                                }
+
+                                if ($hr > 0) {
+                                    $hrnew = $hr * 60 * 60;
+                                } else {
+                                    $hrnew = $hr;
+                                }
+                                $totalsecs = $hrnew + $minnew + $sec;
+                            }
+
+                            if ($PlayingTime == '' || is_null($PlayingTime)) {
+                                $PlayingTime = '00:00:00';
+                            }
+
+                            $dCreated = new DateTime($TransactionResult[$ctr]['DateStarted']);
+                            $thisDate = $dCreated->format('m/d/Y');
+                            
+                            $deposit = $TransactionResult[$ctr]['Deposit'];
+                            $reload = $TransactionResult[$ctr]['Reload'];
+                            $redemption = $TransactionResult[$ctr]['Withdrawal'];
+                            $response->TransactionSummaryID = $TransactionResult[$ctr]['TransactionsSummaryID'];
+                            $PlayerWin = number_format(($deposit + $reload) - $redemption, 2, '.', '');
+                            $response->rows[$ctr]['id'] = $TransactionResult[$ctr]['TransactionsSummaryID'];
+                            $response->rows[$ctr]['cell'] = array(
+                                $thisDate,
+                                $SiteName,
+                                $PlayingTime,
+                                $deposit,
+                                $reload,
+                                $redemption,
+                                $PlayerWin,
+                                $totalsecs
+                            );
+                            $ctr++;
+                        } while ($ctr != $count);
+                    }
+                }
+                    echo json_encode($response);
+                    exit;
+                }
+            }
+            break;
+
+        //Get the Transaction Details to populate the subgrid            
+        case "ActivityReport2":
+            if (isset($_POST['transID']) && $_POST['transID'] != '') {
+                $TransactionsSummaryID = $_POST['transID'];
+
+                $page = $_POST['page'];
+                $limit = $_POST['rows'];
+                $TransDetails = $_TransactionSummary->getAmountReload($TransactionsSummaryID);
+                $total_pages = ceil(count($TransDetails) / $limit);
+                if ($page > $total_pages) {
+                    $page = $total_pages;
+                }
+
+                $count = count($TransDetails);
+
+                $responce->page = $page;
+                $responce->total = $total_pages;
+                $responce->records = count($count);
+                $ctr = 0;
+                foreach ($TransDetails as $value2) {
+
+
+                    $trans_details = array();
+                    $mergedep = 0;
+                    $mergerel = 0;
+                    $mergewith = 0;
+
+                    foreach ($value2 as $value) {
+                        $mergedep = 0;
+                        $mergerel = 0;
+                        $mergewith = 0;
+                        $trans_details[$value2['TransactionType']] = array(
+                            'TransactionsSummaryID' => $value['TransactionsSummaryID'],
+                            'Deposit' => $value['Deposit'],
+                            'Amount' => $value['Amount'],
+                            'Withdrawal' => $mergewith,
+                        );
+
+                        $trans = array();
+                        switch ($value2['TransactionType']) {
+                            case 'D':
+                                $mergedep = $mergedep + $value2['Deposit'];
+                                $trans = array('Deposit' => $mergedep);
+                                break;
+                            case 'R':
+                                $mergerel = $mergerel + $value2['Amount'];
+                                $trans = array('Amount' => $mergerel);
+                                break;
+                            case 'W':
+                                $mergewith = $mergewith + $value2['Withdrawal'];
+                                $trans = array('Withdrawal' => $mergewith);
+                                break;
+                        }
+                        $trans_details[$value2['TransactionType']] = array_merge($trans_details[$value2['TransactionType']], $trans);
+                    }
+                    foreach ($trans_details as $vview) {
+                        $transid = $vview['TransactionsSummaryID'];
+
+                        if ($ctr == 0) {
+                            $depositamt = $value2['Deposit'];
+                            $reloadamt = 0;
+                            $withdrawamt = 0;
+                        }
+                        if ($ctr < ($count - 1) && $count > 1 && $ctr > 0) {
+                            $reloadamt = $value2['Amount'];
+                            $depositamt = 0;
+                            $withdrawamt = 0;
+                        } else {
+                            $reloadamt = 0;
+                        }
+                        if ($ctr == ($count - 1) && $ctr > 0) {
+                            $withdrawamt = $value2['Withdrawal'];
+                            $depositamt = 0;
+                            $reloadamt = 0;
+                        } else {
+                            $withdrawamt = 0;
+                        }
+
+                        $responce->rows[$ctr]['id'] = $transid;
+                        $responce->rows[$ctr]['cell'] = array($depositamt, $reloadamt, $withdrawamt);
+                        $ctr++;
+                    }
+                }
+
+
+                echo json_encode($responce);
+                exit;
+            }
+            break;
+    }
+}
+?>

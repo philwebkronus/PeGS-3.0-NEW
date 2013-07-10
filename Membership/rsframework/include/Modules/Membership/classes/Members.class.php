@@ -344,6 +344,7 @@ class Members extends BaseEntity {
 
     function Authenticate($username, $password, $hashing = '') {
         App::LoadModuleClass("Loyalty", "MemberCards");
+        App::LoadModuleClass("Membership", "TempMembers");
         App::LoadCore("Validation.class.php");
         $validate = new Validation();
 
@@ -406,34 +407,17 @@ class Members extends BaseEntity {
                     App::SetErrorMessage("Invalid Account");
                     break;
             }
-//            if ($row["Status"] == 1) {
-//                if ($row["Password"] != $strpass) {
-//                    if ($row["LoginAttempts"] < 2) {
-//                        App::SetErrorMessage("Invalid Password");
-//                        $this->IncrementLoginAttempts($mid);
-//                    } else {
-//                        App::SetErrorMessage("Invalid Password. Account Locked");
-//                        $this->LockAccountForAttempts($mid);
-//                    }
-//                } else {
-//                    $this->ResetLoginAttempts($mid);
-//                    $retval = $row;
-//                }
-//            } elseif ($row["Status"] == 0) {
-//                App::SetErrorMessage("Account Inactive");
-//            } elseif ($row["Status"] == 2) {
-//                App::SetErrorMessage("Account Suspended");
-//            } elseif ($row["Status"] == 3) {
-//                App::SetErrorMessage("Account Locked (Login Attempts)");
-//            } elseif ($row["Status"] == 4) {
-//                App::SetErrorMessage("Account Locked (By Admin)");
-//            } elseif ($row["Status"] == 5) {
-//                App::SetErrorMessage("Account Banned");
-//            } elseif ($row["Status"] == 6) {
-//                App::SetErrorMessage("Account Terminated");
-//            }
         } else {
-            App::SetErrorMessage("Invalid Account");
+            $_tempMembers = new TempMembers();
+            
+            $isTempAcctExist = $_tempMembers->chkTempUser($username);
+            
+            //check if account has no transactions yet in kronus cashier
+            if($isTempAcctExist > 0)
+                App::SetErrorMessage("You need to transact at least one transaction 
+                    before you can login.");
+            else
+                App::SetErrorMessage("Invalid Account.");
         }
         return $retval;
     }

@@ -90,7 +90,6 @@ $fproc->AddControl($txtQuantity);
 $txtFirstName = new TextBox("FirstName", "FirstName", "First Name: ");
 $txtFirstName->ShowCaption = true;
 $txtFirstName->Length = 30;
-$txtQuantity->ReadOnly = false;
 $txtFirstName->Size = 15;
 $txtFirstName->CssClass = "validate[required, custom[onlyLetterSp], minSize[2]]";
 $fproc->AddControl($txtFirstName);
@@ -351,17 +350,31 @@ if ($fproc->IsPostBack)
                 $emailmessage = str_replace('$actualcity', $actualcities[1], $emailmessage);
                 $emailmessage = str_replace('$actualregion', $actualregions[1], $emailmessage);
                 $emailmessage = str_replace('$imagesdir', $imagesdir, $emailmessage);
-                
-                //send emailof redemption coupon
-                Helper::sendRedemptionCoupon($emailmessage);
 
-//                if ($sendemailtoadmin == 1)
-//                {
-//                    $pm->AddAddress("rpsanchez@philweb.com.ph", "Roger Sanchez");
-//                    $pm->AddAddress("itqa@philweb.com.ph", "IT QA");
-//                    $pm->AddAddress("mmdapula@philweb.com.ph", "Mikko Dapula");
-//                    $pm->AddAddress("ammarcos@philweb.com.ph", "Maan Marcos");
-//                }
+//                eval('$emailmsg = $emailmessage; ');
+//                App::Pr($emailmessage);
+//                $filename = dirname(__FILE__) . "/posts.txt";
+//                $fp = new File($filename);
+//                $fp->Write($emailmessage);
+
+                $pm = new PHPMailer();
+
+                if ($sendemailtoadmin == 1)
+                {
+                    $pm->AddAddress("rpsanchez@philweb.com.ph", "Roger Sanchez");
+                    $pm->AddAddress("itqa@philweb.com.ph", "IT QA");
+                    $pm->AddAddress("mmdapula@philweb.com.ph", "Mikko Dapula");
+                    $pm->AddAddress("ammarcos@philweb.com.ph", "Maan Marcos");
+                }
+                //$pm->AddAddress($email, $playername);
+                $pm->Body = $emailmessage;
+                $pm->IsHTML(true);
+
+                $pm->From = "loyaltyadmin@pagcoregames.com";
+                $pm->FromName = "Loyalty Admin";
+                $pm->Host = "localhost";
+                $pm->Subject = "Loyalty Coupon Redemption";
+                //$pm->Send();
             }
 
             if (isset($_SESSION['CardInfo']))

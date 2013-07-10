@@ -40,6 +40,19 @@ class MemberCards extends BaseEntity
     }
     
     /*
+     * Description: Get the number of both Active and Banned Account Status
+     * @author: Junjun S. Hernandez
+     * DateCreated: June 27, 2013 01:07:35PM
+     */
+    public function getAllMemberCards()
+    {
+        
+        $query = "SELECT MemberCardID, MID, CardNumber FROM membercards ORDER BY CardNumber ASC";
+        
+        return parent::RunQuery($query);
+    }
+    
+    /*
      * Description: Get Card Status
      * @author: gvjagolino
      * result: object array

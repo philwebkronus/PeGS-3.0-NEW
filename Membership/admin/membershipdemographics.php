@@ -241,7 +241,7 @@ if($fproc->IsPostBack)
         $result = $resultz;
 
         $datagrid_bn = new DataGrid();
-        $datagrid_bn->AddColumn("DateRange", "Date Range", DataGridColumnType::Text, DataGridColumnAlignment::Left);
+        $datagrid_bn->AddColumn("Age Bracket", "Date Range", DataGridColumnType::Text, DataGridColumnAlignment::Left);
         $datagrid_bn->AddColumn("Male", "Male", DataGridColumnType::Text, DataGridColumnAlignment::Center);
         $datagrid_bn->AddColumn("Female", "Female", DataGridColumnType::Text, DataGridColumnAlignment::Center);
         $datagrid_bn->AddColumn("Total", "Total", DataGridColumnType::Text, DataGridColumnAlignment::Center);

@@ -58,5 +58,26 @@ class Accounts extends BaseEntity
             return false;
         }
     }
+    /**
+     * @author Mark Kenneth Esguerra
+     * Date Created: July 9, 2013
+     * @param int $accounttype Select username with specific account type
+     */
+    public function SelectAccountsByAccountType($accounttype)
+    {
+        $query = "SELECT AID, UserName FROM $this->TableName WHERE AccountTypeID = $accounttype";
+        return parent::RunQuery($query);
+    }
+    /**
+     * Select UserName by a specific AID
+     * @author Mark Kenneth Esguerra
+     * Date Created: July 9, 2013
+     * @param int $AID 
+     */
+    public function SelectUsernameByAID($AID)
+    {
+        $query = "SELECT UserName FROM $this->TableName WHERE AID = $AID";
+        return parent::RunQuery($query);
+    }
 }
 ?>

@@ -38,5 +38,18 @@ class Sites extends BaseEntity
         $where = " where SiteCode = '$sitecode'";
         return parent::SelectByWhere($where);
     }
+    
+    
+    /*
+     * Description: Get only the Site Name by SiteID
+     * @author: Junjun S. Hernandez
+     * result: object array
+     * DateCreated: 2013-07-01
+     */
+    public function getSiteName( $siteid )
+    {
+        $query = "SELECT SiteName FROM sites WHERE SiteID = $siteid";
+        return parent::RunQuery($query);
+    }
 }
 ?>

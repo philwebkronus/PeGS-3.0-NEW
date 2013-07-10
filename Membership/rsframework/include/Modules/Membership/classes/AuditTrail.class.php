@@ -56,7 +56,33 @@ class AuditTrail extends BaseEntity
         $this->Insert($arrEntries);
         
     }
-    
-    
+    /**
+     * @author Mark Kenneth Esguerra <mgesguerra@philweb.com.ph>
+     * Date Created: July 8, 2013
+     * @param date $transactionDate Date for filter
+     * @param array $array Array of AIDs
+     */
+    public function getTotalLogs ($arrAID, $fromTransactionDate)
+    {
+        $toTransactionDate =  $vdateto = date ( 'Y-m-d' , strtotime ('+1 day' , strtotime($fromTransactionDate)));
+        $query = "SELECT COUNT(AuditTrailID) AS count FROM $this->TableName
+                  WHERE ID IN ("."'".implode("','",$arrAID)."'".") AND 
+                  TransactionDateTime >= '$fromTransactionDate' AND TransactionDateTime < '$toTransactionDate'";
+        return parent::RunQuery($query);
+    }
+    /**
+     * @author Mark Kenneth Esguerra
+     * Date Created: July 8, 2013
+     */
+    public function LoadAuditLogs($start, $limit, $sidx, $sord, $arrAID, $fromTransactionDate)
+    {
+        $toTransactionDate =  $vdateto = date ( 'Y-m-d' , strtotime ('+1 day' , strtotime($fromTransactionDate)));
+        $query = "SELECT * FROM $this->TableName
+                  WHERE ID IN ("."'".implode("','",$arrAID)."'".") AND 
+                  TransactionDateTime >= '$fromTransactionDate' AND TransactionDateTime < '$toTransactionDate'"."
+                  ORDER BY $sidx $sord
+                  LIMIT $start, $limit";
+        return parent::RunQuery($query);
+    }
 }
 ?>
