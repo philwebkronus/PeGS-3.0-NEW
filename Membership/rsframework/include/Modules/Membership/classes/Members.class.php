@@ -135,9 +135,11 @@ class Members extends BaseEntity {
 
                             $this->TableName = "loyaltydb.cards";
 
-                            $cardID = $arrMemberCards["CardID"];                 
-
-                            $this->ExecuteQuery("UPDATE loyaltydb.cards SET Status = 1 WHERE CardID = $cardID");
+                            $cardID = $arrMemberCards['CardID'];     
+                            $cardType = $ArrayOldCardID['CardTypeID'];
+                            
+                            $this->ExecuteQuery("UPDATE loyaltydb.cards SET Status = 1, 
+                                CardTypeID = $cardType WHERE CardID = $cardID");
 
                             if (!App::HasError()) {
 

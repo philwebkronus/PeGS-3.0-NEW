@@ -105,7 +105,16 @@ class Cards extends BaseEntity
                 
                 if(!App::HasError())
                 {
-                    $this->CommitTransaction();
+                    $memcardid = $arrNewCard['CardID'];
+                    $this->ExecuteQuery("UPDATE loyaltydb.cards SET CardTypeID = 2 WHERE CardID = $memcardid");
+
+                    if (!App::HasError()) {
+                        $this->CommitTransaction();
+                    }
+                    else
+                    {
+                        $this->RollBackTransaction();
+                    }
                 }
                 else
                 {
