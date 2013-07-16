@@ -21,7 +21,7 @@
                 var RewardOfferID = $(this).attr('RewardOfferID');
                 var Points = $(this).attr('Points');
                 var IsCoupon = $(this).attr('IsCoupon');
-                var PlayerPoints = "<?php echo $currentPoints; ?>";
+                var PlayerPoints = "<?php echo $PlayerPoints; ?>";
                 $.ajax({
                     url: "controller/helpercontroller.php",
                     type: 'POST',
@@ -225,7 +225,7 @@
                                                                                                 } else {
                                                                                                         echo "<span style='color: #FFFFFF'>None</span>";
                                                                                                 }?></div>
-                            <div class="product-points">Points: <?php if($rewardoffers[$itr]["Points"] != '') { echo number_format($rewardoffers[$itr]["Points"],2); } ?></div>
+                            <div class="product-points">Points: <?php if($rewardoffers[$itr]["Points"] != '') { echo number_format($rewardoffers[$itr]["Points"],0,'',','); } ?></div>
                         </div>
                         <div class="span6 learn-more-container">
                             <?php  
@@ -265,7 +265,7 @@
                                                                                                 } else {
                                                                                                         echo "<span style='color: #FFFFFF'>None</span>";
                                                                                                 }?></div>
-                            <div class="product-points">Points: <?php if($rewardoffers[$itr]["Points"] != '') { echo number_format($rewardoffers[$itr]["Points"],2); } ?></div>
+                            <div class="product-points">Points: <?php if($rewardoffers[$itr]["Points"] != '') { echo number_format($rewardoffers[$itr]["Points"],0,'',','); } ?></div>
                         </div>
                         <div class="span6 learn-more-container">
                             <?php  
@@ -336,7 +336,7 @@
                     <td><?php echo $txtAddress1; ?><br/>
                         <?php echo $txtAddress2; ?><br/></td>
                     <td>Gender</td>
-                    <td><?php echo $rdoGroupGender->Radios[0]; ?><?php echo $rdoGroupGender->Radios[1]; ?></td>
+                    <td><div style="float: left"><?php echo $rdoGroupGender->Radios[0]; ?></div><div style="float: left; margin-left: 50px;"><?php echo $rdoGroupGender->Radios[1]; ?></div></td>
                 </tr>
                 <tr>
                     <td colspan="2"></td>

@@ -99,10 +99,11 @@ $email = $arrmemberinfo['Email'];
 /**
  * Loyalty Points
  */
-$currentPoints = $points[0]['CurrentPoints'];
-$lifetimePoints = $points[0]['LifetimePoints'];
-$bonusPoints = $points[0]['BonusPoints'];
-$redeemedPoints = $points[0]['RedeemedPoints'];
+$currentPoints = number_format($points[0]['CurrentPoints'],0,'',',');
+$PlayerPoints = $points[0]['CurrentPoints'];
+$lifetimePoints = number_format($points[0]['LifetimePoints'],0,'',',');
+$bonusPoints = number_format($points[0]['BonusPoints'],0,'',',');
+$redeemedPoints = number_format($points[0]['RedeemedPoints'],0,'',',');
 
 
 /**

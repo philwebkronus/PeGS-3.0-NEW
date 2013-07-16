@@ -90,8 +90,12 @@ if(isset($_SESSION['RewardItemsInfo'])){
     $_RaffleCoupons->TableName = "rafflecoupons_".$getRaffleCouponSuffix[0]['CouponBatchID'];
     
     //for loading reward item details
-    $itemDetails = $_RewardItemDetails->SelectByID($_SESSION['RewardItemsInfo']['RewardItemID']);
-    
+    $itemresult = $_RewardItemDetails->SelectByID($_SESSION['RewardItemsInfo']['RewardItemID']);
+    if(count($itemresult) > 0){
+        $itemDetails = $itemresult[0];
+    } else {
+        $itemDetails = 0;
+    }
     $fproc = new FormsProcessor();
     
     $btnRedeemButton = new Button("redeem-button", "redeem-button", "REDEEM NOW");
@@ -665,7 +669,7 @@ function curPageURL()
     <link rel="stylesheet" href="css/slider/prof_slider/ad_gallery.css">
     <br/>
    <div id="bread-crumbs"><a href="profile.php">Home</a> |  Entertainment City</div>           
-   <?php if(count($itemDetails) != 0){ ?>
+   
     <div class="membership-inner-wrapper">
         <div class="row-fluid test">
             <div class="span7">
@@ -673,12 +677,12 @@ function curPageURL()
                 <img src="images/slider/membership_innerpages/product_image_full.jpg"></div>
             <div class="span5">
                  <div style="background-color:#cecece; text-align:center; padding: 20px 30px;">
-                     <h1><?php echo number_format($_SESSION['RewardItemsInfo']['Points'], 2, ".", ",") ?></h1>
+                     <h1><?php echo number_format($_SESSION['RewardItemsInfo']['Points'], 0, "", ",") ?></h1>
                  </div>
                 <div class="miw-product-wrapper" style="padding:14px 30px;">
                     <div class="miw-product-name" style="padding:6px 0;"><h4><?php echo $_SESSION['RewardItemsInfo']['ProductName']; ?></h4></div>
                      <div class="miw-product-desc" style="font-size:12px; line-height: 12px;">
-                        <?php echo $itemDetails[0]["DetailsOneA"]; ?>
+                        <?php if(isset($itemDetails["DetailsOneA"])){ echo $itemDetails["DetailsOneA"]; }?>
                      </div>
                      <div class="miw-partner-desc" style="font-weight: bold; margin-top:10px;"><?php echo $_SESSION['RewardItemsInfo']['PartnerName']; ?></div>
                      <br>
@@ -689,50 +693,72 @@ function curPageURL()
         </div><!-- .membership-inner-wrapper -->
         <br>
         <div class="round-gold membership-inner-padding">
+            <?php if($itemDetails != 0){ ?>
             <div class="row-fluid">
                 <div class="span7">
-                    <h3><?php echo $itemDetails[0]["HeaderOne"]; ?></h3>
+                    <h3><?php if(isset($itemDetails["HeaderOne"]) && $itemDetails["HeaderOne"] != "") 
+                                            { 
+                                                echo $itemDetails["HeaderOne"]; 
+                                            } else if(isset($itemDetails["HeaderOne"]) && $itemDetails["HeaderOne"] == ""){
+                                                echo "<span style='color: transparent'>SAMPLE HEADER</span>";
+                                            }
+                                ?>
+                    </h3>
                     <hr>
                     <p>
-                        <?php echo $itemDetails[0]["DetailsOneA"]; ?>
+                        <?php echo $itemDetails["DetailsOneA"]; ?>
                     </p>
                     <p>
-                        <?php echo $itemDetails[0]["DetailsOneB"]; ?>
+                        <?php echo $itemDetails["DetailsOneB"]; ?>
                     </p>
                     <p>
-                        <?php echo $itemDetails[0]["DetailsOneC"]; ?>                                                       
+                        <?php echo $itemDetails["DetailsOneC"]; ?>                                                       
                     </p>
                 </div>
                 <div class="span5">
-                    <h3><?php echo $itemDetails[0]["HeaderTwo"]; ?></h3>
+                    <h3><?php if(isset($itemDetails["HeaderTwo"]) && $itemDetails["HeaderTwo"] != "") 
+                                            { 
+                                                echo $itemDetails["HeaderTwo"]; 
+                                            } else if(isset($itemDetails["HeaderTwo"]) && $itemDetails["HeaderTwo"] == ""){
+                                                echo "<span style='color: transparent'>SAMPLE HEADER</span>";
+                                            }
+                                ?>
+                    </h3>
                     <hr>
-                        <strong><?php echo $itemDetails[0]["DetailsTwoA"]; ?> </strong>
+                        <strong><?php echo $itemDetails["DetailsTwoA"]; ?> </strong>
                         <p>
-                            <?php echo $itemDetails[0]["DetailsTwoB"]; ?>
+                            <?php echo $itemDetails["DetailsTwoB"]; ?>
                         </p>
                         <p>
-                            <?php echo $itemDetails[0]["DetailsTwoC"]; ?>
+                            <?php echo $itemDetails["DetailsTwoC"]; ?>
                         </p>
                 </div>
             </div>
             <br>
             <div class="row-fluid">
                 <div class="span12">
-                    <h3><?php echo $itemDetails[0]["HeaderThree"]; ?></h3>
+                    <h3><?php if(isset($itemDetails["HeaderThree"]) && $itemDetails["HeaderThree"] != "") 
+                                            { 
+                                                echo $itemDetails["HeaderThree"]; 
+                                            } else if(isset($itemDetails["HeaderThree"]) && $itemDetails["HeaderThree"] == ""){
+                                                echo "<span style='color: transparent'>SAMPLE HEADER</span>";
+                                            }
+                                ?>
+                    </h3>
                     <hr>
                      <p>
-                         <?php echo $itemDetails[0]["DetailsThreeA"]; ?>
+                         <?php echo $itemDetails["DetailsThreeA"]; ?>
                     </p>
                     <p>
-                        <?php echo $itemDetails[0]["DetailsThreeB"]; ?>
+                        <?php echo $itemDetails["DetailsThreeB"]; ?>
                     </p>
                     <p>
-                        <?php echo $itemDetails[0]["DetailsThreeC"]; ?>                                                          
+                        <?php echo $itemDetails["DetailsThreeC"]; ?>                                                          
                     </p>                             
                 </div>
             </div>
+            <?php } else { echo "<p style='font-size: 14px;'>Reward Item has no details provided.</p>"; } ?>
         </div>
-        <?php } ?>
         <!--popup dialog box for redemption-->
         <div id="redemptionquantity" style="display:none;">
             <?php echo $hdnMemberInfoID; ?>
