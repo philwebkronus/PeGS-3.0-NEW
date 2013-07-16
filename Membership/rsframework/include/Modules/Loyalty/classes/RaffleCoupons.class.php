@@ -18,6 +18,38 @@ class RaffleCoupons extends BaseEntity
         $this->DatabaseType = DatabaseTypes::PDO;
     }
     
+    function getAvailableCoupons($RewardItemID,$CouponQuantity){
+        $query = "SELECT RaffleCouponID FROM $this->TableName
+                            WHERE Status = 0 AND RewardItemID = $RewardItemID 
+                            ORDER BY CouponNumber LIMIT $CouponQuantity";
+        return parent::RunQuery($query);
+    }
+    
+    function updateRaffleCouponsStatus($RaffleCouponID, $CouponRedemptionLogID,$RewardItemID, $updatedbyaid){
+        $query = "LOCK TABLES $this->TableName WRITE;";
+        parent::ExecuteQuery($query);
+        if ($this->HasError){
+            App::SetErrorMessage($this->getError());
+            return false;
+        }
+        
+        $query = "UPDATE $this->TableName SET CouponRedemptionLogID = $CouponRedemptionLogID, Status = 1, UpdatedByAID = $updatedbyaid,
+                            DateUpdated = now_usec() WHERE Status = 0 AND RewardItemID = $RewardItemID AND RaffleCouponID = $RaffleCouponID";
+        return parent::ExecuteQuery($query);
+        
+        if ($this->HasError) {
+            App::SetErrorMessage($this->getError());
+            return false;
+        }
+        
+        $query = "UNLOCK TABLES;";
+        parent::ExecuteQuery($query);
+        if ($this->HasError){
+            App::SetErrorMessage($this->getError());
+            return false;
+        }
+    }
+
     function Redeem($CouponRedemptionLogID, $rewarditemid, $quantity)
     {
         $query = "LOCK TABLES $this->TableName WRITE;";
@@ -50,6 +82,14 @@ class RaffleCoupons extends BaseEntity
         {
             App::SetErrorMessage($this->getError());
             return false;
+        } else {
+            $query = "UPDATE loyaltydb.couponredemptionlogs SET Status = 1, DateUpdated = now_usec() WHERE CouponRedemptionLogID = $CouponRedemptionLogID";
+            parent::ExecuteQuery($query);
+            if ($this->HasError)
+            {
+                App::SetErrorMessage($this->getError());
+                return false;
+            }
         }
     }
     

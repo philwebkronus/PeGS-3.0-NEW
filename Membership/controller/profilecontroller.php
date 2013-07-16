@@ -3,32 +3,64 @@
  * @author : owliber
  * @date : 2013-04-19
  */
+
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+require_once("init.inc.php");
 include 'sessionmanager.php';
+
+//enable header
+$useCustomHeader = true;
+
+App::LoadCore("URL.class.php");
+App::LoadCore("Hashing.class.php");
+App::LoadCore("Validation.class.php");
+App::LoadCore("File.class.php");
+App::LoadCore("PHPMailer.class.php");
+
+App::LoadModuleClass("Membership", "MemberInfo");
+App::LoadModuleClass("Membership", "Identifications");
+App::LoadModuleClass("Membership", "Nationality");
+App::LoadModuleClass("Membership", "Occupation");
+App::LoadModuleClass("Membership", "MemberSessions");
+App::LoadModuleClass("Membership", "AuditTrail");
+App::LoadModuleClass("Loyalty", "MemberCards");
+App::LoadModuleClass("Loyalty", "RewardOffers");
+App::LoadModuleClass("Loyalty", "CardTransactions");
+App::LoadModuleClass("Loyalty", "Cards");
+App::LoadModuleClass("Kronus", "Sites");
+
+App::LoadControl("DatePicker");
+App::LoadControl("TextBox");
+App::LoadControl("ComboBox");
+App::LoadControl("Button");
+App::LoadControl("RadioGroup");
+App::LoadControl("Hidden");
 
 if (!isset($_SESSION["MemberInfo"]["Member"]["MID"]))
 {
     App::SetErrorMessage("Account Banned");
-    reloadParent();
+    echo'<script> alert("Session is Expired"); window.location="index.php"; </script> ';
 }
 
 $MID = $_SESSION["MemberInfo"]["Member"]["MID"];
-
+unset($_SESSION["RewardItemsInfo"]);
 /**
  * Load Models
  */
 $_MemberInfo = new MemberInfo();
 $_MemberCards = new MemberCards();
 $_CardTransactions = new CardTransactions();
+$_RewardOffers = new RewardOffers();
+$_Cards = new Cards();
 $_Sites = new Sites();
 
 $logger = new ErrorLogger();
 $logdate = $logger->logdate;
 $logtype = "Error ";
 
-if (!isset($fproc))
-{
-    $fproc = new FormsProcessor();
-}
+$fproc = new FormsProcessor();
 
 $evt = new EventListener($fproc);
 $dsmaxdate = new DateSelector();
@@ -89,7 +121,6 @@ $txtMiddleName->ShowCaption = false;
 $txtMiddleName->Length = 30;
 $txtMiddleName->Size = 15;
 $txtMiddleName->CssClass = "validate[custom[onlyLetterSp], minSize[2]]";
-;
 $txtMiddleName->Text = $arrmemberinfo['MiddleName'];
 $fproc->AddControl($txtMiddleName);
 
@@ -98,7 +129,6 @@ $txtLastName->ShowCaption = false;
 $txtLastName->Length = 30;
 $txtLastName->Size = 15;
 $txtLastName->CssClass = "validate[required, custom[onlyLetterSp], minSize[2]]";
-;
 $txtLastName->Text = $arrmemberinfo['LastName'];
 $fproc->AddControl($txtLastName);
 
@@ -127,10 +157,32 @@ $txtAlternateMobileNumber->AutoComplete = false;
 $txtAlternateMobileNumber->CssClass = "validate[custom[onlyNumber], minSize[9]]";
 $fproc->AddControl($txtAlternateMobileNumber);
 
-if (!isset($txtPassword))
-{
-    $txtPassword = new TextBox("txtPassword", "txtPassword", "Password");
-}
+//$btnLearnMore = new Button("btnLearnMore", "btnLearnMore", "Learn More");
+//$btnLearnMore->CssClass = "yellow-btn-learn-more";
+//$btnLearnMore->
+//$fproc->AddControl($btnLearnMore); 
+
+$hdnRewardItemID = new Hidden("hdnRewardItemID", "hdnRewardItemID", "hdnRewardItemID");
+$hdnRewardItemID->ShowCaption = false;
+$hdnRewardItemID->Text = "";
+$fproc->AddControl($hdnRewardItemID);
+
+$hdnProductName = new Hidden("hdnProductName", "hdnProductName", "hdnProductName");
+$hdnProductName->ShowCaption = false;
+$hdnProductName->Text = "";
+$fproc->AddControl($hdnProductName);
+
+$hdnPartnerName = new Hidden("hdnPartnerName", "hdnPartnerName", "hdnPartnerName");
+$hdnPartnerName->ShowCaption = false;
+$hdnPartnerName->Text = "";
+$fproc->AddControl($hdnPartnerName);
+
+$hdnRewardOfferID = new Hidden("hdnRewardOfferID", "hdnRewardOfferID", "hdnRewardOfferID");
+$hdnRewardOfferID->ShowCaption = false;
+$hdnRewardOfferID->Text = "";
+$fproc->AddControl($hdnRewardOfferID);
+
+$txtPassword = new TextBox("txtPassword", "txtPassword", "Password");
 $txtPassword->ShowCaption = false;
 $txtPassword->Length = 40;
 $txtPassword->Size = 15;
@@ -261,6 +313,14 @@ $rdoGroupSmoker->Initialize();
 $rdoGroupSmoker->SetSelectedValue($arrmemberinfo['IsSmoker']);
 $rdoGroupGender->Args = "onclick='\"window.close()\"'";
 $fproc->AddControl($rdoGroupSmoker);
+$rewardoffers = $_RewardOffers->getAllRewardOffers($_SESSION["MemberInfo"]["CardTypeID"],"Points");
+for ($itr=0;$itr < count($rewardoffers); $itr++) {
+    preg_match('/\((.*?)\)/', $rewardoffers[$itr]["ProductName"], $rewardname);
+    if(is_array($rewardname) && isset($rewardname[1])){
+        unset($rewardoffers[$itr]["ProductName"]);
+        $rewardoffers[$itr]["ProductName"] = $rewardname[1];
+    }
+}
 
 //Check if has scanned file
 
@@ -299,10 +359,7 @@ else
     $lastPlay = "";
 }
 
-if (!$fproc->IsFormProcessed)
-{
-    $fproc->ProcessForms();
-}
+$fproc->ProcessForms();
 $dateupdated = "now_usec()";
 
 echo App::GetErrorMessage();
@@ -358,7 +415,7 @@ if ($fproc->IsPostBack)
         if($sessioncount > 0)
         {
             //Proceed with the update profile
-            $_MemberInfo->updateProfile($arrMembers, $arrMemberInfo);
+            $resultmsg = $_MemberInfo->updateProfile($arrMembers, $arrMemberInfo);
         }
         else 
         {

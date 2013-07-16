@@ -14,5 +14,12 @@ class Cities extends BaseEntity
         $this->ConnString = "membership";
         $this->DatabaseType = DatabaseTypes::PDO;
     }
+    
+    
+    function getCityName($cityID){
+        $query = "SELECT CityName FROM $this->TableName WHERE CityID = $cityID";
+        $result = parent::RunQuery($query);
+        return $result[0]['CityName'];
+    }
 }
 ?>

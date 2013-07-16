@@ -134,12 +134,12 @@ div.nav ul ul li {
     font-weight: normal; 
     background: #c3d9ff; 
     color: #1A597C; 
-    width: 152px; 
+    width: 175px; 
 }
 
 div.nav ul ul li:hover {
     margin-left: auto;
-    height: 15px; 
+    height: auto; 
     position: relative;
 }
 
@@ -251,3 +251,16 @@ div.nav ul ul ul {
 
 /*-----------------------------------------------------------------------------------------------------*/
 
+/*--------Additional CSS Style for Add Promo------------------*/
+
+#tbladdpromo tr td #caption{
+    width: 100px;
+}
+#tbladdpromo tr td #field{
+    width: 200px;
+    vertical-align: top;
+}
+.radiostatus{
+    margin-left: 40px;
+    margin-bottom: 5px;
+}

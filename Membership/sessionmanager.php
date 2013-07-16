@@ -33,7 +33,7 @@ App::LoadModuleClass("Membership", "MemberSessions");
     {
         $msg = "Not Connected";
         session_destroy();
-       echo'<script> alert("Session Expired"); window.location="index.php"; </script> ';
+       echo'<script> alert("Session is Expired"); window.location="index.php"; </script> ';
     }
 
 ?>

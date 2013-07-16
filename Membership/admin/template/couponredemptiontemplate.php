@@ -14,7 +14,7 @@
                         <td><strong>$couponseries</strong></td>
                     </tr>
                     <tr>
-                        <td>No. of Coupons :</td>
+                        <td>No. of Coupons: </td>
                         <td>$quantity</td>
                     </tr>
                     <tr>
@@ -30,19 +30,19 @@
                     </tr>
                     <tr>
                         <td>Promo Code:</td>
-                        <td>201301</td>
+                        <td>$promocode</td>
                     </tr>
                     <tr>
                         <td>Promo Title:</td>
-                        <td>Membership Raffle Promo</td>
+                        <td>$promoname</td>
                     </tr>
                     <tr>
                         <td>Promo Period:</td>
-                        <td>April 12 to May 24, 2013</td>
+                        <td>$promoperiod</td>
                     </tr>
                     <tr>
                         <td>Draw Date:</td>
-                        <td>May 31, 2013 4PM</td>
+                        <td>$drawdate</td>
                     </tr>
                     <tr>
                         <td style="vertical-align:top;" colspan="2">&nbsp;</td>

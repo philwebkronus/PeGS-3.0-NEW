@@ -82,7 +82,7 @@ class MemberCards extends BaseEntity
                     MID
                   FROM loyaltydb.membercards
                   WHERE MID = $MID
-                  AND `Status` IN (1,5,7, 8)
+                  AND `Status` IN (1,5)
                   GROUP BY MID;";
                 
         $result = parent::RunQuery($query);
@@ -121,7 +121,7 @@ class MemberCards extends BaseEntity
                     END AS CardType
             FROM membercards m
                 INNER JOIN cards c ON c.CardID = m.CardID AND m.CardNumber = c.CardNumber
-            WHERE m.MID = $MID";
+            WHERE m.MID = $MID AND m.Status IN(1,5)";
        
         $result = parent::RunQuery($query);
         
@@ -238,14 +238,23 @@ class MemberCards extends BaseEntity
     {
         $query = "Update $this->TableName set RedeemedPoints = RedeemedPoints + $redeemTotalPoints, 
                 CurrentPoints = CurrentPoints - $redeemTotalPoints WHERE MID = $MID and CardNumber = '$CardNumber'
-                and CurrentPoints >= $redeemTotalPoints and Status = 1;";
+                and CurrentPoints >= $redeemTotalPoints and Status IN (1,5);";
         $this->LastQuery = $query;
         $retval = parent::ExecuteQuery($query);
         if ($this->AffectedRows <= 0)
         {
             App::SetErrorMessage("Failed to redeem: Card may have insufficient points.");
-        }
-        return $retval;
     }
+        return $retval;
+}
+
+    //For updating player points
+    public function updatePlayerPoints($MID, $redeemTotalPoints)
+    {
+        $query = "UPDATE $this->TableName set RedeemedPoints = RedeemedPoints + $redeemTotalPoints, 
+                CurrentPoints = CurrentPoints - $redeemTotalPoints WHERE MID = $MID AND  Status IN (1,5)";
+        return parent::ExecuteQuery($query);
+    }
+
 }
 ?>

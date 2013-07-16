@@ -248,7 +248,7 @@ if ($fproc->IsPostBack)
         {
             $_CouponRedemptionLogs = new CouponRedemptionLogs();
             $_CouponRedemptionLogs->setPDOConnection($CommonPDOConnection);
-            $_CouponRedemptionLogs->Redeem($redeemMID, $redeemRewardITemID, $redeemQuantity, 1, 1);
+            $_CouponRedemptionLogs->insertCouponLogs($redeemMID, $redeemRewardITemID, $redeemQuantity, $source = 0, $_SESSION['userinfo']['AID']);
             $CouponRedemptionLogID = $_CouponRedemptionLogs->LastInsertID;
         }
 
@@ -270,146 +270,158 @@ if ($fproc->IsPostBack)
         else
         {
             $_SESSION["PreviousRemdeption"] = $CouponRedemptionLogID;
-            $_MemberCards->CommitTransaction();
-            $_Log->logEvent(AuditFunctions::MARKETING_REDEMPTION, 'MID:'.$MID.':Success', array('ID'=>$_SESSION['userinfo']['AID'], 'SessionID'=>$_SESSION['userinfo']['SessionID']));
+            
+            $_CouponRedemptionLogs->updateLogsStatus($CouponRedemptionLogID, $source = 0, $status = 1);
+            
+            if(!App::HasError()){
+                
+                $_MemberCards->CommitTransaction();
+                
+                $_Log->logEvent(AuditFunctions::MARKETING_REDEMPTION, 'MID:'.$MID.':Success', array('ID'=>$_SESSION['userinfo']['AID'], 'SessionID'=>$_SESSION['userinfo']['SessionID']));
 
-            $hdnRewardItemID->Text = "";
+                $hdnRewardItemID->Text = "";
 
-            $redemptioninfo = $_RaffleCoupons->getCouponRedemptionInfo($CouponRedemptionLogID);
+                $redemptioninfo = $_RaffleCoupons->getCouponRedemptionInfo($CouponRedemptionLogID);
 
-            /* Prepare player and redemption information for display */
-            $playername = trim($arrmemberinfo["FirstName"]) . " " . trim($arrmemberinfo["LastName"]);
-            $address = $arrmemberinfo["Address1"];
-            $cityid = $arrmemberinfo["CityID"];
-            $regionid = $arrmemberinfo["RegionID"];
-            $birthdate = $arrmemberinfo["Birthdate"];
-            $email = $arrmemberinfo["Email"];
-            $contactno = $arrmemberinfo["MobileNumber"];
-            if (isset($site["SiteName"]))
-            {
-                $sitecode = $site["SiteName"];
-            }
-            else{
-                $sitecode = '';
-            }
-            $arrcouponredemptionloginfo = $redemptioninfo[0];
-            $mincouponnumber = str_pad($arrcouponredemptionloginfo["MinCouponNumber"], 7, "0", STR_PAD_LEFT);
-            $maxcouponnumber = str_pad($arrcouponredemptionloginfo["MaxCouponNumber"], 7, "0", STR_PAD_LEFT);
+                /* Prepare player and redemption information for display */
+                $playername = trim($arrmemberinfo["FirstName"]) . " " . trim($arrmemberinfo["LastName"]);
+                $address = $arrmemberinfo["Address1"];
+                $cityid = $arrmemberinfo["CityID"];
+                $regionid = $arrmemberinfo["RegionID"];
+                $birthdate = $arrmemberinfo["Birthdate"];
+                $email = $arrmemberinfo["Email"];
+                $contactno = $arrmemberinfo["MobileNumber"];
+                if (isset($site["SiteName"]))
+                {
+                    $sitecode = $site["SiteName"];
+                }
+                else{
+                    $sitecode = '';
+                }
+                $arrcouponredemptionloginfo = $redemptioninfo[0];
+                $mincouponnumber = str_pad($arrcouponredemptionloginfo["MinCouponNumber"], 7, "0", STR_PAD_LEFT);
+                $maxcouponnumber = str_pad($arrcouponredemptionloginfo["MaxCouponNumber"], 7, "0", STR_PAD_LEFT);
 
-            if ($arrcouponredemptionloginfo["MinCouponNumber"] == $arrcouponredemptionloginfo["MaxCouponNumber"])
-            {
-                $couponseries = $mincouponnumber;
-            }
-            else
-            {
-                $couponseries = $mincouponnumber . " - " . $maxcouponnumber;
-            }
+                if ($arrcouponredemptionloginfo["MinCouponNumber"] == $arrcouponredemptionloginfo["MaxCouponNumber"])
+                {
+                    $couponseries = $mincouponnumber;
+                }
+                else
+                {
+                    $couponseries = $mincouponnumber . " - " . $maxcouponnumber;
+                }
 
-            if ($arrcouponredemptionloginfo["MaxCouponNumber"] == 0)
-            {
-                $actualquantity = 0;
-                $couponseries = "";
-                $showcouponredemptionwindow = false;
-                App::SetErrorMessage("Insufficient Raffle Coupons. Please Try Again Later");
-                $error = "Insufficient Raffle Coupons. Please Try Again Later";
+                if ($arrcouponredemptionloginfo["MaxCouponNumber"] == 0)
+                {
+                    $actualquantity = 0;
+                    $couponseries = "";
+                    $showcouponredemptionwindow = false;
+                    App::SetErrorMessage("Insufficient Raffle Coupons. Please Try Again Later");
+                    $error = "Insufficient Raffle Coupons. Please Try Again Later";
+                    $logger->logger($logdate, $logtype, $error);
+                }
+                else
+                {
+                    $showcouponredemptionwindow = true;
+                    $actualquantity = $maxcouponnumber - $mincouponnumber + 1;
+                }
+
+                $serialnumber = str_pad($CouponRedemptionLogID, 7, "0", STR_PAD_LEFT) . "A" . $_RaffleCoupons->getMod10($mincouponnumber) . "B" . $_RaffleCoupons->getMod10($maxcouponnumber);
+                $sendemail = true;
+                $redemptiondate = date("F j, Y, g:i a");
+
+                $checkstring = $couponseries . $actualquantity . $CardNumber . $playername . date("F j, Y", strtotime($birthdate)) . $email . $contactno;
+                $checksum = crc32($checkstring);
+
+
+                if ($showcouponredemptionwindow == true)
+                {
+                    $imagesdir = str_replace(URL::CurrentPage(), "loyalty/images/", curPageURL());
+                    App::LoadCore("File.class.php");
+                    $filename = dirname(__FILE__) . "/template/couponredemptiontemplate.php";
+                    $fp = new File($filename);
+                    $emailmessage = $fp->ReadToEnd();
+                    $emailmessage = str_replace('$playername', $playername, $emailmessage);
+                    $emailmessage = str_replace('$address', $address, $emailmessage);
+                    $emailmessage = str_replace('$couponseries', $couponseries, $emailmessage);
+                    $emailmessage = str_replace('$quantity', $actualquantity, $emailmessage);
+                    $emailmessage = str_replace('$sitecode', $sitecode, $emailmessage);
+                    $emailmessage = str_replace('$redemptiondate', $redemptiondate, $emailmessage);
+                    $emailmessage = str_replace('$cardno', $CardNumber, $emailmessage);
+                    $emailmessage = str_replace('$birthdate', date("F j, Y", strtotime($birthdate)), $emailmessage);
+                    $emailmessage = str_replace('$email', $email, $emailmessage);
+                    $emailmessage = str_replace('$contactno', $contactno, $emailmessage);
+                    $emailmessage = str_replace('$checksum', $checksum, $emailmessage);
+                    $emailmessage = str_replace('$serialnumber', $serialnumber, $emailmessage);
+                    $emailmessage = str_replace('$actualcity', $actualcities[1], $emailmessage);
+                    $emailmessage = str_replace('$actualregion', $actualregions[1], $emailmessage);
+                    $emailmessage = str_replace('$imagesdir', $imagesdir, $emailmessage);
+
+    //                eval('$emailmsg = $emailmessage; ');
+    //                App::Pr($emailmessage);
+    //                $filename = dirname(__FILE__) . "/posts.txt";
+    //                $fp = new File($filename);
+    //                $fp->Write($emailmessage);
+
+                    $pm = new PHPMailer();
+
+                    if ($sendemailtoadmin == 1)
+                    {
+                        $pm->AddAddress("rpsanchez@philweb.com.ph", "Roger Sanchez");
+                        $pm->AddAddress("itqa@philweb.com.ph", "IT QA");
+                        $pm->AddAddress("mmdapula@philweb.com.ph", "Mikko Dapula");
+                        $pm->AddAddress("ammarcos@philweb.com.ph", "Maan Marcos");
+                    }
+                    //$pm->AddAddress($email, $playername);
+                    $pm->Body = $emailmessage;
+                    $pm->IsHTML(true);
+
+                    $pm->From = "loyaltyadmin@pagcoregames.com";
+                    $pm->FromName = "Loyalty Admin";
+                    $pm->Host = "localhost";
+                    $pm->Subject = "Loyalty Coupon Redemption";
+                    //$pm->Send();
+                }
+
+                if (isset($_SESSION['CardInfo']))
+                {
+
+                    $CardNumber = $_SESSION['CardInfo']["CardNumber"];
+                    $MID = $_SESSION['CardInfo']["MID"];
+                    $siteName = "";
+                    $transDate = "";
+                    $txtSearch->Text = $CardNumber;
+                    $arrCards = $_Cards->getCardInfo($CardNumber);
+                    $arrTransactions = $_CardTransactions->getLastTransaction($CardNumber);
+
+
+                    $cardinfo = $arrCards[0];
+                    unset($arrCards);
+                    $CardTypeID = $cardinfo["CardTypeID"];
+                    $_SESSION['CardInfo']["CardTypeID"] = $CardTypeID;
+                    $loyaltyinfo = $_MemberCards->getActiveMemberCardInfo($MID);
+                    $loyaltyinfo = $loyaltyinfo[0];
+                    $currentPoints = $loyaltyinfo['CurrentPoints'];
+                    $lifetimePoints = $loyaltyinfo['LifetimePoints'];
+                    $bonusPoints = $loyaltyinfo['BonusPoints'];
+                    $redeemedPoints = $loyaltyinfo['RedeemedPoints'];
+                    $loyaltyinfo['CardTypeID'] = $CardTypeID;
+
+                    if (count($arrTransactions) > 0)
+                    {
+                        $site = $_Sites->getSite($arrTransactions[0]['SiteID']);
+                        $siteName = $site[0]['SiteName'];
+                        $transDate = date('M d, Y ', strtotime($arrTransactions[0]['TransactionDate']));
+                    }
+
+                    $loyaltyinfo["LastTransactionDate"] = $transDate;
+                    $loyaltyinfo["LastSitePlayed"] = $siteName;
+                }
+            }else{
+                $_MemberCards->RollBackTransaction();
+                $error = "Redemption Failed";
                 $logger->logger($logdate, $logtype, $error);
-            }
-            else
-            {
-                $showcouponredemptionwindow = true;
-                $actualquantity = $maxcouponnumber - $mincouponnumber + 1;
-            }
-
-            $serialnumber = str_pad($CouponRedemptionLogID, 7, "0", STR_PAD_LEFT) . "A" . $_RaffleCoupons->getMod10($mincouponnumber) . "B" . $_RaffleCoupons->getMod10($maxcouponnumber);
-            $sendemail = true;
-            $redemptiondate = date("F j, Y, g:i a");
-
-            $checkstring = $couponseries . $actualquantity . $CardNumber . $playername . date("F j, Y", strtotime($birthdate)) . $email . $contactno;
-            $checksum = crc32($checkstring);
-
-
-            if ($showcouponredemptionwindow == true)
-            {
-                $imagesdir = str_replace(URL::CurrentPage(), "loyalty/images/", curPageURL());
-                App::LoadCore("File.class.php");
-                $filename = dirname(__FILE__) . "/template/couponredemptiontemplate.php";
-                $fp = new File($filename);
-                $emailmessage = $fp->ReadToEnd();
-                $emailmessage = str_replace('$playername', $playername, $emailmessage);
-                $emailmessage = str_replace('$address', $address, $emailmessage);
-                $emailmessage = str_replace('$couponseries', $couponseries, $emailmessage);
-                $emailmessage = str_replace('$quantity', $actualquantity, $emailmessage);
-                $emailmessage = str_replace('$sitecode', $sitecode, $emailmessage);
-                $emailmessage = str_replace('$redemptiondate', $redemptiondate, $emailmessage);
-                $emailmessage = str_replace('$cardno', $CardNumber, $emailmessage);
-                $emailmessage = str_replace('$birthdate', date("F j, Y", strtotime($birthdate)), $emailmessage);
-                $emailmessage = str_replace('$email', $email, $emailmessage);
-                $emailmessage = str_replace('$contactno', $contactno, $emailmessage);
-                $emailmessage = str_replace('$checksum', $checksum, $emailmessage);
-                $emailmessage = str_replace('$serialnumber', $serialnumber, $emailmessage);
-                $emailmessage = str_replace('$actualcity', $actualcities[1], $emailmessage);
-                $emailmessage = str_replace('$actualregion', $actualregions[1], $emailmessage);
-                $emailmessage = str_replace('$imagesdir', $imagesdir, $emailmessage);
-
-//                eval('$emailmsg = $emailmessage; ');
-//                App::Pr($emailmessage);
-//                $filename = dirname(__FILE__) . "/posts.txt";
-//                $fp = new File($filename);
-//                $fp->Write($emailmessage);
-
-                $pm = new PHPMailer();
-
-                if ($sendemailtoadmin == 1)
-                {
-                    $pm->AddAddress("rpsanchez@philweb.com.ph", "Roger Sanchez");
-                    $pm->AddAddress("itqa@philweb.com.ph", "IT QA");
-                    $pm->AddAddress("mmdapula@philweb.com.ph", "Mikko Dapula");
-                    $pm->AddAddress("ammarcos@philweb.com.ph", "Maan Marcos");
-                }
-                //$pm->AddAddress($email, $playername);
-                $pm->Body = $emailmessage;
-                $pm->IsHTML(true);
-
-                $pm->From = "loyaltyadmin@pagcoregames.com";
-                $pm->FromName = "Loyalty Admin";
-                $pm->Host = "localhost";
-                $pm->Subject = "Loyalty Coupon Redemption";
-                //$pm->Send();
-            }
-
-            if (isset($_SESSION['CardInfo']))
-            {
-
-                $CardNumber = $_SESSION['CardInfo']["CardNumber"];
-                $MID = $_SESSION['CardInfo']["MID"];
-                $siteName = "";
-                $transDate = "";
-                $txtSearch->Text = $CardNumber;
-                $arrCards = $_Cards->getCardInfo($CardNumber);
-                $arrTransactions = $_CardTransactions->getLastTransaction($CardNumber);
-
-
-                $cardinfo = $arrCards[0];
-                unset($arrCards);
-                $CardTypeID = $cardinfo["CardTypeID"];
-                $_SESSION['CardInfo']["CardTypeID"] = $CardTypeID;
-                $loyaltyinfo = $_MemberCards->getActiveMemberCardInfo($MID);
-                $loyaltyinfo = $loyaltyinfo[0];
-                $currentPoints = $loyaltyinfo['CurrentPoints'];
-                $lifetimePoints = $loyaltyinfo['LifetimePoints'];
-                $bonusPoints = $loyaltyinfo['BonusPoints'];
-                $redeemedPoints = $loyaltyinfo['RedeemedPoints'];
-                $loyaltyinfo['CardTypeID'] = $CardTypeID;
-
-                if (count($arrTransactions) > 0)
-                {
-                    $site = $_Sites->getSite($arrTransactions[0]['SiteID']);
-                    $siteName = $site[0]['SiteName'];
-                    $transDate = date('M d, Y ', strtotime($arrTransactions[0]['TransactionDate']));
-                }
-
-                $loyaltyinfo["LastTransactionDate"] = $transDate;
-                $loyaltyinfo["LastSitePlayed"] = $siteName;
+                $_Log->logEvent(AuditFunctions::MARKETING_REDEMPTION, 'MID:'.$MID.':Failed', array('ID'=>$_SESSION['userinfo']['AID'], 'SessionID'=>$_SESSION['userinfo']['SessionID']));
             }
         }
     }

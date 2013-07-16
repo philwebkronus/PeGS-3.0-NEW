@@ -14,5 +14,11 @@ class Regions extends BaseEntity
         $this->ConnString = "membership";
         $this->DatabaseType = DatabaseTypes::PDO;
     }
+    
+    function getRegionName($regionID){
+        $query = "SELECT RegionName FROM $this->TableName WHERE RegionID = $regionID";
+        $result = parent::RunQuery($query);
+        return $result[0]['RegionName'];
+    }
 }
 ?>

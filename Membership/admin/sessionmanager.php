@@ -8,9 +8,11 @@ require_once("../init.inc.php");
 App::LoadCore("URL.class.php");
 App::LoadModuleClass("Admin", "AccessRights");
 App::LoadModuleClass("Admin", "AccountSessions");
+App::LoadModuleClass("Kronus", "Accounts");
 
 //Get user access
 $accessrights = new AccessRights();
+$accounts = new Accounts();
 $_AccountSessions = new AccountSessions();
 
 if(isset($_SESSION['userinfo']) 

@@ -299,17 +299,20 @@ if ($fproc->IsPostBack) {
                         rowNum: 10,
                         rowList: [10, 20, 30],
                         height: 'auto',
-//                        refresh : true,
                         loadonce: true,
+                        refresh: true,
                         datatype: "json",
                         viewrecords: true,
                         pager: pager_id, 
                         sortorder: "asc",
-                        colNames: ['Deposit', 'Reload', 'Redemption'],
+                        caption: "Transaction Details",
+                        colNames: ['Deposit', 'Reload', 'Redemption', 'Payment Method', 'Voucher Code'],
                         colModel: [
                             {name: 'Deposit', index: 'Deposit', formatter: 'currency', formatoptions: {thousandsSeparator: ', '}, align: 'right', width: 245},
                             {name: 'Amount', index: "Amount", formatter: 'currency', formatoptions: {thousandsSeparator: ', '}, align: 'right', width: 150},
-                            {name: 'Withdrawal', index: 'Withdrawal', formatter: 'currency', formatoptions: {thousandsSeparator: ', '}, align: 'right', width: 245}
+                            {name: 'Withdrawal', index: 'Withdrawal', formatter: 'currency', formatoptions: {thousandsSeparator: ', '}, align: 'right', width: 245},
+                            {name: 'PaymentMethod', index: 'PaymentMethod', align: 'right', width: 245},
+                            {name: 'VoucherCode', index: 'VoucherCode', align: 'right', width: 245}
                         ]
                         });
                         jQuery("#" + subgrid_table_id).setGridParam({ rowNum: 10 }).trigger("reloadGrid");

@@ -94,11 +94,18 @@ class TransactionSummary extends BaseEntity
     
     public function getAmountReload($transactionssummaryid)
     {
-        $query = "SELECT ts.TransactionsSummaryID, td.TransactionType, ts.Deposit, td.Amount, ts.Withdrawal
+        $query = "SELECT ts.TransactionsSummaryID, ts.Deposit, td.Amount, ts.Withdrawal, td.TransactionType, td.PaymentType, td.TransactionReferenceID
                          FROM transactionsummary ts
                          INNER JOIN transactiondetails td
                          ON ts.TransactionsSummaryID = td.TransactionSummaryID
-                         WHERE  ts.TransactionsSummaryID = '$transactionssummaryid'";
+                         WHERE  ts.TransactionsSummaryID = $transactionssummaryid";
+        $result = parent::RunQuery($query);
+        return $result;
+    }
+    
+    public function getOptions($transactionreferenceid)
+    {
+        $query = "SELECT Option1 From transactionrequestlogs WHERE TransactionReferenceID = $transactionreferenceid";
         $result = parent::RunQuery($query);
         return $result;
     }

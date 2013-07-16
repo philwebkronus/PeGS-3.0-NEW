@@ -35,7 +35,13 @@ class MemberInfo extends BaseEntity
         
     }
     
-    public function getMIDFNameUsingEmail( $email )
+    public function getEmail($MID){
+        $query = "SELECT Email FROM $this->TableName WHERE MID=$MID";
+        $result = parent::RunQuery($query);
+        return $result[0]["Email"];
+    }
+
+        public function getMIDFNameUsingEmail( $email )
     {
         
         $query = "SELECT MID, FirstName, LastName FROM ".$this->TableName."
@@ -180,6 +186,13 @@ class MemberInfo extends BaseEntity
                 {
                     //App::Pr($this);
                     $this->CommitTransaction();
+                    if($this->AffectedRows == 0){
+                        $message = "Profile Details Unchanged.";
+                        return $message;
+                    } else {
+                        $message =" You have successfully updated your profile.";
+                        return $message;
+                    }
                     //App::SetSuccessMessage('Update Profile Successful');
                     
                 } 
@@ -188,6 +201,8 @@ class MemberInfo extends BaseEntity
             {
                 //echo App::GetErrorMessage();
                 $this->RollBackTransaction();
+                $message = "Update profile failed.";
+                return $message;
             }
         }
         catch (Exception $e)
@@ -227,6 +242,26 @@ class MemberInfo extends BaseEntity
 //        $fp = new File($filename);
 //        $fp->WriteAppend("Last Query: " . $this->LastQuery . "\r\n");
         return $retval;
+    }
+    
+        function updateProfileWithNoEmail($arrEntries){
+        unset($_SESSION["PreviousRedemption"]);
+        $this->Identity = "MemberInfoID";
+        parse_str($arrEntries, $entries);
+        if (isset($entries["TermsAndConditions"])) {
+            unset($entries["TermsAndConditions"]);
+        }
+        foreach ($entries as $key => $val){
+            $entries[$key] = urldecode($val);
+        }
+        parent::UpdateByArray($entries);
+        if ($this->HasError){
+            $retval =  $this->getError();
+        } else {
+                $retval =  "Profile Updated Successfully.";
+            }
+        return $retval;
+        
     }
     
     /**

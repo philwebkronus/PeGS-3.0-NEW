@@ -10,6 +10,7 @@ $javascripts[] = "js/jquery-ui.min.js";
 $javascripts[] = "js/jquery.validationEngine.js";
 $javascripts[] = "js/jquery.validationEngine-en.js";
 $javascripts[] = "js/tools.js";
+$javascripts[] = "js/slider/ad_gallery.js";
 
 if (isset($customjavascripts) && count($customjavascripts) > 0)
 {

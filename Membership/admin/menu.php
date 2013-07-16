@@ -9,6 +9,7 @@ include('sessionmanager.php');
 <div class="header">
     Membership Administration
 </div>
+
 <div class="mainmenu">
     <div class="nav">
     <ul>
@@ -33,7 +34,15 @@ include('sessionmanager.php');
                     <?php } ?>
                 <?php } ?>
         </li>
-        <li><a href="logout.php">Logout</a></li>
+        <li><a href="logout.php">Logout (<?php 
+        $aid = $_SESSION['aID'];
+        $array = $accounts->getUsername($aid);
+        foreach ($array as $value) {
+            $username = $value['UserName'];
+        }
+        echo "$username";?>)</a></li>
+        <li></li>
+        
     </ul>
     </div>
 </div>

@@ -86,6 +86,7 @@ if($fproc->IsPostBack)
                     $_SESSION['userinfo']['AID'] = $row['AID'];
                     $_SESSION['userinfo']['AccountTypeID'] = $accounttypeid;
 
+                    $_SESSION['userinfo']['SiteID'] = 1; //Head Office
                     if ($accounttypeid == AccountTypes::Cashier) //Cashier
                     {
                         $arrsiteaccounts = $_SiteAccounts->getSiteIDByAID($row['AID']);

@@ -11,6 +11,7 @@ $javascripts[] = "js/jquery.validationEngine.js";
 $javascripts[] = "js/jquery.validationEngine-en.js";
 $javascripts[] = "js/jquery.dropdown.js";
 $javascripts[] = "js/hoverIntent.js";
+$javascripts[] = "js/checkinput.js";
 $stylesheets[] = "css/paging.css";
 $stylesheets[] = "css/ie.css";
 $stylesheets[] = "css/style.css";
@@ -45,7 +46,7 @@ $timezone = $curdate->GetCurrentDateFormat('O (T)');
 <!DOCTYPE html>
 <html>
     <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
         <title><?php echo $pagetitle; ?></title>
         <?php echo $headerinfo; ?>
         <!--[if lte IE 7]>
@@ -75,7 +76,7 @@ $timezone = $curdate->GetCurrentDateFormat('O (T)');
         </script>
     </head>
     <body>        
-        <form action="" method="post" name="MainForm" id="MainForm" <?php echo $autocompletestring; ?> >
+        <form enctype="multipart/form-data" action="" method="post" name="MainForm" id="MainForm" <?php echo $autocompletestring; ?> >
             <div id="dashboard-messagebox" title="Message Box" style="display: none;">
                 <p>
                     <span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 50px 0;"></span>

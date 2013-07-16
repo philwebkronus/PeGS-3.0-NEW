@@ -24,5 +24,22 @@ class CardTypes extends BaseEntity
         $result = parent::SelectByWhere($where);
         return $result[0]['CardTypeID'];
     }
+    
+    /*
+     * Description: Get the Card Type without condition
+     * @author: Junjun S. Hernandez
+     * DateCreated: July 12, 2013 12:26:35PM
+     */
+    public function getCardTypes()
+    {
+        $query = "SELECT CardTypeID, CardTypeName FROM ref_cardtypes";
+        return parent::RunQuery($query);
+    }
+    
+    public function getCardTypeNameByID($cardtypeid)
+    {
+        $query = "SELECT CardTypeName FROM ref_cardtypes WHERE CardTypeID = '$cardtypeid'";
+        return parent::RunQuery($query);
+    }
 }
 ?>

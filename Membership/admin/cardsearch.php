@@ -38,7 +38,7 @@
         });
         $("#btnClear").click(function(){
             $("#txtSearch").val("");
-            $("#txtSearch").change();
+            //$("#txtSearch").change();
         });
         
     

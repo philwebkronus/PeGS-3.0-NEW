@@ -1,24 +1,44 @@
 <?php
 
 /* * ***************** 
- * Author: Roger Sanchez
- * Date Created: 2013-06-20
- * Company: Philweb
- * ***************** */
-?>
-<?php
-
-/* * ***************** 
  * Author: Renz Tiratira
  * Date Created: 2013-04-26
  * ***************** */
 
+/* * ***************** 
+ * Author: aqdepliyan
+ * Date Updated: 2013-07-08 1:13PM
+ * ***************** */
+
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+require_once("init.inc.php");
+
+$useCustomHeader = true;
+
+$pagetitle = "Membership";
+
+App::LoadCore("URL.class.php");
+App::LoadCore("Hashing.class.php");
+App::LoadCore("Validation.class.php");
+App::LoadCore("File.class.php");
+App::LoadCore("PHPMailer.class.php");
+
+App::LoadModuleClass("Membership", "Members");
+App::LoadModuleClass("Membership", "MemberSessions");
+App::LoadModuleClass("Membership", "AuditTrail");
+App::LoadModuleClass("Membership", "AuditFunctions");
+App::LoadModuleClass("Loyalty", "MemberCards");
+App::LoadModuleClass("Loyalty", "Cards");
+
+App::LoadControl("TextBox");
+App::LoadControl("Button");
+App::LoadControl("Hidden");
+
 $_Log = new AuditTrail();
 
-if (!isset($fproc))
-{
-    $fproc = new FormsProcessor();
-}
+$fproc = new FormsProcessor();
 $txtUsername = new TextBox("txtUsername", "txtUsername", "Username:");
 $txtUsername->Length = 30;
 $txtUsername->Size = 30;
@@ -39,10 +59,7 @@ $btnLogin->IsSubmit = true;
 $btnLogin->CssClass = "yellow-btn";
 $fproc->AddControl($btnLogin);
 
-if (!$fproc->IsFormProcessed)
-{
-    $fproc->ProcessForms();
-}
+$fproc->ProcessForms();
 
 if ($fproc->IsPostBack && $btnLogin->SubmittedValue == "Login")
 {
@@ -116,8 +133,7 @@ if ($fproc->IsPostBack && $btnLogin->SubmittedValue == "Login")
             
             //Log to audittrail
             $_Log->logEvent(AuditFunctions::LOGIN, $username, array('ID' => $members["MID"], 'SessionID' => $sessionid));
-
-            //reloadParent();
+            header("location:profile.php");
         }
     }
 }

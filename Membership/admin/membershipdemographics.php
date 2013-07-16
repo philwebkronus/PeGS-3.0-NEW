@@ -269,7 +269,9 @@ else{
         var curr_month = date.getMonth();
         curr_month = curr_month + 1;
         var curr_year = date.getFullYear();
-        
+        var datez1 = $("#fromDateverified").val();
+        var datez2 = $("#toDateverified").val();
+            
            if(curr_month < 10)
            {
                curr_month = "0" + curr_month;
@@ -290,6 +292,13 @@ else{
            $('#results').hide();
            return false;   
          }
+         else if(datez2 < datez1)
+                {
+                   alert("Queried End Date must me greater than Start Date");
+                   jQuery('#players').GridUnload();
+                   $("#dRange").html("");
+                   return false;         
+                }
          else
          {
             $('#results').show();

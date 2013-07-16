@@ -119,7 +119,6 @@ if ($fproc->IsPostBack)
     if ($btnClear->SubmittedValue == "Clear")
     {
         unset($_SESSION['CardInfo']);
-        $txtSearch->Text = $defaultsearchvalue;
     }
 }
 

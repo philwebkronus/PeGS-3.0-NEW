@@ -16,6 +16,17 @@ class RewardItems extends BaseEntity
         $this->DatabaseType = DatabaseTypes::PDO;
         $this->Identity = "RewardItemID";
     }
+    
+    function getAvailableItemCount($RewardItemID){
+        $query = "SELECT AvailableItemCount FROM $this->TableName WHERE RewardItemID = $RewardItemID";
+        $result = parent::RunQuery($query);
+        return $result[0];
+    }
+    
+    function updateAvailableItemCount($RewardItemID, $ItemCount){
+        $query = "UPDATE  $this->TableName SET AvailableItemCount = AvailableItemCount - $ItemCount WHERE RewardItemID = $RewardItemID";
+        return parent::ExecuteQuery($query);
+    }
 
     function getActiveRewardItemsByCardType($cardtypeid = '')
     {
@@ -49,6 +60,89 @@ class RewardItems extends BaseEntity
                     on b.PromoID = d.PromoID
                   WHERE $where";
 
+        return parent::RunQuery($query);
+    }
+    
+    function getAllRewardItems()
+    {
+        $query = "SELECT ri.RewardItemID, ri.RewardItemName, ri.RewardItemDescription, 
+            ri.RewardItemPrice, ri.RewardItemCode, ri.ExpiryDate, ri.RewardItemCount, ri.AvailableItemCount, ri.ShowInHomePage,
+            ri.IsCoupon, ri.Status, ri.RewardItemImagePath, rid.HeaderOne, rid.HeaderTwo, rid.HeaderThree, rid.DetailsOneA, 
+            rid.DetailsOneB, rid.DetailsOneC, rid.DetailsTwoA, rid.DetailsTwoB, rid.DetailsTwoC, 
+            rid.DetailsThreeA, rid.DetailsThreeB, rid.DetailsThreeC FROM rewarditems ri 
+            INNER JOIN rewarditemdetails rid ON ri.RewardItemID = rid.RewardItemID";
+
+        return parent::RunQuery($query);
+    }
+
+     /**
+    * @author Gerardo V. Jagolino Jr.
+    * @return int
+    * count all reward items
+    */ 
+    function countAllRewardItems()
+    {
+        $query = "SELECT COUNT(RewardItemID) AS count FROM rewarditems";
+
+        return parent::RunQuery($query);
+    }
+    
+     /**
+    * @author Gerardo V. Jagolino Jr.
+    * @param $itemid
+    * @return int
+    * get all reward item per ID
+    */ 
+    function getAllRewardItemsperItemID($itemid)
+    {
+        $query = "SELECT ri.RewardItemID, ri.RewardItemName, ri.RewardItemDescription, 
+            ri.RewardItemPrice, ri.RewardItemCode, ri.ExpiryDate, ri.RewardItemCount, ri.AvailableItemCount, ri.ShowInHomePage,
+            ri.IsCoupon, ri.Status, ri.RewardItemImagePath, rid.HeaderOne, rid.HeaderTwo, rid.HeaderThree, rid.DetailsOneA, 
+            rid.DetailsOneB, rid.DetailsOneC, rid.DetailsTwoA, rid.DetailsTwoB, rid.DetailsTwoC, 
+            rid.DetailsThreeA, rid.DetailsThreeB, rid.DetailsThreeC FROM rewarditems ri 
+            INNER JOIN rewarditemdetails rid ON ri.RewardItemID = rid.RewardItemID
+            WHERE ri.RewardItemID = $itemid;";
+
+        return parent::RunQuery($query);
+    }
+    
+    
+     /**
+    * @author Gerardo V. Jagolino Jr.
+    * @param $rewarditemname = '', $rewarditemdesc = '',$rewarditemcode = '',
+             $rewarditemimagepath = '', $expdate = '', $rewarditemcount = '',$rewarditemprice = '',
+            $iscoupon = '',$showinhomepage = '',$aid = '', $rewarditemid = ''
+    * @return int
+    * update reward items
+    */ 
+    function updateRewardItem($rewarditemname = '', $rewarditemdesc = '',$rewarditemcode = '',
+             $rewarditemimagepath = '', $expdate = '', $rewarditemcount = '',$rewarditemprice = '',
+            $iscoupon = '',$showinhomepage = '',$aid = '', $rewarditemid = '')
+    {
+
+        $query = "UPDATE rewarditems SET RewardItemName = '$rewarditemname', RewardItemDescription = '$rewarditemdesc',
+            RewardItemCode = '$rewarditemcode', RewardItemImagePath = '$rewarditemimagepath', ExpiryDate = '$expdate', 
+                RewardItemCount = $rewarditemcount, RewardItemPrice = $rewarditemprice, IsCoupon = $iscoupon, 
+                    ShowInHomePage = $showinhomepage, DateUpdated = 'now_usec()', UpdatedByAID = $aid 
+                        WHERE RewardItemID = $rewarditemid";
+
+        return parent::ExecuteQuery($query);
+    }
+    
+    /*
+     * Description: Get the Reward ID and Name only
+     * @author: Junjun S. Hernandez
+     * DateCreated: July 12, 2013 12:26:35PM
+     */
+    function getRewardIDAndName()
+    {
+        $query = "SELECT RewardItemID, RewardItemName FROM rewarditems";
+        return parent::RunQuery($query);
+    }
+    
+    function getRewardNameByID($rewarditemid)
+    {
+        $query = "SELECT RewardItemName FROM rewarditems WHERE RewardItemID = $rewarditemid";
         return parent::RunQuery($query);
     }
 

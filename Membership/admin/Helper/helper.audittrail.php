@@ -14,21 +14,17 @@ $Accounts   = new Accounts();
 
 $page = $_POST['page'];
 $limit = $_POST['rows'];
-$sidx = $_POST['sidx'];
-$sord = $_POST['sord'];
-$transactionDate = $_POST['TransactionDate'];
-if (!$sidx) $sidx = 1;
 
+$transactionDate = $_POST['TransactionDate'];
 //Select all the accounts where account type is equal to the account type of the current user
 $accounttype = $_SESSION['userinfo']['AccountTypeID'];
-$selectAccounts = $Accounts->SelectAccountsByAccountType($accounttype);
-
-
+$selectAccounts = $Accounts->selectAccountsByAccountType($accounttype);
 //load usernames in an array
 for ($i = 0; count($selectAccounts) > $i; $i++)
 {
     $arrAID[] = $selectAccounts[$i]['AID'];
 }
+//get the total number of logs
 $getTotalLogs = $AuditTrail->getTotalLogs($arrAID, $transactionDate);
 $count = $getTotalLogs[0]['count'];
 if ($count > 0)
@@ -47,8 +43,8 @@ if ($page > $total_pages)
 $start = $limit * $page - $limit;
 if($count == 0)
     $start = 0;
-
-$loadLogs = $AuditTrail->LoadAuditLogs($start, $limit, $sidx, $sord, $arrAID, $transactionDate);
+//load the audit logs to json
+$loadLogs = $AuditTrail->loadAuditLogs($arrAID, $transactionDate);
 
 $response->page = $page;
 $response->total = $total_pages;
@@ -57,8 +53,8 @@ $response->records = $count;
 if(count($loadLogs) > 0){
     $i = 0; 
     foreach ($loadLogs as $val){
-        $getUsername = $Accounts->SelectUsernameByAID($val['ID']);
-        $response->rows[$i]['id'] = $val['ID'];
+        $getUsername = $Accounts->selectUsernameByAID($val['ID']);
+        $response->rows[$i]['id'] = $val['AuditTrailID'];
         $response->rows[$i]['cell'] = array($getUsername[0]['UserName'],
                                             $val['TransactionDetails'],
                                             $val['TransactionDateTime'],

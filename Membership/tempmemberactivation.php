@@ -178,6 +178,12 @@ if((isset($_GET["tempnumber"]) && (htmlentities($_GET["tempnumber"]))) &&
                 $tempcardinfo = $tempcardresult[0];
                 $tempcardid = $tempcardinfo["CardID"];
                 
+                $tempcardresult2 = $_MemberCards->getMemberCardInfoByCard($tempAccountCode);
+                $tempcarddetails = $tempcardresult2[0];
+                $lifetimePoints = $tempcarddetails["LifetimePoints"];
+                $currentpoints = $tempcarddetails["CurrentPoints"];
+                $redeemedpoints = $tempcarddetails["RedeemedPoints"];
+                
                 $cardresult = $_Cards->getCardInfo($MembershipCardNumber); //getMemberCardInfoByCard($MembershipCardNumber);
                 $cardinfo = $cardresult[0];
                 $cardid = $cardinfo["CardID"];
@@ -186,9 +192,9 @@ if((isset($_GET["tempnumber"]) && (htmlentities($_GET["tempnumber"]))) &&
                 $arrMemberCards["CardID"]= $cardid;
                 $arrMemberCards["SiteID"]= $siteid;
                 $arrMemberCards["CardNumber"] = $MembershipCardNumber;
-                $arrMemberCards["LifetimePoints"] = "0";
-                $arrMemberCards["CurrentPoints"] = "0";
-                $arrMemberCards["RedeemedPoints"] = "0";
+                $arrMemberCards["LifetimePoints"] = $lifetimePoints;
+                $arrMemberCards["CurrentPoints"] = $currentpoints;
+                $arrMemberCards["RedeemedPoints"] = $redeemedpoints;
                 $arrMemberCards["DateCreated"] = $datecreated;
                 $arrMemberCards["CreatedByAID"] = $AID;
                 $arrMemberCards["Status"] = CardStatus::ACTIVE;

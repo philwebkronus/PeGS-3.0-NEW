@@ -69,7 +69,7 @@ $fproc->ProcessForms();
                     datatype: "json",
                     colNames:['Username', 'Transaction Details', 'Transaction Date','IP Address'],
                     colModel:[
-                            {name: 'Username', index: 'username', align: 'left', width: 170},
+                            {name: 'UserName', index: 'UserName', align: 'left', width: 170},
                             {name: 'TransactionDetails', index: 'TransactionDetails', align: 'left', width: 350},
                             {name: 'TransactionDate', index: 'TransactionDate', align: 'left', width: 250},
                             {name: 'IPAddress', index: 'IPAddress', align: 'left', width: 130},   
@@ -81,6 +81,7 @@ $fproc->ProcessForms();
                     width: 970,
                     pager: "#pager2",
                     refresh: true,
+                    loadonce: true,
                     viewrecords: true,
                     loadtext: "Loading...",
                     sortorder: "desc",

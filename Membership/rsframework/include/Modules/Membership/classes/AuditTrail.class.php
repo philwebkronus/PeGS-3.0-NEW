@@ -71,17 +71,18 @@ class AuditTrail extends BaseEntity
         return parent::RunQuery($query);
     }
     /**
+     * Load Audit Logs
+     * @param array $array AID Array of AIDs
+     * @param date $fromTransactionDate Transaction Date for filter
      * @author Mark Kenneth Esguerra
      * Date Created: July 8, 2013
      */
-    public function LoadAuditLogs($start, $limit, $sidx, $sord, $arrAID, $fromTransactionDate)
+    public function loadAuditLogs($arrAID, $fromTransactionDate)
     {
         $toTransactionDate =  $vdateto = date ( 'Y-m-d' , strtotime ('+1 day' , strtotime($fromTransactionDate)));
         $query = "SELECT * FROM $this->TableName
                   WHERE ID IN ("."'".implode("','",$arrAID)."'".") AND 
-                  TransactionDateTime >= '$fromTransactionDate' AND TransactionDateTime < '$toTransactionDate'"."
-                  ORDER BY $sidx $sord
-                  LIMIT $start, $limit";
+                  TransactionDateTime >= '$fromTransactionDate' AND TransactionDateTime < '$toTransactionDate'"."";
         return parent::RunQuery($query);
     }
 }

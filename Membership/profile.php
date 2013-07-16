@@ -1,17 +1,59 @@
-<script language="javascript" type="text/javascript">
+<?php
+
+/*
+* Description: Profile View
+* @author: aqdepliyan
+* DateCreated: 2013-07-04 02:02:40 PM
+*/
+
+?>
+<?php include_once 'controller/profilecontroller.php'; ?>
+<?php include "header.php"; ?> 
+<script type="text/javascript">
     
     $(document).ready(function() {
         
+        
+        $("#btnLearnMore").live("click",function(){
+                var RewardItemID = $(this).attr('RewardItemID');
+                var ProductName = $(this).attr('ProductName');
+                var PartnerName = $(this).attr('PartnerName');
+                var RewardOfferID = $(this).attr('RewardOfferID');
+                var Points = $(this).attr('Points');
+                var IsCoupon = $(this).attr('IsCoupon');
+                var PlayerPoints = "<?php echo $currentPoints; ?>";
+                $.ajax({
+                    url: "controller/helpercontroller.php",
+                    type: 'POST',
+                    data : {
+                                    rewarditemid : function(){return RewardItemID;},
+                                    productname : function(){return ProductName;},
+                                    partnername : function(){return PartnerName;},
+                                    rewardofferid :  function(){return RewardOfferID;},
+                                    points :  function(){return Points;},
+                                    iscoupon :  function(){return IsCoupon;},
+                                    playerpoints: function(){return PlayerPoints;}
+                                },
+                    success: function(response){
+                        if(response){
+                            window.location="redemption.php";
+                        }
+                    },
+                    error: function(){
+                        alert("Error in AJAX call.");
+                    }
+                });
+            });
+            
         function loadprofile() {
             $("#home-latest-news").addClass('profile-box');
             $("#carousel").hide();
-            //            $("#home-login-box").addClass('profile-wrapper');
         }
         
         window.onload = loadprofile;
         
         function reloadProfile() {
-            parent.window.location.href='index.php';
+            parent.window.location.href='profile.php';
         }
         
         $("#txtPassword").blur(function(){
@@ -81,30 +123,178 @@
     });                   
 
 </script>
-<div id="home-login-box">      
-    <div id="home-login-wrapper">
-        <!--<div id="home-page-login-form">-->
-        <div class="profile">
-            <p>Hi <?php echo strtoupper($nick); ?>! [<a href="logout.php">Logout</a>]</p>
-            <ul style="list-style: none; margin-left: 10px;">
-                <li><strong><?php echo strtoupper($memberName); ?></strong></li>
-                <li>Card Number: <?php echo $cardNumber; ?></li>
-                <li>Mobile Number: <?php echo $mobileNumber; ?></li>
-                <li>Email Address: <?php echo $email; ?></li>
-<!--            </ul>
-            <ul style="list-style: none;">-->
-                <li>Current Points: <?php echo $currentPoints; ?></li>
-                <li>Bonus Points: <?php echo $bonusPoints; ?></li>
-                <li>Redeemed Points: <?php echo $redeemedPoints; ?></li>
-                <li>Lifetime Points: <?php echo $lifetimePoints; ?></li>
-            </ul>
-            <?php echo $btnUpdate; ?>
+<link href="css/slider/bootstrap.min.css" rel="stylesheet" media="screen">
+<link href="css/slider/bootstrap-responsive.min.css" rel="stylesheet" media="screen">
+<link href="css/slider/prof_slider/style.css" rel="stylesheet" media="screen">
+<link rel="stylesheet" href="css/slider/prof_slider/ad_gallery.css">
+<script type="text/javascript">
 
-            </form> <!-- End form declared in the header -->
+        $(window).load(function() {
+            $('.ad-gallery').adGallery({effect:'fade'
+                   ,loader_image: 'css/slider/loader.gif'
+                   ,display_next_and_prev: false
+                   ,display_back_and_forward: false
+                    ,slideshow: {
+                               enable: true,
+                               autostart: true,
+                               speed: 1000}
+           });
+            $('#scroll-to-top').click(function() {
+              $("html, body").animate({ scrollTop: 0 }, "slow");
+              return false;
+            });
+        });
+
+</script>
+    <div class="row-fluid">
+        <div class="span4 round-gold" style="background-color: #FFF;">
+                    <p>Hi <?php echo strtoupper($nick); ?>! [<a href="logout.php">Logout</a>]</p>
+                    <ul style="list-style: none; margin-left: 10px;">
+                        <li><strong><?php echo strtoupper($memberName); ?></strong></li>
+                        <li>Card Number: <?php echo $cardNumber; ?></li>
+                        <li>Mobile Number: <?php echo $mobileNumber; ?></li>
+                        <li>Email Address: <?php echo $email; ?></li>
+                        <li>Current Points: <?php echo $currentPoints; ?></li>
+                        <li>Bonus Points: <?php echo $bonusPoints; ?></li>
+                        <li>Redeemed Points: <?php echo $redeemedPoints; ?></li>
+                        <li>Lifetime Points: <?php echo $lifetimePoints; ?></li>
+                    </ul>
+                    <?php echo $btnUpdate; ?>
+                     <!-- End form declared in the header -->
         </div>
-        <!--</div>-->
+        </form>
+        <div class="span8">
+        <?php if($_SESSION["MemberInfo"]["CardTypeID"] != 3) { ?>
+            <div class="round-black">
+                <!-- ### START - SLIDER GALLERY ### -->
+                <div id="gallery" class="ad-gallery">
+                    <div class="ad-image-wrapper"></div>
+                    <div class="ad-controls"></div>
+                    <div class="ad-nav">
+                        <div class="ad-thumbs">
+                            <ul class="ad-thumb-list">
+                                <li>
+                                    <a href="images/slider/slider_photos/lamb.jpg">
+                                        <img src="images/slider/bullet.png" title="Lamborghini" longdesc="http://www.lamborghini.com" alt="Caption">
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="images/slider/slider_photos/mac.jpg">
+                                        <img src="images/slider/bullet.png" title="Apple" longdesc="" alt="">
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="images/slider/slider_photos/ubuntu.jpg">
+                                        <img src="images/slider/bullet.png" title="Ubuntu" longdesc="" alt="">
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="images/slider/slider_photos/dummy_img.jpg">
+                                        <img src="images/slider/bullet.png" title="Dollar" longdesc="" alt="">
+                                    </a>
+                                </li>
+                            </ul>
+                        </div><!-- .ad-thumbs -->
+                      </div><!-- .ad-nav -->
+                </div><!-- .ad-gallery -->    
+                <!-- ### END - SLIDER GALLERY ### -->                            
+            </div>
+            <br>
+            <!--Iteration for reward Offers Display-->
+            <?php 
+            $itr = 0;
+            
+            do{ ?>
+            <div class="row-fluid product-container">
+                <div class="span6 product-wrapper">
+                    <div class="limited-ribbon"></div>
+                    <div class="product-thumb">
+                        <img src="images/slider/membership_innerpages/product_image_teaser.jpg">
+                        <div class="social-overlay">
+                            <div class="social-buttons">
+                            <a href="#"><img src="images/slider/membership_innerpages/fb.png"></a>
+                            <a href="#"><img src="images/slider/membership_innerpages/twitter.png"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row-fluid product-details">
+                        <div class="span6">
+                            <div class="product-name"><?php echo $rewardoffers[$itr]['ProductName']; ?></div>
+                            <div class="partner-name"><?php if($rewardoffers[$itr]['PartnerName'] != "" ){ 
+                                                                                                        echo $rewardoffers[$itr]['PartnerName']; 
+                                                                                                } else {
+                                                                                                        echo "<span style='color: #FFFFFF'>None</span>";
+                                                                                                }?></div>
+                            <div class="product-points">Points: <?php if($rewardoffers[$itr]["Points"] != '') { echo number_format($rewardoffers[$itr]["Points"],2); } ?></div>
+                        </div>
+                        <div class="span6 learn-more-container">
+                            <?php  
+                                        $RewardItemID = $rewardoffers[$itr]["RewardItemID"];
+                                        $PartnerName = $rewardoffers[$itr]['PartnerName'];
+                                        $ProductName = $rewardoffers[$itr]['ProductName'];
+                                        $RewardOfferID = $rewardoffers[$itr]['RewardOfferID'];
+                                        $Points = $rewardoffers[$itr]['Points'];
+                                        $IsCoupon = $rewardoffers[$itr]['IsCoupon'];
+                            ?>
+                            <input type="button" value="Learn More" class="yellow-btn-learn-more" id="btnLearnMore" RewardItemID='<?php echo $RewardItemID; ?>' 
+                                PartnerName='<?php echo $PartnerName; ?>' ProductName='<?php echo $ProductName; ?>' 
+                                RewardOfferID='<?php echo $RewardOfferID; ?>' Points='<?php echo $Points; ?>' IsCoupon='<?php echo $IsCoupon; ?>' />
+                        </div>
+                    </div>
+                </div><!-- .product-wrapper -->
+                <?php 
+                $itr++;
+                
+                if(isset($rewardoffers[$itr]['ProductName'])) { ?>
+                <div class="span6 product-wrapper">
+                    <div class="limited-ribbon"></div>
+                    <div class="product-thumb">
+                        <img src="images/slider/membership_innerpages/product_image_teaser.jpg">
+                        <div class="social-overlay">
+                            <div class="social-buttons">
+                            <a href="#"><img src="images/slider/membership_innerpages/fb.png"></a>
+                            <a href="#"><img src="images/slider/membership_innerpages/twitter.png"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row-fluid product-details">
+                        <div class="span6">
+                            <div class="product-name"><?php echo $rewardoffers[$itr]['ProductName']; ?></div>
+                            <div class="partner-name"><?php if($rewardoffers[$itr]['PartnerName'] != "" ){ 
+                                                                                                        echo $rewardoffers[$itr]['PartnerName']; 
+                                                                                                } else {
+                                                                                                        echo "<span style='color: #FFFFFF'>None</span>";
+                                                                                                }?></div>
+                            <div class="product-points">Points: <?php if($rewardoffers[$itr]["Points"] != '') { echo number_format($rewardoffers[$itr]["Points"],2); } ?></div>
+                        </div>
+                        <div class="span6 learn-more-container">
+                            <?php  
+                                        $RewardItemID = $rewardoffers[$itr]["RewardItemID"];
+                                        $PartnerName = $rewardoffers[$itr]['PartnerName'];
+                                        $ProductName = $rewardoffers[$itr]['ProductName'];
+                                        $RewardOfferID = $rewardoffers[$itr]['RewardOfferID'];
+                                        $Points = $rewardoffers[$itr]['Points'];
+                                        $IsCoupon = $rewardoffers[$itr]['IsCoupon'];
+                            ?>
+                            <input type="button" value="Learn More" class="yellow-btn-learn-more" id="btnLearnMore" RewardItemID='<?php echo $RewardItemID; ?>' 
+                                PartnerName='<?php echo $PartnerName; ?>' ProductName='<?php echo $ProductName; ?>' 
+                                RewardOfferID='<?php echo $RewardOfferID; ?>' Points='<?php echo $Points; ?>' IsCoupon='<?php echo $IsCoupon; ?>' />
+                        </div>
+                    </div>
+                </div><!-- .product-wrapper-->
+                <?php } else { echo "</div>"; break; } ?>
+            </div><!-- .product-container -->
+            <?php
+            $itr++;
+            } while ($itr != count($rewardoffers)); ?>
+            <!--End of Iteration-->
+            
+            <a href="#" id="scroll-to-top"></a>
+         <?php } else {
+            echo "<p style='font-size: 14px;'>Please migrate your Temporary Account to a Membership Card to activate Redemption.</p>";
+        } ?>
+        </div>
     </div>
-    <!--</div>-->
     <form name="SubForm" id="SubForm" method="post" action="" enctype="multipart/form-data" >
 
         <!-- Update Profile page holder -->
@@ -155,10 +345,6 @@
                 </tr>      
 
                 <tr>
-            <!--        <td colspan="2">Attached scanned ID/<br />Supporting Documents <br />
-                        <input type="file" name="ScannedID" id="ScannedID" value="" /><br />
-                        <em><php echo $memberfile; ?></em>
-                    </td>-->
                     <td>ID Presented*</td>
                     <td><?php echo $txtIDPresented; ?><br/>
                         <?php echo $cboIDSelection; ?></td>
@@ -186,20 +372,10 @@
 
         <div id="SuccessDialog" name="SuccessDialog">
             <?php if ($isOpen == 'true')
-            { ?>
-                <?php if ($isSuccess)
-                { ?>
-                    <p>
-                        You have successfully updated your profile.
-                    </p>
-                    <?php
+            { 
+                if(isset($resultmsg)){
+                    echo "<p>".$resultmsg."</p>";
                 }
-                else
-                {
-                    ?>
-                    <p>
-                        Update profile failed.
-                    </p>
-                <?php } ?>
-            <?php } ?>
+            } ?>
         </div>
+<?php include "footer.php"; ?>
