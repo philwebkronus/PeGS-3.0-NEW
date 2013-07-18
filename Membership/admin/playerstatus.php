@@ -5,6 +5,18 @@ include('sessionmanager.php');
 $pagetitle = "Change Player Status";
 $currentpage = "Administration";
 
+if (isset($_SESSION['msg'])) {
+    $isOpen = 'true';
+    $isSuccess = $isOpen;
+        $msgprompt = $_SESSION['msg'];
+        unset($_SESSION['msg']);
+
+} else {
+    $isOpen = 'false';
+    $isSuccess = 'false';
+    $msgprompt = '';
+}
+
 App::LoadCore('Validation.class.php');
 
 App::LoadControl("DataGrid");
@@ -86,23 +98,6 @@ if ($fproc->IsPostBack)
     
     $(document).ready(function(){
         
-        function loadData(){
-            var carddata = '<?php echo isset($_SESSION['CardData']); ?>';
-            if(carddata != ''){
-                getPlayerDetails('<?php 
-                                                if(isset($_SESSION['CardData']['Name']) && $_SESSION['CardData']['Name'] != '') {
-                                                    $txtSearch->Text = $_SESSION['CardData']['Name'];
-                                                    echo $_SESSION['CardData']['Name'];
-                                                } else if(isset($_SESSION['CardData']['CardNumber']) && $_SESSION['CardData']['CardNumber'] != '') {
-                                                    $txtSearch->Text = $_SESSION['CardData']['CardNumber'];
-                                                    echo $_SESSION['CardData']['CardNumber'];
-                                                }
-                                            ?>');
-            }
-        }
-        
-        loadData();
-        
         $('#btnSearch').live('click', function(){
             var txtsearch = $("#txtSearch").val();
             if (txtsearch.substr(0,1) === " "){
@@ -110,9 +105,42 @@ if ($fproc->IsPostBack)
             }
             else
             {
-                getPlayerDetails($("#txtSearch").val());
+                jQuery.ajax(
+                {
+                   url: "Helper/helper.playerstatus.php",
+                   type: 'post',
+                   data: {pager: function(){ return "GetBanUnban";},
+                          txtSearch : function() {return $("#txtSearch").val();}
+                         },
+                   dataType : 'json',     
+                   success: function(data)
+                   {
+                       if(data > 0){
+                           getPlayerDetails($("#txtSearch").val());
+                       }
+                       else{
+                           $.each(data, function(i,user)
+                          {
+                           jQuery('.ui-dialog-content').html("<p><center><label>"+$(this).attr('ErrorMsg')+"</label></center></p>");
+                           $("#SuccessDialog").dialog("open");
+                           });
+                           jQuery('#playerstatus').GridUnload();
+                       }   
+                       
+                   },
+                   error: function(XMLHttpRequest, e)
+                   {
+                         alert(XMLHttpRequest.responseText);
+                         if(XMLHttpRequest.status == 401)
+                         {
+                             window.location.reload();
+                         }
+                   }
+                });
             }    
         });
+        
+        
         
         
         function getPlayerDetails(txtSearch)
@@ -123,6 +151,7 @@ if ($fproc->IsPostBack)
                     url:url,
                     mtype: 'post',
                     postData: {
+                                pager: function(){ return "GetBanUnbanGrid";},
                                 txtSearch : function() {return txtSearch}
                               },
                     datatype: "json",
@@ -230,13 +259,67 @@ if ($fproc->IsPostBack)
         });
     });
 </script>
+
+<script language="javascript" type="text/javascript">
+    $(document).ready(
+    function()
+    {
+        defaultvalue = "<?php echo $defaultsearchvalue; ?>";
+        $("#txtSearch").click(function(){
+            $("#txtSearch").change();
+            if ($("#txtSearch").val() === "")
+            {
+                $("#txtSearch").val("");
+            }
+        });
+        $("#txtSearch").keyup(function(){
+            $("#txtSearch").change();
+            $("#btnSearch").removeAttr("disabled");
+        });
+        $("#txtSearch").blur(function(){
+            $("#txtSearch").change();
+        });
+        $("#txtSearch").change(function(){
+            if ($("#txtSearch").val() === "")
+            {
+                $("#btnSearch").attr("disabled", "disabled");
+                $("#txtSearch").val("");
+            }
+            else
+            {
+                $("#btnSearch").removeAttr("disabled");
+            }
+            
+        });
+        $("#btnClear").click(function(){
+            $("#txtSearch").val("");
+        });
+        
+        
+        $('#SuccessDialog').dialog({
+            autoOpen: <?php echo $isOpen; ?>,
+            modal: true,
+            width: '400',
+            title : 'Player Banning/Unbanning',
+            closeOnEscape: true,            
+            buttons: {
+                "Ok": function() {
+                    $(this).dialog("close");
+                }
+            }
+        });
+    
+    });
+</script>
 <div align="center">
     </form>
     <form name="updateplayerstatus" id="updateplayerstatus" method="POST">
         <div class="maincontainer">
             <?php include('menu.php'); ?>
-            <div class="content">
-                <?php include('bannedcardsearch.php'); ?>
+            <div class="content"> 
+<div class="searchbar formstyle">
+        <?php echo $txtSearch; ?><?php echo $btnSearch; ?><?php echo $btnClear; ?>
+</div>
                     <!--<br><br>-->
                     <div align="center" id="pagination">
                         <table border="1" id="playerstatus">
@@ -246,6 +329,12 @@ if ($fproc->IsPostBack)
                         <span id="errorMessage"></span>
                     </div>
             </div>
+                <div id="SuccessDialog" name="SuccessDialog">
+
+                    <p>
+                        <label id="label1"></label>
+                    </p>
+                </div>
         </div>
     </form>
     <form name="updatestatus" class="updatestatus" id="updatestatus">

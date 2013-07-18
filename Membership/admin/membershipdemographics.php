@@ -46,7 +46,7 @@ $fromdateverified->Value = date('Y-m-d');
 $fromdateverified->YearsToDisplay = "-100";
 $fromdateverified->CssClass = "validate[required]";
 $fromdateverified->isRenderJQueryScript = true;
-$fromdateverified->Size = 27;
+$fromdateverified->Size = 20;
 $fproc->AddControl($fromdateverified);
 
 
@@ -59,12 +59,13 @@ $todateverified->ShowCaption = false;
 $todateverified->YearsToDisplay = "-100";
 $todateverified->CssClass = "validate[required]";
 $todateverified->isRenderJQueryScript = true;
-$todateverified->Size = 27;
+$todateverified->Size = 20;
 $fproc->AddControl($todateverified);
 
 $btnSubmit = new Button("btnSubmit", "btnSubmit", "Query");
 $btnSubmit->IsSubmit = true;
 $btnSubmit->CssClass = "btnDefault roundcorners";
+$btnSubmit->Style = "padding-left: 12px; padding-right: 12px; padding-top: 3px; padding-bottom: 3px;";
 $fproc->AddControl($btnSubmit);
 
 $fproc->ProcessForms();
@@ -316,24 +317,23 @@ else{
             <?php include('menu.php'); ?>
             <br />
             <div style="float: left;" class="title">Membership Demographics:</div>
-            <br />
+            <br /><br />
             <table>
-            <tr></tr>
-            <tr></tr>
             <tr>
-            <td>From</td>
+            <td>Filters: &nbsp; &nbsp;</td>    
+            <td>From&nbsp;</td>
             <td><?php echo $fromdateverified; ?></td>
-            <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;To</td>
+            <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;To&nbsp;</td>
             <td><?php echo $todateverified; ?></td>
+            <td width="20"></td>
+            <td><?php echo $btnSubmit; ?> </td> 
             </tr>
             <tr></tr>
             <tr></tr>
             <tr>
             <td></td>
             <td></td>
-            <td></td>
-            <td></td>
-            <td><?php echo $btnSubmit; ?> </td>    
+            <td></td>   
             </tr>    
             </table>
              <div class="content">
@@ -343,6 +343,8 @@ else{
                         <div align="right" class="pad5">
 
                         </div>
+                        <hr color="black">
+                        <br />
                         <div align="right" class="pad5">
                             <?php echo $membershipdemographics; ?>
                         </div>

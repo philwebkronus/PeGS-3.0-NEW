@@ -32,7 +32,7 @@ $fproc = new FormsProcessor();
 
 App::LoadModuleClass('Kronus', 'Sites');
 $_Sites = new Sites();
-$cboSiteID = new ComboBox("SiteID", "SiteID", "eGames Site: ");
+$cboSiteID = new ComboBox("SiteID", "SiteID", "eGames Site: &nbsp;");
 $opt1 = null;
 $opt1[] = new ListItem("Select One", "-1", true);
 $cboSiteID->Items = $opt1;
@@ -52,7 +52,7 @@ $dsmindate = new DateSelector();
 $dsmaxdate->AddYears(+21);
 $dsmindate->AddYears(-100);
 $thestime = date('Y-m-d H:i:s'); 
-$datetime_from = date("Y-m-d",strtotime("-1 week",strtotime($thestime)));
+$datetime_from = date("Y-m-d",strtotime("-6 days",strtotime($thestime)));
 $fromdateverified = new DatePicker("fromDateverified", "fromDateverified", "From");
 $fromdateverified->MaxDate = $dsmaxdate->CurrentDate;
 $fromdateverified->MinDate = $dsmindate->CurrentDate;
@@ -62,7 +62,7 @@ $fromdateverified->Value = date('Y-m-d');
 $fromdateverified->YearsToDisplay = "-100";
 $fromdateverified->CssClass = "validate[required]";
 $fromdateverified->isRenderJQueryScript = true;
-$fromdateverified->Size = 27;
+$fromdateverified->Size = 20;
 $fproc->AddControl($fromdateverified);
 
 
@@ -75,11 +75,12 @@ $todateverified->ShowCaption = false;
 $todateverified->YearsToDisplay = "-100";
 $todateverified->CssClass = "validate[required]";
 $todateverified->isRenderJQueryScript = true;
-$todateverified->Size = 27;
+$todateverified->Size = 20;
 $fproc->AddControl($todateverified);
 
 $btnSubmit = new Button("btnSubmit", "btnSubmit", "Query");
 $btnSubmit->ShowCaption = true;
+$btnSubmit->Style = "padding-left: 12px; padding-right: 12px; padding-top: 3px; padding-bottom: 3px;";
 $btnSubmit->Enabled = true;
 $fproc->AddControl($btnSubmit);
 
@@ -184,21 +185,21 @@ else{
                                 toDateverified : function() {return jQuery("#toDateverified").val();}
                               },
                     datatype: "json",
-                    colNames:['Account Number', 'Status', 'Deposit', 'Reload', 'Redemption', 
-                              'Player Net Win'],
+                    colNames:['Account Number', 'Status', 'Deposit', 'Reload', 'Redemption', 'Player Net Win'],
                     colModel:[
-                            {name:'LoyaltyCardNumber',index:'LoyaltyCardNumber',align: 'left', width: 245},
-                            {name:'Status',index:'Status', align: 'left', width: 150},
-                            {name:'Deposit',index:'Deposit', align: 'right', width: 150},
-                            {name:'Reload',index:'Reload', align: 'right', width: 90},
-                            {name:'Withdrawal',index:'Withdrawal', align: 'right', width: 90},
-                            {name:'PlayerNW',index:'PlayerNW', align: 'right', width: 245},
+                            {name:'LoyaltyCardNumber',index:'LoyaltyCardNumber',align: 'left',width: 200, fixed: true},
+                            {name:'Status',index:'Status', align: 'left',width: 150, fixed: true},
+                            {name:'Deposit',index:'Deposit', align: 'right',width: 150, fixed: true},
+                            {name:'Reload',index:'Reload', align: 'right',width: 150, fixed: true},
+                            {name:'Withdrawal',index:'Withdrawal', align: 'right',width: 150, fixed: true},
+                            {name:'PlayerNW',index:'PlayerNW', align: 'right',width: 140, fixed: true}
                     ],
 
                     rowNum:10,
                     rowList:[10,20,30],
                     height: 250,
                     width: 970,
+                    shrinkToFit: true,
                     pager: '#pager2',
                     refresh: true,
                     loadonce: true,
@@ -305,13 +306,7 @@ else{
 
             }
             
-            if(month2 < month){
-                alert("End Date must be greater than the Start Date");
-                jQuery('#players').GridUnload();
-                $("#dRange").html("");
-                return false;
-            }
-            else{
+           
                 var monthresult = month2 - month;
                 if(monthresult > 1){
                     alert("Your Starting and Ending Date and Time must be within 1-Week Frame");
@@ -326,7 +321,7 @@ else{
                     if(month == month2){
                         var daydiff = day2 - day;
                   
-                        if(daydiff <= 7){
+                        if(daydiff < 7){
                             return true;
                         }
                         else{
@@ -359,7 +354,7 @@ else{
                             //30
                             var result = 30 - day;
                             var result2 = result + day2;
-                            if(result2 <= 7){
+                            if(result2 < 7){
                                 return true;
                             }
                             else{
@@ -381,13 +376,43 @@ else{
                        
                   }
                   else{
-                      alert("Your Starting and Ending Date and Time must be within 1-Week Frame");
+                      
+                      var yeardiff = year2 - year;
+                      
+                      if(yeardiff > 1){
+                          alert("Your Starting and Ending Date and Time must be within 1-Week Frame");
                             jQuery('#players').GridUnload();
                             $("#dRange").html("");
                             return false;
+                      }
+                      else{
+                          if(month == 12 && month2 == 1){
+                              //31
+                            var result = 31 - day;
+                            var result2 = result + day2;
+                            if(result2 < 7){
+                                return true;
+                            }
+                            
+                            else
+                            {
+                                alert("Your Starting and Ending Date and Time must be within 1-Week Frame");
+                                jQuery('#players').GridUnload();
+                                $("#dRange").html("");
+                                return false;
+                            }
+                          }
+                          else{
+                              alert("Your Starting and Ending Date and Time must be within 1-Week Frame");
+                                jQuery('#players').GridUnload();
+                                $("#dRange").html("");
+                                return false;
+                          }
+                      }
+                      
                   }
                }
-            }
+            
             
 
                 if((fromDateAsInt > toDate) ) {
@@ -405,7 +430,7 @@ else{
                 }
                 else {
 
-                    alert("Your Starting and Ending Date and Time must be within 1-Week Frame2");
+                    alert("Your Starting and Ending Date and Time must be within 1-Week Frame");
                     return false;
                 }
 
@@ -427,28 +452,30 @@ else{
                 <table align="left">
                     <tr>
                     <td><?php echo $cboSiteID; ?></td>
-                    <td>From</td>
+                    <td width="30"></td>
+                    <td>From&nbsp;</td>
                         <td><?php echo $fromdateverified; ?></td>
-                        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;To</td>
+                        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;To&nbsp;</td>
                         <td><?php echo $todateverified; ?></td>
+                        <td width="20"></td>
+                        <td align ="right"><?php echo $btnSubmit; ?> </td>  
                     </tr>
                     <tr>
                     <td></td>
                     <td></td><td></td>
                     <td></td><td></td>
-                    <td></td><td></td>
-                    <td></td><td></td>    
-                    <td align ="right"><?php echo $btnSubmit; ?> </td>    
+                    <td></td><td></td>  
                     </tr>    
                 </table>
             </div>
-            <div id="dateRange" style="float: left;">
+<!--            <div id="dateRange" style="float: left;">
                 &nbsp;&nbsp;&nbsp;&nbsp;<label id="dRange"></label>
-            </div>
-            <br/><br/><br/>
-            <br/><br/><br/>
+            </div>-->
+            <br/><br/>
+            <br/>
             <div class="content">
-                    <br><br>
+                    <hr color="black" />
+                    <br>
                     <div align="center" id="pagination">
                         <table border="1" id="players">
 

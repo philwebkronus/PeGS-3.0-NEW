@@ -32,7 +32,7 @@ class CardTypes extends BaseEntity
      */
     public function getCardTypes()
     {
-        $query = "SELECT CardTypeID, CardTypeName FROM ref_cardtypes";
+        $query = "SELECT CardTypeID, CardTypeName FROM ref_cardtypes WHERE CardTypeID != 3";
         return parent::RunQuery($query);
     }
     

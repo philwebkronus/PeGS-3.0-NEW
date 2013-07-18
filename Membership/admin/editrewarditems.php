@@ -130,7 +130,7 @@ $expirationdate->MinDate = $dsmindate->CurrentDate;
 $expirationdate->ShowCaption = false;
 $expirationdate->SelectedDate = $expirydate;
 $expirationdate->Value = $expirydate;
-$expirationdate->YearsToDisplay = "-100";
+$expirationdate->YearsToDisplay = "-100:+10";
 $expirationdate->CssClass = "validate[required]";
 $expirationdate->isRenderJQueryScript = true;
 $expirationdate->Size = 27;
@@ -779,8 +779,15 @@ else{
                     <?php 
                     list($name, $extension) = preg_split("/\./", $rewarditemimage);
                     $imagepath = App::getParam("images_directory")."small_".$rewarditemimage;
-                    $path = substr($imagepath, 8);
-                    echo "<img src=\"$path\" title=\"Error\" border=0>";?>
+                    $exist = file_exists($imagepath);
+                    if($exist == true){
+                        $path = substr($imagepath, 8);
+                        echo "<img src=\"$path\" title=\"Error\" border=0>";
+                    }
+                    else {
+                        echo "Image Preview Not Available";
+                    }
+                    ?>
             </div>   
         </div>
         
@@ -788,9 +795,16 @@ else{
             <div align="center">
                     <?php 
                     list($name, $extension) = preg_split("/\./", $rewarditemimage);
-                    $imagepath = App::getParam("images_directory")."medium_".$name;
+                    $imagepath = App::getParam("images_directory")."medium_".$rewarditemimage;
                     $path = substr($imagepath, 8);
-                    echo "<img src=\"$path\" title=\"Error\" border=0>";?>
+                    $exist = file_exists($imagepath);
+                    if($exist == true){
+                        $path = substr($imagepath, 8);
+                        echo "<img src=\"$path\" title=\"Error\" border=0>";
+                    }
+                    else {
+                        echo "Image Preview Not Available";
+                    }?>
             </div>   
         </div>
         
@@ -798,9 +812,16 @@ else{
             <div align="center">
                     <?php 
                     list($name, $extension) = preg_split("/\./", $rewarditemimage);
-                    $imagepath = App::getParam("images_directory")."large_".$name;
+                    $imagepath = App::getParam("images_directory")."large_".$rewarditemimage;
                     $path = substr($imagepath, 8);
-                    echo "<img src=\"$path\" title=\"Error\" border=0>";?>
+                    $exist = file_exists($imagepath);
+                    if($exist == true){
+                        $path = substr($imagepath, 8);
+                        echo "<img src=\"$path\" title=\"Error\" border=0>";
+                    }
+                    else {
+                        echo "Image Preview Not Available";
+                    }?>
             </div>   
         </div>
     </div>

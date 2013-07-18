@@ -51,7 +51,7 @@ if(isset($_POST['Sites']) && $_POST['Sites'] != ''){
 
         $result = $_TransactionSummary->getDistinctCard($site, $fromdate, $todate);
        
-        if(count($result[0]) > 0)
+        if($count > 0)
         {
             
              $i = 0;
@@ -59,9 +59,24 @@ if(isset($_POST['Sites']) && $_POST['Sites'] != ''){
              $responce->total = $total_pages;
              $responce->records = $count;                    
              foreach($result as $vview)
-             {                     
+             {                  
+                $cardid = $_MemberCards->getMID($vview['LoyaltyCardNumber']);
+                if(is_null($cardid) || $cardid == ''){
+                    $cardid = 0;
+                }
+                foreach ($cardid as $val) {
+                    $MID = $val['MID'];
+                }
+                if(is_null($MID) || $MID == ''){
+                    $MID = 0;
+                }
+                $memcardnumber = $_MemberCards->getCardNumber($MID);
+                foreach ($memcardnumber as $val3) {
+                    $card = $val3['CardNumber'];
+                }
                 
-                $status= $_MemberCards->getStatusByCard($vview['LoyaltyCardNumber']);
+                
+                $status= $_MemberCards->getStatusByCard($card);
                 
                 foreach ($status as $value) {
                     $status = $value['Status'];
@@ -104,10 +119,10 @@ if(isset($_POST['Sites']) && $_POST['Sites'] != ''){
                         $arrgrand = array("Deposit" => $granddeposit, 
                                 "Reload" => $grandreload, "Withdraw" => $grandwithdraw);
                         
-                $playernetwin = $arrgrand['Deposit'] + $arrgrand['Reload'] - $arrgrand['Withdraw'];
+                $playernetwin = $arrgrand['Withdraw'] - ($arrgrand['Deposit'] + $arrgrand['Reload']) ;
                 $responce->rows[$i]['id']=$vview['LoyaltyCardNumber'];
-                $responce->rows[$i]['cell']=array($vview['LoyaltyCardNumber'],$vstatus,number_format($arrgrand['Deposit'],2),
-                    number_format($arrgrand['Reload'],2),number_format($arrgrand['Withdraw'],2) ,number_format($playernetwin,2));
+                $responce->rows[$i]['cell']=array($card,$vstatus,number_format($arrgrand['Deposit'],2),
+                    number_format($arrgrand['Reload'],2),number_format($arrgrand['Withdraw'],2) , number_format($playernetwin,2)); //abs($playernetwin)
                 
                 $i++;
              }

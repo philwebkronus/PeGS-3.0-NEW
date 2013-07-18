@@ -3,7 +3,7 @@ require_once("../init.inc.php");
 include('sessionmanager.php');
 
 $pagetitle = "Viewing of Reward Items";
-$currentpage = "Item Management";
+$currentpage = "Administration";
 
 if (isset($_SESSION['msg'])) {
     $isOpen = 'true';

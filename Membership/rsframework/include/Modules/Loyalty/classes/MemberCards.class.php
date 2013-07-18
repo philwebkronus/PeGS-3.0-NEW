@@ -255,6 +255,45 @@ class MemberCards extends BaseEntity
                 CurrentPoints = CurrentPoints - $redeemTotalPoints WHERE MID = $MID AND  Status IN (1,5)";
         return parent::ExecuteQuery($query);
     }
+    
+    /*
+     * Description: MemberCardID based on given cardid
+     * @author: Gerardo Jagolino Jr.
+     * result: object array
+     * DateCreated: 2013-07-17
+     */
+    public function getMemCardID( $cardid )
+    {
+        $query = "SELECT MemberCardID FROM membercards WHERE CardID = $cardid";
+        $result = parent::RunQuery($query);
+        return $result;
+    }
+    
+    /*
+     * Description: MID based on given cardnumber
+     * @author: Gerardo Jagolino Jr.
+     * result: object array
+     * DateCreated: 2013-07-17
+     */
+    public function getMID( $cardnumber )
+    {
+        $query = "SELECT MID FROM membercards WHERE CardNumber = '$cardnumber'";
+        $result = parent::RunQuery($query);
+        return $result;
+    }
+    
+    /*
+     * Description: card number based on given membercardID
+     * @author: Gerardo Jagolino Jr.
+     * result: object array
+     * DateCreated: 2013-07-17
+     */
+    public function getCardNumber( $memcardid )
+    {
+        $query = "SELECT CardNumber FROM membercards WHERE MID = $memcardid AND Status != 8";
+        $result = parent::RunQuery($query);
+        return $result;
+    }
 
 }
 ?>

@@ -43,19 +43,50 @@ if (isset($_POST['pager'])) {
                     $profile->Age = '';
                     $profile->Gender = '';
                     $profile->Status = '';
-                    echo json_encode($profile);
+                    $msg = 'Invalid Card';
+                    $profile->Msg = $msg;
                 } else {
                     $MemberInfoResult = $_MemberInfo->getMemberInfoByID($MIDResult[0]['MID']);
+                    
                     $memberinfovalue['Age'] = $MemberInfoResult[0]['Age'];
                     $memberinfovalue['Gender'] = $MemberInfoResult[0]['Gender'] == 1 ? "Male" : "Female";
-                    $memberinfovalue['Status'] = $MemberInfoResult[0]['Status'] == 1 ? "Banned" : "Active";
+                    
+                    if($MemberInfoResult[0]['Status'] == 1){
+                        $memberinfovalue['Status'] = 'Active';
+                    }
+                    else if ($MemberInfoResult[0]['Status'] == 2) {
+                        $memberinfovalue['Status'] = 'Suspended';
+                        $msg = 'Membership Account Status: Suspended';
+                        $profile->Msg = $msg;
+                    }
+                    else if ($MemberInfoResult[0]['Status'] == 3) {
+                        $memberinfovalue['Status'] = 'Locked (Attempts)';
+                        $msg = 'Membership Account Status: Locked (Attempts)';
+                        $profile->Msg = $msg;
+                    }
+                    else if ($MemberInfoResult[0]['Status'] == 4) {
+                        $memberinfovalue['Status'] = 'Locked (Admin)';
+                        $msg = 'Membership Account Status: Locked (Admin)';
+                        $profile->Msg = $msg;
+                    }
+                    else if ($MemberInfoResult[0]['Status'] == 5) {
+                        $memberinfovalue['Status'] = 'Banned';
+                        $msg = 'Membership Account Status: Banned';
+                        $profile->Msg = $msg;
+                    }
+                    else if ($MemberInfoResult[0]['Status'] == 6) {
+                        $memberinfovalue['Status'] = 'Terminated';
+                        $msg = 'Membership Account Status: Terminated';
+                    }
                     $profile->MID = $MIDResult[0]['MID'];
                     $profile->Age = $memberinfovalue['Age'];
                     $profile->Gender = $memberinfovalue['Gender'];
                     $profile->Status = $memberinfovalue['Status'];
-                    echo json_encode($profile);
+                    
                 }
+                echo json_encode($profile);
             }
+            
             break;
 
         //for Query button, get the Transaction Summary details to populate the grid
@@ -63,7 +94,6 @@ if (isset($_POST['pager'])) {
             if (isset($_POST['Card']) && $_POST['Card'] != '') {
                 $cardnumber = $_POST['Card'];
                 $MIDResult = $_MemberCards->getMIDByCard($cardnumber);
-                $countMD = count($MIDResult);
                 $startdate = $_POST['fromTransDate'] . " " . 'cutofftime';
                 $enddate = $_POST['toTransDate'] . " " . 'cutofftime';
 
@@ -153,7 +183,7 @@ if (isset($_POST['pager'])) {
                                 $reload = $TransactionResult[$ctr]['Reload'];
                                 $redemption = $TransactionResult[$ctr]['Withdrawal'];
                                 $response->TransactionSummaryID = $TransactionResult[$ctr]['TransactionsSummaryID'];
-                                $PlayerWin = number_format(($deposit + $reload) - $redemption, 2, '.', '');
+                                $PlayerWin = number_format($redemption - ($deposit + $reload), 2, '.', '');
                                 $response->rows[$ctr]['id'] = $TransactionResult[$ctr]['TransactionsSummaryID'];
                                 $response->rows[$ctr]['cell'] = array(
                                     $thisDate,

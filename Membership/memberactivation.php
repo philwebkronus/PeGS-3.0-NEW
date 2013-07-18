@@ -210,6 +210,8 @@ if ((isset($_GET["oldnumber"]) && (htmlentities($_GET["oldnumber"])))
                 $MemberInfo["Email"] = $txtEmail->SubmittedValue;
                 $MemberInfo["MobileNumber"] = $txtMobile->SubmittedValue;
                 $MemberInfo["DateCreated"] = $dateCreated;
+                $MemberInfo["DateVerified"] = $dateCreated;
+                
                 $rdoGroupGender->SubmittedValue == 1 ? $MemberInfo['Gender'] = 1 : $MemberInfo['Gender'] = 2;
 
                 $result = $_Members->Migrate($Memberstable, $MemberInfo, $AID, $siteid, $LoyatyCardNumber, $NewMembershipCardNumber, $oldCardEmail, $isVIP, false);

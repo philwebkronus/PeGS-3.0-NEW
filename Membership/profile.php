@@ -100,9 +100,9 @@
             },
             
             open: function (event, ui) {
-                $(event.target).parent().css('position', 'fixed');
-                $(event.target).parent().css('top', '5%');
-                $(event.target).parent().css('left', '20%');
+//                $(event.target).parent().css('position', 'fixed');
+//                $(event.target).parent().css('top', '5%');
+//                $(event.target).parent().css('left', '20%');
             }
         }).parent().appendTo($("#SubForm").validationEngine());
         

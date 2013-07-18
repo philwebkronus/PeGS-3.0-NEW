@@ -18,7 +18,7 @@ class TransactionSummary extends BaseEntity
     {
         $query = "SELECT TransactionsSummaryID, LoyaltyCardNumber, Deposit, Reload, Withdrawal 
             FROM transactionsummary 
-            WHERE SiteID = $site AND DateStarted >= '$startdate' AND DateEnded < '$enddate'";
+            WHERE SiteID = $site AND DateStarted >= '$startdate' AND DateStarted < '$enddate'";
         
     
         $result = parent::RunQuery($query);
@@ -35,7 +35,7 @@ class TransactionSummary extends BaseEntity
     {
         $query = "SELECT TransactionsSummaryID, LoyaltyCardNumber, Deposit, Reload, Withdrawal 
             FROM transactionsummary 
-            WHERE SiteID = $site AND DateStarted >= '$startdate' AND DateEnded < '$enddate' 
+            WHERE SiteID = $site AND DateStarted >= '$startdate' AND DateStarted < '$enddate' 
             AND LoyaltyCardNumber = '$loyaltycardnumber'";
         
     
@@ -52,7 +52,7 @@ class TransactionSummary extends BaseEntity
     public function countTransSummary($site, $startdate, $enddate)
     {
         $query = "SELECT COUNT(DISTINCT(LoyaltyCardNumber)) AS count FROM transactionsummary WHERE SiteID = $site 
-            AND DateStarted >= '$startdate' AND DateEnded < '$enddate'";
+            AND DateStarted >= '$startdate' AND DateStarted < '$enddate'";
 
         $result = parent::RunQuery($query);
         return $result;
@@ -68,7 +68,7 @@ class TransactionSummary extends BaseEntity
         $query = "SELECT DISTINCT(LoyaltyCardNumber)
             FROM transactionsummary 
             WHERE SiteID = $site AND DateStarted >= '$start' 
-            AND DateEnded < '$end'";
+            AND DateStarted < '$end'";
         $result = parent::RunQuery($query);
         return $result;
     }

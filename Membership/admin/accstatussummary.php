@@ -94,6 +94,9 @@ $acctstatussummary = $datagrid_bn->Render();
             <div align="right" class="pad5">
                 <div style="float: left;" class="title">Account Status Summary:</div>
             </div>
+            <br /><br />
+            <hr color="black">
+            <br />
             <div align="right" class="pad5">
                 <?php echo $acctstatussummary; ?>
             </div>
