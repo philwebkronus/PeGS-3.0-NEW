@@ -49,8 +49,7 @@ if(count($loadPromos) > 0)
                                             $val['StartDate'],
                                             $val['EndDate'],
                                             Helper::determinePromoStatus($val['Status']),
-                                            "<input type='button' value='Update Details' id='updatelink' PromoID=".$id." style='overflow:visible; margin:0; padding:0; border:0; color:royalblue; background:transparent; ".
-                                            "font:inherit; line-height:normal; text-decoration:underline;  cursor:pointer; -moz-user-select:text; '/>"
+                                            "<input type='button' value='Update Details' id='updatelink' PromoID=".$id." style='cursor:pointer;'/>"
                                             
         );
         $i++;

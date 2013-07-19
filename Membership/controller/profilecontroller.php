@@ -372,14 +372,21 @@ if ($fproc->IsPostBack)
     {
         $hdnUpdateProfile->Text = "";
         (!empty($txtPassword->SubmittedValue)) ? $arrMembers["Password"] = md5($txtPassword->SubmittedValue) : "";
-        $arrMembers["DateUpdated"] = $dateupdated;
-        $arrMembers["MID"] = $MID;
+        if(!empty($txtPassword->SubmittedValue)){
+            $arrMembers["DateUpdated"] = $dateupdated;
+            $arrMembers["MID"] = $MID; 
+        }
+        else{
+            $arrMembers = '';
+        }
+        
 
         $arrMemberInfo["FirstName"] = $txtFirstName->SubmittedValue;
         $arrMemberInfo["MiddleName"] = $txtMiddleName->SubmittedValue;
         $arrMemberInfo['LastName'] = $txtLastName->SubmittedValue;
         $arrMemberInfo['NickName'] = $txtNickName->SubmittedValue;
 
+        $arrMemberInfo['MID'] = $MID;
         $arrMemberInfo['Address1'] = $txtAddress1->SubmittedValue;
         $arrMemberInfo['Address2'] = $txtAddress2->SubmittedValue;
         $arrMemberInfo['MobileNumber'] = $txtMobileNumber->SubmittedValue;
@@ -391,7 +398,7 @@ if ($fproc->IsPostBack)
         $arrMemberInfo['OccupationID'] = $cboOccupation->SubmittedValue;
         $arrMemberInfo['IdentificationID'] = $cboIDSelection->SubmittedValue;
         $arrMemberInfo['IdentificationNumber'] = $txtIDPresented->SubmittedValue;
-
+        
         $arrMemberInfo['Gender'] = $rdoGroupGender->SubmittedValue;
         $arrMemberInfo['IsSmoker'] = $rdoGroupSmoker->SubmittedValue;
 

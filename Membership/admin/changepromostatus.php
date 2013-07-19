@@ -21,10 +21,14 @@ App::LoadControl("Button");
 App::LoadControl("RadioGroup");
 App::LoadControl("Radio");
 App::LoadControl("Hidden");
+App::LoadControl("TextBox");
 
 $Promos = new Promos();
 $RewardOffers = new RewardOffers();
 $_Log = new AuditTrail();
+//Unset sessions for messages
+unset ($_SESSION['UPDATE']['SUCCESS']);
+unset ($_SESSION['CHANGE']['SUCCESS']);
 
 $promoID = strip_tags(mysql_escape_string($_POST['hdnPromoID']));
 //If question string is not available in the URL (maybe changed by the user),  it will redirect to View Promo
@@ -42,18 +46,24 @@ if (isset($promoID) && $promoID != NULL || isset($hdnPromoID))
     }
     $fproc = new FormsProcessor();
     
+    $txtCurrentStatus = new TextBox("txtCurrentStatus","txtCurrentStatus","Current Status: ");
+    $txtCurrentStatus->ReadOnly = true;
+    $txtCurrentStatus->ShowCaption = false;
+    $txtCurrentStatus->Text = Helper::determinePromoStatus($status);
+    $fproc->AddControl($txtCurrentStatus);
+    
     $rdoGroupStatus = new RadioGroup("rdoGroupStatus", "rdoGroupStatus","Status");
     $rdoGroupStatus->AddRadio("0", "Inactive");
     $rdoGroupStatus->AddRadio("1", "Active");
     $rdoGroupStatus->AddRadio("2", "Deactivated");
     $rdoGroupStatus->ShowCaption = true;
-    $rdoGroupStatus->Style = "margin-left: 40px;";
+    $rdoGroupStatus->Style = "margin-left: 0px;";
     $rdoGroupStatus->Initialize();
     $rdoGroupStatus->SetSelectedValue($status);
     
     $btnSubmit = new Button("btnSubmit","btnSubmit","Submit");
     $btnSubmit->IsSubmit = true;
-    $btnSubmit->Style = "margin-top: 20px;margin-left: 60px;position:relative";
+    $btnSubmit->Style = "margin-top: 10px;margin-left: 210px;";
     
     $btnCancel = new Button("btnCancel","btnCancel","Cancel");
     $btnCancel->IsSubmit = true;
@@ -76,53 +86,68 @@ if (isset($promoID) && $promoID != NULL || isset($hdnPromoID))
         {
             if ($rdoGroupStatus->SubmittedValue != null)
             {
-                //check if the status is changed if not display error message
-                if ($rdoGroupStatus->SubmittedValue == $status)
+                //Update the promo status in the promos table
+                $CommonPDOConnection = null;
+
+                $Promos->StartTransaction();
+                $arrEntries['PromoID'] = $promoID;
+                $arrEntries['Status'] = $rdoGroupStatus->SubmittedValue;
+                $Promos->UpdateByArray($arrEntries);
+                $CommonPDOConnection = $Promos->getPDOConnection();
+
+                if (!App::HasError())
                 {
-                    $errormsg = "<span style='color:red'>ERROR:</span> The status of the promo has not been changed";
+                    //If there no error occured update the promo status in the rewardoffers table
+                    $RewardOffers->setPDOConnection($CommonPDOConnection);
+                    $RewardOffers->updatePromoStatus($rdoGroupStatus->SubmittedValue, $promoID);
+                }
+                if (App::HasError())
+                {
+                    $Promos->RollBackTransaction();
+                    $errormsg = "<span style='color:red'>ERROR:</span> There's an error occured while changing the promo status";
                     $openErrorDialog = true;
                 }
                 else
                 {
-                    //Update the promo status in the promos table
-                    $CommonPDOConnection = null;
-                    
-                    $Promos->StartTransaction();
-                    $arrEntries['PromoID'] = $promoID;
-                    $arrEntries['DateUpdated'] = date("Y-m-d");
-                    $arrEntries['UpdatedByAID'] = $_SESSION['userinfo']['AID'];
-                    $arrEntries['Status'] = $rdoGroupStatus->SubmittedValue;
-                    $Promos->UpdateByArray($arrEntries);
-                    $CommonPDOConnection = $Promos->getPDOConnection();
-                    
-                    if (!App::HasError())
+                    $Promos->CommitTransaction();
+                    //Check if status is unchanged
+                    $affected = $Promos->AffectedRows;
+                    if ($affected > 0)
                     {
-                        //If there no error occured update the promo status in the rewardoffers table
-                        $RewardOffers->setPDOConnection($CommonPDOConnection);
-                        $RewardOffers->updatePromoStatus($rdoGroupStatus->SubmittedValue, $promoID);
-                    }
-                    if (App::HasError())
-                    {
-                        $Promos->RollBackTransaction();
-                        $errormsg = "<span style='color:red'>ERROR:</span> There's an error occured while changing the promo status";
-                        $openErrorDialog = true;
+                        //Update the Date Updated and UpdatedBy
+                        $Promos->StartTransaction();
+                        $arrEntries['PromoID'] = $promoID;
+                        $arrEntries['DateUpdated'] = date("Y-m-d");
+                        $arrEntries['UpdatedByAID'] = $_SESSION['userinfo']['AID'];
+                        $Promos->UpdateByArray($arrEntries);
+                        
+                        if (App::HasError())
+                        {
+                            $Promos->RollBackTransaction();
+                            $errormsg = "<span style='color:red'>ERROR:</span> There's an error occured while changing the promo status";
+                            $openErrorDialog = true;
+                        }
+                        else
+                        {
+                            //unset session for Success message and promoID before setting up new session
+                            unset($_SESSION['CHANGE']['SUCCESS']); 
+                            unset($_SESSION['PromoID']);
+                            //set new session for Success message and promoID
+                            $_SESSION['CHANGE']['SUCCESS'] = "The Status of the Promo is successfully changed into ".Helper::DeterminePromoStatus($rdoGroupStatus->SubmittedValue);
+                            $_SESSION['PromoID'] = $promoID;
+                            URL::Redirect("viewpromo.php?success");
+                            //Log to audit trail
+                            $username = $_SESSION['userinfo']['Username'];
+                            $AID = $_SESSION['userinfo']['AID'];
+                            $sessionID = $_SESSION['userinfo']['SessionID'];
+                            $_Log->logEvent(AuditFunctions::MARKETING_CHANGE_PROMO_STATUS, $username.":Successful", array('ID'=>$AID, 'SessionID'=>$sessionID));
+                        }
                     }
                     else
                     {
-                        $Promos->CommitTransaction();
-                        //unset session for Success message and promoID before setting up new session
-                        unset($_SESSION['MSG']['SUCCESS']); 
-                        unset($_SESSION['PromoID']);
-                        //set new session for Success message and promoID
-                        $_SESSION['MSG']['SUCCESS'] = "The Status of the Promo is successfully changed into ".Helper::DeterminePromoStatus($rdoGroupStatus->SubmittedValue);
+                        $_SESSION['CHANGE']['SUCCESS'] = "Promo status unchanged";
                         $_SESSION['PromoID'] = $promoID;
-                        URL::Redirect("updatepromo.php?success");
-                        App::SetSuccessMessage("The Status of the Promo is successfully changed into ".Helper::DeterminePromoStatus($rdoGroupStatus->SubmittedValue));
-                        //Log to audit trail
-                        $username = $_SESSION['userinfo']['Username'];
-                        $AID = $_SESSION['userinfo']['AID'];
-                        $sessionID = $_SESSION['userinfo']['SessionID'];
-                        $_Log->logEvent(AuditFunctions::MARKETING_CHANGE_PROMO_STATUS, $username.":Successful", array('ID'=>$AID, 'SessionID'=>$sessionID));
+                        URL::Redirect("viewpromo.php?success");
                     }
                 }
             }
@@ -132,7 +157,7 @@ if (isset($promoID) && $promoID != NULL || isset($hdnPromoID))
            //Redirect to updatepromo.php and set session for PromoID to be able to display the Promo 
            unset ($_SESSION['PromoID']); //Unset session first before setting up a new session
            $_SESSION['PromoID'] = $promoID;
-           URL::Redirect("updatepromo.php");
+           URL::Redirect("viewpromo.php");
         }
     }
 }
@@ -151,6 +176,7 @@ else
        $("#errorDialog").dialog({
           autoOpen: <?php echo $openErrorDialog; ?>,
           modal: true,
+          resizable: false,
           buttons: {
                 "OK":function(){
                     $(this).dialog("close");
@@ -167,13 +193,15 @@ else
             <div class="content">
                     <br><br>
                     <div class="title">Change Promo Status</div>
-                    <br /><br />
-                    <b>Status: </b><br />
+                    <br />
+                    Current Status: <?php echo $txtCurrentStatus; ?><br /><br />
                     <?php echo $hdnPromoID; ?>
-                    <?php echo $rdoGroupStatus->Radios[1]; ?><br />
-                    <?php echo $rdoGroupStatus->Radios[0]; ?><br />
-                    <?php echo $rdoGroupStatus->Radios[2]; ?><br />
-                    <?php echo $btnSubmit; echo $btnCancel; ?>
+                    <div style="margin-left: 80px;">
+                        <?php echo $rdoGroupStatus->Radios[1]; ?>
+                        <?php echo $rdoGroupStatus->Radios[0]; ?>
+                        <?php echo $rdoGroupStatus->Radios[2]; ?><br />
+                    </div>
+                    <?php echo $btnSubmit; ?>
                     <div align="center" id="pagination">
                         <span id="errorMessage"></span>
                     </div>

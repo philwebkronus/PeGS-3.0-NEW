@@ -31,7 +31,8 @@ class RewardOffers extends BaseEntity
     
     public function getAllRewardOffers($CardTypeID, $sortby, $isAsc = 0){
         $sorttype = $isAsc == 0 ? "asc":"desc";
-        $query = "SELECT ro.RewardOfferID, ri.IsCoupon, ri.RewardItemID, ri.RewardItemName as ProductName, rp.PartnerName, ro.RequiredPoints as Points
+        $query = "SELECT ro.RewardOfferID, ri.IsCoupon, ri.RewardItemID, ri.RewardItemDescription as Description, p.Name as PromoName, 
+                            ri.RewardItemName as ProductName, rp.PartnerName, ro.RequiredPoints as Points
                             FROM $this->TableName ro
                             INNER JOIN rewarditems ri ON ri.RewardItemID = ro.RewardItemID
                             INNER JOIN promos p ON p.PromoID = ro.PromoID

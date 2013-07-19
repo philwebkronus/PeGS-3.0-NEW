@@ -112,13 +112,29 @@ class MemberCards extends BaseEntity
         return $result;
     }
     
+    public function getMemberCardInfoRedemption( $MID )
+    {
+        $query = "SELECT m.*,
+                    CASE c.CardTypeID
+                        WHEN 1 THEN 'Gold'
+                        WHEN 2 THEN 'Green'
+                    END AS CardType, c.CardTypeID
+            FROM membercards m
+                INNER JOIN cards c ON c.CardID = m.CardID AND m.CardNumber = c.CardNumber
+            WHERE m.MID = $MID";
+       
+        $result = parent::RunQuery($query);
+        
+        return $result;
+    }
+    
     public function getActiveMemberCardInfo( $MID )
     {
         $query = "SELECT m.*,
                     CASE c.CardTypeID
                         WHEN 1 THEN 'Gold'
                         WHEN 2 THEN 'Green'
-                    END AS CardType
+                    END AS CardType, c.CardTypeID
             FROM membercards m
                 INNER JOIN cards c ON c.CardID = m.CardID AND m.CardNumber = c.CardNumber
             WHERE m.MID = $MID AND m.Status IN(1,5)";

@@ -13,12 +13,17 @@ $currentpage = "Promo Maintenance";
 if (isset($_REQUEST['success']))
 {
     $openSuccessDialog = true;
-    if (isset($_SESSION['MESSAGE']['SUCCESS']))
+    if (isset($_SESSION['UPDATE']['SUCCESS']))
     {
-        $msg = $_SESSION['MESSAGE']['SUCCESS'];
-    }    
-    unset ($_SESSION['MESSAGE']['SUCCESS']);
+        $msg = $_SESSION['UPDATE']['SUCCESS'];
+    }
+    else if (isset($_SESSION['CHANGE']['SUCCESS']))
+    {
+       $msg = $_SESSION['CHANGE']['SUCCESS'];
+    }
 }
+unset ($_SESSION['UPDATE']['SUCCESS']);
+unset ($_SESSION['CHANGE']['SUCCESS']);
 unset ($_SESSION['PromoID']);
 ?>
 <?php include("header.php"); ?>
@@ -35,24 +40,24 @@ unset ($_SESSION['PromoID']);
         function getPromos()
         {
             var url = "Helper/helper.promos.php";
-            jQuery('#promos').GridUnload();
             jQuery("#promos").jqGrid({
                     url:url,
                     datatype: "json",
                     colNames:['Promo Name', 'Description', 'Start Date','End Date','Status','Action'],
                     colModel:[
-                            {name: 'PromoName', index: 'PromoName', align: 'left', width: 170},
-                            {name: 'Description', index: 'Description', align: 'left', width: 350},
-                            {name: 'StartDate', index: 'StartDate', align: 'left', width: 120},
-                            {name: 'EndDate', index: 'EndDate', align: 'left', width: 110},
-                            {name: 'Status', index: 'Status', align: 'center', width: 130},
-                            {name: 'Action', index: 'action', align: 'center', width: 170}
+                            {name: 'PromoName', index: 'PromoName', align: 'left', width: 150, fixed: true},
+                            {name: 'Description', index: 'Description', align: 'left', width: 330, fixed: true},
+                            {name: 'StartDate', index: 'StartDate', align: 'left', width: 110, fixed: true},
+                            {name: 'EndDate', index: 'EndDate', align: 'left', width: 110, fixed: true},
+                            {name: 'Status', index: 'Status', align: 'center', width: 100, fixed: true},
+                            {name: 'Action', index: 'action', align: 'center', width: 140, fixed: true}
                     ],
                             
                     rowNum: 10,
                     rowList: [10,20,30],
                     height: 250,
                     width: 970,
+                    shrinkToFit: true,
                     pager: "#pager",
                     refresh: true,
                     loadonce: true,
@@ -75,17 +80,20 @@ unset ($_SESSION['PromoID']);
 </script>
 <script type="text/javascript">
      $(document).ready(function(){
-        $("#msg").html("<?php echo $msg; ?>");
-        $( "#successDialog" ).dialog({
-            modal:true,
-            resizable: false,
-            autoOpen: <?php echo $openSuccessDialog; ?>,
-            buttons: {
-                "OK":function(){
-                    $(this).dialog("close");
+        <?php if (isset($msg) && isset($openSuccessDialog)): ?>
+            $("#msg").html("<?php echo $msg; ?>");
+            
+            $( "#successDialog" ).dialog({
+                modal:true,
+                resizable: false,
+                autoOpen: <?php echo $openSuccessDialog; ?>,
+                buttons: {
+                    "OK":function(){
+                        $(this).dialog("close");
+                    }
                 }
-            }
-        });
+            });
+        <?php endif; ?>     
      });
 </script>    
 <div align="center">

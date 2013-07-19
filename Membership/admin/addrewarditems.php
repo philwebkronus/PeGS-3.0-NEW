@@ -59,9 +59,11 @@ $currentpage = "Administration";
     <div class="maincontainer">
         <?php include('menu.php'); ?>
         <br />
-        <div class="tab">
-            <div class="title">Adding of Reward Items</div>
+        <div class="title" style="margin-left: 40px;">Adding of Reward Items</div>
             <br />
+            <hr color="black" />
+            <br />
+        <div class="tab">
             <input type="hidden" name="vihp" id="vihp" value="1" />
             <input type="hidden" name="rt" id="rt" value="1" />
             <table align="center">

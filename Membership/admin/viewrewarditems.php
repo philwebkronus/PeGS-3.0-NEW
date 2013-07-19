@@ -40,15 +40,16 @@ if (isset($_SESSION['msg'])) {
                 url:url,
                 mtype: 'post',
                 datatype: "json",
-                colNames:['Reward Item Name', 'Reward Item Description', 'Reward Item Price', 'Reward Item Count', 'Available Item Count', 
+                colNames:['Reward Item Name', 'Reward Item Description', 'Item Price', 'Item Count', 'Item Code','Available Item Count', 
                     'Reward Type', 'Status', 'Action'],
                 colModel:[
                     {name:'RewardItemName',index:'RewardItemName',align: 'center', width: 245},
                     {name:'RewardItemDescription',index:'RewardItemDescription', align: 'center', width: 270},
-                    {name:'RewardItemPrice',index:'RewardItemPrice', align: 'center', width: 120},
+                    {name:'RewardItemPrice',index:'RewardItemPrice', align: 'right', width: 120},
                     {name:'RewardItemCount',index:'RewardItemCount', align: 'center', width: 120},
+                    {name:'RewardItemCode',index:'RewardItemCode', align: 'center', width: 120},
                     {name:'AvailableItemCount',index:'AvailableItemCount', align: 'center', width: 120},
-                    {name:'IsCoupon',index:'IsCoupon', align: 'center', width: 95},
+                    {name:'IsCoupon',index:'IsCoupon', align: 'center', width: 125},
                     {name:'Status',index:'Status', align: 'center', width: 145},
                     {name:'button', index: 'button', width:150, align: 'center'},
                 ],
@@ -93,6 +94,8 @@ if (isset($_SESSION['msg'])) {
 <?php include('menu.php'); ?>
         <br />
         <div class="title" align="">View Reward Items</div>
+        <br />
+        <hr color="black" />
         <br />
         <div class="content">
             <br>

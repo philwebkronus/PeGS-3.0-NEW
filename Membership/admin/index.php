@@ -303,7 +303,7 @@ if($fproc->IsPostBack)
         $arrMemberInfo['IsSmoker'] = $rdoGroupSmoker->SubmittedValue;
         
         //Proceed with the update profile
-        $_MemberInfo->updateProfile($arrMembers,$arrMemberInfo);
+        $_MemberInfo->updateProfileAdmin($arrMembers,$arrMemberInfo);
         
         if(!App::HasError())
         {

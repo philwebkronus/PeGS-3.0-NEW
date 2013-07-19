@@ -166,6 +166,71 @@ class MemberInfo extends BaseEntity
         $this->StartTransaction();
         
         try 
+        { 
+            if(!empty($arrMembers) || $arrMembers != ''){
+                $this->TableName = "members";
+                $this->Identity = "MID";
+                $updatedprofile = $this->UpdateByArray($arrMembers); 
+            }
+            else{
+                $updatedprofile = 0;
+            }
+                   
+        
+            //App::Pr($arrMembers);
+             
+            if(!App::HasError())
+            {
+                $this->TableName = "memberinfo";
+                $this->Identity = "MID";
+                $updatedinfo = $this->UpdateByArray($arrMemberInfo);
+
+                if($updatedinfo == 1){
+                    $arrMemberInfo['DateUpdated'] = 'now_usec()';
+                    if(isset($_SESSION['MID']))
+                    $arrMemberInfo['UpdatedByAID'] = $_SESSION['MID'];
+                    if(isset($_SESSION['aID']))
+                    $this->UpdateByArray($arrMemberInfo);
+                }
+                //App::Pr($arrMemberInfo);
+                
+                if(!App::HasError())     
+                {
+                    //App::Pr($this);
+                    $this->CommitTransaction();
+                    if($updatedprofile == 1 && $updatedinfo == 0 || $updatedprofile == 0 && $updatedinfo == 1
+                            || $updatedprofile == 1 && $updatedinfo == 1){
+                        $message = "You have successfully updated your profile.";
+                        return $message;
+                    } else {
+                        $message ="Account details unchanged.";
+                        return $message;
+                    }
+                    //App::SetSuccessMessage('Update Profile Successful');
+                    
+                } 
+            }
+            else
+            {
+                //echo App::GetErrorMessage();
+                $this->RollBackTransaction();
+                $message = "Update profile failed.";
+                return $message;
+            }
+        }
+        catch (Exception $e)
+        {
+            $this->RollBackTransaction();
+            App::SetErrorMessage($e->getMessage());
+        }
+    }
+    
+    public function updateProfileAdmin( $arrMembers, $arrMemberInfo)
+    {
+        
+        $this->StartTransaction();
+        
+        try 
         {          
             $this->TableName = "members";
             $this->Identity = "MID";
@@ -258,8 +323,8 @@ class MemberInfo extends BaseEntity
         if ($this->HasError){
             $retval =  $this->getError();
         } else {
-                $retval =  "Profile Updated Successfully.";
-            }
+            $retval =  "Profile Updated Successfully.";
+        }
         return $retval;
         
     }
@@ -274,6 +339,22 @@ class MemberInfo extends BaseEntity
         
         $query = "SELECT COUNT(mi.MemberInfoID) AS Count FROM memberinfo mi INNER JOIN members m ON m.MID = mi.MID 
             WHERE YEAR(CURDATE())-YEAR(mi.BirthDate) BETWEEN 21 AND 30 AND mi.Gender = $gender
+                AND mi.DateVerified >= '$fromdate' AND mi.DateVerified <= '$todate' AND m.Status IN (1,5);";
+        
+        return parent::RunQuery($query);
+        
+    }
+    
+    /**
+      * @author Gerardo V. Jagolino Jr.
+      * @return object array
+      * get member information of age 21 to 30
+     */
+    public function getBirthdays($gender, $fromdate, $todate)
+    {
+        
+        $query = "SELECT mi.MemberInfoID, mi.MID, mi.Birthdate FROM memberinfo mi INNER JOIN members m ON m.MID = mi.MID 
+            WHERE mi.Gender = $gender
                 AND mi.DateVerified >= '$fromdate' AND mi.DateVerified <= '$todate' AND m.Status IN (1,5);";
         
         return parent::RunQuery($query);

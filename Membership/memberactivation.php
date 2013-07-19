@@ -192,7 +192,7 @@ if ((isset($_GET["oldnumber"]) && (htmlentities($_GET["oldnumber"])))
                     $Memberstable["UserName"] = $NewMembershipCardNumber;
                 } else {
                     $noemail = false;
-                    $Memberstable["UserName"] = $oldCardEmail;
+                    $Memberstable["UserName"] = $txtEmail->SubmittedValue;
                 }
 
                 $Memberstable['DateCreated'] = $dateCreated;

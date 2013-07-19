@@ -1,14 +1,14 @@
 <div id="itemmessagebody" class="itemmessagebody" style="background-color: #FFFFFF; display:none;" align="center">
-    <table cellpadding="0" cellspacing="0" width="612" style="font-family: arial; font-size: 9pt;background-color: #FFFFFF;">
+    <table cellpadding="0" cellspacing="0" width="612" style="text-align: left;font-family: arial; font-size: 9pt;background-color: #FFFFFF;">
         <tr>
             <td style="vertical-align:top;" align="center" colspan ="2">
-                <img src="$imagesdirheader.jpg"/>
+                <img src="$imagesdirnewheader.jpg" width="612" height="80"/>
             </td>
         </tr>
         <tr>
             <td style="vertical-align:top;" align="center" colspan ="1" width="50%">
                 <br/>
-                <table width="100%" cellpadding="2">
+                <table width="100%" cellpadding="2" style="text-align: left;">
                     <tr>
                         <td>No. of Items :</td>
                         <td>$quantity</td>
@@ -81,12 +81,12 @@
             </td>
             <td style="vertical-align:top;" align="center" colspan ="1" style="font-size: 14pt;">
                 <br/>
-                <img src="$imagesdirsampleitem1.jpg" width="300"/>
+                <img src="$imagesdirsampleitem1.jpg" style="height:auto; width:auto; max-width:320px; max-height:350px;"/>
             </td>
         </tr>
         <tr>
             <td style="vertical-align:top;" align="center" colspan ="2">
-                <img src="$imagesdirfooter.png"/>
+                <img src="$imagesdirnewfooter.jpg" width="612" height="40" />
             </td>
         </tr>
     </table>

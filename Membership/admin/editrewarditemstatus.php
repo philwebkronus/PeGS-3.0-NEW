@@ -31,6 +31,15 @@ if (isset($_SESSION['rewarditemdetails'])) {
         $rewarditemid = $vview['RewardItemID'];
         $status = $vview['Status'];
     }
+    switch ($status)
+            {
+                case 0:
+                    $rstatuz = "Inactive";
+                break;
+                case 1:
+                    $rstatuz = "Active";
+                break;
+            }
 } else {
     
 }
@@ -150,9 +159,11 @@ if ($fproc->IsPostBack) {
     <div class="maincontainer">
 <?php include('menu.php'); ?>
         <br />
+        <div class="title" style="margin-left: 40px;">Update Reward Items Status</div>
+        <br />
+        <hr color="black" />
+        <br />
         <div align="center">
-            <div class="title">Update Reward Items Status</div>
-            <br />
             <input type="hidden" name="rewarditemid" id="rewarditemid" value="<?php echo "$rewarditemid"; ?>" />
             <input type="hidden" name="status" id="status" value="<?php echo "$status"; ?>" />
             <input type="hidden" name="oldstatus" id="oldstatus" value="<?php echo "$status"; ?>" />
@@ -160,10 +171,15 @@ if ($fproc->IsPostBack) {
             <div>
                 <table>
                     <tr>
-                        <td><br/></td>
                     </tr>
                     <tr>
-                        <td>Status : &nbsp;&nbsp;</td>
+                        <td>Current Status : </td>
+                        <td>
+                        <input type="text" readonly="readonly" value="<?php echo  $rstatuz; ?>"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
                         <td>
                             <input type="radio" id="statusactive" name="statusactive" value="1" />Active&nbsp;&nbsp;&nbsp;
                             <input type="radio" id="statusinactive" name="statusinactive" value="0"  />Inactive

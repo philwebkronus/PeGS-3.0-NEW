@@ -42,7 +42,7 @@ $list_posaccts->AddArray($arrsites);
 $cboSiteID->DataSource = $list_posaccts;
 $cboSiteID->ShowCaption = true;
 $cboSiteID->DataSourceValue = "SiteID";
-$cboSiteID->DataSourceText = "SiteCode";
+$cboSiteID->DataSourceText = "SiteName";
 $cboSiteID->DataBind();
 $fproc->AddControl($cboSiteID);
 
@@ -108,7 +108,7 @@ else{
 <script type='text/javascript'>
     
     $(document).ready(function(){
-        
+        $('#pagination').hide();
         $('#btnSubmit').live('click', function(){
             var site = jQuery("#SiteID").val();
             var date1 = "<?php echo date("Ymd");?>"
@@ -163,7 +163,8 @@ else{
                 }
                 else
                 {
-                    $("#dRange").html("Date Range: ".concat(datez1, separator, datez2));   
+                    $("#dRange").html("Date Range: ".concat(datez1, separator, datez2));  
+                    document.getElementById("pagination").style.display = "block";
                 loadDetails();     
                 }
             }
@@ -446,12 +447,14 @@ else{
         <div class="maincontainer">
             <?php include('menu.php'); ?>
             <br />
-            <div class="title">Member Deposit/Withdraw Transaction per Cut-off</div>
+            <div class="title">&nbsp;&nbsp;&nbsp;Member Deposit/Withdraw Transaction per Cut-off</div>
+            <br />
+            <hr color="black" />
             <br />
             <div align="left">
                 <table align="left">
                     <tr>
-                    <td><?php echo $cboSiteID; ?></td>
+                    <td>&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $cboSiteID; ?></td>
                     <td width="30"></td>
                     <td>From&nbsp;</td>
                         <td><?php echo $fromdateverified; ?></td>
@@ -474,9 +477,9 @@ else{
             <br/><br/>
             <br/>
             <div class="content">
-                    <hr color="black" />
-                    <br>
                     <div align="center" id="pagination">
+                         <hr color="black" />
+                    <br>
                         <table border="1" id="players">
 
                         </table>

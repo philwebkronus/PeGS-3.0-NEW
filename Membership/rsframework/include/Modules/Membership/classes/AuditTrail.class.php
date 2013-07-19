@@ -82,7 +82,8 @@ class AuditTrail extends BaseEntity
         $toTransactionDate =  $vdateto = date ( 'Y-m-d' , strtotime ('+1 day' , strtotime($fromTransactionDate)));
         $query = "SELECT * FROM $this->TableName
                   WHERE ID IN ("."'".implode("','",$arrAID)."'".") AND 
-                  TransactionDateTime >= '$fromTransactionDate' AND TransactionDateTime < '$toTransactionDate'"."";
+                  TransactionDateTime >= '$fromTransactionDate' AND TransactionDateTime < '$toTransactionDate'"."
+                  ORDER BY AuditTrailID DESC";
         return parent::RunQuery($query);
     }
 }

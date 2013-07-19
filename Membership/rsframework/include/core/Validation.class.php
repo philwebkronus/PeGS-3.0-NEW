@@ -90,7 +90,7 @@ class Validation extends BaseObject
     function validateEmail($input)
     {
         //$result = ereg ("^[^@ ]+@[^@ ]+\.[^@ \.]+$", $input); //deprecated 
-        $regex = '/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$/'; 
+        $regex = '/^[_A-Za-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$/'; 
         if (preg_match($regex, $input))
         {
             return true;

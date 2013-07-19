@@ -20,15 +20,17 @@ App::LoadControl("TextBox");
 
 $Promos = new Promos();
 $_Log = new AuditTrail();
-
+//Display success message if set
+unset ($_SESSION['UPDATE']['SUCCESS']);
+unset ($_SESSION['CHANGE']['SUCCESS']);
 if (isset($_REQUEST['success']))
 {
     $openSuccessDialog = true;
-    if (isset($_SESSION['MSG']['SUCCESS']))
+    if (isset($_SESSION['CHANGE']['SUCCESS']))
     {
-        $msg = $_SESSION['MSG']['SUCCESS'];
+        $msg = $_SESSION['CHANGE']['SUCCESS'];
     }    
-    unset ($_SESSION['MSG']['SUCCESS']);
+    unset ($_SESSION['CHANGE']['SUCCESS']);
 }
 
 if (isset($_SESSION['PromoID']))
@@ -41,7 +43,7 @@ else
     $promoID = strip_tags(mysql_escape_string($_POST['promoID']));
 }
 //Check if the Promo ID is set and not null
-if (isset($promoID) && $promoID != NULL || isset($hdnPromoID))
+if (isset($promoID) && $promoID != NULL)
 {
     $promoDetails = $Promos->loadPromoByID($promoID); // Load Promo by ID
     if (count($promoDetails) > 0) //Check if promo exist
@@ -97,11 +99,11 @@ if (isset($promoID) && $promoID != NULL || isset($hdnPromoID))
     //$startDate->MinDate = $dsmindate->CurrentDate;
     $startDate->SelectedDate = $start_date;
     $startDate->YearsToDisplay = "-100";
-    $startDate->CssClass = "validate[required]";
     $startDate->isRenderJQueryScript = true;
     $startDate->Size = 25;
     $startDate->Style = "z-index: 200";
     $startDate->Value = $start_date;
+    $startDate->Args = "placeholder='YYYY-MM-DD'";
     $fproc->AddControl($startDate);
 
     $endDate = new DatePicker("endDate","endDate","End Date: ");
@@ -109,10 +111,10 @@ if (isset($promoID) && $promoID != NULL || isset($hdnPromoID))
     //$startDate->MinDate = $dsmindate->CurrentDate;
     $endDate->SelectedDate = $end_date  ;
     $endDate->YearsToDisplay = "-100";
-    $endDate->CssClass = "validate[required]";
     $endDate->isRenderJQueryScript = true;
     $endDate->Size = 25;
     $endDate->Value = $end_date;
+    $endDate->Args = "placeholder='YYYY-MM-DD'";
     $fproc->AddControl($endDate);
     
     $drawDate = new DatePicker("drawDate","drawDate","Draw Date: ");
@@ -120,9 +122,9 @@ if (isset($promoID) && $promoID != NULL || isset($hdnPromoID))
     //$startDate->MinDate = $dsmindate->CurrentDate;
     $drawDate->SelectedDate = $draw_date;
     $drawDate->YearsToDisplay = "-100";
-    $drawDate->CssClass = "validate[required]";
     $drawDate->isRenderJQueryScript = true;
     $drawDate->Size = 25;
+    $drawDate->Args = "placeholder='YYYY-MM-DD'";
     $fproc->AddControl($drawDate);
     
     $btnSubmit = new Button("btnSubmit", "btnSubmit", "Update Details");
@@ -147,7 +149,10 @@ if (isset($promoID) && $promoID != NULL || isset($hdnPromoID))
         if ($btnSubmit->SubmittedValue == "Update Details")
         {
             //check if valid information is entered
-            if ((strlen($txtPromoName->SubmittedValue) == 0) || (strlen($txtPromoDescription->SubmittedValue) == 0))
+            if ((strlen($txtPromoName->SubmittedValue) == 0) || (strlen($txtPromoDescription->SubmittedValue) == 0)
+                                                             || (strlen($startDate->SubmittedValue) == 0)
+                                                             || (strlen($endDate->SubmittedValue) == 0)
+                                                             || (strlen($drawDate->SubmittedValue) == 0))
             {
                 $errormsg = "<span style='color:red'>ERROR:</span> All fields are required";
                 $openErrorDialog = true;
@@ -171,14 +176,12 @@ if (isset($promoID) && $promoID != NULL || isset($hdnPromoID))
                 $arrEntries['PromoID'] = $promoID;
                 $arrEntries['Name'] = $txtPromoName->SubmittedValue;
                 $arrEntries['Description'] = $txtPromoDescription->SubmittedValue;
-                $arrEntries['DateUpdated'] = date("Y-m-d");
-                $arrEntries['UpdatedByAID'] = $_SESSION['userinfo']['AID'];
                 $arrEntries['StartDate'] = $startDate->SubmittedValue;
                 $arrEntries['EndDate'] = $endDate->SubmittedValue;
                 $arrEntries['DrawDate'] = $drawDate->SubmittedValue;
                 $arrEntries['Status'] = 1;
                 $Promos->UpdateByArray($arrEntries);
-                
+              
                 if ($Promos->HasError)
                 {
                     $Promos->RollBackTransaction();
@@ -188,15 +191,44 @@ if (isset($promoID) && $promoID != NULL || isset($hdnPromoID))
                 else 
                 {
                     $Promos->CommitTransaction();
-                    //Log to audit trail
-                    $username = $_SESSION['userinfo']['Username'];
-                    $AID = $_SESSION['userinfo']['AID'];
-                    $sessionID = $_SESSION['userinfo']['SessionID'];
-                    $_Log->logEvent(AuditFunctions::MARKETING_UPDATE_PROMO, $username.":Successful", array('ID'=>$AID, 'SessionID'=>$sessionID));
-                    //Redirect to view promo with success dialog box
-                    unset($_SESSION['MESSAGE']['SUCCESS']);
-                    $_SESSION['MESSAGE']['SUCCESS'] = "The promo was successfully updated";
-                    URL::Redirect("viewpromo.php?success");
+                    //If nothing has been changed
+                    $affected = $Promos->AffectedRows;
+                    if ($affected > 0)
+                    {
+                        //Update Date Updated and UpdatedBy
+                        $Promos->StartTransaction();
+                        $arrEntries['PromoID'] = $promoID;
+                        $arrEntries['DateUpdated'] = date("Y-m-d");
+                        $arrEntries['UpdatedByAID'] = $_SESSION['userinfo']['AID'];
+                        $Promos->UpdateByArray($arrEntries);
+                        
+                        if ($Promos->HasError)
+                        {
+                            $Promos->RollBackTransaction();
+                            $errormsg = "<span style='color:red'>ERROR:</span> There's an error occured while updating the promo";
+                            $openErrorDialog = true;
+                        }
+                        else
+                        {    
+                            $Promos->CommitTransaction();
+                            //Log to audit trail
+                            $username = $_SESSION['userinfo']['Username'];
+                            $AID = $_SESSION['userinfo']['AID'];
+                            $sessionID = $_SESSION['userinfo']['SessionID'];
+                            $_Log->logEvent(AuditFunctions::MARKETING_UPDATE_PROMO, $username.":Successful", array('ID'=>$AID, 'SessionID'=>$sessionID));
+                            //Redirect to view promo with success dialog box
+                            unset($_SESSION['UPDATE']['SUCCESS']);
+                            $_SESSION['UPDATE']['SUCCESS'] = "The Promo was successfully updated";
+                            URL::Redirect("viewpromo.php?success");
+                        }    
+                    }
+                    else
+                    {
+                        //Redirect to view promo with success dialog box
+                        unset($_SESSION['UPDATE']['SUCCESS']);
+                        $_SESSION['UPDATE']['SUCCESS'] = "Promo details unchanged";
+                        URL::Redirect("viewpromo.php?success");
+                    }
                 }
             }
         }
@@ -221,17 +253,19 @@ else
 </script> 
 <script type="text/javascript">
     $(document).ready(function(){
-       $("#msgsuccess").html("<?php echo $msg; ?>");
-       $("#successDialog").dialog({
-          autoOpen: <?php echo $openSuccessDialog; ?>,
-          modal: true,
-          resizable: false,
-          buttons: {
-                "OK": function(){
-                    $(this).dialog("close");
-                }
-          }
-       });
+        <?php if (isset($msg) && isset($openSuccessDialog)):?>
+            $("#msgsuccess").html("<?php echo $msg; ?>");
+            $("#successDialog").dialog({
+               autoOpen: <?php echo $openSuccessDialog; ?>,
+               modal: true,
+               resizable: false,
+               buttons: {
+                     "OK": function(){
+                         $(this).dialog("close");
+                     }
+               }
+            });
+        <?php endif; ?>
     });
 </script>
 <script type="text/javascript">

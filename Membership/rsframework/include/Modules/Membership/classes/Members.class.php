@@ -108,8 +108,6 @@ class Members extends BaseEntity {
 
                         $datecreated = "now_usec()";
 
-                        $getMID = $this->getMID($UserName);
-                        $arrgetMID = $getMID[0];
                         $ArrCardID = $_OldCards->getOldCardDetails($loyaltyCard);
                         $ArrayOldCardID = $ArrCardID[0];
                         $ArrNewCardID = $_Cards->getCardInfo($newCard);
@@ -118,7 +116,7 @@ class Members extends BaseEntity {
                         App::LoadModuleClass("Loyalty", "CardStatus");
                         $this->TableName = "loyaltydb.membercards";
 
-                        $arrMemberCards['MID'] = $arrgetMID['MID'];
+                        $arrMemberCards['MID'] = $MID;
                         $arrMemberCards['CardID'] = $ArrayNewCardID['CardID'];
                         $arrMemberCards['SiteID'] = $siteid;
                         $arrMemberCards['CardNumber'] = $ArrayNewCardID['CardNumber'];
@@ -144,7 +142,7 @@ class Members extends BaseEntity {
                             if (!App::HasError()) {
 
                                 $arrCardPointsTransfer['ToMemberCardID'] = $this->LastInsertID;
-                                $arrCardPointsTransfer['MID'] = $arrgetMID['MID'];
+                                $arrCardPointsTransfer['MID'] = $MID;
                                 $arrCardPointsTransfer['FromOldCardID'] = $ArrayOldCardID['OldCardID'];
                                 $arrCardPointsTransfer['LifeTimePoints'] = $ArrayOldCardID['LifetimePoints'];
                                 $arrCardPointsTransfer['CurrentPoints'] = $ArrayOldCardID['CurrentPoints'];
@@ -175,9 +173,9 @@ class Members extends BaseEntity {
                                         $casinoservices = $_CasinoServices->getUserBasedCasinoServices();
 
                                         foreach ($casinoservices as $casinoservice) {
-
+                                            
                                             $serviceID = $casinoservice['ServiceID'];
-                                            $MemberServiceMID = $arrgetMID['MID'];
+                                            $MemberServiceMID = $MID;
 
                                             $this->TableName = "membership.memberservices";
 

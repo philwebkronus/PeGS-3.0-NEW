@@ -21,8 +21,7 @@ class Sites extends BaseEntity
      */
     public function getAllSite()
     {
-        $query = "SELECT SiteID, SUBSTRING_INDEX(SUBSTRING_INDEX(SiteCode, '-', 2), '-', -1) 
-            AS SiteCode FROM sites ORDER BY SiteCode ASC";
+        $query = "SELECT SiteID, SiteName FROM sites ORDER BY SiteName ASC";
         
         return parent::RunQuery($query);
     }

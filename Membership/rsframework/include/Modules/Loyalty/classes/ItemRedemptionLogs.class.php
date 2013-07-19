@@ -18,14 +18,15 @@ Class ItemRedemptionLogs extends BaseEntity {
         $arrEntries["MID"] = $mid;
         $arrEntries["RewardItemID"] = $rewarditemid;
         $arrEntries["ItemCount"] = $itemcount;
-        $arrEntries["SiteID"] = $siteid;
         $arrEntries["ServiceID"] = $serviceid;
         $arrEntries["Source"] = $source;
         $arrEntries["DateCreated"] = $redeemeddate;
         if($arrEntries["Source"] == 1){
             $arrEntries["CreatedByAID"] = $arrEntries["MID"];
+            $arrEntries["SiteID"] = $siteid;
         } else {
             $arrEntries["CreatedByAID"] = $_SESSION['userinfo']['AID'];
+            $arrEntries["SiteID"] = $_SESSION['userinfo']['SiteID'];
         }
         
         $retval = parent::Insert($arrEntries);

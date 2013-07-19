@@ -316,7 +316,9 @@ else{
         <div class="maincontainer">
             <?php include('menu.php'); ?>
             <br />
-            <div style="float: left;" class="title">Membership Demographics:</div>
+            <div style="float: left; margin-left: 40px;" class="title">Membership Demographics:</div>
+            <br /><br />
+            <hr color="black">
             <br /><br />
             <table>
             <tr>

@@ -139,22 +139,41 @@ if (isset($_SESSION['CardInfo']))
     $CardTypeID = $cardinfo["CardTypeID"];
     $_SESSION['CardInfo']["CardTypeID"] = $CardTypeID;
     $loyaltyinfo = $_MemberCards->getActiveMemberCardInfo($MID);
-    $loyaltyinfo = $loyaltyinfo[0];
-    $cardType = $loyaltyinfo['CardType'];
-    $currentPoints = $loyaltyinfo['CurrentPoints'];
-    $lifetimePoints = $loyaltyinfo['LifetimePoints'];
-    $bonusPoints = $loyaltyinfo['BonusPoints'];
-    $redeemedPoints = $loyaltyinfo['RedeemedPoints'];
-    $loyaltyinfo['CardTypeID'] = $CardTypeID;
+    if(isset($loyaltyinfo[0]) && $loyaltyinfo[0] != ""){
+        $loyaltyinfo = $loyaltyinfo[0];
+        $cardType = $loyaltyinfo['CardType'];
+        $currentPoints = $loyaltyinfo['CurrentPoints'];
+        $lifetimePoints = $loyaltyinfo['LifetimePoints'];
+        $bonusPoints = $loyaltyinfo['BonusPoints'];
+        $redeemedPoints = $loyaltyinfo['RedeemedPoints'];
+        $loyaltyinfo['CardTypeID'] = $CardTypeID;
+        
+        if (count($arrTransactions) > 0)
+        {
+            $site = $_Sites->getSite($arrTransactions[0]['SiteID']);
+            $siteName = $site[0]['SiteName'];
+            $transDate = date('M d, Y ', strtotime($arrTransactions[0]['TransactionDate']));
+        }
 
-    if (count($arrTransactions) > 0)
-    {
-        $site = $_Sites->getSite($arrTransactions[0]['SiteID']);
-        $siteName = $site[0]['SiteName'];
-        $transDate = date('M d, Y ', strtotime($arrTransactions[0]['TransactionDate']));
+        $loyaltyinfo["LastTransactionDate"] = $transDate;
+        $loyaltyinfo["LastSitePlayed"] = $siteName;
+    } else {
+        switch ($cardinfo["Status"]) {
+            case 0:
+                $msg = "Card is inactive";
+                break;
+            case 2:
+                $msg = "Card is deactivated";
+                break;
+            case 8:
+                $msg = "Card is migrated";
+                break;
+            case 9:
+                $msg = "Card is banned";
+                break;
+        }
+        App::SetErrorMessage($msg);
     }
     
-    $loyaltyinfo["LastTransactionDate"] = $transDate;
-    $loyaltyinfo["LastSitePlayed"] = $siteName;
 }
 ?>

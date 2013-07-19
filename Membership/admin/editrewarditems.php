@@ -531,9 +531,11 @@ else{
     <div class="maincontainer">
 <?php include('menu.php'); ?>
         <br />
-        <div class="tab">
-  <div class="title">Update Reward Items</div>
+        <div class="title" style="margin-left: 40px;">Update Reward Items</div>
             <br />
+            <hr color="black" />
+            <br />
+        <div class="tab">
             <input type="hidden" name="rewarditemid" id="rewarditemid" value="<?php echo "$rewarditemid";?>" />
             <input type="hidden" name="vihp" id="vihp" value="<?php echo "$showinhomepage";?>" />
             <input type="hidden" name="rt" id="rt" value="<?php echo "$iscouponz";?>" />

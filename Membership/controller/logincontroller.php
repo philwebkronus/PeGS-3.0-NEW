@@ -47,8 +47,8 @@ $txtUsername->CssClass = "validate[required] login-field";
 $fproc->AddControl($txtUsername);
 
 $txtPassword = new TextBox("txtPassword", "txtPassword", "Password:");
-$txtPassword->Length = 30;
-$txtPassword->Size = 30;
+$txtPassword->Length = 40;
+$txtPassword->Size = 40;
 $txtPassword->Password = true;
 $txtPassword->ShowCaption = false;
 $txtPassword->CssClass = "validate[required] login-field";

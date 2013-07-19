@@ -74,7 +74,7 @@ $response = null;
                 $ritemid = $vview['RewardItemID'];
                         
                 $responce->rows[$i]['id']=$vview['RewardItemID'];
-                $responce->rows[$i]['cell']=array($vview['RewardItemName'],$vview['RewardItemDescription'],$vview['RewardItemPrice'],
+                $responce->rows[$i]['cell']=array($vview['RewardItemName'],$vview['RewardItemDescription'],$vview['RewardItemPrice'],$vview['RewardItemCount'],
                     $vview['RewardItemCode'] ,$vview['AvailableItemCount'],$iscoupon,$vstatus, "<input type=\"button\" value=\"Edit Details\" onclick=\"window.location.href='controller/editrewarditemscontroller.php?rewarditemid=$rewarditemid'+'&page='+'ViewService';\"/>");
                 
                 $i++;

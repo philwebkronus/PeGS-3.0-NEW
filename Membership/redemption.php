@@ -29,19 +29,11 @@ if(isset($_SESSION['RewardItemsInfo'])){
     App::LoadCore("File.class.php");
     App::LoadCore("PHPMailer.class.php");
 
-    App::LoadModuleClass("Membership", "Members");
     App::LoadModuleClass("Membership", "MemberInfo");
-    App::LoadModuleClass("Membership", "MemberSessions");
-    App::LoadModuleClass("Membership", "Identifications");
-    App::LoadModuleClass("Membership", "Nationality");
-    App::LoadModuleClass("Membership", "Occupation");
-    App::LoadModuleClass("Membership", "Referrer");
     App::LoadModuleClass("Membership", "AuditTrail");
     App::LoadModuleClass("Membership", "AuditFunctions");
     App::LoadModuleClass('Membership', 'Cities');
     App::LoadModuleClass('Membership', 'Regions');
-    App::LoadModuleClass("Membership", "Cities");
-    App::LoadModuleClass("Membership", "Regions");
 
     App::LoadModuleClass("Loyalty", "CouponBatches");
     App::LoadModuleClass("Loyalty", "MemberCards");
@@ -51,7 +43,6 @@ if(isset($_SESSION['RewardItemsInfo'])){
     App::LoadModuleClass("Loyalty", "CardTransactions");
     App::LoadModuleClass('Loyalty', 'RewardItems');
     App::LoadModuleClass('Loyalty', 'RewardOffers');
-    App::LoadModuleClass('Loyalty', 'MemberCards');
     App::LoadModuleClass('Loyalty', 'CouponRedemptionLogs');
     App::LoadModuleClass('Loyalty', 'RaffleCoupons');
     App::LoadModuleClass("Loyalty", "ItemRedemptionLogs");
@@ -143,7 +134,8 @@ if(isset($_SESSION['RewardItemsInfo'])){
     $txtQuantity->Style = 'color: #666';
     $txtQuantity->Length = 5;
     $txtQuantity->Size = 5;
-    $txtQuantity->Text = "0";
+    $txtQuantity->Text = "";
+    $txtQuantity->Args = "placeholder='0' ";
     $fproc->AddControl($txtQuantity);
     
     $txtRedeemFirstName = new TextBox("FirstName", "FirstName", "First Name: ");
@@ -179,7 +171,7 @@ if(isset($_SESSION['RewardItemsInfo'])){
     $arrRef_city = $_Ref_city->SelectAll();
     $arrRef_cityList = new ArrayList($arrRef_city);
     $cboCityID = new ComboBox("CityID", "CityID", "City: ");
-    $opt1[] = new ListItem("Select City", "0", true);
+    $opt1[] = new ListItem("Select City", "", true);
     $cboCityID->Items = $opt1;
     $cboCityID->ShowCaption = false;
     $cboCityID->CssClass = 'validate[required]';
@@ -193,7 +185,7 @@ if(isset($_SESSION['RewardItemsInfo'])){
     $arrRef_region = $_Ref_region->SelectAll();
     $arrRef_regionList = new ArrayList($arrRef_region);
     $cboRegionID = new ComboBox("RegionID", "RegionID", "Region: ");
-    $opt2[] = new ListItem("Select Region", "0", true);
+    $opt2[] = new ListItem("Select Region", "", true);
     $cboRegionID->Items = $opt2;
     $cboRegionID->ShowCaption = false;
     $cboRegionID->CssClass = 'validate[required]';
@@ -244,27 +236,23 @@ if(isset($_SESSION['RewardItemsInfo'])){
     
     $fproc->ProcessForms();
     
-function curPageURL()
-    {
+    //Function for curling page reward copy
+    function curPageURL() {
         $pageURL = 'http';
-        if (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on")
-        {
+        if (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on") {
             $pageURL .= "s";
         }
         $pageURL .= "://";
-        if ($_SERVER["SERVER_PORT"] != "80")
-        {
+        if ($_SERVER["SERVER_PORT"] != "80") {
             $pageURL .= $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . $_SERVER["REQUEST_URI"];
-        }
-        else
-        {
+        } else {
             $pageURL .= $_SERVER["SERVER_NAME"] . $_SERVER["REQUEST_URI"];
         }
         return $pageURL;
     }    
     
     if($fproc->IsPostBack){
-         if (!(isset($_SESSION["PreviousRedemption"])) && $txtQuantity->SubmittedValue != "" && $hdnItemName->SubmittedValue != "" 
+         if(!(isset($_SESSION["PreviousRedemption"])) && $txtQuantity->SubmittedValue != "" && $hdnItemName->SubmittedValue != "" 
                 && $hdnItemPoints->SubmittedValue != "" && $hdnTotalItemPoints->SubmittedValue != "" && $hdnCardNumber->SubmittedValue != ""){
 
                 //Get Reward Offer Coupon/Item Transaction details
@@ -276,12 +264,12 @@ function curPageURL()
                 }
                 
                 //check if player has region id and city id, if not set both region id and city id to 0;
-                if((isset($ArrMemberInfo["RegionID"]) && $ArrMemberInfo["RegionID"] != '') && (isset($ArrMemberInfo["RegionID"]) && $ArrMemberInfo["RegionID"] != '')){
+                if((isset($ArrMemberInfo["RegionID"]) && $ArrMemberInfo["RegionID"] != '' && $ArrMemberInfo["RegionID"] != 0) && (isset($ArrMemberInfo["RegionID"]) && $ArrMemberInfo["RegionID"] != '' && $ArrMemberInfo["RegionID"] != 0)){
                     $regionname = $_Ref_region->getRegionName($ArrMemberInfo["RegionID"]);
                     $cityname = $_Ref_city->getCityName($ArrMemberInfo["CityID"]);
                 } else {
-                    $regionname = 0;
-                    $cityname = 0;
+                    $regionname = "";
+                    $cityname = "";
                 }
                 
                 $playername = $ArrMemberInfo["FirstName"]." ".$ArrMemberInfo["LastName"];
@@ -290,9 +278,9 @@ function curPageURL()
                 $email = $ArrMemberInfo["Email"];
                 $sitecode = "Website";
                 $contactno = $ArrMemberInfo["MobileNumber"];
-                
+                $source = 1; //0-Cashier; 1-Player
                 //Redemption Process for both Coupon and Item.
-                include("controller/PortalRedemptionController.php");
+                include("controller/RedemptionController.php");
                 
                 //Check if coupon or item and display appropriate reward 
                 //offer transaction printable copy and send to legit player email.
@@ -430,7 +418,6 @@ function curPageURL()
                         $pm->Send();
                         unset($_SESSION['RewardOfferCopy']);
                     }
-
                 }
         }
     }
@@ -451,10 +438,12 @@ function curPageURL()
                                             "Print" : function() {
                                                 $("#Quantity").val("");
                                                 window.print();
+                                                 window.location="profile.php";
                                             },
                                             "Close": function() {
                                                 $("#Quantity").val("");
                                                 $(this).dialog("close");
+                                                 window.location="profile.php";
                                             }
                                         },
                                         open: function(event, ui) {
@@ -462,6 +451,7 @@ function curPageURL()
                                         },
                                         close: function(event, ui) {
                                             $("#frmRedemption").show();
+                                             window.location="profile.php";
                                         },
                                         width: 1100,
                                         title: "Redemption Successful"
@@ -475,10 +465,12 @@ function curPageURL()
                                             "Print" : function() {
                                                 $("#Quantity").val("");
                                                 window.print();
+                                                 window.location="profile.php";
                                             },
                                             "Close": function() {
                                                 $("#Quantity").val("");
                                                 $(this).dialog("close");
+                                                window.location="profile.php";
                                             }
                                         },
                                         open: function(event, ui) {
@@ -486,6 +478,7 @@ function curPageURL()
                                         },
                                         close: function(event, ui) {
                                             $("#frmRedemption").show();
+                                             window.location="profile.php";
                                         },
                                         width: 1100,
                                         title: "Redemption Successful"
@@ -513,8 +506,20 @@ function curPageURL()
                     });
                 };
                 
+                //validates input: accept numbers only
+                function numberonly(evt)
+                {
+                    var charCode = (evt.which) ? evt.which : evt.keyCode;
+                    if (charCode > 31 && (charCode < 48 || charCode > 57))
+                          return false;
+                    else if(charCode == 9)
+                      return true;
+                    else
+                      return true;
+                }
+                
                 //Txtbox Quantity Events
-                defaultquantity = "0";
+                defaultquantity = "";
                 $("#Quantity").click(function() {
                     if ($("#Quantity").val() == defaultquantity) {
                         $("#Quantity").val("");
@@ -530,15 +535,18 @@ function curPageURL()
                 });
 
                 $("#Quantity").change(function() {
-                    if ($("#Quantity").val() == "" || $("#Quantity").val() == defaultquantity) {
-                        $("#Quantity").val(defaultquantity);
+                    if ($("#Quantity").val() == "") {
+                        $("#Quantity").val("");
+                        $("#TotalItemPoints").html("");
                     } else {
                         $("#TotalItemPoints").html('Total Points: ' + parseInt($("#ItemPoints").html()) * parseInt($("#Quantity").val()));
                         $("#hdnTotalItemPoints").val(parseInt($("#ItemPoints").html()) * parseInt($("#Quantity").val()));
                     }
                 });
 
-                $("#Quantity").ForceNumericOnly();
+                $("#Quantity").keypress(function(event){
+                    return numberonly(event);
+                });
                 
                 
                 //Redeem Button Click Event Function
@@ -631,16 +639,18 @@ function curPageURL()
                                         $("#MainForm").validationEngine('hideAll');
                                     },
                                     width: 550,
-                                    title: "Redeem Item"
+                                    title: "Redeem Item/Coupon"
                                 }).parent().appendTo($("#MainForm"));
                         } else {
                             $("#redemptionquantity").dialog({
                             modal: true,
                             buttons: {
                                 "Submit": function(){
-                                    <?php unset($_SESSION["PreviousRedemption"]); ?>
-                                    $(this).dialog('close');
-                                    $("#MainForm").submit();
+                                    if ($("#MainForm").validationEngine('validate')){
+                                        <?php unset($_SESSION["PreviousRedemption"]); ?>
+                                        $(this).dialog('close');
+                                        $("#MainForm").submit();
+                                    }
                                 },
                                 "Cancel": function(){
                                     $("#Quantity").val("");
@@ -655,7 +665,7 @@ function curPageURL()
                                 $("#MainForm").validationEngine('hideAll');
                             },
                             width: 550,
-                            title: "Redeem Item"
+                            title: "Redeem Item/Coupon"
                         }).parent().appendTo($("#MainForm"));
                     }
                 }
