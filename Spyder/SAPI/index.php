@@ -8,18 +8,22 @@ $dbpassword = "";
 
 $dbname = "";
 
-$spyderhost = "";
-
 $spyderport = "";
+
+$issecure = FALSE; //TRUE or FALSE (not string)
 
 function getroutingkey($terminal) {
 
     global $dbhost, $dbusername, $dbpassword, $dbname;
 
-    $query = "SELECT ipaddress FROM connection where terminalname='{$terminal}'";
+////    $query = "SELECT a.ChannelID as channelid,b.ExtBindAddress as ip, b.ExtPort as port
+////        FROM terminalconnections as a INNER JOIN servers as b ON a.ServerID = b.ServerID and a.TerminalID = ?";
+//
+    $query = "SELECT server,ipaddress FROM connection where terminalname='{$terminal}'";
+
 
     $con = mysqli_connect($dbhost, $dbusername, $dbpassword, $dbname);
-
+// Check connection
     if (mysqli_connect_errno()) {
         echo "Failed to connect to MySQL: " . mysqli_connect_error();
     }
@@ -27,30 +31,32 @@ function getroutingkey($terminal) {
     $result = mysqli_query($con, $query);
 
     while ($row = mysqli_fetch_array($result)) {
-        $ipaddress = $row['ipaddress'];
+        $returnresult = array($row['server'], $row['ipaddress']);
     }
 
-    return $ipaddress;
+    return $returnresult;
 }
 
-function sendtospyder($str, $channel) {
+function sendtospyder($str, $spyderhost, $channel) {
 
-    global $spyderhost, $spyderport;
+    global $spyderport, $issecure;
 
     $command = "/send?clientid={$channel}&msg={$str}\r\n";
 
-    $socket = stream_socket_client("ssl://$spyderhost:$spyderport", $errno, $errstr, 30);
+    if ($issecure)
+        $socket = stream_socket_client("ssl://$spyderhost:$spyderport", $errno, $errstr, 30);
+    else {
+        $socket = stream_socket_client("tcp://$spyderhost:$spyderport", $errno, $errstr, 30);
+    }
 
     if ($socket) {
 
         fwrite($socket, $command);
 
-        $buf = null;
-
-        while (!feof($socket)) {
-            $buf .= fread($socket, 20240);
-        }
-
+//        $buf = null;
+//        while (!feof($socket)) {
+//            $buf .= fread($socket, 20240);
+//        }
         //close connection
 
         sleep(5);
@@ -101,9 +107,9 @@ try {
 
         echo "0";
     } else {
-//        list($channelid, $ip, $port) = getroutingkey($terminalid);
+        list($server, $connectionid) = getroutingkey($terminalid);
 
-        $ip = getroutingkey($terminalid);
+//        $ip = getroutingkey($terminalid);
 
         if ($mode == "1") {
 
@@ -119,7 +125,7 @@ try {
 
             $message = "lock|" . $username . "|" . $password . "|" . $casinoid;
 
-            sendtospyder($message, $ip);
+            sendtospyder($message, $server, $connectionid);
 
             echo "1";
         } elseif ($mode == "0") {
@@ -136,7 +142,7 @@ try {
 
             $message = "unlock|" . $username . "|" . $password . "|" . $casinoid;
 
-            sendtospyder($message, $ip);
+            sendtospyder($message, $server, $connectionid);
 
             echo "1";
         }
