@@ -133,6 +133,13 @@ class MemberInfo extends BaseEntity
         return parent::RunQuery($query);
     }
     
+    public function getDateVerifiedByMID($MID)
+    {
+        $query = "SELECT DateVerified FROM $this->TableName WHERE MID = $MID;";
+        $result = parent::RunQuery($query);
+        return $result;
+    }
+    
     /*
      * Description: Get the number of both Active and Banned Account Status
      * @author: Junjun S. Hernandez
@@ -154,7 +161,7 @@ class MemberInfo extends BaseEntity
     
         public function getMemberInfoByID($MID)
     {
-        $query = "SELECT YEAR(current_date)-YEAR(mi.Birthdate) as Age, Gender, m.Status FROM memberinfo mi
+        $query = "SELECT YEAR(current_date)-YEAR(mi.Birthdate) as Age, mi.MID, mi.Gender, m.Status FROM memberinfo mi
                     INNER JOIN members m ON mi.MID = m.MID
                   WHERE m.MID = $MID";
         return parent::RunQuery($query);

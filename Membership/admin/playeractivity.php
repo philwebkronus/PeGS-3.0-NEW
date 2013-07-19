@@ -19,27 +19,12 @@ App::LoadCore('Validation.class.php');
 
 App::LoadControl("DatePicker");
 App::LoadControl("ComboBox");
-App::LoadControl("Pagination");
 App::LoadControl("TextBox");
 App::LoadControl("Button");
-App::LoadControl("DataGrid");
 App::LoadControl("Hidden");
-
-
-// Instantiate pagination object with appropriate arguments
-$pagesPerSection = 10;       // How many pages will be displayed in the navigation bar
-// former number of pages will be displayed
-$options = array(5, 10, 25, 50, "All"); // Display options
-$paginationID = "changestat";     // This is the ID name for pagination object
-$stylePageOff = "pageOff";     // The following are CSS style class names. See styles.css
-$stylePageOn = "pageOn";
-$styleErrors = "paginationErrors";
-$styleSelect = "paginationSelect";
 
 $fproc = new FormsProcessor();
 
-$_Cards = new MemberCards();
-$defaultsearchvalue = 'Enter Card Number';
 $txtCardNumber = new TextBox("txtCardNumber", "txtCardNumber", "Card Number: ");
 $txtCardNumber->ShowCaption = false;
 $txtCardNumber->CssClass = 'validate[required]]';
@@ -54,6 +39,7 @@ $dsmindate = new DateSelector();
 
 $dsmaxdate->AddYears(+21);
 $dsmindate->AddYears(-100);
+
 $thestime = date('Y-m-d H:i:s');
 $datetime_from = date("Y-m-d", strtotime("-6 days", strtotime($thestime)));
 $fromTransDate = new DatePicker("fromTransDate", "fromTransDate", "From");
@@ -68,7 +54,6 @@ $fromTransDate->isRenderJQueryScript = true;
 $fromTransDate->Size = 20;
 $fproc->AddControl($fromTransDate);
 
-
 $toTransDate = new DatePicker("toTransDate", "toTransDate", "To");
 $toTransDate->MaxDate = $dsmaxdate->CurrentDate;
 $toTransDate->MinDate = $dsmindate->CurrentDate;
@@ -81,18 +66,6 @@ $toTransDate->isRenderJQueryScript = true;
 $toTransDate->Size = 20;
 $fproc->AddControl($toTransDate);
 
-$aAge = new TextBox("aAge", "aAge");
-$aAge->ReadOnly = True;
-$fproc->AddControl($aAge);
-
-$aGender = new TextBox("aGender", "aGender");
-$aGender->ReadOnly = True;
-$fproc->AddControl($aGender);
-
-$aStatus = new TextBox("aStatus", "aStatus");
-$aStatus->ReadOnly = True;
-$fproc->AddControl($aStatus);
-
 $btnSubmit = new Button("btnSubmit", "btnSubmit", "Query");
 $btnSubmit->ShowCaption = true;
 $btnSubmit->Enabled = true;
@@ -100,8 +73,6 @@ $btnSubmit->Style = "padding-left: 12px; padding-right: 12px; padding-top: 3px; 
 $fproc->AddControl($btnSubmit);
 
 $fproc->ProcessForms();
-
-$isOpen = 'false';
 ?>
 
 <?php include("header.php"); ?>
@@ -138,7 +109,7 @@ $isOpen = 'false';
         $('#btnSubmit').live('click', function() {
             $('#playerlists').attr('action', 'updateaccount.php');
             $('#playerlists').submit();
-            
+
             var card = jQuery("#txtCardNumber").val();
             if (card == '') {
                 $("#dRange").html("");
@@ -217,15 +188,264 @@ $isOpen = 'false';
             }
 
         });
-        
-        function notActiveStatus(){
-            jQuery('#players').GridUnload();
-                                    $("#dRange").html("");
-                                    $('#playerprofile').hide();
-                                    $('#playerprofiledetails').hide();
-                                    $('#pagination').hide();
+
+        //Function for Date and Time Validation
+        function validateDateTime(date) {
+            var time1 = " <?php echo App::getParam("cutofftime"); ?>";
+            var time2 = " <?php echo App::getParam("cutofftime"); ?>";
+            var date1 = $("#fromTransDate").val().concat(time1);
+            var date2 = $("#toTransDate").val().concat(time2);
+
+            var fromDateTime = date1.split(" ");
+            var toDateTime = date2.split(" ");
+            var fromTimeArray = fromDateTime[1].split(":");
+            var fromTime = parseInt("".concat(fromTimeArray[0]).concat(fromTimeArray[1]).concat(fromTimeArray[2]), 10);
+            var toTimeArray = toDateTime[1].split(":");
+            var toTime = parseInt("".concat(toTimeArray[0]).concat(toTimeArray[1]).concat(toTimeArray[2]), 10);
+            var fromDate = fromDateTime[0].split("-");
+            var toDateArray = toDateTime[0].split("-");
+            var toDate = parseInt("".concat(toDateArray[0]).concat(toDateArray[1]).concat(toDateArray[2]));
+            var fromDateAsInt = parseInt("".concat(fromDate[0]).concat(fromDate[1]).concat(fromDate[2]));
+            var toDatez = toDateTime[0].split("-");
+
+            var year = parseInt(fromDate[0], 10);
+            var year2 = parseInt(toDatez[0], 10);
+            var month = parseInt(fromDate[1], 10);
+            var month2 = parseInt(toDatez[1], 10);
+            var day = parseInt(fromDate[2], 10);
+            var day2 = parseInt(toDatez[2], 10);
+            var monthsum = month2 - month;
+
+            var theNextDate = "";
+            var leadingZero = "0";
+
+            var currentDate = date;
+
+            /**
+             * @Code Block to check validity of date and time parameters
+             * 
+             */
+            if (month == 1 || month == 3 || month == 5 || month == 7 || month == 8 || month == 10 || month == 12) { //31 Days
+
+                if (month == 12) {
+
+                    if (day == 31) {
+                        theNextDate = theNextDate.concat((year + 1), '01', '01');
+                    }
+                    else {
+                        theNextDate = theNextDate.concat(year, '12', (leadingZero.concat((day + 1).toString())).substr(-2));
+                    }
+
+                }
+                else {
+
+                    if (day == 31) {
+                        theNextDate = theNextDate.concat(year, (leadingZero.concat((month + 1).toString())).substr(-2), '01');
+                    }
+                    else {
+                        theNextDate = theNextDate.concat(year, (leadingZero.concat((month).toString())).substr(-2), (leadingZero.concat((day + 1).toString())).substr(-2));
+                    }
+
+                }
+
+            }
+            else if (month == 4 || month == 6 || month == 9 || month == 11) { //30 Days
+
+                if (day == 30) {
+                    theNextDate = theNextDate.concat(year, (leadingZero.concat((month + 1).toString())).substr(-2), '01');
+                }
+                else {
+                    theNextDate = theNextDate.concat(year, (leadingZero.concat((month).toString())).substr(-2), (leadingZero.concat((day + 1).toString())).substr(-2));
+                }
+
+            }
+            else { //February
+
+                if ((year % 4) == 0) {
+
+                    if (day == 29) {
+                        theNextDate = theNextDate.concat(year, '03', '01');
+                    }
+                    else {
+                        theNextDate = theNextDate.concat(year, '02', (leadingZero.concat((day + 1).toString())).substr(-2));
+                    }
+
+                }
+                else {
+
+                    if (day == 28) {
+                        theNextDate = theNextDate.concat(year, '03', '01');
+                    }
+                    else {
+                        theNextDate = theNextDate.concat(year, '02', (leadingZero.concat((day + 1).toString())).substr(-2));
+                    }
+
+                }
+
+            }
+
+
+            var monthresult = month2 - month;
+            if (monthresult > 1) { //Check if Month ended minus Month started is greater than 1
+                $("#dRange").html("");
+                $('#playerprofile').hide();
+                $('#playerprofiledetails').hide();
+                $('#pagination').hide();
+                alert("Your Starting and Ending Date and Time must be within 1-Week Frame");
+                return false;
+            }
+            else {
+
+                if (year == year2) { //Check if Year ended is equal to Year started
+
+                    if (month == month2) {
+                        var daydiff = day2 - day;
+
+                        if (daydiff < 7) {
+                            return true;
+                        }
+                        else {
+                            $("#dRange").html("");
+                            $('#playerprofile').hide();
+                            $('#playerprofiledetails').hide();
+                            $('#pagination').hide();
+                            alert("Your Starting and Ending Date and Time must be within 1-Week Frame");
+                            return false;
+                        }
+                    } //Check if Month ended is equal to Month started
+                    else {
+                        if (month == 1 || month == 3 || month == 5 || month == 7 || month == 8 || month == 10 || month == 12)
+                        {
+                            //31
+                            var result = 31 - day;
+                            var result2 = result + day2;
+                            if (result2 <= 7) {
+                                return true;
+                            }
+
+                            else
+                            {
+                                $("#dRange").html("");
+                                $('#playerprofile').hide();
+                                $('#playerprofiledetails').hide();
+                                $('#pagination').hide();
+                                alert("Your Starting and Ending Date and Time must be within 1-Week Frame");
+                                return false;
+                            }
+                        }
+                        else if (month == 4 || month == 6 || month == 9 || month == 11)
+                        {
+                            //30
+                            var result = 30 - day;
+                            var result2 = result + day2;
+                            if (result2 < 7) {
+                                return true;
+                            }
+                            else {
+                                $("#dRange").html("");
+                                $('#playerprofile').hide();
+                                $('#playerprofiledetails').hide();
+                                $('#pagination').hide();
+                                alert("Your Starting and Ending Date and Time must be within 1-Week Frame");
+                                return false;
+                            }
+
+                        }
+                        else {
+                            $("#dRange").html("");
+                            $('#playerprofile').hide();
+                            $('#playerprofiledetails').hide();
+                            $('#pagination').hide();
+                            alert("Your Starting and Ending Date and Time must be within 1-Week Frame");
+                            return false;
+                        }
+                    }
+
+
+                } //Check if Year ended is not equal to Year started
+                else {
+
+                    var yeardiff = year2 - year;
+
+                    if (yeardiff > 1) {
+                        $("#dRange").html("");
+                        $('#playerprofile').hide();
+                        $('#playerprofiledetails').hide();
+                        $('#pagination').hide();
+                        alert("Your Starting and Ending Date and Time must be within 1-Week Frame");
+                        return false;
+                    }
+                    else {
+                        if (month == 12 && month2 == 1) {
+                            //31
+                            var result = 31 - day;
+                            var result2 = result + day2;
+                            if (result2 < 7) {
+                                return true;
+                            }
+
+                            else
+                            {
+                                $("#dRange").html("");
+                                $('#playerprofile').hide();
+                                $('#playerprofiledetails').hide();
+                                $('#pagination').hide();
+                                alert("Your Starting and Ending Date and Time must be within 1-Week Frame");
+                                return false;
+                            }
+                        }
+                        else {
+                            $("#dRange").html("");
+                            $('#playerprofile').hide();
+                            $('#playerprofiledetails').hide();
+                            $('#pagination').hide();
+                            alert("Your Starting and Ending Date and Time must be within 1-Week Frame");
+                            return false;
+                        }
+                    }
+
+                }
+            }
+
+            if ((fromDateAsInt > toDate)) {
+                $("#dRange").html("");
+                $('#playerprofile').hide();
+                $('#playerprofiledetails').hide();
+                $('#pagination').hide();
+                alert("Invalid Date");
+                return false;
+            }
+            else if ((toDate > currentDate || fromDateAsInt > currentDate)) {
+                $("#dRange").html("");
+                $('#playerprofile').hide();
+                $('#playerprofiledetails').hide();
+                $('#pagination').hide();
+                alert("Queried date must not be greater than today");
+                return false;
+            }
+            else {
+                $("#dRange").html("");
+                $('#playerprofile').hide();
+                $('#playerprofiledetails').hide();
+                $('#pagination').hide();
+                alert("Your Starting and Ending Date and Time must be within 1-Week Frame");
+                return false;
+            }
+
+
+
         }
 
+        //Function to hide Profile Details and Grid
+        function notActiveStatus() {
+            jQuery('#players').GridUnload();
+            $("#dRange").html("");
+            $('#playerprofile').hide();
+            $('#playerprofiledetails').hide();
+            $('#pagination').hide();
+        }
+
+        //Function to get Profile Details
         function getProfileData(cardnumber) {
             $.ajax(
                     {
@@ -244,7 +464,6 @@ $isOpen = 'false';
                         {
                             var dataprofile = $.parseJSON(data);
                             if (dataprofile.MID != '') {
-                                if (dataprofile.Status == 'Active') {
                                     document.getElementById("playerprofiledetails").style.display = "block";
                                     $("#tblage").html("<label>" + dataprofile.Age + "</label>");
                                     $("#tblgender").html("<label>" + dataprofile.Gender + "</label>");
@@ -254,114 +473,24 @@ $isOpen = 'false';
                                     $('#playerprofiledetails').show();
                                     $('#pagination').show();
                                     loadDetails();
-                                }
-                                else{
-                                jQuery('.ui-dialog-content').html("<p><center><label>" + dataprofile.Msg + "</label></center></p>");
-                                    $('#SuccessDialog').dialog({
-                                        modal: true,
-                                        width: '400',
-                                        title: 'Search Results',
-                                        closeOnEscape: true,
-                                        buttons: {
-                                            "Ok": function() {
-                                                $(this).dialog("close");
-                                            }
-                                        }
-                                    });
-                                if (dataprofile.Status == 'Suspended') {
-                                    notActiveStatus();
-                                    jQuery('.ui-dialog-content').html("<p><center><label>" + dataprofile.Msg + "</label></center></p>");
-                                    $('#SuccessDialog').dialog({
-                                        modal: true,
-                                        width: '400',
-                                        title: 'Search Results',
-                                        closeOnEscape: true,
-                                        buttons: {
-                                            "Ok": function() {
-                                                $(this).dialog("close");
-                                            }
-                                        }
-                                    });
-                                }
-                                if (dataprofile.Status == 'Locked (Attempts)') {
-                                    notActiveStatus();
-                                    jQuery('.ui-dialog-content').html("<p><center><label>" + dataprofile.Msg + "</label></center></p>");
-                                    $('#SuccessDialog').dialog({
-                                        modal: true,
-                                        width: '400',
-                                        title: 'Search Results',
-                                        closeOnEscape: true,
-                                        buttons: {
-                                            "Ok": function() {
-                                                $(this).dialog("close");
-                                            }
-                                        }
-                                    });
-                                }
-                                else if (dataprofile.Status == 'Locked (Admin)') {
-                                    notActiveStatus();
-                                    jQuery('.ui-dialog-content').html("<p><center><label>" + dataprofile.Msg + "</label></center></p>");
-                                    $('#SuccessDialog').dialog({
-                                        modal: true,
-                                        width: '400',
-                                        title: 'Search Results',
-                                        closeOnEscape: true,
-                                        buttons: {
-                                            "Ok": function() {
-                                                $(this).dialog("close");
-                                            }
-                                        }
-                                    });
-                                }
-                                else if (dataprofile.Status == 'Banned') {
-                                    notActiveStatus();
-                                    jQuery('.ui-dialog-content').html("<p><center><label>" + dataprofile.Msg + "</label></center></p>");
-                                    $('#SuccessDialog').dialog({
-                                        modal: true,
-                                        width: '400',
-                                        title: 'Search Results',
-                                        closeOnEscape: true,
-                                        buttons: {
-                                            "Ok": function() {
-                                                $(this).dialog("close");
-                                            }
-                                        }
-                                    });
-                                }
-                                else if (dataprofile.Status == 'Terminated') {
-                                    notActiveStatus();
-                                    jQuery('.ui-dialog-content').html("<p><center><label>" + dataprofile.Msg + "</label></center></p>");
-                                    $('#SuccessDialog').dialog({
-                                        modal: true,
-                                        width: '400',
-                                        title: 'Search Results',
-                                        closeOnEscape: true,
-                                        buttons: {
-                                            "Ok": function() {
-                                                $(this).dialog("close");
-                                            }
-                                        }
-                                    });
-                                }
-                                }
                             }
-                            else{
-                            jQuery('.ui-dialog-content').html("<p><center><label>" + dataprofile.Msg + "</label></center></p>");
-                            $('#SuccessDialog').dialog({
-                                        modal: true,
-                                        width: '400',
-                                        title: 'Search Results',
-                                        closeOnEscape: true,
-                                        buttons: {
-                                            "Ok": function() {
-                                                $(this).dialog("close");
-                                            }
-                                        }
-                                    });
-                            if (dataprofile.MID == '') {
+                            else {
                                 jQuery('.ui-dialog-content').html("<p><center><label>" + dataprofile.Msg + "</label></center></p>");
-                                notActiveStatus();
-                            }
+                                $('#SuccessDialog').dialog({
+                                    modal: true,
+                                    width: '400',
+                                    title: 'Search Results',
+                                    closeOnEscape: true,
+                                    buttons: {
+                                        "Ok": function() {
+                                            $(this).dialog("close");
+                                        }
+                                    }
+                                });
+                                if (dataprofile.MID == '') {
+                                    jQuery('.ui-dialog-content').html("<p><center><label>" + dataprofile.Msg + "</label></center></p>");
+                                    notActiveStatus();
+                                }
                             }
                         },
                         error: function(error)
@@ -373,6 +502,7 @@ $isOpen = 'false';
                     });
         }
 
+        //FUnction to load Member Activity Data
         function loadDetails()
         {
             var url = "Helper/helper.playeractivity.php";
@@ -420,7 +550,14 @@ $isOpen = 'false';
                 sortorder: "asc",
                 caption: "Activity Report",
                 footerrow: true,
-                subGridRowExpanded: function(subgrid_id, row_id) { // we pass two parameters // subgrid_id is a id of the div tag created whitin a table data // the id of this elemenet is a combination of the "sg_" + id of the row // the row_id is the id of the row // If we wan to pass additinal parameters to the url we can use // a method getRowData(row_id) - which returns associative array in type name-value // here we can easy construct the flowing
+                subGridRowExpanded: function(subgrid_id, row_id) {
+                    // we pass two parameters
+                    // subgrid_id is a id of the div tag created whitin a table data
+                    // the id of this elemenet is a combination of the "sg_" + id of the row
+                    // the row_id is the id of the row
+                    // If we wan to pass additinal parameters to the url we can use
+                    // a method getRowData(row_id) - which returns associative array in type name-value
+                    // here we can easy construct the flowing
                     var subgrid_table_id, pager_id;
                     subgrid_table_id = subgrid_id + "_t";
                     pager_id = "p_" + subgrid_table_id;
@@ -459,10 +596,9 @@ $isOpen = 'false';
                     });
                     jQuery("#" + subgrid_table_id).setGridParam({rowNum: 10}).trigger("reloadGrid");
                     jQuery("#" + subgrid_table_id).jqGrid('navGrid', "#" + pager_id, {edit: false, add: false, del: false, search: false});
-//                    jQuery("#" + subgrid_table_id).jqGrid('navGrid', "#" + pager_id,
-//                            {edit: false, add: false, del: false, search: false})
 
                 },
+                //Gwt the Totals when loading of Member Activity Data is complete
                 loadComplete: function() {
 
                     var grid = $("#players");
@@ -495,254 +631,6 @@ $isOpen = 'false';
                         edit: false, add: false, del: false, search: false, refresh: true});
 
         }
-
-        function validateDateTime (date) {
-            var time1 = " <?php echo App::getParam("cutofftime");?>";
-            var time2 = " <?php echo App::getParam("cutofftime");?>";
-            var date1 = $("#fromTransDate").val().concat(time1);
-            var date2 = $("#toTransDate").val().concat(time2);
-
-            var fromDateTime = date1.split(" ");
-            var toDateTime = date2.split(" ");
-            var fromTimeArray = fromDateTime[1].split(":");
-            var fromTime = parseInt("".concat(fromTimeArray[0]).concat(fromTimeArray[1]).concat(fromTimeArray[2]), 10);
-            var toTimeArray = toDateTime[1].split(":");
-            var toTime = parseInt("".concat(toTimeArray[0]).concat(toTimeArray[1]).concat(toTimeArray[2]),10);
-            var fromDate = fromDateTime[0].split("-");
-            var toDateArray = toDateTime[0].split("-");
-            var toDate = parseInt("".concat(toDateArray[0]).concat(toDateArray[1]).concat(toDateArray[2]));
-            var fromDateAsInt = parseInt("".concat(fromDate[0]).concat(fromDate[1]).concat(fromDate[2]));
-            var toDatez = toDateTime[0].split("-");
-            
-            var year = parseInt(fromDate[0], 10);
-            var year2 = parseInt(toDatez[0], 10);
-            var month = parseInt(fromDate[1], 10);
-            var month2 = parseInt(toDatez[1], 10);
-            var day = parseInt(fromDate[2], 10);
-            var day2 = parseInt(toDatez[2], 10);
-            var monthsum = month2 - month;
-
-            var theNextDate = "";
-            var leadingZero = "0";
-
-            var currentDate = date;
-            
-            /**
-             * @Code Block to check validity of date and time parameters
-             * 
-             */    
-            if(month == 1 || month == 3 || month == 5 || month == 7 || month == 8 || month == 10 || month == 12) { //31 Days
-
-                if(month == 12) {
-
-                    if(day == 31) {
-                        theNextDate = theNextDate.concat((year+1),'01','01');
-                    }
-                    else {
-                        theNextDate = theNextDate.concat(year, '12', (leadingZero.concat((day+1).toString())).substr(-2));
-                    }
-
-                }
-                else {
-
-                    if(day == 31) {
-                        theNextDate = theNextDate.concat(year, (leadingZero.concat((month+1).toString())).substr(-2),'01');
-                    }
-                    else {
-                        theNextDate = theNextDate.concat(year, (leadingZero.concat((month).toString())).substr(-2), (leadingZero.concat((day+1).toString())).substr(-2));
-                    }
-
-                }
-
-            }
-            else if (month == 4 || month == 6 || month == 9 || month == 11) { //30 Days
-
-                 if(day == 30) {
-                     theNextDate = theNextDate.concat(year, (leadingZero.concat((month+1).toString())).substr(-2),'01');
-                 }
-                 else {
-                     theNextDate = theNextDate.concat(year, (leadingZero.concat((month).toString())).substr(-2), (leadingZero.concat((day+1).toString())).substr(-2));
-                 }
-
-            }
-            else { //February
-
-                if((year%4) == 0) {
-
-                    if(day == 29) {
-                         theNextDate = theNextDate.concat(year, '03','01');
-                    }
-                    else {
-                        theNextDate = theNextDate.concat(year, '02', (leadingZero.concat((day+1).toString())).substr(-2));
-                    }
-
-                }
-                else {
-
-                    if(day == 28) {
-                         theNextDate = theNextDate.concat(year, '03','01');
-                    }
-                    else {
-                        theNextDate = theNextDate.concat(year, '02', (leadingZero.concat((day+1).toString())).substr(-2));
-                    }
-
-                }
-
-            }
-            
-           
-                var monthresult = month2 - month;
-                if(monthresult > 1){
-                    $("#dRange").html("");
-                    $('#playerprofile').hide();
-                    $('#playerprofiledetails').hide();
-                    $('#pagination').hide();
-                    alert("Your Starting and Ending Date and Time must be within 1-Week Frame");
-                    return false;
-                }
-                else{                
-                            
-                if(year == year2 ){
-                    
-                    if(month == month2){
-                        var daydiff = day2 - day;
-                  
-                        if(daydiff < 7){
-                            return true;
-                        }
-                        else{
-                            $("#dRange").html("");
-                            $('#playerprofile').hide();
-                            $('#playerprofiledetails').hide();
-                            $('#pagination').hide();
-                            alert("Your Starting and Ending Date and Time must be within 1-Week Frame");
-                            return false;
-                        }
-                    }
-                    else{
-                        if(month == 1 || month == 3 || month == 5 || month == 7 || month == 8 || month == 10 || month == 12)
-                        {
-                            //31
-                            var result = 31 - day;
-                            var result2 = result + day2;
-                            if(result2 <= 7){
-                                return true;
-                            }
-                            
-                            else
-                            {
-                                $("#dRange").html("");
-                                $('#playerprofile').hide();
-                                $('#playerprofiledetails').hide();
-                                $('#pagination').hide();
-                                alert("Your Starting and Ending Date and Time must be within 1-Week Frame");
-                                return false;
-                            }
-                        }
-                        else if(month == 4 || month == 6 || month == 9 || month == 11)
-                        {
-                            //30
-                            var result = 30 - day;
-                            var result2 = result + day2;
-                            if(result2 < 7){
-                                return true;
-                            }
-                            else{
-                                $("#dRange").html("");
-                                $('#playerprofile').hide();
-                                $('#playerprofiledetails').hide();
-                                $('#pagination').hide();
-                                alert("Your Starting and Ending Date and Time must be within 1-Week Frame");
-                                return false;
-                            }
-
-                        }
-                        else{
-                            $("#dRange").html("");
-                            $('#playerprofile').hide();
-                            $('#playerprofiledetails').hide();
-                            $('#pagination').hide();
-                            alert("Your Starting and Ending Date and Time must be within 1-Week Frame");
-                                return false;
-                        } 
-                    }
-                    
-                       
-                  }
-                  else{
-                      
-                      var yeardiff = year2 - year;
-                      
-                      if(yeardiff > 1){
-                          $("#dRange").html("");
-                          $('#playerprofile').hide();
-                          $('#playerprofiledetails').hide();
-                          $('#pagination').hide();
-                          alert("Your Starting and Ending Date and Time must be within 1-Week Frame");
-                            return false;
-                      }
-                      else{
-                          if(month == 12 && month2 == 1){
-                              //31
-                            var result = 31 - day;
-                            var result2 = result + day2;
-                            if(result2 < 7){
-                                return true;
-                            }
-                            
-                            else
-                            {
-                                $("#dRange").html("");
-                                $('#playerprofile').hide();
-                                $('#playerprofiledetails').hide();
-                                $('#pagination').hide();
-                                alert("Your Starting and Ending Date and Time must be within 1-Week Frame");
-                                return false;
-                            }
-                          }
-                          else{
-                              $("#dRange").html("");
-                              $('#playerprofile').hide();
-                              $('#playerprofiledetails').hide();
-                              $('#pagination').hide();
-                              alert("Your Starting and Ending Date and Time must be within 1-Week Frame");
-                              return false;
-                          }
-                      }
-                      
-                  }
-               }
-            
-            
-
-                if((fromDateAsInt > toDate) ) {
-                    $("#dRange").html("");
-                    $('#playerprofile').hide();
-                    $('#playerprofiledetails').hide();
-                    $('#pagination').hide();
-                    alert("Invalid Date");
-                    return false;
-                }
-                else if((toDate > currentDate || fromDateAsInt > currentDate)){
-                    $("#dRange").html("");
-                    $('#playerprofile').hide();
-                    $('#playerprofiledetails').hide();
-                    $('#pagination').hide();
-                    alert("Queried date must not be greater than today");
-                    return false;
-                }
-                else {
-                    $("#dRange").html("");
-                    $('#playerprofile').hide();
-                    $('#playerprofiledetails').hide();
-                    $('#pagination').hide();
-                    alert("Your Starting and Ending Date and Time must be within 1-Week Frame");
-                    return false;
-                }
-
-                
-            
-        }
     });
 
 </script>
@@ -753,13 +641,16 @@ $isOpen = 'false';
         <div class="maincontainer">
             <?php include('menu.php'); ?>
             <br/>
-            <div  style="float: left;" class="title">Member Activity</div>
-            <br/>
-            <br/>
+            <div  style="float: left;" class="title">&nbsp;&nbsp;&nbsp;Member Activity</div>
+            <div class="pad5" align="right"> </div>
+            <br/><br/>
+            <hr color="black">
+            <br>
+            <div class="pad5" align="right"></div>
             <div align="center">
                 <table align="left">
                     <tr>
-                        <td>Card Number &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                        <td>&nbsp;&nbsp;&nbsp;&nbsp;Card Number &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                         <td><?php echo $txtCardNumber; ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp</td>
                         <td>From&nbsp;&nbsp;&nbsp;</td>
                         <td align="right"><?php echo $fromTransDate; ?>&nbsp;&nbsp;&nbsp;</td>
@@ -774,10 +665,10 @@ $isOpen = 'false';
                     <div id="results">
                         <div id="playerprofiledetails" style="display: none;">
                             <div class="pad5" align="right"> </div>
-                        <br/><br/>
-                        <hr color="black">
-                        <br>
-                        <div class="pad5" align="right"></div>
+                            <br/><br/>
+                            <hr color="black">
+                            <br>
+                            <div class="pad5" align="right"></div>
                             <table id="tblplayerdetails">
                                 <tr><th colspan="2">Player Profile</th></tr>
                                 <tr><td style="width: 200px;">Age</td><td id="tblage"></td></tr>
@@ -790,7 +681,8 @@ $isOpen = 'false';
                     <br/><br/><br/>
                     <br/><br/>
                     <div id="pagination">
-<!--                        <div id="dateRange" align="left">
+                        <!-- Display the Date Range-->
+                        <!-- <div id="dateRange" align="left">
                             &nbsp;&nbsp;&nbsp;&nbsp;<label id="dRange"></label>
                         </div>-->
                         <br/>

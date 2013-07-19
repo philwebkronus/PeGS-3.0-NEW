@@ -1,7 +1,8 @@
 <?php
 
 /*
- * Description: Fetching and encoding data into JSON array to be displayed in JQGRID for list of Member Activity.
+ * Description: Fetching and encoding data into JSON array to display Member Profile;
+ *              Member Activity Details be displayed in JQGRID for list of Member Activity.
  * @Author: Junjun S. Hernandez
  * Date Created: 07-02-2013 05:00 PM
  */
@@ -14,6 +15,7 @@ require_once("../../init.inc.php");
 App::LoadModuleClass("Loyalty", "MemberCards");
 App::LoadModuleClass("Membership", "MemberInfo");
 App::LoadModuleClass("Kronus", "TransactionSummary");
+App::LoadModuleClass("Kronus", "Sites");
 App::LoadModuleClass("Kronus", "Sites");
 
 //Load Needed Core Class.
@@ -43,11 +45,12 @@ if (isset($_POST['pager'])) {
                     $profile->Age = '';
                     $profile->Gender = '';
                     $profile->Status = '';
-                    $msg = 'Invalid Card';
+                    $msg = 'Membership Account Status: Invalid Card Number';
                     $profile->Msg = $msg;
                 } else {
                     $MemberInfoResult = $_MemberInfo->getMemberInfoByID($MIDResult[0]['MID']);
-                    
+                    if(isset($MemberInfoResult[0]['MID']) && $MemberInfoResult[0]['MID'] != '')
+                    {
                     $memberinfovalue['Age'] = $MemberInfoResult[0]['Age'];
                     $memberinfovalue['Gender'] = $MemberInfoResult[0]['Gender'] == 1 ? "Male" : "Female";
                     
@@ -56,33 +59,32 @@ if (isset($_POST['pager'])) {
                     }
                     else if ($MemberInfoResult[0]['Status'] == 2) {
                         $memberinfovalue['Status'] = 'Suspended';
-                        $msg = 'Membership Account Status: Suspended';
-                        $profile->Msg = $msg;
                     }
                     else if ($MemberInfoResult[0]['Status'] == 3) {
                         $memberinfovalue['Status'] = 'Locked (Attempts)';
-                        $msg = 'Membership Account Status: Locked (Attempts)';
-                        $profile->Msg = $msg;
                     }
                     else if ($MemberInfoResult[0]['Status'] == 4) {
                         $memberinfovalue['Status'] = 'Locked (Admin)';
-                        $msg = 'Membership Account Status: Locked (Admin)';
-                        $profile->Msg = $msg;
                     }
                     else if ($MemberInfoResult[0]['Status'] == 5) {
                         $memberinfovalue['Status'] = 'Banned';
-                        $msg = 'Membership Account Status: Banned';
-                        $profile->Msg = $msg;
                     }
                     else if ($MemberInfoResult[0]['Status'] == 6) {
                         $memberinfovalue['Status'] = 'Terminated';
-                        $msg = 'Membership Account Status: Terminated';
                     }
                     $profile->MID = $MIDResult[0]['MID'];
                     $profile->Age = $memberinfovalue['Age'];
                     $profile->Gender = $memberinfovalue['Gender'];
                     $profile->Status = $memberinfovalue['Status'];
-                    
+                    }
+                    else{
+                       $profile->MID = '';
+                       $profile->Age = '';
+                       $profile->Gender = '';
+                       $profile->Status = '';
+                       $msg = 'Membership Account Status: Invalid Card Number';
+                       $profile->Msg = $msg; 
+                    }
                 }
                 echo json_encode($profile);
             }
