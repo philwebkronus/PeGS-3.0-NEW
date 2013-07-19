@@ -67,6 +67,7 @@ $_MemberInfo = new MemberInfo();
 $_Ref_city = new Cities();
 $_Ref_region = new Regions();
 $_Promos = new Promos();
+$_Sites = new Sites();
 
 /* Initialize variables and default values */
 $sendemailtoadmin = false;
@@ -300,7 +301,15 @@ if($fproc->IsPostBack){
             $address = $ArrMemberInfo["Address1"];
             $birthdate = $ArrMemberInfo["Birthdate"];
             $email = $ArrMemberInfo["Email"];
-            $sitecode = "Website";
+            $sitecode = $_SESSION['userinfo']['SiteID'];
+            
+            $siteresult = $_Sites->getSiteName($sitecode);
+            if(count($siteresult) > 0){
+                $sitename = $siteresult[0]["SiteName"];
+            } else {
+                $sitename = "";
+            }
+            
             $contactno = $ArrMemberInfo["MobileNumber"];
             $source = 0; //0-Cashier; 1-Player
             //Redemption Process for both Coupon and Item.
@@ -351,7 +360,7 @@ if($fproc->IsPostBack){
                     $emailmessage = str_replace('$playername', $playername, $emailmessage);
                     $emailmessage = str_replace('$address', $address, $emailmessage);
                     $emailmessage = str_replace('$quantity', $_SESSION['RewardOfferCopy']["Quantity"], $emailmessage);
-                    $emailmessage = str_replace('$sitecode', $sitecode, $emailmessage);
+                    $emailmessage = str_replace('$sitecode', $sitename, $emailmessage);
                     $emailmessage = str_replace('$redemptiondate', $redemptiondate, $emailmessage);
                     $emailmessage = str_replace('$cardno', $cardNumber, $emailmessage);
                     $emailmessage = str_replace('$birthdate', date("F j, Y", strtotime($birthdate)), $emailmessage);
@@ -399,7 +408,7 @@ if($fproc->IsPostBack){
                     $emailmessage = $fp->ReadToEnd();
                     $emailmessage = str_replace('$playername', $playername, $emailmessage);
                     $emailmessage = str_replace('$address', $address, $emailmessage);
-                    $emailmessage = str_replace('$sitecode', $sitecode, $emailmessage);
+                    $emailmessage = str_replace('$sitecode', $sitename, $emailmessage);
                     $emailmessage = str_replace('$cardno', $cardNumber, $emailmessage);
                     $emailmessage = str_replace('$birthdate', date("F j, Y", strtotime($birthdate)), $emailmessage);
                     $emailmessage = str_replace('$email', $email, $emailmessage);
