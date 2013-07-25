@@ -255,6 +255,7 @@ class TerminalController extends FrontendController {
             Mirage::loadComponents('CasinoApi');
             Mirage::loadModels('TerminalSessionsModel');
             $terminalSessionsModel = new TerminalSessionsModel();
+            $startSessionFormModel->amount = toInt($startSessionFormModel->amount);
             $service_id = $terminalSessionsModel->getServiceId($startSessionFormModel->terminal_id);
             $this->_reload($startSessionFormModel,$service_id);
         }

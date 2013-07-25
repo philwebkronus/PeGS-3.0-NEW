@@ -21,6 +21,7 @@ class ReloadSessionController extends FrontendController{
             Mirage::loadModels(array('TerminalSessionsModel','SiteDenominationModel'));  
             
             $startSessionFormModel->setAttributes($_POST['StartSessionFormModel']);
+                $startSessionFormModel->amount = toInt($startSessionFormModel->amount);
                 $terminalSessionsModel = new TerminalSessionsModel();
                 $terminal_session_data = $terminalSessionsModel->getDataById($startSessionFormModel->terminal_id);
                 $service_id = $terminal_session_data['ServiceID'];
