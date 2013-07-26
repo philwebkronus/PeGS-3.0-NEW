@@ -46,9 +46,11 @@ class ProcessTopUpPaginate extends BaseProcess {
         $sort = "SiteID";
         if(strlen($_GET['sidx']) > 0)
             $sort = $_GET['sidx'];
-        
+        ob_get_clean();
         //array containing complete details
         $rows = $topup->grossHoldMonitoring($sort, $dir, $startdate,$enddate); 
+        ini_set('memory_limit', '-1'); 
+        ini_set('max_execution_time', '220');
         $arrdetails = array();
         foreach($rows as $id => $row) {
             $gross_hold = (($row['Deposit'] + $row['Reload'] - $row['Withdrawal']) - $row['ActualAmount']);
