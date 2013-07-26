@@ -45,15 +45,20 @@ if(isset($_SESSION['acctype']))
     
     <table>
         <tr>
-            <td>Start Date</td>
+<!--            <td>Start Date</td>
             <td>
-                <input type="text" value="<?php echo date('Y-m-d'); ?>" id="startdate" readonly="readonly" name="startdate" />
-               <!-- <img name="cal" src="images/cal.gif" width="16" height="16" border="0" alt="Pick a date" onClick="displayDatePicker('startdate', false, 'ymd', '-');"/> -->
+                <input type="text" value="<?php //echo date('Y-m-d'); ?>" id="startdate" readonly="readonly" name="startdate" />
+                <img name="cal" src="images/cal.gif" width="16" height="16" border="0" alt="Pick a date" onClick="displayDatePicker('startdate', false, 'ymd', '-');"/>
             </td>
             <td>End Date</td>
             <td>
-                <input type="text" value="<?php echo date('Y-m-d',strtotime(date("Y-m-d", strtotime(date('Y-m-d')))))  ?>" id="enddate" readonly="readonly" name="enddate" />
-                <!-- <img name="cal" src="images/cal.gif" width="16" height="16" border="0" alt="Pick a date" onClick="displayDatePicker('enddate', false, 'ymd', '-');"/> -->
+                <input type="text" value="<?php //echo date('Y-m-d',strtotime(date("Y-m-d", strtotime(date('Y-m-d')))))  ?>" id="enddate" readonly="readonly" name="enddate" />
+                <img name="cal" src="images/cal.gif" width="16" height="16" border="0" alt="Pick a date" onClick="displayDatePicker('enddate', false, 'ymd', '-');" />
+            </td>-->
+            <td>Transaction Date</td>
+            <td>
+                <input type="text" value="<?php echo date('Y-m-d'); ?>" id="startdate" readonly="readonly" name="startdate" />
+                <img name="cal" src="images/cal.gif" width="16" height="16" border="0" alt="Pick a date" onClick="displayDatePicker('startdate', false, 'ymd', '-');"/>
             </td>
         </tr>
         <tr>
@@ -206,7 +211,7 @@ if(isset($_SESSION['acctype']))
           
           var siteid = jQuery('#selSiteCode option:selected').val();
           var startdate = jQuery('#startdate').val();
-          var enddate = jQuery('#enddate').val();
+          //var enddate = jQuery('#enddate').val();
           var comp1 = jQuery('#sel1comp option:selected').val();
           var comp2 = jQuery('#sel2comp option:selected').val();
           var num1 = jQuery('#firstamount').val();
@@ -230,12 +235,12 @@ if(isset($_SESSION['acctype']))
               alert('Please enter second number'); return false;
           }          
           
-          if(Date.parse(startdate) > Date.parse(enddate)) {
-              alert('Start date should less than end date'); return false;
-          }
+//          if(Date.parse(startdate) > Date.parse(enddate)) {
+//              alert('Start date should less than end date'); return false;
+//          }
           
           jQuery("#ghmgrid").jqGrid('setGridParam',{url:"process/ProcessTopUpPaginate.php?action=getdata&siteid="+siteid+
-            "&startdate="+startdate+"&enddate="+enddate+"&comp1="+comp1+"&comp2="+comp2+"&num1="+num1+"&num2="+num2+
+            "&startdate="+startdate+"&comp1="+comp1+"&comp2="+comp2+"&num1="+num1+"&num2="+num2+
             "&withconfirm="+withconfirm+"&sellocation="+sellocation,page:1}).trigger("reloadGrid"); 
       });
    });

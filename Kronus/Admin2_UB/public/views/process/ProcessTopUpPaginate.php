@@ -26,14 +26,15 @@ class ProcessTopUpPaginate extends BaseProcess {
         include_once __DIR__.'/../sys/class/TopUp.class.php';
         
         $startdate = date('Y-m-d')." ".BaseProcess::$cutoff;
-        $enddate = date('Y-m-d',strtotime(date("Y-m-d", strtotime(date('Y-m-d'))) .BaseProcess::$gaddeddate))." ".BaseProcess::$cutoff;        
-            
-        
+
         if(isset($_GET['startdate']))
             $startdate = $_GET['startdate']." ".BaseProcess::$cutoff;
         
-        if(isset($_GET['enddate']))
-            $enddate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($_GET['enddate'])) .BaseProcess::$gaddeddate))." ".BaseProcess::$cutoff;
+//        if(isset($_GET['enddate']))
+//            $enddate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($_GET['enddate'])) .BaseProcess::$gaddeddate))." ".BaseProcess::$cutoff;
+//            
+        $enddate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($startdate)) .BaseProcess::$gaddeddate))." ".BaseProcess::$cutoff; 
+        
         // to check if greater than 1 day
         // since this program must support current cut-off,
         // all dates GT or LT current cut-off

@@ -17,8 +17,9 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         $topreport->open();
         $siteID = $_POST['selSiteCode'];
         $startdate = $_POST['startdate']." ".BaseProcess::$cutoff;
-        $venddate = $_POST['enddate'];  
-        $enddate = date ('Y-m-d' , strtotime (BaseProcess::$gaddeddate, strtotime($venddate)))." ".BaseProcess::$cutoff;
+        //$venddate = $_POST['enddate'];  
+        //$enddate = date ('Y-m-d' , strtotime (BaseProcess::$gaddeddate, strtotime($venddate)))." ".BaseProcess::$cutoff;
+        $enddate = date ('Y-m-d' , strtotime (BaseProcess::$gaddeddate, strtotime($startdate)))." ".BaseProcess::$cutoff;
         $rows = $topreport->grossHolMonitoring($startdate, $enddate, $siteID);
         $pdf = CTCPDF::c_getInstance();
         $pdf->c_commonReportFormat();
@@ -76,8 +77,9 @@ class ProcessTopUpGenerateReports extends BaseProcess{
     public function grossHoldMonExcel() {
         $siteID = $_POST['selSiteCode'];
         $startdate = $_POST['startdate']." ".BaseProcess::$cutoff;
-        $venddate = $_POST['enddate'];  
-        $enddate = date ('Y-m-d' , strtotime (BaseProcess::$gaddeddate, strtotime($venddate)))." ".BaseProcess::$cutoff;   
+        //$venddate = $_POST['enddate'];  
+        //$enddate = date ('Y-m-d' , strtotime (BaseProcess::$gaddeddate, strtotime($venddate)))." ".BaseProcess::$cutoff;   
+        $enddate = date ('Y-m-d' , strtotime (BaseProcess::$gaddeddate, strtotime($startdate)))." ".BaseProcess::$cutoff;   
         $_SESSION['report_header'] = array('Site / PEGS Name','Site / PEGS Code', 'POS Account','BCF','Deposit','Reload','Withdrawal','Manual Redemption','Gross Hold', 'With Confirmation','Location');
         $topreport = new TopUpReportQuery($this->getConnection());
         $topreport->open();
