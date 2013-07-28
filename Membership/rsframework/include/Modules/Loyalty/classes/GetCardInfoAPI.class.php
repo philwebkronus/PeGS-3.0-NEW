@@ -29,7 +29,7 @@ class GetCardInfoAPI extends BaseEntity
         App::LoadModuleClass("Membership", "Helper");
         App::LoadModuleClass('Loyalty', "MemberCards");
         App::LoadModuleClass("Loyalty", "Cards");   
-        
+        App::LoadCore('ErrorLogger.php');
         
         //Instantiate Models
         $_MemberInfo = new MemberInfo();
@@ -40,6 +40,10 @@ class GetCardInfoAPI extends BaseEntity
         
         $_ActivateMember = new ActivateMember();
         $_Helper = new Helper();
+        
+        $logger = new ErrorLogger();
+        $logdate = $logger->logdate;
+        $logtype = "Error ";
                 
         switch ( $status )
         {
@@ -69,7 +73,7 @@ class GetCardInfoAPI extends BaseEntity
                                         "StatusMsg"        => 'Inactive Card',
                                         )
                            );
-                
+                $logger->logger($logdate, $logtype, "Inactive Card: ".$cardnumber);
                 return $result;
                 break;
             
@@ -576,7 +580,7 @@ class GetCardInfoAPI extends BaseEntity
                                         "StatusMsg"        => 'Card Not Found',
                                         )
                            );
-                
+                $logger->logger($logdate, $logtype, "Card Not Found[004]: ".$cardnumber);
                 return $result;
                 break;
             

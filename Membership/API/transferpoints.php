@@ -12,13 +12,17 @@ App::LoadModuleClass("Loyalty", "MemberCards");
 App::LoadModuleClass("Loyalty", "CardStatus");
 App::LoadModuleClass("Membership", "AuditTrail");
 App::LoadModuleClass("Membership", "AuditFunctions");
-        
+App::LoadCore('ErrorLogger.php');        
 
 $_PointsTransferAPI = new PointsTransferAPI();
 $_JSONAPIResponse = new JSONAPIResponse();
 $_OldCards = new OldCards();
 $_MemberCards = new MemberCards();
 $_Log = new AuditTrail();
+
+$logger = new ErrorLogger();
+$logdate = $logger->logdate;
+$logtype = "Error ";
 
 if((isset($_GET["oldnumber"]) && ctype_alnum($_GET["oldnumber"])) && 
    (isset($_GET["newnumber"]) && ctype_alnum( $_GET["newnumber"])) &&
@@ -59,6 +63,7 @@ if((isset($_GET["oldnumber"]) && ctype_alnum($_GET["oldnumber"])) &&
         elseif($verifyoldcard==CardStatus::NOT_EXIST)
         {
             $status = CardStatus::NOT_EXIST;
+            $logger->logger($logdate, $logtype, "Card Not Found[005]: ".$oldcardnumber);
             $statusmsg = "Card not found";
         }
         $_JSONAPIResponse->_sendResponse(200, json_encode(array("CardPoints"=>array("LoyaltyCardPoints"=>"", "MembershipCardPoints"=>"", "StatusCode"=>(int)$status, "StatusMsg"=>$statusmsg))));

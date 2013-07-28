@@ -20,7 +20,7 @@ App::LoadModuleClass("Loyalty", "CardStatus");
 App::LoadModuleClass("Loyalty", "CardVersion");
 App::LoadModuleClass("Membership", "TempMemberInfo");
 App::LoadModuleClass("Membership", "Helper");
-
+App::LoadCore('ErrorLogger.php');
 
 /*
  * Load Core for API Response
@@ -36,6 +36,10 @@ $_OldCards = new OldCards();
 $_TempMembers = new TempMemberInfo();
 $_JSONAPIResponse = new JSONAPIResponse();
 $_Helper = new Helper();
+
+$logger = new ErrorLogger();
+$logdate = $logger->logdate;
+$logtype = "Error ";
 
 if(!isset($_GET['cardnumber']) || !isset( $_GET['isreg'])){
     $result = array("CardInfo"=>array(
@@ -62,7 +66,7 @@ if(!isset($_GET['cardnumber']) || !isset( $_GET['isreg'])){
                                     "StatusMsg"        => 'Card Not Found',
                                     )
                         );
-    
+    $logger->logger($logdate, $logtype, "Card Number is blank");
     $_JSONAPIResponse->_sendResponse(200, json_encode($result));
     exit;
 }
@@ -99,6 +103,7 @@ if((ctype_alnum( $cardNumber )) && (ctype_digit( $isReg ) ))
             }
             else
             {
+                $logger->logger($logdate, $logtype, "Card Not Found[000]: ".$cardNumber);
                 $status = CardStatus::NOT_EXIST;
             }
             
@@ -141,11 +146,13 @@ if((ctype_alnum( $cardNumber )) && (ctype_digit( $isReg ) ))
                 }
                 else
                 {
+                    $logger->logger($logdate, $logtype, "Temporary account is inactive: ".$cardNumber);
                     $status = CardStatus::INACTIVE_TEMPORARY;
                 }
             }
             else
             {
+                $logger->logger($logdate, $logtype, "Card Not Found[001]: ".$cardNumber);
                 $status = CardStatus::NOT_EXIST;
             }
             
@@ -179,12 +186,13 @@ if((ctype_alnum( $cardNumber )) && (ctype_digit( $isReg ) ))
             else
             {
                 $status = CardStatus::NOT_EXIST;
+                $logger->logger($logdate, $logtype, "Card Not Found[002]: ".$cardNumber);
             }
             
             break;
         
         default :
-            
+            $logger->logger($logdate, $logtype, "Card Not Found[003]: ".$cardNumber);
             $status = CardStatus::NOT_EXIST;
             break;
     }
@@ -219,7 +227,7 @@ else
                                     "StatusMsg"        => 'Card Not Found',
                                     )
                         );
-    
+    $logger->logger($logdate, $logtype, "Invalid card number: ".$cardNumber);
     $_JSONAPIResponse->_sendResponse(200, json_encode($result));
     exit;
 }
