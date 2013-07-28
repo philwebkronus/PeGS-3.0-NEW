@@ -144,16 +144,16 @@ function btnProceed(){
     var total = addCommas(Number(loyaltypoints) + Number(mempoints));
 
     if(status == "Active"){
-        updateLightbox('VIP Rewards Card &nbsp;<input type="text" readonly  style="width: 180px;left:2px;margin-left: 5px;font-size: 10px;text-align: center;font-weight: bold; padding: 3px;" id= "rewardcard" value="' + loyaltycard + '" />' +
-                                        '&nbsp;<input type = "text" style ="display: inline; float: right; width: 60px;font-size: 10px;font-weight: bold; padding: 3px; text-align: right;" id="loyaltypoints" readonly value = "'+  addCommas(loyaltypoints) +'" />' +
-                                        '<br /><div style="margin-top:10px;">Membership Card &nbsp;<input type="text" readonly style=" width: 180px;left:2px;margin-left: 5px;font-size: 10px;text-align: center;font-weight: bold; padding: 3px;" id= "membershipcard" value="' + membershipcard + '" />' +
-                                        '&nbsp;<input type = "text" style ="display: inline; float: right; width: 60px;font-size: 10px;font-weight: bold; padding: 3px; text-align: right;" id="mempoints" readonly value = "'+  addCommas(mempoints) +'" /></div>' + 
-                                        '<input type= "hidden" id="url_transfer" value ="' + url_transfer + '" />' +
+        updateLightbox('<table style="top: 50%; left: 50%; margin-top: -100px; margin-left: -250px; position: fixed; background-color:#FFFFFF;"><tr></tr><tr></tr><tr><td><tr></tr><tr></tr><tr><td>&nbsp;VIP Rewards Card &nbsp;<input type="text" readonly  style="width: 180px;left:2px;margin-left: 5px;font-size: 10px;text-align: center;font-weight: bold; padding: 3px;" id= "rewardcard" value="' + loyaltycard + '" />' +
+                                        '<input type = "text" style="width: 60px;left:2px;margin-left: 5px;font-size: 10px;text-align: center;font-weight: bold; padding: 3px; text-align: right;" id="loyaltypoints" readonly value = "'+  addCommas(loyaltypoints) +'" />&nbsp;</td></tr>' +
+                                        '<tr><td><br /><div style="margin-top:10px;">&nbsp;Membership Card &nbsp;<input type="text" readonly style=" width: 180px;left:2px;margin-left: 5px;font-size: 10px;text-align: center;font-weight: bold; padding: 3px;" id= "membershipcard" value="' + membershipcard + '" />' +
+                                        '<input type = "text" style="width: 60px;left:2px;margin-left: 5px;font-size: 10px;text-align: center;font-weight: bold; padding: 3px; text-align: right;" id="mempoints" readonly value = "'+  addCommas(mempoints) +'" />&nbsp;&nbsp;</td></tr>' + 
+                                        '<tr><td><input type= "hidden" id="url_transfer" value ="' + url_transfer + '" />' +
                                         '<input type= "hidden" id="aid" value ="' + aid + '" />' +
-                                        '<hr style ="width: 17%; display: block; float: right; font-weight: bold;" />' +
-                                        '<br /><input type = "text" style =" float: right; font-size: 10px;width: 60px;font-weight: bold; padding: 3px; text-align: right;" readonly value = "'+ total +'" />' + 
-                                        '<br /><br /><br /><input type="button" style="font-size: 14px; margin-left:120px; width: 80px; height: 27px;"  value="Back" class = "btnClr"/>' +
-                                        '<input type="button" style="font-size: 14px; margin-left:10px; width: 80px; height: 27px;"  value="Transfer" onClick="javascript: btnTransfer();" />', '');
+                                        '<hr style ="margin-right: 5px; margin-top: 1px; width: 17%; display: block; float: right; font-weight: bold;" />' +
+                                        '<br /><br />&nbsp;<input type = "text" style ="margin-top: -30px; margin-right: 7px;float: right; font-size: 10px;width: 60px;font-weight: bold; text-align: right;padding: 3px;" readonly value = "'+ total +'" /></td></tr>' + 
+                                        '<tr><td><br /><br /><br /><input type="button" style="font-size: 14px; margin-left:120px; width: 80px; height: 27px;"  value="Back" class = "btnClr"/>' +
+                                        '<input type="button" style="font-size: 14px; margin-left:10px; width: 80px; height: 27px;"  value="Transfer" onClick="javascript: btnTransfer();" /></td></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr><td></table>', '');
     } else if(status == "Inactive"){
             hideLightbox();
             window.showModalDialog(url_activate+'?oldnumber='+loyaltycard+'&newnumber='+membershipcard+
@@ -222,7 +222,7 @@ function btnSubmit(){
                                                                         ''          
                                         ); 
                                 } else {
-                                    updateLightbox( '<center><label  style="font-size: 24px; color: red; font-weight: bold;">Card Number is INVALID.</label>' + 
+                                    updateLightbox( '<center><label  style="font-size: 24px; color: red; font-weight: bold;">Error[009]: Card Number is INVALID.</label>' + 
                                                                     '<br /><br /><label style="font-size: 20px;  font-weight: bold;">Please contact Philweb Customer</label>' + 
                                                                     '<br /><label style="font-size: 20px;  font-weight: bold;">Service Hotline 338-3388.</label></center>' + 
                                                                     '<br /><input type="button" style="float: right; width: 50px; height: 25px;"  value="Ok" class="btnClr" />',
@@ -230,7 +230,7 @@ function btnSubmit(){
                                     );     
                                 }
                             } else {
-                                updateLightbox( '<center><label  style="font-size: 24px; color: red; font-weight: bold;">Card Number is INVALID.</label>' + 
+                                updateLightbox( '<center><label  style="font-size: 24px; color: red; font-weight: bold;">Error[010]: Card Number is INVALID.</label>' + 
                                                                 '<br /><br /><label style="font-size: 20px;  font-weight: bold;">Please contact Philweb Customer</label>' + 
                                                                 '<br /><label style="font-size: 20px;  font-weight: bold;">Service Hotline 338-3388.</label></center>' + 
                                                                 '<br /><input type="button" style="float: right; width: 50px; height: 25px;"  value="Ok" class="btnClr" />',

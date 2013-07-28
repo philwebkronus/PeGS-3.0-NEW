@@ -27,9 +27,44 @@
                     success : function(data) {
                         try {
                             var json = $.parseJSON(data);
-                            
+                                if(json.CardInfo.StatusCode == '' || json.CardInfo.StatusCode == null){
+                                    updateLightbox( '<center><label  style="font-size: 24px; color: red; font-weight: bold;">Error[004]: Card Number is INVALID.</label>' + 
+                                                                    '<br /><br /><label style="font-size: 20px;  font-weight: bold;">Please contact Philweb Customer</label>' + 
+                                                                    '<br /><label style="font-size: 20px;  font-weight: bold;">Service Hotline 338-3388.</label></center>' + 
+                                                                    '<br /><input type="button" style="float: right; width: 50px; height: 25px;"  value="Ok" class="btnClose" />',
+                                                                    ''          
+                                    );    
+                                }
+
+                                if(json.CardInfo.StatusCode == undefined ){
+                                    updateLightbox( '<center><label  style="font-size: 24px; color: red; font-weight: bold;">Error[005]: Card Number is INVALID.</label>' + 
+                                                                    '<br /><br /><label style="font-size: 20px;  font-weight: bold;">Please contact Philweb Customer</label>' + 
+                                                                    '<br /><label style="font-size: 20px;  font-weight: bold;">Service Hotline 338-3388.</label></center>' + 
+                                                                    '<br /><input type="button" style="float: right; width: 50px; height: 25px;"  value="Ok" class="btnClose" />',
+                                                                    ''          
+                                    );    
+                                }
+
+                                if(json.CardInfo.StatusCode == 100){
+                                    updateLightbox( '<center><label  style="font-size: 24px; color: red; font-weight: bold;">Error[006]: Card Number is INVALID.</label>' + 
+                                                                    '<br /><br /><label style="font-size: 20px;  font-weight: bold;">Please contact Philweb Customer</label>' + 
+                                                                    '<br /><label style="font-size: 20px;  font-weight: bold;">Service Hotline 338-3388.</label></center>' + 
+                                                                    '<br /><input type="button" style="float: right; width: 50px; height: 25px;"  value="Ok" class="btnClose" />',
+                                                                    ''          
+                                    );    
+                                }
+                                
+                                if(json.CardInfo.StatusCode == 4){
+                                    updateLightbox( '<center><label  style="font-size: 24px; color: red; font-weight: bold;">Error[007]: Card Number is INVALID.</label>' + 
+                                                                    '<br /><br /><label style="font-size: 20px;  font-weight: bold;">Please contact Philweb Customer</label>' + 
+                                                                    '<br /><label style="font-size: 20px;  font-weight: bold;">Service Hotline 338-3388.</label></center>' + 
+                                                                    '<br /><input type="button" style="float: right; width: 50px; height: 25px;"  value="Ok" class="btnClose" />',
+                                                                    ''          
+                                    );    
+                                }
+                                
                                 //check if the card number has a value, if none return invalid message
-                                if(json.CardInfo.StatusCode != '' && json.CardInfo.StatusCode != null && json.CardInfo.StatusCode != undefined && json.CardInfo.StatusCode != 100 &&  json.CardInfo.StatusCode != 8 &&  json.CardInfo.StatusCode != 4){
+                                if(json.CardInfo.StatusCode != 8){
                                     var StatusValue = getStatusValue(json.CardInfo.StatusCode);
                                     var cardtype = getCardType(json.CardInfo.CardType);
                                     
@@ -69,7 +104,7 @@
                                         );
                                     }
                                 } else {
-                                     updateLightbox( '<center><label  style="font-size: 24px; color: red; font-weight: bold;">Card Number is INVALID.</label>' + 
+                                     updateLightbox( '<center><label  style="font-size: 24px; color: red; font-weight: bold;">Error[008]: Card Number is INVALID.</label>' + 
                                                                     '<br /><label style="font-size: 20px;  font-weight: bold;">Please contact Philweb Customer</label>' + 
                                                                     '<br /><label style="font-size: 20px;  font-weight: bold;">Service Hotline 338-3388.</label></center>' + 
                                                                     '<br /><input type="button" style="float: right; width: 50px; height: 25px;"  value="Ok" class="btnClose" />',

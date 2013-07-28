@@ -47,9 +47,35 @@ function identifyCard()
                             } else {
 
                                 showLightbox(function(){
-
+                                    if(StatusValue == ''){
+                                        updateLightbox( '<center><label  style="font-size: 24px; color: red; font-weight: bold;">Error[000]: Card Number is INVALID.</label>' + 
+                                                                        '<br /><br /><label style="font-size: 20px;  font-weight: bold;">Please contact Philweb Customer</label>' + 
+                                                                        '<br /><label style="font-size: 20px;  font-weight: bold;">Service Hotline 338-3388.</label></center>' + 
+                                                                        '<br /><input type="button" style="float: right; width: 50px; height: 25px;"  value="Ok" class="btnClose" />',
+                                                                        ''          
+                                        );    
+                                    }
+                                    
+                                    if(StatusValue == undefined){
+                                        updateLightbox( '<center><label  style="font-size: 24px; color: red; font-weight: bold;">Error[001]: Card Number is INVALID.</label>' + 
+                                                                        '<br /><br /><label style="font-size: 20px;  font-weight: bold;">Please contact Philweb Customer</label>' + 
+                                                                        '<br /><label style="font-size: 20px;  font-weight: bold;">Service Hotline 338-3388.</label></center>' + 
+                                                                        '<br /><input type="button" style="float: right; width: 50px; height: 25px;"  value="Ok" class="btnClose" />',
+                                                                        ''          
+                                        );    
+                                    }
+                                    
+                                    if(json.CardInfo.StatusCode == 100){
+                                        updateLightbox( '<center><label  style="font-size: 24px; color: red; font-weight: bold;">Error[002]: Card Number is INVALID.</label>' + 
+                                                                        '<br /><br /><label style="font-size: 20px;  font-weight: bold;">Please contact Philweb Customer</label>' + 
+                                                                        '<br /><label style="font-size: 20px;  font-weight: bold;">Service Hotline 338-3388.</label></center>' + 
+                                                                        '<br /><input type="button" style="float: right; width: 50px; height: 25px;"  value="Ok" class="btnClose" />',
+                                                                        ''          
+                                        );    
+                                    }
+                                    
                                     //check if the card number has a value, if none return invalid message
-                                    if(StatusValue != '' &&StatusValue != undefined && json.CardInfo.StatusCode != 100 && json.CardInfo.StatusCode != 8  ){
+                                    if(json.CardInfo.StatusCode != 8 ){
                                         
                                         if(StatusValue == "Old"){
                                             updateLightbox( '<div id = "popup">Migration Account: '  + 
@@ -79,7 +105,7 @@ function identifyCard()
                                                     var t=a[1].split(":");
                                                     var date = new Date(d[0],(d[1]-1),d[2],t[0],t[1],t[2]);
                                                     var cooling_period =  json.CardInfo.CoolingPeriod;
-
+                                                    
                                                     //get date difference between date today and the dateverified
                                                     var datediff = getDateDiff(date,servertime, cooling_period);
 
@@ -138,7 +164,7 @@ function identifyCard()
                                                 ); 
                                         } 
                                     } else {
-                                         updateLightbox( '<center><label  style="font-size: 24px; color: red; font-weight: bold;">Card Number is INVALID.</label>' + 
+                                         updateLightbox( '<center><label  style="font-size: 24px; color: red; font-weight: bold;">Error[003]: Card Number is INVALID.</label>' + 
                                                                         '<br /><br /><label style="font-size: 20px;  font-weight: bold;">Please contact Philweb Customer</label>' + 
                                                                         '<br /><label style="font-size: 20px;  font-weight: bold;">Service Hotline 338-3388.</label></center>' + 
                                                                         '<br /><input type="button" style="float: right; width: 50px; height: 25px;"  value="Ok" class="btnClose" />',
