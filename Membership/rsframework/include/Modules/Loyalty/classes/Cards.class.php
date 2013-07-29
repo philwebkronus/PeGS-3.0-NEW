@@ -33,7 +33,7 @@ class Cards extends BaseEntity
             return CardVersion::TEMPORARY;
         }
         
-        if(strpos(substr($cardnumber, 0,2), 'UB') !== false)
+        if((strpos(substr($cardnumber, 0,2), 'UB') !== false ) || (strpos(substr($cardnumber, 0,2), 'ub') !== false) )
         {
             return CardVersion::USERBASED;
         }

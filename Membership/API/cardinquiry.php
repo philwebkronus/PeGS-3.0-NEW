@@ -87,6 +87,7 @@ if((ctype_alnum( $cardNumber )) && (ctype_digit( $isReg ) ))
     switch ($version)
     {
         case CardVersion::OLD: // Old version
+            $cardNumber = strtoupper($cardNumber);
             $result = $_OldCards->getOldCardInfo( $cardNumber );
         
             if(count($result) > 0)
@@ -159,7 +160,7 @@ if((ctype_alnum( $cardNumber )) && (ctype_digit( $isReg ) ))
             break;
             
         case CardVersion::USERBASED: // User-based
-            
+            $cardNumber = strtoupper($cardNumber);
             $result = $_Cards->getCardInfo( $cardNumber );
             
             if(count( $result ) > 0)
