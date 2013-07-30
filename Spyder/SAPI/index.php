@@ -11,7 +11,7 @@
 /** Configuration Section **/
 
 $_DBHost = "";
-$_DBName = "spyder";
+$_DBName = "";
 $_DBUser = "";
 $_DBPassword = "";
 
@@ -71,9 +71,9 @@ function getServerConnectionByTerminal( $terminalName ) {
         $stmt->execute();
         $result = $stmt->fetchObject();
     } catch(PDOException $PDOEx) {
-
+        error_log( $PDOEx->getMessage() );
     } catch (Exception $ex) {
-
+        error_log( $ex->getMessage() );
     }
 
     return $result;
@@ -86,22 +86,26 @@ function sendMessage( $spyderHost, $spyderPort, $channelId, $message ) {
 
     $command = "/send?clientid={$channelId}&msg={$message}" . $delimeter;
 
-    $socket = stream_socket_client( "tcp://$spyderHost:$spyderPort", $errno, $errstr, $_SpyderConnTimeout );
+    try {
+        $socket = stream_socket_client( "tcp://$spyderHost:$spyderPort", $errno, $errstr, $_SpyderConnTimeout );
 
-    if ( $socket ) {
-        fwrite( $socket, $command, strlen( $command ) );
+        if ( $socket ) {
+            fwrite( $socket, $command, strlen( $command ) );
 
-        $response = null;
+            $response = null;
 
-        while ( !feof( $socket ) ) {
-                $response .= fread( $socket, 20240 );
+            while ( !feof( $socket ) ) {
+                    $response .= fread( $socket, 20240 );
+            }
+
+            fclose( $socket );
+
+            echo $response;
+        } else {
+            echo "$errstr ($errno)<br />\n";
         }
-
-        fclose( $socket );
-
-        echo $response;
-    } else {
-        echo "$errstr ($errno)<br />\n";
+    } catch (Exception $ex) {
+        error_log( $ex->getMessage() );
     }
 }
 
