@@ -26,3 +26,10 @@ Version 1.0.0.3 June 11, 2013
 
 File changes:
 Spyder\SAPI\index.php Modified
+
+Version 1.0.1.0 July 30, 2013
+-----------------------------
+- refactor and release version
+
+File changes:
+Spyder\SAPI\index.php Modified

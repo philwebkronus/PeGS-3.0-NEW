@@ -1,155 +1,120 @@
 <?php
 
-$dbhost = "";
+/**
+ * SAPI for Lock/Unlock Terminal Function
+ *
+ * WEBiTS R&D
+ * Copyright 2013. PhilWeb Corporation
+ *
+ */
 
-$dbusername = "";
+/** Configuration Section **/
 
-$dbpassword = "";
+$_DBHost = "";
+$_DBName = "spyder";
+$_DBUser = "";
+$_DBPassword = "";
 
-$dbname = "";
+$_SpyderConnTimeout = 3;
+$_SpyderPort = 35000;
 
-$spyderport = "";
+/** Do not edit beyond this line **/
 
-$issecure = FALSE; //TRUE or FALSE (not string)
+$terminaName = $_GET[ "TerminalName" ];
+$commandId = $_GET[ "CommandID" ];
+$username = $_GET[ "UserName" ];
+$password = $_GET[ "Password" ];
+$type = $_GET[ "Type" ];
+$casinoId = $_GET[ "CasinoID" ];
 
-function getroutingkey($terminal) {
+if ( !isset( $_GET[ "TerminalName" ] ) ||
+    !isset( $_GET[ "CommandID" ] ) ||
+    !isset( $_GET[ "UserName" ] ) ||
+    !isset( $_GET[ "Password" ] ) ||
+    !isset( $_GET[ "Type" ] ) ||
+    !isset( $_GET[ "CasinoID" ] ) )
+{
+    echo 'Required parameters missing';
+} else {
+    $terminalConnectionInfo = getServerConnectionByTerminal( $terminaName );
 
-    global $dbhost, $dbusername, $dbpassword, $dbname;
+    if ( $terminalConnectionInfo != null ) {
+        $message = null;
 
-////    $query = "SELECT a.ChannelID as channelid,b.ExtBindAddress as ip, b.ExtPort as port
-////        FROM terminalconnections as a INNER JOIN servers as b ON a.ServerID = b.ServerID and a.TerminalID = ?";
-//
-    $query = "SELECT server,ipaddress FROM connection where terminalname='{$terminal}'";
-
-
-    $con = mysqli_connect($dbhost, $dbusername, $dbpassword, $dbname);
-// Check connection
-    if (mysqli_connect_errno()) {
-        echo "Failed to connect to MySQL: " . mysqli_connect_error();
-    }
-
-    $result = mysqli_query($con, $query);
-
-    while ($row = mysqli_fetch_array($result)) {
-        $returnresult = array($row['server'], $row['ipaddress']);
-    }
-
-    return $returnresult;
-}
-
-function sendtospyder($str, $spyderhost, $channel) {
-
-    global $spyderport, $issecure;
-
-    $command = "/send?clientid={$channel}&msg={$str}\r\n";
-
-    if ($issecure)
-        $socket = stream_socket_client("ssl://$spyderhost:$spyderport", $errno, $errstr, 30);
-    else {
-        $socket = stream_socket_client("tcp://$spyderhost:$spyderport", $errno, $errstr, 30);
-    }
-
-    if ($socket) {
-
-        fwrite($socket, $command);
-
-//        $buf = null;
-//        while (!feof($socket)) {
-//            $buf .= fread($socket, 20240);
-//        }
-        //close connection
-
-        sleep(5);
-
-        fclose($socket);
-    } else {
-        echo $errstr;
-    }
-}
-
-try {
-
-    $terminalid = $_GET['TerminalName'];
-    $mode = $_GET['CommandID'];
-    $username = $_GET['UserName'];
-    $password = $_GET['Password'];
-    $type = $_GET['Type'];
-    $casinoid = $_GET['CasinoID'];
-
-    if (!isset($_GET['TerminalName']) || $terminalid == NULL) {
-
-//        echo "99";
-
-        echo "0";
-    } elseif (!isset($_GET['CommandID']) || $mode == NULL) {
-
-//        echo "98";
-
-        echo "0";
-    } elseif (!isset($_GET['UserName']) || $username == NULL) {
-
-//        echo "97";
-
-        echo "0";
-    } elseif (!isset($_GET['Password']) || $password == NULL) {
-
-//        echo "96";
-
-        echo "0";
-    } elseif (!isset($_GET['Type']) || $type == NULL) {
-
-//        echo "95";
-
-        echo "0";
-    } elseif (!isset($_GET['CasinoID']) || $casinoid == NULL) {
-
-//        echo "94";
-
-        echo "0";
-    } else {
-        list($server, $connectionid) = getroutingkey($terminalid);
-
-//        $ip = getroutingkey($terminalid);
-
-        if ($mode == "1") {
-
-//            $arrtype = array('Header' => 'Type', 'Data' => '0');
-//            $arrmessage = array('Header' => 'Message', 'Data' => 'lock');
-//            $arrusername = array('Header' => 'Username', 'Data' => $username);
-//            $arrpassword = array('Header' => 'Password', 'Data' => $password);
-//            $arrcasinoid = array('Header' => 'CasinoID', 'Data' => $casinoid);
-//            $payload = array($arrtype, $arrmessage, $arrusername, $arrpassword, $arrcasinoid);
-//            $arr = array('Command' => "lock", 'Version' => "1.0.0", 'PayLoad' => $payload, 'PayLoadCount' => count($payload));
-//            $message = json_encode($arr);
-//            sendtospyder($message,$ip,$port,$channelid);
-
-            $message = "lock|" . $username . "|" . $password . "|" . $casinoid;
-
-            sendtospyder($message, $server, $connectionid);
-
-            echo "1";
-        } elseif ($mode == "0") {
-
-//            $arrtype = array('Header' => 'Type', 'Data' => '1');
-//            $arrmessage = array('Header' => 'Message', 'Data' => 'unlock');
-//            $arrusername = array('Header' => 'Username', 'Data' => $username);
-//            $arrpassword = array('Header' => 'Password', 'Data' => $password);
-//            $arrcasinoid = array('Header' => 'CasinoID', 'Data' => $casinoid);
-//            $payload = array($arrtype, $arrmessage, $arrusername, $arrpassword, $arrcasinoid);
-//            $arr = array('Command' => "unlock", 'Version' => "1.0.0", 'PayLoad' => $payload, 'PayLoadCount' => count($payload));
-//            $message = json_encode($arr);
-//            sendtospyder($message,$ip,$port,$channelid);
-
-            $message = "unlock|" . $username . "|" . $password . "|" . $casinoid;
-
-            sendtospyder($message, $server, $connectionid);
-
-            echo "1";
+        if ( $commandId == "0" ) {
+            $message = "unlock|" . $username . "|" . $password . "|" . $casinoId;
+        } else if ( $commandId == "1" ) {
+            $message = "lock|||";
         }
-        else
-            echo "0";
+
+        if ( $message != null ) {
+            sendMessage ( $terminalConnectionInfo->server, $_SpyderPort, $terminalConnectionInfo->channelid, $message );
+        } else {
+            echo 'Invalid command id supplied';
+        }
+    } else {
+        echo 'No terminal connection info found';
     }
-} catch (Exception $exc) {
-    echo $exc;
 }
+
+function getServerConnectionByTerminal( $terminalName ) {
+    $db = null;
+    $result = null;
+
+    try {
+        $sql = "SELECT server, ipaddress channelid, state FROM connection WHERE terminalname = :terminalName AND server IS NOT NULL";
+
+        $db = getConnection();
+        $stmt = $db->prepare( $sql );
+	$stmt->setFetchMode( PDO::FETCH_OBJ );
+        $stmt->bindParam( "terminalName", $terminalName );
+        $stmt->execute();
+        $result = $stmt->fetchObject();
+    } catch(PDOException $PDOEx) {
+
+    } catch (Exception $ex) {
+
+    }
+
+    return $result;
+}
+
+function sendMessage( $spyderHost, $spyderPort, $channelId, $message ) {
+    global $_SpyderConnTimeout;
+
+    $delimeter = "\r\n";
+
+    $command = "/send?clientid={$channelId}&msg={$message}" . $delimeter;
+
+    $socket = stream_socket_client( "tcp://$spyderHost:$spyderPort", $errno, $errstr, $_SpyderConnTimeout );
+
+    if ( $socket ) {
+        fwrite( $socket, $command, strlen( $command ) );
+
+        $response = null;
+
+        while ( !feof( $socket ) ) {
+                $response .= fread( $socket, 20240 );
+        }
+
+        fclose( $socket );
+
+        echo $response;
+    } else {
+        echo "$errstr ($errno)<br />\n";
+    }
+}
+
+function getConnection() {
+    global $_DBHost;
+    global $_DBName;
+    global $_DBUser;
+    global $_DBPassword;
+
+    $dbh = new PDO( "mysql:host=$_DBHost;dbname=$_DBName", $_DBUser, $_DBPassword );
+    $dbh->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
+
+    return $dbh;
+}
+
 ?>
