@@ -39,8 +39,8 @@ $txtUsername->CssClass = "validate[required]";
 $fproc->AddControl($txtUsername);
 
 $txtPassword = new TextBox("txtPassword", "txtPassword", "Password ");
-$txtPassword->Length = 30;
-$txtPassword->Size = 30;
+$txtPassword->Length = 12;
+$txtPassword->Size = 12;
 $txtPassword->Password = true;
 $txtPassword->ShowCaption = false;
 $txtPassword->CssClass = "validate[required]";
