@@ -37,7 +37,12 @@ if(isset($_SESSION['acctype']))
     else
     {
 ?>
-
+<!--<style type="text/css">
+    #tblgrosshold th{
+        background-color: green;
+        color: white;
+    }
+</style>-->
 <form method="post" id="frmreport">
 <div id="workarea">
     <div id="pagetitle">Gross Hold Monitoring</div>
@@ -85,7 +90,7 @@ if(isset($_SESSION['acctype']))
                 <input type="text" id="secondamount" name="secondamount" class="auto" />      
             </td>
         </tr>
-        <tr>
+<!--        <tr>
             <td>With Confirmation</td>
             <td>
                 <select name="selwithconfirmation" id="selwithconfirmation">
@@ -94,7 +99,7 @@ if(isset($_SESSION['acctype']))
                     <option value="N">N</option>
                 </select>
             </td>
-        </tr>
+        </tr>-->        
         <tr>
             <td>Location</td>
             <td>
@@ -106,28 +111,70 @@ if(isset($_SESSION['acctype']))
             </td>
         </tr>
     </table>
+    <div id="loading" style="position: fixed; z-index: 5000; background: url('images/Please_wait.gif') no-repeat; height: 162px; width: 260px; margin: 50px 0 0 400px; display: none;"></div>
     <div id="submitarea">
         <input type="button" value="Search" id="btnsearch"/>
     </div>
     <br />
-    <div align="center" id="pagination"> 
-      <table id="ghmgrid">
-
-      </table>
-     <div id="pager2"></div>
+    <div  id="tblgrosshold" style="display: none;width: 1200px; height: 358px; overflow-y: auto;">
+        <table id="tblgrossholdbody"></table>
     </div>
-    <div id="senchaexport1" style="background-color: #6A6A6A; padding-bottom: 60px; width: 1200px;">
-        <br />
-        <input type="button" value="Export to PDF File" id="btnpdf" style="float:right;"/>
-        <input type="button" value="Export to Excel File" id="btnexcel" style="float:right;"/> 
-    </div>
-  
+    <div id="fade" class="black_overlay" oncontextmenu="return false"></div>
 </div>
 </form>    
 <style type="text/css">
    .ui-jqgrid .ui-jqgrid-htable th div {
-      height: 21px;
+      height: 21px; 
+/*      background-color: */
    }   
+   #tblgrosshold {
+       border-radius: 5px 5px 5px 5px;
+       -moz-border-top-left-radius: 5px;
+       -moz-border-top-right-radius: 5px;
+       -moz-border-radius-bottomleft: 5px;
+       -moz-border-radius-bottomright: 5px;   
+       border-left: 2px solid #AAAAAA;
+       border-top: 2px solid #AAAAAA;
+       border-right: 3px solid #AAAAAA;
+       border-bottom: 3px solid #AAAAAA;
+       /*border: 2px solid #AAAAAA;*/
+   }
+   
+   #tblgrossholdbody {
+       background-color: #fcfdfd;
+   }
+   
+   #tblgrossholdbody td {
+       border: 2px solid #AAAAAA;
+       height: 20px;
+   }
+   
+   #tblgrossholdbody {
+       border-collapse:collapse;
+   }
+   
+   #tblgrossholdbody {
+       border-radius: 5px 5px 5px 5px;
+       -moz-border-top-left-radius: 5px;
+       -moz-border-top-right-radius: 5px;
+       -moz-border-radius-bottomleft: 5px;
+       -moz-border-radius-bottomright: 5px;   
+   }
+   
+   #tblfooter-banner {
+       border-bottom-left-radius: 5px;
+       border-bottom-right-radius: 5px;
+       -moz-border-radius-bottomleft: 5px;
+       -moz-border-radius-bottomright: 5px; 
+   }
+   
+    #tblheader-banner {
+       border-top-left-radius: 5px;
+       border-top-right-radius: 5px;
+       -moz-border-top-left-radius: 5px;
+       -moz-border-top-right-radius: 5px;
+       position: relative; top: 0; left: 0; 
+   }
 </style>
 <script type="text/javascript" src="jscripts/topup_date_validation.js" ></script>
 <script type="text/javascript">
@@ -145,60 +192,64 @@ if(isset($_SESSION['acctype']))
           jQuery('#frmreport').submit();          
       });
       
-      jQuery("#ghmgrid").jqGrid({
-         url : 'process/ProcessTopUpPaginate.php?action=getdata&withconfirm='+jQuery('#selwithconfirmation option:selected').val()+'&sellocation='+jQuery('#sellocation option:selected').val()+'&comp1='+jQuery('#sel1comp option:selected').val()+'&num1='+jQuery('#firstamount').val(),
-         datatype: "json",
-         colNames:['Site / PEGS Name', 'Site / PEGS Code', 'POS Account','BCF', 'Deposit', 'Reload', 'Withdrawal', 'Manual Redemption','Gross Hold','With Confirmation','Location'],
-         rowNum:10,
-         rowList:[10,20,30],
-         height: 280,
-         width: 1200,
-         pager: '#pager2',
-         viewrecords: true,
-         sortorder: "asc",
-         caption:"Gross Hold Monitoring",
-         colModel:[
-            {name:'SiteName',index:'SiteName',align:'left'},
-            {name:'SiteCode',index:'SiteCode',align:'left'},
-            {name:'POSAccountNo', index:'POSAccountNo', align:'left'},
-            {name:'BCF', index:'BCF', align:'right'},
-            {name:'Deposit',index:'Deposit',align:'right',sortable:false},
-            {name:'Reload',index:'Reload',align:'right',sortable:false},
-            {name:'Withdrawal',index:'Withdrawal',align:'right',sortable:false},
-            {name:'ActualAmount',index:'ActualAmount',align:'right',sortable:false},
-            {name:'GrossHold',index:'GrossHold',align:'right',sortable:false},
-            {name:'WithConfirmation',index:'WithConfirmation',sortable:false},
-            {name:'Location',index:'Location',sortable:false}
-         ],
-         loadComplete: function(response) {
-             
-             if(response.rows != undefined)
-             {
-                for(var i=0;i<response.rows.length;i++) {
-                     var gh = response.rows[i].cell[7].replace(/\,/g,'');
-                     //console.log(response.rows);
-
-                     //&& (response.rows[i].cell[9] > <?php echo _GREEN_1 ?> && response.rows[i].cell[9] <= <?php echo _GREEN_2 ?>)
-                     if((parseFloat(gh) > <?php echo _GREEN_1 ?> && parseFloat(gh) <= <?php echo _GREEN_2 ?>) && response.rows[i].cell[8] == 'Y' && response.rows[i].cell[9] == 'Provincial') {
-                         $('#' + response.rows[i].id).css('background-color','green');
-                     } else if((parseFloat(gh) > <?php echo _ORANGE_1 ?> && parseFloat(gh) <= <?php echo _ORANGE_2 ?>) && response.rows[i].cell[8] == 'Y' && response.rows[i].cell[9] == 'Provincial') {
-                         $('#' + response.rows[i].id).css('background-color','orange');
-                     } else if((parseFloat(gh) > <?php echo _BLUE_ ?>) && response.rows[i].cell[8] == 'Y' && response.rows[i].cell[9] == 'Provincial') {
-                         $('#' + response.rows[i].id).css('background-color','#3385FF'); //blue
-                     } else if(parseFloat(gh) > <?php echo _RED_ ?> && response.rows[i].cell[8] == 'N' && response.rows[i].cell[9] == 'Provincial') {
-                         $('#' + response.rows[i].id).css('background-color','red');
-                     }
-                 }
-                 if(response.sitecode != undefined) {
-                     jQuery('#lblsitecode').html(response.sitecode);
-                 } else {
-                     jQuery('#lblsitecode').html('');
-                 }
-             }
-         },
-         resizable:true
-      });
-      jQuery("#ghmgrid").jqGrid('navGrid','#pager2',{edit:false,add:false,del:false, search:false, refresh: true});
+//      jQuery("#ghmgrid").jqGrid({
+//         url : 'process/ProcessTopUpPaginate.php?action=getdata&withconfirm='+jQuery('#selwithconfirmation option:selected').val()+'&sellocation='+jQuery('#sellocation option:selected').val()+'&comp1='+jQuery('#sel1comp option:selected').val()+'&num1='+jQuery('#firstamount').val(),
+//         datatype: "json",
+//         colNames:['Site / PEGS Name', 'Site / PEGS Code', 'POS Account','BCF', 'Deposit', 'Reload', 'Withdrawal', 'Manual Redemption','Gross Hold','With Confirmation','Location'],
+//         rowNum:10,
+//         rowList:[10,20,30],
+//         height: 280,
+//         width: 1200,
+//         pager: '#pager2',
+//         viewrecords: true,
+//         sortorder: "asc",
+//         caption:"Gross Hold Monitoring",
+//         colModel:[
+//            {name:'SiteName',index:'SiteName',align:'left'},
+//            {name:'SiteCode',index:'SiteCode',align:'left'},
+//            {name:'POSAccountNo', index:'POSAccountNo', align:'left'},
+//            {name:'BCF', index:'BCF', align:'right'},
+//            {name:'Deposit',index:'Deposit',align:'right',sortable:false},
+//            {name:'Reload',index:'Reload',align:'right',sortable:false},
+//            {name:'Withdrawal',index:'Withdrawal',align:'right',sortable:false},
+//            {name:'ActualAmount',index:'ActualAmount',align:'right',sortable:false},
+//            {name:'GrossHold',index:'GrossHold',align:'right',sortable:false},
+//            {name:'WithConfirmation',index:'WithConfirmation',sortable:false},
+//            {name:'Location',index:'Location',sortable:false}
+//         ],
+//         loadComplete: function(response) {
+//             
+//             if(response.rows != undefined)
+//             {
+//                $('#loading').hide();
+//                document.getElementById('loading').style.display='none';
+//                document.getElementById('fade').style.display='none';
+//                
+//                for(var i=0;i<response.rows.length;i++) {
+//                     var gh = response.rows[i].cell[7].replace(/\,/g,'');
+//                     //console.log(response.rows);
+//
+//                     //&& (response.rows[i].cell[9] > <?php echo _GREEN_1 ?> && response.rows[i].cell[9] <= <?php echo _GREEN_2 ?>)
+//                     if((parseFloat(gh) > <?php echo _GREEN_1 ?> && parseFloat(gh) <= <?php echo _GREEN_2 ?>) && response.rows[i].cell[8] == 'Y' && response.rows[i].cell[9] == 'Provincial') {
+//                         $('#' + response.rows[i].id).css('background-color','green');
+//                     } else if((parseFloat(gh) > <?php echo _ORANGE_1 ?> && parseFloat(gh) <= <?php echo _ORANGE_2 ?>) && response.rows[i].cell[8] == 'Y' && response.rows[i].cell[9] == 'Provincial') {
+//                         $('#' + response.rows[i].id).css('background-color','orange');
+//                     } else if((parseFloat(gh) > <?php echo _BLUE_ ?>) && response.rows[i].cell[8] == 'Y' && response.rows[i].cell[9] == 'Provincial') {
+//                         $('#' + response.rows[i].id).css('background-color','#3385FF'); //blue
+//                     } else if(parseFloat(gh) > <?php echo _RED_ ?> && response.rows[i].cell[8] == 'N' && response.rows[i].cell[9] == 'Provincial') {
+//                         $('#' + response.rows[i].id).css('background-color','red');
+//                     }
+//                 }
+//                 if(response.sitecode != undefined) {
+//                     jQuery('#lblsitecode').html(response.sitecode);
+//                 } else {
+//                     jQuery('#lblsitecode').html('');
+//                 }
+//             }
+//         },
+//         resizable:true
+//      });
+//      jQuery("#ghmgrid").jqGrid('navGrid','#pager2',{edit:false,add:false,del:false, search:false, refresh: true});
 
       jQuery('#selSiteCode').live('change', function(){
           jQuery('#lblsitename').html(jQuery(this).children('option:selected').attr('label'));
@@ -211,13 +262,10 @@ if(isset($_SESSION['acctype']))
           
           var siteid = jQuery('#selSiteCode option:selected').val();
           var startdate = jQuery('#startdate').val();
-          //var enddate = jQuery('#enddate').val();
           var comp1 = jQuery('#sel1comp option:selected').val();
           var comp2 = jQuery('#sel2comp option:selected').val();
           var num1 = jQuery('#firstamount').val();
           var num2 = jQuery('#secondamount').val();
-          var withconfirm = jQuery('#selwithconfirmation option:selected').val();
-          var sellocation = jQuery('#sellocation option:selected').val();
           
           if(comp1 == '' && num1 != '') {
               alert('Please select first comparison'); return false;
@@ -238,10 +286,68 @@ if(isset($_SESSION['acctype']))
 //          if(Date.parse(startdate) > Date.parse(enddate)) {
 //              alert('Start date should less than end date'); return false;
 //          }
-          
-          jQuery("#ghmgrid").jqGrid('setGridParam',{url:"process/ProcessTopUpPaginate.php?action=getdata&siteid="+siteid+
-            "&startdate="+startdate+"&comp1="+comp1+"&comp2="+comp2+"&num1="+num1+"&num2="+num2+
-            "&withconfirm="+withconfirm+"&sellocation="+sellocation,page:1}).trigger("reloadGrid"); 
+        document.getElementById('loading').style.display='block';
+        document.getElementById('fade').style.display='block';
+        
+        $.ajax({
+                url: 'process/ProcessTopUpPaginate.php?action=getdata&sellocation='+jQuery('#sellocation option:selected').val()+'&comp1='+jQuery('#sel1comp option:selected').val()+'&num1='+jQuery('#firstamount').val()+'&comp2='+jQuery('#sel2comp option:selected').val()+'&num2='+jQuery('#secondamount').val(),
+                type: 'GET',
+                data : {
+                                sord : function() {return "asc"; },
+                                startdate : function(){return startdate;},
+                                siteid : function(){return siteid;}
+                            },
+                dataType: 'json',
+                success: function(data)
+                {
+                    $("#tblgrosshold").css("display", "block");
+                    
+                    var header = "<thead style='position: relative; top:0; left: 0; height: -63px;'><tr><td  id='tblheader-banner' colspan='11' style='font-style: Arial, calibri, helvetica; font-size: 14px; font-weight: bold; background-color: #3d561c; color: white; height: 30px;'>Gross Hold Monitoring</td>"+
+                                            "</tr><tr style='font-style: Arial, calibri, helvetica; font-size: 12px; text-align: center;font-weight: bold; background-color: #D6EB99; color: black; height: 25px;'>"+
+                                            "<td style='width: 100px;'>POS Account</td><td style='width: 230px;'>Site / PEGS Name</td><td style='width: 130px;'>BCF</td><td style='width: 130px;'>Deposit</td>"+
+                                            "<td style='width: 130px;'>Reload</td><td style='width: 130px;'>Withdrawal</td><td style='width: 130px;'>Manual Redemption</td><td style='width: 130px;'>Gross Hold</td><td style='width: 90px;'>Location</td>"+
+                                            "</tr></thead>";
+                    
+                    var footer = "<tfoot style='position: relative; top:0; left: 0; height: -37px;'><tr style='font-style: Arial, calibri, helvetica; font-size: 12px; text-align: center;font-weight: bold; background-color: #D6EB99; color: black; height: 35px;'>"+
+                                            "<td colspan='11' id='tblfooter-banner'></td></tr></tfoot>";
+                                        
+                    $("#tblgrossholdbody").html("");
+                    $("#tblgrossholdbody").html(header);
+                    
+                     
+                    
+                    $('#loading').hide();
+                    document.getElementById('loading').style.display='none';
+                    document.getElementById('fade').style.display='none';
+                    $("#tblgrossholdbody").append("<tbody>");
+                    for(var itr = 0; itr < data.CountOfSites; itr++){
+                        var part = "<tr id='"+data[itr].POS+"'><td >"+data[itr].POS+"</td><td>"+data[itr].SiteName+"</td><td style='text-align: right;'>"+data[itr].BCF+"</td>"+
+                                            "<td style='text-align: right;'>"+data[itr].Deposit+"</td><td style='text-align: right;'>"+data[itr].Reload+"</td><td style='text-align: right;'>"+data[itr].Withdrawal+"</td><td style='text-align: right;'>"+data[itr].ManualRedemption+"</td>"+
+                                            "<td style='text-align: right;'>"+data[itr].GrossHold+"</td><td>"+data[itr].Location+"</td></tr>";
+                        
+                        $("#tblgrossholdbody").append(part);
+                        
+                        var grosshold = data[itr].GrossHold;
+                        var balance = data[itr].BCF;
+                        var gh = grosshold.replace(/,/g,"");
+                        var bcf = balance.replace(/,/g,"");
+                        var threshold = data[itr].MinBalance;
+                        
+                        //if gross hold >= 200K, color row will be green
+                        if(parseFloat(gh) >= parseFloat('<?php echo _GREEN_1; ?>')) {
+                             $('#' + data[itr].POS).css('background-color','#32CD32');
+                        } 
+                        
+                        //if site balance < minimum threshold, color will be red
+                        if(parseFloat(bcf) < parseFloat(threshold)) {
+                             $('#' + data[itr].POS).css('background-color','red');
+                        }
+
+                    }
+                    $("#tblgrossholdbody").append("</tbody>");          
+                }
+        });
+        
       });
    });
 </script>

@@ -1043,28 +1043,32 @@ class TopUp extends DBHandler
       public function grossHoldMonitoring($sort,$dir,$startdate,$enddate) {
 
           if(isset($_GET['siteid']) && $_GET['siteid'] != '') {
-              $query = "SELECT td.TransactionDetailsID, td.TransactionReferenceID, td.TransactionSummaryID, " . 
-                "td.SiteID, s.SiteCode, s.SiteName, s.POSAccountNo, td.TerminalID, s.POSAccountNo, td.TransactionType, " . 
-                "COALESCE(td.Amount,0) AS Amount, td.DateCreated, td.ServiceID, td.CreatedByAID, a.UserName, sb.Balance as Balance" . 
-                "FROM transactiondetails td FORCE INDEX(IX_transactiondetails_DateCreated) " . 
-                "INNER JOIN sitebalance sb ON sb.SiteID = td.SiteID " . 
-                "INNER JOIN accounts a ON a.AID = td.CreatedByAID " . 
-                "INNER JOIN sites s ON s.SiteID = td.SiteID " .                 
-                "WHERE td.DateCreated >= ? AND td.DateCreated < ? AND td.Status IN (1,4) AND td.SiteID = ? " . 
-                "ORDER BY s.$sort $dir";
-//              
+                $query = "SELECT s.SiteID, s.POSAccountNo , s.SiteName, IFNULL(sb.Balance, 0) AS BCF,
+                                    IFNULL(SUM(mr.ActualAmount), 0) AS ManualRedemption,
+                                    CASE sd.RegionID WHEN 17 THEN 'Metro Manila' ELSE 'Provincial' END AS Location,
+                                    sb.MinBalance
+                                    FROM sites s 
+                                    LEFT JOIN  sitebalance sb ON s.SiteID = sb.SiteID
+                                    LEFT JOIN  sitedetails sd ON s.SiteID = sd.SiteID
+                                    LEFT JOIN manualredemptions mr FORCE INDEX(IX_manualredemptions_TransactionDate) ON s.SiteID = mr.SiteID
+                                      AND mr.TransactionDate >= ? AND mr.TransactionDate < ?
+                                    WHERE s.SiteID NOT IN (1, 235)
+                                    AND s.SiteID = ?
+                                    ORDER BY s.$sort $dir";
               
           } else {
-              $query = "SELECT td.TransactionDetailsID, td.TransactionReferenceID, td.TransactionSummaryID, td.SiteID, " . 
-                "s.SiteName, td.TerminalID, s.POSAccountNo, td.TransactionType, COALESCE(td.Amount,0) AS Amount, " . 
-                "td.DateCreated, s.SiteCode, s.POSAccountNo, td.ServiceID, td.CreatedByAID, a.UserName, sb.Balance as Balance " . 
-                "FROM transactiondetails td  FORCE INDEX(IX_transactiondetails_DateCreated)" . 
-                "INNER JOIN sitebalance sb ON sb.SiteID = td.SiteID " . 
-                "INNER JOIN accounts a ON a.AID = td.CreatedByAID " . 
-                "INNER JOIN sites s ON s.SiteID = td.SiteID " .
-                "WHERE td.DateCreated >= ? AND td.DateCreated < ? AND td.Status IN(1,4) " . 
-                "ORDER BY s.$sort $dir ";
-//              
+                $query = "SELECT s.SiteID, s.POSAccountNo , s.SiteName, IFNULL(sb.Balance, 0) AS BCF,
+                                    IFNULL(SUM(mr.ActualAmount), 0) AS ManualRedemption,
+                                    CASE sd.RegionID WHEN 17 THEN 'Metro Manila' ELSE 'Provincial' END AS Location,
+                                    sb.MinBalance
+                                    FROM sites s 
+                                    LEFT JOIN  sitebalance sb ON s.SiteID = sb.SiteID
+                                    LEFT JOIN  sitedetails sd ON s.SiteID = sd.SiteID
+                                    LEFT JOIN manualredemptions mr FORCE INDEX(IX_manualredemptions_TransactionDate) ON s.SiteID = mr.SiteID
+                                      AND mr.TransactionDate >= ? AND mr.TransactionDate < ?
+                                    WHERE s.SiteID NOT IN (1, 235)
+                                    GROUP By s.SiteID
+                                    ORDER BY s.$sort $dir";
               
           }
           $this->prepare($query);
@@ -1076,88 +1080,58 @@ class TopUp extends DBHandler
         
           $this->execute();        
           $rows1 =  $this->fetchAllData();
-          $trans_details = array();
+
           $varrmerge = array();
-          foreach($rows1 as $value) 
+          foreach($rows1 as $itr => $value) 
           {                
-                if(!isset($varrmerge[$value['SiteID']])) 
-                {
-                     $mergedep = 0;
-                     $mergerel = 0;
-                     $mergewith = 0; 
-                     $varrmerge[$value['SiteID']] = array(
-                        'TransactionSummaryID'=>$value['TransactionSummaryID'],
-                        'TerminalID'=>$value['TerminalID'],
-                        'SiteID'=>$value['SiteID'],
-                        'SiteCode'=>$value['SiteCode'],
-                        'SiteName'=>$value['SiteName'],
-                        'POSAccountNo'=>$value['POSAccountNo'],
-                        'Balance'=>$value['Balance'],
-                        'Withdrawal'=>$mergewith,
-                        'Deposit'=>$mergedep,
-                        'Reload'=>$mergerel
-                     ); 
-                }
-                $trans = array();
-                switch ($value['TransactionType']) 
-                {
-                    case 'W':
-                        $mergewith = $mergewith + $value['Amount'];
-                        $trans = array('Withdrawal'=>$mergewith);
-                        break;
-                    case 'D':
-                        $mergedep = $mergedep + $value['Amount'];
-                        $trans = array('Deposit'=>$mergedep);
-                        break;
-                    case 'R':
-                        $mergerel = $mergerel + $value['Amount'];
-                        $trans = array('Reload'=>$mergerel);
-                        break;
-                }
-                $varrmerge[$value['SiteID']] = array_merge($varrmerge[$value['SiteID']], $trans);
+                 $varrmerge[$itr] = array(
+                    'SiteID'=>$value['SiteID'],
+                     'POSAccountNo'=>$value['POSAccountNo'],
+                     'SiteName'=>$value['SiteName'],
+                    'BCF'=>$value['BCF'],
+                    'ActualAmount'=>$value['ManualRedemption'],
+                    'Location'=>$value['Location'],
+                     'MinBalance' =>$value['MinBalance'],
+                    'Deposit'=>"0.00",
+                    'Reload'=>"0.00",
+                    'Redemption'=>"0.00"
+                 ); 
           }
           
           foreach($varrmerge as $key => $trans) {
-                $vsiteID = $trans['SiteID'];
-                // GET SUM of MANUAL REDEMPTION
-                $query2 = "SELECT SUM(ActualAmount) AS ActualAmount FROM manualredemptions " . 
-                    "WHERE SiteID = ? AND TransactionDate >= ? AND TransactionDate < ?";
-                $this->prepare($query2);
-                $this->bindparameter(1, $vsiteID); // $key is site id
-                $this->bindparameter(2, $startdate);
-                $this->bindparameter(3, $enddate);
-                $this->execute();  
-                $rows2 =  $this->fetchData();
-                $varrmerge[$key]['ActualAmount'] = '0.00';
-                if($rows2['ActualAmount'])
-                    $varrmerge[$key]['ActualAmount'] = $rows2['ActualAmount'];
-                
-                // GET PickUpTag per site id
-                $query3 = "SELECT PickUpTag FROM sitebalance WHERE SiteID = ?";
-                $this->prepare($query3);
-                $this->bindparameter(1, $vsiteID); // $key is site id
-                $this->execute();
-                $row3 =  $this->fetchData();
-                
-                if($row3['PickUpTag'] == 1) {
-                    $varrmerge[$key]['PickUpTag'] = "Metro Manila";
-                } else {
-                    $varrmerge[$key]['PickUpTag'] = "Provincial";
-                }
-                
-                $query4 = "SELECT SiteID FROM grossholdconfirmation WHERE SiteID = ? AND DateCredited = ?";
-                $this->prepare($query4);
-                $this->bindparameter(1, $vsiteID); // $key is site id   
-                $this->bindparameter(2, $startdate);
-                $this->execute();
-                $row4 =  $this->fetchData();
-                $withconfirmation = 'N';
-                if($row4) {
-                    $withconfirmation = 'Y';
-                }
-                $varrmerge[$key]['withconfirmation'] = $withconfirmation;
+                $vsiteID[$key] = $trans['SiteID'];
           }
-          unset($query, $sort, $dir, $rows1, $trans_details);          
+          
+          $sites = implode(",", $vsiteID);
+          $query2 = "SELECT s.SiteID, s.POSAccountNo,
+                                IFNULL(SUM(CASE td.TransactionType WHEN 'D' THEN td.Amount ELSE 0 END), 0) AS Deposit,
+                                IFNULL(SUM(CASE td.TransactionType WHEN 'R' THEN td.Amount ELSE 0 END), 0) AS Reload,
+                                IFNULL(SUM(CASE td.TransactionType WHEN 'W' THEN td.Amount ELSE 0 END), 0) AS Redemption
+                                FROM sites s USE INDEX (IDX_sites_SiteID)
+                                LEFT JOIN transactiondetails td FORCE INDEX (IX_transactiondetails_DateCreated, IX_transactiondetails_Status) ON s.SiteID = td.SiteID
+                                WHERE td.DateCreated >= ? AND td.DateCreated < ?
+                                AND td.Status IN (1, 4) AND s.SiteID IN ($sites)
+                                GROUP BY s.SiteID
+                                ORDER BY s.$sort $dir"; 
+          
+            $this->prepare($query2);
+            $this->bindparameter(1, $startdate);
+            $this->bindparameter(2, $enddate);
+            $this->execute();  
+            $rows2 =  $this->fetchAllData();
+            $vsiteID = 0;
+            $itr = 0;
+            foreach ($rows2 as $value1) {
+                foreach ($varrmerge as $keys => $value2) {
+                    if($value1["SiteID"] == $value2["SiteID"]){
+                        $varrmerge[$keys]["Deposit"] = $value1["Deposit"];
+                        $varrmerge[$keys]["Reload"] = $value1["Reload"];
+                        $varrmerge[$keys]["Redemption"] = $value1["Redemption"];
+                        break;
+                    }
+                }  
+            }
+          unset($query,$query2, $sort, $dir, $rows1);   
           return $varrmerge;
       }
       

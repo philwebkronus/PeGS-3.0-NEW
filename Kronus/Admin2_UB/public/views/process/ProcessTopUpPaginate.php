@@ -43,41 +43,40 @@ class ProcessTopUpPaginate extends BaseProcess {
         $topup = new TopUp($this->getConnection());
         $topup->open();
         $dir = $_GET['sord'];
-        $sort = "SiteID";
-        if(strlen($_GET['sidx']) > 0)
+        $sort = "POSAccountNo";
+
+        if(strlen($_GET['sidx']) > 0){
             $sort = $_GET['sidx'];
+        }
         ob_get_clean();
+        
         //array containing complete details
         $rows = $topup->grossHoldMonitoring($sort, $dir, $startdate,$enddate); 
         ini_set('memory_limit', '-1'); 
         ini_set('max_execution_time', '220');
         $arrdetails = array();
         foreach($rows as $id => $row) {
-            $gross_hold = (($row['Deposit'] + $row['Reload'] - $row['Withdrawal']) - $row['ActualAmount']);
+            $gross_hold = (($row['Deposit'] + $row['Reload'] - $row['Redemption']) - $row['ActualAmount']);
             $temp = array(
                         "SiteName"=>$row['SiteName'],
-                        "SiteCode"=>substr($row['SiteCode'], strlen(BaseProcess::$sitecode)),
+//                        "SiteCode"=>substr($row['SiteCode'], strlen(BaseProcess::$sitecode)),
+                        "MinBalance" => $row["MinBalance"],
                         "POS"=>$row['POSAccountNo'],
-                        "BCF"=>number_format($row['Balance'],2),
+                        "BCF"=>number_format($row['BCF'],2),
                         "Deposit"=>number_format($row['Deposit'],2),
                         "Reload"=>number_format($row['Reload'],2),
-                        "Withdrawal"=>number_format($row['Withdrawal'],2),
+                        "Withdrawal"=>number_format($row['Redemption'],2),
                         "ManualRedemption"=>(($row['ActualAmount'])?number_format($row['ActualAmount'],2):''),
                         "GrossHold"=>number_format($gross_hold, 2),
-                        "Confirmation"=>$row['withconfirmation'],
-                        "PickUp"=>$row['PickUpTag'],
-                    );
-            if($_GET['withconfirm'] != '') {
-                if($row['withconfirmation'] != $_GET['withconfirm']) {
-                    continue;
-                }
-            }
-            if($_GET['sellocation'] != '') {
-                if($row['PickUpTag'] != $_GET['sellocation']) {
-                    continue;
-                }
-            }            
-
+                        "Location"=>$row['Location'],
+                    );        
+            
+                    if($_GET['sellocation'] != '') {
+                        if($row['Location'] != $_GET['sellocation']) {
+                            continue;
+                        }
+                    }            
+            
             //check the amount range
             if(isset($_GET['comp1']) && isset($_GET['comp2']) && $_GET['comp1'] != '' && $_GET['comp2'] != '') {
                 $val1 = str_replace(',', '', $_GET['num1']);
@@ -98,62 +97,10 @@ class ProcessTopUpPaginate extends BaseProcess {
             }
         }
 
-        $page = $_GET['page']; // get the requested page
-        $limit = $_GET['rows']; // get how many rows we want to have into the grid
-
-        if(count($arrdetails) > 0)
-        {
-            $count = count($arrdetails); //count total rows
-            if($count > 0 ) {
-                   $total_pages = ceil($count/$limit);
-            } else {
-                  $total_pages = 0;
-            }
-
-            if ($page > $total_pages)
-            {
-                $page = $total_pages;
-                $start = $limit * $page - $limit;           
-            }
-            if($page == 0)
-            {
-                $start = 0;
-            }
-            else{
-                $start = $limit * $page - $limit;   
-            }
-
-            $limit = (int)$limit;
-            //paginate the array
-            $rdetails = $topup->paginatetransaction($arrdetails, $start, $limit);
-            $i = 0;
-            $response->page = $page;
-            $response->total = $total_pages;
-            $response->records = $count;  
-            //write to jqgrid
-            foreach ($rdetails as $key=>$row)
-            {
-                $response->rows[$i]['id']= $key;
-                $response->rows[$i]['cell'] = array($row['SiteName'], $row['SiteCode'], $row['POS'],$row['BCF'], 
-                    $row['Deposit'], $row['Reload'], $row['Withdrawal'], $row['ManualRedemption'], $row['GrossHold'], 
-                    $row['Confirmation'], $row['PickUp']);
-                $i++;
-            }
-            unset($rdetails, $limit, $start, $page, $total_pages, $count);
-        }
-        else
-        {
-            $i = 0;
-            $response->page = 0;
-            $response->total = 0;
-            $response->records = 0;
-            $msg = "Gross Hold Monitoring: No Results Found";
-            $response->msg = $msg;;  
-        }
-        
-        echo json_encode($response);
+        $arrdetails["CountOfSites"] = count($arrdetails);
+        echo json_encode($arrdetails);
         $topup->close();
-        unset($rows, $startdate, $enddate, $response, $arrdetails, $temp);
+        unset($rows, $startdate, $enddate, $arrdetails, $temp);
         exit;
     }
     
