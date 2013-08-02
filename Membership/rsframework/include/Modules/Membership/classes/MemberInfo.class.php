@@ -317,115 +317,40 @@ class MemberInfo extends BaseEntity
     }
     
         function updateProfileWithNoEmail($arrEntries){
-        unset($_SESSION["PreviousRedemption"]);
-        $this->Identity = "MemberInfoID";
-        parse_str($arrEntries, $entries);
-        if (isset($entries["TermsAndConditions"])) {
-            unset($entries["TermsAndConditions"]);
-        }
-        foreach ($entries as $key => $val){
-            $entries[$key] = urldecode($val);
-        }
-        parent::UpdateByArray($entries);
-        if ($this->HasError){
-            $retval =  $this->getError();
-        } else {
-            $retval =  "Profile Updated Successfully.";
-        }
-        return $retval;
+            unset($_SESSION["PreviousRedemption"]);
+            $this->Identity = "MemberInfoID";
+            parse_str($arrEntries, $entries);
+            if (isset($entries["TermsAndConditions"])) {
+                unset($entries["TermsAndConditions"]);
+            }
+            foreach ($entries as $key => $val){
+                $entries[$key] = urldecode($val);
+            }
+            if(isset($_SESSION["CardRed"])){
+                $entries["MemberInfoID"] = $_SESSION["CardRed"]["MemberInfoID"];
+            }
+            parent::UpdateByArray($entries);
+            if ($this->HasError){
+                $retval =  $this->getError();
+            } else {
+                $retval =  "Profile Updated Successfully.";
+            }
+            return $retval;
         
     }
+    
+   
     
     /**
       * @author Gerardo V. Jagolino Jr.
       * @return object array
-      * get member information of age 21 to 30
-     */
-    public function getAge21to30($gender, $fromdate, $todate)
-    {
-        
-        $query = "SELECT COUNT(mi.MemberInfoID) AS Count FROM memberinfo mi INNER JOIN members m ON m.MID = mi.MID 
-            WHERE YEAR(CURDATE())-YEAR(mi.BirthDate) BETWEEN 21 AND 30 AND mi.Gender = $gender
-                AND mi.DateVerified >= '$fromdate' AND mi.DateVerified <= '$todate' AND m.Status IN (1,5);";
-        
-        return parent::RunQuery($query);
-        
-    }
-    
-    /**
-      * @author Gerardo V. Jagolino Jr.
-      * @return object array
-      * get member information of age 21 to 30
+      * get member information MID and Birthdate 
      */
     public function getBirthdays($gender, $fromdate, $todate)
     {
         
         $query = "SELECT mi.MemberInfoID, mi.MID, mi.Birthdate FROM memberinfo mi INNER JOIN members m ON m.MID = mi.MID 
             WHERE mi.Gender = $gender
-                AND mi.DateVerified >= '$fromdate' AND mi.DateVerified <= '$todate' AND m.Status IN (1,5);";
-        
-        return parent::RunQuery($query);
-        
-    }
-    
-    /**
-      * @author Gerardo V. Jagolino Jr.
-      * @return object array
-      * get member information of age 31 to 40
-     */
-    public function getAge31to40($gender, $fromdate, $todate)
-    {
-        
-        $query = "SELECT COUNT(mi.MemberInfoID) AS Count FROM memberinfo mi INNER JOIN members m ON m.MID = mi.MID 
-            WHERE YEAR(CURDATE())-YEAR(mi.BirthDate) BETWEEN 31 AND 40 AND mi.Gender = $gender
-                AND mi.DateVerified >= '$fromdate' AND mi.DateVerified <= '$todate' AND m.Status IN (1,5);";
-        
-        return parent::RunQuery($query);
-        
-    }
-    
-    /**
-      * @author Gerardo V. Jagolino Jr.
-      * @return object array
-      * get member information of age 41 to 50
-     */
-    public function getAge41to50($gender, $fromdate, $todate)
-    {
-        
-        $query = "SELECT COUNT(mi.MemberInfoID) AS Count FROM memberinfo mi INNER JOIN members m ON m.MID = mi.MID 
-            WHERE YEAR(CURDATE())-YEAR(mi.BirthDate) BETWEEN 41 AND 50 AND mi.Gender = $gender
-                AND mi.DateVerified >= '$fromdate' AND mi.DateVerified <= '$todate' AND m.Status IN (1,5);";
-        
-        return parent::RunQuery($query);
-        
-    }
-    
-    /**
-      * @author Gerardo V. Jagolino Jr.
-      * @return object array
-      * get member information of age 51 to 60
-     */
-    public function getAge51to60($gender, $fromdate, $todate)
-    {
-        
-        $query = "SELECT COUNT(mi.MemberInfoID) AS Count FROM memberinfo mi INNER JOIN members m ON m.MID = mi.MID 
-            WHERE YEAR(CURDATE())-YEAR(mi.BirthDate) BETWEEN 51 AND 60 AND mi.Gender = $gender
-                AND mi.DateVerified >= '$fromdate' AND mi.DateVerified <= '$todate' AND m.Status IN (1,5);";
-        
-        return parent::RunQuery($query);
-        
-    }
-    
-    /**
-      * @author Gerardo V. Jagolino Jr.
-      * @return object array
-      * get member information of age 61 and up
-     */
-    public function getAge61andup($gender, $fromdate, $todate)
-    {
-        
-        $query = "SELECT COUNT(mi.MemberInfoID) AS Count FROM memberinfo mi INNER JOIN members m ON m.MID = mi.MID 
-            WHERE YEAR(CURDATE())-YEAR(mi.BirthDate) >= 60 AND mi.Gender = $gender
                 AND mi.DateVerified >= '$fromdate' AND mi.DateVerified <= '$todate' AND m.Status IN (1,5);";
         
         return parent::RunQuery($query);
