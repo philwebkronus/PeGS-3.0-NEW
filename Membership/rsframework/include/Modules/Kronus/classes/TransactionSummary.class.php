@@ -68,7 +68,7 @@ class TransactionSummary extends BaseEntity
         $query = "SELECT DISTINCT(LoyaltyCardNumber)
             FROM transactionsummary 
             WHERE SiteID = $site AND DateStarted >= '$start' 
-            AND DateStarted < '$end'";
+            AND DateStarted < '$end' AND LoyaltyCardNumber IS NOT NULL";
         $result = parent::RunQuery($query);
         return $result;
     }
