@@ -89,6 +89,7 @@ body
     /*color: #1A597C;*/
     /*background: #fbec88;*/
     color: #ff0000;
+    z-index: -1001;
 }
 
 .searchbar
