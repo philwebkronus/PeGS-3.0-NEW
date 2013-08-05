@@ -21,9 +21,9 @@ $memInfoActive = $_MemberInfo->getActiveAccountStatus();
 $memInfoBanned = $_MemberInfo->getBannedAccountStatus();
 $memInfoStatus = $_MemberInfo->getActiveAndBannedAccountStatus();
 
-$countActive = count($memInfoActive);
-$countBanned = count($memInfoBanned);
-$countStatus = count($memInfoStatus);
+$countActive = $memInfoActive[0]['COUNT(MID)'];
+$countBanned = $memInfoBanned[0]['COUNT(MID)'];
+$countStatus = $memInfoStatus[0]['COUNT(MID)'];
 
 //Clear the session for Redemtion
 if(isset($_SESSION['CardRed'])){
