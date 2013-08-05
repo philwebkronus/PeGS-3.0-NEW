@@ -80,6 +80,11 @@ $fproc->AddControl($btnClear);
 
 $fproc->ProcessForms();
 
+//Clear the session for Redemtion
+if(isset($_SESSION['CardRed'])){
+    unset($_SESSION['CardRed']);
+}
+
 if ($fproc->IsPostBack)
 {
     if ($btnClear->SubmittedValue == "Clear")
@@ -91,7 +96,9 @@ if ($fproc->IsPostBack)
 
 ?>
 <?php include("header.php"); ?>
-<script type='text/javascript' src='js/jquery.jqGrid.js' media='screen, projection'></script>
+<script type='text/javascript' src='js/jqgrid/i18n/grid.locale-en.js' media='screen, projection'></script>
+<script type='text/javascript' src='js/jquery.jqGrid.min.js' media='screen, projection'></script>
+<!--<script type='text/javascript' src='js/jquery.jqGrid.js' media='screen, projection'></script>-->
 <link rel='stylesheet' type='text/css' media='screen' href='css/ui.jqgrid.css' />
 <link rel='stylesheet' type='text/css' media='screen' href='css/ui.multiselect.css' />
 <script type='text/javascript'>
@@ -347,7 +354,7 @@ if ($fproc->IsPostBack)
             <p align="left">Do you wish to Ban/Unban this Player?</p>
             <p align="left">Please input remarks to continue.</p>
             <label style="float: left;width: 60px;display: block;">Remarks:</label>
-            <div style="float:right;"><textarea name="txtRemarks" id="txtRemarks" cols="20" rows="1" class="validate[required]" style="color: #666; width: 200px;"></textarea></div>
+            <div style="float:right;"><textarea name="txtRemarks" id="txtRemarks" cols="20" rows="1" class="validate[required]" maxlength="255" style="color: #666; width: 200px;"></textarea></div>
             <br>
         </div>
     </form>
