@@ -72,92 +72,135 @@ $fproc->ProcessForms();
 
 $showresult = false;
 
+//Clear the session for Redemtion
+if(isset($_SESSION['CardRed'])){
+    unset($_SESSION['CardRed']);
+}
+
 if($fproc->IsPostBack)
 {
     if($btnSubmit->SubmittedValue == "Query")
     {
         $fromdate = $fromdateverified->SubmittedValue;
         $todate = $todateverified->SubmittedValue;
+        list($yr, $mon, $day) = preg_split("/\-/", $todate);
         
-        //Group info by gender and age
-        $memInfo21to31 = $_MemberInfo->getAge21to30(1, $fromdate, $todate);
-        $memInfo21to32 = $_MemberInfo->getAge21to30(2, $fromdate, $todate);
-
-        $memInfo31to40M = $_MemberInfo->getAge31to40(1, $fromdate, $todate);
-        $memInfo31to40F = $_MemberInfo->getAge31to40(2, $fromdate, $todate);
-
-        $memInfo41to50M = $_MemberInfo->getAge41to50(1, $fromdate, $todate);
-        $memInfo41to50F = $_MemberInfo->getAge41to50(2, $fromdate, $todate);
-
-        $memInfo51to60M = $_MemberInfo->getAge51to60(1, $fromdate, $todate);
-        $memInfo51to60F = $_MemberInfo->getAge51to60(2, $fromdate, $todate);
-
-        $memInfo61andupM = $_MemberInfo->getAge61andup(1, $fromdate, $todate);
-        $memInfo61andupF = $_MemberInfo->getAge61andup(2, $fromdate, $todate);
-
-        //loop through results from 21 to 30
-        foreach ($memInfo21to31 as $value) {
-            foreach ($value as $value2) {
+        $todate = $yr."-".$mon."-".($day+1);
+        
+        function CalculateAge($BirthDate) {
+            list($Year, $Month, $Day) = explode("-", $BirthDate);
+            if(date("m") >  $Month){
+                $age = date("Y") - $Year;
             }
-        }
+            elseif(date("m") <  $Month){
+                $age = date("Y") - $Year;
+                $age = $age - 1;
+            }
+            elseif($Month ==  date("m")){
+                if(date("d") < $Day){
+                    $age = date("Y") - $Year;
+                    $age = $age - 1;
+                }
+                else{
+                    $age = date("Y") - $Year;
+                }
+            }
 
-        foreach ($memInfo21to32 as $val) {
-            foreach ($val as $value3) {
+            return $age;
+        }  
+        
+        $boysbday = $_MemberInfo->getBirthdays(1, $fromdate, $todate);
+        $girlsbday = $_MemberInfo->getBirthdays(2, $fromdate, $todate);
+       
+        $arrboys21 = array();
+        $arrboys31 = array();
+        $arrboys41 = array();
+        $arrboys51 = array();
+        $arrboys60 = array();
+
+        foreach ($boysbday as $value) {
+            
+            $boysage = CalculateAge($value['Birthdate']);
+                
+            if($boysage >= 21 && $boysage <= 30){
+                array_push($arrboys21, $boysage);
+            }
+            
+            if($boysage >= 31 && $boysage <= 40){
+                array_push($arrboys31, $boysage);
+            }
+            
+            if($boysage >= 41 && $boysage <= 50){
+                array_push($arrboys41, $boysage);
+            }
+            
+            if($boysage >= 51 && $boysage <= 60){
+                array_push($arrboys51, $boysage);
+            }
+            
+            if($boysage > 60 ){
+                array_push($arrboys60, $boysage);
             }
         }
         
-        $total = $value2 + $value3; //total result of people ages 21 - 30
+        $arrgirls21 = array();
+        $arrgirls31 = array();
+        $arrgirls41 = array();
+        $arrgirls51 = array();
+        $arrgirls60 = array();	
+
+        foreach ($girlsbday as $value2) {
             
-        //loop through results from 31 to 40
-        foreach ($memInfo31to40M as $val1) {
-            foreach ($val1 as $value4) {
-            }
-        }
-
-        foreach ($memInfo31to40F as $val2) {
-            foreach ($val2 as $value5) {
-            }
-        }
-        $total2 = $value4 + $value5; //total result of people ages 31 - 40
-                
-        //loop through results from 41 to 50
-        foreach ($memInfo41to50M as $val3) {
-            foreach ($val3 as $value6) {
-            }
-        }
-
-        foreach ($memInfo41to50F as $val4) {
-            foreach ($val4 as $value7) {
-            }
-        }
-        $total3 = $value6 + $value7; //total result of people ages 41 - 50
-                
-        //loop through results from 51 to 60
-        foreach ($memInfo51to60M as $val5) {
-            foreach ($val5 as $value8) {
-            }
-        }
-
-        foreach ($memInfo51to60F as $val6) {
-            foreach ($val6 as $value9) {
-            }
-        }
-        $total4 = $value8 + $value9; //total result of people ages 51 - 60
+            $girlsage = CalculateAge($value2['Birthdate']);
             
-        //loop through results from 61 and up
-        foreach ($memInfo61andupM as $val7) {
-            foreach ($val7 as $value10) {
+            
+        
+            if($girlsage >= 21 && $girlsage <= 30){
+                array_push($arrgirls21, $girlsage);
             }
+            
+            if($girlsage >= 31 && $girlsage <= 40){
+                array_push($arrgirls31, $girlsage);
+            }
+            
+            if($girlsage >= 41 && $girlsage <= 50){
+                array_push($arrgirls41, $girlsage);
+            }
+            
+            if($girlsage >= 51 && $girlsage <= 60){
+                array_push($arrgirls51, $girlsage);
+            }
+            
+            if($girlsage > 60 ){
+                array_push($arrgirls60, $girlsage);
+            }
+            
         }
+        $countboys21 = count($arrboys21);
+        $countboys31 = count($arrboys31);
+        $countboys41 = count($arrboys41);
+        $countboys51 = count($arrboys51);
+        $countboys60 = count($arrboys60);
+        
+        $countgirls21 = count($arrgirls21);
+        $countgirls31 = count($arrgirls31);
+        $countgirls41 = count($arrgirls41);
+        $countgirls51 = count($arrgirls51);
+        $countgirls60 = count($arrgirls60);
+        
+        $total = $countboys21 + $countgirls21; //total result of people ages 21 - 30
 
-        foreach ($memInfo61andupF as $val8) {
-            foreach ($val8 as $value11) {
-            }
-        }
-        $total5 = $value10 + $value11; //total result of people ages 61 and up
+        $total2 = $countgirls31 + $countboys31; //total result of people ages 31 - 40
+
+        $total3 = $countgirls41 + $countboys41; //total result of people ages 41 - 50
                 
-        $maletotal = $value2+$value4+$value6+$value8+$value10;
-        $femaletotal = $value3+$value5+$value7+$value9+$value11;
+        $total4 = $countboys51 + $countgirls51; //total result of people ages 51 - 60
+            
+
+        $total5 = $countboys60 + $countgirls60; //total result of people ages 61 and up
+                
+        $maletotal = $countboys21+$countboys31+$countboys41+$countboys51+$countboys60;
+        $femaletotal = $countgirls21+$countgirls31+$countgirls41+$countgirls51+$countgirls60;
         $supertotal = $total+$total2+$total3+$total4+$total5;
                 
         if($supertotal > 0){
@@ -197,36 +240,36 @@ if($fproc->IsPostBack)
       $resultz = array(
         array(
             'Date Range' => '21-30',
-            'Male' => $value2,
-            'Female' => $value3,
+            'Male' => $countboys21,
+            'Female' => $countgirls21,
             'Total' => $total,
             'Percentage' => $percent." %",
         ),
           array(
             'Date Range' => '31-40',
-            'Male' => $value4,
-            'Female' => $value5,
+            'Male' => $countboys31,
+            'Female' => $countgirls31,
             'Total' => $total2,
             'Percentage' => $percent2." %",
         ),
           array(
             'Date Range' => '41-50',
-            'Male' => $value6,
-            'Female' => $value7,
+            'Male' => $countboys41,
+            'Female' => $countgirls41,
             'Total' => $total3,
             'Percentage' => $percent3." %",
         ),
           array(
             'Date Range' => '51-60',
-            'Male' => $value8,
-            'Female' => $value9,
+            'Male' => $countboys51,
+            'Female' => $countgirls51,
             'Total' => $total4,
             'Percentage' => $percent4." %",
         ),
           array(
             'Date Range' => '61 and above',
-            'Male' => $value10,
-            'Female' => $value11,
+            'Male' => $countboys60,
+            'Female' => $countgirls60,
             'Total' => $total5,
             'Percentage' => $percent5." %",
         ),
@@ -316,13 +359,13 @@ else{
         <div class="maincontainer">
             <?php include('menu.php'); ?>
             <br />
-            <div style="float: left; margin-left: 40px;" class="title">Membership Demographics:</div>
+            <div style="float: left; margin-left: 30px;" class="title">Membership Demographics:</div>
             <br /><br />
             <hr color="black">
             <br /><br />
             <table>
             <tr>
-            <td>Filters: &nbsp; &nbsp;</td>    
+            <td>&nbsp; &nbsp;&nbsp; &nbsp;Filters: &nbsp; &nbsp;</td>    
             <td>From&nbsp;</td>
             <td><?php echo $fromdateverified; ?></td>
             <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;To&nbsp;</td>
