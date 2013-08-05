@@ -69,7 +69,8 @@ width:606px;
         border: 0;
       }
       .ad-gallery .ad-image-wrapper .ad-image .ad-image-description {
-          display: none;
+          /*display: none;*/
+          visibility: hidden;
         position: absolute;
         top: 0px;
         /*right: 50px;*/
