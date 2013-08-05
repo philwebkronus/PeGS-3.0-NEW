@@ -9,6 +9,7 @@
 ?>
 <?php include_once 'controller/profilecontroller.php'; ?>
 <?php include "header.php"; ?> 
+<script type="text/javascript" src="js/slider/ad_gallery.js"></script>
 <script type="text/javascript">
     
     $(document).ready(function() {
@@ -174,23 +175,33 @@
                         <div class="ad-thumbs">
                             <ul class="ad-thumb-list">
                                 <li>
-                                    <a href="images/slider/slider_photos/lamb.jpg">
-                                        <img src="images/slider/bullet.png" title="Lamborghini" longdesc="http://www.lamborghini.com" alt="Caption">
+                                    <a href="images/slider/slider_photos/ConsolationPrize.jpg">
+                                        <img src="images/slider/bullet.png" title="Consolation Prize" longdesc="http://www.lamborghini.com" alt="Caption">
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="images/slider/slider_photos/mac.jpg">
-                                        <img src="images/slider/bullet.png" title="Apple" longdesc="" alt="">
+                                    <a href="images/slider/slider_photos/devices.jpg">
+                                        <img src="images/slider/bullet.png" title="Devices" longdesc="" alt="">
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="images/slider/slider_photos/ubuntu.jpg">
-                                        <img src="images/slider/bullet.png" title="Ubuntu" longdesc="" alt="">
+                                    <a href="images/slider/slider_photos/HarleyDavidson.jpg">
+                                        <img src="images/slider/bullet.png" title="Harley Davidson" longdesc="" alt="">
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="images/slider/slider_photos/dummy_img.jpg">
-                                        <img src="images/slider/bullet.png" title="Dollar" longdesc="" alt="">
+                                    <a href="images/slider/slider_photos/Starcruise.jpg">
+                                        <img src="images/slider/bullet.png" title="Starcruise" longdesc="" alt="">
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="images/slider/slider_photos/MacauLuxuryTour.jpg">
+                                        <img src="images/slider/bullet.png" title="Macau Luxury Tour" longdesc="" alt="">
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="images/slider/slider_photos/toyota.jpg">
+                                        <img src="images/slider/bullet.png" title="Toyota" longdesc="" alt="">
                                     </a>
                                 </li>
                             </ul>

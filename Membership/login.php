@@ -5,7 +5,7 @@
 <link href="css/slider/bootstrap.min.css" rel="stylesheet" media="screen">
 <link href="css/slider/bootstrap-responsive.min.css" rel="stylesheet" media="screen">
 <link href="css/slider/style.css" rel="stylesheet" media="screen">
-<link rel="stylesheet" href="css/slider/ad_gallery.css">
+<link rel="stylesheet" href="css/slider/prof_slider/ad_gallery.css">
 <!-------------------------------->
 <script language="javascript" type="text/javascript">
     
@@ -47,23 +47,33 @@
                                 <div class="ad-thumbs">
                                     <ul class="ad-thumb-list">
                                         <li>
-                                            <a href="images/slider/slider_photos/lamb.jpg">
-                                                <img src="images/slider/bullet.png" title="Lamborghini" longdesc="http://www.lamborghini.com" alt="Caption">
+                                            <a href="images/slider/slider_photos/ConsolationPrize.jpg" >
+                                                <img src="images/slider/slider_photos/ConsolationPrize.jpg" title="ConsolationPrize" longdesc="http://localhost/membershipsystem/images/slider/slider_photos/ConsolationPrize.jpg" alt="Caption">
                                             </a>
                                         </li>
                                         <li>
-                                            <a href="images/slider/slider_photos/mac.jpg">
-                                                <img src="images/slider/bullet.png" title="Apple" longdesc="" alt="">
+                                            <a href="images/slider/slider_photos/devices.jpg">
+                                                <img src="images/slider/slider_photos/devices.jpg" title="" longdesc="http://localhost/membershipsystem/images/slider/slider_photos/devices.jpg" alt="">
                                             </a>
                                         </li>
                                         <li>
-                                            <a href="images/slider/slider_photos/ubuntu.jpg">
-                                                <img src="images/slider/bullet.png" title="Ubuntu" longdesc="" alt="">
+                                            <a href="images/slider/slider_photos/HarleyDavidson.jpg">
+                                                <img src="images/slider/slider_photos/HarleyDavidson.jpg" title="" longdesc="http://localhost/membershipsystem/images/slider/slider_photos/HarleyDavidson.jpg" alt="">
                                             </a>
                                         </li>
                                         <li>
-                                            <a href="images/slider/slider_photos/dummy_img.jpg">
-                                                <img src="images/slider/bullet.png" title="Dollar" longdesc="" alt="">
+                                            <a href="images/slider/slider_photos/Starcruise.jpg">
+                                                <img src="images/slider/slider_photos/Starcruise.jpg" title="" longdesc="http://localhost/membershipsystem/images/slider/slider_photos/Starcruise.jpg" alt="">
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="images/slider/slider_photos/MacauLuxuryTour.jpg">
+                                                <img src="images/slider/slider_photos/MacauLuxuryTour.jpg" title="" longdesc="http://localhost/membershipsystem/images/slider/slider_photos/MacauLuxuryTour.jpg" alt="">
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="images/slider/slider_photos/toyota.jpg">
+                                                <img src="images/slider/slider_photos/toyota.jpg" title="" longdesc="http://localhost/membershipsystem/images/slider/slider_photos/toyota.jpg" alt="">
                                             </a>
                                         </li>
                                     </ul>
