@@ -185,23 +185,23 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="images/slider/slider_photos/HarleyDavidson.jpg">
-                                        <img src="images/slider/bullet.png" title="Harley Davidson" longdesc="" alt="">
+                                    <a href="images/slider/slider_photos/MacauLuxuryTour.jpg">
+                                        <img src="images/slider/slider_photos/MacauLuxuryTour.jpg" title="" longdesc="images/slider/slider_photos/MacauLuxuryTour.jpg" alt="">
                                     </a>
                                 </li>
                                 <li>
                                     <a href="images/slider/slider_photos/Starcruise.jpg">
-                                        <img src="images/slider/bullet.png" title="Starcruise" longdesc="" alt="">
+                                        <img src="images/slider/slider_photos/Starcruise.jpg" title="" longdesc="images/slider/slider_photos/Starcruise.jpg" alt="">
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="images/slider/slider_photos/MacauLuxuryTour.jpg">
-                                        <img src="images/slider/bullet.png" title="Macau Luxury Tour" longdesc="" alt="">
+                                    <a href="images/slider/slider_photos/HarleyDavidson.jpg">
+                                        <img src="images/slider/slider_photos/HarleyDavidson.jpg" title="" longdesc="images/slider/slider_photos/HarleyDavidson.jpg" alt="">
                                     </a>
                                 </li>
                                 <li>
                                     <a href="images/slider/slider_photos/toyota.jpg">
-                                        <img src="images/slider/bullet.png" title="Toyota" longdesc="" alt="">
+                                        <img src="images/slider/slider_photos/toyota.jpg" title="" longdesc="images/slider/slider_photos/toyota.jpg" alt="">
                                     </a>
                                 </li>
                             </ul>

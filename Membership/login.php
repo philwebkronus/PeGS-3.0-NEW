@@ -48,32 +48,32 @@
                                     <ul class="ad-thumb-list">
                                         <li>
                                             <a href="images/slider/slider_photos/ConsolationPrize.jpg" >
-                                                <img src="images/slider/slider_photos/ConsolationPrize.jpg" title="ConsolationPrize" longdesc="http://localhost/membershipsystem/images/slider/slider_photos/ConsolationPrize.jpg" alt="Caption">
+                                                <img src="images/slider/slider_photos/ConsolationPrize.jpg" title="ConsolationPrize" longdesc="images/slider/slider_photos/ConsolationPrize.jpg" alt="Caption">
                                             </a>
                                         </li>
                                         <li>
                                             <a href="images/slider/slider_photos/devices.jpg">
-                                                <img src="images/slider/slider_photos/devices.jpg" title="" longdesc="http://localhost/membershipsystem/images/slider/slider_photos/devices.jpg" alt="">
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="images/slider/slider_photos/HarleyDavidson.jpg">
-                                                <img src="images/slider/slider_photos/HarleyDavidson.jpg" title="" longdesc="http://localhost/membershipsystem/images/slider/slider_photos/HarleyDavidson.jpg" alt="">
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="images/slider/slider_photos/Starcruise.jpg">
-                                                <img src="images/slider/slider_photos/Starcruise.jpg" title="" longdesc="http://localhost/membershipsystem/images/slider/slider_photos/Starcruise.jpg" alt="">
+                                                <img src="images/slider/slider_photos/devices.jpg" title="" longdesc="images/slider/slider_photos/devices.jpg" alt="">
                                             </a>
                                         </li>
                                         <li>
                                             <a href="images/slider/slider_photos/MacauLuxuryTour.jpg">
-                                                <img src="images/slider/slider_photos/MacauLuxuryTour.jpg" title="" longdesc="http://localhost/membershipsystem/images/slider/slider_photos/MacauLuxuryTour.jpg" alt="">
+                                                <img src="images/slider/slider_photos/MacauLuxuryTour.jpg" title="" longdesc="images/slider/slider_photos/MacauLuxuryTour.jpg" alt="">
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="images/slider/slider_photos/Starcruise.jpg">
+                                                <img src="images/slider/slider_photos/Starcruise.jpg" title="" longdesc="images/slider/slider_photos/Starcruise.jpg" alt="">
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="images/slider/slider_photos/HarleyDavidson.jpg">
+                                                <img src="images/slider/slider_photos/HarleyDavidson.jpg" title="" longdesc="images/slider/slider_photos/HarleyDavidson.jpg" alt="">
                                             </a>
                                         </li>
                                         <li>
                                             <a href="images/slider/slider_photos/toyota.jpg">
-                                                <img src="images/slider/slider_photos/toyota.jpg" title="" longdesc="http://localhost/membershipsystem/images/slider/slider_photos/toyota.jpg" alt="">
+                                                <img src="images/slider/slider_photos/toyota.jpg" title="" longdesc="images/slider/slider_photos/toyota.jpg" alt="">
                                             </a>
                                         </li>
                                     </ul>
