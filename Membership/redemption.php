@@ -34,6 +34,7 @@ if(isset($_SESSION['RewardItemsInfo'])){
     App::LoadModuleClass("Membership", "AuditFunctions");
     App::LoadModuleClass('Membership', 'Cities');
     App::LoadModuleClass('Membership', 'Regions');
+    App::LoadModuleClass('Membership', 'Helper');
 
     App::LoadModuleClass("Loyalty", "CouponBatches");
     App::LoadModuleClass("Loyalty", "MemberCards");
@@ -75,6 +76,7 @@ if(isset($_SESSION['RewardItemsInfo'])){
     $_Ref_region = new Regions();
     $_RewardItemDetails = new RewardItemDetails();
     $_Promos = new Promos();
+    $_Helper = new Helper();
     
     //Set Table for raffle coupon based on active coupon batch.
     $getRaffleCouponSuffix = $_CouponBatches->SelectByWhere(" WHERE Status = 1 LIMIT 1");
@@ -168,17 +170,11 @@ if(isset($_SESSION['RewardItemsInfo'])){
     $txtRedeemAddress1->CssClass = "validate[required]";
     $fproc->AddControl($txtRedeemAddress1);
     
-    $arrRef_city = $_Ref_city->SelectAll();
-    $arrRef_cityList = new ArrayList($arrRef_city);
     $cboCityID = new ComboBox("CityID", "CityID", "City: ");
     $opt1[] = new ListItem("Select City", "", true);
     $cboCityID->Items = $opt1;
     $cboCityID->ShowCaption = false;
     $cboCityID->CssClass = 'validate[required]';
-    $cboCityID->DataSourceText = "CityName";
-    $cboCityID->DataSourceValue = "CityID";
-    $cboCityID->DataSource = $arrRef_cityList;
-    $cboCityID->DataBind();
     $fproc->AddControl($cboCityID);
     
 
@@ -226,8 +222,17 @@ if(isset($_SESSION['RewardItemsInfo'])){
         $txtRedeemFirstName->Text = $ArrMemberInfo["FirstName"];
         $txtRedeemLastName->Text = $ArrMemberInfo["LastName"];
         $txtRedeemAddress1->Text = $ArrMemberInfo["Address1"];
-        $cboCityID->SetSelectedValue($ArrMemberInfo["CityID"]);
         $cboRegionID->SetSelectedValue($ArrMemberInfo["RegionID"]);
+        $arrRef_city = $_Ref_city->getCitiesUsingRegionID($ArrMemberInfo["RegionID"]);
+        $arrRef_cityList = new ArrayList($arrRef_city);
+        $cboCityID->DataSourceText = "CityName";
+        $cboCityID->DataSourceValue = "CityID";
+        $cboCityID->DataSource = $arrRef_cityList;
+        $cboCityID->DataBind();
+        if($ArrMemberInfo["CityID"] != ""){
+            $cboCityID->SetSelectedValue($ArrMemberInfo["CityID"]);
+        }
+        
         $txtRedeemMobileNumber->Text = $ArrMemberInfo["MobileNumber"];
         $txtRedeemEmail->Text = $ArrMemberInfo["Email"];
         $dtRedeemBirthDate->SelectedDate = $ArrMemberInfo["Birthdate"];
@@ -296,21 +301,40 @@ if(isset($_SESSION['RewardItemsInfo'])){
                     $redemptiondate = $rdate->format("F j, Y, g:i a");
 
                     //Set Promo Period Date Format
-                    $startyear = date('Y', strtotime($dateRange["StartDate"]));
-                    $endyear = date('Y', strtotime($dateRange["EndDate"]));
-                    if($startyear == $endyear){
-                        $sdate = new DateTime(date($dateRange["StartDate"]));
-                        $startdate = $sdate->format("F j");
-                        $edate = new DateTime(date($dateRange["EndDate"]));
-                        $enddate = $edate->format("F j, Y");
-                        $promoperiod = $startdate." to ".$enddate;
+                    if(isset($_SESSION['RewardOfferCopy']["CouponSeries"])){
+                        $startyear = date('Y', strtotime($dateRange["StartDate"]));
+                        $endyear = date('Y', strtotime($dateRange["EndDate"]));
+                        if($startyear == $endyear){
+                            $sdate = new DateTime(date($dateRange["StartDate"]));
+                            $startdate = $sdate->format("F j");
+                            $edate = new DateTime(date($dateRange["EndDate"]));
+                            $enddate = $edate->format("F j, Y");
+                            $promoperiod = $startdate." to ".$enddate;
+                        } else {
+                            $sdate = new DateTime(date($dateRange["StartDate"]));
+                            $startdate = $sdate->format("F j, Y");
+                            $edate = new DateTime(date($dateRange["EndDate"]));
+                            $enddate = $edate->format("F j, Y");
+                            $promoperiod = $startdate." to ".$enddate;
+                        }
                     } else {
+                        $ProductName = $_SESSION['RewardItemsInfo']['ProductName'];
+                        $PartnerName = $_SESSION['RewardItemsInfo']['PartnerName'];
+                        
+                        $getResult = $_RewardOffers->getRewardItemCode($RewardOfferID);
+                        if(isset($getResult[0])){
+                            $rewarditemcode = $getResult[0]['eCouponCode'];
+                        } else {
+                            $rewarditemcode = "";
+                        }
+                        
                         $sdate = new DateTime(date($dateRange["StartDate"]));
                         $startdate = $sdate->format("F j, Y");
                         $edate = new DateTime(date($dateRange["EndDate"]));
                         $enddate = $edate->format("F j, Y");
                         $promoperiod = $startdate." to ".$enddate;
                     }
+                    
 
                     // For Coupon Only : Set Draw Date Format.
                     $ddate = new DateTime(date($promodetails["DrawDate"]));
@@ -324,50 +348,27 @@ if(isset($_SESSION['RewardItemsInfo'])){
                         $fp = new File($filename);
                         $emailmessage = $fp->ReadToEnd();
                         $emailmessage = str_replace('$playername', $playername, $emailmessage);
-                        $emailmessage = str_replace('$address', $address, $emailmessage);
-                        $emailmessage = str_replace('$quantity', $_SESSION['RewardOfferCopy']["Quantity"], $emailmessage);
                         $emailmessage = str_replace('$sitecode', $sitecode, $emailmessage);
                         $emailmessage = str_replace('$redemptiondate', $redemptiondate, $emailmessage);
                         $emailmessage = str_replace('$cardno', $cardNumber, $emailmessage);
-                        $emailmessage = str_replace('$birthdate', date("F j, Y", strtotime($birthdate)), $emailmessage);
-                        $emailmessage = str_replace('$email', $email, $emailmessage);
-                        $emailmessage = str_replace('$contactno', $contactno, $emailmessage);
-                        $emailmessage = str_replace('$checksum', $_SESSION['RewardOfferCopy']["CheckSum"], $emailmessage);
-                        $emailmessage = str_replace('$serialnumber', $_SESSION['RewardOfferCopy']["SerialNumber"], $emailmessage);
-                        $emailmessage = str_replace('$actualcity', $cityname, $emailmessage);
-                        $emailmessage = str_replace('$actualregion', $regionname, $emailmessage);
                         $emailmessage = str_replace('$imagesdir', $imagesdir, $emailmessage);
-                        $emailmessage = str_replace('$promocode', $promodetails["PromoCode"], $emailmessage);
-                        $emailmessage = str_replace('$promoname', $promodetails["PromoName"], $emailmessage);
-                        $emailmessage = str_replace('$promoperiod', $promoperiod, $emailmessage);
+                        $emailmessage = str_replace('$startperiod', $startdate, $emailmessage);
+                        $emailmessage = str_replace('$endperiod', $enddate, $emailmessage);
+                        $emailmessage = str_replace('$itemname', $ProductName, $emailmessage);
+                        $emailmessage = str_replace('$partnername', $PartnerName, $emailmessage);
+                        $emailmessage = str_replace('$rewarditemcode', $rewarditemcode, $emailmessage);
+                        
+                        $newheader = $imagesdir."newheader.jpg";
+                        $newfooter = $imagesdir."newfooter.jpg";
+                        $item = $imagesdir."sampleitem1.jpg";
+                        
+                        $_Helper->sendEmailItemRedemption($playername,$email,$sitecode,$redemptiondate,$cardNumber,$newheader,$newfooter,$item,
+                                                                                                $startdate,$enddate,$ProductName,$PartnerName,$rewarditemcode, $_SESSION['RewardOfferCopy']["CheckSum"]);
 
-                //                eval('$emailmsg = $emailmessage; ');
-                //                App::Pr($emailmessage);
-                //                $filename = dirname(__FILE__) . "/posts.txt";
-                //                $fp = new File($filename);
-                //                $fp->Write($emailmessage);
-
-                        $pm = new PHPMailer();
-
-                        if ($sendemailtoadmin == 1)
-                        {
-                            $pm->AddAddress("rpsanchez@philweb.com.ph", "Roger Sanchez");
-                            $pm->AddAddress("itqa@philweb.com.ph", "IT QA");
-                            $pm->AddAddress("mmdapula@philweb.com.ph", "Mikko Dapula");
-                            $pm->AddAddress("ammarcos@philweb.com.ph", "Maan Marcos");
-                        }
-                        $pm->AddAddress($email, $playername);
-                        $pm->Body = $emailmessage;
-                        $pm->IsHTML(true);
-
-                        $pm->From = "membership@egamescasino.ph";
-                        $pm->FromName = "Philweb Membership";
-                        $pm->Host = "localhost";
-                        $pm->Subject = "E-Games Membership";
-                        $pm->Send();
                         unset($_SESSION['RewardOfferCopy']);
                     } else {
                         $imagesdir = str_replace(URL::CurrentPage(), "admin/loyalty/images/", curPageURL());
+                        $fbirthdate = date("F j, Y", strtotime($birthdate));
                         App::LoadCore("File.class.php");
                         $filename = dirname(__FILE__) . "/admin/template/couponredemptiontemplate.php";
                         $fp = new File($filename);
@@ -376,7 +377,7 @@ if(isset($_SESSION['RewardItemsInfo'])){
                         $emailmessage = str_replace('$address', $address, $emailmessage);
                         $emailmessage = str_replace('$sitecode', $sitecode, $emailmessage);
                         $emailmessage = str_replace('$cardno', $cardNumber, $emailmessage);
-                        $emailmessage = str_replace('$birthdate', date("F j, Y", strtotime($birthdate)), $emailmessage);
+                        $emailmessage = str_replace('$birthdate', $fbirthdate, $emailmessage);
                         $emailmessage = str_replace('$email', $email, $emailmessage);
                         $emailmessage = str_replace('$contactno', $contactno, $emailmessage);
                         $emailmessage = str_replace('$actualcity', $cityname, $emailmessage);
@@ -391,31 +392,18 @@ if(isset($_SESSION['RewardItemsInfo'])){
                         $emailmessage = str_replace('$promoname', $promodetails["PromoName"], $emailmessage);
                         $emailmessage = str_replace('$promoperiod', $promoperiod, $emailmessage);
                         $emailmessage = str_replace('$drawdate', $drawdate, $emailmessage);
-
-                //                eval('$emailmsg = $emailmessage; ');
-                //                App::Pr($emailmessage);
-                //                $filename = dirname(__FILE__) . "/posts.txt";
-                //                $fp = new File($filename);
-                //                $fp->Write($emailmessage);
-
-                        $pm = new PHPMailer();
-
-                        if ($sendemailtoadmin == 1)
-                        {
-                            $pm->AddAddress("rpsanchez@philweb.com.ph", "Roger Sanchez");
-                            $pm->AddAddress("itqa@philweb.com.ph", "IT QA");
-                            $pm->AddAddress("mmdapula@philweb.com.ph", "Mikko Dapula");
-                            $pm->AddAddress("ammarcos@philweb.com.ph", "Maan Marcos");
-                        }
-                        $pm->AddAddress($email, $playername);
-                        $pm->Body = $emailmessage;
-                        $pm->IsHTML(true);
-
-                        $pm->From = "membership@egamescasino.ph";
-                        $pm->FromName = "Philweb Membership";
-                        $pm->Host = "localhost";
-                        $pm->Subject = "E-Games Membership";
-                        $pm->Send();
+                        
+                        $newheader = $imagesdir."newheader.jpg";
+                        $newfooter = $imagesdir."newfooter.jpg";
+                        $coupon = $imagesdir."toyota.jpg";
+                        
+                        
+                        $_Helper->sendEmailCouponRedemption($playername,$address,$sitecode,$cardNumber,$fbirthdate,$email,$contactno,$cityname,
+                                                                                        $regionname,$newheader,$newfooter,$coupon,$_SESSION['RewardOfferCopy']["CouponSeries"],
+                                                                                        $_SESSION['RewardOfferCopy']["Quantity"],$_SESSION['RewardOfferCopy']["CheckSum"],
+                                                                                        $_SESSION['RewardOfferCopy']["SerialNumber"],$redemptiondate,$promodetails["PromoCode"],
+                                                                                        $promodetails["PromoName"],$promoperiod,$drawdate);
+                        
                         unset($_SESSION['RewardOfferCopy']);
                     }
                 }
@@ -548,6 +536,37 @@ if(isset($_SESSION['RewardItemsInfo'])){
                     return numberonly(event);
                 });
                 
+                function getCitiesList(regionid){
+                        var functionname = "GetCities";
+                        $.ajax({
+                                    url: "admin/Helper/helper.rewardoffersredemption.php",
+                                    type: 'post',
+                                    data : {
+                                                    functiontype : function() {return functionname; },
+                                                    regionid : function(){return regionid;}
+                                                },
+                                    dataType: 'json',
+                                    success: function(data)
+                                    {
+                                        $("#CityID").html("");
+                                        $("#CityID").append("<option value=''>Select City</option>");
+                                        for(var itr = 0; itr < data.CountOfCities; itr++){
+                                            $("#CityID").append("<option value='"+data.ListOfCities[itr].CityID+"'>"+data.ListOfCities[itr].CityName+"</option>");
+                                        }
+                                    }
+                            });
+                    }
+
+                    $("#RegionID").live("change",function(){
+                        var regionid = $("#RegionID").val();
+                        if(regionid != ""){
+                            getCitiesList(regionid);
+                        } else{
+                            $("#CityID").html("");
+                            $("#CityID").append("<option value=''>Select City</option>");
+                        }
+                    });
+                
                 
                 //Redeem Button Click Event Function
                 $("#redeem-button").live("click",function(){
@@ -586,7 +605,7 @@ if(isset($_SESSION['RewardItemsInfo'])){
                                                                         {
                                                                             if (data != "Profile Updated Successfully.")
                                                                             {
-                                                                                $("#failedmessage").html("<p>Error updating profile. Please try again.</p>");
+                                                                                $("#failedmessage").html("<center><p>"+data+"</p></center>");
                                                                                 $("#failedmessage").dialog({
                                                                                     modal: true,
                                                                                     width: 350,
@@ -705,6 +724,7 @@ if(isset($_SESSION['RewardItemsInfo'])){
         <div class="round-gold membership-inner-padding">
             <?php if($itemDetails != 0){ ?>
             <div class="row-fluid">
+                <?php if($_SESSION['RewardItemsInfo']['IsCoupon'] == 0){ ?>
                 <div class="span7">
                     <h3><?php if(isset($itemDetails["HeaderOne"]) && $itemDetails["HeaderOne"] != "") 
                                             { 
@@ -743,10 +763,33 @@ if(isset($_SESSION['RewardItemsInfo'])){
                             <?php echo $itemDetails["DetailsTwoC"]; ?>
                         </p>
                 </div>
+                <?php } else { ?>
+                <div class="span12">
+                    <h3><?php if(isset($itemDetails["HeaderOne"]) && $itemDetails["HeaderOne"] != "") 
+                                            { 
+                                                echo $itemDetails["HeaderOne"]; 
+                                            } else if(isset($itemDetails["HeaderOne"]) && $itemDetails["HeaderOne"] == ""){
+                                                echo "<span style='color: transparent'>SAMPLE HEADER</span>";
+                                            }
+                                ?>
+                    </h3>
+                    <hr>
+                    <p>
+                        <?php echo $itemDetails["DetailsOneA"]; ?>
+                    </p>
+                    <p>
+                        <?php echo $itemDetails["DetailsOneB"]; ?>
+                    </p>
+                    <p>
+                        <?php echo $itemDetails["DetailsOneC"]; ?>                                                       
+                    </p>
+                </div>
+                <?php } ?>
             </div>
             <br>
             <div class="row-fluid">
                 <div class="span12">
+                    <?php if(($itemDetails["DetailsThreeA"] != '' || $itemDetails["DetailsThreeA"] != null) && ($itemDetails["DetailsThreeB"] != '' || $itemDetails["DetailsThreeB"] != null) && ($itemDetails["DetailsThreeC"] != '' || $itemDetails["DetailsThreeC"] != null) && $_SESSION['RewardItemsInfo']['IsCoupon'] != 1){ ?>
                     <h3><?php if(isset($itemDetails["HeaderThree"]) && $itemDetails["HeaderThree"] != "") 
                                             { 
                                                 echo $itemDetails["HeaderThree"]; 
@@ -764,7 +807,32 @@ if(isset($_SESSION['RewardItemsInfo'])){
                     </p>
                     <p>
                         <?php echo $itemDetails["DetailsThreeC"]; ?>                                                          
-                    </p>                             
+                    </p>           
+                    <?php } else { ?>
+                    <h3><?php if(isset($itemDetails["HeaderThree"]) && $itemDetails["HeaderThree"] != "") 
+                                            { 
+                                                echo $itemDetails["HeaderThree"]; 
+                                            } else if(isset($itemDetails["HeaderThree"]) && $itemDetails["HeaderThree"] == ""){
+                                                echo "<span style='color: transparent'>SAMPLE HEADER</span>";
+                                            }
+                                ?>
+                    </h3>
+                    <hr>
+                     <p>
+                        1. The raffle promo entitles the player to win only once.<br/>
+                        2. PhilWeb reserves the right to invalidate an entry or prize winner if the proper data or authorization was not provided. If an entrant does not truthfully provide all requested personal information, PhilWeb may solely determine that such entrant shall not be eligible to take part in any way in the raffle promo or win any prize.<br/>
+                        3. Prizes with monetary value of PhP10,000 and above are subject to 20% withholding tax, which shall be for the account of the winners. As withholding agent, PhilWeb will process, withhold, and remit to BIR the 20% withholding tax in behalf of the winners. Upon receipt of tax payment, PhilWeb will issue winners an official receipt and a copy of BIR Form 2306 Certificate at Final Tax Withheld at Source. <br/>
+                        4. Prizes are non-transferable and non-convertible to cash. <br/>
+                        5. Prizes, other than the Toyota 86 grand prize, are convertible to slots load. The Toyota 86 has already been pre-ordered due to the limited supply of this car model in the country. Monetary value of the prize (less withholding tax) may be converted to casino bet vouchers. Electronic vouchers will be issued by e-Games Marketing and PhilWeb Top-up. Vouchers are good as cash and can be redeemed at the specified e-Games café/s within 30 days from date of issuance. Vouchers are transferable but not convertible to cash. <br/>
+                        <ol style="list-style-type:lower-alpha; list-style-position:inside; text-indent: 5px;">
+                            <li>Winner may use up to PhP30, 000 bet voucher credits per day.<br/></li>
+                            <li>Winner must play for at least one (1) hour to redeem his winnings.<br/></li>
+                            <li>Winner cannot collect winnings from the cashier if bet voucher credits were used to play any non-slot games.<br/></li>
+                            <li>Cash reloads cannot be done when voucher is used as initial deposit.<br/></li>
+                            <li>Voucher cannot be used to reload current game.<br/></li>
+                        </ol>
+                    </p>
+                    <?php } ?>
                 </div>
             </div>
             <?php } else { echo "<p style='font-size: 14px;'>Reward Item has no details provided.</p>"; } ?>
@@ -810,12 +878,12 @@ if(isset($_SESSION['RewardItemsInfo'])){
                         <td><?php echo $txtRedeemAddress1; ?></td>
                     </tr>
                     <tr>
-                        <td id="profileinfo-td-label">City: </td>
-                        <td><?php echo $cboCityID; ?></td>
-                    </tr>
-                    <tr>
                         <td id="profileinfo-td-label">Region: </td>
                         <td><?php echo $cboRegionID; ?></td>
+                    </tr>
+                    <tr>
+                        <td id="profileinfo-td-label">City: </td>
+                        <td><?php echo $cboCityID; ?></td>
                     </tr>
                     <tr>
                         <td id="profileinfo-td-label">Email: </td>

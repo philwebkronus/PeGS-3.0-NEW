@@ -21,6 +21,7 @@ App::LoadModuleClass('Membership', 'Regions');
 App::LoadModuleClass('Membership', 'MemberInfo');
 App::LoadModuleClass("Membership", "AuditTrail");
 App::LoadModuleClass("Membership", "AuditFunctions");
+App::LoadModuleClass('Membership', 'Helper');
 
 App::LoadModuleClass("Loyalty", "CouponBatches");
 App::LoadModuleClass("Loyalty", "MemberCards");
@@ -68,6 +69,7 @@ $_Ref_city = new Cities();
 $_Ref_region = new Regions();
 $_Promos = new Promos();
 $_Sites = new Sites();
+$_Helper = new Helper();
 
 /* Initialize variables and default values */
 $sendemailtoadmin = false;
@@ -201,18 +203,12 @@ $txtRedeemAddress1->Args = "style='padding:2px;width: 245px;' ";
 $txtRedeemAddress1->CssClass = "validate[required]";
 $fproc->AddControl($txtRedeemAddress1);
 
-$arrRef_city = $_Ref_city->SelectAll();
-$arrRef_cityList = new ArrayList($arrRef_city);
 $cboCityID = new ComboBox("CityID", "CityID", "City: ");
 $opt1[] = new ListItem("Select City", "", true);
 $cboCityID->Items = $opt1;
 $cboCityID->ShowCaption = false;
 $cboCityID->Args = "style='padding:2px;width: 250px;' ";
 $cboCityID->CssClass = 'validate[required]';
-$cboCityID->DataSourceText = "CityName";
-$cboCityID->DataSourceValue = "CityID";
-$cboCityID->DataSource = $arrRef_cityList;
-$cboCityID->DataBind();
 $fproc->AddControl($cboCityID);
 
 
@@ -249,22 +245,6 @@ $btnClear->ShowCaption = true;
 $btnClear->IsSubmit = true;
 $fproc->AddControl($btnClear);
 
-if(isset($_SESSION['CardRed'])){
-    $memberinfo = $_MemberInfo->getMemberInfo($_SESSION["CardRed"]["MID"]);
-    $ArrMemberInfo = $memberinfo[0];
-
-    //get player card details
-    $txtRedeemFirstName->Text = $ArrMemberInfo["FirstName"];
-    $txtRedeemLastName->Text = $ArrMemberInfo["LastName"];
-    $txtRedeemAddress1->Text = $ArrMemberInfo["Address1"];
-    $cboCityID->SetSelectedValue($ArrMemberInfo["CityID"]);
-    $cboRegionID->SetSelectedValue($ArrMemberInfo["RegionID"]);
-    $txtRedeemMobileNumber->Text = $ArrMemberInfo["MobileNumber"];
-    $txtRedeemEmail->Text = $ArrMemberInfo["Email"];
-    $dtRedeemBirthDate->SelectedDate = $ArrMemberInfo["Birthdate"];
-    $hdnMemberInfoID->Text = $ArrMemberInfo["MemberInfoID"];
-}
-
 $fproc->ProcessForms();
 
 function curPageURL() {
@@ -286,6 +266,9 @@ if($fproc->IsPostBack){
     if(!(isset($_SESSION["PreviousRedemption"])) && $txtQuantity->SubmittedValue != "" && $hdnItemName->SubmittedValue != "" 
             && $hdnItemPoints->SubmittedValue != "" && $hdnTotalItemPoints->SubmittedValue != ""){
             $_SESSION['CardRed']['IsCoupon'] = $hdnIsCoupon->SubmittedValue;
+            
+            $memberinfo = $_MemberInfo->getMemberInfo($_SESSION["CardRed"]["MID"]);
+            $ArrMemberInfo = $memberinfo[0];
             
             //Get Reward Offer Coupon/Item Transaction details
             //check if player has region id and city id, if not set both region id and city id to 0;
@@ -330,21 +313,44 @@ if($fproc->IsPostBack){
                 $redemptiondate = $rdate->format("F j, Y, g:i a");
                 
                 //Set Promo Period Date Format
-                $startyear = date('Y', strtotime($dateRange["StartDate"]));
-                $endyear = date('Y', strtotime($dateRange["EndDate"]));
-                if($startyear == $endyear){
-                    $sdate = new DateTime(date($dateRange["StartDate"]));
-                    $startdate = $sdate->format("F j");
-                    $edate = new DateTime(date($dateRange["EndDate"]));
-                    $enddate = $edate->format("F j, Y");
-                    $promoperiod = $startdate." to ".$enddate;
+                if(isset($_SESSION['RewardOfferCopy']["CouponSeries"])){
+                    $startyear = date('Y', strtotime($dateRange["StartDate"]));
+                    $endyear = date('Y', strtotime($dateRange["EndDate"]));
+                    if($startyear == $endyear){
+                        $sdate = new DateTime(date($dateRange["StartDate"]));
+                        $startdate = $sdate->format("F j");
+                        $edate = new DateTime(date($dateRange["EndDate"]));
+                        $enddate = $edate->format("F j, Y");
+                        $promoperiod = $startdate." to ".$enddate;
+                    } else {
+                        $sdate = new DateTime(date($dateRange["StartDate"]));
+                        $startdate = $sdate->format("F j, Y");
+                        $edate = new DateTime(date($dateRange["EndDate"]));
+                        $enddate = $edate->format("F j, Y");
+                        $promoperiod = $startdate." to ".$enddate;
+                    }
                 } else {
+                    
+                    $getResult = $_RewardOffers->getRewardItemDetailsForCopy($RewardOfferID);
+                    if(isset($getResult[0])){
+                        $rewardoffersdetails = $getResult[0];
+                        preg_match('/\((.*?)\)/', $rewardoffersdetails["ProductName"], $rewardname);
+                        if(is_array($rewardname) && isset($rewardname[1])){
+                            unset($rewardoffersdetails["ProductName"]);
+                            $rewardoffersdetails["ProductName"] = $rewardname[1];
+                        }
+                        $productname = $rewardoffersdetails["ProductName"];
+                        $partnername = $rewardoffersdetails["PartnerName"];
+                        $rewarditemcode = $rewardoffersdetails["eCouponCode"];
+                    }
+                    
                     $sdate = new DateTime(date($dateRange["StartDate"]));
                     $startdate = $sdate->format("F j, Y");
                     $edate = new DateTime(date($dateRange["EndDate"]));
                     $enddate = $edate->format("F j, Y");
                     $promoperiod = $startdate." to ".$enddate;
                 }
+                
 
                 // For Coupon Only : Set Draw Date Format.
                 $ddate = new DateTime(date($promodetails["DrawDate"]));
@@ -358,50 +364,27 @@ if($fproc->IsPostBack){
                     $fp = new File($filename);
                     $emailmessage = $fp->ReadToEnd();
                     $emailmessage = str_replace('$playername', $playername, $emailmessage);
-                    $emailmessage = str_replace('$address', $address, $emailmessage);
-                    $emailmessage = str_replace('$quantity', $_SESSION['RewardOfferCopy']["Quantity"], $emailmessage);
                     $emailmessage = str_replace('$sitecode', $sitename, $emailmessage);
                     $emailmessage = str_replace('$redemptiondate', $redemptiondate, $emailmessage);
                     $emailmessage = str_replace('$cardno', $cardNumber, $emailmessage);
-                    $emailmessage = str_replace('$birthdate', date("F j, Y", strtotime($birthdate)), $emailmessage);
-                    $emailmessage = str_replace('$email', $email, $emailmessage);
-                    $emailmessage = str_replace('$contactno', $contactno, $emailmessage);
-                    $emailmessage = str_replace('$checksum', $_SESSION['RewardOfferCopy']["CheckSum"], $emailmessage);
-                    $emailmessage = str_replace('$serialnumber', $_SESSION['RewardOfferCopy']["SerialNumber"], $emailmessage);
-                    $emailmessage = str_replace('$actualcity', $cityname, $emailmessage);
-                    $emailmessage = str_replace('$actualregion', $regionname, $emailmessage);
                     $emailmessage = str_replace('$imagesdir', $imagesdir, $emailmessage);
-                    $emailmessage = str_replace('$promocode', $promodetails["PromoCode"], $emailmessage);
-                    $emailmessage = str_replace('$promoname', $promodetails["PromoName"], $emailmessage);
-                    $emailmessage = str_replace('$promoperiod', $promoperiod, $emailmessage);
+                    $emailmessage = str_replace('$startperiod', $startdate, $emailmessage);
+                    $emailmessage = str_replace('$endperiod', $enddate, $emailmessage);
+                    $emailmessage = str_replace('$itemname', $productname, $emailmessage);
+                    $emailmessage = str_replace('$partnername', $partnername, $emailmessage);
+                    $emailmessage = str_replace('$rewarditemcode', $rewarditemcode, $emailmessage);
+                    $emailmessage = str_replace('$checksum', $_SESSION['RewardOfferCopy']["CheckSum"], $emailmessage);
 
-            //                eval('$emailmsg = $emailmessage; ');
-            //                App::Pr($emailmessage);
-            //                $filename = dirname(__FILE__) . "/posts.txt";
-            //                $fp = new File($filename);
-            //                $fp->Write($emailmessage);
+                    $newheader = $imagesdir."newheader.jpg";
+                    $newfooter = $imagesdir."newfooter.jpg";
+                    $item = $imagesdir."sampleitem1.jpg";
 
-                    $pm = new PHPMailer();
-
-                    if ($sendemailtoadmin == 1)
-                    {
-                        $pm->AddAddress("rpsanchez@philweb.com.ph", "Roger Sanchez");
-                        $pm->AddAddress("itqa@philweb.com.ph", "IT QA");
-                        $pm->AddAddress("mmdapula@philweb.com.ph", "Mikko Dapula");
-                        $pm->AddAddress("ammarcos@philweb.com.ph", "Maan Marcos");
-                    }
-                    $pm->AddAddress($email, $playername);
-                    $pm->Body = $emailmessage;
-                    $pm->IsHTML(true);
-
-                    $pm->From = "membership@egamescasino.ph";
-                    $pm->FromName = "Philweb Membership";
-                    $pm->Host = "localhost";
-                    $pm->Subject = "E-Games Membership";
-                        $pm->Send();
+                    $_Helper->sendEmailItemRedemption($playername,$email,$sitecode,$redemptiondate,$cardNumber,$newheader,$newfooter,$item,
+                                                                                            $startdate,$enddate,$productname,$partnername,$rewarditemcode, $_SESSION['RewardOfferCopy']["CheckSum"]);
                     unset($_SESSION['RewardOfferCopy']);
                 } else {
                     $imagesdir = str_replace(URL::CurrentPage(), "loyalty/images/", curPageURL());
+                    $fbirthdate = date("F j, Y", strtotime($birthdate));
                     App::LoadCore("File.class.php");
                     $filename = dirname(__FILE__) . "/template/couponredemptiontemplate.php";
                     $fp = new File($filename);
@@ -426,30 +409,17 @@ if($fproc->IsPostBack){
                     $emailmessage = str_replace('$promoperiod', $promoperiod, $emailmessage);
                     $emailmessage = str_replace('$drawdate', $drawdate, $emailmessage);
 
-            //                eval('$emailmsg = $emailmessage; ');
-            //                App::Pr($emailmessage);
-            //                $filename = dirname(__FILE__) . "/posts.txt";
-            //                $fp = new File($filename);
-            //                $fp->Write($emailmessage);
+                    $newheader = $imagesdir."newheader.jpg";
+                    $newfooter = $imagesdir."newfooter.jpg";
+                    $coupon = $imagesdir."toyota.jpg";
 
-                    $pm = new PHPMailer();
 
-                    if ($sendemailtoadmin == 1)
-                    {
-                        $pm->AddAddress("rpsanchez@philweb.com.ph", "Roger Sanchez");
-                        $pm->AddAddress("itqa@philweb.com.ph", "IT QA");
-                        $pm->AddAddress("mmdapula@philweb.com.ph", "Mikko Dapula");
-                        $pm->AddAddress("ammarcos@philweb.com.ph", "Maan Marcos");
-                    }
-                    $pm->AddAddress($email, $playername);
-                    $pm->Body = $emailmessage;
-                    $pm->IsHTML(true);
+                    $_Helper->sendEmailCouponRedemption($playername,$address,$sitecode,$cardNumber,$fbirthdate,$email,$contactno,$cityname,
+                                                                                    $regionname,$newheader,$newfooter,$coupon,$_SESSION['RewardOfferCopy']["CouponSeries"],
+                                                                                    $_SESSION['RewardOfferCopy']["Quantity"],$_SESSION['RewardOfferCopy']["CheckSum"],
+                                                                                    $_SESSION['RewardOfferCopy']["SerialNumber"],$redemptiondate,$promodetails["PromoCode"],
+                                                                                    $promodetails["PromoName"],$promoperiod,$drawdate);
 
-                    $pm->From = "membership@egamescasino.ph";
-                    $pm->FromName = "Philweb Membership";
-                    $pm->Host = "localhost";
-                    $pm->Subject = "E-Games Membership";
-                        $pm->Send();
                     unset($_SESSION['RewardOfferCopy']);
                 }
             }
@@ -462,10 +432,11 @@ if($fproc->IsPostBack){
     }
 }
 
-
 ?>
 <?php include('header.php'); ?>
-<script type='text/javascript' src='js/jquery.jqGrid.js' media='screen, projection'></script>
+<script type='text/javascript' src='js/jqgrid/i18n/grid.locale-en.js' media='screen, projection'></script>
+<script type='text/javascript' src='js/jquery.jqGrid.min.js' media='screen, projection'></script>
+<!--<script type='text/javascript' src='js/jquery.jqGrid.js' media='screen, projection'></script>-->
 <link rel='stylesheet' type='text/css' media='screen' href='css/ui.jqgrid.redemption.css' />
 <link rel='stylesheet' type='text/css' media='screen' href='css/ui.multiselect.css' />
 <script type="text/javascript">
@@ -478,6 +449,37 @@ if($fproc->IsPostBack){
             }
         }
         loadCardData();
+        
+        function getCitiesList(regionid){
+            var functionname = "GetCities";
+            $.ajax({
+                        url: "Helper/helper.rewardoffersredemption.php",
+                        type: 'post',
+                        data : {
+                                        functiontype : function() {return functionname; },
+                                        regionid : function(){return regionid;}
+                                    },
+                        dataType: 'json',
+                        success: function(data)
+                        {
+                            $("#CityID").html("");
+                            $("#CityID").append("<option value=''>Select City</option>");
+                            for(var itr = 0; itr < data.CountOfCities; itr++){
+                                $("#CityID").append("<option value='"+data.ListOfCities[itr].CityID+"'>"+data.ListOfCities[itr].CityName+"</option>");
+                            }
+                        }
+                });
+        }
+        
+        $("#RegionID").live("change",function(){
+            var regionid = $("#RegionID").val();
+            if(regionid != ""){
+                getCitiesList(regionid);
+            } else{
+                $("#CityID").html("");
+                $("#CityID").append("<option value=''>Select City</option>");
+            }
+        });
         
         function getCardData(datavar){
             var functionname = "CardDetails";
@@ -502,6 +504,25 @@ if($fproc->IsPostBack){
                                 $("#idredeemedpoints").html("<span>"+data.RedeemedPoints+"</span>");
                                 $("#idsitename").html("<span>"+data.LastSitePlayed+"</span>");
                                 $("#idtransdate").html("<span>"+data.LastTransactionDate+"</span>");
+                                
+                                //Set Player Data
+                                $("#FirstName").val(data.FirstName);
+                                $("#LastName").val(data.LastName);
+                                $("#MobileNumber").val(data.MobileNumber);
+                                $("#Email").val(data.Email);
+                                $("#Address1").val(data.Address1);
+
+                                $("#RegionID").get(0).selectedIndex = data.RegionID;
+                                if(data.RegionID != ""){
+                                    getCitiesList(data.RegionID);
+                                    if($("#hdnCityID") != ""){
+                                        $("#CityID").get(0).selectedIndex = data.CityID;
+                                    }
+                                }
+                                
+                                $("#Birthdate").datepicker("setDate", new Date(data.Birthdate) );
+                                $("#CardNumber").html("<span>"+data.CardNumber+"</span>");
+
                                 $("#CardTypeID").val(data.CardTypeID);
                                 if(data.CardTypeID != 3){
                                     if(data.Status == 1){
@@ -776,7 +797,7 @@ if($fproc->IsPostBack){
                                                                         {
                                                                             if (data != "Profile Updated Successfully.")
                                                                             {
-                                                                                $("#failedmessage").html("<p>Error updating profile. Please try again.</p>");
+                                                                                $("#failedmessage").html("<center><p>"+data+"</p></center>");
                                                                                 $("#failedmessage").dialog({
                                                                                     modal: true,
                                                                                     width: 350,
@@ -896,13 +917,12 @@ if($fproc->IsPostBack){
                     <span id="TotalItemPoints"></span>
                 </div>
             </form>
-        <form name="profileupdate" ID="profileupdate">
+        <form name="profileupdate" id="profileupdate">
             <div id="profileinfo" class="profileinfo" style="display:none; font-size: 10pt; text-align: left;">
-                <?php echo $hdnMemberInfoID; ?>
                 <table>
                     <tr>
                         <td id="profileinfo-td-label" style="padding-bottom: 5px;">Card Number:</td>
-                        <td style="padding-bottom: 5px;"><?php if(isset($_SESSION["CardRed"])){ echo $_SESSION['CardRed']['CardNumber']; }?></td>
+                        <td style="padding-bottom: 5px;"><label id="CardNumber"></label></td>
                     </tr>
                     <tr>
                         <td id="profileinfo-td-label">First Name:</td>
@@ -921,12 +941,12 @@ if($fproc->IsPostBack){
                         <td><?php echo $txtRedeemAddress1; ?></td>
                     </tr>
                     <tr>
-                        <td id="profileinfo-td-label">City: </td>
-                        <td><?php echo $cboCityID; ?></td>
-                    </tr>
-                    <tr>
                         <td id="profileinfo-td-label">Region: </td>
                         <td><?php echo $cboRegionID; ?></td>
+                    </tr>
+                     <tr>
+                        <td id="profileinfo-td-label">City: </td>
+                        <td><?php echo $cboCityID; ?></td>
                     </tr>
                     <tr>
                         <td id="profileinfo-td-label">Email: </td>
@@ -951,6 +971,7 @@ if($fproc->IsPostBack){
             <div id="failedmessage" style="display:none; color: red;">
 
             </div>
+        </form>
     </div>
 </div>
 <?php include('footer.php'); ?>
