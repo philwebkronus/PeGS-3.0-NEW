@@ -15,6 +15,9 @@ if(isset($_POST["functiontype"]) && $_POST["functiontype"] != ""){
             App::LoadModuleClass("Loyalty", "RewardOffers");
             App::LoadModuleClass('Loyalty', 'RewardItems');
             App::LoadModuleClass('Membership', 'MemberInfo');
+            App::LoadModuleClass('Membership', 'Cities');
+            App::LoadModuleClass("Loyalty", "CouponBatches");
+            App::LoadModuleClass('Loyalty', 'RaffleCoupons');
             App::LoadModuleClass('Loyalty', 'MemberCards');
             App::LoadModuleClass('Loyalty', 'Cards');
             App::LoadModuleClass('Loyalty', 'CardTransactions');
@@ -29,6 +32,9 @@ if(isset($_POST["functiontype"]) && $_POST["functiontype"] != ""){
             $_CardTransactions = new CardTransactions();
             $_MemberInfo = new MemberInfo();
             $_Sites = new Sites();
+            $_Ref_city = new Cities();
+            $_CouponBatches = new CouponBatches();
+            $_RaffleCoupons = new RaffleCoupons();
 
             $logger = new ErrorLogger();
             $logdate = $logger->logdate;
@@ -64,11 +70,23 @@ if(isset($_POST["functiontype"]) && $_POST["functiontype"] != ""){
                                         $RewardOfferID = $rewardoffers[$itr]["RewardOfferID"];
                                         $IsCoupon = $rewardoffers[$itr]["IsCoupon"];
                                         $RequiredPoints = $rewardoffers[$itr]["Points"];
-                                        $enabled = "";
+                                        $enabled = "";                     
                                         if( $_SESSION['CardRed']['CardPoints'] < $RequiredPoints){
                                             $rewardoffers[$itr]["Action"] = "<input type='button' value='Redeem' id='csredeem-button' disabled='disabled' Email = '$EmailAddress' ProductName='$ProductName' RewardItemID='$RewardItemID' RewardOfferID='$RewardOfferID' IsCoupon='$IsCoupon' RequiredPoints='$RequiredPoints' >";
                                         } else {
-                                            $rewardoffers[$itr]["Action"] = "<input type='button' value='Redeem' id='csredeem-button' Email = '$EmailAddress' ProductName='$ProductName' RewardItemID='$RewardItemID' RewardOfferID='$RewardOfferID' IsCoupon='$IsCoupon' RequiredPoints='$RequiredPoints' >";
+                                            
+                                            if($IsCoupon == 1 || $IsCoupon == "1"){
+                                                //Set Table for raffle coupon based on active coupon batch.
+                                                $getRaffleCouponSuffix = $_CouponBatches->SelectByWhere(" WHERE Status = 1 LIMIT 1");
+                                                if(isset($getRaffleCouponSuffix[0]) && $getRaffleCouponSuffix[0]['CouponBatchID'] != ""){
+                                                    $_RaffleCoupons->TableName = "rafflecoupons_".$getRaffleCouponSuffix[0]['CouponBatchID'];
+                                                    $rewardoffers[$itr]["Action"] = "<input type='button' value='Redeem' id='csredeem-button' Email = '$EmailAddress' ProductName='$ProductName' RewardItemID='$RewardItemID' RewardOfferID='$RewardOfferID' IsCoupon='$IsCoupon' RequiredPoints='$RequiredPoints' >";
+                                                } else {
+                                                    $rewardoffers[$itr]["Action"] = "<input type='button' disabled value='Redeem' id='csredeem-button' Email = '$EmailAddress' ProductName='$ProductName' RewardItemID='$RewardItemID' RewardOfferID='$RewardOfferID' IsCoupon='$IsCoupon' RequiredPoints='$RequiredPoints' >";
+                                                }
+                                            } else {
+                                                $rewardoffers[$itr]["Action"] = "<input type='button' value='Redeem' id='csredeem-button' Email = '$EmailAddress' ProductName='$ProductName' RewardItemID='$RewardItemID' RewardOfferID='$RewardOfferID' IsCoupon='$IsCoupon' RequiredPoints='$RequiredPoints' >";
+                                            }
                                         }
 
                                         $response->rows[$ctr]['id'] = $rewardoffers[$itr]["RewardOfferID"];
@@ -111,7 +129,30 @@ if(isset($_POST["functiontype"]) && $_POST["functiontype"] != ""){
                                                 $_SESSION['CardRed']['MID'] = $MID;
                                                 $_SESSION['CardRed']['CardPoints'] = $cardInfo[0]['CurrentPoints'];
                                                 $_SESSION['CardRed']['CardTypeID'] = $cardInfo[0]['CardTypeID'];
-
+                                                
+                                                //check if region and city are valid
+                                                if(isset($result[0]["CityID"]) && $result[0]["CityID"] != "" && isset($result[0]["RegionID"]) && $result[0]["RegionID"] != ""){
+                                                    $validCityAndRegion = $_Ref_city->checkCitiesAndRegionsValidity($result[0]["RegionID"], $result[0]["CityID"]);
+                                                } else { $validCityAndRegion = ""; }
+                                                
+                                                if($validCityAndRegion != ""){
+                                                    $response["CityID"] = $result[0]["CityID"];
+                                                    $response["RegionID"] = $result[0]["RegionID"];
+                                                } else {
+                                                    $response["RegionID"] = $result[0]["RegionID"];
+                                                    $response["CityID"] = "";
+                                                }
+                                                
+                                                //get player card details
+                                                $response["FirstName"] = $result[0]["FirstName"];
+                                                $response["LastName"] = $result[0]["LastName"];
+                                                $response["Address1"] = $result[0]["Address1"];
+                                                $response["MobileNumber"] = $result[0]["MobileNumber"];
+                                                $response["Email"] = $result[0]["Email"];
+                                                $response["Birthdate"] = $result[0]["Birthdate"];
+                                                $response["MemberInfoID"] = $result[0]["MemberInfoID"];
+                                                $_SESSION['CardRed']['MemberInfoID'] = $response["MemberInfoID"];
+                                                
                                                 $response["Error"] = "";
                                                 $response["CardNumber"] = $CardNumber;
                                                 $response["CardType"] = $cardInfo[0]['CardType'];
@@ -184,6 +225,32 @@ if(isset($_POST["functiontype"]) && $_POST["functiontype"] != ""){
                                                         $CardType = "Temp";
                                                         break;
                                                 }
+                                                
+                                                $memberinfo = $_MemberInfo->getMemberInfo($_SESSION["CardRed"]["MID"]);
+                                                $ArrMemberInfo = $memberinfo[0];
+                                                
+                                                //check if region and city are valid
+                                                if(isset($ArrMemberInfo["CityID"]) && $ArrMemberInfo["CityID"] != "" && isset($ArrMemberInfo["RegionID"]) && $ArrMemberInfo["RegionID"] != ""){
+                                                    $validCityAndRegion = $_Ref_city->checkCitiesAndRegionsValidity($ArrMemberInfo["RegionID"], $ArrMemberInfo["CityID"]);
+                                                } else { $validCityAndRegion = ""; }
+                                                
+                                                if($validCityAndRegion != ""){
+                                                    $response["CityID"] = $ArrMemberInfo["CityID"];
+                                                    $response["RegionID"] = $ArrMemberInfo["RegionID"];
+                                                } else {
+                                                    $response["CityID"] = "";
+                                                    $response["RegionID"] = $ArrMemberInfo["RegionID"];
+                                                }
+                                                
+                                                //get player card details
+                                                $response["FirstName"] = $ArrMemberInfo["FirstName"];
+                                                $response["LastName"] = $ArrMemberInfo["LastName"];
+                                                $response["Address1"] = $ArrMemberInfo["Address1"];
+                                                $response["MobileNumber"] = $ArrMemberInfo["MobileNumber"];
+                                                $response["Email"] = $ArrMemberInfo["Email"];
+                                                $response["Birthdate"] = $ArrMemberInfo["Birthdate"];
+                                                $response["MemberInfoID"] = $ArrMemberInfo["MemberInfoID"];
+                                                $_SESSION['CardRed']['MemberInfoID'] = $response["MemberInfoID"];
 
                                                 $response["Error"] = "";
                                                 $response["CardNumber"] = $CardNumber;
@@ -234,6 +301,22 @@ if(isset($_POST["functiontype"]) && $_POST["functiontype"] != ""){
                                             }
                                         }
                                 }
+            } elseif ($functionname == "GetCities") {
+                if(isset($_POST["regionid"]) && $_POST["regionid"] != ""){
+                    $regionid = $_POST["regionid"];
+                    $listofcities = $_Ref_city->getCitiesUsingRegionID($regionid);
+                    $response["ListOfCities"] = $listofcities;
+                    $response["CountOfCities"] = count($listofcities);
+                }
+            } elseif($functionname == "CheckCouponAvailibility"){
+                //Set Table for raffle coupon based on active coupon batch.
+                $getRaffleCouponSuffix = $_CouponBatches->SelectByWhere(" WHERE Status = 1 LIMIT 1");
+                if(isset($getRaffleCouponSuffix[0]) && $getRaffleCouponSuffix[0]['CouponBatchID'] != ""){
+                    $_RaffleCoupons->TableName = "rafflecoupons_".$getRaffleCouponSuffix[0]['CouponBatchID'];
+                    $response["IsAvailableCouponBatchID"] = 1; //Yes
+                } else {
+                    $response["IsAvailableCouponBatchID"] = 0; //No
+                }
             }
             
         echo  json_encode($response);

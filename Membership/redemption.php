@@ -78,10 +78,19 @@ if(isset($_SESSION['RewardItemsInfo'])){
     $_Promos = new Promos();
     $_Helper = new Helper();
     
-    //Set Table for raffle coupon based on active coupon batch.
-    $getRaffleCouponSuffix = $_CouponBatches->SelectByWhere(" WHERE Status = 1 LIMIT 1");
-    $_RaffleCoupons->TableName = "rafflecoupons_".$getRaffleCouponSuffix[0]['CouponBatchID'];
-    
+    //Check if the coupon batch is active, if not display error message.
+    if($_SESSION['RewardItemsInfo']['IsCoupon'] == 1 || $_SESSION['RewardItemsInfo']['IsCoupon'] == "1"){
+        //Set Table for raffle coupon based on active coupon batch.
+        $getRaffleCouponSuffix = $_CouponBatches->SelectByWhere(" WHERE Status = 1 LIMIT 1");
+        if(isset($getRaffleCouponSuffix[0]) && $getRaffleCouponSuffix[0]['CouponBatchID'] != ""){
+            $_RaffleCoupons->TableName = "rafflecoupons_".$getRaffleCouponSuffix[0]['CouponBatchID'];
+            $IsAvailableCouponBatchID = 1; //Yes
+        } else {
+            $IsAvailableCouponBatchID = 0; //No
+            App::SetErrorMessage("Raffle Coupons are unavailable.");
+        }
+    }
+
     //for loading reward item details
     $itemresult = $_RewardItemDetails->SelectByID($_SESSION['RewardItemsInfo']['RewardItemID']);
     if(count($itemresult) > 0){
@@ -93,10 +102,19 @@ if(isset($_SESSION['RewardItemsInfo'])){
     
     $btnRedeemButton = new Button("redeem-button", "redeem-button", "REDEEM NOW");
     $btnRedeemButton->CssClass = "yellow-btn-redeem-button";
+    
+    //If Player Points is less than the Reward Item Points disabled the redeem button
+    //If not, whether coupon or item. For coupon check if the coupon batch is active, if not disabled the redeem button.
     if($_SESSION['RewardItemsInfo']['PlayerPoints'] < $_SESSION['RewardItemsInfo']['Points']){
         $btnRedeemButton->Enabled = false;
     } else {
-        $btnRedeemButton->Enabled = true;
+        if($_SESSION['RewardItemsInfo']['IsCoupon'] == 1 || $_SESSION['RewardItemsInfo']['IsCoupon'] == '1'){
+            if($IsAvailableCouponBatchID == 0){
+                $btnRedeemButton->Enabled = false;
+            }
+        } else {
+            $btnRedeemButton->Enabled = true;
+        }
     }
     $fproc->AddControl($btnRedeemButton);
     
@@ -266,6 +284,19 @@ if(isset($_SESSION['RewardItemsInfo'])){
                     unset($_SESSION['MemberInfo']);
                     App::SetErrorMessage("Account Banned");
                     echo "<script>parent.window.location.href='index.php';</script>";
+                }
+                
+                //Check if the coupon batch is active, if not display error message.
+                if($_SESSION['RewardItemsInfo']['IsCoupon'] == 1 || $_SESSION['RewardItemsInfo']['IsCoupon'] == "1"){
+                    //Set Table for raffle coupon based on active coupon batch.
+                    $getRaffleCouponSuffix = $_CouponBatches->SelectByWhere(" WHERE Status = 1 LIMIT 1");
+                    if(isset($getRaffleCouponSuffix[0]) && $getRaffleCouponSuffix[0]['CouponBatchID'] != ""){
+                        $_RaffleCoupons->TableName = "rafflecoupons_".$getRaffleCouponSuffix[0]['CouponBatchID'];
+                    } else {
+                        unset($_SESSION['RewardItemsInfo']);
+                        App::SetErrorMessage("Raffle Coupons are unavailable.");
+                        echo "<script>parent.window.location.href='index.php';</script>";
+                    }
                 }
                 
                 //check if player has region id and city id, if not set both region id and city id to 0;

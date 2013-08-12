@@ -78,9 +78,6 @@ $site = "";
 $arrmemberinfo = "";
 $showcouponredemptionwindow = false;
 
-    //Set Table for raffle coupon based on active coupon batch.
-    $getRaffleCouponSuffix = $_CouponBatches->SelectByWhere(" WHERE Status = 1 LIMIT 1");
-    $_RaffleCoupons->TableName = "rafflecoupons_".$getRaffleCouponSuffix[0]['CouponBatchID'];
 
 /* Used to determine min and max dates for birthdate field */
 $dsmaxdate = new DateSelector();
@@ -270,33 +267,77 @@ if($fproc->IsPostBack){
             $memberinfo = $_MemberInfo->getMemberInfo($_SESSION["CardRed"]["MID"]);
             $ArrMemberInfo = $memberinfo[0];
             
-            //Get Reward Offer Coupon/Item Transaction details
-            //check if player has region id and city id, if not set both region id and city id to 0;
-            if((isset($ArrMemberInfo["RegionID"]) && $ArrMemberInfo["RegionID"] != '' && $ArrMemberInfo["RegionID"] != 0) && (isset($ArrMemberInfo["RegionID"]) && $ArrMemberInfo["RegionID"] != '' && $ArrMemberInfo["RegionID"] != 0)){
-                $regionname = $_Ref_region->getRegionName($ArrMemberInfo["RegionID"]);
-                $cityname = $_Ref_city->getCityName($ArrMemberInfo["CityID"]);
-            } else {
-                $regionname = "";
-                $cityname = "";
-            }
+            //Check if the coupon batch is active, if not display error message.
+            if($_SESSION['CardRed']['IsCoupon'] == 1 || $_SESSION['CardRed']['IsCoupon'] == "1"){
+                //Set Table for raffle coupon based on active coupon batch.
+                $getRaffleCouponSuffix = $_CouponBatches->SelectByWhere(" WHERE Status = 1 LIMIT 1");
+                
+                if(isset($getRaffleCouponSuffix[0]) && $getRaffleCouponSuffix[0]['CouponBatchID'] != ""){
+                    $_RaffleCoupons->TableName = "rafflecoupons_".$getRaffleCouponSuffix[0]['CouponBatchID'];
+                    
+                    //Get Reward Offer Coupon/Item Transaction details
+                    //check if player has region id and city id, if not set both region id and city id to 0;
+                    if((isset($ArrMemberInfo["RegionID"]) && $ArrMemberInfo["RegionID"] != '' && $ArrMemberInfo["RegionID"] != 0) && (isset($ArrMemberInfo["RegionID"]) && $ArrMemberInfo["RegionID"] != '' && $ArrMemberInfo["RegionID"] != 0)){
+                        $regionname = $_Ref_region->getRegionName($ArrMemberInfo["RegionID"]);
+                        $cityname = $_Ref_city->getCityName($ArrMemberInfo["CityID"]);
+                    } else {
+                        $regionname = "";
+                        $cityname = "";
+                    }
 
-            $playername = $ArrMemberInfo["FirstName"]." ".$ArrMemberInfo["LastName"];
-            $address = $ArrMemberInfo["Address1"];
-            $birthdate = $ArrMemberInfo["Birthdate"];
-            $email = $ArrMemberInfo["Email"];
-            $sitecode = $_SESSION['userinfo']['SiteID'];
-            
-            $siteresult = $_Sites->getSiteName($sitecode);
-            if(count($siteresult) > 0){
-                $sitename = $siteresult[0]["SiteName"];
+                    $playername = $ArrMemberInfo["FirstName"]." ".$ArrMemberInfo["LastName"];
+                    $address = $ArrMemberInfo["Address1"];
+                    $birthdate = $ArrMemberInfo["Birthdate"];
+                    $email = $ArrMemberInfo["Email"];
+                    $sitecode = $_SESSION['userinfo']['SiteID'];
+
+                    $siteresult = $_Sites->getSiteName($sitecode);
+                    if(count($siteresult) > 0){
+                        $sitename = $siteresult[0]["SiteName"];
+                    } else {
+                        $sitename = "";
+                    }
+
+                    $contactno = $ArrMemberInfo["MobileNumber"];
+                    $source = 0; //0-Cashier; 1-Player
+                    //Redemption Process for both Coupon and Item.
+                    include("../controller/RedemptionController.php");
+                    
+                } else {
+                    $txtQuantity->Text = '';
+                    App::SetErrorMessage("Redemption Failed: Raffle Coupons are unavailable.");
+                }
             } else {
-                $sitename = "";
+                //Get Reward Offer Coupon/Item Transaction details
+                //check if player has region id and city id, if not set both region id and city id to 0;
+                if((isset($ArrMemberInfo["RegionID"]) && $ArrMemberInfo["RegionID"] != '' && $ArrMemberInfo["RegionID"] != 0) && (isset($ArrMemberInfo["RegionID"]) && $ArrMemberInfo["RegionID"] != '' && $ArrMemberInfo["RegionID"] != 0)){
+                    $regionname = $_Ref_region->getRegionName($ArrMemberInfo["RegionID"]);
+                    $cityname = $_Ref_city->getCityName($ArrMemberInfo["CityID"]);
+                } else {
+                    $regionname = "";
+                    $cityname = "";
+                }
+
+                $playername = $ArrMemberInfo["FirstName"]." ".$ArrMemberInfo["LastName"];
+                $address = $ArrMemberInfo["Address1"];
+                $birthdate = $ArrMemberInfo["Birthdate"];
+                $email = $ArrMemberInfo["Email"];
+                $sitecode = $_SESSION['userinfo']['SiteID'];
+
+                $siteresult = $_Sites->getSiteName($sitecode);
+                if(count($siteresult) > 0){
+                    $sitename = $siteresult[0]["SiteName"];
+                } else {
+                    $sitename = "";
+                }
+
+                $contactno = $ArrMemberInfo["MobileNumber"];
+                $source = 0; //0-Cashier; 1-Player
+                //Redemption Process for both Coupon and Item.
+                include("../controller/RedemptionController.php");
             }
             
-            $contactno = $ArrMemberInfo["MobileNumber"];
-            $source = 0; //0-Cashier; 1-Player
-            //Redemption Process for both Coupon and Item.
-            include("../controller/RedemptionController.php");
+            
 
             //Check if coupon or item and display appropriate reward 
             //offer transaction printable copy and send to legit player email.
@@ -471,6 +512,31 @@ if($fproc->IsPostBack){
                 });
         }
         
+        //Function for Checking of Coupon Batch Status
+        function checkCouponBatchAvailability(){
+            var functionname = "CheckCouponAvailibility";
+            var availability;
+            $.ajax({
+                        url: "Helper/helper.rewardoffersredemption.php",
+                        type: 'post',
+                        data : {
+                                        functiontype : function() {return functionname; }
+                                    },
+                        async: false,
+                        dataType: 'json',
+                        success: function(data)
+                        {
+                             if(data.IsAvailableCouponBatchID == 0){
+                                    availability = "False";
+                             } else {
+                                    availability = "True";
+                             }
+                        }
+                });
+                
+                return availability;
+        }
+        
         $("#RegionID").live("change",function(){
             var regionid = $("#RegionID").val();
             if(regionid != ""){
@@ -511,7 +577,7 @@ if($fproc->IsPostBack){
                                 $("#MobileNumber").val(data.MobileNumber);
                                 $("#Email").val(data.Email);
                                 $("#Address1").val(data.Address1);
-
+                                
                                 $("#RegionID").get(0).selectedIndex = data.RegionID;
                                 if(data.RegionID != ""){
                                     getCitiesList(data.RegionID);
@@ -755,7 +821,8 @@ if($fproc->IsPostBack){
         
         
         $('#csredeem-button').live('click', function(){
-               $("#profileupdate").validationEngine();
+               $("#profileupdate").validationEngine();            
+                    var returnValue = checkCouponBatchAvailability();
                     if ($("#redemptionquantity").dialog( "isOpen" ) !== true){
                         var ProductName = $(this).attr("ProductName");
                         var ItemPoints = $(this).attr("RequiredPoints");
@@ -770,7 +837,16 @@ if($fproc->IsPostBack){
                         $("#RewardItemID").val(RewardItemID);
                         $("#IsCoupon").val(IsCoupon);
                         $("#RewardOfferID").val(RewardOfferID);
- 
+                        
+                        //Check if the coupon batch is active, if not display error message.
+                        if(returnValue == 'False' && $("#IsCoupon").val() == 1){ 
+                            $('#redemption-errormsg').html('<p style="padding-top: 5px; padding-bottom: 5px; padding-left: 3px;">Raffle Coupons are unavailable.</p>');
+                            $('#redemption-errormsg').css('display','block');
+                        } else {
+                            $('#redemption-errormsg').html('');
+                            $('#redemption-errormsg').css('display','none');
+                        }
+                        
                         if(email  == ""){
                                 $("#redemptionquantity").dialog({
                                     modal: true,
@@ -904,6 +980,7 @@ if($fproc->IsPostBack){
             </form>
             <form name="frmRedemption" id="frmRedemption" method="post">
                 <div id="redemptionquantity" style="display:none;">
+                    <div id="redemption-errormsg" style="display: none; font-size: 12px; background-color: red; color: white; width: 100%;"></div>
                     <?php echo $hdnMemberInfoID; ?>
                     <?php echo $hdnItemName; ?>
                     <?php echo $hdnItemPoints; ?>
