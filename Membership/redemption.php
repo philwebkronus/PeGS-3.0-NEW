@@ -240,16 +240,27 @@ if(isset($_SESSION['RewardItemsInfo'])){
         $txtRedeemFirstName->Text = $ArrMemberInfo["FirstName"];
         $txtRedeemLastName->Text = $ArrMemberInfo["LastName"];
         $txtRedeemAddress1->Text = $ArrMemberInfo["Address1"];
-        $cboRegionID->SetSelectedValue($ArrMemberInfo["RegionID"]);
-        $arrRef_city = $_Ref_city->getCitiesUsingRegionID($ArrMemberInfo["RegionID"]);
-        $arrRef_cityList = new ArrayList($arrRef_city);
-        $cboCityID->DataSourceText = "CityName";
-        $cboCityID->DataSourceValue = "CityID";
-        $cboCityID->DataSource = $arrRef_cityList;
-        $cboCityID->DataBind();
-        if($ArrMemberInfo["CityID"] != ""){
-            $cboCityID->SetSelectedValue($ArrMemberInfo["CityID"]);
+        if(isset($ArrMemberInfo["RegionID"]) && $ArrMemberInfo["RegionID"] != null && $ArrMemberInfo["RegionID"] != ''){
+            $cboRegionID->SetSelectedValue($ArrMemberInfo["RegionID"]);
+            $arrRef_city = $_Ref_city->getCitiesUsingRegionID($ArrMemberInfo["RegionID"]);
+            
+            $arrRef_cityList = new ArrayList($arrRef_city);
+            $cboCityID->DataSourceText = "CityName";
+            $cboCityID->DataSourceValue = "CityID";
+            $cboCityID->DataSource = $arrRef_cityList;
+            $cboCityID->DataBind();
+            if($ArrMemberInfo["CityID"] != ""){
+                $cboCityID->SetSelectedValue($ArrMemberInfo["CityID"]);
+            }
+        } else {
+            $arrRef_cityList = '';
+            $opt3[] = new ListItem("Select City", "", true);
+            $cboCityID->Items = $opt3;
+            if($ArrMemberInfo["CityID"] != ""){
+                $cboCityID->SetSelectedValue($ArrMemberInfo["CityID"]);
+            }
         }
+        
         
         $txtRedeemMobileNumber->Text = $ArrMemberInfo["MobileNumber"];
         $txtRedeemEmail->Text = $ArrMemberInfo["Email"];
@@ -298,9 +309,8 @@ if(isset($_SESSION['RewardItemsInfo'])){
                         echo "<script>parent.window.location.href='index.php';</script>";
                     }
                 }
-                
                 //check if player has region id and city id, if not set both region id and city id to 0;
-                if((isset($ArrMemberInfo["RegionID"]) && $ArrMemberInfo["RegionID"] != '' && $ArrMemberInfo["RegionID"] != 0) && (isset($ArrMemberInfo["RegionID"]) && $ArrMemberInfo["RegionID"] != '' && $ArrMemberInfo["RegionID"] != 0)){
+                if((isset($ArrMemberInfo["RegionID"]) && $ArrMemberInfo["RegionID"] != null && $ArrMemberInfo["RegionID"] != '' && $ArrMemberInfo["RegionID"] != 0) && (isset($ArrMemberInfo["CityID"]) && $ArrMemberInfo["CityID"] != null &&$ArrMemberInfo["CityID"] != '' && $ArrMemberInfo["CityID"] != 0)){
                     $regionname = $_Ref_region->getRegionName($ArrMemberInfo["RegionID"]);
                     $cityname = $_Ref_city->getCityName($ArrMemberInfo["CityID"]);
                 } else {
