@@ -393,6 +393,7 @@ else{
                         <div align="right" class="pad5">
                             <?php echo $membershipdemographics; ?>
                         </div>
+                        <label>&nbsp;&nbsp;Note: Percentages are rounded to the nearest whole number.</label>
                     <?php
                     }?>
                 </div>
