@@ -14,7 +14,8 @@ class TerminalsModel extends MI_Model {
     public $terminal_code;
     
     /**
-     *
+     * Counts the physical terminal per site
+     * Used to display terminal pager on Terminal Monitoring
      * @param type $siteid
      * @return type 
      */
