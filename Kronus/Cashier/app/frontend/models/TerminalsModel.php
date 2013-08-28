@@ -3,7 +3,7 @@
 /**
  * Date Created 10 28, 11 1:11:44 PM <pre />
  * Description of TerminalsModel
- * @author Bryan Salazar, elperez
+ * @author Bryan Salazar
  */
 class TerminalsModel extends MI_Model {
     
@@ -19,8 +19,7 @@ class TerminalsModel extends MI_Model {
      * @return type 
      */
     public function getNumberOfTerminalsPerSite($siteid) {
-        $sql = "SELECT COUNT(t.TerminalID) as num_terminals FROM terminals t WHERE t.SiteID = :siteid 
-                    AND t.Status = 1";
+        $sql = "SELECT COUNT(t.TerminalID) as num_terminals FROM terminals t WHERE t.SiteID = :siteid";
         $param = array(':siteid'=>$siteid);
         $this->exec($sql,$param);
         $result = $this->find();
