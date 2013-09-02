@@ -53,7 +53,7 @@ class ActivateMember extends BaseEntity
                                    AlternateEmail, MobileNumber, AlternateMobileNumber, NationalityID,
                                    OccupationID, ReferrerID, Address1, Address2, IdentificationID, IdentificationNumber,
                                    RegistrationOrigin, EmailSubscription, SMSSubscription, IsSmoker, IsCompleteInfo,
-                                   DateVerified
+                                   DateVerified, ReferrerCode
                             FROM membership_temp.memberinfo mi
                                 INNER JOIN members m ON mi.MID = m.MID
                             WHERE m.TemporaryAccountCode = '$this->CardNumber'";
@@ -82,7 +82,8 @@ class ActivateMember extends BaseEntity
         $arrMemberInfo['IsCompleteInfo'] = $result2[0]['IsCompleteInfo'];
         $arrMemberInfo['DateCreated'] = 'now_usec()';
         $arrMemberInfo['DateVerified'] = $result[0]['DateVerified'];                
-                    
+        $arrMemberInfo['ReferrerCode'] = $result2[0]['ReferrerCode'];   
+        
         try
         {
             $this->Insert($arrMembers);                       
@@ -171,16 +172,15 @@ class ActivateMember extends BaseEntity
                                        $zip = 'NA';
                                        $countryCode = 'PH';
 
-                                       $casinoAccounts[0]['isVIP'] == 0 ? $vipLevel = 1 : $vipLevel = 2;
-
+                                       $casinoAccounts[0]['isVIP'] == 0 ? $vipLevel = App::getParam("ptreg") : $vipLevel = App::getParam("ptvip");
+                                       
                                         /*
                                          * PlayTech Configurations
                                          */
-                                       $URI = 'https://extdev-devhead-cashier.extdev.eu';
-                                       $casino = 'playtech800041';
-                                       $playerSecretKey = 'PhilWeb123';
-                                       //$depositSecretKey = 'PhilWeb123';
-                                       //$withdrawSecretkey = 'PhilWeb123';                
+                                       $arrplayeruri = App::getParam("player_api");
+                                       $URI = $arrplayeruri[$serviceID - 1];
+                                       $casino = App::getParam("pt_casino_name");
+                                       $playerSecretKey = App::getParam("pt_secret_key");                 
 
                                        $playtechAPI = new PlayTechAPI($URI, $casino, $playerSecretKey);                
 

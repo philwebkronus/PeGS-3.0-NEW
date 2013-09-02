@@ -160,6 +160,13 @@ $txtIDPresented->Size = 15;
 $txtIDPresented->CssClass = "validate[required, custom[onlyLetterNumber]]";
 $fproc->AddControl($txtIDPresented);
 
+//Added by: MKGE 08-22-13
+$txtReferrerCode = new TextBox("txtReferrerCode","txtReferrerCode","Referrer Code");
+$txtReferrerCode->ShowCaption = false;
+$txtReferrerCode->Length = 20;
+$txtReferrerCode->Size = 15;
+$fproc->AddControl($txtReferrerCode);
+
 $btnSubmit = new Button("btnSubmit", "btnSubmit", "Register");
 $btnSubmit->IsSubmit = true;
 $btnSubmit->CssClass = "btnDefault roundedcorners yellow-btn";
@@ -230,7 +237,7 @@ $fproc->AddControl($chkSMSNotification);
 
 $chkConfirmAge = new CheckBox("chkConfirmAge", "chkConfirmAge", "");
 $chkConfirmAge->ShowCaption = true;
-$chkConfirmAge->Caption = "I hereby confirm that I am at least 21 years old and have read and accepted the <a href=".$_CONFIG['terms-conditions'].">Terms and Conditions</a>.";
+$chkConfirmAge->Caption = "I hereby confirm that I am at least 21 years old and have read and accepted the <a href=".$_CONFIG['terms-conditions']." target='_blank'>Terms and Conditions</a>.";
 $chkConfirmAge->CssClass = 'validate[required]';
 $fproc->AddControl($chkConfirmAge);
 
@@ -282,7 +289,7 @@ if ($fproc->IsPostBack)
         $arrMemberInfo['Birthdate'] = $dtBirthDate->SubmittedValue;
         $arrMemberInfo['NationalityID'] = $cboNationality->SubmittedValue;
         $arrMemberInfo['OccupationID'] = $cboOccupation->SubmittedValue;
-
+        $arrMemberInfo['ReferrerCode'] = $txtReferrerCode->SubmittedValue;
         $arrMemberInfo['Gender'] = $rdoGroupGender->SubmittedValue;
         $arrMemberInfo['IsSmoker'] = $rdoGroupSmoker->SubmittedValue;
 
@@ -317,27 +324,58 @@ if ($fproc->IsPostBack)
         if (!App::HasError())
         {
             $isSuccess = true;
-            $id = $_SESSION['MemberInfo']['MID'];
-            $sessionid = $_SESSION['MemberInfo']['SessionID'];
+            if(isset($_SESSION['MemberInfo']['MID'])){
+                $id = $_SESSION['MemberInfo']['MID'];
+                $sessionid = $_SESSION['MemberInfo']['SessionID'];
+            }
+            else{
+                $id = 0;  
+                $sessionid = '';
+                $arrMemberInfo['UserName'] = 'guest';
+            }  
             $_Log->logEvent(AuditFunctions::PLAYER_REGISTRATION, $arrMemberInfo['UserName'], array('ID' => $id, 'SessionID' => $sessionid));
         }
         else
         {
-            $isSuccess = false;
-            if (strpos(App::GetErrorMessage(), " Integrity constraint violation: 1062 Duplicate entry") > 0)
-            {
-                $isEmailUnique = false;
-                App::SetErrorMessage("Email already exists. Please choose a different email address.");
+            //check if email is already verified in temp table
+            $tempEmail = $_TempMembers->chkTmpVerifiedEmailAddress(trim($arrMemberInfo['Email']));
+            if($tempEmail > 0){
+                App::SetErrorMessage("Email already verified. Please choose a different email address.");
                 $_Log->logAPI(AuditFunctions::PLAYER_EMAIL_VERIFICATION, $tempEmail.':'.$arrMemberInfo['Email'].':Failed', 0, 0);
-                $isOpen = false;
+                $isSuccess = false;
                 $error = "Email already exists. Please choose a different email address.";
                 $logger->logger($logdate, $logtype, $error);
             }
-            else{
-                $isOpen = false;
-                App::SetErrorMessage("Registration Failed, Please try again.");
-                $error = "Failed to register new player.";
-                $logger->logger($logdate, $logtype, $error);
+            else
+            {
+                $_TempMembers->Register($arrMembers, $arrMemberInfo);
+                $isOpen = 'true';
+                if (!App::HasError())
+                {
+                    $isSuccess = true;
+                    $id = $_SESSION['MemberInfo']['MID'];
+                    $sessionid = $_SESSION['MemberInfo']['SessionID'];
+                    $_Log->logEvent(AuditFunctions::PLAYER_REGISTRATION, $arrMemberInfo['UserName'], array('ID' => $id, 'SessionID' => $sessionid));
+                }
+                else
+                {
+                    $isSuccess = false;
+                    if (strpos(App::GetErrorMessage(), " Integrity constraint violation: 1062 Duplicate entry") > 0)
+                    {
+                        $isEmailUnique = false;
+                        App::SetErrorMessage("Email already exists. Please choose a different email address.");
+                        $_Log->logAPI(AuditFunctions::PLAYER_EMAIL_VERIFICATION, $tempEmail.':'.$arrMemberInfo['Email'].':Failed', 0, 0);
+                        $isOpen = false;
+                        $error = "Email already exists. Please choose a different email address.";
+                        $logger->logger($logdate, $logtype, $error);
+                    }
+                    else{
+                        $isOpen = false;
+                        App::SetErrorMessage("Registration Failed, Please try again.");
+                        $error = "Failed to register new player.";
+                        $logger->logger($logdate, $logtype, $error);
+                    }
+                }
             }
         }
     }
@@ -429,13 +467,14 @@ if ($fproc->IsPostBack)
         <td><?php echo $txtAge; ?></td>
     </tr>
     <tr>
-        <td colspan="2">How did you hear about e-Games?<br/>
-            <?php echo $cboHowDidYouHear; ?></td>
+        <td>Referrer Code<br/>
+        <td><?php echo $txtReferrerCode; ?></td>
         <td>Nationality</td>
         <td><?php echo $cboNationality; ?></td>
     </tr>
     <tr>
-        <td colspan="2">&nbsp;</td>
+        <td colspan="2">How did you hear about e-Games?<br/>
+            <?php echo $cboHowDidYouHear; ?></td>
         <td>Occupation</td>
         <td><?php echo $cboOccupation; ?></td>
     </tr>
