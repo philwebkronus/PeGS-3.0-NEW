@@ -238,7 +238,7 @@ class MigrateMember extends BaseEntity
         (!empty($memberinfo[0]['MobileNumber'])) ? $phone = str_replace(' ','',$memberinfo[0]['MobileNumber']) : $phone = '338-3838';
         $zip = 'NA';
         
-        $memberservices[0]['isVIP'] == 0 ? $vipLevel = 1 : $vipLevel = 2;
+        $memberservices[0]['isVIP'] == 0 ? $vipLevel = App::getParam("ptreg") : $vipLevel = App::getParam("ptvip");
         //$vipLevel = 1; //1-reg ; 2-vip
         
         foreach( $casinoservices as $casinoservice )
@@ -246,17 +246,15 @@ class MigrateMember extends BaseEntity
            
            switch( $casinoservice['ServiceID'] )
             {
-                default:
                 case CasinoProviders::PT;
 
                      /*
                       * PlayTech Configurations
                       */
-                    $URI = 'https://extdev-devhead-cashier.extdev.eu';
-                    $casino = 'playtech800041';
-                    $playerSecretKey = 'PhilWeb123';
-                    //$depositSecretKey = 'PhilWeb123';
-                    //$withdrawSecretkey = 'PhilWeb123';                
+                    $arrplayeruri = App::getParam("player_api");
+                    $URI = $arrplayeruri[$casinoservice['ServiceID'] - 1];
+                    $casino = App::getParam("pt_casino_name");
+                    $playerSecretKey = App::getParam("pt_secret_key");                 
 
                     $playtechAPI = new PlayTechAPI($URI, $casino, $playerSecretKey);                
 
@@ -275,6 +273,8 @@ class MigrateMember extends BaseEntity
                 case CasinoProviders::RTG_GAMMA;
                     break;
                 case CasinoProviders::RTG_SIGMA;
+                    break;
+                default:
                     break;
             }   
         }

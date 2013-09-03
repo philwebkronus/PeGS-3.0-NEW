@@ -43,6 +43,8 @@ class CasinoServices extends BaseEntity
         App::LoadCore("Randomizer.class.php");
         $_Randomizer = new Randomizer();
         
+        $isVIP == 0 ? $vipLevel = App::getParam("ptreg") : $vipLevel = App::getParam("ptvip");
+        
         $services['ServiceID'] = $serviceID;
         $services['MID'] = $MID;
         $services['ServiceUsername'] = str_pad($MID, 12, '0', STR_PAD_LEFT); 
@@ -52,7 +54,8 @@ class CasinoServices extends BaseEntity
         $services['DateCreated'] = 'now_usec()';
         $services['isVIP'] = $isVIP;
         $services['Status'] = 1;
-
+        $services['VIPLevel'] = $vipLevel;
+        
         $newservices[] = $services;
         
         return $newservices;

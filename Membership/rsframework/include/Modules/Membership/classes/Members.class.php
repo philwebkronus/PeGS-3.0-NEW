@@ -42,7 +42,7 @@ class Members extends BaseEntity {
     public function getAllBannedAccountsInfo()
     {
         $query = "SELECT m.MID, mc.MemberCardID, mc.CardNumber, mi.DateCreated as DateCreated, YEAR(current_date)-YEAR(mi.Birthdate) as Age, 
-                            mi.Gender, rn.Name as Nationality
+                            mi.DateVerified, mi.Gender, rn.Name as Nationality
                             FROM $this->TableName m
                             INNER JOIN loyaltydb.membercards mc ON mc.MID = m.MID
                             INNER JOIN membership.memberinfo mi ON mi.MID = mc.MID
@@ -203,18 +203,18 @@ class Members extends BaseEntity {
                                                     $phone = '123-4567';                                        
                                                     $zip = 'NA';
                                                     $countryCode = 'PH';
-
-                                                    $arrServices[0]['isVIP'] == 0 ? $vipLevel = 1 : $vipLevel = 2;
+                                                    
+                                                    //$arrServices[0]['isVIP'] == 0 ? $vipLevel = 1 : $vipLevel = 2;
+                                                    $vipLevel = $arrServices[0]['VIPLevel'];
 
                                                     /*
                                                      * PlayTech Configurations
                                                      */
-                                                    $URI = 'https://extdev-devhead-cashier.extdev.eu';
-                                                    $casino = 'playtech800041';
-                                                    $playerSecretKey = 'PhilWeb123';
-                                                    //$depositSecretKey = 'PhilWeb123';
-                                                    //$withdrawSecretkey = 'PhilWeb123';                
-
+                                                    $arrplayeruri = App::getParam("player_api");
+                                                    $URI = $arrplayeruri[$serviceID - 1];
+                                                    $casino = App::getParam("pt_casino_name");
+                                                    $playerSecretKey = App::getParam("pt_secret_key");              
+                                                    
                                                     $playtechAPI = new PlayTechAPI($URI, $casino, $playerSecretKey);
 
                                                     /*
@@ -341,102 +341,109 @@ class Members extends BaseEntity {
             return false;
         }
     }
-
+    /**
+     * Login Authentication
+     * @author
+     * @modified Mark Kenneth Esguerra
+     * @date July 19, 2013
+     * @param string $username
+     * @param string $password
+     * @param string $hashing 
+     */
     function Authenticate($username, $password, $hashing = '') {
         App::LoadModuleClass("Loyalty", "MemberCards");
+        App::LoadModuleClass("Membership", "TempMembers");
         App::LoadCore("Validation.class.php");
         $validate = new Validation();
-
-        if ($validate->validateEmail($username)) {
-            $query = "select * from members where username='$username'";
-            $result = parent::RunQuery($query);
-        } else {
-            $membercards = new MemberCards();
-            $cardinfo = $membercards->getMIDByCard($username);
-
-            if (is_array($cardinfo) && count($cardinfo) > 0) {
-                $MID = $cardinfo[0]['MID'];
-                $query = "select * from members where MID='$MID'";
+        
+        //Check if the Username is in Membership_Temp and its already verified
+            if ($validate->validateEmail($username)) 
+            {
+                $query = "select * from membership.members where username='$username'";
                 $result = parent::RunQuery($query);
             } else {
-                $result = array();
+                $membercards = new MemberCards();
+                $cardinfo = $membercards->getMIDByCard($username);
+            
+                if (is_array($cardinfo) && count($cardinfo) > 0) 
+                {
+                    if($cardinfo[0]['Status'] == 1 || $cardinfo[0]['Status'] == 5 ){
+                        $MID = $cardinfo[0]['MID'];
+                        $query = "select * from membership.members where MID='$MID'";
+                        $result = parent::RunQuery($query);
+                    } else {
+                        $result = 0;
+                    }
+                } 
+                else 
+                {
+                        $result = array();
+                }
             }
-        }
+            $retval = "";
+            $strpass = $password;
 
-        $retval = "";
-        $strpass = $password;
-
-        if ($hashing != '') {
-            App::LoadCore("Hashing.class.php");
-            if ($hashing == Hashing::MD5) {
-                $strpass = md5($password);
+            if ($hashing != '')
+            {
+                App::LoadCore("Hashing.class.php");
+                
+                if ($hashing == Hashing::MD5)
+                {
+                    $strpass = md5($password);
+                }
             }
-        }
+            
+            if (is_array($result) && count($result) > 0) 
+            {
+                $row = $result[0];
+                $mid = $row["MID"];
+                
+                switch($row["Status"])
+                {
+                    case 1 :
+                        if ($row["Password"] != $strpass) 
+                            App::SetErrorMessage("Invalid Password");
+                        else 
+                            $retval = $row;
+                        break;
+                    case 0 :
+                        App::SetErrorMessage("Account Inactive");
+                        break;
+                    case 2 :
+                        App::SetErrorMessage("Account Suspended");
+                        break;
+                    case 3 :
+                        App::SetErrorMessage("Account Locked (Login Attempts)");
+                        break;
+                    case 4 :
+                        App::SetErrorMessage("Account Locked (By Admin)");
+                        break;
+                    case 5:
+                        App::SetErrorMessage("Account Locked (By Admin)");
+                        break;
+                    case 6 :
+                        App::SetErrorMessage("Account Terminated");
+                        break;
+                    default :
+                        App::SetErrorMessage("Invalid Account");
+                        break;
+                }
+            } else if($result == 0) {
+                App::SetErrorMessage("Invalid Account.");
+            } else {
+                App::SetErrorMessage("Invalid Account");
+                $_tempMembers = new TempMembers();
 
-        if (is_array($result) && count($result) > 0) {
-            $row = $result[0];
-            $mid = $row["MID"];
+                $isTempAcctExist = $_tempMembers->chkTempUser($username);
 
-            switch($row["Status"]){
-                case 1 :
-                    if ($row["Password"] != $strpass) 
-                        App::SetErrorMessage("Invalid Password");
-                    else 
-                        $retval = $row;
-                    break;
-                case 0 :
-                    App::SetErrorMessage("Account Inactive");
-                    break;
-                case 2 :
-                     App::SetErrorMessage("Account Suspended");
-                    break;
-                case 3 :
-                    App::SetErrorMessage("Account Locked (Login Attempts)");
-                    break;
-                case 4 :
-                    App::SetErrorMessage("Account Locked (By Admin)");
-                    break;
-                case 5:
-                    App::SetErrorMessage("Account Locked (By Admin)");
-                    break;
-                case 6 :
-                    App::SetErrorMessage("Account Terminated");
-                    break;
-                default :
-                    App::SetErrorMessage("Invalid Account");
-                    break;
+                //check if account has no transactions yet in kronus cashier
+                if($isTempAcctExist > 0)
+                   App::SetErrorMessage("You need to transact at least one transaction before you can login.");
+                else
+                    App::SetErrorMessage("Invalid Account.");
             }
-//            if ($row["Status"] == 1) {
-//                if ($row["Password"] != $strpass) {
-//                    if ($row["LoginAttempts"] < 2) {
-//                        App::SetErrorMessage("Invalid Password");
-//                        $this->IncrementLoginAttempts($mid);
-//                    } else {
-//                        App::SetErrorMessage("Invalid Password. Account Locked");
-//                        $this->LockAccountForAttempts($mid);
-//                    }
-//                } else {
-//                    $this->ResetLoginAttempts($mid);
-//                    $retval = $row;
-//                }
-//            } elseif ($row["Status"] == 0) {
-//                App::SetErrorMessage("Account Inactive");
-//            } elseif ($row["Status"] == 2) {
-//                App::SetErrorMessage("Account Suspended");
-//            } elseif ($row["Status"] == 3) {
-//                App::SetErrorMessage("Account Locked (Login Attempts)");
-//            } elseif ($row["Status"] == 4) {
-//                App::SetErrorMessage("Account Locked (By Admin)");
-//            } elseif ($row["Status"] == 5) {
-//                App::SetErrorMessage("Account Banned");
-//            } elseif ($row["Status"] == 6) {
-//                App::SetErrorMessage("Account Terminated");
-//            }
-        } else {
-            App::SetErrorMessage("Invalid Account");
+            return $retval;
         }
-        return $retval;
-    }
 
     function IncrementLoginAttempts($mid) {
         $query = "update $this->TableName set LoginAttempts = LoginAttempts + 1 where MID=$mid";
@@ -453,7 +460,7 @@ class Members extends BaseEntity {
         return parent::ExecuteQuery($query);
     }
 
-    public function getUserName($MID)
+    function getUserName($MID)
     {
         $query = "SELECT UserName FROM members WHERE MID = $MID";
         $result = parent::RunQuery($query);
@@ -467,7 +474,7 @@ class Members extends BaseEntity {
      * @param str $email
      * @return int
      */
-    public function chkActiveVerifiedEmailAddress($email){
+    function chkActiveVerifiedEmailAddress($email){
         $query = "SELECT COUNT(mi.MID) ctractive FROM memberinfo mi
                   WHERE mi.Email = '$email'";       
         $result = parent::RunQuery($query);

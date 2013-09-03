@@ -172,8 +172,8 @@ class ActivateMember extends BaseEntity
                                        $zip = 'NA';
                                        $countryCode = 'PH';
 
-                                       $casinoAccounts[0]['isVIP'] == 0 ? $vipLevel = App::getParam("ptreg") : $vipLevel = App::getParam("ptvip");
-                                       
+                                       //$casinoAccounts[0]['isVIP'] == 0 ? $vipLevel = App::getParam("ptreg") : $vipLevel = App::getParam("ptvip");
+                                       $vipLevel = $casinoAccounts[0]['VIPLevel'];
                                         /*
                                          * PlayTech Configurations
                                          */
