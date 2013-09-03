@@ -99,6 +99,14 @@ class CasinoApi {
                                       );
 
                 $_CasinoAPIHandler = new CasinoCAPIHandler(CasinoCAPIHandler::PT, $configuration);
+                
+                // check if connected
+                if (!(bool)$_CasinoAPIHandler->IsAPIServerOK()) {
+                    $message = 'Can\'t connect to PT';
+                    logger($message . ' TerminalID='.$terminal_id . ' ServiceID='.$server_id);
+                    self::throwError($message);
+                }
+                
         } else {
                 $url = Mirage::app()->param['revertbroken_api']['URI'];
                 $configuration = array('URI'=>'',
@@ -113,14 +121,16 @@ class CasinoApi {
                                       );
 
                 $_CasinoAPIHandler = new CasinoCAPIHandler(CasinoCAPIHandler::PT, $configuration);
+                
+                
+                // check if connected
+                if (!(bool)$_CasinoAPIHandler->IsAPIServerOK2()) {
+                    $message = 'Can\'t connect to PT';
+                    logger($message . ' TerminalID='.$terminal_id . ' ServiceID='.$server_id);
+                    self::throwError($message);
+                }
         }
-        
-        // check if connected
-        if (!(bool)$_CasinoAPIHandler->IsAPIServerOK()) {
-            $message = 'Can\'t connect to PT';
-            logger($message . ' TerminalID='.$terminal_id . ' ServiceID='.$server_id);
-            self::throwError($message);
-        }
+      
         
         return $_CasinoAPIHandler;
         

@@ -69,15 +69,18 @@ class CommonRedeem {
             $terminal_name = $terminalname;
         }
 
-        if($currentbet > 0){
+        //revert player bet on hand regardless of the current bet, for PT only
+        if(strpos($service_name, 'PT') !== false) {
             $result = $casinoApi->RevertBrokenGamesAPI($terminal_id, $service_id, $terminal_name);
             if($result['RevertBrokenGamesReponse'][0] == false){
+                //unfreeze PT account 
+                $casinoApiHandler->ChangeAccountStatus($terminal_name, 0);
                 //unlock launchpad gaming terminal
-                $casinoApi->callSpyderAPI($commandId = 0, $terminal_id, $terminalname, $login_pwd, $service_id);
+                $casinoApi->callSpyderAPI($commandId = 0, $terminal_id, $terminal_name, $login_pwd, $service_id);
                 CasinoApi::throwError("Unable to revert bet on hand.");
             }
         }
-
+        
         //check if there was a pending game bet for RTG
         if(strpos($service_name, 'RTG') !== false) {
             $PID = $casinoApiHandler->GetPIDLogin($terminal_name);

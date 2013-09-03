@@ -71,10 +71,13 @@ class CommonUBRedeem {
         } else {
             $terminal_name = $terminalsModel->getTerminalName($terminal_id);
         }
-
-        if($currentbet > 0){
+        
+         //revert player bet on hand regardless of the current bet, for PT only
+        if(strpos($service_name, 'PT') !== false) {
             $result = $casinoApi->RevertBrokenGamesAPI($terminal_id, $service_id, $casinoUsername);
             if($result['RevertBrokenGamesReponse'][0] == false){
+                //unfreeze PT account 
+                $casinoApiHandler->ChangeAccountStatus($casinoUsername, 0);
                 //unlock launchpad gaming terminal
                 $casinoApi->callSpyderAPI($commandId = 0, $terminal_id, $casinoUsername, $login_pwd, $service_id);
                 CasinoApi::throwError("Unable to revert bet on hand.");

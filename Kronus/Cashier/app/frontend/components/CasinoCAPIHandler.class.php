@@ -162,6 +162,26 @@ class CasinoCAPIHandler
 
         return common::isHostReachable( $this->_URI, $port );
     }
+    
+    /**
+     * Checks if API endpoint is reachable
+     *
+     * @param none
+     * @return boolean
+     */
+    public function IsAPIServerOK2()
+    {
+        $port = 80;
+        
+        $urlInfo = parse_url( $this->_URIPID );        
+
+        if ( $urlInfo[ 'scheme' ] == 'https' )
+        {
+            $port = 443;
+        }
+
+        return common::isHostReachable( $this->_URIPID, $port );
+    }
 
     /**
      * Retrieve the current balance of the casino account
