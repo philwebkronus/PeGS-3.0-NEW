@@ -13,13 +13,22 @@
 
 //Mirage::loadComponents('CasinoAPI/PlayTechAPI.class');
 Yii::import('casinoapi/PlayTechAPI');
+Yii::import('casinoapi/PlayTechRevertBrokenGamesAPI');
 
 class PlayTechAPIWrapper {
     
     private $_API;
     
-    public function __construct($URI, $casinoName, $secretKey){
-        $this->_API = new PlayTechAPI($URI, $casinoName, $secretKey);
+//    public function __construct($URI, $casinoName, $secretKey){
+//        $this->_API = new PlayTechAPI($URI, $casinoName, $secretKey);
+//    }
+    
+    public function __construct($URI, $casinoName='', $secretKey='', $certFilePath='', $keyFilePath='', $isRevert = 0){
+        if($isRevert == 0){
+                $this->_API = new PlayTechAPI($URI, $casinoName, $secretKey);
+        } else {
+                $this->_API = new PlayTechRevertBrokenGamesAPI($URI, $certFilePath, $keyFilePath);
+        }
     }
     
     public function GetAPIInstance(){
@@ -249,6 +258,22 @@ class PlayTechAPIWrapper {
             return array( 'IsSucceed' => false, 'ErrorCode' => 3, 'ErrorMessage' => 'API Error: ' . $this->_API->GetError() );
         }
     }
+    
+    public function RevertBrokenGames($playerUsername, $playerMode, $revertMode)
+    {
+        $response = $this->_API->DoRevertBrokenGames($playerUsername, $playerMode, $revertMode);
+
+        if(is_array($response)){
+            if($response != NULL){
+                return array('IsSucceed' => true, 'ErrorCode' => 0, 'ErrorMessage' => null, 'RevertBrokenGamesReponse' => $response);
+            } else {
+                    return array('IsSucceed' => false, 'ErrorCode' => 1, 'ErrorMessage' => "(".$response['error'].")");
+                }
+        } else {
+            return array('IsSucceed' => false, 'ErrorCode' => 2, 'ErrorMessage' => "Response Malformed");
+        }
+    }
+    
 }
 
 ?>
