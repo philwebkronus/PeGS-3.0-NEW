@@ -373,7 +373,7 @@ if($connected)
                         $vTo = date ('Y-m-d', strtotime ('+1 day' , strtotime($vdate2)));
                         $vtransstatus = $_POST['cmbstatus'];
                         $vtranstype = $_POST['cmbtranstype'];
-
+                        
                         /** Store status to an array **/
                         $arrstasssstus = array();
                         if($vtransstatus == 1)
@@ -431,12 +431,12 @@ if($connected)
                                    case 'R': $vtranstype = 'Reload';break;
                                    case 'RD': $vtranstype = 'Redeposit';break;
                                 }               
-
+                                $results2 = $oas->getsitecode($vSiteID);
+                                $results2 = $results2['SiteCode'];
+                                $results = preg_split("/$results2/", $vview['TerminalCode']);
                                 
-                                $results = preg_split("/\-/",$vview['TerminalCode']);
-                                $results2 = preg_split("/\ID/", $results[1]);
                                 $responce->rows[$i]['id']=$vview['TransactionDetailsID'];
-                                $responce->rows[$i]['cell']=array($vview['TransactionReferenceID'],$results2[1],$vtranstype,$vview['ServiceTransactionID'], number_format($vview['Amount'],2),$vview['DateCreated'],$vstatus, $vview['UserName']);
+                                $responce->rows[$i]['cell']=array($vview['TransactionReferenceID'],$results[1],$vtranstype,$vview['ServiceTransactionID'], number_format($vview['Amount'],2),$vview['DateCreated'],$vstatus, $vview['UserName']);
                                 $i++;
                              }
                         }
@@ -741,10 +741,12 @@ if($connected)
                            case 'RD': $vtranstype = 'Redeposit';break;
                         }               
                         
-                        $results = preg_split("/\-/",$vview['TerminalCode']);
-                        $results2 = preg_split("/\ID/", $results[1]); 
+                        $results2 = $oas->getsitecode($vSiteID);
+                        $results2 = $results2['SiteCode'];
+                        $results = preg_split("/$results2/", $vview['TerminalCode']);
+                        
                         $responce->rows[$i]['id']=$vview['TransactionReferenceID'];
-                        $responce->rows[$i]['cell']=array($vview['TransactionReferenceID'],$vview['TransactionSummaryID'],$vview['POSAccountNo'], $results2[1],$vtranstype,$vview['ServiceName'], number_format($vview['Amount'],2),$vview['DateCreated'],$vview['UserName'], $vstatus);
+                        $responce->rows[$i]['cell']=array($vview['TransactionReferenceID'],$vview['TransactionSummaryID'],$vview['POSAccountNo'], $results[1],$vtranstype,$vview['ServiceName'], number_format($vview['Amount'],2),$vview['DateCreated'],$vview['UserName'], $vstatus);
                         $i++;
                      }
                 }
@@ -806,10 +808,11 @@ if($connected)
                      $responce->records = $count;                    
                      foreach($result as $vview)
                      {
-                        $results = preg_split("/\-/",$vview['TerminalCode']);
-                        $results2 = preg_split("/\ID/", $results[1]); 
+                        $results2 = $oas->getsitecode($vSiteID);
+                        $results2 = $results2['SiteCode'];
+                        $results = preg_split("/$results2/", $vview['TerminalCode']); 
                         $responce->rows[$i]['id']=$vview['TransactionsSummaryID'];
-                        $responce->rows[$i]['cell']=array($vview['TransactionsSummaryID'],$vview['POSAccountNo'], $results2[1],  number_format($vview['Deposit'], 2), number_format($vview['Reload'],2), number_format($vview['Withdrawal'], 2), $vview['DateStarted'], $vview['DateEnded'], $vview['UserName']);
+                        $responce->rows[$i]['cell']=array($vview['TransactionsSummaryID'],$vview['POSAccountNo'], $results[1],  number_format($vview['Deposit'], 2), number_format($vview['Reload'],2), number_format($vview['Withdrawal'], 2), $vview['DateStarted'], $vview['DateEnded'], $vview['UserName']);
                         $i++;
                      }
                 }
@@ -892,12 +895,13 @@ if($connected)
                            case 'RD': $vtranstype = 'Redeposit';break;
                         }
                         
-                        $results = preg_split("/\-/",$vview['TerminalCode']);
-                        $results2 = preg_split("/\ID/", $results[1]);
+                        $results2 = $oas->getsitecode($vSiteID);
+                        $results2 = $results2['SiteCode'];
+                        $results = preg_split("/$results2/", $vview['TerminalCode']);
                         $vsthistoryID = $vview['ServiceTransferHistoryID'];
                         $responce->rows[$i]['id']=$vview['TransactionRequestLogLPID'];
                         $responce->rows[$i]['cell']=array($vview['TransactionRequestLogLPID'],$vview['TransactionReferenceID'], $vview['POSAccountNo'], 
-                                                          $results2[1], $vtranstype, $vview['ServiceTransactionID'], 
+                                                          $results[1], $vtranstype, $vview['ServiceTransactionID'], 
                                                           $vview['ServiceStatus'], number_format($vview['Amount'], 2), $vview['ServiceName'], 
                                                           $vview['StartDate'], $vview['EndDate'], $vstatus);
                         $i++;
@@ -2122,8 +2126,8 @@ if($connected)
                                             
                                             //check if VIP, pass appropriate VIP parameter.
                                                 if(strstr($vprovidername, "VIP") == true){
-                                                    $visVIP = 2;
-                                                } else { $visVIP = 1; }
+                                                    $visVIP = $_ptvip;
+                                                } else { $visVIP = $_ptreg; }
                                                 
                                                      $vapiResult = $_CasinoGamingPlayerAPI->createTerminalAccount($vprovidername, 
                                                                            $vserviceID, $url, $login, $password, $aid, $currency, $email, $fname, 

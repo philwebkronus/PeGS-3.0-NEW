@@ -19,6 +19,10 @@ if(isset($_SESSION['sessionID']))
 {
     $new_sessionid = $_SESSION['sessionID'];
 }
+else 
+{
+    $new_sessionid = '';
+}
 if(isset($_SESSION['accID']))
 {
     $aid = $_SESSION['accID'];
@@ -555,8 +559,8 @@ if($connected)
                                     
                                     //check if VIP, then pass appropriate VIP parameter
                                     if(strstr($vlogin, "VIP") == true){
-                                        $isVIP = 2;
-                                    } else { $isVIP = 1; }
+                                        $isVIP = $_ptvip;
+                                    } else { $isVIP = $_ptreg; }
                                     $capiserverID = '';
                                     
                                     //replace number in the lastname with its equivalent value  in words.
