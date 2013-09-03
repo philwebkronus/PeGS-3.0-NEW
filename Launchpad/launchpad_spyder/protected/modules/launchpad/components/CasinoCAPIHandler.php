@@ -103,9 +103,16 @@ class CasinoCAPIHandler
         }
         else if ( $this->_gamingProvider == self::PT )
         {
-            $casinoName = $configuration['pt_casino_name'];
-            $secretKey = $configuration['pt_secret_key'];
-            $this->_API = new PlayTechAPIWrapper($this->_URI, $casinoName, $secretKey);
+            if(!isset($configuration['REVERT_BROKEN_GAME_MODE'])){
+                $casinoName = $configuration['pt_casino_name'];
+                $secretKey = $configuration['pt_secret_key'];
+                $this->_API = new PlayTechAPIWrapper($this->_URI, $casinoName, $secretKey);
+            } else {
+                $this->_URIPID = $configuration[ 'URI_RBAPI' ];
+                $certFilePath = $configuration['certFilePath'];
+                $keyFilePath = $configuration['keyFilePath'];
+                $this->_API = new PlayTechAPIWrapper($this->_URIPID, '', '',$certFilePath, $keyFilePath,1);  
+            } 
         }
         else if ( $this->_gamingProvider == self::RTG )
         {
@@ -372,6 +379,10 @@ class CasinoCAPIHandler
         $pidResults =  $this->_API->GetPIDUsingLogin($login);
         return $pidResults["PID"];
 
+    }
+    
+    public function RevertBrokenGamesAPI( $username, $playerMode, $revertMode ){
+        return $this->_API->RevertBrokenGames( $username, $playerMode, $revertMode );
     }
 
 }

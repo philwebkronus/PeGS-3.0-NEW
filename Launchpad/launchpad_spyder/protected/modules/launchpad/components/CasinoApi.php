@@ -99,21 +99,40 @@ class CasinoApi
         return $_CasinoAPIHandler;
     }
     
-    public function generatePTConfig($terminal_id, $server_id){
-        $url =  LPConfig::app()->params['service_api'][$server_id -1];
-        $configuration = array('URI'=>$url,
-                               'isCaching'=>FALSE,
-                               'isDebug'=>TRUE,
-                               'pt_casino_name'=> LPConfig::app()->params['pt_config']['pt_casino_name'],
-                               'pt_secret_key'=>  LPConfig::app()->params['pt_config']['pt_secret_key']
-                              );
+    public function generatePTConfig($terminal_id, $server_id, $isRevert = 0){
+        
+        if($isRevert == 0){
+            $url =  LPConfig::app()->params['service_api'][$server_id -1];
+            $configuration = array('URI'=>$url,
+                                   'isCaching'=>FALSE,
+                                   'isDebug'=>TRUE,
+                                   'pt_casino_name'=> LPConfig::app()->params['pt_config']['pt_casino_name'],
+                                   'pt_secret_key'=>  LPConfig::app()->params['pt_config']['pt_secret_key']
+                                  );
+
+        } else {
+            
+                $url = LPConfig::app()->params['revertbroken_api']['URI'];
+                $configuration = array('URI'=>'',
+                                       'URI_RBAPI'=>$url,
+                                       'isCaching'=>FALSE,
+                                       'isDebug'=>TRUE,
+                                       'REVERT_BROKEN_GAME_MODE' => LPConfig::app()->params['revertbroken_api']['REVERT_BROKEN_GAME_MODE'],
+                                       'CASINO_NAME' => LPConfig::app()->params['revertbroken_api']['CASINO_NAME'],
+                                       'PLAYER_MODE' => LPConfig::app()->params['revertbroken_api']['PLAYER_MODE'],
+                                       'certFilePath' => LPConfig::app()->params['revertbroken_api']['PTClientCertsPath'].$server_id.'/cert.pem',
+                                       'keyFilePath' => LPConfig::app()->params['revertbroken_api']['PTClientKeyPath'].$server_id.'/key.pem' 
+                                      );
+
+        }
+        
         
         $_CasinoAPIHandler = new CasinoCAPIHandler(CasinoCAPIHandler::PT, $configuration);
         
         // check if connected
         if (!(bool)$_CasinoAPIHandler->IsAPIServerOK()) {
             $message = 'Can\'t connect to PT';
-            $this->log($message . ' TerminalID='.$terminal_id . ' ServiceID='.$serverid);
+            $this->log($message . ' TerminalID='.$terminal_id . ' ServiceID='.$server_id);
             throw new CHttpException(404, $message);
         }
         
@@ -170,6 +189,23 @@ class CasinoApi
         $pendingGames = $casinoAPIHandler->GetPendingGames($PID);
         return $pendingGames;
     }
+    
+    /**
+     * Reverts PT Pending games
+     * @param int $terminal_id
+     * @param int $service_id
+     * @param str $username
+     * @return type
+     */
+    public function RevertBrokenGamesAPI($terminal_id, $service_id, $username){
+        $isRevert = 1; //0-No, 1-Yes
+        $_casinoAPIHandler = $this->generatePTConfig($terminal_id,$service_id, $isRevert);
+        $game_mode = LPConfig::app()->params['revertbroken_api']['REVERT_BROKEN_GAME_MODE'];
+        $player_mode = LPConfig::app()->params['revertbroken_api']['PLAYER_MODE'];
+        $response = $_casinoAPIHandler->RevertBrokenGamesAPI($username, $player_mode, $game_mode);
+        return $response;
+    }
+    
     
     /**
      *

@@ -623,13 +623,11 @@ class LobbyController extends CController
                 
                 $changeStatusResult = $casinoApiHandler->ChangeAccountStatus($login, 1);
                 
-//                if($currentbet > 0){
-//                    $casinoAPI = new CasinoApi();
-//                    $revertbrokengames = $casinoAPI->RevertBrokenGamesAPI($this->getTerminalID(), $serviceID, $login);
-//                    if($revertbrokengames['RevertBrokenGamesReponse'][0] == false){
-//                        $this->log('[ServiceID: ' . $this->getCurrentServiceID() .'] Unable to revert bet on hand.');
-//                        throw new CHttpException(404, 'Unable to revert bet on hand.');
-//                    }
+//                $casinoAPI = new CasinoApi();
+//                $revertbrokengames = $casinoAPI->RevertBrokenGamesAPI($this->getTerminalID(), $serviceID, $login);
+//                if($revertbrokengames['RevertBrokenGamesReponse'][0] == false){
+//                    $this->log('[ServiceID: ' . $this->getCurrentServiceID() .'] Unable to revert bet on hand.');
+//                    throw new CHttpException(404, 'Unable to revert bet on hand.');
 //                }
                 
                 $withdrawResult = $casinoApiHandler->Withdraw($this->getTerminalCode(), Lib::moneyToDecimal($amount), $tracking[0], $tracking[1], 
