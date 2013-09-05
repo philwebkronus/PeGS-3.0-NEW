@@ -167,7 +167,7 @@ if ($fproc->IsPostBack)
                     colModel:[
                             {name:'FullName',index:'FullName',align: 'left', width: 200},
                             {name:'CardNumber',index:'CardNumber', align: 'left', width: 150},
-                            {name:'ID',index:'ID', align: 'left', width: 150},
+                            {name:'ID',index:'ID', align: 'left', width: 150, hidden: true},
                             {name:'Birthdate',index:'Birthdate', align: 'left', width: 90},
                             {name:'Status',index:'Status', align: 'left', width: 90},
                             {name:'Remarks',index:'Remarks', align: 'left', width: 290},
