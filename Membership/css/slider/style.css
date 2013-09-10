@@ -101,12 +101,20 @@ h1, h2, h3, h4, h5, h6{margin:0px; font-weight: bold;}
 /*sidebars*/
 #home-login-box a{color:#fff500;}
 #home-login-box a:hover{color:#fff500;}
-#home-login-wrapper{background:url(../../images/slider/login_box.png) no-repeat; width:288px; height:184px; margin-left:-10px; font-size:10px;clear:both;}
+#home-login-wrapper{background:url(../../images/slider/login_box.png) no-repeat; width:288px; height:204px; margin-left:-10px; font-size:10px;clear:both;background-size: 288px 204px;}
 #home-page-login-form{padding:25px 16px;}
 .home-login-form-label{width:70px; text-align:right; padding-top:3px; float:left;}
 .home-login-form-input{margin-left:8px; float:left;}
 .home-login-form-input input.login-field{width:156px; border:1px solid #FFFFFF; border-radius: 0px;}
 #home-login-form-link{ margin-top:5px; text-align: center;}
+/*Start styling for Checking of Points Pop-up Div*/
+.checkpointsdialog {background:url(../../images/slider/content_bg.jpg) repeat-x;}
+.checkpointsdialog .ui-widget-header {background: #810306; color: #FFFFFF}
+/*End styling for Checking of Points Pop-up Div*/
+.pop-up-login-link:link{color: #fff500;}
+.pop-up-login-link:active{color: #fff500;}
+.pop-up-login-link:visited{color: #fff500;}
+.pop-up-login-link:hover{color: #fff500}
 
 #social-buttons-container{margin-top:5px; text-align:right; margin-right:10px;}
 
@@ -268,3 +276,12 @@ border-radius: 0px !important;}
 } 
 
 .membership-inner-padding{padding:30px;}
+
+
+/**login pop up for redeem***/
+
+#login-pop-up{
+    border-radius: 3px;
+    -webkit-border-radius:  3px;
+    -moz-border-radius: 3px;
+}

@@ -21,7 +21,7 @@ class Sites extends BaseEntity
      */
     public function getAllSite()
     {
-        $query = "SELECT SiteID, SiteName FROM sites ORDER BY SiteName ASC";
+        $query = "SELECT SiteID, SiteName FROM sites WHERE Status = 1 ORDER BY SiteName ASC";
         
         return parent::RunQuery($query);
     }

@@ -59,27 +59,66 @@ $btnLogin->IsSubmit = true;
 $btnLogin->CssClass = "yellow-btn";
 $fproc->AddControl($btnLogin);
 
+/* * ***************** 
+ * Author: JunJun S. Hernandez
+ * Description: Objects for pop-up div for checking of points
+ * Date Updated: 2013-08-22
+ * ***************** */
+//Start of declaration of objects for checking of points
+$txtCardNumber = new TextBox("txtCardNumber", "txtCardNumber", "txtCardNumber");
+$txtCardNumber->Length = 40;
+$txtCardNumber->Text = "";
+$txtCardNumber->Args = 'autocomplete="off" placeholder="Enter Card Number" onkeypress="javascript: return AlphaNumericOnly(event)"';
+$fproc->AddControl($txtCardNumber);
+
+$btnCheck = new Button("btnCheck", "btnCheck", "Check");
+$btnCheck->CssClass = "btnDefault roundedcorners yellow-btn";
+$fproc->AddControl($btnCheck);
+//End of declaration of objects for checking of points
+
 $fproc->ProcessForms();
 
-if ($fproc->IsPostBack && $btnLogin->SubmittedValue == "Login")
-{
-    if (!$txtUsername->Text == "")
-    {
-        $username = $txtUsername->SubmittedValue;
+$CardPoints = null;
+
+if ($fproc->IsPostBack && $btnLogin->SubmittedValue == "Login") {
+    if (!$txtUsername->Text == "") {
+        if (!$txtUsername->Text == "")
+        {
+            $username = $txtUsername->SubmittedValue;
+        }
+
+        if (!$txtPassword->Text == "")
+        {
+            $password = $txtPassword->SubmittedValue;
+        }
     }
-    
-    if (!$txtPassword->Text == "")
-    {
-        $password = $txtPassword->SubmittedValue;
+
+    if (!$txtPassword->Text == "") {
+        if (!$txtUsername->Text == "")
+        {
+            $username = $txtUsername->SubmittedValue;
+        }
+
+        if (!$txtPassword->Text == "")
+        {
+            $password = $txtPassword->SubmittedValue;
+        }
+        else if ($txtUsername->Text == "" || $txtPassword->Text == "")
+        {
+            App::SetErrorMessage("Username and Password are required");
+            $txtUsername->Text = "";
+            $txtPassword->Text = "";
+        }
     }
-    
-    if (isset($username) && isset($password))
+    if ($txtUsername->Text == "" || $txtPassword->Text == "")
     {
+        App::SetErrorMessage("Username and Password are required");
+    }
+    if (isset($username) && isset($password)) {
         $_Members = new Members();
         $members = $_Members->Authenticate($username, $password, Hashing::MD5);
 
-        if ($members)
-        {
+        if ($members) {
             $_MemberSessions = new MemberSessions();
 
             $datenow = "now_usec()";
@@ -97,12 +136,10 @@ if ($fproc->IsPostBack && $btnLogin->SubmittedValue == "Login")
                     $activesession = $value2['Count'];
                 }
             }
-            
-            if($activesession > 0)
-            {
-                $_MemberSessions->updateSession($arrMemberSessions["SessionID"], $members["MID"],$arrMemberSessions["RemoteIP"]);
-            }
-            else{
+
+            if ($activesession > 0) {
+                $_MemberSessions->updateSession($arrMemberSessions["SessionID"], $members["MID"], $arrMemberSessions["RemoteIP"]);
+            } else {
                 $_MemberSessions->Insert($arrMemberSessions);
             }
             $_SESSION['sessionID'] = $arrMemberSessions["SessionID"];
@@ -130,7 +167,7 @@ if ($fproc->IsPostBack && $btnLogin->SubmittedValue == "Login")
             $_SESSION["MemberInfo"]["SessionID"] = $sessionid;
             $_SESSION["MemberInfo"]["CardTypeID"] = $cardtypeid;
             $_SESSION["MemberInfo"]["DateEnded"] = $enddate;
-            
+
             //Log to audittrail
             $_Log->logEvent(AuditFunctions::LOGIN, $username, array('ID' => $members["MID"], 'SessionID' => $sessionid));
             header("location:profile.php");

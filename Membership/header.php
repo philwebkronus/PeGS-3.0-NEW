@@ -10,6 +10,7 @@ $javascripts[] = "js/jquery-ui.min.js";
 $javascripts[] = "js/jquery.validationEngine.js";
 $javascripts[] = "js/jquery.validationEngine-en.js";
 $javascripts[] = "js/tools.js";
+$javascripts[] = "admin/js/checkinput.js";
 //$javascripts[] = "js/slider/ad_gallery.js";
 $javascripts[] = "js/slider/jquery.ad-gallery.js";
 

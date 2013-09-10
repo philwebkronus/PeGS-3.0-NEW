@@ -264,3 +264,63 @@ div.nav ul ul ul {
     margin-left: 40px;
     margin-bottom: 5px;
 }
+
+/*--------Additional CSS Style for Add Reward Items------------------*/
+
+img {
+    border:0;
+}
+form.profileForm{
+  float:left;
+  width:300px;
+  height:500px;
+  border:2px solid #AAAAAA;
+  padding:15px;
+}
+div.error{
+    color:red;
+    font-weight: bold;
+    font-family: Arial;
+    font-size:10px;
+    text-align:center;
+}
+div.success{
+    color:green;
+    font-weight: bold;
+    font-family: Arial;
+    font-size:10px;
+    text-align:center;
+}
+form.profileForm label{
+  display:block;
+  float:left;
+  width:170px;
+  font-family:Arial;
+}
+form.profileForm input{
+  display:block;
+  float:left;
+  width:250px;
+}
+form.profileForm input.submit{
+  margin-top:25px;
+  width:100px;
+}
+div.imageContainer input{
+  width:100px;
+  display:block;
+}
+.clear
+{
+  clear:both;
+}
+div.imageContainer{
+  float:left;
+  width:150px;
+  margin-right:25px;
+  text-align:center;
+  border:2px solid #CCCCCC;
+}
+a#delete{
+
+}

@@ -371,6 +371,8 @@ class Members extends BaseEntity {
                         $MID = $cardinfo[0]['MID'];
                         $query = "select * from membership.members where MID='$MID'";
                         $result = parent::RunQuery($query);
+                    } elseif($cardinfo[0]['Status'] == 9) {
+                        $result = "Card is banned";
                     } else {
                         $result = 0;
                     }
@@ -428,7 +430,11 @@ class Members extends BaseEntity {
                         App::SetErrorMessage("Invalid Account");
                         break;
                 }
-            } else if($result == 0) {
+            }
+            elseif(is_string($result)){
+                App::SetErrorMessage($result);
+            }
+            else if($result == 0) {
                 App::SetErrorMessage("Invalid Account.");
             } else {
                 App::SetErrorMessage("Invalid Account");

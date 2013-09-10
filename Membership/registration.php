@@ -165,6 +165,7 @@ $txtReferrerCode = new TextBox("txtReferrerCode","txtReferrerCode","Referrer Cod
 $txtReferrerCode->ShowCaption = false;
 $txtReferrerCode->Length = 20;
 $txtReferrerCode->Size = 15;
+$txtReferrerCode->Args = "onkeypress = 'javascript: return AlphaNumericOnly(event)'";
 $fproc->AddControl($txtReferrerCode);
 
 $btnSubmit = new Button("btnSubmit", "btnSubmit", "Register");
@@ -467,7 +468,7 @@ if ($fproc->IsPostBack)
         <td><?php echo $txtAge; ?></td>
     </tr>
     <tr>
-        <td>Referrer Code<br/>
+        <td>Referral Code<br/>
         <td><?php echo $txtReferrerCode; ?></td>
         <td>Nationality</td>
         <td><?php echo $cboNationality; ?></td>
