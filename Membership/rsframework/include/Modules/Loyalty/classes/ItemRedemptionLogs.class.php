@@ -56,6 +56,30 @@ Class ItemRedemptionLogs extends BaseEntity {
         return parent::ExecuteQuery($query);
     }
     
+    /*
+* Description: get codes For Verification of items
+* @author: JunJun S. Hernandez
+* DateCreated: 2013-09-13 09:50AM
+*/
+   
+    //get Serial Code for verification of items
+    function getSerialCode($SerialCode){
+        $query = "SELECT SerialCode FROM $this->TableName WHERE SerialCode = '$SerialCode'";
+        return parent::RunQuery($query);
+    }
+    
+    //get Security Code for verification of items
+    function getSecurityCode($SecurityCode){
+        $query = "SELECT SecurityCode FROM $this->TableName WHERE SecurityCode = '$SecurityCode'";
+        return parent::RunQuery($query);
+    }
+    
+    //get Both Serial and Security Code for verification of items
+    function getItemCode($SerialCode, $SecurityCode){
+        $query = "SELECT ItemRedemptionLogID, SerialCode, SecurityCode FROM $this->TableName WHERE SerialCode = '$SerialCode' AND SecurityCode = '$SecurityCode'";
+        return parent::RunQuery($query);
+    }
+    
 }
 
 ?>
