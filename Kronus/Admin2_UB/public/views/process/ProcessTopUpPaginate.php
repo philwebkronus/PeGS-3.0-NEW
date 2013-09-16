@@ -67,6 +67,7 @@ class ProcessTopUpPaginate extends BaseProcess {
                         "Reload"=>number_format($row['Reload'],2),
                         "Withdrawal"=>number_format($row['Redemption'],2),
                         "ManualRedemption"=>(($row['ActualAmount'])?number_format($row['ActualAmount'],2):''),
+                        "Coupon"=>number_format($row['Coupon'],2),
                         "GrossHold"=>number_format($gross_hold, 2),
                         "Location"=>$row['Location'],
                     );        
@@ -1045,6 +1046,7 @@ class ProcessTopUpPaginate extends BaseProcess {
                 number_format($row['reload'],2),
                 number_format($row['redemption'],2),
                 number_format($row['manualredemption'],2),
+                number_format($row['coupon'],2),
                 number_format($grosshold,2),
                 number_format($row['replenishment'],2),
                 number_format($row['collection'],2),

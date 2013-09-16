@@ -937,6 +937,7 @@ class ProcessTopUpGenerateReports extends BaseProcess{
                 array('value'=>'Reload'),
                 array('value'=>'Redemption'),
                 array('value'=>'Manual Redemption'),
+                array('value'=>'Coupon'),
                 array('value'=>'Gross Hold'),
                 array('value'=>'Replenishment'),
                 array('value'=>'Collection'),
@@ -957,6 +958,7 @@ class ProcessTopUpGenerateReports extends BaseProcess{
                     array('value'=>number_format($row['reload'],2)),
                     array('value'=>number_format($row['redemption'],2)),
                     array('value'=>number_format($row['manualredemption'], 2)),
+                    array('value'=>number_format($row['coupon'], 2)),
                     array('value'=>number_format($grosshold,2)),
                     array('value'=>number_format($row['replenishment'],2)),
                     array('value'=>number_format($row['collection'],2)),
@@ -977,7 +979,7 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         $startdate = $_POST['startdate']." ".BaseProcess::$cutoff;
         $venddate = $_POST['enddate'];  
         $enddate = date ('Y-m-d' , strtotime (BaseProcess::$gaddeddate, strtotime($venddate)))." ".BaseProcess::$cutoff;           
-        $_SESSION['report_header'] = array('Site / PEGS Code','Site / PEGS Name', 'POS Account','Cut Off Date','Beginning Balance','Initial Deposit','Reload','Redemption','Manual Redemption','Gross Hold', 'Replenishment','Collection','Ending Balance');
+        $_SESSION['report_header'] = array('Site / PEGS Code','Site / PEGS Name', 'POS Account','Cut Off Date','Beginning Balance','Initial Deposit','Reload','Redemption','Manual Redemption','Coupon','Gross Hold', 'Replenishment','Collection','Ending Balance');
         $topreport = new TopUpReportQuery($this->getConnection());
         $topreport->open();
         $vsitecode = $_POST['selsitecode'];
@@ -1005,6 +1007,7 @@ class ProcessTopUpGenerateReports extends BaseProcess{
                                 number_format($row['reload'],2),
                                 number_format($row['redemption'],2),
                                 number_format($row['manualredemption'], 2),
+                                number_format($row['coupon'], 2),
                                 number_format($grosshold,2),
                                 number_format($row['replenishment'],2),
                                 number_format($row['collection'],2),

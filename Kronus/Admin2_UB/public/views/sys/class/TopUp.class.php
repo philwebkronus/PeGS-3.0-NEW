@@ -26,7 +26,7 @@ class TopUp extends DBHandler
        switch ($zsiteid)
        {
            case 'All':
-                $query1 = "SELECT sgc.SiteID, sgc.BeginningBalance, sgc.EndingBalance, ad.Name, sd.SiteDescription, 
+                $query1 = "SELECT sgc.SiteID, sgc.BeginningBalance, sgc.EndingBalance, ad.Name, sd.SiteDescription, sgc.Coupon,
                             s.SiteCode, s.POSAccountNo,sgc.DateFirstTransaction,sgc.DateLastTransaction,sgc.ReportDate,
                             sgc.DateCutOff,sgc.Deposit AS InitialDeposit, sgc.Reload AS Reload , sgc.Withdrawal AS Redemption                       
                             FROM sitegrossholdcutoff sgc
@@ -60,7 +60,7 @@ class TopUp extends DBHandler
                         'sitecode'=>$row1['SiteCode'],'sitename'=>($row1['Name'] . ' ' . $row1['SiteDescription']), 'POSAccountNo' => $row1['POSAccountNo'],
                         'initialdep'=>$row1['InitialDeposit'],'reload'=>$row1['Reload'],'redemption'=>$row1['Redemption'],
                         'datestart'=>$row1['DateFirstTransaction'],'datelast'=>$row1['DateLastTransaction'],
-                        'reportdate'=>$row1['ReportDate'],'cutoff'=>$row1['DateCutOff'],'manualredemption'=>0,
+                        'reportdate'=>$row1['ReportDate'],'cutoff'=>$row1['DateCutOff'],'manualredemption'=>0,'coupon'=>$row1['Coupon'],
                         'replenishment'=>0,'collection'=>0,'replenishment'=>0
                         );
                 }
@@ -169,7 +169,7 @@ class TopUp extends DBHandler
                 }                 
                break;
            case $zsiteid > 0 :
-                $query1 = "SELECT sgc.SiteID, sgc.BeginningBalance, sgc.EndingBalance, ad.Name, sd.SiteDescription, 
+                $query1 = "SELECT sgc.SiteID, sgc.BeginningBalance, sgc.EndingBalance, ad.Name, sd.SiteDescription, sgc.Coupon,
                             s.SiteCode, s.POSAccountNo,sgc.DateFirstTransaction,sgc.DateLastTransaction,sgc.ReportDate,
                             sgc.DateCutOff,sgc.Deposit AS InitialDeposit, sgc.Reload AS Reload , sgc.Withdrawal AS Redemption                       
                             FROM sitegrossholdcutoff sgc
@@ -204,7 +204,7 @@ class TopUp extends DBHandler
                         'sitecode'=>$row1['SiteCode'],'sitename'=>($row1['Name'] . ' ' . $row1['SiteDescription']), 'POSAccountNo' => $row1['POSAccountNo'],
                         'initialdep'=>$row1['InitialDeposit'],'reload'=>$row1['Reload'],'redemption'=>$row1['Redemption'],
                         'datestart'=>$row1['DateFirstTransaction'],'datelast'=>$row1['DateLastTransaction'],
-                        'reportdate'=>$row1['ReportDate'],'cutoff'=>$row1['DateCutOff'],'manualredemption'=>0,
+                        'reportdate'=>$row1['ReportDate'],'cutoff'=>$row1['DateCutOff'],'manualredemption'=>0,'coupon'=>$row1['Coupon'],
                         'replenishment'=>0,'collection'=>0,'replenishment'=>0
                         );
                 }
@@ -1094,7 +1094,8 @@ class TopUp extends DBHandler
                      'MinBalance' =>$value['MinBalance'],
                     'Deposit'=>"0.00",
                     'Reload'=>"0.00",
-                    'Redemption'=>"0.00"
+                    'Redemption'=>"0.00",
+                    'Coupon'=>"0.00"
                  ); 
           }
           
@@ -1106,14 +1107,15 @@ class TopUp extends DBHandler
           $query2 = "SELECT s.SiteID, s.POSAccountNo,
                                 IFNULL(SUM(CASE td.TransactionType WHEN 'D' THEN td.Amount ELSE 0 END), 0) AS Deposit,
                                 IFNULL(SUM(CASE td.TransactionType WHEN 'R' THEN td.Amount ELSE 0 END), 0) AS Reload,
-                                IFNULL(SUM(CASE td.TransactionType WHEN 'W' THEN td.Amount ELSE 0 END), 0) AS Redemption
+                                IFNULL(SUM(CASE td.TransactionType WHEN 'W' THEN td.Amount ELSE 0 END), 0) AS Redemption,
+                                IFNULL(SUM(CASE td.PaymentType WHEN '2' THEN td.Amount ELSE 0 END), 0) AS Coupon
                                 FROM sites s USE INDEX (IDX_sites_SiteID)
                                 LEFT JOIN transactiondetails td FORCE INDEX (IX_transactiondetails_DateCreated, IX_transactiondetails_Status) ON s.SiteID = td.SiteID
                                 WHERE td.DateCreated >= ? AND td.DateCreated < ?
                                 AND td.Status IN (1, 4) AND s.SiteID IN ($sites)
                                 GROUP BY s.SiteID
                                 ORDER BY s.$sort $dir"; 
-          
+        
             $this->prepare($query2);
             $this->bindparameter(1, $startdate);
             $this->bindparameter(2, $enddate);
@@ -1127,6 +1129,7 @@ class TopUp extends DBHandler
                         $varrmerge[$keys]["Deposit"] = $value1["Deposit"];
                         $varrmerge[$keys]["Reload"] = $value1["Reload"];
                         $varrmerge[$keys]["Redemption"] = $value1["Redemption"];
+                        $varrmerge[$keys]["Coupon"] = $value1["Coupon"];
                         break;
                     }
                 }  

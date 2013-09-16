@@ -522,7 +522,7 @@ class TopUpReportQuery extends DBHandler{
        switch ($zsiteid)
                            {
            case 'All':
-                $query1 = "SELECT sgc.SiteID, sgc.BeginningBalance, sgc.EndingBalance, ad.Name, sd.SiteDescription, 
+                $query1 = "SELECT sgc.SiteID, sgc.BeginningBalance, sgc.EndingBalance, ad.Name, sd.SiteDescription, sgc.Coupon,
                             s.SiteCode, s.POSAccountNo,sgc.DateFirstTransaction,sgc.DateLastTransaction,sgc.ReportDate,
                             sgc.DateCutOff,sgc.Deposit AS InitialDeposit, sgc.Reload AS Reload , sgc.Withdrawal AS Redemption                       
                             FROM sitegrossholdcutoff sgc
@@ -554,7 +554,7 @@ class TopUpReportQuery extends DBHandler{
                 foreach($rows1 as $row1) {
                     $qr1[] = array('siteid'=>$row1['SiteID'],'begbal'=>$row1['BeginningBalance'],'endbal'=>$row1['BeginningBalance'],
                         'sitecode'=>$row1['SiteCode'],'sitename'=>($row1['Name'] . ' ' . $row1['SiteDescription']), 'POSAccountNo' => $row1['POSAccountNo'],
-                        'initialdep'=>$row1['InitialDeposit'],'reload'=>$row1['Reload'],'redemption'=>$row1['Redemption'],
+                        'initialdep'=>$row1['InitialDeposit'],'reload'=>$row1['Reload'],'redemption'=>$row1['Redemption'],'coupon'=>$row1['Coupon'],
                         'datestart'=>$row1['DateFirstTransaction'],'datelast'=>$row1['DateLastTransaction'],
                         'reportdate'=>$row1['ReportDate'],'cutoff'=>$row1['DateCutOff'],'manualredemption'=>0,
                         'replenishment'=>0,'collection'=>0,'replenishment'=>0
@@ -665,7 +665,7 @@ class TopUpReportQuery extends DBHandler{
                 }                 
                break;
            case $zsiteid > 0 :
-                $query1 = "SELECT sgc.SiteID, sgc.BeginningBalance, sgc.EndingBalance, ad.Name, sd.SiteDescription, 
+                $query1 = "SELECT sgc.SiteID, sgc.BeginningBalance, sgc.EndingBalance, ad.Name, sd.SiteDescription, sgc.Coupon,
                             s.SiteCode, s.POSAccountNo,sgc.DateFirstTransaction,sgc.DateLastTransaction,sgc.ReportDate,
                             sgc.DateCutOff,sgc.Deposit AS InitialDeposit, sgc.Reload AS Reload , sgc.Withdrawal AS Redemption                       
                             FROM sitegrossholdcutoff sgc
@@ -698,7 +698,7 @@ class TopUpReportQuery extends DBHandler{
                 foreach($rows1 as $row1) {
                     $qr1[] = array('siteid'=>$row1['SiteID'],'begbal'=>$row1['BeginningBalance'],'endbal'=>$row1['BeginningBalance'],
                         'sitecode'=>$row1['SiteCode'],'sitename'=>($row1['Name'] . ' ' . $row1['SiteDescription']), 'POSAccountNo' => $row1['POSAccountNo'],
-                        'initialdep'=>$row1['InitialDeposit'],'reload'=>$row1['Reload'],'redemption'=>$row1['Redemption'],
+                        'initialdep'=>$row1['InitialDeposit'],'reload'=>$row1['Reload'],'redemption'=>$row1['Redemption'],'coupon'=>$row1['Coupon'],
                         'datestart'=>$row1['DateFirstTransaction'],'datelast'=>$row1['DateLastTransaction'],
                         'reportdate'=>$row1['ReportDate'],'cutoff'=>$row1['DateCutOff'],'manualredemption'=>0,
                         'replenishment'=>0,'collection'=>0,'replenishment'=>0
