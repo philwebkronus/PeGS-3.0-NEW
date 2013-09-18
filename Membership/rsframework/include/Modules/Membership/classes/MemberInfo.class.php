@@ -310,6 +310,16 @@ class MemberInfo extends BaseEntity {
         $query = "SELECT Email FROM membership.memberinfo WHERE MID = $MID;";
         return parent::RunQuery($query);
     }
+    
+    public function checkIfEmailExistsWithMID($MID, $Email) {
+        $query = "SELECT COUNT(Email) AS COUNT FROM memberinfo WHERE MID != $MID AND Email = '$Email';";
+        return parent::RunQuery($query);
+    }
+    
+    public function getMID($Email) {
+        $query = "SELECT MID FROM membership.members WHERE UserName = '$Email'";
+        return parent::RunQuery($query);
+    }
 
 }
 

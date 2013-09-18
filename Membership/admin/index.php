@@ -332,11 +332,20 @@ if ($fproc->IsPostBack) {
             } else {
                 $emailcount = 0;
             }
+            $emailcounty = $_MemberInfo->checkIfEmailExistsWithMID($HiddenMID, $SubmittedEmail);
+            if ($emailcounty > 0) {
+                foreach ($emailcounty as $value) {
+                    $emailcounty = $value['COUNT'];
+                }
+            } else {
+                $emailcounty = 0;
+            }
         } else {
             $emailcount = 0;
+            $emailcounty = 0;
         }
         
-        if ($emailcount > 0) {
+        if (($emailcount > 0)||($emailcounty > 0)) {
             $message = "Sorry, " . $arrMemberInfo['Email'] . " already belongs to an existing account. Please enter another email address!";
             $isSuccess = false;
         } else {

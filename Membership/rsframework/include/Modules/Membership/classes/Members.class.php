@@ -479,6 +479,13 @@ class Members extends BaseEntity {
         $query = "UPDATE membership.members SET UserName = '$Email' WHERE MID = $MID";
         return parent::ExecuteQuery($query);
     }
+    
+    public function getMIDbyUserName($username){
+        $query = "SELECT MID FROM members WHERE UserName = '$username'";       
+        $result = parent::RunQuery($query);
+        
+        return $result;
+    }
 
 }
 

@@ -450,7 +450,16 @@ if ($fproc->IsPostBack) {
                 }
             }
             
-            if ($temphasemailcount > 0) {
+            $hasemailcount = $_MemberInfo->checkIfEmailExistsWithMID($aid, $email);
+            if (is_null($hasemailcount)) {
+                $hasemailcount = 0;
+            } else {
+                foreach ($hasemailcount as $value) {
+                    $hasemailcount = $value['COUNT'];
+                }
+            }
+            
+            if (($temphasemailcount > 0)||($hasemailcount > 0)) {
                 $resultmsg = "Sorry, " . $arrMemberInfo['Email'] . " already belongs to an existing account. Please enter another email address!";
             } else {
 
