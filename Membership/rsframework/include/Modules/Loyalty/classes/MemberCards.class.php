@@ -350,6 +350,36 @@ class MemberCards extends BaseEntity {
         $result = parent::RunQuery($query);
         return $result;
     }
+    
+    /**
+     * @Description: For Fetching Card Points
+     * @author: aqdepliyan
+     * @DateCreated: 2013-09-17 04:04PM
+     */
+
+    public function getCurrentPointsByCardNumber($cardnumber) {
+        $query = "SELECT CurrentPoints
+                            FROM " . $this->TableName . "
+                            WHERE CardNumber ='" . $cardnumber . "'";
+
+        $result = parent::RunQuery($query);
+        return $result;
+    }
+    
+    /**
+     * @Description: For Fetching Card Points
+     * @author: aqdepliyan
+     * @DateCreated: 2013-09-17 04:04PM
+     */
+
+    public function getCurrentPointsByMID($MID) {
+        $query = "SELECT CurrentPoints
+                            FROM " . $this->TableName . "
+                            WHERE MID =".$MID;
+
+        $result = parent::RunQuery($query);
+        return $result;
+    }
 
     /*
      * Description: card number based on given membercardID
@@ -400,6 +430,19 @@ class MemberCards extends BaseEntity {
         $result = parent::RunQuery($query);
         return $result;
     }   
+    
+    
+    /*
+     * Description: get Card Number using MID
+     * @author: JunJun S. Hernandez
+     * result: object array
+     * DateCreated: 2013-08-12
+     */
+    public function getCardNumberByMID( $MID )
+    {
+        $query = "SELECT CardNumber FROM membercards WHERE MID = '$MID'";
+        return parent::RunQuery($query);
+    }  
 }
 
 ?>

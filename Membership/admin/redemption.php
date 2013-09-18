@@ -1,12 +1,12 @@
 <?php
-/*
- * @author : owliber
- * @date : 2013-05-20
+/**
+ * @Author : owliber
+ * @DateCreated : 2013-05-20
  */
 
-/*
-* @author: aqdepliyan
-* DateUpdated: 2013-07-16 01:04PM
+/**
+* @Author: aqdepliyan
+* @DateUpdated: 2013-07-16 01:04PM
 */
 
 require_once("../init.inc.php");
@@ -35,6 +35,7 @@ App::LoadModuleClass('Loyalty', 'CouponRedemptionLogs');
 App::LoadModuleClass('Loyalty', 'RaffleCoupons');
 App::LoadModuleClass("Loyalty", "ItemRedemptionLogs");
 App::LoadModuleClass("Loyalty", "Promos");
+App::LoadModuleClass("Loyalty", "PendingRedemption");
 
 App::LoadModuleClass('Kronus', 'Sites');
 
@@ -70,6 +71,7 @@ $_Ref_region = new Regions();
 $_Promos = new Promos();
 $_Sites = new Sites();
 $_Helper = new Helper();
+$_PendingRedemption = new PendingRedemption();
 
 /* Initialize variables and default values */
 $sendemailtoadmin = false;

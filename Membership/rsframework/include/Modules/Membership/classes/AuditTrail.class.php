@@ -26,7 +26,8 @@ class AuditTrail extends BaseEntity
             $sessionid = $info['SessionID'];
         }
                 
-        $remoteIP = $_SERVER['REMOTE_ADDR'];        
+        //$remoteIP = $_SERVER['REMOTE_ADDR'];        
+        $remoteIP = gethostbyaddr($_SERVER['REMOTE_ADDR']);
         
         $arrEntries['ID'] = $id;        
         $arrEntries['AuditFunctionID'] = $auditfunctionid;

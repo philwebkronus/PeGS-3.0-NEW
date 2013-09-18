@@ -10,10 +10,10 @@
 <?php include_once 'controller/profilecontroller.php'; ?>
 <?php include "header.php"; ?> 
 <script type="text/javascript" src="js/slider/ad_gallery.js"></script>
+<script type="text/javascript" src="admin/js/checkinput.js"></script>
 <script type="text/javascript">
     
     $(document).ready(function() {
-        
         
         $("#btnLearnMore").live("click",function(){
                 var RewardItemID = $(this).attr('RewardItemID');
@@ -22,7 +22,6 @@
                 var RewardOfferID = $(this).attr('RewardOfferID');
                 var Points = $(this).attr('Points');
                 var IsCoupon = $(this).attr('IsCoupon');
-                var PlayerPoints = "<?php echo $PlayerPoints; ?>";
                 $.ajax({
                     url: "controller/helpercontroller.php",
                     type: 'POST',
@@ -32,8 +31,7 @@
                                     partnername : function(){return PartnerName;},
                                     rewardofferid :  function(){return RewardOfferID;},
                                     points :  function(){return Points;},
-                                    iscoupon :  function(){return IsCoupon;},
-                                    playerpoints: function(){return PlayerPoints;}
+                                    iscoupon :  function(){return IsCoupon;}
                                 },
                     success: function(response){
                         if(response){
@@ -122,7 +120,6 @@
         });
         
     });                   
-
 </script>
 <link href="css/slider/bootstrap.min.css" rel="stylesheet" media="screen">
 <link href="css/slider/bootstrap-responsive.min.css" rel="stylesheet" media="screen">

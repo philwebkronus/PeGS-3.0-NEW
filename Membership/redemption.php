@@ -1,4 +1,11 @@
 <?php
+
+/**
+ * @Description: For Player Redemption
+ * @Author: aqdepliyan
+ * @DateCreated: 2013-07-10
+ */
+
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
@@ -49,6 +56,7 @@ if(isset($_SESSION['RewardItemsInfo'])){
     App::LoadModuleClass("Loyalty", "ItemRedemptionLogs");
     App::LoadModuleClass("Loyalty", "RewardItemDetails");
     App::LoadModuleClass("Loyalty", "Promos");
+    App::LoadModuleClass("Loyalty", "PendingRedemption");
 
     App::LoadModuleClass("Kronus", "Sites");
 
@@ -77,6 +85,7 @@ if(isset($_SESSION['RewardItemsInfo'])){
     $_RewardItemDetails = new RewardItemDetails();
     $_Promos = new Promos();
     $_Helper = new Helper();
+    $_PendingRedemption = new PendingRedemption();
     
     //Check if the coupon batch is active, if not display error message.
     if($_SESSION['RewardItemsInfo']['IsCoupon'] == 1 || $_SESSION['RewardItemsInfo']['IsCoupon'] == "1"){
@@ -103,9 +112,13 @@ if(isset($_SESSION['RewardItemsInfo'])){
     $btnRedeemButton = new Button("redeem-button", "redeem-button", "REDEEM NOW");
     $btnRedeemButton->CssClass = "yellow-btn-redeem-button";
     
+    //Get Player's Current Points
+    $results = $_MemberCards->getCurrentPointsByMID($MID);
+    $PlayerPoints = $results[0]['CurrentPoints'];
+    
     //If Player Points is less than the Reward Item Points disabled the redeem button
     //If not, whether coupon or item. For coupon check if the coupon batch is active, if not disabled the redeem button.
-    if($_SESSION['RewardItemsInfo']['PlayerPoints'] < $_SESSION['RewardItemsInfo']['Points']){
+    if($PlayerPoints < $_SESSION['RewardItemsInfo']['Points']){
         $btnRedeemButton->Enabled = false;
     } else {
         if($_SESSION['RewardItemsInfo']['IsCoupon'] == 1 || $_SESSION['RewardItemsInfo']['IsCoupon'] == '1'){
@@ -130,7 +143,7 @@ if(isset($_SESSION['RewardItemsInfo'])){
     
     $hdnPlayerPoints = new Hidden("PlayerPoints", "PlayerPoints", "PlayerPoints: ");
     $hdnPlayerPoints->ShowCaption = true;
-    $hdnPlayerPoints->Text = $_SESSION['RewardItemsInfo']['PlayerPoints'];
+    $hdnPlayerPoints->Text = $PlayerPoints;
     $fproc->AddControl($hdnPlayerPoints);
     
     $hdnItemName = new Hidden("hdnItemName", "hdnItemName", "hdnItemName: ");

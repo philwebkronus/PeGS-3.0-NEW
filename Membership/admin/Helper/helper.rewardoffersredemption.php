@@ -1,9 +1,9 @@
 <?php
 
 /**
- * Description: Fetching and encoding data into JSON array to be displayed in JQGRID for list of all reward offers available based in player card type.
+ * @Description: Fetching and encoding data into JSON array to be displayed in JQGRID for list of all reward offers available based in player card type.
  *@Author: aqdepliyan
- * Date Created: 07-16-2013 02:46 PM
+ * @DateCreated: 07-16-2013 02:46 PM
  */
 
 if(isset($_POST["functiontype"]) && $_POST["functiontype"] != ""){
@@ -71,7 +71,8 @@ if(isset($_POST["functiontype"]) && $_POST["functiontype"] != ""){
                                         $IsCoupon = $rewardoffers[$itr]["IsCoupon"];
                                         $RequiredPoints = $rewardoffers[$itr]["Points"];
                                         $enabled = "";                     
-                                        if( $_SESSION['CardRed']['CardPoints'] < $RequiredPoints){
+                                        $CurrentPoints = $_MemberCards->getCurrentPointsByCardNumber($_SESSION['CardRed']['CardNumber']);
+                                        if( $CurrentPoints < $RequiredPoints){
                                             $rewardoffers[$itr]["Action"] = "<input type='button' value='Redeem' id='csredeem-button' disabled='disabled' Email = '$EmailAddress' ProductName='$ProductName' RewardItemID='$RewardItemID' RewardOfferID='$RewardOfferID' IsCoupon='$IsCoupon' RequiredPoints='$RequiredPoints' >";
                                         } else {
                                             
@@ -127,7 +128,6 @@ if(isset($_POST["functiontype"]) && $_POST["functiontype"] != ""){
                                                 $CardNumber = $cardInfo[0]['CardNumber'];
                                                 $_SESSION['CardRed']['CardNumber'] = $CardNumber;
                                                 $_SESSION['CardRed']['MID'] = $MID;
-                                                $_SESSION['CardRed']['CardPoints'] = $cardInfo[0]['CurrentPoints'];
                                                 $_SESSION['CardRed']['CardTypeID'] = $cardInfo[0]['CardTypeID'];
                                                 
                                                 //check if region and city are valid
@@ -209,7 +209,6 @@ if(isset($_POST["functiontype"]) && $_POST["functiontype"] != ""){
                                                 $MID = $membercards[0]['MID'];
                                                 $_SESSION['CardRed']['CardNumber'] = $searchValue;
                                                 $_SESSION['CardRed']['MID'] = $MID;
-                                                $_SESSION['CardRed']['CardPoints'] = $membercards[0]['CurrentPoints'];
                                                 $_SESSION['CardRed']['CardTypeID'] = $membercards[0]['CardTypeID'];
                                                 $CardNumber = $searchValue;
                                                 $email = $_MemberInfo->getEmail($MID);
