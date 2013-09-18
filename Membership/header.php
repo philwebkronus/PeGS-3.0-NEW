@@ -7,6 +7,7 @@
 
 $javascripts[] = "js/jquery.min.js";
 $javascripts[] = "js/jquery-ui.min.js";
+$javascripts[] = "admin/js/checkinput.js";
 $javascripts[] = "js/jquery.validationEngine.js";
 $javascripts[] = "js/jquery.validationEngine-en.js";
 $javascripts[] = "js/tools.js";

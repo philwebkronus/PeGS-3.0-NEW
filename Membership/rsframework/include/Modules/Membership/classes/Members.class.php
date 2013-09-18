@@ -18,29 +18,26 @@ class Members extends BaseEntity {
         $this->Identity = "MID";
         $this->DatabaseType = DatabaseTypes::PDO;
     }
-    
-    public function updatePasswordUsingMID($MID,$password)
-    {
+
+    public function updatePasswordUsingMID($MID, $password) {
         $query = "UPDATE $this->TableName SET Password = md5('$password') WHERE MID = $MID";
         parent::ExecuteQuery($query);
-        if($this->HasError){
+        if ($this->HasError) {
             App::SetErrorMessage($this->getError());
             return false;
         }
     }
-    
-    public function updateForChangePasswordUsingMID($MID, $changepassword)
-    {
+
+    public function updateForChangePasswordUsingMID($MID, $changepassword) {
         $query = "UPDATE $this->TableName SET ForChangePassword = $changepassword WHERE MID = $MID";
         parent::ExecuteQuery($query);
-        if($this->HasError){
+        if ($this->HasError) {
             App::SetErrorMessage($this->getError());
             return false;
         }
     }
-    
-    public function getAllBannedAccountsInfo()
-    {
+
+    public function getAllBannedAccountsInfo() {
         $query = "SELECT m.MID, mc.MemberCardID, mc.CardNumber, mi.DateCreated as DateCreated, YEAR(current_date)-YEAR(mi.Birthdate) as Age, 
                             mi.DateVerified, mi.Gender, rn.Name as Nationality
                             FROM $this->TableName m
@@ -52,8 +49,7 @@ class Members extends BaseEntity {
         return $result;
     }
 
-    public function getForChangePasswordUsingCardNumber($CardNumber)
-    {
+    public function getForChangePasswordUsingCardNumber($CardNumber) {
         $query = "SELECT m.ForChangePassword FROM $this->TableName m
                             INNER JOIN loyaltydb.membercards mc ON mc.MID =m.MID
                             WHERE mc.CardNumber = '$CardNumber' ";
@@ -61,254 +57,243 @@ class Members extends BaseEntity {
         return $result[0]['ForChangePassword'];
     }
 
-    function Migrate($arrMembers, $arrMemberInfo, $AID, $siteid, $loyaltyCard, $newCard, $oldCardEmail, $isVIP, $isTemp = true) 
-    {
+    function Migrate($arrMembers, $arrMemberInfo, $AID, $siteid, $loyaltyCard, $newCard, $oldCardEmail, $isVIP, $isTemp = true) {
 
-                list($year,$month,$day) = preg_split("/\-/", $arrMemberInfo['Birthdate']);
-                $this->StartTransaction();
-            try {
-                App::LoadCore('Randomizer.class.php');
-                $randomizer = new Randomizer();
+        list($year, $month, $day) = preg_split("/\-/", $arrMemberInfo['Birthdate']);
+        $this->StartTransaction();
+        try {
+            App::LoadCore('Randomizer.class.php');
+            $randomizer = new Randomizer();
 
-                /**
-                 * If records are from Old Loyalty Card
-                 */
-                if (!$isTemp) {
+            /**
+             * If records are from Old Loyalty Card
+             */
+            if (!$isTemp) {
 
 
-                    $password = $month.$day.$year;
-                    $hashpassword = md5($password);
-                    $arrMembers['Password'] = $hashpassword;
+                $password = $month . $day . $year;
+                $hashpassword = md5($password);
+                $arrMembers['Password'] = $hashpassword;
 
-                    $this->password = $password;
-                    $this->hashpassword = $hashpassword;
-                }
+                $this->password = $password;
+                $this->hashpassword = $hashpassword;
+            }
 
-                $this->Insert($arrMembers);
+            $this->Insert($arrMembers);
+
+            if (!App::HasError()) {
+                $this->TableName = "membership.memberinfo";
+                $MID = $this->LastInsertID;
+                $arrMemberInfo['MID'] = $MID;
+
+                $this->Insert($arrMemberInfo);
 
                 if (!App::HasError()) {
-                    $this->TableName = "membership.memberinfo";
-                    $MID = $this->LastInsertID;
-                    $arrMemberInfo['MID'] = $MID;
+                    App::LoadModuleClass("Loyalty", "OldCards");
+                    App::LoadModuleClass("Loyalty", "Cards");
 
-                    $this->Insert($arrMemberInfo);
+                    if (empty($oldCardEmail)) {
+                        $UserName = $newCard;
+                    } else {
+                        $UserName = $oldCardEmail;
+                    }
+
+                    $_OldCards = new OldCards();
+                    $_Cards = new Cards();
+
+                    $datecreated = "now_usec()";
+
+                    $ArrCardID = $_OldCards->getOldCardDetails($loyaltyCard);
+                    $ArrayOldCardID = $ArrCardID[0];
+                    $ArrNewCardID = $_Cards->getCardInfo($newCard);
+                    $ArrayNewCardID = $ArrNewCardID[0];
+
+                    App::LoadModuleClass("Loyalty", "CardStatus");
+                    $this->TableName = "loyaltydb.membercards";
+
+                    $arrMemberCards['MID'] = $MID;
+                    $arrMemberCards['CardID'] = $ArrayNewCardID['CardID'];
+                    $arrMemberCards['SiteID'] = $siteid;
+                    $arrMemberCards['CardNumber'] = $ArrayNewCardID['CardNumber'];
+                    $arrMemberCards['LifetimePoints'] = $ArrayOldCardID['LifetimePoints'];
+                    $arrMemberCards['CurrentPoints'] = $ArrayOldCardID['CurrentPoints'];
+                    $arrMemberCards['RedeemedPoints'] = $ArrayOldCardID['RedeemedPoints'];
+                    $arrMemberCards['DateCreated'] = $datecreated;
+                    $arrMemberCards['CreatedByAID'] = $AID;
+                    $arrMemberCards['Status'] = CardStatus::ACTIVE;
+
+                    $this->Insert($arrMemberCards);
 
                     if (!App::HasError()) {
-                        App::LoadModuleClass("Loyalty", "OldCards");
-                        App::LoadModuleClass("Loyalty", "Cards");
 
-                        if (empty($oldCardEmail)) {
-                            $UserName = $newCard;
-                        } else {
-                            $UserName = $oldCardEmail;
-                        }
+                        $this->TableName = "loyaltydb.cards";
 
-                        $_OldCards = new OldCards();
-                        $_Cards = new Cards();
+                        $cardID = $arrMemberCards['CardID'];
+                        $cardType = $ArrayOldCardID['CardTypeID'];
 
-                        $datecreated = "now_usec()";
-
-                        $ArrCardID = $_OldCards->getOldCardDetails($loyaltyCard);
-                        $ArrayOldCardID = $ArrCardID[0];
-                        $ArrNewCardID = $_Cards->getCardInfo($newCard);
-                        $ArrayNewCardID = $ArrNewCardID[0];
-
-                        App::LoadModuleClass("Loyalty", "CardStatus");
-                        $this->TableName = "loyaltydb.membercards";
-
-                        $arrMemberCards['MID'] = $MID;
-                        $arrMemberCards['CardID'] = $ArrayNewCardID['CardID'];
-                        $arrMemberCards['SiteID'] = $siteid;
-                        $arrMemberCards['CardNumber'] = $ArrayNewCardID['CardNumber'];
-                        $arrMemberCards['LifetimePoints'] = $ArrayOldCardID['LifetimePoints'];
-                        $arrMemberCards['CurrentPoints'] = $ArrayOldCardID['CurrentPoints'];
-                        $arrMemberCards['RedeemedPoints'] = $ArrayOldCardID['RedeemedPoints'];
-                        $arrMemberCards['DateCreated'] = $datecreated;
-                        $arrMemberCards['CreatedByAID'] = $AID;
-                        $arrMemberCards['Status'] = CardStatus::ACTIVE;
-
-                        $this->Insert($arrMemberCards);
+                        $this->ExecuteQuery("UPDATE loyaltydb.cards SET Status = 1, 
+                                CardTypeID = $cardType WHERE CardID = $cardID");
 
                         if (!App::HasError()) {
 
-                            $this->TableName = "loyaltydb.cards";
+                            $arrCardPointsTransfer['ToMemberCardID'] = $this->LastInsertID;
+                            $arrCardPointsTransfer['MID'] = $MID;
+                            $arrCardPointsTransfer['FromOldCardID'] = $ArrayOldCardID['OldCardID'];
+                            $arrCardPointsTransfer['LifeTimePoints'] = $ArrayOldCardID['LifetimePoints'];
+                            $arrCardPointsTransfer['CurrentPoints'] = $ArrayOldCardID['CurrentPoints'];
+                            $arrCardPointsTransfer['RedeemedPoints'] = $ArrayOldCardID['RedeemedPoints'];
+                            $arrCardPointsTransfer['DateTransferred'] = $datecreated;
+                            $arrCardPointsTransfer['TransferredByAID'] = $AID;
+                            $arrCardPointsTransfer['OldToNew'] = '1';
 
-                            $cardID = $arrMemberCards['CardID'];     
-                            $cardType = $ArrayOldCardID['CardTypeID'];
-                            
-                            $this->ExecuteQuery("UPDATE loyaltydb.cards SET Status = 1, 
-                                CardTypeID = $cardType WHERE CardID = $cardID");
+                            $this->TableName = "loyaltydb.cardpointstransfer";
+
+                            $this->Insert($arrCardPointsTransfer);
 
                             if (!App::HasError()) {
 
-                                $arrCardPointsTransfer['ToMemberCardID'] = $this->LastInsertID;
-                                $arrCardPointsTransfer['MID'] = $MID;
-                                $arrCardPointsTransfer['FromOldCardID'] = $ArrayOldCardID['OldCardID'];
-                                $arrCardPointsTransfer['LifeTimePoints'] = $ArrayOldCardID['LifetimePoints'];
-                                $arrCardPointsTransfer['CurrentPoints'] = $ArrayOldCardID['CurrentPoints'];
-                                $arrCardPointsTransfer['RedeemedPoints'] = $ArrayOldCardID['RedeemedPoints'];
-                                $arrCardPointsTransfer['DateTransferred'] = $datecreated;
-                                $arrCardPointsTransfer['TransferredByAID'] = $AID;
-                                $arrCardPointsTransfer['OldToNew'] = '1';
+                                $this->TableName = "loyaltydb.oldcards";
 
-                                $this->TableName = "loyaltydb.cardpointstransfer";
+                                $oldCardID = $arrCardPointsTransfer["FromOldCardID"];
 
-                                $this->Insert($arrCardPointsTransfer);
+                                $this->ExecuteQuery("UPDATE loyaltydb.oldcards SET CardStatus = 4 WHERE OldCardID = $oldCardID");
 
                                 if (!App::HasError()) {
 
-                                    $this->TableName = "loyaltydb.oldcards";
+                                    App::LoadModuleClass("CasinoProvider", "PlayTechAPI");
+                                    App::LoadModuleClass("CasinoProvider", "CasinoProviders");
+                                    App::LoadModuleClass("Kronus", "CasinoServices");
 
-                                    $oldCardID = $arrCardPointsTransfer["FromOldCardID"];
+                                    $_CasinoServices = new CasinoServices();
+                                    $casinoservices = $_CasinoServices->getUserBasedCasinoServices();
 
-                                    $this->ExecuteQuery("UPDATE loyaltydb.oldcards SET CardStatus = 4 WHERE OldCardID = $oldCardID");
+                                    foreach ($casinoservices as $casinoservice) {
 
-                                    if (!App::HasError()) {
+                                        $serviceID = $casinoservice['ServiceID'];
+                                        $MemberServiceMID = $MID;
 
-                                        App::LoadModuleClass("CasinoProvider", "PlayTechAPI");
-                                        App::LoadModuleClass("CasinoProvider", "CasinoProviders");
-                                        App::LoadModuleClass("Kronus", "CasinoServices");
+                                        $this->TableName = "membership.memberservices";
 
-                                        $_CasinoServices = new CasinoServices();
-                                        $casinoservices = $_CasinoServices->getUserBasedCasinoServices();
+                                        switch ($serviceID) {
 
-                                        foreach ($casinoservices as $casinoservice) {
-                                            
-                                            $serviceID = $casinoservice['ServiceID'];
-                                            $MemberServiceMID = $MID;
+                                            case CasinoProviders::PT;
 
-                                            $this->TableName = "membership.memberservices";
+                                                $arrServices = $_CasinoServices->generateCasinoAccounts($MemberServiceMID, $serviceID, $isVIP);
 
-                                            switch ($serviceID) {
+                                                $this->InsertMultiple($arrServices);
 
-                                                case CasinoProviders::PT;                                                    
+                                                /*
+                                                 * Member account info
+                                                 */
+                                                $userName = $arrServices[0]['ServiceUsername'];
+                                                $password = $arrServices[0]['ServicePassword'];
 
-                                                    $arrServices = $_CasinoServices->generateCasinoAccounts($MemberServiceMID, $serviceID, $isVIP);
+                                                //Create fake info base on MID
+                                                $email = $MID . "@philweb.com.ph";
+                                                $firstName = "NA";
+                                                $lastName = "NA";
+                                                $birthDate = "1970-01-01";
+                                                $address = "NA";
+                                                $city = "NA";
+                                                $phone = '123-4567';
+                                                $zip = 'NA';
+                                                $countryCode = 'PH';
 
-                                                    $this->InsertMultiple($arrServices);                                            
+                                                //$arrServices[0]['isVIP'] == 0 ? $vipLevel = 1 : $vipLevel = 2;
+                                                $vipLevel = $arrServices[0]['VIPLevel'];
 
-                                                   /*
-                                                    * Member account info
-                                                    */
-                                                    $userName = $arrServices[0]['ServiceUsername'];
-                                                    $password = $arrServices[0]['ServicePassword'];
+                                                /*
+                                                 * PlayTech Configurations
+                                                 */
+                                                $arrplayeruri = App::getParam("player_api");
+                                                $URI = $arrplayeruri[$serviceID - 1];
+                                                $casino = App::getParam("pt_casino_name");
+                                                $playerSecretKey = App::getParam("pt_secret_key");
 
-                                                    //Create fake info base on MID
-                                                    $email = $MID."@philweb.com.ph";                                        
-                                                    $firstName = "NA";
-                                                    $lastName = "NA";
-                                                    $birthDate = "1970-01-01";
-                                                    $address = "NA";
-                                                    $city = "NA";
-                                                    $phone = '123-4567';                                        
-                                                    $zip = 'NA';
-                                                    $countryCode = 'PH';
-                                                    
-                                                    //$arrServices[0]['isVIP'] == 0 ? $vipLevel = 1 : $vipLevel = 2;
-                                                    $vipLevel = $arrServices[0]['VIPLevel'];
+                                                $playtechAPI = new PlayTechAPI($URI, $casino, $playerSecretKey);
 
-                                                    /*
-                                                     * PlayTech Configurations
-                                                     */
-                                                    $arrplayeruri = App::getParam("player_api");
-                                                    $URI = $arrplayeruri[$serviceID - 1];
-                                                    $casino = App::getParam("pt_casino_name");
-                                                    $playerSecretKey = App::getParam("pt_secret_key");              
-                                                    
-                                                    $playtechAPI = new PlayTechAPI($URI, $casino, $playerSecretKey);
+                                                /*
+                                                 * Create account
+                                                 */
+                                                $apiResult = $playtechAPI->NewPlayer($userName, $password, $email, $firstName, $lastName, $birthDate, $address, $city, $countryCode, $phone, $zip, $vipLevel);
 
-                                                    /*
-                                                     * Create account
-                                                     */
-                                                    $apiResult = $playtechAPI->NewPlayer($userName, $password, $email, $firstName, $lastName, $birthDate, $address, $city, $countryCode, $phone, $zip, $vipLevel);
+                                                break;
 
-                                                    break;
-
-                                                case CasinoProviders::MG;
-                                                    break;
-                                                case CasinoProviders::RTG_ALPHA_11;
-                                                    break;
-                                                case CasinoProviders::RTG_GAMMA_11;
-                                                    break;
-                                                case CasinoProviders::RTG_SIGMA_11;
-                                                    break;
-                                                default:
-                                                    break;
-                                            }
+                                            case CasinoProviders::MG;
+                                                break;
+                                            case CasinoProviders::RTG_ALPHA_11;
+                                                break;
+                                            case CasinoProviders::RTG_GAMMA_11;
+                                                break;
+                                            case CasinoProviders::RTG_SIGMA_11;
+                                                break;
+                                            default:
+                                                break;
                                         }
+                                    }
 
-                                        $result = $apiResult['transaction']['@attributes']['result'];
+                                    $result = $apiResult['transaction']['@attributes']['result'];
 
-                                        if ($result == 'OK') {
-                                            $this->CommitTransaction();
-                                            return array('status'=>'OK','error'=>'');
-                                        } else {
-                                            $this->RollBackTransaction();
-                                            return array('status'=>'ERROR','error'=>$apiResult['error']);
-                                        }
+                                    if ($result == 'OK') {
+                                        $this->CommitTransaction();
+                                        return array('status' => 'OK', 'error' => '');
                                     } else {
                                         $this->RollBackTransaction();
-                                        return array('status'=>'ERROR','error'=>'Failed updating old cards.');
+                                        return array('status' => 'ERROR', 'error' => $apiResult['error']);
                                     }
                                 } else {
                                     $this->RollBackTransaction();
-                                    return array('status'=>'ERROR','error'=>'Failed transfering points.');
+                                    return array('status' => 'ERROR', 'error' => 'Failed updating old cards.');
                                 }
                             } else {
                                 $this->RollBackTransaction();
-                                if (strpos(App::GetErrorMessage(), " Integrity constraint violation: 1062 Duplicate entry") > 0)
-                        {
-                            App::SetErrorMessage("Card ID already exists. Please retry the transaction.");
-
-                            return array('status'=>'ERROR','error'=>'Failed migrating member details');               
-                        }else
-                                return array('status'=>'ERROR','error'=>'Failed updating card status.');
+                                return array('status' => 'ERROR', 'error' => 'Failed transfering points.');
                             }
                         } else {
                             $this->RollBackTransaction();
-                            if (strpos(App::GetErrorMessage(), " Integrity constraint violation: 1062 Duplicate entry") > 0)
-                        {
-                            App::SetErrorMessage("Card ID already exists. Please retry the transaction.");
+                            if (strpos(App::GetErrorMessage(), " Integrity constraint violation: 1062 Duplicate entry") > 0) {
+                                App::SetErrorMessage("Card ID already exists. Please retry the transaction.");
 
-                            return array('status'=>'ERROR','error'=>'Failed migrating member details');               
-                        }else
-                            return array('status'=>'ERROR','error'=>'Failed inserting to member cards.');
+                                return array('status' => 'ERROR', 'error' => 'Failed migrating member details');
+                            }
+                            else
+                                return array('status' => 'ERROR', 'error' => 'Failed updating card status.');
                         }
                     } else {
                         $this->RollBackTransaction();
+                        if (strpos(App::GetErrorMessage(), " Integrity constraint violation: 1062 Duplicate entry") > 0) {
+                            App::SetErrorMessage("Card ID already exists. Please retry the transaction.");
 
-                        if (strpos(App::GetErrorMessage(), " Integrity constraint violation: 1062 Duplicate entry") > 0)
-                        {
-                            App::SetErrorMessage("Email already exists. Please choose a different email address.");
-
-                            return array('status'=>'ERROR','error'=>'Failed migrating member details');               
+                            return array('status' => 'ERROR', 'error' => 'Failed migrating member details');
                         }
                         else
-                        {
-                            return array('status'=>'ERROR','error'=>'Failed migrating member details.');                        
-                        }
-
+                            return array('status' => 'ERROR', 'error' => 'Failed inserting to member cards.');
                     }
                 } else {
                     $this->RollBackTransaction();
-                    if (strpos(App::GetErrorMessage(), " Integrity constraint violation: 1062 Duplicate entry") > 0)
-                        {
-                            App::SetErrorMessage("Email already exists. Please choose a different email address.");
 
-                            return array('status'=>'ERROR','error'=>'Failed migrating member details');               
-                        }
-                        else
-                        {
-                            return array('status'=>'ERROR','error'=>'Failed migrating member details.');                        
-                        }
+                    if (strpos(App::GetErrorMessage(), " Integrity constraint violation: 1062 Duplicate entry") > 0) {
+                        App::SetErrorMessage("Email already exists. Please choose a different email address.");
+
+                        return array('status' => 'ERROR', 'error' => 'Failed migrating member details');
+                    } else {
+                        return array('status' => 'ERROR', 'error' => 'Failed migrating member details.');
+                    }
                 }
-            } catch (Exception $e) {
+            } else {
                 $this->RollBackTransaction();
-                return array('status'=>'ERROR','error'=>$e->getMessage());
+                if (strpos(App::GetErrorMessage(), " Integrity constraint violation: 1062 Duplicate entry") > 0) {
+                    App::SetErrorMessage("Email already exists. Please choose a different email address.");
+
+                    return array('status' => 'ERROR', 'error' => 'Failed migrating member details');
+                } else {
+                    return array('status' => 'ERROR', 'error' => 'Failed migrating member details.');
+                }
             }
-           
-        
-        
+        } catch (Exception $e) {
+            $this->RollBackTransaction();
+            return array('status' => 'ERROR', 'error' => $e->getMessage());
+        }
     }
 
     function getMID($UserName) {
@@ -332,15 +317,16 @@ class Members extends BaseEntity {
             $this->RollBackTransaction();
         }
     }
-    
-    public function updateMemberStatusUsingMID($status,$MID){
-        $query = "UPDATE ".$this->TableName." SET Status = ".$status." WHERE MID = ".$MID;
+
+    public function updateMemberStatusUsingMID($status, $MID) {
+        $query = "UPDATE " . $this->TableName . " SET Status = " . $status . " WHERE MID = " . $MID;
         parent::ExecuteQuery($query);
-        if($this->HasError){
+        if ($this->HasError) {
             App::SetErrorMessage($this->getError());
             return false;
         }
     }
+
     /**
      * Login Authentication
      * @author
@@ -355,101 +341,92 @@ class Members extends BaseEntity {
         App::LoadModuleClass("Membership", "TempMembers");
         App::LoadCore("Validation.class.php");
         $validate = new Validation();
-        
+
         //Check if the Username is in Membership_Temp and its already verified
-            if ($validate->validateEmail($username)) 
-            {
-                $query = "select * from membership.members where username='$username'";
-                $result = parent::RunQuery($query);
+        if ($validate->validateEmail($username)) {
+            $query = "select * from membership.members where username='$username'";
+            $result = parent::RunQuery($query);
+        } else {
+            $membercards = new MemberCards();
+            $cardinfo = $membercards->getMIDByCard($username);
+
+            if (is_array($cardinfo) && count($cardinfo) > 0) {
+                if ($cardinfo[0]['Status'] == 1 || $cardinfo[0]['Status'] == 5) {
+                    $MID = $cardinfo[0]['MID'];
+                    $query = "select * from membership.members where MID='$MID'";
+                    $result = parent::RunQuery($query);
+                } elseif ($cardinfo[0]['Status'] == 9) {
+                    $result = "Card is banned";
+                } else {
+                    $result = 0;
+                }
             } else {
-                $membercards = new MemberCards();
-                $cardinfo = $membercards->getMIDByCard($username);
-            
-                if (is_array($cardinfo) && count($cardinfo) > 0) 
-                {
-                    if($cardinfo[0]['Status'] == 1 || $cardinfo[0]['Status'] == 5 ){
-                        $MID = $cardinfo[0]['MID'];
-                        $query = "select * from membership.members where MID='$MID'";
-                        $result = parent::RunQuery($query);
-                    } elseif($cardinfo[0]['Status'] == 9) {
-                        $result = "Card is banned";
-                    } else {
-                        $result = 0;
-                    }
-                } 
-                else 
-                {
-                        $result = array();
-                }
+                $result = array();
             }
-            $retval = "";
-            $strpass = $password;
-
-            if ($hashing != '')
-            {
-                App::LoadCore("Hashing.class.php");
-                
-                if ($hashing == Hashing::MD5)
-                {
-                    $strpass = md5($password);
-                }
-            }
-            
-            if (is_array($result) && count($result) > 0) 
-            {
-                $row = $result[0];
-                $mid = $row["MID"];
-                
-                switch($row["Status"])
-                {
-                    case 1 :
-                        if ($row["Password"] != $strpass) 
-                            App::SetErrorMessage("Invalid Password");
-                        else 
-                            $retval = $row;
-                        break;
-                    case 0 :
-                        App::SetErrorMessage("Account Inactive");
-                        break;
-                    case 2 :
-                        App::SetErrorMessage("Account Suspended");
-                        break;
-                    case 3 :
-                        App::SetErrorMessage("Account Locked (Login Attempts)");
-                        break;
-                    case 4 :
-                        App::SetErrorMessage("Account Locked (By Admin)");
-                        break;
-                    case 5:
-                        App::SetErrorMessage("Account Locked (By Admin)");
-                        break;
-                    case 6 :
-                        App::SetErrorMessage("Account Terminated");
-                        break;
-                    default :
-                        App::SetErrorMessage("Invalid Account");
-                        break;
-                }
-            }
-            elseif(is_string($result)){
-                App::SetErrorMessage($result);
-            }
-            else if($result == 0) {
-                App::SetErrorMessage("Invalid Account.");
-            } else {
-                App::SetErrorMessage("Invalid Account");
-                $_tempMembers = new TempMembers();
-
-                $isTempAcctExist = $_tempMembers->chkTempUser($username);
-
-                //check if account has no transactions yet in kronus cashier
-                if($isTempAcctExist > 0)
-                   App::SetErrorMessage("You need to transact at least one transaction before you can login.");
-                else
-                    App::SetErrorMessage("Invalid Account.");
-            }
-            return $retval;
         }
+        $retval = "";
+        $strpass = $password;
+
+        if ($hashing != '') {
+            App::LoadCore("Hashing.class.php");
+
+            if ($hashing == Hashing::MD5) {
+                $strpass = md5($password);
+            }
+        }
+
+        if (is_array($result) && count($result) > 0) {
+            $row = $result[0];
+            $mid = $row["MID"];
+
+            switch ($row["Status"]) {
+                case 1 :
+                    if ($row["Password"] != $strpass)
+                        App::SetErrorMessage("Invalid Password");
+                    else
+                        $retval = $row;
+                    break;
+                case 0 :
+                    App::SetErrorMessage("Account Inactive");
+                    break;
+                case 2 :
+                    App::SetErrorMessage("Account Suspended");
+                    break;
+                case 3 :
+                    App::SetErrorMessage("Account Locked (Login Attempts)");
+                    break;
+                case 4 :
+                    App::SetErrorMessage("Account Locked (By Admin)");
+                    break;
+                case 5:
+                    App::SetErrorMessage("Account Locked (By Admin)");
+                    break;
+                case 6 :
+                    App::SetErrorMessage("Account Terminated");
+                    break;
+                default :
+                    App::SetErrorMessage("Invalid Account");
+                    break;
+            }
+        }
+        elseif (is_string($result)) {
+            App::SetErrorMessage($result);
+        } else if ($result == 0) {
+            App::SetErrorMessage("Invalid Account.");
+        } else {
+            App::SetErrorMessage("Invalid Account");
+            $_tempMembers = new TempMembers();
+
+            $isTempAcctExist = $_tempMembers->chkTempUser($username);
+
+            //check if account has no transactions yet in kronus cashier
+            if ($isTempAcctExist > 0)
+                App::SetErrorMessage("You need to transact at least one transaction before you can login.");
+            else
+                App::SetErrorMessage("Invalid Account.");
+        }
+        return $retval;
+    }
 
     function IncrementLoginAttempts($mid) {
         $query = "update $this->TableName set LoginAttempts = LoginAttempts + 1 where MID=$mid";
@@ -466,13 +443,12 @@ class Members extends BaseEntity {
         return parent::ExecuteQuery($query);
     }
 
-    function getUserName($MID)
-    {
+    function getUserName($MID) {
         $query = "SELECT UserName FROM members WHERE MID = $MID";
         $result = parent::RunQuery($query);
         return $result[0]['UserName'];
     }
-    
+
     /**
      * Check if email was already verified in live membership db
      * @author elperez
@@ -480,13 +456,30 @@ class Members extends BaseEntity {
      * @param str $email
      * @return int
      */
-    function chkActiveVerifiedEmailAddress($email){
+    function chkActiveVerifiedEmailAddress($email) {
         $query = "SELECT COUNT(mi.MID) ctractive FROM memberinfo mi
-                  WHERE mi.Email = '$email'";       
+                  WHERE mi.Email = '$email'";
         $result = parent::RunQuery($query);
-        
+
         return $result[0]['ctractive'];
     }
+
+    public function updateMemberUsername($MID, $arrMemberInfo) {
+        $Email = $arrMemberInfo['Email'];
+        $Password = $arrMemberInfo['Password'];
+        if($Password == ''){
+            $query = "UPDATE membership.members SET UserName = '$Email' WHERE MID = $MID";
+        } else {
+            $query = "UPDATE membership.members SET UserName = '$Email', Password = '$Password' WHERE MID = $MID";
+        }
+        return parent::ExecuteQuery($query);
+    }
+
+    public function updateMemberUsernameAdmin($MID, $Email) {
+        $query = "UPDATE membership.members SET UserName = '$Email' WHERE MID = $MID";
+        return parent::ExecuteQuery($query);
+    }
+
 }
 
 ?>

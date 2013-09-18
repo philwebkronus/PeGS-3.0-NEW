@@ -1,4 +1,5 @@
 <?php
+
 /*
  * @author : owliber
  * @date : 2013-04-19
@@ -20,11 +21,13 @@ App::LoadCore("File.class.php");
 App::LoadCore("PHPMailer.class.php");
 
 App::LoadModuleClass("Membership", "MemberInfo");
+App::LoadModuleClass("Membership", "MembershipTemp");
 App::LoadModuleClass("Membership", "Identifications");
 App::LoadModuleClass("Membership", "Nationality");
 App::LoadModuleClass("Membership", "Occupation");
 App::LoadModuleClass("Membership", "MemberSessions");
 App::LoadModuleClass("Membership", "AuditTrail");
+App::LoadModuleClass("Membership", "Members");
 App::LoadModuleClass("Loyalty", "MemberCards");
 App::LoadModuleClass("Loyalty", "RewardOffers");
 App::LoadModuleClass("Loyalty", "CardTransactions");
@@ -38,8 +41,7 @@ App::LoadControl("Button");
 App::LoadControl("RadioGroup");
 App::LoadControl("Hidden");
 
-if (!isset($_SESSION["MemberInfo"]["Member"]["MID"]))
-{
+if (!isset($_SESSION["MemberInfo"]["Member"]["MID"])) {
     App::SetErrorMessage("Account Banned");
     echo'<script> alert("Session is Expired"); window.location="index.php"; </script> ';
 }
@@ -50,11 +52,13 @@ unset($_SESSION["RewardItemsInfo"]);
  * Load Models
  */
 $_MemberInfo = new MemberInfo();
+$_MemberTemp = new MembershipTemp();
 $_MemberCards = new MemberCards();
 $_CardTransactions = new CardTransactions();
 $_RewardOffers = new RewardOffers();
 $_Cards = new Cards();
 $_Sites = new Sites();
+$_Members = new Members();
 
 $logger = new ErrorLogger();
 $logdate = $logger->logdate;
@@ -74,8 +78,7 @@ $arrmemberinfo = $memberinfo[0];
 
 $cardinfo = $_MemberCards->getActiveMemberCardInfo($MID);
 
-if (!isset($cardinfo[0]['CardNumber']))
-{
+if (!isset($cardinfo[0]['CardNumber'])) {
 
     //session_destroy();
     unset($_SESSION['MemberInfo']);
@@ -99,11 +102,11 @@ $email = $arrmemberinfo['Email'];
 /**
  * Loyalty Points
  */
-$currentPoints = number_format($points[0]['CurrentPoints'],0,'',',');
+$currentPoints = number_format($points[0]['CurrentPoints'], 0, '', ',');
 $PlayerPoints = $points[0]['CurrentPoints'];
-$lifetimePoints = number_format($points[0]['LifetimePoints'],0,'',',');
-$bonusPoints = number_format($points[0]['BonusPoints'],0,'',',');
-$redeemedPoints = number_format($points[0]['RedeemedPoints'],0,'',',');
+$lifetimePoints = number_format($points[0]['LifetimePoints'], 0, '', ',');
+$bonusPoints = number_format($points[0]['BonusPoints'], 0, '', ',');
+$redeemedPoints = number_format($points[0]['RedeemedPoints'], 0, '', ',');
 
 
 /**
@@ -206,10 +209,10 @@ $txtEmail->Length = 30;
 $txtEmail->Size = 15;
 $txtEmail->CssClass = "validate[required, custom[email]]";
 
-if ($validate->validateEmail($arrmemberinfo['Email']))
-    $txtEmail->ReadOnly = true;
-else
-    $txtEmail->ReadOnly = false;
+//if ($validate->validateEmail($arrmemberinfo['Email']))
+//    $txtEmail->ReadOnly = true;
+//else
+//    $txtEmail->ReadOnly = false;
 
 $txtEmail->Text = $arrmemberinfo['Email'];
 $fproc->AddControl($txtEmail);
@@ -314,10 +317,10 @@ $rdoGroupSmoker->Initialize();
 $rdoGroupSmoker->SetSelectedValue($arrmemberinfo['IsSmoker']);
 $rdoGroupGender->Args = "onclick='\"window.close()\"'";
 $fproc->AddControl($rdoGroupSmoker);
-$rewardoffers = $_RewardOffers->getAllRewardOffers($_SESSION["MemberInfo"]["CardTypeID"],"Points");
-for ($itr=0;$itr < count($rewardoffers); $itr++) {
+$rewardoffers = $_RewardOffers->getAllRewardOffers($_SESSION["MemberInfo"]["CardTypeID"], "Points");
+for ($itr = 0; $itr < count($rewardoffers); $itr++) {
     preg_match('/\((.*?)\)/', $rewardoffers[$itr]["ProductName"], $rewardname);
-    if(is_array($rewardname) && isset($rewardname[1])){
+    if (is_array($rewardname) && isset($rewardname[1])) {
         unset($rewardoffers[$itr]["ProductName"]);
         $rewardoffers[$itr]["ProductName"] = $rewardname[1];
     }
@@ -347,16 +350,13 @@ $hdnUpdateProfile->Text = "";
 $fproc->AddControl($hdnUpdateProfile);
 
 $trans = $_CardTransactions->getLastTransaction($cardNumber);
-if (count($trans) > 0)
-{
+if (count($trans) > 0) {
     $site = $_Sites->getSite($trans[0]['SiteID']);
     $siteName = $site[0]['SiteName'];
     $transDate = date('M d, Y ', strtotime($trans[0]['TransactionDate']));
 
     $lastPlay = "<p>You last played in $siteName on $transDate.</p>";
-}
-else
-{
+} else {
     $lastPlay = "";
 }
 
@@ -365,27 +365,28 @@ $dateupdated = "now_usec()";
 
 echo App::GetErrorMessage();
 
-if ($fproc->IsPostBack)
-{
+if ($fproc->IsPostBack) {
     //Check if password was changed.
-    if ($hdnUpdateProfile->SubmittedValue == "update")
-    {
+    if ($hdnUpdateProfile->SubmittedValue == "update") {
         $hdnUpdateProfile->Text = "";
         (!empty($txtPassword->SubmittedValue)) ? $arrMembers["Password"] = md5($txtPassword->SubmittedValue) : "";
-        if(!empty($txtPassword->SubmittedValue)){
+        if (!empty($txtPassword->SubmittedValue)) {
             $arrMembers["DateUpdated"] = $dateupdated;
-            $arrMembers["MID"] = $MID; 
-        }
-        else{
+            $arrMembers["MID"] = $MID;
+        } else {
             $arrMembers = '';
         }
-        
+
 
         $arrMemberInfo["FirstName"] = $txtFirstName->SubmittedValue;
         $arrMemberInfo["MiddleName"] = $txtMiddleName->SubmittedValue;
         $arrMemberInfo['LastName'] = $txtLastName->SubmittedValue;
         $arrMemberInfo['NickName'] = $txtNickName->SubmittedValue;
-
+        if($txtPassword->SubmittedValue==''){
+            $arrMemberInfo['Password'] = '';
+        } else {
+            $arrMemberInfo['Password'] = md5($txtPassword->SubmittedValue);
+        }
         $arrMemberInfo['MID'] = $MID;
         $arrMemberInfo['Address1'] = $txtAddress1->SubmittedValue;
         $arrMemberInfo['Address2'] = $txtAddress2->SubmittedValue;
@@ -398,15 +399,14 @@ if ($fproc->IsPostBack)
         $arrMemberInfo['OccupationID'] = $cboOccupation->SubmittedValue;
         $arrMemberInfo['IdentificationID'] = $cboIDSelection->SubmittedValue;
         $arrMemberInfo['IdentificationNumber'] = $txtIDPresented->SubmittedValue;
-        
+
         $arrMemberInfo['Gender'] = $rdoGroupGender->SubmittedValue;
         $arrMemberInfo['IsSmoker'] = $rdoGroupSmoker->SubmittedValue;
 
-        if(isset($_SESSION['sessionID']) || isset($_SESSION['MID'])){
+        if (isset($_SESSION['sessionID']) || isset($_SESSION['MID'])) {
             $sessionid = $_SESSION['sessionID'];
             $aid = $_SESSION['MID'];
-        }
-        else{
+        } else {
             $sessionid = 0;
             $aid = 0;
         }
@@ -420,24 +420,100 @@ if ($fproc->IsPostBack)
                 $sessioncount = $value2['Count'];
             }
         }
-        if($sessioncount > 0)
-        {
+        if ($sessioncount > 0) {
             //Proceed with the update profile
-            $resultmsg = $_MemberInfo->updateProfile($arrMembers, $arrMemberInfo);
-        }
-        else 
-        {
+            //check if from old to new migrated card
+            if (!is_null($_SESSION['MemberEmail'])) {
+                $SessEmail = $_SESSION['MemberEmail'];
+
+                $tempMID = $_MemberTemp->getMID($SessEmail);
+               
+                if(empty($tempMID)){
+                $tempMID = 0;
+                } else {
+                foreach ($tempMID as $value) {
+                    $tempMID = $value['MID'];
+                }
+                }
+                $MID = $tempMID;
+            }
+            else
+                $MID = $aid;
+
+            $email = $arrMemberInfo['Email'];
+            $temphasemailcount = $_MemberTemp->checkIfEmailExistsWithMID($MID, $email);
+            if (is_null($temphasemailcount)) {
+                $temphasemailcount = 0;
+            } else {
+                foreach ($temphasemailcount as $value) {
+                    $temphasemailcount = $value['COUNT'];
+                }
+            }
+            
+            if ($temphasemailcount > 0) {
+                $resultmsg = "Sorry, " . $arrMemberInfo['Email'] . " already belongs to an existing account. Please enter another email address!";
+            } else {
+
+                //Proceed with the update profile
+                $_MemberInfo->StartTransaction();
+                $resultmsg = $_MemberInfo->updateProfile($arrMembers, $arrMemberInfo);
+                $CommonPDOConn = $_MemberInfo->getPDOConnection();
+                $_Members->setPDOConnection($CommonPDOConn);
+                if (App::HasError()) {
+                    $_MemberInfo->RollBackTransaction();
+                    $error = $_Members->errormessage;
+                    $logger->logger($logdate, $logtype, $error);
+                    $isSuccess = false;
+                } else {
+                    $_Members->setPDOConnection($CommonPDOConn);
+                    $_Members->updateMemberUsername($aid, $arrMemberInfo);
+                    if ($_Members->HasError) {
+                        $_MemberInfo->RollBackTransaction();
+                        $error = $_Members->errormessage;
+                        $logger->logger($logdate, $logtype, $error);
+                        $isSuccess = false;
+                    } else {
+                        $_MemberTemp->setPDOConnection($CommonPDOConn);
+                        $_MemberTemp->updateTempEmail($arrMemberInfo, $MID);
+                        if ($_MemberTemp->HasError) {
+                            $_MemberInfo->RollBackTransaction();
+                            $error = $_MemberTemp->errormessage;
+                            $logger->logger($logdate, $logtype, $error);
+                            $isSuccess = false;
+                        } else {
+                            $_MemberTemp->updateTempMemberUsername($arrMemberInfo, $MID);
+                            if ($_MemberTemp->HasError) {
+                                $_MemberInfo->RollBackTransaction();
+                                $error = $_MemberTemp->errormessage;
+                                $logger->logger($logdate, $logtype, $error);
+                                $isSuccess = false;
+                            } else {
+                                $_MemberInfo->CommitTransaction();
+                                unset($_SESSION['MemberEmail']);
+                                $_SESSION['MemberEmail'] = $arrMemberInfo['Email'];
+                                $isSuccess = true;
+                                if (($_MemberInfo->AffectedRows > 0)||($_Members->AffectedRows > 0)||($_MemberTemp->AffectedRows > 0)) {
+                                    $_MemberInfo->updateProfileDateUpdated($MID, $arrMemberInfo, $aid);
+                                    $_MemberTemp->updateTempProfileDateUpdated($MID, $arrMemberInfo, $aid);
+                                    $resultmsg = 'Profile updated successfully!';
+                                } else {
+                                    $resultmsg = 'Profile unchanged!';
+                                }
+                           }
+                        }
+                    }
+                }
+            }
+        } else {
             session_destroy();
             echo'<script> alert("Session Expired"); window.location="index.php"; </script> ';
         }
-        
 
-        if (!App::HasError())
-        {
+
+        if (!App::HasError()) {
             $isSuccess = true;
 
-            if (isset($_SESSION['MemberInfo']))
-            {
+            if (isset($_SESSION['MemberInfo'])) {
                 App::LoadModuleClass("Membership", "AuditTrail");
                 App::LoadModuleClass("Membership", "AuditFunctions");
 
@@ -449,9 +525,7 @@ if ($fproc->IsPostBack)
                 $_Log = new AuditTrail();
                 $_Log->logEvent(AuditFunctions::UPDATE_PROFILE, $username, array('ID' => $id, 'SessionID' => $sessionid));
             }
-        }
-        else
-        {
+        } else {
             $error = "Failed to update player profile.";
             $logger->logger($logdate, $logtype, $error);
             $isSuccess = false;

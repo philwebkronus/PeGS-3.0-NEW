@@ -26,6 +26,7 @@ App::LoadCore("File.class.php");
 App::LoadCore("PHPMailer.class.php");
 
 App::LoadModuleClass("Membership", "Members");
+App::LoadModuleClass("Membership", "MemberInfo");
 App::LoadModuleClass("Membership", "MemberSessions");
 App::LoadModuleClass("Membership", "AuditTrail");
 App::LoadModuleClass("Membership", "AuditFunctions");
@@ -37,6 +38,7 @@ App::LoadControl("Button");
 App::LoadControl("Hidden");
 
 $_Log = new AuditTrail();
+$_MemberInfo = new MemberInfo();
 
 $fproc = new FormsProcessor();
 $txtUsername = new TextBox("txtUsername", "txtUsername", "Username:");
@@ -167,7 +169,12 @@ if ($fproc->IsPostBack && $btnLogin->SubmittedValue == "Login") {
             $_SESSION["MemberInfo"]["SessionID"] = $sessionid;
             $_SESSION["MemberInfo"]["CardTypeID"] = $cardtypeid;
             $_SESSION["MemberInfo"]["DateEnded"] = $enddate;
-
+            
+            $sessMID = $_MemberInfo->getEmailByMID();
+            foreach ($sessMID as $value) {
+                $_SESSION['MemberEmail'] = $value['Email'];
+            }
+            
             //Log to audittrail
             $_Log->logEvent(AuditFunctions::LOGIN, $username, array('ID' => $members["MID"], 'SessionID' => $sessionid));
             header("location:profile.php");
