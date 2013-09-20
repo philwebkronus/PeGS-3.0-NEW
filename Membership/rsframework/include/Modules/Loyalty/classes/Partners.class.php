@@ -8,9 +8,9 @@ class Partners extends BaseEntity
 {
     function Partners()
     {
-        $this->TableName = "promos";
+        $this->TableName = "ref_partners";
         $this->ConnString = "loyalty";
-        $this->Identity = "PromoID";
+        $this->Identity = "PartnerID";
         $this->DatabaseType = DatabaseTypes::PDO;
     }
     
@@ -25,6 +25,14 @@ class Partners extends BaseEntity
     public function getPartnerNameByID($partnerid)
     {
         $query = "SELECT PartnerName FROM ref_partners WHERE PartnerID = $partnerid";
+        return parent::RunQuery($query);
+    }
+    
+    public function getPartnerDetailsUsingPartnerName($PartnerName){
+        $query = "SELECT pd.CompanyAddress, pd.CompanyPhone, pd.CompanyWebsite 
+                            FROM $this->TableName rp 
+                            INNER JOIN loyaltydb.partnerdetails pd ON pd.PartnerID = rp.PartnerID
+                            WHERE rp.PartnerName='$PartnerName' ";
         return parent::RunQuery($query);
     }
 }

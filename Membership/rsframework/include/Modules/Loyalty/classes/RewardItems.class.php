@@ -23,9 +23,121 @@ class RewardItems extends BaseEntity
         return $result[0];
     }
     
-    function updateAvailableItemCount($RewardItemID, $ItemCount){
-        $query = "UPDATE  $this->TableName SET AvailableItemCount = AvailableItemCount - $ItemCount WHERE RewardItemID = $RewardItemID";
+    function updateAvailableItemCount($RewardItemID, $ItemCount, $UpdatedByAID){
+        $query = "UPDATE  $this->TableName SET AvailableItemCount = AvailableItemCount - $ItemCount,
+                            UpdatedByAID=$UpdatedByAID, DateUpdated=now_usec()
+                            WHERE RewardItemID = $RewardItemID";
         return parent::ExecuteQuery($query);
+    }
+    
+    /**
+    * @Description: Get All Reward Offers in a specific cardtype and sortable by specific field name either asc or desc 
+    * @author aqdepliyan
+    * @param $CardTypeID, $sortby, $isAsc
+    * @return array   
+    */
+    public function getAllRewardOffersBasedOnPlayerClassification($IsVIP, $sortby, $isAsc = 0){
+        $sorttype = $isAsc == 0 ? "asc":"desc";
+        if($IsVIP == 0){ //Regular
+            $playerclassification = 2;
+        } else if($IsVIP == 1) { //VIP
+            $playerclassification = 3;
+        }
+        $query = "SELECT ri.RewardID, ri.RewardItemID, ri.SubText as Description, ri.AvailableItemCount,
+                            ri.ItemName as ProductName, rp.PartnerName, ri.RequiredPoints as Points, 
+                            ri.ThumbnailLimitedImage, ri.ECouponImage, ri.WebsiteSliderImage,
+                            ri.LearnMoreLimitedImage, ri.LearnMoreOutOfStockImage, ri.ThumbnailOutOfStockImage,
+                            ri.PromoName
+                            FROM $this->TableName ri
+                            LEFT JOIN ref_partners rp ON rp.PartnerID = ri.PartnerID
+                            WHERE ri.PClassID = $playerclassification
+                            AND ri.Status = 1 
+                            AND ri.OfferEndDate >= now_usec()
+                            ORDER BY $sortby $sorttype";
+       
+        return parent::RunQuery($query);
+    }
+    
+    /**
+    * @Description: Get Reward Item Offer End Date.
+    * @author aqdepliyan
+    * @param $RewardItemID
+    * @return array
+    */
+    function getOfferEndDate($RewardItemID){
+        $query = "SELECT  OfferEndDate, now_usec() as CurrentDate FROM $this->TableName
+                            WHERE RewardItemID=$RewardItemID";
+        $result = parent::RunQuery($query);
+        return $result[0];
+    }
+    
+    /**
+    * @Description: Get Reward Offer Date Range of availability
+    * @author aqdepliyan
+    * @param $RewardItemID
+    * @return array
+    */
+    function getOfferDateRange($RewardItemID){
+        $query = "SELECT OfferStartDate as StartDate, OfferEndDate as EndDate, DrawDate
+                            FROM $this->TableName WHERE RewardItemID = $RewardItemID";
+        $result = parent::RunQuery($query);
+        return $result[0];
+    }
+    
+    
+    /**
+    * @Author aqdepliyan
+     * @Description: Get Reward Item Serial End Code.
+    * @param $RewardItemID
+    * @return array
+    */
+    function getSerialCodeEnd($RewardItemID){
+        $query = "SELECT  PartnerID, PartnerItemID FROM $this->TableName
+                            WHERE RewardItemID=$RewardItemID";
+        $result = parent::RunQuery($query);
+        return $result[0];
+    }
+    
+    /**
+     * @Author: aqdepliyan
+     * @Description: Get About the Reward and Terms & Condition of the reward 
+     * @param type $rewarditemid
+     * @return array
+     */
+    function getAboutandTerms($rewarditemid){
+        $query = "SELECT About, Terms, SubText, PromoCode, PromoName FROM $this->TableName WHERE RewardItemID=".$rewarditemid.";";
+        $result = parent::RunQuery($query);
+        if(isset($result[0])){
+            return $result[0];
+        } else {
+            $result = App::GetErrorMessage();;
+            return $result;
+        }
+        
+    }
+    
+    /**
+     * @Author: aqdepliyan
+     * @Description: Get RewardID using rewarditemid
+     * @param type $rewarditemid
+     * @return array
+     */
+    function getRewardID($rewarditemid){
+        $query = "SELECT RewardID FROM $this->TableName WHERE RewardItemID=".$rewarditemid;
+        return parent::RunQuery($query);
+    }
+    
+    /**
+     * @Description: For fetching learn more image.
+     * @Author: aqdepliyan
+     * @param int $rewarditemid
+     * @return array
+     */
+    function getLearnMorePageImage($rewarditemid){
+        $query = "SELECT LearnMoreLimitedImage, LearnMoreOutOfStockImage
+                            FROM $this->TableName WHERE RewardItemID=".$rewarditemid;
+        $result = parent::RunQuery($query);
+        return $result[0];
     }
 
     function getActiveRewardItemsByCardType($cardtypeid = '')

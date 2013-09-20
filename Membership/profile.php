@@ -1,9 +1,9 @@
 <?php
 
-/*
-* Description: Profile View
-* @author: aqdepliyan
-* DateCreated: 2013-07-04 02:02:40 PM
+/**
+* @Description: Profile View
+* @Author: aqdepliyan
+* @DateCreated: 2013-07-04 02:02:40 PM
 */
 
 ?>
@@ -19,9 +19,10 @@
                 var RewardItemID = $(this).attr('RewardItemID');
                 var ProductName = $(this).attr('ProductName');
                 var PartnerName = $(this).attr('PartnerName');
-                var RewardOfferID = $(this).attr('RewardOfferID');
                 var Points = $(this).attr('Points');
-                var IsCoupon = $(this).attr('IsCoupon');
+                var RewardID = $(this).attr('RewardID');
+                var LearnMoreImage = $(this).attr('LearnMoreImage');
+                var eCouponImage = $(this).attr('eCouponImage');
                 $.ajax({
                     url: "controller/helpercontroller.php",
                     type: 'POST',
@@ -29,9 +30,10 @@
                                     rewarditemid : function(){return RewardItemID;},
                                     productname : function(){return ProductName;},
                                     partnername : function(){return PartnerName;},
-                                    rewardofferid :  function(){return RewardOfferID;},
                                     points :  function(){return Points;},
-                                    iscoupon :  function(){return IsCoupon;}
+                                    rewardid :  function(){return RewardID;},
+                                    learnmoreimage: function(){return LearnMoreImage;},
+                                    ecouponimage: function(){return eCouponImage;}
                                 },
                     success: function(response){
                         if(response){
@@ -215,13 +217,20 @@
             do{ ?>
             <div class="row-fluid product-container">
                 <div class="span6 product-wrapper">
-                    <div class="limited-ribbon"></div>
+                    <!--<div class="limited-ribbon"></div>-->
                     <div class="product-thumb">
-                        <img src="images/slider/membership_innerpages/product_image_teaser.jpg">
+                        <!--<img src="images/slider/membership_innerpages/product_image_teaser.jpg">-->
+                         <?php if($rewardoffers[$itr]['AvailableItemCount'] <= 0){ ?>
+                            <?php $learmoreimage = $rewardoffers[$itr]["LearnMoreOutOfStockImage"]; ?>
+                            <img src="<?php $imagepath = App::getParam('rewarditem_imagepath').$rewardoffers[$itr]['ThumbnailOutOfStockImage']; echo $imagepath; ?>">
+                        <?php } else { ?>
+                            <?php $learmoreimage = $rewardoffers[$itr]["LearnMoreLimitedImage"]; ?>
+                            <img src="<?php $imagepath = App::getParam('rewarditem_imagepath').$rewardoffers[$itr]['ThumbnailLimitedImage']; echo $imagepath; ?>">
+                        <?php } ?>
                         <div class="social-overlay">
                             <div class="social-buttons">
-                            <a href="#"><img src="images/slider/membership_innerpages/fb.png"></a>
-                            <a href="#"><img src="images/slider/membership_innerpages/twitter.png"></a>
+                            <a href="#"><img src="images/rewarditems/extra_images/fb.png"></a>
+                            <a href="#"><img src="images/rewarditems/extra_images/twitter.png"></a>
                             </div>
                         </div>
                     </div>
@@ -240,13 +249,15 @@
                                         $RewardItemID = $rewardoffers[$itr]["RewardItemID"];
                                         $PartnerName = $rewardoffers[$itr]['PartnerName'];
                                         $ProductName = $rewardoffers[$itr]['ProductName'];
-                                        $RewardOfferID = $rewardoffers[$itr]['RewardOfferID'];
                                         $Points = $rewardoffers[$itr]['Points'];
-                                        $IsCoupon = $rewardoffers[$itr]['IsCoupon'];
+                                        $RewardID = $rewardoffers[$itr]['RewardID'];
+                                        $eCouponImage = $rewardoffers[$itr]["ECouponImage"];
                             ?>
                             <input type="button" value="Learn More" class="yellow-btn-learn-more" id="btnLearnMore" RewardItemID='<?php echo $RewardItemID; ?>' 
                                 PartnerName='<?php echo $PartnerName; ?>' ProductName='<?php echo $ProductName; ?>' 
-                                RewardOfferID='<?php echo $RewardOfferID; ?>' Points='<?php echo $Points; ?>' IsCoupon='<?php echo $IsCoupon; ?>' />
+                                Points='<?php echo $Points; ?>' RewardID='<?php echo $RewardID; ?>' 
+                                LearnMoreImage ='<?php echo $learmoreimage; ?>'
+                                eCouponImage='<?php echo $eCouponImage; ?>' />
                         </div>
                     </div>
                 </div><!-- .product-wrapper -->
@@ -255,13 +266,20 @@
                 
                 if(isset($rewardoffers[$itr]['ProductName'])) { ?>
                 <div class="span6 product-wrapper">
-                    <div class="limited-ribbon"></div>
+                    <!--<div class="limited-ribbon"></div>-->
                     <div class="product-thumb">
-                        <img src="images/slider/membership_innerpages/product_image_teaser.jpg">
+                        <!--<img src="images/slider/membership_innerpages/product_image_teaser.jpg">-->
+                        <?php if($rewardoffers[$itr]['AvailableItemCount'] <= 0){ ?>
+                            <?php $learmoreimage = $rewardoffers[$itr]["LearnMoreOutOfStockImage"]; ?>
+                            <img src="<?php $imagepath = App::getParam('rewarditem_imagepath').$rewardoffers[$itr]['ThumbnailOutOfStockImage']; echo $imagepath; ?>">
+                        <?php } else { ?>
+                            <?php $learmoreimage = $rewardoffers[$itr]["LearnMoreLimitedImage"]; ?>
+                            <img src="<?php $imagepath = App::getParam('rewarditem_imagepath').$rewardoffers[$itr]['ThumbnailLimitedImage']; echo $imagepath; ?>">
+                        <?php } ?>
                         <div class="social-overlay">
                             <div class="social-buttons">
-                            <a href="#"><img src="images/slider/membership_innerpages/fb.png"></a>
-                            <a href="#"><img src="images/slider/membership_innerpages/twitter.png"></a>
+                            <a href="#"><img src="images/rewarditems/extra_images/fb.png"></a>
+                            <a href="#"><img src="images/rewarditems/extra_images/twitter.png"></a>
                             </div>
                         </div>
                     </div>
@@ -280,13 +298,15 @@
                                         $RewardItemID = $rewardoffers[$itr]["RewardItemID"];
                                         $PartnerName = $rewardoffers[$itr]['PartnerName'];
                                         $ProductName = $rewardoffers[$itr]['ProductName'];
-                                        $RewardOfferID = $rewardoffers[$itr]['RewardOfferID'];
                                         $Points = $rewardoffers[$itr]['Points'];
-                                        $IsCoupon = $rewardoffers[$itr]['IsCoupon'];
+                                        $RewardID = $rewardoffers[$itr]['RewardID'];
+                                        $eCouponImage = $rewardoffers[$itr]["ECouponImage"];
                             ?>
                             <input type="button" value="Learn More" class="yellow-btn-learn-more" id="btnLearnMore" RewardItemID='<?php echo $RewardItemID; ?>' 
                                 PartnerName='<?php echo $PartnerName; ?>' ProductName='<?php echo $ProductName; ?>' 
-                                RewardOfferID='<?php echo $RewardOfferID; ?>' Points='<?php echo $Points; ?>' IsCoupon='<?php echo $IsCoupon; ?>' />
+                                Points='<?php echo $Points; ?>' RewardID='<?php echo $RewardID; ?>' 
+                                LearnMoreImage ='<?php echo $learmoreimage; ?>'
+                                eCouponImage='<?php echo $eCouponImage; ?>' />
                         </div>
                     </div>
                 </div><!-- .product-wrapper-->

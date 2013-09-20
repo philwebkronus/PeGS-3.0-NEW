@@ -246,21 +246,21 @@ border-radius: 0px !important;}
 /*membership inner pages*/
 .product-container{margin-bottom:20px;}
 .product-wrapper{border:2px solid #9c9a9b; background-color:#FFFFFF; padding:10px;}
-.limited-ribbon{background-image:url('../../../images/slider/membership_innerpages/limited.png'); width:91px; height:71px; position:absolute; margin-left:198px; margin-top:-12px; }
-.limited-ribbon-full{background-image:url('../../../images/slider/membership_innerpages/limited.png'); width:91px; height:71px; position:absolute; margin-left:440px;}
+.limited-ribbon{background-image:url('../../../images/rewarditems/extra_images/limited.png'); width:91px; height:71px; position:absolute; margin-left:198px; margin-top:-12px; }
+.limited-ribbon-full{background-image:url('../../../images/rewarditems/extra_images/limited.png'); width:91px; height:71px; position:absolute; margin-left:440px;}
 .product-details{margin-top:8px; font-weight: bold; }
 .product-name{text-transform: uppercase; margin-bottom:2px; font-size:15px;}
 .product-thumb{min-height: 175px;}
-.learn-more{background-image: url('../../../images/slider/membership_innerpages/learn_more_-button_bg.png'); background-repeat: no-repeat; height: 30px; width: 120px; display: block;}
+.learn-more{background-image: url('../../../images/rewarditems/extra_images/learn_more_-button_bg.png'); background-repeat: no-repeat; height: 30px; width: 120px; display: block;}
 .learn-more-container{margin-top:12px; padding-left:22px;}
-.yellow-btn-learn-more{background:url(../../../images/slider/yellow_button_bg.jpg) repeat-x; width: 120px; height:28px; border:none; text-transform: uppercase; font-weight: bold; padding:5px 10px;  -moz-border-radius: 4px;-webkit-border-radius: 4px;-khtml-border-radius: 4px;border-radius: 4px; }
-.yellow-btn-learn-more:hover{background:url(../../../images/slider/yellow__button_bg_hover.jpg); text-shadow: 1px 1px #FFFFFF;}
-.yellow-btn-redeem-button{display:block; background:url(../../../images/slider/membership_innerpages/redeem_button_bg.png) repeat-x; height: 72px; width: 269px; border:none; text-transform: uppercase; font-size: 34px;font-weight: bold; padding:10px 15px;  -moz-border-radius: 7px;-webkit-border-radius: 7px;-khtml-border-radius: 7px;border-radius: 7px; }
+.yellow-btn-learn-more{background:url(../../../images/rewarditems/extra_images/yellow_button_bg.jpg) repeat-x; width: 120px; height:28px; border:none; text-transform: uppercase; font-weight: bold; padding:5px 10px;  -moz-border-radius: 4px;-webkit-border-radius: 4px;-khtml-border-radius: 4px;border-radius: 4px; }
+.yellow-btn-learn-more:hover{background:url(../../../images/rewarditems/extra_images/yellow__button_bg_hover.jpg); text-shadow: 1px 1px #FFFFFF;}
+.yellow-btn-redeem-button{display:block; background:url(../../../images/rewarditems/extra_images/redeem_button_bg.png) repeat-x; height: 72px; width: 269px; border:none; text-transform: uppercase; font-size: 34px;font-weight: bold; padding:10px 15px;  -moz-border-radius: 7px;-webkit-border-radius: 7px;-khtml-border-radius: 7px;border-radius: 7px; }
 .yellow-btn-redeem-button:hover{ text-shadow: 1px 1px #FFFFFF;}
-.social-overlay{background-image: url('../../../images/slider/membership_innerpages/overlay.png'); background-repeat: repeat; height:50px; position:relative; margin-top:-50px; display: none;}
+.social-overlay{background-image: url('../../../images/rewarditems/extra_images/overlay.png'); background-repeat: repeat; height:50px; position:relative; margin-top:-50px; display: none;}
 .social-buttons{padding-top:15px; text-align: right; padding-right:10px;}
 .product-thumb:hover .social-overlay{display:block;}
-#scroll-to-top{display:block; height: 64px; width:147px; cursor: pointer; background-image:url('../../../images/slider/membership_innerpages/scroll_to_top.png'); position:absolute; margin-left:-170px; margin-top:-80px;}
+#scroll-to-top{display:block; height: 64px; width:147px; cursor: pointer; background-image:url('../../../images/rewarditems/extra_images/scroll_to_top.png'); position:absolute; margin-left:-170px; margin-top:-80px;}
 
 .membership-inner-wrapper{border:1px solid #beb8a0; background-color:#FFF; padding:12px 5px 15px 5px;}
 .membership-inner-wrapper [class*="span"] {

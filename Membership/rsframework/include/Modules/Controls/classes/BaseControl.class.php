@@ -253,15 +253,15 @@ class BaseControl extends BaseObject
         $tabindex = $this->TabIndex;
         $attributes = "";
 
-        $name = $this->Name != null ? "name='$this->Name' " : '';
-        $id = $this->ID != null ? "id='$this->ID' " : '';
-        $style = $style != null ? "style='$this->Style' " : '';
+        $name = $this->Name != null ? 'name="'.$this->Name.'" ' : '';
+        $id = $this->ID != null ? 'id="'.$this->ID.'" ' : '';
+        $style = $style != null ? 'style="'.$this->Style.'" ' : '';
         $args = $this->Args != null ? $args = $this->Args : '';
-        $enabled = $this->Enabled == true ? "" : "disabled='disabled' ";
-        $visible = $this->Visible == true ? "" : "style='display:none;' ";
-        $readonly = $this->ReadOnly == false ? "" : "readonly ";
-        $tabindex = $this->TabIndex == null ? "" : "tabindex='$this->TabIndex' ";
-        $cssclass = $this->CssClass != null ? "class='$this->CssClass' " : '';
+        $enabled = $this->Enabled == true ? '' : 'disabled="disabled" ';
+        $visible = $this->Visible == true ? '' : 'style="display:none;" ';
+        $readonly = $this->ReadOnly == false ? '' : 'readonly ';
+        $tabindex = $this->TabIndex == null ? '' : 'tabindex="'.$this->TabIndex.'" ';
+        $cssclass = $this->CssClass != null ? 'class="'.$this->CssClass.'" ' : '';
         $attributes = $name . $id . $cssclass . $style . $args . $tabindex . $enabled . $visible . $readonly;
 
         $this->Attributes = $attributes;

@@ -56,7 +56,7 @@ class MemberInfo extends BaseEntity {
     public function getMemberInfoByUsername($Username) {
 
         $query = "SELECT
-                    m.Password,
+                    m.Password, m.IsVIP,
                     mi.*
                   FROM memberinfo mi
                     INNER JOIN members m ON mi.MID = m.MID
@@ -273,7 +273,8 @@ class MemberInfo extends BaseEntity {
         }
         parent::UpdateByArray($entries);
         if ($this->HasError) {
-            $retval = $this->getError();
+            parse_str($arrEntries, $entries);
+            $retval = "Sorry, " . $entries['Email'] . " already belongs to an existing account. Please enter another email address!";
         } else {
             $retval = "Profile Updated Successfully.";
         }

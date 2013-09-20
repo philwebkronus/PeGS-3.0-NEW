@@ -168,6 +168,7 @@ if ($fproc->IsPostBack && $btnLogin->SubmittedValue == "Login") {
             $_SESSION["MemberInfo"]["Member"] = $members;
             $_SESSION["MemberInfo"]["SessionID"] = $sessionid;
             $_SESSION["MemberInfo"]["CardTypeID"] = $cardtypeid;
+            $_SESSION["MemberInfo"]["IsVIP"] = $membercards['IsVIP'];
             $_SESSION["MemberInfo"]["DateEnded"] = $enddate;
             
             $sessMID = $_MemberInfo->getEmailByMID();

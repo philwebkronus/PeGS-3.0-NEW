@@ -1,8 +1,13 @@
 <?php
 
-/*
+/**
  * @author : owliber
  * @date : 2013-04-19
+ */
+
+/**
+ * @author : aqdepliyan
+ * @dateupdated : 2013-07-04
  */
 
 error_reporting(E_ALL);
@@ -30,6 +35,7 @@ App::LoadModuleClass("Membership", "AuditTrail");
 App::LoadModuleClass("Membership", "Members");
 App::LoadModuleClass("Loyalty", "MemberCards");
 App::LoadModuleClass("Loyalty", "RewardOffers");
+App::LoadModuleClass("Loyalty", "RewardItems");
 App::LoadModuleClass("Loyalty", "CardTransactions");
 App::LoadModuleClass("Loyalty", "Cards");
 App::LoadModuleClass("Kronus", "Sites");
@@ -56,6 +62,7 @@ $_MemberTemp = new MembershipTemp();
 $_MemberCards = new MemberCards();
 $_CardTransactions = new CardTransactions();
 $_RewardOffers = new RewardOffers();
+$_RewardItems = new RewardItems();
 $_Cards = new Cards();
 $_Sites = new Sites();
 $_Members = new Members();
@@ -83,7 +90,7 @@ if (!isset($cardinfo[0]['CardNumber'])) {
     //session_destroy();
     unset($_SESSION['MemberInfo']);
     App::SetErrorMessage("Account Banned");
-    reloadParent();
+    header("location:login.php");
 }
 
 $cardNumber = $cardinfo[0]['CardNumber'];
@@ -317,8 +324,9 @@ $rdoGroupSmoker->Initialize();
 $rdoGroupSmoker->SetSelectedValue($arrmemberinfo['IsSmoker']);
 $rdoGroupGender->Args = "onclick='\"window.close()\"'";
 $fproc->AddControl($rdoGroupSmoker);
-$rewardoffers = $_RewardOffers->getAllRewardOffers($_SESSION["MemberInfo"]["CardTypeID"], "Points");
-for ($itr = 0; $itr < count($rewardoffers); $itr++) {
+
+$rewardoffers = $_RewardItems->getAllRewardOffersBasedOnPlayerClassification($_SESSION["MemberInfo"]["IsVIP"],"Points");
+for ($itr=0;$itr < count($rewardoffers); $itr++) {
     preg_match('/\((.*?)\)/', $rewardoffers[$itr]["ProductName"], $rewardname);
     if (is_array($rewardname) && isset($rewardname[1])) {
         unset($rewardoffers[$itr]["ProductName"]);

@@ -26,8 +26,9 @@ class MemberCards extends BaseEntity {
 
     function getMemberCardInfoByCard($cardnumber) {
 
-        $query = "SELECT m.*, c.CardTypeID 
+        $query = "SELECT m.*, c.CardTypeID , mb.IsVIP
                   FROM membercards m
+                    INNER JOIN membership.members mb ON mb.MID = m.MID
                     INNER JOIN cards c ON m.CardID = c.CardID AND m.CardNumber = c.CardNumber
                   WHERE m.CardNumber='$cardnumber'";
 
@@ -153,12 +154,13 @@ class MemberCards extends BaseEntity {
     }
 
     public function getActiveMemberCardInfo($MID) {
-        $query = "SELECT m.*,
+        $query = "SELECT m.*, mb.IsVIP,
                     CASE c.CardTypeID
                         WHEN 1 THEN 'Gold'
                         WHEN 2 THEN 'Green'
                     END AS CardType, c.CardTypeID
             FROM membercards m
+                INNER JOIN membership.members mb ON mb.MID = m.MID
                 INNER JOIN cards c ON c.CardID = m.CardID AND m.CardNumber = c.CardNumber
             WHERE m.MID = $MID AND m.Status IN(1,5)";
 
@@ -167,10 +169,10 @@ class MemberCards extends BaseEntity {
         return $result;
     }
 
-    /*
-     * Description: Get MemberCard Info using MID with a status limit only to active, active temporary and banned cards.
+    /**
+     * @Description: Get MemberCard Info using MID with a status limit only to active, active temporary and banned cards.
      * @author: aqdepliyan
-     * DateCreated: 2013-06-17 05:38:40PM
+     * @DateCreated: 2013-06-17 05:38:40PM
      */
 
     public function getMemberCardInfoByMID($MID) {
@@ -183,10 +185,10 @@ class MemberCards extends BaseEntity {
         return $result;
     }
 
-    /*
-     * Description: Get MemberCard Info using CardNumber with a status limit only to active, active temporary and banned cards.
+    /**
+     * @Description: Get MemberCard Info using CardNumber.
      * @author: aqdepliyan
-     * DateCreated: 2013-06-17 06:02:35PM
+     * @DateCreated: 2013-06-17 06:02:35PM
      */
 
     public function getMemberCardInfoByCardNumber($cardnumber) {
@@ -197,13 +199,12 @@ class MemberCards extends BaseEntity {
         $result = parent::RunQuery($query);
         return $result;
     }
-
-    /*
-     * Description: Get MemberCard Info with a status limit only to banned cards.
+    
+    /**
+     * @Description: Get MemberCard Info with a status limit only to banned cards.
      * @author: aqdepliyan
-     * DateCreated: 2013-06-19 06:02:35PM
+     * @DateCreated: 2013-06-19 06:02:35PM
      */
-
     public function getAllBannedMemberCardInfo() {
         $query = "SELECT MemberCardID, MID, CardNumber
                             FROM " . $this->TableName . "
@@ -355,8 +356,9 @@ class MemberCards extends BaseEntity {
      * @Description: For Fetching Card Points
      * @author: aqdepliyan
      * @DateCreated: 2013-09-17 04:04PM
+     * @param string $cardnumber
+     * @return int
      */
-
     public function getCurrentPointsByCardNumber($cardnumber) {
         $query = "SELECT CurrentPoints
                             FROM " . $this->TableName . "
@@ -365,18 +367,18 @@ class MemberCards extends BaseEntity {
         $result = parent::RunQuery($query);
         return $result;
     }
-    
+
     /**
      * @Description: For Fetching Card Points
      * @author: aqdepliyan
      * @DateCreated: 2013-09-17 04:04PM
+     * @param int $MID
+     * @return int
      */
-
-    public function getCurrentPointsByMID($MID) {
+    public function getCurrentPointsByMID($MID){
         $query = "SELECT CurrentPoints
                             FROM " . $this->TableName . "
-                            WHERE MID =".$MID;
-
+                            WHERE MID=".$MID;
         $result = parent::RunQuery($query);
         return $result;
     }

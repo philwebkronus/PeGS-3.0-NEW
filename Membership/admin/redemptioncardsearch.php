@@ -47,7 +47,7 @@
         <?php echo $txtSearch; ?><?php echo $btnSearch; ?><?php echo $btnClear; ?>
 </div>
 <div id="cardinfo" style="display: none;">
-    <?php echo $hdnCardTypeID; ?>
+    <?php echo $hdnRewardID; ?>
     <table>
         <tr>
             <td colspan="4"><span class="title">Card Point Information</span></td>

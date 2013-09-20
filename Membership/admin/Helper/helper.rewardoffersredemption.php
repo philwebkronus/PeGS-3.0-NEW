@@ -1,9 +1,9 @@
 <?php
 
 /**
- * @Description: Fetching and encoding data into JSON array to be displayed in JQGRID for list of all reward offers available based in player card type.
+ *@Description: Fetching and encoding data into JSON array to be displayed in JQGRID for list of all reward offers available based on player card type.
  *@Author: aqdepliyan
- * @DateCreated: 07-16-2013 02:46 PM
+ *@DateCreated: 07-16-2013 02:46 PM
  */
 
 if(isset($_POST["functiontype"]) && $_POST["functiontype"] != ""){
@@ -28,6 +28,7 @@ if(isset($_POST["functiontype"]) && $_POST["functiontype"] != ""){
 
             //Initialize Modules
             $_RewardOffers = new RewardOffers();
+            $_RewardItems = new RewardItems();
             $_MemberCards = new MemberCards();
             $_CardTransactions = new CardTransactions();
             $_MemberInfo = new MemberInfo();
@@ -46,7 +47,7 @@ if(isset($_POST["functiontype"]) && $_POST["functiontype"] != ""){
                                 $page = $_POST['page'];
                                 $limit = $_POST['rows'];
 
-                                $rewardoffers = $_RewardOffers->getAllRewardOffers($_SESSION['CardRed']['CardTypeID'],"Points");
+                                $rewardoffers = $_RewardItems->getAllRewardOffersBasedOnPlayerClassification($_SESSION['CardRed']['IsVIP'],"Points");
                                 if(count($rewardoffers) > 0){
 
                                     $total_pages = ceil(count($rewardoffers)/$limit);
@@ -67,30 +68,36 @@ if(isset($_POST["functiontype"]) && $_POST["functiontype"] != ""){
                                         }
                                         $ProductName = $rewardoffers[$itr]["ProductName"];
                                         $RewardItemID = $rewardoffers[$itr]["RewardItemID"];
-                                        $RewardOfferID = $rewardoffers[$itr]["RewardOfferID"];
-                                        $IsCoupon = $rewardoffers[$itr]["IsCoupon"];
+                                        $RewardID = $rewardoffers[$itr]["RewardID"];
                                         $RequiredPoints = $rewardoffers[$itr]["Points"];
-                                        $enabled = "";                     
+                                        $eCouponImage = $rewardoffers[$itr]["ECouponImage"];
+                                        $PartnerName = $rewardoffers[$itr]["PartnerName"];
+                                        $availableitemcount = $rewardoffers[$itr]["AvailableItemCount"];
+                                        $enabled = "";                
                                         $CurrentPoints = $_MemberCards->getCurrentPointsByCardNumber($_SESSION['CardRed']['CardNumber']);
                                         if( $CurrentPoints < $RequiredPoints){
-                                            $rewardoffers[$itr]["Action"] = "<input type='button' value='Redeem' id='csredeem-button' disabled='disabled' Email = '$EmailAddress' ProductName='$ProductName' RewardItemID='$RewardItemID' RewardOfferID='$RewardOfferID' IsCoupon='$IsCoupon' RequiredPoints='$RequiredPoints' >";
+                                            $rewardoffers[$itr]["Action"] = "<input type='button' value='Redeem' id='csredeem-button' disabled='disabled' Email = '$EmailAddress' ProductName='$ProductName' RewardItemID='$RewardItemID' RewardID='$RewardID' RequiredPoints='$RequiredPoints' eCouponImage='$eCouponImage' PartnerName='$PartnerName' >";
                                         } else {
-                                            
-                                            if($IsCoupon == 1 || $IsCoupon == "1"){
-                                                //Set Table for raffle coupon based on active coupon batch.
-                                                $getRaffleCouponSuffix = $_CouponBatches->SelectByWhere(" WHERE Status = 1 LIMIT 1");
-                                                if(isset($getRaffleCouponSuffix[0]) && $getRaffleCouponSuffix[0]['CouponBatchID'] != ""){
-                                                    $_RaffleCoupons->TableName = "rafflecoupons_".$getRaffleCouponSuffix[0]['CouponBatchID'];
-                                                    $rewardoffers[$itr]["Action"] = "<input type='button' value='Redeem' id='csredeem-button' Email = '$EmailAddress' ProductName='$ProductName' RewardItemID='$RewardItemID' RewardOfferID='$RewardOfferID' IsCoupon='$IsCoupon' RequiredPoints='$RequiredPoints' >";
+                                            //Check if the Item/Coupons available item count is greater than zero.
+                                                if((int)$availableitemcount['AvailableItemCount'] > 0){
+                                                        if($RewardID == 2 || $RewardID == "2"){
+                                                            //Set Table for raffle coupon based on active coupon batch.
+                                                            $getRaffleCouponSuffix = $_CouponBatches->SelectByWhere(" WHERE Status = 1 LIMIT 1");
+                                                            if(isset($getRaffleCouponSuffix[0]) && $getRaffleCouponSuffix[0]['CouponBatchID'] != ""){
+                                                                $_RaffleCoupons->TableName = "rafflecoupons_".$getRaffleCouponSuffix[0]['CouponBatchID'];
+                                                                $rewardoffers[$itr]["Action"] = "<input type='button' value='Redeem' id='csredeem-button' Email = '$EmailAddress' ProductName='$ProductName' RewardItemID='$RewardItemID' RewardID='$RewardID' RequiredPoints='$RequiredPoints' eCouponImage='$eCouponImage' PartnerName='$PartnerName' >";
+                                                            } else {
+                                                                $rewardoffers[$itr]["Action"] = "<input type='button' disabled value='Redeem' id='csredeem-button' Email = '$EmailAddress' ProductName='$ProductName' RewardItemID='$RewardItemID' RewardID='$RewardID' RequiredPoints='$RequiredPoints' eCouponImage='$eCouponImage' PartnerName='$PartnerName' >";
+                                                            }
+                                                        } else {
+                                                            $rewardoffers[$itr]["Action"] = "<input type='button' value='Redeem' id='csredeem-button' Email = '$EmailAddress' ProductName='$ProductName' RewardItemID='$RewardItemID' RewardID='$RewardID' RequiredPoints='$RequiredPoints' eCouponImage='$eCouponImage' PartnerName='$PartnerName' >";
+                                                        }
                                                 } else {
-                                                    $rewardoffers[$itr]["Action"] = "<input type='button' disabled value='Redeem' id='csredeem-button' Email = '$EmailAddress' ProductName='$ProductName' RewardItemID='$RewardItemID' RewardOfferID='$RewardOfferID' IsCoupon='$IsCoupon' RequiredPoints='$RequiredPoints' >";
+                                                    $rewardoffers[$itr]["Action"] = "<input type='button' value='Redeem' id='csredeem-button' disabled='disabled' Email = '$EmailAddress' ProductName='$ProductName' RewardItemID='$RewardItemID' RewardID='$RewardID' RequiredPoints='$RequiredPoints' eCouponImage='$eCouponImage' PartnerName='$PartnerName' >";
                                                 }
-                                            } else {
-                                                $rewardoffers[$itr]["Action"] = "<input type='button' value='Redeem' id='csredeem-button' Email = '$EmailAddress' ProductName='$ProductName' RewardItemID='$RewardItemID' RewardOfferID='$RewardOfferID' IsCoupon='$IsCoupon' RequiredPoints='$RequiredPoints' >";
-                                            }
                                         }
 
-                                        $response->rows[$ctr]['id'] = $rewardoffers[$itr]["RewardOfferID"];
+                                        $response->rows[$ctr]['id'] = $rewardoffers[$itr]["RewardItemID"];
                                         $response->rows[$itr]['cell'] = array(
                                                                                                     $rewardoffers[$itr]["ProductName"],
                                                                                                     $rewardoffers[$itr]["Points"],
@@ -129,7 +136,7 @@ if(isset($_POST["functiontype"]) && $_POST["functiontype"] != ""){
                                                 $_SESSION['CardRed']['CardNumber'] = $CardNumber;
                                                 $_SESSION['CardRed']['MID'] = $MID;
                                                 $_SESSION['CardRed']['CardTypeID'] = $cardInfo[0]['CardTypeID'];
-                                                
+                                                $_SESSION['CardRed']['IsVIP'] = $result[0]['IsVIP'];
                                                 //check if region and city are valid
                                                 if(isset($result[0]["CityID"]) && $result[0]["CityID"] != "" && isset($result[0]["RegionID"]) && $result[0]["RegionID"] != ""){
                                                     $validCityAndRegion = $_Ref_city->checkCitiesAndRegionsValidity($result[0]["RegionID"], $result[0]["CityID"]);
@@ -161,6 +168,7 @@ if(isset($_POST["functiontype"]) && $_POST["functiontype"] != ""){
                                                 $response["BonusPoints"] = $cardInfo[0]['BonusPoints'];
                                                 $response["RedeemedPoints"] = $cardInfo[0]['RedeemedPoints'];
                                                 $response["CardTypeID"] = $cardInfo[0]['CardTypeID'];
+                                                $response["IsVIP"] = $result[0]['IsVIP'];
                                                 $response["Status"] = $cardInfo[0]['Status'];
                                                 
                                                 switch ($response["Status"]) {
@@ -210,6 +218,7 @@ if(isset($_POST["functiontype"]) && $_POST["functiontype"] != ""){
                                                 $_SESSION['CardRed']['CardNumber'] = $searchValue;
                                                 $_SESSION['CardRed']['MID'] = $MID;
                                                 $_SESSION['CardRed']['CardTypeID'] = $membercards[0]['CardTypeID'];
+                                                $_SESSION['CardRed']['IsVIP'] = $membercards[0]['IsVIP'];
                                                 $CardNumber = $searchValue;
                                                 $email = $_MemberInfo->getEmail($MID);
                                                 $_SESSION['CardRed']['Email'] = $email;
@@ -259,6 +268,7 @@ if(isset($_POST["functiontype"]) && $_POST["functiontype"] != ""){
                                                 $response["BonusPoints"] = $membercards[0]['BonusPoints'];
                                                 $response["RedeemedPoints"] = $membercards[0]['RedeemedPoints'];
                                                 $response["CardTypeID"] = $membercards[0]['CardTypeID'];
+                                                $response["IsVIP"] = $membercards[0]['IsVIP'];
                                                 $response["Status"] = $membercards[0]['Status'];
                                                 
                                                 switch ($response["Status"]) {

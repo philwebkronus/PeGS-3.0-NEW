@@ -1,8 +1,8 @@
 <?php
-/*
-* Description: Use For Manipulating Table ItemRedemptionLogs
-* @author: aqdepliyan
-* DateCreated: 2013-07-10 09:52AM
+/**
+* @Description: Use For Manipulating Table ItemRedemptionLogs
+* @Author: aqdepliyan
+* @DateCreated: 2013-07-10 09:52AM
 */
 
 Class ItemRedemptionLogs extends BaseEntity {
@@ -14,6 +14,17 @@ Class ItemRedemptionLogs extends BaseEntity {
         $this->DatabaseType = DatabaseTypes::PDO;
     }
     
+    /**
+     * @Description: For Inserting Redemptiion logs on database
+     * @param date $redeemeddate
+     * @param int $mid
+     * @param int $rewarditemid
+     * @param int $itemcount
+     * @param int $source
+     * @param int $siteid
+     * @param int $serviceid
+     * @return int
+     */
      function insertItemLogs($redeemeddate,$mid, $rewarditemid, $itemcount,$source, $siteid='', $serviceid='') {
         $arrEntries["MID"] = $mid;
         $arrEntries["RewardItemID"] = $rewarditemid;
@@ -37,6 +48,11 @@ Class ItemRedemptionLogs extends BaseEntity {
         return $retval;
     }
     
+    /**
+     * @Description: For fetching MID and Source(0-Cashier, 1-Player) from database
+     * @param int $ItemRedemptionLogID
+     * @return array
+     */
     function getSource($ItemRedemptionLogID){
         $query = "SELECT MID, Source FROM $this->TableName
                             WHERE ItemRedemptionLogID = $ItemRedemptionLogID";
@@ -44,14 +60,27 @@ Class ItemRedemptionLogs extends BaseEntity {
         return $result[0];
     }
 
-
-    function updateLogsStatus($ItemRedemptionLogID, $source, $status, $mid=''){
+    /**
+     * @Description: For Updating Redemption Log Status(0-pending, 1, Successful and 2-Failed)
+     * @param int $ItemRedemptionLogID
+     * @param int $source
+     * @param int $status
+     * @param int $mid
+     * @param int $totalitempoints
+     * @param string $serialcode
+     * @param string $securitycode
+     * @param date $validfrom
+     * @param date $validto
+     * @return bool
+     */
+    function updateLogsStatus($ItemRedemptionLogID, $source, $status, $mid='', $totalitempoints = '', $serialcode='', $securitycode='', $validfrom='', $validto=''){
         if($source == 1){
             $updatedbyaid = $mid;
         } else {
             $updatedbyaid = $_SESSION['userinfo']['AID'];
         }
-        $query = "UPDATE $this->TableName SET Status = $status, DateUpdated = now_usec(),UpdatedByAID = $updatedbyaid
+        $query = "UPDATE $this->TableName SET Status = $status, DateUpdated = now_usec(),UpdatedByAID = $updatedbyaid, 
+                            SerialCode='$serialcode', SecurityCode='$securitycode', ValidFrom='$validfrom', ValidTo='$validto', RedeemedPoints=$totalitempoints
                             WHERE ItemRedemptionLogID = $ItemRedemptionLogID";
         return parent::ExecuteQuery($query);
     }

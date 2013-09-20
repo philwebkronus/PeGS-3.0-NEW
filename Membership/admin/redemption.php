@@ -22,6 +22,7 @@ App::LoadModuleClass('Membership', 'MemberInfo');
 App::LoadModuleClass("Membership", "AuditTrail");
 App::LoadModuleClass("Membership", "AuditFunctions");
 App::LoadModuleClass('Membership', 'Helper');
+App::LoadModuleClass('Membership', 'MembershipSmsAPI');
 
 App::LoadModuleClass("Loyalty", "CouponBatches");
 App::LoadModuleClass("Loyalty", "MemberCards");
@@ -36,6 +37,9 @@ App::LoadModuleClass('Loyalty', 'RaffleCoupons');
 App::LoadModuleClass("Loyalty", "ItemRedemptionLogs");
 App::LoadModuleClass("Loyalty", "Promos");
 App::LoadModuleClass("Loyalty", "PendingRedemption");
+App::LoadModuleClass("Loyalty", "SMSRequestLogs");
+App::LoadModuleClass("Loyalty", "ItemSerialCodes");
+App::LoadModuleClass("Loyalty", "Partners");
 
 App::LoadModuleClass('Kronus', 'Sites');
 
@@ -72,6 +76,9 @@ $_Promos = new Promos();
 $_Sites = new Sites();
 $_Helper = new Helper();
 $_PendingRedemption = new PendingRedemption();
+$_SMSRequestLogs = new SMSRequestLogs();
+$_ItemSerialCodes = new ItemSerialCodes();
+$_Partners = new Partners();
 
 /* Initialize variables and default values */
 $sendemailtoadmin = false;
@@ -79,6 +86,7 @@ $emailmessage = "";
 $site = "";
 $arrmemberinfo = "";
 $showcouponredemptionwindow = false;
+$showitemredemptionwindow = false;
 
 
 /* Used to determine min and max dates for birthdate field */
@@ -100,15 +108,25 @@ $fproc = new FormsProcessor();
 
 
 /* Controls for form redemption */
-$txtQuantity = new TextBox('Quantity', 'Quantity', 'Quantity ');
+$txtQuantity = new TextBox("Quantity", "Quantity", "Quantity ");
 $txtQuantity->ShowCaption = false;
-$txtQuantity->CssClass = 'validate[required,custom[integer],min[1]]';
-$txtQuantity->Style = 'color: #666';
+$txtQuantity->CssClass = "validate[required,custom[integer],min[1]]";
+$txtQuantity->Style = "color: #666; width: 100px;";
 $txtQuantity->Length = 5;
 $txtQuantity->Size = 5;
 $txtQuantity->Text = "";
-$txtQuantity->Args = "placeholder='0' ";
+$txtQuantity->Args = "placeholder=\"0\" ";
 $fproc->AddControl($txtQuantity);
+
+$txtItemQuantity = new TextBox("ItemQuantity", "ItemQuantity", "ItemQuantity ");
+$txtItemQuantity->ShowCaption = false;
+$txtItemQuantity->CssClass = "validate[required,custom[integer],min[1]]";
+$txtItemQuantity->Style = "color: #666; width: 100px;";
+$txtItemQuantity->Length = 1;
+$txtItemQuantity->Size = 1;
+$txtItemQuantity->Text = "";
+$txtItemQuantity->Args = "placeholder=\"0\" ";
+$fproc->AddControl($txtItemQuantity);
 
 $hdnMemberInfoID = new Hidden("MemberInfoID", "MemberInfoID", "MemberInfoID: ");
 $hdnMemberInfoID->ShowCaption = true;
@@ -135,20 +153,20 @@ $hdnItemPoints->ShowCaption = true;
 $hdnItemPoints->Text = "";
 $fproc->AddControl($hdnItemPoints);
 
-$hdnIsCoupon = new Hidden("IsCoupon", "IsCoupon", "IsCoupon: ");
-$hdnIsCoupon->ShowCaption = true;
-$hdnIsCoupon->Text = "";
-$fproc->AddControl($hdnIsCoupon);
+$hdnRewardID = new Hidden("RewardID", "RewardID", "RewardID: ");
+$hdnRewardID->ShowCaption = true;
+$hdnRewardID->Text = "";
+$fproc->AddControl($hdnRewardID);
 
-$hdnRewardOfferID = new Hidden("RewardOfferID", "RewardOfferID", "RewardOfferID: ");
-$hdnRewardOfferID->ShowCaption = true;
-$hdnRewardOfferID->Text = "";
-$fproc->AddControl($hdnRewardOfferID);
+$hdnPartnerName = new Hidden("PartnerName", "PartnerName", "PartnerName: ");
+$hdnPartnerName->ShowCaption = true;
+$hdnPartnerName->Text = "";
+$fproc->AddControl($hdnPartnerName);
 
-$hdnCardTypeID = new Hidden("CardTypeID", "CardTypeID", "CardTypeID: ");
-$hdnCardTypeID->ShowCaption = true;
-$hdnCardTypeID->Text = "";
-$fproc->AddControl($hdnCardTypeID);
+$hdneCouponImage = new Hidden("eCouponImage", "eCouponImage", "eCouponImage: ");
+$hdneCouponImage->ShowCaption = true;
+$hdneCouponImage->Text = "";
+$fproc->AddControl($hdneCouponImage);
 
 /* ----------------------------------------- */
 
@@ -246,31 +264,20 @@ $fproc->AddControl($btnClear);
 
 $fproc->ProcessForms();
 
-function curPageURL() {
-    $pageURL = 'http';
-    if (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on") {
-        $pageURL .= "s";
-    }
-    $pageURL .= "://";
-    if ($_SERVER["SERVER_PORT"] != "80") {
-        $pageURL .= $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . $_SERVER["REQUEST_URI"];
-    } else {
-        $pageURL .= $_SERVER["SERVER_NAME"] . $_SERVER["REQUEST_URI"];
-    }
-    return $pageURL;
-}    
-
 if($fproc->IsPostBack){
     //For redemption process
-    if(!(isset($_SESSION["PreviousRedemption"])) && $txtQuantity->SubmittedValue != "" && $hdnItemName->SubmittedValue != "" 
-            && $hdnItemPoints->SubmittedValue != "" && $hdnTotalItemPoints->SubmittedValue != ""){
-            $_SESSION['CardRed']['IsCoupon'] = $hdnIsCoupon->SubmittedValue;
+    if(!(isset($_SESSION["PreviousRedemption"])) && ($txtQuantity->SubmittedValue != "" || $txtItemQuantity->SubmittedValue != "") && $hdnItemName->SubmittedValue != "" 
+            && $hdnItemPoints->SubmittedValue != "" && $hdnTotalItemPoints->SubmittedValue != "" && $hdnRewardItemID->SubmittedValue != ""){
+            $RewardItemID = $hdnRewardItemID->SubmittedValue;
+            
+            $resultrewardid = $_RewardItems->getRewardID($RewardItemID);
+            $_SESSION['CardRed']['RewardID'] = $resultrewardid[0]['RewardID'];
             
             $memberinfo = $_MemberInfo->getMemberInfo($_SESSION["CardRed"]["MID"]);
             $ArrMemberInfo = $memberinfo[0];
             
             //Check if the coupon batch is active, if not display error message.
-            if($_SESSION['CardRed']['IsCoupon'] == 1 || $_SESSION['CardRed']['IsCoupon'] == "1"){
+            if($_SESSION['CardRed']['RewardID'] == 2 || $_SESSION['CardRed']['RewardID'] == "2"){
                 //Set Table for raffle coupon based on active coupon batch.
                 $getRaffleCouponSuffix = $_CouponBatches->SelectByWhere(" WHERE Status = 1 LIMIT 1");
                 
@@ -302,6 +309,7 @@ if($fproc->IsPostBack){
 
                     $contactno = $ArrMemberInfo["MobileNumber"];
                     $source = 0; //0-Cashier; 1-Player
+                    
                     //Redemption Process for both Coupon and Item.
                     include("../controller/RedemptionController.php");
                     
@@ -319,7 +327,6 @@ if($fproc->IsPostBack){
                     $regionname = "";
                     $cityname = "";
                 }
-
                 $playername = $ArrMemberInfo["FirstName"]." ".$ArrMemberInfo["LastName"];
                 $address = $ArrMemberInfo["Address1"];
                 $birthdate = $ArrMemberInfo["Birthdate"];
@@ -335,21 +342,21 @@ if($fproc->IsPostBack){
 
                 $contactno = $ArrMemberInfo["MobileNumber"];
                 $source = 0; //0-Cashier; 1-Player
+                
                 //Redemption Process for both Coupon and Item.
                 include("../controller/RedemptionController.php");
             }
             
-            
+            $partnername = $hdnPartnerName->SubmittedValue;
+            $itemname = $hdnItemName->SubmittedValue;
+            $eCouponImage = $hdneCouponImage->SubmittedValue;
 
-            //Check if coupon or item and display appropriate reward 
-            //offer transaction printable copy and send to legit player email.
+            /*Check if coupon or item and display appropriate reward 
+            offer transaction printable copy and send to legit player email.*/
             if ($showcouponredemptionwindow == true && isset($_SESSION['RewardOfferCopy']))
             {
-                $RewardOfferID = $hdnRewardOfferID->SubmittedValue;
-                $cardNumber = $_SESSION["CardRed"]["CardNumber"];
-                $getPromoID = $_RewardOffers->SelectByID($RewardOfferID);
-                $dateRange = $_RewardOffers->getOfferDateRange($RewardOfferID);
-                $promodetails = $_Promos->getPromoDetails($getPromoID[0]["PromoID"]);
+                $cardnumber = $_SESSION["CardRed"]["CardNumber"];
+                $dateRange = $_RewardItems->getOfferDateRange($RewardItemID);
 
                 //Set Redemption Date and Time format.
                 $rdate = new DateTime(date($_SESSION['RewardOfferCopy']["RedemptionDate"]));
@@ -374,59 +381,59 @@ if($fproc->IsPostBack){
                     }
                 } else {
                     
-                    $getResult = $_RewardOffers->getRewardItemDetailsForCopy($RewardOfferID);
-                    if(isset($getResult[0])){
-                        $rewardoffersdetails = $getResult[0];
-                        preg_match('/\((.*?)\)/', $rewardoffersdetails["ProductName"], $rewardname);
-                        if(is_array($rewardname) && isset($rewardname[1])){
-                            unset($rewardoffersdetails["ProductName"]);
-                            $rewardoffersdetails["ProductName"] = $rewardname[1];
-                        }
-                        $productname = $rewardoffersdetails["ProductName"];
-                        $partnername = $rewardoffersdetails["PartnerName"];
-                        $rewarditemcode = $rewardoffersdetails["eCouponCode"];
-                    }
-                    
                     $sdate = new DateTime(date($dateRange["StartDate"]));
                     $startdate = $sdate->format("F j, Y");
                     $edate = new DateTime(date($dateRange["EndDate"]));
                     $enddate = $edate->format("F j, Y");
                     $promoperiod = $startdate." to ".$enddate;
                 }
-                
-
+               
                 // For Coupon Only : Set Draw Date Format.
-                $ddate = new DateTime(date($promodetails["DrawDate"]));
-                $drawdate = $ddate->format("F j, Y gA");
+                if($dateRange["DrawDate"] != '' && $dateRange["DrawDate"] != null){
+                    $ddate = new DateTime(date($dateRange["DrawDate"]));
+                    $drawdate = $ddate->format("F j, Y gA");
+                } else {
+                    $drawdate = '';
+                }
+                
+                $newheader = App::getParam('rewarditem_imagepath')."extra_images/newheader.jpg";
+                $newfooter = App::getParam('rewarditem_imagepath')."extra_images/newfooter.jpg";
+                $itemimage = App::getParam('rewarditem_imagepath').$eCouponImage;
+                $importantreminder = App::getParam('rewarditem_imagepath')."important_reminders.jpg";
+                
+                //Get About the Reward Description and its terms and condition
+                $rewarddetails = $_RewardItems->getAboutandTerms($RewardItemID);
+                if(isset($rewarddetails['About'])){
+                    $about = $rewarddetails['About'];
+                    $term = $rewarddetails['Terms'];
+                    $promoname = $rewarddetails['PromoName'];
+                    $promocode = $rewarddetails['PromoCode'];
+                }
 
                 //Format Reward Offer Copy for email and popup window.
                 if(!isset($_SESSION['RewardOfferCopy']["CouponSeries"])){
-                    $imagesdir = str_replace(URL::CurrentPage(), "loyalty/images/", curPageURL());
-                    App::LoadCore("File.class.php");
-                    $filename = dirname(__FILE__) . "/template/itemredemptiontemplate.php";
-                    $fp = new File($filename);
-                    $emailmessage = $fp->ReadToEnd();
-                    $emailmessage = str_replace('$playername', $playername, $emailmessage);
-                    $emailmessage = str_replace('$sitecode', $sitename, $emailmessage);
-                    $emailmessage = str_replace('$redemptiondate', $redemptiondate, $emailmessage);
-                    $emailmessage = str_replace('$cardno', $cardNumber, $emailmessage);
-                    $emailmessage = str_replace('$imagesdir', $imagesdir, $emailmessage);
-                    $emailmessage = str_replace('$startperiod', $startdate, $emailmessage);
-                    $emailmessage = str_replace('$endperiod', $enddate, $emailmessage);
-                    $emailmessage = str_replace('$itemname', $productname, $emailmessage);
-                    $emailmessage = str_replace('$partnername', $partnername, $emailmessage);
-                    $emailmessage = str_replace('$rewarditemcode', $rewarditemcode, $emailmessage);
-                    $emailmessage = str_replace('$checksum', $_SESSION['RewardOfferCopy']["CheckSum"], $emailmessage);
+                    
+                    //Get Partner Details
+                    $partnersd = $_Partners->getPartnerDetailsUsingPartnerName($partnername);
+                    if(isset($partnersd[0])){
+                        $companyaddress = $partnersd[0]['CompanyAddress'];
+                        $companyphone = $partnersd[0]['CompanyPhone'];
+                        $companywebsite = $partnersd[0]['CompanyWebsite'];
+                    } else {
+                        $companyaddress = '';
+                        $companyphone = '';
+                        $companywebsite = '';
+                    }
 
-                    $newheader = $imagesdir."newheader.jpg";
-                    $newfooter = $imagesdir."newfooter.jpg";
-                    $item = $imagesdir."sampleitem1.jpg";
-
-                    $_Helper->sendEmailItemRedemption($playername,$email,$sitecode,$redemptiondate,$cardNumber,$newheader,$newfooter,$item,
-                                                                                            $startdate,$enddate,$productname,$partnername,$rewarditemcode, $_SESSION['RewardOfferCopy']["CheckSum"]);
-                    unset($_SESSION['RewardOfferCopy']);
+                    $ctr = count($_SESSION['RewardOfferCopy']["SerialNumber"]);
+                    for($itr=0; $itr < $ctr; $itr++){
+                            $_Helper->sendEmailItemRedemption($email, $newheader, $itemimage, $itemname, $partnername,$playername,$cardnumber,$redemptiondate,
+                                                                                                $_SESSION['RewardOfferCopy']["SerialNumber"][$itr],$_SESSION['RewardOfferCopy']["SecurityCode"][$itr],$enddate,
+                                                                                                $companyaddress,$companyphone, $companywebsite, $importantreminder,$about, $term, $newfooter);
+                        }
+                    
                 } else {
-                    $imagesdir = str_replace(URL::CurrentPage(), "loyalty/images/", curPageURL());
+                    
                     $fbirthdate = date("F j, Y", strtotime($birthdate));
                     App::LoadCore("File.class.php");
                     $filename = dirname(__FILE__) . "/template/couponredemptiontemplate.php";
@@ -435,34 +442,33 @@ if($fproc->IsPostBack){
                     $emailmessage = str_replace('$playername', $playername, $emailmessage);
                     $emailmessage = str_replace('$address', $address, $emailmessage);
                     $emailmessage = str_replace('$sitecode', $sitename, $emailmessage);
-                    $emailmessage = str_replace('$cardno', $cardNumber, $emailmessage);
+                    $emailmessage = str_replace('$cardno', $cardnumber, $emailmessage);
                     $emailmessage = str_replace('$birthdate', date("F j, Y", strtotime($birthdate)), $emailmessage);
                     $emailmessage = str_replace('$email', $email, $emailmessage);
                     $emailmessage = str_replace('$contactno', $contactno, $emailmessage);
                     $emailmessage = str_replace('$actualcity', $cityname, $emailmessage);
                     $emailmessage = str_replace('$actualregion', $regionname, $emailmessage);
-                    $emailmessage = str_replace('$imagesdir', $imagesdir, $emailmessage);
+                    $emailmessage = str_replace('$newheader', $newheader, $emailmessage);
+                    $emailmessage = str_replace('$newfooter', $newfooter, $emailmessage);
+                    $emailmessage = str_replace('$couponimage', $itemimage, $emailmessage);
                     $emailmessage = str_replace('$couponseries', $_SESSION['RewardOfferCopy']["CouponSeries"], $emailmessage);
                     $emailmessage = str_replace('$quantity', $_SESSION['RewardOfferCopy']["Quantity"], $emailmessage);
                     $emailmessage = str_replace('$checksum', $_SESSION['RewardOfferCopy']["CheckSum"], $emailmessage);
-                    $emailmessage = str_replace('$serialnumber', $_SESSION['RewardOfferCopy']["SerialNumber"], $emailmessage);
+                    $emailmessage = str_replace('$serialcode', $_SESSION['RewardOfferCopy']["SerialNumber"], $emailmessage);
                     $emailmessage = str_replace('$redemptiondate', $redemptiondate, $emailmessage);
-                    $emailmessage = str_replace('$promocode', $promodetails["PromoCode"], $emailmessage);
-                    $emailmessage = str_replace('$promoname', $promodetails["PromoName"], $emailmessage);
+                    $emailmessage = str_replace('$promocode', $promocode, $emailmessage);
+                    $emailmessage = str_replace('$promoname', $promoname, $emailmessage);
                     $emailmessage = str_replace('$promoperiod', $promoperiod, $emailmessage);
                     $emailmessage = str_replace('$drawdate', $drawdate, $emailmessage);
+                    $emailmessage = str_replace('$about', $about, $emailmessage);
+                    $emailmessage = str_replace('$term', $term, $emailmessage);
 
-                    $newheader = $imagesdir."newheader.jpg";
-                    $newfooter = $imagesdir."newfooter.jpg";
-                    $coupon = $imagesdir."toyota.jpg";
-
-
-                    $_Helper->sendEmailCouponRedemption($playername,$address,$sitecode,$cardNumber,$fbirthdate,$email,$contactno,$cityname,
-                                                                                    $regionname,$newheader,$newfooter,$coupon,$_SESSION['RewardOfferCopy']["CouponSeries"],
+                    $_Helper->sendEmailCouponRedemption($playername,$address,$sitecode,$cardnumber,$fbirthdate,$email,$contactno,$cityname,
+                                                                                    $regionname,$newheader,$newfooter,$itemimage,$_SESSION['RewardOfferCopy']["CouponSeries"],
                                                                                     $_SESSION['RewardOfferCopy']["Quantity"],$_SESSION['RewardOfferCopy']["CheckSum"],
-                                                                                    $_SESSION['RewardOfferCopy']["SerialNumber"],$redemptiondate,$promodetails["PromoCode"],
-                                                                                    $promodetails["PromoName"],$promoperiod,$drawdate);
-
+                                                                                    $_SESSION['RewardOfferCopy']["SerialNumber"],$redemptiondate,$promocode,
+                                                                                    $promoname,$promoperiod,$drawdate,$about,$term);
+                    
                     unset($_SESSION['RewardOfferCopy']);
                 }
             }
@@ -479,7 +485,6 @@ if($fproc->IsPostBack){
 <?php include('header.php'); ?>
 <script type='text/javascript' src='js/jqgrid/i18n/grid.locale-en.js' media='screen, projection'></script>
 <script type='text/javascript' src='js/jquery.jqGrid.min.js' media='screen, projection'></script>
-<!--<script type='text/javascript' src='js/jquery.jqGrid.js' media='screen, projection'></script>-->
 <link rel='stylesheet' type='text/css' media='screen' href='css/ui.jqgrid.redemption.css' />
 <link rel='stylesheet' type='text/css' media='screen' href='css/ui.multiselect.css' />
 <script type="text/javascript">
@@ -565,7 +570,11 @@ if($fproc->IsPostBack){
                                 $("#cardinfo").removeAttr("style");
                                 $("#cardinfo").css("display","block");
                                 $("#idcardnumber").html("<span>"+data.CardNumber+"</span>");
-                                $("#idcardtype").html("<span>"+data.CardType+"</span>");
+                                if(data.IsVIP == 0 || data.IsVIP == '0'){
+                                     $("#idcardtype").html("<span>Regular</span>");
+                                } else {
+                                    $("#idcardtype").html("<span>VIP</span>");
+                                }
                                 $("#idcurrentpoints").html("<span>"+data.CurrentPoints+"</span>");
                                 $("#idlifetimepoints").html("<span>"+data.LifetimePoints+"</span>");
                                 $("#idbonuspoints").html("<span>"+data.BonusPoints+"</span>");
@@ -700,8 +709,10 @@ if($fproc->IsPostBack){
             }    
         });
         
+        var localhost = location.host;
+        
         <?php
-            if ($showcouponredemptionwindow == true && $_SESSION['CardRed']['IsCoupon'] == 1)
+            if ($showcouponredemptionwindow == true && $showitemredemptionwindow == false)
             {
                 ?>             
                             if ($("#couponmessagebody").dialog( "isOpen" ) !== true){
@@ -710,11 +721,18 @@ if($fproc->IsPostBack){
                                     buttons: {
                                         "Print" : function() {
                                             $("#Quantity").val("");
-                                            window.print();
+                                            $("#ItemQuantity").val("");
+                                            var mywindow = window.open('http://'+localhost+'membershipsystem/admin/template/couponredemptiontemplate.php');
+                                            mywindow.document.write('</head><body >');
+                                            mywindow.document.write($("#couponmessagebody").html());
+                                            mywindow.document.write('</body></html>');
+                                            mywindow.print();
+                                            mywindow.close();
                                             window.location.href = "redemption.php";
                                         },
                                         "Close": function() {
                                             $("#Quantity").val("");
+                                            $("#ItemQuantity").val("");
                                             $(this).dialog("close");
                                             window.location.href = "redemption.php";
                                         }
@@ -730,18 +748,25 @@ if($fproc->IsPostBack){
                                     title: "Redemption Successful"
                                 });
                             }
-            <?php } else if ($showcouponredemptionwindow == true && $_SESSION['CardRed']['IsCoupon'] == 0) { ?>
+            <?php } else if ($showitemredemptionwindow == true) { ?>
                             if ($("#itemmessagebody").dialog( "isOpen" ) !== true) {
                                 $("#itemmessagebody").dialog({
                                     modal: true,
                                     buttons: {
                                         "Print" : function() {
                                             $("#Quantity").val("");
-                                            window.print();
+                                            $("#ItemQuantity").val("");
+                                            var mywindow = window.open('http://'+localhost+'membershipsystem/admin/template/admin/template/itemredemptiontemplate.php');
+                                            mywindow.document.write('</head><body >');
+                                            mywindow.document.write($("#itemmessagebody").html());
+                                            mywindow.document.write('</body></html>');
+                                            mywindow.print();
+                                            mywindow.close();
                                             window.location.href = "redemption.php";
                                         },
                                         "Close": function() {
                                             $("#Quantity").val("");
+                                            $("#ItemQuantity").val("");
                                             $(this).dialog("close");
                                             window.location.href = "redemption.php";
                                         }
@@ -791,6 +816,18 @@ if($fproc->IsPostBack){
               return true;
         }
         
+        //validates input: accept numbers only ranging from 0-5
+        function numberonlyonetofive(evt)
+        {
+            var charCode = (evt.which) ? evt.which : evt.keyCode;
+            if (charCode > 31 && (charCode < 48 || charCode > 53))
+                  return false;
+            else if(charCode == 9)
+              return true;
+            else
+              return true;
+        }
+        
         //Txtbox Quantity Events
         defaultquantity = "";
         $("#Quantity").click(function() {
@@ -799,26 +836,66 @@ if($fproc->IsPostBack){
             }
         });
 
-        $("#Quantity").keyup(function() {
-            $("#Quantity").change();
+        $("#Quantity").live('keyup',function() {
+            calculateQuantity();
         });
 
-        $("#Quantity").blur(function() {
-            $("#Quantity").change();
+        $("#Quantity").live('blur',function() {
+            calculateQuantity();
         });
 
-        $("#Quantity").change(function() {
+        $("#Quantity").live('change',function() {
+            calculateQuantity();
+        });
+        
+        function calculateQuantity(){
             if ($("#Quantity").val() == "") {
                 $("#Quantity").val("");
                 $("#TotalItemPoints").html("");
             } else {
-                $("#TotalItemPoints").html('Total Points: ' + parseInt($("#ItemPoints").html()) * parseInt($("#Quantity").val()));
+                var totalitempoints = parseInt($("#ItemPoints").html()) * parseInt($("#Quantity").val());
+                $("#TotalItemPoints").html('Total Points: ' + totalitempoints.toString().replace(/,/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                 $("#hdnTotalItemPoints").val(parseInt($("#ItemPoints").html()) * parseInt($("#Quantity").val()));
+            }
+        }
+
+        $("#Quantity").live('keypress',function(event){
+            return numberonly(event);
+        });
+        
+        //Txtbox ItemQuantity Events
+        defaultquantity = "";
+        $("#ItemQuantity").click(function() {
+            if ($("#ItemQuantity").val() == defaultquantity) {
+                $("#ItemQuantity").val("");
             }
         });
 
-        $("#Quantity").keypress(function(event){
-            return numberonly(event);
+        $("#ItemQuantity").live('keyup', function() {
+            calculateItemQuantity();
+        });
+
+        $("#ItemQuantity").live('blur', function() {
+            calculateItemQuantity();
+        });
+
+        $("#ItemQuantity").live('change', function() {
+            calculateItemQuantity();
+        });
+        
+        function calculateItemQuantity(){
+            if ($("#ItemQuantity").val() == "") {
+                $("#ItemQuantity").val("");
+                $("#TotalItemPoints").html("");
+            } else {
+                var totalitempoints = parseInt($("#ItemPoints").html()) * parseInt($("#ItemQuantity").val());
+                $("#TotalItemPoints").html('Total Points: ' + totalitempoints.toString().replace(/,/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                $("#hdnTotalItemPoints").val(parseInt($("#ItemPoints").html()) * parseInt($("#ItemQuantity").val()));
+            }
+        }
+
+        $("#ItemQuantity").live('keypress',function(event){
+            return numberonlyonetofive(event);
         });
         
         
@@ -828,20 +905,27 @@ if($fproc->IsPostBack){
                     if ($("#redemptionquantity").dialog( "isOpen" ) !== true){
                         var ProductName = $(this).attr("ProductName");
                         var ItemPoints = $(this).attr("RequiredPoints");
-                        var IsCoupon = $(this).attr("IsCoupon");
-                        var RewardOfferID = $(this).attr("RewardOfferID");
+                        var RewardID = $(this).attr("RewardID");
                         var RewardItemID = $(this).attr("RewardItemID");
+                        var PartnerName = $(this).attr("PartnerName");
+                        var eCouponImage = $(this).attr("eCouponImage");
                         var email = $(this).attr("Email");
                         $("#ItemName").html(ProductName);
                         $("#ItemPoints").html(ItemPoints);
                         $("#hdnItemName").val(ProductName);
                         $("#hdnItemPoints").val(ItemPoints);
                         $("#RewardItemID").val(RewardItemID);
-                        $("#IsCoupon").val(IsCoupon);
-                        $("#RewardOfferID").val(RewardOfferID);
+                        $("#RewardID").val(RewardID);
+                        $("#PartnerName").val(PartnerName);
+                        $("#eCouponImage").val(eCouponImage);
+                        if($("#RewardID").val() == 1){
+                            $("#txtinputs").html('<?php echo "Please enter quantity to be redeemed (max. 5 items). "; echo $txtItemQuantity; ?>');
+                        } else {
+                            $("#txtinputs").html('<?php echo "Please enter quantity to be redeemed. "; echo $txtQuantity; ?>');
+                        }
                         
                         //Check if the coupon batch is active, if not display error message.
-                        if(returnValue == 'False' && $("#IsCoupon").val() == 1){ 
+                        if(returnValue == 'False' && $("#RewardID").val() == 1){ 
                             $('#redemption-errormsg').html('<p style="padding-top: 5px; padding-bottom: 5px; padding-left: 3px;">Raffle Coupons are unavailable.</p>');
                             $('#redemption-errormsg').css('display','block');
                         } else {
@@ -884,6 +968,7 @@ if($fproc->IsPostBack){
                                                                                     buttons: {
                                                                                         "Ok": function(){
                                                                                             $("#Quantity").val("");
+                                                                                            $("#ItemQuantity").val("");
                                                                                             $("#TotalItemPoints").html("");
                                                                                             $(this).dialog('close');
                                                                                             $("#frmRedemption").submit();
@@ -899,6 +984,8 @@ if($fproc->IsPostBack){
                                                                 },
                                                                 "Cancel" : function(){
                                                                     $("#Quantity").val("");
+                                                                    $("#ItemQuantity").val("");
+                                                                    $("#txtinputs").html("");
                                                                     $("#TotalItemPoints").html("");
                                                                     $(this).dialog("close");
                                                                 }
@@ -917,7 +1004,9 @@ if($fproc->IsPostBack){
                                         },
                                         "Cancel": function(){
                                             $("#Quantity").val("");
+                                            $("#ItemQuantity").val("");
                                             $("#TotalItemPoints").html("");
+                                            $("#txtinputs").html("");
                                             $(this).dialog("close");
                                         }
                                     },
@@ -943,6 +1032,8 @@ if($fproc->IsPostBack){
                                 },
                                 "Cancel": function(){
                                     $("#Quantity").val("");
+                                    $("#ItemQuantity").val("");
+                                    $("#txtinputs").html("");
                                     $("#TotalItemPoints").html("");
                                     $(this).dialog("close");
                                 }
@@ -980,6 +1071,7 @@ if($fproc->IsPostBack){
                     <p id="temp-msg" style='display: none; font-size: 14px;'>Please migrate your Temporary Account to a Membership Card to activate Redemption.</p>
                     <div id="error-msg" style="display:none; font-size: 14px;"></div>
             </form>
+            <?php include('template/itemredemptiontemplate.php'); ?>
             <form name="frmRedemption" id="frmRedemption" method="post">
                 <div id="redemptionquantity" style="display:none;">
                     <div id="redemption-errormsg" style="display: none; font-size: 12px; background-color: red; color: white; width: 100%;"></div>
@@ -988,11 +1080,12 @@ if($fproc->IsPostBack){
                     <?php echo $hdnItemPoints; ?>
                     <?php echo $hdnTotalItemPoints; ?>
                     <?php echo $hdnRewardItemID; ?>
-                    <?php echo $hdnRewardOfferID; ?>
-                    <?php echo $hdnIsCoupon; ?>
+                    <?php echo $hdnRewardID; ?>
+                    <?php echo $hdnPartnerName; ?>
+                    <?php echo $hdneCouponImage; ?>
                     Item Name: <span id="ItemName"></span><br/>
                     Points per Item: <span id="ItemPoints"></span><br/><br/>
-                    Please enter quantity to be redeemed. <?php echo $txtQuantity; ?><br/>
+                    <span id="txtinputs"></span><br/>
                     <span id="TotalItemPoints"></span>
                 </div>
             </form>
@@ -1045,7 +1138,7 @@ if($fproc->IsPostBack){
             // if redemption is successful, show redemption window
             if ($showcouponredemptionwindow == true) {
                 echo $emailmessage;
-            }
+            } 
             ?>
             <div id="failedmessage" style="display:none; color: red;">
 

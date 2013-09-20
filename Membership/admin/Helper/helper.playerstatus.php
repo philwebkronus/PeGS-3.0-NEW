@@ -1,9 +1,9 @@
 <?php
 
-/*
- * Description: Fetching and encoding data into JSON array to be displayed in JQGRID for unban/ban player module.
+/**
+ *@Description: Fetching and encoding data into JSON array to be displayed in JQGRID for unban/ban player module.
  *@Author: aqdepliyan
- * Date Created: 06-28-2013 02:03 PM
+ *@DateCreated: 06-28-2013 02:03 PM
  */
 
 //Attach and Initialize framework
@@ -78,7 +78,7 @@ if(isset($_POST['pager'])){
                        }
                        $memInfo[0]['MID'] =  $MID;
                        $memInfo[0]['CardNumber'] = $cardInfo[0]['CardNumber'];
-                       $memInfo[0]['FullName'] = $result[0]['LastName'].', '.$result[0]['FirstName'];
+                       $memInfo[0]['FullName'] = $result[0]['FirstName'].' '.$result[0]['LastName'];
                        $memInfo[0]['ID'] = $result[0]['IdentificationName'].' - '.$result[0]['IdentificationNumber'];
                        $bdate = new DateTime($result[0]['Birthdate']);
                        $memInfo[0]['Birthdate'] = $bdate->format('m/d/Y');

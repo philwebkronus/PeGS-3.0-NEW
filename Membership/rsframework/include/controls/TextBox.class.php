@@ -64,20 +64,22 @@ class TextBox extends BaseControl
         if ($this->Multiline)
         {
             $text = $this->Text;
-            $rows = "rows='$this->Rows'";
-            $columns = "cols='$this->Columns'";
-            $caption = $this->ShowCaption == true ? "<label for='$this->Name'>" . $this->Caption . "</label>" : "";
-            $strtextbox = "$caption<textarea $rows $columns $this->Attributes >$text</textarea>";
+            $rows = 'rows="'.$this->Rows.'"';
+            $columns = 'cols="'.$this->Columns.'"';
+            $caption = $this->ShowCaption == true ? '<label for="'.$this->Name.'">' . $this->Caption . '</label>' : '';
+//            $strtextbox = $caption<textarea $rows $columns $this->Attributes >$text</textarea>";
+            $strtextbox = ''.$caption.'<textarea '.$rows.' '.$columns.' '.$this->Attributes.' >'.$text.'</textarea>';
         }
         else
         {
             $text != null ? $text = "value=\"" . $this->EscapeHTML($this->Text) . "\" " : '';
-            $autocomplete = $this->AutoComplete != true ? "autocomplete='off' " : '';
-            $length = $this->Length != null ? "maxlength='$this->Length' " : "";
-            $size = $this->Size != null ? "size='$this->Size' " : "";
+            $autocomplete = $this->AutoComplete != true ? 'autocomplete="off" ' : '';
+            $length = $this->Length != null ? 'maxlength="'.$this->Length.'" ' : '';
+            $size = $this->Size != null ? 'size="'.$this->Size.'" ' : '';
             $password = $this->Password == true ? "password" : "text";
-            $caption = $this->ShowCaption == true ? "<label for='$this->Name'>" . $this->Caption . "</label>" : "";
-            $strtextbox = "$caption<input type='$password' $length $size $this->Attributes $text $autocomplete>";
+            $caption = $this->ShowCaption == true ? '<label for="'.$this->Name.'">' . $this->Caption . '</label>' : '';
+//            $strtextbox = "$caption<input type='$password' $length $size $this->Attributes $text $autocomplete>";
+            $strtextbox = ''.$caption.'<input type="'.$password.'" '.$length.' '.$size.' '.$this->Attributes.' '.$text.' '.$autocomplete.'>';
         }
         return $strtextbox;
     }

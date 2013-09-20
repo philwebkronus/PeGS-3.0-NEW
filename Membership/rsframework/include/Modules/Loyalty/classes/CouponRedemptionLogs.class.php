@@ -70,13 +70,16 @@ class CouponRedemptionLogs extends BaseEntity
      * @param type $mid
      * @return type
      */
-    function updateLogsStatus($CouponRedemptionLogID, $source, $status, $mid=''){
+    function updateLogsStatus($CouponRedemptionLogID, $source, $status, $mid='',$totalitempoints='',
+                                                        $serialcode='',$securitycode='',$validfrom='',$validto=''){
+       
         if($source == 1){
             $updatedbyaid = $mid;
         } else {
             $updatedbyaid = $_SESSION['userinfo']['AID'];
         }
-        $query = "UPDATE $this->TableName SET Status = $status, DateUpdated = now_usec(),UpdatedByAID = $updatedbyaid
+        $query = "UPDATE $this->TableName SET Status = $status, DateUpdated = now_usec(),UpdatedByAID = $updatedbyaid,
+                            SerialCode='$serialcode', SecurityCode='$securitycode', ValidFrom='$validfrom', ValidTo='$validto', RedeemedPoints=$totalitempoints
                             WHERE CouponRedemptionLogID = $CouponRedemptionLogID";
         return parent::ExecuteQuery($query);
     }

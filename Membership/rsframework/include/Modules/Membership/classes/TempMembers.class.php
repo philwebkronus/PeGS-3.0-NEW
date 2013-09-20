@@ -42,6 +42,27 @@ class TempMembers extends BaseEntity
         return $result;
     }
     
+    /**
+     * @Description: for fetching account code and date created using MID
+     * @Author aqdepliyan
+     * @param int $MID
+     * @return array
+     */
+    public function getTempMemberInfoForSMS($MID)
+    {
+        $query = "SELECT m.TemporaryAccountCode, m.DateCreated, mi.MobileNumber
+                            FROM
+                             membership_temp.members m
+                            INNER JOIN membership_temp.memberinfo mi
+                            ON m.MID = mi.MID
+                            WHERE m.MID = ".$MID;
+        
+        $result = parent::RunQuery($query);
+        if(is_array($result) && isset($result[0])){
+            return $result[0];
+        } else { return $result = ''; }
+    }
+    
     public function verifyEmailAccount($email,$tempcode)
     {
         $this->StartTransaction();
@@ -80,6 +101,8 @@ class TempMembers extends BaseEntity
     
     function Register($arrMembers,$arrMemberInfo)
     {
+        $MID = '';
+        
         //Load module and instantiate model
         App::LoadModuleClass("Membership", "Helper");
         $_Helper = new Helper();
@@ -113,10 +136,11 @@ class TempMembers extends BaseEntity
                     
                     $Recipient = $arrMemberInfo['FirstName'] . ' ' . $arrMemberInfo['LastName'];                    
                     $_Helper->sendEmailVerification($arrMemberInfo['Email'], $Recipient, $tempcode);
-                    
+                    $MID = $arrMemberInfo['MID'];
                 } else
                 {
                     $this->RollBackTransaction ();
+                    
                 }
 
             }
@@ -130,6 +154,8 @@ class TempMembers extends BaseEntity
             $this->RollBackTransaction();
             App::SetErrorMessage($e->getMessage());
         }
+        
+        return $MID;
         
     }
     
@@ -201,6 +227,20 @@ class TempMembers extends BaseEntity
         
         $result = parent::RunQuery($query);
         return $result[0]['ctruser'];
+    }
+    /**
+     * Check if the UserName entered in the login Form is exist in Membership Temp
+     * 
+     * @author Mark Kenneth Esguerra
+     * @date July 19, 2013
+     * @param string $username Email Address as Username
+     * @return int count
+     */
+    public function checkIfUsernameExist($username)
+    {
+        $query = "SELECT COUNT(UserName) as Count FROM $this->TableName WHERE UserName = '$username'";
+        $result = parent::RunQuery($query);
+        return $result[0]['Count'];
     }
     
 }
