@@ -1,0 +1,13 @@
+Error Codes of VMS API's
+
+0 - Transaction approved, Coupon is unclaimed
+1 - Tracking ID not found.
+2 - Source is invalid.
+3 - Invalid input parameters
+4 - Inactive coupon
+5 - Coupon is already used
+6 - Invalid Coupon
+7 - Invalid voucher type
+8 - Transaction denied
+9 - Tracking Id was already used
+10 - Coupon was already expired.

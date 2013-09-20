@@ -35,7 +35,7 @@ class Utilities extends CFormModel
         return $result["ParamValue"];
     }
     
-    public function getBatchStatus()
+    public static function getBatchStatus()
     {
         return array(
             self::VOUCHER_STATUS_ALL => 'All',
@@ -48,7 +48,7 @@ class Utilities extends CFormModel
         );
     }
     
-    public function getVoucherStatus()
+    public static function getVoucherStatus()
     {
         if(Yii::app()->user->isAdmin())
         {
@@ -113,6 +113,11 @@ class Utilities extends CFormModel
         $result = $sql->queryAll();
         
         return $result;
+    }
+    
+    public static function log($message) 
+    {
+        Yii::log($message, 'error');
     }
         
 }

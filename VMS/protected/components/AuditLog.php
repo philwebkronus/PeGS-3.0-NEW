@@ -64,6 +64,16 @@ class AuditLog extends CFormModel
         return $result["AuditFunctionName"];
     }
     
+    /**
+     * Logs API transaction made
+     * @param int $APIMethod Type (1-verify, 2-use, 3-generate, 4-log stacker, 
+     *                             5-verify=stacker, 6-stacker session, 7-verify tracking id)
+     * @param int $source
+     * @param str $transDetails
+     * @param str $referenceID
+     * @param str $trackingID
+     * @param int $status
+     */
     public static function logAPITransactions($APIMethod,$source,$transDetails,$referenceID,$trackingID,$status)
     {
         $conn = Yii::app()->db;
