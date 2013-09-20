@@ -301,14 +301,15 @@ class FrontendController extends MI_Controller {
                                     
                                     //use voucher and check result
                                     $useVoucherResult = $voucherManagement->useVoucher($accid, $trackingId, $vouchercode, $terminal_id, $source);
-                                    
                                     if(isset($useVoucherResult['UseVoucher']['ErrorCode']) && $useVoucherResult['UseVoucher']['ErrorCode'] != 0)
                                     {
                                             $vmsrequestlogs->updateVMSRequestLogs($vmsrequestlogsID, 2);
                                             
-                                            //verify tracking id, if voucher is unclaimed proceed to use voucher
-                                            $verifyVoucherResult = $voucherManagement->verifyVoucher($vouchercode, $accid, $source, $trackingId);
-                                            if(isset($verifyVoucherResult['VerifyVoucher']['ErrorCode']) && $verifyVoucherResult['VerifyVoucher']['ErrorCode'] == 0){
+                                            //verify tracking id, if tracking id is not found and voucher is unclaimed proceed to use voucher
+                                            $verifyVoucherResult = $voucherManagement->verifyVoucher('', $accid, $source, $trackingId);
+                                            
+                                            //check if tracking result is not found that means transaction was not successful on the first try
+                                            if(isset($verifyVoucherResult['VerifyVoucher']['ErrorCode']) && $verifyVoucherResult['VerifyVoucher']['ErrorCode'] != 0){
 
                                                 $trackingId = "c".$casinoAPI->udate('YmdHisu');
                                                 
@@ -316,6 +317,7 @@ class FrontendController extends MI_Controller {
                                                 $vmsrequestlogs->insert($vouchercode, $accid, $terminal_id,$trackingId);
                                                 
                                                 $useVoucherResult = $voucherManagement->useVoucher($accid, $trackingId, $vouchercode, $terminal_id, $source);
+                                                
                                                 if(isset($useVoucherResult['UseVoucher']['ErrorCode']) && $useVoucherResult['UseVoucher']['ErrorCode'] != 0)
                                                 {
                                                         $vmsrequestlogs->updateVMSRequestLogs($vmsrequestlogsID, 2);
@@ -324,8 +326,8 @@ class FrontendController extends MI_Controller {
                                                         //check if the useVoucher is successful, if success insert to vmsrequestlogs and status = 1 else 2
                                                         $vmsrequestlogs->updateVMSRequestLogs($vmsrequestlogsID, 1);
                                                 }
-
                                             }
+                                            
                                     } else {
                                         //check if the useVoucher is successful, if success insert to vmsrequestlogs and status = 1 else 2
                                         $vmsrequestlogs->updateVMSRequestLogs($vmsrequestlogsID, 1);
@@ -646,21 +648,24 @@ class FrontendController extends MI_Controller {
                                     
                                     //use voucher, and check result
                                     $useVoucherResult = $voucherManagement->useVoucher($accid, $trackingId, $vouchercode, $terminal_id, $source);
-
+                                    
                                     if(isset($useVoucherResult['UseVoucher']['ErrorCode']) && $useVoucherResult['UseVoucher']['ErrorCode'] != 0)
                                     {
                                         $vmsrequestlogs->updateVMSRequestLogs($vmsrequestlogsID, 2);
                                         
-                                        //verify tracking id, if voucher is unclaimed proceed to use voucher
-                                        $verifyVoucherResult = $voucherManagement->verifyVoucher($vouchercode, $accid, $source, $trackingId);
-                                        if(isset($verifyVoucherResult['VerifyVoucher']['ErrorCode']) && $verifyVoucherResult['VerifyVoucher']['ErrorCode'] == 0){
+                                        //verify tracking id, if tracking id is not found and voucher is unclaimed proceed to use voucher
+                                        $verifyVoucherResult = $voucherManagement->verifyVoucher('', $accid, $source, $trackingId);
+
+                                        //check if tracking result is not found that means transaction was not successful on the first try
+                                        if(isset($verifyVoucherResult['VerifyVoucher']['ErrorCode']) && $verifyVoucherResult['VerifyVoucher']['ErrorCode'] != 0){
 
                                             $trackingId = "c".$casinoAPI->udate('YmdHisu');
-                                            
+
                                             //Insert to vmsrequestlogs
                                             $vmsrequestlogs->insert($vouchercode, $accid, $terminal_id,$trackingId);
-                                            
+
                                             $useVoucherResult = $voucherManagement->useVoucher($accid, $trackingId, $vouchercode, $terminal_id, $source);
+
                                             if(isset($useVoucherResult['UseVoucher']['ErrorCode']) && $useVoucherResult['UseVoucher']['ErrorCode'] != 0)
                                             {
                                                     $vmsrequestlogs->updateVMSRequestLogs($vmsrequestlogsID, 2);
@@ -669,11 +674,9 @@ class FrontendController extends MI_Controller {
                                                     //check if the useVoucher is successful, if success insert to vmsrequestlogs and status = 1 else 2
                                                     $vmsrequestlogs->updateVMSRequestLogs($vmsrequestlogsID, 1);
                                             }
-                                        } else {
-                                            $message = 'VMS: '.$verifyVoucherResult['VerifyVoucher']['TransMsg'];
-                                            logger($message);
-                                            $this->throwError($message);
+
                                         }
+                                        
                                     } else {
                                         //check if the useVoucher is successful, if success insert to vmsrequestlogs and status = 1 else 2
                                         $vmsrequestlogs->updateVMSRequestLogs($vmsrequestlogsID, 1);

@@ -89,7 +89,7 @@ $vaccesspages = array('5');
         jQuery('#tblreplenish').jqGrid({
             url : 'process/ProcessTopUpPaginate.php?action=grossholdbalance&site='+jQuery('#selsitecode').val(),
             datatype: "json",
-            colNames:['Site / PEGS Code', 'Site / PEGS Name', 'POS Account', 'Cut Off Date', 'Beginning Balance', 'Initial Deposit', 'Reload','Redemption','Manual Redemption','Coupon','Gross Hold','Replenishment','Collection','Ending Balance'],
+            colNames:['Site / PEGS Code', 'Site / PEGS Name', 'POS Account', 'Cut Off Date', 'Beginning Balance', 'Initial Deposit', 'Reload','Redemption','Manual Redemption','Voucher','Gross Hold','Replenishment','Collection','Ending Balance'],
             rowNum:10,
             height: 280,
             width: 1200,

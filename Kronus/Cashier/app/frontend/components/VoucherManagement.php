@@ -116,6 +116,12 @@ class VoucherManagement {
     public function verifyVoucher($vouchercode, $aid, $source, $trackingId = ''){
         $this->_URI = Mirage::app()->param['verify_voucher'];
         
+        if (!(bool)$this->IsAPIServerOK()) {
+            $message = 'Can\'t connect to VMS System';
+            logger($message . ' CouponCode=' . $vouchercode . ' AID='.$aid);
+            self::throwError($message);
+        }
+        
         $this->InitQueryString();
         $this->_queryString = $this->_queryString.'vouchercode='.$vouchercode;
         $this->_queryString = $this->_queryString.'&aid='.$aid;
@@ -146,6 +152,12 @@ class VoucherManagement {
      */
     public function useVoucher($aid, $trackingID, $vouchercode, $terminalID, $source){
         $this->_URI = Mirage::app()->param['use_voucher'];
+        
+        if (!(bool)$this->IsAPIServerOK()) {
+            $message = 'Can\'t connect to VMS System';
+            logger($message . ' CouponCode=' . $vouchercode . ' AID='.$aid);
+            self::throwError($message);
+        }
         
         $this->InitQueryString();
         $this->_queryString = $this->_queryString.'aid='.$aid;
@@ -226,6 +238,26 @@ class VoucherManagement {
     private function json2Array( $xmlString )
     {
         return json_decode( $xmlString, TRUE );
+    }
+    
+    /**
+     * Checks if API endpoint is reachable
+     *
+     * @param none
+     * @return boolean
+     */
+    public function IsAPIServerOK()
+    {
+        $port = 80;
+        
+        $urlInfo = parse_url( $this->_URI );        
+
+        if (isset($urlInfo[ 'scheme' ])  && $urlInfo[ 'scheme' ] == 'https')
+        {
+            $port = 443;
+        }
+
+        return common::isHostReachable( $this->_URI, $port );
     }
 }
 

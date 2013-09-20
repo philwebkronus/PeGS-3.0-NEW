@@ -937,7 +937,7 @@ class ProcessTopUpGenerateReports extends BaseProcess{
                 array('value'=>'Reload'),
                 array('value'=>'Redemption'),
                 array('value'=>'Manual Redemption'),
-                array('value'=>'Coupon'),
+                array('value'=>'Voucher'),
                 array('value'=>'Gross Hold'),
                 array('value'=>'Replenishment'),
                 array('value'=>'Collection'),
@@ -979,7 +979,7 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         $startdate = $_POST['startdate']." ".BaseProcess::$cutoff;
         $venddate = $_POST['enddate'];  
         $enddate = date ('Y-m-d' , strtotime (BaseProcess::$gaddeddate, strtotime($venddate)))." ".BaseProcess::$cutoff;           
-        $_SESSION['report_header'] = array('Site / PEGS Code','Site / PEGS Name', 'POS Account','Cut Off Date','Beginning Balance','Initial Deposit','Reload','Redemption','Manual Redemption','Coupon','Gross Hold', 'Replenishment','Collection','Ending Balance');
+        $_SESSION['report_header'] = array('Site / PEGS Code','Site / PEGS Name', 'POS Account','Cut Off Date','Beginning Balance','Initial Deposit','Reload','Redemption','Manual Redemption','Voucher','Gross Hold', 'Replenishment','Collection','Ending Balance');
         $topreport = new TopUpReportQuery($this->getConnection());
         $topreport->open();
         $vsitecode = $_POST['selsitecode'];
