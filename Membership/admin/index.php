@@ -500,8 +500,9 @@ if (isset($_SESSION['CardInfo'])) {
 <div align="center">
     <div class="maincontainer">
         <?php include('menu.php'); ?>
+         <?php include('cardsearch.php'); ?>
         <div class="content">
-            <?php include('cardsearch.php'); ?>
+           
 
             <form name="frmProfile" id="frmProfile" method="post" action="" />
 
