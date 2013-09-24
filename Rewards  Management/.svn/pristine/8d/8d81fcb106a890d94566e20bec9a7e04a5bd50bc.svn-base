@@ -1,0 +1,444 @@
+<?php
+$this->breadcrumbs=array(
+	'Verify Rewards',
+);?>
+<?php 
+$partners = new RefPartnerModel(); 
+$rewarditems = new RewardItemsModel();
+$rafflecoupons = new RaffleCouponModel(); 
+$this->pageTitle = Yii::app()->name . ' - Verify Rewards';
+
+Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl . '/js/idle.js');
+Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl . '/js/idlechecker.js');
+Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl . '/js/validations.js');
+
+?>
+<script type="text/javascript">
+ jQuery(document).ready(function(){
+    $("input[name='rewardsecoupons']").click(function()
+    {
+        document.getElementById('rewardpage').style.display='block';
+        document.getElementById('rafflepage').style.display='none';
+        $('#raffleecoupons').attr('checked',false);
+        $("#ecouponserial2").val('');
+        $("#ecouponsecuritycode2").val('');
+        document.getElementById("egamespartner").selectedIndex = 0;
+        document.getElementById("rewarditem").selectedIndex = 0;
+    });
+     
+     
+    $("input[name='raffleecoupons']").click(function()
+    {
+        $('#rewardsecoupons').attr('checked',false);
+        document.getElementById('rafflepage').style.display='block';
+        document.getElementById('rewardpage').style.display='none';
+        $("#ecouponserial").val('');
+        $("#ecouponsecuritycode").val('');
+         document.getElementById("rafflepromo").selectedIndex = 0;
+    });     
+ });
+</script>
+<!--Disable Right Click--Added by: mgesguerra 09-16-13-->
+<script type="text/javascript">
+    $(function () {
+      $(document).bind("contextmenu",function(e){
+        e.preventDefault();
+      });
+    });
+</script>    
+<script type="text/javascript">
+    $(document).ready(function(){
+        
+        var egamespartner = document.getElementById('egamespartner');
+
+        $('#egamespartner').live('change', function(){ 
+            
+            $.ajax({
+                url: 'ajaxGetRewardItems?egamespartner='+egamespartner.value,
+                type: 'post',
+                dataType: 'json',
+                success: function(data)
+                {
+                    $('#rewarditem').empty();
+                    var opt = '';
+                    jQuery.each(data, function(k,v){
+                        opt+='<option value="'+ k +'">'+ v + '</option>';
+                    });
+                    $('#rewarditem').html(opt);
+                }
+            });
+        });
+        //Change Verify Button Behavior -> Disable to Enable
+        //Modified by Mark Kenneth Esguerra 09-20-13
+        $("#submitverifybtn").attr('disabled','disabled');
+        $("#submitverify2btn").attr('disabled','disabled');
+        $("#ecouponsecuritycode").click(function(){
+            $("#ecouponsecuritycode").change();
+            if ($("#ecouponserial").val() == "" || $("#ecouponsecuritycode").val() == "")
+            {
+                $("#submitverify2btn").attr('disabled','disabled');
+            }
+        });
+        
+       
+            $('#rewarditem').live('change', function(){ 
+            if ($("#ecouponserial").val() == "" || $("#ecouponsecuritycode").val() == "" 
+                || $("#egamespartner").val() == "-1" || $("#rewarditem").val() == "-1")
+            {
+                $("#submitverifybtn").attr('disabled','disabled');
+            }
+            else{
+                $("#submitverifybtn").removeAttr('disabled');
+            }
+            });
+        
+        
+            $('#egamespartner').live('change', function(){ 
+            if ($("#ecouponserial").val() == "" || $("#ecouponsecuritycode").val() == ""
+             || $("#egamespartner").val() == "-1" || $("#rewarditem").val() == "-1")
+            {
+                $("#submitverifybtn").attr('disabled','disabled');
+            }
+            else{
+                $("#submitverifybtn").removeAttr('disabled');
+            }
+        });
+        
+        
+        $("#ecouponserial").keyup(function(){
+            $("#ecouponserial").change();
+        });
+        $("#ecouponserial").blur(function(){
+            $("#ecouponserial").change();
+        });
+        
+        $("#ecouponsecuritycode").keyup(function(){
+            $("#ecouponsecuritycode").change();
+        });
+        $("#ecouponsecuritycode").blur(function(){
+            $("#ecouponsecuritycode").change();
+        });
+        
+        $("#ecouponsecuritycode").change(function(){
+            if($("#ecouponserial").val() == ""){
+                document.getElementById('submitverify').style.display='none';
+            }
+            else{
+                if ($("#ecouponsecuritycode").val() == "" || $("#egamespartner").val() == "-1" ||
+                $("#ecouponsecuritycode").val() == "" || $("#rewarditem").val() == "-1")
+                {
+                    $("#submitverifybtn").attr('disabled','disabled');
+                }
+                else
+                {
+                    $("#submitverifybtn").removeAttr('disabled');
+                }
+            }
+            
+        });  
+        $("#ecouponserial").change(function(){
+            if($("#ecouponserial").val() == ""){
+                $("#submitverifybtn").attr('disabled','disabled');
+            }
+            else{
+                if ($("#ecouponsecuritycode").val() == "" || $("#egamespartner").val() == "-1" ||
+                $("#ecouponsecuritycode").val() == "" || $("#rewarditem").val() == "-1")
+                {
+                    $("#submitverifybtn").attr('disabled','disabled');
+                }
+                else
+                {
+                    $("#submitverifybtn").removeAttr('disabled');
+                }
+            }
+            
+        });
+
+        //for raffle promos
+        
+        $('#rafflepromo').live('change', function(){ 
+            if ($("#ecouponserial").val() == "" || $("#ecouponsecuritycode").val() == ""
+             || $("#rafflepromo").val() == "-1")
+            {
+                $("#submitverify2btn").attr('disabled','disabled');
+            }
+            else{
+                $("#submitverify2btn").removeAttr('disabled');
+            }
+        });
+        
+        $("#ecouponserial2").keyup(function(){
+            $("#ecouponserial2").change();
+        });
+        $("#ecouponserial2").blur(function(){
+            $("#ecouponserial2").change();
+        });
+        
+        $("#ecouponsecuritycode2").keyup(function(){
+            $("#ecouponsecuritycode2").change();
+        });
+        $("#ecouponsecuritycode2").blur(function(){
+            $("#ecouponsecuritycode2").change();
+        });
+        
+        $("#ecouponserial2").change(function(){
+            if($("#ecouponserial2").val() == ""){
+                $("#submitverify2btn").attr('disabled','disabled');
+            }
+            else{
+                if ($("#ecouponserial2").val() == "" ||
+                $("#ecouponsecuritycode2").val() == "" || $("#rafflepromo").val() == "-1")
+                {
+                    $("#submitverify2btn").attr('disabled','disabled');
+                }
+                else
+                {
+                    $("#submitverify2btn").removeAttr('disabled');
+                }
+            }
+            
+        });
+        
+        $("#ecouponsecuritycode2").change(function(){
+            if($("#ecouponsecuritycode2").val() == ""){
+                $("#submitverify2btn").attr('disabled','disabled');
+            }
+            else{
+                if ($("#ecouponserial2").val() == "" || $("#ecouponsecuritycode2").val() == "" 
+                    || $("#rafflepromo").val() == "-1")
+                {
+                    $("#submitverify2btn").attr('disabled','disabled');
+                }
+                else
+                {
+                    $("#submitverify2btn").removeAttr('disabled');
+                }
+            }
+            
+        });  
+ 
+        
+    });
+</script>
+<h2>Verify Rewards</h2>
+<hr color="black" />
+<div class="row" style="padding: 10px 5px; background: #EFEFEF;">
+<?php
+        $form = $this->beginWidget('CActiveForm', array(
+            'id' => 'VerifyRewardsForm',
+            'enableClientValidation' => true,
+            'clientOptions' => array(
+                'validateOnSubmit' => true,
+            ),
+                ));
+        ?>
+    <table>
+        <tr>
+        <td>
+            <input type="radio" id="rewardsecoupons" name="rewardsecoupons" value="1" checked/>
+            
+            <?php echo CHtml::label("Rewards e-Coupons", "rewardsecoupons");?>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="radio" id="raffleecoupons" name="raffleecoupons" value="2"/>
+            
+            <?php echo CHtml::label("Raffle e-Coupons", "raffleecoupons");?>
+        </td>  
+        </tr>
+        
+   
+    </table>
+     <div id="rewardpage">   
+        <table style="width:500px; margin: 50px;">
+
+            <tr>
+            <td><?php echo CHtml::label("eGames Partner : ", "egamespartnerlbl");?></td>    
+            <td>
+                    <?php echo $form->dropDownList($model, 'egamespartner',  $partners->getPartners(), array('id'=>'egamespartner','style' => 'width: 200px;')); ?>
+            </td>
+            </tr>
+            <tr>
+                <td><?php echo CHtml::label("Reward Item : ", "rewarditemlbl");?></td>    
+            <td>
+
+                    <?php echo $form->dropDownList($model, 'rewarditem', array('-1'=>'- Please Select -'), array('id' => 'rewarditem', 'style' => 'width: 200px;')); ?>
+            </td>
+            </tr>
+            <tr>
+                <td><?php echo CHtml::label("e-Coupon Serial Code : ", "ecouponserial");?></td>    
+            <td>
+                    <?php echo $form->textField($model,'ecouponserial', array('id'=>'ecouponserial',  'style'=>'width: 250px;', 'onkeypress' => 'return numberandletter1(event);')); ?>
+            </td>
+            </tr>
+            <tr>
+                <td><?php echo CHtml::label("e-Coupon Security Code : ", "ecouponsecuritycode");?></td>    
+            <td>
+                    <?php echo $form->textField($model,'ecouponsecuritycode', array('id'=>'ecouponsecuritycode',  'style'=>'width: 250px;', 'onkeypress' => 'return numberandletter1(event);')); ?>
+            </td>
+            </tr>
+        </table>
+         
+           <div id="submitverify" style="width: 100%; text-align: center;">
+            <?php echo CHtml::submitButton("Verify", array('id'=>'submitverifybtn','name' => 'Submit')); ?>
+           </div> 
+    </div>
+    
+    <div id="rafflepage" style="display: none">   
+    <table style="width:500px; margin: 50px;">
+        
+        <tr>
+            <td><?php echo CHtml::label("Raffle Promo : ", "rafflepromo");?></td>    
+        <td>
+                <?php
+                    $arrItems = $rewarditems->selectRaffleItems();
+                    array_unshift($arrItems, array('RewardItemID' => '-1', 'ItemName' => '-Please Select-'));
+                    $itemList = CHtml::listData($arrItems, 'RewardItemID','ItemName');
+                ?>
+                <?php echo $form->dropDownList($model, 'rafflepromo', $itemList, array('id' => 'rafflepromo',  'style'=>'width: 200px;')); ?>
+        </td>
+        </tr>
+        <tr>
+            <td><?php echo CHtml::label("e-Coupon Serial Code : ", "ecouponserial2");?></td>    
+        <td>
+                <?php echo $form->textField($model,'ecouponserial2', array('id'=>'ecouponserial2',  'style'=>'width: 250px;', 'onkeypress' => 'return numberandletter1(event);')); ?>
+        </td>
+        </tr>
+        <tr>
+            <td><?php echo CHtml::label("e-Coupon Security Code : ", "ecouponsecuritycode2");?></td>    
+        <td>
+                <?php echo $form->textField($model,'ecouponsecuritycode2', array('id'=>'ecouponsecuritycode2',  'style'=>'width: 250px;', 'onkeypress' => 'return numberandletter1(event);')); ?>
+        </td>
+        </tr>
+    </table>
+        
+          <div id="submitverify2" style="width: 100%; text-align: center;">
+            <?php echo CHtml::submitButton("Verify", array('id'=>'submitverify2btn','name' => 'Submit2')); ?>
+          </div> 
+    </div>  
+
+</div>
+<?php echo CHtml::beginForm(array('verifyRewards/verifyrewards'), 'POST', array(
+        'id'=>'VerifyRewardsForm',
+        'name'=>'VerifyRewardsForm')); ?>
+        
+<?php echo CHtml::endForm(); ?>    
+<?php $this->endWidget(); ?>
+        <input id="Timeout" type="hidden" value="<?php echo Yii::app()->params->idletimelogout;;?>" />
+        <input id="logout" type="hidden" value="<?php echo Yii::app()->params->autologouturl;;?>" />
+<?php
+/** Start Widget **/
+$this->beginWidget('zii.widgets.jui.CJuiDialog',array(
+    'id'=>'mydialog',
+    'options'=>array(
+        'title'=>'Alert',
+        'autoOpen'=>false,
+        'closeOnEscape' => false,
+        'resizable'=>false,
+        'draggable'=>false,
+        'open'=>'js:function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }',
+        'buttons' => array
+        (
+            'OK'=>'js:function(){
+                window.location.href = $("#logout").val();
+                $(this).dialog("close");
+            }',
+        ),
+    ),
+));
+echo "<center>";
+echo 'Session Expired';
+echo "<br/>";
+echo "</center>";
+    
+$this->endWidget('zii.widgets.jui.CJuiDialog');
+/** End Widget **/
+
+?>
+
+<?php
+/** Start Widget **/
+$this->beginWidget('zii.widgets.jui.CJuiDialog',array(
+    'id'=>'alertdialog',
+    'options'=>array(
+        'autoOpen'=>$this->showDialog2,
+        'modal'=>true,
+        'resizable'=>false,
+        'draggable'=>false,
+        'show'=>'fade',
+        'hide'=>'fade',
+        'width'=>350,
+        'height'=>200,
+        'buttons' => array
+        (
+            'OK'=>'js:function(){
+        $("#ecouponserial").val("");
+        $("#ecouponsecuritycode").val("");
+        $("#ecouponserial2").val("");
+        $("#ecouponsecuritycode2").val("");
+        document.getElementById("egamespartner").selectedIndex = 0;
+        document.getElementById("rewarditem").selectedIndex = 0;
+                $(this).dialog("close");
+            }',
+        ),
+    ),
+));
+
+echo $this->dialogMsg;
+echo "<br/>";
+echo "<br/>";
+echo $this->dialogMsg2;
+echo "<br/>";
+
+    
+$this->endWidget('zii.widgets.jui.CJuiDialog');
+/** End Widget **/
+
+?>
+
+<?php
+/** Start Widget **/
+$this->beginWidget('zii.widgets.jui.CJuiDialog',array(
+    'id'=>'successdialog',
+    'options'=>array(
+        'autoOpen'=>$this->showDialogSuccess,
+        'modal'=>true,
+        'resizable'=>false,
+        'draggable'=>false,
+        'show'=>'fade',
+        'hide'=>'fade',
+        'width'=>350,
+        'height'=>200,
+        'open'=>'js:function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }',
+        'buttons' => array
+        (
+            'PROCEED'=>'js:function(){
+                $("#LogVerificationForm").submit();
+                $(this).dialog("close");
+                $("#ecouponserial").val("");
+                $("#ecouponsecuritycode").val("");
+                $("#ecouponserial2").val("");
+                $("#ecouponsecuritycode2").val("");
+                document.getElementById("egamespartner").selectedIndex = 0;
+                document.getElementById("rewarditem").selectedIndex = 0;
+            }',
+        ),
+    ),
+));
+
+echo $this->dialogMsg;
+echo "<br/>";
+echo $this->dialogMsg2;
+echo "<br/>";
+echo $this->dialogMsg3;
+echo "<br/>";
+?>
+<?php echo CHtml::beginForm(array('verifyRewards/logVerification'), 'POST', array(
+        'id'=>'LogVerificationForm',
+        'name'=>'LogVerificationForm')); ?>
+        
+<?php echo CHtml::endForm(); ?>        
+<?php
+$this->endWidget('zii.widgets.jui.CJuiDialog');
+/** End Widget **/
+
+?>
+

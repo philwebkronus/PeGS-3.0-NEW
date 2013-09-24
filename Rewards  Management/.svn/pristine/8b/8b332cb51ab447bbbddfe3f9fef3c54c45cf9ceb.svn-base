@@ -1,0 +1,23 @@
+<?php
+
+class CouponRedemptionLogsModel extends CFormModel
+{
+    
+    public function checkSerialSecCodes($serial, $security, $rewarditemid){
+        
+        $connection = Yii::app()->db;
+         
+        $sql="SELECT MID, RewardItemID, SecurityCode, SerialCode, ValidDateFrom, ValidDateTo, Status, Source FROM couponredemptionlogs 
+            WHERE SerialCode = :serial AND SecurityCode = :security AND RewardItemID = :rewarditemid;";
+        $command = $connection->createCommand($sql);
+        $command->bindValue(':serial', $serial);
+        $command->bindValue(':security', $security);
+        $command->bindValue(':rewarditemid', $rewarditemid);
+        $result = $command->queryAll();
+         
+        return $result;
+        
+    }  
+    
+}
+?>

@@ -1,0 +1,97 @@
+/* 
+    Document   : menu
+    Created on : Oct 15, 2012, 2:47:41 PM
+    Author     : owliber
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+/*root { 
+    display: block;
+}*/
+
+#mainmenu {
+    height: 35px; /* need for eficient position*/
+    background:url('../images/menu-bg.png') repeat-x left top;
+}
+#mainmenu > ul > li {  
+    overflow: visible;
+    display: block; 
+    float: left;    
+    padding:3px 0;
+    margin-top:2px;
+}
+#mainmenu > ul > li ul { 
+    display: none;
+    position: absolute;
+    background: #FFF; 
+    padding: 0;
+    height: auto; 
+    z-index: 100000;
+}
+/* drop down menu */
+#mainmenu > ul > li > ul { 
+    margin-top: 0px;
+    
+}
+/* others sub menus */
+#mainmenu > ul > li > ul li ul { 
+    margin-top: -30px; /* align with parent*/
+    left:99%;
+    width: 100%;
+}
+
+#mainmenu ul li a{
+    font-size:14px;
+    font-weight: 100;
+    padding-bottom: 8px;
+}
+
+#mainmenu ul li:hover > ul{ 
+    display: block;
+    margin-top:7px;
+}
+
+#mainmenu ul li ul li a{
+    padding: 5px 14px; 
+    background-color: #c3d9ff; /*#EFF4FA;*/
+    color: #2b2a2a; /*#6399CD;*/
+    text-decoration: none;
+    display: block;
+    border-left:1px solid #70a8d2; /*#a6dbf9;*/
+    border-right: 1px solid #70a8d2; /*#a6dbf9;*/
+}
+
+#mainmenu ul li ul li:last-child a{   
+    -moz-box-shadow: none;
+    -webkit-box-shadow: none;
+    box-shadow: none;    
+    border-bottom: 1px solid #70a8d2; /*#a6dbf9;*/
+}
+
+#mainmenu ul li a:hover, #mainmenu ul li ul li a:hover 
+{
+	color:#516e9e;
+	background-color:#fbec88;
+	font-size:14px;
+	text-decoration:none;
+        
+}
+
+#mainmenu ul li.selected a
+{
+	color:#363645;
+	background-color:#fbec88;
+	font-size:14px;
+	text-decoration:none;
+        
+}
+
+#mainmenu ul li ul li.selected a
+{
+	color:#363645;
+	background-color:#fbec88;
+	font-size:14px;
+	text-decoration:none;
+}
+
