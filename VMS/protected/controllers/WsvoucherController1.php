@@ -5,7 +5,7 @@
  *
  * @author elperez
  */
-class WsVoucherController extends Controller{
+class WsvoucherController extends Controller{
     
     //Source came from KAPI 
     CONST SOURCE_KAPI = 1;
