@@ -15,7 +15,7 @@
         <script type="text/javascript" src="jscripts/accounting.min.js"></script>
         <script type="text/javascript" src="jscripts/jquery.helpers.js"></script>
         <script type="text/javascript" src="jscripts/autoNumeric-1.6.2.js"></script>
-        <script type="text/javascript" src="https://getfirebug.com/firebug-lite.js"></script>
+<!--        <script type="text/javascript" src="https://getfirebug.com/firebug-lite.js"></script>-->
     </head>
     <object id="eGamesMembershipRFID_WebActiveX" name="eGamesMembershipRFID_WebActiveX" classid="clsid:E91C8217-F92A-4ec4-990D-25C91CC0AEE3"></object>
 <script languange="javascript" type="text/javascript"> 
@@ -28,7 +28,7 @@
 	}
 </script>
 
-    <body lang="en" onload="eGamesMembershipRFID_WebActiveX_OnLoad(); document.getElementById('StartSessionFormModel_loyalty_card').focus();" onunload="eGamesMembershipRFID_WebActiveX_OnUnLoad();">
+    <body lang="en" onload="eGamesMembershipRFID_WebActiveX_OnLoad();" onunload="eGamesMembershipRFID_WebActiveX_OnUnLoad();">
         <div id="container">
             <div id="header">
                 <div id="top-header">
