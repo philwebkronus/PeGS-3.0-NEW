@@ -30,6 +30,7 @@ return array(
     'terminal/redeemhk'=>'Terminal/redeemHotkey', // hot key
     'terminal/redeemgetbalance' =>'Terminal/redeemGetBalance',
     'terminal/ping'=>'Terminal/ping',
+    'terminal/getrfidkey'=>'Terminal/getRFIDKeyValue', //rfid key
     
     // routes for start session stand alone
     'startsession'=>'StartSession/overview',

@@ -15,9 +15,20 @@
         <script type="text/javascript" src="jscripts/accounting.min.js"></script>
         <script type="text/javascript" src="jscripts/jquery.helpers.js"></script>
         <script type="text/javascript" src="jscripts/autoNumeric-1.6.2.js"></script>
-<!--        <script type="text/javascript" src="https://getfirebug.com/firebug-lite.js"></script>-->
+        <script type="text/javascript" src="https://getfirebug.com/firebug-lite.js"></script>
     </head>
-    <body>
+    <object id="eGamesMembershipRFID_WebActiveX" name="eGamesMembershipRFID_WebActiveX" classid="clsid:E91C8217-F92A-4ec4-990D-25C91CC0AEE3"></object>
+<script languange="javascript" type="text/javascript"> 
+	function eGamesMembershipRFID_WebActiveX_OnLoad() {  
+        eGamesMembershipRFID_WebActiveX.Init(1);
+	}
+ 
+	function eGamesMembershipRFID_WebActiveX_OnUnLoad() {
+//		eGamesMembershipRFID_WebActiveX.Dispose();
+	}
+</script>
+
+    <body lang="en" onload="eGamesMembershipRFID_WebActiveX_OnLoad(); document.getElementById('StartSessionFormModel_loyalty_card').focus();" onunload="eGamesMembershipRFID_WebActiveX_OnUnLoad();">
         <div id="container">
             <div id="header">
                 <div id="top-header">
@@ -67,6 +78,17 @@
         </script>
         <script>
         $(document).ready(function(){
+            
+            $.ajax({
+                    url:'<?php echo Mirage::app()->createUrl('terminal/getrfidkey') ?>',
+                    success:function(data){
+                       eGamesMembershipRFID_WebActiveX.SetKeyValue(data); // securely get this from the server (HTTPS)
+                    },
+                    error:function(){
+                      alert('Please set your RFID Key number'); //show alert to set RFID keynumber
+                    }
+            });
+                    
             $('#btnLogout').click(function(){
                 if (confirm('Are you sure you want to logout?')) {
                     document.location = '<?php echo Mirage::app()->param['logout_page'] ?>';

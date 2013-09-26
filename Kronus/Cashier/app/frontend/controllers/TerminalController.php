@@ -421,4 +421,12 @@ class TerminalController extends FrontendController {
     public function pingAction(){
         die('ok');
     }
+    
+    /**
+     * Description: get RFID key from config file
+     * @return rfid key
+     */
+    public function getRFIDKeyValueAction(){
+        echo Mirage::app()->param['rfid_key'];
+    }
 }
