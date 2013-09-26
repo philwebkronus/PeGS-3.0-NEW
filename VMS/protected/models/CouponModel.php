@@ -39,7 +39,7 @@ class CouponModel extends CFormModel{
                       TerminalID, Amount, DateCreated, DateUsed, CreatedByAID, Source, 
                       Status, LoyaltyCreditable, DateExpiry) 
                       VALUES(:vouchertypeid, :trackingid, :couponcode, :batchno, :terminalid, 
-                             :amount, now_usec(), now_usec(), :aid, :source, 1, :loyaltycreditable,
+                             :amount, now_usec(), now_usec(), :aid, :source, 3, :loyaltycreditable,
                              :dateexpiry)";
             
             $sql = $this->_connection->createCommand($query);

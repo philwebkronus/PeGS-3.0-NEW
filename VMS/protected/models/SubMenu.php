@@ -94,7 +94,7 @@ class SubMenu extends CFormModel
         return $result;
     }
     
-    public function getMenuID($submenuid)
+    public static function getMenuID($submenuid)
     {
         $query = "SELECT MenuID FROM submenus WHERE SubMenuID =:submenuid";
         $sql = Yii::app()->db->createCommand($query);
@@ -311,7 +311,7 @@ class SubMenu extends CFormModel
         
     }
     
-    public function getSubMenuIDByLink($link)
+    public static function getSubMenuIDByLink($link)
     {
         $query = "SELECT SubMenuID FROM submenus WHERE Link =:link";
         $sql = Yii::app()->db->createCommand($query);

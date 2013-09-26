@@ -38,7 +38,7 @@ class VMSBaseIdentity extends Controller
                     array('allow', // allow other actions from logged users
                             'actions'=>array('login','logout','index','error', //SiteController actions
                                              'update','list','generate','monitor',
-                                             'changestatus','delete','exportToCSV',
+                                             'changestatus','delete','exportToCSV','exportToExcel',
                                              'siteConversionDataTable','dataTable',
                                              'ajaxGetTerminal','ajaxStackerSessions','ajaxVoucherUsage',
                                              'ajaxStackerDetails','ajaxLastQuery','ajaxEGMachines','ajaxVoucherMonitor',

@@ -23,20 +23,5 @@ else
             <li>Site Code : <b> <?php echo Yii::app()->user->getSiteCode(); ?></b></li>
         <?php 
         }?>
-            
-        <li>Total EGM Machines : <b><?php echo Statistics::egmCountBySite($site);?></b></li>
-        <li>Active EGM Machines : <b><?php echo Statistics::egmCountBySite($site,1);?></b></li>
     </ul>    
-</div>
-
-<div class="summary-group">
-    <div class="summary-title">Voucher Summary</div>
-    <p class="information"><i>Summary for <?php echo date('F d, Y'); ?></i></p>
-<ul>    
-    <li>(<b><?php echo Statistics::redeemedTicketsBySite($site); ?></b>) total redeemed tickets </li>
-    <li>(<b><?php echo Statistics::generatedTicketsBySite($site); ?></b>) total generated tickets </li>
-    <li>(<b><?php echo Statistics::usedTicketsBySite($site); ?></b>) total used tickets </li>
-    <li>(<b><?php echo Statistics::usedCouponsBySite($site); ?></b>) total used coupons </li>
-    <li>(<b><?php echo Statistics::voidTicketsBySite($site); ?></b>) total void tickets </li>
-</ul>
 </div>

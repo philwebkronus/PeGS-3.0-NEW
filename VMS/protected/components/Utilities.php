@@ -102,7 +102,7 @@ class Utilities extends CFormModel
         
     }
     
-    public function getSiteInfo()
+    public static function getSiteInfo()
     {
         $query = "SELECT s.SiteID, s.SiteCode 
                     FROM sites s
