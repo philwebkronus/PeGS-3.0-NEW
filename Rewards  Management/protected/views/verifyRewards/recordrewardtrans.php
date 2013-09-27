@@ -19,7 +19,40 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl . '/js
       });
     });
 </script>
-
+<script type="text/javascript">
+    $(document).ready(function(){
+        $("#partnernamecashier").keyup(function(){
+           var branchdtls = $("#partnernamecashier").val();
+           if (branchdtls.substring(0, 1) === " "){
+               alert("Warning: Trailing spaces is/are not allowed");
+               $("#partnernamecashier").val("");
+           }
+           else{
+               return true;
+           }
+        });
+        $("#branchdetails").keyup(function(){
+           var branchdtls = $("#branchdetails").val();
+           if (branchdtls.substring(0, 1) === " "){
+               alert("Warning: Trailing spaces is/are not allowed");
+               $("#branchdetails").val("");
+           }
+           else{
+               return true;
+           }
+        });
+        $("#remarks").keyup(function(){
+           var branchdtls = $("#remarks").val();
+           if (branchdtls.substring(0, 1) === " "){
+               alert("Warning: Trailing spaces is/are not allowed");
+               $("#remarks").val("");
+           }
+           else{
+               return true;
+           }
+        });
+    });
+</script>
 <h2>Record The Reward Transaction</h2>
 <hr color="black" />
 <div class="row" style="padding: 10px 5px; background: #EFEFEF;">
@@ -143,6 +176,7 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
 $this->beginWidget('zii.widgets.jui.CJuiDialog',array(
     'id'=>'alertdialog',
     'options'=>array(
+        'title' => $this->title,
         'autoOpen'=>$this->showDialog2,
         'modal'=>true,
         'resizable'=>false,
@@ -188,7 +222,7 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog',array(
         'open'=>'js:function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }',
         'buttons' => array
         (
-            'PROCEED'=>'js:function(){
+            'OK' =>'js:function(){
                 $(this).dialog("close");
                 window.location = "verifyrewards"
             }',

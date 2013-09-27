@@ -62,7 +62,7 @@ class VerifyRewardsForm extends CFormModel
     }
     
     
-    public function mailRecordReward($to, $CC = ''){
+    public function mailRecordReward($to, $date, $partner, $rewarditem, $serialcode, $securitycode, $CC = ''){
 
         $subject  = "Recording of the Reward Transaction";
         $headers  = 'MIME-Version: 1.0' . "\r\n";
@@ -75,20 +75,34 @@ class VerifyRewardsForm extends CFormModel
                       <title>Rewards Item Management</title>
                     </head>
                     <body>
-                      <p>Rewards Item Management - E-Coupon Verification</p>
+                      <h3>Recording of Reward Transaction</h3>
                       <table>
                         <tr>
-                          <th>Sample</th><th>Data</th><th>Data</th><th>Data</th>
+                          <td><b>Date Claimed:</b></td>
+                          <td>'.$date.'</td>
                         </tr>
                         <tr>
-                          <td>Sample</td><td>Data</td><td>Data</td><td>Data</td>
+                          <td><b>Partner:</b></td>
+                          <td>'.$partner.'</td>
+                        </tr>
+                        <tr>
+                          <td><b>Reward Item:</b></td>
+                          <td>'.$rewarditem.'</td>
+                        </tr>
+                        <tr>
+                          <td><b>Serial Code:</b></td>
+                          <td>'.$serialcode.'</td>
+                        </tr>
+                        <tr>
+                          <td><b>Security Code:</b></td>
+                          <td>'.$securitycode.'</td>
                         </tr>
                       </table>
                     </body>
                     </html>
                     ';
                   
-            mail($to, $subject, $detail, $headers);
+        mail($to, $subject, $detail, $headers);
     }
     
     

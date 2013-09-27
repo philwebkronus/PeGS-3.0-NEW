@@ -4,7 +4,11 @@
 class SessionForm extends CFormModel
 {
     
-	public function addSession($aid, $session_id){
+    public $aid;
+    public $sessionid;
+
+
+    public function addSession($aid, $session_id){
         $query = "INSERT INTO accountsessions (AID, SessionID, DateCreated) VALUES ($aid, '$session_id', NOW())";
         $sql = Yii::app()->db->createCommand($query);
         return $sql->execute();

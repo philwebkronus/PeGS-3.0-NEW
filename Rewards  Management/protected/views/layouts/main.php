@@ -35,15 +35,20 @@
 	</div><!-- header -->
 	<div id="mainmenu">
             <br>
-		<?php $this->widget('zii.widgets.CMenu',array(
-			'items'=>array(
-				array('label'=>'Verify Rewards', 'url'=>array('/verifyRewards/verifyrewards')),
-				array('label'=>'Manage Rewards', 'url'=>array('#')),
-//				array('label'=>'Manage Partners', 'url'=>array('/managePartners/index')),
-//				array('label'=>'Manage Reports', 'url'=>array('/reports/rewardsredemption')),
-                            	array('label'=>'Manage Partners', 'url'=>array('#')),
-				array('label'=>'Manage Reports', 'url'=>array('#')),
-			),
+		<?php 
+                
+        if(isset(Yii::app()->session['AccountType']))
+        {
+            $accounttype = Yii::app()->session['AccountType'];
+            
+            //Get menus from database by account type id
+            $items =  SiteMenu::getMenusByAccountType($accounttype);
+            
+        }else
+            $items = array();
+        
+        $this->widget('zii.widgets.CMenu',array(
+			'items'=>$items
 		));
                 ?>
                 <div id="divLogout">

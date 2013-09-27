@@ -41,7 +41,7 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl . '/js
         $("#errmsg2").html(""); 
     });
     //Rewards E-Coupon
-    $("#submitverifybtn").live("click", function(){
+    $("#Submit").live("click", function(){
        var partner = $("#egamespartner").val();
        var item = $("#VerifyRewardsForm_rewarditem").val();
        var serialcode = $("#ecouponserial").val();
@@ -71,7 +71,7 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl . '/js
        $("#errmsg").html(""); 
     });
     //Raffle E-Coupons
-    $("#submitverify2btn").live("click", function(){
+    $("#Submit2").live("click", function(){
        var raffleitem = $("#rafflepromo").val();
        var serialcode2 = $("#ecouponserial2").val();
        var securitycode2 = $("#ecouponsecuritycode2").val();
@@ -178,7 +178,7 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl . '/js
         </table>
          
            <div id="submitverify" style="width: 100%; text-align: center;">
-            <?php echo CHtml::submitButton("Verify", array('id'=>'submitverifybtn','name' => 'Submit')); ?>
+            <?php echo CHtml::submitButton("Verify", array('id'=>'Submit','name' => 'Submit')); ?>
            </div> 
     </div>
     
@@ -213,7 +213,7 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl . '/js
     </table>
         
           <div id="submitverify2" style="width: 100%; text-align: center;">
-            <?php echo CHtml::submitButton("Verify", array('id'=>'submitverify2btn','name' => 'Submit2')); ?>
+            <?php echo CHtml::submitButton("Verify", array('id'=>'Submit2','name' => 'Submit2')); ?>
           </div> 
     </div>  
     

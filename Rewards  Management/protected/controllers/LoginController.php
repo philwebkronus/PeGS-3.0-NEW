@@ -2,7 +2,7 @@
 
 class LoginController extends Controller
 {
-    public $showDialog = false;
+    public $showDialog;
     public $dialogMsg;
     
 	/**
@@ -32,7 +32,8 @@ class LoginController extends Controller
 	{
 		// renders the view file 'protected/views/site/index.php'
 		// using the default layout 'protected/views/layouts/main.php'
-		$this->render('index');
+        $model = new LoginForm;
+		$this->render('login',array('model'=>$model));
 	}
 
 	/**
@@ -56,7 +57,7 @@ class LoginController extends Controller
 	{
 		$model = new LoginForm;
         $accountform = new AccountForm();
-        
+        $sessionmodel = new SessionForm();
         
 		// if it is ajax validation request
 		if(isset($_POST['ajax']) && $_POST['ajax']==='login-form')
@@ -70,93 +71,121 @@ class LoginController extends Controller
 		if(isset($_POST['LoginForm']))
 		{
 			$model->attributes=$_POST['LoginForm'];
-                        $username = $model->UserName;
-                        $password = $model->Password;
+            $username = $model->UserName;
+            $password = $model->Password;
+            
+            $usernamelen = strlen($username);
+            $passwordlen = strlen($password);
+            
+                $acct = $accountform->checkUsername($username);
+                $countacct = count($acct);
+                $this->showDialog = false;
+                if($countacct > 0)
+                {
+                        foreach ($acct as $row) {
+                            $aid = $row['AID'];
+                            $accounttypeid = $row['AccountTypeID'];
+                        }
+                        
+                        $session = new CHttpSession;
+                        $session->open();
+                        $session->clear();
+                        
+                        $session_id = session_id();
+                        $session->setSessionID($session_id);
+            
+                        $sessionmodel->checkSession($aid);
+                        if (empty($sessionmodel->aid)) {
+                            $sessionmodel->addSession($aid, $session_id);
+                        }
+                        else {
+                            $sessionmodel->updateSession($aid, $session_id);
+                        }
 
-                        $usernamelen = strlen($username);
-                        $passwordlen = strlen($password);
+                        Yii::app()->session['AID'] = $aid;
+                        Yii::app()->session['SessionID'] = $session_id;
+                        Yii::app()->session['AccountType'] = $accounttypeid;
+                        
+                        $attempts = $accountform->getLoginAttempts($aid);
 
-                        $acct = $accountform->checkUsername($username);
-                        $countacct = count($acct);
+                        foreach ($attempts as $row2) {
+                            $oldnumattempts = $row2['LoginAttempts'];
+                        }
+                        $numattempts = $oldnumattempts + 1;
+                        
+                    if($passwordlen >= 8)
+                    {
+                            $acctpass = $accountform->checkPassword($password);
+                            $countacctpass = count($acctpass);
 
-                        if($countacct > 0)
-                        {
-                                foreach ($acct as $row) {
-                                    $aid = $row['AID'];
-                                }
+                            if($countacctpass > 0){
 
-                                Yii::app()->session['AID'] = $aid;
-
-                                $attempts = $accountform->getLoginAttempts($aid);
-
-                                foreach ($attempts as $row2) {
-                                    $oldnumattempts = $row2['LoginAttempts'];
-                                }
-                                $numattempts = $oldnumattempts + 1;
-
-                                if($passwordlen >= 8)
+                                if($oldnumattempts < 3)
                                 {
-                                        $acctpass = $accountform->checkPassword($password);
-                                        $countacctpass = count($acctpass);
-
-                                        if($countacctpass > 0){
-
-                                            if($oldnumattempts < 3)
-                                            {
-                                                if($model->login()){
-                                                    $numattempts = 0;
-                                                    $accountform->updateLoginAttempts($aid, $numattempts);
-
-                                                    $this->redirect(array('/verifyRewards/verifyrewards'));
-
-                                                }
-                                                else{
-                                                    $this->showDialog = true;
-                                                    $this->dialogMsg = "Invalid Username or Password, Please try again";  
-                                                }
-                                            }
-                                            else
-                                            {
-
-                                                if($oldnumattempts == 3){
-
-                                                    $this->showDialog = true;
-                                                    $this->dialogMsg = "Access Denied.Please contact system administrator to have your account unlocked.";
-                                                }
-                                                else if($oldnumattempts < 3){
-                                                    $accountform->updateLoginAttempts($aid, $numattempts);
-                                                    $this->showDialog = true;
-
-                                                    $this->dialogMsg = "Access Denied.Please contact system administrator to have your account unlocked.";
-                                                }   
-                                            }
-
+                                    if($model->login()){
+                                        $numattempts = 0;
+                                        $accountform->updateLoginAttempts($aid, $numattempts);
+                                        
+                                        $landingpage = SiteMenu::getLandingPage($accounttypeid);
+                                        
+                                        if(!empty($landingpage)){
+                                            $this->redirect(array($landingpage));
                                         }
                                         else{
+                                            $this->showDialog = true;
+                                            $this->dialogMsg = "User has no access right, Please try again";
+                                        }
 
-                                            if($oldnumattempts == 3){
-
-                                                $this->showDialog = true;
-                                                $this->dialogMsg = "Access Denied.Please contact system administrator to have your account unlocked.";
-                                            }
-                                            else if($oldnumattempts < 3){
-                                                $accountform->updateLoginAttempts($aid, $numattempts);
-
-                                                $this->showDialog = true;
-                                                $this->dialogMsg = "Invalid Username or Password, Please try again";
-                                            }        
-                                    } 
+                                    }
+                                    else{
+                                        $this->showDialog = true;
+                                        $this->dialogMsg = "Invalid Username or Password, Please try again";  
+                                    }
                                 }
-                                else{
-                                    $accountform->updateLoginAttempts($aid, $numattempts);
+                                else
+                                {
+                                    
+                                    if($oldnumattempts == 3){
+                                        
+                                        $this->showDialog = true;
+                                        $this->dialogMsg = "Access Denied.Please contact system administrator to have your account unlocked.";
+                                    }
+                                    else if($oldnumattempts < 3){
+                                        $accountform->updateLoginAttempts($aid, $numattempts);
+                                        $this->showDialog = true;
+
+                                        $this->dialogMsg = "Access Denied.Please contact system administrator to have your account unlocked.";
+                                    }   
+                                }
+
+                            }
+                            else{
+
+                                if($oldnumattempts == 3){
+
                                     $this->showDialog = true;
-                                    $this->dialogMsg = "Please enter your password. Minimum of 8 alphanumeric.";
+                                    $this->dialogMsg = "Access Denied.Please contact system administrator to have your account unlocked.";
                                 }
-                        }
-                        else{
-                            $this->showDialog = true;
-                            $this->dialogMsg = "Invalid Username or Password, Please try again";  
-                        }
+                                else if($oldnumattempts < 3){
+                                    $accountform->updateLoginAttempts($aid, $numattempts);
+
+                                    $this->showDialog = true;
+                                    $this->dialogMsg = "Invalid Username or Password, Please try again";
+                                }        
+                        } 
+                    }
+                    else{
+                        $accountform->updateLoginAttempts($aid, $numattempts);
+                        $this->showDialog = true;
+                        $this->dialogMsg = "Please enter your password. Minimum of 8 alphanumeric.";
+                    }
+                    
+
+                }
+                else{
+                    $this->showDialog = true;
+                    $this->dialogMsg = "Invalid Username or Password, Please try again";  
+                }
 		}
         
 		// display the login form
@@ -168,7 +197,10 @@ class LoginController extends Controller
 	 */
 	public function actionLogout()
 	{
-		Yii::app()->user->logout();
+		$aid = Yii::app()->session['AID'];
+        $sessionmodel = new SessionForm();
+        $sessionmodel->deleteSession($aid);
+        Yii::app()->user->logout();
 		$this->redirect(Yii::app()->homeUrl);
 	}
     

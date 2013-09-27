@@ -2,37 +2,109 @@
 
 class ManagePartnersController extends Controller {
 
-    public $showDialog = false;
-    public $dialogMsg;
-
+    public $dialogmsg;
+    public $dialogtitle;
+    public $showdialog = false;
+    public $partnerID;
     /**
-     * Get Partner Data from database and encode to json for jqgrid.
+     * Add Partner Controller
+     * @author mgesguerra 
+     * @date 09-20-13
+     * 
      */
     public function actionAddPartner() {
         $model = new ManagePartnersForm;
-        $model->attributes = $_POST['ManagePartnersForm'];
-        if ($model->addPartner()) {
-            $model->addPartnerDetails();
-        }
-        $this->redirect(array('index', 'model' => $model));
-    }
-
-    public function actionEdit($id) {
-//        $this->redirect(array('edit','model'=>$model));
-        $model = new ManagePartnersForm;
-        if (isset($_GET['id'])) {
-            $id = $_GET['id'];
+        $validation = new Validations();
+        if (isset($_POST['ManagePartnersForm']))
+        {
+            $model->attributes = $_POST['ManagePartnersForm'];
             
+            $details['partnerID']       = $this->sanitize($model->PartnerID);
+            $details['partnername']     = $this->sanitize($model->eGamesPartner);
+            $details['address']         = $this->sanitize($model->companyAddress);
+            $details['pnumber']         = $this->sanitize($model->phoneNumber);
+            $details['faxnumber']       = $this->sanitize($model->faxNumber);
+            $details['email']           = $this->sanitize($model->emailAddress);
+            $details['website']         = $this->sanitize($model->website);
+            $details['contactPerson']   = $this->sanitize($model->contactPerson);
+            $details['contactPosition'] = $this->sanitize($model->contactPosition);
+            $details['contactEmail']    = $this->sanitize($model->contactEmailAddress);
+            $details['contactPNumber']  = $this->sanitize($model->contactPhoneNumber);
+            $details['contactMobile']   = $this->sanitize($model->contactMobile);
+            $details['status']          = $this->sanitize($model->partnershipStatus);
+            $details['noOfofferings']   = $this->sanitize($model->numberOfRewardOfferings);
+            //Check if all fields are filled up
+            if ((($details['partnerID'] || $details['partnername'] | $details['address'] ||
+                $details['pnumber'] || $details['faxnumber'] || $details['email'] || 
+                $details['website'] || $details['contactPerson'] || $details['contactPosition'] || 
+                $details['contactEmail'] || $details['contactPNumber'] 
+                || $details['contactMobile'] || $details['noOfofferings']) == "") 
+                || ($details['status'] == -1))
+            {
+                
+                $this->dialogtitle = "ERROR MESSAGE";
+                $this->dialogmsg = "Please fill up all fields!";
+                $this->showdialog = true;
+            }
+            else if (!$validation->validateAlphaNumeric($details['partnername']) || 
+                     !$validation->validateAlphaNumeric($details['address']) || 
+                     !$validation->validateAlphaNumeric($details['faxnumber']) ||
+                     !$validation->validateAlphaNumeric($details['contactPosition']) ||
+                     !$validation->validateAlphaNumeric($details['contactMobile']) ||
+                     !$validation->validateAlphaNumeric($details['status']) ||
+                     !$validation->validateAlphaNumeric($details['noOfofferings']))
+            {
+                $this->dialogtitle = "ERROR MESSAGE";
+                $this->dialogmsg = "Special characters are not allowed in some fields that \n
+                                    accept only letters or numbers.";
+                $this->showdialog = true;
+            }
+            else
+            {
+                $result = $model->addPartner($details);
+                
+                $this->dialogmsg = $result['TransMsg'];
+                //SUCCESS or ERROR Message
+                if ($result['TransCode'] != 0)
+                {
+                    $this->dialogtitle = "ERROR MESSAGE";
+                }
+                else
+                {
+                    $this->dialogtitle = "SUCCESS MESSAGE";
+                    //Test if php can send email in client side
+                    $to = "sample@someone.com";
+                    $subject = "Test";
+                    $message = "Sample Message";
+                    if(mail($to,$subject,$message) == false)
+                    {
+                        $this->dialogtitle = "ERROR MESSAGE";
+                        $this->dialogmsg = "Email message did not send";
+                    }
+                    else
+                    {
+                        $model->mailAddedPartner($result['Email'], $result['ContactPerson'], $result['Password']);
+                    }
+                }
+                $this->showdialog = true;
+            }
+            $this->render('index', array('model' => $model));
         }
-        $this->render('index', array('model' => $model));
+        else
+        {
+            $this->redirect('index');
+        }
     }
 
     /**
      * Lists all models.
+     * Modified by: Mark Kenneth Esguerra | 09-17-13
      */
     public function actionIndex() {
         $model = new ManagePartnersForm;
-        $data = $model->getPartnerDetails();
+        $status = "All";
+        $data = $model->getPartnerDetails($status);
+            
         $updateUrl = $this->createUrl('update', array('id' => ''));
         $ctr = 0;
         $countData = count($data);
@@ -40,7 +112,21 @@ class ManagePartnersController extends Controller {
             if (!array_key_exists('errcode', $data)) {
                 do {
                     $arrayNewList['PartnerID'] = $data[$ctr]['PartnerID'];
-                    $arrayNewList['PartnerName'] = urldecode($data[$ctr]['PartnerName']);
+                    $arrayNewList['PartnerName'] = "<a href='#' id='partnerNameLink' PartnerID='".$arrayNewList['PartnerID']."'
+                                                                           PartnerName='".$data[$ctr]['PartnerName']."'
+                                                                           CompanyAddress='".$data[$ctr]['CompanyAddress']."'
+                                                                           CompanyEmail='".$data[$ctr]['CompanyEmail']."'
+                                                                           CompanyPhone='".$data[$ctr]['CompanyPhone']."'
+                                                                           CompanyFax='".$data[$ctr]['CompanyFax']."'
+                                                                           CompanyWebsite='".$data[$ctr]['CompanyWebsite']."'
+                                                                           ContactPerson='".$data[$ctr]['ContactPerson']."'
+                                                                           ContactPersonPosition='".$data[$ctr]['ContactPersonPosition']."'
+                                                                           ContactPersonPhone='".$data[$ctr]['ContactPersonPhone']."'
+                                                                           ContactPersonMobile='".$data[$ctr]['ContactPersonMobile']."'
+                                                                           ContactPersonEmail='".$data[$ctr]['ContactPersonEmail']."'
+                                                                           Status='".$data[$ctr]['Status']."'
+                                                                           NumberOfRewardOffers='".$data[$ctr]['NumberOfRewardOffers']."'
+                                                                           >".$data[$ctr]['PartnerName']."</a>";
                     if ($data[$ctr]['Status'] == 1) {
                         $arrayNewList['Status'] = 'Active';
                     } else {
@@ -49,7 +135,21 @@ class ManagePartnersController extends Controller {
                     $arrayNewList['NumberOfRewardOffers'] = urldecode($data[$ctr]['NumberOfRewardOffers']);
                     $arrayNewList['ContactPerson'] = urldecode($data[$ctr]['ContactPerson']);
                     $arrayNewList['ContactPersonEmail'] = urldecode($data[$ctr]['ContactPersonEmail']);
-                    $arrayNewList['EditLink'] = "<div title='Edit Details'><form id='editlinkform' action='edit' method='post'><input type='hidden' id='editlinkid' value='$arrayNewList[PartnerID]'><a href='index?id=$arrayNewList[PartnerID]' onclick='editDialog();return false;'></form><span class='ui-icon ui-icon-gear'></span></div>";
+                    $arrayNewList['EditLink'] = "<div title='Edit Details'><a href='#' id='editlinkid' PartnerID='".$arrayNewList['PartnerID']."'
+                                                                           PartnerName='".$data[$ctr]['PartnerName']."'
+                                                                           CompanyAddress='".$data[$ctr]['CompanyAddress']."'
+                                                                           CompanyEmail='".$data[$ctr]['CompanyEmail']."'
+                                                                           CompanyPhone='".$data[$ctr]['CompanyPhone']."'
+                                                                           CompanyFax='".$data[$ctr]['CompanyFax']."'
+                                                                           CompanyWebsite='".$data[$ctr]['CompanyWebsite']."'
+                                                                           ContactPerson='".$data[$ctr]['ContactPerson']."'
+                                                                           ContactPersonPosition='".$data[$ctr]['ContactPersonPosition']."'
+                                                                           ContactPersonPhone='".$data[$ctr]['ContactPersonPhone']."'
+                                                                           ContactPersonMobile='".$data[$ctr]['ContactPersonMobile']."'
+                                                                           ContactPersonEmail='".$data[$ctr]['ContactPersonEmail']."'
+                                                                           Status='".$data[$ctr]['Status']."'
+                                                                           NumberOfRewardOffers='".$data[$ctr]['NumberOfRewardOffers']."'
+                                                                           ><img src='../../images/settings.png'></a></div>";
                     $arrayData[] = $arrayNewList;
                     $ctr = $ctr + 1;
                 } while ($ctr < $countData);
@@ -72,5 +172,268 @@ class ManagePartnersController extends Controller {
             Yii::app()->end();
         }
     }
+    /**
+     * Get Status Name
+     * @param type $status StatusRef
+     * @author mgesguerra
+     */
+    public static function determineStatus($status)
+    {
+        switch($status)
+        {
+            case 1: $stat = "Active";
+                break;
+            case 0: $stat = "Inactive";
+                break;
+            default: $stat = "Inactive";
+                break;
+        }
+        return $stat;
+    }
+    /**
+     * Update Details Controller
+     * Updates partner details when the user clicks
+     * partner name
+     * @author mgesguerra
+     * @date Sep-18-13
+     */
+    public function actionUpdatedetails()
+    {
+        $model = new ManagePartnersForm();
+        $validation = new Validations();
+        if (isset($_POST['ManagePartnersForm']))
+        {
+            $model->attributes = $_POST['ManagePartnersForm'];
+            
+            $details['partnerID']       = $this->sanitize($model->PartnerID);
+            $details['partnername']     = $this->sanitize($model->eGamesPartner);
+            $details['address']         = $this->sanitize($model->companyAddress);
+            $details['pnumber']         = $this->sanitize($model->phoneNumber);
+            $details['faxnumber']       = $this->sanitize($model->faxNumber);
+            $details['email']           = $this->sanitize($model->emailAddress);
+            $details['website']         = $this->sanitize($model->website);
+            $details['contactPerson']   = $this->sanitize($model->contactPerson);
+            $details['contactPosition'] = $this->sanitize($model->contactPosition);
+            $details['contactEmail']    = $this->sanitize($model->contactEmailAddress);
+            $details['contactPNumber']  = $this->sanitize($model->contactPhoneNumber);
+            $details['contactMobile']   = $this->sanitize($model->contactMobile);
+            $details['status']          = $this->sanitize($model->partnershipStatus);
+            $details['noOfofferings']   = $this->sanitize($model->numberOfRewardOfferings);
+            //Error Handling (Validations)
+            if ((($details['partnerID'] || $details['partnername'] | $details['address'] ||
+                $details['pnumber'] || $details['faxnumber'] || $details['email'] || 
+                $details['website'] || $details['contactPerson'] || $details['contactPosition'] || 
+                $details['contactEmail'] || $details['contactPNumber'] 
+                || $details['contactMobile']) == "" || $details['noOfofferings'] == "") || ($details['status'] == -1))
+            {
+                $this->dialogtitle = "ERROR MESSAGE";
+                $this->dialogmsg = "Please fill up all fields!";
+                $this->showdialog = true;
+            }
+            else if (($validation->validateEmail($details['email']) == false) ||
+                      $validation->validateEmail($details['contactEmail']) == false)
+            {
+                $this->dialogtitle = "ERROR MESSAGE";
+                $this->dialogmsg = "Invalid Email Address on <u>Company</u> or <u>Contact Person</u>
+                                    Email Address";
+                $this->showdialog = true;
+            }
+            else if ($validation->validateWebsite($details['website']) == false)
+            {
+                $this->dialogtitle = "ERROR MESSAGE";
+                $this->dialogmsg = "Invalid Website URL";
+                $this->showdialog = true;
+            }
+            else if (!$validation->validateAlphaNumeric($details['partnerID']) || 
+                     !$validation->validateAlphaNumeric($details['partnername']) || 
+                     !$validation->validateAlphaNumeric($details['address']) || 
+                     !$validation->validateAlphaNumeric($details['faxnumber']) ||
+                     !$validation->validateAlphaNumeric($details['contactPerson']) ||
+                     !$validation->validateAlphaNumeric($details['contactPosition']) ||
+                     !$validation->validateAlphaNumeric($details['contactMobile']) ||
+                     !$validation->validateAlphaNumeric($details['status']) ||
+                     !$validation->validateAlphaNumeric($details['noOfofferings']))
+            {
+                $this->dialogtitle = "ERROR MESSAGE";
+                $this->dialogmsg = "Special characters are not allowed in some fields that \n
+                                    accept only letters or numbers.";
+                $this->showdialog = true;
+            }
+            else
+            {
+                $return = $model->updatePartnerDetails($details);
 
+                $this->dialogmsg = $return['TransMsg'];
+                //SUCCESS or ERROR Message
+                if ($return['TransCode'] != 0)
+                {
+                    $this->dialogtitle = "ERROR MESSAGE";
+                }
+                else
+                {
+                    $this->dialogtitle = "SUCCESS MESSAGE";
+                }
+                $this->showdialog = true;
+                
+            }
+            $this->render('index', array('model' => $model));
+        }
+        else
+        {
+            $this->redirect('index');
+        }
+    }
+    /**
+     * Update Details Controller using AJAX
+     * Updates partner details when the user clicks
+     * partner name using AJAX
+     * @author mgesguerra
+     * @date Sep-19-13
+     */
+    public function actionAjaxupdatedetails()
+    {
+        $model = new ManagePartnersForm();
+        if (isset($_POST['ManagePartnersForm']))
+        {
+            $model->attributes = $_POST['ManagePartnersForm'];
+            
+            $details['partnerID']       = $model->PartnerID;
+            $details['partnername']     = $model->eGamesPartner;
+            $details['address']         = $model->companyAddress;
+            $details['pnumber']         = $model->phoneNumber;
+            $details['faxnumber']       = $model->faxNumber;
+            $details['email']           = $model->emailAddress;
+            $details['website']         = $model->website;
+            $details['contactPerson']   = $model->contactPerson;
+            $details['contactPosition'] = $model->contactPosition;
+            $details['contactEmail']    = $model->contactEmailAddress;
+            $details['contactPNumber']  = $model->contactPhoneNumber;
+            $details['status']          = $model->partnershipStatus;
+            
+            $return = $model->updatePartnerDetails($details);
+            //Return the TransCode
+            echo $return['TransCode'];
+            exit;
+        }
+        else
+        {
+            $this->redirect('index');
+        }
+    }
+    /**
+     * Sanitize inputs
+     * Add here some additional function <br /> to sanitize inputss
+     * @param type $str String to be sanitize
+     * @return $str Sanitized input
+     * @author mgesguerra
+     */
+    private function sanitize($str)
+    {
+        $str = trim($str);
+        
+        return mysql_escape_string($str);
+    }
+    
+    /**
+     * Filter Partner Views using AJAX. View Partners by Active, 
+     * Inactive or All then load to JqGrid
+     * @author mgesguerra
+     * @date Sept. 27, 2013
+     */
+    public function actionAjaxViewPartnersBy()
+    {
+        $model = new ManagePartnersForm();
+        $page = $_POST['page'];
+        $limit = $_POST['rows'];
+
+        $status = $_POST['Status'];
+        
+        $data = $model->getPartnerDetails($status);
+        
+        $count = count($data);
+        if ($count > 0)
+        {
+            $total_pages = ceil($count/$limit);
+        }
+        else
+        {   
+            $total_pages = 0;
+        }
+        if ($page > $total_pages)
+        {
+            $page = $total_pages;
+        }
+
+        $start = $limit * $page - $limit;
+        if($count == 0)
+            $start = 0;
+        
+        $response->page = $page;
+        $response->total = $total_pages;
+        $response->records = $count;
+        //Check there are fetched data
+        if ($count > 0)
+        {
+            $i = 0; 
+            foreach ($data as $val)
+            {
+                if ($val['Status'] == 1)
+                {
+                    $val['Status'] = 'Active';
+                } 
+                else 
+                {
+                    $val['Status'] = 'Inactive';
+                }
+                    
+                $response->rows[$i]['id'] = $val['PartnerID'];
+                $response->rows[$i]['cell'] = array("<a href='#' id='partnerNameLink' PartnerID='".$val['PartnerID']."'
+                                                                           PartnerName='".$val['PartnerName']."'
+                                                                           CompanyAddress='".$val['CompanyAddress']."'
+                                                                           CompanyEmail='".$val['CompanyEmail']."'
+                                                                           CompanyPhone='".$val['CompanyPhone']."'
+                                                                           CompanyFax='".$val['CompanyFax']."'
+                                                                           CompanyWebsite='".$val['CompanyWebsite']."'
+                                                                           ContactPerson='".$val['ContactPerson']."'
+                                                                           ContactPersonPosition='".$val['ContactPersonPosition']."'
+                                                                           ContactPersonPhone='".$val['ContactPersonPhone']."'
+                                                                           ContactPersonMobile='".$val['ContactPersonMobile']."'
+                                                                           ContactPersonEmail='".$val['ContactPersonEmail']."'
+                                                                           Status='".$val['Status']."'
+                                                                           NumberOfRewardOffers='".$val['NumberOfRewardOffers']."'
+                                                                           >".$val['PartnerName']."</a>",
+                                                    $val['Status'],
+                                                    $val['NumberOfRewardOffers'],
+                                                    $val['ContactPerson'],
+                                                    $val['ContactPersonEmail'],
+                                                    "<div title='Edit Details'><a href='#' id='editlinkid' PartnerID='".$val['PartnerID']."'
+                                                                           PartnerName='".$val['PartnerName']."'
+                                                                           CompanyAddress='".$val['CompanyAddress']."'
+                                                                           CompanyEmail='".$val['CompanyEmail']."'
+                                                                           CompanyPhone='".$val['CompanyPhone']."'
+                                                                           CompanyFax='".$val['CompanyFax']."'
+                                                                           CompanyWebsite='".$val['CompanyWebsite']."'
+                                                                           ContactPerson='".$val['ContactPerson']."'
+                                                                           ContactPersonPosition='".$val['ContactPersonPosition']."'
+                                                                           ContactPersonPhone='".$val['ContactPersonPhone']."'
+                                                                           ContactPersonMobile='".$val['ContactPersonMobile']."'
+                                                                           ContactPersonEmail='".$val['ContactPersonEmail']."'
+                                                                           Status='".$val['Status']."'
+                                                                           NumberOfRewardOffers='".$val['NumberOfRewardOffers']."'
+                                                                           ><img src='../../images/settings.png'></a></div>"
+                                                    );
+                $i++;
+            }
+        }
+        else
+        {
+            $i = 0;
+            $response->page = $page;
+            $response->total = $total_pages;
+            $response->records = $count;
+            $msg = "Audit Trail: No returned result";
+            $response->msg = $msg;
+        }
+        echo json_encode($response);
+    }
 }

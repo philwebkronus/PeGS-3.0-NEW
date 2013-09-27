@@ -79,7 +79,7 @@ class AccountForm extends CFormModel
     {
         $connection = Yii::app()->db2;
         
-        $sql="SELECT AID, UserName, Password, Status FROM accounts 
+        $sql="SELECT AID, UserName, Password, AccountTypeID, Status FROM accounts 
             WHERE UserName = :username;";
         $command = $connection->createCommand($sql);
         $command->bindValue(':username', $username);

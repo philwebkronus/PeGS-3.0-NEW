@@ -3,190 +3,210 @@
 class VerifyRewardsController extends Controller
 {
     
-    public $showDialog;
+    public $showDialog = false;
     public $dialogMsg;
     public $dialogMsg2;
     public $dialogMsg3;
-    public $showDialog2;
+    public $showDialog2 = false;
     public $showDialogSuccess;
+    public $title;
 
 
     public function actionIndex()
 	{
+        //for session checking
+        $_AccountSessions = new SessionForm();
+
+        if (isset(Yii::app()->session['SessionID'])) {
+            $aid = Yii::app()->session['AID'];
+            $sessionid = Yii::app()->session['SessionID'];
+        } else {
+            $sessionid = 0;
+            $aid = 0;
+        }
+
+        $sessioncount = $_AccountSessions->checkifsessionexist($aid, $sessionid);
+        
+        if ($sessioncount == 0) {
+            Yii::app()->user->logout();
+            $this->redirect(array(Yii::app()->defaultController));
+        } 
+        else 
+        {
 		$model = new VerifyRewardsForm();
         
         
         $this->render('verifyrewards', array('model' => $model));
+        }
 	}
 
     public function actionVerifyrewards()
-	{
-        //for session checking
-//        $_AccountSessions = new SessionForm();
-//
-//        if (isset(Yii::app()->session['SessionID'])) {
-//            $aid = Yii::app()->session['AID'];
-//            $sessionid = Yii::app()->session['SessionID'];
-//        } else {
-//            $sessionid = 0;
-//            $aid = 0;
-//        }
-//
-//        $sessioncount = $_AccountSessions->checkifsessionexist($aid, $sessionid);
-//
-//        if ($sessioncount == 0) {
-//            Yii::app()->user->logout();
-//            $this->redirect(array(Yii::app()->defaultController));
-//        } 
-//        else 
-//        {
-            $model                  = new VerifyRewardsForm();
-            $itemredemptionlogs     = new ItemRedemptionLogsModel();
-            $couponredemptionlogs   = new CouponRedemptionLogsModel();
-            
-            if(isset($_POST['VerifyRewardsForm']))
+    {
+    //for session checking
+        $_AccountSessions = new SessionForm();
+
+        if (isset(Yii::app()->session['SessionID'])) {
+            $aid = Yii::app()->session['AID'];
+            $sessionid = Yii::app()->session['SessionID'];
+        } else {
+            $sessionid = 0;
+            $aid = 0;
+        }
+
+        $sessioncount = $_AccountSessions->checkifsessionexist($aid, $sessionid);
+        
+        if ($sessioncount == 0) {
+            Yii::app()->user->logout();
+            $this->redirect(array(Yii::app()->defaultController));
+        } 
+        else 
+        {
+        $model                  = new VerifyRewardsForm();
+        $itemredemptionlogs     = new ItemRedemptionLogsModel();
+        $couponredemptionlogs   = new CouponRedemptionLogsModel();
+
+        if(isset($_POST['VerifyRewardsForm']))
+        {
+            $model->attributes = $_POST['VerifyRewardsForm'];
+                
+            $partnerid = $model->egamespartner;
+            $reewarditemid = $model->rewarditem;
+            $serialcode = $model->ecouponserial;
+            $securitycode = $model->ecouponsecuritycode;
+
+            if (isset($_POST['Submit'])) {
+                    $check = $itemredemptionlogs->checkSerialSecCodes($serialcode,$securitycode,$reewarditemid);
+                    $countcheck = count($check);
+                    if($countcheck > 0){
+                        foreach ($check as $row) {
+                            $rewarditemid = $row['RewardItemID'];
+                            $mid = $row['MID'];
+                            $validdatefrom = $row['ValidFrom'];
+                            $validdateto = $row['ValidTo'];
+                            $status = $row['Status'];
+                            $serial = $row['SerialCode'];
+                            $security = $row['SecurityCode'];
+                            $source = $row['Source'];
+                        }
+
+                        if($status == 1){
+                                Yii::app()->session['partnerid'] = $partnerid;
+                                Yii::app()->session['rewarditemid'] = $rewarditemid;
+                                Yii::app()->session['MID'] = $mid;
+                                Yii::app()->session['serialcode'] = $serial;
+                                Yii::app()->session['securitycode'] = $security;
+                                Yii::app()->session['source'] = $source;
+
+                                $datetoday = date("Y-m-d"); 
+
+                                $checkrange = $model->check_in_range($validdatefrom, $validdateto, $datetoday);
+
+                                $validdatefrom = date("d/m/Y", strtotime($validdatefrom));
+                                $validdateto = date("d/m/Y", strtotime($validdateto));
+
+                                if($checkrange == true){
+
+                                    $this->showDialogSuccess = true;
+                                    $this->dialogMsg = "This e-Coupon ".$serialcode." is valid."; 
+                                    $this->dialogMsg2 = "e-Coupon validity period is from ".$validdatefrom." to ".$validdateto.".";
+                                    $this->dialogMsg3 = "To record transaction click PROCEED.";
+                                }
+                                else{
+                                    $this->showDialog2 = true;
+                                    $this->dialogMsg = "This e-Coupon ".$serialcode." has expired."; 
+                                    $this->dialogMsg2 = "e-Coupon validity period is from ".$validdatefrom." to ".$validdateto."."; 
+                                }
+                        }
+                        else if($status == 3){
+                            $this->showDialog2 = true;
+                            $this->dialogMsg = "This e-Coupon ".$serialcode." is used."; 
+                            $this->dialogMsg2 = "Review e-Coupon details in the previous page."; 
+                        }
+
+                    }
+                    else
+                    {
+                        $this->showDialog2 = true;
+                        $this->dialogMsg = "This e-Coupon ".$serialcode." does not match our records."; 
+                        $this->dialogMsg2 = "Review e-Coupon details in the previous page."; 
+                    }
+            }
+            else if (isset($_POST['Submit2'])) 
             {
-                $model->attributes = $_POST['VerifyRewardsForm'];
-                
-                $partnerid = $model->egamespartner;
-                $reewarditemid = $model->rewarditem;
-                $serialcode = $model->ecouponserial;
-                $securitycode = $model->ecouponsecuritycode;
-                
-                if (isset($_POST['Submit'])) {
 
-                        $check = $itemredemptionlogs->checkSerialSecCodes($serialcode,$securitycode,$reewarditemid);
-                        $countcheck = count($check);
-                        if($countcheck > 0){
-                            foreach ($check as $row) {
-                                $rewarditemid = $row['RewardItemID'];
-                                $mid = $row['MID'];
-                                $validdatefrom = $row['ValidFrom'];
-                                $validdateto = $row['ValidTo'];
-                                $status = $row['Status'];
-                                $serial = $row['SerialCode'];
-                                $security = $row['SecurityCode'];
-                                $source = $row['Source'];
-                            }
+                $rafflepromo = $model->rafflepromo;
+                $serialcode2 = $model->ecouponserial2;
+                $securitycode2 = $model->ecouponsecuritycode2;
 
-                            if($status == 1){
-                                    Yii::app()->session['partnerid'] = $partnerid;
-                                    Yii::app()->session['rewarditemid'] = $rewarditemid;
-                                    Yii::app()->session['MID'] = $mid;
-                                    Yii::app()->session['serialcode'] = $serial;
-                                    Yii::app()->session['securitycode'] = $security;
-                                    Yii::app()->session['source'] = $source;
+                $check = $couponredemptionlogs->checkSerialSecCodes($serialcode2,$securitycode2,$rafflepromo);
+                    $countcheck = count($check);
+                    if($countcheck > 0){
+                        foreach ($check as $row) {
+                            $rewarditemid = $row['RewardItemID'];
+                            $mid = $row['MID'];
+                            $validdatefrom = $row['ValidFrom'];
+                            $validdateto = $row['ValidTo'];
+                            $status = $row['Status'];
+                            $serial = $row['SerialCode'];
+                            $security = $row['SecurityCode'];
+                            $source = $row['Source'];
+                        }
 
-                                    $datetoday = date("Y-m-d H:i:s"); 
+                        if($status == 1){
 
-                                    $checkrange = $model->check_in_range($validdatefrom, $validdateto, $datetoday);
-                                    
-                                    $validdatefrom = date("d/m/Y", strtotime($validdatefrom));
-                                    $validdateto = date("d/m/Y", strtotime($validdateto));
-                                        
-                                    if($checkrange == true){
-                                        
-                                        $this->showDialogSuccess = true;
-                                        $this->dialogMsg = "This e-Coupon ".$serialcode." is valid."; 
+                                $datetoday = date("Y-m-d H:i:s"); 
+
+                                $checkrange = $model->check_in_range($validdatefrom, $validdateto, $datetoday);
+
+                                $validdatefrom = date("d/m/Y", strtotime($validdatefrom));
+                                $validdateto = date("d/m/Y", strtotime($validdateto));
+
+                                if($checkrange == true){
+
+                                    $result = $couponredemptionlogs->updateCouponLogsStatus($securitycode2, $serialcode2);
+                                    if ($result['TransCode'] == 1)
+                                    {
+                                        $this->showDialog2 = true;
+                                        $this->dialogMsg = "This e-Coupon ".$serialcode2." is valid."; 
                                         $this->dialogMsg2 = "e-Coupon validity period is from ".$validdatefrom." to ".$validdateto.".";
-                                        $this->dialogMsg3 = "To record transaction click PROCEED.";
                                     }
-                                    else{
+                                    else
+                                    {
                                         $this->showDialog2 = true;
-                                        $this->dialogMsg = "This e-Coupon ".$serialcode." has expired."; 
-                                        $this->dialogMsg2 = "e-Coupon validity period is from ".$validdatefrom." to ".$validdateto."."; 
+                                        $this->dialogMsg = "An error occured while updating the status";
                                     }
-                            }
-                            else if($status == 3){
-                                $this->showDialog2 = true;
-                                $this->dialogMsg = "This e-Coupon ".$serialcode." is used."; 
-                                $this->dialogMsg2 = "Review e-Coupon details in the previous page."; 
-                            }
+                                }
+                                else{
+                                    $this->showDialog2 = true;
+                                    $this->dialogMsg = "This e-Coupon ".$serialcode2." has expired."; 
+                                    $this->dialogMsg2 = "e-Coupon validity period is from ".$validdatefrom." to ".$validdateto."."; 
+                                }
 
                         }
                         else{
-                            
                             $this->showDialog2 = true;
-                            $this->dialogMsg = "This e-Coupon ".$serialcode." does not match our records."; 
+                            $this->dialogMsg = "This e-Coupon ".$serialcode2." is used."; 
                             $this->dialogMsg2 = "Review e-Coupon details in the previous page."; 
                         }
                 
-                }
-                elseif (isset($_POST['Submit2'])) 
-                {
-                    
-                    $rafflepromo = $model->rafflepromo;
-                    $serialcode2 = $model->ecouponserial2;
-                    $securitycode2 = $model->ecouponsecuritycode2;
-                
-                    $check = $couponredemptionlogs->checkSerialSecCodes($serialcode2,$securitycode2,$rafflepromo);
-                        $countcheck = count($check);
-                        if($countcheck > 0){
-                            foreach ($check as $row) {
-                                $rewarditemid = $row['RewardItemID'];
-                                $mid = $row['MID'];
-                                $validdatefrom = $row['ValidFrom'];
-                                $validdateto = $row['ValidTo'];
-                                $status = $row['Status'];
-                                $serial = $row['SerialCode'];
-                                $security = $row['SecurityCode'];
-                                $source = $row['Source'];
-                            }
-                            
-                            if($status == 1){
-                                
-                                    $datetoday = date("Y-m-d H:i:s"); 
-
-                                    $checkrange = $model->check_in_range($validdatefrom, $validdateto, $datetoday);
-                                    
-                                    $validdatefrom = date("d/m/Y", strtotime($validdatefrom));
-                                    $validdateto = date("d/m/Y", strtotime($validdateto));
-                                        
-                                    if($checkrange == true){
-                                        
-                                        $result = $couponredemptionlogs->updateCouponLogsStatus($securitycode2, $serialcode2);
-                                        if ($result['TransCode'] == 1)
-                                        {
-                                            $this->showDialog2 = true;
-                                            $this->dialogMsg = "This e-Coupon ".$serialcode2." is valid."; 
-                                            $this->dialogMsg2 = "e-coupon validity period is from ".$validdatefrom." to ".$validdateto.".";
-                                        }
-                                        else
-                                        {
-                                            $this->showDialog2 = true;
-                                            $this->dialogMsg = "An error occured while updating the status";
-                                        }
-                                    }
-                                    else{
-                                        $this->showDialog2 = true;
-                                        $this->dialogMsg = "This e-Coupon ".$serialcode2." has expired."; 
-                                        $this->dialogMsg2 = "e-coupon validity period is from ".$validdatefrom." to ".$validdateto."."; 
-                                    }
-                                
-                            }
-                            else{
-                                $this->showDialog2 = true;
-                                $this->dialogMsg = "This e-Coupon ".$serialcode2." is used."; 
-                                $this->dialogMsg2 = "Review e-Coupon details in the previous page."; 
-                            }
-                            
-                        }
-                        else{
-                            $this->showDialog2 = true;
-                            $this->dialogMsg = "This e-Coupon ".$serialcode2." does not match our records."; 
-                            $this->dialogMsg2 = "Review e-Coupon details in the previous page."; 
-                        }
-                
+                    }
+                    else{
+                      $this->showDialogSuccess = false;
+                    }
                 }
                 else{
-                  $this->showDialogSuccess = false;
+                    $this->showDialog2 = true;
+                    $this->dialogMsg = "This e-Coupon ".$serialcode2." does not match our records."; 
+                    $this->dialogMsg2 = "Review e-Coupon details in the previous page."; 
                 }
-            }
-            
-            $this->render('verifyrewards', array('model' => $model));
-//        }
 
-	}
+            }
+            else{
+              $this->showDialogSuccess = false;
+            }
+        }
+        $this->render('verifyrewards', array('model' => $model));
+    }
     /**
      * Get Reward Items
      * @modified Mark Kenneth Esguerra
@@ -197,7 +217,7 @@ class VerifyRewardsController extends Controller
         $partnerid = $_POST['VerifyRewardsForm_egamespartner'];
         
         $items = $rewarditems->getRewardItems($partnerid);
-        array_unshift($items, array('RewardItemID' => '-1', 'ItemName' => '-Please Select-'));
+        array_unshift($items, array('RewardItemID' => '-1', 'ItemName' => '- Please Select -'));
         foreach ($items as $result)
         {
             ?>
@@ -208,7 +228,7 @@ class VerifyRewardsController extends Controller
     
     public function actionRecordrewardtrans() {
         $model = new VerifyRewardsForm();
-
+        $validation = new Validations();
         $itemredemptionlogs = new ItemRedemptionLogsModel();
         $partners = new PartnersModel(); 
         $partnerinfo = new PartnerInfoModel();
@@ -228,12 +248,20 @@ class VerifyRewardsController extends Controller
                     $forminputs = $_POST['VerifyRewardsForm'];
      
                     if (isset($_POST['Submit'])) {
-
-                        $partnernamecashier = $forminputs['partnernamecashier'];
-                        $branchdetails = $forminputs['branchdetails'];
-                        $remarks = $forminputs['remarks'];
+                        //Trim inputs - avoid trailing spaces
+                        $partnernamecashier = trim($forminputs['partnernamecashier']);
+                        $branchdetails = trim($forminputs['branchdetails']);
+                        $remarks = trim($forminputs['remarks']);
                         
-                        if($partnernamecashier != '' && $branchdetails != ''){
+                        if (!$validation->validateAlphaNumeric($partnernamecashier) || !$validation->validateAlphaNumeric($branchdetails)
+                            || !$validation->validateAlphaNumeric($remarks))
+                        {
+                            $this->showDialog2 = true;
+                            $this->dialogMsg = "Special Characters are not allowed"; 
+                            $this->title = "ERROR MESSAGE";
+                        }
+                        else if($partnernamecashier != '' && $branchdetails != '')
+                        {
 
                             $upsuccess = $itemredemptionlogs->updateItemRedemptionLogs($rewarditemid, $partnernamecashier, 
                                     $branchdetails, $remarks, $mid, $aid);
@@ -255,28 +283,39 @@ class VerifyRewardsController extends Controller
 
 
                                 array_push($marketingemail, $partneremail);
-
-                                $vcount = 0;        
-                                $CC = '';
-
-                                while($vcount < count($marketingemail))
+                                //Test if php can send email in client side
+                                $to = "sample@someone.com";
+                                $subject = "Test";
+                                $message = "Sample Message";
+                                if(mail($to,$subject,$message) != false)
                                 {
+                                    $vcount = 0;        
+                                    $CC = '';
+                                
+                                    while($vcount < count($marketingemail))
+                                    {
 
-                                    $to = $marketingemail[$vcount];
+                                        $to = $marketingemail[$vcount];
 
-                                    $model->mailRecordReward($to, $CC);
+                                        $model->mailRecordReward($to, $CC);
+ 
+                                        $vcount++;
+                                    }
+                                    $this->showDialogSuccess = true;
+                                    $this->dialogMsg = "Reward transaction is recorded."; 
+                                    $this->dialogMsg2 = "Keep the e-Coupon as this should be forwarded to PhilWeb."; 
 
-                                    $vcount++;
+                                    Yii::app()->session['MID'] = '';
+                                    Yii::app()->session['rewarditemid']= '';
+                                    Yii::app()->session['AID']= '';
+                                    Yii::app()->session['partnerid']= '';
                                 }
-
-                                $this->showDialogSuccess = true;
-                                $this->dialogMsg = "Reward transaction is recorded."; 
-                                $this->dialogMsg2 = "Keep the e-coupon as this should be forwarded to PhilWeb."; 
-
-                                Yii::app()->session['MID'] = '';
-                                Yii::app()->session['rewarditemid']= '';
-                                Yii::app()->session['AID']= '';
-                                Yii::app()->session['partnerid']= '';
+                                else
+                                {
+                                    $this->showDialog2 = true;
+                                    $this->title = "ERROR MESSAGE";
+                                    $this->dialogMsg = "Email message did not send.";
+                                }
                                 
                             }
                             else{
@@ -287,7 +326,8 @@ class VerifyRewardsController extends Controller
 
                             
                         }
-                        else{
+                        else
+                        {
                             $this->showDialog2 = true;
                             $this->dialogMsg = "Make sure that all required fields are filled out."; 
                         }
@@ -369,13 +409,12 @@ class VerifyRewardsController extends Controller
         }
         else{
             $this->showDialog2 = true;
-            $this->dialogMsg = "Failed to verify e-coupons."; 
+            $this->dialogMsg = "Failed to verify e-Coupons."; 
             $this->dialogMsg2 = "Please try again.";
             $this->render('verifyrewards', array('model' => $verifyrewards));
         }
     
     }
-    
     
     public function actionAutoLogout() {
         
