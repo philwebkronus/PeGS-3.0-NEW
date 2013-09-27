@@ -251,13 +251,13 @@ class MemberCards extends BaseEntity {
     }
     
     
-    public function transferMemberCard($mid, $lifetimepoints, $currentpoints, $redeemedpoints, $newcardnumber, 
+    public function transferMemberCard($lifetimepoints, $currentpoints, $redeemedpoints, $newcardnumber, 
             $oldubcardnumber, $status1, $status2, $aid, $dateupdated)
     {
         $this->StartTransaction();
         try
         {
-            $query = "UPDATE loyaltydb.membercards SET MID = '$mid', LifetimePoints = '$lifetimepoints',
+            $query = "UPDATE loyaltydb.membercards SET LifetimePoints = '$lifetimepoints',
                 CurrentPoints = '$currentpoints', RedeemedPoints = '$redeemedpoints', DateUpdated = '$dateupdated',
                 Status = '$status1', UpdatedByAID = '$aid'
                 WHERE CardNumber = '$newcardnumber'";
@@ -378,7 +378,7 @@ class MemberCards extends BaseEntity {
     public function getCurrentPointsByMID($MID){
         $query = "SELECT CurrentPoints
                             FROM " . $this->TableName . "
-                            WHERE MID=".$MID." AND Status = 1";
+                            WHERE MID=".$MID."AND Status = 1";
         $result = parent::RunQuery($query);
         return $result;
     }
@@ -445,6 +445,100 @@ class MemberCards extends BaseEntity {
         $query = "SELECT CardNumber FROM membercards WHERE MID = '$MID'";
         return parent::RunQuery($query);
     }  
+    
+    public function getMemCardIDByCardNumber($cardnumber) {
+        $query = "SELECT MemberCardID FROM membercards WHERE CardNumber = '$cardnumber'";
+        $result = parent::RunQuery($query);
+        return $result;
+    }
+
+    /*
+     * Description: card number based on given membercardID
+     * @author: Gerardo Jagolino Jr.
+     * result: object array
+     * DateCreated: 2013-07-17
+     */
+    public function getTempcardDetails( $cardnumber )
+    {
+        $query = "SELECT MemberCardID, MID, CardID, SiteID,
+            LifeTimePoints, CurrentPoints, RedeemedPoints, BonusPoints, DateCreated, 
+            CreatedByAID, Status
+        FROM membercards WHERE CardNumber = '$cardnumber'";
+        $result = parent::RunQuery($query);
+        return $result;
+    }  
+    
+    /*
+     * Description: card number based on given membercardID
+     * @author: Gerardo Jagolino Jr.
+     * result: object array
+     * DateCreated: 2013-07-17
+     */
+    public function getMigratedCard( $mid )
+    {
+        $query = "SELECT MemberCardID, MID, CardID, SiteID, CardNumber,
+            LifeTimePoints, CurrentPoints, RedeemedPoints, BonusPoints, DateCreated, 
+            CreatedByAID, Status
+        FROM membercards WHERE MID = '$mid' AND Status = 1";
+        $result = parent::RunQuery($query);
+        return $result;
+    }  
+    
+    public function getMemberCardDetails( $membercardid )
+    {
+        $query = "SELECT MemberCardID, MID, CardID, CardNumber, SiteID, 
+            LifetimePoints, CurrentPoints, RedeemedPoints, DateCreated, 
+            CreatedByAID, Status
+        FROM membercards WHERE MemberCardID = '$membercardid'";
+        $result = parent::RunQuery($query);
+        return $result;
+    }   
+    
+    
+    public function getUBCardDetails( $cardnumber )
+    {
+        $query = "SELECT MemberCardID, MID, CardID, CardNumber, SiteID, 
+            LifeTimePoints, CurrentPoints, RedeemedPoints, BonusPoints, DateCreated, 
+            CreatedByAID, Status
+        FROM membercards WHERE CardNumber = '$cardnumber'";
+        $result = parent::RunQuery($query);
+        return $result;
+    }   
+    
+    
+    public function getAllCardDetails( $mid )
+    {
+        $query = "SELECT MemberCardID, MID, CardID, CardNumber, SiteID, 
+            LifeTimePoints, CurrentPoints, RedeemedPoints, BonusPoints, DateCreated, 
+            CreatedByAID, Status
+        FROM membercards WHERE MID = '$mid' AND Status = 1";
+        $result = parent::RunQuery($query);
+        return $result;
+    } 
+    
+    
+    public function getCardDetailsFromStatus( $mid, $status )
+    {
+        $query = "SELECT MemberCardID, MID, CardID, CardNumber, SiteID, 
+            LifeTimePoints, CurrentPoints, RedeemedPoints, BonusPoints, DateCreated, 
+            CreatedByAID, Status
+        FROM membercards WHERE MID = '$mid' AND Status = '$status'";
+        $result = parent::RunQuery($query);
+        return $result;
+    } 
+    
+    
+    public function getCardDetailsByMemID( $membercardid )
+    {
+        $query = "SELECT MemberCardID, MID, CardID, CardNumber, SiteID, 
+            LifeTimePoints, CurrentPoints, RedeemedPoints, BonusPoints, DateCreated, 
+            CreatedByAID, Status
+        FROM membercards WHERE MemberCardID = '$membercardid'";
+        $result = parent::RunQuery($query);
+        return $result;
+    } 
+    
+    
 }
 
 ?>

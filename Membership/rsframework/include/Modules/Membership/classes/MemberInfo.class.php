@@ -321,6 +321,21 @@ class MemberInfo extends BaseEntity {
         $query = "SELECT MID FROM membership.members WHERE UserName = '$Email'";
         return parent::RunQuery($query);
     }
+    
+    public function getMIDByFirstName($Name) {
+        $query = "SELECT MID FROM memberinfo WHERE FirstName LIKE '$Name'";
+        return parent::RunQuery($query);
+    }
+    
+    public function getMIDByLastName($Name) {
+        $query = "SELECT MID FROM memberinfo WHERE LastName LIKE '$Name'";
+        return parent::RunQuery($query);
+    }
+    
+    public function getMIDByEmail($Email) {
+        $query = "SELECT MID FROM memberinfo WHERE Email = '$Email'";
+        return parent::RunQuery($query);
+    }
 
 }
 

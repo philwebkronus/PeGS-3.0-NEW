@@ -227,11 +227,11 @@ div.nav ul ul ul {
 }
 
 #tblplayerdetails {
-    float: left;
+    float: center;
     display: block;
     margin-left: 12px;
     margin-top: 10px;
-    width: 200px;
+    width: 600px;
     border: 1px solid gray;
 }
 

@@ -22,5 +22,16 @@ class CardPointsTransfer extends BaseEntity
         $result = parent::RunQuery($query);
         return $result;
     }*/
+    
+    
+    function getTransferrredUBCard($fromoldcardid)
+    {
+        $query = "SELECT MID, ToMemberCardID, LifeTimePoints, CurrentPoints, 
+            RedeemedPoints, BonusPoints, DateTransferred 
+            FROM cardpointstransfer
+            WHERE FromOldCardID = '$fromoldcardid' ";
+        
+        return parent::RunQuery($query);
+    }
 }
 ?>
