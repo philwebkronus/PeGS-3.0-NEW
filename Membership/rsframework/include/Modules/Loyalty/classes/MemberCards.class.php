@@ -378,7 +378,7 @@ class MemberCards extends BaseEntity {
     public function getCurrentPointsByMID($MID){
         $query = "SELECT CurrentPoints
                             FROM " . $this->TableName . "
-                            WHERE MID=".$MID;
+                            WHERE MID=".$MID." AND Status = 1";
         $result = parent::RunQuery($query);
         return $result;
     }
