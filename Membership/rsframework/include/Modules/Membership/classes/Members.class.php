@@ -180,7 +180,7 @@ class Members extends BaseEntity {
 
                                                 $arrServices = $_CasinoServices->generateCasinoAccounts($MemberServiceMID, $serviceID, $isVIP);
 
-                                                $this->InsertMultiple($arrServices);
+                                                //$this->InsertMultiple($arrServices);
 
                                                 /*
                                                  * Member account info
@@ -235,6 +235,25 @@ class Members extends BaseEntity {
                                     $result = $apiResult['transaction']['@attributes']['result'];
 
                                     if ($result == 'OK') {
+                                        App::LoadModuleClass("CasinoProvider", "PlayTechReportViewAPI");
+                                
+                                        $reportUri = App::getParam("pt_rpt_uri");
+                                        $casino = App::getParam("pt_rpt_casinoname");
+                                        $admin = App::getParam("pt_rpt_admin");
+                                        $password = App::getParam("pt_rpt_password");
+                                        $reportCode = App::getParam("pt_rpt_code");
+                                        $playerCode = null;
+
+                                        $_PTReportAPI = new PlayTechReportViewAPI($reportUri, $casino, $admin, $password);
+
+                                        $rptResult = $_PTReportAPI->export($reportCode, 'exportxml', array('username'=>$userName));
+
+                                        $playerCode = $rptResult['PlayerCode']; //get player code from PT Report API
+
+                                        $arrServices[0]['PlayerCode'] = $playerCode;
+
+                                        $this->InsertMultiple($arrServices);
+                                        
                                         $this->CommitTransaction();
                                         return array('status' => 'OK', 'error' => '');
                                     } else {

@@ -215,6 +215,7 @@ if(isset($_SESSION['CardRed'])){
             
             var cardtype = jQuery("#cboIDSelection2").val();
             var cardnumber = jQuery("#txtCardNumber").val();
+            hideAllDiv();
             if(cardnumber == ''){
                 alert('Please Enter Card Number');
             }
@@ -235,6 +236,7 @@ if(isset($_SESSION['CardRed'])){
         });
         
         $('#btnSubmit2').live('click', function() {
+            hideAllDiv();
           var cardnumber = jQuery("#txtEmail").val();
             if(cardnumber == ''){
                 alert('Please Enter a Valid Email Address');
@@ -511,6 +513,35 @@ if(isset($_SESSION['CardRed'])){
                                     document.getElementById("playerprofiledetails5").style.display = "none";
                                     document.getElementById("playerprofile5").style.display = "none";
                                     
+                                    if(dataprofile.Migrated == '1'){
+                                        document.getElementById("playerprofiledetails7").style.display = "block";
+                                        
+                                        $("#tblmsg7").html("<label>" + dataprofile.MigratedInfo + "</label>");
+                                        $("#tblage7").html("<label>" + dataprofile.MigratedDate + "</label>");
+                                        $("#tblgender7").html("<label>" + dataprofile.MigratedSite + "</label>");
+                                        
+                                        $("#tbllpoints7").html("<label>" + dataprofile.MigratedLifeTimePoints + "</label>");
+                                        $("#tblcpoints7").html("<label>" + dataprofile.MigratedCurrentPoints + "</label>");
+                                        $("#tblrpoints7").html("<label>" + dataprofile.MigratedRedeemedPoints + "</label>");
+                                        $("#tblbpoints7").html("<label>" + dataprofile.MigratedBonusPoints + "</label>");
+                                        
+                                        $('#playerprofiledetails7').show();
+                                    }
+                                    if(dataprofile.RedCard == '1'){
+                                        document.getElementById("playerprofiledetails8").style.display = "block";
+                                        
+                                        $("#tblmsg8").html("<label>" + dataprofile.RedCardInfo + "</label>");
+                                        $("#tblage8").html("<label>" + dataprofile.RedCardDate + "</label>");
+                                        $("#tblgender8").html("<label>" + dataprofile.RedCardSite + "</label>");
+                                        
+                                        $("#tbllpoints8").html("<label>" + dataprofile.RedCardLifeTimePoints + "</label>");
+                                        $("#tblcpoints8").html("<label>" + dataprofile.RedCardCurrentPoints + "</label>");
+                                        $("#tblrpoints8").html("<label>" + dataprofile.RedCardRedeemedPoints + "</label>");
+                                        $("#tblbpoints8").html("<label>" + dataprofile.RedCardBonusPoints + "</label>");
+                                        
+                                        $('#playerprofiledetails8').show();
+                                    }
+                                    
                                     $("#tblmsg6").html("<label>" + dataprofile.Msg + "</label>");
                                     $("#tblage6").html("<label>" + dataprofile.DateTimeMigration + "</label>");
                                     $("#tblgender6").html("<label>" + dataprofile.Site + "</label>");
@@ -752,6 +783,36 @@ if(isset($_SESSION['CardRed'])){
                     });
         }
         
+        function hideAllDiv(){
+            document.getElementById("results").style.display = "none";
+            document.getElementById("playerprofiledetails").style.display = "none";
+            document.getElementById("playerprofile").style.display = "none";
+            
+            document.getElementById("results2").style.display = "none";
+            document.getElementById("playerprofiledetails2").style.display = "none";
+            document.getElementById("playerprofile2").style.display = "none";
+            
+            document.getElementById("results3").style.display = "none";
+            document.getElementById("playerprofiledetails3").style.display = "none";
+            document.getElementById("playerprofile3").style.display = "none";
+            
+            document.getElementById("results4").style.display = "none";
+            document.getElementById("playerprofiledetails4").style.display = "none";
+            document.getElementById("playerprofile4").style.display = "none";
+            
+            document.getElementById("results5").style.display = "none";
+            document.getElementById("playerprofiledetails5").style.display = "none";
+            document.getElementById("playerprofile5").style.display = "none";
+            
+            document.getElementById("results6").style.display = "none";
+            document.getElementById("playerprofiledetails6").style.display = "none";
+            document.getElementById("playerprofile6").style.display = "none";
+            
+            document.getElementById("playerprofiledetails7").style.display = "none";
+            document.getElementById("playerprofiledetails8").style.display = "none";
+        
+        }
+        
     });
 
 </script>
@@ -818,7 +879,7 @@ if(isset($_SESSION['CardRed'])){
                             <hr color="black">
                             <br>
                             <div class="pad5" align="center"></div>
-                            <table id="tblplayerdetails">
+                            <table id="tblplayerdetails2">
                                 <tr><th colspan="3">Card Details</th></tr>
                                 <tr><td style="width: 600px;">Information</td><td id="tblmsg" style="width: 500px;"></td></tr>
                                 <tr><td style="width: 600px;">Date and Time of Migration</td><td id="tblage" style="width: 500px;"></td></tr>
@@ -843,7 +904,7 @@ if(isset($_SESSION['CardRed'])){
                             <hr color="black">
                             <br>
                             <div class="pad5" align="center"></div>
-                            <table id="tblplayerdetails">
+                            <table id="tblplayerdetails2">
                                 <tr><th colspan="3">Card Details</th></tr>
                                 <tr><td style="width: 600px;">Information</td><td id="tblmsg2" style="width: 500px;"></td></tr>
                                 <tr><td style="width: 600px;">Date and Time of Verification</td><td id="tblage2" style="width: 500px;"></td></tr>
@@ -867,7 +928,7 @@ if(isset($_SESSION['CardRed'])){
                             <hr color="black">
                             <br>
                             <div class="pad5" align="center"></div>
-                            <table id="tblplayerdetails">
+                            <table id="tblplayerdetails2">
                                 <tr><th colspan="3">Card Details</th></tr>
                                 <tr><td style="width: 600px;">Information</td><td id="tblmsg3" style="width: 500px;"></td></tr>
                                 <tr><td style="width: 600px;">Date and Time of Registration</td><td id="tblage3" style="width: 500px;"></td></tr>
@@ -892,7 +953,7 @@ if(isset($_SESSION['CardRed'])){
                             <hr color="black">
                             <br>
                             <div class="pad5" align="center"></div>
-                            <table id="tblplayerdetails">
+                            <table id="tblplayerdetails2">
                                 <tr><th colspan="3">Card Details</th></tr>
                                 <tr><td style="width: 600px;">Information</td><td id="tblmsg4" style="width: 500px;"></td></tr>
                                 <tr><td style="width: 600px;">Date and Time of Migration/Transferring of Points</td><td id="tblage4" style="width: 500px;"></td></tr>
@@ -916,7 +977,7 @@ if(isset($_SESSION['CardRed'])){
                             <hr color="black">
                             <br>
                             <div class="pad5" align="center"></div>
-                            <table id="tblplayerdetails">
+                            <table id="tblplayerdetails2">
                                 <tr><th colspan="3">Card Details</th></tr>
                                 <tr><td style="width: 600px;">Information</td><td id="tblmsg5" style="width: 500px;"></td></tr>
                                 <tr><td style="width: 600px;">Date and Time of Migration/Transferring of Points</td><td id="tblage5" style="width: 500px;"></td></tr>
@@ -940,7 +1001,7 @@ if(isset($_SESSION['CardRed'])){
                             <hr color="black">
                             <br>
                             <div class="pad5" align="center"></div>
-                            <table id="tblplayerdetails">
+                            <table id="tblplayerdetails2">
                                 <tr><th colspan="3">Card Details</th></tr>
                                 <tr><td style="width: 500px;">Information</td><td id="tblmsg6" style="width: 500px;"></td></tr>
                                 <tr><td style="width: 500px;">Date and Time of Migration</td><td id="tblage6" style="width: 500px;"></td></tr>
@@ -958,7 +1019,7 @@ if(isset($_SESSION['CardRed'])){
                             <hr color="black">
                             <br>
                             <div class="pad5" align="center"></div>
-                            <table id="tblplayerdetails">
+                            <table id="tblplayerdetails2">
                                 <tr><th colspan="3">Migrated Card Details</th></tr>
                                 <tr><td style="width: 600px;">Migrated Card Information</td><td id="tblmsg7" style="width: 500px;"></td></tr>
                                 <tr><td style="width: 600px;">Date and Time of Migration</td><td id="tblage7" style="width: 500px;"></td></tr>
@@ -976,7 +1037,7 @@ if(isset($_SESSION['CardRed'])){
                             <hr color="black">
                             <br>
                             <div class="pad5" align="center"></div>
-                            <table id="tblplayerdetails">
+                            <table id="tblplayerdetails2">
                                 <tr><th colspan="3">Red Card Details</th></tr>
                                 <tr><td style="width: 600px;">Red Card Information</td><td id="tblmsg8" style="width: 500px;"></td></tr>
                                 <tr><td style="width: 600px;">Date and Time of Transferring of Points</td><td id="tblage8" style="width: 500px;"></td></tr>

@@ -23,7 +23,27 @@ class MemberPointsTransferLog extends BaseEntity {
         return parent::RunQuery($query);
     }
     
-    
+    public function logPointsTransfer($fromMemberCardID, $toMemberCardID, $lifetimePoints, $currentPoints, $redeemedPoints, $dateTransferred, $transferredByAID)
+    {
+        $this->StartTransaction();
+        try
+        {
+        $query = "INSERT INTO memberpointstranferlog (FromMemberCardID, ToMemberCardID,
+                              LifetimePoints, CurrentPoints, RedeemedPoints, DateTransferred, TransferredByAID)
+                         VALUES('$fromMemberCardID', '$toMemberCardID', '$lifetimePoints', '$currentPoints', '$redeemedPoints', '$dateTransferred', '$transferredByAID')";
+        $this->ExecuteQuery($query);
+        if(!App::HasError()) {
+                $this->CommitTransaction();
+        } else {
+                $this->RollBackTransaction(); 
+        }
+        }
+        catch(Exception $e)
+        {
+            $this->RollBackTransaction();
+            App::SetErrorMessage($e->getMessage());
+        }
+    }
     
 }
 ?>

@@ -277,6 +277,21 @@ if (isset($_POST['pager'])) {
                             $siteid = $arr1['SiteID'];
                         }
                         
+                        $olddetails = $_CardPointsTransfer->getOldUBCard($mid);
+                        
+                        if(!empty($olddetails)){
+                            foreach ($olddetails as $varz) {
+                                $oldcardid = $varz['FromOldCardID'];
+                            }
+                            
+                            $oldcard = $_OldCards->getOldCardInfobyOldCardID($oldcardid);
+                            
+                            $oldcarddetails = ' - Migrated From Loyalty Card '.$oldcard;
+                        }
+                        else{
+                            $oldcarddetails = '';
+                        }
+                        
                         $sitedetails = $_Sites->getSite($siteid);
 
                         foreach ($sitedetails as $row) {
@@ -323,11 +338,11 @@ if (isset($_POST['pager'])) {
                             $allcarddetails = $_MemberCards->getAllCardDetails($mid);
 
                             $countallcarddetails = count($allcarddetails);
-
+                            
                             if($countallcarddetails == 1){
 
                                 $msg->IDdetect = '3.2';
-                                $msg->Msg = 'Card is Active';
+                                $msg->Msg = 'Card is Active'.$oldcarddetails;
                                 $msg->CardType = $cardtype;
                                 $msg->DateTimeMigration = $datecreated;
                                 $msg->Site = $sitename;
@@ -335,11 +350,88 @@ if (isset($_POST['pager'])) {
                                 $msg->CurrentPoints = $currentpoints;
                                 $msg->RedeemedPoints = $redeemedpoints;
                                 $msg->BonusPoints = $bonuspoints;
+                                
+                                $migratedtempcarddetails = $_MemberCards->getCardDetailsFromStatus($mid, 8);
+                                
+                                $fromcardid = $_MemberPointsTransferLog->getFromCardID($membercardID);
+                                
+                                if(!empty($fromcardid)){
+                                    foreach ($fromcardid as $arg) {
+                                        $fromcardid = $arg['FromMemberCardID'];
+                                        $redcardlifetimepoints = number_format($arg['LifeTimePoints']);
+                                        $redcardcurrentpoints = number_format($arg['CurrentPoints']);
+                                        $redcardredeemedpoints = number_format($arg['RedeemedPoints']);
+                                        $redcardbonuspoints = 0;
+                                        $redcarddatecreated = date("Y-m-d H:i:s",strtotime($arg['DateTransferred']));
+                                    }
+                                    $redcarddetails = $_MemberCards->getCardDetailsByMemID($fromcardid);
+                                }
+                                else {
+                                    $redcarddetails = array();
+                                }    
+                                    
+
+                                if(!empty($migratedtempcarddetails)){
+                                    foreach ($migratedtempcarddetails as $mgrtdtemp) {
+                                        $migratedcardnumber = $mgrtdtemp['CardNumber'];
+                                        $migratedmid = $mgrtdtemp['MID'];
+                                        $migratedstatus = $mgrtdtemp['Status'];
+                                        $migratedlifetimepoints = number_format($mgrtdtemp['LifeTimePoints']);
+                                        $migratedcurrentpoints = number_format($mgrtdtemp['CurrentPoints']);
+                                        $migratedredeemedpoints = number_format($mgrtdtemp['RedeemedPoints']);
+                                        $migratedbonuspoints = number_format($mgrtdtemp['BonusPoints']);
+                                        $migrateddatecreated = date("Y-m-d H:i:s",strtotime($mgrtdtemp['DateCreated']));
+                                        $migratedsiteid = $mgrtdtemp['SiteID'];
+                                    }
+
+                                    $mgsitedetails = $_Sites->getSite($migratedsiteid);
+
+                                    foreach ($mgsitedetails as $rowz) {
+                                        $migratedsitename = $rowz['SiteName'];
+                                    }
+
+                                    $msg->Migrated = '1';
+                                    $msg->MigratedInfo = 'Migrated From Temporary Card '.$migratedcardnumber;
+                                    $msg->MigratedSite = $migratedsitename;
+                                    $msg->MigratedDate = $migrateddatecreated;
+                                    $msg->MigratedLifeTimePoints = $migratedlifetimepoints;
+                                    $msg->MigratedCurrentPoints = $migratedcurrentpoints;
+                                    $msg->MigratedRedeemedPoints = $migratedredeemedpoints;
+                                    $msg->MigratedBonusPoints = $migratedbonuspoints;
+
+
+                                }
+
+                                if(!empty($redcarddetails)){
+                                    
+                                    
+                                    foreach ($redcarddetails as $redcard) {
+                                        $redcardnumber = $redcard['CardNumber'];
+                                        $redcardmid = $redcard['MID'];
+                                        $redcardstatus = $redcard['Status'];
+                                        $redcardsiteid = $redcard['SiteID'];
+                                    }
+                                    $redsitedetails = $_Sites->getSite($redcardsiteid);
+
+                                    foreach ($redsitedetails as $rowz2) {
+                                        $redcardsitename = $rowz2['SiteName'];
+                                    }
+
+
+                                    $msg->RedCard = '1';
+                                    $msg->RedCardInfo = 'Transferred From '.$redcardnumber;
+                                    $msg->RedCardSite = $redcardsitename;
+                                    $msg->RedCardDate = $redcarddatecreated;
+                                    $msg->RedCardLifeTimePoints = $redcardlifetimepoints;
+                                    $msg->RedCardCurrentPoints = $redcardcurrentpoints;
+                                    $msg->RedCardRedeemedPoints = $redcardredeemedpoints;
+                                    $msg->RedCardBonusPoints = $redcardbonuspoints;
+                                }
 
                             }
                             else{
                                 $msg->IDdetect = '3.3';
-                                $msg->Msg = 'Card is Active';
+                                $msg->Msg = 'Card is Active'.$oldcarddetails;
                                 $msg->CardType = $cardtype;
                                 $msg->DateTimeMigration = $datecreated;
                                 $msg->Site = $sitename;
@@ -481,11 +573,159 @@ if (isset($_POST['pager'])) {
                     }
 
                         $allcarddetails = $_MemberCards->getAllCardDetails($mid);
+                        $cardz = $_MemberCards->getCardDetailsFromStatus($mid, 5);
                         
                         if(!empty($allcarddetails)){
                             $countallcarddetails = count($allcarddetails);
-                                
+                            
                             $card1 = $_MemberCards->getCardDetailsFromStatus($mid, 1);
+
+                            if(!empty($card1)){
+                                foreach ($card1 as $vari) {
+                                    $card = $vari['CardNumber'];
+                                }
+                            }
+                            else{
+                                $card = '';
+
+                            }
+                            $ubcarddetails = $_MemberCards->getUBCardDetails($card);
+                            
+                        if(!empty($ubcarddetails)){
+                           foreach ($ubcarddetails as $arr1) {
+                                    $membercardID = $arr1['MemberCardID'];
+                                    $mid = $arr1['MID'];
+                                    $status = $arr1['Status'];
+                                    $lifetimepoints = number_format($arr1['LifeTimePoints']);
+                                    $currentpoints = number_format($arr1['CurrentPoints']);
+                                    $redeemedpoints = number_format($arr1['RedeemedPoints']);
+                                    $bonuspoints = number_format($arr1['BonusPoints']);
+                                    $datecreated = date("Y-m-d H:i:s",  strtotime($arr1['DateCreated']));
+                                    $siteid = $arr1['SiteID'];
+                                }
+
+                                $cardtype = 3;
+
+                                $sitedetails = $_Sites->getSite($siteid);
+
+                                foreach ($sitedetails as $row) {
+                                    $sitename = $row['SiteName'];
+                                }
+                                
+                                $olddetails = $_CardPointsTransfer->getOldUBCard($mid);
+                                
+                                if(!empty($olddetails)){
+                                    foreach ($olddetails as $varz) {
+                                        $oldcardid = $varz['FromOldCardID'];
+                                    }
+
+                                    $oldcard = $_OldCards->getOldCardInfobyOldCardID($oldcardid);
+
+                                    $oldcarddetails = ' - Migrated From Loyalty Card '.$oldcard;
+                                }
+                                else{
+                                    $oldcarddetails = '';
+                                }
+                        
+                        }
+                        else{
+                            $msg->IDdetect = '1.3';
+                            $msg->CardType = 'Invalid';
+                            $msg->Msg = 'Invalid Email Address, Please Try Again';
+                        }
+
+                                $msg->IDdetect = '3.3';
+                                $msg->Msg = 'Card is Active - '.$card.$oldcarddetails;
+                                $msg->CardType = $cardtype;
+                                $msg->DateTimeMigration = $datecreated;
+                                $msg->Site = $sitename;
+                                $msg->LifeTimePoints = $lifetimepoints;
+                                $msg->CurrentPoints = $currentpoints;
+                                $msg->RedeemedPoints = $redeemedpoints;
+                                $msg->BonusPoints = $bonuspoints;
+
+                                $migratedtempcarddetails = $_MemberCards->getCardDetailsFromStatus($mid, 8);
+                                
+                                 $fromcardid = $_MemberPointsTransferLog->getFromCardID($membercardID);
+                                 
+                                if(!empty($fromcardid)){
+                                    foreach ($fromcardid as $arg) {
+                                        $fromcardid = $arg['FromMemberCardID'];
+                                        $redcardlifetimepoints = number_format($arg['LifeTimePoints']);
+                                        $redcardcurrentpoints = number_format($arg['CurrentPoints']);
+                                        $redcardredeemedpoints = number_format($arg['RedeemedPoints']);
+                                        $redcardbonuspoints = 0;
+                                        $redcarddatecreated = date("Y-m-d H:i:s",strtotime($arg['DateTransferred']));
+                                    }
+                                    $redcarddetails = $_MemberCards->getCardDetailsByMemID($fromcardid);
+                                }
+                                else {
+                                    $redcarddetails = array();
+                                }
+
+                                if(!empty($migratedtempcarddetails)){
+                                    foreach ($migratedtempcarddetails as $mgrtdtemp) {
+                                        $migratedcardnumber = $mgrtdtemp['CardNumber'];
+                                        $migratedmid = $mgrtdtemp['MID'];
+                                        $migratedstatus = $mgrtdtemp['Status'];
+                                        $migratedlifetimepoints = number_format($mgrtdtemp['LifeTimePoints']);
+                                        $migratedcurrentpoints = number_format($mgrtdtemp['CurrentPoints']);
+                                        $migratedredeemedpoints = number_format($mgrtdtemp['RedeemedPoints']);
+                                        $migratedbonuspoints = number_format($mgrtdtemp['BonusPoints']);
+                                        $migrateddatecreated = date("Y-m-d H:i:s",strtotime($mgrtdtemp['DateCreated']));
+                                        $migratedsiteid = $mgrtdtemp['SiteID'];
+                                    }
+
+                                    $mgsitedetails = $_Sites->getSite($migratedsiteid);
+
+                                    foreach ($mgsitedetails as $rowz) {
+                                        $migratedsitename = $rowz['SiteName'];
+                                    }
+
+                                    $msg->Migrated = '1';
+                                    $msg->MigratedInfo = 'Migrated From Temporary Card '.$migratedcardnumber;
+                                    $msg->MigratedSite = $migratedsitename;
+                                    $msg->MigratedDate = $migrateddatecreated;
+                                    $msg->MigratedLifeTimePoints = $migratedlifetimepoints;
+                                    $msg->MigratedCurrentPoints = $migratedcurrentpoints;
+                                    $msg->MigratedRedeemedPoints = $migratedredeemedpoints;
+                                    $msg->MigratedBonusPoints = $migratedbonuspoints;
+
+
+                                }
+
+
+                                if(!empty($redcarddetails)){
+                                    foreach ($redcarddetails as $redcard) {
+                                        $redcardnumber = $redcard['CardNumber'];
+                                        $redcardmid = $redcard['MID'];
+                                        $redcardstatus = $redcard['Status'];
+                                        $redcardsiteid = $redcard['SiteID'];
+                                    }
+                                    $redsitedetails = $_Sites->getSite($redcardsiteid);
+
+                                    foreach ($redsitedetails as $rowz2) {
+                                        $redcardsitename = $rowz2['SiteName'];
+                                    }
+
+
+                                    $msg->RedCard = '1';
+                                    $msg->RedCardInfo = 'Transferred From '.$redcardnumber;
+                                    $msg->RedCardSite = $redcardsitename;
+                                    $msg->RedCardDate = $redcarddatecreated;
+                                    $msg->RedCardLifeTimePoints = $redcardlifetimepoints;
+                                    $msg->RedCardCurrentPoints = $redcardcurrentpoints;
+                                    $msg->RedCardRedeemedPoints = $redcardredeemedpoints;
+                                    $msg->RedCardBonusPoints = $redcardbonuspoints;
+                                }
+
+
+                            
+                        }
+                        elseif(!empty ($cardz)){
+                            $countallcarddetails = count($cardz);
+                                
+                            $card1 = $_MemberCards->getCardDetailsFromStatus($mid, 5);
 
                             if(!empty($card1)){
                                 foreach ($card1 as $vari) {
@@ -528,7 +768,7 @@ if (isset($_POST['pager'])) {
                             if($countallcarddetails == 1){
 
                                 $msg->IDdetect = '3.2';
-                                $msg->Msg = 'Card is Active - '.$card;
+                                $msg->Msg = 'Card is Active - '.$card.$oldcarddetails;
                                 $msg->CardType = $cardtype;
                                 $msg->DateTimeMigration = $datecreated;
                                 $msg->Site = $sitename;
@@ -540,7 +780,7 @@ if (isset($_POST['pager'])) {
                             }
                             else{
                                 $msg->IDdetect = '3.3';
-                                $msg->Msg = 'Card is Active - '.$card;
+                                $msg->Msg = 'Card is Active - '.$card.$oldcarddetails;
                                 $msg->CardType = $cardtype;
                                 $msg->DateTimeMigration = $datecreated;
                                 $msg->Site = $sitename;
@@ -628,10 +868,95 @@ if (isset($_POST['pager'])) {
                             }
                         }
                         else{
+                             $card1 = $_MemberCards->getCardDetailsFromStatus($mid, 9);
+                             
+                             if(!empty($card1)){
+                                 foreach ($card1 as $vari) {
+                                    $card = $vari['CardNumber'];
+                                }
+                             }
+                             else{
+                                 $card1 = $_MemberCards->getCardDetailsFromStatus($mid, 8);
+                             
+                                if(!empty($card1)){
+                                    foreach ($card1 as $vari) {
+                                       $card = $vari['CardNumber'];
+                                   }
+                                }
+                                else{
+                                    $card1 = $_MemberCards->getCardDetailsFromStatus($mid, 7);
+                             
+                                    if(!empty($card1)){
+                                        foreach ($card1 as $vari) {
+                                           $card = $vari['CardNumber'];
+                                       }
+                                    }
+                                    else{
+                                        $card = '';
+                                    }
+                                }
+                             }
+                                
+                                
+                                $ubcarddetails = $_MemberCards->getUBCardDetails($card);
+                                
+                             if(!empty($ubcarddetails)){
+                           foreach ($ubcarddetails as $arr1) {
+                                    $membercardID = $arr1['MemberCardID'];
+                                    $mid = $arr1['MID'];
+                                    $status = $arr1['Status'];
+                                    $lifetimepoints = number_format($arr1['LifeTimePoints']);
+                                    $currentpoints = number_format($arr1['CurrentPoints']);
+                                    $redeemedpoints = number_format($arr1['RedeemedPoints']);
+                                    $bonuspoints = number_format($arr1['BonusPoints']);
+                                    $datecreated = date("Y-m-d H:i:s",  strtotime($arr1['DateCreated']));
+                                    $siteid = $arr1['SiteID'];
+                                }
+
+                                $cardtype = 3;
+
+                                $sitedetails = $_Sites->getSite($siteid);
+
+                                foreach ($sitedetails as $row) {
+                                    $sitename = $row['SiteName'];
+                                }
+                                
+                                switch($status)
+                            {
+                                case 0: $vstatus = 'InActive';break;
+                                case 1: $vstatus = 'Active';    break;
+                                case 2: $vstatus = 'Deactivated';break;
+                                case 5: $vstatus = 'Active Temporary';break;
+                                case 7: $vstatus = 'New Migrated'; break;   
+                                case 8: $vstatus = 'Temporary Migrated';  break;
+                                case 9: $vstatus = 'Banned';  break;
+                                default: $vstatus = 'Card Not Found'; break;
+                            }
                             
-                            $msg->IDdetect = '1.3';
-                            $msg->CardType = 'Invalid';
-                            $msg->Msg = 'Please Enter Valid Email Address';
+                            if($vstatus == 'New Migrated' || $vstatus == 'Temporary Migrated' ){
+                                    $msg->Msg = 'Membership Card '.$card.' is already Migrated';
+                                }
+                                else{
+                                    $msg->Msg = 'Card '.$card.' is '.$vstatus;
+                                }
+
+                                $msg->IDdetect = '3.1';
+
+                                $msg->CardType = $cardtype;
+                                $msg->DateTimeMigration = $datecreated;
+                                $msg->Site = $sitename;
+                                $msg->LifeTimePoints = $lifetimepoints;
+                                $msg->CurrentPoints = $currentpoints;
+                                $msg->RedeemedPoints = $redeemedpoints;
+                                $msg->BonusPoints = $bonuspoints;
+                            }
+                            else{
+                                $msg->IDdetect = '1.3';
+                                $msg->CardType = 'Invalid';
+                                $msg->Msg = 'Invalid Email Address, Please Try Again';
+                            }
+                            
+                          
                         }
                 }
                 

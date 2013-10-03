@@ -201,87 +201,90 @@ class MigrateMember extends BaseEntity
             $this->RollBackTransaction();
     }
     
-    public function processCasinoAccount( $MID )
-    {
-        /*
-         * Load Classes
-         */
-        App::LoadModuleClass("CasinoProvider", "CasinoProviders");
-        App::LoadModuleClass("CasinoProvider", "PlayTechAPI");
-        App::LoadModuleClass("Membership", "MemberInfo");
-        App::LoadModuleClass("Membership", "MemberServices");
-        App::LoadModuleClass("Kronus", "CasinoServices");                
-        
-        /*
-         * Instantiate Models
-         */
-        $_MemberInfo = new MemberInfo();
-        $_MemberServices = new MemberServices();
-        $_CasinoServices = new CasinoServices();
-        
-        $memberservices = $_MemberServices->getUserBasedMemberServices( $MID );
-        $memberinfo = $_MemberInfo->getMemberInfo( $MID );
-        $casinoservices = $_CasinoServices->getUserBasedCasinoServices();
-        
-        /*
-         * Member account info
-         */
-        $userName = $memberservices[0]['ServiceUsername'];
-        $password = $memberservices[0]['ServicePassword'];
-        $email = str_replace(' ','_',$memberinfo[0]['Email']);
-        $firstName = str_replace(' ','',$memberinfo[0]['FirstName']);
-        $lastName = str_replace(' ','_',$memberinfo[0]['LastName']);
-        $birthDate = date('Y-m-d',strtotime($memberinfo[0]['Birthdate']));
-        (!empty($memberinfo[0]['Address1'])) ? $address = str_replace(' ','_',$memberinfo[0]['Address1']) : $address = 'NA';
-        (!empty($memberinfo[0]['Address2'])) ? $city = str_replace(' ','_',$memberinfo[0]['Address2']) : $city = "NA";
-        $countryCode = 'PH';
-        (!empty($memberinfo[0]['MobileNumber'])) ? $phone = str_replace(' ','',$memberinfo[0]['MobileNumber']) : $phone = '338-3838';
-        $zip = 'NA';
-        
-        $memberservices[0]['isVIP'] == 0 ? $vipLevel = App::getParam("ptreg") : $vipLevel = App::getParam("ptvip");
-        //$vipLevel = 1; //1-reg ; 2-vip
-        
-        foreach( $casinoservices as $casinoservice )
-        {
-           
-           switch( $casinoservice['ServiceID'] )
-            {
-                case CasinoProviders::PT;
-
-                     /*
-                      * PlayTech Configurations
-                      */
-                    $arrplayeruri = App::getParam("player_api");
-                    $URI = $arrplayeruri[$casinoservice['ServiceID'] - 1];
-                    $casino = App::getParam("pt_casino_name");
-                    $playerSecretKey = App::getParam("pt_secret_key");                 
-
-                    $playtechAPI = new PlayTechAPI($URI, $casino, $playerSecretKey);                
-
-                    /*
-                     * Create account
-                     */
-                    $apiResult = $playtechAPI->NewPlayer($userName, $password, $email, $firstName, 
-                                    $lastName, $birthDate, $address, $city, $countryCode, $phone, 
-                                    $zip, $vipLevel);
-                    break;
-
-                case CasinoProviders::MG;
-                    break;
-                case CasinoProviders::RTG_ALPHA;
-                    break;
-                case CasinoProviders::RTG_GAMMA;
-                    break;
-                case CasinoProviders::RTG_SIGMA;
-                    break;
-                default:
-                    break;
-            }   
-        }
-                
-              
-        
-        return $apiResult;
-    }
+    /**
+     * obsolete class
+     */   
+//    public function processCasinoAccount( $MID )
+//    {
+//        /*
+//         * Load Classes
+//         */
+//        App::LoadModuleClass("CasinoProvider", "CasinoProviders");
+//        App::LoadModuleClass("CasinoProvider", "PlayTechAPI");
+//        App::LoadModuleClass("Membership", "MemberInfo");
+//        App::LoadModuleClass("Membership", "MemberServices");
+//        App::LoadModuleClass("Kronus", "CasinoServices");                
+//        
+//        /*
+//         * Instantiate Models
+//         */
+//        $_MemberInfo = new MemberInfo();
+//        $_MemberServices = new MemberServices();
+//        $_CasinoServices = new CasinoServices();
+//        
+//        $memberservices = $_MemberServices->getUserBasedMemberServices( $MID );
+//        $memberinfo = $_MemberInfo->getMemberInfo( $MID );
+//        $casinoservices = $_CasinoServices->getUserBasedCasinoServices();
+//        
+//        /*
+//         * Member account info
+//         */
+//        $userName = $memberservices[0]['ServiceUsername'];
+//        $password = $memberservices[0]['ServicePassword'];
+//        $email = str_replace(' ','_',$memberinfo[0]['Email']);
+//        $firstName = str_replace(' ','',$memberinfo[0]['FirstName']);
+//        $lastName = str_replace(' ','_',$memberinfo[0]['LastName']);
+//        $birthDate = date('Y-m-d',strtotime($memberinfo[0]['Birthdate']));
+//        (!empty($memberinfo[0]['Address1'])) ? $address = str_replace(' ','_',$memberinfo[0]['Address1']) : $address = 'NA';
+//        (!empty($memberinfo[0]['Address2'])) ? $city = str_replace(' ','_',$memberinfo[0]['Address2']) : $city = "NA";
+//        $countryCode = 'PH';
+//        (!empty($memberinfo[0]['MobileNumber'])) ? $phone = str_replace(' ','',$memberinfo[0]['MobileNumber']) : $phone = '338-3838';
+//        $zip = 'NA';
+//        
+//        $memberservices[0]['isVIP'] == 0 ? $vipLevel = App::getParam("ptreg") : $vipLevel = App::getParam("ptvip");
+//        //$vipLevel = 1; //1-reg ; 2-vip
+//        
+//        foreach( $casinoservices as $casinoservice )
+//        {
+//           
+//           switch( $casinoservice['ServiceID'] )
+//            {
+//                case CasinoProviders::PT;
+//
+//                     /*
+//                      * PlayTech Configurations
+//                      */
+//                    $arrplayeruri = App::getParam("player_api");
+//                    $URI = $arrplayeruri[$casinoservice['ServiceID'] - 1];
+//                    $casino = App::getParam("pt_casino_name");
+//                    $playerSecretKey = App::getParam("pt_secret_key");                 
+//
+//                    $playtechAPI = new PlayTechAPI($URI, $casino, $playerSecretKey);                
+//
+//                    /*
+//                     * Create account
+//                     */
+//                    $apiResult = $playtechAPI->NewPlayer($userName, $password, $email, $firstName, 
+//                                    $lastName, $birthDate, $address, $city, $countryCode, $phone, 
+//                                    $zip, $vipLevel);
+//                    break;
+//
+//                case CasinoProviders::MG;
+//                    break;
+//                case CasinoProviders::RTG_ALPHA;
+//                    break;
+//                case CasinoProviders::RTG_GAMMA;
+//                    break;
+//                case CasinoProviders::RTG_SIGMA;
+//                    break;
+//                default:
+//                    break;
+//            }   
+//        }
+//                
+//              
+//        
+//        return $apiResult;
+//    }
 }
 ?>

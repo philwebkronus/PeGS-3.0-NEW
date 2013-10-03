@@ -34,11 +34,11 @@ class ActivateMember extends BaseEntity
         App::LoadModuleClass("Membership", "TempMembers");
         App::LoadModuleClass("Membership", "TempMemberInfo");
         App::LoadModuleClass("Loyalty", "CardTypes");
-        
+
         $_TempMembers = new TempMembers();
         $_TempMemberInfo = new TempMemberInfo();
         $_CardTypes = new CardTypes();
-                
+               
         $queryMember = "SELECT UserName, Password, DateCreated, DateVerified
                         FROM membership_temp.members
                         WHERE TemporaryAccountCode = '$this->CardNumber'";
@@ -153,7 +153,7 @@ class ActivateMember extends BaseEntity
 
                                         $casinoAccounts = $_CasinoServices->generateCasinoAccounts( $this->MID, $serviceID );
 
-                                        $this->InsertMultiple($casinoAccounts);
+                                        //$this->InsertMultiple($casinoAccounts);
 
                                        /*
                                         * Member account info
@@ -209,6 +209,25 @@ class ActivateMember extends BaseEntity
 
                             if($result == 'OK')              
                             {
+                                App::LoadModuleClass("CasinoProvider", "PlayTechReportViewAPI");
+                                
+                                $reportUri = App::getParam("pt_rpt_uri");
+                                $casino = App::getParam("pt_rpt_casinoname");
+                                $admin = App::getParam("pt_rpt_admin");
+                                $password = App::getParam("pt_rpt_password");
+                                $reportCode = App::getParam("pt_rpt_code");
+                                $playerCode = null;
+                                
+                                $_PTReportAPI = new PlayTechReportViewAPI($reportUri, $casino, $admin, $password);
+                                
+                                $rptResult = $_PTReportAPI->export($reportCode, 'exportxml', array('username'=>$userName));
+                                
+                                $playerCode = $rptResult['PlayerCode']; //get player code from PT Report API
+                                
+                                $casinoAccounts[0]['PlayerCode'] = $playerCode;
+                                
+                                $this->InsertMultiple($casinoAccounts);
+                                
                                 $this->CommitTransaction();
                                 return array("MID"=>$this->MID,"status"=>'OK');
                             }

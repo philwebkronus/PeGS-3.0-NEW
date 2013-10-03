@@ -40,6 +40,7 @@ $siteName = "";
 $transDate = "";
 $showcardinfo = true;
 $defaultsearchvalue = "Enter Card Number";
+$msg = '';
 
 
 if (!isset($fproc))
@@ -161,18 +162,21 @@ if (isset($_SESSION['CardInfo']))
         switch ($cardinfo["Status"]) {
             case 0:
                 $msg = "Card is inactive";
+                App::SetErrorMessage($msg);
                 break;
             case 2:
                 $msg = "Card is deactivated";
+                App::SetErrorMessage($msg);
                 break;
             case 8:
                 $msg = "Card is migrated";
+                App::SetErrorMessage($msg);
                 break;
             case 9:
                 $msg = "Card is banned";
+                App::SetErrorMessage($msg);
                 break;
         }
-        App::SetErrorMessage($msg);
     }
     
 }

@@ -42,6 +42,18 @@ class OldCards extends BaseEntity
        return parent::RunQuery($query);
        
     }
+    
+    public function getOldCardInfobyOldCardID( $oldcardid )
+    {
+        $query = "SELECT * FROM oldcards WHERE OldCardID = $oldcardid";
+        
+        $result = parent::RunQuery($query);
+  
+        foreach ($result as $value) {
+            $oldcard = $value['CardNumber'];
+        }
+         return $oldcard;
+    }
    
 }
 ?>

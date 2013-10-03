@@ -231,8 +231,31 @@ div.nav ul ul ul {
     display: block;
     margin-left: 12px;
     margin-top: 10px;
+    width: 255px;
+    border: 1px solid gray;
+}
+
+#tblplayerdetails2 {
+    float: center;
+    display: block;
+    margin-left: 12px;
+    margin-top: 10px;
     width: 600px;
     border: 1px solid gray;
+}
+
+#tblplayerdetails2 th {
+    border: 1px solid gray;
+    color:  white;
+    padding: 5px;
+    background-color: #1A597C;
+    text-align: left;
+}
+
+#tblplayerdetails2 td {
+    /*border: 1px solid gray;*/
+    padding: 3px;
+    text-align: left;
 }
 
 #tblplayerdetails th {

@@ -19,6 +19,7 @@ App::LoadModuleClass("Loyalty", "CardStatus");
 App::LoadModuleClass("Kronus", "Sites");
 App::LoadModuleClass("Membership", "AuditTrail");
 App::LoadModuleClass("Membership", "AuditFunctions");
+App::LoadModuleClass("Membership", "TempMembers");
 
 App::LoadControl("TextBox");
 App::LoadControl("Button");
@@ -30,6 +31,7 @@ App::LoadCore('ErrorLogger.php');
 
 $_Members = new Members();
 $_AccountTypes = new AccountTypes();
+$_TempMembers = new TempMembers();
 
 $_Identification = new Identifications();
 $_OldCards = new OldCards();
@@ -195,49 +197,65 @@ if ((isset($_GET["oldnumber"]) && (htmlentities($_GET["oldnumber"])))
                     $Memberstable["UserName"] = $txtEmail->SubmittedValue;
                 }
 
-                $Memberstable['DateCreated'] = $dateCreated;
-                $Memberstable['Status'] = '1';
-
-                $PlayerName = $txtplayername->SubmittedValue;
-                
-                $MemberInfo["FirstName"] = $PlayerName;
-                $MemberInfo["Birthdate"] = $dtBirthDate->SubmittedValue;
-                if(!$noemail) $MemberInfo["Email"] = $Memberstable["UserName"];
-                $MemberInfo["NationalityID"] = 1;
-                $MemberInfo["OccupationID"] = 1;
-                $MemberInfo["IdentificationID"] = $ComboID->SubmittedValue;
-                $MemberInfo["IdentificationNumber"] = $txtplayerIDNumber->SubmittedValue;
-                $MemberInfo["Email"] = $txtEmail->SubmittedValue;
-                $MemberInfo["MobileNumber"] = $txtMobile->SubmittedValue;
-                $MemberInfo["DateCreated"] = $dateCreated;
-                $MemberInfo["DateVerified"] = $dateCreated;
-                
-                $rdoGroupGender->SubmittedValue == 1 ? $MemberInfo['Gender'] = 1 : $MemberInfo['Gender'] = 2;
-
-                $result = $_Members->Migrate($Memberstable, $MemberInfo, $AID, $siteid, $LoyatyCardNumber, $NewMembershipCardNumber, $oldCardEmail, $isVIP, false);
-                
-                $status = $result['status'];
-                
-                if ($status == 'OK')
-                {
-                    $isSuccess = true;
-                    $_Log->logAPI(AuditFunctions::MIGRATE_OLD, $LoyatyCardNumber.':'.$NewMembershipCardNumber.':'.$_Members->password.':Success',$siteCode, $AID);
+                $tempEmail = 0;
+                if($txtEmail->SubmittedValue != ""){
+                    
+                    //check if email is already verified in temp table
+                    $tempEmail = $_TempMembers->chkTmpVerifiedEmailAddress(trim($txtEmail->SubmittedValue));
+                    
                 }
-                else
-                {
+                
+                if($tempEmail > 0){
+                    App::SetErrorMessage("Email already verified. Please choose a different email address.");
+                    $_Log->logAPI(AuditFunctions::MIGRATE_OLD, $tempEmail.':'.$txtEmail->SubmittedValue.':Failed', 0, 0);
                     $isSuccess = false;
-                    $error = $result['error'];
-                    $_Log->logAPI(AuditFunctions::MIGRATE_OLD, $LoyatyCardNumber.':'.$NewMembershipCardNumber.':Failed', $siteCode, $AID);
+                    $error = "Email already verified. Please choose a different email address.";
                     $logger->logger($logdate, $logtype, $error);
+                } else {
+                    $Memberstable['DateCreated'] = $dateCreated;
+                    $Memberstable['Status'] = '1';
+
+                    $PlayerName = $txtplayername->SubmittedValue;
+
+                    $MemberInfo["FirstName"] = $PlayerName;
+                    $MemberInfo["Birthdate"] = $dtBirthDate->SubmittedValue;
+                    if(!$noemail) $MemberInfo["Email"] = $Memberstable["UserName"];
+                    $MemberInfo["NationalityID"] = 1;
+                    $MemberInfo["OccupationID"] = 1;
+                    $MemberInfo["IdentificationID"] = $ComboID->SubmittedValue;
+                    $MemberInfo["IdentificationNumber"] = $txtplayerIDNumber->SubmittedValue;
+                    $MemberInfo["Email"] = $txtEmail->SubmittedValue;
+                    $MemberInfo["MobileNumber"] = $txtMobile->SubmittedValue;
+                    $MemberInfo["DateCreated"] = $dateCreated;
+                    $MemberInfo["DateVerified"] = $dateCreated;
+
+                    $rdoGroupGender->SubmittedValue == 1 ? $MemberInfo['Gender'] = 1 : $MemberInfo['Gender'] = 2;
+
+                    $result = $_Members->Migrate($Memberstable, $MemberInfo, $AID, $siteid, $LoyatyCardNumber, $NewMembershipCardNumber, $oldCardEmail, $isVIP, false);
+
+                    $status = $result['status'];
+
+                    if ($status == 'OK')
+                    {
+                        $isSuccess = true;
+                        $_Log->logAPI(AuditFunctions::MIGRATE_OLD, $LoyatyCardNumber.':'.$NewMembershipCardNumber.':'.$_Members->password.':Success',$siteCode, $AID);
+                    }
+                    else
+                    {
+                        $isSuccess = false;
+                        $error = $result['error'];
+                        $_Log->logAPI(AuditFunctions::MIGRATE_OLD, $LoyatyCardNumber.':'.$NewMembershipCardNumber.':Failed', $siteCode, $AID);
+                        $logger->logger($logdate, $logtype, $error);
+                    }
+
+                    /*
+                     * Load message dialog box
+                     */
+
+                    $ActivationDialogOpen = 'true';
+
+                    $displayPassword = $_Members->password; //$arrgetMID['Password'];
                 }
-
-                /*
-                 * Load message dialog box
-                 */
-
-                $ActivationDialogOpen = 'true';
-
-                $displayPassword = $_Members->password; //$arrgetMID['Password'];
             }
         }
     }
