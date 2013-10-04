@@ -2,7 +2,7 @@
 /* @var $this SiteController */
 /* @var $model LoginForm */
 /* @var $form CActiveForm  */
-$this->layout = '//layouts/login';
+$this->layout = '/layouts/login';
 
 $this->pageTitle=Yii::app()->name . ' - Login';
 

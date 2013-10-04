@@ -2,6 +2,7 @@
 
 class ManagePartnersForm extends CFormModel
 {
+    public $username;
     public $eGamesPartner;
     public $companyAddress;
     public $companyName;   
@@ -17,6 +18,7 @@ class ManagePartnersForm extends CFormModel
     public $partnershipStatus;
     public $numberOfRewardOfferings;
     public $PartnerID;
+    public $presentStatus;
     
     public $zeGamesPartner;
     public $zcompanyAddress;
@@ -35,11 +37,11 @@ class ManagePartnersForm extends CFormModel
     
     public function rules() {
         return array(
-            array('PartnerID', 'required'),
+            array('PartnerID, presentStatus', 'required'),
             array('eGamesPartner', 'required'),
             array('eGamesPartner', 'length', 'max' => 30, 'min' => 5),
             array('companyAddress', 'required'),
-            array('companyAddress', 'length', 'max' => 20, 'min' => 5),
+            array('companyAddress', 'length', 'max' => 150, 'min' => 5),
             array('companyName', 'required'),
             array('companyName', 'length', 'max' => 30, 'min' => 5),
             array('phoneNumber', 'required'),
@@ -52,6 +54,8 @@ class ManagePartnersForm extends CFormModel
             array('website', 'length', 'max' => 30, 'min' => 5),
             array('contactPerson', 'required'),
             array('contactPerson', 'length', 'max' => 30, 'min' => 5),
+            array('username', 'required'),
+            array('username', 'length', 'max' => 20, 'min' => 5),
             array('contactPosition', 'required'),
             array('contactPosition', 'length', 'max' => 30, 'min' => 5),
             array('contactPhoneNumber', 'required'),
@@ -67,7 +71,7 @@ class ManagePartnersForm extends CFormModel
         );
     }
     //Added by: mgesguerra - 09-18-13
-    //To change Partner Label 
+    //To change Partner's Details Labels 
     public function attributeLabels()
     {
         return array(
@@ -89,7 +93,7 @@ class ManagePartnersForm extends CFormModel
                              pd.ContactPersonPosition, pd.ContactPersonPhone,
                              pd.ContactPersonMobile, pd.ContactPersonEmail, pd.NumberOfRewardOffers
                              FROM partnerdetails pd
-                             INNER JOIN ref_partners rp ON rp.PartnerID = pd.PartnerID WHERE rp.Status IN (0, 1);";
+                             INNER JOIN ref_partners rp ON rp.PartnerID = pd.PartnerID WHERE rp.Status IN (0, 1, 2);";
         
         }
         else
@@ -214,22 +218,63 @@ class ManagePartnersForm extends CFormModel
                 //Check whether first or second query has been updated
                 if ($secondresult > 0 || $firstresult > 0)
                 {
-                    try
+                    //Check the selected status, if ACTIVE to INACTIVE, change the status
+                    //of the partner's corresponing item, if INACTIVE to ACTIVE, do not 
+                    //change the status
+                    if ($status == 0)
                     {
-                        $pdo->commit();
-                        return array('TransMsg'=>'Partner\'s Details is successfully updated.',
-                                     'TransCode'=>0);
+                        try
+                        {
+                            //If partner's status has been change, change also the status of 
+                            //its corresponding item
+                            $thirdquery = "UPDATE rewarditems SET Status = :status
+                                           WHERE PartnerID = :partnerID";
+                            $sql = $connection->createCommand($thirdquery);
+                            $sql->bindParam(":partnerID", $partnerID);
+                            $sql->bindParam(":status", $this->determineItemStat($status));
+                            $thirdresult = $sql->execute();
+                            if ($thirdresult > 0 || $secondresult > 0 || $firstresult > 0)
+                            {
+                                try
+                                {
+                                    $pdo->commit();
+                                    return array('TransMsg'=>'Partner\'s Details is successfully updated.',
+                                                 'TransCode'=>0);
+                                }
+                                catch (CDbException $e)
+                                {
+                                    $pdo->rollback();
+                                    return array('TransMsg'=>'Error: '. $e->getMessage(),
+                                                 'TransCode'=>2);
+                                }
+                            }
+                        }
+                        catch (CDbException $e)
+                        {
+                            $pdo->rollback();
+                            return array('TransMsg'=>'Error: '. $e->getMessage(),
+                                 'TransCode'=>2);
+                        }
                     }
-                    catch (CDbException $e)
+                    else
                     {
-                        $pdo->rollback();
-                        return array('TransMsg'=>'Error: '. $e->getMessage(),
-                             'TransCode'=>2);
+                        try
+                        {
+                            $pdo->commit();
+                            return array('TransMsg'=>'Partner\'s Details is successfully updated.',
+                                         'TransCode'=>0);
+                        }
+                        catch (CDbException $e)
+                        {
+                            $pdo->rollback();
+                            return array('TransMsg'=>'Error: '. $e->getMessage(),
+                                         'TransCode'=>2);
+                        }
                     }
                 }
                 else
                 {
-                    return array('TransMsg'=>'No record was updated.',
+                    return array('TransMsg'=>'Record details unchanged.',
                          'TransCode'=>1);
                 }
                 
@@ -242,11 +287,6 @@ class ManagePartnersForm extends CFormModel
                 return array('TransMsg'=>'Error: '. $e->getMessage(),
                              'TransCode'=>2);
             }
-        }
-        else
-        {
-            return array('TransMsg'=>'No record was updated.',
-                         'TransCode'=>1);
         }
     }
     /**
@@ -269,6 +309,7 @@ class ManagePartnersForm extends CFormModel
         $email              = $details['email'];
         $website            = $details['website'];
         $contactPerson      = $details['contactPerson'];
+        $username           = $details['username'];
         $contactPosition    = $details['contactPosition'];
         $contactEmail       = $details['contactEmail'];
         $contactPNumber     = $details['contactPNumber'];
@@ -342,6 +383,7 @@ class ManagePartnersForm extends CFormModel
                         $thirdquery = "INSERT INTO partners (UserName, 
                                                              Password,
                                                              RefPartnerID,
+                                                             AccountTypeID,
                                                              LoginAttempts,
                                                              ForChangePassword,
                                                              DateCreated,
@@ -351,6 +393,7 @@ class ManagePartnersForm extends CFormModel
                                             :username,
                                             :password,
                                             :refpartnerID,
+                                            14,
                                             0,
                                             0,
                                             NOW(),
@@ -358,7 +401,7 @@ class ManagePartnersForm extends CFormModel
                                             :status
                                          )";
                         $sql = $connection->createCommand($thirdquery);
-                        $sql->bindParam(":username", $contactEmail);
+                        $sql->bindParam(":username", $username);
                         $sql->bindParam(":password", $password);
                         $sql->bindParam(":refpartnerID", $lastInsertPID);
                         $sql->bindParam(":status", $status);
@@ -398,11 +441,21 @@ class ManagePartnersForm extends CFormModel
                                 
                                 if ($fourthresult > 0)
                                 {
-                                    $pdo->commit();
-                                    return array('TransMsg'=>'Partner successfully Added.',
-                                                 'TransCode'=>0, 'Email' => $contactEmail, 
-                                                 'ContactPerson' => $contactPerson, 'Password' => $password
-                                                );
+                                    try
+                                    {
+                                        $pdo->commit();
+                                        return array('TransMsg'=>'Partner successfully added.',
+                                                     'TransCode'=>0, 'Email' => $contactEmail,
+                                                     'Username' => $username,
+                                                     'ContactPerson' => $contactPerson, 'Password' => $password
+                                                    );
+                                    }
+                                    catch(CDbException $e)
+                                    {
+                                        $pdo->rollback();
+                                        return array('TransMsg'=>'Error: '. $e->getMessage(),
+                                                     'TransCode'=>2);
+                                    }
                                 }
                                 else
                                 {
@@ -484,7 +537,7 @@ class ManagePartnersForm extends CFormModel
      * @date September 27, 2013
      * @return boolean
      */
-    public function mailAddedPartner($to, $contactperson, $password)
+    public function mailAddedPartner($to, $contactperson, $password, $username)
     {
         $servername = $_SERVER['HTTP_HOST'];
         
@@ -504,12 +557,32 @@ class ManagePartnersForm extends CFormModel
 
                   <p>Please click through the link provided below to log-in to your account. </p>
                   
-                  <a href='http://$servername/updatepassword.php?username=$to&password=$password'><b>Change Initial Password</b></a>
+                  <a href='http://$servername/index.php/updatePassword/index?username=$username&password=$password'><b>Change Initial Password</b></a>
                 </body>
                 </html>
                 ";
         
         mail($to, $subject, $detail, $headers);
+    }
+    /**
+     * Change the Reference Status as RewardItem and Ref_partners have <br />
+     * different reference status scheme
+     * @param int $stat ref status of the partner
+     * @author Mark Kenenth Esguerra
+     */
+    private function determineItemStat($stat)
+    {
+        switch ($stat)
+        {
+            //Partner-----Item
+            case 0: $stat = 2;
+                break;
+            case 1: $stat = 1;
+                break;
+            case 2: $stat = 4;
+                break;
+        }
+        return $stat;
     }
 }
 

@@ -15,12 +15,12 @@
 	<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/form.css" />
         <!--<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/menu.css" />-->
         <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/template.css" />
-        <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/js/jquery.jqGrid-4.3.1/css/ui.jqgrid.css" />       
+               
 	<title><?php echo CHtml::encode($this->pageTitle); ?></title>
 </head>
 
-<body class="login-page">
-<div class="login-page container">
+<body class="updatepassword-page">
+<div class="updatepassword-page container">
 	<div id="content">
 		<?php echo $content; ?>
 	</div><!-- content -->

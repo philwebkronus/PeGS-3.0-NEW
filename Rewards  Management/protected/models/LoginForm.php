@@ -104,7 +104,27 @@ class LoginForm extends CFormModel
 		else
 			return false;
 	}
+    public function loginPartner()
+    {
+        $partner = new PartnersModel();
+        
+        if($this->_identity===null)
+        {
+            $this->_identity=new UserIdentity($this->UserName,$this->Password);
+            $this->_identity->authenticate();
+        }
+        $check = $partner->checkAccount($this->UserName, $this->Password);
+        //Check if exist
+        if (count($check) > 0)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     
+    }
     
     /*
      * Description: check Account

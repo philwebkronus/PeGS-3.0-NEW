@@ -34,6 +34,7 @@ $("#editlinkid").live("click",function(){
     $("#ContactMobile2").val(contactPersonMobile);
     $("#NumberOfRewardOfferings2").val(numberOfRewardOffers);
     $("#Status2").val(status).attr("selected", "selected");
+    $("#LastStatus2").val(status);
 
     $("#editPartner2ndDialog-compdtls").dialog("open");
     return false;
@@ -84,6 +85,7 @@ $("#partnerNameLink").live("click",function(){
     $("#ContactPhoneNumber").attr('disabled','disabled');
     $("#ContactMobile").attr('disabled','disabled');
     $("#Status").attr('disabled','disabled');
+    $("#LastStatus").val(status);
     $("#NumberOfRewardOfferings").attr('disabled','disabled');
     
     $("#editPartnerDialog").dialog("open");
@@ -148,7 +150,7 @@ $(".addBtn").live("click", function(){
                     
                     return false;
                 }
-                else if (/^[a-zA-Z0-9- ]*$/.test(address) === false)
+                else if (/^[a-zA-Z0-9- /,-.]*$/.test(address) === false)
                 {
                     $("#msgdialogAdd").css({'text-align':"left",'color':"red"});
                     $("#msgdialogAdd").html("Special character/s is/are not allowed in Company Address");
@@ -196,11 +198,12 @@ $(".addBtn").live("click", function(){
                 var contactpnumber  = $("#ContactPhoneNumberAdd").val();
                 var contactmobile   = $("#ContactMobileAdd").val();
                 var numberOfoffers  = $("#NumberOfRewardOfferingsAdd").val();
+                var username        = $("#UsernameAdd").val();
                 var status          = $("#StatusAdd").val();
                 
                 if (contactperson === "" || contactposition === "" || contactemail === "" 
                     || contactpnumber === "" || contactmobile === "" || numberOfoffers === ""
-                    || status == -1)
+                    || status == -1 || username === "")
                 {
                     $("#msgdialogAdd").css({'text-align':"left",'color':"red"});
                     $("#msgdialogAdd").html("Please fill up all fields");
@@ -209,6 +212,13 @@ $(".addBtn").live("click", function(){
                 {
                     $("#msgdialogAdd").css({'text-align':"left",'color':"red"});
                     $("#msgdialogAdd").html("Special character/s is/are not allowed in Contact Person");
+                    
+                    return false;
+                }
+                else if (/^[a-zA-Z0-9- ]*$/.test(username) === false)
+                {
+                    $("#msgdialogAdd").css({'text-align':"left",'color':"red"});
+                    $("#msgdialogAdd").html("Special character/s is/are not allowed in Username");
                     
                     return false;
                 }
@@ -245,6 +255,13 @@ $(".addBtn").live("click", function(){
                     $("#msgdialogAdd").css({'text-align':"left",'color':"red"});
                     $("#msgdialogAdd").html("Invalid Email Address");
                 }
+                else if (numberOfoffers <=  0)
+                {
+                    $("#msgdialogAdd").css({'text-align':"left",'color':"red"});
+                    $("#msgdialogAdd").html("Number of Reward Offerings must be greater than zero");
+                    
+                    return false;
+                }
                 else
                 {
                     $("#addpartner-form").submit();
@@ -267,6 +284,8 @@ $(".addBtn").live("click", function(){
             var contactpnumber  = $("#ContactPhoneNumber").val();
             var contactmobile   = $("#ContactMobile").val();
             var numberOfoffers  = $("#NumberOfRewardOfferings").val();
+            var laststatus      = $("#LastStatus").val();
+            var status          = $("#Status").val();
             
             if (partnername === "" || address === "" || phonenumber === "" || faxnumber === ""
                 || emailaddress === "" || website === "" || contactperson === "" 
@@ -283,7 +302,7 @@ $(".addBtn").live("click", function(){
 
                 return false;
             }
-            else if (/^[a-zA-Z0-9- ]*$/.test(address) === false)
+            else if (/^[a-zA-Z0-9- /,-.]*$/.test(address) === false)
             {
                 $("#msgdialog2").css({'text-align':"left",'color':"red"});
                 $("#msgdialog2").html("Special character/s is/are not allowed in Company Address");
@@ -349,6 +368,21 @@ $(".addBtn").live("click", function(){
                 $("#msgdialog2").css({'text-align':"left",'color':"red"});
                 $("#msgdialog2").html("Invalid Website URL");
             }
+            else if (numberOfoffers <=  0)
+            {
+                $("#msgdialog2").css({'text-align':"left",'color':"red"});
+                $("#msgdialog2").html("Number of Reward Offerings must be greater than zero");
+
+                return false;
+            }
+            else if (status != laststatus)
+            {
+                var c = confirm("Are you sure you want to change the partner's status?");
+                if (c == true)
+                {
+                    $("#editpartner-form-pname").submit();
+                }
+            }
             else
             {
                 $("#editpartner-form-pname").submit();
@@ -382,7 +416,7 @@ $(".addBtn").live("click", function(){
                     
                     return false;
                 }
-                else if (/^[a-zA-Z0-9- ]*$/.test(address) === false)
+                else if (/^[a-zA-Z0-9- /,-.]*$/.test(address) === false)
                 {
                     $("#msgdialog").css({'text-align':"left",'color':"red"});
                     $("#msgdialog").html("Special character/s is/are not allowed in Company Address");
@@ -430,6 +464,8 @@ $(".addBtn").live("click", function(){
                 var contactpnumber  = $("#ContactPhoneNumber2").val();
                 var contactmobile   = $("#ContactMobile2").val();
                 var numberOfoffers  = $("#NumberOfRewardOfferings2").val();
+                var laststatus      = $("#LastStatus2").val();
+                var status          = $("#Status2").val();
                 
                 if (contactperson === "" || contactposition === "" || contactemail === "" 
                     || contactpnumber === "" || contactmobile === "" || numberOfoffers === "")
@@ -482,6 +518,21 @@ $(".addBtn").live("click", function(){
                     
                     return false;
                 }
+                else if (numberOfoffers <=  0)
+                {
+                    $("#msgdialog").css({'text-align':"left",'color':"red"});
+                    $("#msgdialog").html("Number of Reward Offerings must be greater than zero");
+                    
+                    return false;
+                }
+                else if (status != laststatus)
+                {
+                    var c = confirm("Are you sure you want to change the partner's status?");
+                    if (c == true)
+                    {
+                        $("#editpartner-form-editlink").submit();
+                    }
+                }
                 else
                 {
                     $("#editpartner-form-editlink").submit();
@@ -513,12 +564,12 @@ $(".addBtn").live("click", function(){
                     datatype: "json",
                     colNames:['Partner Name', 'Status', 'Number of Reward Offers', 'Contact Person', "Contact Person's Email", ''],
                     colModel:[
-                            {name : 'Name', sortable : false, width : '190', resizable : true, align : 'center'},
-                            {name : 'Status', sortable : false, width : '90', resizable : true, align : 'center'},
+                            {name : 'Name', sortable : false, width : '200', resizable : true, align : 'center'},
+                            {name : 'StatusName', sortable : false, width : '90', resizable : true, align : 'center'},
                             {name : 'NumberOfRewardOffers', sortable : false, width : '160', resizable : true, align : 'center'},
                             {name : 'ContactPerson', sortable : false, width : '190', resizable : true, align : 'center'},
                             {name : 'ContactPersonEmail', sortable : false, width : '180', resizable : true, align : 'center'},
-                            {name : 'EditLink', 'sortable' : false, width : '69', resizable : false, align : 'center'},  
+                            {name : 'EditLink', 'sortable' : false, width : '59', resizable : false, align : 'center'},  
                     ],
                             
                     rowNum: 10,
@@ -541,7 +592,6 @@ $(".addBtn").live("click", function(){
        });
     });
 </script>
-
 <h1>Manage Partners</h1>
 <?php
     $form = $this->beginWidget('CActiveForm', array(
@@ -559,13 +609,7 @@ VIEW PARTNERS BY
     echo CHtml::dropDownList('ViewBy', '', array('All'=>'All',
                                                  '1'=>'Active',
                                                  '0'=>'Inactive'),
-                                           array('id' => 'viewby',
-//                                                 'ajax' => array(
-//                                                   'type' => 'POST',
-//                                                   'url' => CController::createUrl('ajaxViewPartnersBy'),
-//                                                   'data' => array('ViewBy'=>'js:this.value')
-//                                               )
-                                           ));
+                                           array('id' => 'viewby'));
     $this->endWidget();
 ?>
 <br /><br />
@@ -618,7 +662,7 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
         'resizable' => false,
         'draggable' => false,
         'width' => '500',
-        'height' => '430',
+        'height' => '500',
         'modal' => true,
         'open' => 'js:function(event, ui) {
                         $(this).siblings(".ui-dialog-titlebar-close").show();
@@ -677,7 +721,7 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
 ?>
 <div id="addNewPartner">
     <div style="text-align: left;">
-        <img id="wiz" src="<?php echo Yii::app()->request->baseUrl.'/images/wizard1.png'?>" width="300" height="40">
+        <img id="wiz" src="<?php echo Yii::app()->request->baseUrl.'/images/wizard1.png'?>">
     </div>
     <br /><br />
     <span id="msgdialogAdd"></span>
@@ -706,7 +750,7 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
                 <?php echo $form->labelEx($model, 'companyAddress', array('style'=>'font-weight:bold;')); ?>
             </td>
             <td>
-                <?php echo $form->textField($model, 'companyAddress', array('id'=>'companyAddressAdd', 'onkeypress'=>'return alphanumeric4(event)')) ?>
+                <?php echo $form->textField($model, 'companyAddress', array('id'=>'companyAddressAdd', 'onkeypress'=>'return addresskeypress(event)')) ?>
             </td>
        </tr>
        <tr>
@@ -749,6 +793,14 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
            </td>
            <td>
                <?php echo $form->textField($model, 'contactPerson', array('id'=>'ContactPersonAdd', 'onkeypress'=>'return alphanumeric4(event)')) ?>
+           </td>
+       </tr>
+       <tr>
+           <td>
+               <?php echo $form->labelEx($model, 'username', array('style'=>'font-weight:bold;')); ?>
+           </td>
+           <td>
+               <?php echo $form->textField($model, 'username', array('id'=>'UsernameAdd', 'onkeypress'=>'return alphanumeric4(event)')) ?>
            </td>
        </tr>
        <tr>
@@ -824,7 +876,7 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
         'resizable' => false,
         'draggable' => false,
         'modal' => true,
-        'height' => '450',
+        'height' => '490',
         'width' => '500',
         'open' => 'js:function(event, ui) {
                         $(this).siblings(".ui-dialog-titlebar-close").show();
@@ -857,6 +909,7 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
                                                                                    color:"#aaa"});
                 $("#cOthers").removeClass("active");
                 $("#cDetails").removeClass("active visited").addClass("active");
+                $("#wiz2").attr("src","../../images/wizard1.png");
             }',
             'NEXT' => 'js:function(){
                     var result = validateInputs(2, 1);
@@ -872,6 +925,7 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
                         $(this).siblings(".ui-dialog-buttonpane").find("button").eq(3).show();
                         $("#cOthers").addClass("active");
                         $("#cDetails").removeClass("active").addClass("active visited");
+                        $("#wiz2").attr("src","../../images/wizard2.png");
                     }
             }',
             'SAVE' => 'js:function(){
@@ -907,9 +961,8 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
 </script>    
 <div id="editNewPartner2">
     <div style="text-align: left;">
-        <img id="wiz" src="<?php echo Yii::app()->request->baseUrl.'/images/wizard1.png'?>" width="300" height="40">
-    </div>
-    <br /><br />
+        <img id="wiz2" src="<?php echo Yii::app()->request->baseUrl.'/images/wizard1.png'?>">
+    </div><br />
     <span id="msgdialog"></span>
     <?php
     //Edit Form when user clicks EDIT
@@ -926,6 +979,7 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
     <?php //echo $form->errorSummary($model); ?><br>
     <?php 
         echo $form->hiddenField($model, 'PartnerID', array('id'=>'PartnerID2'));
+        echo $form->hiddenField($model, 'presentStatus', array('id'=>'LastStatus2'));
     ?>
     <table id="firstGroup">
         <tr> 
@@ -941,7 +995,7 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
                 <?php echo $form->labelEx($model, 'companyAddress', array('style'=>'font-weight:bold;')); ?>
             </td>
             <td>
-                <?php echo $form->textField($model, 'companyAddress', array('id'=>'companyAddress2', 'onkeypress'=>'return alphanumeric4(event)')) ?>
+                <?php echo $form->textField($model, 'companyAddress', array('id'=>'companyAddress2', 'onkeypress'=>'return addresskeypress(event)')) ?>
             </td>
        </tr>
        <tr>
@@ -1115,6 +1169,7 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
     <?php //echo $form->errorSummary($model); ?><br>
     <?php 
         echo $form->hiddenField($model, 'PartnerID', array('id'=>'PartnerID'));
+        echo $form->hiddenField($model, 'presentStatus', array('id' => 'LastStatus'))
     ?>
     <div class="row">
         <?php echo $form->labelEx($model, "eGamesPartner"); ?><br>
@@ -1124,7 +1179,7 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
     <br />
     <div class="row">
         <?php echo $form->labelEx($model, 'companyAddress'); ?><br>
-        <?php echo $form->textField($model, 'companyAddress', array('id'=>'companyAddress', 'onkeypress'=>'return alphanumeric4(event)', 'disabled' => 'true')) ?>
+        <?php echo $form->textField($model, 'companyAddress', array('id'=>'companyAddress', 'onkeypress'=>'return addresskeypress(event)', 'disabled' => 'true')) ?>
         <?php //echo $form->error($model, 'companyAddress'); ?>
     </div>
     <br />
@@ -1210,15 +1265,17 @@ $this->widget('application.components.widgets.JqGridWidget', array('tableID' => 
         'caption' => 'Manage Partners',
         'height' => '40',
         'width' => '700',
+        'navBarOptions' => array( 'search' => false),
+        'search' => false,
         'shrinkToFit' => false,
         'colNames' => array('Partner Name', 'Status', 'Number of Reward Offers', 'Contact Person', "Contact Person's Email", ''),
         'colModel' => array(
-            array('name' => 'Name', 'sortable' => false, 'width' => '190', 'resizable' => true, 'align' => 'center'),
+            array('name' => 'Name', 'sortable' => false, 'width' => '200', 'resizable' => true, 'align' => 'center'),
             array('name' => 'Status', 'sortable' => false, 'width' => '90', 'resizable' => true, 'align' => 'center'),
             array('name' => 'NumberOfRewardOffers', 'sortable' => false, 'width' => '160', 'resizable' => true, 'align' => 'center'),
             array('name' => 'ContactPerson', 'sortable' => false, 'width' => '190', 'resizable' => true, 'align' => 'center'),
             array('name' => 'ContactPersonEmail', 'sortable' => false, 'width' => '180', 'resizable' => true, 'align' => 'center'),
-            array('name' => 'EditLink', 'sortable' => false, 'width' => '68', 'resizable' => false, 'align' => 'center'),
+            array('name' => 'EditLink', 'sortable' => false, 'width' => '58', 'resizable' => false, 'align' => 'center'),
         ),
 )));
 ?>

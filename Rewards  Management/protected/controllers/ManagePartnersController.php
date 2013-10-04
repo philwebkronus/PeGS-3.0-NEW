@@ -27,6 +27,7 @@ class ManagePartnersController extends Controller {
             $details['email']           = $this->sanitize($model->emailAddress);
             $details['website']         = $this->sanitize($model->website);
             $details['contactPerson']   = $this->sanitize($model->contactPerson);
+            $details['username']        = $this->sanitize($model->username);
             $details['contactPosition'] = $this->sanitize($model->contactPosition);
             $details['contactEmail']    = $this->sanitize($model->contactEmailAddress);
             $details['contactPNumber']  = $this->sanitize($model->contactPhoneNumber);
@@ -36,7 +37,8 @@ class ManagePartnersController extends Controller {
             //Check if all fields are filled up
             if ((($details['partnerID'] || $details['partnername'] | $details['address'] ||
                 $details['pnumber'] || $details['faxnumber'] || $details['email'] || 
-                $details['website'] || $details['contactPerson'] || $details['contactPosition'] || 
+                $details['website'] || $details['contactPerson'] || $details['username']
+                || $details['contactPosition'] || 
                 $details['contactEmail'] || $details['contactPNumber'] 
                 || $details['contactMobile'] || $details['noOfofferings']) == "") 
                 || ($details['status'] == -1))
@@ -47,8 +49,9 @@ class ManagePartnersController extends Controller {
                 $this->showdialog = true;
             }
             else if (!$validation->validateAlphaNumeric($details['partnername']) || 
-                     !$validation->validateAlphaNumeric($details['address']) || 
+                     !$validation->validateAddress($details['address']) ||
                      !$validation->validateAlphaNumeric($details['faxnumber']) ||
+                     !$validation->validateAlphaNumeric($details['username']) ||
                      !$validation->validateAlphaNumeric($details['contactPosition']) ||
                      !$validation->validateAlphaNumeric($details['contactMobile']) ||
                      !$validation->validateAlphaNumeric($details['status']) ||
@@ -57,6 +60,12 @@ class ManagePartnersController extends Controller {
                 $this->dialogtitle = "ERROR MESSAGE";
                 $this->dialogmsg = "Special characters are not allowed in some fields that \n
                                     accept only letters or numbers.";
+                $this->showdialog = true;
+            }
+            else if ($details['noOfofferings'] <= 0)
+            {
+                $this->dialogtitle = "ERROR MESSAGE";
+                $this->dialogmsg = "Number of Reward Offerings must be greater than zero.";
                 $this->showdialog = true;
             }
             else
@@ -83,7 +92,7 @@ class ManagePartnersController extends Controller {
                     }
                     else
                     {
-                        $model->mailAddedPartner($result['Email'], $result['ContactPerson'], $result['Password']);
+                        $model->mailAddedPartner($result['Email'], $result['ContactPerson'], $result['Password'], $result['Username']);
                     }
                 }
                 $this->showdialog = true;
@@ -129,8 +138,14 @@ class ManagePartnersController extends Controller {
                                                                            >".$data[$ctr]['PartnerName']."</a>";
                     if ($data[$ctr]['Status'] == 1) {
                         $arrayNewList['Status'] = 'Active';
-                    } else {
+                    } 
+                    else if ($data[$ctr]['Status'] == 0)
+                    {
                         $arrayNewList['Status'] = 'Inactive';
+                    }
+                    else if ($data[$ctr]['Status'] == 2)
+                    {
+                        $arrayNewList['Status'] = 'Deactivated';
                     }
                     $arrayNewList['NumberOfRewardOffers'] = urldecode($data[$ctr]['NumberOfRewardOffers']);
                     $arrayNewList['ContactPerson'] = urldecode($data[$ctr]['ContactPerson']);
@@ -185,7 +200,7 @@ class ManagePartnersController extends Controller {
                 break;
             case 0: $stat = "Inactive";
                 break;
-            default: $stat = "Inactive";
+            case 2: $stat = "Deactivated";
                 break;
         }
         return $stat;
@@ -245,8 +260,8 @@ class ManagePartnersController extends Controller {
                 $this->showdialog = true;
             }
             else if (!$validation->validateAlphaNumeric($details['partnerID']) || 
-                     !$validation->validateAlphaNumeric($details['partnername']) || 
-                     !$validation->validateAlphaNumeric($details['address']) || 
+                     !$validation->validateAlphaNumeric($details['partnername']) ||
+                     !$validation->validateAddress($details['address']) ||
                      !$validation->validateAlphaNumeric($details['faxnumber']) ||
                      !$validation->validateAlphaNumeric($details['contactPerson']) ||
                      !$validation->validateAlphaNumeric($details['contactPosition']) ||
@@ -257,6 +272,12 @@ class ManagePartnersController extends Controller {
                 $this->dialogtitle = "ERROR MESSAGE";
                 $this->dialogmsg = "Special characters are not allowed in some fields that \n
                                     accept only letters or numbers.";
+                $this->showdialog = true;
+            }
+            else if ($details['noOfofferings'] <= 0)
+            {
+                $this->dialogtitle = "ERROR MESSAGE";
+                $this->dialogmsg = "Number of Reward Offerings must be greater than zero.";
                 $this->showdialog = true;
             }
             else
@@ -277,43 +298,6 @@ class ManagePartnersController extends Controller {
                 
             }
             $this->render('index', array('model' => $model));
-        }
-        else
-        {
-            $this->redirect('index');
-        }
-    }
-    /**
-     * Update Details Controller using AJAX
-     * Updates partner details when the user clicks
-     * partner name using AJAX
-     * @author mgesguerra
-     * @date Sep-19-13
-     */
-    public function actionAjaxupdatedetails()
-    {
-        $model = new ManagePartnersForm();
-        if (isset($_POST['ManagePartnersForm']))
-        {
-            $model->attributes = $_POST['ManagePartnersForm'];
-            
-            $details['partnerID']       = $model->PartnerID;
-            $details['partnername']     = $model->eGamesPartner;
-            $details['address']         = $model->companyAddress;
-            $details['pnumber']         = $model->phoneNumber;
-            $details['faxnumber']       = $model->faxNumber;
-            $details['email']           = $model->emailAddress;
-            $details['website']         = $model->website;
-            $details['contactPerson']   = $model->contactPerson;
-            $details['contactPosition'] = $model->contactPosition;
-            $details['contactEmail']    = $model->contactEmailAddress;
-            $details['contactPNumber']  = $model->contactPhoneNumber;
-            $details['status']          = $model->partnershipStatus;
-            
-            $return = $model->updatePartnerDetails($details);
-            //Return the TransCode
-            echo $return['TransCode'];
-            exit;
         }
         else
         {
@@ -379,11 +363,15 @@ class ManagePartnersController extends Controller {
             {
                 if ($val['Status'] == 1)
                 {
-                    $val['Status'] = 'Active';
+                    $val['StatusName'] = 'Active';
                 } 
-                else 
+                else if ($val['Status'] == 0)
                 {
-                    $val['Status'] = 'Inactive';
+                    $val['StatusName'] = 'Inactive';
+                }
+                else if ($val['Status'] == 2)
+                {
+                    $val['StatusName'] = 'Deactivated';
                 }
                     
                 $response->rows[$i]['id'] = $val['PartnerID'];
@@ -400,9 +388,10 @@ class ManagePartnersController extends Controller {
                                                                            ContactPersonMobile='".$val['ContactPersonMobile']."'
                                                                            ContactPersonEmail='".$val['ContactPersonEmail']."'
                                                                            Status='".$val['Status']."'
+                                                                           StatusName='".$val['StatusName']."'
                                                                            NumberOfRewardOffers='".$val['NumberOfRewardOffers']."'
                                                                            >".$val['PartnerName']."</a>",
-                                                    $val['Status'],
+                                                    $val['StatusName'],
                                                     $val['NumberOfRewardOffers'],
                                                     $val['ContactPerson'],
                                                     $val['ContactPersonEmail'],
@@ -435,5 +424,15 @@ class ManagePartnersController extends Controller {
             $response->msg = $msg;
         }
         echo json_encode($response);
+    }
+    
+    public function actionAutoLogout() {
+        
+        $page = $_POST['page'];
+ 
+        if($page =='logout'){
+
+            echo json_encode('logouts');
+        } 
     }
 }

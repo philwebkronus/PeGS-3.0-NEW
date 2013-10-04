@@ -164,3 +164,26 @@ root {
 .rowgray{
     
 }
+/*Update password layout*/
+
+.updatepassword-page{background-color: #f7f4ee;}
+.updatepassword{
+    width: 35%;
+    border: 1px solid #69a8cd;
+    padding: 20px 0 20px 40px;
+    margin-left: 30%;
+    margin-top: 15%;
+    background-color: #dbeffb; /*#c9e7f8;*/
+}
+.updatepassword-title{
+    position: relative;
+    width:120px;
+    border:1px solid #5ba0c9;
+    background-color: #1a597c;
+    color:#FFFFFF;
+    padding: 2px 0 2px 10px;
+    font-weight: bold;
+    margin-top: -30px;
+    margin-left: -10px;
+    margin-bottom: 20px;
+}

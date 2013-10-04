@@ -6,11 +6,8 @@ $this->breadcrumbs=array(
 $partners = new RefPartnerModel(); 
 $rewarditems = new RewardItemsModel();
 $rafflecoupons = new RaffleCouponModel(); 
+$partneracct = new PartnersModel();
 $this->pageTitle = Yii::app()->name . ' - Verify Rewards';
-
-Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl . '/js/idle.js');
-Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl . '/js/idlechecker.js');
-Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl . '/js/validations.js');
 
 ?>
 <script type="text/javascript">
@@ -20,11 +17,18 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl . '/js
     $("input[name='rewardsecoupons']").click(function()
     {
         document.getElementById('rewardpage').style.display='block';
+        <?php
+        if (!isset(Yii::app()->session['PartnerPID']))
+        {
+        ?>
         document.getElementById('rafflepage').style.display='none';
+        <?php
+        }
+        ?>
         $('#raffleecoupons').attr('checked',false);
         $("#ecouponserial2").val('');
         $("#ecouponsecuritycode2").val('');
-        document.getElementById("egamespartner").selectedIndex = 0;
+        document.getElementById("VerifyRewardsForm_egamespartner").selectedIndex = 0;
         document.getElementById("rewarditem").selectedIndex = 0;
         $("#errmsg").html("");
     });
@@ -127,9 +131,16 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl . '/js
             
             <?php echo CHtml::label("Rewards e-Coupons", "rewardsecoupons");?>
             &nbsp;&nbsp;&nbsp;&nbsp;
-            <input type="radio" id="raffleecoupons" name="raffleecoupons" value="2"/>
+            <?php 
+            if (!isset(Yii::app()->session['PartnerPID']))
+            {
+            ?>
+                <input type="radio" id="raffleecoupons" name="raffleecoupons" value="2"/>
             
-            <?php echo CHtml::label("Raffle e-Coupons", "raffleecoupons");?>
+                <?php echo CHtml::label("Raffle e-Coupons", "raffleecoupons");?>
+            <?php
+            } 
+            ?>
         </td>  
         </tr>
         
@@ -145,22 +156,46 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl . '/js
             <td>
                 <?php
                     $model = new VerifyRewardsForm();
-                    $egamespartners = $partners->getPartners();
-                    array_unshift($egamespartners, array('PartnerID'=>'-1', 'PartnerName'=>'-Please Select-'));
-                    $arrPartners = CHtml::listData($egamespartners, 'PartnerID', 'PartnerName');
-                    echo $form->dropDownList($model, 'egamespartner', $arrPartners, array('ajax' => array(
-                                                                                         'type' => 'POST',
-                                                                                         'url' => CController::createUrl('ajaxGetRewardItems'),
-                                                                                         'update' => '#VerifyRewardsForm_rewarditem',
-                                                                                         'data' => array('VerifyRewardsForm_egamespartner'=>'js:this.value')
-                                                                                                    ))); ?>
+                    if (isset(Yii::app()->session['PartnerPID']))
+                    {
+                        $partnerpid = Yii::app()->session['PartnerPID'];
+                        $egamespartners = $partners->getPartnerByContactPerson($partnerpid);
+                        $arrPartners = CHtml::listData($egamespartners, 'PartnerID', 'PartnerName');
+                        echo $form->dropDownList($model, 'egamespartner', $arrPartners); 
+                    }
+                    else if (isset(Yii::app()->session['AID']))
+                    {
+                        $egamespartners = $partners->getPartners();
+                        array_unshift($egamespartners, array('PartnerID'=>'-1', 'PartnerName'=>'- Please Select -'));
+                        $arrPartners = CHtml::listData($egamespartners, 'PartnerID', 'PartnerName');
+                        echo $form->dropDownList($model, 'egamespartner', $arrPartners, array('ajax' => array(
+                                                                                             'type' => 'POST',
+                                                                                             'url' => CController::createUrl('ajaxGetRewardItems'),
+                                                                                             'update' => '#VerifyRewardsForm_rewarditem',
+                                                                                             'data' => array('VerifyRewardsForm_egamespartner'=>'js:this.value')
+                                                                             ))); 
+                    }
+                ?>
             </td>
             </tr>
             <tr>
                 <td><?php echo CHtml::label("Reward Item : ", "rewarditemlbl");?></td>    
             <td>
-
-                    <?php echo $form->dropDownList($model, 'rewarditem', array('-1'=>'- Please Select -'), array('value'=>'','style' => 'width: 200px;')); ?>
+                    <?php
+                        if (isset(Yii::app()->session['PartnerPID']))
+                        {
+                            $partnerpid = Yii::app()->session['PartnerPID'];
+                            $arrItems = $rewarditems->getRewardItemsJoinPartners($partnerpid);
+                            array_unshift($arrItems, array('RewardItemID'=>'-1', 'ItemName'=>'-Please Select-'));
+                            $itemList = CHtml::listData($arrItems, 'RewardItemID', 'ItemName');
+                            echo $form->dropDownList($model, 'rewarditem', $itemList); 
+                            
+                        }
+                        else
+                        {
+                            echo $form->dropDownList($model, 'rewarditem', array('-1'=>'- Please Select -'), array('value'=>'','style' => 'width: 200px;')); 
+                        }
+                    ?>
             </td>
             </tr>
             <tr>
@@ -181,42 +216,47 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl . '/js
             <?php echo CHtml::submitButton("Verify", array('id'=>'Submit','name' => 'Submit')); ?>
            </div> 
     </div>
-    
-    <div id="rafflepage" style="display: none">   
-    <table style="width:500px; margin: 50px;">
-        <tr>
-            <td><span id="errmsg2" style="color: red"></span> </td>
-        </tr>
-        <tr>
-            <td><?php echo CHtml::label("Raffle Promo : ", "rafflepromo");?></td>    
-        <td>
-                <?php
-                    $arrItems = $rewarditems->selectRaffleItems();
-                    array_unshift($arrItems, array('RewardItemID' => '-1', 'ItemName' => '-Please Select-'));
-                    $itemList = CHtml::listData($arrItems, 'RewardItemID','ItemName');
-                ?>
-                <?php echo $form->dropDownList($model, 'rafflepromo', $itemList, array('id' => 'rafflepromo',  'style'=>'width: 200px;')); ?>
-        </td>
-        </tr>
-        <tr>
-            <td><?php echo CHtml::label("e-Coupon Serial Code : ", "ecouponserial2");?></td>    
-        <td>
-                <?php echo $form->textField($model,'ecouponserial2', array('id'=>'ecouponserial2',  'style'=>'width: 250px;', 'onkeypress' => 'return numberandletter1(event);')); ?>
-        </td>
-        </tr>
-        <tr>
-            <td><?php echo CHtml::label("e-Coupon Security Code : ", "ecouponsecuritycode2");?></td>    
-        <td>
-                <?php echo $form->textField($model,'ecouponsecuritycode2', array('id'=>'ecouponsecuritycode2',  'style'=>'width: 250px;', 'onkeypress' => 'return numberandletter1(event);')); ?>
-        </td>
-        </tr>
-    </table>
-        
-          <div id="submitverify2" style="width: 100%; text-align: center;">
-            <?php echo CHtml::submitButton("Verify", array('id'=>'Submit2','name' => 'Submit2')); ?>
-          </div> 
-    </div>  
-    
+    <?php 
+    if (!isset(Yii::app()->session['PartnerPID']))
+    {
+    ?>
+        <div id="rafflepage" style="display: none">   
+        <table style="width:500px; margin: 50px;">
+            <tr>
+                <td><span id="errmsg2" style="color: red"></span> </td>
+            </tr>
+            <tr>
+                <td><?php echo CHtml::label("Raffle Promo : ", "rafflepromo");?></td>    
+            <td>
+                    <?php
+                        $arrItems = $rewarditems->selectRaffleItems();
+                        array_unshift($arrItems, array('RewardItemID' => '-1', 'ItemName' => '-Please Select-'));
+                        $itemList = CHtml::listData($arrItems, 'RewardItemID','ItemName');
+                    ?>
+                    <?php echo $form->dropDownList($model, 'rafflepromo', $itemList, array('id' => 'rafflepromo',  'style'=>'width: 200px;')); ?>
+            </td>
+            </tr>
+            <tr>
+                <td><?php echo CHtml::label("e-Coupon Serial Code : ", "ecouponserial2");?></td>    
+            <td>
+                    <?php echo $form->textField($model,'ecouponserial2', array('id'=>'ecouponserial2',  'style'=>'width: 250px;', 'onkeypress' => 'return numberandletter1(event);')); ?>
+            </td>
+            </tr>
+            <tr>
+                <td><?php echo CHtml::label("e-Coupon Security Code : ", "ecouponsecuritycode2");?></td>    
+            <td>
+                    <?php echo $form->textField($model,'ecouponsecuritycode2', array('id'=>'ecouponsecuritycode2',  'style'=>'width: 250px;', 'onkeypress' => 'return numberandletter1(event);')); ?>
+            </td>
+            </tr>
+        </table>
+
+              <div id="submitverify2" style="width: 100%; text-align: center;">
+                <?php echo CHtml::submitButton("Verify", array('id'=>'Submit2','name' => 'Submit2')); ?>
+              </div> 
+        </div>
+    <?php
+    }
+    ?>
 </div>
 <?php echo CHtml::beginForm(array('verifyRewards/verifyrewards'), 'POST', array(
         'id'=>'VerifyRewardsForm',
@@ -224,37 +264,6 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl . '/js
         
 <?php echo CHtml::endForm(); ?>    
 <?php $this->endWidget(); ?>
-        <input id="Timeout" type="hidden" value="<?php echo Yii::app()->params->idletimelogout;;?>" />
-        <input id="logout" type="hidden" value="<?php echo Yii::app()->params->autologouturl;;?>" />
-<?php
-/** Start Widget **/
-$this->beginWidget('zii.widgets.jui.CJuiDialog',array(
-    'id'=>'mydialog',
-    'options'=>array(
-        'title'=>'Alert',
-        'autoOpen'=>false,
-        'closeOnEscape' => false,
-        'resizable'=>false,
-        'draggable'=>false,
-        'open'=>'js:function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }',
-        'buttons' => array
-        (
-            'OK'=>'js:function(){
-                window.location.href = $("#logout").val();
-                $(this).dialog("close");
-            }',
-        ),
-    ),
-));
-echo "<center>";
-echo 'Session Expired';
-echo "<br/>";
-echo "</center>";
-    
-$this->endWidget('zii.widgets.jui.CJuiDialog');
-/** End Widget **/
-
-?>
 
 <?php
 /** Start Widget **/

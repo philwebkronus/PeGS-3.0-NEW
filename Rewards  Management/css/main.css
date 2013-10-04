@@ -124,6 +124,7 @@ body
         box-shadow: 6px 5px 5px #1a597c;
         behavior: url(css/PIE/PIE.htc);
         position:relative;
+        cursor:pointer;
 }
 
 #linkButton

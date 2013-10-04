@@ -58,5 +58,42 @@ class Validations
             return false;
         }
     }
+    /**
+     * Check if Address format is valid. Allowed characters are (.), (,) <br />
+     * (-), (/)
+     * @param string $input Inputted address
+     * @return boolean
+     * @author mgesguerra 09-25-13
+     */
+    public function validateAddress($input)
+    {
+        $result = preg_match ("/^[0-9a-zA-Z\s \/\.\-\,]+$/", $input);
+        if ($result)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    /**
+     * Check if Password is valid. Allowed characters are <br /> _%*+-!$=#.:?/&
+     * @param type $input
+     * @return boolean
+     * @author mgesguerra 10-02-13
+     */
+    public function validatePassword($input)
+    {
+        $result = preg_match ("/^[0-9a-zA-Z\s \_\%\#\.\-\+\!\=\:]+$/", $input);
+        if ($result)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
 }
 ?>

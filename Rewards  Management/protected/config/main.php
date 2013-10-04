@@ -7,7 +7,7 @@
 // CWebApplication properties can be configured here.
 return array(
 	'basePath'=>dirname(__FILE__).DIRECTORY_SEPARATOR.'..',
-	'name'=>'Reward Items Management',
+	'name'=>'Rewards Management',
         'defaultController'=>'login/login',
 
 	// preloading 'log' component
@@ -53,45 +53,44 @@ return array(
 //		),
 		// uncomment the following to use a MySQL database
 		'db'=>array(
-            //Development
-            'connectionString' => 'mysql:host=<hostname>;dbname=<database name>',
-			'emulatePrepare' => true,
-			'username' => '<database username>',
-			'password' => '<database password>',
+                        //Development
+            'connectionString' => 'mysql:host=<dbhost>;dbname=<db name>',
+                                    'emulatePrepare' => true,
+                                    'username' => '<username>',
+                                    'password' => '<password>',
 			'charset' => 'utf8',
 		),
 		
-        'db2'=>array(
-            //Development
-            'connectionString' => 'mysql:host=<hostname>;dbname=<database name>',
-			'emulatePrepare' => true,
-			'username' => '<database username>',
-			'password' => '<database password>',
-			'charset' => 'utf8',
-            'class' => 'CDbConnection',
+                'db2'=>array(
+			//'connectionString' => 'mysql:host=localhost;dbname=npos',
+                        //Development
+                        'connectionString' => 'mysql:host=<dbhost>;dbname=<db name>',
+                                    'emulatePrepare' => true,
+                                    'username' => '<username>',
+                                    'password' => '<password>',
+                                    'charset' => 'utf8',
+                        'class' => 'CDbConnection',
 		),
-       
         
-         'widgetFactory'=>array(
+                'widgetFactory'=>array(
                         'widgets'=>array(
                             'CJuiDialog' => array(
                                 'cssFile'=>'jquery-ui-1.9.2.custom.css',
                                 'theme'=>'redmond',
-                                'themeUrl'=>'/rewards.management/css', //theme path
+                                'themeUrl'=>'/css', 
                             ),
                             'CJuiDatePicker' => array(
                                 'cssFile'=>'jquery-ui-1.9.2.custom.css',
                                 'theme'=>'redmond',
-                                'themeUrl'=>'/rewards.management/css',  //theme path
+                                'themeUrl'=>'/css', 
                             ),
                             'CJuiDateTimePicker' => array(
                                 'cssFile'=>'jquery-ui-1.9.2.custom.css',
                                 'theme'=>'redmond',
-                                'themeUrl'=>'/rewards.management/css',  //theme path
+                                'themeUrl'=>'/css', 
                             ),
                         ),
                  ),
-        
 		'errorHandler'=>array(
 			// use 'site/error' action to display errors
 			'errorAction'=>'login/error',
@@ -100,7 +99,7 @@ return array(
 			'class'=>'CLogRouter',
 			'routes'=>array(
 				array(
-					'class'=>'CFileLogRoute',
+					'class'=>'CFileLogRouteModified',
 					'levels'=>'error, warning',
 				),
 				// uncomment the following to show log messages on web pages
@@ -111,6 +110,12 @@ return array(
 				*/
 			),
 		),
+                'clientScript'=>array(
+                    'scriptMap'=>array(
+                         'jquery.js'=>false,
+                    ),
+
+               ),
 	),
 
 	// application-level parameters that can be accessed
@@ -120,8 +125,8 @@ return array(
 		'adminEmail'=>'webmaster@example.com',
         //'idletimelogout'=>'600000', //10 minutes (1000 milliseconds = 1 second)
         'idletimelogout'=>'600000',
-        'autologouturl'=>'http://localhost/rewards.management/index.php?r=login/logout',
-        'marketingemail'=>array('<marketin email address>'),
+        'autologouturl'=>'http://<vhost>/index.php?r=login/logout',
+        'marketingemail'=>array('<test marketing email>'),
         'pageGridLimit'=>array(10,20,30), // drop down page limit in jqgrid
         'initialLimit'=> 10, // initial page limit in jqgrid
 	),

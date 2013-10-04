@@ -6,6 +6,8 @@ function AlphaOnlyWithSpace(event)
     {
         return true;
     }
+    else if (charCode == 37 || charCode == 39) //left and right arrow keys
+         return true;
     else
     {
         return false;
@@ -19,6 +21,8 @@ function AlphaNumericOnlyWithSpace(event)
     {
         return true;
     }
+    else if (charCode == 37 || charCode == 39) //left and right arrow keys
+         return true;
     else
     {
         return false;
@@ -29,7 +33,9 @@ function AlphaNumericOnly(event)
             var charCode = (event.which) ? event.which : event.keyCode;
             if (/*DisableWhiteSpaces*/(charCode == 32) || /*DisableSpecialCharacters*/ (charCode > 32 && charCode < 48) || (charCode > 57 && charCode < 65) || (charCode > 90 && charCode < 97) || (charCode > 122 && charCode < 128))
                 return false;
-
+            else if (charCode == 37 || charCode == 39) //left and right arrow keys
+                return true;
+            else
             return true;
         }
         
@@ -37,12 +43,14 @@ function AlphaNumericOnly(event)
 function alphanumeric4(event)
 {
    var charCode = (event.which) ? event.which : event.keyCode;
-      if ((charCode > 64 && charCode < 91 ) || (charCode > 47 && charCode < 58) || (charCode > 96 && charCode < 123))
-          return true;
-      else if(charCode == 8 ||charCode == 32 || charCode == 9)
-         return true;
-      else
-          return false;
+  if ((charCode > 64 && charCode < 91 ) || (charCode > 47 && charCode < 58) || (charCode > 96 && charCode < 123))
+      return true;
+  else if(charCode == 8 ||charCode == 32 || charCode == 9)
+     return true;
+  else if (charCode == 37 || charCode == 39) //left and right arrow keys
+     return true;
+  else
+      return false;
 }
 
 //validates input: accepts big letter and number only, no spaces
@@ -56,7 +64,9 @@ function numberonly(event)
 {
     var charCode = (event.which) ? event.which : event.keyCode;
    
-    if (charCode > 31 && (charCode < 46 || ( charCode >= 47 && charCode < 48 ) || charCode > 57))
+    if (charCode == 37 || charCode == 39) //left and right arrow keys
+         return true;
+    else if (charCode > 31 && (charCode < 46 || ( charCode >= 47 && charCode < 48 ) || charCode > 57))
     {
         return false;
     }
@@ -87,6 +97,8 @@ function numberandletter(evt)
       {
           return true;
       }
+      else if (charCode == 37 || charCode == 39) //left and right arrow keys
+         return true;
       else
           return true;
 }
@@ -96,8 +108,10 @@ function AlphaNumericOnlyWithSpace(event)
     var charCode = (event.which) ? event.which : event.keyCode;
     if ((charCode > 32 && charCode < 48) || (charCode > 57 && charCode < 65) || (charCode > 90 && charCode < 97) || (charCode > 122 && charCode < 128))
         return false;
-
-    return true;
+    else if (charCode == 37 || charCode == 39) //left and right arrow keys
+         return true;
+    else
+        return true;
 }
 //removes spaces, special characters except (@, ., _) on email textboxes; modified 2012-02-14
 function emailkeypress(event)
@@ -108,6 +122,8 @@ function emailkeypress(event)
         {
           return true;
         }
+    else if (charCode == 37 || charCode == 39) //left and right arrow keys
+         return true;
     else{
           return false;
     }
@@ -120,6 +136,8 @@ function websitekeypress(event)
         {
           return true;
         }
+    else if (charCode == 37 || charCode == 39) //left and right arrow keys
+        return true;
     else{
           return false;
     }
@@ -128,8 +146,7 @@ function telephonekeypress(event)
 {
     var charCode = (event.which) ? event.which : event.keyCode;
    
-    if ((charCode > 31 && charCode < 40) || 
-       ((charCode > 41 && charCode < 44) || ( charCode >= 47 && charCode < 48 ) || charCode > 57))
+    if (charCode > 31 && (charCode < 46 || ( charCode >= 47 && charCode < 48 ) || charCode > 57))
     {
         return false;
     }
@@ -137,15 +154,27 @@ function telephonekeypress(event)
     {
         return true;
     }
-    else if (charCode == 45)
-    {
-        return true;
-    }
     else if(charCode == 9)
         return true;
+    else if (charCode == 37 || charCode == 39) //left and right arrow keys
+         return true;
     else
     {
         return true;
     }
+}
+function addresskeypress(event)
+{
+   var charCode = (event.which) ? event.which : event.keyCode;
+      if ((charCode > 64 && charCode < 91 ) || (charCode > 47 && charCode < 58) || (charCode > 96 && charCode < 123))
+          return true;
+      else if(charCode == 8 ||charCode == 32 || charCode == 9)
+         return true;
+      else if (charCode == 45 || charCode == 44 || charCode == 47 || charCode == 46)
+         return true;
+      else if (charCode == 37 || charCode == 39) //left and right arrow keys
+         return true;
+      else
+          return false;
 }
 

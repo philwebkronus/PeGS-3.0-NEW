@@ -24,7 +24,7 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl . '/js
         $("#partnernamecashier").keyup(function(){
            var branchdtls = $("#partnernamecashier").val();
            if (branchdtls.substring(0, 1) === " "){
-               alert("Warning: Trailing spaces is/are not allowed");
+               alert("Warning: Trailing space/s is/are not allowed");
                $("#partnernamecashier").val("");
            }
            else{
@@ -34,7 +34,7 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl . '/js
         $("#branchdetails").keyup(function(){
            var branchdtls = $("#branchdetails").val();
            if (branchdtls.substring(0, 1) === " "){
-               alert("Warning: Trailing spaces is/are not allowed");
+               alert("Warning: Trailing space/s is/are not allowed");
                $("#branchdetails").val("");
            }
            else{

@@ -18,7 +18,7 @@
 	<!--[if lt IE 8]>
 	<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/ie.css" media="screen, projection" />
 	<![endif]-->
-                     <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/js/jquery.jqGrid-4.3.1/css/ui.jqgrid.css" />
+        <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/js/jquery.jqGrid-4.3.1/css/ui.jqgrid.css" />
 	<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/main.css" />
 	<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/form.css" />
                      <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/redmond/jquery-ui-1.9.2.custom.css" />
@@ -53,12 +53,17 @@
                 ?>
                 <div id="divLogout">
                 <?php 
-                if(!Yii::app()->user->isGuest)
+                if (isset(Yii::app()->session['AID']))
                 {
-                    echo CHtml::link('Logout ('.Yii::app()->user->name.')',array('/login/logout'),
+                    echo CHtml::link('Logout ('.Yii::app()->session['UserName'].')',array('/login/logout'),
                         array('class' => 'logoutlink')
                     ); 
-                    
+                }
+                else if (Yii::app()->session['PartnerPID'])
+                {
+                    echo CHtml::link('Logout ('.Yii::app()->session['UserName'].')',array('/login/logoutpartner'),
+                        array('class' => 'logoutlink')
+                    ); 
                 }
                 ?>
                 </div>
@@ -79,15 +84,52 @@
 	</div><!-- footer -->
 
 </div><!-- page -->
-<!--<script type="text/javascript" src="<?php echo Yii::app()->request->baseUrl; ?>/js/jquery.fieldvalidator.js" ></script>-->
+<!--<script type="text/javascript" src="<?php //echo Yii::app()->request->baseUrl; ?>/js/jquery.fieldvalidator.js" ></script>-->
     <script type="text/javascript" src="<?php echo Yii::app()->request->baseUrl; ?>/js/jquery.jqGrid-4.3.1/js/i18n/grid.locale-en.js" ></script>
     <script type="text/javascript" src="<?php echo Yii::app()->request->baseUrl; ?>/js/jquery.jqGrid-4.3.1/js/jquery.jqGrid.min.js" ></script>
-    <!--<script type="text/javascript" src="<?php echo Yii::app()->request->baseUrl; ?>/js/fancybox/jquery.mousewheel-3.0.4.pack.js"></script>-->
-    <!--<script type="text/javascript" src="<?php echo Yii::app()->request->baseUrl; ?>/js/fancybox/jquery.fancybox-1.3.4.pack.js"></script>-->
+    <!--<script type="text/javascript" src="<?php //echo Yii::app()->request->baseUrl; ?>/js/fancybox/jquery.mousewheel-3.0.4.pack.js"></script>-->
+    <!--<script type="text/javascript" src="<?php //echo Yii::app()->request->baseUrl; ?>/js/fancybox/jquery.fancybox-1.3.4.pack.js"></script>-->
 <!--    <script type="text/javascript" src="<?php //echo Yii::app()->request->baseUrl; ?>/js/lightbox.js"></script>
     <script type="text/javascript" src="<?php //echo Yii::app()->request->baseUrl; ?>/js/jquery.tipTip.minified.js"></script>-->
-    <?php
+<?php 
+    Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl . '/js/idle.js');
+    Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl . '/js/idlechecker.js');
+    Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl . '/js/validations.js');
+    Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl . '/js/trailingspaces.js');
     Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl . '/js/checkinput.js');
-    ?>
+?>
+    
+<input id="Timeout" type="hidden" value="<?php echo Yii::app()->params->idletimelogout;;?>" />
+<input id="logout" type="hidden" value="<?php echo Yii::app()->params->autologouturl;;?>" />
+<?php
+/** Start Widget **/
+$this->beginWidget('zii.widgets.jui.CJuiDialog',array(
+    'id'=>'mydialog',
+    'options'=>array(
+        'title'=>'Alert',
+        'autoOpen'=>false,
+        'closeOnEscape' => false,
+        'resizable'=>false,
+        'draggable'=>false,
+        'modal' => true,
+        'open'=>'js:function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }',
+        'buttons' => array
+        (
+            'OK'=>'js:function(){
+                window.location.href = $("#logout").val();
+                $(this).dialog("close");
+            }',
+        ),
+    ),
+));
+echo "<center>";
+echo 'Session Expired';
+echo "<br/>";
+echo "</center>";
+    
+$this->endWidget('zii.widgets.jui.CJuiDialog');
+/** End Widget **/
+
+?>
 </body>
 </html>
