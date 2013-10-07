@@ -76,7 +76,7 @@ class MembershipTemp extends BaseEntity {
     }
     
     public function checkIfEmailExistsWithMID($MID, $Email) {
-        $query = "SELECT COUNT(Email) AS COUNT FROM memberinfo WHERE MID != $MID AND Email = '$Email';";
+        $query = "SELECT COUNT(Email) AS COUNT FROM memberinfo WHERE MID != $MID AND Email = '$Email' AND Status = 2;";
         return parent::RunQuery($query);
     }
     

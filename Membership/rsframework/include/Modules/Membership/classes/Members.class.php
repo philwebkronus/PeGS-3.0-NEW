@@ -209,6 +209,8 @@ class Members extends BaseEntity {
                                                 $URI = $arrplayeruri[$serviceID - 1];
                                                 $casino = App::getParam("pt_casino_name");
                                                 $playerSecretKey = App::getParam("pt_secret_key");
+                                                
+                                                $arrServices[0]['isVIP'] == 0 ? $vipLevel = App::getParam("ptreg") : $vipLevel = App::getParam("ptvip");
 
                                                 $playtechAPI = new PlayTechAPI($URI, $casino, $playerSecretKey);
 
@@ -340,6 +342,16 @@ class Members extends BaseEntity {
     public function updateMemberStatusUsingMID($status, $MID) {
         $query = "UPDATE " . $this->TableName . " SET Status = " . $status . " WHERE MID = " . $MID;
         parent::ExecuteQuery($query);
+        if ($this->HasError) {
+            App::SetErrorMessage($this->getError());
+            return false;
+        }
+    }
+    
+    
+    public function TerminateUsingMID($status, $MID, $email) {
+        $query = "UPDATE " . $this->TableName . " SET Status = " . $status . ", UserName = '$email'  WHERE MID = " . $MID;
+        $this->ExecuteQuery($query);
         if ($this->HasError) {
             App::SetErrorMessage($this->getError());
             return false;
@@ -482,7 +494,7 @@ class Members extends BaseEntity {
 
         return $result[0]['ctractive'];
     }
-
+    
     public function updateMemberUsername($MID, $arrMemberInfo) {
         $Email = $arrMemberInfo['Email'];
         $Password = $arrMemberInfo['Password'];
@@ -493,7 +505,7 @@ class Members extends BaseEntity {
         }
         return parent::ExecuteQuery($query);
     }
-
+        
     public function updateMemberUsernameAdmin($MID, $Email) {
         $query = "UPDATE membership.members SET UserName = '$Email' WHERE MID = $MID";
         return parent::ExecuteQuery($query);
@@ -505,7 +517,16 @@ class Members extends BaseEntity {
         
         return $result;
     }
-
+    
+    public function chkEmailAddress($email){
+        $query = "SELECT COUNT(m.MID) ctrtemp FROM members m 
+                INNER JOIN memberinfo mi ON m.MID = mi.MID
+                WHERE mi.Email = '$email' AND m.Status IN (1,2,3,4,5);";
+        
+        $result = parent::RunQuery($query);
+        
+        return $result[0]['ctrtemp'];
+    }
 }
 
 ?>

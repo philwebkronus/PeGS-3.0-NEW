@@ -313,7 +313,7 @@ class MemberInfo extends BaseEntity {
     }
     
     public function checkIfEmailExistsWithMID($MID, $Email) {
-        $query = "SELECT COUNT(Email) AS COUNT FROM memberinfo WHERE MID != $MID AND Email = '$Email';";
+        $query = "SELECT COUNT(Email) AS COUNT FROM memberinfo WHERE MID != $MID AND Email = '$Email' AND Status = 9;";
         return parent::RunQuery($query);
     }
     
@@ -335,6 +335,22 @@ class MemberInfo extends BaseEntity {
     public function getMIDByEmail($Email) {
         $query = "SELECT MID FROM memberinfo WHERE Email = '$Email'";
         return parent::RunQuery($query);
+    }
+    
+    public function getEmailByMID2($MID) {
+       
+        $query = "SELECT Email FROM membership.memberinfo WHERE MID = $MID;";
+        return parent::RunQuery($query);
+    }
+    
+    
+    public function updateAppendUsingMID($status, $MID, $email) {
+        $query = "UPDATE " . $this->TableName . " SET Status = " . $status . ", Email = '$email' WHERE MID = " . $MID;
+        $this->ExecuteQuery($query);
+        if ($this->HasError) {
+            App::SetErrorMessage($this->getError());
+            return false;
+        }
     }
 
 }

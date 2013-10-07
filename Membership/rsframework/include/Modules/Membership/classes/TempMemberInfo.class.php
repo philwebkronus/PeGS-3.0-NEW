@@ -25,6 +25,28 @@ class TempMemberInfo extends BaseEntity
         
         return $result;
     }
+    
+    
+    public function checkExistingEmail( $email )
+    {
+        $query = "SELECT COUNT(MemberInfoID) AS COUNT FROM memberinfo WHERE Email = '$email'";
+        
+        $result = parent::RunQuery($query);
+        
+        return $result;
+    }
+    
+    
+    public function deactivateAccount( $email , $newemail)
+    {
+        $query = "UPDATE memberinfo SET Status = 2, Email = '$newemail' WHERE Email = '$email'";
+        
+        $this->ExecuteQuery($query);
+        if ($this->HasError) {
+            App::SetErrorMessage($this->getError());
+            return false;
+        }
+    }
    
 
 }

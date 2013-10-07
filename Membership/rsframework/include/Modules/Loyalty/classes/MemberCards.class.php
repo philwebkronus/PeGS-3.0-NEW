@@ -184,6 +184,18 @@ class MemberCards extends BaseEntity {
         $result = parent::RunQuery($query);
         return $result;
     }
+    
+    
+    
+    public function getMemberCardInfoByMIDAllStat($MID) {
+        $query = "SELECT m.Status, mc.MemberCardID, mc.CardNumber, mc.Status AS MCStatus
+                            FROM membership.members as m
+                            INNER JOIN " . $this->TableName . " as mc ON mc.MID = m.MID
+                            WHERE mc.Status IN(1,2,5) AND m.Status IN(1,6) AND m.MID =" . $MID;
+
+        $result = parent::RunQuery($query);
+        return $result;
+    }
 
     /**
      * @Description: Get MemberCard Info using CardNumber.
@@ -192,7 +204,7 @@ class MemberCards extends BaseEntity {
      */
 
     public function getMemberCardInfoByCardNumber($cardnumber) {
-        $query = "SELECT MemberCardID, MID
+        $query = "SELECT MemberCardID, MID, Status
                             FROM " . $this->TableName . "
                             WHERE CardNumber ='" . $cardnumber . "'";
 
@@ -522,7 +534,17 @@ class MemberCards extends BaseEntity {
         FROM membercards WHERE MID = '$mid' AND Status = 1";
         $result = parent::RunQuery($query);
         return $result;
-    } 
+    }
+    
+    public function getInActiveCardDetails( $mid )
+    {
+        $query = "SELECT MemberCardID, MID, CardID, CardNumber, SiteID, 
+            LifeTimePoints, CurrentPoints, RedeemedPoints, BonusPoints, DateCreated, 
+            CreatedByAID, Status
+        FROM membercards WHERE MID = '$mid' AND Status != 1";
+        $result = parent::RunQuery($query);
+        return $result;
+    }
     
     
     public function getCardDetailsFromStatus( $mid, $status )

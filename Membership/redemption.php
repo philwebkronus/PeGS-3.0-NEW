@@ -858,7 +858,7 @@ if(isset($_SESSION['RewardItemsInfo'])){
                 <img src="<?php $imagepath = App::getParam('rewarditem_imagepath').$_SESSION['RewardItemsInfo']['LearnMoreImage']; echo $imagepath; ?>"></div>
             <div class="span5">
                  <div style="background-color:#cecece; text-align:center; padding: 20px 30px;">
-                     <h1><?php echo number_format($_SESSION['RewardItemsInfo']['Points'], 0, "", ",") ?></h1>
+                     <h1><?php echo number_format($_SESSION['RewardItemsInfo']['Points'], 0, "", ",") ?> Points</h1>
                  </div>
                 <div class="miw-product-wrapper" style="padding:14px 30px;">
                     <div class="miw-product-name" style="padding:6px 0;"><h4><?php echo $_SESSION['RewardItemsInfo']['ProductName']; ?></h4></div>
@@ -910,7 +910,7 @@ if(isset($_SESSION['RewardItemsInfo'])){
             <br>
             <div class="row-fluid">
                 <div class="span12">
-                    <h3>TERMS AND CONDITION</h3>
+                    <h3>TERMS AND CONDITIONS</h3>
                     <hr>
                     <?php echo $rewarditemdetails['Terms']; ?>
                 </div>

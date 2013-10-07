@@ -243,6 +243,18 @@ class TempMembers extends BaseEntity
         return $result[0]['Count'];
     }
     
+    
+    public function deactivateAccount( $email , $newemail)
+    {
+        $query = "UPDATE members SET UserName = '$newemail' WHERE UserName = '$email'";
+        
+        $this->ExecuteQuery($query);
+        if ($this->HasError) {
+            App::SetErrorMessage($this->getError());
+            return false;
+        }
+    }
+    
 }
 
 ?>

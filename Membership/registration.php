@@ -312,103 +312,7 @@ if ($fproc->IsPostBack)
             $error = "Email already exists. Please choose a different email address.";
             $logger->logger($logdate, $logtype, $error);
         }
-        
-        //check if email is already verified in temp table
-        $tempEmail = $_TempMembers->chkTmpVerifiedEmailAddress(trim($arrMemberInfo['Email']));
-        if($tempEmail > 0){
-            App::SetErrorMessage("Email already verified. Please choose a different email address.");
-            $_Log->logAPI(AuditFunctions::PLAYER_EMAIL_VERIFICATION, $tempEmail.':'.$arrMemberInfo['Email'].':Failed', 0, 0);
-            $isSuccess = false;
-            $error = "Email already exists. Please choose a different email address.";
-            $logger->logger($logdate, $logtype, $error);
-        }
-        
-        $lastinsertMID = $_TempMembers->Register($arrMembers, $arrMemberInfo);
-
-        $isOpen = 'true';
-        if (!App::HasError())
-        {
-            $isSuccess = true;
-            if(isset($_SESSION['MemberInfo']['MID'])){
-                $id = $_SESSION['MemberInfo']['MID'];
-                $sessionid = $_SESSION['MemberInfo']['SessionID'];
-            }
-            else{
-                $id = 0;  
-                $sessionid = '';
-                $arrMemberInfo['UserName'] = 'guest';
-            }  
-            
-            $memberInfos = $_TempMembers->getTempMemberInfoForSMS($lastinsertMID);
-            
-            //match to 09 or 639 in mobile number
-            $match = substr($memberInfos["MobileNumber"], 0, 3);
-            if($match == "639"){
-                $mncount = count($memberInfos["MobileNumber"]);
-                if(!$mncount == 12){
-                    $message = "Failed to send SMS: Invalid Mobile Number.";
-                    App::SetErrorMessage($message);
-                } else {
-                    $templateid = $_SMSRequestLogs->getSMSMethodTemplateID(SMSRequestLogs::PLAYER_REGISTRATION);
-                    $methodid = SMSRequestLogs::PLAYER_REGISTRATION;
-                    $mobileno = $memberInfos["MobileNumber"];
-                    $smslastinsertedid = $_SMSRequestLogs->insertSMSRequestLogs($methodid, $mobileno, $memberInfos["DateCreated"]);
-                    if($smslastinsertedid != 0 && $smslastinsertedid != ''){
-                        $trackingid = "SMSR".$smslastinsertedid;
-                        $apiURL = App::getParam("SMSURI");    
-                        $app_id = App::getParam("app_id");    
-                        $_MembershipSmsAPI = new MembershipSmsAPI($apiURL, $app_id);
-                        $smsresult = $_MembershipSmsAPI->sendRegistration($mobileno, $templateid, $memberInfos["DateCreated"], $memberInfos["TemporaryAccountCode"], $trackingid);
-                        if($smsresult['status'] != 1){
-                            $message = "Failed to send SMS.";
-                            App::SetErrorMessage($message);
-                        }
-                    } else {
-                        $message = "Failed to send SMS: Error on logging event in database.";
-                        echo "<script type='text/javascript'>alert(".$message.");</script>";
-                        App::SetErrorMessage($message);
-                    }
-                }
-            } else {
-                $match = substr($memberInfos["MobileNumber"], 0, 2);
-                if($match == "09"){
-                    $mncount = count($memberInfos["MobileNumber"]);
-                    $message = "Failed to send SMS: Invalid Mobile Number.";
-                    if(!$mncount == 11){
-                         $message = "Failed to send SMS: Invalid Mobile Number.";
-                         App::SetErrorMessage($message);
-                     } else {
-                        $mobileno = str_replace("09", "639", $memberInfos["MobileNumber"]);
-                        $templateid = $_SMSRequestLogs->getSMSMethodTemplateID(SMSRequestLogs::PLAYER_REGISTRATION);
-                        $methodid = SMSRequestLogs::PLAYER_REGISTRATION;
-                        $smslastinsertedid = $_SMSRequestLogs->insertSMSRequestLogs($methodid, $mobileno, $memberInfos["DateCreated"]);
-                        if($smslastinsertedid != 0 && $smslastinsertedid != ''){
-                            $trackingid = "SMSR".$smslastinsertedid;
-                            $apiURL = App::getParam("SMSURI");    
-                            $app_id = App::getParam("app_id");    
-                            $_MembershipSmsAPI = new MembershipSmsAPI($apiURL, $app_id);
-                            $smsresult = $_MembershipSmsAPI->sendRegistration($mobileno, $templateid, $memberInfos["DateCreated"], $memberInfos["TemporaryAccountCode"], $trackingid);
-                            if($smsresult['status'] != 1){
-                                $message = "Failed to send SMS.";
-                                App::SetErrorMessage($message);
-                            }
-                        } else {
-                            $message = "Failed to send SMS: Error on logging event in database.";
-                            echo "<script type='text/javascript'>alert(".$message.");</script>";
-                            App::SetErrorMessage($message);
-                        }
-                     }
-                } else {
-                    $message = "Failed to send SMS: Invalid Mobile Number.";
-                    echo "<script type='text/javascript'>alert(".$message.");</script>";
-                    App::SetErrorMessage($message);
-                }
-            }
-            
-            $_Log->logEvent(AuditFunctions::PLAYER_REGISTRATION, $arrMemberInfo['UserName'], array('ID' => $id, 'SessionID' => $sessionid));
-        }
-        else
-        {
+        else{
             //check if email is already verified in temp table
             $tempEmail = $_TempMembers->chkTmpVerifiedEmailAddress(trim($arrMemberInfo['Email']));
             if($tempEmail > 0){
@@ -418,18 +322,26 @@ if ($fproc->IsPostBack)
                 $error = "Email already exists. Please choose a different email address.";
                 $logger->logger($logdate, $logtype, $error);
             }
-            else
-            {
-                $_TempMembers->Register($arrMembers, $arrMemberInfo);
+            else{
+                
+                $lastinsertMID = $_TempMembers->Register($arrMembers, $arrMemberInfo);
+
                 $isOpen = 'true';
                 if (!App::HasError())
                 {
                     $isSuccess = true;
-                    $id = $_SESSION['MemberInfo']['MID'];
-                    $sessionid = $_SESSION['MemberInfo']['SessionID'];
-                    
+                    if(isset($_SESSION['MemberInfo']['MID'])){
+                        $id = $_SESSION['MemberInfo']['MID'];
+                        $sessionid = $_SESSION['MemberInfo']['SessionID'];
+                    }
+                    else{
+                        $id = 0;  
+                        $sessionid = '';
+                        $arrMemberInfo['UserName'] = 'guest';
+                    }  
+
                     $memberInfos = $_TempMembers->getTempMemberInfoForSMS($lastinsertMID);
-            
+
                     //match to 09 or 639 in mobile number
                     $match = substr($memberInfos["MobileNumber"], 0, 3);
                     if($match == "639"){
@@ -447,7 +359,7 @@ if ($fproc->IsPostBack)
                                 $apiURL = App::getParam("SMSURI");    
                                 $app_id = App::getParam("app_id");    
                                 $_MembershipSmsAPI = new MembershipSmsAPI($apiURL, $app_id);
-                                $smsresult = $_MembershipSmsAPI->sendRegistration($mobileno, $templateid, $datecreated, $memberInfos["TemporaryAccountCode"], $trackingid);
+                                $smsresult = $_MembershipSmsAPI->sendRegistration($mobileno, $templateid, $memberInfos["DateCreated"], $memberInfos["TemporaryAccountCode"], $trackingid);
                                 if($smsresult['status'] != 1){
                                     $message = "Failed to send SMS.";
                                     App::SetErrorMessage($message);
@@ -476,8 +388,7 @@ if ($fproc->IsPostBack)
                                     $apiURL = App::getParam("SMSURI");    
                                     $app_id = App::getParam("app_id");    
                                     $_MembershipSmsAPI = new MembershipSmsAPI($apiURL, $app_id);
-                                    $smsresult = $_MembershipSmsAPI->sendRegistration($mobileno, $templateid, $datecreated, $memberInfos["TemporaryAccountCode"], $trackingid);
-                                    
+                                    $smsresult = $_MembershipSmsAPI->sendRegistration($mobileno, $templateid, $memberInfos["DateCreated"], $memberInfos["TemporaryAccountCode"], $trackingid);
                                     if($smsresult['status'] != 1){
                                         $message = "Failed to send SMS.";
                                         App::SetErrorMessage($message);
@@ -494,30 +405,127 @@ if ($fproc->IsPostBack)
                             App::SetErrorMessage($message);
                         }
                     }
-                    
+
                     $_Log->logEvent(AuditFunctions::PLAYER_REGISTRATION, $arrMemberInfo['UserName'], array('ID' => $id, 'SessionID' => $sessionid));
                 }
                 else
                 {
-                    $isSuccess = false;
-                    if (strpos(App::GetErrorMessage(), " Integrity constraint violation: 1062 Duplicate entry") > 0)
-                    {
-                        $isEmailUnique = false;
-                        App::SetErrorMessage("Email already exists. Please choose a different email address.");
+                    //check if email is already verified in temp table
+                    $tempEmail = $_TempMembers->chkTmpVerifiedEmailAddress(trim($arrMemberInfo['Email']));
+                    if($tempEmail > 0){
+                        App::SetErrorMessage("Email already verified. Please choose a different email address.");
                         $_Log->logAPI(AuditFunctions::PLAYER_EMAIL_VERIFICATION, $tempEmail.':'.$arrMemberInfo['Email'].':Failed', 0, 0);
-                        $isOpen = false;
+                        $isSuccess = false;
                         $error = "Email already exists. Please choose a different email address.";
                         $logger->logger($logdate, $logtype, $error);
                     }
-                    else{
-                        $isOpen = false;
-                        App::SetErrorMessage("Registration Failed, Please try again.");
-                        $error = "Failed to register new player.";
-                        $logger->logger($logdate, $logtype, $error);
+                    else
+                    {
+                        $_TempMembers->Register($arrMembers, $arrMemberInfo);
+                        $isOpen = 'true';
+                        if (!App::HasError())
+                        {
+                            $isSuccess = true;
+                            $id = $_SESSION['MemberInfo']['MID'];
+                            $sessionid = $_SESSION['MemberInfo']['SessionID'];
+
+                            $memberInfos = $_TempMembers->getTempMemberInfoForSMS($lastinsertMID);
+
+                            //match to 09 or 639 in mobile number
+                            $match = substr($memberInfos["MobileNumber"], 0, 3);
+                            if($match == "639"){
+                                $mncount = count($memberInfos["MobileNumber"]);
+                                if(!$mncount == 12){
+                                    $message = "Failed to send SMS: Invalid Mobile Number.";
+                                    App::SetErrorMessage($message);
+                                } else {
+                                    $templateid = $_SMSRequestLogs->getSMSMethodTemplateID(SMSRequestLogs::PLAYER_REGISTRATION);
+                                    $methodid = SMSRequestLogs::PLAYER_REGISTRATION;
+                                    $mobileno = $memberInfos["MobileNumber"];
+                                    $smslastinsertedid = $_SMSRequestLogs->insertSMSRequestLogs($methodid, $mobileno, $memberInfos["DateCreated"]);
+                                    if($smslastinsertedid != 0 && $smslastinsertedid != ''){
+                                        $trackingid = "SMSR".$smslastinsertedid;
+                                        $apiURL = App::getParam("SMSURI");    
+                                        $app_id = App::getParam("app_id");    
+                                        $_MembershipSmsAPI = new MembershipSmsAPI($apiURL, $app_id);
+                                        $smsresult = $_MembershipSmsAPI->sendRegistration($mobileno, $templateid, $datecreated, $memberInfos["TemporaryAccountCode"], $trackingid);
+                                        if($smsresult['status'] != 1){
+                                            $message = "Failed to send SMS.";
+                                            App::SetErrorMessage($message);
+                                        }
+                                    } else {
+                                        $message = "Failed to send SMS: Error on logging event in database.";
+                                        echo "<script type='text/javascript'>alert(".$message.");</script>";
+                                        App::SetErrorMessage($message);
+                                    }
+                                }
+                            } else {
+                                $match = substr($memberInfos["MobileNumber"], 0, 2);
+                                if($match == "09"){
+                                    $mncount = count($memberInfos["MobileNumber"]);
+                                    $message = "Failed to send SMS: Invalid Mobile Number.";
+                                    if(!$mncount == 11){
+                                         $message = "Failed to send SMS: Invalid Mobile Number.";
+                                         App::SetErrorMessage($message);
+                                     } else {
+                                        $mobileno = str_replace("09", "639", $memberInfos["MobileNumber"]);
+                                        $templateid = $_SMSRequestLogs->getSMSMethodTemplateID(SMSRequestLogs::PLAYER_REGISTRATION);
+                                        $methodid = SMSRequestLogs::PLAYER_REGISTRATION;
+                                        $smslastinsertedid = $_SMSRequestLogs->insertSMSRequestLogs($methodid, $mobileno, $memberInfos["DateCreated"]);
+                                        if($smslastinsertedid != 0 && $smslastinsertedid != ''){
+                                            $trackingid = "SMSR".$smslastinsertedid;
+                                            $apiURL = App::getParam("SMSURI");    
+                                            $app_id = App::getParam("app_id");    
+                                            $_MembershipSmsAPI = new MembershipSmsAPI($apiURL, $app_id);
+                                            $smsresult = $_MembershipSmsAPI->sendRegistration($mobileno, $templateid, $datecreated, $memberInfos["TemporaryAccountCode"], $trackingid);
+
+                                            if($smsresult['status'] != 1){
+                                                $message = "Failed to send SMS.";
+                                                App::SetErrorMessage($message);
+                                            }
+                                        } else {
+                                            $message = "Failed to send SMS: Error on logging event in database.";
+                                            echo "<script type='text/javascript'>alert(".$message.");</script>";
+                                            App::SetErrorMessage($message);
+                                        }
+                                     }
+                                } else {
+                                    $message = "Failed to send SMS: Invalid Mobile Number.";
+                                    echo "<script type='text/javascript'>alert(".$message.");</script>";
+                                    App::SetErrorMessage($message);
+                                }
+                            }
+
+                            $_Log->logEvent(AuditFunctions::PLAYER_REGISTRATION, $arrMemberInfo['UserName'], array('ID' => $id, 'SessionID' => $sessionid));
+                        }
+                        else
+                        {
+                            $isSuccess = false;
+                            if (strpos(App::GetErrorMessage(), " Integrity constraint violation: 1062 Duplicate entry") > 0)
+                            {
+                                $isEmailUnique = false;
+                                App::SetErrorMessage("Email already exists. Please choose a different email address.");
+                                $_Log->logAPI(AuditFunctions::PLAYER_EMAIL_VERIFICATION, $tempEmail.':'.$arrMemberInfo['Email'].':Failed', 0, 0);
+                                $isOpen = false;
+                                $error = "Email already exists. Please choose a different email address.";
+                                $logger->logger($logdate, $logtype, $error);
+                            }
+                            else{
+                                $isOpen = false;
+                                App::SetErrorMessage("Registration Failed, Please try again.");
+                                $error = "Failed to register new player.";
+                                $logger->logger($logdate, $logtype, $error);
+                            }
+                        }
                     }
                 }
+
             }
         }
+        
+        
+        
+        
     }
 }
 ?>

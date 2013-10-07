@@ -65,8 +65,8 @@ $fproc->AddControl($txtRewardItemCount);
 $dsmaxdate = new DateSelector();
 $dsmindate = new DateSelector();
 
-$dsmaxdate->AddYears(+21);
-$dsmindate->AddYears(-100);
+$dsmaxdate->AddYears(+100);
+$dsmindate->AddDays(-0);
 
 $datetime_from = date("Y-m-d");
 $expirationdate = new DatePicker("expirationDate", "expirationDate", "From");
@@ -94,14 +94,67 @@ $isOpen = 'false';
 if ($fproc->IsPostBack) {
 
     if ($btnSubmit->SubmittedValue == 'Submit') {
+       
+        $srcfile=App::getParam("uploaded_images");       
+        $dstfile=App::getParam("images_directory");      
+       
+        $images1 = glob($srcfile ."*.*");
+        $imagecount = count($images1);
+        
+        if(!empty($images1) && $imagecount == 3){
+        
+        function full_copy( $source, $target ) {
+            if ( is_dir( $source ) ) {
+                $d = dir( $source );
+                while ( FALSE !== ( $entry = $d->read() ) ) {
+                    if ( $entry == '.' || $entry == '..' ) {
+                        continue;
+                    }
+                    $Entry = $source . '/' . $entry; 
+                    if ( is_dir( $Entry ) ) {
+                        full_copy( $Entry, $target . '/' . $entry );
+                        continue;
+                    }
+                    copy( $Entry, $target . '/' . $entry );
+                }
+
+                $d->close();
+            }else {
+                copy( $source, $target );
+            }
+        }
+        
+        foreach($images1 as $fileimage) {
+            
+            $result = explode('/', $fileimage);
+            $rcount = count($result);
+            $count = $rcount - 1;
+            full_copy($fileimage, $dstfile.$result[$count]);
+        }
+        
+        $filename1 = $result[$count];
+        
+        list($filename1, $exten) = preg_split("/\./", $filename1);
+                       
+        list($small, $name) = preg_split("/\_/", $filename1);
+               
+        // Specify the target directory and add forward slash
+        $path = App::getParam("uploaded_images");       
+       
+        // Loop over all of the files in the folder
+        $images = glob($path ."*.*");
+        
+        
+        foreach($images as $file) {
+            unlink($file); // Delete each file through the loop
+        }
+                      
         if (isset($_POST['txtRewardItemName']) && isset($_POST['rewarditemdesc']) && isset($_POST['txtRewardItemPrice'])
                 && isset($_POST['txtRewardItemCount']) && isset($_POST['expirationDate']) && isset($_POST['firstheader'])
-                && isset($_POST['detailone1']) && isset($_POST['firstheader'])) {
-
-            if ($_FILES['picUpload1']['size'] > 0) {
-
-                if (isset($_FILES["picUpload1"]["name"])) {
-
+                && isset($_POST['detailone1']) && isset($_POST['firstheader']) && $_POST['detailone1'] != '' && 
+                $_POST['firstheader'] != '' ) {
+            
+         
                     $rewarditemname = $_POST['txtRewardItemName'];
                     $rewarditemdesc = $_POST['rewarditemdesc'];
                     $rewarditemcode = $_POST['txtItemCode'];
@@ -189,33 +242,9 @@ if ($fproc->IsPostBack) {
                         $viewhomepage = $vihpno;
                     }
 
-
-                    $filename1 = $_FILES['picUpload1']['name'];
-                    $size1 = $_FILES['picUpload1']['size'];
-                    $tmp_name1 = $_FILES['picUpload1']['tmp_name'];
-
-                    $filename2 = $_FILES['picUpload2']['name'];
-                    $size2 = $_FILES['picUpload2']['size'];
-                    $tmp_name2 = $_FILES['picUpload2']['tmp_name'];
-
-                    $filename3 = $_FILES['picUpload3']['name'];
-                    $size3 = $_FILES['picUpload3']['size'];
-                    $tmp_name3 = $_FILES['picUpload3']['tmp_name'];
-
-
-                    if ($size1 < 204800 && $size2 < 204800 && $size3 < 204800) {
-
-                        list($filename1, $exten) = preg_split("/\./", $filename1);
-                        list($filename2, $exten2) = preg_split("/\./", $filename2);
-                        list($filename3, $exten3) = preg_split("/\./", $filename3);
-
-                        list($small, $name) = preg_split("/\_/", $filename1);
-                        list($med, $name2) = preg_split("/\_/", $filename2);
-                        list($large, $name3) = preg_split("/\_/", $filename3);
-
-                        if ($name == $name2 && $name2 == $name3) {
-
-                            $upload_path = App::getParam("images_directory");
+                        if (file_exists($dstfile.'small_'.$name. "." .$exten) && 
+                                file_exists($dstfile.'medium_'.$name. "." .$exten) &&
+                                    file_exists($dstfile.'large_'.$name. "." .$exten)) {
 
                             $arrEntry['RewardItemName'] = "$rewarditemname";
                             $arrEntry['RewardItemDescription'] = "$rewarditemdesc";
@@ -255,42 +284,22 @@ if ($fproc->IsPostBack) {
                                 $rewarditemdetails->StartTransaction();
                                 $rewarditemdetails->Insert($arrEntry2);
                                 $rewarditemdetails->CommitTransaction();
-
-                                if (move_uploaded_file($tmp_name1, $upload_path . '/' . "$filename1" . '.' . "$exten")) {
-                                    if (move_uploaded_file($tmp_name2, $upload_path . '/' . "$filename2" . '.' . "$exten")) {
-                                        if (move_uploaded_file($tmp_name3, $upload_path . '/' . "$filename3" . '.' . "$exten")) {
-                                            $upload = 1;
-                                        }
-                                    }
-                                } else {
-                                    $upload = 0;
-                                }
-
-
-                                if ($upload > 0) {
+                                
                                     $_Log->logEvent(AuditFunctions::MARKETING_ADD_REWARD_ITEM, ':Successful', array('ID' => $_SESSION['userinfo']['AID'], 'SessionID' => $_SESSION['userinfo']['SessionID']));
                                     $msgprompt = ("Reward Item Successfully Inserted");
                                     $isSuccess = true;
-                                } else {
-                                    $msgprompt = ("Error in Inserting New Item");
-                                    $isSuccess = false;
-                                }
+                                
                             } else {
                                 $rewarditems->RollBackTransaction();
                                 $msgprompt = ("Failed to insert in reward items table");
                                 $isSuccess = false;
                             }
                         } else {
-                            $_SESSION['msg'] = 'Failed to update records, Upload Image must be the same';
+                            $_SESSION['msg'] = 'Failed to upload images';
                             $msg = "false1";
                             header("Location: viewrewarditems.php?msg=" . $msg);
                         }
-                    } else {
-                        $msgprompt = ("File must not be greater than 200KB");
-                        $isSuccess = false;
-                    }
-                }
-            }
+            
             $txtRewardItemName->Text = '';
             $txtRewardItemCount->Text = '';
             $txtRewardItemPrice->Text = '';
@@ -299,7 +308,27 @@ if ($fproc->IsPostBack) {
             $msgprompt = ("Please complete required fields");
             $isSuccess = false;
         }
+        
+        }
+        else{
+            $msgprompt = ("All images are required");
+            $isSuccess = false;
+        }
         $isOpen = 'true';
     }
+}
+else{
+    
+    // Specify the target directory and add forward slash
+    $path = App::getParam("uploaded_images");       
+
+    // Loop over all of the files in the folder
+    $images = glob($path ."*.*");
+
+
+    foreach($images as $file) {
+        unlink($file); // Delete each file through the loop
+    }
+    
 }
 ?>

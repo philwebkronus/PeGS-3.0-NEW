@@ -45,6 +45,9 @@ class AuditFunctions extends BaseEntity
     CONST MARKETING_ADD_PROMO = 39;
     CONST MARKETING_UPDATE_PROMO = 40;
     CONST MARKETING_CHANGE_PROMO_STATUS = 41;
+    CONST MARKETING_RED_CARD_TRANSFERRING = 43;
+    CONST TERMINATE = 44;
+    CONST ACTIVATE = 45;
     
     public function AuditFunctions()
     {
