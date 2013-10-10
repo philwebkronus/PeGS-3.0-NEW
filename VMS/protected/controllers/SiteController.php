@@ -2,6 +2,8 @@
 
 class SiteController extends VMSBaseIdentity
 {      
+    public $showDialog = false;
+    public $dialogMsg;
 	/**
 	 * Declares class-based actions.
 	 */
@@ -63,7 +65,7 @@ class SiteController extends VMSBaseIdentity
             }
             else
             {
-		$model=new LoginForm;
+		$model=new LoginForm();
                 
 		// if it is ajax validation request
 		if(isset($_POST['ajax']) && $_POST['ajax']==='login-form')
@@ -79,13 +81,18 @@ class SiteController extends VMSBaseIdentity
                         
 			// validate user input and redirect to the previous page if valid
 			if($model->validate() && $model->login())
-                        {
-                            //Log to audit trail
-                            AuditLog::logTransactions(1, ' as '.$model->UserName);
-                            
-                            //Redirect to default page set on the access rights
-                            $this->redirect(array(Yii::app()->session['homeUrl']));
-                        }
+            {
+                //Log to audit trail
+                AuditLog::logTransactions(1, ' as '.$model->UserName);
+
+                //Redirect to default page set on the access rights
+                $this->redirect(array(Yii::app()->session['homeUrl']));
+            }
+            else if($model->noaccess == true){
+                $this->showDialog = true;
+                $this->dialogMsg = "No access rights found for this user";
+                Yii::app()->user->logout();
+            }
                         
 		}
                 
@@ -101,9 +108,10 @@ class SiteController extends VMSBaseIdentity
 	{
                 //Log to audit trail
                 AuditLog::logTransactions(2, ' user '.Yii::app()->user->getName());
-		
+		$aid = Yii::app()->session['AID'];
                 Yii::app()->user->logout();
-		//$this->redirect(Yii::app()->homeUrl);
+                $sessionmodel = new SessionModel();
+                $sessionmodel->deleteSession($aid);
                 $this->redirect(array(Yii::app()->defaultController));
 	}
 }
