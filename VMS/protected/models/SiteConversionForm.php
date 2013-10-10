@@ -27,7 +27,7 @@ class SiteConversionForm extends CFormModel
         }
         else
         {
-            $where = " and s.SiteCode='".$site."'";
+            $where = " and t.SiteID='".$site."'";
         }
         $sql = "select v.VoucherTypeID, s.SiteCode, sum(v.Amount) as TotalAmountReimbursed, count(v.VoucherCode) as TotalCount
                 from vouchers v
@@ -35,11 +35,11 @@ class SiteConversionForm extends CFormModel
                 on v.TerminalID = t.TerminalID
                 inner join sites s
                 on t.SiteID = s.SiteID
-                where v.DateReimbursed >= :from
-                and v.DateReimbursed < :to
+                where v.DateCreated >= :from
+                and v.DateCreated < :to
                 and v.Status = 5"
                 .$where.
-                " group by s.SiteCode";
+                " group by v.VoucherTypeID, s.SiteCode";
         $command = $connection->createCommand($sql);
         $command->bindValue(":from", $from);
         $command->bindValue(":to", $to);
@@ -51,7 +51,8 @@ class SiteConversionForm extends CFormModel
     public function getSite()
     {
         $connection = Yii::app()->db;
-        $sql = 'select SiteCode from sites where isTestSite = 0 and Status = 1'; //and SiteCode not like :Site';
+        $sql = 'select SiteID, substr(SiteCode,6) as SiteCode from sites where SiteID != 1 and isTestSite = 0 and Status = 1
+            ORDER BY SiteCode ASC'; //and SiteCode not like :Site';
         $command = $connection->createCommand($sql);
         //$command->bindValue(':Site', '%TST%');
         
@@ -60,7 +61,26 @@ class SiteConversionForm extends CFormModel
         $site = array('All'=>'All');
         foreach($result as $row)
         {
-            $site[$row['SiteCode']] = $row['SiteCode'];
+            $site[$row['SiteID']] = $row['SiteCode'];
+        }
+        return $site;
+    }
+    
+    
+    public function getSiteName()
+    {
+        $connection = Yii::app()->db;
+        $sql = 'select SiteID, SiteName from sites where SiteID != 1 and isTestSite = 0 and Status = 1
+            ORDER BY SiteCode ASC'; //and SiteCode not like :Site';
+        $command = $connection->createCommand($sql);
+        //$command->bindValue(':Site', '%TST%');
+        
+        $result = $command->queryAll();
+        
+        $site = array('All'=>'All');
+        foreach($result as $row)
+        {
+            $site[$row['SiteID']] = $row['SiteName'];
         }
         return $site;
     }
