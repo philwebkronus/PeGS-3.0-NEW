@@ -487,10 +487,11 @@ if($sessioncount > 0)
                     if($availableitemcount["AvailableItemCount"] >= $redemptiondata["Quantity"]){    
                         //Redemption Process for Item
                         $offerenddate = $_RewardItems->getOfferEndDate($redemptiondata["RewardItemID"]);
-                        $RedeemedDate = $offerenddate["CurrentDate"];
+                        $RedeemedDate = $offerenddate["ItemCurrentDate"];
+                        $CurrentDate = $offerenddate["CurrentDate"];
                         
                         //check if the availing date  is greater than the End date of the reward offer.
-                        if($RedeemedDate <= $offerenddate["OfferEndDate"]){
+                        if($CurrentDate <= $offerenddate["OfferEndDate"]){
                             
                             $tobecurrentpoints = (int)$redemptiondata['PlayerPoints'] - (int)$redemptiondata['TotalItemPoints'];
                             
@@ -545,9 +546,10 @@ if($sessioncount > 0)
                                     } else {
                                             $totalpoints = $redemptiondata['TotalItemPoints']/$redemptiondata['Quantity'];
                                             for($itr = 0; $itr < (int)$redemptiondata["Quantity"]; $itr++){
+                                                
                                                     $_ItemRedemptionLogs->StartTransaction();
                                                     $_ItemRedemptionLogs->insertItemLogs($RedeemedDate, $redemptiondata["MID"], $redemptiondata["RewardItemID"], 1,$source);
-
+                                                    
                                                     if(!App::HasError()){
                                                         $_ItemRedemptionLogs->CommitTransaction();
                                                         $ItemRedemptionLogID = $_ItemRedemptionLogs->LastInsertID;
@@ -583,7 +585,7 @@ if($sessioncount > 0)
                                                                 //Calculate Validity End Date of the Raffle Coupon.
                                                                 $date = new DateTime($RedeemedDate);
                                                                 $date->add(new DateInterval('P6M'));
-                                                                $validto = $date->format('Y-m-d h:i:s.u');
+                                                                $validto = $date->format('Y-m-d H:i:s.u');
 
                                                                 $_ItemRedemptionLogs->updateLogsStatus($ItemRedemptionLogID, $itemlogsdetail['Source'], $status, $itemlogsdetail['MID'], $totalpoints,$serialcode, $securitycode, $RedeemedDate, $validto);
 
@@ -608,6 +610,11 @@ if($sessioncount > 0)
                                                                         $_SESSION['RewardOfferCopy']['RedemptionDate'] = $RedeemedDate;
                                                                         $_SESSION['RewardOfferCopy']['SecurityCode'][$itr] = $securitycode;
                                                                         $_SESSION['RewardOfferCopy']['SerialNumber'][$itr] = $serialcode;
+                                                                        
+                                                                        $validdate = new DateTime(date($validto));
+                                                                        $validitydate = $validdate->format("F j, Y");
+                                                                        
+                                                                        $_SESSION['RewardOfferCopy']['ValidUntil'][$itr] = $validitydate;
 
                                                                         //send SMS to player
                                                                         sendSMS(SMSRequestLogs::ITEM_REDEMPTION, $redemptiondata["MobileNumber"], $RedeemedDate, $serialcode, 1, "SMSI");          
@@ -880,7 +887,7 @@ function sendSMS($methodid, $mobileno, $RedeemedDate, $serialnumber, $quantity, 
             if(!$mncount == 12){
                 $message = "Failed to send SMS: Invalid Mobile Number.";
                 echo "<script type='text/javascript'>alert(".$message.");</script>";
-                App::SetErrorMessage($message);
+//                App::SetErrorMessage($message);
             } else {
                 $templateid = $_SMSRequestLogs->getSMSMethodTemplateID($methodid);
                 $smslastinsertedid = $_SMSRequestLogs->insertSMSRequestLogs($methodid, $mobileno, $RedeemedDate,$couponseries, $serialnumber, $quantity);
@@ -898,12 +905,12 @@ function sendSMS($methodid, $mobileno, $RedeemedDate, $serialnumber, $quantity, 
                     if($smsresult['status'] != 1){
                         $message = "Failed to send SMS.";
                         echo "<script type='text/javascript'>alert(".$message.");</script>";
-                        App::SetErrorMessage($message);
+//                        App::SetErrorMessage($message);
                     }
                 } else {
                     $message = "Failed to send SMS: Failed to log event on database.";
                     echo "<script type='text/javascript'>alert(".$message.");</script>";
-                    App::SetErrorMessage($message);
+//                    App::SetErrorMessage($message);
                 }
             }
         } else {
@@ -913,7 +920,7 @@ function sendSMS($methodid, $mobileno, $RedeemedDate, $serialnumber, $quantity, 
                 if(!$mncount == 11){
                      $message = "Failed to send SMS: Invalid Mobile Number.";
                      echo "<script type='text/javascript'>alert(".$message.");</script>";
-                     App::SetErrorMessage($message);
+//                     App::SetErrorMessage($message);
                  } else {
                     $mobileno = str_replace("09", "639", $mobileno);
                     $templateid = $_SMSRequestLogs->getSMSMethodTemplateID($methodid);
@@ -931,18 +938,18 @@ function sendSMS($methodid, $mobileno, $RedeemedDate, $serialnumber, $quantity, 
                         if($smsresult['status'] != 1){
                             $message = "Failed to send SMS.";
                             echo "<script type='text/javascript'>alert(".$message.");</script>";
-                            App::SetErrorMessage($message);
+//                            App::SetErrorMessage($message);
                         }
                     } else {
                         $message = "Failed to send SMS: Error on logging event in database.";
                         echo "<script type='text/javascript'>alert(".$message.");</script>";
-                        App::SetErrorMessage($message);
+//                        App::SetErrorMessage($message);
                     }
                  }
             } else {
                 $message = "Failed to send SMS: Invalid Mobile Number.";
                 echo "<script type='text/javascript'>alert(".$message.");</script>";
-                App::SetErrorMessage($message);
+//                App::SetErrorMessage($message);
             }
         }
 }

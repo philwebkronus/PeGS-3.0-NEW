@@ -428,7 +428,7 @@ if($fproc->IsPostBack){
                     $ctr = count($_SESSION['RewardOfferCopy']["SerialNumber"]);
                     for($itr=0; $itr < $ctr; $itr++){
                             $_Helper->sendEmailItemRedemption($email, $newheader, $itemimage, $itemname, $partnername,$playername,$cardnumber,$redemptiondate,
-                                                                                                $_SESSION['RewardOfferCopy']["SerialNumber"][$itr],$_SESSION['RewardOfferCopy']["SecurityCode"][$itr],$enddate,
+                                                                                                $_SESSION['RewardOfferCopy']["SerialNumber"][$itr],$_SESSION['RewardOfferCopy']["SecurityCode"][$itr],$_SESSION['RewardOfferCopy']['ValidUntil'][$itr],
                                                                                                 $companyaddress,$companyphone, $companywebsite, $importantreminder,$about, $term, $newfooter);
                         }
                     

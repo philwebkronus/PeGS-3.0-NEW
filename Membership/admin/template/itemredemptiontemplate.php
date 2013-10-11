@@ -1,9 +1,14 @@
 <div id="itemmessagebody" class="itemmessagebody" style="background-color: #FFFFFF; display:none;" align="center">
     <?php
-        $counter = count($_SESSION['RewardOfferCopy']["SerialNumber"]);
+        if(isset($_SESSION['RewardOfferCopy'])) {
+            $counter = count($_SESSION['RewardOfferCopy']["SerialNumber"]);
+        } else {
+            $counter = 0;
+        }
         for($itr = 0; $itr < $counter; $itr++){
             $serialcode = $_SESSION['RewardOfferCopy']["SerialNumber"][$itr]; 
             $securitycode = $_SESSION['RewardOfferCopy']["SecurityCode"][$itr]; 
+            $validto = $_SESSION['RewardOfferCopy']['ValidUntil'][$itr]; 
     ?>
             <hr>
             <br>
@@ -48,7 +53,7 @@
                                         E-COUPON SECURITY CODE: &nbsp;&nbsp;&nbsp;&nbsp;<br/>
                                         <?php echo $securitycode; ?> <br/>
                                         AVAIL REWARD UNTIL: &nbsp;&nbsp;&nbsp;&nbsp;<br/>
-                                        <?php echo $enddate; ?>
+                                        <?php echo $validto; ?>
                                 </td>
                                 <td style="vertical-align:text-top; width: 200px; text-wrap: normal;"> <b ><span style="font-size: 14px;"><?php echo $partnername; ?></span></b><br/>
                                         <span style="font-size: 10px;"><?php echo $companyaddress; ?> <br/>

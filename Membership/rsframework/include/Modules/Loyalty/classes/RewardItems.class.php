@@ -65,7 +65,7 @@ class RewardItems extends BaseEntity
     * @return array
     */
     function getOfferEndDate($RewardItemID){
-        $query = "SELECT  OfferEndDate, curdate() as CurrentDate FROM $this->TableName
+        $query = "SELECT  OfferEndDate, curdate() as CurrentDate, now_usec() as ItemCurrentDate FROM $this->TableName
                             WHERE RewardItemID=$RewardItemID";
         $result = parent::RunQuery($query);
         return $result[0];
