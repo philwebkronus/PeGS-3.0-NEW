@@ -170,9 +170,9 @@ if($sessioncount > 0)
                         //Redemption Process for Coupon
                         $offerenddate = $_RewardItems->getOfferEndDate($redemptiondata["RewardItemID"]);
                         $RedeemedDate = $offerenddate["CurrentDate"];
-
+                        
                         //check if the availing date  is greater than the End date of the reward offer.
-                        if($RedeemedDate < $offerenddate){
+                        if($RedeemedDate <= $offerenddate["OfferEndDate"]){
                             
                             $tobecurrentpoints = (int)$redemptiondata["PlayerPoints"] - (int)$redemptiondata["TotalItemPoints"];
                             
@@ -488,9 +488,9 @@ if($sessioncount > 0)
                         //Redemption Process for Item
                         $offerenddate = $_RewardItems->getOfferEndDate($redemptiondata["RewardItemID"]);
                         $RedeemedDate = $offerenddate["CurrentDate"];
-
+                        
                         //check if the availing date  is greater than the End date of the reward offer.
-                        if($RedeemedDate < $offerenddate["OfferEndDate"]){
+                        if($RedeemedDate <= $offerenddate["OfferEndDate"]){
                             
                             $tobecurrentpoints = (int)$redemptiondata['PlayerPoints'] - (int)$redemptiondata['TotalItemPoints'];
                             

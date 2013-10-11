@@ -52,7 +52,7 @@ class RewardItems extends BaseEntity
                             LEFT JOIN ref_partners rp ON rp.PartnerID = ri.PartnerID
                             WHERE ri.PClassID = $playerclassification
                             AND ri.Status = 1 
-                            AND ri.OfferEndDate >= now_usec()
+                            AND ri.OfferEndDate >= curdate()
                             ORDER BY $sortby $sorttype";
        
         return parent::RunQuery($query);
@@ -65,7 +65,7 @@ class RewardItems extends BaseEntity
     * @return array
     */
     function getOfferEndDate($RewardItemID){
-        $query = "SELECT  OfferEndDate, now_usec() as CurrentDate FROM $this->TableName
+        $query = "SELECT  OfferEndDate, curdate() as CurrentDate FROM $this->TableName
                             WHERE RewardItemID=$RewardItemID";
         $result = parent::RunQuery($query);
         return $result[0];
