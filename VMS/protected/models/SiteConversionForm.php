@@ -50,7 +50,7 @@ class SiteConversionForm extends CFormModel
     
     public function getSite()
     {
-        $connection = Yii::app()->db;
+        $connection = Yii::app()->db2;
         $sql = 'select SiteID, substr(SiteCode,6) as SiteCode from sites where SiteID != 1 and isTestSite = 0 and Status = 1
             ORDER BY SiteCode ASC'; //and SiteCode not like :Site';
         $command = $connection->createCommand($sql);
@@ -69,7 +69,7 @@ class SiteConversionForm extends CFormModel
     
     public function getSiteName()
     {
-        $connection = Yii::app()->db;
+        $connection = Yii::app()->db2;
         $sql = 'select SiteID, SiteName from sites where SiteID != 1 and isTestSite = 0 and Status = 1
             ORDER BY SiteCode ASC'; //and SiteCode not like :Site';
         $command = $connection->createCommand($sql);
