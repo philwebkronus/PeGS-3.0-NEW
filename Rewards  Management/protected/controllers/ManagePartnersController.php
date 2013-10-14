@@ -6,6 +6,7 @@ class ManagePartnersController extends Controller {
     public $dialogtitle;
     public $showdialog = false;
     public $partnerID;
+   
     /**
      * Add Partner Controller
      * @author mgesguerra 
@@ -35,7 +36,7 @@ class ManagePartnersController extends Controller {
             $details['status']          = $this->sanitize($model->partnershipStatus);
             $details['noOfofferings']   = $this->sanitize($model->numberOfRewardOfferings);
             //Check if all fields are filled up
-            if ((($details['partnerID'] || $details['partnername'] | $details['address'] ||
+            if ((($details['partnerID'] || $details['partnername'] || $details['address'] ||
                 $details['pnumber'] || $details['faxnumber'] || $details['email'] || 
                 $details['website'] || $details['contactPerson'] || $details['username']
                 || $details['contactPosition'] || 
@@ -70,7 +71,7 @@ class ManagePartnersController extends Controller {
             }
             else
             {
-                $result = $model->addPartner($details);
+                $result = $model->addPartner($details); 
                 
                 $this->dialogmsg = $result['TransMsg'];
                 //SUCCESS or ERROR Message
@@ -235,7 +236,7 @@ class ManagePartnersController extends Controller {
             $details['status']          = $this->sanitize($model->partnershipStatus);
             $details['noOfofferings']   = $this->sanitize($model->numberOfRewardOfferings);
             //Error Handling (Validations)
-            if ((($details['partnerID'] || $details['partnername'] | $details['address'] ||
+            if ((($details['partnerID'] || $details['partnername'] || $details['address'] ||
                 $details['pnumber'] || $details['faxnumber'] || $details['email'] || 
                 $details['website'] || $details['contactPerson'] || $details['contactPosition'] || 
                 $details['contactEmail'] || $details['contactPNumber'] 

@@ -1,3 +1,8 @@
+<?php
+//var_dump(Yii::app()->user->getState("acctype"));
+//var_dump(Yii::app()->user->isGuest);
+//exit;
+?>
 <script type='text/javascript'>
 //Display Partner's Details in Edit DialogBox
 //Added by: Mark Kenneth Esguerra | Sep-17-13
@@ -1265,8 +1270,6 @@ $this->widget('application.components.widgets.JqGridWidget', array('tableID' => 
         'caption' => 'Manage Partners',
         'height' => '40',
         'width' => '700',
-        'navBarOptions' => array( 'search' => false),
-        'search' => false,
         'shrinkToFit' => false,
         'colNames' => array('Partner Name', 'Status', 'Number of Reward Offers', 'Contact Person', "Contact Person's Email", ''),
         'colModel' => array(

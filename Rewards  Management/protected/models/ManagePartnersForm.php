@@ -49,7 +49,7 @@ class ManagePartnersForm extends CFormModel
             array('faxNumber', 'required'),
             array('faxNumber', 'length', 'max' => 20, 'min' => 5),
             array('emailAddress', 'required'),
-            array('eGamesParemailAddress', 'length', 'max' => 30, 'min' => 5),
+            array('emailAddress', 'length', 'max' => 30, 'min' => 5),
             array('website', 'required'),
             array('website', 'length', 'max' => 30, 'min' => 5),
             array('contactPerson', 'required'),
