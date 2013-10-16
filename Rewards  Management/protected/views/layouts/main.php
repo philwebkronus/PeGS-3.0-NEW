@@ -164,7 +164,7 @@ else
     echo "</center>";
 
     $this->endWidget('zii.widgets.jui.CJuiDialog');
-    /** End Widget **/
+    /** End Widget ***/
 }
 ?>
 </body>
