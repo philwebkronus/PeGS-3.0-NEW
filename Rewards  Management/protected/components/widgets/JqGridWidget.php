@@ -56,6 +56,18 @@ class JqGridWidget extends CWidget
             unset($this->jqGridParam['loadComplete']);
         }
         
+        $onSelectRow = null;
+        if(isset($this->jqGridParam['onSelectRow'])) {
+            $onSelectRow = $this->jqGridParam['onSelectRow'];
+            unset($this->jqGridParam['onSelectRow']);
+        }
+        
+        $onCellSelect = null;
+        if(isset($this->jqGridParam['onCellSelect'])) {
+            $onCellSelect = $this->jqGridParam['onCellSelect'];
+            unset($this->jqGridParam['onCellSelect']);
+        }
+        
         if(isset($this->jqGridParam['url']))
             $this->jqGridParam = array_merge($this->jqGridParam,array('url'=>$this->jqGridParam['url']));
         
@@ -65,6 +77,12 @@ class JqGridWidget extends CWidget
         $config = substr($config, 0,-1);
         if($loadComplete != null)
             $config.=',loadComplete:' . $loadComplete;
+        
+        if($onSelectRow != null)
+            $config.=',onSelectRow:' . $onSelectRow;
+        
+        if($onCellSelect != null)
+            $config.=',onCellSelect:' . $onCellSelect;
         
         /**
          *Added for optional search feature of jQGrid

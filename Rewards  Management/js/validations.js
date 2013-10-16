@@ -2585,3 +2585,35 @@ function chkOverride(){
             }
             return true;
         }
+        
+        function alphanumericSpaceCommaDot(evt)
+        {
+            var charCode = (evt.which) ? evt.which : evt.keyCode;
+            if(charCode == 9 || charCode == 8 || charCode == 32 || charCode == 44 || charCode == 46)
+                return true;
+            else if((charCode >= 65 && charCode <= 90) || (charCode >= 48 && charCode <= 57) || (charCode >= 97 && charCode <= 122))
+                return true;
+            else
+                return false;
+        }
+        
+        function alphanumericSpaceDash(evt)
+        {
+            var charCode = (evt.which) ? evt.which : evt.keyCode;
+            if(charCode == 9 || charCode == 8 || charCode == 32 ||  charCode == 45)
+                return true;
+            else if((charCode >= 65 && charCode <= 90) || (charCode >= 48 && charCode <= 57) || (charCode >= 97 && charCode <= 122))
+                return true;
+            else
+                return false;
+        }
+        
+        function trimword(word) {
+            var trimmed;
+            if (typeof word.name == 'undefined') {
+              trimmed = 'undefined';
+            } else {
+              trimmed = word.name.replace(/(^\s+|\s+$)/g, '');
+            }
+            return trimmed;
+      }

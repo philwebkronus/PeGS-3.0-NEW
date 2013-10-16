@@ -47,28 +47,40 @@ return array(
 				'<controller:\w+>/<action:\w+>'=>'<controller>/<action>',
 			),
 		),
-		
-//		'db'=>array(
-//			'connectionString' => 'sqlite:'.dirname(__FILE__).'/../data/testdrive.db',
-//		),
 		// uncomment the following to use a MySQL database
-		'db'=>array(
-                        //Development
-            'connectionString' => 'mysql:host=<dbhost>;dbname=<db name>',
-                                    'emulatePrepare' => true,
-                                    'username' => '<username>',
-                                    'password' => '<password>',
-			'charset' => 'utf8',
+                'db'=>array(
+                        'connectionString' => 'mysql:host=<DB Host>;dbname=<DB Name>',
+                        'emulatePrepare' => true,
+                        'username' => '<DB Username>',
+                        'password' => '<DB Password>',
+                        'charset' => 'utf8',
+                        'class' => 'CDbConnection',
 		),
 		
                 'db2'=>array(
-			//'connectionString' => 'mysql:host=localhost;dbname=npos',
-                        //Development
-                        'connectionString' => 'mysql:host=<dbhost>;dbname=<db name>',
-                                    'emulatePrepare' => true,
-                                    'username' => '<username>',
-                                    'password' => '<password>',
-                                    'charset' => 'utf8',
+                        'connectionString' => 'mysql:host=<DB Host>;dbname=<DB Name>',
+                        'emulatePrepare' => true,
+                        'username' => '<DB Username>',
+                        'password' => '<DB Password>',
+                        'charset' => 'utf8',
+                        'class' => 'CDbConnection',
+		),
+        
+                'db3'=>array(
+                        'connectionString' => 'mysql:host=<DB Host>;dbname=<DB Name>',
+                        'emulatePrepare' => true,
+                        'username' => '<DB Username>',
+                        'password' => '<DB Password>',
+                        'charset' => 'utf8',
+                        'class' => 'CDbConnection',
+		),
+        
+                'db4'=>array(
+                        'connectionString' => 'mysql:host=<DB Host>;dbname=<DB Name>',
+                        'emulatePrepare' => true,
+                        'username' => '<DB Username>',
+                        'password' => '<DB Password>',
+                        'charset' => 'utf8',
                         'class' => 'CDbConnection',
 		),
         
@@ -77,20 +89,21 @@ return array(
                             'CJuiDialog' => array(
                                 'cssFile'=>'jquery-ui-1.9.2.custom.css',
                                 'theme'=>'redmond',
-                                'themeUrl'=>'/css', 
+                                'themeUrl'=>'/<rewards mgmt root dir>/css', 
                             ),
                             'CJuiDatePicker' => array(
                                 'cssFile'=>'jquery-ui-1.9.2.custom.css',
                                 'theme'=>'redmond',
-                                'themeUrl'=>'/css', 
+                                'themeUrl'=>'/<rewards mgmt root dir>/css', 
                             ),
                             'CJuiDateTimePicker' => array(
                                 'cssFile'=>'jquery-ui-1.9.2.custom.css',
                                 'theme'=>'redmond',
-                                'themeUrl'=>'/css', 
+                                'themeUrl'=>'/<rewards mgmt root dir>/css', 
                             ),
                         ),
                  ),
+        
 		'errorHandler'=>array(
 			// use 'site/error' action to display errors
 			'errorAction'=>'login/error',
@@ -99,7 +112,7 @@ return array(
 			'class'=>'CLogRouter',
 			'routes'=>array(
 				array(
-					'class'=>'CFileLogRouteModified',
+					'class'=>'CFileLogRoute',
 					'levels'=>'error, warning',
 				),
 				// uncomment the following to show log messages on web pages
@@ -110,11 +123,11 @@ return array(
 				*/
 			),
 		),
-                'clientScript'=>array(
+               'clientScript'=>array(
                     'scriptMap'=>array(
                          'jquery.js'=>false,
+                         'jquery-ui.js'=>false,
                     ),
-
                ),
 	),
 
@@ -122,12 +135,18 @@ return array(
 	// using Yii::app()->params['paramName']
 	'params'=>array(
 		// this is used in contact page
-		'adminEmail'=>'webmaster@example.com',
-        //'idletimelogout'=>'600000', //10 minutes (1000 milliseconds = 1 second)
-        'idletimelogout'=>'600000',
-        'autologouturl'=>'http://<vhost>/index.php?r=login/logout',
-        'marketingemail'=>array('<test marketing email>'),
-        'pageGridLimit'=>array(10,20,30), // drop down page limit in jqgrid
-        'initialLimit'=> 10, // initial page limit in jqgrid
+				'adminEmail'=>'webmaster@example.com',
+                //'idletimelogout'=>'600000', //10 minutes (1000 milliseconds = 1 second)
+                'idletimelogout'=>'600000',
+                'autologouturl'=>'http://<rewards mgmt vhost url>/index.php?r=login/logout',
+                'marketingemail'=>array('<marketing email>'),
+                'pageGridLimit'=>array(10,20,30), // drop down page limit in jqgrid
+                'initialLimit'=> 10, // initial page limit in jqgrid
+                'maximum_datepicker_year' => '2099',
+                'image_directory' => '/var/www/<rewards mgmt root dir>/images/rewarditems/',
+                'image_path' => '/images/rewarditems/',
+                'image_allowed_ext' => array("jpg", "jpeg", "png", "gif"),
+                'dateformat' => 'yy-mm-dd',
+                'timeformat' => 'hh:mm:ss',
 	),
 );
