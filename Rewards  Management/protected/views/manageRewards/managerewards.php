@@ -306,6 +306,15 @@ tinyMCE.init({
                 } else {
                     return true;
                 }
+            } else if(part == 6){                                  //Edit part for Active Reward
+                var newstatus = $("#editstatus").val();
+                var comparestat = $("#editstatus option[value='"+newstatus+"']").text();
+                if(newstatus == ""){
+                    var message = "Please Select Reward Status.";
+                    return message;
+                } else {
+                    return true;
+                }
             }
         } else if (form == 2) {                                    //Add New Reward Item Form
             if(part == 1) {                                             //Primary Details
@@ -1480,19 +1489,26 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
                                         var stats = $("#hdnStatus").val();
                                         
                                         if(stats == "Active"){
-                                            $("#primarydetails").hide();
-                                            $("#aboutthereward").show();
-                                            $("#editaboutreward").hide();
-                                            $("#edittermsreward").hide();
-                                            $(this).siblings(".ui-dialog-buttonpane").find("button").eq(0).hide();
-                                            $(this).siblings(".ui-dialog-buttonpane").find("button").eq(4).hide();
-                                            $(this).siblings(".ui-dialog-buttonpane").find("button").eq(2).hide();
-                                            $(this).siblings(".ui-dialog-buttonpane").find("button").eq(6).hide();
-                                            $(this).siblings(".ui-dialog-buttonpane").find("button").eq(3).hide();
-                                            $(this).siblings(".ui-dialog-buttonpane").find("button").eq(7).hide();
+                                            var results = validateinputs(1,6, rewardid);
 
-                                            $(this).siblings(".ui-dialog-buttonpane").find("button").eq(1).show();
-                                            $(this).siblings(".ui-dialog-buttonpane").find("button").eq(5).show();
+                                            if(results == true){
+                                                    $("#primarydetails").hide();
+                                                    $("#aboutthereward").show();
+                                                    $("#editaboutreward").hide();
+                                                    $("#edittermsreward").hide();
+                                                    $(this).siblings(".ui-dialog-buttonpane").find("button").eq(0).hide();
+                                                    $(this).siblings(".ui-dialog-buttonpane").find("button").eq(4).hide();
+                                                    $(this).siblings(".ui-dialog-buttonpane").find("button").eq(2).hide();
+                                                    $(this).siblings(".ui-dialog-buttonpane").find("button").eq(6).hide();
+                                                    $(this).siblings(".ui-dialog-buttonpane").find("button").eq(3).hide();
+                                                    $(this).siblings(".ui-dialog-buttonpane").find("button").eq(7).hide();
+
+                                                    $(this).siblings(".ui-dialog-buttonpane").find("button").eq(1).show();
+                                                    $(this).siblings(".ui-dialog-buttonpane").find("button").eq(5).show();
+                                            } else {
+                                                    $("#message1").html(results);
+                                                    $("#messagedialog3").dialog("open");
+                                            }
                                         } else {
                                             var results = validateinputs(1,1, rewardid);
 
@@ -1601,12 +1617,12 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
                                         if(stats == "Active"){
                                             var results = validateinputs(1,5,rewardid);
                                             if(results == true){
-                                                    $("#edit-item-form").submit();
-                                                    $(this).dialog("close");
+                                                $("#edit-item-form").submit();
+                                                $(this).dialog("close");
                                             } else {
-                                                    $("#message1").html(results);
-                                                    $("#messagedialog3").dialog("open");
-                                                    $(this).dialog("close");
+                                                $("#message1").html(results);
+                                                $("#messagedialog3").dialog("open");
+                                                $(this).dialog("close");
                                             }
                                         } else {
                                             var results = validateinputs(1,4,rewardid);
