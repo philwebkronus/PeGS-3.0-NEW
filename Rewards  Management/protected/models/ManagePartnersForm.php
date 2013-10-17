@@ -67,7 +67,7 @@ class ManagePartnersForm extends CFormModel
             array('partnershipStatus', 'required'),
             array('partnershipStatus', 'length', 'max' => 20, 'min' => 5),
             array('numberOfRewardOfferings', 'required'),
-            array('numberOfRewardOfferings', 'length', 'max' => 20, 'min' => 5),
+            array('numberOfRewardOfferings', 'length', 'max' => 10, 'min' => 5),
         );
     }
     //Added by: mgesguerra - 09-18-13

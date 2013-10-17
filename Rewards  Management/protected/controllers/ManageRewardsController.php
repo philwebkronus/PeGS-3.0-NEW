@@ -14,6 +14,7 @@ class ManageRewardsController extends Controller
     
     /**
      * @Description: For fetching initial data in manage rewards
+     * @Author: aqdepliyan
      * @DateCreated: 2013-09-20
      */
     public function actionManageRewards() {
@@ -27,25 +28,21 @@ class ManageRewardsController extends Controller
         $ctr = 0;
         $arraynewlist = array();
         $arraydata = array();
-        if (is_array($data) && sizeof($data) > 0) {
+        if (is_array($data) && $countdata > 0) {
             if (!array_key_exists('errcode', $data)) {
                 do {
-//                    if($data[$ctr]['PartnerName'] == null || $data[$ctr]['PartnerName'] == '')
-//                        $data[$ctr]['PartnerName'] = 'n/a';
-//                    if($data[$ctr]['Category'] == null || $data[$ctr]['Category'] == '')
-//                        $data[$ctr]['Category'] = 'n/a';
                     $arraynewlist['RewardItemID'] = $data[$ctr]['RewardItemID']; 
                     $arraynewlist['PartnerName'] = urldecode($data[$ctr]['PartnerName']); 
-                    $arraynewlist['ItemName'] = urldecode($data[$ctr]['ItemName']); 
+                    $arraynewlist['ItemName'] = "<a href='javascript:void(0)' title='View Details' RewardItemID='".$arraynewlist['RewardItemID']."'  id='viewlink'>".$data[$ctr]['ItemName']."</a>";
                     $arraynewlist['Category'] = urldecode($data[$ctr]['Category']); 
                     $arraynewlist['Points'] = urldecode($data[$ctr]['Points']); 
                     $arraynewlist['Eligibility'] = urldecode($data[$ctr]['Eligibility']); 
                     $arraynewlist['Status'] = urldecode($data[$ctr]['Status']); 
                     $arraynewlist['PromoPeriod'] = urldecode($data[$ctr]['OfferStartDate']." - ".$data[$ctr]['OfferEndDate']); 
                     if($arraynewlist['Status'] != 'Active'){
-                        $arraynewlist['Action'] = "<div title='actionbuttons' style='padding-top: 3px;'><a href='javascript:void(0)' title='Edit' RewardItemID='".$arraynewlist['RewardItemID']."' id='editbutton'><img id='editimage".$arraynewlist['RewardItemID']."' src='../../images/ui-icon-edit.png'></a>&nbsp;&nbsp;<a href='javascript:void(0)' title='Delete' RewardItemID='".$arraynewlist['RewardItemID']."' id='deletebutton'><img id='deleteimage".$arraynewlist['RewardItemID']."' src='../../images/ui-icon-delete.png'></a>&nbsp;&nbsp;<a href='javascript:void(0)' title='Replenish' RewardItemID='".$arraynewlist['RewardItemID']."' id='refillbutton'><img id='refillimage".$arraynewlist['RewardItemID']."' src='../../images/ui-icon-refill.png' ></a></div>";
+                        $arraynewlist['Action'] = "<div title='actionbuttons' style='padding-top: 3px;'><a href='javascript:void(0)' title='Edit' Status='".$arraynewlist['Status']."'  RewardItemID='".$arraynewlist['RewardItemID']."' id='editbutton'><img id='editimage".$arraynewlist['RewardItemID']."' src='../../images/ui-icon-edit.png'></a>&nbsp;&nbsp;<a href='javascript:void(0)' title='Delete' RewardItemID='".$arraynewlist['RewardItemID']."' id='deletebutton'><img id='deleteimage".$arraynewlist['RewardItemID']."' src='../../images/ui-icon-delete.png'></a>&nbsp;&nbsp;<a href='javascript:void(0)' title='Replenish' RewardItemID='".$arraynewlist['RewardItemID']."' id='refillbutton'><img id='refillimage".$arraynewlist['RewardItemID']."' src='../../images/ui-icon-refill.png' ></a></div>";
                     } else {
-                        $arraynewlist['Action'] = "<div title='actionbuttons' style='padding-top: 3px;'><a href='javascript:void(0)' title='Edit' style='visibility: hidden;' RewardItemID='".$arraynewlist['RewardItemID']."' id='editbutton'><img id='editimage".$arraynewlist['RewardItemID']."' src='../../images/ui-icon-edit.png'></a>&nbsp;&nbsp;<a href='javascript:void(0)' title='Delete' RewardItemID='".$arraynewlist['RewardItemID']."' id='deletebutton'><img id='deleteimage".$arraynewlist['RewardItemID']."' src='../../images/ui-icon-delete.png'></a>&nbsp;&nbsp;<a href='javascript:void(0)' title='Replenish' RewardItemID='".$arraynewlist['RewardItemID']."' id='refillbutton'><img id='refillimage".$arraynewlist['RewardItemID']."' src='../../images/ui-icon-refill.png' ></a></div>";
+                        $arraynewlist['Action'] = "<div title='actionbuttons' style='padding-top: 3px;'><a href='javascript:void(0)' title='Edit' Status='".$arraynewlist['Status']."'  RewardItemID='".$arraynewlist['RewardItemID']."' id='editbutton'><img id='editimage".$arraynewlist['RewardItemID']."' src='../../images/ui-icon-edit.png'></a>&nbsp;&nbsp;<a href='javascript:void(0)' title='Delete' RewardItemID='".$arraynewlist['RewardItemID']."' id='deletebutton'><img id='deleteimage".$arraynewlist['RewardItemID']."' src='../../images/ui-icon-delete.png'></a>&nbsp;&nbsp;<a href='javascript:void(0)' title='Replenish' RewardItemID='".$arraynewlist['RewardItemID']."' id='refillbutton'><img id='refillimage".$arraynewlist['RewardItemID']."' src='../../images/ui-icon-refill.png' ></a></div>";
                     }                 
                     $arraydata[$ctr]=$arraynewlist;
                     $ctr++;
@@ -63,6 +60,7 @@ class ManageRewardsController extends Controller
 
     /**
      * @Description: For fetching data after changing the view rewards by and/or rewards type (reward e-coupon, raffle e-coupon)
+     * @Author: aqdepliyan
      * @DateCreated: 2013-09-24
      */
     public function actionRewardsList(){
@@ -95,13 +93,9 @@ class ManageRewardsController extends Controller
             $response['records'] = $countdata;
             
             for($ctr = 0; $ctr < $countdata; $ctr++){
-//                if($data[$ctr]['PartnerName'] == null || $data[$ctr]['PartnerName'] == '')
-//                    $data[$ctr]['PartnerName'] = 'n/a';
-//                if($data[$ctr]['Category'] == null || $data[$ctr]['Category'] == '')
-//                    $data[$ctr]['Category'] = 'n/a';
                 $arraynewlist['RewardItemID'] = $data[$ctr]['RewardItemID']; 
                 $arraynewlist['PartnerName'] = $data[$ctr]['PartnerName']; 
-                $arraynewlist['ItemName'] = $data[$ctr]['ItemName']; 
+                $arraynewlist['ItemName'] = "<a href='javascript:void(0)' title='View Details' RewardItemID='".$arraynewlist['RewardItemID']."'  id='viewlink'>".$data[$ctr]['ItemName']."</a>";
                 $arraynewlist['Category'] = $data[$ctr]['Category']; 
                 $arraynewlist['Points'] = $data[$ctr]['Points']; 
                 $arraynewlist['Eligibility'] = $data[$ctr]['Eligibility']; 
@@ -111,15 +105,15 @@ class ManageRewardsController extends Controller
                 
                 if($arraynewlist['Status'] != 'Active'){
                     if($rewardtype == 2){
-                        $arraynewlist['Action'] = "<div title='actionbuttons' style='padding-top: 3px;'><a href='javascript:void(0)' title='Edit' RewardItemID='".$arraynewlist['RewardItemID']."' id='editbutton'><img id='editimage".$arraynewlist['RewardItemID']."' src='../../images/ui-icon-edit.png'></a>&nbsp;&nbsp;<a href='javascript:void(0)' title='Delete' RewardItemID='".$arraynewlist['RewardItemID']."' id='deletebutton'><img id='deleteimage".$arraynewlist['RewardItemID']."' src='../../images/ui-icon-delete.png'></a>&nbsp;&nbsp;<a href='javascript:void(0)' style='visibility: hidden;' title='Replenish' RewardItemID='".$arraynewlist['RewardItemID']."' id='refillbutton'><img id='refillimage".$arraynewlist['RewardItemID']."' src='../../images/ui-icon-refill.png' ></a></div>";
+                        $arraynewlist['Action'] = "<div title='actionbuttons' style='padding-top: 3px;'><a href='javascript:void(0)' title='Edit' Status='".$arraynewlist['Status']."' RewardItemID='".$arraynewlist['RewardItemID']."' id='editbutton'><img id='editimage".$arraynewlist['RewardItemID']."' src='../../images/ui-icon-edit.png'></a>&nbsp;&nbsp;<a href='javascript:void(0)' title='Delete' RewardItemID='".$arraynewlist['RewardItemID']."' id='deletebutton'><img id='deleteimage".$arraynewlist['RewardItemID']."' src='../../images/ui-icon-delete.png'></a>&nbsp;&nbsp;<a href='javascript:void(0)' style='visibility: hidden;' title='Replenish' RewardItemID='".$arraynewlist['RewardItemID']."' id='refillbutton'><img id='refillimage".$arraynewlist['RewardItemID']."' src='../../images/ui-icon-refill.png' ></a></div>";
                     } else {
-                        $arraynewlist['Action'] = "<div title='actionbuttons' style='padding-top: 3px;'><a href='javascript:void(0)' title='Edit' RewardItemID='".$arraynewlist['RewardItemID']."' id='editbutton'><img id='editimage".$arraynewlist['RewardItemID']."' src='../../images/ui-icon-edit.png'></a>&nbsp;&nbsp;<a href='javascript:void(0)' title='Delete' RewardItemID='".$arraynewlist['RewardItemID']."' id='deletebutton'><img id='deleteimage".$arraynewlist['RewardItemID']."' src='../../images/ui-icon-delete.png'></a>&nbsp;&nbsp;<a href='javascript:void(0)' title='Replenish' RewardItemID='".$arraynewlist['RewardItemID']."' id='refillbutton'><img id='refillimage".$arraynewlist['RewardItemID']."' src='../../images/ui-icon-refill.png' ></a></div>";
+                        $arraynewlist['Action'] = "<div title='actionbuttons' style='padding-top: 3px;'><a href='javascript:void(0)' title='Edit' Status='".$arraynewlist['Status']."' RewardItemID='".$arraynewlist['RewardItemID']."' id='editbutton'><img id='editimage".$arraynewlist['RewardItemID']."' src='../../images/ui-icon-edit.png'></a>&nbsp;&nbsp;<a href='javascript:void(0)' title='Delete' RewardItemID='".$arraynewlist['RewardItemID']."' id='deletebutton'><img id='deleteimage".$arraynewlist['RewardItemID']."' src='../../images/ui-icon-delete.png'></a>&nbsp;&nbsp;<a href='javascript:void(0)' title='Replenish' RewardItemID='".$arraynewlist['RewardItemID']."' id='refillbutton'><img id='refillimage".$arraynewlist['RewardItemID']."' src='../../images/ui-icon-refill.png' ></a></div>";
                     }
                 } else {
                     if($rewardtype == 2){
-                        $arraynewlist['Action'] = "<div title='actionbuttons' style='padding-top: 3px;'><a href='javascript:void(0)' title='Edit' style='visibility: hidden;' RewardItemID='".$arraynewlist['RewardItemID']."' id='editbutton'><img id='editimage".$arraynewlist['RewardItemID']."' src='../../images/ui-icon-edit.png'></a>&nbsp;&nbsp;<a href='javascript:void(0)' title='Delete' RewardItemID='".$arraynewlist['RewardItemID']."' id='deletebutton'><img id='deleteimage".$arraynewlist['RewardItemID']."' src='../../images/ui-icon-delete.png'></a>&nbsp;&nbsp;<a href='javascript:void(0)' title='Replenish' style='visibility: hidden;'  RewardItemID='".$arraynewlist['RewardItemID']."' id='refillbutton'><img id='refillimage".$arraynewlist['RewardItemID']."' src='../../images/ui-icon-refill.png' ></a></div>";
+                        $arraynewlist['Action'] = "<div title='actionbuttons' style='padding-top: 3px;'><a href='javascript:void(0)' title='Edit' Status='".$arraynewlist['Status']."' RewardItemID='".$arraynewlist['RewardItemID']."' id='editbutton'><img id='editimage".$arraynewlist['RewardItemID']."' src='../../images/ui-icon-edit.png'></a>&nbsp;&nbsp;<a href='javascript:void(0)' title='Delete' RewardItemID='".$arraynewlist['RewardItemID']."' id='deletebutton'><img id='deleteimage".$arraynewlist['RewardItemID']."' src='../../images/ui-icon-delete.png'></a>&nbsp;&nbsp;<a href='javascript:void(0)' title='Replenish' style='visibility: hidden;'  RewardItemID='".$arraynewlist['RewardItemID']."' id='refillbutton'><img id='refillimage".$arraynewlist['RewardItemID']."' src='../../images/ui-icon-refill.png' ></a></div>";
                     } else {
-                        $arraynewlist['Action'] = "<div title='actionbuttons' style='padding-top: 3px;'><a href='javascript:void(0)' title='Edit' style='visibility: hidden;' RewardItemID='".$arraynewlist['RewardItemID']."' id='editbutton'><img id='editimage".$arraynewlist['RewardItemID']."' src='../../images/ui-icon-edit.png'></a>&nbsp;&nbsp;<a href='javascript:void(0)' title='Delete' RewardItemID='".$arraynewlist['RewardItemID']."' id='deletebutton'><img id='deleteimage".$arraynewlist['RewardItemID']."' src='../../images/ui-icon-delete.png'></a>&nbsp;&nbsp;<a href='javascript:void(0)' title='Replenish' RewardItemID='".$arraynewlist['RewardItemID']."' id='refillbutton'><img id='refillimage".$arraynewlist['RewardItemID']."' src='../../images/ui-icon-refill.png' ></a></div>";
+                        $arraynewlist['Action'] = "<div title='actionbuttons' style='padding-top: 3px;'><a href='javascript:void(0)' title='Edit' Status='".$arraynewlist['Status']."' RewardItemID='".$arraynewlist['RewardItemID']."' id='editbutton'><img id='editimage".$arraynewlist['RewardItemID']."' src='../../images/ui-icon-edit.png'></a>&nbsp;&nbsp;<a href='javascript:void(0)' title='Delete' RewardItemID='".$arraynewlist['RewardItemID']."' id='deletebutton'><img id='deleteimage".$arraynewlist['RewardItemID']."' src='../../images/ui-icon-delete.png'></a>&nbsp;&nbsp;<a href='javascript:void(0)' title='Replenish' RewardItemID='".$arraynewlist['RewardItemID']."' id='refillbutton'><img id='refillimage".$arraynewlist['RewardItemID']."' src='../../images/ui-icon-refill.png' ></a></div>";
                     }
                 }     
                 
@@ -148,6 +142,7 @@ class ManageRewardsController extends Controller
         echo json_encode($response);
         exit;
     }
+    
     /**
      * @Description: For Manipulating Rewards (Delete, Edit and Add)
      * @Author: aqdepliyan
@@ -435,10 +430,7 @@ class ManageRewardsController extends Controller
         $countdata = count($data);
         
         if($countdata == 1){
-            if($data[0]['Status'] == "Active"){
-                $result['showdialog'] = true;
-                $result['message'] = "Reward Item/Coupon is active and not editable.";
-            } else if($data[0]['Status'] == "Deactivated"){
+            if($data[0]['Status'] == "Deactivated"){
                 $result['showdialog'] = true;
                 $result['message'] = "Reward Item/Coupon is already removed.";
             } else {
@@ -495,13 +487,10 @@ class ManageRewardsController extends Controller
         exit;
     }
 
-    private function sanitize($str) {
-        $str = trim($str);
-        
-        return $str;
-    }
-    
-    
+    /**
+     * @Description: UI For Upload Thumbnail Image with Limited Badge
+     * @Author: aqdepliyan
+     */
     public function actionThumbnailLimited () 
     {
         echo "<link rel='stylesheet' type='text/css' href='".Yii::app()->request->baseUrl."/css/main.css' />";
@@ -584,6 +573,7 @@ class ManageRewardsController extends Controller
                         <div id="msgcontainer1"><div id = "thblimitedmsgbox" style = "z-index: 5; float: left; display: none;"></div>
                         <p id="msg1" style="display: none"></p></div>
                     </div>
+                    <span style="font-style: italic; font-size: 11px; float: left; height: 10px; width: 160px;"><center>280 x 175 only</center></span>
                     </body>
                 ';
                 
@@ -594,6 +584,10 @@ class ManageRewardsController extends Controller
         Yii::app()->end();
     }
     
+    /**
+     * @Description: UI For Upload Thumbnail Image with Out-Of-Stock Badge
+     * @Author: aqdepliyan
+     */
     public function actionThumbnailOutofstock () 
     {
         echo "<link rel='stylesheet' type='text/css' href='".Yii::app()->request->baseUrl."/css/main.css' />";
@@ -675,6 +669,7 @@ class ManageRewardsController extends Controller
                             <div id="msgcontainer2"><div id = "thboutofstockmsgbox" style = "z-index: 5; float: left; display: none;"></div>
                             <p id="msg2" style="display: none"></p></div>
                         </div>
+                        <span style="font-style: italic; font-size: 11px; float: left; height: 10px; width: 160px;"><center>280 x 175 only</center></span>
                     </body>
                 ';
         
@@ -686,6 +681,10 @@ class ManageRewardsController extends Controller
         Yii::app()->end();
     }
     
+    /**
+     * @Description: UI For Upload ECoupon Image
+     * @Author: aqdepliyan
+     */
     public function actionECoupon () 
     {
         echo "<link rel='stylesheet' type='text/css' href='".Yii::app()->request->baseUrl."/css/main.css' />";
@@ -779,6 +778,10 @@ class ManageRewardsController extends Controller
         Yii::app()->end();
     }
     
+    /**
+     * @Description: UI For Upload Learn More Image with Limited Badge
+     * @Author: aqdepliyan
+     */
     public function actionLearnMoreLimited () 
     {
         echo "<link rel='stylesheet' type='text/css' href='".Yii::app()->request->baseUrl."/css/main.css' />";
@@ -860,6 +863,7 @@ class ManageRewardsController extends Controller
                             <div id="msgcontainer4"><div id = "lmlimitedmsgbox" style = "z-index: 5; float: left; display: none;"></div>
                             <p id="msg4" style="display: none"></p></div>
                         </div>
+                        <span style="font-style: italic; font-size: 11px; float: left; height: 10px; width: 160px;"><center>560 x 362 only</center></span>
                     </body>
                 ';
         
@@ -871,6 +875,10 @@ class ManageRewardsController extends Controller
         Yii::app()->end();
     }
     
+    /**
+     * @Description: UI For Upload Learn More Image with Out-Of-Stock Badge
+     * @Author: aqdepliyan
+     */
     public function actionLearnMoreOutofstock () 
     {
         echo "<link rel='stylesheet' type='text/css' href='".Yii::app()->request->baseUrl."/css/main.css' />";
@@ -952,6 +960,7 @@ class ManageRewardsController extends Controller
                             <div id="msgcontainer5"><div id = "lmoutofstockmsgbox" style = "z-index: 5; float: left; display: none;"></div>
                             <p id="msg5" style="display: none"></p></div>
                         </div>
+                        <span style="font-style: italic; font-size: 11px; float: left; height: 10px; width: 160px;"><center>560 x 362 only</center></span>
                     </body>
                 ';
                 
@@ -963,6 +972,10 @@ class ManageRewardsController extends Controller
         Yii::app()->end();
     }
     
+    /**
+     * @Description: UI For Upload Webslider Image
+     * @Author: aqdepliyan
+     */
     public function actionWebsiteSlider () 
     {
         echo "<link rel='stylesheet' type='text/css' href='".Yii::app()->request->baseUrl."/css/main.css' />";
@@ -1044,6 +1057,7 @@ class ManageRewardsController extends Controller
                             <div id="msgcontainer6"><div id = "webslidermsgbox" style = "z-index: 5; float: left; display: none;"></div>
                             <p id="msg6" style="display: none"></p></div>
                         </div>
+                        <span style="font-style: italic; font-size: 11px; float: left; height: 10px; width: 160px;"><center>606 x 372 only</center></span>
                     </body>
                 ';
         
@@ -1055,6 +1069,10 @@ class ManageRewardsController extends Controller
         Yii::app()->end();
     }
     
+    /**
+     * @Description: Process for uploading photos
+     * @Author: aqdepliyan
+     */
     public function actionUploadPhoto () {
         
         if(isset(Yii::app()->session['uploadedfile']) && isset(Yii::app()->session['message'])){

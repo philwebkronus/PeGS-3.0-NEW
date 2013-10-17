@@ -32,6 +32,32 @@ tinyMCE.init({
 tinyMCE.init({
         // General options
         mode : "exact",
+        elements : "editaboutreadonly",
+        theme : "advanced",
+        skin : "o2k7",
+        readonly: true,
+        plugins : "safari,spellchecker,pagebreak,style,layer,table,save,advhr,advimage,advlink,emotions,iespell,inlinepopups,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras,template",
+
+        // Theme options
+        theme_advanced_buttons1 : "save,newdocument,|,bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,fontselect,fontsizeselect",
+        theme_advanced_buttons2 : "cut,copy,paste|,bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,image,code,|,forecolor,backcolor,|,ltr,rt",
+        theme_advanced_buttons3 : "tablecontrols,|,hr,removeformat,|,sub,sup,|,charmap,emotions,|,printl",
+        theme_advanced_toolbar_location : "top",
+        theme_advanced_toolbar_align : "left",
+        theme_advanced_resizing : true,
+
+        // Example content CSS (should be your site CSS)
+//        content_css : "css/example.css",
+
+        // Drop lists for link/image/media/template dialogs
+        template_external_list_url : "js/template_list.js",
+        external_link_list_url : "js/link_list.js",
+        external_image_list_url : "js/image_list.js",
+        media_external_list_url : "js/media_list.js"
+});
+tinyMCE.init({
+        // General options
+        mode : "exact",
         elements : "addabout",
         theme : "advanced",
         skin : "o2k7",
@@ -60,6 +86,32 @@ tinyMCE.init({
         elements : "editterms",
         theme : "advanced",
         skin : "o2k7",
+        plugins : "safari,spellchecker,pagebreak,style,layer,table,save,advhr,advimage,advlink,emotions,iespell,inlinepopups,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras,template",
+
+        // Theme options
+        theme_advanced_buttons1 : "save,newdocument,|,bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,fontselect,fontsizeselect",
+        theme_advanced_buttons2 : "cut,copy,paste|,bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,image,code,|,forecolor,backcolor,|,ltr,rt",
+        theme_advanced_buttons3 : "tablecontrols,|,hr,removeformat,|,sub,sup,|,charmap,emotions,|,printl",
+        theme_advanced_toolbar_location : "top",
+        theme_advanced_toolbar_align : "left",
+        theme_advanced_resizing : true,
+
+        // Example content CSS (should be your site CSS)
+//        content_css : "css/example.css",
+
+        // Drop lists for link/image/media/template dialogs
+        template_external_list_url : "js/template_list.js",
+        external_link_list_url : "js/link_list.js",
+        external_image_list_url : "js/image_list.js",
+        media_external_list_url : "js/media_list.js"
+});
+tinyMCE.init({
+        // General options
+        mode : "exact",
+        elements : "edittermsreadonly",
+        theme : "advanced",
+        skin : "o2k7",
+        readonly: true,
         plugins : "safari,spellchecker,pagebreak,style,layer,table,save,advhr,advimage,advlink,emotions,iespell,inlinepopups,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras,template",
 
         // Theme options
@@ -240,7 +292,19 @@ tinyMCE.init({
                         if (c2 == true) {
                             return true;
                         }
+                    } else {
+                        return true;
                     }
+                }
+            } else if(part == 5){                                  //Edit part for Active Reward
+                var newstatus = $("#editstatus").val();
+                var stats = $("#hdnStatus").val();
+                var comparestat = $("#editstatus option[value='"+newstatus+"']").text();
+                if(comparestat == stats){
+                    var message = "Status Unchanged.";
+                    return message;
+                } else {
+                    return true;
                 }
             }
         } else if (form == 2) {                                    //Add New Reward Item Form
@@ -367,7 +431,7 @@ tinyMCE.init({
                     }
                 } 
                 return true;
-            }
+            } 
         }
         
     }
@@ -410,12 +474,12 @@ tinyMCE.init({
                                             if(column['name'] != 'Action'){
                                                 var grid = jQuery('#rewardslist');
                                                 var sel_id = grid.jqGrid('getGridParam', 'selrow');
-                                                var status = grid.jqGrid('getCell', sel_id, 'Status');
-
-                                                if(status != 'Active'){
-                                                    RewardItemID = rowid;
-                                                    getRewardDetails(RewardItemID);
-                                                }
+                                                //var status = grid.jqGrid('getCell', sel_id, 'Status');
+                                                
+                                                RewardItemID = rowid;
+                                                var showonly = "showedit";
+                                                $('#hdnRewardItemID-edit').val(RewardItemID);
+                                                getRewardDetails(RewardItemID, showonly);
                                             }
                                         },
                 caption:'Manage Rewards'
@@ -424,7 +488,7 @@ tinyMCE.init({
                 { edit:false,add:false,del:false, search:false, refresh: true });
     }
 
-    function getRewardDetails(RewardItemID){
+    function getRewardDetails(RewardItemID,showonly){
         $.ajax({
             url: 'rewardDetails?RewardItemID='+RewardItemID,
             type: 'POST',
@@ -441,6 +505,12 @@ tinyMCE.init({
                     $("#to_hour").val(data.OfferEndHour);
                     $("#to_min").val(data.OfferEndMin);
                     $("#to_sec").val(data.OfferEndSec);
+                    $("#fromhour").val(data.OfferStartHour);
+                    $("#frommin").val(data.OfferStartMin);
+                    $("#fromsec").val(data.OfferStartSec);
+                    $("#tohour").val(data.OfferEndHour);
+                    $("#tomin").val(data.OfferEndMin);
+                    $("#tosec").val(data.OfferEndSec);
                     $("#partner").val(data.PartnerName);
                     $("#partnerid").val(data.PartnerID);
                     $("#rewarditem").val(data.ItemName);
@@ -457,9 +527,16 @@ tinyMCE.init({
                     $("#subtext").val(data.Subtext);
                     $("#about").html(data.About);
                     tinyMCE.get('editabout').setContent(data.About);
+                    tinyMCE.get('editaboutreadonly').setContent(data.About);
                     $("#terms").html(data.Terms);
                     tinyMCE.get('editterms').setContent(data.Terms);
-                    $("#showrewardsdetails").dialog("open");
+                    tinyMCE.get('edittermsreadonly').setContent(data.Terms);
+                    $("#hdnStatus").val(data.Status);
+                    if(showonly == "edit"){
+                        $("#showrewardsdetails").siblings(".ui-dialog-buttonpane").find("button").eq(0).click();
+                    } else {
+                        $("#showrewardsdetails").dialog("open");
+                    }
                 } else {
                     $("#message").html(data.message);
                     $("#messagedialog2").dialog("open");
@@ -489,12 +566,16 @@ tinyMCE.init({
                 } else {
                     if(data.showdialog == false && data.message == ''){
                         $("#editpartner").html("");
+                        $("#editpartnerreadonly").html("");
                         $("#editpartner").append("<option value=''>Select Partner</option>");
+                        $("#editpartnerreadonly").append("<option value=''>Select Partner</option>");
                         for(var itr = 0; itr < data.CountofPartners; itr++){
                             $("#editpartner").append("<option value='"+data.ListofPartners[itr].PartnerID+"'>"+data.ListofPartners[itr].PartnerName+"</option>");
+                            $("#editpartnerreadonly").append("<option value='"+data.ListofPartners[itr].PartnerID+"'>"+data.ListofPartners[itr].PartnerName+"</option>");
                         }
                         var partnerid = $("#partnerid").val()
                         $("#editpartner option[value='"+partnerid+"']").attr("selected", "selected");
+                        $("#editpartnerreadonly option[value='"+partnerid+"']").attr("selected", "selected");
                     } else {
                         $("#message").html(data.message);
                         $("#messagedialog2").dialog("open");
@@ -533,19 +614,26 @@ tinyMCE.init({
                 } else {
                     if(data.showdialog == false && data.message == ''){
                         $("#editcategory").html("");
-                        $("#editcategory").append("<option value=''>Select Partner</option>");
+                        $("#editcategoryreadonly").html("");
+                        $("#editcategory").append("<option value=''>Select Category</option>");
+                        $("#editcategoryreadonly").append("<option value=''>Select Category</option>");
                         for(var itr = 0; itr < data.CountofCategories; itr++){
                             $("#editcategory").append("<option value='"+data.ListofCategories[itr].CategoryID+"'>"+data.ListofCategories[itr].CategoryName+"</option>");
+                            $("#editcategoryreadonly").append("<option value='"+data.ListofCategories[itr].CategoryID+"'>"+data.ListofCategories[itr].CategoryName+"</option>");
                         }
                         var categoryid = $("#categoryid").val();
                         var eligibilityid = $("#eligibilityid").val();
                         var statusid = $("#statusid").val();
                         $("#editcategory option[value='"+categoryid+"']").attr("selected", "selected");
+                        $("#editcategoryreadonly option[value='"+categoryid+"']").attr("selected", "selected");
                         $("#editeligibility option[value='"+eligibilityid+"']").attr("selected", "selected");
+                        $("#editeligibilityreadonly option[value='"+eligibilityid+"']").attr("selected", "selected");
                         $("#editstatus option[value='"+statusid+"']").attr("selected", "selected");
                         $("#editsubtext").val($("#subtext").val());
                         $("#from_date").val($("#offerstartdate").val());
+                        $("#fromdate").val($("#offerstartdate").val());
                         $("#to_date").val($("#offerenddate").val());
+                        $("#todate").val($("#offerenddate").val());
                     } else {
                         $("#message").html(data.message);
                         $("#messagedialog2").dialog("open");
@@ -579,43 +667,6 @@ tinyMCE.init({
     $(document).ready(function(){
         $("#displaydetailsform").hide();
         $("#editdetailsform").hide();
-        $("#editbutton").live("mouseover",function () {
-            var RewardItemID = $(this).attr("RewardItemID");
-            $("#editimage"+RewardItemID).removeAttr("src");
-            $("#editimage"+RewardItemID).attr("src", "../../images/ui-icon-edit-hover.png");
-        });
-
-        $("#editbutton").live("mouseout",function () {
-            var RewardItemID = $(this).attr("RewardItemID");
-            $("#editimage"+RewardItemID).removeAttr("src");
-            $("#editimage"+RewardItemID).attr("src", "../../images/ui-icon-edit.png");
-            $("#editimage"+RewardItemID).removeAttr("style");
-        });
-
-        $("#deletebutton").live("mouseover",function () {
-            var RewardItemID = $(this).attr("RewardItemID");
-            $("#deleteimage"+RewardItemID).removeAttr("src");
-            $("#deleteimage"+RewardItemID).attr("src", "../../images/ui-icon-delete-hover.png");
-        });
-
-        $("#deletebutton").live("mouseout",function () {
-            var RewardItemID = $(this).attr("RewardItemID");
-            $("#deleteimage"+RewardItemID).removeAttr("src");
-            $("#deleteimage"+RewardItemID).attr("src", "../../images/ui-icon-delete.png");
-        });
-
-        $("#refillbutton").live("mouseover",function () {
-            var RewardItemID = $(this).attr("RewardItemID");
-            $("#refillimage"+RewardItemID).removeAttr("src");
-            $("#refillimage"+RewardItemID).attr("src", "../../images/ui-icon-refill-hover.png");
-        });
-
-        $("#refillbutton").live("mouseout",function () {
-            var RewardItemID = $(this).attr("RewardItemID");
-            $("#refillimage"+RewardItemID).removeAttr("src");
-            $("#refillimage"+RewardItemID).attr("src", "../../images/ui-icon-refill.png");
-        });
-
 
         $("#accordion-link1").live("mouseover",function () {
             $("#accordion-arrow-icon1").removeAttr("style");
@@ -721,8 +772,18 @@ tinyMCE.init({
 
         $("#editbutton").live("click",function(){
             var RewardItemID = $(this).attr("RewardItemID");
+            var Status = $(this).attr("Status");
             $("#hdnRewardItemID-edit").val(RewardItemID);
-            getRewardDetails(RewardItemID);
+            var showonly = 'edit';
+            getRewardDetails(RewardItemID,showonly, Status);
+        });
+        
+        $("#viewlink").live("click",function(){
+            var RewardItemID = $(this).attr("RewardItemID");
+            $("#hdnRewardItemID-edit").val(RewardItemID);
+            var showonly = 'showedit';
+            var Status = '';
+            getRewardDetails(RewardItemID,showonly, Status);
         });
 
         $("#refillbutton").live("click",function(){
@@ -884,7 +945,7 @@ tinyMCE.init({
 ?>
 <table style="font-size: 12px;">
     <tr>
-        <!-- Controls for filtering rewards list data -->
+        <!----- Controls for filtering rewards list data ----->
         <td style="text-align: right; width: 50%;">
             <?php echo CHtml::label("VIEW REWARDS BY: ", "viewrewardsby", array('style' => 'vertical-align:middle;'));?>
             <?php echo $form->dropDownList($model, 'viewrewardsby', array("0" => "All", "1" => "Active", "2" => "Inactive","3" => "Out-Of-Stock"), array('id' => 'viewrewardsby')) ?>
@@ -920,6 +981,7 @@ tinyMCE.init({
 /** ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 ?>
 
+
 <?php
 /** -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
  * @Description: Popup Confirmation Dialog box for delete reward item/coupon function
@@ -954,6 +1016,7 @@ echo "</center>";
 $this->endWidget('zii.widgets.jui.CJuiDialog');
 /** ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 ?>
+
 
 <?php
 /** -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -991,6 +1054,7 @@ echo "</center>";
 $this->endWidget('zii.widgets.jui.CJuiDialog');
 /** ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 ?>
+
 
 <?php
 /** -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -1058,6 +1122,7 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog',array(
 /** ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 ?>
 
+
 <?php
 /** -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
  * @Description: Form for Editing of Reward Item/Coupon Details
@@ -1103,8 +1168,9 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog',array(
         'autoOpen'=>false,
         'modal'=>true,
         'resizable'=>false,
-        'draggable'=>true,
-        'width'=>700,
+        'draggable'=>false,
+        'position'=>array("middle", 100),
+        'width'=>'700',
         'show'=>'fade',
         'hide'=>'fade',
         'open' => 'js:function(event,ui){
@@ -1215,8 +1281,8 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog',array(
         'draggable'=>false,
         'show'=>'fade',
         'hide'=>'fade',
-        'width'=>350,
-        'height'=>200,
+        'width'=>'350',
+        'height'=>'200',
         'buttons' => array
         (
             'OK'=>'js:function(){
@@ -1242,7 +1308,8 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
             'autoOpen'=>false,
             'modal'=>true,
             'resizable'=>false,
-            'draggable'=>true,
+            'draggable'=>false,
+            'position'=>array("middle",30),
             'width'=>650,
             'show'=>'fade',
             'hide'=>'fade',
@@ -1263,6 +1330,69 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
                             } else {
                                 var rewardtype = $("#rewardtype1:checked").val();
                             }
+                            
+                            var stats = $("#hdnStatus").val();
+                            if(stats == "Active"){
+                                $("#thblimitedframe").contents().find("#thbsubmit_limited").attr("disabled","disabled");
+                                $("#thboutofstockframe").contents().find("#thbsubmit_outofstock").attr("disabled","disabled");
+                                $("#lmlimitedframe").contents().find("#lmsubmit_limited").attr("disabled","disabled");
+                                $("#lmoutofstockframe").contents().find("#lmsubmit_outofstock").attr("disabled","disabled");
+                                $("#ecouponframe").contents().find("#ecoupon_submit").attr("disabled","disabled");
+                                $("#websliderframe").contents().find("#webslider_submit").attr("disabled","disabled");
+                                $("#editrewarditem").attr("readonly", "readonly");
+                                $("#editpoints").attr("readonly", "readonly");
+                                $("#editsubtext").attr("readonly", "readonly");
+                                $("#editaboutdiv").removeAttr("style");
+                                $("#editaboutdiv").attr("style","display: none;");
+                                $("#editaboutrodiv").removeAttr("style");
+                                $("#edittermsdiv").removeAttr("style");
+                                $("#edittermsdiv").attr("style","display: none;");
+                                $("#edittermsrodiv").removeAttr("style");
+                                
+                                $("#promoperioddiv").removeAttr("style");
+                                $("#promoperioddiv").attr("style", "display: none");
+                                $("#readonlypromoperioddiv").removeAttr("style");
+                                
+                                $("#eligibilitydiv").removeAttr("style");
+                                $("#eligibilitydiv").attr("style", "display: none");
+                                $("#readonlyeligibilitydiv").removeAttr("style");
+                                $("#partnerdiv").removeAttr("style");
+                                $("#partnerdiv").attr("style", "display: none");
+                                $("#readonlypartnerdiv").removeAttr("style");
+                                $("#categorydiv").removeAttr("style");
+                                $("#categorydiv").attr("style", "display: none");
+                                $("#readonlycategorydiv").removeAttr("style");
+                            } else {
+                                $("#thblimitedframe").contents().find("#thbsubmit_limited").removeAttr("disabled");
+                                $("#thboutofstockframe").contents().find("#thbsubmit_outofstock").removeAttr("disabled");
+                                $("#lmlimitedframe").contents().find("#lmsubmit_limited").removeAttr("disabled");
+                                $("#lmoutofstockframe").contents().find("#lmsubmit_outofstock").removeAttr("disabled");
+                                $("#ecouponframe").contents().find("#ecoupon_submit").removeAttr("disabled");
+                                $("#websliderframe").contents().find("#webslider_submit").removeAttr("disabled");
+                                $("#editrewarditem").removeAttr("readonly");
+                                $("#editpoints").removeAttr("readonly");
+                                $("#editsubtext").removeAttr("readonly");
+                                $("#readonlypromoperioddiv").removeAttr("style");
+                                $("#promoperioddiv").removeAttr("style");
+                                $("#readonlypromoperioddiv").attr("style", "display: none");
+                                $("#editaboutrodiv").removeAttr("style");
+                                $("#editaboutrodiv").attr("style","display: none;");
+                                $("#editaboutdiv").removeAttr("style");
+                                $("#edittermsrodiv").removeAttr("style");
+                                $("#edittermsrodiv").attr("style","display: none;");
+                                $("#edittermsdiv").removeAttr("style");
+                                
+                                $("#eligibilitydiv").removeAttr("style");
+                                $("#readonlyeligibilitydiv").removeAttr("style");
+                                $("#readonlyeligibilitydiv").attr("style", "display: none");
+                                $("#partnerdiv").removeAttr("style");
+                                $("#readonlypartnerdiv").removeAttr("style");
+                                $("#readonlypartnerdiv").attr("style", "display: none");
+                                $("#categorydiv").removeAttr("style");
+                                $("#readonlycategorydiv").removeAttr("style");
+                                $("#readonlycategorydiv").attr("style", "display: none");
+                            }
+                            
                             if(rewardtype == 2){
                                 $("#hdnRewardID-edit").val(rewardtype);
                                 var statusid = $("#statusid").val();
@@ -1270,9 +1400,12 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
                                 $("#editstatus option[value=\'"+statusid+"\']").attr("selected", "selected");
                                 $("#editsubtext").val($("#subtext").val());
                                 $("#from_date").val($("#offerstartdate").val());
+                                $("#fromdate").val($("#offerstartdate").val());
                                 $("#to_date").val($("#offerenddate").val());
+                                $("#todate").val($("#offerenddate").val());
                                 $("#editrewarditem").val($("#rewarditem").val());
                                 $("#editeligibility option[value=\'"+eligibilityid+"\']").attr("selected", "selected");
+                                $("#editeligibilityreadonly option[value=\'"+eligibilityid+"\']").attr("selected", "selected");
                                 var points = $("#points").val();
                                 $("#editpoints").val(points.toString().replace(/,/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                                 $("#primarydetails").show();
@@ -1344,70 +1477,145 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
                             }'),
                 array('id' => 'firstnext','text'=>'NEXT','click'=> 'js:function(){
                                         var rewardid = $("#hdnRewardID-edit").val();
-                                        var results = validateinputs(1,1, rewardid);
+                                        var stats = $("#hdnStatus").val();
                                         
-                                        if(results == true){
-                                                $("#primarydetails").hide();
-                                                $("#aboutthereward").show();
-                                                $("#editaboutreward").hide();
-                                                $("#edittermsreward").hide();
-                                                $(this).siblings(".ui-dialog-buttonpane").find("button").eq(0).hide();
-                                                $(this).siblings(".ui-dialog-buttonpane").find("button").eq(4).hide();
-                                                $(this).siblings(".ui-dialog-buttonpane").find("button").eq(2).hide();
-                                                $(this).siblings(".ui-dialog-buttonpane").find("button").eq(6).hide();
-                                                $(this).siblings(".ui-dialog-buttonpane").find("button").eq(3).hide();
-                                                $(this).siblings(".ui-dialog-buttonpane").find("button").eq(7).hide();
+                                        if(stats == "Active"){
+                                            $("#primarydetails").hide();
+                                            $("#aboutthereward").show();
+                                            $("#editaboutreward").hide();
+                                            $("#edittermsreward").hide();
+                                            $(this).siblings(".ui-dialog-buttonpane").find("button").eq(0).hide();
+                                            $(this).siblings(".ui-dialog-buttonpane").find("button").eq(4).hide();
+                                            $(this).siblings(".ui-dialog-buttonpane").find("button").eq(2).hide();
+                                            $(this).siblings(".ui-dialog-buttonpane").find("button").eq(6).hide();
+                                            $(this).siblings(".ui-dialog-buttonpane").find("button").eq(3).hide();
+                                            $(this).siblings(".ui-dialog-buttonpane").find("button").eq(7).hide();
 
-                                                $(this).siblings(".ui-dialog-buttonpane").find("button").eq(1).show();
-                                                $(this).siblings(".ui-dialog-buttonpane").find("button").eq(5).show();
+                                            $(this).siblings(".ui-dialog-buttonpane").find("button").eq(1).show();
+                                            $(this).siblings(".ui-dialog-buttonpane").find("button").eq(5).show();
                                         } else {
-                                                $("#message1").html(results);
-                                                $("#messagedialog3").dialog("open");
-                                        }      
+                                            var results = validateinputs(1,1, rewardid);
+
+                                            if(results == true){
+                                                    $("#primarydetails").hide();
+                                                    $("#aboutthereward").show();
+                                                    $("#editaboutreward").hide();
+                                                    $("#edittermsreward").hide();
+                                                    $(this).siblings(".ui-dialog-buttonpane").find("button").eq(0).hide();
+                                                    $(this).siblings(".ui-dialog-buttonpane").find("button").eq(4).hide();
+                                                    $(this).siblings(".ui-dialog-buttonpane").find("button").eq(2).hide();
+                                                    $(this).siblings(".ui-dialog-buttonpane").find("button").eq(6).hide();
+                                                    $(this).siblings(".ui-dialog-buttonpane").find("button").eq(3).hide();
+                                                    $(this).siblings(".ui-dialog-buttonpane").find("button").eq(7).hide();
+
+                                                    $(this).siblings(".ui-dialog-buttonpane").find("button").eq(1).show();
+                                                    $(this).siblings(".ui-dialog-buttonpane").find("button").eq(5).show();
+                                            } else {
+                                                    $("#message1").html(results);
+                                                    $("#messagedialog3").dialog("open");
+                                            }
+                                        }
+                                               
                             }'),
                 array('id' => 'secondnext','text'=>'NEXT','click'=> 'js:function(){
-                                        var results = validateinputs(1,2);
-                                        if(results == true){
-                                                $("#primarydetails").hide();
-                                                $("#aboutthereward").hide();
-                                                $("#editaboutreward").show();
-                                                $("#edittermsreward").hide();
-                                                $(this).siblings(".ui-dialog-buttonpane").find("button").eq(0).hide();
-                                                $(this).siblings(".ui-dialog-buttonpane").find("button").eq(4).hide();
-                                                $(this).siblings(".ui-dialog-buttonpane").find("button").eq(1).hide();
-                                                $(this).siblings(".ui-dialog-buttonpane").find("button").eq(5).hide();
-                                                $(this).siblings(".ui-dialog-buttonpane").find("button").eq(3).hide();
-                                                $(this).siblings(".ui-dialog-buttonpane").find("button").eq(7).hide();
+                                        var stats = $("#hdnStatus").val();
+                                        
+                                        if(stats == "Active"){
+                                            $("#primarydetails").hide();
+                                            $("#aboutthereward").hide();
+                                            $("#editaboutreward").show();
+                                            $("#edittermsreward").hide();
+                                            $(this).siblings(".ui-dialog-buttonpane").find("button").eq(0).hide();
+                                            $(this).siblings(".ui-dialog-buttonpane").find("button").eq(4).hide();
+                                            $(this).siblings(".ui-dialog-buttonpane").find("button").eq(1).hide();
+                                            $(this).siblings(".ui-dialog-buttonpane").find("button").eq(5).hide();
+                                            $(this).siblings(".ui-dialog-buttonpane").find("button").eq(3).hide();
+                                            $(this).siblings(".ui-dialog-buttonpane").find("button").eq(7).hide();
 
-                                                $(this).siblings(".ui-dialog-buttonpane").find("button").eq(2).show();
-                                                $(this).siblings(".ui-dialog-buttonpane").find("button").eq(6).show();
-                                        } 
+                                            $(this).siblings(".ui-dialog-buttonpane").find("button").eq(2).show();
+                                            $(this).siblings(".ui-dialog-buttonpane").find("button").eq(6).show();
+                                        } else {
+                                            var rewardid = $("#hdnRewardID-edit").val();
+                                            var results = validateinputs(1,2, rewardid);
+                                            if(results == true){
+                                                    $("#primarydetails").hide();
+                                                    $("#aboutthereward").hide();
+                                                    $("#editaboutreward").show();
+                                                    $("#edittermsreward").hide();
+                                                    $(this).siblings(".ui-dialog-buttonpane").find("button").eq(0).hide();
+                                                    $(this).siblings(".ui-dialog-buttonpane").find("button").eq(4).hide();
+                                                    $(this).siblings(".ui-dialog-buttonpane").find("button").eq(1).hide();
+                                                    $(this).siblings(".ui-dialog-buttonpane").find("button").eq(5).hide();
+                                                    $(this).siblings(".ui-dialog-buttonpane").find("button").eq(3).hide();
+                                                    $(this).siblings(".ui-dialog-buttonpane").find("button").eq(7).hide();
+
+                                                    $(this).siblings(".ui-dialog-buttonpane").find("button").eq(2).show();
+                                                    $(this).siblings(".ui-dialog-buttonpane").find("button").eq(6).show();
+                                            } 
+                                        }
+                                        
                             }'),
                 array('id' => 'thirdnext','text'=>'NEXT','click'=> 'js:function(){
-                                        var results = validateinputs(1,3);
-                                        if(results == true){
-                                                $("#primarydetails").hide();
-                                                $("#aboutthereward").hide();
-                                                $("#editaboutreward").hide();
-                                                $("#edittermsreward").show();
-                                                $(this).siblings(".ui-dialog-buttonpane").find("button").eq(0).hide();
-                                                $(this).siblings(".ui-dialog-buttonpane").find("button").eq(4).hide();
-                                                $(this).siblings(".ui-dialog-buttonpane").find("button").eq(1).hide();
-                                                $(this).siblings(".ui-dialog-buttonpane").find("button").eq(5).hide();
-                                                $(this).siblings(".ui-dialog-buttonpane").find("button").eq(2).hide();
-                                                $(this).siblings(".ui-dialog-buttonpane").find("button").eq(6).hide();
+                                        var stats = $("#hdnStatus").val();
+                                        
+                                        if(stats == "Active"){
+                                            $("#primarydetails").hide();
+                                            $("#aboutthereward").hide();
+                                            $("#editaboutreward").hide();
+                                            $("#edittermsreward").show();
+                                            $(this).siblings(".ui-dialog-buttonpane").find("button").eq(0).hide();
+                                            $(this).siblings(".ui-dialog-buttonpane").find("button").eq(4).hide();
+                                            $(this).siblings(".ui-dialog-buttonpane").find("button").eq(1).hide();
+                                            $(this).siblings(".ui-dialog-buttonpane").find("button").eq(5).hide();
+                                            $(this).siblings(".ui-dialog-buttonpane").find("button").eq(2).hide();
+                                            $(this).siblings(".ui-dialog-buttonpane").find("button").eq(6).hide();
 
-                                                $(this).siblings(".ui-dialog-buttonpane").find("button").eq(3).show();
-                                                $(this).siblings(".ui-dialog-buttonpane").find("button").eq(7).show();
+                                            $(this).siblings(".ui-dialog-buttonpane").find("button").eq(3).show();
+                                            $(this).siblings(".ui-dialog-buttonpane").find("button").eq(7).show();
+                                        } else {
+                                            var rewardid = $("#hdnRewardID-edit").val();
+                                            var results = validateinputs(1,3, rewardid);
+                                            if(results == true){
+                                                    $("#primarydetails").hide();
+                                                    $("#aboutthereward").hide();
+                                                    $("#editaboutreward").hide();
+                                                    $("#edittermsreward").show();
+                                                    $(this).siblings(".ui-dialog-buttonpane").find("button").eq(0).hide();
+                                                    $(this).siblings(".ui-dialog-buttonpane").find("button").eq(4).hide();
+                                                    $(this).siblings(".ui-dialog-buttonpane").find("button").eq(1).hide();
+                                                    $(this).siblings(".ui-dialog-buttonpane").find("button").eq(5).hide();
+                                                    $(this).siblings(".ui-dialog-buttonpane").find("button").eq(2).hide();
+                                                    $(this).siblings(".ui-dialog-buttonpane").find("button").eq(6).hide();
+
+                                                    $(this).siblings(".ui-dialog-buttonpane").find("button").eq(3).show();
+                                                    $(this).siblings(".ui-dialog-buttonpane").find("button").eq(7).show();
+                                            } 
                                         }
+                                        
                                         
                             }'),
                 array('id' => 'save','text'=>'SAVE','click'=> 'js:function(){
-                                        var results = validateinputs(1,4);
-                                        if(results == true){
-                                                $("#edit-item-form").submit();
-                                                $(this).dialog("close");
+                                        var stats = $("#hdnStatus").val();
+                                        var rewardid = $("#hdnRewardID-edit").val();
+
+                                        if(stats == "Active"){
+                                            var results = validateinputs(1,5,rewardid);
+                                            if(results == true){
+                                                    $("#edit-item-form").submit();
+                                                    $(this).dialog("close");
+                                            } else {
+                                                    $("#message1").html(results);
+                                                    $("#messagedialog3").dialog("open");
+                                                    $(this).dialog("close");
+                                            }
+                                        } else {
+                                            var results = validateinputs(1,4,rewardid);
+                                            if(results == true){
+                                                    $("#edit-item-form").submit();
+                                                    $(this).dialog("close");
+                                            }
                                         }
+                                        
                             }')
             ),
         ),
@@ -1426,6 +1634,7 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
 <?php echo CHtml::hiddenField('hdnFunctionName' , 'EditReward', array('id' => 'hdnFunctionName')); ?>
 <?php echo CHtml::hiddenField('hdnRewardItemID-edit' , '', array('id'=>'hdnRewardItemID-edit')); ?>
 <?php echo CHtml::hiddenField('hdnRewardID-edit' , '', array('id'=>'hdnRewardID-edit')); ?>
+<?php echo CHtml::hiddenField('hdnStatus' , '', array('id'=>'hdnStatus')); ?>
 <table id="primarydetails" style="display: none;">
     <tr>
         <td colspan="2">
@@ -1439,7 +1648,12 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
     <tr id="partner-row">
         <td style="width: 250px;">e-Games Partner &nbsp<span style="vertical-align: top; color: red; font-weight: bold;">*</span></td>
         <td>
-            <?php echo $form->dropDownList($model, 'editpartner', array("" => "Select Partner"), array('id'=>'editpartner', 'style' => 'width: 313px; padding: 2px;')) ?>
+            <div id="partnerdiv">
+                <?php echo $form->dropDownList($model, 'editpartner', array("" => "Select Partner"), array('id'=>'editpartner', 'style' => 'width: 313px; padding: 2px;')) ?>
+            </div>
+            <div id="readonlypartnerdiv" style="display: none;">
+                <?php echo $form->dropDownList($model, 'editpartnerreadonly', array("" => "Select Partner"), array('id'=>'editpartnerreadonly', 'style' => 'width: 313px; padding: 2px;', 'disabled' => 'disabled')) ?>
+            </div>
         </td>
     </tr>
     <tr>
@@ -1451,7 +1665,12 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
     <tr id="category-row">
         <td>Reward Category &nbsp<span style="vertical-align: top; color: red; font-weight: bold;">*</span></td>
         <td>
-            <?php echo $form->dropDownList($model, 'editcategory', array("" => "Select Category"), array('id'=>'editcategory', 'style' => 'width: 313px; padding: 2px;')) ?>
+            <div id="categorydiv">
+                <?php echo $form->dropDownList($model, 'editcategory', array("" => "Select Category"), array('id'=>'editcategory', 'style' => 'width: 313px; padding: 2px;')) ?>
+            </div>
+            <div id="readonlycategorydiv" style="display: none;">
+                <?php echo $form->dropDownList($model, 'editcategoryreadonly', array("" => "Select Category"), array('id'=>'editcategoryreadonly', 'style' => 'width: 313px; padding: 2px;', 'disabled' => 'disabled')) ?>
+            </div>
         </td>
     </tr>
     <tr>
@@ -1463,7 +1682,12 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
     <tr>
         <td>Member Eligibility &nbsp<span style="vertical-align: top; color: red; font-weight: bold;">*</span></td>
         <td>
-            <?php echo $form->dropDownList($model, 'editeligibility', array("" => "Select Eligibility", "2" => "Regular", "3" => "VIP"), array('id'=>'editeligibility', 'style' => 'width: 313px; padding: 2px;')) ?>
+            <div id="eligibilitydiv">
+                <?php echo $form->dropDownList($model, 'editeligibility', array("" => "Select Eligibility", "2" => "Regular", "3" => "VIP"), array('id'=>'editeligibility', 'style' => 'width: 313px; padding: 2px;')) ?>
+            </div>
+            <div id="readonlyeligibilitydiv" style="display: none;">
+                <?php echo $form->dropDownList($model, 'editeligibilityreadonly', array("" => "Select Eligibility", "2" => "Regular", "3" => "VIP"), array('id'=>'editeligibilityreadonly', 'style' => 'width: 313px; padding: 2px;', 'disabled' => 'disabled')) ?>
+            </div>
         </td>
     </tr>
     <tr>
@@ -1481,6 +1705,7 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
     <tr>
         <td>Promo Period &nbsp<span style="vertical-align: top; color: red; font-weight: bold;">*</span></td>
         <td>
+            <div id="promoperioddiv">
             <?php 
                     $yeartodate = (string)date('Y'); 
                     $maxyear = Yii::app()->params['maximum_datepicker_year']; 
@@ -1513,7 +1738,7 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
                                                                                                                                 "10" => "10", "11" => "11", "12" => "12", "13" => "13", "14" => "14",
                                                                                                                                 "15" => "15", "16" => "16", "17" => "17", "18" => "18", "19" => "19",
                                                                                                                                 "20" => "20", "21" => "21", "22" => "22", "23" => "23"),
-                                                                                                                                array('style'=>'padding:3px;', 'onChange' => 'javascript: $("#start_date").val(dateText)'));?>
+                                                                                                                                array('style'=>'padding:3px;'));?>
             <?php echo CHtml::dropdownlist('from_min', '00', array("00" => "00", "01" => "01", "02" => "02", "03" => "03", "04" => "04",
                                                                                                                                 "05" => "05", "06" => "06", "07" => "07", "08" => "08", "09" => "09",
                                                                                                                                 "10" => "10", "11" => "11", "12" => "12", "13" => "13", "14" => "14",
@@ -1553,7 +1778,7 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
                      'yearRange' => $yearrange,
                 ),
                 'htmlOptions'=>array(
-                    'style'=>'disabled: true; height:20px; width: 100px; margin-top: 5px; margin-left: 18px;'
+                    'style'=>'height:20px; width: 100px; margin-top: 5px; margin-left: 18px;'
                 ),
             ));
             ?>
@@ -1586,6 +1811,73 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
                                                                                                                                 "45" => "45", "46" => "46", "47" => "47", "48" => "48", "49" => "49",
                                                                                                                                 "50" => "50", "51" => "51", "52" => "52", "53" => "53", "54" => "54",
                                                                                                                                 "55" => "55", "56" => "56", "57" => "57", "58" => "58", "59" => "59"), array('style'=>'padding:3px;'));?>
+        </div>
+        <div id="readonlypromoperioddiv" style="display: none;">
+            <b>From :</b>
+            <?php echo CHtml::textField('fromdate' , '', array('id' => 'fromdate', 'style' => 'height:20px; width: 100px;', 'disabled' => 'disabled')); ?>
+            <?php echo CHtml::dropdownlist('fromhour', '00', array("00" => "00", "01" => "01", "02" => "02", "03" => "03", "04" => "04",
+                                                                                                                                "05" => "05", "06" => "06", "07" => "07", "08" => "08", "09" => "09",
+                                                                                                                                "10" => "10", "11" => "11", "12" => "12", "13" => "13", "14" => "14",
+                                                                                                                                "15" => "15", "16" => "16", "17" => "17", "18" => "18", "19" => "19",
+                                                                                                                                "20" => "20", "21" => "21", "22" => "22", "23" => "23"),
+                                                                                                                                array('style'=>'padding:3px;', 'disabled' => 'disabled'));?>
+            <?php echo CHtml::dropdownlist('frommin', '00', array("00" => "00", "01" => "01", "02" => "02", "03" => "03", "04" => "04",
+                                                                                                                                "05" => "05", "06" => "06", "07" => "07", "08" => "08", "09" => "09",
+                                                                                                                                "10" => "10", "11" => "11", "12" => "12", "13" => "13", "14" => "14",
+                                                                                                                                "15" => "15", "16" => "16", "17" => "17", "18" => "18", "19" => "19",
+                                                                                                                                "20" => "20", "21" => "21", "22" => "22", "23" => "23", "24" => "24",
+                                                                                                                                "25" => "25", "26" => "26", "27" => "27", "28" => "28", "29" => "29",
+                                                                                                                                "30" => "30", "31" => "31", "32" => "32", "33" => "33", "34" => "34",
+                                                                                                                                "35" => "35", "36" => "36", "37" => "37", "38" => "38", "39" => "39",
+                                                                                                                                "40" => "40", "41" => "41", "42" => "42", "43" => "43", "44" => "44",
+                                                                                                                                "45" => "45", "46" => "46", "47" => "47", "48" => "48", "49" => "49",
+                                                                                                                                "50" => "50", "51" => "51", "52" => "52", "53" => "53", "54" => "54",
+                                                                                                                                "55" => "55", "56" => "56", "57" => "57", "58" => "58", "59" => "59"), array('style'=>'padding:3px;', 'disabled' => 'disabled'));?>
+            <?php echo CHtml::dropdownlist('fromsec', '00', array("00" => "00", "01" => "01", "02" => "02", "03" => "03", "04" => "04",
+                                                                                                                                "05" => "05", "06" => "06", "07" => "07", "08" => "08", "09" => "09",
+                                                                                                                                "10" => "10", "11" => "11", "12" => "12", "13" => "13", "14" => "14",
+                                                                                                                                "15" => "15", "16" => "16", "17" => "17", "18" => "18", "19" => "19",
+                                                                                                                                "20" => "20", "21" => "21", "22" => "22", "23" => "23", "24" => "24",
+                                                                                                                                "25" => "25", "26" => "26", "27" => "27", "28" => "28", "29" => "29",
+                                                                                                                                "30" => "30", "31" => "31", "32" => "32", "33" => "33", "34" => "34",
+                                                                                                                                "35" => "35", "36" => "36", "37" => "37", "38" => "38", "39" => "39",
+                                                                                                                                "40" => "40", "41" => "41", "42" => "42", "43" => "43", "44" => "44",
+                                                                                                                                "45" => "45", "46" => "46", "47" => "47", "48" => "48", "49" => "49",
+                                                                                                                                "50" => "50", "51" => "51", "52" => "52", "53" => "53", "54" => "54",
+                                                                                                                                "55" => "55", "56" => "56", "57" => "57", "58" => "58", "59" => "59"), array('style'=>'padding:3px;', 'disabled' => 'disabled'));?>
+            &nbsp;<br/>
+            <b>To :</b>
+            <?php echo CHtml::textField('todate' , '', array('id' => 'todate', 'style' => 'height:20px; width: 100px; margin-top: 5px; margin-left: 18px;', 'disabled' => 'disabled')); ?>
+            <?php echo CHtml::dropdownlist('tohour', '00', array("00" => "00", "01" => "01", "02" => "02", "03" => "03", "04" => "04",
+                                                                                                                                "05" => "05", "06" => "06", "07" => "07", "08" => "08", "09" => "09",
+                                                                                                                                "10" => "10", "11" => "11", "12" => "12", "13" => "13", "14" => "14",
+                                                                                                                                "15" => "15", "16" => "16", "17" => "17", "18" => "18", "19" => "19",
+                                                                                                                                "20" => "20", "21" => "21", "22" => "22", "23" => "23"), array('style'=>'padding:3px;', 'disabled' => 'disabled'));?>
+            <?php echo CHtml::dropdownlist('tomin', '00', array("00" => "00", "01" => "01", "02" => "02", "03" => "03", "04" => "04",
+                                                                                                                                "05" => "05", "06" => "06", "07" => "07", "08" => "08", "09" => "09",
+                                                                                                                                "10" => "10", "11" => "11", "12" => "12", "13" => "13", "14" => "14",
+                                                                                                                                "15" => "15", "16" => "16", "17" => "17", "18" => "18", "19" => "19",
+                                                                                                                                "20" => "20", "21" => "21", "22" => "22", "23" => "23", "24" => "24",
+                                                                                                                                "25" => "25", "26" => "26", "27" => "27", "28" => "28", "29" => "29",
+                                                                                                                                "30" => "30", "31" => "31", "32" => "32", "33" => "33", "34" => "34",
+                                                                                                                                "35" => "35", "36" => "36", "37" => "37", "38" => "38", "39" => "39",
+                                                                                                                                "40" => "40", "41" => "41", "42" => "42", "43" => "43", "44" => "44",
+                                                                                                                                "45" => "45", "46" => "46", "47" => "47", "48" => "48", "49" => "49",
+                                                                                                                                "50" => "50", "51" => "51", "52" => "52", "53" => "53", "54" => "54",
+                                                                                                                                "55" => "55", "56" => "56", "57" => "57", "58" => "58", "59" => "59"), array('style'=>'padding:3px;', 'disabled' => 'disabled'));?>
+            <?php echo CHtml::dropdownlist('tosec', '00', array("00" => "00", "01" => "01", "02" => "02", "03" => "03", "04" => "04",
+                                                                                                                                "05" => "05", "06" => "06", "07" => "07", "08" => "08", "09" => "09",
+                                                                                                                                "10" => "10", "11" => "11", "12" => "12", "13" => "13", "14" => "14",
+                                                                                                                                "15" => "15", "16" => "16", "17" => "17", "18" => "18", "19" => "19",
+                                                                                                                                "20" => "20", "21" => "21", "22" => "22", "23" => "23", "24" => "24",
+                                                                                                                                "25" => "25", "26" => "26", "27" => "27", "28" => "28", "29" => "29",
+                                                                                                                                "30" => "30", "31" => "31", "32" => "32", "33" => "33", "34" => "34",
+                                                                                                                                "35" => "35", "36" => "36", "37" => "37", "38" => "38", "39" => "39",
+                                                                                                                                "40" => "40", "41" => "41", "42" => "42", "43" => "43", "44" => "44",
+                                                                                                                                "45" => "45", "46" => "46", "47" => "47", "48" => "48", "49" => "49",
+                                                                                                                                "50" => "50", "51" => "51", "52" => "52", "53" => "53", "54" => "54",
+                                                                                                                                "55" => "55", "56" => "56", "57" => "57", "58" => "58", "59" => "59"), array('style'=>'padding:3px;', 'disabled' => 'disabled'));?>
+        </div>
         </td>
     </tr>
 </table>
@@ -1595,27 +1887,28 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
         <td colspan="3">
             <div id="edit-breadcrumbs">
                 <span id="title-breadcrumbs-row">Edit Reward Details</span>
-                <img id="edit-breadcrumbs-image" src="../../images/aboutreward.png">
+                <img id="edit-breadcrumbs-image" src="../../images/primarydetails.png">
             </div>
         </td>
     </tr>
     <tr><td colspan="3"></td></tr>
     <tr>
         <td colspan="3">
+            <span style="font-size: 12px; height: 10px; width: 100%;"><b>Allowed Image Size :</b> <i> 300 KB and Below.</i></span><br/>
             <div id="balancer"></div>
             <iframe id="thblimitedframe"
                     src="<?php echo Yii::app()->createUrl('manageRewards/thumbnailLimited'); ?>" 
-                    style="height: 235px; width: 160px; overflow: hidden; border: none; background: #FFFFFF;" >
+                    style="height: 248px; width: 160px; overflow: hidden; border: none; background: #FFFFFF;" >
             </iframe>
             <?php echo CHtml::hiddenField('thblimitedphoto', '', array('id' => 'thblimitedphoto')); ?>
             <iframe id="thboutofstockframe"
                     src="<?php echo Yii::app()->createUrl('manageRewards/thumbnailOutofstock'); ?>" 
-                    style="height: 235px; width: 160px; overflow: hidden; border: none; background: #FFFFFF;">
+                    style="height: 248px; width: 160px; overflow: hidden; border: none; background: #FFFFFF;">
             </iframe>
             <?php echo CHtml::hiddenField('thboutofstockphoto', '',array('id' => 'thboutofstockphoto')); ?>
             <iframe id="ecouponframe"
                     src="<?php echo Yii::app()->createUrl('manageRewards/eCoupon'); ?>" 
-                    style="height: 235px; width: 160px; overflow: hidden; border: none; background: #FFFFFF;">
+                    style="height: 248px; width: 160px; overflow: hidden; border: none; background: #FFFFFF;">
             </iframe>
             <?php echo CHtml::hiddenField('ecouponphoto', '',array('id' => 'ecouponphoto')); ?>
         </td>
@@ -1625,17 +1918,17 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
             <div id="balancer"></div>
             <iframe id="lmlimitedframe"
                     src="<?php echo Yii::app()->createUrl('manageRewards/learnMoreLimited'); ?>" 
-                    style="height: 235px; width: 160px; overflow: hidden; border: none; background: #FFFFFF;">
+                    style="height: 248px; width: 160px; overflow: hidden; border: none; background: #FFFFFF;">
             </iframe>
             <?php echo CHtml::hiddenField('lmlimitedphoto', '', array('id' => 'lmlimitedphoto')); ?>
             <iframe id="lmoutofstockframe"
                     src="<?php echo Yii::app()->createUrl('manageRewards/learnMoreOutofstock'); ?>" 
-                    style="height: 235px; width: 160px; overflow: hidden; border: none; background: #FFFFFF;">
+                    style="height: 248px; width: 160px; overflow: hidden; border: none; background: #FFFFFF;">
             </iframe>
             <?php echo CHtml::hiddenField('lmoutofstockphoto', '', array('id' => 'lmoutofstockphoto')); ?>
             <iframe id="websliderframe"
                     src="<?php echo Yii::app()->createUrl('manageRewards/websiteSlider'); ?>" 
-                    style="height: 235px; width: 160px; overflow: hidden; border: none; background: #FFFFFF;">
+                    style="height: 248px; width: 160px; overflow: hidden; border: none; background: #FFFFFF;">
             </iframe>
             <?php echo CHtml::hiddenField('websliderphoto', '',array('id' => 'websliderphoto')); ?>
         </td>
@@ -1654,7 +1947,8 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
     <tr>
         <td style="vertical-align: top; width: 200px;">About the Reward</td>
         <td>
-            <?php echo $form->textArea($model, 'editabout', array('id' => 'editabout','style' => 'width:100%; height: 200px;')); ?>
+            <div id="editaboutdiv"><?php echo $form->textArea($model, 'editabout', array('id' => 'editabout','style' => 'width:100%; height: 400px;')); ?></div>
+            <div id="editaboutrodiv" style="display: none;"><?php echo CHtml::textArea('editaboutreadonly','', array('id' => 'editaboutreadonly','style' => 'width:100%; height: 400px;')); ?></div>
         </td>
     </tr>
 </table>
@@ -1671,7 +1965,8 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
     <tr>
         <td style="vertical-align: top; width: 200px;">Terms of the Reward</td>
         <td>
-             <?php echo $form->textArea($model, 'editterms', array('id' => 'editterms','style' => 'width:100%; height: 200px;')); ?>
+            <div id="edittermsdiv"><?php echo $form->textArea($model, 'editterms', array('id' => 'editterms','style' => 'width:100%; height: 400px;')); ?></div>
+            <div id="edittermsrodiv"><?php echo CHtml::textArea('edittermsreadonly','', array('id' => 'edittermsreadonly','style' => 'width:100%; height: 400px;')); ?></div>
         </td>
     </tr>
 </table>
@@ -1680,6 +1975,8 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
 <?php
 /** ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 ?>
+
+
 <?php
 /** -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
  * @Description: Form for Adding of New Reward Item/Coupon Details
@@ -1724,7 +2021,8 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
             'autoOpen'=>false,
             'modal'=>true,
             'resizable'=>false,
-            'draggable'=>true,
+            'draggable'=>false,
+            'position'=>array("middle",30),
             'width'=>650,
             'show'=>'fade',
             'hide'=>'fade',
@@ -2136,8 +2434,8 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
       <tr>
         <td colspan="3">
             <div id="add-breadcrumbs">
-                <span id="title-breadcrumbs-row">Add New Reward Item</span>
-                <img id="add-breadcrumbs-image" src="../../images/aboutreward.png">
+                <span id="title-breadcrumbs-row">Add Reward Details</span>
+                <img id="add-breadcrumbs-image" src="../../images/primarydetails.png">
             </div>
         </td>
     </tr>
@@ -2187,7 +2485,7 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
     <tr>
         <td colspan="3">
             <div id="add-breadcrumbs">
-                <span id="title-breadcrumbs-row">Add New Reward Item</span>
+                <span id="title-breadcrumbs-row">Add Reward Details</span>
                 <img id="add-breadcrumbs-image" src="../../images/aboutreward.png">
             </div>
         </td>
@@ -2196,7 +2494,7 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
     <tr>
         <td style="vertical-align: top; width: 200px;">About the Reward</td>
         <td>
-            <?php echo $form->textArea($model, 'addabout', array('id' => 'addabout','style' => 'width:100%; height: 200px;')); ?>
+            <?php echo $form->textArea($model, 'addabout', array('id' => 'addabout','style' => 'width:100%; height: 400px;')); ?>
         </td>
     </tr>
 </table>
@@ -2204,7 +2502,7 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
     <tr>
         <td colspan="3">
             <div id="add-breadcrumbs">
-                <span id="title-breadcrumbs-row">Add New Reward Item</span>
+                <span id="title-breadcrumbs-row">Add Reward Details</span>
                 <img id="add-breadcrumbs-image" src="../../images/termsreward.png">
             </div>
         </td>
@@ -2213,12 +2511,23 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
     <tr>
         <td style="vertical-align: top; width: 200px;">Terms of the Reward</td>
         <td>
-             <?php echo $form->textArea($model, 'addterms', array('id' => 'addterms','style' => 'width:100%; height: 200px;')); ?>
+             <?php echo $form->textArea($model, 'addterms', array('id' => 'addterms','style' => 'width:100%; height: 400px;')); ?>
         </td>
     </tr>
 </table>
 <?php $this->endWidget(); ?>
 <?php $this->endWidget('zii.widgets.jui.CJuiDialog');?>
+<?php
+/** ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+?>
+
+<?php
+/** ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+/**
+ * @Description: For loading Initial Data Grid
+ * @Author: aqdepliyan
+ */
+?>
 <?php
     $this->widget('application.components.widgets.JqGridWidget', array('tableID' => 'rewardslist', 'pagerID' => 'rewardslistpager',
         'jqGridParam' => array(
@@ -2242,13 +2551,16 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
                                             if(column!= 'Action'){
                                                 var grid = jQuery('#rewardslist');
                                                 var sel_id = grid.jqGrid('getGridParam', 'selrow');
-                                                var status = grid.jqGrid('getCell', sel_id, 'Status');
+                                                //var status = grid.jqGrid('getCell', sel_id, 'Status');
 
-                                                if(status != 'Active'){
-                                                    RewardItemID = rowid;
-                                                    getRewardDetails(RewardItemID);
-                                                }
+                                                RewardItemID = rowid;
+                                                var showonly = 'showedit';
+                                                $('#hdnRewardItemID-edit').val(RewardItemID);
+                                                getRewardDetails(RewardItemID, showonly);
                                             }
                                         }",
     )));
+?>
+<?php
+/** ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 ?>

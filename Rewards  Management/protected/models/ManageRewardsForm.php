@@ -1,10 +1,10 @@
 <?php
 
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * @Description: Form Model for Manage Rewards Module.
+ * @Author: aqdepliyan
+ * @DateCreated: 2013-09-20
  */
-
 Class ManageRewardsForm extends CFormModel 
 {
     
@@ -13,10 +13,13 @@ Class ManageRewardsForm extends CFormModel
     
     //Variable for Reward Item Editing Form
     public $editpartner;
+    public $editpartnerreadonly;
     public $editrewarditem;
     public $editcategory;
+    public $editcategoryreadonly;
     public $editpoints;
     public $editeligibility;
+    public $editeligibilityreadonly;
     public $editstatus;
     public $editavailableitemcount;
     public $editabout;

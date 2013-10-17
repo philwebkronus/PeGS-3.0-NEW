@@ -176,7 +176,7 @@ class RewardItemsModel extends CFormModel
         $count = count($result);
         
         for($ctr=0; $ctr < $count;$ctr++) {
-            if((int)$result[$ctr]['AvailableItemCount'] <= 0){
+            if((int)$result[$ctr]['AvailableItemCount'] <= 0 && $result[$ctr]["Status"] != "Out-Of-Stock"){
                 $pdo = $connection->beginTransaction();
                 try {
                     $updatequery = "UPDATE rewarditems SET Status = 3 WHERE RewardItemID=".$result[$ctr]['RewardItemID'];
@@ -185,21 +185,22 @@ class RewardItemsModel extends CFormModel
                     if($updateresult > 0){
                         try {
                             $pdo->commit();
+                            $result[$ctr]["Status"] = "Out-Of-Stock";
                         } catch (CDbException $e) {
                             $pdo->rollback();
                             return array('TransMsg'=>'Error: '. $e->getMessage(),'TransCode'=>2);
                         }
                     } else {
-                        return array('TransMsg'=>'No record was updated.', 'TransCode'=>1);
+                        return array('TransMsg'=>'Failed to update the status of rewarditems with zero item count..', 'TransCode'=>1);
                     }
                 } catch (CDbException $e) {
                     $pdo->rollback();
                     return array('TransMsg'=>'Error: '. $e->getMessage(), 'TransCode'=>2);
                 }
-                if($filterby != 3){
+                if($filterby != 3 || $filterby != 0){
                     unset($result[$ctr]);
                 }
-            } 
+            }
         }
         
         return $result;
@@ -324,6 +325,7 @@ class RewardItemsModel extends CFormModel
         
         return $result;
     }
+    
     
     /**
      * @Description: Update Reward Item Details
@@ -464,6 +466,37 @@ class RewardItemsModel extends CFormModel
     }
     
     
+    /**
+     * @Description: Function for inserting new reward item on rewarditems table.
+     * @Author: aqdepliyan
+     * @DateCreated: 2013-10-14
+     * @param int $partneritemid
+     * @param int $rewardid
+     * @param string $itemname
+     * @param int $points
+     * @param int $pclassid
+     * @param int $status
+     * @param string $startdate
+     * @param string $enddate
+     * @param int $partnerid
+     * @param int $categoryid
+     * @param string $subtext
+     * @param string $about
+     * @param string $terms
+     * @param int $itemcount
+     * @param string $thblimitedphoto
+     * @param string $thboutofstockphoto
+     * @param string $ecouponphoto
+     * @param string $lmlimitedphoto
+     * @param string $lmoutofstockphoto
+     * @param string $websliderphoto
+     * @param string $promocode
+     * @param string $promoname
+     * @param string $drawdate
+     * @param string $serialcodestart
+     * @param string $serialcodeend
+     * @return array
+     */
     public function InsertRewardItem($partneritemid, $rewardid, $itemname, $points, $pclassid, $status, $startdate, $enddate, $partnerid, $categoryid,
                                                                             $subtext, $about,  $terms,  $itemcount, $thblimitedphoto, $thboutofstockphoto, $ecouponphoto,
                                                                             $lmlimitedphoto, $lmoutofstockphoto, $websliderphoto, $promocode, $promoname, $drawdate, 
@@ -515,6 +548,13 @@ class RewardItemsModel extends CFormModel
         }
     }
     
+    /**
+     * @Description: Use for validating the reward item to be inserted.
+     * @Author: aqdepliyan
+     * @DateCreated: 2013-10-14
+     * @param string $itemname
+     * @return array
+     */
     public function ValidateItem($itemname){
 
        $connection = Yii::app()->db;
@@ -526,6 +566,13 @@ class RewardItemsModel extends CFormModel
         return $result;
     }
     
+    /**
+     * @Description: Use to fetch the last PartnerItemID under a specific partner id.
+     * @Author: aqdepliyan
+     * @DateCreated: 2013-10-15
+     * @param int $partnerid
+     * @return array
+     */
     public function GetPartnerItemID($partnerid){
 
        $connection = Yii::app()->db;
@@ -537,6 +584,13 @@ class RewardItemsModel extends CFormModel
         return $result;
     }
     
+    /**
+     * @Description: Use to fetch the SerialCodeEnd of a specific rewarditem.
+     * @Author: aqdepliyan
+     * @DateCreated: 2013-10-15
+     * @param int $rewarditemid
+     * @return array
+     */
     public function GetSerialCodeEnd($rewarditemid){
 
        $connection = Yii::app()->db;

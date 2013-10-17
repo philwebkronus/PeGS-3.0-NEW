@@ -15,6 +15,7 @@ class ManagePartnersController extends Controller {
      */
     public function actionAddPartner() {
         $model = new ManagePartnersForm;
+        $refpartner = new RefPartnerModel();
         $validation = new Validations();
         if (isset($_POST['ManagePartnersForm']))
         {
@@ -35,68 +36,95 @@ class ManagePartnersController extends Controller {
             $details['contactMobile']   = $this->sanitize($model->contactMobile);
             $details['status']          = $this->sanitize($model->partnershipStatus);
             $details['noOfofferings']   = $this->sanitize($model->numberOfRewardOfferings);
-            //Check if all fields are filled up
-            if ((($details['partnerID'] || $details['partnername'] || $details['address'] ||
-                $details['pnumber'] || $details['faxnumber'] || $details['email'] || 
-                $details['website'] || $details['contactPerson'] || $details['username']
-                || $details['contactPosition'] || 
-                $details['contactEmail'] || $details['contactPNumber'] 
-                || $details['contactMobile'] || $details['noOfofferings']) == "") 
-                || ($details['status'] == -1))
-            {
-                
-                $this->dialogtitle = "ERROR MESSAGE";
-                $this->dialogmsg = "Please fill up all fields!";
-                $this->showdialog = true;
-            }
-            else if (!$validation->validateAlphaNumeric($details['partnername']) || 
-                     !$validation->validateAddress($details['address']) ||
-                     !$validation->validateAlphaNumeric($details['faxnumber']) ||
-                     !$validation->validateAlphaNumeric($details['username']) ||
-                     !$validation->validateAlphaNumeric($details['contactPosition']) ||
-                     !$validation->validateAlphaNumeric($details['contactMobile']) ||
-                     !$validation->validateAlphaNumeric($details['status']) ||
-                     !$validation->validateAlphaNumeric($details['noOfofferings']))
+            
+            //Check if Partner was already exist
+            if ($refpartner->checkPartnerIfExist($details['partnername']) > 0)
             {
                 $this->dialogtitle = "ERROR MESSAGE";
-                $this->dialogmsg = "Special characters are not allowed in some fields that \n
-                                    accept only letters or numbers.";
+                $this->dialogmsg = "Partner already Exist.";
                 $this->showdialog = true;
             }
-            else if ($details['noOfofferings'] <= 0)
-            {
-                $this->dialogtitle = "ERROR MESSAGE";
-                $this->dialogmsg = "Number of Reward Offerings must be greater than zero.";
-                $this->showdialog = true;
-            }
+            //Validate inputs
             else
             {
-                $result = $model->addPartner($details); 
-                
-                $this->dialogmsg = $result['TransMsg'];
-                //SUCCESS or ERROR Message
-                if ($result['TransCode'] != 0)
+                //Check if all fields are filled up
+                if ((($details['partnerID'] || $details['partnername'] || $details['address'] ||
+                    $details['pnumber'] || $details['faxnumber'] || $details['email'] || 
+                    $details['website'] || $details['contactPerson'] || $details['username']
+                    || $details['contactPosition'] || 
+                    $details['contactEmail'] || $details['contactPNumber'] 
+                    || $details['contactMobile'] || $details['noOfofferings']) == "") 
+                    || ($details['status'] == -1))
+                {
+
+                    $this->dialogtitle = "ERROR MESSAGE";
+                    $this->dialogmsg = "Please fill up all fields!";
+                    $this->showdialog = true;
+                }
+                else if (!$validation->validateAlphaNumeric($details['partnername']) || 
+                         !$validation->validateAddress($details['address']) ||
+                         !$validation->validateAlphaNumeric($details['faxnumber']) ||
+                         !$validation->validateAlphaNumeric($details['username']) ||
+                         !$validation->validateAlphaNumeric($details['contactPosition']) ||
+                         !$validation->validateAlphaNumeric($details['contactMobile']) ||
+                         !$validation->validateAlphaNumeric($details['status']) ||
+                         !$validation->validateAlphaNumeric($details['noOfofferings']))
                 {
                     $this->dialogtitle = "ERROR MESSAGE";
+                    $this->dialogmsg = "Special characters are not allowed in some fields that \n
+                                        accept only letters or numbers.";
+                    $this->showdialog = true;
+                }
+                else if ($validation->validateWebsite($details['website']) == false)
+                {
+                    $this->dialogtitle = "ERROR MESSAGE";
+                    $this->dialogmsg = "Invalid Website URL";
+                    $this->showdialog = true;
+                }
+                else if (($validation->validateEmail($details['email']) == false) ||
+                $validation->validateEmail($details['contactEmail']) == false)
+                {
+                   $this->dialogtitle = "ERROR MESSAGE";
+                   $this->dialogmsg = "Invalid Email Address on <u>Company</u> or <u>Contact Person</u>
+                                       Email Address";
+                   $this->showdialog = true;
+                }
+                
+                if ($details['noOfofferings'] <= 0)
+                {
+                    $this->dialogtitle = "ERROR MESSAGE";
+                    $this->dialogmsg = "Number of Reward Offerings must be greater than zero.";
+                    $this->showdialog = true;
                 }
                 else
                 {
-                    $this->dialogtitle = "SUCCESS MESSAGE";
-                    //Test if php can send email in client side
-                    $to = "sample@someone.com";
-                    $subject = "Test";
-                    $message = "Sample Message";
-                    if(mail($to,$subject,$message) == false)
+                    $result = $model->addPartner($details); 
+
+                    $this->dialogmsg = $result['TransMsg'];
+                    //SUCCESS or ERROR Message
+                    if ($result['TransCode'] != 0)
                     {
                         $this->dialogtitle = "ERROR MESSAGE";
-                        $this->dialogmsg = "Email message did not send";
                     }
                     else
                     {
-                        $model->mailAddedPartner($result['Email'], $result['ContactPerson'], $result['Password'], $result['Username']);
+                        $this->dialogtitle = "SUCCESS MESSAGE";
+                        //Test if php can send email in client side
+                        $to = "sample@someone.com";
+                        $subject = "Test";
+                        $message = "Sample Message";
+                        if(mail($to,$subject,$message) == false)
+                        {
+                            $this->dialogtitle = "ERROR MESSAGE";
+                            $this->dialogmsg = "Email message did not send";
+                        }
+                        else
+                        {
+                            $model->mailAddedPartner($result['Email'], $result['ContactPerson'], $result['Password'], $result['Username']);
+                        }
                     }
+                    $this->showdialog = true;
                 }
-                $this->showdialog = true;
             }
             $this->render('index', array('model' => $model));
         }
@@ -216,6 +244,7 @@ class ManagePartnersController extends Controller {
     public function actionUpdatedetails()
     {
         $model = new ManagePartnersForm();
+        $refpartner = new RefPartnerModel();
         $validation = new Validations();
         if (isset($_POST['ManagePartnersForm']))
         {
@@ -235,70 +264,85 @@ class ManagePartnersController extends Controller {
             $details['contactMobile']   = $this->sanitize($model->contactMobile);
             $details['status']          = $this->sanitize($model->partnershipStatus);
             $details['noOfofferings']   = $this->sanitize($model->numberOfRewardOfferings);
+            
             //Error Handling (Validations)
-            if ((($details['partnerID'] || $details['partnername'] || $details['address'] ||
+            //Check if Partner was already exist
+            $isExist =  $refpartner->checkPartnerIfExist($details['partnername'], $details['partnerID']);
+            if ((int)$isExist > 0)
+            {
+                $this->dialogtitle = "ERROR MESSAGE";
+                $this->dialogmsg = "Partner already Exist.";
+                $this->showdialog = true;
+            }
+            else 
+            {
+                if ((($details['partnerID'] || $details['partnername'] || $details['address'] ||
                 $details['pnumber'] || $details['faxnumber'] || $details['email'] || 
                 $details['website'] || $details['contactPerson'] || $details['contactPosition'] || 
                 $details['contactEmail'] || $details['contactPNumber'] 
                 || $details['contactMobile']) == "" || $details['noOfofferings'] == "") || ($details['status'] == -1))
-            {
-                $this->dialogtitle = "ERROR MESSAGE";
-                $this->dialogmsg = "Please fill up all fields!";
-                $this->showdialog = true;
-            }
-            else if (($validation->validateEmail($details['email']) == false) ||
-                      $validation->validateEmail($details['contactEmail']) == false)
-            {
-                $this->dialogtitle = "ERROR MESSAGE";
-                $this->dialogmsg = "Invalid Email Address on <u>Company</u> or <u>Contact Person</u>
-                                    Email Address";
-                $this->showdialog = true;
-            }
-            else if ($validation->validateWebsite($details['website']) == false)
-            {
-                $this->dialogtitle = "ERROR MESSAGE";
-                $this->dialogmsg = "Invalid Website URL";
-                $this->showdialog = true;
-            }
-            else if (!$validation->validateAlphaNumeric($details['partnerID']) || 
-                     !$validation->validateAlphaNumeric($details['partnername']) ||
-                     !$validation->validateAddress($details['address']) ||
-                     !$validation->validateAlphaNumeric($details['faxnumber']) ||
-                     !$validation->validateAlphaNumeric($details['contactPerson']) ||
-                     !$validation->validateAlphaNumeric($details['contactPosition']) ||
-                     !$validation->validateAlphaNumeric($details['contactMobile']) ||
-                     !$validation->validateAlphaNumeric($details['status']) ||
-                     !$validation->validateAlphaNumeric($details['noOfofferings']))
-            {
-                $this->dialogtitle = "ERROR MESSAGE";
-                $this->dialogmsg = "Special characters are not allowed in some fields that \n
-                                    accept only letters or numbers.";
-                $this->showdialog = true;
-            }
-            else if ($details['noOfofferings'] <= 0)
-            {
-                $this->dialogtitle = "ERROR MESSAGE";
-                $this->dialogmsg = "Number of Reward Offerings must be greater than zero.";
-                $this->showdialog = true;
-            }
-            else
-            {
-                $return = $model->updatePartnerDetails($details);
-
-                $this->dialogmsg = $return['TransMsg'];
-                //SUCCESS or ERROR Message
-                if ($return['TransCode'] != 0)
                 {
                     $this->dialogtitle = "ERROR MESSAGE";
+                    $this->dialogmsg = "Please fill up all fields!";
+                    $this->showdialog = true;
+
+                }
+                
+                if (!$validation->validateAlphaNumeric($details['partnerID']) || 
+                        !$validation->validateAlphaNumeric($details['partnername']) ||
+                        !$validation->validateAddress($details['address']) ||
+                        !$validation->validateAlphaNumeric($details['faxnumber']) ||
+                        !$validation->validateAlphaNumeric($details['contactPerson']) ||
+                        !$validation->validateAlphaNumeric($details['contactPosition']) ||
+                        !$validation->validateAlphaNumeric($details['contactMobile']) ||
+                        !$validation->validateAlphaNumeric($details['status']) ||
+                        !$validation->validateAlphaNumeric($details['noOfofferings']))
+                {
+                    $this->dialogtitle = "ERROR MESSAGE";
+                    $this->dialogmsg = "Special characters are not allowed in some fields that \n
+                                        accept only letters or numbers.";
+                    $this->showdialog = true;
+                }
+                else if ($validation->validateWebsite($details['website']) == false)
+                {
+                    $this->dialogtitle = "ERROR MESSAGE";
+                    $this->dialogmsg = "Invalid Website URL";
+                    $this->showdialog = true;
+                }
+                else if (($validation->validateEmail($details['email']) == false) ||
+                $validation->validateEmail($details['contactEmail']) == false)
+                {
+                   $this->dialogtitle = "ERROR MESSAGE";
+                   $this->dialogmsg = "Invalid Email Address on <u>Company</u> or <u>Contact Person</u>
+                                       Email Address";
+                   $this->showdialog = true;
+                }
+
+                if ($details['noOfofferings'] <= 0)
+                {
+                    $this->dialogtitle = "ERROR MESSAGE";
+                    $this->dialogmsg = "Number of Reward Offerings must be greater than zero.";
+                    $this->showdialog = true;
                 }
                 else
                 {
-                    $this->dialogtitle = "SUCCESS MESSAGE";
+                    $return = $model->updatePartnerDetails($details);
+
+                    $this->dialogmsg = $return['TransMsg'];
+                    //SUCCESS or ERROR Message
+                    if ($return['TransCode'] != 0)
+                    {
+                        $this->dialogtitle = "ERROR MESSAGE";
+                    }
+                    else
+                    {
+                        $this->dialogtitle = "SUCCESS MESSAGE";
+                    }
+                    $this->showdialog = true;
+
                 }
-                $this->showdialog = true;
-                
-            }
-            $this->render('index', array('model' => $model));
+           }
+           $this->render('index', array('model' => $model));
         }
         else
         {
@@ -426,7 +470,6 @@ class ManagePartnersController extends Controller {
         }
         echo json_encode($response);
     }
-    
     public function actionAutoLogout() {
         
         $page = $_POST['page'];

@@ -99,5 +99,34 @@ class RefPartnerModel extends CFormModel
         
         return $status;
     }
+    /**
+     * Check if the Partner added was already existing. Checking will base on
+     * the Partner's Name
+     * @author Mark Kenneth Esguerra
+     * @date October 16, 2013
+     */
+    public function checkPartnerIfExist($partnername, $id = NULL)
+    {
+        $connection = Yii::app()->db;
+        if (is_null($id))
+        {
+            $query = "SELECT COUNT(PartnerName) as ctrpartner FROM ref_partners WHERE PartnerName = :partnername";
+            $command = $connection->createCommand($query);
+            $command->bindParam(":partnername", $partnername);
+        }
+        else
+        {
+            $query = "SELECT COUNT(PartnerName) as ctrpartner FROM ref_partners
+                      WHERE PartnerName = :partnername AND PartnerID <> :partnerid";
+            $command = $connection->createCommand($query);
+            $command->bindParam(":partnername", $partnername);
+            $command->bindParam(":partnerid", $id);
+        }
+
+
+        $result = $command->queryRow();
+        
+        return $result['ctrpartner'];
+    }
 }
 ?>
