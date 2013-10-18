@@ -40,19 +40,31 @@ class CouponRedemptionLogsModel extends CFormModel
      * @author Mark Kenneth Esguerra
      * @date Sep-06-13
      */
-    public function inquiry($inquiry, $filter, $particular, $player, $date_from, $date_to)
+    public function inquiry($inquiry, $filter, $particular, $player, $date_from, $date_to, $all = NULL)
     {
         //Determine what select method will going to use depending on the inquiry
         switch($inquiry)
         {
             case self::REWARDS_REDEMPTION:
-                $select = "SELECT COUNT(CouponRedemptionLogID) as ItemRedeemed, a.DateCreated, ";
+                if (is_null($all))
+                    $select = "SELECT COUNT(CouponRedemptionLogID) as ItemRedeemed, a.DateCreated,";
+                else
+                    $select = "SELECT CouponRedemptionLogID, a.DateCreated";
+                    Yii::app()->session['inquiry'] = self::REWARDS_REDEMPTION;
                 break;
             case self::UNIQUE_MEMBER_PARTICIPATION:
-                $select = "SELECT COUNT(DISTINCT(MID)) as MembersRedeemed, a.DateCreated";
+                if (is_null($all))
+                    $select = "SELECT COUNT(DISTINCT(MID)) as MembersRedeemed, a.DateCreated,";
+                else
+                    $select = "SELECT DISTINCT(MID), a.DateCreated";
+                    Yii::app()->session['inquiry'] = self::UNIQUE_MEMBER_PARTICIPATION;
                 break;
             case self::REWARDS_POINTS_USAGE:
-                $select = "SELECT SUM(RedeemedPoints) as TotalRedeemedPoints, a.DateCreated, ";
+                if (is_null($all))
+                    $select = "SELECT SUM(RedeemedPoints) as TotalRedeemedPoints, a.DateCreated,";
+                else
+                    $select = "SELECT a.RedeemedPoints, a.DateCreated";
+                    Yii::app()->session['inquiry'] = self::REWARDS_POINTS_USAGE;
                 break;
         }
         

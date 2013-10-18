@@ -415,12 +415,45 @@ class VerifyRewardsController extends Controller
                     $lastname = $row2['LastName'];
                     $idname = $row2['IdentificationName'];
                 }
-                
-                Yii::app()->session['cardnumber'] = $cardnumber;
-                Yii::app()->session['membername'] = $firstname." ".$middlename." ".$lastname;
-                Yii::app()->session['identificationname'] = $idname;
-            
-            $this->redirect(array('/verifyRewards/recordrewardtrans'), array('model' => $verifyrewards));
+                if (isset($cardnumber))
+                {
+                    Yii::app()->session['cardnumber'] = $cardnumber;
+                    Yii::app()->session['membername'] = $firstname." ".$middlename." ".$lastname;
+                    Yii::app()->session['identificationname'] = $idname;
+                    
+                    $this->redirect(array('/verifyRewards/recordrewardtrans'), array('model' => $verifyrewards));
+                }
+                else
+                {
+                    $status = $membercards->checkStatus($mid);
+                    foreach($status as $row)
+                    {
+                        $stat = $row['Status'];
+                    }
+                    switch ($stat)
+                    {
+                        case 2:
+                            $this->dialogMsg = "Membership Card is Deactivated"; 
+                            break;
+                        case 0:
+                            $this->dialogMsg = "Membership Card is Inactive"; 
+                            break;
+                        case 8:
+                            $this->dialogMsg = "Migrated Temporary Account"; 
+                            break;
+                        case 5:
+                            $this->dialogMsg = "Active Temporary Account"; 
+                            break;
+                        case 9:
+                            $this->dialogMsg = "Membership Card is Banned"; 
+                            break;
+                        case 7:
+                            $this->dialogMsg = "Membership Card is already Migrated"; 
+                            break;
+                    }
+                    $this->showDialog2 = true;
+                    $this->dialogMsg2 = "Please try again.";
+                }
         }
         else{
             $this->showDialog2 = true;
@@ -428,7 +461,7 @@ class VerifyRewardsController extends Controller
             $this->dialogMsg2 = "Please try again.";
             $this->render('verifyrewards', array('model' => $verifyrewards));
         }
-    
+        $this->render('verifyrewards', array('model' => $verifyrewards));
     }
     
     public function actionAutoLogout() {

@@ -13,7 +13,8 @@ class ManagePartnersController extends Controller {
      * @date 09-20-13
      * 
      */
-    public function actionAddPartner() {
+    public function actionAddPartner()
+    {
         $model = new ManagePartnersForm;
         $refpartner = new RefPartnerModel();
         $validation = new Validations();
@@ -144,8 +145,11 @@ class ManagePartnersController extends Controller {
         $data = $model->getPartnerDetails($status);
             
         $updateUrl = $this->createUrl('update', array('id' => ''));
+        $arrayData = array();
         $ctr = 0;
         $countData = count($data);
+        $arrayNewList = array();
+        $arrayData = array();
         if (is_array($data) && sizeof($data) > 0) {
             if (!array_key_exists('errcode', $data)) {
                 do {
@@ -203,6 +207,7 @@ class ManagePartnersController extends Controller {
             echo jqGrid::generateJSON(10, $arrayData, 'PartnerID');
             Yii::app()->end();
         }
+        unset($arrayNewList, $arrayData);
         $this->render('index', array('model' => $model));
     }
 
@@ -380,6 +385,7 @@ class ManagePartnersController extends Controller {
         $data = $model->getPartnerDetails($status);
         
         $count = count($data);
+        $response = array();
         if ($count > 0)
         {
             $total_pages = ceil($count/$limit);
@@ -397,9 +403,9 @@ class ManagePartnersController extends Controller {
         if($count == 0)
             $start = 0;
         
-        $response->page = $page;
-        $response->total = $total_pages;
-        $response->records = $count;
+        $response["page"] = $page;
+        $response["total"] = $total_pages;
+        $response["records"] = $count;
         //Check there are fetched data
         if ($count > 0)
         {
@@ -419,8 +425,8 @@ class ManagePartnersController extends Controller {
                     $val['StatusName'] = 'Deactivated';
                 }
                     
-                $response->rows[$i]['id'] = $val['PartnerID'];
-                $response->rows[$i]['cell'] = array("<a href='#' id='partnerNameLink' PartnerID='".$val['PartnerID']."'
+                $response["rows"][$i]['id'] = $val['PartnerID'];
+                $response["rows"][$i]['cell'] = array("<a href='#' id='partnerNameLink' PartnerID='".$val['PartnerID']."'
                                                                            PartnerName='".$val['PartnerName']."'
                                                                            CompanyAddress='".$val['CompanyAddress']."'
                                                                            CompanyEmail='".$val['CompanyEmail']."'
@@ -462,11 +468,11 @@ class ManagePartnersController extends Controller {
         else
         {
             $i = 0;
-            $response->page = $page;
-            $response->total = $total_pages;
-            $response->records = $count;
+            $response["page"] = $page;
+            $response["total"] = $total_pages;
+            $response["records"] = $count;
             $msg = "Audit Trail: No returned result";
-            $response->msg = $msg;
+            $response["msg"] = $msg;
         }
         echo json_encode($response);
     }

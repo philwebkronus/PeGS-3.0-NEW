@@ -34,11 +34,16 @@ class ManageRewardsController extends Controller
                     $arraynewlist['RewardItemID'] = $data[$ctr]['RewardItemID']; 
                     $arraynewlist['PartnerName'] = urldecode($data[$ctr]['PartnerName']); 
                     $arraynewlist['ItemName'] = "<a href='javascript:void(0)' title='View Details' RewardItemID='".$arraynewlist['RewardItemID']."'  id='viewlink'>".$data[$ctr]['ItemName']."</a>";
+                    $arraynewlist['Description'] = urldecode($data[$ctr]['Description']); 
                     $arraynewlist['Category'] = urldecode($data[$ctr]['Category']); 
                     $arraynewlist['Points'] = urldecode($data[$ctr]['Points']); 
                     $arraynewlist['Eligibility'] = urldecode($data[$ctr]['Eligibility']); 
                     $arraynewlist['Status'] = urldecode($data[$ctr]['Status']); 
-                    $arraynewlist['PromoPeriod'] = urldecode($data[$ctr]['OfferStartDate']." - ".$data[$ctr]['OfferEndDate']); 
+                    $OfferStartDate = new DateTime($data[$ctr]['OfferStartDate']);
+                    $data[$ctr]['OfferStartDate'] = $OfferStartDate->format("Y-m-d");
+                    $OfferEndDate = new DateTime($data[$ctr]['OfferEndDate']);
+                    $data[$ctr]['OfferEndDate'] = $OfferEndDate->format("Y-m-d");
+                    $arraynewlist['PromoPeriod'] = urldecode($data[$ctr]['OfferStartDate']." &mdash; ".$data[$ctr]['OfferEndDate']); 
                     if($arraynewlist['Status'] != 'Active'){
                         $arraynewlist['Action'] = "<div title='actionbuttons' style='padding-top: 3px;'><a href='javascript:void(0)' title='Edit' Status='".$arraynewlist['Status']."'  RewardItemID='".$arraynewlist['RewardItemID']."' id='editbutton'><img id='editimage".$arraynewlist['RewardItemID']."' src='../../images/ui-icon-edit.png'></a>&nbsp;&nbsp;<a href='javascript:void(0)' title='Delete' RewardItemID='".$arraynewlist['RewardItemID']."' id='deletebutton'><img id='deleteimage".$arraynewlist['RewardItemID']."' src='../../images/ui-icon-delete.png'></a>&nbsp;&nbsp;<a href='javascript:void(0)' title='Replenish' RewardItemID='".$arraynewlist['RewardItemID']."' id='refillbutton'><img id='refillimage".$arraynewlist['RewardItemID']."' src='../../images/ui-icon-refill.png' ></a></div>";
                     } else {
@@ -96,12 +101,16 @@ class ManageRewardsController extends Controller
                 $arraynewlist['RewardItemID'] = $data[$ctr]['RewardItemID']; 
                 $arraynewlist['PartnerName'] = $data[$ctr]['PartnerName']; 
                 $arraynewlist['ItemName'] = "<a href='javascript:void(0)' title='View Details' RewardItemID='".$arraynewlist['RewardItemID']."'  id='viewlink'>".$data[$ctr]['ItemName']."</a>";
+                $arraynewlist['Description'] = $data[$ctr]['Description']; 
                 $arraynewlist['Category'] = $data[$ctr]['Category']; 
                 $arraynewlist['Points'] = $data[$ctr]['Points']; 
                 $arraynewlist['Eligibility'] = $data[$ctr]['Eligibility']; 
                 $arraynewlist['Status'] = $data[$ctr]['Status']; 
-                
-                $arraynewlist['PromoPeriod'] = $data[$ctr]['OfferStartDate']." - ".$data[$ctr]['OfferEndDate']; 
+                $OfferStartDate = new DateTime($data[$ctr]['OfferStartDate']);
+                $data[$ctr]['OfferStartDate'] = $OfferStartDate->format("Y-m-d");
+                $OfferEndDate = new DateTime($data[$ctr]['OfferEndDate']);
+                $data[$ctr]['OfferEndDate'] = $OfferEndDate->format("Y-m-d");
+                $arraynewlist['PromoPeriod'] = $data[$ctr]['OfferStartDate']." &mdash; ".$data[$ctr]['OfferEndDate']; 
                 
                 if($arraynewlist['Status'] != 'Active'){
                     if($rewardtype == 2){
@@ -121,6 +130,7 @@ class ManageRewardsController extends Controller
                 $response['rows'][$ctr]['cell'] = array(
                                                                             $arraynewlist["PartnerName"],
                                                                             $arraynewlist["ItemName"],
+                                                                            $arraynewlist["Description"],
                                                                             $arraynewlist["Category"],
                                                                             $arraynewlist["Points"],
                                                                             $arraynewlist["Eligibility"],
@@ -180,9 +190,22 @@ class ManageRewardsController extends Controller
                     $lmlimitedphoto = $_POST['lmlimitedphoto'];
                     $lmoutofstockphoto = $_POST['lmoutofstockphoto'];
                     $websliderphoto = $_POST['websliderphoto'];
-                    $startdate = $_POST['from_date']." ".$_POST['from_hour'].":".$_POST['from_min'].":".$_POST['from_sec'];
-                    $enddate = $_POST['to_date']." ".$_POST['to_hour'].":".$_POST['to_min'].":".$_POST['to_sec'];
                     $editpoints = preg_replace('/[^0-9]/s', '', $model->editpoints);
+                    
+                    if($_POST['from_hour'] == "00" && $_POST['from_min'] == "00" && $_POST['from_sec'] == "00"){
+                        $initialtime = Yii::app()->params['initialtime'];
+                    } else {
+                        $initialtime = $_POST['from_hour'].":".$_POST['from_min'].":".$_POST['from_sec'];
+                    }
+                    
+                    if($_POST['to_hour'] == "00" && $_POST['to_min'] == "00" && $_POST['to_sec'] == "00"){
+                        $cutofftime = Yii::app()->params['cutofftime'];
+                    } else {
+                        $cutofftime = $_POST['to_hour'].":".$_POST['to_min'].":".$_POST['to_sec'];
+                    }
+
+                    $startdate = $_POST['from_date']." ".$initialtime;
+                    $enddate = $_POST['to_date']." ".$cutofftime;
                     
                     if($model->editabout == ''){
                         $about = null;
@@ -216,9 +239,9 @@ class ManageRewardsController extends Controller
                     if($result['TransCode'] == 0){
                         $this->showdialog = true;
                         if($rewardid == "2"){
-                            $this->message = "Raffle e-Coupon has been successfully updated.";
+                            $this->message = "Raffle e-Coupon successfully updated.";
                         } else {
-                            $this->message = "Reward e-Coupon has been successfully updated.";
+                            $this->message = "Reward e-Coupon successfully updated.";
                         }
                     } else {
                         $this->showdialog = true;
@@ -238,19 +261,28 @@ class ManageRewardsController extends Controller
                     $lmlimitedphoto = $_POST['lmlimitedphoto'];
                     $lmoutofstockphoto = $_POST['lmoutofstockphoto'];
                     $websliderphoto = $_POST['websliderphoto'];
-                    $startdate = $_POST['add_from_date']." ".$_POST['from_hour'].":".$_POST['from_min'].":".$_POST['from_sec'];
-                    $enddate = $_POST['add_to_date']." ".$_POST['to_hour'].":".$_POST['to_min'].":".$_POST['to_sec'];
+                    
+                    if($_POST['from_hour'] == "00" && $_POST['from_min'] == "00" && $_POST['from_sec'] == "00"){
+                        $initialtime = Yii::app()->params['initialtime'];
+                    } else {
+                        $initialtime = $_POST['from_hour'].":".$_POST['from_min'].":".$_POST['from_sec'];
+                    }
+                    
+                    if($_POST['to_hour'] == "00" && $_POST['to_min'] == "00" && $_POST['to_sec'] == "00"){
+                        $cutofftime = Yii::app()->params['cutofftime'];
+                    } else {
+                        $cutofftime = $_POST['to_hour'].":".$_POST['to_min'].":".$_POST['to_sec'];
+                    }
+                    
+                    $startdate = $_POST['add_from_date']." ".$initialtime;
+                    $enddate = $_POST['add_to_date']." ".$cutofftime;
                     $drawdate = null;
                     
-                    if($model->addabout == ''){
-                        $about = null;
-                    } else { $about = $model->addabout; }
-                    if($model->addrewardid == ''){
+                    $about = $model->addabout; 
+                    $terms = $model->addterms; 
+                    if($_POST['addrewardid'] == ''){
                         $rewardid = null;
-                    } else { $rewardid = $model->addrewardid; }
-                    if($model->addterms == ''){
-                        $terms = null;
-                    } else { $terms = $model->addterms; }
+                    } else { $rewardid = $_POST['addrewardid']; }
                     if($model->addpartner == ''){
                         $partnerid = null;
                     } else { $partnerid = $model->addpartner; }
@@ -316,16 +348,16 @@ class ManageRewardsController extends Controller
                         if($addnewrewarditem['TransCode'] == 0){
                             $this->showdialog = true;
                             if($rewardid == "2"){
-                                $this->message = "New Raffle e-Coupon has been successfully added.";
+                                $this->message = "Raffle e-Coupon successfully Added.";
                             } else {
-                                $this->message = "New Reward e-Coupon has been successfully added.";
+                                $this->message = "Reward e-Coupon successfully Added.";
                             }
                         } else {
                             $this->showdialog = true;
                             if($rewardid == "2"){
-                                $this->message = "Failed to add New Reward e-Coupon.";
-                            } else {
                                 $this->message = "Failed to add New Raffle e-Coupon.";
+                            } else {
+                                $this->message = "Failed to add New Reward e-Coupon.";
                             }
                         }
                         $this->render('managerewards', array('model' => $model));
@@ -338,9 +370,9 @@ class ManageRewardsController extends Controller
                     $itemcount = $model->inventoryupdate;
                     $currentinventory = $model->currentinventory;
                     $addeditemcount = $model->additems;
-                    $newitemcount = str_replace( ',', '', $itemcount );
-                    $currentitemcount = str_replace( ',', '', $currentinventory );
-                    $addeditemcount = str_replace( ',', '', $addeditemcount );
+                    $newitemcount = preg_replace('/[^0-9]/s', '', $itemcount);
+                    $currentitemcount = preg_replace('/[^0-9]/s', '', $currentinventory);
+                    $addeditemcount = preg_replace('/[^0-9]/s', '', $addeditemcount);
                     if((int)$newitemcount != (int)$currentinventory){
                         if($newitemcount != 0 || $newitemcount != null){
                             $getserialendcode = $rewarditems->GetSerialCodeEnd($rewarditemid);
@@ -388,7 +420,7 @@ class ManageRewardsController extends Controller
             $result['message'] = '';
         } else {
             $result['showdialog'] = true;
-            $result['message'] = "Reward Item Partner is deactivated.";
+            $result['message'] = "No Available Partner.";
         }
         echo json_encode($result);
         exit;
@@ -1184,6 +1216,15 @@ class ManageRewardsController extends Controller
         
     }
     
+     public function actionAutoLogout() {
+        
+        $page = $_POST['page'];
+ 
+        if($page =='logout'){
+
+            echo json_encode('logouts');
+        } 
+    }    
     
 }
 

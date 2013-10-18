@@ -10,12 +10,12 @@ tinyMCE.init({
         elements : "editabout",
         theme : "advanced",
         skin : "o2k7",
-        plugins : "safari,spellchecker,pagebreak,style,layer,table,save,advhr,advimage,advlink,emotions,iespell,inlinepopups,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras,template",
+        plugins : "safari,spellchecker,pagebreak,style,layer,table,save,advhr,advimage,advlink,iespell,inlinepopups,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras,template",
 
         // Theme options
         theme_advanced_buttons1 : "save,newdocument,|,bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,fontselect,fontsizeselect",
-        theme_advanced_buttons2 : "cut,copy,paste|,bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,image,code,|,forecolor,backcolor,|,ltr,rt",
-        theme_advanced_buttons3 : "tablecontrols,|,hr,removeformat,|,sub,sup,|,charmap,emotions,|,printl",
+        theme_advanced_buttons2 : "cut,copy,paste,pastetext,|,bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,image,code,|,forecolor,backcolor,|,ltr,rt",
+        theme_advanced_buttons3 : "tablecontrols,|,removeformat",
         theme_advanced_toolbar_location : "top",
         theme_advanced_toolbar_align : "left",
         theme_advanced_resizing : true,
@@ -36,12 +36,12 @@ tinyMCE.init({
         theme : "advanced",
         skin : "o2k7",
         readonly: true,
-        plugins : "safari,spellchecker,pagebreak,style,layer,table,save,advhr,advimage,advlink,emotions,iespell,inlinepopups,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras,template",
+        plugins : "safari,spellchecker,pagebreak,style,layer,table,save,advhr,advimage,advlink,iespell,inlinepopups,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras,template",
 
         // Theme options
         theme_advanced_buttons1 : "save,newdocument,|,bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,fontselect,fontsizeselect",
-        theme_advanced_buttons2 : "cut,copy,paste|,bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,image,code,|,forecolor,backcolor,|,ltr,rt",
-        theme_advanced_buttons3 : "tablecontrols,|,hr,removeformat,|,sub,sup,|,charmap,emotions,|,printl",
+        theme_advanced_buttons2 : "cut,copy,paste,pastetext,|,bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,image,code,|,forecolor,backcolor,|,ltr,rt",
+        theme_advanced_buttons3 : "tablecontrols,|,removeformat",
         theme_advanced_toolbar_location : "top",
         theme_advanced_toolbar_align : "left",
         theme_advanced_resizing : true,
@@ -61,12 +61,12 @@ tinyMCE.init({
         elements : "addabout",
         theme : "advanced",
         skin : "o2k7",
-        plugins : "safari,spellchecker,pagebreak,style,layer,table,save,advhr,advimage,advlink,emotions,iespell,inlinepopups,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras,template",
+        plugins : "safari,spellchecker,pagebreak,style,layer,table,save,advhr,advimage,advlink,iespell,inlinepopups,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras,template",
 
         // Theme options
         theme_advanced_buttons1 : "save,newdocument,|,bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,fontselect,fontsizeselect",
-        theme_advanced_buttons2 : "cut,copy,paste|,bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,image,code,|,forecolor,backcolor,|,ltr,rt",
-        theme_advanced_buttons3 : "tablecontrols,|,hr,removeformat,|,sub,sup,|,charmap,emotions,|,printl",
+        theme_advanced_buttons2 : "cut,copy,paste,pastetext,|,bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,image,code,|,forecolor,backcolor,|,ltr,rt",
+        theme_advanced_buttons3 : "tablecontrols,|,removeformat",
         theme_advanced_toolbar_location : "top",
         theme_advanced_toolbar_align : "left",
         theme_advanced_resizing : true,
@@ -86,12 +86,12 @@ tinyMCE.init({
         elements : "editterms",
         theme : "advanced",
         skin : "o2k7",
-        plugins : "safari,spellchecker,pagebreak,style,layer,table,save,advhr,advimage,advlink,emotions,iespell,inlinepopups,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras,template",
+        plugins : "safari,spellchecker,pagebreak,style,layer,table,save,advhr,advimage,advlink,iespell,inlinepopups,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras,template",
 
         // Theme options
         theme_advanced_buttons1 : "save,newdocument,|,bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,fontselect,fontsizeselect",
-        theme_advanced_buttons2 : "cut,copy,paste|,bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,image,code,|,forecolor,backcolor,|,ltr,rt",
-        theme_advanced_buttons3 : "tablecontrols,|,hr,removeformat,|,sub,sup,|,charmap,emotions,|,printl",
+        theme_advanced_buttons2 : "cut,copy,paste,pastetext,|,bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,image,code,|,forecolor,backcolor,|,ltr,rt",
+        theme_advanced_buttons3 : "tablecontrols,|,removeformat",
         theme_advanced_toolbar_location : "top",
         theme_advanced_toolbar_align : "left",
         theme_advanced_resizing : true,
@@ -112,12 +112,12 @@ tinyMCE.init({
         theme : "advanced",
         skin : "o2k7",
         readonly: true,
-        plugins : "safari,spellchecker,pagebreak,style,layer,table,save,advhr,advimage,advlink,emotions,iespell,inlinepopups,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras,template",
+        plugins : "safari,spellchecker,pagebreak,style,layer,table,save,advhr,advimage,advlink,iespell,inlinepopups,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras,template",
 
         // Theme options
         theme_advanced_buttons1 : "save,newdocument,|,bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,fontselect,fontsizeselect",
-        theme_advanced_buttons2 : "cut,copy,paste|,bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,image,code,|,forecolor,backcolor,|,ltr,rt",
-        theme_advanced_buttons3 : "tablecontrols,|,hr,removeformat,|,sub,sup,|,charmap,emotions,|,printl",
+        theme_advanced_buttons2 : "cut,copy,paste,pastetext,|,bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,image,code,|,forecolor,backcolor,|,ltr,rt",
+        theme_advanced_buttons3 : "tablecontrols,|,removeformat",
         theme_advanced_toolbar_location : "top",
         theme_advanced_toolbar_align : "left",
         theme_advanced_resizing : true,
@@ -137,12 +137,12 @@ tinyMCE.init({
         elements : "addterms",
         theme : "advanced",
         skin : "o2k7",
-        plugins : "safari,spellchecker,pagebreak,style,layer,table,save,advhr,advimage,advlink,emotions,iespell,inlinepopups,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras,template",
+        plugins : "safari,spellchecker,pagebreak,style,layer,table,save,advhr,advimage,advlink,iespell,inlinepopups,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras,template",
 
         // Theme options
         theme_advanced_buttons1 : "save,newdocument,|,bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,fontselect,fontsizeselect",
-        theme_advanced_buttons2 : "cut,copy,paste|,bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,image,code,|,forecolor,backcolor,|,ltr,rt",
-        theme_advanced_buttons3 : "tablecontrols,|,hr,removeformat,|,sub,sup,|,charmap,emotions,|,printl",
+        theme_advanced_buttons2 : "cut,copy,paste,pastetext,|,bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,image,code,|,forecolor,backcolor,|,ltr,rt",
+        theme_advanced_buttons3 : "tablecontrols,|,removeformat",
         theme_advanced_toolbar_location : "top",
         theme_advanced_toolbar_align : "left",
         theme_advanced_resizing : true,
@@ -173,8 +173,8 @@ tinyMCE.init({
                 var todate = $("#to_date").val();
                 
                 if(rewardid == 2){
-                    if(rewarditem == "" || points == "" || eligibility == "" || status == "" || fromdate == "" || todate == "") {
-                        var message = "Please fill up all required fields";
+                    if(rewarditem == "" || points == "" || eligibility == "" || status == "" || fromdate == "" || todate == "" || subtext == "") {
+                        var message = "Please fill up all fields.";
                         return message;
                     } else if (/^[a-zA-Z0-9- ]*$/.test(rewarditem) === false) {
                         var message = "Special character/s is/are not allowed in Reward Item";
@@ -187,8 +187,8 @@ tinyMCE.init({
                         return true;
                     }
                 } else {
-                    if(partner == "" || rewarditem == "" || category == "" || points == "" || eligibility == "" || status == "" || fromdate == "" || todate == "") {
-                        var message = "Please fill up all required fields";
+                    if(partner == "" || rewarditem == "" || category == "" || points == "" || eligibility == "" || status == "" || fromdate == "" || todate == "" || subtext == "") {
+                        var message = "Please fill up all fields.";
                         return message;
                     } else if (/^[a-zA-Z0-9- ]*$/.test(rewarditem) === false) {
                         var message = "Special character/s is/are not allowed in Reward Item";
@@ -259,31 +259,16 @@ tinyMCE.init({
             } else if(part == 3){                                   //About the Reward (part 2)
                 var editabout = tinyMCE.get('editabout').getContent();
                 if(editabout == "") {
-                    var c = confirm("Are you sure you don't want to say something about this Reward Item?");
-                    if (c == true) {
-                        return true;
-                    } else {
-                        return false;
-                    }
+                    var message = "Please fill up About the Reward field.";
+                    return message;
                 } else {
                     return true;
                 }
             } else if(part == 4){                                  //Terms of the Reward
                 var editterms = tinyMCE.get('editterms').getContent();
                 if(editterms == "") {
-                    var c1 = confirm("Are you sure you don't want to state the terms and conditions for this Reward Item?");
-                    if (c1 == true) {
-                        var newstatus = $("#editstatus").val();
-                        var currentstatus = $("#statusid").val();
-                        if(currentstatus != newstatus){
-                            var c2 = confirm("Are you sure you want to change the status of this Reward Item?");
-                            if (c2 == true) {
-                                return true;
-                            }
-                        }
-                    } else {
-                        return false;
-                    }
+                    var message = "Please fill up Terms of the Reward field.";
+                    return message;
                 } else {
                     var newstatus = $("#editstatus").val();
                     var currentstatus = $("#statusid").val();
@@ -334,8 +319,8 @@ tinyMCE.init({
 
                 if(rewardid == 2){
                     if(rewarditem == "" || points == "" || eligibility == "" || status == "" || fromdate == "" || todate == "" || itemcount == ""
-                        || promoname ==  "" || promocode == "" || drawdate == "") {
-                        var message = "Please fill up all required fields";
+                        || promoname ==  "" || promocode == "" || drawdate == "" || subtext == "") {
+                        var message = "Please fill up all fields.";
                         return message;
                     } else if (/^[a-zA-Z0-9- ]*$/.test(rewarditem) === false) {
                         var message = "Special character/s is/are not allowed in Reward Item";
@@ -348,8 +333,8 @@ tinyMCE.init({
                         return true;
                     }
                 } else {
-                    if(partner == "" || rewarditem == "" || category == "" || points == "" || eligibility == "" || status == "" || fromdate == "" || todate == "" || itemcount == "") {
-                        var message = "Please fill up all required fields";
+                    if(partner == "" || rewarditem == "" || category == "" || points == "" || eligibility == "" || status == "" || fromdate == "" || todate == "" || itemcount == "" || subtext == "") {
+                        var message = "Please fill up all fields.";
                         return message;
                     } else if (/^[a-zA-Z0-9- ]*$/.test(rewarditem) === false) {
                         var message = "Special character/s is/are not allowed in Reward Item";
@@ -420,81 +405,129 @@ tinyMCE.init({
             } else if(part == 3){                                   //About the Reward (part 2)
                 var editabout = tinyMCE.get('addabout').getContent();
                 if(editabout == "") {
-                    var c = confirm("Are you sure you don't want to say something about this Reward Item?");
-                    if (c == true) {
-                        return true;
-                    } else {
-                        return false;
-                    }
+                    var message = "Please fill up About the Reward field.";
+                    return message;
                 } else {
                     return true;
                 }
             } else if(part == 4){                                  //Terms of the Reward
                 var editterms = tinyMCE.get('addterms').getContent();
                 if(editterms == "") {
-                    var c1 = confirm("Are you sure you don't want to state the terms and conditions for this Reward Item?");
-                    if (c1 == true) {
-                        return true;
-                    } else {
-                        return false;
-                    }
-                } 
-                return true;
+                    var message = "Please fill up Terms of the Reward field.";
+                    return message;
+                } else {
+                    return true;
+                }
             } 
         }
         
     }
     
     function reloadRewardsList(viewrewardsby,rewardtype){
-        jQuery('#rewardslist').GridUnload();
-        jQuery('#rewardslist').jqGrid({
-                url:'rewardsList',
-                mtype: 'POST',
-                postData: {
-                            viewrewardsby : function() {return viewrewardsby; },
-                            rewardtype : function() {return rewardtype; }
-                          },
-                datatype: 'JSON',
-                colNames:['Partner', 'Reward', 'Category', 'Points Required', 'Eligibility', 'Status', 'Promo Period','Action'],
-                colModel:[
-                        {name:'PartnerName',index:'ProductName',align: 'center', width: 200},
-                        {name:'RewardName',index:'RewardName', align: 'center',width: 350},
-                        {name:'Category',index:'Category', align: 'center',width: 220},
-                        {name:'Points',index:'Points', align: 'center',width: 80},
-                        {name:'Eligibility',index:'Eligibility', align: 'center', width: 120},
-                        {name:'Status',index:'Status', align: 'center', width: 120},
-                        {name:'PromoPeriod',index:'PromoPeriod', align: 'center', width: 280},
-                        {name:'Action',index:'Action', align: 'center', width: 200},
-                ],
+        if(rewardtype == 2){
+            jQuery('#rewardslist').GridUnload();
+            jQuery('#rewardslist').jqGrid({
+                    url:'rewardsList',
+                    mtype: 'POST',
+                    postData: {
+                                viewrewardsby : function() {return viewrewardsby; },
+                                rewardtype : function() {return rewardtype; }
+                              },
+                    datatype: 'JSON',
+                    colNames:['Partner', 'Reward', 'Description', 'Category', 'Points Required', 'Eligibility', 'Status', 'Promo Period','Action'],
+                    colModel:[
+                            {name:'PartnerName',index:'ProductName',align: 'center', width: 200, hidden: true},
+                            {name:'RewardName',index:'RewardName', align: 'center',width: 250},
+                            {name:'Description',index:'Description', align: 'center',width: 350},
+                            {name:'Category',index:'Category', align: 'center',width: 220, hidden: true},
+                            {name:'Points',index:'Points', align: 'center',width: 80},
+                            {name:'Eligibility',index:'Eligibility', align: 'center', width: 120, hidden: true},
+                            {name:'Status',index:'Status', align: 'center', width: 120},
+                            {name:'PromoPeriod',index:'PromoPeriod', align: 'center', width: 280, hidden: true},
+                            {name:'Action',index:'Action', align: 'center', width: 100},
+                    ],
 
-                rowNum:10,
-                rowList:[10,20,30],
-                rowheight: 300,
-                height: 300,
-                autowidth: true,
-                pager: '#rewardslistpager',
-                refresh: true,
-                loadonce: true,
-                viewrecords: true,
-                sortorder: 'asc',
-                onCellSelect: function(rowid, col, content, event) {  
-                                            var cm = jQuery('#rewardslist').jqGrid('getGridParam', 'colModel');
-                                            var column = cm[col];
-                                            if(column['name'] != 'Action'){
-                                                var grid = jQuery('#rewardslist');
-                                                var sel_id = grid.jqGrid('getGridParam', 'selrow');
-                                                //var status = grid.jqGrid('getCell', sel_id, 'Status');
-                                                
-                                                RewardItemID = rowid;
-                                                var showonly = "showedit";
-                                                $('#hdnRewardItemID-edit').val(RewardItemID);
-                                                getRewardDetails(RewardItemID, showonly);
-                                            }
-                                        },
-                caption:'Manage Rewards'
-        });
-        jQuery('#rewardslist').jqGrid('navGrid','#rewardslistpager',
-                { edit:false,add:false,del:false, search:false, refresh: true });
+                    rowNum:10,
+                    rowList:[10,20,30],
+                    rowheight: 300,
+                    height: 300,
+                    autowidth: true,
+                    pager: '#rewardslistpager',
+                    refresh: true,
+                    loadonce: true,
+                    viewrecords: true,
+                    sortorder: 'asc',
+                    onCellSelect: function(rowid, col, content, event) {  
+                                                var cm = jQuery('#rewardslist').jqGrid('getGridParam', 'colModel');
+                                                var column = cm[col];
+                                                if(column['name'] != 'Action'){
+                                                    var grid = jQuery('#rewardslist');
+                                                    var sel_id = grid.jqGrid('getGridParam', 'selrow');
+                                                    //var status = grid.jqGrid('getCell', sel_id, 'Status');
+
+                                                    RewardItemID = rowid;
+                                                    var showonly = "showedit";
+                                                    $('#hdnRewardItemID-edit').val(RewardItemID);
+                                                    getRewardDetails(RewardItemID, showonly);
+                                                }
+                                            },
+                    caption:'Manage Rewards'
+            });
+            jQuery('#rewardslist').jqGrid('navGrid','#rewardslistpager',
+                    { edit:false,add:false,del:false, search:false, refresh: true });
+        } else {
+            jQuery('#rewardslist').GridUnload();
+            jQuery('#rewardslist').jqGrid({
+                    url:'rewardsList',
+                    mtype: 'POST',
+                    postData: {
+                                viewrewardsby : function() {return viewrewardsby; },
+                                rewardtype : function() {return rewardtype; }
+                              },
+                    datatype: 'JSON',
+                    colNames:['Partner', 'Reward', 'Description', 'Category', 'Points Required', 'Eligibility', 'Status', 'Promo Period','Action'],
+                    colModel:[
+                            {name:'PartnerName',index:'ProductName',align: 'center', width: 200},
+                            {name:'RewardName',index:'RewardName', align: 'center',width: 350},
+                            {name:'Description',index:'Description', align: 'center',width: 350,hidden: true},
+                            {name:'Category',index:'Category', align: 'center',width: 220},
+                            {name:'Points',index:'Points', align: 'center',width: 80},
+                            {name:'Eligibility',index:'Eligibility', align: 'center', width: 120},
+                            {name:'Status',index:'Status', align: 'center', width: 120},
+                            {name:'PromoPeriod',index:'PromoPeriod', align: 'center', width: 280},
+                            {name:'Action',index:'Action', align: 'center', width: 200},
+                    ],
+
+                    rowNum:10,
+                    rowList:[10,20,30],
+                    rowheight: 300,
+                    height: 300,
+                    autowidth: true,
+                    pager: '#rewardslistpager',
+                    refresh: true,
+                    loadonce: true,
+                    viewrecords: true,
+                    sortorder: 'asc',
+                    onCellSelect: function(rowid, col, content, event) {  
+                                                var cm = jQuery('#rewardslist').jqGrid('getGridParam', 'colModel');
+                                                var column = cm[col];
+                                                if(column['name'] != 'Action'){
+                                                    var grid = jQuery('#rewardslist');
+                                                    var sel_id = grid.jqGrid('getGridParam', 'selrow');
+                                                    //var status = grid.jqGrid('getCell', sel_id, 'Status');
+
+                                                    RewardItemID = rowid;
+                                                    var showonly = "showedit";
+                                                    $('#hdnRewardItemID-edit').val(RewardItemID);
+                                                    getRewardDetails(RewardItemID, showonly);
+                                                }
+                                            },
+                    caption:'Manage Rewards'
+            });
+            jQuery('#rewardslist').jqGrid('navGrid','#rewardslistpager',
+                    { edit:false,add:false,del:false, search:false, refresh: true });
+        }
+        
     }
 
     function getRewardDetails(RewardItemID,showonly){
@@ -676,6 +709,8 @@ tinyMCE.init({
     $(document).ready(function(){
         $("#displaydetailsform").hide();
         $("#editdetailsform").hide();
+        $(".buttonlink-add").val("ADD REWARD");
+        $("#addrewardid").val($('#rewardtype1:checked').val());
 
         $("#accordion-link1").live("mouseover",function () {
             $("#accordion-arrow-icon1").removeAttr("style");
@@ -760,6 +795,15 @@ tinyMCE.init({
             var viewrewardsby = $('#viewrewardsby').val();
             var rewardtype = $('#rewardtype1:checked').val();
             reloadRewardsList(viewrewardsby,rewardtype);
+            $("#addrewardid").val(rewardtype);
+            $(".buttonlink-add").val("ADD REWARD");
+            $("#addpartner-row").removeAttr("style");
+            $("#addcategory-row").removeAttr("style");
+            $("#additemcount-row").removeAttr("style");
+            $("#additemcount").val("");
+            $("#addpromoname-row").css("display", "none");
+            $("#addpromocode-row").css("display", "none");
+            $("#adddrawdate-row").css("display", "none");
         });
 
         $('#rewardtype2').live('click', function(){
@@ -770,13 +814,34 @@ tinyMCE.init({
             var viewrewardsby = $('#viewrewardsby').val();
             var rewardtype = $('#rewardtype2:checked').val();
             reloadRewardsList(viewrewardsby,rewardtype);
+            $("#addrewardid").val(rewardtype);
+            $(".buttonlink-add").val("ADD RAFFLE");
+            $("#addpartner-row").removeAttr("style");
+            $("#addcategory-row").removeAttr("style");
+            $("#addpromoname-row").removeAttr("style");
+            $("#addpromocode-row").removeAttr("style");
+            $("#adddrawdate-row").removeAttr("style");
+            $("#addpartner-row").css("display", "none");
+            $("#addcategory-row").css("display", "none");
+            $("#additemcount-row").css("display", "none");
+            $("#additemcount").val("1");
         });
 
         $("#deletebutton").live("click",function(){
             var RewardItemID = $(this).attr("RewardItemID");
             $("#hdnRewardItemID").val(RewardItemID);
             $("#hdnFunctionName").val("DeleteReward");
-            $("#deleterewardconfirmation").dialog("open");
+            if($('#rewardtype1:checked').val() != undefined){
+                var rewardtype = $('#rewardtype1:checked').val();
+            } else {
+                var rewardtype = $('#rewardtype2:checked').val();
+            }
+            if(rewardtype == "1"){
+                $("#deleterewardconfirmation1").dialog("open");
+            } else {
+                $("#deleterewardconfirmation2").dialog("open");
+            }
+            
         });
 
         $("#editbutton").live("click",function(){
@@ -805,7 +870,7 @@ tinyMCE.init({
         $("#additems").live('click', function() {
             if ($("#additems").val() == defaultquantity) {
                 $("#additems").val("");
-                $("#inventoryupdate").val($("#currentinventory").val());
+                $("#inventoryupdate").val("");
             }
         });
 
@@ -820,10 +885,12 @@ tinyMCE.init({
         $("#additems").live('change',function() {
             if ($("#additems").val() == "") {
                 $("#additems").val("");
-                $("#inventoryupdate").val($("#currentinventory").val());
+                $("#inventoryupdate").val("");
             } else {
-                var inventoryupdate = parseInt($("#currentinventory").val()) + parseInt($("#additems").val());
+                var additems = $(this).val();
+                var inventoryupdate = parseInt($("#currentinventory").val()) + parseInt(additems.toString().replace(/,/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ""));
                 $("#inventoryupdate").val(inventoryupdate.toString().replace(/,/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                $("#additems").val(additems.toString().replace(/,/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ","));
             }
         });
 
@@ -895,30 +962,9 @@ tinyMCE.init({
                 $("#addpoints").val(points.toString().replace(/,/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ","));
             }
         });
-        
-        $("#addrewardid").live('change',function() {
-            if ($("#addrewardid").val() == "2") {
-                $("#addpartner-row").removeAttr("style");
-                $("#addcategory-row").removeAttr("style");
-                $("#addpromoname-row").removeAttr("style");
-                $("#addpromocode-row").removeAttr("style");
-                $("#adddrawdate-row").removeAttr("style");
-                $("#addpartner-row").css("display", "none");
-                $("#addcategory-row").css("display", "none");
-                $("#additemcount-row").css("display", "none");
-                $("#additemcount").val("1");
-            } else {
-                $("#addpartner-row").removeAttr("style");
-                $("#addcategory-row").removeAttr("style");
-                $("#additemcount-row").removeAttr("style");
-                $("#additemcount").val("");
-                $("#addpromoname-row").css("display", "none");
-                $("#addpromocode-row").css("display", "none");
-                $("#adddrawdate-row").css("display", "none");
-            }
-        });
 
     });
+    
     
      $("#addpromoname").live('keypress',function(event){
             return alphanumericSpaceDash(event);
@@ -978,7 +1024,7 @@ tinyMCE.init({
 <div id="main" style="position:relative;">
     <center>
         <br>
-        <?php echo CHtml::button('ADD REWARD', array('id'=>'linkButton', 'style'=>'color:white;', 'onclick' => '$("#addnewreward").dialog("open"); return false;')); ?>
+        <?php echo CHtml::button('ADD REWARD', array('class'=>'buttonlink-add','id'=>'linkButton', 'style'=>'color:white;', 'onclick' => '$("#addnewreward").dialog("open"); return false;')); ?>
     </center>
 </div>
 <?php echo CHtml::beginForm(array('manageRewards/managereward'), 'POST', array(
@@ -997,7 +1043,7 @@ tinyMCE.init({
  * @Author: aqdepliyan
  */
 $this->beginWidget('zii.widgets.jui.CJuiDialog',array(
-    'id'=>'deleterewardconfirmation',
+    'id'=>'deleterewardconfirmation1',
     'options'=>array(
         'title'=>'DELETE REWARD',
         'autoOpen'=>false,
@@ -1018,7 +1064,35 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog',array(
     ),
 ));
 echo "<center>";
-echo 'Do you want to delete this reward?';
+echo 'Do you really want to delete this reward?';
+echo "<br/>";
+echo "</center>";
+    
+$this->endWidget('zii.widgets.jui.CJuiDialog');
+
+$this->beginWidget('zii.widgets.jui.CJuiDialog',array(
+    'id'=>'deleterewardconfirmation2',
+    'options'=>array(
+        'title'=>'DELETE REWARD',
+        'autoOpen'=>false,
+        'modal'=>true,
+        'closeOnEscape' => false,
+        'resizable'=>false,
+        'draggable'=>false,
+        'show'=>'fade',
+        'hide'=>'fade',
+        'buttons' => array
+        (
+            'YES'=>'js:function(){
+                $("#delete-item-form").submit();
+                $(this).dialog("close");
+            }',
+            'NO'=>'js:function(){ $(this).dialog("close"); }',
+        ),
+    ),
+));
+echo "<center>";
+echo 'Do you really want to delete this raffle?';
 echo "<br/>";
 echo "</center>";
     
@@ -1069,7 +1143,37 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
 /** -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
  * @Description: Form for Replenishing of Reward Item/Coupon Inventory
  * @Author: aqdepliyan
- */
+ */ 
+$this->beginWidget('zii.widgets.jui.CJuiDialog',array(
+    'id'=>'messagedialog5',
+    'options'=>array(
+        'title' => 'REPLENISH MESSAGE',
+        'autoOpen'=>false,
+        'modal'=>true,
+        'resizable'=>false,
+        'draggable'=>false,
+        'show'=>'fade',
+        'hide'=>'fade',
+        'width'=>350,
+        'height'=>200,
+        'buttons' => array
+        (
+            'OK'=>'js:function(){
+                $("#additems").val("");
+                $("#additems").change();
+                $(this).dialog("close");
+            }',
+        ),
+    ),
+));
+
+echo "<center>";
+echo "<br/>";
+echo "<span id='message3'></span>";
+echo "<br/>";
+echo "</center>";
+    
+$this->endWidget('zii.widgets.jui.CJuiDialog');
 $this->beginWidget('zii.widgets.jui.CJuiDialog',array(
     'id'=>'replenishform',
     'options'=>array(
@@ -1084,11 +1188,24 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog',array(
         'open' => 'js:function(event,ui){
                         $("#replenishingform").show();
         }',
+        'close' => 'js:function(event,ui){
+                        $("#additems").val("");
+                        $("#additems").change();
+        }',
         'buttons' => array
         (
             'SAVE'=>'js:function(){
-                $("#replenish-form").submit();
-                $(this).dialog("close");
+                var additems = $("#additems").val();
+                if(additems == "0"){
+                    $("#message3").html("0 amount is not valid. <br/> Please enter amount to add.");
+                    $("#messagedialog5").dialog("open");
+                } else if(additems == ""){
+                    $("#message3").html("Please enter amount to add.");
+                    $("#messagedialog5").dialog("open");
+                } else {
+                    $("#replenish-form").submit();
+                    $(this).dialog("close");
+                }
             }'
         ),
     ),
@@ -1118,6 +1235,7 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog',array(
         <td>Add Items</td>
         <td>
             <?php echo $form->textField($model, 'additems', array('id'=>'additems', 'style' => 'width: 200px;')) ?>
+            <?php echo CHtml::hiddenField('hdnadditems' , '', array('id'=>'hdnadditems')); ?>
         </td>
     </tr>
         <td>Total Inventory Level</td>
@@ -1713,13 +1831,13 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
         </td>
     </tr>
     <tr>
-        <td style="vertical-align: top;">Subtexts</td>
+        <td style="vertical-align: top;">Subtexts &nbsp;<span style="vertical-align: top; color: red; font-weight: bold;">*</span></td>
         <td>
             <?php echo $form->textArea($model, 'editsubtext', array('id'=>'editsubtext', 'rows' => 3, 'cols' => 31, 'maxlength' => 200)); ?>
         </td>
     </tr>
     <tr>
-        <td>Promo Period &nbsp<span style="vertical-align: top; color: red; font-weight: bold;">*</span></td>
+        <td style="vertical-align: top;">Promo Period &nbsp<span style="vertical-align: top; color: red; font-weight: bold;">*</span></td>
         <td>
             <div id="promoperioddiv">
             <?php 
@@ -1740,12 +1858,10 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
                     'changeYear' => true,           // can change year
                     'changeMonth' => true,          // can change month
                      'yearRange' => $yearrange,
-                     'onSelect'=>'js:function(dateText, inst){
-                                            $("#to_date").css("disabled", "false");
-                     }'
+                     'minDate' => '0',
                 ),
                 'htmlOptions'=>array(
-                    'style'=>'height:20px; width: 100px;'
+                    'style'=>'height:20px; width: 255px;'
                 ),
             ));
             ?>
@@ -1754,7 +1870,7 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
                                                                                                                                 "10" => "10", "11" => "11", "12" => "12", "13" => "13", "14" => "14",
                                                                                                                                 "15" => "15", "16" => "16", "17" => "17", "18" => "18", "19" => "19",
                                                                                                                                 "20" => "20", "21" => "21", "22" => "22", "23" => "23"),
-                                                                                                                                array('style'=>'padding:3px;'));?>
+                                                                                                                                array('style'=>'padding:3px; display: none;'));?>
             <?php echo CHtml::dropdownlist('from_min', '00', array("00" => "00", "01" => "01", "02" => "02", "03" => "03", "04" => "04",
                                                                                                                                 "05" => "05", "06" => "06", "07" => "07", "08" => "08", "09" => "09",
                                                                                                                                 "10" => "10", "11" => "11", "12" => "12", "13" => "13", "14" => "14",
@@ -1766,7 +1882,7 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
                                                                                                                                 "40" => "40", "41" => "41", "42" => "42", "43" => "43", "44" => "44",
                                                                                                                                 "45" => "45", "46" => "46", "47" => "47", "48" => "48", "49" => "49",
                                                                                                                                 "50" => "50", "51" => "51", "52" => "52", "53" => "53", "54" => "54",
-                                                                                                                                "55" => "55", "56" => "56", "57" => "57", "58" => "58", "59" => "59"), array('style'=>'padding:3px;'));?>
+                                                                                                                                "55" => "55", "56" => "56", "57" => "57", "58" => "58", "59" => "59"), array('style'=>'padding:3px; display: none;', ));?>
             <?php echo CHtml::dropdownlist('from_sec', '00', array("00" => "00", "01" => "01", "02" => "02", "03" => "03", "04" => "04",
                                                                                                                                 "05" => "05", "06" => "06", "07" => "07", "08" => "08", "09" => "09",
                                                                                                                                 "10" => "10", "11" => "11", "12" => "12", "13" => "13", "14" => "14",
@@ -1778,7 +1894,7 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
                                                                                                                                 "40" => "40", "41" => "41", "42" => "42", "43" => "43", "44" => "44",
                                                                                                                                 "45" => "45", "46" => "46", "47" => "47", "48" => "48", "49" => "49",
                                                                                                                                 "50" => "50", "51" => "51", "52" => "52", "53" => "53", "54" => "54",
-                                                                                                                                "55" => "55", "56" => "56", "57" => "57", "58" => "58", "59" => "59"), array('style'=>'padding:3px;'));?>
+                                                                                                                                "55" => "55", "56" => "56", "57" => "57", "58" => "58", "59" => "59"), array('style'=>'padding:3px; display: none;'));?>
             &nbsp;<br/>
             <b>To :</b>
             <?php
@@ -1792,9 +1908,10 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
                     'changeYear' => true,           // can change year
                     'changeMonth' => true,          // can change month
                      'yearRange' => $yearrange,
+                     'minDate' => '0',
                 ),
                 'htmlOptions'=>array(
-                    'style'=>'height:20px; width: 100px; margin-top: 5px; margin-left: 18px;'
+                    'style'=>'height:20px; width: 255px; margin-top: 5px; margin-left: 18px;'
                 ),
             ));
             ?>
@@ -1802,7 +1919,7 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
                                                                                                                                 "05" => "05", "06" => "06", "07" => "07", "08" => "08", "09" => "09",
                                                                                                                                 "10" => "10", "11" => "11", "12" => "12", "13" => "13", "14" => "14",
                                                                                                                                 "15" => "15", "16" => "16", "17" => "17", "18" => "18", "19" => "19",
-                                                                                                                                "20" => "20", "21" => "21", "22" => "22", "23" => "23"), array('style'=>'padding:3px;'));?>
+                                                                                                                                "20" => "20", "21" => "21", "22" => "22", "23" => "23"), array('style'=>'padding:3px; display: none;'));?>
             <?php echo CHtml::dropdownlist('to_min', '00', array("00" => "00", "01" => "01", "02" => "02", "03" => "03", "04" => "04",
                                                                                                                                 "05" => "05", "06" => "06", "07" => "07", "08" => "08", "09" => "09",
                                                                                                                                 "10" => "10", "11" => "11", "12" => "12", "13" => "13", "14" => "14",
@@ -1814,7 +1931,7 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
                                                                                                                                 "40" => "40", "41" => "41", "42" => "42", "43" => "43", "44" => "44",
                                                                                                                                 "45" => "45", "46" => "46", "47" => "47", "48" => "48", "49" => "49",
                                                                                                                                 "50" => "50", "51" => "51", "52" => "52", "53" => "53", "54" => "54",
-                                                                                                                                "55" => "55", "56" => "56", "57" => "57", "58" => "58", "59" => "59"), array('style'=>'padding:3px;'));?>
+                                                                                                                                "55" => "55", "56" => "56", "57" => "57", "58" => "58", "59" => "59"), array('style'=>'padding:3px; display: none;'));?>
             <?php echo CHtml::dropdownlist('to_sec', '00', array("00" => "00", "01" => "01", "02" => "02", "03" => "03", "04" => "04",
                                                                                                                                 "05" => "05", "06" => "06", "07" => "07", "08" => "08", "09" => "09",
                                                                                                                                 "10" => "10", "11" => "11", "12" => "12", "13" => "13", "14" => "14",
@@ -1826,73 +1943,14 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
                                                                                                                                 "40" => "40", "41" => "41", "42" => "42", "43" => "43", "44" => "44",
                                                                                                                                 "45" => "45", "46" => "46", "47" => "47", "48" => "48", "49" => "49",
                                                                                                                                 "50" => "50", "51" => "51", "52" => "52", "53" => "53", "54" => "54",
-                                                                                                                                "55" => "55", "56" => "56", "57" => "57", "58" => "58", "59" => "59"), array('style'=>'padding:3px;'));?>
+                                                                                                                                "55" => "55", "56" => "56", "57" => "57", "58" => "58", "59" => "59"), array('style'=>'padding:3px; display: none;'));?>
         </div>
         <div id="readonlypromoperioddiv" style="display: none;">
             <b>From :</b>
-            <?php echo CHtml::textField('fromdate' , '', array('id' => 'fromdate', 'style' => 'height:20px; width: 100px;', 'disabled' => 'disabled')); ?>
-            <?php echo CHtml::dropdownlist('fromhour', '00', array("00" => "00", "01" => "01", "02" => "02", "03" => "03", "04" => "04",
-                                                                                                                                "05" => "05", "06" => "06", "07" => "07", "08" => "08", "09" => "09",
-                                                                                                                                "10" => "10", "11" => "11", "12" => "12", "13" => "13", "14" => "14",
-                                                                                                                                "15" => "15", "16" => "16", "17" => "17", "18" => "18", "19" => "19",
-                                                                                                                                "20" => "20", "21" => "21", "22" => "22", "23" => "23"),
-                                                                                                                                array('style'=>'padding:3px;', 'disabled' => 'disabled'));?>
-            <?php echo CHtml::dropdownlist('frommin', '00', array("00" => "00", "01" => "01", "02" => "02", "03" => "03", "04" => "04",
-                                                                                                                                "05" => "05", "06" => "06", "07" => "07", "08" => "08", "09" => "09",
-                                                                                                                                "10" => "10", "11" => "11", "12" => "12", "13" => "13", "14" => "14",
-                                                                                                                                "15" => "15", "16" => "16", "17" => "17", "18" => "18", "19" => "19",
-                                                                                                                                "20" => "20", "21" => "21", "22" => "22", "23" => "23", "24" => "24",
-                                                                                                                                "25" => "25", "26" => "26", "27" => "27", "28" => "28", "29" => "29",
-                                                                                                                                "30" => "30", "31" => "31", "32" => "32", "33" => "33", "34" => "34",
-                                                                                                                                "35" => "35", "36" => "36", "37" => "37", "38" => "38", "39" => "39",
-                                                                                                                                "40" => "40", "41" => "41", "42" => "42", "43" => "43", "44" => "44",
-                                                                                                                                "45" => "45", "46" => "46", "47" => "47", "48" => "48", "49" => "49",
-                                                                                                                                "50" => "50", "51" => "51", "52" => "52", "53" => "53", "54" => "54",
-                                                                                                                                "55" => "55", "56" => "56", "57" => "57", "58" => "58", "59" => "59"), array('style'=>'padding:3px;', 'disabled' => 'disabled'));?>
-            <?php echo CHtml::dropdownlist('fromsec', '00', array("00" => "00", "01" => "01", "02" => "02", "03" => "03", "04" => "04",
-                                                                                                                                "05" => "05", "06" => "06", "07" => "07", "08" => "08", "09" => "09",
-                                                                                                                                "10" => "10", "11" => "11", "12" => "12", "13" => "13", "14" => "14",
-                                                                                                                                "15" => "15", "16" => "16", "17" => "17", "18" => "18", "19" => "19",
-                                                                                                                                "20" => "20", "21" => "21", "22" => "22", "23" => "23", "24" => "24",
-                                                                                                                                "25" => "25", "26" => "26", "27" => "27", "28" => "28", "29" => "29",
-                                                                                                                                "30" => "30", "31" => "31", "32" => "32", "33" => "33", "34" => "34",
-                                                                                                                                "35" => "35", "36" => "36", "37" => "37", "38" => "38", "39" => "39",
-                                                                                                                                "40" => "40", "41" => "41", "42" => "42", "43" => "43", "44" => "44",
-                                                                                                                                "45" => "45", "46" => "46", "47" => "47", "48" => "48", "49" => "49",
-                                                                                                                                "50" => "50", "51" => "51", "52" => "52", "53" => "53", "54" => "54",
-                                                                                                                                "55" => "55", "56" => "56", "57" => "57", "58" => "58", "59" => "59"), array('style'=>'padding:3px;', 'disabled' => 'disabled'));?>
+            <?php echo CHtml::textField('fromdate' , '', array('id' => 'fromdate', 'style' => 'height:20px; width: 255px;', 'disabled' => 'disabled')); ?>
             &nbsp;<br/>
             <b>To :</b>
-            <?php echo CHtml::textField('todate' , '', array('id' => 'todate', 'style' => 'height:20px; width: 100px; margin-top: 5px; margin-left: 18px;', 'disabled' => 'disabled')); ?>
-            <?php echo CHtml::dropdownlist('tohour', '00', array("00" => "00", "01" => "01", "02" => "02", "03" => "03", "04" => "04",
-                                                                                                                                "05" => "05", "06" => "06", "07" => "07", "08" => "08", "09" => "09",
-                                                                                                                                "10" => "10", "11" => "11", "12" => "12", "13" => "13", "14" => "14",
-                                                                                                                                "15" => "15", "16" => "16", "17" => "17", "18" => "18", "19" => "19",
-                                                                                                                                "20" => "20", "21" => "21", "22" => "22", "23" => "23"), array('style'=>'padding:3px;', 'disabled' => 'disabled'));?>
-            <?php echo CHtml::dropdownlist('tomin', '00', array("00" => "00", "01" => "01", "02" => "02", "03" => "03", "04" => "04",
-                                                                                                                                "05" => "05", "06" => "06", "07" => "07", "08" => "08", "09" => "09",
-                                                                                                                                "10" => "10", "11" => "11", "12" => "12", "13" => "13", "14" => "14",
-                                                                                                                                "15" => "15", "16" => "16", "17" => "17", "18" => "18", "19" => "19",
-                                                                                                                                "20" => "20", "21" => "21", "22" => "22", "23" => "23", "24" => "24",
-                                                                                                                                "25" => "25", "26" => "26", "27" => "27", "28" => "28", "29" => "29",
-                                                                                                                                "30" => "30", "31" => "31", "32" => "32", "33" => "33", "34" => "34",
-                                                                                                                                "35" => "35", "36" => "36", "37" => "37", "38" => "38", "39" => "39",
-                                                                                                                                "40" => "40", "41" => "41", "42" => "42", "43" => "43", "44" => "44",
-                                                                                                                                "45" => "45", "46" => "46", "47" => "47", "48" => "48", "49" => "49",
-                                                                                                                                "50" => "50", "51" => "51", "52" => "52", "53" => "53", "54" => "54",
-                                                                                                                                "55" => "55", "56" => "56", "57" => "57", "58" => "58", "59" => "59"), array('style'=>'padding:3px;', 'disabled' => 'disabled'));?>
-            <?php echo CHtml::dropdownlist('tosec', '00', array("00" => "00", "01" => "01", "02" => "02", "03" => "03", "04" => "04",
-                                                                                                                                "05" => "05", "06" => "06", "07" => "07", "08" => "08", "09" => "09",
-                                                                                                                                "10" => "10", "11" => "11", "12" => "12", "13" => "13", "14" => "14",
-                                                                                                                                "15" => "15", "16" => "16", "17" => "17", "18" => "18", "19" => "19",
-                                                                                                                                "20" => "20", "21" => "21", "22" => "22", "23" => "23", "24" => "24",
-                                                                                                                                "25" => "25", "26" => "26", "27" => "27", "28" => "28", "29" => "29",
-                                                                                                                                "30" => "30", "31" => "31", "32" => "32", "33" => "33", "34" => "34",
-                                                                                                                                "35" => "35", "36" => "36", "37" => "37", "38" => "38", "39" => "39",
-                                                                                                                                "40" => "40", "41" => "41", "42" => "42", "43" => "43", "44" => "44",
-                                                                                                                                "45" => "45", "46" => "46", "47" => "47", "48" => "48", "49" => "49",
-                                                                                                                                "50" => "50", "51" => "51", "52" => "52", "53" => "53", "54" => "54",
-                                                                                                                                "55" => "55", "56" => "56", "57" => "57", "58" => "58", "59" => "59"), array('style'=>'padding:3px;', 'disabled' => 'disabled'));?>
+            <?php echo CHtml::textField('todate' , '', array('id' => 'todate', 'style' => 'height:20px; width: 255px; margin-top: 5px; margin-left: 18px;', 'disabled' => 'disabled')); ?>
         </div>
         </td>
     </tr>
@@ -1903,7 +1961,7 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
         <td colspan="3">
             <div id="edit-breadcrumbs">
                 <span id="title-breadcrumbs-row">Edit Reward Details</span>
-                <img id="edit-breadcrumbs-image" src="../../images/primarydetails.png">
+                <img id="edit-breadcrumbs-image" src="../../images/aboutreward.png">
             </div>
         </td>
     </tr>
@@ -2210,6 +2268,7 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
 ?>
 <?php echo CHtml::hiddenField('hdnFunctionName' , 'AddReward', array('id' => 'hdnFunctionName')); ?>
 <?php echo CHtml::hiddenField('hdnRewardItemID-add' , '', array('id'=>'hdnRewardItemID-add')); ?>
+<?php echo CHtml::hiddenField('addrewardid' , '', array('id'=>'addrewardid')); ?>
 <table id="addprimarydetails" style="display: none;">
     <tr>
         <td colspan="2">
@@ -2220,12 +2279,12 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
         </td>
     </tr>
     <tr><td colspan="2"></td></tr>
-    <tr id="rewardid-row">
+<!--    <tr id="rewardid-row">
         <td style="width: 250px;">Reward Type &nbsp<span style="vertical-align: top; color: red; font-weight: bold;">*</span></td>
         <td>
-            <?php echo $form->dropDownList($model, 'addrewardid', array("1" => "Rewards e-Coupon","2" => "Raffle e-Coupon"), array('id'=>'addrewardid', 'style' => 'width: 313px; padding: 2px;')) ?>
+            <?php // echo $form->dropDownList($model, 'addrewardid', array("1" => "Rewards e-Coupon","2" => "Raffle e-Coupon"), array('id'=>'addrewardid', 'style' => 'width: 313px; padding: 2px;')) ?>
         </td>
-    </tr>
+    </tr>-->
     <tr id="addpartner-row">
         <td style="width: 250px;">e-Games Partner &nbsp<span style="vertical-align: top; color: red; font-weight: bold;">*</span></td>
         <td>
@@ -2263,13 +2322,13 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
         </td>
     </tr>
     <tr>
-        <td style="vertical-align: top;">Subtexts</td>
+        <td style="vertical-align: top;">Subtexts &nbsp;<span style="vertical-align: top; color: red; font-weight: bold;">*</span></td>
         <td>
             <?php echo $form->textArea($model, 'addsubtext', array('id'=>'addsubtext', 'rows' => 3, 'cols' => 31, 'maxlength' => 200)); ?>
         </td>
     </tr>
     <tr>
-        <td>Promo Period &nbsp<span style="vertical-align: top; color: red; font-weight: bold;">*</span></td>
+        <td style="vertical-align: top;">Promo Period &nbsp<span style="vertical-align: top; color: red; font-weight: bold;">*</span></td>
         <td>
             <?php 
                     $yeartodate = (string)date('Y'); 
@@ -2289,18 +2348,20 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
                     'changeYear' => true,           // can change year
                     'changeMonth' => true,          // can change month
                      'yearRange' => $yearrange,
+                     'minDate' => '0',
                 ),
                 'htmlOptions'=>array(
-                    'style'=>'height:20px; width: 100px;'
+                    'style'=>'height:20px; width: 255px;'
                 ),
             ));
             ?>
+            <!--  DROPDOWNLIST FOR HRS:MINS:SECS FOR PROMO PERIOD (from)  -->
             <?php echo CHtml::dropdownlist('from_hour', '00', array("00" => "00", "01" => "01", "02" => "02", "03" => "03", "04" => "04",
                                                                                                                                 "05" => "05", "06" => "06", "07" => "07", "08" => "08", "09" => "09",
                                                                                                                                 "10" => "10", "11" => "11", "12" => "12", "13" => "13", "14" => "14",
                                                                                                                                 "15" => "15", "16" => "16", "17" => "17", "18" => "18", "19" => "19",
                                                                                                                                 "20" => "20", "21" => "21", "22" => "22", "23" => "23"),
-                                                                                                                                array('style'=>'padding:3px;', 'onChange' => 'javascript: $("#start_date").val(dateText)'));?>
+                                                                                                                                array('style'=>'padding:3px; display: none;'));?>
             <?php echo CHtml::dropdownlist('from_min', '00', array("00" => "00", "01" => "01", "02" => "02", "03" => "03", "04" => "04",
                                                                                                                                 "05" => "05", "06" => "06", "07" => "07", "08" => "08", "09" => "09",
                                                                                                                                 "10" => "10", "11" => "11", "12" => "12", "13" => "13", "14" => "14",
@@ -2312,7 +2373,7 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
                                                                                                                                 "40" => "40", "41" => "41", "42" => "42", "43" => "43", "44" => "44",
                                                                                                                                 "45" => "45", "46" => "46", "47" => "47", "48" => "48", "49" => "49",
                                                                                                                                 "50" => "50", "51" => "51", "52" => "52", "53" => "53", "54" => "54",
-                                                                                                                                "55" => "55", "56" => "56", "57" => "57", "58" => "58", "59" => "59"), array('style'=>'padding:3px;'));?>
+                                                                                                                                "55" => "55", "56" => "56", "57" => "57", "58" => "58", "59" => "59"), array('style'=>'padding:3px; display: none;'));?>
             <?php echo CHtml::dropdownlist('from_sec', '00', array("00" => "00", "01" => "01", "02" => "02", "03" => "03", "04" => "04",
                                                                                                                                 "05" => "05", "06" => "06", "07" => "07", "08" => "08", "09" => "09",
                                                                                                                                 "10" => "10", "11" => "11", "12" => "12", "13" => "13", "14" => "14",
@@ -2324,7 +2385,7 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
                                                                                                                                 "40" => "40", "41" => "41", "42" => "42", "43" => "43", "44" => "44",
                                                                                                                                 "45" => "45", "46" => "46", "47" => "47", "48" => "48", "49" => "49",
                                                                                                                                 "50" => "50", "51" => "51", "52" => "52", "53" => "53", "54" => "54",
-                                                                                                                                "55" => "55", "56" => "56", "57" => "57", "58" => "58", "59" => "59"), array('style'=>'padding:3px;'));?>
+                                                                                                                                "55" => "55", "56" => "56", "57" => "57", "58" => "58", "59" => "59"), array('style'=>'padding:3px; display: none;'));?>
             &nbsp;<br/>
             <b>To :</b>
             <?php
@@ -2338,17 +2399,19 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
                     'changeYear' => true,           // can change year
                     'changeMonth' => true,          // can change month
                      'yearRange' => $yearrange,
+                     'minDate' => '0',
                 ),
                 'htmlOptions'=>array(
-                    'style'=>'disabled: true; height:20px; width: 100px; margin-top: 5px; margin-left: 18px;'
+                    'style'=>'disabled: true; height:20px; width: 255px; margin-top: 5px; margin-left: 18px;'
                 ),
             ));
             ?>
+            <!--  DROPDOWNLIST FOR HRS:MINS:SECS FOR PROMO PERIOD (to)  -->
             <?php echo CHtml::dropdownlist('to_hour', '00', array("00" => "00", "01" => "01", "02" => "02", "03" => "03", "04" => "04",
                                                                                                                                 "05" => "05", "06" => "06", "07" => "07", "08" => "08", "09" => "09",
                                                                                                                                 "10" => "10", "11" => "11", "12" => "12", "13" => "13", "14" => "14",
                                                                                                                                 "15" => "15", "16" => "16", "17" => "17", "18" => "18", "19" => "19",
-                                                                                                                                "20" => "20", "21" => "21", "22" => "22", "23" => "23"), array('style'=>'padding:3px;'));?>
+                                                                                                                                "20" => "20", "21" => "21", "22" => "22", "23" => "23"), array('style'=>'padding:3px; display: none;'));?>
             <?php echo CHtml::dropdownlist('to_min', '00', array("00" => "00", "01" => "01", "02" => "02", "03" => "03", "04" => "04",
                                                                                                                                 "05" => "05", "06" => "06", "07" => "07", "08" => "08", "09" => "09",
                                                                                                                                 "10" => "10", "11" => "11", "12" => "12", "13" => "13", "14" => "14",
@@ -2360,7 +2423,7 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
                                                                                                                                 "40" => "40", "41" => "41", "42" => "42", "43" => "43", "44" => "44",
                                                                                                                                 "45" => "45", "46" => "46", "47" => "47", "48" => "48", "49" => "49",
                                                                                                                                 "50" => "50", "51" => "51", "52" => "52", "53" => "53", "54" => "54",
-                                                                                                                                "55" => "55", "56" => "56", "57" => "57", "58" => "58", "59" => "59"), array('style'=>'padding:3px;'));?>
+                                                                                                                                "55" => "55", "56" => "56", "57" => "57", "58" => "58", "59" => "59"), array('style'=>'padding:3px; display: none;'));?>
             <?php echo CHtml::dropdownlist('to_sec', '00', array("00" => "00", "01" => "01", "02" => "02", "03" => "03", "04" => "04",
                                                                                                                                 "05" => "05", "06" => "06", "07" => "07", "08" => "08", "09" => "09",
                                                                                                                                 "10" => "10", "11" => "11", "12" => "12", "13" => "13", "14" => "14",
@@ -2372,7 +2435,7 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
                                                                                                                                 "40" => "40", "41" => "41", "42" => "42", "43" => "43", "44" => "44",
                                                                                                                                 "45" => "45", "46" => "46", "47" => "47", "48" => "48", "49" => "49",
                                                                                                                                 "50" => "50", "51" => "51", "52" => "52", "53" => "53", "54" => "54",
-                                                                                                                                "55" => "55", "56" => "56", "57" => "57", "58" => "58", "59" => "59"), array('style'=>'padding:3px;'));?>
+                                                                                                                                "55" => "55", "56" => "56", "57" => "57", "58" => "58", "59" => "59"), array('style'=>'padding:3px; display: none;'));?>
         </td>
     </tr>
      <tr id="additemcount-row">
@@ -2407,17 +2470,19 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
                     'changeYear' => true,           // can change year
                     'changeMonth' => true,          // can change month
                      'yearRange' => $yearrange,
+                     'minDate' => '0',
                 ),
                 'htmlOptions'=>array(
-                    'style'=>'disabled: true; height:20px; width: 150px; margin-top: 5px;;'
+                    'style'=>'height:20px; width: 150px; margin-top: 5px;'
                 ),
             ));
             ?>
+            <!--  DROPDOWNLIST FOR HRS:MINS:SECS FOR DRAWDATE  -->
             <?php echo CHtml::dropdownlist('drawdate_hour', '00', array("00" => "00", "01" => "01", "02" => "02", "03" => "03", "04" => "04",
                                                                                                                                 "05" => "05", "06" => "06", "07" => "07", "08" => "08", "09" => "09",
                                                                                                                                 "10" => "10", "11" => "11", "12" => "12", "13" => "13", "14" => "14",
                                                                                                                                 "15" => "15", "16" => "16", "17" => "17", "18" => "18", "19" => "19",
-                                                                                                                                "20" => "20", "21" => "21", "22" => "22", "23" => "23"), array('style'=>'padding:3px;'));?>
+                                                                                                                                "20" => "20", "21" => "21", "22" => "22", "23" => "23"), array('style'=>'padding:3px; display: none;'));?>
             <?php echo CHtml::dropdownlist('drawdate_min', '00', array("00" => "00", "01" => "01", "02" => "02", "03" => "03", "04" => "04",
                                                                                                                                 "05" => "05", "06" => "06", "07" => "07", "08" => "08", "09" => "09",
                                                                                                                                 "10" => "10", "11" => "11", "12" => "12", "13" => "13", "14" => "14",
@@ -2429,7 +2494,7 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
                                                                                                                                 "40" => "40", "41" => "41", "42" => "42", "43" => "43", "44" => "44",
                                                                                                                                 "45" => "45", "46" => "46", "47" => "47", "48" => "48", "49" => "49",
                                                                                                                                 "50" => "50", "51" => "51", "52" => "52", "53" => "53", "54" => "54",
-                                                                                                                                "55" => "55", "56" => "56", "57" => "57", "58" => "58", "59" => "59"), array('style'=>'padding:3px;'));?>
+                                                                                                                                "55" => "55", "56" => "56", "57" => "57", "58" => "58", "59" => "59"), array('style'=>'padding:3px; display: none;'));?>
             <?php echo CHtml::dropdownlist('drawdate_sec', '00', array("00" => "00", "01" => "01", "02" => "02", "03" => "03", "04" => "04",
                                                                                                                                 "05" => "05", "06" => "06", "07" => "07", "08" => "08", "09" => "09",
                                                                                                                                 "10" => "10", "11" => "11", "12" => "12", "13" => "13", "14" => "14",
@@ -2441,7 +2506,7 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
                                                                                                                                 "40" => "40", "41" => "41", "42" => "42", "43" => "43", "44" => "44",
                                                                                                                                 "45" => "45", "46" => "46", "47" => "47", "48" => "48", "49" => "49",
                                                                                                                                 "50" => "50", "51" => "51", "52" => "52", "53" => "53", "54" => "54",
-                                                                                                                                "55" => "55", "56" => "56", "57" => "57", "58" => "58", "59" => "59"), array('style'=>'padding:3px;'));?>
+                                                                                                                                "55" => "55", "56" => "56", "57" => "57", "58" => "58", "59" => "59"), array('style'=>'padding:3px; display: none;'));?>
         </td>
     </tr>
 </table>
@@ -2451,7 +2516,7 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
         <td colspan="3">
             <div id="add-breadcrumbs">
                 <span id="title-breadcrumbs-row">Add Reward Details</span>
-                <img id="add-breadcrumbs-image" src="../../images/primarydetails.png">
+                <img id="add-breadcrumbs-image" src="../../images/aboutreward.png">
             </div>
         </td>
     </tr>
@@ -2551,10 +2616,11 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
             'loadonce' => true,
             'caption' => 'Manage Rewards',
             'height' => '50',
-            'colNames' => array('Partner', 'Reward', 'Category', 'Points Required', "Eligibility", 'Status', 'Promo Period','Action'),
+            'colNames' => array('Partner', 'Reward', 'Description', 'Category', 'Points Required', "Eligibility", 'Status', 'Promo Period','Action'),
             'colModel' => array(
                 array('name' => 'PartnerName', 'sortable' => false, 'width' => '200px', 'resizable' => true, 'align' => 'center'),
                 array('name' => 'RewardName', 'sortable' => false, 'width' => '350px', 'resizable' => true, 'align' => 'center'),
+                array('name' => 'Description', 'sortable' => false, 'width' => '220px', 'resizable' => true, 'align' => 'center', 'hidden' => true),
                 array('name' => 'Category', 'sortable' => false, 'width' => '220px', 'resizable' => true, 'align' => 'center'),
                 array('name' => 'Points', 'sortable' => false, 'width' => '80px', 'resizable' => true, 'align' => 'center'),
                 array('name' => 'Eligibility', 'sortable' => false, 'width' => '120px', 'resizable' => true, 'align' => 'center'),

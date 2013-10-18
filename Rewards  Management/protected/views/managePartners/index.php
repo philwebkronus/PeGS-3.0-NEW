@@ -77,6 +77,23 @@ $("#partnerNameLink").live("click",function(){
     $("#ContactMobile").val(contactPersonMobile);
     $("#NumberOfRewardOfferings").val(numberOfRewardOffers);
     $("#Status").val(status).attr("selected", "selected");
+    
+    $("#PartnerID2").val(partnerID);
+    $("#Partner2").val(partnerName);
+    $("#companyAddress2").val(companyAddress);
+    $("#PNumber2").val(companyPhone);
+    $("#FNumber2").val(companyFax);
+    $("#EmailAddress2").val(companyEmail);
+    $("#Website2").val(companyWebsite);
+    $("#ContactPerson2").val(contactPerson);
+    $("#ContactPosition2").val(contactPersonPosition);
+    $("#ContactEmailAddress2").val(contactPersonEmail);
+    $("#ContactPhoneNumber2").val(contactPersonPhone);
+    $("#ContactMobile2").val(contactPersonMobile);
+    $("#NumberOfRewardOfferings2").val(numberOfRewardOffers);
+    $("#Status2").val(status).attr("selected", "selected");
+    $("#LastStatus2").val(status);
+    
     //Disable Fields
     $("#Partner").attr('disabled','disabled');
     $("#companyAddress").attr('disabled','disabled');
@@ -105,6 +122,7 @@ $(".addBtn").live("click", function(){
     $("#EmailAddressAdd").val("");
     $("#WebsiteAdd").val("");
     $("#ContactPersonAdd").val("");
+    $("#UsernameAdd").val("");
     $("#ContactPositionAdd").val("");
     $("#ContactEmailAddressAdd").val("");
     $("#ContactPhoneNumberAdd").val("");
@@ -192,7 +210,24 @@ $(".addBtn").live("click", function(){
                 }
                 else
                 {   
-                    return true;
+                    if (phonenumber.length < 5)
+                    {
+                        $("#msgdialogAdd").css({'text-align':"left",'color':"red"});
+                        $("#msgdialogAdd").html("Phone Number too short (minimum is 5 characters)");
+                        
+                        return false;
+                    }
+                    else if (faxnumber.length < 7)
+                    {
+                        $("#msgdialogAdd").css({'text-align':"left",'color':"red"});
+                        $("#msgdialogAdd").html("Fax Number too short (minimum is 7 characters)");
+                        
+                        return false;
+                    }
+                    else
+                    {
+                        return true;
+                    }
                 }
             }
             else if (part == 2)
@@ -269,7 +304,31 @@ $(".addBtn").live("click", function(){
                 }
                 else
                 {
-                    $("#addpartner-form").submit();
+                    if (contactposition.length < 5)
+                    {
+                        $("#msgdialogAdd").css({'text-align':"left",'color':"red"});
+                        $("#msgdialogAdd").html("Position too short (minimum is 5 characters)");
+                        
+                        return false;
+                    }
+                    else if (contactpnumber.length < 7)
+                    {
+                        $("#msgdialogAdd").css({'text-align':"left",'color':"red"});
+                        $("#msgdialogAdd").html("Contact Person's Phone Number too short (minimum is 7 characters)");
+                        
+                        return false;
+                    }
+                    else if (contactmobile.length < 11)
+                    {
+                        $("#msgdialogAdd").css({'text-align':"left",'color':"red"});
+                        $("#msgdialogAdd").html("Mobile Number too short (minimum is 11 characters)");
+                        
+                        return false;
+                    }
+                    else
+                    {
+                        $("#addpartner-form").submit();
+                    }
                 }
             }
         }
@@ -431,14 +490,14 @@ $(".addBtn").live("click", function(){
                 else if (/^[a-zA-Z0-9- ]*$/.test(phonenumber) === false)
                 {
                     $("#msgdialog").css({'text-align':"left",'color':"red"});
-                    $("#msgdialog").html("Special character/s is/are not allowed in Company Address");
+                    $("#msgdialog").html("Special character/s is/are not allowed in Phone Number");
                 
                     return false;
                 }
                 else if (/^[a-zA-Z0-9- ]*$/.test(faxnumber) === false)
                 {
                     $("#msgdialog").css({'text-align':"left",'color':"red"});
-                    $("#msgdialog").html("Special character/s is/are not allowed in Company Address");
+                    $("#msgdialog").html("Special character/s is/are not allowed in Fax Number");
                 
                     return false;
                 }
@@ -458,7 +517,24 @@ $(".addBtn").live("click", function(){
                 }
                 else
                 {
-                    return true;
+                    if (phonenumber.length < 5)
+                    {
+                        $("#msgdialog").css({'text-align':"left",'color':"red"});
+                        $("#msgdialog").html("Phone Number too short (minimum is 5 characters)");
+                        
+                        return false;
+                    }
+                    else if (faxnumber.length < 7)
+                    {
+                        $("#msgdialog").css({'text-align':"left",'color':"red"});
+                        $("#msgdialog").html("Fax Number too short (minimum is 7 characters)");
+                        
+                        return false;
+                    }
+                    else
+                    {
+                        return true;
+                    }
                 }
             }
             else if (part == 2)
@@ -530,19 +606,46 @@ $(".addBtn").live("click", function(){
                     
                     return false;
                 }
-                else if (status != laststatus)
-                {
-                    var c = confirm("Are you sure you want to change the partner's status?");
-                    if (c == true)
-                    {
-                        $("#editpartner-form-editlink").submit();
-                    }
-                }
                 else
                 {
-                    $("#editpartner-form-editlink").submit();
-                    
-                    return true;
+                    if (contactposition.length < 5)
+                    {
+                        $("#msgdialog").css({'text-align':"left",'color':"red"});
+                        $("#msgdialog").html("Position too short (minimum is 5 characters)");
+                        
+                        return false;
+                    }
+                    else if (contactpnumber.length < 7)
+                    {
+                        $("#msgdialog").css({'text-align':"left",'color':"red"});
+                        $("#msgdialog").html("Contact Person's Phone Number too short (minimum is 7 characters)");
+                        
+                        return false;
+                    }
+                    else if (contactmobile.length < 11)
+                    {
+                        $("#msgdialog").css({'text-align':"left",'color':"red"});
+                        $("#msgdialog").html("Mobile Number too short (minimum is 11 characters)");
+                        
+                        return false;
+                    }
+                    else
+                    {
+                        //Check if status is change
+                        if (status != laststatus)
+                        {
+                            var c = confirm("Are you sure you want to change the partner's status?");
+                            if (c == true)
+                            {
+                                $("#editpartner-form-editlink").submit();
+                            }
+                        }
+                        else
+                        {
+                            $("#editpartner-form-editlink").submit();
+                        }
+                        return true;
+                    }
                 }
             }
         }
@@ -570,9 +673,9 @@ $(".addBtn").live("click", function(){
                     colNames:['Partner Name', 'Status', 'Number of Reward Offers', 'Contact Person', "Contact Person's Email", ''],
                     colModel:[
                             {name : 'Name', sortable : false, width : '200', resizable : true, align : 'center'},
-                            {name : 'StatusName', sortable : false, width : '90', resizable : true, align : 'center'},
-                            {name : 'NumberOfRewardOffers', sortable : false, width : '160', resizable : true, align : 'center'},
-                            {name : 'ContactPerson', sortable : false, width : '190', resizable : true, align : 'center'},
+                            {name : 'StatusName', sortable : false, width : '87', resizable : true, align : 'center'},
+                            {name : 'NumberOfRewardOffers', sortable : false, width : '159', resizable : true, align : 'center'},
+                            {name : 'ContactPerson', sortable : false, width : '180', resizable : true, align : 'center'},
                             {name : 'ContactPersonEmail', sortable : false, width : '180', resizable : true, align : 'center'},
                             {name : 'EditLink', 'sortable' : false, width : '59', resizable : false, align : 'center'},  
                     ],
@@ -1120,6 +1223,7 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
         'width' => '300',
         'open' => 'js:function(event, ui) { 
                         $(this).siblings(".ui-dialog-titlebar-close").hide();
+                        $(this).siblings(".ui-dialog-buttonpane").find("button").eq(1).show();
                         $(this).siblings(".ui-dialog-buttonpane").find("button").eq(2).hide();
                         $("#msgdialog2").html("");
                         $(this).scrollTop(0);
@@ -1132,22 +1236,8 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
                 $(this).dialog("close");
             }',
             'EDIT' => 'js:function(){
-                    $("#Partner").removeAttr("disabled");
-                    $("#companyAddress").removeAttr("disabled");
-                    $("#PNumber").removeAttr("disabled");
-                    $("#FNumber").removeAttr("disabled");
-                    $("#EmailAddress").removeAttr("disabled");
-                    $("#Website").removeAttr("disabled");
-                    $("#ContactPerson").removeAttr("disabled");
-                    $("#ContactPosition").removeAttr("disabled");
-                    $("#ContactEmailAddress").removeAttr("disabled");
-                    $("#ContactPhoneNumber").removeAttr("disabled");
-                    $("#ContactMobile").removeAttr("disabled");
-                    $("#NumberOfRewardOfferings").removeAttr("disabled");
-                    $("#Status").removeAttr("disabled");
-                    $(this).siblings(".ui-dialog-buttonpane").find("button").eq(1).hide();
-                    $(this).siblings(".ui-dialog-buttonpane").find("button").eq(2).show();
-                    $(this).dialog("option", "title", "EDIT PARTNER\'S DETAILS");
+                    $(this).dialog("close");
+                    $("#editPartner2ndDialog-compdtls").dialog("open");
             }',
             'SAVE' => 'js:function(){
                     validateInputs(1);

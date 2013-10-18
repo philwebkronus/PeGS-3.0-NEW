@@ -122,7 +122,7 @@ class RewardItemsModel extends CFormModel
                                         WHEN 1 THEN 'Active'
                                         WHEN 2 THEN 'Inactive'
                                         WHEN 3 THEN 'Out-Of-Stock'
-                                    END as Status, ri.AvailableItemCount, ri.OfferStartDate, ri.OfferEndDate, ri.About, ri.Terms
+                                    END as Status, ri.AvailableItemCount, ri.OfferStartDate, ri.OfferEndDate, ri.About, ri.Terms, ri.SubText as Description
                                     FROM rewarditems ri
                                     LEFT JOIN ref_partners rp ON rp.PartnerID = ri.PartnerID
                                     INNER JOIN ref_playerclassification rpc ON rpc.PClassID = ri.PClassID
@@ -135,7 +135,7 @@ class RewardItemsModel extends CFormModel
                                         WHEN 1 THEN 'Active'
                                         WHEN 2 THEN 'Inactive'
                                         WHEN 3 THEN 'Out-Of-Stock'
-                                    END as Status, ri.AvailableItemCount, ri.OfferStartDate, ri.OfferEndDate, ri.About, ri.Terms
+                                    END as Status, ri.AvailableItemCount, ri.OfferStartDate, ri.OfferEndDate, ri.About, ri.Terms, ri.SubText as Description
                                     FROM rewarditems ri
                                     LEFT JOIN ref_partners rp ON rp.PartnerID = ri.PartnerID
                                     INNER JOIN ref_playerclassification rpc ON rpc.PClassID = ri.PClassID
@@ -148,7 +148,7 @@ class RewardItemsModel extends CFormModel
                                         WHEN 1 THEN 'Active'
                                         WHEN 2 THEN 'Inactive'
                                         WHEN 3 THEN 'Out-Of-Stock'
-                                    END as Status, ri.AvailableItemCount, ri.OfferStartDate, ri.OfferEndDate, ri.About, ri.Terms
+                                    END as Status, ri.AvailableItemCount, ri.OfferStartDate, ri.OfferEndDate, ri.About, ri.Terms, ri.SubText as Description
                                     FROM rewarditems ri
                                     LEFT JOIN ref_partners rp ON rp.PartnerID = ri.PartnerID
                                     INNER JOIN ref_playerclassification rpc ON rpc.PClassID = ri.PClassID
@@ -161,7 +161,7 @@ class RewardItemsModel extends CFormModel
                                         WHEN 1 THEN 'Active'
                                         WHEN 2 THEN 'Inactive'
                                         WHEN 3 THEN 'Out-Of-Stock'
-                                    END as Status, ri.AvailableItemCount, ri.OfferStartDate, ri.OfferEndDate, ri.About, ri.Terms
+                                    END as Status, ri.AvailableItemCount, ri.OfferStartDate, ri.OfferEndDate, ri.About, ri.Terms, ri.SubText as Description
                                     FROM rewarditems ri
                                     LEFT JOIN ref_partners rp ON rp.PartnerID = ri.PartnerID
                                     INNER JOIN ref_playerclassification rpc ON rpc.PClassID = ri.PClassID

@@ -76,6 +76,7 @@ class ManagePartnersForm extends CFormModel
     {
         return array(
             'eGamesPartner' => 'eGames Partner',
+            'companyAddress' => 'Company Name',
             'contactPerson' => 'Contact Person',
             'contactPhoneNumber' => 'Phone Number',
             'contactEmailAddress' => 'Email Address',
