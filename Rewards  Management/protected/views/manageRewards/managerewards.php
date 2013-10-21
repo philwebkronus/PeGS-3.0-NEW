@@ -348,12 +348,12 @@ tinyMCE.init({
                     }
                 }
             } else if(part == 2){                                   //About the Reward (part 1)
-                var thblimited =$('#thblimitedframe').contents().find('#thbsubmit_limited').attr('ImageName');
-                var thboutofstock = $('#thboutofstockframe').contents().find('#thbsubmit_outofstock').attr('ImageName');
-                var ecoupon = $('#ecouponframe').contents().find('#ecoupon_submit').attr('ImageName');
-                var lmlimited = $('#lmlimitedframe').contents().find('#lmsubmit_limited').attr('ImageName');
-                var lmoutofstock = $('#lmoutofstockframe').contents().find('#lmsubmit_outofstock').attr('ImageName');
-                var webslider = $('#websliderframe').contents().find('#webslider_submit').attr('ImageName');
+                var thblimited =$('#addthblimitedframe').contents().find('#thbsubmit_limited').attr('ImageName');
+                var thboutofstock = $('#addthboutofstockframe').contents().find('#thbsubmit_outofstock').attr('ImageName');
+                var ecoupon = $('#addecouponframe').contents().find('#ecoupon_submit').attr('ImageName');
+                var lmlimited = $('#addlmlimitedframe').contents().find('#lmsubmit_limited').attr('ImageName');
+                var lmoutofstock = $('#addlmoutofstockframe').contents().find('#lmsubmit_outofstock').attr('ImageName');
+                var webslider = $('#addwebsliderframe').contents().find('#webslider_submit').attr('ImageName');
 
                 if((thblimited == "" || thblimited == undefined || thblimited == null) && 
                     (thboutofstock == "" || thboutofstock == undefined || thboutofstock == null) && 
@@ -988,6 +988,8 @@ tinyMCE.init({
  * @Description: Form for Deleting of Reward Item/Coupon
  * @Author: aqdepliyan
  */
+        $urlrefresh = Yii::app()->createUrl('manageRewards/managerewards');
+        
         $form = $this->beginWidget('CActiveForm', array(
             'id' => 'delete-item-form',
             'enableClientValidation' => true,
@@ -1081,13 +1083,16 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog',array(
         'draggable'=>false,
         'show'=>'fade',
         'hide'=>'fade',
+        'close' => 'js:function(event, ui){
+            window.location.href = "'.$urlrefresh.'"; 
+        }',
         'buttons' => array
         (
             'YES'=>'js:function(){
                 $("#delete-item-form").submit();
                 $(this).dialog("close");
             }',
-            'NO'=>'js:function(){ $(this).dialog("close"); }',
+            'NO'=>'js:function(){ $(this).dialog("close"); window.location.href = "'.$urlrefresh.'"; }',
         ),
     ),
 ));
@@ -1117,6 +1122,9 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog',array(
         'hide'=>'fade',
         'width'=>350,
         'height'=>200,
+        'close' => 'js:function(event, ui){
+            window.location.href = "'.$urlrefresh.'"; 
+        }',
         'buttons' => array
         (
             'OK'=>'js:function(){
@@ -1156,12 +1164,16 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog',array(
         'hide'=>'fade',
         'width'=>350,
         'height'=>200,
+        'close' => 'js:function(event, ui){
+            window.location.href = "'.$urlrefresh.'"; 
+        }',
         'buttons' => array
         (
             'OK'=>'js:function(){
                 $("#additems").val("");
                 $("#additems").change();
                 $(this).dialog("close");
+                window.location.href = "'.$urlrefresh.'"; 
             }',
         ),
     ),
@@ -1191,6 +1203,7 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog',array(
         'close' => 'js:function(event,ui){
                         $("#additems").val("");
                         $("#additems").change();
+                        window.location.href = "'.$urlrefresh.'"; 
         }',
         'buttons' => array
         (
@@ -1268,6 +1281,9 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog',array(
         'hide'=>'fade',
         'width'=>350,
         'height'=>200,
+        'close' => 'js:function(event, ui){
+            window.location.href = "'.$urlrefresh.'"; 
+        }',
         'buttons' => array
         (
             'OK'=>'js:function(){
@@ -1551,11 +1567,15 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
                                 $("#edittermsreward").hide();
                             }
             }',
+            'close' => 'js:function(event,ui){
+                            window.location.href = "'.$urlrefresh.'";
+            }',
             'buttons' => array
             (
                 array('id' => 'firstback','text'=>'BACK',
                             'click'=> 'js:function(){
                                         $(this).dialog("close");
+                                        window.location.href = "'.$urlrefresh.'";
                             }'),
                 array('id' => 'secondback','text'=>'BACK','click'=> 'js:function(){
                                         $("#primarydetails").show();
@@ -2134,11 +2154,15 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
                                 $("#addtermsreward").hide();
                             }
             }',
+            'close' => 'js:function(event,ui){
+                            window.location.href = "'.$urlrefresh.'";
+            }',
             'buttons' => array
             (
                 array('id' => 'firstback','text'=>'BACK',
                             'click'=> 'js:function(){
                                         $(this).dialog("close");
+                                        window.location.href = "'.$urlrefresh.'";
                             }'),
                 array('id' => 'secondback','text'=>'BACK','click'=> 'js:function(){
                                         $("#addprimarydetails").show();
@@ -2209,7 +2233,8 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
                                         }      
                             }'),
                 array('id' => 'secondnext','text'=>'NEXT','click'=> 'js:function(){
-                                        var results = validateinputs(2,2);
+                                        var rewardid = $("#addrewardid").val();
+                                        var results = validateinputs(2,2,rewardid);
                                         if(results == true){
                                                 $("#addprimarydetails").hide();
                                                 $("#addaboutthereward").hide();
@@ -2227,7 +2252,8 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
                                         } 
                             }'),
                 array('id' => 'thirdnext','text'=>'NEXT','click'=> 'js:function(){
-                                        var results = validateinputs(2,3);
+                                        var rewardid = $("#addrewardid").val();
+                                        var results = validateinputs(2,3,rewardid);
                                         if(results == true){
                                                 $("#addprimarydetails").hide();
                                                 $("#addaboutthereward").hide();
@@ -2246,7 +2272,8 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
                                         
                             }'),
                 array('id' => 'save','text'=>'SAVE','click'=> 'js:function(){
-                                        var results = validateinputs(2,4);
+                                        var rewardid = $("#addrewardid").val();
+                                        var results = validateinputs(2,4,rewardid);
                                         if(results == true){
                                                 $("#add-item-form").submit();
                                                 $(this).dialog("close");
@@ -2524,19 +2551,19 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
     <tr>
         <td colspan="3">
             <div id="balancer"></div>
-            <iframe id="thblimitedframe"
+            <iframe id="addthblimitedframe"
                     src="<?php echo Yii::app()->createUrl('manageRewards/thumbnailLimited'); ?>" 
-                    style="height: 235px; width: 160px; overflow: hidden; border: none; background: #FFFFFF;" >
+                    style="height: 248px; width: 160px; overflow: hidden; border: none; background: #FFFFFF;" >
             </iframe>
             <?php echo CHtml::hiddenField('thblimitedphoto', '', array('id' => 'thblimitedphoto')); ?>
-            <iframe id="thboutofstockframe"
+            <iframe id="addthboutofstockframe"
                     src="<?php echo Yii::app()->createUrl('manageRewards/thumbnailOutofstock'); ?>" 
-                    style="height: 235px; width: 160px; overflow: hidden; border: none; background: #FFFFFF;">
+                    style="height: 248px; width: 160px; overflow: hidden; border: none; background: #FFFFFF;">
             </iframe>
             <?php echo CHtml::hiddenField('thboutofstockphoto', '',array('id' => 'thboutofstockphoto')); ?>
-            <iframe id="ecouponframe"
+            <iframe id="addecouponframe"
                     src="<?php echo Yii::app()->createUrl('manageRewards/eCoupon'); ?>" 
-                    style="height: 235px; width: 160px; overflow: hidden; border: none; background: #FFFFFF;">
+                    style="height: 248px; width: 160px; overflow: hidden; border: none; background: #FFFFFF;">
             </iframe>
             <?php echo CHtml::hiddenField('ecouponphoto', '',array('id' => 'ecouponphoto')); ?>
         </td>
@@ -2544,19 +2571,19 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
     <tr>
         <td colspan="3">
             <div id="balancer"></div>
-            <iframe id="lmlimitedframe"
+            <iframe id="addlmlimitedframe"
                     src="<?php echo Yii::app()->createUrl('manageRewards/learnMoreLimited'); ?>" 
-                    style="height: 235px; width: 160px; overflow: hidden; border: none; background: #FFFFFF;">
+                    style="height: 248px; width: 160px; overflow: hidden; border: none; background: #FFFFFF;">
             </iframe>
             <?php echo CHtml::hiddenField('lmlimitedphoto', '', array('id' => 'lmlimitedphoto')); ?>
-            <iframe id="lmoutofstockframe"
+            <iframe id="addlmoutofstockframe"
                     src="<?php echo Yii::app()->createUrl('manageRewards/learnMoreOutofstock'); ?>" 
-                    style="height: 235px; width: 160px; overflow: hidden; border: none; background: #FFFFFF;">
+                    style="height: 248px; width: 160px; overflow: hidden; border: none; background: #FFFFFF;">
             </iframe>
             <?php echo CHtml::hiddenField('lmoutofstockphoto', '', array('id' => 'lmoutofstockphoto')); ?>
-            <iframe id="websliderframe"
+            <iframe id="addwebsliderframe"
                     src="<?php echo Yii::app()->createUrl('manageRewards/websiteSlider'); ?>" 
-                    style="height: 235px; width: 160px; overflow: hidden; border: none; background: #FFFFFF;">
+                    style="height: 248px; width: 160px; overflow: hidden; border: none; background: #FFFFFF;">
             </iframe>
             <?php echo CHtml::hiddenField('websliderphoto', '',array('id' => 'websliderphoto')); ?>
         </td>

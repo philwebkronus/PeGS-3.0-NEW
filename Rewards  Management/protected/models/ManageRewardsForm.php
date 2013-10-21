@@ -21,7 +21,6 @@ Class ManageRewardsForm extends CFormModel
     public $editeligibility;
     public $editeligibilityreadonly;
     public $editstatus;
-    public $editavailableitemcount;
     public $editabout;
     public $editterms;
     public $editsubtext;
@@ -33,7 +32,6 @@ Class ManageRewardsForm extends CFormModel
     public $addpoints;
     public $addeligibility;
     public $addstatus;
-    public $addavailableitemcount;
     public $addabout;
     public $addterms;
     public $addsubtext;
@@ -56,7 +54,7 @@ Class ManageRewardsForm extends CFormModel
                         addcategory, addpoints, addeligibility, addstatus, additemcount, addavailableitemcount,
                         addrewardid, addpromoname, addpromocode, addsubtext', 'required'),
             
-            array('additems', 'length', 'max' => 5),
+            array('additems', 'length', 'max' => 5,'min' => 1),
             array('editrewarditem', 'length', 'max' => 50),
             array('addrewarditem', 'length', 'max' => 50),
             array('addpromoname', 'length', 'max' => 50),
@@ -64,8 +62,7 @@ Class ManageRewardsForm extends CFormModel
             array('editsubtext', 'length', 'max' => 200),
             array('editpoints', 'length', 'max' => 6, 'min' => 2),
             array('addpoints', 'length', 'max' => 6, 'min' => 2),
-            array('editavailableitemcount', 'length', 'max' => 5, 'min' => 1),
-            array('addavailableitemcount', 'length', 'max' => 5, 'min' => 1),
+            array('additemcount', 'length', 'max' => 5, 'min' => 1),
             array('editabout', 'length', 'max' => 500, 'min' => 10),
             array('editterms', 'length', 'max' => 500, 'min' => 10),
             array('addabout', 'length', 'max' => 500, 'min' => 10),
