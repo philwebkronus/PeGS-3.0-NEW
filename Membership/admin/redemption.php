@@ -24,22 +24,22 @@ App::LoadModuleClass("Membership", "AuditFunctions");
 App::LoadModuleClass('Membership', 'Helper');
 App::LoadModuleClass('Membership', 'MembershipSmsAPI');
 
-App::LoadModuleClass("Loyalty", "CouponBatches");
+App::LoadModuleClass("Rewards", "CouponBatches");
 App::LoadModuleClass("Loyalty", "MemberCards");
 App::LoadModuleClass("Loyalty", "Cards");
 App::LoadModuleClass("Loyalty", "CardTypes");
 App::LoadModuleClass("Loyalty", "Rewards");
 App::LoadModuleClass("Loyalty", "CardTransactions");
-App::LoadModuleClass('Loyalty', 'RewardItems');
+App::LoadModuleClass('Rewards', 'RewardItems');
 App::LoadModuleClass('Loyalty', 'RewardOffers');
-App::LoadModuleClass('Loyalty', 'CouponRedemptionLogs');
-App::LoadModuleClass('Loyalty', 'RaffleCoupons');
-App::LoadModuleClass("Loyalty", "ItemRedemptionLogs");
+App::LoadModuleClass('Rewards', 'CouponRedemptionLogs');
+App::LoadModuleClass('Rewards', 'RaffleCoupons');
+App::LoadModuleClass("Rewards", "ItemRedemptionLogs");
 App::LoadModuleClass("Loyalty", "Promos");
-App::LoadModuleClass("Loyalty", "PendingRedemption");
+App::LoadModuleClass("Rewards", "PendingRedemption");
 App::LoadModuleClass("Loyalty", "SMSRequestLogs");
-App::LoadModuleClass("Loyalty", "ItemSerialCodes");
-App::LoadModuleClass("Loyalty", "Partners");
+App::LoadModuleClass("Rewards", "ItemSerialCodes");
+App::LoadModuleClass("Rewards", "Partners");
 
 App::LoadModuleClass('Kronus', 'Sites');
 
@@ -66,7 +66,6 @@ $_AuditTrail = new AuditTrail();
 $_ItemRedemptionLogs = new ItemRedemptionLogs();
 $_CouponRedemptionLogs = new CouponRedemptionLogs();
 $_RaffleCoupons = new RaffleCoupons();
-$_RewardOffers = new RewardOffers();
 $_RewardItems = new RewardItems();
 $_MemberCards = new MemberCards();
 $_MemberInfo = new MemberInfo();

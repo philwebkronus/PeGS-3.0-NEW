@@ -1,6 +1,6 @@
 <?php
 
-App::LoadModuleClass("Loyalty", "ItemRedemptionLogs");
+App::LoadModuleClass("Rewards", "ItemRedemptionLogs");
 
 App::LoadCore('Validation.class.php');
 App::LoadControl("TextBox");

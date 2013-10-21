@@ -44,22 +44,20 @@ if(isset($_SESSION['RewardItemsInfo'])){
     App::LoadModuleClass('Membership', 'Helper');
     App::LoadModuleClass('Membership', 'MembershipSmsAPI');
 
-    App::LoadModuleClass("Loyalty", "CouponBatches");
+    App::LoadModuleClass("Rewards", "CouponBatches");
     App::LoadModuleClass("Loyalty", "MemberCards");
     App::LoadModuleClass("Loyalty", "Cards");
     App::LoadModuleClass("Loyalty", "CardTypes");
     App::LoadModuleClass("Loyalty", "Rewards");
     App::LoadModuleClass("Loyalty", "CardTransactions");
-    App::LoadModuleClass('Loyalty', 'RewardItems');
-    App::LoadModuleClass('Loyalty', 'CouponRedemptionLogs');
-    App::LoadModuleClass('Loyalty', 'RaffleCoupons');
-    App::LoadModuleClass("Loyalty", "ItemRedemptionLogs");
-    App::LoadModuleClass("Loyalty", "RewardItemDetails");
-    App::LoadModuleClass("Loyalty", "Promos");
-    App::LoadModuleClass("Loyalty", "PendingRedemption");
+    App::LoadModuleClass('Rewards', 'RewardItems');
+    App::LoadModuleClass('Rewards', 'CouponRedemptionLogs');
+    App::LoadModuleClass('Rewards', 'RaffleCoupons');
+    App::LoadModuleClass("Rewards", "ItemRedemptionLogs");
+    App::LoadModuleClass("Rewards", "PendingRedemption");
     App::LoadModuleClass("Loyalty", "SMSRequestLogs");
-    App::LoadModuleClass("Loyalty", "ItemSerialCodes");
-    App::LoadModuleClass("Loyalty", "Partners");
+    App::LoadModuleClass("Rewards", "ItemSerialCodes");
+    App::LoadModuleClass("Rewards", "Partners");
 
     App::LoadModuleClass("Kronus", "Sites");
 
@@ -84,8 +82,6 @@ if(isset($_SESSION['RewardItemsInfo'])){
     $_MemberInfo = new MemberInfo();
     $_Ref_city = new Cities();
     $_Ref_region = new Regions();
-    $_RewardItemDetails = new RewardItemDetails();
-    $_Promos = new Promos();
     $_Helper = new Helper();
     $_PendingRedemption = new PendingRedemption();
     $_SMSRequestLogs = new SMSRequestLogs();

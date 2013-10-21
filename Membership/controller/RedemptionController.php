@@ -152,6 +152,7 @@ if($sessioncount > 0)
                 } else {
                     $message = "Failed to log event on database.";
                     $_AuditTrail->RollBackTransaction();
+                    App::ClearStatus();
                     App::SetErrorMessage($message);
                     $txtQuantity->Text = "";
                     $hdnTotalItemPoints->Text = "";
@@ -169,7 +170,7 @@ if($sessioncount > 0)
 
                         //Redemption Process for Coupon
                         $offerenddate = $_RewardItems->getOfferEndDate($redemptiondata["RewardItemID"]);
-                        $RedeemedDate = $offerenddate["CurrentDate"];
+                        $RedeemedDate = $offerenddate["ItemCurrentDate"];
                         
                         //check if the availing date  is greater than the End date of the reward offer.
                         if($RedeemedDate <= $offerenddate["OfferEndDate"]){
@@ -193,6 +194,7 @@ if($sessioncount > 0)
                                     } else {
                                         $message = "Failed to log event on database.";
                                         $_AuditTrail->RollBackTransaction();
+                                        App::ClearStatus();
                                         App::SetErrorMessage($message);
                                         $txtQuantity->Text = "";
                                         $hdnTotalItemPoints->Text = "";
@@ -219,6 +221,7 @@ if($sessioncount > 0)
                                             } else {
                                                 $message = "Failed to log event on database.";
                                                 $_AuditTrail->RollBackTransaction();
+                                                App::ClearStatus();
                                                 App::SetErrorMessage($message);
                                                 $txtQuantity->Text = "";
                                                 $hdnTotalItemPoints->Text = "";
@@ -310,6 +313,7 @@ if($sessioncount > 0)
                                                             }
                                                         } else {
                                                             $_MemberCards->RollBackTransaction();
+                                                            App::ClearStatus();
                                                             $message = "Player Redemption: Error in updating redemption log.";
                                                             $_AuditTrail->StartTransaction();
                                                             if($source == 1){
@@ -326,6 +330,7 @@ if($sessioncount > 0)
                                                             } else {
                                                                 $message = "Failed to log event on database.";
                                                                 $_AuditTrail->RollBackTransaction();
+                                                                App::ClearStatus();
                                                                 App::SetErrorMessage($message);
                                                                 $txtQuantity->Text = "";
                                                                 $hdnTotalItemPoints->Text = "";
@@ -343,6 +348,7 @@ if($sessioncount > 0)
                                                             $_CouponRedemptionLogs->CommitTransaction();
                                                         } else {
                                                             $_CouponRedemptionLogs->RollBackTransaction();
+                                                            App::ClearStatus();
                                                         }
 
                                                         $message = "Player Redemption: Transaction Failed. Please try again.";
@@ -361,6 +367,7 @@ if($sessioncount > 0)
                                                         } else {
                                                             $message = "Failed to log event on database.";
                                                             $_AuditTrail->RollBackTransaction();
+                                                            App::ClearStatus();
                                                             App::SetErrorMessage($message);
                                                             $txtQuantity->Text = "";
                                                             $hdnTotalItemPoints->Text = "";
@@ -370,6 +377,7 @@ if($sessioncount > 0)
 
                                                 } else {
                                                     $_RaffleCoupons->RollBackTransaction();
+                                                    App::ClearStatus();
                                                     $status = 2;
                                                     $couponlogsdetail = $_CouponRedemptionLogs->getSource($CouponRedemptionLogID);
                                                     $_CouponRedemptionLogs->StartTransaction();
@@ -379,6 +387,7 @@ if($sessioncount > 0)
                                                         $_CouponRedemptionLogs->CommitTransaction();
                                                     } else {
                                                         $_CouponRedemptionLogs->RollBackTransaction();
+                                                        App::ClearStatus();
                                                     }
 
                                                     $message = "Player Redemption: Transaction Failed. Please try again.";
@@ -397,6 +406,7 @@ if($sessioncount > 0)
                                                     } else {
                                                         $message = "Failed to log event on database.";
                                                         $_AuditTrail->RollBackTransaction();
+                                                        App::ClearStatus();
                                                         App::SetErrorMessage($message);
                                                         $txtQuantity->Text = "";
                                                         $hdnTotalItemPoints->Text = "";
@@ -405,6 +415,7 @@ if($sessioncount > 0)
                                                 }
                                             } else {
                                                 $_CouponRedemptionLogs->RollBackTransaction();
+                                                App::ClearStatus();
                                                 $message = "Player Redemption: Error in redemption logging.";
                                                 $_AuditTrail->StartTransaction();
                                                 if($source == 1){
@@ -421,6 +432,7 @@ if($sessioncount > 0)
                                                 } else {
                                                     $message = "Failed to log event on database.";
                                                     $_AuditTrail->RollBackTransaction();
+                                                    App::ClearStatus();
                                                     App::SetErrorMessage($message);
                                                     $txtQuantity->Text = "";
                                                     $hdnTotalItemPoints->Text = "";
@@ -449,6 +461,7 @@ if($sessioncount > 0)
                             } else {
                                 $message = "Failed to log event on database.";
                                 $_AuditTrail->RollBackTransaction();
+                                App::ClearStatus();
                                 App::SetErrorMessage($message);
                                 $txtQuantity->Text = "";
                                 $hdnTotalItemPoints->Text = "";
@@ -472,6 +485,7 @@ if($sessioncount > 0)
                         } else {
                             $message = "Failed to log event on database.";
                             $_AuditTrail->RollBackTransaction();
+                            App::ClearStatus();
                             App::SetErrorMessage($message);
                             $txtQuantity->Text = "";
                             $hdnTotalItemPoints->Text = "";
@@ -512,6 +526,7 @@ if($sessioncount > 0)
                                     } else {
                                         $message = "Failed to log event on database.";
                                         $_AuditTrail->RollBackTransaction();
+                                        App::ClearStatus();
                                         App::SetErrorMessage($message);
                                         $txtQuantity->Text = "";
                                         $hdnTotalItemPoints->Text = "";
@@ -538,6 +553,7 @@ if($sessioncount > 0)
                                             } else {
                                                 $message = "Failed to log event on database.";
                                                 $_AuditTrail->RollBackTransaction();
+                                                App::ClearStatus();
                                                 App::SetErrorMessage($message);
                                                 $txtQuantity->Text = "";
                                                 $hdnTotalItemPoints->Text = "";
@@ -577,11 +593,12 @@ if($sessioncount > 0)
                                                             $partnerid =$serial['PartnerID'];
                                                             $partneritemid =$serial['PartnerItemID'];
                                                             $suffixserialcode = $_ItemSerialCodes->getSerialCodeForRedemptionCopy($redemptiondata["RewardItemID"]);
-                                                            if(isset($suffixserialcode[0]) && !empty($suffixserialcode[0])){
+
+                                                            if(isset($suffixserialcode[0]['SerialCode']) && $suffixserialcode[0]['SerialCode'] != "" ){
                                                                 $serialcode = str_pad($partnerid, 2, "0", STR_PAD_LEFT).str_pad($partneritemid, 2, "0", STR_PAD_LEFT).$suffixserialcode[0]['SerialCode'];
                                                                 $serialcodeid = $suffixserialcode[0]['ItemSerialCodeID'];
                                                                 $securitycode = mt_rand_str(8);
-
+                                                                
                                                                 //Calculate Validity End Date of the Raffle Coupon.
                                                                 $date = new DateTime($RedeemedDate);
                                                                 $date->add(new DateInterval('P6M'));
@@ -591,7 +608,7 @@ if($sessioncount > 0)
 
                                                                 $_ItemSerialCodes->setPDOConnection($CommonPDOConn);
                                                                 $_ItemSerialCodes->updateSerialCodeStatus($serialcodeid,$UpdatedByAID);
-
+                                                                
                                                                 if(!App::HasError()){
                                                                     $_RewardItems->CommitTransaction();
                                                                     $message = "Player Redemption: Transaction Successful.";
@@ -629,6 +646,7 @@ if($sessioncount > 0)
                                                                     } else {
                                                                         $message = "Failed to log event on database.";
                                                                         $_AuditTrail->RollBackTransaction();
+                                                                        App::ClearStatus();
                                                                         App::SetErrorMessage($message);
                                                                         $txtQuantity->Text = "";
                                                                         $hdnTotalItemPoints->Text = "";
@@ -637,6 +655,7 @@ if($sessioncount > 0)
                                                                     }
                                                                 } else {
                                                                     $_RewardItems->RollBackTransaction();
+                                                                    App::ClearStatus();
                                                                     $message = "Player Redemption: Transaction failed.Error in updating redemption logs.";
                                                                     $_AuditTrail->StartTransaction();
                                                                     if($source == 1){
@@ -654,6 +673,7 @@ if($sessioncount > 0)
                                                                     } else {
                                                                         $message = "Failed to log event on database.";
                                                                         $_AuditTrail->RollBackTransaction();
+                                                                        App::ClearStatus();
                                                                         App::SetErrorMessage($message);
                                                                         $txtQuantity->Text = "";
                                                                         $hdnTotalItemPoints->Text = "";
@@ -663,11 +683,12 @@ if($sessioncount > 0)
                                                                 }
                                                             } else {
                                                                 $_RewardItems->RollBackTransaction();
+                                                                App::ClearStatus();
                                                                 $status = 2;
                                                                 $itemlogsdetail = $_ItemRedemptionLogs->getSource($ItemRedemptionLogID);
                                                                 $_ItemRedemptionLogs->StartTransaction();
                                                                 $_ItemRedemptionLogs->updateLogsStatus($ItemRedemptionLogID, $itemlogsdetail['Source'], $status, $itemlogsdetail["MID"]);
-
+   
                                                                 if(!$_ItemRedemptionLogs->HasError){
                                                                     $_ItemRedemptionLogs->CommitTransaction();
                                                                     $message = "Player Redemption: Transaction failed. Serial Code is unavailable.";
@@ -687,6 +708,7 @@ if($sessioncount > 0)
                                                                     } else {
                                                                         $message = "Failed to log event on database.";
                                                                         $_AuditTrail->RollBackTransaction();
+                                                                        App::ClearStatus();
                                                                         App::SetErrorMessage($message);
                                                                         $txtQuantity->Text = "";
                                                                         $hdnTotalItemPoints->Text = "";
@@ -695,6 +717,7 @@ if($sessioncount > 0)
                                                                     }
                                                                 } else {
                                                                     $_ItemRedemptionLogs->RollBackTransaction();
+                                                                    App::ClearStatus();
                                                                     $message = "Player Redemption: Transaction failed. Error in updating redemption log";
                                                                     $_AuditTrail->StartTransaction();
                                                                     if($source == 1){
@@ -712,6 +735,7 @@ if($sessioncount > 0)
                                                                     } else {
                                                                         $message = "Failed to log event on database.";
                                                                         $_AuditTrail->RollBackTransaction();
+                                                                        App::ClearStatus();
                                                                         App::SetErrorMessage($message);
                                                                         $txtQuantity->Text = "";
                                                                         $hdnTotalItemPoints->Text = "";
@@ -723,6 +747,7 @@ if($sessioncount > 0)
 
                                                         } else {
                                                             $_RewardItems->RollBackTransaction();
+                                                            App::ClearStatus();
                                                             $status = 2;
                                                             $itemlogsdetail = $_ItemRedemptionLogs->getSource($ItemRedemptionLogID);
                                                             $_ItemRedemptionLogs->StartTransaction();
@@ -747,6 +772,7 @@ if($sessioncount > 0)
                                                                 } else {
                                                                     $message = "Failed to log event on database.";
                                                                     $_AuditTrail->RollBackTransaction();
+                                                                    App::ClearStatus();
                                                                     App::SetErrorMessage($message);
                                                                     $txtQuantity->Text = "";
                                                                     $hdnTotalItemPoints->Text = "";
@@ -755,6 +781,7 @@ if($sessioncount > 0)
                                                                 }
                                                             } else {
                                                                 $_ItemRedemptionLogs->RollBackTransaction();
+                                                                App::ClearStatus();
                                                                 $message = "Player Redemption: Transaction failed. Error in updating redemption log";
                                                                 $_AuditTrail->StartTransaction();
                                                                 if($source == 1){
@@ -772,6 +799,7 @@ if($sessioncount > 0)
                                                                 } else {
                                                                     $message = "Failed to log event on database.";
                                                                     $_AuditTrail->RollBackTransaction();
+                                                                    App::ClearStatus();
                                                                     App::SetErrorMessage($message);
                                                                     $txtQuantity->Text = "";
                                                                     $hdnTotalItemPoints->Text = "";
@@ -783,6 +811,7 @@ if($sessioncount > 0)
 
                                                     } else {
                                                         $_ItemRedemptionLogs->RollBackTransaction();
+                                                        App::ClearStatus();
                                                         $message = "Player Redemption: Error in redemption logging.";
                                                         $_AuditTrail->StartTransaction();
                                                         if($source == 1){
@@ -800,6 +829,7 @@ if($sessioncount > 0)
                                                         } else {
                                                             $message = "Failed to log event on database.";
                                                             $_AuditTrail->RollBackTransaction();
+                                                            App::ClearStatus();
                                                             App::SetErrorMessage($message);
                                                             $txtQuantity->Text = "";
                                                             $hdnTotalItemPoints->Text = "";
@@ -831,6 +861,7 @@ if($sessioncount > 0)
                         } else {
                             $message = "Failed to log event on database.";
                             $_AuditTrail->RollBackTransaction();
+                            App::ClearStatus();
                             App::SetErrorMessage($message);
                             $txtQuantity->Text = "";
                             $hdnTotalItemPoints->Text = "";
@@ -856,6 +887,7 @@ if($sessioncount > 0)
             } else {
                 $message = "Failed to log event on database.";
                 $_AuditTrail->RollBackTransaction();
+                App::ClearStatus();
                 App::SetErrorMessage($message);
                 $txtQuantity->Text = "";
                 $hdnTotalItemPoints->Text = "";

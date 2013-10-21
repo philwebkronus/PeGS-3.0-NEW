@@ -13,11 +13,11 @@ if(isset($_POST["functiontype"]) && $_POST["functiontype"] != ""){
 
             //Load modules needed
             App::LoadModuleClass("Loyalty", "RewardOffers");
-            App::LoadModuleClass('Loyalty', 'RewardItems');
+            App::LoadModuleClass('Rewards', 'RewardItems');
             App::LoadModuleClass('Membership', 'MemberInfo');
             App::LoadModuleClass('Membership', 'Cities');
-            App::LoadModuleClass("Loyalty", "CouponBatches");
-            App::LoadModuleClass('Loyalty', 'RaffleCoupons');
+            App::LoadModuleClass("Rewards", "CouponBatches");
+            App::LoadModuleClass('Rewards', 'RaffleCoupons');
             App::LoadModuleClass('Loyalty', 'MemberCards');
             App::LoadModuleClass('Loyalty', 'Cards');
             App::LoadModuleClass('Loyalty', 'CardTransactions');
@@ -27,7 +27,6 @@ if(isset($_POST["functiontype"]) && $_POST["functiontype"] != ""){
             App::LoadCore('ErrorLogger.php');
 
             //Initialize Modules
-            $_RewardOffers = new RewardOffers();
             $_RewardItems = new RewardItems();
             $_MemberCards = new MemberCards();
             $_CardTransactions = new CardTransactions();
