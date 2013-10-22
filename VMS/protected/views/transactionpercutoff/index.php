@@ -1,8 +1,24 @@
+<script type="text/javascript">
+    $(document).ready(function(){
+       <?php
+        if(isset($_POST['TransactionpercutoffForm']) == ''){
+        ?>
+            $('#transpercutoffgrid').hide();
+        <?php
+        } else {
+        ?>
+            $('#transpercutoffgrid').show();
+        <?php
+        }
+        ?>
+    });
+</script>
 <?php
 $this->breadcrumbs=array(
 	'Transaction Per Cut-off',
 );?>
 <?php
+
 $siteconversionmodel = new SiteConversionForm;
 if(isset($_POST['TransactionpercutoffForm']))
 {
@@ -21,6 +37,7 @@ else
 
     }
 }
+
 ?>
 <h2>Transaction Per Cut-off</h2>
 <hr color="black" />
@@ -63,7 +80,7 @@ else
         </tr>
     </table>
     <div style="width: 100%; text-align: center; margin-left: 250px;">
-            <?php echo CHtml::submitButton("Submit"); ?>
+            <?php echo CHtml::submitButton('Submit', array('id' => 'submit')); ?>
     </div> 
 </div>
 <div>

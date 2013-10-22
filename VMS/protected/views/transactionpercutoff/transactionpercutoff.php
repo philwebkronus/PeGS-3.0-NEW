@@ -1,13 +1,15 @@
 <div <?php echo 'style="display:'.Yii::app()->session['display'].'"'; ?>>
     <br/>
     <hr color="black" />
+    <div id='transpercutoffgrid'>
 <?php
+
     if(isset(Yii::app()->session['transactiondate'])){
         $datetime = new DateTime(Yii::app()->session['transactiondate']);
         $datetime->modify('+1 day');
         $vdate = $datetime->format('Y-m-d');
         Yii::app()->session['vdate'] = $vdate;
-        echo Yii::app()->session['transactiondate']." to ".$vdate." 05:59:59";
+        echo Yii::app()->session['transactiondate']." to ".$vdate. " ".Yii::app()->params['cutofftimeend'];
     }
         $grid = array(
 
@@ -22,7 +24,7 @@
         'header'=>'Code',
         'type'=>'raw',
         'value'=>'CHtml::encode($data["VoucherCode"])',
-        'htmlOptions' => array('style' => 'text-align:right'),    
+        'htmlOptions' => array('style' => 'text-align:center'),    
         ),
             
         array('name'=>'SiteName',
@@ -46,7 +48,7 @@
             $amt = CHtml::encode($data["Amount"]);
             return number_format(doubleval($amt), 2);
         },
-        'htmlOptions' => array('style' => 'text-align:center'),    
+        'htmlOptions' => array('style' => 'text-align:right'),    
         ),
             
         array('name'=>'DateCreated',
@@ -99,3 +101,4 @@
     <?php $this->createUrl('exporttoexcel'); ?>
     <?php echo CHtml::link('<b>Export To Excel</b>','exporttoexcel'); ?>
 </div>
+    </div>

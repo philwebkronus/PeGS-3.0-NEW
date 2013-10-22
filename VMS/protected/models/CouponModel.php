@@ -122,6 +122,51 @@ class CouponModel extends CFormModel{
         
         return $result['ctrtracking'];
     }
+    
+    /**
+     * @author JunJun S. Hernandez
+     * @datecreated 10/21/13
+     * @param str $date
+     * @return object
+     */
+    public function getAllUsedCouponList($date){
+        $datetime = new DateTime($date);
+        $datetime->modify('+1 day');
+        $vdate = $datetime->format('Y-m-d H:i:s');
+        $sql = "SELECT c.CouponID AS VoucherID, c.VoucherTypeID, c.CouponCode AS VoucherCode, 
+                c.Status, c.TerminalID, c.Amount, c.DateCreated, c.DateExpiry, c.Source, c.LoyaltyCreditable, st.SiteName
+                FROM coupons c INNER JOIN terminals t ON t.TerminalID = c.TerminalID
+                INNER JOIN sites st ON st.SiteID = t.SiteID
+                WHERE c.DateCreated >= :transdate AND  c.DateCreated < :vtransdate AND c.Status = 3";
+        $command = $this->_connection->createCommand($sql);
+        $command->bindValue(":transdate", $date);
+        $command->bindValue(":vtransdate", $vdate);
+        $result = $command->queryAll();
+        return $result;
+    }
+    
+    /**
+     * @author JunJun S. Hernandez
+     * @datecreated 10/21/13
+     * @param int $site
+     * @param str $date
+     * @return object
+     */
+    public function getUsedCouponListBySite($site, $date){
+        $datetime = new DateTime($date);
+        $datetime->modify('+1 day');
+        $vdate = $datetime->format('Y-m-d H:i:s');
+        $sql = "SELECT c.CouponID AS VoucherID, c.VoucherTypeID, c.CouponCode AS VoucherCode, 
+                c.Status, c.TerminalID, c.Amount, c.DateCreated, c.DateExpiry, c.Source, c.LoyaltyCreditable, st.SiteName
+                FROM coupons c INNER JOIN terminals t ON t.TerminalID = c.TerminalID
+                INNER JOIN sites st ON st.SiteID = t.SiteID
+                WHERE t.SiteID = '$site' AND c.DateCreated >= :transdate AND c.DateCreated < :vtransdate AND c.Status = 3";
+        $command = $this->_connection->createCommand($sql);
+        $command->bindValue(":transdate", $date);
+        $command->bindValue(":vtransdate", $vdate);
+        $result = $command->queryAll();
+        return $result;
+    }
 }
 
 ?>
