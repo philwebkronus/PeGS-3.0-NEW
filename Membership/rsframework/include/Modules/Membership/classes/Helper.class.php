@@ -31,9 +31,9 @@ class Helper extends BaseEntity
         
         $mailer->Body = "<html><body>Dear <label style='font-style: italic;'>$name</label>,<br />";
         $mailer->Body .= "<p style='text-align: justify; text-justify: inter-word;'><br />Thank you for signing up! This is to inform you that your User Account has been successfully created on this date ".date('m/d/Y',time())." and time (".date('H:i:s',time())."). Your Temporary Account Code is $tempcode. Present this code and one (1) government-issued ID at any e-Games cafe near you. ";
-        $mailer->Body .= "<br /><br />To verify your account, please click this link <b><a href='http://".$_SERVER['HTTP_HOST']."/verify.php?email=$email&tempcode=$tempcode'>http://".$_SERVER['HTTP_HOST']."/verify.php?email=$email&tempcode=$tempcode</a></b>";
-        $mailer->Body .= "<br />To read the Terms & Conditions, please click this link <b><a href='http://www.egamescasino.ph/terms-and-conditions/'>http://www.egamescasino.ph/terms-and-conditions/</a></b>.";
-        $mailer->Body .= "<br />To locate the e-Games cafes near you, please click this link <b><a href='http://www.egamescasino.ph/location/'>http://www.egamescasino.ph/location/</a></b>.";
+        $mailer->Body .= "<br /><br />To verify your account, please click this link <b><a href='https://".$_SERVER['HTTP_HOST']."/verify.php?email=$email&tempcode=$tempcode'>https://".$_SERVER['HTTP_HOST']."/verify.php?email=$email&tempcode=$tempcode</a></b>";
+        $mailer->Body .= "<br />To read the Terms & Conditions, please click this link <b><a href='https://www.egamescasino.ph/terms-and-conditions/'>https://www.egamescasino.ph/terms-and-conditions/</a></b>.";
+        $mailer->Body .= "<br />To locate the e-Games cafes near you, please click this link <b><a href='https://www.egamescasino.ph/locations/'>https://www.egamescasino.ph/locations/</a></b>.";
         $mailer->Body .= "<br /><br />Please be advised that your Temporary Account Code will be activated only after 24 hours.";
         $mailer->Body .= "<br />For inquiries, please call our 24-hour Customer Service Hotlines at (02) 338-3388 / Toll Free 1800-10-7445932. You can also send an email to our Customer Service Team at customerservice@philweb.com.ph.";
         $mailer->Body .= "<br /><br />Regards,";
@@ -58,7 +58,7 @@ class Helper extends BaseEntity
         $mailer->Body .= "<p style='text-align: justify; text-justify: inter-word;'><br />Your password has been reset on ".date('m-d-Y',time())." ".date('H:i:s',time()).".";
         $mailer->Body .= "<br /><br />It is advisable that you change your password upon log-in. ";
         $mailer->Body .= "<br /><br />Please click through the link provided below to log-in to your account. ";
-        $mailer->Body .= "<br /><br /><b><a href='http://".$_SERVER['HTTP_HOST']."/changepassword.php?CardNumber=$hashedubcards'>Forgot Password</a></b> ";
+        $mailer->Body .= "<br /><br /><b><a href='https://".$_SERVER['HTTP_HOST']."/changepassword.php?CardNumber=$hashedubcards'>Forgot Password</a></b> ";
         $mailer->Body .= "<br /><br />For inquiries, please call our 24-hour Customer Service Hotlines at (02) 338-3388 / Toll Free 1800-10-7445932. You can also send an email to our Customer Service Team at <b>customerservice@philweb.com.ph</b>.";
         $mailer->Body .= "<br /><br />Thank you and good day! ";
         $mailer->Body .= "<br /><br />Best Regards, ";
