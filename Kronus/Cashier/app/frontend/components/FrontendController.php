@@ -222,7 +222,7 @@ class FrontendController extends MI_Controller {
         //check if voucher
         if(isset($startSessionFormModel->voucher_code) && $startSessionFormModel->voucher_code != '')
         {
-                $paymentType = 2;
+                $paymentType = 2; //payment type is coupon method
                 $vouchercode = $startSessionFormModel->voucher_code;
                 $source = Mirage::app()->param['voucher_source'];
                 
@@ -300,23 +300,25 @@ class FrontendController extends MI_Controller {
                                     $vmsrequestlogsID = $vmsrequestlogs->insert($vouchercode, $accid, $terminal_id,$trackingId);
                                     
                                     //use voucher and check result
-                                    $useVoucherResult = $voucherManagement->useVoucher($accid, $trackingId, $vouchercode, $terminal_id, $source);
+                                    $useVoucherResult = $voucherManagement->useVoucher($accid, $trackingId, $vouchercode, $terminal_id, $source, $siteid, $mid);
+                                   
+                                    //If first try of use voucher fails, retry
                                     if(isset($useVoucherResult['UseVoucher']['ErrorCode']) && $useVoucherResult['UseVoucher']['ErrorCode'] != 0)
                                     {
                                             $vmsrequestlogs->updateVMSRequestLogs($vmsrequestlogsID, 2);
                                             
                                             //verify tracking id, if tracking id is not found and voucher is unclaimed proceed to use voucher
                                             $verifyVoucherResult = $voucherManagement->verifyVoucher('', $accid, $source, $trackingId);
-                                            
+                                             
                                             //check if tracking result is not found that means transaction was not successful on the first try
-                                            if(isset($verifyVoucherResult['VerifyVoucher']['ErrorCode']) && $verifyVoucherResult['VerifyVoucher']['ErrorCode'] != 0){
+                                            if(!isset($verifyVoucherResult['VerifyVoucher']['ErrorCode']) && $verifyVoucherResult['VerifyVoucher']['ErrorCode'] != 0){
 
                                                 $trackingId = "c".$casinoAPI->udate('YmdHisu');
                                                 
                                                 //Insert to vmsrequestlogs
                                                 $vmsrequestlogs->insert($vouchercode, $accid, $terminal_id,$trackingId);
                                                 
-                                                $useVoucherResult = $voucherManagement->useVoucher($accid, $trackingId, $vouchercode, $terminal_id, $source);
+                                                $useVoucherResult = $voucherManagement->useVoucher($accid, $trackingId, $vouchercode, $terminal_id, $source, $siteid, $mid);
                                                 
                                                 if(isset($useVoucherResult['UseVoucher']['ErrorCode']) && $useVoucherResult['UseVoucher']['ErrorCode'] != 0)
                                                 {
@@ -350,7 +352,7 @@ class FrontendController extends MI_Controller {
         }
         else
         {
-                $paymentType = 1; 
+                $paymentType = 1; //payment type is cash method
                 $isCreditable = 1;
                 
                 //check if amount is other denomination
@@ -530,7 +532,7 @@ class FrontendController extends MI_Controller {
         //check if voucher
         if(isset($startSessionFormModel->voucher_code) && $startSessionFormModel->voucher_code !='')
         {
-                    $paymentType = 2;
+                    $paymentType = 2; //payment type is coupon 
                     $vouchercode = $startSessionFormModel->voucher_code;
                     $source = Mirage::app()->param['voucher_source'];
                     $trackingId = '';
@@ -647,8 +649,9 @@ class FrontendController extends MI_Controller {
                                     $vmsrequestlogsID = $vmsrequestlogs->insert($vouchercode, $accid, $terminal_id,$trackingId);
                                     
                                     //use voucher, and check result
-                                    $useVoucherResult = $voucherManagement->useVoucher($accid, $trackingId, $vouchercode, $terminal_id, $source);
+                                    $useVoucherResult = $voucherManagement->useVoucher($accid, $trackingId, $vouchercode, $terminal_id, $source, $siteid, $mid);
                                     
+                                    //If first try of use voucher fails, retry
                                     if(isset($useVoucherResult['UseVoucher']['ErrorCode']) && $useVoucherResult['UseVoucher']['ErrorCode'] != 0)
                                     {
                                         $vmsrequestlogs->updateVMSRequestLogs($vmsrequestlogsID, 2);
@@ -664,7 +667,7 @@ class FrontendController extends MI_Controller {
                                             //Insert to vmsrequestlogs
                                             $vmsrequestlogs->insert($vouchercode, $accid, $terminal_id,$trackingId);
 
-                                            $useVoucherResult = $voucherManagement->useVoucher($accid, $trackingId, $vouchercode, $terminal_id, $source);
+                                            $useVoucherResult = $voucherManagement->useVoucher($accid, $trackingId, $vouchercode, $terminal_id, $source, $siteid, $mid);
 
                                             if(isset($useVoucherResult['UseVoucher']['ErrorCode']) && $useVoucherResult['UseVoucher']['ErrorCode'] != 0)
                                             {
@@ -700,7 +703,7 @@ class FrontendController extends MI_Controller {
         } 
         else 
         {
-                    $paymentType = 1;
+                    $paymentType = 1; //payment type is cash
                     $isCreditable = 1;
                     
                     //check if amount is other denomination

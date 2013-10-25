@@ -1,11 +1,9 @@
 <?php
 /**
  * Method / Action of VMS (Voucher Management System)
- * @author aqdepliyan
+ * @author aqdepliyan, elperez
+ * @dateupdated 10/24/13 add mid and siteid, also 
  */
-
-//Mirage::loadComponents('checkhost.class');
-//Mirage::loadComponents('common.class');
 
 class VoucherManagement {
     
@@ -69,40 +67,6 @@ class VoucherManagement {
         echo $message;
         Mirage::app()->end();
     }
-        
-    /**
-     * Generates a voucher this was called in every redemption transaction
-     * @param str $trackingID
-     * @param int $terminalID
-     * @param int $amount
-     * @param str $aid
-     * @param int $sourceID
-     * @param str $token
-     * @return str | array
-     */
-    public function generateVoucher($trackingID, $terminalID, $amount, $aid, $sourceID, $token){
-        $this->_URI = Mirage::app()->param['generate_voucher'];
-        
-        $this->InitQueryString();
-        $this->_queryString = $this->_queryString.'terminalid='.$terminalID;
-        $this->_queryString = $this->_queryString.'&amount='.$amount;
-        $this->_queryString = $this->_queryString.'&trackingid='.$trackingID;
-        $this->_queryString = $this->_queryString.'&aid='.$aid;
-        $this->_queryString = $this->_queryString.'&source='.$sourceID;
-        $this->_queryString = $this->_queryString.'&token='.$token;
-        
-        $this->_fullUri = $this->_URI;
-        $this->_fullUri = $this->_fullUri.'/'.$this->_queryString;
-        
-        $response = $this->SubmitData($this->_fullUri);
-        if($response[0] == 200){
-            $this->_APIresponse = $this->json2Array($response[1]);
-        } else {
-            $this->_error = $response[0];
-        }
-                
-        return $this->_APIresponse;
-    }
     
     /**
      * Verify if voucher is for claiming 
@@ -122,17 +86,23 @@ class VoucherManagement {
             self::throwError($message);
         }
         
-        $this->InitQueryString();
-        $this->_queryString = $this->_queryString.'vouchercode='.$vouchercode;
-        $this->_queryString = $this->_queryString.'&aid='.$aid;
-        $this->_queryString = $this->_queryString.'&trackingid='.$trackingId;
-        $this->_queryString = $this->_queryString.'&source='.$source;
+//        $this->InitQueryString();
+//        $this->_queryString = $this->_queryString.'vouchercode='.$vouchercode;
+//        $this->_queryString = $this->_queryString.'&aid='.$aid;
+//        $this->_queryString = $this->_queryString.'&trackingid='.$trackingId;
+//        $this->_queryString = $this->_queryString.'&source='.$source;
+//        
+//        $this->_fullUri = $this->_URI;
+//        $this->_fullUri = $this->_fullUri.'/'.$this->_queryString;
+//        $response = $this->SubmitData($this->_fullUri);
         
-        $this->_fullUri = $this->_URI;
-        $this->_fullUri = $this->_fullUri.'/'.$this->_queryString;
+        $postData = json_encode(array('vouchercode'=>$vouchercode,
+                                      'aid'=>$aid,
+                                      'trackingid'=>$trackingId,
+                                      'source'=>$source));
         
-        $response = $this->SubmitData($this->_fullUri);
-       
+        $response = $this->SubmitData($this->_URI, $postData);
+        
         if($response[0] == 200){
             $this->_APIresponse = $this->json2Array($response[1]);
         } else {
@@ -150,7 +120,8 @@ class VoucherManagement {
      * @param int $source
      * @return str | array
      */
-    public function useVoucher($aid, $trackingID, $vouchercode, $terminalID, $source){
+    public function useVoucher($aid, $trackingID, $vouchercode, $terminalID, 
+                               $source, $siteID, $mid){
         $this->_URI = Mirage::app()->param['use_voucher'];
         
         if (!(bool)$this->IsAPIServerOK()) {
@@ -159,17 +130,29 @@ class VoucherManagement {
             self::throwError($message);
         }
         
-        $this->InitQueryString();
-        $this->_queryString = $this->_queryString.'aid='.$aid;
-        $this->_queryString = $this->_queryString.'&trackingid='.$trackingID;
-        $this->_queryString = $this->_queryString.'&vouchercode='.$vouchercode;
-        $this->_queryString = $this->_queryString.'&terminalid='.$terminalID;
-        $this->_queryString = $this->_queryString.'&source='.$source;
+//        $this->InitQueryString();
+//        $this->_queryString = $this->_queryString.'aid='.$aid;
+//        $this->_queryString = $this->_queryString.'&trackingid='.$trackingID;
+//        $this->_queryString = $this->_queryString.'&vouchercode='.$vouchercode;
+//        $this->_queryString = $this->_queryString.'&terminalid='.$terminalID;
+//        $this->_queryString = $this->_queryString.'&source='.$source;
+//        $this->_queryString = $this->_queryString.'&siteid='.$siteID;
+//        $this->_queryString = $this->_queryString.'&mid='.$mid;
+//        
+//        $this->_fullUri = $this->_URI;
+//        $this->_fullUri = $this->_fullUri.'/'.$this->_queryString;
+//        
+//        $response = $this->SubmitData($this->_fullUri);
         
-        $this->_fullUri = $this->_URI;
-        $this->_fullUri = $this->_fullUri.'/'.$this->_queryString;
+        $postData = json_encode(array('aid'=>$aid,
+                                      'trackingid'=>$trackingID,
+                                      'vouchercode'=>$vouchercode,
+                                      'terminalid'=>$terminalID,
+                                      'source'=>$source,
+                                      'siteid'=>$siteID,
+                                      'mid'=>$mid));
         
-        $response = $this->SubmitData($this->_fullUri);
+        $response = $this->SubmitData($this->_URI, $postData);
         if($response[0] == 200){
             $this->_APIresponse = $this->json2Array($response[1]);
         } else {
@@ -177,42 +160,9 @@ class VoucherManagement {
         }
                 
         return $this->_APIresponse;
-    }
+    } 
     
-    /**
-     * @todo
-     */
-    public function cancelVoucher(){
-        
-    }
-    
-    /**
-     * Updates voucher status from Active/Unclaimed (1) to used(3)
-     * @param str $voucherCode
-     * @param int $aid
-     * @return str | array
-     */
-    public function updateVoucher($voucherCode, $aid){
-        $this->_URI = Mirage::app()->param['update_voucher'];
-        
-        $this->InitQueryString();
-        $this->_queryString = $this->_queryString.'vouchercode='.$voucherCode;
-        $this->_queryString = $this->_queryString.'&aid='.$aid;
-        
-        $this->_fullUri = $this->_URI;
-        $this->_fullUri = $this->_fullUri.'/'.$this->_queryString;
-        
-        $response = $this->SubmitData($this->_fullUri);
-        if($response[0] == 200){
-            $this->_APIresponse = $this->json2Array($response[1]);
-        } else {
-            $this->_error = $response[0];
-        }
-                
-        return $this->_APIresponse;
-    }
-    
-    private function SubmitData( $URI )
+    private function SubmitData( $URI, $postdata )
     {
             $curl = curl_init( $URI );
 
@@ -222,10 +172,11 @@ class VoucherManagement {
             curl_setopt( $curl, CURLOPT_USERAGENT, $this->_userAgent );
             curl_setopt( $curl, CURLOPT_SSL_VERIFYHOST, FALSE );
             curl_setopt( $curl, CURLOPT_SSL_VERIFYPEER, FALSE );
-            curl_setopt( $curl, CURLOPT_POST, FALSE );
-            curl_setopt( $curl, CURLOPT_HTTPHEADER, array( 'Content-Type: text/plain; charset=utf-8' ) );
+            curl_setopt( $curl, CURLOPT_POST, TRUE );
+            curl_setopt( $curl, CURLOPT_HTTPHEADER, array( 'Content-Type: application/json' ) );
             curl_setopt( $curl, CURLOPT_RETURNTRANSFER, TRUE );
-
+            // Data+Files to be posted
+            curl_setopt($curl, CURLOPT_POSTFIELDS, $postdata);
             $response = curl_exec( $curl );
 
             $http_status = curl_getinfo( $curl, CURLINFO_HTTP_CODE );

@@ -224,9 +224,12 @@ class CommonReload {
 
             $transReqLogsModel->update($trans_req_log_last_id, $apiresult, $transstatus,$transrefid,$terminal_id);
             
-            $newbal = $bcf - $amount;
+            //BCF will be deducted if payment method is cash only
+            if($paymentType == 1) {
+                $newbal = $bcf - $amount;
+                $siteBalance->updateBcf($newbal, $site_id, 'Reload session');
+            }
             
-            $siteBalance->updateBcf($newbal, $site_id, 'Reload session');
             
             if(!$isupdated) {
                 $message = 'Error: Failed insert records in transaction tables';
