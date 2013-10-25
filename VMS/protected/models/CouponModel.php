@@ -130,14 +130,20 @@ class CouponModel extends CFormModel{
      * @return array
      */
     public function getAllUsedCouponList($date){
+        //get kronus database name
+        $kronusConnString = Yii::app()->db2->connectionString;
+        $dbnameresult = explode(";", $kronusConnString);
+        $dbname = str_replace("dbname=", "", $dbnameresult[1]);
+
         $datetime = new DateTime($date);
         $datetime->modify('+1 day');
         $vdate = $datetime->format('Y-m-d H:i:s');
         $sql = "SELECT c.CouponID AS VoucherID, '2' AS VoucherTypeID, st.SiteName, c.CouponCode AS VoucherCode, 
                 c.Status, c.TerminalID, c.Amount, c.DateCreated, c.ValidToDate, c.IsCreditable, st.SiteName,
                 c.DateUpdated
-                FROM coupons c INNER JOIN terminals t ON t.TerminalID = c.TerminalID
-                INNER JOIN sites st ON st.SiteID = t.SiteID
+                FROM coupons c 
+                INNER JOIN $dbname.terminals t ON t.TerminalID = c.TerminalID
+                INNER JOIN $dbname.sites st ON st.SiteID = t.SiteID
                 WHERE c.DateUpdated >= :transdate AND  c.DateUpdated < :vtransdate AND c.Status = 3
                 ORDER BY st.SiteID, c.TerminalID, c.DateUpdated";
         $command = $this->_connection->createCommand($sql);
@@ -155,14 +161,20 @@ class CouponModel extends CFormModel{
      * @return array
      */
     public function getUsedCouponListBySite($site, $date){
+        
+        //get kronus database name
+        $kronusConnString = Yii::app()->db2->connectionString;
+        $dbnameresult = explode(";", $kronusConnString);
+        $dbname = str_replace("dbname=", "", $dbnameresult[1]);
+        
         $datetime = new DateTime($date);
         $datetime->modify('+1 day');
         $vdate = $datetime->format('Y-m-d H:i:s');
         $sql = "SELECT c.CouponID AS VoucherID, '2' AS VoucherTypeID, st.SiteName, c.CouponCode AS VoucherCode, 
                 c.Status, c.TerminalID, c.Amount, c.DateCreated, c.ValidToDate, c.IsCreditable, st.SiteName,
                 c.DateUpdated
-                FROM coupons c INNER JOIN terminals t ON t.TerminalID = c.TerminalID
-                INNER JOIN sites st ON st.SiteID = t.SiteID
+                FROM coupons c INNER JOIN $dbname.terminals t ON t.TerminalID = c.TerminalID
+                INNER JOIN $dbname.sites st ON st.SiteID = t.SiteID
                 WHERE t.SiteID = '$site' AND c.DateUpdated >= :transdate 
                 AND c.DateUpdated < :vtransdate AND c.Status = 3
                 ORDER BY st.SiteID, c.TerminalID, c.DateUpdated";

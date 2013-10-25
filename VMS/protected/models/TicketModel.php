@@ -21,14 +21,19 @@ class TicketModel extends CFormModel{
      * @return array
      */
     public function getAllUsedTicketList($date){
+         //get kronus database name
+        $kronusConnString = Yii::app()->db2->connectionString;
+        $dbnameresult = explode(";", $kronusConnString);
+        $dbname = str_replace("dbname=", "", $dbnameresult[1]);
+        
         $datetime = new DateTime($date);
         $datetime->modify('+1 day');
         $vdate = $datetime->format('Y-m-d H:i:s');
         $sql = "SELECT t.TicketID AS VoucherID, '1' AS VoucherTypeID, st.SiteName, t.TicketCode AS VoucherCode, 
                 t.Status, t.TerminalID, t.Amount, t.DateCreated, t.DateUpdated, t.ValidToDate, 
                 t.Source, t.IsCreditable FROM tickets t 
-		INNER JOIN terminals tr ON tr.TerminalID=t.TerminalID
-		INNER JOIN sites st ON st.SiteID = tr.SiteID
+		INNER JOIN $dbname.terminals tr ON tr.TerminalID=t.TerminalID
+		INNER JOIN $dbname.sites st ON st.SiteID = tr.SiteID
                 WHERE t.DateUpdated >= :transdate AND  t.DateUpdated < :vtransdate AND t.Status = 3
                 ORDER BY st.SiteID, t.TerminalID, t.DateUpdated";
         $command = $this->_connection->createCommand($sql);
@@ -46,14 +51,19 @@ class TicketModel extends CFormModel{
      * @return array
      */
     public function getUsedTicketListBySite($site, $date){
+         //get kronus database name
+        $kronusConnString = Yii::app()->db2->connectionString;
+        $dbnameresult = explode(";", $kronusConnString);
+        $dbname = str_replace("dbname=", "", $dbnameresult[1]);
+        
         $datetime = new DateTime($date);
         $datetime->modify('+1 day');
         $vdate = $datetime->format('Y-m-d H:i:s');
         $sql = "SELECT t.TicketID AS VoucherID, '1' AS VoucherTypeID, st.SiteName, t.TicketCode AS VoucherCode, 
                 t.Status, t.TerminalID, t.Amount, t.DateCreated, t.DateUpdated, t.ValidToDate, 
                 t.Source, t.IsCreditable FROM tickets t 
-		INNER JOIN terminals tr ON tr.TerminalID=t.TerminalID
-		INNER JOIN sites st ON st.SiteID = tr.SiteID
+		INNER JOIN $dbname.terminals tr ON tr.TerminalID=t.TerminalID
+		INNER JOIN $dbname.sites st ON st.SiteID = tr.SiteID
                 WHERE st.SiteID = $site AND t.DateUpdated >= :transdate AND  t.DateUpdated < :vtransdate AND t.Status = 3
                 ORDER BY st.SiteID, t.TerminalID, t.DateUpdated";
         $command = $this->_connection->createCommand($sql);
