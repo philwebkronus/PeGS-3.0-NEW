@@ -213,14 +213,14 @@ $(".addBtn").live("click", function(){
                     if (partnername.length < 5)
                     {
                         $("#msgdialogAdd").css({'text-align':"left",'color':"red"});
-                        $("#msgdialogAdd").html("eGames Partner Name too short (minimum is 7 characters)");
+                        $("#msgdialogAdd").html("eGames Partner Name too short (minimum is 5 characters)");
                         
                         return false;
                     }
                     else if (address.length < 5)
                     {
                         $("#msgdialogAdd").css({'text-align':"left",'color':"red"});
-                        $("#msgdialogAdd").html("Company Name too short (minimum is 7 characters)");
+                        $("#msgdialogAdd").html("Company Name too short (minimum is 5 characters)");
                         
                         return false;
                     }
@@ -534,14 +534,14 @@ $(".addBtn").live("click", function(){
                     if (partnername.length < 5)
                     {
                         $("#msgdialog").css({'text-align':"left",'color':"red"});
-                        $("#msgdialog").html("eGames Partner Name too short (minimum is 7 characters)");
+                        $("#msgdialog").html("eGames Partner Name too short (minimum is 5 characters)");
                         
                         return false;
                     }
                     else if (address.length < 5)
                     {
                         $("#msgdialog").css({'text-align':"left",'color':"red"});
-                        $("#msgdialog").html("Company Name too short (minimum is 7 characters)");
+                        $("#msgdialog").html("Company Name too short (minimum is 5 characters)");
                         
                         return false;
                     }
@@ -859,8 +859,10 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
     <div style="text-align: left;">
         <img id="wiz" src="<?php echo Yii::app()->request->baseUrl.'/images/wizard1.png'?>">
     </div>
-    <br /><br />
-    <span id="msgdialogAdd"></span>
+    <br />
+    <div style="text-align:left">
+        <span id="msgdialogAdd"></span>
+    </div>
     <?php
     $form = $this->beginWidget('CActiveForm', array(
         'id' => 'addpartner-form',
@@ -873,7 +875,7 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
     ));
     ?>
    <table id="firstGroupAdd">
-        <tr >
+        <tr>
             <td>
                 <?php echo $form->labelEx($model, "eGamesPartner", array('style'=>'font-weight:bold;')); ?>
             </td>
@@ -1071,36 +1073,14 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
         ),
     ),
 ));
-?>
-<script type="text/javascript">
-    //Breadcrumbs Behavior
-    //Added by: Mark Kenneth Esguerra
-    //Date: Sept.23 2013
-    $(document).ready(function(){
-       $("#cDetails").click(function(){
-          $("#firstGroup").show();
-          $("#secondGroup").hide();
-          $("#cOthers").removeClass("active");
-          $("#cDetails").removeClass("active visited").addClass("active");
-
-          
-          $("#editPartner2ndDialog-compdtls").siblings(".ui-dialog-buttonpane").find("button").eq(0).show();
-          $("#editPartner2ndDialog-compdtls").siblings(".ui-dialog-buttonpane").find("button").eq(2).show();
-          $("#editPartner2ndDialog-compdtls").siblings(".ui-dialog-buttonpane").find("button").eq(1).hide();
-          $("#editPartner2ndDialog-compdtls").siblings(".ui-dialog-buttonpane").find("button").eq(3).hide();
-                    
-          return false;
-       });
-       $("#cOthers").click(function(){
-          return false; 
-       });
-    });
-</script>    
+?>   
 <div id="editNewPartner2">
     <div style="text-align: left;">
         <img id="wiz2" src="<?php echo Yii::app()->request->baseUrl.'/images/wizard1.png'?>">
     </div><br />
-    <span id="msgdialog"></span>
+    <div style="text-align:left">
+        <span id="msgdialog"></span>
+    </div>    
     <?php
     //Edit Form when user clicks EDIT
     $form = $this->beginWidget('CActiveForm', array(
@@ -1277,7 +1257,7 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
 ));
 ?>
 <div id="editNewPartner" style="text-align: left;">
-    <span id="msgdialog2"></span>
+    <span id="msgdialog2" style="text-align:left;"></span>
     <?php
     //Edit Form when user clicks PARTNERNAME
     $form = $this->beginWidget('CActiveForm', array(
