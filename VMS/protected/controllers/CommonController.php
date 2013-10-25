@@ -11,8 +11,8 @@ class CommonController{
     CONST VOUCHER_STATUS_ACTIVE = 1;
     CONST VOUCHER_STATUS_VOID = 2;
     CONST VOUCHER_STATUS_USED = 3;
+    CONST VOUCHER_STATUS_CLAIMED = 4;  
     CONST VOUCHER_STATUS_REIMBURSED = 5;
-    CONST VOUCHER_STATUS_CLAIMED = 4;    
     CONST VOUCHER_STATUS_EXPIRED = 6;
     CONST VOUCHER_STATUS_CANCELLED = 7; 
     
@@ -22,7 +22,14 @@ class CommonController{
     CONST VOUCHER_TYPE_TICKET = 1;
     CONST VOUCHER_TYPE_COUPON = 2;
     
+    CONST TRACKING_ID_STATUS_PENDING = 0;
+    CONST TRACKING_ID_STATUS_SUCCESSFUL = 1;
+    CONST TRACKING_ID_STATUS_FAILED = 2;
+    CONST TRACKING_ID_STATUS_FULFILLMENT_APPROVED = 3;
+    CONST TRACKING_ID_STATUS_FULFILLMENT_DENIED = 4;
+    
     /**
+     * Obsolote Method
      * @author elperez
      * @datecreated 09/16/2013
      * @purpose Get coupon status
@@ -33,7 +40,7 @@ class CommonController{
      * @param str $voucherTypeID ticket | coupon
      * @return array
      */
-    public function verifyCoupon($AID,$voucherCode,$source,$trackingid, $voucherTypeID){
+    public function x_verifyCoupon($AID,$voucherCode,$source,$trackingid, $voucherTypeID){
         $_voucherBatchInfoModel = new VoucherBatchInfoModel();
         $_couponBatchModel = new CouponBatchModel();
         
@@ -104,7 +111,7 @@ class CommonController{
     }
     
     /**
-     * 
+     * Obsolete Function
      * @param str $voucherCode coupon / ticket type
      * @param int $aid account id
      * @param str $trackingID unique tracking info
@@ -113,7 +120,7 @@ class CommonController{
      * @param int $voucherTypeID coupon / ticket type
      * @return array transaction result
      */
-    public function useCoupon($voucherCode, $aid,$trackingID,
+    public function x_useCoupon($voucherCode, $aid,$trackingID,
                             $terminalID, $source, $voucherTypeID){
         $_voucherBatchInfoModel = new VoucherBatchInfoModel();
         $_couponBatchModel = new CouponBatchModel();
@@ -198,6 +205,23 @@ class CommonController{
     }
     
     /**
+     * @author JunJun S. Hernandez
+     * @datecreated 10/22/2013
+     * @purpose Validate Coupon and Ticket
+     * @param str $trackingID unique tracking info
+     * @param str $terminalName name of terminal
+     * @param str $voucherTicketBarcode ticket | coupon
+     * @param int $source cashier | kapi | egm
+     * @param int $aid cashier id
+     * @return array
+     */
+    public function validateCouponTicket($trackingID, $terminalName, $voucherTicketBarcode, $source, $aid){
+        $_couponModel = new CouponModel();
+        $_ticketModel = new TicketModel();
+        return $_couponModel->getCouponDataByCode($voucherTicketBarcode);
+    }
+    
+    /**
      * Get the return output of verify voucher API
      * @param type $voucherTypeID
      * @param int $errorCode
@@ -259,6 +283,188 @@ class CommonController{
                 
                 break;
         }
+    }
+    
+        /**
+     * @author elperez
+     * @datecreated 10/24/2013
+     * @purpose Get coupon status
+     * @param int $AID cashier id
+     * @param str $voucherCode coupon code
+     * @param int $source cashier | kapi | egm
+     * @param str $trackingid unique tracking info
+     * @param str $voucherTypeID ticket | coupon
+     * @return array
+     */
+    public function verifyCoupon($AID,$voucherCode,$source,$trackingid, $voucherTypeID){
+        $couponModel = new CouponModel();
+        
+        $amount = 0;
+        $dateCreated = ""; 
+        $loyaltyCreditable = 0;
+        $couponStatus = "";
+        
+        //verify coupon date expiration
+        $dateNow = date("Y-m-d H:i:s");
+        
+        $couponResults = $couponModel->chkCouponAvailable($voucherCode);
+        
+        if(is_array($couponResults)){
+            $amount = (float)$couponResults['Amount'];
+            $loyaltyCreditable = (int)$couponResults['IsCreditable'];
+            $couponStatus = $couponResults['Status'];
+            $fromDateExpiry = (string)$couponResults['ValidFromDate'];    
+            $toDateExpiry = (string)$couponResults['ValidToDate'];
+            $dateCreated = (string)$couponResults['DateCreated'];
+            
+            //check if date is already expired
+            if($dateNow >= $fromDateExpiry && $dateNow <= $toDateExpiry){
+                
+                //check the status of coupon
+                //0-Inactive, 1-Active, 2-Deactivated, 3-Used, 4-Cancelled, 5-Reimbursed
+                switch($couponStatus){
+                    //inactive
+                    case "0" :
+                        $transMsg = "Inactive Coupon.";
+                        $errorCode = 4;
+                        break;
+                    //unused
+                    case "1" :
+                        $errorCode = 0;
+                        $transMsg = "Coupon is unclaimed.";
+                        break;
+                    //deactivated
+                    case "2":
+                        $errorCode = 12;
+                        $transMsg = "Coupon is deactivated.";
+                        break;
+                    //used
+                    case "3" : 
+                        $errorCode = 5;
+                        $transMsg = "Coupon is already used";
+                        break;
+                    //cancelled
+                    case "4":
+                        $errorCode = 13;
+                        $transMsg = "Coupon is cancelled";
+                        break;
+                    //reimbursed
+                    case "5":
+                        $errorCode = 14;
+                        $transMsg = "Coupon is already reimbursed";
+                        break;
+                    default :
+                        $errorCode = 6;
+                        $transMsg = "Invalid coupon";
+                        break;
+                }
+            } else {
+                $transMsg = "Coupon was already expired.";
+                $errorCode = 1;   
+            }
+        } else {
+            $transMsg = "Coupon is invalid.";
+            $errorCode = 11;
+        }
+        
+        $details = "VerifyVoucher : ".$transMsg;
+        AuditLog::logAPITransactions(1, $source, $details, $voucherCode, $trackingid, (int)$couponStatus);
+        return $this->getVerifyRetMsg(2, $errorCode, $transMsg, $voucherCode, 
+                            $amount, $dateCreated, $loyaltyCreditable);
+    }
+    
+    /**
+     * @param str $voucherCode coupon / ticket type
+     * @param int $aid account id
+     * @param str $trackingID unique tracking info
+     * @param int $terminalID egm / kronus terminal
+     * @param int $source egm, kronus, kapi
+     * @param int $voucherTypeID coupon / ticket type
+     * @param int $mid membership ID
+     * @param int $siteID site ID 
+     * @return array transaction result
+     */
+    public function useCoupon($voucherCode, $aid,$trackingID,
+                            $terminalID, $source, $voucherTypeID, $mid, $siteID){
+        $couponModel = new CouponModel();
+        $couponStatus = "";
+        
+        $couponResults = $couponModel->chkCouponAvailable($voucherCode);
+        
+        if(is_array($couponResults)){
+            $amount = (float)$couponResults['Amount'];
+            $loyaltyCreditable = (int)$couponResults['IsCreditable'];
+            $couponStatus = $couponResults['Status'];
+            $fromDateExpiry = (string)$couponResults['ValidFromDate'];    
+            $toDateExpiry = (string)$couponResults['ValidToDate'];
+            
+            //verify coupon date expiration
+            $dateNow = date("Y-m-d H:i:s");
+        
+            //check if date is already expired
+            if($dateNow >= $fromDateExpiry && $dateNow <= $toDateExpiry){
+                
+                //check the status of coupon
+                switch($couponStatus){
+                    //inactive
+                    case "0" :
+                          $transMsg = "Inactive Coupon.";
+                          $errorCode = 4;                  
+                        break;
+                    //unused
+                    case "1" :
+                           $isTrackingIdExists = $couponModel->isTrackingIDExists($trackingID);
+
+                           if($isTrackingIdExists == 0){
+                                $isUpdated = $couponModel->usedCoupon($siteID, $terminalID, 
+                                        $mid, $aid, $trackingID, $voucherCode);
+
+                                //check if transaction was successful
+                                if($isUpdated){
+                                    $transMsg = "Transaction approved.";
+                                    $errorCode = 0;
+                                } else {
+                                    $transMsg = "Transaction denied.";
+                                    $errorCode = 8;
+                                }
+                           } else {
+                               $transMsg = "Tracking ID was already used.";
+                               $errorCode = 9;
+                           }
+                        break;
+                    //used
+                    case "3" : 
+                        $transMsg = "Coupon is already used.";
+                        $errorCode = 5;
+                        break;
+                     //cancelled
+                    case "4":
+                        $errorCode = 13;
+                        $transMsg = "Coupon is cancelled";
+                        break;
+                    //reimbursed
+                    case "5":
+                        $errorCode = 14;
+                        $transMsg = "Coupon is already reimbursed";
+                        break;
+                    default :
+                        $transMsg = "Invalid coupon";
+                        $errorCode = 6;
+                        break;
+                }
+            } else {
+                $transMsg = "Coupon was already expired.";
+                $errorCode = 1;   
+            }
+        } else {
+            $transMsg = "Coupon is invalid.";
+            $errorCode = 11;
+        }
+        
+        $details = "UseVoucher : ".$transMsg;
+        AuditLog::logAPITransactions(2, $source, $details, $voucherCode, $trackingID, $couponStatus);
+        return $this->getUseRetMsg(2, $transMsg, $errorCode);
+        
     }
 }
 

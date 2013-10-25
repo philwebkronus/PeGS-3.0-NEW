@@ -19,7 +19,7 @@ $this->breadcrumbs=array(
 );?>
 <?php
 
-$siteconversionmodel = new SiteConversionForm;
+$sitesModel = new SitesModel();
 if(isset($_POST['TransactionpercutoffForm']))
 {
     $model->attributes=$_POST['TransactionpercutoffForm'];
@@ -69,7 +69,7 @@ else
         <tr>
         <td><?php echo CHtml::label("eGames : ", "site");?></td>    
         <td>
-                <?php echo $form->dropDownList($model, 'site', $siteconversionmodel->getSiteName(), array('id'=>'site')); ?>
+                <?php echo $form->dropDownList($model, 'site', $sitesModel->fetchAllActiveSites(), array('id'=>'site')); ?>
         </td>
         </tr>
         <tr>

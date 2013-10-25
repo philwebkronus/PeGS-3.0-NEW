@@ -11,3 +11,7 @@ Error Codes of VMS API's
 8 - Transaction denied
 9 - Tracking Id was already used
 10 - Coupon was already expired.
+11 - Coupon is invalid
+12 - Coupon is deactivated
+13 - Coupon is cancelled
+14 - Coupon is already reimbursed

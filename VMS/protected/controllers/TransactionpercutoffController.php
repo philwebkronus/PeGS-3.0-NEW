@@ -59,11 +59,11 @@ class TransactionpercutoffController extends VMSBaseIdentity {
                 } elseif ($site == 'All' && $vouchertype == 1) {
                     $ticketarr = $_Tickets->getAllUsedTicketList($transdate);
                 } elseif ($site == 'All' && $vouchertype == 2) {
-                   $couponarr = $_Coupons->getAllUsedCouponList($transdate);
+                    $couponarr = $_Coupons->getAllUsedCouponList($transdate);
                 } elseif ($site != 'All' && $vouchertype == 1) {
-                   $ticketarr = $_Tickets->getUsedTicketListBySite($site, $transdate);
+                    $ticketarr = $_Tickets->getUsedTicketListBySite($site, $transdate);
                 } elseif ($site != 'All' && $vouchertype == 2) {
-                   $couponarr = $_Coupons->getUsedCouponListBySite($site, $transdate);
+                    $couponarr = $_Coupons->getUsedCouponListBySite($site, $transdate);
                 }
 
                 if (!empty($couponarr)) {
@@ -77,27 +77,14 @@ class TransactionpercutoffController extends VMSBaseIdentity {
                         $couponterminalname = $terminalname[0]['TerminalName'];
                         $couponamount = $value['Amount'];
                         $coupondatecreated = $value['DateCreated'];
-                        $coupondateexpiry = $value['DateExpiry'];
-                        $couponsource = $value['Source'];
-                        $couponiscreditable = $value['LoyaltyCreditable'];
+                        $coupondateexpiry = $value['ValidToDate'];
+                        $coupondateupdated = $value['DateUpdated'];
+                        $couponiscreditable = $value['IsCreditable'];
+                        $couponsource = "Cashier";
                         if($couponstatus == 3){
                             $couponstatus = 'Used';
                         } else {
                             $couponstatus = '';
-                        }
-                        switch ($couponsource) {
-                            case 1:
-                                $couponsource = 'KAPI';
-                                break;
-                            case 2:
-                                $couponsource = 'EGM';
-                                break;
-                            case 3:
-                                $couponsource = 'Cashier';
-                                break;
-                            case 4:
-                                $couponsource = 'VMS';
-                                break;
                         }
                         $record = array(
                             'SiteName' => $sitename,
@@ -106,7 +93,7 @@ class TransactionpercutoffController extends VMSBaseIdentity {
                             'VoucherCode' => $couponvouchercode,
                             'Status' => $couponstatus,
                             'Amount' => $couponamount,
-                            'DateCreated' => $coupondatecreated,
+                            'DateCreated' => $coupondateupdated,
                             'DateExpired' => $coupondateexpiry,
                             'Source' => $couponsource,
                             'IsCreditable' => $couponiscreditable,
@@ -126,28 +113,9 @@ class TransactionpercutoffController extends VMSBaseIdentity {
                         $ticketterminalname = $terminalname[0]['TerminalName'];
                         $ticketamount = $value['Amount'];
                         $ticketdatecreated = $value['DateCreated'];
-                        $ticketdateexpiry = $value['DateExpiry'];
-                        $ticketsource = $value['Source'];
-                        $ticketiscreditable = $value['LoyaltyCreditable'];
-                        if($couponstatus == 3){
-                            $couponstatus = 'Used';
-                        } else {
-                            $couponstatus = '';
-                        }
-                        switch ($ticketsource) {
-                            case 1:
-                                $ticketsource = 'KAPI';
-                                break;
-                            case 2:
-                                $ticketsource = 'EGM';
-                                break;
-                            case 3:
-                                $ticketsource = 'Cashier';
-                                break;
-                            case 4:
-                                $ticketsource = 'VMS';
-                                break;
-                        }
+                        $ticketdateexpiry = $value['ValidToDate'];
+                        $ticketsource = 'EGM';
+                        $ticketiscreditable = $value['IsCreditable'];
                         $record = array(
                             'SiteName' => $sitename,
                             'TerminalName' => $ticketterminalname,
@@ -160,7 +128,6 @@ class TransactionpercutoffController extends VMSBaseIdentity {
                             'Source' => $ticketsource,
                             'IsCreditable' => $ticketiscreditable,
                         );
-
                         array_push($rawData, $record);
                     }
                 }
@@ -197,27 +164,14 @@ class TransactionpercutoffController extends VMSBaseIdentity {
                         $couponterminalname = $terminalname[0]['TerminalName'];
                         $couponamount = $value['Amount'];
                         $coupondatecreated = $value['DateCreated'];
-                        $coupondateexpiry = $value['DateExpiry'];
-                        $couponsource = $value['Source'];
-                        $couponiscreditable = $value['LoyaltyCreditable'];
+                        $coupondateupdated = $value['DateUpdated'];
+                        $coupondateexpiry = $value['ValidToDate'];
+                        $couponsource = 'Cashier';
+                        $couponiscreditable = $value['IsCreditable'];
                         if($couponstatus == 3){
                             $couponstatus = 'Used';
                         } else {
                             $couponstatus = '';
-                        }
-                        switch ($couponsource) {
-                            case 1:
-                                $couponsource = 'KAPI';
-                                break;
-                            case 2:
-                                $couponsource = 'EGM';
-                                break;
-                            case 3:
-                                $couponsource = 'Cashier';
-                                break;
-                            case 4:
-                                $couponsource = 'VMS';
-                                break;
                         }
                         $record = array(
                             'SiteName' => $sitename,
@@ -226,7 +180,7 @@ class TransactionpercutoffController extends VMSBaseIdentity {
                             'VoucherCode' => $couponvouchercode,
                             'Status' => $couponstatus,
                             'Amount' => $couponamount,
-                            'DateCreated' => $coupondatecreated,
+                            'DateCreated' => $coupondateupdated, //pass date wherein coupon has used
                             'DateExpired' => $coupondateexpiry,
                             'Source' => $couponsource,
                             'IsCreditable' => $couponiscreditable,
@@ -246,27 +200,13 @@ class TransactionpercutoffController extends VMSBaseIdentity {
                         $ticketterminalname = $terminalname[0]['TerminalName'];
                         $ticketamount = $value['Amount'];
                         $ticketdatecreated = $value['DateCreated'];
-                        $ticketdateexpiry = $value['DateExpiry'];
-                        $ticketsource = $value['Source'];
-                        $ticketiscreditable = $value['LoyaltyCreditable'];
-                        if($couponstatus == 3){
-                            $couponstatus = 'Used';
+                        $ticketdateexpiry = $value['ValidToDate'];
+                        $ticketsource = 'EGM';
+                        $ticketiscreditable = $value['IsCreditable'];
+                        if($ticketstatus == 3){
+                            $ticketstatus = 'Used';
                         } else {
-                            $couponstatus = '';
-                        }
-                        switch ($ticketsource) {
-                            case 1:
-                                $ticketsource = 'KAPI';
-                                break;
-                            case 2:
-                                $ticketsource = 'EGM';
-                                break;
-                            case 3:
-                                $ticketsource = 'Cashier';
-                                break;
-                            case 4:
-                                $ticketsource = 'VMS';
-                                break;
+                            $ticketstatus = '';
                         }
                         $record = array(
                             'SiteName' => $sitename,
@@ -381,9 +321,9 @@ class TransactionpercutoffController extends VMSBaseIdentity {
             //code to download the data of report in the excel format
             include_once("protected/extensions/ExportToExcel.php");
             $transdate = Yii::app()->session['transactiondate'];
-            list($transdate, $b) = split(' ', $transdate);
+            $transdate = explode(' ', $transdate);
             //code to download the data of report in the excel format
-            $fn = "TransactionPerCutOff_".$transdate.".xls";
+            $fn = "TransactionPerCutOff_".$transdate[0].".xls";
             //create the instance of the exportexcel format
             $excel_obj = new ExportExcel("$fn");
             //setting the values of the headers and data of the excel file
