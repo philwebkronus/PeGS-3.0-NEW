@@ -95,5 +95,46 @@ class Validations
             return false;
         }
     }
+    /**
+     * Validate the minumum length of the text depending on field
+     * @param text $text The inputted text
+     * @param type $field The field to be validated
+     * @return boolean Returns <b>TRUE</b> if VALID, FALSE if INVALID
+     * @author Mark Kenneth Esguerra
+     * @date October 21, 2013
+     */
+    public function validateMinimum($text, $field)
+    {
+        $length = strlen($text);
+        
+        switch ($field)
+        {
+            case "PartnerName":
+                $limit = 5;
+                break;
+            case "CompanyName":
+                $limit = 5;
+                break;
+            case "PhoneNumber":
+                $limit = 7;
+                break;
+            case "FaxNumber":
+                $limit = 7;
+                break;
+            case "ContactPosition":
+                $limit = 5;
+                break;
+            case "ContactPhone":
+                $limit = 7;
+                break;
+            case "ContactMobile":
+                $limit = 11;
+                break;
+        }
+        if ($length < $limit)
+            return true;
+        else
+            return false;
+    }
 }
 ?>

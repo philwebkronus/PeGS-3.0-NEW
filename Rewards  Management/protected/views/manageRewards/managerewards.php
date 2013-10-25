@@ -14,7 +14,7 @@ tinyMCE.init({
 
         // Theme options
         theme_advanced_buttons1 : "save,newdocument,|,bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,fontselect,fontsizeselect",
-        theme_advanced_buttons2 : "cut,copy,paste,pastetext,|,bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,image,code,|,forecolor,backcolor,|,ltr,rt",
+        theme_advanced_buttons2 : "cut,copy,paste,pastetext,|,bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,image,code,|,forecolor,backcolor",
         theme_advanced_buttons3 : "tablecontrols,|,removeformat",
         theme_advanced_toolbar_location : "top",
         theme_advanced_toolbar_align : "left",
@@ -40,7 +40,7 @@ tinyMCE.init({
 
         // Theme options
         theme_advanced_buttons1 : "save,newdocument,|,bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,fontselect,fontsizeselect",
-        theme_advanced_buttons2 : "cut,copy,paste,pastetext,|,bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,image,code,|,forecolor,backcolor,|,ltr,rt",
+        theme_advanced_buttons2 : "cut,copy,paste,pastetext,|,bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,image,code,|,forecolor,backcolor",
         theme_advanced_buttons3 : "tablecontrols,|,removeformat",
         theme_advanced_toolbar_location : "top",
         theme_advanced_toolbar_align : "left",
@@ -65,7 +65,7 @@ tinyMCE.init({
 
         // Theme options
         theme_advanced_buttons1 : "save,newdocument,|,bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,fontselect,fontsizeselect",
-        theme_advanced_buttons2 : "cut,copy,paste,pastetext,|,bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,image,code,|,forecolor,backcolor,|,ltr,rt",
+        theme_advanced_buttons2 : "cut,copy,paste,pastetext,|,bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,image,code,|,forecolor,backcolor",
         theme_advanced_buttons3 : "tablecontrols,|,removeformat",
         theme_advanced_toolbar_location : "top",
         theme_advanced_toolbar_align : "left",
@@ -90,7 +90,7 @@ tinyMCE.init({
 
         // Theme options
         theme_advanced_buttons1 : "save,newdocument,|,bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,fontselect,fontsizeselect",
-        theme_advanced_buttons2 : "cut,copy,paste,pastetext,|,bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,image,code,|,forecolor,backcolor,|,ltr,rt",
+        theme_advanced_buttons2 : "cut,copy,paste,pastetext,|,bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,image,code,|,forecolor,backcolor",
         theme_advanced_buttons3 : "tablecontrols,|,removeformat",
         theme_advanced_toolbar_location : "top",
         theme_advanced_toolbar_align : "left",
@@ -116,7 +116,7 @@ tinyMCE.init({
 
         // Theme options
         theme_advanced_buttons1 : "save,newdocument,|,bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,fontselect,fontsizeselect",
-        theme_advanced_buttons2 : "cut,copy,paste,pastetext,|,bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,image,code,|,forecolor,backcolor,|,ltr,rt",
+        theme_advanced_buttons2 : "cut,copy,paste,pastetext,|,bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,image,code,|,forecolor,backcolor",
         theme_advanced_buttons3 : "tablecontrols,|,removeformat",
         theme_advanced_toolbar_location : "top",
         theme_advanced_toolbar_align : "left",
@@ -141,7 +141,7 @@ tinyMCE.init({
 
         // Theme options
         theme_advanced_buttons1 : "save,newdocument,|,bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,fontselect,fontsizeselect",
-        theme_advanced_buttons2 : "cut,copy,paste,pastetext,|,bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,image,code,|,forecolor,backcolor,|,ltr,rt",
+        theme_advanced_buttons2 : "cut,copy,paste,pastetext,|,bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,image,code,|,forecolor,backcolor",
         theme_advanced_buttons3 : "tablecontrols,|,removeformat",
         theme_advanced_toolbar_location : "top",
         theme_advanced_toolbar_align : "left",
@@ -171,13 +171,26 @@ tinyMCE.init({
                 var subtext = $("#editsubtext").val();
                 var fromdate = $("#from_date").val();
                 var todate = $("#to_date").val();
-                
+                var draw_date = $("#editdrawdate").val();
+                var date1 = new Date($("#from_date").val());
+                var date2 = new Date($("#to_date").val());
+                var date0 = new Date($("#editdrawdate").val());
+                var datefrom = date1.getTime();
+                var dateto = date2.getTime();
+                var datedraw = date0.getTime();
+
                 if(rewardid == 2){
-                    if(rewarditem == "" || points == "" || eligibility == "" || status == "" || fromdate == "" || todate == "" || subtext == "") {
+                    if(rewarditem == "" || points == "" || eligibility == "" || status == "" || fromdate == "" || todate == "" || subtext == "" || draw_date == "") {
                         var message = "Please fill up all fields.";
                         return message;
                     } else if (/^[a-zA-Z0-9- ]*$/.test(rewarditem) === false) {
                         var message = "Special character/s is/are not allowed in Reward Item";
+                        return message;
+                    } else if(datefrom > dateto){
+                        var message = "Invalid Date Range.";
+                        return message;
+                    } else if(dateto > datedraw){
+                        var message = "Invalid Draw Date.";
                         return message;
                     } else  {
                         rewarditem = trimword(rewarditem);
@@ -192,6 +205,9 @@ tinyMCE.init({
                         return message;
                     } else if (/^[a-zA-Z0-9- ]*$/.test(rewarditem) === false) {
                         var message = "Special character/s is/are not allowed in Reward Item";
+                        return message;
+                    } else if(datefrom > dateto){
+                        var message = "Invalid Date Range.";
                         return message;
                     } else  {
                         rewarditem = trimword(rewarditem);
@@ -289,6 +305,18 @@ tinyMCE.init({
                     var message = "Status Unchanged.";
                     return message;
                 } else {
+                    var newstatus = $("#editstatus").val();
+                    var stats = $("#hdnStatus").val();
+                    if(comparestat != stats){
+                        var c2 = confirm("Are you sure you want to change the status of this Reward Item?");
+                        if (c2 == true) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    } else {
+                        return true;
+                    }
                     return true;
                 }
             } else if(part == 6){                                  //Edit part for Active Reward
@@ -316,6 +344,12 @@ tinyMCE.init({
                 var promoname = $("#addpromoname").val();
                 var promocode = $("#addpromocode").val();
                 var drawdate = $("#drawdate").val();
+                var date3 = new Date($("#add_from_date").val());
+                var date4 = new Date($("#add_to_date").val());
+                var date5 = new Date($("#drawdate").val());
+                var adddatefrom = date3.getTime();
+                var adddateto = date4.getTime();
+                var adddatedraw = date5.getTime();
 
                 if(rewardid == 2){
                     if(rewarditem == "" || points == "" || eligibility == "" || status == "" || fromdate == "" || todate == "" || itemcount == ""
@@ -324,6 +358,12 @@ tinyMCE.init({
                         return message;
                     } else if (/^[a-zA-Z0-9- ]*$/.test(rewarditem) === false) {
                         var message = "Special character/s is/are not allowed in Reward Item";
+                        return message;
+                    } else if(adddatefrom > adddateto){
+                        var message = "Invalid Date Range.";
+                        return message;
+                    } else if(adddateto > adddatedraw){
+                        var message = "Invalid Draw Date.";
                         return message;
                     } else  {
                         rewarditem = trimword(rewarditem);
@@ -338,6 +378,9 @@ tinyMCE.init({
                         return message;
                     } else if (/^[a-zA-Z0-9- ]*$/.test(rewarditem) === false) {
                         var message = "Special character/s is/are not allowed in Reward Item";
+                        return message;
+                    } else if(adddatefrom > adddateto){
+                        var message = "Invalid Date Range.";
                         return message;
                     } else  {
                         rewarditem = trimword(rewarditem);
@@ -377,28 +420,28 @@ tinyMCE.init({
                     var c = confirm("Are you sure you don't want to complete all the images for this Reward Item?");
                     if (c == true) {
                         if(thblimited != "")
-                            $("#thblimitedphoto").val(thblimited);
+                            $("#addthblimitedphoto").val(thblimited);
                         if(thboutofstock != "")
-                            $("#thboutofstockphoto").val(thboutofstock);
+                            $("#addthboutofstockphoto").val(thboutofstock);
                         if(ecoupon != "")
-                            $("#ecouponphoto").val(ecoupon);
+                            $("#addecouponphoto").val(ecoupon);
                         if(lmlimited != "")
-                            $("#lmlimitedphoto").val(lmlimited);
+                            $("#addlmlimitedphoto").val(lmlimited);
                         if(lmoutofstock != "")
-                            $("#lmoutofstockphoto").val(lmoutofstock);
+                            $("#addlmoutofstockphoto").val(lmoutofstock);
                         if(webslider != "")
-                            $("#websliderphoto").val(webslider);
+                            $("#addwebsliderphoto").val(webslider);
                         return true;
                     } else {
                         return false;
                     }
                 } else {
-                    $("#thblimitedphoto").val(thblimited);
-                    $("#thboutofstockphoto").val(thboutofstock);
-                    $("#ecouponphoto").val(ecoupon);
-                    $("#lmlimitedphoto").val(lmlimited);
-                    $("#lmoutofstockphoto").val(lmoutofstock);
-                    $("#websliderphoto").val(webslider);
+                    $("#addthblimitedphoto").val(thblimited);
+                    $("#addthboutofstockphoto").val(thboutofstock);
+                    $("#addecouponphoto").val(ecoupon);
+                    $("#addlmlimitedphoto").val(lmlimited);
+                    $("#addlmoutofstockphoto").val(lmoutofstock);
+                    $("#addwebsliderphoto").val(webslider);
                     return true;
                 }
                 
@@ -566,6 +609,12 @@ tinyMCE.init({
                     $("#statusid").val(data.StatusID);
                     var itemcount = data.AvailableItemCount;
                     $("#availableitemcount").val(itemcount.toString().replace(/,/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                    if(!data.NoDrawDate){
+                        $("#editdrawdate").val(data.DrawDate);
+                        $("#editdrawdate_hour").val(data.DrawDateHour);
+                        $("#editdrawdate_min").val(data.DrawDateMin);
+                        $("#editdrawdate_sec").val(data.DrawDateSec);
+                    }
                     $("#subtext").val(data.Subtext);
                     $("#about").html(data.About);
                     tinyMCE.get('editabout').setContent(data.About);
@@ -586,6 +635,27 @@ tinyMCE.init({
             }
         });
     }
+    
+//    function deleteUploadedImages(thblimited,thboutofstock,lmlimited,lmoutofstock,ecoupon,webslider){     
+//        $.ajax({
+//            url: 'deleteUploadedImages',
+//            type: 'POST',
+//            data : {
+//                            thblimitedphoto : function() {return thblimited; },
+//                            thboutofstockphoto : function(){return thboutofstock;},
+//                            ecouponphoto : function() {return ecoupon; },
+//                            lmlimitedphoto : function(){return lmlimited;},
+//                            lmoutofstockphoto : function() {return lmoutofstock; },
+//                            websliderphoto : function(){return webslider;}
+//                        },
+//            dataType: 'json',
+//            success: function(data)
+//            {
+//                $("#message").html(data.message);
+//                $("#messagedialog2").dialog("open");
+//            }
+//        });
+//    }
 
     function getActivePartners(action){
         $.ajax({
@@ -792,6 +862,7 @@ tinyMCE.init({
         $('#rewardtype1').live('click', function(){ 
             $("#partner-row").removeAttr('style');
             $("#category-row").removeAttr('style');
+            $("#editdrawdate-row").css("display", "none");
             var viewrewardsby = $('#viewrewardsby').val();
             var rewardtype = $('#rewardtype1:checked').val();
             reloadRewardsList(viewrewardsby,rewardtype);
@@ -807,6 +878,7 @@ tinyMCE.init({
         });
 
         $('#rewardtype2').live('click', function(){
+            $("#editdrawdate-row").removeAttr("style");
             $("#partner-row").removeAttr('style');
             $("#category-row").removeAttr('style');
             $("#partner-row").attr('style', 'display: none');
@@ -1568,12 +1640,38 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
                             }
             }',
             'close' => 'js:function(event,ui){
+//                            var thblimited =$("#thblimitedframe").contents().find("#thbsubmit_limited").attr("ImageName");
+//                            var thboutofstock = $("#thboutofstockframe").contents().find("#thbsubmit_outofstock").attr("ImageName");
+//                            var ecoupon = $("#ecouponframe").contents().find("#ecoupon_submit").attr("ImageName");
+//                            var lmlimited = $("#lmlimitedframe").contents().find("#lmsubmit_limited").attr("ImageName");
+//                            var lmoutofstock = $("#lmoutofstockframe").contents().find("#lmsubmit_outofstock").attr("ImageName");
+//                            var webslider = $("#websliderframe").contents().find("#webslider_submit").attr("ImageName");
+//                            thblimited == undefined ? thblimited = null:"";
+//                            thboutofstock == undefined ? thboutofstock = null:"";
+//                            ecoupon == undefined ? ecoupon = null:"";
+//                            lmlimited == undefined ? lmlimited = null:"";
+//                            lmoutofstock == undefined ? lmoutofstock = null:"";
+//                            webslider == undefined ? webslider = null:"";
+//                            deleteUploadedImages(thblimited,thboutofstock,lmlimited,lmoutofstock,ecoupon,webslider);
                             window.location.href = "'.$urlrefresh.'";
             }',
             'buttons' => array
             (
                 array('id' => 'firstback','text'=>'BACK',
                             'click'=> 'js:function(){
+                                        var thblimited =$("#thblimitedframe").contents().find("#thbsubmit_limited").attr("ImageName");
+                                        var thboutofstock = $("#thboutofstockframe").contents().find("#thbsubmit_outofstock").attr("ImageName");
+                                        var ecoupon = $("#ecouponframe").contents().find("#ecoupon_submit").attr("ImageName");
+                                        var lmlimited = $("#lmlimitedframe").contents().find("#lmsubmit_limited").attr("ImageName");
+                                        var lmoutofstock = $("#lmoutofstockframe").contents().find("#lmsubmit_outofstock").attr("ImageName");
+                                        var webslider = $("#websliderframe").contents().find("#webslider_submit").attr("ImageName");
+                                        thblimited == undefined ? thblimited = null:"";
+                                        thboutofstock == undefined ? thboutofstock = null:"";
+                                        ecoupon == undefined ? ecoupon = null:"";
+                                        lmlimited == undefined ? lmlimited = null:"";
+                                        lmoutofstock == undefined ? lmoutofstock = null:"";
+                                        webslider == undefined ? webslider = null:"";
+                                        deleteUploadedImages(thblimited,thboutofstock,lmlimited,lmoutofstock,ecoupon,webslider);
                                         $(this).dialog("close");
                                         window.location.href = "'.$urlrefresh.'";
                             }'),
@@ -1705,7 +1803,10 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
 
                                                     $(this).siblings(".ui-dialog-buttonpane").find("button").eq(2).show();
                                                     $(this).siblings(".ui-dialog-buttonpane").find("button").eq(6).show();
-                                            } 
+                                            } else if(results != true && results != false) {
+                                                    $("#message1").html(results);
+                                                    $("#messagedialog3").dialog("open");
+                                            }  
                                         }
                                         
                             }'),
@@ -1743,7 +1844,10 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
 
                                                     $(this).siblings(".ui-dialog-buttonpane").find("button").eq(3).show();
                                                     $(this).siblings(".ui-dialog-buttonpane").find("button").eq(7).show();
-                                            } 
+                                            } else if(results != true && results != false)  {
+                                                    $("#message1").html(results);
+                                                    $("#messagedialog3").dialog("open");
+                                            }  
                                         }
                                         
                                         
@@ -1757,7 +1861,7 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
                                             if(results == true){
                                                 $("#edit-item-form").submit();
                                                 $(this).dialog("close");
-                                            } else {
+                                            } else if(results != true && results != false) {
                                                 $("#message1").html(results);
                                                 $("#messagedialog3").dialog("open");
                                                 $(this).dialog("close");
@@ -1767,7 +1871,10 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
                                             if(results == true){
                                                     $("#edit-item-form").submit();
                                                     $(this).dialog("close");
-                                            }
+                                            } else if(results != true && results != false) {
+                                                    $("#message1").html(results);
+                                                    $("#messagedialog3").dialog("open");
+                                            }  
                                         }
                                         
                             }')
@@ -1881,7 +1988,8 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
                      'minDate' => '0',
                 ),
                 'htmlOptions'=>array(
-                    'style'=>'height:20px; width: 255px;'
+                    'style'=>'height:20px; width: 255px;',
+                    'readonly' => true,
                 ),
             ));
             ?>
@@ -1931,7 +2039,8 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
                      'minDate' => '0',
                 ),
                 'htmlOptions'=>array(
-                    'style'=>'height:20px; width: 255px; margin-top: 5px; margin-left: 18px;'
+                    'style'=>'height:20px; width: 255px; margin-top: 5px; margin-left: 18px;',
+                    'readonly' => true,
                 ),
             ));
             ?>
@@ -1972,6 +2081,60 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
             <b>To :</b>
             <?php echo CHtml::textField('todate' , '', array('id' => 'todate', 'style' => 'height:20px; width: 255px; margin-top: 5px; margin-left: 18px;', 'disabled' => 'disabled')); ?>
         </div>
+        </td>
+    </tr>
+    <tr id="editdrawdate-row" style="display: none;">
+        <td>Draw Date &nbsp<span style="vertical-align: top; color: red; font-weight: bold;">*</span></td>
+        <td>
+     <?php
+            $this->widget('zii.widgets.jui.CJuiDatePicker', array(
+                'name'=>'editdrawdate',  
+                'id'=>'editdrawdate',  
+                'value'=>  '', 
+                 'options'=>array(
+                    'showAnim'=>'fade',
+                    'dateFormat'=>$dateformat,
+                    'changeYear' => true,           // can change year
+                    'changeMonth' => true,          // can change month
+                     'yearRange' => $yearrange,
+                     'minDate' => '0',
+                ),
+                'htmlOptions'=>array(
+                    'style'=>'height:20px; width: 307px; margin-top: 5px;',
+                    'readonly' => true,
+                ),
+            ));
+            ?>
+            <!--  DROPDOWNLIST FOR HRS:MINS:SECS FOR DRAWDATE  -->
+            <?php echo CHtml::dropdownlist('editdrawdate_hour', '00', array("00" => "00", "01" => "01", "02" => "02", "03" => "03", "04" => "04",
+                                                                                                                                "05" => "05", "06" => "06", "07" => "07", "08" => "08", "09" => "09",
+                                                                                                                                "10" => "10", "11" => "11", "12" => "12", "13" => "13", "14" => "14",
+                                                                                                                                "15" => "15", "16" => "16", "17" => "17", "18" => "18", "19" => "19",
+                                                                                                                                "20" => "20", "21" => "21", "22" => "22", "23" => "23"), array('style'=>'padding:3px; display: none;'));?>
+            <?php echo CHtml::dropdownlist('editdrawdate_min', '00', array("00" => "00", "01" => "01", "02" => "02", "03" => "03", "04" => "04",
+                                                                                                                                "05" => "05", "06" => "06", "07" => "07", "08" => "08", "09" => "09",
+                                                                                                                                "10" => "10", "11" => "11", "12" => "12", "13" => "13", "14" => "14",
+                                                                                                                                "15" => "15", "16" => "16", "17" => "17", "18" => "18", "19" => "19",
+                                                                                                                                "20" => "20", "21" => "21", "22" => "22", "23" => "23", "24" => "24",
+                                                                                                                                "25" => "25", "26" => "26", "27" => "27", "28" => "28", "29" => "29",
+                                                                                                                                "30" => "30", "31" => "31", "32" => "32", "33" => "33", "34" => "34",
+                                                                                                                                "35" => "35", "36" => "36", "37" => "37", "38" => "38", "39" => "39",
+                                                                                                                                "40" => "40", "41" => "41", "42" => "42", "43" => "43", "44" => "44",
+                                                                                                                                "45" => "45", "46" => "46", "47" => "47", "48" => "48", "49" => "49",
+                                                                                                                                "50" => "50", "51" => "51", "52" => "52", "53" => "53", "54" => "54",
+                                                                                                                                "55" => "55", "56" => "56", "57" => "57", "58" => "58", "59" => "59"), array('style'=>'padding:3px; display: none;'));?>
+            <?php echo CHtml::dropdownlist('editdrawdate_sec', '00', array("00" => "00", "01" => "01", "02" => "02", "03" => "03", "04" => "04",
+                                                                                                                                "05" => "05", "06" => "06", "07" => "07", "08" => "08", "09" => "09",
+                                                                                                                                "10" => "10", "11" => "11", "12" => "12", "13" => "13", "14" => "14",
+                                                                                                                                "15" => "15", "16" => "16", "17" => "17", "18" => "18", "19" => "19",
+                                                                                                                                "20" => "20", "21" => "21", "22" => "22", "23" => "23", "24" => "24",
+                                                                                                                                "25" => "25", "26" => "26", "27" => "27", "28" => "28", "29" => "29",
+                                                                                                                                "30" => "30", "31" => "31", "32" => "32", "33" => "33", "34" => "34",
+                                                                                                                                "35" => "35", "36" => "36", "37" => "37", "38" => "38", "39" => "39",
+                                                                                                                                "40" => "40", "41" => "41", "42" => "42", "43" => "43", "44" => "44",
+                                                                                                                                "45" => "45", "46" => "46", "47" => "47", "48" => "48", "49" => "49",
+                                                                                                                                "50" => "50", "51" => "51", "52" => "52", "53" => "53", "54" => "54",
+                                                                                                                                "55" => "55", "56" => "56", "57" => "57", "58" => "58", "59" => "59"), array('style'=>'padding:3px; display: none;'));?>
         </td>
     </tr>
 </table>
@@ -2155,12 +2318,38 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
                             }
             }',
             'close' => 'js:function(event,ui){
+//                            var thblimited =$("#addthblimitedframe").contents().find("#thbsubmit_limited").attr("ImageName");
+//                            var thboutofstock = $("#addthboutofstockframe").contents().find("#thbsubmit_outofstock").attr("ImageName");
+//                            var ecoupon = $("#addecouponframe").contents().find("#ecoupon_submit").attr("ImageName");
+//                            var lmlimited = $("#addlmlimitedframe").contents().find("#lmsubmit_limited").attr("ImageName");
+//                            var lmoutofstock = $("#addlmoutofstockframe").contents().find("#lmsubmit_outofstock").attr("ImageName");
+//                            var webslider = $("#addwebsliderframe").contents().find("#webslider_submit").attr("ImageName");
+//                            thblimited == undefined ? thblimited = null:"";
+//                            thboutofstock == undefined ? thboutofstock = null:"";
+//                            ecoupon == undefined ? ecoupon = null:"";
+//                            lmlimited == undefined ? lmlimited = null:"";
+//                            lmoutofstock == undefined ? lmoutofstock = null:"";
+//                            webslider == undefined ? webslider = null:"";
+//                            deleteUploadedImages(thblimited,thboutofstock,lmlimited,lmoutofstock,ecoupon,webslider);
                             window.location.href = "'.$urlrefresh.'";
             }',
             'buttons' => array
             (
                 array('id' => 'firstback','text'=>'BACK',
                             'click'=> 'js:function(){
+                                        var thblimited =$("#addthblimitedframe").contents().find("#thbsubmit_limited").attr("ImageName");
+                                        var thboutofstock = $("#addthboutofstockframe").contents().find("#thbsubmit_outofstock").attr("ImageName");
+                                        var ecoupon = $("#addecouponframe").contents().find("#ecoupon_submit").attr("ImageName");
+                                        var lmlimited = $("#addlmlimitedframe").contents().find("#lmsubmit_limited").attr("ImageName");
+                                        var lmoutofstock = $("#addlmoutofstockframe").contents().find("#lmsubmit_outofstock").attr("ImageName");
+                                        var webslider = $("#addwebsliderframe").contents().find("#webslider_submit").attr("ImageName");
+                                        thblimited == undefined ? thblimited = "":"";
+                                        thboutofstock == undefined ? thboutofstock = null:"";
+                                        ecoupon == undefined ? ecoupon = null:"";
+                                        lmlimited == undefined ? lmlimited = null:"";
+                                        lmoutofstock == undefined ? lmoutofstock = null:"";
+                                        webslider == undefined ? webslider = null:"";
+                                        deleteUploadedImages(thblimited,thboutofstock,lmlimited,lmoutofstock,ecoupon,webslider);
                                         $(this).dialog("close");
                                         window.location.href = "'.$urlrefresh.'";
                             }'),
@@ -2249,7 +2438,10 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
 
                                                 $(this).siblings(".ui-dialog-buttonpane").find("button").eq(2).show();
                                                 $(this).siblings(".ui-dialog-buttonpane").find("button").eq(6).show();
-                                        } 
+                                        } else {
+                                                $("#message2").html(results);
+                                                $("#messagedialog4").dialog("open");
+                                        }  
                             }'),
                 array('id' => 'thirdnext','text'=>'NEXT','click'=> 'js:function(){
                                         var rewardid = $("#addrewardid").val();
@@ -2268,7 +2460,10 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
 
                                                 $(this).siblings(".ui-dialog-buttonpane").find("button").eq(3).show();
                                                 $(this).siblings(".ui-dialog-buttonpane").find("button").eq(7).show();
-                                        }
+                                        } else {
+                                                $("#message2").html(results);
+                                                $("#messagedialog4").dialog("open");
+                                        }  
                                         
                             }'),
                 array('id' => 'save','text'=>'SAVE','click'=> 'js:function(){
@@ -2277,7 +2472,10 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
                                         if(results == true){
                                                 $("#add-item-form").submit();
                                                 $(this).dialog("close");
-                                        }
+                                        } else {
+                                                $("#message2").html(results);
+                                                $("#messagedialog4").dialog("open");
+                                        }  
                             }')
             ),
         ),
@@ -2378,7 +2576,8 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
                      'minDate' => '0',
                 ),
                 'htmlOptions'=>array(
-                    'style'=>'height:20px; width: 255px;'
+                    'style'=>'height:20px; width: 255px;',
+                    'readonly' => true,
                 ),
             ));
             ?>
@@ -2429,7 +2628,8 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
                      'minDate' => '0',
                 ),
                 'htmlOptions'=>array(
-                    'style'=>'disabled: true; height:20px; width: 255px; margin-top: 5px; margin-left: 18px;'
+                    'style'=>'disabled: true; height:20px; width: 255px; margin-top: 5px; margin-left: 18px;',
+                    'readonly' => true,
                 ),
             ));
             ?>
@@ -2500,7 +2700,8 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
                      'minDate' => '0',
                 ),
                 'htmlOptions'=>array(
-                    'style'=>'height:20px; width: 150px; margin-top: 5px;'
+                    'style'=>'height:20px; width: 150px; margin-top: 5px;',
+                    'readonly' => true,
                 ),
             ));
             ?>
@@ -2555,17 +2756,17 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
                     src="<?php echo Yii::app()->createUrl('manageRewards/thumbnailLimited'); ?>" 
                     style="height: 248px; width: 160px; overflow: hidden; border: none; background: #FFFFFF;" >
             </iframe>
-            <?php echo CHtml::hiddenField('thblimitedphoto', '', array('id' => 'thblimitedphoto')); ?>
+            <?php echo CHtml::hiddenField('addthblimitedphoto', '', array('id' => 'addthblimitedphoto')); ?>
             <iframe id="addthboutofstockframe"
                     src="<?php echo Yii::app()->createUrl('manageRewards/thumbnailOutofstock'); ?>" 
                     style="height: 248px; width: 160px; overflow: hidden; border: none; background: #FFFFFF;">
             </iframe>
-            <?php echo CHtml::hiddenField('thboutofstockphoto', '',array('id' => 'thboutofstockphoto')); ?>
+            <?php echo CHtml::hiddenField('addthboutofstockphoto', '',array('id' => 'addthboutofstockphoto')); ?>
             <iframe id="addecouponframe"
                     src="<?php echo Yii::app()->createUrl('manageRewards/eCoupon'); ?>" 
                     style="height: 248px; width: 160px; overflow: hidden; border: none; background: #FFFFFF;">
             </iframe>
-            <?php echo CHtml::hiddenField('ecouponphoto', '',array('id' => 'ecouponphoto')); ?>
+            <?php echo CHtml::hiddenField('addecouponphoto', '',array('id' => 'addecouponphoto')); ?>
         </td>
     </tr>
     <tr>
@@ -2575,17 +2776,17 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
                     src="<?php echo Yii::app()->createUrl('manageRewards/learnMoreLimited'); ?>" 
                     style="height: 248px; width: 160px; overflow: hidden; border: none; background: #FFFFFF;">
             </iframe>
-            <?php echo CHtml::hiddenField('lmlimitedphoto', '', array('id' => 'lmlimitedphoto')); ?>
+            <?php echo CHtml::hiddenField('addlmlimitedphoto', '', array('id' => 'addlmlimitedphoto')); ?>
             <iframe id="addlmoutofstockframe"
                     src="<?php echo Yii::app()->createUrl('manageRewards/learnMoreOutofstock'); ?>" 
                     style="height: 248px; width: 160px; overflow: hidden; border: none; background: #FFFFFF;">
             </iframe>
-            <?php echo CHtml::hiddenField('lmoutofstockphoto', '', array('id' => 'lmoutofstockphoto')); ?>
+            <?php echo CHtml::hiddenField('addlmoutofstockphoto', '', array('id' => 'addlmoutofstockphoto')); ?>
             <iframe id="addwebsliderframe"
                     src="<?php echo Yii::app()->createUrl('manageRewards/websiteSlider'); ?>" 
                     style="height: 248px; width: 160px; overflow: hidden; border: none; background: #FFFFFF;">
             </iframe>
-            <?php echo CHtml::hiddenField('websliderphoto', '',array('id' => 'websliderphoto')); ?>
+            <?php echo CHtml::hiddenField('addwebsliderphoto', '',array('id' => 'addwebsliderphoto')); ?>
         </td>
     </tr>
 </table>

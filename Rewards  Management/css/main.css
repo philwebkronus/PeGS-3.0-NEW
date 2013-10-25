@@ -19,11 +19,11 @@ body
 {
         margin: 0;
 	padding: 0px;
-        height: 122px;
+        height: 100px;
         background-color:#1a597c;
         color:#FFF;
         font-size: 15px;
-        line-height: 130px;
+        line-height: 105px;
 }
 
 #content
@@ -109,6 +109,13 @@ body
 #divLogout /** Modified by: mgesguerra 09-16-13*/
 {
         float: right;
+}
+
+#logoutdiv {
+    background-color:#dcedf3;
+    height: 20px;
+    color: white;
+    /*line-height: 5px;*/
 }
 
 #linkButton

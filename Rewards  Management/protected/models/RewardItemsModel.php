@@ -254,7 +254,8 @@ class RewardItemsModel extends CFormModel
                                 WHEN 2 THEN 'Inactive'
                                 WHEN 3 THEN 'Out-Of-Stock'
                                 WHEN 4 THEN 'Deactivated'
-                            END as Status, ri.Status as StatusID, ri.AvailableItemCount, ri.OfferStartDate, ri.OfferEndDate, ri.SubText as Subtext, ri.About, ri.Terms
+                            END as Status, ri.Status as StatusID, ri.AvailableItemCount, ri.OfferStartDate, ri.OfferEndDate, ri.SubText as Subtext, 
+                            ri.PromoName, ri.PromoCode, ri.DrawDate, ri.About, ri.Terms
                             FROM rewarditems ri
                             LEFT JOIN ref_partners rp ON rp.PartnerID = ri.PartnerID
                             INNER JOIN ref_playerclassification rpc ON rpc.PClassID = ri.PClassID
@@ -354,8 +355,11 @@ class RewardItemsModel extends CFormModel
      */
     public function UpdateRewardItem($rewarditemid, $rewardid, $itemname, $points, $pclassid, $status, $startdate, $enddate, $partnerid, $categoryid,
                                                                             $subtext, $about,  $terms, $thblimitedphoto, $thboutofstockphoto, $ecouponphoto, 
-                                                                            $lmlimitedphoto, $lmoutofstockphoto, $websliderphoto)
+                                                                            $lmlimitedphoto, $lmoutofstockphoto, $websliderphoto,$drawdate)
     {
+            if($drawdate == ''){
+                $drawdate = null;
+            } else { $drawdate = $drawdate; }
             if($about == ''){
                 $about = null;
             } else { $about = $about; }
@@ -397,7 +401,7 @@ class RewardItemsModel extends CFormModel
             $query = "UPDATE rewarditems SET ItemName = :itemname, RequiredPoints = :points,
                             PClassID = :pclassid, SubText = :subtext, OfferStartDate = :startdate, OfferEndDate = :enddate, ".$thblimited."
                             ".$thboutofstock." ".$ecoupon." ".$lmlimited." ".$lmoutofstock." ".$webslider." About = :about, Terms = :terms, Status = :status,
-                            DateUpdated = now_usec(), UpdatedByAID = :updatedbyaid
+                            DateUpdated = now_usec(), UpdatedByAID = :updatedbyaid, DrawDate = :drawdate
                             WHERE RewardItemID = :rewarditemid";
             $command = $connection->createCommand($query);
             $command->bindParam(":itemname", $itemname,PDO::PARAM_STR);
@@ -422,6 +426,7 @@ class RewardItemsModel extends CFormModel
             $command->bindParam(":terms", $terms);
             $command->bindParam(":status", $status,PDO::PARAM_INT);
             $command->bindParam(":updatedbyaid", $updatedbyaid, PDO::PARAM_INT);
+            $command->bindParam(":drawdate", $drawdate, PDO::PARAM_STR);
             $command->bindParam(":rewarditemid", $rewarditemid, PDO::PARAM_INT);
         } else {
             $query = "UPDATE rewarditems SET PartnerID = :partnerid, ItemName = :itemname, CategoryID = :categoryid, RequiredPoints = :points,

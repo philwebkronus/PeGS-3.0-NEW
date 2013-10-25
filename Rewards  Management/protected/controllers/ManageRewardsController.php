@@ -191,6 +191,68 @@ class ManageRewardsController extends Controller
                     $lmoutofstockphoto = $_POST['lmoutofstockphoto'];
                     $websliderphoto = $_POST['websliderphoto'];
                     $editpoints = preg_replace('/[^0-9]/s', '', $model->editpoints);
+                    $imagedirector= Yii::app()->params['image_directory'];
+                    $imagetmpdirectory = Yii::app()->params['image_tmpdirectory'];
+                    $transferfile1 = true;
+                    $transferfile2 = true;
+                    $transferfile3 = true;
+                    $transferfile4 = true;
+                    $transferfile5 = true;
+                    $transferfile6 = true;
+                    $rewarditemname = $model->editrewarditem;
+                    if($thblimitedphoto != ""){
+                        $extname_thblimited = strpos($thblimitedphoto, 'thblimited') !== false ? "limited":"";
+                        $thblimited = explode(".",$thblimitedphoto);
+                        $ext_thblimited = end($thblimited);
+                        $rewarditemname = preg_replace("/[^a-zA-Z0-9+$]/", "-", $rewarditemname);
+                        $newthblimitedphoto = $rewarditemname."_".$extname_thblimited.".".$ext_thblimited;
+                        $transferfile1 = copy("$imagetmpdirectory".$thblimitedphoto, "$imagedirector".$newthblimitedphoto);
+                    }
+                    
+                    if($thboutofstockphoto != ""){
+                        $extname_thboutofstock = strpos($thboutofstockphoto, 'thboutofstock') !== false ? "outofstock":"";
+                        $thboutofstock = explode(".",$thboutofstockphoto);
+                        $ext_thboutofstock = end($thboutofstock);
+                        $rewarditemname = preg_replace("/[^a-zA-Z0-9+$]/", "-", $rewarditemname);
+                        $newthboutofstockphoto = $rewarditemname."_".$extname_thboutofstock.".".$ext_thboutofstock;
+                        $transferfile2 = copy("$imagetmpdirectory".$thboutofstockphoto, "$imagedirector".$newthboutofstockphoto);
+                    }
+                    
+                    if($ecouponphoto != ""){
+                        $extname_ecoupon = strpos($ecouponphoto, 'ecoupon') !== false ? "ecoupon":"";
+                        $ecoupon = explode(".",$ecouponphoto);
+                        $ext_ecoupon = end($ecoupon);
+                        $rewarditemname = preg_replace("/[^a-zA-Z0-9+$]/", "-", $rewarditemname);
+                        $newecouponphoto = $rewarditemname."_".$extname_ecoupon.".".$ext_ecoupon;
+                        $transferfile3 = copy("$imagetmpdirectory".$ecouponphoto, "$imagedirector".$newecouponphoto);
+                    }
+                    
+                    if($lmlimitedphoto != ""){
+                        $extname_lmlimited = strpos($lmlimitedphoto, 'lmlimited') !== false ? "learnmore-limited":"";
+                        $lmlimited = explode(".",$lmlimitedphoto);
+                        $ext_lmlimited = end($lmlimited);
+                        $rewarditemname = preg_replace("/[^a-zA-Z0-9+$]/", "-", $rewarditemname);
+                        $newlmlimitedphoto = $rewarditemname."_".$extname_lmlimited.".".$ext_lmlimited;
+                        $transferfile4 = copy("$imagetmpdirectory".$lmlimitedphoto, "$imagedirector".$newlmlimitedphoto);
+                    }
+                    
+                    if($lmoutofstockphoto != ""){
+                        $extname_lmoutofstock = strpos($lmoutofstockphoto, 'lmoutofstock') !== false ? "learnmore-outofstock":"";
+                        $lmoutofstock = explode(".",$lmoutofstockphoto);
+                        $ext_lmoutofstock = end($lmoutofstock);
+                        $rewarditemname = preg_replace("/[^a-zA-Z0-9+$]/", "-", $rewarditemname);
+                        $newlmoutofstockphoto = $rewarditemname."_".$extname_lmoutofstock.".".$ext_lmoutofstock;
+                        $transferfile5 = copy("$imagetmpdirectory".$lmoutofstockphoto, "$imagedirector".$newlmoutofstockphoto);
+                    }
+                    
+                    if($websliderphoto != ""){
+                        $extname_webslider = strpos($websliderphoto, 'webslider') !== false ? "slider":"";
+                        $webslider = explode(".",$websliderphoto);
+                        $ext_webslider = end($webslider);
+                        $rewarditemname = preg_replace("/[^a-zA-Z0-9+$]/", "-", $rewarditemname);
+                        $newwebsliderphoto = $rewarditemname."_".$extname_webslider.".".$ext_webslider;
+                        $transferfile6 = copy("$imagetmpdirectory".$websliderphoto, "$imagedirector".$newwebsliderphoto);
+                    }
                     
                     if($_POST['from_hour'] == "00" && $_POST['from_min'] == "00" && $_POST['from_sec'] == "00"){
                         $initialtime = Yii::app()->params['initialtime'];
@@ -203,10 +265,16 @@ class ManageRewardsController extends Controller
                     } else {
                         $cutofftime = $_POST['to_hour'].":".$_POST['to_min'].":".$_POST['to_sec'];
                     }
+                    
+                    if($_POST['editdrawdate_hour'] == "00" && $_POST['editdrawdate_min'] == "00" && $_POST['editdrawdate_sec'] == "00"){
+                        $cutofftime = Yii::app()->params['cutofftime'];
+                    } else {
+                        $cutofftime = $_POST['editdrawdate_hour'].":".$_POST['editdrawdate_min'].":".$_POST['editdrawdate_sec'];
+                    }
 
                     $startdate = $_POST['from_date']." ".$initialtime;
                     $enddate = $_POST['to_date']." ".$cutofftime;
-                    
+                    $drawdate = $_POST['editdrawdate']." ".$cutofftime;
                     if($model->editabout == ''){
                         $about = null;
                     } else { $about = $model->editabout; }
@@ -232,10 +300,36 @@ class ManageRewardsController extends Controller
                             $lmoutofstockphoto = $lmlimitedphoto;
                         }
                     }
+                    
+                    if($transferfile1 != true || $transferfile2 != true || $transferfile3 != true || $transferfile4 != true || $transferfile5 != true || $transferfile6 != true){
+                        $this->showdialog = true;
+                        $this->message = "Update Failed: Error in uploading of images.";
+                        $thblimitedphoto != "" ? unlink("$imagetmpdirectory".$thblimitedphoto):"";
+                        $thboutofstockphoto != "" ? unlink("$imagetmpdirectory".$thboutofstockphoto):"";
+                        $ecouponphoto != "" ? unlink("$imagetmpdirectory".$ecouponphoto):"";
+                        $lmlimitedphoto != "" ? unlink("$imagetmpdirectory".$lmlimitedphoto):"";
+                        $lmoutofstockphoto != "" ? unlink("$imagetmpdirectory".$lmoutofstockphoto):"";
+                        $websliderphoto != "" ? unlink("$imagetmpdirectory".$websliderphoto):"";
+
+                        $this->render('managerewards', array('model' => $model));
+                    } else {
+                        $thblimitedphoto != "" ? unlink("$imagetmpdirectory".$thblimitedphoto):"";
+                        $thboutofstockphoto != "" ? unlink("$imagetmpdirectory".$thboutofstockphoto):"";
+                        $ecouponphoto != "" ? unlink("$imagetmpdirectory".$ecouponphoto):"";
+                        $lmlimitedphoto != "" ? unlink("$imagetmpdirectory".$lmlimitedphoto):"";
+                        $lmoutofstockphoto != "" ? unlink("$imagetmpdirectory".$lmoutofstockphoto):"";
+                        $websliderphoto != "" ? unlink("$imagetmpdirectory".$websliderphoto):"";
+                        $thblimitedphoto != "" ? $thblimitedphoto = $newthblimitedphoto: $thblimitedphoto = $thblimitedphoto;
+                        $thboutofstockphoto != "" ? $thboutofstockphoto = $newthboutofstockphoto: $thboutofstockphoto = $thboutofstockphoto;
+                        $ecouponphoto != "" ? $ecouponphoto = $newecouponphoto: $ecouponphoto = $ecouponphoto;
+                        $lmlimitedphoto != "" ? $lmlimitedphoto = $newlmlimitedphoto: $lmlimitedphoto = $lmlimitedphoto;
+                        $lmoutofstockphoto != "" ? $lmoutofstockphoto = $newlmoutofstockphoto: $lmoutofstockphoto = $lmoutofstockphoto;
+                        $websliderphoto != "" ? $websliderphoto = $newwebsliderphoto: $websliderphoto = $websliderphoto;
+                    }
 
                     $result = $rewarditems->UpdateRewardItem($rewarditemid, $rewardid, $model->editrewarditem, $editpoints, $model->editeligibility, $model->editstatus, $startdate, $enddate, 
                                                                                                                 $partnerid, $categoryid, $subtext, $about, $terms, $thblimitedphoto, $thboutofstockphoto, 
-                                                                                                                $ecouponphoto, $lmlimitedphoto, $lmoutofstockphoto, $websliderphoto);
+                                                                                                                $ecouponphoto, $lmlimitedphoto, $lmoutofstockphoto, $websliderphoto, $drawdate);
                     if($result['TransCode'] == 0){
                         $this->showdialog = true;
                         if($rewardid == "2"){
@@ -255,12 +349,74 @@ class ManageRewardsController extends Controller
                     
                     break;
                 case 'AddReward':
-                    $thblimitedphoto = $_POST['thblimitedphoto'];
-                    $thboutofstockphoto = $_POST['thboutofstockphoto'];
-                    $ecouponphoto = $_POST['ecouponphoto'];
-                    $lmlimitedphoto = $_POST['lmlimitedphoto'];
-                    $lmoutofstockphoto = $_POST['lmoutofstockphoto'];
-                    $websliderphoto = $_POST['websliderphoto'];
+                    $thblimitedphoto = $_POST['addthblimitedphoto'];
+                    $thboutofstockphoto = $_POST['addthboutofstockphoto'];
+                    $ecouponphoto = $_POST['addecouponphoto'];
+                    $lmlimitedphoto = $_POST['addlmlimitedphoto'];
+                    $lmoutofstockphoto = $_POST['addlmoutofstockphoto'];
+                    $websliderphoto = $_POST['addwebsliderphoto'];
+                    $imagedirector= Yii::app()->params['image_directory'];
+                    $imagetmpdirectory = Yii::app()->params['image_tmpdirectory'];
+                    $transferfile1 = true;
+                    $transferfile2 = true;
+                    $transferfile3 = true;
+                    $transferfile4 = true;
+                    $transferfile5 = true;
+                    $transferfile6 = true;
+                    $rewarditemname = $model->addrewarditem;
+                    if($thblimitedphoto != ""){
+                        $extname_thblimited = strpos($thblimitedphoto, 'thblimited') !== false ? "limited":"";
+                        $thblimited = explode(".",$thblimitedphoto);
+                        $ext_thblimited = end($thblimited);
+                        $rewarditemname = preg_replace("/[^a-zA-Z0-9+$]/", "-", $rewarditemname);
+                        $newthblimitedphoto = $rewarditemname."_".$extname_thblimited.".".$ext_thblimited;
+                        $transferfile1 = copy("$imagetmpdirectory".$thblimitedphoto, "$imagedirector".$newthblimitedphoto);
+                    }
+                    
+                    if($thboutofstockphoto != ""){
+                        $extname_thboutofstock = strpos($thboutofstockphoto, 'thboutofstock') !== false ? "outofstock":"";
+                        $thboutofstock = explode(".",$thboutofstockphoto);
+                        $ext_thboutofstock = end($thboutofstock);
+                        $rewarditemname = preg_replace("/[^a-zA-Z0-9+$]/", "-", $rewarditemname);
+                        $newthboutofstockphoto = $rewarditemname."_".$extname_thboutofstock.".".$ext_thboutofstock;
+                        $transferfile2 = copy("$imagetmpdirectory".$thboutofstockphoto, "$imagedirector".$newthboutofstockphoto);
+                    }
+                    
+                    if($ecouponphoto != ""){
+                        $extname_ecoupon = strpos($ecouponphoto, 'ecoupon') !== false ? "ecoupon":"";
+                        $ecoupon = explode(".",$ecouponphoto);
+                        $ext_ecoupon = end($ecoupon);
+                        $rewarditemname = preg_replace("/[^a-zA-Z0-9+$]/", "-", $rewarditemname);
+                        $newecouponphoto = $rewarditemname."_".$extname_ecoupon.".".$ext_ecoupon;
+                        $transferfile3 = copy("$imagetmpdirectory".$ecouponphoto, "$imagedirector".$newecouponphoto);
+                    }
+                    
+                    if($lmlimitedphoto != ""){
+                        $extname_lmlimited = strpos($lmlimitedphoto, 'lmlimited') !== false ? "learnmore-limited":"";
+                        $lmlimited = explode(".",$lmlimitedphoto);
+                        $ext_lmlimited = end($lmlimited);
+                        $rewarditemname = preg_replace("/[^a-zA-Z0-9+$]/", "-", $rewarditemname);
+                        $newlmlimitedphoto = $rewarditemname."_".$extname_lmlimited.".".$ext_lmlimited;
+                        $transferfile4 = copy("$imagetmpdirectory".$lmlimitedphoto, "$imagedirector".$newlmlimitedphoto);
+                    }
+                    
+                    if($lmoutofstockphoto != ""){
+                        $extname_lmoutofstock = strpos($lmoutofstockphoto, 'lmoutofstock') !== false ? "learnmore-outofstock":"";
+                        $lmoutofstock = explode(".",$lmoutofstockphoto);
+                        $ext_lmoutofstock = end($lmoutofstock);
+                        $rewarditemname = preg_replace("/[^a-zA-Z0-9+$]/", "-", $rewarditemname);
+                        $newlmoutofstockphoto = $rewarditemname."_".$extname_lmoutofstock.".".$ext_lmoutofstock;
+                        $transferfile5 = copy("$imagetmpdirectory".$lmoutofstockphoto, "$imagedirector".$newlmoutofstockphoto);
+                    }
+                    
+                    if($websliderphoto != ""){
+                        $extname_webslider = strpos($websliderphoto, 'webslider') !== false ? "slider":"";
+                        $webslider = explode(".",$websliderphoto);
+                        $ext_webslider = end($webslider);
+                        $rewarditemname = preg_replace("/[^a-zA-Z0-9+$]/", "-", $rewarditemname);
+                        $newwebsliderphoto = $rewarditemname."_".$extname_webslider.".".$ext_webslider;
+                        $transferfile6 = copy("$imagetmpdirectory".$websliderphoto, "$imagedirector".$newwebsliderphoto);
+                    }
                     
                     if($_POST['from_hour'] == "00" && $_POST['from_min'] == "00" && $_POST['from_sec'] == "00"){
                         $initialtime = Yii::app()->params['initialtime'];
@@ -320,9 +476,8 @@ class ManageRewardsController extends Controller
                             }
                         }
                     }
-                    
+
                     if($validated) {
-                        
                         if($partnerid != null || $partnerid != ""){
                             $getpartneritemid = $rewarditems->GetPartnerItemID($partnerid);
                             $partneritemid = (int)$getpartneritemid[0]["lastpartneritemid"]+1;
@@ -339,6 +494,33 @@ class ManageRewardsController extends Controller
                             $serialcodeend = "0";
                         }
 
+                        if($transferfile1 != true || $transferfile2 != true || $transferfile3 != true || $transferfile4 != true || $transferfile5 != true || $transferfile6 != true){
+                            $this->showdialog = true;
+                            $this->message = "Update Failed: Error in uploading of images.";
+                            
+                            $thblimitedphoto != "" ? unlink("$imagetmpdirectory".$thblimitedphoto):"";
+                            $thboutofstockphoto != "" ? unlink("$imagetmpdirectory".$thboutofstockphoto):"";
+                            $ecouponphoto != "" ? unlink("$imagetmpdirectory".$ecouponphoto):"";
+                            $lmlimitedphoto != "" ? unlink("$imagetmpdirectory".$lmlimitedphoto):"";
+                            $lmoutofstockphoto != "" ? unlink("$imagetmpdirectory".$lmoutofstockphoto):"";
+                            $websliderphoto != "" ? unlink("$imagetmpdirectory".$websliderphoto):"";
+                            
+                            $this->render('managerewards', array('model' => $model));
+                        } else {
+                            $thblimitedphoto != "" ? unlink("$imagetmpdirectory".$thblimitedphoto):"";
+                            $thboutofstockphoto != "" ? unlink("$imagetmpdirectory".$thboutofstockphoto):"";
+                            $ecouponphoto != "" ? unlink("$imagetmpdirectory".$ecouponphoto):"";
+                            $lmlimitedphoto != "" ? unlink("$imagetmpdirectory".$lmlimitedphoto):"";
+                            $lmoutofstockphoto != "" ? unlink("$imagetmpdirectory".$lmoutofstockphoto):"";
+                            $websliderphoto != "" ? unlink("$imagetmpdirectory".$websliderphoto):"";
+                            $thblimitedphoto != "" ? $thblimitedphoto = $newthblimitedphoto: $thblimitedphoto = $thblimitedphoto;
+                            $thboutofstockphoto != "" ? $thboutofstockphoto = $newthboutofstockphoto: $thboutofstockphoto = $thboutofstockphoto;
+                            $ecouponphoto != "" ? $ecouponphoto = $newecouponphoto: $ecouponphoto = $ecouponphoto;
+                            $lmlimitedphoto != "" ? $lmlimitedphoto = $newlmlimitedphoto: $lmlimitedphoto = $lmlimitedphoto;
+                            $lmoutofstockphoto != "" ? $lmoutofstockphoto = $newlmoutofstockphoto: $lmoutofstockphoto = $lmoutofstockphoto;
+                            $websliderphoto != "" ? $websliderphoto = $newwebsliderphoto: $websliderphoto = $websliderphoto;
+                        }
+                        
                         $addnewrewarditem = $rewarditems->InsertRewardItem((int)$partneritemid, (int)$rewardid, $model->addrewarditem, (int)$addpoints, (int)$model->addeligibility, 
                                                                                                                                                 (int)$model->addstatus, $startdate,  $enddate, $partnerid, $categoryid, $subtext, $about, $terms, (int)$itemcount, 
                                                                                                                                                 $thblimitedphoto, $thboutofstockphoto, $ecouponphoto, $lmlimitedphoto, 
@@ -360,6 +542,14 @@ class ManageRewardsController extends Controller
                                 $this->message = "Failed to add New Reward e-Coupon.";
                             }
                         }
+                        $this->render('managerewards', array('model' => $model));
+                    } else {
+                        $this->showdialog = true;
+                            if($rewardid == "2"){
+                                $this->message = "Raffle e-Coupon already exist.";
+                            } else {
+                                $this->message = "Reward e-Coupon already exist.";
+                            }
                         $this->render('managerewards', array('model' => $model));
                     }
 
@@ -487,6 +677,20 @@ class ManageRewardsController extends Controller
                 $result['OfferEndMin'] = $EndMin;
                 $result['OfferEndSec'] = $EndSec;
                 $result["PromoDate"] = $StartDate.' - '.$EndDate;
+                if($result['DrawDate'] != ""){
+                    $result['NoDrawDate'] = false;
+                    $DrawDate = new DateTime($result['DrawDate']);
+                    $DrawdateHour = $DrawDate->format("H");
+                    $DrawdateMin = $DrawDate->format("i");
+                    $DrawdateSec = $DrawDate->format("s");
+                    $result['DrawDate'] = $DrawDate->format("Y-m-d");
+                    $result['DrawDateHour'] = $DrawdateHour;
+                    $result['DrawDateMin'] = $DrawdateMin;
+                    $result['DrawDateSec'] = $DrawdateSec;
+                } else {
+                    $result['NoDrawDate'] = true;
+                }
+                
                 $result['message'] = '';
             }
         } else {
@@ -518,6 +722,40 @@ class ManageRewardsController extends Controller
         echo json_encode($result);
         exit;
     }
+    
+    /**
+     * 
+     * @param type $thblimitedphoto
+     * @param type $thboutofstockphoto
+     * @param type $ecouponphoto
+     * @param type $lmlimitedphoto
+     * @param type $lmoutofstockphoto
+     * @param type $websliderphoto
+     */
+//    public function actionDeleteUploadedImages($thblimitedphoto, $thboutofstockphoto, $ecouponphoto, $lmlimitedphoto,
+//                                                                                                    $lmoutofstockphoto, $websliderphoto)
+////    public function actionDeleteUploadedImages()
+//    {
+//        $imagetmpdirectory = Yii::app()->params['image_tmpdirectory'];
+////        $thblimitedphoto = $_POST["thblimitedphoto"];
+////        $thboutofstockphoto = $_POST["thboutofstockphoto"];
+////        $ecouponphoto = $_POST["ecouponphoto"];
+////        $lmlimitedphoto = $_POST["lmlimitedphoto"];
+////        $lmoutofstockphoto = $_POST["lmoutofstockphoto"];
+////        $websliderphoto = $_POST["websliderphoto"];
+//        $thblimitedphoto != "" ? unlink("$imagetmpdirectory".$thblimitedphoto):"";
+//        $thboutofstockphoto != "" ? unlink("$imagetmpdirectory".$thboutofstockphoto):"";
+//        $ecouponphoto != "" ? unlink("$imagetmpdirectory".$ecouponphoto):"";
+//        $lmlimitedphoto != "" ? unlink("$imagetmpdirectory".$lmlimitedphoto):"";
+//        $lmoutofstockphoto != "" ? unlink("$imagetmpdirectory".$lmoutofstockphoto):"";
+//        $websliderphoto != "" ? unlink("$imagetmpdirectory".$websliderphoto):"";
+//        
+//        $result['showdialog'] = true;
+//        $result['message'] = "Uploaded Images is deleted.";
+//        
+//        echo json_encode($result);
+//        exit;
+//    }
 
     /**
      * @Description: UI For Upload Thumbnail Image with Limited Badge
@@ -535,7 +773,7 @@ class ManageRewardsController extends Controller
         
         if(isset(Yii::app()->session['uploadedfile']) && isset(Yii::app()->session['message'])){
             if(Yii::app()->session['message'] == "Image Uploaded"){
-                    $scripts = '$("#thblimited").attr("src","../..'.Yii::app()->params['image_path'].Yii::app()->session['uploadedfile'].'");
+                    $scripts = '$("#thblimited").attr("src","../..'.Yii::app()->params['image_tmppath'].Yii::app()->session['uploadedfile'].'");
                                         $("#thblimitedmsgbox").removeAttr("style");
                                         $("#thblimitedmsgbox").attr("style", "z-index: 5; background-color: green; display: block; height: 40px; position:relative; top: -70px;");
                                         $("#thbsubmit_limited").attr("IsFilled", "Yes");
@@ -632,7 +870,7 @@ class ManageRewardsController extends Controller
 
         if(isset(Yii::app()->session['uploadedfile']) && isset(Yii::app()->session['message'])){
             if(Yii::app()->session['message'] == "Image Uploaded"){
-                    $scripts = '$("#thboutofstock").attr("src","../..'.Yii::app()->params['image_path'].Yii::app()->session['uploadedfile'].'");
+                    $scripts = '$("#thboutofstock").attr("src","../..'.Yii::app()->params['image_tmppath'].Yii::app()->session['uploadedfile'].'");
                                         $("#thboutofstockmsgbox").removeAttr("style");
                                         $("#thboutofstockmsgbox").attr("style", "z-index: 5; background-color: green; display: block; height: 40px; position:relative; top: -70px;");
                                         $("#thbsubmit_outofstock").attr("IsFilled", "Yes");
@@ -729,7 +967,7 @@ class ManageRewardsController extends Controller
         
         if(isset(Yii::app()->session['uploadedfile']) && isset(Yii::app()->session['message'])){
             if(Yii::app()->session['message'] == "Image Uploaded"){
-                    $scripts = '$("#ecoupon").attr("src","../..'.Yii::app()->params['image_path'].Yii::app()->session['uploadedfile'].'");
+                    $scripts = '$("#ecoupon").attr("src","../..'.Yii::app()->params['image_tmppath'].Yii::app()->session['uploadedfile'].'");
                                         $("#ecouponmsgbox").removeAttr("style");
                                         $("#ecouponmsgbox").attr("style", "z-index: 5; background-color: green; display: block; height: 40px; position:relative; top: -70px;");
                                         $("#ecoupon_submit").attr("IsFilled", "Yes");
@@ -826,7 +1064,7 @@ class ManageRewardsController extends Controller
         
         if(isset(Yii::app()->session['uploadedfile']) && isset(Yii::app()->session['message'])){
             if(Yii::app()->session['message'] == "Image Uploaded"){
-                    $scripts = '$("#lmlimited").attr("src","../..'.Yii::app()->params['image_path'].Yii::app()->session['uploadedfile'].'");
+                    $scripts = '$("#lmlimited").attr("src","../..'.Yii::app()->params['image_tmppath'].Yii::app()->session['uploadedfile'].'");
                                         $("#lmlimitedmsgbox").removeAttr("style");
                                         $("#lmlimitedmsgbox").attr("style", "z-index: 5; background-color: green; display: block; height: 40px; position:relative; top: -70px;");
                                         $("#lmsubmit_limited").attr("IsFilled", "Yes");
@@ -923,7 +1161,7 @@ class ManageRewardsController extends Controller
         
         if(isset(Yii::app()->session['uploadedfile']) && isset(Yii::app()->session['message'])){
             if(Yii::app()->session['message'] == "Image Uploaded"){
-                    $scripts = '$("#lmoutofstock").attr("src","../../'.Yii::app()->params['image_path'].Yii::app()->session['uploadedfile'].'");
+                    $scripts = '$("#lmoutofstock").attr("src","../../'.Yii::app()->params['image_tmppath'].Yii::app()->session['uploadedfile'].'");
                                         $("#lmoutofstockmsgbox").removeAttr("style");
                                         $("#lmoutofstockmsgbox").attr("style", "z-index: 5; background-color: green; display: block; height: 40px; position:relative; top: -70px;");
                                         $("#lmsubmit_outofstock").attr("IsFilled", "Yes");
@@ -1020,7 +1258,7 @@ class ManageRewardsController extends Controller
         
         if(isset(Yii::app()->session['uploadedfile']) && isset(Yii::app()->session['message'])){
             if(Yii::app()->session['message'] == "Image Uploaded"){
-                    $scripts = '$("#webslider").attr("src","../../'.Yii::app()->params['image_path'].Yii::app()->session['uploadedfile'].'");
+                    $scripts = '$("#webslider").attr("src","../../'.Yii::app()->params['image_tmppath'].Yii::app()->session['uploadedfile'].'");
                                         $("#webslidermsgbox").removeAttr("style");
                                         $("#webslidermsgbox").attr("style", "z-index: 5; background-color: green; display: block; height: 40px; position:relative; top: -70px;");
                                         $("#webslider_submit").attr("IsFilled", "Yes");
@@ -1146,7 +1384,7 @@ class ManageRewardsController extends Controller
                 $ext = $fileArr[count($fileArr)-1];
 
                 $size2 = $file['size'];
-                $upload_location = Yii::app()->params['image_directory'];
+                $upload_location = Yii::app()->params['image_tmpdirectory'];
 
                 if($file["error"] > 0){
                     $result['message'] = "Upload Failed";
@@ -1161,32 +1399,44 @@ class ManageRewardsController extends Controller
                                 $image_height = $image_info[1];
                                 if($idname == "thbsubmit_limited" || $idname == "thbsubmit_outofstock"){
                                     if($image_width == 280 && $image_height == 175){
-                                        move_uploaded_file($file["tmp_name"],"$upload_location".$file["name"]);
-                                        $result['uploadedfile'] = $file["name"];
+                                        $path_parts = pathinfo($file['name']);
+                                        $extname = $idname == "thbsubmit_limited" ? "thblimited":"thboutofstock";
+                                        $newname = $path_parts['filename'].'_'.$extname.'.'.$path_parts['extension'];
+                                        move_uploaded_file($file["tmp_name"],"$upload_location".$newname);
+                                        $result['uploadedfile'] = $newname;
                                         $result['message'] = "Image Uploaded";
                                     } else {
                                         $result['message'] = "Invalid Image Dimension";
                                     }
                                 } else if($idname == "lmsubmit_limited" || $idname == "lmsubmit_outofstock"){
                                     if($image_width == 560 && $image_height == 362){
-                                        move_uploaded_file($file["tmp_name"],"$upload_location".$file["name"]);
-                                        $result['uploadedfile'] = $file["name"];
+                                        $path_parts = pathinfo($file['name']);
+                                        $extname = $idname == "lmsubmit_limited" ? "lmlimited":"lmoutofstock";
+                                        $newname = $path_parts['filename'].'_'.$extname.'.'.$path_parts['extension'];
+                                        move_uploaded_file($file["tmp_name"],"$upload_location".$newname);
+                                        $result['uploadedfile'] = $newname;
                                         $result['message'] = "Image Uploaded";
                                     } else {
                                         $result['message'] = "Invalid Image Dimension";
                                     }
                                 } else if($idname == "ecouponsubmit"){
 //                                    if($image_width == 216 && $image_height == 216){
-                                        move_uploaded_file($file["tmp_name"],"$upload_location".$file["name"]);
-                                        $result['uploadedfile'] = $file["name"];
+                                        $path_parts = pathinfo($file['name']);
+                                        $extname = "ecoupon";
+                                        $newname = $path_parts['filename'].'_'.$extname.'.'.$path_parts['extension'];
+                                        move_uploaded_file($file["tmp_name"],"$upload_location".$newname);
+                                        $result['uploadedfile'] = $newname;
                                         $result['message'] = "Image Uploaded";
 //                                    } else {
 //                                        $result['message'] = "Invalid Image Dimension";
 //                                    }
                                 } else if($idname == "webslidersubmit"){
                                     if($image_width == 606 && $image_height == 372){
-                                        move_uploaded_file($file["tmp_name"],"$upload_location".$file["name"]);
-                                        $result['uploadedfile'] = $file["name"];
+                                        $path_parts = pathinfo($file['name']);
+                                        $extname =  "webslider";
+                                        $newname = $path_parts['filename'].'_'.$extname.'.'.$path_parts['extension'];
+                                        move_uploaded_file($file["tmp_name"],"$upload_location".$newname);
+                                        $result['uploadedfile'] = $newname;
                                         $result['message'] = "Image Uploaded";
                                     } else {
                                         $result['message'] = "Invalid Image Dimension";
@@ -1223,6 +1473,11 @@ class ManageRewardsController extends Controller
         if($page =='logout'){
 
             echo json_encode('logouts');
+            //Force Logout even without clicking OK
+            $aid = Yii::app()->session['AID'];
+            $sessionmodel = new SessionForm();
+            $sessionmodel->deleteSession($aid);
+            Yii::app()->user->logout();
         } 
     }    
     

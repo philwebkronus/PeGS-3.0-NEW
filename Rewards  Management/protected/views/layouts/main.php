@@ -70,8 +70,8 @@ else
                     <div id="logo"><?php echo CHtml::encode(Yii::app()->name); ?></div>
             </div><!-- header -->
             <div id="mainmenu">
-                <br>
-                    <?php 
+                 <br/>
+                <?php 
 
             if(isset(Yii::app()->session['AccountType']))
             {
@@ -87,6 +87,13 @@ else
                             'items'=>$items
                     ));
                     ?>
+            </div><!-- mainmenu -->
+            <?php //if(isset($this->breadcrumbs)):?>
+                    <?php //$this->widget('zii.widgets.CBreadcrumbs', array(
+                            //'links'=>$this->breadcrumbs,
+                    //)); ?><!-- breadcrumbs -->
+            <?php //endif?>
+            <div id="logoutdiv">
                     <div id="divLogout">
                     <?php 
                     if (isset(Yii::app()->session['AID']))
@@ -103,12 +110,7 @@ else
                     }
                     ?>
                     </div>
-            </div><!-- mainmenu -->
-            <?php //if(isset($this->breadcrumbs)):?>
-                    <?php //$this->widget('zii.widgets.CBreadcrumbs', array(
-                            //'links'=>$this->breadcrumbs,
-                    //)); ?><!-- breadcrumbs -->
-            <?php //endif?>
+            </div>
 
             <?php echo $content; ?>
 
@@ -164,7 +166,7 @@ else
     echo "</center>";
 
     $this->endWidget('zii.widgets.jui.CJuiDialog');
-    /** End Widget ***/
+    /** End Widget **/
 }
 ?>
 </body>

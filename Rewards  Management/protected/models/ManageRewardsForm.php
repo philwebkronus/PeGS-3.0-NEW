@@ -24,6 +24,8 @@ Class ManageRewardsForm extends CFormModel
     public $editabout;
     public $editterms;
     public $editsubtext;
+    //public $editpromoname;
+    //public $editpromocode;
     
     //Variable for Reward Item Adding Form
     public $addpartner;

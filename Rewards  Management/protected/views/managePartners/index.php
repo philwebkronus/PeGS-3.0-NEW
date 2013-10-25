@@ -209,11 +209,25 @@ $(".addBtn").live("click", function(){
                     return false;
                 }
                 else
-                {   
-                    if (phonenumber.length < 5)
+                {
+                    if (partnername.length < 5)
                     {
                         $("#msgdialogAdd").css({'text-align':"left",'color':"red"});
-                        $("#msgdialogAdd").html("Phone Number too short (minimum is 5 characters)");
+                        $("#msgdialogAdd").html("eGames Partner Name too short (minimum is 7 characters)");
+                        
+                        return false;
+                    }
+                    else if (address.length < 5)
+                    {
+                        $("#msgdialogAdd").css({'text-align':"left",'color':"red"});
+                        $("#msgdialogAdd").html("Company Name too short (minimum is 7 characters)");
+                        
+                        return false;
+                    }
+                    else if (phonenumber.length < 7)
+                    {
+                        $("#msgdialogAdd").css({'text-align':"left",'color':"red"});
+                        $("#msgdialogAdd").html("Phone Number too short (minimum is 7 characters)");
                         
                         return false;
                     }
@@ -255,7 +269,7 @@ $(".addBtn").live("click", function(){
                     
                     return false;
                 }
-                else if (/^[a-zA-Z0-9- ]*$/.test(username) === false)
+                else if (/^[a-zA-Z0-9-_ ]*$/.test(username) === false)
                 {
                     $("#msgdialogAdd").css({'text-align':"left",'color':"red"});
                     $("#msgdialogAdd").html("Special character/s is/are not allowed in Username");
@@ -517,10 +531,24 @@ $(".addBtn").live("click", function(){
                 }
                 else
                 {
-                    if (phonenumber.length < 5)
+                    if (partnername.length < 5)
                     {
                         $("#msgdialog").css({'text-align':"left",'color':"red"});
-                        $("#msgdialog").html("Phone Number too short (minimum is 5 characters)");
+                        $("#msgdialog").html("eGames Partner Name too short (minimum is 7 characters)");
+                        
+                        return false;
+                    }
+                    else if (address.length < 5)
+                    {
+                        $("#msgdialog").css({'text-align':"left",'color':"red"});
+                        $("#msgdialog").html("Company Name too short (minimum is 7 characters)");
+                        
+                        return false;
+                    }
+                    else if (phonenumber.length < 7)
+                    {
+                        $("#msgdialog").css({'text-align':"left",'color':"red"});
+                        $("#msgdialog").html("Phone Number too short (minimum is 7 characters)");
                         
                         return false;
                     }
@@ -858,7 +886,7 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
                 <?php echo $form->labelEx($model, 'companyAddress', array('style'=>'font-weight:bold;')); ?>
             </td>
             <td>
-                <?php echo $form->textField($model, 'companyAddress', array('id'=>'companyAddressAdd', 'onkeypress'=>'return addresskeypress(event)')) ?>
+                <?php echo $form->textField($model, 'companyAddress', array('id'=>'companyAddressAdd', 'onkeypress'=>'return alphanumeric4(event)')) ?>
             </td>
        </tr>
        <tr>
@@ -900,7 +928,7 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
                <?php echo $form->labelEx($model, 'contactPerson', array('style'=>'font-weight:bold;')); ?>
            </td>
            <td>
-               <?php echo $form->textField($model, 'contactPerson', array('id'=>'ContactPersonAdd', 'onkeypress'=>'return alphanumeric4(event)')) ?>
+               <?php echo $form->textField($model, 'contactPerson', array('id'=>'ContactPersonAdd', 'onkeypress'=>'return AlphaOnlyWithSpace(event)')) ?>
            </td>
        </tr>
        <tr>
@@ -908,7 +936,7 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
                <?php echo $form->labelEx($model, 'username', array('style'=>'font-weight:bold;')); ?>
            </td>
            <td>
-               <?php echo $form->textField($model, 'username', array('id'=>'UsernameAdd', 'onkeypress'=>'return alphanumeric4(event)')) ?>
+               <?php echo $form->textField($model, 'username', array('id'=>'UsernameAdd', 'onkeypress'=>'return usernamekeypress(event)')) ?>
            </td>
        </tr>
        <tr>
@@ -1008,6 +1036,7 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
             'BACK' => 'js:function(){
                 $("#secondGroup").hide();
                 $("#firstGroup").show();
+                $("#msgdialog").html("");
                 $(this).siblings(".ui-dialog-buttonpane").find("button").eq(1).hide();
                 $(this).siblings(".ui-dialog-buttonpane").find("button").eq(3).hide();
                 $(this).siblings(".ui-dialog-buttonpane").find("button").eq(0).show();
@@ -1103,7 +1132,7 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
                 <?php echo $form->labelEx($model, 'companyAddress', array('style'=>'font-weight:bold;')); ?>
             </td>
             <td>
-                <?php echo $form->textField($model, 'companyAddress', array('id'=>'companyAddress2', 'onkeypress'=>'return addresskeypress(event)')) ?>
+                <?php echo $form->textField($model, 'companyAddress', array('id'=>'companyAddress2', 'onkeypress'=>'return alphanumeric4(event)')) ?>
             </td>
        </tr>
        <tr>
@@ -1145,7 +1174,7 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
                <?php echo $form->labelEx($model, 'contactPerson', array('style'=>'font-weight:bold;')); ?>
            </td>
            <td>
-               <?php echo $form->textField($model, 'contactPerson', array('id'=>'ContactPerson2', 'onkeypress'=>'return alphanumeric4(event)')) ?>
+               <?php echo $form->textField($model, 'contactPerson', array('id'=>'ContactPerson2', 'onkeypress'=>'return AlphaOnlyWithSpace(event)')) ?>
            </td>
        </tr>
        <tr>
@@ -1304,7 +1333,7 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
     <br />
     <div class="row">
         <?php echo $form->labelEx($model, 'contactPerson'); ?><br>
-        <?php echo $form->textField($model, 'contactPerson', array('id'=>'ContactPerson', 'onkeypress'=>'return alphanumeric4(event)', 'disabled' => 'true')) ?>
+        <?php echo $form->textField($model, 'contactPerson', array('id'=>'ContactPerson', 'onkeypress'=>'return AlphaOnlyWithSpace(event)', 'disabled' => 'true')) ?>
         <?php //echo $form->error($model, 'contactPerson'); ?>
     </div>
     <br />

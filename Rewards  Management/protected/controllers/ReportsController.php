@@ -130,8 +130,8 @@ class ReportsController extends Controller
                 else if ($category == RewardTypeModel::ALL)
                 {
                     //Both Raffle and Rewards E-Coupon
-                    $ret_query[] = $itemredemption->inquiry(1, $filter, $particular, $player, $date_from, $date_to);
-                    $ret_query[] = $couponredemption->inquiry(1, $filter, $particular, $player, $date_from, $date_to);
+                    $ret_query[] = $itemredemption->inquiry(1, $filter, $particular, $player, $date_from, $date_to, 1);
+                    $ret_query[] = $couponredemption->inquiry(1, $filter, $particular, $player, $date_from, $date_to, 1);
                     $success = $this->Generate($ret_query, $player);
                     if ($success)
                     {
@@ -247,8 +247,8 @@ class ReportsController extends Controller
                 else if ($category == RewardTypeModel::ALL)
                 {
                     //Both Raffle and Rewards E-Coupon
-                    $ret_query[] = $itemredemption->inquiry(2, $filter, $particular, $player, $date_from, $date_to);
-                    $ret_query[] = $couponredemption->inquiry(2, $filter, $particular, $player, $date_from, $date_to);
+                    $ret_query[] = $itemredemption->inquiry(2, $filter, $particular, $player, $date_from, $date_to, 1);
+                    $ret_query[] = $couponredemption->inquiry(2, $filter, $particular, $player, $date_from, $date_to, 1);
                     $success = $this->Generate($ret_query, $player);
                     if ($success)
                     {
@@ -363,8 +363,8 @@ class ReportsController extends Controller
                 else if ($category == RewardTypeModel::ALL)
                 {
                     //Both Raffle and Rewards E-Coupon
-                    $ret_query[] = $itemredemption->inquiry(3, $filter, $particular, $player, $date_from, $date_to);
-                    $ret_query[] = $couponredemption->inquiry(3, $filter, $particular, $player, $date_from, $date_to);
+                    $ret_query[] = $itemredemption->inquiry(3, $filter, $particular, $player, $date_from, $date_to, 1);
+                    $ret_query[] = $couponredemption->inquiry(3, $filter, $particular, $player, $date_from, $date_to, 1);
                     $success = $this->Generate($ret_query, $player);
                     if ($success)
                     {
@@ -392,6 +392,12 @@ class ReportsController extends Controller
         require_once('jpgraph-3.5.0b1/src/jpgraph_bar.php');
         
         $itemredemption = new ItemRedemptionLogsModel();
+        //Check if what inquiry set by session
+        $inq = Yii::app()->session['inquiry'];
+        if ($inq != 3)
+            $fn_inq = "COUNT(*) as Count,";
+        else
+            $fn_inq = "SUM(RedeemedPoints) as TotalRedeemedPoints,";
         //Dimensions
         //Every dimensions have different DATE_FORMAT for have 
         //proper labeling in the graph. Also in the file to be
@@ -404,7 +410,7 @@ class ReportsController extends Controller
                                          'DateLabel' => "CONCAT(DATE_FORMAT(a.DateCreated,'%Y-%m-%d'), ' - ', DATE_FORMAT(a.DateCreated,'%Y-%m-%d') + INTERVAL 6 DAY) AS DateLabel"),
                             '2' => array('Title'=>'Monthly','DateFunction'=>'MONTH',
                                          'FileName'=>'images/graph-monthly.png',
-                                         'DateLabel' => "MONTHNAME(a.DateCreated) AS DateLabel"),
+                                         'DateLabel' => 'DATE_FORMAT(a.DateCreated, "%c") AS DateLabel'),
                             '3' => array('Title'=>'Quarterly','DateFunction'=>'QUARTER',
                                          'FileName'=>'images/graph-quarterly.png',
                                          'DateLabel' => "QUARTER(a.DateCreated) AS DateLabel"),
@@ -412,6 +418,7 @@ class ReportsController extends Controller
                                          'FileName'=>'images/graph-yearly.png',
                                          'DateLabel' => "YEAR(a.DateCreated) AS DateLabel")
         );
+        $arrData = array();
         for ($d = 0; count($dimensions) > $d; $d++)
         {
             //Check if the chosen Category (E-Coupons) is (Raffle or Rewards) or ALL
@@ -425,7 +432,6 @@ class ReportsController extends Controller
                     $queryMonth = $query[0][0]." ".$dimensions[$d]['DateLabel']." ".$query[0][1].
                                             "GROUP BY ".$dimensions[$d]['DateFunction']."(a.DateCreated) 
                                              ORDER BY (a.DateCreated)";
-                    var_dump($query);exit;
                     $result = $itemredemption->runQuery($queryMonth, $player);
                     //Check if there were results found
                     if (count($result) > 0)
@@ -433,32 +439,177 @@ class ReportsController extends Controller
                         //Get Array Keys
                         $arrkey = array_keys($result[0]);
                         $key1 = $arrkey[0];
-                        $key2 = $arrkey[1];
-                        for ($i = 0; count($result) > $i; $i++)
+                        $key2 = $arrkey[2]; //DateLabel - Index 1 is the dateCreated
+                        //MONTH
+                        if($d == 2)
                         {
-                            //Get the LABEL according to the date dimension;
-                            switch($d)
+                            for ($i = 0; 12 >= $i; $i++)
                             {
-                                case 0: $getLabel = $result[$i][$key2];
-                                    break;
-                                case 1: $getLabel = $result[$i][$key2];
-                                    break;
-                                case 2: $getLabel = substr($result[$i][$key2], 0, 3);
-                                        $this->filter = false;
-                                        $this->flip = false;
-                                    break;
-                                case 3: $getLabel = $this->identifyQuarter($result[$i][$key2]);
-                                        $this->filter = false;
-                                        $this->flip = false;
-                                    break;
-                                case 4: $getLabel = $result[$i][$key2];
-                                        $this->filter = false;
-                                        $this->flip = false;
-                                    break;
+                                //Check if arrays associated with index $i are set.
+                                //If not set, assign 0 to data and temporarily assign the index to label
+                                //else, assign the gathered data and label
+                                if (!isset($result[$i][$key2]) && !isset($result[$i][$key1]))
+                                {
+                                    $getLabel = $i;
+                                    $getData = 0;
+                                }
+                                else
+                                {
+                                    $getLabel = $result[$i][$key2];
+                                    $getData = $result[$i][$key1];
+                                }
+                                //Assign gathered data according to label (month)
+                                switch($getLabel)
+                                {
+                                    case 1:
+                                        $lbl[0] = "Jan";
+                                        if (!isset($datay[0]))
+                                            $datay[0] = $getData;
+                                        break;
+                                    case 2: 
+                                        $lbl[1] = "Feb";
+                                        if (!isset($datay[1]))
+                                            $datay[1] = $getData;
+                                        break;
+                                    case 3: 
+                                        $lbl[2] = "Mar";
+                                        if (!isset($datay[2]))
+                                            $datay[2] = $getData;
+                                        break;
+                                    case 4: 
+                                        $lbl[3] = "Apr";
+                                        if (!isset($datay[3]))
+                                            $datay[3] = $getData;
+                                        break;
+                                    case 5: 
+                                        $lbl[4] = "May";
+                                        if (!isset($datay[4]))
+                                            $datay[4] = $getData;
+                                        break;
+                                    case 6: 
+                                        $lbl[5] = "Jun";
+                                        if (!isset($datay[5]))
+                                            $datay[5] = $getData;
+                                        break;
+                                    case 7: 
+                                        $lbl[6] = "Jul";
+                                        if (!isset($datay[6]))
+                                            $datay[6] = $getData;
+                                        break;
+                                    case 8: 
+                                        $lbl[7] = "Aug";
+                                        if (!isset($datay[7]))
+                                            $datay[7] = $getData;
+                                        break;
+                                    case 9: 
+                                        $lbl[8] = "Sep";
+                                        if (!isset($datay[8]))
+                                            $datay[8] = $getData;
+                                        break;
+                                    case 10: 
+                                        $lbl[9] = "Oct";
+                                        if (!isset($datay[9]))
+                                            $datay[9] = $getData;
+                                        break;
+                                    case 11: 
+                                        $lbl[10] = "Nov";
+                                        if (!isset($datay[10]))
+                                            $datay[10] = $getData;
+                                        break;
+                                    case 12: 
+                                        $lbl[11] = "Dec";
+                                        if (!isset($datay[11]))
+                                            $datay[11] = $getData;
+                                        break;
+                                }
                             }
-                            $datay[]    = $result[$i][$key1]; //Put the retrieved data in array dataY
-                            $lbl[]      = $getLabel;
+                            //Complete the array
+                            for ($x = 0; 12 > $x; $x++)
+                            {
+                                if (!isset($lbl[$x]) && !isset($lbl[$x]))
+                                {
+                                    $lbl[$x] = $this->getMonthName($x + 1);
+                                    $datay[$x] = 0;
+                                }
+                            }
                         }
+                        //QUARTER
+                        else if ($d == 3)
+                        {
+                            for ($i = 0; 4 >= $i; $i++)
+                            {
+                                if (!isset($result[$i][$key2]) && !isset($result[$i][$key1]))
+                                {
+                                    $getLabel = $i;
+                                    $getData = 0;
+                                }
+                                else
+                                {
+                                    $getLabel = $result[$i][$key2];
+                                    $getData = $result[$i][$key1];
+                                }
+                                switch($getLabel)
+                                {
+                                    case 1: 
+                                        $lbl[0] = $this->identifyQuarter($getLabel);
+                                        if (!isset($datay[0]))
+                                            $datay[0] = $getData;
+                                        break;
+                                    case 2: 
+                                        $lbl[1] = $this->identifyQuarter($getLabel);
+                                        if (!isset($datay[1]))
+                                            $datay[1] = $getData;
+                                        break;
+                                    case 3: 
+                                        $lbl[2] = $this->identifyQuarter($getLabel);
+                                        if (!isset($datay[2]))
+                                            $datay[2] = $getData;
+                                        break;
+                                    case 4: 
+                                        $lbl[3] = $this->identifyQuarter($getLabel);
+                                        if (!isset($datay[3]))
+                                            $datay[3] = $getData;
+                                        break;
+                                }
+                            }
+                            for ($x = 0; 4 > $x; $x++)
+                            {
+                                if (!isset($lbl[$x]) && !isset($lbl[$x]))
+                                {
+                                    $lbl[$x] = $this->identifyQuarter($x + 1);
+                                    $datay[$x] = 0;
+                                }
+                            }
+                            $this->flip = false;
+                        }
+                        else
+                        {
+                            for ($i = 0; count($result) > $i; $i++)
+                            {
+                                switch($d)
+                                {
+                                    case 0: $getLabel = $result[$i][$key2];
+                                        break;
+                                    case 1: $getLabel = $result[$i][$key2];
+                                        break;
+                                    case 2: $getLabel = substr($result[$i][$key2], 0, 3);
+                                            $this->filter = false;
+                                            $this->flip = false;
+                                        break;
+                                    case 3: $getLabel = $result[$i][$key2];
+                                            $this->filter = false;
+                                            $this->flip = false;
+                                        break;
+                                    case 4: $getLabel = $result[$i][$key2];
+                                            $this->filter = false;
+                                            $this->flip = false;
+                                        break;
+                                }
+                                $datay[]    = $result[$i][$key1]; //Put the retrieved data in array dataY
+                                $lbl[]      = $getLabel;
+                            }
+                        }
+//                        $arrData[] = array($dimensions[$d]['Title'], array($datay, $lbl));
                     }
                     else
                     {
@@ -477,12 +628,12 @@ class ReportsController extends Controller
                 {
                     if ($query[$i] != NULL)
                     {
-                        $queryMonth[] = $query[$i][0]." ".$dimensions[$d]['DateLabel']." ".$query[$i][1]." GROUP BY ".$dimensions[$d]['DateFunction']."(a.DateCreated)
-                                                  ORDER BY ".$dimensions[$d]['DateFunction']."(a.DateCreated)";
+                        $queryMonth[] = $query[$i][0]." ".$query[$i][1];
                     }
                 }
-                $finalQuery = "(".$queryMonth[0].") UNION ALL (".$queryMonth[1].")";
-                var_dump($finalQuery);exit;
+                $finalQuery = "SELECT ".$fn_inq." ".$dimensions[$d]['DateLabel']." FROM (".$queryMonth[0]." UNION ALL ".$queryMonth[1].") AS a"
+                               ." GROUP BY ".$dimensions[$d]['DateFunction']."(DateCreated)
+                                  ORDER BY ".$dimensions[$d]['DateFunction']."(DateCreated)";
                 $result = $itemredemption->runQuery($finalQuery, $player);
                 //Count Result. Must have TWO (2) Array Results
                 if (count($result) > 0)
@@ -531,7 +682,7 @@ class ReportsController extends Controller
             $graph->SetShadow();
 
             // Adjust the margin a bit to make more room for titles
-            $graph->SetMargin(30,30,20,70);
+            $graph->SetMargin(40,30,20,70);
             //Set Title      
             $graph->title->SetFont(FF_FONT1,FS_BOLD);
             $graph->yaxis->title->SetFont(FF_FONT1,FS_BOLD, 12);
@@ -540,7 +691,10 @@ class ReportsController extends Controller
             //Set Labels
             $graph->xaxis->SetTickLabels($lbl);
             $graph->xaxis->SetLabelAlign('center','center');
-            $graph->xaxis->SetLabelMargin(20); 
+            $graph->xaxis->SetLabelMargin(20);
+            $graph->yaxis->SetLabelMargin(0);
+            $graph->yaxis->SetLabelFormatCallback('number_format');
+            $graph->yaxis->SetLabelFormat('%s');
             $graph->xaxis->scale->ticks->Set(1, 2);
 
             $graph->yaxis->HideLine(false);
@@ -549,7 +703,7 @@ class ReportsController extends Controller
             {
                 $graph->xaxis->SetLabelAngle(90);
             }
-            $graph->yaxis->scale->SetGrace(20);
+            $graph->yaxis->scale->SetGrace(10);
             // Create a bar pot
             $bplot = new BarPlot($datay);
             // Adjust fill color
@@ -564,7 +718,10 @@ class ReportsController extends Controller
             unset($lbl);
             unset($result);
             unset($queryMonth);
+            unset(Yii::app()->session['inquiry']);
         }
+        Yii::app()->session['arrdata'] = $arrData;
+        unset($arrData);
         ///////////////////////////////////////////////////////////////////////////////////
         return true;
     }
@@ -717,6 +874,37 @@ class ReportsController extends Controller
         }
         return $months;
     }
+    private function getMonthName($numeric)
+    {
+        switch($numeric)
+        {
+            case 1: $month = "Jan";
+                break;
+            case 2: $month = "Feb";
+                break;
+            case 3: $month = "Mar";
+                break;
+            case 4: $month = "Apr";
+                break;
+            case 5: $month = "May";
+                break;
+            case 6: $month = "Jun";
+                break;
+            case 7: $month = "Jul";
+                break;
+            case 8: $month = "Aug";
+                break;
+            case 9: $month = "Sep";
+                break;
+            case 10: $month = "Oct";
+                break;
+            case 11: $month = "Nov";
+                break;
+            case 12: $month = "Dec";
+                break;
+        }
+        return $month;
+    }
     public function actionAutoLogout() {
         
         $page = $_POST['page'];
@@ -724,6 +912,11 @@ class ReportsController extends Controller
         if($page =='logout'){
 
             echo json_encode('logouts');
+            //Force Logout even without clicking OK
+            $aid = Yii::app()->session['AID'];
+            $sessionmodel = new SessionForm();
+            $sessionmodel->deleteSession($aid);
+            Yii::app()->user->logout();
         } 
     }
 }

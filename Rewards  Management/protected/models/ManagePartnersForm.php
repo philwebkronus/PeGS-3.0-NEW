@@ -67,7 +67,7 @@ class ManagePartnersForm extends CFormModel
             array('partnershipStatus', 'required'),
             array('partnershipStatus', 'length', 'max' => 20, 'min' => 5),
             array('numberOfRewardOfferings', 'required'),
-            array('numberOfRewardOfferings', 'length', 'max' => 10, 'min' => 5),
+            array('numberOfRewardOfferings', 'length', 'max' => 9, 'min' => 5),
         );
     }
     //Added by: mgesguerra - 09-18-13
@@ -276,7 +276,7 @@ class ManagePartnersForm extends CFormModel
                 else
                 {
                     return array('TransMsg'=>'Record details unchanged.',
-                         'TransCode'=>1);
+                         'TransCode'=>3);
                 }
                 
                 
@@ -540,7 +540,12 @@ class ManagePartnersForm extends CFormModel
      */
     public function mailAddedPartner($to, $contactperson, $password, $username)
     {
-        $servername = $_SERVER['HTTP_HOST'];
+        $subroot = "";
+        if (isset(Yii::app()->params['subrootfolder']))
+        {
+            $subroot = "/".Yii::app()->params['subrootfolder'];
+        }
+        $servername = $_SERVER['HTTP_HOST'].$subroot;
         
         $subject  = "Change Initial Password";
         $headers  = 'MIME-Version: 1.0' . "\r\n";

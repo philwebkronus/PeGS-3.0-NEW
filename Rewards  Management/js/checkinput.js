@@ -5,11 +5,15 @@ function AlphaOnlyWithSpace(event)
     {
         return false;
     }
+    else if(char == "'")
+    {
+        return false;
+    }
     else
     {
         var charCode = (event.which) ? event.which : event.keyCode;
         if ((charCode > 64 && charCode < 91) || (charCode > 96 && charCode < 123) || charCode == 32
-             || charCode == 8 || charCode == 9 || charCode == 46 || charCode == 95 || charCode == 45)
+             || charCode == 8 || charCode == 9 || charCode == 95 || charCode == 45)
         {
             return true;
         }
@@ -25,6 +29,10 @@ function AlphaNumericOnlyWithSpace(event)
 {
     var char = (String.fromCharCode(event.which));
     if (char == "%")
+    {
+        return false;
+    }
+    else if(char == "'")
     {
         return false;
     }
@@ -51,6 +59,10 @@ function AlphaNumericOnly(event)
     {
         return false;
     }
+    else if(char == "'")
+    {
+        return false;
+    }
     else
     {
         var charCode = (event.which) ? event.which : event.keyCode;
@@ -69,6 +81,10 @@ function alphanumeric4(event)
   
   var char = (String.fromCharCode(event.which));
   if (char == "%")
+  {
+      return false;
+  }
+  else if(char == "'")
   {
       return false;
   }
@@ -100,6 +116,10 @@ function numberonly(event)
     {
         return false;
     }
+    else if(char == "'")
+    {
+        return false;
+    }
     else
     {
         var charCode = (event.which) ? event.which : event.keyCode;
@@ -111,7 +131,7 @@ function numberonly(event)
         }
         else if (charCode == 46)
         {
-            return true;
+            return false;
         }
         else if(charCode == 9)
             return true;
@@ -127,6 +147,10 @@ function numberandletter(evt)
 {
     var char = (String.fromCharCode(evt.which));
     if (char == "%")
+    {
+        return false;
+    }
+    else if(char == "'")
     {
         return false;
     }
@@ -158,6 +182,10 @@ function AlphaNumericOnlyWithSpace(event)
     {
         return false;
     }
+    else if(char == "'")
+    {
+        return false;
+    }
     else
     {
         var charCode = (event.which) ? event.which : event.keyCode;
@@ -174,6 +202,10 @@ function emailkeypress(event)
 {
     var char = (String.fromCharCode(event.which));
     if (char == "%")
+    {
+        return false;
+    }
+    else if(char == "'")
     {
         return false;
     }
@@ -199,6 +231,10 @@ function websitekeypress(event)
     {
         return false;
     }
+    else if(char == "'")
+    {
+        return false;
+    }
     else
     {
         var charCode = (event.which) ? event.which : event.keyCode;
@@ -221,6 +257,10 @@ function telephonekeypress(event)
     {
         return false;
     }
+    else if(char == "'")
+    {
+        return false;
+    }
     else
     {
         var charCode = (event.which) ? event.which : event.keyCode;
@@ -232,7 +272,7 @@ function telephonekeypress(event)
         }
         else if (charCode == 46)
         {
-            return true;
+            return false;
         }
         else if(charCode == 9)
             return true;
@@ -246,6 +286,10 @@ function addresskeypress(event)
 {
   var char = (String.fromCharCode(event.which));
   if (char == "%")
+  {
+      return false;
+  }
+  else if(char == "'")
   {
       return false;
   }
@@ -263,5 +307,32 @@ function addresskeypress(event)
       else
           return false;
    }
+}
+function usernamekeypress(event)
+{
+  
+  var char = (String.fromCharCode(event.which));
+  if (char == "%")
+  {
+      return false;
+  }
+  else if(char == "'")
+  {
+      return false;
+  }
+  else
+  {
+  var charCode = (event.which) ? event.which : event.keyCode;
+    if ((charCode > 64 && charCode < 91 ) || (charCode > 47 && charCode < 58) || (charCode > 96 && charCode < 123))
+        return true;
+    else if(charCode == 8 ||charCode == 32 || charCode == 9)
+       return true;
+    else if (charCode == 37 || charCode == 39) //left and right arrow keys
+       return true;
+   else if (charCode == 95)
+       return true;
+    else
+        return false;
+  }
 }
 

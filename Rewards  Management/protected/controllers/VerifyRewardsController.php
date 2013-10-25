@@ -107,10 +107,10 @@ class VerifyRewardsController extends Controller
                                     Yii::app()->session['securitycode'] = $security;
                                     Yii::app()->session['source'] = $source;
 
-                                    $datetoday = date("Y-m-d"); 
-
+                                    $datetoday = date("Y-m-d H:i:s"); 
+                                    
                                     $checkrange = $model->check_in_range($validdatefrom, $validdateto, $datetoday);
-
+                                  
                                     $validdatefrom = date("d/m/Y", strtotime($validdatefrom));
                                     $validdateto = date("d/m/Y", strtotime($validdateto));
 
@@ -164,8 +164,8 @@ class VerifyRewardsController extends Controller
 
                             if($status == 1){
 
-                                    $datetoday = date("Y-m-d H:i:s"); 
-
+                                    $datetoday = date("Y-m-d H:i:s.u"); 
+                                    
                                     $checkrange = $model->check_in_range($validdatefrom, $validdateto, $datetoday);
 
                                     $validdatefrom = date("d/m/Y", strtotime($validdatefrom));
@@ -201,15 +201,11 @@ class VerifyRewardsController extends Controller
 
                         }
                         else{
-                          $this->showDialogSuccess = false;
+                            $this->showDialog2 = true;
+                            $this->dialogMsg = "This e-Coupon ".$serialcode2." does not match our records."; 
+                            $this->dialogMsg2 = "Review e-Coupon details in the previous page."; 
                         }
                     }
-                    else{
-                        $this->showDialog2 = true;
-                        $this->dialogMsg = "This e-Coupon ".$serialcode2." does not match our records."; 
-                        $this->dialogMsg2 = "Review e-Coupon details in the previous page."; 
-                    }
-
             }
             else{
               $this->showDialogSuccess = false;
@@ -288,7 +284,7 @@ class VerifyRewardsController extends Controller
                                 foreach ($partnerpidarr as $value) {
                                     $partnerpid = $value['RefPartnerID'];
                                 }
-
+                                $emails = array();
                                 $emailarr = $partnerinfo->getPartnerEmailByCompany($partnerid);
                                 foreach($emailarr as $email)
                                 {
@@ -471,6 +467,11 @@ class VerifyRewardsController extends Controller
         if($page =='logout'){
 
             echo json_encode('logouts');
+            //Force Logout even without clicking OK
+            $aid = Yii::app()->session['AID'];
+            $sessionmodel = new SessionForm();
+            $sessionmodel->deleteSession($aid);
+            Yii::app()->user->logout();
         } 
     }
 	
