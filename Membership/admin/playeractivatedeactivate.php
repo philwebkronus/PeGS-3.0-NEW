@@ -321,7 +321,11 @@ if ($fproc->IsPostBack)
     <form name="updateplayerstatus" id="updateplayerstatus" method="POST">
         <div class="maincontainer">
             <?php include('menu.php'); ?>
-            <div class="content"> 
+            <div class="content">
+                <h2>
+                    Player Termination
+                </h2>
+                <br/>
 <div class="searchbar formstyle">
         <?php echo $txtSearch; ?><?php echo $btnSearch; ?><?php echo $btnClear; ?>
 </div>
@@ -349,7 +353,7 @@ if ($fproc->IsPostBack)
             <?php echo $hdnCardNumber; ?>
             <?php echo $hdnMID; ?>
             <?php echo $hdnStatus; ?>
-            <p align="left">Do you wish to Terminate/Activate this Player?</p>
+            <p align="left">Do you wish to Terminate this Player?</p>
         </div>
     </form>
     <div id="successmessage" style="display:none; color: green;">

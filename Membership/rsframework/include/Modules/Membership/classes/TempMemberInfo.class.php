@@ -47,6 +47,15 @@ class TempMemberInfo extends BaseEntity
             return false;
         }
     }
+    
+    public function getMembersByMID( $MID )
+    {
+        $query = "SELECT * FROM memberinfo WHERE MID= '$MID'";
+        
+        $result = parent::RunQuery($query);
+        
+        return $result;
+    }
    
 
 }

@@ -255,6 +255,48 @@ class TempMembers extends BaseEntity
         }
     }
     
+    public function TerminateTempAccount($MID,$newemail){
+        
+        $errorLogger = new ErrorLogger();
+         $this->StartTransaction();
+         try {
+                    $query2 = "UPDATE membership_temp.memberinfo SET Status = 2, Email = '$newemail' WHERE MID = '$MID'";
+
+                    $ismeminfotempupdated = parent::ExecuteQuery($query2);
+
+                    if($ismeminfotempupdated){
+                        $query3 = "UPDATE membership_temp.members SET UserName = '$newemail' WHERE MID = '$MID'";
+
+                        $ismemtempupdated = parent::ExecuteQuery($query3);
+
+                        if(!$ismemtempupdated){
+
+                            $this->RollBackTransaction();
+                            $errMsg = "Player Termination: Transaction Failed.";
+                            $errorLogger->log($errorLogger->logdate, "error", $errMsg);
+                            return $errMsg;
+                        }
+                        else{
+                            $this->CommitTransaction();
+                            return true;
+                        }
+                    }
+                    else{
+                        $this->RollBackTransaction();
+                        $errMsg = "Player Termination: Transaction Failed.";
+                        $errorLogger->log($errorLogger->logdate, "error", $errMsg);
+                        return $errMsg;
+                    }
+                
+                
+                }catch(Exception $e){
+             $this->RollBackTransaction();
+             $errorLogger->log($errorLogger->logdate, "error", $e->getMessage());
+             $errMsg = "Player Termination: Transaction Failed.";
+             return $errMsg;
+         }
+    }
+    
 }
 
 ?>

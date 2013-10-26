@@ -31,73 +31,49 @@ Class PlayerTerminationWrapper {
         $_TempMembers = new TempMembers();
         
         $email = $_MemberInfo->getEmailByMID2($entries['MID']);
+        
+        if(!empty($email)){
         foreach ($email as $value) {
            $email = $value['Email'];
         }
         
         $checkemail = $_TempMemberInfo->checkExistingEmail($email);
-        $checkemail = $checkemail[0]['COUNT'];
+        $checkemailcount = $checkemail[0]['COUNT'];
         
         $_Members = new Members();
-        $_Members->StartTransaction();
         
-        $_Members->TerminateUsingMID($entries['Status'], $entries['MID'], $email.$entries['MID']);
-        $CommonPDOConn = $_Members->getPDOConnection();
-        if($entries['Status'] == "6"){
-            $status = 2;
-        } else {
-            $status = strpos($entries['CardNumber'], 'eGames') !== false ? 6:1;
+        $message = $_Members->TerminateAccount($entries['Status'], $entries['MID'], $email.$entries['MID'], 
+                $email, $entries['CardNumber'], $checkemailcount);
+        if(!$message){
+            $message = $message;
+        }
+        else{
+            $message = 'Player Termination: Transaction Successful.';
         }
         
-        if($checkemail > 0){
-            $_TempMemberInfo->setPDOConnection($CommonPDOConn);
-            $_TempMemberInfo->deactivateAccount($email, $email.$entries['MID']);
+         return $message;
+        
+        }
+        else{
+            $tempinfo = $_TempMemberInfo->getMembersByMID($entries['MID']);
             
-            $_TempMembers->setPDOConnection($CommonPDOConn);
-            $_TempMembers->deactivateAccount($email, $email.$entries['MID']);
-        }
+            if(!empty($tempinfo)){
+                foreach ($tempinfo as $value) {
+                    $email = $value['Email'];
+                 }
         
-        $_MemberInfo->setPDOConnection($CommonPDOConn);
-        $_MemberInfo->updateAppendUsingMID($status, $entries['MID'], $email.$entries['MID']);
-        
-        $_MemberCards = new MemberCards();
-        $_MemberCards->setPDOConnection($CommonPDOConn);
-        $_MemberCards->updateMemberCardStatusUsingCardNumber($status, $entries['CardNumber']);
-        if(!App::HasError()){
-            $_Members->CommitTransaction();
-            if($entries['Status'] == "6"){
-                $message = "Player Termination: Transaction Successful.";
-                $_AuditTrail = new AuditTrail();
-                $_AuditTrail->StartTransaction();
-                $_AuditTrail->logEvent(AuditFunctions::TERMINATE, $message, array('ID'=>$_SESSION['userinfo']['AID'], 'SessionID'=>$_SESSION['userinfo']['SessionID']));
-                if(!App::HasError()){
-                    $_AuditTrail->CommitTransaction();
-                    return $message;
-                } else {
-                    $message = "Failed to log event on database.";
-                    $_AuditTrail->RollBackTransaction();
-                    return $message;
-                }
-            } else {
-                $message = "Player Termination: Transaction Successful.";
-                $_AuditTrail = new AuditTrail();
-                $_AuditTrail->StartTransaction();
-                $_AuditTrail->logEvent(AuditFunctions::ACTIVATE, $message, array('ID'=>$_SESSION['userinfo']['AID'], 'SessionID'=>$_SESSION['userinfo']['SessionID']));
-                if(!App::HasError()){
-                    $_AuditTrail->CommitTransaction();
-                    return $message;
-                } else {
-                    $message = "Failed to log event on database.";
-                    $_AuditTrail->RollBackTransaction();
-                    return $message;
-                }
+                $_TempMembers->TerminateTempAccount($entries['MID'], $email.$entries['MID']);
+                
+                $message = 'Player Termination: Transaction Successful.';
+            }
+            else{
+                $message = 'Player Termination: Transaction Failed.';
             }
             
-        } else {
-            $_Members->RollBackTransaction();
-            $message = "Player Termination: Transaction Failed.";
+            
             return $message;
         }
+        
     }
 
             

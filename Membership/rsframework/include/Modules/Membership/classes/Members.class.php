@@ -527,6 +527,113 @@ class Members extends BaseEntity {
         
         return $result[0]['ctrtemp'];
     }
+    
+    public function TerminateAccount($memberstatus, $MID, $newemail, $email, $cardnumber, $checkemailcount){
+         $errorLogger = new ErrorLogger();
+         $this->StartTransaction();
+         try {
+             
+             //get coupon redemption log id
+             $query = "UPDATE " . $this->TableName . " SET Status = " . $memberstatus . ", UserName = '$newemail'  WHERE MID = " . $MID;
+                    
+            $ismembersupdated = parent::ExecuteQuery($query);
+
+            //validate if raffle coupon was updated
+            if($ismembersupdated) {
+
+                //if record exist in temp tables
+                if($checkemailcount > 0){
+                    $query2 = "UPDATE membership_temp.memberinfo SET Status = 2, Email = '$newemail' WHERE Email = '$email'";
+
+                    $ismeminfotempupdated = parent::ExecuteQuery($query2);
+
+                    if($ismeminfotempupdated){
+                        $query3 = "UPDATE membership_temp.members SET UserName = '$newemail' WHERE UserName = '$email'";
+
+                        $ismemtempupdated = parent::ExecuteQuery($query3);
+
+                        if(!$ismemtempupdated){
+
+                            $this->RollBackTransaction();
+                            $errMsg = "Player Termination: Transaction Failed.";
+                            $errorLogger->log($errorLogger->logdate, "error", $errMsg);
+                            return $errMsg;
+                        }
+                    }
+                    else{
+                        $this->RollBackTransaction();
+                        $errMsg = "Player Termination: Transaction Failed.";
+                        $errorLogger->log($errorLogger->logdate, "error", $errMsg);
+                        return $errMsg;
+                    }
+                }
+
+                if($memberstatus == "6"){
+                    $memberinfostatus = 2;
+                } else {
+                    $memberinfostatus = strpos($cardnumber, 'eGames') !== false ? 6:1;
+                }
+
+                //update couponredemptionlogs
+                $query4 = "UPDATE membership.memberinfo SET Status = " . $memberinfostatus . ", Email = '$newemail' WHERE MID = " . $MID;
+
+                $ismeminfoupdated = parent::ExecuteQuery($query4);
+
+                //validate is successfully updated
+                if($ismeminfoupdated){
+
+                        $query5 = "UPDATE loyaltydb.membercards SET Status = " . $memberinfostatus . " WHERE CardNumber = '" . $cardnumber . "'";
+
+                        $ismembercardsupdated = parent::ExecuteQuery($query5);
+
+                        if ($ismembercardsupdated)
+                        {
+                            $query6 = "UPDATE loyaltydb.cards SET Status = " . $memberinfostatus . " WHERE CardNumber = '" . $cardnumber . "'";
+                            
+                            $iscardsupdated = parent::ExecuteQuery($query6);
+                            
+                            if ($iscardsupdated)
+                            {
+                                $this->CommitTransaction();
+                                return true;
+                            }
+                            else
+                            {
+                                $this->RollBackTransaction();
+                                $errMsg = "Player Termination: Transaction Failed.";
+                                $errorLogger->log($errorLogger->logdate, "error", $errMsg);
+                                return $errMsg;
+                            }
+                        }
+                        else
+                        {
+                            $this->RollBackTransaction();
+                            $errMsg = "Player Termination: Transaction Failed.";
+                            $errorLogger->log($errorLogger->logdate, "error", $errMsg);
+                            return $errMsg;
+                        }
+
+                } else {
+                    $this->RollBackTransaction();
+                    $errMsg = "Player Termination: Transaction Failed.";
+                    $errorLogger->log($errorLogger->logdate, "error", $errMsg);
+                    return $errMsg;
+                }
+
+            } else {
+                $this->RollBackTransaction();
+                $errMsg = "Player Termination: Transaction Failed.";
+                $errorLogger->log($errorLogger->logdate, "error", $errMsg);
+                return $errMsg;
+            }
+                    
+         }catch(Exception $e){
+             $this->RollBackTransaction();
+             $errorLogger->log($errorLogger->logdate, "error", $e->getMessage());
+             $errMsg = "Player Termination: Transaction Failed.";
+             return $errMsg;
+         }
+    }   
 }
 
 ?>

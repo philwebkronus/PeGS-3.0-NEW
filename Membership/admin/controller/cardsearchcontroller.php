@@ -8,7 +8,7 @@
 require_once("../init.inc.php");
 include_once('sessionmanager.php');
 
-App::LoadModuleClass('Loyalty', 'RewardItems');
+App::LoadModuleClass('Rewards', 'RewardItems');
 App::LoadModuleClass('Membership', 'MemberInfo');
 App::LoadModuleClass('Loyalty', 'MemberCards');
 App::LoadModuleClass('Loyalty', 'Cards');

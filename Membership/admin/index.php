@@ -344,71 +344,78 @@ if ($fproc->IsPostBack) {
             $emailcount = 0;
             $emailcounty = 0;
         }
+        $loyaltyinfo = $_MemberCards->getDeactivatedStatusByMID($HiddenMID);
         
-        if (($emailcount > 0)||($emailcounty > 0)) {
-            $message = "Sorry, " . $arrMemberInfo['Email'] . " already belongs to an existing account. Please enter another email address!";
+        if(!empty($loyaltyinfo)){
+            $message = "Sorry, Unable to update this card, Card is already Deactivated.";
             $isSuccess = false;
-        } else {
-            //Proceed with the update profile
-            $_MemberInfo->StartTransaction();
-            $_MemberInfo->updateProfileAdmin($HiddenMID, $arrMemberInfo);
-            $CommonPDOConn = $_MemberInfo->getPDOConnection();
-            $_Members->setPDOConnection($CommonPDOConn);
-            if (App::HasError()) {
-                $_MemberInfo->RollBackTransaction();
-                $error = $_Members->errormessage;
-                $logger->logger($logdate, $logtype, $error);
+        }
+        else{
+            if (($emailcount > 0)||($emailcounty > 0)) {
+                $message = "Sorry, " . $arrMemberInfo['Email'] . " already belongs to an existing account. Please enter another email address!";
                 $isSuccess = false;
             } else {
+                //Proceed with the update profile
+                $_MemberInfo->StartTransaction();
+                $_MemberInfo->updateProfileAdmin($HiddenMID, $arrMemberInfo);
+                $CommonPDOConn = $_MemberInfo->getPDOConnection();
                 $_Members->setPDOConnection($CommonPDOConn);
-                $_Members->updateMemberUsernameAdmin($HiddenMID, $SubmittedEmail);
-                if ($_Members->HasError) {
+                if (App::HasError()) {
                     $_MemberInfo->RollBackTransaction();
                     $error = $_Members->errormessage;
                     $logger->logger($logdate, $logtype, $error);
                     $isSuccess = false;
                 } else {
-                    //if does not exists in membership_temp
-                    if ($tempMID == 0) {
-                        $isSuccess = true;
-                        if (($_MemberInfo->AffectedRows > 0)||($_Members->AffectedRows > 0)) {
-                            $_MemberInfo->CommitTransaction();
-                            $_MemberInfo->updateProfileDateUpdatedAdmin($HiddenMID, $arrMemberInfo, $aid);
-                            $retMsg = 'Profile updated successfully!';
-                        } else {
-                            $retMsg = 'Profile unchanged!';
+                    $_Members->setPDOConnection($CommonPDOConn);
+                    $_Members->updateMemberUsernameAdmin($HiddenMID, $SubmittedEmail);
+                    if ($_Members->HasError) {
+                        $_MemberInfo->RollBackTransaction();
+                        $error = $_Members->errormessage;
+                        $logger->logger($logdate, $logtype, $error);
+                        $isSuccess = false;
+                    } else {
+                        //if does not exists in membership_temp
+                        if ($tempMID == 0) {
+                            $isSuccess = true;
+                            if (($_MemberInfo->AffectedRows > 0)||($_Members->AffectedRows > 0)) {
+                                $_MemberInfo->CommitTransaction();
+                                $_MemberInfo->updateProfileDateUpdatedAdmin($HiddenMID, $arrMemberInfo, $aid);
+                                $retMsg = 'Profile updated successfully!';
+                            } else {
+                                $retMsg = 'Profile unchanged!';
+                            }
+                            unset($_SESSION['HiddenEmail']);
+                            $_Log->logEvent(AuditFunctions::UPDATE_PROFILE, 'MID:' . $arrMembers["MID"] . ':Successful', array('ID' => $_SESSION['userinfo']['AID'], 'SessionID' => $_SESSION['userinfo']['SessionID']));
                         }
-                        unset($_SESSION['HiddenEmail']);
-                        $_Log->logEvent(AuditFunctions::UPDATE_PROFILE, 'MID:' . $arrMembers["MID"] . ':Successful', array('ID' => $_SESSION['userinfo']['AID'], 'SessionID' => $_SESSION['userinfo']['SessionID']));
-                    }
-                    //if does exists in membership_temp
-                    else {
-                        $_MemberTemp->setPDOConnection($CommonPDOConn);
-                        $_MemberTemp->updateTempProfileEmailAdmin($SubmittedEmail, $_SESSION['HiddenEmail']);
-                        if ($_MemberTemp->HasError) {
-                            $_MemberInfo->RollBackTransaction();
-                            $error = $_MemberTemp->errormessage;
-                            $logger->logger($logdate, $logtype, $error);
-                            $isSuccess = false;
-                        } else {
-                            $_MemberTemp->updateTempMemberUsernameAdmin($SubmittedEmail, $_SESSION['HiddenEmail']);
+                        //if does exists in membership_temp
+                        else {
+                            $_MemberTemp->setPDOConnection($CommonPDOConn);
+                            $_MemberTemp->updateTempProfileEmailAdmin($SubmittedEmail, $_SESSION['HiddenEmail']);
                             if ($_MemberTemp->HasError) {
                                 $_MemberInfo->RollBackTransaction();
                                 $error = $_MemberTemp->errormessage;
                                 $logger->logger($logdate, $logtype, $error);
                                 $isSuccess = false;
                             } else {
-                                $isSuccess = true;
-                                if (($_MemberInfo->AffectedRows > 0)||($_Members->AffectedRows > 0)||($_MemberTemp->AffectedRows > 0)) {
-                                    $_MemberInfo->CommitTransaction();
-                                    $_MemberInfo->updateProfileDateUpdatedAdmin($HiddenMID, $arrMemberInfo, $aid);
-                                    $_MemberTemp->updateTempProfileDateUpdatedAdmin($HiddenMID, $arrMemberInfo, $aid);
-                                    $retMsg = 'Profile updated successfully!';
+                                $_MemberTemp->updateTempMemberUsernameAdmin($SubmittedEmail, $_SESSION['HiddenEmail']);
+                                if ($_MemberTemp->HasError) {
+                                    $_MemberInfo->RollBackTransaction();
+                                    $error = $_MemberTemp->errormessage;
+                                    $logger->logger($logdate, $logtype, $error);
+                                    $isSuccess = false;
                                 } else {
-                                    $retMsg = 'Profile unchanged!';
+                                    $isSuccess = true;
+                                    if (($_MemberInfo->AffectedRows > 0)||($_Members->AffectedRows > 0)||($_MemberTemp->AffectedRows > 0)) {
+                                        $_MemberInfo->CommitTransaction();
+                                        $_MemberInfo->updateProfileDateUpdatedAdmin($HiddenMID, $arrMemberInfo, $aid);
+                                        $_MemberTemp->updateTempProfileDateUpdatedAdmin($HiddenMID, $arrMemberInfo, $aid);
+                                        $retMsg = 'Profile updated successfully!';
+                                    } else {
+                                        $retMsg = 'Profile unchanged!';
+                                    }
+                                    unset($_SESSION['HiddenEmail']);
+                                    $_Log->logEvent(AuditFunctions::UPDATE_PROFILE, 'MID:' . $arrMembers["MID"] . ':Successful', array('ID' => $_SESSION['userinfo']['AID'], 'SessionID' => $_SESSION['userinfo']['SessionID']));
                                 }
-                                unset($_SESSION['HiddenEmail']);
-                                $_Log->logEvent(AuditFunctions::UPDATE_PROFILE, 'MID:' . $arrMembers["MID"] . ':Successful', array('ID' => $_SESSION['userinfo']['AID'], 'SessionID' => $_SESSION['userinfo']['SessionID']));
                             }
                         }
                     }

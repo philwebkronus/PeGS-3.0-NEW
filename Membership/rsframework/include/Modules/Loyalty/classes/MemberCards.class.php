@@ -263,13 +263,13 @@ class MemberCards extends BaseEntity {
     }
     
     
-    public function transferMemberCard($lifetimepoints, $currentpoints, $redeemedpoints, $newcardnumber, 
+    public function transferMemberCard($mid, $cardid, $siteid, $lifetimepoints, $currentpoints, $redeemedpoints, $newcardnumber, 
             $oldubcardnumber, $status1, $status2, $aid, $dateupdated)
     {
         $this->StartTransaction();
         try
         {
-            $query = "UPDATE loyaltydb.membercards SET LifetimePoints = '$lifetimepoints',
+            $query = "UPDATE membercards SET LifetimePoints = '$lifetimepoints',
                 CurrentPoints = '$currentpoints', RedeemedPoints = '$redeemedpoints', DateUpdated = '$dateupdated',
                 Status = '$status1', UpdatedByAID = '$aid'
                 WHERE CardNumber = '$newcardnumber'";
@@ -278,7 +278,7 @@ class MemberCards extends BaseEntity {
             
             if(!App::HasError())
             {
-                $query2 = "UPDATE loyaltydb.membercards SET DateUpdated = '$dateupdated',
+                $query2 = "UPDATE membercards SET DateUpdated = '$dateupdated',
                     Status = '$status2', UpdatedByAID = '$aid' 
                     WHERE CardNumber = '$oldubcardnumber'";
         
@@ -286,7 +286,21 @@ class MemberCards extends BaseEntity {
                 
                 if(!App::HasError())
                 {
-                    $this->CommitTransaction();
+                    $query3 = "INSERT INTO membercards SET MID = '$mid', CardID = '$cardid', CardNumber = '$newcardnumber',
+                                                           SiteID = '$siteid', LifetimePoints = '$lifetimepoints',
+                                                           CurrentPoints = '$currentpoints', RedeemedPoints = '$redeemedpoints',
+                                                           DateCreated = '$dateupdated' , Status = 1";
+        
+                    $this->ExecuteQuery($query3);
+                
+                    if(!App::HasError())
+                        {
+                            $this->CommitTransaction();
+                        }
+                    else
+                        {
+                            $this->RollBackTransaction();
+                        }
                 }
                 else
                 {
@@ -435,12 +449,12 @@ class MemberCards extends BaseEntity {
      * result: object array
      * DateCreated: 2013-07-17
      */
-    public function getCardDetails( $cardnumber )
+    public function getCardDetails( $CardNumber )
     {
-        $query = "SELECT MemberCardID, MID, CardID, CardNumber, SiteID, 
+        $query = "SELECT MemberCardID, MID, CardID, SiteID, 
             LifetimePoints, CurrentPoints, RedeemedPoints, DateCreated, 
             CreatedByAID, Status
-        FROM membercards WHERE CardNumber = '$cardnumber' AND Status = 1";
+        FROM membercards WHERE CardNumber = '$CardNumber'";
         $result = parent::RunQuery($query);
         return $result;
     }   
@@ -536,6 +550,17 @@ class MemberCards extends BaseEntity {
         return $result;
     }
     
+    
+    public function getCardDetailsActiveDeactivateBanned( $mid )
+    {
+        $query = "SELECT MemberCardID, MID, CardID, CardNumber, SiteID, 
+            LifeTimePoints, CurrentPoints, RedeemedPoints, BonusPoints, DateCreated, 
+            CreatedByAID, Status
+        FROM membercards WHERE MID = '$mid' AND Status IN (1,2,9)";
+        $result = parent::RunQuery($query);
+        return $result;
+    }
+    
     public function getInActiveCardDetails( $mid )
     {
         $query = "SELECT MemberCardID, MID, CardID, CardNumber, SiteID, 
@@ -568,6 +593,54 @@ class MemberCards extends BaseEntity {
         return $result;
     } 
     
+    public function updateMemberCardsStatus($cardid1, $cardid2, $status1, $status2, $aid, $dateupdated)
+    {
+        $this->StartTransaction();
+        try
+        {
+            $this->ExecuteQuery("UPDATE membercards SET Status = $status1, UpdatedByAID = $aid, 
+                DateUpdated = '$dateupdated' WHERE CardID = $cardid1");
+            
+            if(!App::HasError())
+            { 
+                if(!App::HasError())
+                {
+                    $this->ExecuteQuery("UPDATE membercards SET Status = $status2, UpdatedByAID = $aid, 
+                DateUpdated = '$dateupdated' WHERE CardID = $cardid2");
+
+                    if (!App::HasError()) {
+                        $this->CommitTransaction();
+                    }
+                    else
+                    {
+                        $this->RollBackTransaction();
+                    }
+                }
+                else
+                {
+                    $this->RollBackTransaction();
+                }
+            }
+            else
+            {
+                $this->RollBackTransaction();
+            }
+        }
+        catch(Exception $e)
+        {
+            $this->RollBackTransaction();
+            App::SetErrorMessage($e->getMessage());
+        }
+    }
+    
+    
+    public function getDeactivatedStatusByMID($MID) {
+
+        $query = "SELECT Status FROM membercards WHERE MID = '$MID' AND Status = 2";
+
+        $result = parent::RunQuery($query);
+        return $result;
+    }
     
 }
 

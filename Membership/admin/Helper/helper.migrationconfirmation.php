@@ -117,10 +117,10 @@ if (isset($_POST['pager'])) {
 
                  }
                  elseif($status == 8){
+                    
+                     $membercarddetails = $_MemberCards->getCardDetailsActiveDeactivateBanned($mid);
                      
-                     $membercarddetails = $_MemberCards->getAllCardDetails($mid);
-                     
-                     if(count($membercarddetails)){
+                     if(!empty($membercarddetails)){
                          foreach ($membercarddetails as $value) {
                             $cardnumber = $value['CardNumber'];
                             $activestatus = $value['Status'];
@@ -156,7 +156,7 @@ if (isset($_POST['pager'])) {
                         $msg->BonusPoints = $bonuspoints;
                      } else {
                         $msg->IDdetect = '1.3';
-                        $msg->Msg = 'Migrated temporary card';
+                        $msg->Msg = 'Migrated temporary cards';
                         $msg->CardType = "Invalid";  
                      }
                  }
@@ -276,6 +276,8 @@ if (isset($_POST['pager'])) {
                             $datecreated = date("Y-m-d H:i:s",strtotime($arr1['DateCreated']));
                             $siteid = $arr1['SiteID'];
                         }
+                        
+                        if($status == '1' || $status == '2' || $status == '7' || $status == '9'){
                         
                         $olddetails = $_CardPointsTransfer->getOldUBCard($mid);
                         
@@ -520,6 +522,13 @@ if (isset($_POST['pager'])) {
 
                             }
                         }
+                        
+                        }
+                        else{
+                            $msg->IDdetect = '1.3';
+                            $msg->CardType = 'Invalid';
+                            $msg->Msg = 'Card Number Invalid, Please Try Again';
+                        }
                 }
                 else{
                     $msg->IDdetect = '1.3';
@@ -571,6 +580,7 @@ if (isset($_POST['pager'])) {
                     }else{
                         $mid = $mid2;
                     }
+                    $oldcarddetails = '';
 
                         $allcarddetails = $_MemberCards->getAllCardDetails($mid);
                         $cardz = $_MemberCards->getCardDetailsFromStatus($mid, 5);
@@ -764,7 +774,7 @@ if (isset($_POST['pager'])) {
                             $msg->CardType = 'Invalid';
                             $msg->Msg = 'Invalid Email Address, Please Try Again';
                         }
-
+                        
                             if($countallcarddetails == 1){
 
                                 $msg->IDdetect = '3.2';

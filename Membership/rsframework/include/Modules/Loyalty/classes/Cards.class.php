@@ -94,10 +94,11 @@ class Cards extends BaseEntity
         try
         {
             $tempstatus = $arrTempCard['Status'];
+            $tempsiteid = $arrTempCard['SiteID'];
             $tempcardid = $arrTempCard['CardID'];
             
-            $this->UpdateByArray($arrTempCard);
-            $this->ExecuteQuery("UPDATE membercards SET Status = $tempstatus WHERE CardID = $tempcardid");
+            //$this->UpdateByArray($arrTempCard);
+            $this->ExecuteQuery("UPDATE membercards SET Status = $tempstatus, SiteID = $tempsiteid WHERE CardID = $tempcardid");
             
             if(!App::HasError())
             {
@@ -131,6 +132,92 @@ class Cards extends BaseEntity
             $this->RollBackTransaction();
             App::SetErrorMessage($e->getMessage());
         }
+    }
+    
+    public function updateCardsStatus2($cardid1, $cardid2, $status1, $status2, $aid, $dateupdated)
+    {
+        $this->StartTransaction();
+        try
+        {
+            $this->ExecuteQuery("UPDATE cards SET Status = $status1, UpdatedByAID = $aid, 
+                DateUpdated = '$dateupdated' WHERE CardID = $cardid1");
+            
+            if(!App::HasError())
+            { 
+                if(!App::HasError())
+                {
+                    $this->ExecuteQuery("UPDATE cards SET Status = $status2, UpdatedByAID = $aid, 
+                DateUpdated = '$dateupdated' WHERE CardID = $cardid2");
+
+                    if (!App::HasError()) {
+                        $this->CommitTransaction();
+                    }
+                    else
+                    {
+                        $this->RollBackTransaction();
+                    }
+                }
+                else
+                {
+                    $this->RollBackTransaction();
+                }
+            }
+            else
+            {
+                $this->RollBackTransaction();
+            }
+        }
+        catch(Exception $e)
+        {
+            $this->RollBackTransaction();
+            App::SetErrorMessage($e->getMessage());
+        }
+    }
+    
+    /*
+     * Description: Get Card Status
+     * @author: JunJunS. Hernandez
+     * result: object array
+     * DateCreated: 2013-07-01
+     */
+
+    public function getStatusByCard($cardnumber) {
+
+        $query = "SELECT Status FROM cards WHERE CardNumber='$cardnumber'";
+
+        $result = parent::RunQuery($query);
+        return $result;
+    }
+    /*
+     * Description: Get Card Status
+     */
+    public function getCardIDByCardNumber($cardnumber) {
+        $query = "SELECT CardID FROM cards WHERE CardNumber = '$cardnumber'";
+        $result = parent::RunQuery($query);
+        return $result;
+    }
+    
+    /*
+     * Description: card number based on given membercardID
+     */
+    public function getCardDetails( $cardnumber )
+    {
+        $query = "SELECT CardID, CardTypeID
+                    FROM cards WHERE CardNumber = '$cardnumber'";
+        $result = parent::RunQuery($query);
+        return $result;
+    }
+    
+    public function getMemCardIDByCardNumber($cardnumber) {
+        $query = "SELECT MemberCardID FROM membercards WHERE CardNumber = '$cardnumber'";
+        $result = parent::RunQuery($query);
+        return $result;
+    }
+    
+    public function getCardType($cardnumber) {
+        $query = "SELECT CardTypeID FROM cards WHERE CardNumber = '$cardnumber'";
+        $result = parent::RunQuery($query);
+        return $result;
     }
 
 }?>

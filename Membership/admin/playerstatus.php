@@ -323,7 +323,11 @@ if ($fproc->IsPostBack)
     <form name="updateplayerstatus" id="updateplayerstatus" method="POST">
         <div class="maincontainer">
             <?php include('menu.php'); ?>
-            <div class="content"> 
+            <div class="content">
+                <h2>
+                    Player Banning/Unbanning
+                </h2>
+                <br/>
 <div class="searchbar formstyle">
         <?php echo $txtSearch; ?><?php echo $btnSearch; ?><?php echo $btnClear; ?>
 </div>
