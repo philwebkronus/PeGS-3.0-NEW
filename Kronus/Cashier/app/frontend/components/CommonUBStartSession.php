@@ -251,11 +251,8 @@ class CommonUBStartSession {
             
             $transReqLogsModel->update($trans_req_log_last_id, $apiresult, $transstatus,$transrefid,$terminal_id);
             
-            //BCF will be deducted if payment method is cash only
-            if($paymentType == 1){
-                $newbal = $bcf - $initial_deposit;
-                $siteBalance->updateBcf($newbal, $site_id, 'Start session'); //update bcf
-            }
+            $newbal = $bcf - $initial_deposit;
+            $siteBalance->updateBcf($newbal, $site_id, 'Start session'); //update bcf
             
             if(!$trans_summary_id)
             {
