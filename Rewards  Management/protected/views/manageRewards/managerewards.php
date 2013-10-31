@@ -159,6 +159,22 @@ tinyMCE.init({
 </script>
 <script type="text/javascript">
     
+    function trimword(word) {
+            word = word.replace(/(^\s*)|(\s*$)/gi,"");
+            word = word.replace(/[ ]{2,}/gi," "); 
+            word = word.replace(/\n /,"\n"); 
+            return word;
+      }
+    
+    function checktrailingspaces(word){
+        if (/^\s+|\s*$/g.test(word) === true){
+            var msg = "Warning: Trailing space/s is/are not allowed";
+            return msg;
+        } else {
+            return true;
+        }
+    }
+    
     function validateinputs(form, part, rewardid) {
         if(form == 1){                                                  //Edit Reward Form
             if(part == 1) {                                             //Primary Details
@@ -193,11 +209,18 @@ tinyMCE.init({
                         var message = "Invalid Draw Date.";
                         return message;
                     } else  {
-                        rewarditem = trimword(rewarditem);
-                        if(subtext != '')
-                            subtext = trimword(subtext);
-                        points = trimword(points);
-                        return true;
+                        var checkreward = checktrailingspaces(rewarditem);
+                        var checksubtext = checktrailingspaces(subtext);
+
+                        if(checkreward == true && checksubtext == true){
+                            return true;
+                        } else {
+                            $("#editrewarditem").val(trimword(rewarditem));
+                            $("#editsubtext").val(trimword(subtext));
+                            $("#editpoints").val(trimword(points));
+                            alert("Warning: Trailing space/s is/are not allowed. All extra spaces is now cleaned.");
+                            return true;
+                        }
                     }
                 } else {
                     if(partner == "" || rewarditem == "" || category == "" || points == "" || eligibility == "" || status == "" || fromdate == "" || todate == "" || subtext == "") {
@@ -210,11 +233,18 @@ tinyMCE.init({
                         var message = "Invalid Date Range.";
                         return message;
                     } else  {
-                        rewarditem = trimword(rewarditem);
-                        if(subtext != '')
-                            subtext = trimword(subtext);
-                        points = trimword(points);
-                        return true;
+                        var checkreward = checktrailingspaces(rewarditem);
+                        var checksubtext = checktrailingspaces(subtext);
+
+                        if(checkreward == true && checksubtext == true){
+                            return true;
+                        } else {
+                            $("#editrewarditem").val(trimword(rewarditem));
+                            $("#editsubtext").val(trimword(subtext));
+                            $("#editpoints").val(trimword(points));
+                            alert("Warning: Trailing space/s is/are not allowed. All extra spaces is now cleaned.");
+                            return true;
+                        }
                     }
                 }
             } else if(part == 2){                                   //About the Reward (part 1)
@@ -366,11 +396,18 @@ tinyMCE.init({
                         var message = "Invalid Draw Date.";
                         return message;
                     } else  {
-                        rewarditem = trimword(rewarditem);
-                        if(subtext != '')
-                            subtext = trimword(subtext);
-                        points = trimword(points);
-                        return true;
+                        var checkreward = checktrailingspaces(rewarditem);
+                        var checksubtext = checktrailingspaces(subtext);
+
+                        if(checkreward == true && checksubtext == true){
+                            return true;
+                        } else {
+                            $("#addrewarditem").val(trimword(rewarditem));
+                            $("#addsubtext").val(trimword(subtext));
+                            $("#addpoints").val(trimword(points));
+                            alert("Warning: Trailing space/s is/are not allowed. All extra spaces is now cleaned.");
+                            return true;
+                        }
                     }
                 } else {
                     if(partner == "" || rewarditem == "" || category == "" || points == "" || eligibility == "" || status == "" || fromdate == "" || todate == "" || itemcount == "" || subtext == "") {
@@ -383,11 +420,18 @@ tinyMCE.init({
                         var message = "Invalid Date Range.";
                         return message;
                     } else  {
-                        rewarditem = trimword(rewarditem);
-                        if(subtext != '')
-                            subtext = trimword(subtext);
-                        points = trimword(points);
-                        return true;
+                        var checkreward = checktrailingspaces(rewarditem);
+                        var checksubtext = checktrailingspaces(subtext);
+
+                        if(checkreward == true && checksubtext == true){
+                            return true;
+                        } else {
+                            $("#addrewarditem").val(trimword(rewarditem));
+                            $("#addsubtext").val(trimword(subtext));
+                            $("#addpoints").val(trimword(points));
+                            alert("Warning: Trailing space/s is/are not allowed. All extra spaces is now cleaned.");
+                            return true;
+                        }
                     }
                 }
             } else if(part == 2){                                   //About the Reward (part 1)
@@ -635,27 +679,6 @@ tinyMCE.init({
             }
         });
     }
-    
-//    function deleteUploadedImages(thblimited,thboutofstock,lmlimited,lmoutofstock,ecoupon,webslider){     
-//        $.ajax({
-//            url: 'deleteUploadedImages',
-//            type: 'POST',
-//            data : {
-//                            thblimitedphoto : function() {return thblimited; },
-//                            thboutofstockphoto : function(){return thboutofstock;},
-//                            ecouponphoto : function() {return ecoupon; },
-//                            lmlimitedphoto : function(){return lmlimited;},
-//                            lmoutofstockphoto : function() {return lmoutofstock; },
-//                            websliderphoto : function(){return webslider;}
-//                        },
-//            dataType: 'json',
-//            success: function(data)
-//            {
-//                $("#message").html(data.message);
-//                $("#messagedialog2").dialog("open");
-//            }
-//        });
-//    }
 
     function getActivePartners(action){
         $.ajax({
@@ -1640,38 +1663,12 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
                             }
             }',
             'close' => 'js:function(event,ui){
-//                            var thblimited =$("#thblimitedframe").contents().find("#thbsubmit_limited").attr("ImageName");
-//                            var thboutofstock = $("#thboutofstockframe").contents().find("#thbsubmit_outofstock").attr("ImageName");
-//                            var ecoupon = $("#ecouponframe").contents().find("#ecoupon_submit").attr("ImageName");
-//                            var lmlimited = $("#lmlimitedframe").contents().find("#lmsubmit_limited").attr("ImageName");
-//                            var lmoutofstock = $("#lmoutofstockframe").contents().find("#lmsubmit_outofstock").attr("ImageName");
-//                            var webslider = $("#websliderframe").contents().find("#webslider_submit").attr("ImageName");
-//                            thblimited == undefined ? thblimited = null:"";
-//                            thboutofstock == undefined ? thboutofstock = null:"";
-//                            ecoupon == undefined ? ecoupon = null:"";
-//                            lmlimited == undefined ? lmlimited = null:"";
-//                            lmoutofstock == undefined ? lmoutofstock = null:"";
-//                            webslider == undefined ? webslider = null:"";
-//                            deleteUploadedImages(thblimited,thboutofstock,lmlimited,lmoutofstock,ecoupon,webslider);
                             window.location.href = "'.$urlrefresh.'";
             }',
             'buttons' => array
             (
                 array('id' => 'firstback','text'=>'BACK',
                             'click'=> 'js:function(){
-                                        var thblimited =$("#thblimitedframe").contents().find("#thbsubmit_limited").attr("ImageName");
-                                        var thboutofstock = $("#thboutofstockframe").contents().find("#thbsubmit_outofstock").attr("ImageName");
-                                        var ecoupon = $("#ecouponframe").contents().find("#ecoupon_submit").attr("ImageName");
-                                        var lmlimited = $("#lmlimitedframe").contents().find("#lmsubmit_limited").attr("ImageName");
-                                        var lmoutofstock = $("#lmoutofstockframe").contents().find("#lmsubmit_outofstock").attr("ImageName");
-                                        var webslider = $("#websliderframe").contents().find("#webslider_submit").attr("ImageName");
-                                        thblimited == undefined ? thblimited = null:"";
-                                        thboutofstock == undefined ? thboutofstock = null:"";
-                                        ecoupon == undefined ? ecoupon = null:"";
-                                        lmlimited == undefined ? lmlimited = null:"";
-                                        lmoutofstock == undefined ? lmoutofstock = null:"";
-                                        webslider == undefined ? webslider = null:"";
-                                        deleteUploadedImages(thblimited,thboutofstock,lmlimited,lmoutofstock,ecoupon,webslider);
                                         $(this).dialog("close");
                                         window.location.href = "'.$urlrefresh.'";
                             }'),
@@ -2318,38 +2315,12 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
                             }
             }',
             'close' => 'js:function(event,ui){
-//                            var thblimited =$("#addthblimitedframe").contents().find("#thbsubmit_limited").attr("ImageName");
-//                            var thboutofstock = $("#addthboutofstockframe").contents().find("#thbsubmit_outofstock").attr("ImageName");
-//                            var ecoupon = $("#addecouponframe").contents().find("#ecoupon_submit").attr("ImageName");
-//                            var lmlimited = $("#addlmlimitedframe").contents().find("#lmsubmit_limited").attr("ImageName");
-//                            var lmoutofstock = $("#addlmoutofstockframe").contents().find("#lmsubmit_outofstock").attr("ImageName");
-//                            var webslider = $("#addwebsliderframe").contents().find("#webslider_submit").attr("ImageName");
-//                            thblimited == undefined ? thblimited = null:"";
-//                            thboutofstock == undefined ? thboutofstock = null:"";
-//                            ecoupon == undefined ? ecoupon = null:"";
-//                            lmlimited == undefined ? lmlimited = null:"";
-//                            lmoutofstock == undefined ? lmoutofstock = null:"";
-//                            webslider == undefined ? webslider = null:"";
-//                            deleteUploadedImages(thblimited,thboutofstock,lmlimited,lmoutofstock,ecoupon,webslider);
                             window.location.href = "'.$urlrefresh.'";
             }',
             'buttons' => array
             (
                 array('id' => 'firstback','text'=>'BACK',
-                            'click'=> 'js:function(){
-                                        var thblimited =$("#addthblimitedframe").contents().find("#thbsubmit_limited").attr("ImageName");
-                                        var thboutofstock = $("#addthboutofstockframe").contents().find("#thbsubmit_outofstock").attr("ImageName");
-                                        var ecoupon = $("#addecouponframe").contents().find("#ecoupon_submit").attr("ImageName");
-                                        var lmlimited = $("#addlmlimitedframe").contents().find("#lmsubmit_limited").attr("ImageName");
-                                        var lmoutofstock = $("#addlmoutofstockframe").contents().find("#lmsubmit_outofstock").attr("ImageName");
-                                        var webslider = $("#addwebsliderframe").contents().find("#webslider_submit").attr("ImageName");
-                                        thblimited == undefined ? thblimited = "":"";
-                                        thboutofstock == undefined ? thboutofstock = null:"";
-                                        ecoupon == undefined ? ecoupon = null:"";
-                                        lmlimited == undefined ? lmlimited = null:"";
-                                        lmoutofstock == undefined ? lmoutofstock = null:"";
-                                        webslider == undefined ? webslider = null:"";
-                                        deleteUploadedImages(thblimited,thboutofstock,lmlimited,lmoutofstock,ecoupon,webslider);
+                            'click'=> 'js:function(){    
                                         $(this).dialog("close");
                                         window.location.href = "'.$urlrefresh.'";
                             }'),

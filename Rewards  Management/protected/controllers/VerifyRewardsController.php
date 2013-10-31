@@ -84,7 +84,7 @@ class VerifyRewardsController extends Controller
                 $serialcode = $model->ecouponserial;
                 $securitycode = $model->ecouponsecuritycode;
 
-                if (isset($_POST['Submit'])) {
+                if (isset($_POST['Submit']) || isset($_POST['VerifyRewardsForm']['egamespartner'])) {
                         $check = $itemredemptionlogs->checkSerialSecCodes($serialcode,$securitycode,$reewarditemid);
                         $countcheck = count($check);
                         if($countcheck > 0){
@@ -141,74 +141,70 @@ class VerifyRewardsController extends Controller
                             $this->dialogMsg2 = "Review e-Coupon details in the previous page."; 
                         }
                 }
-                else if (isset($_POST['Submit2'])) 
+                else if (isset($_POST['Submit2']) || isset($_POST['VerifyRewardsForm']['rafflepromo'])) 
                 {
-
                     $rafflepromo = $model->rafflepromo;
                     $serialcode2 = $model->ecouponserial2;
                     $securitycode2 = $model->ecouponsecuritycode2;
 
                     $check = $couponredemptionlogs->checkSerialSecCodes($serialcode2,$securitycode2,$rafflepromo);
-                        $countcheck = count($check);
-                        if($countcheck > 0){
-                            foreach ($check as $row) {
-                                $rewarditemid = $row['RewardItemID'];
-                                $mid = $row['MID'];
-                                $validdatefrom = $row['ValidFrom'];
-                                $validdateto = $row['ValidTo'];
-                                $status = $row['Status'];
-                                $serial = $row['SerialCode'];
-                                $security = $row['SecurityCode'];
-                                $source = $row['Source'];
-                            }
+                    $countcheck = count($check);
+                    if($countcheck > 0){
+                        foreach ($check as $row) {
+                            $rewarditemid = $row['RewardItemID'];
+                            $mid = $row['MID'];
+                            $validdatefrom = $row['ValidFrom'];
+                            $validdateto = $row['ValidTo'];
+                            $status = $row['Status'];
+                            $serial = $row['SerialCode'];
+                            $security = $row['SecurityCode'];
+                            $source = $row['Source'];
+                        }
 
-                            if($status == 1){
+                        if($status == 1){
 
-                                    $datetoday = date("Y-m-d H:i:s.u"); 
-                                    
-                                    $checkrange = $model->check_in_range($validdatefrom, $validdateto, $datetoday);
+                                $datetoday = date("Y-m-d H:i:s.u"); 
 
-                                    $validdatefrom = date("d/m/Y", strtotime($validdatefrom));
-                                    $validdateto = date("d/m/Y", strtotime($validdateto));
+                                $checkrange = $model->check_in_range($validdatefrom, $validdateto, $datetoday);
 
-                                    if($checkrange == true){
+                                $validdatefrom = date("d/m/Y", strtotime($validdatefrom));
+                                $validdateto = date("d/m/Y", strtotime($validdateto));
 
-                                        $result = $couponredemptionlogs->updateCouponLogsStatus($securitycode2, $serialcode2);
-                                        if ($result['TransCode'] == 1)
-                                        {
-                                            $this->showDialog2 = true;
-                                            $this->dialogMsg = "This e-Coupon ".$serialcode2." is valid."; 
-                                            $this->dialogMsg2 = "e-Coupon validity period is from ".$validdatefrom." to ".$validdateto.".";
-                                        }
-                                        else
-                                        {
-                                            $this->showDialog2 = true;
-                                            $this->dialogMsg = "An error occured while updating the status";
-                                        }
-                                    }
-                                    else{
+                                if($checkrange == true){
+
+                                    $result = $couponredemptionlogs->updateCouponLogsStatus($securitycode2, $serialcode2);
+                                    if ($result['TransCode'] == 1)
+                                    {
                                         $this->showDialog2 = true;
-                                        $this->dialogMsg = "This e-Coupon ".$serialcode2." has expired."; 
-                                        $this->dialogMsg2 = "e-Coupon validity period is from ".$validdatefrom." to ".$validdateto."."; 
+                                        $this->dialogMsg = "This e-Coupon ".$serialcode2." is valid."; 
+                                        $this->dialogMsg2 = "e-Coupon validity period is from ".$validdatefrom." to ".$validdateto.".";
                                     }
-
-                            }
-                            else{
-                                $this->showDialog2 = true;
-                                $this->dialogMsg = "This e-Coupon ".$serialcode2." is used."; 
-                                $this->dialogMsg2 = "Review e-Coupon details in the previous page."; 
-                            }
+                                    else
+                                    {
+                                        $this->showDialog2 = true;
+                                        $this->dialogMsg = "An error occured while updating the status";
+                                    }
+                                }
+                                else{
+                                    $this->showDialog2 = true;
+                                    $this->dialogMsg = "This e-Coupon ".$serialcode2." has expired."; 
+                                    $this->dialogMsg2 = "e-Coupon validity period is from ".$validdatefrom." to ".$validdateto."."; 
+                                }
 
                         }
                         else{
                             $this->showDialog2 = true;
-                            $this->dialogMsg = "This e-Coupon ".$serialcode2." does not match our records."; 
+                            $this->dialogMsg = "This e-Coupon ".$serialcode2." is used."; 
                             $this->dialogMsg2 = "Review e-Coupon details in the previous page."; 
                         }
+
                     }
-            }
-            else{
-              $this->showDialogSuccess = false;
+                    else{
+                        $this->showDialog2 = true;
+                        $this->dialogMsg = "This e-Coupon ".$serialcode2." does not match our records."; 
+                        $this->dialogMsg2 = "Review e-Coupon details in the previous page."; 
+                    }
+                }
             }
         }
         $this->render('verifyrewards', array('model' => $model));
@@ -259,17 +255,23 @@ class VerifyRewardsController extends Controller
                         $branchdetails = trim($forminputs['branchdetails']);
                         $remarks = trim($forminputs['remarks']);
                         
-                        if (!$validation->validateAlphaNumeric($partnernamecashier) || (!$validation->validateAlphaNumeric($branchdetails)
+                        if ($partnernamecashier == "" || $branchdetails == "")
+                        {
+                            $this->showDialog2 = true;
+                            $this->dialogMsg = "Fields with asterisk (*) are required"; 
+                            $this->title = "ERROR MESSAGE";
+                        }
+                        else if (!$validation->validateAlphaNumeric($partnernamecashier) || (!$validation->validateAlphaNumeric($branchdetails)
                             ))
                         {
                             $this->showDialog2 = true;
-                            $this->dialogMsg = "Special Characters are not allowed"; 
+                            $this->dialogMsg = "Special characters are not allowed"; 
                             $this->title = "ERROR MESSAGE";
                         }
                         else if ($remarks != "" && !$validation->validateAlphaNumeric($remarks))
                         {
                             $this->showDialog2 = true;
-                            $this->dialogMsg = "Special Characters are not allowed"; 
+                            $this->dialogMsg = "Special characters are not allowed"; 
                             $this->title = "ERROR MESSAGE";
                         }
                         else if($partnernamecashier != '' && $branchdetails != '')
@@ -301,16 +303,19 @@ class VerifyRewardsController extends Controller
                                 {
                                     $vcount = 0;        
                                     $CC = '';
-                                    $date = date('Y-m-d H:i:s');
                                     $partner = Yii::app()->session['partnername'];
                                     $securitycode = Yii::app()->session['securitycode'];
                                     $serialcode = Yii::app()->session['serialcode'];
                                     $rewarditem = Yii::app()->session['rewardname'];
+                                    $timeofavail = date("h:i:s");
+                                    $dateavailed = date("m-d-Y");
+                                    $membername = Yii::app()->session['membername'];
+                                    $membercard = Yii::app()->session['cardnumber'];
                                     while($vcount < count($emails))
                                     {
 
                                         $to = $emails[$vcount];
-                                        $model->mailRecordReward($to, $date, $partner, $rewarditem, $serialcode, $securitycode, $CC);
+                                        $model->mailRecordReward($to, $partner, $rewarditem, $serialcode, $securitycode, $timeofavail, $dateavailed, $membercard, $membername, $partnernamecashier, $CC);
  
                                         $vcount++;
                                     }

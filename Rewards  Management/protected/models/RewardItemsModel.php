@@ -279,7 +279,7 @@ class RewardItemsModel extends CFormModel
         $CreatedByAID = Yii::app()->session['AID'];
         $pdo = $connection->beginTransaction();
         $query = "UPDATE rewarditems SET AvailableItemCount = $newitemcount, SerialCodeEnd = '$newserialcodeend', DateUpdated = now_usec(),
-                            UpdatedByAID = $CreatedByAID WHERE RewardItemID = ".$rewarditemid;
+                            UpdatedByAID = $CreatedByAID, Status = 1 WHERE RewardItemID = ".$rewarditemid;
         $sql = Yii::app()->db->createCommand($query);
         $updateresult = $sql->execute();
         if($updateresult > 0){

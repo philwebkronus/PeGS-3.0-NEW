@@ -724,40 +724,6 @@ class ManageRewardsController extends Controller
     }
     
     /**
-     * 
-     * @param type $thblimitedphoto
-     * @param type $thboutofstockphoto
-     * @param type $ecouponphoto
-     * @param type $lmlimitedphoto
-     * @param type $lmoutofstockphoto
-     * @param type $websliderphoto
-     */
-//    public function actionDeleteUploadedImages($thblimitedphoto, $thboutofstockphoto, $ecouponphoto, $lmlimitedphoto,
-//                                                                                                    $lmoutofstockphoto, $websliderphoto)
-////    public function actionDeleteUploadedImages()
-//    {
-//        $imagetmpdirectory = Yii::app()->params['image_tmpdirectory'];
-////        $thblimitedphoto = $_POST["thblimitedphoto"];
-////        $thboutofstockphoto = $_POST["thboutofstockphoto"];
-////        $ecouponphoto = $_POST["ecouponphoto"];
-////        $lmlimitedphoto = $_POST["lmlimitedphoto"];
-////        $lmoutofstockphoto = $_POST["lmoutofstockphoto"];
-////        $websliderphoto = $_POST["websliderphoto"];
-//        $thblimitedphoto != "" ? unlink("$imagetmpdirectory".$thblimitedphoto):"";
-//        $thboutofstockphoto != "" ? unlink("$imagetmpdirectory".$thboutofstockphoto):"";
-//        $ecouponphoto != "" ? unlink("$imagetmpdirectory".$ecouponphoto):"";
-//        $lmlimitedphoto != "" ? unlink("$imagetmpdirectory".$lmlimitedphoto):"";
-//        $lmoutofstockphoto != "" ? unlink("$imagetmpdirectory".$lmoutofstockphoto):"";
-//        $websliderphoto != "" ? unlink("$imagetmpdirectory".$websliderphoto):"";
-//        
-//        $result['showdialog'] = true;
-//        $result['message'] = "Uploaded Images is deleted.";
-//        
-//        echo json_encode($result);
-//        exit;
-//    }
-
-    /**
      * @Description: UI For Upload Thumbnail Image with Limited Badge
      * @Author: aqdepliyan
      */
