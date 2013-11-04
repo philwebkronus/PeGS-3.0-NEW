@@ -214,6 +214,8 @@ if((isset($_GET["tempnumber"]) && (htmlentities($_GET["tempnumber"]))) &&
                     $arrNewCard["Status"]= CardStatus::ACTIVE;
 
                     $arrTempCard["CardID"] = $tempcardid;
+//                    $arrTempCard["SiteID"] = $siteid; need to double check the saving of site id
+                    $arrTempCard["SiteID"] = 1;
                     $arrTempCard["UpdatedByAID"] = $AID;
                     $arrTempCard["DateUpdated"] = $datecreated;
                     $arrTempCard["Status"]= CardStatus::TEMPORARY_MIGRATED;
