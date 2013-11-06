@@ -1,11 +1,7 @@
 function AlphaOnlyWithSpace(event)
 {
     var char = (String.fromCharCode(event.which));
-    if (char == "%")
-    {
-        return false;
-    }
-    else if(char == "'")
+    if (char == "%" || char == "'")
     {
         return false;
     }
@@ -13,7 +9,7 @@ function AlphaOnlyWithSpace(event)
     {
         var charCode = (event.which) ? event.which : event.keyCode;
         if ((charCode > 64 && charCode < 91) || (charCode > 96 && charCode < 123) || charCode == 32
-             || charCode == 8 || charCode == 9 || charCode == 95 || charCode == 45)
+             || charCode == 8 || charCode == 9)
         {
             return true;
         }
@@ -28,11 +24,7 @@ function AlphaOnlyWithSpace(event)
 function AlphaNumericOnlyWithSpace(event)
 {
     var char = (String.fromCharCode(event.which));
-    if (char == "%")
-    {
-        return false;
-    }
-    else if(char == "'")
+    if (char == "%" || char == "'")
     {
         return false;
     }
@@ -55,11 +47,7 @@ function AlphaNumericOnlyWithSpace(event)
 function AlphaNumericOnly(event)
 {
     var char = (String.fromCharCode(event.which));
-    if (char == "%")
-    {
-        return false;
-    }
-    else if(char == "'")
+    if (char == "%" || char == "'")
     {
         return false;
     }
@@ -80,13 +68,9 @@ function alphanumeric4(event)
 {
   
   var char = (String.fromCharCode(event.which));
-  if (char == "%")
+  if (char == "%" || char == "'")
   {
-      return false;
-  }
-  else if(char == "'")
-  {
-      return false;
+    return false;
   }
   else
   {
@@ -112,11 +96,7 @@ function alphanumeric1(event)
 function numberonly(event)
 {
     var char = (String.fromCharCode(event.which));
-    if (char == "%")
-    {
-        return false;
-    }
-    else if(char == "'")
+    if (char == "%" || char == "'")
     {
         return false;
     }
@@ -146,11 +126,7 @@ function numberonly(event)
 function numberandletter(evt)
 {
     var char = (String.fromCharCode(evt.which));
-    if (char == "%")
-    {
-        return false;
-    }
-    else if(char == "'")
+    if (char == "%" || char == "'")
     {
         return false;
     }
@@ -178,11 +154,7 @@ function numberandletter(evt)
 function AlphaNumericOnlyWithSpace(event)
 {
     var char = (String.fromCharCode(event.which));
-    if (char == "%")
-    {
-        return false;
-    }
-    else if(char == "'")
+    if (char == "%" || char == "'")
     {
         return false;
     }
@@ -201,11 +173,7 @@ function AlphaNumericOnlyWithSpace(event)
 function emailkeypress(event)
 {
     var char = (String.fromCharCode(event.which));
-    if (char == "%")
-    {
-        return false;
-    }
-    else if(char == "'")
+    if (char == "%" || char == "'")
     {
         return false;
     }
@@ -227,11 +195,7 @@ function emailkeypress(event)
 function websitekeypress(event)
 {
     var char = (String.fromCharCode(event.which));
-    if (char == "%")
-    {
-        return false;
-    }
-    else if(char == "'")
+    if (char == "%" || char == "'")
     {
         return false;
     }
@@ -253,11 +217,7 @@ function websitekeypress(event)
 function telephonekeypress(event)
 {
     var char = (String.fromCharCode(event.which));
-    if (char == "%")
-    {
-        return false;
-    }
-    else if(char == "'")
+    if (char == "%" || char == "'")
     {
         return false;
     }
@@ -285,13 +245,9 @@ function telephonekeypress(event)
 function addresskeypress(event)
 {
   var char = (String.fromCharCode(event.which));
-  if (char == "%")
+  if (char == "%" || char == "'")
   {
-      return false;
-  }
-  else if(char == "'")
-  {
-      return false;
+    return false;
   }
   else
   {
@@ -312,20 +268,16 @@ function usernamekeypress(event)
 {
   
   var char = (String.fromCharCode(event.which));
-  if (char == "%")
+  if (char == "%" || char == "'")
   {
-      return false;
-  }
-  else if(char == "'")
-  {
-      return false;
+    return false;
   }
   else
   {
   var charCode = (event.which) ? event.which : event.keyCode;
     if ((charCode > 64 && charCode < 91 ) || (charCode > 47 && charCode < 58) || (charCode > 96 && charCode < 123))
         return true;
-    else if(charCode == 8 ||charCode == 32 || charCode == 9)
+    else if(charCode == 8 || charCode == 9)
        return true;
     else if (charCode == 37 || charCode == 39) //left and right arrow keys
        return true;

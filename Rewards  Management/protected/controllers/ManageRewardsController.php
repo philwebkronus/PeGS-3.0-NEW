@@ -637,7 +637,7 @@ class ManageRewardsController extends Controller
         echo json_encode($result);
         exit;
     }
-
+    
     /**
      * @Description: For Fetching List of Rewards
      * @Author: aqdepliyan

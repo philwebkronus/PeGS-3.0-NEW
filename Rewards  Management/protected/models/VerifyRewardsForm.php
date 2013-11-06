@@ -62,47 +62,77 @@ class VerifyRewardsForm extends CFormModel
     }
     
     
-    public function mailRecordReward($to, $date, $partner, $rewarditem, $serialcode, $securitycode, $CC = ''){
+    public function mailRecordReward($to, $partner, $rewarditem, $serialcode, $securitycode, $timeavailed, $dateavailed, $membercard, $membername, $cashier, $CC = ''){
 
-        $subject  = "Recording of the Reward Transaction";
+        $subject  = "[Rewards Availment Notification] Membership Rewards Program";
         $headers  = 'MIME-Version: 1.0' . "\r\n";
         $headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
-        $headers .=  "From: "."RewardsItemManagement@philweb.com.ph"."\r\n" . "Cc: "."$CC";
+        $headers .=  "From: "."rewardsmanagement@philweb.com.ph"."\r\n" . "Cc: "."$CC";
         
                 $detail = '
                     <html>
                     <head>
                       <title>Rewards Item Management</title>
+                      <style>
+                        table
+                        {
+                            border-collapse: collapse;
+                        }
+                        table tr th 
+                        {
+                            border-collapse: collapse; border: 1px solid #000;
+                        }
+                        table tr td 
+                        {
+                            border-collapse: collapse; border: 1px solid #000; text-align:center;
+                        }
+                      </style>
                     </head>
                     <body>
-                      <h3>Recording of Reward Transaction</h3>
-                      <table>
-                        <tr>
-                          <td><b>Date Claimed:</b></td>
-                          <td>'.$date.'</td>
+                      <p>
+                      Hi,
+                      </p>
+                      <p>
+                      This is to inform you that the '.$rewarditem.' of '.$partner.' was availed and was successfully 
+                      recorded as detailed below:
+                      </p>
+                    <table style="border-collapse: collapse;">  
+                        <tr style="border-collapse: collapse; border: 1px solid #000;">
+                            <th style="border-collapse: collapse; border: 1px solid #000;">Serial</th>
+                            <th style="border-collapse: collapse; border: 1px solid #000;">Security</th>
+                            <th style="border-collapse: collapse; border: 1px solid #000;">Reward Item</th>
+                            <th style="border-collapse: collapse; border: 1px solid #000;">Name of Person Availing</th>
+                            <th style="border-collapse: collapse; border: 1px solid #000;">Membership Card Number</th>
+                            <th style="border-collapse: collapse; border: 1px solid #000;">Time of Availment</th>
+                            <th style="border-collapse: collapse; border: 1px solid #000;">Date of Availment</th>
+                            <th style="border-collapse: collapse; border: 1px solid #000;">Cashier on Duty</th>
+                        </tr>    
+                        <tr style="border-collapse: collapse; border: 1px solid #000;">
+                            <td style="border-collapse: collapse; border: 1px solid #000; text-align:center;">'.$serialcode.'</td>
+                            <td style="border-collapse: collapse; border: 1px solid #000; text-align:center;">'.$securitycode.'</td>
+                            <td style="border-collapse: collapse; border: 1px solid #000; text-align:center;">'.$rewarditem.'</td>
+                            <td style="border-collapse: collapse; border: 1px solid #000; text-align:center;">'.$membername.'</td>
+                            <td style="border-collapse: collapse; border: 1px solid #000; text-align:center;">'.$membercard.'</td>
+                            <td style="border-collapse: collapse; border: 1px solid #000; text-align:center;">'.$timeavailed.'</td>
+                            <td style="border-collapse: collapse; border: 1px solid #000; text-align:center;">'.$dateavailed.'</td>
+                            <td style="border-collapse: collapse; border: 1px solid #000; text-align:center;">'.$cashier.'</td>
                         </tr>
-                        <tr>
-                          <td><b>Partner:</b></td>
-                          <td>'.$partner.'</td>
-                        </tr>
-                        <tr>
-                          <td><b>Reward Item:</b></td>
-                          <td>'.$rewarditem.'</td>
-                        </tr>
-                        <tr>
-                          <td><b>Serial Code:</b></td>
-                          <td>'.$serialcode.'</td>
-                        </tr>
-                        <tr>
-                          <td><b>Security Code:</b></td>
-                          <td>'.$securitycode.'</td>
-                        </tr>
-                      </table>
+                    </table>
+                    <p>
+                    Should there be any concern, please call our 24-hour Customer Service Hotlines at (02) 338-3388 / Toll-Free 1800-10-7445932. 
+                    You can also send an email to our Customer Service Team at customerservice@philweb.com.ph.
+                    </p>
+                    <p>
+                    Thanks. <br />
+                    **This is an automated email.
+                    </p>
                     </body>
                     </html>
                     ';
                   
-        mail($to, $subject, $detail, $headers);
+        $result = mail($to, $subject, $detail, $headers);
+        
+        return $result;
     }
     
     

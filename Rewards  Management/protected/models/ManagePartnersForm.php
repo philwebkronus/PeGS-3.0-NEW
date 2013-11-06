@@ -150,7 +150,7 @@ class ManagePartnersForm extends CFormModel
      * @param array $details Array of details
      * @author Mark Kenneth Esguerra
      */
-    public function updatePartnerDetails($details)
+    public function updatePartnerDetails($details, $user)
     {
         $connection = Yii::app()->db;
         
@@ -173,7 +173,9 @@ class ManagePartnersForm extends CFormModel
         //Update the tbl_ref_partners
         $firstquery = "UPDATE ref_partners SET 
                             PartnerName = :partnername,
-                            Status = :status
+                            Status = :status,
+                            DateUpdated = NOW_USEC(),
+                            UpdatedByAID = :AID
                        WHERE PartnerID = :partnerID
                       ";
         
@@ -181,6 +183,7 @@ class ManagePartnersForm extends CFormModel
         $sql->bindParam(":partnername", $partnername);
         $sql->bindParam(":partnerID", $partnerID);
         $sql->bindParam(":status", $status);
+        $sql->bindParam(":AID", $user);
         $firstresult = $sql->execute();
         
         if ($firstresult >= 0)
@@ -219,22 +222,70 @@ class ManagePartnersForm extends CFormModel
                 //Check whether first or second query has been updated
                 if ($secondresult > 0 || $firstresult > 0)
                 {
-                    //Check the selected status, if ACTIVE to INACTIVE, change the status
-                    //of the partner's corresponing item, if INACTIVE to ACTIVE, do not 
-                    //change the status
-                    if ($status == 0)
+                    try
                     {
-                        try
+                        //Update tbl_partnerinfo
+                        $secondquery = "UPDATE partnersinfo a 
+                                        INNER JOIN partners b ON a.PartnerPID = b.PartnerPID 
+                                        SET 
+                                            a.Name = :contactperson,
+                                            a.Address = :address,
+                                            a.Email = :contactemail,
+                                            a.Landline = :contactphone,
+                                            a.MobileNumber = :contactmobile,
+                                            a.Designation = :contactposition 
+                                        WHERE b.RefPartnerID = :partnerID
+                                        ";
+                        $sql = $connection->createCommand($secondquery);
+                        $sql->bindParam(":partnerID", $partnerID);
+                        $sql->bindParam(":address", $address);
+                        $sql->bindParam(":contactperson", $contactPerson);
+                        $sql->bindParam(":contactposition", $contactPosition);
+                        $sql->bindParam(":contactphone", $contactPNumber);
+                        $sql->bindParam(":contactmobile", $contactMobile);
+                        $sql->bindParam(":contactemail", $contactEmail);
+                        $updateresult = $sql->execute();
+                        if ($updateresult > 0 || $secondresult > 0 || $firstresult > 0)
                         {
-                            //If partner's status has been change, change also the status of 
-                            //its corresponding item
-                            $thirdquery = "UPDATE rewarditems SET Status = :status
-                                           WHERE PartnerID = :partnerID";
-                            $sql = $connection->createCommand($thirdquery);
-                            $sql->bindParam(":partnerID", $partnerID);
-                            $sql->bindParam(":status", $this->determineItemStat($status));
-                            $thirdresult = $sql->execute();
-                            if ($thirdresult > 0 || $secondresult > 0 || $firstresult > 0)
+                            //Check the selected status, if ACTIVE to INACTIVE, change the status
+                            //of the partner's corresponding item, if INACTIVE to ACTIVE, do not 
+                            //change the status
+                            if ($status == 0)
+                            {
+                                try
+                                {
+                                    //If partner's status has been change, change also the status of 
+                                    //its corresponding item
+                                    $thirdquery = "UPDATE rewarditems SET Status = :status
+                                                   WHERE PartnerID = :partnerID";
+                                    $sql = $connection->createCommand($thirdquery);
+                                    $sql->bindParam(":partnerID", $partnerID);
+                                    $sql->bindParam(":status", $this->determineItemStat($status));
+                                    $thirdresult = $sql->execute();
+                                    if ($thirdresult > 0 || $secondresult > 0 || $firstresult > 0)
+                                    {
+                                        try
+                                        {
+                                            $pdo->commit();
+                                            return array('TransMsg'=>'Partner\'s Details is successfully updated.',
+                                                         'TransCode'=>0);
+                                        }
+                                        catch (CDbException $e)
+                                        {
+                                            $pdo->rollback();
+                                            return array('TransMsg'=>'Error: '. $e->getMessage(),
+                                                         'TransCode'=>2);
+                                        }
+                                    }
+                                }
+                                catch (CDbException $e)
+                                {
+                                    $pdo->rollback();
+                                    return array('TransMsg'=>'Error: '. $e->getMessage(),
+                                         'TransCode'=>2);
+                                }
+                            }
+                            else
                             {
                                 try
                                 {
@@ -250,27 +301,12 @@ class ManagePartnersForm extends CFormModel
                                 }
                             }
                         }
-                        catch (CDbException $e)
-                        {
-                            $pdo->rollback();
-                            return array('TransMsg'=>'Error: '. $e->getMessage(),
-                                 'TransCode'=>2);
-                        }
                     }
-                    else
+                    catch (CDbException $e)
                     {
-                        try
-                        {
-                            $pdo->commit();
-                            return array('TransMsg'=>'Partner\'s Details is successfully updated.',
-                                         'TransCode'=>0);
-                        }
-                        catch (CDbException $e)
-                        {
-                            $pdo->rollback();
-                            return array('TransMsg'=>'Error: '. $e->getMessage(),
-                                         'TransCode'=>2);
-                        }
+                        $pdo->rollback();
+                        return array('TransMsg'=>'Error: '. $e->getMessage(),
+                             'TransCode'=>2);
                     }
                 }
                 else
@@ -437,7 +473,7 @@ class ManagePartnersForm extends CFormModel
                                 $sql->bindParam(":email", $contactEmail);
                                 $sql->bindParam(":landline", $contactPNumber);
                                 $sql->bindParam(":mobile", $contactMobile);
-                                $sql->bindParam(":designation", $partnername);
+                                $sql->bindParam(":designation", $contactPosition);
                                 $fourthresult = $sql->execute();
                                 
                                 if ($fourthresult > 0)

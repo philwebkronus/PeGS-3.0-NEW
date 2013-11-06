@@ -422,7 +422,8 @@ class ManagePartnersController extends Controller {
                     }
                     else
                     {
-                        $return = $model->updatePartnerDetails($details);
+                        $user = Yii::app()->session['AID'];
+                        $return = $model->updatePartnerDetails($details, $user);
 
                         $this->dialogmsg = $return['TransMsg'];
                         //SUCCESS or ERROR Message

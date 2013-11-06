@@ -166,15 +166,6 @@ tinyMCE.init({
             return word;
       }
     
-    function checktrailingspaces(word){
-        if (/^\s+|\s*$/g.test(word) === true){
-            var msg = "Warning: Trailing space/s is/are not allowed";
-            return msg;
-        } else {
-            return true;
-        }
-    }
-    
     function validateinputs(form, part, rewardid) {
         if(form == 1){                                                  //Edit Reward Form
             if(part == 1) {                                             //Primary Details
@@ -209,18 +200,10 @@ tinyMCE.init({
                         var message = "Invalid Draw Date.";
                         return message;
                     } else  {
-                        var checkreward = checktrailingspaces(rewarditem);
-                        var checksubtext = checktrailingspaces(subtext);
-
-                        if(checkreward == true && checksubtext == true){
-                            return true;
-                        } else {
-                            $("#editrewarditem").val(trimword(rewarditem));
-                            $("#editsubtext").val(trimword(subtext));
-                            $("#editpoints").val(trimword(points));
-                            alert("Warning: Trailing space/s is/are not allowed. All extra spaces is now cleaned.");
-                            return true;
-                        }
+                        $("#editrewarditem").val(trimword(rewarditem));
+                        $("#editsubtext").val(trimword(subtext));
+                        $("#editpoints").val(trimword(points));
+                        return true;
                     }
                 } else {
                     if(partner == "" || rewarditem == "" || category == "" || points == "" || eligibility == "" || status == "" || fromdate == "" || todate == "" || subtext == "") {
@@ -233,18 +216,10 @@ tinyMCE.init({
                         var message = "Invalid Date Range.";
                         return message;
                     } else  {
-                        var checkreward = checktrailingspaces(rewarditem);
-                        var checksubtext = checktrailingspaces(subtext);
-
-                        if(checkreward == true && checksubtext == true){
-                            return true;
-                        } else {
-                            $("#editrewarditem").val(trimword(rewarditem));
-                            $("#editsubtext").val(trimword(subtext));
-                            $("#editpoints").val(trimword(points));
-                            alert("Warning: Trailing space/s is/are not allowed. All extra spaces is now cleaned.");
-                            return true;
-                        }
+                        $("#editrewarditem").val(trimword(rewarditem));
+                        $("#editsubtext").val(trimword(subtext));
+                        $("#editpoints").val(trimword(points));
+                        return true;
                     }
                 }
             } else if(part == 2){                                   //About the Reward (part 1)
@@ -420,18 +395,10 @@ tinyMCE.init({
                         var message = "Invalid Date Range.";
                         return message;
                     } else  {
-                        var checkreward = checktrailingspaces(rewarditem);
-                        var checksubtext = checktrailingspaces(subtext);
-
-                        if(checkreward == true && checksubtext == true){
-                            return true;
-                        } else {
-                            $("#addrewarditem").val(trimword(rewarditem));
-                            $("#addsubtext").val(trimword(subtext));
-                            $("#addpoints").val(trimword(points));
-                            alert("Warning: Trailing space/s is/are not allowed. All extra spaces is now cleaned.");
-                            return true;
-                        }
+                        $("#addrewarditem").val(trimword(rewarditem));
+                        $("#addsubtext").val(trimword(subtext));
+                        $("#addpoints").val(trimword(points));
+                        return true;
                     }
                 }
             } else if(part == 2){                                   //About the Reward (part 1)
@@ -739,6 +706,11 @@ tinyMCE.init({
                         var dd = today.getDate();
                         var mm = today.getMonth()+1; //January is 0.
                         var yy = today.getFullYear();
+                        //condition for formatting month
+                        mm = mm < 10 ? mm = "0"+mm:mm=mm;
+
+                        //condition for formatting day
+                        dd = dd < 10 ? dd = "0"+dd:dd=dd;
                         var datetoday = yy+"-"+mm+"-"+dd;
                         $("#add_from_date").val(datetoday);
                     } else {
@@ -960,7 +932,7 @@ tinyMCE.init({
             $(" #hdnRewardItemID-replenishform").val(RewardItemID);
             getCurrentInventory(RewardItemID);
         });
-
+        
         defaultquantity = "0";
         $("#additems").live('click', function() {
             if ($("#additems").val() == defaultquantity) {
@@ -1026,7 +998,26 @@ tinyMCE.init({
         $("#editrewarditem").live('keypress',function(event){
             return alphanumericSpaceDash(event);
         });
-
+        
+        $("#editrewarditem").live("keyup",function(event){
+            var rewarditem = $("#editrewarditem").val();
+            if (rewarditem.substring(0, 1) === " "){
+                alert("Warning: Trailing space/s is/are not allowed");
+                $("#editrewarditem").val(trimword($("#editrewarditem").val()));
+            } else {
+                return true;
+            }
+        });
+        
+        $("#editsubtext").live("keyup",function(event){
+            var subtext = $("#editsubtext").val();
+            if (subtext.substring(0, 1) === " "){
+                alert("Warning: Trailing space/s is/are not allowed");
+                $("#editsubtext").val(trimword($("#editsubtext").val()));
+            } else {
+                return true;
+            }
+        });
 
         $("#addpoints").live('change',function() {
             if ($("#addpoints").val() == "") {
@@ -1047,6 +1038,26 @@ tinyMCE.init({
         
         $("#addrewarditem").live('keypress',function(event){
             return alphanumericSpaceDash(event);
+        });
+        
+        $("#addsubtext").live("keyup",function(event){
+            var subtext = $("#addsubtext").val();
+            if (subtext.substring(0, 1) === " "){
+                alert("Warning: Trailing space/s is/are not allowed");
+                $("#addsubtext").val(trimword($("#addsubtext").val()));
+            } else {
+                return true;
+            }
+        });
+        
+        $("#addrewarditem").live("keyup",function(event){
+            var rewarditem = $("#addrewarditem").val();
+            if (rewarditem.substring(0, 1) === " "){
+                alert("Warning: Trailing space/s is/are not allowed");
+                $("#addrewarditem").val(trimword($("#addrewarditem").val()));
+            } else {
+                return true;
+            }
         });
 
         $("#addpoints").live('change',function() {
@@ -1941,10 +1952,10 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
         <td>Member Eligibility &nbsp<span style="vertical-align: top; color: red; font-weight: bold;">*</span></td>
         <td>
             <div id="eligibilitydiv">
-                <?php echo $form->dropDownList($model, 'editeligibility', array("" => "Select Eligibility", "2" => "Regular", "3" => "VIP"), array('id'=>'editeligibility', 'style' => 'width: 313px; padding: 2px;')) ?>
+                <?php echo $form->dropDownList($model, 'editeligibility', array("" => "Select Eligibility","1" => "All", "2" => "Regular", "3" => "VIP"), array('id'=>'editeligibility', 'style' => 'width: 313px; padding: 2px;')) ?>
             </div>
             <div id="readonlyeligibilitydiv" style="display: none;">
-                <?php echo $form->dropDownList($model, 'editeligibilityreadonly', array("" => "Select Eligibility", "2" => "Regular", "3" => "VIP"), array('id'=>'editeligibilityreadonly', 'style' => 'width: 313px; padding: 2px;', 'disabled' => 'disabled')) ?>
+                <?php echo $form->dropDownList($model, 'editeligibilityreadonly', array("" => "Select Eligibility", "1" => "All", "2" => "Regular", "3" => "VIP"), array('id'=>'editeligibilityreadonly', 'style' => 'width: 313px; padding: 2px;', 'disabled' => 'disabled')) ?>
             </div>
         </td>
     </tr>
@@ -2299,6 +2310,11 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
                                 var dd = today.getDate();
                                 var mm = today.getMonth()+1; //January is 0.
                                 var yy = today.getFullYear();
+                                //condition for formatting month
+                                mm = mm < 10 ? mm = "0"+mm:mm=mm;
+
+                                //condition for formatting day
+                                dd = dd < 10 ? dd = "0"+dd:dd=dd;
                                 var datetoday = yy+"-"+mm+"-"+dd;
                                 $("#add_from_date").val(datetoday);
                                 $("#addprimarydetails").show();
@@ -2508,7 +2524,7 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
     <tr>
         <td>Member Eligibility &nbsp<span style="vertical-align: top; color: red; font-weight: bold;">*</span></td>
         <td>
-            <?php echo $form->dropDownList($model, 'addeligibility', array("" => "Select Eligibility", "2" => "Regular", "3" => "VIP"), array('id'=>'addeligibility', 'style' => 'width: 313px; padding: 2px;')) ?>
+            <?php echo $form->dropDownList($model, 'addeligibility', array("" => "Select Eligibility", "1" => "All", "2" => "Regular", "3" => "VIP"), array('id'=>'addeligibility', 'style' => 'width: 313px; padding: 2px;')) ?>
         </td>
     </tr>
     <tr>

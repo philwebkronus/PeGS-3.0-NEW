@@ -295,30 +295,32 @@ class VerifyRewardsController extends Controller
                                 $marketingemail = Yii::app()->params['marketingemail'][0];
                                 //Push marketing email in array
                                 array_push($emails, $marketingemail);
-                                //Test if php can send email in client side
-                                $to = "sample@someone.com";
-                                $subject = "Test";
-                                $message = "Sample Message";
-                                if(mail($to,$subject,$message) != false)
+                                $vcount = 0;        
+                                $CC = '';
+                                $partner = Yii::app()->session['partnername'];
+                                $securitycode = Yii::app()->session['securitycode'];
+                                $serialcode = Yii::app()->session['serialcode'];
+                                $rewarditem = Yii::app()->session['rewardname'];
+                                $timeofavail = date("h:i:s A");
+                                $dateavailed = date("m-d-Y");
+                                $membername = Yii::app()->session['membername'];
+                                $membercard = Yii::app()->session['cardnumber'];
+                                while($vcount < count($emails))
                                 {
-                                    $vcount = 0;        
-                                    $CC = '';
-                                    $partner = Yii::app()->session['partnername'];
-                                    $securitycode = Yii::app()->session['securitycode'];
-                                    $serialcode = Yii::app()->session['serialcode'];
-                                    $rewarditem = Yii::app()->session['rewardname'];
-                                    $timeofavail = date("h:i:s");
-                                    $dateavailed = date("m-d-Y");
-                                    $membername = Yii::app()->session['membername'];
-                                    $membercard = Yii::app()->session['cardnumber'];
-                                    while($vcount < count($emails))
-                                    {
 
-                                        $to = $emails[$vcount];
-                                        $model->mailRecordReward($to, $partner, $rewarditem, $serialcode, $securitycode, $timeofavail, $dateavailed, $membercard, $membername, $partnernamecashier, $CC);
- 
-                                        $vcount++;
-                                    }
+                                    $to = $emails[$vcount];
+                                    $result = $model->mailRecordReward($to, $partner, $rewarditem, $serialcode, $securitycode, $timeofavail, $dateavailed, $membercard, $membername, $partnernamecashier, $CC);
+                                    
+                                    $vcount++;
+                                }
+                                if (!$result)
+                                {
+                                    $this->showDialog2 = true;
+                                    $this->title = "ERROR MESSAGE";
+                                    $this->dialogMsg = "Email message did not send.";
+                                }
+                                else
+                                {
                                     $this->showDialogSuccess = true;
                                     $this->dialogMsg = "Reward transaction is recorded."; 
                                     $this->dialogMsg2 = "Keep the e-Coupon as this should be forwarded to PhilWeb."; 
@@ -326,13 +328,6 @@ class VerifyRewardsController extends Controller
                                     Yii::app()->session['rewarditemid']= '';
                                     Yii::app()->session['partnerid']= '';
                                 }
-                                else
-                                {
-                                    $this->showDialog2 = true;
-                                    $this->title = "ERROR MESSAGE";
-                                    $this->dialogMsg = "Email message did not send.";
-                                }
-                                
                             }
                             else{
                                 $this->showDialog2 = true;

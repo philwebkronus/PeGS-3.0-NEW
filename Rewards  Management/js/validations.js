@@ -2589,7 +2589,7 @@ function chkOverride(){
         function alphanumericSpaceCommaDot(evt)
         {
             var charCode = (evt.which) ? evt.which : evt.keyCode;
-            if(charCode == 9 || charCode == 8 || charCode == 32 || charCode == 44 || charCode == 46)
+            if(charCode == 9 || charCode == 8 || charCode == 32 || charCode == 44 || charCode == 46 || evt.keyCode == 39 ||  evt.keyCode == 37)
                 return true;
             else if((charCode >= 65 && charCode <= 90) || (charCode >= 48 && charCode <= 57) || (charCode >= 97 && charCode <= 122))
                 return true;
@@ -2600,7 +2600,7 @@ function chkOverride(){
         function alphanumericSpaceDash(evt)
         {
             var charCode = (evt.which) ? evt.which : evt.keyCode;
-            if(charCode == 9 || charCode == 8 || charCode == 32 ||  charCode == 45)
+            if(charCode == 9 || charCode == 8 || charCode == 32 ||  charCode == 45 ||  evt.keyCode == 39 ||  evt.keyCode == 37)
                 return true;
             else if((charCode >= 65 && charCode <= 90) || (charCode >= 48 && charCode <= 57) || (charCode >= 97 && charCode <= 122))
                 return true;
