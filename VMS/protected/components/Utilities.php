@@ -108,7 +108,7 @@ class Utilities extends CFormModel
                     FROM sites s
                     INNER JOIN siteaccounts sa ON s.SiteID = sa.SiteID
                     WHERE sa.AID =:AID";
-        $sql = YII::app()->db->createCommand($query);
+        $sql = Yii::app()->db2->createCommand($query);
         $sql->bindValue(":AID",Yii::app()->session['AID']);
         $result = $sql->queryAll();
         
@@ -118,6 +118,13 @@ class Utilities extends CFormModel
     public static function log($message) 
     {
         Yii::log($message, 'error');
+    }
+    
+    public static function validateInput($string){
+         if (!preg_match('/[\'^£$%&*()}{@#~?><>,|=_+¬]/', $string))
+            return true;
+         else
+            return false;
     }
         
 }
