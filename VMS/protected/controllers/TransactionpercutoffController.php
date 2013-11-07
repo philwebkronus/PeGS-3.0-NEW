@@ -86,6 +86,12 @@ class TransactionpercutoffController extends VMSBaseIdentity {
                         } else {
                             $couponstatus = '';
                         }
+                        
+                        $vcoupondateupdated = new DateTime($coupondateupdated);
+                        $zcoupondateupdated = date(date_format($vcoupondateupdated, 'Y-m-d H:i:s'));
+                        $vcoupondateexpiry = new DateTime($coupondateexpiry);
+                        $zcoupondateexpiry = date(date_format($vcoupondateexpiry, 'Y-m-d H:i:s'));
+                        
                         $record = array(
                             'SiteName' => $sitename,
                             'TerminalName' => $couponterminalname,
@@ -93,8 +99,8 @@ class TransactionpercutoffController extends VMSBaseIdentity {
                             'VoucherCode' => $couponvouchercode,
                             'Status' => $couponstatus,
                             'Amount' => $couponamount,
-                            'DateCreated' => $coupondateupdated,
-                            'DateExpired' => $coupondateexpiry,
+                            'DateCreated' => $zcoupondateupdated,
+                            'DateExpired' => $zcoupondateexpiry,
                             'Source' => $couponsource,
                             'IsCreditable' => $couponiscreditable,
                         );
@@ -116,6 +122,12 @@ class TransactionpercutoffController extends VMSBaseIdentity {
                         $ticketdateexpiry = $value['ValidToDate'];
                         $ticketsource = 'EGM';
                         $ticketiscreditable = $value['IsCreditable'];
+                        
+                        $vticketdatecreated = new DateTime($ticketdatecreated);
+                        $zticketdatecreated = date(date_format($vticketdatecreated, 'Y-m-d H:i:s'));
+                        $vticketdateexpiry = new DateTime($ticketdateexpiry);
+                        $zticketdateexpiry = date(date_format($vticketdateexpiry, 'Y-m-d H:i:s'));
+                        
                         $record = array(
                             'SiteName' => $sitename,
                             'TerminalName' => $ticketterminalname,
@@ -123,8 +135,8 @@ class TransactionpercutoffController extends VMSBaseIdentity {
                             'VoucherCode' => $ticketvouchercode,
                             'Status' => $ticketstatus,
                             'Amount' => $ticketamount,
-                            'DateCreated' => $ticketdatecreated,
-                            'DateExpired' => $ticketdateexpiry,
+                            'DateCreated' => $zticketdatecreated,
+                            'DateExpired' => $zticketdateexpiry,
                             'Source' => $ticketsource,
                             'IsCreditable' => $ticketiscreditable,
                         );
@@ -173,6 +185,12 @@ class TransactionpercutoffController extends VMSBaseIdentity {
                         } else {
                             $couponstatus = '';
                         }
+                        
+                        $vcoupondateupdated = new DateTime($coupondateupdated);
+                        $zcoupondateupdated = date(date_format($vcoupondateupdated, 'Y-m-d H:i:s'));
+                        $vcoupondateexpiry = new DateTime($coupondateexpiry);
+                        $zcoupondateexpiry = date(date_format($vcoupondateexpiry, 'Y-m-d H:i:s'));
+                        
                         $record = array(
                             'SiteName' => $sitename,
                             'TerminalName' => $couponterminalname,
@@ -180,8 +198,8 @@ class TransactionpercutoffController extends VMSBaseIdentity {
                             'VoucherCode' => $couponvouchercode,
                             'Status' => $couponstatus,
                             'Amount' => $couponamount,
-                            'DateCreated' => $coupondateupdated, //pass date wherein coupon has used
-                            'DateExpired' => $coupondateexpiry,
+                            'DateCreated' => $zcoupondateupdated, //pass date wherein coupon has used
+                            'DateExpired' => $zcoupondateexpiry,
                             'Source' => $couponsource,
                             'IsCreditable' => $couponiscreditable,
                         );
@@ -208,6 +226,12 @@ class TransactionpercutoffController extends VMSBaseIdentity {
                         } else {
                             $ticketstatus = '';
                         }
+                        
+                        $vticketdatecreated = new DateTime($ticketdatecreated);
+                        $zticketdatecreated = date(date_format($vticketdatecreated, 'Y-m-d H:i:s'));
+                        $vticketdateexpiry = new DateTime($ticketdateexpiry);
+                        $zticketdateexpiry = date(date_format($vticketdateexpiry, 'Y-m-d H:i:s'));
+                        
                         $record = array(
                             'SiteName' => $sitename,
                             'TerminalName' => $ticketterminalname,
@@ -215,8 +239,8 @@ class TransactionpercutoffController extends VMSBaseIdentity {
                             'VoucherCode' => $ticketvouchercode,
                             'Status' => $ticketstatus,
                             'Amount' => $ticketamount,
-                            'DateCreated' => $ticketdatecreated,
-                            'DateExpired' => $ticketdateexpiry,
+                            'DateCreated' => $zticketdatecreated,
+                            'DateExpired' => $zticketdateexpiry,
                             'Source' => $ticketsource,
                             'IsCreditable' => $ticketiscreditable,
                         );
