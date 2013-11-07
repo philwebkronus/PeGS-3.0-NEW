@@ -257,13 +257,13 @@ $this->pageTitle = Yii::app()->name . ' - Verify Rewards';
     <?php
     }
     ?>
+    <?php $this->endWidget(); ?>
 </div>
 <?php echo CHtml::beginForm(array('verifyRewards/verifyrewards'), 'POST', array(
         'id'=>'VerifyRewardsForm',
         'name'=>'VerifyRewardsForm')); ?>
         
 <?php echo CHtml::endForm(); ?>    
-<?php $this->endWidget(); ?>
 
 <?php
 /** Start Widget **/
@@ -277,7 +277,7 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog',array(
         'show'=>'fade',
         'hide'=>'fade',
         'width'=>400,
-        'height'=>250,
+        'height'=>200,
         'buttons' => array
         (
             'OK'=>'js:function(){
@@ -288,11 +288,19 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog',array(
     ),
 ));
 
-echo $this->dialogMsg;
-echo "<br/>";
-echo "<br/>";
-echo $this->dialogMsg2;
-echo "<br/>";
+if ($this->dialogMsg2 != NULL || $this->dialogMsg3 != NULL)
+{
+    echo $this->dialogMsg;
+    echo "<br/>";
+    echo $this->dialogMsg2;
+    echo "<br/>";
+    echo $this->dialogMsg3;
+    echo "<br/>";
+}
+else
+{
+    echo $this->dialogMsg;
+}
 
     
 $this->endWidget('zii.widgets.jui.CJuiDialog');
@@ -330,12 +338,19 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog',array(
     ),
 ));
 
-echo $this->dialogMsg;
-echo "<br/>";
-echo $this->dialogMsg2;
-echo "<br/>";
-echo $this->dialogMsg3;
-echo "<br/>";
+if (isset($this->dialogMsg2) || isset($this->dialogMsg3))
+{
+    echo $this->dialogMsg;
+    echo "<br/>";
+    echo $this->dialogMsg2;
+    echo "<br/>";
+    echo $this->dialogMsg3;
+    echo "<br/>";
+}
+else
+{
+    echo $this->dialogMsg;
+}
 ?>
 <?php echo CHtml::beginForm(array('verifyRewards/logVerification'), 'POST', array(
         'id'=>'LogVerificationForm',

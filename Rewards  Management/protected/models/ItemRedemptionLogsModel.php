@@ -13,12 +13,14 @@ class ItemRedemptionLogsModel extends CFormModel
     CONST UNIQUE_MEMBER_PARTICIPATION = 2;
     CONST REWARDS_POINTS_USAGE = 3;
     
-    public function updateItemRedemptionLogs($rewarditemid, $cashiername, $branchdetails, $remarks, $mid, $aid){
+    public function updateItemRedemptionLogs($rewarditemid, $cashiername, $branchdetails, $remarks, $mid, $aid, $securitycode, $serialcode){
 
             $connection = Yii::app()->db;
             $date = date("Y-m-d H:i:s"); 
             $sql="UPDATE itemredemptionlogs SET CashierName = :cashiername, BranchDetails = :branchdetails,
-                Remarks = :remarks, Status = 3, DateClaimed = :date, ClaimedByAID = :aid WHERE RewardItemID = :rewarditemid AND MID = :mid";
+                Remarks = :remarks, Status = 3, DateClaimed = :date, ClaimedByAID = :aid 
+                WHERE RewardItemID = :rewarditemid AND MID = :mid AND SecurityCode = :securitycode 
+                AND SerialCode = :serialcode";
             $command = $connection->createCommand($sql);
             $command->bindValue(':cashiername', $cashiername);
             $command->bindValue(':branchdetails', $branchdetails);
@@ -27,6 +29,8 @@ class ItemRedemptionLogsModel extends CFormModel
             $command->bindValue(':date', $date);
             $command->bindValue(':aid', $aid);
             $command->bindValue(':rewarditemid', $rewarditemid);
+            $command->bindValue('securitycode', $securitycode);
+            $command->bindValue('serialcode', $serialcode);
             $result = $command->execute();
 
             return $result;
