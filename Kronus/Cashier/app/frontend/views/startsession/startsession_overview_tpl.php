@@ -49,6 +49,8 @@
         
         
         $('#btnstartsessionsa').click(function(){
+            var voucher = $("#StartSessionFormModel_voucher_code").val();
+            
             if(!startSessionStandAloneChecking()) {
                 return false;
             } else {
@@ -57,15 +59,18 @@
             
             if(issuccess == "false")
             {
-                    if($("#StartSessionFormModel_voucher_code").val() == ''){
+                    //check voucher length
+                    if(voucher.length == 0){
                         //alert(toMoney($('#StartSessionFormModel_amount').val()));return false;
                         if(!confirm('Are you sure you want to start a new session with the initial playing balance of  ' + toMoney($('#StartSessionFormModel_amount').val())+'?')) {
                             return false;
                         }
                     } else {
+                        $("#StartSessionFormModel_voucher_code").val(voucher);
                         if(!confirm('Are you sure you want to start a new session using a voucher?')) {
                             return false;
                         }
+                         
                     }
 
                     //get terminal code for blocking
