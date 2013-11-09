@@ -75,6 +75,7 @@
         $('#StartSessionFormModel_terminal_id').focus();
         
         $('#btnreloadsa').click(function(){
+            var voucher = $("#StartSessionFormModel_voucher_code").val();
             if(!startSessionStandAloneChecking()) {
                 return false;
             }
@@ -84,11 +85,13 @@
 //                var amount = $('#StartSessionFormModel_sel_amount').val();
 //            } 
             
-            if($("#StartSessionFormModel_voucher_code").val() == ''){
+            //check voucher length
+            if(voucher.length == 0){
                 if(!confirm('Are you sure you want to reload this session with the amount of  ' + toMoney($('#StartSessionFormModel_amount').val())+'?')) {
                     return false;
                 }
             } else {
+                $("#StartSessionFormModel_voucher_code").val(voucher);
                 if(!confirm('Are you sure you want to reload this session using a voucher?')) {
                     return false;
                 }
@@ -123,7 +126,7 @@
                 $('#StartSessionFormModel_amount').val($(this).children('option:selected').html());
                 if($(this).val() == '')
                     $('#StartSessionFormModel_amount').val('');
-            }   
+                }
         });
         
         //$('#StartSessionFormModel_terminal_id').live('change',function(){
