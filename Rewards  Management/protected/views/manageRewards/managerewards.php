@@ -1394,7 +1394,7 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog',array(
         (
             'OK'=>'js:function(){
                 $(this).dialog("close");
-                window.location = "managerewards";
+                window.location = "'.$urlrefresh.'"; 
             }',
         ),
     ),
@@ -1424,12 +1424,27 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog',array(
         'hide'=>'fade',
         'open' => 'js:function(event,ui){
                         $("#displaydetailsform").show();
+                        var statusid = $("#statusid").val();
+                        if(statusid == "1"){
+                            $(this).siblings(".ui-dialog-buttonpane").find("button").eq(0).hide();
+                            $(this).siblings(".ui-dialog-buttonpane").find("button").eq(1).show(); 
+                        } else {
+                            $(this).siblings(".ui-dialog-buttonpane").find("button").eq(0).show();
+                            $(this).siblings(".ui-dialog-buttonpane").find("button").eq(1).hide();
+                        }
+        }',
+        'close' => 'js:function(event,ui){
+                            window.location.href = "'.$urlrefresh.'"; 
         }',
         'buttons' => array
         (
             'EDIT'=>'js:function(){
                 $("#editrewarddetails").dialog("open");
                 $(this).dialog("close");
+            }',
+            'CLOSE'=>'js:function(){
+                $(this).dialog("close");
+                window.location.href = "'.$urlrefresh.'"; 
             }'
         ),
     ),
