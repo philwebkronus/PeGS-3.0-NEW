@@ -51,7 +51,7 @@ class RewardItems extends BaseEntity
                             ri.PromoName
                             FROM $this->TableName ri
                             LEFT JOIN ref_partners rp ON rp.PartnerID = ri.PartnerID
-                            WHERE ri.PClassID = $playerclassification
+                            WHERE ri.PClassID IN ($playerclassification, 1)
                             AND ri.Status = 1 
                             AND ri.OfferEndDate >= now_usec()
                             ORDER BY $sortby $sorttype";
