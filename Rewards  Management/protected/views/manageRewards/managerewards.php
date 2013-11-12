@@ -371,18 +371,10 @@ tinyMCE.init({
                         var message = "Invalid Draw Date.";
                         return message;
                     } else  {
-                        var checkreward = checktrailingspaces(rewarditem);
-                        var checksubtext = checktrailingspaces(subtext);
-
-                        if(checkreward == true && checksubtext == true){
-                            return true;
-                        } else {
-                            $("#addrewarditem").val(trimword(rewarditem));
-                            $("#addsubtext").val(trimword(subtext));
-                            $("#addpoints").val(trimword(points));
-                            alert("Warning: Trailing space/s is/are not allowed. All extra spaces is now cleaned.");
-                            return true;
-                        }
+                        $("#addrewarditem").val(trimword(rewarditem));
+                        $("#addsubtext").val(trimword(subtext));
+                        $("#addpoints").val(trimword(points));
+                        return true;
                     }
                 } else {
                     if(partner == "" || rewarditem == "" || category == "" || points == "" || eligibility == "" || status == "" || fromdate == "" || todate == "" || itemcount == "" || subtext == "") {
