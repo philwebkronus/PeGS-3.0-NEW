@@ -86,6 +86,29 @@ function alphanumeric4(event)
   }
 }
 
+        //letter and number with space and dash 
+function alphanumericnew4(event)
+{
+  
+  var char = (String.fromCharCode(event.which));
+  if (char == "%")
+  {
+    return false;
+  }
+  else
+  {
+  var charCode = (event.which) ? event.which : event.keyCode;
+    if ((charCode > 64 && charCode < 91 ) || (charCode > 47 && charCode < 58) || (charCode > 96 && charCode < 123))
+        return true;
+    else if(charCode == 8 ||charCode == 32 || charCode == 9)
+       return true;
+    else if (charCode == 37 || charCode == 39 || charCode == 45) //left and right arrow keys
+       return true;
+    else
+        return false;
+  }
+}
+
 //validates input: accepts big letter and number only, no spaces
 function alphanumeric1(event)
 {
@@ -104,6 +127,35 @@ function numberonly(event)
     {
         var charCode = (event.which) ? event.which : event.keyCode;
         if (charCode == 37 || charCode == 39) //left and right arrow keys
+             return true;
+        else if (charCode > 31 && (charCode < 46 || ( charCode >= 47 && charCode < 48 ) || charCode > 57))
+        {
+            return false;
+        }
+        else if (charCode == 46)
+        {
+            return false;
+        }
+        else if(charCode == 9)
+            return true;
+        else
+        {
+            return true;
+        }
+    }
+}
+
+function faxnumberonly(event)
+{
+    var char = (String.fromCharCode(event.which));
+    if (char == "%" || char == "'")
+    {
+        return false;
+    }
+    else
+    {
+        var charCode = (event.which) ? event.which : event.keyCode;
+        if (charCode == 37 || charCode == 39 || charCode == 45 || charCode == 43 || charCode == 40 || charCode == 41) //left and right arrow keys
              return true;
         else if (charCode > 31 && (charCode < 46 || ( charCode >= 47 && charCode < 48 ) || charCode > 57))
         {
@@ -242,27 +294,53 @@ function telephonekeypress(event)
         }
     }
 }
+function telephonenewkeypress(event)
+{
+    var char = (String.fromCharCode(event.which));
+    if (char == "%" || char == "'")
+    {
+        return false;
+    }
+    else
+    {
+        var charCode = (event.which) ? event.which : event.keyCode;
+        if (charCode == 37 || charCode == 39 || charCode == 45 || charCode == 43 || charCode == 40 || charCode == 41) //left and right arrow keys
+             return true;
+        if (charCode > 31 && (charCode < 46 || ( charCode >= 47 && charCode < 48 ) || charCode > 57))
+        {
+            return false;
+        }
+        else if (charCode == 46)
+        {
+            return false;
+        }
+        else if(charCode == 9)
+            return true;
+        else
+        {
+            return true;
+        }
+    }
+}
 function addresskeypress(event)
 {
-  var char = (String.fromCharCode(event.which));
-  if (char == "%" || char == "'")
+   var char = (String.fromCharCode(event.which));
+  if (char == "%")
   {
     return false;
   }
   else
   {
-      var charCode = (event.which) ? event.which : event.keyCode;
-      if ((charCode > 64 && charCode < 91 ) || (charCode > 47 && charCode < 58) || (charCode > 96 && charCode < 123))
-          return true;
-      else if(charCode == 8 ||charCode == 32 || charCode == 9)
-         return true;
-      else if (charCode == 45 || charCode == 44 || charCode == 47 || charCode == 46)
-         return true;
-      else if (charCode == 37 || charCode == 39) //left and right arrow keys
-         return true;
-      else
-          return false;
-   }
+  var charCode = (event.which) ? event.which : event.keyCode;
+    if ((charCode > 64 && charCode < 91 ) || (charCode > 47 && charCode < 58) || (charCode > 96 && charCode < 123))
+        return true;
+    else if(charCode == 8 ||charCode == 32 || charCode == 9)
+       return true;
+    else if (charCode == 37 || charCode == 39 || charCode == 45) //left and right arrow keys
+       return true;
+    else
+        return false;
+  }
 }
 function usernamekeypress(event)
 {

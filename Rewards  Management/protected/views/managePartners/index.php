@@ -166,28 +166,28 @@ $(".addBtn").live("click", function(){
                     
                     return false;
                 }
-                else if (/^[a-zA-Z0-9- ]*$/.test(partnername) === false)
+                else if (/^[a-zA-Z0-9- \']*$/.test(partnername) === false)
                 {
                     $("#msgdialogAdd").css({'text-align':"left",'color':"red"});
                     $("#msgdialogAdd").html("Special character/s is/are not allowed in Partner Name");
                     
                     return false;
                 }
-                else if (/^[a-zA-Z0-9- /,-.]*$/.test(address) === false)
+                else if (/^[a-zA-Z0-9- /,-.']*$/.test(address) === false)
                 {
                     $("#msgdialogAdd").css({'text-align':"left",'color':"red"});
                     $("#msgdialogAdd").html("Special character/s is/are not allowed in Company Address");
                 
                     return false;
                 }
-                else if (/^[a-zA-Z0-9- ]*$/.test(phonenumber) === false)
+                else if (/^[a-zA-Z0-9- \+\-\(\)]*$/.test(phonenumber) === false)
                 {
                     $("#msgdialogAdd").css({'text-align':"left",'color':"red"});
                     $("#msgdialogAdd").html("Special character/s is/are not allowed in Company Phone Number");
                 
                     return false;
                 }
-                else if (/^[a-zA-Z0-9- ]*$/.test(faxnumber) === false)
+                else if (/^[a-zA-Z0-9-  \+\-\(\)]*$/.test(faxnumber) === false)
                 {
                     $("#msgdialogAdd").css({'text-align':"left",'color':"red"});
                     $("#msgdialogAdd").html("Special character/s is/are not allowed in Fax Number");
@@ -373,28 +373,28 @@ $(".addBtn").live("click", function(){
                 $("#msgdialog2").css({'text-align':"left",'color':"red"});
                 $("#msgdialog2").html("Please fill up all fields");
             }
-            else if (/^[a-zA-Z0-9- ]*$/.test(partnername) === false)
+            else if (/^[a-zA-Z0-9- \']*$/.test(partnername) === false)
             {
                 $("#msgdialog2").css({'text-align':"left",'color':"red"});
                 $("#msgdialog2").html("Special character/s is/are not allowed in Partner Name");
 
                 return false;
             }
-            else if (/^[a-zA-Z0-9- /,-.]*$/.test(address) === false)
+            else if (/^[a-zA-Z0-9- /,-.']*$/.test(address) === false)
             {
                 $("#msgdialog2").css({'text-align':"left",'color':"red"});
                 $("#msgdialog2").html("Special character/s is/are not allowed in Company Address");
 
                 return false;
             }
-            else if (/^[a-zA-Z0-9- ]*$/.test(phonenumber) === false)
+            else if (/^[a-zA-Z0-9- \+\-\(\)]*$/.test(phonenumber) === false)
             {
                 $("#msgdialog2").css({'text-align':"left",'color':"red"});
                 $("#msgdialog2").html("Special character/s is/are not allowed in Phone Number");
 
                 return false;
             }
-            else if (/^[a-zA-Z0-9- ]*$/.test(faxnumber) === false)
+            else if (/^[a-zA-Z0-9-  \+\-\(\)]*$/.test(faxnumber) === false)
             {
                 $("#msgdialog2").css({'text-align':"left",'color':"red"});
                 $("#msgdialog2").html("Special character/s is/are not allowed in Company Fax Number");
@@ -487,28 +487,28 @@ $(".addBtn").live("click", function(){
                     
                     return false;
                 }
-                else if (/^[a-zA-Z0-9- ]*$/.test(partnername) === false)
+                else if (/^[a-zA-Z0-9- \']*$/.test(partnername) === false)
                 {
                     $("#msgdialog").css({'text-align':"left",'color':"red"});
                     $("#msgdialog").html("Special character/s is/are not allowed in Partner Name");
                     
                     return false;
                 }
-                else if (/^[a-zA-Z0-9- /,-.]*$/.test(address) === false)
+                else if (/^[a-zA-Z0-9- /,-.']*$/.test(address) === false)
                 {
                     $("#msgdialog").css({'text-align':"left",'color':"red"});
                     $("#msgdialog").html("Special character/s is/are not allowed in Company Address");
                 
                     return false;
                 }
-                else if (/^[a-zA-Z0-9- ]*$/.test(phonenumber) === false)
+                else if (/^[a-zA-Z0-9- \+\-\(\)]*$/.test(phonenumber) === false)
                 {
                     $("#msgdialog").css({'text-align':"left",'color':"red"});
                     $("#msgdialog").html("Special character/s is/are not allowed in Phone Number");
                 
                     return false;
                 }
-                else if (/^[a-zA-Z0-9- ]*$/.test(faxnumber) === false)
+                else if (/^[a-zA-Z0-9-  \+\-\(\)]*$/.test(faxnumber) === false)
                 {
                     $("#msgdialog").css({'text-align':"left",'color':"red"});
                     $("#msgdialog").html("Special character/s is/are not allowed in Fax Number");
@@ -880,7 +880,7 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
                 <?php echo $form->labelEx($model, "eGamesPartner", array('style'=>'font-weight:bold;')); ?>
             </td>
             <td>
-                <?php echo $form->textField($model, 'eGamesPartner', array('id'=>'PartnerAdd', 'onkeypress'=>'return alphanumeric4(event)')) ?>
+                <?php echo $form->textField($model, 'eGamesPartner', array('id'=>'PartnerAdd', 'onkeypress'=>'return alphanumericnew4(event)')) ?>
             </td>    
         </tr>
         <tr>
@@ -888,7 +888,7 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
                 <?php echo $form->labelEx($model, 'companyAddress', array('style'=>'font-weight:bold;')); ?>
             </td>
             <td>
-                <?php echo $form->textField($model, 'companyAddress', array('id'=>'companyAddressAdd', 'onkeypress'=>'return alphanumeric4(event)')) ?>
+                <?php echo $form->textField($model, 'companyAddress', array('id'=>'companyAddressAdd', 'onkeypress'=>'return alphanumericnew4(event)')) ?>
             </td>
        </tr>
        <tr>
@@ -896,7 +896,7 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
                <?php echo $form->labelEx($model, 'phoneNumber', array('style'=>'font-weight:bold;')); ?>
            </td>
            <td>
-               <?php echo $form->textField($model, 'phoneNumber', array('id'=>'PNumberAdd', 'onkeypress'=>'return telephonekeypress(event)')) ?>
+               <?php echo $form->textField($model, 'phoneNumber', array('id'=>'PNumberAdd', 'onkeypress'=>'return telephonenewkeypress(event)')) ?>
            </td>
        </tr>
        <tr>
@@ -904,7 +904,7 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
                <?php echo $form->labelEx($model, 'faxNumber', array('style'=>'font-weight:bold;')); ?>
            </td>
            <td>
-               <?php echo $form->textField($model, 'faxNumber', array('id'=>'FNumberAdd', 'onkeypress'=>'return numberonly(event)')) ?>
+               <?php echo $form->textField($model, 'faxNumber', array('id'=>'FNumberAdd', 'onkeypress'=>'return faxnumberonly(event)')) ?>
            </td>
        </tr>    
        <tr>
@@ -1104,7 +1104,7 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
                 <?php echo $form->labelEx($model, "eGamesPartner", array('style'=>'font-weight:bold;')); ?>
             </td>
             <td>
-                <?php echo $form->textField($model, 'eGamesPartner', array('id'=>'Partner2', 'onkeypress'=>'return alphanumeric4(event)')) ?>
+                <?php echo $form->textField($model, 'eGamesPartner', array('id'=>'Partner2', 'onkeypress'=>'return alphanumericnew4(event)')) ?>
             </td>    
         </tr>
         <tr>
@@ -1112,7 +1112,7 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
                 <?php echo $form->labelEx($model, 'companyAddress', array('style'=>'font-weight:bold;')); ?>
             </td>
             <td>
-                <?php echo $form->textField($model, 'companyAddress', array('id'=>'companyAddress2', 'onkeypress'=>'return alphanumeric4(event)')) ?>
+                <?php echo $form->textField($model, 'companyAddress', array('id'=>'companyAddress2', 'onkeypress'=>'return alphanumericnew4(event)')) ?>
             </td>
        </tr>
        <tr>
@@ -1120,7 +1120,7 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
                <?php echo $form->labelEx($model, 'phoneNumber', array('style'=>'font-weight:bold;')); ?>
            </td>
            <td>
-               <?php echo $form->textField($model, 'phoneNumber', array('id'=>'PNumber2', 'onkeypress'=>'return telephonekeypress(event)')) ?>
+               <?php echo $form->textField($model, 'phoneNumber', array('id'=>'PNumber2', 'onkeypress'=>'return telephonenewkeypress(event)')) ?>
            </td>
        </tr>
        <tr>
@@ -1128,7 +1128,7 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
                <?php echo $form->labelEx($model, 'faxNumber', array('style'=>'font-weight:bold;')); ?>
            </td>
            <td>
-               <?php echo $form->textField($model, 'faxNumber', array('id'=>'FNumber2', 'onkeypress'=>'return numberonly(event)')) ?>
+               <?php echo $form->textField($model, 'faxNumber', array('id'=>'FNumber2', 'onkeypress'=>'return faxnumberonly(event)')) ?>
            </td>
        </tr>    
        <tr>
@@ -1277,7 +1277,7 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
     ?>
     <div class="row">
         <?php echo $form->labelEx($model, "eGamesPartner"); ?><br>
-        <?php echo $form->textField($model, 'eGamesPartner', array('id'=>'Partner', 'onkeypress'=>'return alphanumeric4(event)', 'disabled' => 'true')) ?>
+        <?php echo $form->textField($model, 'eGamesPartner', array('id'=>'Partner', 'onkeypress'=>'return alphanumericnew4(event)', 'disabled' => 'true')) ?>
         <?php //echo $form->error($model, 'eGamesPartner'); ?>
     </div>
     <br />
@@ -1289,13 +1289,13 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
     <br />
     <div class="row">
         <?php echo $form->labelEx($model, 'phoneNumber'); ?><br>
-        <?php echo $form->textField($model, 'phoneNumber', array('id'=>'PNumber', 'onkeypress'=>'return telephonekeypress(event)', 'disabled' => 'true')) ?>
+        <?php echo $form->textField($model, 'phoneNumber', array('id'=>'PNumber', 'onkeypress'=>'return telephonenewkeypress(event)', 'disabled' => 'true')) ?>
         <?php //echo $form->error($model, 'phoneNumber'); ?>
     </div>
     <br />
     <div class="row">
         <?php echo $form->labelEx($model, 'faxNumber'); ?><br>
-        <?php echo $form->textField($model, 'faxNumber', array('id'=>'FNumber', 'onkeypress'=>'return numberonly(event)', 'disabled' => 'true')) ?>
+        <?php echo $form->textField($model, 'faxNumber', array('id'=>'FNumber', 'onkeypress'=>'return faxnumberonly(event)', 'disabled' => 'true')) ?>
         <?php //echo $form->error($model, 'faxNumber'); ?>
     </div>
     <br />

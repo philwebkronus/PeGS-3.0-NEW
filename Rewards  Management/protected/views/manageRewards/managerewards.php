@@ -1433,9 +1433,6 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog',array(
                             $(this).siblings(".ui-dialog-buttonpane").find("button").eq(1).hide();
                         }
         }',
-        'close' => 'js:function(event,ui){
-                            window.location.href = "'.$urlrefresh.'"; 
-        }',
         'buttons' => array
         (
             'EDIT'=>'js:function(){
