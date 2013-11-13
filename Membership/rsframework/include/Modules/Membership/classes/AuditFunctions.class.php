@@ -48,6 +48,9 @@ class AuditFunctions extends BaseEntity
     CONST MARKETING_RED_CARD_TRANSFERRING = 43;
     CONST TERMINATE = 44;
     CONST ACTIVATE = 45;
+    CONST PLAYER_BLACKLISTING = 49;
+    CONST UPDATE_BLACKLISTED_PLAYER = 50;
+    CONST REMOVE_BLACKLISTED_PLAYER = 51;
     
     public function AuditFunctions()
     {

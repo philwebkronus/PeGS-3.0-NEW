@@ -347,3 +347,14 @@ div.imageContainer{
 a#delete{
 
 }
+div#addblacklist{
+    margin: 30px;
+    text-align: center;
+}
+#btnaddblacklist{
+    padding: 5px;
+}
+#tblblacklist td{
+    width: 100px;
+    padding-bottom: 10px;
+}

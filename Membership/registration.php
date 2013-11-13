@@ -18,6 +18,7 @@ App::LoadModuleClass("Membership", "Members");
 App::LoadModuleClass("Membership", "AuditTrail");
 App::LoadModuleClass("Membership", "AuditFunctions");
 App::LoadModuleClass('Membership', 'MembershipSmsAPI');
+App::LoadModuleClass('Membership', 'BlackLists');
 
 App::LoadModuleClass("Loyalty", "SMSRequestLogs");
 
@@ -47,6 +48,7 @@ $_Members = new Members();
 $_AccountTypes = new AccountTypes();
 $_Log = new AuditTrail();
 $_SMSRequestLogs = new SMSRequestLogs();
+$_BlackLists = new BlackLists();
 
 $logger = new ErrorLogger();
 $logdate = $logger->logdate;
@@ -302,7 +304,8 @@ if ($fproc->IsPostBack)
 
         $chkEmailNotification->SubmittedValue == 1 ? $arrMemberInfo['EmailSubscription'] = 1 : $arrMemberInfo['EmailSubscription'] = 0;
         $chkSMSNotification->SubmittedValue == 1 ? $arrMemberInfo['SMSSubscription'] = 1 : $arrMemberInfo['SMSSubscription'] = 0;
-
+        //Check if listed in blacklists
+        $blacklistresult = $_BlackLists->checkIfExist(formatName($arrMemberInfo['LastName']), formatName($arrMemberInfo['FirstName']), formatName($arrMemberInfo['Birthdate']), 3);
         //check if email is active and existing in live membership db
         $activeEmail = $_Members->chkActiveVerifiedEmailAddress(trim($arrMemberInfo['Email']));
         if($activeEmail > 0){
@@ -311,6 +314,11 @@ if ($fproc->IsPostBack)
             $isSuccess = false;
             $error = "Email already exists. Please choose a different email address.";
             $logger->logger($logdate, $logtype, $error);
+        }
+        else if ($blacklistresult[0]['Count'] > 0)
+        {
+            $message = "Registration cannot proceed. Please contact Customer Service";
+            App::SetErrorMessage($message);
         }
         else{
             //check if email is already verified in temp table
@@ -684,3 +692,31 @@ if ($fproc->IsPostBack)
     ?>
 </div>
 <?php include 'footer.php'; ?>
+<?php
+/**
+ * Format names
+ * @example Inputted lastname is 'dEla crUz' the ouput would be Dela Cruz
+ * @param type $str Name
+ * @return string reformatted name
+ * @author Mark Kenneth Esguerra
+ * @date November 12, 2013
+ */
+function formatName($str)
+{
+    $arrNames = explode(" ", $str);
+    if (count($arrNames) > 1)
+    {
+        $name = "";
+        foreach($arrNames as $names)
+        {
+           $n = trim(ucfirst(strtolower($names)));
+           $name .= $n." ";
+        }
+        return trim($name);
+    }
+    else
+    {
+        $name = trim(ucfirst(strtolower($str)));
+        return trim($name);
+    }
+}
