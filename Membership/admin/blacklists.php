@@ -53,7 +53,7 @@ $dtBirthDate->MinDate = $dsmindate->CurrentDate;
 //$dtBirthDate->SelectedDate = $dsmaxdate->PreviousDate;
 $dtBirthDate->ShowCaption = false;
 $dtBirthDate->YearsToDisplay = "-100";
-//$dtBirthDate->CssClass = "validate[required]";
+$dtBirthDate->CssClass = "validate[required]";
 $dtBirthDate->isRenderJQueryScript = true;
 $dtBirthDate->Style = "height:20px";
 $dtBirthDate->Size = 15;
@@ -92,7 +92,7 @@ if ($fproc->IsPostBack)
     {
         $lastname   = formatName(mysql_escape_string($txtLastname->SubmittedValue));
         $firstname  = formatName(mysql_escape_string($txtFirstName->SubmittedValue));
-        $birthdate  = mysql_escape_string($dtBirthDate->SubmittedValue);
+        $birthdate  = mysql_escape_string($_POST['dtBirthDate']);
         $remarks    = mysql_escape_string($txtRemarks->SubmittedValue);
         if (($lastname && $firstname && $birthdate) != "")
         {
@@ -274,8 +274,8 @@ if ($fproc->IsPostBack)
                         mtype : 'post',
                         colNames:['Last Name', 'First Name', 'Birth Date','Action'],
                         colModel:[
-                                {name: 'LastName', index: 'LastName', align: 'left', width: 330, fixed: true},
-                                {name: 'FirstName', index: 'FirstName', align: 'left', width: 330, fixed: true},
+                                {name: 'LastName', index: 'LastName', align: 'left', width: 230, fixed: true},
+                                {name: 'FirstName', index: 'FirstName', align: 'left', width: 230, fixed: true},
                                 {name: 'BirthDate', index: 'BirthDate', align: 'center', width: 180, fixed: true},
                                 {name: 'Action', index: 'action', align: 'center', width: 50}
                         ],
@@ -283,7 +283,7 @@ if ($fproc->IsPostBack)
                         rowNum: 10,
                         rowList: [10,20,30],
                         height: 250,
-                        width: 970,
+                        width: 770,
                         pager: "#pager",
                         refresh: true,
                         loadonce: true,
@@ -441,6 +441,7 @@ if ($fproc->IsPostBack)
           $("#txtRemarks").val("");
           $("#hdnprocess").val(1);
           $("#dlgaddblacklist").dialog('open');
+
        });
     });
 </script>
@@ -512,8 +513,10 @@ if ($fproc->IsPostBack)
                 Player Blacklisting
             </h2>
             <br/>
-            <table border="1" id="blacklist"></table>
-            <div id="pager"></div>
+            <div id="divlist">
+                <table border="1" id="blacklist"></table>
+                <div id="pager"></div>
+            </div>
             <div id="addblacklist">
                 <?php echo $btnAdd; ?>
             </div>    
@@ -522,10 +525,20 @@ if ($fproc->IsPostBack)
 </div>
 <!--error dialog-->
 <div id="dialogmsg">
-    <p id="msg"><?php echo $msg; ?></p>
+    <p id="msg">
+        <?php 
+            if (isset($msg))
+            echo $msg; 
+        ?>
+    </p>
 </div>
 <div id="confirmdialog">
-    <p id="ask"><?php echo $ask; ?></p>
+    <p id="ask">
+        <?php 
+            if (isset($ask))
+                echo $ask; 
+        ?>
+    </p>
     <form action = "" method="post" id="changestat">
     </form>
 </div>    
@@ -534,7 +547,7 @@ if ($fproc->IsPostBack)
     <table border="1" id="tblblacklistedhist"></table>
     <div id="pagerhist"></div>
 </div>  
-<form action ="" id="submit-addblacklist" method="post">
+<form action ="" id="submit-addblacklist" method="post" >
     <div id="dlgaddblacklist">
         <table id="tblblacklist" style="margin-top: 28px;">
             <tr>
@@ -547,7 +560,26 @@ if ($fproc->IsPostBack)
             </tr>
             <tr>
                 <td>Birth Date</td>
-                <td><?php echo $dtBirthDate; ?></td>
+                <td>
+                    <script type="text/javascript">
+                        $(function() {    
+                            $( "#dtBirthDate" ).datepicker({
+                                showOn: "button",
+                                buttonImage: "images/calendar.gif",
+                                buttonImageOnly: true,
+                                dateFormat: "yy-mm-dd",
+                                changeMonth: true,
+                                changeYear: true,
+                                closeText: "Close",
+                                showButtonPanel: true,
+                                minDate: new Date(1913, 10, 13),
+                                maxDate: new Date(1992, 10, 13),
+                                yearRange: 'c-100:c'
+                            });
+                        });
+                    </script>    
+                    <input type="text" name="dtBirthDate" id="dtBirthDate" readonly size="15" style="height:20px;">
+                </td>
             </tr>
             <tr>
                 <td>Remarks</td>
