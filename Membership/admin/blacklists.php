@@ -142,7 +142,7 @@ if ($fproc->IsPostBack)
                         if ($checkifexist[0]['Status'] == 0)
                         {
                             $showconfirm = true;
-                            $ask = "The player is already recorded as whitelisted. Do you want to add again this on blacklists record?";
+                            $ask = "The player is already tagged as whitelisted. Do you want to include it again on our blacklists record?";
                             $hdBLId = $checkifexist[0]['BlackListedID'];
                             $remark = $remarks;
                         }
@@ -159,11 +159,6 @@ if ($fproc->IsPostBack)
                     //Check if what process Add or Update
                     if ($process == 1) // Add to Black List
                     {
-                        //Append the word blacklisted in every remarks
-                        if ($remarks == "" )
-                            $remarks = "Blacklisted";
-                        else
-                            $remarks = "Blacklisted - ".$remarks;
                         $result = $blacklist->addToBlackList($lastname, $firstname, $birthdate, $remarks, $aid);
                     }
                     else if ($process == 2) //Update BlackList
@@ -282,7 +277,7 @@ if ($fproc->IsPostBack)
 
                         rowNum: 10,
                         rowList: [10,20,30],
-                        height: 250,
+                        height: 300,
                         width: 770,
                         pager: "#pager",
                         refresh: true,

@@ -156,7 +156,7 @@ class BlackLists extends BaseEntity
         $query = "SELECT a.BlackListedID, a.LastName, a.FirstName, a.BirthDate, 
                          DATE_FORMAT(a.DateCreated, '%Y-%c-%d') as DateCreated 
                   FROM $this->TableName a 
-                  WHERE a.Status = 1";
+                  WHERE a.Status = 1 ORDER BY a.LastName ASC";
                   
         $result = parent::RunQuery($query);
         
