@@ -4,6 +4,8 @@
  * @author Mark Kenneth Esguerra
  * @date November 7, 2013
  * @copyright (c) 2013, Philweb Corporation
+ * @modifiedBy Noel Antonio
+ * @dateModified 11-20-2013
  */
 require_once("../init.inc.php");
 include('sessionmanager.php');
@@ -30,7 +32,7 @@ $fproc = new FormsProcessor();
 
 $txtLastname = new TextBox("txtLastname", "txtLastname", "Last Name: ");
 $txtLastname->ShowCaption = false;
-$txtLastname->CssClass = "validate[required, custom[onlyLetterSp], minSize[2]]";
+$txtLastname->CssClass = "validate[required, custom[trailingSpaces], custom[checkMinSize], custom[onlyLetterSp]]";
 $txtLastname->Length = 30;
 $txtLastname->Size = 15;
 $txtLastname->Style = "height:20px;";
@@ -38,7 +40,7 @@ $fproc->AddControl($txtLastname);
 
 $txtFirstName = new TextBox("txtFirstName", "txtFirstName", "First Name: ");
 $txtFirstName->ShowCaption = false;
-$txtFirstName->CssClass = "validate[required, custom[onlyLetterSp], minSize[2]]";
+$txtFirstName->CssClass = "validate[required, custom[trailingSpaces], custom[checkMinSize], custom[onlyLetterSp]]";
 $txtFirstName->Length = 30;
 $txtFirstName->Size = 15;
 $txtFirstName->Style = "height:20px;";
@@ -62,6 +64,8 @@ $fproc->AddControl($dtBirthDate);
 $txtRemarks = new TextBox("txtRemarks", "txtRemarks", "Remarks: ");
 $txtRemarks->ShowCaption = false;
 $txtRemarks->Multiline = true;
+$txtRemarks->Columns = 30;
+$txtRemarks->Rows = 5;
 $fproc->AddControl($txtRemarks);
 
 $hdnProcess = new Hidden("hdnprocess", "hdnprocess");
@@ -79,145 +83,148 @@ $btnAdd->Args = "onclick = 'javascript: $('#dlgaddblacklist').dialog('open'); '"
 $fproc->AddControl($btnAdd);
 
 $fproc->ProcessForms();
-//Add and Update method are consolidated in this part
+
+// Add and Update method are consolidated on this part
 if ($fproc->IsPostBack)
 {
     if (!isset($_POST['confirmAddAgain']) && !isset($_POST['hdnblacklistID']))
     {
-    $process = $hdnProcess->SubmittedValue;
-    $aid = $_SESSION['userinfo']['AID'];
-    if (isset($hdnBLId->SubmittedValue))
-        $blackListedID = $hdnBLId->SubmittedValue;
-    if ($process != 3)
-    {
-        $lastname   = formatName(mysql_escape_string($txtLastname->SubmittedValue));
-        $firstname  = formatName(mysql_escape_string($txtFirstName->SubmittedValue));
-        $birthdate  = mysql_escape_string($_POST['dtBirthDate']);
-        $remarks    = mysql_escape_string($txtRemarks->SubmittedValue);
-        if (($lastname && $firstname && $birthdate) != "")
+        $process = $hdnProcess->SubmittedValue;
+        $aid = $_SESSION['userinfo']['AID'];
+        if (isset($hdnBLId->SubmittedValue))
+            $blackListedID = $hdnBLId->SubmittedValue;
+        
+        if ($process != 3)
         {
-            if (validateNames($lastname) && validateNames($firstname))
+            $lastname   = formatName(mysql_escape_string($txtLastname->SubmittedValue));
+            $firstname  = formatName(mysql_escape_string($txtFirstName->SubmittedValue));
+            $birthdate  = mysql_escape_string($_POST['dtBirthDate']);
+            $remarks    = mysql_escape_string($txtRemarks->SubmittedValue);
+            if (($lastname && $firstname && $birthdate) != "")
             {
-                //Check if entered data are already exist in records
-                $checkifexist = $blacklist->checkIfExist($lastname, $firstname, $birthdate, $process, $blackListedID);
-                if (count($checkifexist) > 0)
+                if (validateNames($lastname) && validateNames($firstname))
                 {
-                    //ADD
-                    if ($process == 1)
+                    //Check if entered data are already exist in records
+                    $checkifexist = $blacklist->checkIfExist($lastname, $firstname, $birthdate, $process, $blackListedID);
+                    if (count($checkifexist) > 0)
                     {
-                        //If 0, change to blacklisted 
-                        if ($checkifexist[0]['Status'] == 0)
+                        //ADD
+                        if ($process == 1)
                         {
-                            $blackListedID = $checkifexist[0]['BlackListedID'];
-                            $result = $blacklist->changeBlackListedStat($blackListedID, $aid, 1, $remarks);
-                            if (isset($result))
+                            //If 0, change to blacklisted 
+                            if ($checkifexist[0]['Status'] == 0)
                             {
-                                //Check result
-                                if ($result['TransCode'] == 1)
+                                $blackListedID = $checkifexist[0]['BlackListedID'];
+                                $result = $blacklist->changeBlackListedStat($blackListedID, $aid, 1, $remarks);
+                                if (isset($result))
                                 {
-                                    $showdialog = true;
-                                    $msg = $result['TransMsg'];
-                                    $title = "MESSAGE";
+                                    //Check result
+                                    if ($result['TransCode'] == 1)
+                                    {
+                                        $showdialog = true;
+                                        $msg = $result['TransMsg'];
+                                        $title = "MESSAGE";
+                                    }
+                                    else if ($result['TransCode'] == 0)
+                                    {
+                                        $showdialog = true;
+                                        $msg = $result['TransMsg'];
+                                        $title = "ERROR MESSAGE";
+                                    }
                                 }
-                                else if ($result['TransCode'] == 0)
-                                {
-                                    $showdialog = true;
-                                    $msg = $result['TransMsg'];
-                                    $title = "ERROR MESSAGE";
-                                }
-                            }
 
+                            }
+                            
+                            //Prompt already exist
+                            else if ($checkifexist[0]['Status'] == 1)
+                            {
+                                $showdialog = true;
+                                $msg = "The player is already black listed";
+                                $title = "ERROR MESSAGE";
+                            }
                         }
-                        //Prompt already exist
-                        else if ($checkifexist[0]['Status'] == 1)
+                        //Update
+                        else if ($process == 2)
                         {
-                            $showdialog = true;
-                            $msg = "The player is already black listed";
-                            $title = "ERROR MESSAGE";
+                            if ($checkifexist[0]['Status'] == 0)
+                            {
+                                $showconfirm = true;
+                                $ask = "The player is already tagged as whitelisted. Do you want to include it again on our blacklists record?";
+                                $hdBLId = $checkifexist[0]['BlackListedID'];
+                                $remark = $remarks;
+                            }
+                            else
+                            {
+                                $showdialog = true;
+                                $msg = "The player is already black listed";
+                                $title = "ERROR MESSAGE";
+                            }
                         }
                     }
-                    //Update
-                    else if ($process == 2)
+                    else
                     {
-                        if ($checkifexist[0]['Status'] == 0)
+                        //Check if what process Add or Update
+                        if ($process == 1) // Add to Black List
                         {
-                            $showconfirm = true;
-                            $ask = "The player is already tagged as whitelisted. Do you want to include it again on our blacklists record?";
-                            $hdBLId = $checkifexist[0]['BlackListedID'];
-                            $remark = $remarks;
+                            $result = $blacklist->addToBlackList($lastname, $firstname, $birthdate, $remarks, $aid);
                         }
-                        else
+                        else if ($process == 2) //Update BlackList
                         {
-                            $showdialog = true;
-                            $msg = "The player is already black listed";
-                            $title = "ERROR MESSAGE";
+                            $result = $blacklist->updateBlacklistedDetails($lastname, $firstname, $birthdate, $remarks, $blackListedID);
+                        }
+                        if (isset($result))
+                        {
+                            //Check result
+                            if ($result['TransCode'] == 1)
+                            {
+                                $showdialog = true;
+                                $msg = $result['TransMsg'];
+                                $title = "MESSAGE";
+                            }
+                            else if ($result['TransCode'] == 0)
+                            {
+                                $showdialog = true;
+                                $msg = $result['TransMsg'];
+                                $title = "ERROR MESSAGE";
+                            }
                         }
                     }
                 }
                 else
                 {
-                    //Check if what process Add or Update
-                    if ($process == 1) // Add to Black List
-                    {
-                        $result = $blacklist->addToBlackList($lastname, $firstname, $birthdate, $remarks, $aid);
-                    }
-                    else if ($process == 2) //Update BlackList
-                    {
-                        $result = $blacklist->updateBlacklistedDetails($lastname, $firstname, $birthdate, $remarks, $blackListedID);
-                    }
-                    if (isset($result))
-                    {
-                        //Check result
-                        if ($result['TransCode'] == 1)
-                        {
-                            $showdialog = true;
-                            $msg = $result['TransMsg'];
-                            $title = "MESSAGE";
-                        }
-                        else if ($result['TransCode'] == 0)
-                        {
-                            $showdialog = true;
-                            $msg = $result['TransMsg'];
-                            $title = "ERROR MESSAGE";
-                        }
-                    }
+                    $showdialog = true;
+                    $msg = "You have entered an invalid character/s";
+                    $title = "ERROR MESSAGE";
                 }
             }
             else
             {
                 $showdialog = true;
-                $msg = "You have entered an invalid character/s";
+                $msg = "Please fill up all fields";
                 $title = "ERROR MESSAGE";
             }
         }
         else
         {
-            $showdialog = true;
-            $msg = "Please fill up all fields";
-            $title = "ERROR MESSAGE";
-        }
-    }
-    else
-    {
-        //Remove from list
-        $result = $blacklist->changeBlackListedStat($blackListedID, $aid, 2);
-        if (isset($result))
-        {
-            //Check result
-            if ($result['TransCode'] == 1)
+            //Remove from list
+            $result = $blacklist->changeBlackListedStat($blackListedID, $aid, 2);
+            if (isset($result))
             {
-                $showdialog = true;
-                $msg = $result['TransMsg'];
-                $title = "MESSAGE";
-            }
-            else if ($result['TransCode'] == 0)
-            {
-                $showdialog = true;
-                $msg = $result['TransMsg'];
-                $title = "ERROR MESSAGE";
+                //Check result
+                if ($result['TransCode'] == 1)
+                {
+                    $showdialog = true;
+                    $msg = $result['TransMsg'];
+                    $title = "MESSAGE";
+                }
+                else if ($result['TransCode'] == 0)
+                {
+                    $showdialog = true;
+                    $msg = $result['TransMsg'];
+                    $title = "ERROR MESSAGE";
+                }
             }
         }
-    }
     }
     else
     {
@@ -289,7 +296,7 @@ if ($fproc->IsPostBack)
                 });
                 jQuery("#blacklist").jqGrid('navGrid','#pager',
                 {
-                    edit:false,add:false,del:false, search:false, refresh: true});
+                    edit:false,add:false,del:false, search:false, refresh: false});
             }
             $("#editblacklisted").live('click', function(){
                 var LastName    = $(this).attr('LastName');
@@ -379,18 +386,24 @@ if ($fproc->IsPostBack)
             modal : true,
             title : 'Add to Black List',
             width : 420,
-            height : 350,
+            height : 400,
             autoOpen : false,
             resizable : false,
             draggable :false,
             buttons : {
                 'Save' :  function(){
+                    $('.formErrorContent').show();
+                    $('.formErrorArrow').show();
                     $("#submit-addblacklist").submit();
                 },
                 'Cancel' : function(){
                     $(this).dialog('close');
-                }
             }
+            },
+            beforeClose: function(){
+                $('.formErrorContent').hide();
+                $('.formErrorArrow').hide();
+            },
         }).parent().appendTo($("#submit-addblacklist").validationEngine());
         
         $("#blacklisthist").dialog({
@@ -544,7 +557,7 @@ if ($fproc->IsPostBack)
 </div>  
 <form action ="" id="submit-addblacklist" method="post" >
     <div id="dlgaddblacklist">
-        <table id="tblblacklist" style="margin-top: 28px;">
+        <table id="tblblacklist" style="margin-top: 50px;">
             <tr>
                 <td>Last Name</td>
                 <td><?php echo $txtLastname; ?></td>
@@ -557,7 +570,8 @@ if ($fproc->IsPostBack)
                 <td>Birth Date</td>
                 <td>
                     <script type="text/javascript">
-                        $(function() {    
+                        $(function() {
+                            var date = new Date();                            
                             $( "#dtBirthDate" ).datepicker({
                                 showOn: "button",
                                 buttonImage: "images/calendar.gif",
@@ -568,12 +582,12 @@ if ($fproc->IsPostBack)
                                 closeText: "Close",
                                 showButtonPanel: true,
                                 minDate: new Date(1913, 10, 13),
-                                maxDate: new Date(1992, 10, 13),
+                                maxDate: new Date(date.getUTCFullYear() - 21, date.getUTCMonth(), date.getUTCDate()),
                                 yearRange: 'c-100:c'
                             });
                         });
                     </script>    
-                    <input type="text" name="dtBirthDate" id="dtBirthDate" readonly size="15" style="height:20px;">
+                    <input type="text" name="dtBirthDate" id="dtBirthDate" readonly="true"  onfocus="this.blur();" size="15" style="height:20px; cursor: pointer;" />
                 </td>
             </tr>
             <tr>

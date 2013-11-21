@@ -37,7 +37,7 @@
                     "alertText": "* Maximum ",
                     "alertText2": " characters allowed"
                 },
-				"groupRequired": {
+                "groupRequired": {
                     "regex": "none",
                     "alertText": "* You must fill one of the following fields"
                 },
@@ -147,6 +147,15 @@
                     "regex": /^[a-zA-Z\ \']+$/,
                     "alertText": "* Letters only"
                 },
+                // validate spaces in the beginning, NDA 11-20-2013
+                "trailingSpaces": {
+                    "regex": /^[^\s][a-zA-Z0-9\ \']+$/,
+                    "alertText": "* Trailing space/s is/are not allowed."
+                },
+                "checkMinSize": {
+                    "regex": /^[A-Za-z0-9]{2}|[A-Za-z0-9]$/,
+                    "alertText": "* Minimum of (2) characters."
+                },
                 "onlyLetterNumber": {
                     "regex": /^[0-9a-zA-Z]+$/,
                     "alertText": "* No special characters and spaces allowed"
@@ -167,7 +176,7 @@
                     "alertText": "* This user is already taken",
                     "alertTextLoad": "* Validating, please wait"
                 },
-				"ajaxUserCallPhp": {
+                "ajaxUserCallPhp": {
                     "url": "phpajax/ajaxValidateFieldUser.php",
                     // you may want to pass extra data on the ajax call
                     "extraData": "name=eric",
@@ -186,14 +195,14 @@
                     // speaks by itself
                     "alertTextLoad": "* Validating, please wait"
                 },
-				 "ajaxNameCallPhp": {
-	                    // remote json service location
-	                    "url": "phpajax/ajaxValidateFieldName.php",
-	                    // error
-	                    "alertText": "* This name is already taken",
-	                    // speaks by itself
-	                    "alertTextLoad": "* Validating, please wait"
-	                },
+                "ajaxNameCallPhp": {
+                    // remote json service location
+                    "url": "phpajax/ajaxValidateFieldName.php",
+                    // error
+                    "alertText": "* This name is already taken",
+                    // speaks by itself
+                    "alertTextLoad": "* Validating, please wait"
+                },
                 "validate2fields": {
                     "alertText": "* Please input HELLO"
                 },
@@ -203,13 +212,13 @@
                     "alertText": "* Invalid Date"
                 },
                 //tls warning:homegrown not fielded 
-				"dateTimeFormat": {
+                "dateTimeFormat": {
 	                "regex": /^\d{4}[\/\-](0?[1-9]|1[012])[\/\-](0?[1-9]|[12][0-9]|3[01])\s+(1[012]|0?[1-9]){1}:(0?[1-5]|[0-6][0-9]){1}:(0?[0-6]|[0-6][0-9]){1}\s+(am|pm|AM|PM){1}$|^(?:(?:(?:0?[13578]|1[02])(\/|-)31)|(?:(?:0?[1,3-9]|1[0-2])(\/|-)(?:29|30)))(\/|-)(?:[1-9]\d\d\d|\d[1-9]\d\d|\d\d[1-9]\d|\d\d\d[1-9])$|^((1[012]|0?[1-9]){1}\/(0?[1-9]|[12][0-9]|3[01]){1}\/\d{2,4}\s+(1[012]|0?[1-9]){1}:(0?[1-5]|[0-6][0-9]){1}:(0?[0-6]|[0-6][0-9]){1}\s+(am|pm|AM|PM){1})$/,
                     "alertText": "* Invalid Date or Date Format",
                     "alertText2": "Expected Format: ",
                     "alertText3": "mm/dd/yyyy hh:mm:ss AM|PM or ", 
                     "alertText4": "yyyy-mm-dd hh:mm:ss AM|PM"
-	            }
+                }
             };
             
         }
