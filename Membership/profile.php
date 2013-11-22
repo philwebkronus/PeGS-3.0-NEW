@@ -174,33 +174,28 @@
                         <div class="ad-thumbs">
                             <ul class="ad-thumb-list">
                                 <li>
-                                    <a href="images/slider/slider_photos/ConsolationPrize.jpg">
-                                        <img src="images/slider/bullet.png" title="Consolation Prize" longdesc="http://www.lamborghini.com" alt="Caption">
+                                    <a href="images/slider/slider_photos/1.jpg">
+                                        <img src="images/slider/slider_photos/1.jpg" title="" longdesc="images/slider/slider_photos/1.jpg" alt="Caption">
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="images/slider/slider_photos/devices.jpg">
-                                        <img src="images/slider/bullet.png" title="Devices" longdesc="" alt="">
+                                    <a href="images/slider/slider_photos/2.jpg">
+                                        <img src="images/slider/slider_photos/2.jpg" title="" longdesc="images/slider/slider_photos/2.jpg" alt="">
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="images/slider/slider_photos/MacauLuxuryTour.jpg">
-                                        <img src="images/slider/slider_photos/MacauLuxuryTour.jpg" title="" longdesc="images/slider/slider_photos/MacauLuxuryTour.jpg" alt="">
+                                    <a href="images/slider/slider_photos/3.jpg">
+                                        <img src="images/slider/slider_photos/3.jpg" title="" longdesc="images/slider/slider_photos/3.jpg" alt="">
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="images/slider/slider_photos/Starcruise.jpg">
-                                        <img src="images/slider/slider_photos/Starcruise.jpg" title="" longdesc="images/slider/slider_photos/Starcruise.jpg" alt="">
+                                    <a href="images/slider/slider_photos/4.jpg">
+                                        <img src="images/slider/slider_photos/4.jpg" title="" longdesc="images/slider/slider_photos/4.jpg" alt="">
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="images/slider/slider_photos/HarleyDavidson.jpg">
-                                        <img src="images/slider/slider_photos/HarleyDavidson.jpg" title="" longdesc="images/slider/slider_photos/HarleyDavidson.jpg" alt="">
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="images/slider/slider_photos/toyota.jpg">
-                                        <img src="images/slider/slider_photos/toyota.jpg" title="" longdesc="images/slider/slider_photos/toyota.jpg" alt="">
+                                    <a href="images/slider/slider_photos/5.jpg">
+                                        <img src="images/slider/slider_photos/5.jpg" title="" longdesc="images/slider/slider_photos/5.jpg" alt="">
                                     </a>
                                 </li>
                             </ul>
