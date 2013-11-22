@@ -57,6 +57,7 @@ class ProcessTopUpPaginate extends BaseProcess {
         $arrdetails = array();
         foreach($rows as $id => $row) {
             $gross_hold = (($row['Deposit'] + $row['Reload'] - $row['Redemption']) - $row['ActualAmount']);
+            $cashonhand = $gross_hold - $row['Coupon'];
             $temp = array(
                         "SiteName"=>$row['SiteName'],
 //                        "SiteCode"=>substr($row['SiteCode'], strlen(BaseProcess::$sitecode)),
@@ -68,6 +69,7 @@ class ProcessTopUpPaginate extends BaseProcess {
                         "Withdrawal"=>number_format($row['Redemption'],2),
                         "ManualRedemption"=>(($row['ActualAmount'])?number_format($row['ActualAmount'],2):''),
                         "Coupon"=>number_format($row['Coupon'],2),
+                        "CashonHand"=>number_format($cashonhand,2),
                         "GrossHold"=>number_format($gross_hold, 2),
                         "Location"=>$row['Location'],
                     );        
@@ -1035,6 +1037,7 @@ class ProcessTopUpPaginate extends BaseProcess {
         $jqgrid = $params['jqgrid'];
         foreach($rresult as $row) {
             $grosshold = ($row['initialdep'] + $row['reload'] - $row['redemption']) - $row['manualredemption'];
+            $cashonhand = $grosshold - $row['coupon'];
             $endbal = $grosshold + $row['replenishment'] - $row['collection'];
             $jqgrid->rows[] = array('id'=>$row['siteid'],'cell'=>array(
                 substr($row['sitecode'], strlen(BaseProcess::$sitecode)),
@@ -1047,6 +1050,7 @@ class ProcessTopUpPaginate extends BaseProcess {
                 number_format($row['redemption'],2),
                 number_format($row['manualredemption'],2),
                 number_format($row['coupon'],2),
+                number_format($cashonhand,2),
                 number_format($grosshold,2),
                 number_format($row['replenishment'],2),
                 number_format($row['collection'],2),

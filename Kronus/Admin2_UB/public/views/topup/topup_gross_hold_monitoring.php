@@ -305,7 +305,7 @@ if(isset($_SESSION['acctype']))
                     var header = "<thead style='position: relative; top:0; left: 0; height: -63px;'><tr><td  id='tblheader-banner' colspan='11' style='font-style: Arial, calibri, helvetica; font-size: 14px; font-weight: bold; background-color: #3d561c; color: white; height: 30px;'>Gross Hold Monitoring</td>"+
                                             "</tr><tr style='font-style: Arial, calibri, helvetica; font-size: 12px; text-align: center;font-weight: bold; background-color: #D6EB99; color: black; height: 25px;'>"+
                                             "<td style='width: 100px;'>POS Account</td><td style='width: 230px;'>Site / PEGS Name</td><td style='width: 130px;'>BCF</td><td style='width: 130px;'>Deposit</td>"+
-                                            "<td style='width: 130px;'>Reload</td><td style='width: 130px;'>Withdrawal</td><td style='width: 130px;'>Manual Redemption</td><td style='width: 130px;'>Voucher</td><td style='width: 130px;'>Gross Hold</td><td style='width: 90px;'>Location</td>"+
+                                            "<td style='width: 130px;'>Reload</td><td style='width: 130px;'>Withdrawal</td><td style='width: 130px;'>Manual Redemption</td><td style='width: 130px;'>Voucher</td><td style='width: 130px;'>Cash on Hand</td><td style='width: 130px;'>Gross Hold</td><td style='width: 90px;'>Location</td>"+
                                             "</tr></thead>";
                     
                     var footer = "<tfoot style='position: relative; top:0; left: 0; height: -37px;'><tr style='font-style: Arial, calibri, helvetica; font-size: 12px; text-align: center;font-weight: bold; background-color: #D6EB99; color: black; height: 35px;'>"+
@@ -323,7 +323,7 @@ if(isset($_SESSION['acctype']))
                     for(var itr = 0; itr < data.CountOfSites; itr++){
                         var part = "<tr id='"+data[itr].POS+"'><td >"+data[itr].POS+"</td><td>"+data[itr].SiteName+"</td><td style='text-align: right;'>"+data[itr].BCF+"</td>"+
                                             "<td style='text-align: right;'>"+data[itr].Deposit+"</td><td style='text-align: right;'>"+data[itr].Reload+"</td><td style='text-align: right;'>"+data[itr].Withdrawal+"</td><td style='text-align: right;'>"+data[itr].ManualRedemption+"</td>"+
-                                            "<td style='text-align: right;'>"+data[itr].Coupon+"</td>"+"<td style='text-align: right;'>"+data[itr].GrossHold+"</td><td>"+data[itr].Location+"</td></tr>";
+                                            "<td style='text-align: right;'>"+data[itr].Coupon+"</td>"+"<td style='text-align: right;'>"+data[itr].CashonHand+"</td><td style='text-align: right;'>"+data[itr].GrossHold+"</td><td>"+data[itr].Location+"</td></tr>";
                         
                         $("#tblgrossholdbody").append(part);
                         

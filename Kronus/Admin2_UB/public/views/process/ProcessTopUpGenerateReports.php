@@ -938,6 +938,7 @@ class ProcessTopUpGenerateReports extends BaseProcess{
                 array('value'=>'Redemption'),
                 array('value'=>'Manual Redemption'),
                 array('value'=>'Voucher'),
+                array('value'=>'Cash on Hand'),
                 array('value'=>'Gross Hold'),
                 array('value'=>'Replenishment'),
                 array('value'=>'Collection'),
@@ -947,6 +948,7 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         if(count($rows) > 0){
             foreach($rows as $row) {
                 $grosshold = ($row['initialdep'] + $row['reload'] - $row['redemption']) - $row['manualredemption']; // (D+R-W) - manual redemption
+                $cashonhand = $grosshold - $row['coupon'];
                 $endbal = $grosshold + $row['replenishment'] - $row['collection'];
                 $pdf->c_tableRow2(array(
                     array('value'=>substr($row['sitecode'], strlen(BaseProcess::$sitecode))),
@@ -959,6 +961,7 @@ class ProcessTopUpGenerateReports extends BaseProcess{
                     array('value'=>number_format($row['redemption'],2)),
                     array('value'=>number_format($row['manualredemption'], 2)),
                     array('value'=>number_format($row['coupon'], 2)),
+                    array('value'=>number_format($cashonhand, 2)),
                     array('value'=>number_format($grosshold,2)),
                     array('value'=>number_format($row['replenishment'],2)),
                     array('value'=>number_format($row['collection'],2)),
@@ -979,7 +982,7 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         $startdate = $_POST['startdate']." ".BaseProcess::$cutoff;
         $venddate = $_POST['enddate'];  
         $enddate = date ('Y-m-d' , strtotime (BaseProcess::$gaddeddate, strtotime($venddate)))." ".BaseProcess::$cutoff;           
-        $_SESSION['report_header'] = array('Site / PEGS Code','Site / PEGS Name', 'POS Account','Cut Off Date','Beginning Balance','Initial Deposit','Reload','Redemption','Manual Redemption','Voucher','Gross Hold', 'Replenishment','Collection','Ending Balance');
+        $_SESSION['report_header'] = array('Site / PEGS Code','Site / PEGS Name', 'POS Account','Cut Off Date','Beginning Balance','Initial Deposit','Reload','Redemption','Manual Redemption','Voucher','Cash on Hand','Gross Hold', 'Replenishment','Collection','Ending Balance');
         $topreport = new TopUpReportQuery($this->getConnection());
         $topreport->open();
         $vsitecode = $_POST['selsitecode'];
@@ -996,6 +999,7 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         if(count($rows) > 0){
             foreach($rows as $row) {
                 $grosshold = ($row['initialdep'] + $row['reload'] - $row['redemption']) - $row['manualredemption']; // (D+R-W) - manual redemption
+                $cashonhand = $grosshold - $row['coupon'];
                 $endbal = $grosshold + $row['replenishment'] - $row['collection'];
                 $new_rows[] = array(
                                 substr($row['sitecode'], strlen(BaseProcess::$sitecode)),
@@ -1008,6 +1012,7 @@ class ProcessTopUpGenerateReports extends BaseProcess{
                                 number_format($row['redemption'],2),
                                 number_format($row['manualredemption'], 2),
                                 number_format($row['coupon'], 2),
+                                number_format($cashonhand, 2),
                                 number_format($grosshold,2),
                                 number_format($row['replenishment'],2),
                                 number_format($row['collection'],2),
