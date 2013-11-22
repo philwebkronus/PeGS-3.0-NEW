@@ -32,7 +32,7 @@ $fproc = new FormsProcessor();
 
 $txtLastname = new TextBox("txtLastname", "txtLastname", "Last Name: ");
 $txtLastname->ShowCaption = false;
-$txtLastname->CssClass = "validate[required, custom[trailingSpaces], custom[checkMinSize], custom[onlyLetterSp]]";
+$txtLastname->CssClass = "validate[required, custom[trailingSpaces], custom[onlyLetterSp], minSize[2]]";
 $txtLastname->Length = 30;
 $txtLastname->Size = 15;
 $txtLastname->Style = "height:20px;";
@@ -40,7 +40,7 @@ $fproc->AddControl($txtLastname);
 
 $txtFirstName = new TextBox("txtFirstName", "txtFirstName", "First Name: ");
 $txtFirstName->ShowCaption = false;
-$txtFirstName->CssClass = "validate[required, custom[trailingSpaces], custom[checkMinSize], custom[onlyLetterSp]]";
+$txtFirstName->CssClass = "validate[required, custom[trailingSpaces], custom[onlyLetterSp], minSize[2]]";
 $txtFirstName->Length = 30;
 $txtFirstName->Size = 15;
 $txtFirstName->Style = "height:20px;";

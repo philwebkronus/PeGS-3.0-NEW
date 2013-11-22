@@ -149,7 +149,9 @@
                 },
                 // validate spaces in the beginning, NDA 11-20-2013
                 "trailingSpaces": {
-                    "regex": /^[^\s][a-zA-Z0-9\ \']+$/,
+                    "func": function (field, rules, i, options){
+                            return (field.val().substring(0, 1) === " ") ? false : true;
+                    },
                     "alertText": "* Trailing space/s is/are not allowed."
                 },
                 "checkMinSize": {
