@@ -80,6 +80,8 @@ if (isset($_POST['pager'])) {
                     if ($status == 1) {
                         if ($countMD == 0) {
                             $profile->MID = '';
+                            $profile->Name = '';
+                            $profile->Birthdate = '';
                             $profile->Age = '';
                             $profile->Gender = '';
                             $profile->Status = '';
@@ -90,6 +92,9 @@ if (isset($_POST['pager'])) {
 
                             $MemberInfoResult = $_MemberInfo->getMemberInfoByID($MIDResult[0]['MID']);
                             if (isset($MemberInfoResult[0]['MID']) && $MemberInfoResult[0]['MID'] != '') {
+                                $memberinfovalue['FirstName'] = $MemberInfoResult[0]['FirstName'];
+                                $memberinfovalue['LastName'] = $MemberInfoResult[0]['LastName'];
+                                $memberinfovalue['Birthdate'] = $MemberInfoResult[0]['Birthdate'];
                                 $memberinfovalue['Age'] = $MemberInfoResult[0]['Age'];
                                 $memberinfovalue['Gender'] = $MemberInfoResult[0]['Gender'] == 1 ? "Male" : "Female";
 
@@ -106,7 +111,10 @@ if (isset($_POST['pager'])) {
                                 } else if ($MemberInfoResult[0]['Status'] == 6) {
                                     $memberinfovalue['Status'] = 'Terminated';
                                 }
+                                
                                 $profile->MID = $MIDResult[0]['MID'];
+                                $profile->Name = $memberinfovalue['FirstName'].' '.$memberinfovalue['LastName'];
+                                $profile->Birthdate = $memberinfovalue['Birthdate'];
                                 $profile->Age = $memberinfovalue['Age'];
                                 $profile->Gender = $memberinfovalue['Gender'];
                                 $profile->Status = $memberinfovalue['Status'];
@@ -116,6 +124,8 @@ if (isset($_POST['pager'])) {
                                 $profile->BonusPoints = number_format($cardpoints['BonusPoints']);
                             } else {
                                 $profile->MID = '';
+                                $profile->Name = '';
+                                $profile->Birthdate = '';
                                 $profile->Age = '';
                                 $profile->Gender = '';
                                 $profile->Status = '';
@@ -125,6 +135,8 @@ if (isset($_POST['pager'])) {
                         }
                     } else if ($status == 0) {
                         $profile->MID = '';
+                        $profile->Name = '';
+                        $profile->Birthdate = '';
                         $profile->Age = '';
                         $profile->Gender = '';
                         $profile->Status = '';
@@ -132,6 +144,8 @@ if (isset($_POST['pager'])) {
                         $profile->Msg = $msg;
                     } else if ($status == 5) {
                         $profile->MID = '';
+                        $profile->Name = '';
+                        $profile->Birthdate = '';
                         $profile->Age = '';
                         $profile->Gender = '';
                         $profile->Status = '';
@@ -139,6 +153,8 @@ if (isset($_POST['pager'])) {
                         $profile->Msg = $msg;
                     } else if ($status == 7) {
                         $profile->MID = '';
+                        $profile->Name = '';
+                        $profile->Birthdate = '';
                         $profile->Age = '';
                         $profile->Gender = '';
                         $profile->Status = '';
@@ -146,6 +162,8 @@ if (isset($_POST['pager'])) {
                         $profile->Msg = $msg;
                     } else if ($status == 8) {
                         $profile->MID = '';
+                        $profile->Name = '';
+                        $profile->Birthdate = '';
                         $profile->Age = '';
                         $profile->Gender = '';
                         $profile->Status = '';
@@ -153,6 +171,8 @@ if (isset($_POST['pager'])) {
                         $profile->Msg = $msg;
                     } else if ($status == 9) {
                         $profile->MID = '';
+                        $profile->Name = '';
+                        $profile->Birthdate = '';
                         $profile->Age = '';
                         $profile->Gender = '';
                         $profile->Status = '';
@@ -160,6 +180,8 @@ if (isset($_POST['pager'])) {
                         $profile->Msg = $msg;
                     } else {
                         $profile->MID = '';
+                        $profile->Name = '';
+                        $profile->Birthdate = '';
                         $profile->Age = '';
                         $profile->Gender = '';
                         $profile->Status = '';
@@ -193,6 +215,8 @@ if (isset($_POST['pager'])) {
                         if ($status == 1) {
                             if ($countMD == 0) {
                                 $profile->MID = '';
+                                $profile->Name = '';
+                                $profile->Birthdate = '';
                                 $profile->Age = '';
                                 $profile->Gender = '';
                                 $profile->Status = '';
@@ -203,6 +227,9 @@ if (isset($_POST['pager'])) {
 
                                 $MemberInfoResult = $_MemberInfo->getMemberInfoByID($MIDResult[0]['MID']);
                                 if (isset($MemberInfoResult[0]['MID']) && $MemberInfoResult[0]['MID'] != '') {
+                                    $memberinfovalue['FirstName'] = $MemberInfoResult[0]['FirstName'];
+                                    $memberinfovalue['LastName'] = $MemberInfoResult[0]['LastName'];
+                                    $memberinfovalue['Birthdate'] = $MemberInfoResult[0]['Birthdate'];
                                     $memberinfovalue['Age'] = $MemberInfoResult[0]['Age'];
                                     $memberinfovalue['Gender'] = $MemberInfoResult[0]['Gender'] == 1 ? "Male" : "Female";
 
@@ -220,6 +247,8 @@ if (isset($_POST['pager'])) {
                                         $memberinfovalue['Status'] = 'Terminated';
                                     }
                                     $profile->MID = $MIDResult[0]['MID'];
+                                    $profile->Name = $memberinfovalue['FirstName'].' '.$memberinfovalue['LastName'];
+                                    $profile->Birthdate = $memberinfovalue['Birthdate'];
                                     $profile->Age = $memberinfovalue['Age'];
                                     $profile->Gender = $memberinfovalue['Gender'];
                                     $profile->Status = $memberinfovalue['Status'];
@@ -229,6 +258,8 @@ if (isset($_POST['pager'])) {
                                     $profile->BonusPoints = number_format($cardpoints['BonusPoints']);
                                 } else {
                                     $profile->MID = '';
+                                    $profile->Name = '';
+                                    $profile->Birthdate = '';
                                     $profile->Age = '';
                                     $profile->Gender = '';
                                     $profile->Status = '';
@@ -238,6 +269,8 @@ if (isset($_POST['pager'])) {
                             }
                         } else if ($status == 0) {
                             $profile->MID = '';
+                            $profile->Name = '';
+                            $profile->Birthdate = '';
                             $profile->Age = '';
                             $profile->Gender = '';
                             $profile->Status = '';
@@ -245,6 +278,8 @@ if (isset($_POST['pager'])) {
                             $profile->Msg = $msg;
                         } else if ($status == 5) {
                             $profile->MID = '';
+                            $profile->Name = '';
+                            $profile->Birthdate = '';
                             $profile->Age = '';
                             $profile->Gender = '';
                             $profile->Status = '';
@@ -252,6 +287,8 @@ if (isset($_POST['pager'])) {
                             $profile->Msg = $msg;
                         } else if ($status == 7) {
                             $profile->MID = '';
+                            $profile->Name = '';
+                            $profile->Birthdate = '';
                             $profile->Age = '';
                             $profile->Gender = '';
                             $profile->Status = '';
@@ -259,6 +296,8 @@ if (isset($_POST['pager'])) {
                             $profile->Msg = $msg;
                         } else if ($status == 8) {
                             $profile->MID = '';
+                            $profile->Name = '';
+                            $profile->Birthdate = '';
                             $profile->Age = '';
                             $profile->Gender = '';
                             $profile->Status = '';
@@ -266,6 +305,8 @@ if (isset($_POST['pager'])) {
                             $profile->Msg = $msg;
                         } else if ($status == 9) {
                             $profile->MID = '';
+                            $profile->Name = '';
+                            $profile->Birthdate = '';
                             $profile->Age = '';
                             $profile->Gender = '';
                             $profile->Status = '';
@@ -273,6 +314,8 @@ if (isset($_POST['pager'])) {
                             $profile->Msg = $msg;
                         } else {
                             $profile->MID = '';
+                            $profile->Name = '';
+                            $profile->Birthdate = '';
                             $profile->Age = '';
                             $profile->Gender = '';
                             $profile->Status = '';
@@ -281,6 +324,8 @@ if (isset($_POST['pager'])) {
                         }
                     } else {
                         $profile->MID = '';
+                        $profile->Name = '';
+                        $profile->Birthdate = '';
                         $profile->Age = '';
                         $profile->Gender = '';
                         $profile->Status = '';
@@ -356,6 +401,8 @@ if (isset($_POST['pager'])) {
                                 $logger->logger($logdate, $logtype, $error);
 
                                 $profile->MID = '';
+                                $profile->Name = '';
+                                $profile->Birthdate = '';
                                 $profile->Age = '';
                                 $profile->Gender = '';
                                 $profile->Status = '';
@@ -400,6 +447,8 @@ if (isset($_POST['pager'])) {
                                             $_Log->logAPI(AuditFunctions::MARKETING_RED_CARD_TRANSFERRING, 'From Card: ' . $oldcard . ', Pts: ' . $carddetails["CurrentPoints"] . '; To Card: ' . $newcard . ', Pts: ' . $newcarddetailz["CurrentPoints"] . ', Success', $_SESSION['aID']);
                                             $_MemberPointsTransferLog->logPointsTransfer($fromMemberCardID, $toMemberCardID, $lifetimepoints, $currentpoints, $redeemedpoints, $datecreated, $aid);
                                             $profile->MID = '';
+                                            $profile->Name = '';
+                                            $profile->Birthdate = '';
                                             $profile->Age = '';
                                             $profile->Gender = '';
                                             $profile->Status = '';
@@ -412,6 +461,8 @@ if (isset($_POST['pager'])) {
                                             $logger->logger($logdate, $logtype, $error);
 
                                             $profile->MID = '';
+                                            $profile->Name = '';
+                                            $profile->Birthdate = '';
                                             $profile->Age = '';
                                             $profile->Gender = '';
                                             $profile->Status = '';
@@ -425,6 +476,8 @@ if (isset($_POST['pager'])) {
                                         $logger->logger($logdate, $logtype, $error);
 
                                         $profile->MID = '';
+                                        $profile->Name = '';
+                                        $profile->Birthdate = '';
                                         $profile->Age = '';
                                         $profile->Gender = '';
                                         $profile->Status = '';
@@ -439,6 +492,8 @@ if (isset($_POST['pager'])) {
                                     $logger->logger($logdate, $logtype, $error);
 
                                     $profile->MID = '';
+                                    $profile->Name = '';
+                                    $profile->Birthdate = '';
                                     $profile->Age = '';
                                     $profile->Gender = '';
                                     $profile->Status = '';
@@ -449,6 +504,8 @@ if (isset($_POST['pager'])) {
                         } else if ($newcard == $oldcard) {
 
                             $profile->MID = '';
+                            $profile->Name = '';
+                            $profile->Birthdate = '';
                             $profile->Age = '';
                             $profile->Gender = '';
                             $profile->Status = '';
@@ -457,6 +514,8 @@ if (isset($_POST['pager'])) {
                         }else if ($status == 1) {
 
                             $profile->MID = '';
+                            $profile->Name = '';
+                            $profile->Birthdate = '';
                             $profile->Age = '';
                             $profile->Gender = '';
                             $profile->Status = '';
@@ -465,6 +524,8 @@ if (isset($_POST['pager'])) {
                         } else if ($status == 7 || $status == 8) {
 
                             $profile->MID = '';
+                            $profile->Name = '';
+                            $profile->Birthdate = '';
                             $profile->Age = '';
                             $profile->Gender = '';
                             $profile->Status = '';
@@ -473,6 +534,8 @@ if (isset($_POST['pager'])) {
                         } else if ($status == 5) {
 
                             $profile->MID = '';
+                            $profile->Name = '';
+                            $profile->Birthdate = '';
                             $profile->Age = '';
                             $profile->Gender = '';
                             $profile->Status = '';
@@ -481,6 +544,8 @@ if (isset($_POST['pager'])) {
                         } else if ($status == 9) {
 
                             $profile->MID = '';
+                            $profile->Name = '';
+                            $profile->Birthdate = '';
                             $profile->Age = '';
                             $profile->Gender = '';
                             $profile->Status = '';
@@ -489,6 +554,8 @@ if (isset($_POST['pager'])) {
                         } else if ($status == 2) {
 
                             $profile->MID = '';
+                            $profile->Name = '';
+                            $profile->Birthdate = '';
                             $profile->Age = '';
                             $profile->Gender = '';
                             $profile->Status = '';
@@ -497,6 +564,8 @@ if (isset($_POST['pager'])) {
                         } 
                     } else {
                         $profile->MID = '';
+                        $profile->Name = '';
+                        $profile->Birthdate = '';
                         $profile->Age = '';
                         $profile->Gender = '';
                         $profile->Status = '';
@@ -506,6 +575,8 @@ if (isset($_POST['pager'])) {
                 } else if ($status == 1) {
 
                     $profile->MID = '';
+                    $profile->Name = '';
+                    $profile->Birthdate = '';
                     $profile->Age = '';
                     $profile->Gender = '';
                     $profile->Status = '';
@@ -514,6 +585,8 @@ if (isset($_POST['pager'])) {
                 } else if ($status == 7 || $status == 8) {
 
                     $profile->MID = '';
+                    $profile->Name = '';
+                    $profile->Birthdate = '';
                     $profile->Age = '';
                     $profile->Gender = '';
                     $profile->Status = '';
@@ -522,6 +595,8 @@ if (isset($_POST['pager'])) {
                 } else if ($status == 2) {
 
                     $profile->MID = '';
+                    $profile->Name = '';
+                    $profile->Birthdate = '';
                     $profile->Age = '';
                     $profile->Gender = '';
                     $profile->Status = '';
@@ -530,6 +605,8 @@ if (isset($_POST['pager'])) {
                 } else if ($newcard == $oldcard) {
 
                     $profile->MID = '';
+                    $profile->Name = '';
+                    $profile->Birthdate = '';
                     $profile->Age = '';
                     $profile->Gender = '';
                     $profile->Status = '';
@@ -537,6 +614,8 @@ if (isset($_POST['pager'])) {
                     $profile->Msg = $msg;
                 } else {
                     $profile->MID = '';
+                    $profile->Name = '';
+                    $profile->Birthdate = '';
                     $profile->Age = '';
                     $profile->Gender = '';
                     $profile->Status = '';
@@ -596,6 +675,8 @@ if (isset($_POST['pager'])) {
                             $logger->logger($logdate, $logtype, $error);
 
                             $profile->MID = '';
+                            $profile->Name = '';
+                            $profile->Birthdate = '';
                             $profile->Age = '';
                             $profile->Gender = '';
                             $profile->Status = '';
@@ -657,6 +738,8 @@ if (isset($_POST['pager'])) {
                                         $_Log->logAPI(AuditFunctions::MARKETING_RED_CARD_TRANSFERRING, 'From Card: ' . $oldcard . ', Pts: ' . $currentpoints . '; To Card: ' . $newcard . ', Pts: 0, Success', $_SESSION['aID']);
                                         $_MemberPointsTransferLog->logPointsTransfer($fromMemberCardID, $toMemberCardID, $lifetimepoints, $currentpoints, $redeemedpoints, $datecreated, $aid);
                                         $profile->MID = '';
+                                        $profile->Name = '';
+                                        $profile->Birthdate = '';
                                         $profile->Age = '';
                                         $profile->Gender = '';
                                         $profile->Status = '';
@@ -669,6 +752,8 @@ if (isset($_POST['pager'])) {
                                         $logger->logger($logdate, $logtype, $error);
 
                                         $profile->MID = '';
+                                        $profile->Name = '';
+                                        $profile->Birthdate = '';
                                         $profile->Age = '';
                                         $profile->Gender = '';
                                         $profile->Status = '';
@@ -682,6 +767,8 @@ if (isset($_POST['pager'])) {
                                     $logger->logger($logdate, $logtype, $error);
 
                                     $profile->MID = '';
+                                    $profile->Name = '';
+                                    $profile->Birthdate = '';
                                     $profile->Age = '';
                                     $profile->Gender = '';
                                     $profile->Status = '';
@@ -695,6 +782,8 @@ if (isset($_POST['pager'])) {
                                 $logger->logger($logdate, $logtype, $error);
 
                                 $profile->MID = '';
+                                $profile->Name = '';
+                                $profile->Birthdate = '';
                                 $profile->Age = '';
                                 $profile->Gender = '';
                                 $profile->Status = '';
@@ -705,6 +794,8 @@ if (isset($_POST['pager'])) {
                     } else if ($newcard == $oldcard) {
 
                         $profile->MID = '';
+                        $profile->Name = '';
+                        $profile->Birthdate = '';
                         $profile->Age = '';
                         $profile->Gender = '';
                         $profile->Status = '';
@@ -713,6 +804,8 @@ if (isset($_POST['pager'])) {
                     } else if ($status == 1) {
 
                         $profile->MID = '';
+                        $profile->Name = '';
+                        $profile->Birthdate = '';
                         $profile->Age = '';
                         $profile->Gender = '';
                         $profile->Status = '';
@@ -721,6 +814,8 @@ if (isset($_POST['pager'])) {
                     } else if ($status == 7 || $status == 8) {
 
                         $profile->MID = '';
+                        $profile->Name = '';
+                        $profile->Birthdate = '';
                         $profile->Age = '';
                         $profile->Gender = '';
                         $profile->Status = '';
@@ -729,6 +824,8 @@ if (isset($_POST['pager'])) {
                     } else if ($status == 5) {
 
                             $profile->MID = '';
+                            $profile->Name = '';
+                            $profile->Birthdate = '';
                             $profile->Age = '';
                             $profile->Gender = '';
                             $profile->Status = '';
@@ -737,6 +834,8 @@ if (isset($_POST['pager'])) {
                         } else if ($status == 9) {
 
                             $profile->MID = '';
+                            $profile->Name = '';
+                            $profile->Birthdate = '';
                             $profile->Age = '';
                             $profile->Gender = '';
                             $profile->Status = '';
@@ -745,6 +844,8 @@ if (isset($_POST['pager'])) {
                         } else if ($status == 2) {
 
                         $profile->MID = '';
+                        $profile->Name = '';
+                        $profile->Birthdate = '';
                         $profile->Age = '';
                         $profile->Gender = '';
                         $profile->Status = '';
@@ -752,6 +853,8 @@ if (isset($_POST['pager'])) {
                         $profile->Msg = $msg;
                     } else {
                         $profile->MID = '';
+                        $profile->Name = '';
+                        $profile->Birthdate = '';
                         $profile->Age = '';
                         $profile->Gender = '';
                         $profile->Status = '';
@@ -760,6 +863,8 @@ if (isset($_POST['pager'])) {
                     }
                 } else {
                     $profile->MID = '';
+                    $profile->Name = '';
+                    $profile->Birthdate = '';
                     $profile->Age = '';
                     $profile->Gender = '';
                     $profile->Status = '';

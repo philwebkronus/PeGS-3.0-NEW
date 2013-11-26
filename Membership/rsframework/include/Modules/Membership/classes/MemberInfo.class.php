@@ -150,7 +150,7 @@ class MemberInfo extends BaseEntity {
      */
 
     public function getMemberInfoByID($MID) {
-        $query = "SELECT YEAR(current_date)-YEAR(mi.Birthdate) as Age, mi.MID, mi.Gender, m.Status FROM memberinfo mi
+        $query = "SELECT mi.FirstName, mi.MiddleName, mi.LastName, mi.Birthdate, YEAR(current_date)-YEAR(mi.Birthdate) as Age, mi.MID, mi.Gender, m.Status FROM memberinfo mi
                     INNER JOIN members m ON mi.MID = m.MID
                   WHERE m.MID = $MID";
         return parent::RunQuery($query);
