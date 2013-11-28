@@ -379,8 +379,6 @@ if (isset($_POST['pager'])) {
 
                     $oldubcardnumber = $carddetails[0]['CardNumber'];
                     $status2 = CardStatus::NEW_MIGRATED;
-                    $cardtypeold = $_Cards->getCardType($oldcard);
-                    $cardtypenew = $_Cards->getCardType($newcard);
 
                     $cardidB = $_Cards->getCardDetails($newcard);
                     foreach ($cardidB as $value) {
@@ -392,7 +390,7 @@ if (isset($_POST['pager'])) {
                         $cardid1 = $value['CardID'];
                     }
                     $cardid1 = $cardid1;
-                    if ($cardtypeold == $cardtypenew) {
+                    
                         if ($status == 0 && $newcard != $oldcard) {
                             if ($currentpoints < 0) {
                                 $isSuccess = false;
@@ -561,17 +559,7 @@ if (isset($_POST['pager'])) {
                             $profile->Status = '';
                             $msg = 'Red Card Transferring:  Card has already been deactivated.';
                             $profile->Msg = $msg;
-                        } 
-                    } else {
-                        $profile->MID = '';
-                        $profile->Name = '';
-                        $profile->Birthdate = '';
-                        $profile->Age = '';
-                        $profile->Gender = '';
-                        $profile->Status = '';
-                        $msg = 'Red Card Transferring:  Cards have different Card Types.';
-                        $profile->Msg = $msg;
-                    }
+                        }
                 } else if ($status == 1) {
 
                     $profile->MID = '';
@@ -662,11 +650,9 @@ if (isset($_POST['pager'])) {
 
                 $oldubcardnumber = $oldcard;
                 $status2 = CardStatus::NEW_MIGRATED;
-                $cardtypeold = $_Cards->getCardType($oldcard);
-                $cardtypenew = $_Cards->getCardType($newcard);
                 $fromMemberCardID = $_MemberCards->getMemCardIDByCardNumber($oldcard);
                 $toMemberCardID = $_Cards->getMemCardIDByCardNumber($newcard);
-                if ($cardtypeold == $cardtypenew) {
+
                     if ($status == 0 && $newcard != $oldcard) {
                         if ($currentpoints < 0) {
                             $isSuccess = false;
@@ -861,16 +847,6 @@ if (isset($_POST['pager'])) {
                         $msg = 'Red Card Transferring: Invalid Card';
                         $profile->Msg = $msg;
                     }
-                } else {
-                    $profile->MID = '';
-                    $profile->Name = '';
-                    $profile->Birthdate = '';
-                    $profile->Age = '';
-                    $profile->Gender = '';
-                    $profile->Status = '';
-                    $msg = 'Red Card Transferring:  Cards have different Card Types.';
-                    $profile->Msg = $msg;
-                }
 
                 echo json_encode($profile);
 

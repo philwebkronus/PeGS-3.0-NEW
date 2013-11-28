@@ -43,7 +43,7 @@ $txtUserName->CssClass = 'validate[required]]';
 $txtUserName->Style = 'color: #666';
 $txtUserName->Size = 20;
 $txtUserName->AutoComplete = false;
-$txtUserName->Args = 'placeholder="Enter Username" onkeypress="javascript: return checkemail(event)"';
+$txtUserName->Args = 'placeholder="Enter Username" onkeypress="javascript: return alphanumericemail2(event)"';
 $fproc->AddControl($txtUserName);
 
 $txtCardNumber = new TextBox("txtCardNumber", "txtCardNumber", "Card Number: ");
@@ -61,7 +61,7 @@ $txtNewCardNumber->CssClass = 'validate[required]]';
 $txtNewCardNumber->Style = 'color: #666';
 $txtNewCardNumber->Size = 20;
 $txtNewCardNumber->AutoComplete = false;
-$txtNewCardNumber->Args = 'placeholder="Enter New Card Number" onkeypress="javascript: return AlphaNumericOnly(event)"';
+$txtNewCardNumber->Args = 'placeholder="Enter New Card Number" onkeypress="javascript: return alphanumericemail2(event)"';
 $fproc->AddControl($txtNewCardNumber);
 
 $hdnMID = new Hidden('hdnMID', 'hdnMID');
@@ -110,6 +110,63 @@ if (isset($_SESSION['CardRed'])) {
 
     $(document).ready(function() {
 
+        function specialcharacter(elementvalue)
+        {
+            var iChars = "/\s+$/!`@#$%^&*()+=[]\\\';,./{}|\":<>?~_-";
+            var data = elementvalue;
+            for (var i = 0; i < data.length; i++)
+            {
+                if (iChars.indexOf(data.charAt(i)) != -1 || (data.which == 32) != -1)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        function specialcharacter2(elementvalue)
+        {
+            var iChars = "!`#$%^&*()+=[]\\\';,/{}|\":<>?~";
+            var data = elementvalue;
+
+            for (var i = 0; i < data.length; i++)
+            {
+                if (iChars.indexOf(data.charAt(i)) != -1 || (data.which == 32) != -1)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+
+        $("#txtCardNumber").focus(function() {
+            var cardval = $("#txtCardNumber").val();
+            $("#txtCardNumber").bind('paste', function(event) {
+                setTimeout(function(event) {
+                    var data = $("#txtCardNumber").val();
+                    if (!specialcharacter(data)) {
+                        $("#txtCardNumber").val('');
+                        $("#txtCardNumber").focus();
+                    }
+                }, 0);
+            });
+        });
+
+        $("#txtUserName").focus(function() {
+            var userval = $("#txtUserName").val();
+            $("#txtUserName").bind('paste', function(event) {
+                setTimeout(function(event) {
+                    var data = $("#txtUserName").val();
+                    if (!specialcharacter2(data)) {
+                        $("#txtUserName").val('');
+                        $("#txtUserName").focus();
+                    }
+                }, 0);
+            });
+        });
+
+
         $('#cboIDSelection').live('change', function() {
             var id = jQuery("#cboIDSelection option:selected").val();
 
@@ -133,7 +190,6 @@ if (isset($_SESSION['CardRed'])) {
                 $('#pagination').hide();
             }
         });
-
 
         $('#playerprofile').show();
         $("#txtCardNumber").click(function() {
@@ -306,245 +362,8 @@ if (isset($_SESSION['CardRed'])) {
                         success: function(data)
                         {
                             var dataprofile = $.parseJSON(data);
-                            if(dataprofile.Msg=='Session Expired'){
-                                    window.location.href = dataprofile.RedirectToPage;
-                            } else {
-                            if (dataprofile.MID != '') {
-                                document.getElementById("results").style.display = "block";
-                                $("#tblname").html("<label>" + dataprofile.Name + "</label>");
-                                $("#tblbirthdate").html("<label>" + dataprofile.Birthdate + "</label>");
-                                $("#tblage").html("<label>" + dataprofile.Age + "</label>");
-                                $("#tblgender").html("<label>" + dataprofile.Gender + "</label>");
-                                $("#tblstatus").html("<label>" + dataprofile.Status + "</label>");
-                                $("#tblltpoints").html("<label>" + dataprofile.LifeTimePoints + "</label>");
-                                $("#tblcpoints").html("<label>" + dataprofile.CurrentPoints + "</label>");
-                                $("#tblrpoints").html("<label>" + dataprofile.RedeemedPoints + "</label>");
-                                $("#tblbpoints").html("<label>" + dataprofile.BonusPoints + "</label>");
-                                $('#playerprofile').show();
-                                $('#results').show();
-                                $('#pagination').show();
-                                jQuery('#hdnMID').val(dataprofile.MID);
-
-                            }
-                            else {
-                                jQuery('.ui-dialog-content').html("<p><center><label>" + dataprofile.Msg + "</label></center></p>");
-                                $('#SuccessDialog').dialog({
-                                    modal: true,
-                                    width: '400',
-                                    title: 'Red Card Transferring',
-                                    closeOnEscape: true,
-                                    draggable: false,
-                                    resizable: false,
-                                    open: function(event, ui) {
-                                        $(this).closest('.ui-dialog').find('.ui-dialog-titlebar-close').hide();
-                                    },
-                                    buttons: {
-                                        "Ok": function() {
-                                            $(this).dialog("close");
-                                        }
-                                    }
-                                });
-                                if (dataprofile.MID == '') {
-                                    jQuery('.ui-dialog-content').html("<p><center><label>" + dataprofile.Msg + "</label></center></p>");
-                                    notActiveStatus();
-                                }
-                            }
-                            }
-                        },
-                        error: function(error)
-                        {
-                            var dataprofile = $.parseJSON(error);
-                            $("#errorMessage").html("<span>" + dataprofile.msg + "</span>");
-
-                        }
-                    });
-        }
-
-
-        //Function to get Profile Details
-        function getProfileData2(username) {
-            $.ajax(
-                    {
-                        url: "Helper/helper.redcardtransferring.php",
-                        type: 'post',
-                        data: {
-                            pager: function() {
-                                return "ProfileData2";
-                            },
-                            UserName: function() {
-                                return username;
-                            }
-                        },
-                        datatype: 'json',
-                        success: function(data)
-                        {
-                            var dataprofile = $.parseJSON(data);
-                            if(dataprofile.Msg=='Session Expired'){
-                                    window.location.href = dataprofile.RedirectToPage;
-                            } else {
-                            if (dataprofile.MID != '') {
-                                document.getElementById("results").style.display = "block";
-                                $("#tblname").html("<label>" + dataprofile.Name + "</label>");
-                                $("#tblbirthdate").html("<label>" + dataprofile.Birthdate + "</label>");
-                                $("#tblage").html("<label>" + dataprofile.Age + "</label>");
-                                $("#tblgender").html("<label>" + dataprofile.Gender + "</label>");
-                                $("#tblstatus").html("<label>" + dataprofile.Status + "</label>");
-                                $("#tblltpoints").html("<label>" + dataprofile.LifeTimePoints + "</label>");
-                                $("#tblcpoints").html("<label>" + dataprofile.CurrentPoints + "</label>");
-                                $("#tblrpoints").html("<label>" + dataprofile.RedeemedPoints + "</label>");
-                                $("#tblbpoints").html("<label>" + dataprofile.BonusPoints + "</label>");
-                                $('#playerprofile').show();
-                                $('#results').show();
-                                $('#pagination').show();
-                                jQuery('#hdnMID').val(dataprofile.MID);
-
-                            }
-                            else {
-                                jQuery('.ui-dialog-content').html("<p><center><label>" + dataprofile.Msg + "</label></center></p>");
-                                $('#SuccessDialog').dialog({
-                                    modal: true,
-                                    width: '400',
-                                    title: 'Red Card Transferring',
-                                    closeOnEscape: true,
-                                    draggable: false,
-                                    resizable: false,
-                                    open: function(event, ui) {
-                                        $(this).closest('.ui-dialog').find('.ui-dialog-titlebar-close').hide();
-                                    },
-                                    buttons: {
-                                        "Ok": function() {
-                                            $(this).dialog("close");
-                                        }
-                                    }
-                                });
-                                if (dataprofile.MID == '') {
-                                    jQuery('.ui-dialog-content').html("<p><center><label>" + dataprofile.Msg + "</label></center></p>");
-                                    notActiveStatus();
-                                }
-                            }
-                            }
-                        },
-                        error: function(error)
-                        {
-                            var dataprofile = $.parseJSON(error);
-                            $("#errorMessage").html("<span>" + dataprofile.msg + "</span>");
-
-                        }
-                    });
-        }
-
-        //Function to get Profile Details
-        function processPoints(cardnumber) {
-            $.ajax(
-                    {
-                        url: "Helper/helper.redcardtransferring.php",
-                        type: 'post',
-                        data: {
-                            pager: function() {
-                                return "ProcessPoints";
-                            },
-                            NewCard: function() {
-                                return cardnumber;
-                            },
-                            OldCard: function() {
-                                return jQuery("#txtCardNumber").val();
-                            },
-                            MID: function() {
-                                return jQuery("#hdnMID").val();
-                            }
-                        },
-                        datatype: 'json',
-                        success: function(data)
-                        {
-
-                            var dataprofile = $.parseJSON(data);
-                            if(dataprofile.Msg=='Session Expired'){
-                                    window.location.href = dataprofile.RedirectToPage;
-                            } else {
-                            if (dataprofile.MID != '') {
-                                document.getElementById("results").style.display = "block";
-                                $("#tblname").html("<label>" + dataprofile.Name + "</label>");
-                                $("#tblbirthdate").html("<label>" + dataprofile.Birthdate + "</label>");
-                                $("#tblage").html("<label>" + dataprofile.Age + "</label>");
-                                $("#tblgender").html("<label>" + dataprofile.Gender + "</label>");
-                                $("#tblstatus").html("<label>" + dataprofile.Status + "</label>");
-                                $("#tblltpoints").html("<label>" + dataprofile.LifeTimePoints + "</label>");
-                                $("#tblcpoints").html("<label>" + dataprofile.CurrentPoints + "</label>");
-                                $("#tblrpoints").html("<label>" + dataprofile.RedeemedPoints + "</label>");
-                                $("#tblbpoints").html("<label>" + dataprofile.BonusPoints + "</label>");
-                                $('#playerprofile').show();
-                                $('#results').show();
-                                $('#pagination').show();
-                                jQuery('#hdnMID').val(dataprofile.MID);
-
-                            }
-                            else {
-                                jQuery('.ui-dialog-content').html("<p><center><label>" + dataprofile.Msg + "</label></center></p>");
-                                $('#SuccessDialog').dialog({
-                                    modal: true,
-                                    width: '400',
-                                    title: 'Red Card Transferring',
-                                    closeOnEscape: true,
-                                    draggable: false,
-                                    resizable: false,
-                                    open: function(event, ui) {
-                                        $(this).closest('.ui-dialog').find('.ui-dialog-titlebar-close').hide();
-                                    },
-                                    buttons: {
-                                        "Ok": function() {
-                                            $(this).dialog("close");
-                                        }
-                                    }
-                                });
-                                if (dataprofile.MID == '') {
-                                    jQuery('.ui-dialog-content').html("<p><center><label>" + dataprofile.Msg + "</label></center></p>");
-                                    notActiveStatus();
-                                }
-                            }
-                            }
-                        },
-                        error: function(error)
-                        {
-                            var dataprofile = $.parseJSON(error);
-                            $("#errorMessage").html("<span>" + dataprofile.msg + "</span>");
-
-                        }
-                    });
-
-            document.getElementById("cboIDSelection").selectedIndex = 'Select One';
-            $("#perusername").css("display", "none");
-            $("#percard").css("display", "none");
-            $("#txtCardNumber").val("");
-            $("#txtUserName").val("");
-        }
-
-
-        //Function to get Profile Details
-        function processPoints2(username) {
-                $.ajax(
-                        {
-                            url: "Helper/helper.redcardtransferring.php",
-                            type: 'post',
-                            data: {
-                                pager: function() {
-                                    return "ProcessPoints2";
-                                },
-                                UserName: function() {
-                                    return username;
-                                },
-                                NewCard: function() {
-                                    return jQuery("#txtNewCardNumber").val();
-                                },
-                                MID: function() {
-                                    return jQuery("#hdnMID").val();
-                                }
-                            },
-                            datatype: 'json',
-                            success: function(data)
-                            {
-                                var dataprofile = $.parseJSON(data);
-                                if(dataprofile.Msg=='Session Expired'){
-                                    window.location.href = dataprofile.RedirectToPage;
+                            if (dataprofile.Msg == 'Session Expired') {
+                                window.location.href = dataprofile.RedirectToPage;
                             } else {
                                 if (dataprofile.MID != '') {
                                     document.getElementById("results").style.display = "block";
@@ -586,20 +405,257 @@ if (isset($_SESSION['CardRed'])) {
                                         notActiveStatus();
                                     }
                                 }
-                                }
-                            },
-                            error: function(error)
-                            {
-                                var dataprofile = $.parseJSON(error);
-                                $("#errorMessage").html("<span>" + dataprofile.msg + "</span>");
-
                             }
-                        });
-                document.getElementById("cboIDSelection").selectedIndex = 'Select One';
-                $("#perusername").css("display", "none");
-                $("#percard").css("display", "none");
-                $("#txtCardNumber").val("");
-                $("#txtUserName").val("");
+                        },
+                        error: function(error)
+                        {
+                            var dataprofile = $.parseJSON(error);
+                            $("#errorMessage").html("<span>" + dataprofile.msg + "</span>");
+
+                        }
+                    });
+        }
+
+
+        //Function to get Profile Details
+        function getProfileData2(username) {
+            $.ajax(
+                    {
+                        url: "Helper/helper.redcardtransferring.php",
+                        type: 'post',
+                        data: {
+                            pager: function() {
+                                return "ProfileData2";
+                            },
+                            UserName: function() {
+                                return username;
+                            }
+                        },
+                        datatype: 'json',
+                        success: function(data)
+                        {
+                            var dataprofile = $.parseJSON(data);
+                            if (dataprofile.Msg == 'Session Expired') {
+                                window.location.href = dataprofile.RedirectToPage;
+                            } else {
+                                if (dataprofile.MID != '') {
+                                    document.getElementById("results").style.display = "block";
+                                    $("#tblname").html("<label>" + dataprofile.Name + "</label>");
+                                    $("#tblbirthdate").html("<label>" + dataprofile.Birthdate + "</label>");
+                                    $("#tblage").html("<label>" + dataprofile.Age + "</label>");
+                                    $("#tblgender").html("<label>" + dataprofile.Gender + "</label>");
+                                    $("#tblstatus").html("<label>" + dataprofile.Status + "</label>");
+                                    $("#tblltpoints").html("<label>" + dataprofile.LifeTimePoints + "</label>");
+                                    $("#tblcpoints").html("<label>" + dataprofile.CurrentPoints + "</label>");
+                                    $("#tblrpoints").html("<label>" + dataprofile.RedeemedPoints + "</label>");
+                                    $("#tblbpoints").html("<label>" + dataprofile.BonusPoints + "</label>");
+                                    $('#playerprofile').show();
+                                    $('#results').show();
+                                    $('#pagination').show();
+                                    jQuery('#hdnMID').val(dataprofile.MID);
+
+                                }
+                                else {
+                                    jQuery('.ui-dialog-content').html("<p><center><label>" + dataprofile.Msg + "</label></center></p>");
+                                    $('#SuccessDialog').dialog({
+                                        modal: true,
+                                        width: '400',
+                                        title: 'Red Card Transferring',
+                                        closeOnEscape: true,
+                                        draggable: false,
+                                        resizable: false,
+                                        open: function(event, ui) {
+                                            $(this).closest('.ui-dialog').find('.ui-dialog-titlebar-close').hide();
+                                        },
+                                        buttons: {
+                                            "Ok": function() {
+                                                $(this).dialog("close");
+                                            }
+                                        }
+                                    });
+                                    if (dataprofile.MID == '') {
+                                        jQuery('.ui-dialog-content').html("<p><center><label>" + dataprofile.Msg + "</label></center></p>");
+                                        notActiveStatus();
+                                    }
+                                }
+                            }
+                        },
+                        error: function(error)
+                        {
+                            var dataprofile = $.parseJSON(error);
+                            $("#errorMessage").html("<span>" + dataprofile.msg + "</span>");
+
+                        }
+                    });
+        }
+
+        //Function to get Profile Details
+        function processPoints(cardnumber) {
+            $.ajax(
+                    {
+                        url: "Helper/helper.redcardtransferring.php",
+                        type: 'post',
+                        data: {
+                            pager: function() {
+                                return "ProcessPoints";
+                            },
+                            NewCard: function() {
+                                return cardnumber;
+                            },
+                            OldCard: function() {
+                                return jQuery("#txtCardNumber").val();
+                            },
+                            MID: function() {
+                                return jQuery("#hdnMID").val();
+                            }
+                        },
+                        datatype: 'json',
+                        success: function(data)
+                        {
+
+                            var dataprofile = $.parseJSON(data);
+                            if (dataprofile.Msg == 'Session Expired') {
+                                window.location.href = dataprofile.RedirectToPage;
+                            } else {
+                                if (dataprofile.MID != '') {
+                                    document.getElementById("results").style.display = "block";
+                                    $("#tblname").html("<label>" + dataprofile.Name + "</label>");
+                                    $("#tblbirthdate").html("<label>" + dataprofile.Birthdate + "</label>");
+                                    $("#tblage").html("<label>" + dataprofile.Age + "</label>");
+                                    $("#tblgender").html("<label>" + dataprofile.Gender + "</label>");
+                                    $("#tblstatus").html("<label>" + dataprofile.Status + "</label>");
+                                    $("#tblltpoints").html("<label>" + dataprofile.LifeTimePoints + "</label>");
+                                    $("#tblcpoints").html("<label>" + dataprofile.CurrentPoints + "</label>");
+                                    $("#tblrpoints").html("<label>" + dataprofile.RedeemedPoints + "</label>");
+                                    $("#tblbpoints").html("<label>" + dataprofile.BonusPoints + "</label>");
+                                    $('#playerprofile').show();
+                                    $('#results').show();
+                                    $('#pagination').show();
+                                    jQuery('#hdnMID').val(dataprofile.MID);
+
+                                }
+                                else {
+                                    jQuery('.ui-dialog-content').html("<p><center><label>" + dataprofile.Msg + "</label></center></p>");
+                                    $('#SuccessDialog').dialog({
+                                        modal: true,
+                                        width: '400',
+                                        title: 'Red Card Transferring',
+                                        closeOnEscape: true,
+                                        draggable: false,
+                                        resizable: false,
+                                        open: function(event, ui) {
+                                            $(this).closest('.ui-dialog').find('.ui-dialog-titlebar-close').hide();
+                                        },
+                                        buttons: {
+                                            "Ok": function() {
+                                                $(this).dialog("close");
+                                            }
+                                        }
+                                    });
+                                    if (dataprofile.MID == '') {
+                                        jQuery('.ui-dialog-content').html("<p><center><label>" + dataprofile.Msg + "</label></center></p>");
+                                        notActiveStatus();
+                                    }
+                                }
+                            }
+                        },
+                        error: function(error)
+                        {
+                            var dataprofile = $.parseJSON(error);
+                            $("#errorMessage").html("<span>" + dataprofile.msg + "</span>");
+
+                        }
+                    });
+
+            document.getElementById("cboIDSelection").selectedIndex = 'Select One';
+            $("#perusername").css("display", "none");
+            $("#percard").css("display", "none");
+            $("#txtCardNumber").val("");
+            $("#txtUserName").val("");
+        }
+
+
+        //Function to get Profile Details
+        function processPoints2(username) {
+            $.ajax(
+                    {
+                        url: "Helper/helper.redcardtransferring.php",
+                        type: 'post',
+                        data: {
+                            pager: function() {
+                                return "ProcessPoints2";
+                            },
+                            UserName: function() {
+                                return username;
+                            },
+                            NewCard: function() {
+                                return jQuery("#txtNewCardNumber").val();
+                            },
+                            MID: function() {
+                                return jQuery("#hdnMID").val();
+                            }
+                        },
+                        datatype: 'json',
+                        success: function(data)
+                        {
+                            var dataprofile = $.parseJSON(data);
+                            if (dataprofile.Msg == 'Session Expired') {
+                                window.location.href = dataprofile.RedirectToPage;
+                            } else {
+                                if (dataprofile.MID != '') {
+                                    document.getElementById("results").style.display = "block";
+                                    $("#tblname").html("<label>" + dataprofile.Name + "</label>");
+                                    $("#tblbirthdate").html("<label>" + dataprofile.Birthdate + "</label>");
+                                    $("#tblage").html("<label>" + dataprofile.Age + "</label>");
+                                    $("#tblgender").html("<label>" + dataprofile.Gender + "</label>");
+                                    $("#tblstatus").html("<label>" + dataprofile.Status + "</label>");
+                                    $("#tblltpoints").html("<label>" + dataprofile.LifeTimePoints + "</label>");
+                                    $("#tblcpoints").html("<label>" + dataprofile.CurrentPoints + "</label>");
+                                    $("#tblrpoints").html("<label>" + dataprofile.RedeemedPoints + "</label>");
+                                    $("#tblbpoints").html("<label>" + dataprofile.BonusPoints + "</label>");
+                                    $('#playerprofile').show();
+                                    $('#results').show();
+                                    $('#pagination').show();
+                                    jQuery('#hdnMID').val(dataprofile.MID);
+
+                                }
+                                else {
+                                    jQuery('.ui-dialog-content').html("<p><center><label>" + dataprofile.Msg + "</label></center></p>");
+                                    $('#SuccessDialog').dialog({
+                                        modal: true,
+                                        width: '400',
+                                        title: 'Red Card Transferring',
+                                        closeOnEscape: true,
+                                        draggable: false,
+                                        resizable: false,
+                                        open: function(event, ui) {
+                                            $(this).closest('.ui-dialog').find('.ui-dialog-titlebar-close').hide();
+                                        },
+                                        buttons: {
+                                            "Ok": function() {
+                                                $(this).dialog("close");
+                                            }
+                                        }
+                                    });
+                                    if (dataprofile.MID == '') {
+                                        jQuery('.ui-dialog-content').html("<p><center><label>" + dataprofile.Msg + "</label></center></p>");
+                                        notActiveStatus();
+                                    }
+                                }
+                            }
+                        },
+                        error: function(error)
+                        {
+                            var dataprofile = $.parseJSON(error);
+                            $("#errorMessage").html("<span>" + dataprofile.msg + "</span>");
+
+                        }
+                    });
+            document.getElementById("cboIDSelection").selectedIndex = 'Select One';
+            $("#perusername").css("display", "none");
+            $("#percard").css("display", "none");
+            $("#txtCardNumber").val("");
+            $("#txtUserName").val("");
         }
 
     });
@@ -663,29 +719,29 @@ if (isset($_SESSION['CardRed'])) {
                         <br>
                         <div class="pad5" align="right"></div>
                         <div style="float: left">
-                        <table id="tblplayerdetails">
-                            <tr><th colspan="2">Player Profile</th></tr>
-                            <tr><td style="width: 200px;">Name</td><td style="width: 200px;" id="tblname"></td></tr>
-                            <tr><td style="width: 200px;">Birthdate</td><td style="width: 200px;" id="tblbirthdate"></td></tr>
-                            <tr><td style="width: 200px;">Age</td><td style="width: 200px;" id="tblage"></td></tr>
-                            <tr><td style="width: 200px;">Gender</td><td style="width: 200px;" id="tblgender"></td></tr>
-                            <tr><td style="width: 200px;">Status</td><td style="width: 200px;" id="tblstatus"></td></tr>
-                            <tr><td style="width: 200px;">Life Time Points</td><td style="width: 200px;" id="tblltpoints"></td></tr>
-                            <tr><td style="width: 200px;">Current Points</td><td style="width: 200px;" id="tblcpoints"></td></tr>
-                            <tr><td style="width: 200px;">Redeemed Points</td><td style="width: 200px;" id="tblrpoints"></td></tr>
-                            <tr><td style="width: 200px;">Bonus Points</td><td style="width: 200px;" id="tblbpoints"></td></tr>
-                        </table>
-                        <?php echo "$hdnMID"; ?>
+                            <table id="tblplayerdetails">
+                                <tr><th colspan="2">Player Profile</th></tr>
+                                <tr><td style="width: 200px;">Name</td><td style="width: 200px;" id="tblname"></td></tr>
+                                <tr><td style="width: 200px;">Birthdate</td><td style="width: 200px;" id="tblbirthdate"></td></tr>
+                                <tr><td style="width: 200px;">Age</td><td style="width: 200px;" id="tblage"></td></tr>
+                                <tr><td style="width: 200px;">Gender</td><td style="width: 200px;" id="tblgender"></td></tr>
+                                <tr><td style="width: 200px;">Status</td><td style="width: 200px;" id="tblstatus"></td></tr>
+                                <tr><td style="width: 200px;">Life Time Points</td><td style="width: 200px;" id="tblltpoints"></td></tr>
+                                <tr><td style="width: 200px;">Current Points</td><td style="width: 200px;" id="tblcpoints"></td></tr>
+                                <tr><td style="width: 200px;">Redeemed Points</td><td style="width: 200px;" id="tblrpoints"></td></tr>
+                                <tr><td style="width: 200px;">Bonus Points</td><td style="width: 200px;" id="tblbpoints"></td></tr>
+                            </table>
+                            <?php echo "$hdnMID"; ?>
                         </div>
                         <div style="float: left">
-                        <table align="left">
-                            <tr><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;New Card Number &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td></tr>
-                            <tr><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?php echo "$txtNewCardNumber"; ?></td></tr>
-                        </table>
-                        <table align="left">
-                            <tr><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td></tr>    
-                            <tr><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?php echo "$btnTransfer"; ?></td></tr>
-                        </table>
+                            <table align="left">
+                                <tr><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;New Card Number &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td></tr>
+                                <tr><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?php echo "$txtNewCardNumber"; ?></td></tr>
+                            </table>
+                            <table align="left">
+                                <tr><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td></tr>    
+                                <tr><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?php echo "$btnTransfer"; ?></td></tr>
+                            </table>
                         </div>
                     </div>
                     <br/>

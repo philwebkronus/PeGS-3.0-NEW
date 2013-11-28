@@ -88,4 +88,17 @@ function alphanumericemail(event)
          return true;
       else
           return false;
-}        
+}    
+
+function alphanumericemail2(event)
+{
+   var charCode = (event.which) ? event.which : event.keyCode;
+      if ((charCode > 64 && charCode < 91 ) || (charCode > 47 && charCode < 58) || (charCode > 96 && charCode < 123))
+          return true;
+      else if(charCode == 8 || charCode == 9 || charCode == 64 || charCode == 46 || charCode == 45 || charCode == 95)
+         return true;
+     else if(charCode == 32)
+         return false;
+      else
+          return false;
+} 
