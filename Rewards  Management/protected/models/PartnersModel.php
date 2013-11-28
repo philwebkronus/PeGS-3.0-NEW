@@ -7,7 +7,7 @@ class PartnersModel extends CFormModel
         
         $connection = Yii::app()->db;
          
-        $sql="SELECT RefPartnerID FROM partners
+        $sql="SELECT PartnerPID FROM partners
             WHERE RefPartnerID = :refpartnerid LIMIT 1";
         $command = $connection->createCommand($sql);
         $command->bindValue(':refpartnerid', $refpartnerid);

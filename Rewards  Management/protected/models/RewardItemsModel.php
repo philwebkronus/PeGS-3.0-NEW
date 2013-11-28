@@ -16,9 +16,18 @@ class RewardItemsModel extends CFormModel
         
     }
     
-    
-    
-    public function getRewardItems($partnerid){
+    public function getAuditTrailDetails($rewarditemid){
+        $connection = Yii::app()->db;
+         
+        $sql="SELECT PartnerID, ItemName, Status FROM rewarditems 
+            WHERE RewardItemID = :rewarditemid";
+        $command = $connection->createCommand($sql);
+        $command->bindValue(':rewarditemid', $rewarditemid);
+        $result = $command->queryAll();
+        return $result[0];
+    }
+
+        public function getRewardItems($partnerid){
         
         $connection = Yii::app()->db;
          
@@ -40,7 +49,7 @@ class RewardItemsModel extends CFormModel
             WHERE RewardItemID = :rewarditemid";
         $command = $connection->createCommand($sql);
         $command->bindValue(':rewarditemid', $rewarditemid);
-        $result = $command->queryAll();
+        $result = $command->queryRow();
          
         return $result;
         
@@ -274,12 +283,17 @@ class RewardItemsModel extends CFormModel
      * @param int $newitemcount
      * @return array
      */
-    public function replenishItem($rewarditemid, $newitemcount, $currentitemcount, $addeditemcount, $newserialcodeend){
+    public function replenishItem($rewarditemid, $newitemcount, $currentitemcount, $addeditemcount, $newserialcodeend, $status){
         $connection = Yii::app()->db;
         $CreatedByAID = Yii::app()->session['AID'];
         $pdo = $connection->beginTransaction();
-        $query = "UPDATE rewarditems SET AvailableItemCount = $newitemcount, SerialCodeEnd = '$newserialcodeend', DateUpdated = now_usec(),
+        if($status == 2){
+            $query = "UPDATE rewarditems SET AvailableItemCount = $newitemcount, SerialCodeEnd = '$newserialcodeend', DateUpdated = now_usec(),
+                            UpdatedByAID = $CreatedByAID WHERE RewardItemID = ".$rewarditemid;
+        } else {
+            $query = "UPDATE rewarditems SET AvailableItemCount = $newitemcount, SerialCodeEnd = '$newserialcodeend', DateUpdated = now_usec(),
                             UpdatedByAID = $CreatedByAID, Status = 1 WHERE RewardItemID = ".$rewarditemid;
+        }
         $sql = Yii::app()->db->createCommand($query);
         $updateresult = $sql->execute();
         if($updateresult > 0){
@@ -547,7 +561,8 @@ class RewardItemsModel extends CFormModel
 
         try {
             $command->execute();
-            return array('TransMsg'=>'Reward Item/Coupon has been successfully added.','TransCode'=>0);
+            $lastinsertedid = $connection->getLastInsertID();
+            return array('TransMsg'=>'Reward Item/Coupon has been successfully added.','TransCode'=>0, 'LastInsertID' => $lastinsertedid);
         } catch (CDbException $e) {
             return array('TransMsg'=>'Error: '. $e->getMessage(),'TransCode'=>2);
         }

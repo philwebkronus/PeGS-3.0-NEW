@@ -895,6 +895,7 @@ tinyMCE.init({
             } else {
                 var rewardtype = $('#rewardtype2:checked').val();
             }
+            $("#hdnrewardtype").val(rewardtype);
             if(rewardtype == "1"){
                 $("#deleterewardconfirmation1").dialog("open");
             } else {
@@ -922,6 +923,12 @@ tinyMCE.init({
         $("#refillbutton").live("click",function(){
             var RewardItemID = $(this).attr("RewardItemID");
             $(" #hdnRewardItemID-replenishform").val(RewardItemID);
+            if($('#rewardtype1:checked').val() != undefined){
+                var rewardtype = $('#rewardtype1:checked').val();
+            } else {
+                var rewardtype = $('#rewardtype2:checked').val();
+            }
+            $(" #hdnRewardID-replenishform").val(rewardtype);
             getCurrentInventory(RewardItemID);
         });
         
@@ -1119,6 +1126,7 @@ tinyMCE.init({
 </table>
 <?php echo CHtml::hiddenField('hdnFunctionName' , '', array('id' => 'hdnFunctionName')); ?>
 <?php echo CHtml::hiddenField('hdnRewardItemID' , '', array('id'=>'hdnRewardItemID')); ?>
+<?php echo CHtml::hiddenField('hdnrewardtype' , '', array('id'=>'hdnrewardtype')); ?>
 <table id="rewardslist"></table>
 <div id="rewardslistpager"></div>
 <div id="main" style="position:relative;">
@@ -1335,6 +1343,7 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog',array(
     ?>
 <?php echo CHtml::hiddenField('hdnFunctionName' , 'ReplenishItem', array('id' => 'hdnFunctionName')); ?>
 <?php echo CHtml::hiddenField('hdnRewardItemID-replenishform' , '', array('id'=>'hdnRewardItemID-replenishform')); ?>
+<?php echo CHtml::hiddenField('hdnRewardID-replenishform' , '', array('id'=>'hdnRewardID-replenishform')); ?>
 <table id="replenishingform" style="display: none">
     <tr>
         <td>Current Inventory Level</td>

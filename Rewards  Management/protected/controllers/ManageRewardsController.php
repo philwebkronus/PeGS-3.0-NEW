@@ -161,6 +161,7 @@ class ManageRewardsController extends Controller
     public function actionManipulateReward(){
         $model = new ManageRewardsForm();
         $rewarditems = new RewardItemsModel();
+        $audittrail = new AuditTrailModel();
 
         if(isset($_POST['ManageRewardsForm'])){
             $model->attributes = $_POST['ManageRewardsForm'];
@@ -169,15 +170,42 @@ class ManageRewardsController extends Controller
             switch ($functionname){
                 case 'DeleteReward':
                     $rewarditemid = $_POST['hdnRewardItemID'];
+                    $rewardtype = $_POST['hdnrewardtype'];
                     $status = 4;
+                    
+                    //Change status of item to deactivated (deleted)
                     $result = $rewarditems->updateRewardStatus($rewarditemid, $status);
+                    
+                    //Get the PartnerID for audit trail transaction details
+                    $audittraildetails = $rewarditems->getAuditTrailDetails($rewarditemid);
+                    
+                    //Identify Reward Type to get the appropriate Audit Function.
+                    if($rewardtype == "1" || $rewardtype == 1){
+                        $auditfunctionid = RefAuditFunctionsModel::MARKETING_DELETE_REWARDS;
+                    } else {
+                        $auditfunctionid = RefAuditFunctionsModel::MARKETING_DELETE_RAFFLE;
+                    }
                     
                     if($result['TransCode'] == 0){
                         $this->showdialog = true;
-                        $this->message = "Reward Item/Coupon has been successfully deleted.";
+                        if($rewardtype == "1"){
+                            $this->message = "Reward e-Coupon has been successfully deleted.";
+                            $transdetails = "RewardItemID: ".$rewarditemid.", PartnerID: ".$audittraildetails["PartnerID"].", Name: ".$audittraildetails["ItemName"].", Status: 4 - Deactivated";
+                        } else {
+                            $this->message = "Raffle e-Coupon has been successfully deleted.";
+                            $transdetails = "RewardItemID: ".$rewarditemid.", Name: ".$audittraildetails["ItemName"].", Status: 4 - Deactivated";
+                        }
+                        
+                        //Log event to audit trail
+                        $audittrail->logEvent($auditfunctionid, $transdetails, array('SessionID' => Yii::app()->session['SessionID'], 'AID' => Yii::app()->session['AID']));
                     } else {
                         $this->showdialog = true;
-                        $this->message = "Failed to delete Reward Item/Coupon.";
+                        if($rewardtype == "1"){
+                            $this->message = "Failed to delete Reward e-Coupon.";
+                        } else {
+                            $this->message = "Failed to delete Raffle e-Coupon.";
+                        }
+
                     }
                     $this->render('managerewards', array('model' => $model));
                     break;
@@ -291,7 +319,14 @@ class ManageRewardsController extends Controller
                         $subtext = null;
                     } else { $subtext = $model->editsubtext; }
                     
-                    if($rewardid == 2){
+                    //Identify Reward Type to get the appropriate Audit Function.
+                    if($rewardid == "2"){
+                        $auditfunctionid = RefAuditFunctionsModel::MARKETING_EDIT_RAFFLE_DETAILS;
+                    } else {
+                        $auditfunctionid = RefAuditFunctionsModel::MARKETING_EDIT_REWARDS_DETAILS;
+                    }
+                    
+                    if($rewardid == 2 || $rewardid == "2"){
                         if(($thblimitedphoto != null && $thblimitedphoto != '') && ($thboutofstockphoto == null || $thboutofstockphoto == '')){
                             $thboutofstockphoto = $thblimitedphoto;
                         }
@@ -310,7 +345,7 @@ class ManageRewardsController extends Controller
                         $lmlimitedphoto != "" ? unlink("$imagetmpdirectory".$lmlimitedphoto):"";
                         $lmoutofstockphoto != "" ? unlink("$imagetmpdirectory".$lmoutofstockphoto):"";
                         $websliderphoto != "" ? unlink("$imagetmpdirectory".$websliderphoto):"";
-
+                        
                         $this->render('managerewards', array('model' => $model));
                     } else {
                         $thblimitedphoto != "" ? unlink("$imagetmpdirectory".$thblimitedphoto):"";
@@ -326,17 +361,35 @@ class ManageRewardsController extends Controller
                         $lmoutofstockphoto != "" ? $lmoutofstockphoto = $newlmoutofstockphoto: $lmoutofstockphoto = $lmoutofstockphoto;
                         $websliderphoto != "" ? $websliderphoto = $newwebsliderphoto: $websliderphoto = $websliderphoto;
                     }
-
+                    
+                    //Update Reward Item Details
                     $result = $rewarditems->UpdateRewardItem($rewarditemid, $rewardid, $model->editrewarditem, $editpoints, $model->editeligibility, $model->editstatus, $startdate, $enddate, 
                                                                                                                 $partnerid, $categoryid, $subtext, $about, $terms, $thblimitedphoto, $thboutofstockphoto, 
                                                                                                                 $ecouponphoto, $lmlimitedphoto, $lmoutofstockphoto, $websliderphoto, $drawdate);
+                    
                     if($result['TransCode'] == 0){
                         $this->showdialog = true;
+                        
+                        switch ($model->editstatus) {
+                            case "1":
+                                $statusvalue = "Active";
+                                break;
+                            case "2":
+                                $statusvalue = "Inactive";
+                                break;
+                        }
+                        
                         if($rewardid == "2"){
                             $this->message = "Raffle e-Coupon successfully updated.";
+                            $transdetails = "RewardItemID: ".$rewarditemid.", Name: ".$model->editrewarditem.", Status: ".$model->editstatus." - ".$statusvalue;
                         } else {
                             $this->message = "Reward e-Coupon successfully updated.";
+                            $transdetails = "RewardItemID: ".$rewarditemid.", PartnerID: ".$partnerid.", Name: ".$model->editrewarditem.", Status: ".$model->editstatus." - ".$statusvalue;
                         }
+                        
+                        //Log Event on Audit trail
+                        $audittrail->logEvent($auditfunctionid, $transdetails, array('SessionID' => Yii::app()->session['SessionID'], 'AID' => Yii::app()->session['AID']));
+                    
                     } else {
                         $this->showdialog = true;
                         if($rewardid == "2"){
@@ -455,7 +508,14 @@ class ManageRewardsController extends Controller
                         $promoname = null;
                     } else { $promoname = $model->addpromoname; }
                     
-                    if($rewardid == 2){
+                    //Identify Reward Type to get the appropriate Audit Function.
+                    if($rewardid == "2" || $rewardid == 2){
+                        $auditfunctionid = RefAuditFunctionsModel::MARKETING_ADD_RAFFLE;
+                    } else {
+                        $auditfunctionid = RefAuditFunctionsModel::MARKETING_ADD_REWARDS;
+                    }
+                    
+                    if($rewardid == "2" || $rewardid == 2){
                         if(($thblimitedphoto != null && $thblimitedphoto != '') && ($thboutofstockphoto == null || $thboutofstockphoto == '')){
                             $thboutofstockphoto = $thblimitedphoto;
                         }
@@ -521,6 +581,7 @@ class ManageRewardsController extends Controller
                             $websliderphoto != "" ? $websliderphoto = $newwebsliderphoto: $websliderphoto = $websliderphoto;
                         }
                         
+                        //Add New Reward Item 
                         $addnewrewarditem = $rewarditems->InsertRewardItem((int)$partneritemid, (int)$rewardid, $model->addrewarditem, (int)$addpoints, (int)$model->addeligibility, 
                                                                                                                                                 (int)$model->addstatus, $startdate,  $enddate, $partnerid, $categoryid, $subtext, $about, $terms, (int)$itemcount, 
                                                                                                                                                 $thblimitedphoto, $thboutofstockphoto, $ecouponphoto, $lmlimitedphoto, 
@@ -529,11 +590,26 @@ class ManageRewardsController extends Controller
                         
                         if($addnewrewarditem['TransCode'] == 0){
                             $this->showdialog = true;
+                            
+                            switch ($model->addstatus) {
+                                case "1":
+                                    $statusvalue = "Active";
+                                    break;
+                                case "2":
+                                    $statusvalue = "Inactive";
+                                    break;
+                            }
+                            
                             if($rewardid == "2"){
                                 $this->message = "Raffle e-Coupon successfully Added.";
+                                $transdetails = "RewardItemID: ".$addnewrewarditem["LastInsertID"].", Name: ".$model->addrewarditem.", Status: ".$model->addstatus." - ".$statusvalue;
                             } else {
                                 $this->message = "Reward e-Coupon successfully Added.";
+                                $transdetails = "RewardItemID: ".$addnewrewarditem["LastInsertID"].", PartnerID: ".$partnerid.", Name: ".$model->addrewarditem.", Status: ".$model->addstatus." - ".$statusvalue;
                             }
+                            
+                            //Log Event on Audit trail
+                            $audittrail->logEvent($auditfunctionid, $transdetails, array('SessionID' => Yii::app()->session['SessionID'], 'AID' => Yii::app()->session['AID']));
                         } else {
                             $this->showdialog = true;
                             if($rewardid == "2"){
@@ -545,35 +621,61 @@ class ManageRewardsController extends Controller
                         $this->render('managerewards', array('model' => $model));
                     } else {
                         $this->showdialog = true;
-                            if($rewardid == "2"){
-                                $this->message = "Raffle e-Coupon already exist.";
-                            } else {
-                                $this->message = "Reward e-Coupon already exist.";
-                            }
+                        if($rewardid == "2"){
+                            $this->message = "Raffle e-Coupon already exist.";
+                        } else {
+                            $this->message = "Reward e-Coupon already exist.";
+                        }
                         $this->render('managerewards', array('model' => $model));
                     }
 
                     break;
                 case 'ReplenishItem':
                     $rewarditemid = $_POST['hdnRewardItemID-replenishform'];
-
+                    $rewardid = $_POST["hdnRewardID-replenishform"];
                     $itemcount = $model->inventoryupdate;
                     $currentinventory = $model->currentinventory;
                     $addeditemcount = $model->additems;
                     $newitemcount = preg_replace('/[^0-9]/s', '', $itemcount);
                     $currentitemcount = preg_replace('/[^0-9]/s', '', $currentinventory);
                     $addeditemcount = preg_replace('/[^0-9]/s', '', $addeditemcount);
+                    $auditfunctionid = RefAuditFunctionsModel::MARKETING_REPLENISH_REWARD_INVENTORY;
+                    
                     if((int)$newitemcount != (int)$currentinventory){
                         if($newitemcount != 0 || $newitemcount != null){
                             $getserialendcode = $rewarditems->GetSerialCodeEnd($rewarditemid);
                             $total = (int)$getserialendcode[0]["SerialCodeEnd"] + (int)$addeditemcount;
                             $str = (string)$total;
                             $newserialcodeend = str_pad($str, 5, "0", STR_PAD_LEFT);
-                            $result = $rewarditems->replenishItem($rewarditemid, (int)$newitemcount, (int)$currentitemcount, (int)$addeditemcount, $newserialcodeend);
-
+                            
+                            //Get the PartnerID for audit trail transaction details
+                            $audittraildetails = $rewarditems->getAuditTrailDetails($rewarditemid);
+                            
+                            //Replenish Item Inventory
+                            $result = $rewarditems->replenishItem($rewarditemid, (int)$newitemcount, (int)$currentitemcount, (int)$addeditemcount, $newserialcodeend, (int)$audittraildetails["Status"]);
+                            
                             if($result['TransCode'] == 0){
                                 $this->showdialog = true;
-                                $this->message = $result['TransMsg'];
+                                
+                                switch ($audittraildetails["Status"]) {
+                                    case "1":
+                                        $statusvalue = "Active";
+                                        break;
+                                    case "2":
+                                        $statusvalue = "Inactive";
+                                        break;
+                                }
+                                
+                                if($rewardid == "1"){
+                                    $this->message = "Reward e-Coupon has been successfully replenished.";
+                                    $transdetails = "RewardItemID: ".$rewarditemid.", PartnerID: ".$audittraildetails["PartnerID"].", Name: ".$audittraildetails["ItemName"].", Status: ".$audittraildetails["Status"]." - ".$statusvalue;
+                                } else {
+                                    $this->message = "Raffle e-Coupon has been successfully replenished.";
+                                    $transdetails = "RewardItemID: ".$rewarditemid.", Name: ".$audittraildetails["ItemName"].", Status: ".$audittraildetails["Status"]." - ".$statusvalue;
+                                }
+                                
+                                //Log Event on Audit trail
+                                $audittrail->logEvent($auditfunctionid, $transdetails, array('SessionID' => Yii::app()->session['SessionID'], 'AID' => Yii::app()->session['AID']));
                             } else {
                                 $this->showdialog = true;
                                 $this->message = "Failed to replenish Reward Item/Coupon.";

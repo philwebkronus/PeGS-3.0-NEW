@@ -152,6 +152,8 @@ class ManagePartnersForm extends CFormModel
      */
     public function updatePartnerDetails($details, $user)
     {
+        $audittrailmodel = new AuditTrailModel();
+        
         $connection = Yii::app()->db;
         
         $pdo = $connection->beginTransaction();
@@ -170,160 +172,179 @@ class ManagePartnersForm extends CFormModel
         $contactMobile      = $details['contactMobile'];
         $status             = $details['status'];
         $numberofofferings  = $details['noOfofferings'];
-        //Update the tbl_ref_partners
-        $firstquery = "UPDATE ref_partners SET 
-                            PartnerName = :partnername,
-                            Status = :status,
-                            DateUpdated = NOW_USEC(),
-                            UpdatedByAID = :AID
-                       WHERE PartnerID = :partnerID
-                      ";
         
-        $sql = $connection->createCommand($firstquery);
-        $sql->bindParam(":partnername", $partnername);
-        $sql->bindParam(":partnerID", $partnerID);
-        $sql->bindParam(":status", $status);
-        $sql->bindParam(":AID", $user);
-        $firstresult = $sql->execute();
-        
-        if ($firstresult >= 0)
+        try
         {
-            try
-            {               
-                //Update tbl_partnerdetails
-                $secondquery = "UPDATE partnerdetails SET 
-                                    CompanyAddress = :address,
-                                    CompanyEmail = :email,
-                                    CompanyPhone = :phonenumber,
-                                    CompanyFax = :faxnumber,
-                                    CompanyWebsite = :website,
-                                    ContactPerson = :contactperson,
-                                    ContactPersonPosition = :contactposition,
-                                    ContactPersonPhone = :contactphone,
-                                    ContactPersonMobile = :contactmobile,
-                                    ContactPersonEmail = :contactemail,
-                                    NumberOfRewardOffers = :numberofofferings
-                                WHERE PartnerID = :partnerID
-                                ";
-                $sql = $connection->createCommand($secondquery);
-                $sql->bindParam(":partnerID", $partnerID);
-                $sql->bindParam(":address", $address);
-                $sql->bindParam(":email", $email);
-                $sql->bindParam(":phonenumber", $pnumber);
-                $sql->bindParam(":faxnumber", $faxnumber);
-                $sql->bindParam(":website", $website);
-                $sql->bindParam(":contactperson", $contactPerson);
-                $sql->bindParam(":contactposition", $contactPosition);
-                $sql->bindParam(":contactphone", $contactPNumber);
-                $sql->bindParam(":contactmobile", $contactMobile);
-                $sql->bindParam(":contactemail", $contactEmail);
-                $sql->bindParam(":numberofofferings", $numberofofferings);
-                $secondresult = $sql->execute();
-                //Check whether first or second query has been updated
-                if ($secondresult > 0 || $firstresult > 0)
-                {
-                    try
+            //Update the tbl_ref_partners
+            $firstquery = "UPDATE ref_partners SET 
+                                PartnerName = :partnername,
+                                Status = :status,
+                                DateUpdated = NOW_USEC(),
+                                UpdatedByAID = :AID
+                           WHERE PartnerID = :partnerID
+                          ";
+
+            $sql = $connection->createCommand($firstquery);
+            $sql->bindParam(":partnername", $partnername);
+            $sql->bindParam(":partnerID", $partnerID);
+            $sql->bindParam(":status", $status);
+            $sql->bindParam(":AID", $user);
+            $firstresult = $sql->execute();
+
+            if ($firstresult >= 0)
+            {
+                try
+                {               
+                    //Update tbl_partnerdetails
+                    $secondquery = "UPDATE partnerdetails SET 
+                                        CompanyAddress = :address,
+                                        CompanyEmail = :email,
+                                        CompanyPhone = :phonenumber,
+                                        CompanyFax = :faxnumber,
+                                        CompanyWebsite = :website,
+                                        ContactPerson = :contactperson,
+                                        ContactPersonPosition = :contactposition,
+                                        ContactPersonPhone = :contactphone,
+                                        ContactPersonMobile = :contactmobile,
+                                        ContactPersonEmail = :contactemail,
+                                        NumberOfRewardOffers = :numberofofferings
+                                    WHERE PartnerID = :partnerID
+                                    ";
+                    $sql = $connection->createCommand($secondquery);
+                    $sql->bindParam(":partnerID", $partnerID);
+                    $sql->bindParam(":address", $address);
+                    $sql->bindParam(":email", $email);
+                    $sql->bindParam(":phonenumber", $pnumber);
+                    $sql->bindParam(":faxnumber", $faxnumber);
+                    $sql->bindParam(":website", $website);
+                    $sql->bindParam(":contactperson", $contactPerson);
+                    $sql->bindParam(":contactposition", $contactPosition);
+                    $sql->bindParam(":contactphone", $contactPNumber);
+                    $sql->bindParam(":contactmobile", $contactMobile);
+                    $sql->bindParam(":contactemail", $contactEmail);
+                    $sql->bindParam(":numberofofferings", $numberofofferings);
+                    $secondresult = $sql->execute(); 
+                    //Check whether first or second query has been updated
+                    if ($secondresult > 0 || $firstresult > 0)
                     {
-                        //Update tbl_partnerinfo
-                        $secondquery = "UPDATE partnersinfo a 
-                                        INNER JOIN partners b ON a.PartnerPID = b.PartnerPID 
-                                        SET 
-                                            a.Name = :contactperson,
-                                            a.Address = :address,
-                                            a.Email = :contactemail,
-                                            a.Landline = :contactphone,
-                                            a.MobileNumber = :contactmobile,
-                                            a.Designation = :contactposition 
-                                        WHERE b.RefPartnerID = :partnerID
-                                        ";
-                        $sql = $connection->createCommand($secondquery);
-                        $sql->bindParam(":partnerID", $partnerID);
-                        $sql->bindParam(":address", $address);
-                        $sql->bindParam(":contactperson", $contactPerson);
-                        $sql->bindParam(":contactposition", $contactPosition);
-                        $sql->bindParam(":contactphone", $contactPNumber);
-                        $sql->bindParam(":contactmobile", $contactMobile);
-                        $sql->bindParam(":contactemail", $contactEmail);
-                        $updateresult = $sql->execute();
-                        if ($updateresult > 0 || $secondresult > 0 || $firstresult > 0)
+                        try
                         {
-                            //Check the selected status, if ACTIVE to INACTIVE, change the status
-                            //of the partner's corresponding item, if INACTIVE to ACTIVE, do not 
-                            //change the status
-                            if ($status == 0)
+                            //Update tbl_partnerinfo
+                            $secondquery = "UPDATE partnersinfo a 
+                                            INNER JOIN partners b ON a.PartnerPID = b.PartnerPID 
+                                            SET 
+                                                a.Name = :contactperson,
+                                                a.Address = :address,
+                                                a.Email = :contactemail,
+                                                a.Landline = :contactphone,
+                                                a.MobileNumber = :contactmobile,
+                                                a.Designation = :contactposition 
+                                            WHERE b.RefPartnerID = :partnerID
+                                            ";
+                            $sql = $connection->createCommand($secondquery);
+                            $sql->bindParam(":partnerID", $partnerID);
+                            $sql->bindParam(":address", $address);
+                            $sql->bindParam(":contactperson", $contactPerson);
+                            $sql->bindParam(":contactposition", $contactPosition);
+                            $sql->bindParam(":contactphone", $contactPNumber);
+                            $sql->bindParam(":contactmobile", $contactMobile);
+                            $sql->bindParam(":contactemail", $contactEmail);
+                            $updateresult = $sql->execute();
+                            if ($updateresult > 0 || $secondresult > 0 || $firstresult > 0)
                             {
-                                try
+                                //Check the selected status, if ACTIVE to INACTIVE, change the status
+                                //of the partner's corresponding item, if INACTIVE to ACTIVE, do not 
+                                //change the status
+                                if ($status == 0)
                                 {
-                                    //If partner's status has been change, change also the status of 
-                                    //its corresponding item
-                                    $thirdquery = "UPDATE rewarditems SET Status = :status
-                                                   WHERE PartnerID = :partnerID";
-                                    $sql = $connection->createCommand($thirdquery);
-                                    $sql->bindParam(":partnerID", $partnerID);
-                                    $sql->bindParam(":status", $this->determineItemStat($status));
-                                    $thirdresult = $sql->execute();
-                                    if ($thirdresult > 0 || $secondresult > 0 || $firstresult > 0)
+                                    try
                                     {
-                                        try
+                                        //If partner's status has been change, change also the status of 
+                                        //its corresponding item
+                                        $thirdquery = "UPDATE rewarditems SET Status = :status
+                                                       WHERE PartnerID = :partnerID";
+                                        $sql = $connection->createCommand($thirdquery);
+                                        $sql->bindParam(":partnerID", $partnerID);
+                                        $sql->bindParam(":status", $this->determineItemStat($status));
+                                        $thirdresult = $sql->execute();
+                                        if ($thirdresult > 0 || $secondresult > 0 || $firstresult > 0)
                                         {
-                                            $pdo->commit();
-                                            return array('TransMsg'=>'Partner\'s Details is successfully updated.',
-                                                         'TransCode'=>0);
-                                        }
-                                        catch (CDbException $e)
-                                        {
-                                            $pdo->rollback();
-                                            return array('TransMsg'=>'Error: '. $e->getMessage(),
-                                                         'TransCode'=>2);
+                                            try
+                                            {
+                                                $pdo->commit();
+                                                //Log to Audit Trail
+                                                $status = $this->getStat($status);
+                                                $audittrailmodel->logEvent(RefAuditFunctionsModel::MARKETING_UPDATE_PARTNER_STATUS, "PartnerID:".$partnerID." Name:".$partnername." Status:".$status, array('SessionID' => Yii::app()->session['SessionID'], 
+                                                                                                                                          'AID' => Yii::app()->session['AID']));
+                                                return array('TransMsg'=>'Partner\'s Details is successfully updated.',
+                                                             'TransCode'=>0);
+                                            }
+                                            catch (CDbException $e)
+                                            {
+                                                $pdo->rollback();
+                                                return array('TransMsg'=>'Error to update Partner Details',
+                                                             'TransCode'=>2);
+                                            }
                                         }
                                     }
+                                    catch (CDbException $e)
+                                    {
+                                        $pdo->rollback();
+                                        return array('TransMsg'=>'Error: Failed to update transactional table [0005]',
+                                             'TransCode'=>2);
+                                    }
                                 }
-                                catch (CDbException $e)
+                                else
                                 {
-                                    $pdo->rollback();
-                                    return array('TransMsg'=>'Error: '. $e->getMessage(),
-                                         'TransCode'=>2);
-                                }
-                            }
-                            else
-                            {
-                                try
-                                {
-                                    $pdo->commit();
-                                    return array('TransMsg'=>'Partner\'s Details is successfully updated.',
-                                                 'TransCode'=>0);
-                                }
-                                catch (CDbException $e)
-                                {
-                                    $pdo->rollback();
-                                    return array('TransMsg'=>'Error: '. $e->getMessage(),
-                                                 'TransCode'=>2);
+                                    try
+                                    {
+                                        $pdo->commit();
+                                        //Log to Audit Trail
+                                        $status = $this->getStat($status);
+                                        $audittrailmodel->logEvent(RefAuditFunctionsModel::MARKETING_EDIT_PARTNER_DETAILS,"PartnerID:".$partnerID." Name:".$partnername." Status:".$status, array('SessionID' => Yii::app()->session['SessionID'], 
+                                                                                                                             'AID' => Yii::app()->session['AID']));
+                                        return array('TransMsg'=>'Partner\'s Details is successfully updated.',
+                                                     'TransCode'=>0);
+                                    }
+                                    catch (CDbException $e)
+                                    {
+                                        $pdo->rollback();
+                                        return array('TransMsg'=>'Error: Failed to update Partner Details',
+                                                     'TransCode'=>2);
+                                    }
                                 }
                             }
                         }
+                        catch (CDbException $e)
+                        {
+                            $pdo->rollback();
+                            return array('TransMsg'=>'Error: Failed to update transactional table [0004]',
+                                 'TransCode'=>2);
+                        }
                     }
-                    catch (CDbException $e)
+                    else
                     {
-                        $pdo->rollback();
-                        return array('TransMsg'=>'Error: '. $e->getMessage(),
-                             'TransCode'=>2);
+                        return array('TransMsg'=>'Record details unchanged.',
+                             'TransCode'=>3);
                     }
+
+
                 }
-                else
+                catch (CDbException $e)
                 {
-                    return array('TransMsg'=>'Record details unchanged.',
-                         'TransCode'=>3);
+                    $pdo->rollback();
+
+                    return array('TransMsg'=>'Error: Failed to update transactional table [0002]',
+                                 'TransCode'=>2);
                 }
-                
-                
             }
-            catch (CDbException $e)
-            {
-                $pdo->rollback();
-                
-                return array('TransMsg'=>'Error: '. $e->getMessage(),
-                             'TransCode'=>2);
-            }
+        }
+        catch (CDbException $e)
+        {
+            $pdo->rollback();
+
+            return array('TransMsg'=>'Error: Failed to update transactional table [0001]',
+                         'TransCode'=>2);
         }
     }
     /**
@@ -335,6 +356,8 @@ class ManagePartnersForm extends CFormModel
      */
     public function addPartner($details)
     {
+        $audittrailmodel = new AuditTrailModel();
+        
         $connection = Yii::app()->db;
         
         $pdo = $connection->beginTransaction();
@@ -481,65 +504,69 @@ class ManagePartnersForm extends CFormModel
                                     try
                                     {
                                         $pdo->commit();
+                                        $status = $this->getStat($status);
+                                        $audittrailmodel->logEvent(RefAuditFunctionsModel::MARKETING_ADD_PARTNER, "PartnerID:".$lastInsertPID." Name:".$partnername." Status:".$status, array('SessionID' => Yii::app()->session['SessionID'], 
+                                                                                                                                      'AID' => Yii::app()->session['AID']));
                                         return array('TransMsg'=>'Partner successfully added.',
                                                      'TransCode'=>0, 'Email' => $contactEmail,
                                                      'Username' => $username,
-                                                     'ContactPerson' => $contactPerson, 'Password' => $password
+                                                     'ContactPerson' => $contactPerson, 'Password' => $password,
+                                                     'ID' => $lastInsertPartnerPID
                                                     );
                                     }
                                     catch(CDbException $e)
                                     {
                                         $pdo->rollback();
-                                        return array('TransMsg'=>'Error: '. $e->getMessage(),
+                                        return array('TransMsg'=>'Error: Failed to add new partner',
                                                      'TransCode'=>2);
                                     }
                                 }
                                 else
                                 {
                                     $pdo->rollback();
-                                    return array('TransMsg'=>'Error: '. $e->getMessage(),
+                                    return array('TransMsg'=>'Error: Failed to insert in transactional table [0004]',
                                                  'TransCode'=>2);
                                 }
                             }
                             catch(CDbException $e)
                             {
                                 $pdo->rollback();
-                                return array('TransMsg'=>'Error: '. $e->getMessage(),
+                                return array('TransMsg'=>'Error: Failed to insert in transactional table [0004]',
                                              'TransCode'=>2);
                             }
                         }
                         else
                         {
                             $pdo->rollback();
-                            return array('TransMsg'=>'Error: '. $e->getMessage(),
+                            return array('TransMsg'=>'Error: Failed to insert in transactional table [0003]',
                                          'TransCode'=>2);
                         }
                     }
                     catch (CDbException $e)
                     {
                         $pdo->rollback();
-                        return array('TransMsg'=>'Error: '. $e->getMessage(),
+                        return array('TransMsg'=>'Error: Failed to insert in transactional table [0003]',
                                      'TransCode'=>2);
                     }
                 }
                 else
                 {
                         $pdo->rollback();
-                        return array('TransMsg'=>'Error: '. $e->getMessage(),
+                        return array('TransMsg'=>'Error: Failed to insert in transactional table [0002]',
                                      'TransCode'=>2);
                 }                
             }
             catch (CDbException $e)
             {
                 $pdo->rollback();
-                return array('TransMsg'=>'Error: '. $e->getMessage(),
+                return array('TransMsg'=>'Error: Failed to insert in transactional table [0002]',
                              'TransCode'=>2);
             }
         }
         else
         {
             $pdo->rollback();
-            return array('TransMsg'=>'Error: '. $e->getMessage(),
+            return array('TransMsg'=>'Error: Failed to insert in transactional table [0001]',
             'TransCode'=>2);
         }
     }
@@ -574,8 +601,13 @@ class ManagePartnersForm extends CFormModel
      * @date September 27, 2013
      * @return boolean
      */
-    public function mailAddedPartner($to, $contactperson, $password, $username)
+    public function mailAddedPartner($to, $contactperson, $password, $username, $senttoaid)
     {
+        $autoemaillogs = new AutoEmailLogsModel();
+        $AID = Yii::app()->session['AID'];
+        $SentToCCAID = null;
+        $SentToBCCAID = null;
+        
         $subroot = "";
         if (isset(Yii::app()->params['subrootfolder']))
         {
@@ -586,12 +618,12 @@ class ManagePartnersForm extends CFormModel
         $subject  = "Change Initial Password";
         $headers  = 'MIME-Version: 1.0' . "\r\n";
         $headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
-        $headers .=  "From: "."RewardsItemManagement@philweb.com.ph"."\r\n";
+        $headers .=  "From: "."rewardsmanagement@philweb.com.ph"."\r\n";
         
         $detail = "
                 <html>
                 <head>
-                  <title>Rewards Item Management</title>
+                  <title>Rewards Management</title>
                 </head>
                 <body>
                   <i>Hi Mr/Ms. $contactperson</i> <br /><br />
@@ -605,6 +637,8 @@ class ManagePartnersForm extends CFormModel
                 ";
         
         mail($to, $subject, $detail, $headers);
+        //Log to Audit trail
+        $autoemaillogs->InsertAutoEmailLogs(RefAutoEmailTypeModel::ADD_PARTNER, $senttoaid, $SentToCCAID, $SentToBCCAID, $detail, $AID);
     }
     /**
      * Change the Reference Status as RewardItem and Ref_partners have <br />
@@ -625,6 +659,19 @@ class ManagePartnersForm extends CFormModel
                 break;
         }
         return $stat;
+    }
+    public function getStat($stat)
+    {
+        if ($stat == 1)
+        {
+            $status = "Active";
+        }
+        else if ($stat == 0)
+        {
+            $status = "Inactive";
+        }
+        
+        return $status;
     }
 }
 

@@ -10,7 +10,8 @@ class VerifyRewardsController extends Controller
     public $showDialog2 = false;
     public $showDialogSuccess;
     public $title;
-
+    private $serialcode;
+    private $securitycode;
 
     public function actionIndex()
     {
@@ -141,6 +142,7 @@ class VerifyRewardsController extends Controller
                         $this->dialogMsg2 = "Review e-Coupon details in the previous page."; 
                     }
                 }
+                //verify raffle
                 else if (isset($_POST['Submit2']) || isset($_POST['VerifyRewardsForm']['rafflepromo'])) 
                 {
                     $rafflepromo = $model->rafflepromo;
@@ -212,128 +214,176 @@ class VerifyRewardsController extends Controller
     }
     
     public function actionRecordrewardtrans() {
-        $model = new VerifyRewardsForm();
-        $validation = new Validations();
+        $model              = new VerifyRewardsForm();
+        $validation         = new Validations();
         $itemredemptionlogs = new ItemRedemptionLogsModel();
-        $partners = new PartnersModel(); 
-        $partnerinfo = new PartnerInfoModel();
-      
-            $rewarditemid = Yii::app()->session['rewarditemid'];
-            $mid = Yii::app()->session['MID'];
-            $aid = Yii::app()->session['AID'];
-            $partnerid = Yii::app()->session['partnerid'];
-            
-            if($rewarditemid == '' || $mid == ''){
-                $this->redirect(array('/verifyRewards/verifyrewards'));
+        $partners           = new PartnersModel(); 
+        $partnerinfo        = new PartnerInfoModel();
+        $audittrailmodel    = new AuditTrailModel();
+        $rewarditemmodel    = new RewardItemsModel();
+        
+        $rewarditemid = Yii::app()->session['rewarditemid'];
+        $mid = Yii::app()->session['MID'];
+        $aid = Yii::app()->session['AID'];
+        $partnerid = Yii::app()->session['partnerid'];
+
+        if($rewarditemid == '' || $mid == ''){
+            $this->redirect(array('/verifyRewards/verifyrewards'));
+        }
+        else
+        {   
+            //Log to Audit trail
+            switch(Yii::app()->session['AccountType'])
+            {
+                case 6: 
+                    $auditfunction = RefAuditFunctionsModel::CS_VERIFY_REWARDS;
+                    break;
+                case 9:
+                    $auditfunction = RefAuditFunctionsModel::AS_VERIFY_REWARDS;
+                    break;
+                case 13:
+                    $auditfunction = RefAuditFunctionsModel::MARKETING_VERIFY_REWARDS;
+                    break;
+                case 14:
+                    $auditfunction = RefAuditFunctionsModel::PARTNER_VERIFY_REWARDS;
+                    break;
+                default:
+                    $auditfunction = null;
+                    break;
             }
-            else
-            {   
-                if(isset($_POST['VerifyRewardsForm']))
-                {
-                    $forminputs = $_POST['VerifyRewardsForm'];
-     
-                    if (isset($_POST['Submit'])) {
-                        //Trim inputs - avoid trailing spaces
-                        $partnernamecashier = trim($forminputs['partnernamecashier']);
-                        $branchdetails = trim($forminputs['branchdetails']);
-                        $remarks = trim($forminputs['remarks']);
-                        
-                        if ($partnernamecashier == "" || $branchdetails == "")
-                        {
-                            $this->showDialog2 = true;
-                            $this->dialogMsg = "Fields with asterisk (*) are required"; 
-                            $this->title = "ERROR MESSAGE";
-                        }
-                        else if (!$validation->validateAlphaNumeric($partnernamecashier) || (!$validation->validateAlphaNumeric($branchdetails)
-                            ))
-                        {
-                            $this->showDialog2 = true;
-                            $this->dialogMsg = "Special characters are not allowed"; 
-                            $this->title = "ERROR MESSAGE";
-                        }
-                        else if ($remarks != "" && !$validation->validateAlphaNumeric($remarks))
-                        {
-                            $this->showDialog2 = true;
-                            $this->dialogMsg = "Special characters are not allowed"; 
-                            $this->title = "ERROR MESSAGE";
-                        }
-                        else if($partnernamecashier != '' && $branchdetails != '')
-                        {
-                            $securitycode = Yii::app()->session['securitycode'];
-                            $serialcode = Yii::app()->session['serialcode'];
-                            
-                            $upsuccess = $itemredemptionlogs->updateItemRedemptionLogs($rewarditemid, $partnernamecashier, 
-                                    $branchdetails, $remarks, $mid, $aid, $securitycode, $serialcode);
+            //Log to Audit trail\
+            $serial = Yii::app()->session['serialcode'];
+            $security = Yii::app()->session['securitycode'];
+            $rewarditem =  $rewarditemmodel->getRewardName($rewarditemid);
+            $audittrailmodel->logEvent($auditfunction, "SerialCode:".$serial.";SecurityCode:".$security.";RewardItem:".$rewarditem['ItemName'].":successful", array('SessionID' => Yii::app()->session['SessionID'], 
+                                                                                            'AID' => Yii::app()->session['AID']));
+            if(isset($_POST['VerifyRewardsForm']))
+            {
+                $forminputs = $_POST['VerifyRewardsForm'];
 
-                            if($upsuccess > 0){
+                if (isset($_POST['Submit'])) {
+                    //Trim inputs - avoid trailing spaces
+                    $partnernamecashier = trim($forminputs['partnernamecashier']);
+                    $branchdetails = trim($forminputs['branchdetails']);
+                    $remarks = trim($forminputs['remarks']);
 
-                                $partnerpidarr = $partners->getPartnerPID($partnerid);
-                                foreach ($partnerpidarr as $value) {
-                                    $partnerpid = $value['RefPartnerID'];
-                                }
-                                $emails = array();
-                                $emailarr = $partnerinfo->getPartnerEmailByCompany($partnerid);
-                                foreach($emailarr as $email)
-                                {
-                                    $emails[] = $email['Email'];
-                                }
-                                $marketingemail = Yii::app()->params['marketingemail'][0];
-                                //Push marketing email in array
-                                array_push($emails, $marketingemail);
-                                $vcount = 0;        
-                                $CC = '';
-                                $partner = Yii::app()->session['partnername'];
-                                $rewarditem = Yii::app()->session['rewardname'];
-                                $timeofavail = date("h:i:s A");
-                                $dateavailed = date("m-d-Y");
-                                $membername = Yii::app()->session['membername'];
-                                $membercard = Yii::app()->session['cardnumber'];
-                                while($vcount < count($emails))
-                                {
-
-                                    $to = $emails[$vcount];
-                                    $result = $model->mailRecordReward($to, $partner, $rewarditem, $serialcode, $securitycode, $timeofavail, $dateavailed, $membercard, $membername, $partnernamecashier, $CC);
-                                    
-                                    $vcount++;
-                                }
-                                if (!$result)
-                                {
-                                    $this->showDialog2 = true;
-                                    $this->title = "ERROR MESSAGE";
-                                    $this->dialogMsg = "Email message did not send.";
-                                }
-                                else
-                                {
-                                    $this->showDialogSuccess = true;
-                                    $this->dialogMsg = "Reward transaction is recorded."; 
-                                    $this->dialogMsg2 = "Keep the e-Coupon as this should be forwarded to PhilWeb."; 
-
-                                    Yii::app()->session['rewarditemid']= '';
-                                    Yii::app()->session['partnerid']= '';
-                                }
-                            }
-                            else{
-                                $this->showDialog2 = true;
-                                $this->dialogMsg = "Reward transaction update Failed."; 
-                                $this->dialogMsg2 = "Please Try again."; 
-                            }
-
-                            
-                        }
-                        else
-                        {
-                            $this->showDialog2 = true;
-                            $this->dialogMsg = "Make sure that all required fields are filled out."; 
-                        }
+                    if ($partnernamecashier == "" || $branchdetails == "")
+                    {
+                        $this->showDialog2 = true;
+                        $this->dialogMsg = "Fields with asterisk (*) are required"; 
+                        $this->title = "ERROR MESSAGE";
                     }
-                    else{
-                        $this->showDialog2 = false;
+                    else if (!$validation->validateAlphaNumeric($partnernamecashier) || (!$validation->validateAlphaNumeric($branchdetails)
+                        ))
+                    {
+                        $this->showDialog2 = true;
+                        $this->dialogMsg = "Special characters are not allowed"; 
+                        $this->title = "ERROR MESSAGE";
+                    }
+                    else if ($remarks != "" && !$validation->validateAlphaNumeric($remarks))
+                    {
+                        $this->showDialog2 = true;
+                        $this->dialogMsg = "Special characters are not allowed"; 
+                        $this->title = "ERROR MESSAGE";
+                    }
+                    else if($partnernamecashier != '' && $branchdetails != '')
+                    {
+                        $securitycode = Yii::app()->session['securitycode'];
+                        $serialcode = Yii::app()->session['serialcode'];
+
+                        $upsuccess = $itemredemptionlogs->updateItemRedemptionLogs($rewarditemid, $partnernamecashier, 
+                                $branchdetails, $remarks, $mid, $aid, $securitycode, $serialcode);
+
+                        if($upsuccess > 0){
+
+                            $partnerpidarr = $partners->getPartnerPID($partnerid);
+                            foreach ($partnerpidarr as $value) {
+                                $partnerpid = $value['PartnerPID'];
+                            }
+                            $emails = array();
+                            $emailarr = $partnerinfo->getPartnerEmailByCompany($partnerid);
+                            foreach($emailarr as $email)
+                            {
+                                $emails[] = $email['Email'];
+                            }
+                            $marketingemail = Yii::app()->params['marketingemail'][0];
+                            //Push marketing email in array
+                            array_push($emails, $marketingemail);
+                            $vcount = 0;        
+                            $CC = '';
+                            $partner = Yii::app()->session['partnername'];
+                            $rewarditem = $rewarditem['ItemName'];
+                            $timeofavail = date("h:i:s A");
+                            $dateavailed = date("m-d-Y");
+                            $membername = Yii::app()->session['membername'];
+                            $membercard = Yii::app()->session['cardnumber'];
+                            while($vcount < count($emails))
+                            {
+
+                                $to = $emails[$vcount];
+                                $result = $model->mailRecordReward($to, $partner, $rewarditem, $serialcode, $securitycode, $timeofavail, $dateavailed, $membercard, $membername, $partnernamecashier, $partnerpid, $CC);
+                                $vcount++;
+                            }
+                            if (!$result)
+                            {
+                                $this->showDialog2 = true;
+                                $this->title = "ERROR MESSAGE";
+                                $this->dialogMsg = "Email message did not send.";
+                            }
+                            else
+                            {
+                                //Log to Audit trail
+                                switch(Yii::app()->session['AccountType'])
+                                {
+                                    case 6: 
+                                        $auditfunction = RefAuditFunctionsModel::CS_RECORD_REWARDS;
+                                        break;
+                                    case 9:
+                                        $auditfunction = RefAuditFunctionsModel::AS_RECORD_REWARDS;
+                                        break;
+                                    case 13:
+                                        $auditfunction = RefAuditFunctionsModel::MARKETING_RECORD_REWARDS;
+                                        break;
+                                    case 14:
+                                        $auditfunction = RefAuditFunctionsModel::PARTNER_RECORD_REWARDS;
+                                        break;
+                                    default:
+                                        $auditfunction = null;
+                                        break;
+                                }
+                                $audittrailmodel->logEvent($auditfunction, "CashierName:".$partnernamecashier.";BranchDetails:".$branchdetails.":successful", array('SessionID' => Yii::app()->session['SessionID'], 
+                                                                                                                'AID' => Yii::app()->session['AID']));
+                                $this->showDialogSuccess = true;
+                                $this->dialogMsg = "Reward transaction is recorded."; 
+                                $this->dialogMsg2 = "Keep the e-Coupon as this should be forwarded to PhilWeb."; 
+
+                                Yii::app()->session['rewarditemid']= '';
+                                Yii::app()->session['partnerid']= '';
+                            }
+                        }
+                        else{
+                            $this->showDialog2 = true;
+                            $this->dialogMsg = "Reward transaction update Failed."; 
+                            $this->dialogMsg2 = "Please Try again."; 
+                        }
+
+
+                    }
+                    else
+                    {
+                        $this->showDialog2 = true;
+                        $this->dialogMsg = "Make sure that all required fields are filled out."; 
                     }
                 }
-
-                $this->render('recordrewardtrans', array('model' => $model));
-  
+                else{
+                    $this->showDialog2 = false;
+                }
             }
+
+            $this->render('recordrewardtrans', array('model' => $model, 
+                                                     'rewardname'=>$rewarditem['ItemName']));
+
+        }
     }
     
     

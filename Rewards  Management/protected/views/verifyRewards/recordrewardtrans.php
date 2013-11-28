@@ -77,7 +77,7 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl . '/js
         </tr>
         <tr>
         <td width="25%" align="left">
-            <?php echo CHtml::label("Reward :"." ".Yii::app()->session['rewardname'], "rewardsecoupons");?>
+            <?php echo CHtml::label("Reward :"." ".$rewardname, "rewardsecoupons");?>
         </td>
         <td width="40%" align="left">
             <?php echo CHtml::label("Security Code :"." ".Yii::app()->session['securitycode'], "raffleecoupons");?>

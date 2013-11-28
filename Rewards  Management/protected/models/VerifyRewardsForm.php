@@ -62,8 +62,10 @@ class VerifyRewardsForm extends CFormModel
     }
     
     
-    public function mailRecordReward($to, $partner, $rewarditem, $serialcode, $securitycode, $timeavailed, $dateavailed, $membercard, $membername, $cashier, $CC = ''){
-
+    public function mailRecordReward($to, $partner, $rewarditem, $serialcode, $securitycode, $timeavailed, $dateavailed, $membercard, $membername, $cashier, $partnerpid, $CC = ''){
+        
+        $autoemaillogs = new AutoEmailLogsModel();
+        
         $subject  = "[Rewards Availment Notification] Membership Rewards Program";
         $headers  = 'MIME-Version: 1.0' . "\r\n";
         $headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
@@ -131,6 +133,9 @@ class VerifyRewardsForm extends CFormModel
                     ';
                   
         $result = mail($to, $subject, $detail, $headers);
+        //Log to AutoEmailLogs
+        if ($result)
+            $autoemaillogs->InsertAutoEmailLogs(RefAutoEmailTypeModel::REWARDS_AVAILMENT_NOTIFICATION, $partnerpid, "", "", $detail, Yii::app()->session['AID']);
         
         return $result;
     }

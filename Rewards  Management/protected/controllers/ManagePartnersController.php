@@ -166,7 +166,7 @@ class ManagePartnersController extends Controller {
                             }
                             else
                             {
-                                $model->mailAddedPartner($result['Email'], $result['ContactPerson'], $result['Password'], $result['Username']);
+                                $model->mailAddedPartner($result['Email'], $result['ContactPerson'], $result['Password'], $result['Username'], $result["ID"]);
                             }
                         }
                         $this->showdialog = true;

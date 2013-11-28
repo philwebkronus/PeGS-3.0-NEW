@@ -452,6 +452,8 @@ class CouponRedemptionLogsModel extends CFormModel
      */
     public function updateCouponLogsStatus($securitycode, $serialcode)
     {
+        $audittrailmodel = new AuditTrailModel();
+        
         $connection = Yii::app()->db;
     
         $pdo = $connection->beginTransaction();
@@ -470,6 +472,26 @@ class CouponRedemptionLogsModel extends CFormModel
             try
             {
                 $pdo->commit();
+                switch(Yii::app()->session['AccountType'])
+                {
+                    case 6: 
+                        $auditfunction = RefAuditFunctionsModel::CS_VERIFY_RAFFLE;
+                        break;
+                    case 9:
+                        $auditfunction = RefAuditFunctionsModel::AS_VERIFY_RAFFLE;
+                        break;
+                    case 13:
+                        $auditfunction = RefAuditFunctionsModel::MARKETING_VERIFY_RAFFLE;
+                        break;
+                    case 14:
+                        $auditfunction = RefAuditFunctionsModel::PARTNER_VERIFY_RAFFLE;
+                        break;
+                    default:
+                        $auditfunction = null;
+                        break;
+                }
+                $audittrailmodel->logEvent($auditfunction, "SerialCode: ".$serialcode.";SecurityCode:".$securitycode.":successful", array('SessionID' => Yii::app()->session['SessionID'], 
+                                                                                            'AID' => Yii::app()->session['AID']));
                 return array('TranMsg' => 'Verified', 'TransCode' => 1);
             }
             catch(CBException $e)
