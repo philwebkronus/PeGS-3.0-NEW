@@ -92,6 +92,7 @@ function alphanumericemail(event)
 
 function alphanumericemail2(event)
 {
+    
    var charCode = (event.which) ? event.which : event.keyCode;
       if ((charCode > 64 && charCode < 91 ) || (charCode > 47 && charCode < 58) || (charCode > 96 && charCode < 123))
           return true;

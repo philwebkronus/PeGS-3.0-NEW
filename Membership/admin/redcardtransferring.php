@@ -61,7 +61,7 @@ $txtNewCardNumber->CssClass = 'validate[required]]';
 $txtNewCardNumber->Style = 'color: #666';
 $txtNewCardNumber->Size = 20;
 $txtNewCardNumber->AutoComplete = false;
-$txtNewCardNumber->Args = 'placeholder="Enter New Card Number" onkeypress="javascript: return alphanumericemail2(event)"';
+$txtNewCardNumber->Args = 'placeholder="Enter New Card Number" onkeypress="javascript: return AlphaNumericOnly(event)"';
 $fproc->AddControl($txtNewCardNumber);
 
 $hdnMID = new Hidden('hdnMID', 'hdnMID');
@@ -112,11 +112,11 @@ if (isset($_SESSION['CardRed'])) {
 
         function specialcharacter(elementvalue)
         {
-            var iChars = "/\s+$/!`@#$%^&*()+=[]\\\';,./{}|\":<>?~_-";
+            var iChars = "!`@#$%^&*()+=[]\\\';,./{}|\":<>?~_";
             var data = elementvalue;
             for (var i = 0; i < data.length; i++)
             {
-                if (iChars.indexOf(data.charAt(i)) != -1 || (data.which == 32) != -1)
+                if (iChars.indexOf(data.charAt(i)) != -1 || iChars.indexOf(data.charAt(i)) == 32)
                 {
                     return false;
                 }
@@ -124,48 +124,49 @@ if (isset($_SESSION['CardRed'])) {
             return true;
         }
 
-        function specialcharacter2(elementvalue)
-        {
-            var iChars = "!`#$%^&*()+=[]\\\';,/{}|\":<>?~";
-            var data = elementvalue;
 
-            for (var i = 0; i < data.length; i++)
-            {
-                if (iChars.indexOf(data.charAt(i)) != -1 || (data.which == 32) != -1)
-                {
-                    return false;
-                }
-            }
-            return true;
-        }
-
+        $('#txtCardNumber').change(function() {
+            $(this).val($(this).val().replace(/ /g, ""));
+        });
 
         $("#txtCardNumber").focus(function() {
-            var cardval = $("#txtCardNumber").val();
             $("#txtCardNumber").bind('paste', function(event) {
                 setTimeout(function(event) {
                     var data = $("#txtCardNumber").val();
                     if (!specialcharacter(data)) {
-                        $("#txtCardNumber").val('');
+                        $("#txtCardNumber").val("");
                         $("#txtCardNumber").focus();
                     }
                 }, 0);
             });
         });
-
+        function specialcharacter2(elementvalue)
+        {
+            var iChars = "!`#$%^&*()+=[]\\\';,/{}|\":<>?~";
+            var data = elementvalue;
+            for (var i = 0; i < data.length; i++)
+            {
+                if (iChars.indexOf(data.charAt(i)) != -1 || iChars.indexOf(data.charAt(i)) == 32)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+        $('#txtUserName').change(function() {
+            $(this).val($(this).val().replace(/ /g, ""));
+        });
         $("#txtUserName").focus(function() {
-            var userval = $("#txtUserName").val();
             $("#txtUserName").bind('paste', function(event) {
                 setTimeout(function(event) {
                     var data = $("#txtUserName").val();
                     if (!specialcharacter2(data)) {
-                        $("#txtUserName").val('');
+                        $("#txtUserName").val("");
                         $("#txtUserName").focus();
                     }
                 }, 0);
             });
         });
-
 
         $('#cboIDSelection').live('change', function() {
             var id = jQuery("#cboIDSelection option:selected").val();
