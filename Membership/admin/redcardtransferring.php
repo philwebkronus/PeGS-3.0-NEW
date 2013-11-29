@@ -126,7 +126,7 @@ if (isset($_SESSION['CardRed'])) {
 
 
         $('#txtCardNumber').change(function() {
-            $(this).val($(this).val().replace(/ /g, ""));
+            $(this).val($(this).val().replace(" ", ""));
         });
 
         $("#txtCardNumber").focus(function() {
@@ -154,7 +154,7 @@ if (isset($_SESSION['CardRed'])) {
             return true;
         }
         $('#txtUserName').change(function() {
-            $(this).val($(this).val().replace(/ /g, ""));
+            $(this).val($(this).val().replace(" ", ""));
         });
         $("#txtUserName").focus(function() {
             $("#txtUserName").bind('paste', function(event) {
@@ -201,9 +201,6 @@ if (isset($_SESSION['CardRed'])) {
             }
         });
         $("#txtCardNumber").keyup(function() {
-            $("#txtCardNumber").change();
-        });
-        $("#txtCardNumber").blur(function() {
             $("#txtCardNumber").change();
         });
         $("#txtCardNumber").change(function() {
