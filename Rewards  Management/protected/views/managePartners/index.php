@@ -256,7 +256,7 @@ $(".addBtn").live("click", function(){
                 var status          = $("#StatusAdd").val();
                 
                 if (contactperson === "" || contactposition === "" || contactemail === "" 
-                    || contactpnumber === "" || contactmobile === "" || numberOfoffers === ""
+                    || contactpnumber === "" || contactmobile === "" 
                     || status == -1 || username === "")
                 {
                     $("#msgdialogAdd").css({'text-align':"left",'color':"red"});
@@ -309,13 +309,13 @@ $(".addBtn").live("click", function(){
                     $("#msgdialogAdd").css({'text-align':"left",'color':"red"});
                     $("#msgdialogAdd").html("Invalid Email Address");
                 }
-                else if (numberOfoffers <=  0)
-                {
-                    $("#msgdialogAdd").css({'text-align':"left",'color':"red"});
-                    $("#msgdialogAdd").html("Number of Reward Offerings must be greater than zero");
-                    
-                    return false;
-                }
+//                else if (numberOfoffers <=  0)
+//                {
+//                    $("#msgdialogAdd").css({'text-align':"left",'color':"red"});
+//                    $("#msgdialogAdd").html("Number of Reward Offerings must be greater than zero");
+//                    
+//                    return false;
+//                }
                 else
                 {
                     if (contactposition.length < 5)
@@ -609,7 +609,7 @@ $(".addBtn").live("click", function(){
                 else if (/^[a-zA-Z0-9- ]*$/.test(contactmobile) === false)
                 {
                     $("#msgdialog").css({'text-align':"left",'color':"red"});
-                    $("#msgdialog").html("Special character/s is/are not allowedd in Contact Person's Mobile");
+                    $("#msgdialog").html("Special character/s is/are not allowed in Contact Person's Mobile");
                 
                     return false;
                 }
@@ -627,13 +627,13 @@ $(".addBtn").live("click", function(){
                     
                     return false;
                 }
-                else if (numberOfoffers <=  0)
-                {
-                    $("#msgdialog").css({'text-align':"left",'color':"red"});
-                    $("#msgdialog").html("Number of Reward Offerings must be greater than zero");
-                    
-                    return false;
-                }
+//                else if (numberOfoffers <=  0)
+//                {
+//                    $("#msgdialog").css({'text-align':"left",'color':"red"});
+//                    $("#msgdialog").html("Number of Reward Offerings must be greater than zero");
+//                    
+//                    return false;
+//                }
                 else
                 {
                     if (contactposition.length < 5)
@@ -984,10 +984,10 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
        </tr>
        <tr>
            <td>
-               <?php echo $form->labelEx($model, 'numberOfRewardOfferings', array('style'=>'font-weight:bold;')); ?>
+               <?php echo $form->labelEx($model, 'numberOfRewardOfferings', array('style'=>'font-weight:bold;', 'style' => 'display:none')); ?>
            </td>
            <td>
-               <?php echo $form->textField($model, 'numberOfRewardOfferings', array('id'=>'NumberOfRewardOfferingsAdd', 'onkeypress'=>'return numberonly(event)')) ?>
+               <?php echo $form->textField($model, 'numberOfRewardOfferings', array('id'=>'NumberOfRewardOfferingsAdd', 'onkeypress'=>'return numberonly(event)', 'style' => 'display:none')) ?>
            </td>    
        </tr>
     </table>
@@ -1203,7 +1203,7 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
                <?php echo $form->labelEx($model, 'numberOfRewardOfferings', array('style'=>'font-weight:bold;')); ?>
            </td>
            <td>
-               <?php echo $form->textField($model, 'numberOfRewardOfferings', array('id'=>'NumberOfRewardOfferings2', 'onkeypress'=>'return numberonly(event)')) ?>
+               <?php echo $form->textField($model, 'numberOfRewardOfferings', array('id'=>'NumberOfRewardOfferings2', 'onkeypress'=>'return numberonly(event)', 'readonly'=> 'readonly')) ?>
            </td>    
        </tr>
     </table>

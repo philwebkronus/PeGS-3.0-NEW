@@ -63,7 +63,6 @@ class VerifyRewardsForm extends CFormModel
     
     
     public function mailRecordReward($to, $partner, $rewarditem, $serialcode, $securitycode, $timeavailed, $dateavailed, $membercard, $membername, $cashier, $partnerpid, $CC = ''){
-        
         $autoemaillogs = new AutoEmailLogsModel();
         
         $subject  = "[Rewards Availment Notification] Membership Rewards Program";
@@ -131,7 +130,6 @@ class VerifyRewardsForm extends CFormModel
                     </body>
                     </html>
                     ';
-                  
         $result = mail($to, $subject, $detail, $headers);
         //Log to AutoEmailLogs
         if ($result)
@@ -139,6 +137,4 @@ class VerifyRewardsForm extends CFormModel
         
         return $result;
     }
-    
-    
 }

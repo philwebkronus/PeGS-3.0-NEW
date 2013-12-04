@@ -1343,7 +1343,6 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog',array(
     ?>
 <?php echo CHtml::hiddenField('hdnFunctionName' , 'ReplenishItem', array('id' => 'hdnFunctionName')); ?>
 <?php echo CHtml::hiddenField('hdnRewardItemID-replenishform' , '', array('id'=>'hdnRewardItemID-replenishform')); ?>
-<?php echo CHtml::hiddenField('hdnRewardID-replenishform' , '', array('id'=>'hdnRewardID-replenishform')); ?>
 <table id="replenishingform" style="display: none">
     <tr>
         <td>Current Inventory Level</td>

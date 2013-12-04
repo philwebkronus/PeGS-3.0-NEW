@@ -36,7 +36,7 @@ class ManageRewardsController extends Controller
                     $arraynewlist['ItemName'] = "<a href='javascript:void(0)' title='View Details' RewardItemID='".$arraynewlist['RewardItemID']."'  id='viewlink'>".$data[$ctr]['ItemName']."</a>";
                     $arraynewlist['Description'] = urldecode($data[$ctr]['Description']); 
                     $arraynewlist['Category'] = urldecode($data[$ctr]['Category']); 
-                    $arraynewlist['Points'] = urldecode($data[$ctr]['Points']); 
+                    $arraynewlist['Points'] = number_format($data[$ctr]['Points'], 0, '', ',');
                     $arraynewlist['Eligibility'] = urldecode($data[$ctr]['Eligibility']); 
                     $arraynewlist['Status'] = urldecode($data[$ctr]['Status']); 
                     $OfferStartDate = new DateTime($data[$ctr]['OfferStartDate']);
@@ -44,7 +44,7 @@ class ManageRewardsController extends Controller
                     $OfferEndDate = new DateTime($data[$ctr]['OfferEndDate']);
                     $data[$ctr]['OfferEndDate'] = $OfferEndDate->format("Y-m-d");
                     $arraynewlist['PromoPeriod'] = urldecode($data[$ctr]['OfferStartDate']." &mdash; ".$data[$ctr]['OfferEndDate']); 
-                    if($arraynewlist['Status'] != 'Active'){
+                    if($arraynewlist['Status'] != 'Active' && $arraynewlist['Status'] != 'Out-Of-Stock'){
                         $arraynewlist['Action'] = "<div title='actionbuttons' style='padding-top: 3px;'><a href='javascript:void(0)' title='Edit' Status='".$arraynewlist['Status']."'  RewardItemID='".$arraynewlist['RewardItemID']."' id='editbutton'><img id='editimage".$arraynewlist['RewardItemID']."' src='../../images/ui-icon-edit.png'></a>&nbsp;&nbsp;<a href='javascript:void(0)' title='Delete' RewardItemID='".$arraynewlist['RewardItemID']."' id='deletebutton'><img id='deleteimage".$arraynewlist['RewardItemID']."' src='../../images/ui-icon-delete.png'></a>&nbsp;&nbsp;<a href='javascript:void(0)' title='Replenish' RewardItemID='".$arraynewlist['RewardItemID']."' id='refillbutton'><img id='refillimage".$arraynewlist['RewardItemID']."' src='../../images/ui-icon-refill.png' ></a></div>";
                     } else {
                         $arraynewlist['Action'] = "<div title='actionbuttons' style='padding-top: 3px;'><a href='javascript:void(0)' style='visibility: hidden;' title='Edit' Status='".$arraynewlist['Status']."'  RewardItemID='".$arraynewlist['RewardItemID']."' id='editbutton'><img id='editimage".$arraynewlist['RewardItemID']."' src='../../images/ui-icon-edit.png'></a>&nbsp;&nbsp;<a href='javascript:void(0)' title='Delete' RewardItemID='".$arraynewlist['RewardItemID']."' id='deletebutton'><img id='deleteimage".$arraynewlist['RewardItemID']."' src='../../images/ui-icon-delete.png'></a>&nbsp;&nbsp;<a href='javascript:void(0)' title='Replenish' RewardItemID='".$arraynewlist['RewardItemID']."' id='refillbutton'><img id='refillimage".$arraynewlist['RewardItemID']."' src='../../images/ui-icon-refill.png' ></a></div>";
@@ -103,7 +103,7 @@ class ManageRewardsController extends Controller
                 $arraynewlist['ItemName'] = "<a href='javascript:void(0)' title='View Details' RewardItemID='".$arraynewlist['RewardItemID']."'  id='viewlink'>".$data[$ctr]['ItemName']."</a>";
                 $arraynewlist['Description'] = $data[$ctr]['Description']; 
                 $arraynewlist['Category'] = $data[$ctr]['Category']; 
-                $arraynewlist['Points'] = $data[$ctr]['Points']; 
+                $arraynewlist['Points'] = number_format($data[$ctr]['Points'], 0, '', ',');
                 $arraynewlist['Eligibility'] = $data[$ctr]['Eligibility']; 
                 $arraynewlist['Status'] = $data[$ctr]['Status']; 
                 $OfferStartDate = new DateTime($data[$ctr]['OfferStartDate']);
@@ -112,7 +112,7 @@ class ManageRewardsController extends Controller
                 $data[$ctr]['OfferEndDate'] = $OfferEndDate->format("Y-m-d");
                 $arraynewlist['PromoPeriod'] = $data[$ctr]['OfferStartDate']." &mdash; ".$data[$ctr]['OfferEndDate']; 
                 
-                if($arraynewlist['Status'] != 'Active'){
+                if($arraynewlist['Status'] != 'Active' && $arraynewlist['Status'] != 'Out-Of-Stock'){
                     if($rewardtype == 2){
                         $arraynewlist['Action'] = "<div title='actionbuttons' style='padding-top: 3px;'><a href='javascript:void(0)' title='Edit' Status='".$arraynewlist['Status']."' RewardItemID='".$arraynewlist['RewardItemID']."' id='editbutton'><img id='editimage".$arraynewlist['RewardItemID']."' src='../../images/ui-icon-edit.png'></a>&nbsp;&nbsp;<a href='javascript:void(0)' title='Delete' RewardItemID='".$arraynewlist['RewardItemID']."' id='deletebutton'><img id='deleteimage".$arraynewlist['RewardItemID']."' src='../../images/ui-icon-delete.png'></a>&nbsp;&nbsp;<a href='javascript:void(0)' style='visibility: hidden;' title='Replenish' RewardItemID='".$arraynewlist['RewardItemID']."' id='refillbutton'><img id='refillimage".$arraynewlist['RewardItemID']."' src='../../images/ui-icon-refill.png' ></a></div>";
                     } else {
@@ -162,6 +162,7 @@ class ManageRewardsController extends Controller
         $model = new ManageRewardsForm();
         $rewarditems = new RewardItemsModel();
         $audittrail = new AuditTrailModel();
+        $refpartners = new RefPartnerModel();
 
         if(isset($_POST['ManageRewardsForm'])){
             $model->attributes = $_POST['ManageRewardsForm'];
@@ -178,6 +179,16 @@ class ManageRewardsController extends Controller
                     
                     //Get the PartnerID for audit trail transaction details
                     $audittraildetails = $rewarditems->getAuditTrailDetails($rewarditemid);
+                    
+                    //Get total reward offerings (active/outofstock rewards) per partner
+                    $getpartnerstobeupdated = $rewarditems->getSumCountActiveByPartner((int)$audittraildetails["PartnerID"]);
+
+                   if(count($getpartnerstobeupdated) > 0){
+                        //Update total reward offerings per partner
+                        $partnerid = (int)$audittraildetails["PartnerID"];
+                        $offeringscount =(int)$getpartnerstobeupdated["RewardsCount"];
+                        $refpartners->UpdateNoOfOfferings($partnerid, $offeringscount);
+                    }
                     
                     //Identify Reward Type to get the appropriate Audit Function.
                     if($rewardtype == "1" || $rewardtype == 1){
@@ -366,6 +377,15 @@ class ManageRewardsController extends Controller
                     $result = $rewarditems->UpdateRewardItem($rewarditemid, $rewardid, $model->editrewarditem, $editpoints, $model->editeligibility, $model->editstatus, $startdate, $enddate, 
                                                                                                                 $partnerid, $categoryid, $subtext, $about, $terms, $thblimitedphoto, $thboutofstockphoto, 
                                                                                                                 $ecouponphoto, $lmlimitedphoto, $lmoutofstockphoto, $websliderphoto, $drawdate);
+                    
+                    //Get total reward offerings (active/outofstock rewards) per partner
+                    $getpartnerstobeupdated = $rewarditems->getSumCountActiveByPartner((int)$partnerid);
+                    
+                    if(count($getpartnerstobeupdated) > 0){
+                        //Update total reward offerings per partner
+                        $offeringscount =(int)$getpartnerstobeupdated["RewardsCount"];
+                        $refpartners->UpdateNoOfOfferings((int)$partnerid, $offeringscount);
+                    }
                     
                     if($result['TransCode'] == 0){
                         $this->showdialog = true;
@@ -588,6 +608,15 @@ class ManageRewardsController extends Controller
                                                                                                                                                 $lmoutofstockphoto, $websliderphoto, $promocode, $promoname, $drawdate, 
                                                                                                                                                 $serialcodestart, $serialcodeend);
                         
+                        //Get total reward offerings (active/outofstock rewards) per partner
+                        $getpartnerstobeupdated = $rewarditems->getSumCountActiveByPartner((int)$partnerid);
+
+                        if(count($getpartnerstobeupdated) > 0){
+                            //Update total reward offerings per partner
+                            $offeringscount =(int)$getpartnerstobeupdated["RewardsCount"];
+                            $refpartners->UpdateNoOfOfferings((int)$partnerid, $offeringscount);
+                        }
+                        
                         if($addnewrewarditem['TransCode'] == 0){
                             $this->showdialog = true;
                             
@@ -632,7 +661,6 @@ class ManageRewardsController extends Controller
                     break;
                 case 'ReplenishItem':
                     $rewarditemid = $_POST['hdnRewardItemID-replenishform'];
-                    $rewardid = $_POST["hdnRewardID-replenishform"];
                     $itemcount = $model->inventoryupdate;
                     $currentinventory = $model->currentinventory;
                     $addeditemcount = $model->additems;
@@ -654,6 +682,16 @@ class ManageRewardsController extends Controller
                             //Replenish Item Inventory
                             $result = $rewarditems->replenishItem($rewarditemid, (int)$newitemcount, (int)$currentitemcount, (int)$addeditemcount, $newserialcodeend, (int)$audittraildetails["Status"]);
                             
+                            //Get total reward offerings (active/outofstock rewards) per partner
+                            $getpartnerstobeupdated = $rewarditems->getSumCountActiveByPartner((int)$audittraildetails["PartnerID"]);
+
+                            if(count($getpartnerstobeupdated) > 0){
+                                //Update total reward offerings per partner
+                                $partnerid = (int)$audittraildetails["PartnerID"];
+                                $offeringscount =(int)$getpartnerstobeupdated["RewardsCount"];
+                                $refpartners->UpdateNoOfOfferings($partnerid, $offeringscount);
+                            }
+                            
                             if($result['TransCode'] == 0){
                                 $this->showdialog = true;
                                 
@@ -665,14 +703,10 @@ class ManageRewardsController extends Controller
                                         $statusvalue = "Inactive";
                                         break;
                                 }
-                                
-                                if($rewardid == "1"){
-                                    $this->message = "Reward e-Coupon has been successfully replenished.";
-                                    $transdetails = "RewardItemID: ".$rewarditemid.", PartnerID: ".$audittraildetails["PartnerID"].", Name: ".$audittraildetails["ItemName"].", Status: ".$audittraildetails["Status"]." - ".$statusvalue;
-                                } else {
-                                    $this->message = "Raffle e-Coupon has been successfully replenished.";
-                                    $transdetails = "RewardItemID: ".$rewarditemid.", Name: ".$audittraildetails["ItemName"].", Status: ".$audittraildetails["Status"]." - ".$statusvalue;
-                                }
+
+                                $this->message = "Raffle e-Coupon has been successfully replenished.";
+                                $transdetails = "RewardItemID: ".$rewarditemid.", Name: ".$audittraildetails["ItemName"].", Status: ".$audittraildetails["Status"]." - ".$statusvalue.
+                                                                ", CurrentItemCount: ".$currentitemcount.", ReplenishItemCount: ".$addeditemcount.", EndingItemCount: ".$newitemcount;
                                 
                                 //Log Event on Audit trail
                                 $audittrail->logEvent($auditfunctionid, $transdetails, array('SessionID' => Yii::app()->session['SessionID'], 'AID' => Yii::app()->session['AID']));

@@ -622,5 +622,24 @@ class RewardItemsModel extends CFormModel
         return $result;
     }
     
+    /**
+     * @Description: Fetch current count of active/out-of-stock reward under specific partner
+     * @Author: aqdepliyan
+     * @DateCreated: 2013-12-02
+     * @return array
+     */
+    public function getSumCountActiveByPartner($partnerid){
+        
+        $connection = Yii::app()->db;
+        
+        $query = "SELECT COUNT(RewardItemID) as RewardsCount FROM rewarditems
+                            WHERE Status IN (1,3) AND PartnerID = :partnerid";
+        $command = $connection->createCommand($query);
+        $command->bindParam(":partnerid", $partnerid);
+        $result = $command->queryAll();
+        
+        return $result[0];
+    }
+    
 }
 ?>

@@ -128,5 +128,40 @@ class RefPartnerModel extends CFormModel
         
         return $result['ctrpartner'];
     }
+    
+    /**
+     * @Description: Update No. Of Reward Offerings per partner
+     * @Author: aqdepliyan
+     * @param int $partnerid
+     * @param int $offeringscount
+     */
+    public function UpdateNoOfOfferings($partnerid, $offeringscount){
+        $connection = Yii::app()->db;
+
+        $query = "UPDATE partnerdetails SET NumberOfRewardOffers = :offeringcount WHERE PartnerID = :partnerid";
+        $command = $connection->createCommand($query);
+        $command->bindParam(":offeringcount", $offeringscount,PDO::PARAM_INT);
+        $command->bindParam(":partnerid", $partnerid,PDO::PARAM_INT);
+        $command->execute();
+    }
+    /**
+     * Get Current Status of the Partner
+     * @param int $partnerID ID of the partner
+     * @return string Current status of the partner
+     * @author Mark Kenneth Esguerra
+     * @date December 3, 2013
+     */
+    public function getCurrentStatus($partnerID)
+    {
+        $connection = Yii::app()->db;
+        
+        $query = "SELECT Status FROM ref_partners WHERE PartnerID = :partnerID";
+        $command = $connection->createCommand($query);
+        $command->bindParam(":partnerID", $partnerID);
+        
+        $result = $command->queryRow();
+        
+        return $result['Status'];
+    }
 }
 ?>

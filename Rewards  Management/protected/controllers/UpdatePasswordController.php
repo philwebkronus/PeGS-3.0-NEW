@@ -34,6 +34,7 @@ class UpdatePasswordController extends Controller
     {
         $model      = new UpdatePasswordModel();
         $validation = new Validations();
+        $audittrail = new AuditTrailModel();
         //Get the query strings in the URL
         $this->Username = $_GET['username'];
         $this->TempPass = $_GET['password'];
@@ -89,6 +90,8 @@ class UpdatePasswordController extends Controller
                     {
                         $this->dialogtitle = "SUCCESS MESSAGE";
                         $this->dialogshow2 = true;
+                        //Log event to audit trail
+                        $audittrail->logEvent(RefAuditFunctionsModel::CHANGE_PASSWORD, "Username: ".$username, array('SessionID' => Yii::app()->session['SessionID'], 'AID' => Yii::app()->session['PartnerPID']));
                     }
                     else if ($result['TransCode'] == 2)
                     {

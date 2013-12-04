@@ -46,6 +46,8 @@ class VerifyRewardsController extends Controller
     //for session checking
         $_AccountSessions = new SessionForm();
         $_PartnerSessions = new PartnerSessionModel();
+        $audittrailmodel    = new AuditTrailModel();
+        $rewarditemmodel    = new RewardItemsModel();
         
         if (isset(Yii::app()->session['SessionID'])) {
             $aid = Yii::app()->session['AID'];
@@ -117,6 +119,31 @@ class VerifyRewardsController extends Controller
 
                                 if($checkrange == true){
 
+                                    //Log to Audit trail
+                                    switch(Yii::app()->session['AccountType'])
+                                    {
+                                        case 6: 
+                                            $auditfunction = RefAuditFunctionsModel::CS_VERIFY_REWARDS;
+                                            break;
+                                        case 9:
+                                            $auditfunction = RefAuditFunctionsModel::AS_VERIFY_REWARDS;
+                                            break;
+                                        case 13:
+                                            $auditfunction = RefAuditFunctionsModel::MARKETING_VERIFY_REWARDS;
+                                            break;
+                                        case 14:
+                                            $auditfunction = RefAuditFunctionsModel::PARTNER_VERIFY_REWARDS;
+                                            break;
+                                        default:
+                                            $auditfunction = null;
+                                            break;
+                                    }
+                                    //Log to Audit trail\
+                                    $serial = Yii::app()->session['serialcode'];
+                                    $security = Yii::app()->session['securitycode'];
+                                    $rewarditem =  $rewarditemmodel->getRewardName($rewarditemid);
+                                    $audittrailmodel->logEvent($auditfunction, "SerialCode:".$serial.";SecurityCode:".$security.";RewardItem:".$rewarditem['ItemName'].":successful", array('SessionID' => Yii::app()->session['SessionID'], 
+                                                                                                                    'AID' => Yii::app()->session['AID']));
                                     $this->showDialogSuccess = true;
                                     $this->dialogMsg = "This e-Coupon ".$serialcode." is valid."; 
                                     $this->dialogMsg2 = "e-Coupon validity period is from ".$validdatefrom." to ".$validdateto.".";
@@ -223,40 +250,19 @@ class VerifyRewardsController extends Controller
         $rewarditemmodel    = new RewardItemsModel();
         
         $rewarditemid = Yii::app()->session['rewarditemid'];
+        
         $mid = Yii::app()->session['MID'];
         $aid = Yii::app()->session['AID'];
         $partnerid = Yii::app()->session['partnerid'];
-
+        $rewarditem = "";
+        $rewarditemresult =  $rewarditemmodel->getRewardName($rewarditemid);
+        $rewarditem = $rewarditemresult['ItemName'];
+        
         if($rewarditemid == '' || $mid == ''){
             $this->redirect(array('/verifyRewards/verifyrewards'));
         }
         else
         {   
-            //Log to Audit trail
-            switch(Yii::app()->session['AccountType'])
-            {
-                case 6: 
-                    $auditfunction = RefAuditFunctionsModel::CS_VERIFY_REWARDS;
-                    break;
-                case 9:
-                    $auditfunction = RefAuditFunctionsModel::AS_VERIFY_REWARDS;
-                    break;
-                case 13:
-                    $auditfunction = RefAuditFunctionsModel::MARKETING_VERIFY_REWARDS;
-                    break;
-                case 14:
-                    $auditfunction = RefAuditFunctionsModel::PARTNER_VERIFY_REWARDS;
-                    break;
-                default:
-                    $auditfunction = null;
-                    break;
-            }
-            //Log to Audit trail\
-            $serial = Yii::app()->session['serialcode'];
-            $security = Yii::app()->session['securitycode'];
-            $rewarditem =  $rewarditemmodel->getRewardName($rewarditemid);
-            $audittrailmodel->logEvent($auditfunction, "SerialCode:".$serial.";SecurityCode:".$security.";RewardItem:".$rewarditem['ItemName'].":successful", array('SessionID' => Yii::app()->session['SessionID'], 
-                                                                                            'AID' => Yii::app()->session['AID']));
             if(isset($_POST['VerifyRewardsForm']))
             {
                 $forminputs = $_POST['VerifyRewardsForm'];
@@ -312,7 +318,7 @@ class VerifyRewardsController extends Controller
                             $vcount = 0;        
                             $CC = '';
                             $partner = Yii::app()->session['partnername'];
-                            $rewarditem = $rewarditem['ItemName'];
+
                             $timeofavail = date("h:i:s A");
                             $dateavailed = date("m-d-Y");
                             $membername = Yii::app()->session['membername'];
@@ -381,7 +387,7 @@ class VerifyRewardsController extends Controller
             }
 
             $this->render('recordrewardtrans', array('model' => $model, 
-                                                     'rewardname'=>$rewarditem['ItemName']));
+                                                     'rewardname'=>$rewarditem));
 
         }
     }
@@ -417,11 +423,11 @@ class VerifyRewardsController extends Controller
         
         if($is_success > 0){
             
-            $rewardname = $rewarditem->getRewardName($rewarditemid);
-
-                foreach ($rewardname as $var) {
-                    $rewardnames = $var['ItemName'];
-                }
+                $rewardname = $rewarditem->getRewardName($rewarditemid);
+                $rewardnames = $rewardname['ItemName'];
+//                foreach ($rewardname as $var) {
+//                    $rewardnames = $var['ItemName'];
+//                }
                 Yii::app()->session['rewardname'] = $rewardnames;
                 
                 
@@ -433,56 +439,78 @@ class VerifyRewardsController extends Controller
                 Yii::app()->session['partnername'] = $partnernames;
                 
                 $arrcard = $membercards->getCardNumber($mid);
-                foreach ($arrcard as $row) {
-                    $cardnumber = $row['CardNumber'];
-                }
-
-                $arrmembername = $memberinfo->getMemberNameID($mid);
-                foreach ($arrmembername as $row2) {
-                    $firstname = $row2['FirstName'];
-                    $middlename = $row2['MiddleName'];
-                    $lastname = $row2['LastName'];
-                    $idname = $row2['IdentificationName'];
-                }
-                if (isset($cardnumber))
+                
+                if(count($arrcard) > 0)
                 {
-                    Yii::app()->session['cardnumber'] = $cardnumber;
-                    Yii::app()->session['membername'] = $firstname." ".$middlename." ".$lastname;
-                    Yii::app()->session['identificationname'] = $idname;
+                    foreach ($arrcard as $row) {
+                        $cardnumber = $row['CardNumber'];
+                    }
                     
-                    $this->redirect(array('/verifyRewards/recordrewardtrans'), array('model' => $verifyrewards));
+                    $arrmembername = $memberinfo->getMemberNameID($mid);
+                    if (count ($arrmembername) > 0)
+                    {
+                        foreach ($arrmembername as $row2) {
+                            $firstname = $row2['FirstName'];
+                            $middlename = $row2['MiddleName'];
+                            $lastname = $row2['LastName'];
+                            $idname = $row2['IdentificationName'];
+                        }
+                        
+                        if (isset($cardnumber))
+                        {
+                            Yii::app()->session['cardnumber'] = $cardnumber;
+                            Yii::app()->session['membername'] = $firstname." ".$middlename." ".$lastname;
+                            Yii::app()->session['identificationname'] = $idname;
+
+                            $this->redirect(array('/verifyRewards/recordrewardtrans'), array('model' => $verifyrewards));
+                        }
+                        else
+                        {
+                            $status = $membercards->checkStatus($mid);
+                            foreach($status as $row)
+                            {
+                                $stat = $row['Status'];
+                            }
+                            switch ($stat)
+                            {
+                                case 2:
+                                    $this->dialogMsg = "Membership Card is Deactivated"; 
+                                    break;
+                                case 0:
+                                    $this->dialogMsg = "Membership Card is Inactive"; 
+                                    break;
+                                case 8:
+                                    $this->dialogMsg = "Migrated Temporary Account"; 
+                                    break;
+                                case 5:
+                                    $this->dialogMsg = "Active Temporary Account"; 
+                                    break;
+                                case 9:
+                                    $this->dialogMsg = "Membership Card is Banned"; 
+                                    break;
+                                case 7:
+                                    $this->dialogMsg = "Membership Card is already Migrated"; 
+                                    break;
+                            }
+                            $this->showDialog2 = true;
+                            $this->dialogMsg2 = "Please try again.";
+                        }
+                    }
+                    else
+                    {
+                        $this->dialogMsg = "Unable to get Member's Info";
+                        $this->showDialog2 = true;
+                    }
                 }
                 else
                 {
-                    $status = $membercards->checkStatus($mid);
-                    foreach($status as $row)
-                    {
-                        $stat = $row['Status'];
-                    }
-                    switch ($stat)
-                    {
-                        case 2:
-                            $this->dialogMsg = "Membership Card is Deactivated"; 
-                            break;
-                        case 0:
-                            $this->dialogMsg = "Membership Card is Inactive"; 
-                            break;
-                        case 8:
-                            $this->dialogMsg = "Migrated Temporary Account"; 
-                            break;
-                        case 5:
-                            $this->dialogMsg = "Active Temporary Account"; 
-                            break;
-                        case 9:
-                            $this->dialogMsg = "Membership Card is Banned"; 
-                            break;
-                        case 7:
-                            $this->dialogMsg = "Membership Card is already Migrated"; 
-                            break;
-                    }
+                    $this->dialogMsg = "Membership Card is Invalid";
                     $this->showDialog2 = true;
-                    $this->dialogMsg2 = "Please try again.";
                 }
+                
+                
+                
+                
         }
         else{
             $this->showDialog2 = true;

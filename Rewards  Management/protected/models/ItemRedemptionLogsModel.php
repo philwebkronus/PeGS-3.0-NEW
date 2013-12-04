@@ -55,6 +55,7 @@ class ItemRedemptionLogsModel extends CFormModel
     }
     /**
      * Inquiry for Item Redemption Logs
+     * @param int $inquiry Report Type
      * @param int $fitler <p>The filter selected 1 - Item 2 - Partner 3 - Category 0 - ALL</p>
      * @param string $particular <p>The value of selected particular</p>
      * @param int $player <p>The selected player segment 1 - ALL 2 - Regular 3 - VIP</p>

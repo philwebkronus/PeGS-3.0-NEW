@@ -145,5 +145,72 @@ class PartnersModel extends CFormModel
         
         return $result;
     }
+    /**
+     * Check if username of added partner already exist
+     * @param string $username Entered username for the partner
+     * @return int Count, to check if exist
+     * @author Mark Kenneth Esguerra
+     * @date November 29, 2013
+     */
+    public function checkUsernameExist($username)
+    {
+        $connection = Yii::app()->db;
+        
+        $query = "SELECT Count(PartnerPID) as ctrusername FROM partners
+                  WHERE UserName = :username";
+        
+        $command = $connection->createCommand($query);
+        $command->bindParam(":username", $username);
+        $result = $command->queryRow();
+        
+        return $result;
+    }
+    /**
+     * Update DateLastLogin of partners table after logging in
+     * @param int $partnerPID Partner ID
+     * @return boolean True if successfully updated false if not
+     * @author Mark Kenneth Esguerra
+     * @date December 4, 2013
+     */
+    public function updateLastLogin($partnerPID)
+    {
+        $connection = Yii::app()->db;
+        
+        $pdo = $connection->beginTransaction();
+        
+        try
+        {
+            $query = "UPDATE partners SET DateLastLogin = NOW_USEC() 
+                      WHERE PartnerPID = :partnerPID";
+            $sql = $connection->createCommand($query);
+            $sql->bindParam(":partnerPID", $partnerPID);
+            
+            $result = $sql->execute();
+            
+            if ($result > 0)
+            {
+                try
+                {
+                    $pdo->commit();
+                    return true;
+                }
+                catch (CDbException $e)
+                {
+                    $pdo->rollback();
+                    return false;
+                }
+            }
+            else
+            {
+                $pdo->rollback();
+                return false;
+            }
+        }
+        catch (CDbException $e)
+        {
+            $pdo->rollback();
+            return false;
+        }
+    }
 }
 ?>

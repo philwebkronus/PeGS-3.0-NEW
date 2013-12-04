@@ -152,7 +152,7 @@ class ManagePartnersForm extends CFormModel
      */
     public function updatePartnerDetails($details, $user)
     {
-        $audittrailmodel = new AuditTrailModel();
+        $audittrailmodel    = new AuditTrailModel();
         
         $connection = Yii::app()->db;
         
@@ -249,7 +249,9 @@ class ManagePartnersForm extends CFormModel
                             $sql->bindParam(":contactphone", $contactPNumber);
                             $sql->bindParam(":contactmobile", $contactMobile);
                             $sql->bindParam(":contactemail", $contactEmail);
+                            
                             $updateresult = $sql->execute();
+                            
                             if ($updateresult > 0 || $secondresult > 0 || $firstresult > 0)
                             {
                                 //Check the selected status, if ACTIVE to INACTIVE, change the status
@@ -257,59 +259,36 @@ class ManagePartnersForm extends CFormModel
                                 //change the status
                                 if ($status == 0)
                                 {
-                                    try
-                                    {
-                                        //If partner's status has been change, change also the status of 
-                                        //its corresponding item
-                                        $thirdquery = "UPDATE rewarditems SET Status = :status
-                                                       WHERE PartnerID = :partnerID";
-                                        $sql = $connection->createCommand($thirdquery);
-                                        $sql->bindParam(":partnerID", $partnerID);
-                                        $sql->bindParam(":status", $this->determineItemStat($status));
-                                        $thirdresult = $sql->execute();
-                                        if ($thirdresult > 0 || $secondresult > 0 || $firstresult > 0)
-                                        {
-                                            try
-                                            {
-                                                $pdo->commit();
-                                                //Log to Audit Trail
-                                                $status = $this->getStat($status);
-                                                $audittrailmodel->logEvent(RefAuditFunctionsModel::MARKETING_UPDATE_PARTNER_STATUS, "PartnerID:".$partnerID." Name:".$partnername." Status:".$status, array('SessionID' => Yii::app()->session['SessionID'], 
-                                                                                                                                          'AID' => Yii::app()->session['AID']));
-                                                return array('TransMsg'=>'Partner\'s Details is successfully updated.',
-                                                             'TransCode'=>0);
-                                            }
-                                            catch (CDbException $e)
-                                            {
-                                                $pdo->rollback();
-                                                return array('TransMsg'=>'Error to update Partner Details',
-                                                             'TransCode'=>2);
-                                            }
-                                        }
-                                    }
-                                    catch (CDbException $e)
-                                    {
-                                        $pdo->rollback();
-                                        return array('TransMsg'=>'Error: Failed to update transactional table [0005]',
-                                             'TransCode'=>2);
-                                    }
+                                
+                                    //If partner's status has been change, change also the status of 
+                                    //its corresponding item
+                                    $thirdquery = "UPDATE rewarditems SET Status = :status
+                                                   WHERE PartnerID = :partnerID";
+                                    $sql = $connection->createCommand($thirdquery);
+                                    $sql->bindParam(":partnerID", $partnerID);
+                                    $sql->bindParam(":status", $this->determineItemStat($status));
+                                    $thirdresult = $sql->execute();
                                 }
                                 else
+                                {
+                                    $thirdresult = 0;
+                                }
+                                if ($thirdresult > 0 || $secondresult > 0 || $firstresult > 0)
                                 {
                                     try
                                     {
                                         $pdo->commit();
                                         //Log to Audit Trail
-                                        $status = $this->getStat($status);
-                                        $audittrailmodel->logEvent(RefAuditFunctionsModel::MARKETING_EDIT_PARTNER_DETAILS,"PartnerID:".$partnerID." Name:".$partnername." Status:".$status, array('SessionID' => Yii::app()->session['SessionID'], 
+                                        $getstatus = $this->getStat($status);
+                                        $audittrailmodel->logEvent(RefAuditFunctionsModel::MARKETING_EDIT_PARTNER_DETAILS,"PartnerID:".$partnerID." Name:".$partnername." Status:".$getstatus, array('SessionID' => Yii::app()->session['SessionID'], 
                                                                                                                              'AID' => Yii::app()->session['AID']));
-                                        return array('TransMsg'=>'Partner\'s Details is successfully updated.',
+                                        return array('TransMsg'=>'Successfully Updated Partner Details',
                                                      'TransCode'=>0);
                                     }
                                     catch (CDbException $e)
                                     {
                                         $pdo->rollback();
-                                        return array('TransMsg'=>'Error: Failed to update Partner Details',
+                                        return array('TransMsg'=>'Error to update Partner Details',
                                                      'TransCode'=>2);
                                     }
                                 }
@@ -403,8 +382,7 @@ class ManagePartnersForm extends CFormModel
                                                             ContactPersonPosition,
                                                             ContactPersonPhone,
                                                             ContactPersonMobile,
-                                                            ContactPersonEmail,
-                                                            NumberOfRewardOffers)
+                                                            ContactPersonEmail)
                                VALUES (:partnerID,
                                        :address,
                                        :email,
@@ -415,8 +393,7 @@ class ManagePartnersForm extends CFormModel
                                        :contactposition,
                                        :contactphone,
                                        :contactmobile,
-                                       :contactemail,
-                                       :numberofofferings
+                                       :contactemail
                                        )";
                 $sql = $connection->createCommand($secondquery);
                 $sql->bindParam(":address", $address);
@@ -429,7 +406,6 @@ class ManagePartnersForm extends CFormModel
                 $sql->bindParam(":contactphone", $contactPNumber);
                 $sql->bindParam(":contactmobile", $contactMobile);
                 $sql->bindParam(":contactemail", $contactEmail);
-                $sql->bindParam(":numberofofferings", $numberofofferings);
                 $sql->bindParam(":partnerID", $lastInsertPID);
                 $secondresult = $sql->execute();
                 //Check if all details are successfully inserted in ref_partners and
@@ -660,6 +636,12 @@ class ManagePartnersForm extends CFormModel
         }
         return $stat;
     }
+    /**
+     * Get Status
+     * @param int $stat 
+     * @return string Status
+     * 
+     */
     public function getStat($stat)
     {
         if ($stat == 1)
