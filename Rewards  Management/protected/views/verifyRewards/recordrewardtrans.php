@@ -11,7 +11,7 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl . '/js
 
 ?>
 
-<!--Disable Right Click--Added by: mgesguerra 09-16-13-->
+<!--Disable Right Click--Added by: mgesguerra 09-16-13 -->
 <script type="text/javascript">
     $(function () {
       $(document).bind("contextmenu",function(e){
