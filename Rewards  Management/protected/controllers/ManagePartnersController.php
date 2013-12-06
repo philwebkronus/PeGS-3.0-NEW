@@ -357,7 +357,6 @@ class ManagePartnersController extends Controller {
                 if (!$validation->validateAlphaNumeric($details['partnerID']) || 
                     !$validation->validateAlphaNumeric($details['partnername']) ||
                     !$validation->validateAlphaNumeric($details['address']) ||
-                    !$validation->validateAlphaNumeric($details['faxnumber']) ||
                     !$validation->validateAlphaNumeric($details['contactPerson']) ||
                     !$validation->validateAlphaNumeric($details['contactPosition']) ||
                     !$validation->validateAlphaNumeric($details['contactMobile']) ||
