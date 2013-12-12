@@ -95,25 +95,22 @@ class MemberCards extends BaseEntity {
         $result = parent::RunQuery($query);
         return $result[0]['CardNumber'];
     }
-    
-    public function getOldUBCardNumberUsingMID( $MID )
-    {
+
+    public function getOldUBCardNumberUsingMID($MID) {
         $query = "SELECT mc.CardNumber
                             FROM membercards mc
                             INNER JOIN cards c ON c.CardID = mc.CardID
                             WHERE mc.MID = $MID AND mc.Status = 1";
-        
+
         $result = parent::RunQuery($query);
-        if(empty($result)){
-             return 0;
-        }
-        else{
+        if (empty($result)) {
+            return 0;
+        } else {
             return $result[0]['CardNumber'];
         }
     }
-    
-    public function getMIDByCard( $cardnumber )
-    {
+
+    public function getMIDByCard($cardnumber) {
         $query = "SELECT mc.MID, c.Status
                   FROM membercards mc
                     INNER JOIN cards c ON mc.CardID = c.CardID
@@ -123,22 +120,19 @@ class MemberCards extends BaseEntity {
 
         return $result;
     }
-    
-    
-    public function getPointsByCard( $cardnumber )
-    {
+
+    public function getPointsByCard($cardnumber) {
         $query = "SELECT mc.LifeTimePoints, mc.CurrentPoints, mc.RedeemedPoints, mc.BonusPoints
                   FROM membercards mc
                     INNER JOIN cards c ON mc.CardID = c.CardID
                   WHERE c.CardNumber = '$cardnumber'";
-        
+
         $result = parent::RunQuery($query);
-        
+
         return $result[0];
     }
-    
-    public function getMemberCardInfoRedemption( $MID )
-    {
+
+    public function getMemberCardInfoRedemption($MID) {
         $query = "SELECT m.*,
                     CASE c.CardTypeID
                         WHEN 1 THEN 'Gold'
@@ -174,7 +168,6 @@ class MemberCards extends BaseEntity {
      * @author: aqdepliyan
      * @DateCreated: 2013-06-17 05:38:40PM
      */
-
     public function getMemberCardInfoByMID($MID) {
         $query = "SELECT m.Status, mc.MemberCardID, mc.CardNumber
                             FROM membership.members as m
@@ -184,9 +177,7 @@ class MemberCards extends BaseEntity {
         $result = parent::RunQuery($query);
         return $result;
     }
-    
-    
-    
+
     public function getMemberCardInfoByMIDAllStat($MID) {
         $query = "SELECT m.Status, mc.MemberCardID, mc.CardNumber, mc.Status AS MCStatus
                             FROM membership.members as m
@@ -202,7 +193,6 @@ class MemberCards extends BaseEntity {
      * @author: aqdepliyan
      * @DateCreated: 2013-06-17 06:02:35PM
      */
-
     public function getMemberCardInfoByCardNumber($cardnumber) {
         $query = "SELECT MemberCardID, MID, Status
                             FROM " . $this->TableName . "
@@ -211,7 +201,7 @@ class MemberCards extends BaseEntity {
         $result = parent::RunQuery($query);
         return $result;
     }
-    
+
     /**
      * @Description: Get MemberCard Info with a status limit only to banned cards.
      * @author: aqdepliyan
@@ -261,66 +251,50 @@ class MemberCards extends BaseEntity {
             App::SetErrorMessage($e->getMessage());
         }
     }
-    
-    
-    public function transferMemberCard($mid, $cardid, $siteid, $lifetimepoints, $currentpoints, $redeemedpoints, $newcardnumber, 
-            $oldubcardnumber, $status1, $status2, $aid, $dateupdated)
-    {
+
+    public function transferMemberCard($mid, $cardid, $siteid, $lifetimepoints, $currentpoints, $redeemedpoints, $newcardnumber, $oldubcardnumber, $status1, $status2, $aid, $dateupdated) {
         $this->StartTransaction();
-        try
-        {
+        try {
             $query = "UPDATE membercards SET LifetimePoints = '$lifetimepoints',
                 CurrentPoints = '$currentpoints', RedeemedPoints = '$redeemedpoints', DateUpdated = '$dateupdated',
                 Status = '$status1', UpdatedByAID = '$aid'
                 WHERE CardNumber = '$newcardnumber'";
-        
+
             $this->ExecuteQuery($query);
-            
-            if(!App::HasError())
-            {
+
+            if (!App::HasError()) {
                 $query2 = "UPDATE membercards SET DateUpdated = '$dateupdated',
                     Status = '$status2', UpdatedByAID = '$aid' 
                     WHERE CardNumber = '$oldubcardnumber'";
-        
+
                 $this->ExecuteQuery($query2);
-                
-                if(!App::HasError())
-                {
+
+                if (!App::HasError()) {
                     $query3 = "INSERT INTO membercards SET MID = '$mid', CardID = '$cardid', CardNumber = '$newcardnumber',
                                                            SiteID = '$siteid', LifetimePoints = '$lifetimepoints',
                                                            CurrentPoints = '$currentpoints', RedeemedPoints = '$redeemedpoints',
                                                            DateCreated = '$dateupdated' , Status = 1";
-        
+
                     $this->ExecuteQuery($query3);
-                
-                    if(!App::HasError())
-                        {
-                            $this->CommitTransaction();
-                        }
-                    else
-                        {
-                            $this->RollBackTransaction();
-                        }
-                }
-                else
-                {
+
+                    if (!App::HasError()) {
+                        $this->CommitTransaction();
+                    } else {
+                        $this->RollBackTransaction();
+                    }
+                } else {
                     $this->RollBackTransaction();
                 }
-            }
-            else
-            {
+            } else {
                 $this->RollBackTransaction();
             }
-        }
-        catch(Exception $e)
-        {
+        } catch (Exception $e) {
             $this->RollBackTransaction();
             App::SetErrorMessage($e->getMessage());
         }
     }
-    
-    public function updateMemberCardName( $MID, $name )
-    {
+
+    public function updateMemberCardName($MID, $name) {
         $this->StartTransaction();
 
         $query = "UPDATE loyaltydb.membercards SET MemberCardName = '$name' WHERE MID = $MID";
@@ -351,6 +325,14 @@ class MemberCards extends BaseEntity {
                 CurrentPoints = CurrentPoints - $redeemTotalPoints WHERE MID = $MID AND  Status IN (1,5)";
         return parent::ExecuteQuery($query);
     }
+    
+    //For updating card points
+    public function UpdateCardPoints($MID, $redeemTotalPoints) {
+        $query = "UPDATE loyaltydb.membercards set RedeemedPoints = RedeemedPoints + $redeemTotalPoints, 
+                CurrentPoints = CurrentPoints - $redeemTotalPoints WHERE MID = $MID AND  Status IN (1,5)";
+        parent::ExecuteQuery($query);
+        return $this->AffectedRows;
+    }
 
     /*
      * Description: MemberCardID based on given cardid
@@ -377,7 +359,7 @@ class MemberCards extends BaseEntity {
         $result = parent::RunQuery($query);
         return $result;
     }
-    
+
     /**
      * @Description: For Fetching Card Points
      * @author: aqdepliyan
@@ -401,10 +383,10 @@ class MemberCards extends BaseEntity {
      * @param int $MID
      * @return int
      */
-    public function getCurrentPointsByMID($MID){
+    public function getCurrentPointsByMID($MID) {
         $query = "SELECT CurrentPoints
                             FROM " . $this->TableName . "
-                            WHERE MID=".$MID." AND Status = 1";
+                            WHERE MID=" . $MID . " AND Status = 1";
         $result = parent::RunQuery($query);
         return $result;
     }
@@ -421,14 +403,12 @@ class MemberCards extends BaseEntity {
         $result = parent::RunQuery($query);
         return $result;
     }
-    
-    public function checkHasCardNumber( $memcardid )
-    {
+
+    public function checkHasCardNumber($memcardid) {
         $query = "SELECT COUNT(CardNumber) as count FROM membercards WHERE MID = $memcardid AND Status != 8";
         $result = parent::RunQuery($query);
         return $result[0]['count'];
     }
-    
 
     /*
      * Description: get Current Points and corresponding Status by CardNumber
@@ -442,42 +422,40 @@ class MemberCards extends BaseEntity {
         return $result;
     }
 
-    
     /*
      * Description: card number based on given membercardID
      * @author: Gerardo Jagolino Jr.
      * result: object array
      * DateCreated: 2013-07-17
      */
-    public function getCardDetails( $CardNumber )
-    {
+
+    public function getCardDetails($CardNumber) {
         $query = "SELECT MemberCardID, MID, CardID, SiteID, 
             LifetimePoints, CurrentPoints, RedeemedPoints, DateCreated, 
             CreatedByAID, Status
         FROM membercards WHERE CardNumber = '$CardNumber'";
         $result = parent::RunQuery($query);
         return $result;
-    }   
-    
-    
+    }
+
     /*
      * Description: get Card Number using MID
      * @author: JunJun S. Hernandez
      * result: object array
      * DateCreated: 2013-08-12
      */
-    public function getCardNumberByMID( $MID )
-    {
+
+    public function getCardNumberByMID($MID) {
         $query = "SELECT CardNumber FROM membercards WHERE MID = '$MID'";
         return parent::RunQuery($query);
-    }  
-    
+    }
+
     public function getMemCardIDByCardNumber($cardnumber) {
         $query = "SELECT MemberCardID FROM membercards WHERE CardNumber = '$cardnumber'";
         $result = parent::RunQuery($query);
         return $result;
     }
-    
+
     public function getStatusByMID($MID) {
 
         $query = "SELECT Status FROM membercards WHERE MID = '$MID'";
@@ -492,56 +470,51 @@ class MemberCards extends BaseEntity {
      * result: object array
      * DateCreated: 2013-07-17
      */
-    public function getTempcardDetails( $cardnumber )
-    {
+
+    public function getTempcardDetails($cardnumber) {
         $query = "SELECT MemberCardID, MID, CardID, SiteID,
             LifeTimePoints, CurrentPoints, RedeemedPoints, BonusPoints, DateCreated, 
             CreatedByAID, Status
         FROM membercards WHERE CardNumber = '$cardnumber'";
         $result = parent::RunQuery($query);
         return $result;
-    }  
-    
+    }
+
     /*
      * Description: card number based on given membercardID
      * @author: Gerardo Jagolino Jr.
      * result: object array
      * DateCreated: 2013-07-17
      */
-    public function getMigratedCard( $mid )
-    {
+
+    public function getMigratedCard($mid) {
         $query = "SELECT MemberCardID, MID, CardID, SiteID, CardNumber,
             LifeTimePoints, CurrentPoints, RedeemedPoints, BonusPoints, DateCreated, 
             CreatedByAID, Status
         FROM membercards WHERE MID = '$mid' AND Status = 1";
         $result = parent::RunQuery($query);
         return $result;
-    }  
-    
-    public function getMemberCardDetails( $membercardid )
-    {
+    }
+
+    public function getMemberCardDetails($membercardid) {
         $query = "SELECT MemberCardID, MID, CardID, CardNumber, SiteID, 
             LifetimePoints, CurrentPoints, RedeemedPoints, DateCreated, 
             CreatedByAID, Status
         FROM membercards WHERE MemberCardID = '$membercardid'";
         $result = parent::RunQuery($query);
         return $result;
-    }   
-    
-    
-    public function getUBCardDetails( $cardnumber )
-    {
+    }
+
+    public function getUBCardDetails($cardnumber) {
         $query = "SELECT MemberCardID, MID, CardID, CardNumber, SiteID, 
             LifeTimePoints, CurrentPoints, RedeemedPoints, BonusPoints, DateCreated, 
             CreatedByAID, Status
         FROM membercards WHERE CardNumber = '$cardnumber'";
         $result = parent::RunQuery($query);
         return $result;
-    }   
-    
-    
-    public function getAllCardDetails( $mid )
-    {
+    }
+
+    public function getAllCardDetails($mid) {
         $query = "SELECT MemberCardID, MID, CardID, CardNumber, SiteID, 
             LifeTimePoints, CurrentPoints, RedeemedPoints, BonusPoints, DateCreated, 
             CreatedByAID, Status
@@ -549,10 +522,8 @@ class MemberCards extends BaseEntity {
         $result = parent::RunQuery($query);
         return $result;
     }
-    
-    
-    public function getCardDetailsActiveDeactivateBanned( $mid )
-    {
+
+    public function getCardDetailsActiveDeactivateBanned($mid) {
         $query = "SELECT MemberCardID, MID, CardID, CardNumber, SiteID, 
             LifeTimePoints, CurrentPoints, RedeemedPoints, BonusPoints, DateCreated, 
             CreatedByAID, Status
@@ -560,9 +531,8 @@ class MemberCards extends BaseEntity {
         $result = parent::RunQuery($query);
         return $result;
     }
-    
-    public function getInActiveCardDetails( $mid )
-    {
+
+    public function getInActiveCardDetails($mid) {
         $query = "SELECT MemberCardID, MID, CardID, CardNumber, SiteID, 
             LifeTimePoints, CurrentPoints, RedeemedPoints, BonusPoints, DateCreated, 
             CreatedByAID, Status
@@ -570,70 +540,57 @@ class MemberCards extends BaseEntity {
         $result = parent::RunQuery($query);
         return $result;
     }
-    
-    
-    public function getCardDetailsFromStatus( $mid, $status )
-    {
+
+    public function getCardDetailsFromStatus($mid, $status) {
         $query = "SELECT MemberCardID, MID, CardID, CardNumber, SiteID, 
             LifeTimePoints, CurrentPoints, RedeemedPoints, BonusPoints, DateCreated, 
             CreatedByAID, Status
         FROM membercards WHERE MID = '$mid' AND Status = '$status'";
         $result = parent::RunQuery($query);
         return $result;
-    } 
-    
-    
-    public function getCardDetailsByMemID( $membercardid )
-    {
+    }
+
+    public function getCardDetailsByMemID($membercardid) {
         $query = "SELECT MemberCardID, MID, CardID, CardNumber, SiteID, 
             LifeTimePoints, CurrentPoints, RedeemedPoints, BonusPoints, DateCreated, 
             CreatedByAID, Status
         FROM membercards WHERE MemberCardID = '$membercardid'";
         $result = parent::RunQuery($query);
         return $result;
-    } 
-    
-    public function updateMemberCardsStatus($cardid1, $cardid2, $status1, $status2, $aid, $dateupdated)
-    {
+    }
+
+    public function updateMemberCardsStatus($cardid1, $cardid2, $status1, $status2, $aid, $dateupdated) {
         $this->StartTransaction();
-        try
-        {
+        try {
             $this->ExecuteQuery("UPDATE membercards SET Status = $status1, UpdatedByAID = $aid, 
                 DateUpdated = '$dateupdated' WHERE CardID = $cardid1");
-            
-            if(!App::HasError())
-            { 
-                if(!App::HasError())
-                {
+
+            if (!App::HasError()) {
+                if (!App::HasError()) {
                     $this->ExecuteQuery("UPDATE membercards SET Status = $status2, UpdatedByAID = $aid, 
                 DateUpdated = '$dateupdated' WHERE CardID = $cardid2");
 
                     if (!App::HasError()) {
-                        $this->CommitTransaction();
-                    }
-                    else
-                    {
+                            if (!App::HasError()) {
+                                $this->CommitTransaction();
+                            } else {
+                                $this->RollBackTransaction();
+                            }
+                    } else {
                         $this->RollBackTransaction();
                     }
-                }
-                else
-                {
+                } else {
                     $this->RollBackTransaction();
                 }
-            }
-            else
-            {
+            } else {
                 $this->RollBackTransaction();
             }
-        }
-        catch(Exception $e)
-        {
+        } catch (Exception $e) {
             $this->RollBackTransaction();
             App::SetErrorMessage($e->getMessage());
         }
     }
-    
-    
+
     public function getDeactivatedStatusByMID($MID) {
 
         $query = "SELECT Status FROM membercards WHERE MID = '$MID' AND Status = 2";
@@ -641,7 +598,7 @@ class MemberCards extends BaseEntity {
         $result = parent::RunQuery($query);
         return $result;
     }
-    
+
 }
 
 ?>

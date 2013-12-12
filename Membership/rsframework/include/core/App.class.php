@@ -414,6 +414,21 @@ class App
             return false;
         }
     }
+    
+    /**
+    * @Description: Generate Alphanumeric combination for security code (For Coupon and Item Redemption)
+     * @Author: aqdepliyan
+     * @DateCreated: 2013-10-23
+    * @param int $length
+    * @return string
+    */
+   public function mt_rand_str ($length) {
+       $c = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+       $s = '';
+       $cl = strlen($c)-1;
+       for ($cl = strlen($c)-1, $i = 0; $i < $length; $s .= $c[mt_rand(0, $cl)], ++$i);
+       return $s;
+   }
 
 }
 

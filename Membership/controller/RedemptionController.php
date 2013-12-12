@@ -91,6 +91,9 @@ if(isset($_SESSION['MID'])){
 //Check if session is existing, if not destroy session and redirect to login page.
 if($sessioncount > 0)
 {
+        App::LoadCore('ErrorLogger.php');
+        $logger = new ErrorLogger();
+        
         //proceed with redemption process if it has session
         if($source == 1){
             $redemptiondata["MID"] = $MID;
@@ -136,12 +139,20 @@ if($sessioncount > 0)
         if($redemptiondata["Quantity"] > 0){
 
             if($redemptiondata["PlayerPoints"] < $redemptiondata["TotalItemPoints"]){
-                $message = "Player Redemption: Transaction Failed. Card may have insufficient points.";
+                $message = "Transaction Failed. Card may have insufficient points.";
                 $_AuditTrail->StartTransaction();
                 if($source == 1){
-                    $_AuditTrail->logEvent(AuditFunctions::PLAYER_REDEMPTION, $message, array('ID'=>$redemptiondata["MID"], 'SessionID'=>$_SESSION['MemberInfo']['SessionID']));
+                    if($redemptiondata["RewardID"] == 1) {
+                        $_AuditTrail->logEvent(AuditFunctions::PLAYER_ITEM_REDEMPTION, $message, array('ID'=>$redemptiondata["MID"], 'SessionID'=>$_SESSION['MemberInfo']['SessionID']));
+                    } else {
+                        $_AuditTrail->logEvent(AuditFunctions::PLAYER_REDEMPTION, $message, array('ID'=>$redemptiondata["MID"], 'SessionID'=>$_SESSION['MemberInfo']['SessionID']));
+                    }
                 } else {
-                    $_AuditTrail->logEvent(AuditFunctions::CASHIER_REDEMPTION, $message, array('ID'=>$_SESSION['userinfo']['AID'], 'SessionID'=>$_SESSION['userinfo']['SessionID']));
+                    if($redemptiondata["RewardID"] == 1) {
+                        $_AuditTrail->logEvent(AuditFunctions::CASHIER_ITEM_REDEMPTION, $message, array('ID'=>$_SESSION['userinfo']['AID'], 'SessionID'=>$_SESSION['userinfo']['SessionID']));
+                    } else {
+                        $_AuditTrail->logEvent(AuditFunctions::CASHIER_REDEMPTION, $message, array('ID'=>$_SESSION['userinfo']['AID'], 'SessionID'=>$_SESSION['userinfo']['SessionID']));
+                    }
                 }
                 if(!App::HasError()){
                     $_AuditTrail->CommitTransaction();
@@ -150,14 +161,16 @@ if($sessioncount > 0)
                     $hdnTotalItemPoints->Text = "";
                     echo "<script type='text/javascript'>$('#TotalItemPoints').html('');</script>";
                 } else {
-                    $message = "Failed to log event on database.";
+                    $logmessage = "Failed to log event on Audit Trail.";
                     $_AuditTrail->RollBackTransaction();
                     App::ClearStatus();
-                    App::SetErrorMessage($message);
                     $txtQuantity->Text = "";
                     $hdnTotalItemPoints->Text = "";
                     echo "<script type='text/javascript'>$('#TotalItemPoints').html('');</script>";
+                    $logtype = $redemptiondata["RewardID"] == 2 ? "[COUPON REDEMPTION ERROR] ": "[ITEM REDEMPTION ERROR] ";
+                    $logger->log($logger->logdate,$logtype, $logmessage);
                 }
+                App::SetErrorMessage($message);
             } else {
                 $IsCoupon = ($redemptiondata["RewardID"] == 1 || $redemptiondata["RewardID"] == "1") ? false:true;
 
@@ -178,7 +191,7 @@ if($sessioncount > 0)
                             $tobecurrentpoints = (int)$redemptiondata["PlayerPoints"] - (int)$redemptiondata["TotalItemPoints"];
                             
                             if($tobecurrentpoints < 0){
-                                    $message = "Player Redemption: Transaction Failed. Card may have insufficient points.";
+                                    $message = "Transaction Failed. Card may have insufficient points.";
                                     $_AuditTrail->StartTransaction();
                                     if($source == 1){
                                         $_AuditTrail->logEvent(AuditFunctions::PLAYER_REDEMPTION, $message, array('ID'=>$redemptiondata["MID"], 'SessionID'=>$_SESSION['MemberInfo']['SessionID']));
@@ -187,25 +200,25 @@ if($sessioncount > 0)
                                     }
                                     if(!App::HasError()){
                                         $_AuditTrail->CommitTransaction();
-                                        App::SetErrorMessage($message);
                                         $txtQuantity->Text = "";
                                         $hdnTotalItemPoints->Text = "";
                                         echo "<script type='text/javascript'>$('#TotalItemPoints').html('');</script>";
                                     } else {
-                                        $message = "Failed to log event on database.";
+                                        $logmessage = "Failed to log event on Audit Trail.";
                                         $_AuditTrail->RollBackTransaction();
                                         App::ClearStatus();
-                                        App::SetErrorMessage($message);
                                         $txtQuantity->Text = "";
                                         $hdnTotalItemPoints->Text = "";
                                         echo "<script type='text/javascript'>$('#TotalItemPoints').html('');</script>";
+                                        $logger->log($logger->logdate,"[COUPON REDEMPTION ERROR] ", $logmessage);
                                     }
+                                    App::SetErrorMessage($message);
                             } else {
                                     $pendingredemption = $_PendingRedemption->checkPendingRedemption($redemptiondata['MID']);
                                     
                                     //Check if there is pending  redemption, if yes throw error message.
                                     if($pendingredemption){
-                                            $message = "Player Redemption: Transaction Failed. Card has a pending redemption.";
+                                            $message = "Transaction Failed. Card has a pending redemption.";
                                             $_AuditTrail->StartTransaction();
                                             if($source == 1){
                                                 $_AuditTrail->logEvent(AuditFunctions::PLAYER_REDEMPTION, $message, array('ID'=>$redemptiondata["MID"], 'SessionID'=>$_SESSION['MemberInfo']['SessionID']));
@@ -214,236 +227,63 @@ if($sessioncount > 0)
                                             }
                                             if(!App::HasError()){
                                                 $_AuditTrail->CommitTransaction();
-                                                App::SetErrorMessage($message);
                                                 $txtQuantity->Text = "";
                                                 $hdnTotalItemPoints->Text = "";
                                                 echo "<script type='text/javascript'>$('#TotalItemPoints').html('');</script>";
                                             } else {
-                                                $message = "Failed to log event on database.";
+                                                $logmessage = "Failed to log event on Audit Trail.";
                                                 $_AuditTrail->RollBackTransaction();
                                                 App::ClearStatus();
-                                                App::SetErrorMessage($message);
                                                 $txtQuantity->Text = "";
                                                 $hdnTotalItemPoints->Text = "";
                                                 echo "<script type='text/javascript'>$('#TotalItemPoints').html('');</script>";
+                                                $logger->log($logger->logdate,"[COUPON REDEMPTION ERROR] ", $logmessage);
                                             }
+                                            App::SetErrorMessage($message);
                                     } else {
-                                            $_CouponRedemptionLogs->StartTransaction();
-                                            $_CouponRedemptionLogs->insertCouponLogs($redemptiondata["MID"], $redemptiondata["RewardItemID"], $redemptiondata["Quantity"],$source, $RedeemedDate);
+                                        
+                                        //Process Coupon Redemption
+                                        $resultsarray = $_RedemptionProcess->ProcessCouponRedemption($redemptiondata["MID"], $redemptiondata["RewardItemID"], $redemptiondata["Quantity"], $redemptiondata["TotalItemPoints"], 
+                                                                                                                                                            $redemptiondata["CardNumber"], $source, $RedeemedDate);
+                                        
+                                        if($resultsarray["IsSuccess"]){
+                                            $OldCP = number_format($resultsarray["OldCP"]);
+                                            $RedeemedPoints = number_format($redemptiondata["TotalItemPoints"]);
+                                            $message = "CP: ".$OldCP.", Item: ".$redemptiondata["ItemName"].", RP: ".$RedeemedPoints.", Series: ".$_SESSION['RewardOfferCopy']['CouponSeries'];
+                                        } else {
+                                            $message = $resultsarray["Message"];
+                                        }
+                                        
+                                        $_AuditTrail->StartTransaction();
+                                        if($source == 1){
+                                                $_AuditTrail->logEvent(AuditFunctions::PLAYER_REDEMPTION, $message, array('ID'=>$redemptiondata["MID"], 'SessionID'=>$_SESSION['MemberInfo']['SessionID']));
+                                        } else {
+                                                $_AuditTrail->logEvent(AuditFunctions::CASHIER_REDEMPTION, $message, array('ID'=>$_SESSION['userinfo']['AID'], 'SessionID'=>$_SESSION['userinfo']['SessionID']));
+                                        }
+                                        if(!$_AuditTrail->HasError){
+                                            $_AuditTrail->CommitTransaction();
+                                        } else {
+                                            $logmessage = "Failed to log event on Audit Trail.";
+                                            $_AuditTrail->RollBackTransaction();
+                                            App::ClearStatus();
+                                            $logger->log($logger->logdate,"[COUPON REDEMPTION ERROR] ", $logmessage);
+                                        }
+                                        
+                                        $txtQuantity->Text = "";
+                                        $hdnTotalItemPoints->Text = "";
+                                        echo "<script type='text/javascript'>$('#TotalItemPoints').html('');</script>";
+                                        
+                                        if(!$resultsarray["IsSuccess"]){
+                                            App::SetErrorMessage($message);
+                                        } else {
+                                            //send SMS alert to player
+                                            sendSMS(SMSRequestLogs::COUPON_REDEMPTION, $redemptiondata["MobileNumber"], $RedeemedDate, $_SESSION['RewardOfferCopy']['SerialNumber'], $redemptiondata["Quantity"], "SMSC", $resultsarray["LastInsertedID"], '', $_SESSION['RewardOfferCopy']['CouponSeries']);    
 
-                                            if(!App::HasError()){
-                                                $_CouponRedemptionLogs->CommitTransaction();
-                                                $CouponRedemptionLogID = $_CouponRedemptionLogs->LastInsertID;
-
-                                                $_RaffleCoupons->StartTransaction();
-                                                $itr = 0;
-                                                do{
-                                                    if($source == 1){
-                                                        $_RaffleCoupons->updateRaffleCouponsStatus($availablecoupon[$itr]["RaffleCouponID"], $CouponRedemptionLogID, $redemptiondata["RewardItemID"],$redemptiondata["MID"]);
-                                                    } else {
-                                                        $_RaffleCoupons->updateRaffleCouponsStatus($availablecoupon[$itr]["RaffleCouponID"], $CouponRedemptionLogID, $redemptiondata["RewardItemID"],$_SESSION['userinfo']['AID']);
-                                                    }
-                                                    $itr++;
-                                                }while($itr != count($availablecoupon));
-
-                                                if(!App::HasError()){
-                                                    $_RaffleCoupons->CommitTransaction();
-
-                                                    $_MemberCards->StartTransaction();
-                                                    $_MemberCards->updatePlayerPoints($redemptiondata["MID"], $redemptiondata["TotalItemPoints"]);
-                                                    $CommonPDOConn = $_MemberCards->getPDOConnection();
-
-                                                    if(!App::HasError()){
-                                                        $status = 1;
-                                                        $couponlogsdetail = $_CouponRedemptionLogs->getSource($CouponRedemptionLogID);
-                                                        $_CouponRedemptionLogs->setPDOConnection($CommonPDOConn);
-
-                                                        $redemptioninfo = $_RaffleCoupons->getCouponRedemptionInfo($CouponRedemptionLogID);
-                                                        $arrcouponredemptionloginfo = $redemptioninfo[0];
-                                                        $mincouponnumber = str_pad($arrcouponredemptionloginfo["MinCouponNumber"], 7, "0", STR_PAD_LEFT);
-                                                        $maxcouponnumber = str_pad($arrcouponredemptionloginfo["MaxCouponNumber"], 7, "0", STR_PAD_LEFT);
-
-                                                        if ($arrcouponredemptionloginfo["MinCouponNumber"] == $arrcouponredemptionloginfo["MaxCouponNumber"]) {
-                                                            $couponseries = $mincouponnumber;
-                                                        } else {
-                                                            $couponseries = $mincouponnumber . " - " . $maxcouponnumber;
-                                                        }
-
-                                                        $serialnumber = str_pad($CouponRedemptionLogID, 7, "0", STR_PAD_LEFT) . "A" . $_RaffleCoupons->getMod10($mincouponnumber) . "B" . $_RaffleCoupons->getMod10($maxcouponnumber);
-                                                        $checkstring = $couponseries . $redemptiondata["Quantity"] . $redemptiondata["CardNumber"]  . $redemptiondata["PlayerName"]  . date("F j, Y", strtotime($redemptiondata["Birthdate"])) . 
-                                                                                    $redemptiondata["Email"] . $redemptiondata["MobileNumber"];
-                                                        $checksum = crc32($checkstring);
-
-                                                        $_CouponRedemptionLogs->updateLogsStatus($CouponRedemptionLogID, $couponlogsdetail['Source'], $status, $couponlogsdetail["MID"],$redemptiondata["TotalItemPoints"],
-                                                                                                                $serialnumber, $checksum);
-                                                        if(!App::HasError()){
-                                                            $_MemberCards->CommitTransaction();
-                                                            $message = "Player Redemption: Transaction Successful.";
-                                                            $_AuditTrail->StartTransaction();
-                                                            if($source == 1){
-                                                                $_AuditTrail->logEvent(AuditFunctions::PLAYER_REDEMPTION, $message, array('ID'=>$redemptiondata["MID"], 'SessionID'=>$_SESSION['MemberInfo']['SessionID']));
-                                                            } else {
-                                                                $_AuditTrail->logEvent(AuditFunctions::CASHIER_REDEMPTION, $message, array('ID'=>$_SESSION['userinfo']['AID'], 'SessionID'=>$_SESSION['userinfo']['SessionID']));
-                                                            }
-                                                            if(!$_AuditTrail->HasError){
-                                                                $_AuditTrail->CommitTransaction();
-                                                                $_SESSION["PreviousRedemption"] = $CouponRedemptionLogID;
-                                                                $_SESSION['RewardOfferCopy']['CouponSeries'] = $couponseries;
-                                                                $_SESSION['RewardOfferCopy']['Quantity'] = $redemptiondata["Quantity"];
-                                                                $_SESSION['RewardOfferCopy']['RedemptionDate'] = $RedeemedDate;
-                                                                $_SESSION['RewardOfferCopy']['CheckSum'] = $checksum;
-                                                                $_SESSION['RewardOfferCopy']['SerialNumber'] = $serialnumber;
-
-                                                                $replacecurrentpoints = $_MemberCards->getCurrentPointsByCardNumber($redemptiondata["CardNumber"]);
-                                                                $_SESSION['RewardItemsInfo']['PlayerPoints'] = $replacecurrentpoints[0];
-
-                                                                //send SMS alert to player
-                                                                sendSMS(SMSRequestLogs::COUPON_REDEMPTION, $redemptiondata["MobileNumber"], $RedeemedDate, $serialnumber, $redemptiondata["Quantity"], "SMSC", $couponseries);    
-
-                                                                $showcouponredemptionwindow = true;
-                                                                $showitemredemptionwindow = false;
-                                                                return $message;
-                                                            } else {
-                                                                $message = "Failed to log event on database.";
-                                                                $_AuditTrail->RollBackTransaction();
-                                                                App::SetErrorMessage($message);
-                                                                $txtQuantity->Text = "";
-                                                                $hdnTotalItemPoints->Text = "";
-                                                                echo "<script type='text/javascript'>$('#TotalItemPoints').html('');</script>";
-                                                            }
-                                                        } else {
-                                                            $_MemberCards->RollBackTransaction();
-                                                            App::ClearStatus();
-                                                            $message = "Player Redemption: Error in updating redemption log.";
-                                                            $_AuditTrail->StartTransaction();
-                                                            if($source == 1){
-                                                                $_AuditTrail->logEvent(AuditFunctions::PLAYER_REDEMPTION, $message, array('ID'=>$redemptiondata["MID"], 'SessionID'=>$_SESSION['MemberInfo']['SessionID']));
-                                                            } else {
-                                                                $_AuditTrail->logEvent(AuditFunctions::CASHIER_REDEMPTION, $message, array('ID'=>$_SESSION['userinfo']['AID'], 'SessionID'=>$_SESSION['userinfo']['SessionID']));
-                                                            }
-                                                            if(!$_AuditTrail->HasError){
-                                                                $_AuditTrail->CommitTransaction();
-                                                                App::SetErrorMessage($message);
-                                                                $txtQuantity->Text = "";
-                                                                $hdnTotalItemPoints->Text = "";
-                                                                echo "<script type='text/javascript'>$('#TotalItemPoints').html('');</script>";
-                                                            } else {
-                                                                $message = "Failed to log event on database.";
-                                                                $_AuditTrail->RollBackTransaction();
-                                                                App::ClearStatus();
-                                                                App::SetErrorMessage($message);
-                                                                $txtQuantity->Text = "";
-                                                                $hdnTotalItemPoints->Text = "";
-                                                                echo "<script type='text/javascript'>$('#TotalItemPoints').html('');</script>";
-                                                            }
-                                                        }
-                                                    } else {
-                                                        $_MemberCards->RollBackTransaction();
-                                                        $status = 2;
-                                                        $couponlogsdetail = $_CouponRedemptionLogs->getSource($CouponRedemptionLogID);
-                                                        $_CouponRedemptionLogs->StartTransaction();
-                                                        $_CouponRedemptionLogs->updateLogsStatus($CouponRedemptionLogID, $couponlogsdetail['Source'], $status, $couponlogsdetail["MID"]);
-
-                                                        if(!$_CouponRedemptionLogs->HasError){
-                                                            $_CouponRedemptionLogs->CommitTransaction();
-                                                        } else {
-                                                            $_CouponRedemptionLogs->RollBackTransaction();
-                                                            App::ClearStatus();
-                                                        }
-
-                                                        $message = "Player Redemption: Transaction Failed. Please try again.";
-                                                        $_AuditTrail->StartTransaction();
-                                                        if($source == 1){
-                                                            $_AuditTrail->logEvent(AuditFunctions::PLAYER_REDEMPTION, $message, array('ID'=>$redemptiondata["MID"], 'SessionID'=>$_SESSION['MemberInfo']['SessionID']));
-                                                        } else {
-                                                            $_AuditTrail->logEvent(AuditFunctions::CASHIER_REDEMPTION, $message, array('ID'=>$_SESSION['userinfo']['AID'], 'SessionID'=>$_SESSION['userinfo']['SessionID']));
-                                                        }
-                                                        if(!$_AuditTrail->HasError){
-                                                            $_AuditTrail->CommitTransaction();
-                                                            App::SetErrorMessage($message);
-                                                            $txtQuantity->Text = "";
-                                                            $hdnTotalItemPoints->Text = "";
-                                                            echo "<script type='text/javascript'>$('#TotalItemPoints').html('');</script>";
-                                                        } else {
-                                                            $message = "Failed to log event on database.";
-                                                            $_AuditTrail->RollBackTransaction();
-                                                            App::ClearStatus();
-                                                            App::SetErrorMessage($message);
-                                                            $txtQuantity->Text = "";
-                                                            $hdnTotalItemPoints->Text = "";
-                                                            echo "<script type='text/javascript'>$('#TotalItemPoints').html('');</script>";
-                                                        }
-                                                    }
-
-                                                } else {
-                                                    $_RaffleCoupons->RollBackTransaction();
-                                                    App::ClearStatus();
-                                                    $status = 2;
-                                                    $couponlogsdetail = $_CouponRedemptionLogs->getSource($CouponRedemptionLogID);
-                                                    $_CouponRedemptionLogs->StartTransaction();
-                                                    $_CouponRedemptionLogs->updateLogsStatus($CouponRedemptionLogID, $couponlogsdetail['Source'], $status, $couponlogsdetail["MID"]);
-
-                                                    if(!$_CouponRedemptionLogs->HasError){
-                                                        $_CouponRedemptionLogs->CommitTransaction();
-                                                    } else {
-                                                        $_CouponRedemptionLogs->RollBackTransaction();
-                                                        App::ClearStatus();
-                                                    }
-
-                                                    $message = "Player Redemption: Transaction Failed. Please try again.";
-                                                    $_AuditTrail->StartTransaction();
-                                                    if($source == 1){
-                                                        $_AuditTrail->logEvent(AuditFunctions::PLAYER_REDEMPTION, $message, array('ID'=>$redemptiondata["MID"], 'SessionID'=>$_SESSION['MemberInfo']['SessionID']));
-                                                    } else {
-                                                        $_AuditTrail->logEvent(AuditFunctions::CASHIER_REDEMPTION, $message, array('ID'=>$_SESSION['userinfo']['AID'], 'SessionID'=>$_SESSION['userinfo']['SessionID']));
-                                                    }
-                                                    if(!$_AuditTrail->HasError){
-                                                        $_AuditTrail->CommitTransaction();
-                                                        App::SetErrorMessage($message);
-                                                        $txtQuantity->Text = "";
-                                                        $hdnTotalItemPoints->Text = "";
-                                                        echo "<script type='text/javascript'>$('#TotalItemPoints').html('');</script>";
-                                                    } else {
-                                                        $message = "Failed to log event on database.";
-                                                        $_AuditTrail->RollBackTransaction();
-                                                        App::ClearStatus();
-                                                        App::SetErrorMessage($message);
-                                                        $txtQuantity->Text = "";
-                                                        $hdnTotalItemPoints->Text = "";
-                                                        echo "<script type='text/javascript'>$('#TotalItemPoints').html('');</script>";
-                                                    }
-                                                }
-                                            } else {
-                                                $_CouponRedemptionLogs->RollBackTransaction();
-                                                App::ClearStatus();
-                                                $message = "Player Redemption: Error in redemption logging.";
-                                                $_AuditTrail->StartTransaction();
-                                                if($source == 1){
-                                                    $_AuditTrail->logEvent(AuditFunctions::PLAYER_REDEMPTION, $message, array('ID'=>$redemptiondata["MID"], 'SessionID'=>$_SESSION['MemberInfo']['SessionID']));
-                                                } else {
-                                                    $_AuditTrail->logEvent(AuditFunctions::CASHIER_REDEMPTION, $message, array('ID'=>$_SESSION['userinfo']['AID'], 'SessionID'=>$_SESSION['userinfo']['SessionID']));
-                                                }
-                                                if(!$_AuditTrail->HasError){
-                                                    $_AuditTrail->CommitTransaction();
-                                                    App::SetErrorMessage($message);
-                                                    $txtQuantity->Text = "";
-                                                    $hdnTotalItemPoints->Text = "";
-                                                    echo "<script type='text/javascript'>$('#TotalItemPoints').html('');</script>";
-                                                } else {
-                                                    $message = "Failed to log event on database.";
-                                                    $_AuditTrail->RollBackTransaction();
-                                                    App::ClearStatus();
-                                                    App::SetErrorMessage($message);
-                                                    $txtQuantity->Text = "";
-                                                    $hdnTotalItemPoints->Text = "";
-                                                    echo "<script type='text/javascript'>$('#TotalItemPoints').html('');</script>";
-                                                }
-                                            }
+                                            $showcouponredemptionwindow = true;
+                                            $showitemredemptionwindow = false;
+                                        }
                                     }
                             }
-                            
-                            
-
                         } else {
                             $message = "Player Redemption: Transaction Failed. Reward Offer has already ended.";
                             $_AuditTrail->StartTransaction();
@@ -454,22 +294,22 @@ if($sessioncount > 0)
                             }
                             if(!$_AuditTrail->HasError){
                                 $_AuditTrail->CommitTransaction();
-                                App::SetErrorMessage($message);
                                 $txtQuantity->Text = "";
                                 $hdnTotalItemPoints->Text = "";
                                 echo "<script type='text/javascript'>$('#TotalItemPoints').html('');</script>";
                             } else {
-                                $message = "Failed to log event on database.";
+                                $logmessage = "Failed to log event on Audit Trail.";
                                 $_AuditTrail->RollBackTransaction();
                                 App::ClearStatus();
-                                App::SetErrorMessage($message);
                                 $txtQuantity->Text = "";
                                 $hdnTotalItemPoints->Text = "";
                                 echo "<script type='text/javascript'>$('#TotalItemPoints').html('');</script>";
+                                $logger->log($logger->logdate,"[COUPON REDEMPTION ERROR] ", $logmessage);
                             }
+                            App::SetErrorMessage($message);
                         }
                     } else {
-                        $message = "Player Redemption: Transaction Failed.Number of available coupon is insufficient.";
+                        $message = "Transaction Failed. Raffle Coupon is either insufficient or unavailable.";
                         $_AuditTrail->StartTransaction();
                         if($source == 1){
                             $_AuditTrail->logEvent(AuditFunctions::PLAYER_REDEMPTION, $message, array('ID'=>$redemptiondata["MID"], 'SessionID'=>$_SESSION['MemberInfo']['SessionID']));
@@ -478,19 +318,19 @@ if($sessioncount > 0)
                         }
                         if(!$_AuditTrail->HasError){
                             $_AuditTrail->CommitTransaction();
-                            App::SetErrorMessage($message);
                             $txtQuantity->Text = "";
                             $hdnTotalItemPoints->Text = "";
                             echo "<script type='text/javascript'>$('#TotalItemPoints').html('');</script>";
                         } else {
-                            $message = "Failed to log event on database.";
+                            $logmessage = "Failed to log event on Audit Trail.";
                             $_AuditTrail->RollBackTransaction();
                             App::ClearStatus();
-                            App::SetErrorMessage($message);
                             $txtQuantity->Text = "";
                             $hdnTotalItemPoints->Text = "";
                             echo "<script type='text/javascript'>$('#TotalItemPoints').html('');</script>";
+                            $logger->log($logger->logdate,"[COUPON REDEMPTION ERROR] ", $logmessage);
                         }
+                        App::SetErrorMessage($message);
                     }
 
                 } else {
@@ -498,401 +338,238 @@ if($sessioncount > 0)
                     //Check if the available item is greater than or match with the quantity avail by the player.
                     $availableitemcount = $_RewardItems->getAvailableItemCount($redemptiondata["RewardItemID"]);
 
-                    if($availableitemcount["AvailableItemCount"] >= $redemptiondata["Quantity"]){    
-                        //Redemption Process for Item
-                        $offerenddate = $_RewardItems->getOfferEndDate($redemptiondata["RewardItemID"]);
-                        $RedeemedDate = $offerenddate["ItemCurrentDate"];
-                        $CurrentDate = $offerenddate["CurrentDate"];
+                    if($availableitemcount["AvailableItemCount"] >= $redemptiondata["Quantity"]){
                         
-                        //check if the availing date  is greater than the End date of the reward offer.
-                        if($CurrentDate <= $offerenddate["OfferEndDate"]){
-                            
-                            $tobecurrentpoints = (int)$redemptiondata['PlayerPoints'] - (int)$redemptiondata['TotalItemPoints'];
-                            
-                            if($tobecurrentpoints < 0){
-                                    $message = "Player Redemption: Transaction Failed. Card may have insufficient points.";
-                                    $_AuditTrail->StartTransaction();
-                                    if($source == 1){
-                                        $_AuditTrail->logEvent(AuditFunctions::PLAYER_REDEMPTION, $message, array('ID'=>$redemptiondata["MID"], 'SessionID'=>$_SESSION['MemberInfo']['SessionID']));
-                                    } else {
-                                        $_AuditTrail->logEvent(AuditFunctions::CASHIER_REDEMPTION, $message, array('ID'=>$_SESSION['userinfo']['AID'], 'SessionID'=>$_SESSION['userinfo']['SessionID']));
-                                    }
-                                    if(!$_AuditTrail->HasError){
-                                        $_AuditTrail->CommitTransaction();
-                                        App::SetErrorMessage($message);
-                                        $txtQuantity->Text = "";
-                                        $hdnTotalItemPoints->Text = "";
-                                        echo "<script type='text/javascript'>$('#TotalItemPoints').html('');</script>";
-                                    } else {
-                                        $message = "Failed to log event on database.";
-                                        $_AuditTrail->RollBackTransaction();
-                                        App::ClearStatus();
-                                        App::SetErrorMessage($message);
-                                        $txtQuantity->Text = "";
-                                        $hdnTotalItemPoints->Text = "";
-                                        echo "<script type='text/javascript'>$('#TotalItemPoints').html('');</script>";
-                                    }
-                            } else {
-                                    $pendingredemption = $_PendingRedemption->checkPendingRedemption($redemptiondata["MID"]);
-                                    
-                                    //Check if there is a pending redemption for this player.
-                                    if($pendingredemption){
-                                            $message = "Player Redemption: Transaction Failed. Card has a pending redemption.";
+                        $availableserialcode = $_ItemSerialCodes->getAvailableSerialCodeCount($redemptiondata["RewardItemID"],$redemptiondata["Quantity"]);
+                        
+                        if(count($availableserialcode) >= $redemptiondata["Quantity"]) { 
+                                //Redemption Process for Item
+                                $offerenddate = $_RewardItems->getOfferEndDate($redemptiondata["RewardItemID"]);
+                                $RedeemedDate = $offerenddate["ItemCurrentDate"];
+                                $CurrentDate = $offerenddate["CurrentDate"];
+
+                                //check if the availing date  is greater than the End date of the reward offer.
+                                if($RedeemedDate <= $offerenddate["OfferEndDate"]){
+
+                                    $tobecurrentpoints = (int)$redemptiondata['PlayerPoints'] - (int)$redemptiondata['TotalItemPoints'];
+
+                                    if($tobecurrentpoints < 0){
+                                            $message = "Transaction Failed. Card may have insufficient points.";
                                             $_AuditTrail->StartTransaction();
                                             if($source == 1){
-                                                $_AuditTrail->logEvent(AuditFunctions::PLAYER_REDEMPTION, $message, array('ID'=>$redemptiondata["MID"], 'SessionID'=>$_SESSION['MemberInfo']['SessionID']));
+                                                $_AuditTrail->logEvent(AuditFunctions::PLAYER_ITEM_REDEMPTION, $message, array('ID'=>$redemptiondata["MID"], 'SessionID'=>$_SESSION['MemberInfo']['SessionID']));
                                             } else {
-                                                $_AuditTrail->logEvent(AuditFunctions::CASHIER_REDEMPTION, $message, array('ID'=>$_SESSION['userinfo']['AID'], 'SessionID'=>$_SESSION['userinfo']['SessionID']));
+                                                $_AuditTrail->logEvent(AuditFunctions::CASHIER_ITEM_REDEMPTION, $message, array('ID'=>$_SESSION['userinfo']['AID'], 'SessionID'=>$_SESSION['userinfo']['SessionID']));
                                             }
                                             if(!$_AuditTrail->HasError){
                                                 $_AuditTrail->CommitTransaction();
-                                                App::SetErrorMessage($message);
                                                 $txtQuantity->Text = "";
                                                 $hdnTotalItemPoints->Text = "";
                                                 echo "<script type='text/javascript'>$('#TotalItemPoints').html('');</script>";
                                             } else {
-                                                $message = "Failed to log event on database.";
+                                                $logmessage = "Failed to log event on database.";
                                                 $_AuditTrail->RollBackTransaction();
                                                 App::ClearStatus();
-                                                App::SetErrorMessage($message);
                                                 $txtQuantity->Text = "";
                                                 $hdnTotalItemPoints->Text = "";
                                                 echo "<script type='text/javascript'>$('#TotalItemPoints').html('');</script>";
+                                                $logger->log($logger->logdate,"[ITEM REDEMPTION ERROR] ", $logmessage);
                                             }
+                                            App::SetErrorMessage($message);
                                     } else {
-                                            $totalpoints = $redemptiondata['TotalItemPoints']/$redemptiondata['Quantity'];
-                                            for($itr = 0; $itr < (int)$redemptiondata["Quantity"]; $itr++){
-                                                
-                                                    $_ItemRedemptionLogs->StartTransaction();
-                                                    $_ItemRedemptionLogs->insertItemLogs($RedeemedDate, $redemptiondata["MID"], $redemptiondata["RewardItemID"], 1,$source);
-                                                    
-                                                    if(!App::HasError()){
-                                                        $_ItemRedemptionLogs->CommitTransaction();
-                                                        $ItemRedemptionLogID = $_ItemRedemptionLogs->LastInsertID;
+                                            $pendingredemption = $_PendingRedemption->checkPendingRedemption($redemptiondata["MID"]);
 
-                                                        $_RewardItems->StartTransaction();
-
-                                                        if($source == 1) {
-                                                            $UpdatedByAID = $redemptiondata['MID'];
-                                                        } else {
-                                                            $UpdatedByAID = $_SESSION['userinfo']['AID'];
-                                                        }
-
-                                                        $_RewardItems->updateAvailableItemCount($redemptiondata["RewardItemID"], 1, $UpdatedByAID);
-                                                        $CommonPDOConn = $_RewardItems->getPDOConnection();
-
-                                                        $_MemberCards->setPDOConnection($CommonPDOConn);
-                                                        $_MemberCards->updatePlayerPoints($redemptiondata["MID"], $totalpoints);
-
-                                                        if(!App::HasError()){
-                                                            $status = 1;
-                                                            $itemlogsdetail = $_ItemRedemptionLogs->getSource($ItemRedemptionLogID);
-                                                            $_ItemRedemptionLogs->setPDOConnection($CommonPDOConn);
-
-                                                            $serial = $_RewardItems->getSerialCodeEnd($redemptiondata["RewardItemID"]);
-                                                            $partnerid =$serial['PartnerID'];
-                                                            $partneritemid =$serial['PartnerItemID'];
-                                                            $suffixserialcode = $_ItemSerialCodes->getSerialCodeForRedemptionCopy($redemptiondata["RewardItemID"]);
-
-                                                            if(isset($suffixserialcode[0]['SerialCode']) && $suffixserialcode[0]['SerialCode'] != "" ){
-                                                                $serialcode = str_pad($partnerid, 2, "0", STR_PAD_LEFT).str_pad($partneritemid, 2, "0", STR_PAD_LEFT).$suffixserialcode[0]['SerialCode'];
-                                                                $serialcodeid = $suffixserialcode[0]['ItemSerialCodeID'];
-                                                                $securitycode = mt_rand_str(8);
-                                                                
-                                                                //Calculate Validity End Date of the Raffle Coupon.
-                                                                $date = new DateTime($RedeemedDate);
-                                                                $date->add(new DateInterval('P6M'));
-                                                                $validto = $date->format('Y-m-d H:i:s.u');
-
-                                                                $_ItemRedemptionLogs->updateLogsStatus($ItemRedemptionLogID, $itemlogsdetail['Source'], $status, $itemlogsdetail['MID'], $totalpoints,$serialcode, $securitycode, $RedeemedDate, $validto);
-
-                                                                $_ItemSerialCodes->setPDOConnection($CommonPDOConn);
-                                                                $_ItemSerialCodes->updateSerialCodeStatus($serialcodeid,$UpdatedByAID);
-                                                                
-                                                                if(!App::HasError()){
-                                                                    $_RewardItems->CommitTransaction();
-                                                                    $message = "Player Redemption: Transaction Successful.";
-
-                                                                    $_AuditTrail->StartTransaction();
-                                                                    if($source == 1){
-                                                                        $_AuditTrail->logEvent(AuditFunctions::PLAYER_REDEMPTION, $message, array('ID'=>$redemptiondata["MID"], 'SessionID'=>$_SESSION['MemberInfo']['SessionID']));
-                                                                    } else {
-                                                                        $_AuditTrail->logEvent(AuditFunctions::CASHIER_REDEMPTION, $message, array('ID'=>$_SESSION['userinfo']['AID'], 'SessionID'=>$_SESSION['userinfo']['SessionID']));
-                                                                    }
-                                                                    if(!$_AuditTrail->HasError){
-                                                                        $_AuditTrail->CommitTransaction();
-                                                                        $_SESSION["PreviousRedemption"] = $ItemRedemptionLogID;
-
-                                                                        $_SESSION['RewardOfferCopy']['Quantity'] = 1;
-                                                                        $_SESSION['RewardOfferCopy']['RedemptionDate'] = $RedeemedDate;
-                                                                        $_SESSION['RewardOfferCopy']['SecurityCode'][$itr] = $securitycode;
-                                                                        $_SESSION['RewardOfferCopy']['SerialNumber'][$itr] = $serialcode;
-                                                                        
-                                                                        $validdate = new DateTime(date($validto));
-                                                                        $validitydate = $validdate->format("F j, Y");
-                                                                        
-                                                                        $_SESSION['RewardOfferCopy']['ValidUntil'][$itr] = $validitydate;
-
-                                                                        //send SMS to player
-                                                                        sendSMS(SMSRequestLogs::ITEM_REDEMPTION, $redemptiondata["MobileNumber"], $RedeemedDate, $serialcode, 1, "SMSI");          
-
-                                                                        $showcouponredemptionwindow = true;
-                                                                        $showitemredemptionwindow = true;
-                                                                        if($itr < (int)$redemptiondata["Quantity"]){
-                                                                            continue;
-                                                                        } else {
-                                                                            return $message;
-                                                                        }
-                                                                    } else {
-                                                                        $message = "Failed to log event on database.";
-                                                                        $_AuditTrail->RollBackTransaction();
-                                                                        App::ClearStatus();
-                                                                        App::SetErrorMessage($message);
-                                                                        $txtQuantity->Text = "";
-                                                                        $hdnTotalItemPoints->Text = "";
-                                                                        echo "<script type='text/javascript'>$('#TotalItemPoints').html('');</script>";
-                                                                        break;
-                                                                    }
-                                                                } else {
-                                                                    $_RewardItems->RollBackTransaction();
-                                                                    App::ClearStatus();
-                                                                    $message = "Player Redemption: Transaction failed.Error in updating redemption logs.";
-                                                                    $_AuditTrail->StartTransaction();
-                                                                    if($source == 1){
-                                                                        $_AuditTrail->logEvent(AuditFunctions::PLAYER_REDEMPTION, $message, array('ID'=>$redemptiondata["MID"], 'SessionID'=>$_SESSION['MemberInfo']['SessionID']));
-                                                                    } else {
-                                                                        $_AuditTrail->logEvent(AuditFunctions::CASHIER_REDEMPTION, $message, array('ID'=>$_SESSION['userinfo']['AID'], 'SessionID'=>$_SESSION['userinfo']['SessionID']));
-                                                                    }
-                                                                    if(!$_AuditTrail->HasError){
-                                                                        $_AuditTrail->CommitTransaction();
-                                                                        App::SetErrorMessage($message);
-                                                                        $txtQuantity->Text = "";
-                                                                        $hdnTotalItemPoints->Text = "";
-                                                                        echo "<script type='text/javascript'>$('#TotalItemPoints').html('');</script>";
-                                                                        break;
-                                                                    } else {
-                                                                        $message = "Failed to log event on database.";
-                                                                        $_AuditTrail->RollBackTransaction();
-                                                                        App::ClearStatus();
-                                                                        App::SetErrorMessage($message);
-                                                                        $txtQuantity->Text = "";
-                                                                        $hdnTotalItemPoints->Text = "";
-                                                                        echo "<script type='text/javascript'>$('#TotalItemPoints').html('');</script>";
-                                                                        break;
-                                                                    }
-                                                                }
-                                                            } else {
-                                                                $_RewardItems->RollBackTransaction();
-                                                                App::ClearStatus();
-                                                                $status = 2;
-                                                                $itemlogsdetail = $_ItemRedemptionLogs->getSource($ItemRedemptionLogID);
-                                                                $_ItemRedemptionLogs->StartTransaction();
-                                                                $_ItemRedemptionLogs->updateLogsStatus($ItemRedemptionLogID, $itemlogsdetail['Source'], $status, $itemlogsdetail["MID"]);
-   
-                                                                if(!$_ItemRedemptionLogs->HasError){
-                                                                    $_ItemRedemptionLogs->CommitTransaction();
-                                                                    $message = "Player Redemption: Transaction failed. Serial Code is unavailable.";
-                                                                    $_AuditTrail->StartTransaction();
-                                                                    if($source == 1){
-                                                                        $_AuditTrail->logEvent(AuditFunctions::PLAYER_REDEMPTION, $message, array('ID'=>$redemptiondata["MID"], 'SessionID'=>$_SESSION['MemberInfo']['SessionID']));
-                                                                    } else {
-                                                                        $_AuditTrail->logEvent(AuditFunctions::CASHIER_REDEMPTION, $message, array('ID'=>$_SESSION['userinfo']['AID'], 'SessionID'=>$_SESSION['userinfo']['SessionID']));
-                                                                    }
-                                                                    if(!$_AuditTrail->HasError){
-                                                                        $_AuditTrail->CommitTransaction();
-                                                                        App::SetErrorMessage($message);
-                                                                        $txtQuantity->Text = "";
-                                                                        $hdnTotalItemPoints->Text = "";
-                                                                        echo "<script type='text/javascript'>$('#TotalItemPoints').html('');</script>";
-                                                                        break;
-                                                                    } else {
-                                                                        $message = "Failed to log event on database.";
-                                                                        $_AuditTrail->RollBackTransaction();
-                                                                        App::ClearStatus();
-                                                                        App::SetErrorMessage($message);
-                                                                        $txtQuantity->Text = "";
-                                                                        $hdnTotalItemPoints->Text = "";
-                                                                        echo "<script type='text/javascript'>$('#TotalItemPoints').html('');</script>";
-                                                                        break;
-                                                                    }
-                                                                } else {
-                                                                    $_ItemRedemptionLogs->RollBackTransaction();
-                                                                    App::ClearStatus();
-                                                                    $message = "Player Redemption: Transaction failed. Error in updating redemption log";
-                                                                    $_AuditTrail->StartTransaction();
-                                                                    if($source == 1){
-                                                                        $_AuditTrail->logEvent(AuditFunctions::PLAYER_REDEMPTION, $message, array('ID'=>$redemptiondata["MID"], 'SessionID'=>$_SESSION['MemberInfo']['SessionID']));
-                                                                    } else {
-                                                                        $_AuditTrail->logEvent(AuditFunctions::CASHIER_REDEMPTION, $message, array('ID'=>$_SESSION['userinfo']['AID'], 'SessionID'=>$_SESSION['userinfo']['SessionID']));
-                                                                    }
-                                                                    if(!$_AuditTrail->HasError){
-                                                                        $_AuditTrail->CommitTransaction();
-                                                                        App::SetErrorMessage($message);
-                                                                        $txtQuantity->Text = "";
-                                                                        $hdnTotalItemPoints->Text = "";
-                                                                        echo "<script type='text/javascript'>$('#TotalItemPoints').html('');</script>";
-                                                                        break;
-                                                                    } else {
-                                                                        $message = "Failed to log event on database.";
-                                                                        $_AuditTrail->RollBackTransaction();
-                                                                        App::ClearStatus();
-                                                                        App::SetErrorMessage($message);
-                                                                        $txtQuantity->Text = "";
-                                                                        $hdnTotalItemPoints->Text = "";
-                                                                        echo "<script type='text/javascript'>$('#TotalItemPoints').html('');</script>";
-                                                                        break;
-                                                                    }
-                                                                }
-                                                            }
-
-                                                        } else {
-                                                            $_RewardItems->RollBackTransaction();
-                                                            App::ClearStatus();
-                                                            $status = 2;
-                                                            $itemlogsdetail = $_ItemRedemptionLogs->getSource($ItemRedemptionLogID);
-                                                            $_ItemRedemptionLogs->StartTransaction();
-                                                            $_ItemRedemptionLogs->updateLogsStatus($ItemRedemptionLogID, $itemlogsdetail['Source'], $status, $itemlogsdetail["MID"]);
-
-                                                            if(!$_ItemRedemptionLogs->HasError){
-                                                                $_ItemRedemptionLogs->CommitTransaction();
-                                                                $message = "Player Redemption: Transaction Failed. Please try again.";
-                                                                $_AuditTrail->StartTransaction();
-                                                                if($source == 1){
-                                                                    $_AuditTrail->logEvent(AuditFunctions::PLAYER_REDEMPTION, $message, array('ID'=>$redemptiondata["MID"], 'SessionID'=>$_SESSION['MemberInfo']['SessionID']));
-                                                                } else {
-                                                                    $_AuditTrail->logEvent(AuditFunctions::CASHIER_REDEMPTION, $message, array('ID'=>$_SESSION['userinfo']['AID'], 'SessionID'=>$_SESSION['userinfo']['SessionID']));
-                                                                }
-                                                                if(!$_AuditTrail->HasError){
-                                                                    $_AuditTrail->CommitTransaction();
-                                                                    App::SetErrorMessage($message);
-                                                                    $txtQuantity->Text = "";
-                                                                    $hdnTotalItemPoints->Text = "";
-                                                                    echo "<script type='text/javascript'>$('#TotalItemPoints').html('');</script>";
-                                                                    break;
-                                                                } else {
-                                                                    $message = "Failed to log event on database.";
-                                                                    $_AuditTrail->RollBackTransaction();
-                                                                    App::ClearStatus();
-                                                                    App::SetErrorMessage($message);
-                                                                    $txtQuantity->Text = "";
-                                                                    $hdnTotalItemPoints->Text = "";
-                                                                    echo "<script type='text/javascript'>$('#TotalItemPoints').html('');</script>";
-                                                                    break;
-                                                                }
-                                                            } else {
-                                                                $_ItemRedemptionLogs->RollBackTransaction();
-                                                                App::ClearStatus();
-                                                                $message = "Player Redemption: Transaction failed. Error in updating redemption log";
-                                                                $_AuditTrail->StartTransaction();
-                                                                if($source == 1){
-                                                                    $_AuditTrail->logEvent(AuditFunctions::PLAYER_REDEMPTION, $message, array('ID'=>$redemptiondata["MID"], 'SessionID'=>$_SESSION['MemberInfo']['SessionID']));
-                                                                } else {
-                                                                    $_AuditTrail->logEvent(AuditFunctions::CASHIER_REDEMPTION, $message, array('ID'=>$_SESSION['userinfo']['AID'], 'SessionID'=>$_SESSION['userinfo']['SessionID']));
-                                                                }
-                                                                if(!$_AuditTrail->HasError){
-                                                                    $_AuditTrail->CommitTransaction();
-                                                                    App::SetErrorMessage($message);
-                                                                    $txtQuantity->Text = "";
-                                                                    $hdnTotalItemPoints->Text = "";
-                                                                    echo "<script type='text/javascript'>$('#TotalItemPoints').html('');</script>";
-                                                                    break;
-                                                                } else {
-                                                                    $message = "Failed to log event on database.";
-                                                                    $_AuditTrail->RollBackTransaction();
-                                                                    App::ClearStatus();
-                                                                    App::SetErrorMessage($message);
-                                                                    $txtQuantity->Text = "";
-                                                                    $hdnTotalItemPoints->Text = "";
-                                                                    echo "<script type='text/javascript'>$('#TotalItemPoints').html('');</script>";
-                                                                    break;
-                                                                }
-                                                            }
-                                                        }
-
+                                            //Check if there is a pending redemption for this player.
+                                            if($pendingredemption){
+                                                    $message = "Transaction Failed. Card has a pending redemption.";
+                                                    $_AuditTrail->StartTransaction();
+                                                    if($source == 1){
+                                                        $_AuditTrail->logEvent(AuditFunctions::PLAYER_ITEM_REDEMPTION, $message, array('ID'=>$redemptiondata["MID"], 'SessionID'=>$_SESSION['MemberInfo']['SessionID']));
                                                     } else {
-                                                        $_ItemRedemptionLogs->RollBackTransaction();
+                                                        $_AuditTrail->logEvent(AuditFunctions::CASHIER_ITEM_REDEMPTION, $message, array('ID'=>$_SESSION['userinfo']['AID'], 'SessionID'=>$_SESSION['userinfo']['SessionID']));
+                                                    }
+                                                    if(!$_AuditTrail->HasError){
+                                                        $_AuditTrail->CommitTransaction();
+                                                        $txtQuantity->Text = "";
+                                                        $hdnTotalItemPoints->Text = "";
+                                                        echo "<script type='text/javascript'>$('#TotalItemPoints').html('');</script>";
+                                                    } else {
+                                                        $logmessage = "Failed to log event on Audit Trail.";
+                                                        $_AuditTrail->RollBackTransaction();
                                                         App::ClearStatus();
-                                                        $message = "Player Redemption: Error in redemption logging.";
-                                                        $_AuditTrail->StartTransaction();
-                                                        if($source == 1){
-                                                            $_AuditTrail->logEvent(AuditFunctions::PLAYER_REDEMPTION, $message, array('ID'=>$redemptiondata["MID"], 'SessionID'=>$_SESSION['MemberInfo']['SessionID']));
-                                                        } else {
-                                                            $_AuditTrail->logEvent(AuditFunctions::CASHIER_REDEMPTION, $message, array('ID'=>$_SESSION['userinfo']['AID'], 'SessionID'=>$_SESSION['userinfo']['SessionID']));
+                                                        $txtQuantity->Text = "";
+                                                        $hdnTotalItemPoints->Text = "";
+                                                        echo "<script type='text/javascript'>$('#TotalItemPoints').html('');</script>";
+                                                        $logger->log($logger->logdate,"[ITEM REDEMPTION ERROR] ", $logmessage);
+                                                    }
+                                                    App::SetErrorMessage($message);
+                                            } else {
+
+                                                    //Process Item Redemption
+                                                    $resultsarray = $_RedemptionProcess->ProcessItemRedemption($redemptiondata["MID"], $redemptiondata["RewardItemID"], $redemptiondata["Quantity"], 
+                                                                                                            $redemptiondata['TotalItemPoints'], $redemptiondata["CardNumber"], $source, $RedeemedDate);
+
+                                                    if($resultsarray["IsSuccess"]){
+                                                        $OldCP = number_format($resultsarray["OldCP"]);
+                                                        $RedeemedPoints = number_format($redemptiondata["TotalItemPoints"]);
+                                                        $message = "CP: ".$OldCP.", Item: ".$redemptiondata["ItemName"].", RP: ".$RedeemedPoints;
+                                                    } else {
+                                                        $message = $resultsarray["Message"];
+                                                    }
+
+                                                    $_AuditTrail->StartTransaction();
+                                                    if($source == 1){
+                                                            $_AuditTrail->logEvent(AuditFunctions::PLAYER_ITEM_REDEMPTION, $message, array('ID'=>$redemptiondata["MID"], 'SessionID'=>$_SESSION['MemberInfo']['SessionID']));
+                                                    } else {
+                                                            $_AuditTrail->logEvent(AuditFunctions::CASHIER_ITEM_REDEMPTION, $message, array('ID'=>$_SESSION['userinfo']['AID'], 'SessionID'=>$_SESSION['userinfo']['SessionID']));
+                                                    }
+
+                                                    if(!$_AuditTrail->HasError){
+                                                        $_AuditTrail->CommitTransaction();
+                                                    } else {
+                                                        $logmessage = "Failed to log event on Audit Trail.";
+                                                        $_AuditTrail->RollBackTransaction();
+                                                        App::ClearStatus();
+                                                        $logger->log($logger->logdate,"[ITEM REDEMPTION ERROR] ", $logmessage);
+                                                    }
+
+                                                    $txtQuantity->Text = "";
+                                                    $hdnTotalItemPoints->Text = "";
+                                                    echo "<script type='text/javascript'>$('#TotalItemPoints').html('');</script>";
+
+                                                    if(!$resultsarray["IsSuccess"]){
+                                                        App::SetErrorMessage($message);
+                                                    } else {
+                                                        //send SMS to player
+                                                        $ctr = count($_SESSION['RewardOfferCopy']['SerialNumber']);
+                                                        $totalpoints = $redemptiondata["TotalItemPoints"]/$redemptiondata["Quantity"];
+                                                        for($itr = 0; $itr < $ctr; $itr++){
+                                                            sendSMS(SMSRequestLogs::ITEM_REDEMPTION, $redemptiondata["MobileNumber"], $RedeemedDate, $_SESSION['RewardOfferCopy']['SerialNumber'][$itr], 1, "SMSI", 
+                                                                                $resultsarray["LastInsertedID"][$itr], $totalpoints);          
                                                         }
-                                                        if(!$_AuditTrail->HasError){
-                                                            $_AuditTrail->CommitTransaction();
-                                                            App::SetErrorMessage($message);
-                                                            $txtQuantity->Text = "";
-                                                            $hdnTotalItemPoints->Text = "";
-                                                            echo "<script type='text/javascript'>$('#TotalItemPoints').html('');</script>";
-                                                            break;
-                                                        } else {
-                                                            $message = "Failed to log event on database.";
-                                                            $_AuditTrail->RollBackTransaction();
-                                                            App::ClearStatus();
-                                                            App::SetErrorMessage($message);
-                                                            $txtQuantity->Text = "";
-                                                            $hdnTotalItemPoints->Text = "";
-                                                            echo "<script type='text/javascript'>$('#TotalItemPoints').html('');</script>";
-                                                            break;
-                                                        }
+
+                                                        //send SMS to player (preparation for per redemption sms alert)
+                                                        //if(count($_SESSION['RewardOfferCopy']['SerialNumber']) > 1){ 
+                                                            //$SerialCodeSeries = $_SESSION['RewardOfferCopy']['SerialNumber'][0]." - ".end($_SESSION['RewardOfferCopy']['SerialNumber']);
+                                                            //$InsertedIDSeries = $resultsarray["LastInsertedID"][0]." - ".end($resultsarray["LastInsertedID"]);
+                                                        //} else if(count($_SESSION['RewardOfferCopy']['SerialNumber']) == 1){ 
+                                                            //$SerialCodeSeries = $_SESSION['RewardOfferCopy']['SerialNumber'][0];
+                                                            //$InsertedIDSeries = $resultsarray["LastInsertedID"][0];
+                                                        //}
+                                                        //$totalpoints = $redemptiondata["TotalItemPoints"]/$redemptiondata["Quantity"];
+                                                        //sendSMS(SMSRequestLogs::ITEM_REDEMPTION, $redemptiondata["MobileNumber"], $RedeemedDate, $SerialCodeSeries, 1, "SMSI", $InsertedIDSeries, $totalpoints);   
+
+                                                        $showcouponredemptionwindow = true;
+                                                        $showitemredemptionwindow = true;
                                                     }
                                             }
                                     }
-                            }
-                            
-                           
-
+                                } else {
+                                    $message = "Player Redemption: Transaction Failed. Reward Offer has already ended.";
+                                    $_AuditTrail->StartTransaction();
+                                    if($source == 1){
+                                        $_AuditTrail->logEvent(AuditFunctions::PLAYER_ITEM_REDEMPTION, $message, array('ID'=>$redemptiondata["MID"], 'SessionID'=>$_SESSION['MemberInfo']['SessionID']));
+                                    } else {
+                                        $_AuditTrail->logEvent(AuditFunctions::CASHIER_ITEM_REDEMPTION, $message, array('ID'=>$_SESSION['userinfo']['AID'], 'SessionID'=>$_SESSION['userinfo']['SessionID']));
+                                    }
+                                    if(!$_AuditTrail->HasError){
+                                        $_AuditTrail->CommitTransaction();
+                                        $txtQuantity->Text = "";
+                                        $hdnTotalItemPoints->Text = "";
+                                        echo "<script type='text/javascript'>$('#TotalItemPoints').html('');</script>";
+                                    } else {
+                                        $logmessage = "Failed to log event on Audit Trail.";
+                                        $_AuditTrail->RollBackTransaction();
+                                        App::ClearStatus();
+                                        $txtQuantity->Text = "";
+                                        $hdnTotalItemPoints->Text = "";
+                                        echo "<script type='text/javascript'>$('#TotalItemPoints').html('');</script>";
+                                        $logger->log($logger->logdate,"[ITEM REDEMPTION ERROR] ", $logmessage);
+                                    }
+                                    App::SetErrorMessage($message);
+                                }
+                        } else {
+                                $message = "Transaction Failed.Serial Code is unavailable.";
+                                $_AuditTrail->StartTransaction();
+                                if($source == 1){
+                                    $_AuditTrail->logEvent(AuditFunctions::PLAYER_ITEM_REDEMPTION, $message, array('ID'=>$redemptiondata["MID"], 'SessionID'=>$_SESSION['MemberInfo']['SessionID']));
+                                } else {
+                                    $_AuditTrail->logEvent(AuditFunctions::CASHIER_ITEM_REDEMPTION, $message, array('ID'=>$_SESSION['userinfo']['AID'], 'SessionID'=>$_SESSION['userinfo']['SessionID']));
+                                }
+                                if(!$_AuditTrail->HasError){
+                                    $_AuditTrail->CommitTransaction();
+                                    $txtQuantity->Text = "";
+                                    $hdnTotalItemPoints->Text = "";
+                                    echo "<script type='text/javascript'>$('#TotalItemPoints').html('');</script>";
+                                } else {
+                                    $logmessage = "Failed to log event on Audit Trail.";
+                                    $_AuditTrail->RollBackTransaction();
+                                    App::ClearStatus();
+                                    $txtQuantity->Text = "";
+                                    $hdnTotalItemPoints->Text = "";
+                                    echo "<script type='text/javascript'>$('#TotalItemPoints').html('');</script>";
+                                    $logger->log($logger->logdate,"[ITEM REDEMPTION ERROR] ", $logmessage);
+                                }
+                                App::SetErrorMessage($message);
                         }
                     } else {
-                        $message = "Player Redemption: Transaction Failed.Number of available item is insufficient.";
+                        $message = "Transaction Failed.Number of available item is insufficient.";
                         $_AuditTrail->StartTransaction();
                         if($source == 1){
-                            $_AuditTrail->logEvent(AuditFunctions::PLAYER_REDEMPTION, $message, array('ID'=>$redemptiondata["MID"], 'SessionID'=>$_SESSION['MemberInfo']['SessionID']));
+                            $_AuditTrail->logEvent(AuditFunctions::PLAYER_ITEM_REDEMPTION, $message, array('ID'=>$redemptiondata["MID"], 'SessionID'=>$_SESSION['MemberInfo']['SessionID']));
                         } else {
-                            $_AuditTrail->logEvent(AuditFunctions::CASHIER_REDEMPTION, $message, array('ID'=>$_SESSION['userinfo']['AID'], 'SessionID'=>$_SESSION['userinfo']['SessionID']));
+                            $_AuditTrail->logEvent(AuditFunctions::CASHIER_ITEM_REDEMPTION, $message, array('ID'=>$_SESSION['userinfo']['AID'], 'SessionID'=>$_SESSION['userinfo']['SessionID']));
                         }
                         if(!$_AuditTrail->HasError){
                             $_AuditTrail->CommitTransaction();
-                            App::SetErrorMessage($message);
                             $txtQuantity->Text = "";
                             $hdnTotalItemPoints->Text = "";
                             echo "<script type='text/javascript'>$('#TotalItemPoints').html('');</script>";
                         } else {
-                            $message = "Failed to log event on database.";
+                            $logmessage = "Failed to log event on Audit Trail.";
                             $_AuditTrail->RollBackTransaction();
                             App::ClearStatus();
-                            App::SetErrorMessage($message);
                             $txtQuantity->Text = "";
                             $hdnTotalItemPoints->Text = "";
                             echo "<script type='text/javascript'>$('#TotalItemPoints').html('');</script>";
+                            $logger->log($logger->logdate,"[ITEM REDEMPTION ERROR] ", $logmessage);
                         }
+                        App::SetErrorMessage($message);
                     }
                 }
             }
         } else {
-            $message = "Player Redemption: Transaction Failed.Invalid Item/Coupon Quantity.";
+            $message = "Transaction Failed.Invalid Item/Coupon Quantity.";
             $_AuditTrail->StartTransaction();
             if($source == 1){
-                $_AuditTrail->logEvent(AuditFunctions::PLAYER_REDEMPTION, $message, array('ID'=>$redemptiondata["MID"], 'SessionID'=>$_SESSION['MemberInfo']['SessionID']));
+                if($redemptiondata["RewardID"] == 1) {
+                    $_AuditTrail->logEvent(AuditFunctions::PLAYER_ITEM_REDEMPTION, $message, array('ID'=>$redemptiondata["MID"], 'SessionID'=>$_SESSION['MemberInfo']['SessionID']));
+                } else {
+                    $_AuditTrail->logEvent(AuditFunctions::PLAYER_REDEMPTION, $message, array('ID'=>$redemptiondata["MID"], 'SessionID'=>$_SESSION['MemberInfo']['SessionID']));
+                }
             } else {
-                $_AuditTrail->logEvent(AuditFunctions::CASHIER_REDEMPTION, $message, array('ID'=>$_SESSION['userinfo']['AID'], 'SessionID'=>$_SESSION['userinfo']['SessionID']));
+                if($redemptiondata["RewardID"] == 1) {
+                    $_AuditTrail->logEvent(AuditFunctions::CASHIER_ITEM_REDEMPTION, $message, array('ID'=>$_SESSION['userinfo']['AID'], 'SessionID'=>$_SESSION['userinfo']['SessionID']));
+                } else {
+                    $_AuditTrail->logEvent(AuditFunctions::CASHIER_REDEMPTION, $message, array('ID'=>$_SESSION['userinfo']['AID'], 'SessionID'=>$_SESSION['userinfo']['SessionID']));
+                }
             }
             if(!$_AuditTrail->HasError){
                 $_AuditTrail->CommitTransaction();
-                App::SetErrorMessage($message);
                 $txtQuantity->Text = "";
                 $hdnTotalItemPoints->Text = "";
                 echo "<script type='text/javascript'>$('#TotalItemPoints').html('');</script>";
             } else {
-                $message = "Failed to log event on database.";
+                $logmessage = "Failed to log event on Audit Trail.";
                 $_AuditTrail->RollBackTransaction();
                 App::ClearStatus();
-                App::SetErrorMessage($message);
                 $txtQuantity->Text = "";
                 $hdnTotalItemPoints->Text = "";
                 echo "<script type='text/javascript'>$('#TotalItemPoints').html('');</script>";
+                $logtype = $redemptiondata["RewardID"] == 2 ? "[COUPON REDEMPTION ERROR] ": "[ITEM REDEMPTION ERROR] ";
+                $logger->log($logger->logdate,$logtype, $logmessage);
             }
+            App::SetErrorMessage($message);
         }
 }
 
@@ -906,10 +583,12 @@ if($sessioncount > 0)
  * @param string $prefix_trackingID
  * @param string $couponseries , optional: depends on method used.
  */
-function sendSMS($methodid, $mobileno, $RedeemedDate, $serialnumber, $quantity, $prefix_trackingID, $couponseries = ''){
+function sendSMS($methodid, $mobileno, $RedeemedDate, $serialnumber, $quantity, $prefix_trackingID, $LastInsertedID, $redeemedpoints, $couponseries = ''){
 
         App::LoadModuleClass('Membership', 'MembershipSmsAPI');
-        App::LoadModuleClass("Loyalty", "SMSRequestLogs");
+        App::LoadModuleClass("Rewards", "SMSRequestLogs");
+        App::LoadCore('ErrorLogger.php');
+        $logger = new ErrorLogger();
         $_SMSRequestLogs = new SMSRequestLogs();
 
         //match to 09 or 639 in mobile number
@@ -917,9 +596,10 @@ function sendSMS($methodid, $mobileno, $RedeemedDate, $serialnumber, $quantity, 
         if($match == "639"){
             $mncount = count($mobileno);
             if(!$mncount == 12){
-                $message = "Failed to send SMS: Invalid Mobile Number.";
-                echo "<script type='text/javascript'>alert(".$message.");</script>";
-//                App::SetErrorMessage($message);
+                $idtype = $methodid == 1 ? "CouponRedemptionLogID: ": ($methodid == 2 ? "ItemRedemptionLogID: ": "");
+                $logtype = $methodid == 1 ? "[COUPON REDEMPTION ERROR] ": ($methodid == 2 ? "[ITEM REDEMPTION ERROR] ":"");
+                $message = "Failed to send SMS: Invalid Mobile Number [".$idtype." $LastInsertedID].";
+                $logger->log($logger->logdate,$logtype, $message);
             } else {
                 $templateid = $_SMSRequestLogs->getSMSMethodTemplateID($methodid);
                 $smslastinsertedid = $_SMSRequestLogs->insertSMSRequestLogs($methodid, $mobileno, $RedeemedDate,$couponseries, $serialnumber, $quantity);
@@ -931,18 +611,20 @@ function sendSMS($methodid, $mobileno, $RedeemedDate, $serialnumber, $quantity, 
                     if($couponseries != '' && $methodid == 1){
                         $smsresult = $_MembershipSmsAPI->sendCouponRedemption($mobileno, $templateid, $couponseries, $serialnumber, $quantity, $trackingid);
                     } else {
-                        $smsresult = $_MembershipSmsAPI->sendItemRedemption($mobileno, $templateid, $serialnumber, $trackingid);
+                        $smsresult = $_MembershipSmsAPI->sendItemRedemption($mobileno, $templateid, $serialnumber, $trackingid, $redeemedpoints);
                     }
 
                     if($smsresult['status'] != 1){
-                        $message = "Failed to send SMS.";
-                        echo "<script type='text/javascript'>alert(".$message.");</script>";
-//                        App::SetErrorMessage($message);
+                        $idtype = $methodid == 1 ? "CouponRedemptionLogID: ": ($methodid == 2 ? "ItemRedemptionLogID: ": "");
+                        $logtype = $methodid == 1 ? "[COUPON REDEMPTION ERROR] ": ($methodid == 2 ? "[ITEM REDEMPTION ERROR] ":"");
+                        $message = "Failed to send SMS [".$idtype." $LastInsertedID].";
+                        $logger->log($logger->logdate,$logtype, $message);
                     }
                 } else {
-                    $message = "Failed to send SMS: Failed to log event on database.";
-                    echo "<script type='text/javascript'>alert(".$message.");</script>";
-//                    App::SetErrorMessage($message);
+                    $idtype = $methodid == 1 ? "CouponRedemptionLogID: ": ($methodid == 2 ? "ItemRedemptionLogID: ": "");
+                    $logtype = $methodid == 1 ? "[COUPON REDEMPTION ERROR] ": ($methodid == 2 ? "[ITEM REDEMPTION ERROR] ":"");
+                    $message = "Failed to send SMS: Failed to log event on database [".$idtype." $LastInsertedID].";
+                    $logger->log($logger->logdate,$logtype, $message);
                 }
             }
         } else {
@@ -950,9 +632,10 @@ function sendSMS($methodid, $mobileno, $RedeemedDate, $serialnumber, $quantity, 
             if($match == "09"){
                 $mncount = count($mobileno);
                 if(!$mncount == 11){
-                     $message = "Failed to send SMS: Invalid Mobile Number.";
-                     echo "<script type='text/javascript'>alert(".$message.");</script>";
-//                     App::SetErrorMessage($message);
+                     $idtype = $methodid == 1 ? "CouponRedemptionLogID: ": ($methodid == 2 ? "ItemRedemptionLogID: ": "");
+                     $logtype = $methodid == 1 ? "[COUPON REDEMPTION ERROR] ": ($methodid == 2 ? "[ITEM REDEMPTION ERROR] ":"");
+                     $message = "Failed to send SMS: Invalid Mobile Number [".$idtype." $LastInsertedID].";
+                     $logger->log($logger->logdate,$logtype, $message);
                  } else {
                     $mobileno = str_replace("09", "639", $mobileno);
                     $templateid = $_SMSRequestLogs->getSMSMethodTemplateID($methodid);
@@ -965,38 +648,28 @@ function sendSMS($methodid, $mobileno, $RedeemedDate, $serialnumber, $quantity, 
                         if($couponseries != '' && $methodid == 1){
                             $smsresult = $_MembershipSmsAPI->sendCouponRedemption($mobileno, $templateid, $couponseries, $serialnumber, $quantity, $trackingid);
                         } else {
-                            $smsresult = $_MembershipSmsAPI->sendItemRedemption($mobileno, $templateid, $serialnumber, $trackingid);
+                            $smsresult = $_MembershipSmsAPI->sendItemRedemption($mobileno, $templateid, $serialnumber, $trackingid,$redeemedpoints);
                         }
                         if($smsresult['status'] != 1){
-                            $message = "Failed to send SMS.";
-                            echo "<script type='text/javascript'>alert(".$message.");</script>";
-//                            App::SetErrorMessage($message);
+                            $idtype = $methodid == 1 ? "CouponRedemptionLogID: ": ($methodid == 2 ? "ItemRedemptionLogID: ": "");
+                            $logtype = $methodid == 1 ? "[COUPON REDEMPTION ERROR] ": ($methodid == 2 ? "[ITEM REDEMPTION ERROR] ":"");
+                            $message = "Failed to send SMS [".$idtype." $LastInsertedID].";
+                            $logger->log($logger->logdate,$logtype, $message);
                         }
                     } else {
-                        $message = "Failed to send SMS: Error on logging event in database.";
-                        echo "<script type='text/javascript'>alert(".$message.");</script>";
-//                        App::SetErrorMessage($message);
+                        $idtype = $methodid == 1 ? "CouponRedemptionLogID: ": ($methodid == 2 ? "ItemRedemptionLogID: ": "");
+                        $logtype = $methodid == 1 ? "[COUPON REDEMPTION ERROR] ": ($methodid == 2 ? "[ITEM REDEMPTION ERROR] ":"");
+                        $message = "Failed to send SMS: Error on logging event in database [".$idtype." $LastInsertedID].";
+                        $logger->log($logger->logdate,$logtype, $message);
                     }
                  }
             } else {
-                $message = "Failed to send SMS: Invalid Mobile Number.";
-                echo "<script type='text/javascript'>alert(".$message.");</script>";
-//                App::SetErrorMessage($message);
+                $idtype = $methodid == 1 ? "CouponRedemptionLogID: ": ($methodid == 2 ? "ItemRedemptionLogID: ": "");
+                $logtype = $methodid == 1 ? "[COUPON REDEMPTION ERROR] ": ($methodid == 2 ? "[ITEM REDEMPTION ERROR] ":"");
+                $message = "Failed to send SMS: Invalid Mobile Number [".$idtype." $LastInsertedID].";
+                $logger->log($logger->logdate,$logtype, $message);
             }
         }
-}
-
-/**
- * @Description: Generate Alphanumeric combination for security code
- * @param int $length
- * @return string
- */
-function mt_rand_str ($length) {
-    $c = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    $s = '';
-    $cl = strlen($c)-1;
-    for ($cl = strlen($c)-1, $i = 0; $i < $length; $s .= $c[mt_rand(0, $cl)], ++$i);
-    return $s;
 }
 
 ?>

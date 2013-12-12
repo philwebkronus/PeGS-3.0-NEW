@@ -20,7 +20,7 @@ App::LoadModuleClass("Membership", "AuditFunctions");
 App::LoadModuleClass('Membership', 'MembershipSmsAPI');
 App::LoadModuleClass('Membership', 'BlackLists');
 
-App::LoadModuleClass("Loyalty", "SMSRequestLogs");
+App::LoadModuleClass("Rewards", "SMSRequestLogs");
 
 // Load Controls
 App::LoadControl("DatePicker");
@@ -355,8 +355,8 @@ if ($fproc->IsPostBack)
                     if($match == "639"){
                         $mncount = count($memberInfos["MobileNumber"]);
                         if(!$mncount == 12){
-                            $message = "Failed to send SMS: Invalid Mobile Number.";
-                            App::SetErrorMessage($message);
+                            $message = "Failed to send SMS: Invalid Mobile Number [MID: $lastinsertMID].";
+                            $logger->log($logger->logdate,"[REGISTRATION ERROR] ", $message);
                         } else {
                             $templateid = $_SMSRequestLogs->getSMSMethodTemplateID(SMSRequestLogs::PLAYER_REGISTRATION);
                             $methodid = SMSRequestLogs::PLAYER_REGISTRATION;
@@ -369,23 +369,21 @@ if ($fproc->IsPostBack)
                                 $_MembershipSmsAPI = new MembershipSmsAPI($apiURL, $app_id);
                                 $smsresult = $_MembershipSmsAPI->sendRegistration($mobileno, $templateid, $memberInfos["DateCreated"], $memberInfos["TemporaryAccountCode"], $trackingid);
                                 if($smsresult['status'] != 1){
-                                    $message = "Failed to send SMS.";
-                                    App::SetErrorMessage($message);
+                                    $message = "Failed to send SMS [MID: $lastinsertMID].";
+                                    $logger->log($logger->logdate,"[REGISTRATION ERROR] ", $message);
                                 }
                             } else {
-                                $message = "Failed to send SMS: Error on logging event in database.";
-                                echo "<script type='text/javascript'>alert(".$message.");</script>";
-                                App::SetErrorMessage($message);
+                                $message = "Failed to send SMS: Error on logging event in database [MID: $lastinsertMID].";
+                                $logger->log($logger->logdate,"[REGISTRATION ERROR] ", $message);
                             }
                         }
                     } else {
                         $match = substr($memberInfos["MobileNumber"], 0, 2);
                         if($match == "09"){
                             $mncount = count($memberInfos["MobileNumber"]);
-                            $message = "Failed to send SMS: Invalid Mobile Number.";
                             if(!$mncount == 11){
-                                 $message = "Failed to send SMS: Invalid Mobile Number.";
-                                 App::SetErrorMessage($message);
+                                 $message = "Failed to send SMS: Invalid Mobile Number [MID: $lastinsertMID].";
+                                 $logger->log($logger->logdate,"[REGISTRATION ERROR] ", $message);
                              } else {
                                 $mobileno = str_replace("09", "639", $memberInfos["MobileNumber"]);
                                 $templateid = $_SMSRequestLogs->getSMSMethodTemplateID(SMSRequestLogs::PLAYER_REGISTRATION);
@@ -398,19 +396,17 @@ if ($fproc->IsPostBack)
                                     $_MembershipSmsAPI = new MembershipSmsAPI($apiURL, $app_id);
                                     $smsresult = $_MembershipSmsAPI->sendRegistration($mobileno, $templateid, $memberInfos["DateCreated"], $memberInfos["TemporaryAccountCode"], $trackingid);
                                     if($smsresult['status'] != 1){
-                                        $message = "Failed to send SMS.";
-                                        App::SetErrorMessage($message);
+                                        $message = "Failed to send SMS [MID: $lastinsertMID].";
+                                        $logger->log($logger->logdate,"[REGISTRATION ERROR] ", $message);
                                     }
                                 } else {
-                                    $message = "Failed to send SMS: Error on logging event in database.";
-                                    echo "<script type='text/javascript'>alert(".$message.");</script>";
-                                    App::SetErrorMessage($message);
+                                    $message = "Failed to send SMS: Error on logging event in database [MID: $lastinsertMID].";
+                                    $logger->log($logger->logdate,"[REGISTRATION ERROR] ", $message);
                                 }
                              }
                         } else {
-                            $message = "Failed to send SMS: Invalid Mobile Number.";
-                            echo "<script type='text/javascript'>alert(".$message.");</script>";
-                            App::SetErrorMessage($message);
+                            $message = "Failed to send SMS: Invalid Mobile Number [MID: $lastinsertMID].";
+                            $logger->log($logger->logdate,"[REGISTRATION ERROR] ", $message);
                         }
                     }
 
@@ -444,8 +440,8 @@ if ($fproc->IsPostBack)
                             if($match == "639"){
                                 $mncount = count($memberInfos["MobileNumber"]);
                                 if(!$mncount == 12){
-                                    $message = "Failed to send SMS: Invalid Mobile Number.";
-                                    App::SetErrorMessage($message);
+                                    $message = "Failed to send SMS: Invalid Mobile Number [MID: $lastinsertMID].";
+                                    $logger->log($logger->logdate,"[REGISTRATION ERROR] ", $message);
                                 } else {
                                     $templateid = $_SMSRequestLogs->getSMSMethodTemplateID(SMSRequestLogs::PLAYER_REGISTRATION);
                                     $methodid = SMSRequestLogs::PLAYER_REGISTRATION;
@@ -458,8 +454,8 @@ if ($fproc->IsPostBack)
                                         $_MembershipSmsAPI = new MembershipSmsAPI($apiURL, $app_id);
                                         $smsresult = $_MembershipSmsAPI->sendRegistration($mobileno, $templateid, $datecreated, $memberInfos["TemporaryAccountCode"], $trackingid);
                                         if($smsresult['status'] != 1){
-                                            $message = "Failed to send SMS.";
-                                            App::SetErrorMessage($message);
+                                            $message = "Failed to send SMS [MID: $lastinsertMID].";
+                                            $logger->log($logger->logdate,"[REGISTRATION ERROR] ", $message);
                                         }
                                     } else {
                                         $message = "Failed to send SMS: Error on logging event in database.";
@@ -471,10 +467,9 @@ if ($fproc->IsPostBack)
                                 $match = substr($memberInfos["MobileNumber"], 0, 2);
                                 if($match == "09"){
                                     $mncount = count($memberInfos["MobileNumber"]);
-                                    $message = "Failed to send SMS: Invalid Mobile Number.";
                                     if(!$mncount == 11){
-                                         $message = "Failed to send SMS: Invalid Mobile Number.";
-                                         App::SetErrorMessage($message);
+                                         $message = "Failed to send SMS: Invalid Mobile Number [MID: $lastinsertMID].";
+                                         $logger->log($logger->logdate,"[REGISTRATION ERROR] ", $message);
                                      } else {
                                         $mobileno = str_replace("09", "639", $memberInfos["MobileNumber"]);
                                         $templateid = $_SMSRequestLogs->getSMSMethodTemplateID(SMSRequestLogs::PLAYER_REGISTRATION);
@@ -488,19 +483,17 @@ if ($fproc->IsPostBack)
                                             $smsresult = $_MembershipSmsAPI->sendRegistration($mobileno, $templateid, $datecreated, $memberInfos["TemporaryAccountCode"], $trackingid);
 
                                             if($smsresult['status'] != 1){
-                                                $message = "Failed to send SMS.";
-                                                App::SetErrorMessage($message);
+                                                $message = "Failed to send SMS [MID: $lastinsertMID].";
+                                                $logger->log($logger->logdate,"[REGISTRATION ERROR] ", $message);
                                             }
                                         } else {
-                                            $message = "Failed to send SMS: Error on logging event in database.";
-                                            echo "<script type='text/javascript'>alert(".$message.");</script>";
-                                            App::SetErrorMessage($message);
+                                            $message = "Failed to send SMS: Error on logging event in database [MID: $lastinsertMID].";
+                                            $logger->log($logger->logdate,"[REGISTRATION ERROR] ", $message);
                                         }
                                      }
                                 } else {
-                                    $message = "Failed to send SMS: Invalid Mobile Number.";
-                                    echo "<script type='text/javascript'>alert(".$message.");</script>";
-                                    App::SetErrorMessage($message);
+                                    $message = "Failed to send SMS: Invalid Mobile Number [MID: $lastinsertMID].";
+                                    $logger->log($logger->logdate,"[REGISTRATION ERROR] ", $message);
                                 }
                             }
 

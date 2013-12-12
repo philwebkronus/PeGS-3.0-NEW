@@ -307,6 +307,76 @@ class Helper extends BaseEntity
         $mailer->Subject = "e-Games Membership Rewards";
         $mailer->Send();
     }
+    
+    
+    public function sendMysteryRewardEmail($redeemeddate, $redeemedtime, $serialcode, $securitycode, $mysteryname, $itemname, $cardnumber, 
+                                                                                            $playername, $status, $modeofredemption, $to)
+    {
+        
+        App::LoadCore("PHPMailer.class.php");
+        $mailer = new PHPMailer();
+        $mailer->AddAddress($to, "Philweb Marketing Team");
+        $mailer->IsHTML(true);
+
+        $detail = '
+            <html>
+                <head>
+                    <style>
+                        table {
+                            border-collapse: collapse;
+                        }
+                        table tr th {
+                            border-collapse: collapse; border: 1px solid #000;
+                        }
+                        table tr td {
+                            border-collapse: collapse; border: 1px solid #000; text-align:center;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <p>Hi,</p>
+                    <p>This is to inform you that a Mystery Red Box has been redeemed just now. Please see the details below:</p>
+                    <table style="border-collapse: collapse;">  
+                        <tr style="border-collapse: collapse; border: 1px solid #000;">
+                            <th style="border-collapse: collapse; border: 1px solid #000;">Date of Redemption</th>
+                            <th style="border-collapse: collapse; border: 1px solid #000;">Time of Redemption</th>
+                            <th style="border-collapse: collapse; border: 1px solid #000;">e-Coupon Serial Code</th>
+                            <th style="border-collapse: collapse; border: 1px solid #000;">e-Coupon Security Code</th>
+                            <th style="border-collapse: collapse; border: 1px solid #000;">Mystery Red Box Number</th>
+                            <th style="border-collapse: collapse; border: 1px solid #000;">Reward Item</th>
+                            <th style="border-collapse: collapse; border: 1px solid #000;">Membership Card Number</th>
+                            <th style="border-collapse: collapse; border: 1px solid #000;">e-Coupon Owner</th>
+                            <th style="border-collapse: collapse; border: 1px solid #000;">Status</th>
+                            <th style="border-collapse: collapse; border: 1px solid #000;">Mode of Redemption</th>
+                        </tr>    
+                        <tr style="border-collapse: collapse; border: 1px solid #000;">
+                            <td style="border-collapse: collapse; border: 1px solid #000; text-align:center;">'.$redeemeddate.'</td>
+                            <td style="border-collapse: collapse; border: 1px solid #000; text-align:center;">'.$redeemedtime.'</td>
+                            <td style="border-collapse: collapse; border: 1px solid #000; text-align:center;">'.$serialcode.'</td>
+                            <td style="border-collapse: collapse; border: 1px solid #000; text-align:center;">'.$securitycode.'</td>
+                            <td style="border-collapse: collapse; border: 1px solid #000; text-align:center;">'.$mysteryname.'</td>
+                            <td style="border-collapse: collapse; border: 1px solid #000; text-align:center;">'.$itemname.'</td>
+                            <td style="border-collapse: collapse; border: 1px solid #000; text-align:center;">'.$cardnumber.'</td>
+                            <td style="border-collapse: collapse; border: 1px solid #000; text-align:center;">'.$playername.'</td>
+                            <td style="border-collapse: collapse; border: 1px solid #000; text-align:center;">'.$status.'</td>
+                            <td style="border-collapse: collapse; border: 1px solid #000; text-align:center;">'.$modeofredemption.'</td>
+                        </tr>
+                    </table>
+                    <p>Thanks. <br />
+                    **This is an automated email.
+                    </p>
+                </body>
+            </html>'; 
+                
+        $mailer->Body =$detail;
+        
+        $mailer->From = "membership@egamescasino.ph";
+        $mailer->FromName = "Membership Rewards";
+        $mailer->Host = "localhost";
+        $mailer->Subject = "[Mystery Red Box Redemption] Membership Rewards Program";
+        $mailer->Send();
+    }
+    
 
     public static function removeDash($str){
         return str_replace("-", "", $str);

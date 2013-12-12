@@ -35,9 +35,9 @@ App::LoadModuleClass('Loyalty', 'RewardOffers');
 App::LoadModuleClass('Rewards', 'CouponRedemptionLogs');
 App::LoadModuleClass('Rewards', 'RaffleCoupons');
 App::LoadModuleClass("Rewards", "ItemRedemptionLogs");
-App::LoadModuleClass("Loyalty", "Promos");
+App::LoadModuleClass("Rewards", "RedemptionProcess");
 App::LoadModuleClass("Rewards", "PendingRedemption");
-App::LoadModuleClass("Loyalty", "SMSRequestLogs");
+App::LoadModuleClass("Rewards", "SMSRequestLogs");
 App::LoadModuleClass("Rewards", "ItemSerialCodes");
 App::LoadModuleClass("Rewards", "Partners");
 
@@ -71,13 +71,13 @@ $_MemberCards = new MemberCards();
 $_MemberInfo = new MemberInfo();
 $_Ref_city = new Cities();
 $_Ref_region = new Regions();
-$_Promos = new Promos();
 $_Sites = new Sites();
 $_Helper = new Helper();
 $_PendingRedemption = new PendingRedemption();
 $_SMSRequestLogs = new SMSRequestLogs();
 $_ItemSerialCodes = new ItemSerialCodes();
 $_Partners = new Partners();
+$_RedemptionProcess = new RedemptionProcess();
 
 /* Initialize variables and default values */
 $sendemailtoadmin = false;
@@ -314,7 +314,7 @@ if($fproc->IsPostBack){
                     
                 } else {
                     $txtQuantity->Text = '';
-                    App::SetErrorMessage("Redemption Failed: Raffle Coupons are unavailable.");
+                    App::SetErrorMessage("Raffle Coupons are unavailable.");
                 }
             } else {
                 //Get Reward Offer Coupon/Item Transaction details
@@ -347,7 +347,6 @@ if($fproc->IsPostBack){
             }
             
             $partnername = $hdnPartnerName->SubmittedValue;
-            $itemname = $hdnItemName->SubmittedValue;
             $eCouponImage = $hdneCouponImage->SubmittedValue;
 
             /*Check if coupon or item and display appropriate reward 
@@ -386,6 +385,12 @@ if($fproc->IsPostBack){
                     $enddate = $edate->format("F j, Y");
                     $promoperiod = $startdate." to ".$enddate;
                 }
+                
+                if($dateRange['IsMystery'] == 1 && $dateRange['AvailableItemCount'] > 0) {
+                    $itemname = $dateRange['MysteryName'];
+                } else {
+                    $itemname = $dateRange['ItemName'];
+                }
                
                 // For Coupon Only : Set Draw Date Format.
                 if($dateRange["DrawDate"] != '' && $dateRange["DrawDate"] != null){
@@ -395,10 +400,10 @@ if($fproc->IsPostBack){
                     $drawdate = '';
                 }
                 
-                $newheader = App::getParam('rewarditem_imagepath')."extra_images/newheader.jpg";
-                $newfooter = App::getParam('rewarditem_imagepath')."extra_images/newfooter.jpg";
+                $newheader = App::getParam('extra_imagepath')."extra_images/newheader.jpg";
+                $newfooter = App::getParam('extra_imagepath')."extra_images/newfooter.jpg";
                 $itemimage = App::getParam('rewarditem_imagepath').$eCouponImage;
-                $importantreminder = App::getParam('rewarditem_imagepath')."important_reminders.jpg";
+                $importantreminder = App::getParam('extra_imagepath')."important_reminders.jpg";
                 
                 //Get About the Reward Description and its terms and condition
                 $rewarddetails = $_RewardItems->getAboutandTerms($RewardItemID);
@@ -429,7 +434,23 @@ if($fproc->IsPostBack){
                             $_Helper->sendEmailItemRedemption($email, $newheader, $itemimage, $itemname, $partnername,$playername,$cardnumber,$redemptiondate,
                                                                                                 $_SESSION['RewardOfferCopy']["SerialNumber"][$itr],$_SESSION['RewardOfferCopy']["SecurityCode"][$itr],$_SESSION['RewardOfferCopy']['ValidUntil'][$itr],
                                                                                                 $companyaddress,$companyphone, $companywebsite, $importantreminder,$about, $term, $newfooter);
-                        }
+                            
+                            if($dateRange['IsMystery'] == 1){
+                                    $rddate = new DateTime(date($_SESSION['RewardOfferCopy']["RedemptionDate"]));
+                                    $redeemeddate = $rddate->format("m-d-Y");
+                                    $redeemedtime = $rddate->format("G:i A");
+                                    $sender = App::getParam('MarketingEmail');
+                                    if($_SESSION['CardRed']['IsVIP'] == 0){
+                                        $statusvalue = "Regular";
+                                    } else {
+                                        $statusvalue = "VIP";
+                                    }
+                                    $modeofredemption = "via cashier";
+                                    $_Helper->sendMysteryRewardEmail($redeemeddate, $redeemedtime, $_SESSION['RewardOfferCopy']["SerialNumber"][$itr], $_SESSION['RewardOfferCopy']["SecurityCode"][$itr], 
+                                                                                                                $dateRange['MysteryName'], $dateRange['ItemName'], $cardnumber, $playername, 
+                                                                                                                $statusvalue, $modeofredemption, $sender);
+                            }
+                    }
                     
                 } else {
                     
@@ -912,6 +933,7 @@ if($fproc->IsPostBack){
                         $("#ItemName").html(ProductName);
                         $("#ItemPoints").html(ItemPoints);
                         $("#hdnItemName").val(ProductName);
+                        $("#hdnMysteryName").val(ProductName);
                         $("#hdnItemPoints").val(ItemPoints);
                         $("#RewardItemID").val(RewardItemID);
                         $("#RewardID").val(RewardID);

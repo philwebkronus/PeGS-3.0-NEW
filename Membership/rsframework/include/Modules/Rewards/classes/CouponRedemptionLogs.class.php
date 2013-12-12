@@ -9,54 +9,57 @@
 class CouponRedemptionLogs extends BaseEntity
 {
     
-    function CouponRedemptionLogs()
+    public function CouponRedemptionLogs()
     {
         $this->TableName = "couponredemptionlogs";
-        //$this->ConnString = "loyalty";
         $this->ConnString = "rewardsdb";
         $this->Identity = "CouponRedemptionLogID";
         $this->DatabaseType = DatabaseTypes::PDO;
     }
     
     /**
-     * 
-     * @param type $mid
-     * @param type $rewarditemid
-     * @param type $couponcount
-     * @param type $source
-     * @param type $redeemeddate
-     * @param type $siteid
-     * @param type $serviceid
-     * @return type
+     * @Description: Insert new record in Coupon Redemption Logs
+     * @param int $mid
+     * @param int $rewarditemid
+     * @param int $couponcount
+     * @param int $source
+     * @param string $redeemeddate
+     * @param int $siteid
+     * @param int $serviceid
+     * @return int
      */
-    function insertCouponLogs($mid, $rewarditemid, $couponcount,$source, $redeemeddate = '', $siteid='', $serviceid='')
+    public function insertCouponLogs($mid, $rewarditemid, $couponcount,$source, $redeemeddate = '', $siteid='', $serviceid='')
     {
         $arrEntries["MID"] = $mid;
         $arrEntries["RewardItemID"] = $rewarditemid;
         $arrEntries["CouponCount"] = $couponcount;
-        
         $arrEntries["ServiceID"] = $serviceid;
         $arrEntries["Source"] = $source;
+        $arrEntries["DateCreated"] = $redeemeddate;
         
         if($arrEntries["Source"] == 1){
             $arrEntries["CreatedByAID"] = $arrEntries["MID"];
-            $arrEntries["DateCreated"] = $redeemeddate;
             $arrEntries["SiteID"] = $siteid;
         } else {
             $arrEntries["CreatedByAID"] = $_SESSION['userinfo']['AID'];
-            $arrEntries["DateCreated"] = 'now_usec()';
             $arrEntries["SiteID"] = $_SESSION['userinfo']['SiteID'];
         }
         
         $retval = parent::Insert($arrEntries);
-        if ($this->HasError)
+        if ($this->HasError && $retval == "")
         {
             App::SetErrorMessage($this->getError());
         }
         return $retval;
     }
     
-    function getSource($CouponRedemptionLogID){
+    /**
+     * @Description: Get the Source(via cashier - 0 or via portal - 1) of Redemption.
+     * @Author: aqdepliyan
+     * @param int $CouponRedemptionLogID
+     * @return array
+     */
+    public function getSource($CouponRedemptionLogID){
         $query = "SELECT MID, Source FROM $this->TableName
                             WHERE CouponRedemptionLogID = $CouponRedemptionLogID";
         $result = parent::RunQuery($query);
@@ -64,14 +67,14 @@ class CouponRedemptionLogs extends BaseEntity
     }
 
     /**
-     * 
-     * @param type $CouponRedemptionLogID
-     * @param type $source
-     * @param type $status
-     * @param type $mid
-     * @return type
+     * @Description: Update the Coupon Redemption Details and Status as (1-Success, 2-Failed)
+     * @param int $CouponRedemptionLogID
+     * @param int $source
+     * @param int $status
+     * @param int $mid
+     * @return int
      */
-    function updateLogsStatus($CouponRedemptionLogID, $source, $status, $mid='',$totalitempoints='',
+    public function updateLogsStatus($CouponRedemptionLogID, $source, $status, $mid='',$totalitempoints='',
                                                         $serialcode='',$securitycode='',$validfrom=null,$validto=null){
        
         if($source == 1){
@@ -82,7 +85,8 @@ class CouponRedemptionLogs extends BaseEntity
         $query = "UPDATE ".$this->GetDBName().".".$this->TableName." SET Status = $status, DateUpdated = now_usec(),UpdatedByAID = $updatedbyaid,
                             SerialCode='$serialcode', SecurityCode='$securitycode', ValidFrom='$validfrom', ValidTo='$validto', RedeemedPoints=$totalitempoints
                             WHERE CouponRedemptionLogID = $CouponRedemptionLogID";
-        return parent::ExecuteQuery($query);
+        parent::ExecuteQuery($query);
+        return $this->AffectedRows;
     }
 }
 ?>

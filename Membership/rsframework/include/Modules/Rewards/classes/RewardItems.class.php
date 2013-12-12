@@ -28,7 +28,8 @@ class RewardItems extends BaseEntity
         $query = "UPDATE  $this->TableName SET AvailableItemCount = AvailableItemCount - $ItemCount,
                             UpdatedByAID=$UpdatedByAID, DateUpdated=now_usec()
                             WHERE RewardItemID = $RewardItemID";
-        return parent::ExecuteQuery($query);
+        parent::ExecuteQuery($query);
+        return $this->AffectedRows;
     }
     
     /**
@@ -48,11 +49,12 @@ class RewardItems extends BaseEntity
                             ri.ItemName as ProductName, rp.PartnerName, ri.RequiredPoints as Points, 
                             ri.ThumbnailLimitedImage, ri.ECouponImage, ri.WebsiteSliderImage,
                             ri.LearnMoreLimitedImage, ri.LearnMoreOutOfStockImage, ri.ThumbnailOutOfStockImage,
-                            ri.PromoName
+                            ri.PromoName, ri.IsMystery, ri.MysteryName, ri.MysteryAbout, ri.MysteryTerms, ri.MysterySubtext
                             FROM $this->TableName ri
                             LEFT JOIN ref_partners rp ON rp.PartnerID = ri.PartnerID
                             WHERE ri.PClassID IN ($playerclassification, 1)
-                            AND ri.Status = 1 
+                            AND ri.Status IN (1,3)
+                            AND ri.OfferStartDate <= now_usec() 
                             AND ri.OfferEndDate >= now_usec()
                             ORDER BY $sortby $sorttype";
        
@@ -79,7 +81,7 @@ class RewardItems extends BaseEntity
     * @return array
     */
     function getOfferDateRange($RewardItemID){
-        $query = "SELECT OfferStartDate as StartDate, OfferEndDate as EndDate, DrawDate
+        $query = "SELECT OfferStartDate as StartDate, OfferEndDate as EndDate, DrawDate, AvailableItemCount, MysteryName, ItemName, IsMystery
                             FROM $this->TableName WHERE RewardItemID = $RewardItemID";
         $result = parent::RunQuery($query);
         return $result[0];
@@ -92,9 +94,25 @@ class RewardItems extends BaseEntity
     * @param $RewardItemID
     * @return array
     */
-    function getSerialCodeEnd($RewardItemID){
+    function getSerialCodePrefix($RewardItemID){
         $query = "SELECT  PartnerID, PartnerItemID FROM $this->TableName
                             WHERE RewardItemID=$RewardItemID";
+        $result = parent::RunQuery($query);
+        return $result[0];
+    }
+    
+    /**
+     * @Description: For Checking of RewardItem Status before completing the redemption.
+     * @param int $RewardItemID
+     * @return string
+     */
+    function CheckStatus($RewardItemID){
+        $query = "SELECT CASE Status
+                                        WHEN 1 THEN 'Active'
+                                        WHEN 2 THEN 'Inactive'
+                                        WHEN 3 THEN 'Out-Of-Stock'
+                                        WHEN 4 THEN 'Deleted'
+                            END as Status FROM $this->TableName WHERE RewardItemID = $RewardItemID";
         $result = parent::RunQuery($query);
         return $result[0];
     }
@@ -106,7 +124,25 @@ class RewardItems extends BaseEntity
      * @return array
      */
     function getAboutandTerms($rewarditemid){
-        $query = "SELECT About, Terms, SubText, PromoCode, PromoName FROM $this->TableName WHERE RewardItemID=".$rewarditemid.";";
+        $query = "SELECT About, Terms, SubText, PromoCode, PromoName, AvailableItemCount FROM $this->TableName WHERE RewardItemID=".$rewarditemid.";";
+        $result = parent::RunQuery($query);
+        if(isset($result[0])){
+            return $result[0];
+        } else {
+            $result = App::GetErrorMessage();;
+            return $result;
+        }
+        
+    }
+    
+    /**
+     * @Author: aqdepliyan
+     * @Description: Get Mystery Details if it's a Mystery Reward
+     * @param type $rewarditemid
+     * @return array
+     */
+    function getMysteryDetails($rewarditemid){
+        $query = "SELECT MysteryAbout, MysteryTerms, MysterySubtext, MysteryName FROM $this->TableName WHERE RewardItemID=".$rewarditemid.";";
         $result = parent::RunQuery($query);
         if(isset($result[0])){
             return $result[0];

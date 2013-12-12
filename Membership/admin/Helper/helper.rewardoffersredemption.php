@@ -12,7 +12,6 @@ if(isset($_POST["functiontype"]) && $_POST["functiontype"] != ""){
             require_once("../../init.inc.php");
 
             //Load modules needed
-            App::LoadModuleClass("Loyalty", "RewardOffers");
             App::LoadModuleClass('Rewards', 'RewardItems');
             App::LoadModuleClass('Membership', 'MemberInfo');
             App::LoadModuleClass('Membership', 'Cities');
@@ -65,7 +64,14 @@ if(isset($_POST["functiontype"]) && $_POST["functiontype"] != ""){
                                             unset($rewardoffers[$itr]["ProductName"]);
                                             $rewardoffers[$itr]["ProductName"] = $rewardname[1];
                                         }
-                                        $ProductName = $rewardoffers[$itr]["ProductName"];
+
+                                        if($rewardoffers[$itr]['IsMystery'] == 1 && $rewardoffers[$itr]['AvailableItemCount'] > 0){ 
+                                            $ProductName =  $rewardoffers[$itr]['MysteryName']; 
+                                            $Description = $rewardoffers[$itr]['MysterySubtext']; 
+                                        } else { 
+                                            $ProductName =  $rewardoffers[$itr]['ProductName']; 
+                                            $Description =  $rewardoffers[$itr]['Description']; 
+                                        }
                                         $RewardItemID = $rewardoffers[$itr]["RewardItemID"];
                                         $RewardID = $rewardoffers[$itr]["RewardID"];
                                         $RequiredPoints = $rewardoffers[$itr]["Points"];
@@ -98,9 +104,9 @@ if(isset($_POST["functiontype"]) && $_POST["functiontype"] != ""){
 
                                         $response->rows[$ctr]['id'] = $rewardoffers[$itr]["RewardItemID"];
                                         $response->rows[$itr]['cell'] = array(
-                                                                                                    $rewardoffers[$itr]["ProductName"],
+                                                                                                    $ProductName,
                                                                                                     $rewardoffers[$itr]["Points"],
-                                                                                                    $rewardoffers[$itr]["Description"],
+                                                                                                    $Description,
                                                                                                     $rewardoffers[$itr]["PromoName"],
                                                                                                     $rewardoffers[$itr]["Action"]
                                                                                                 );

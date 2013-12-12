@@ -6,8 +6,8 @@
 */
 
 Class ItemRedemptionLogs extends BaseEntity {
-    
-    function ItemRedemptionLogs() {
+
+    public function ItemRedemptionLogs() {
         $this->TableName = "itemredemptionlogs";
         //this->ConnString = "loyalty";
         $this->ConnString = "rewardsdb";
@@ -16,7 +16,7 @@ Class ItemRedemptionLogs extends BaseEntity {
     }
     
     /**
-     * @Description: For Inserting Redemptiion logs on database
+     * @Description: For Inserting Redemption logs on database
      * @param date $redeemeddate
      * @param int $mid
      * @param int $rewarditemid
@@ -26,7 +26,7 @@ Class ItemRedemptionLogs extends BaseEntity {
      * @param int $serviceid
      * @return int
      */
-     function insertItemLogs($redeemeddate,$mid, $rewarditemid, $itemcount,$source, $siteid='', $serviceid='') {
+    public function insertItemLogs($redeemeddate,$mid, $rewarditemid, $itemcount,$source, $siteid='', $serviceid='') {
         $arrEntries["MID"] = $mid;
         $arrEntries["RewardItemID"] = $rewarditemid;
         $arrEntries["ItemCount"] = $itemcount;
@@ -42,7 +42,7 @@ Class ItemRedemptionLogs extends BaseEntity {
         }
         
         $retval = parent::Insert($arrEntries);
-        if ($this->HasError)
+        if ($this->HasError && $retval == "")
         {
             App::SetErrorMessage($this->getError());
         }
@@ -54,7 +54,7 @@ Class ItemRedemptionLogs extends BaseEntity {
      * @param int $ItemRedemptionLogID
      * @return array
      */
-    function getSource($ItemRedemptionLogID){
+    public function getSource($ItemRedemptionLogID){
         $query = "SELECT MID, Source FROM $this->TableName
                             WHERE ItemRedemptionLogID = $ItemRedemptionLogID";
         $result = parent::RunQuery($query);
@@ -70,11 +70,11 @@ Class ItemRedemptionLogs extends BaseEntity {
      * @param int $totalitempoints
      * @param string $serialcode
      * @param string $securitycode
-     * @param date $validfrom
-     * @param date $validto
+     * @param string $validfrom
+     * @param string $validto
      * @return bool
      */
-    function updateLogsStatus($ItemRedemptionLogID, $source, $status, $mid='', $totalitempoints = 0, $serialcode='', $securitycode='', $validfrom='', $validto=''){
+    public function updateLogsStatus($ItemRedemptionLogID, $source, $status, $mid='', $totalitempoints = 0, $serialcode='', $securitycode='', $validfrom=null, $validto=null){
         if($source == 1){
             $updatedbyaid = $mid;
         } else {
@@ -83,7 +83,8 @@ Class ItemRedemptionLogs extends BaseEntity {
         $query = "UPDATE $this->TableName SET Status = $status, DateUpdated = now_usec(),UpdatedByAID = $updatedbyaid, 
                             SerialCode='$serialcode', SecurityCode='$securitycode', ValidFrom='$validfrom', ValidTo='$validto', RedeemedPoints=$totalitempoints
                             WHERE ItemRedemptionLogID = $ItemRedemptionLogID";
-        return parent::ExecuteQuery($query);
+        parent::ExecuteQuery($query);
+        return $this->AffectedRows;
     }
     
     /*
@@ -93,19 +94,19 @@ Class ItemRedemptionLogs extends BaseEntity {
 */
    
     //get Serial Code for verification of items
-    function getSerialCode($SerialCode){
+    public function getSerialCode($SerialCode){
         $query = "SELECT SerialCode FROM $this->TableName WHERE SerialCode = '$SerialCode'";
         return parent::RunQuery($query);
     }
     
     //get Security Code for verification of items
-    function getSecurityCode($SecurityCode){
+    public function getSecurityCode($SecurityCode){
         $query = "SELECT SecurityCode FROM $this->TableName WHERE SecurityCode = '$SecurityCode'";
         return parent::RunQuery($query);
     }
     
     //get Both Serial and Security Code for verification of items
-    function getItemCode($SerialCode, $SecurityCode){
+    public function getItemCode($SerialCode, $SecurityCode){
         $query = "SELECT ItemRedemptionLogID, SerialCode, SecurityCode FROM $this->TableName WHERE SerialCode = '$SerialCode' AND SecurityCode = '$SecurityCode'";
         return parent::RunQuery($query);
     }
