@@ -3,23 +3,35 @@
 class RefPartnerModel extends CFormModel
 {
     
+    /**
+     * @modifiedBy: Noel Antonio 11-11-2013
+     * @description: mystery partner to be excluded in the set of partners
+     * @param int $id Partner ID
+     * @return array resultset of partners
+     */
     public function getPartners($id = null){
         
         $connection = Yii::app()->db;
-        if (isset($id) && $id != NULL)
+        $name = Yii::app()->params['mysteryPartner'];
+        if (isset($id) && $id != NULL || $id != "")
         {
             $sql="SELECT PartnerID, PartnerName FROM ref_partners WHERE PartnerID = :partnerid AND 
-                  Status = 1"; 
+                  Status = 1 AND PartnerName NOT LIKE :partnerName"; 
+            
+            $command = $connection->createCommand($sql);
+            $command->bindParam(":partnerid", $id);
         }
         else
         {
-            $sql="SELECT PartnerID, PartnerName FROM ref_partners WHERE Status = 1 ORDER BY PartnerName ASC;";
+            $sql="SELECT PartnerID, PartnerName FROM ref_partners WHERE Status = 1 AND PartnerName NOT LIKE :partnerName ORDER BY PartnerName ASC;";
+            $command = $connection->createCommand($sql);
         }
-        $command = $connection->createCommand($sql);
-        $command->bindParam(":partnerid", $id);
+        
+        $keyword = "%".$name."%";
+        $command->bindParam(':partnerName', $keyword, PDO::PARAM_STR);
         $result = $command->queryAll();
         
-        return $result;
+        return $result;        
         
     }
     
@@ -36,6 +48,31 @@ class RefPartnerModel extends CFormModel
         return $result;
         
     }
+    
+    /**
+     * @Description: Get Partner ID Using Partner Name
+     * @param string $partnername
+     * @return int or null
+     */
+    public function getPartnerIDUsingName($partnername){
+        
+        $connection = Yii::app()->db;
+         
+        $sql="SELECT PartnerID FROM ref_partners 
+                    WHERE Status = 1 AND PartnerName LIKE :partnername;";
+        $command = $connection->createCommand($sql);
+        $keyword = "%".$partnername."%";
+        $command->bindParam(':partnername', $keyword, PDO::PARAM_STR);
+        $result = $command->queryAll();
+          
+        if(isset($result[0]["PartnerID"])){
+            return $result[0]["PartnerID"];
+        } else {
+            return null;
+        }
+    }
+    
+    
     /**
      * Select Active Partners
      * @author Mark Kenneth Esguerra
@@ -57,17 +94,22 @@ class RefPartnerModel extends CFormModel
      * @return array Array of Partner/s
      * @author Mark Kenneth Esguerra
      * @date October 3, 2013
+     * @modifiedBy: Noel Antonio 11-11-2013
+     * @description: mystery partner to be excluded in the set of partners
      */
     public function getPartnerByContactPerson($partnerpid)
     {
         $connection = Yii::app()->db;
+        $name = Yii::app()->params['mysteryPartner'];
         
         $query = "SELECT PartnerID, PartnerName FROM ref_partners a
                   INNER JOIN partners b ON a.PartnerID = b.RefPartnerID
-                  WHERE b.PartnerPID = :partnerpid
+                  WHERE b.PartnerPID = :partnerpid AND PartnerID NOT LIKE :partnerName
                   ";
         $command = $connection->createCommand($query);
         $command->bindParam(":partnerpid", $partnerpid);
+        $keyword = "%".$name."%";
+        $command->bindParam(':partnerName', $keyword, PDO::PARAM_STR);
         $result = $command->queryAll();
         
         return $result;
@@ -144,24 +186,6 @@ class RefPartnerModel extends CFormModel
         $command->bindParam(":partnerid", $partnerid,PDO::PARAM_INT);
         $command->execute();
     }
-    /**
-     * Get Current Status of the Partner
-     * @param int $partnerID ID of the partner
-     * @return string Current status of the partner
-     * @author Mark Kenneth Esguerra
-     * @date December 3, 2013
-     */
-    public function getCurrentStatus($partnerID)
-    {
-        $connection = Yii::app()->db;
-        
-        $query = "SELECT Status FROM ref_partners WHERE PartnerID = :partnerID";
-        $command = $connection->createCommand($query);
-        $command->bindParam(":partnerID", $partnerID);
-        
-        $result = $command->queryRow();
-        
-        return $result['Status'];
-    }
+    
 }
 ?>

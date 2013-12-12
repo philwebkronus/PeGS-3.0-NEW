@@ -582,10 +582,16 @@ Added by: mgesguerra
 
 #accordion-arrow-icon1 { display: block; }
 #accordion-arrow-icon2 { display: block; }
+#accordion-arrow-icon3 { display: block; }
+#accordion-arrow-icon4 { display: block; }
 #accordion-link1 { display: block; float: right; }
 #accordion-link2 { display: block; float: right; }
+#accordion-link3 { display: block; float: right; }
+#accordion-link4 { display: block; float: right; }
 #accordion-title-row1 { float: left; }
 #accordion-title-row2 { float: left; }
+#accordion-title-row3 { float: left; }
+#accordion-title-row4 { float: left; }
 #title-row { width: 200px; }
 #about, #terms { padding-top: 5px;}
 #title-breadcrumbs-row { float: left; font-size: 24px; margin-top: 10px; font-family: arial,calibri, helvetica; }
@@ -599,7 +605,21 @@ Added by: mgesguerra
     -moz-border-radius: 3px;
 }
 
+#aboutmysteryrewards {
+    border: 1px solid lightgray;
+    padding: 5px;
+    border-radius: 3px;
+    -moz-border-radius: 3px;
+}
+
 #termsrewards {
+    border: 1px solid lightgray;
+    padding: 5px;
+    border-radius: 3px;
+    -moz-border-radius: 3px;
+}
+
+#termsmysteryrewards {
     border: 1px solid lightgray;
     padding: 5px;
     border-radius: 3px;

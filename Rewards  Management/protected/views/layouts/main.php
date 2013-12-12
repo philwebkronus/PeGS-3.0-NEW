@@ -1,10 +1,13 @@
-<?php /* @var $this Controller */ 
+<?php
+
 /**
  * SESSION CHECKING
  * If there are no session, the system will redirect back
  * to login page
  * Added by: mgesguerra
  * Date Added: October 7, 2013
+ * @modifiedBy: Noel Antonio
+ * @dateModified: 11-11-2013
  */
 $_AccountSessions = new SessionForm();
 $_PartnerSessions = new PartnerSessionModel();
@@ -47,19 +50,23 @@ else
             <!--[if lt IE 8]>
             <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/ie.css" media="screen, projection" />
             <![endif]-->
-
-            <!-- blueprint CSS framework -->
-            <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/screen.css" media="screen, projection" />
-            <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/print.css" media="print" />
-            <!--[if lt IE 8]>
-            <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/ie.css" media="screen, projection" />
-            <![endif]-->
             <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/js/jquery.jqGrid-4.3.1/css/ui.jqgrid.css" />
             <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/main.css" />
             <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/form.css" />
-                         <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/redmond/jquery-ui-1.9.2.custom.css" />
 
             <title><?php echo CHtml::encode($this->pageTitle); ?></title>
+            <?php  
+                Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl . '/js/validations.js');
+                Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl . '/js/trailingspaces.js');
+                Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl . '/js/checkinput.js');
+                Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl . '/js/jquery.jqGrid-4.3.1/js/i18n/grid.locale-en.js');
+                Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl . '/js/jquery.jqGrid-4.3.1/js/jquery.jqGrid.min.js');
+                
+                // Added for submenus
+                Yii::app()->clientScript->registerCoreScript('jquery');
+                Yii::app()->clientScript->registerCssFile(Yii::app()->request->baseUrl . '/css/jqueryslidemenu.css');	
+                Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl . '/js/jqueryslidemenu.js');
+            ?>
     </head>
 
     <body>
@@ -68,31 +75,30 @@ else
 
             <div id="header">
                     <div id="logo"><?php echo CHtml::encode(Yii::app()->name); ?></div>
-            </div><!-- header -->
-            <div id="mainmenu">
-                 <br/>
-                <?php 
+            </div><!-- header -->           
+                    
+            <div id="mymenu" class="jqueryslidemenu"><br/>
+            <?php 
+                    if(isset(Yii::app()->session['AccountType']))
+                    {
+                        $accounttype = Yii::app()->session['AccountType'];
 
-            if(isset(Yii::app()->session['AccountType']))
-            {
-                $accounttype = Yii::app()->session['AccountType'];
+                        //Get menus from database by account type id
+                        $items =  SiteMenu::getMenusByAccountType($accounttype);                
 
-                //Get menus from database by account type id
-                $items =  SiteMenu::getMenusByAccountType($accounttype);
+                    }else
+                        $items = array();
 
-            }else
-                $items = array();
-
-            $this->widget('zii.widgets.CMenu',array(
+                    $this->widget('zii.widgets.CMenu',array(
                             'items'=>$items
                     ));
-                    ?>
+            ?>
             </div><!-- mainmenu -->
             <?php //if(isset($this->breadcrumbs)):?>
                     <?php //$this->widget('zii.widgets.CBreadcrumbs', array(
                             //'links'=>$this->breadcrumbs,
                     //)); ?><!-- breadcrumbs -->
-            <?php //endif?>
+            <?php //endif?>                                       
             <div id="logoutdiv">
                     <div id="divLogout">
                     <?php 
@@ -122,23 +128,11 @@ else
             </div><!-- footer -->
 
     </div><!-- page -->
-    <!--<script type="text/javascript" src="<?php //echo Yii::app()->request->baseUrl; ?>/js/jquery.fieldvalidator.js" ></script>-->
-        <script type="text/javascript" src="<?php echo Yii::app()->request->baseUrl; ?>/js/jquery.jqGrid-4.3.1/js/i18n/grid.locale-en.js" ></script>
-        <script type="text/javascript" src="<?php echo Yii::app()->request->baseUrl; ?>/js/jquery.jqGrid-4.3.1/js/jquery.jqGrid.min.js" ></script>
-        <!--<script type="text/javascript" src="<?php //echo Yii::app()->request->baseUrl; ?>/js/fancybox/jquery.mousewheel-3.0.4.pack.js"></script>-->
-        <!--<script type="text/javascript" src="<?php //echo Yii::app()->request->baseUrl; ?>/js/fancybox/jquery.fancybox-1.3.4.pack.js"></script>-->
-    <!--    <script type="text/javascript" src="<?php //echo Yii::app()->request->baseUrl; ?>/js/lightbox.js"></script>
-        <script type="text/javascript" src="<?php //echo Yii::app()->request->baseUrl; ?>/js/jquery.tipTip.minified.js"></script>-->
-    <?php 
-        Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl . '/js/idle.js');
-        Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl . '/js/idlechecker.js');
-        Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl . '/js/validations.js');
-        Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl . '/js/trailingspaces.js');
-        Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl . '/js/checkinput.js');
-    ?>
-
+    
     <input id="Timeout" type="hidden" value="<?php echo Yii::app()->params->idletimelogout;;?>" />
     <input id="logout" type="hidden" value="<?php echo Yii::app()->params->autologouturl;;?>" />
+    <script type="text/javascript" src="<?php echo Yii::app()->request->baseUrl . '/js/idle.js' ?>"></script>
+    <script type="text/javascript" src="<?php echo Yii::app()->request->baseUrl . '/js/idlechecker.js' ?>"></script> 
     <?php
     /** Start Widget **/
     $this->beginWidget('zii.widgets.jui.CJuiDialog',array(

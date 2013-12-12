@@ -64,7 +64,7 @@ class LoginController extends Controller
         $partnersession = new PartnerSessionModel();
         $refpartner     = new RefPartnerModel();
         $audittrail = new AuditTrailModel();
-
+        
         // if it is ajax validation request
         if(isset($_POST['ajax']) && $_POST['ajax']==='login-form')
         {
@@ -88,7 +88,7 @@ class LoginController extends Controller
             $acct = $accountform->checkUsername($username);
             $countacct = count($acct);
             $this->showDialog = false;
-            if($countacct > 0) 
+            if($countacct > 0)
             {
                 foreach ($acct as $row) {
                     $aid = $row['AID'];
@@ -104,23 +104,15 @@ class LoginController extends Controller
                 }
                 $numattempts = $oldnumattempts + 1;
 
-                //If number of attempts >= 3, display access denied msg
-                if($oldnumattempts >= 3){
-                    $this->showDialog = true;
-                    $this->dialogMsg = "Access Denied.Please contact system administrator to have your account unlocked.";
-                    $transdetails = "Login Attempt/s Count: ".$oldnumattempts;
+                if($passwordlen >= 8)
+                {
+                    $acctpass = $accountform->checkPassword($password);
+                    $countacctpass = count($acctpass);
 
-                    //Log event to audit trail
-                    $audittrail->logEvent(RefAuditFunctionsModel::LOGIN_INVALID_ATTEMPTS, $transdetails, array('SessionID' => "", 'AID' => ""));
-                    
-                } else {
-                    if($passwordlen >= 8)
+                    if($countacctpass > 0)
                     {
-                        //check password if match
-                        $acctpass = $accountform->checkPassword($password);
-                        $countacctpass = count($acctpass);
 
-                        if($countacctpass > 0)
+                        if($oldnumattempts < 3)
                         {
                             if($model->login()){
                                 $numattempts = 0;
@@ -152,65 +144,74 @@ class LoginController extends Controller
                                     //Log event to audit trail
                                     $audittrail->logEvent(RefAuditFunctionsModel::LOGIN, "Username: ".Yii::app()->session['UserName'], array('SessionID' => Yii::app()->session['SessionID'], 'AID' => Yii::app()->session['AID']));
                                     $this->redirect(array($landingpage));
-
+                                    
                                 } else {
                                     $this->showDialog = true;
                                     $this->dialogMsg = "User has no access right, Please try again";
                                 }
 
                             } else {
-                                if($oldnumattempts >= 3){
-
-                                    $this->showDialog = true;
-                                    $this->dialogMsg = "Access Denied.Please contact system administrator to have your account unlocked.";
-                                    $transdetails = "Login Attempt/s Count: ".$oldnumattempts;
-
-                                    //Log event to audit trail
-                                    $audittrail->logEvent(RefAuditFunctionsModel::LOGIN_INVALID_ATTEMPTS, $transdetails, array('SessionID' => "", 'AID' => ""));
-
-                                } else {
-                                    $accountform->updateLoginAttempts($aid, $numattempts);
-
-                                    $this->showDialog = true;
-                                    $this->dialogMsg = "Invalid Username or Password, Please try again";
-                                    $transdetails = "Login Attempt/s Count: ".$numattempts;
-
-                                    //Log event to audit trail
-                                    $audittrail->logEvent(RefAuditFunctionsModel::LOGIN_INVALID_ATTEMPTS, $transdetails, array('SessionID' => "", 'AID' => ""));
-                                }
+                                $accountform->updateLoginAttempts($aid, $numattempts);
+                                $this->showDialog = true;
+                                $this->dialogMsg = "Invalid Username or Password, Please try again";  
+                                $transdetails = "Login Attempt/s Count: ".$numattempts;
+                                
+                                //Log event to audit trail
+                                $audittrail->logEvent(RefAuditFunctionsModel::LOGIN_INVALID_ATTEMPTS, $transdetails, array('SessionID' => "", 'AID' => ""));
                             }
+                            
                         } else {
-                            if($oldnumattempts >= 3){
-
+                            if($oldnumattempts == 3){
                                 $this->showDialog = true;
                                 $this->dialogMsg = "Access Denied.Please contact system administrator to have your account unlocked.";
                                 $transdetails = "Login Attempt/s Count: ".$oldnumattempts;
-
+                                    
                                 //Log event to audit trail
                                 $audittrail->logEvent(RefAuditFunctionsModel::LOGIN_INVALID_ATTEMPTS, $transdetails, array('SessionID' => "", 'AID' => ""));
-
-                            } else {
+                                
+                            } else if($oldnumattempts < 3) {
                                 $accountform->updateLoginAttempts($aid, $numattempts);
-
                                 $this->showDialog = true;
-                                $this->dialogMsg = "Invalid Username or Password, Please try again";
+                                $this->dialogMsg = "Access Denied.Please contact system administrator to have your account unlocked.";
                                 $transdetails = "Login Attempt/s Count: ".$numattempts;
 
                                 //Log event to audit trail
                                 $audittrail->logEvent(RefAuditFunctionsModel::LOGIN_INVALID_ATTEMPTS, $transdetails, array('SessionID' => "", 'AID' => ""));
-                            }        
+                            }   
                         }
 
                     } else {
-                        $accountform->updateLoginAttempts($aid, $numattempts);
-                        $this->showDialog = true;
-                        $this->dialogMsg = "Please enter your password. Minimum of 8 alphanumeric.";
-                        $transdetails = "Login Attempt/s Count: ".$numattempts;
+                        if($oldnumattempts == 3){
 
-                        //Log event to audit trail
-                        $audittrail->logEvent(RefAuditFunctionsModel::LOGIN_INVALID_ATTEMPTS, $transdetails, array('SessionID' => Yii::app()->session['SessionID'], 'AID' => Yii::app()->session['PartnerPID']));
-                    }
+                            $this->showDialog = true;
+                            $this->dialogMsg = "Access Denied.Please contact system administrator to have your account unlocked.";
+                            $transdetails = "Login Attempt/s Count: ".$oldnumattempts;
+
+                            //Log event to audit trail
+                            $audittrail->logEvent(RefAuditFunctionsModel::LOGIN_INVALID_ATTEMPTS, $transdetails, array('SessionID' => "", 'AID' => ""));
+                            
+                        } else if($oldnumattempts < 3) {
+                            $accountform->updateLoginAttempts($aid, $numattempts);
+
+                            $this->showDialog = true;
+                            $this->dialogMsg = "Invalid Username or Password, Please try again";
+                            $transdetails = "Login Attempt/s Count: ".$numattempts;
+
+                            //Log event to audit trail
+                            $audittrail->logEvent(RefAuditFunctionsModel::LOGIN_INVALID_ATTEMPTS, $transdetails, array('SessionID' => "", 'AID' => ""));
+                        }        
+                    } 
+                    
+                } else {
+                    $accountform->updateLoginAttempts($aid, $numattempts);
+                    $this->showDialog = true;
+                    $this->dialogMsg = "Please enter your password. Minimum of 8 alphanumeric.";
+                    $transdetails = "Login Attempt/s Count: ".$numattempts;
+
+                    //Log event to audit trail
+                    $audittrail->logEvent(RefAuditFunctionsModel::LOGIN_INVALID_ATTEMPTS, $transdetails, array('SessionID' => Yii::app()->session['SessionID'], 'AID' => Yii::app()->session['PartnerPID']));
                 }
+
             }
             //Check for Partner Access
             else if (count($partner->checkUsername($username)) > 0)
@@ -297,7 +298,7 @@ class LoginController extends Controller
                                 }
                             } else {
                                 $this->showDialog = true;
-                                $this->dialogMsg = "Invalid Username or Password, Please try again"; 
+                                $this->dialogMsg = "Invalid Username or Password, Please try again";  
                             }
                         } else {
                             $this->showDialog = true;
@@ -316,7 +317,7 @@ class LoginController extends Controller
                 $this->dialogMsg = "Invalid Username or Password, Please try again";  
             }
         }
-
+        
         // display the login form
         $this->render('login',array('model'=>$model));
     }
@@ -329,7 +330,7 @@ class LoginController extends Controller
         $aid = Yii::app()->session['AID'];
         $sessionmodel = new SessionForm();
         $audittrail = new AuditTrailModel();
-
+            
         //Log event to audit trail  
         $audittrail->logEvent(RefAuditFunctionsModel::LOGOUT, "Username: ".Yii::app()->session['UserName'], array('SessionID' => Yii::app()->session['SessionID'], 'AID' => Yii::app()->session['AID']));
         $sessionmodel->deleteSession($aid);

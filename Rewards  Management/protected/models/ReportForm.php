@@ -12,6 +12,8 @@ class ReportForm extends CFormModel
     public $filter_by;
     public $particular;
     public $player_segment;
+    public $report_type;
+    public $date_coverage;
     
     public static function model($classname = __CLASS__)
     {
@@ -21,7 +23,7 @@ class ReportForm extends CFormModel
     public function rules()
     {
         return array(
-            array('category, filter_by, particular, player_segment, date_from, date_to','required'),
+            array('report_type, date_coverage, category, filter_by, particular, player_segment, date_from, date_to','required'),
             array('particular','safe')
         );
     }

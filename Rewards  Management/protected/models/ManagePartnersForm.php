@@ -280,7 +280,7 @@ class ManagePartnersForm extends CFormModel
                                         $pdo->commit();
                                         //Log to Audit Trail
                                         $getstatus = $this->getStat($status);
-                                        $audittrailmodel->logEvent(RefAuditFunctionsModel::MARKETING_EDIT_PARTNER_DETAILS,"PartnerID:".$partnerID." Name:".$partnername." Status:".$getstatus, array('SessionID' => Yii::app()->session['SessionID'], 
+                                        $audittrailmodel->logEvent(RefAuditFunctionsModel::MARKETING_EDIT_PARTNER_DETAILS,"PartnerID: ".$partnerID." Name: ".$partnername." Status: ".$getstatus, array('SessionID' => Yii::app()->session['SessionID'], 
                                                                                                                              'AID' => Yii::app()->session['AID']));
                                         return array('TransMsg'=>'Successfully Updated Partner Details',
                                                      'TransCode'=>0);
@@ -480,9 +480,16 @@ class ManagePartnersForm extends CFormModel
                                     try
                                     {
                                         $pdo->commit();
+                                        //Log to Audit Trail
                                         $status = $this->getStat($status);
-                                        $audittrailmodel->logEvent(RefAuditFunctionsModel::MARKETING_ADD_PARTNER, "PartnerID:".$lastInsertPID." Name:".$partnername." Status:".$status, array('SessionID' => Yii::app()->session['SessionID'], 
+                                        $audittrailmodel->logEvent(RefAuditFunctionsModel::MARKETING_ADD_PARTNER, "PartnerID: ".$lastInsertPID." Name: ".$partnername." Status: ".$status, array('SessionID' => Yii::app()->session['SessionID'], 
                                                                                                                                       'AID' => Yii::app()->session['AID']));
+                                        return array('TransMsg'=>'Partner successfully added.',
+                                                     'TransCode'=>0, 'Email' => $contactEmail,
+                                                     'Username' => $username,
+                                                     'ContactPerson' => $contactPerson, 'Password' => $password,
+                                                     'ID' => $lastInsertPartnerPID
+                                                    );
                                         return array('TransMsg'=>'Partner successfully added.',
                                                      'TransCode'=>0, 'Email' => $contactEmail,
                                                      'Username' => $username,
@@ -493,7 +500,7 @@ class ManagePartnersForm extends CFormModel
                                     catch(CDbException $e)
                                     {
                                         $pdo->rollback();
-                                        return array('TransMsg'=>'Error: Failed to add new partner',
+                                        return array('TransMsg'=>'Error: Failed to insert in transactional table [0004]',
                                                      'TransCode'=>2);
                                     }
                                 }
@@ -594,12 +601,12 @@ class ManagePartnersForm extends CFormModel
         $subject  = "Change Initial Password";
         $headers  = 'MIME-Version: 1.0' . "\r\n";
         $headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
-        $headers .=  "From: "."rewardsmanagement@philweb.com.ph"."\r\n";
+        $headers .=  "From: "."RewardsItemManagement@philweb.com.ph"."\r\n";
         
         $detail = "
                 <html>
                 <head>
-                  <title>Rewards Management</title>
+                  <title>Rewards Item Management</title>
                 </head>
                 <body>
                   <i>Hi Mr/Ms. $contactperson</i> <br /><br />

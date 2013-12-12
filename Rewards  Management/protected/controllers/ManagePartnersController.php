@@ -39,8 +39,7 @@ class ManagePartnersController extends Controller {
             $details['contactMobile']   = $this->sanitize($model->contactMobile);
             $details['status']          = $this->sanitize($model->partnershipStatus);
 //            $details['noOfofferings']   = $this->sanitize($model->numberOfRewardOfferings);
-            $details['noOfofferings']   = 1;
-            
+            $details['noOfofferings']   = 1;           
             //Check if Partner was already exist
             $ctrpartner = $refpartner->checkPartnerIfExist($details['partnername']);
             if ($ctrpartner > 0)
@@ -73,7 +72,7 @@ class ManagePartnersController extends Controller {
                     {
 
                         $this->dialogtitle = "ERROR MESSAGE";
-                        $this->dialogmsg = "Please fill up all fields!";
+                        $this->dialogmsg = "Please fill up all fields.";
                         $this->showdialog = true;
                     }
                     else if (!$validation->validateAlphaNumeric($details['partnername']) || 
@@ -187,7 +186,7 @@ class ManagePartnersController extends Controller {
                         }
                     }
                 }
-            } 
+            }
             $this->render('index', array('model' => $model));
         }
         else

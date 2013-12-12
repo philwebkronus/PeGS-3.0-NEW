@@ -69,7 +69,7 @@ class CouponRedemptionLogsModel extends CFormModel
         }
         
         $connection = Yii::app()->db;
-        $particularID = substr($particular, 1, 1); //get only the real ID of the ITEM (Exclude the appended letter)
+        $particularID = substr($particular, 1); //get only the real ID of the ITEM (Exclude the appended letter)
         /**
          * Check if the selected Particular is ALL.
          * IF not ALL, get the number of redeemed items depending on the selected specific particular 

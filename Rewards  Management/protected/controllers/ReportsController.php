@@ -11,6 +11,7 @@ class ReportsController extends Controller
     public $message;
     public $filter;
     public $flip;
+    public $reporttype;
     
     CONST DAILY = 0;
     CONST WEEKLY = 1;
@@ -36,7 +37,7 @@ class ReportsController extends Controller
     /**
      * Rewards Redemption Controller
      */
-    public function actionRewardsredemption()
+    public function actionIndex()
     {
         $report             = new ReportForm();
         $itemredemption     = new ItemRedemptionLogsModel();
@@ -45,14 +46,22 @@ class ReportsController extends Controller
         {
             $report->attributes = $_POST['ReportForm']; //Pass consolidated values into model attributes
             
+            $reporttype = $report->report_type;
             $category   = $report->category;
             $filter     = $report->filter_by;
             $particular = $report->particular;
             $player     = $report->player_segment;
             $date_from  = $report->date_from;
             $date_to    = $report->date_to;
+            $coverage   = $report->date_coverage;
             //Error Handling
-            if (strlen($category) == 0 || $category == "")
+            if ($reporttype == "" || strlen($reporttype) == 0)
+            {
+                $this->showdialog = true;
+                $this->message = "Please select Report type";
+                $this->filter = $filter;
+            }
+            else if (strlen($category) == 0 || $category == "")
             {
                 $this->showdialog = true;
                 $this->message = "Please select Category";
@@ -82,6 +91,12 @@ class ReportsController extends Controller
                 $this->message = "Please select From/To Date";
                 $this->filter = $filter;
             }
+            else if ($coverage == "" || strlen($coverage) == 0)
+            {
+                $this->showdialog = true;
+                $this->message = "Please select Date Coverage";
+                $this->filter = $filter;
+            }
             else if (strtotime($date_from) > strtotime($date_to))
             {
                 $this->showdialog = true;
@@ -90,166 +105,55 @@ class ReportsController extends Controller
             }
             else
             {
-                //Check whether Raffle, Rewards E-coupon or BOTH (ALL) has been chosen
-                if ($category == RewardTypeModel::RAFFLE_E_COUPONS)
+                $result = $this->checkDateRange($coverage, $date_from, $date_to);
+                if ($result['ErrorCode'] == 0)
                 {
-                    //For Raffle E-Coupon
-                    $ret_query[] = $couponredemption->inquiry(1, $filter, $particular, $player, $date_from, $date_to);
-                    $success = $this->Generate($ret_query, $player);
-                    if ($success)
-                    {
-                        //Redirect to VIEW 
-                        $this->redirect('view');
-                    }
-                    else
-                    {
-                        //Show Dialog Box 'No Results Found'
-                        $this->showdialog = true;
-                        $this->message = "No Results Found";
-                        $this->filter = $filter;
-                    }
-                }
-                else if ($category == RewardTypeModel::REWARDS_E_COUPONS)
-                {
-                    //For Rewards E-Coupons
-                    $ret_query[] = $itemredemption->inquiry(1, $filter, $particular, $player, $date_from, $date_to);
-                    $success = $this->Generate($ret_query, $player);
-                    if ($success)
-                    {
-                        //Redirect to VIEW 
-                        $this->redirect('view');
-                    }
-                    else
-                    {
-                        //Show Dialog Box 'No Results Found'
-                        $this->showdialog = true;
-                        $this->message = "No Results Found";
-                        $this->filter = $filter;
-                    }
-                }
-                else if ($category == RewardTypeModel::ALL)
-                {
-                    //Both Raffle and Rewards E-Coupon
-                    $ret_query[] = $itemredemption->inquiry(1, $filter, $particular, $player, $date_from, $date_to, 1);
-                    $ret_query[] = $couponredemption->inquiry(1, $filter, $particular, $player, $date_from, $date_to, 1);
-                    $success = $this->Generate($ret_query, $player);
-                    if ($success)
-                    {
-                        //Redirect to VIEW 
-                        $this->redirect('view');
-                    }
-                    else
-                    {
-                        //Show Dialog Box 'No Results Found'
-                        $this->showdialog = true;
-                        $this->message = "No Results Found";
-                        $this->filter = $filter;
-                    }
-                }
-            }
-        }
-        $this->render('rewardsredemption',array('model'=>$report));
-    }
-    /**
-     * Unique Member Participation Controller
-     * Sep-11-13
-     */
-    public function actionParticipation()
-    {
-        $report             = new ReportForm();
-        $itemredemption     = new ItemRedemptionLogsModel();
-        $couponredemption   = new CouponRedemptionLogsModel();
-        if (isset($_POST['ReportForm']))
-        {
-            $report->attributes = $_POST['ReportForm']; //Pass consolidated values into model attributes
-            $category   = $report->category;
-            $filter     = $report->filter_by;
-            $particular = $report->particular;
-            $player     = $report->player_segment;
-            $date_from  = $report->date_from;
-            $date_to    = $report->date_to;
-            //Error Handling
-            if (strlen($category) == 0 || $category == "")
-            {
-                $this->showdialog = true;
-                $this->message = "Please select Category";
-                if ($filter != NULL)
+                    $this->showdialog = true;
+                    $this->message = $result['ErrorMsg'];
                     $this->filter = $filter;
-            }
-            else if (strlen($filter) == 0 || $filter == "")
-            {
-                $this->showdialog = true;
-                $this->message = "Please select a Filter By";
-            }
-            else if (strlen($particular) == 0 || $particular == "")
-            {
-                $this->showdialog = true;
-                $this->message = "Please select Choose Particular";
-                $this->filter = $filter;
-            }
-            else if (strlen($player) == 0 || $player == "")
-            {
-                $this->showdialog = true;
-                $this->message = "Please select Player Segment";
-                $this->filter = $filter;
-            }
-            else if ((strlen($date_from) == 0 || $date_from == "") || (strlen($date_to) == 0 || $date_to == ""))
-            {
-                $this->showdialog = true;
-                $this->message = "Please select From/To Date";
-                $this->filter = $filter;
-            }
-            else if (strtotime($date_from) > strtotime($date_to))
-            {
-                $this->showdialog = true;
-                $this->message = "Invalid Date Range";
-                $this->filter = $filter;
-            }
-            else
-            {
-                //Check whether Raffle, Rewards E-coupon or BOTH (ALL) has been chosen
-                if ($category == RewardTypeModel::RAFFLE_E_COUPONS)
-                {
-                    //For Raffle E-Coupon
-                    $ret_query[] = $couponredemption->inquiry(2, $filter, $particular, $player, $date_from, $date_to);
-                    $success = $this->Generate($ret_query, $player);
-                    if ($success)
-                    {
-                        //Redirect to VIEW 
-                        $this->redirect('view');
-                    }
-                    else
-                    {
-                        //Show Dialog Box 'No Results Found'
-                        $this->showdialog = true;
-                        $this->message = "No Results Found";
-                        $this->filter = $filter;
-                    }
                 }
-                else if ($category == RewardTypeModel::REWARDS_E_COUPONS)
+                else
                 {
-                    //For Rewards E-Coupons
-                    $ret_query[] = $itemredemption->inquiry(2, $filter, $particular, $player, $date_from, $date_to);
-                    $success = $this->Generate($ret_query, $player);
-                    if ($success)
+                    //Check whether Raffle, Rewards E-coupon or BOTH (ALL) has been chosen
+                    if ($category == RewardTypeModel::RAFFLE_E_COUPONS)
                     {
-                        //Redirect to VIEW 
-                        $this->redirect('view');
+                        //For Raffle E-Coupon
+                        $ret_query[] = $couponredemption->inquiry($reporttype, $filter, $particular, $player, $date_from, $date_to);
                     }
-                    else
+                    else if ($category == RewardTypeModel::REWARDS_E_COUPONS)
                     {
-                        //Show Dialog Box 'No Results Found'
-                        $this->showdialog = true;
-                        $this->message = "No Results Found";
-                        $this->filter = $filter;
+                        //For Rewards E-Coupons
+                        $ret_query[] = $itemredemption->inquiry($reporttype, $filter, $particular, $player, $date_from, $date_to);
+                        
                     }
-                }
-                else if ($category == RewardTypeModel::ALL)
-                {
-                    //Both Raffle and Rewards E-Coupon
-                    $ret_query[] = $itemredemption->inquiry(2, $filter, $particular, $player, $date_from, $date_to, 1);
-                    $ret_query[] = $couponredemption->inquiry(2, $filter, $particular, $player, $date_from, $date_to, 1);
-                    $success = $this->Generate($ret_query, $player);
+                    else if ($category == RewardTypeModel::ALL)
+                    {
+                        //Both Raffle and Rewards E-Coupon
+                        $ret_query[] = $itemredemption->inquiry($reporttype, $filter, $particular, $player, $date_from, $date_to, 1);
+                        $ret_query[] = $couponredemption->inquiry($reporttype, $filter, $particular, $player, $date_from, $date_to, 1);
+
+                    }
+                    switch ($coverage)
+                    {
+                        case self::DAILY:
+                            $start  = $result['StartDate'];
+                            $end    = $result['EndDate'];
+                            break;
+                        case self::QUARTERLY:
+                            $start  = $result['StartQuarter'];
+                            $end    = $result['EndQuarter'];
+                            break;
+                        case self::MONTHLY:
+                            $start  = $result['StartMonth'];
+                            $end    = $result['EndMonth'];
+                            break;
+                        case self::YEARLY:
+                            $start  = null;     
+                            $end    = null;
+                            break;
+                    }
+                    //Generate Report
+                    $success = $this->Generate($reporttype, $ret_query, $player, $coverage, $start, $end);
                     if ($success)
                     {
                         //Redirect to VIEW 
@@ -265,125 +169,10 @@ class ReportsController extends Controller
                 }
             }
         }
-        $this->render('participation',array('model'=>$report));
+        $this->render('index',array('model'=>$report));
     }
-    /**
-     * Reward Points Usage Controller
-     */
-    public function actionUsage()
-    {
-        $report             = new ReportForm();
-        $itemredemption     = new ItemRedemptionLogsModel();
-        $couponredemption   = new CouponRedemptionLogsModel();
-        if (isset($_POST['ReportForm']))
-        {
-            $report->attributes = $_POST['ReportForm']; //Pass consolidated values into model attributes
-            $category   = $report->category;
-            $filter     = $report->filter_by;
-            $particular = $report->particular;
-            $player     = $report->player_segment;
-            $date_from  = $report->date_from;
-            $date_to    = $report->date_to;
-            //Error Handling
-            if (strlen($category) == 0 || $category == "")
-            {
-                $this->showdialog = true;
-                $this->message = "Please select Category";
-                if ($filter != NULL)
-                    $this->filter = $filter;
-            }
-            else if (strlen($filter) == 0 || $filter == "")
-            {
-                $this->showdialog = true;
-                $this->message = "Please select a Filter By";
-            }
-            else if (strlen($particular) == 0 || $particular == "")
-            {
-                $this->showdialog = true;
-                $this->message = "Please select Choose Particular";
-                $this->filter = $filter;
-            }
-            else if (strlen($player) == 0 || $player == "")
-            {
-                $this->showdialog = true;
-                $this->message = "Please select Player Segment";
-                $this->filter = $filter;
-            }
-            else if ((strlen($date_from) == 0 || $date_from == "") || (strlen($date_to) == 0 || $date_to == ""))
-            {
-                $this->showdialog = true;
-                $this->message = "Please select From/To Date";
-                $this->filter = $filter;
-            }
-            else if (strtotime($date_from) > strtotime($date_to))
-            {
-                $this->showdialog = true;
-                $this->message = "Invalid Date Range";
-                $this->filter = $filter;
-            }
-            else
-            {
-                //Check whether Raffle, Rewards E-coupon or BOTH (ALL) has been chosen
-                if ($category == RewardTypeModel::RAFFLE_E_COUPONS)
-                {
-                    //For Raffle E-Coupon
-                    $ret_query[] = $couponredemption->inquiry(3, $filter, $particular, $player, $date_from, $date_to);
-                    $success = $this->Generate($ret_query, $player);
-                    if ($success)
-                    {
-                        //Redirect to VIEW 
-                        $this->redirect('view');
-                    }
-                    else
-                    {
-                        //Show Dialog Box 'No Results Found'
-                        $this->showdialog = true;
-                        $this->message = "No Results Found";
-                        $this->filter = $filter;
-                    }
-                }
-                else if ($category == RewardTypeModel::REWARDS_E_COUPONS)
-                {
-                    //For Rewards E-Coupons
-                    $ret_query[] = $itemredemption->inquiry(3, $filter, $particular, $player, $date_from, $date_to);
-                    $success = $this->Generate($ret_query, $player);
-                    if ($success)
-                    {
-                        //Redirect to VIEW 
-                        $this->redirect('view');
-                    }
-                    else
-                    {
-                        //Show Dialog Box 'No Results Found'
-                        $this->showdialog = true;
-                        $this->message = "No Results Found";
-                        $this->filter = $filter;
-                    }
-                }
-                else if ($category == RewardTypeModel::ALL)
-                {
-                    //Both Raffle and Rewards E-Coupon
-                    $ret_query[] = $itemredemption->inquiry(3, $filter, $particular, $player, $date_from, $date_to, 1);
-                    $ret_query[] = $couponredemption->inquiry(3, $filter, $particular, $player, $date_from, $date_to, 1);
-                    $success = $this->Generate($ret_query, $player);
-                    if ($success)
-                    {
-                        //Redirect to VIEW 
-                        $this->redirect('view');
-                    }
-                    else
-                    {
-                        //Show Dialog Box 'No Results Found'
-                        $this->showdialog = true;
-                        $this->message = "No Results Found";
-                        $this->filter = $filter;
-                    }
-                }
-            }
-        }
-        $this->render('usage',array('model'=>$report));
-    }
-    public function Generate($query, $player)
+    
+    public function Generate($type, $query, $player, $coverage, $start = NULL, $end = NULL)
     {
         $this->flip = true;
         Yii::import('application.extensions.*');
@@ -418,308 +207,391 @@ class ReportsController extends Controller
                                          'FileName'=>'images/graph-yearly.png',
                                          'DateLabel' => "YEAR(a.DateCreated) AS DateLabel")
         );
-        $arrData = array();
-        for ($d = 0; count($dimensions) > $d; $d++)
+        //Name report type
+        switch ($type)
         {
-            //Check if the chosen Category (E-Coupons) is (Raffle or Rewards) or ALL
-            //If ALL, there must be 2 queries. Else, only 1.
-            if (count($query) == 1)
+            case 1: $reporttype = "Rewards Redemption";
+                break;
+            case 2: $reporttype = "Unique Member Participation";
+                break;
+            case 3: $reporttype = "Rewards Points Usage";
+                break;
+            default: $reporttype = "";
+                break;
+        }
+        
+        $arrData = array();
+        $d = $coverage;
+        //Check if the chosen Category (E-Coupons) is (Raffle or Rewards) or ALL
+        //If ALL, there must be 2 queries. Else, only 1.
+        if (count($query) == 1)
+        {
+            //Return false to display No result found if NULL
+            if ($query[0] != NULL)
             {
-                //Return false to display No result found if NULL
-                if ($query[0] != NULL)
-                {
-                    //Append other MySQL function for query
-                    $queryMonth = $query[0][0]." ".$dimensions[$d]['DateLabel']." ".$query[0][1].
-                                            "GROUP BY ".$dimensions[$d]['DateFunction']."(a.DateCreated) 
-                                             ORDER BY (a.DateCreated)";
-                    $result = $itemredemption->runQuery($queryMonth, $player);
-                    //Check if there were results found
-                    if (count($result) > 0)
-                    {
-                        //Get Array Keys
-                        $arrkey = array_keys($result[0]);
-                        $key1 = $arrkey[0];
-                        $key2 = $arrkey[2]; //DateLabel - Index 1 is the dateCreated
-                        //MONTH
-                        if($d == 2)
-                        {
-                            for ($i = 0; 12 >= $i; $i++)
-                            {
-                                //Check if arrays associated with index $i are set.
-                                //If not set, assign 0 to data and temporarily assign the index to label
-                                //else, assign the gathered data and label
-                                if (!isset($result[$i][$key2]) && !isset($result[$i][$key1]))
-                                {
-                                    $getLabel = $i;
-                                    $getData = 0;
-                                }
-                                else
-                                {
-                                    $getLabel = $result[$i][$key2];
-                                    $getData = $result[$i][$key1];
-                                }
-                                //Assign gathered data according to label (month)
-                                switch($getLabel)
-                                {
-                                    case 1:
-                                        $lbl[0] = "Jan";
-                                        if (!isset($datay[0]))
-                                            $datay[0] = $getData;
-                                        break;
-                                    case 2: 
-                                        $lbl[1] = "Feb";
-                                        if (!isset($datay[1]))
-                                            $datay[1] = $getData;
-                                        break;
-                                    case 3: 
-                                        $lbl[2] = "Mar";
-                                        if (!isset($datay[2]))
-                                            $datay[2] = $getData;
-                                        break;
-                                    case 4: 
-                                        $lbl[3] = "Apr";
-                                        if (!isset($datay[3]))
-                                            $datay[3] = $getData;
-                                        break;
-                                    case 5: 
-                                        $lbl[4] = "May";
-                                        if (!isset($datay[4]))
-                                            $datay[4] = $getData;
-                                        break;
-                                    case 6: 
-                                        $lbl[5] = "Jun";
-                                        if (!isset($datay[5]))
-                                            $datay[5] = $getData;
-                                        break;
-                                    case 7: 
-                                        $lbl[6] = "Jul";
-                                        if (!isset($datay[6]))
-                                            $datay[6] = $getData;
-                                        break;
-                                    case 8: 
-                                        $lbl[7] = "Aug";
-                                        if (!isset($datay[7]))
-                                            $datay[7] = $getData;
-                                        break;
-                                    case 9: 
-                                        $lbl[8] = "Sep";
-                                        if (!isset($datay[8]))
-                                            $datay[8] = $getData;
-                                        break;
-                                    case 10: 
-                                        $lbl[9] = "Oct";
-                                        if (!isset($datay[9]))
-                                            $datay[9] = $getData;
-                                        break;
-                                    case 11: 
-                                        $lbl[10] = "Nov";
-                                        if (!isset($datay[10]))
-                                            $datay[10] = $getData;
-                                        break;
-                                    case 12: 
-                                        $lbl[11] = "Dec";
-                                        if (!isset($datay[11]))
-                                            $datay[11] = $getData;
-                                        break;
-                                }
-                            }
-                            //Complete the array
-                            for ($x = 0; 12 > $x; $x++)
-                            {
-                                if (!isset($lbl[$x]) && !isset($lbl[$x]))
-                                {
-                                    $lbl[$x] = $this->getMonthName($x + 1);
-                                    $datay[$x] = 0;
-                                }
-                            }
-                        }
-                        //QUARTER
-                        else if ($d == 3)
-                        {
-                            for ($i = 0; 4 >= $i; $i++)
-                            {
-                                if (!isset($result[$i][$key2]) && !isset($result[$i][$key1]))
-                                {
-                                    $getLabel = $i;
-                                    $getData = 0;
-                                }
-                                else
-                                {
-                                    $getLabel = $result[$i][$key2];
-                                    $getData = $result[$i][$key1];
-                                }
-                                switch($getLabel)
-                                {
-                                    case 1: 
-                                        $lbl[0] = $this->identifyQuarter($getLabel);
-                                        if (!isset($datay[0]))
-                                            $datay[0] = $getData;
-                                        break;
-                                    case 2: 
-                                        $lbl[1] = $this->identifyQuarter($getLabel);
-                                        if (!isset($datay[1]))
-                                            $datay[1] = $getData;
-                                        break;
-                                    case 3: 
-                                        $lbl[2] = $this->identifyQuarter($getLabel);
-                                        if (!isset($datay[2]))
-                                            $datay[2] = $getData;
-                                        break;
-                                    case 4: 
-                                        $lbl[3] = $this->identifyQuarter($getLabel);
-                                        if (!isset($datay[3]))
-                                            $datay[3] = $getData;
-                                        break;
-                                }
-                            }
-                            for ($x = 0; 4 > $x; $x++)
-                            {
-                                if (!isset($lbl[$x]) && !isset($lbl[$x]))
-                                {
-                                    $lbl[$x] = $this->identifyQuarter($x + 1);
-                                    $datay[$x] = 0;
-                                }
-                            }
-                            $this->flip = false;
-                        }
-                        else
-                        {
-                            for ($i = 0; count($result) > $i; $i++)
-                            {
-                                switch($d)
-                                {
-                                    case 0: $getLabel = $result[$i][$key2];
-                                        break;
-                                    case 1: $getLabel = $result[$i][$key2];
-                                        break;
-                                    case 2: $getLabel = substr($result[$i][$key2], 0, 3);
-                                            $this->filter = false;
-                                            $this->flip = false;
-                                        break;
-                                    case 3: $getLabel = $result[$i][$key2];
-                                            $this->filter = false;
-                                            $this->flip = false;
-                                        break;
-                                    case 4: $getLabel = $result[$i][$key2];
-                                            $this->filter = false;
-                                            $this->flip = false;
-                                        break;
-                                }
-                                $datay[]    = $result[$i][$key1]; //Put the retrieved data in array dataY
-                                $lbl[]      = $getLabel;
-                            }
-                        }
-//                        $arrData[] = array($dimensions[$d]['Title'], array($datay, $lbl));
-                    }
-                    else
-                    {
-                        return false;
-                    }
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            else if (count($query) == 2)
-            {
-                //Get the TWO (2) Queries -> Append GROUP BY AND ORDER BY function -> Run Query
-                for($i = 0; count($query) > $i; $i++)
-                {
-                    if ($query[$i] != NULL)
-                    {
-                        $queryMonth[] = $query[$i][0]." ".$query[$i][1];
-                    }
-                }
-                $finalQuery = "SELECT ".$fn_inq." ".$dimensions[$d]['DateLabel']." FROM (".$queryMonth[0]." UNION ALL ".$queryMonth[1].") AS a"
-                               ." GROUP BY ".$dimensions[$d]['DateFunction']."(DateCreated)
-                                  ORDER BY ".$dimensions[$d]['DateFunction']."(DateCreated)";
-                $result = $itemredemption->runQuery($finalQuery, $player);
-                //Count Result. Must have TWO (2) Array Results
+                //Append other MySQL function for query
+                $queryMonth = $query[0][0]." ".$dimensions[$d]['DateLabel'].", YEAR(a.DateCreated) as Year ".$query[0][1].
+                                        "GROUP BY  YEAR(a.DateCreated), ".$dimensions[$d]['DateFunction']."(a.DateCreated) 
+                                         ORDER BY (a.DateCreated) ASC";
+                //var_dump($queryMonth);exit;
+                $result = $itemredemption->runQuery($queryMonth, $player);
+                //Check if there were results found
                 if (count($result) > 0)
                 {
                     //Get Array Keys
                     $arrkey = array_keys($result[0]);
                     $key1 = $arrkey[0];
-                    $key2 = $arrkey[1];
-                    for ($i = 0; count($result) > $i; $i++)
+                    $key2 = $arrkey[2]; //DateLabel - Index 1 is the dateCreated
+                    $year = $arrkey[3];
+                    
+                    $quarter = $start;
+                    $datay = array();
+                    //Get maximum bars depending on date coverage
+                    switch ($d)
                     {
-                        //Get the LABEL according to the date dimension;
+                        case 0: $days = $start;$max = 7; break;
+                        case 2: $month = $start;$max = 12; break; //Monthly
+                        case 3: $quarter = $start; $max = 4; break; //Quarterly
+                    }
+                    if ($d != 4)
+                    {
+                        if ($start == $end)
+                        {
+                            if ($d == 2) //Month
+                                $vbars = 12;
+                            else if ($d == 3) //Quarterly
+                                $vbars = 1;
+                        }
+                        else if ($start > $end)
+                        {
+                            $vbars = ($max - $start) + 1 + $end;
+                        }
+                        else
+                        {
+                            $vbars = ($end - $start) + 1;
+                        }
+                    }
+                    else
+                    {
+                        $vbars = 2;
+                    }
+                    //Get all retrieved data
+                    //var_dump($vbars);var_dump($start);var_dump($end);exit;
+                    for ($i = 0; $vbars > $i; $i++)
+                    {
+                        $isnull = false;
                         switch($d)
                         {
-                            case 0: $getLabel = $result[$i][$key2];
+                            case 0: 
+                                
+                            //Monthly
+                            case 2:
+                                if (!isset($result[$i][$key2]))
+                                {
+                                    if (($vbars + 1) <= 11)
+                                    {
+                                        if ($month > 12)
+                                        {
+                                            $month  = 1;
+                                            $getLabel = $this->getMonthName($month)."\n".(($result[0][$year]) + 1);
+                                        }
+                                        else
+                                        {
+                                            $getLabel = $this->getMonthName($month)."\n".($result[0][$year] + 1);
+                                        }
+                                        $this->filter = false;
+                                        $this->flip = false;
+                                        $getData = 0;
+
+                                        $isnull = true;
+                                    }
+                                    $month++;
+                                }
+                                else
+                                {
+                                    if ($month > 12)
+                                    {
+                                        $month = 1;
+                                    }
+                                    if ($result[$i][$key2] == $month)
+                                    {
+                                        $getLabel = $this->getMonthName($result[$i][$key2])."\n".$result[$i][$year];
+                                        $this->filter = false;
+                                        $this->flip = false;
+                                        $getData = $result[$i][$key1];
+                                        
+                                        $datay[]    = $getData; //Put the retrieved data in array dataY
+                                        $lbl[]      = $getLabel;
+                                    }
+                                    else
+                                    {
+                                        if ($month > $result[$i][$key2])
+                                        {
+                                            $blank = (12 - $month) + $result[$i][$key2];
+                                        }
+                                        else
+                                        {
+                                            $blank = ($result[$i][$key2] - $month);
+                                        }
+                                        $_month = $month;
+                                        while ($blank > 0)
+                                        {
+                                            $getLabel = $this->getMonthName($_month)."\n".$result[$i][$year];
+                                            $this->filter = false;
+                                            $this->flip = false;
+                                            $getData    = 0; //No Data
+
+                                            $datay[]    = $getData; //Put the retrieved data in array dataY
+                                            $lbl[]      = $getLabel;
+                                            
+                                            $blank--;
+                                            $_month++;
+                                            if ($_month > 12)
+                                                $_month = 1;
+                                        }
+                                        if ($month <= 12)
+                                        {
+                                            $getLabel = $this->getMonthName($result[$i][$key2])."\n".$result[$i][$year];
+                                            $this->filter = false;
+                                            $this->flip = false;
+                                            $getData = $result[$i][$key1];
+
+                                            $datay[]    = $getData; //Put the retrieved data in array dataY
+                                            $lbl[]      = $getLabel;
+                                            
+                                            $month = $result[$i][$key2];
+                                        }
+                                        else
+                                        {
+                                            $month = 0;
+                                        }
+                                        if ($month > 12)
+                                        {
+                                            $month = 1;
+                                        }
+                                    }
+                                    $month++;
+                                }
                                 break;
-                            case 1: $getLabel = $result[$i][$key2];
+                            //Quarterly
+                            case 3:
+                                //If 0 data
+                                if (!isset($result[$i][$key2]))
+                                {
+                                    //var_dump($quarter);var_dump($vbars);exit;
+                                    if (($vbars + 1) <= 3)
+                                    {
+                                        if ($quarter > 4)
+                                        {
+                                            $quarter  = 1;
+                                            $getLabel = $this->identifyQuarter($quarter)."\n".(($result[0][$year]) + 1);
+
+                                        }
+                                        else
+                                        {
+                                            $getLabel = $this->identifyQuarter($quarter)."\n".($result[0][$year] + 1);
+                                        }
+                                        $this->flip = false;
+                                        $getData = 0;
+
+                                        $isnull = true;
+                                    }
+                                    $quarter++;
+                                }
+                                else
+                                {
+                                    if ($quarter > 4)
+                                    {
+                                        $quarter = 1;
+                                    }
+                                    if ($result[$i][$key2] == $quarter)
+                                    {
+                                        $getLabel = $this->identifyQuarter($result[$i][$key2])."\n".$result[$i][$year];
+                                        $this->flip = false;
+                                        $getData = $result[$i][$key1];
+                                        
+                                        $datay[]    = $getData; //Put the retrieved data in array dataY
+                                        $lbl[]      = $getLabel;
+                                    }
+                                    else
+                                    {
+                                        if ($quarter > $result[$i][$key2])
+                                        {
+                                            $blank = (4 - $quarter) + $result[$i][$key2];
+                                        }
+                                        else
+                                        {
+                                            $blank = ($result[$i][$key2] - $quarter);
+                                        }
+                                        $_quarter = $quarter;
+                                        while ($blank > 0)
+                                        {
+                                            
+                                            $getLabel = $this->identifyQuarter($_quarter)."\n".$result[$i][$year];
+                                            $this->flip = false;
+                                            $getData    = 0; //No Data
+                                        
+                                            $datay[]    = $getData; //Put the retrieved data in array dataY
+                                            $lbl[]      = $getLabel;
+                                            
+                                            $blank--;
+                                            $_quarter++;
+                                            if ($_quarter > 4)
+                                                $_quarter = 1;
+                                        }
+                                        if ($quarter <= 4)
+                                        {
+                                            $getLabel = $this->identifyQuarter($result[$i][$key2])."\n".$result[$i][$year];
+                                            $this->flip = false;
+                                            $getData = $result[$i][$key1];
+
+                                            $datay[]    = $getData; //Put the retrieved data in array dataY
+                                            $lbl[]      = $getLabel;
+                                            
+                                            $quarter = $result[$i][$key2];
+                                        }
+                                        else
+                                        {
+                                            $quarter = 0;
+                                        }
+                                        if ($quarter > 4)
+                                        {
+                                            $quarter = 1;
+                                        }
+                                    }
+                                    $quarter++;
+                                }
                                 break;
-                            case 2: $getLabel = substr($result[$i][$key2], 0, 3);
-                                    $this->filter = false;
+                            case 4:
+                                if (!isset($result[$i][$year]))
+                                {
+                                    $getData = 0;
+                                    $getLabel = 0;
+                                }
+                                else
+                                {
+                                    $datay[]    = $result[$i][$key1];
+                                    $lbl[]      = $result[$i][$year];
                                     $this->flip = false;
-                                break;
-                            case 3: $getLabel = $this->identifyQuarter($result[$i][$key2]);
-                                    $this->filter = false;
-                                    $this->flip = false;
-                                break;
-                            case 4: $getLabel = $result[$i][$key2];
-                                    $this->filter = false;
-                                    $this->flip = false;
+                                }
                                 break;
                         }
-                        $datay[]    = $result[$i][$key1]; //Put the retrieved data in array dataY
-                        $lbl[]      = $getLabel;
+                        if ($isnull)
+                        {
+                            $datay[]    = $getData; //Put the retrieved data in array dataY
+                            $lbl[]      = $getLabel;
+                        }
                     }
+//                        $arrData[] = array($dimensions[$d]['Title'], array($datay, $lbl));
                 }
                 else
                 {
                     return false;
                 }
             }
-
-            // Create the graph. These two calls are always required
-            $graph = new Graph(700, 500);
-            $graph->SetScale('textlin');
-
-            // Add a drop shadow
-            $graph->SetShadow();
-
-            // Adjust the margin a bit to make more room for titles
-            $graph->SetMargin(40,30,20,70);
-            //Set Title      
-            $graph->title->SetFont(FF_FONT1,FS_BOLD);
-            $graph->yaxis->title->SetFont(FF_FONT1,FS_BOLD, 12);
-            $graph->xaxis->SetTitleMargin(30);
-            $graph->xaxis->SetTitle($dimensions[$d]['Title'].' Statistics','middle'); 
-            //Set Labels
-            $graph->xaxis->SetTickLabels($lbl);
-            $graph->xaxis->SetLabelAlign('center','center');
-            $graph->xaxis->SetLabelMargin(20);
-            $graph->yaxis->SetLabelMargin(0);
-            $graph->yaxis->SetLabelFormatCallback('number_format');
-            $graph->yaxis->SetLabelFormat('%s');
-            $graph->xaxis->scale->ticks->Set(1, 2);
-
-            $graph->yaxis->HideLine(false);
-            //Check if flip is true
-            if ($this->flip)
+            else
             {
-                $graph->xaxis->SetLabelAngle(90);
+                return false;
             }
-            $graph->yaxis->scale->SetGrace(10);
-            // Create a bar pot
-            $bplot = new BarPlot($datay);
-            // Adjust fill color
-            $bplot->SetFillColor('orange');
-            $graph->Add($bplot);
-            // Display the graph
-            $gdImgHandler = $graph->Stroke(_IMG_HANDLER);
-            $fileName = $dimensions[$d]['FileName'];
-            $graph->img->Stream($fileName);
-            //Clear Arrays!
-            unset($datay);
-            unset($lbl);
-            unset($result);
-            unset($queryMonth);
-            unset(Yii::app()->session['inquiry']);
         }
+        else if (count($query) == 2)
+        {
+            //Get the TWO (2) Queries -> Append GROUP BY AND ORDER BY function -> Run Query
+            for($i = 0; count($query) > $i; $i++)
+            {
+                if ($query[$i] != NULL)
+                {
+                    $queryMonth[] = $query[$i][0]." ".$query[$i][1];
+                }
+            }
+            $finalQuery = "SELECT ".$fn_inq." ".$dimensions[$d]['DateLabel']." FROM (".$queryMonth[0]." UNION ALL ".$queryMonth[1].") AS a"
+                           ." GROUP BY ".$dimensions[$d]['DateFunction']."(DateCreated)
+                              ORDER BY ".$dimensions[$d]['DateFunction']."(DateCreated)";
+            $result = $itemredemption->runQuery($finalQuery, $player);
+            //Count Result. Must have TWO (2) Array Results
+            if (count($result) > 0)
+            {
+                //Get Array Keys
+                $arrkey = array_keys($result[0]);
+                $key1 = $arrkey[0];
+                $key2 = $arrkey[1];
+                for ($i = 0; count($result) > $i; $i++)
+                {
+                    //Get the LABEL according to the date dimension;
+                    switch($d)
+                    {
+                        case 0: $getLabel = $result[$i][$key2];
+                            break;
+                        case 1: $getLabel = $result[$i][$key2];
+                            break;
+                        case 2: $getLabel = substr($result[$i][$key2], 0, 3);
+                                $this->filter = false;
+                                $this->flip = false;
+                            break;
+                        case 3: $getLabel = $this->identifyQuarter($result[$i][$key2]);
+                                $this->filter = false;
+                                $this->flip = false;
+                            break;
+                        case 4: $getLabel = $result[$i][$key2];
+                                $this->filter = false;
+                                $this->flip = false;
+                            break;
+                    }
+                    $datay[]    = $result[$i][$key1]; //Put the retrieved data in array dataY
+                    $lbl[]      = $getLabel;
+                }
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        // Create the graph. These two calls are always required
+        $graph = new Graph(700, 550);
+        $graph->SetScale('textlin');
+
+        // Add a drop shadow
+        $graph->SetShadow();
+
+        // Adjust the margin a bit to make more room for titles
+        $graph->SetMargin(40,30,20,100);
+        //Set Title      
+        $graph->title->SetFont(FF_FONT1,FS_BOLD);
+        $graph->yaxis->title->SetFont(FF_FONT1,FS_BOLD, 12);
+        $graph->xaxis->SetTitleMargin(45);
+        $graph->xaxis->SetTitle($reporttype." - ".$dimensions[$d]['Title'].' Statistics','middle'); 
+        //Set Labels
+        $graph->xaxis->SetTickLabels($lbl);
+        $graph->xaxis->SetLabelAlign('center','center');
+        $graph->xaxis->SetLabelMargin(25);
+        $graph->yaxis->SetLabelMargin(0);
+        $graph->yaxis->SetLabelFormatCallback('number_format');
+        $graph->yaxis->SetLabelFormat('%s');
+        $graph->xaxis->scale->ticks->Set(1, 2);
+
+        $graph->yaxis->HideLine(false);
+        //Check if flip is true
+        if ($this->flip)
+        {
+            $graph->xaxis->SetLabelAngle(90);
+        }
+        $graph->yaxis->scale->SetGrace(10);
+        // Create a bar pot
+        $bplot = new BarPlot($datay);
+        // Adjust fill color
+        $bplot->SetFillColor('orange');
+        $graph->Add($bplot);
+        // Display the graph
+        $gdImgHandler = $graph->Stroke(_IMG_HANDLER);
+        $fileName = 'images/graph.png';
+        $graph->img->Stream($fileName);
+        //Clear Arrays!
+        unset($datay);
+        unset($lbl);
+        unset($result);
+        unset($queryMonth);
+        unset(Yii::app()->session['inquiry']);
         Yii::app()->session['arrdata'] = $arrData;
         unset($arrData);
         ///////////////////////////////////////////////////////////////////////////////////
@@ -904,6 +776,158 @@ class ReportsController extends Controller
                 break;
         }
         return $month;
+    }
+    /**
+     * Get respective quarter by month
+     * @param int $month Month in numeric
+     * @return int Quarter
+     */
+    public function whatQuarter($month)
+    {
+        if ($month == "01" || $month == "02" || $month == "03")
+        {
+            $quarter = 1;
+        }
+        else if ($month == "04" || $month == "05" || $month == "06")
+        {
+            $quarter = 2;
+        }
+        else if ($month == "07" || $month == "08" || $month == "09")
+        {
+            $quarter = 3;
+        }
+        else if ($month == "10" || $month == "11" || $month == "12")
+        {
+            $quarter = 4;
+        }
+        return $quarter;
+    }
+    /**
+     * Check date range depending on chosen report coverage
+     * @param int $coverage Report coverage
+     * @param date $datefrom From date
+     * @param date $dateto To date
+     * @return array ErrorCode and ErrorMsg
+     * @author Mark Kenneth Esguerra
+     * @date November 18, 2013
+     */
+    function checkDateRange($coverage, $datefrom, $dateto)
+    {
+        $days       = round(abs(strtotime($datefrom) - strtotime($dateto))/86400);
+        $monthfrom  = substr($datefrom, 5, 2);
+        $monthto    = substr($dateto, 5, 2);
+        $yearfrom   = substr($datefrom, 0, 3);
+        $yearto     = substr($dateto, 0, 3);
+        switch($coverage)
+        {
+            //Daily
+            case self::DAILY:
+                if ($days > 7)
+                    return array('ErrorCode' => 0, 'ErrorMsg' => 'Maximum date range in Daily Report coverage is only 7 days');
+                else
+                    return array('ErrorCode' => 1, 'StartDate' => $datefrom, 'EndDate' => $dateto);
+                break;
+            //Weekly
+            case self::WEEKLY:
+                if ($days > 70)
+                    return array('ErrorCode' => 0, 'ErrorMsg' => 'Maximum date range in Weekly Report coverage is only 10 weeks');
+                else
+                    return array('ErrorCode' => 1);
+                break;
+            //Monthly
+            case self::MONTHLY:
+                if ($days > 365)
+                    return array('ErrorCode' => 0, 'ErrorMsg' => 'Maximum date range in Monthly Report coverage is only 12 months');
+                else
+                    return array('ErrorCode' => 1, 'StartMonth' => $monthfrom, 'EndMonth' => $monthto);
+                break;
+            //Quarterly
+            case self::QUARTERLY:
+                if ($monthfrom == "01" || $monthfrom == "02" || $monthfrom ==  "03")
+                {
+                    if ($monthfrom == $monthto && $days <= 365)
+                    {
+                        return array('ErrorCode' => 1, 'StartQuarter' => 1, 'EndQuarter' => $this->whatQuarter($monthto));
+                    }
+                    else
+                    {
+                       if (($monthto == "01" || $monthto == "02" || $monthto == "03") || ($days > 365))
+                       {
+                           return array('ErrorCode' => 0, 'ErrorMsg' => 'Maximum date range in Quarterly Report coverage must output only 4 quarters');
+                       }
+                       else
+                       {
+                           return array('ErrorCode' => 1, 'StartQuarter' => 1, 'EndQuarter' => $this->whatQuarter($monthto));
+                       }
+                    }
+                }
+                else if($monthfrom == "04" || $monthfrom == "05" || $monthfrom == "06")
+                {
+                    if ($monthfrom == $monthto && $days <= 365)
+                    {
+                        return array('ErrorCode' => 1, 'StartQuarter' => 2, 'EndQuarter' => $this->whatQuarter($monthto));
+                    }
+                    else
+                    {
+                       if (($monthto == "04" || $monthto == "05" || $monthto == "06") || ($days > 365))
+                       {
+                           return array('ErrorCode' => 0, 'ErrorMsg' => 'Maximum date range in Quarterly Report coverage must output only 4 quarters');
+                       }
+                       else
+                       {
+                           return array('ErrorCode' => 1, 'StartQuarter' => 2, 'EndQuarter' => $this->whatQuarter($monthto));
+                       }
+                    }
+                }
+                else if($monthfrom == "07" || $monthfrom == "08" || $monthfrom == "09")
+                {
+                    if ($monthfrom == $monthto && $days <= 365)
+                    {
+                        return array('ErrorCode' => 1, 'StartQuarter' => 3, 'EndQuarter' => $this->whatQuarter($monthto));
+                    }
+                    else
+                    {
+                       if (($monthto == "07" || $monthto == "08" || $monthto == "09") || ($days > 365))
+                       {
+                           return array('ErrorCode' => 0, 'ErrorMsg' => 'Maximum date range in Quarterly Report coverage must output only 4 quarters');
+                       }
+                       else
+                       {
+                           return array('ErrorCode' => 1, 'StartQuarter' => 3, 'EndQuarter' => $this->whatQuarter($monthto));
+                       }
+                    }
+                }
+                else if ($monthfrom == "10" || $monthfrom == "11" || $monthfrom == "12")
+                {
+                    if ($monthfrom == $monthto && $days <= 365)
+                    {
+                        return array('ErrorCode' => 1, 'StartQuarter' => 4, 'EndQuarter' => $this->whatQuarter($monthto));
+                    }
+                    else
+                    {
+                        if (($monthto == "10" || $monthto == "11" || $monthto == "12") || ($days > 365))
+                        {
+                            return array('ErrorCode' => 0, 'ErrorMsg' => 'Maximum date range in Quarterly Report coverage must output only 4 quarters');
+                        }
+                        else
+                        {
+                            return array('ErrorCode' => 1, 'StartQuarter' => 4, 'EndQuarter' => $this->whatQuarter($monthto));
+                        }
+                    }
+                }
+            //Yearly
+            case self::YEARLY:
+                $years = $yearto - $yearfrom;
+                if ($years > 1)
+                    return array('ErrorCode' => 0, 'ErrorMsg' => 'Maximum date range in Yearly Report coverage is only 2 years');
+                else
+                    return array('ErrorCode' => 1);
+                break;
+            default:
+                return array('ErrorCode' => 0, 'ErrorMsg' => 'Invalid Report Coverage');
+                break;
+            
+        }
     }
     public function actionAutoLogout() {
         

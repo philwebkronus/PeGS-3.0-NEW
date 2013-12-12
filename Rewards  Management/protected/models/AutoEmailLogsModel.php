@@ -3,6 +3,18 @@
 
 class AutoEmailLogsModel extends CFormModel
 {
+    /**
+     * @Description: Insert Auto Email logs for every auto email.
+     * @Author: aqdepliyan
+     * @DateCreated: 2013-11-28
+     * @param int $AEmailID
+     * @param int $SentToAID
+     * @param int $SentToCCAID
+     * @param int $SentToBCCAID
+     * @param string $Message
+     * @param int $SentByAID
+     * @return bool
+     */
     public function InsertAutoEmailLogs($AEmailID, $SentToAID, $SentToCCAID, $SentToBCCAID, $Message, $SentByAID){
         $connection = Yii::app()->db;
         

@@ -93,7 +93,7 @@ class ItemRedemptionLogsModel extends CFormModel
         }
         
         $connection = Yii::app()->db;
-        $particularID = substr($particular, 1, 1); //get only the real ID of the ITEM (Exclude the appended letter)
+        $particularID = substr($particular, 1); //get only the real ID of the ITEM (Exclude the appended letter)
         /**
          * Check if the selected Particular is ALL.
          * IF not ALL, get the number of redeemed items depending on the selected specific particular 
@@ -223,7 +223,7 @@ class ItemRedemptionLogsModel extends CFormModel
                             $query[0] = $select;
                             $query[1] = "FROM itemredemptionlogs a
                                          INNER JOIN rewarditems b ON a.RewardItemID = b.RewardItemID
-                                         WHERE b.PClassID = b.PClassID IN (1, 2)  AND b.RewardItemID = ".$particularID." AND 
+                                         WHERE b.PClassID IN (1, 2)  AND b.RewardItemID = ".$particularID." AND 
                                          a.DateCreated >= '$date_from 00:00:00' AND a.DateCreated <= '$date_to 11:59:59'"."
                                          ";
                         }
@@ -232,7 +232,7 @@ class ItemRedemptionLogsModel extends CFormModel
                             $query[0] = $select;
                             $query[1] = "FROM itemredemptionlogs a
                                          INNER JOIN rewarditems b ON a.RewardItemID = b.RewardItemID
-                                         WHERE b.PClassID = b.PClassID IN (1, 2) AND b.PartnerID = ".$particularID." AND
+                                         WHERE b.PClassID IN (1, 2) AND b.PartnerID = ".$particularID." AND
                                          a.DateCreated >= '$date_from 00:00:00' AND a.DateCreated <= '$date_to 11:59:59'"."
                                         ";
                         }
@@ -241,7 +241,7 @@ class ItemRedemptionLogsModel extends CFormModel
                             $query[0] = $select;
                             $query[1] = "FROM itemredemptionlogs a
                                          INNER JOIN rewarditems b ON a.RewardItemID = b.RewardItemID
-                                         WHERE b.PClassID = b.PClassID IN (1, 2) AND b.CategoryID = ".$particularID." AND 
+                                         WHERE b.PClassID IN (1, 2) AND b.CategoryID = ".$particularID." AND 
                                          a.DateCreated >= '$date_from 00:00:00' AND a.DateCreated <= '$date_to 11:59:59'"."
                                          ";
                         }
@@ -250,7 +250,7 @@ class ItemRedemptionLogsModel extends CFormModel
                             $query[0] = $select;
                             $query[1] = "FROM itemredemptionlogs a
                                          INNER JOIN rewarditems b ON a.RewardItemID = b.RewardItemID
-                                         WHERE b.PClassID = b.PClassID IN (1, 2) AND 
+                                         WHERE b.PClassID IN (1, 2) AND 
                                          a.DateCreated >= '$date_from 00:00:00' AND a.DateCreated <= '$date_to 11:59:59'"."
                                          ";
                         }

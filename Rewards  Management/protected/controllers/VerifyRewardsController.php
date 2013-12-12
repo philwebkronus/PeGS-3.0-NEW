@@ -119,7 +119,7 @@ class VerifyRewardsController extends Controller
 
                                 if($checkrange == true){
 
-                                    //Log to Audit trail
+                                    //Log to Audit trail - Verify Raffle
                                     switch(Yii::app()->session['AccountType'])
                                     {
                                         case 6: 
@@ -142,7 +142,7 @@ class VerifyRewardsController extends Controller
                                     $serial = Yii::app()->session['serialcode'];
                                     $security = Yii::app()->session['securitycode'];
                                     $rewarditem =  $rewarditemmodel->getRewardName($rewarditemid);
-                                    $audittrailmodel->logEvent($auditfunction, "SerialCode:".$serial.";SecurityCode:".$security.";RewardItem:".$rewarditem['ItemName'].":successful", array('SessionID' => Yii::app()->session['SessionID'], 
+                                    $audittrailmodel->logEvent($auditfunction, "SerialCode: ".$serial.";SecurityCode: ".$security.";RewardItem: ".$rewarditem['ItemName'].":successful", array('SessionID' => Yii::app()->session['SessionID'], 
                                                                                                                     'AID' => Yii::app()->session['AID']));
                                     $this->showDialogSuccess = true;
                                     $this->dialogMsg = "This e-Coupon ".$serialcode." is valid."; 
@@ -189,11 +189,33 @@ class VerifyRewardsController extends Controller
                             $security = $row['SecurityCode'];
                             $source = $row['Source'];
                         }
-
+                        //Get RewardItem Name
+                        $rewarditem = $rewarditemmodel->getRewardName($rewarditemid);
                         if($status == 1){
                             $result = $couponredemptionlogs->updateCouponLogsStatus($securitycode2, $serialcode2);
                             if ($result['TransCode'] == 1)
                             {
+                                //Log to Audit Trail - Verify Raffle
+                                switch(Yii::app()->session['AccountType'])
+                                {
+                                    case 6: 
+                                        $auditfunction = RefAuditFunctionsModel::CS_VERIFY_RAFFLE;
+                                        break;
+                                    case 9:
+                                        $auditfunction = RefAuditFunctionsModel::AS_VERIFY_RAFFLE;
+                                        break;
+                                    case 13:
+                                        $auditfunction = RefAuditFunctionsModel::MARKETING_VERIFY_RAFFLE;
+                                        break;
+                                    case 14:
+                                        $auditfunction = RefAuditFunctionsModel::PARTNER_VERIFY_RAFFLE;
+                                        break;
+                                    default:
+                                        $auditfunction = null;
+                                        break;
+                                }
+                                $audittrailmodel->logEvent($auditfunction, "SerialCode: ".$serialcode2.";SecurityCode: ".$securitycode2.";RewardItem: ".$rewarditem['ItemName'].":successful", array('SessionID' => Yii::app()->session['SessionID'], 
+                                                                                                            'AID' => Yii::app()->session['AID']));
                                 $this->showDialog2 = true;
                                 $this->dialogMsg = "This e-Coupon ".$serialcode2." is valid.";
                             }
@@ -250,11 +272,9 @@ class VerifyRewardsController extends Controller
         $rewarditemmodel    = new RewardItemsModel();
         
         $rewarditemid = Yii::app()->session['rewarditemid'];
-        
         $mid = Yii::app()->session['MID'];
         $aid = Yii::app()->session['AID'];
         $partnerid = Yii::app()->session['partnerid'];
-        $rewarditem = "";
         $rewarditemresult =  $rewarditemmodel->getRewardName($rewarditemid);
         $rewarditem = $rewarditemresult['ItemName'];
         
@@ -357,7 +377,7 @@ class VerifyRewardsController extends Controller
                                         $auditfunction = null;
                                         break;
                                 }
-                                $audittrailmodel->logEvent($auditfunction, "CashierName:".$partnernamecashier.";BranchDetails:".$branchdetails.":successful", array('SessionID' => Yii::app()->session['SessionID'], 
+                                $audittrailmodel->logEvent($auditfunction, "SerialCode: ".$serialcode.";SecurityCode: ".$securitycode.";CashierName: ".$partnernamecashier.";BranchDetails: ".$branchdetails.":successful", array('SessionID' => Yii::app()->session['SessionID'], 
                                                                                                                 'AID' => Yii::app()->session['AID']));
                                 $this->showDialogSuccess = true;
                                 $this->dialogMsg = "Reward transaction is recorded."; 
@@ -439,78 +459,56 @@ class VerifyRewardsController extends Controller
                 Yii::app()->session['partnername'] = $partnernames;
                 
                 $arrcard = $membercards->getCardNumber($mid);
-                
-                if(count($arrcard) > 0)
-                {
-                    foreach ($arrcard as $row) {
-                        $cardnumber = $row['CardNumber'];
-                    }
-                    
-                    $arrmembername = $memberinfo->getMemberNameID($mid);
-                    if (count ($arrmembername) > 0)
-                    {
-                        foreach ($arrmembername as $row2) {
-                            $firstname = $row2['FirstName'];
-                            $middlename = $row2['MiddleName'];
-                            $lastname = $row2['LastName'];
-                            $idname = $row2['IdentificationName'];
-                        }
-                        
-                        if (isset($cardnumber))
-                        {
-                            Yii::app()->session['cardnumber'] = $cardnumber;
-                            Yii::app()->session['membername'] = $firstname." ".$middlename." ".$lastname;
-                            Yii::app()->session['identificationname'] = $idname;
+                foreach ($arrcard as $row) {
+                    $cardnumber = $row['CardNumber'];
+                }
 
-                            $this->redirect(array('/verifyRewards/recordrewardtrans'), array('model' => $verifyrewards));
-                        }
-                        else
-                        {
-                            $status = $membercards->checkStatus($mid);
-                            foreach($status as $row)
-                            {
-                                $stat = $row['Status'];
-                            }
-                            switch ($stat)
-                            {
-                                case 2:
-                                    $this->dialogMsg = "Membership Card is Deactivated"; 
-                                    break;
-                                case 0:
-                                    $this->dialogMsg = "Membership Card is Inactive"; 
-                                    break;
-                                case 8:
-                                    $this->dialogMsg = "Migrated Temporary Account"; 
-                                    break;
-                                case 5:
-                                    $this->dialogMsg = "Active Temporary Account"; 
-                                    break;
-                                case 9:
-                                    $this->dialogMsg = "Membership Card is Banned"; 
-                                    break;
-                                case 7:
-                                    $this->dialogMsg = "Membership Card is already Migrated"; 
-                                    break;
-                            }
-                            $this->showDialog2 = true;
-                            $this->dialogMsg2 = "Please try again.";
-                        }
-                    }
-                    else
-                    {
-                        $this->dialogMsg = "Unable to get Member's Info";
-                        $this->showDialog2 = true;
-                    }
+                $arrmembername = $memberinfo->getMemberNameID($mid);
+                foreach ($arrmembername as $row2) {
+                    $firstname = $row2['FirstName'];
+                    $middlename = $row2['MiddleName'];
+                    $lastname = $row2['LastName'];
+                    $idname = $row2['IdentificationName'];
+                }
+                if (isset($cardnumber))
+                {
+                    Yii::app()->session['cardnumber'] = $cardnumber;
+                    Yii::app()->session['membername'] = $firstname." ".$middlename." ".$lastname;
+                    Yii::app()->session['identificationname'] = $idname;
+                    
+                    $this->redirect(array('/verifyRewards/recordrewardtrans'), array('model' => $verifyrewards));
                 }
                 else
                 {
-                    $this->dialogMsg = "Membership Card is Invalid";
+                    $status = $membercards->checkStatus($mid);
+                    foreach($status as $row)
+                    {
+                        $stat = $row['Status'];
+                    }
+                    switch ($stat)
+                    {
+                        case 2:
+                            $this->dialogMsg = "Membership Card is Deactivated"; 
+                            break;
+                        case 0:
+                            $this->dialogMsg = "Membership Card is Inactive"; 
+                            break;
+                        case 8:
+                            $this->dialogMsg = "Migrated Temporary Account"; 
+                            break;
+                        case 5:
+                            $this->dialogMsg = "Active Temporary Account"; 
+                            break;
+                        case 9:
+                            $this->dialogMsg = "Membership Card is Banned"; 
+                            break;
+                        case 7:
+                            $this->dialogMsg = "Membership Card is already Migrated"; 
+                            break;
+                    }
                     $this->showDialog2 = true;
+                    $this->dialogMsg2 = "Please try again.";
                 }
-                
-                
-                
-                
         }
         else{
             $this->showDialog2 = true;

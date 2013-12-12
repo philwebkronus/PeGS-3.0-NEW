@@ -256,7 +256,7 @@ $(".addBtn").live("click", function(){
                 var status          = $("#StatusAdd").val();
                 
                 if (contactperson === "" || contactposition === "" || contactemail === "" 
-                    || contactpnumber === "" || contactmobile === "" 
+                    || contactpnumber === "" || contactmobile === ""
                     || status == -1 || username === "")
                 {
                     $("#msgdialogAdd").css({'text-align':"left",'color':"red"});
@@ -283,7 +283,7 @@ $(".addBtn").live("click", function(){
                 
                     return false;
                 }
-                else if (/^[a-zA-Z0-9- ]*$/.test(contactpnumber) === false)
+                else if (/^[a-zA-Z0-9- \+\-\(\)]*$/.test(contactpnumber) === false)
                 {
                     $("#msgdialogAdd").css({'text-align':"left",'color':"red"});
                     $("#msgdialogAdd").html("Special character/s is/are not allowed in Contact Person's Phone Number");
@@ -599,7 +599,7 @@ $(".addBtn").live("click", function(){
                 
                     return false;
                 }
-                else if (/^[a-zA-Z0-9- ]*$/.test(contactpnumber) === false)
+                else if (/^[a-zA-Z0-9- \+\-\(\)]*$/.test(contactpnumber) === false)
                 {
                     $("#msgdialog").css({'text-align':"left",'color':"red"});
                     $("#msgdialog").html("Special character/s is/are not allowed in Contact Person's Phone Number");
@@ -609,7 +609,7 @@ $(".addBtn").live("click", function(){
                 else if (/^[a-zA-Z0-9- ]*$/.test(contactmobile) === false)
                 {
                     $("#msgdialog").css({'text-align':"left",'color':"red"});
-                    $("#msgdialog").html("Special character/s is/are not allowed in Contact Person's Mobile");
+                    $("#msgdialog").html("Special character/s is/are not allowedd in Contact Person's Mobile");
                 
                     return false;
                 }
@@ -962,7 +962,7 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
                <?php echo $form->labelEx($model, 'contactPhoneNumber', array('style'=>'font-weight:bold;')); ?>
            </td>
            <td>
-               <?php echo $form->textField($model, 'contactPhoneNumber', array('id'=>'ContactPhoneNumberAdd', 'onkeypress'=>'return telephonekeypress(event)')) ?>
+               <?php echo $form->textField($model, 'contactPhoneNumber', array('id'=>'ContactPhoneNumberAdd', 'onkeypress'=>'return telephonenewkeypress(event)')) ?>
            </td>    
        </tr>
        <tr>
@@ -1178,7 +1178,7 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
                <?php echo $form->labelEx($model, 'contactPhoneNumber', array('style'=>'font-weight:bold;')); ?>
            </td>
            <td>
-               <?php echo $form->textField($model, 'contactPhoneNumber', array('id'=>'ContactPhoneNumber2', 'onkeypress'=>'return telephonekeypress(event)')) ?>
+               <?php echo $form->textField($model, 'contactPhoneNumber', array('id'=>'ContactPhoneNumber2', 'onkeypress'=>'return telephonenewkeypress(event)')) ?>
            </td>    
        </tr>
        <tr>
@@ -1203,7 +1203,7 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
                <?php echo $form->labelEx($model, 'numberOfRewardOfferings', array('style'=>'font-weight:bold;')); ?>
            </td>
            <td>
-               <?php echo $form->textField($model, 'numberOfRewardOfferings', array('id'=>'NumberOfRewardOfferings2', 'onkeypress'=>'return numberonly(event)', 'readonly'=> 'readonly')) ?>
+               <?php echo $form->textField($model, 'numberOfRewardOfferings', array('id'=>'NumberOfRewardOfferings2', 'onkeypress'=>'return numberonly(event)', 'readonly' => 'readonly')) ?>
            </td>    
        </tr>
     </table>

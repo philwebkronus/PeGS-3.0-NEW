@@ -1,29 +1,28 @@
 <?php
 
 /**
- * @Description: Controller for Manage Rewards Tab
+ * @Description: Controller for Manage Mystery Rewards Tab
  * @Author: aqdepliyan
- * @DateCreated: 2013-09-20 01:21PM
+ * @DateCreated: 2013-11-11 11:54AM
  */
 
 
-class ManageRewardsController extends Controller 
+class ManageMysteryRewardsController extends Controller 
 {
     public $showdialog;
     public $message;
     
     /**
-     * @Description: For fetching initial data in manage rewards
+     * @Description: For fetching initial data in manage mystery rewards
      * @Author: aqdepliyan
-     * @DateCreated: 2013-09-20
+     * @DateCreated: 2013-11-11
      */
-    public function actionManageRewards() {
-        $model = new ManageRewardsForm();
+    public function actionManageMysteryReward() {
+        $model = new ManageMysteryRewardsForm();
         $rewarditems = new RewardItemsModel();
 
-        $rewardtype = 1;
         $filterby = 0;
-        $data = $rewarditems->getRewardItemsForManageRewards($rewardtype, $filterby);
+        $data = $rewarditems->getRewardItemsForManageMysteryRewards($filterby);
         $countdata = count($data);
         $ctr = 0;
         $arraynewlist = array();
@@ -45,9 +44,9 @@ class ManageRewardsController extends Controller
                     $data[$ctr]['OfferEndDate'] = $OfferEndDate->format("Y-m-d");
                     $arraynewlist['PromoPeriod'] = urldecode($data[$ctr]['OfferStartDate']." &mdash; ".$data[$ctr]['OfferEndDate']); 
                     if($arraynewlist['Status'] != 'Active' && $arraynewlist['Status'] != 'Out-Of-Stock'){
-                        $arraynewlist['Action'] = "<div title='actionbuttons' style='padding-top: 3px;'><a href='javascript:void(0)' title='Edit' Status='".$arraynewlist['Status']."'  RewardItemID='".$arraynewlist['RewardItemID']."' id='editbutton'><img id='editimage".$arraynewlist['RewardItemID']."' src='../../images/ui-icon-edit.png'></a>&nbsp;&nbsp;<a href='javascript:void(0)' title='Delete' RewardItemID='".$arraynewlist['RewardItemID']."' id='deletebutton'><img id='deleteimage".$arraynewlist['RewardItemID']."' src='../../images/ui-icon-delete.png'></a>&nbsp;&nbsp;<a href='javascript:void(0)' title='Replenish' RewardItemID='".$arraynewlist['RewardItemID']."' id='refillbutton'><img id='refillimage".$arraynewlist['RewardItemID']."' src='../../images/ui-icon-refill.png' ></a></div>";
+                        $arraynewlist['Action'] = "<div title='actionbuttons' style='padding-top: 3px;'><a href='javascript:void(0)' title='Edit'  Status='".$arraynewlist['Status']."'  RewardItemID='".$arraynewlist['RewardItemID']."' id='editbutton'><img id='editimage".$arraynewlist['RewardItemID']."' src='../../images/ui-icon-edit.png'></a>&nbsp;&nbsp;<a href='javascript:void(0)' title='Delete' RewardItemID='".$arraynewlist['RewardItemID']."' id='deletebutton'><img id='deleteimage".$arraynewlist['RewardItemID']."' src='../../images/ui-icon-delete.png'></a>&nbsp;&nbsp;<a href='javascript:void(0)' style='visibility: hidden;' title='Replenish' RewardItemID='".$arraynewlist['RewardItemID']."' id='refillbutton'><img id='refillimage".$arraynewlist['RewardItemID']."' src='../../images/ui-icon-refill.png' ></a></div>";
                     } else {
-                        $arraynewlist['Action'] = "<div title='actionbuttons' style='padding-top: 3px;'><a href='javascript:void(0)' style='visibility: hidden;' title='Edit' Status='".$arraynewlist['Status']."'  RewardItemID='".$arraynewlist['RewardItemID']."' id='editbutton'><img id='editimage".$arraynewlist['RewardItemID']."' src='../../images/ui-icon-edit.png'></a>&nbsp;&nbsp;<a href='javascript:void(0)' title='Delete' RewardItemID='".$arraynewlist['RewardItemID']."' id='deletebutton'><img id='deleteimage".$arraynewlist['RewardItemID']."' src='../../images/ui-icon-delete.png'></a>&nbsp;&nbsp;<a href='javascript:void(0)' title='Replenish' RewardItemID='".$arraynewlist['RewardItemID']."' id='refillbutton'><img id='refillimage".$arraynewlist['RewardItemID']."' src='../../images/ui-icon-refill.png' ></a></div>";
+                        $arraynewlist['Action'] = "<div title='actionbuttons' style='padding-top: 3px;'><a href='javascript:void(0)' title='Edit' style='visibility: hidden;' Status='".$arraynewlist['Status']."'  RewardItemID='".$arraynewlist['RewardItemID']."' id='editbutton'><img id='editimage".$arraynewlist['RewardItemID']."' src='../../images/ui-icon-edit.png'></a>&nbsp;&nbsp;<a href='javascript:void(0)' title='Delete' RewardItemID='".$arraynewlist['RewardItemID']."' id='deletebutton'><img id='deleteimage".$arraynewlist['RewardItemID']."' src='../../images/ui-icon-delete.png'></a>&nbsp;&nbsp;<a href='javascript:void(0)' style='visibility: hidden;' title='Replenish' RewardItemID='".$arraynewlist['RewardItemID']."' id='refillbutton'><img id='refillimage".$arraynewlist['RewardItemID']."' src='../../images/ui-icon-refill.png' ></a></div>";
                     }                 
                     $arraydata[$ctr]=$arraynewlist;
                     $ctr++;
@@ -60,27 +59,24 @@ class ManageRewardsController extends Controller
             Yii::app()->end();
         }
         unset($arraynewlist,$arraydata);
-        $this->render('managerewards', array('model' => $model));
+        $this->render('managemysteryreward', array('model' => $model));
     }
 
     /**
-     * @Description: For fetching data after changing the view rewards by and/or rewards type (reward e-coupon, raffle e-coupon)
+     * @Description: For fetching data after changing the view rewards by (All, Active, Inactive and Out-Of-Stock).
      * @Author: aqdepliyan
-     * @DateCreated: 2013-09-24
+     * @DateCreated: 2013-11-11
      */
-    public function actionRewardsList(){
+    public function actionMysteryRewardsList(){
         $rewarditems = new RewardItemsModel();
 
         if(isset($_POST['viewrewardsby'])){
             $filterby = $_POST['viewrewardsby'];
         }
-        
-        if(isset($_POST['rewardtype'])){
-            $rewardtype = $_POST['rewardtype'];
-        }
+
         $page = $_POST['page'];
         $limit = $_POST['rows'];
-        $data = $rewarditems->getRewardItemsForManageRewards($rewardtype, $filterby);
+        $data = $rewarditems->getRewardItemsForManageMysteryRewards($filterby);
 
         $countdata = count($data);
         
@@ -113,17 +109,9 @@ class ManageRewardsController extends Controller
                 $arraynewlist['PromoPeriod'] = $data[$ctr]['OfferStartDate']." &mdash; ".$data[$ctr]['OfferEndDate']; 
                 
                 if($arraynewlist['Status'] != 'Active' && $arraynewlist['Status'] != 'Out-Of-Stock'){
-                    if($rewardtype == 2){
                         $arraynewlist['Action'] = "<div title='actionbuttons' style='padding-top: 3px;'><a href='javascript:void(0)' title='Edit' Status='".$arraynewlist['Status']."' RewardItemID='".$arraynewlist['RewardItemID']."' id='editbutton'><img id='editimage".$arraynewlist['RewardItemID']."' src='../../images/ui-icon-edit.png'></a>&nbsp;&nbsp;<a href='javascript:void(0)' title='Delete' RewardItemID='".$arraynewlist['RewardItemID']."' id='deletebutton'><img id='deleteimage".$arraynewlist['RewardItemID']."' src='../../images/ui-icon-delete.png'></a>&nbsp;&nbsp;<a href='javascript:void(0)' style='visibility: hidden;' title='Replenish' RewardItemID='".$arraynewlist['RewardItemID']."' id='refillbutton'><img id='refillimage".$arraynewlist['RewardItemID']."' src='../../images/ui-icon-refill.png' ></a></div>";
-                    } else {
-                        $arraynewlist['Action'] = "<div title='actionbuttons' style='padding-top: 3px;'><a href='javascript:void(0)' title='Edit' Status='".$arraynewlist['Status']."' RewardItemID='".$arraynewlist['RewardItemID']."' id='editbutton'><img id='editimage".$arraynewlist['RewardItemID']."' src='../../images/ui-icon-edit.png'></a>&nbsp;&nbsp;<a href='javascript:void(0)' title='Delete' RewardItemID='".$arraynewlist['RewardItemID']."' id='deletebutton'><img id='deleteimage".$arraynewlist['RewardItemID']."' src='../../images/ui-icon-delete.png'></a>&nbsp;&nbsp;<a href='javascript:void(0)' title='Replenish' RewardItemID='".$arraynewlist['RewardItemID']."' id='refillbutton'><img id='refillimage".$arraynewlist['RewardItemID']."' src='../../images/ui-icon-refill.png' ></a></div>";
-                    }
                 } else {
-                    if($rewardtype == 2){
-                        $arraynewlist['Action'] = "<div title='actionbuttons' style='padding-top: 3px;'><a href='javascript:void(0)' style='visibility: hidden;' title='Edit' Status='".$arraynewlist['Status']."' RewardItemID='".$arraynewlist['RewardItemID']."' id='editbutton'><img id='editimage".$arraynewlist['RewardItemID']."' src='../../images/ui-icon-edit.png'></a>&nbsp;&nbsp;<a href='javascript:void(0)' title='Delete' RewardItemID='".$arraynewlist['RewardItemID']."' id='deletebutton'><img id='deleteimage".$arraynewlist['RewardItemID']."' src='../../images/ui-icon-delete.png'></a>&nbsp;&nbsp;<a href='javascript:void(0)' title='Replenish' style='visibility: hidden;'  RewardItemID='".$arraynewlist['RewardItemID']."' id='refillbutton'><img id='refillimage".$arraynewlist['RewardItemID']."' src='../../images/ui-icon-refill.png' ></a></div>";
-                    } else {
-                        $arraynewlist['Action'] = "<div title='actionbuttons' style='padding-top: 3px;'><a href='javascript:void(0)' style='visibility: hidden;' title='Edit' Status='".$arraynewlist['Status']."' RewardItemID='".$arraynewlist['RewardItemID']."' id='editbutton'><img id='editimage".$arraynewlist['RewardItemID']."' src='../../images/ui-icon-edit.png'></a>&nbsp;&nbsp;<a href='javascript:void(0)' title='Delete' RewardItemID='".$arraynewlist['RewardItemID']."' id='deletebutton'><img id='deleteimage".$arraynewlist['RewardItemID']."' src='../../images/ui-icon-delete.png'></a>&nbsp;&nbsp;<a href='javascript:void(0)' title='Replenish' RewardItemID='".$arraynewlist['RewardItemID']."' id='refillbutton'><img id='refillimage".$arraynewlist['RewardItemID']."' src='../../images/ui-icon-refill.png' ></a></div>";
-                    }
+                        $arraynewlist['Action'] = "<div title='actionbuttons' style='padding-top: 3px;'><a href='javascript:void(0)' title='Edit' style='visibility: hidden;' Status='".$arraynewlist['Status']."' RewardItemID='".$arraynewlist['RewardItemID']."' id='editbutton'><img id='editimage".$arraynewlist['RewardItemID']."' src='../../images/ui-icon-edit.png'></a>&nbsp;&nbsp;<a href='javascript:void(0)' title='Delete' RewardItemID='".$arraynewlist['RewardItemID']."' id='deletebutton'><img id='deleteimage".$arraynewlist['RewardItemID']."' src='../../images/ui-icon-delete.png'></a>&nbsp;&nbsp;<a href='javascript:void(0)' title='Replenish' style='visibility: hidden;'  RewardItemID='".$arraynewlist['RewardItemID']."' id='refillbutton'><img id='refillimage".$arraynewlist['RewardItemID']."' src='../../images/ui-icon-refill.png' ></a></div>";
                 }     
                 
                 $response['rows'][$ctr]['id'] = $arraynewlist["RewardItemID"];
@@ -154,25 +142,25 @@ class ManageRewardsController extends Controller
     }
     
     /**
-     * @Description: For Manipulating Rewards (Delete, Edit and Add)
+     * @Description: For Manipulating Mystery Rewards (Delete, Edit and Add)
      * @Author: aqdepliyan
-     * @DateCreated: 2013-09-24
+     * @DateCreated: 2013-11-11
      */
-    public function actionManipulateReward(){
-        $model = new ManageRewardsForm();
+    public function actionManipulateMysteryReward(){
+        $model = new ManageMysteryRewardsForm();
         $rewarditems = new RewardItemsModel();
-        $audittrail = new AuditTrailModel();
         $refpartners = new RefPartnerModel();
+        $audittrail = new AuditTrailModel();
 
-        if(isset($_POST['ManageRewardsForm'])){
-            $model->attributes = $_POST['ManageRewardsForm'];
+        if(isset($_POST['ManageMysteryRewardsForm'])){
+            $model->attributes = $_POST['ManageMysteryRewardsForm'];
 
             $functionname = $_POST['hdnFunctionName'];
             switch ($functionname){
                 case 'DeleteReward':
                     $rewarditemid = $_POST['hdnRewardItemID'];
-                    $rewardtype = $_POST['hdnrewardtype'];
                     $status = 4;
+                    $auditfunctionid = RefAuditFunctionsModel::MARKETING_DELETE_MYSTERY_REWARDS;
                     
                     //Change status of item to deactivated (deleted)
                     $result = $rewarditems->updateRewardStatus($rewarditemid, $status);
@@ -190,39 +178,22 @@ class ManageRewardsController extends Controller
                         $refpartners->UpdateNoOfOfferings($partnerid, $offeringscount);
                     }
                     
-                    //Identify Reward Type to get the appropriate Audit Function.
-                    if($rewardtype == "1" || $rewardtype == 1){
-                        $auditfunctionid = RefAuditFunctionsModel::MARKETING_DELETE_REWARDS;
-                    } else {
-                        $auditfunctionid = RefAuditFunctionsModel::MARKETING_DELETE_RAFFLE;
-                    }
-                    
                     if($result['TransCode'] == 0){
                         $this->showdialog = true;
-                        if($rewardtype == "1"){
-                            $this->message = "Reward e-Coupon has been successfully deleted.";
-                            $transdetails = "RewardItemID: ".$rewarditemid.", PartnerID: ".$audittraildetails["PartnerID"].", Name: ".$audittraildetails["ItemName"].", Status: 4 - Deactivated";
-                        } else {
-                            $this->message = "Raffle e-Coupon has been successfully deleted.";
-                            $transdetails = "RewardItemID: ".$rewarditemid.", Name: ".$audittraildetails["ItemName"].", Status: 4 - Deactivated";
-                        }
+                        $this->message = "Mystery Reward has been successfully deleted.";
+                        $transdetails = "RewardItemID: ".$rewarditemid.", PartnerName: eGames, Name: ".$audittraildetails["ItemName"].", Status: 4 - Deactivated";
                         
                         //Log event to audit trail
                         $audittrail->logEvent($auditfunctionid, $transdetails, array('SessionID' => Yii::app()->session['SessionID'], 'AID' => Yii::app()->session['AID']));
                     } else {
                         $this->showdialog = true;
-                        if($rewardtype == "1"){
-                            $this->message = "Failed to delete Reward e-Coupon.";
-                        } else {
-                            $this->message = "Failed to delete Raffle e-Coupon.";
-                        }
-
+                        $this->message = "Failed to delete Mystery Reward.";
                     }
-                    $this->render('managerewards', array('model' => $model));
+                    $this->render('managemysteryreward', array('model' => $model));
                     break;
                 case 'EditReward':
                     $rewarditemid = $_POST['hdnRewardItemID-edit'];
-                    $rewardid = $_POST['hdnRewardID-edit'];
+                    $rewardid = 1;
                     $thblimitedphoto = $_POST['thblimitedphoto'];
                     $thboutofstockphoto = $_POST['thboutofstockphoto'];
                     $ecouponphoto = $_POST['ecouponphoto'];
@@ -232,6 +203,7 @@ class ManageRewardsController extends Controller
                     $editpoints = preg_replace('/[^0-9]/s', '', $model->editpoints);
                     $imagedirector= Yii::app()->params['image_directory'];
                     $imagetmpdirectory = Yii::app()->params['image_tmpdirectory'];
+                    $auditfunctionid = RefAuditFunctionsModel::MARKETING_EDIT_MYSTERY_REWARDS_DETAILS;      
                     $transferfile1 = true;
                     $transferfile2 = true;
                     $transferfile3 = true;
@@ -304,49 +276,31 @@ class ManageRewardsController extends Controller
                     } else {
                         $cutofftime = $_POST['to_hour'].":".$_POST['to_min'].":".$_POST['to_sec'];
                     }
-                    
-                    if($_POST['editdrawdate_hour'] == "00" && $_POST['editdrawdate_min'] == "00" && $_POST['editdrawdate_sec'] == "00"){
-                        $cutofftime = Yii::app()->params['cutofftime'];
-                    } else {
-                        $cutofftime = $_POST['editdrawdate_hour'].":".$_POST['editdrawdate_min'].":".$_POST['editdrawdate_sec'];
-                    }
 
                     $startdate = $_POST['from_date']." ".$initialtime;
                     $enddate = $_POST['to_date']." ".$cutofftime;
-                    $drawdate = $_POST['editdrawdate']." ".$cutofftime;
+                    if($model->editmysteryabout == ''){
+                        $mysteryabout = null;
+                    } else { $mysteryabout = $model->editmysteryabout; }
                     if($model->editabout == ''){
                         $about = null;
                     } else { $about = $model->editabout; }
+                    if($model->editmysteryterms == ''){
+                        $mysteryterms = null;
+                    } else { $mysteryterms = $model->editmysteryterms; }
                     if($model->editterms == ''){
                         $terms = null;
                     } else { $terms = $model->editterms; }
-                    if($model->editpartner == ''){
-                        $partnerid = null;
-                    } else { $partnerid = $model->editpartner; }
                     if($model->editcategory == ''){
                         $categoryid = null;
                     } else { $categoryid = $model->editcategory; }
+                    if($model->editmysterysubtext == ''){
+                        $mysterysubtext = null;
+                    } else { $mysterysubtext = $model->editmysterysubtext; }
                     if($model->editsubtext == ''){
                         $subtext = null;
                     } else { $subtext = $model->editsubtext; }
-                    
-                    //Identify Reward Type to get the appropriate Audit Function.
-                    if($rewardid == "2"){
-                        $auditfunctionid = RefAuditFunctionsModel::MARKETING_EDIT_RAFFLE_DETAILS;
-                    } else {
-                        $auditfunctionid = RefAuditFunctionsModel::MARKETING_EDIT_REWARDS_DETAILS;
-                    }
-                    
-                    if($rewardid == 2 || $rewardid == "2"){
-                        if(($thblimitedphoto != null && $thblimitedphoto != '') && ($thboutofstockphoto == null || $thboutofstockphoto == '')){
-                            $thboutofstockphoto = $thblimitedphoto;
-                        }
-                        
-                        if(($lmlimitedphoto != null && $lmlimitedphoto != '') && ($thblimitedphoto == null || $thblimitedphoto == '')){
-                            $lmoutofstockphoto = $lmlimitedphoto;
-                        }
-                    }
-                    
+
                     if($transferfile1 != true || $transferfile2 != true || $transferfile3 != true || $transferfile4 != true || $transferfile5 != true || $transferfile6 != true){
                         $this->showdialog = true;
                         $this->message = "Update Failed: Error in uploading of images.";
@@ -357,7 +311,7 @@ class ManageRewardsController extends Controller
                         $lmoutofstockphoto != "" ? unlink("$imagetmpdirectory".$lmoutofstockphoto):"";
                         $websliderphoto != "" ? unlink("$imagetmpdirectory".$websliderphoto):"";
 
-                        $this->render('managerewards', array('model' => $model));
+                        $this->render('managemysteryreward', array('model' => $model));
                     } else {
                         $thblimitedphoto != "" ? unlink("$imagetmpdirectory".$thblimitedphoto):"";
                         $thboutofstockphoto != "" ? unlink("$imagetmpdirectory".$thboutofstockphoto):"";
@@ -374,19 +328,23 @@ class ManageRewardsController extends Controller
                     }
                     
                     //Update Reward Item Details
-                    $result = $rewarditems->UpdateRewardItem($rewarditemid, $rewardid, $model->editrewarditem, $editpoints, $model->editeligibility, $model->editstatus, $startdate, $enddate, 
-                                                                                                                $partnerid, $categoryid, $subtext, $about, $terms, $thblimitedphoto, $thboutofstockphoto, 
-                                                                                                                $ecouponphoto, $lmlimitedphoto, $lmoutofstockphoto, $websliderphoto, $drawdate);
+                    $result = $rewarditems->UpdateMysteryReward($rewarditemid, $model->editrewarditem, $model->editmysteryrewarditem, $editpoints, $model->editeligibility, $model->editstatus, $startdate, $enddate, 
+                                                                                                                $categoryid, $subtext, $mysterysubtext, $about, $mysteryabout, $terms, $mysteryterms, $thblimitedphoto, $thboutofstockphoto, 
+                                                                                                                $ecouponphoto, $lmlimitedphoto, $lmoutofstockphoto, $websliderphoto);
+                    
+                    //Get the PartnerID for audit trail transaction details
+                    $audittraildetails = $rewarditems->getAuditTrailDetails($rewarditemid);
                     
                     //Get total reward offerings (active/outofstock rewards) per partner
-                    $getpartnerstobeupdated = $rewarditems->getSumCountActiveByPartner((int)$partnerid);
+                    $getpartnerstobeupdated = $rewarditems->getSumCountActiveByPartner((int)$audittraildetails["PartnerID"]);
                     
                     if(count($getpartnerstobeupdated) > 0){
                         //Update total reward offerings per partner
+                        $partnerid = (int)$audittraildetails["PartnerID"];
                         $offeringscount =(int)$getpartnerstobeupdated["RewardsCount"];
-                        $refpartners->UpdateNoOfOfferings((int)$partnerid, $offeringscount);
+                        $refpartners->UpdateNoOfOfferings($partnerid, $offeringscount);
                     }
-                    
+
                     if($result['TransCode'] == 0){
                         $this->showdialog = true;
                         
@@ -399,29 +357,20 @@ class ManageRewardsController extends Controller
                                 break;
                         }
                         
-                        if($rewardid == "2"){
-                            $this->message = "Raffle e-Coupon successfully updated.";
-                            $transdetails = "RewardItemID: ".$rewarditemid.", Name: ".$model->editrewarditem.", Status: ".$model->editstatus." - ".$statusvalue;
-                        } else {
-                            $this->message = "Reward e-Coupon successfully updated.";
-                            $transdetails = "RewardItemID: ".$rewarditemid.", PartnerID: ".$partnerid.", Name: ".$model->editrewarditem.", Status: ".$model->editstatus." - ".$statusvalue;
-                        }
+                        $this->message = "Mystery Reward successfully updated.";
+                        $transdetails = "RewardItemID: ".$rewarditemid.", PartnerName: eGames , Name: ".$model->editrewarditem.", Status: ".$model->editstatus." - ".$statusvalue;
                         
                         //Log Event on Audit trail
                         $audittrail->logEvent($auditfunctionid, $transdetails, array('SessionID' => Yii::app()->session['SessionID'], 'AID' => Yii::app()->session['AID']));
-                    
                     } else {
                         $this->showdialog = true;
-                        if($rewardid == "2"){
-                            $this->message = "Failed to update Raffle e-Coupon.";
-                        } else {
-                            $this->message = "Failed to update Reward e-Coupon.";
-                        }
+                        $this->message = "Failed to update Mystery Reward.";
                     }
-                    $this->render('managerewards', array('model' => $model));
+                    $this->render('managemysteryreward', array('model' => $model));
                     
                     break;
                 case 'AddReward':
+                    $rewardid = 1;
                     $thblimitedphoto = $_POST['addthblimitedphoto'];
                     $thboutofstockphoto = $_POST['addthboutofstockphoto'];
                     $ecouponphoto = $_POST['addecouponphoto'];
@@ -430,6 +379,7 @@ class ManageRewardsController extends Controller
                     $websliderphoto = $_POST['addwebsliderphoto'];
                     $imagedirector= Yii::app()->params['image_directory'];
                     $imagetmpdirectory = Yii::app()->params['image_tmpdirectory'];
+                    $auditfunctionid = RefAuditFunctionsModel::MARKETING_ADD_MYSTERY_REWARDS;                    
                     $transferfile1 = true;
                     $transferfile2 = true;
                     $transferfile3 = true;
@@ -505,46 +455,23 @@ class ManageRewardsController extends Controller
                     
                     $startdate = $_POST['add_from_date']." ".$initialtime;
                     $enddate = $_POST['add_to_date']." ".$cutofftime;
-                    $drawdate = null;
                     
                     $about = $model->addabout; 
                     $terms = $model->addterms; 
-                    if($_POST['addrewardid'] == ''){
-                        $rewardid = null;
-                    } else { $rewardid = $_POST['addrewardid']; }
-                    if($model->addpartner == ''){
-                        $partnerid = null;
-                    } else { $partnerid = $model->addpartner; }
+                    $mysteryabout = $model->addmysteryabout; 
+                    $mysteryterms = $model->addmysteryterms; 
+                    $partnername = Yii::app()->params["mysteryPartner"];
+                    $partnerid = $refpartners->getPartnerIDUsingName($partnername);
                     if($model->addcategory == ''){
                         $categoryid = null;
                     } else { $categoryid = $model->addcategory; }
                     if($model->addsubtext == ''){
                         $subtext = null;
                     } else { $subtext = $model->addsubtext; }
-                    if($model->addpromocode == ''){
-                        $promocode = null;
-                    } else { $promocode = $model->addpromocode; }
-                    if($model->addpromoname == ''){
-                        $promoname = null;
-                    } else { $promoname = $model->addpromoname; }
+                    if($model->addmysterysubtext == ''){
+                        $mysterysubtext = null;
+                    } else { $mysterysubtext = $model->addmysterysubtext; }
                     
-                    //Identify Reward Type to get the appropriate Audit Function.
-                    if($rewardid == "2" || $rewardid == 2){
-                        $auditfunctionid = RefAuditFunctionsModel::MARKETING_ADD_RAFFLE;
-                    } else {
-                        $auditfunctionid = RefAuditFunctionsModel::MARKETING_ADD_REWARDS;
-                    }
-                    
-                    if($rewardid == "2" || $rewardid == 2){
-                        if(($thblimitedphoto != null && $thblimitedphoto != '') && ($thboutofstockphoto == null || $thboutofstockphoto == '')){
-                            $thboutofstockphoto = $thblimitedphoto;
-                        }
-                        
-                        if(($lmlimitedphoto != null && $lmlimitedphoto != '') && ($thblimitedphoto == null || $thblimitedphoto == '')){
-                            $lmoutofstockphoto = $lmlimitedphoto;
-                        }
-                        $drawdate = $_POST['drawdate']." ".$_POST['drawdate_hour'].":".$_POST['drawdate_min'].":".$_POST['drawdate_sec'];
-                    }
                     $validated = true;
                     $validateitem = $rewarditems->ValidateItem($model->addrewarditem);
                     $count =  count($validateitem);
@@ -561,22 +488,20 @@ class ManageRewardsController extends Controller
                         if($partnerid != null || $partnerid != ""){
                             $getpartneritemid = $rewarditems->GetPartnerItemID($partnerid);
                             $partneritemid = (int)$getpartneritemid[0]["lastpartneritemid"]+1;
-                            $itemcount = preg_replace('/[^0-9]/s', '', $model->additemcount);
+                            $itemcount = preg_replace('/[^0-9]/s', '', 1);
                             $addpoints = preg_replace('/[^0-9]/s', '', $model->addpoints);
                             $serialcodestart = "00001";
                             $str = (string)$itemcount;
                             $serialcodeend = str_pad($str, 5, "0", STR_PAD_LEFT);
                         } else {
-                            $partneritemid = null;
-                            $itemcount = preg_replace('/[^0-9]/s', '', $model->additemcount);
-                            $addpoints = preg_replace('/[^0-9]/s', '', $model->addpoints);
-                            $serialcodestart = "0";
-                            $serialcodeend = "0";
+                            $this->showdialog = true;
+                            $this->message = "Transaction Failed: Mystery Reward Partner is unavailable.";
+                            $this->render('managemysteryreward', array('model' => $model));
                         }
 
                         if($transferfile1 != true || $transferfile2 != true || $transferfile3 != true || $transferfile4 != true || $transferfile5 != true || $transferfile6 != true){
                             $this->showdialog = true;
-                            $this->message = "Update Failed: Error in uploading of images.";
+                            $this->message = "Transaction Failed: Error in uploading of images.";
                             
                             $thblimitedphoto != "" ? unlink("$imagetmpdirectory".$thblimitedphoto):"";
                             $thboutofstockphoto != "" ? unlink("$imagetmpdirectory".$thboutofstockphoto):"";
@@ -585,7 +510,7 @@ class ManageRewardsController extends Controller
                             $lmoutofstockphoto != "" ? unlink("$imagetmpdirectory".$lmoutofstockphoto):"";
                             $websliderphoto != "" ? unlink("$imagetmpdirectory".$websliderphoto):"";
                             
-                            $this->render('managerewards', array('model' => $model));
+                            $this->render('managemysteryreward', array('model' => $model));
                         } else {
                             $thblimitedphoto != "" ? unlink("$imagetmpdirectory".$thblimitedphoto):"";
                             $thboutofstockphoto != "" ? unlink("$imagetmpdirectory".$thboutofstockphoto):"";
@@ -602,10 +527,11 @@ class ManageRewardsController extends Controller
                         }
                         
                         //Add New Reward Item 
-                        $addnewrewarditem = $rewarditems->InsertRewardItem((int)$partneritemid, (int)$rewardid, $model->addrewarditem, (int)$addpoints, (int)$model->addeligibility, 
-                                                                                                                                                (int)$model->addstatus, $startdate,  $enddate, $partnerid, $categoryid, $subtext, $about, $terms, (int)$itemcount, 
+                        $addnewrewarditem = $rewarditems->InsertMysteryReward((int)$partneritemid, (int)$rewardid, $model->addrewarditem, $model->addmysteryrewarditem, (int)$addpoints, 
+                                                                                                                                                (int)$model->addeligibility, (int)$model->addstatus, $startdate,  $enddate, $partnerid, $categoryid, $subtext, $mysterysubtext,
+                                                                                                                                                $about, $mysteryabout, $terms, $mysteryterms, (int)$itemcount, 
                                                                                                                                                 $thblimitedphoto, $thboutofstockphoto, $ecouponphoto, $lmlimitedphoto, 
-                                                                                                                                                $lmoutofstockphoto, $websliderphoto, $promocode, $promoname, $drawdate, 
+                                                                                                                                                $lmoutofstockphoto, $websliderphoto, 
                                                                                                                                                 $serialcodestart, $serialcodeend);
                         
                         //Get total reward offerings (active/outofstock rewards) per partner
@@ -620,7 +546,7 @@ class ManageRewardsController extends Controller
                         if($addnewrewarditem['TransCode'] == 0){
                             $this->showdialog = true;
                             
-                            switch ($model->addstatus) {
+                             switch ($model->addstatus) {
                                 case "1":
                                     $statusvalue = "Active";
                                     break;
@@ -629,125 +555,33 @@ class ManageRewardsController extends Controller
                                     break;
                             }
                             
-                            if($rewardid == "2"){
-                                $this->message = "Raffle e-Coupon successfully Added.";
-                                $transdetails = "RewardItemID: ".$addnewrewarditem["LastInsertID"].", Name: ".$model->addrewarditem.", Status: ".$model->addstatus." - ".$statusvalue;
-                            } else {
-                                $this->message = "Reward e-Coupon successfully Added.";
-                                $transdetails = "RewardItemID: ".$addnewrewarditem["LastInsertID"].", PartnerID: ".$partnerid.", Name: ".$model->addrewarditem.", Status: ".$model->addstatus." - ".$statusvalue;
-                            }
+                            $this->message = "Mystery Reward successfully Added.";
+                            $transdetails = "RewardItemID: ".$addnewrewarditem["LastInsertID"].", PartnerName: eGames, Name: ".$model->addrewarditem.", Status: ".$model->addstatus." - ".$statusvalue;
                             
                             //Log Event on Audit trail
                             $audittrail->logEvent($auditfunctionid, $transdetails, array('SessionID' => Yii::app()->session['SessionID'], 'AID' => Yii::app()->session['AID']));
                         } else {
                             $this->showdialog = true;
-                            if($rewardid == "2"){
-                                $this->message = "Failed to add New Raffle e-Coupon.";
-                            } else {
-                                $this->message = "Failed to add New Reward e-Coupon.";
-                            }
+                            $this->message = "Failed to add New Mystery Reward.";
                         }
-                        $this->render('managerewards', array('model' => $model));
+                        $this->render('managemysteryreward', array('model' => $model));
                     } else {
                         $this->showdialog = true;
-                            if($rewardid == "2"){
-                                $this->message = "Raffle e-Coupon already exist.";
-                            } else {
-                                $this->message = "Reward e-Coupon already exist.";
-                            }
-                        $this->render('managerewards', array('model' => $model));
+                        $this->message = "Mystery Reward already exist.";
+                        $this->render('managemysteryreward', array('model' => $model));
                     }
 
-                    break;
-                case 'ReplenishItem':
-                    $rewarditemid = $_POST['hdnRewardItemID-replenishform'];
-                    $itemcount = $model->inventoryupdate;
-                    $currentinventory = $model->currentinventory;
-                    $addeditemcount = $model->additems;
-                    $newitemcount = preg_replace('/[^0-9]/s', '', $itemcount);
-                    $currentitemcount = preg_replace('/[^0-9]/s', '', $currentinventory);
-                    $addeditemcount = preg_replace('/[^0-9]/s', '', $addeditemcount);
-                    $auditfunctionid = RefAuditFunctionsModel::MARKETING_REPLENISH_REWARD_INVENTORY;
-                    
-                    if((int)$newitemcount != (int)$currentinventory){
-                        if($newitemcount != 0 || $newitemcount != null){
-                            $getserialendcode = $rewarditems->GetSerialCodeEnd($rewarditemid);
-                            $total = (int)$getserialendcode[0]["SerialCodeEnd"] + (int)$addeditemcount;
-                            $str = (string)$total;
-                            $newserialcodeend = str_pad($str, 5, "0", STR_PAD_LEFT);
-                            
-                            //Get the PartnerID for audit trail transaction details
-                            $audittraildetails = $rewarditems->getAuditTrailDetails($rewarditemid);
-                            
-                            //Replenish Item Inventory
-                            $result = $rewarditems->replenishItem($rewarditemid, (int)$newitemcount, (int)$currentitemcount, (int)$addeditemcount, $newserialcodeend, (int)$audittraildetails["Status"]);
-
-                            //Get total reward offerings (active/outofstock rewards) per partner
-                            $getpartnerstobeupdated = $rewarditems->getSumCountActiveByPartner((int)$audittraildetails["PartnerID"]);
-
-                            if(count($getpartnerstobeupdated) > 0){
-                                //Update total reward offerings per partner
-                                $partnerid = (int)$audittraildetails["PartnerID"];
-                                $offeringscount =(int)$getpartnerstobeupdated["RewardsCount"];
-                                $refpartners->UpdateNoOfOfferings($partnerid, $offeringscount);
-                            }
-                            
-                            if($result['TransCode'] == 0){
-                                $this->showdialog = true;
-                                $statusvalue = "Active";
-
-                                $this->message = "Reward e-Coupon has been successfully replenished.";
-                                $transdetails = "RewardItemID: ".$rewarditemid.", PartnerID: ".$audittraildetails["PartnerID"].", Name: ".$audittraildetails["ItemName"].", Status: ".$audittraildetails["Status"]." - ".$statusvalue.
-                                                                ", CurrentItemCount: ".$currentitemcount.", ReplenishItemCount: ".$addeditemcount.", EndingItemCount: ".$newitemcount;
-                                    
-                                //Log Event on Audit trail
-                                $audittrail->logEvent($auditfunctionid, $transdetails, array('SessionID' => Yii::app()->session['SessionID'], 'AID' => Yii::app()->session['AID']));
-                            } else {
-                                $this->showdialog = true;
-                                $this->message = "Failed to replenish Reward Item.";
-                            }
-                        } else {
-                            $this->showdialog = true;
-                            $this->message = "Failed to replenish Reward Item. New Item Count is invalid.";
-                        }
-                    } else {
-                        $this->showdialog = true;
-                        $this->message = "Records unchanged.";
-                    }
-                    $this->render('managerewards', array('model' => $model));
                     break;
             }
         } else {
-            $this->redirect('managerewards');
+            $this->redirect('managemysteryreward');
         }
-    }
-    
-    /**
-     * @Description: For fetching List of Partners
-     * @Author: aqdepliyan
-     * @DateCreated: 2013-10-01
-     */
-    public function actionActivePartners(){
-        $refpartners = new RefPartnerModel();
-        
-        $data = $refpartners->getPartners();
-        if(isset($data[0])){
-            $result['ListofPartners'] = $data;
-            $result['CountofPartners'] = count($data);
-            $result['showdialog'] = false;
-            $result['message'] = '';
-        } else {
-            $result['showdialog'] = true;
-            $result['message'] = "No Available Partner.";
-        }
-        echo json_encode($result);
-        exit;
     }
     
     /**
      * @Description: For fetching List of Category
      * @Author: aqdepliyan
-     * @DateCreated: 2013-10-01
+     * @DateCreated: 2013-11-11
      */
     public function actionCategoryList(){
         $refcategory = new RefCategoryModel();
@@ -767,22 +601,22 @@ class ManageRewardsController extends Controller
     }
     
     /**
-     * @Description: For Fetching List of Rewards
+     * @Description: For Fetching List of Mystery Rewards
      * @Author: aqdepliyan
-     * @DateCreated: 2013-09-25
+     * @DateCreated: 2013-11-11
      * @param int $RewardItemID
      */
-    public function actionRewardDetails($RewardItemID){
+    public function actionMysteryRewardDetails($RewardItemID){
         $rewarditems = new RewardItemsModel();
 
         $rewarditemid = isset($RewardItemID) ? $rewarditemid = $RewardItemID : $rewarditemid = 0;
-        $data = $rewarditems->getRewardDetailsUsingRewardItemID($rewarditemid);
+        $data = $rewarditems->getMysteryRewardDetailsUsingRewardItemID($rewarditemid);
         $countdata = count($data);
         
         if($countdata == 1){
             if($data[0]['Status'] == "Deactivated"){
                 $result['showdialog'] = true;
-                $result['message'] = "Reward Item/Coupon is already removed.";
+                $result['message'] = "Mystery Reward is already removed.";
             } else {
                 $result = $data[0];
                 $result['showdialog'] = false;
@@ -823,16 +657,16 @@ class ManageRewardsController extends Controller
             }
         } else {
             $result['showdialog'] = true;
-            $result['message'] = "Reward Item/Coupon is not found.";
+            $result['message'] = "Mystery Reward is not found.";
         }
         echo json_encode($result);
         exit;
     }
     
     /**
-     * @Description: For fetching current inventory of a reward item/coupon
+     * @Description: For fetching current inventory of a mystery reward
      * @Author: aqdepliyan 
-     * @DateCreated: 2013-10-01
+     * @DateCreated: 2013-11-11
      * @param int $RewardItemID
      */
     public function actionCurrentInventory($RewardItemID){
@@ -845,7 +679,7 @@ class ManageRewardsController extends Controller
             $result['message'] = '';
         } else {
             $result['showdialog'] = true;
-            $result['message'] = "Reward Item/Coupon is not found.";
+            $result['message'] = "Mystery Reward is not found.";
         }
         echo json_encode($result);
         exit;
@@ -924,13 +758,13 @@ class ManageRewardsController extends Controller
                     </script>
                 '; 
         
-        echo CHtml::beginForm(Yii::app()->createUrl('manageRewards/uploadPhoto'), 
+        echo CHtml::beginForm(Yii::app()->createUrl('manageMysteryRewards/uploadPhoto'), 
                                 "POST", array("enctype" => "multipart/form-data", "id" => "uploadingphotoform1"));
 
                 echo '
                     <body style="background-color: white;" onLoad="javascript: bodyload();">
                     <div id = "upload-image-container" >
-                        <div id = "upload-header" style = "color: black; font-family: Lucida Grande,Lucida Sans,Arial,sans-serif; width: 150px; text-align: center; font-size: 14px;">Thumbnail Photo<br>(Limited Badge)</div>
+                        <div id = "upload-header" style = "color: black; font-family: Lucida Grande,Lucida Sans,Arial,sans-serif; width: 150px; text-align: center; font-size: 14px;">Thumbnail Photo<br>(Hidden)</div>
                         <img alt = "" src="../../images/image_preview1.jpg" width = "150" height = "150" id = "thblimited">
                         <input type = "file" name = "thbsubmit_limited" id = "thbsubmit_limited" style = "visibility:hidden;position:absolute;top:0;left:0"/>
                         <div id="buttonlike" style="padding-top: 3px; height: 22px; width: 145px; appearance:button; -moz-appearance:button; -webkit-appearance:button;"><a href = "javascript: void(0);"  id = "thbsubmitlimited" title = "Upload" style = " font-family: Lucida Grande,Lucida Sans,Arial,sans-serif; font-size: 1.1em; color: black; text-decoration: none; display: block; text-align: center;">Change Photo</a></div>
@@ -1019,13 +853,13 @@ class ManageRewardsController extends Controller
                     </script>
                 '; 
         
-        echo CHtml::beginForm(Yii::app()->createUrl('manageRewards/uploadPhoto'), 
+        echo CHtml::beginForm(Yii::app()->createUrl('manageMysteryRewards/uploadPhoto'), 
                                 "POST", array("enctype" => "multipart/form-data", "id" => "uploadingphotoform2"));
         
                 echo '
                     <body style="background-color: white;" onLoad="javascript: bodyload();">
                         <div id="upload-image-container" >
-                            <div id="upload-header" style="color: black; font-family: Lucida Grande,Lucida Sans,Arial,sans-serif; font-size: 1.1em; width: 150px; text-align: center; font-size: 14px;">Thumbnail Photo<br>(Out-Of-Stock Badge)</div>
+                            <div id="upload-header" style="color: black; font-family: Lucida Grande,Lucida Sans,Arial,sans-serif; font-size: 1.1em; width: 150px; text-align: center; font-size: 14px;">Thumbnail Photo<br>(Revealed)</div>
                             <img alt=""  src="../../images/image_preview1.jpg" width="150" height="150" id="thboutofstock">
                             <input type="file" name="thbsubmit_outofstock" id="thbsubmit_outofstock"  style="visibility:hidden;position:absolute;top:0;left:0"/>
                             <div id="buttonlike" style="padding-top: 3px; height: 22px; width: 145px;appearance:button; -moz-appearance:button; -webkit-appearance:button;"><a href = "javascript: void(0);"  id = "thbsubmitoutofstock" title = "Upload" style = " font-family: Lucida Grande,Lucida Sans,Arial,sans-serif; font-size: 1.1em; color: black; text-decoration: none; display: block; text-align: center;">Change Photo</a></div>
@@ -1117,7 +951,7 @@ class ManageRewardsController extends Controller
                 '; 
         
         
-        echo CHtml::beginForm(Yii::app()->createUrl('manageRewards/uploadPhoto'), 
+        echo CHtml::beginForm(Yii::app()->createUrl('manageMysteryRewards/uploadPhoto'), 
                                 "POST", array("enctype" => "multipart/form-data", "id" => "uploadingphotoform3"));
         
                 echo '
@@ -1213,13 +1047,13 @@ class ManageRewardsController extends Controller
                     </script>
                 '; 
         
-        echo CHtml::beginForm(Yii::app()->createUrl('manageRewards/uploadPhoto'), 
+        echo CHtml::beginForm(Yii::app()->createUrl('manageMysteryRewards/uploadPhoto'), 
                                 "POST", array("enctype" => "multipart/form-data", "id" => "uploadingphotoform4"));
         
                 echo '
                     <body style="background-color: white;" onLoad="javascript: bodyload();">
                         <div id="upload-image-container" >
-                            <div id="upload-header" style="color: black; font-family: Lucida Grande,Lucida Sans,Arial,sans-serif; font-size: 1.1em; width: 150px; text-align: center; font-size: 14px;">Learn More Photo<br>(Limited Badge)</div>
+                            <div id="upload-header" style="color: black; font-family: Lucida Grande,Lucida Sans,Arial,sans-serif; font-size: 1.1em; width: 150px; text-align: center; font-size: 14px;">Learn More Photo<br>(Hidden)</div>
                             <img alt=""  src="../../images/image_preview1.jpg" width="150" height="150" id="lmlimited">
                             <input type="file" name="lmsubmit_limited" id="lmsubmit_limited"  style="visibility:hidden;position:absolute;top:0;left:0"/>
                             <div id="buttonlike" style="padding-top: 3px; height: 22px; width: 145px;appearance:button; -moz-appearance:button; -webkit-appearance:button;"><a href = "javascript: void(0);"  id = "lmsubmitlimited" title = "Upload" style = " font-family: Lucida Grande,Lucida Sans,Arial,sans-serif; font-size: 1.1em; color: black; text-decoration: none; display: block; text-align: center;">Change Photo</a></div>
@@ -1310,13 +1144,13 @@ class ManageRewardsController extends Controller
                     </script>
                 '; 
         
-        echo CHtml::beginForm(Yii::app()->createUrl('manageRewards/uploadPhoto'), 
+        echo CHtml::beginForm(Yii::app()->createUrl('manageMysteryRewards/uploadPhoto'), 
                                 "POST", array("enctype" => "multipart/form-data", "id" => "uploadingphotoform5"));
         
                 echo '
                     <body style="background-color: white;" onLoad="javascript: bodyload();">
                         <div id="upload-image-container" >
-                            <div id="upload-header" style="color: black; font-family: Lucida Grande,Lucida Sans,Arial,sans-serif; font-size: 1.1em; width: 150px; text-align: center; font-size: 14px;">Learn More Photo<br>(Out-Of-Stock Badge)</div>
+                            <div id="upload-header" style="color: black; font-family: Lucida Grande,Lucida Sans,Arial,sans-serif; font-size: 1.1em; width: 150px; text-align: center; font-size: 14px;">Learn More Photo<br>(Revealed)</div>
                             <img alt=""  src="../../images/image_preview1.jpg" width="150" height="150" id="lmoutofstock">
                             <input type="file" name="lmsubmit_outofstock" id="lmsubmit_outofstock"  style="visibility:hidden;position:absolute;top:0;left:0"/>
                             <div id="buttonlike" style="padding-top: 3px; height: 22px; width: 145px;appearance:button; -moz-appearance:button; -webkit-appearance:button;"><a href = "javascript: void(0);"  id = "lmsubmitoutofstock" title = "Upload" style = " font-family: Lucida Grande,Lucida Sans,Arial,sans-serif; font-size: 1.1em; color: black; text-decoration: none; display: block; text-align: center;">Change Photo</a></div>
@@ -1407,7 +1241,7 @@ class ManageRewardsController extends Controller
                     </script>
                 '; 
 
-        echo CHtml::beginForm(Yii::app()->createUrl('manageRewards/uploadPhoto'), 
+        echo CHtml::beginForm(Yii::app()->createUrl('manageMysteryRewards/uploadPhoto'), 
                                 "POST", array("enctype" => "multipart/form-data", "id" => "uploadingphotoform6"));
         
                 echo '

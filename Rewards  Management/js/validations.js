@@ -2597,10 +2597,38 @@ function chkOverride(){
                 return false;
         }
         
+        function alphanumericSpaceCommaDotOther(evt)
+        {
+            var charCode = (evt.which) ? evt.which : evt.keyCode;
+            var string = (String.fromCharCode(evt.which));
+            if(charCode == 9 || charCode == 8 || charCode == 32 || charCode == 44 || charCode == 46 || charCode == 39 ||  evt.keyCode == 37)
+                return true;
+            else if(string == "?" || string == "!" || string == "'" || string == "-")
+                return true;
+            else if((charCode >= 65 && charCode <= 90) || (charCode >= 48 && charCode <= 57) || (charCode >= 97 && charCode <= 122))
+                return true;
+            else
+                return false;
+        }
+        
         function alphanumericSpaceDash(evt)
         {
             var charCode = (evt.which) ? evt.which : evt.keyCode;
             if(charCode == 9 || charCode == 8 || charCode == 32 ||  charCode == 45 ||  evt.keyCode == 39 ||  evt.keyCode == 37)
+                return true;
+            else if((charCode >= 65 && charCode <= 90) || (charCode >= 48 && charCode <= 57) || (charCode >= 97 && charCode <= 122))
+                return true;
+            else
+                return false;
+        }
+        
+        function alphanumericSpaceDashSharp(evt)
+        {
+            var charCode = (evt.which) ? evt.which : evt.keyCode;
+            var string = (String.fromCharCode(evt.which));
+            if(charCode == 9 || charCode == 8 || charCode == 32 ||  charCode == 45 ||  evt.keyCode == 39 ||  evt.keyCode == 37)
+                return true;
+            else if(charCode == 35 && string == "#")
                 return true;
             else if((charCode >= 65 && charCode <= 90) || (charCode >= 48 && charCode <= 57) || (charCode >= 97 && charCode <= 122))
                 return true;
