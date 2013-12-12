@@ -1,7 +1,7 @@
 <?php
 
 /**
- * VerifyRewardsForm class.
+ * @Description: VerifyRewardsForm class.
  */
 class VerifyRewardsForm extends CFormModel
 {
@@ -49,6 +49,7 @@ class VerifyRewardsForm extends CFormModel
             array('remarks', 'length', 'max'=> 100)
         );
     }
+    
     
     public function check_in_range($start_date, $end_date, $date_from_user)
     {

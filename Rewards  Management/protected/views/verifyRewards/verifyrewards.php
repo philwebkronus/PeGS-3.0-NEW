@@ -1,3 +1,9 @@
+<?php  
+/**
+ * @Description: Verify Rewards View
+ */
+ ?>
+
 <?php
 $this->breadcrumbs=array(
 	'Verify Rewards',

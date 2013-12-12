@@ -15,6 +15,8 @@ class PartnersModel extends CFormModel
          
         return $result; 
     }
+    
+    
     /**
      * Check if the Username entered is existing in partners table
      * @param string $username Username entered by the user

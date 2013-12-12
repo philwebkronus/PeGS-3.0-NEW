@@ -1,8 +1,8 @@
 <?php
 /**
  * Update Password Controller
- * @author Mark Kenneth Esguerra
- * @date September 30, 2013
+ * @Author Mark Kenneth Esguerra
+ * @DateCreated September 30, 2013
  * @copyright (c) 2013, Philweb Corporation
  */
 class UpdatePasswordController extends Controller
