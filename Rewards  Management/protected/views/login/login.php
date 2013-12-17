@@ -73,7 +73,7 @@ $this->breadcrumbs=array(
 
 	<div class="row">
 		<?php echo $form->labelEx($model,'Password'); ?>
-		<?php echo $form->passwordField($model,'Password',array('onkeypress' => 'return numberandletter(event);', 'maxlength' => 30)); ?>
+		<?php echo $form->passwordField($model,'Password',array('onkeypress' => 'return numberandletter(event);', 'maxlength' => 12)); ?>
 		<?php echo $form->error($model,'Password'); ?>
 	</div>
 	<div class="row buttons">
