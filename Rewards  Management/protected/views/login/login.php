@@ -1,5 +1,5 @@
 <?php
-/* @var $this SiteController */
+/** @var $this SiteController */
 /* @var $model LoginForm */
 /* @var $form CActiveForm  */
 $this->layout = '/layouts/login';
