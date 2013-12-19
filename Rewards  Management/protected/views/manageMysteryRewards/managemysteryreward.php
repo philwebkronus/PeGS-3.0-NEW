@@ -255,6 +255,9 @@ tinyMCE.init({
                 } else if(datefrom > dateto){
                     var message = "Invalid Date Range.";
                     return message;
+                } else if(points == "0" || points == 0)  {
+                        var message = "Zero (0) is not a valid. Please enter a valid reward points.";
+                        return message;
                 } else  {
                     $("#editrewarditem").val(trimword(rewarditem));
                     $("#editmysteryrewarditem").val(trimword(mysteryrewardname));
@@ -396,6 +399,9 @@ tinyMCE.init({
                 } else if(adddatefrom > adddateto){
                     var message = "Invalid Date Range.";
                     return message;
+                } else if(points == "0" || points == 0)  {
+                        var message = "Zero (0) is not a valid reward points.";
+                        return message;
                 } else  {
                     $("#addrewarditem").val(trimword(rewarditem));
                     $("#addmysteryrewarditem").val(trimword(mysteryrewardname));
@@ -553,7 +559,7 @@ tinyMCE.init({
                 caption:'Manage Mystery Rewards'
         });
         jQuery('#rewardslist').jqGrid('navGrid','#rewardslistpager',
-                { edit:false,add:false,del:false, search:false, refresh: true });
+                { edit:false,add:false,del:false, search:false, refresh: false });
     }
 
     function getRewardDetails(RewardItemID,showonly){

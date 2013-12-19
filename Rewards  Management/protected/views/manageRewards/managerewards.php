@@ -207,6 +207,9 @@ tinyMCE.init({
                     } else if(dateto > datedraw){
                         var message = "Invalid Draw Date.";
                         return message;
+                    } else if(points == "0" || points == 0)  {
+                        var message = "Zero (0) is not a valid reward points.";
+                        return message;
                     } else  {
                         $("#editrewarditem").val(trimword(rewarditem));
                         $("#editsubtext").val(trimword(subtext));
@@ -225,6 +228,9 @@ tinyMCE.init({
                         return message;
                     } else if(datefrom > dateto){
                         var message = "Invalid Date Range.";
+                        return message;
+                    } else if(points == "0" || points == 0)  {
+                        var message = "Zero (0) is not a valid reward points.";
                         return message;
                     } else  {
                         $("#editrewarditem").val(trimword(rewarditem));
@@ -308,6 +314,8 @@ tinyMCE.init({
                         var c2 = confirm("Are you sure you want to change the status of this Reward Item?");
                         if (c2 == true) {
                             return true;
+                        } else {
+                            return false;
                         }
                     } else {
                         return true;
@@ -384,6 +392,12 @@ tinyMCE.init({
                     } else if(adddateto > adddatedraw){
                         var message = "Invalid Draw Date.";
                         return message;
+                    } else if(points == "0" || points == 0)  {
+                        var message = "Zero (0) is not a valid reward points.";
+                        return message;
+                    } else if(itemcount == "0" || itemcount == 0)  {
+                        var message = "Zero (0) is not a valid inventory balance.";
+                        return message;
                     } else  {
                         $("#addrewarditem").val(trimword(rewarditem));
                         $("#addsubtext").val(trimword(subtext));
@@ -402,6 +416,12 @@ tinyMCE.init({
                         return message;
                     } else if(adddatefrom > adddateto){
                         var message = "Invalid Date Range.";
+                        return message;
+                    } else if(points == "0" || points == 0)  {
+                        var message = "Zero (0) is not a valid reward points.";
+                        return message;
+                    } else if(itemcount == "0" || itemcount == 0)  {
+                        var message = "Zero (0) is not a valid inventory balance.";
                         return message;
                     } else  {
                         $("#addrewarditem").val(trimword(rewarditem));
@@ -537,7 +557,7 @@ tinyMCE.init({
                     caption:'Manage Rewards'
             });
             jQuery('#rewardslist').jqGrid('navGrid','#rewardslistpager',
-                    { edit:false,add:false,del:false, search:false, refresh: true });
+                    { edit:false,add:false,del:false, search:false, refresh: false });
         } else {
             jQuery('#rewardslist').GridUnload();
             jQuery('#rewardslist').jqGrid({

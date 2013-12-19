@@ -97,7 +97,7 @@ class JqGridWidget extends CWidget
             
                 
             jQuery('#$this->tableID').jqGrid({".$config."});
-            jQuery('#$this->tableID').jqGrid('navGrid','#$this->pagerID',{edit:false,add:false,del:false, search: {$search}});
+            jQuery('#$this->tableID').jqGrid('navGrid','#$this->pagerID',{edit:false,add:false,del:false, refresh: false, search: {$search}});
                 
             jQuery('#$this->tableID tbody tr:nth-child(1)').css('visibility','collapse');
                 
