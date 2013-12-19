@@ -78,6 +78,18 @@ if($countcritical > 0){
                             </body>";
 
         mail($EmailRecipient, $subject, $detail, $headers);
+        
+        //Insert Auto Email Logs
+        $query = "INSERT INTO  autoemaillogs(AEmailID, SentToAID, SentToCCAID, SentToBCCAID, Message, DateSent, SentByAID)
+                            VALUES(:aemailid, :senttoaid, :senttoccaid, :senttobccaid, :message, now_usec(), :sentbyaid)";
+        $sql = $connection->prepare($query);
+        $sql->bindParam(":aemailid", 2);
+        $sql->bindParam(":senttoaid", null);
+        $sql->bindParam(":senttoccaid", null);
+        $sql->bindParam(":senttobccaid", null);
+        $sql->bindParam(":message", $detail);
+        $sql->bindParam(":sentbyaid", 1);
+        $sql->execute();
     } 
 }
 

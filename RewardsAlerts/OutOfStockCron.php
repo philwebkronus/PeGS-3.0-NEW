@@ -14,7 +14,7 @@ $password = $config["db"]["password"];
 
 // database connection
 $connection = new PDO($connectionstring,$username,$password);
-$sql="SELECT ri.RewardItemID, ri.ItemName, ri.AvailableItemCount as CurrentCount, rp.PartnerName, now_usec() as DateTimeToday 
+$sql="SELECT ri.RewardItemID, ri.IsMystery, ri.ItemName, ri.AvailableItemCount as CurrentCount, rp.PartnerName, now_usec() as DateTimeToday 
             FROM rewarditems ri
             INNER JOIN ref_partners rp ON rp.PartnerID = ri.PartnerID 
             WHERE ri.RewardID = 1 AND ri.Status IN (1,3)";
@@ -50,12 +50,14 @@ if($countoutofstock > 0){
     
     foreach ($IsOutOfStockArray as $IsOutOfStock) {
         
-        //tag item status as expired
-        $query = "UPDATE rewarditems SET Status = 3 WHERE RewardItemID = ?";
-        $sql = $connection->prepare($query);
-        $sql->bindParam(1,$IsOutOfStock["RewardItemID"]);
-        $sql->execute();
-        
+        if($IsOutOfStock["IsMystery"] != 1){
+            //tag item status as expired
+            $query = "UPDATE rewarditems SET Status = 3 WHERE RewardItemID = ?";
+            $sql = $connection->prepare($query);
+            $sql->bindParam(1,$IsOutOfStock["RewardItemID"]);
+            $sql->execute();
+        }
+ 
         $ItemName = $IsOutOfStock["ItemName"];
         $PartnerName = $IsOutOfStock["PartnerName"];
         $DateTime = $IsOutOfStock["DateTimeToday"];
@@ -73,6 +75,19 @@ if($countoutofstock > 0){
                    </body>";
 
         mail($EmailRecipient, $subject, $detail, $headers);
+        
+        //Insert Auto Email Logs
+        $query = "INSERT INTO  autoemaillogs(AEmailID, SentToAID, SentToCCAID, SentToBCCAID, Message, DateSent, SentByAID)
+                            VALUES(:aemailid, :senttoaid, :senttoccaid, :senttobccaid, :message, now_usec(), :sentbyaid)";
+        $sql = $connection->prepare($query);
+        $sql->bindParam(":aemailid", 3);
+        $sql->bindParam(":senttoaid", null);
+        $sql->bindParam(":senttoccaid", null);
+        $sql->bindParam(":senttobccaid", null);
+        $sql->bindParam(":message", $detail);
+        $sql->bindParam(":sentbyaid", 1);
+        $sql->execute();
+        
     }
 }
 
