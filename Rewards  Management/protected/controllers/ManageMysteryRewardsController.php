@@ -145,6 +145,7 @@ class ManageMysteryRewardsController extends Controller
      * @Description: For Manipulating Mystery Rewards (Delete, Edit and Add)
      * @Author: aqdepliyan
      * @DateCreated: 2013-11-11
+     * @modified mgesguerra 2013-12-20
      */
     public function actionManipulateMysteryReward(){
         $model = new ManageMysteryRewardsForm();
@@ -211,6 +212,9 @@ class ManageMysteryRewardsController extends Controller
                     $transferfile5 = true;
                     $transferfile6 = true;
                     $rewarditemname = $model->editrewarditem;
+                    
+                    //Check if Mystery Reward Item is already exist
+                    
                     if($thblimitedphoto != ""){
                         $extname_thblimited = strpos($thblimitedphoto, 'thblimited') !== false ? "limited":"";
                         $thblimited = explode(".",$thblimitedphoto);
@@ -326,45 +330,51 @@ class ManageMysteryRewardsController extends Controller
                         $lmoutofstockphoto != "" ? $lmoutofstockphoto = $newlmoutofstockphoto: $lmoutofstockphoto = $lmoutofstockphoto;
                         $websliderphoto != "" ? $websliderphoto = $newwebsliderphoto: $websliderphoto = $websliderphoto;
                     }
-                    
                     //Update Reward Item Details
                     $result = $rewarditems->UpdateMysteryReward($rewarditemid, $model->editrewarditem, $model->editmysteryrewarditem, $editpoints, $model->editeligibility, $model->editstatus, $startdate, $enddate, 
                                                                                                                 $categoryid, $subtext, $mysterysubtext, $about, $mysteryabout, $terms, $mysteryterms, $thblimitedphoto, $thboutofstockphoto, 
                                                                                                                 $ecouponphoto, $lmlimitedphoto, $lmoutofstockphoto, $websliderphoto);
                     
-                    //Get the PartnerID for audit trail transaction details
-                    $audittraildetails = $rewarditems->getAuditTrailDetails($rewarditemid);
-                    
-                    //Get total reward offerings (active/outofstock rewards) per partner
-                    $getpartnerstobeupdated = $rewarditems->getSumCountActiveByPartner((int)$audittraildetails["PartnerID"]);
-                    
-                    if(count($getpartnerstobeupdated) > 0){
-                        //Update total reward offerings per partner
-                        $partnerid = (int)$audittraildetails["PartnerID"];
-                        $offeringscount =(int)$getpartnerstobeupdated["RewardsCount"];
-                        $refpartners->UpdateNoOfOfferings($partnerid, $offeringscount);
-                    }
+                    //Check if mystery item already exist
+                    if ($result['TransCode'] != 3){
+                        //Get the PartnerID for audit trail transaction details
+                        $audittraildetails = $rewarditems->getAuditTrailDetails($rewarditemid);
 
-                    if($result['TransCode'] == 0){
-                        $this->showdialog = true;
-                        
-                        switch ($model->editstatus) {
-                            case "1":
-                                $statusvalue = "Active";
-                                break;
-                            case "2":
-                                $statusvalue = "Inactive";
-                                break;
+                        //Get total reward offerings (active/outofstock rewards) per partner
+                        $getpartnerstobeupdated = $rewarditems->getSumCountActiveByPartner((int)$audittraildetails["PartnerID"]);
+
+                        if(count($getpartnerstobeupdated) > 0){
+                            //Update total reward offerings per partner
+                            $partnerid = (int)$audittraildetails["PartnerID"];
+                            $offeringscount =(int)$getpartnerstobeupdated["RewardsCount"];
+                            $refpartners->UpdateNoOfOfferings($partnerid, $offeringscount);
                         }
-                        
-                        $this->message = "Mystery Reward successfully updated.";
-                        $transdetails = "RewardItemID: ".$rewarditemid.", PartnerName: eGames , Name: ".$model->editrewarditem.", Status: ".$model->editstatus." - ".$statusvalue;
-                        
-                        //Log Event on Audit trail
-                        $audittrail->logEvent($auditfunctionid, $transdetails, array('SessionID' => Yii::app()->session['SessionID'], 'AID' => Yii::app()->session['AID']));
-                    } else {
+
+                        if($result['TransCode'] == 0){
+                            $this->showdialog = true;
+
+                            switch ($model->editstatus) {
+                                case "1":
+                                    $statusvalue = "Active";
+                                    break;
+                                case "2":
+                                    $statusvalue = "Inactive";
+                                    break;
+                            }
+
+                            $this->message = "Mystery Reward successfully updated.";
+                            $transdetails = "RewardItemID: ".$rewarditemid.", PartnerName: eGames , Name: ".$model->editrewarditem.", Status: ".$model->editstatus." - ".$statusvalue;
+
+                            //Log Event on Audit trail
+                            $audittrail->logEvent($auditfunctionid, $transdetails, array('SessionID' => Yii::app()->session['SessionID'], 'AID' => Yii::app()->session['AID']));
+                        } else {
+                            $this->showdialog = true;
+                            $this->message = "Failed to update Mystery Reward.";
+                        }
+                    }
+                    else{
                         $this->showdialog = true;
-                        $this->message = "Failed to update Mystery Reward.";
+                        $this->message = "Mystery Reward Item already exist";
                     }
                     $this->render('managemysteryreward', array('model' => $model));
                     

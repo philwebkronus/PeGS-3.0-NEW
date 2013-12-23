@@ -2471,7 +2471,6 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
                                                 $(this).siblings(".ui-dialog-buttonpane").find("button").eq(6).show();
                                         } else {
                                                 $("#message2").html(results);
-                                                $("#messagedialog4").dialog("open");
                                         }  
                             }'),
                 array('id' => 'thirdnext','text'=>'NEXT','click'=> 'js:function(){

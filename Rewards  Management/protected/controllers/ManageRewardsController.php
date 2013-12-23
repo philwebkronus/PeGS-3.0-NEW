@@ -157,6 +157,7 @@ class ManageRewardsController extends Controller
      * @Description: For Manipulating Rewards (Delete, Edit and Add)
      * @Author: aqdepliyan
      * @DateCreated: 2013-09-24
+     * @modified mgesguerra 2013-12-20
      */
     public function actionManipulateReward(){
         $model = new ManageRewardsForm();
@@ -378,45 +379,53 @@ class ManageRewardsController extends Controller
                                                                                                                 $partnerid, $categoryid, $subtext, $about, $terms, $thblimitedphoto, $thboutofstockphoto, 
                                                                                                                 $ecouponphoto, $lmlimitedphoto, $lmoutofstockphoto, $websliderphoto, $drawdate);
                     
-                    //Get total reward offerings (active/outofstock rewards) per partner
-                    $getpartnerstobeupdated = $rewarditems->getSumCountActiveByPartner((int)$partnerid);
-                    
-                    if(count($getpartnerstobeupdated) > 0){
-                        //Update total reward offerings per partner
-                        $offeringscount =(int)$getpartnerstobeupdated["RewardsCount"];
-                        $refpartners->UpdateNoOfOfferings((int)$partnerid, $offeringscount);
+                    if ($result['TransCode'] != 3)
+                    {
+                        //Get total reward offerings (active/outofstock rewards) per partner
+                        $getpartnerstobeupdated = $rewarditems->getSumCountActiveByPartner((int)$partnerid);
+
+                        if(count($getpartnerstobeupdated) > 0){
+                            //Update total reward offerings per partner
+                            $offeringscount =(int)$getpartnerstobeupdated["RewardsCount"];
+                            $refpartners->UpdateNoOfOfferings((int)$partnerid, $offeringscount);
+                        }
+
+                        if($result['TransCode'] == 0){
+                            $this->showdialog = true;
+
+                            switch ($model->editstatus) {
+                                case "1":
+                                    $statusvalue = "Active";
+                                    break;
+                                case "2":
+                                    $statusvalue = "Inactive";
+                                    break;
+                            }
+
+                            if($rewardid == "2"){
+                                $this->message = "Raffle e-Coupon successfully updated.";
+                                $transdetails = "RewardItemID: ".$rewarditemid.", Name: ".$model->editrewarditem.", Status: ".$model->editstatus." - ".$statusvalue;
+                            } else {
+                                $this->message = "Reward e-Coupon successfully updated.";
+                                $transdetails = "RewardItemID: ".$rewarditemid.", PartnerID: ".$partnerid.", Name: ".$model->editrewarditem.", Status: ".$model->editstatus." - ".$statusvalue;
+                            }
+
+                            //Log Event on Audit trail
+                            $audittrail->logEvent($auditfunctionid, $transdetails, array('SessionID' => Yii::app()->session['SessionID'], 'AID' => Yii::app()->session['AID']));
+
+                        } else {
+                            $this->showdialog = true;
+                            if($rewardid == "2"){
+                                $this->message = "Failed to update Raffle e-Coupon.";
+                            } else {
+                                $this->message = "Failed to update Reward e-Coupon.";
+                            }
+                        }
                     }
-                    
-                    if($result['TransCode'] == 0){
+                    else
+                    {
                         $this->showdialog = true;
-                        
-                        switch ($model->editstatus) {
-                            case "1":
-                                $statusvalue = "Active";
-                                break;
-                            case "2":
-                                $statusvalue = "Inactive";
-                                break;
-                        }
-                        
-                        if($rewardid == "2"){
-                            $this->message = "Raffle e-Coupon successfully updated.";
-                            $transdetails = "RewardItemID: ".$rewarditemid.", Name: ".$model->editrewarditem.", Status: ".$model->editstatus." - ".$statusvalue;
-                        } else {
-                            $this->message = "Reward e-Coupon successfully updated.";
-                            $transdetails = "RewardItemID: ".$rewarditemid.", PartnerID: ".$partnerid.", Name: ".$model->editrewarditem.", Status: ".$model->editstatus." - ".$statusvalue;
-                        }
-                        
-                        //Log Event on Audit trail
-                        $audittrail->logEvent($auditfunctionid, $transdetails, array('SessionID' => Yii::app()->session['SessionID'], 'AID' => Yii::app()->session['AID']));
-                    
-                    } else {
-                        $this->showdialog = true;
-                        if($rewardid == "2"){
-                            $this->message = "Failed to update Raffle e-Coupon.";
-                        } else {
-                            $this->message = "Failed to update Reward e-Coupon.";
-                        }
+                        $this->message = "Reward Item/Coupon is already exist";
                     }
                     $this->render('managerewards', array('model' => $model));
                     

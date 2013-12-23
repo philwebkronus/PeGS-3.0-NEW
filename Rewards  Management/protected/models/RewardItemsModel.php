@@ -58,14 +58,24 @@ class RewardItemsModel extends CFormModel
      * Select Active Rewards Items
      * @author Mark Kenneth Esguerra
      * @date Sep-06-13
-     * @return Array Array of RewardItemIDs and ItemNames
+     * @param int $itemtype 0 - Item, 1 -> Coupon
+     * @return array Array of RewardItemIDs and ItemNames
      */
-    public function selectRewardItems()
+    public function selectRewardItems($itemtype = null)
     {
         $connection = Yii::app()->db;
-        
-        $sql = "SELECT RewardItemID, ItemName FROM rewarditems WHERE Status = 1";
+        if ($itemtype != NULL)
+        {
+            $sql = "SELECT RewardItemID, ItemName FROM rewarditems
+                    WHERE Status = 1 AND IsCoupon = :itemtype ";
+        }
+        else
+        {
+            $sql = "SELECT RewardItemID, ItemName FROM rewarditems
+                    WHERE Status = 1";
+        }
         $command = $connection->createCommand($sql);
+        $command->bindParam(":itemtype", $itemtype);
         $result = $command->queryAll();
         
         return $result;
@@ -483,11 +493,28 @@ class RewardItemsModel extends CFormModel
      * @param string $lmoutofstockphoto
      * @param string $websliderphoto
      * @return array
+     * @modified mgesguerra 2013-12-20
      */
     public function UpdateRewardItem($rewarditemid, $rewardid, $itemname, $points, $pclassid, $status, $startdate, $enddate, $partnerid, $categoryid,
                                                                             $subtext, $about,  $terms, $thblimitedphoto, $thboutofstockphoto, $ecouponphoto, 
                                                                             $lmlimitedphoto, $lmoutofstockphoto, $websliderphoto,$drawdate)
     {
+        $connection = Yii::app()->db;
+        $updatedbyaid = Yii::app()->session['AID'];
+        
+        //Check if entered Mystery Reward Item is already exist
+        $checkitem = "SELECT COUNT(RewardItemID) as Count FROM rewarditems 
+                     WHERE ItemName = :itemname AND IsMystery = 0";
+        $command = $connection->createCommand($checkitem);
+        $command->bindParam(":itemname", $itemname);
+        $isExist = $command->queryRow();
+        
+        if ($isExist['Count'] > 0)
+        {
+            return array('TransMsg'=>'Reward Item/Coupon already exist.','TransCode'=>3);
+        }
+        else
+        {
             if($drawdate == ''){
                 $drawdate = null;
             } else { $drawdate = $drawdate; }
@@ -525,79 +552,77 @@ class RewardItemsModel extends CFormModel
                 $webslider = '';
             } else { $websliderphoto = $websliderphoto; $webslider =  "WebsiteSliderImage = :webslider,";}
         
-        $connection = Yii::app()->db;
+            if($rewardid == 2){
+                $query = "UPDATE rewarditems SET ItemName = :itemname, RequiredPoints = :points,
+                                PClassID = :pclassid, SubText = :subtext, OfferStartDate = :startdate, OfferEndDate = :enddate, ".$thblimited."
+                                ".$thboutofstock." ".$ecoupon." ".$lmlimited." ".$lmoutofstock." ".$webslider." About = :about, Terms = :terms, Status = :status,
+                                DateUpdated = now_usec(), UpdatedByAID = :updatedbyaid, DrawDate = :drawdate
+                                WHERE RewardItemID = :rewarditemid";
+                $command = $connection->createCommand($query);
+                $command->bindParam(":itemname", $itemname,PDO::PARAM_STR);
+                $command->bindParam(":points", $points, PDO::PARAM_INT);
+                $command->bindParam(":pclassid", $pclassid,PDO::PARAM_INT);
+                $command->bindParam(":subtext", $subtext);
+                $command->bindParam(":startdate", $startdate, PDO::PARAM_STR);
+                $command->bindParam(":enddate", $enddate, PDO::PARAM_STR);
+                if($thblimited != "")
+                    $command->bindParam(":thblimited", $thblimitedphoto, PDO::PARAM_STR);
+                if($thboutofstock != "")
+                    $command->bindParam(":thboutofstock", $thboutofstockphoto, PDO::PARAM_STR);
+                if($ecoupon != "")
+                    $command->bindParam(":ecoupon", $ecouponphoto, PDO::PARAM_STR);
+                if($lmlimited != "")
+                    $command->bindParam(":lmlimited", $lmlimitedphoto, PDO::PARAM_STR);
+                if($lmoutofstock != "")
+                    $command->bindParam(":lmoutofstock", $lmoutofstockphoto, PDO::PARAM_STR);
+                if($webslider != "")
+                    $command->bindParam(":webslider", $websliderphoto, PDO::PARAM_STR);
+                $command->bindParam(":about", $about);
+                $command->bindParam(":terms", $terms);
+                $command->bindParam(":status", $status,PDO::PARAM_INT);
+                $command->bindParam(":updatedbyaid", $updatedbyaid, PDO::PARAM_INT);
+                $command->bindParam(":drawdate", $drawdate, PDO::PARAM_STR);
+                $command->bindParam(":rewarditemid", $rewarditemid, PDO::PARAM_INT);
+            } else {
+                $query = "UPDATE rewarditems SET PartnerID = :partnerid, ItemName = :itemname, CategoryID = :categoryid, RequiredPoints = :points,
+                                PClassID = :pclassid, SubText = :subtext, OfferStartDate = :startdate, OfferEndDate = :enddate, ".$thblimited."
+                                ".$thboutofstock." ".$ecoupon." ".$lmlimited." ".$lmoutofstock." ".$webslider." About = :about, Terms = :terms, Status = :status,
+                                DateUpdated = now_usec(), UpdatedByAID = :updatedbyaid
+                                WHERE RewardItemID = :rewarditemid";
+                $command = $connection->createCommand($query);
+                $command->bindParam(":partnerid", $partnerid);
+                $command->bindParam(":itemname", $itemname,PDO::PARAM_STR);
+                $command->bindParam(":categoryid", $categoryid);
+                $command->bindParam(":points", $points, PDO::PARAM_INT);
+                $command->bindParam(":pclassid", $pclassid,PDO::PARAM_INT);
+                $command->bindParam(":subtext", $subtext);
+                $command->bindParam(":startdate", $startdate, PDO::PARAM_STR);
+                $command->bindParam(":enddate", $enddate, PDO::PARAM_STR);
+                if($thblimited != "")
+                    $command->bindParam(":thblimited", $thblimitedphoto, PDO::PARAM_STR);
+                if($thboutofstock != "")
+                    $command->bindParam(":thboutofstock", $thboutofstockphoto, PDO::PARAM_STR);
+                if($ecoupon != "")
+                    $command->bindParam(":ecoupon", $ecouponphoto, PDO::PARAM_STR);
+                if($lmlimited != "")
+                    $command->bindParam(":lmlimited", $lmlimitedphoto, PDO::PARAM_STR);
+                if($lmoutofstock != "")
+                    $command->bindParam(":lmoutofstock", $lmoutofstockphoto, PDO::PARAM_STR);
+                if($webslider != "")
+                    $command->bindParam(":webslider", $websliderphoto, PDO::PARAM_STR);
+                $command->bindParam(":about", $about);
+                $command->bindParam(":terms", $terms);
+                $command->bindParam(":status", $status,PDO::PARAM_INT);
+                $command->bindParam(":updatedbyaid", $updatedbyaid, PDO::PARAM_INT);
+                $command->bindParam(":rewarditemid", $rewarditemid, PDO::PARAM_INT);
+            }
 
-        $updatedbyaid = Yii::app()->session['AID'];
-        if($rewardid == 2){
-            $query = "UPDATE rewarditems SET ItemName = :itemname, RequiredPoints = :points,
-                            PClassID = :pclassid, SubText = :subtext, OfferStartDate = :startdate, OfferEndDate = :enddate, ".$thblimited."
-                            ".$thboutofstock." ".$ecoupon." ".$lmlimited." ".$lmoutofstock." ".$webslider." About = :about, Terms = :terms, Status = :status,
-                            DateUpdated = now_usec(), UpdatedByAID = :updatedbyaid, DrawDate = :drawdate
-                            WHERE RewardItemID = :rewarditemid";
-            $command = $connection->createCommand($query);
-            $command->bindParam(":itemname", $itemname,PDO::PARAM_STR);
-            $command->bindParam(":points", $points, PDO::PARAM_INT);
-            $command->bindParam(":pclassid", $pclassid,PDO::PARAM_INT);
-            $command->bindParam(":subtext", $subtext);
-            $command->bindParam(":startdate", $startdate, PDO::PARAM_STR);
-            $command->bindParam(":enddate", $enddate, PDO::PARAM_STR);
-            if($thblimited != "")
-                $command->bindParam(":thblimited", $thblimitedphoto, PDO::PARAM_STR);
-            if($thboutofstock != "")
-                $command->bindParam(":thboutofstock", $thboutofstockphoto, PDO::PARAM_STR);
-            if($ecoupon != "")
-                $command->bindParam(":ecoupon", $ecouponphoto, PDO::PARAM_STR);
-            if($lmlimited != "")
-                $command->bindParam(":lmlimited", $lmlimitedphoto, PDO::PARAM_STR);
-            if($lmoutofstock != "")
-                $command->bindParam(":lmoutofstock", $lmoutofstockphoto, PDO::PARAM_STR);
-            if($webslider != "")
-                $command->bindParam(":webslider", $websliderphoto, PDO::PARAM_STR);
-            $command->bindParam(":about", $about);
-            $command->bindParam(":terms", $terms);
-            $command->bindParam(":status", $status,PDO::PARAM_INT);
-            $command->bindParam(":updatedbyaid", $updatedbyaid, PDO::PARAM_INT);
-            $command->bindParam(":drawdate", $drawdate, PDO::PARAM_STR);
-            $command->bindParam(":rewarditemid", $rewarditemid, PDO::PARAM_INT);
-        } else {
-            $query = "UPDATE rewarditems SET PartnerID = :partnerid, ItemName = :itemname, CategoryID = :categoryid, RequiredPoints = :points,
-                            PClassID = :pclassid, SubText = :subtext, OfferStartDate = :startdate, OfferEndDate = :enddate, ".$thblimited."
-                            ".$thboutofstock." ".$ecoupon." ".$lmlimited." ".$lmoutofstock." ".$webslider." About = :about, Terms = :terms, Status = :status,
-                            DateUpdated = now_usec(), UpdatedByAID = :updatedbyaid
-                            WHERE RewardItemID = :rewarditemid";
-            $command = $connection->createCommand($query);
-            $command->bindParam(":partnerid", $partnerid);
-            $command->bindParam(":itemname", $itemname,PDO::PARAM_STR);
-            $command->bindParam(":categoryid", $categoryid);
-            $command->bindParam(":points", $points, PDO::PARAM_INT);
-            $command->bindParam(":pclassid", $pclassid,PDO::PARAM_INT);
-            $command->bindParam(":subtext", $subtext);
-            $command->bindParam(":startdate", $startdate, PDO::PARAM_STR);
-            $command->bindParam(":enddate", $enddate, PDO::PARAM_STR);
-            if($thblimited != "")
-                $command->bindParam(":thblimited", $thblimitedphoto, PDO::PARAM_STR);
-            if($thboutofstock != "")
-                $command->bindParam(":thboutofstock", $thboutofstockphoto, PDO::PARAM_STR);
-            if($ecoupon != "")
-                $command->bindParam(":ecoupon", $ecouponphoto, PDO::PARAM_STR);
-            if($lmlimited != "")
-                $command->bindParam(":lmlimited", $lmlimitedphoto, PDO::PARAM_STR);
-            if($lmoutofstock != "")
-                $command->bindParam(":lmoutofstock", $lmoutofstockphoto, PDO::PARAM_STR);
-            if($webslider != "")
-                $command->bindParam(":webslider", $websliderphoto, PDO::PARAM_STR);
-            $command->bindParam(":about", $about);
-            $command->bindParam(":terms", $terms);
-            $command->bindParam(":status", $status,PDO::PARAM_INT);
-            $command->bindParam(":updatedbyaid", $updatedbyaid, PDO::PARAM_INT);
-            $command->bindParam(":rewarditemid", $rewarditemid, PDO::PARAM_INT);
-        }
-
-        try {
-            $command->execute();
-            return array('TransMsg'=>'Reward Item/Coupon has been successfully updated.','TransCode'=>0);
-        } catch (CDbException $e) {
-            return array('TransMsg'=>'Error: '. $e->getMessage(),'TransCode'=>2);
+            try {
+                $command->execute();
+                return array('TransMsg'=>'Reward Item/Coupon has been successfully updated.','TransCode'=>0);
+            } catch (CDbException $e) {
+                return array('TransMsg'=>'Error: '. $e->getMessage(),'TransCode'=>2);
+            }
         }
     }
     
@@ -627,12 +652,28 @@ class RewardItemsModel extends CFormModel
      * @param string $lmoutofstockphoto
      * @param string $websliderphoto
      * @return array
+     * @modified mgesguerra 2013-12-20
      */
     public function UpdateMysteryReward($rewarditemid, $itemname, $mysteryname, $points, $pclassid, $status, $startdate, $enddate, $categoryid,
                                                                             $subtext, $mysterysubtext, $about,  $mysteryabout, $terms, $mysteryterms, $thblimitedphoto, 
                                                                             $thboutofstockphoto, $ecouponphoto, $lmlimitedphoto, $lmoutofstockphoto, $websliderphoto)
     {
+        $connection = Yii::app()->db;
+        $updatedbyaid = Yii::app()->session['AID'];
+        //Check if entered Mystery Reward Item is already exist
+        $checkitem = "SELECT COUNT(RewardItemID) as Count FROM rewarditems 
+                     WHERE ItemName = :itemname AND IsMystery = 1";
+        $command = $connection->createCommand($checkitem);
+        $command->bindParam(":itemname", $itemname);
+        $isExist = $command->queryRow();
         
+        if ($isExist['Count'] > 0)
+        {
+            return array('TransMsg'=>'Mystery Reward Item already Exist','TransCode'=> 3);
+        }
+        else
+        {
+
             if($about == ''){
                 $about = null;
             } else { $about = $about; }
@@ -672,51 +713,49 @@ class RewardItemsModel extends CFormModel
             if($websliderphoto == ''){
                 $webslider = '';
             } else { $websliderphoto = $websliderphoto; $webslider =  "WebsiteSliderImage = :webslider,";}
-        
-        $connection = Yii::app()->db;
-        $updatedbyaid = Yii::app()->session['AID'];
 
-        $query = "UPDATE rewarditems SET ItemName = :itemname, CategoryID = :categoryid, RequiredPoints = :points,
-                            PClassID = :pclassid, SubText = :subtext, OfferStartDate = :startdate, OfferEndDate = :enddate, ".$thblimited."
-                            ".$thboutofstock." ".$ecoupon." ".$lmlimited." ".$lmoutofstock." ".$webslider." About = :about, Terms = :terms, Status = :status,
-                            MysterySubtext = :mysterysubtext, MysteryAbout = :mysteryabout, MysteryTerms = :mysteryterms, MysteryName = :mysteryname,
-                            DateUpdated = now_usec(), UpdatedByAID = :updatedbyaid
-                            WHERE RewardItemID = :rewarditemid";
-        $command = $connection->createCommand($query);
-        $command->bindParam(":itemname", $itemname,PDO::PARAM_STR);
-        $command->bindParam(":mysteryname", $mysteryname,PDO::PARAM_STR);
-        $command->bindParam(":categoryid", $categoryid);
-        $command->bindParam(":points", $points, PDO::PARAM_INT);
-        $command->bindParam(":pclassid", $pclassid,PDO::PARAM_INT);
-        $command->bindParam(":subtext", $subtext);
-        $command->bindParam(":startdate", $startdate, PDO::PARAM_STR);
-        $command->bindParam(":enddate", $enddate, PDO::PARAM_STR);
-        if($thblimited != "")
-            $command->bindParam(":thblimited", $thblimitedphoto, PDO::PARAM_STR);
-        if($thboutofstock != "")
-            $command->bindParam(":thboutofstock", $thboutofstockphoto, PDO::PARAM_STR);
-        if($ecoupon != "")
-            $command->bindParam(":ecoupon", $ecouponphoto, PDO::PARAM_STR);
-        if($lmlimited != "")
-            $command->bindParam(":lmlimited", $lmlimitedphoto, PDO::PARAM_STR);
-        if($lmoutofstock != "")
-            $command->bindParam(":lmoutofstock", $lmoutofstockphoto, PDO::PARAM_STR);
-        if($webslider != "")
-            $command->bindParam(":webslider", $websliderphoto, PDO::PARAM_STR);
-        $command->bindParam(":about", $about);
-        $command->bindParam(":terms", $terms);
-        $command->bindParam(":status", $status,PDO::PARAM_INT);
-        $command->bindParam(":mysterysubtext", $mysterysubtext);
-        $command->bindParam(":mysteryabout", $mysteryabout);
-        $command->bindParam(":mysteryterms", $mysteryterms);
-        $command->bindParam(":updatedbyaid", $updatedbyaid, PDO::PARAM_INT);
-        $command->bindParam(":rewarditemid", $rewarditemid, PDO::PARAM_INT);
-        
-        try {
-            $command->execute();
-            return array('TransMsg'=>'Mystery Reward has been successfully updated.','TransCode'=>0);
-        } catch (CDbException $e) {
-            return array('TransMsg'=>'Error: '. $e->getMessage(),'TransCode'=>2);
+            $query = "UPDATE rewarditems SET ItemName = :itemname, CategoryID = :categoryid, RequiredPoints = :points,
+                                PClassID = :pclassid, SubText = :subtext, OfferStartDate = :startdate, OfferEndDate = :enddate, ".$thblimited."
+                                ".$thboutofstock." ".$ecoupon." ".$lmlimited." ".$lmoutofstock." ".$webslider." About = :about, Terms = :terms, Status = :status,
+                                MysterySubtext = :mysterysubtext, MysteryAbout = :mysteryabout, MysteryTerms = :mysteryterms, MysteryName = :mysteryname,
+                                DateUpdated = now_usec(), UpdatedByAID = :updatedbyaid
+                                WHERE RewardItemID = :rewarditemid";
+            $command = $connection->createCommand($query);
+            $command->bindParam(":itemname", $itemname,PDO::PARAM_STR);
+            $command->bindParam(":mysteryname", $mysteryname,PDO::PARAM_STR);
+            $command->bindParam(":categoryid", $categoryid);
+            $command->bindParam(":points", $points, PDO::PARAM_INT);
+            $command->bindParam(":pclassid", $pclassid,PDO::PARAM_INT);
+            $command->bindParam(":subtext", $subtext);
+            $command->bindParam(":startdate", $startdate, PDO::PARAM_STR);
+            $command->bindParam(":enddate", $enddate, PDO::PARAM_STR);
+            if($thblimited != "")
+                $command->bindParam(":thblimited", $thblimitedphoto, PDO::PARAM_STR);
+            if($thboutofstock != "")
+                $command->bindParam(":thboutofstock", $thboutofstockphoto, PDO::PARAM_STR);
+            if($ecoupon != "")
+                $command->bindParam(":ecoupon", $ecouponphoto, PDO::PARAM_STR);
+            if($lmlimited != "")
+                $command->bindParam(":lmlimited", $lmlimitedphoto, PDO::PARAM_STR);
+            if($lmoutofstock != "")
+                $command->bindParam(":lmoutofstock", $lmoutofstockphoto, PDO::PARAM_STR);
+            if($webslider != "")
+                $command->bindParam(":webslider", $websliderphoto, PDO::PARAM_STR);
+            $command->bindParam(":about", $about);
+            $command->bindParam(":terms", $terms);
+            $command->bindParam(":status", $status,PDO::PARAM_INT);
+            $command->bindParam(":mysterysubtext", $mysterysubtext);
+            $command->bindParam(":mysteryabout", $mysteryabout);
+            $command->bindParam(":mysteryterms", $mysteryterms);
+            $command->bindParam(":updatedbyaid", $updatedbyaid, PDO::PARAM_INT);
+            $command->bindParam(":rewarditemid", $rewarditemid, PDO::PARAM_INT);
+
+            try {
+                $command->execute();
+                return array('TransMsg'=>'Mystery Reward has been successfully updated.','TransCode'=>0);
+            } catch (CDbException $e) {
+                return array('TransMsg'=>'Error: '. $e->getMessage(),'TransCode'=>2);
+            }
         }
     }
     
