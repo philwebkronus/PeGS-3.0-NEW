@@ -23,7 +23,7 @@ class ActivateMember extends BaseEntity
      * to permanent database
      * @param string $cardnumber
      */
-    public function Migrate( $cardnumber )
+    public function Migrate( $cardnumber, $siteID )
     {                
         //Membership DB
         
@@ -122,7 +122,7 @@ class ActivateMember extends BaseEntity
                         $arrMemberCard['CardID'] = $this->CardID;
                         $arrMemberCard['CardNumber'] = $this->CardNumber;
 
-                        $arrMemberCard['SiteID'] = 1; //To be supplied from the cashier
+                        $arrMemberCard['SiteID'] = $siteID; //To be supplied from the cashier
                         $arrMemberCard['DateCreated'] = 'now_usec()';
                         $arrMemberCard['CreatedByAID'] = 1; //To be supplied from the cashier
                         $arrMemberCard['Status'] = CardStatus::ACTIVE_TEMPORARY;; //Active card
@@ -209,22 +209,22 @@ class ActivateMember extends BaseEntity
 
                             if($result == 'OK')              
                             {
-                                App::LoadModuleClass("CasinoProvider", "PlayTechReportViewAPI");
-                                
-                                $reportUri = App::getParam("pt_rpt_uri");
-                                $casino = App::getParam("pt_rpt_casinoname");
-                                $admin = App::getParam("pt_rpt_admin");
-                                $password = App::getParam("pt_rpt_password");
-                                $reportCode = App::getParam("pt_rpt_code");
-                                $playerCode = null;
-                                
-                                $_PTReportAPI = new PlayTechReportViewAPI($reportUri, $casino, $admin, $password);
-                                
-                                $rptResult = $_PTReportAPI->export($reportCode, 'exportxml', array('username'=>$userName));
-                                
-                                $playerCode = $rptResult['PlayerCode']; //get player code from PT Report API
-                                
-                                $casinoAccounts[0]['PlayerCode'] = $playerCode;
+//                                App::LoadModuleClass("CasinoProvider", "PlayTechReportViewAPI");
+//                                
+//                                $reportUri = App::getParam("pt_rpt_uri");
+//                                $casino = App::getParam("pt_rpt_casinoname");
+//                                $admin = App::getParam("pt_rpt_admin");
+//                                $password = App::getParam("pt_rpt_password");
+//                                $reportCode = App::getParam("pt_rpt_code");
+//                                $playerCode = null;
+//                                
+//                                $_PTReportAPI = new PlayTechReportViewAPI($reportUri, $casino, $admin, $password);
+//                                
+//                                $rptResult = $_PTReportAPI->export($reportCode, 'exportxml', array('username'=>$userName));
+//                                
+//                                $playerCode = $rptResult['PlayerCode']; //get player code from PT Report API
+//                                
+//                                $casinoAccounts[0]['PlayerCode'] = $playerCode;
                                 
                                 $this->InsertMultiple($casinoAccounts);
                                 
