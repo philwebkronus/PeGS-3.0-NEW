@@ -67,7 +67,7 @@ class RewardItemsModel extends CFormModel
         if ($itemtype != NULL)
         {
             $sql = "SELECT RewardItemID, ItemName FROM rewarditems
-                    WHERE Status = 1 AND IsCoupon = :itemtype ";
+                    WHERE Status = 1 AND IsCoupon = :itemtype ORDER BY ItemName ASC";
         }
         else
         {
@@ -287,21 +287,21 @@ class RewardItemsModel extends CFormModel
                                     LEFT JOIN ref_partners rp ON rp.PartnerID = ri.PartnerID
                                     INNER JOIN ref_playerclassification rpc ON rpc.PClassID = ri.PClassID
                                     LEFT JOIN ref_category rc ON rc.CategoryID = ri.CategoryID
-                                    WHERE ri.IsMystery = 1 AND ri.AvailableItemCount = 0";
+                                    WHERE ri.IsMystery = 1 AND ri.AvailableItemCount = 0 AND ri.Status = $filterby";
                 break;
         }
         
-        $command = $connection->createCommand($query);
-        $result = $command->queryAll();
-        
-        $count = count($result);
+            $command = $connection->createCommand($query);
+            $result = $command->queryAll();
 
-        for($ctr=0; $ctr < $count;$ctr++) {
-            if((int)$result[$ctr]['AvailableItemCount'] <= 0 ){
-                $result[$ctr]['Status'] = "Out-Of-Stock";
+            $count = count($result);
+
+            for($ctr=0; $ctr < $count;$ctr++) {
+                if((int)$result[$ctr]['AvailableItemCount'] <= 0 ){
+                    $result[$ctr]['Status'] = "Out-Of-Stock";
+                }
             }
-        }
-        
+            
         return $result;
     }
     
@@ -425,22 +425,22 @@ class RewardItemsModel extends CFormModel
         $updateresult = $sql->execute();
         if($updateresult > 0){
             try {
-                $replenishlogs = "INSERT INTO  replenishmentlogs(RewardItemID, CurrentItemCount, ReplenishItemCount, EndingItemCount, DateCreated, CreatedByAID)
-                                    VALUES($rewarditemid, $currentitemcount, $addeditemcount, $newitemcount, now_usec(), $CreatedByAID)";
+                    $replenishlogs = "INSERT INTO  replenishmentlogs(RewardItemID, CurrentItemCount, ReplenishItemCount, EndingItemCount, DateCreated, CreatedByAID)
+                                        VALUES($rewarditemid, $currentitemcount, $addeditemcount, $newitemcount, now_usec(), $CreatedByAID)";
                 $replenishlogssql = Yii::app()->db->createCommand($replenishlogs);
-                $insertresult = $replenishlogssql->execute();
-                if($insertresult > 0){
-                    try {
-                        $pdo->commit();
-                        return array('TransMsg'=>'Reward Item/Coupon has been successfully replenished.','TransCode'=>0);
-                    } catch (CDbException $e) {
-                        $pdo->rollback();
+                    $insertresult = $replenishlogssql->execute();
+                    if($insertresult > 0){
+                        try {
+                            $pdo->commit();
+                            return array('TransMsg'=>'Reward Item/Coupon has been successfully replenished.','TransCode'=>0);
+                        } catch (CDbException $e) {
+                            $pdo->rollback();
                         return array('TransMsg'=>'Error: '. $e->getMessage(),'TransCode'=>2);
-                    }
+                        }
                     
-                } else {
-                    return array('TransMsg'=>'No log was inserted.', 'TransCode'=>1);
-                }
+                    } else {
+                        return array('TransMsg'=>'No log was inserted.', 'TransCode'=>1);
+                    }
             } catch (CDbException $e) {
                 $pdo->rollback();
                 return array('TransMsg'=>'Error: '. $e->getMessage(),'TransCode'=>2);
@@ -662,9 +662,10 @@ class RewardItemsModel extends CFormModel
         $updatedbyaid = Yii::app()->session['AID'];
         //Check if entered Mystery Reward Item is already exist
         $checkitem = "SELECT COUNT(RewardItemID) as Count FROM rewarditems 
-                     WHERE ItemName = :itemname AND IsMystery = 1";
+                     WHERE ItemName = :itemname AND IsMystery = 1 AND RewardItemID <> :rewarditemid";
         $command = $connection->createCommand($checkitem);
         $command->bindParam(":itemname", $itemname);
+        $command->bindParam(":rewarditemid", $rewarditemid);
         $isExist = $command->queryRow();
         
         if ($isExist['Count'] > 0)
@@ -837,8 +838,8 @@ class RewardItemsModel extends CFormModel
         try {
             $command->execute();
             $lastinsertedid = $connection->getLastInsertID();
-            return array('TransMsg'=>'Reward Item/Coupon has been successfully added.','TransCode'=>0, 'LastInsertID' => $lastinsertedid);
-        } catch (CDbException $e) {
+                    return array('TransMsg'=>'Reward Item/Coupon has been successfully added.','TransCode'=>0, 'LastInsertID' => $lastinsertedid);
+                } catch (CDbException $e) {
             return array('TransMsg'=>'Error: '. $e->getMessage(),'TransCode'=>2);
         }
     }
