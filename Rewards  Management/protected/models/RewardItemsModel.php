@@ -287,7 +287,7 @@ class RewardItemsModel extends CFormModel
                                     LEFT JOIN ref_partners rp ON rp.PartnerID = ri.PartnerID
                                     INNER JOIN ref_playerclassification rpc ON rpc.PClassID = ri.PClassID
                                     LEFT JOIN ref_category rc ON rc.CategoryID = ri.CategoryID
-                                    WHERE ri.IsMystery = 1 AND ri.AvailableItemCount = 0 AND ri.Status = $filterby";
+                                    WHERE ri.IsMystery = 1 AND ri.AvailableItemCount = 0 AND ri.Status IN ($filterby, 1)";
                 break;
         }
         
