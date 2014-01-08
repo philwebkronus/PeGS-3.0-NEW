@@ -160,6 +160,50 @@ if (isset($_POST['pager'])) {
                         $msg->CardType = "Invalid";  
                      }
                  }
+                 elseif($status == 2){
+                    
+                     $membercarddetails = $_MemberCards->getCardDetailsActiveDeactivateBanned($mid);
+                     
+                     if(!empty($membercarddetails)){
+                         foreach ($membercarddetails as $value) {
+                            $cardnumber = $value['CardNumber'];
+                            $activestatus = $value['Status'];
+                            $datetimemigration = date("Y-m-d H:i:s",strtotime($value['DateCreated']));
+                            $lifetimepoints = number_format($value['LifeTimePoints']);
+                            $currentpoints = number_format($value['CurrentPoints']);
+                            $redeemedpoints = number_format($value['BonusPoints']);
+                            $bonuspoints = number_format($value['BonusPoints']);
+                        }
+                        
+                        $status = $activestatus;
+
+                        switch($status)
+                           {
+                               case 0: $vstatus = 'InActive';break;
+                               case 1: $vstatus = 'Active';    break;
+                               case 2: $vstatus = 'Deactivated';break;
+                               case 5: $vstatus = 'Active Temporary';break;
+                               case 7: $vstatus = 'New Migrated'; break;   
+                               case 8: $vstatus = 'Temporary Migrated';  break;
+                               case 9: $vstatus = 'Banned';  break;
+                               default: $vstatus = 'Card Not Found'; break;
+                           }
+
+                        $msg->IDdetect = '1.2';
+                        $msg->Msg = 'Temporary Account is Deactivated '.$cardnumber;
+                        $msg->CardType = $cardtype;
+                        $msg->DateTimeMigration = $datetimemigration;
+                        $msg->Site = $sitename;
+                        $msg->LifeTimePoints = $lifetimepoints;
+                        $msg->CurrentPoints = $currentpoints;
+                        $msg->RedeemedPoints = $redeemedpoints;
+                        $msg->BonusPoints = $bonuspoints;
+                     } else {
+                        $msg->IDdetect = '1.3';
+                        $msg->Msg = 'Migrated temporary cards';
+                        $msg->CardType = "Invalid";  
+                     }
+                 }
                  else{
 
                      $msg->IDdetect = '1.3';

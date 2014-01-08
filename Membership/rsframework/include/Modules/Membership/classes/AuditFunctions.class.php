@@ -55,6 +55,7 @@ class AuditFunctions extends BaseEntity
     CONST UPDATE_BLACKLISTED_PLAYER = 50;
     CONST REMOVE_BLACKLISTED_PLAYER = 51;
     CONST PLAYER_CLASSIFICATION_ASSIGNMENT = 52;
+    CONST MANUAL_UB_PT_ASSIGNMENT = 53;
     
     public function AuditFunctions()
     {
