@@ -388,8 +388,10 @@ if (isset($_POST['pager'])) {
                     $cardidA = $_Cards->getCardDetails($oldcard);
                     foreach ($cardidA as $value) {
                         $cardid1 = $value['CardID'];
+                        $cardtypeid1 = $value['CardTypeID'];
                     }
                     $cardid1 = $cardid1;
+                    $cardtypeid1 = $cardtypeid1;
                     
                         if ($status == 0 && $newcard != $oldcard) {
                             if ($currentpoints < 0) {
@@ -407,7 +409,7 @@ if (isset($_POST['pager'])) {
                                 $msg = 'Migration failed. Card has negative current points.';
                                 $profile->Msg = $msg;
                             } else {
-                                $_MemberCards->transferMemberCard($MID, $cardid2, $siteid, $lifetimepoints, $currentpoints, $redeemedpoints, $newcardnumber, $oldubcardnumber, $status1, $status2, $aid, $datecreated);
+                                $_MemberCards->transferMemberCard($MID, $cardid2, $siteid, $lifetimepoints, $currentpoints, $redeemedpoints, $newcardnumber, $oldubcardnumber, $status1, $status2, $aid, $datecreated, $cardtypeid1);
 
                                 if (!App::HasError()) {
 
@@ -656,7 +658,7 @@ if (isset($_POST['pager'])) {
                     if ($status == 0 && $newcard != $oldcard) {
                         if ($currentpoints < 0) {
                             $isSuccess = false;
-                            $_Log->logAPI(AuditFunctions::MARKETING_RED_CARD_TRANSFERRING, 'From Card: ' . $oldcard . ', Pts: ' . $carddetails["CurrentPoints"] . '; To Card: ' . $newcard . ', Pts: ' . $newcarddetailz["CurrentPoints"] . ', Failed', $_SESSION['aID']);
+                            $_Log->logAPI(AuditFunctions::MARKETING_RED_CARD_TRANSFERRING, 'From Card: ' . $oldcard . ', Pts: ' . $carddetails[0]["CurrentPoints"] . '; To Card: ' . $newcard . ', Pts: ' . $carddetails[0]["CurrentPoints"] . ', Failed', $_SESSION['aID']);
                             $error = "Card has negative current points.";
                             $logger->logger($logdate, $logtype, $error);
 
@@ -690,19 +692,29 @@ if (isset($_POST['pager'])) {
                                 $cardid2 = $value['CardID'];
                             }
                             $cardid2 = $cardid2;
-                            $status2 = CardStatus::ACTIVE;
-
-                            $_MemberCards->transferMemberCard($MID, $cardid2, $siteid, $lifetimepoints, $currentpoints, $redeemedpoints, $newcardnumber, $oldcard, $status1, $status2, $aid, $datecreated);
+                            
+                            $cardtypeid1 = $_Cards->getCardDetails($oldcard);
+                                foreach ($cardtypeid1 as $value) {
+                                    $cardtypeid1 = $value['CardTypeID'];
+                                }
+                                $cardtypeid1 = $cardtypeid1;
+                            $_MemberCards->transferMemberCard($MID, $cardid2, $siteid, $lifetimepoints, $currentpoints, $redeemedpoints, $newcardnumber, $oldcard, $status1, $status2, $aid, $datecreated, $cardtypeid1);
 
                             if (!App::HasError()) {
 
                                 $cardidA = $_Cards->getCardDetails($oldcard);
-                                foreach ($cardidA as $value) {
-                                    $cardid1 = $value['CardID'];
-                                }
-                                $cardid1 = $cardid1;
-                                $status1 = CardStatus::NEW_MIGRATED;
+                                    foreach ($cardidA as $value) {
+                                        $cardid1 = $value['CardID'];
+                                    }
+                                    $cardid1 = $cardid1;
+                                    $status1 = CardStatus::NEW_MIGRATED;
 
+                                    $cardidB = $_Cards->getCardDetails($newcard);
+                                    foreach ($cardidB as $value) {
+                                        $cardid2 = $value['CardID'];
+                                    }
+                                    $cardid2 = $cardid2;
+                                    $status2 = CardStatus::ACTIVE;
 
                                 $_Cards->updateCardsStatus2($cardid1, $cardid2, $status1, $status2, $aid, $datecreated);
 

@@ -100,7 +100,7 @@ class MemberCards extends BaseEntity {
         $query = "SELECT mc.CardNumber
                             FROM membercards mc
                             INNER JOIN cards c ON c.CardID = mc.CardID
-                            WHERE mc.MID = $MID AND mc.Status = 1";
+                            WHERE mc.MID = $MID";
 
         $result = parent::RunQuery($query);
         if (empty($result)) {
@@ -156,7 +156,7 @@ class MemberCards extends BaseEntity {
             FROM membercards m
                 INNER JOIN membership.members mb ON mb.MID = m.MID
                 INNER JOIN cards c ON c.CardID = m.CardID AND m.CardNumber = c.CardNumber
-            WHERE m.MID = $MID AND m.Status IN(1,5)";
+            WHERE m.MID = $MID AND m.Status IN(1,5) ORDER BY MemberCardID DESC";
 
         $result = parent::RunQuery($query);
 
@@ -252,7 +252,8 @@ class MemberCards extends BaseEntity {
         }
     }
 
-    public function transferMemberCard($mid, $cardid, $siteid, $lifetimepoints, $currentpoints, $redeemedpoints, $newcardnumber, $oldubcardnumber, $status1, $status2, $aid, $dateupdated) {
+    public function transferMemberCard($mid, $cardid, $siteid, $lifetimepoints, $currentpoints, $redeemedpoints, $newcardnumber, $oldubcardnumber, $status1, $status2, $aid, $dateupdated, $cardtypeid1) {
+        
         $this->StartTransaction();
         try {
             $query = "UPDATE membercards SET LifetimePoints = '$lifetimepoints',
@@ -273,12 +274,20 @@ class MemberCards extends BaseEntity {
                     $query3 = "INSERT INTO membercards SET MID = '$mid', CardID = '$cardid', CardNumber = '$newcardnumber',
                                                            SiteID = '$siteid', LifetimePoints = '$lifetimepoints',
                                                            CurrentPoints = '$currentpoints', RedeemedPoints = '$redeemedpoints',
-                                                           DateCreated = '$dateupdated' , Status = 1";
+                                                           DateCreated = '$dateupdated' , Status = '$status1'";
 
                     $this->ExecuteQuery($query3);
 
                     if (!App::HasError()) {
-                        $this->CommitTransaction();
+                        $query4 = "UPDATE cards SET CardTypeID = '$cardtypeid1' WHERE CardNumber = '$newcardnumber'";
+
+                        $this->ExecuteQuery($query4);
+
+                        if (!App::HasError()) {
+                            $this->CommitTransaction();
+                        } else {
+                            $this->RollBackTransaction();
+                        }
                     } else {
                         $this->RollBackTransaction();
                     }
@@ -325,7 +334,7 @@ class MemberCards extends BaseEntity {
                 CurrentPoints = CurrentPoints - $redeemTotalPoints WHERE MID = $MID AND  Status IN (1,5)";
         return parent::ExecuteQuery($query);
     }
-    
+
     //For updating card points
     public function UpdateCardPoints($MID, $redeemTotalPoints) {
         $query = "UPDATE loyaltydb.membercards set RedeemedPoints = RedeemedPoints + $redeemTotalPoints, 
@@ -571,11 +580,11 @@ class MemberCards extends BaseEntity {
                 DateUpdated = '$dateupdated' WHERE CardID = $cardid2");
 
                     if (!App::HasError()) {
-                            if (!App::HasError()) {
-                                $this->CommitTransaction();
-                            } else {
-                                $this->RollBackTransaction();
-                            }
+                        if (!App::HasError()) {
+                            $this->CommitTransaction();
+                        } else {
+                            $this->RollBackTransaction();
+                        }
                     } else {
                         $this->RollBackTransaction();
                     }

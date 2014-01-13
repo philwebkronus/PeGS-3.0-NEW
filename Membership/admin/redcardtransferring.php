@@ -109,7 +109,7 @@ if (isset($_SESSION['CardRed'])) {
 <script type='text/javascript'>
 
     $(document).ready(function() {
-
+        
         function specialcharacter(elementvalue)
         {
             var iChars = "!`@#$%^&*()+=[]\\\';,./{}|\":<>?~_";
@@ -128,6 +128,28 @@ if (isset($_SESSION['CardRed'])) {
         $('#txtCardNumber').change(function() {
             $(this).val($(this).val().replace(" ", ""));
         });
+        
+            $("#cboIDSelection").live("change", function() {
+        if ($("#cboIDSelection").val() == -1) {
+            $("#txtCardNumber").val("");
+            $("#txtUsername").val("");
+            $("#txtNewCardNumber").val("");
+            $("#percard").hide();
+            $("#perusername").hide();
+            $("#newCardNumberTable").hide();
+            $("#btnTransferTable").hide();
+            $("#tblplayerdetails").hide();
+        } else {
+            $("#txtCardNumber").val("");
+            $("#txtUsername").val("");
+            $("#txtNewCardNumber").val("");
+            $("#percard").show();
+            $("#perusername").show();
+            $("#newCardNumberTable").show();
+            $("#btnTransferTable").show();
+            $("#tblplayerdetails").show();
+        }
+    });
 
         $("#txtCardNumber").focus(function() {
             $("#txtCardNumber").bind('paste', function(event) {
@@ -140,6 +162,19 @@ if (isset($_SESSION['CardRed'])) {
                 }, 0);
             });
         });
+        
+        $("#txtNewCardNumber").focus(function() {
+            $("#txtNewCardNumber").bind('paste', function(event) {
+                setTimeout(function(event) {
+                    var data = $("#txtNewCardNumber").val();
+                    if (!specialcharacter(data)) {
+                        $("#txtNewCardNumber").val("");
+                        $("#txtNewCardNumber").focus();
+                    }
+                }, 0);
+            });
+        });
+        
         function specialcharacter2(elementvalue)
         {
             var iChars = "!`#$%^&*()+=[]\\\';,/{}|\":<>?~";
@@ -732,11 +767,11 @@ if (isset($_SESSION['CardRed'])) {
                             <?php echo "$hdnMID"; ?>
                         </div>
                         <div style="float: left">
-                            <table align="left">
+                            <table align="left" id="newCardNumberTable">
                                 <tr><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;New Card Number &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td></tr>
                                 <tr><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?php echo "$txtNewCardNumber"; ?></td></tr>
                             </table>
-                            <table align="left">
+                            <table align="left" id="btnTransferTable">
                                 <tr><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td></tr>    
                                 <tr><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?php echo "$btnTransfer"; ?></td></tr>
                             </table>
