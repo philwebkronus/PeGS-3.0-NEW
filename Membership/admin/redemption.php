@@ -960,8 +960,11 @@ if($fproc->IsPostBack){
                                 $("#TotalItemPoints").html('Total Points: ' + mysterypoints.toString().replace(/,/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                                 $("#hdnTotalItemPoints").val(mysterypoints);
                             } else {
+                                $("#TotalItemPoints").html('');
+                                $("#hdnTotalItemPoints").val('');
                                 //Limit redeemable quantity to 5 items.
-                                $("#txtinputs").html('<?php echo "Please enter quantity to be redeemed (max. 5 items). "; echo $txtItemQuantity; ?>');
+                                $("#txtinputs").html('<?php echo "Please enter quantity to be redeemed (max. 5 items). "; $txtItemQuantity->Text = ""; 
+                                                                                            $txtItemQuantity->Args = "placeholder=\"0\""; echo $txtItemQuantity; ?>');
                             }
                         } else {
                             $("#txtinputs").html('<?php echo "Please enter quantity to be redeemed. "; echo $txtQuantity; ?>');
@@ -1027,7 +1030,9 @@ if($fproc->IsPostBack){
                                                                 },
                                                                 "Cancel" : function(){
                                                                     $("#Quantity").val("");
-                                                                    $("#ItemQuantity").val("");
+                                                                    if(IsMystery != "1"){
+                                                                        $("#ItemQuantity").val("");
+                                                                    }
                                                                     $("#txtinputs").html("");
                                                                     $("#TotalItemPoints").html("");
                                                                     $(this).dialog("close");
@@ -1047,7 +1052,9 @@ if($fproc->IsPostBack){
                                         },
                                         "Cancel": function(){
                                             $("#Quantity").val("");
-                                            $("#ItemQuantity").val("");
+                                            if(IsMystery != "1"){
+                                                $("#ItemQuantity").val("");
+                                            }
                                             $("#TotalItemPoints").html("");
                                             $("#txtinputs").html("");
                                             $(this).dialog("close");
@@ -1075,7 +1082,9 @@ if($fproc->IsPostBack){
                                 },
                                 "Cancel": function(){
                                     $("#Quantity").val("");
-                                    $("#ItemQuantity").val("");
+                                    if(IsMystery != "1"){
+                                        $("#ItemQuantity").val("");
+                                    }
                                     $("#txtinputs").html("");
                                     $("#TotalItemPoints").html("");
                                     $(this).dialog("close");

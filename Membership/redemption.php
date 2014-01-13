@@ -824,7 +824,9 @@ if(isset($_SESSION['RewardItemsInfo'])){
                                                                 },
                                                                 "Cancel" : function(){
                                                                     $("#Quantity").val("");
-                                                                    $("#ItemQuantity").val("");
+                                                                    <?php if($_SESSION['RewardItemsInfo']['IsMystery'] != 1) {
+                                                                        echo "$('#ItemQuantity').val('');"; 
+                                                                     } ?>
                                                                     $("#TotalItemPoints").html("");
                                                                     $(this).dialog("close");
                                                                 }
@@ -844,6 +846,9 @@ if(isset($_SESSION['RewardItemsInfo'])){
                                         "Cancel": function(){
                                             $("#Quantity").val("");
                                             $("#ItemQuantity").val("");
+                                            <?php if($_SESSION['RewardItemsInfo']['IsMystery'] != 1) {
+                                                echo "$('#ItemQuantity').val('');"; 
+                                             } ?>
                                             $("#TotalItemPoints").html("");
                                             $(this).dialog("close");
                                         }
@@ -870,7 +875,9 @@ if(isset($_SESSION['RewardItemsInfo'])){
                                 },
                                 "Cancel": function(){
                                     $("#Quantity").val("");
-                                    $("#ItemQuantity").val("");
+                                    <?php if($_SESSION['RewardItemsInfo']['IsMystery'] != 1) {
+                                       echo "$('#ItemQuantity').val('');"; 
+                                    } ?>
                                     $("#TotalItemPoints").html("");
                                     $(this).dialog("close");
                                 }
