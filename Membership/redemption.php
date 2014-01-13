@@ -197,6 +197,11 @@ if(isset($_SESSION['RewardItemsInfo'])){
     $hdnItemPoints->Text = "";
     $fproc->AddControl($hdnItemPoints);
     
+    $hdnIsMystery = new Hidden("hdnIsMystery", "hdnIsMystery", "hdnIsMystery: ");
+    $hdnIsMystery->ShowCaption = true;
+    $hdnIsMystery->Text = $_SESSION['RewardItemsInfo']['IsMystery'];
+    $fproc->AddControl($hdnIsMystery);
+    
     $hdnProductName = new Hidden("hdnProductName", "hdnProductName", "hdnProductName: ");
     $hdnProductName->ShowCaption = true;
     $hdnProductName->Text = $ProductName;
@@ -759,6 +764,14 @@ if(isset($_SESSION['RewardItemsInfo'])){
                         $("#ItemPoints").html(ItemPoints);
                         $("#hdnItemName").val(ProductName);
                         $("#hdnItemPoints").val(ItemPoints);
+                        
+                        //Check if the Reward Item is Mystery Type.
+                        if($("#hdnIsMystery").val() == "1"){
+                            //Calculate the total item redeemed points (mystery)
+                            var mysterypoints = parseInt($("#hdnItemPoints").val());
+                            $("#TotalItemPoints").html('Total Points: ' + mysterypoints.toString().replace(/,/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                            $("#hdnTotalItemPoints").val(mysterypoints);
+                        }
                         var email = "<?php echo $result = $_MemberInfo->getEmail($_SESSION["MemberInfo"]["Member"]["MID"]); ?>";
                         if(email  == ""){
                                 $("#redemptionquantity").dialog({
@@ -939,15 +952,13 @@ if(isset($_SESSION['RewardItemsInfo'])){
                         <strong>
                             <?php echo $_SESSION['RewardItemsInfo']['PartnerName'] ?>
                         </strong>
-                        <p>
+                        <br/>
                             <?php echo $partnersd[0]['CompanyAddress']; ?>
-                        </p>
-                        <p>
+                        <br/>
                             Tel. Nos.: <?php echo $partnersd[0]['CompanyPhone']; ?>
-                        </p>
-                        <p>
+                        <br/>
                             Website: <?php echo $partnersd[0]['CompanyWebsite']; ?>
-                        </p>
+                        
                 </div>
                 <?php } else { ?>
                 <div class="span12">
@@ -979,9 +990,10 @@ if(isset($_SESSION['RewardItemsInfo'])){
             <?php echo $hdnItemPoints; ?>
             <?php echo $hdnTotalItemPoints; ?>
             <?php echo $hdnCardNumber; ?>
+            <?php echo $hdnIsMystery; ?>
             Item Name: <span id="ItemName"></span><br/>
             Points per Item: <span id="ItemPoints"></span><br/><br/>
-            <?php if($_SESSION['RewardItemsInfo']['RewardID'] == 1){ echo 'Please enter quantity to be redeemed (max. 5 items). '; echo $txtItemQuantity; } else { echo 'Please enter quantity to be redeemed. '; echo $txtQuantity; } ?><br/>
+            <?php if($_SESSION['RewardItemsInfo']['RewardID'] == 1){ echo 'Please enter quantity to be redeemed (max. 5 items). '; if($_SESSION['RewardItemsInfo']['IsMystery'] == 1){ $txtItemQuantity->Text = "1"; $txtItemQuantity->Args = "readonly=readonly"; echo $txtItemQuantity;} else { echo $txtItemQuantity; } } else { echo 'Please enter quantity to be redeemed. '; echo $txtQuantity; } ?><br/>
             <span id="TotalItemPoints"></span>
         </div>
         <!-------------------------------------------------->

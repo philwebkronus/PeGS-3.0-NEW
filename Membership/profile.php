@@ -167,204 +167,209 @@
         </form>
         <div class="span8">
         <?php if($_SESSION["MemberInfo"]["CardTypeID"] != 3) { ?>
-            <div class="round-black">
-                <!-- ### START - SLIDER GALLERY ### -->
-                <div id="gallery" class="ad-gallery">
-                    <div class="ad-image-wrapper"></div>
-                    <div class="ad-controls"></div>
-                    <div class="ad-nav">
-                        <div class="ad-thumbs">
-                            <ul class="ad-thumb-list">
-                                <li>
-                                    <a href="images/slider/slider_photos/1.jpg">
-                                        <img src="images/slider/slider_photos/1.jpg" title="" longdesc="images/slider/slider_photos/1.jpg" alt="Caption">
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="images/slider/slider_photos/2.jpg">
-                                        <img src="images/slider/slider_photos/2.jpg" title="" longdesc="images/slider/slider_photos/2.jpg" alt="">
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="images/slider/slider_photos/3.jpg">
-                                        <img src="images/slider/slider_photos/3.jpg" title="" longdesc="images/slider/slider_photos/3.jpg" alt="">
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="images/slider/slider_photos/4.jpg">
-                                        <img src="images/slider/slider_photos/4.jpg" title="" longdesc="images/slider/slider_photos/4.jpg" alt="">
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="images/slider/slider_photos/5.jpg">
-                                        <img src="images/slider/slider_photos/5.jpg" title="" longdesc="images/slider/slider_photos/5.jpg" alt="">
-                                    </a>
-                                </li>
-                            </ul>
-                        </div><!-- .ad-thumbs -->
-                      </div><!-- .ad-nav -->
-                </div><!-- .ad-gallery -->    
-                <!-- ### END - SLIDER GALLERY ### -->                            
-            </div>
-            <br>
-            <!--Iteration for reward Offers Display-->
-            <?php 
-            $itr = 0;
-            
-            do{ ?>
-            <div class="row-fluid product-container">
-                <div class="span6 product-wrapper">
-                    <!--<div class="limited-ribbon"></div>-->
-                    <div class="product-thumb">
-                        <!--<img src="images/slider/membership_innerpages/product_image_teaser.jpg">-->
-                         <?php if($rewardoffers[$itr]['AvailableItemCount'] <= 0){ ?>
-                            <?php $learmoreimage = $rewardoffers[$itr]["LearnMoreOutOfStockImage"]; ?>
-                            <img src="<?php $imagepath = App::getParam('rewarditem_imagepath').$rewardoffers[$itr]['ThumbnailOutOfStockImage']; echo $imagepath; ?>">
-                        <?php } else { ?>
-                            <?php $learmoreimage = $rewardoffers[$itr]["LearnMoreLimitedImage"]; ?>
-                            <img src="<?php $imagepath = App::getParam('rewarditem_imagepath').$rewardoffers[$itr]['ThumbnailLimitedImage']; echo $imagepath; ?>">
-                        <?php } ?>
-<!--                        <div class="social-overlay">
-                            <div class="social-buttons">
-                            <a href="#"><img src="images/rewarditems/extra_images/fb.png"></a>
-                            <a href="#"><img src="images/rewarditems/extra_images/twitter.png"></a>
-                            </div>
-                        </div>-->
-                    </div>
-                    <div class="row-fluid product-details">
-                        <div class="span6">
-                            <div class="product-name"><?php if($rewardoffers[$itr]['IsMystery'] == 1 && $rewardoffers[$itr]['AvailableItemCount'] > 0){ echo $rewardoffers[$itr]['MysteryName']; }else { echo $rewardoffers[$itr]['ProductName']; }?></div>
-                            <div class="partner-name"><?php if($rewardoffers[$itr]['IsMystery'] == 1) {
-                                                                                                        if($rewardoffers[$itr]['AvailableItemCount'] > 0) {
-                                                                                                                if($rewardoffers[$itr]['PartnerName'] != "" ){ 
-                                                                                                                        echo $rewardoffers[$itr]['PartnerName']; 
-                                                                                                                } else {
-                                                                                                                        echo "<span style='color: #FFFFFF'>None</span>";
-                                                                                                                }
-                                                                                                        } else { 
-                                                                                                                echo "was inside the Red Box"; 
-                                                                                                        }
-                                                                                                    } else {
-                                                                                                        if($rewardoffers[$itr]['PartnerName'] != "" ){ 
-                                                                                                                echo $rewardoffers[$itr]['PartnerName']; 
-                                                                                                        } else {
-                                                                                                                echo "<span style='color: #FFFFFF'>None</span>";
-                                                                                                        }
-                                                                                                    }?></div>
-                            <div class="product-points"><?php if($rewardoffers[$itr]['IsMystery'] == 1) {
-                                                                                                            if($rewardoffers[$itr]['AvailableItemCount'] > 0) {
-                                                                                                                echo "Points:"; 
-                                                                                                                if($rewardoffers[$itr]["Points"] != '') { 
-                                                                                                                echo number_format($rewardoffers[$itr]["Points"],0,'',','); 
-                                                                                                                }
-                                                                                                            } 
-                                                                                                        } else {
-                                                                                                            echo "Points:"; 
-                                                                                                            if($rewardoffers[$itr]["Points"] != '') { 
-                                                                                                                echo number_format($rewardoffers[$itr]["Points"],0,'',','); 
-                                                                                                            }
-                                                                                                        }?></div>
-                        </div>
-                        <div class="span6 learn-more-container">
-                            <?php  
-                                        $RewardItemID = $rewardoffers[$itr]["RewardItemID"];
-                                        $PartnerName = $rewardoffers[$itr]['PartnerName'];
-                                        $ProductName = $rewardoffers[$itr]['ProductName'];
-                                        $Points = $rewardoffers[$itr]['Points'];
-                                        $RewardID = $rewardoffers[$itr]['RewardID'];
-                                        $eCouponImage = $rewardoffers[$itr]["ECouponImage"];
-                                        $IsMystery = $rewardoffers[$itr]["IsMystery"];
-                            ?>
-                            <input type="button" value="Learn More" class="yellow-btn-learn-more" id="btnLearnMore" RewardItemID='<?php echo $RewardItemID; ?>' 
-                                PartnerName='<?php echo $PartnerName; ?>' ProductName='<?php echo $ProductName; ?>' 
-                                Points='<?php echo $Points; ?>' RewardID='<?php echo $RewardID; ?>' 
-                                LearnMoreImage ='<?php echo $learmoreimage; ?>' eCouponImage='<?php echo $eCouponImage; ?>' 
-                                IsMystery='<?php echo $IsMystery; ?>' />
-                        </div>
-                    </div>
-                </div><!-- .product-wrapper -->
+            <?php if(count($rewardoffers) != 0){ ?>
+                <div class="round-black">
+                    <!-- ### START - SLIDER GALLERY ### -->
+                    <div id="gallery" class="ad-gallery">
+                        <div class="ad-image-wrapper"></div>
+                        <div class="ad-controls"></div>
+                        <div class="ad-nav">
+                            <div class="ad-thumbs">
+                                <ul class="ad-thumb-list">
+                                    <li>
+                                        <a href="images/slider/slider_photos/1.jpg">
+                                            <img src="images/slider/slider_photos/1.jpg" title="" longdesc="images/slider/slider_photos/1.jpg" alt="Caption">
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="images/slider/slider_photos/2.jpg">
+                                            <img src="images/slider/slider_photos/2.jpg" title="" longdesc="images/slider/slider_photos/2.jpg" alt="">
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="images/slider/slider_photos/3.jpg">
+                                            <img src="images/slider/slider_photos/3.jpg" title="" longdesc="images/slider/slider_photos/3.jpg" alt="">
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="images/slider/slider_photos/4.jpg">
+                                            <img src="images/slider/slider_photos/4.jpg" title="" longdesc="images/slider/slider_photos/4.jpg" alt="">
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="images/slider/slider_photos/5.jpg">
+                                            <img src="images/slider/slider_photos/5.jpg" title="" longdesc="images/slider/slider_photos/5.jpg" alt="">
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div><!-- .ad-thumbs -->
+                          </div><!-- .ad-nav -->
+                    </div><!-- .ad-gallery -->    
+                    <!-- ### END - SLIDER GALLERY ### -->                            
+                </div>
+                <br>
+                <!--Iteration for reward Offers Display-->
                 <?php 
-                $itr++;
-                
-                if(isset($rewardoffers[$itr]['ProductName'])) { ?>
-                <div class="span6 product-wrapper">
-                    <!--<div class="limited-ribbon"></div>-->
-                    <div class="product-thumb">
-                        <!--<img src="images/slider/membership_innerpages/product_image_teaser.jpg">-->
-                        <?php if($rewardoffers[$itr]['AvailableItemCount'] <= 0){ ?>
-                            <?php $learmoreimage = $rewardoffers[$itr]["LearnMoreOutOfStockImage"]; ?>
-                            <img src="<?php $imagepath = App::getParam('rewarditem_imagepath').$rewardoffers[$itr]['ThumbnailOutOfStockImage']; echo $imagepath; ?>">
-                        <?php } else { ?>
-                            <?php $learmoreimage = $rewardoffers[$itr]["LearnMoreLimitedImage"]; ?>
-                            <img src="<?php $imagepath = App::getParam('rewarditem_imagepath').$rewardoffers[$itr]['ThumbnailLimitedImage']; echo $imagepath; ?>">
-                        <?php } ?>
-<!--                        <div class="social-overlay">
-                            <div class="social-buttons">
-                            <a href="#"><img src="images/rewarditems/extra_images/fb.png"></a>
-                            <a href="#"><img src="images/rewarditems/extra_images/twitter.png"></a>
-                            </div>
-                        </div>-->
-                    </div>
-                    <div class="row-fluid product-details">
-                        <div class="span6">
-                            <div class="product-name"><?php if($rewardoffers[$itr]['IsMystery'] == 1 && $rewardoffers[$itr]['AvailableItemCount'] > 0){ echo $rewardoffers[$itr]['MysteryName']; } else { echo $rewardoffers[$itr]['ProductName']; } ?></div>
-                            <div class="partner-name"><?php if($rewardoffers[$itr]['IsMystery'] == 1) {
-                                                                                                        if($rewardoffers[$itr]['AvailableItemCount'] > 0) {
-                                                                                                                if($rewardoffers[$itr]['PartnerName'] != "" ){ 
-                                                                                                                        echo $rewardoffers[$itr]['PartnerName']; 
-                                                                                                                } else {
-                                                                                                                        echo "<span style='color: #FFFFFF'>None</span>";
-                                                                                                                }
-                                                                                                        } else { 
-                                                                                                                echo "was inside the Red Box"; 
-                                                                                                        }
-                                                                                                    } else {
-                                                                                                        if($rewardoffers[$itr]['PartnerName'] != "" ){ 
-                                                                                                                echo $rewardoffers[$itr]['PartnerName']; 
-                                                                                                        } else {
-                                                                                                                echo "<span style='color: #FFFFFF'>None</span>";
-                                                                                                        }
-                                                                                                    }?></div>
-                            <div class="product-points"><?php if($rewardoffers[$itr]['IsMystery'] == 1) {
+                $itr = 0;
+
+                do { ?>
+                <div class="row-fluid product-container">
+                    <div class="span6 product-wrapper">
+                        <!--<div class="limited-ribbon"></div>-->
+                        <div class="product-thumb">
+                            <!--<img src="images/slider/membership_innerpages/product_image_teaser.jpg">-->
+                             <?php if($rewardoffers[$itr]['AvailableItemCount'] <= 0){ ?>
+                                <?php $learmoreimage = $rewardoffers[$itr]["LearnMoreOutOfStockImage"]; ?>
+                                <img src="<?php $imagepath = App::getParam('rewarditem_imagepath').$rewardoffers[$itr]['ThumbnailOutOfStockImage']; echo $imagepath; ?>">
+                            <?php } else { ?>
+                                <?php $learmoreimage = $rewardoffers[$itr]["LearnMoreLimitedImage"]; ?>
+                                <img src="<?php $imagepath = App::getParam('rewarditem_imagepath').$rewardoffers[$itr]['ThumbnailLimitedImage']; echo $imagepath; ?>">
+                            <?php } ?>
+    <!--                        <div class="social-overlay">
+                                <div class="social-buttons">
+                                <a href="#"><img src="images/rewarditems/extra_images/fb.png"></a>
+                                <a href="#"><img src="images/rewarditems/extra_images/twitter.png"></a>
+                                </div>
+                            </div>-->
+                        </div>
+                        <div class="row-fluid product-details">
+                            <div class="span6">
+                                <div class="product-name"><?php if($rewardoffers[$itr]['IsMystery'] == 1 && $rewardoffers[$itr]['AvailableItemCount'] > 0){ echo $rewardoffers[$itr]['MysteryName']; }else { echo $rewardoffers[$itr]['ProductName']; }?></div>
+                                <div class="partner-name"><?php if($rewardoffers[$itr]['IsMystery'] == 1) {
                                                                                                             if($rewardoffers[$itr]['AvailableItemCount'] > 0) {
-                                                                                                                echo "Points:"; 
-                                                                                                                if($rewardoffers[$itr]["Points"] != '') { 
-                                                                                                                echo number_format($rewardoffers[$itr]["Points"],0,'',','); 
-                                                                                                                }
-                                                                                                            } 
+                                                                                                                    if($rewardoffers[$itr]['PartnerName'] != "" ){ 
+                                                                                                                            echo $rewardoffers[$itr]['PartnerName']; 
+                                                                                                                    } else {
+                                                                                                                            echo "<span style='color: #FFFFFF'>None</span>";
+                                                                                                                    }
+                                                                                                            } else { 
+                                                                                                                    echo "Reward was Unwrapped from a Mystery Red Box"; 
+                                                                                                            }
                                                                                                         } else {
-                                                                                                            echo "Points:"; 
-                                                                                                            if($rewardoffers[$itr]["Points"] != '') { 
-                                                                                                                echo number_format($rewardoffers[$itr]["Points"],0,'',','); 
+                                                                                                            if($rewardoffers[$itr]['PartnerName'] != "" ){ 
+                                                                                                                    echo $rewardoffers[$itr]['PartnerName']; 
+                                                                                                            } else {
+                                                                                                                    echo "<span style='color: #FFFFFF'>None</span>";
                                                                                                             }
                                                                                                         }?></div>
+                                <div class="product-points"><?php if($rewardoffers[$itr]['IsMystery'] == 1) {
+                                                                                                                if($rewardoffers[$itr]['AvailableItemCount'] > 0) {
+                                                                                                                    echo "Points:"; 
+                                                                                                                    if($rewardoffers[$itr]["Points"] != '') { 
+                                                                                                                    echo number_format($rewardoffers[$itr]["Points"],0,'',','); 
+                                                                                                                    }
+                                                                                                                } 
+                                                                                                            } else {
+                                                                                                                echo "Points:"; 
+                                                                                                                if($rewardoffers[$itr]["Points"] != '') { 
+                                                                                                                    echo number_format($rewardoffers[$itr]["Points"],0,'',','); 
+                                                                                                                }
+                                                                                                            }?></div>
+                            </div>
+                            <div class="span6 learn-more-container">
+                                <?php  
+                                            $RewardItemID = $rewardoffers[$itr]["RewardItemID"];
+                                            $PartnerName = $rewardoffers[$itr]['PartnerName'];
+                                            $ProductName = $rewardoffers[$itr]['ProductName'];
+                                            $Points = $rewardoffers[$itr]['Points'];
+                                            $RewardID = $rewardoffers[$itr]['RewardID'];
+                                            $eCouponImage = $rewardoffers[$itr]["ECouponImage"];
+                                            $IsMystery = $rewardoffers[$itr]["IsMystery"];
+                                ?>
+                                <input type="button" value="Learn More" class="yellow-btn-learn-more" id="btnLearnMore" RewardItemID='<?php echo $RewardItemID; ?>' 
+                                    PartnerName='<?php echo $PartnerName; ?>' ProductName='<?php echo $ProductName; ?>' 
+                                    Points='<?php echo $Points; ?>' RewardID='<?php echo $RewardID; ?>' 
+                                    LearnMoreImage ='<?php echo $learmoreimage; ?>' eCouponImage='<?php echo $eCouponImage; ?>' 
+                                    IsMystery='<?php echo $IsMystery; ?>' />
+                            </div>
                         </div>
-                        <div class="span6 learn-more-container">
-                            <?php  
-                                        $RewardItemID = $rewardoffers[$itr]["RewardItemID"];
-                                        $PartnerName = $rewardoffers[$itr]['PartnerName'];
-                                        $ProductName = $rewardoffers[$itr]['ProductName'];
-                                        $Points = $rewardoffers[$itr]['Points'];
-                                        $RewardID = $rewardoffers[$itr]['RewardID'];
-                                        $eCouponImage = $rewardoffers[$itr]["ECouponImage"];
-                                        $IsMystery = $rewardoffers[$itr]["IsMystery"];
-                            ?>
-                            <input type="button" value="Learn More" class="yellow-btn-learn-more" id="btnLearnMore" RewardItemID='<?php echo $RewardItemID; ?>' 
-                                PartnerName='<?php echo $PartnerName; ?>' ProductName='<?php echo $ProductName; ?>' 
-                                Points='<?php echo $Points; ?>' RewardID='<?php echo $RewardID; ?>' 
-                                LearnMoreImage ='<?php echo $learmoreimage; ?>' eCouponImage='<?php echo $eCouponImage; ?>'
-                                IsMystery='<?php echo $IsMystery; ?>' />
+                    </div><!-- .product-wrapper -->
+                    <?php 
+                    $itr++;
+
+                    if(isset($rewardoffers[$itr]['ProductName'])) { ?>
+                    <div class="span6 product-wrapper">
+                        <!--<div class="limited-ribbon"></div>-->
+                        <div class="product-thumb">
+                            <!--<img src="images/slider/membership_innerpages/product_image_teaser.jpg">-->
+                            <?php if($rewardoffers[$itr]['AvailableItemCount'] <= 0){ ?>
+                                <?php $learmoreimage = $rewardoffers[$itr]["LearnMoreOutOfStockImage"]; ?>
+                                <img src="<?php $imagepath = App::getParam('rewarditem_imagepath').$rewardoffers[$itr]['ThumbnailOutOfStockImage']; echo $imagepath; ?>">
+                            <?php } else { ?>
+                                <?php $learmoreimage = $rewardoffers[$itr]["LearnMoreLimitedImage"]; ?>
+                                <img src="<?php $imagepath = App::getParam('rewarditem_imagepath').$rewardoffers[$itr]['ThumbnailLimitedImage']; echo $imagepath; ?>">
+                            <?php } ?>
+    <!--                        <div class="social-overlay">
+                                <div class="social-buttons">
+                                <a href="#"><img src="images/rewarditems/extra_images/fb.png"></a>
+                                <a href="#"><img src="images/rewarditems/extra_images/twitter.png"></a>
+                                </div>
+                            </div>-->
                         </div>
-                    </div>
-                </div><!-- .product-wrapper-->
-                <?php } else { echo "</div>"; break; } ?>
-            </div><!-- .product-container -->
-            <?php
-            $itr++;
-            } while ($itr != count($rewardoffers)); ?>
-            <!--End of Iteration-->
-            
-            <a href="#" id="scroll-to-top"></a>
+                        <div class="row-fluid product-details">
+                            <div class="span6">
+                                <div class="product-name"><?php if($rewardoffers[$itr]['IsMystery'] == 1 && $rewardoffers[$itr]['AvailableItemCount'] > 0){ echo $rewardoffers[$itr]['MysteryName']; } else { echo $rewardoffers[$itr]['ProductName']; } ?></div>
+                                <div class="partner-name"><?php if($rewardoffers[$itr]['IsMystery'] == 1) {
+                                                                                                            if($rewardoffers[$itr]['AvailableItemCount'] > 0) {
+                                                                                                                    if($rewardoffers[$itr]['PartnerName'] != "" ){ 
+                                                                                                                            echo $rewardoffers[$itr]['PartnerName']; 
+                                                                                                                    } else {
+                                                                                                                            echo "<span style='color: #FFFFFF'>None</span>";
+                                                                                                                    }
+                                                                                                            } else { 
+                                                                                                                    echo "Reward was Unwrapped from a Mystery Red Box"; 
+                                                                                                            }
+                                                                                                        } else {
+                                                                                                            if($rewardoffers[$itr]['PartnerName'] != "" ){ 
+                                                                                                                    echo $rewardoffers[$itr]['PartnerName']; 
+                                                                                                            } else {
+                                                                                                                    echo "<span style='color: #FFFFFF'>None</span>";
+                                                                                                            }
+                                                                                                        }?></div>
+                                <div class="product-points"><?php if($rewardoffers[$itr]['IsMystery'] == 1) {
+                                                                                                                if($rewardoffers[$itr]['AvailableItemCount'] > 0) {
+                                                                                                                    echo "Points:"; 
+                                                                                                                    if($rewardoffers[$itr]["Points"] != '') { 
+                                                                                                                    echo number_format($rewardoffers[$itr]["Points"],0,'',','); 
+                                                                                                                    }
+                                                                                                                } 
+                                                                                                            } else {
+                                                                                                                echo "Points:"; 
+                                                                                                                if($rewardoffers[$itr]["Points"] != '') { 
+                                                                                                                    echo number_format($rewardoffers[$itr]["Points"],0,'',','); 
+                                                                                                                }
+                                                                                                            }?></div>
+                            </div>
+                            <div class="span6 learn-more-container">
+                                <?php  
+                                            $RewardItemID = $rewardoffers[$itr]["RewardItemID"];
+                                            $PartnerName = $rewardoffers[$itr]['PartnerName'];
+                                            $ProductName = $rewardoffers[$itr]['ProductName'];
+                                            $Points = $rewardoffers[$itr]['Points'];
+                                            $RewardID = $rewardoffers[$itr]['RewardID'];
+                                            $eCouponImage = $rewardoffers[$itr]["ECouponImage"];
+                                            $IsMystery = $rewardoffers[$itr]["IsMystery"];
+                                ?>
+                                <input type="button" value="Learn More" class="yellow-btn-learn-more" id="btnLearnMore" RewardItemID='<?php echo $RewardItemID; ?>' 
+                                    PartnerName='<?php echo $PartnerName; ?>' ProductName='<?php echo $ProductName; ?>' 
+                                    Points='<?php echo $Points; ?>' RewardID='<?php echo $RewardID; ?>' 
+                                    LearnMoreImage ='<?php echo $learmoreimage; ?>' eCouponImage='<?php echo $eCouponImage; ?>'
+                                    IsMystery='<?php echo $IsMystery; ?>' />
+                            </div>
+                        </div>
+                    </div><!-- .product-wrapper-->
+                    <?php } else { echo "</div>"; break; } ?>
+                </div><!-- .product-container -->
+                <?php
+                $itr++;
+                } while ($itr != count($rewardoffers)); ?>
+                <!--End of Iteration-->
+                
+                <a href="#" id="scroll-to-top"></a>
+            <?php } else { 
+                    echo "<p style='font-size: 14px;'>No Offered Rewards.</p>";
+               }?>
+               <!--End of If Condition-->
          <?php } else {
             echo "<p style='font-size: 14px;'>Please migrate your Temporary Account to a Membership Card to activate Redemption.</p>";
         } ?>

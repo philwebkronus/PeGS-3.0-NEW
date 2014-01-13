@@ -78,6 +78,7 @@ if(isset($_POST["functiontype"]) && $_POST["functiontype"] != ""){
                                         $eCouponImage = $rewardoffers[$itr]["ECouponImage"];
                                         $PartnerName = $rewardoffers[$itr]["PartnerName"];
                                         $availableitemcount = $rewardoffers[$itr]["AvailableItemCount"];
+                                        $IsMystery= $rewardoffers[$itr]['IsMystery'];
                                         $enabled = "";                
                                         $CurrentPoints = $_MemberCards->getCurrentPointsByCardNumber($_SESSION['CardRed']['CardNumber']);
                                         if( $CurrentPoints < $RequiredPoints){
@@ -90,15 +91,15 @@ if(isset($_POST["functiontype"]) && $_POST["functiontype"] != ""){
                                                             $getRaffleCouponSuffix = $_CouponBatches->SelectByWhere(" WHERE Status = 1 LIMIT 1");
                                                             if(isset($getRaffleCouponSuffix[0]) && $getRaffleCouponSuffix[0]['CouponBatchID'] != ""){
                                                                 $_RaffleCoupons->TableName = "rafflecoupons_".$getRaffleCouponSuffix[0]['CouponBatchID'];
-                                                                $rewardoffers[$itr]["Action"] = "<input type='button' value='Redeem' id='csredeem-button' Email = '$EmailAddress' ProductName='$ProductName' RewardItemID='$RewardItemID' RewardID='$RewardID' RequiredPoints='$RequiredPoints' eCouponImage='$eCouponImage' PartnerName='$PartnerName' >";
+                                                                $rewardoffers[$itr]["Action"] = "<input type='button' value='Redeem' id='csredeem-button' Email = '$EmailAddress' ProductName='$ProductName' RewardItemID='$RewardItemID' RewardID='$RewardID' RequiredPoints='$RequiredPoints' eCouponImage='$eCouponImage' PartnerName='$PartnerName' IsMystery = '$IsMystery' >";
                                                             } else {
-                                                                $rewardoffers[$itr]["Action"] = "<input type='button' disabled value='Redeem' id='csredeem-button' Email = '$EmailAddress' ProductName='$ProductName' RewardItemID='$RewardItemID' RewardID='$RewardID' RequiredPoints='$RequiredPoints' eCouponImage='$eCouponImage' PartnerName='$PartnerName' >";
+                                                                $rewardoffers[$itr]["Action"] = "<input type='button' disabled value='Redeem' id='csredeem-button' Email = '$EmailAddress' ProductName='$ProductName' RewardItemID='$RewardItemID' RewardID='$RewardID' RequiredPoints='$RequiredPoints' eCouponImage='$eCouponImage' PartnerName='$PartnerName' IsMystery = '$IsMystery' >";
                                                             }
                                                         } else {
-                                                            $rewardoffers[$itr]["Action"] = "<input type='button' value='Redeem' id='csredeem-button' Email = '$EmailAddress' ProductName='$ProductName' RewardItemID='$RewardItemID' RewardID='$RewardID' RequiredPoints='$RequiredPoints' eCouponImage='$eCouponImage' PartnerName='$PartnerName' >";
+                                                            $rewardoffers[$itr]["Action"] = "<input type='button' value='Redeem' id='csredeem-button' Email = '$EmailAddress' ProductName='$ProductName' RewardItemID='$RewardItemID' RewardID='$RewardID' RequiredPoints='$RequiredPoints' eCouponImage='$eCouponImage' PartnerName='$PartnerName' IsMystery = '$IsMystery' >";
                                                         }
                                                 } else {
-                                                    $rewardoffers[$itr]["Action"] = "<input type='button' value='Redeem' id='csredeem-button' disabled='disabled' Email = '$EmailAddress' ProductName='$ProductName' RewardItemID='$RewardItemID' RewardID='$RewardID' RequiredPoints='$RequiredPoints' eCouponImage='$eCouponImage' PartnerName='$PartnerName' >";
+                                                    $rewardoffers[$itr]["Action"] = "<input type='button' value='Redeem' id='csredeem-button' disabled='disabled' Email = '$EmailAddress' ProductName='$ProductName' RewardItemID='$RewardItemID' RewardID='$RewardID' RequiredPoints='$RequiredPoints' eCouponImage='$eCouponImage' PartnerName='$PartnerName' IsMystery = '$IsMystery' >";
                                                 }
                                         }
 
@@ -168,10 +169,10 @@ if(isset($_POST["functiontype"]) && $_POST["functiontype"] != ""){
                                                 $response["Error"] = "";
                                                 $response["CardNumber"] = $CardNumber;
                                                 $response["CardType"] = $cardInfo[0]['CardType'];
-                                                $response["CurrentPoints"] = $cardInfo[0]['CurrentPoints'];
-                                                $response["LifetimePoints"] = $cardInfo[0]['LifetimePoints'];
-                                                $response["BonusPoints"] = $cardInfo[0]['BonusPoints'];
-                                                $response["RedeemedPoints"] = $cardInfo[0]['RedeemedPoints'];
+                                                $response["CurrentPoints"] = number_format($cardInfo[0]['CurrentPoints'], 0, '', ',');
+                                                $response["LifetimePoints"] = number_format($cardInfo[0]['LifetimePoints'], 0, '', ',');
+                                                $response["BonusPoints"] = number_format($cardInfo[0]['BonusPoints'], 0, '', ',');
+                                                $response["RedeemedPoints"] = number_format($cardInfo[0]['RedeemedPoints'], 0, '', ',');
                                                 $response["CardTypeID"] = $cardInfo[0]['CardTypeID'];
                                                 $response["IsVIP"] = $result[0]['IsVIP'];
                                                 $response["Status"] = $cardInfo[0]['Status'];
@@ -185,8 +186,12 @@ if(isset($_POST["functiontype"]) && $_POST["functiontype"] != ""){
                                                         $response["StatusMsg"] = "Card is Deactivated.";
                                                         unset($_SESSION['CardRed']);
                                                         break;
+                                                    case 7:
+                                                        $response["StatusMsg"] = "Red Card is already Migrated.";
+                                                        unset($_SESSION['CardRed']);
+                                                        break;
                                                     case 8:
-                                                        $response["StatusMsg"] = "Card is Migrated.";
+                                                        $response["StatusMsg"] = "Temporary Card is Migrated.";
                                                         unset($_SESSION['CardRed']);
                                                         break;
                                                     case 9:
@@ -268,10 +273,10 @@ if(isset($_POST["functiontype"]) && $_POST["functiontype"] != ""){
                                                 $response["Error"] = "";
                                                 $response["CardNumber"] = $CardNumber;
                                                 $response["CardType"] = $CardType;
-                                                $response["CurrentPoints"] = $membercards[0]['CurrentPoints'];
-                                                $response["LifetimePoints"] = $membercards[0]['LifetimePoints'];
-                                                $response["BonusPoints"] = $membercards[0]['BonusPoints'];
-                                                $response["RedeemedPoints"] = $membercards[0]['RedeemedPoints'];
+                                                $response["CurrentPoints"] = number_format($membercards[0]['CurrentPoints'], 0, '', ',');
+                                                $response["LifetimePoints"] = number_format($membercards[0]['LifetimePoints'], 0, '', ',');
+                                                $response["BonusPoints"] = number_format($membercards[0]['BonusPoints'], 0, '', ',');
+                                                $response["RedeemedPoints"] = number_format($membercards[0]['RedeemedPoints'], 0, '', ',');
                                                 $response["CardTypeID"] = $membercards[0]['CardTypeID'];
                                                 $response["IsVIP"] = $membercards[0]['IsVIP'];
                                                 $response["Status"] = $membercards[0]['Status'];
@@ -285,8 +290,12 @@ if(isset($_POST["functiontype"]) && $_POST["functiontype"] != ""){
                                                         $response["StatusMsg"] = "Card is Deactivated.";
                                                         unset($_SESSION['CardRed']);
                                                         break;
+                                                    case 7:
+                                                        $response["StatusMsg"] = "Red Card is  already Migrated.";
+                                                        unset($_SESSION['CardRed']);
+                                                        break;
                                                     case 8:
-                                                        $response["StatusMsg"] = "Card is Migrated.";
+                                                        $response["StatusMsg"] = "Temporary Card is Migrated.";
                                                         unset($_SESSION['CardRed']);
                                                         break;
                                                     case 9:

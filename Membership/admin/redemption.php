@@ -623,6 +623,7 @@ if($fproc->IsPostBack){
                                 $("#CardTypeID").val(data.CardTypeID);
                                 if(data.CardTypeID != 3){
                                     if(data.Status == 1){
+                                        $("#temp-msg").css("display","none");
                                         getRedeemableOffers();
                                     } else {
                                         $("#cardinfo").css("display","none");
@@ -637,6 +638,8 @@ if($fproc->IsPostBack){
                                                 "Ok": function(){
                                                     $(this).dialog('close');
                                                     $("#txtSearch").val("");
+                                                    $("#temp-msg").css("display","none");
+                                                    $("#cardinfo").css("display","none");
                                                 }
                                             }
                                         });
@@ -656,6 +659,8 @@ if($fproc->IsPostBack){
                                             "Ok": function(){
                                                 $(this).dialog('close');
                                                 $("#txtSearch").val("");
+                                                $("#temp-msg").css("display","none");
+                                                $("#cardinfo").css("display","none");
                                             }
                                         }
                                     });
@@ -672,6 +677,8 @@ if($fproc->IsPostBack){
                                         "Ok": function(){
                                             $(this).dialog('close');
                                             $("#txtSearch").val("");
+                                            $("#temp-msg").css("display","none");
+                                            $("#cardinfo").css("display","none");
                                         }
                                     }
                                 });
@@ -742,7 +749,7 @@ if($fproc->IsPostBack){
                                         "Print" : function() {
                                             $("#Quantity").val("");
                                             $("#ItemQuantity").val("");
-                                            var mywindow = window.open('http://'+localhost+'membershipsystem/admin/template/couponredemptiontemplate.php');
+                                            var mywindow = window.open('http://'+localhost+'membership.rewards/admin/template/couponredemptiontemplate.php');
                                             mywindow.document.write('</head><body >');
                                             mywindow.document.write($("#couponmessagebody").html());
                                             mywindow.document.write('</body></html>');
@@ -776,7 +783,7 @@ if($fproc->IsPostBack){
                                         "Print" : function() {
                                             $("#Quantity").val("");
                                             $("#ItemQuantity").val("");
-                                            var mywindow = window.open('http://'+localhost+'membershipsystem/admin/template/admin/template/itemredemptiontemplate.php');
+                                            var mywindow = window.open('http://'+localhost+'membership.rewards/admin/template/admin/template/itemredemptiontemplate.php');
                                             mywindow.document.write('</head><body >');
                                             mywindow.document.write($("#itemmessagebody").html());
                                             mywindow.document.write('</body></html>');
@@ -929,6 +936,7 @@ if($fproc->IsPostBack){
                         var RewardItemID = $(this).attr("RewardItemID");
                         var PartnerName = $(this).attr("PartnerName");
                         var eCouponImage = $(this).attr("eCouponImage");
+                        var IsMystery = $(this).attr("IsMystery");
                         var email = $(this).attr("Email");
                         $("#ItemName").html(ProductName);
                         $("#ItemPoints").html(ItemPoints);
@@ -939,8 +947,22 @@ if($fproc->IsPostBack){
                         $("#RewardID").val(RewardID);
                         $("#PartnerName").val(PartnerName);
                         $("#eCouponImage").val(eCouponImage);
+                        
+                        //Identify whether the reward is item or coupon.
                         if($("#RewardID").val() == 1){
-                            $("#txtinputs").html('<?php echo "Please enter quantity to be redeemed (max. 5 items). "; echo $txtItemQuantity; ?>');
+                            //Check if the Reward Item is Mystery Type.
+                            if(IsMystery == "1"){
+                                //Limit to only 1 redeemable quantity for the mystery item.
+                                $("#txtinputs").html('<?php echo "Please enter quantity to be redeemed (max. 5 items). "; $txtItemQuantity->Text = "1"; 
+                                                                                            $txtItemQuantity->Args = "readonly=readonly"; echo $txtItemQuantity;
+                                                                                ?>');
+                                var mysterypoints = parseInt($("#hdnItemPoints").val());
+                                $("#TotalItemPoints").html('Total Points: ' + mysterypoints.toString().replace(/,/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                                $("#hdnTotalItemPoints").val(mysterypoints);
+                            } else {
+                                //Limit redeemable quantity to 5 items.
+                                $("#txtinputs").html('<?php echo "Please enter quantity to be redeemed (max. 5 items). "; echo $txtItemQuantity; ?>');
+                            }
                         } else {
                             $("#txtinputs").html('<?php echo "Please enter quantity to be redeemed. "; echo $txtQuantity; ?>');
                         }
