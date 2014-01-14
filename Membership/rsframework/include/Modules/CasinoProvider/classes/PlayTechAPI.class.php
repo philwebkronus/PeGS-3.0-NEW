@@ -374,22 +374,23 @@ class PlayTechAPI
 		
 		$this->_fullUri = $this->_fullUri . '/' . $_methodFileName . $this->_queryString;
                 
+                /*
 		$response = $this->SubmitData( $this->_fullUri );	
                 
                 //Enable PT creation, 08/22/13
                 if($response[0] == 200){
-                    
+               
                     $this->_APIresponse = $this->XML2Array($response[1]);
                     
                 } else {
                     
                     $this->_error = $response[0];
                 }
-                
+                */
                
                 //always pass OK, to continue transaction in membership, remove this
                 //if PT will be deployed 06/25/13
-                //$this->_APIresponse = array('transaction'=>array('@attributes'=>array('result'=>'OK')));
+                $this->_APIresponse = array('transaction'=>array('@attributes'=>array('result'=>'OK')));
                 
                 return $this->_APIresponse;	
 	}	
