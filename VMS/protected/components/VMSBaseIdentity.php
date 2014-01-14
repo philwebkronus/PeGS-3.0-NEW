@@ -43,7 +43,8 @@ class VMSBaseIdentity extends Controller
                                              'ajaxGetTerminal','ajaxStackerSessions','ajaxVoucherUsage',
                                              'ajaxStackerDetails','ajaxLastQuery','ajaxEGMachines','ajaxVoucherMonitor',
                                              'reimbursableVoucherDataTable','voucherUsageDataTable',
-                                             'validationDataTable','vmslogs','apilogs'
+                                             'validationDataTable','vmslogs','apilogs', 'loadBatch','getVoucherInfo',
+                                             'regenerate', 'index'
                                        ),
                             'users'=>array('@'),
                     ),

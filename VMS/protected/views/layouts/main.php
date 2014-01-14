@@ -18,6 +18,7 @@
 <!--    <link rel="stylesheet" href="http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css" />
         <script src="http://code.jquery.com/jquery-1.8.3.js"></script>
         <script src="http://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>-->
+        <?php Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl . '/js/validations.js'); ?>
 	<title><?php echo CHtml::encode($this->pageTitle); ?></title>
 </head>
 
@@ -25,8 +26,7 @@
 
 <div class="container" id="page">
 
-<!--	<div id="header">Voucher Management System</div> header -->
-        <div id="header"></div>
+    <div id="header"><div id="headertext">Voucher Management System</div></div>
         
         <div id="mainmenu">
         <?php 
@@ -49,9 +49,9 @@
            'submenuOptions'=> array(),
            'visible'=>!Yii::app()->user->isGuest, 
          );
-                
-        $items = array_merge($items,$logout);
         
+        $items = array_merge($items,$logout);
+                
         $this->widget('zii.widgets.CMenu', array(
           'id' => 'nav',
           'activeCssClass'=>'selected',
@@ -76,8 +76,8 @@
 	</div><!-- footer -->
 
 </div><!-- page -->
-
-        
-
+<?php
+    Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl . '/js/validations.js');
+?>
 </body>
 </html>

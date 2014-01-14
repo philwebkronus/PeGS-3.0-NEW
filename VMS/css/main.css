@@ -31,10 +31,16 @@ body
 	margin: 0;
 	padding: 0;
         height: 122px;
-        background:url('../images/header.png') no-repeat left top;
+        /*background:url('../images/header.png') no-repeat left top;*/
         background-color:#1a597c;
         color:#FFF;
+        font-size: 26px;
+        line-height: 130px;
 }   
+
+#headertext{
+        margin-left: 25px;
+}
 
 #content
 {
@@ -150,6 +156,7 @@ div.view
 
 div.breadcrumbs
 {
+        visibility: hidden;
 	font-size: 0.9em;
 	padding: 5px 20px;
 }
@@ -275,4 +282,10 @@ div.loadingtext
     top: 16px;
     left: 50px;
     font-size:12px;
+}
+div#gentool{
+    width: 500px;
+}
+table#gentooltbl tr td#label{
+    width: 120px;
 }
