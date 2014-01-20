@@ -89,7 +89,7 @@ class Cards extends BaseEntity
     
     public function updateCardStatus($arrNewCard, $arrTempCard)
     {
-        
+
         $this->StartTransaction();
         try
         {
@@ -98,19 +98,28 @@ class Cards extends BaseEntity
             $tempcardid = $arrTempCard['CardID'];
             
             //$this->UpdateByArray($arrTempCard);
-            $this->ExecuteQuery("UPDATE membercards SET Status = $tempstatus, SiteID = $tempsiteid WHERE CardID = $tempcardid");
+            $isSuccess = $this->ExecuteQuery("UPDATE membercards SET Status = $tempstatus, SiteID = $tempsiteid WHERE CardID = $tempcardid");
             
-            if(!App::HasError())
+            if($isSuccess)
             {
-                $this->UpdateByArray($arrNewCard);
+                $affectedRows = $this->UpdateByArray($arrNewCard);
                 
-                if(!App::HasError())
+                if($affectedRows > 0)
                 {
                     $memcardid = $arrNewCard['CardID'];
                     $this->ExecuteQuery("UPDATE loyaltydb.cards SET CardTypeID = 2 WHERE CardID = $memcardid");
 
                     if (!App::HasError()) {
-                        $this->CommitTransaction();
+                        
+                        $tempmemcardid = $arrTempCard['CardID'];
+                        $tempstatus = $arrTempCard['Status'];
+                        
+                        $isSuccess = $this->ExecuteQuery("UPDATE loyaltydb.cards SET Status = $tempstatus WHERE CardID = $tempmemcardid");
+                        if ($isSuccess) {
+                            $this->CommitTransaction();
+                        } else {
+                            $this->RollBackTransaction();
+                        }
                     }
                     else
                     {

@@ -18,10 +18,11 @@ class GetCardInfoAPI extends BaseEntity
      * @param int $cardnumber
      * @return string array of Member details and card information
      */
-    public function GetCardInfo( $cardnumber, $status, $isreg )
+    public function GetCardInfo( $cardnumber, $status, $isreg, $siteID )
     {
         //Load MemberInfo Module Class
         App::LoadModuleClass("Membership", "MemberInfo");
+        App::LoadModuleClass("Membership", "Members");
         App::LoadModuleClass("Membership", "TempMembers");
         App::LoadModuleClass("Membership", "MemberServices");        
         App::LoadModuleClass("Membership", "MigrateMember");  
@@ -33,6 +34,7 @@ class GetCardInfoAPI extends BaseEntity
         
         //Instantiate Models
         $_MemberInfo = new MemberInfo();
+        $_Members = new Members();
         $_TempMembers = new TempMembers();
         $_MemberServices = new MemberServices();
         $_MemberCards = new MemberCards();
@@ -83,6 +85,8 @@ class GetCardInfoAPI extends BaseEntity
                  
                 $memberInfo = $_MemberInfo->getMemberInfo($cardinfo[0]['MID']);
                 $row = array_merge($cardinfo[0],$memberInfo[0]);
+                
+                $members = $_Members->getVIP($cardinfo[0]['MID']);
                                 
                 $cardType = $_Cards->getCardInfo( $cardnumber );
                 
@@ -90,28 +94,29 @@ class GetCardInfoAPI extends BaseEntity
                 $casinoAccounts = $_MemberServices->getCasinoAccounts( $row['MID'] );
             
                 $result = array("CardInfo"=>array(
-                                         "MID"              => $row['MID'],
-                                         "Username"         => "",
-                                         "CardNumber"       => $cardnumber,
-                                         "MemberUsername"   => $row['Email'],
-                                         "CardType"         => $cardType[0]['CardTypeID'],
-                                         "MemberName"       => $row['FirstName'] . ' ' . $row['LastName'],
-                                         "RegistrationDate" => $row['DateCreated'],
-                                         "Birthdate"        => $row['Birthdate'],
-                                         "CurrentPoints"    => $row['CurrentPoints'],
-                                         "LifetimePoints"   => $row['LifetimePoints'],
-                                         "RedeemedPoints"   => $row['RedeemedPoints'],
-                                         "IsCompleteInfo"   => $row['IsCompleteInfo'],
-                                         "MemberID"         => $row['MID'],                                                                     
-                                         "CasinoArray"      => $casinoAccounts,
-                                         "CardStatus"       => intval($row['Status']),
-                                         "DateVerified"     => $row['DateVerified'],
-                                         "MobileNumber"     => $row['MobileNumber'],
-                                         "Email"            => $row['Email'],
-                                         "IsReg"            => intval($isreg),
-                                         "CoolingPeriod"    => "",
-                                         "StatusCode"       => intval(CardStatus::ACTIVE),
-                                         "StatusMsg"        => 'Active Card',
+                                         "MID"                  => $row['MID'],
+                                         "Username"             => "",
+                                         "CardNumber"           => $cardnumber,
+                                         "MemberUsername"       => $row['Email'],
+                                         "CardType"             => $cardType[0]['CardTypeID'],
+                                         "MemberName"           => $row['FirstName'] . ' ' . $row['LastName'],
+                                         "RegistrationDate"     => $row['DateCreated'],
+                                         "Birthdate"            => $row['Birthdate'],
+                                         "CurrentPoints"        => $row['CurrentPoints'],
+                                         "LifetimePoints"       => $row['LifetimePoints'],
+                                         "RedeemedPoints"       => $row['RedeemedPoints'],
+                                         "IsCompleteInfo"       => $row['IsCompleteInfo'],
+                                         "MemberID"             => $row['MID'], 
+                                         "MemberClassification" => $members[0]['isVIP'],
+                                         "CasinoArray"          => $casinoAccounts,
+                                         "CardStatus"           => intval($row['Status']),
+                                         "DateVerified"         => $row['DateVerified'],
+                                         "MobileNumber"         => $row['MobileNumber'],
+                                         "Email"                => $row['Email'],
+                                         "IsReg"                => intval($isreg),
+                                         "CoolingPeriod"        => "",
+                                         "StatusCode"           => intval(CardStatus::ACTIVE),
+                                         "StatusMsg"            => 'Active Card',
                                          )
                             );
                 
@@ -164,6 +169,7 @@ class GetCardInfoAPI extends BaseEntity
                         , MemberID AS MID
                         , CasinoArray
                         , CardStatus
+                        , IsVIP
                         , DateVerified
                         , MobileNumber
                         , Email
@@ -192,7 +198,8 @@ class GetCardInfoAPI extends BaseEntity
                                          "CardStatus"       => $row[0]['CardStatus'],
                                          "DateVerified"     => $row[0]['DateVerified'],
                                          "MobileNumber"     => $row[0]['MobileNumber'],
-                                         "Email"            => $row[0]['Email'],                    
+                                         "Email"            => $row[0]['Email'],
+                                         "IsVIP"            => $row[0]['IsVIP'],
                                          "IsReg"            => intval($isreg),
                                          "CoolingPeriod"    => "",
                                          "StatusCode"       => intval(CardStatus::OLD),
@@ -253,7 +260,7 @@ class GetCardInfoAPI extends BaseEntity
                     
                     $_Log = new AuditTrail();
                     
-                    $activation = $_ActivateMember->Migrate( $cardnumber );
+                    $activation = $_ActivateMember->Migrate( $cardnumber, $siteID );
                                         
                     if(count ( $activation ) > 0 )
                     {
@@ -262,6 +269,8 @@ class GetCardInfoAPI extends BaseEntity
                         if($status == 'OK')
                         {
                             $MID = $activation['MID'];   
+                            
+                            $members = $_Members->getVIP($MID);
                         
                             $casinoAccounts = $_MemberServices->getCasinoAccounts( $MID );                            
                             $memberInfo = $_MemberInfo->getMemberInfo( $MID );
@@ -271,28 +280,29 @@ class GetCardInfoAPI extends BaseEntity
                             $points = $cardinfo[0];
                             
                             $result = array("CardInfo"=>array(
-                                         "MID"              => $MID,
-                                         "Username"         => "",
-                                         "CardNumber"       => $cardnumber,//$row['CardNumber'],
-                                         "MemberUsername"   => $row['UserName'],
-                                         "CardType"         => "",
-                                         "MemberName"       => $row['FirstName'] . ' ' . $row['LastName'],
-                                         "RegistrationDate" => $row['DateCreated'],
-                                         "Birthdate"        => $row['Birthdate'],
-                                         "CurrentPoints"    => $points['CurrentPoints'],
-                                         "LifetimePoints"   => $points['LifetimePoints'],
-                                         "RedeemedPoints"   => $points['RedeemedPoints'],
-                                         "IsCompleteInfo"   => $row['IsCompleteInfo'],
-                                         "MemberID"         => $MID,                                                                     
-                                         "CasinoArray"      => $casinoAccounts,
-                                         "CardStatus"       => intval(CardStatus::ACTIVE_TEMPORARY),
-                                         "DateVerified"     => $row['DateVerified'],
-                                         "MobileNumber"     => $row['MobileNumber'],
-                                         "Email"            => $row['Email'],                                         
-                                         "IsReg"            => intval($isreg),
-                                         "CoolingPeriod"    => $_Helper->getParameterValue('COOLING_PERIOD'),
-                                         "StatusCode"       => intval(CardStatus::ACTIVE_TEMPORARY),
-                                         "StatusMsg"        => 'Active Temporary Account',
+                                         "MID"                  => $MID,
+                                         "Username"             => "",
+                                         "CardNumber"           => $cardnumber,//$row['CardNumber'],
+                                         "MemberUsername"       => $row['UserName'],
+                                         "CardType"             => "",
+                                         "MemberName"           => $row['FirstName'] . ' ' . $row['LastName'],
+                                         "RegistrationDate"     => $row['DateCreated'],
+                                         "Birthdate"            => $row['Birthdate'],
+                                         "CurrentPoints"        => $points['CurrentPoints'],
+                                         "LifetimePoints"       => $points['LifetimePoints'],
+                                         "RedeemedPoints"       => $points['RedeemedPoints'],
+                                         "IsCompleteInfo"       => $row['IsCompleteInfo'],
+                                         "MemberID"             => $MID,   
+                                         "MemberClassification" => $members[0]['isVIP'],
+                                         "CasinoArray"          => $casinoAccounts,
+                                         "CardStatus"           => intval(CardStatus::ACTIVE_TEMPORARY),
+                                         "DateVerified"         => $row['DateVerified'],
+                                         "MobileNumber"         => $row['MobileNumber'],
+                                         "Email"                => $row['Email'],                                         
+                                         "IsReg"                => intval($isreg),
+                                         "CoolingPeriod"        => $_Helper->getParameterValue('COOLING_PERIOD'),
+                                         "StatusCode"           => intval(CardStatus::ACTIVE_TEMPORARY),
+                                         "StatusMsg"            => 'Active Temporary Account',
                                          )
                             );
                             
@@ -380,33 +390,36 @@ class GetCardInfoAPI extends BaseEntity
                         $memberInfo = $_MemberInfo->getMemberInfo( $MID );                        
                         $row = $memberInfo[0];
                         
+                        $members = $_Members->getVIP($MID);
+                        
                         $casinoAccounts = $_MemberServices->getCasinoAccounts( $MID );
                         
                     }
                     
                     $result = array("CardInfo"=>array(
-                                         "MID"              => $MID,
-                                         "Username"         => "",
-                                         "CardNumber"       => $cardnumber,//$row['CardNumber'],
-                                         "MemberUsername"   => $row['UserName'],
-                                         "CardType"         => "",
-                                         "MemberName"       => $row['FirstName'] . ' ' . $row['LastName'],
-                                         "RegistrationDate" => $row['DateCreated'],
-                                         "Birthdate"        => $row['Birthdate'],
-                                         "CurrentPoints"    => $points['CurrentPoints'],
-                                         "LifetimePoints"   => $points['LifetimePoints'],
-                                         "RedeemedPoints"   => $points['RedeemedPoints'],
-                                         "IsCompleteInfo"   => $row['IsCompleteInfo'],
-                                         "MemberID"         => $MID,                                                                     
-                                         "CasinoArray"      => $casinoAccounts,
-                                         "CardStatus"       => intval(CardStatus::ACTIVE_TEMPORARY),
-                                         "DateVerified"     => $row['DateVerified'],
-                                         "MobileNumber"     => $row['MobileNumber'],
-                                         "Email"            => $row['Email'],                                         
-                                         "IsReg"            => intval($isreg),
-                                         "CoolingPeriod"    => $_Helper->getParameterValue('COOLING_PERIOD'),
-                                         "StatusCode"       => intval(CardStatus::ACTIVE_TEMPORARY),
-                                         "StatusMsg"        => 'Active Temporary Account',
+                                         "MID"                      => $MID,
+                                         "Username"                 => "",
+                                         "CardNumber"               => $cardnumber,//$row['CardNumber'],
+                                         "MemberUsername"           => $row['UserName'],
+                                         "CardType"                 => "",
+                                         "MemberName"               => $row['FirstName'] . ' ' . $row['LastName'],
+                                         "RegistrationDate"         => $row['DateCreated'],
+                                         "Birthdate"                => $row['Birthdate'],
+                                         "CurrentPoints"            => $points['CurrentPoints'],
+                                         "LifetimePoints"           => $points['LifetimePoints'],
+                                         "RedeemedPoints"           => $points['RedeemedPoints'],
+                                         "IsCompleteInfo"           => $row['IsCompleteInfo'],
+                                         "MemberID"                 => $MID,    
+                                         "MemberClassification"     => $members[0]['isVIP'],
+                                         "CasinoArray"              => $casinoAccounts,
+                                         "CardStatus"               => intval(CardStatus::ACTIVE_TEMPORARY),
+                                         "DateVerified"             => $row['DateVerified'],
+                                         "MobileNumber"             => $row['MobileNumber'],
+                                         "Email"                    => $row['Email'],                                         
+                                         "IsReg"                    => intval($isreg),
+                                         "CoolingPeriod"            => $_Helper->getParameterValue('COOLING_PERIOD'),
+                                         "StatusCode"               => intval(CardStatus::ACTIVE_TEMPORARY),
+                                         "StatusMsg"                => 'Active Temporary Account',
                                          )
                             );
                     
@@ -421,29 +434,32 @@ class GetCardInfoAPI extends BaseEntity
                                 
                 $MID = $row[0]['MID'];
                 
+                $memberClassification = 0; //always tag as regular account
+                
                 $result = array("CardInfo"=>array(
-                                         "MID"              => $MID,
-                                         "Username"         => "",
-                                         "CardNumber"       => "",
-                                         "MemberUsername"   => $row[0]['UserName'],
-                                         "CardType"         => "",
-                                         "MemberName"       => $row[0]['FirstName'] . ' ' . $row[0]['LastName'],
-                                         "RegistrationDate" => $row[0]['DateCreated'],
-                                         "Birthdate"        => $row[0]['Birthdate'],
-                                         "CurrentPoints"    => 0,
-                                         "LifetimePoints"   => 0,
-                                         "RedeemedPoints"   => 0,
-                                         "IsCompleteInfo"   => $row[0]['IsCompleteInfo'],
-                                         "MemberID"         => $MID,                                                                     
-                                         "CasinoArray"      => "",
-                                         "CardStatus"       => intval(CardStatus::INACTIVE_TEMPORARY),
-                                         "DateVerified"     => $row[0]['DateVerified'],
-                                         "MobileNumber"     => $row[0]['MobileNumber'],
-                                         "Email"            => $row[0]['Email'],
-                                         "IsReg"            => intval($isreg),
-                                         "CoolingPeriod"    => $_Helper->getParameterValue('COOLING_PERIOD'),
-                                         "StatusCode"       => intval(CardStatus::INACTIVE_TEMPORARY),
-                                         "StatusMsg"        => 'Inactive Temporary Account',
+                                         "MID"                      => $MID,
+                                         "Username"                 => "",
+                                         "CardNumber"               => "",
+                                         "MemberUsername"           => $row[0]['UserName'],
+                                         "CardType"                 => "",
+                                         "MemberName"               => $row[0]['FirstName'] . ' ' . $row[0]['LastName'],
+                                         "RegistrationDate"         => $row[0]['DateCreated'],
+                                         "Birthdate"                => $row[0]['Birthdate'],
+                                         "CurrentPoints"            => 0,
+                                         "LifetimePoints"           => 0,
+                                         "RedeemedPoints"           => 0,
+                                         "IsCompleteInfo"           => $row[0]['IsCompleteInfo'],
+                                         "MemberID"                 => $MID,   
+                                         "MemberClassification"     => $memberClassification,
+                                         "CasinoArray"              => "",
+                                         "CardStatus"               => intval(CardStatus::INACTIVE_TEMPORARY),
+                                         "DateVerified"             => $row[0]['DateVerified'],
+                                         "MobileNumber"             => $row[0]['MobileNumber'],
+                                         "Email"                    => $row[0]['Email'],
+                                         "IsReg"                    => intval($isreg),
+                                         "CoolingPeriod"            => $_Helper->getParameterValue('COOLING_PERIOD'),
+                                         "StatusCode"               => intval(CardStatus::INACTIVE_TEMPORARY),
+                                         "StatusMsg"                => 'Inactive Temporary Account',
                                          )
                             );
                 
@@ -468,6 +484,8 @@ class GetCardInfoAPI extends BaseEntity
         
                 $cardinfo = parent::RunQuery($query);        
                 $memberInfo = $_MemberInfo->getMemberInfo($cardinfo[0]['MID']);
+                
+                $members = $_Members->getVIP($cardinfo[0]['MID']);
 
                 $row = array_merge($cardinfo[0],$memberInfo[0]);
                 
@@ -475,28 +493,29 @@ class GetCardInfoAPI extends BaseEntity
                 $casinoAccounts = $_MemberServices->getCasinoAccounts( $row['MID'] );
                             
                 $result = array("CardInfo"=>array(
-                                         "MID"              => "",
-                                         "Username"         => "",
-                                         "CardNumber"       => $row['CardNumber'],
-                                         "MemberUsername"   => $row['Email'],
-                                         "CardType"         => $row['CardTypeID'],
-                                         "MemberName"       => $row['FirstName'],
-                                         "RegistrationDate" => $row['DateCreated'],
-                                         "Birthdate"        => $row['Birthdate'],
-                                         "CurrentPoints"    => $row['CurrentPoints'],
-                                         "LifetimePoints"   => $row['LifetimePoints'],
-                                         "RedeemedPoints"   => $row['RedeemedPoints'],
-                                         "IsCompleteInfo"   => $row['IsCompleteInfo'],
-                                         "MemberID"         => $row['MID'],                                                                     
-                                         "CasinoArray"      => $casinoAccounts,
-                                         "CardStatus"       => intval($row['Status']),
-                                         "DateVerified"     => $row['DateVerified'],
-                                         "MobileNumber"     => $row['MobileNumber'],
-                                         "Email"            => $row['Email'],                    
-                                         "IsReg"            => intval($isreg),
-                                         "CoolingPeriod"    => "",
-                                         "StatusCode"       => intval(CardStatus::NEW_MIGRATED),
-                                         "StatusMsg"        => 'Migrated New Card',
+                                         "MID"                      => "",
+                                         "Username"                 => "",
+                                         "CardNumber"               => $row['CardNumber'],
+                                         "MemberUsername"           => $row['Email'],
+                                         "CardType"                 => $row['CardTypeID'],
+                                         "MemberName"               => $row['FirstName'],
+                                         "RegistrationDate"         => $row['DateCreated'],
+                                         "Birthdate"                => $row['Birthdate'],
+                                         "CurrentPoints"            => $row['CurrentPoints'],
+                                         "LifetimePoints"           => $row['LifetimePoints'],
+                                         "RedeemedPoints"           => $row['RedeemedPoints'],
+                                         "IsCompleteInfo"           => $row['IsCompleteInfo'],
+                                         "MemberID"                 => $row['MID'],     
+                                         "MemberClassification"     => $members[0]['isVIP'],
+                                         "CasinoArray"              => $casinoAccounts,
+                                         "CardStatus"               => intval($row['Status']),
+                                         "DateVerified"             => $row['DateVerified'],
+                                         "MobileNumber"             => $row['MobileNumber'],
+                                         "Email"                    => $row['Email'],                    
+                                         "IsReg"                    => intval($isreg),
+                                         "CoolingPeriod"            => "",
+                                         "StatusCode"               => intval(CardStatus::NEW_MIGRATED),
+                                         "StatusMsg"                => 'Migrated New Card',
                                          )
                             );
                 
@@ -594,31 +613,34 @@ class GetCardInfoAPI extends BaseEntity
                 $memberinfo = $_MemberInfo->getMemberInfo($MID);
                 $row = $memberinfo[0];
                 
+                $members = $_Members->getVIP($MID);
+                
                 $casinoAccounts = $_MemberServices->getCasinoAccounts( $MID );
                 
                 $result = array("CardInfo"=>array(
-                                        "MID"              => $MID,
-                                        "Username"         => $row['UserName'],
-                                        "CardNumber"       => $card['CardNumber'],
-                                        "MemberUsername"   => $row['UserName'],
-                                        "CardType"         => $card['CardTypeID'],
-                                        "MemberName"       => $row['FirstName'] . ' ' . $row['LastName'],
-                                        "RegistrationDate" => $row['DateCreated'],
-                                        "Birthdate"        => $row['Birthdate'],
-                                        "CurrentPoints"    => $card['CurrentPoints'],
-                                        "LifetimePoints"   => $card['LifetimePoints'],
-                                        "RedeemedPoints"   => $card['RedeemedPoints'],
-                                        "IsCompleteInfo"   => "",
-                                        "MemberID"         => $MID,                                                                     
-                                        "CasinoArray"      => $casinoAccounts,
-                                        "CardStatus"       => intval(CardStatus::BANNED),
-                                        "DateVerified"     => $row['DateVerified'],
-                                        "MobileNumber"     => $row['MobileNumber'],
-                                        "Email"            => $row['Email'],                                        
-                                        "IsReg"            => intval($isreg),
-                                        "CoolingPeriod"    => "",
-                                        "StatusCode"       => intval(CardStatus::BANNED),
-                                        "StatusMsg"        => 'Card Is Banned',
+                                        "MID"                   => $MID,
+                                        "Username"              => $row['UserName'],
+                                        "CardNumber"            => $card['CardNumber'],
+                                        "MemberUsername"        => $row['UserName'],
+                                        "CardType"              => $card['CardTypeID'],
+                                        "MemberName"            => $row['FirstName'] . ' ' . $row['LastName'],
+                                        "RegistrationDate"      => $row['DateCreated'],
+                                        "Birthdate"             => $row['Birthdate'],
+                                        "CurrentPoints"         => $card['CurrentPoints'],
+                                        "LifetimePoints"        => $card['LifetimePoints'],
+                                        "RedeemedPoints"        => $card['RedeemedPoints'],
+                                        "IsCompleteInfo"        => "",
+                                        "MemberID"              => $MID,  
+                                        "MemberClassification"  => $members[0]['isVIP'],
+                                        "CasinoArray"           => $casinoAccounts,
+                                        "CardStatus"            => intval(CardStatus::BANNED),
+                                        "DateVerified"          => $row['DateVerified'],
+                                        "MobileNumber"          => $row['MobileNumber'],
+                                        "Email"                 => $row['Email'],                                        
+                                        "IsReg"                 => intval($isreg),
+                                        "CoolingPeriod"         => "",
+                                        "StatusCode"            => intval(CardStatus::BANNED),
+                                        "StatusMsg"             => 'Card Is Banned',
                                         )
                            );
                 
