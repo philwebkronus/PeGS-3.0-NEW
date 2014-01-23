@@ -243,7 +243,7 @@
                                                                                                                             echo "<span style='color: #FFFFFF'>None</span>";
                                                                                                                     }
                                                                                                             } else { 
-                                                                                                                    echo "Reward was Unwrapped from a Mystery Red Box"; 
+                                                                                                                    echo "Reward Item was Unwrapped from a Mystery Red Box"; 
                                                                                                             }
                                                                                                         } else {
                                                                                                             if($rewardoffers[$itr]['PartnerName'] != "" ){ 
@@ -317,7 +317,7 @@
                                                                                                                             echo "<span style='color: #FFFFFF'>None</span>";
                                                                                                                     }
                                                                                                             } else { 
-                                                                                                                    echo "Reward was Unwrapped from a Mystery Red Box"; 
+                                                                                                                    echo "Reward Item was Unwrapped from a Mystery Red Box"; 
                                                                                                             }
                                                                                                         } else {
                                                                                                             if($rewardoffers[$itr]['PartnerName'] != "" ){ 

@@ -100,7 +100,7 @@ class MemberCards extends BaseEntity {
         $query = "SELECT mc.CardNumber
                             FROM membercards mc
                             INNER JOIN cards c ON c.CardID = mc.CardID
-                            WHERE mc.MID = $MID";
+                            WHERE mc.MID = $MID ORDER BY mc.MemberCardID DESC";
 
         $result = parent::RunQuery($query);
         if (empty($result)) {
@@ -156,7 +156,7 @@ class MemberCards extends BaseEntity {
             FROM membercards m
                 INNER JOIN membership.members mb ON mb.MID = m.MID
                 INNER JOIN cards c ON c.CardID = m.CardID AND m.CardNumber = c.CardNumber
-            WHERE m.MID = $MID AND m.Status IN(1,5) ORDER BY MemberCardID DESC";
+            WHERE m.MID = $MID AND m.Status IN(1,5)";
 
         $result = parent::RunQuery($query);
 
@@ -169,10 +169,10 @@ class MemberCards extends BaseEntity {
      * @DateCreated: 2013-06-17 05:38:40PM
      */
     public function getMemberCardInfoByMID($MID) {
-        $query = "SELECT m.Status, mc.MemberCardID, mc.CardNumber
+        $query = "SELECT m.Status, mc.MemberCardID, mc.CardNumber, mc.Status as StatusMC
                             FROM membership.members as m
                             INNER JOIN " . $this->TableName . " as mc ON mc.MID = m.MID
-                            WHERE mc.Status IN(1,5,9) AND m.Status IN(1,5) AND m.MID =" . $MID;
+                            WHERE mc.Status IN(1,2,5,7,8,9) AND m.Status IN(1,5) AND m.MID =" . $MID;
 
         $result = parent::RunQuery($query);
         return $result;

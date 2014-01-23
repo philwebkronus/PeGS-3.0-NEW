@@ -53,138 +53,160 @@ class ManagePartnersController extends Controller {
             {
                 //Check if username is already exist
                 $ctrusername = $partnersmodel->checkUsernameExist($details['username']);
-                if ($ctrusername['ctrusername'] > 0)
+                if ($ctrusername['ctrusername'] == 0)
                 {
-                    $this->dialogtitle = "ERROR MESSAGE";
-                    $this->dialogmsg = "Username already Exist.";
-                    $this->showdialog = true;
-                }
-                else
-                {
-                    //Check if all fields are filled up
+                    //Check if all fields are not blank
                     if ((($details['partnerID'] || $details['partnername'] || $details['address'] ||
                         $details['pnumber'] || $details['faxnumber'] || $details['email'] || 
                         $details['website'] || $details['contactPerson'] || $details['username']
                         || $details['contactPosition'] || 
                         $details['contactEmail'] || $details['contactPNumber'] 
                         || $details['contactMobile'] || $details['noOfofferings']) == "") 
-                        || ($details['status'] == -1))
+                        || ($details['status'] != -1))
                     {
+                        //Validate check if inputted strings have no special characters
+                        if ( $validation->validateAlphaNumeric($details['address']) && 
+                             $validation->validateAlphaNumeric($details['faxnumber']) && 
+                             $validation->validateAlphaNumeric($details['username']) && 
+                             $validation->validateAlphaNumeric($details['contactPosition']) && 
+                             $validation->validateAlphaNumeric($details['contactMobile']) && 
+                             $validation->validateAlphaNumeric($details['status']) && 
+                             $validation->validateAlphaNumeric($details['noOfofferings']))
+                        {
+                            
+                            //Check if email address format is valid
+                            if (($validation->validateEmail($details['email'])) && 
+                            $validation->validateEmail($details['contactEmail']))
+                            {
+                                //Check if website format is valid
+                                if ($validation->validateWebsite($details['website']) == true)
+                                {
+                                    //Check if text length is valid
+                                    if (!$validation->validateMinimum($details['partnername'], "PartnerName"))
+                                    {
+                                        if (!$validation->validateMinimum($details['address'], "CompanyName"))
+                                        {
+                                            if (!$validation->validateMinimum($details['pnumber'], "PhoneNumber"))
+                                            {
+                                                if (!$validation->validateMinimum($details['faxnumber'], "FaxNumber"))
+                                                {
+                                                    if (!$validation->validateMinimum($details['contactPosition'], "ContactPosition"))
+                                                    {
+                                                        if (!$validation->validateMinimum($details['contactPNumber'], "ContactPosition"))
+                                                        {
+                                                            if (!$validation->validateMinimum($details['contactMobile'], "ContactMobile"))
+                                                            {
+                                                                $result = $model->addPartner($details); 
 
+                                                                $this->dialogmsg = $result['TransMsg'];
+                                                                //SUCCESS or ERROR Message
+                                                                if ($result['TransCode'] != 0)
+                                                                {
+                                                                    $this->dialogtitle = "ERROR MESSAGE";
+                                                                }
+                                                                else
+                                                                {
+                                                                    $this->dialogtitle = "SUCCESS MESSAGE";
+                                                                    //Test if php can send email in client side
+                                                                    $to = "sample@someone.com";
+                                                                    $subject = "Test";
+                                                                    $message = "Sample Message";
+                                                                    if(mail($to,$subject,$message, "From: ") == false)
+                                                                    {
+                                                                        $this->dialogtitle = "ERROR MESSAGE";
+                                                                        $this->dialogmsg = "Email message did not send";
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        $model->mailAddedPartner($result['Email'], $result['ContactPerson'], $result['Password'], $result['Username'], $result["ID"]);
+                                                                    }
+                                                                }
+                                                                $this->showdialog = true;
+                                                            }
+                                                            else
+                                                            {
+                                                                $this->dialogtitle = "ERROR MESSAGE";
+                                                                $this->dialogmsg = "Contact Person's Mobile too short (minimum is 11 characters)";
+                                                                $this->showdialog = true;
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            $this->dialogtitle = "ERROR MESSAGE";
+                                                            $this->dialogmsg = "Contact Person's Phone Number too short (minimum is 7 characters)";
+                                                            $this->showdialog = true;
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        $this->dialogtitle = "ERROR MESSAGE";
+                                                        $this->dialogmsg = "Contact Person's Position too short (minimum is 5 characters)";
+                                                        $this->showdialog = true;
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    $this->dialogtitle = "ERROR MESSAGE";
+                                                    $this->dialogmsg = "Fax Number too short (minimum is 7 characters)";
+                                                    $this->showdialog = true;
+                                                }
+                                            }
+                                            else
+                                            {
+                                                $this->dialogtitle = "ERROR MESSAGE";
+                                                $this->dialogmsg = "Phone Number too short (minimum is 7 characters)";
+                                                $this->showdialog = true;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            $this->dialogtitle = "ERROR MESSAGE";
+                                            $this->dialogmsg = "Company Name too short (minimum is 5 characters)";
+                                            $this->showdialog = true;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        $this->dialogtitle = "ERROR MESSAGE";
+                                        $this->dialogmsg = "eGames Partner Name too short (minimum is 5 characters)";
+                                        $this->showdialog = true;
+                                    }
+                                }
+                                else
+                                {
+                                    $this->dialogtitle = "ERROR MESSAGE";
+                                    $this->dialogmsg = "Invalid Website URL";
+                                    $this->showdialog = true;
+                                }
+                            }
+                            else
+                            {
+                                $this->dialogtitle = "ERROR MESSAGE";
+                                $this->dialogmsg = "Invalid Email Address on <u>Company</u> or <u>Contact Person</u>
+                                                   Email Address";
+                                $this->showdialog = true;
+                            }
+                        }
+                        else
+                        {
+                            $this->dialogtitle = "ERROR MESSAGE";
+                            $this->dialogmsg = "Special characters are not allowed in some fields that \n
+                                                accept only letters or numbers.";
+                            $this->showdialog = true;
+                        }
+                    }
+                    else
+                    {
                         $this->dialogtitle = "ERROR MESSAGE";
                         $this->dialogmsg = "Please fill up all fields.";
                         $this->showdialog = true;
                     }
-                    else if (!$validation->validateAlphaNumeric($details['partnername']) || 
-                             !$validation->validateAlphaNumeric($details['address']) ||
-                             !$validation->validateAlphaNumeric($details['faxnumber']) ||
-                             !$validation->validateAlphaNumeric($details['username']) ||
-                             !$validation->validateAlphaNumeric($details['contactPosition']) ||
-                             !$validation->validateAlphaNumeric($details['contactMobile']) ||
-                             !$validation->validateAlphaNumeric($details['status']) ||
-                             !$validation->validateAlphaNumeric($details['noOfofferings']))
-                    {
-                        $this->dialogtitle = "ERROR MESSAGE";
-                        $this->dialogmsg = "Special characters are not allowed in some fields that \n
-                                            accept only letters or numbers.";
-                        $this->showdialog = true;
-                    }
-                    else if ($validation->validateWebsite($details['website']) == false)
-                    {
-                        $this->dialogtitle = "ERROR MESSAGE";
-                        $this->dialogmsg = "Invalid Website URL";
-                        $this->showdialog = true;
-                    }
-                    else if (($validation->validateEmail($details['email']) == false) ||
-                    $validation->validateEmail($details['contactEmail']) == false)
-                    {
-                       $this->dialogtitle = "ERROR MESSAGE";
-                       $this->dialogmsg = "Invalid Email Address on <u>Company</u> or <u>Contact Person</u>
-                                           Email Address";
-                       $this->showdialog = true;
-                    }
-
-                    if ($details['noOfofferings'] <= 0)
-                    {
-                        $this->dialogtitle = "ERROR MESSAGE";
-                        $this->dialogmsg = "Number of Reward Offerings must be greater than zero.";
-                        $this->showdialog = true;
-                    }
-                    else
-                    {
-                        //Validate text length
-                        if ($validation->validateMinimum($details['partnername'], "PartnerName"))
-                        {
-                            $this->dialogtitle = "ERROR MESSAGE";
-                            $this->dialogmsg = "eGames Partner Name too short (minimum is 5 characters)";
-                            $this->showdialog = true;
-                        }
-                        else if ($validation->validateMinimum($details['address'], "CompanyName"))
-                        {
-                            $this->dialogtitle = "ERROR MESSAGE";
-                            $this->dialogmsg = "Company Name too short (minimum is 5 characters)";
-                            $this->showdialog = true;
-                        }
-                        else if ($validation->validateMinimum($details['pnumber'], "PhoneNumber"))
-                        {
-                            $this->dialogtitle = "ERROR MESSAGE";
-                            $this->dialogmsg = "Phone Number too short (minimum is 5 characters)";
-                            $this->showdialog = true;
-                        }
-                        else if ($validation->validateMinimum($details['faxnumber'], "FaxNumber"))
-                        {
-                            $this->dialogtitle = "ERROR MESSAGE";
-                            $this->dialogmsg = "Fax Number too short (minimum is 7 characters)";
-                            $this->showdialog = true;
-                        }
-                        else if ($validation->validateMinimum($details['contactPosition'], "ContactPosition"))
-                        {
-                            $this->dialogtitle = "ERROR MESSAGE";
-                            $this->dialogmsg = "Contact Person's Position too short (minimum is 5 characters)";
-                            $this->showdialog = true;
-                        }
-                        else if ($validation->validateMinimum($details['contactPNumber'], "ContactPosition"))
-                        {
-                            $this->dialogtitle = "ERROR MESSAGE";
-                            $this->dialogmsg = "Contact Person's Phone Number too short (minimum is 7 characters)";
-                            $this->showdialog = true;
-                        }
-                        else if ($validation->validateMinimum($details['contactMobile'], "ContactMobile"))
-                        {
-                            $this->dialogtitle = "ERROR MESSAGE";
-                            $this->dialogmsg = "Contact Person's Mobile too short (minimum is 11 characters)";
-                            $this->showdialog = true;
-                        }
-                        else
-                        {
-                            $result = $model->addPartner($details); 
-
-                            $this->dialogmsg = $result['TransMsg'];
-                            //SUCCESS or ERROR Message
-                            if ($result['TransCode'] != 0)
-                            {
-                                $this->dialogtitle = "ERROR MESSAGE";
-                            }
-                            else
-                            {
-                                $this->dialogtitle = "SUCCESS MESSAGE";
-                                //Test if php can send email in client side
-                                $to = "sample@someone.com";
-                                $subject = "Test";
-                                $message = "Sample Message";
-                                if(mail($to,$subject,$message) == false)
-                                {
-                                    $this->dialogtitle = "ERROR MESSAGE";
-                                    $this->dialogmsg = "Email message did not send";
-                                }
-                                else
-                                {
-                                    $model->mailAddedPartner($result['Email'], $result['ContactPerson'], $result['Password'], $result['Username'], $result["ID"]);
-                                }
-                            }
-                            $this->showdialog = true;
-                        }
-                    }
+                }
+                else
+                {
+                    $this->dialogtitle = "ERROR MESSAGE";
+                    $this->dialogmsg = "Username already Exist.";
+                    $this->showdialog = true;
                 }
             }
             $this->render('index', array('model' => $model));
@@ -333,132 +355,156 @@ class ManagePartnersController extends Controller {
             //Error Handling (Validations)
             //Check if Partner was already exist
             $isExist =  $refpartner->checkPartnerIfExist($details['partnername'], $details['partnerID']);
-            if ((int)$isExist > 0)
+            if ((int)$isExist == 0)
+            {
+                //Check if all fields are not blank
+                if ((($details['partnerID'] || $details['partnername'] || $details['address'] ||
+                $details['pnumber'] || $details['faxnumber'] || $details['email'] || 
+                $details['website'] || $details['contactPerson'] || $details['contactPosition'] || 
+                $details['contactEmail'] || $details['contactPNumber'] 
+                || $details['contactMobile']) == "" || $details['noOfofferings'] == "") || ($details['status'] != -1))
+                {
+                    //Check if inputted strings have no special characters
+                    if ($validation->validateAlphaNumeric($details['address']) && 
+                        $validation->validateAlphaNumeric($details['contactPerson']) && 
+                        $validation->validateAlphaNumeric($details['contactPosition']) && 
+                        $validation->validateAlphaNumeric($details['contactMobile']) && 
+                        $validation->validateAlphaNumeric($details['status']) && 
+                        $validation->validateAlphaNumeric($details['noOfofferings']))
+                    {
+                        
+                        //Check if email addresses format are valid
+                        if (($validation->validateEmail($details['email'])) && 
+                        $validation->validateEmail($details['contactEmail']))
+                        {
+                            //Check if website url format is valid
+                            if ($validation->validateWebsite($details['website']) == true)
+                            {
+                               //Check text length if valid
+                                if (!$validation->validateMinimum($details['partnername'], "PartnerName"))
+                                {
+                                    if (!$validation->validateMinimum($details['address'], "CompanyName"))
+                                    {
+                                        if (!$validation->validateMinimum($details['pnumber'], "PhoneNumber"))
+                                        {   
+                                            if (!$validation->validateMinimum($details['faxnumber'], "FaxNumber"))
+                                            {
+                                                if (!$validation->validateMinimum($details['contactPosition'], "ContactPosition"))
+                                                {
+                                                    if (!$validation->validateMinimum($details['contactPNumber'], "ContactPosition"))
+                                                    {
+                                                        if (!$validation->validateMinimum($details['contactMobile'], "ContactMobile"))
+                                                        {
+                                                            $user = Yii::app()->session['AID'];
+                                                            $return = $model->updatePartnerDetails($details, $user);
+
+                                                            $this->dialogmsg = $return['TransMsg'];
+                                                            //SUCCESS or ERROR Message
+                                                            switch ($return['TransCode'])
+                                                            {
+                                                                case 0:
+                                                                    $this->dialogtitle = "SUCCESS MESSAGE";
+                                                                    break;
+                                                                case 2:
+                                                                    $this->dialogtitle = "ERROR MESSAGE";
+                                                                    break;
+                                                                case 3: 
+                                                                    $this->dialogtitle = "MESSAGE";
+                                                                    break;
+                                                                default:
+                                                                    $this->dialogtitle = "ERROR MESSAGE";
+                                                                    break;
+                                                            }
+                                                            $this->showdialog = true;
+                                                        }
+                                                        else
+                                                        {
+                                                            $this->dialogtitle = "ERROR MESSAGE";
+                                                            $this->dialogmsg = "Contact Person's Mobile too short (minimum is 11 characters)";
+                                                            $this->showdialog = true;
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        $this->dialogtitle = "ERROR MESSAGE";
+                                                        $this->dialogmsg = "Contact Person's Phone Number too short (minimum is 7 characters)";
+                                                        $this->showdialog = true;
+                                                        }
+                                                }
+                                                else
+                                                {
+                                                    $this->dialogtitle = "ERROR MESSAGE";
+                                                    $this->dialogmsg = "Contact Person's Position too short (minimum is 5 characters)";
+                                                    $this->showdialog = true;
+                                                }
+                                            }
+                                            else
+                                            {
+                                                $this->dialogtitle = "ERROR MESSAGE";
+                                                $this->dialogmsg = "Fax Number too short (minimum is 7 characters)";
+                                                $this->showdialog = true;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            $this->dialogtitle = "ERROR MESSAGE";
+                                            $this->dialogmsg = "Phone Number too short (minimum is 7 characters)";
+                                            $this->showdialog = true;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        $this->dialogtitle = "ERROR MESSAGE";
+                                        $this->dialogmsg = "Company Name too short (minimum is 5 characters)";
+                                        $this->showdialog = true;
+                                    }
+                                    
+                                }
+                                else
+                                {
+                                    $this->dialogtitle = "ERROR MESSAGE";
+                                    $this->dialogmsg = "eGames Partner Name too short (minimum is 5 characters)";
+                                    $this->showdialog = true;
+                                }
+                            }
+                            else
+                            {
+                                $this->dialogtitle = "ERROR MESSAGE";
+                                $this->dialogmsg = "Invalid Website URL";
+                                $this->showdialog = true;
+                            }
+                        }
+                        else
+                        {
+                            
+                            
+                            $this->dialogtitle = "ERROR MESSAGE";
+                            $this->dialogmsg = "Invalid Email Address on <u>Company</u> or <u>Contact Person</u>
+                                               Email Address";
+                            $this->showdialog = true;
+                        }
+                    }
+                    else
+                    {
+                        $this->dialogtitle = "ERROR MESSAGE";
+                        $this->dialogmsg = "Special characters are not allowed in some fields that \n
+                                            accept only letters or numbers.";
+                        $this->showdialog = true;
+                    }
+                }
+                else
+                {
+                    $this->dialogtitle = "ERROR MESSAGE";
+                    $this->dialogmsg = "Please fill up all fields!";
+                    $this->showdialog = true;
+                }
+            }
+            else
             {
                 $this->dialogtitle = "ERROR MESSAGE";
                 $this->dialogmsg = "Partner already Exist.";
                 $this->showdialog = true;
             }
-            else 
-            {
-                if ((($details['partnerID'] || $details['partnername'] || $details['address'] ||
-                $details['pnumber'] || $details['faxnumber'] || $details['email'] || 
-                $details['website'] || $details['contactPerson'] || $details['contactPosition'] || 
-                $details['contactEmail'] || $details['contactPNumber'] 
-                || $details['contactMobile']) == "" || $details['noOfofferings'] == "") || ($details['status'] == -1))
-                {
-                    $this->dialogtitle = "ERROR MESSAGE";
-                    $this->dialogmsg = "Please fill up all fields!";
-                    $this->showdialog = true;
-
-                }
-                
-                if (!$validation->validateAlphaNumeric($details['partnerID']) || 
-                    !$validation->validateAlphaNumeric($details['partnername']) ||
-                    !$validation->validateAlphaNumeric($details['address']) ||
-                    !$validation->validateAlphaNumeric($details['contactPerson']) ||
-                    !$validation->validateAlphaNumeric($details['contactPosition']) ||
-                    !$validation->validateAlphaNumeric($details['contactMobile']) ||
-                    !$validation->validateAlphaNumeric($details['status']) ||
-                    !$validation->validateAlphaNumeric($details['noOfofferings']))
-                {
-                    $this->dialogtitle = "ERROR MESSAGE";
-                    $this->dialogmsg = "Special characters are not allowed in some fields that \n
-                                        accept only letters or numbers.";
-                    $this->showdialog = true;
-                }
-                else if ($validation->validateWebsite($details['website']) == false)
-                {
-                    $this->dialogtitle = "ERROR MESSAGE";
-                    $this->dialogmsg = "Invalid Website URL";
-                    $this->showdialog = true;
-                }
-                else if (($validation->validateEmail($details['email']) == false) ||
-                $validation->validateEmail($details['contactEmail']) == false)
-                {
-                   $this->dialogtitle = "ERROR MESSAGE";
-                   $this->dialogmsg = "Invalid Email Address on <u>Company</u> or <u>Contact Person</u>
-                                       Email Address";
-                   $this->showdialog = true;
-                }
-
-//                if ($details['noOfofferings'] <= 0)
-//                {
-//                    $this->dialogtitle = "ERROR MESSAGE";
-//                    $this->dialogmsg = "Number of Reward Offerings must be greater than zero.";
-//                    $this->showdialog = true;
-//                }
-                else
-                {
-                    //Validate text length
-                    if ($validation->validateMinimum($details['partnername'], "PartnerName"))
-                    {
-                        $this->dialogtitle = "ERROR MESSAGE";
-                        $this->dialogmsg = "eGames Partner Name too short (minimum is 5 characters)";
-                        $this->showdialog = true;
-                    }
-                    else if ($validation->validateMinimum($details['address'], "CompanyName"))
-                    {
-                        $this->dialogtitle = "ERROR MESSAGE";
-                        $this->dialogmsg = "Company Name too short (minimum is 5 characters)";
-                        $this->showdialog = true;
-                    }
-                    else if ($validation->validateMinimum($details['pnumber'], "PhoneNumber"))
-                    {
-                        $this->dialogtitle = "ERROR MESSAGE";
-                        $this->dialogmsg = "Phone Number too short (minimum is 5 characters)";
-                        $this->showdialog = true;
-                    }
-                    else if ($validation->validateMinimum($details['faxnumber'], "FaxNumber"))
-                    {
-                        $this->dialogtitle = "ERROR MESSAGE";
-                        $this->dialogmsg = "Fax Number too short (minimum is 7 characters)";
-                        $this->showdialog = true;
-                    }
-                    else if ($validation->validateMinimum($details['contactPosition'], "ContactPosition"))
-                    {
-                        $this->dialogtitle = "ERROR MESSAGE";
-                        $this->dialogmsg = "Contact Person's Position too short (minimum is 5 characters)";
-                        $this->showdialog = true;
-                    }
-                    else if ($validation->validateMinimum($details['contactPNumber'], "ContactPosition"))
-                    {
-                        $this->dialogtitle = "ERROR MESSAGE";
-                        $this->dialogmsg = "Contact Person's Phone Number too short (minimum is 7 characters)";
-                        $this->showdialog = true;
-                    }
-                    else if ($validation->validateMinimum($details['contactMobile'], "ContactMobile"))
-                    {
-                        $this->dialogtitle = "ERROR MESSAGE";
-                        $this->dialogmsg = "Contact Person's Mobile too short (minimum is 11 characters)";
-                        $this->showdialog = true;
-                    }
-                    else
-                    {
-                        $user = Yii::app()->session['AID'];
-                        $return = $model->updatePartnerDetails($details, $user);
-
-                        $this->dialogmsg = $return['TransMsg'];
-                        //SUCCESS or ERROR Message
-                        switch ($return['TransCode'])
-                        {
-                            case 0:
-                                $this->dialogtitle = "SUCCESS MESSAGE";
-                                break;
-                            case 2:
-                                $this->dialogtitle = "ERROR MESSAGE";
-                                break;
-                            case 3: 
-                                $this->dialogtitle = "MESSAGE";
-                                break;
-                            default:
-                                $this->dialogtitle = "ERROR MESSAGE";
-                                break;
-                        }
-                        $this->showdialog = true;
-                    }
-                }
-           }
            $this->render('index', array('model' => $model));
         }
         else
