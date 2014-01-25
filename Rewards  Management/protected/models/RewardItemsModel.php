@@ -502,9 +502,9 @@ class RewardItemsModel extends CFormModel
         $connection = Yii::app()->db;
         $updatedbyaid = Yii::app()->session['AID'];
         
-        //Check if entered Mystery Reward Item is already exist
+        //Check if entered Mystery Reward Item is already exist, add filtering of status (Active, Inactive)
         $checkitem = "SELECT COUNT(RewardItemID) as Count FROM rewarditems 
-                     WHERE ItemName = :itemname AND IsMystery = 0";
+                     WHERE ItemName = :itemname AND IsMystery = 0 AND Status IN(1, 2, 3)";
         $command = $connection->createCommand($checkitem);
         $command->bindParam(":itemname", $itemname);
         $isExist = $command->queryRow();
@@ -660,9 +660,9 @@ class RewardItemsModel extends CFormModel
     {
         $connection = Yii::app()->db;
         $updatedbyaid = Yii::app()->session['AID'];
-        //Check if entered Mystery Reward Item is already exist
+        //Check if entered Mystery Reward Item is already exist, add filtering of status(Active, Inactive, Out of stock)
         $checkitem = "SELECT COUNT(RewardItemID) as Count FROM rewarditems 
-                     WHERE ItemName = :itemname AND IsMystery = 1 AND RewardItemID <> :rewarditemid";
+                     WHERE ItemName = :itemname AND IsMystery = 1 AND Status IN(1, 2, 3) AND RewardItemID <> :rewarditemid";
         $command = $connection->createCommand($checkitem);
         $command->bindParam(":itemname", $itemname);
         $command->bindParam(":rewarditemid", $rewarditemid);
