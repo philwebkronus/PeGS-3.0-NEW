@@ -7,7 +7,7 @@ class CouponRedemptionLogsModel extends CFormModel
     CONST PARTNER = 2;
     CONST CATEGORY = 3;
     
-    CONST PLAYER_ALL = 1;
+    CONST PLAYER_ALL = 2;
     
     CONST REWARDS_REDEMPTION = 1;
     CONST UNIQUE_MEMBER_PARTICIPATION = 2;
@@ -47,24 +47,21 @@ class CouponRedemptionLogsModel extends CFormModel
         {
             case self::REWARDS_REDEMPTION:
                 if (is_null($all))
-                    $select = "SELECT COUNT(CouponRedemptionLogID) as ItemRedeemed, a.DateCreated,";
+                    $select = "SELECT SUM(CouponCount) as ItemRedeemed, a.DateCreated,";
                 else
-                    $select = "SELECT CouponRedemptionLogID, a.DateCreated";
-                    Yii::app()->session['inquiry'] = self::REWARDS_REDEMPTION;
+                    $select = "SELECT SUM(a.CouponCount) as Total, a.DateCreated";
                 break;
             case self::UNIQUE_MEMBER_PARTICIPATION:
                 if (is_null($all))
-                    $select = "SELECT COUNT(DISTINCT(MID)) as MembersRedeemed, a.DateCreated,";
+                    $select = "SELECT COUNT(DISTINCT(a.MID)) as MembersRedeemed, a.DateCreated,";
                 else
-                    $select = "SELECT DISTINCT(MID), a.DateCreated";
-                    Yii::app()->session['inquiry'] = self::UNIQUE_MEMBER_PARTICIPATION;
+                    $select = "SELECT a.MID as Total, a.DateCreated as DateCreated";
                 break;
             case self::REWARDS_POINTS_USAGE:
                 if (is_null($all))
                     $select = "SELECT SUM(RedeemedPoints) as TotalRedeemedPoints, a.DateCreated,";
                 else
-                    $select = "SELECT a.RedeemedPoints, a.DateCreated";
-                    Yii::app()->session['inquiry'] = self::REWARDS_POINTS_USAGE;
+                    $select = "SELECT SUM(a.RedeemedPoints) as Total, a.DateCreated";
                 break;
         }
         
@@ -89,19 +86,19 @@ class CouponRedemptionLogsModel extends CFormModel
                     {
                         $query[0] = $select;
                         $query[1] = "FROM couponredemptionlogs a
-                                    INNER JOIN rewarditems b ON a.RewardItemID = b.RewardItemID
-                                    WHERE b.PClassID = :player  AND b.RewardItemID = ".$particularID." AND
-                                    a.DateCreated >= '$date_from 00:00:00' AND a.DateCreated <= '$date_to 11:59:59'"."
-                                    ";
+                                    INNER JOIN rewarditems b ON a.RewardItemID = b.RewardItemID 
+                                    INNER JOIN membership.members m ON a.MID = m.MID 
+                                    WHERE m.IsVIP = :player  AND b.RewardItemID = ".$particularID." AND a.Status = 1 AND ";
+                        $query[2] = "a.DateCreated >= '$date_from 00:00:00' AND a.DateCreated <= '$date_to 23:59:59'";
                     }
                     else //If ALL PLAYER SEGMENTS selected
                     {
                         $query[0] = $select;
                         $query[1] = "FROM couponredemptionlogs a
-                                     INNER JOIN rewarditems b ON a.RewardItemID = b.RewardItemID
-                                     WHERE b.PClassID IN (1, 2) AND b.RewardItemID = ".$particularID." AND
-                                     a.DateCreated >= '$date_from 00:00:00' AND a.DateCreated <= '$date_to 11:59:59'"."
-                                     ";
+                                     INNER JOIN rewarditems b ON a.RewardItemID = b.RewardItemID 
+                                     INNER JOIN membership.members m ON a.MID = m.MID 
+                                     WHERE m.IsVIP IN (0, 1) AND b.RewardItemID = ".$particularID." AND a.Status = 1 AND ";
+                        $query[2] = "a.DateCreated >= '$date_from 00:00:00' AND a.DateCreated <= '$date_to 23:59:59'";
                     }
                     break;
                 case self::PARTNER: //PARTNER
@@ -109,19 +106,19 @@ class CouponRedemptionLogsModel extends CFormModel
                     {
                         $query[0] = $select;
                         $query[1] = "FROM couponredemptionlogs a
-                                     INNER JOIN rewarditems b ON a.RewardItemID = b.RewardItemID
-                                     WHERE b.PClassID = :player AND b.PartnerID = ".$particularID." AND
-                                     a.DateCreated >= '$date_from 00:00:00' AND a.DateCreated <= '$date_to 11:59:59'"."
-                                     ";
+                                     INNER JOIN rewarditems b ON a.RewardItemID = b.RewardItemID 
+                                     INNER JOIN membership.members m ON a.MID = m.MID 
+                                     WHERE m.IsVIP = :player AND b.PartnerID = ".$particularID." AND a.Status = 1 AND ";
+                        $query[2] = "a.DateCreated >= '$date_from 00:00:00' AND a.DateCreated <= '$date_to 23:59:59'";
                     }
                     else //If ALL PLAYER SEGMENTS is selected
                     {
                         $query[0] = $select;
                         $query[1] = "FROM couponredemptionlogs a
-                                     INNER JOIN rewarditems b ON a.RewardItemID = b.RewardItemID
-                                     WHERE b.PClassID IN (1, 2) AND b.PartnerID = ".$particularID." AND
-                                     a.DateCreated >= '$date_from 00:00:00' AND a.DateCreated <= '$date_to 11:59:59'"."
-                                     ";
+                                     INNER JOIN rewarditems b ON a.RewardItemID = b.RewardItemID 
+                                     INNER JOIN membership.members m ON a.MID = m.MID 
+                                     WHERE m.IsVIP IN (0, 1) AND b.PartnerID = ".$particularID." AND a.Status = 1 AND ";
+                        $query[2] = "a.DateCreated >= '$date_from 00:00:00' AND a.DateCreated <= '$date_to 23:59:59'";
                     }
                     break;
                 case self::CATEGORY: //CATEGORY
@@ -129,19 +126,19 @@ class CouponRedemptionLogsModel extends CFormModel
                     {
                         $query[0] = $select;
                         $query[1] = "FROM couponredemptionlogs a
-                                     INNER JOIN rewarditems b ON a.RewardItemID = b.RewardItemID
-                                     WHERE b.PClassID = :player AND b.CategoryID = ".$particularID." AND
-                                     a.DateCreated >= '$date_from 00:00:00' AND a.DateCreated <= '$date_to 11:59:59'"."
-                                     ";
+                                     INNER JOIN rewarditems b ON a.RewardItemID = b.RewardItemID 
+                                     INNER JOIN membership.members m ON a.MID = m.MID 
+                                     WHERE m.IsVIP = :player AND b.CategoryID = ".$particularID." AND a.Status = 1 AND ";
+                        $query[2] = "a.DateCreated >= '$date_from 00:00:00' AND a.DateCreated <= '$date_to 23:59:59'";
                     }
                     else //If ALL PLAYER SEGMENTS is selected
                     {
                         $query[0] = $select;
                         $query[1] = "FROM couponredemptionlogs a
-                                     INNER JOIN rewarditems b ON a.RewardItemID = b.RewardItemID
-                                     WHERE b.PClassID IN (1, 2) AND b.CategoryID = ".$particularID." AND
-                                     a.DateCreated >= '$date_from 00:00:00' AND a.DateCreated <= '$date_to 11:59:59'"."
-                                     ";
+                                     INNER JOIN rewarditems b ON a.RewardItemID = b.RewardItemID 
+                                     INNER JOIN membership.members m ON a.MID = m.MID 
+                                     WHERE m.IsVIP IN (0, 1) AND b.CategoryID = ".$particularID." AND a.Status = 1 AND ";
+                        $query[2] = "a.DateCreated >= '$date_from 00:00:00' AND a.DateCreated <= '$date_to 23:59:59'";
                     }
                     break;
                 case self::ALL: //ALL
@@ -155,37 +152,37 @@ class CouponRedemptionLogsModel extends CFormModel
                         {
                             $query[0] = $select;
                             $query[1] = "FROM couponredemptionlogs a
-                                         INNER JOIN rewarditems b ON a.RewardItemID = b.RewardItemID
-                                         WHERE b.PClassID = :player  AND b.RewardItemID = ".$particularID." AND
-                                         a.DateCreated >= '$date_from 00:00:00' AND a.DateCreated <= '$date_to 11:59:59'"."
-                                         ";
+                                         INNER JOIN rewarditems b ON a.RewardItemID = b.RewardItemID 
+                                         INNER JOIN membership.members m ON a.MID = m.MID 
+                                         WHERE m.IsVIP = :player  AND b.RewardItemID = ".$particularID." AND a.Status = 1 AND ";
+                            $query[2] = "a.DateCreated >= '$date_from 00:00:00' AND a.DateCreated <= '$date_to 23:59:59'";
                         }
                         else if ($appendedLetter == "P")
                         {
                             $query[0] = $select;
                             $query[1] = "FROM couponredemptionlogs a
-                                         INNER JOIN rewarditems b ON a.RewardItemID = b.RewardItemID
-                                         WHERE b.PClassID = :player AND b.PartnerID = ".$particularID." AND
-                                         a.DateCreated >= '$date_from 00:00:00' AND a.DateCreated <= '$date_to 11:59:59'"."    
-                                         ";
+                                         INNER JOIN rewarditems b ON a.RewardItemID = b.RewardItemID 
+                                         INNER JOIN membership.members m ON a.MID = m.MID 
+                                         WHERE m.IsVIP = :player AND b.PartnerID = ".$particularID." AND a.Status = 1 AND ";
+                            $query[2] = "a.DateCreated >= '$date_from 00:00:00' AND a.DateCreated <= '$date_to 23:59:59'";
                         }
                         else if ($appendedLetter == "C")
                         {
                             $query[0] = $select;
                             $query[1] = "FROM couponredemptionlogs a
-                                         INNER JOIN rewarditems b ON a.RewardItemID = b.RewardItemID
-                                         WHERE b.PClassID = :player AND b.CategoryID = ".$particularID." AND 
-                                         a.DateCreated >= '$date_from 00:00:00' AND a.DateCreated <= '$date_to 11:59:59'"."
-                                         ";
+                                         INNER JOIN rewarditems b ON a.RewardItemID = b.RewardItemID 
+                                         INNER JOIN membership.members m ON a.MID = m.MID 
+                                         WHERE m.IsVIP = :player AND b.CategoryID = ".$particularID." AND a.Status = 1 AND ";
+                            $query[2] = "a.DateCreated >= '$date_from 00:00:00' AND a.DateCreated <= '$date_to 23:59:59'";
                         }
                         else if ($appendedLetter == "A")
                         {
                             $query[0] = $select;
                             $query[1] = "FROM couponredemptionlogs a
-                                         INNER JOIN rewarditems b ON a.RewardItemID = b.RewardItemID
-                                         WHERE b.PClassID = :player AND
-                                         a.DateCreated >= '$date_from 00:00:00' AND a.DateCreated <= '$date_to 11:59:59'"."
-                                         ";
+                                         INNER JOIN rewarditems b ON a.RewardItemID = b.RewardItemID 
+                                         INNER JOIN membership.members m ON a.MID = m.MID 
+                                         WHERE m.IsVIP = :player AND a.Status = 1 AND ";
+                            $query[2] = "a.DateCreated >= '$date_from 00:00:00' AND a.DateCreated <= '$date_to 23:59:59'";
                         }
                     }
                     else //If ALL PLAYER SEGMENTS is selected
@@ -198,37 +195,37 @@ class CouponRedemptionLogsModel extends CFormModel
                         {
                             $query[0] = $select;
                             $query[1] = "FROM couponredemptionlogs a
-                                         INNER JOIN rewarditems b ON a.RewardItemID = b.RewardItemID
-                                         WHERE b.PClassID = b.PClassID IN (1, 2)  AND b.RewardItemID = ".$particularID." AND 
-                                         a.DateCreated >= '$date_from 00:00:00' AND a.DateCreated <= '$date_to 11:59:59'"."
-                                         ";
+                                         INNER JOIN rewarditems b ON a.RewardItemID = b.RewardItemID 
+                                         INNER JOIN membership.members m ON a.MID = m.MID 
+                                         WHERE m.IsVIP = m.IsVIP IN (0, 1)  AND b.RewardItemID = ".$particularID." AND a.Status = 1 AND ";
+                            $query[2] = "a.DateCreated >= '$date_from 00:00:00' AND a.DateCreated <= '$date_to 23:59:59'";
                         }
                         else if ($appendedLetter == "P")
                         {
                             $query[0] = $select;
                             $query[1] = "FROM couponredemptionlogs a
-                                         INNER JOIN rewarditems b ON a.RewardItemID = b.RewardItemID
-                                         WHERE b.PClassID = b.PClassID IN (1, 2) AND b.PartnerID = ".$particularID." AND
-                                         a.DateCreated >= '$date_from 00:00:00' AND a.DateCreated <= '$date_to 11:59:59'"."
-                                        ";
+                                         INNER JOIN rewarditems b ON a.RewardItemID = b.RewardItemID 
+                                         INNER JOIN membership.members m ON a.MID = m.MID 
+                                         WHERE m.IsVIP = m.IsVIP IN (0, 1) AND b.PartnerID = ".$particularID." AND a.Status = 1 AND ";
+                            $query[2] = "a.DateCreated >= '$date_from 00:00:00' AND a.DateCreated <= '$date_to 23:59:59'";
                         }
                         else if ($appendedLetter == "C")
                         {
                             $query[0] = $select;
                             $query[1] = "FROM couponredemptionlogs a
-                                         INNER JOIN rewarditems b ON a.RewardItemID = b.RewardItemID
-                                         WHERE b.PClassID = b.PClassID IN (1, 2) AND b.CategoryID = ".$particularID." AND 
-                                         a.DateCreated >= '$date_from 00:00:00' AND a.DateCreated <= '$date_to 11:59:59'"."
-                                         ";
+                                         INNER JOIN rewarditems b ON a.RewardItemID = b.RewardItemID 
+                                         INNER JOIN membership.members m ON a.MID = m.MID 
+                                         WHERE m.IsVIP = m.IsVIP IN (0, 1) AND b.CategoryID = ".$particularID." AND a.Status = 1 AND ";
+                            $query[2] = "a.DateCreated >= '$date_from 00:00:00' AND a.DateCreated <= '$date_to 23:59:59'";
                         }
                         else if ($appendedLetter == "A")
                         {
                             $query[0] = $select;
                             $query[1] = "FROM couponredemptionlogs a
-                                         INNER JOIN rewarditems b ON a.RewardItemID = b.RewardItemID
-                                         WHERE b.PClassID = b.PClassID IN (1, 2) AND 
-                                         a.DateCreated >= '$date_from 00:00:00' AND a.DateCreated <= '$date_to 11:59:59'"."
-                                         ";
+                                         INNER JOIN rewarditems b ON a.RewardItemID = b.RewardItemID 
+                                         INNER JOIN membership.members m ON a.MID = m.MID 
+                                         WHERE m.IsVIP = m.IsVIP IN (0, 1) AND a.Status = 1 AND ";
+                            $query[2] = "a.DateCreated >= '$date_from 00:00:00' AND a.DateCreated <= '$date_to 23:59:59'";
                         }
                     }
                     break;
@@ -243,19 +240,19 @@ class CouponRedemptionLogsModel extends CFormModel
                     {
                         $query[0] = $select; 
                         $query[1] = "FROM couponredemptionlogs a
-                                     INNER JOIN rewarditems b ON a.RewardItemID = b.RewardItemID
-                                     WHERE b.PClassID = :player AND
-                                     a.DateCreated >= '$date_from 00:00:00' AND a.DateCreated <= '$date_to 11:59:59'"."
-                                     ";
+                                     INNER JOIN rewarditems b ON a.RewardItemID = b.RewardItemID 
+                                     INNER JOIN membership.members m ON a.MID = m.MID 
+                                     WHERE m.IsVIP = :player AND a.Status = 1 AND ";
+                        $query[2] = "a.DateCreated >= '$date_from 00:00:00' AND a.DateCreated <= '$date_to 23:59:59'";
                     }
                     else //If ALL PLAYER SEGMENTS IS SELECTED
                     {
                         $query[0] = $select; 
                         $query[1] = "FROM couponredemptionlogs a
-                                     INNER JOIN rewarditems b ON a.RewardItemID = b.RewardItemID
-                                     WHERE b.PClassID IN (1, 2) AND
-                                     a.DateCreated >= '$date_from 00:00:00' AND a.DateCreated <= '$date_to 11:59:59'"."
-                                     ";
+                                     INNER JOIN rewarditems b ON a.RewardItemID = b.RewardItemID 
+                                     INNER JOIN membership.members m ON a.MID = m.MID 
+                                     WHERE m.IsVIP IN (0, 1) AND a.Status = 1 AND ";
+                        $query[2] = "a.DateCreated >= '$date_from 00:00:00' AND a.DateCreated <= '$date_to 23:59:59'";
                     }
                     break;
                 case self::PARTNER: //PARTNER
@@ -271,10 +268,10 @@ class CouponRedemptionLogsModel extends CFormModel
                         }
                         $query[0] = $select; 
                         $query[1] = "FROM couponredemptionlogs a
-                                  INNER JOIN rewarditems b ON a.RewardItemID = b.RewardItemID
-                                  WHERE b.PClassID = :player AND b.PartnerID IN ("."'".implode("','",$arrpartners)."'".") AND 
-                                  a.DateCreated >= '$date_from 00:00:00' AND a.DateCreated <= '$date_to 11:59:59'"."
-                                  ";
+                                  INNER JOIN rewarditems b ON a.RewardItemID = b.RewardItemID 
+                                  INNER JOIN membership.members m ON a.MID = m.MID 
+                                  WHERE m.IsVIP = :player AND b.PartnerID IN ("."'".implode("','",$arrpartners)."'".") AND a.Status = 1 AND ";
+                        $query[2] = "a.DateCreated >= '$date_from 00:00:00' AND a.DateCreated <= '$date_to 23:59:59'";
                     }
                     else //If ALL PLAYER SEGMENTS IS SELECTED
                     {
@@ -284,10 +281,10 @@ class CouponRedemptionLogsModel extends CFormModel
                         }
                         $query[0] = $select;
                         $query[1] = "FROM couponredemptionlogs a
-                                     INNER JOIN rewarditems b ON a.RewardItemID = b.RewardItemID
-                                     WHERE b.PClassID IN (1, 2) AND b.PartnerID IN ("."'".implode("','",$arrpartners)."'".") AND 
-                                     a.DateCreated >= '$date_from 00:00:00' AND a.DateCreated <= '$date_to 11:59:59'"."
-                                     ";
+                                     INNER JOIN rewarditems b ON a.RewardItemID = b.RewardItemID 
+                                     INNER JOIN membership.members m ON a.MID = m.MID 
+                                     WHERE m.IsVIP IN (0, 1) AND b.PartnerID IN ("."'".implode("','",$arrpartners)."'".") AND a.Status = 1 AND ";
+                        $query[2] = "a.DateCreated >= '$date_from 00:00:00' AND a.DateCreated <= '$date_to 23:59:59'";
                     }
                     break;
                 case self::CATEGORY: //CATEGORY
@@ -304,10 +301,10 @@ class CouponRedemptionLogsModel extends CFormModel
                         }
                         $query[0] = $select; 
                         $query[1] = "FROM couponredemptionlogs a
-                                     INNER JOIN rewarditems b ON a.RewardItemID = b.RewardItemID
-                                     WHERE b.PClassID IN (1, 2) AND b.CategoryID IN ("."'".implode("','",$arrcategories)."'".") AND 
-                                     a.DateCreated >= '$date_from 00:00:00' AND a.DateCreated <= '$date_to 11:59:59'"."
-                                     ";
+                                     INNER JOIN rewarditems b ON a.RewardItemID = b.RewardItemID 
+                                     INNER JOIN membership.members m ON a.MID = m.MID 
+                                     WHERE m.IsVIP IN (0, 1) AND b.CategoryID IN ("."'".implode("','",$arrcategories)."'".") AND a.Status = 1 AND ";
+                        $query[2] = "a.DateCreated >= '$date_from 00:00:00' AND a.DateCreated <= '$date_to 23:59:59'";
                     }
                     else //If a specific PLAYER SEGMENTS IS SELECTED
                     {
@@ -317,10 +314,10 @@ class CouponRedemptionLogsModel extends CFormModel
                         }
                         $query[0] = $select;
                         $query[1] = "FROM couponredemptionlogs a
-                                     INNER JOIN rewarditems b ON a.RewardItemID = b.RewardItemID
-                                     WHERE b.PClassID IN (1, 2) AND b.CategoryID IN ("."'".implode("','",$arrcategories)."'".") AND 
-                                     a.DateCreated >= '$date_from 00:00:00' AND a.DateCreated <= '$date_to 11:59:59'"."
-                                     ";
+                                     INNER JOIN rewarditems b ON a.RewardItemID = b.RewardItemID 
+                                     INNER JOIN membership.members m ON a.MID = m.MID 
+                                     WHERE m.IsVIP IN (0, 1) AND b.CategoryID IN ("."'".implode("','",$arrcategories)."'".") AND a.Status = 1 AND ";
+                        $query[2] = "a.DateCreated >= '$date_from 00:00:00' AND a.DateCreated <= '$date_to 23:59:59'";
                     }
                     break;
                 case self::ALL: //ALL
@@ -334,10 +331,68 @@ class CouponRedemptionLogsModel extends CFormModel
                         {
                             $query[0] = $select; 
                             $query[1] = "FROM couponredemptionlogs a
-                                         INNER JOIN rewarditems b ON a.RewardItemID = b.RewardItemID
-                                         WHERE b.PClassID = :player AND 
-                                         a.DateCreated >= '$date_from 00:00:00' AND a.DateCreated <= '$date_to 11:59:59'"."
-                                         ";
+                                         INNER JOIN rewarditems b ON a.RewardItemID = b.RewardItemID 
+                                         INNER JOIN membership.members m ON a.MID = m.MID 
+                                         WHERE m.IsVIP = :player AND a.Status = 1 AND ";
+                            $query[2] = "a.DateCreated >= '$date_from 00:00:00' AND a.DateCreated <= '$date_to 23:59:59'";
+                        }
+                        else if ($appendedLetter == "P")
+                        {
+                            //Select Partners
+                            $getPartners = "SELECT PartnerID FROM ref_partners";
+                            $command = $connection->createCommand($getPartners);
+                            $partners = $command->queryAll();
+                            for ($i = 0; count($partners) > $i; $i++)
+                            {
+                                $arrpartners[] = $partners[$i]['PartnerID'];
+                            }
+                            $query[0] = $select;
+                            $query[1] = "FROM couponredemptionlogs a
+                                         INNER JOIN rewarditems b ON a.RewardItemID = b.RewardItemID  
+                                         INNER JOIN membership.members m ON a.MID = m.MID 
+                                         WHERE m.IsVIP = :player AND b.PartnerID IN ("."'".implode("','",$arrpartners)."'".") AND a.Status = 1 AND ";
+                            $query[2] = "a.DateCreated >= '$date_from 00:00:00' AND a.DateCreated <= '$date_to 23:59:59'";
+                        }
+                        else if ($appendedLetter == "C")
+                        {
+                            //Select Categories
+                            $getCategories = "SELECT CategoryID FROM ref_category";
+                            $command = $connection->createCommand($getCategories);
+                            $categories = $command->queryAll();
+                            for ($i = 0; count($categories) > $i; $i++)
+                            {
+                                $arrcategories[] = $categories[$i]['CategoryID'];
+                            }
+                            $query[0] = $select; 
+                            $query[1] = "FROM couponredemptionlogs a
+                                         INNER JOIN rewarditems b ON a.RewardItemID = b.RewardItemID 
+                                         INNER JOIN membership.members m ON a.MID = m.MID 
+                                         WHERE m.IsVIP = :player AND b.CategoryID IN ("."'".implode("','",$arrcategories)."'".") AND a.Status = 1 AND ";
+                            $query[2] = "a.DateCreated >= '$date_from 00:00:00' AND a.DateCreated <= '$date_to 23:59:59'";
+                        }
+                        else if ($appendedLetter == "A")
+                        {
+                            $query[0] = $select;
+                            $query[1] = "FROM couponredemptionlogs a
+                                         INNER JOIN rewarditems b ON a.RewardItemID = b.RewardItemID 
+                                         INNER JOIN membership.members m ON a.MID = m.MID 
+                                         WHERE m.IsVIP = :player AND a.Status = 1 AND ";
+                            $query[2] = "a.DateCreated >= '$date_from 00:00:00' AND a.DateCreated <= '$date_to 23:59:59'";
+                        }
+                    }
+                    else
+                    {
+                        //If ALL is the filter, determine its filter classification by the 
+                        //appended letter in the each ID
+                        $appendedLetter = substr($particular, 0, 1); //get the letter appended
+                        if ($appendedLetter == "I")
+                        {
+                            $query[0] = $select;
+                            $query[1] = "FROM couponredemptionlogs a
+                                         INNER JOIN rewarditems b ON a.RewardItemID = b.RewardItemID 
+                                         INNER JOIN membership.members m ON a.MID = m.MID 
+                                         WHERE m.IsVIP IN (0, 1) AND a.Status = 1 AND ";
+                            $query[2] = "a.DateCreated >= '$date_from 00:00:00' AND a.DateCreated <= '$date_to 23:59:59'";
                         }
                         else if ($appendedLetter == "P")
                         {
@@ -352,9 +407,9 @@ class CouponRedemptionLogsModel extends CFormModel
                             $query[0] = $select;
                             $query[1] = "FROM couponredemptionlogs a
                                          INNER JOIN rewarditems b ON a.RewardItemID = b.RewardItemID 
-                                         WHERE b.PClassID = :player AND b.PartnerID IN ("."'".implode("','",$arrpartners)."'".") AND 
-                                         a.DateCreated >= '$date_from 00:00:00' AND a.DateCreated <= '$date_to 11:59:59'"."
-                                         ";
+                                         INNER JOIN membership.members m ON a.MID = m.MID 
+                                         WHERE m.IsVIP IN (0, 1) AND b.PartnerID IN ("."'".implode("','",$arrpartners)."'".") AND a.Status = 1 AND ";
+                            $query[2] = "a.DateCreated >= '$date_from 00:00:00' AND a.DateCreated <= '$date_to 23:59:59'";
                         }
                         else if ($appendedLetter == "C")
                         {
@@ -368,77 +423,19 @@ class CouponRedemptionLogsModel extends CFormModel
                             }
                             $query[0] = $select; 
                             $query[1] = "FROM couponredemptionlogs a
-                                         INNER JOIN rewarditems b ON a.RewardItemID = b.RewardItemID
-                                         WHERE b.PClassID = :player AND b.CategoryID IN ("."'".implode("','",$arrcategories)."'".") AND 
-                                         a.DateCreated >= '$date_from 00:00:00' AND a.DateCreated <= '$date_to 11:59:59'"."
-                                         ";
+                                         INNER JOIN rewarditems b ON a.RewardItemID = b.RewardItemID 
+                                         INNER JOIN membership.members m ON a.MID = m.MID 
+                                         WHERE m.IsVIP IN (0, 1) AND b.CategoryID IN ("."'".implode("','",$arrcategories)."'".") AND a.Status = 1 AND ";
+                            $query[2] = "a.DateCreated >= '$date_from 00:00:00' AND a.DateCreated <= '$date_to 23:59:59'";
                         }
                         else if ($appendedLetter == "A")
                         {
                             $query[0] = $select;
                             $query[1] = "FROM couponredemptionlogs a
-                                         INNER JOIN rewarditems b ON a.RewardItemID = b.RewardItemID
-                                         WHERE b.PClassID = :player AND 
-                                         a.DateCreated >= '$date_from 00:00:00' AND a.DateCreated <= '$date_to 11:59:59'"."
-                                         ";
-                        }
-                    }
-                    else
-                    {
-                        //If ALL is the filter, determine its filter classification by the 
-                        //appended letter in the each ID
-                        $appendedLetter = substr($particular, 0, 1); //get the letter appended
-                        if ($appendedLetter == "I")
-                        {
-                            $query[0] = $select;
-                            $query[1] = "FROM couponredemptionlogs a
-                                         INNER JOIN rewarditems b ON a.RewardItemID = b.RewardItemID
-                                         WHERE b.PClassID IN (1, 2) AND
-                                         a.DateCreated >= '$date_from 00:00:00' AND a.DateCreated <= '$date_to 11:59:59'"."
-                                         ";
-                        }
-                        else if ($appendedLetter == "P")
-                        {
-                            //Select Partners
-                            $getPartners = "SELECT PartnerID FROM ref_partners";
-                            $command = $connection->createCommand($getPartners);
-                            $partners = $command->queryAll();
-                            for ($i = 0; count($partners) > $i; $i++)
-                            {
-                                $arrpartners[] = $partners[$i]['PartnerID'];
-                            }
-                            $query[0] = $select;
-                            $query[1] = "FROM couponredemptionlogs a
-                                         INNER JOIN rewarditems b ON a.RewardItemID = b.RewardItemID
-                                         WHERE b.PClassID IN (1, 2) AND b.PartnerID IN ("."'".implode("','",$arrpartners)."'".") AND 
-                                         a.DateCreated >= '$date_from 00:00:00' AND a.DateCreated <= '$date_to 11:59:59'"."
-                                         ";
-                        }
-                        else if ($appendedLetter == "C")
-                        {
-                            //Select Categories
-                            $getCategories = "SELECT CategoryID FROM ref_category";
-                            $command = $connection->createCommand($getCategories);
-                            $categories = $command->queryAll();
-                            for ($i = 0; count($categories) > $i; $i++)
-                            {
-                                $arrcategories[] = $categories[$i]['CategoryID'];
-                            }
-                            $query[0] = $select; 
-                            $query[1] = "FROM couponredemptionlogs a
-                                         INNER JOIN rewarditems b ON a.RewardItemID = b.RewardItemID
-                                         WHERE b.PClassID IN (1, 2) AND b.CategoryID IN ("."'".implode("','",$arrcategories)."'".") AND 
-                                         a.DateCreated >= '$date_from 00:00:00' AND a.DateCreated <= '$date_to 11:59:59'"."
-                                         ";
-                        }
-                        else if ($appendedLetter == "A")
-                        {
-                            $query[0] = $select;
-                            $query[1] = "FROM couponredemptionlogs a
-                                         INNER JOIN rewarditems b ON a.RewardItemID = b.RewardItemID
-                                         WHERE b.PClassID IN (1, 2) AND 
-                                         a.DateCreated >= '$date_from 00:00:00' AND a.DateCreated <= '$date_to 11:59:59'"."
-                                         ";
+                                         INNER JOIN rewarditems b ON a.RewardItemID = b.RewardItemID 
+                                         INNER JOIN membership.members m ON a.MID = m.MID 
+                                         WHERE m.IsVIP IN (0, 1) AND a.Status = 1 AND ";
+                            $query[2] = "a.DateCreated >= '$date_from 00:00:00' AND a.DateCreated <= '$date_to 23:59:59'";
                         }
                     }
                     break;
@@ -472,26 +469,6 @@ class CouponRedemptionLogsModel extends CFormModel
             try
             {
                 $pdo->commit();
-                switch(Yii::app()->session['AccountType'])
-                {
-                    case 6: 
-                        $auditfunction = RefAuditFunctionsModel::CS_VERIFY_RAFFLE;
-                        break;
-                    case 9:
-                        $auditfunction = RefAuditFunctionsModel::AS_VERIFY_RAFFLE;
-                        break;
-                    case 13:
-                        $auditfunction = RefAuditFunctionsModel::MARKETING_VERIFY_RAFFLE;
-                        break;
-                    case 14:
-                        $auditfunction = RefAuditFunctionsModel::PARTNER_VERIFY_RAFFLE;
-                        break;
-                    default:
-                        $auditfunction = null;
-                        break;
-                }
-                $audittrailmodel->logEvent($auditfunction, "SerialCode: ".$serialcode.";SecurityCode:".$securitycode.":successful", array('SessionID' => Yii::app()->session['SessionID'], 
-                                                                                            'AID' => Yii::app()->session['AID']));
                 return array('TranMsg' => 'Verified', 'TransCode' => 1);
             }
             catch(CBException $e)

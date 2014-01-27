@@ -25,6 +25,25 @@ class RewardTypeModel extends CFormModel
         
         return $result;
     }
+    /**
+     * Get reward type description (name)
+     * @param int $rewardID Reward ID
+     * @return string Description
+     * @author Mark Kenneth Esguerra
+     * @date December 12, 2013
+     */
+    public function getRewardTypeDesp($rewardID)
+    {
+        $connection = Yii::app()->db;
+        
+        $query = "SELECT Description FROM ref_rewardtype 
+                  WHERE RewardID = :rewardID";
+        $command = $connection->createCommand($query);
+        $command->bindParam(":rewardID", $rewardID);
+        $result = $command->queryRow();
+        
+        return $result['Description'];
+    }
     
 }
 ?>

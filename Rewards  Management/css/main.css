@@ -642,3 +642,7 @@ Added by: mgesguerra
     float: left;
     border: 2px solid white;
 }
+
+.report-field {
+    width: 120px;
+}

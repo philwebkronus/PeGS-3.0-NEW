@@ -30,6 +30,7 @@ behavior: url(css/PIE/PIE.htc);
 position:relative;    
 display: block;
 text-decoration: none;
+z-index: 1000;
 }
 
 * html .jqueryslidemenu ul li a{ /*IE6 hack to get sub menu links to behave correctly*/

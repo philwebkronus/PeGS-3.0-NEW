@@ -142,12 +142,13 @@ class ManageMysteryRewardsController extends Controller
     }
     
     /**
-     * @Description: For Manipulating Mystery Rewards (Delete, Edit and Add)
+     * @Description: For Deleting Mystery Rewards
      * @Author: aqdepliyan
      * @DateCreated: 2013-11-11
-     * @modified mgesguerra 2013-12-20
+     * @DateModified: 2014-01-17
      */
-    public function actionManipulateMysteryReward(){
+    public function actionDeleteMysteryReward(){
+        
         $model = new ManageMysteryRewardsForm();
         $rewarditems = new RewardItemsModel();
         $refpartners = new RefPartnerModel();
@@ -155,174 +156,264 @@ class ManageMysteryRewardsController extends Controller
 
         if(isset($_POST['ManageMysteryRewardsForm'])){
             $model->attributes = $_POST['ManageMysteryRewardsForm'];
+            
+            $rewarditemid = $_POST['hdnRewardItemID'];
+            $status = 4;
+            $auditfunctionid = RefAuditFunctionsModel::MARKETING_DELETE_MYSTERY_REWARDS;
 
-            $functionname = $_POST['hdnFunctionName'];
-            switch ($functionname){
-                case 'DeleteReward':
-                    $rewarditemid = $_POST['hdnRewardItemID'];
-                    $status = 4;
-                    $auditfunctionid = RefAuditFunctionsModel::MARKETING_DELETE_MYSTERY_REWARDS;
-                    
-                    //Change status of item to deactivated (deleted)
-                    $result = $rewarditems->updateRewardStatus($rewarditemid, $status);
-                    
-                    //Get the PartnerID for audit trail transaction details
-                    $audittraildetails = $rewarditems->getAuditTrailDetails($rewarditemid);
-                    
-                    //Get total reward offerings (active/outofstock rewards) per partner
-                    $getpartnerstobeupdated = $rewarditems->getSumCountActiveByPartner((int)$audittraildetails["PartnerID"]);
+            //Change status of item to deactivated (deleted)
+            $result = $rewarditems->updateRewardStatus($rewarditemid, $status);
 
-                   if(count($getpartnerstobeupdated) > 0){
-                        //Update total reward offerings per partner
-                        $partnerid = (int)$audittraildetails["PartnerID"];
-                        $offeringscount =(int)$getpartnerstobeupdated["RewardsCount"];
-                        $refpartners->UpdateNoOfOfferings($partnerid, $offeringscount);
+            //Get the PartnerID for audit trail transaction details
+            $audittraildetails = $rewarditems->getAuditTrailDetails($rewarditemid);
+
+            //Get total reward offerings (active/outofstock rewards) per partner
+            $getpartnerstobeupdated = $rewarditems->getSumCountActiveByPartner((int)$audittraildetails["PartnerID"]);
+
+           if(count($getpartnerstobeupdated) > 0){
+                //Update total reward offerings per partner
+                $partnerid = (int)$audittraildetails["PartnerID"];
+                $offeringscount =(int)$getpartnerstobeupdated["RewardsCount"];
+                $refpartners->UpdateNoOfOfferings($partnerid, $offeringscount);
+            }
+
+            if($result['TransCode'] == 0){
+                $this->showdialog = true;
+                $this->message = "Mystery Reward has been successfully deleted.";
+                $transdetails = "RewardItemID: ".$rewarditemid.", PartnerName: eGames, Name: ".$audittraildetails["ItemName"].", Status: 4 - Deactivated";
+
+                //Log event to audit trail
+                $audittrail->logEvent($auditfunctionid, $transdetails, array('SessionID' => Yii::app()->session['SessionID'], 'AID' => Yii::app()->session['AID']));
+            } else {
+                $this->showdialog = true;
+                $this->message = "Failed to delete Mystery Reward.";
+            }
+            
+            $this->render('managemysteryreward', array('model' => $model));
+            
+        } else {
+            $this->redirect('managemysteryreward');
+        }
+    }
+    
+    /**
+     * @Description: For Adding New Mystery Reward
+     * @Author: aqdepliyan
+     * @DateCreated: 2013-11-11
+     * @DateModified: 2014-01-17
+     */
+    public function actionAddMysteryReward(){
+        $model = new ManageMysteryRewardsForm();
+        $rewarditems = new RewardItemsModel();
+        $refpartners = new RefPartnerModel();
+        $audittrail = new AuditTrailModel();
+
+        if(isset($_POST['ManageMysteryRewardsForm'])){
+            $model->attributes = $_POST['ManageMysteryRewardsForm'];
+            
+            $rewardid = 1;
+            $thblimitedphoto = $_POST['addthblimitedphoto'];
+            $thboutofstockphoto = $_POST['addthboutofstockphoto'];
+            $ecouponphoto = $_POST['addecouponphoto'];
+            $lmlimitedphoto = $_POST['addlmlimitedphoto'];
+            $lmoutofstockphoto = $_POST['addlmoutofstockphoto'];
+            $websliderphoto = $_POST['addwebsliderphoto'];
+            $imagedirector= Yii::app()->params['image_directory'];
+            $imagetmpdirectory = Yii::app()->params['image_tmpdirectory'];
+            $auditfunctionid = RefAuditFunctionsModel::MARKETING_ADD_MYSTERY_REWARDS;                    
+            $transferfile1 = true;
+            $transferfile2 = true;
+            $transferfile3 = true;
+            $transferfile4 = true;
+            $transferfile5 = true;
+            $transferfile6 = true;
+            $unlink1 = true;
+            $unlink2 = true;
+            $unlink3 = true;
+            $unlink4 = true;
+            $unlink5 = true;
+            $unlink6 = true;
+            $rewarditemname = $model->addrewarditem;
+            if($thblimitedphoto != ""){
+                $extname_thblimited = strpos($thblimitedphoto, 'thblimited') !== false ? "limited":"";
+                $thblimited = explode(".",$thblimitedphoto);
+                $ext_thblimited = end($thblimited);
+                $rewarditemname = preg_replace("/[^a-zA-Z0-9+$]/", "-", $rewarditemname);
+                $newthblimitedphoto = $rewarditemname."_".$extname_thblimited.".".$ext_thblimited;
+                if(file_exists("$imagetmpdirectory".$thblimitedphoto)){
+                    $transferfile1 = copy("$imagetmpdirectory".$thblimitedphoto, "$imagedirector".$newthblimitedphoto);
+                    chmod("$imagetmpdirectory".$thblimitedphoto, 0777);
+                }
+            }
+
+            if($thboutofstockphoto != ""){
+                $extname_thboutofstock = strpos($thboutofstockphoto, 'thboutofstock') !== false ? "outofstock":"";
+                $thboutofstock = explode(".",$thboutofstockphoto);
+                $ext_thboutofstock = end($thboutofstock);
+                $rewarditemname = preg_replace("/[^a-zA-Z0-9+$]/", "-", $rewarditemname);
+                $newthboutofstockphoto = $rewarditemname."_".$extname_thboutofstock.".".$ext_thboutofstock;
+                if(file_exists("$imagetmpdirectory".$thboutofstockphoto)){
+                    $transferfile2 = copy("$imagetmpdirectory".$thboutofstockphoto, "$imagedirector".$newthboutofstockphoto);
+                    chmod("$imagetmpdirectory".$thboutofstockphoto, 0777);
+                }
+            }
+
+            if($ecouponphoto != ""){
+                $extname_ecoupon = strpos($ecouponphoto, 'ecoupon') !== false ? "ecoupon":"";
+                $ecoupon = explode(".",$ecouponphoto);
+                $ext_ecoupon = end($ecoupon);
+                $rewarditemname = preg_replace("/[^a-zA-Z0-9+$]/", "-", $rewarditemname);
+                $newecouponphoto = $rewarditemname."_".$extname_ecoupon.".".$ext_ecoupon;
+                if(file_exists("$imagetmpdirectory".$ecouponphoto)){
+                    $transferfile3 = copy("$imagetmpdirectory".$ecouponphoto, "$imagedirector".$newecouponphoto);
+                    chmod("$imagetmpdirectory".$ecouponphoto, 0777);
+                }
+            }
+
+            if($lmlimitedphoto != ""){
+                $extname_lmlimited = strpos($lmlimitedphoto, 'lmlimited') !== false ? "learnmore-limited":"";
+                $lmlimited = explode(".",$lmlimitedphoto);
+                $ext_lmlimited = end($lmlimited);
+                $rewarditemname = preg_replace("/[^a-zA-Z0-9+$]/", "-", $rewarditemname);
+                $newlmlimitedphoto = $rewarditemname."_".$extname_lmlimited.".".$ext_lmlimited;
+                if(file_exists("$imagetmpdirectory".$lmlimitedphoto)){
+                    $transferfile4 = copy("$imagetmpdirectory".$lmlimitedphoto, "$imagedirector".$newlmlimitedphoto);
+                    chmod("$imagetmpdirectory".$lmlimitedphoto, 0777);
+                }
+            }
+
+            if($lmoutofstockphoto != ""){
+                $extname_lmoutofstock = strpos($lmoutofstockphoto, 'lmoutofstock') !== false ? "learnmore-outofstock":"";
+                $lmoutofstock = explode(".",$lmoutofstockphoto);
+                $ext_lmoutofstock = end($lmoutofstock);
+                $rewarditemname = preg_replace("/[^a-zA-Z0-9+$]/", "-", $rewarditemname);
+                $newlmoutofstockphoto = $rewarditemname."_".$extname_lmoutofstock.".".$ext_lmoutofstock;
+                if(file_exists("$imagetmpdirectory".$lmoutofstockphoto)){
+                    $transferfile5 = copy("$imagetmpdirectory".$lmoutofstockphoto, "$imagedirector".$newlmoutofstockphoto);
+                    chmod("$imagetmpdirectory".$lmoutofstockphoto, 0777);
+                }
+            }
+
+            if($websliderphoto != ""){
+                $extname_webslider = strpos($websliderphoto, 'webslider') !== false ? "slider":"";
+                $webslider = explode(".",$websliderphoto);
+                $ext_webslider = end($webslider);
+                $rewarditemname = preg_replace("/[^a-zA-Z0-9+$]/", "-", $rewarditemname);
+                $newwebsliderphoto = $rewarditemname."_".$extname_webslider.".".$ext_webslider;
+                if(file_exists("$imagetmpdirectory".$websliderphoto)){
+                    $transferfile6 = copy("$imagetmpdirectory".$websliderphoto, "$imagedirector".$newwebsliderphoto);
+                    chmod("$imagetmpdirectory".$websliderphoto, 0777);
+                }
+            }
+
+            if($_POST['from_hour'] == "00" && $_POST['from_min'] == "00" && $_POST['from_sec'] == "00"){
+                $initialtime = Yii::app()->params['initialtime'];
+            } else {
+                $initialtime = $_POST['from_hour'].":".$_POST['from_min'].":".$_POST['from_sec'];
+            }
+
+            if($_POST['to_hour'] == "00" && $_POST['to_min'] == "00" && $_POST['to_sec'] == "00"){
+                $cutofftime = Yii::app()->params['cutofftime'];
+            } else {
+                $cutofftime = $_POST['to_hour'].":".$_POST['to_min'].":".$_POST['to_sec'];
+            }
+
+            $startdate = $_POST['add_from_date']." ".$initialtime;
+            $enddate = $_POST['add_to_date']." ".$cutofftime;
+
+            $about = $model->addabout; 
+            $terms = $model->addterms; 
+            $mysteryabout = $model->addmysteryabout; 
+            $mysteryterms = $model->addmysteryterms; 
+            $partnername = Yii::app()->params["mysteryPartner"];
+            if($model->addcategory == ''){
+                $categoryid = null;
+            } else { $categoryid = $model->addcategory; }
+            if($model->addsubtext == ''){
+                $subtext = null;
+            } else { $subtext = $model->addsubtext; }
+            if($model->addmysterysubtext == ''){
+                $mysterysubtext = null;
+            } else { $mysterysubtext = $model->addmysterysubtext; }
+
+            $validated = true;
+            $validateitem = $rewarditems->ValidateItem($model->addrewarditem);
+            $count =  count($validateitem);
+            if($count > 0){
+                for($itr = 0; $itr < $count; $itr++){
+                    if($validateitem[$itr]["Status"] != 4){
+                        $validated =false;
+                        break;
                     }
-                    
-                    if($result['TransCode'] == 0){
-                        $this->showdialog = true;
-                        $this->message = "Mystery Reward has been successfully deleted.";
-                        $transdetails = "RewardItemID: ".$rewarditemid.", PartnerName: eGames, Name: ".$audittraildetails["ItemName"].", Status: 4 - Deactivated";
-                        
-                        //Log event to audit trail
-                        $audittrail->logEvent($auditfunctionid, $transdetails, array('SessionID' => Yii::app()->session['SessionID'], 'AID' => Yii::app()->session['AID']));
-                    } else {
-                        $this->showdialog = true;
-                        $this->message = "Failed to delete Mystery Reward.";
-                    }
+                }
+            }
+
+            if($validated) {
+                if($partnername != null || $partnername != ""){
+                    $partnerid = $refpartners->getPartnerIDUsingName($partnername);
+                    $getpartneritemid = $rewarditems->GetPartnerItemID($partnerid);
+                    $partneritemid = (int)$getpartneritemid[0]["lastpartneritemid"]+1;
+                    $itemcount = preg_replace('/[^0-9]/s', '', 1);
+                    $addpoints = preg_replace('/[^0-9]/s', '', $model->addpoints);
+                    $serialcodestart = "00001";
+                    $str = (string)$itemcount;
+                    $serialcodeend = str_pad($str, 5, "0", STR_PAD_LEFT);
+                } else {
+                    $this->showdialog = true;
+                    $this->message = "Transaction Failed: Mystery Reward Partner is unavailable.";
                     $this->render('managemysteryreward', array('model' => $model));
-                    break;
-                case 'EditReward':
-                    $rewarditemid = $_POST['hdnRewardItemID-edit'];
-                    $rewardid = 1;
-                    $thblimitedphoto = $_POST['thblimitedphoto'];
-                    $thboutofstockphoto = $_POST['thboutofstockphoto'];
-                    $ecouponphoto = $_POST['ecouponphoto'];
-                    $lmlimitedphoto = $_POST['lmlimitedphoto'];
-                    $lmoutofstockphoto = $_POST['lmoutofstockphoto'];
-                    $websliderphoto = $_POST['websliderphoto'];
-                    $editpoints = preg_replace('/[^0-9]/s', '', $model->editpoints);
-                    $imagedirector= Yii::app()->params['image_directory'];
-                    $imagetmpdirectory = Yii::app()->params['image_tmpdirectory'];
-                    $auditfunctionid = RefAuditFunctionsModel::MARKETING_EDIT_MYSTERY_REWARDS_DETAILS;      
-                    $transferfile1 = true;
-                    $transferfile2 = true;
-                    $transferfile3 = true;
-                    $transferfile4 = true;
-                    $transferfile5 = true;
-                    $transferfile6 = true;
-                    $rewarditemname = $model->editrewarditem;
-                    
-                    //Check if Mystery Reward Item is already exist
-                    
-                    if($thblimitedphoto != ""){
-                        $extname_thblimited = strpos($thblimitedphoto, 'thblimited') !== false ? "limited":"";
-                        $thblimited = explode(".",$thblimitedphoto);
-                        $ext_thblimited = end($thblimited);
-                        $rewarditemname = preg_replace("/[^a-zA-Z0-9+$]/", "-", $rewarditemname);
-                        $newthblimitedphoto = $rewarditemname."_".$extname_thblimited.".".$ext_thblimited;
-                        $transferfile1 = copy("$imagetmpdirectory".$thblimitedphoto, "$imagedirector".$newthblimitedphoto);
+                }
+
+                if($transferfile1 != true || $transferfile2 != true || $transferfile3 != true || $transferfile4 != true || $transferfile5 != true || $transferfile6 != true){
+                    $this->showdialog = true;
+                    $this->message = "Transaction Failed: Error in uploading of images.";
+
+                    if(file_exists("$imagetmpdirectory".$thblimitedphoto)){
+                        $thblimitedphoto != "" ? unlink("$imagetmpdirectory".$thblimitedphoto):true;
                     }
-                    
-                    if($thboutofstockphoto != ""){
-                        $extname_thboutofstock = strpos($thboutofstockphoto, 'thboutofstock') !== false ? "outofstock":"";
-                        $thboutofstock = explode(".",$thboutofstockphoto);
-                        $ext_thboutofstock = end($thboutofstock);
-                        $rewarditemname = preg_replace("/[^a-zA-Z0-9+$]/", "-", $rewarditemname);
-                        $newthboutofstockphoto = $rewarditemname."_".$extname_thboutofstock.".".$ext_thboutofstock;
-                        $transferfile2 = copy("$imagetmpdirectory".$thboutofstockphoto, "$imagedirector".$newthboutofstockphoto);
+                    if(file_exists("$imagetmpdirectory".$thboutofstockphoto)){
+                        $thboutofstockphoto != "" ? unlink("$imagetmpdirectory".$thboutofstockphoto):true;
                     }
-                    
-                    if($ecouponphoto != ""){
-                        $extname_ecoupon = strpos($ecouponphoto, 'ecoupon') !== false ? "ecoupon":"";
-                        $ecoupon = explode(".",$ecouponphoto);
-                        $ext_ecoupon = end($ecoupon);
-                        $rewarditemname = preg_replace("/[^a-zA-Z0-9+$]/", "-", $rewarditemname);
-                        $newecouponphoto = $rewarditemname."_".$extname_ecoupon.".".$ext_ecoupon;
-                        $transferfile3 = copy("$imagetmpdirectory".$ecouponphoto, "$imagedirector".$newecouponphoto);
+                    if(file_exists("$imagetmpdirectory".$ecouponphoto)){
+                        $ecouponphoto != "" ? unlink("$imagetmpdirectory".$ecouponphoto):true;
                     }
-                    
-                    if($lmlimitedphoto != ""){
-                        $extname_lmlimited = strpos($lmlimitedphoto, 'lmlimited') !== false ? "learnmore-limited":"";
-                        $lmlimited = explode(".",$lmlimitedphoto);
-                        $ext_lmlimited = end($lmlimited);
-                        $rewarditemname = preg_replace("/[^a-zA-Z0-9+$]/", "-", $rewarditemname);
-                        $newlmlimitedphoto = $rewarditemname."_".$extname_lmlimited.".".$ext_lmlimited;
-                        $transferfile4 = copy("$imagetmpdirectory".$lmlimitedphoto, "$imagedirector".$newlmlimitedphoto);
+                    if(file_exists("$imagetmpdirectory".$lmlimitedphoto)){
+                        $lmlimitedphoto != "" ? unlink("$imagetmpdirectory".$lmlimitedphoto):true;
                     }
-                    
-                    if($lmoutofstockphoto != ""){
-                        $extname_lmoutofstock = strpos($lmoutofstockphoto, 'lmoutofstock') !== false ? "learnmore-outofstock":"";
-                        $lmoutofstock = explode(".",$lmoutofstockphoto);
-                        $ext_lmoutofstock = end($lmoutofstock);
-                        $rewarditemname = preg_replace("/[^a-zA-Z0-9+$]/", "-", $rewarditemname);
-                        $newlmoutofstockphoto = $rewarditemname."_".$extname_lmoutofstock.".".$ext_lmoutofstock;
-                        $transferfile5 = copy("$imagetmpdirectory".$lmoutofstockphoto, "$imagedirector".$newlmoutofstockphoto);
+                    if(file_exists("$imagetmpdirectory".$lmoutofstockphoto)){
+                        $lmoutofstockphoto != "" ? unlink("$imagetmpdirectory".$lmoutofstockphoto):true;
                     }
-                    
-                    if($websliderphoto != ""){
-                        $extname_webslider = strpos($websliderphoto, 'webslider') !== false ? "slider":"";
-                        $webslider = explode(".",$websliderphoto);
-                        $ext_webslider = end($webslider);
-                        $rewarditemname = preg_replace("/[^a-zA-Z0-9+$]/", "-", $rewarditemname);
-                        $newwebsliderphoto = $rewarditemname."_".$extname_webslider.".".$ext_webslider;
-                        $transferfile6 = copy("$imagetmpdirectory".$websliderphoto, "$imagedirector".$newwebsliderphoto);
-                    }
-                    
-                    if($_POST['from_hour'] == "00" && $_POST['from_min'] == "00" && $_POST['from_sec'] == "00"){
-                        $initialtime = Yii::app()->params['initialtime'];
-                    } else {
-                        $initialtime = $_POST['from_hour'].":".$_POST['from_min'].":".$_POST['from_sec'];
-                    }
-                    
-                    if($_POST['to_hour'] == "00" && $_POST['to_min'] == "00" && $_POST['to_sec'] == "00"){
-                        $cutofftime = Yii::app()->params['cutofftime'];
-                    } else {
-                        $cutofftime = $_POST['to_hour'].":".$_POST['to_min'].":".$_POST['to_sec'];
+                    if(file_exists("$imagetmpdirectory".$websliderphoto)){
+                        $websliderphoto != "" ? unlink("$imagetmpdirectory".$websliderphoto):true;
                     }
 
-                    $startdate = $_POST['from_date']." ".$initialtime;
-                    $enddate = $_POST['to_date']." ".$cutofftime;
-                    if($model->editmysteryabout == ''){
-                        $mysteryabout = null;
-                    } else { $mysteryabout = $model->editmysteryabout; }
-                    if($model->editabout == ''){
-                        $about = null;
-                    } else { $about = $model->editabout; }
-                    if($model->editmysteryterms == ''){
-                        $mysteryterms = null;
-                    } else { $mysteryterms = $model->editmysteryterms; }
-                    if($model->editterms == ''){
-                        $terms = null;
-                    } else { $terms = $model->editterms; }
-                    if($model->editcategory == ''){
-                        $categoryid = null;
-                    } else { $categoryid = $model->editcategory; }
-                    if($model->editmysterysubtext == ''){
-                        $mysterysubtext = null;
-                    } else { $mysterysubtext = $model->editmysterysubtext; }
-                    if($model->editsubtext == ''){
-                        $subtext = null;
-                    } else { $subtext = $model->editsubtext; }
+                    $this->render('managemysteryreward', array('model' => $model));
+                } else {
+                    if(file_exists("$imagetmpdirectory".$thblimitedphoto)){
+                        $unlink1 = $thblimitedphoto != "" ? unlink("$imagetmpdirectory".$thblimitedphoto):true;
+                    }
+                    if(file_exists("$imagetmpdirectory".$thboutofstockphoto)){
+                        $unlink2 = $thboutofstockphoto != "" ? unlink("$imagetmpdirectory".$thboutofstockphoto):true;
+                    }
+                    if(file_exists("$imagetmpdirectory".$ecouponphoto)){
+                        $unlink3 = $ecouponphoto != "" ? unlink("$imagetmpdirectory".$ecouponphoto):true;
+                    }
+                    if(file_exists("$imagetmpdirectory".$lmlimitedphoto)){
+                        $unlink4 = $lmlimitedphoto != "" ? unlink("$imagetmpdirectory".$lmlimitedphoto):true;
+                    }
+                    if(file_exists("$imagetmpdirectory".$lmoutofstockphoto)){
+                        $unlink5 = $lmoutofstockphoto != "" ? unlink("$imagetmpdirectory".$lmoutofstockphoto):true;
+                    }
+                    if(file_exists("$imagetmpdirectory".$websliderphoto)){
+                        $unlink6 = $websliderphoto != "" ? unlink("$imagetmpdirectory".$websliderphoto):true;
+                    }
 
-                    if($transferfile1 != true || $transferfile2 != true || $transferfile3 != true || $transferfile4 != true || $transferfile5 != true || $transferfile6 != true){
+                    //Check if the uploaded images in tmp are deleted.
+                    if($unlink1 != true || $unlink2 != true || $unlink3 != true || $unlink4 != true || $unlink5 != true || $unlink6 != true){
                         $this->showdialog = true;
-                        $this->message = "Update Failed: Error in uploading of images.";
-                        $thblimitedphoto != "" ? unlink("$imagetmpdirectory".$thblimitedphoto):"";
-                        $thboutofstockphoto != "" ? unlink("$imagetmpdirectory".$thboutofstockphoto):"";
-                        $ecouponphoto != "" ? unlink("$imagetmpdirectory".$ecouponphoto):"";
-                        $lmlimitedphoto != "" ? unlink("$imagetmpdirectory".$lmlimitedphoto):"";
-                        $lmoutofstockphoto != "" ? unlink("$imagetmpdirectory".$lmoutofstockphoto):"";
-                        $websliderphoto != "" ? unlink("$imagetmpdirectory".$websliderphoto):"";
-
+                        $this->message = "Update Failed: Error in processing of images.";
                         $this->render('managemysteryreward', array('model' => $model));
                     } else {
-                        $thblimitedphoto != "" ? unlink("$imagetmpdirectory".$thblimitedphoto):"";
-                        $thboutofstockphoto != "" ? unlink("$imagetmpdirectory".$thboutofstockphoto):"";
-                        $ecouponphoto != "" ? unlink("$imagetmpdirectory".$ecouponphoto):"";
-                        $lmlimitedphoto != "" ? unlink("$imagetmpdirectory".$lmlimitedphoto):"";
-                        $lmoutofstockphoto != "" ? unlink("$imagetmpdirectory".$lmoutofstockphoto):"";
-                        $websliderphoto != "" ? unlink("$imagetmpdirectory".$websliderphoto):"";
                         $thblimitedphoto != "" ? $thblimitedphoto = $newthblimitedphoto: $thblimitedphoto = $thblimitedphoto;
                         $thboutofstockphoto != "" ? $thboutofstockphoto = $newthboutofstockphoto: $thboutofstockphoto = $thboutofstockphoto;
                         $ecouponphoto != "" ? $ecouponphoto = $newecouponphoto: $ecouponphoto = $ecouponphoto;
@@ -330,263 +421,351 @@ class ManageMysteryRewardsController extends Controller
                         $lmoutofstockphoto != "" ? $lmoutofstockphoto = $newlmoutofstockphoto: $lmoutofstockphoto = $lmoutofstockphoto;
                         $websliderphoto != "" ? $websliderphoto = $newwebsliderphoto: $websliderphoto = $websliderphoto;
                     }
-                    //Update Reward Item Details
-                    $result = $rewarditems->UpdateMysteryReward($rewarditemid, $model->editrewarditem, $model->editmysteryrewarditem, $editpoints, $model->editeligibility, $model->editstatus, $startdate, $enddate, 
-                                                                                                                $categoryid, $subtext, $mysterysubtext, $about, $mysteryabout, $terms, $mysteryterms, $thblimitedphoto, $thboutofstockphoto, 
-                                                                                                                $ecouponphoto, $lmlimitedphoto, $lmoutofstockphoto, $websliderphoto);
-                    
-                    //Check if mystery item already exist
-                    if ($result['TransCode'] != 3){
-                        //Get the PartnerID for audit trail transaction details
-                        $audittraildetails = $rewarditems->getAuditTrailDetails($rewarditemid);
+                }
 
-                        //Get total reward offerings (active/outofstock rewards) per partner
-                        $getpartnerstobeupdated = $rewarditems->getSumCountActiveByPartner((int)$audittraildetails["PartnerID"]);
+                //Add New Reward Item 
+                $addnewrewarditem = $rewarditems->InsertMysteryReward((int)$partneritemid, (int)$rewardid, $model->addrewarditem, $model->addmysteryrewarditem, (int)$addpoints, 
+                                                                                                                                        (int)$model->addeligibility, (int)$model->addstatus, $startdate,  $enddate, $partnerid, $categoryid, $subtext, $mysterysubtext,
+                                                                                                                                        $about, $mysteryabout, $terms, $mysteryterms, (int)$itemcount, 
+                                                                                                                                        $thblimitedphoto, $thboutofstockphoto, $ecouponphoto, $lmlimitedphoto, 
+                                                                                                                                        $lmoutofstockphoto, $websliderphoto, 
+                                                                                                                                        $serialcodestart, $serialcodeend);
 
-                        if(count($getpartnerstobeupdated) > 0){
-                            //Update total reward offerings per partner
-                            $partnerid = (int)$audittraildetails["PartnerID"];
-                            $offeringscount =(int)$getpartnerstobeupdated["RewardsCount"];
-                            $refpartners->UpdateNoOfOfferings($partnerid, $offeringscount);
-                        }
+                //Get total reward offerings (active/outofstock rewards) per partner
+                $getpartnerstobeupdated = $rewarditems->getSumCountActiveByPartner((int)$partnerid);
 
-                        if($result['TransCode'] == 0){
-                            $this->showdialog = true;
+                if(count($getpartnerstobeupdated) > 0){
+                    //Update total reward offerings per partner
+                    $offeringscount =(int)$getpartnerstobeupdated["RewardsCount"];
+                    $refpartners->UpdateNoOfOfferings((int)$partnerid, $offeringscount);
+                }
 
-                            switch ($model->editstatus) {
-                                case "1":
-                                    $statusvalue = "Active";
-                                    break;
-                                case "2":
-                                    $statusvalue = "Inactive";
-                                    break;
-                            }
+                if($addnewrewarditem['TransCode'] == 0){
+                    $this->showdialog = true;
 
-                            $this->message = "Mystery Reward successfully updated.";
-                            $transdetails = "RewardItemID: ".$rewarditemid.", PartnerName: eGames , Name: ".$model->editrewarditem.", Status: ".$model->editstatus." - ".$statusvalue;
-
-                            //Log Event on Audit trail
-                            $audittrail->logEvent($auditfunctionid, $transdetails, array('SessionID' => Yii::app()->session['SessionID'], 'AID' => Yii::app()->session['AID']));
-                        } else {
-                            $this->showdialog = true;
-                            $this->message = "Failed to update Mystery Reward.";
-                        }
-                    }
-                    else{
-                        $this->showdialog = true;
-                        $this->message = "Mystery Reward Item already exist";
-                    }
-                    $this->render('managemysteryreward', array('model' => $model));
-                    
-                    break;
-                case 'AddReward':
-                    $rewardid = 1;
-                    $thblimitedphoto = $_POST['addthblimitedphoto'];
-                    $thboutofstockphoto = $_POST['addthboutofstockphoto'];
-                    $ecouponphoto = $_POST['addecouponphoto'];
-                    $lmlimitedphoto = $_POST['addlmlimitedphoto'];
-                    $lmoutofstockphoto = $_POST['addlmoutofstockphoto'];
-                    $websliderphoto = $_POST['addwebsliderphoto'];
-                    $imagedirector= Yii::app()->params['image_directory'];
-                    $imagetmpdirectory = Yii::app()->params['image_tmpdirectory'];
-                    $auditfunctionid = RefAuditFunctionsModel::MARKETING_ADD_MYSTERY_REWARDS;                    
-                    $transferfile1 = true;
-                    $transferfile2 = true;
-                    $transferfile3 = true;
-                    $transferfile4 = true;
-                    $transferfile5 = true;
-                    $transferfile6 = true;
-                    $rewarditemname = $model->addrewarditem;
-                    if($thblimitedphoto != ""){
-                        $extname_thblimited = strpos($thblimitedphoto, 'thblimited') !== false ? "limited":"";
-                        $thblimited = explode(".",$thblimitedphoto);
-                        $ext_thblimited = end($thblimited);
-                        $rewarditemname = preg_replace("/[^a-zA-Z0-9+$]/", "-", $rewarditemname);
-                        $newthblimitedphoto = $rewarditemname."_".$extname_thblimited.".".$ext_thblimited;
-                        $transferfile1 = copy("$imagetmpdirectory".$thblimitedphoto, "$imagedirector".$newthblimitedphoto);
-                    }
-                    
-                    if($thboutofstockphoto != ""){
-                        $extname_thboutofstock = strpos($thboutofstockphoto, 'thboutofstock') !== false ? "outofstock":"";
-                        $thboutofstock = explode(".",$thboutofstockphoto);
-                        $ext_thboutofstock = end($thboutofstock);
-                        $rewarditemname = preg_replace("/[^a-zA-Z0-9+$]/", "-", $rewarditemname);
-                        $newthboutofstockphoto = $rewarditemname."_".$extname_thboutofstock.".".$ext_thboutofstock;
-                        $transferfile2 = copy("$imagetmpdirectory".$thboutofstockphoto, "$imagedirector".$newthboutofstockphoto);
-                    }
-                    
-                    if($ecouponphoto != ""){
-                        $extname_ecoupon = strpos($ecouponphoto, 'ecoupon') !== false ? "ecoupon":"";
-                        $ecoupon = explode(".",$ecouponphoto);
-                        $ext_ecoupon = end($ecoupon);
-                        $rewarditemname = preg_replace("/[^a-zA-Z0-9+$]/", "-", $rewarditemname);
-                        $newecouponphoto = $rewarditemname."_".$extname_ecoupon.".".$ext_ecoupon;
-                        $transferfile3 = copy("$imagetmpdirectory".$ecouponphoto, "$imagedirector".$newecouponphoto);
-                    }
-                    
-                    if($lmlimitedphoto != ""){
-                        $extname_lmlimited = strpos($lmlimitedphoto, 'lmlimited') !== false ? "learnmore-limited":"";
-                        $lmlimited = explode(".",$lmlimitedphoto);
-                        $ext_lmlimited = end($lmlimited);
-                        $rewarditemname = preg_replace("/[^a-zA-Z0-9+$]/", "-", $rewarditemname);
-                        $newlmlimitedphoto = $rewarditemname."_".$extname_lmlimited.".".$ext_lmlimited;
-                        $transferfile4 = copy("$imagetmpdirectory".$lmlimitedphoto, "$imagedirector".$newlmlimitedphoto);
-                    }
-                    
-                    if($lmoutofstockphoto != ""){
-                        $extname_lmoutofstock = strpos($lmoutofstockphoto, 'lmoutofstock') !== false ? "learnmore-outofstock":"";
-                        $lmoutofstock = explode(".",$lmoutofstockphoto);
-                        $ext_lmoutofstock = end($lmoutofstock);
-                        $rewarditemname = preg_replace("/[^a-zA-Z0-9+$]/", "-", $rewarditemname);
-                        $newlmoutofstockphoto = $rewarditemname."_".$extname_lmoutofstock.".".$ext_lmoutofstock;
-                        $transferfile5 = copy("$imagetmpdirectory".$lmoutofstockphoto, "$imagedirector".$newlmoutofstockphoto);
-                    }
-                    
-                    if($websliderphoto != ""){
-                        $extname_webslider = strpos($websliderphoto, 'webslider') !== false ? "slider":"";
-                        $webslider = explode(".",$websliderphoto);
-                        $ext_webslider = end($webslider);
-                        $rewarditemname = preg_replace("/[^a-zA-Z0-9+$]/", "-", $rewarditemname);
-                        $newwebsliderphoto = $rewarditemname."_".$extname_webslider.".".$ext_webslider;
-                        $transferfile6 = copy("$imagetmpdirectory".$websliderphoto, "$imagedirector".$newwebsliderphoto);
-                    }
-                    
-                    if($_POST['from_hour'] == "00" && $_POST['from_min'] == "00" && $_POST['from_sec'] == "00"){
-                        $initialtime = Yii::app()->params['initialtime'];
-                    } else {
-                        $initialtime = $_POST['from_hour'].":".$_POST['from_min'].":".$_POST['from_sec'];
-                    }
-                    
-                    if($_POST['to_hour'] == "00" && $_POST['to_min'] == "00" && $_POST['to_sec'] == "00"){
-                        $cutofftime = Yii::app()->params['cutofftime'];
-                    } else {
-                        $cutofftime = $_POST['to_hour'].":".$_POST['to_min'].":".$_POST['to_sec'];
-                    }
-                    
-                    $startdate = $_POST['add_from_date']." ".$initialtime;
-                    $enddate = $_POST['add_to_date']." ".$cutofftime;
-                    
-                    $about = $model->addabout; 
-                    $terms = $model->addterms; 
-                    $mysteryabout = $model->addmysteryabout; 
-                    $mysteryterms = $model->addmysteryterms; 
-                    $partnername = Yii::app()->params["mysteryPartner"];
-                    $partnerid = $refpartners->getPartnerIDUsingName($partnername);
-                    if($model->addcategory == ''){
-                        $categoryid = null;
-                    } else { $categoryid = $model->addcategory; }
-                    if($model->addsubtext == ''){
-                        $subtext = null;
-                    } else { $subtext = $model->addsubtext; }
-                    if($model->addmysterysubtext == ''){
-                        $mysterysubtext = null;
-                    } else { $mysterysubtext = $model->addmysterysubtext; }
-                    
-                    $validated = true;
-                    $validateitem = $rewarditems->ValidateItem($model->addrewarditem);
-                    $count =  count($validateitem);
-                    if($count > 0){
-                        for($itr = 0; $itr < $count; $itr++){
-                            if($validateitem[$itr]["Status"] != 4){
-                                $validated =false;
-                                break;
-                            }
-                        }
+                     switch ($model->addstatus) {
+                        case "1":
+                            $statusvalue = "Active";
+                            break;
+                        case "2":
+                            $statusvalue = "Inactive";
+                            break;
                     }
 
-                    if($validated) {
-                        if($partnerid != null || $partnerid != ""){
-                            $getpartneritemid = $rewarditems->GetPartnerItemID($partnerid);
-                            $partneritemid = (int)$getpartneritemid[0]["lastpartneritemid"]+1;
-                            $itemcount = preg_replace('/[^0-9]/s', '', 1);
-                            $addpoints = preg_replace('/[^0-9]/s', '', $model->addpoints);
-                            $serialcodestart = "00001";
-                            $str = (string)$itemcount;
-                            $serialcodeend = str_pad($str, 5, "0", STR_PAD_LEFT);
-                        } else {
-                            $this->showdialog = true;
-                            $this->message = "Transaction Failed: Mystery Reward Partner is unavailable.";
-                            $this->render('managemysteryreward', array('model' => $model));
-                        }
+                    $this->message = "Mystery Reward successfully Added.";
+                    $transdetails = "RewardItemID: ".$addnewrewarditem["LastInsertID"].", PartnerName: eGames, Name: ".$model->addrewarditem.", Status: ".$model->addstatus." - ".$statusvalue;
 
-                        if($transferfile1 != true || $transferfile2 != true || $transferfile3 != true || $transferfile4 != true || $transferfile5 != true || $transferfile6 != true){
-                            $this->showdialog = true;
-                            $this->message = "Transaction Failed: Error in uploading of images.";
-                            
-                            $thblimitedphoto != "" ? unlink("$imagetmpdirectory".$thblimitedphoto):"";
-                            $thboutofstockphoto != "" ? unlink("$imagetmpdirectory".$thboutofstockphoto):"";
-                            $ecouponphoto != "" ? unlink("$imagetmpdirectory".$ecouponphoto):"";
-                            $lmlimitedphoto != "" ? unlink("$imagetmpdirectory".$lmlimitedphoto):"";
-                            $lmoutofstockphoto != "" ? unlink("$imagetmpdirectory".$lmoutofstockphoto):"";
-                            $websliderphoto != "" ? unlink("$imagetmpdirectory".$websliderphoto):"";
-                            
-                            $this->render('managemysteryreward', array('model' => $model));
-                        } else {
-                            $thblimitedphoto != "" ? unlink("$imagetmpdirectory".$thblimitedphoto):"";
-                            $thboutofstockphoto != "" ? unlink("$imagetmpdirectory".$thboutofstockphoto):"";
-                            $ecouponphoto != "" ? unlink("$imagetmpdirectory".$ecouponphoto):"";
-                            $lmlimitedphoto != "" ? unlink("$imagetmpdirectory".$lmlimitedphoto):"";
-                            $lmoutofstockphoto != "" ? unlink("$imagetmpdirectory".$lmoutofstockphoto):"";
-                            $websliderphoto != "" ? unlink("$imagetmpdirectory".$websliderphoto):"";
-                            $thblimitedphoto != "" ? $thblimitedphoto = $newthblimitedphoto: $thblimitedphoto = $thblimitedphoto;
-                            $thboutofstockphoto != "" ? $thboutofstockphoto = $newthboutofstockphoto: $thboutofstockphoto = $thboutofstockphoto;
-                            $ecouponphoto != "" ? $ecouponphoto = $newecouponphoto: $ecouponphoto = $ecouponphoto;
-                            $lmlimitedphoto != "" ? $lmlimitedphoto = $newlmlimitedphoto: $lmlimitedphoto = $lmlimitedphoto;
-                            $lmoutofstockphoto != "" ? $lmoutofstockphoto = $newlmoutofstockphoto: $lmoutofstockphoto = $lmoutofstockphoto;
-                            $websliderphoto != "" ? $websliderphoto = $newwebsliderphoto: $websliderphoto = $websliderphoto;
-                        }
-                        
-                        //Add New Reward Item 
-                        $addnewrewarditem = $rewarditems->InsertMysteryReward((int)$partneritemid, (int)$rewardid, $model->addrewarditem, $model->addmysteryrewarditem, (int)$addpoints, 
-                                                                                                                                                (int)$model->addeligibility, (int)$model->addstatus, $startdate,  $enddate, $partnerid, $categoryid, $subtext, $mysterysubtext,
-                                                                                                                                                $about, $mysteryabout, $terms, $mysteryterms, (int)$itemcount, 
-                                                                                                                                                $thblimitedphoto, $thboutofstockphoto, $ecouponphoto, $lmlimitedphoto, 
-                                                                                                                                                $lmoutofstockphoto, $websliderphoto, 
-                                                                                                                                                $serialcodestart, $serialcodeend);
-                        
-                        //Get total reward offerings (active/outofstock rewards) per partner
-                        $getpartnerstobeupdated = $rewarditems->getSumCountActiveByPartner((int)$partnerid);
-
-                        if(count($getpartnerstobeupdated) > 0){
-                            //Update total reward offerings per partner
-                            $offeringscount =(int)$getpartnerstobeupdated["RewardsCount"];
-                            $refpartners->UpdateNoOfOfferings((int)$partnerid, $offeringscount);
-                        }
-                        
-                        if($addnewrewarditem['TransCode'] == 0){
-                            $this->showdialog = true;
-                            
-                             switch ($model->addstatus) {
-                                case "1":
-                                    $statusvalue = "Active";
-                                    break;
-                                case "2":
-                                    $statusvalue = "Inactive";
-                                    break;
-                            }
-                            
-                            $this->message = "Mystery Reward successfully Added.";
-                            $transdetails = "RewardItemID: ".$addnewrewarditem["LastInsertID"].", PartnerName: eGames, Name: ".$model->addrewarditem.", Status: ".$model->addstatus." - ".$statusvalue;
-                            
-                            //Log Event on Audit trail
-                            $audittrail->logEvent($auditfunctionid, $transdetails, array('SessionID' => Yii::app()->session['SessionID'], 'AID' => Yii::app()->session['AID']));
-                        } else {
-                            $this->showdialog = true;
-                            $this->message = "Failed to add New Mystery Reward.";
-                        }
-                        $this->render('managemysteryreward', array('model' => $model));
-                    } else {
-                        $this->showdialog = true;
-                        $this->message = "Mystery Reward already exist.";
-                        $this->render('managemysteryreward', array('model' => $model));
-                    }
-
-                    break;
+                    //Log Event on Audit trail
+                    $audittrail->logEvent($auditfunctionid, $transdetails, array('SessionID' => Yii::app()->session['SessionID'], 'AID' => Yii::app()->session['AID']));
+                } else {
+                    $this->showdialog = true;
+                    $this->message = "Failed to add New Mystery Reward.";
+                }
+                $this->render('managemysteryreward', array('model' => $model));
+            } else {
+                $this->showdialog = true;
+                $this->message = "Mystery Reward already exist.";
+                $this->render('managemysteryreward', array('model' => $model));
             }
+            
         } else {
             $this->redirect('managemysteryreward');
         }
     }
+    
+    
+    /**
+     * @Description: For Updating Mystery Reward Details
+     * @Author: aqdepliyan
+     * @DateCreated: 2013-11-11
+     * @DateModified: 2014-01-17
+     */
+    public function actionUpdateMysteryReward(){
+        
+        $model = new ManageMysteryRewardsForm();
+        $rewarditems = new RewardItemsModel();
+        $refpartners = new RefPartnerModel();
+        $audittrail = new AuditTrailModel();
+
+        if(isset($_POST['ManageMysteryRewardsForm'])){
+            $model->attributes = $_POST['ManageMysteryRewardsForm'];
+            
+            $rewarditemid = $_POST['hdnRewardItemID-edit'];
+            $thblimitedphoto = $_POST['thblimitedphoto'];
+            $thboutofstockphoto = $_POST['thboutofstockphoto'];
+            $ecouponphoto = $_POST['ecouponphoto'];
+            $lmlimitedphoto = $_POST['lmlimitedphoto'];
+            $lmoutofstockphoto = $_POST['lmoutofstockphoto'];
+            $websliderphoto = $_POST['websliderphoto'];
+            $thblimitedpicname = $_POST['thblimitedpicname'];
+            $thboutofstockpicname = $_POST['thboutofstockpicname'];
+            $ecouponpicname = $_POST['ecouponpicname'];
+            $lmlimitedpicname = $_POST['lmlimitedpicname'];
+            $lmoutofstockpicname = $_POST['lmoutofstockpicname'];
+            $websliderpicname = $_POST['websliderpicname'];
+            $editpoints = preg_replace('/[^0-9]/s', '', $model->editpoints);
+            $imagedirector= Yii::app()->params['image_directory'];
+            $imagetmpdirectory = Yii::app()->params['image_tmpdirectory'];
+            $auditfunctionid = RefAuditFunctionsModel::MARKETING_EDIT_MYSTERY_REWARDS_DETAILS;      
+            $transferfile1 = true;
+            $transferfile2 = true;
+            $transferfile3 = true;
+            $transferfile4 = true;
+            $transferfile5 = true;
+            $transferfile6 = true;
+            $unlink1 = true;
+            $unlink2 = true;
+            $unlink3 = true;
+            $unlink4 = true;
+            $unlink5 = true;
+            $unlink6 = true;
+            $rewarditemname = $model->editrewarditem;
+
+            //Check if Mystery Reward Item is already exist
+            if($thblimitedphoto != ""){
+                $extname_thblimited = strpos($thblimitedphoto, 'thblimited') !== false ? "limited":"";
+                $thblimited = explode(".",$thblimitedphoto);
+                $ext_thblimited = end($thblimited);
+                $rewarditemname = preg_replace("/[^a-zA-Z0-9+$]/", "-", $rewarditemname);
+                $newthblimitedphoto = $rewarditemname."_".$extname_thblimited.".".$ext_thblimited;
+                if(file_exists("$imagetmpdirectory".$thblimitedphoto)){
+                    $transferfile1 = copy("$imagetmpdirectory".$thblimitedphoto, "$imagedirector".$newthblimitedphoto);
+                    chmod("$imagetmpdirectory".$thblimitedphoto, 0777);
+                } else {
+                    if(file_exists("$imagedirector".$thblimitedpicname)){
+                        rename("$imagedirector".$thblimitedpicname, "$imagedirector".$newthblimitedphoto);
+                    }
+                }
+            }
+
+            if($thboutofstockphoto != ""){
+                $extname_thboutofstock = strpos($thboutofstockphoto, 'thboutofstock') !== false ? "outofstock":"";
+                $thboutofstock = explode(".",$thboutofstockphoto);
+                $ext_thboutofstock = end($thboutofstock);
+                $rewarditemname = preg_replace("/[^a-zA-Z0-9+$]/", "-", $rewarditemname);
+                $newthboutofstockphoto = $rewarditemname."_".$extname_thboutofstock.".".$ext_thboutofstock;
+                if(file_exists("$imagetmpdirectory".$thboutofstockphoto)){
+                    $transferfile2 = copy("$imagetmpdirectory".$thboutofstockphoto, "$imagedirector".$newthboutofstockphoto);
+                    chmod("$imagetmpdirectory".$thboutofstockphoto, 0777);
+                } else {
+                    if(file_exists("$imagedirector".$thboutofstockpicname)){
+                        rename("$imagedirector".$thboutofstockpicname, "$imagedirector".$newthboutofstockphoto);
+                    }
+                }
+            }
+
+            if($ecouponphoto != ""){
+                $extname_ecoupon = strpos($ecouponphoto, 'ecoupon') !== false ? "ecoupon":"";
+                $ecoupon = explode(".",$ecouponphoto);
+                $ext_ecoupon = end($ecoupon);
+                $rewarditemname = preg_replace("/[^a-zA-Z0-9+$]/", "-", $rewarditemname);
+                $newecouponphoto = $rewarditemname."_".$extname_ecoupon.".".$ext_ecoupon;
+                if(file_exists("$imagetmpdirectory".$ecouponphoto)){
+                    $transferfile3 = copy("$imagetmpdirectory".$ecouponphoto, "$imagedirector".$newecouponphoto);
+                    chmod("$imagetmpdirectory".$ecouponphoto, 0777);
+                } else {
+                    if(file_exists("$imagedirector".$ecouponpicname)){
+                        rename("$imagedirector".$ecouponpicname, "$imagedirector".$newecouponphoto);
+                    }
+                }
+            }
+
+            if($lmlimitedphoto != ""){
+                $extname_lmlimited = strpos($lmlimitedphoto, 'lmlimited') !== false ? "learnmore-limited":"";
+                $lmlimited = explode(".",$lmlimitedphoto);
+                $ext_lmlimited = end($lmlimited);
+                $rewarditemname = preg_replace("/[^a-zA-Z0-9+$]/", "-", $rewarditemname);
+                $newlmlimitedphoto = $rewarditemname."_".$extname_lmlimited.".".$ext_lmlimited;
+                if(file_exists("$imagetmpdirectory".$lmlimitedphoto)){
+                    $transferfile4 = copy("$imagetmpdirectory".$lmlimitedphoto, "$imagedirector".$newlmlimitedphoto);
+                    chmod("$imagetmpdirectory".$lmlimitedphoto, 0777);
+                } else {
+                    if(file_exists("$imagedirector".$lmlimitedpicname)){
+                        rename("$imagedirector".$lmlimitedpicname, "$imagedirector".$newlmlimitedphoto);
+                    }
+                }
+            }
+
+            if($lmoutofstockphoto != ""){
+                $extname_lmoutofstock = strpos($lmoutofstockphoto, 'lmoutofstock') !== false ? "learnmore-outofstock":"";
+                $lmoutofstock = explode(".",$lmoutofstockphoto);
+                $ext_lmoutofstock = end($lmoutofstock);
+                $rewarditemname = preg_replace("/[^a-zA-Z0-9+$]/", "-", $rewarditemname);
+                $newlmoutofstockphoto = $rewarditemname."_".$extname_lmoutofstock.".".$ext_lmoutofstock;
+                if(file_exists("$imagetmpdirectory".$lmoutofstockphoto)){
+                    $transferfile5 = copy("$imagetmpdirectory".$lmoutofstockphoto, "$imagedirector".$newlmoutofstockphoto);
+                    chmod("$imagetmpdirectory".$lmoutofstockphoto, 0777);
+                } else {
+                    if(file_exists("$imagedirector".$lmoutofstockpicname)){
+                        rename("$imagedirector".$lmoutofstockpicname, "$imagedirector".$newlmoutofstockphoto);
+                    }
+                }
+            }
+
+            if($websliderphoto != ""){
+                $extname_webslider = strpos($websliderphoto, 'webslider') !== false ? "slider":"";
+                $webslider = explode(".",$websliderphoto);
+                $ext_webslider = end($webslider);
+                $rewarditemname = preg_replace("/[^a-zA-Z0-9+$]/", "-", $rewarditemname);
+                $newwebsliderphoto = $rewarditemname."_".$extname_webslider.".".$ext_webslider;
+                if(file_exists("$imagetmpdirectory".$websliderphoto)){
+                    $transferfile6 = copy("$imagetmpdirectory".$websliderphoto, "$imagedirector".$newwebsliderphoto);
+                    chmod("$imagetmpdirectory".$websliderphoto, 0777);
+                } else {
+                    if(file_exists("$imagedirector".$websliderpicname)){
+                        rename("$imagedirector".$websliderpicname, "$imagedirector".$newwebsliderphoto);
+                    }
+                }
+            }
+
+            if($_POST['from_hour'] == "00" && $_POST['from_min'] == "00" && $_POST['from_sec'] == "00"){
+                $initialtime = Yii::app()->params['initialtime'];
+            } else {
+                $initialtime = $_POST['from_hour'].":".$_POST['from_min'].":".$_POST['from_sec'];
+            }
+
+            if($_POST['to_hour'] == "00" && $_POST['to_min'] == "00" && $_POST['to_sec'] == "00"){
+                $cutofftime = Yii::app()->params['cutofftime'];
+            } else {
+                $cutofftime = $_POST['to_hour'].":".$_POST['to_min'].":".$_POST['to_sec'];
+            }
+
+            $startdate = $_POST['from_date']." ".$initialtime;
+            $enddate = $_POST['to_date']." ".$cutofftime;
+            if($model->editmysteryabout == ''){
+                $mysteryabout = null;
+            } else { $mysteryabout = $model->editmysteryabout; }
+            if($model->editabout == ''){
+                $about = null;
+            } else { $about = $model->editabout; }
+            if($model->editmysteryterms == ''){
+                $mysteryterms = null;
+            } else { $mysteryterms = $model->editmysteryterms; }
+            if($model->editterms == ''){
+                $terms = null;
+            } else { $terms = $model->editterms; }
+            if($model->editcategory == ''){
+                $categoryid = null;
+            } else { $categoryid = $model->editcategory; }
+            if($model->editmysterysubtext == ''){
+                $mysterysubtext = null;
+            } else { $mysterysubtext = $model->editmysterysubtext; }
+            if($model->editsubtext == ''){
+                $subtext = null;
+            } else { $subtext = $model->editsubtext; }
+            
+            if($transferfile1 != true || $transferfile2 != true || $transferfile3 != true || $transferfile4 != true || $transferfile5 != true || $transferfile6 != true){
+                $this->showdialog = true;
+                $this->message = "Update Failed: Error in uploading of images.";
+                if(file_exists("$imagetmpdirectory".$thblimitedphoto)){
+                    $thblimitedphoto != "" ? unlink("$imagetmpdirectory".$thblimitedphoto):true;
+                }
+                if(file_exists("$imagetmpdirectory".$thboutofstockphoto)){
+                    $thboutofstockphoto != "" ? unlink("$imagetmpdirectory".$thboutofstockphoto):true;
+                }
+                if(file_exists("$imagetmpdirectory".$ecouponphoto)){
+                    $ecouponphoto != "" ? unlink("$imagetmpdirectory".$ecouponphoto):true;
+                }
+                if(file_exists("$imagetmpdirectory".$lmlimitedphoto)){
+                    $lmlimitedphoto != "" ? unlink("$imagetmpdirectory".$lmlimitedphoto):true;
+                }
+                if(file_exists("$imagetmpdirectory".$lmoutofstockphoto)){
+                    $lmoutofstockphoto != "" ? unlink("$imagetmpdirectory".$lmoutofstockphoto):true;
+                }
+                if(file_exists("$imagetmpdirectory".$websliderphoto)){
+                    $websliderphoto != "" ? unlink("$imagetmpdirectory".$websliderphoto):true;
+                }
+
+                $this->render('managemysteryreward', array('model' => $model));
+            } else {
+                if(file_exists("$imagetmpdirectory".$thblimitedphoto)){
+                    $unlink1 = $thblimitedphoto != "" ? unlink("$imagetmpdirectory".$thblimitedphoto):true;
+                }
+                if(file_exists("$imagetmpdirectory".$thboutofstockphoto)){
+                    $unlink2 = $thboutofstockphoto != "" ? unlink("$imagetmpdirectory".$thboutofstockphoto):true;
+                }
+                if(file_exists("$imagetmpdirectory".$ecouponphoto)){
+                    $unlink3 = $ecouponphoto != "" ? unlink("$imagetmpdirectory".$ecouponphoto):true;
+                }
+                if(file_exists("$imagetmpdirectory".$lmlimitedphoto)){
+                    $unlink4 = $lmlimitedphoto != "" ? unlink("$imagetmpdirectory".$lmlimitedphoto):true;
+                }
+                if(file_exists("$imagetmpdirectory".$lmoutofstockphoto)){
+                    $unlink5 = $lmoutofstockphoto != "" ? unlink("$imagetmpdirectory".$lmoutofstockphoto):true;
+                }
+                if(file_exists("$imagetmpdirectory".$websliderphoto)){
+                    $unlink6 = $websliderphoto != "" ? unlink("$imagetmpdirectory".$websliderphoto):true;
+                }
+
+                //Check if the uploaded images in tmp are deleted.
+                if($unlink1 != true || $unlink2 != true || $unlink3 != true || $unlink4 != true || $unlink5 != true || $unlink6 != true){
+                    $this->showdialog = true;
+                    $this->message = "Update Failed: Error in processing of images.";
+                    $this->render('managemysteryreward', array('model' => $model));
+                } else {
+                    $thblimitedphoto != "" ? $thblimitedphoto = $newthblimitedphoto: $thblimitedphoto = $thblimitedphoto;
+                    $thboutofstockphoto != "" ? $thboutofstockphoto = $newthboutofstockphoto: $thboutofstockphoto = $thboutofstockphoto;
+                    $ecouponphoto != "" ? $ecouponphoto = $newecouponphoto: $ecouponphoto = $ecouponphoto;
+                    $lmlimitedphoto != "" ? $lmlimitedphoto = $newlmlimitedphoto: $lmlimitedphoto = $lmlimitedphoto;
+                    $lmoutofstockphoto != "" ? $lmoutofstockphoto = $newlmoutofstockphoto: $lmoutofstockphoto = $lmoutofstockphoto;
+                    $websliderphoto != "" ? $websliderphoto = $newwebsliderphoto: $websliderphoto = $websliderphoto;
+                }
+            }
+
+            //Update Reward Item Details
+            $result = $rewarditems->UpdateMysteryReward($rewarditemid, $model->editrewarditem, $model->editmysteryrewarditem, $editpoints, $model->editeligibility, $model->editstatus, $startdate, $enddate, 
+                                                                                                        $categoryid, $subtext, $mysterysubtext, $about, $mysteryabout, $terms, $mysteryterms, $thblimitedphoto, $thboutofstockphoto, 
+                                                                                                        $ecouponphoto, $lmlimitedphoto, $lmoutofstockphoto, $websliderphoto);
+
+            //Check if mystery item already exist
+            if ($result['TransCode'] != 3){
+                //Get the PartnerID for audit trail transaction details
+                $audittraildetails = $rewarditems->getAuditTrailDetails($rewarditemid);
+
+                //Get total reward offerings (active/outofstock rewards) per partner
+                $getpartnerstobeupdated = $rewarditems->getSumCountActiveByPartner((int)$audittraildetails["PartnerID"]);
+
+                if(count($getpartnerstobeupdated) > 0){
+                    //Update total reward offerings per partner
+                    $partnerid = (int)$audittraildetails["PartnerID"];
+                    $offeringscount =(int)$getpartnerstobeupdated["RewardsCount"];
+                    $refpartners->UpdateNoOfOfferings($partnerid, $offeringscount);
+                }
+
+                if($result['TransCode'] == 0 && $result["AffectedRows"] > 0){
+                    $this->showdialog = true;
+
+                    switch ($model->editstatus) {
+                        case "1":
+                            $statusvalue = "Active";
+                            break;
+                        case "2":
+                            $statusvalue = "Inactive";
+                            break;
+                    }
+
+                    $this->message = "Mystery Reward successfully updated.";
+                    $transdetails = "RewardItemID: ".$rewarditemid.", PartnerName: eGames , Name: ".$model->editrewarditem.", Status: ".$model->editstatus." - ".$statusvalue;
+
+                    //Log Event on Audit trail
+                    $audittrail->logEvent($auditfunctionid, $transdetails, array('SessionID' => Yii::app()->session['SessionID'], 'AID' => Yii::app()->session['AID']));
+                } else if($result["TransCode"] == 0 && $result["AffectedRows"] == 0){
+                    $this->showdialog = true;
+                    $this->message = "Mystery Reward Details Unchanged.";
+                } else {
+                    $this->showdialog = true;
+                    $this->message = "Failed to update Mystery Reward.";
+                }
+            } else {
+                $this->showdialog = true;
+                $this->message = "Mystery Reward Item already exist";
+            }
+            $this->render('managemysteryreward', array('model' => $model));
+        } else {
+            $this->redirect('managemysteryreward');
+        }
+    }
+
     
     /**
      * @Description: For fetching List of Category
@@ -669,6 +848,8 @@ class ManageMysteryRewardsController extends Controller
             $result['showdialog'] = true;
             $result['message'] = "Mystery Reward is not found.";
         }
+        
+        $result["ImagePath"] = Yii::app()->params['imagepath'];
         echo json_encode($result);
         exit;
     }

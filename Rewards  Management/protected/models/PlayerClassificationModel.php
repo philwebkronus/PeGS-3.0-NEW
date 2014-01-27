@@ -21,5 +21,25 @@ class PlayerClassificationModel extends CFormModel
         
         return $result;
     }
+    /**
+     * Get the Player Class Description (Name)
+     * @param int $PClassID PClassID
+     * @return string Description Name
+     * @author Mark Kenneth Esguerra
+     * @date December 12, 2013
+     */
+    public function getPlayerDescription($PClassID)
+    {
+        $connection = Yii::app()->db;
+        
+        $query = "SELECT Description FROM ref_playerclassification 
+                  WHERE PClassID = :pclassID";
+        $command = $connection->createCommand($query);
+        $command->bindParam(":pclassID", $PClassID);
+        $result = $command->queryRow();
+        
+        return $result['Description'];
+        
+    }
 }
 ?>

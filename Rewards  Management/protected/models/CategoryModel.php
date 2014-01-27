@@ -15,11 +15,29 @@ class CategoryModel extends CFormModel
     {
         $connection = Yii::app()->db;
         
-        $sql = "SELECT CategoryID, Description FROM ref_category WHERE Status = 1";
+        $sql = "SELECT CategoryID, Description FROM ref_category WHERE Status = 1 
+                ORDER BY Description ASC";
         $command = $connection->createCommand($sql);
         $result = $command->queryAll();
         
         return $result;
+    }
+    /**
+     * Get Category Description
+     * @param int $categoryID CategoryID
+     * @return string Description
+     */
+    public function getCategoryDescription($categoryID)
+    {
+        $connection = Yii::app()->db;
+        
+        $query = "SELECT Description FROM ref_category 
+                  WHERE CategoryID = :categoryID";
+        $command = $connection->createCommand($query);
+        $command->bindParam(":categoryID", $categoryID);
+        $result = $command->queryRow();
+        
+        return $result['Description'];
     }
 }
 ?>

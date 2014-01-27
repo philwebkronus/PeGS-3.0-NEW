@@ -14,6 +14,7 @@ class ReportForm extends CFormModel
     public $player_segment;
     public $report_type;
     public $date_coverage;
+    public $hdnitemtype;
     
     public static function model($classname = __CLASS__)
     {

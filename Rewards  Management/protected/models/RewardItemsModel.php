@@ -72,7 +72,7 @@ class RewardItemsModel extends CFormModel
         else
         {
             $sql = "SELECT RewardItemID, ItemName FROM rewarditems
-                    WHERE Status = 1";
+                    WHERE Status = 1 ORDER BY ItemName ASC";
         }
         $command = $connection->createCommand($sql);
         $command->bindParam(":itemtype", $itemtype);
@@ -81,7 +81,7 @@ class RewardItemsModel extends CFormModel
         return $result;
     }
     /**
-     * Get Raffle Item
+     * Get Raffle Items
      * @author Mark Kenneth Esguerra
      * @date Sep-19-13
      * @return array Array of Raffle Items
@@ -103,7 +103,7 @@ class RewardItemsModel extends CFormModel
      * the RefPartnerID then select items through it<br />
      * @param type $partnerpid Partner user ID
      * @return array Array of Reward Items
-     * @author Mark Kenneth Esguerra]
+     * @author Mark Kenneth Esguerra
      * @date October 3, 2013
      */
     public function getRewardItemsJoinPartners($partnerpid)
@@ -210,7 +210,7 @@ class RewardItemsModel extends CFormModel
                             return array('TransMsg'=>'Error: '. $e->getMessage(),'TransCode'=>2);
                         }
                     } else {
-                        return array('TransMsg'=>'Failed to update the status of rewarditems with zero item count..', 'TransCode'=>1);
+                        return array('TransMsg'=>'Failed to update the status of rewarditems with zero item count.', 'TransCode'=>1);
                     }
                 } catch (CDbException $e) {
                     $pdo->rollback();
@@ -354,7 +354,9 @@ class RewardItemsModel extends CFormModel
                                 WHEN 3 THEN 'Out-Of-Stock'
                                 WHEN 4 THEN 'Deactivated'
                             END as Status, ri.Status as StatusID, ri.AvailableItemCount, ri.OfferStartDate, ri.OfferEndDate, ri.SubText as Subtext, 
-                            ri.PromoName, ri.PromoCode, ri.DrawDate, ri.About, ri.Terms
+                            ri.PromoName, ri.PromoCode, ri.DrawDate, ri.About, ri.Terms, ri.ThumbnailLimitedImage as thblimited,
+                            ri.ThumbnailOutOfStockImage as thboutofstock, ri.ECouponImage as ecoupon, ri.WebsiteSliderImage as webslider,
+                            ri.LearnMoreLimitedImage as lmlimited, ri.LearnMoreOutOfStockImage as lmoutofstock
                             FROM rewarditems ri
                             LEFT JOIN ref_partners rp ON rp.PartnerID = ri.PartnerID
                             INNER JOIN ref_playerclassification rpc ON rpc.PClassID = ri.PClassID
@@ -382,7 +384,10 @@ class RewardItemsModel extends CFormModel
                                 WHEN 3 THEN 'Out-Of-Stock'
                                 WHEN 4 THEN 'Deactivated'
                             END as Status, ri.Status as StatusID, ri.AvailableItemCount, ri.OfferStartDate, ri.OfferEndDate, ri.SubText as Subtext, 
-                            ri.PromoName, ri.PromoCode, ri.DrawDate, ri.About, ri.Terms, ri.IsMystery, ri.MysteryName, ri.MysteryAbout, ri.MysterySubtext, ri.MysteryTerms
+                            ri.PromoName, ri.PromoCode, ri.DrawDate, ri.About, ri.Terms, ri.IsMystery, ri.MysteryName, 
+                            ri.MysteryAbout, ri.MysterySubtext, ri.MysteryTerms, ri.ThumbnailLimitedImage as thblimited,
+                            ri.ThumbnailOutOfStockImage as thboutofstock, ri.ECouponImage as ecoupon, ri.WebsiteSliderImage as webslider,
+                            ri.LearnMoreLimitedImage as lmlimited, ri.LearnMoreOutOfStockImage as lmoutofstock
                             FROM rewarditems ri
                             LEFT JOIN ref_partners rp ON rp.PartnerID = ri.PartnerID
                             INNER JOIN ref_playerclassification rpc ON rpc.PClassID = ri.PClassID
@@ -410,7 +415,7 @@ class RewardItemsModel extends CFormModel
      * @param int $newitemcount
      * @return array
      */
-    public function replenishItem($rewarditemid, $newitemcount, $currentitemcount, $addeditemcount, $newserialcodeend, $status){
+    public function replenishItem($rewarditemid, $newitemcount, $currentitemcount, $addeditemcount, $newserialcodeend, $status, $oldserialendcode){
         $connection = Yii::app()->db;
         $CreatedByAID = Yii::app()->session['AID'];
         $pdo = $connection->beginTransaction();
@@ -421,13 +426,28 @@ class RewardItemsModel extends CFormModel
             $query = "UPDATE rewarditems SET AvailableItemCount = $newitemcount, SerialCodeEnd = '$newserialcodeend', DateUpdated = now_usec(),
                             UpdatedByAID = $CreatedByAID, Status = 1 WHERE RewardItemID = ".$rewarditemid;
         }
-        $sql = Yii::app()->db->createCommand($query);
+        $sql = $connection->createCommand($query);
         $updateresult = $sql->execute();
         if($updateresult > 0){
+            $genquery = "INSERT INTO itemserialcodes(RewardItemID, SerialCode, DateCreated, Status) VALUES ";
+            for($int = 1; $int <= (int)$addeditemcount; $int++){
+                $oldserialendcode++;
+                $serialcode = str_pad((string)$oldserialendcode, 5, "0", STR_PAD_LEFT);
+                $genquery = $genquery." ($rewarditemid, '$serialcode', now_usec(), 1)";
+                if((int)$addeditemcount > $int){
+                    $genquery = $genquery.", ";
+                }
+            }
+            $genserialcode = $connection->createCommand($genquery);
+            
             try {
+                $genserialcode->execute();
+                $lastinsertedid = $connection->getLastInsertID();
+                
+                if($lastinsertedid != 0 || $lastinsertedid != ""){
                     $replenishlogs = "INSERT INTO  replenishmentlogs(RewardItemID, CurrentItemCount, ReplenishItemCount, EndingItemCount, DateCreated, CreatedByAID)
                                         VALUES($rewarditemid, $currentitemcount, $addeditemcount, $newitemcount, now_usec(), $CreatedByAID)";
-                $replenishlogssql = Yii::app()->db->createCommand($replenishlogs);
+                    $replenishlogssql = $connection->createCommand($replenishlogs);
                     $insertresult = $replenishlogssql->execute();
                     if($insertresult > 0){
                         try {
@@ -435,12 +455,12 @@ class RewardItemsModel extends CFormModel
                             return array('TransMsg'=>'Reward Item/Coupon has been successfully replenished.','TransCode'=>0);
                         } catch (CDbException $e) {
                             $pdo->rollback();
-                        return array('TransMsg'=>'Error: '. $e->getMessage(),'TransCode'=>2);
+                            return array('TransMsg'=>'Error: Reward Item Replenishment Failed. Error in serial code generation.','TransCode'=>3);
                         }
-                    
                     } else {
                         return array('TransMsg'=>'No log was inserted.', 'TransCode'=>1);
                     }
+                }
             } catch (CDbException $e) {
                 $pdo->rollback();
                 return array('TransMsg'=>'Error: '. $e->getMessage(),'TransCode'=>2);
@@ -502,11 +522,13 @@ class RewardItemsModel extends CFormModel
         $connection = Yii::app()->db;
         $updatedbyaid = Yii::app()->session['AID'];
         
-        //Check if entered Mystery Reward Item is already exist, add filtering of status (Active, Inactive)
+        //Check if entered Mystery Reward Item is already exist
         $checkitem = "SELECT COUNT(RewardItemID) as Count FROM rewarditems 
-                     WHERE ItemName = :itemname AND IsMystery = 0 AND Status IN(1, 2, 3)";
+                     WHERE ItemName = :itemname AND IsMystery = 0 AND Status IN(1, 2, 3)
+                     AND RewardItemID <> :rewarditemid";
         $command = $connection->createCommand($checkitem);
         $command->bindParam(":itemname", $itemname);
+        $command->bindParam(":rewarditemid", $rewarditemid);
         $isExist = $command->queryRow();
         
         if ($isExist['Count'] > 0)
@@ -618,8 +640,8 @@ class RewardItemsModel extends CFormModel
             }
 
             try {
-                $command->execute();
-                return array('TransMsg'=>'Reward Item/Coupon has been successfully updated.','TransCode'=>0);
+                $rowCount = $command->execute();
+                return array('TransMsg'=>'Reward Item/Coupon has been successfully updated.','TransCode'=>0, 'AffectedRows' => $rowCount);
             } catch (CDbException $e) {
                 return array('TransMsg'=>'Error: '. $e->getMessage(),'TransCode'=>2);
             }
@@ -660,7 +682,7 @@ class RewardItemsModel extends CFormModel
     {
         $connection = Yii::app()->db;
         $updatedbyaid = Yii::app()->session['AID'];
-        //Check if entered Mystery Reward Item is already exist, add filtering of status(Active, Inactive, Out of stock)
+        //Check if entered Mystery Reward Item is already exist
         $checkitem = "SELECT COUNT(RewardItemID) as Count FROM rewarditems 
                      WHERE ItemName = :itemname AND IsMystery = 1 AND Status IN(1, 2, 3) AND RewardItemID <> :rewarditemid";
         $command = $connection->createCommand($checkitem);
@@ -752,8 +774,8 @@ class RewardItemsModel extends CFormModel
             $command->bindParam(":rewarditemid", $rewarditemid, PDO::PARAM_INT);
 
             try {
-                $command->execute();
-                return array('TransMsg'=>'Mystery Reward has been successfully updated.','TransCode'=>0);
+                $rowCount = $command->execute();
+                return array('TransMsg'=>'Mystery Reward has been successfully updated.','TransCode'=>0, "AffectedRows" => $rowCount);
             } catch (CDbException $e) {
                 return array('TransMsg'=>'Error: '. $e->getMessage(),'TransCode'=>2);
             }
@@ -838,8 +860,27 @@ class RewardItemsModel extends CFormModel
         try {
             $command->execute();
             $lastinsertedid = $connection->getLastInsertID();
+            if($rewardid == 1 || $rewardid == "1"){
+                $genquery = "INSERT INTO itemserialcodes(RewardItemID, SerialCode, DateCreated, Status) VALUES ";
+                for($int = 1; $int <= (int)$itemcount; $int++){
+                    $serialcode = str_pad((string)$int, 5, "0", STR_PAD_LEFT);
+                    $genquery = $genquery." ($lastinsertedid, '$serialcode', now_usec(), 1)";
+                    if((int)$itemcount > $int){
+                        $genquery = $genquery.", ";
+                    }
+                }
+
+                $genserialcode = $connection->createCommand($genquery);
+                try {
+                    $genserialcode->execute();
                     return array('TransMsg'=>'Reward Item/Coupon has been successfully added.','TransCode'=>0, 'LastInsertID' => $lastinsertedid);
                 } catch (CDbException $e) {
+                    return array('TransMsg'=>'Error: Reward Item Adding Failed. Error in serial code generation.','TransCode'=>3);
+                }
+            } else {
+                return array('TransMsg'=>'Reward Item/Coupon has been successfully added.','TransCode'=>0, 'LastInsertID' => $lastinsertedid);
+            }
+        } catch (CDbException $e) {
             return array('TransMsg'=>'Error: '. $e->getMessage(),'TransCode'=>2);
         }
     }
@@ -906,7 +947,26 @@ class RewardItemsModel extends CFormModel
         try {
             $command->execute();
             $lastinsertedid = $connection->getLastInsertID();
-            return array('TransMsg'=>'Mystery Reward has been successfully added.','TransCode'=>0, "LastInsertID" => $lastinsertedid);
+            if($rewardid == 1 || $rewardid == "1"){
+                $genquery = "INSERT INTO itemserialcodes(RewardItemID, SerialCode, DateCreated, Status) VALUES ";
+                for($int = 1; $int <= (int)$itemcount; $int++){
+                    $serialcode = str_pad((string)$int, 5, "0", STR_PAD_LEFT);
+                    $genquery = $genquery." ($lastinsertedid, '$serialcode', now_usec(), 1)";
+                    if((int)$itemcount > $int){
+                        $genquery = $genquery.", ";
+                    }
+                }
+
+                $genserialcode = $connection->createCommand($genquery);
+                try {
+                    $genserialcode->execute();
+                    return array('TransMsg'=>'Mystery Reward has been successfully added.','TransCode'=>0, 'LastInsertID' => $lastinsertedid);
+                } catch (CDbException $e) {
+                    return array('TransMsg'=>'Error: Reward Item Adding Failed. Error in serial code generation.','TransCode'=>3);
+                }
+            } else {
+                return array('TransMsg'=>'Mystery Reward has been successfully added.','TransCode'=>0, 'LastInsertID' => $lastinsertedid);
+            }
         } catch (CDbException $e) {
             return array('TransMsg'=>'Error: '. $e->getMessage(),'TransCode'=>2);
         }

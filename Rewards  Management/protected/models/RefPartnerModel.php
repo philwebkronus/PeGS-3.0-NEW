@@ -82,7 +82,8 @@ class RefPartnerModel extends CFormModel
     {
         $connection = Yii::app()->db;
         
-        $sql = "SELECT PartnerID, PartnerName FROM ref_partners WHERE Status = 1";
+        $sql = "SELECT PartnerID, PartnerName FROM ref_partners WHERE Status = 1 
+                ORDER BY PartnerName ASC";
         $command = $connection->createCommand($sql);
         $result = $command->queryAll();
         
@@ -142,7 +143,7 @@ class RefPartnerModel extends CFormModel
         return $status;
     }
     /**
-     * Check if the Partner added was already existing. Checking will base on
+     * Check if the Partner added is already existing. Checking will base on
      * the Partner's Name
      * @author Mark Kenneth Esguerra
      * @date October 16, 2013
@@ -150,12 +151,14 @@ class RefPartnerModel extends CFormModel
     public function checkPartnerIfExist($partnername, $id = NULL)
     {
         $connection = Yii::app()->db;
+        //Added
         if (is_null($id))
         {
             $query = "SELECT COUNT(PartnerName) as ctrpartner FROM ref_partners WHERE PartnerName = :partnername";
             $command = $connection->createCommand($query);
             $command->bindParam(":partnername", $partnername);
         }
+        //Updated
         else
         {
             $query = "SELECT COUNT(PartnerName) as ctrpartner FROM ref_partners
@@ -186,6 +189,24 @@ class RefPartnerModel extends CFormModel
         $command->bindParam(":partnerid", $partnerid,PDO::PARAM_INT);
         $command->execute();
     }
-    
+    /**
+     * Get Current Status of the Partner
+     * @param int $partnerID ID of the partner
+     * @return string Current status of the partner
+     * @author Mark Kenneth Esguerra
+     * @date December 3, 2013
+     */
+    public function getCurrentStatus($partnerID)
+    {
+        $connection = Yii::app()->db;
+        
+        $query = "SELECT Status FROM ref_partners WHERE PartnerID = :partnerID";
+        $command = $connection->createCommand($query);
+        $command->bindParam(":partnerID", $partnerID);
+        
+        $result = $command->queryRow();
+        
+        return $result['Status'];
+    }
 }
 ?>
