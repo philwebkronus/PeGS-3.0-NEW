@@ -20,6 +20,7 @@ class ManagePartnersForm extends CFormModel
     public $PartnerID;
     public $presentStatus;
     
+    
     public $zeGamesPartner;
     public $zcompanyAddress;
     public $zcompanyName;   
