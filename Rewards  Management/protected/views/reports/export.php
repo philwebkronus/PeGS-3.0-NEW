@@ -93,7 +93,7 @@ if ($type == "pdf")
 
     $pdf->SetDisplayMode('real','default');
     //Output the PDF
-    $pdf->Output("exports/export-to-pdf.pdf","F");
+    $pdf->Output("","D");
     //Log to Audit Trail
     $audittrailmodel->logEvent(RefAuditFunctionsModel::EXPORT_TO_PDF, "Export to PDF", array('SessionID' => Yii::app()->session['SessionID'],
                                                      'AID' => Yii::app()->session['AID']));
