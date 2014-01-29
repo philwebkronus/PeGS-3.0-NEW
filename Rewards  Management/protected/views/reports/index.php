@@ -49,10 +49,7 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
         if (isset($this->wizard))
         {
             //Enable date_to if has value
-            ?>
-            if ($("#ReportForm_date_to").val() != ""){
-                $("#ReportForm_date_to").removeAttr('disabled');
-            }
+    ?>
             <?php
             switch($this->wizard)
             {
@@ -307,19 +304,71 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
             </td>
             <td>
                 <?php
-                    echo $form->dropDownList($model, 'filter_by',array('0'=>'All',
-                                                                       '1'=>'Item',
-                                                                       '2'=>'Partner',
-                                                                       '3'=>'Category'),
-                                                                 array('prompt'=>'Please Select',
-                                                                       'ajax' => array(
-                                                                            'type' => 'POST',
-                                                                            'url' => CController::createUrl('loadParticulars'),
-                                                                            'update' => '#ReportForm_particular',
-                                                                            'data' => array('ReportForm_filter_by'=>'js:this.value',  
-                                                                                            'itemtype'=>'js:$("#ReportForm_hdnitemtype").val()')
-                                                                 ),
-                    ));
+                    if (isset($this->category))
+                    {
+                        switch ($this->category)
+                        {
+                            case 0: //All
+                                echo $form->dropDownList($model, 'filter_by',array('0'=>'All',
+                                                                           '1'=>'Item',
+                                                                           '2'=>'Partner',
+                                                                           '3'=>'Category'),
+                                                                     array('prompt'=>'Please Select',
+                                                                           'ajax' => array(
+                                                                                'type' => 'POST',
+                                                                                'url' => CController::createUrl('loadParticulars'),
+                                                                                'update' => '#ReportForm_particular',
+                                                                                'data' => array('ReportForm_filter_by'=>'js:this.value',  
+                                                                                                'itemtype'=>'js:$("#ReportForm_hdnitemtype").val()')
+                                                                     ),
+                                ));
+                                break;
+                            case 1: //Reward eCoupon
+                                echo $form->dropDownList($model, 'filter_by',array('0'=>'All',
+                                                                           '1'=>'Item',
+                                                                           '2'=>'Partner',
+                                                                           '3'=>'Category'),
+                                                                     array('prompt'=>'Please Select',
+                                                                           'ajax' => array(
+                                                                                'type' => 'POST',
+                                                                                'url' => CController::createUrl('loadParticulars'),
+                                                                                'update' => '#ReportForm_particular',
+                                                                                'data' => array('ReportForm_filter_by'=>'js:this.value',  
+                                                                                                'itemtype'=>'js:$("#ReportForm_hdnitemtype").val()')
+                                                                     ),
+                                ));
+                                break;
+                            case 2: //Raffle eCoupon
+                                echo $form->dropDownList($model, 'filter_by',array('1'=>'Item'),
+                                                                     array('prompt'=>'Please Select',
+                                                                           'ajax' => array(
+                                                                                'type' => 'POST',
+                                                                                'url' => CController::createUrl('loadParticulars'),
+                                                                                'update' => '#ReportForm_particular',
+                                                                                'data' => array('ReportForm_filter_by'=>'js:this.value',  
+                                                                                                'itemtype'=>'js:$("#ReportForm_hdnitemtype").val()')
+                                                                     ),
+                                ));
+                                break;
+                                
+                        }
+                    }
+                    else
+                    {
+                        echo $form->dropDownList($model, 'filter_by',array('0'=>'All',
+                                                                           '1'=>'Item',
+                                                                           '2'=>'Partner',
+                                                                           '3'=>'Category'),
+                                                                     array('prompt'=>'Please Select',
+                                                                           'ajax' => array(
+                                                                                'type' => 'POST',
+                                                                                'url' => CController::createUrl('loadParticulars'),
+                                                                                'update' => '#ReportForm_particular',
+                                                                                'data' => array('ReportForm_filter_by'=>'js:this.value',  
+                                                                                                'itemtype'=>'js:$("#ReportForm_hdnitemtype").val()')
+                                                                     ),
+                        ));
+                    }
                 ?>
             </td>
         </tr>
@@ -339,7 +388,14 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
                         {
                             if ($filter == 1) //ITEMS
                             {
-                                $arrItems = $rewarditems->selectRewardItems($this->itemtype);
+                                //in able to return to proper selection of filters
+                                if (isset($this->category))
+                                    if ($this->category == 2)
+                                        $selector = 1;
+                                else
+                                    $selector = $this->itemtype;
+                                
+                                $arrItems = $rewarditems->selectRewardItems($selector);
                                 $append = "I";
                                 for ($i = 0; count($arrItems) > $i; $i++)
                                 {
@@ -487,8 +543,7 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
                         'htmlOptions' => array(
                             'size' => '10',         // textField size
                             'maxlength' => '10',    // textField maxlength
-                            'readonly' => true,
-                            'disabled' => 'disabled'
+                            'readonly' => true
                         ),
                         'options' => array(
                             'showOn'=>'button',

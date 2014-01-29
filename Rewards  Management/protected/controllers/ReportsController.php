@@ -71,6 +71,7 @@ class ReportsController extends Controller
                 $this->message = "Please select a Report type";
                 $this->filter = $filter;
                 $this->wizard = 1;
+                $this->category = $category;
             }
             else if (strlen($category) == 0 || $category == "")
             {
@@ -79,12 +80,14 @@ class ReportsController extends Controller
                 if ($filter != NULL)
                     $this->filter = $filter;
                 $this->wizard = 2;
+                $this->category = $category;
             }
             else if (strlen($filter) == 0 || $filter == "")
             {
                 $this->showdialog = true;
                 $this->message = "Please select a Filter";
                 $this->wizard = 2;
+                $this->category = $category;
             }
             else if ((strlen($particular) == 0 || $particular == "") && $category == 0)
             {
@@ -92,6 +95,7 @@ class ReportsController extends Controller
                 $this->message = "Please choose a Particular";
                 $this->filter = $filter;
                 $this->wizard = 2;
+                $this->category = $category;
             }
             else if ((strlen($player) == 0 || $player == "") && $category == 0)
             {
@@ -99,6 +103,7 @@ class ReportsController extends Controller
                 $this->message = "Please select a Player Segment";
                 $this->filter = $filter;
                 $this->wizard = 2;
+                $this->category = $category;
             }
             else if ($coverage == "" || strlen($coverage) == 0)
             {
@@ -106,6 +111,7 @@ class ReportsController extends Controller
                 $this->message = "Please select Date Coverage";
                 $this->filter = $filter;
                 $this->wizard = 3;
+                $this->category = $category;
             }
             else if ((strlen($date_from) == 0 || $date_from == "") || (strlen($date_to) == 0 || $date_to == ""))
             {
@@ -113,6 +119,7 @@ class ReportsController extends Controller
                 $this->message = "Please select From/To Date";
                 $this->filter = $filter;
                 $this->wizard = 3;
+                $this->category = $category;
             }
             else if (strtotime($date_from) > strtotime($date_to))
             {
@@ -120,6 +127,7 @@ class ReportsController extends Controller
                 $this->message = "Invalid Date Range";
                 $this->filter = $filter;
                 $this->wizard = 3;
+                $this->category = $category;
             }
             else
             {
@@ -129,6 +137,7 @@ class ReportsController extends Controller
                     $this->showdialog = true;
                     $this->message = $result['ErrorMsg'];
                     $this->filter = $filter;
+                    $this->category = $category;
                 }
                 else
                 {
@@ -320,6 +329,7 @@ class ReportsController extends Controller
                         $this->showdialog = true;
                         $this->message = "No Results Found";
                         $this->filter = $filter;
+                        $this->category = $category;
                     }
                 }
             }
