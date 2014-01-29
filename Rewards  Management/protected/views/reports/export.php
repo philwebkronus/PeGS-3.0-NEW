@@ -98,13 +98,12 @@ if ($type == "pdf")
     $audittrailmodel->logEvent(RefAuditFunctionsModel::EXPORT_TO_PDF, "Export to PDF", array('SessionID' => Yii::app()->session['SessionID'],
                                                      'AID' => Yii::app()->session['AID']));
     //Force download the pdf file
-    $file_name = 'exports/export-to-pdf.pdf';
+    header('Content-Type: application/x-download');
+    header('Cache-Control: private, max-age=0, must-revalidate');
+    header('Pragma: public');
     header("Content-disposition: attachment; filename=\"$title.pdf\"");
     header('Content-Type: application/pdf');
     header("Content-Transfer-Encoding: Binary");
-    header('Content-Length: ' . filesize($file_name));
-    
-    readfile($file_name);
     exit();
 }
 //Export Data to Excel
