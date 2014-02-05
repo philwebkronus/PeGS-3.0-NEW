@@ -69,8 +69,8 @@ class MembershipSmsAPI {
      * @return string
      */
     public function sendItemRedemption($mobileNo, $msgTemplateID, $serialcode, $trackingId, $points){
-
-        $placeholderValues = array("SERIAL_CODE"=>$serialcode, 'POINTS' => $points );
+        
+        $placeholderValues = array("SERIAL_CODE"=>"$serialcode");
         
         $requestParameters = array('app_id'=>$this->_appId,
                                    'to'=>$mobileNo,
