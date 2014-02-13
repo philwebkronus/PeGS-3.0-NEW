@@ -65,7 +65,7 @@ if ($type == "pdf")
     $pdf->SetFont('Arial','',9);
     $pdf->Cell(10,1, "From: ".$datefrom."   To: ".$dateto);
     $pdf->Ln(10);
-    $pdf->Image(Yii::app()->basePath."/../images/graph.png");
+    $pdf->Image(Yii::app()->basePath."/../images/graph_".Yii::app()->session['AID'].".png");
     //Reward Type
     $pdf->SetFont('Arial','B',10);
     $pdf->Cell(45,5, 'Reward Type: ');

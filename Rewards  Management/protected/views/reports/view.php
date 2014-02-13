@@ -36,7 +36,7 @@ if (isset($reporttype) && isset($exportHeader) && isset($exportHeader))
             From: <?php echo $start; ?>&nbsp;&nbsp;&nbsp;To: <?php echo $end; ?><br /><br />
             <div id="row">
                 <?php
-                    echo CHtml::image(Yii::app()->request->baseUrl."/images/graph.png",'',array(
+                    echo CHtml::image(Yii::app()->request->baseUrl."/images/graph_".Yii::app()->session['AID'].".png",'',array(
                                             'width'=>'710',
                                             'height'=> '600',                    ));
                 ?>

@@ -381,6 +381,9 @@ class ReportsController extends Controller
 
         $arrData = array();
         $d = $coverage;
+        $from = $datefrom;
+        $to = $dateto;
+        
         //Check if the chosen Category (E-Coupons) is (Raffle or Rewards) or ALL
         //If ALL, there must be 2 queries. Else, only 1.
         if (count($query) == 1)
@@ -486,7 +489,7 @@ class ReportsController extends Controller
                 }
                 else
                 {
-                    $finalQuery = "SELECT COUNT(Total) as Total, DateCreated, DateLabel, Year FROM (
+                    $finalQuery = "SELECT COUNT(DISTINCT(Total)) as Total, DateCreated, DateLabel, Year FROM (
                                         SELECT Total, DateCreated, ".$dimensions[$d]['DateFunction']."(DateCreated) as DateLabel, YEAR(DateCreated) as Year"."
                                                                                        FROM (".$query[0][0]." ".
                                                                                                $query[0][1]." ".
@@ -496,7 +499,7 @@ class ReportsController extends Controller
                                                                                                $query[1][1]." ".
                                                                                                $query[1][2]." 
                                                                                                ) AS x"
-                                   ." GROUP BY Total) r GROUP BY ".$dimensions[$d]['DateFunction']."(DateCreated) 
+                                   ." GROUP BY DateCreated) r GROUP BY ".$dimensions[$d]['DateFunction']."(DateCreated) 
                                       ORDER BY YEAR(DateCreated), ".$dimensions[$d]['DateFunction']."(DateCreated) ASC";
                 }
                 $result = $itemredemption->runQuery($finalQuery, $player);
@@ -554,7 +557,7 @@ class ReportsController extends Controller
                     }
                     else
                     {
-                        $queryWeek = "SELECT COUNT(Total) as Total, DateCreated, DateLabel, Year FROM (
+                        $queryWeek = "SELECT COUNT(DISTINCT(Total)) as Total, DateCreated, DateLabel, Year FROM (
                                         SELECT Total, DateCreated, ".$dimensions[$d]['DateFunction']."(DateCreated) as DateLabel, YEAR(DateCreated) as Year"."
                                                                                        FROM (".$query[0][0]." ".
                                                                                                $query[0][1]." ".
@@ -564,7 +567,7 @@ class ReportsController extends Controller
                                                                                                $query[1][1]." ".
                                                                                                "a.DateCreated >= '".$datefrom." 00:00:00'
                                                                                                 AND a.DateCreated <= '".$dateto." 23:59:59' ) AS x"
-                                   ." GROUP BY Total) r";   
+                                   ." GROUP BY DateCreated) r";   
                     }
                     $weekresult = $itemredemption->runQuery($queryWeek, $player);
                     
@@ -991,7 +994,7 @@ class ReportsController extends Controller
         $graph->Add($bplot);
         // Display the graph
         $gdImgHandler = $graph->Stroke(_IMG_HANDLER);
-        $fileName = 'images/graph.png';
+        $fileName = 'images/graph_'.Yii::app()->session['AID'].'.png';
         $graph->img->Stream($fileName);
 
         //------------------------Export to Excel------------------------------------------//
@@ -1018,7 +1021,7 @@ class ReportsController extends Controller
                               1 => $dimensions[$d]['Title']." Statistics");
         array_push($completevalues, $datecoverage);
         $daterange = array (0 => 'Date Range: ', 
-                            1 => date("m-d-Y", strtotime($datefrom))."  -  ".date("m-d-Y", strtotime($dateto)));
+                            1 => date("m-d-Y", strtotime($from))."  -  ".date("m-d-Y", strtotime($to)));
         array_push($completevalues, $daterange);
         array_push($completevalues, $newline);
         $arrrewardtype = array (0 => 'Reward Type: ', 
