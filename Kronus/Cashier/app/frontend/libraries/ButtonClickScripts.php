@@ -219,6 +219,8 @@ $(document).ready(function(){
                             tbody+= '<td>'+json.trans_details[i].TransType+'</td>';
                             tbody+= '<td>'+toMoney(json.trans_details[i].Amount,'no')+'</td>';
                             tbody+= '<td>'+json.trans_details[i].DateCreated+'</td>';
+                            tbody+= '<td>'+json.trans_details[i].TerminalType+'</td>';
+                            tbody+= '<td>'+json.trans_details[i].Name+'</td>';
                             tbody+='</tr>';
                         }
                         $('#reloadlogin').html(login);

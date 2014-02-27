@@ -27,11 +27,12 @@ class CommonStartSession {
                           $casinoServiceID = '', $mid = '', $userMode = '') {
         
         Mirage::loadComponents('CasinoApi');
-        Mirage::loadModels(array('TerminalsModel','SiteBalanceModel','CommonTransactionsModel',
+        Mirage::loadModels(array('TerminalsModel','EgmSessionsModel','SiteBalanceModel','CommonTransactionsModel',
                                  'PendingTerminalTransactionCountModel'));
         
         $casinoApi = new CasinoApi();
         $terminalsModel = new TerminalsModel();
+        $egmSessionsModel = new EgmSessionsModel();
         $siteBalance = new SiteBalanceModel();
         $commonTransactionsModel = new CommonTransactionsModel();
         $pendingTerminalTransactionCountModel = new PendingTerminalTransactionCountModel();
@@ -96,6 +97,20 @@ class CommonStartSession {
 
         $udate = CasinoApi::udate('YmdHisu');
         
+        //check terminal type if Genesis = 1
+        $terminaltype = $terminalsModel->checkTerminalType($terminal_id);
+        
+        if($terminaltype == 1){
+            //insert egm session
+            $egmsessionsresult = $egmSessionsModel->insert($mid, $terminal_id, $service_id, $_SESSION['accID']);
+
+            if(!$egmsessionsresult){
+                $message = 'Error: The terminal has an ongoing terminal deposit session.';
+                logger($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id);
+                CasinoApi::throwError($message);
+            }
+        }
+        
         //insert into terminalsessions, throw error if there is existing session 
         //this terminal / user
         $trans_summary_max_id = null;
@@ -118,6 +133,7 @@ class CommonStartSession {
             $pendingTerminalTransactionCountModel->updatePendingTerminalCount($terminal_id);
             $message = 'There was a pending transaction for this user / terminal.';
             $terminalSessionsModel->deleteTerminalSessionById($terminal_id);
+            $egmSessionsModel->deleteEgmSessionById($terminal_id);
             logger($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id);
             CasinoApi::throwError($message);
         }
@@ -132,6 +148,7 @@ class CommonStartSession {
         if (!(bool)$casinoApiHandler->IsAPIServerOK()) {
             $transReqLogsModel->update($trans_req_log_last_id, 'false', 2,null,$terminal_id);
             $terminalSessionsModel->deleteTerminalSessionById($terminal_id);
+            $egmSessionsModel->deleteEgmSessionById($terminal_id);
             $message = 'Can\'t connect to casino';
             logger($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id);
             CasinoApi::throwError($message);
@@ -143,6 +160,7 @@ class CommonStartSession {
             if(!$changeStatusResult['IsSucceed']){
                 $transReqLogsModel->update($trans_req_log_last_id, 'false', 2,null,$terminal_id);
                 $terminalSessionsModel->deleteTerminalSessionById($terminal_id);
+                $egmSessionsModel->deleteEgmSessionById($terminal_id);
                 $message = "Info: Failed to unlock the terminal in Swinging Singapore.";
                 logger($message);
                 CasinoApi::throwError($message);
@@ -160,6 +178,7 @@ class CommonStartSession {
             if (!(bool)$casinoApiHandler->IsAPIServerOK()) {
                 $transReqLogsModel->update($trans_req_log_last_id, 'false', 2,null,$terminal_id);
                 $terminalSessionsModel->deleteTerminalSessionById($terminal_id);
+                $egmSessionsModel->deleteEgmSessionById($terminal_id);
                 $message = 'Can\'t connect to casino';
                 logger($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id);
                 CasinoApi::throwError($message);
@@ -174,6 +193,7 @@ class CommonStartSession {
             {
                 $transReqLogsModel->update($trans_req_log_last_id, 'false', 2,null,$terminal_id);
                 $terminalSessionsModel->deleteTerminalSessionById($terminal_id);
+                $egmSessionsModel->deleteEgmSessionById($terminal_id);
                 $message = 'Error: Failed to start session.';
                 logger($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id. ' ErrorMessage='.$transSearchInfo['ErrorMessage']);
                 CasinoApi::throwError($message);
@@ -209,6 +229,7 @@ class CommonStartSession {
             if(isset($resultdeposit['IsSucceed']) && $resultdeposit['IsSucceed'] == false) {
                 $transReqLogsModel->update($trans_req_log_last_id, 'false', 2,null,$terminal_id);
                 $terminalSessionsModel->deleteTerminalSessionById($terminal_id);
+                $egmSessionsModel->deleteEgmSessionById($terminal_id);
                 $message = 'Error: Failed to start session.';
                 logger($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id. 'ErrorMessage = '.$resultdeposit['ErrorMessage']);
                 CasinoApi::throwError($message);
@@ -258,6 +279,7 @@ class CommonStartSession {
             if(!$trans_summary_id)
             {
                 $terminalSessionsModel->deleteTerminalSessionById($terminal_id);
+                $egmSessionsModel->deleteEgmSessionById($terminal_id);
                 $message = 'Error: Failed to insert records in transaction tables.';
                 logger($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id);
                 CasinoApi::throwError($message);
@@ -282,6 +304,7 @@ class CommonStartSession {
             
             $transReqLogsModel->update($trans_req_log_last_id, $apiresult, 2,null,$terminal_id);
             $terminalSessionsModel->deleteTerminalSessionById($terminal_id);
+            $egmSessionsModel->deleteEgmSessionById($terminal_id);
             $message = 'Error: Request denied. Please try again.';
             logger($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id);
             CasinoApi::throwError($message);

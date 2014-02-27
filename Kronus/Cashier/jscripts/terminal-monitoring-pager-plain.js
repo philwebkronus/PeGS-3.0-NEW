@@ -98,6 +98,11 @@ $(document).ready(function(){
                             cls = 'notactive';
                             casino = casinononvip;
                         }
+                        if(data.terminals[i]['TerminalType'] == 1){
+                            var egmcode = 'G';
+                            code = egmcode.concat(code);
+                            tcode = egmcode.concat(tcode);
+                        }
                         html+='<td id="' + code + '" vipid="' + vipid + '" nonvipid="' + nonvipid + '" class="' + cls + '">';
                         html += '<div class="box tcode"><h1>'+ tcode + '</h1></div>';
                         html += '<div class="box chk"></div>';

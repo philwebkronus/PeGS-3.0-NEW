@@ -29,11 +29,12 @@ class CommonRedeem {
             $loyalty_card, $mid = '', $userMode = '') {
         
         Mirage::loadComponents('CasinoApi');
-        Mirage::loadModels(array('TerminalsModel', 'CommonTransactionsModel',
+        Mirage::loadModels(array('TerminalsModel', 'EgmSessionsModel','CommonTransactionsModel',
                                  'PendingTerminalTransactionCountModel'));
         
         $casinoApi = new CasinoApi();
         $terminalsModel = new TerminalsModel();
+        $egmSessionsModel = new EgmSessionsModel();
         $commonTransactionsModel = new CommonTransactionsModel();
         $pendingTerminalTransactionCountModel = new PendingTerminalTransactionCountModel();
                 
@@ -104,6 +105,7 @@ class CommonRedeem {
         $trans_summary_id = $terminalSessionsModel->getLastSessSummaryID($terminal_id);
         if(!$trans_summary_id){
             $terminalSessionsModel->deleteTerminalSessionById($terminal_id);
+            $egmSessionsModel->deleteEgmSessionById($terminal_id);
             $message = 'Redeem Session Failed. Please check if the terminal
                         has a valid start session.';
             logger($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id);
@@ -168,10 +170,10 @@ class CommonRedeem {
             }
 
             
-                /************************ WITHDRAW ************************************/
-                $resultwithdraw = $casinoApiHandler->Withdraw($terminal_name, $amount, 
+           /************************ WITHDRAW ************************************/
+           $resultwithdraw = $casinoApiHandler->Withdraw($terminal_name, $amount, 
                     $tracking1, $tracking2, $tracking3, $tracking4, $terminal_pwd, $event_id, $transaction_id);   
-                
+               
                 //check if Withdraw API reply is null
                 if(is_null($resultwithdraw)){
 
@@ -269,6 +271,13 @@ class CommonRedeem {
                                         $site_id, $terminal_id, 'W', $paymentType,$service_id, $acct_id, $transstatus,
                                         $loyalty_card, $mid);
                     
+                    //check terminal type if Genesis = 1
+                    $terminalType = $terminalsModel->checkTerminalType($terminal_id);
+                    
+                    if($terminalType == 1){
+                        $egmSessionsModel->deleteEgmSessionById($terminal_id);
+                    }
+                    
                     $transReqLogsModel->update($trans_req_log_last_id, $apiresult, $transstatus,$transrefid,$terminal_id);
 
                     if(!$isredeemed){
@@ -294,6 +303,12 @@ class CommonRedeem {
             $isredeemed = $commonTransactionsModel->redeemTransaction($amount, $trans_summary_id, $udate, 
                                         $site_id, $terminal_id, 'W', $paymentType,$service_id, $acct_id, 1,
                                         $loyalty_card, $mid);
+            //check terminal type if Genesis = 1
+            $terminalType = $terminalsModel->checkTerminalType($terminal_id);
+                    
+            if($terminalType == 1){
+                $egmSessionsModel->deleteEgmSessionById($terminal_id);
+            }
             
             
             $transReqLogsModel->updateTransReqLogDueZeroBal($terminal_id, $site_id, 'W', $trans_req_log_last_id);

@@ -95,7 +95,7 @@ html,body,h1,h2,h3,h4,h5,h6, p{
 
 /***************************** reload session popup ***************************/
 #tm-reload-form div{float: left;width: 320px;}
-#tm-reload-form div.details{width: 400px;}
+#tm-reload-form div.details{width: 600px;}
 #tm-reload-form div.details table tbody tr td.amount{text-align: right}
 
 .standalonetbl tbody tr th{text-align: left}

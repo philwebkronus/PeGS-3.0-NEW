@@ -36,9 +36,14 @@ class TransactionDetailsModel extends MI_Model{
         // DATE_FORMAT(B.DateStarted,'%m-%d-%y %h:%i:%s %p') DateStarted FROM transactiondetails A 
         $sql = "SELECT CASE A.TransactionType WHEN 'D' THEN 'Deposit' WHEN 'R' THEN 'Reload' ELSE 'Withdraw' END TransType,
             A.Amount,DATE_FORMAT(A.DateCreated,'%Y-%m-%d %h:%i:%s %p') DateCreated,C.TerminalCode,
-            DATE_FORMAT(B.DateStarted,'%Y-%m-%d %h:%i:%s %p') DateStarted FROM transactiondetails A 
+            DATE_FORMAT(B.DateStarted,'%Y-%m-%d %h:%i:%s %p') DateStarted,
+            CASE C.TerminalType WHEN 0 THEN 'Regular' WHEN 1 THEN 'Genesis' END TerminalType, 
+            CASE E.AccountTypeID WHEN 4 THEN 'Cashier' WHEN 15 THEN 'EGM' END Name
+            FROM transactiondetails A 
             INNER JOIN transactionsummary B ON A.TransactionSummaryID = B.TransactionsSummaryID 
-            INNER JOIN terminals C ON C.TerminalID = A.TerminalID " . 
+            INNER JOIN terminals C ON C.TerminalID = A.TerminalID 
+            INNER JOIN accounts D ON A.CreatedByAID = D.AID
+            INNER JOIN ref_accounttypes E ON D.AccountTypeID = E.AccountTypeID " . 
             "WHERE B.TransactionsSummaryID = :trans_summary_id AND A.Status IN (1,4)";
         $param = array(':trans_summary_id'=>$trans_summary_id);
         $this->exec($sql, $param);

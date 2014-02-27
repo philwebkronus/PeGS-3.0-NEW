@@ -25,12 +25,13 @@ class CommonUBReload {
             $casinoUsername = '',$casinoPassword = '', $casinoServiceID = '') {
         
         Mirage::loadComponents('CasinoApi');
-        Mirage::loadModels(array('TransactionSummaryModel','TerminalsModel',
+        Mirage::loadModels(array('TransactionSummaryModel','TerminalsModel','EgmSessionsModel',
                                  'SiteBalanceModel', 'CommonTransactionsModel',
                                  'PendingUserTransactionCountModel'));
         
         $casinoApi = new CasinoApi();
         $terminalsModel = new TerminalsModel();
+        $egmSessionsModel = new EgmSessionsModel();
         $transSummaryModel = new TransactionSummaryModel();
         $siteBalance = new SiteBalanceModel();
         $commonTransactionsModel = new CommonTransactionsModel();
@@ -72,6 +73,7 @@ class CommonUBReload {
         $trans_summary_id = $terminalSessionsModel->getLastSessSummaryID($terminal_id);
         if(!$trans_summary_id){
             $terminalSessionsModel->deleteTerminalSessionById($terminal_id);
+            $egmSessionsModel->deleteEgmSessionById($terminal_id);
             $message = 'Reload Session Failed. Please check if the terminal
                             has a valid start session.';
             logger($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id);

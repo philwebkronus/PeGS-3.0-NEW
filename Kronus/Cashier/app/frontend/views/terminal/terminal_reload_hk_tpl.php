@@ -54,10 +54,10 @@ $(document).ready(function(){
     <div class="details">
         <table border="1" style="width: 100%">
             <tr>
-                <td colspan="3">LOGIN: <b id="reloadlogin"><?php //echo (($login)?$login:'') ?></b></td>
+                <td colspan="5">LOGIN: <b id="reloadlogin"><?php //echo (($login)?$login:'') ?></b></td>
             </tr>
             <tr>
-                <td colspan="3">TIME IN: <b id="reloadtimein"></b></td>
+                <td colspan="5">TIME IN: <b id="reloadtimein"></b></td>
             </tr>
             
             <?php
@@ -83,18 +83,18 @@ $(document).ready(function(){
             ?>
             
             <tr>
-                <td colspan="3">INITIAL DEPOSIT: <b id="reloadinitialdeposit"><?php //echo (($trans_details)?$initial_deposit:''); ?></b></td>
+                <td colspan="5">INITIAL DEPOSIT: <b id="reloadinitialdeposit"><?php //echo (($trans_details)?$initial_deposit:''); ?></b></td>
             </tr>
             <tr>
-                <td colspan="3">TOTAL RELOAD: <b id="reloadtotalreload"><?php //echo (($trans_details)?toMoney($total_reload):''); ?></b></td>
+                <td colspan="5">TOTAL RELOAD: <b id="reloadtotalreload"><?php //echo (($trans_details)?toMoney($total_reload):''); ?></b></td>
             </tr>
             <tr>
-                <th colspan="3" style="background-color: #62AF35">
+                <th colspan="5" style="background-color: #62AF35">
                     <i>SESSION DETAILS</i>
                 </th>
             </tr>
             <tr>
-                <th style="width: 70px;">Type</th><th style="width: 100px;">Amount</th><th>Time</th>
+                <th style="width: 70px;">Type</th><th style="width: 100px;">Amount</th><th>Time</th><th>Terminal Type</th><th>Source</th>
             </tr>
             <tbody id="reloadtbody">
                 <?php //echo (($trans_details)?$tbody:''); ?>

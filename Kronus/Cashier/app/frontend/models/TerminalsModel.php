@@ -30,7 +30,7 @@ class TerminalsModel extends MI_Model {
     public function getTerminalPerPage($siteid,$start,$terminal_per_page,$len) {
         
         //get all terminals under specific site
-        $sql1 = "SELECT t.TerminalID,SUBSTR(t.TerminalCode,$len) AS tc,t.TerminalName, DATE_FORMAT(ts.DateStarted,'%Y-%m-%d %H:%i:%s') DateStarted, t.SiteID, t.Status,t.isVIP,ts.LastTransactionDate, DATE_FORMAT(ts.LastTransactionDate,'%m/%d/%Y %H:%i:%s') as ltd,
+        $sql1 = "SELECT t.TerminalID,t.TerminalType,SUBSTR(t.TerminalCode,$len) AS tc,t.TerminalName, DATE_FORMAT(ts.DateStarted,'%Y-%m-%d %H:%i:%s') DateStarted, t.SiteID, t.Status,t.isVIP,ts.LastTransactionDate, DATE_FORMAT(ts.LastTransactionDate,'%m/%d/%Y %H:%i:%s') as ltd,
             TIMESTAMPDIFF(MINUTE,LastTransactionDate,NOW()) as minutes,TIMESTAMPDIFF(MINUTE,ts.DateStarted,NOW()) as dif , FORMAT(ts.LastBalance,2) as lastbalance,C.Status as ServiceStatus, C.ServiceID, ts.ServiceID as usedServiceID
             FROM terminals t LEFT JOIN terminalsessions ts ON (t.terminalID = ts.terminalID) INNER JOIN terminalservices AS C ON t.TerminalID = C.TerminalID " . 
             "WHERE t.SiteID = :siteid  AND C.isCreated = 1 
@@ -159,7 +159,7 @@ class TerminalsModel extends MI_Model {
     }
     
     public function getTerminalsToStartSession($site_id,$len) {
-        $sql = "SELECT A.TerminalID TId,SUBSTR(A.TerminalCode,$len) AS tc, A.TerminalCode TCode FROM terminals A " . 
+        $sql = "SELECT A.TerminalID TId,A.TerminalType, SUBSTR(A.TerminalCode,$len) AS tc, A.TerminalCode TCode FROM terminals A " . 
                 "LEFT JOIN terminalsessions B ON A.TerminalID = B.TerminalID INNER JOIN terminalservices AS C ON A.TerminalID = C.TerminalID " . 
                 "WHERE A.Status = '1' AND A.SiteID = :site_id  AND C.Status = 1 AND C.isCreated = 1 AND " . 
                 "B.DateEnded IS NULL ORDER BY CAST(`tc` AS SIGNED), A.TerminalID";
@@ -169,7 +169,7 @@ class TerminalsModel extends MI_Model {
     }
     
     public function getAllActiveTerminals($site_id,$len) {
-        $sql = "SELECT A.TerminalID TId,SUBSTR(A.TerminalCode,$len) AS tc, A.TerminalCode TCode FROM terminals A " . 
+        $sql = "SELECT A.TerminalID TId, A.TerminalType, SUBSTR(A.TerminalCode,$len) AS tc, A.TerminalCode TCode FROM terminals A " . 
                 "INNER JOIN terminalsessions B ON A.TerminalID = B.TerminalID " . 
                 "WHERE A.Status = '1' AND A.SiteID = :site_id ORDER BY CAST(`tc` AS SIGNED), A.TerminalID";
         $param = array(':site_id'=>$site_id);
@@ -179,10 +179,17 @@ class TerminalsModel extends MI_Model {
         $non_vips = array();
         foreach($terminals as $terminal) {
             $tid = $terminal['TId'];
-            $tdesc = $terminal['tc'];            
+            $tdesc = $terminal['tc'];
+            $trmtype = $terminal['TerminalType'];
             if(strpos(strtolower($tdesc), 'vip')) {
+                if($trmtype == 1){
+                   $tdesc = 'G'.$tdesc; 
+                }
                 $vips[] = array('id'=>$tid,'code'=>$tdesc);
             } else {
+                if($trmtype == 1){
+                   $tdesc = 'G'.$tdesc; 
+                }
                 $non_vips[] = array('id'=>$tid,'code'=>$tdesc);
             }
         }
@@ -242,7 +249,9 @@ class TerminalsModel extends MI_Model {
 
         foreach($terminals as $terminal) {
             $tid = $terminal['TId'];
-            $tdesc = $terminal['TCode'];      
+            $tdesc = $terminal['TCode'];     
+            $trmtype = $terminal['TerminalType']; 
+            
 //            if(in_array($tdesc,$allowed)) {
 //                if(strpos(strtolower($tdesc), 'vip')) {
 //                    $vips[] = array('id'=>$tid,'code'=>substr($tdesc, $len - 1));
@@ -251,10 +260,14 @@ class TerminalsModel extends MI_Model {
 //                }
 //            }
             if(in_array($tdesc,$v) || in_array($tdesc, $nv)) {
+                $tdesc = substr($tdesc, $len - 1);
+                if($trmtype == 1){
+                    $tdesc = 'G'.$tdesc;
+                }
                 if(strpos(strtolower($tdesc), 'vip')) {
-                    $vips[$tid] = array('id'=>$tid,'code'=>substr($tdesc, $len - 1));
+                    $vips[$tid] = array('id'=>$tid,'code'=>$tdesc);
                 } else {
-                    $non_vips[$tid] = array('id'=>$tid,'code'=>substr($tdesc, $len - 1));
+                    $non_vips[$tid] = array('id'=>$tid,'code'=>$tdesc);
                 }
             }
         }
@@ -314,6 +327,17 @@ class TerminalsModel extends MI_Model {
            $this->dbh->rollBack();
            return false;
        }
+    }
+    
+    
+    public function checkTerminalType($terminal_id) {
+        $sql = 'SELECT TerminalType FROM terminals WHERE TerminalID = :terminal_id';
+        $param = array(':terminal_id'=>$terminal_id);
+        $this->exec($sql,$param);
+        $result = $this->find();
+        $terminal_type = $result['TerminalType'];
+        
+        return $terminal_type;
     }
     
 }

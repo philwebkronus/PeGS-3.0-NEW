@@ -14,13 +14,19 @@ class LoyaltyAPIWrapper {
      * @param type $return_transfer (if 1 or true it will return transfer on success, if not 1 or true it will display transfer on success
      * @return type 
      */
-    public function getCardInfo($card_number, $return_transfer=false, $isReg = 0) {
+    public function getCardInfo($card_number, $return_transfer=false, $isReg = 0, $siteid = '') {
         
         $card_number = urlencode(trim($card_number));
         $isReg = urlencode(trim($isReg));
         
+        //Tag the first site id of temp account migration 
+        if(isset($_SESSION['AccountSiteID']))
+            $SiteID = $_SESSION['AccountSiteID'];
+        else
+            $SiteID = urlencode(trim($siteid));
+        
         $ch = curl_init();
-        curl_setopt($ch,CURLOPT_URL, Mirage::app()->param['card_inquiry'] . '?cardnumber=' . $card_number.'&isreg='.$isReg);
+        curl_setopt($ch,CURLOPT_URL, Mirage::app()->param['card_inquiry'] . '?cardnumber=' . $card_number.'&isreg='.$isReg.'&siteid='.$SiteID);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, $return_transfer); 
         $result = curl_exec($ch);
         curl_close($ch);   

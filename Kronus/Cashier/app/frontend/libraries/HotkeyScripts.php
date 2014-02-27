@@ -212,6 +212,8 @@ $(document).ready(function(){
                                 tbody += '<td class="amount">'+toMoney(v.Amount,'no') + '</td>';
                             }
                             tbody += '<td>' + v.DateCreated + '</td>';
+                            tbody += '<td>' + v.TerminalType + '</td>';
+                            tbody += '<td>' + v.Name + '</td>';
                             tbody += '</tr>';
                         });
                         if(ActionType.Deposit == false) {
@@ -255,6 +257,8 @@ $(document).ready(function(){
                                 tbody+='<td>'+json.trans_details[i].TransType+'</td>';                                    
                                 tbody+='<td class="amount">'+toMoney(json.trans_details[i].Amount,'no')+'</td>';
                                 tbody+='<td>'+json.trans_details[i].DateCreated+'</td>';
+                                tbody+='<td>'+json.trans_details[i].TerminalType+'</td>';
+                                tbody+='<td>'+json.trans_details[i].Name+'</td>';
                                 tbody+='</tr>';
                             }
                             $('#reloadtbody').html(tbody);
@@ -361,7 +365,7 @@ $(document).ready(function(){
         }
         
         if($("#StartSessionFormModel_sel_amount").val() != 'voucher'){
-            if(!confirm('Are you sure you want to reload this session with the amount of PhP ' + toMoney($('#StartSessionFormModel_amount').val())+'?')) {
+            if(!confirm('Are you sure you want to reload this session with the amount of ' + toMoney($('#StartSessionFormModel_amount').val())+'?')) {
                 return false;
             }
         } else {

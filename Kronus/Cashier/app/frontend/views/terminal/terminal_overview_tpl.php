@@ -20,6 +20,11 @@
             <?php // IF VIP NOT EXIST BREAK ?>
             <?php if(!isset($terminals[$key + 1])): ?>
                 <?php $class='disable'; ?>
+            <?php if($terminal['TerminalType'] == 1){
+                $code = 'G'.$code;
+                $tcode = 'G'.$tcode;
+            }
+            ?>
             <td id="<?php echo $code ?>" class="<?php echo $class ?>">
                 <div class="box tcode"><h1><?php echo $tcode ?></h1></div>
                 <div class="box chk"><?php echo $checkbox; ?></div>
@@ -64,7 +69,11 @@
                 <?php $class = 'notactive'; ?>
                 <?php $casino = $casinononvip; ?>
             <?php endif; ?>
-            
+            <?php if($terminal['TerminalType'] == 1){
+                $code = 'G'.$code;
+                $tcode = 'G'.$tcode;
+            }
+            ?>
             <td id="<?php echo $code ?>" casinononvip="<?php echo $casinononvip ?>" casinovip="<?php echo $casinovip ?>" vipid="<?php echo $vipid ?>" nonvipid="<?php echo $nonvipid ?>" class="<?php echo $class ?>">
                 <div class="box tcode"><h1><?php echo $tcode ?></h1></div>
                 <div class="box chk"><?php echo $checkbox; ?></div>

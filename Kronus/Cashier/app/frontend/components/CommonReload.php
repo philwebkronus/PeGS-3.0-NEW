@@ -23,12 +23,13 @@ class CommonReload {
     public function reload($bcf,$amount,$paymentType,$terminal_id,$site_id,$service_id,$acctid,
             $loyalty_card, $voucher_code = '',$trackingid = '', $mid = '', $userMode = '') {
         Mirage::loadComponents('CasinoApi');
-        Mirage::loadModels(array('TransactionSummaryModel','TerminalsModel',
+        Mirage::loadModels(array('TransactionSummaryModel','TerminalsModel','EgmSessionsModel',
                                  'SiteBalanceModel', 'CommonTransactionsModel',
                                  'PendingTerminalTransactionCountModel'));
         
         $casinoApi = new CasinoApi();
         $terminalsModel = new TerminalsModel();
+        $egmSessionsModel = new EgmSessionsModel();
         $transSummaryModel = new TransactionSummaryModel();
         $siteBalance = new SiteBalanceModel();
         $commonTransactionsModel = new CommonTransactionsModel();
@@ -69,6 +70,7 @@ class CommonReload {
         $trans_summary_id = $terminalSessionsModel->getLastSessSummaryID($terminal_id);
         if(!$trans_summary_id){
             $terminalSessionsModel->deleteTerminalSessionById($terminal_id);
+            $egmSessionsModel->deleteEgmSessionById($terminal_id);
             $message = 'Reload Session Failed. Please check if the terminal
                             has a valid start session.';
             logger($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id);

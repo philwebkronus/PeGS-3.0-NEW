@@ -45,10 +45,10 @@ $(document).ready(function(){
     <div class="details">
         <table border="1" style="width: 100%">
             <tr>
-                <td colspan="3">LOGIN: <b><?php echo $tcode; ?></b></td>
+                <td colspan="5">LOGIN: <b><?php echo $tcode; ?></b></td>
             </tr>
             <tr>
-                <td colspan="3">TIME IN: <b><?php echo date('Y-m-d h:i:s A',strtotime($terminal_session_data['DateStarted'])); ?></b></td>
+                <td colspan="5">TIME IN: <b><?php echo date('Y-m-d h:i:s A',strtotime($terminal_session_data['DateStarted'])); ?></b></td>
             </tr>
             
             <?php
@@ -67,23 +67,25 @@ $(document).ready(function(){
                     $tbody.= '<td class="amount">' . toMoney($trans_detail['Amount']) . '</td>';
                 }
                 $tbody.= '<td>' . $trans_detail['DateCreated'] . '</td>';
+                $tbody.= '<td>' . $trans_detail['TerminalType'] . '</td>';
+                $tbody.= '<td>' . $trans_detail['Name'] . '</td>';
                 $tbody.='</tr>';
             }
             ?>
             
             <tr>
-                <td colspan="3">INITIAL DEPOSIT: <b><?php echo 'PhP '.$initial_deposit; ?></b></td>
+                <td colspan="5">INITIAL DEPOSIT: <b><?php echo 'PhP '.$initial_deposit; ?></b></td>
             </tr>
             <tr>
-                <td colspan="3">TOTAL RELOAD: <b><?php echo 'PhP '. toMoney($total_reload); ?></b></td>
+                <td colspan="5">TOTAL RELOAD: <b><?php echo 'PhP '. toMoney($total_reload); ?></b></td>
             </tr>
             <tr>
-                <th colspan="3" style="background-color: #62AF35">
+                <th colspan="5" style="background-color: #62AF35">
                     <i>SESSION DETAILS</i>
                 </th>
             </tr>
             <tr>
-                <th style="width: 70px;">Type</th><th style="width: 100px;">Amount</th><th>Time</th>
+                <th style="width: 70px;">Type</th><th style="width: 100px;">Amount</th><th>Time</th><th>Terminal Type</th><th>Source</th>
             </tr>
             <tbody>
                 <?php echo $tbody; ?>

@@ -29,26 +29,26 @@
     <div class="details">
         <table border="1" style="width: 100%">
             <tr>
-                <td colspan="3">LOGIN: <b id="reloadlogin"></b></td>
+                <td colspan="5">LOGIN: <b id="reloadlogin"></b></td>
             </tr>
             <tr>
-                <td colspan="3">TIME IN: 
+                <td colspan="5">TIME IN: 
                     <b id="reloadtimein"></b>
                 </td>
             </tr>  
             <tr>
-                <td colspan="3">INITIAL DEPOSIT: <b id="initialdeposit"></b></td>
+                <td colspan="5">INITIAL DEPOSIT: <b id="initialdeposit"></b></td>
             </tr>
             <tr>
-                <td colspan="3">TOTAL RELOAD: <b id="totalreload"></b></td>
+                <td colspan="5">TOTAL RELOAD: <b id="totalreload"></b></td>
             </tr>
             <tr>
-                <th colspan="3" style="background-color: #62AF35">
+                <th colspan="5" style="background-color: #62AF35">
                     <i>SESSION DETAILS</i>
                 </th>
             </tr>  
             <tr>
-                <th style="width: 70px;">Type</th><th style="width: 100px;">Amount</th><th>Time</th>
+                <th style="width: 70px;">Type</th><th style="width: 100px;">Amount</th><th>Time</th><th>Terminal Type</th><th>Source</th>
             </tr>
             <tbody id="reloadtbody">
             </tbody>   
@@ -93,7 +93,7 @@
             terminalCode = terminalCode.replace(/vip/i,'');
             terminalCode = preffixCode+terminalCode;
             
-            if(!confirm('Are you sure you want to redeem the amount of PhP ' + amount + '?')) {
+            if(!confirm('Are you sure you want to redeem the amount of ' + toMoney(amount) + '?')) {
                 return false;
             }
             showLightbox(function(){
@@ -161,6 +161,8 @@
                                     tbody+='<td>'+json.trans_details[i].TransType+'</td>';                                    
                                     tbody+='<td class="amount">'+toMoney(json.trans_details[i].Amount,'no')+'</td>';
                                     tbody+='<td>'+json.trans_details[i].DateCreated+'</td>';
+                                    tbody+='<td>'+json.trans_details[i].TerminalType+'</td>';
+                                    tbody+='<td>'+json.trans_details[i].Name+'</td>';
                                     tbody+='</tr>';
                                 }
                                 $('#reloadtbody').html(tbody);
@@ -229,6 +231,8 @@
                                     }
                                     tbody+='<td class="amount">'+toMoney(json.trans_details[i].Amount,'no')+'</td>';
                                     tbody+='<td>'+json.trans_details[i].DateCreated+'</td>';
+                                    tbody+='<td>'+json.trans_details[i].TerminalType+'</td>';
+                                    tbody+='<td>'+json.trans_details[i].Name+'</td>';
                                     tbody+='</tr>';
                                 }
                             }

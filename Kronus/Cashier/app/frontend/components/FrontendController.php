@@ -403,7 +403,7 @@ class FrontendController extends MI_Controller {
      */
     protected function _redeem($startSessionFormModel) {
         Mirage::loadComponents(array('CommonRedeem','LoyaltyAPIWrapper.class','CommonUBRedeem',
-                                     'AsynchronousRequest.class'));
+                                     'AsynchronousRequest.class','CasinoApi'));
         Mirage::loadModels(array('SitesModel','TerminalSessionsModel','TerminalServicesModel',
                                  'RefServicesModel', 'LoyaltyRequestLogsModel',
                                  'SpyderRequestLogsModel','TerminalsModel'));
@@ -517,6 +517,7 @@ class FrontendController extends MI_Controller {
         $trackingId = '';
         $ref_service = $refService->getServiceById($startSessionFormModel->casino);        
         $terminalname = $terminalsmodel->getTerminalName($terminal_id);
+        $terminaltype = $terminalsmodel->checkTerminalType($terminal_id);
        
        $isVIP = '';
        if(!isset($_POST['isvip'])){
@@ -575,9 +576,9 @@ class FrontendController extends MI_Controller {
                             } else {
                                 
                                     $trackingId = "c".$casinoAPI->udate('YmdHisu');
-
+                                    
                                     list($is_loyalty, $card_number,$loyalty, $casinos, $mid, $casinoarray_count) = 
-                                            $this->getCardInfo($startSessionFormModel->loyalty_card);
+                                            $this->getCardInfo($startSessionFormModel->loyalty_card, $this->site_id, $terminaltype);
                                     
                                     $casinoUsername = '';
                                     $casinoPassword = '';
@@ -715,7 +716,7 @@ class FrontendController extends MI_Controller {
                     
                             
                     list($is_loyalty, $card_number,$loyalty, $casinos, $mid, $casinoarray_count) = 
-                            $this->getCardInfo($startSessionFormModel->loyalty_card);
+                            $this->getCardInfo($startSessionFormModel->loyalty_card, $this->site_id, $terminaltype);
 
                     $casinoUsername = '';
                     $casinoPassword = '';
@@ -884,7 +885,7 @@ class FrontendController extends MI_Controller {
      * Get card info and validate its status
      * @param type $barCode 
      */
-    protected function getCardInfo($barCode){
+    protected function getCardInfo($barCode, $siteID, $terminaltype){
         $is_loyalty = false;
         $loyalty = new LoyaltyAPIWrapper();
         $card_number = '';
@@ -895,7 +896,7 @@ class FrontendController extends MI_Controller {
         {
             if($barCode != '') {
                 
-                $result = $loyalty->getCardInfo($barCode, 1);
+                $result = $loyalty->getCardInfo($barCode, 1, $siteID);
                 $obj_result = json_decode($result);
                 
                 if($obj_result->CardInfo->CardNumber == null) {
@@ -935,7 +936,7 @@ class FrontendController extends MI_Controller {
         {
             if($barCode != '') {
                 
-                $result = $loyalty->getCardInfo($barCode,1);
+                $result = $loyalty->getCardInfo($barCode,1, $siteID);
                 $obj_result = json_decode($result);
                 
                 if($obj_result->CardInfo->CardNumber == null) {
@@ -948,6 +949,20 @@ class FrontendController extends MI_Controller {
                 }
             }
         }
+        
+        //check if genesis checking is enabled in config file
+        if(Mirage::app()->param['is_Genesis'] == 1){
+            
+           //if terminaltype is genesis and temp card is present return error meessage 
+           if($terminaltype == 1){
+                if($obj_result->CardInfo->StatusCode == 5){
+                    header('HTTP/1.0 404 Not Found');
+                        echo 'The membership card you entered is not supported. Please use the red membership card.';
+                        Mirage::app()->end();
+                }
+           } 
+        }
+        
 
         $casinoarray_count = count($obj_result->CardInfo->CasinoArray);
         $casinos = array();

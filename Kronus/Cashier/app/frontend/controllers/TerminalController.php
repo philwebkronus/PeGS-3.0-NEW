@@ -273,7 +273,7 @@ class TerminalController extends FrontendController {
      */
     public function reloadClickAction() {
         if(!$this->isAjaxRequest() && !$this->isPostRequest())
-            Mirage::app()->error404();
+            Mirage::app()->error404();       
         
         Mirage::loadComponents('CasinoApi');
         Mirage::loadModels(array('StartSessionFormModel','SiteDenominationModel','RefServicesModel','TerminalSessionsModel'));
@@ -422,11 +422,4 @@ class TerminalController extends FrontendController {
         die('ok');
     }
     
-    /**
-     * Description: get RFID key from config file
-     * @return rfid key
-     */
-    public function getRFIDKeyValueAction(){
-        echo Mirage::app()->param['rfid_key'];
-    }
 }
