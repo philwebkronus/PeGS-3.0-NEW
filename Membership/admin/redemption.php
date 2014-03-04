@@ -483,7 +483,7 @@ if($fproc->IsPostBack){
                     $emailmessage = str_replace('$about', $about, $emailmessage);
                     $emailmessage = str_replace('$term', $term, $emailmessage);
 
-                    $_Helper->sendEmailCouponRedemption($playername,$address,$sitecode,$cardnumber,$fbirthdate,$email,$contactno,$cityname,
+                    $_Helper->sendEmailCouponRedemption($playername,$address,$sitename,$cardnumber,$fbirthdate,$email,$contactno,$cityname,
                                                                                     $regionname,$newheader,$newfooter,$itemimage,$_SESSION['RewardOfferCopy']["CouponSeries"],
                                                                                     $_SESSION['RewardOfferCopy']["Quantity"],$_SESSION['RewardOfferCopy']["CheckSum"],
                                                                                     $_SESSION['RewardOfferCopy']["SerialNumber"],$redemptiondate,$promocode,
