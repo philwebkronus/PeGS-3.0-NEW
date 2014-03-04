@@ -601,6 +601,7 @@ class ReportsController extends Controller
             $key1 = $arrkey[0];
             $key2 = $arrkey[2]; //DateLabel - Index 1 is the dateCreated
             $year = $arrkey[3];
+            $startyear = substr($datefrom, 0, 4);
             //Check if there were results found
             $datay = array();
             //Get Start date and max bars of each date coverage
@@ -733,6 +734,7 @@ class ReportsController extends Controller
                         break;
                     //Monthly
                     case self::MONTHLY:
+                        //this statement proceed when there is no more data, it will just fullfill the date range
                         if (!isset($result[$i][$key2]))
                         {
                             if (count($lbl) < $vbars)
@@ -744,7 +746,7 @@ class ReportsController extends Controller
                                 }
                                 else
                                 {
-                                    $getLabel = $this->getMonthName($month)."\n".($result[0][$year] + 1);
+                                    $getLabel = $this->getMonthName($month)."\n".($startyear);
                                 }
                                 $this->flip = false;
                                 $getData = 0;
@@ -767,7 +769,8 @@ class ReportsController extends Controller
 
                                 $datay[]    = $getData; //Put the retrieved data in array dataY
                                 $lbl[]      = $getLabel;
-
+                                
+                                $startyear = $result[$i][$year];
                                 $month++;
                             }
                             else
@@ -783,7 +786,7 @@ class ReportsController extends Controller
                                 $_month = $month;
                                 while ($blank > 0)
                                 {
-                                    $getLabel = $this->getMonthName($_month)."\n".$result[$i][$year];
+                                    $getLabel = $this->getMonthName($_month)."\n".$startyear;
                                     $this->flip = false;
                                     $getData    = 0; //No Data
 
@@ -792,8 +795,11 @@ class ReportsController extends Controller
 
                                     $blank--;
                                     $_month++;
-                                    if ($_month > 12)
+                                    if ($_month == 13)
+                                    {
                                         $_month = 1;
+                                        $startyear++;
+                                    }
                                 }
                                 if ($month <= 12)
                                 {
@@ -812,10 +818,7 @@ class ReportsController extends Controller
                                 {
                                     $month = 0;
                                 }
-                                if ($month > 12)
-                                {
-                                    $month = 1;
-                                }
+                                
                             }
                         }
                         break;
@@ -834,7 +837,7 @@ class ReportsController extends Controller
                                 }
                                 else
                                 {
-                                    $getLabel = $this->identifyQuarter($quarter)."\n      ".($result[0][$year] + 1);
+                                    $getLabel = $this->identifyQuarter($quarter)."\n      ".($result[0][$year]);
                                 }
                                 $this->flip = false;
                                 $getData = 0;
@@ -873,8 +876,7 @@ class ReportsController extends Controller
                                 $_quarter = $quarter;
                                 while ($blank > 0)
                                 {
-
-                                    $getLabel = $this->identifyQuarter($_quarter)."\n      ".$result[$i][$year];
+                                    $getLabel = $this->identifyQuarter($_quarter)."\n      ".$startyear;
                                     $this->flip = false;
                                     $getData    = 0; //No Data
 
@@ -883,8 +885,11 @@ class ReportsController extends Controller
 
                                     $blank--;
                                     $_quarter++;
-                                    if ($_quarter > 4)
+                                    if ($_quarter == 5)
+                                    {
                                         $_quarter = 1;
+                                        $startyear++;
+                                    }
                                 }
                                 if ($quarter <= 4)
                                 {

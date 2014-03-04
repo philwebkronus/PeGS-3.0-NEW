@@ -21,7 +21,7 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog',array(
     'id'=>'dialog_box',
     // additional javascript options for the dialog plugin
     'options'=>array(
-        'title'=>'ERROR MESSAGE',
+        'title'=> 'MESSAGE',
         'autoOpen' => $this->showdialog,
         'resizable' => false,
         'draggable' => false,
@@ -378,6 +378,10 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
             </td>
             <td>
                 <?php
+                    $items          = array();
+                    $partners       = array();
+                    $particulars    = array();
+                    $categories     = array();
                     //Retain the selected value once there is/are error
                     //after submission since this dropdown was depending on Filter DDL. 
                     if (isset($this->filter)) //Set once the error was committed
