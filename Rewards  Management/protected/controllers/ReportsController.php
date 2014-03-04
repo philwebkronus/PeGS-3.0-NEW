@@ -837,7 +837,7 @@ class ReportsController extends Controller
                                 }
                                 else
                                 {
-                                    $getLabel = $this->identifyQuarter($quarter)."\n      ".($result[0][$year]);
+                                    $getLabel = $this->identifyQuarter($quarter)."\n      ".($startyear);
                                 }
                                 $this->flip = false;
                                 $getData = 0;
@@ -860,7 +860,8 @@ class ReportsController extends Controller
 
                                 $datay[]    = $getData; //Put the retrieved data in array dataY
                                 $lbl[]      = $getLabel;
-
+                                
+                                $startyear = $result[$i][$year];
                                 $quarter++;
                             }
                             else
