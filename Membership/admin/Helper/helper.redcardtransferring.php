@@ -22,6 +22,7 @@ App::LoadModuleClass("Membership", "AuditTrail");
 App::LoadModuleClass("Membership", "AuditFunctions");
 App::LoadModuleClass("Loyalty", "MemberPointsTransferLog");
 App::LoadModuleClass("Admin", "AccountSessions");
+App::LoadModuleClass("Kronus", "TerminalSessions");
 
 //Load Needed Core Class.
 App::LoadCore('Validation.class.php');
@@ -36,6 +37,7 @@ $_Sites = new Sites();
 $_Log = new AuditTrail();
 $_MemberPointsTransferLog = new MemberPointsTransferLog();
 $_AccountSessions = new AccountSessions();
+$_TerminalSessions = new TerminalSessions();
 $profile = null;
 $response = null;
 
@@ -92,36 +94,48 @@ if (isset($_POST['pager'])) {
 
                             $MemberInfoResult = $_MemberInfo->getMemberInfoByID($MIDResult[0]['MID']);
                             if (isset($MemberInfoResult[0]['MID']) && $MemberInfoResult[0]['MID'] != '') {
-                                $memberinfovalue['FirstName'] = $MemberInfoResult[0]['FirstName'];
-                                $memberinfovalue['LastName'] = $MemberInfoResult[0]['LastName'];
-                                $memberinfovalue['Birthdate'] = $MemberInfoResult[0]['Birthdate'];
-                                $memberinfovalue['Age'] = $MemberInfoResult[0]['Age'];
-                                $memberinfovalue['Gender'] = $MemberInfoResult[0]['Gender'] == 1 ? "Male" : "Female";
+                                $count = $_TerminalSessions->isSessionExists($MemberInfoResult[0]['MID']);
+                                if ($count[0]['ctrTerminalID'] == 0) {
+                                    $memberinfovalue['FirstName'] = $MemberInfoResult[0]['FirstName'];
+                                    $memberinfovalue['LastName'] = $MemberInfoResult[0]['LastName'];
+                                    $memberinfovalue['Birthdate'] = $MemberInfoResult[0]['Birthdate'];
+                                    $memberinfovalue['Age'] = $MemberInfoResult[0]['Age'];
+                                    $memberinfovalue['Gender'] = $MemberInfoResult[0]['Gender'] == 1 ? "Male" : "Female";
 
-                                if ($MemberInfoResult[0]['Status'] == 1) {
-                                    $memberinfovalue['Status'] = 'Active';
-                                } else if ($MemberInfoResult[0]['Status'] == 2) {
-                                    $memberinfovalue['Status'] = 'Suspended';
-                                } else if ($MemberInfoResult[0]['Status'] == 3) {
-                                    $memberinfovalue['Status'] = 'Locked (Attempts)';
-                                } else if ($MemberInfoResult[0]['Status'] == 4) {
-                                    $memberinfovalue['Status'] = 'Locked (Admin)';
-                                } else if ($MemberInfoResult[0]['Status'] == 5) {
-                                    $memberinfovalue['Status'] = 'Banned';
-                                } else if ($MemberInfoResult[0]['Status'] == 6) {
-                                    $memberinfovalue['Status'] = 'Terminated';
+                                    if ($MemberInfoResult[0]['Status'] == 1) {
+                                        $memberinfovalue['Status'] = 'Active';
+                                    } else if ($MemberInfoResult[0]['Status'] == 2) {
+                                        $memberinfovalue['Status'] = 'Suspended';
+                                    } else if ($MemberInfoResult[0]['Status'] == 3) {
+                                        $memberinfovalue['Status'] = 'Locked (Attempts)';
+                                    } else if ($MemberInfoResult[0]['Status'] == 4) {
+                                        $memberinfovalue['Status'] = 'Locked (Admin)';
+                                    } else if ($MemberInfoResult[0]['Status'] == 5) {
+                                        $memberinfovalue['Status'] = 'Banned';
+                                    } else if ($MemberInfoResult[0]['Status'] == 6) {
+                                        $memberinfovalue['Status'] = 'Terminated';
+                                    }
+
+                                    $profile->MID = $MIDResult[0]['MID'];
+                                    $profile->Name = $memberinfovalue['FirstName'] . ' ' . $memberinfovalue['LastName'];
+                                    $profile->Birthdate = $memberinfovalue['Birthdate'];
+                                    $profile->Age = $memberinfovalue['Age'];
+                                    $profile->Gender = $memberinfovalue['Gender'];
+                                    $profile->Status = $memberinfovalue['Status'];
+                                    $profile->LifeTimePoints = number_format($cardpoints['LifeTimePoints']);
+                                    $profile->CurrentPoints = number_format($cardpoints['CurrentPoints']);
+                                    $profile->RedeemedPoints = number_format($cardpoints['RedeemedPoints']);
+                                    $profile->BonusPoints = number_format($cardpoints['BonusPoints']);
+                                } else {
+                                    $profile->MID = '';
+                                    $profile->Name = '';
+                                    $profile->Birthdate = '';
+                                    $profile->Age = '';
+                                    $profile->Gender = '';
+                                    $profile->Status = '';
+                                    $msg = 'Red Card Transferring:  Cannot transfer points with an active session.';
+                                    $profile->Msg = $msg;
                                 }
-                                
-                                $profile->MID = $MIDResult[0]['MID'];
-                                $profile->Name = $memberinfovalue['FirstName'].' '.$memberinfovalue['LastName'];
-                                $profile->Birthdate = $memberinfovalue['Birthdate'];
-                                $profile->Age = $memberinfovalue['Age'];
-                                $profile->Gender = $memberinfovalue['Gender'];
-                                $profile->Status = $memberinfovalue['Status'];
-                                $profile->LifeTimePoints = number_format($cardpoints['LifeTimePoints']);
-                                $profile->CurrentPoints = number_format($cardpoints['CurrentPoints']);
-                                $profile->RedeemedPoints = number_format($cardpoints['RedeemedPoints']);
-                                $profile->BonusPoints = number_format($cardpoints['BonusPoints']);
                             } else {
                                 $profile->MID = '';
                                 $profile->Name = '';
@@ -227,35 +241,47 @@ if (isset($_POST['pager'])) {
 
                                 $MemberInfoResult = $_MemberInfo->getMemberInfoByID($MIDResult[0]['MID']);
                                 if (isset($MemberInfoResult[0]['MID']) && $MemberInfoResult[0]['MID'] != '') {
-                                    $memberinfovalue['FirstName'] = $MemberInfoResult[0]['FirstName'];
-                                    $memberinfovalue['LastName'] = $MemberInfoResult[0]['LastName'];
-                                    $memberinfovalue['Birthdate'] = $MemberInfoResult[0]['Birthdate'];
-                                    $memberinfovalue['Age'] = $MemberInfoResult[0]['Age'];
-                                    $memberinfovalue['Gender'] = $MemberInfoResult[0]['Gender'] == 1 ? "Male" : "Female";
+                                    $count = $_TerminalSessions->isSessionExists($MemberInfoResult[0]['MID']);
+                                    if ($count[0]['ctrTerminalID'] == 0) {
+                                        $memberinfovalue['FirstName'] = $MemberInfoResult[0]['FirstName'];
+                                        $memberinfovalue['LastName'] = $MemberInfoResult[0]['LastName'];
+                                        $memberinfovalue['Birthdate'] = $MemberInfoResult[0]['Birthdate'];
+                                        $memberinfovalue['Age'] = $MemberInfoResult[0]['Age'];
+                                        $memberinfovalue['Gender'] = $MemberInfoResult[0]['Gender'] == 1 ? "Male" : "Female";
 
-                                    if ($MemberInfoResult[0]['Status'] == 1) {
-                                        $memberinfovalue['Status'] = 'Active';
-                                    } else if ($MemberInfoResult[0]['Status'] == 2) {
-                                        $memberinfovalue['Status'] = 'Suspended';
-                                    } else if ($MemberInfoResult[0]['Status'] == 3) {
-                                        $memberinfovalue['Status'] = 'Locked (Attempts)';
-                                    } else if ($MemberInfoResult[0]['Status'] == 4) {
-                                        $memberinfovalue['Status'] = 'Locked (Admin)';
-                                    } else if ($MemberInfoResult[0]['Status'] == 5) {
-                                        $memberinfovalue['Status'] = 'Banned';
-                                    } else if ($MemberInfoResult[0]['Status'] == 6) {
-                                        $memberinfovalue['Status'] = 'Terminated';
+                                        if ($MemberInfoResult[0]['Status'] == 1) {
+                                            $memberinfovalue['Status'] = 'Active';
+                                        } else if ($MemberInfoResult[0]['Status'] == 2) {
+                                            $memberinfovalue['Status'] = 'Suspended';
+                                        } else if ($MemberInfoResult[0]['Status'] == 3) {
+                                            $memberinfovalue['Status'] = 'Locked (Attempts)';
+                                        } else if ($MemberInfoResult[0]['Status'] == 4) {
+                                            $memberinfovalue['Status'] = 'Locked (Admin)';
+                                        } else if ($MemberInfoResult[0]['Status'] == 5) {
+                                            $memberinfovalue['Status'] = 'Banned';
+                                        } else if ($MemberInfoResult[0]['Status'] == 6) {
+                                            $memberinfovalue['Status'] = 'Terminated';
+                                        }
+                                        $profile->MID = $MIDResult[0]['MID'];
+                                        $profile->Name = $memberinfovalue['FirstName'] . ' ' . $memberinfovalue['LastName'];
+                                        $profile->Birthdate = $memberinfovalue['Birthdate'];
+                                        $profile->Age = $memberinfovalue['Age'];
+                                        $profile->Gender = $memberinfovalue['Gender'];
+                                        $profile->Status = $memberinfovalue['Status'];
+                                        $profile->LifeTimePoints = number_format($cardpoints['LifeTimePoints']);
+                                        $profile->CurrentPoints = number_format($cardpoints['CurrentPoints']);
+                                        $profile->RedeemedPoints = number_format($cardpoints['RedeemedPoints']);
+                                        $profile->BonusPoints = number_format($cardpoints['BonusPoints']);
+                                    } else {
+                                        $profile->MID = '';
+                                        $profile->Name = '';
+                                        $profile->Birthdate = '';
+                                        $profile->Age = '';
+                                        $profile->Gender = '';
+                                        $profile->Status = '';
+                                        $msg = 'Red Card Transferring:  Cannot transfer points with an active session.';
+                                        $profile->Msg = $msg;
                                     }
-                                    $profile->MID = $MIDResult[0]['MID'];
-                                    $profile->Name = $memberinfovalue['FirstName'].' '.$memberinfovalue['LastName'];
-                                    $profile->Birthdate = $memberinfovalue['Birthdate'];
-                                    $profile->Age = $memberinfovalue['Age'];
-                                    $profile->Gender = $memberinfovalue['Gender'];
-                                    $profile->Status = $memberinfovalue['Status'];
-                                    $profile->LifeTimePoints = number_format($cardpoints['LifeTimePoints']);
-                                    $profile->CurrentPoints = number_format($cardpoints['CurrentPoints']);
-                                    $profile->RedeemedPoints = number_format($cardpoints['RedeemedPoints']);
-                                    $profile->BonusPoints = number_format($cardpoints['BonusPoints']);
                                 } else {
                                     $profile->MID = '';
                                     $profile->Name = '';
@@ -392,83 +418,68 @@ if (isset($_POST['pager'])) {
                     }
                     $cardid1 = $cardid1;
                     $cardtypeid1 = $cardtypeid1;
-                    
-                        if ($status == 0 && $newcard != $oldcard) {
-                            if ($currentpoints < 0) {
-                                $isSuccess = false;
-                                $_Log->logAPI(AuditFunctions::MARKETING_RED_CARD_TRANSFERRING, 'From Card: ' . $oldcard . ', Pts: ' . $carddetails["CurrentPoints"] . '; To Card: ' . $newcard . ', Pts: ' . $newcarddetailz["CurrentPoints"] . ', Failed', $_SESSION['aID']);
-                                $error = "Card has negative current points.";
-                                $logger->logger($logdate, $logtype, $error);
 
-                                $profile->MID = '';
-                                $profile->Name = '';
-                                $profile->Birthdate = '';
-                                $profile->Age = '';
-                                $profile->Gender = '';
-                                $profile->Status = '';
-                                $msg = 'Migration failed. Card has negative current points.';
-                                $profile->Msg = $msg;
-                            } else {
-                                $_MemberCards->transferMemberCard($MID, $cardid2, $siteid, $lifetimepoints, $currentpoints, $redeemedpoints, $newcardnumber, $oldubcardnumber, $status1, $status2, $aid, $datecreated, $cardtypeid1);
+                    if ($status == 0 && $newcard != $oldcard) {
+                        if ($currentpoints < 0) {
+                            $isSuccess = false;
+                            $_Log->logAPI(AuditFunctions::MARKETING_RED_CARD_TRANSFERRING, 'From Card: ' . $oldcard . ', Pts: ' . $carddetails["CurrentPoints"] . '; To Card: ' . $newcard . ', Pts: ' . $newcarddetailz["CurrentPoints"] . ', Failed', $_SESSION['aID']);
+                            $error = "Card has negative current points.";
+                            $logger->logger($logdate, $logtype, $error);
+
+                            $profile->MID = '';
+                            $profile->Name = '';
+                            $profile->Birthdate = '';
+                            $profile->Age = '';
+                            $profile->Gender = '';
+                            $profile->Status = '';
+                            $msg = 'Migration failed. Card has negative current points.';
+                            $profile->Msg = $msg;
+                        } else {
+                            $_MemberCards->transferMemberCard($MID, $cardid2, $siteid, $lifetimepoints, $currentpoints, $redeemedpoints, $newcardnumber, $oldubcardnumber, $status1, $status2, $aid, $datecreated, $cardtypeid1);
+
+                            if (!App::HasError()) {
+
+                                $cardidA = $_Cards->getCardDetails($oldcard);
+                                foreach ($cardidA as $value) {
+                                    $cardid1 = $value['CardID'];
+                                }
+                                $cardid1 = $cardid1;
+                                $status1 = CardStatus::NEW_MIGRATED;
+
+                                $cardidB = $_Cards->getCardDetails($newcard);
+                                foreach ($cardidB as $value) {
+                                    $cardid2 = $value['CardID'];
+                                }
+                                $cardid2 = $cardid2;
+                                $status2 = CardStatus::ACTIVE;
+
+                                $_Cards->updateCardsStatus2($cardid1, $cardid2, $status1, $status2, $aid, $datecreated);
 
                                 if (!App::HasError()) {
-
-                                    $cardidA = $_Cards->getCardDetails($oldcard);
-                                    foreach ($cardidA as $value) {
-                                        $cardid1 = $value['CardID'];
-                                    }
-                                    $cardid1 = $cardid1;
-                                    $status1 = CardStatus::NEW_MIGRATED;
-
-                                    $cardidB = $_Cards->getCardDetails($newcard);
-                                    foreach ($cardidB as $value) {
-                                        $cardid2 = $value['CardID'];
-                                    }
-                                    $cardid2 = $cardid2;
-                                    $status2 = CardStatus::ACTIVE;
-
-                                    $_Cards->updateCardsStatus2($cardid1, $cardid2, $status1, $status2, $aid, $datecreated);
-                                    
+                                    $dateupdated = $datecreated;
+                                    $_MemberCards->updateMemberCardsStatus($cardid1, $cardid2, $status1, $status2, $aid, $dateupdated);
                                     if (!App::HasError()) {
-                                        $dateupdated = $datecreated;
-                                        $_MemberCards->updateMemberCardsStatus($cardid1, $cardid2, $status1, $status2, $aid, $dateupdated);
-                                        if (!App::HasError()) {
-                                            $fromMemberCardIDA = $_MemberCards->getMemCardIDByCardNumber($oldcard);
-                                            foreach ($fromMemberCardIDA as $value) {
-                                                $fromMemberCardID = $value['MemberCardID'];
-                                            }
-                                            $fromMemberCardID = $fromMemberCardID;
-                                            $toMemberCardIDA = $_MemberCards->getMemCardIDByCardNumber($newcard);
-                                            foreach ($toMemberCardIDA as $value) {
-                                                $toMemberCardID = $value['MemberCardID'];
-                                            }
-                                            $toMemberCardID = $toMemberCardID;
-                                            $isSuccess = true;
-                                            $_Log->logAPI(AuditFunctions::MARKETING_RED_CARD_TRANSFERRING, 'From Card: ' . $oldcard . ', Pts: ' . $carddetails["CurrentPoints"] . '; To Card: ' . $newcard . ', Pts: ' . $newcarddetailz["CurrentPoints"] . ', Success', $_SESSION['aID']);
-                                            $_MemberPointsTransferLog->logPointsTransfer($fromMemberCardID, $toMemberCardID, $lifetimepoints, $currentpoints, $redeemedpoints, $datecreated, $aid);
-                                            $profile->MID = '';
-                                            $profile->Name = '';
-                                            $profile->Birthdate = '';
-                                            $profile->Age = '';
-                                            $profile->Gender = '';
-                                            $profile->Status = '';
-                                            $msg = 'Red Card Transferring: Transaction Successful';
-                                            $profile->Msg = $msg;
-                                        } else {
-                                            $isSuccess = false;
-                                            $_Log->logAPI(AuditFunctions::MARKETING_RED_CARD_TRANSFERRING, 'From Card: ' . $oldcard . ', Pts: ' . $currentpoints . '; To Card: ' . $newcard . ', Pts: ' . $newcarddetailz["CurrentPoints"] . ', Failed', $_SESSION['aID']);
-                                            $error = "Failed to transfer points";
-                                            $logger->logger($logdate, $logtype, $error);
-
-                                            $profile->MID = '';
-                                            $profile->Name = '';
-                                            $profile->Birthdate = '';
-                                            $profile->Age = '';
-                                            $profile->Gender = '';
-                                            $profile->Status = '';
-                                            $msg = 'Red Card Transferring: Transaction Failed';
-                                            $profile->Msg = $msg;
+                                        $fromMemberCardIDA = $_MemberCards->getMemCardIDByCardNumber($oldcard);
+                                        foreach ($fromMemberCardIDA as $value) {
+                                            $fromMemberCardID = $value['MemberCardID'];
                                         }
+                                        $fromMemberCardID = $fromMemberCardID;
+                                        $toMemberCardIDA = $_MemberCards->getMemCardIDByCardNumber($newcard);
+                                        foreach ($toMemberCardIDA as $value) {
+                                            $toMemberCardID = $value['MemberCardID'];
+                                        }
+                                        $toMemberCardID = $toMemberCardID;
+                                        $isSuccess = true;
+                                        $_Log->logAPI(AuditFunctions::MARKETING_RED_CARD_TRANSFERRING, 'From Card: ' . $oldcard . ', Pts: ' . $carddetails["CurrentPoints"] . '; To Card: ' . $newcard . ', Pts: ' . $newcarddetailz["CurrentPoints"] . ', Success', $_SESSION['aID']);
+                                        $_MemberPointsTransferLog->logPointsTransfer($fromMemberCardID, $toMemberCardID, $lifetimepoints, $currentpoints, $redeemedpoints, $datecreated, $aid);
+                                        $profile->MID = '';
+                                        $profile->Name = '';
+                                        $profile->Birthdate = '';
+                                        $profile->Age = '';
+                                        $profile->Gender = '';
+                                        $profile->Status = '';
+                                        $msg = 'Red Card Transferring: Transaction Successful';
+                                        $profile->Msg = $msg;
                                     } else {
                                         $isSuccess = false;
                                         $_Log->logAPI(AuditFunctions::MARKETING_RED_CARD_TRANSFERRING, 'From Card: ' . $oldcard . ', Pts: ' . $currentpoints . '; To Card: ' . $newcard . ', Pts: ' . $newcarddetailz["CurrentPoints"] . ', Failed', $_SESSION['aID']);
@@ -485,7 +496,6 @@ if (isset($_POST['pager'])) {
                                         $profile->Msg = $msg;
                                     }
                                 } else {
-
                                     $isSuccess = false;
                                     $_Log->logAPI(AuditFunctions::MARKETING_RED_CARD_TRANSFERRING, 'From Card: ' . $oldcard . ', Pts: ' . $currentpoints . '; To Card: ' . $newcard . ', Pts: ' . $newcarddetailz["CurrentPoints"] . ', Failed', $_SESSION['aID']);
                                     $error = "Failed to transfer points";
@@ -500,68 +510,84 @@ if (isset($_POST['pager'])) {
                                     $msg = 'Red Card Transferring: Transaction Failed';
                                     $profile->Msg = $msg;
                                 }
+                            } else {
+
+                                $isSuccess = false;
+                                $_Log->logAPI(AuditFunctions::MARKETING_RED_CARD_TRANSFERRING, 'From Card: ' . $oldcard . ', Pts: ' . $currentpoints . '; To Card: ' . $newcard . ', Pts: ' . $newcarddetailz["CurrentPoints"] . ', Failed', $_SESSION['aID']);
+                                $error = "Failed to transfer points";
+                                $logger->logger($logdate, $logtype, $error);
+
+                                $profile->MID = '';
+                                $profile->Name = '';
+                                $profile->Birthdate = '';
+                                $profile->Age = '';
+                                $profile->Gender = '';
+                                $profile->Status = '';
+                                $msg = 'Red Card Transferring: Transaction Failed';
+                                $profile->Msg = $msg;
                             }
-                        } else if ($newcard == $oldcard) {
-
-                            $profile->MID = '';
-                            $profile->Name = '';
-                            $profile->Birthdate = '';
-                            $profile->Age = '';
-                            $profile->Gender = '';
-                            $profile->Status = '';
-                            $msg = 'Red Card Transferring:  Cannot transfer to same Card.';
-                            $profile->Msg = $msg;
-                        }else if ($status == 1) {
-
-                            $profile->MID = '';
-                            $profile->Name = '';
-                            $profile->Birthdate = '';
-                            $profile->Age = '';
-                            $profile->Gender = '';
-                            $profile->Status = '';
-                            $msg = 'Red Card Transferring:  Active Red Card is not allowed.';
-                            $profile->Msg = $msg;
-                        } else if ($status == 7 || $status == 8) {
-
-                            $profile->MID = '';
-                            $profile->Name = '';
-                            $profile->Birthdate = '';
-                            $profile->Age = '';
-                            $profile->Gender = '';
-                            $profile->Status = '';
-                            $msg = 'Red Card Transferring:  Red Card is already migrated.';
-                            $profile->Msg = $msg;
-                        } else if ($status == 5) {
-
-                            $profile->MID = '';
-                            $profile->Name = '';
-                            $profile->Birthdate = '';
-                            $profile->Age = '';
-                            $profile->Gender = '';
-                            $profile->Status = '';
-                            $msg = 'Red Card Transferring:  Temporary Card is not allowed.';
-                            $profile->Msg = $msg;
-                        } else if ($status == 9) {
-
-                            $profile->MID = '';
-                            $profile->Name = '';
-                            $profile->Birthdate = '';
-                            $profile->Age = '';
-                            $profile->Gender = '';
-                            $profile->Status = '';
-                            $msg = 'Red Card Transferring:  Red Card is banned.';
-                            $profile->Msg = $msg;
-                        } else if ($status == 2) {
-
-                            $profile->MID = '';
-                            $profile->Name = '';
-                            $profile->Birthdate = '';
-                            $profile->Age = '';
-                            $profile->Gender = '';
-                            $profile->Status = '';
-                            $msg = 'Red Card Transferring:  Card has already been deactivated.';
-                            $profile->Msg = $msg;
                         }
+                    } else if ($newcard == $oldcard) {
+
+                        $profile->MID = '';
+                        $profile->Name = '';
+                        $profile->Birthdate = '';
+                        $profile->Age = '';
+                        $profile->Gender = '';
+                        $profile->Status = '';
+                        $msg = 'Red Card Transferring:  Cannot transfer to same Card.';
+                        $profile->Msg = $msg;
+                    } else if ($status == 1) {
+
+                        $profile->MID = '';
+                        $profile->Name = '';
+                        $profile->Birthdate = '';
+                        $profile->Age = '';
+                        $profile->Gender = '';
+                        $profile->Status = '';
+                        $msg = 'Red Card Transferring:  Active Red Card is not allowed.';
+                        $profile->Msg = $msg;
+                    } else if ($status == 7 || $status == 8) {
+
+                        $profile->MID = '';
+                        $profile->Name = '';
+                        $profile->Birthdate = '';
+                        $profile->Age = '';
+                        $profile->Gender = '';
+                        $profile->Status = '';
+                        $msg = 'Red Card Transferring:  Red Card is already migrated.';
+                        $profile->Msg = $msg;
+                    } else if ($status == 5) {
+
+                        $profile->MID = '';
+                        $profile->Name = '';
+                        $profile->Birthdate = '';
+                        $profile->Age = '';
+                        $profile->Gender = '';
+                        $profile->Status = '';
+                        $msg = 'Red Card Transferring:  Temporary Card is not allowed.';
+                        $profile->Msg = $msg;
+                    } else if ($status == 9) {
+
+                        $profile->MID = '';
+                        $profile->Name = '';
+                        $profile->Birthdate = '';
+                        $profile->Age = '';
+                        $profile->Gender = '';
+                        $profile->Status = '';
+                        $msg = 'Red Card Transferring:  Red Card is banned.';
+                        $profile->Msg = $msg;
+                    } else if ($status == 2) {
+
+                        $profile->MID = '';
+                        $profile->Name = '';
+                        $profile->Birthdate = '';
+                        $profile->Age = '';
+                        $profile->Gender = '';
+                        $profile->Status = '';
+                        $msg = 'Red Card Transferring:  Card has already been deactivated.';
+                        $profile->Msg = $msg;
+                    }
                 } else if ($status == 1) {
 
                     $profile->MID = '';
@@ -655,109 +681,94 @@ if (isset($_POST['pager'])) {
                 $fromMemberCardID = $_MemberCards->getMemCardIDByCardNumber($oldcard);
                 $toMemberCardID = $_Cards->getMemCardIDByCardNumber($newcard);
 
-                    if ($status == 0 && $newcard != $oldcard) {
-                        if ($currentpoints < 0) {
-                            $isSuccess = false;
-                            $_Log->logAPI(AuditFunctions::MARKETING_RED_CARD_TRANSFERRING, 'From Card: ' . $oldcard . ', Pts: ' . $carddetails[0]["CurrentPoints"] . '; To Card: ' . $newcard . ', Pts: ' . $carddetails[0]["CurrentPoints"] . ', Failed', $_SESSION['aID']);
-                            $error = "Card has negative current points.";
-                            $logger->logger($logdate, $logtype, $error);
+                if ($status == 0 && $newcard != $oldcard) {
+                    if ($currentpoints < 0) {
+                        $isSuccess = false;
+                        $_Log->logAPI(AuditFunctions::MARKETING_RED_CARD_TRANSFERRING, 'From Card: ' . $oldcard . ', Pts: ' . $carddetails[0]["CurrentPoints"] . '; To Card: ' . $newcard . ', Pts: ' . $carddetails[0]["CurrentPoints"] . ', Failed', $_SESSION['aID']);
+                        $error = "Card has negative current points.";
+                        $logger->logger($logdate, $logtype, $error);
 
-                            $profile->MID = '';
-                            $profile->Name = '';
-                            $profile->Birthdate = '';
-                            $profile->Age = '';
-                            $profile->Gender = '';
-                            $profile->Status = '';
-                            $msg = 'Migration failed. Card has negative current points.';
-                            $profile->Msg = $msg;
+                        $profile->MID = '';
+                        $profile->Name = '';
+                        $profile->Birthdate = '';
+                        $profile->Age = '';
+                        $profile->Gender = '';
+                        $profile->Status = '';
+                        $msg = 'Migration failed. Card has negative current points.';
+                        $profile->Msg = $msg;
+                    } else {
+                        if ($lifetimepoints == '') {
+                            $lifetimepoints = 0;
                         } else {
-                            if ($lifetimepoints == '') {
-                                $lifetimepoints = 0;
-                            } else {
-                                $lifetimepoints = $lifetimepoints;
+                            $lifetimepoints = $lifetimepoints;
+                        }
+                        if ($currentpoints == '') {
+                            $currentpoints = 0;
+                        } else {
+                            $currentpoints = $currentpoints;
+                        }
+                        if ($redeemedpoints == '') {
+                            $redeemedpoints = 0;
+                        } else {
+                            $redeemedpoints = $redeemedpoints;
+                        }
+
+                        $cardidB = $_Cards->getCardDetails($newcard);
+                        foreach ($cardidB as $value) {
+                            $cardid2 = $value['CardID'];
+                        }
+                        $cardid2 = $cardid2;
+
+                        $cardtypeid1 = $_Cards->getCardDetails($oldcard);
+                        foreach ($cardtypeid1 as $value) {
+                            $cardtypeid1 = $value['CardTypeID'];
+                        }
+                        $cardtypeid1 = $cardtypeid1;
+                        $_MemberCards->transferMemberCard($MID, $cardid2, $siteid, $lifetimepoints, $currentpoints, $redeemedpoints, $newcardnumber, $oldcard, $status1, $status2, $aid, $datecreated, $cardtypeid1);
+
+                        if (!App::HasError()) {
+
+                            $cardidA = $_Cards->getCardDetails($oldcard);
+                            foreach ($cardidA as $value) {
+                                $cardid1 = $value['CardID'];
                             }
-                            if ($currentpoints == '') {
-                                $currentpoints = 0;
-                            } else {
-                                $currentpoints = $currentpoints;
-                            }
-                            if ($redeemedpoints == '') {
-                                $redeemedpoints = 0;
-                            } else {
-                                $redeemedpoints = $redeemedpoints;
-                            }
+                            $cardid1 = $cardid1;
+                            $status1 = CardStatus::NEW_MIGRATED;
 
                             $cardidB = $_Cards->getCardDetails($newcard);
                             foreach ($cardidB as $value) {
                                 $cardid2 = $value['CardID'];
                             }
                             $cardid2 = $cardid2;
-                            
-                            $cardtypeid1 = $_Cards->getCardDetails($oldcard);
-                                foreach ($cardtypeid1 as $value) {
-                                    $cardtypeid1 = $value['CardTypeID'];
-                                }
-                                $cardtypeid1 = $cardtypeid1;
-                            $_MemberCards->transferMemberCard($MID, $cardid2, $siteid, $lifetimepoints, $currentpoints, $redeemedpoints, $newcardnumber, $oldcard, $status1, $status2, $aid, $datecreated, $cardtypeid1);
+                            $status2 = CardStatus::ACTIVE;
+
+                            $_Cards->updateCardsStatus2($cardid1, $cardid2, $status1, $status2, $aid, $datecreated);
 
                             if (!App::HasError()) {
-
-                                $cardidA = $_Cards->getCardDetails($oldcard);
-                                    foreach ($cardidA as $value) {
-                                        $cardid1 = $value['CardID'];
-                                    }
-                                    $cardid1 = $cardid1;
-                                    $status1 = CardStatus::NEW_MIGRATED;
-
-                                    $cardidB = $_Cards->getCardDetails($newcard);
-                                    foreach ($cardidB as $value) {
-                                        $cardid2 = $value['CardID'];
-                                    }
-                                    $cardid2 = $cardid2;
-                                    $status2 = CardStatus::ACTIVE;
-
-                                $_Cards->updateCardsStatus2($cardid1, $cardid2, $status1, $status2, $aid, $datecreated);
-
+                                $dateupdated = $datecreated;
+                                $_MemberCards->updateMemberCardsStatus($cardid1, $cardid2, $status1, $status2, $aid, $dateupdated);
                                 if (!App::HasError()) {
-                                    $dateupdated = $datecreated;
-                                    $_MemberCards->updateMemberCardsStatus($cardid1, $cardid2, $status1, $status2, $aid, $dateupdated);
-                                    if (!App::HasError()) {
-                                        $fromMemberCardIDA = $_MemberCards->getMemCardIDByCardNumber($oldcard);
-                                        foreach ($fromMemberCardIDA as $value) {
-                                            $fromMemberCardID = $value['MemberCardID'];
-                                        }
-                                        $fromMemberCardID = $fromMemberCardID;
-                                        $toMemberCardIDA = $_MemberCards->getMemCardIDByCardNumber($newcard);
-                                        foreach ($toMemberCardIDA as $value) {
-                                            $toMemberCardID = $value['MemberCardID'];
-                                        }
-                                        $toMemberCardID = $toMemberCardID;
-                                        $isSuccess = true;
-                                        $_Log->logAPI(AuditFunctions::MARKETING_RED_CARD_TRANSFERRING, 'From Card: ' . $oldcard . ', Pts: ' . $currentpoints . '; To Card: ' . $newcard . ', Pts: 0, Success', $_SESSION['aID']);
-                                        $_MemberPointsTransferLog->logPointsTransfer($fromMemberCardID, $toMemberCardID, $lifetimepoints, $currentpoints, $redeemedpoints, $datecreated, $aid);
-                                        $profile->MID = '';
-                                        $profile->Name = '';
-                                        $profile->Birthdate = '';
-                                        $profile->Age = '';
-                                        $profile->Gender = '';
-                                        $profile->Status = '';
-                                        $msg = 'Red Card Transferring: Transaction Successful';
-                                        $profile->Msg = $msg;
-                                    } else {
-                                        $isSuccess = false;
-                                        $_Log->logAPI(AuditFunctions::MARKETING_RED_CARD_TRANSFERRING, 'From Card: ' . $oldcard . ', Pts: ' . $currentpoints . '; To Card: ' . $newcard . ', Pts: 0, Failed', $_SESSION['aID']);
-                                        $error = "Failed to transfer points";
-                                        $logger->logger($logdate, $logtype, $error);
-
-                                        $profile->MID = '';
-                                        $profile->Name = '';
-                                        $profile->Birthdate = '';
-                                        $profile->Age = '';
-                                        $profile->Gender = '';
-                                        $profile->Status = '';
-                                        $msg = 'Red Card Transferring: Transaction Failed';
-                                        $profile->Msg = $msg;
+                                    $fromMemberCardIDA = $_MemberCards->getMemCardIDByCardNumber($oldcard);
+                                    foreach ($fromMemberCardIDA as $value) {
+                                        $fromMemberCardID = $value['MemberCardID'];
                                     }
+                                    $fromMemberCardID = $fromMemberCardID;
+                                    $toMemberCardIDA = $_MemberCards->getMemCardIDByCardNumber($newcard);
+                                    foreach ($toMemberCardIDA as $value) {
+                                        $toMemberCardID = $value['MemberCardID'];
+                                    }
+                                    $toMemberCardID = $toMemberCardID;
+                                    $isSuccess = true;
+                                    $_Log->logAPI(AuditFunctions::MARKETING_RED_CARD_TRANSFERRING, 'From Card: ' . $oldcard . ', Pts: ' . $currentpoints . '; To Card: ' . $newcard . ', Pts: 0, Success', $_SESSION['aID']);
+                                    $_MemberPointsTransferLog->logPointsTransfer($fromMemberCardID, $toMemberCardID, $lifetimepoints, $currentpoints, $redeemedpoints, $datecreated, $aid);
+                                    $profile->MID = '';
+                                    $profile->Name = '';
+                                    $profile->Birthdate = '';
+                                    $profile->Age = '';
+                                    $profile->Gender = '';
+                                    $profile->Status = '';
+                                    $msg = 'Red Card Transferring: Transaction Successful';
+                                    $profile->Msg = $msg;
                                 } else {
                                     $isSuccess = false;
                                     $_Log->logAPI(AuditFunctions::MARKETING_RED_CARD_TRANSFERRING, 'From Card: ' . $oldcard . ', Pts: ' . $currentpoints . '; To Card: ' . $newcard . ', Pts: 0, Failed', $_SESSION['aID']);
@@ -788,77 +799,92 @@ if (isset($_POST['pager'])) {
                                 $msg = 'Red Card Transferring: Transaction Failed';
                                 $profile->Msg = $msg;
                             }
+                        } else {
+                            $isSuccess = false;
+                            $_Log->logAPI(AuditFunctions::MARKETING_RED_CARD_TRANSFERRING, 'From Card: ' . $oldcard . ', Pts: ' . $currentpoints . '; To Card: ' . $newcard . ', Pts: 0, Failed', $_SESSION['aID']);
+                            $error = "Failed to transfer points";
+                            $logger->logger($logdate, $logtype, $error);
+
+                            $profile->MID = '';
+                            $profile->Name = '';
+                            $profile->Birthdate = '';
+                            $profile->Age = '';
+                            $profile->Gender = '';
+                            $profile->Status = '';
+                            $msg = 'Red Card Transferring: Transaction Failed';
+                            $profile->Msg = $msg;
                         }
-                    } else if ($newcard == $oldcard) {
-
-                        $profile->MID = '';
-                        $profile->Name = '';
-                        $profile->Birthdate = '';
-                        $profile->Age = '';
-                        $profile->Gender = '';
-                        $profile->Status = '';
-                        $msg = 'Red Card Transferring:  Cannot transfer to same Card.';
-                        $profile->Msg = $msg;
-                    } else if ($status == 1) {
-
-                        $profile->MID = '';
-                        $profile->Name = '';
-                        $profile->Birthdate = '';
-                        $profile->Age = '';
-                        $profile->Gender = '';
-                        $profile->Status = '';
-                        $msg = 'Red Card Transferring:  Active Red Card is not allowed.';
-                        $profile->Msg = $msg;
-                    } else if ($status == 7 || $status == 8) {
-
-                        $profile->MID = '';
-                        $profile->Name = '';
-                        $profile->Birthdate = '';
-                        $profile->Age = '';
-                        $profile->Gender = '';
-                        $profile->Status = '';
-                        $msg = 'Red Card Transferring:  Red Card is already migrated.';
-                        $profile->Msg = $msg;
-                    } else if ($status == 5) {
-
-                            $profile->MID = '';
-                            $profile->Name = '';
-                            $profile->Birthdate = '';
-                            $profile->Age = '';
-                            $profile->Gender = '';
-                            $profile->Status = '';
-                            $msg = 'Red Card Transferring:  Temporary Card is not allowed.';
-                            $profile->Msg = $msg;
-                        } else if ($status == 9) {
-
-                            $profile->MID = '';
-                            $profile->Name = '';
-                            $profile->Birthdate = '';
-                            $profile->Age = '';
-                            $profile->Gender = '';
-                            $profile->Status = '';
-                            $msg = 'Red Card Transferring:  Red Card is banned.';
-                            $profile->Msg = $msg;
-                        } else if ($status == 2) {
-
-                        $profile->MID = '';
-                        $profile->Name = '';
-                        $profile->Birthdate = '';
-                        $profile->Age = '';
-                        $profile->Gender = '';
-                        $profile->Status = '';
-                        $msg = 'Red Card Transferring:  Card has already been deactivated.';
-                        $profile->Msg = $msg;
-                    } else {
-                        $profile->MID = '';
-                        $profile->Name = '';
-                        $profile->Birthdate = '';
-                        $profile->Age = '';
-                        $profile->Gender = '';
-                        $profile->Status = '';
-                        $msg = 'Red Card Transferring: Invalid Card';
-                        $profile->Msg = $msg;
                     }
+                } else if ($newcard == $oldcard) {
+
+                    $profile->MID = '';
+                    $profile->Name = '';
+                    $profile->Birthdate = '';
+                    $profile->Age = '';
+                    $profile->Gender = '';
+                    $profile->Status = '';
+                    $msg = 'Red Card Transferring:  Cannot transfer to same Card.';
+                    $profile->Msg = $msg;
+                } else if ($status == 1) {
+
+                    $profile->MID = '';
+                    $profile->Name = '';
+                    $profile->Birthdate = '';
+                    $profile->Age = '';
+                    $profile->Gender = '';
+                    $profile->Status = '';
+                    $msg = 'Red Card Transferring:  Active Red Card is not allowed.';
+                    $profile->Msg = $msg;
+                } else if ($status == 7 || $status == 8) {
+
+                    $profile->MID = '';
+                    $profile->Name = '';
+                    $profile->Birthdate = '';
+                    $profile->Age = '';
+                    $profile->Gender = '';
+                    $profile->Status = '';
+                    $msg = 'Red Card Transferring:  Red Card is already migrated.';
+                    $profile->Msg = $msg;
+                } else if ($status == 5) {
+
+                    $profile->MID = '';
+                    $profile->Name = '';
+                    $profile->Birthdate = '';
+                    $profile->Age = '';
+                    $profile->Gender = '';
+                    $profile->Status = '';
+                    $msg = 'Red Card Transferring:  Temporary Card is not allowed.';
+                    $profile->Msg = $msg;
+                } else if ($status == 9) {
+
+                    $profile->MID = '';
+                    $profile->Name = '';
+                    $profile->Birthdate = '';
+                    $profile->Age = '';
+                    $profile->Gender = '';
+                    $profile->Status = '';
+                    $msg = 'Red Card Transferring:  Red Card is banned.';
+                    $profile->Msg = $msg;
+                } else if ($status == 2) {
+
+                    $profile->MID = '';
+                    $profile->Name = '';
+                    $profile->Birthdate = '';
+                    $profile->Age = '';
+                    $profile->Gender = '';
+                    $profile->Status = '';
+                    $msg = 'Red Card Transferring:  Card has already been deactivated.';
+                    $profile->Msg = $msg;
+                } else {
+                    $profile->MID = '';
+                    $profile->Name = '';
+                    $profile->Birthdate = '';
+                    $profile->Age = '';
+                    $profile->Gender = '';
+                    $profile->Status = '';
+                    $msg = 'Red Card Transferring: Invalid Card';
+                    $profile->Msg = $msg;
+                }
 
                 echo json_encode($profile);
 
