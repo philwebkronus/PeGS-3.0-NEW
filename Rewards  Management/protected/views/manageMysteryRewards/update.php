@@ -775,21 +775,21 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
             <span style="font-size: 12px; height: 10px; width: 100%;"><b>Allowed Image Size :</b> <i> 300 KB and Below.</i></span><br/>
             <div id="balancer"></div>
             <iframe id="thblimitedframe"
-                    src="<?php echo Yii::app()->createUrl('manageMysteryRewards/thumbnailLimited'); ?>" 
+                    src="<?php echo Yii::app()->createUrl('manageMysteryRewards/thumbnailLimited') . '?var=' . mt_rand(1000, 9999); ?>" 
                     style="height: 248px; width: 160px; overflow: hidden; border: none; background: #FFFFFF;" >
             </iframe>
             <?php echo CHtml::hiddenField('thblimitedphoto', '', array('id' => 'thblimitedphoto')); ?>
             <?php echo CHtml::hiddenField('thblimitedpicname', '', array('id' => 'thblimitedpicname')); ?>
             <?php echo CHtml::hiddenField('thblimitedpath', '', array('id' => 'thblimitedpath')); ?>
             <iframe id="thboutofstockframe"
-                    src="<?php echo Yii::app()->createUrl('manageMysteryRewards/thumbnailOutofstock'); ?>" 
+                    src="<?php echo Yii::app()->createUrl('manageMysteryRewards/thumbnailOutofstock') . '?var=' . mt_rand(1000, 9999); ?>" 
                     style="height: 248px; width: 160px; overflow: hidden; border: none; background: #FFFFFF;">
             </iframe>
             <?php echo CHtml::hiddenField('thboutofstockphoto', '',array('id' => 'thboutofstockphoto')); ?>
             <?php echo CHtml::hiddenField('thboutofstockpicname', '',array('id' => 'thboutofstockpicname')); ?>
             <?php echo CHtml::hiddenField('thboutofstockpath', '',array('id' => 'thboutofstockpath')); ?>
             <iframe id="ecouponframe"
-                    src="<?php echo Yii::app()->createUrl('manageMysteryRewards/eCoupon'); ?>" 
+                    src="<?php echo Yii::app()->createUrl('manageMysteryRewards/eCoupon') . '?var=' . mt_rand(1000, 9999); ?>" 
                     style="height: 248px; width: 160px; overflow: hidden; border: none; background: #FFFFFF;">
             </iframe>
             <?php echo CHtml::hiddenField('ecouponphoto', '',array('id' => 'ecouponphoto')); ?>
@@ -801,21 +801,21 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
         <td colspan="3">
             <div id="balancer"></div>
             <iframe id="lmlimitedframe"
-                    src="<?php echo Yii::app()->createUrl('manageMysteryRewards/learnMoreLimited'); ?>" 
+                    src="<?php echo Yii::app()->createUrl('manageMysteryRewards/learnMoreLimited') . '?var=' . mt_rand(1000, 9999); ?>" 
                     style="height: 248px; width: 160px; overflow: hidden; border: none; background: #FFFFFF;">
             </iframe>
             <?php echo CHtml::hiddenField('lmlimitedphoto', '', array('id' => 'lmlimitedphoto')); ?>
             <?php echo CHtml::hiddenField('lmlimitedpicname', '', array('id' => 'lmlimitedpicname')); ?>
             <?php echo CHtml::hiddenField('lmlimitedpath', '', array('id' => 'lmlimitedpath')); ?>
             <iframe id="lmoutofstockframe"
-                    src="<?php echo Yii::app()->createUrl('manageMysteryRewards/learnMoreOutofstock'); ?>" 
+                    src="<?php echo Yii::app()->createUrl('manageMysteryRewards/learnMoreOutofstock') . '?var=' . mt_rand(1000, 9999); ?>" 
                     style="height: 248px; width: 160px; overflow: hidden; border: none; background: #FFFFFF;">
             </iframe>
             <?php echo CHtml::hiddenField('lmoutofstockphoto', '', array('id' => 'lmoutofstockphoto')); ?>
             <?php echo CHtml::hiddenField('lmoutofstockpicname', '', array('id' => 'lmoutofstockpicname')); ?>
             <?php echo CHtml::hiddenField('lmoutofstockpath', '', array('id' => 'lmoutofstockpath')); ?>
             <iframe id="websliderframe"
-                    src="<?php echo Yii::app()->createUrl('manageMysteryRewards/websiteSlider'); ?>" 
+                    src="<?php echo Yii::app()->createUrl('manageMysteryRewards/websiteSlider') . '?var=' . mt_rand(1000, 9999); ?>" 
                     style="height: 248px; width: 160px; overflow: hidden; border: none; background: #FFFFFF;">
             </iframe>
             <?php echo CHtml::hiddenField('websliderphoto', '',array('id' => 'websliderphoto')); ?>

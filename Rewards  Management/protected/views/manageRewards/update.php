@@ -838,14 +838,14 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
             <?php echo CHtml::hiddenField('thblimitedpicname', '', array('id' => 'thblimitedpicname')); ?>
             <?php echo CHtml::hiddenField('thblimitedpath', '', array('id' => 'thblimitedpath')); ?>
             <iframe id="thboutofstockframe"
-                    src="<?php echo Yii::app()->createUrl('manageRewards/thumbnailOutofstock') . '?var=' . mt_rand(1000, 9999);; ?>" 
+                    src="<?php echo Yii::app()->createUrl('manageRewards/thumbnailOutofstock') . '?var=' . mt_rand(1000, 9999); ?>" 
                     style="height: 248px; width: 160px; overflow: hidden; border: none; background: #FFFFFF;">
             </iframe>
             <?php echo CHtml::hiddenField('thboutofstockphoto', '',array('id' => 'thboutofstockphoto')); ?>
             <?php echo CHtml::hiddenField('thboutofstockpicname', '',array('id' => 'thboutofstockpicname')); ?>
             <?php echo CHtml::hiddenField('thboutofstockpath', '',array('id' => 'thboutofstockpath')); ?>
             <iframe id="ecouponframe"
-                    src="<?php echo Yii::app()->createUrl('manageRewards/eCoupon') . '?var=' . mt_rand(1000, 9999);; ?>" 
+                    src="<?php echo Yii::app()->createUrl('manageRewards/eCoupon') . '?var=' . mt_rand(1000, 9999); ?>" 
                     style="height: 248px; width: 160px; overflow: hidden; border: none; background: #FFFFFF;">
             </iframe>
             <?php echo CHtml::hiddenField('ecouponphoto', '',array('id' => 'ecouponphoto')); ?>
@@ -857,21 +857,21 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
         <td colspan="3">
             <div id="balancer"></div>
             <iframe id="lmlimitedframe"
-                    src="<?php echo Yii::app()->createUrl('manageRewards/learnMoreLimited') . '?var=' . mt_rand(1000, 9999);; ?>" 
+                    src="<?php echo Yii::app()->createUrl('manageRewards/learnMoreLimited') . '?var=' . mt_rand(1000, 9999); ?>" 
                     style="height: 248px; width: 160px; overflow: hidden; border: none; background: #FFFFFF;">
             </iframe>
             <?php echo CHtml::hiddenField('lmlimitedphoto', '', array('id' => 'lmlimitedphoto')); ?>
             <?php echo CHtml::hiddenField('lmlimitedpicname', '', array('id' => 'lmlimitedpicname')); ?>
             <?php echo CHtml::hiddenField('lmlimitedpath', '', array('id' => 'lmlimitedpath')); ?>
             <iframe id="lmoutofstockframe"
-                    src="<?php echo Yii::app()->createUrl('manageRewards/learnMoreOutofstock') . '?var=' . mt_rand(1000, 9999);; ?>" 
+                    src="<?php echo Yii::app()->createUrl('manageRewards/learnMoreOutofstock') . '?var=' . mt_rand(1000, 9999); ?>" 
                     style="height: 248px; width: 160px; overflow: hidden; border: none; background: #FFFFFF;">
             </iframe>
             <?php echo CHtml::hiddenField('lmoutofstockphoto', '', array('id' => 'lmoutofstockphoto')); ?>
             <?php echo CHtml::hiddenField('lmoutofstockpicname', '', array('id' => 'lmoutofstockpicname')); ?>
             <?php echo CHtml::hiddenField('lmoutofstockpath', '', array('id' => 'lmoutofstockpath')); ?>
             <iframe id="websliderframe"
-                    src="<?php echo Yii::app()->createUrl('manageRewards/websiteSlider') . '?var=' . mt_rand(1000, 9999);; ?>" 
+                    src="<?php echo Yii::app()->createUrl('manageRewards/websiteSlider') . '?var=' . mt_rand(1000, 9999); ?>" 
                     style="height: 248px; width: 160px; overflow: hidden; border: none; background: #FFFFFF;">
             </iframe>
             <?php echo CHtml::hiddenField('websliderphoto', '',array('id' => 'websliderphoto')); ?>

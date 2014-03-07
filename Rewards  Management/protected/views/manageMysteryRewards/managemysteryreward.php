@@ -600,31 +600,37 @@ tinyMCE.init({
                     $("#availableitemcount").val(itemcount.toString().replace(/,/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                     
                     if(data.thblimited != ""){
+                        document.getElementById("thblimitedframe").contentDocument.location.reload(true);
                         $("#thblimitedphoto").val(data.thblimited);
                         $("#thblimitedpicname").val(data.thblimited);
                         $("#thblimitedpath").val(data.ImagePath+data.thblimited);
                     }
                     if(data.thboutofstock != ""){
+                        document.getElementById("thboutofstockframe").contentDocument.location.reload(true);
                         $("#thboutofstockphoto").val(data.thboutofstock);
                         $("#thboutofstockpicname").val(data.thboutofstock);
                         $("#thboutofstockpath").val(data.ImagePath+data.thboutofstock);
                     }
                     if(data.ecoupon != ""){
+                        document.getElementById("ecouponframe").contentDocument.location.reload(true);
                         $("#ecouponphoto").val(data.ecoupon);
                         $("#ecouponpicname").val(data.ecoupon);
                         $("#ecouponpath").val(data.ImagePath+data.ecoupon);
                     }
                     if(data.lmlimited != ""){
+                        document.getElementById("lmlimitedframe").contentDocument.location.reload(true);
                         $("#lmlimitedphoto").val(data.lmlimited);
                         $("#lmlimitedpicname").val(data.lmlimited);
                         $("#lmlimitedpath").val(data.ImagePath+data.lmlimited);
                     }
                     if(data.lmoutofstock != ""){
+                        document.getElementById("lmoutofstockframe").contentDocument.location.reload(true);
                         $("#lmoutofstockphoto").val(data.lmoutofstock);
                         $("#lmoutofstockpicname").val(data.lmoutofstock);
                         $("#lmoutofstockpath").val(data.ImagePath+data.lmoutofstock);
                     }
                     if(data.webslider != ""){
+                        document.getElementById("websliderframe").contentDocument.location.reload(true);
                         $("#websliderphoto").val(data.webslider);
                         $("#websliderpicname").val(data.webslider);
                         $("#websliderpath").val(data.ImagePath+data.webslider);
