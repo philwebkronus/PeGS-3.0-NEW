@@ -224,6 +224,10 @@ if (isset($_SESSION['CardRed'])) {
                 $('#playerprofile').hide();
                 $('#results').hide();
                 $('#pagination').hide();
+            } else {
+                $("#txtUserName").val("");
+                $("#txtCardNumber").val("");
+                $("#txtNewCardNumber").val("");
             }
         });
 
