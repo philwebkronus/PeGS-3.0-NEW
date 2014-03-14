@@ -1,0 +1,42 @@
+<?php
+Mirage::loadComponents(array('FrontendController'));
+/**
+ * Description of ViewTransactionController
+ *
+ * @author Bryan Salazar
+ */
+class ViewTransactionController extends FrontendController {
+    public function overviewAction()
+    {
+        $this->render('viewtransaction_overview');
+    }
+    
+    public function viewTransactionAction()
+    {
+        if(!$this->isAjaxRequest()) {
+            Mirage::app()->error404();
+        }
+        Mirage::loadModels(array('TransactionDetailsModel'));
+        $transactionDetailsModel = new TransactionDetailsModel();
+        $limit = $_GET['limit'];
+        $createdBy = $_SESSION['accID'];
+        $start_date = $_GET['date'];
+        $datenow = date('Y-m-d');
+        $time = date('H:i:s');
+        $cutoff = Mirage::app()->param['cut_off'];
+        //if time was less than the cutoff
+        if($start_date == $datenow)
+        {
+            //if date is today, check the cutoff time;
+            if($time < $cutoff)
+            {
+                //get the -1 day
+                $start_date = minusOneDay($start_date); 
+            }
+        }
+        $end_date = addOneDay($start_date);
+        $rows = $transactionDetailsModel->getTransactionDetails($createdBy, $limit,$start_date,$end_date);
+        echo json_encode(array('trans_details'=>$rows,'site_code'=>$_SESSION['site_code']));
+        Mirage::app()->end();
+    }
+}
