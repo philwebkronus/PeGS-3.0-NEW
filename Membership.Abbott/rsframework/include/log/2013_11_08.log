@@ -1,0 +1,4 @@
+[08-Nov-2013 09:30:33] PHP Fatal error:  Call to undefined method Members::getVIP() in /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php on line 89
+[08-Nov-2013 09:30:33] PHP Stack trace:
+[08-Nov-2013 09:30:33] PHP   1. {main}() /var/www/membership/membership.rewards/API/cardinquiry.php:0
+[08-Nov-2013 09:30:33] PHP   2. GetCardInfoAPI->GetCardInfo() /var/www/membership/membership.rewards/API/cardinquiry.php:201

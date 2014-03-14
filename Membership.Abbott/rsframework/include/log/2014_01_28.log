@@ -1,0 +1,127 @@
+[28-Jan-2014 13:24:02] [REGISTRATION ERROR] Failed to send SMS: Invalid Mobile Number [MID: 258].
+[28-Jan-2014 13:28:37] PHP Notice:  Undefined property: PlayTechAPI::$_error in /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/PlayTechAPI.class.php on line 128
+[28-Jan-2014 13:28:37] PHP Stack trace:
+[28-Jan-2014 13:28:37] PHP   1. {main}() /var/www/membership/membership.rewards/API/cardinquiry.php:0
+[28-Jan-2014 13:28:37] PHP   2. GetCardInfoAPI->GetCardInfo() /var/www/membership/membership.rewards/API/cardinquiry.php:210
+[28-Jan-2014 13:28:37] PHP   3. ActivateMember->Migrate() /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php:263
+[28-Jan-2014 13:28:37] PHP   4. CasinoAPI->createAccount() /var/www/membership/membership.rewards/rsframework/include/Modules/Membership/classes/ActivateMember.class.php:249
+[28-Jan-2014 13:28:37] PHP   5. CasinoAPIHandler->CreateNewAccount() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/CasinoAPI.class.php:251
+[28-Jan-2014 13:28:37] PHP   6. PlayTechAPIWrapper->NewPlayer() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/CasinoAPIHandler.class.php:154
+[28-Jan-2014 13:28:37] PHP   7. PlayTechAPI->GetError() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/PlayTechAPIWrapper.class.php:56
+[28-Jan-2014 13:28:37] PHP Notice:  Undefined index: URI_PID in /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/CasinoAPIHandler.class.php on line 52
+[28-Jan-2014 13:28:37] PHP Stack trace:
+[28-Jan-2014 13:28:37] PHP   1. {main}() /var/www/membership/membership.rewards/API/cardinquiry.php:0
+[28-Jan-2014 13:28:37] PHP   2. GetCardInfoAPI->GetCardInfo() /var/www/membership/membership.rewards/API/cardinquiry.php:210
+[28-Jan-2014 13:28:37] PHP   3. ActivateMember->Migrate() /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php:263
+[28-Jan-2014 13:28:37] PHP   4. CasinoAPI->createAccount() /var/www/membership/membership.rewards/rsframework/include/Modules/Membership/classes/ActivateMember.class.php:179
+[28-Jan-2014 13:28:37] PHP   5. CasinoAPI->configureRTG() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/CasinoAPI.class.php:236
+[28-Jan-2014 13:28:37] PHP   6. CasinoAPIHandler->__construct() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/CasinoAPI.class.php:70
+[28-Jan-2014 13:28:37] PHP Notice:  Undefined index: APIType in /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/CasinoAPIHandler.class.php on line 54
+[28-Jan-2014 13:28:37] PHP Stack trace:
+[28-Jan-2014 13:28:37] PHP   1. {main}() /var/www/membership/membership.rewards/API/cardinquiry.php:0
+[28-Jan-2014 13:28:37] PHP   2. GetCardInfoAPI->GetCardInfo() /var/www/membership/membership.rewards/API/cardinquiry.php:210
+[28-Jan-2014 13:28:37] PHP   3. ActivateMember->Migrate() /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php:263
+[28-Jan-2014 13:28:37] PHP   4. CasinoAPI->createAccount() /var/www/membership/membership.rewards/rsframework/include/Modules/Membership/classes/ActivateMember.class.php:179
+[28-Jan-2014 13:28:37] PHP   5. CasinoAPI->configureRTG() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/CasinoAPI.class.php:236
+[28-Jan-2014 13:28:37] PHP   6. CasinoAPIHandler->__construct() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/CasinoAPI.class.php:70
+[28-Jan-2014 13:28:37] PHP Notice:  Undefined variable: config in /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/CasinoAPI.class.php on line 183
+[28-Jan-2014 13:28:37] PHP Stack trace:
+[28-Jan-2014 13:28:37] PHP   1. {main}() /var/www/membership/membership.rewards/API/cardinquiry.php:0
+[28-Jan-2014 13:28:37] PHP   2. GetCardInfoAPI->GetCardInfo() /var/www/membership/membership.rewards/API/cardinquiry.php:210
+[28-Jan-2014 13:28:37] PHP   3. ActivateMember->Migrate() /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php:263
+[28-Jan-2014 13:28:37] PHP   4. CasinoAPI->createAccount() /var/www/membership/membership.rewards/rsframework/include/Modules/Membership/classes/ActivateMember.class.php:179
+[28-Jan-2014 13:28:37] PHP   5. CasinoAPI->getAllData() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/CasinoAPI.class.php:222
+[28-Jan-2014 13:28:37] PHP Notice:  Undefined offset: 18 in /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/CasinoAPI.class.php on line 26
+[28-Jan-2014 13:28:37] PHP Stack trace:
+[28-Jan-2014 13:28:37] PHP   1. {main}() /var/www/membership/membership.rewards/API/cardinquiry.php:0
+[28-Jan-2014 13:28:37] PHP   2. GetCardInfoAPI->GetCardInfo() /var/www/membership/membership.rewards/API/cardinquiry.php:210
+[28-Jan-2014 13:28:37] PHP   3. ActivateMember->Migrate() /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php:263
+[28-Jan-2014 13:28:37] PHP   4. CasinoAPI->createAccount() /var/www/membership/membership.rewards/rsframework/include/Modules/Membership/classes/ActivateMember.class.php:179
+[28-Jan-2014 13:28:37] PHP   5. CasinoAPI->configureRTG() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/CasinoAPI.class.php:236
+[28-Jan-2014 13:28:37] PHP Notice:  Undefined index: URI_PID in /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/CasinoAPIHandler.class.php on line 52
+[28-Jan-2014 13:28:37] PHP Stack trace:
+[28-Jan-2014 13:28:37] PHP   1. {main}() /var/www/membership/membership.rewards/API/cardinquiry.php:0
+[28-Jan-2014 13:28:37] PHP   2. GetCardInfoAPI->GetCardInfo() /var/www/membership/membership.rewards/API/cardinquiry.php:210
+[28-Jan-2014 13:28:37] PHP   3. ActivateMember->Migrate() /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php:263
+[28-Jan-2014 13:28:37] PHP   4. CasinoAPI->createAccount() /var/www/membership/membership.rewards/rsframework/include/Modules/Membership/classes/ActivateMember.class.php:179
+[28-Jan-2014 13:28:37] PHP   5. CasinoAPI->configureRTG() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/CasinoAPI.class.php:236
+[28-Jan-2014 13:28:37] PHP   6. CasinoAPIHandler->__construct() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/CasinoAPI.class.php:70
+[28-Jan-2014 13:28:37] PHP Notice:  Undefined index: APIType in /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/CasinoAPIHandler.class.php on line 54
+[28-Jan-2014 13:28:37] PHP Stack trace:
+[28-Jan-2014 13:28:37] PHP   1. {main}() /var/www/membership/membership.rewards/API/cardinquiry.php:0
+[28-Jan-2014 13:28:37] PHP   2. GetCardInfoAPI->GetCardInfo() /var/www/membership/membership.rewards/API/cardinquiry.php:210
+[28-Jan-2014 13:28:37] PHP   3. ActivateMember->Migrate() /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php:263
+[28-Jan-2014 13:28:37] PHP   4. CasinoAPI->createAccount() /var/www/membership/membership.rewards/rsframework/include/Modules/Membership/classes/ActivateMember.class.php:179
+[28-Jan-2014 13:28:37] PHP   5. CasinoAPI->configureRTG() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/CasinoAPI.class.php:236
+[28-Jan-2014 13:28:37] PHP   6. CasinoAPIHandler->__construct() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/CasinoAPI.class.php:70
+[28-Jan-2014 13:28:37] PHP Warning:  Cannot modify header information - headers already sent by (output started at /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/CasinoAPIHandler.class.php:52) in /var/www/membership/membership.rewards/rsframework/include/core/JSONAPIResponse.class.php on line 21
+[28-Jan-2014 13:28:37] PHP Stack trace:
+[28-Jan-2014 13:28:37] PHP   1. {main}() /var/www/membership/membership.rewards/API/cardinquiry.php:0
+[28-Jan-2014 13:28:37] PHP   2. JSONAPIResponse->_sendResponse() /var/www/membership/membership.rewards/API/cardinquiry.php:211
+[28-Jan-2014 13:28:37] PHP   3. header() /var/www/membership/membership.rewards/rsframework/include/core/JSONAPIResponse.class.php:21
+[28-Jan-2014 13:28:37] PHP Warning:  Cannot modify header information - headers already sent by (output started at /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/CasinoAPIHandler.class.php:52) in /var/www/membership/membership.rewards/rsframework/include/core/JSONAPIResponse.class.php on line 23
+[28-Jan-2014 13:28:37] PHP Stack trace:
+[28-Jan-2014 13:28:37] PHP   1. {main}() /var/www/membership/membership.rewards/API/cardinquiry.php:0
+[28-Jan-2014 13:28:37] PHP   2. JSONAPIResponse->_sendResponse() /var/www/membership/membership.rewards/API/cardinquiry.php:211
+[28-Jan-2014 13:28:37] PHP   3. header() /var/www/membership/membership.rewards/rsframework/include/core/JSONAPIResponse.class.php:23
+[28-Jan-2014 13:41:34] [REGISTRATION ERROR] Failed to send SMS: Invalid Mobile Number [MID: 259].
+[28-Jan-2014 13:42:34] PHP Notice:  Undefined property: PlayTechAPI::$_error in /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/PlayTechAPI.class.php on line 128
+[28-Jan-2014 13:42:34] PHP Stack trace:
+[28-Jan-2014 13:42:34] PHP   1. {main}() /var/www/membership/membership.rewards/API/cardinquiry.php:0
+[28-Jan-2014 13:42:34] PHP   2. GetCardInfoAPI->GetCardInfo() /var/www/membership/membership.rewards/API/cardinquiry.php:210
+[28-Jan-2014 13:42:34] PHP   3. ActivateMember->Migrate() /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php:263
+[28-Jan-2014 13:42:34] PHP   4. CasinoAPI->createAccount() /var/www/membership/membership.rewards/rsframework/include/Modules/Membership/classes/ActivateMember.class.php:249
+[28-Jan-2014 13:42:34] PHP   5. CasinoAPIHandler->CreateNewAccount() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/CasinoAPI.class.php:251
+[28-Jan-2014 13:42:34] PHP   6. PlayTechAPIWrapper->NewPlayer() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/CasinoAPIHandler.class.php:154
+[28-Jan-2014 13:42:34] PHP   7. PlayTechAPI->GetError() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/PlayTechAPIWrapper.class.php:56
+[28-Jan-2014 13:42:34] PHP Notice:  Undefined index: URI_PID in /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/CasinoAPIHandler.class.php on line 52
+[28-Jan-2014 13:42:34] PHP Stack trace:
+[28-Jan-2014 13:42:34] PHP   1. {main}() /var/www/membership/membership.rewards/API/cardinquiry.php:0
+[28-Jan-2014 13:42:34] PHP   2. GetCardInfoAPI->GetCardInfo() /var/www/membership/membership.rewards/API/cardinquiry.php:210
+[28-Jan-2014 13:42:34] PHP   3. ActivateMember->Migrate() /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php:263
+[28-Jan-2014 13:42:34] PHP   4. CasinoAPI->createAccount() /var/www/membership/membership.rewards/rsframework/include/Modules/Membership/classes/ActivateMember.class.php:179
+[28-Jan-2014 13:42:34] PHP   5. CasinoAPI->configureRTG() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/CasinoAPI.class.php:236
+[28-Jan-2014 13:42:34] PHP   6. CasinoAPIHandler->__construct() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/CasinoAPI.class.php:70
+[28-Jan-2014 13:42:34] PHP Notice:  Undefined index: APIType in /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/CasinoAPIHandler.class.php on line 54
+[28-Jan-2014 13:42:34] PHP Stack trace:
+[28-Jan-2014 13:42:34] PHP   1. {main}() /var/www/membership/membership.rewards/API/cardinquiry.php:0
+[28-Jan-2014 13:42:34] PHP   2. GetCardInfoAPI->GetCardInfo() /var/www/membership/membership.rewards/API/cardinquiry.php:210
+[28-Jan-2014 13:42:34] PHP   3. ActivateMember->Migrate() /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php:263
+[28-Jan-2014 13:42:34] PHP   4. CasinoAPI->createAccount() /var/www/membership/membership.rewards/rsframework/include/Modules/Membership/classes/ActivateMember.class.php:179
+[28-Jan-2014 13:42:34] PHP   5. CasinoAPI->configureRTG() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/CasinoAPI.class.php:236
+[28-Jan-2014 13:42:34] PHP   6. CasinoAPIHandler->__construct() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/CasinoAPI.class.php:70
+[28-Jan-2014 13:42:34] PHP Warning:  Cannot modify header information - headers already sent by (output started at /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/CasinoAPIHandler.class.php:52) in /var/www/membership/membership.rewards/rsframework/include/core/JSONAPIResponse.class.php on line 21
+[28-Jan-2014 13:42:34] PHP Stack trace:
+[28-Jan-2014 13:42:34] PHP   1. {main}() /var/www/membership/membership.rewards/API/cardinquiry.php:0
+[28-Jan-2014 13:42:34] PHP   2. JSONAPIResponse->_sendResponse() /var/www/membership/membership.rewards/API/cardinquiry.php:211
+[28-Jan-2014 13:42:34] PHP   3. header() /var/www/membership/membership.rewards/rsframework/include/core/JSONAPIResponse.class.php:21
+[28-Jan-2014 13:42:34] PHP Warning:  Cannot modify header information - headers already sent by (output started at /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/CasinoAPIHandler.class.php:52) in /var/www/membership/membership.rewards/rsframework/include/core/JSONAPIResponse.class.php on line 23
+[28-Jan-2014 13:42:34] PHP Stack trace:
+[28-Jan-2014 13:42:34] PHP   1. {main}() /var/www/membership/membership.rewards/API/cardinquiry.php:0
+[28-Jan-2014 13:42:34] PHP   2. JSONAPIResponse->_sendResponse() /var/www/membership/membership.rewards/API/cardinquiry.php:211
+[28-Jan-2014 13:42:34] PHP   3. header() /var/www/membership/membership.rewards/rsframework/include/core/JSONAPIResponse.class.php:23
+[28-Jan-2014 14:00:06] [REGISTRATION ERROR] Failed to send SMS: Invalid Mobile Number [MID: 260].
+[28-Jan-2014 14:02:16] PHP Notice:  Undefined property: PlayTechAPI::$_error in /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/PlayTechAPI.class.php on line 128
+[28-Jan-2014 14:02:16] PHP Stack trace:
+[28-Jan-2014 14:02:16] PHP   1. {main}() /var/www/membership/membership.rewards/API/cardinquiry.php:0
+[28-Jan-2014 14:02:16] PHP   2. GetCardInfoAPI->GetCardInfo() /var/www/membership/membership.rewards/API/cardinquiry.php:210
+[28-Jan-2014 14:02:16] PHP   3. ActivateMember->Migrate() /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php:263
+[28-Jan-2014 14:02:16] PHP   4. CasinoAPI->createAccount() /var/www/membership/membership.rewards/rsframework/include/Modules/Membership/classes/ActivateMember.class.php:249
+[28-Jan-2014 14:02:16] PHP   5. CasinoAPIHandler->CreateNewAccount() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/CasinoAPI.class.php:253
+[28-Jan-2014 14:02:16] PHP   6. PlayTechAPIWrapper->NewPlayer() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/CasinoAPIHandler.class.php:154
+[28-Jan-2014 14:02:16] PHP   7. PlayTechAPI->GetError() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/PlayTechAPIWrapper.class.php:56
+[28-Jan-2014 14:19:42] [REGISTRATION ERROR] Failed to send SMS: Invalid Mobile Number [MID: 261].
+[28-Jan-2014 14:29:55] [REGISTRATION ERROR] Failed to send SMS: Invalid Mobile Number [MID: 262].
+[28-Jan-2014 14:40:30] [REGISTRATION ERROR] Failed to send SMS: Invalid Mobile Number [MID: 263].
+[28-Jan-2014 14:41:52] PHP Warning:  Cannot modify header information - headers already sent by (output started at /var/www/membership/membership.rewards/rsframework/include/Modules/Membership/classes/ActivateMember.class.php:250) in /var/www/membership/membership.rewards/rsframework/include/core/JSONAPIResponse.class.php on line 21
+[28-Jan-2014 14:41:52] PHP Stack trace:
+[28-Jan-2014 14:41:52] PHP   1. {main}() /var/www/membership/membership.rewards/API/cardinquiry.php:0
+[28-Jan-2014 14:41:52] PHP   2. JSONAPIResponse->_sendResponse() /var/www/membership/membership.rewards/API/cardinquiry.php:211
+[28-Jan-2014 14:41:52] PHP   3. header() /var/www/membership/membership.rewards/rsframework/include/core/JSONAPIResponse.class.php:21
+[28-Jan-2014 14:41:52] PHP Warning:  Cannot modify header information - headers already sent by (output started at /var/www/membership/membership.rewards/rsframework/include/Modules/Membership/classes/ActivateMember.class.php:250) in /var/www/membership/membership.rewards/rsframework/include/core/JSONAPIResponse.class.php on line 23
+[28-Jan-2014 14:41:52] PHP Stack trace:
+[28-Jan-2014 14:41:52] PHP   1. {main}() /var/www/membership/membership.rewards/API/cardinquiry.php:0
+[28-Jan-2014 14:41:52] PHP   2. JSONAPIResponse->_sendResponse() /var/www/membership/membership.rewards/API/cardinquiry.php:211
+[28-Jan-2014 14:41:52] PHP   3. header() /var/www/membership/membership.rewards/rsframework/include/core/JSONAPIResponse.class.php:23
+[28-Jan-2014 15:01:47] [REGISTRATION ERROR] Failed to send SMS: Invalid Mobile Number [MID: 264].
+[28-Jan-2014 15:02:51] Error "Invalid card number: " File: /var/www/membership/membership.rewards/API/cardinquiry.php LINE: 240

@@ -1,0 +1,3 @@
+[24-Oct-2013 09:36:08] PHP Notice:  Undefined index: userinfo in /var/www/membership/membership.rewards/admin/index.php on line 58
+[24-Oct-2013 09:36:08] PHP Stack trace:
+[24-Oct-2013 09:36:08] PHP   1. {main}() /var/www/membership/membership.rewards/admin/index.php:0

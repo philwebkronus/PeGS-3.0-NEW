@@ -1,0 +1,489 @@
+[29-Jan-2014 11:21:40] [REGISTRATION ERROR] Failed to send SMS: Invalid Mobile Number [MID: 265].
+[29-Jan-2014 11:25:16] PHP Notice:  Undefined index: userinfo in /var/www/membership/membership.rewards/admin/index.php on line 58
+[29-Jan-2014 11:25:16] PHP Stack trace:
+[29-Jan-2014 11:25:16] PHP   1. {main}() /var/www/membership/membership.rewards/admin/index.php:0
+[29-Jan-2014 11:25:16] PHP Warning:  Cannot modify header information - headers already sent by (output started at /var/www/membership/membership.rewards/admin/header.php:108) in /var/www/membership/membership.rewards/rsframework/include/core/URL.class.php on line 16
+[29-Jan-2014 11:25:16] PHP Stack trace:
+[29-Jan-2014 11:25:16] PHP   1. {main}() /var/www/membership/membership.rewards/admin/index.php:0
+[29-Jan-2014 11:25:16] PHP   2. include() /var/www/membership/membership.rewards/admin/index.php:509
+[29-Jan-2014 11:25:16] PHP   3. include() /var/www/membership/membership.rewards/admin/menu.php:7
+[29-Jan-2014 11:25:16] PHP   4. URL::Redirect() /var/www/membership/membership.rewards/admin/sessionmanager.php:90
+[29-Jan-2014 11:25:16] PHP   5. header() /var/www/membership/membership.rewards/rsframework/include/core/URL.class.php:16
+[29-Jan-2014 11:25:16] PHP Notice:  Undefined variable: usermenu in /var/www/membership/membership.rewards/admin/menu.php on line 16
+[29-Jan-2014 11:25:16] PHP Stack trace:
+[29-Jan-2014 11:25:16] PHP   1. {main}() /var/www/membership/membership.rewards/admin/index.php:0
+[29-Jan-2014 11:25:16] PHP   2. include() /var/www/membership/membership.rewards/admin/index.php:509
+[29-Jan-2014 11:25:16] PHP Warning:  Invalid argument supplied for foreach() in /var/www/membership/membership.rewards/admin/menu.php on line 16
+[29-Jan-2014 11:25:16] PHP Stack trace:
+[29-Jan-2014 11:25:16] PHP   1. {main}() /var/www/membership/membership.rewards/admin/index.php:0
+[29-Jan-2014 11:25:16] PHP   2. include() /var/www/membership/membership.rewards/admin/index.php:509
+[29-Jan-2014 11:25:16] PHP Notice:  Undefined index: aID in /var/www/membership/membership.rewards/admin/menu.php on line 38
+[29-Jan-2014 11:25:16] PHP Stack trace:
+[29-Jan-2014 11:25:16] PHP   1. {main}() /var/www/membership/membership.rewards/admin/index.php:0
+[29-Jan-2014 11:25:16] PHP   2. include() /var/www/membership/membership.rewards/admin/index.php:509
+[29-Jan-2014 11:25:16] MySQL Error "You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1" File: /var/www/membership/membership.rewards/rsframework/include/datalayer/MySQLDatabase.php LINE: 147
+[29-Jan-2014 11:25:16] PHP Warning:  Invalid argument supplied for foreach() in /var/www/membership/membership.rewards/admin/menu.php on line 40
+[29-Jan-2014 11:25:16] PHP Stack trace:
+[29-Jan-2014 11:25:16] PHP   1. {main}() /var/www/membership/membership.rewards/admin/index.php:0
+[29-Jan-2014 11:25:16] PHP   2. include() /var/www/membership/membership.rewards/admin/index.php:509
+[29-Jan-2014 11:25:16] PHP Notice:  Undefined variable: username in /var/www/membership/membership.rewards/admin/menu.php on line 43
+[29-Jan-2014 11:25:16] PHP Stack trace:
+[29-Jan-2014 11:25:16] PHP   1. {main}() /var/www/membership/membership.rewards/admin/index.php:0
+[29-Jan-2014 11:25:16] PHP   2. include() /var/www/membership/membership.rewards/admin/index.php:509
+[29-Jan-2014 11:25:16] PHP Notice:  Undefined variable: usermenu in /var/www/membership/membership.rewards/admin/menu.php on line 51
+[29-Jan-2014 11:25:16] PHP Stack trace:
+[29-Jan-2014 11:25:16] PHP   1. {main}() /var/www/membership/membership.rewards/admin/index.php:0
+[29-Jan-2014 11:25:16] PHP   2. include() /var/www/membership/membership.rewards/admin/index.php:509
+[29-Jan-2014 11:25:16] PHP Warning:  Invalid argument supplied for foreach() in /var/www/membership/membership.rewards/admin/menu.php on line 51
+[29-Jan-2014 11:25:16] PHP Stack trace:
+[29-Jan-2014 11:25:16] PHP   1. {main}() /var/www/membership/membership.rewards/admin/index.php:0
+[29-Jan-2014 11:25:16] PHP   2. include() /var/www/membership/membership.rewards/admin/index.php:509
+[29-Jan-2014 13:40:53] [REGISTRATION ERROR] Failed to send SMS: Invalid Mobile Number [MID: 266].
+[29-Jan-2014 13:41:53] Error "Inactive Card: UBKSAMYE" File: /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php LINE: 78
+[29-Jan-2014 13:41:53] Error "Inactive Card: UBKSAMYE" File: /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php LINE: 78
+[29-Jan-2014 13:42:36] Error "Values not submitted" File: /var/www/membership/membership.rewards/tempmemberactivation.php LINE: 307
+[29-Jan-2014 13:42:39] MySQL Error "SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry '494' for key 'UK_membercards_CardID'" File: /var/www/membership/membership.rewards/rsframework/include/core/BaseEntity.class.php LINE: 88
+[29-Jan-2014 13:42:39] Error "Failed to insert in membercards table" File: /var/www/membership/membership.rewards/tempmemberactivation.php LINE: 298
+[29-Jan-2014 13:43:30] Error "Inactive Card: UBJXYHGW" File: /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php LINE: 78
+[29-Jan-2014 13:43:33] Error "Values not submitted" File: /var/www/membership/membership.rewards/tempmemberactivation.php LINE: 307
+[29-Jan-2014 14:03:05] PHP Notice:  Undefined variable: i in /var/www/membership/membership.rewards/rsframework/include/controls/ComboBox.class.php on line 152
+[29-Jan-2014 14:03:05] PHP Stack trace:
+[29-Jan-2014 14:03:05] PHP   1. {main}() /var/www/membership/membership.rewards/admin/manualptcreation.php:0
+[29-Jan-2014 14:03:05] PHP   2. ComboBox->DataBind() /var/www/membership/membership.rewards/admin/manualptcreation.php:39
+[29-Jan-2014 14:03:05] PHP Notice:  Undefined variable: i in /var/www/membership/membership.rewards/rsframework/include/controls/ComboBox.class.php on line 152
+[29-Jan-2014 14:03:05] PHP Stack trace:
+[29-Jan-2014 14:03:05] PHP   1. {main}() /var/www/membership/membership.rewards/admin/manualptcreation.php:0
+[29-Jan-2014 14:03:05] PHP   2. ComboBox->DataBind() /var/www/membership/membership.rewards/admin/manualptcreation.php:39
+[29-Jan-2014 14:04:01] PHP Notice:  Undefined variable: i in /var/www/membership/membership.rewards/rsframework/include/controls/ComboBox.class.php on line 152
+[29-Jan-2014 14:04:01] PHP Stack trace:
+[29-Jan-2014 14:04:01] PHP   1. {main}() /var/www/membership/membership.rewards/admin/manualptcreation.php:0
+[29-Jan-2014 14:04:01] PHP   2. ComboBox->DataBind() /var/www/membership/membership.rewards/admin/manualptcreation.php:39
+[29-Jan-2014 14:04:01] PHP Notice:  Undefined variable: i in /var/www/membership/membership.rewards/rsframework/include/controls/ComboBox.class.php on line 152
+[29-Jan-2014 14:04:01] PHP Stack trace:
+[29-Jan-2014 14:04:01] PHP   1. {main}() /var/www/membership/membership.rewards/admin/manualptcreation.php:0
+[29-Jan-2014 14:04:01] PHP   2. ComboBox->DataBind() /var/www/membership/membership.rewards/admin/manualptcreation.php:39
+[29-Jan-2014 14:04:35] PHP Notice:  Undefined variable: i in /var/www/membership/membership.rewards/rsframework/include/controls/ComboBox.class.php on line 152
+[29-Jan-2014 14:04:35] PHP Stack trace:
+[29-Jan-2014 14:04:35] PHP   1. {main}() /var/www/membership/membership.rewards/admin/manualptcreation.php:0
+[29-Jan-2014 14:04:35] PHP   2. ComboBox->DataBind() /var/www/membership/membership.rewards/admin/manualptcreation.php:39
+[29-Jan-2014 14:04:35] PHP Notice:  Undefined variable: i in /var/www/membership/membership.rewards/rsframework/include/controls/ComboBox.class.php on line 152
+[29-Jan-2014 14:04:35] PHP Stack trace:
+[29-Jan-2014 14:04:35] PHP   1. {main}() /var/www/membership/membership.rewards/admin/manualptcreation.php:0
+[29-Jan-2014 14:04:35] PHP   2. ComboBox->DataBind() /var/www/membership/membership.rewards/admin/manualptcreation.php:39
+[29-Jan-2014 14:04:53] PHP Notice:  Undefined variable: i in /var/www/membership/membership.rewards/rsframework/include/controls/ComboBox.class.php on line 152
+[29-Jan-2014 14:04:53] PHP Stack trace:
+[29-Jan-2014 14:04:53] PHP   1. {main}() /var/www/membership/membership.rewards/admin/manualptcreation.php:0
+[29-Jan-2014 14:04:53] PHP   2. ComboBox->DataBind() /var/www/membership/membership.rewards/admin/manualptcreation.php:39
+[29-Jan-2014 14:04:53] PHP Notice:  Undefined variable: i in /var/www/membership/membership.rewards/rsframework/include/controls/ComboBox.class.php on line 152
+[29-Jan-2014 14:04:53] PHP Stack trace:
+[29-Jan-2014 14:04:53] PHP   1. {main}() /var/www/membership/membership.rewards/admin/manualptcreation.php:0
+[29-Jan-2014 14:04:53] PHP   2. ComboBox->DataBind() /var/www/membership/membership.rewards/admin/manualptcreation.php:39
+[29-Jan-2014 14:05:02] PHP Notice:  Undefined variable: i in /var/www/membership/membership.rewards/rsframework/include/controls/ComboBox.class.php on line 152
+[29-Jan-2014 14:05:02] PHP Stack trace:
+[29-Jan-2014 14:05:02] PHP   1. {main}() /var/www/membership/membership.rewards/admin/manualptcreation.php:0
+[29-Jan-2014 14:05:02] PHP   2. ComboBox->DataBind() /var/www/membership/membership.rewards/admin/manualptcreation.php:39
+[29-Jan-2014 14:05:02] PHP Notice:  Undefined variable: i in /var/www/membership/membership.rewards/rsframework/include/controls/ComboBox.class.php on line 152
+[29-Jan-2014 14:05:02] PHP Stack trace:
+[29-Jan-2014 14:05:02] PHP   1. {main}() /var/www/membership/membership.rewards/admin/manualptcreation.php:0
+[29-Jan-2014 14:05:02] PHP   2. ComboBox->DataBind() /var/www/membership/membership.rewards/admin/manualptcreation.php:39
+[29-Jan-2014 14:05:03] PHP Notice:  Undefined variable: i in /var/www/membership/membership.rewards/rsframework/include/controls/ComboBox.class.php on line 152
+[29-Jan-2014 14:05:03] PHP Stack trace:
+[29-Jan-2014 14:05:03] PHP   1. {main}() /var/www/membership/membership.rewards/admin/manualptcreation.php:0
+[29-Jan-2014 14:05:03] PHP   2. ComboBox->DataBind() /var/www/membership/membership.rewards/admin/manualptcreation.php:39
+[29-Jan-2014 14:05:03] PHP Notice:  Undefined variable: i in /var/www/membership/membership.rewards/rsframework/include/controls/ComboBox.class.php on line 152
+[29-Jan-2014 14:05:03] PHP Stack trace:
+[29-Jan-2014 14:05:03] PHP   1. {main}() /var/www/membership/membership.rewards/admin/manualptcreation.php:0
+[29-Jan-2014 14:05:03] PHP   2. ComboBox->DataBind() /var/www/membership/membership.rewards/admin/manualptcreation.php:39
+[29-Jan-2014 14:05:33] PHP Notice:  Undefined variable: i in /var/www/membership/membership.rewards/rsframework/include/controls/ComboBox.class.php on line 152
+[29-Jan-2014 14:05:33] PHP Stack trace:
+[29-Jan-2014 14:05:33] PHP   1. {main}() /var/www/membership/membership.rewards/admin/manualptcreation.php:0
+[29-Jan-2014 14:05:33] PHP   2. ComboBox->DataBind() /var/www/membership/membership.rewards/admin/manualptcreation.php:38
+[29-Jan-2014 14:05:44] PHP Notice:  Undefined variable: i in /var/www/membership/membership.rewards/rsframework/include/controls/ComboBox.class.php on line 152
+[29-Jan-2014 14:05:44] PHP Stack trace:
+[29-Jan-2014 14:05:44] PHP   1. {main}() /var/www/membership/membership.rewards/admin/manualptcreation.php:0
+[29-Jan-2014 14:05:44] PHP   2. ComboBox->DataBind() /var/www/membership/membership.rewards/admin/manualptcreation.php:36
+[29-Jan-2014 14:06:31] PHP Notice:  Undefined variable: i in /var/www/membership/membership.rewards/rsframework/include/controls/ComboBox.class.php on line 152
+[29-Jan-2014 14:06:31] PHP Stack trace:
+[29-Jan-2014 14:06:31] PHP   1. {main}() /var/www/membership/membership.rewards/admin/manualptcreation.php:0
+[29-Jan-2014 14:06:31] PHP   2. ComboBox->DataBind() /var/www/membership/membership.rewards/admin/manualptcreation.php:36
+[29-Jan-2014 14:07:33] Error "Inactive Card: UBRH8OB6" File: /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php LINE: 78
+[29-Jan-2014 14:07:42] Error "Values not submitted" File: /var/www/membership/membership.rewards/tempmemberactivation.php LINE: 307
+[29-Jan-2014 14:11:46] [REGISTRATION ERROR] Failed to send SMS: Invalid Mobile Number [MID: 267].
+[29-Jan-2014 14:13:09] Error "Inactive Card: UBMSF6XS" File: /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php LINE: 78
+[29-Jan-2014 14:13:14] Error "Values not submitted" File: /var/www/membership/membership.rewards/tempmemberactivation.php LINE: 307
+[29-Jan-2014 14:16:07] [REGISTRATION ERROR] Failed to send SMS: Invalid Mobile Number [MID: 268].
+[29-Jan-2014 14:17:57] Error "Inactive Card: UBMQ98A2" File: /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php LINE: 78
+[29-Jan-2014 14:18:01] Error "Values not submitted" File: /var/www/membership/membership.rewards/tempmemberactivation.php LINE: 307
+[29-Jan-2014 14:57:19] [REGISTRATION ERROR] Failed to send SMS: Invalid Mobile Number [MID: 269].
+[29-Jan-2014 14:58:21] Error "Inactive Card: UBYTRF9R" File: /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php LINE: 78
+[29-Jan-2014 14:58:27] PHP Warning:  addslashes() expects parameter 1 to be string, array given in /var/www/membership/membership.rewards/rsframework/include/datalayer/PDOHandler.php on line 323
+[29-Jan-2014 14:58:27] PHP Stack trace:
+[29-Jan-2014 14:58:27] PHP   1. {main}() /var/www/membership/membership.rewards/API/cardinquiry.php:0
+[29-Jan-2014 14:58:27] PHP   2. GetCardInfoAPI->GetCardInfo() /var/www/membership/membership.rewards/API/cardinquiry.php:210
+[29-Jan-2014 14:58:27] PHP   3. ActivateMember->Migrate() /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php:263
+[29-Jan-2014 14:58:27] PHP   4. BaseEntity->InsertMultiple() /var/www/membership/membership.rewards/rsframework/include/Modules/Membership/classes/ActivateMember.class.php:270
+[29-Jan-2014 14:58:27] PHP   5. PDOHandler->InsertMultiple() /var/www/membership/membership.rewards/rsframework/include/core/BaseEntity.class.php:104
+[29-Jan-2014 14:58:27] PHP   6. addslashes() /var/www/membership/membership.rewards/rsframework/include/datalayer/PDOHandler.php:323
+[29-Jan-2014 14:58:27] PHP Warning:  strtolower() expects parameter 1 to be string, array given in /var/www/membership/membership.rewards/rsframework/include/datalayer/PDOHandler.php on line 417
+[29-Jan-2014 14:58:27] PHP Stack trace:
+[29-Jan-2014 14:58:27] PHP   1. {main}() /var/www/membership/membership.rewards/API/cardinquiry.php:0
+[29-Jan-2014 14:58:27] PHP   2. GetCardInfoAPI->GetCardInfo() /var/www/membership/membership.rewards/API/cardinquiry.php:210
+[29-Jan-2014 14:58:27] PHP   3. ActivateMember->Migrate() /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php:263
+[29-Jan-2014 14:58:27] PHP   4. BaseEntity->InsertMultiple() /var/www/membership/membership.rewards/rsframework/include/Modules/Membership/classes/ActivateMember.class.php:270
+[29-Jan-2014 14:58:27] PHP   5. PDOHandler->InsertMultiple() /var/www/membership/membership.rewards/rsframework/include/core/BaseEntity.class.php:104
+[29-Jan-2014 14:58:27] PHP   6. PDOHandler->CleanValues() /var/www/membership/membership.rewards/rsframework/include/datalayer/PDOHandler.php:324
+[29-Jan-2014 14:58:27] PHP   7. PDOHandler->HasFunction() /var/www/membership/membership.rewards/rsframework/include/datalayer/PDOHandler.php:405
+[29-Jan-2014 14:58:27] PHP   8. strtolower() /var/www/membership/membership.rewards/rsframework/include/datalayer/PDOHandler.php:417
+[29-Jan-2014 14:58:27] PHP Warning:  addslashes() expects parameter 1 to be string, array given in /var/www/membership/membership.rewards/rsframework/include/datalayer/PDOHandler.php on line 323
+[29-Jan-2014 14:58:27] PHP Stack trace:
+[29-Jan-2014 14:58:27] PHP   1. {main}() /var/www/membership/membership.rewards/API/cardinquiry.php:0
+[29-Jan-2014 14:58:27] PHP   2. GetCardInfoAPI->GetCardInfo() /var/www/membership/membership.rewards/API/cardinquiry.php:210
+[29-Jan-2014 14:58:27] PHP   3. ActivateMember->Migrate() /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php:263
+[29-Jan-2014 14:58:27] PHP   4. BaseEntity->InsertMultiple() /var/www/membership/membership.rewards/rsframework/include/Modules/Membership/classes/ActivateMember.class.php:270
+[29-Jan-2014 14:58:27] PHP   5. PDOHandler->InsertMultiple() /var/www/membership/membership.rewards/rsframework/include/core/BaseEntity.class.php:104
+[29-Jan-2014 14:58:27] PHP   6. addslashes() /var/www/membership/membership.rewards/rsframework/include/datalayer/PDOHandler.php:323
+[29-Jan-2014 14:58:27] PHP Warning:  strtolower() expects parameter 1 to be string, array given in /var/www/membership/membership.rewards/rsframework/include/datalayer/PDOHandler.php on line 417
+[29-Jan-2014 14:58:27] PHP Stack trace:
+[29-Jan-2014 14:58:27] PHP   1. {main}() /var/www/membership/membership.rewards/API/cardinquiry.php:0
+[29-Jan-2014 14:58:27] PHP   2. GetCardInfoAPI->GetCardInfo() /var/www/membership/membership.rewards/API/cardinquiry.php:210
+[29-Jan-2014 14:58:27] PHP   3. ActivateMember->Migrate() /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php:263
+[29-Jan-2014 14:58:27] PHP   4. BaseEntity->InsertMultiple() /var/www/membership/membership.rewards/rsframework/include/Modules/Membership/classes/ActivateMember.class.php:270
+[29-Jan-2014 14:58:27] PHP   5. PDOHandler->InsertMultiple() /var/www/membership/membership.rewards/rsframework/include/core/BaseEntity.class.php:104
+[29-Jan-2014 14:58:27] PHP   6. PDOHandler->CleanValues() /var/www/membership/membership.rewards/rsframework/include/datalayer/PDOHandler.php:324
+[29-Jan-2014 14:58:27] PHP   7. PDOHandler->HasFunction() /var/www/membership/membership.rewards/rsframework/include/datalayer/PDOHandler.php:405
+[29-Jan-2014 14:58:27] PHP   8. strtolower() /var/www/membership/membership.rewards/rsframework/include/datalayer/PDOHandler.php:417
+[29-Jan-2014 14:58:27] MySQL Error "SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '0) VALUES (''),('')' at line 1" File: /var/www/membership/membership.rewards/rsframework/include/core/BaseEntity.class.php LINE: 109
+[29-Jan-2014 14:58:27] PHP Warning:  Cannot modify header information - headers already sent by (output started at /var/www/membership/membership.rewards/rsframework/include/datalayer/PDOHandler.php:417) in /var/www/membership/membership.rewards/rsframework/include/core/JSONAPIResponse.class.php on line 21
+[29-Jan-2014 14:58:27] PHP Stack trace:
+[29-Jan-2014 14:58:27] PHP   1. {main}() /var/www/membership/membership.rewards/API/cardinquiry.php:0
+[29-Jan-2014 14:58:27] PHP   2. JSONAPIResponse->_sendResponse() /var/www/membership/membership.rewards/API/cardinquiry.php:211
+[29-Jan-2014 14:58:27] PHP   3. header() /var/www/membership/membership.rewards/rsframework/include/core/JSONAPIResponse.class.php:21
+[29-Jan-2014 14:58:27] PHP Warning:  Cannot modify header information - headers already sent by (output started at /var/www/membership/membership.rewards/rsframework/include/datalayer/PDOHandler.php:417) in /var/www/membership/membership.rewards/rsframework/include/core/JSONAPIResponse.class.php on line 23
+[29-Jan-2014 14:58:27] PHP Stack trace:
+[29-Jan-2014 14:58:27] PHP   1. {main}() /var/www/membership/membership.rewards/API/cardinquiry.php:0
+[29-Jan-2014 14:58:27] PHP   2. JSONAPIResponse->_sendResponse() /var/www/membership/membership.rewards/API/cardinquiry.php:211
+[29-Jan-2014 14:58:27] PHP   3. header() /var/www/membership/membership.rewards/rsframework/include/core/JSONAPIResponse.class.php:23
+[29-Jan-2014 15:00:38] Error "Values not submitted" File: /var/www/membership/membership.rewards/tempmemberactivation.php LINE: 307
+[29-Jan-2014 15:01:46] [REGISTRATION ERROR] Failed to send SMS: Invalid Mobile Number [MID: 270].
+[29-Jan-2014 15:02:22] Error "Inactive Card: UBRUFVM4" File: /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php LINE: 78
+[29-Jan-2014 15:02:26] PHP Warning:  addslashes() expects parameter 1 to be string, array given in /var/www/membership/membership.rewards/rsframework/include/datalayer/PDOHandler.php on line 285
+[29-Jan-2014 15:02:26] PHP Stack trace:
+[29-Jan-2014 15:02:26] PHP   1. {main}() /var/www/membership/membership.rewards/API/cardinquiry.php:0
+[29-Jan-2014 15:02:26] PHP   2. GetCardInfoAPI->GetCardInfo() /var/www/membership/membership.rewards/API/cardinquiry.php:210
+[29-Jan-2014 15:02:26] PHP   3. ActivateMember->Migrate() /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php:263
+[29-Jan-2014 15:02:26] PHP   4. BaseEntity->Insert() /var/www/membership/membership.rewards/rsframework/include/Modules/Membership/classes/ActivateMember.class.php:270
+[29-Jan-2014 15:02:26] PHP   5. PDOHandler->InsertSingle() /var/www/membership/membership.rewards/rsframework/include/core/BaseEntity.class.php:83
+[29-Jan-2014 15:02:26] PHP   6. addslashes() /var/www/membership/membership.rewards/rsframework/include/datalayer/PDOHandler.php:285
+[29-Jan-2014 15:02:26] PHP Warning:  strtolower() expects parameter 1 to be string, array given in /var/www/membership/membership.rewards/rsframework/include/datalayer/PDOHandler.php on line 417
+[29-Jan-2014 15:02:26] PHP Stack trace:
+[29-Jan-2014 15:02:26] PHP   1. {main}() /var/www/membership/membership.rewards/API/cardinquiry.php:0
+[29-Jan-2014 15:02:26] PHP   2. GetCardInfoAPI->GetCardInfo() /var/www/membership/membership.rewards/API/cardinquiry.php:210
+[29-Jan-2014 15:02:26] PHP   3. ActivateMember->Migrate() /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php:263
+[29-Jan-2014 15:02:26] PHP   4. BaseEntity->Insert() /var/www/membership/membership.rewards/rsframework/include/Modules/Membership/classes/ActivateMember.class.php:270
+[29-Jan-2014 15:02:26] PHP   5. PDOHandler->InsertSingle() /var/www/membership/membership.rewards/rsframework/include/core/BaseEntity.class.php:83
+[29-Jan-2014 15:02:26] PHP   6. PDOHandler->CleanValues() /var/www/membership/membership.rewards/rsframework/include/datalayer/PDOHandler.php:286
+[29-Jan-2014 15:02:26] PHP   7. PDOHandler->HasFunction() /var/www/membership/membership.rewards/rsframework/include/datalayer/PDOHandler.php:405
+[29-Jan-2014 15:02:26] PHP   8. strtolower() /var/www/membership/membership.rewards/rsframework/include/datalayer/PDOHandler.php:417
+[29-Jan-2014 15:02:26] PHP Warning:  addslashes() expects parameter 1 to be string, array given in /var/www/membership/membership.rewards/rsframework/include/datalayer/PDOHandler.php on line 285
+[29-Jan-2014 15:02:26] PHP Stack trace:
+[29-Jan-2014 15:02:26] PHP   1. {main}() /var/www/membership/membership.rewards/API/cardinquiry.php:0
+[29-Jan-2014 15:02:26] PHP   2. GetCardInfoAPI->GetCardInfo() /var/www/membership/membership.rewards/API/cardinquiry.php:210
+[29-Jan-2014 15:02:26] PHP   3. ActivateMember->Migrate() /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php:263
+[29-Jan-2014 15:02:26] PHP   4. BaseEntity->Insert() /var/www/membership/membership.rewards/rsframework/include/Modules/Membership/classes/ActivateMember.class.php:270
+[29-Jan-2014 15:02:26] PHP   5. PDOHandler->InsertSingle() /var/www/membership/membership.rewards/rsframework/include/core/BaseEntity.class.php:83
+[29-Jan-2014 15:02:26] PHP   6. addslashes() /var/www/membership/membership.rewards/rsframework/include/datalayer/PDOHandler.php:285
+[29-Jan-2014 15:02:26] PHP Warning:  strtolower() expects parameter 1 to be string, array given in /var/www/membership/membership.rewards/rsframework/include/datalayer/PDOHandler.php on line 417
+[29-Jan-2014 15:02:26] PHP Stack trace:
+[29-Jan-2014 15:02:26] PHP   1. {main}() /var/www/membership/membership.rewards/API/cardinquiry.php:0
+[29-Jan-2014 15:02:26] PHP   2. GetCardInfoAPI->GetCardInfo() /var/www/membership/membership.rewards/API/cardinquiry.php:210
+[29-Jan-2014 15:02:26] PHP   3. ActivateMember->Migrate() /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php:263
+[29-Jan-2014 15:02:26] PHP   4. BaseEntity->Insert() /var/www/membership/membership.rewards/rsframework/include/Modules/Membership/classes/ActivateMember.class.php:270
+[29-Jan-2014 15:02:26] PHP   5. PDOHandler->InsertSingle() /var/www/membership/membership.rewards/rsframework/include/core/BaseEntity.class.php:83
+[29-Jan-2014 15:02:26] PHP   6. PDOHandler->CleanValues() /var/www/membership/membership.rewards/rsframework/include/datalayer/PDOHandler.php:286
+[29-Jan-2014 15:02:26] PHP   7. PDOHandler->HasFunction() /var/www/membership/membership.rewards/rsframework/include/datalayer/PDOHandler.php:405
+[29-Jan-2014 15:02:26] PHP   8. strtolower() /var/www/membership/membership.rewards/rsframework/include/datalayer/PDOHandler.php:417
+[29-Jan-2014 15:02:26] MySQL Error "SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '0, 1) values (NULL,NULL)' at line 1" File: /var/www/membership/membership.rewards/rsframework/include/core/BaseEntity.class.php LINE: 88
+[29-Jan-2014 15:02:26] PHP Warning:  Cannot modify header information - headers already sent by (output started at /var/www/membership/membership.rewards/rsframework/include/datalayer/PDOHandler.php:417) in /var/www/membership/membership.rewards/rsframework/include/core/JSONAPIResponse.class.php on line 21
+[29-Jan-2014 15:02:26] PHP Stack trace:
+[29-Jan-2014 15:02:26] PHP   1. {main}() /var/www/membership/membership.rewards/API/cardinquiry.php:0
+[29-Jan-2014 15:02:26] PHP   2. JSONAPIResponse->_sendResponse() /var/www/membership/membership.rewards/API/cardinquiry.php:211
+[29-Jan-2014 15:02:26] PHP   3. header() /var/www/membership/membership.rewards/rsframework/include/core/JSONAPIResponse.class.php:21
+[29-Jan-2014 15:02:26] PHP Warning:  Cannot modify header information - headers already sent by (output started at /var/www/membership/membership.rewards/rsframework/include/datalayer/PDOHandler.php:417) in /var/www/membership/membership.rewards/rsframework/include/core/JSONAPIResponse.class.php on line 23
+[29-Jan-2014 15:02:26] PHP Stack trace:
+[29-Jan-2014 15:02:26] PHP   1. {main}() /var/www/membership/membership.rewards/API/cardinquiry.php:0
+[29-Jan-2014 15:02:26] PHP   2. JSONAPIResponse->_sendResponse() /var/www/membership/membership.rewards/API/cardinquiry.php:211
+[29-Jan-2014 15:02:26] PHP   3. header() /var/www/membership/membership.rewards/rsframework/include/core/JSONAPIResponse.class.php:23
+[29-Jan-2014 15:03:39] Error "Values not submitted" File: /var/www/membership/membership.rewards/tempmemberactivation.php LINE: 307
+[29-Jan-2014 15:06:35] Error "Temporary account is inactive: eGamesW0GXH" File: /var/www/membership/membership.rewards/API/cardinquiry.php LINE: 159
+[29-Jan-2014 15:12:37] PHP Warning:  addslashes() expects parameter 1 to be string, array given in /var/www/membership/membership.rewards/rsframework/include/datalayer/PDOHandler.php on line 285
+[29-Jan-2014 15:12:37] PHP Stack trace:
+[29-Jan-2014 15:12:37] PHP   1. {main}() /var/www/membership/membership.rewards/API/cardinquiry.php:0
+[29-Jan-2014 15:12:37] PHP   2. GetCardInfoAPI->GetCardInfo() /var/www/membership/membership.rewards/API/cardinquiry.php:210
+[29-Jan-2014 15:12:37] PHP   3. ActivateMember->Migrate() /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php:263
+[29-Jan-2014 15:12:37] PHP   4. BaseEntity->Insert() /var/www/membership/membership.rewards/rsframework/include/Modules/Membership/classes/ActivateMember.class.php:271
+[29-Jan-2014 15:12:37] PHP   5. PDOHandler->InsertSingle() /var/www/membership/membership.rewards/rsframework/include/core/BaseEntity.class.php:83
+[29-Jan-2014 15:12:37] PHP   6. addslashes() /var/www/membership/membership.rewards/rsframework/include/datalayer/PDOHandler.php:285
+[29-Jan-2014 15:12:37] PHP Warning:  strtolower() expects parameter 1 to be string, array given in /var/www/membership/membership.rewards/rsframework/include/datalayer/PDOHandler.php on line 417
+[29-Jan-2014 15:12:37] PHP Stack trace:
+[29-Jan-2014 15:12:37] PHP   1. {main}() /var/www/membership/membership.rewards/API/cardinquiry.php:0
+[29-Jan-2014 15:12:37] PHP   2. GetCardInfoAPI->GetCardInfo() /var/www/membership/membership.rewards/API/cardinquiry.php:210
+[29-Jan-2014 15:12:37] PHP   3. ActivateMember->Migrate() /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php:263
+[29-Jan-2014 15:12:37] PHP   4. BaseEntity->Insert() /var/www/membership/membership.rewards/rsframework/include/Modules/Membership/classes/ActivateMember.class.php:271
+[29-Jan-2014 15:12:37] PHP   5. PDOHandler->InsertSingle() /var/www/membership/membership.rewards/rsframework/include/core/BaseEntity.class.php:83
+[29-Jan-2014 15:12:37] PHP   6. PDOHandler->CleanValues() /var/www/membership/membership.rewards/rsframework/include/datalayer/PDOHandler.php:286
+[29-Jan-2014 15:12:37] PHP   7. PDOHandler->HasFunction() /var/www/membership/membership.rewards/rsframework/include/datalayer/PDOHandler.php:405
+[29-Jan-2014 15:12:37] PHP   8. strtolower() /var/www/membership/membership.rewards/rsframework/include/datalayer/PDOHandler.php:417
+[29-Jan-2014 15:12:37] MySQL Error "SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '0) values (NULL)' at line 1" File: /var/www/membership/membership.rewards/rsframework/include/core/BaseEntity.class.php LINE: 88
+[29-Jan-2014 15:12:37] PHP Warning:  addslashes() expects parameter 1 to be string, array given in /var/www/membership/membership.rewards/rsframework/include/datalayer/PDOHandler.php on line 285
+[29-Jan-2014 15:12:37] PHP Stack trace:
+[29-Jan-2014 15:12:37] PHP   1. {main}() /var/www/membership/membership.rewards/API/cardinquiry.php:0
+[29-Jan-2014 15:12:37] PHP   2. GetCardInfoAPI->GetCardInfo() /var/www/membership/membership.rewards/API/cardinquiry.php:210
+[29-Jan-2014 15:12:37] PHP   3. ActivateMember->Migrate() /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php:263
+[29-Jan-2014 15:12:37] PHP   4. BaseEntity->Insert() /var/www/membership/membership.rewards/rsframework/include/Modules/Membership/classes/ActivateMember.class.php:271
+[29-Jan-2014 15:12:37] PHP   5. PDOHandler->InsertSingle() /var/www/membership/membership.rewards/rsframework/include/core/BaseEntity.class.php:83
+[29-Jan-2014 15:12:37] PHP   6. addslashes() /var/www/membership/membership.rewards/rsframework/include/datalayer/PDOHandler.php:285
+[29-Jan-2014 15:12:37] PHP Warning:  strtolower() expects parameter 1 to be string, array given in /var/www/membership/membership.rewards/rsframework/include/datalayer/PDOHandler.php on line 417
+[29-Jan-2014 15:12:37] PHP Stack trace:
+[29-Jan-2014 15:12:37] PHP   1. {main}() /var/www/membership/membership.rewards/API/cardinquiry.php:0
+[29-Jan-2014 15:12:37] PHP   2. GetCardInfoAPI->GetCardInfo() /var/www/membership/membership.rewards/API/cardinquiry.php:210
+[29-Jan-2014 15:12:37] PHP   3. ActivateMember->Migrate() /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php:263
+[29-Jan-2014 15:12:37] PHP   4. BaseEntity->Insert() /var/www/membership/membership.rewards/rsframework/include/Modules/Membership/classes/ActivateMember.class.php:271
+[29-Jan-2014 15:12:37] PHP   5. PDOHandler->InsertSingle() /var/www/membership/membership.rewards/rsframework/include/core/BaseEntity.class.php:83
+[29-Jan-2014 15:12:37] PHP   6. PDOHandler->CleanValues() /var/www/membership/membership.rewards/rsframework/include/datalayer/PDOHandler.php:286
+[29-Jan-2014 15:12:37] PHP   7. PDOHandler->HasFunction() /var/www/membership/membership.rewards/rsframework/include/datalayer/PDOHandler.php:405
+[29-Jan-2014 15:12:37] PHP   8. strtolower() /var/www/membership/membership.rewards/rsframework/include/datalayer/PDOHandler.php:417
+[29-Jan-2014 15:12:38] MySQL Error "SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '0) values (NULL)' at line 1" File: /var/www/membership/membership.rewards/rsframework/include/core/BaseEntity.class.php LINE: 88
+[29-Jan-2014 15:12:38] PHP Warning:  Cannot modify header information - headers already sent by (output started at /var/www/membership/membership.rewards/rsframework/include/datalayer/PDOHandler.php:417) in /var/www/membership/membership.rewards/rsframework/include/core/JSONAPIResponse.class.php on line 21
+[29-Jan-2014 15:12:38] PHP Stack trace:
+[29-Jan-2014 15:12:38] PHP   1. {main}() /var/www/membership/membership.rewards/API/cardinquiry.php:0
+[29-Jan-2014 15:12:38] PHP   2. JSONAPIResponse->_sendResponse() /var/www/membership/membership.rewards/API/cardinquiry.php:211
+[29-Jan-2014 15:12:38] PHP   3. header() /var/www/membership/membership.rewards/rsframework/include/core/JSONAPIResponse.class.php:21
+[29-Jan-2014 15:12:38] PHP Warning:  Cannot modify header information - headers already sent by (output started at /var/www/membership/membership.rewards/rsframework/include/datalayer/PDOHandler.php:417) in /var/www/membership/membership.rewards/rsframework/include/core/JSONAPIResponse.class.php on line 23
+[29-Jan-2014 15:12:38] PHP Stack trace:
+[29-Jan-2014 15:12:38] PHP   1. {main}() /var/www/membership/membership.rewards/API/cardinquiry.php:0
+[29-Jan-2014 15:12:38] PHP   2. JSONAPIResponse->_sendResponse() /var/www/membership/membership.rewards/API/cardinquiry.php:211
+[29-Jan-2014 15:12:38] PHP   3. header() /var/www/membership/membership.rewards/rsframework/include/core/JSONAPIResponse.class.php:23
+[29-Jan-2014 16:51:15] PHP Fatal error:  Class 'CasinoServices' not found in /var/www/membership/membership.rewards/admin/manualptcreation.php on line 27
+[29-Jan-2014 16:51:15] PHP Stack trace:
+[29-Jan-2014 16:51:15] PHP   1. {main}() /var/www/membership/membership.rewards/admin/manualptcreation.php:0
+[29-Jan-2014 16:51:24] PHP Fatal error:  Class 'CasinoServices' not found in /var/www/membership/membership.rewards/admin/manualptcreation.php on line 27
+[29-Jan-2014 16:51:24] PHP Stack trace:
+[29-Jan-2014 16:51:24] PHP   1. {main}() /var/www/membership/membership.rewards/admin/manualptcreation.php:0
+[29-Jan-2014 16:51:50] PHP Notice:  Undefined variable: i in /var/www/membership/membership.rewards/rsframework/include/controls/ComboBox.class.php on line 152
+[29-Jan-2014 16:51:50] PHP Stack trace:
+[29-Jan-2014 16:51:50] PHP   1. {main}() /var/www/membership/membership.rewards/admin/manualptcreation.php:0
+[29-Jan-2014 16:51:50] PHP   2. ComboBox->DataBind() /var/www/membership/membership.rewards/admin/manualptcreation.php:39
+[29-Jan-2014 16:51:50] PHP Notice:  Undefined variable: i in /var/www/membership/membership.rewards/rsframework/include/controls/ComboBox.class.php on line 152
+[29-Jan-2014 16:51:50] PHP Stack trace:
+[29-Jan-2014 16:51:50] PHP   1. {main}() /var/www/membership/membership.rewards/admin/manualptcreation.php:0
+[29-Jan-2014 16:51:50] PHP   2. ComboBox->DataBind() /var/www/membership/membership.rewards/admin/manualptcreation.php:39
+[29-Jan-2014 16:56:51] PHP Notice:  Undefined variable: i in /var/www/membership/membership.rewards/rsframework/include/controls/ComboBox.class.php on line 152
+[29-Jan-2014 16:56:51] PHP Stack trace:
+[29-Jan-2014 16:56:51] PHP   1. {main}() /var/www/membership/membership.rewards/admin/manualptcreation.php:0
+[29-Jan-2014 16:56:51] PHP   2. ComboBox->DataBind() /var/www/membership/membership.rewards/admin/manualptcreation.php:41
+[29-Jan-2014 16:56:51] PHP Notice:  Undefined variable: i in /var/www/membership/membership.rewards/rsframework/include/controls/ComboBox.class.php on line 152
+[29-Jan-2014 16:56:51] PHP Stack trace:
+[29-Jan-2014 16:56:51] PHP   1. {main}() /var/www/membership/membership.rewards/admin/manualptcreation.php:0
+[29-Jan-2014 16:56:51] PHP   2. ComboBox->DataBind() /var/www/membership/membership.rewards/admin/manualptcreation.php:41
+[29-Jan-2014 16:59:10] PHP Notice:  Undefined variable: i in /var/www/membership/membership.rewards/rsframework/include/controls/ComboBox.class.php on line 152
+[29-Jan-2014 16:59:10] PHP Stack trace:
+[29-Jan-2014 16:59:10] PHP   1. {main}() /var/www/membership/membership.rewards/admin/manualptcreation.php:0
+[29-Jan-2014 16:59:10] PHP   2. ComboBox->DataBind() /var/www/membership/membership.rewards/admin/manualptcreation.php:38
+[29-Jan-2014 16:59:10] PHP Notice:  Undefined variable: i in /var/www/membership/membership.rewards/rsframework/include/controls/ComboBox.class.php on line 152
+[29-Jan-2014 16:59:10] PHP Stack trace:
+[29-Jan-2014 16:59:10] PHP   1. {main}() /var/www/membership/membership.rewards/admin/manualptcreation.php:0
+[29-Jan-2014 16:59:10] PHP   2. ComboBox->DataBind() /var/www/membership/membership.rewards/admin/manualptcreation.php:38
+[29-Jan-2014 16:59:26] PHP Notice:  Undefined variable: i in /var/www/membership/membership.rewards/rsframework/include/controls/ComboBox.class.php on line 152
+[29-Jan-2014 16:59:26] PHP Stack trace:
+[29-Jan-2014 16:59:26] PHP   1. {main}() /var/www/membership/membership.rewards/admin/manualptcreation.php:0
+[29-Jan-2014 16:59:26] PHP   2. ComboBox->DataBind() /var/www/membership/membership.rewards/admin/manualptcreation.php:38
+[29-Jan-2014 16:59:26] PHP Notice:  Undefined variable: i in /var/www/membership/membership.rewards/rsframework/include/controls/ComboBox.class.php on line 152
+[29-Jan-2014 16:59:26] PHP Stack trace:
+[29-Jan-2014 16:59:26] PHP   1. {main}() /var/www/membership/membership.rewards/admin/manualptcreation.php:0
+[29-Jan-2014 16:59:26] PHP   2. ComboBox->DataBind() /var/www/membership/membership.rewards/admin/manualptcreation.php:38
+[29-Jan-2014 17:56:27] PHP Notice:  Undefined variable: i in /var/www/membership/membership.rewards/rsframework/include/controls/ComboBox.class.php on line 152
+[29-Jan-2014 17:56:27] PHP Stack trace:
+[29-Jan-2014 17:56:27] PHP   1. {main}() /var/www/membership/membership.rewards/admin/manualptcreation.php:0
+[29-Jan-2014 17:56:27] PHP   2. ComboBox->DataBind() /var/www/membership/membership.rewards/admin/manualptcreation.php:38
+[29-Jan-2014 17:56:27] PHP Notice:  Undefined variable: i in /var/www/membership/membership.rewards/rsframework/include/controls/ComboBox.class.php on line 152
+[29-Jan-2014 17:56:27] PHP Stack trace:
+[29-Jan-2014 17:56:27] PHP   1. {main}() /var/www/membership/membership.rewards/admin/manualptcreation.php:0
+[29-Jan-2014 17:56:27] PHP   2. ComboBox->DataBind() /var/www/membership/membership.rewards/admin/manualptcreation.php:38
+[29-Jan-2014 17:56:27] PHP Warning:  Cannot modify header information - headers already sent by (output started at /var/www/membership/membership.rewards/admin/header.php:51) in /var/www/membership/membership.rewards/rsframework/include/core/URL.class.php on line 16
+[29-Jan-2014 17:56:27] PHP Stack trace:
+[29-Jan-2014 17:56:27] PHP   1. {main}() /var/www/membership/membership.rewards/admin/manualptcreation.php:0
+[29-Jan-2014 17:56:27] PHP   2. include() /var/www/membership/membership.rewards/admin/manualptcreation.php:254
+[29-Jan-2014 17:56:27] PHP   3. include() /var/www/membership/membership.rewards/admin/menu.php:7
+[29-Jan-2014 17:56:27] PHP   4. URL::Redirect() /var/www/membership/membership.rewards/admin/sessionmanager.php:90
+[29-Jan-2014 17:56:27] PHP   5. header() /var/www/membership/membership.rewards/rsframework/include/core/URL.class.php:16
+[29-Jan-2014 17:56:27] PHP Notice:  Undefined variable: usermenu in /var/www/membership/membership.rewards/admin/menu.php on line 16
+[29-Jan-2014 17:56:27] PHP Stack trace:
+[29-Jan-2014 17:56:27] PHP   1. {main}() /var/www/membership/membership.rewards/admin/manualptcreation.php:0
+[29-Jan-2014 17:56:27] PHP   2. include() /var/www/membership/membership.rewards/admin/manualptcreation.php:254
+[29-Jan-2014 17:56:27] PHP Warning:  Invalid argument supplied for foreach() in /var/www/membership/membership.rewards/admin/menu.php on line 16
+[29-Jan-2014 17:56:27] PHP Stack trace:
+[29-Jan-2014 17:56:27] PHP   1. {main}() /var/www/membership/membership.rewards/admin/manualptcreation.php:0
+[29-Jan-2014 17:56:27] PHP   2. include() /var/www/membership/membership.rewards/admin/manualptcreation.php:254
+[29-Jan-2014 17:56:27] PHP Notice:  Undefined index: aID in /var/www/membership/membership.rewards/admin/menu.php on line 38
+[29-Jan-2014 17:56:27] PHP Stack trace:
+[29-Jan-2014 17:56:27] PHP   1. {main}() /var/www/membership/membership.rewards/admin/manualptcreation.php:0
+[29-Jan-2014 17:56:27] PHP   2. include() /var/www/membership/membership.rewards/admin/manualptcreation.php:254
+[29-Jan-2014 17:56:27] MySQL Error "You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1" File: /var/www/membership/membership.rewards/rsframework/include/datalayer/MySQLDatabase.php LINE: 147
+[29-Jan-2014 17:56:27] PHP Warning:  Invalid argument supplied for foreach() in /var/www/membership/membership.rewards/admin/menu.php on line 40
+[29-Jan-2014 17:56:27] PHP Stack trace:
+[29-Jan-2014 17:56:27] PHP   1. {main}() /var/www/membership/membership.rewards/admin/manualptcreation.php:0
+[29-Jan-2014 17:56:27] PHP   2. include() /var/www/membership/membership.rewards/admin/manualptcreation.php:254
+[29-Jan-2014 17:56:27] PHP Notice:  Undefined variable: username in /var/www/membership/membership.rewards/admin/menu.php on line 43
+[29-Jan-2014 17:56:27] PHP Stack trace:
+[29-Jan-2014 17:56:27] PHP   1. {main}() /var/www/membership/membership.rewards/admin/manualptcreation.php:0
+[29-Jan-2014 17:56:27] PHP   2. include() /var/www/membership/membership.rewards/admin/manualptcreation.php:254
+[29-Jan-2014 17:56:27] PHP Notice:  Undefined variable: usermenu in /var/www/membership/membership.rewards/admin/menu.php on line 51
+[29-Jan-2014 17:56:27] PHP Stack trace:
+[29-Jan-2014 17:56:27] PHP   1. {main}() /var/www/membership/membership.rewards/admin/manualptcreation.php:0
+[29-Jan-2014 17:56:27] PHP   2. include() /var/www/membership/membership.rewards/admin/manualptcreation.php:254
+[29-Jan-2014 17:56:27] PHP Warning:  Invalid argument supplied for foreach() in /var/www/membership/membership.rewards/admin/menu.php on line 51
+[29-Jan-2014 17:56:27] PHP Stack trace:
+[29-Jan-2014 17:56:27] PHP   1. {main}() /var/www/membership/membership.rewards/admin/manualptcreation.php:0
+[29-Jan-2014 17:56:27] PHP   2. include() /var/www/membership/membership.rewards/admin/manualptcreation.php:254
+[29-Jan-2014 17:56:33] PHP Notice:  Undefined variable: i in /var/www/membership/membership.rewards/rsframework/include/controls/ComboBox.class.php on line 152
+[29-Jan-2014 17:56:33] PHP Stack trace:
+[29-Jan-2014 17:56:33] PHP   1. {main}() /var/www/membership/membership.rewards/admin/manualptcreation.php:0
+[29-Jan-2014 17:56:33] PHP   2. ComboBox->DataBind() /var/www/membership/membership.rewards/admin/manualptcreation.php:38
+[29-Jan-2014 17:56:33] PHP Notice:  Undefined variable: i in /var/www/membership/membership.rewards/rsframework/include/controls/ComboBox.class.php on line 152
+[29-Jan-2014 17:56:33] PHP Stack trace:
+[29-Jan-2014 17:56:33] PHP   1. {main}() /var/www/membership/membership.rewards/admin/manualptcreation.php:0
+[29-Jan-2014 17:56:33] PHP   2. ComboBox->DataBind() /var/www/membership/membership.rewards/admin/manualptcreation.php:38
+[29-Jan-2014 17:58:17] PHP Notice:  Undefined variable: i in /var/www/membership/membership.rewards/rsframework/include/controls/ComboBox.class.php on line 152
+[29-Jan-2014 17:58:17] PHP Stack trace:
+[29-Jan-2014 17:58:17] PHP   1. {main}() /var/www/membership/membership.rewards/admin/manualptcreation.php:0
+[29-Jan-2014 17:58:17] PHP   2. ComboBox->DataBind() /var/www/membership/membership.rewards/admin/manualptcreation.php:42
+[29-Jan-2014 17:58:17] PHP Notice:  Undefined variable: i in /var/www/membership/membership.rewards/rsframework/include/controls/ComboBox.class.php on line 152
+[29-Jan-2014 17:58:17] PHP Stack trace:
+[29-Jan-2014 17:58:17] PHP   1. {main}() /var/www/membership/membership.rewards/admin/manualptcreation.php:0
+[29-Jan-2014 17:58:17] PHP   2. ComboBox->DataBind() /var/www/membership/membership.rewards/admin/manualptcreation.php:42
+[29-Jan-2014 18:10:20] [REGISTRATION ERROR] Failed to send SMS: Invalid Mobile Number [MID: 275].
+[29-Jan-2014 18:11:33] Error "Inactive Card: UBGTWHSG" File: /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php LINE: 78
+[29-Jan-2014 18:11:38] PHP Fatal error:  Call to undefined method RealtimeGamingPlayerAPI::GetPIDFromLogin() in /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/RealtimeGamingAPIWrapper.class.php on line 389
+[29-Jan-2014 18:11:38] PHP Stack trace:
+[29-Jan-2014 18:11:38] PHP   1. {main}() /var/www/membership/membership.rewards/API/cardinquiry.php:0
+[29-Jan-2014 18:11:38] PHP   2. GetCardInfoAPI->GetCardInfo() /var/www/membership/membership.rewards/API/cardinquiry.php:210
+[29-Jan-2014 18:11:38] PHP   3. ActivateMember->Migrate() /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php:263
+[29-Jan-2014 18:11:38] PHP   4. CasinoAPI->GetAccountInfo() /var/www/membership/membership.rewards/rsframework/include/Modules/Membership/classes/ActivateMember.class.php:190
+[29-Jan-2014 18:11:38] PHP   5. CasinoAPIHandler->GetAccountInfo() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/CasinoAPI.class.php:351
+[29-Jan-2014 18:11:38] PHP   6. RealtimeGamingAPIWrapper->GetAccountInfoByLogin() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/CasinoAPIHandler.class.php:175
+[29-Jan-2014 18:11:38] PHP   7. RealtimeGamingAPIWrapper->_GetPIDFromLogin() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/RealtimeGamingAPIWrapper.class.php:449
+[29-Jan-2014 18:26:23] [REGISTRATION ERROR] Failed to send SMS: Invalid Mobile Number [MID: 276].
+[29-Jan-2014 18:27:21] Error "Inactive Card: UB84M5QN" File: /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php LINE: 78
+[29-Jan-2014 18:27:24] Error "Values not submitted" File: /var/www/membership/membership.rewards/tempmemberactivation.php LINE: 307
+[29-Jan-2014 19:11:44] PHP Warning:  Cannot modify header information - headers already sent by (output started at /var/www/membership/membership.rewards/admin/header.php:115) in /var/www/membership/membership.rewards/rsframework/include/core/URL.class.php on line 16
+[29-Jan-2014 19:11:44] PHP Stack trace:
+[29-Jan-2014 19:11:44] PHP   1. {main}() /var/www/membership/membership.rewards/admin/manualptcreation.php:0
+[29-Jan-2014 19:11:44] PHP   2. include() /var/www/membership/membership.rewards/admin/manualptcreation.php:266
+[29-Jan-2014 19:11:44] PHP   3. include() /var/www/membership/membership.rewards/admin/menu.php:7
+[29-Jan-2014 19:11:44] PHP   4. URL::Redirect() /var/www/membership/membership.rewards/admin/sessionmanager.php:90
+[29-Jan-2014 19:11:44] PHP   5. header() /var/www/membership/membership.rewards/rsframework/include/core/URL.class.php:16
+[29-Jan-2014 19:11:44] PHP Notice:  Undefined variable: usermenu in /var/www/membership/membership.rewards/admin/menu.php on line 16
+[29-Jan-2014 19:11:44] PHP Stack trace:
+[29-Jan-2014 19:11:44] PHP   1. {main}() /var/www/membership/membership.rewards/admin/manualptcreation.php:0
+[29-Jan-2014 19:11:44] PHP   2. include() /var/www/membership/membership.rewards/admin/manualptcreation.php:266
+[29-Jan-2014 19:11:44] PHP Warning:  Invalid argument supplied for foreach() in /var/www/membership/membership.rewards/admin/menu.php on line 16
+[29-Jan-2014 19:11:44] PHP Stack trace:
+[29-Jan-2014 19:11:44] PHP   1. {main}() /var/www/membership/membership.rewards/admin/manualptcreation.php:0
+[29-Jan-2014 19:11:44] PHP   2. include() /var/www/membership/membership.rewards/admin/manualptcreation.php:266
+[29-Jan-2014 19:11:44] PHP Notice:  Undefined index: aID in /var/www/membership/membership.rewards/admin/menu.php on line 38
+[29-Jan-2014 19:11:44] PHP Stack trace:
+[29-Jan-2014 19:11:44] PHP   1. {main}() /var/www/membership/membership.rewards/admin/manualptcreation.php:0
+[29-Jan-2014 19:11:44] PHP   2. include() /var/www/membership/membership.rewards/admin/manualptcreation.php:266
+[29-Jan-2014 19:11:44] MySQL Error "You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1" File: /var/www/membership/membership.rewards/rsframework/include/datalayer/MySQLDatabase.php LINE: 147
+[29-Jan-2014 19:11:44] PHP Warning:  Invalid argument supplied for foreach() in /var/www/membership/membership.rewards/admin/menu.php on line 40
+[29-Jan-2014 19:11:44] PHP Stack trace:
+[29-Jan-2014 19:11:44] PHP   1. {main}() /var/www/membership/membership.rewards/admin/manualptcreation.php:0
+[29-Jan-2014 19:11:44] PHP   2. include() /var/www/membership/membership.rewards/admin/manualptcreation.php:266
+[29-Jan-2014 19:11:44] PHP Notice:  Undefined variable: username in /var/www/membership/membership.rewards/admin/menu.php on line 43
+[29-Jan-2014 19:11:44] PHP Stack trace:
+[29-Jan-2014 19:11:44] PHP   1. {main}() /var/www/membership/membership.rewards/admin/manualptcreation.php:0
+[29-Jan-2014 19:11:44] PHP   2. include() /var/www/membership/membership.rewards/admin/manualptcreation.php:266
+[29-Jan-2014 19:11:44] PHP Notice:  Undefined variable: usermenu in /var/www/membership/membership.rewards/admin/menu.php on line 51
+[29-Jan-2014 19:11:44] PHP Stack trace:
+[29-Jan-2014 19:11:44] PHP   1. {main}() /var/www/membership/membership.rewards/admin/manualptcreation.php:0
+[29-Jan-2014 19:11:44] PHP   2. include() /var/www/membership/membership.rewards/admin/manualptcreation.php:266
+[29-Jan-2014 19:11:44] PHP Warning:  Invalid argument supplied for foreach() in /var/www/membership/membership.rewards/admin/menu.php on line 51
+[29-Jan-2014 19:11:44] PHP Stack trace:
+[29-Jan-2014 19:11:44] PHP   1. {main}() /var/www/membership/membership.rewards/admin/manualptcreation.php:0
+[29-Jan-2014 19:11:44] PHP   2. include() /var/www/membership/membership.rewards/admin/manualptcreation.php:266
+[29-Jan-2014 20:01:26] PHP Warning:  Cannot modify header information - headers already sent by (output started at /var/www/membership/membership.rewards/admin/header.php:115) in /var/www/membership/membership.rewards/rsframework/include/core/URL.class.php on line 16
+[29-Jan-2014 20:01:26] PHP Stack trace:
+[29-Jan-2014 20:01:26] PHP   1. {main}() /var/www/membership/membership.rewards/admin/manualptcreation.php:0
+[29-Jan-2014 20:01:26] PHP   2. include() /var/www/membership/membership.rewards/admin/manualptcreation.php:265
+[29-Jan-2014 20:01:26] PHP   3. include() /var/www/membership/membership.rewards/admin/menu.php:7
+[29-Jan-2014 20:01:26] PHP   4. URL::Redirect() /var/www/membership/membership.rewards/admin/sessionmanager.php:90
+[29-Jan-2014 20:01:26] PHP   5. header() /var/www/membership/membership.rewards/rsframework/include/core/URL.class.php:16
+[29-Jan-2014 20:01:26] PHP Notice:  Undefined variable: usermenu in /var/www/membership/membership.rewards/admin/menu.php on line 16
+[29-Jan-2014 20:01:26] PHP Stack trace:
+[29-Jan-2014 20:01:26] PHP   1. {main}() /var/www/membership/membership.rewards/admin/manualptcreation.php:0
+[29-Jan-2014 20:01:26] PHP   2. include() /var/www/membership/membership.rewards/admin/manualptcreation.php:265
+[29-Jan-2014 20:01:26] PHP Warning:  Invalid argument supplied for foreach() in /var/www/membership/membership.rewards/admin/menu.php on line 16
+[29-Jan-2014 20:01:26] PHP Stack trace:
+[29-Jan-2014 20:01:26] PHP   1. {main}() /var/www/membership/membership.rewards/admin/manualptcreation.php:0
+[29-Jan-2014 20:01:26] PHP   2. include() /var/www/membership/membership.rewards/admin/manualptcreation.php:265
+[29-Jan-2014 20:01:26] PHP Notice:  Undefined index: aID in /var/www/membership/membership.rewards/admin/menu.php on line 38
+[29-Jan-2014 20:01:26] PHP Stack trace:
+[29-Jan-2014 20:01:26] PHP   1. {main}() /var/www/membership/membership.rewards/admin/manualptcreation.php:0
+[29-Jan-2014 20:01:26] PHP   2. include() /var/www/membership/membership.rewards/admin/manualptcreation.php:265
+[29-Jan-2014 20:01:26] MySQL Error "You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1" File: /var/www/membership/membership.rewards/rsframework/include/datalayer/MySQLDatabase.php LINE: 147
+[29-Jan-2014 20:01:26] PHP Warning:  Invalid argument supplied for foreach() in /var/www/membership/membership.rewards/admin/menu.php on line 40
+[29-Jan-2014 20:01:26] PHP Stack trace:
+[29-Jan-2014 20:01:26] PHP   1. {main}() /var/www/membership/membership.rewards/admin/manualptcreation.php:0
+[29-Jan-2014 20:01:26] PHP   2. include() /var/www/membership/membership.rewards/admin/manualptcreation.php:265
+[29-Jan-2014 20:01:26] PHP Notice:  Undefined variable: username in /var/www/membership/membership.rewards/admin/menu.php on line 43
+[29-Jan-2014 20:01:26] PHP Stack trace:
+[29-Jan-2014 20:01:26] PHP   1. {main}() /var/www/membership/membership.rewards/admin/manualptcreation.php:0
+[29-Jan-2014 20:01:26] PHP   2. include() /var/www/membership/membership.rewards/admin/manualptcreation.php:265
+[29-Jan-2014 20:01:26] PHP Notice:  Undefined variable: usermenu in /var/www/membership/membership.rewards/admin/menu.php on line 51
+[29-Jan-2014 20:01:26] PHP Stack trace:
+[29-Jan-2014 20:01:26] PHP   1. {main}() /var/www/membership/membership.rewards/admin/manualptcreation.php:0
+[29-Jan-2014 20:01:26] PHP   2. include() /var/www/membership/membership.rewards/admin/manualptcreation.php:265
+[29-Jan-2014 20:01:26] PHP Warning:  Invalid argument supplied for foreach() in /var/www/membership/membership.rewards/admin/menu.php on line 51
+[29-Jan-2014 20:01:26] PHP Stack trace:
+[29-Jan-2014 20:01:26] PHP   1. {main}() /var/www/membership/membership.rewards/admin/manualptcreation.php:0
+[29-Jan-2014 20:01:26] PHP   2. include() /var/www/membership/membership.rewards/admin/manualptcreation.php:265
+[29-Jan-2014 20:04:19] PHP Fatal error:  Using $this when not in object context in /var/www/membership/membership.rewards/admin/Helper/helper.manualptcreation.php on line 130
+[29-Jan-2014 20:04:19] PHP Stack trace:
+[29-Jan-2014 20:04:19] PHP   1. {main}() /var/www/membership/membership.rewards/admin/Helper/helper.manualptcreation.php:0
+[29-Jan-2014 20:07:26] PHP Fatal error:  Using $this when not in object context in /var/www/membership/membership.rewards/admin/Helper/helper.manualptcreation.php on line 135
+[29-Jan-2014 20:07:26] PHP Stack trace:
+[29-Jan-2014 20:07:26] PHP   1. {main}() /var/www/membership/membership.rewards/admin/Helper/helper.manualptcreation.php:0
+[29-Jan-2014 20:09:37] PHP Notice:  Undefined variable: casinoAccounts in /var/www/membership/membership.rewards/admin/Helper/helper.manualptcreation.php on line 138
+[29-Jan-2014 20:09:37] PHP Stack trace:
+[29-Jan-2014 20:09:37] PHP   1. {main}() /var/www/membership/membership.rewards/admin/Helper/helper.manualptcreation.php:0
+[29-Jan-2014 20:09:37] PHP Notice:  Undefined variable: casinoAccounts in /var/www/membership/membership.rewards/admin/Helper/helper.manualptcreation.php on line 139
+[29-Jan-2014 20:09:37] PHP Stack trace:
+[29-Jan-2014 20:09:37] PHP   1. {main}() /var/www/membership/membership.rewards/admin/Helper/helper.manualptcreation.php:0
+[29-Jan-2014 20:10:18] PHP Notice:  Undefined variable: casinoAccounts in /var/www/membership/membership.rewards/admin/Helper/helper.manualptcreation.php on line 138
+[29-Jan-2014 20:10:18] PHP Stack trace:
+[29-Jan-2014 20:10:18] PHP   1. {main}() /var/www/membership/membership.rewards/admin/Helper/helper.manualptcreation.php:0
+[29-Jan-2014 20:10:18] PHP Notice:  Undefined variable: casinoAccounts in /var/www/membership/membership.rewards/admin/Helper/helper.manualptcreation.php on line 139
+[29-Jan-2014 20:10:18] PHP Stack trace:
+[29-Jan-2014 20:10:18] PHP   1. {main}() /var/www/membership/membership.rewards/admin/Helper/helper.manualptcreation.php:0
+[29-Jan-2014 20:10:29] PHP Notice:  Undefined variable: casinoAccounts in /var/www/membership/membership.rewards/admin/Helper/helper.manualptcreation.php on line 138
+[29-Jan-2014 20:10:29] PHP Stack trace:
+[29-Jan-2014 20:10:29] PHP   1. {main}() /var/www/membership/membership.rewards/admin/Helper/helper.manualptcreation.php:0
+[29-Jan-2014 20:10:29] PHP Notice:  Undefined variable: casinoAccounts in /var/www/membership/membership.rewards/admin/Helper/helper.manualptcreation.php on line 139
+[29-Jan-2014 20:10:29] PHP Stack trace:
+[29-Jan-2014 20:10:29] PHP   1. {main}() /var/www/membership/membership.rewards/admin/Helper/helper.manualptcreation.php:0
+[29-Jan-2014 20:11:25] PHP Warning:  Missing argument 3 for CasinoServices::generateCasinoAccounts(), called in /var/www/membership/membership.rewards/admin/Helper/helper.manualptcreation.php on line 134 and defined in /var/www/membership/membership.rewards/rsframework/include/Modules/Kronus/classes/CasinoServices.class.php on line 51
+[29-Jan-2014 20:11:25] PHP Stack trace:
+[29-Jan-2014 20:11:25] PHP   1. {main}() /var/www/membership/membership.rewards/admin/Helper/helper.manualptcreation.php:0
+[29-Jan-2014 20:11:25] PHP   2. CasinoServices->generateCasinoAccounts() /var/www/membership/membership.rewards/admin/Helper/helper.manualptcreation.php:134
+[29-Jan-2014 20:11:25] PHP Notice:  Undefined variable: serviceName in /var/www/membership/membership.rewards/rsframework/include/Modules/Kronus/classes/CasinoServices.class.php on line 57
+[29-Jan-2014 20:11:25] PHP Stack trace:
+[29-Jan-2014 20:11:25] PHP   1. {main}() /var/www/membership/membership.rewards/admin/Helper/helper.manualptcreation.php:0
+[29-Jan-2014 20:11:25] PHP   2. CasinoServices->generateCasinoAccounts() /var/www/membership/membership.rewards/admin/Helper/helper.manualptcreation.php:134
+[29-Jan-2014 20:11:25] PHP Notice:  Undefined variable: serviceName in /var/www/membership/membership.rewards/rsframework/include/Modules/Kronus/classes/CasinoServices.class.php on line 60
+[29-Jan-2014 20:11:25] PHP Stack trace:
+[29-Jan-2014 20:11:25] PHP   1. {main}() /var/www/membership/membership.rewards/admin/Helper/helper.manualptcreation.php:0
+[29-Jan-2014 20:11:25] PHP   2. CasinoServices->generateCasinoAccounts() /var/www/membership/membership.rewards/admin/Helper/helper.manualptcreation.php:134
+[29-Jan-2014 20:11:25] PHP Notice:  Undefined variable: vipLevel in /var/www/membership/membership.rewards/rsframework/include/Modules/Kronus/classes/CasinoServices.class.php on line 74
+[29-Jan-2014 20:11:25] PHP Stack trace:
+[29-Jan-2014 20:11:25] PHP   1. {main}() /var/www/membership/membership.rewards/admin/Helper/helper.manualptcreation.php:0
+[29-Jan-2014 20:11:25] PHP   2. CasinoServices->generateCasinoAccounts() /var/www/membership/membership.rewards/admin/Helper/helper.manualptcreation.php:134

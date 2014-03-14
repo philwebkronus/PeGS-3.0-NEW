@@ -1,0 +1,99 @@
+[04-Nov-2013 09:54:05] Error "Inactive Card: UBDRQG9Y" File: /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php LINE: 76
+[04-Nov-2013 09:54:20] Error "Values not submitted" File: /var/www/membership/membership.rewards/tempmemberactivation.php LINE: 306
+[04-Nov-2013 11:13:55] PHP Notice:  Undefined index: userinfo in /var/www/membership/membership.rewards/admin/index.php on line 58
+[04-Nov-2013 11:13:55] PHP Stack trace:
+[04-Nov-2013 11:13:55] PHP   1. {main}() /var/www/membership/membership.rewards/admin/index.php:0
+[04-Nov-2013 11:13:55] PHP Warning:  Cannot modify header information - headers already sent by (output started at /var/www/membership/membership.rewards/admin/header.php:108) in /var/www/membership/membership.rewards/rsframework/include/core/URL.class.php on line 16
+[04-Nov-2013 11:13:55] PHP Stack trace:
+[04-Nov-2013 11:13:55] PHP   1. {main}() /var/www/membership/membership.rewards/admin/index.php:0
+[04-Nov-2013 11:13:55] PHP   2. include() /var/www/membership/membership.rewards/admin/index.php:509
+[04-Nov-2013 11:13:55] PHP   3. include() /var/www/membership/membership.rewards/admin/menu.php:7
+[04-Nov-2013 11:13:55] PHP   4. URL::Redirect() /var/www/membership/membership.rewards/admin/sessionmanager.php:90
+[04-Nov-2013 11:13:55] PHP   5. header() /var/www/membership/membership.rewards/rsframework/include/core/URL.class.php:16
+[04-Nov-2013 11:13:55] PHP Notice:  Undefined variable: usermenu in /var/www/membership/membership.rewards/admin/menu.php on line 16
+[04-Nov-2013 11:13:55] PHP Stack trace:
+[04-Nov-2013 11:13:55] PHP   1. {main}() /var/www/membership/membership.rewards/admin/index.php:0
+[04-Nov-2013 11:13:55] PHP   2. include() /var/www/membership/membership.rewards/admin/index.php:509
+[04-Nov-2013 11:13:55] PHP Warning:  Invalid argument supplied for foreach() in /var/www/membership/membership.rewards/admin/menu.php on line 16
+[04-Nov-2013 11:13:55] PHP Stack trace:
+[04-Nov-2013 11:13:55] PHP   1. {main}() /var/www/membership/membership.rewards/admin/index.php:0
+[04-Nov-2013 11:13:55] PHP   2. include() /var/www/membership/membership.rewards/admin/index.php:509
+[04-Nov-2013 11:13:55] PHP Notice:  Undefined index: aID in /var/www/membership/membership.rewards/admin/menu.php on line 38
+[04-Nov-2013 11:13:55] PHP Stack trace:
+[04-Nov-2013 11:13:55] PHP   1. {main}() /var/www/membership/membership.rewards/admin/index.php:0
+[04-Nov-2013 11:13:55] PHP   2. include() /var/www/membership/membership.rewards/admin/index.php:509
+[04-Nov-2013 11:13:55] MySQL Error "You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1" File: /var/www/membership/membership.rewards/rsframework/include/datalayer/MySQLDatabase.php LINE: 147
+[04-Nov-2013 11:13:55] PHP Warning:  Invalid argument supplied for foreach() in /var/www/membership/membership.rewards/admin/menu.php on line 40
+[04-Nov-2013 11:13:55] PHP Stack trace:
+[04-Nov-2013 11:13:55] PHP   1. {main}() /var/www/membership/membership.rewards/admin/index.php:0
+[04-Nov-2013 11:13:55] PHP   2. include() /var/www/membership/membership.rewards/admin/index.php:509
+[04-Nov-2013 11:13:55] PHP Notice:  Undefined variable: username in /var/www/membership/membership.rewards/admin/menu.php on line 43
+[04-Nov-2013 11:13:55] PHP Stack trace:
+[04-Nov-2013 11:13:55] PHP   1. {main}() /var/www/membership/membership.rewards/admin/index.php:0
+[04-Nov-2013 11:13:55] PHP   2. include() /var/www/membership/membership.rewards/admin/index.php:509
+[04-Nov-2013 11:13:55] PHP Notice:  Undefined variable: usermenu in /var/www/membership/membership.rewards/admin/menu.php on line 51
+[04-Nov-2013 11:13:55] PHP Stack trace:
+[04-Nov-2013 11:13:55] PHP   1. {main}() /var/www/membership/membership.rewards/admin/index.php:0
+[04-Nov-2013 11:13:55] PHP   2. include() /var/www/membership/membership.rewards/admin/index.php:509
+[04-Nov-2013 11:13:55] PHP Warning:  Invalid argument supplied for foreach() in /var/www/membership/membership.rewards/admin/menu.php on line 51
+[04-Nov-2013 11:13:55] PHP Stack trace:
+[04-Nov-2013 11:13:55] PHP   1. {main}() /var/www/membership/membership.rewards/admin/index.php:0
+[04-Nov-2013 11:13:55] PHP   2. include() /var/www/membership/membership.rewards/admin/index.php:509
+[04-Nov-2013 11:16:03] Error "Inactive Card: UB3538EB" File: /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php LINE: 76
+[04-Nov-2013 11:16:11] Error "Values not submitted" File: /var/www/membership/membership.rewards/tempmemberactivation.php LINE: 306
+[04-Nov-2013 11:16:13] MySQL Error "SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry '146' for key 'UK_membercards_CardID'" File: /var/www/membership/membership.rewards/rsframework/include/core/BaseEntity.class.php LINE: 88
+[04-Nov-2013 11:16:13] Error "Failed to insert in membercards table" File: /var/www/membership/membership.rewards/tempmemberactivation.php LINE: 297
+[04-Nov-2013 11:17:37] Error "Inactive Card: UB08F133" File: /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php LINE: 76
+[04-Nov-2013 11:17:41] Error "Values not submitted" File: /var/www/membership/membership.rewards/tempmemberactivation.php LINE: 306
+[04-Nov-2013 11:19:51] Error "Inactive Card: UB08F133" File: /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php LINE: 76
+[04-Nov-2013 11:19:54] Error "Values not submitted" File: /var/www/membership/membership.rewards/tempmemberactivation.php LINE: 317
+[04-Nov-2013 11:24:48] Error "Inactive Card: UBBEAC07" File: /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php LINE: 76
+[04-Nov-2013 11:25:01] Error "Values not submitted" File: /var/www/membership/membership.rewards/tempmemberactivation.php LINE: 317
+[04-Nov-2013 11:26:11] Error "Inactive Card: UBBEAC07" File: /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php LINE: 76
+[04-Nov-2013 11:26:17] Error "Values not submitted" File: /var/www/membership/membership.rewards/tempmemberactivation.php LINE: 317
+[04-Nov-2013 11:28:12] Error "Inactive Card: UBBEAC07" File: /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php LINE: 76
+[04-Nov-2013 11:28:20] Error "Values not submitted" File: /var/www/membership/membership.rewards/tempmemberactivation.php LINE: 317
+[04-Nov-2013 11:36:56] Error "Inactive Card: UBBEAC07" File: /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php LINE: 76
+[04-Nov-2013 11:37:05] Error "Values not submitted" File: /var/www/membership/membership.rewards/tempmemberactivation.php LINE: 306
+[04-Nov-2013 14:21:28] Error "Invalid card number: SELECT * FROM membership_temp.members WHERE TemporaryAccountCode = 'eGames7K60X';" File: /var/www/membership/membership.rewards/API/cardinquiry.php LINE: 231
+[04-Nov-2013 14:21:45] Error "Card Not Found[001]: eGames7K60X" File: /var/www/membership/membership.rewards/API/cardinquiry.php LINE: 156
+[04-Nov-2013 14:21:45] Error "Card Not Found[004]: eGames7K60X" File: /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php LINE: 583
+[04-Nov-2013 14:23:19] Error "Card Not Found[001]: eGames7K60X" File: /var/www/membership/membership.rewards/API/cardinquiry.php LINE: 156
+[04-Nov-2013 14:23:19] Error "Card Not Found[004]: eGames7K60X" File: /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php LINE: 583
+[04-Nov-2013 14:23:30] Error "Card Not Found[001]: eGames7K60X" File: /var/www/membership/membership.rewards/API/cardinquiry.php LINE: 156
+[04-Nov-2013 14:23:30] Error "Card Not Found[004]: eGames7K60X" File: /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php LINE: 583
+[04-Nov-2013 14:24:33] Error "Card Not Found[001]: eGames7K60X" File: /var/www/membership/membership.rewards/API/cardinquiry.php LINE: 156
+[04-Nov-2013 14:24:33] Error "Card Not Found[004]: eGames7K60X" File: /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php LINE: 583
+[04-Nov-2013 14:26:25] Error "Inactive Card: UBAF7PN5" File: /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php LINE: 76
+[04-Nov-2013 14:28:37] Error "Inactive Card: UBAF7PN5" File: /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php LINE: 76
+[04-Nov-2013 14:30:06] Error "Inactive Card: UBAF7PN5" File: /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php LINE: 76
+[04-Nov-2013 15:28:11] Error "Invalid card number" File: /var/www/membership/membership.rewards/admin/controller/cardsearchcontroller.php LINE: 115
+[04-Nov-2013 15:28:11] PHP Warning:  session_destroy() [<a href='0function.session-destroy0'>function.session-destroy0</a>]: Trying to destroy uninitialized session in /var/www/membership/membership.rewards/admin/sessionmanager.php on line 83
+[04-Nov-2013 15:28:11] PHP Stack trace:
+[04-Nov-2013 15:28:11] PHP   1. {main}() /var/www/membership/membership.rewards/admin/index.php:0
+[04-Nov-2013 15:28:11] PHP   2. include() /var/www/membership/membership.rewards/admin/index.php:509
+[04-Nov-2013 15:28:11] PHP   3. include() /var/www/membership/membership.rewards/admin/menu.php:7
+[04-Nov-2013 15:28:11] PHP   4. session_destroy() /var/www/membership/membership.rewards/admin/sessionmanager.php:83
+[04-Nov-2013 15:28:11] PHP Warning:  Cannot modify header information - headers already sent by (output started at /var/www/membership/membership.rewards/admin/header.php:115) in /var/www/membership/membership.rewards/rsframework/include/core/URL.class.php on line 16
+[04-Nov-2013 15:28:11] PHP Stack trace:
+[04-Nov-2013 15:28:11] PHP   1. {main}() /var/www/membership/membership.rewards/admin/index.php:0
+[04-Nov-2013 15:28:11] PHP   2. include() /var/www/membership/membership.rewards/admin/index.php:509
+[04-Nov-2013 15:28:11] PHP   3. include() /var/www/membership/membership.rewards/admin/menu.php:7
+[04-Nov-2013 15:28:11] PHP   4. URL::Redirect() /var/www/membership/membership.rewards/admin/sessionmanager.php:84
+[04-Nov-2013 15:28:11] PHP   5. header() /var/www/membership/membership.rewards/rsframework/include/core/URL.class.php:16
+[04-Nov-2013 15:28:11] PHP Notice:  Undefined variable: usermenu in /var/www/membership/membership.rewards/admin/menu.php on line 16
+[04-Nov-2013 15:28:11] PHP Stack trace:
+[04-Nov-2013 15:28:11] PHP   1. {main}() /var/www/membership/membership.rewards/admin/index.php:0
+[04-Nov-2013 15:28:11] PHP   2. include() /var/www/membership/membership.rewards/admin/index.php:509
+[04-Nov-2013 15:28:11] PHP Warning:  Invalid argument supplied for foreach() in /var/www/membership/membership.rewards/admin/menu.php on line 16
+[04-Nov-2013 15:28:11] PHP Stack trace:
+[04-Nov-2013 15:28:11] PHP   1. {main}() /var/www/membership/membership.rewards/admin/index.php:0
+[04-Nov-2013 15:28:11] PHP   2. include() /var/www/membership/membership.rewards/admin/index.php:509
+[04-Nov-2013 15:28:11] PHP Notice:  Undefined variable: usermenu in /var/www/membership/membership.rewards/admin/menu.php on line 51
+[04-Nov-2013 15:28:11] PHP Stack trace:
+[04-Nov-2013 15:28:11] PHP   1. {main}() /var/www/membership/membership.rewards/admin/index.php:0
+[04-Nov-2013 15:28:11] PHP   2. include() /var/www/membership/membership.rewards/admin/index.php:509
+[04-Nov-2013 15:28:11] PHP Warning:  Invalid argument supplied for foreach() in /var/www/membership/membership.rewards/admin/menu.php on line 51
+[04-Nov-2013 15:28:11] PHP Stack trace:
+[04-Nov-2013 15:28:11] PHP   1. {main}() /var/www/membership/membership.rewards/admin/index.php:0
+[04-Nov-2013 15:28:11] PHP   2. include() /var/www/membership/membership.rewards/admin/index.php:509

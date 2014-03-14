@@ -1,0 +1,110 @@
+[13-Dec-2013 15:44:13] PHP Warning:  Cannot modify header information - headers already sent by (output started at /var/www/membership/membership.rewards/admin/header.php:115) in /var/www/membership/membership.rewards/rsframework/include/core/URL.class.php on line 16
+[13-Dec-2013 15:44:13] PHP Stack trace:
+[13-Dec-2013 15:44:13] PHP   1. {main}() /var/www/membership/membership.rewards/admin/manualptcreation.php:0
+[13-Dec-2013 15:44:13] PHP   2. include() /var/www/membership/membership.rewards/admin/manualptcreation.php:213
+[13-Dec-2013 15:44:13] PHP   3. include() /var/www/membership/membership.rewards/admin/menu.php:7
+[13-Dec-2013 15:44:13] PHP   4. URL::Redirect() /var/www/membership/membership.rewards/admin/sessionmanager.php:90
+[13-Dec-2013 15:44:13] PHP   5. header() /var/www/membership/membership.rewards/rsframework/include/core/URL.class.php:16
+[13-Dec-2013 15:44:13] PHP Notice:  Undefined variable: usermenu in /var/www/membership/membership.rewards/admin/menu.php on line 16
+[13-Dec-2013 15:44:13] PHP Stack trace:
+[13-Dec-2013 15:44:13] PHP   1. {main}() /var/www/membership/membership.rewards/admin/manualptcreation.php:0
+[13-Dec-2013 15:44:13] PHP   2. include() /var/www/membership/membership.rewards/admin/manualptcreation.php:213
+[13-Dec-2013 15:44:13] PHP Warning:  Invalid argument supplied for foreach() in /var/www/membership/membership.rewards/admin/menu.php on line 16
+[13-Dec-2013 15:44:13] PHP Stack trace:
+[13-Dec-2013 15:44:13] PHP   1. {main}() /var/www/membership/membership.rewards/admin/manualptcreation.php:0
+[13-Dec-2013 15:44:13] PHP   2. include() /var/www/membership/membership.rewards/admin/manualptcreation.php:213
+[13-Dec-2013 15:44:13] PHP Notice:  Undefined index: aID in /var/www/membership/membership.rewards/admin/menu.php on line 38
+[13-Dec-2013 15:44:13] PHP Stack trace:
+[13-Dec-2013 15:44:13] PHP   1. {main}() /var/www/membership/membership.rewards/admin/manualptcreation.php:0
+[13-Dec-2013 15:44:13] PHP   2. include() /var/www/membership/membership.rewards/admin/manualptcreation.php:213
+[13-Dec-2013 15:44:13] MySQL Error "You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1" File: /var/www/membership/membership.rewards/rsframework/include/datalayer/MySQLDatabase.php LINE: 147
+[13-Dec-2013 15:44:13] PHP Warning:  Invalid argument supplied for foreach() in /var/www/membership/membership.rewards/admin/menu.php on line 40
+[13-Dec-2013 15:44:13] PHP Stack trace:
+[13-Dec-2013 15:44:13] PHP   1. {main}() /var/www/membership/membership.rewards/admin/manualptcreation.php:0
+[13-Dec-2013 15:44:13] PHP   2. include() /var/www/membership/membership.rewards/admin/manualptcreation.php:213
+[13-Dec-2013 15:44:13] PHP Notice:  Undefined variable: username in /var/www/membership/membership.rewards/admin/menu.php on line 43
+[13-Dec-2013 15:44:13] PHP Stack trace:
+[13-Dec-2013 15:44:13] PHP   1. {main}() /var/www/membership/membership.rewards/admin/manualptcreation.php:0
+[13-Dec-2013 15:44:13] PHP   2. include() /var/www/membership/membership.rewards/admin/manualptcreation.php:213
+[13-Dec-2013 15:44:13] PHP Notice:  Undefined variable: usermenu in /var/www/membership/membership.rewards/admin/menu.php on line 51
+[13-Dec-2013 15:44:13] PHP Stack trace:
+[13-Dec-2013 15:44:13] PHP   1. {main}() /var/www/membership/membership.rewards/admin/manualptcreation.php:0
+[13-Dec-2013 15:44:13] PHP   2. include() /var/www/membership/membership.rewards/admin/manualptcreation.php:213
+[13-Dec-2013 15:44:13] PHP Warning:  Invalid argument supplied for foreach() in /var/www/membership/membership.rewards/admin/menu.php on line 51
+[13-Dec-2013 15:44:13] PHP Stack trace:
+[13-Dec-2013 15:44:13] PHP   1. {main}() /var/www/membership/membership.rewards/admin/manualptcreation.php:0
+[13-Dec-2013 15:44:13] PHP   2. include() /var/www/membership/membership.rewards/admin/manualptcreation.php:213
+[13-Dec-2013 16:53:38] PHP Warning:  Cannot modify header information - headers already sent by (output started at /var/www/membership/membership.rewards/admin/header.php:115) in /var/www/membership/membership.rewards/rsframework/include/core/URL.class.php on line 16
+[13-Dec-2013 16:53:38] PHP Stack trace:
+[13-Dec-2013 16:53:38] PHP   1. {main}() /var/www/membership/membership.rewards/admin/manualptcreation.php:0
+[13-Dec-2013 16:53:38] PHP   2. include() /var/www/membership/membership.rewards/admin/manualptcreation.php:213
+[13-Dec-2013 16:53:38] PHP   3. include() /var/www/membership/membership.rewards/admin/menu.php:7
+[13-Dec-2013 16:53:38] PHP   4. URL::Redirect() /var/www/membership/membership.rewards/admin/sessionmanager.php:90
+[13-Dec-2013 16:53:38] PHP   5. header() /var/www/membership/membership.rewards/rsframework/include/core/URL.class.php:16
+[13-Dec-2013 16:53:38] PHP Notice:  Undefined variable: usermenu in /var/www/membership/membership.rewards/admin/menu.php on line 16
+[13-Dec-2013 16:53:38] PHP Stack trace:
+[13-Dec-2013 16:53:38] PHP   1. {main}() /var/www/membership/membership.rewards/admin/manualptcreation.php:0
+[13-Dec-2013 16:53:38] PHP   2. include() /var/www/membership/membership.rewards/admin/manualptcreation.php:213
+[13-Dec-2013 16:53:38] PHP Warning:  Invalid argument supplied for foreach() in /var/www/membership/membership.rewards/admin/menu.php on line 16
+[13-Dec-2013 16:53:38] PHP Stack trace:
+[13-Dec-2013 16:53:38] PHP   1. {main}() /var/www/membership/membership.rewards/admin/manualptcreation.php:0
+[13-Dec-2013 16:53:38] PHP   2. include() /var/www/membership/membership.rewards/admin/manualptcreation.php:213
+[13-Dec-2013 16:53:38] PHP Notice:  Undefined index: aID in /var/www/membership/membership.rewards/admin/menu.php on line 38
+[13-Dec-2013 16:53:38] PHP Stack trace:
+[13-Dec-2013 16:53:38] PHP   1. {main}() /var/www/membership/membership.rewards/admin/manualptcreation.php:0
+[13-Dec-2013 16:53:38] PHP   2. include() /var/www/membership/membership.rewards/admin/manualptcreation.php:213
+[13-Dec-2013 16:53:38] MySQL Error "You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1" File: /var/www/membership/membership.rewards/rsframework/include/datalayer/MySQLDatabase.php LINE: 147
+[13-Dec-2013 16:53:38] PHP Warning:  Invalid argument supplied for foreach() in /var/www/membership/membership.rewards/admin/menu.php on line 40
+[13-Dec-2013 16:53:38] PHP Stack trace:
+[13-Dec-2013 16:53:38] PHP   1. {main}() /var/www/membership/membership.rewards/admin/manualptcreation.php:0
+[13-Dec-2013 16:53:38] PHP   2. include() /var/www/membership/membership.rewards/admin/manualptcreation.php:213
+[13-Dec-2013 16:53:38] PHP Notice:  Undefined variable: username in /var/www/membership/membership.rewards/admin/menu.php on line 43
+[13-Dec-2013 16:53:38] PHP Stack trace:
+[13-Dec-2013 16:53:38] PHP   1. {main}() /var/www/membership/membership.rewards/admin/manualptcreation.php:0
+[13-Dec-2013 16:53:38] PHP   2. include() /var/www/membership/membership.rewards/admin/manualptcreation.php:213
+[13-Dec-2013 16:53:38] PHP Notice:  Undefined variable: usermenu in /var/www/membership/membership.rewards/admin/menu.php on line 51
+[13-Dec-2013 16:53:38] PHP Stack trace:
+[13-Dec-2013 16:53:38] PHP   1. {main}() /var/www/membership/membership.rewards/admin/manualptcreation.php:0
+[13-Dec-2013 16:53:38] PHP   2. include() /var/www/membership/membership.rewards/admin/manualptcreation.php:213
+[13-Dec-2013 16:53:38] PHP Warning:  Invalid argument supplied for foreach() in /var/www/membership/membership.rewards/admin/menu.php on line 51
+[13-Dec-2013 16:53:38] PHP Stack trace:
+[13-Dec-2013 16:53:38] PHP   1. {main}() /var/www/membership/membership.rewards/admin/manualptcreation.php:0
+[13-Dec-2013 16:53:38] PHP   2. include() /var/www/membership/membership.rewards/admin/manualptcreation.php:213
+[13-Dec-2013 17:06:07] PHP Warning:  Cannot modify header information - headers already sent by (output started at /var/www/membership/membership.rewards/admin/header.php:115) in /var/www/membership/membership.rewards/rsframework/include/core/URL.class.php on line 16
+[13-Dec-2013 17:06:07] PHP Stack trace:
+[13-Dec-2013 17:06:07] PHP   1. {main}() /var/www/membership/membership.rewards/admin/manualptcreation.php:0
+[13-Dec-2013 17:06:07] PHP   2. include() /var/www/membership/membership.rewards/admin/manualptcreation.php:213
+[13-Dec-2013 17:06:07] PHP   3. include() /var/www/membership/membership.rewards/admin/menu.php:7
+[13-Dec-2013 17:06:07] PHP   4. URL::Redirect() /var/www/membership/membership.rewards/admin/sessionmanager.php:90
+[13-Dec-2013 17:06:07] PHP   5. header() /var/www/membership/membership.rewards/rsframework/include/core/URL.class.php:16
+[13-Dec-2013 17:06:07] PHP Notice:  Undefined variable: usermenu in /var/www/membership/membership.rewards/admin/menu.php on line 16
+[13-Dec-2013 17:06:07] PHP Stack trace:
+[13-Dec-2013 17:06:07] PHP   1. {main}() /var/www/membership/membership.rewards/admin/manualptcreation.php:0
+[13-Dec-2013 17:06:07] PHP   2. include() /var/www/membership/membership.rewards/admin/manualptcreation.php:213
+[13-Dec-2013 17:06:07] PHP Warning:  Invalid argument supplied for foreach() in /var/www/membership/membership.rewards/admin/menu.php on line 16
+[13-Dec-2013 17:06:07] PHP Stack trace:
+[13-Dec-2013 17:06:07] PHP   1. {main}() /var/www/membership/membership.rewards/admin/manualptcreation.php:0
+[13-Dec-2013 17:06:07] PHP   2. include() /var/www/membership/membership.rewards/admin/manualptcreation.php:213
+[13-Dec-2013 17:06:07] PHP Notice:  Undefined index: aID in /var/www/membership/membership.rewards/admin/menu.php on line 38
+[13-Dec-2013 17:06:07] PHP Stack trace:
+[13-Dec-2013 17:06:07] PHP   1. {main}() /var/www/membership/membership.rewards/admin/manualptcreation.php:0
+[13-Dec-2013 17:06:07] PHP   2. include() /var/www/membership/membership.rewards/admin/manualptcreation.php:213
+[13-Dec-2013 17:06:07] MySQL Error "You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1" File: /var/www/membership/membership.rewards/rsframework/include/datalayer/MySQLDatabase.php LINE: 147
+[13-Dec-2013 17:06:07] PHP Warning:  Invalid argument supplied for foreach() in /var/www/membership/membership.rewards/admin/menu.php on line 40
+[13-Dec-2013 17:06:07] PHP Stack trace:
+[13-Dec-2013 17:06:07] PHP   1. {main}() /var/www/membership/membership.rewards/admin/manualptcreation.php:0
+[13-Dec-2013 17:06:07] PHP   2. include() /var/www/membership/membership.rewards/admin/manualptcreation.php:213
+[13-Dec-2013 17:06:07] PHP Notice:  Undefined variable: username in /var/www/membership/membership.rewards/admin/menu.php on line 43
+[13-Dec-2013 17:06:07] PHP Stack trace:
+[13-Dec-2013 17:06:07] PHP   1. {main}() /var/www/membership/membership.rewards/admin/manualptcreation.php:0
+[13-Dec-2013 17:06:07] PHP   2. include() /var/www/membership/membership.rewards/admin/manualptcreation.php:213
+[13-Dec-2013 17:06:07] PHP Notice:  Undefined variable: usermenu in /var/www/membership/membership.rewards/admin/menu.php on line 51
+[13-Dec-2013 17:06:07] PHP Stack trace:
+[13-Dec-2013 17:06:07] PHP   1. {main}() /var/www/membership/membership.rewards/admin/manualptcreation.php:0
+[13-Dec-2013 17:06:07] PHP   2. include() /var/www/membership/membership.rewards/admin/manualptcreation.php:213
+[13-Dec-2013 17:06:07] PHP Warning:  Invalid argument supplied for foreach() in /var/www/membership/membership.rewards/admin/menu.php on line 51
+[13-Dec-2013 17:06:07] PHP Stack trace:
+[13-Dec-2013 17:06:07] PHP   1. {main}() /var/www/membership/membership.rewards/admin/manualptcreation.php:0
+[13-Dec-2013 17:06:07] PHP   2. include() /var/www/membership/membership.rewards/admin/manualptcreation.php:213
+[13-Dec-2013 17:22:44] [REGISTRATION ERROR] Failed to send SMS: Invalid Mobile Number [MID: 222].
+[13-Dec-2013 17:58:00] [REGISTRATION ERROR] Failed to send SMS: Invalid Mobile Number [MID: 224].

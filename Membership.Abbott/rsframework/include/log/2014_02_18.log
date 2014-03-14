@@ -1,0 +1,9 @@
+[18-Feb-2014 10:46:20] Error "Inactive Card: UBKH3CFU" File: /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php LINE: 78
+[18-Feb-2014 11:41:50] Error "Inactive Card: UBYDER6R" File: /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php LINE: 78
+[18-Feb-2014 13:19:17] Error "Inactive Card: UBH2DU73" File: /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php LINE: 78
+[18-Feb-2014 13:19:22] Error "Inactive Card: UBPP42ZP" File: /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php LINE: 78
+[18-Feb-2014 13:27:59] Error "Card Not Found[003]: 194400021160" File: /var/www/membership/membership.rewards/API/cardinquiry.php LINE: 205
+[18-Feb-2014 13:27:59] Error "Card Not Found[004]: 194400021160" File: /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php LINE: 602
+[18-Feb-2014 13:35:52] Error "Inactive Card: UBXCHFRA" File: /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php LINE: 78
+[18-Feb-2014 13:36:00] Error "Values not submitted" File: /var/www/membership/membership.rewards/tempmemberactivation.php LINE: 307
+[18-Feb-2014 13:36:58] Error "Invalid card number: exit;" File: /var/www/membership/membership.rewards/API/cardinquiry.php LINE: 240

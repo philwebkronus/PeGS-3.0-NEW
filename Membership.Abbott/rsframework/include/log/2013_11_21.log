@@ -1,0 +1,40 @@
+[21-Nov-2013 18:06:41] PHP Notice:  Undefined index: userinfo in /var/www/membership/membership.rewards/admin/index.php on line 58
+[21-Nov-2013 18:06:41] PHP Stack trace:
+[21-Nov-2013 18:06:41] PHP   1. {main}() /var/www/membership/membership.rewards/admin/index.php:0
+[21-Nov-2013 18:06:41] PHP Warning:  Cannot modify header information - headers already sent by (output started at /var/www/membership/membership.rewards/admin/header.php:108) in /var/www/membership/membership.rewards/rsframework/include/core/URL.class.php on line 16
+[21-Nov-2013 18:06:41] PHP Stack trace:
+[21-Nov-2013 18:06:41] PHP   1. {main}() /var/www/membership/membership.rewards/admin/index.php:0
+[21-Nov-2013 18:06:41] PHP   2. include() /var/www/membership/membership.rewards/admin/index.php:509
+[21-Nov-2013 18:06:41] PHP   3. include() /var/www/membership/membership.rewards/admin/menu.php:7
+[21-Nov-2013 18:06:41] PHP   4. URL::Redirect() /var/www/membership/membership.rewards/admin/sessionmanager.php:90
+[21-Nov-2013 18:06:41] PHP   5. header() /var/www/membership/membership.rewards/rsframework/include/core/URL.class.php:16
+[21-Nov-2013 18:06:41] PHP Notice:  Undefined variable: usermenu in /var/www/membership/membership.rewards/admin/menu.php on line 16
+[21-Nov-2013 18:06:41] PHP Stack trace:
+[21-Nov-2013 18:06:41] PHP   1. {main}() /var/www/membership/membership.rewards/admin/index.php:0
+[21-Nov-2013 18:06:41] PHP   2. include() /var/www/membership/membership.rewards/admin/index.php:509
+[21-Nov-2013 18:06:41] PHP Warning:  Invalid argument supplied for foreach() in /var/www/membership/membership.rewards/admin/menu.php on line 16
+[21-Nov-2013 18:06:41] PHP Stack trace:
+[21-Nov-2013 18:06:41] PHP   1. {main}() /var/www/membership/membership.rewards/admin/index.php:0
+[21-Nov-2013 18:06:41] PHP   2. include() /var/www/membership/membership.rewards/admin/index.php:509
+[21-Nov-2013 18:06:41] PHP Notice:  Undefined index: aID in /var/www/membership/membership.rewards/admin/menu.php on line 38
+[21-Nov-2013 18:06:41] PHP Stack trace:
+[21-Nov-2013 18:06:41] PHP   1. {main}() /var/www/membership/membership.rewards/admin/index.php:0
+[21-Nov-2013 18:06:41] PHP   2. include() /var/www/membership/membership.rewards/admin/index.php:509
+[21-Nov-2013 18:06:41] MySQL Error "You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1" File: /var/www/membership/membership.rewards/rsframework/include/datalayer/MySQLDatabase.php LINE: 147
+[21-Nov-2013 18:06:41] PHP Warning:  Invalid argument supplied for foreach() in /var/www/membership/membership.rewards/admin/menu.php on line 40
+[21-Nov-2013 18:06:41] PHP Stack trace:
+[21-Nov-2013 18:06:41] PHP   1. {main}() /var/www/membership/membership.rewards/admin/index.php:0
+[21-Nov-2013 18:06:41] PHP   2. include() /var/www/membership/membership.rewards/admin/index.php:509
+[21-Nov-2013 18:06:41] PHP Notice:  Undefined variable: username in /var/www/membership/membership.rewards/admin/menu.php on line 43
+[21-Nov-2013 18:06:41] PHP Stack trace:
+[21-Nov-2013 18:06:41] PHP   1. {main}() /var/www/membership/membership.rewards/admin/index.php:0
+[21-Nov-2013 18:06:41] PHP   2. include() /var/www/membership/membership.rewards/admin/index.php:509
+[21-Nov-2013 18:06:41] PHP Notice:  Undefined variable: usermenu in /var/www/membership/membership.rewards/admin/menu.php on line 51
+[21-Nov-2013 18:06:41] PHP Stack trace:
+[21-Nov-2013 18:06:41] PHP   1. {main}() /var/www/membership/membership.rewards/admin/index.php:0
+[21-Nov-2013 18:06:41] PHP   2. include() /var/www/membership/membership.rewards/admin/index.php:509
+[21-Nov-2013 18:06:41] PHP Warning:  Invalid argument supplied for foreach() in /var/www/membership/membership.rewards/admin/menu.php on line 51
+[21-Nov-2013 18:06:41] PHP Stack trace:
+[21-Nov-2013 18:06:41] PHP   1. {main}() /var/www/membership/membership.rewards/admin/index.php:0
+[21-Nov-2013 18:06:41] PHP   2. include() /var/www/membership/membership.rewards/admin/index.php:509
+[21-Nov-2013 18:26:25] Error "Parameters not set" File: /var/www/membership/membership.rewards/memberactivation.php LINE: 272

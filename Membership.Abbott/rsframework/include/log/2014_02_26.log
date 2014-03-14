@@ -1,0 +1,4 @@
+[26-Feb-2014 14:43:47] Error "Inactive Card: UB4NHZWQ" File: /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php LINE: 78
+[26-Feb-2014 14:43:50] Error "Values not submitted" File: /var/www/membership/membership.rewards/tempmemberactivation.php LINE: 307
+[26-Feb-2014 16:01:20] Error "Card Not Found[002]: UBHPJF5" File: /var/www/membership/membership.rewards/API/cardinquiry.php LINE: 199
+[26-Feb-2014 16:01:21] Error "Card Not Found[004]: UBHPJF5" File: /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php LINE: 602

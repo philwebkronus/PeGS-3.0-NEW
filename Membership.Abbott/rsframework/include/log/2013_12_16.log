@@ -1,0 +1,50 @@
+[16-Dec-2013 15:21:39] Error "Parameters not set" File: /var/www/membership/membership.rewards/memberactivation.php LINE: 272
+[16-Dec-2013 15:24:37] [REGISTRATION ERROR] Failed to send SMS: Invalid Mobile Number [MID: 229].
+[16-Dec-2013 18:10:25] Error "Card Number is blank" File: /var/www/membership/membership.rewards/API/cardinquiry.php LINE: 69
+[16-Dec-2013 18:11:08] Error "Card Number is blank" File: /var/www/membership/membership.rewards/API/cardinquiry.php LINE: 69
+[16-Dec-2013 18:13:55] PHP Warning:  Missing argument 2 for ActivateMember::Migrate(), called in /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php on line 263 and defined in /var/www/membership/membership.rewards/rsframework/include/Modules/Membership/classes/ActivateMember.class.php on line 26
+[16-Dec-2013 18:13:55] PHP Stack trace:
+[16-Dec-2013 18:13:55] PHP   1. {main}() /var/www/membership/membership.rewards/API/cardinquiry.php:0
+[16-Dec-2013 18:13:55] PHP   2. GetCardInfoAPI->GetCardInfo() /var/www/membership/membership.rewards/API/cardinquiry.php:202
+[16-Dec-2013 18:13:55] PHP   3. ActivateMember->Migrate() /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php:263
+[16-Dec-2013 18:13:55] PHP Notice:  Undefined variable: siteID in /var/www/membership/membership.rewards/rsframework/include/Modules/Membership/classes/ActivateMember.class.php on line 125
+[16-Dec-2013 18:13:55] PHP Stack trace:
+[16-Dec-2013 18:13:55] PHP   1. {main}() /var/www/membership/membership.rewards/API/cardinquiry.php:0
+[16-Dec-2013 18:13:55] PHP   2. GetCardInfoAPI->GetCardInfo() /var/www/membership/membership.rewards/API/cardinquiry.php:202
+[16-Dec-2013 18:13:55] PHP   3. ActivateMember->Migrate() /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php:263
+[16-Dec-2013 18:17:23] [REGISTRATION ERROR] Failed to send SMS: Invalid Mobile Number [MID: 230].
+[16-Dec-2013 18:18:29] PHP Warning:  Missing argument 2 for ActivateMember::Migrate(), called in /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php on line 263 and defined in /var/www/membership/membership.rewards/rsframework/include/Modules/Membership/classes/ActivateMember.class.php on line 26
+[16-Dec-2013 18:18:29] PHP Stack trace:
+[16-Dec-2013 18:18:29] PHP   1. {main}() /var/www/membership/membership.rewards/API/cardinquiry.php:0
+[16-Dec-2013 18:18:29] PHP   2. GetCardInfoAPI->GetCardInfo() /var/www/membership/membership.rewards/API/cardinquiry.php:202
+[16-Dec-2013 18:18:29] PHP   3. ActivateMember->Migrate() /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php:263
+[16-Dec-2013 18:18:29] PHP Notice:  Undefined variable: siteID in /var/www/membership/membership.rewards/rsframework/include/Modules/Membership/classes/ActivateMember.class.php on line 125
+[16-Dec-2013 18:18:29] PHP Stack trace:
+[16-Dec-2013 18:18:29] PHP   1. {main}() /var/www/membership/membership.rewards/API/cardinquiry.php:0
+[16-Dec-2013 18:18:29] PHP   2. GetCardInfoAPI->GetCardInfo() /var/www/membership/membership.rewards/API/cardinquiry.php:202
+[16-Dec-2013 18:18:29] PHP   3. ActivateMember->Migrate() /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php:263
+[16-Dec-2013 18:23:23] [REGISTRATION ERROR] Failed to send SMS: Invalid Mobile Number [MID: 231].
+[16-Dec-2013 19:49:41] Error "Parameters not set" File: /var/www/membership/membership.rewards/memberactivation.php LINE: 272
+[16-Dec-2013 19:50:19] Error "Card Number is blank" File: /var/www/membership/membership.rewards/API/cardinquiry.php LINE: 69
+[16-Dec-2013 20:02:09] Error "Card Number is blank" File: /var/www/membership/membership.rewards/API/cardinquiry.php LINE: 69
+[16-Dec-2013 20:02:20] Error "Card Number is blank" File: /var/www/membership/membership.rewards/API/cardinquiry.php LINE: 69
+[16-Dec-2013 20:19:01] Error "Card Number is blank" File: /var/www/membership/membership.rewards/API/cardinquiry.php LINE: 69
+[16-Dec-2013 20:19:25] Error "Card Number is blank" File: /var/www/membership/membership.rewards/API/cardinquiry.php LINE: 69
+[16-Dec-2013 20:20:29] Error "Card Number is blank" File: /var/www/membership/membership.rewards/API/cardinquiry.php LINE: 69
+[16-Dec-2013 20:21:17] Error "Card Number is blank" File: /var/www/membership/membership.rewards/API/cardinquiry.php LINE: 69
+[16-Dec-2013 20:21:34] Error "Card Number is blank" File: /var/www/membership/membership.rewards/API/cardinquiry.php LINE: 69
+[16-Dec-2013 20:24:52] Error "Card Number is blank" File: /var/www/membership/membership.rewards/API/cardinquiry.php LINE: 69
+[16-Dec-2013 20:24:58] Error "Card Number is blank" File: /var/www/membership/membership.rewards/API/cardinquiry.php LINE: 69
+[16-Dec-2013 20:27:57] Error "Card Number is blank" File: /var/www/membership/membership.rewards/API/cardinquiry.php LINE: 69
+[16-Dec-2013 20:31:47] [REGISTRATION ERROR] Failed to send SMS: Invalid Mobile Number [MID: 232].
+[16-Dec-2013 20:34:05] Error "Card Number is blank" File: /var/www/membership/membership.rewards/API/cardinquiry.php LINE: 69
+[16-Dec-2013 20:43:54] Error "Card Number is blank" File: /var/www/membership/membership.rewards/API/cardinquiry.php LINE: 69
+[16-Dec-2013 20:44:47] Error "Card Number is blank" File: /var/www/membership/membership.rewards/API/cardinquiry.php LINE: 69
+[16-Dec-2013 20:45:43] Error "Card Number is blank" File: /var/www/membership/membership.rewards/API/cardinquiry.php LINE: 69
+[16-Dec-2013 20:45:50] Error "Card Number is blank" File: /var/www/membership/membership.rewards/API/cardinquiry.php LINE: 69
+[16-Dec-2013 20:46:13] PHP Notice:  Undefined index: siteid in /var/www/membership/membership.rewards/API/cardinquiry.php on line 44
+[16-Dec-2013 20:46:13] PHP Stack trace:
+[16-Dec-2013 20:46:13] PHP   1. {main}() /var/www/membership/membership.rewards/API/cardinquiry.php:0
+[16-Dec-2013 20:48:46] Error "Card Number is blank" File: /var/www/membership/membership.rewards/API/cardinquiry.php LINE: 70
+[16-Dec-2013 21:06:10] Error "Inactive Card: UB89983048203247" File: /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php LINE: 78
+[16-Dec-2013 21:06:18] Error "Values not submitted" File: /var/www/membership/membership.rewards/tempmemberactivation.php LINE: 307

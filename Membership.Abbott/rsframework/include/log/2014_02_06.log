@@ -1,0 +1,40 @@
+[06-Feb-2014 13:59:20] PHP Notice:  Undefined index: userinfo in /var/www/membership/membership.rewards/admin/index.php on line 58
+[06-Feb-2014 13:59:20] PHP Stack trace:
+[06-Feb-2014 13:59:20] PHP   1. {main}() /var/www/membership/membership.rewards/admin/index.php:0
+[06-Feb-2014 13:59:20] PHP Warning:  Cannot modify header information - headers already sent by (output started at /var/www/membership/membership.rewards/admin/header.php:108) in /var/www/membership/membership.rewards/rsframework/include/core/URL.class.php on line 16
+[06-Feb-2014 13:59:20] PHP Stack trace:
+[06-Feb-2014 13:59:20] PHP   1. {main}() /var/www/membership/membership.rewards/admin/index.php:0
+[06-Feb-2014 13:59:20] PHP   2. include() /var/www/membership/membership.rewards/admin/index.php:509
+[06-Feb-2014 13:59:20] PHP   3. include() /var/www/membership/membership.rewards/admin/menu.php:7
+[06-Feb-2014 13:59:20] PHP   4. URL::Redirect() /var/www/membership/membership.rewards/admin/sessionmanager.php:90
+[06-Feb-2014 13:59:20] PHP   5. header() /var/www/membership/membership.rewards/rsframework/include/core/URL.class.php:16
+[06-Feb-2014 13:59:20] PHP Notice:  Undefined variable: usermenu in /var/www/membership/membership.rewards/admin/menu.php on line 16
+[06-Feb-2014 13:59:20] PHP Stack trace:
+[06-Feb-2014 13:59:20] PHP   1. {main}() /var/www/membership/membership.rewards/admin/index.php:0
+[06-Feb-2014 13:59:20] PHP   2. include() /var/www/membership/membership.rewards/admin/index.php:509
+[06-Feb-2014 13:59:20] PHP Warning:  Invalid argument supplied for foreach() in /var/www/membership/membership.rewards/admin/menu.php on line 16
+[06-Feb-2014 13:59:20] PHP Stack trace:
+[06-Feb-2014 13:59:20] PHP   1. {main}() /var/www/membership/membership.rewards/admin/index.php:0
+[06-Feb-2014 13:59:20] PHP   2. include() /var/www/membership/membership.rewards/admin/index.php:509
+[06-Feb-2014 13:59:20] PHP Notice:  Undefined index: aID in /var/www/membership/membership.rewards/admin/menu.php on line 38
+[06-Feb-2014 13:59:20] PHP Stack trace:
+[06-Feb-2014 13:59:20] PHP   1. {main}() /var/www/membership/membership.rewards/admin/index.php:0
+[06-Feb-2014 13:59:20] PHP   2. include() /var/www/membership/membership.rewards/admin/index.php:509
+[06-Feb-2014 13:59:20] MySQL Error "You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1" File: /var/www/membership/membership.rewards/rsframework/include/datalayer/MySQLDatabase.php LINE: 147
+[06-Feb-2014 13:59:20] PHP Warning:  Invalid argument supplied for foreach() in /var/www/membership/membership.rewards/admin/menu.php on line 40
+[06-Feb-2014 13:59:20] PHP Stack trace:
+[06-Feb-2014 13:59:20] PHP   1. {main}() /var/www/membership/membership.rewards/admin/index.php:0
+[06-Feb-2014 13:59:20] PHP   2. include() /var/www/membership/membership.rewards/admin/index.php:509
+[06-Feb-2014 13:59:20] PHP Notice:  Undefined variable: username in /var/www/membership/membership.rewards/admin/menu.php on line 43
+[06-Feb-2014 13:59:20] PHP Stack trace:
+[06-Feb-2014 13:59:20] PHP   1. {main}() /var/www/membership/membership.rewards/admin/index.php:0
+[06-Feb-2014 13:59:20] PHP   2. include() /var/www/membership/membership.rewards/admin/index.php:509
+[06-Feb-2014 13:59:20] PHP Notice:  Undefined variable: usermenu in /var/www/membership/membership.rewards/admin/menu.php on line 51
+[06-Feb-2014 13:59:20] PHP Stack trace:
+[06-Feb-2014 13:59:20] PHP   1. {main}() /var/www/membership/membership.rewards/admin/index.php:0
+[06-Feb-2014 13:59:20] PHP   2. include() /var/www/membership/membership.rewards/admin/index.php:509
+[06-Feb-2014 13:59:20] PHP Warning:  Invalid argument supplied for foreach() in /var/www/membership/membership.rewards/admin/menu.php on line 51
+[06-Feb-2014 13:59:20] PHP Stack trace:
+[06-Feb-2014 13:59:20] PHP   1. {main}() /var/www/membership/membership.rewards/admin/index.php:0
+[06-Feb-2014 13:59:20] PHP   2. include() /var/www/membership/membership.rewards/admin/index.php:509
+[06-Feb-2014 18:30:11] Error "Inactive Card: UBHZQCOK" File: /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php LINE: 78

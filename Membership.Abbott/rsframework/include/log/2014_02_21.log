@@ -1,0 +1,3 @@
+[21-Feb-2014 13:42:09] Error "Inactive Card: UBPPQNVA" File: /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php LINE: 78
+[21-Feb-2014 14:30:12] Error "Parameters not set" File: /var/www/membership/membership.rewards/memberactivation.php LINE: 272
+[21-Feb-2014 16:33:37] Error "Inactive Card: UBEMLN8O" File: /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php LINE: 78

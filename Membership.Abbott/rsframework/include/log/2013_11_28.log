@@ -1,0 +1,169 @@
+[28-Nov-2013 09:54:49] PHP Notice:  Undefined index: userinfo in /var/www/membership/membership.rewards/admin/index.php on line 58
+[28-Nov-2013 09:54:49] PHP Stack trace:
+[28-Nov-2013 09:54:49] PHP   1. {main}() /var/www/membership/membership.rewards/admin/index.php:0
+[28-Nov-2013 09:54:49] PHP Warning:  Cannot modify header information - headers already sent by (output started at /var/www/membership/membership.rewards/admin/header.php:108) in /var/www/membership/membership.rewards/rsframework/include/core/URL.class.php on line 16
+[28-Nov-2013 09:54:49] PHP Stack trace:
+[28-Nov-2013 09:54:49] PHP   1. {main}() /var/www/membership/membership.rewards/admin/index.php:0
+[28-Nov-2013 09:54:49] PHP   2. include() /var/www/membership/membership.rewards/admin/index.php:509
+[28-Nov-2013 09:54:49] PHP   3. include() /var/www/membership/membership.rewards/admin/menu.php:7
+[28-Nov-2013 09:54:49] PHP   4. URL::Redirect() /var/www/membership/membership.rewards/admin/sessionmanager.php:90
+[28-Nov-2013 09:54:49] PHP   5. header() /var/www/membership/membership.rewards/rsframework/include/core/URL.class.php:16
+[28-Nov-2013 09:54:49] PHP Notice:  Undefined variable: usermenu in /var/www/membership/membership.rewards/admin/menu.php on line 16
+[28-Nov-2013 09:54:49] PHP Stack trace:
+[28-Nov-2013 09:54:49] PHP   1. {main}() /var/www/membership/membership.rewards/admin/index.php:0
+[28-Nov-2013 09:54:49] PHP   2. include() /var/www/membership/membership.rewards/admin/index.php:509
+[28-Nov-2013 09:54:49] PHP Warning:  Invalid argument supplied for foreach() in /var/www/membership/membership.rewards/admin/menu.php on line 16
+[28-Nov-2013 09:54:49] PHP Stack trace:
+[28-Nov-2013 09:54:49] PHP   1. {main}() /var/www/membership/membership.rewards/admin/index.php:0
+[28-Nov-2013 09:54:49] PHP   2. include() /var/www/membership/membership.rewards/admin/index.php:509
+[28-Nov-2013 09:54:49] PHP Notice:  Undefined index: aID in /var/www/membership/membership.rewards/admin/menu.php on line 38
+[28-Nov-2013 09:54:49] PHP Stack trace:
+[28-Nov-2013 09:54:49] PHP   1. {main}() /var/www/membership/membership.rewards/admin/index.php:0
+[28-Nov-2013 09:54:49] PHP   2. include() /var/www/membership/membership.rewards/admin/index.php:509
+[28-Nov-2013 09:54:49] MySQL Error "You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1" File: /var/www/membership/membership.rewards/rsframework/include/datalayer/MySQLDatabase.php LINE: 147
+[28-Nov-2013 09:54:49] PHP Warning:  Invalid argument supplied for foreach() in /var/www/membership/membership.rewards/admin/menu.php on line 40
+[28-Nov-2013 09:54:49] PHP Stack trace:
+[28-Nov-2013 09:54:49] PHP   1. {main}() /var/www/membership/membership.rewards/admin/index.php:0
+[28-Nov-2013 09:54:49] PHP   2. include() /var/www/membership/membership.rewards/admin/index.php:509
+[28-Nov-2013 09:54:49] PHP Notice:  Undefined variable: username in /var/www/membership/membership.rewards/admin/menu.php on line 43
+[28-Nov-2013 09:54:49] PHP Stack trace:
+[28-Nov-2013 09:54:49] PHP   1. {main}() /var/www/membership/membership.rewards/admin/index.php:0
+[28-Nov-2013 09:54:49] PHP   2. include() /var/www/membership/membership.rewards/admin/index.php:509
+[28-Nov-2013 09:54:49] PHP Notice:  Undefined variable: usermenu in /var/www/membership/membership.rewards/admin/menu.php on line 51
+[28-Nov-2013 09:54:49] PHP Stack trace:
+[28-Nov-2013 09:54:49] PHP   1. {main}() /var/www/membership/membership.rewards/admin/index.php:0
+[28-Nov-2013 09:54:49] PHP   2. include() /var/www/membership/membership.rewards/admin/index.php:509
+[28-Nov-2013 09:54:49] PHP Warning:  Invalid argument supplied for foreach() in /var/www/membership/membership.rewards/admin/menu.php on line 51
+[28-Nov-2013 09:54:49] PHP Stack trace:
+[28-Nov-2013 09:54:49] PHP   1. {main}() /var/www/membership/membership.rewards/admin/index.php:0
+[28-Nov-2013 09:54:49] PHP   2. include() /var/www/membership/membership.rewards/admin/index.php:509
+[28-Nov-2013 10:14:43] PHP Warning:  Cannot modify header information - headers already sent by (output started at /var/www/membership/membership.rewards/admin/header.php:115) in /var/www/membership/membership.rewards/rsframework/include/core/URL.class.php on line 16
+[28-Nov-2013 10:14:43] PHP Stack trace:
+[28-Nov-2013 10:14:43] PHP   1. {main}() /var/www/membership/membership.rewards/admin/redcardtransferring.php:0
+[28-Nov-2013 10:14:43] PHP   2. include() /var/www/membership/membership.rewards/admin/redcardtransferring.php:651
+[28-Nov-2013 10:14:43] PHP   3. include() /var/www/membership/membership.rewards/admin/menu.php:7
+[28-Nov-2013 10:14:43] PHP   4. URL::Redirect() /var/www/membership/membership.rewards/admin/sessionmanager.php:90
+[28-Nov-2013 10:14:43] PHP   5. header() /var/www/membership/membership.rewards/rsframework/include/core/URL.class.php:16
+[28-Nov-2013 10:14:43] PHP Notice:  Undefined variable: usermenu in /var/www/membership/membership.rewards/admin/menu.php on line 16
+[28-Nov-2013 10:14:43] PHP Stack trace:
+[28-Nov-2013 10:14:43] PHP   1. {main}() /var/www/membership/membership.rewards/admin/redcardtransferring.php:0
+[28-Nov-2013 10:14:43] PHP   2. include() /var/www/membership/membership.rewards/admin/redcardtransferring.php:651
+[28-Nov-2013 10:14:43] PHP Warning:  Invalid argument supplied for foreach() in /var/www/membership/membership.rewards/admin/menu.php on line 16
+[28-Nov-2013 10:14:43] PHP Stack trace:
+[28-Nov-2013 10:14:43] PHP   1. {main}() /var/www/membership/membership.rewards/admin/redcardtransferring.php:0
+[28-Nov-2013 10:14:43] PHP   2. include() /var/www/membership/membership.rewards/admin/redcardtransferring.php:651
+[28-Nov-2013 10:14:43] PHP Notice:  Undefined index: aID in /var/www/membership/membership.rewards/admin/menu.php on line 38
+[28-Nov-2013 10:14:43] PHP Stack trace:
+[28-Nov-2013 10:14:43] PHP   1. {main}() /var/www/membership/membership.rewards/admin/redcardtransferring.php:0
+[28-Nov-2013 10:14:43] PHP   2. include() /var/www/membership/membership.rewards/admin/redcardtransferring.php:651
+[28-Nov-2013 10:14:43] MySQL Error "You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1" File: /var/www/membership/membership.rewards/rsframework/include/datalayer/MySQLDatabase.php LINE: 147
+[28-Nov-2013 10:14:43] PHP Warning:  Invalid argument supplied for foreach() in /var/www/membership/membership.rewards/admin/menu.php on line 40
+[28-Nov-2013 10:14:43] PHP Stack trace:
+[28-Nov-2013 10:14:43] PHP   1. {main}() /var/www/membership/membership.rewards/admin/redcardtransferring.php:0
+[28-Nov-2013 10:14:43] PHP   2. include() /var/www/membership/membership.rewards/admin/redcardtransferring.php:651
+[28-Nov-2013 10:14:43] PHP Notice:  Undefined variable: username in /var/www/membership/membership.rewards/admin/menu.php on line 43
+[28-Nov-2013 10:14:43] PHP Stack trace:
+[28-Nov-2013 10:14:43] PHP   1. {main}() /var/www/membership/membership.rewards/admin/redcardtransferring.php:0
+[28-Nov-2013 10:14:43] PHP   2. include() /var/www/membership/membership.rewards/admin/redcardtransferring.php:651
+[28-Nov-2013 10:14:43] PHP Notice:  Undefined variable: usermenu in /var/www/membership/membership.rewards/admin/menu.php on line 51
+[28-Nov-2013 10:14:43] PHP Stack trace:
+[28-Nov-2013 10:14:43] PHP   1. {main}() /var/www/membership/membership.rewards/admin/redcardtransferring.php:0
+[28-Nov-2013 10:14:43] PHP   2. include() /var/www/membership/membership.rewards/admin/redcardtransferring.php:651
+[28-Nov-2013 10:14:43] PHP Warning:  Invalid argument supplied for foreach() in /var/www/membership/membership.rewards/admin/menu.php on line 51
+[28-Nov-2013 10:14:43] PHP Stack trace:
+[28-Nov-2013 10:14:43] PHP   1. {main}() /var/www/membership/membership.rewards/admin/redcardtransferring.php:0
+[28-Nov-2013 10:14:43] PHP   2. include() /var/www/membership/membership.rewards/admin/redcardtransferring.php:651
+[28-Nov-2013 11:35:01] PHP Warning:  session_destroy() [<a href='0function.session-destroy0'>function.session-destroy0</a>]: Trying to destroy uninitialized session in /var/www/membership/membership.rewards/admin/sessionmanager.php on line 83
+[28-Nov-2013 11:35:01] PHP Stack trace:
+[28-Nov-2013 11:35:01] PHP   1. {main}() /var/www/membership/membership.rewards/admin/blank.php:0
+[28-Nov-2013 11:35:01] PHP   2. include() /var/www/membership/membership.rewards/admin/blank.php:20
+[28-Nov-2013 11:35:01] PHP   3. include() /var/www/membership/membership.rewards/admin/menu.php:7
+[28-Nov-2013 11:35:01] PHP   4. session_destroy() /var/www/membership/membership.rewards/admin/sessionmanager.php:83
+[28-Nov-2013 11:35:01] PHP Warning:  Cannot modify header information - headers already sent by (output started at /var/www/membership/membership.rewards/admin/header.php:115) in /var/www/membership/membership.rewards/rsframework/include/core/URL.class.php on line 16
+[28-Nov-2013 11:35:01] PHP Stack trace:
+[28-Nov-2013 11:35:01] PHP   1. {main}() /var/www/membership/membership.rewards/admin/blank.php:0
+[28-Nov-2013 11:35:01] PHP   2. include() /var/www/membership/membership.rewards/admin/blank.php:20
+[28-Nov-2013 11:35:01] PHP   3. include() /var/www/membership/membership.rewards/admin/menu.php:7
+[28-Nov-2013 11:35:01] PHP   4. URL::Redirect() /var/www/membership/membership.rewards/admin/sessionmanager.php:84
+[28-Nov-2013 11:35:01] PHP   5. header() /var/www/membership/membership.rewards/rsframework/include/core/URL.class.php:16
+[28-Nov-2013 11:35:01] PHP Notice:  Undefined variable: usermenu in /var/www/membership/membership.rewards/admin/menu.php on line 16
+[28-Nov-2013 11:35:01] PHP Stack trace:
+[28-Nov-2013 11:35:01] PHP   1. {main}() /var/www/membership/membership.rewards/admin/blank.php:0
+[28-Nov-2013 11:35:01] PHP   2. include() /var/www/membership/membership.rewards/admin/blank.php:20
+[28-Nov-2013 11:35:01] PHP Warning:  Invalid argument supplied for foreach() in /var/www/membership/membership.rewards/admin/menu.php on line 16
+[28-Nov-2013 11:35:01] PHP Stack trace:
+[28-Nov-2013 11:35:01] PHP   1. {main}() /var/www/membership/membership.rewards/admin/blank.php:0
+[28-Nov-2013 11:35:01] PHP   2. include() /var/www/membership/membership.rewards/admin/blank.php:20
+[28-Nov-2013 11:35:01] PHP Notice:  Undefined variable: usermenu in /var/www/membership/membership.rewards/admin/menu.php on line 51
+[28-Nov-2013 11:35:01] PHP Stack trace:
+[28-Nov-2013 11:35:01] PHP   1. {main}() /var/www/membership/membership.rewards/admin/blank.php:0
+[28-Nov-2013 11:35:01] PHP   2. include() /var/www/membership/membership.rewards/admin/blank.php:20
+[28-Nov-2013 11:35:01] PHP Warning:  Invalid argument supplied for foreach() in /var/www/membership/membership.rewards/admin/menu.php on line 51
+[28-Nov-2013 11:35:01] PHP Stack trace:
+[28-Nov-2013 11:35:01] PHP   1. {main}() /var/www/membership/membership.rewards/admin/blank.php:0
+[28-Nov-2013 11:35:01] PHP   2. include() /var/www/membership/membership.rewards/admin/blank.php:20
+[28-Nov-2013 11:40:39] PHP Warning:  session_destroy() [<a href='0function.session-destroy0'>function.session-destroy0</a>]: Trying to destroy uninitialized session in /var/www/membership/membership.rewards/admin/sessionmanager.php on line 83
+[28-Nov-2013 11:40:39] PHP Stack trace:
+[28-Nov-2013 11:40:39] PHP   1. {main}() /var/www/membership/membership.rewards/admin/blank.php:0
+[28-Nov-2013 11:40:39] PHP   2. include() /var/www/membership/membership.rewards/admin/blank.php:20
+[28-Nov-2013 11:40:39] PHP   3. include() /var/www/membership/membership.rewards/admin/menu.php:7
+[28-Nov-2013 11:40:39] PHP   4. session_destroy() /var/www/membership/membership.rewards/admin/sessionmanager.php:83
+[28-Nov-2013 11:40:39] PHP Warning:  Cannot modify header information - headers already sent by (output started at /var/www/membership/membership.rewards/admin/header.php:115) in /var/www/membership/membership.rewards/rsframework/include/core/URL.class.php on line 16
+[28-Nov-2013 11:40:39] PHP Stack trace:
+[28-Nov-2013 11:40:39] PHP   1. {main}() /var/www/membership/membership.rewards/admin/blank.php:0
+[28-Nov-2013 11:40:39] PHP   2. include() /var/www/membership/membership.rewards/admin/blank.php:20
+[28-Nov-2013 11:40:39] PHP   3. include() /var/www/membership/membership.rewards/admin/menu.php:7
+[28-Nov-2013 11:40:39] PHP   4. URL::Redirect() /var/www/membership/membership.rewards/admin/sessionmanager.php:84
+[28-Nov-2013 11:40:39] PHP   5. header() /var/www/membership/membership.rewards/rsframework/include/core/URL.class.php:16
+[28-Nov-2013 11:40:39] PHP Notice:  Undefined variable: usermenu in /var/www/membership/membership.rewards/admin/menu.php on line 16
+[28-Nov-2013 11:40:39] PHP Stack trace:
+[28-Nov-2013 11:40:39] PHP   1. {main}() /var/www/membership/membership.rewards/admin/blank.php:0
+[28-Nov-2013 11:40:39] PHP   2. include() /var/www/membership/membership.rewards/admin/blank.php:20
+[28-Nov-2013 11:40:39] PHP Warning:  Invalid argument supplied for foreach() in /var/www/membership/membership.rewards/admin/menu.php on line 16
+[28-Nov-2013 11:40:39] PHP Stack trace:
+[28-Nov-2013 11:40:39] PHP   1. {main}() /var/www/membership/membership.rewards/admin/blank.php:0
+[28-Nov-2013 11:40:39] PHP   2. include() /var/www/membership/membership.rewards/admin/blank.php:20
+[28-Nov-2013 11:40:39] PHP Notice:  Undefined variable: usermenu in /var/www/membership/membership.rewards/admin/menu.php on line 51
+[28-Nov-2013 11:40:39] PHP Stack trace:
+[28-Nov-2013 11:40:39] PHP   1. {main}() /var/www/membership/membership.rewards/admin/blank.php:0
+[28-Nov-2013 11:40:39] PHP   2. include() /var/www/membership/membership.rewards/admin/blank.php:20
+[28-Nov-2013 11:40:39] PHP Warning:  Invalid argument supplied for foreach() in /var/www/membership/membership.rewards/admin/menu.php on line 51
+[28-Nov-2013 11:40:39] PHP Stack trace:
+[28-Nov-2013 11:40:39] PHP   1. {main}() /var/www/membership/membership.rewards/admin/blank.php:0
+[28-Nov-2013 11:40:39] PHP   2. include() /var/www/membership/membership.rewards/admin/blank.php:20
+[28-Nov-2013 17:32:33] PHP Warning:  Cannot modify header information - headers already sent by (output started at /var/www/membership/membership.rewards/admin/header.php:115) in /var/www/membership/membership.rewards/rsframework/include/core/URL.class.php on line 16
+[28-Nov-2013 17:32:33] PHP Stack trace:
+[28-Nov-2013 17:32:33] PHP   1. {main}() /var/www/membership/membership.rewards/admin/redcardtransferring.php:0
+[28-Nov-2013 17:32:33] PHP   2. include() /var/www/membership/membership.rewards/admin/redcardtransferring.php:673
+[28-Nov-2013 17:32:33] PHP   3. include() /var/www/membership/membership.rewards/admin/menu.php:7
+[28-Nov-2013 17:32:33] PHP   4. URL::Redirect() /var/www/membership/membership.rewards/admin/sessionmanager.php:90
+[28-Nov-2013 17:32:33] PHP   5. header() /var/www/membership/membership.rewards/rsframework/include/core/URL.class.php:16
+[28-Nov-2013 17:32:33] PHP Notice:  Undefined variable: usermenu in /var/www/membership/membership.rewards/admin/menu.php on line 16
+[28-Nov-2013 17:32:33] PHP Stack trace:
+[28-Nov-2013 17:32:33] PHP   1. {main}() /var/www/membership/membership.rewards/admin/redcardtransferring.php:0
+[28-Nov-2013 17:32:33] PHP   2. include() /var/www/membership/membership.rewards/admin/redcardtransferring.php:673
+[28-Nov-2013 17:32:33] PHP Warning:  Invalid argument supplied for foreach() in /var/www/membership/membership.rewards/admin/menu.php on line 16
+[28-Nov-2013 17:32:33] PHP Stack trace:
+[28-Nov-2013 17:32:33] PHP   1. {main}() /var/www/membership/membership.rewards/admin/redcardtransferring.php:0
+[28-Nov-2013 17:32:33] PHP   2. include() /var/www/membership/membership.rewards/admin/redcardtransferring.php:673
+[28-Nov-2013 17:32:33] PHP Notice:  Undefined index: aID in /var/www/membership/membership.rewards/admin/menu.php on line 38
+[28-Nov-2013 17:32:33] PHP Stack trace:
+[28-Nov-2013 17:32:33] PHP   1. {main}() /var/www/membership/membership.rewards/admin/redcardtransferring.php:0
+[28-Nov-2013 17:32:33] PHP   2. include() /var/www/membership/membership.rewards/admin/redcardtransferring.php:673
+[28-Nov-2013 17:32:33] MySQL Error "You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1" File: /var/www/membership/membership.rewards/rsframework/include/datalayer/MySQLDatabase.php LINE: 147
+[28-Nov-2013 17:32:33] PHP Warning:  Invalid argument supplied for foreach() in /var/www/membership/membership.rewards/admin/menu.php on line 40
+[28-Nov-2013 17:32:33] PHP Stack trace:
+[28-Nov-2013 17:32:33] PHP   1. {main}() /var/www/membership/membership.rewards/admin/redcardtransferring.php:0
+[28-Nov-2013 17:32:33] PHP   2. include() /var/www/membership/membership.rewards/admin/redcardtransferring.php:673
+[28-Nov-2013 17:32:33] PHP Notice:  Undefined variable: username in /var/www/membership/membership.rewards/admin/menu.php on line 43
+[28-Nov-2013 17:32:33] PHP Stack trace:
+[28-Nov-2013 17:32:33] PHP   1. {main}() /var/www/membership/membership.rewards/admin/redcardtransferring.php:0
+[28-Nov-2013 17:32:33] PHP   2. include() /var/www/membership/membership.rewards/admin/redcardtransferring.php:673
+[28-Nov-2013 17:32:33] PHP Notice:  Undefined variable: usermenu in /var/www/membership/membership.rewards/admin/menu.php on line 51
+[28-Nov-2013 17:32:33] PHP Stack trace:
+[28-Nov-2013 17:32:33] PHP   1. {main}() /var/www/membership/membership.rewards/admin/redcardtransferring.php:0
+[28-Nov-2013 17:32:33] PHP   2. include() /var/www/membership/membership.rewards/admin/redcardtransferring.php:673
+[28-Nov-2013 17:32:33] PHP Warning:  Invalid argument supplied for foreach() in /var/www/membership/membership.rewards/admin/menu.php on line 51
+[28-Nov-2013 17:32:33] PHP Stack trace:
+[28-Nov-2013 17:32:33] PHP   1. {main}() /var/www/membership/membership.rewards/admin/redcardtransferring.php:0
+[28-Nov-2013 17:32:33] PHP   2. include() /var/www/membership/membership.rewards/admin/redcardtransferring.php:673

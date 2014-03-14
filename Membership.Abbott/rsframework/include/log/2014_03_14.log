@@ -1,0 +1,2 @@
+[14-Mar-2014 14:24:18] Error "Card Not Found[002]: UB7JBJS5UB7JBJS5" File: /var/www/membership/membership.rewards/API/cardinquiry.php LINE: 199
+[14-Mar-2014 14:24:18] Error "Card Not Found[004]: UB7JBJS5UB7JBJS5" File: /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php LINE: 602

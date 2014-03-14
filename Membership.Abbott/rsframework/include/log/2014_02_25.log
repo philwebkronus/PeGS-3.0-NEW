@@ -1,0 +1,263 @@
+[25-Feb-2014 16:43:12] PHP Warning:  Missing argument 14 for CasinoAPI::createAccount(), called in /var/www/membership/membership.rewards/rsframework/include/Modules/Membership/classes/ActivateMember.class.php on line 202 and defined in /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/CasinoAPI.class.php on line 253
+[25-Feb-2014 16:43:12] PHP Stack trace:
+[25-Feb-2014 16:43:12] PHP   1. {main}() /var/www/membership/membership.rewards/API/cardinquiry.php:0
+[25-Feb-2014 16:43:12] PHP   2. GetCardInfoAPI->GetCardInfo() /var/www/membership/membership.rewards/API/cardinquiry.php:210
+[25-Feb-2014 16:43:12] PHP   3. ActivateMember->Migrate() /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php:263
+[25-Feb-2014 16:43:12] PHP   4. CasinoAPI->createAccount() /var/www/membership/membership.rewards/rsframework/include/Modules/Membership/classes/ActivateMember.class.php:202
+[25-Feb-2014 16:43:12] PHP Notice:  Undefined variable: viplevel in /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/CasinoAPI.class.php on line 288
+[25-Feb-2014 16:43:12] PHP Stack trace:
+[25-Feb-2014 16:43:12] PHP   1. {main}() /var/www/membership/membership.rewards/API/cardinquiry.php:0
+[25-Feb-2014 16:43:12] PHP   2. GetCardInfoAPI->GetCardInfo() /var/www/membership/membership.rewards/API/cardinquiry.php:210
+[25-Feb-2014 16:43:12] PHP   3. ActivateMember->Migrate() /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php:263
+[25-Feb-2014 16:43:12] PHP   4. CasinoAPI->createAccount() /var/www/membership/membership.rewards/rsframework/include/Modules/Membership/classes/ActivateMember.class.php:202
+[25-Feb-2014 16:43:12] PHP Warning:  Cannot modify header information - headers already sent by (output started at /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/CasinoAPI.class.php:288) in /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/RealtimeGamingWCFPlayerAPI.class.php on line 270
+[25-Feb-2014 16:43:12] PHP Stack trace:
+[25-Feb-2014 16:43:12] PHP   1. {main}() /var/www/membership/membership.rewards/API/cardinquiry.php:0
+[25-Feb-2014 16:43:12] PHP   2. GetCardInfoAPI->GetCardInfo() /var/www/membership/membership.rewards/API/cardinquiry.php:210
+[25-Feb-2014 16:43:12] PHP   3. ActivateMember->Migrate() /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php:263
+[25-Feb-2014 16:43:12] PHP   4. CasinoAPI->createAccount() /var/www/membership/membership.rewards/rsframework/include/Modules/Membership/classes/ActivateMember.class.php:202
+[25-Feb-2014 16:43:12] PHP   5. CasinoAPIHandler->CreateNewAccount() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/CasinoAPI.class.php:288
+[25-Feb-2014 16:43:12] PHP   6. RealtimeGamingUBAPIWrapper->AddUser() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/CasinoAPIHandler.class.php:103
+[25-Feb-2014 16:43:12] PHP   7. RealtimeGamingWCFPlayerAPI->createTerminalAccount() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/RealtimeGamingUBAPIWrapper.class.php:246
+[25-Feb-2014 16:43:12] PHP   8. RealtimeGamingWCFPlayerAPI->submitRequest() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/RealtimeGamingWCFPlayerAPI.class.php:169
+[25-Feb-2014 16:43:12] PHP   9. header() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/RealtimeGamingWCFPlayerAPI.class.php:270
+[25-Feb-2014 16:43:12] PHP Warning:  SoapClient::SoapClient() [<a href='0soapclient.soapclient0'>soapclient.soapclient0</a>]: Unable to set private key file `/var/www/membership/membership.rewards/rsframework/include/RTGClientCerts/19/cert.pem' in /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/RealtimeGamingWCFPlayerAPI.class.php on line 281
+[25-Feb-2014 16:43:12] PHP Stack trace:
+[25-Feb-2014 16:43:12] PHP   1. {main}() /var/www/membership/membership.rewards/API/cardinquiry.php:0
+[25-Feb-2014 16:43:12] PHP   2. GetCardInfoAPI->GetCardInfo() /var/www/membership/membership.rewards/API/cardinquiry.php:210
+[25-Feb-2014 16:43:12] PHP   3. ActivateMember->Migrate() /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php:263
+[25-Feb-2014 16:43:12] PHP   4. CasinoAPI->createAccount() /var/www/membership/membership.rewards/rsframework/include/Modules/Membership/classes/ActivateMember.class.php:202
+[25-Feb-2014 16:43:12] PHP   5. CasinoAPIHandler->CreateNewAccount() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/CasinoAPI.class.php:288
+[25-Feb-2014 16:43:12] PHP   6. RealtimeGamingUBAPIWrapper->AddUser() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/CasinoAPIHandler.class.php:103
+[25-Feb-2014 16:43:12] PHP   7. RealtimeGamingWCFPlayerAPI->createTerminalAccount() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/RealtimeGamingUBAPIWrapper.class.php:246
+[25-Feb-2014 16:43:12] PHP   8. RealtimeGamingWCFPlayerAPI->submitRequest() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/RealtimeGamingWCFPlayerAPI.class.php:169
+[25-Feb-2014 16:43:12] PHP   9. SoapClient->SoapClient() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/RealtimeGamingWCFPlayerAPI.class.php:281
+[25-Feb-2014 16:43:12] PHP Warning:  SoapClient::SoapClient() [<a href='0soapclient.soapclient0'>soapclient.soapclient0</a>]: failed to create an SSL handle in /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/RealtimeGamingWCFPlayerAPI.class.php on line 281
+[25-Feb-2014 16:43:12] PHP Stack trace:
+[25-Feb-2014 16:43:12] PHP   1. {main}() /var/www/membership/membership.rewards/API/cardinquiry.php:0
+[25-Feb-2014 16:43:12] PHP   2. GetCardInfoAPI->GetCardInfo() /var/www/membership/membership.rewards/API/cardinquiry.php:210
+[25-Feb-2014 16:43:12] PHP   3. ActivateMember->Migrate() /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php:263
+[25-Feb-2014 16:43:12] PHP   4. CasinoAPI->createAccount() /var/www/membership/membership.rewards/rsframework/include/Modules/Membership/classes/ActivateMember.class.php:202
+[25-Feb-2014 16:43:12] PHP   5. CasinoAPIHandler->CreateNewAccount() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/CasinoAPI.class.php:288
+[25-Feb-2014 16:43:12] PHP   6. RealtimeGamingUBAPIWrapper->AddUser() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/CasinoAPIHandler.class.php:103
+[25-Feb-2014 16:43:12] PHP   7. RealtimeGamingWCFPlayerAPI->createTerminalAccount() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/RealtimeGamingUBAPIWrapper.class.php:246
+[25-Feb-2014 16:43:12] PHP   8. RealtimeGamingWCFPlayerAPI->submitRequest() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/RealtimeGamingWCFPlayerAPI.class.php:169
+[25-Feb-2014 16:43:12] PHP   9. SoapClient->SoapClient() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/RealtimeGamingWCFPlayerAPI.class.php:281
+[25-Feb-2014 16:43:12] PHP Warning:  SoapClient::SoapClient() [<a href='0soapclient.soapclient0'>soapclient.soapclient0</a>]: Failed to enable crypto in /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/RealtimeGamingWCFPlayerAPI.class.php on line 281
+[25-Feb-2014 16:43:12] PHP Stack trace:
+[25-Feb-2014 16:43:12] PHP   1. {main}() /var/www/membership/membership.rewards/API/cardinquiry.php:0
+[25-Feb-2014 16:43:12] PHP   2. GetCardInfoAPI->GetCardInfo() /var/www/membership/membership.rewards/API/cardinquiry.php:210
+[25-Feb-2014 16:43:12] PHP   3. ActivateMember->Migrate() /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php:263
+[25-Feb-2014 16:43:12] PHP   4. CasinoAPI->createAccount() /var/www/membership/membership.rewards/rsframework/include/Modules/Membership/classes/ActivateMember.class.php:202
+[25-Feb-2014 16:43:12] PHP   5. CasinoAPIHandler->CreateNewAccount() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/CasinoAPI.class.php:288
+[25-Feb-2014 16:43:12] PHP   6. RealtimeGamingUBAPIWrapper->AddUser() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/CasinoAPIHandler.class.php:103
+[25-Feb-2014 16:43:12] PHP   7. RealtimeGamingWCFPlayerAPI->createTerminalAccount() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/RealtimeGamingUBAPIWrapper.class.php:246
+[25-Feb-2014 16:43:12] PHP   8. RealtimeGamingWCFPlayerAPI->submitRequest() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/RealtimeGamingWCFPlayerAPI.class.php:169
+[25-Feb-2014 16:43:12] PHP   9. SoapClient->SoapClient() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/RealtimeGamingWCFPlayerAPI.class.php:281
+[25-Feb-2014 16:43:12] PHP Warning:  SoapClient::SoapClient(https://202.44.102.31/ECFDEMOFDGEFNPGEMFOQ/casinoapi/player.asmx) [<a href='0soapclient.soapclient0'>soapclient.soapclient0</a>]: failed to open stream: operation failed in /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/RealtimeGamingWCFPlayerAPI.class.php on line 281
+[25-Feb-2014 16:43:12] PHP Stack trace:
+[25-Feb-2014 16:43:12] PHP   1. {main}() /var/www/membership/membership.rewards/API/cardinquiry.php:0
+[25-Feb-2014 16:43:12] PHP   2. GetCardInfoAPI->GetCardInfo() /var/www/membership/membership.rewards/API/cardinquiry.php:210
+[25-Feb-2014 16:43:12] PHP   3. ActivateMember->Migrate() /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php:263
+[25-Feb-2014 16:43:12] PHP   4. CasinoAPI->createAccount() /var/www/membership/membership.rewards/rsframework/include/Modules/Membership/classes/ActivateMember.class.php:202
+[25-Feb-2014 16:43:12] PHP   5. CasinoAPIHandler->CreateNewAccount() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/CasinoAPI.class.php:288
+[25-Feb-2014 16:43:12] PHP   6. RealtimeGamingUBAPIWrapper->AddUser() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/CasinoAPIHandler.class.php:103
+[25-Feb-2014 16:43:12] PHP   7. RealtimeGamingWCFPlayerAPI->createTerminalAccount() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/RealtimeGamingUBAPIWrapper.class.php:246
+[25-Feb-2014 16:43:12] PHP   8. RealtimeGamingWCFPlayerAPI->submitRequest() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/RealtimeGamingWCFPlayerAPI.class.php:169
+[25-Feb-2014 16:43:12] PHP   9. SoapClient->SoapClient() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/RealtimeGamingWCFPlayerAPI.class.php:281
+[25-Feb-2014 16:43:12] PHP Warning:  SoapClient::SoapClient() [<a href='0soapclient.soapclient0'>soapclient.soapclient0</a>]: I/O warning : failed to load external entity &quot;https://202.44.102.31/ECFDEMOFDGEFNPGEMFOQ/casinoapi/player.asmx&quot; in /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/RealtimeGamingWCFPlayerAPI.class.php on line 281
+[25-Feb-2014 16:43:12] PHP Stack trace:
+[25-Feb-2014 16:43:12] PHP   1. {main}() /var/www/membership/membership.rewards/API/cardinquiry.php:0
+[25-Feb-2014 16:43:12] PHP   2. GetCardInfoAPI->GetCardInfo() /var/www/membership/membership.rewards/API/cardinquiry.php:210
+[25-Feb-2014 16:43:12] PHP   3. ActivateMember->Migrate() /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php:263
+[25-Feb-2014 16:43:12] PHP   4. CasinoAPI->createAccount() /var/www/membership/membership.rewards/rsframework/include/Modules/Membership/classes/ActivateMember.class.php:202
+[25-Feb-2014 16:43:12] PHP   5. CasinoAPIHandler->CreateNewAccount() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/CasinoAPI.class.php:288
+[25-Feb-2014 16:43:12] PHP   6. RealtimeGamingUBAPIWrapper->AddUser() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/CasinoAPIHandler.class.php:103
+[25-Feb-2014 16:43:12] PHP   7. RealtimeGamingWCFPlayerAPI->createTerminalAccount() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/RealtimeGamingUBAPIWrapper.class.php:246
+[25-Feb-2014 16:43:12] PHP   8. RealtimeGamingWCFPlayerAPI->submitRequest() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/RealtimeGamingWCFPlayerAPI.class.php:169
+[25-Feb-2014 16:43:12] PHP   9. SoapClient->SoapClient() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/RealtimeGamingWCFPlayerAPI.class.php:281
+[25-Feb-2014 16:43:12] PHP Fatal error:  SOAP-ERROR: Parsing WSDL: Couldn't load from 'https://202.44.102.31/ECFDEMOFDGEFNPGEMFOQ/casinoapi/player.asmx' : failed to load external entity "https://202.44.102.31/ECFDEMOFDGEFNPGEMFOQ/casinoapi/player.asmx"
+ in /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/RealtimeGamingWCFPlayerAPI.class.php on line 281
+[25-Feb-2014 16:43:12] PHP Stack trace:
+[25-Feb-2014 16:43:12] PHP   1. {main}() /var/www/membership/membership.rewards/API/cardinquiry.php:0
+[25-Feb-2014 16:43:12] PHP   2. GetCardInfoAPI->GetCardInfo() /var/www/membership/membership.rewards/API/cardinquiry.php:210
+[25-Feb-2014 16:43:12] PHP   3. ActivateMember->Migrate() /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php:263
+[25-Feb-2014 16:43:12] PHP   4. CasinoAPI->createAccount() /var/www/membership/membership.rewards/rsframework/include/Modules/Membership/classes/ActivateMember.class.php:202
+[25-Feb-2014 16:43:12] PHP   5. CasinoAPIHandler->CreateNewAccount() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/CasinoAPI.class.php:288
+[25-Feb-2014 16:43:12] PHP   6. RealtimeGamingUBAPIWrapper->AddUser() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/CasinoAPIHandler.class.php:103
+[25-Feb-2014 16:43:12] PHP   7. RealtimeGamingWCFPlayerAPI->createTerminalAccount() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/RealtimeGamingUBAPIWrapper.class.php:246
+[25-Feb-2014 16:43:12] PHP   8. RealtimeGamingWCFPlayerAPI->submitRequest() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/RealtimeGamingWCFPlayerAPI.class.php:169
+[25-Feb-2014 16:43:12] PHP   9. SoapClient->SoapClient() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/RealtimeGamingWCFPlayerAPI.class.php:281
+[25-Feb-2014 16:46:11] PHP Warning:  Missing argument 14 for CasinoAPI::createAccount(), called in /var/www/membership/membership.rewards/rsframework/include/Modules/Membership/classes/ActivateMember.class.php on line 202 and defined in /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/CasinoAPI.class.php on line 253
+[25-Feb-2014 16:46:11] PHP Stack trace:
+[25-Feb-2014 16:46:11] PHP   1. {main}() /var/www/membership/membership.rewards/API/cardinquiry.php:0
+[25-Feb-2014 16:46:11] PHP   2. GetCardInfoAPI->GetCardInfo() /var/www/membership/membership.rewards/API/cardinquiry.php:210
+[25-Feb-2014 16:46:11] PHP   3. ActivateMember->Migrate() /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php:263
+[25-Feb-2014 16:46:11] PHP   4. CasinoAPI->createAccount() /var/www/membership/membership.rewards/rsframework/include/Modules/Membership/classes/ActivateMember.class.php:202
+[25-Feb-2014 16:46:11] PHP Notice:  Undefined variable: viplevel in /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/CasinoAPI.class.php on line 288
+[25-Feb-2014 16:46:11] PHP Stack trace:
+[25-Feb-2014 16:46:11] PHP   1. {main}() /var/www/membership/membership.rewards/API/cardinquiry.php:0
+[25-Feb-2014 16:46:11] PHP   2. GetCardInfoAPI->GetCardInfo() /var/www/membership/membership.rewards/API/cardinquiry.php:210
+[25-Feb-2014 16:46:11] PHP   3. ActivateMember->Migrate() /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php:263
+[25-Feb-2014 16:46:11] PHP   4. CasinoAPI->createAccount() /var/www/membership/membership.rewards/rsframework/include/Modules/Membership/classes/ActivateMember.class.php:202
+[25-Feb-2014 16:46:11] PHP Warning:  Cannot modify header information - headers already sent by (output started at /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/CasinoAPI.class.php:288) in /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/RealtimeGamingWCFPlayerAPI.class.php on line 270
+[25-Feb-2014 16:46:11] PHP Stack trace:
+[25-Feb-2014 16:46:11] PHP   1. {main}() /var/www/membership/membership.rewards/API/cardinquiry.php:0
+[25-Feb-2014 16:46:11] PHP   2. GetCardInfoAPI->GetCardInfo() /var/www/membership/membership.rewards/API/cardinquiry.php:210
+[25-Feb-2014 16:46:11] PHP   3. ActivateMember->Migrate() /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php:263
+[25-Feb-2014 16:46:11] PHP   4. CasinoAPI->createAccount() /var/www/membership/membership.rewards/rsframework/include/Modules/Membership/classes/ActivateMember.class.php:202
+[25-Feb-2014 16:46:11] PHP   5. CasinoAPIHandler->CreateNewAccount() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/CasinoAPI.class.php:288
+[25-Feb-2014 16:46:11] PHP   6. RealtimeGamingUBAPIWrapper->AddUser() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/CasinoAPIHandler.class.php:103
+[25-Feb-2014 16:46:11] PHP   7. RealtimeGamingWCFPlayerAPI->createTerminalAccount() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/RealtimeGamingUBAPIWrapper.class.php:246
+[25-Feb-2014 16:46:11] PHP   8. RealtimeGamingWCFPlayerAPI->submitRequest() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/RealtimeGamingWCFPlayerAPI.class.php:169
+[25-Feb-2014 16:46:11] PHP   9. header() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/RealtimeGamingWCFPlayerAPI.class.php:270
+[25-Feb-2014 16:46:11] PHP Warning:  SoapClient::SoapClient() [<a href='0soapclient.soapclient0'>soapclient.soapclient0</a>]: Unable to set private key file `/var/www/membership/membership.rewards/rsframework/include/RTGClientCerts/19/cert.pem' in /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/RealtimeGamingWCFPlayerAPI.class.php on line 281
+[25-Feb-2014 16:46:11] PHP Stack trace:
+[25-Feb-2014 16:46:11] PHP   1. {main}() /var/www/membership/membership.rewards/API/cardinquiry.php:0
+[25-Feb-2014 16:46:11] PHP   2. GetCardInfoAPI->GetCardInfo() /var/www/membership/membership.rewards/API/cardinquiry.php:210
+[25-Feb-2014 16:46:11] PHP   3. ActivateMember->Migrate() /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php:263
+[25-Feb-2014 16:46:11] PHP   4. CasinoAPI->createAccount() /var/www/membership/membership.rewards/rsframework/include/Modules/Membership/classes/ActivateMember.class.php:202
+[25-Feb-2014 16:46:11] PHP   5. CasinoAPIHandler->CreateNewAccount() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/CasinoAPI.class.php:288
+[25-Feb-2014 16:46:11] PHP   6. RealtimeGamingUBAPIWrapper->AddUser() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/CasinoAPIHandler.class.php:103
+[25-Feb-2014 16:46:11] PHP   7. RealtimeGamingWCFPlayerAPI->createTerminalAccount() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/RealtimeGamingUBAPIWrapper.class.php:246
+[25-Feb-2014 16:46:11] PHP   8. RealtimeGamingWCFPlayerAPI->submitRequest() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/RealtimeGamingWCFPlayerAPI.class.php:169
+[25-Feb-2014 16:46:11] PHP   9. SoapClient->SoapClient() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/RealtimeGamingWCFPlayerAPI.class.php:281
+[25-Feb-2014 16:46:11] PHP Warning:  SoapClient::SoapClient() [<a href='0soapclient.soapclient0'>soapclient.soapclient0</a>]: failed to create an SSL handle in /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/RealtimeGamingWCFPlayerAPI.class.php on line 281
+[25-Feb-2014 16:46:11] PHP Stack trace:
+[25-Feb-2014 16:46:11] PHP   1. {main}() /var/www/membership/membership.rewards/API/cardinquiry.php:0
+[25-Feb-2014 16:46:11] PHP   2. GetCardInfoAPI->GetCardInfo() /var/www/membership/membership.rewards/API/cardinquiry.php:210
+[25-Feb-2014 16:46:11] PHP   3. ActivateMember->Migrate() /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php:263
+[25-Feb-2014 16:46:11] PHP   4. CasinoAPI->createAccount() /var/www/membership/membership.rewards/rsframework/include/Modules/Membership/classes/ActivateMember.class.php:202
+[25-Feb-2014 16:46:11] PHP   5. CasinoAPIHandler->CreateNewAccount() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/CasinoAPI.class.php:288
+[25-Feb-2014 16:46:11] PHP   6. RealtimeGamingUBAPIWrapper->AddUser() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/CasinoAPIHandler.class.php:103
+[25-Feb-2014 16:46:11] PHP   7. RealtimeGamingWCFPlayerAPI->createTerminalAccount() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/RealtimeGamingUBAPIWrapper.class.php:246
+[25-Feb-2014 16:46:11] PHP   8. RealtimeGamingWCFPlayerAPI->submitRequest() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/RealtimeGamingWCFPlayerAPI.class.php:169
+[25-Feb-2014 16:46:11] PHP   9. SoapClient->SoapClient() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/RealtimeGamingWCFPlayerAPI.class.php:281
+[25-Feb-2014 16:46:11] PHP Warning:  SoapClient::SoapClient() [<a href='0soapclient.soapclient0'>soapclient.soapclient0</a>]: Failed to enable crypto in /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/RealtimeGamingWCFPlayerAPI.class.php on line 281
+[25-Feb-2014 16:46:11] PHP Stack trace:
+[25-Feb-2014 16:46:11] PHP   1. {main}() /var/www/membership/membership.rewards/API/cardinquiry.php:0
+[25-Feb-2014 16:46:11] PHP   2. GetCardInfoAPI->GetCardInfo() /var/www/membership/membership.rewards/API/cardinquiry.php:210
+[25-Feb-2014 16:46:11] PHP   3. ActivateMember->Migrate() /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php:263
+[25-Feb-2014 16:46:11] PHP   4. CasinoAPI->createAccount() /var/www/membership/membership.rewards/rsframework/include/Modules/Membership/classes/ActivateMember.class.php:202
+[25-Feb-2014 16:46:11] PHP   5. CasinoAPIHandler->CreateNewAccount() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/CasinoAPI.class.php:288
+[25-Feb-2014 16:46:11] PHP   6. RealtimeGamingUBAPIWrapper->AddUser() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/CasinoAPIHandler.class.php:103
+[25-Feb-2014 16:46:11] PHP   7. RealtimeGamingWCFPlayerAPI->createTerminalAccount() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/RealtimeGamingUBAPIWrapper.class.php:246
+[25-Feb-2014 16:46:11] PHP   8. RealtimeGamingWCFPlayerAPI->submitRequest() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/RealtimeGamingWCFPlayerAPI.class.php:169
+[25-Feb-2014 16:46:11] PHP   9. SoapClient->SoapClient() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/RealtimeGamingWCFPlayerAPI.class.php:281
+[25-Feb-2014 16:46:11] PHP Warning:  SoapClient::SoapClient(https://202.44.102.31/ECFDEMOFDGEFNPGEMFOQ/casinoapi/player.asmx) [<a href='0soapclient.soapclient0'>soapclient.soapclient0</a>]: failed to open stream: operation failed in /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/RealtimeGamingWCFPlayerAPI.class.php on line 281
+[25-Feb-2014 16:46:11] PHP Stack trace:
+[25-Feb-2014 16:46:11] PHP   1. {main}() /var/www/membership/membership.rewards/API/cardinquiry.php:0
+[25-Feb-2014 16:46:11] PHP   2. GetCardInfoAPI->GetCardInfo() /var/www/membership/membership.rewards/API/cardinquiry.php:210
+[25-Feb-2014 16:46:11] PHP   3. ActivateMember->Migrate() /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php:263
+[25-Feb-2014 16:46:11] PHP   4. CasinoAPI->createAccount() /var/www/membership/membership.rewards/rsframework/include/Modules/Membership/classes/ActivateMember.class.php:202
+[25-Feb-2014 16:46:11] PHP   5. CasinoAPIHandler->CreateNewAccount() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/CasinoAPI.class.php:288
+[25-Feb-2014 16:46:11] PHP   6. RealtimeGamingUBAPIWrapper->AddUser() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/CasinoAPIHandler.class.php:103
+[25-Feb-2014 16:46:11] PHP   7. RealtimeGamingWCFPlayerAPI->createTerminalAccount() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/RealtimeGamingUBAPIWrapper.class.php:246
+[25-Feb-2014 16:46:11] PHP   8. RealtimeGamingWCFPlayerAPI->submitRequest() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/RealtimeGamingWCFPlayerAPI.class.php:169
+[25-Feb-2014 16:46:11] PHP   9. SoapClient->SoapClient() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/RealtimeGamingWCFPlayerAPI.class.php:281
+[25-Feb-2014 16:46:11] PHP Warning:  SoapClient::SoapClient() [<a href='0soapclient.soapclient0'>soapclient.soapclient0</a>]: I/O warning : failed to load external entity &quot;https://202.44.102.31/ECFDEMOFDGEFNPGEMFOQ/casinoapi/player.asmx&quot; in /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/RealtimeGamingWCFPlayerAPI.class.php on line 281
+[25-Feb-2014 16:46:11] PHP Stack trace:
+[25-Feb-2014 16:46:11] PHP   1. {main}() /var/www/membership/membership.rewards/API/cardinquiry.php:0
+[25-Feb-2014 16:46:11] PHP   2. GetCardInfoAPI->GetCardInfo() /var/www/membership/membership.rewards/API/cardinquiry.php:210
+[25-Feb-2014 16:46:11] PHP   3. ActivateMember->Migrate() /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php:263
+[25-Feb-2014 16:46:11] PHP   4. CasinoAPI->createAccount() /var/www/membership/membership.rewards/rsframework/include/Modules/Membership/classes/ActivateMember.class.php:202
+[25-Feb-2014 16:46:11] PHP   5. CasinoAPIHandler->CreateNewAccount() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/CasinoAPI.class.php:288
+[25-Feb-2014 16:46:11] PHP   6. RealtimeGamingUBAPIWrapper->AddUser() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/CasinoAPIHandler.class.php:103
+[25-Feb-2014 16:46:11] PHP   7. RealtimeGamingWCFPlayerAPI->createTerminalAccount() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/RealtimeGamingUBAPIWrapper.class.php:246
+[25-Feb-2014 16:46:11] PHP   8. RealtimeGamingWCFPlayerAPI->submitRequest() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/RealtimeGamingWCFPlayerAPI.class.php:169
+[25-Feb-2014 16:46:11] PHP   9. SoapClient->SoapClient() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/RealtimeGamingWCFPlayerAPI.class.php:281
+[25-Feb-2014 16:46:11] PHP Fatal error:  SOAP-ERROR: Parsing WSDL: Couldn't load from 'https://202.44.102.31/ECFDEMOFDGEFNPGEMFOQ/casinoapi/player.asmx' : failed to load external entity "https://202.44.102.31/ECFDEMOFDGEFNPGEMFOQ/casinoapi/player.asmx"
+ in /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/RealtimeGamingWCFPlayerAPI.class.php on line 281
+[25-Feb-2014 16:46:11] PHP Stack trace:
+[25-Feb-2014 16:46:11] PHP   1. {main}() /var/www/membership/membership.rewards/API/cardinquiry.php:0
+[25-Feb-2014 16:46:11] PHP   2. GetCardInfoAPI->GetCardInfo() /var/www/membership/membership.rewards/API/cardinquiry.php:210
+[25-Feb-2014 16:46:11] PHP   3. ActivateMember->Migrate() /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php:263
+[25-Feb-2014 16:46:11] PHP   4. CasinoAPI->createAccount() /var/www/membership/membership.rewards/rsframework/include/Modules/Membership/classes/ActivateMember.class.php:202
+[25-Feb-2014 16:46:11] PHP   5. CasinoAPIHandler->CreateNewAccount() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/CasinoAPI.class.php:288
+[25-Feb-2014 16:46:11] PHP   6. RealtimeGamingUBAPIWrapper->AddUser() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/CasinoAPIHandler.class.php:103
+[25-Feb-2014 16:46:11] PHP   7. RealtimeGamingWCFPlayerAPI->createTerminalAccount() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/RealtimeGamingUBAPIWrapper.class.php:246
+[25-Feb-2014 16:46:11] PHP   8. RealtimeGamingWCFPlayerAPI->submitRequest() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/RealtimeGamingWCFPlayerAPI.class.php:169
+[25-Feb-2014 16:46:11] PHP   9. SoapClient->SoapClient() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/RealtimeGamingWCFPlayerAPI.class.php:281
+[25-Feb-2014 17:46:44] PHP Warning:  Missing argument 14 for CasinoAPI::createAccount(), called in /var/www/membership/membership.rewards/rsframework/include/Modules/Membership/classes/ActivateMember.class.php on line 202 and defined in /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/CasinoAPI.class.php on line 253
+[25-Feb-2014 17:46:44] PHP Stack trace:
+[25-Feb-2014 17:46:44] PHP   1. {main}() /var/www/membership/membership.rewards/API/cardinquiry.php:0
+[25-Feb-2014 17:46:44] PHP   2. GetCardInfoAPI->GetCardInfo() /var/www/membership/membership.rewards/API/cardinquiry.php:210
+[25-Feb-2014 17:46:44] PHP   3. ActivateMember->Migrate() /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php:263
+[25-Feb-2014 17:46:44] PHP   4. CasinoAPI->createAccount() /var/www/membership/membership.rewards/rsframework/include/Modules/Membership/classes/ActivateMember.class.php:202
+[25-Feb-2014 17:46:44] PHP Notice:  Undefined variable: viplevel in /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/CasinoAPI.class.php on line 288
+[25-Feb-2014 17:46:44] PHP Stack trace:
+[25-Feb-2014 17:46:44] PHP   1. {main}() /var/www/membership/membership.rewards/API/cardinquiry.php:0
+[25-Feb-2014 17:46:44] PHP   2. GetCardInfoAPI->GetCardInfo() /var/www/membership/membership.rewards/API/cardinquiry.php:210
+[25-Feb-2014 17:46:44] PHP   3. ActivateMember->Migrate() /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php:263
+[25-Feb-2014 17:46:44] PHP   4. CasinoAPI->createAccount() /var/www/membership/membership.rewards/rsframework/include/Modules/Membership/classes/ActivateMember.class.php:202
+[25-Feb-2014 17:46:44] PHP Warning:  Cannot modify header information - headers already sent by (output started at /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/CasinoAPI.class.php:288) in /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/RealtimeGamingWCFPlayerAPI.class.php on line 270
+[25-Feb-2014 17:46:44] PHP Stack trace:
+[25-Feb-2014 17:46:44] PHP   1. {main}() /var/www/membership/membership.rewards/API/cardinquiry.php:0
+[25-Feb-2014 17:46:44] PHP   2. GetCardInfoAPI->GetCardInfo() /var/www/membership/membership.rewards/API/cardinquiry.php:210
+[25-Feb-2014 17:46:44] PHP   3. ActivateMember->Migrate() /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php:263
+[25-Feb-2014 17:46:44] PHP   4. CasinoAPI->createAccount() /var/www/membership/membership.rewards/rsframework/include/Modules/Membership/classes/ActivateMember.class.php:202
+[25-Feb-2014 17:46:44] PHP   5. CasinoAPIHandler->CreateNewAccount() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/CasinoAPI.class.php:288
+[25-Feb-2014 17:46:44] PHP   6. RealtimeGamingUBAPIWrapper->AddUser() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/CasinoAPIHandler.class.php:103
+[25-Feb-2014 17:46:44] PHP   7. RealtimeGamingWCFPlayerAPI->createTerminalAccount() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/RealtimeGamingUBAPIWrapper.class.php:246
+[25-Feb-2014 17:46:44] PHP   8. RealtimeGamingWCFPlayerAPI->submitRequest() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/RealtimeGamingWCFPlayerAPI.class.php:169
+[25-Feb-2014 17:46:44] PHP   9. header() /var/www/membership/membership.rewards/rsframework/include/Modules/CasinoProvider/classes/RealtimeGamingWCFPlayerAPI.class.php:270
+[25-Feb-2014 17:46:44] PHP Fatal error:  Uncaught exception 'PDOException' with message 'There is no active transaction' in /var/www/membership/membership.rewards/rsframework/include/datalayer/PDOHandler.php:376
+Stack trace:
+#0 /var/www/membership/membership.rewards/rsframework/include/datalayer/PDOHandler.php(376): PDO->rollBack()
+#1 /var/www/membership/membership.rewards/rsframework/include/core/BaseEntity.class.php(544): PDOHandler->rollBack()
+#2 /var/www/membership/membership.rewards/rsframework/include/Modules/Membership/classes/ActivateMember.class.php(434): BaseEntity->RollBackTransaction()
+#3 /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php(263): ActivateMember->Migrate('eGames07Z7I', 1)
+#4 /var/www/membership/membership.rewards/API/cardinquiry.php(210): GetCardInfoAPI->GetCardInfo('eGames07Z7I', 5, '0', 1)
+#5 {main}
+  thrown in /var/www/membership/membership.rewards/rsframework/include/datalayer/PDOHandler.php on line 376
+[25-Feb-2014 18:03:15] PHP Fatal error:  Uncaught exception 'PDOException' with message 'There is no active transaction' in /var/www/membership/membership.rewards/rsframework/include/datalayer/PDOHandler.php:376
+Stack trace:
+#0 /var/www/membership/membership.rewards/rsframework/include/datalayer/PDOHandler.php(376): PDO->rollBack()
+#1 /var/www/membership/membership.rewards/rsframework/include/core/BaseEntity.class.php(544): PDOHandler->rollBack()
+#2 /var/www/membership/membership.rewards/rsframework/include/Modules/Membership/classes/ActivateMember.class.php(434): BaseEntity->RollBackTransaction()
+#3 /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php(263): ActivateMember->Migrate('eGamesNAW1I', 1)
+#4 /var/www/membership/membership.rewards/API/cardinquiry.php(210): GetCardInfoAPI->GetCardInfo('eGamesNAW1I', 5, '0', 1)
+#5 {main}
+  thrown in /var/www/membership/membership.rewards/rsframework/include/datalayer/PDOHandler.php on line 376
+[25-Feb-2014 19:05:12] Error "Inactive Card: UBF39XUM" File: /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php LINE: 78
+[25-Feb-2014 19:06:22] Error "Values not submitted" File: /var/www/membership/membership.rewards/tempmemberactivation.php LINE: 307
+[25-Feb-2014 19:07:09] Error "Inactive Card: UB2CE6DO" File: /var/www/membership/membership.rewards/rsframework/include/Modules/Loyalty/classes/GetCardInfoAPI.class.php LINE: 78
+[25-Feb-2014 19:12:25] PHP Notice:  Undefined index: userinfo in /var/www/membership/membership.rewards/admin/index.php on line 58
+[25-Feb-2014 19:12:25] PHP Stack trace:
+[25-Feb-2014 19:12:25] PHP   1. {main}() /var/www/membership/membership.rewards/admin/index.php:0
+[25-Feb-2014 19:12:25] PHP Warning:  Cannot modify header information - headers already sent by (output started at /var/www/membership/membership.rewards/admin/header.php:108) in /var/www/membership/membership.rewards/rsframework/include/core/URL.class.php on line 16
+[25-Feb-2014 19:12:25] PHP Stack trace:
+[25-Feb-2014 19:12:25] PHP   1. {main}() /var/www/membership/membership.rewards/admin/index.php:0
+[25-Feb-2014 19:12:25] PHP   2. include() /var/www/membership/membership.rewards/admin/index.php:509
+[25-Feb-2014 19:12:25] PHP   3. include() /var/www/membership/membership.rewards/admin/menu.php:7
+[25-Feb-2014 19:12:25] PHP   4. URL::Redirect() /var/www/membership/membership.rewards/admin/sessionmanager.php:90
+[25-Feb-2014 19:12:25] PHP   5. header() /var/www/membership/membership.rewards/rsframework/include/core/URL.class.php:16
+[25-Feb-2014 19:12:25] PHP Notice:  Undefined variable: usermenu in /var/www/membership/membership.rewards/admin/menu.php on line 16
+[25-Feb-2014 19:12:25] PHP Stack trace:
+[25-Feb-2014 19:12:25] PHP   1. {main}() /var/www/membership/membership.rewards/admin/index.php:0
+[25-Feb-2014 19:12:25] PHP   2. include() /var/www/membership/membership.rewards/admin/index.php:509
+[25-Feb-2014 19:12:25] PHP Warning:  Invalid argument supplied for foreach() in /var/www/membership/membership.rewards/admin/menu.php on line 16
+[25-Feb-2014 19:12:25] PHP Stack trace:
+[25-Feb-2014 19:12:25] PHP   1. {main}() /var/www/membership/membership.rewards/admin/index.php:0
+[25-Feb-2014 19:12:25] PHP   2. include() /var/www/membership/membership.rewards/admin/index.php:509
+[25-Feb-2014 19:12:25] PHP Notice:  Undefined index: aID in /var/www/membership/membership.rewards/admin/menu.php on line 38
+[25-Feb-2014 19:12:25] PHP Stack trace:
+[25-Feb-2014 19:12:25] PHP   1. {main}() /var/www/membership/membership.rewards/admin/index.php:0
+[25-Feb-2014 19:12:25] PHP   2. include() /var/www/membership/membership.rewards/admin/index.php:509
+[25-Feb-2014 19:12:25] MySQL Error "You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1" File: /var/www/membership/membership.rewards/rsframework/include/datalayer/MySQLDatabase.php LINE: 147
+[25-Feb-2014 19:12:25] PHP Warning:  Invalid argument supplied for foreach() in /var/www/membership/membership.rewards/admin/menu.php on line 40
+[25-Feb-2014 19:12:25] PHP Stack trace:
+[25-Feb-2014 19:12:25] PHP   1. {main}() /var/www/membership/membership.rewards/admin/index.php:0
+[25-Feb-2014 19:12:25] PHP   2. include() /var/www/membership/membership.rewards/admin/index.php:509
+[25-Feb-2014 19:12:25] PHP Notice:  Undefined variable: username in /var/www/membership/membership.rewards/admin/menu.php on line 43
+[25-Feb-2014 19:12:25] PHP Stack trace:
+[25-Feb-2014 19:12:25] PHP   1. {main}() /var/www/membership/membership.rewards/admin/index.php:0
+[25-Feb-2014 19:12:25] PHP   2. include() /var/www/membership/membership.rewards/admin/index.php:509
+[25-Feb-2014 19:12:25] PHP Notice:  Undefined variable: usermenu in /var/www/membership/membership.rewards/admin/menu.php on line 51
+[25-Feb-2014 19:12:25] PHP Stack trace:
+[25-Feb-2014 19:12:25] PHP   1. {main}() /var/www/membership/membership.rewards/admin/index.php:0
+[25-Feb-2014 19:12:25] PHP   2. include() /var/www/membership/membership.rewards/admin/index.php:509
+[25-Feb-2014 19:12:25] PHP Warning:  Invalid argument supplied for foreach() in /var/www/membership/membership.rewards/admin/menu.php on line 51
+[25-Feb-2014 19:12:25] PHP Stack trace:
+[25-Feb-2014 19:12:25] PHP   1. {main}() /var/www/membership/membership.rewards/admin/index.php:0
+[25-Feb-2014 19:12:25] PHP   2. include() /var/www/membership/membership.rewards/admin/index.php:509
