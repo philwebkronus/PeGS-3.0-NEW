@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Document   : newXMLDocument.xml
+    Created on : June 15, 2011, 3:05 PM
+    Author     :  Lea Tuazon
+    Description:
+        On time pull of all menus in db; to avoid network traffic
+--> 
+<rights>
+<right id="1">
+<!--    <menu id ="12" name='Menu Maintenance' pagename="12" path='blank.php'>
+         <submenu id="88" name='Create Sub-menu' path='submenucreate.php' group='Sub-menu' pagename='12' />
+         <submenu id="89" name='View Sub-menu' path='submenuview.php' group='Sub-menu' pagename='12' />
+         <submenu id="96" name='Sub-menu Deactivation' path='submenudeactivation.php' group='Sub-menu' pagename='12' />
+         <submenu id="90" name='Create Menu' path='menucreation.php' group="Menu" pagename="12" />
+         <submenu id="91" name='View Menu' path='menuview.php' group="Menu" pagename="12" />
+         <submenu id="92" name='Menu Deactivation' path='menudeactivation.php' group='Menu' pagename='12' />
+         <submenu id="93" name='Access Rights' path='accessrights.php' group='Access Rights' pagename='12' />
+         <submenu id="94" name='View Access Rights' path='viewaccessrights.php' group='Access Rights' pagename='12' />
+         <submenu id="95" name='User Deactivation' path='accountdeactivation.php' group=' ' pagename='12' />
+    </menu>-->
+    <menu id ="1" name='Functions' path='blank.php' pagename="1">
+     <submenu id="1" name="Account Creation" path="accountcreation.php" pagename="1" group=' '/>
+     <submenu id="2" name="Update Profile" path="accountview.php" pagename="1" group=' '/>
+     <submenu id="61" name="Unlock Account" path="accountunlock.php" pagename="1" group=' '/>
+    </menu>
+    <menu id ="19" name='Reports' path='blank.php' pagename="19">
+        <submenu id="54" name='Audit Trail' path='rptaudittrail.php' pagename="19" group=' '/>
+    </menu>
+</right>
+<right id="2">
+<!--    <menu id ="11" name='Functions' pagename="11" path='blank.php'>
+        <submenu id="79" name='Terminal Monitoring' path='optrmonitoring.php' pagename="11" group=' '/>
+    </menu>-->
+    <menu id ="2" name='Functions' path='blank.php' pagename="2">   
+       <submenu id="34" name='Supervisor Creation' path='accountcreation.php' group='Supervisor' pagename="2"/>
+       <submenu id="4"  name='Update Supervisor Profile' path='accountview.php' group='Supervisor' pagename="2"/>
+       <submenu id="35" name='Cashier Creation' path='accountcreation.php' group='Cashier' pagename="2"/> 
+       <submenu id="3" name='Update Cashier Profile' path='accountview.php' group='Cashier' pagename="2"/>     
+       <submenu id="61" name='Unlock Account' path='accountunlock.php' group=' ' pagename="2" />
+     </menu>
+    <menu id ="19" name='Reports' path='blank.php' pagename="19">
+        <submenu id="55" name='Active Session and Terminal Balance Per Site' path='rptActiveSessionAndTerminalBalance.php' pagename="19" group='Active Session And Terminal Balance'/>
+       <submenu id="56" name='Active Session and Terminal Balance Per Membership Card' path='rptActiveSessionAndTerminalBalanceUB.php' pagename="19" group='Active Session And Terminal Balance'/>
+       <submenu id="5" name='BCF Per Site' path='rptbcfpersite.php' pagename="19" group=' '/>
+       <submenu id="6" name='Site Transactions' path='rptsitetransaction.php' pagename="19" group=' '/>
+       <submenu id="54" name='Audit Trail' path='rptaudittrail.php' pagename="19" group=' '/>  
+    </menu>
+</right>
+<right id="3">   
+     <menu id ="19" name='Reports' path='blank.php' pagename="19">
+         <submenu id="55" name='Active Session and Terminal Balance Per Site' path='rptActiveSessionAndTerminalBalance.php' pagename="19" group='Active Session And Terminal Balance'/>
+       <submenu id="56" name='Active Session and Terminal Balance Per Membership Card' path='rptActiveSessionAndTerminalBalanceUB.php' pagename="19" group='Active Session And Terminal Balance'/>
+       <submenu id="9" name="Gross Hold" path="rptsupgrosshold.php" pagename="19" group=' '/>
+       <submenu id="54" name='Audit Trail' path='rptaudittrail.php' pagename="19" group=' '/> 
+     </menu>
+</right>
+<right id="4">   
+     <menu id ="5" name='Terminal Monitoring' path='../../../cashier/public/views/cashier.php?page=terminalmonitoring'>
+     </menu>  
+     <menu id ="19" name='Reports' path='blank.php'>
+       <submenu id="12" name='Transaction History' path='../process/ProcessReports.php?type=csh' />
+       <submenu id="13" name='Posting of Deposit' path='underconstruction.php' />
+       <submenu id="54" name='Audit Trail' path='rptaudittrail.php' />
+     </menu>
+</right>
+<right id="5">   
+    <menu id ="10" name='Gross Hold Monitoring' path='GHMonitoring.php' pagename="10"></menu>    
+    <menu id ="11" name='Functions' path='blank.php' pagename="11">
+      <submenu id="19" name='Override' path='Override.php' group='Auto Top-up' pagename="11"/>
+      <submenu id="19" name='Initial Posting of Manual Top-up' path='topupmanual.php' group='Manual Top-up' pagename="11"/>
+      <submenu id="20" name='Update Manual Top-up Posting' path='topupview.php' group='Manual Top-up' pagename="11" />
+      <submenu id="22" name='Reversal of Manual Top-up' path='topupreversal.php' group='Manual Top-up' pagename="11" />
+      <submenu id="13" name='Posting of Collection' path='cashierdeposit.php' group='Posting' pagename="11" />
+      <submenu id="69" name='Replenishment Platform' path='topupreplenishment.php' group='Posting' pagename="11" />
+      <submenu id="64" name='PeGs Confirmation' path='pegsconfirmation.php' group='Posting' pagename="11" />
+      <submenu id ="13" name='Terminal Based Manual Redemption' path='manualredemption.php' group="Manual Redemption" pagename="11" />
+      <submenu id ="14" name='User Based Manual Redemption' path='manualredemption_ub.php' group="Manual Redemption" pagename="11" />
+      <submenu id="38" name='Freeze Accounts' path='suspendaccount.php' group=' ' pagename="11" />
+    </menu>
+    <menu id ="19" name='Reports' path='blank.php' pagename="19">   
+      <submenu id="72" name="GH Balance Per Cut-off" path="GrossHoldBalance.php" group= "Site Monitoring" pagename="19" />
+      <!--<submenu id="60" name='Betting Credit' path='BettingCredit.php' group= "Site Monitoring" pagename="19" />-->
+      <!-- Added on 06/04/2012 for BCF Report Separation -->
+      <submenu id="60" name='Critical BCF' path='BettingCredit.php?report=critical' group= "Site Monitoring" pagename="19" />
+      <submenu id="60" name='Non-Critical BCF' path='BettingCredit.php?report=safe' group= "Site Monitoring" pagename="19" />
+       <submenu id="51" name='Playing Balance Per Site' path='PlayingBalance.php' group= "Playing Balance" pagename="19" />
+      <submenu id="52" name='Playing Balance Per Membership Card' path='PlayingBalanceub.php' group= "Playing Balance" pagename="19" />
+      <!-- End Modification -->
+<!--      <submenu id="60" name='List of Pegs Subject for Top-up' path='ListPegsSubject.php' group= "Site Monitoring" pagename="19" />-->
+      <submenu id="24" name='Collection History' path='PostedDeposit.php' group="Posting" pagename="19" />
+      <submenu id="70" name="Confirmation History" path="Confirmation.php" group="Posting" pagename="19" />
+      <submenu id="71" name="Replenishment History" path="Replenishment.php" group="Posting" pagename="19" />
+      <submenu id="25" name='Top-up History' path='TopUpHistory.php' group="Top-up Monitoring" pagename="19" />
+      <submenu id="29" name='Manual Top-up Reversal History' path='ReversalOfManualTopUp.php' group="Top-up Monitoring" pagename="19" />
+      <submenu id="30" name='Manual Redemption History' path='TopUpManualRedemption.php' group=" " pagename="19" />
+      <submenu id="54" name='Audit Trail' path='rptaudittrail.php' group=" " pagename="19" />
+    </menu>   
+</right>
+<right id="6">   
+   <menu id="20" name="Functions" path="blank.php" pagename="20" >
+      <submenu id="61" name='Unlock Account' path='accountunlock.php' pagename="20" group=' '/>
+      <submenu id="73" name='Passkey Retrieval' path='csviewpasskey.php' pagename="20" group=' '/> 
+      <submenu id="74" pagename="20" path="applptracking_cs.php" name="E-City Tracking" group=" "/>
+      <submenu id ="51" name='UB Transaction Tracking' path='appsupportviewub.php' group=' ' pagename="20" />
+   </menu>
+   <menu id ="19" name='Reports' path='blank.php' pagename="19">
+       <submenu id="67" name='User Based Redemption' path='csuserbasedredemptions.php' pagename="19" group='Redemptions' />
+      <submenu id="68" name='Terminal Based Redemption' path='csredemptions.php' pagename="19" group='Redemptions'/>     
+      <submenu id="51" name='Playing Balance Per Site' path='PlayingBalance.php' pagename="19" group='Playing Balance' />
+      <submenu id="52" name='Playing Balance Per Membership Card' path='PlayingBalanceub.php' group= "Playing Balance" pagename="19" />
+      <submenu id ="54" name='Audit Trail' path='rptaudittrail.php' pagename="19" group=' '/> 
+   </menu>
+</right>
+<right id="7">   
+    <menu id ="14" name='Terminal Monitoring' path='../../../cashier2.pagcoregames.com/index.php?r=monitoring/overview'>
+    </menu>    
+</right>
+<right id="8">   
+      <menu id ="15" name='Functions' path='blank.php' pagename="15">
+        <submenu id="33" name='Site/PEGS Creation' path='sitecreation.php' group='Sites/PEGS'  pagename="15" />
+        <submenu id="38" name='Update Site/PEGS Profile' path='siteview.php' group='Sites/PEGS'  pagename="15" />
+        <submenu id="58" name="Update Site/PEGS Denomination" path='updatedenom.php' group='Sites/PEGS'  pagename="15" />
+        <submenu id="32" name='Operator / PAGCOR / TM Creation' path='accountcreation.php' group='Operator / PAGCOR / TM'  pagename="15" />
+        <submenu id="37" name='Update Operator / PAGCOR / TM Profile' path='accountview.php' group='Operator / PAGCOR / TM'  pagename="15" />       
+        <submenu id="36" name='Terminal Creation' path='terminalcreation.php' group='RTG Terminal Maintenance'  pagename="15" /> 
+        <submenu id="41" name='Update Terminal Profile' path='terminalview.php' group='RTG Terminal Maintenance'  pagename="15" />
+        <submenu id="42" name='Terminal Provider Assignment' path='serviceassignment.php' group='RTG Terminal Maintenance'  pagename="15" />
+        <submenu id="36" name='Terminal Creation' path='terminalcreation.php' group='RTG2 Terminal Maintenance'  pagename="15" /> 
+        <submenu id="41" name='Update Terminal Profile' path='terminalview.php' group='RTG2 Terminal Maintenance'  pagename="15" />
+        <submenu id="42" name='Terminal Provider Assignment' path='serviceassignment.php' group='RTG2 Terminal Maintenance'  pagename="15" />
+        <submenu id="36" name='Terminal Creation' path='terminalcreation.php' group='MG Terminal Maintenance'  pagename="15" /> 
+        <submenu id="41" name='Update Terminal Profile' path='terminalview.php' group='MG Terminal Maintenance'  pagename="15" />
+        <submenu id="42" name='Terminal Provider Assignment' path='serviceassignment.php' group='MG Terminal Maintenance'  pagename="15" />
+        <submenu id="36" name='Terminal Creation' path='terminalcreation.php' group='PT Terminal Maintenance' pagename="15" />
+        <submenu id="41" name='Update Terminal Profile' path='terminalview.php' group='PT Terminal Maintenance' pagename="15" />
+        <submenu id="42" name='Terminal Provider Assignment' path='serviceassignment.php' group='PT Terminal Maintenance' pagename="15" />
+        <submenu id='63' name='Batch Terminal Creation' path='batchterminalcreation.php' group=' ' pagename="15" />
+        <submenu id="61" name='Unlock Account' path='accountunlock.php' group=' ' pagename="15"/>
+        <submenu id='67' name='Terminate Account' path='terminateaccount.php' group=' ' pagename="15" />
+        <submenu id="85" name="Removal of Assigned Site" path="siteremoval.php" group=' ' pagename="15" />
+        <submenu id="86" name="Casino Services Profile Management" path="casinoviewprofile.php" group=' ' pagename="15" />
+      </menu>
+      <menu id ="19" name='Reports' path='blank.php' pagename="19">
+        <submenu id="43" name='Site Listing' path='rptsitelisting.php' pagename="19" />
+        <submenu id="59" name='Site Demographics' path='rptsitedemographics.php' pagename="19" />
+        <submenu id="80" name='User Listing' path='rptuserlisting.php' pagename="19" />
+        <submenu id="54" name='Audit Trail' path='rptaudittrail.php' pagename="19" />
+      </menu>
+</right>
+<right id="9">   
+      <menu id ="17" name='Functions' path='blank.php' pagename="17">
+        <submenu id ="49" name='Transaction Tracking' path='appsupportview.php' group='Tracking' pagename="17" />
+        <submenu id ="51" name='UB Transaction Tracking' path='appsupportviewub.php' group='Tracking' pagename="17" />
+        <submenu id ="50" name='On/Off Passkey' path='apppasskey.php' group='Tracking' pagename="17"/>   
+        <submenu id ='74' name='E-City Tracking' path='applptracking.php' group='Tracking' pagename='17' />
+        <submenu id ='75' name='Logs Tracking' path='applogsmonitor.php' group='Tracking' pagename='17' />
+        <submenu id ='75' name='E-City Logs Tracking' path='launchPadLogsMonitor.php' group='Tracking' pagename='17' />
+        <submenu id ='76' name='Admin Logs Tracking' path='appadminlogsmonitor.php' group='Tracking' pagename='17' />
+        <submenu id ="62" name='Disabling of Cashier Terminal' path='appdisableterminal.php' group='Terminal' pagename="17" />   
+        <submenu id ="81" name='Adjust Cashier Terminal' path='appadjustterminal.php' group='Terminal' pagename="17" />   
+        <submenu id="65" name='Switching of Servers' path='appswitchserver.php' group='Terminal' pagename="17" />
+        <submenu id="66" name="Removing of Casino" path='appremoveserver.php' group='Terminal'  pagename="17" />
+        <submenu id="84" name="Change Terminal Password" path='appbatchpassword.php' group='Terminal'  pagename="17" />
+        <submenu id="90" name="Enabling of Spyder" path='enablingofspyder.php' group='Terminal'  pagename="17" />
+        <submenu id="90" name="Cashier URL Management" path='appurlmanagement.php' group='Terminal'  pagename="17" />
+        <submenu id="88" name="Reset Casino Account Terminal Based" path='appunlockterminal.php' group='Reset Casino Account'  pagename="17" />
+        <submenu id="88" name="Reset Casino Account User Based" path='appunlockterminal_ub.php' group='Reset Casino Account'  pagename="17" />
+        <submenu id="89" name="Manual Casino Fulfillment" path='manualAPIfulfillment.php' group=' '  pagename="17" />
+        
+      </menu>
+     <menu id ="19" name='Reports' path='blank.php' pagename="19">
+        <submenu id ="54" name='Audit Trail' path='rptaudittrail.php' pagename="19"/>      
+        <submenu id ="86" name='Change Terminal Password Logs' path='apprptpassword.php' pagename="19"/> 
+        <submenu id ="87" name='LP Deployment Created Terminals' path='apprptterminalscreated.php' pagename="19"/> 
+     </menu>
+</right>
+<right id="11">
+     <menu id ="10" name='Gross Hold Monitoring' path='GHMonitoring.php' pagename="10"></menu>
+     <menu id="19" name='Reports' path='blank.php' pagename="19">
+        <submenu id ='76' name='E-City Report' path='pagcorecityreport.php' pagename='19' />
+        <submenu id ='83' name='GH Balance Per Cut-off' path='pagcorghbal.php' pagename='19' />
+        <submenu id="54" name='Audit Trail' path='rptaudittrail.php' pagename="19" />
+        <submenu id="84" name='Casino Gross Hold' path='casinogrosshold.php' pagename="19" />
+     </menu>
+</right>
+<right id="12">
+     <menu id="19" name='Reports' path='blank.php' pagename="19">
+        <submenu id ='82' name='Transaction Tracking' path='rptfinancetrack.php' pagename='19' />
+        <submenu id ='76' name='E-City Report' path='pagcorecityreport.php' pagename='19' />
+        <submenu id="54" name='Audit Trail' path='rptaudittrail.php' pagename="19" />
+     </menu>
+</right>
+</rights>

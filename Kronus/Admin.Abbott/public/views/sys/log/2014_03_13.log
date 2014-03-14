@@ -1,0 +1,8 @@
+[13-Mar-2014 11:20:14] PHP Notice:  Undefined index: uname in C:\xampp\htdocs\kronus.admin.abbott.version\public\views\menulist.php on line 31
+[13-Mar-2014 11:20:14] PHP Notice:  Undefined index: accname in C:\xampp\htdocs\kronus.admin.abbott.version\public\views\menulist.php on line 32
+[13-Mar-2014 11:20:14] PHP Notice:  Undefined index: acctype in C:\xampp\htdocs\kronus.admin.abbott.version\public\views\menulist.php on line 38
+[13-Mar-2014 11:20:14] PHP Warning:  DOMXPath::query() [<a href='0domxpath.query0'>domxpath.query0</a>]: Invalid expression in C:\xampp\htdocs\kronus.admin.abbott.version\public\views\menulist.php on line 42
+[13-Mar-2014 11:20:14] PHP Warning:  DOMXPath::query() [<a href='0domxpath.query0'>domxpath.query0</a>]: Invalid expression in C:\xampp\htdocs\kronus.admin.abbott.version\public\views\menulist.php on line 42
+[13-Mar-2014 11:20:14] PHP Notice:  Trying to get property of non-object in C:\xampp\htdocs\kronus.admin.abbott.version\public\views\menulist.php on line 44
+[13-Mar-2014 14:07:26] PHP Notice:  A session had already been started - ignoring session_start() in C:\xampp\htdocs\kronus.admin.abbott.version\public\views\process\ProcessLogin.php on line 85
+[13-Mar-2014 14:08:28] PHP Notice:  A session had already been started - ignoring session_start() in C:\xampp\htdocs\kronus.admin.abbott.version\public\views\process\ProcessLogin.php on line 85

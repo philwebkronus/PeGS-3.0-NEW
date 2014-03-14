@@ -1,0 +1,16 @@
+[03-Mar-2014 14:12:06] PHP Notice:  A session had already been started - ignoring session_start() in C:\xampp\htdocs\kronus.admin.abbott.version\public\views\process\ProcessLogin.php on line 85
+[03-Mar-2014 14:12:53] PHP Notice:  A session had already been started - ignoring session_start() in C:\xampp\htdocs\kronus.admin.abbott.version\public\views\process\ProcessLogin.php on line 85
+[03-Mar-2014 18:41:49] PHP Notice:  A session had already been started - ignoring session_start() in C:\xampp\htdocs\kronus.admin.abbott.version\public\views\process\ProcessLogin.php on line 85
+[03-Mar-2014 18:41:54] PHP Notice:  Undefined index: sidx in C:\xampp\htdocs\kronus.admin.abbott.version\public\views\process\ProcessTopUpPaginate.php on line 48
+[03-Mar-2014 18:41:59] PHP Notice:  Undefined index: sidx in C:\xampp\htdocs\kronus.admin.abbott.version\public\views\process\ProcessTopUpPaginate.php on line 48
+[03-Mar-2014 18:42:05] PHP Notice:  Undefined index: sidx in C:\xampp\htdocs\kronus.admin.abbott.version\public\views\process\ProcessTopUpPaginate.php on line 48
+[03-Mar-2014 18:42:36] PHP Notice:  Undefined index: sidx in C:\xampp\htdocs\kronus.admin.abbott.version\public\views\process\ProcessTopUpPaginate.php on line 48
+[03-Mar-2014 18:42:39] PHP Notice:  Undefined index: sidx in C:\xampp\htdocs\kronus.admin.abbott.version\public\views\process\ProcessTopUpPaginate.php on line 48
+[03-Mar-2014 18:42:54] PHP Notice:  Undefined index: sidx in C:\xampp\htdocs\kronus.admin.abbott.version\public\views\process\ProcessTopUpPaginate.php on line 48
+[03-Mar-2014 18:43:22] PHP Notice:  Undefined index: sidx in C:\xampp\htdocs\kronus.admin.abbott.version\public\views\process\ProcessTopUpPaginate.php on line 48
+[03-Mar-2014 19:02:37] PHP Notice:  Undefined index: sidx in C:\xampp\htdocs\kronus.admin.abbott.version\public\views\process\ProcessTopUpPaginate.php on line 48
+[03-Mar-2014 19:02:58] PHP Notice:  Undefined index: sidx in C:\xampp\htdocs\kronus.admin.abbott.version\public\views\process\ProcessTopUpPaginate.php on line 48
+[03-Mar-2014 19:03:15] PHP Notice:  Undefined index: sidx in C:\xampp\htdocs\kronus.admin.abbott.version\public\views\process\ProcessTopUpPaginate.php on line 48
+[03-Mar-2014 19:05:33] PHP Notice:  Undefined index: sidx in C:\xampp\htdocs\kronus.admin.abbott.version\public\views\process\ProcessTopUpPaginate.php on line 48
+[03-Mar-2014 19:05:37] PHP Notice:  Undefined index: sidx in C:\xampp\htdocs\kronus.admin.abbott.version\public\views\process\ProcessTopUpPaginate.php on line 48
+[03-Mar-2014 19:05:43] PHP Notice:  Undefined index: sidx in C:\xampp\htdocs\kronus.admin.abbott.version\public\views\process\ProcessTopUpPaginate.php on line 48

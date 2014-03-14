@@ -1,0 +1,18 @@
+[10-Mar-2014 13:17:08] PHP Notice:  Trying to get property of non-object in C:\xampp\htdocs\kronus.admin.abbott.version\public\views\process\ProcessTopUpPaginate.php on line 415
+[10-Mar-2014 13:17:08] PHP Notice:  Trying to get property of non-object in C:\xampp\htdocs\kronus.admin.abbott.version\public\views\process\ProcessTopUpPaginate.php on line 415
+[10-Mar-2014 13:17:12] PHP Notice:  Undefined index: uname in C:\xampp\htdocs\kronus.admin.abbott.version\public\views\menulist.php on line 31
+[10-Mar-2014 13:17:12] PHP Notice:  Undefined index: accname in C:\xampp\htdocs\kronus.admin.abbott.version\public\views\menulist.php on line 32
+[10-Mar-2014 13:17:12] PHP Notice:  Undefined index: acctype in C:\xampp\htdocs\kronus.admin.abbott.version\public\views\menulist.php on line 38
+[10-Mar-2014 13:17:13] PHP Warning:  DOMXPath::query() [<a href='0domxpath.query0'>domxpath.query0</a>]: Invalid expression in C:\xampp\htdocs\kronus.admin.abbott.version\public\views\menulist.php on line 42
+[10-Mar-2014 13:17:13] PHP Warning:  DOMXPath::query() [<a href='0domxpath.query0'>domxpath.query0</a>]: Invalid expression in C:\xampp\htdocs\kronus.admin.abbott.version\public\views\menulist.php on line 42
+[10-Mar-2014 13:17:13] PHP Notice:  Trying to get property of non-object in C:\xampp\htdocs\kronus.admin.abbott.version\public\views\menulist.php on line 44
+[10-Mar-2014 13:17:29] PHP Notice:  Trying to get property of non-object in C:\xampp\htdocs\kronus.admin.abbott.version\public\views\process\ProcessTopUpPaginate.php on line 415
+[10-Mar-2014 13:17:29] PHP Notice:  Trying to get property of non-object in C:\xampp\htdocs\kronus.admin.abbott.version\public\views\process\ProcessTopUpPaginate.php on line 415
+[10-Mar-2014 13:17:51] PHP Notice:  Trying to get property of non-object in C:\xampp\htdocs\kronus.admin.abbott.version\public\views\process\ProcessTopUpPaginate.php on line 415
+[10-Mar-2014 13:17:51] PHP Notice:  Trying to get property of non-object in C:\xampp\htdocs\kronus.admin.abbott.version\public\views\process\ProcessTopUpPaginate.php on line 415
+[10-Mar-2014 13:21:58] PHP Notice:  A session had already been started - ignoring session_start() in C:\xampp\htdocs\kronus.admin.abbott.version\public\views\process\ProcessLogin.php on line 85
+[10-Mar-2014 13:22:24] PHP Notice:  Trying to get property of non-object in C:\xampp\htdocs\kronus.admin.abbott.version\public\views\process\ProcessTopUpPaginate.php on line 415
+[10-Mar-2014 13:22:24] PHP Notice:  Trying to get property of non-object in C:\xampp\htdocs\kronus.admin.abbott.version\public\views\process\ProcessTopUpPaginate.php on line 415
+[10-Mar-2014 13:38:01] PHP Notice:  A session had already been started - ignoring session_start() in C:\xampp\htdocs\kronus.admin.abbott.version\public\views\process\ProcessLogin.php on line 85
+[10-Mar-2014 14:27:27] PHP Fatal error:  Call to a member function prepare() on a non-object in C:\xampp\htdocs\kronus.admin.abbott.version\public\views\sys\class\DbHandler.class.php on line 91
+[10-Mar-2014 16:30:35] PHP Notice:  A session had already been started - ignoring session_start() in C:\xampp\htdocs\kronus.admin.abbott.version\public\views\process\ProcessLogin.php on line 85
