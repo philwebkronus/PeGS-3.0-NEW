@@ -1,0 +1,19 @@
+#upload-image-container {
+    border: 1px solid #4297D7;
+    width: 150px;
+    height: 215px;
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+    float: left;
+    margin-right: 5px;
+}
+
+#save-image-container {
+    border: 1px solid #4297D7;
+    width: 150px;
+    height: 120px;
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+    float: left;
+    margin-right: 5px;
+}
