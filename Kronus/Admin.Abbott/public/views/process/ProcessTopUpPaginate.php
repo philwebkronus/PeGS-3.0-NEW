@@ -504,51 +504,55 @@ class ProcessTopUpPaginate extends BaseProcess {
         $limit = (int)$limit;   
         
         $rows = $topup->getActiveTerminals2($sitecode, $direction, $start, $limit);
+        if(count($rows) == 0){
+            $jqgrid = array();
+        } else {
+            foreach($rows as $key => $row) {
+                $balance = $this->getBalance($row);
+                /********************* GET BALANCE API ****************************/
+
+                if(is_string($balance['Balance'])) {
+                    $rows[$key]['PlayingBalance'] = number_format((double)$balance['Balance'],2, '.', ',');
+                }  else {
+                    if($row["ServiceID"])
+                    $rows[$key]['PlayingBalance'] = number_format($balance['Balance'],2, '.', ',');
+                }
+            }
+            foreach($rows as $row) {
+                $temp_pbal = explode('.', $row['PlayingBalance']);
+                if(count($temp_pbal) != 2) {
+                    if(is_string($row['PlayingBalance'])) {
+                        $row['PlayingBalance'] = $row['PlayingBalance'];
+                    }
+                    else
+                    {
+                        $row['PlayingBalance'] = number_format($row['PlayingBalance'], 2, '.', ',');
+                    }
+
+                }
+
+                if($row['PlayingBalance'] == 0 || $row['PlayingBalance'] == "0.00"){
+                        $row['PlayingBalance'] = "N/A";
+                }
+
+
+                if($row['UserMode'] == 0){
+                    $row['UserMode'] = "Terminal Based";
+                }
+                else{
+                    $row['UserMode'] = "User Based";
+                }
+                $jqgrid->rows[] = array('id'=>$row['TerminalID'],'cell'=>array(
+                    substr($row['SiteCode'], strlen(BaseProcess::$sitecode)),
+                    $row['SiteName'], 
+                    substr($row['TerminalCode'], strlen($row['SiteCode'])),
+                    $row['PlayingBalance'], 
+                    $row['ServiceName'],
+                    $row['UserMode'],
+                ));
+            }
+        }
         
-        foreach($rows as $key => $row) {
-            $balance = $this->getBalance($row);
-            /********************* GET BALANCE API ****************************/
-            
-            if(is_string($balance['Balance'])) {
-                $rows[$key]['PlayingBalance'] = number_format((double)$balance['Balance'],2, '.', ',');
-            }  else {
-                if($row["ServiceID"])
-                $rows[$key]['PlayingBalance'] = number_format($balance['Balance'],2, '.', ',');
-            }
-        }
-        foreach($rows as $row) {
-            $temp_pbal = explode('.', $row['PlayingBalance']);
-            if(count($temp_pbal) != 2) {
-                if(is_string($row['PlayingBalance'])) {
-                    $row['PlayingBalance'] = $row['PlayingBalance'];
-                }
-                else
-                {
-                    $row['PlayingBalance'] = number_format($row['PlayingBalance'], 2, '.', ',');
-                }
-                
-            }
-            
-            if($row['PlayingBalance'] == 0 || $row['PlayingBalance'] == "0.00"){
-                    $row['PlayingBalance'] = "N/A";
-            }
-                
-             
-            if($row['UserMode'] == 0){
-                $row['UserMode'] = "Terminal Based";
-            }
-            else{
-                $row['UserMode'] = "User Based";
-            }
-            $jqgrid->rows[] = array('id'=>$row['TerminalID'],'cell'=>array(
-                substr($row['SiteCode'], strlen(BaseProcess::$sitecode)),
-                $row['SiteName'], 
-                substr($row['TerminalCode'], strlen($row['SiteCode'])),
-                $row['PlayingBalance'], 
-                $row['ServiceName'],
-                $row['UserMode'],
-            ));
-        }
         echo json_encode($jqgrid);
         $topup->close();
         unset($total_row, $params, $sort, $jqgrid, $rows, $jqgrid);

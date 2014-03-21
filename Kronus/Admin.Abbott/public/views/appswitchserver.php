@@ -114,6 +114,8 @@ $vaccesspages = array('9');
                dataType: 'json',
                success: function(data)
                {
+                   $("#chosen").html("");
+                   $("#chosen").html("<option value='temp'>Make your choice on the left</option>");
                    var terminal = jQuery("#cmbterminal");
                    jQuery.each(data, function(){
                        terminal.append(jQuery("<option />").val(this.TerminalCode).text(this.TerminalCode));

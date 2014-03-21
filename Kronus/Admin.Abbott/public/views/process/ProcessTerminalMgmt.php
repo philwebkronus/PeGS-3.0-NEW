@@ -648,7 +648,7 @@ if($connected)
                        else
                        {
                            //if account does not created in casino's RTG / MG, check the errorcode is exists
-                           if($vapiResult['ErrorCode'] == 5 || $vapiResult['ErrorCode'] == 1 || $vapiResult['ErrorCode'] == 3)
+                           if($vapiResult['ErrorCode'] == 5 || $vapiResult['ErrorCode'] == 1 || $vapiResult['ErrorCode'] == 3 ||  $vapiResult['ErrorID'] == 5)
                            {
                                //if provider is RTG, then
                                if(strstr($vprovidername, "RTG") == true)

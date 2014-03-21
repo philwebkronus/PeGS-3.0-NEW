@@ -566,7 +566,7 @@ class CasinoGamingCAPI {
     public function ChangePlayerClassification($casinoName, $url, $pid, $playerClassID, $userID, $serverID)
         {
             if(strpos($casinoName, 'RTG2') !== false){
-                $isplayerAPI = 0;
+                $isplayerAPI = 1;
                 $casinoApiHandler = $this->configureRTG2($serverID, $url, $isplayerAPI);
             }
             

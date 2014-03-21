@@ -175,7 +175,7 @@ $vaccesspages = array('5','6');
         });
         
         jQuery('#btnSubmit').click(function(){
-        
+            
            if(document.getElementById('selsite').value == "-1")
            {
                alert("Please select site");
@@ -186,33 +186,39 @@ $vaccesspages = array('5','6');
             var sitecode = jQuery("#selsite").val();
             jQuery('#gridwrapper').show();
             jQuery('#senchaexport1').show();
-            jQuery("#playingbal").jqGrid('setGridParam',{url:"process/ProcessTopUpPaginate.php?action=getactiveterminals&sitecode="+sitecode,
-            page:1}).trigger("reloadGrid"); 
            }
+           jQuery('#playingbal').GridUnload();
+           jQuery("#playingbal").jqGrid({
+                            url:'process/ProcessTopUpPaginate.php?action=getactiveterminals',
+                            mtype: 'post',
+                            postData: {
+                                    sitecode: function() {return $('#selsite').val(); }
+                                      },
+                            datatype: "json",
+                            colNames:['Site / PEGS Code', 'Site / PEGS Name', 'Terminal Code', 'Playing Balance','Service Name', 'User Mode'],
+                            colModel:[
+                                {name:'SiteCode',index:'SiteCode',align:'left'},
+                                {name:'SiteName',index:'SiteName',align:'left'},
+                                {name:'TerminalCode',index:'TerminalCode',align:'center'},
+                                {name:'PlayingBalance',index:'PlayingBalance',align:'right',sortable:false},
+                                {name:'ServiceName', index:'ServiceName', align:'center', sortable:false},
+                                {name:'UserMode', index:'UserMode', align:'center', sortable:false},
+                            ], 
+                            rowNum:10,
+                            rowList:[10,20,30],
+                            height: 220,
+                            width: 1100,
+                            pager: '#pager2',
+                            refresh: true,
+                            viewrecords: true,
+                            sortorder: "asc",
+                            caption:"Playing Balance"
+                    });
+                    jQuery("#playingbal").jqGrid('navGrid','#pager2',{edit:false,add:false,del:false, search:false, refresh: true});
+                    $('#playingbal').trigger("reloadGrid");
         })
         
-        jQuery("#playingbal").jqGrid({
-            url : 'process/ProcessTopUpPaginate.php?action=getplayingbalance',
-            datatype: "json",
-            colNames:['Site / PEGS Code', 'Site / PEGS Name', 'Terminal Code', 'Playing Balance','Service Name', 'User Mode'],
-            rowNum:10,
-            height: 280,
-            width: 1200,
-            rowList:[10,20,30],
-            pager: '#pager2',
-            viewrecords: true,
-            sortorder: "asc",
-            caption:"Playing Balance Per Site",
-            colModel:[
-                {name:'SiteCode',index:'SiteCode',align:'left'},
-                {name:'SiteName',index:'SiteName',align:'left'},
-                {name:'TerminalCode',index:'TerminalCode',align:'center'},
-                {name:'PlayingBalance',index:'PlayingBalance',align:'right',sortable:false},
-                {name:'ServiceName', index:'ServiceName', align:'center', sortable:false},
-                {name:'UserMode', index:'UserMode', align:'center', sortable:false},
-            ],     
-            resizable:true
-        });        
+   
     });
 </script>
 <?php  
