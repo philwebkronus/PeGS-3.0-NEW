@@ -1,6 +1,6 @@
 <?php
 
-/*
+/**
  * Created by: Lea Tuazon
  * Modified By: Edson L. Perez
  * Date Created : June 7, 2011

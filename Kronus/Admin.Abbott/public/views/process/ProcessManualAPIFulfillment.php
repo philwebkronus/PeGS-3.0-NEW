@@ -1,6 +1,6 @@
 <?php
 
-/* Created by : Gerardo V. Jagolino Jr.
+/** Created by : Gerardo V. Jagolino Jr.
  * Date Created : Apr 11, 2013
  */
 
