@@ -323,18 +323,34 @@ if($connected)
                                 );
                             }
                              $casino2 = $maf->loopAndFindCasinoService($casinoz, 'ServiceID', $serviceid);  
-                            
-                                $casinoinfo = array(
+                             
+                             if(!empty($casino2)){
+                                 $casinoinfo = array(
                                   array(
                                       'UserName'  => $obj_result->CardInfo->MemberName,
                                       'MobileNumber'  => $obj_result->CardInfo->MobileNumber,
                                       'Email'  => $obj_result->CardInfo->Email,
                                       'Birthdate' => $obj_result->CardInfo->Birthdate,
                                       'Casino' => $casino2[0]['ServiceID'],
-                                      'Login' => $casino2[0]['ServiceUserName'],
+                                      'Login' => $obj_result->CardInfo->CasinoArray[0]->ServiceUsername,
                                       'CardNumber' => $obj_result->CardInfo->CardNumber,
                                   )
                                 );
+                             }
+                             else{
+                                 $casinoinfo = array(
+                                  array(
+                                      'UserName'  => $obj_result->CardInfo->MemberName,
+                                      'MobileNumber'  => $obj_result->CardInfo->MobileNumber,
+                                      'Email'  => $obj_result->CardInfo->Email,
+                                      'Birthdate' => $obj_result->CardInfo->Birthdate,
+                                      'Casino' => $serviceid,
+                                      'Login' => $obj_result->CardInfo->CasinoArray[0]->ServiceUsername,
+                                      'CardNumber' => $obj_result->CardInfo->CardNumber,
+                                  )
+                                );
+                             }
+                                
                                 
                                 echo json_encode($casinoinfo);
                                 $_SESSION['MID'] = $obj_result->CardInfo->MID;

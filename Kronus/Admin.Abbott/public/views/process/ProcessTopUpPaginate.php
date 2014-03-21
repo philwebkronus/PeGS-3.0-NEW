@@ -478,15 +478,32 @@ class ProcessTopUpPaginate extends BaseProcess {
         
         $topup = new TopUp($this->getConnection());
         $topup->open();   
+        $sitecode = $_POST['sitecode'];
         
-        $total_row = $topup->getActiveTerminalsTotal();
-        $params = $this->getJqgrid($total_row, 's.SiteCode, t.TerminalCode');
-        $jqgrid = $params['jqgrid'];
-        if(isset($_GET['sidx']) && $_GET['sidx'] !=  '')
-            $sort = $_GET['sidx'];
-        else
-            $sort = 't.TerminalCode';
-        $rows = $topup->getActiveTerminals($params['sort'], $params['dir'], $params['start'], $params['limit']);
+        $rcount = $topup->countActiveTerminals2($sitecode);
+        
+        foreach ($rcount as $value) {
+            $count = $value['rcount'];
+        }
+        
+        $page = $_POST['page']; // get the requested page
+        $limit = $_POST['rows']; // get how many rows we want to have into the grid
+        $sidx = $_POST['sidx']; // get index row - i.e. user click to sort
+        $direction = $_POST['sord']; // get the direction
+
+        if($count > 0 ) {
+            $total_pages = ceil($count/$limit);
+        } else {
+            $total_pages = 0;
+        }
+        if ($page > $total_pages)
+        {
+            $page = $total_pages;
+        }
+        $start = $limit * $page - $limit;
+        $limit = (int)$limit;   
+        
+        $rows = $topup->getActiveTerminals2($sitecode, $direction, $start, $limit);
         
         foreach($rows as $key => $row) {
             $balance = $this->getBalance($row);

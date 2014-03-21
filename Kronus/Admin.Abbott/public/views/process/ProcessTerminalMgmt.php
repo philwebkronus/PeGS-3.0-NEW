@@ -654,7 +654,7 @@ if($connected)
                                if(strstr($vprovidername, "RTG") == true)
                                {
                                    //Call API to get Account Info
-                                   $vapiResult = $_CasinoGamingPlayerAPI->getCasinoAccountInfo($login, $serverId, $cashierurl,$password);
+                                   $vapiResult = $_CasinoGamingPlayerAPI->getCasinoAccountInfo($login, $serverId, $cashierurl,$password, $vprovidername);
                                    
                                     //check if exists in RTG
                                    if(isset($vapiResult['AccountInfo']['password']) && 
