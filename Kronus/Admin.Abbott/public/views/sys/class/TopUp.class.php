@@ -1658,6 +1658,40 @@ class TopUp extends DBHandler
       }
       
       
+      public function getActiveTerminals2($sitecode, $dir, $start, $limit) {
+          
+          $condition = " WHERE s.SiteCode = '$sitecode' ";
+          
+          
+          $query = "SELECT ts.TerminalID, t.TerminalName,s.SiteName, s.POSAccountNo, s.SiteCode,ts.ServiceID,
+                            t.TerminalCode, rs.ServiceName, ts.UserMode FROM terminalsessions ts
+                            INNER JOIN terminals as t ON ts.TerminalID = t.terminalID 
+                            INNER JOIN sites as s ON t.SiteID = s.SiteID 
+                            INNER JOIN ref_services rs ON ts.ServiceID = rs.ServiceID
+                            $condition
+                            ORDER BY ts.TerminalID $dir LIMIT $start,$limit";
+          $this->prepare($query);
+          $this->execute();
+          return $this->fetchAllData();
+      }
+      
+      
+      public function countActiveTerminals2($sitecode) {
+          
+          $condition = " WHERE s.SiteCode = '$sitecode' ";
+          
+          
+          $query = "SELECT COUNT(ts.TerminalID) AS rcount FROM terminalsessions ts
+                            INNER JOIN terminals as t ON ts.TerminalID = t.terminalID 
+                            INNER JOIN sites as s ON t.SiteID = s.SiteID 
+                            INNER JOIN ref_services rs ON ts.ServiceID = rs.ServiceID
+                            $condition";
+          $this->prepare($query);
+          $this->execute();
+          return $this->fetchAllData();
+      }
+      
+      
       public function getUBServiceLogin($terminalid) {
 
           $query = "SELECT UBServiceLogin FROM terminalsessions WHERE TerminalID = ?";
