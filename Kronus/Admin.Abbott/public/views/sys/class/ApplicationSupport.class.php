@@ -583,6 +583,20 @@ class ApplicationSupport extends DBHandler
           $this->executeQuery($stmt);
           return $this->fetchAllData();
      }
+     
+     function getterminals2($zsiteID)
+      {
+          if($zsiteID > 0)
+          {
+              $stmt = "Select DISTINCT(t.TerminalID), t.TerminalCode from terminals t INNER JOIN terminalservices ts ON  t.TerminalID = ts.TerminalID INNER JOIN ref_services rs ON ts.ServiceID = rs.ServiceID where t.SiteID = '".$zsiteID."' AND t.Status = 1 AND t.isVIP = 0 AND rs.UserMode = 0 ORDER BY TerminalID ASC";
+          }
+          else
+	  {
+              $stmt = "Select DISTINCT(t.TerminalID), t.TerminalCode from terminals t INNER JOIN terminalservices ts ON  t.TerminalID = ts.TerminalID INNER JOIN ref_services rs ON ts.ServiceID = rs.ServiceID WHERE t.Status = 1 AND t.isVIP = 0 AND rs.UserMode = 0 ORDER BY TerminalID ASC";
+          }
+          $this->executeQuery($stmt);
+          return $this->fetchAllData();
+     }
       
      //get terminals by server ID (RTG Alpha, Gamma, ECF, MG) --> Switching of Servers
      function getterminalbyserverID($zsiteID, $zserviceID)

@@ -1342,7 +1342,7 @@ if($connected)
             break;
             case 'RemoveServer':
                if(isset($_POST['cmbterminal']) && (isset($_POST['cmbnewservice'])) && (isset($_POST['txtremarks'])))
-               { 
+               {
                    $vsiteID = $_POST['cmbsite'];
                    $vserviceID = $_POST['cmbnewservice'];
                    $varrterminalcode = array($_POST['txtterminalcode']);
@@ -2813,6 +2813,41 @@ if($connected)
         $vresults = array();
         //get all terminals
         $vresults = $oas->getterminals($vsiteID);  
+        if(count($vresults) > 0)
+        {
+            $terminals = array();
+            foreach($vresults as $row)
+            {
+                $rterminalID = $row['TerminalID'];
+                $rterminalCode = $row['TerminalCode'];
+                $sitecode = $terminalcode;
+
+                //remove the "icsa-[SiteCode]"
+                    $rterminalCode = substr($row['TerminalCode'], strlen($rsitecode['SiteCode']));
+
+                //create a new array to populate the combobox
+                $newvalue = array("TerminalID" => $rterminalID, "TerminalCode" => $rterminalCode);
+                array_push($terminals, $newvalue);
+            }
+            echo json_encode($terminals);
+            unset($terminals);
+        }
+        else
+        {
+            echo "No Terminal Assigned";
+        }
+        unset($vresults);
+        $oas->close();
+        exit;
+    }
+    
+    elseif(isset($_POST['sendSiteID3']))
+    {
+        $vsiteID = $_POST['sendSiteID3'];
+        $rsitecode = $oas->getsitecode($vsiteID); //get the sitecode first
+        $vresults = array();
+        //get all terminals
+        $vresults = $oas->getterminals2($vsiteID);  
         if(count($vresults) > 0)
         {
             $terminals = array();

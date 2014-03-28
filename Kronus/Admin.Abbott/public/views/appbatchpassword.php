@@ -103,7 +103,7 @@ $vaccesspages = array('9');
                 jQuery.ajax({
                     url: url,
                     type: 'post',
-                    data: {sendSiteID2: function(){return jQuery("#cmbsite").val();}},
+                    data: {sendSiteID3: function(){return jQuery("#cmbsite").val();}},
                     dataType: 'json',
                     success: function(data){
                         var terminal = $("#cmbterminal");
