@@ -1,0 +1,45 @@
+2013/07/19 14:31:11 [error] [php] Undefined index: terminalCode (/var/www/launchpad_gtc/protected/modules/launchpad/controllers/LobbyController.php:81)
+Stack trace:
+#0 /var/www/yii/framework/web/CController.php(287): LobbyController->runAction()
+#1 /var/www/yii/framework/web/CController.php(266): LobbyController->runActionWithFilters()
+#2 /var/www/yii/framework/web/CWebApplication.php(276): LobbyController->run()
+#3 /var/www/yii/framework/web/CWebApplication.php(135): CWebApplication->runController()
+#4 /var/www/yii/framework/base/CApplication.php(162): CWebApplication->processRequest()
+#5 /var/www/launchpad_gtc/index.php(13): CWebApplication->run()
+REQUEST_URI=/launchpad_gtc/index.php?r=launchpad/lobby/saveTerminalCode
+2013/07/19 16:34:14 [error] [php] Undefined index: terminalCode (/var/www/launchpad_gtc/protected/modules/launchpad/controllers/LobbyController.php:81)
+Stack trace:
+#0 /var/www/yii/framework/web/CController.php(287): LobbyController->runAction()
+#1 /var/www/yii/framework/web/CController.php(266): LobbyController->runActionWithFilters()
+#2 /var/www/yii/framework/web/CWebApplication.php(276): LobbyController->run()
+#3 /var/www/yii/framework/web/CWebApplication.php(135): CWebApplication->runController()
+#4 /var/www/yii/framework/base/CApplication.php(162): CWebApplication->processRequest()
+#5 /var/www/launchpad_gtc/index.php(13): CWebApplication->run()
+REQUEST_URI=/launchpad_gtc/index.php?r=launchpad/lobby/saveTerminalCode
+2013/07/19 16:37:50 [error] [php] Undefined index: terminalCode (/var/www/launchpad_gtc/protected/modules/launchpad/controllers/LobbyController.php:81)
+Stack trace:
+#0 /var/www/yii/framework/web/CController.php(287): LobbyController->runAction()
+#1 /var/www/yii/framework/web/CController.php(266): LobbyController->runActionWithFilters()
+#2 /var/www/yii/framework/web/CWebApplication.php(276): LobbyController->run()
+#3 /var/www/yii/framework/web/CWebApplication.php(135): CWebApplication->runController()
+#4 /var/www/yii/framework/base/CApplication.php(162): CWebApplication->processRequest()
+#5 /var/www/launchpad_gtc/index.php(13): CWebApplication->run()
+REQUEST_URI=/launchpad_gtc/index.php?r=launchpad/lobby/saveTerminalCode
+2013/07/19 16:39:12 [error] [php] Undefined index: terminalCode (/var/www/launchpad_gtc/protected/modules/launchpad/controllers/LobbyController.php:81)
+Stack trace:
+#0 /var/www/yii/framework/web/CController.php(287): LobbyController->runAction()
+#1 /var/www/yii/framework/web/CController.php(266): LobbyController->runActionWithFilters()
+#2 /var/www/yii/framework/web/CWebApplication.php(276): LobbyController->run()
+#3 /var/www/yii/framework/web/CWebApplication.php(135): CWebApplication->runController()
+#4 /var/www/yii/framework/base/CApplication.php(162): CWebApplication->processRequest()
+#5 /var/www/launchpad_gtc/index.php(13): CWebApplication->run()
+REQUEST_URI=/launchpad_gtc/index.php?r=launchpad/lobby/saveTerminalCode
+2013/07/19 16:40:50 [error] [php] Undefined index: terminalCode (/var/www/launchpad_gtc/protected/modules/launchpad/controllers/LobbyController.php:81)
+Stack trace:
+#0 /var/www/yii/framework/web/CController.php(287): LobbyController->runAction()
+#1 /var/www/yii/framework/web/CController.php(266): LobbyController->runActionWithFilters()
+#2 /var/www/yii/framework/web/CWebApplication.php(276): LobbyController->run()
+#3 /var/www/yii/framework/web/CWebApplication.php(135): CWebApplication->runController()
+#4 /var/www/yii/framework/base/CApplication.php(162): CWebApplication->processRequest()
+#5 /var/www/launchpad_gtc/index.php(13): CWebApplication->run()
+REQUEST_URI=/launchpad_gtc/index.php?r=launchpad/lobby/saveTerminalCode

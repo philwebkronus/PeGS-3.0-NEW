@@ -1,0 +1,55 @@
+2014/03/27 14:05:09 [error] [launchpad.models.LPTerminalSessions] [TerminalID=928 TerminalCode=ICSA-TSTID10] Can't get current casino
+2014/03/27 14:05:11 [error] [launchpad.models.LPTerminalSessions] [TerminalID=928 TerminalCode=ICSA-TSTID10] Can't get current casino
+2014/03/27 14:05:12 [error] [launchpad.models.LPTerminalSessions] [TerminalID=928 TerminalCode=ICSA-TSTID10] Can't get current casino
+2014/03/27 14:08:38 [error] [php] Undefined index: terminalCode (C:\xampp\htdocs\launchpad.gtc.dev\protected\modules\launchpad\controllers\LobbyController.php:81)
+Stack trace:
+#0 C:\xampp\htdocs\yii\framework\web\CController.php(287): LobbyController->runAction()
+#1 C:\xampp\htdocs\yii\framework\web\CController.php(266): LobbyController->runActionWithFilters()
+#2 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(276): LobbyController->run()
+#3 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(135): CWebApplication->runController()
+#4 C:\xampp\htdocs\yii\framework\base\CApplication.php(162): CWebApplication->processRequest()
+#5 C:\xampp\htdocs\launchpad.gtc.dev\index.php(13): CWebApplication->run()
+REQUEST_URI=/launchpad.gtc.dev/index.php?r=launchpad/lobby/saveTerminalCode
+2014/03/27 14:08:42 [error] [php] Undefined index: terminalCode (C:\xampp\htdocs\launchpad.gtc.dev\protected\modules\launchpad\controllers\LobbyController.php:81)
+Stack trace:
+#0 C:\xampp\htdocs\yii\framework\web\CController.php(287): LobbyController->runAction()
+#1 C:\xampp\htdocs\yii\framework\web\CController.php(266): LobbyController->runActionWithFilters()
+#2 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(276): LobbyController->run()
+#3 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(135): CWebApplication->runController()
+#4 C:\xampp\htdocs\yii\framework\base\CApplication.php(162): CWebApplication->processRequest()
+#5 C:\xampp\htdocs\launchpad.gtc.dev\index.php(13): CWebApplication->run()
+REQUEST_URI=/launchpad.gtc.dev/index.php?r=launchpad/lobby/saveTerminalCode
+2014/03/27 14:09:36 [error] [php] Undefined index: terminalCode (C:\xampp\htdocs\launchpad.gtc.dev\protected\modules\launchpad\controllers\LobbyController.php:81)
+Stack trace:
+#0 C:\xampp\htdocs\yii\framework\web\CController.php(287): LobbyController->runAction()
+#1 C:\xampp\htdocs\yii\framework\web\CController.php(266): LobbyController->runActionWithFilters()
+#2 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(276): LobbyController->run()
+#3 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(135): CWebApplication->runController()
+#4 C:\xampp\htdocs\yii\framework\base\CApplication.php(162): CWebApplication->processRequest()
+#5 C:\xampp\htdocs\launchpad.gtc.dev\index.php(13): CWebApplication->run()
+REQUEST_URI=/launchpad.gtc.dev/index.php?r=launchpad/lobby/saveTerminalCode
+2014/03/27 14:10:20 [error] [php] Undefined index: terminalCode (C:\xampp\htdocs\launchpad.gtc.dev\protected\modules\launchpad\controllers\LobbyController.php:81)
+Stack trace:
+#0 C:\xampp\htdocs\yii\framework\web\CController.php(287): LobbyController->runAction()
+#1 C:\xampp\htdocs\yii\framework\web\CController.php(266): LobbyController->runActionWithFilters()
+#2 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(276): LobbyController->run()
+#3 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(135): CWebApplication->runController()
+#4 C:\xampp\htdocs\yii\framework\base\CApplication.php(162): CWebApplication->processRequest()
+#5 C:\xampp\htdocs\launchpad.gtc.dev\index.php(13): CWebApplication->run()
+REQUEST_URI=/launchpad.gtc.dev/index.php?r=launchpad/lobby/saveTerminalCode
+2014/03/27 14:11:04 [error] [launchpad.models.LPTerminalSessions] [TerminalID=928 TerminalCode=ICSA-TSTID10] Can't get current casino
+2014/03/27 14:11:04 [error] [launchpad.models.LPRefServices] [TerminalID=928 TerminalCode=ICSA-TSTID10] 
+2014/03/27 14:11:04 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Service ID not found' in C:\xampp\htdocs\launchpad.gtc.dev\protected\modules\launchpad\models\LPRefServices.php:83
+Stack trace:
+#0 C:\xampp\htdocs\launchpad.gtc.dev\protected\modules\launchpad\controllers\LobbyController.php(95): LPRefServices->getUserMode(false)
+#1 C:\xampp\htdocs\yii\framework\web\actions\CInlineAction.php(50): LobbyController->actionIndex()
+#2 C:\xampp\htdocs\yii\framework\web\CController.php(309): CInlineAction->runWithParams(Array)
+#3 C:\xampp\htdocs\yii\framework\web\CController.php(287): CController->runAction(Object(CInlineAction))
+#4 C:\xampp\htdocs\yii\framework\web\CController.php(266): CController->runActionWithFilters(Object(CInlineAction), Array)
+#5 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(276): CController->run('index')
+#6 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(135): CWebApplication->runController('launchpad/lobby...')
+#7 C:\xampp\htdocs\yii\framework\base\CApplication.php(162): CWebApplication->processRequest()
+#8 C:\xampp\htdocs\launchpad.gtc.dev\index.php(13): CApplication->run()
+#9 {main}
+REQUEST_URI=/launchpad.gtc.dev/index.php?r=launchpad/lobby/index
+---

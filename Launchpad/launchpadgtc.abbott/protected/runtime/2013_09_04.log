@@ -1,0 +1,460 @@
+2013/09/04 09:42:11 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get current casino
+2013/09/04 09:42:12 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get current casino
+2013/09/04 09:42:12 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get casino password
+2013/09/04 09:42:12 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get current casino
+2013/09/04 09:42:12 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Can't get current casino' in /var/www/launchpad_gtc/protected/modules/launchpad/controllers/LobbyController.php:112
+Stack trace:
+#0 /var/www/yii/framework/web/actions/CInlineAction.php(50): LobbyController->actionIndex()
+#1 /var/www/yii/framework/web/CController.php(309): CInlineAction->runWithParams(Array)
+#2 /var/www/yii/framework/web/CController.php(287): CController->runAction(Object(CInlineAction))
+#3 /var/www/yii/framework/web/CController.php(266): CController->runActionWithFilters(Object(CInlineAction), Array)
+#4 /var/www/yii/framework/web/CWebApplication.php(276): CController->run('index')
+#5 /var/www/yii/framework/web/CWebApplication.php(135): CWebApplication->runController('launchpad/lobby...')
+#6 /var/www/yii/framework/base/CApplication.php(162): CWebApplication->processRequest()
+#7 /var/www/launchpad_gtc/index.php(13): CApplication->run()
+#8 {main}
+REQUEST_URI=/index.php?r=launchpad/lobby/index
+---
+2013/09/04 09:44:18 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get current casino
+2013/09/04 09:44:18 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get casino password
+2013/09/04 09:44:18 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get current casino
+2013/09/04 09:44:18 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Can't get current casino' in /var/www/launchpad_gtc/protected/modules/launchpad/controllers/LobbyController.php:112
+Stack trace:
+#0 /var/www/yii/framework/web/actions/CInlineAction.php(50): LobbyController->actionIndex()
+#1 /var/www/yii/framework/web/CController.php(309): CInlineAction->runWithParams(Array)
+#2 /var/www/yii/framework/web/CController.php(287): CController->runAction(Object(CInlineAction))
+#3 /var/www/yii/framework/web/CController.php(266): CController->runActionWithFilters(Object(CInlineAction), Array)
+#4 /var/www/yii/framework/web/CWebApplication.php(276): CController->run('index')
+#5 /var/www/yii/framework/web/CWebApplication.php(135): CWebApplication->runController('launchpad/lobby...')
+#6 /var/www/yii/framework/base/CApplication.php(162): CWebApplication->processRequest()
+#7 /var/www/launchpad_gtc/index.php(13): CApplication->run()
+#8 {main}
+REQUEST_URI=/index.php?r=launchpad/lobby/index
+---
+2013/09/04 09:51:16 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get current casino
+2013/09/04 09:51:16 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get casino password
+2013/09/04 09:51:16 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get current casino
+2013/09/04 09:51:16 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Can't get current casino' in /var/www/launchpad_gtc/protected/modules/launchpad/controllers/LobbyController.php:112
+Stack trace:
+#0 /var/www/yii/framework/web/actions/CInlineAction.php(50): LobbyController->actionIndex()
+#1 /var/www/yii/framework/web/CController.php(309): CInlineAction->runWithParams(Array)
+#2 /var/www/yii/framework/web/CController.php(287): CController->runAction(Object(CInlineAction))
+#3 /var/www/yii/framework/web/CController.php(266): CController->runActionWithFilters(Object(CInlineAction), Array)
+#4 /var/www/yii/framework/web/CWebApplication.php(276): CController->run('index')
+#5 /var/www/yii/framework/web/CWebApplication.php(135): CWebApplication->runController('launchpad/lobby...')
+#6 /var/www/yii/framework/base/CApplication.php(162): CWebApplication->processRequest()
+#7 /var/www/launchpad_gtc/index.php(13): CApplication->run()
+#8 {main}
+REQUEST_URI=/index.php?r=launchpad/lobby/index
+---
+2013/09/04 09:56:27 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get current casino
+2013/09/04 09:56:27 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get casino password
+2013/09/04 09:56:27 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get current casino
+2013/09/04 09:56:27 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Can't get current casino' in /var/www/launchpad_gtc/protected/modules/launchpad/controllers/LobbyController.php:112
+Stack trace:
+#0 /var/www/yii/framework/web/actions/CInlineAction.php(50): LobbyController->actionIndex()
+#1 /var/www/yii/framework/web/CController.php(309): CInlineAction->runWithParams(Array)
+#2 /var/www/yii/framework/web/CController.php(287): CController->runAction(Object(CInlineAction))
+#3 /var/www/yii/framework/web/CController.php(266): CController->runActionWithFilters(Object(CInlineAction), Array)
+#4 /var/www/yii/framework/web/CWebApplication.php(276): CController->run('index')
+#5 /var/www/yii/framework/web/CWebApplication.php(135): CWebApplication->runController('launchpad/lobby...')
+#6 /var/www/yii/framework/base/CApplication.php(162): CWebApplication->processRequest()
+#7 /var/www/launchpad_gtc/index.php(13): CApplication->run()
+#8 {main}
+REQUEST_URI=/index.php?r=launchpad/lobby/index
+---
+2013/09/04 09:57:55 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get current casino
+2013/09/04 09:57:55 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get casino password
+2013/09/04 09:57:55 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get current casino
+2013/09/04 09:57:55 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Can't get current casino' in /var/www/launchpad_gtc/protected/modules/launchpad/controllers/LobbyController.php:112
+Stack trace:
+#0 /var/www/yii/framework/web/actions/CInlineAction.php(50): LobbyController->actionIndex()
+#1 /var/www/yii/framework/web/CController.php(309): CInlineAction->runWithParams(Array)
+#2 /var/www/yii/framework/web/CController.php(287): CController->runAction(Object(CInlineAction))
+#3 /var/www/yii/framework/web/CController.php(266): CController->runActionWithFilters(Object(CInlineAction), Array)
+#4 /var/www/yii/framework/web/CWebApplication.php(276): CController->run('index')
+#5 /var/www/yii/framework/web/CWebApplication.php(135): CWebApplication->runController('launchpad/lobby...')
+#6 /var/www/yii/framework/base/CApplication.php(162): CWebApplication->processRequest()
+#7 /var/www/launchpad_gtc/index.php(13): CApplication->run()
+#8 {main}
+REQUEST_URI=/index.php?r=launchpad/lobby/index
+---
+2013/09/04 10:01:11 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get current casino
+2013/09/04 10:01:11 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get casino password
+2013/09/04 10:01:11 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get current casino
+2013/09/04 10:01:11 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Can't get current casino' in /var/www/launchpad_gtc/protected/modules/launchpad/controllers/LobbyController.php:112
+Stack trace:
+#0 /var/www/yii/framework/web/actions/CInlineAction.php(50): LobbyController->actionIndex()
+#1 /var/www/yii/framework/web/CController.php(309): CInlineAction->runWithParams(Array)
+#2 /var/www/yii/framework/web/CController.php(287): CController->runAction(Object(CInlineAction))
+#3 /var/www/yii/framework/web/CController.php(266): CController->runActionWithFilters(Object(CInlineAction), Array)
+#4 /var/www/yii/framework/web/CWebApplication.php(276): CController->run('index')
+#5 /var/www/yii/framework/web/CWebApplication.php(135): CWebApplication->runController('launchpad/lobby...')
+#6 /var/www/yii/framework/base/CApplication.php(162): CWebApplication->processRequest()
+#7 /var/www/launchpad_gtc/index.php(13): CApplication->run()
+#8 {main}
+REQUEST_URI=/index.php?r=launchpad/lobby/index
+---
+2013/09/04 10:04:09 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get current casino
+2013/09/04 10:04:09 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get casino password
+2013/09/04 10:04:09 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get current casino
+2013/09/04 10:04:09 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Can't get current casino' in /var/www/launchpad_gtc/protected/modules/launchpad/controllers/LobbyController.php:112
+Stack trace:
+#0 /var/www/yii/framework/web/actions/CInlineAction.php(50): LobbyController->actionIndex()
+#1 /var/www/yii/framework/web/CController.php(309): CInlineAction->runWithParams(Array)
+#2 /var/www/yii/framework/web/CController.php(287): CController->runAction(Object(CInlineAction))
+#3 /var/www/yii/framework/web/CController.php(266): CController->runActionWithFilters(Object(CInlineAction), Array)
+#4 /var/www/yii/framework/web/CWebApplication.php(276): CController->run('index')
+#5 /var/www/yii/framework/web/CWebApplication.php(135): CWebApplication->runController('launchpad/lobby...')
+#6 /var/www/yii/framework/base/CApplication.php(162): CWebApplication->processRequest()
+#7 /var/www/launchpad_gtc/index.php(13): CApplication->run()
+#8 {main}
+REQUEST_URI=/index.php?r=launchpad/lobby/index
+---
+2013/09/04 10:04:55 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get current casino
+2013/09/04 10:04:55 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get current casino
+2013/09/04 10:04:55 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get casino password
+2013/09/04 10:04:55 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get current casino
+2013/09/04 10:04:55 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Can't get current casino' in /var/www/launchpad_gtc/protected/modules/launchpad/controllers/LobbyController.php:112
+Stack trace:
+#0 /var/www/yii/framework/web/actions/CInlineAction.php(50): LobbyController->actionIndex()
+#1 /var/www/yii/framework/web/CController.php(309): CInlineAction->runWithParams(Array)
+#2 /var/www/yii/framework/web/CController.php(287): CController->runAction(Object(CInlineAction))
+#3 /var/www/yii/framework/web/CController.php(266): CController->runActionWithFilters(Object(CInlineAction), Array)
+#4 /var/www/yii/framework/web/CWebApplication.php(276): CController->run('index')
+#5 /var/www/yii/framework/web/CWebApplication.php(135): CWebApplication->runController('launchpad/lobby...')
+#6 /var/www/yii/framework/base/CApplication.php(162): CWebApplication->processRequest()
+#7 /var/www/launchpad_gtc/index.php(13): CApplication->run()
+#8 {main}
+REQUEST_URI=/index.php?r=launchpad/lobby/index
+---
+2013/09/04 10:05:32 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get current casino
+2013/09/04 10:05:32 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get current casino
+2013/09/04 10:05:32 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get casino password
+2013/09/04 10:05:32 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get current casino
+2013/09/04 10:05:32 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Can't get current casino' in /var/www/launchpad_gtc/protected/modules/launchpad/controllers/LobbyController.php:112
+Stack trace:
+#0 /var/www/yii/framework/web/actions/CInlineAction.php(50): LobbyController->actionIndex()
+#1 /var/www/yii/framework/web/CController.php(309): CInlineAction->runWithParams(Array)
+#2 /var/www/yii/framework/web/CController.php(287): CController->runAction(Object(CInlineAction))
+#3 /var/www/yii/framework/web/CController.php(266): CController->runActionWithFilters(Object(CInlineAction), Array)
+#4 /var/www/yii/framework/web/CWebApplication.php(276): CController->run('index')
+#5 /var/www/yii/framework/web/CWebApplication.php(135): CWebApplication->runController('launchpad/lobby...')
+#6 /var/www/yii/framework/base/CApplication.php(162): CWebApplication->processRequest()
+#7 /var/www/launchpad_gtc/index.php(13): CApplication->run()
+#8 {main}
+REQUEST_URI=/index.php?r=launchpad/lobby/index
+---
+2013/09/04 10:08:31 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get current casino
+2013/09/04 10:08:31 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get casino password
+2013/09/04 10:08:31 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get current casino
+2013/09/04 10:08:31 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Can't get current casino' in /var/www/launchpad_gtc/protected/modules/launchpad/controllers/LobbyController.php:112
+Stack trace:
+#0 /var/www/yii/framework/web/actions/CInlineAction.php(50): LobbyController->actionIndex()
+#1 /var/www/yii/framework/web/CController.php(309): CInlineAction->runWithParams(Array)
+#2 /var/www/yii/framework/web/CController.php(287): CController->runAction(Object(CInlineAction))
+#3 /var/www/yii/framework/web/CController.php(266): CController->runActionWithFilters(Object(CInlineAction), Array)
+#4 /var/www/yii/framework/web/CWebApplication.php(276): CController->run('index')
+#5 /var/www/yii/framework/web/CWebApplication.php(135): CWebApplication->runController('launchpad/lobby...')
+#6 /var/www/yii/framework/base/CApplication.php(162): CWebApplication->processRequest()
+#7 /var/www/launchpad_gtc/index.php(13): CApplication->run()
+#8 {main}
+REQUEST_URI=/index.php?r=launchpad/lobby/index
+---
+2013/09/04 10:09:13 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get current casino
+2013/09/04 10:09:13 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get casino password
+2013/09/04 10:09:13 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get current casino
+2013/09/04 10:09:13 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Can't get current casino' in /var/www/launchpad_gtc/protected/modules/launchpad/controllers/LobbyController.php:112
+Stack trace:
+#0 /var/www/yii/framework/web/actions/CInlineAction.php(50): LobbyController->actionIndex()
+#1 /var/www/yii/framework/web/CController.php(309): CInlineAction->runWithParams(Array)
+#2 /var/www/yii/framework/web/CController.php(287): CController->runAction(Object(CInlineAction))
+#3 /var/www/yii/framework/web/CController.php(266): CController->runActionWithFilters(Object(CInlineAction), Array)
+#4 /var/www/yii/framework/web/CWebApplication.php(276): CController->run('index')
+#5 /var/www/yii/framework/web/CWebApplication.php(135): CWebApplication->runController('launchpad/lobby...')
+#6 /var/www/yii/framework/base/CApplication.php(162): CWebApplication->processRequest()
+#7 /var/www/launchpad_gtc/index.php(13): CApplication->run()
+#8 {main}
+REQUEST_URI=/index.php?r=launchpad/lobby/index
+---
+2013/09/04 10:10:02 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get current casino
+2013/09/04 10:10:02 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get casino password
+2013/09/04 10:10:02 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get current casino
+2013/09/04 10:10:02 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Can't get current casino' in /var/www/launchpad_gtc/protected/modules/launchpad/controllers/LobbyController.php:112
+Stack trace:
+#0 /var/www/yii/framework/web/actions/CInlineAction.php(50): LobbyController->actionIndex()
+#1 /var/www/yii/framework/web/CController.php(309): CInlineAction->runWithParams(Array)
+#2 /var/www/yii/framework/web/CController.php(287): CController->runAction(Object(CInlineAction))
+#3 /var/www/yii/framework/web/CController.php(266): CController->runActionWithFilters(Object(CInlineAction), Array)
+#4 /var/www/yii/framework/web/CWebApplication.php(276): CController->run('index')
+#5 /var/www/yii/framework/web/CWebApplication.php(135): CWebApplication->runController('launchpad/lobby...')
+#6 /var/www/yii/framework/base/CApplication.php(162): CWebApplication->processRequest()
+#7 /var/www/launchpad_gtc/index.php(13): CApplication->run()
+#8 {main}
+REQUEST_URI=/index.php?r=launchpad/lobby/index
+---
+2013/09/04 10:10:58 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get current casino
+2013/09/04 10:10:58 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get casino password
+2013/09/04 10:10:58 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get current casino
+2013/09/04 10:10:58 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Can't get current casino' in /var/www/launchpad_gtc/protected/modules/launchpad/controllers/LobbyController.php:112
+Stack trace:
+#0 /var/www/yii/framework/web/actions/CInlineAction.php(50): LobbyController->actionIndex()
+#1 /var/www/yii/framework/web/CController.php(309): CInlineAction->runWithParams(Array)
+#2 /var/www/yii/framework/web/CController.php(287): CController->runAction(Object(CInlineAction))
+#3 /var/www/yii/framework/web/CController.php(266): CController->runActionWithFilters(Object(CInlineAction), Array)
+#4 /var/www/yii/framework/web/CWebApplication.php(276): CController->run('index')
+#5 /var/www/yii/framework/web/CWebApplication.php(135): CWebApplication->runController('launchpad/lobby...')
+#6 /var/www/yii/framework/base/CApplication.php(162): CWebApplication->processRequest()
+#7 /var/www/launchpad_gtc/index.php(13): CApplication->run()
+#8 {main}
+REQUEST_URI=/index.php?r=launchpad/lobby/index
+---
+2013/09/04 10:16:17 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get current casino
+2013/09/04 10:16:17 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get casino password
+2013/09/04 10:16:17 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get current casino
+2013/09/04 10:16:17 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Can't get current casino' in /var/www/launchpad_gtc/protected/modules/launchpad/controllers/LobbyController.php:112
+Stack trace:
+#0 /var/www/yii/framework/web/actions/CInlineAction.php(50): LobbyController->actionIndex()
+#1 /var/www/yii/framework/web/CController.php(309): CInlineAction->runWithParams(Array)
+#2 /var/www/yii/framework/web/CController.php(287): CController->runAction(Object(CInlineAction))
+#3 /var/www/yii/framework/web/CController.php(266): CController->runActionWithFilters(Object(CInlineAction), Array)
+#4 /var/www/yii/framework/web/CWebApplication.php(276): CController->run('index')
+#5 /var/www/yii/framework/web/CWebApplication.php(135): CWebApplication->runController('launchpad/lobby...')
+#6 /var/www/yii/framework/base/CApplication.php(162): CWebApplication->processRequest()
+#7 /var/www/launchpad_gtc/index.php(13): CApplication->run()
+#8 {main}
+REQUEST_URI=/index.php?r=launchpad/lobby/index
+---
+2013/09/04 10:17:34 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get current casino
+2013/09/04 10:17:34 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get casino password
+2013/09/04 10:17:34 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get current casino
+2013/09/04 10:17:34 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Can't get current casino' in /var/www/launchpad_gtc/protected/modules/launchpad/controllers/LobbyController.php:112
+Stack trace:
+#0 /var/www/yii/framework/web/actions/CInlineAction.php(50): LobbyController->actionIndex()
+#1 /var/www/yii/framework/web/CController.php(309): CInlineAction->runWithParams(Array)
+#2 /var/www/yii/framework/web/CController.php(287): CController->runAction(Object(CInlineAction))
+#3 /var/www/yii/framework/web/CController.php(266): CController->runActionWithFilters(Object(CInlineAction), Array)
+#4 /var/www/yii/framework/web/CWebApplication.php(276): CController->run('index')
+#5 /var/www/yii/framework/web/CWebApplication.php(135): CWebApplication->runController('launchpad/lobby...')
+#6 /var/www/yii/framework/base/CApplication.php(162): CWebApplication->processRequest()
+#7 /var/www/launchpad_gtc/index.php(13): CApplication->run()
+#8 {main}
+REQUEST_URI=/index.php?r=launchpad/lobby/index
+---
+2013/09/04 10:18:18 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get current casino
+2013/09/04 10:18:18 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get casino password
+2013/09/04 10:18:18 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get current casino
+2013/09/04 10:18:18 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Can't get current casino' in /var/www/launchpad_gtc/protected/modules/launchpad/controllers/LobbyController.php:112
+Stack trace:
+#0 /var/www/yii/framework/web/actions/CInlineAction.php(50): LobbyController->actionIndex()
+#1 /var/www/yii/framework/web/CController.php(309): CInlineAction->runWithParams(Array)
+#2 /var/www/yii/framework/web/CController.php(287): CController->runAction(Object(CInlineAction))
+#3 /var/www/yii/framework/web/CController.php(266): CController->runActionWithFilters(Object(CInlineAction), Array)
+#4 /var/www/yii/framework/web/CWebApplication.php(276): CController->run('index')
+#5 /var/www/yii/framework/web/CWebApplication.php(135): CWebApplication->runController('launchpad/lobby...')
+#6 /var/www/yii/framework/base/CApplication.php(162): CWebApplication->processRequest()
+#7 /var/www/launchpad_gtc/index.php(13): CApplication->run()
+#8 {main}
+REQUEST_URI=/index.php?r=launchpad/lobby/index
+---
+2013/09/04 10:19:17 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get current casino
+2013/09/04 10:19:17 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get casino password
+2013/09/04 10:19:17 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get current casino
+2013/09/04 10:19:17 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Can't get current casino' in /var/www/launchpad_gtc/protected/modules/launchpad/controllers/LobbyController.php:112
+Stack trace:
+#0 /var/www/yii/framework/web/actions/CInlineAction.php(50): LobbyController->actionIndex()
+#1 /var/www/yii/framework/web/CController.php(309): CInlineAction->runWithParams(Array)
+#2 /var/www/yii/framework/web/CController.php(287): CController->runAction(Object(CInlineAction))
+#3 /var/www/yii/framework/web/CController.php(266): CController->runActionWithFilters(Object(CInlineAction), Array)
+#4 /var/www/yii/framework/web/CWebApplication.php(276): CController->run('index')
+#5 /var/www/yii/framework/web/CWebApplication.php(135): CWebApplication->runController('launchpad/lobby...')
+#6 /var/www/yii/framework/base/CApplication.php(162): CWebApplication->processRequest()
+#7 /var/www/launchpad_gtc/index.php(13): CApplication->run()
+#8 {main}
+REQUEST_URI=/index.php?r=launchpad/lobby/index
+---
+2013/09/04 11:03:29 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get current casino
+2013/09/04 11:03:29 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get casino password
+2013/09/04 11:03:29 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get current casino
+2013/09/04 11:03:29 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Can't get current casino' in /var/www/launchpad_gtc/protected/modules/launchpad/controllers/LobbyController.php:112
+Stack trace:
+#0 /var/www/yii/framework/web/actions/CInlineAction.php(50): LobbyController->actionIndex()
+#1 /var/www/yii/framework/web/CController.php(309): CInlineAction->runWithParams(Array)
+#2 /var/www/yii/framework/web/CController.php(287): CController->runAction(Object(CInlineAction))
+#3 /var/www/yii/framework/web/CController.php(266): CController->runActionWithFilters(Object(CInlineAction), Array)
+#4 /var/www/yii/framework/web/CWebApplication.php(276): CController->run('index')
+#5 /var/www/yii/framework/web/CWebApplication.php(135): CWebApplication->runController('launchpad/lobby...')
+#6 /var/www/yii/framework/base/CApplication.php(162): CWebApplication->processRequest()
+#7 /var/www/launchpad_gtc/index.php(13): CApplication->run()
+#8 {main}
+REQUEST_URI=/index.php?r=launchpad/lobby/index
+---
+2013/09/04 13:50:42 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get current casino
+2013/09/04 13:50:42 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get current casino
+2013/09/04 13:50:43 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get casino password
+2013/09/04 13:50:43 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get current casino
+2013/09/04 13:50:43 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Can't get current casino' in /var/www/launchpad_gtc/protected/modules/launchpad/controllers/LobbyController.php:112
+Stack trace:
+#0 /var/www/yii/framework/web/actions/CInlineAction.php(50): LobbyController->actionIndex()
+#1 /var/www/yii/framework/web/CController.php(309): CInlineAction->runWithParams(Array)
+#2 /var/www/yii/framework/web/CController.php(287): CController->runAction(Object(CInlineAction))
+#3 /var/www/yii/framework/web/CController.php(266): CController->runActionWithFilters(Object(CInlineAction), Array)
+#4 /var/www/yii/framework/web/CWebApplication.php(276): CController->run('index')
+#5 /var/www/yii/framework/web/CWebApplication.php(135): CWebApplication->runController('launchpad/lobby...')
+#6 /var/www/yii/framework/base/CApplication.php(162): CWebApplication->processRequest()
+#7 /var/www/launchpad_gtc/index.php(13): CApplication->run()
+#8 {main}
+REQUEST_URI=/index.php?r=launchpad/lobby/index
+---
+2013/09/04 14:01:36 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get current casino
+2013/09/04 14:01:36 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get current casino
+2013/09/04 14:01:36 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get casino password
+2013/09/04 14:01:36 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get current casino
+2013/09/04 14:01:36 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Can't get current casino' in /var/www/launchpad_gtc/protected/modules/launchpad/controllers/LobbyController.php:112
+Stack trace:
+#0 /var/www/yii/framework/web/actions/CInlineAction.php(50): LobbyController->actionIndex()
+#1 /var/www/yii/framework/web/CController.php(309): CInlineAction->runWithParams(Array)
+#2 /var/www/yii/framework/web/CController.php(287): CController->runAction(Object(CInlineAction))
+#3 /var/www/yii/framework/web/CController.php(266): CController->runActionWithFilters(Object(CInlineAction), Array)
+#4 /var/www/yii/framework/web/CWebApplication.php(276): CController->run('index')
+#5 /var/www/yii/framework/web/CWebApplication.php(135): CWebApplication->runController('launchpad/lobby...')
+#6 /var/www/yii/framework/base/CApplication.php(162): CWebApplication->processRequest()
+#7 /var/www/launchpad_gtc/index.php(13): CApplication->run()
+#8 {main}
+REQUEST_URI=/index.php?r=launchpad/lobby/index
+---
+2013/09/04 14:04:33 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get current casino
+2013/09/04 14:04:33 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get casino password
+2013/09/04 14:04:33 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get current casino
+2013/09/04 14:04:33 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Can't get current casino' in /var/www/launchpad_gtc/protected/modules/launchpad/controllers/LobbyController.php:112
+Stack trace:
+#0 /var/www/yii/framework/web/actions/CInlineAction.php(50): LobbyController->actionIndex()
+#1 /var/www/yii/framework/web/CController.php(309): CInlineAction->runWithParams(Array)
+#2 /var/www/yii/framework/web/CController.php(287): CController->runAction(Object(CInlineAction))
+#3 /var/www/yii/framework/web/CController.php(266): CController->runActionWithFilters(Object(CInlineAction), Array)
+#4 /var/www/yii/framework/web/CWebApplication.php(276): CController->run('index')
+#5 /var/www/yii/framework/web/CWebApplication.php(135): CWebApplication->runController('launchpad/lobby...')
+#6 /var/www/yii/framework/base/CApplication.php(162): CWebApplication->processRequest()
+#7 /var/www/launchpad_gtc/index.php(13): CApplication->run()
+#8 {main}
+REQUEST_URI=/index.php?r=launchpad/lobby/index
+---
+2013/09/04 15:10:44 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get current casino
+2013/09/04 15:10:44 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get casino password
+2013/09/04 15:10:44 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get current casino
+2013/09/04 15:10:44 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Can't get current casino' in /var/www/launchpad_gtc/protected/modules/launchpad/controllers/LobbyController.php:112
+Stack trace:
+#0 /var/www/yii/framework/web/actions/CInlineAction.php(50): LobbyController->actionIndex()
+#1 /var/www/yii/framework/web/CController.php(309): CInlineAction->runWithParams(Array)
+#2 /var/www/yii/framework/web/CController.php(287): CController->runAction(Object(CInlineAction))
+#3 /var/www/yii/framework/web/CController.php(266): CController->runActionWithFilters(Object(CInlineAction), Array)
+#4 /var/www/yii/framework/web/CWebApplication.php(276): CController->run('index')
+#5 /var/www/yii/framework/web/CWebApplication.php(135): CWebApplication->runController('launchpad/lobby...')
+#6 /var/www/yii/framework/base/CApplication.php(162): CWebApplication->processRequest()
+#7 /var/www/launchpad_gtc/index.php(13): CApplication->run()
+#8 {main}
+REQUEST_URI=/index.php?r=launchpad/lobby/index
+---
+2013/09/04 15:50:45 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get current casino
+2013/09/04 15:50:45 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get current casino
+2013/09/04 15:50:45 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get casino password
+2013/09/04 15:50:45 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get current casino
+2013/09/04 15:50:45 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Can't get current casino' in /var/www/launchpad_gtc/protected/modules/launchpad/controllers/LobbyController.php:112
+Stack trace:
+#0 /var/www/yii/framework/web/actions/CInlineAction.php(50): LobbyController->actionIndex()
+#1 /var/www/yii/framework/web/CController.php(309): CInlineAction->runWithParams(Array)
+#2 /var/www/yii/framework/web/CController.php(287): CController->runAction(Object(CInlineAction))
+#3 /var/www/yii/framework/web/CController.php(266): CController->runActionWithFilters(Object(CInlineAction), Array)
+#4 /var/www/yii/framework/web/CWebApplication.php(276): CController->run('index')
+#5 /var/www/yii/framework/web/CWebApplication.php(135): CWebApplication->runController('launchpad/lobby...')
+#6 /var/www/yii/framework/base/CApplication.php(162): CWebApplication->processRequest()
+#7 /var/www/launchpad_gtc/index.php(13): CApplication->run()
+#8 {main}
+REQUEST_URI=/index.php?r=launchpad/lobby/index
+---
+2013/09/04 17:01:24 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get current casino
+2013/09/04 17:01:25 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get current casino
+2013/09/04 17:01:25 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get casino password
+2013/09/04 17:01:25 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get current casino
+2013/09/04 17:01:25 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Can't get current casino' in /var/www/launchpad_gtc/protected/modules/launchpad/controllers/LobbyController.php:112
+Stack trace:
+#0 /var/www/yii/framework/web/actions/CInlineAction.php(50): LobbyController->actionIndex()
+#1 /var/www/yii/framework/web/CController.php(309): CInlineAction->runWithParams(Array)
+#2 /var/www/yii/framework/web/CController.php(287): CController->runAction(Object(CInlineAction))
+#3 /var/www/yii/framework/web/CController.php(266): CController->runActionWithFilters(Object(CInlineAction), Array)
+#4 /var/www/yii/framework/web/CWebApplication.php(276): CController->run('index')
+#5 /var/www/yii/framework/web/CWebApplication.php(135): CWebApplication->runController('launchpad/lobby...')
+#6 /var/www/yii/framework/base/CApplication.php(162): CWebApplication->processRequest()
+#7 /var/www/launchpad_gtc/index.php(13): CApplication->run()
+#8 {main}
+REQUEST_URI=/index.php?r=launchpad/lobby/index
+---
+2013/09/04 17:43:11 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get current casino
+2013/09/04 17:43:11 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get casino password
+2013/09/04 17:43:11 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get current casino
+2013/09/04 17:43:11 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Can't get current casino' in /var/www/launchpad_gtc/protected/modules/launchpad/controllers/LobbyController.php:112
+Stack trace:
+#0 /var/www/yii/framework/web/actions/CInlineAction.php(50): LobbyController->actionIndex()
+#1 /var/www/yii/framework/web/CController.php(309): CInlineAction->runWithParams(Array)
+#2 /var/www/yii/framework/web/CController.php(287): CController->runAction(Object(CInlineAction))
+#3 /var/www/yii/framework/web/CController.php(266): CController->runActionWithFilters(Object(CInlineAction), Array)
+#4 /var/www/yii/framework/web/CWebApplication.php(276): CController->run('index')
+#5 /var/www/yii/framework/web/CWebApplication.php(135): CWebApplication->runController('launchpad/lobby...')
+#6 /var/www/yii/framework/base/CApplication.php(162): CWebApplication->processRequest()
+#7 /var/www/launchpad_gtc/index.php(13): CApplication->run()
+#8 {main}
+REQUEST_URI=/index.php?r=launchpad/lobby/index
+---
+2013/09/04 17:59:43 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get current casino
+2013/09/04 17:59:43 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get current casino
+2013/09/04 17:59:43 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get casino password
+2013/09/04 17:59:43 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get current casino
+2013/09/04 17:59:43 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Can't get current casino' in /var/www/launchpad_gtc/protected/modules/launchpad/controllers/LobbyController.php:112
+Stack trace:
+#0 /var/www/yii/framework/web/actions/CInlineAction.php(50): LobbyController->actionIndex()
+#1 /var/www/yii/framework/web/CController.php(309): CInlineAction->runWithParams(Array)
+#2 /var/www/yii/framework/web/CController.php(287): CController->runAction(Object(CInlineAction))
+#3 /var/www/yii/framework/web/CController.php(266): CController->runActionWithFilters(Object(CInlineAction), Array)
+#4 /var/www/yii/framework/web/CWebApplication.php(276): CController->run('index')
+#5 /var/www/yii/framework/web/CWebApplication.php(135): CWebApplication->runController('launchpad/lobby...')
+#6 /var/www/yii/framework/base/CApplication.php(162): CWebApplication->processRequest()
+#7 /var/www/launchpad_gtc/index.php(13): CApplication->run()
+#8 {main}
+REQUEST_URI=/index.php?r=launchpad/lobby/index
+HTTP_REFERER=http://launchpadgtc.egamescasino.ph/index.php?r=launchpad/lobby/screensaver
+---
+2013/09/04 18:02:03 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get current casino
+2013/09/04 18:02:03 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get casino password
+2013/09/04 18:02:03 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get current casino
+2013/09/04 18:02:03 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Can't get current casino' in /var/www/launchpad_gtc/protected/modules/launchpad/controllers/LobbyController.php:112
+Stack trace:
+#0 /var/www/yii/framework/web/actions/CInlineAction.php(50): LobbyController->actionIndex()
+#1 /var/www/yii/framework/web/CController.php(309): CInlineAction->runWithParams(Array)
+#2 /var/www/yii/framework/web/CController.php(287): CController->runAction(Object(CInlineAction))
+#3 /var/www/yii/framework/web/CController.php(266): CController->runActionWithFilters(Object(CInlineAction), Array)
+#4 /var/www/yii/framework/web/CWebApplication.php(276): CController->run('index')
+#5 /var/www/yii/framework/web/CWebApplication.php(135): CWebApplication->runController('launchpad/lobby...')
+#6 /var/www/yii/framework/base/CApplication.php(162): CWebApplication->processRequest()
+#7 /var/www/launchpad_gtc/index.php(13): CApplication->run()
+#8 {main}
+REQUEST_URI=/index.php?r=launchpad/lobby/index
+HTTP_REFERER=http://launchpadgtc.egamescasino.ph/index.php?r=launchpad/lobby/screensaver
+---
+2013/09/04 18:34:20 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get current casino
+2013/09/04 18:34:21 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get current casino
+2013/09/04 18:34:21 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get casino password
+2013/09/04 18:34:21 [error] [launchpad.models.LPTerminalSessions] [TerminalID=926 TerminalCode=ICSA-TSTID09] Can't get current casino
+2013/09/04 18:34:21 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Can't get current casino' in /var/www/launchpad_gtc/protected/modules/launchpad/controllers/LobbyController.php:112
+Stack trace:
+#0 /var/www/yii/framework/web/actions/CInlineAction.php(50): LobbyController->actionIndex()
+#1 /var/www/yii/framework/web/CController.php(309): CInlineAction->runWithParams(Array)
+#2 /var/www/yii/framework/web/CController.php(287): CController->runAction(Object(CInlineAction))
+#3 /var/www/yii/framework/web/CController.php(266): CController->runActionWithFilters(Object(CInlineAction), Array)
+#4 /var/www/yii/framework/web/CWebApplication.php(276): CController->run('index')
+#5 /var/www/yii/framework/web/CWebApplication.php(135): CWebApplication->runController('launchpad/lobby...')
+#6 /var/www/yii/framework/base/CApplication.php(162): CWebApplication->processRequest()
+#7 /var/www/launchpad_gtc/index.php(13): CApplication->run()
+#8 {main}
+REQUEST_URI=/index.php?r=launchpad/lobby/index
+HTTP_REFERER=http://launchpadgtc.egamescasino.ph/index.php?r=launchpad/lobby/screensaver
+---

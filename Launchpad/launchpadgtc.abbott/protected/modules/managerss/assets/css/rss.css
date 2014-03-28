@@ -1,0 +1,10 @@
+#page{height: 500px; border: solid 1px #ccc}
+.iconBtn{
+    cursor: pointer;
+    float: left;
+    height: 18px;
+    margin-left: 1px;
+    width: 18px;
+}
+body{font: normal 10pt Arial,Helvetica,sans-serif;}
+.centerText{text-align: center}

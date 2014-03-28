@@ -1,0 +1,17 @@
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/pegs-launch-pad-ub/!svn/ver/34/trunk/Launchpad_UB/protected/modules/launchpad/config/PTClientCerts/8
+END
+key.pem
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/pegs-launch-pad-ub/!svn/ver/34/trunk/Launchpad_UB/protected/modules/launchpad/config/PTClientCerts/8/key.pem
+END
+cert.pem
+K 25
+svn:wc:ra_dav:version-url
+V 110
+/pegs-launch-pad-ub/!svn/ver/34/trunk/Launchpad_UB/protected/modules/launchpad/config/PTClientCerts/8/cert.pem
+END
