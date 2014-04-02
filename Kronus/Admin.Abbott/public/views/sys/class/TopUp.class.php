@@ -1,6 +1,6 @@
 <?php
 
-/**
+/*
  * Created by: Lea Tuazon
  * Modified By: Edson L. Perez
  * Date Created : June 7, 2011
@@ -2463,6 +2463,15 @@ class TopUp extends DBHandler
         $servicegroup = $servicegroup['ServiceGroupname'];
         return $servicegroup;
     }
+    
+    public function getServiceStatus($serviceid) {
+          $query = "SELECT Status FROM ref_services WHERE ServiceID = ?";
+          $this->prepare($query);
+          $this->bindparameter(1, $serviceid);
+          $this->execute();
+          $service = $this->fetchData();
+          return $service["Status"];
+      }
         
 }
 ?>

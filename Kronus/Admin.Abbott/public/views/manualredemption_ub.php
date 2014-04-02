@@ -420,62 +420,119 @@
                                       dataType : 'json',  
                                       success : function(data)
                                       {
-                                         var tblRow = "<thead>"
-                                             +"<tr>"
-                                             +"<th colspan='3' class='header'>User Based Redemption </th>"
-                                             +"</tr>"
-                                             +"<tr>"
-                                             +"<th>Casino</th>"
-                                             +"<th>Balance</th>"
-                                             +"<th>Action</th>"
-                                             +"</tr>"
-                                             +"</thead>";
+                                          if(data == "No User Based."){
+                                                $('#loading').hide();
+                                                document.getElementById('loading').style.display='none';
+                                                document.getElementById('fade3').style.display='none';
+                                                document.getElementById('light4').style.display='block';
+                                                document.getElementById('fade4').style.display='block';
+                                                $('#userdatamsg').html("No user-based account assigned on this card.");
+                                           } else {
+                                               var tblRow = "<thead>"
+                                                    +"<tr>"
+                                                    +"<th colspan='3' class='header'>User Based Redemption </th>"
+                                                    +"</tr>"
+                                                    +"<tr>"
+                                                    +"<th>Casino</th>"
+                                                    +"<th>Balance</th>"
+                                                    +"<th>Action</th>"
+                                                    +"</tr>"
+                                                    +"</thead>";
 
-                                       $.each(data, function(i,user)
-                                       {
-                                           var casinousername = this.UserName;
+                                              $.each(data, function(i,user)
+                                              {
+                                                      $('#loading').hide();
+                                                      document.getElementById('loading').style.display='none';
+                                                      document.getElementById('light3').style.display='block';
+                                                      document.getElementById('fade3').style.display='block';
+                                                      document.getElementById('txtmid').value = this.MemberID;
+                                                      document.getElementById('txtusermode').value = 1;
+                                                      
+                                                      if(this.Balance == 0 || this.Balance == 'Error: Cannot get balance' || this.Balance == 'UserBased Manual Redemption: InActive Casino')
+                                                      {
 
-                                               $('#loading').hide();
-                                               document.getElementById('loading').style.display='none';
-                                               document.getElementById('light3').style.display='block';
-                                               document.getElementById('fade3').style.display='block';
-                                               document.getElementById('txtmid').value = this.MemberID;
-                                               document.getElementById('txtusermode').value = 1;
-                                               var balance = CommaFormatted(this.Balance);
-                                               if(this.Balance == 0 || this.Balance == 'Error: Cannot get balance' || this.Balance == 'UserBased Manual Redemption: InActive Casino')
-                                               {
-
-                                                   tblRow +=
-                                                           "<tbody>"
-                                                           +"<tr>"
-                                                           +"<td>"+this.ServiceName+"</td>"   
-                                                           +"<td align='right'>"+balance+"</td>"
-                                                           +"<td align='center' style='width: 100px;'><input type=\"button\" id=\"redeem\" name=\"redeem\" value=\"Redeem\" onclick=\" RedeemUB("+this.Balance+","+this.ServiceID+","+this.TerminalID+")\" disabled/></td>"
-                                                           +"</tr>"
-                                                           +"</tbody>";
-                                                           $('#userdata3').html(tblRow);
-                                               }     
-                                               else
-                                               {
-                                                   tblRow +=
-                                                           "<tbody>"
-                                                           +"<tr>"
-                                                           +"<td>"+this.ServiceName+"</td>"   
-                                                           +"<td align='right'>"+balance+"</td>"
-                                                           +"<td align='center' style='width: 100px;'><input type=\"button\" id=\"redeem\" name=\"redeem\" value=\"Redeem\" onclick=\" RedeemUB("+this.Balance+","+this.ServiceID+","+this.TerminalID+")\" /></td>"
-                                                           +"</tr>"
-                                                           +"</tbody>";
-                                                           $('#userdata3').html(tblRow);
-                                               }
-                                       });
+                                                          tblRow +=
+                                                                  "<tbody>"
+                                                                  +"<tr>"
+                                                                  +"<td>"+this.ServiceName+"</td>"   
+                                                                  +"<td align='right'>"+this.Balance+"</td>"
+                                                                  +"<td align='center' style='width: 100px;'><input type=\"button\" id=\"redeem\" name=\"redeem\" value=\"Redeem\" onclick=\" RedeemUB("+this.Balance+","+this.ServiceID+","+this.TerminalID+")\" disabled/></td>"
+                                                                  +"</tr>"
+                                                                  +"</tbody>";
+                                                                  $('#userdata3').html(tblRow);
+                                                      }     
+                                                      else
+                                                      {
+                                                          var balance = CommaFormatted(this.Balance);
+                                                          tblRow +=
+                                                                  "<tbody>"
+                                                                  +"<tr>"
+                                                                  +"<td>"+this.ServiceName+"</td>"   
+                                                                  +"<td align='right'>"+balance+"</td>"
+                                                                  +"<td align='center' style='width: 100px;'><input type=\"button\" id=\"redeem\" name=\"redeem\" value=\"Redeem\" onclick=\" RedeemUB("+this.Balance+","+this.ServiceID+","+this.TerminalID+")\" /></td>"
+                                                                  +"</tr>"
+                                                                  +"</tbody>";
+                                                                  $('#userdata3').html(tblRow);
+                                                      }
+                                              });
+                                           }
+                                          
+                                         
                                       },
                                       error : function(XMLHttpRequest, e)
                                       {
-                                          alert(XMLHttpRequest.responseText);
-                                          if(XMLHttpRequest.status == 401)
+//                                          alert(XMLHttpRequest.responseText);
+//                                          if(XMLHttpRequest.responseText == 401){
+//                                              window.location.reload();
+//                                          }
+                                          var result = JSON.parse(XMLHttpRequest.responseText);
+                                          var tblRow = "<thead>"
+                                                +"<tr>"
+                                                +"<th colspan='3' class='header'>User Based Redemption </th>"
+                                                +"</tr>"
+                                                +"<tr>"
+                                                +"<th>Casino</th>"
+                                                +"<th>Balance</th>"
+                                                +"<th>Action</th>"
+                                                +"</tr>"
+                                                +"</thead>";
+
+                                          $.each(result, function(i,user)
                                           {
-                                              window.location.reload();
-                                          }
+                                                  $('#loading').hide();
+                                                  document.getElementById('loading').style.display='none';
+                                                  document.getElementById('light3').style.display='block';
+                                                  document.getElementById('fade3').style.display='block';
+                                                  document.getElementById('txtmid').value = this.MemberID;
+                                                  document.getElementById('txtusermode').value = 1;
+
+                                                  if(this.Balance == 0 || this.Balance == 'Error: Cannot get balance' || this.Balance == 'UserBased Manual Redemption: InActive Casino')
+                                                  {
+
+                                                      tblRow +=
+                                                              "<tbody>"
+                                                              +"<tr>"
+                                                              +"<td>"+this.ServiceName+"</td>"   
+                                                              +"<td align='right'>"+this.Balance+"</td>"
+                                                              +"<td align='center' style='width: 100px;'><input type=\"button\" id=\"redeem\" name=\"redeem\" value=\"Redeem\" onclick=\" RedeemUB("+this.Balance+","+this.ServiceID+","+this.TerminalID+")\" disabled/></td>"
+                                                              +"</tr>"
+                                                              +"</tbody>";
+                                                              $('#userdata3').html(tblRow);
+                                                  }     
+                                                  else
+                                                  {
+                                                      var balance = CommaFormatted(this.Balance);
+                                                      tblRow +=
+                                                              "<tbody>"
+                                                              +"<tr>"
+                                                              +"<td>"+this.ServiceName+"</td>"   
+                                                              +"<td align='right'>"+balance+"</td>"
+                                                              +"<td align='center' style='width: 100px;'><input type=\"button\" id=\"redeem\" name=\"redeem\" value=\"Redeem\" onclick=\" RedeemUB("+this.Balance+","+this.ServiceID+","+this.TerminalID+")\" /></td>"
+                                                              +"</tr>"
+                                                              +"</tbody>";
+                                                              $('#userdata3').html(tblRow);
+                                                  }
+                                          });
                                        }
                                   });
                             }
@@ -582,7 +639,20 @@
                     <input type="button" id="btnok" value="OK" style="margin-left: 130px; display: none;" onclick="document.getElementById('light1').style.display='none';document.getElementById('fade').style.display='none'" />
                     <input type="button" style="float: left;" value="Redeem" id="btnWithdraw" class="btnWithdraw" />
                   </div>
-
+                    
+                  <div id="light4" class="white_content" oncontextmenu="return false" style="width: 308px; height:212px;">
+                  <div class="close_popup" id="btnClose" onclick="document.getElementById('light4').style.display='none';document.getElementById('fade4').style.display='none';"></div>
+                    <br />
+                    <br />
+                    <br />
+                    <div id="userdatamsg" style="text-align: center"></div>
+                    <br />
+                    <br />
+                    <br />
+                    <br />
+                    <input type="button" value="Ok" style="float: right;" onclick="document.getElementById('light4').style.display='none';document.getElementById('fade4').style.display='none'" />
+                  </div>
+                    <div id="fade4" class="black_overlay"></div>
 
                   <div id="light2" class="white_content" oncontextmenu="return false" style="width: 308px; height:212px;">
                   <div class="close_popup" id="btnClose" onclick="document.getElementById('light2').style.display='none';document.getElementById('fade').style.display='none';"></div>

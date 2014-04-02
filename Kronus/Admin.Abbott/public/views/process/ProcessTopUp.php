@@ -757,7 +757,7 @@ if($connected)
                 $service = array();
                 $casino2 = array();
                 
-                if($casinoarray_count != 0)
+                if($casinoarray_count != 0){
                     for($ctr = 0; $ctr < $casinoarray_count;$ctr++) {
                         $casinos[$ctr] = array(
                                             array('ServiceUsername' => $casino[$ctr]->ServiceUsername,
@@ -782,83 +782,100 @@ if($connected)
                             $servicename = $otopup->getCasinoName($rserviceid);
                             
                             $servicegrp = $otopup->getServiceGrpName($rserviceid);
+                            $servicestat = $otopup->getServiceStatus($rserviceid);
                             
-                          //loop htrough services to get if has pedning balance
-                          foreach ($servicename as $service2) {
-                                $serviceName = $service2['ServiceName'];
-                                $serviceStatus = $service2['Status'];
-                                
-                                $serviceName = $servicegrp;
-                                
-                                 switch (true){
-                                case strstr($serviceName, "RTG"): //if provider is RTG, then
-                                   //call get balance method of RTG
-                                    $url = $_ServiceAPI[$rserviceid-1];
-                                    $capiusername = $_CAPIUsername;
-                                    $capipassword = $_CAPIPassword;
-                                    $capiplayername = $_CAPIPlayerName;
-                                    $capiserverID = '';
-                                    $balance = $CasinoGamingCAPI->getBalance($serviceName, $rserviceid, $url, 
-                                                        $rserviceuname, $capiusername, $capipassword, 
-                                                        $capiplayername, $capiserverID, $rusermode); 
-                                    break;
-                                case strstr($serviceName, "MG"): //if provider is MG, then
-                                     //call getbalance method of MG
-                                    $_MGCredentials = $_ServiceAPI[$rserviceid-1];
-                                    list($mgurl, $mgserverID) =  $_MGCredentials;
-                                    $url = $mgurl;
-                                    $capiusername = $_CAPIUsername;
-                                    $capipassword = $_CAPIPassword;
-                                    $capiplayername = $_CAPIPlayerName;
-                                    $capiserverID = $mgserverID;
-                                    $balance = $CasinoGamingCAPI->getBalance($serviceName, $rserviceid,
-                                                    $url, $rserviceuname, $capiusername, $capipassword, 
-                                                    $capiplayername, $capiserverID); 
-                                    break;
-                                case strstr($serviceName, "PT"): //if provider is PT, then
-                                    //call getbalance method of PT
-                                    $url = $_ServiceAPI[$rserviceid-1];
-                                    $capiusername = $_ptcasinoname;
-                                    $capipassword = $_ptsecretkey;
-                                    $capiplayername = $_CAPIPlayerName;
-                                    $capiserverID = '';
-                                    $balance = $CasinoGamingCAPI->getBalance($serviceName, 
-                                                    $rserviceid, $url, $rserviceuname, $capiusername, 
-                                                    $capipassword, $capiplayername, $capiserverID); 
-                                    break;
-                                default :
-                                    echo "Error: Invalid Casino Provider";
-                                    break;
+                            if($servicestat == 1){
+                                //loop htrough services to get if has pedning balance
+                                foreach ($servicename as $service2) {
+                                      $serviceName = $service2['ServiceName'];
+                                      $serviceStatus = $service2['Status'];
+
+                                      $servicegrp = $servicegrp;
+
+                                       switch (true){
+                                      case strstr($serviceName, "RTG"): //if provider is RTG, then
+                                         //call get balance method of RTG
+                                          $url = $_ServiceAPI[$rserviceid-1];
+                                          $capiusername = $_CAPIUsername;
+                                          $capipassword = $_CAPIPassword;
+                                          $capiplayername = $_CAPIPlayerName;
+                                          $capiserverID = '';
+                                          $balance = $CasinoGamingCAPI->getBalance($servicegrp, $rserviceid, $url, 
+                                                              $rserviceuname, $capiusername, $capipassword, 
+                                                              $capiplayername, $capiserverID, $rusermode); 
+                                          break;
+                                      case strstr($serviceName, "MG"): //if provider is MG, then
+                                           //call getbalance method of MG
+                                          $_MGCredentials = $_ServiceAPI[$rserviceid-1];
+                                          list($mgurl, $mgserverID) =  $_MGCredentials;
+                                          $url = $mgurl;
+                                          $capiusername = $_CAPIUsername;
+                                          $capipassword = $_CAPIPassword;
+                                          $capiplayername = $_CAPIPlayerName;
+                                          $capiserverID = $mgserverID;
+                                          $balance = $CasinoGamingCAPI->getBalance($servicegrp, $rserviceid,
+                                                          $url, $rserviceuname, $capiusername, $capipassword, 
+                                                          $capiplayername, $capiserverID); 
+                                          break;
+                                      case strstr($serviceName, "PT"): //if provider is PT, then
+                                          //call getbalance method of PT
+                                          $url = $_ServiceAPI[$rserviceid-1];
+                                          $capiusername = $_ptcasinoname;
+                                          $capipassword = $_ptsecretkey;
+                                          $capiplayername = $_CAPIPlayerName;
+                                          $capiserverID = '';
+                                          $balance = $CasinoGamingCAPI->getBalance($servicegrp, 
+                                                          $rserviceid, $url, $rserviceuname, $capiusername, 
+                                                          $capipassword, $capiplayername, $capiserverID); 
+                                          break;
+                                      default :
+                                          echo "Error: Invalid Casino Provider";
+                                          break;
+                                      }
+
+                                              $terminalid = $otopup->viewTerminalID($rserviceuname);
+                                              switch ($serviceStatus){
+                                                  case 1: $serviceStatus = "Active";
+                                                      break;
+                                                  case 0: $serviceStatus = "InActive";
+                                              }  
+
+                                             $casino2 = array(
+                                                          "UserName"  => "$rserviceuname",
+                                                          "Password"  => $rservicepassword,
+                                                          "HashedPassword" => "$hashedpassword",    
+                                                          "ServiceName"  => $serviceName,
+                                                          "ServiceID"  => $rserviceid,
+                                                          "TerminalID"  => $terminalid['TerminalID'],    
+                                                          "UserMode" => "$rusermode",
+                                                          "IsVIP" => "$risvip",
+                                                          "MemberID" => "$rmid",
+                                                          "Status" => "$rstatus",
+                                                          "Balance" => "$balance",
+                                            );
+                                            $_SESSION['ServicePassword'] = $rservicepassword;
+                                            $_SESSION['ServiceUserName'] = $rserviceuname;
                                 }
-
-                                        $terminalid = $otopup->viewTerminalID($rserviceuname);
-                                        switch ($serviceStatus){
-                                            case 1: $serviceStatus = "Active";
-                                                break;
-                                            case 0: $serviceStatus = "InActive";
-                                        }  
-
-                                       $casino2 = array(
-                                                    "UserName"  => "$rserviceuname",
-                                                    "Password"  => $rservicepassword,
-                                                    "HashedPassword" => "$hashedpassword",    
-                                                    "ServiceName"  => $serviceName,
-                                                    "ServiceID"  => $rserviceid,
-                                                    "TerminalID"  => $terminalid['TerminalID'],    
-                                                    "UserMode" => "$rusermode",
-                                                    "IsVIP" => "$risvip",
-                                                    "MemberID" => "$rmid",
-                                                    "Status" => "$rstatus",
-                                                    "Balance" => "$balance",
-                                      );
-                                      $_SESSION['ServicePassword'] = $rservicepassword;
-                                      $_SESSION['ServiceUserName'] = $rserviceuname;
-                          }
+                            }
+                          
                       }
                       array_push($service, $casino2);
                     }  
-                    
-              echo json_encode($service);
+                }
+                $cntservice = 0;
+                
+                foreach ($service as $value) {
+                    if(isset($value["UserName"])){
+                        $cntservice++;
+                    }
+                }
+                
+              if(count($service) > 0 && $cntservice > 0){
+                  echo json_encode($service);
+              } else {
+                  $msg = "No User Based.";
+                  echo json_encode($msg);
+              }
 
               unset($casino, $_SESSION['CasinoArray']);
               unset($service, $casino2, $_SESSION['MID']);
