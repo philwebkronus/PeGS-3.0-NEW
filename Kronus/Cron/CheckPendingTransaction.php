@@ -127,7 +127,7 @@ if($DBH){
         
     }
 
-    //check if there are pending user transactions
+    //check if there are pending user transactions.
     if($pendingcountub > 0)
     {
          //get loyalty card number and transaction count from pendingusertransactioncount table
