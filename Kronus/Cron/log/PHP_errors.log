@@ -1,0 +1,78 @@
+[11-Feb-2014 18:52:07] PHP Warning:  PDOStatement::execute() [<a href='0pdostatement.execute0'>pdostatement.execute0</a>]: SQLSTATE[HY093]: Invalid parameter number: parameter was not defined in C:\xampp\htdocs\kronus.crons\Autoemail.class.php on line 411
+[11-Feb-2014 18:52:07] PHP Stack trace:
+[11-Feb-2014 18:52:07] PHP   1. {main}() C:\xampp\htdocs\kronus.crons\bigwinnings.php:0
+[11-Feb-2014 18:52:07] PHP   2. Autoemail->getServiceGroupName() C:\xampp\htdocs\kronus.crons\bigwinnings.php:96
+[11-Feb-2014 18:52:07] PHP   3. PDOStatement->execute() C:\xampp\htdocs\kronus.crons\Autoemail.class.php:411
+[11-Feb-2014 18:52:41] PHP Warning:  PDOStatement::execute() [<a href='0pdostatement.execute0'>pdostatement.execute0</a>]: SQLSTATE[HY093]: Invalid parameter number: parameter was not defined in C:\xampp\htdocs\kronus.crons\Autoemail.class.php on line 411
+[11-Feb-2014 18:52:41] PHP Stack trace:
+[11-Feb-2014 18:52:41] PHP   1. {main}() C:\xampp\htdocs\kronus.crons\bigwinnings.php:0
+[11-Feb-2014 18:52:41] PHP   2. Autoemail->getServiceGroupName() C:\xampp\htdocs\kronus.crons\bigwinnings.php:96
+[11-Feb-2014 18:52:41] PHP   3. PDOStatement->execute() C:\xampp\htdocs\kronus.crons\Autoemail.class.php:411
+[11-Feb-2014 18:53:11] PHP Warning:  PDOStatement::execute() [<a href='0pdostatement.execute0'>pdostatement.execute0</a>]: SQLSTATE[HY093]: Invalid parameter number: parameter was not defined in C:\xampp\htdocs\kronus.crons\Autoemail.class.php on line 411
+[11-Feb-2014 18:53:11] PHP Stack trace:
+[11-Feb-2014 18:53:11] PHP   1. {main}() C:\xampp\htdocs\kronus.crons\bigwinnings.php:0
+[11-Feb-2014 18:53:11] PHP   2. Autoemail->getServiceGroupName() C:\xampp\htdocs\kronus.crons\bigwinnings.php:96
+[11-Feb-2014 18:53:11] PHP   3. PDOStatement->execute() C:\xampp\htdocs\kronus.crons\Autoemail.class.php:411
+[11-Feb-2014 18:55:15] PHP Warning:  PDOStatement::execute() [<a href='0pdostatement.execute0'>pdostatement.execute0</a>]: SQLSTATE[HY093]: Invalid parameter number: parameter was not defined in C:\xampp\htdocs\kronus.crons\Autoemail.class.php on line 411
+[11-Feb-2014 18:55:15] PHP Stack trace:
+[11-Feb-2014 18:55:15] PHP   1. {main}() C:\xampp\htdocs\kronus.crons\bigwinnings.php:0
+[11-Feb-2014 18:55:15] PHP   2. Autoemail->getServiceGroupName() C:\xampp\htdocs\kronus.crons\bigwinnings.php:96
+[11-Feb-2014 18:55:15] PHP   3. PDOStatement->execute() C:\xampp\htdocs\kronus.crons\Autoemail.class.php:411
+[11-Feb-2014 18:55:51] PHP Warning:  PDOStatement::execute() [<a href='0pdostatement.execute0'>pdostatement.execute0</a>]: SQLSTATE[HY093]: Invalid parameter number: parameter was not defined in C:\xampp\htdocs\kronus.crons\Autoemail.class.php on line 436
+[11-Feb-2014 18:55:51] PHP Stack trace:
+[11-Feb-2014 18:55:51] PHP   1. {main}() C:\xampp\htdocs\kronus.crons\bigwinnings.php:0
+[11-Feb-2014 18:55:51] PHP   2. Autoemail->getUBCredentials() C:\xampp\htdocs\kronus.crons\bigwinnings.php:99
+[11-Feb-2014 18:55:51] PHP   3. PDOStatement->execute() C:\xampp\htdocs\kronus.crons\Autoemail.class.php:436
+[11-Feb-2014 18:55:51] PHP Notice:  Undefined offset: 18 in C:\xampp\htdocs\kronus.crons\bigwinnings.php on line 105
+[11-Feb-2014 18:55:51] PHP Stack trace:
+[11-Feb-2014 18:55:51] PHP   1. {main}() C:\xampp\htdocs\kronus.crons\bigwinnings.php:0
+[11-Feb-2014 18:55:52] PHP Warning:  mail() [<a href='0function.mail0'>function.mail0</a>]: Failed to connect to mailserver at &quot;localhost&quot; port 25, verify your &quot;SMTP&quot; and &quot;smtp_port&quot; setting in php.ini or use ini_set() in C:\xampp\htdocs\kronus.crons\bigwinnings.php on line 184
+[11-Feb-2014 18:55:52] PHP Stack trace:
+[11-Feb-2014 18:55:52] PHP   1. {main}() C:\xampp\htdocs\kronus.crons\bigwinnings.php:0
+[11-Feb-2014 18:55:52] PHP   2. mail() C:\xampp\htdocs\kronus.crons\bigwinnings.php:184
+[11-Feb-2014 18:56:44] PHP Warning:  PDOStatement::execute() [<a href='0pdostatement.execute0'>pdostatement.execute0</a>]: SQLSTATE[HY093]: Invalid parameter number: parameter was not defined in C:\xampp\htdocs\kronus.crons\Autoemail.class.php on line 437
+[11-Feb-2014 18:56:44] PHP Stack trace:
+[11-Feb-2014 18:56:44] PHP   1. {main}() C:\xampp\htdocs\kronus.crons\bigwinnings.php:0
+[11-Feb-2014 18:56:44] PHP   2. Autoemail->getUBCredentials() C:\xampp\htdocs\kronus.crons\bigwinnings.php:99
+[11-Feb-2014 18:56:44] PHP   3. PDOStatement->execute() C:\xampp\htdocs\kronus.crons\Autoemail.class.php:437
+[11-Feb-2014 18:56:44] PHP Notice:  Undefined offset: 18 in C:\xampp\htdocs\kronus.crons\bigwinnings.php on line 105
+[11-Feb-2014 18:56:44] PHP Stack trace:
+[11-Feb-2014 18:56:44] PHP   1. {main}() C:\xampp\htdocs\kronus.crons\bigwinnings.php:0
+[11-Feb-2014 18:56:45] PHP Warning:  mail() [<a href='0function.mail0'>function.mail0</a>]: Failed to connect to mailserver at &quot;localhost&quot; port 25, verify your &quot;SMTP&quot; and &quot;smtp_port&quot; setting in php.ini or use ini_set() in C:\xampp\htdocs\kronus.crons\bigwinnings.php on line 184
+[11-Feb-2014 18:56:45] PHP Stack trace:
+[11-Feb-2014 18:56:45] PHP   1. {main}() C:\xampp\htdocs\kronus.crons\bigwinnings.php:0
+[11-Feb-2014 18:56:45] PHP   2. mail() C:\xampp\htdocs\kronus.crons\bigwinnings.php:184
+[12-Feb-2014 09:14:29] PHP Notice:  Undefined offset: 18 in C:\xampp\htdocs\kronus.crons\bigwinnings.php on line 115
+[12-Feb-2014 09:14:29] PHP Stack trace:
+[12-Feb-2014 09:14:29] PHP   1. {main}() C:\xampp\htdocs\kronus.crons\bigwinnings.php:0
+[12-Feb-2014 09:14:30] PHP Warning:  mail() [<a href='0function.mail0'>function.mail0</a>]: Failed to connect to mailserver at &quot;localhost&quot; port 25, verify your &quot;SMTP&quot; and &quot;smtp_port&quot; setting in php.ini or use ini_set() in C:\xampp\htdocs\kronus.crons\bigwinnings.php on line 194
+[12-Feb-2014 09:14:30] PHP Stack trace:
+[12-Feb-2014 09:14:30] PHP   1. {main}() C:\xampp\htdocs\kronus.crons\bigwinnings.php:0
+[12-Feb-2014 09:14:30] PHP   2. mail() C:\xampp\htdocs\kronus.crons\bigwinnings.php:194
+[12-Feb-2014 09:30:29] PHP Notice:  Object of class PDORow to string conversion in C:\xampp\htdocs\kronus.crons\Autoemail.class.php on line 116
+[12-Feb-2014 09:30:29] PHP Stack trace:
+[12-Feb-2014 09:30:29] PHP   1. {main}() C:\xampp\htdocs\kronus.crons\bigwinnings.php:0
+[12-Feb-2014 09:30:29] PHP   2. Autoemail->insertbigreload() C:\xampp\htdocs\kronus.crons\bigwinnings.php:146
+[12-Feb-2014 09:30:29] PHP   3. PDOStatement->bindParam() C:\xampp\htdocs\kronus.crons\Autoemail.class.php:116
+[12-Feb-2014 09:30:29] PHP Catchable fatal error:  Object of class PDORow could not be converted to string in C:\xampp\htdocs\kronus.crons\bigwinnings.php on line 178
+[12-Feb-2014 09:30:29] PHP Stack trace:
+[12-Feb-2014 09:30:29] PHP   1. {main}() C:\xampp\htdocs\kronus.crons\bigwinnings.php:0
+[12-Feb-2014 09:32:07] PHP Warning:  mail() [<a href='0function.mail0'>function.mail0</a>]: Failed to connect to mailserver at &quot;localhost&quot; port 25, verify your &quot;SMTP&quot; and &quot;smtp_port&quot; setting in php.ini or use ini_set() in C:\xampp\htdocs\kronus.crons\bigwinnings.php on line 195
+[12-Feb-2014 09:32:07] PHP Stack trace:
+[12-Feb-2014 09:32:07] PHP   1. {main}() C:\xampp\htdocs\kronus.crons\bigwinnings.php:0
+[12-Feb-2014 09:32:07] PHP   2. mail() C:\xampp\htdocs\kronus.crons\bigwinnings.php:195
+[12-Feb-2014 09:33:53] PHP Warning:  mail() [<a href='0function.mail0'>function.mail0</a>]: Failed to connect to mailserver at &quot;localhost&quot; port 25, verify your &quot;SMTP&quot; and &quot;smtp_port&quot; setting in php.ini or use ini_set() in C:\xampp\htdocs\kronus.crons\bigwinnings.php on line 195
+[12-Feb-2014 09:33:53] PHP Stack trace:
+[12-Feb-2014 09:33:53] PHP   1. {main}() C:\xampp\htdocs\kronus.crons\bigwinnings.php:0
+[12-Feb-2014 09:33:53] PHP   2. mail() C:\xampp\htdocs\kronus.crons\bigwinnings.php:195
+[12-Feb-2014 09:35:22] PHP Warning:  mail() [<a href='0function.mail0'>function.mail0</a>]: Failed to connect to mailserver at &quot;localhost&quot; port 25, verify your &quot;SMTP&quot; and &quot;smtp_port&quot; setting in php.ini or use ini_set() in C:\xampp\htdocs\kronus.crons\bigwinnings.php on line 195
+[12-Feb-2014 09:35:22] PHP Stack trace:
+[12-Feb-2014 09:35:22] PHP   1. {main}() C:\xampp\htdocs\kronus.crons\bigwinnings.php:0
+[12-Feb-2014 09:35:22] PHP   2. mail() C:\xampp\htdocs\kronus.crons\bigwinnings.php:195
+[12-Feb-2014 09:43:36] PHP Warning:  mail() [<a href='0function.mail0'>function.mail0</a>]: Failed to connect to mailserver at &quot;localhost&quot; port 25, verify your &quot;SMTP&quot; and &quot;smtp_port&quot; setting in php.ini or use ini_set() in C:\xampp\htdocs\kronus.crons\bigwinnings.php on line 195
+[12-Feb-2014 09:43:36] PHP Stack trace:
+[12-Feb-2014 09:43:36] PHP   1. {main}() C:\xampp\htdocs\kronus.crons\bigwinnings.php:0
+[12-Feb-2014 09:43:36] PHP   2. mail() C:\xampp\htdocs\kronus.crons\bigwinnings.php:195
+[28-Feb-2014 16:27:22] PHP Notice:  Undefined index: UserMode in /var/www/kronus.crons/bigwinnings.php on line 102
+[28-Feb-2014 16:27:22] PHP Stack trace:
+[28-Feb-2014 16:27:22] PHP   1. {main}() /var/www/kronus.crons/bigwinnings.php:0
