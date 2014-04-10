@@ -158,7 +158,7 @@ class Autoemail {
     //for Big Winnings step 1
     public function getredeem($cdateforprocess)
     { 
-        $stmt = "SELECT MAX(td.Amount) as Amount, DATE_FORMAT(now(6), '%Y-%m-%d %H:%i:00.000000') as querytime 
+        $stmt = "SELECT MAX(td.Amount) as Amount, now_usec() as querytime 
             FROM transactiondetails td 
             INNER JOIN sites s ON s.SiteID = td.SiteID 
             WHERE td.TransactionType = 'W' 
