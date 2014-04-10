@@ -158,14 +158,20 @@ class Autoemail {
     //for Big Winnings step 1
     public function getredeem($cdateforprocess)
     { 
+        
+        $date = new DateTime($cdateforprocess);
+        $date->add(new DateInterval('PT01M'));
+        $cdateforprocesslimit =  $date->format('Y-m-d H:i') . ":00.000000";
+        
         $stmt = "SELECT MAX(td.Amount) as Amount, DATE_FORMAT(now(6), '%Y-%m-%d %H:%i:00.000000') as querytime 
             FROM transactiondetails td 
             INNER JOIN sites s ON s.SiteID = td.SiteID 
             WHERE td.TransactionType = 'W' 
-            AND td.DateCreated > ? 
+            AND td.DateCreated > ? AND td.DateCreated < ?
             AND s.isTestSite = 0";
         $sth = $this->_dbh->prepare($stmt);
         $sth->bindParam(1,$cdateforprocess);
+        $sth->bindParam(2,$cdateforprocesslimit);
         $sth->execute();
         $result = $sth->fetch(PDO::FETCH_LAZY);
         return $result;    
