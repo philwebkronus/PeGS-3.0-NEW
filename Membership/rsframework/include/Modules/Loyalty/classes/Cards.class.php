@@ -94,11 +94,11 @@ class Cards extends BaseEntity
         try
         {
             $tempstatus = $arrTempCard['Status'];
-            $tempsiteid = $arrTempCard['SiteID'];
+            //$tempsiteid = $arrTempCard['SiteID'];
             $tempcardid = $arrTempCard['CardID'];
             
             //$this->UpdateByArray($arrTempCard);
-            $isSuccess = $this->ExecuteQuery("UPDATE membercards SET Status = $tempstatus, SiteID = $tempsiteid WHERE CardID = $tempcardid");
+            $isSuccess = $this->ExecuteQuery("UPDATE membercards SET Status = $tempstatus WHERE CardID = $tempcardid");
             
             if($isSuccess)
             {
