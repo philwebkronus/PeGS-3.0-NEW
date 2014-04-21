@@ -198,8 +198,8 @@ class ManageRewardsController extends Controller
                 $rewarditemname = preg_replace("/[^a-zA-Z0-9+$]/", "-", $rewarditemname);
                 $newthblimitedphoto = $rewarditemname."_".$extname_thblimited.".".$ext_thblimited;
                 if(file_exists("$imagetmpdirectory".$thblimitedphoto)){
+					chmod("$imagetmpdirectory".$thblimitedphoto, 0777);
                     $transferfile1 = copy("$imagetmpdirectory".$thblimitedphoto, "$imagedirector".$newthblimitedphoto);
-                    chmod("$imagetmpdirectory".$thblimitedphoto, 0777);
                 }
             }
 
@@ -210,8 +210,8 @@ class ManageRewardsController extends Controller
                 $rewarditemname = preg_replace("/[^a-zA-Z0-9+$]/", "-", $rewarditemname);
                 $newthboutofstockphoto = $rewarditemname."_".$extname_thboutofstock.".".$ext_thboutofstock;
                 if(file_exists("$imagetmpdirectory".$thboutofstockphoto)){
+					chmod("$imagetmpdirectory".$thboutofstockphoto, 0777);
                     $transferfile2 = copy("$imagetmpdirectory".$thboutofstockphoto, "$imagedirector".$newthboutofstockphoto);
-                    chmod("$imagetmpdirectory".$thboutofstockphoto, 0777);
                 }
             }
 
@@ -222,8 +222,8 @@ class ManageRewardsController extends Controller
                 $rewarditemname = preg_replace("/[^a-zA-Z0-9+$]/", "-", $rewarditemname);
                 $newecouponphoto = $rewarditemname."_".$extname_ecoupon.".".$ext_ecoupon;
                 if(file_exists("$imagetmpdirectory".$ecouponphoto)){
+					chmod("$imagetmpdirectory".$ecouponphoto, 0777);
                     $transferfile3 = copy("$imagetmpdirectory".$ecouponphoto, "$imagedirector".$newecouponphoto);
-                    chmod("$imagetmpdirectory".$ecouponphoto, 0777);
                 }
             }
 
@@ -234,8 +234,8 @@ class ManageRewardsController extends Controller
                 $rewarditemname = preg_replace("/[^a-zA-Z0-9+$]/", "-", $rewarditemname);
                 $newlmlimitedphoto = $rewarditemname."_".$extname_lmlimited.".".$ext_lmlimited;
                 if(file_exists("$imagetmpdirectory".$lmlimitedphoto)){
+					chmod("$imagetmpdirectory".$lmlimitedphoto, 0777);
                     $transferfile4 = copy("$imagetmpdirectory".$lmlimitedphoto, "$imagedirector".$newlmlimitedphoto);
-                    chmod("$imagetmpdirectory".$lmlimitedphoto, 0777);
                 }
             }
 
@@ -246,8 +246,8 @@ class ManageRewardsController extends Controller
                 $rewarditemname = preg_replace("/[^a-zA-Z0-9+$]/", "-", $rewarditemname);
                 $newlmoutofstockphoto = $rewarditemname."_".$extname_lmoutofstock.".".$ext_lmoutofstock;
                 if(file_exists("$imagetmpdirectory".$lmoutofstockphoto)){
+					chmod("$imagetmpdirectory".$lmoutofstockphoto, 0777);
                     $transferfile5 = copy("$imagetmpdirectory".$lmoutofstockphoto, "$imagedirector".$newlmoutofstockphoto);
-                    chmod("$imagetmpdirectory".$lmoutofstockphoto, 0777);
                 }
             }
 
@@ -258,8 +258,8 @@ class ManageRewardsController extends Controller
                 $rewarditemname = preg_replace("/[^a-zA-Z0-9+$]/", "-", $rewarditemname);
                 $newwebsliderphoto = $rewarditemname."_".$extname_webslider.".".$ext_webslider;
                 if(file_exists("$imagetmpdirectory".$websliderphoto)){
+					chmod("$imagetmpdirectory".$websliderphoto, 0777);
                     $transferfile6 = copy("$imagetmpdirectory".$websliderphoto, "$imagedirector".$newwebsliderphoto);
-                    chmod("$imagetmpdirectory".$websliderphoto, 0777);
                 }                        
             }
 
@@ -524,8 +524,8 @@ class ManageRewardsController extends Controller
                 $rewarditemname = preg_replace("/[^a-zA-Z0-9+$]/", "-", $rewarditemname);
                 $newthblimitedphoto = $rewarditemname."_".$extname_thblimited.".".$ext_thblimited;
                 if(file_exists("$imagetmpdirectory".$thblimitedphoto)){
+					chmod("$imagetmpdirectory".$thblimitedphoto, 0777);
                     $transferfile1 = copy("$imagetmpdirectory".$thblimitedphoto, "$imagedirector".$newthblimitedphoto);
-                    chmod("$imagetmpdirectory".$thblimitedphoto, 0777);
                 } else {
                     if(file_exists("$imagedirector".$thblimitedpicname)){
                         rename("$imagedirector".$thblimitedpicname, "$imagedirector".$newthblimitedphoto);
@@ -540,8 +540,8 @@ class ManageRewardsController extends Controller
                 $rewarditemname = preg_replace("/[^a-zA-Z0-9+$]/", "-", $rewarditemname);
                 $newthboutofstockphoto = $rewarditemname."_".$extname_thboutofstock.".".$ext_thboutofstock;
                 if(file_exists("$imagetmpdirectory".$thboutofstockphoto)){
+					chmod("$imagetmpdirectory".$thboutofstockphoto, 0777);
                     $transferfile2 = copy("$imagetmpdirectory".$thboutofstockphoto, "$imagedirector".$newthboutofstockphoto);
-                    chmod("$imagetmpdirectory".$thboutofstockphoto, 0777);
                 } else {
                     if(file_exists("$imagedirector".$thboutofstockpicname)){
                         rename("$imagedirector".$thboutofstockpicname, "$imagedirector".$newthboutofstockphoto);
@@ -556,8 +556,8 @@ class ManageRewardsController extends Controller
                 $rewarditemname = preg_replace("/[^a-zA-Z0-9+$]/", "-", $rewarditemname);
                 $newecouponphoto = $rewarditemname."_".$extname_ecoupon.".".$ext_ecoupon;
                 if(file_exists("$imagetmpdirectory".$ecouponphoto)){
+					chmod("$imagetmpdirectory".$ecouponphoto, 0777);
                     $transferfile3 = copy("$imagetmpdirectory".$ecouponphoto, "$imagedirector".$newecouponphoto);
-                    chmod("$imagetmpdirectory".$ecouponphoto, 0777);
                 } else {
                     if(file_exists("$imagedirector".$ecouponpicname)){
                         rename("$imagedirector".$ecouponpicname, "$imagedirector".$newecouponphoto);
@@ -572,8 +572,8 @@ class ManageRewardsController extends Controller
                 $rewarditemname = preg_replace("/[^a-zA-Z0-9+$]/", "-", $rewarditemname);
                 $newlmlimitedphoto = $rewarditemname."_".$extname_lmlimited.".".$ext_lmlimited;
                 if(file_exists("$imagetmpdirectory".$lmlimitedphoto)){
+					chmod("$imagetmpdirectory".$lmlimitedphoto, 0777);
                     $transferfile4 = copy("$imagetmpdirectory".$lmlimitedphoto, "$imagedirector".$newlmlimitedphoto);
-                    chmod("$imagetmpdirectory".$lmlimitedphoto, 0777);
                 } else {
                     if(file_exists("$imagedirector".$lmlimitedpicname)){
                         rename("$imagedirector".$lmlimitedpicname, "$imagedirector".$newlmlimitedphoto);
@@ -588,8 +588,8 @@ class ManageRewardsController extends Controller
                 $rewarditemname = preg_replace("/[^a-zA-Z0-9+$]/", "-", $rewarditemname);
                 $newlmoutofstockphoto = $rewarditemname."_".$extname_lmoutofstock.".".$ext_lmoutofstock;
                 if(file_exists("$imagetmpdirectory".$lmoutofstockphoto)){
+					chmod("$imagetmpdirectory".$lmoutofstockphoto, 0777);
                     $transferfile5 = copy("$imagetmpdirectory".$lmoutofstockphoto, "$imagedirector".$newlmoutofstockphoto);
-                    chmod("$imagetmpdirectory".$lmoutofstockphoto, 0777);
                 } else {
                     if(file_exists("$imagedirector".$lmoutofstockpicname)){
                         rename("$imagedirector".$lmoutofstockpicname, "$imagedirector".$newlmoutofstockphoto);
@@ -604,8 +604,8 @@ class ManageRewardsController extends Controller
                 $rewarditemname = preg_replace("/[^a-zA-Z0-9+$]/", "-", $rewarditemname);
                 $newwebsliderphoto = $rewarditemname."_".$extname_webslider.".".$ext_webslider;
                 if(file_exists("$imagetmpdirectory".$websliderphoto)){
+					chmod("$imagetmpdirectory".$websliderphoto, 0777);
                     $transferfile6 = copy("$imagetmpdirectory".$websliderphoto, "$imagedirector".$newwebsliderphoto);
-                    chmod("$imagetmpdirectory".$websliderphoto, 0777);
                 } else {
                     if(file_exists("$imagedirector".$websliderpicname)){
                         rename("$imagedirector".$websliderpicname, "$imagedirector".$newwebsliderphoto);

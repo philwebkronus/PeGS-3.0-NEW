@@ -131,6 +131,7 @@ class RealtimeGamingCasinoGamesAPI
         curl_setopt( $curl, CURLOPT_POST, FALSE );
         curl_setopt( $curl, CURLOPT_HTTPHEADER, array( 'Content-Type: text/xml; charset=utf-8' ) );
         curl_setopt( $curl, CURLOPT_RETURNTRANSFER, 1 );
+		curl_setopt( $curl, CURLOPT_SSLVERSION, 3 );
 
         $response = curl_exec( $curl );
 

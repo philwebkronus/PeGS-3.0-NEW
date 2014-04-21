@@ -764,7 +764,7 @@ class FrontendController extends MI_Controller {
                     {
                         $login_acct = $casinoUsername;
                         $login_pwd = $casinoHashedPassword;
-                        //check if isVIP of chosen casino is match with the isVIP parameter thrown by loyalty getCardInfo function.
+                        // check if isVIP of chosen casino is match with the isVIP parameter thrown by loyalty getCardInfo function.
                         if($casinoIsVIP != $isVIP) {
                             $message = 'Please choose the appropriate regular/vip terminal classification for this card.';
                             logger($message);
