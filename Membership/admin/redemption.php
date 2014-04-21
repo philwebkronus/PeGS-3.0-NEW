@@ -749,7 +749,7 @@ if($fproc->IsPostBack){
                                         "Print" : function() {
                                             $("#Quantity").val("");
                                             $("#ItemQuantity").val("");
-                                            var mywindow = window.open('http://'+localhost+'membership.rewards/admin/template/couponredemptiontemplate.php');
+                                            var mywindow = window.open('<?php echo App::getParam('coupontemplate'); ?>');
                                             mywindow.document.write('</head><body >');
                                             mywindow.document.write($("#couponmessagebody").html());
                                             mywindow.document.write('</body></html>');
@@ -783,7 +783,7 @@ if($fproc->IsPostBack){
                                         "Print" : function() {
                                             $("#Quantity").val("");
                                             $("#ItemQuantity").val("");
-                                            var mywindow = window.open('http://'+localhost+'membership.rewards/admin/template/admin/template/itemredemptiontemplate.php');
+                                            var mywindow = window.open('<?php echo App::getParam('itemtemplate'); ?>');
                                             mywindow.document.write('</head><body >');
                                             mywindow.document.write($("#itemmessagebody").html());
                                             mywindow.document.write('</body></html>');

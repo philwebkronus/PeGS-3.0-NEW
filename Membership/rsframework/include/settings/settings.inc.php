@@ -46,6 +46,11 @@ $_CONFIG["ptvip"] = '3';
 
 //Image Path For Reward items
 $_CONFIG['rewarditem_imagepath'] = "http://".$_SERVER["SERVER_NAME"]."/membershipsystem/images/rewarditems/";
+$_CONFIG['extra_imagepath'] = "http://".$_SERVER["SERVER_NAME"]."/membershipsystem/images/rewarditems/";
+
+//Url path for reward items voucher template
+$_CONFIG['coupontemplate'] = "http://membershipsystem/admin/template/couponredemptiontemplate.php";
+$_CONFIG['itemtemplate'] = "http://membershipsystem/admin/template/itemredemptiontemplate.php";
 
 //Define Maximum Item Quantity that can be avail by the player.
 //$_CONFIG['item_maxquantity'] = 5

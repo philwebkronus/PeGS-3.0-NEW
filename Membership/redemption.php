@@ -437,8 +437,8 @@ if(isset($_SESSION['RewardItemsInfo'])){
                     }
                     
                     //Get Header, Footer and Item/Coupon Image.
-                    $newheader = App::getParam('extra_imagepath')."extra_images/newheader.jpg";
-                    $newfooter = App::getParam('extra_imagepath')."extra_images/newfooter.jpg";
+                    $newheader = App::getParam('extra_imagepath')."extra_images/newheader1.jpg";
+                    $newfooter = App::getParam('extra_imagepath')."extra_images/newfooter1.jpg";
                     $itemimage = App::getParam('rewarditem_imagepath').$_SESSION['RewardItemsInfo']['eCouponImage'];
                     $importantreminder = App::getParam('extra_imagepath')."important_reminders.jpg";
                     
@@ -554,7 +554,7 @@ if(isset($_SESSION['RewardItemsInfo'])){
                                             "Print" : function() {
                                                 $("#Quantity").val("");
                                                 $("#ItemQuantity").val("");
-                                                var mywindow = window.open('http://'+localhost+'membership.rewards/admin/template/couponredemptiontemplate.php');
+                                                var mywindow = window.open('<?php echo App::getParam('coupontemplate'); ?>');
                                                 mywindow.document.write('</head><body >');
                                                 mywindow.document.write($("#couponmessagebody").html());
                                                 mywindow.document.write('</body></html>');
@@ -588,7 +588,7 @@ if(isset($_SESSION['RewardItemsInfo'])){
                                             "Print" : function() {
                                                 $("#Quantity").val("");
                                                 $("#ItemQuantity").val("");
-                                                var mywindow = window.open('http://'+localhost+'membership.rewards/admin/template/admin/template/itemredemptiontemplate.php');
+                                                var mywindow = window.open('<?php echo App::getParam('itemtemplate'); ?>');
                                                 mywindow.document.write('</head><body >');
                                                 mywindow.document.write($("#itemmessagebody").html());
                                                 mywindow.document.write('</body></html>');
