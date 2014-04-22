@@ -437,8 +437,8 @@ if(isset($_SESSION['RewardItemsInfo'])){
                     }
                     
                     //Get Header, Footer and Item/Coupon Image.
-                    $newheader = App::getParam('extra_imagepath')."extra_images/newheader1.jpg";
-                    $newfooter = App::getParam('extra_imagepath')."extra_images/newfooter1.jpg";
+                    $newheader = App::getParam('extra_imagepath')."extra_images/newheader.jpg";
+                    $newfooter = App::getParam('extra_imagepath')."extra_images/newfooter.jpg";
                     $itemimage = App::getParam('rewarditem_imagepath').$_SESSION['RewardItemsInfo']['eCouponImage'];
                     $importantreminder = App::getParam('extra_imagepath')."important_reminders.jpg";
                     
