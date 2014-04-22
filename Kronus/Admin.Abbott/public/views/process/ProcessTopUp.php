@@ -859,7 +859,9 @@ if($connected)
                             }
                           
                       }
-                      array_push($service, $casino2);
+                      if(!empty($casino2)){
+                          array_push($service, $casino2);
+                      }
                     }  
                 }
                 $cntservice = 0;

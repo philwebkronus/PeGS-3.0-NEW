@@ -255,8 +255,27 @@ if(isset($_SESSION['acctype']))
           jQuery('#lblsitename').html(jQuery(this).children('option:selected').attr('label'));
       });
       
+      //Clear Table if there is input error
+      function clearTable(){
+            $("#tblgrosshold").css("display", "block");
+
+            var header = "<thead style='position: relative; top:0; left: 0; height: -63px;'><tr><td  id='tblheader-banner' colspan='11' style='font-style: Arial, calibri, helvetica; font-size: 14px; font-weight: bold; background-color: #3d561c; color: white; height: 30px;'>Gross Hold Monitoring</td>"+
+                                  "</tr><tr style='font-style: Arial, calibri, helvetica; font-size: 12px; text-align: center;font-weight: bold; background-color: #D6EB99; color: black; height: 25px;'>"+
+                                  "<td style='width: 100px;'>POS Account</td><td style='width: 230px;'>Site / PEGS Name</td><td style='width: 130px;'>BCF</td><td style='width: 130px;'>Deposit</td>"+
+                                  "<td style='width: 130px;'>Reload</td><td style='width: 130px;'>Withdrawal</td><td style='width: 130px;'>Manual Redemption</td><td style='width: 130px;'>Voucher</td><td style='width: 130px;'>Cash on Hand</td><td style='width: 130px;'>Gross Hold</td><td style='width: 90px;'>Location</td>"+
+                                  "</tr></thead>";
+
+            var footer = "<tfoot style='position: relative; top:0; left: 0; height: -37px;'><tr style='font-style: Arial, calibri, helvetica; font-size: 12px; text-align: center;font-weight: bold; background-color: #D6EB99; color: black; height: 35px;'>"+
+                                  "<td colspan='11' id='tblfooter-banner'></td></tr></tfoot>";
+
+            $("#tblgrossholdbody").html("");
+            $("#tblgrossholdbody").html(header);
+            return false;
+      }
+      
       jQuery('#btnsearch').click(function(){
           if(!validateDateTopup()) {
+              clearTable();
               return false;
           }
           
@@ -268,19 +287,27 @@ if(isset($_SESSION['acctype']))
           var num2 = jQuery('#secondamount').val();
           
           if(comp1 == '' && num1 != '') {
-              alert('Please select first comparison'); return false;
+              alert('Please select first comparison'); 
+              clearTable();
+              return false;
           }
           
           if(comp1 != '' && num1 == '') {
-              alert('Please enter first number'); return false;
+              alert('Please enter first number'); 
+              clearTable();
+              return false;
           }
           
           if(comp2 == '' && num2 != '' && comp1 != '') {
-              alert('Please select second comparison'); return false;
+              alert('Please select second comparison'); 
+              clearTable();
+              return false;
           }
           
           if(comp2 != '' && num2 == '' && comp1 != '') {
-              alert('Please enter second number'); return false;
+              alert('Please enter second number'); 
+              clearTable();
+              return false;
           }          
           
 //          if(Date.parse(startdate) > Date.parse(enddate)) {
@@ -300,21 +327,7 @@ if(isset($_SESSION['acctype']))
                 dataType: 'json',
                 success: function(data)
                 {
-                    $("#tblgrosshold").css("display", "block");
-                    
-                    var header = "<thead style='position: relative; top:0; left: 0; height: -63px;'><tr><td  id='tblheader-banner' colspan='11' style='font-style: Arial, calibri, helvetica; font-size: 14px; font-weight: bold; background-color: #3d561c; color: white; height: 30px;'>Gross Hold Monitoring</td>"+
-                                            "</tr><tr style='font-style: Arial, calibri, helvetica; font-size: 12px; text-align: center;font-weight: bold; background-color: #D6EB99; color: black; height: 25px;'>"+
-                                            "<td style='width: 100px;'>POS Account</td><td style='width: 230px;'>Site / PEGS Name</td><td style='width: 130px;'>BCF</td><td style='width: 130px;'>Deposit</td>"+
-                                            "<td style='width: 130px;'>Reload</td><td style='width: 130px;'>Withdrawal</td><td style='width: 130px;'>Manual Redemption</td><td style='width: 130px;'>Voucher</td><td style='width: 130px;'>Cash on Hand</td><td style='width: 130px;'>Gross Hold</td><td style='width: 90px;'>Location</td>"+
-                                            "</tr></thead>";
-                    
-                    var footer = "<tfoot style='position: relative; top:0; left: 0; height: -37px;'><tr style='font-style: Arial, calibri, helvetica; font-size: 12px; text-align: center;font-weight: bold; background-color: #D6EB99; color: black; height: 35px;'>"+
-                                            "<td colspan='11' id='tblfooter-banner'></td></tr></tfoot>";
-                                        
-                    $("#tblgrossholdbody").html("");
-                    $("#tblgrossholdbody").html(header);
-                    
-                     
+                    clearTable();
                     
                     $('#loading').hide();
                     document.getElementById('loading').style.display='none';
