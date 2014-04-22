@@ -662,6 +662,7 @@ class MicrogamingCAPI
         curl_setopt( $curl, CURLOPT_HTTPHEADER, array( 'Content-Type: text/xml; charset=utf-8' ) );
         curl_setopt( $curl, CURLOPT_POSTFIELDS, $xmlData );
         curl_setopt( $curl, CURLOPT_RETURNTRANSFER, TRUE );
+        curl_setopt( $curl, CURLOPT_SSLVERSION, 3 );
 
         $response = curl_exec( $curl );
 
