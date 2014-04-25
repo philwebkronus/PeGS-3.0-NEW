@@ -44,7 +44,7 @@ $vaccesspages = array('9','6');
                     });
             });
             
-            //source combo box event
+            //source combo box event.
             $("#cmbsource").change(function() 
             {
                 var source = document.getElementById('cmbsource').value;           
