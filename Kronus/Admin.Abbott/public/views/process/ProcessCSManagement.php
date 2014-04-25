@@ -885,7 +885,7 @@ if($connected)
                             number_format($vview['Withdrawal'], 2), 
                             $vview['DateStarted'], 
                             $vview['DateEnded'], 
-                            $vview['UserName']);
+                            $vview['Name']);
                         
                         $i++;
                      }

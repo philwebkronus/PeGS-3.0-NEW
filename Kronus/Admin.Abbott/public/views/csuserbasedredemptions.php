@@ -272,11 +272,35 @@ if(isset($_SESSION['acctype']))
                                   },
                                   error : function(XMLHttpRequest, e)
                                   {
-                                      alert(XMLHttpRequest.responseText);
-                                      if(XMLHttpRequest.status == 401)
-                                      {
-                                          window.location.reload();
-                                      }
+                                      var result = JSON.parse(XMLHttpRequest.responseText);
+                                      var tblRow = "<thead>"
+                                         +"<tr>"
+                                         +"<th colspan='2' class='header'>User Based Redemption </th>"
+                                         +"</tr>"
+                                         +"<tr>"
+                                         +"<th>Casino</th>"
+                                         +"<th>Balance</th>"
+                                         +"</tr>"
+                                         +"</thead>";
+
+                                        $.each(result, function(i,user)
+                                        {
+
+                                               $('#loading').hide();
+                                               document.getElementById('loading').style.display='none';
+                                               document.getElementById('light2').style.display='block';
+                                               document.getElementById('fade2').style.display='block';
+
+                                           tblRow +=
+                                                       "<tbody>"
+                                                       +"<tr>"
+                                                       +"<td>"+this.ServiceName+"</td>"   
+                                                       +"<td align='right'>"+this.Balance+"</td>"
+                                                       +"</tr>"
+                                                       +"</tbody>";
+                                                       $('#userdata2').html(tblRow);
+
+                                        });
                                    }
                                });  
                             }

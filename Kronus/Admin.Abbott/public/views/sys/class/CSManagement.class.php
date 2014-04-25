@@ -451,9 +451,9 @@ class CSManagement extends DBHandler{
         function gettransactionsummary($zsiteID, $zterminalID, $zdatefrom, $zdateto, $zstart, $zlimit, $zsort, $zdirection)
         {
             $stmt = "SELECT ts.TransactionsSummaryID, ts.SiteID, ts.TerminalID, tm.TerminalCode, ts.Deposit, ts.Reload,
-                    ts.Withdrawal, ts.DateStarted, ts.DateEnded, acc.UserName, s.POSAccountNo
+                    ts.Withdrawal, ts.DateStarted, ts.DateEnded, acc.Name, s.POSAccountNo
                     FROM transactionsummary ts
-                    INNER JOIN accounts acc ON ts.CreatedByAID = acc.AID
+                    INNER JOIN accountdetails acc ON ts.CreatedByAID = acc.AID
                     INNER JOIN terminals tm ON ts.TerminalID = tm.TerminalID
                     INNER JOIN sites s ON ts.SiteID = s.SiteID
                     WHERE ts.SiteID = ? AND ts.TerminalID = ? AND ts.DateStarted >= ?
