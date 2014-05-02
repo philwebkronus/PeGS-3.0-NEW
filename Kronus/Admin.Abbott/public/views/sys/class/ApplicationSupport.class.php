@@ -1507,15 +1507,12 @@ class ApplicationSupport extends DBHandler
         * get cashier username that is responsible for the transactions made
         */
       function getCashierUsername($zFrom, $zTo, $transRefID, $cardnumber){
-           $stmt = "SELECT a.UserName FROM transactiondetails td USE INDEX (IX_transactiondetails_DateCreated)
-                    INNER JOIN accounts a ON td.CreatedByAID = a.AID
-                    WHERE td.DateCreated >= ? AND td.DateCreated < ? AND 
-                    TransactionReferenceID = ? AND LoyaltyCardNumber = ?";
+           $stmt = "SELECT a.Name FROM transactiondetails td 
+                    INNER JOIN npos.accountdetails a ON td.CreatedByAID = a.AID
+                    WHERE TransactionReferenceID = ? AND LoyaltyCardNumber = ?";
               $this->prepare($stmt);
-              $this->bindparameter(1,$zFrom);
-              $this->bindparameter(2,$zTo);
-              $this->bindparameter(3,$transRefID);
-              $this->bindparameter(4,$cardnumber);
+              $this->bindparameter(1,$transRefID);
+              $this->bindparameter(2,$cardnumber);
               
               try {
             $this->execute();
@@ -1523,7 +1520,7 @@ class ApplicationSupport extends DBHandler
               var_dump($e->getMessage()); exit;
           }
           $username = $this->fetchData();
-          return $username['UserName'];
+          return $username['Name'];
       }
       
       /**
