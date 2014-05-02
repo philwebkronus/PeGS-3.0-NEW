@@ -78,11 +78,11 @@ class ApplicationSupport extends DBHandler
           if($ztransstatus[0] == 'All' && $ztranstype == 'All')
           {
               $stmt = "SELECT td.TransactionDetailsID, td.TransactionReferenceID, td.SiteID, tm.TerminalCode, td.TerminalID, td.TransactionType, td.Amount, td.Option2 AS LoyaltyCard, rf.ServiceName,
-                  td.DateCreated, td.Status, trl.ServiceTransactionID, a.UserName FROM transactiondetails td 
+                  td.DateCreated, td.Status, trl.ServiceTransactionID, ad.Name FROM transactiondetails td 
                   INNER JOIN transactionrequestlogs trl ON td.TransactionReferenceID = trl.TransactionReferenceID 
-                  INNER JOIN accounts a ON td.CreatedByAID = a.AID
+                  INNER JOIN accountdetails ad ON td.CreatedByAID = ad.AID
                   INNER JOIN terminals tm ON td.TerminalID = tm.TerminalID
-		 INNER JOIN ref_services rf ON rf.ServiceID = td.ServiceID
+                  INNER JOIN ref_services rf ON rf.ServiceID = td.ServiceID
                   WHERE td.SiteID =? AND td.TerminalID =? AND Date(td.DateCreated) >=? 
                   AND Date(td.DateCreated) < ? ORDER BY td.DateCreated LIMIT ".$zStart.", ".$zLimit."";
               $this->prepare($stmt);
@@ -95,11 +95,11 @@ class ApplicationSupport extends DBHandler
           elseif($ztransstatus[0] <> 'All' && $ztranstype == 'All')
           {
               $stmt = "SELECT td.TransactionDetailsID, td.TransactionReferenceID, td.SiteID, tm.TerminalCode, td.TerminalID, td.TransactionType, td.Amount, td.Option2 AS LoyaltyCard, rf.ServiceName,
-                  td.DateCreated, td.Status, trl.ServiceTransactionID, a.UserName FROM transactiondetails td 
+                  td.DateCreated, td.Status, trl.ServiceTransactionID, ad.Name FROM transactiondetails td 
                   INNER JOIN transactionrequestlogs trl ON td.TransactionReferenceID = trl.TransactionReferenceID 
-                  INNER JOIN accounts a ON td.CreatedByAID = a.AID
+                  INNER JOIN accountdetails ad ON td.CreatedByAID = ad.AID
                   INNER JOIN terminals tm ON td.TerminalID = tm.TerminalID
-		          INNER JOIN ref_services rf ON rf.ServiceID = td.ServiceID
+                  INNER JOIN ref_services rf ON rf.ServiceID = td.ServiceID
                   WHERE td.SiteID =? AND td.TerminalID =? AND td.Status IN (".$status.") AND Date(td.DateCreated) >=? 
                   AND Date(td.DateCreated) < ? ORDER BY td.DateCreated LIMIT ".$zStart.", ".$zLimit."";
               $this->prepare($stmt);
@@ -112,9 +112,9 @@ class ApplicationSupport extends DBHandler
           elseif($ztransstatus[0] == 'All' && $ztranstype <> 'All')
           {
               $stmt = "SELECT td.TransactionDetailsID, td.TransactionReferenceID, td.SiteID, tm.TerminalCode, td.TerminalID, td.TransactionType, td.Amount, td.Option2 AS LoyaltyCard, rf.ServiceName,
-                  td.DateCreated, td.Status, trl.ServiceTransactionID, a.UserName FROM transactiondetails td 
+                  td.DateCreated, td.Status, trl.ServiceTransactionID, ad.Name FROM transactiondetails td 
                   INNER JOIN transactionrequestlogs trl ON td.TransactionReferenceID = trl.TransactionReferenceID 
-                  INNER JOIN accounts a ON td.CreatedByAID = a.AID
+                  INNER JOIN accountdetails ad ON td.CreatedByAID = ad.AID
                   INNER JOIN terminals tm ON td.TerminalID = tm.TerminalID
                   INNER JOIN ref_services rf ON rf.ServiceID = td.ServiceID
                   WHERE td.SiteID =? AND td.TerminalID =? AND td.TransactionType = ? AND Date(td.DateCreated) >=? 
@@ -130,9 +130,9 @@ class ApplicationSupport extends DBHandler
           else
           {
               $stmt = "SELECT td.TransactionDetailsID, td.TransactionReferenceID, td.SiteID, tm.TerminalCode, td.TerminalID, td.TransactionType, td.Amount, td.Option2 AS LoyaltyCard, rf.ServiceName,
-                  td.DateCreated, td.Status, trl.ServiceTransactionID, a.UserName FROM transactiondetails td 
+                  td.DateCreated, td.Status, trl.ServiceTransactionID, ad.Name FROM transactiondetails td 
                   INNER JOIN transactionrequestlogs trl ON td.TransactionReferenceID = trl.TransactionReferenceID 
-                  INNER JOIN accounts a ON td.CreatedByAID = a.AID
+                  INNER JOIN accountdetails ad ON td.CreatedByAID = ad.AID
                   INNER JOIN terminals tm ON td.TerminalID = tm.TerminalID
                   INNER JOIN ref_services rf ON rf.ServiceID = td.ServiceID
                   WHERE td.SiteID =? AND td.TerminalID =? AND td.Status IN (".$status.") AND td.TransactionType = ? AND Date(td.DateCreated) >=? 
