@@ -1660,9 +1660,12 @@ class TopUp extends DBHandler
       
       public function getActiveTerminals2($sitecode, $dir, $start, $limit) {
           
-          $condition = " WHERE s.SiteCode = '$sitecode' ";
-          
-          
+          if($sitecode != "all"){
+              $condition = " WHERE s.SiteCode = '$sitecode' ";
+          } else {
+              $condition = '';
+          }
+
           $query = "SELECT ts.TerminalID, t.TerminalName,s.SiteName, s.POSAccountNo, s.SiteCode,ts.ServiceID,
                             t.TerminalCode, rs.ServiceName, ts.UserMode FROM terminalsessions ts
                             INNER JOIN terminals as t ON ts.TerminalID = t.terminalID 
@@ -1677,8 +1680,12 @@ class TopUp extends DBHandler
       
       
       public function countActiveTerminals2($sitecode) {
-          
-          $condition = " WHERE s.SiteCode = '$sitecode' ";
+
+          if($sitecode != "all"){
+              $condition = " WHERE s.SiteCode = '$sitecode' ";
+          } else {
+              $condition = '';
+          }
           
           
           $query = "SELECT COUNT(ts.TerminalID) AS rcount FROM terminalsessions ts

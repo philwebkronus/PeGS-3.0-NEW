@@ -241,7 +241,7 @@ if (isset($_POST['pager'])) {
                                                 if(empty($checkMS)){
                                                 //add new memberservices record
                                                     $msresult = $_MemberServices->AddMemberServices($serviceID, $MID, $userName, $password, 
-                                                            $hashedpassword, 1, $DateCreated, $isVIP, $vipLevel, null, 1);
+                                                            $password, 1, $DateCreated, $isVIP, $vipLevel, null, 1);
                                                     $msupdate = 'add';
                                                 }
                                                 else{
@@ -366,22 +366,39 @@ if (isset($_POST['pager'])) {
                                 }   
                                 
                                 if(isset ($msupdate) && $msupdate == 'failed' ){
+                                    
+                                    if(strstr($serviceName, "RTG")){
+                                        $addiMsg = 'Failed to Create UserBased RTG Account for UB Card';
+                                    } else if(strstr($serviceName, "MG")){
+                                        $addiMsg = 'Failed to Create UserBased MG Account for UB Card';
+                                    } else {
+                                        $addiMsg = 'Failed to Create UserBased PT Account for UB Card';
+                                    }
+                                    
                                      $_Log->logAPI(AuditFunctions::MANUAL_CASINO_UB_ASSIGNMENT, 
-                                            'Failed to Create UserBased PT Account for UB Card'.$cardnumber, $_SESSION['sessionID'],$_SESSION['aID']);
+                                            $addiMsg.$cardnumber, $_SESSION['sessionID'],$_SESSION['aID']);
                                     $profile->Msg = 'Failed to assign user based Casino';
                                 }
                                 else{
                                     
                                     if(isset ($msupdate) && $msupdate = 'add' && $msresult > 0){
                                  
-                                    $genpassbatchcount = $_GeneratedPasswordBatch->checkGenPassBatch($MID);
+                                        $genpassbatchcount = $_GeneratedPasswordBatch->checkGenPassBatch($MID);
 
-                                    if($genpassbatchcount == 0){
-                                        $_GeneratedPasswordBatch->updatePasswordBatch($MID, $genpassbatchid);
-                                    }
-
+                                        if($genpassbatchcount == 0){
+                                            $_GeneratedPasswordBatch->updatePasswordBatch($MID, $genpassbatchid);
+                                        }
+                                        
+                                        if(strstr($serviceName, "RTG")){
+                                            $addiMsg = 'UB RTG Account Successfully Created for UB Card';
+                                        } else if(strstr($serviceName, "MG")){
+                                            $addiMsg = 'UB MG Account Successfully Created for UB Card';
+                                        } else {
+                                            $addiMsg = 'UB PT Account Successfully Created for UB Card';
+                                        }
+                                        
                                        $_Log->logAPI(AuditFunctions::MANUAL_CASINO_UB_ASSIGNMENT, 
-                                           'UB PT Account Successfully Created for UB Card'.$cardnumber, $_SESSION['sessionID'],$_SESSION['aID']);
+                                           $addiMsg.$cardnumber, $_SESSION['sessionID'],$_SESSION['aID']);
                                        $profile->Msg = 'User based casino assignment was successfully created for this membership account';
                                    }
                                    else{
@@ -409,10 +426,8 @@ if (isset($_POST['pager'])) {
                             //if card status is not temporary or active
                             switch($status)
                             {
-                                case 0: $vstatus = 'InActive';break;
-                                case 1: $vstatus = 'Active';    break;
-                                case 2: $vstatus = 'Card was deactivated';break;
-                                case 5: $vstatus = 'Active Temporary';break;
+                                case 0: $vstatus = 'Card is inactive';break;
+                                case 2: $vstatus = 'Card is deactivated';break;
                                 case 7: $vstatus = 'Membership card was already migrated to another red card'; break;   
                                 case 8: $vstatus = 'Temporary account was already migrated to a red card';  break;
                                 case 9: $vstatus = 'Card is banned.';  break;

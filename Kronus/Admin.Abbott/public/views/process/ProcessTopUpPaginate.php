@@ -409,7 +409,8 @@ class ProcessTopUpPaginate extends BaseProcess {
         $cardnumber = $_POST['cardnumber'];
         $cardinfo = BaseProcess::$cardinfo;
         $loyaltyResult = $loyalty->getCardInfo2($cardnumber, $cardinfo, 1);
-        
+        $casinoinfo = array();
+        $cardnoinfos = '';
         $obj_result = json_decode($loyaltyResult);
 
         $statuscode = $obj_result->CardInfo->StatusCode;
@@ -427,8 +428,7 @@ class ProcessTopUpPaginate extends BaseProcess {
                            
                            $servicename = $topup->getServiceName($serviceid);
                            
-                           $casinoinfo = array(
-                               array(
+                           $cardnoinfos = array(
                                      'UserName'  => $obj_result->CardInfo->MemberName,
                                      'MobileNumber'  => $obj_result->CardInfo->MobileNumber,
                                      'Email'  => $obj_result->CardInfo->Email,
@@ -437,13 +437,15 @@ class ProcessTopUpPaginate extends BaseProcess {
                                      'CardNumber' => $obj_result->CardInfo->CardNumber,
                                      'Login' => $obj_result->CardInfo->CasinoArray[$ctr]->ServiceUsername,
                                      'StatusCode' => $obj_result->CardInfo->StatusCode,
-                                 ),
-                           );
+                            );
 
                            $_SESSION['ServiceUsername'] = $obj_result->CardInfo->CasinoArray[$ctr]->ServiceUsername;
                            $_SESSION['MID'] = $obj_result->CardInfo->MemberID;
-                           echo json_encode($casinoinfo);
+                           
+                           array_push($casinoinfo, $cardnoinfos);
                        }
+                       
+                       echo json_encode($casinoinfo);
                   }
                   else
                   {
@@ -481,7 +483,7 @@ class ProcessTopUpPaginate extends BaseProcess {
         $sitecode = $_POST['sitecode'];
         
         $rcount = $topup->countActiveTerminals2($sitecode);
-        
+
         foreach ($rcount as $value) {
             $count = $value['rcount'];
         }
@@ -500,22 +502,27 @@ class ProcessTopUpPaginate extends BaseProcess {
         {
             $page = $total_pages;
         }
-        $start = $limit * $page - $limit;
+
+        $start = (int)(((int)$page * $limit) - $limit);
         $limit = (int)$limit;   
         
         $rows = $topup->getActiveTerminals2($sitecode, $direction, $start, $limit);
         if(count($rows) == 0){
             $jqgrid = array();
         } else {
+            $jqgrid->page = $page;
             foreach($rows as $key => $row) {
                 $balance = $this->getBalance($row);
                 /********************* GET BALANCE API ****************************/
-
-                if(is_string($balance['Balance'])) {
+                
+                if(is_string($balance['Balance']) && $balance['Balance'] != "Error: Cannot get balance") {
                     $rows[$key]['PlayingBalance'] = number_format((double)$balance['Balance'],2, '.', ',');
                 }  else {
-                    if($row["ServiceID"])
-                    $rows[$key]['PlayingBalance'] = number_format($balance['Balance'],2, '.', ',');
+                    if($balance['Balance'] != "Error: Cannot get balance"){
+                        $rows[$key]['PlayingBalance'] = number_format($balance['Balance'],2, '.', ',');
+                    } else {
+                        $rows[$key]['PlayingBalance'] = $balance['Balance'];
+                    }
                 }
             }
             foreach($rows as $row) {
@@ -531,7 +538,7 @@ class ProcessTopUpPaginate extends BaseProcess {
 
                 }
 
-                if($row['PlayingBalance'] == 0 || $row['PlayingBalance'] == "0.00"){
+                if($row['PlayingBalance'] == "Error: Cannot get balance"){
                         $row['PlayingBalance'] = "N/A";
                 }
 
@@ -551,11 +558,13 @@ class ProcessTopUpPaginate extends BaseProcess {
                     $row['UserMode'],
                 ));
             }
+            $jqgrid->total = ceil($count/$limit);
+            $jqgrid->records = $count;
         }
         
         echo json_encode($jqgrid);
         $topup->close();
-        unset($total_row, $params, $sort, $jqgrid, $rows, $jqgrid);
+        unset($jqgrid, $rows, $jqgrid);
         exit;
     }
     
@@ -583,10 +592,15 @@ class ProcessTopUpPaginate extends BaseProcess {
             $balance = $this->getBalanceUB($row);
             /********************* GET BALANCE API ****************************/
             
-            if(is_string($balance['Balance'])) {
+            if(is_string($balance['Balance']) && $balance['Balance'] != "Error: Cannot get balance") {
                 $rows[$key]['PlayingBalance'] = (float)$balance['Balance'];
             }  else {
-                $rows[$key]['PlayingBalance'] = number_format($balance['Balance'],2, '.', ',');
+                
+                if($balance['Balance'] != "Error: Cannot get balance"){
+                            $rows[$key]['PlayingBalance'] = number_format($balance['Balance'],2, '.', ',');
+                    } else {
+                        $rows[$key]['PlayingBalance'] = $balance['Balance'];
+                    }
             }
         }
         foreach($rows as $row) {
@@ -600,7 +614,7 @@ class ProcessTopUpPaginate extends BaseProcess {
                     $row['PlayingBalance'] = number_format($row['PlayingBalance'], 2, '.', ',');
                 }
                 
-                if($row['PlayingBalance'] == 0){
+                if($row['PlayingBalance'] == "Error: Cannot get balance"){
                     $row['PlayingBalance'] = "N/A";
                 }
             }
@@ -852,10 +866,6 @@ class ProcessTopUpPaginate extends BaseProcess {
                     
                     break;
         }
-       
-        if($balance == "Error: Cannot get balance")
-            $balance = 0;
-       
         
         return array("Balance"=>$balance, "Casino"=>$providername);    
         $topup->close();
