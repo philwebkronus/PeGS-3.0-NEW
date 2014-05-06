@@ -699,6 +699,7 @@ if($connected)
                         $vswithdraw = $arrcomplsum[$ctr]['Withdrawal'];
                         $vsdatestart = $arrcomplsum[$ctr]['DateStarted'];
                         $vsdateend = $arrcomplsum[$ctr]['DateEnded'];
+                        $vdloyaltycrd = $arrcomplsum[$ctr]['LoyaltyCard'];
                         
                         if($vtranssummaryID == $arrcompldet[$ctr2]["TransactionSummaryID"])
                         {         
