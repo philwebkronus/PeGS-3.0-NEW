@@ -446,7 +446,7 @@ if($connected)
                                 $results = preg_split("/$results2/", $vview['TerminalCode']);
                                 
                                 $responce->rows[$i]['id']=$vview['TransactionDetailsID'];
-                                $responce->rows[$i]['cell']=array($vview['TransactionReferenceID'],$results[1],$vtranstype,$vview['ServiceTransactionID'], number_format($vview['Amount'],2),$vview['DateCreated'],$vstatus, $vview['UserName']);
+                                $responce->rows[$i]['cell']=array($vview['TransactionReferenceID'],$results[1],$vtranstype,$vview['ServiceTransactionID'], number_format($vview['Amount'],2),$vview['DateCreated'],$vstatus, $vview['Name']);
                                 $i++;
                              }
                         }
