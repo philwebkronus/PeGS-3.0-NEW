@@ -36,7 +36,13 @@ class TerminalController extends FrontendController {
     public function getDenominationAndCasinoAction() {
         if(!$this->isAjaxRequest() || !$this->isPostRequest())
             Mirage::app()->error404();
-        $deno_casino_min_max = $this->_getDenoCasinoMinMax();
+        if(isset($_POST['isreload'])) {
+            $denominationtype = DENOMINATION_TYPE::RELOAD;
+        }
+        else {
+            $denominationtype = DENOMINATION_TYPE::INITIAL_DEPOSIT;
+        }
+        $deno_casino_min_max = $this->_getDenoCasinoMinMax($denominationtype);
         if(isset($_POST['isreload'])) {
             Mirage::loadComponents('CasinoApi');
             Mirage::loadModels(array('TransactionSummaryModel','TransactionDetailsModel','TerminalSessionsModel'));
@@ -188,7 +194,8 @@ class TerminalController extends FrontendController {
         $casinos = array();
         
         if(isset($_POST['StartSessionFormModel'])) {
-            $deno_casino_min_max = $this->_getDenoCasinoMinMax();
+            $denominationtype = DENOMINATION_TYPE::INITIAL_DEPOSIT;
+            $deno_casino_min_max = $this->_getDenoCasinoMinMax($denominationtype);
             $startSessionFormModel->max_deposit = $deno_casino_min_max['max_denomination'];
             $startSessionFormModel->min_deposit = $deno_casino_min_max['min_denomination'];
             $casinos = $deno_casino_min_max['casino'];

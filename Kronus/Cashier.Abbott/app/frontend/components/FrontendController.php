@@ -144,7 +144,7 @@ class FrontendController extends MI_Controller {
     }
     
     /***************************** HELPER *************************************/
-    protected function _getDenoCasinoMinMax() {
+    protected function _getDenoCasinoMinMax($denomination_type) {
         Mirage::loadModels(array('SiteDenominationModel','TerminalsModel','TerminalServicesModel'));
         $siteDenominationModel = new SiteDenominationModel();
         $terminalsModel = new TerminalsModel();
@@ -156,10 +156,10 @@ class FrontendController extends MI_Controller {
             $terminal_id = $_POST['StartSessionFormModel']['terminal_id'];
         }
         
-        $denomination_type = DENOMINATION_TYPE::INITIAL_DEPOSIT;
-        if(isset($_POST['isreload'])) {
-            $denomination_type = DENOMINATION_TYPE::RELOAD;
-        }
+//        $denomination_type = DENOMINATION_TYPE::INITIAL_DEPOSIT;
+//        if(isset($_POST['isreload'])) {
+//            $denomination_type = DENOMINATION_TYPE::RELOAD;
+//        }
         
         $terminal_data = $terminalsModel->getDataByTerminalId($terminal_id);
         $services = $terminalServicesModel->getCasinoByTerminal($terminal_id);
@@ -243,9 +243,9 @@ class FrontendController extends MI_Controller {
                         {
                                 $amount = $verifyVoucherResult['VerifyVoucher']['Amount'];
                                 $isCreditable = $verifyVoucherResult['VerifyVoucher']['LoyaltyCreditable'];
-                                
+                                $denominationtype = DENOMINATION_TYPE::RELOAD;
                                 //check if the amount is still in denomination range
-                                $denomination = $this->_getDenoCasinoMinMax();
+                                $denomination = $this->_getDenoCasinoMinMax($denominationtype);
                                 $min_deno = $denomination['min_denomination'];
                                 $max_deno = $denomination['max_denomination'];
                                 
@@ -552,8 +552,9 @@ class FrontendController extends MI_Controller {
                         {
                             $isCreditable = $verifyVoucherResult['VerifyVoucher']['LoyaltyCreditable'];
                             $amount = $verifyVoucherResult['VerifyVoucher']['Amount'];
+                            $denominationtype = DENOMINATION_TYPE::INITIAL_DEPOSIT;
                             
-                            $denomination = $this->_getDenoCasinoMinMax();
+                            $denomination = $this->_getDenoCasinoMinMax($denominationtype);
                             $min_deno = $denomination['min_denomination'];
                             $max_deno = $denomination['max_denomination'];
 
