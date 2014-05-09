@@ -1,0 +1,61 @@
+2014/04/10 13:38:18 [error] [php] Undefined index: amount (C:\Apache2.2\htdocs\kronus-egm-ws-abbott\protected\controllers\WsKapiController.php:2089)
+Stack trace:
+#0 C:\Apache2.2\htdocs\yii\framework\web\CController.php(286): WsKapiController->runAction()
+#1 C:\Apache2.2\htdocs\yii\framework\web\CController.php(265): WsKapiController->runActionWithFilters()
+#2 C:\Apache2.2\htdocs\yii\framework\web\CWebApplication.php(282): WsKapiController->run()
+#3 C:\Apache2.2\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController()
+#4 C:\Apache2.2\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#5 C:\Apache2.2\htdocs\kronus-egm-ws-abbott\index.php(13): CWebApplication->run()
+REQUEST_URI=/kronus-egm-ws-abbott/index.php/wsKapi/redeemsession
+in C:\Apache2.2\htdocs\kronus-egm-ws-abbott\protected\controllers\WsKapiController.php (2089)
+in C:\Apache2.2\htdocs\kronus-egm-ws-abbott\index.php (13)
+2014/04/10 17:54:24 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'MKEAPR10HRHG125' for key 'UK_egmrequestlogs_TrackingID'. The SQL statement executed was: INSERT INTO egmrequestlogs(TrackingID, ReportedAmount, Status, 
+                    TransactionType, SiteID, TerminalID, ServiceID, LoyaltyCardNumber, MID, DateLastUpdated) 
+                    VALUES(:tracking_id, :amount, :status, :trans_type, :site_id,
+                    :terminal_id, :service_id, :card_number, :mid, NOW(6)).
+in C:\Apache2.2\htdocs\kronus-egm-ws-abbott\protected\models\GamingRequestLogs.php (53)
+in C:\Apache2.2\htdocs\kronus-egm-ws-abbott\protected\controllers\WsKapiController.php (2233)
+in C:\Apache2.2\htdocs\kronus-egm-ws-abbott\index.php (13)
+2014/04/10 17:54:24 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'MKEAPR10HRHG125' for key 'UK_egmrequestlogs_TrackingID'. The SQL statement executed was: INSERT INTO egmrequestlogs(TrackingID, ReportedAmount, Status, 
+                    TransactionType, SiteID, TerminalID, ServiceID, LoyaltyCardNumber, MID, DateLastUpdated) 
+                    VALUES(:tracking_id, :amount, :status, :trans_type, :site_id,
+                    :terminal_id, :service_id, :card_number, :mid, NOW(6))
+in C:\Apache2.2\htdocs\kronus-egm-ws-abbott\protected\components\Utilities.php (12)
+in C:\Apache2.2\htdocs\kronus-egm-ws-abbott\protected\models\GamingRequestLogs.php (70)
+in C:\Apache2.2\htdocs\kronus-egm-ws-abbott\protected\controllers\WsKapiController.php (2233)
+2014/04/10 17:55:28 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[45000]: <<Unknown error>>: 1644 Transaction Failed: Terminal has existing session.. The SQL statement executed was: INSERT INTO transactionrequestlogs (TransactionReferenceID, StackerSummaryID, 
+                                         Amount, StartDate, TransactionType, TerminalID, Status, 
+                                         SiteID, ServiceID, LoyaltyCardNumber, MID, UserMode, PaymentType, 
+                                         PaymentTrackingID, Option1, ServiceTransactionID)
+                                         VALUES (:trans_ref_id, :stackerbatchid, :amount, NOW(6), :trans_type, 
+                                         :terminal_id, '0', :site_id, :service_id, :loyalty_card, 
+                                         :mid, :user_mode, :paymentType ,:trackingID, :voucher_code, 
+                                         :service_trans_id).
+in C:\Apache2.2\htdocs\kronus-egm-ws-abbott\protected\models\TransactionRequestLogsModel.php (103)
+in C:\Apache2.2\htdocs\kronus-egm-ws-abbott\protected\components\UserBasedTrans.php (478)
+in C:\Apache2.2\htdocs\kronus-egm-ws-abbott\protected\controllers\WsKapiController.php (2424)
+2014/04/10 17:55:28 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[45000]: <<Unknown error>>: 1644 Transaction Failed: Terminal has existing session.. The SQL statement executed was: INSERT INTO transactionrequestlogs (TransactionReferenceID, StackerSummaryID, 
+                                         Amount, StartDate, TransactionType, TerminalID, Status, 
+                                         SiteID, ServiceID, LoyaltyCardNumber, MID, UserMode, PaymentType, 
+                                         PaymentTrackingID, Option1, ServiceTransactionID)
+                                         VALUES (:trans_ref_id, :stackerbatchid, :amount, NOW(6), :trans_type, 
+                                         :terminal_id, '0', :site_id, :service_id, :loyalty_card, 
+                                         :mid, :user_mode, :paymentType ,:trackingID, :voucher_code, 
+                                         :service_trans_id)
+in C:\Apache2.2\htdocs\kronus-egm-ws-abbott\protected\components\Utilities.php (12)
+in C:\Apache2.2\htdocs\kronus-egm-ws-abbott\protected\models\TransactionRequestLogsModel.php (114)
+in C:\Apache2.2\htdocs\kronus-egm-ws-abbott\protected\components\UserBasedTrans.php (478)
+2014/04/10 17:58:28 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'MKEAPR10GE21523' for key 'UK_egmrequestlogs_TrackingID'. The SQL statement executed was: INSERT INTO egmrequestlogs(TrackingID, ReportedAmount, Status, 
+                    TransactionType, SiteID, TerminalID, ServiceID, LoyaltyCardNumber, MID, DateLastUpdated) 
+                    VALUES(:tracking_id, :amount, :status, :trans_type, :site_id,
+                    :terminal_id, :service_id, :card_number, :mid, NOW(6)).
+in C:\Apache2.2\htdocs\kronus-egm-ws-abbott\protected\models\GamingRequestLogs.php (53)
+in C:\Apache2.2\htdocs\kronus-egm-ws-abbott\protected\controllers\WsKapiController.php (1499)
+in C:\Apache2.2\htdocs\kronus-egm-ws-abbott\index.php (13)
+2014/04/10 17:58:28 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'MKEAPR10GE21523' for key 'UK_egmrequestlogs_TrackingID'. The SQL statement executed was: INSERT INTO egmrequestlogs(TrackingID, ReportedAmount, Status, 
+                    TransactionType, SiteID, TerminalID, ServiceID, LoyaltyCardNumber, MID, DateLastUpdated) 
+                    VALUES(:tracking_id, :amount, :status, :trans_type, :site_id,
+                    :terminal_id, :service_id, :card_number, :mid, NOW(6))
+in C:\Apache2.2\htdocs\kronus-egm-ws-abbott\protected\components\Utilities.php (12)
+in C:\Apache2.2\htdocs\kronus-egm-ws-abbott\protected\models\GamingRequestLogs.php (70)
+in C:\Apache2.2\htdocs\kronus-egm-ws-abbott\protected\controllers\WsKapiController.php (1499)

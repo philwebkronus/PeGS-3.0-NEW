@@ -1,0 +1,28 @@
+2014/05/08 11:30:23 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'TRACKMAY23523' for key 'UK_egmrequestlogs_TrackingID'. The SQL statement executed was: INSERT INTO egmrequestlogs(TrackingID, ReportedAmount, Status, 
+                    TransactionType, SiteID, TerminalID, ServiceID, LoyaltyCardNumber, MID, DateLastUpdated) 
+                    VALUES(:tracking_id, :amount, :status, :trans_type, :site_id,
+                    :terminal_id, :service_id, :card_number, :mid, NOW(6)).
+in C:\Apache2.2\htdocs\kronus-egm-ws-abbott\protected\models\GamingRequestLogs.php (53)
+in C:\Apache2.2\htdocs\kronus-egm-ws-abbott\protected\controllers\WsKapiController.php (2113)
+in C:\Apache2.2\htdocs\kronus-egm-ws-abbott\index.php (13)
+2014/05/08 11:30:23 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'TRACKMAY23523' for key 'UK_egmrequestlogs_TrackingID'. The SQL statement executed was: INSERT INTO egmrequestlogs(TrackingID, ReportedAmount, Status, 
+                    TransactionType, SiteID, TerminalID, ServiceID, LoyaltyCardNumber, MID, DateLastUpdated) 
+                    VALUES(:tracking_id, :amount, :status, :trans_type, :site_id,
+                    :terminal_id, :service_id, :card_number, :mid, NOW(6))
+in C:\Apache2.2\htdocs\kronus-egm-ws-abbott\protected\components\Utilities.php (12)
+in C:\Apache2.2\htdocs\kronus-egm-ws-abbott\protected\models\GamingRequestLogs.php (70)
+in C:\Apache2.2\htdocs\kronus-egm-ws-abbott\protected\controllers\WsKapiController.php (2113)
+2014/05/08 11:30:41 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'TRACKMAY23525' for key 'UK_egmrequestlogs_TrackingID'. The SQL statement executed was: INSERT INTO egmrequestlogs(TrackingID, ReportedAmount, Status, 
+                    TransactionType, SiteID, TerminalID, ServiceID, LoyaltyCardNumber, MID, DateLastUpdated) 
+                    VALUES(:tracking_id, :amount, :status, :trans_type, :site_id,
+                    :terminal_id, :service_id, :card_number, :mid, NOW(6)).
+in C:\Apache2.2\htdocs\kronus-egm-ws-abbott\protected\models\GamingRequestLogs.php (53)
+in C:\Apache2.2\htdocs\kronus-egm-ws-abbott\protected\controllers\WsKapiController.php (2113)
+in C:\Apache2.2\htdocs\kronus-egm-ws-abbott\index.php (13)
+2014/05/08 11:30:41 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'TRACKMAY23525' for key 'UK_egmrequestlogs_TrackingID'. The SQL statement executed was: INSERT INTO egmrequestlogs(TrackingID, ReportedAmount, Status, 
+                    TransactionType, SiteID, TerminalID, ServiceID, LoyaltyCardNumber, MID, DateLastUpdated) 
+                    VALUES(:tracking_id, :amount, :status, :trans_type, :site_id,
+                    :terminal_id, :service_id, :card_number, :mid, NOW(6))
+in C:\Apache2.2\htdocs\kronus-egm-ws-abbott\protected\components\Utilities.php (12)
+in C:\Apache2.2\htdocs\kronus-egm-ws-abbott\protected\models\GamingRequestLogs.php (70)
+in C:\Apache2.2\htdocs\kronus-egm-ws-abbott\protected\controllers\WsKapiController.php (2113)

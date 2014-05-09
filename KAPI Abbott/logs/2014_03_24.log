@@ -1,0 +1,31 @@
+Create EGM Session; MID: 123
+ Create EGM Session; MID: 1232014-03-24 16:07:01; CREATE EGM SESSION; Card number is already being used in a current active session.;TerminalID:1093MID: 21203SiteID: 167
+ 
+2014-03-24 16:08:37; CREATE EGM SESSION; Card number is already being used in a current active session.; TerminalID:1093MID: 21203SiteID: 167
+ 
+2014-03-24 16:08:41; CREATE EGM SESSION; Card number is already being used in a current active session.; TerminalID:1093MID: 21203SiteID: 167
+ 
+[2014-03-24 16:11:40] Error: CREATE EGM SESSION; Card number is already being used in a current active session.; TerminalID:1093 MID: 21203 SiteID: 167 
+ 
+[2014-03-24 16:12:31] CREATE EGM SESSION; Error: Card number is already being used in a current active session.; TerminalID:1093 MID: 21203 SiteID: 167 
+ 
+[2014-03-24 16:13:54] CREATE EGM SESSION; Error: Card number is already being used in a current active session.; TerminalID:1093 | MID: 21203 | SiteID: 167 | 
+ 
+[2014-03-24 16:55:08] CREATE EGM SESSION; Error: Terminal already has an active session.; TerminalID:1659 | MID: 21106 | SiteID: 216 | CasinoID: 7
+ 
+[2014-03-24 17:54:06] CREATE EGM SESSION; Error: Terminal already has an active session.; TerminalID:1659 | MID: 21106 | SiteID: 216 | CasinoID: 7
+ 
+[2014-03-24 17:54:47] CREATE EGM SESSION; Error: Terminal already has an active session.; TerminalID:1659 | MID: 21106 | SiteID: 216 | CasinoID: 7
+ 
+[2014-03-24 17:55:26] CREATE EGM SESSION; Error: Terminal already has an active session.; TerminalID:1659 | MID: 21106 | SiteID: 216 | CasinoID: 7
+ 
+[2014-03-24 17:56:15] CREATE EGM SESSION; Error: Terminal already has an active session.; TerminalID:1659 | MID: 21106 | SiteID: 216 | CasinoID: 7
+ 
+[2014-03-24 17:57:25] CREATE EGM SESSION; Error: Terminal already has an active session.; TerminalID:1093 | MID: 21203 | SiteID: 167 | CasinoID: 7
+ 
+[2014-03-24 17:57:35] CREATE EGM SESSION; Error: Terminal already has an active session.; TerminalID:1653 | MID: 21203 | SiteID: 216 | CasinoID: 7
+ 
+[2014-03-24 17:57:54] CREATE EGM SESSION; Error: Terminal already has an active session.; TerminalID:1653 | MID: 21203 | SiteID: 216 | CasinoID: 7
+ 
+[2014-03-24 17:58:46] CREATE EGM SESSION; Error: Card number is already being used in a current active session.; TerminalID:926 | MID: 21203 | SiteID: 167 | 
+ 

@@ -1,0 +1,54 @@
+[2014-04-07 11:01:59] REDEEM SESSION; Error: Can't connect to VMS Server; 
+ 
+[2014-04-07 11:02:51] REDEEM SESSION; Error: Can't connect to VMS Server; 
+ 
+[2014-04-07 13:44:49] START SESSION; Error: Error: Failed to start session.; TerminalID:1627 | MID: 21195 | SiteID: 213 | CasinoID: 19 | ErrorMessage: API Error: HTTP 500
+ 
+[2014-04-07 14:02:58] START SESSION; Error: Error: Failed to start session.; TerminalID:1627 | MID: 21195 | SiteID: 213 | CasinoID: 19 | ErrorMessage: API Error: HTTP 500
+ 
+[2014-04-07 15:13:56] START SESSION; Error: Error: Terminal is already active.; TerminalID:1627 | MID: 21195 | SiteID: 213 | CasinoID: 19
+ 
+[2014-04-07 15:15:28] REDEEM SESSION; Error: Reload Session Failed. Please check if the terminal
+                            has a valid start session.; TerminalID:1627 | MID: 21195 | SiteID: 213 | CasinoID: 19
+ 
+[2014-04-07 15:16:22] START SESSION; Error: There was a pending transaction for this user / terminal.; TerminalID:1627 | MID: 21195 | SiteID: 213 | CasinoID: 19
+ 
+[2014-04-07 15:19:10] START SESSION; Error: Error: Terminal is already active.; TerminalID:1627 | MID: 21195 | SiteID: 213 | CasinoID: 19
+ 
+[2014-04-07 15:19:30] CREATE EGM SESSION; Error: Terminal already has an active session.; TerminalID:1627 | MID: 21195 | SiteID: 213 | CasinoID: 19
+ 
+[2014-04-07 15:19:52] START SESSION; Error: Error: Terminal is already active.; TerminalID:1627 | MID: 21195 | SiteID: 213 | CasinoID: 19
+ 
+[2014-04-07 15:20:29] REDEEM SESSION; Error: Reload Session Failed. Please check if the terminal
+                            has a valid start session.; TerminalID:1627 | MID: 21195 | SiteID: 213 | CasinoID: 19
+ 
+[2014-04-07 15:23:17] START SESSION; Error: Error: Terminal is already active.; TerminalID:1627 | MID: 21195 | SiteID: 213 | CasinoID: 19
+ 
+[2014-04-07 15:23:32] REDEEM SESSION; Error: Reload Session Failed. Please check if the terminal
+                            has a valid start session.; TerminalID:1627 | MID: 21195 | SiteID: 213 | CasinoID: 19
+ 
+[2014-04-07 15:31:50] START SESSION; Error: Error: Terminal is already active.; TerminalID:1627 | MID: 21195 | SiteID: 213 | CasinoID: 19
+ 
+[2014-04-07 15:32:20] REDEEM SESSION; Error: Reload Session Failed. Please check if the terminal
+                            has a valid start session.; TerminalID:1627 | MID: 21195 | SiteID: 213 | CasinoID: 19
+ 
+[2014-04-07 15:45:23] START SESSION; Error: Error: Terminal is already active.; TerminalID:1627 | MID: 21195 | SiteID: 213 | CasinoID: 19
+ 
+[2014-04-07 16:00:31] CREATE EGM SESSION; Error: Terminal already has an active session.; TerminalID:1627 | MID: 21195 | SiteID: 213 | CasinoID: 19
+ 
+[2014-04-07 16:05:00] START SESSION; Error: Error: Terminal is already active.; TerminalID:1627 | MID: 21195 | SiteID: 213 | CasinoID: 19
+ 
+[2014-04-07 16:08:47] CREATE EGM SESSION; Error: Terminal already has an active session.; TerminalID:1627 | MID: 21195 | SiteID: 213 | CasinoID: 19
+ 
+[2014-04-07 16:17:20] CREATE EGM SESSION; Error: Terminal already has an active session.; TerminalID:1626 | MID: 21292 | SiteID: 213 | CasinoID: 19
+ 
+[2014-04-07 16:32:40] START SESSION; Error: There was a pending transaction for this user / terminal.; TerminalID:1625 | MID: 21329 | SiteID: 213 | CasinoID: 19
+ 
+[2014-04-07 16:55:08] CREATE EGM SESSION; Error: Terminal already has an active session.; TerminalID:1625 | MID: 21329 | SiteID: 213 | CasinoID: 19
+ 
+[2014-04-07 16:55:20] CREATE EGM SESSION; Error: Terminal already has an active session.; TerminalID:1625 | MID: 21329 | SiteID: 213 | CasinoID: 19
+ 
+[2014-04-07 16:58:25] START SESSION; Error: Error: Terminal is already active.; TerminalID:1625 | MID: 21329 | SiteID: 213 | CasinoID: 19
+ 
+[2014-04-07 17:54:14] CREATE EGM SESSION; Error: Terminal already has an active session.; TerminalID:1625 | MID: 21329 | SiteID: 213 | CasinoID: 19
+ 

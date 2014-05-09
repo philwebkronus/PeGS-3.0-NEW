@@ -1,0 +1,18 @@
+[2014-04-10 13:34:58] CREATE EGM SESSION; Error: Terminal already has an active session.; TerminalID:1625 | MID: 21329 | SiteID: 213 | CasinoID: 19
+ 
+[2014-04-10 13:38:18] REDEEM SESSION; Error: Error: Redeemable amount is not equal.; TerminalID:1625 | MID: 21329 | SiteID: 213 | CasinoID: 19
+ 
+[2014-04-10 17:52:22] RELOAD SESSION; Error: Casino: Can't get balance; TerminalID:1625 | MID: 21329 | SiteID: 213 | CasinoID: 19
+ 
+[2014-04-10 17:53:46] RELOAD SESSION; Error: Casino: Can't get balance; TerminalID:1625 | MID: 21329 | SiteID: 213 | CasinoID: 19
+ 
+[2014-04-10 17:54:29] RELOAD SESSION; Error: Casino: Can't get balance; TerminalID:1625 | MID: 21329 | SiteID: 213 | CasinoID: 19
+ 
+[2014-04-10 17:55:28] RELOAD SESSION; Error: There was a pending transaction for this user / terminal.; TerminalID:1625 | MID: 21329 | SiteID: 213 | CasinoID: 19
+ 
+[2014-04-10 17:57:56] START SESSION; Error: Error: Please inform customer service for manual redemption.; TerminalID:1625 | MID: 21329 | SiteID: 213 | CasinoID: 19
+ 
+[2014-04-10 17:58:33] START SESSION; Error: Error: Please inform customer service for manual redemption.; TerminalID:1625 | MID: 21329 | SiteID: 213 | CasinoID: 19
+ 
+[2014-04-10 18:00:20] START SESSION; Error: Error: Please inform customer service for manual redemption.; TerminalID:1625 | MID: 21329 | SiteID: 213 | CasinoID: 19
+ 

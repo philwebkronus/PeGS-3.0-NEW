@@ -1,0 +1,8 @@
+[2014-04-16 11:24:54] CREATE EGM SESSION; Error: Card number is already being used in a current active session.; TerminalID:1626 | MID: 21291 | SiteID: 213 | 
+ 
+[2014-04-16 11:26:52] CREATE EGM SESSION; Error: Card number is already being used in a current active session.; TerminalID:1626 | MID: 21291 | SiteID: 213 | 
+ 
+[2014-04-16 11:27:45] CREATE EGM SESSION; Error: Card number is already being used in a current active session.; TerminalID:1092 | MID: 21291 | SiteID: 167 | 
+ 
+[2014-04-16 11:29:57] REDEEM SESSION; Error: Error: 29VIP terminal already started; TerminalID:1092 | MID: 21291 | SiteID: 167 | CasinoID: 7
+ 

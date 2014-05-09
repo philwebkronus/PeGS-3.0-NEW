@@ -1,0 +1,25 @@
+[2014-03-31 13:54:00] CREATE EGM SESSION; Error: Card number is already being used in a current active session.; TerminalID:1659 | MID: 21203 | SiteID: 216 | 
+ 
+[2014-03-31 13:58:32] START SESSION; Error: There was a pending transaction for this user / terminal.; TerminalID:931 | MID: 21203 | SiteID: 167 | CasinoID: 7
+ 
+[2014-03-31 14:02:40] START SESSION; Error: There was a pending transaction for this user / terminal.; TerminalID:931 | MID: 21203 | SiteID: 167 | CasinoID: 7
+ 
+[2014-03-31 14:04:53] CREATE EGM SESSION; Error: Card number is already being used in a current active session.; TerminalID:1092 | MID: 21291 | SiteID: 167 | 
+ 
+[2014-03-31 14:06:49] CREATE EGM SESSION; Error: Card number is already being used in a current active session.; TerminalID:1092 | MID: 21291 | SiteID: 167 | 
+ 
+[2014-03-31 14:07:12] CREATE EGM SESSION; Error: Card number is already being used in a current active session.; TerminalID:1092 | MID: 21291 | SiteID: 167 | 
+ 
+[2014-03-31 14:07:35] CREATE EGM SESSION; Error: Card number is already being used in a current active session.; TerminalID:1092 | MID: 21291 | SiteID: 167 | 
+ 
+[2014-03-31 14:08:36] CREATE EGM SESSION; Error: Terminal already has an active session.; TerminalID:1091 | MID: 21203 | SiteID: 167 | CasinoID: 7
+ 
+[2014-03-31 15:41:01] RELOAD SESSION; Error: Reload Session Failed. Please check if the terminal
+                            has a valid start session.; TerminalID:1659 | MID: 21203 | SiteID: 216 | CasinoID: 7
+ 
+[2014-03-31 15:47:46] START SESSION; Error: There was a pending transaction for this user / terminal.; TerminalID:1659 | MID: 21203 | SiteID: 216 | CasinoID: 7
+ 
+[2014-03-31 15:49:13] START SESSION; Error: There was a pending transaction for this user / terminal.; TerminalID:1659 | MID: 21203 | SiteID: 216 | CasinoID: 7
+ 
+[2014-03-31 15:51:15] START SESSION; Error: There was a pending transaction for this user / terminal.; TerminalID:1659 | MID: 21203 | SiteID: 216 | CasinoID: 7
+ 

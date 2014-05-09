@@ -1,0 +1,20 @@
+2014/03/25 14:23:04 [error] [system.db.CDbCommand] CDbCommand::fetch() failed: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'loyaltydb.mebercards' doesn't exist. The SQL statement executed was: SELECT MID FROM mebercards WHERE CardNumber = :card_number.
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\models\MemberCardsModel.php (36)
+in C:\Apache2.2\htdocs\kronus-egm-ws\protected\controllers\WsKapiController.php (1095)
+in C:\Apache2.2\htdocs\kronus-egm-ws\index.php (13)
+2014/03/25 14:23:04 [error] [exception.CDbException] exception 'CDbException' with message 'CDbCommand failed to execute the SQL statement: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'loyaltydb.mebercards' doesn't exist. The SQL statement executed was: SELECT MID FROM mebercards WHERE CardNumber = :card_number' in C:\Apache2.2\htdocs\yii\framework\db\CDbCommand.php:541
+Stack trace:
+#0 C:\Apache2.2\htdocs\yii\framework\db\CDbCommand.php(414): CDbCommand->queryInternal('fetch', Array, Array)
+#1 C:\Apache2.2\htdocs\kronus-egm-ws\protected\models\MemberCardsModel.php(36): CDbCommand->queryRow(true, Array)
+#2 C:\Apache2.2\htdocs\kronus-egm-ws\protected\controllers\WsKapiController.php(1095): MemberCardsModel->getMID('UBOZM7VV')
+#3 C:\Apache2.2\htdocs\yii\framework\web\actions\CInlineAction.php(49): WsKapiController->actionCreateEgmSession()
+#4 C:\Apache2.2\htdocs\yii\framework\web\CController.php(308): CInlineAction->runWithParams(Array)
+#5 C:\Apache2.2\htdocs\yii\framework\web\CController.php(286): CController->runAction(Object(CInlineAction))
+#6 C:\Apache2.2\htdocs\yii\framework\web\CController.php(265): CController->runActionWithFilters(Object(CInlineAction), Array)
+#7 C:\Apache2.2\htdocs\yii\framework\web\CWebApplication.php(282): CController->run('createegmsessio...')
+#8 C:\Apache2.2\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController('wsKapi/createeg...')
+#9 C:\Apache2.2\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#10 C:\Apache2.2\htdocs\kronus-egm-ws\index.php(13): CApplication->run()
+#11 {main}
+REQUEST_URI=/kronus-egm-ws/index.php/wsKapi/createegmsession
+---
