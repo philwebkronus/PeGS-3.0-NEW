@@ -1,0 +1,49 @@
+Stacker API Error Code References:
+
+Code    Message
+0   -   No Error, Transaction successful.
+1   -   One or more fields is not set or is blank.
+2   -   Invalid input parameter.
+3   -   Terminal does not exist.
+4   -   Amount must be greater than or equal to [Allowed Amount].
+5   -   Transaction failed.
+6   -   Terminal has no active stacker session.
+7   -   Membership Card Number does not exists.
+8   -   Invalid Membership Card Number.
+9   -   Tracking ID does not exist.
+10  -   Tracking ID is not set or is blank.
+11  -   Voucher Code is required.
+12  -   Invalid status.
+13  -   Stacker Tag ID already exists.
+14  -   Serial Number already exists.
+15  -   Stacker may be active or onstock.
+16  -   Failed to add stacker info.
+17  -   Stacker Tag ID does not exist.
+18  -   Serial Number does not exist.
+19  -   One or more values did not match.
+20  -   Failed to update stacker info.
+21  -   Stacker Tag ID and Serial Number did not match.
+22  -   Stacker Batch ID does not exist.
+23  -   Transaction was already canceled.
+24  -   Tracking ID already exists.
+25  -   Terminal has no active EGM session.
+26  -   Terminal stacker session has not yet been validated.
+27  -   Invalid Transaction Type.
+28  -   Invalid Payment Type.
+29  -   Invalid Source.
+30  -   Card Number is required.
+31  -   Cash denomination amount is invalid.
+32  -   Terminal stacker is inactive.
+33  -   Terminal and Membership Card Number does not match in EGM Session.
+34  -   Amount should be equal to Ticket Amount.
+35  -   Invalid Collected By.
+36  -   Collected By is required when ending a stacker session.
+37  -   Stacker Tag ID is already active in another terminal.
+38  -   Serial Number is already active in another terminal.
+39  -   VAPI - (Error Message).
+40  -   Can't connect to VMS Server.
+41  -   Deposit amount must be greater than Php [Amount].
+42  -   Failed to generate ticket.
+43  -   AID is not associated with any Terminal.
+44  -   Terminal and StackerBatchID does not match in EGM session.
+45  -   Invalid Voucher Code.
