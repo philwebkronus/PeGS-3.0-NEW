@@ -1,0 +1,212 @@
+/* 
+    Document   : npos
+    Created on : June 14, 2011, 11:24:20 AM
+    Author     : Gino Ambrosio
+    Description:
+        Used for the main landing page layout.
+*/
+
+/* 
+   TODO customize this sample style
+   Syntax recommendation http://www.w3.org/TR/REC-CSS2/
+*/
+
+html {
+/*    font-family: "Trebuchet", "Arial", "Helvetica";*/
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif; 
+    font-size: 100%;
+    height: 100%;
+}
+
+body { 
+    margin: 0 0;
+    text-align: left;  /* For IE browser */
+/*    min-width: 1200px;*/
+    height: 100%;
+/*    background-color: #011d03;*/
+}
+
+table, a, span, li {
+    font-size: 0.9em;
+}
+
+ul {
+    list-style-type: none;
+    text-align: left;
+/*    background-color: #D5D5D5;*/
+    padding-left: 15px;
+}
+
+ul li {
+    padding-bottom: 10px;
+}
+
+
+select {
+    font-size: 1em;
+}
+    
+a:link {color: Blue; text-decoration: none;}
+a:visited {color: Blue; text-decoration: none;}
+a:active {color: Red; text-decoration: none;}
+a:hover {text-decoration: underline; color: #0b8f01;}
+
+
+table.maintable {
+    width: 100%;
+    height: 100%;
+    background-color:#dddddd;
+}
+
+table.maintable th {
+    height: 30px;
+    background-color: #DCDCDC;
+    border:1px solid Black;
+    text-align: left;
+    padding: 10px;
+}
+
+
+#submenu {
+/*    margin: 0;*/
+/*    font-size: 1.1em;*/
+}
+
+#submenu li a:hover {text-decoration: none; color: #600; border-bottom:1px solid Gray;}
+#submenu li a:active {text-decoration: none; color: Red;}
+
+table.listing {
+    width: 100%;
+    border: 2px solid Black;
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 1em;
+    empty-cells: show;
+    vertical-align: middle;
+}
+
+table.listing thead tr {
+    background-color: #d5e5a3;
+}
+
+table.listing thead tr .condition {
+    text-align: left;
+    padding-left: 5px;
+    background-color: #dcdcdc;
+}
+
+table.listing thead tr .header {
+    text-align: left;
+    padding-left: 5px;
+    background-color: #3d561c;
+    color: White;
+    font-size: 1.2em;
+}
+
+table.listing thead tr .paging {
+    text-align: center;
+    padding-left: 5px;
+    background-color: #3d561c;
+    color: White;
+}
+
+table.listing thead tr th{
+    text-align: center;
+    padding: 4px;
+}
+
+table.listing tbody td {
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+
+table.listing td.amount {
+    text-align: right;
+}
+
+table.listing tfoot tr.grandtotal {
+    background-color: #d5e5a3;
+}
+
+table.listing tfoot tr.grandtotal td {
+    font-weight: Bold;
+}
+
+table.listing tfoot tr.grandtotal td.amount {
+    border-top: 3px double Black;
+}
+
+table.listing tfoot tr.export td {
+    width: 100%;
+    background-color: #6a6a6a;
+    text-align: right;
+    padding: 20px;
+    border-top: 1px solid Black;
+}
+
+table.listing tbody tr:nth-child(odd) { background-color:#FFF;}
+table.listing tbody tr:nth-child(even) { background-color: #e8e8e8;}
+
+table.listing tbody tr:hover { background-color: #cccccc; }
+
+/*
+div#senchahdr {
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 10px;
+}
+
+div#senchaexport {
+    clear: both;
+    width: 90%;
+    background-color: #6a6a6a;
+    text-align: right;
+    padding: 20px;
+    border-top: 1px solid Black;
+}*/
+
+
+
+
+
+
+#navigation
+{
+	float: left;
+	width: 100%;
+	background: #333;
+    font-size: 1.3em;
+}
+
+#navigation ul
+{
+	margin: 0;
+	padding: 0;
+}
+
+#navigation ul li
+{
+	list-style-type: none;
+	display: inline;
+}
+
+#navigation ul#loginuser li a {
+	display: block;
+	float: right;
+	padding: 5px 10px;
+	color: Yellow;
+	text-decoration: none;
+	border-left: 1px solid #fff;
+}
+
+#navigation li a {
+	display: block;
+	float: left;
+	padding: 5px 10px;
+	color: #fff;
+	text-decoration: none;
+	border-right: 1px solid #fff;
+}
+
+#navigation li a:hover { background: #383; }
