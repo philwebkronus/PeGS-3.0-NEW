@@ -16,6 +16,8 @@ class AuditLog extends CFormModel
     CONST API_VERIFY_STACKER = 'verifyStacker';
     CONST API_VERIFY_TRACKINGID = 'verifyTrackingID';
     CONST API_STACKER_SESSION = 'stackerSession';
+    CONST API_ADD_TICKET = 'addTicket';
+    CONST API_VERIFY_TICKET = 'verifyTicket';
     
     /**
      * 
@@ -36,7 +38,7 @@ class AuditLog extends CFormModel
         
         $transMsg = AuditLog::logMessage($auditFunctionID) . " " . $transDetails;
         $query = "INSERT INTO audittrail (AID,AuditTrailFunctionID,TransDetails,TransDateTime,RemoteIP)
-                  VALUE (:AID,:auditFunctionID,:transMsg,now_usec(),:remoteIP)";
+                  VALUE (:AID,:auditFunctionID,:transMsg,NOW(6),:remoteIP)";
 
         $sql = $conn->createCommand($query);  
         $sql->bindValues(array(
@@ -77,7 +79,7 @@ class AuditLog extends CFormModel
     public static function logAPITransactions($APIMethod,$source,$transDetails,$referenceID,$trackingID,$status)
     {
         $conn = Yii::app()->db;
-            
+        $method = '';
         switch ($APIMethod)
         {
             case 1:
@@ -101,12 +103,18 @@ class AuditLog extends CFormModel
             case 7:
                 $method = self::API_VERIFY_TRACKINGID;
                 break;
+            case 8:
+                $method = self::API_ADD_TICKET;
+                break;
+            case 9:
+                $method = self::API_VERIFY_TICKET;
+                break;
         }
-        
+
         $remoteIP = $_SERVER['REMOTE_ADDR'];
                        
         $query = "INSERT INTO apilogs (APIMethod,Source,TransDetails,TransDateTime,ReferenceID,TrackingID,RemoteIP,Status)
-                  VALUE (:APIMethod,:source,:transDetails,now_usec(),:referenceID,:trackingID,:remoteIP,:status)";
+                  VALUE (:APIMethod,:source,:transDetails,NOW(6),:referenceID,:trackingID,:remoteIP,:status)";
 
         $sql = $conn->createCommand($query);    
         $sql->bindValues(array(

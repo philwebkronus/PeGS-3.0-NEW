@@ -32,14 +32,14 @@ class ReimbursableVoucherForm extends CFormModel
         {
             if($terminal == 'All')
             {
-                $where = " and s.SiteCode='".$site."'";
+                $where = " and s.SiteID='".$site."'";
             }
             else
             {
-                $where = " and s.SiteCode='".$site."' and t.TerminalCode='".$terminal."'";
+                $where = " and s.SiteID='".$site."' and t.TerminalID='".$terminal."'";
             }
         }
-        $sql = "select v.VoucherID as `id`, case v.VoucherTypeID when 1 then 'Ticket' when 2 then 'Voucher' end As VoucherType, 
+        $sql = "select v.VoucherID, case VoucherTypeID when 1 then 'Ticket' when 2 then 'Voucher' end As VoucherType, 
                 v.VoucherCode, t.TerminalCode, v.Amount, 
                 ifnull(v.DateCreated, '-') as DateCreated, ifnull(v.DateUsed,'-') as DateUsed, 
                 ifnull(v.DateClaimed, '-') as DateClaimed, ifnull(v.DateExpiry,'-') as DateExpiry
@@ -60,16 +60,17 @@ class ReimbursableVoucherForm extends CFormModel
         
         return $result;
     }
+    
     public function getReimburseVoucher($vouchercode)
     {
         $connection = Yii::app()->db;
         $trans = $connection->beginTransaction();
         try
         {
-            $sql = "update vouchers set Status = 5, DateReimbursed = now_usec(), ReimbursedByAID = ".Yii::app()->user->getId()." where VoucherCode in (".$vouchercode.")";
+            $sql = "update vouchers set Status = 5, DateReimbursed = NOW(6), ReimbursedByAID = ".Yii::app()->user->getId()." where VoucherCode in (".$vouchercode.")";
             $command = $connection->createCommand($sql);
             $result = $command->execute();
-	    $vouchers = array();
+            $vouchers = array();
             $vouchers = Yii::app()->session['reimburselist'];
             foreach($vouchers as $v)
             {
@@ -87,7 +88,8 @@ class ReimbursableVoucherForm extends CFormModel
    public function getSite()
    {
         $connection = Yii::app()->db;
-        $sql = 'select SiteCode from sites where isTestSite = 0 and Status = 1'; //and SiteCode not like :Site';
+        $sql = 'select SiteID, substr(SiteCode,6) as SiteCode from sites where SiteID != 1 
+            and isTestSite = 0 and Status = 1 ORDER BY SiteCode ASC'; //and SiteCode not like :Site';
         $command = $connection->createCommand($sql);
         //$command->bindValue(':Site', '%TST%');
         
@@ -96,7 +98,7 @@ class ReimbursableVoucherForm extends CFormModel
         $site = array('All'=>'All');
         foreach($result as $row)
         {
-            $site[$row['SiteCode']] = $row['SiteCode'];
+            $site[$row['SiteID']] = $row['SiteCode'];
         }
         return $site;
     }
@@ -104,11 +106,11 @@ class ReimbursableVoucherForm extends CFormModel
     public function getTerminal($site)
     {
         $connection = Yii::app()->db;
-        $sql = 'select t.TerminalCode 
+        $sql = 'select t.TerminalID, t.TerminalCode, s.SiteCode  
                 from terminals t
                 inner join sites s
                 on t.SiteID = s.SiteID
-                where s.SiteCode = :Site';
+                where s.SiteID = :Site';
         $command = $connection->createCommand($sql);
         $command->bindValue(':Site', $site);
         
@@ -117,9 +119,12 @@ class ReimbursableVoucherForm extends CFormModel
         $terminal = array('All'=>'All');
         foreach($result as $row)
         {
-            $terminal[$row['TerminalCode']] = $row['TerminalCode'];
+            $vcode = substr($row['TerminalCode'], strlen($row['SiteCode']));
+            $terminal[$row['TerminalID']] = $vcode;
         }
         return json_encode($terminal);
+        //return $terminal;
+        //$terminal = array('ICSA-TST01','ICSA-TST02');
     }
 }
 ?>

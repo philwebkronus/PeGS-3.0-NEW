@@ -4,15 +4,29 @@ class MonitoringController extends VMSBaseIdentity
 {
 	public function actionIndex()
 	{
-                AuditLog::logTransactions(21);
+            $_AccountSessions = new SessionModel();
+
+        if (isset(Yii::app()->session['SessionID'])) {
+            $aid = Yii::app()->session['AID'];
+            $sessionid = Yii::app()->session['SessionID'];
+        } else {
+            $sessionid = 0;
+            $aid = 0;
+        }
+        
+        $sessioncount = $_AccountSessions->checkifsessionexist($aid, $sessionid);
+        
+        if ($sessioncount == 0) {
+            Yii::app()->user->logout();
+            $this->redirect(array(Yii::app()->defaultController));
+        }
+        else{
                 $issubmitted = 0;
-                Yii::app()->session['showcsv'] = "block";
-                if(Yii::app()->session['AccountType'] == 2||Yii::app()->session['AccountType'] == 3||Yii::app()->session['AccountType'] == 4)
+                if(Yii::app()->session['AccountType'] == 4)
                 {
                     $siteinfo = Utilities::getSiteInfo();
                     $sitecode = $siteinfo[0]['SiteCode'];
                     Yii::app()->session['SiteCode'] = $sitecode;
-                    Yii::app()->session['showcsv'] = "none";
                 }
                 $model = new VoucherMonitoringForm();
                 if(isset($_POST['VoucherMonitoringForm']))
@@ -23,7 +37,6 @@ class MonitoringController extends VMSBaseIdentity
                     Yii::app()->session['from'] = $data['from'];
                     Yii::app()->session['to'] = $data['to'];
                     Yii::app()->session['status'] = $data['status'];
-                    Yii::app()->session['vouchertype'] = $data['vouchertype'];
                     Yii::app()->session['site'] = $data['site'];
                     Yii::app()->session['terminal'] = $data['terminal'];
                     Yii::app()->session['vouchercode'] = $data['vouchercode'];
@@ -31,15 +44,14 @@ class MonitoringController extends VMSBaseIdentity
                     $from = Yii::app()->session['from'];
                     $to = Yii::app()->session['to'];
                     $status = Yii::app()->session['status'];
-                    $vouchertype = Yii::app()->session['vouchertype'];
                     $site = Yii::app()->session['site'];
                     $terminal = Yii::app()->session['terminal'];
                     $vouchercode = Yii::app()->session['vouchercode'];
-                    //print_r($_POST['VoucherMonitoringForm']);
+                    
                     if($model->validate())
                     {
                         $issubmitted = 1;
-                        $rawData = $model->getVouchersByRangeStatus($from, $to, $status, $vouchertype, $site, $terminal, $vouchercode);
+                        $rawData = $model->getVouchersByRangeStatus($from, $to, $status, $site, $terminal, $vouchercode);
                         Yii::app()->session['rawData'] = $rawData;
                         $display = 'block';
                         Yii::app()->session['display'] = $display;
@@ -61,18 +73,17 @@ class MonitoringController extends VMSBaseIdentity
                 }
                 else
                 {
-                    if ((isset(Yii::app()->session['from']) && isset(Yii::app()->session['to'])) && (isset($_GET['page'])) ||(isset($_GET['sort'])))
+                    if ((isset(Yii::app()->session['from']) && isset(Yii::app()->session['to'])) && (isset($_GET['page'])))
                     {
                         $issubmitted = 1;
                         
                         $from = Yii::app()->session['from'];
                         $to = Yii::app()->session['to'];
                         $status = Yii::app()->session['status'];
-                        $vouchertype = Yii::app()->session['vouchertype'];
                         $site = Yii::app()->session['site'];
                         $terminal = Yii::app()->session['terminal'];
                         $vouchercode = Yii::app()->session['vouchercode'];
-                        $rawData = $model->getVouchersByRangeStatus($from, $to, $status, $vouchertype, $site, $terminal, $vouchercode);
+                        $rawData = $model->getVouchersByRangeStatus($from, $to, $status, $site, $terminal, $vouchercode);
                         Yii::app()->session['rawData'] = $rawData;
                         //print_r(Yii::app()->session['rawData']);
                         $display = 'block';
@@ -81,11 +92,18 @@ class MonitoringController extends VMSBaseIdentity
                     else
                     {
                         
-                        $issubmitted = 0;
-                        //$rawData = array('0'=>array('2012-01-01','2012-01-02','All','All','All','1'));
-                        //Yii::app()->session['rawData'] = $rawData;
-                        Yii::app()->session['rawData'] = array(1);
-                        $display = 'none';
+                        $issubmitted = 1;
+                        
+                        $from = Yii::app()->session['from'];
+                        $to = Yii::app()->session['to'];
+                        $status = Yii::app()->session['status'];
+                        $site = Yii::app()->session['site'];
+                        $terminal = Yii::app()->session['terminal'];
+                        $vouchercode = Yii::app()->session['vouchercode'];
+                        $rawData = $model->getVouchersByRangeStatus($from, $to, $status, $site, $terminal, $vouchercode);
+                        Yii::app()->session['rawData'] = $rawData;
+                        //print_r(Yii::app()->session['rawData']);
+                        $display = 'block';
                         Yii::app()->session['display'] = $display; 
                     }
                 }
@@ -93,17 +111,36 @@ class MonitoringController extends VMSBaseIdentity
                 $this->render('index', array('model'=>$model,'issubmitted'=>$issubmitted));
 		
 	}
+        }
         
         public function actionDataTable($rawData)
         {
+            $_AccountSessions = new SessionModel();
+
+        if (isset(Yii::app()->session['SessionID'])) {
+            $aid = Yii::app()->session['AID'];
+            $sessionid = Yii::app()->session['SessionID'];
+        } else {
+            $sessionid = 0;
+            $aid = 0;
+        }
+        
+        $sessioncount = $_AccountSessions->checkifsessionexist($aid, $sessionid);
+        
+        if ($sessioncount == 0) {
+            Yii::app()->user->logout();
+            $this->redirect(array(Yii::app()->defaultController));
+        }
+        else{
             $arrayDataProvider = new CArrayDataProvider($rawData, array(
                 //'id'=>'vouchers-grid',
+                'keyField'=>false,
                 'sort'=>array(
                     'attributes'=>array('DateCreated','DateExpiry','Status'),
                     'defaultOrder'=>array('DateCreated'=>true, 'DateExpiry'=>false),
                     ),
                 'pagination'=>array(
-                    'pageSize'=>15,
+                    'pageSize'=>10,
                 ),
             ));
             $params =array(
@@ -120,23 +157,54 @@ class MonitoringController extends VMSBaseIdentity
                   $this->renderPartial('vouchermonitoringdatatable', $params);
             }
         }
+        }
         
         public function actionAjaxGetTerminal($site)
         {
+            $_AccountSessions = new SessionModel();
+
+        if (isset(Yii::app()->session['SessionID'])) {
+            $aid = Yii::app()->session['AID'];
+            $sessionid = Yii::app()->session['SessionID'];
+        } else {
+            $sessionid = 0;
+            $aid = 0;
+        }
+
+        $sessioncount = $_AccountSessions->checkifsessionexist($aid, $sessionid);
+
+        if ($sessioncount == 0) {
+            Yii::app()->user->logout();
+            $this->redirect(array(Yii::app()->defaultController));
+        } else {
             $model = new VoucherMonitoringForm();
             $terminal = $model->getTerminal($site);
             echo $terminal;
         }
+        }
         
-        public function actionExportToCSV()
-        {
-            AuditLog::logTransactions(22);
+        public function actionExportToCSV() {
+        $_AccountSessions = new SessionModel();
+
+        if (isset(Yii::app()->session['SessionID'])) {
+            $aid = Yii::app()->session['AID'];
+            $sessionid = Yii::app()->session['SessionID'];
+        } else {
+            $sessionid = 0;
+            $aid = 0;
+        }
+
+        $sessioncount = $_AccountSessions->checkifsessionexist($aid, $sessionid);
+
+        if ($sessioncount == 0) {
+            Yii::app()->user->logout();
+            $this->redirect(array(Yii::app()->defaultController));
+        } else {
             Yii::import('ext.ECSVExport');
-            $model = new VoucherMonitoringForm();
 
             $rawData = Yii::app()->session['rawData'];
 
-            $filename = "Voucher_Monitoring_".Date('Y_m_d');
+            $filename = "Voucher_Monitoring_" . Date('Y_m_d');
 
             $csv = new ECSVExport($rawData);
             $csv->toCSV($filename);
@@ -146,6 +214,7 @@ class MonitoringController extends VMSBaseIdentity
             Yii::app()->getRequest()->sendFile($filename, $content, "text/csv", false);
             exit();
         }
+    }
         
         /*public function actionGetTerminal()
         {

@@ -38,7 +38,7 @@ class SSO extends OcActiveRecord
         return sha1($value);
     }
     
-    public function getUserStatus($username)
+    public static function getUserStatus($username)
     {
         $query = "SELECT Status FROM accounts 
                   WHERE UserName=:username";

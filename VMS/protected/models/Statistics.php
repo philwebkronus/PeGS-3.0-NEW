@@ -7,7 +7,7 @@
 
 class Statistics extends CFormModel
 {
-    public function egmCountBySite($siteid=null,$status=null)
+    public static function egmCountBySite($siteid=null,$status=null)
     {
         if(empty($siteid))
         {
@@ -58,7 +58,7 @@ class Statistics extends CFormModel
         return $result[0]['total'];
     }
     
-    public function redeemedTicketsBySite($siteid=null)
+    public static function redeemedTicketsBySite($siteid=null)
     {
         if(empty($siteid))
         {
@@ -96,7 +96,7 @@ class Statistics extends CFormModel
         return $result[0]['total'];
     }
     
-    public function generatedTicketsBySite($siteid=null)
+    public static function generatedTicketsBySite($siteid=null)
     {
         if(empty($siteid))
         {
@@ -131,7 +131,7 @@ class Statistics extends CFormModel
         return $result[0]['total'];
     }
     
-    public function usedTicketsBySite($siteid=null)
+    public static function usedTicketsBySite($siteid=null)
     {
         if(empty($siteid))
         {
@@ -168,7 +168,7 @@ class Statistics extends CFormModel
         return $result[0]['total'];
     }
     
-    public function usedCouponsBySite($siteid=null)
+    public static function usedCouponsBySite($siteid=null)
     {
         if(empty($siteid))
         {
@@ -205,7 +205,7 @@ class Statistics extends CFormModel
         return $result[0]['total'];
     }
     
-    public function voidTicketsBySite($siteid=null)
+    public static function voidTicketsBySite($siteid=null)
     {
         if(empty($siteid))
         {

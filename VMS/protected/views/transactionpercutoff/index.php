@@ -67,7 +67,7 @@ else
             </td>
         </tr> 
         <tr>
-        <td><?php echo CHtml::label("eGames : ", "site");?></td>    
+        <td><?php echo CHtml::label("Site/PeGs Code : ", "site");?></td>    
         <td>
                 <?php echo $form->dropDownList($model, 'site', $sitesModel->fetchAllActiveSites(), array('id'=>'site')); ?>
         </td>
@@ -89,4 +89,4 @@ else
     ?>
 </div>
 <?php $this->endWidget(); ?>
-<?php //$this->renderPartial('siteconversion', array('arrayDataProvider'=>$arrayDataProvider)) ?>
+<?php // $this->renderPartial('siteconversion', array('arrayDataProvider'=>$arrayDataProvider)) ?>

@@ -66,6 +66,25 @@ class ExportExcel
 		header("Content-Transfer-Encoding: binary ");
 		print "$header\n$data";
 	}
+        
+        /**
+         * This is a customized function for converting and inserting 
+         * html codes and values into excel cells.
+         * @author Noel Antonio
+         * @param type $html
+         */
+        function toHTML($html)
+        {
+                header("Pragma: public");
+		header("Expires: 0");
+		header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+		header("Content-Type: application/force-download");
+		header("Content-Type: application/octet-stream");
+		header("Content-Type: application/download");
+		header("Content-Disposition: attachment;filename=".$this->filename);
+		header("Content-Transfer-Encoding: binary ");
+		print "$html";
+        }
 
 }
 ?>

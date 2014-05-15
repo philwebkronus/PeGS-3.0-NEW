@@ -17,13 +17,15 @@ $this->breadcrumbs=array(
 
 <div id="batches">
     <h4> Generation Batches</h4>
+    <hr color="black" />
     <span class="ui-icon ui-icon-document-b" style="display:inline-block"></span>
     <?php echo CHtml::link("Create New Batch", "#", array(
                 'onclick'=>'$("#generate-voucher").dialog("open")'
             )); 
     ?>
 </div>
-
+<br/>
+<hr color="black" />
 <div id="details" style="display:none">
     <h4> Generated batch details</h4>
 </div>
@@ -44,31 +46,31 @@ $this->breadcrumbs=array(
                     array('name'=>'Quantity',
                             'type'=>'raw',
                             'value'=>'CHtml::encode($data["Quantity"])',
-                            'htmlOptions'=>array('style'=>'padding-left: 50px; text-align: right'),
+                            'htmlOptions'=>array('style'=>'text-align: center'),
                     ),
-                    array('name'=>'Amount',
+                    array('name'=>'Total Amount',
                             'type'=>'raw',
-                            'value'=>'CHtml::encode($data["Amount"])',
+                            'value'=>'CHtml::encode(number_format($data["Amount"],2))',
                             'htmlOptions'=>array('style'=>'padding-left: 50px; text-align: right'),
 
                     ),                    
                     array('name'=>'Total',
                             'type'=>'raw',
-                            'value'=>'CHtml::encode($data["Total"])',
+                            'value'=>'CHtml::encode(number_format($data["Total"],2))',
                             'htmlOptions'=>array('style'=>'padding-left: 50px; text-align: right'),
 
                     ),    
                     array('name'=>'DateGenerated',
                             'header'=>'Date Generated',
                             'type'=>'raw',
-                            'value'=>'CHtml::encode(date("F d, Y H:i",strtotime($data["DateGenerated"])))',
+                            'value'=>'CHtml::encode(date("Y-m-d H:i:s",strtotime($data["DateGenerated"])))',
                             'htmlOptions'=>array('style'=>'text-align: left'),
 
                     ),
                     array('name'=>'DateExpiry',
                             'header'=>'Expiry Date',
                             'type'=>'raw',
-                            'value'=>'CHtml::encode(date("F d, Y ",strtotime($data["DateExpiry"])))',
+                            'value'=>'CHtml::encode(date("Y-m-d H:i:s",strtotime($data["DateExpiry"])))',
                             'htmlOptions'=>array('style'=>'text-align: left'),
 
                     ),
@@ -80,7 +82,7 @@ $this->breadcrumbs=array(
                             'buttonActivate'=>array(
                                 'label'=>'Activate ',
                                 'imageUrl'=>Yii::app()->request->baseUrl.'/images/ui-icon-enable.png',
-                                'url'=>'Yii::app()->createUrl("/voucherbatch/changestatus", array("BatchNo" => $data["BatchNumber"],"status"=>1))',
+                                'url'=>'Yii::app()->createUrl("/voucherBatch/changestatus", array("BatchNo" => $data["BatchNumber"],"status"=>1))',
                                 'visible'=>'VoucherGeneration::getBatchStatus($data["BatchNumber"]) == 0',
                                 'options' => array(
                                     'ajax' => array(
@@ -105,7 +107,7 @@ $this->breadcrumbs=array(
                             'buttonDeactivate'=>array(
                                 'label'=>'Deactivate ',
                                 'imageUrl'=>Yii::app()->request->baseUrl.'/images/ui-icon-disable.png',
-                                'url'=>'Yii::app()->createUrl("/voucherbatch/changestatus", array("BatchNo" => $data["BatchNumber"],"status"=>0))',
+                                'url'=>'Yii::app()->createUrl("/voucherBatch/changestatus", array("BatchNo" => $data["BatchNumber"],"status"=>0))',
                                 'visible'=> 'VoucherGeneration::getBatchStatus($data["BatchNumber"]) == 1',
                                  'options' => array(
                                     'ajax' => array(
@@ -130,12 +132,12 @@ $this->breadcrumbs=array(
                             'buttonExport'=>array(
                                 'label'=>'Export to CSV ',
                                 'imageUrl'=>Yii::app()->request->baseUrl.'/images/ui-icon-download.png',
-                                'url'=>'Yii::app()->createUrl("/voucherbatch/exporttocsv", array("BatchNo" => $data["BatchNumber"]))',
+                                'url'=>'Yii::app()->createUrl("/voucherBatch/exporttocsv", array("BatchNo" => $data["BatchNumber"]))',
                             ),
                             'buttonDetails'=>array(
                                 'label'=>'Details ',
                                 'imageUrl'=>Yii::app()->request->baseUrl.'/images/ui-icon-details.png',
-                                'url'=>'Yii::app()->createUrl("voucherbatch/list",array("BatchNo"=>$data["BatchNumber"]))',
+                                'url'=>'Yii::app()->createUrl("voucherBatch/list",array("BatchNo"=>$data["BatchNumber"]))',
                                 'options' => array(
                                     'ajax' => array(
                                         'type' => 'GET',
@@ -290,39 +292,52 @@ $this->breadcrumbs=array(
                     $(this).dialog("close");
                }',               
             ),
-            'open'=>'js:function(){
-                resetForm();
-            }',
+//            'close'=>'js:function(){
+//                resetForm();
+//            }',
         ),
 )); ?>
 
 <?php echo CHtml::beginForm(array(
-            'voucherbatch/generate'), 
+            'voucherBatch/generate'), 
             'POST', array(
                 'id'=>'GenerateForm',
                 'name'=>'GenerateForm')); ?>
  <fieldset>
- 
+<table>
+<tr>    
 <p class="validateTips">All form fields are required.</p>
 
-<div class="row">
+
+    <td>
     <?php echo CHtml::label("Quantity","Quantity"); ?><br />
+    </td>
+    <td>
     <?php echo CHtml::textField("Quantity","",array(
             'style'=>'width: 80px; text-align: right;',
             'onkeypress'=>'return isNumberKey(event)')); ?>
-</div>
-
-<div class="row">
-    <?php echo CHtml::label("Amount","Amount"); ?><br />
+    </td>
+    </tr>
+    <tr>
+    <td>
+    <?php echo CHtml::label("Amount","Amount"); ?>
+    </td>
+    <td>
     <?php echo CHtml::textField("Amount","",array(
             'style'=>'text-align: right;',
             'onkeypress'=>'return isNumberKey(event)')); ?>
-</div>
-
-<div class="row">
+    </td>
+    </tr>
+    <tr>
+    <td>
     <?php echo CHtml::label("Validity","Validity"); ?><br />
+    </td>
+    <td>
     <?php echo CHtml::listBox("Validity", '30', array('15'=>'15 days','30'=>'30 days','60'=>'60 days')) ?>
-</div>
+    </td>    
+    </tr>
+
+</table>
  </fieldset>
 
 <?php echo CHtml::endForm(); ?>
@@ -417,7 +432,7 @@ $this->breadcrumbs=array(
         ),
 )); ?>
 
-<?php echo CHtml::beginForm(array('voucherbatch/changestatus'), 'POST', array(
+<?php echo CHtml::beginForm(array('voucherBatch/changestatus'), 'POST', array(
         'id'=>'ActivateForm',
         'name'=>'ActivateForm')); ?>
 
@@ -452,7 +467,7 @@ $this->breadcrumbs=array(
         ),
 )); ?>
 
-<?php echo CHtml::beginForm(array('voucherbatch/changestatus'), 'POST', array(
+<?php echo CHtml::beginForm(array('voucherBatch/changestatus'), 'POST', array(
         'id'=>'DeActivateForm',
         'name'=>'DeActivateForm')); ?>
 

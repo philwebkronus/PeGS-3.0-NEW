@@ -12,6 +12,7 @@ $this->breadcrumbs=array(
 );
 ?>
 <h4>API Logs</h4>
+<hr color="black" />
 <div id="options">
     <span class="ui-icon ui-icon-refresh" style="display:inline-block;"></span>
     <?php
@@ -46,7 +47,8 @@ $this->breadcrumbs=array(
 <div id="search" class="search-form" style="display: <?php echo $display; ?>;">
     <?php echo $this->renderPartial('_apisearch'); ?>
 </div>
-
+<br/>
+<hr color="black" />
 <div id="results-grid">
     <?php echo $this->renderPartial('_apilogresults',array('dataProvider'=>$dataProvider)); ?>
 </div>

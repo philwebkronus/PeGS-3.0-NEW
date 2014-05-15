@@ -14,7 +14,7 @@
                  array('name' => 'TransDateTime',
                     'header' => 'Transaction Time',
                     'type' => 'raw',
-                    'value' => 'CHtml::encode(date("M d, Y H:i",strtotime($data["TransDateTime"])))',
+                    'value' => 'CHtml::encode(date("Y-m-d H:i:s",strtotime($data["TransDateTime"])))',
                     'htmlOptions' => array('style' => 'text-align:center'),
                 ),
                 array('name' => 'AID',

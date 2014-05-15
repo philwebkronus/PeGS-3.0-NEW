@@ -11,6 +11,7 @@ $this->breadcrumbs=array(
 );
 ?>
 <h4>EGM machines stacker sessions</h4>
+<hr color="black" />
 
 <div id="refresh" style="display:inline" class="prepend-top right">
     <?php echo CHtml::ajaxLink(" Refresh", array('stacker/ajaxLastQuery'),array(
@@ -44,31 +45,7 @@ $this->breadcrumbs=array(
 </div>
 <div id="linkback" style="display:none">
     <span class="ui-icon ui-icon-arrowreturnthick-1-w" style="display:inline-block;"></span>
-    <?php echo CHtml::ajaxLink("Go Back", array('stacker/ajaxLastQuery'),array(
-            'type'=>'GET',
-            'success'=>'function(data){
-                $("#linkback").toggle();
-                $("#search").toggle(); 
-                $("#results-grid").html(data);
-                $("#refresh").show();
-                //$.fn.yiiGridView.update("data-grid");
-                
-            }',
-            'beforeSend' => 'function(){
-                 $(".ui-dialog-titlebar").hide()   
-                 $("#ajaxloader").dialog("open")
-            }',
-            'complete' => 'function(){
-                $(".ui-dialog-titlebar").hide()   
-                $("#ajaxloader").dialog("close")
-            }',
-            'update'=>'#results-grid',
-            ),
-            array(
-                'id' => 'backlink-'.uniqid(),
-                'live'=>false
-            )
-     ); ?>
+    <?php echo CHtml::link("Go Back", array('stacker/monitor')); ?>
 
 </div>
 

@@ -18,7 +18,7 @@ $this->breadcrumbs=array(
 ?>
 
 <h4>Menu Management</h4>
-
+<hr color="black" />
 <?php echo CHtml::link("Create new menu", "#", array(
             'onclick'=>'$("#create-menu").dialog("open")'
         )); 
@@ -112,7 +112,7 @@ $this->widget('zii.widgets.grid.CGridView',array(
             'title'=>'New Menu',
             'modal'=>true,
             'width'=>'350',
-            'height'=>'300',
+            'height'=>'350',
             'resizable'=>false,
             'autoOpen'=>false,
             'buttons'=>array(

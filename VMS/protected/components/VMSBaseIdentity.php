@@ -38,13 +38,16 @@ class VMSBaseIdentity extends Controller
                     array('allow', // allow other actions from logged users
                             'actions'=>array('login','logout','index','error', //SiteController actions
                                              'update','list','generate','monitor',
-                                             'changestatus','delete','exportToCSV','exportToExcel',
+                                             'changestatus','delete','exportToCSV','exportToExcel','exporttoexcelcoupon','exporttoexcelticket',
                                              'siteConversionDataTable','dataTable',
                                              'ajaxGetTerminal','ajaxStackerSessions','ajaxVoucherUsage',
                                              'ajaxStackerDetails','ajaxLastQuery','ajaxEGMachines','ajaxVoucherMonitor',
                                              'reimbursableVoucherDataTable','voucherUsageDataTable',
                                              'validationDataTable','vmslogs','apilogs', 'loadBatch','getVoucherInfo',
-                                             'regenerate', 'index'
+                                             'regenerate', 'loadTicketStatus', 'confChangeTicketStatus', 'getChangeStatusHistory',
+                                             'index','exportXls', 'viewTicketConf', 'ticketAutoGenConf', 'confirmConfigSetting', 
+                                             'getConfigurationHistory', 'coupon', 'ticket', 'changeCouponStatus', 
+                                             'changeTicketStatus','loadAllTicketInfo', 'getTotalTickets'
                                        ),
                             'users'=>array('@'),
                     ),

@@ -20,14 +20,14 @@ $this->breadcrumbs=array(
 if($this->viewByBatch)
 {
     $this->menu=array(
-        array('label'=>'Voucher generation','url'=>array('voucherbatch/manage')),
-        array('label'=>'Export to CSV','url'=>array('voucherbatch/exporttocsv','BatchNo'=>$_GET['batchno'])),
+        array('label'=>'Voucher generation','url'=>array('voucherBatch/manage')),
+        array('label'=>'Export to CSV','url'=>array('voucherBatch/exporttocsv','BatchNo'=>$_GET['batchno'])),
     );
 }
 else
 {
     $this->menu=array(
-        array('label'=>'Voucher generation','url'=>array('voucherbatch/manage')),
+        array('label'=>'Voucher generation','url'=>array('voucherBatch/manage')),
     );
 }
 

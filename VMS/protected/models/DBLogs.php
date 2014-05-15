@@ -13,7 +13,7 @@ class DBLogs extends CFormModel
         //$newdate = strtotime ( '+1 day' , strtotime ( $dateto ) ) ;
         //$dateto = date ( 'Y-m-d' , $newdate );
         
-        $query = "SELECT a.ID,a.TransDateTime,a.AID,c.SiteCode,a.TransDetails,a.RemoteIP
+        $query = "SELECT a.ID,a.TransDateTime,a.AID,substr(c.SiteCode,6) as SiteCode,a.TransDetails,a.RemoteIP
                     FROM
                       audittrail a
                       INNER JOIN siteaccounts b ON a.AID = b.AID
@@ -21,7 +21,7 @@ class DBLogs extends CFormModel
                     WHERE
                       a.TransDateTime >=:datefrom AND a.TransDateTime <=:dateto
                     ORDER BY 1 DESC";
-        $sql = Yii::app()->db->createCommand($query);
+        $sql = Yii::app()->db2->createCommand($query);
         $sql->bindValues(array(':datefrom'=>$dateFrom,':dateto'=>$dateto));
         $result = $sql->queryAll();
         return $result;

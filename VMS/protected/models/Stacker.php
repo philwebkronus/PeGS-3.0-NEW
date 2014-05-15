@@ -13,6 +13,14 @@ class Stacker extends CFormModel
     CONST CASH_TYPE_COUPON = 2;
     CONST CASH_TYPE_BILL = 3;
     
+    public function rules()
+    {
+        return array(
+            array('from, to, site','required'),
+            array('to', 'compare', 'compareAttribute'=>'from', 'operator'=>'>','message'=>'Invalid Date Range.')
+        );  
+    }
+    
     public function getStackerSessions($egmmachines)
     {
                 
@@ -170,7 +178,7 @@ class Stacker extends CFormModel
     
     public function activeSites()
     {
-        $query = "SELECT SiteID,SiteCode
+        $query = "SELECT SiteID,substr(SiteCode,6) AS SiteCode
                   FROM sites
                   WHERE Status = 1
                   ORDER BY 2";

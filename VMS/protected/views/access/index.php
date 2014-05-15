@@ -27,7 +27,7 @@ $this->breadcrumbs=array(
         }
         else
         {
-            alert('Please check at least (1) access right.');
+            alert('No access rights found.');
             return false;
         }
     }

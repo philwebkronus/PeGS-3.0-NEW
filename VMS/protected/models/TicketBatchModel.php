@@ -32,7 +32,7 @@ class TicketBatchModel extends CFormModel
                                 :count,
                                 1,
                                 :AID,
-                                NOW_USEC()
+                                NOW(6)
                         )";
         $command = $connection->createCommand($firstquery);
         $command->bindParam(":count", $count);
@@ -68,7 +68,7 @@ class TicketBatchModel extends CFormModel
                                     ) VALUES (:ticketbatch,
                                               :ticketcode,
                                               1,
-                                              NOW_USEC(),
+                                              NOW(6),
                                               :AID,
                                               :iscreditable)";
                     $command = $connection->createCommand($secondquery);
@@ -133,7 +133,7 @@ class TicketBatchModel extends CFormModel
             {
                 $pdo->commit();
                 
-                AuditLog::logTransactions(31, " - Generate Tickets");
+                AuditLog::logTransactions(33, " - Generate Tickets");
                 return array('TransCode' => 1, 
                              'TransMsg' => 'Tickets successfully generated');
             }
@@ -184,93 +184,6 @@ class TicketBatchModel extends CFormModel
         $result = $command->queryRow();
         
         return $result;
-    }
-    /**
-     * Change Ticket Status
-     * @param int $batch BatchID of the Ticket
-     * @param int $status Selected status
-     * @param int $user AID of the user
-     * @return array TransCode and TransMsg
-     * @author Mark Kenneth Esguerra
-     * @date November 4, 2013
-     */
-    public function changeStatus ($batch, $status, $user)
-    {
-        $connection = Yii::app()->db;
-        
-        $pdo = $connection->beginTransaction();
-        
-        //Get Current Status of the TicketBatch
-        $getstat = "SELECT Status FROM ticketbatch WHERE TicketBatchID = :batch";
-        $sql = $connection->createCommand($getstat);
-        $sql->bindParam(":batch", $batch);
-        $stat = $sql->queryRow();
-        
-        if ($stat['Status'] == $status)
-        {
-            return array('TransCode' => 2,
-                         'TransMsg' => 'Ticket status unchanged');
-        }
-        else
-        {
-            $firstquery = "UPDATE ticketbatch SET Status = :status, 
-                                                  DateUpdated = NOW_USEC(),
-                                                  UpdatedByAID = :AID 
-                           WHERE TicketBatchID = :batch";
-            $command = $connection->createCommand($firstquery);
-            $command->bindParam(":status", $status);
-            $command->bindParam(":batch", $batch);
-            $command->bindParam(":AID", $user);
-            $firstresult = $command->execute();
-            if ($firstresult > 0)
-            {
-                try
-                {
-                    $secondquery = "UPDATE tickets SET Status = :status, 
-                                                       DateUpdated = NOW_USEC(),
-                                                       UpdatedByAID = :AID
-                                    WHERE TicketBatchID = :batch AND Status <> 3";
-                    $command = $connection->createCommand($secondquery);
-                    $command->bindParam(":status", $status);
-                    $command->bindParam(":batch", $batch);
-                    $command->bindParam(":AID", $user);
-                    $secondresult = $command->execute();
-                    if ($secondresult > 0)
-                    {
-                        try
-                        {
-                            $pdo->commit();
-
-                            AuditLog::logTransactions(34, "Update Ticket Status Batch ".$batch);
-                            return array('TransCode' => 1,
-                                         'TransMsg' => 'Ticket status successfully updated');
-                        }
-                        catch (CDbException $e)
-                        {
-                            $pdo->rollback();
-                            return array('TransCode' => 0,
-                                         'TransMsg' => $e->getMessage());
-                        }
-                    }
-                    else
-                    {
-                        return array('TransCode' => 2,
-                                     'TransMsg' => 'There are no tickets in batch');
-                    }
-                }
-                catch(CDbException $e)
-                {
-                    $pdo->rollback();
-                    return array('TransCode' => 0,
-                                 'TransMsg' => $e->getMessage());
-                }
-            }
-            else
-            {
-                return array('TransCode' => 2,
-                             'TransMsg' => 'Ticket status unchanged');
-            }
-        }
     }
 }
 ?>

@@ -73,6 +73,29 @@ return array(
 			'charset' => 'utf8',
                         'class' => 'CDbConnection',
 		),
+                'db3'=>array(
+                        'connectionString' => 'mysql:host=<hostname>;dbname=loyaltydb',
+			'emulatePrepare' => true,
+			'username' => '<username>',
+			'password' => '<password',
+			'charset' => 'utf8',
+                        'class' => 'CDbConnection',
+		),
+                'db4'=>array(
+                        'connectionString' => 'mysql:host=<hostname>;dbname=stackermanagement',
+			'emulatePrepare' => true,
+			'username' => '<username>',
+			'password' => '<password>',
+			'charset' => 'utf8',
+                        'class' => 'CDbConnection',
+		),
+                'db5'=>array('connectionString' => 'mysql:host=<hostname>;dbname=spyder',
+			'emulatePrepare' => true,
+			'username' => '<username>',
+			'password' => '<password>',
+			'charset' => 'utf8',
+                        'class' => 'CDbConnection',
+		),                        
                 'CURL' =>array(
                         'class' => 'application.extensions.curl.CurlController',
                      //you can setup timeout,http_login,proxy,proxylogin,cookie, and setOPTIONS
@@ -131,5 +154,19 @@ return array(
             
                 //Token Validator for EGM requests
                 'validateTokenURL'=>'http://192.168.30.97/KAPI/index.php/wsGaming/validatetoken',
+                'cutofftimestart' => '06:00:00',
+                'cutofftimeend' => '05:59:59',
+                'sitePrefix'=>'ICSA-',
+                'allowedAmount'=>0,
+                'dateIntervalEnabled'=>'enabled',
+                'dateInterval'=>'30 days',
+                'itdbaspportemail'=>array('test@philweb.com.ph'),
+                'siteChecking'=>'enabled',
+                'terminalChecking'=>'disabled',
+                'cardNumberChecking'=>'disabled',
+                'expirationChecking'=>'enabled',
+                'ticket_increment'=> '00',
+                'constant_delimiter'=> '342637',
+                'time_stamp'=>'23:59:59', //replace 00:00:00 with H:i:s if current timestamp is needed
 	),
 );

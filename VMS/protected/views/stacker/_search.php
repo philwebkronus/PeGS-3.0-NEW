@@ -49,7 +49,10 @@
 <?php echo CHtml::beginForm(); ?>    
 
  <h5 id="advance-search-lbl" style="display:none">Advance Search</h5>
-    <?php
+ <table style="width: 700px">
+        <tr>
+            <td>
+                <?php
     
         if(Yii::app()->user->isPerSite())
         {
@@ -57,8 +60,8 @@
             echo CHtml::dropDownList('EGM',$this->egmmachine, array('All'=>'All')+Stacker::listActiveEGMMachines(Yii::app()->user->getSiteID()));
         }
         else
-        {
-            echo CHtml::label("Sites", "Site");
+        {    
+            echo CHtml::label("eGames : ", "Site");
             echo CHtml::dropDownList('Site',$this->site, array('empty'=>'Select a site')+Stacker::listActiveSites(),array(
                     'id'=>'Site',
                     //'onchange'=>'checkInput()',
@@ -73,13 +76,15 @@
 
 
             ));
-            echo CHtml::label(" EGM ", "EGM");
-            echo CHtml::dropDownList("EGM", $this->egmmachine, array('empty'=>"Select a site"), array(
-                'id'=>'EGM',
+            echo CHtml::label(" EGM : ", "EGM");
+            echo CHtml::dropDownList("EGM", $this->egmmachine, array('empty'=>"Select a machine"), array(
+                'id'=>'EGM','style'=>'width: 150px'
             ));
         }
         
-    ?>   
+    ?> 
+          </td>       
+       <td>
         
     <?php
         echo CHtml::ajaxButton("Submit", "ajaxStackerSessions", array(
@@ -90,7 +95,12 @@
                         'IsAdvance'=>0,
                     ),
                     'success'=>'function(data){
+                        if(data == "Date must not be greater than today." || data == "Please select a site and EGM then try again."){
+                        alert(data);
+                        }
+                        else{
                         $("#results-grid").html(data); 
+                        }
                     }',
                     'error'=>'function(data){ // if error occured
                         alert("Please select a site and EGM then try again");
@@ -112,6 +122,8 @@
                     )
       );
     ?>
+    </td>
+    <td>
     <span class="ui-icon ui-icon-search" style="display:inline-block;"></span>
      
     <?php echo CHtml::link(" Advance Search", "", array(
@@ -119,57 +131,62 @@
             'style'=>'cursor:pointer',
             'id'=>'show-as'
     )); ?>
-    
+    </td>
+    <td>
     <?php echo CHtml::link(" Hide Advance Search", "", array(
             'onclick'=>'$("#advance-search").toggle();$("#Submit").toggle();$("#show-as").show(); $(this).hide();$("#advance-search-lbl").hide()',
             'style'=>'cursor:pointer; display:none',
             'id'=>'hide-as'
-    )); ?>
+    )); ?>    
+    </td>    
+</tr>
+</table>
+    
         
 <?php $display = $this->advanceFilter == true ? 'block' : 'none'; ?>
 
 <div id="advance-search" style="display:<?php echo $display; ?>">
-    
+    <br/>
+    <table style="width: 600px">
+        <tr>
+            <td><?php echo CHtml::label("From :", "dateFrom");?></td>
+            <td>
     <?php
-    echo CHtml::label("From ", "DateFrom");
-    $this->widget('zii.widgets.jui.CJuiDatePicker', array(
-        'name'=>'DateFrom',
-        'value'=>$this->dateFrom,
-        'options'=>array(
-            'showAnim'=>'fold', // 'show' (the default), 'slideDown', 'fadeIn', 'fold'
-            'showOn'=>'button', // 'focus', 'button', 'both'
-            'buttonText'=>Yii::t('ui','DateFrom'), 
-            'buttonImage'=>Yii::app()->request->baseUrl.'/images/calendar.png', 
-            'buttonImageOnly'=>true,
-            'dateFormat'=>'yy-mm-dd',
-        ),
-        'htmlOptions'=>array(
-            'style'=>'width:80px;vertical-align:top'
-        ),  
-    ));
-    
-    echo CHtml::label(" To ", "DateTo");
-    $this->widget('zii.widgets.jui.CJuiDatePicker', array(
-        'name'=>'DateTo',
-        'value'=>$this->dateTo,
-        'options'=>array(
-            'showAnim'=>'fold', // 'show' (the default), 'slideDown', 'fadeIn', 'fold'
-            'showOn'=>'button', // 'focus', 'button', 'both'
-            'buttonText'=>Yii::t('ui','DateTo'), 
-            'buttonImage'=>Yii::app()->request->baseUrl.'/images/calendar.png', 
-            'buttonImageOnly'=>true,
-            'dateFormat'=>'yy-mm-dd',
-        ),
-        'htmlOptions'=>array(
-            'style'=>'width:80px;vertical-align:top'
-        ),  
-    ));
-    
+   echo CHtml::textField('DateFrom', date('Y-m-d'), array('id'=>'DateFrom','readonly'=>'true', 'value'=>date('Y-m-d'), 'style'=>'width: 100px;')).
+        CHtml::image(Yii::app()->request->baseUrl."/images/calendar.png","calendar", array("id"=>"calbutton","class"=>"pointer","style"=>"cursor: pointer;"));
+        $this->widget('application.extensions.calendar.SCalendar',
+        array(
+        'inputField'=>'DateFrom',
+        'button'=>'calbutton',
+        'showsTime'=>false,
+        'ifFormat'=>'%Y-%m-%d',
+        )); 
+    ?>
+         </td>
+         <td><?php  echo CHtml::label("To :", "dateTo");?></td>
+         <td>
+    <?php            
+   echo CHtml::textField('DateTo', date('Y-m-d'), array('id'=>'DateTo','readonly'=>'true', 'value'=>date('Y-m-d'), 'style'=>'width: 100px;')).
+        CHtml::image(Yii::app()->request->baseUrl."/images/calendar.png","calendar", array("id"=>"calbutton2","class"=>"pointer","style"=>"cursor: pointer;"));
+        $this->widget('application.extensions.calendar.SCalendar',
+        array(
+        'inputField'=>'DateTo',
+        'button'=>'calbutton2',
+        'showsTime'=>false,
+        'ifFormat'=>'%Y-%m-%d',
+        ));
+    ?>
+    </td>
+    <td>
+    <?php
     echo CHtml::checkBox("Session", $this->stackersession == false ? false : true);
     echo CHtml::label("Include ended sessions", "Session")
     ?>
-    
-    <?php
+    </td>
+    </tr>
+    </table>
+    <div style="width: 100%; text-align: center; margin-left: 250px;">
+            <?php
         echo CHtml::ajaxButton("Search", "ajaxStackerSessions", array(
                     'type'=>'GET',                
                     'data'=>array(
@@ -186,7 +203,12 @@
                         'IsAdvance'=>1,
                     ),
                     'success'=>'function(data){
+                        if(data == "Date must not be greater than today." || data == "Please select a site and EGM then try again."){
+                        alert(data);
+                        }
+                        else{
                         $("#results-grid").html(data); 
+                        }
                     }',
                     'error'=>'function(data){ // if error occured
                         alert("Please select a site and EGM then try again");
@@ -208,5 +230,6 @@
                     )
       );
     ?>
+    </div> 
 </div>
 <?php echo CHtml::endForm(); ?>

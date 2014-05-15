@@ -42,22 +42,22 @@ class ValidationForm extends CFormModel
             {
                 if(empty($vouchercode))
                 {
-                    $where = "AND s.SiteCode = '".$site."'";
+                    $where = "AND s.SiteID = '".$site."'";
                 }
                 else
                 {
-                    $where = "AND s.SiteCode = '".$site."' AND v.VoucherCode ='".$vouchercode."'";
+                    $where = "AND s.SiteID = '".$site."' AND v.VoucherCode ='".$vouchercode."'";
                 }
             }
             else
             {
                 if(empty($vouchercode))
                 {
-                    $where = " AND t.TerminalCode = '".$terminal."'";
+                    $where = " AND t.TerminalID = '".$terminal."'";
                 }
                 else
                 {
-                    $where = " AND t.TerminalCode = '".$terminal."' 
+                    $where = " AND t.TerminalID = '".$terminal."' 
                                 AND v.VoucherCode ='".$vouchercode."'";
                 }
                 
@@ -81,7 +81,7 @@ class ValidationForm extends CFormModel
                 when 6 then 'Expired'
                 when 7 then 'Cancelled'
                 end as Status
-                from vouchers v
+                from x_vouchers v
                 inner join terminals t
                 on v.TerminalID = t.TerminalID
                 inner join sites s
@@ -101,7 +101,8 @@ class ValidationForm extends CFormModel
     public function getSite()
     {
         $connection = Yii::app()->db;
-        $sql = 'select SiteCode from sites where isTestSite = 0 and Status = 1'; //and SiteCode not like :Site';
+        $sql = 'select SiteID, substr(SiteCode,6) as SiteCode from sites where SiteID != 1 
+            and isTestSite = 0 and Status = 1 ORDER BY SiteCode ASC'; //and SiteCode not like :Site';
         $command = $connection->createCommand($sql);
         //$command->bindValue(':Site', '%TST%');
         
@@ -110,7 +111,7 @@ class ValidationForm extends CFormModel
         $site = array('All'=>'All');
         foreach($result as $row)
         {
-            $site[$row['SiteCode']] = $row['SiteCode'];
+            $site[$row['SiteID']] = $row['SiteCode'];
         }
         return $site;
         //return array('TST','TIM');
@@ -119,11 +120,11 @@ class ValidationForm extends CFormModel
     public function getTerminal($site)
     {
         $connection = Yii::app()->db;
-        $sql = 'select t.TerminalCode 
+        $sql = 'select t.TerminalID, t.TerminalCode, s.SiteCode  
                 from terminals t
                 inner join sites s
                 on t.SiteID = s.SiteID
-                where s.SiteCode = :Site';
+                where s.SiteID = :Site';
         $command = $connection->createCommand($sql);
         $command->bindValue(':Site', $site);
         
@@ -132,7 +133,8 @@ class ValidationForm extends CFormModel
         $terminal = array('All'=>'All');
         foreach($result as $row)
         {
-            $terminal[$row['TerminalCode']] = $row['TerminalCode'];
+            $vcode = substr($row['TerminalCode'], strlen($row['SiteCode']));
+            $terminal[$row['TerminalID']] = $vcode;
         }
         return json_encode($terminal);
         //return $terminal;

@@ -9,10 +9,11 @@
 <script type="text/javascript">
     $(document).ready(function(){
        $("#vouchertype").val("");
-       $("#count").hide("");
-       $("#amount").hide("");
-       $("#tag").hide("");
-       $("#creditable").hide("");
+       $("#count").hide();
+       $("#amount").hide();
+       $("#tag").hide();
+       $("#creditable").hide();
+       $("#autogen").hide();
        $("#GenerationToolModel_count").val("");
        $("#GenerationToolModel_amount").val("");
        $("#GenerationToolModel_distributiontag").val("");
@@ -34,9 +35,10 @@
             }
             else if (vtype == 2){ //if ticket
                 $("#count").show();
+                $("#autogen").show();
                 $("#amount").hide();
                 $("#tag").hide();
-                $("#creditable").show();
+                $("#creditable").hide();
                 $('#GenerationToolModel_iscreditable_0').attr('checked', true);
             }
             else if (vtype == ""){
@@ -141,7 +143,7 @@ $form = $this->beginWidget('CActiveForm', array(
         </td>
         <td>
             <?php
-                echo $form->dropDownList($model, 'count', array('1000' => '1000', '2000' => '2000', '3000' => '3000', '5000' => '5000'), 
+                echo $form->dropDownList($model, 'count', array('1000' => '1000', '2500' => '2500', '5000' => '5000'), 
                                                           array('prompt' => 'Please Select'))
             ?>
         </td>
@@ -175,13 +177,16 @@ $form = $this->beginWidget('CActiveForm', array(
         </td>
     </tr>  
 </table> 
-    <div id="submit">
-        <?php echo CHtml::submitButton('Submit', array('style' => 'margin-left: 600px;')); ?>
-    </div>
+<div id="submit">
+    <?php echo CHtml::submitButton('Submit', array('style' => 'margin-left: 600px;')); ?>
+</div>
 </div>
 <?php
 $this->endWidget();
 ?>
+<div id="autogen">
+    <?php echo CHtml::submitButton('Ticket Auto-Generation', array('submit'=>'viewTicketConf')); ?>
+</div>
 <?php
 if (isset($this->showdialog2))
 {

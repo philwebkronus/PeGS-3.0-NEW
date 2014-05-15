@@ -13,8 +13,11 @@
  ?>
  <?php echo CHtml::beginForm(); ?> 
  <?php Yii::import('application.extensions.CJuiDateTimePicker.CJuiDateTimePicker'); ?>
+
+<table style="width: 600px">
+    <tr>
+        <td>
  <?php
-    echo CHtml::label("From ", "DateFrom");
     /*
     $this->widget('zii.widgets.jui.CJuiDatePicker', array(
         'name'=>'DateFrom',
@@ -33,28 +36,23 @@
     ));
     */
     
-    $this->widget('CJuiDateTimePicker',array(
-        'name'=>'DateFrom',
-        'id'=>'DateFrom',
-        'value'=>$this->dateFrom,
-        'mode'=>'datetime', //use "time","date" or "datetime" (default)
-        'options'=>array(
-            'dateFormat'=>'yy-mm-dd',
-            'timeFormat'=> 'hh:mm',
-            'showAnim'=>'fold', // 'show' (the default), 'slideDown', 'fadeIn', 'fold'
-            'showOn'=>'button', // 'focus', 'button', 'both'
-            'buttonText'=>Yii::t('ui','DateFrom'), 
-            'buttonImage'=>Yii::app()->request->baseUrl.'/images/calendar.png', 
-            'buttonImageOnly'=>true,
-        ),// jquery plugin options
-        'htmlOptions'=>array('readonly'=>'readonly'),
-        'language'=>'',
-        
-    ));
+    echo CHtml::label("From :", "dateFrom").
+        CHtml::textField('DateFrom', date('Y-m-d h:i:s'), array('id'=>'DateFrom','readonly'=>'true', 'value'=>date('Y-m-d h:i:s'), 'style'=>'width: 150px;')).
+        CHtml::image(Yii::app()->request->baseUrl."/images/calendar.png","calendar", array("id"=>"calbutton","class"=>"pointer","style"=>"cursor: pointer;"));
+        $this->widget('application.extensions.calendar.SCalendar',
+        array(
+        'inputField'=>'DateFrom',
+        'button'=>'calbutton',
+        'showsTime'=>true,
+        'ifFormat'=>'%Y-%m-%d %H:%M:%S',
+        )); 
 
-
-    echo CHtml::label(" To ", "DateTo");
-    
+    ?>
+            
+            </td>
+            <td>
+                
+    <?php            
     /*
     $this->widget('zii.widgets.jui.CJuiDatePicker', array(
         'name'=>'DateTo',
@@ -74,27 +72,23 @@
      * 
      */
     
-    $this->widget('CJuiDateTimePicker',array(
-        'name'=>'DateTo',
-        'id'=>'DateTo',
-        'value'=>$this->dateTo,
-        'mode'=>'datetime', //use "time","date" or "datetime" (default)
-        'options'=>array(
-            'dateFormat'=>'yy-mm-dd',
-            'timeFormat'=> 'hh:mm',
-            'showAnim'=>'fold', // 'show' (the default), 'slideDown', 'fadeIn', 'fold'
-            'showOn'=>'button', // 'focus', 'button', 'both'
-            'buttonText'=>Yii::t('ui','DateTo'), 
-            'buttonImage'=>Yii::app()->request->baseUrl.'/images/calendar.png', 
-            'buttonImageOnly'=>true,
-        ),// jquery plugin options
-        'htmlOptions'=>array('readonly'=>'readonly'),
-        'language'=>'',
-        
-    ));
+    echo CHtml::label(" To :", "dateTo").
+        CHtml::textField('DateTo', date('Y-m-d h:i:s'), array('id'=>'DateTo','readonly'=>'true', 'value'=>date('Y-m-d h:i:s'), 'style'=>'width: 150px;')).
+        CHtml::image(Yii::app()->request->baseUrl."/images/calendar.png","calendar", array("id"=>"calbutton2","class"=>"pointer","style"=>"cursor: pointer;"));
+        $this->widget('application.extensions.calendar.SCalendar',
+        array(
+        'inputField'=>'DateTo',
+        'button'=>'calbutton2',
+        'showsTime'=>true,
+        'ifFormat'=>'%Y-%m-%d %H:%M:%S',
+        ));
 
     ?>
-    <?php
+                </td>
+        </tr>
+    </table>
+    <div style="width: 100%; text-align: center; margin-left: 250px;">
+            <?php
         echo CHtml::ajaxButton("Search", "VMSLogs", array(
                     'type'=>'GET',                
                     'data'=>array(
@@ -112,4 +106,5 @@
                     )
       );
     ?>
+    </div>
 <?php echo CHtml::endForm(); ?>

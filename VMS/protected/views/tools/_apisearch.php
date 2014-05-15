@@ -1,79 +1,67 @@
 <?php
-
 /*
  * @Date Dec 11, 2012
  * @Author owliber
  */
 ?>
-<?php Yii::app()->clientScript->registerScript('ui','
+<?php Yii::app()->clientScript->registerScript('ui', '
         
         var datefrom = $("#DateFrom"), dateto = $("#DateTo")
    
  ', CClientScript::POS_END);
- ?>
- <?php echo CHtml::beginForm(); ?> 
- <?php Yii::import('application.extensions.CJuiDateTimePicker.CJuiDateTimePicker'); ?>
- <?php
-    echo CHtml::label("From ", "DateFrom");
-       
-    $this->widget('CJuiDateTimePicker',array(
-        'name'=>'DateFrom',
-        'id'=>'DateFrom',
-        'value'=>$this->dateFrom,
-        'mode'=>'datetime', //use "time","date" or "datetime" (default)
-        'options'=>array(
-            'dateFormat'=>'yy-mm-dd',
-            'timeFormat'=> 'hh:mm',
-            'showAnim'=>'fold', // 'show' (the default), 'slideDown', 'fadeIn', 'fold'
-            'showOn'=>'button', // 'focus', 'button', 'both'
-            'buttonText'=>Yii::t('ui','DateFrom'), 
-            'buttonImage'=>Yii::app()->request->baseUrl.'/images/calendar.png', 
-            'buttonImageOnly'=>true,
-        ),// jquery plugin options
-        'htmlOptions'=>array('readonly'=>'readonly'),
-        'language'=>'',
-        
-    ));
+?>
+<?php echo CHtml::beginForm(); ?> 
+<?php Yii::import('application.extensions.CJuiDateTimePicker.CJuiDateTimePicker'); ?>
 
-
-    echo CHtml::label(" To ", "DateTo");
-        
-    $this->widget('CJuiDateTimePicker',array(
-        'name'=>'DateTo',
-        'id'=>'DateTo',
-        'value'=>$this->dateTo,
-        'mode'=>'datetime', //use "time","date" or "datetime" (default)
-        'options'=>array(
-            'dateFormat'=>'yy-mm-dd',
-            'timeFormat'=> 'hh:mm',
-            'showAnim'=>'fold', // 'show' (the default), 'slideDown', 'fadeIn', 'fold'
-            'showOn'=>'button', // 'focus', 'button', 'both'
-            'buttonText'=>Yii::t('ui','DateTo'), 
-            'buttonImage'=>Yii::app()->request->baseUrl.'/images/calendar.png', 
-            'buttonImageOnly'=>true,
-        ),// jquery plugin options
-        'htmlOptions'=>array('readonly'=>'readonly'),
-        'language'=>'',
-        
-    ));
-
-    ?>
-    <?php
-        echo CHtml::ajaxButton("Search", "APILogs", array(
-                    'type'=>'GET',                
-                    'data'=>array(
-                        'DateFrom'=>'js:function(){return datefrom.val();}',
-                        'DateTo'=>'js:function(){return dateto.val();}',
-                    ),
-                    'success'=>'function(data){
+<table style="width: 600px">
+    <tr>
+        <td>
+            <?php
+            echo CHtml::label("From ", "dateFrom") .
+            CHtml::textField('DateFrom', date('Y-m-d h:i:s'), array('id' => 'DateFrom', 'readonly' => 'true', 'value' => date('Y-m-d h:i:s'), 'style' => 'width: 150px;')) .
+            CHtml::image(Yii::app()->request->baseUrl . "/images/calendar.png", "calendar", array("id" => "calbutton", "class" => "pointer", "style" => "cursor: pointer;"));
+            $this->widget('application.extensions.calendar.SCalendar', array(
+                'inputField' => 'DateFrom',
+                'button' => 'calbutton',
+                'showsTime' => true,
+                'ifFormat' => '%Y-%m-%d %H:%M:%S',
+            ));
+            ?>
+        </td>
+        <td>
+<?php
+echo CHtml::label("To ", "dateTo") .
+ CHtml::textField('DateTo', date('Y-m-d h:i:s'), array('id' => 'DateTo', 'readonly' => 'true', 'value' => date('Y-m-d h:i:s'), 'style' => 'width: 150px;')) .
+ CHtml::image(Yii::app()->request->baseUrl . "/images/calendar.png", "calendar", array("id" => "calbutton2", "class" => "pointer", "style" => "cursor: pointer;"));
+$this->widget('application.extensions.calendar.SCalendar', array(
+    'inputField' => 'DateTo',
+    'button' => 'calbutton2',
+    'showsTime' => true,
+    'ifFormat' => '%Y-%m-%d %H:%M:%S',
+));
+?></td>
+        <td>
+            
+        </td>
+    </tr>
+</table>
+<div style="width: 100%; text-align: center; margin-left: 250px;">
+            <?php
+            echo CHtml::ajaxButton("Search", "APILogs", array(
+                'type' => 'GET',
+                'data' => array(
+                    'DateFrom' => 'js:function(){return datefrom.val();}',
+                    'DateTo' => 'js:function(){return dateto.val();}',
+                ),
+                'success' => 'function(data){
                         $("#results-grid").html(data); 
                     }',
-                    'update'=>'#results-grid',
-                    ),
-                    array(
-                        'name'=>'Search',
-                        'id'=>'Search',
+                'update' => '#results-grid',
+                    ), array(
+                'name' => 'Search',
+                'id' => 'Search',
                     )
-      );
-    ?>
-<?php echo CHtml::endForm(); ?>
+            );
+            ?>
+    </div>
+            <?php echo CHtml::endForm(); ?>

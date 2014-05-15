@@ -4,113 +4,245 @@ class MonitoringVoucherController extends VMSBaseIdentity {
     
     public $showDialog = false;
     public $dialogMsg;
-
-    public function actionIndex() {
+    public $hasError;
+    public $voucher;
+    public $hasResult = false;
+    
+    //Entry point in monitoring of Ticket voucher
+    public function actionTicket()
+    {
         $model = new MonitoringVoucherForm();
-        $_AccountSessions = new SessionModel();
 
-        if (isset(Yii::app()->session['SessionID'])) {
-            $aid = Yii::app()->session['AID'];
-            $sessionid = Yii::app()->session['SessionID'];
-        } else {
-            $sessionid = 0;
-            $aid = 0;
-        }
-
-        $sessioncount = $_AccountSessions->checkifsessionexist($aid, $sessionid);
-
-        if ($sessioncount == 0) {
-            Yii::app()->user->logout();
-            $this->redirect(array(Yii::app()->defaultController));
-        } else {
-        $display = 'none';
-        Yii::app()->session['display'] = $display;
-             
-        if(isset($_POST['MonitoringVoucherForm']))
+        $rawdata    = array();
+        $option     = array();
+        $option[]   = array('VoucherID' => 1, 'VoucherName' => 'Ticket');
+        //Provide list data
+        $vouchers = CHtml::listData($option, 'VoucherID', 'VoucherName');
+        if (isset($_POST['MonitoringVoucherForm']))
         {
-            $model->attributes = $_POST['MonitoringVoucherForm'];
-            $data = $model->attributes;
-            $vouchertype = $data['vouchertype'];
-            
-            Yii::app()->session['vouchertype'] = $vouchertype;
-            if($vouchertype > 0){
-            
-            //check if vouchertype is ticket
-            if($vouchertype == 1){
-                
-                $vouchercount = $model->getAllTicketCount();
-                
-                $activeticketcount = $model->getTicketCount(1);
-                $voidticketcount = $model->getTicketCount(2);
-                $usedticketcount = $model->getTicketCount(3);
-                $encashmentticketcount = $model->getTicketCount(4);
-                $cancelledticketcount = $model->getTicketCount(5);
-                $reimbursedticketcount = $model->getTicketCount(6);
-                
-                $activeticketcounts = (float)$activeticketcount;
-                $voidticketcounts = (float)$voidticketcount;
-                $usedticketcounts = (float)$usedticketcount;
-                $encashmentticketcounts = (float)$encashmentticketcount;
-                $cancelledticketcounts = (float)$cancelledticketcount;
-                $reimbursedticketcounts = (float)$reimbursedticketcount;
-                $vouchercounts = (float)$vouchercount;
+            $rawdata = $this->monitorVouchers($_POST['MonitoringVoucherForm']);
+            Yii::app()->session['rawData'] = $rawdata;
+        }
+        if (count($rawdata) > 0)
+        {
+            $this->hasResult = true;
+        }
+        else
+        {
+            $this->hasResult = false;
+        }
+        $headertitle = "Monitoring of Tickets";
+        $this->render('index', array('model' => $model, 'vouchers' => $vouchers, 'rawdata' => $rawdata, 'title' => $headertitle));
+    }
+    //Entry point in monitoring of Coupon voucher
+    public function actionCoupon()
+    {
+        $model = new MonitoringVoucherForm();
+        
+        $rawdata    = array();
+        $option     = array();
+        $option[]   = array('VoucherID' => 2, 'VoucherName' => 'Coupons');
+        //Provide list data
+        $vouchers = CHtml::listData($option, 'VoucherID', 'VoucherName');
+        
+        if (isset($_POST['MonitoringVoucherForm']))
+        {
+            $rawdata = $this->monitorVouchers($_POST['MonitoringVoucherForm']);
+            Yii::app()->session['rawData'] = $rawdata;
+        }
+        if (count($rawdata) > 0)
+        {
+            $this->hasResult = true;
+        }
+        else
+        {
+            $this->hasResult = false;
+        }
+        $headertitle = "Monitoring of Coupons";
+        $this->render('index', array('model' => $model, 'vouchers' => $vouchers, 'rawdata' => $rawdata, 'title' => $headertitle));
+    }
+    /****************************************
+     * Monitoring of Voucher process
+     */
+    public function monitorVouchers($postvars)
+    {
+        $model = new MonitoringVoucherForm();
+        
+        $rawdata = array();
+        
+        $model->attributes = $postvars;
+        $data = $model->attributes;
+        $vouchertype    = $data['vouchertype'];
+        $datefrom       = $data['datefrom'];
+        $dateto         = $data['dateto'];
 
-                $activepercentage = round(($activeticketcounts/$vouchercounts)*100,2);
-                $voidpercentage = round(($voidticketcounts/$vouchercounts)*100,2); 
-                $usedpercentage = round(($usedticketcounts/$vouchercounts)*100,2);
-                $encashmentpercentage = round(($encashmentticketcounts/$vouchercounts)*100,2);
-                $cancelledpercentage = round(($cancelledticketcounts/$vouchercounts)*100,2); 
-                $reimbursedpercentage = round(($reimbursedticketcounts/$vouchercounts)*100,2);
-                
-                $rawdata = array(
-                                array(
-                                    'Status' => 'Active',
-                                    'Count' => number_format($activeticketcounts),
-                                    'Percentage' => $activepercentage.' %',
-                                ),
-                                array(
-                                    'Status' => 'Void',
-                                    'Count' => number_format($voidticketcounts),
-                                    'Percentage' => $voidpercentage.' %',
-                                ),
-                                array(
-                                    'Status' => 'Used',
-                                    'Count' => number_format($usedticketcounts),
-                                    'Percentage' => $usedpercentage.' %',
-                                ),
-                                array(
-                                    'Status' => 'Encashment',
-                                    'Count' => number_format($encashmentticketcounts),
-                                    'Percentage' => $encashmentpercentage.' %',
-                                ),
-                                array(
-                                    'Status' => 'Cancelled',
-                                    'Count' => number_format($cancelledticketcounts),
-                                    'Percentage' => $cancelledpercentage.' %',
-                                ),
-                                array(
-                                    'Status' => 'Reimbursed',
-                                    'Count' => number_format($reimbursedticketcounts),
-                                    'Percentage' => $reimbursedpercentage.' %',
-                                ),
-                                array(
-                                    'Status' => 'Total',
-                                    'Count' => number_format($vouchercounts),
-                                    'Percentage' => '100 %',
-                                ),
-                            );
+        Yii::app()->session['vouchertype'] = $vouchertype;
+        if($vouchertype > 0){
+/*******************************************TICKETS**********************************************************/
+            //check if vouchertype is ticket
+            if($vouchertype == 1)
+            {
+                if ($datefrom != "" && $dateto != "")
+                {
+                    $vouchercount = $model->getAllTicketCount($datefrom, $dateto);
+
+                    $activeticketcount = $model->getTicketCount(1, $datefrom, $dateto);
+                    $queuedticketcount = $model->getTicketCount(1, $datefrom, $dateto, 1);
+
+                    $voidticketcount = $model->getTicketCount(2, $datefrom, $dateto);
+                    $usedticketcount = $model->getTicketCount(3, $datefrom, $dateto);
+                    $encashmentticketcount = $model->getTicketCount(4, $datefrom, $dateto);
+                    $cancelledticketcount = $model->getTicketCount(5, $datefrom, $dateto);
+                    $reimbursedticketcount = $model->getTicketCount(6, $datefrom, $dateto);
+                    $expiredticketcount = $model->getTicketCount(7, $datefrom, $dateto);
+
+                    $activeticketcounts = (float)$activeticketcount;
+                    $queuedticketcounts = (float)$queuedticketcount;
+                    $voidticketcounts = (float)$voidticketcount;
+                    $usedticketcounts = (float)$usedticketcount;
+                    $encashmentticketcounts = (float)$encashmentticketcount;
+                    $cancelledticketcounts = (float)$cancelledticketcount;
+                    $reimbursedticketcounts = (float)$reimbursedticketcount;
+                    $expiredticketcounts = (float)$expiredticketcount;
+                    $vouchercounts = (float)$vouchercount;
+                    //ActiveTicket Count
+//                    if ($activeticketcounts > 0)
+//                    {
+//                        $activepercentage = round(($activeticketcounts/$vouchercounts)*100,2);
+//                    }
+//                    else
+//                    {
+//                        $activepercentage = 0;
+//                    }
+//                    //Active (Queued)
+//                    if ($queuedticketcounts > 0)
+//                    {
+//                        $queuedpercentage = round(($queuedticketcounts/$vouchercounts)*100,2);
+//                    }
+//                    else
+//                    {
+//                        $queuedpercentage = 0;
+//                    }
+//                    //Void Tickets
+//                    if ($voidticketcounts > 0)
+//                    {
+//                        $voidpercentage = round(($voidticketcounts/$vouchercounts)*100,2); 
+//                    }
+//                    else
+//                    {
+//                        $voidpercentage = 0;
+//                    }
+//                    //Used Percentage
+//                    if ($usedticketcounts > 0)
+//                    {
+//                         $usedpercentage = round(($usedticketcounts/$vouchercounts)*100,2);
+//                    }
+//                    else
+//                    {
+//                        $usedpercentage = 0;
+//                    }
+//                    //Encashment Percentage
+//                    if ($encashmentticketcounts > 0)
+//                    {
+//                        $encashmentpercentage = round(($encashmentticketcounts/$vouchercounts)*100,2);
+//                    }
+//                    else
+//                    {
+//                        $encashmentpercentage = 0;
+//                    }
+//                    //Cancelled Tickets
+//                    if ($cancelledticketcounts > 0)
+//                    {
+//                         $cancelledpercentage = round(($cancelledticketcounts/$vouchercounts)*100,2); 
+//                    }
+//                    else
+//                    {
+//                        $cancelledpercentage = 0;
+//                    }
+//                    //Reimbursed Tickets
+//                    if ($reimbursedticketcounts > 0)
+//                    {
+//                        $reimbursedpercentage = round(($reimbursedticketcounts/$vouchercounts)*100,2);
+//                    }
+//                    else
+//                    {
+//                        $reimbursedpercentage = 0;
+//                    }
+//                    //Expired Tickets
+//                    if ($expiredticketcounts > 0)
+//                    {
+//                        $expiredpercentage = round(($expiredticketcounts/$vouchercounts)*100,2);
+//                    }
+//                    else
+//                    {
+//                        $expiredpercentage = 0;
+//                    }
+                    $rawdata = array(
+//                                    array(
+//                                        'Status' => 'Active (Queued)',
+//                                        'Count' => number_format($queuedticketcounts),
+//                                        //'Percentage' => $queuedpercentage.' %',
+//                                    ),
+                                    array(
+                                        'Status' => 'Active',
+                                        'Count' => number_format($activeticketcounts),
+                                        //'Percentage' => $activepercentage.' %',
+                                    ),
+                                    array(
+                                        'Status' => 'Void',
+                                        'Count' => number_format($voidticketcounts),
+                                        //'Percentage' => $voidpercentage.' %',
+                                    ),
+                                    array(
+                                        'Status' => 'Used',
+                                        'Count' => number_format($usedticketcounts),
+                                        //'Percentage' => $usedpercentage.' %',
+                                    ),
+                                    array(
+                                        'Status' => 'Encashed',
+                                        'Count' => number_format($encashmentticketcounts),
+                                        //'Percentage' => $encashmentpercentage.' %',
+                                    ),
+//                                    array(
+//                                        'Status' => 'Cancelled',
+//                                        'Count' => number_format($cancelledticketcounts),
+//                                        //'Percentage' => $cancelledpercentage.' %',
+//                                    ),
+                                    array(
+                                        'Status' => 'Reimbursed',
+                                        'Count' => number_format($reimbursedticketcounts),
+                                        //'Percentage' => $reimbursedpercentage.' %',
+                                    ),
+                                    array(
+                                        'Status' => 'Expired',
+                                        'Count' => number_format($expiredticketcounts),
+                                        //'Percentage' => $expiredpercentage.' %',
+                                    ),
+                                    array(
+                                        'Status' => 'Total',
+                                        'Count' => number_format($vouchercounts),
+                                        //'Percentage' => '100 %',
+                                    ),
+                                );
+                }
+                else
+                {
+                    $this->hasError = true;
+                    $errorcode = 1; //Please enter date from/to
+                }
             }
+/*******************************************COUPONS**********************************************************/
             else{
                 //coupons
                 $vouchercount = $model->getAllCouponCount();
-                
+
                 $inactivecouponcount = $model->getCouponCount(0);
                 $activecouponcount = $model->getCouponCount(1);
                 $deactivatedcouponcount = $model->getCouponCount(2);
                 $usedcouponcount = $model->getCouponCount(3);
                 $cancelledcouponcount = $model->getCouponCount(4);
                 $reimbursedcouponcount = $model->getCouponCount(5);
-                
+
                 $inactivecouponcounts = (float)$inactivecouponcount;
                 $activecouponcounts = (float)$activecouponcount;
                 $deactivatedcouponcounts = (float)$deactivatedcouponcount;
@@ -125,10 +257,10 @@ class MonitoringVoucherController extends VMSBaseIdentity {
                 $usedpercentage = round(($usedcouponcounts/$vouchercounts)*100,2);
                 $cancelledpercentage = round(($cancelledcouponcounts/$vouchercounts)*100,2); 
                 $reimbursedpercentage = round(($reimbursedcouponcounts/$vouchercounts)*100,2);
-                
+
                 $rawdata = array(
                                 array(
-                                    'Status' => 'InActive',
+                                    'Status' => 'Inactive',
                                     'Count' => number_format($inactivecouponcounts),
                                     'Percentage' => $inactivepercentage.' %',
                                 ),
@@ -164,27 +296,25 @@ class MonitoringVoucherController extends VMSBaseIdentity {
                                 ),
                             );
             }
-             Yii::app()->session['rawData'] = $rawdata;
-             $display = 'block';
-             Yii::app()->session['display'] = $display;
-                 
+            if ($this->hasError)
+            {
+                if ($errorcode == 1)
+                {
+                    $this->showDialog = true;
+                    $this->dialogMsg = "Please enter From/To Date";
+                }
             }
-            else{
-                $rawdata = array();
-                Yii::app()->session['rawData'] = $rawdata;
+            else
+            {
+                $display = 'block';
+                Yii::app()->session['display'] = $display;
             }
-            
         }
         else{
             $rawdata = array();
-            Yii::app()->session['rawData'] = $rawdata;
         }
-        
-        
-        $this->render('index', array('model' => $model));
-        }
+       return $rawdata;     
     }
-    
     public function actionMonitoringVoucherDataTable($rawData) {
         
             $arrayDataProvider = new CArrayDataProvider($rawData, array(

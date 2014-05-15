@@ -13,6 +13,10 @@
             <?php echo CHtml::textField('terminalname'); ?>
         </div>
         <div class="row">
+            <?php echo CHtml::label('Card Number','cardnumber'); ?>
+            <?php echo CHtml::textField('cardnumber'); ?>
+        </div>
+        <div class="row">
             <?php echo CHtml::label('Amount','amount'); ?>
             <?php echo CHtml::textField('amount'); ?>
         </div>
@@ -23,6 +27,10 @@
         <div class="row">
             <?php echo CHtml::label('AID','aid'); ?>
             <?php echo CHtml::textField('aid'); ?>
+        </div>
+        <div class="row">
+            <?php echo CHtml::label('Purpose','purpose'); ?>
+            <?php echo CHtml::textField('purpose'); ?>
         </div>
         <div class="row" style="margin-left: 225px;">
             <?php echo CHtml::submitButton('Invoke'); ?>

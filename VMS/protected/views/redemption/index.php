@@ -26,7 +26,8 @@ $this->breadcrumbs = array(
 );
 ?>
 
-<h4> Verify payout ticket for redemption</h4><br />
+<h4> Verify payout ticket for redemption</h4>
+<hr color="black" />
 <div class="search-form">
     <?php
     echo CHtml::beginForm(array(

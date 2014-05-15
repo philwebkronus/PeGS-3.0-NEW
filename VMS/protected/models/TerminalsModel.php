@@ -61,7 +61,56 @@ class TerminalsModel extends CFormModel {
         $command->bindValue(":terminalid", $terminalid);
         $result = $command->queryAll();
 
+        if(count($result) > 0){
+            return $result[0]['SiteID'];
+        } else {
+            return 0;
+        }
+    }
+    
+    /**
+     * @author JunJun S. Hernandez
+     * @datecreated 10/21/13
+     * @param str $terminalid
+     * @return object
+     */
+    public function getTerminalIDfromterminals($terminalCode) {
+
+        $connection = Yii::app()->db2;
+
+        $sql = "SELECT TerminalID FROM terminals
+                WHERE TerminalCode = :terminal_code AND TerminalType = 1";
+        $command = $connection->createCommand($sql);
+        $command->bindValue(":terminal_code", $terminalCode);
+        $result = $command->queryAll();
+        if(count($result) > 0){
+            return $result[0]['TerminalID'];
+        } else {
+            return 0;
+        }
+    }
+    
+    
+    public function getTerminalSiteID($terminal_code) {
+        $connection = Yii::app()->db2;
+        $sql = 'SELECT TerminalID, SiteID FROM terminals WHERE TerminalCode = :terminal_code';
+        
+        $command = $connection->createCommand($sql);
+        $command->bindValue(":terminal_code", $terminal_code);
+        $result = $command->queryRow();
+
+        if(empty($result))
+            return false;
         return $result;
+    }
+    
+    public function getTerminalIDByCodeEGMType($terminalCode) {
+        $connection = Yii::app()->db2;
+        $terminalCodeVip = $terminalCode."VIP";
+        $sql = 'SELECT TerminalID, Status FROM terminals WHERE TerminalCode IN (:terminal_code, :terminal_code_vip) AND  TerminalType = 1';
+        $param = array(":terminal_code"=>$terminalCode,":terminal_code_vip"=>$terminalCodeVip);
+        $command = $connection->createCommand($sql);
+        return $command->queryAll(true, $param);
     }
 
 }

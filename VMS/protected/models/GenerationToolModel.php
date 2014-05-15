@@ -14,6 +14,12 @@ class GenerationToolModel extends CFormModel
     public $iscreditable;
     public $couponbatch;
     public $remainingcount;
+    public $thresholdlimit;
+    public $autoticketcount;
+    public $autogenjob;
+    public $hdn_autogenjob;
+    public $hdn_threshold;
+    public $hdn_ticketcount;
     
     public static function model($className=__CLASS__)
     {
@@ -24,6 +30,7 @@ class GenerationToolModel extends CFormModel
         return array(
             array('vouchertype, count, amount, distributiontag, 
                    iscreditable', 'required'),
+            array('amount', 'length', 'max' => 6),
             array('couponbatch, remainingcount', 'safe')
         );
     }

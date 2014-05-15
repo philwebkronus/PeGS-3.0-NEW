@@ -18,47 +18,46 @@
  ?>
 
 <?php echo CHtml::beginForm(); ?>    
-
+<table style="width: 600px">
+    <tr>
+        <td>
 <?php
-echo CHtml::label("From ", "DateFrom");
-$this->widget('zii.widgets.jui.CJuiDatePicker', array(
-    'name'=>'DateFrom',
-    'value'=>$this->dateFrom,
-    'options'=>array(
-        'showAnim'=>'fold', // 'show' (the default), 'slideDown', 'fadeIn', 'fold'
-        'showOn'=>'button', // 'focus', 'button', 'both'
-        'buttonText'=>Yii::t('ui','From'), 
-        'buttonImage'=>Yii::app()->request->baseUrl.'/images/calendar.png', 
-        'buttonImageOnly'=>true,
-        'dateFormat'=>'yy-mm-dd',
-    ),
-    'htmlOptions'=>array(
-        'style'=>'width:80px;vertical-align:top'
-    ),  
-));
-
-echo CHtml::label("To ", "DateTo");
-$this->widget('zii.widgets.jui.CJuiDatePicker', array(
-    'name'=>'DateTo',
-    'value'=>$this->dateTo,
-    'options'=>array(
-        'showAnim'=>'fold', // 'show' (the default), 'slideDown', 'fadeIn', 'fold'
-        'showOn'=>'button', // 'focus', 'button', 'both'
-        'buttonText'=>Yii::t('ui','To'), 
-        'buttonImage'=>Yii::app()->request->baseUrl.'/images/calendar.png', 
-        'buttonImageOnly'=>true,
-        'dateFormat'=>'yy-mm-dd',
-    ),
-    'htmlOptions'=>array(
-        'style'=>'width:80px;vertical-align:top'
-    ),  
-));
+echo CHtml::label("From ", "DateFrom").
+		CHtml::textField('DateFrom', date('Y-m-d'), array('id'=>'DateFrom','readonly'=>'true', 'value'=>date('Y-m-d'), 'style'=>'width: 80px;')).
+		CHtml::image(Yii::app()->request->baseUrl."/images/calendar.png","calendar", array("id"=>"calbutton","class"=>"pointer","style"=>"cursor: pointer;"));
+		$this->widget('application.extensions.calendar.SCalendar',
+		array(
+		'inputField'=>'DateFrom',
+		'button'=>'calbutton',
+		'showsTime'=>false,
+		'ifFormat'=>'%Y-%m-%d',
+		));
+       ?>
+</td>
+<td>
+    <?php
+echo CHtml::label("To ", "DateTo").
+        CHtml::textField('DateTo', date('Y-m-d'), array('id'=>'DateTo','readonly'=>'true', 'value'=>date('Y-m-d'), 'style'=>'width: 80px;')).
+        CHtml::image(Yii::app()->request->baseUrl."/images/calendar.png","calendar", array("id"=>"calbutton2","class"=>"pointer","style"=>"cursor: pointer;"));
+        $this->widget('application.extensions.calendar.SCalendar',
+        array(
+        'inputField'=>'DateTo',
+        'button'=>'calbutton2',
+        'showsTime'=>false,
+        'ifFormat'=>'%Y-%m-%d',
+        ));
 
 ?>
+</td> 
 
+<td>
 <?php echo CHtml::label("Status ", "Status"); ?>
 <?php echo CHtml::dropDownList('Status',$this->status, Utilities::getBatchStatus()); ?>
-<?php /*echo CHtml::submitButton("Submit", array(
+    </td>  
+        </tr>
+    </table>   
+<div style="width: 100%; text-align: center; margin-left: 250px;">
+    <?php /*echo CHtml::submitButton("Submit", array(
             'name'=>'Submit',
             'value'=>'Submit',
      ));*/
@@ -89,5 +88,6 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
       );
 ?>
     
+</div>
 <?php echo CHtml::endForm(); ?>
 

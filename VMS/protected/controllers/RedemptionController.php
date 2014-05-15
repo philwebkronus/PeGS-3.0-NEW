@@ -14,7 +14,23 @@ class RedemptionController extends VMSBaseIdentity
     public $status;
 
     public function actionVerify() {
+        $_AccountSessions = new SessionModel();
+
+        if (isset(Yii::app()->session['SessionID'])) {
+            $aid = Yii::app()->session['AID'];
+            $sessionid = Yii::app()->session['SessionID'];
+        } else {
+            $sessionid = 0;
+            $aid = 0;
+        }
         
+        $sessioncount = $_AccountSessions->checkifsessionexist($aid, $sessionid);
+        
+        if ($sessioncount == 0) {
+            Yii::app()->user->logout();
+            $this->redirect(array(Yii::app()->defaultController));
+        }
+        else{
         $model = new VoucherRedemption();
         $result = array();
 
@@ -65,7 +81,7 @@ class RedemptionController extends VMSBaseIdentity
 
         $this->render('index', array('result' => $result));
     }
-
+    }
 }
 
 ?>

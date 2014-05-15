@@ -425,7 +425,7 @@ class VoucherGeneration extends CFormModel
             $dateExpiry = date('Y-m-d', strtotime('+'.$validity.' DAYS'));
 
             $query = "INSERT INTO voucherbatch (BatchNumber, Quantity, Amount, DateGenerated, DateExpiry, GeneratedByAID)
-                      VALUES (:batchnumber, :quantity, :amount, now_usec(), :dateexpiry, :AID)";
+                      VALUES (:batchnumber, :quantity, :amount, NOW(6), :dateexpiry, :AID)";
 
             $sql = $conn->createCommand($query);
             $sql->bindValues(array(':batchnumber'=>$batchnumber,
@@ -450,7 +450,7 @@ class VoucherGeneration extends CFormModel
 
                     //Query to insert into vouchers table
                     $query = "INSERT INTO vouchers (BatchNumber, VoucherTypeID, VoucherCode, Amount, CreatedByAID, DateCreated, DateExpiry, Source, LoyaltyCreditable, Status)
-                             VALUES (:batchnumber, :voucherType, :voucherCode, :amount, :AID, now_usec(), :dateExpiry, :source, :loyaltycredit, :status)";
+                             VALUES (:batchnumber, :voucherType, :voucherCode, :amount, :AID, NOW(6), :dateExpiry, :source, :loyaltycredit, :status)";
 
                     $sql = $conn->createCommand($query);
                     $sql->bindValues(array(":batchnumber"=>$batchnumber,

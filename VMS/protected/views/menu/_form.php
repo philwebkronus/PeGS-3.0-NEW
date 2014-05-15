@@ -14,52 +14,66 @@ switch($action)
 {
     case 'create':   
     ?>
+<table>
+    <tr>
     <?php echo CHtml::beginForm('manage', 'POST', array('id'=>'CreateForm','name'=>'CreateForm')); ?>
+    <td><?php echo CHtml::label("Name","Name"); ?></td>
+    <td><?php echo CHtml::textField("Name", ""); ?></td>
+    </tr>
+    <tr>
+    <td><?php echo CHtml::label("Link", "for_Link"); ?></td>
+    <td><?php echo CHtml::textField("Link"); ?></td>
+    </tr>
+    <tr>
+    <td><?php echo CHtml::label("Description", "for_Description"); ?></td>
+    <td><?php echo CHtml::textField("Description"); ?></td>
+    </tr>
+    <tr>
+    <td><?php echo CHtml::label("Status", "for_Status"); ?></td>    
+    <td><?php echo CHtml::dropDownList("Status", 1, SiteMenu::getMenuStatus()); ?></td>
+    </tr>
     <div class="row">
-        <?php echo CHtml::label("Name","Name"); ?><br />
-        <?php echo CHtml::textField("Name", ""); ?>
-    </div>
-    <div class="row">
-        <?php echo CHtml::label("Link", "for_Link"); ?><br />
-        <?php echo CHtml::textField("Link"); ?>
-    </div>
-    <div class="row">
-        <?php echo CHtml::label("Description", "for_Description"); ?><br />
-        <?php echo CHtml::textField("Description"); ?>
-    </div>
-    <div class="row">
-        <?php echo CHtml::label("Status", "for_Status"); ?><br />
-        <?php echo CHtml::dropDownList("Status", 1, SiteMenu::getMenuStatus()); ?>   
+        <br />
         <?php echo CHtml::hiddenField("Submit", "Create"); ?>
     </div>
     <?php echo CHtml::endForm(); ?>
+     </table>
     <?php
-    
+   
     break;
 
     case 'update':
     ?>
+    <table>
     <?php echo CHtml::beginForm('manage', 'POST', array('id'=>'UpdateForm','name'=>'UpdateForm')); ?>
+    <tr>
+
+    <td><?php echo CHtml::label("Name", "Name"); ?></td>
+    <td><?php echo CHtml::textField("Name", $menu['Name']); ?></td>
+    </tr>
+    <tr>
+
+    <td><?php echo CHtml::label("Link", "for_Link"); ?></td>
+    <td><?php echo CHtml::textField("Link", $menu['Link']); ?></td>
+    </tr>
+    <tr>
+
+    <td><?php echo CHtml::label("Description", "for_Description"); ?></td>
+    <td><?php echo CHtml::textField("Description", $menu['Description']); ?></td>
+    </tr>
+    <tr>
+
+    <td><?php echo CHtml::label("Status", "for_Status"); ?></td>
+    <td><?php echo CHtml::dropDownList("Status", $menu['Status'], SiteMenu::getMenuStatus()); ?></td>
+    </tr>
     <div class="row">
-        <?php echo CHtml::label("Name", "Name"); ?><br />
-        <?php echo CHtml::textField("Name", $menu['Name']); ?>
-    </div>
-    <div class="row">
-        <?php echo CHtml::label("Link", "for_Link"); ?><br />
-        <?php echo CHtml::textField("Link", $menu['Link']); ?>
-    </div>
-    <div class="row">
-        <?php echo CHtml::label("Description", "for_Description"); ?><br />
-        <?php echo CHtml::textField("Description", $menu['Description']); ?>
-    </div>
-    <div class="row">
-        <?php echo CHtml::label("Status", "for_Status"); ?><br />
-        <?php echo CHtml::dropDownList("Status", $menu['Status'], SiteMenu::getMenuStatus()); ?>
+        <br />
+        
         <?php echo CHtml::hiddenField("MenuID", $menu["MenuID"]); ?>
         <?php echo CHtml::hiddenField("Submit", "Update"); ?>
     </div>
     <?php echo CHtml::endForm(); ?>
-    
+    </table>
     <?php
     
     break;

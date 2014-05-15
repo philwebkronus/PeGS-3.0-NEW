@@ -1,25 +1,34 @@
 <div <?php echo 'style="display:'.Yii::app()->session['display'].'"'; ?>>
-<a href="exporttocsv"><b>Export To CSV</b></a>
+<br/>
+<hr color="black" />
 <?php
     $vouchertype = Yii::app()->session['vouchertype'];
     if($vouchertype == 'All')
     {
         $grid = array(
-        array('name'=>'VoucherType',
+        array('name'=>'Voucher Type',
         'type'=>'raw',
-        'value'=>'CHtml::encode($data["VoucherType"])'),
+        'value'=>'CHtml::encode($data["VoucherType"])',
+        'htmlOptions' => array('style' => 'text-align:center'),
+        ),
 
         array('name'=>'Status',
         'type'=>'raw',
-        'value'=>'CHtml::encode($data["Status"])'),
+        'value'=>'CHtml::encode($data["Status"])',
+        'htmlOptions' => array('style' => 'text-align:center'),
+        ),
 
-        array('name'=>'TotalAmount',
+        array('name'=>'Total Amount',
         'type'=>'raw',
-        'value'=>'CHtml::encode($data["TotalAmount"])'),
+        'value'=>'CHtml::encode(number_format($data["TotalAmount"],2))',
+        'htmlOptions' => array('style' => 'text-align:right'),    
+        ),
 
-        array('name'=>'TotalCount',
+        array('name'=>'Total Count',
         'type'=>'raw',
-        'value'=>'CHtml::encode($data["TotalCount"])'),
+        'value'=>'CHtml::encode($data["TotalCount"])',
+        'htmlOptions' => array('style' => 'text-align:center'),    
+        ),
         
         );        
     }
@@ -28,15 +37,21 @@
         $grid = array(
         array('name'=>'Status',
         'type'=>'raw',
-        'value'=>'CHtml::encode($data["Status"])'),
+        'value'=>'CHtml::encode($data["Status"])',
+        'htmlOptions' => array('style' => 'text-align:center'),    
+        ),
 
-        array('name'=>'TotalAmount',
+        array('name'=>'Total Amount',
         'type'=>'raw',
-        'value'=>'CHtml::encode($data["TotalAmount"])'),
+        'value'=>'CHtml::encode(number_format($data["TotalAmount"],2))',
+        'htmlOptions' => array('style' => 'text-align:center'),    
+        ),
 
-        array('name'=>'TotalCount',
+        array('name'=>'Total Count',
         'type'=>'raw',
-        'value'=>'CHtml::encode($data["TotalCount"])'),
+        'value'=>'CHtml::encode($data["TotalCount"])',
+        'htmlOptions' => array('style' => 'text-align:center'),    
+        ),
 
         );
     }
@@ -49,4 +64,5 @@
         'columns' => $grid,
         ));
 ?>
+    <a href="exporttocsv"><b>Export To CSV</b></a>
 </div>

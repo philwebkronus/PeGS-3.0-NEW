@@ -555,7 +555,7 @@ class VoucherAPI extends CFormModel
             $status = $this->verifyVoucherStatus($voucherCode) == self::VOUCHER_STATUS_ACTIVE ? 'active' : 'void';
             
             $query = "UPDATE vouchers 
-                        SET DateUsed = now_usec(),
+                        SET DateUsed = NOW(6),
                             Status =:status,
                             ProcessedByAID =:AID
                         WHERE VoucherCode =:voucherCode
@@ -577,7 +577,7 @@ class VoucherAPI extends CFormModel
              * If Voucher Type is COUPON, update the TerminalID and DateUsed
              */
             $query = "UPDATE vouchers 
-                        SET DateUsed = now_usec(),
+                        SET DateUsed = NOW(6),
                             TerminalID =:terminalid,
                             Status =:status,
                             ProcessedByAID =:AID
@@ -843,7 +843,7 @@ class VoucherAPI extends CFormModel
 
             //Query to insert into vouchers table
             $query = "INSERT INTO vouchers (VoucherTypeID, TrackingID, VoucherCode, TerminalID, Amount, CreatedByAID, DateCreated, DateExpiry, Source, LoyaltyCreditable, Status)
-                     VALUES (:voucherType, :trackingID, :voucherCode, :terminalID, :amount, :AID, now_usec(), :dateExpiry, :source, :loyaltyCredit, :status)";
+                     VALUES (:voucherType, :trackingID, :voucherCode, :terminalID, :amount, :AID, NOW(6), :dateExpiry, :source, :loyaltyCredit, :status)";
 
             $sql = $conn->createCommand($query);
             $sql->bindValue(":voucherType", $voucherType);
@@ -964,7 +964,7 @@ class VoucherAPI extends CFormModel
         if(!empty($stackersessionID))
         {
             $query = "INSERT INTO egmstackerentries (EGMStackerSessionID,CashType,TrackingID,VoucherCode,Amount,TerminalID,TransactionType,TransactionDate)
-                    VALUES (:stackersessionID, :cashType, :trackingID, :voucherCode, :amount, :terminalID, :transType, now_usec())";
+                    VALUES (:stackersessionID, :cashType, :trackingID, :voucherCode, :amount, :terminalID, :transType, NOW(6))";
             $sql = $conn->createCommand($query);
             $sql->bindValues(array(
                 ':stackersessionID'=>$stackersessionID,

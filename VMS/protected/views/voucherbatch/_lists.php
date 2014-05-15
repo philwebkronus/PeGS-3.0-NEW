@@ -8,11 +8,8 @@
  */
 ?>
 
-<div id="export-link" class="prepend-top" style="display:none">
-    <span class="ui-icon ui-icon-arrowthickstop-1-s" style="display:inline-block;"></span>
-    <?php echo CHtml::link("Export to CSV", array('voucherbatch/exporttocsv?BatchNo='.Yii::app()->session['BatchNo'])); ?>  
-</div>
 
+<?php echo CHtml::link("Go Back", array('voucherBatch/manage')); ?>
 <?php $gridData = array(
                     array('name'=>'BatchNumber',                        
                             'header'=>'Batch Number',
@@ -23,25 +20,25 @@
                     array('name'=>'VoucherCode',
                             'type'=>'raw',
                             'value'=>'CHtml::encode($data["VoucherCode"])',
-                            'htmlOptions'=>array('style'=>'padding-left: 50px; text-align: right'),
+                            'htmlOptions'=>array('style'=>'padding-left: 50px; text-align: center'),
                     ),
                     array('name'=>'Amount',
                             'type'=>'raw',
-                            'value'=>'CHtml::encode($data["Amount"])',
+                            'value'=>'CHtml::encode(number_format($data["Amount"],2))',
                             'htmlOptions'=>array('style'=>'padding-left: 50px; text-align: right'),
 
                     ),    
                     array('name'=>'DateCreated',
                             'header'=>'Date Generated',
                             'type'=>'raw',
-                            'value'=>'CHtml::encode(date("F d, Y H:i",strtotime($data["DateCreated"])))',
+                            'value'=>'CHtml::encode($data["DateCreated"] != "" ? date("Y-m-d H:i:s",strtotime($data["DateCreated"])) : "")',
                             'htmlOptions'=>array('style'=>'text-align: left'),
 
                     ),
                     array('name'=>'DateExpiry',
                             'header'=>'Expiry Date',
                             'type'=>'raw',
-                            'value'=>'CHtml::encode(date("F d, Y",strtotime($data["DateExpiry"])))',
+                            'value'=>'CHtml::encode($data["DateExpiry"] != "" ? date("Y-m-d H:i:s",strtotime($data["DateExpiry"])) : "")',
                             'htmlOptions'=>array('style'=>'text-align: left'),
 
                     ),
@@ -62,3 +59,7 @@
     )); 
     
 ?>
+<div id="export-link" class="prepend-top" style="display:none">
+    <span class="ui-icon ui-icon-arrowthickstop-1-s" style="display:inline-block;"></span>
+    <?php echo CHtml::link("Export to CSV", array('voucherBatch/exporttocsv?BatchNo='.Yii::app()->session['BatchNo'])); ?>  
+</div>

@@ -18,7 +18,7 @@ $this->breadcrumbs=array(
 ?>
 
 <h4>Sub Menu Management</h4>
-
+<hr color="black" />
 <?php echo CHtml::link("Create new sub menu", "#", array(
             'onclick'=>'$("#create-submenu").dialog("open")'
         )); 
@@ -105,7 +105,7 @@ $this->breadcrumbs=array(
             'title'=>'New Sub Menu',
             'modal'=>true,
             'width'=>'400',
-            'height'=>'300',
+            'height'=>'350',
             'resizable'=>false,
             'autoOpen'=>false,
             'buttons'=>array(
@@ -133,7 +133,7 @@ $this->breadcrumbs=array(
             'title'=>'Sub Menu Update',
             'modal'=>true,
             'width'=>'400',
-            'height'=>'340',
+            'height'=>'350',
             'autoOpen'=>$this->updateDialog,
             'resizable'=>false,
             'buttons'=>array(

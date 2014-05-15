@@ -11,6 +11,8 @@ class ChangeStatusModel extends CFormModel
     public $status;
     public $validfrom;
     public $validto;
+    public $ticketcode;
+    public $currentstat;
     
     public static function model($className=__CLASS__)
     {
@@ -20,7 +22,7 @@ class ChangeStatusModel extends CFormModel
     {
         return array(
             array('vouchertype, batch, status, validfrom, 
-                   validto', 'required')
+                   validto, ticketcode, currentstat', 'required')
         );
     }
 }

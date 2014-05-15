@@ -1,0 +1,45 @@
+Error Codes of VMS API's
+
+0 - No Error, 1 - Error
+
+Code    Message
+0   -   No Error, Transaction Approved, Voucher/Ticket is unclaimed.
+1   -   Voucher/Ticket is void.
+2   -   Voucher/Ticket is not activated.
+3   -   Voucher/Ticket is already used.
+4   -   Voucher/Ticket is already claimed.
+5   -   Voucher/Ticket is already reimbursed.
+6   -   Voucher/Ticket is already expired.
+7   -   Voucher/Ticket is cancelled.
+8   -   Voucher/Ticket does not exists.
+9   -   Parameter Error.
+10  -   Voucher/Ticket is not allowed to be used for this site.
+11  -   Voucher/Ticket cannot be used in Deposit/Reload in Cashier.
+12  -   Source is invalid.
+13  -   Tracking ID does not exists.
+14  -   Invalid input parameters.
+15  -   One or more fields have their values mismatched.
+16  -   AID is required for Cashier.
+17  -   Source is required for EGM.
+18  -   Tracking ID has a pending transaction.
+19  -   Tracking ID has a failed transaction.
+20  -   Tracking ID has been denied.
+21  -   One or more field is not set or is blank.
+22  -   Tracking ID is already existing.
+23  -   Transaction successful.
+24  -   Transaction failed.
+25  -   Terminal does not exists.
+26  -   Invalid Source.
+27  -   Invalid Amount.
+
+
+--Use Voucher Ticket--
+
+28  - Invalid Terminal Name.
+29  - Source is invalid
+30  - Inactive Ticket.
+31  - Transaction denied.
+32  - Tracking ID was already used.
+33  - Ticket was already expired.
+34  - Ticket cannot be used in this site.
+35  - Ticket is invalid.

@@ -1,117 +1,112 @@
 <?php
 
-class SiteController extends VMSBaseIdentity
-{      
+class SiteController extends VMSBaseIdentity {
+
     public $showDialog = false;
     public $dialogMsg;
-	/**
-	 * Declares class-based actions.
-	 */
-	public function actions()
-	{
-		return array(
-			// captcha action renders the CAPTCHA image displayed on the contact page
-			'captcha'=>array(
-				'class'=>'CCaptchaAction',
-				'backColor'=>0xFFFFFF,
-			),
-			// page action renders "static" pages stored under 'protected/views/site/pages'
-			// They can be accessed via: index.php?r=site/page&view=FileName
-			'page'=>array(
-				'class'=>'CViewAction',
-			),
-		);
-	}
 
-	/**
-	 * This is the default 'index' action that is invoked
-	 * when an action is not explicitly requested by users.
-	 */
-	public function actionIndex()
-	{
-		// renders the view file 'protected/views/site/index.php'
-		// using the default layout 'protected/views/layouts/main.php'
-		$this->render('index');
-                //echo "&nbsp;";
-	}
+    /**
+     * Declares class-based actions.
+     */
+    public function actions() {
+        return array(
+            // captcha action renders the CAPTCHA image displayed on the contact page
+            'captcha' => array(
+                'class' => 'CCaptchaAction',
+                'backColor' => 0xFFFFFF,
+            ),
+            // page action renders "static" pages stored under 'protected/views/site/pages'
+            // They can be accessed via: index.php?r=site/page&view=FileName
+            'page' => array(
+                'class' => 'CViewAction',
+            ),
+        );
+    }
 
-	/**
-	 * This is the action to handle external exceptions.
-	 */
-	public function actionError()
-	{
-	    if($error=Yii::app()->errorHandler->error)
-	    {
-                //Log error
-                $transDetails = ' from user '. Yii::app()->user->getId() . ' (Site:'.Yii::app()->user->getSiteID().') using URL '.Yii::app()->request->requestUri;
-                AuditLog::logTransactions(30, $transDetails);
-                
-	    	if(Yii::app()->request->isAjaxRequest)
-	    		echo $error['message'];
-	    	else
-	        	$this->render('error', $error);
-	    }
-	}
+    /**
+     * This is the default 'index' action that is invoked
+     * when an action is not explicitly requested by users.
+     */
+    public function actionIndex() {
+        // renders the view file 'protected/views/site/index.php'
+        // using the default layout 'protected/views/layouts/main.php'
+        $this->render('index');
+        //echo "&nbsp;";
+    }
 
-	/**
-	 * Displays the login page
-	 */
-	public function actionLogin()
-	{
-            if(!Yii::app()->user->isGuest)
-            {
-                //$this->redirect(Yii::app()->homeUrl);
-                $this->redirect(array(Yii::app()->session['homeUrl']));
-            }
+    /**
+     * This is the action to handle external exceptions.
+     */
+    public function actionError() {
+        if ($error = Yii::app()->errorHandler->error) {
+            //Log error
+            $transDetails = ' from user ' . Yii::app()->user->getId() . ' (Site:' . Yii::app()->user->getSiteID() . ') using URL ' . Yii::app()->request->requestUri;
+            AuditLog::logTransactions(30, $transDetails);
+
+            if (Yii::app()->request->isAjaxRequest)
+                echo $error['message'];
             else
-            {
-		$model=new LoginForm();
-                
-		// if it is ajax validation request
-		if(isset($_POST['ajax']) && $_POST['ajax']==='login-form')
-		{
-			echo CActiveForm::validate($model);
-			Yii::app()->end();
-		}
+                $this->render('error', $error);
+        }
+    }
 
-		// collect user input data
-		if(isset($_POST['LoginForm']))
-		{
-			$model->attributes=$_POST['LoginForm'];
-                        
-			// validate user input and redirect to the previous page if valid
-			if($model->validate() && $model->login())
-            {
-                //Log to audit trail
-                AuditLog::logTransactions(1, ' as '.$model->UserName);
+    /**
+     * Displays the login page
+     */
+    public function actionLogin() {
+        if (!Yii::app()->user->isGuest) {
+            //$this->redirect(Yii::app()->homeUrl);
+            $this->redirect(array(Yii::app()->session['homeUrl']));
+        } else {
+            $model = new LoginForm();
 
-                //Redirect to default page set on the access rights
-                $this->redirect(array(Yii::app()->session['homeUrl']));
+            // if it is ajax validation request
+            if (isset($_POST['ajax']) && $_POST['ajax'] === 'login-form') {
+                echo CActiveForm::validate($model);
+                Yii::app()->end();
             }
-            else if($model->noaccess == true){
-                $this->showDialog = true;
-                $this->dialogMsg = "No access rights found for this user";
-                Yii::app()->user->logout();
-            }
-                        
-		}
-                
-		// display the login form
-		$this->render('login',array('model'=>$model));
-            }
-	}
 
-	/**
-	 * Logs out the current user and redirect to homepage.
-	 */
-	public function actionLogout()
-	{
-                //Log to audit trail
-                AuditLog::logTransactions(2, ' user '.Yii::app()->user->getName());
-		$aid = Yii::app()->session['AID'];
-                Yii::app()->user->logout();
-                $sessionmodel = new SessionModel();
-                $sessionmodel->deleteSession($aid);
-                $this->redirect(array(Yii::app()->defaultController));
-	}
+            // collect user input data
+            if (isset($_POST['LoginForm'])) {
+                $model->attributes = $_POST['LoginForm'];
+
+                // validate user input and redirect to the previous page if valid
+                if ($model->validate() && $model->login()) {
+                    //Log to audit trail
+                    AuditLog::logTransactions(1, ' as ' . $model->UserName);
+
+                    //Redirect to default page set on the access rights
+                    $this->redirect(array(Yii::app()->session['homeUrl']));
+                } else if ($model->noaccess == true) {
+                    $this->showDialog = true;
+                    $this->dialogMsg = "No access rights found for this user";
+                    Yii::app()->user->logout();
+                }
+            }
+
+            // display the login form
+            $this->render('login', array('model' => $model));
+        }
+    }
+
+    /**
+     * Logs out the current user and redirect to homepage.
+     */
+    public function actionLogout() {
+        //Log to audit trail
+        AuditLog::logTransactions(2, ' user ' . Yii::app()->user->getName());
+        if(isset(Yii::app()->session['AID']) && Yii::app()->session['AID'] != '') {
+            $aid = Yii::app()->session['AID'];
+        } else {
+            $aid = 0;
+        }
+        Yii::app()->user->logout();
+        $sessionmodel = new SessionModel();
+        $checkSession = $sessionmodel->checkSession($aid);
+        if (!empty($checkSession) || $checkSession > 0) {
+            $sessionmodel->deleteSession($aid);
+        }
+        $this->redirect(array(Yii::app()->defaultController));
+    }
+
 }

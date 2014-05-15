@@ -1,5 +1,6 @@
 <div <?php echo 'style="display:'.Yii::app()->session['display'].'"'; ?>>
-<a href="exporttocsv"><b>Export To CSV</b></a>
+    <br/>
+    <hr color="black" />
 <?php
 
         $grid = array(
@@ -10,17 +11,23 @@
         array('name'=>'SiteCode',
         'header'=>'Site',
         'type'=>'raw',
-        'value'=>'CHtml::encode($data["SiteCode"])'),
-
+        'value'=>'CHtml::encode($data["SiteCode"])',
+        'htmlOptions' => array('style' => 'text-align:center'),    
+        ),
+           
         array('name'=>'TotalAmountReimbursed',
         'header'=>'Total Amount Reimbursed',
         'type'=>'raw',
-        'value'=>'CHtml::encode($data["TotalAmountReimbursed"])'),
+        'value'=>'CHtml::encode(number_format($data["TotalAmountReimbursed"],2))',
+        'htmlOptions' => array('style' => 'text-align:right'),    
+        ),
 
         array('name'=>'TotalCount',
         'header'=>'Reimbursed Voucher Count',
         'type'=>'raw',
-        'value'=>'CHtml::encode($data["TotalCount"])'),
+        'value'=>'CHtml::encode($data["TotalCount"])',
+        'htmlOptions' => array('style' => 'text-align:center'),    
+        ),
             
         );
         
@@ -33,4 +40,6 @@
         'columns' => $grid
         ));
 ?>
+    
+    <a href="exporttocsv"><b>Export To CSV</b></a>
 </div>

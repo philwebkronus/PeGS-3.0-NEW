@@ -20,6 +20,23 @@ class StackerController extends VMSBaseIdentity
         
     public function actionMonitor()
     {
+        $_AccountSessions = new SessionModel();
+
+        if (isset(Yii::app()->session['SessionID'])) {
+            $aid = Yii::app()->session['AID'];
+            $sessionid = Yii::app()->session['SessionID'];
+        } else {
+            $sessionid = 0;
+            $aid = 0;
+        }
+        
+        $sessioncount = $_AccountSessions->checkifsessionexist($aid, $sessionid);
+        
+        if ($sessioncount == 0) {
+            Yii::app()->user->logout();
+            $this->redirect(array(Yii::app()->defaultController));
+        }
+        else{
         //Log access to audit trail
         AuditLog::logTransactions(18);
         
@@ -29,7 +46,9 @@ class StackerController extends VMSBaseIdentity
         unset(Yii::app()->session['DateTo']);
         unset(Yii::app()->session['DateFrom']);
         unset(Yii::app()->session['EGM']);
-            
+        $display = 'none';
+        Yii::app()->session['display'] = $display;
+        
         $model = new Stacker();
         
         $this->dateFrom = date('Y-m-d');
@@ -70,11 +89,28 @@ class StackerController extends VMSBaseIdentity
         $this->render('index',array(
             'dataProvider'=>$dataProvider,
         ));
-        
+        }
     }
     
     public function actionAjaxStackerSessions()
     {
+        $_AccountSessions = new SessionModel();
+
+        if (isset(Yii::app()->session['SessionID'])) {
+            $aid = Yii::app()->session['AID'];
+            $sessionid = Yii::app()->session['SessionID'];
+        } else {
+            $sessionid = 0;
+            $aid = 0;
+        }
+        
+        $sessioncount = $_AccountSessions->checkifsessionexist($aid, $sessionid);
+        
+        if ($sessioncount == 0) {
+            Yii::app()->user->logout();
+            $this->redirect(array(Yii::app()->defaultController));
+        }
+        else{
         if(Yii::app()->request->isAjaxRequest)
         {
             if(isset( Yii::app()->session['isEnded']))
@@ -82,15 +118,25 @@ class StackerController extends VMSBaseIdentity
             
             if($_GET['Site'] == "empty" && $_GET['EGM'] == "empty")
             {
-                throw new CHttpException('404', 'Please select a site and EGM then try again.');
+                echo ('Please select a site and EGM then try again.');
                 Yii::app()->end();
-            }
+            }    
             //Selected account groups has view to Site lists
             if(isset($_GET['Site']) && $_GET['Site'] != 'undefined')
                 $this->isAdmin = true;
             
             if(isset($_GET['IsAdvance']) && $_GET['IsAdvance'] == 1)//true
             {
+                if($_GET['DateFrom'] > date('Y-m-d'))
+                {
+                    echo ('Date must not be greater than today.');
+                    Yii::app()->end();
+                }
+                elseif($_GET['DateTo'] > date('Y-m-d')){
+                    echo ('Date must not be greater than today.');
+                    Yii::app()->end();
+                }
+            
                 $this->dateFrom = $_GET['DateFrom'];
                 $this->dateTo = $_GET['DateTo'];
                 $this->advanceFilter = true;
@@ -98,6 +144,7 @@ class StackerController extends VMSBaseIdentity
                 Yii::app()->session['isAdvance'] = 1;
                 Yii::app()->session['DateFrom'] = $this->dateFrom;
                 Yii::app()->session['DateTo'] = $this->dateTo;
+                Yii::app()->session['Site'] = $_GET['Site'];
                 
                 if($_GET['StackerSession'] == 1)
                 {
@@ -126,16 +173,26 @@ class StackerController extends VMSBaseIdentity
             {
                 $egmmachines = Stacker::activeEGMMachinesBySite($this->site);    
 
-                foreach($egmmachines as $value)
-                {
-                    $egmmachine[] = $value['EGMMachineInfoId_PK'];
+                if(empty($egmmachines)){
+                    $egmmachines = NULL;
                 }
+                else{
+                    foreach($egmmachines as $value)
+                    {
+                        $egmmachine[] = $value['EGMMachineInfoId_PK'];
+                    }
 
-                $egmmachines = $egmmachine;
-
+                    $egmmachines = $egmmachine;
+                }
+                   
             }
-            else
+            else{
                 $egmmachines = $this->egmmachine;
+            }
+            
+            if($egmmachines == NULL){
+                    $egmmachines = 0;
+                }
             
             Yii::app()->session['EGM'] = $this->egmmachine;
             
@@ -158,10 +215,28 @@ class StackerController extends VMSBaseIdentity
             
             Yii::app()->end();
         }
+        }
     }
 
     public function actionAjaxStackerDetails()
     {
+        $_AccountSessions = new SessionModel();
+
+        if (isset(Yii::app()->session['SessionID'])) {
+            $aid = Yii::app()->session['AID'];
+            $sessionid = Yii::app()->session['SessionID'];
+        } else {
+            $sessionid = 0;
+            $aid = 0;
+        }
+        
+        $sessioncount = $_AccountSessions->checkifsessionexist($aid, $sessionid);
+        
+        if ($sessioncount == 0) {
+            Yii::app()->user->logout();
+            $this->redirect(array(Yii::app()->defaultController));
+        }
+        else{
         if(Yii::app()->request->isAjaxRequest)
         {
            $model = new Stacker;
@@ -187,90 +262,40 @@ class StackerController extends VMSBaseIdentity
            Yii::app()->end();
                       
         }
-    }  
-    
-    public function actionAjaxLastQuery()
-    {
-        if(Yii::app()->request->isAjaxRequest)
-        {
-            $model = new Stacker;
-            
-            $egmmachine = Yii::app()->session['EGM'];
-            
-            $isEnded = Yii::app()->session['isEnded'];
-            
-            if($isEnded == 1)
-                $StackerSession = true;
-            else
-                $StackerSession = false;
-            
-            $isAdvance = Yii::app()->session['isAdvance'];
-            
-            if($isAdvance == 1)
-                $isAdvance  = true;
-                        
-            $dateFrom= Yii::app()->session['DateFrom'];
-            $dateTo = Yii::app()->session['DateTo'];
-            
-            if(empty($egmmachine))
-                $egmmachine = $this->egmmachine;
-            
-            if($egmmachine == 'All')
-            {
-                $siteID = Yii::app()->user->getSiteID();
-
-                $egmmachines = Stacker::activeEGMMachinesBySite($siteID);    
-
-                foreach($egmmachines as $value)
-                {
-                    $egms[] = $value['EGMMachineInfoId_PK'];
-                }
-
-                $egmmachines = $egms;
-
-            }
-            else
-                $egmmachines = $egmmachine;
-            
-            if($isAdvance)
-                 $stackerlogs = $model->getAllStackerSessions($dateFrom,  $dateTo, $egmmachines, $StackerSession);
-            else
-                 $stackerlogs = $model->getStackerSessions($egmmachines);
-                   
-            $dataProvider = new CArrayDataProvider($stackerlogs, array(
-                'keyField'=>'EGMStackerSessionID',
-                'pagination'=>array(
-                    'pageSize'=>10,
-                ),
-            ));
-            
-            unset(Yii::app()->session['isAdvance']);
-            unset(Yii::app()->session['isEnded']);
-            unset(Yii::app()->session['DateTo']);
-            unset(Yii::app()->session['DateFrom']);
-            unset(Yii::app()->session['EGM']);
-            
-            $this->renderPartial('_lists',array(
-                'dataProvider'=>$dataProvider,
-            ));
-            
-            Yii::app()->end();
-            
         }
-    }
+        
+        
+    } 
         
     public function actionAjaxEGMachines()
     {
+        $_AccountSessions = new SessionModel();
+
+        if (isset(Yii::app()->session['SessionID'])) {
+            $aid = Yii::app()->session['AID'];
+            $sessionid = Yii::app()->session['SessionID'];
+        } else {
+            $sessionid = 0;
+            $aid = 0;
+        }
+        
+        $sessioncount = $_AccountSessions->checkifsessionexist($aid, $sessionid);
+        
+        if ($sessioncount == 0) {
+            Yii::app()->user->logout();
+            $this->redirect(array(Yii::app()->defaultController));
+        }
+        else{
         if(Yii::app()->request->IsAjaxRequest)
         {
             $siteid = $_GET['SiteID'];
-        
+            
             $model = new Stacker();
             
             if($siteid == 'empty')
             {
                 echo CHtml::tag('option',
-                              array('value'=>'empty'),CHtml::encode("Select a site"),true);
+                              array('value'=>'empty'),CHtml::encode("Select a machine"),true);
             }
             else
             {
@@ -286,7 +311,9 @@ class StackerController extends VMSBaseIdentity
             
             
         }
-       
+        }
+        $display = 'block';
+        Yii::app()->session['display'] = $display;
     }
 }
 ?>

@@ -25,7 +25,7 @@ class Controller extends CController
             Yii::app()->onEndRequest = array('Controller','end');
         }
         
-        public function end(){
+        public static function end(){
             Yii::app()->db->setActive(false);
             gc_collect_cycles(); //Free up memory resources
         }

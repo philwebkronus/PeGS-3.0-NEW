@@ -93,7 +93,7 @@ class VoucherRedemption extends CFormModel {
 
         $query = "UPDATE vouchers
                   SET Status =:status,
-                      DateClaimed = now_usec(),
+                      DateClaimed = NOW(6),
                       ClaimedByAID =:aid
                   WHERE VoucherCode =:vouchercode";
         $sql = $conn->createCommand($query);

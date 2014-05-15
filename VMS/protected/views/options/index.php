@@ -6,7 +6,7 @@
  */
 ?>
 <h4>System Options</h4>
-
+<hr color="black" />
 <?php $gridData = array(
                     array('name'=>'Name',
                             'type'=>'raw',
@@ -64,7 +64,7 @@
         'options'=>array(
             'title'=>'Update Parameter',
             'modal'=>true,
-            'width'=>'400',
+            'width'=>'500',
             'height'=>'300',
             'resizable'=>false,
             'autoOpen'=>$this->updateDialog,
@@ -81,21 +81,35 @@
         ),
 )); ?>
 <?php if($this->updateDialog):?>
+<table>
 <?php echo CHtml::beginForm('manage', 'POST', array('id'=>'OptionForm','name'=>'OptionForm')); ?>
+    <tr>
+        <td>
+            <?php echo CHtml::label("Parameter name", "Name"); ?>
+        </td>
+        <td>
+            <?php echo CHtml::textField("Name",$param['ParamName'],array('style'=>'width:250px')); ?>
+        </td>
+    </tr>
 <?php echo CHtml::hiddenField("Submit", 'Update'); ?>
 <?php echo CHtml::hiddenField("ParamID", $param['ParamID']); ?>
-<div class="row">
-    <?php echo CHtml::label("Parameter name", "Name"); ?><br />
-    <?php echo CHtml::textField("Name",$param['ParamName'],array('style'=>'width:250px')); ?>
-</div>    
-<div class="row">
-    <?php echo CHtml::label("Parameter value", "Value"); ?><br />
-    <?php echo CHtml::textField("Value",$param['ParamValue'],array('style'=>'width:250px')); ?>
-</div>
-<div class="row">
-    <?php echo CHtml::label("Description", "Decription"); ?><br />
-    <?php echo CHtml::textArea("Description",$param['ParamDesc'],array('cols'=>'35')); ?>
-</div>
+    <tr>
+        <td>
+            <?php echo CHtml::label("Parameter value", "Value"); ?>
+        </td>
+        <td>
+            <?php echo CHtml::textField("Value",$param['ParamValue'],array('style'=>'width:250px')); ?>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <?php echo CHtml::label("Description", "Decription"); ?>
+        </td>
+        <td>
+            <?php echo CHtml::textArea("Description",$param['ParamDesc'],array('cols'=>'35')); ?>
+        </td>
+    </tr>
+    </table>
 <?php echo CHtml::endForm(); ?>
 <?php endif; ?>
 <?php $this->endWidget('zii.widgets.jui.CJuiDialog'); ?>

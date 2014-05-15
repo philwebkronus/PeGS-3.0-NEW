@@ -17,28 +17,54 @@ switch($action)
     case 'create':
         
     ?>
+<table>
+    <tr>
+           
     <?php echo CHtml::beginForm('', 'POST', array('id'=>'CreateForm','name'=>'CreateForm')); ?>
+        <td>
+            <?php echo CHtml::label("Menu Name", "MenuID"); ?><br />
+        </td> 
+        <td>
+            <?php echo CHtml::dropDownList("MenuID", "", SiteMenu::getMenuList()); ?>
+        </td> 
+    </tr>
+    <tr>
+        <td>
+            <?php echo CHtml::label("Sub Menu", "Submenu"); ?>
+        </td>
+        <td>
+            <?php echo CHtml::textField("Submenu"); ?>
+        </td>
+    </tr>    
+    <tr>
+        <td>
+            <?php echo CHtml::label("Link", "Link"); ?>
+        </td>
+        <td>
+            <?php echo CHtml::textField("Link"); ?>
+        </td> 
+    </tr>    
+    <tr>
+        <td>    
+            <?php echo CHtml::label("Description", "Description"); ?>
+        </td>
+        <td>    
+            <?php echo CHtml::textField("Description"); ?>
+        </td>   
+    </tr>    
+    <tr>
+        <td>
+            <?php echo CHtml::label("Status", "Status"); ?>
+        </td>
+        <td>
+            <?php echo CHtml::dropDownList("Status", 1, SiteMenu::getMenuStatus()); ?>  
+        </td> 
+    </tr>    
     <div class="row">
-        <?php echo CHtml::label("Menu Name", "MenuID"); ?><br />
-        <?php echo CHtml::dropDownList("MenuID", "", SiteMenu::getMenuList()); ?>
-    </div>
-    <div class="row">
-        <?php echo CHtml::label("Sub Menu", "Submenu"); ?><br />
-        <?php echo CHtml::textField("Submenu"); ?>
-    </div>
-    <div class="row">
-        <?php echo CHtml::label("Link", "Link"); ?><br />
-        <?php echo CHtml::textField("Link"); ?>
-    </div>
-    <div class="row">
-        <?php echo CHtml::label("Description", "Description"); ?><br />
-        <?php echo CHtml::textField("Description"); ?>
-    </div>
-    <div class="row">
-        <?php echo CHtml::label("Status", "Status"); ?>
-        <?php echo CHtml::dropDownList("Status", 1, SiteMenu::getMenuStatus()); ?>  
         <?php echo CHtml::hiddenField("Submit", "Create"); ?>
     </div>
+</table>
+
     <?php echo CHtml::endForm(); ?>
     <?php
     
@@ -47,29 +73,54 @@ switch($action)
     case 'update':
     
     ?>
+<table>
+       
     <?php echo CHtml::beginForm('manage', 'POST', array('id'=>'UpdateForm','name'=>'UpdateForm')); ?>
+    <tr>
+        <td>
+            <?php echo CHtml::label("Menu Name", "MenuID"); ?>
+        </td>   
+        <td>
+            <?php echo CHtml::dropDownList("MenuID", $submenu["MenuID"], SiteMenu::getMenuList()); ?>
+        </td> 
+    </tr>
+    <tr>
+        <td>
+            <?php echo CHtml::label("Submenu", "submenu"); ?>
+        </td>
+        <td>
+            <?php echo CHtml::textField("Name", $submenu['Name']); ?>
+        </td>
+    </tr>    
+    <tr>
+        <td>
+            <?php echo CHtml::label("Link", "Link"); ?>
+        </td>    
+        <td>
+            <?php echo CHtml::textField("Link", $submenu['Link']); ?>
+        </td> 
+    </tr>    
+    <tr>
+        <td>
+            <?php echo CHtml::label("Description", "Description"); ?>
+        </td>
+        <td>
+            <?php echo CHtml::textField("Description", $submenu['Description']); ?>
+        </td> 
+    </tr>    
+    <tr>
+        <td>
+            <?php echo CHtml::label("Status", "Status"); ?>
+        </td>    
+        <td>
+            <?php echo CHtml::dropDownList("Status", $submenu['Status'], SiteMenu::getMenuStatus()); ?>
+        </td>    
+    </tr>    
     <div class="row">
-        <?php echo CHtml::label("Menu Name", "MenuID"); ?><br />
-        <?php echo CHtml::dropDownList("MenuID", $submenu["MenuID"], SiteMenu::getMenuList()); ?>
-    </div>
-    <div class="row">
-        <?php echo CHtml::label("Submenu", "submenu"); ?><br />
-        <?php echo CHtml::textField("Name", $submenu['Name']); ?>
-    </div>
-    <div class="row">
-        <?php echo CHtml::label("Link", "Link"); ?><br />
-        <?php echo CHtml::textField("Link", $submenu['Link']); ?>
-    </div>
-    <div class="row">
-        <?php echo CHtml::label("Description", "Description"); ?><br />
-        <?php echo CHtml::textField("Description", $submenu['Description']); ?>
-    </div>
-    <div class="row">
-        <?php echo CHtml::label("Status", "Status"); ?><br />
-        <?php echo CHtml::dropDownList("Status", $submenu['Status'], SiteMenu::getMenuStatus()); ?>
         <?php echo CHtml::hiddenField("Submit", "Update"); ?>
         <?php echo CHtml::hiddenField("SubMenuID", $submenu["SubMenuID"]); ?>
     </div>
+</table>    
     <?php echo CHtml::endForm(); ?>
     <?php
     

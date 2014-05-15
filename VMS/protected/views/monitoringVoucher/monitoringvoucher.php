@@ -1,4 +1,6 @@
 <?php
+$model = new MonitoringVoucherForm();
+
 if(!isset(Yii::app()->session['display']))
 Yii::app()->session['display'] = 'block';
 ?>
@@ -18,12 +20,6 @@ Yii::app()->session['display'] = 'block';
         array('name'=>'Count',
         'type'=>'raw',
         'value'=>'CHtml::encode($data["Count"])',
-        'htmlOptions' => array('style' => 'text-align:center'),    
-        ),
-        
-        array('name'=>'Percentage',
-        'type'=>'raw',
-        'value'=>'CHtml::encode($data["Percentage"])',
         'htmlOptions' => array('style' => 'text-align:right'),    
         ),
         

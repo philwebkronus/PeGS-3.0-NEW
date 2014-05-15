@@ -24,6 +24,7 @@ else
 }
 ?>
 <h2>Site Conversion Report</h2>
+<hr color="black" />
 <div class="row" style="padding: 10px 5px; background: #EFEFEF;">
 <?php $form=$this->beginWidget('CActiveForm', array(
     'enableClientValidation'=>true,
@@ -34,62 +35,48 @@ else
     <?php echo $form->errorSummary($model); ?>
     <table style="width:500px">
         <tr>
-            <td>
-                <?php echo $form->labelEx($model,'from: ');
-                           $this->widget('zii.widgets.jui.CJuiDatePicker', array(
-                           'id'=>'datefrom',
-                           'model'=>$model,
-                           'attribute'=>'from',
-                           //'value'=>$model->from,
-                           'value'=>date('Y-m-d'),
-                           // additional javascript options for the date picker plugin
-                           'options'=>array(
-                               'showAnim'=>'fold',
-                               'showOn'=>'button',
-                               'buttonText'=>Yii::t('ui','from'), 
-                               'buttonImage'=>Yii::app()->request->baseUrl.'/images/calendar.png', 
-                               'buttonImageOnly'=>true,
-                               'autoSize'=>true,
-                               'dateFormat'=>'yy-mm-dd',
-                               //'defaultDate'=>$model->from,
-                           ),
-                           'htmlOptions'=>array('readonly'=>true),
-                           ));
-                ?>
-            </td>
-            <td>
-              <?php echo $form->labelEx($model,'to: ');
-                         $this->widget('zii.widgets.jui.CJuiDatePicker', array(
-                         'id'=>'dateto',
-                         'model'=>$model,
-                         'attribute'=>'to',
-                         //'value'=>$model->to,
-                         'value'=>date('Y-m-d'),
-                         // additional javascript options for the date picker plugin
-                         'options'=>array(
-                             'showAnim'=>'fold',
-                             'showOn'=>'button',
-                             'buttonText'=>Yii::t('ui','to'), 
-                             'buttonImage'=>Yii::app()->request->baseUrl.'/images/calendar.png', 
-                             'buttonImageOnly'=>true,
-                             'autoSize'=>true,
-                             'dateFormat'=>'yy-mm-dd',
-                             //'defaultDate'=>$model->to,
-                         ),
-                         'htmlOptions'=>array('readonly'=>true),
-                         ));
-                ?>
-            </td>
-            <td>
-                <?php echo $form->labelEx($model, 'site:').$form->dropDownList($model, 'site', $siteconversionmodel->getSite(), array('id'=>'site')); ?>
-            </td>
+        <td><?php echo CHtml::label("eGames : ", "Site");?></td>    
+        <td>
+                <?php echo $form->dropDownList($model, 'site', $siteconversionmodel->getSite(), array('id'=>'site')); ?>
+        </td>
         </tr>
         <tr>
             <td>
-                <?php echo CHtml::submitButton("Submit"); ?>
+            </td>    
+        <tr/>
+        <tr>
+            <td><?php echo $form->labelEx($model,'from : ');?></td>    
+            <td>
+                
+                <?php echo $form->textField($model,'from', array('id'=>'txtfrom','readonly'=>'true', /*'value'=>date('Y-m-d'),*/ 'style'=>'width: 120px;')).
+                      CHtml::image(Yii::app()->request->baseUrl."/images/calendar.png","calendar", array("id"=>"calbutton","class"=>"pointer","style"=>"cursor: pointer;"));
+                      $this->widget('application.extensions.calendar.SCalendar',
+                      array(
+                      'inputField'=>'txtfrom',
+                      'button'=>'calbutton',
+                      'showsTime'=>false,
+                      'ifFormat'=>'%Y-%m-%d',
+                      ));                
+                ?>
             </td>
-        </tr>
+            <td><?php echo $form->labelEx($model,'to : ')?></td>    
+            <td>
+              <?php echo $form->textField($model,'to', array('id'=>'txtto','readonly'=>'true', /*'value'=>date('Y-m-d', strtotime('+1 Day', strtotime(date('Y-m-d')))),*/ 'style'=>'width: 120px;')).
+                    CHtml::image(Yii::app()->request->baseUrl."/images/calendar.png","calendar", array("id"=>"calbutton2","class"=>"pointer","style"=>"cursor: pointer;"));
+                    $this->widget('application.extensions.calendar.SCalendar',
+                    array(
+                    'inputField'=>'txtto',
+                    'button'=>'calbutton2',
+                    'showsTime'=>false,
+                    'ifFormat'=>'%Y-%m-%d',
+                    ));                
+                ?>
+            </td>
+        </tr>   
     </table>
+    <div style="width: 100%; text-align: center; margin-left: 250px;">
+            <?php echo CHtml::submitButton("Submit"); ?>
+    </div> 
 </div>
 <div>
     <?php $this->actionSiteConversionDataTable(Yii::app()->session['rawData']); ?>

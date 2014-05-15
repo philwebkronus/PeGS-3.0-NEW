@@ -65,7 +65,7 @@ class VMSRequestLogs extends OcActiveRecord
         $conn = Yii::app()->db;
         $trx = $conn->beginTransaction();
         
-        $query = "INSERT INTO cronlogs (RunDate, Status) VALUES (now_usec(), :status)";
+        $query = "INSERT INTO cronlogs (RunDate, Status) VALUES (NOW(6), :status)";
         $sql = $conn->createCommand($query);
         $sql->bindValue(":status", $status);
         $sql->execute();

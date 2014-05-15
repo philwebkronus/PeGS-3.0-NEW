@@ -50,7 +50,7 @@ class CouponBatchModel {
                                 :amount,
                                 :distributiontag,
                                 0,
-                                NOW_USEC(),
+                                NOW(6),
                                 :createdbyAID
                                )";
         $sql = $connection->createCommand($firstquery);
@@ -89,7 +89,7 @@ class CouponBatchModel {
                                              :couponcode,
                                              :amount,
                                              0,
-                                             NOW_USEC(),
+                                             NOW(6),
                                              :aid,
                                              :iscreditable
                                     )";
@@ -243,7 +243,7 @@ class CouponBatchModel {
        else
        {
             $firstquery = "UPDATE couponbatch SET Status = :status, 
-                                                  DateUpdated = NOW_USEC(),
+                                                  DateUpdated = NOW(6),
                                                   UpdatedByAID = :AID
                            WHERE CouponBatchID = :batch";
             $command = $connection->createCommand($firstquery);
@@ -259,7 +259,7 @@ class CouponBatchModel {
                         $secondquery = "UPDATE coupons SET Status = :status,
                                                            ValidFromDate = :validfrom,
                                                            ValidToDate = :validto,
-                                                           DateUpdated = NOW_USEC(),
+                                                           DateUpdated = NOW(6),
                                                            UpdatedByAID = :AID
                                         WHERE CouponBatchID = :batch AND Status <> 3";
                         $command = $connection->createCommand($secondquery);
@@ -304,7 +304,7 @@ class CouponBatchModel {
                     try
                     {
                         $secondquery = "UPDATE coupons SET Status = :status,
-                                                           DateUpdated = NOW_USEC(),
+                                                           DateUpdated = NOW(6),
                                                            UpdatedByAID = :AID
                                         WHERE CouponBatchID = :batch AND Status <> 3";
                         $command = $connection->createCommand($secondquery);

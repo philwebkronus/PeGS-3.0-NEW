@@ -7,7 +7,8 @@
  * 
  */
 ?>
-
+<hr color="black" />
+<div <?php echo 'style="display:'.Yii::app()->session['display'].'"'; ?>>
 <?php
     
     $this->widget('zii.widgets.grid.CGridView', array(
@@ -25,30 +26,30 @@
             array('name' => 'DateStarted',
                 'header' => 'Date Started',
                 'type' => 'raw',
-                'value' => 'CHtml::encode(date("F d, Y H:i",strtotime($data["DateStarted"])))',
+                'value' => 'CHtml::encode(date("Y-m-d H:i:s",strtotime($data["DateStarted"])))',
                 'htmlOptions' => array('style' => 'text-align:center'),
             ),
             array('name' => 'DateEnded',
                 'header' => 'Date Ended',
                 'type' => 'raw',
-                'value' => 'CHtml::encode($data["DateEnded"] != "" ? date("F d, Y H:i",strtotime($data["DateEnded"])) : "")',
+                'value' => 'CHtml::encode($data["DateEnded"] != "" ? date("Y-m-d H:i:s",strtotime($data["DateEnded"])) : "")',
                 'htmlOptions' => array('style' => 'text-align:center'),
             ),
             array('name' => 'Quantity',
                 'type' => 'raw',
                 'value' => 'CHtml::encode($data["Quantity"])',
-                'htmlOptions' => array('style' => 'text-align: right;'),
+                'htmlOptions' => array('style' => 'text-align: center;'),
             ),
             array('name' => 'CashAmount',
                 'header' => 'Cash Amount',
                 'type' => 'raw',
-                'value' => 'CHtml::encode($data["CashAmount"])',
+                'value' => 'CHtml::encode(number_format($data["CashAmount"],2))',
                 'htmlOptions' => array('style' => 'text-align:right'),
             ),
             array('name' => 'TotalAmount',
                 'header' => 'Total Amount',
                 'type' => 'raw',
-                'value' => 'CHtml::encode($data["TotalAmount"])',
+                'value' => 'CHtml::encode(number_format($data["TotalAmount"],2))',
                 'htmlOptions' => array('style' => 'text-align: right'),
             ),
             array('class' => 'CButtonColumn',
@@ -92,3 +93,4 @@
         ),
     ));
 ?>
+</div>

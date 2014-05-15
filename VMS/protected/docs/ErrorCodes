@@ -1,17 +1,51 @@
 Error Codes of VMS API's
 
-0 - Transaction approved, Coupon is unclaimed
+0 - Transaction approved, Coupon/Ticket is unclaimed, Transaction successful
 1 - Tracking ID not found.
 2 - Source is invalid.
-3 - Invalid input parameters
+3 - Invalid input parameters.
 4 - Inactive coupon
 5 - Coupon is already used
 6 - Invalid Coupon
 7 - Invalid voucher type
 8 - Transaction denied
 9 - Tracking Id was already used
-10 - Coupon was already expired.
-11 - Coupon is invalid
-12 - Coupon is deactivated
-13 - Coupon is cancelled
-14 - Coupon is already reimbursed
+10 - Coupon is already expired.
+11 - Coupon is unclaimed.
+12 - Coupon is deactivated.
+13 - Coupon is cancelled.
+14 - Coupon is already reimbursed.
+15 - Coupon is already claimed.
+16 - Coupon is void.
+17 - Coupon is not activated.
+18 - AID is required for cashier.
+19 - One or more values did not match.
+20 - Ticket is not activated.
+21 - Ticket is unclaimed.
+22 - Ticket is void.
+23 - Ticket is already used.
+24 - Ticket is already claimed.
+25 - Ticket is already reimbursed.
+26 - Ticket is already expired.
+27 - Ticket is cancelled.
+28 - Source is required for cashier.
+29 - Terminal does not exists.
+30 - Coupon is already used.
+31 - Transaction failed.
+32 - Tracking ID is already existing.
+33 - Amount should not be less than (allowed amount).
+34 - Ticket is not allowed to be used for this Site.
+35 - Card Number not found.
+36 - StackerBatchID does not exists.
+37 - Ticket could not be used in cashier.
+38  - Invalid Terminal Name.
+39  - Terminal does not have a session.
+40  - StackerBatchID does not exists.
+41  - StackerBatchID does not have a session.
+42  - Terminal and StackerBatchID does not match in EGM session.
+43  - AID is not associated with any Terminal.
+44 - Terminal ID and MID does not match in EGM session.
+45 - Amount is null.
+46  - Ticket is associated with another Membership Card Number.
+47  - Ticket is not allowed to be used for this Terminal.
+48  - Ticket is invalid.

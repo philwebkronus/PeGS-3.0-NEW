@@ -11,14 +11,8 @@
         Yii::app()->session['vdate'] = $vdate;
         echo Yii::app()->session['transactiondate']." to ".$vdate. " ".Yii::app()->params['cutofftimeend'];
     }
-        $grid = array(
 
-        array('name'=>'VoucherType',
-        'header'=>'Voucher Type',
-        'type'=>'raw',
-        'value'=>'CHtml::encode($data["VoucherType"] == "1" ? "Ticket" : "Coupon")',
-        'htmlOptions' => array('style' => 'text-align:center'),    
-        ),
+        $grid = array(
            
         array('name'=>'CouponCode',
         'header'=>'Code',
@@ -98,7 +92,6 @@
         'columns' => $grid
         ));
 ?>
-    <?php $this->createUrl('exporttoexcel'); ?>
-    <?php echo CHtml::link('<b>Export To Excel</b>','exporttoexcel'); ?>
+    <br><br>
 </div>
     </div>

@@ -55,98 +55,147 @@ class WsVapiInvokerController extends Controller{
         $this->render('overview');
     }
     
-    public function actionVoucherTicketValidation(){
-        $this->pageTitle = 'VAPI - Voucher Ticket Validation';
+        
+    public function actionVerify(){
+        $this->pageTitle = 'VAPI - Verify Coupon';
         $result = '';
         
-        if(isset($_POST['trackingid']) || isset($_POST['terminalname']) || isset($_POST['voucherticketbarcode']) || isset($_POST['source']) || isset($_POST['aid'])){
+        if(isset($_POST['vouchercode']) || isset($_POST['aid']) || isset($_POST['trackingid']) 
+           || isset($_POST['source'])){
+            $trackingID = $_POST['trackingid'];
+            $terminalName = $_POST['terminalname'];
+            $voucherCode = $_POST['vouchercode'];
+            $source = $_POST['source'];
+            $aid = $_POST['aid'];
+            $result = $this->_verify($trackingID, $terminalName, $voucherCode, $source, $aid);
+        } 
+        $this->render('verify', array('result'=>$result));
+    }
+    
+    private function _verify($trackingID, $terminalName, $voucherCode, $source, $aid){
+        $url = "http://vapi.dev.local/index.php/Wsvoucher/verify";
+        //$url = "http://localhost/vouchermanagementsystem/VMS/index.php/Wsvoucher/verify";
+        
+        $postdata = CJSON::encode(array('trackingid'=>$trackingID, 'terminalname'=>$terminalName,'vouchercode'=>$voucherCode, 'source'=>$source, 'aid'=>$aid));
+        
+        $result = $this->SubmitData($url, $postdata);
+        
+        return $result[1];
+    }
+    
+        
+    public function actionUse(){
+        $this->pageTitle = 'VAPI - Use Coupon';
+        $result = '';
+        
+        if(isset($_POST['trackingid']) || isset($_POST['terminalid']) || isset($_POST['voucherticketbarcode']) || isset($_POST['source']) || isset($_POST['aid'])){
                 $trackingid = $_POST['trackingid'];
-                $terminalname = $_POST['terminalname'];
+                $terminalid = $_POST['terminalid'];
                 $voucherticketbarcode = $_POST['voucherticketbarcode'];
                 $source = $_POST['source'];
                 $aid = $_POST['aid'];
-                $result = $this->_voucherTicketValidation($trackingid, $terminalname, $voucherticketbarcode, $source, $aid);
+                $mid = '';
+                if(isset($_POST['mid'])){
+                    $mid = $_POST['mid'];
                 }
-
-        $this->render('voucherTicketValidation', array('result'=>$result));
+                
+                $result = $this->_use($trackingid, $terminalid, $voucherticketbarcode, $source, $aid, $mid);
+                }
+                
+        $this->render('use', array('result'=>$result));
     }
     
-    public function actionGetVoucherTicket(){
-        $this->pageTitle = 'VAPI - Get Voucher Ticket';
+    private function _use($trackingid, $terminalid, $voucherticketbarcode, $source, $aid, $mid){
+        //$url = Yii::app()->params['authenticate_client'];
+        $url = "http://vapi.dev.local/index.php/Wsvoucher/use";
+        //$url = "http://localhost/vms_svn/VMS/index.php/Wsvoucher/use";
+        $postdata = CJSON::encode(array('TrackingID'=>$trackingid, 'TerminalID'=>$terminalid, 'VoucherTicketBarcode'=>$voucherticketbarcode, 'Source'=>$source, 'AID'=>$aid, 'MID'=>$mid));
+        $result = $this->SubmitData($url, $postdata);
+        return $result[1];
+    }
+        public function actionVerifyTicket(){
+        $this->pageTitle = 'VAPI - Verify Ticket';
         $result = '';
         
-        if(isset($_POST['trackingid']) || isset($_POST['terminalname']) || isset($_POST['amount']) || isset($_POST['source']) || isset($_POST['aid'])){
+        if(isset($_POST['TrackingID']) || isset($_POST['TerminalName']) || isset($_POST['VoucherTicketBarcode']) 
+           || isset($_POST['Source']) || isset($_POST['AID']) || isset($_POST['MembershipCardNumber'])){
+            $trackingID = $_POST['TrackingID'];
+            $terminalName = $_POST['TerminalName'];
+            $voucherCode = $_POST['VoucherTicketBarcode'];
+            $source = $_POST['Source'];
+            $aid = $_POST['AID'];
+            $cardNumber = $_POST['MembershipCardNumber'];
+            $result = $this->_verifyTicket($trackingID, $terminalName, $voucherCode, $source, $aid, $cardNumber);
+        } 
+        $this->render('verifyTicket', array('result'=>$result));
+    }
+    
+    private function _verifyTicket($trackingID, $terminalName, $voucherCode, $source, $aid, $cardNumber){
+        $url = "http://vapi.dev.local/index.php/Wsvoucher/verifyTicket";
+        //$url = "http://localhost/vms_svn/VMS/index.php/Wsvoucher/verifyTicket";
+        
+        $postdata = CJSON::encode(array('TrackingID'=>$trackingID, 'TerminalName'=>$terminalName,
+                                        'VoucherTicketBarcode'=>$voucherCode, 'Source'=>$source, 'AID'=>$aid,
+                                        'MembershipCardNumber'=>$cardNumber));
+        $result = $this->SubmitData($url, $postdata);
+        
+        return $result[1];
+    }
+    
+    public function actionAddTicket(){
+        $this->pageTitle = 'VAPI - Add Ticket';
+        $result = '';
+        
+        if(isset($_POST['trackingid']) || isset($_POST['terminalname'])|| isset($_POST['cardnumber']) || isset($_POST['amount']) || isset($_POST['source']) || isset($_POST['aid']) || isset($_POST['purpose']) || isset($_POST['stackerbatchid'])  || isset($_POST['voucherticketbarcode'])){
                 $trackingid = $_POST['trackingid'];
                 $terminalname = $_POST['terminalname'];
+                $cardnumber = $_POST['cardnumber'];
                 $amount = $_POST['amount'];
                 $source = $_POST['source'];
                 $aid = $_POST['aid'];
-                $result = $this->_getVoucherTicket($trackingid, $terminalname, $amount, $source, $aid);
+                $purpose = $_POST['purpose'];
+                $stackerbatchid = $_POST['stackerbatchid'];
+                $vouchercode = $_POST['voucherticketbarcode'];
+                $result = $this->_addTicket($trackingid, $terminalname, $cardnumber, $amount, $source, $aid, $purpose, $stackerbatchid, $vouchercode);
                 }
 
-        $this->render('getVoucherTicket', array('result'=>$result));
+        $this->render('addTicket', array('result'=>$result));
+    }
+
+    private function _addTicket($trackingid, $terminalname, $cardnumber, $amount, $source, $aid, $purpose, $stackerbatchid, $vouchercode){
+        //$url = Yii::app()->params['authenticate_client'];
+        $url = "http://vapi.dev.local/index.php/Wsvoucher/addTicket";
+        //$url = "http://localhost/vms_svn/VMS/index.php/Wsvoucher/addTicket";
+        $postdata = CJSON::encode(array('TrackingID'=>$trackingid, 'TerminalName'=>$terminalname, 'MembershipCardNumber'=>$cardnumber, 'Amount'=>$amount, 'Source'=>$source, 'AID'=>$aid, 'Purpose'=>$purpose, 'StackerBatchID'=>$stackerbatchid, 'VoucherTicketBarcode'=>$vouchercode));
+        $result = $this->SubmitData($url, $postdata);
+        return $result[1];
     }
     
-    public function actionUseVoucher(){
-        $this->pageTitle = 'VAPI - Use Voucher';
+        
+    public function actionUseTicket(){
+        $this->pageTitle = 'VAPI - Use Ticket';
         $result = '';
         
-        if(isset($_POST['trackingid']) || isset($_POST['terminalname']) || isset($_POST['voucherticketbarcode']) || isset($_POST['source']) || isset($_POST['aid'])){
+        if(isset($_POST['trackingid']) || isset($_POST['terminalname']) || isset($_POST['voucherticketbarcode']) || isset($_POST['source']) || isset($_POST['aid'])  || isset($_POST['cardnumber']) || isset($_POST['Amount'])){
                 $trackingid = $_POST['trackingid'];
                 $terminalname = $_POST['terminalname'];
                 $voucherticketbarcode = $_POST['voucherticketbarcode'];
                 $source = $_POST['source'];
                 $aid = $_POST['aid'];
-                $result = $this->_useVoucher($trackingid, $terminalname, $voucherticketbarcode, $source, $aid);
+                $cardnumber = $_POST['cardnumber'];
+                $amount = $_POST['amount'];
+                
+                $result = $this->_useTicket($trackingid, $terminalname, $voucherticketbarcode, $source, $aid, $cardnumber, $amount);
                 }
                 
-        $this->render('useVoucher', array('result'=>$result));
+        $this->render('useTicket', array('result'=>$result));
     }
-    
-    public function actionVerifyVoucher(){
-        $this->pageTitle = 'VAPI - Verify Voucher';
-        $result = '';
-        
-        if(isset($_POST['vouchercode']) && isset($_POST['aid']) && isset($_POST['trackingid']) 
-           && isset($_POST['source'])){
-            $voucherCode = $_POST['vouchercode'];
-            $aid = $_POST['aid'];
-            $trackingID = $_POST['trackingid'];
-            $source = $_POST['source'];
-            
-            $result = $this->_verifyVoucher($voucherCode, $aid, $trackingID, $source);
-        } 
-        
-        $this->render('verifyvoucher', array('result'=>$result));
-    }
-    
-    private function _verifyVoucher($voucherCode, $aid, $trackingID, $source){
-        $url = "http://localhost/vms/index.php/wsvoucher/verify";
-        $postdata = CJSON::encode(array('trackingid'=>$trackingID, 'vouchercode'=>$voucherCode, 'aid'=>$aid, 'source'=>$source));
-        $result = $this->SubmitData($url, $postdata);
-        return $result[1];
-    }
-    
-    private function _voucherTicketValidation($trackingid, $terminalname, $voucherticketbarcode, $source, $aid){
+
+    private function _useTicket($trackingid, $terminalname, $voucherticketbarcode, $source, $aid, $cardnumber, $amount){
         //$url = Yii::app()->params['authenticate_client'];
-        $url = "http://localhost/vouchermanagementsystem/VMS/index.php/Wsvoucher/voucherTicketValidation";
-        $postdata = CJSON::encode(array('TrackingID'=>$trackingid, 'TerminalName'=>$terminalname, 'VoucherTicketBarcode'=>$voucherticketbarcode, 'Source'=>$source, 'AID'=>$aid));
-        $result = $this->SubmitData($url, $postdata);
-        return $result[1];
-    }
-    
-    private function _getVoucherTicket($trackingid, $terminalname, $amount, $source, $aid){
-        //$url = Yii::app()->params['authenticate_client'];
-        $url = "http://localhost/vouchermanagementsystem/VMS/index.php/Wsvoucher/getVoucherTicket";
-        $postdata = CJSON::encode(array('TrackingID'=>$trackingid, 'TerminalName'=>$terminalname, 'Amount'=>$amount, 'Source'=>$source, 'AID'=>$aid));
-        $result = $this->SubmitData($url, $postdata);
-        return $result[1];
-    }
-    
-    private function _useVoucher($trackingid, $terminalname, $voucherticketbarcode, $source, $aid){
-        //$url = Yii::app()->params['authenticate_client'];
-        $url = "http://localhost/vouchermanagementsystem/VMS/index.php/Wsvoucher/useVoucher";
-        $postdata = CJSON::encode(array('TrackingID'=>$trackingid, 'TerminalName'=>$terminalname, 'VoucherTicketBarcode'=>$voucherticketbarcode, 'Source'=>$source, 'AID'=>$aid));
+        $url = "http://vapi.dev.local/index.php/Wsvoucher/useTicket";
+        //$url = "http://localhost/vms_svn/VMS/index.php/Wsvoucher/useTicket";
+        $postdata = CJSON::encode(array('TrackingID'=>$trackingid, 'TerminalName'=>$terminalname, 'VoucherTicketBarcode'=>$voucherticketbarcode, 'Source'=>$source, 'AID'=>$aid, 'MembershipCardNumber'=>$cardnumber, 'Amount'=>$amount));
         $result = $this->SubmitData($url, $postdata);
         return $result[1];
     }
