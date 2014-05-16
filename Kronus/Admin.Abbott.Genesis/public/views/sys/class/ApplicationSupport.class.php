@@ -755,8 +755,8 @@ class ApplicationSupport extends DBHandler
         if($zsummaryID > 0)
         {
             $stmt = "SELECT tr.TransactionReferenceID, st.POSAccountNo, tr.TransactionSummaryID, tr.SiteID, tm.TerminalCode, tr.TerminalID, tr.Option2 AS LoyaltyCard,
-                 tr.TransactionType, tr.Amount, tr.DateCreated, tr.ServiceID,a.UserName, tr.Status, rs.ServiceName 
-                 FROM transactiondetails tr inner join accounts a on tr.CreatedByAID = a.AID
+                 tr.TransactionType, tr.Amount, tr.DateCreated, tr.ServiceID,ad.Name, tr.Status, rs.ServiceName 
+                 FROM transactiondetails tr inner join accountdetails ad on tr.CreatedByAID = ad.AID
                   INNER JOIN sites st ON tr.SiteID = st.SiteID
                   INNER JOIN ref_services rs ON rs.ServiceID = tr.ServiceID 
                   INNER JOIN terminals tm ON tr.TerminalID = tm.TerminalID WHERE tr.SiteID = ? AND tr.TerminalID = ? 
@@ -771,8 +771,8 @@ class ApplicationSupport extends DBHandler
         else
         {
             $stmt = "SELECT tr.TransactionReferenceID, st.POSAccountNo, tr.TransactionSummaryID, tr.SiteID, tm.TerminalCode, tr.TerminalID, tr.Option2 AS LoyaltyCard,
-                 tr.TransactionType, tr.Amount, tr.DateCreated, tr.ServiceID,a.UserName, tr.Status, rs.ServiceName 
-                 FROM transactiondetails tr inner join accounts a on tr.CreatedByAID = a.AID
+                 tr.TransactionType, tr.Amount, tr.DateCreated, tr.ServiceID,ad.Name, tr.Status, rs.ServiceName 
+                 FROM transactiondetails tr inner join accountdetails ad on tr.CreatedByAID = ad.AID
                   INNER JOIN sites st ON tr.SiteID = st.SiteID
                   INNER JOIN ref_services rs ON rs.ServiceID = tr.ServiceID
                   INNER JOIN terminals tm ON tr.TerminalID = tm.TerminalID WHERE tr.SiteID = ? AND tr.TerminalID = ? 
@@ -825,9 +825,10 @@ class ApplicationSupport extends DBHandler
     function gettransactionsummary($zsiteID, $zterminalID, $zdatefrom, $zdateto, $zstart, $zlimit, $zsort, $zdirection)
     {
         $stmt = "SELECT ts.TransactionsSummaryID, ts.SiteID, st.POSAccountNo, ts.TerminalID, t.TerminalCode, ts.Deposit, ts.Reload, ts.Option1 AS LoyaltyCard,
-                 ts.Withdrawal, ts.DateStarted, ts.DateEnded, acc.UserName 
+                 ts.Withdrawal, ts.DateStarted, ts.DateEnded, ad.Name 
                  FROM transactionsummary ts
                  INNER JOIN accounts acc ON ts.CreatedByAID = acc.AID
+                 INNER JOIN accountdetails ad ON acc.AID = ad.AID
                  INNER JOIN sites st ON ts.SiteID = st.SiteID
                  INNER JOIN terminals t ON ts.TerminalID = t.TerminalID
                  WHERE ts.SiteID = ? AND ts.TerminalID = ? AND DATE(ts.DateStarted) >= ?
