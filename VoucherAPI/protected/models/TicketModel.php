@@ -812,7 +812,8 @@ class TicketModel extends CFormModel {
     public function insertTicketData($ticketCode, $siteID, $terminalID, $terminalName, $MID, $amount, $source, $dateUpdated, $updatedByAID, $validFromDate, $validToDate, $trackingID, $status, $stackerBatchID) {
         $beginTrans = $this->_connection->beginTransaction();
         try {
-            $query = "INSERT INTO tickets(TicketCode, SiteID, TerminalID, MID, Amount, Source, CreatedByAID, ValidFromDate, ValidToDate, TrackingID, Status) VALUES(:ticket_code, :site_id, :terminal_id, :mid, :amount, :source, :created_by_aid, :valid_from_date, :valid_to_date, :tracking_id, :status)";
+            $query = "INSERT INTO tickets(TicketCode, SiteID, TerminalID, MID, Amount, Source, CreatedByAID, DateCreated, ValidFromDate, ValidToDate, TrackingID, Status) 
+                                    VALUES(:ticket_code, :site_id, :terminal_id, :mid, :amount, :source, :created_by_aid, NOW(6), :valid_from_date, :valid_to_date, :tracking_id, :status)";
             $sql = $this->_connection->createCommand($query);
 
             $sql->bindValues(array(
@@ -1415,7 +1416,24 @@ class TicketModel extends CFormModel {
 
         return $result;
     }
-
+    public function getTicketDateCreated($vouchercode)
+    {
+        $connection = Yii::app()->db;
+        
+        $sql = "SELECT DateCreated FROM tickets WHERE TicketCode = :ticketCode";
+        $command = $connection->createCommand($sql);
+        $command->bindValue(":ticketCode", $vouchercode);
+        $result = $command->queryRow();
+        
+        if (!empty($result))
+        {
+            return $result['DateCreated'];
+        }
+        else
+        {
+            return "";
+        }
+    }
 }
 
 ?>

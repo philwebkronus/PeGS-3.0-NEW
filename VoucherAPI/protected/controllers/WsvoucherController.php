@@ -527,7 +527,7 @@ class WsvoucherController extends Controller {
         $transMsg = "";
         $errCode = "";
         $sequenceNo = "";
-
+        
         if (isset($request['Source']) && is_numeric($request['Source'])) {
 
             $source = trim($request['Source']);
@@ -566,12 +566,11 @@ class WsvoucherController extends Controller {
                                 if (!empty($MID)) {
                                     $terminalCode = Yii::app()->params['sitePrefix'] . $terminalName;
                                     $terminals = $_terminalsModel->getTerminalIDByCodeEGMType($terminalCode);
-
+                                    
                                     if (!empty($terminals)) {
                                         $terminalID = $terminals[0]['TerminalID'];
-                                        if ($terminalID == '' || empty($terminalID)) {
-                                            $terminalID = $terminals[1]['TerminalID'];
-                                        }
+                                        $terminalIDVIP = $terminals[1]['TerminalID'];
+                                        
                                         if ((isset($request['AID']) && is_numeric($request['AID']) && strlen($request['AID']) > 0)) {
                                             $aid = trim($request['AID']);
                                         } else {
@@ -589,8 +588,14 @@ class WsvoucherController extends Controller {
                                         }
 
                                         if ($source == self::SOURCE_EGM) {
+                                            //Check if terminalID is exist, if not, try VIP
                                             $countTerminalEGMSession = $_egmSessionsModel->isEGMSessionExistsByTerminalID($terminalID);
-                                            if ($countTerminalEGMSession > 0) {
+                                            if ($countTerminalEGMSession == 0) //if not
+                                            {
+                                                $terminalID = $terminalIDVIP;
+                                            }
+                                            $countTerminalEGMSessionLast = $_egmSessionsModel->isEGMSessionExistsByTerminalID($terminalID); //Last checking
+                                            if ($countTerminalEGMSessionLast > 0) {
                                                 $_StackerSummaryModel = new StackerSummaryModel();
                                                 $countStackerBatchID = $_StackerSummaryModel->isStackerSummaryIDExists($stackerBatchID);
                                                 if ($countStackerBatchID > 0) {
@@ -605,7 +610,12 @@ class WsvoucherController extends Controller {
                                                             $dateInterval = Yii::app()->params['dateInterval'];
                                                             $date_now2 = date_add($date_now1, date_interval_create_from_date_string($dateInterval));
                                                             $dateUpdated = $date;
-                                                            $validFromDate = date('Y-m-d H:i:s');
+                                                            //Add milliseconds
+                                                            $t = microtime(true);
+                                                            $micro = sprintf("%06d",($t - floor($t)) * 1000000);
+                                                            $d = new DateTime( date('Y-m-d H:i:s.'.$micro,$t) );
+
+                                                            $validFromDate =  $d->format("Y-m-d H:i:s.u");
                                                             $validToDate = date(date_format($date_now2, 'Y-m-d' . ' ' . Yii::app()->params['time_stamp']));
                                                             $updatedByAID = $aid;
 //                                                                $ticketCodeResult = Helpers::insert_ticket_pad($voucherCode, $terminalName);
@@ -625,6 +635,7 @@ class WsvoucherController extends Controller {
                                                                 $stat = 'Success';
                                                                 $status = 1;
                                                                 $APIMethod = 8;
+                                                                $dateTime = $_ticketModel->getTicketDateCreated($voucherCode);
                                                                 $sequenceNo = $lastInsertedID;
                                                                 AuditLog::logAPITransactions($APIMethod, $source, $details, $voucherCode, $trackingID, $status);
                                                                 $result = $commonController->getVerifyRetMsg($vouchertype, $errorCode, $transMsg, $voucherCode, $amount, $validFromDate, "", $validToDate, $sequenceNo);
@@ -664,70 +675,87 @@ class WsvoucherController extends Controller {
                                                 $result = $commonController->getVerifyRetMsg($vouchertype, $errorCode, $transMsg, $voucherCode, $amount, $validFromDate, "", $validToDate);
                                             }
                                         } else {
-                                            $_StackerSummaryModel = new StackerSummaryModel();
-                                            $countStackerBatchID = $_StackerSummaryModel->isStackerSummaryIDExists($stackerBatchID);
-                                            if ($countStackerBatchID > 0) {
-                                                $countEGMSession = $_egmSessionsModel->isEGMSessionExistsByBatchID($stackerBatchID);
-                                                if ($countEGMSession > 0) {
-                                                    $countMatchedID = $_egmSessionsModel->isTerminalAndBatchIDMatched($terminalID, $stackerBatchID);
-                                                    if ($countMatchedID > 0) {
-                                                        $siteID = $_terminalsModel->getSiteIDfromterminals($terminalID);
+                                            //Check if terminalID is exist, if not, try VIP
+                                            $countTerminalEGMSession = $_egmSessionsModel->isEGMSessionExistsByTerminalID($terminalID);
+                                            if ($countTerminalEGMSession == 0) //if not
+                                            {
+                                                $terminalID = $terminalIDVIP;
+                                            }
+                                            $countTerminalEGMSessionLast = $_egmSessionsModel->isEGMSessionExistsByTerminalID($terminalID); //Last checking
+                                            if ($countTerminalEGMSessionLast > 0) 
+                                            {
+                                                $_StackerSummaryModel = new StackerSummaryModel();
+                                                $countStackerBatchID = $_StackerSummaryModel->isStackerSummaryIDExists($stackerBatchID);
+                                                if ($countStackerBatchID > 0) {
+                                                    $countEGMSession = $_egmSessionsModel->isEGMSessionExistsByBatchID($stackerBatchID);
+                                                    if ($countEGMSession > 0) {
+                                                        $countMatchedID = $_egmSessionsModel->isTerminalAndBatchIDMatched($terminalID, $stackerBatchID);
+                                                        if ($countMatchedID > 0) {
+                                                            $siteID = $_terminalsModel->getSiteIDfromterminals($terminalID);
 
-                                                        $date = date('Y-m-d H:i:s');
-                                                        $date_now1 = new DateTime($date);
-                                                        $dateInterval = Yii::app()->params['dateInterval'];
-                                                        $date_now2 = date_add($date_now1, date_interval_create_from_date_string($dateInterval));
-                                                        $dateUpdated = $date;
-                                                        $validFromDate = date('Y-m-d H:i:s');
-                                                        $validToDate = date(date_format($date_now2, 'Y-m-d' . ' ' . Yii::app()->params['time_stamp']));
-                                                        $updatedByAID = $aid;
-//                                                    $ticketCodeResult = Helpers::insert_ticket_pad($voucherCode, $terminalName);
+                                                            $date = date('Y-m-d H:i:s');
+                                                            $date_now1 = new DateTime($date);
+                                                            $dateInterval = Yii::app()->params['dateInterval'];
+                                                            $date_now2 = date_add($date_now1, date_interval_create_from_date_string($dateInterval));
+                                                            $dateUpdated = $date;
+                                                            
+                                                            //Add milliseconds
+                                                            $t = microtime(true);
+                                                            $micro = sprintf("%06d",($t - floor($t)) * 1000000);
+                                                            $d = new DateTime( date('Y-m-d H:i:s.'.$micro,$t) );
 
-                                                        if ($purpose == self::PURPOSE_PAYOUT_TICKET) {
-                                                            $status = self::STATUS_TICKET_ACTIVE;
-                                                        } else if ($purpose == self::PURPOSE_VOID) {
-                                                            $status = self::STATUS_TICKET_VOID;
-                                                        } else if ($purpose == self::PURPOSE_CANCELLED) {
-                                                            $status = self::STATUS_TICKET_VOID;
-                                                        }
+                                                            $validFromDate =  $d->format("Y-m-d H:i:s.u");
+                                                            $validToDate = date(date_format($date_now2, 'Y-m-d' . ' ' . Yii::app()->params['time_stamp']));
+                                                            $updatedByAID = $aid;
+    //                                                    $ticketCodeResult = Helpers::insert_ticket_pad($voucherCode, $terminalName);
 
-                                                        $lastInsertedID = $_ticketModel->insertTicketData($voucherCode, $siteID, $terminalID, $terminalCode, $MID, $amount, $source, $dateUpdated, $updatedByAID, $validFromDate, $validToDate, $trackingID, $status, $stackerBatchID);
-                                                        if ($lastInsertedID != false) {
-                                                            $transMsg = 'Transaction successful.';
-                                                            $errorCode = 0;
-                                                            $details = "AddTicket : " . $transMsg;
-                                                            $stat = 1;
-                                                            $APIMethod = 8;
-                                                            $sequenceNo = $lastInsertedID;
-                                                            AuditLog::logAPITransactions($APIMethod, $source, $details, $voucherCode, $trackingID, $stat);
-                                                            $result = $commonController->getVerifyRetMsg($vouchertype, $errorCode, $transMsg, $voucherCode, $amount, $validFromDate, "", $validToDate, $sequenceNo);
+                                                            if ($purpose == self::PURPOSE_PAYOUT_TICKET) {
+                                                                $status = self::STATUS_TICKET_ACTIVE;
+                                                            } else if ($purpose == self::PURPOSE_VOID) {
+                                                                $status = self::STATUS_TICKET_VOID;
+                                                            } else if ($purpose == self::PURPOSE_CANCELLED) {
+                                                                $status = self::STATUS_TICKET_VOID;
+                                                            }
+
+                                                            $lastInsertedID = $_ticketModel->insertTicketData($voucherCode, $siteID, $terminalID, $terminalCode, $MID, $amount, $source, $dateUpdated, $updatedByAID, $validFromDate, $validToDate, $trackingID, $status, $stackerBatchID);
+                                                            if ($lastInsertedID != false) {
+                                                                $transMsg = 'Transaction successful.';
+                                                                $errorCode = 0;
+                                                                $details = "AddTicket : " . $transMsg;
+                                                                $stat = 1;
+                                                                $APIMethod = 8;
+                                                                $dateTime = $_ticketModel->getTicketDateCreated($voucherCode);
+                                                                $sequenceNo = $lastInsertedID;
+                                                                AuditLog::logAPITransactions($APIMethod, $source, $details, $voucherCode, $trackingID, $stat);
+                                                                $result = $commonController->getVerifyRetMsg($vouchertype, $errorCode, $transMsg, $voucherCode, $amount, $validFromDate, "", $validToDate, $sequenceNo);
+                                                            } else {
+                                                                $transMsg = 'Transaction failed.';
+                                                                $errorCode = 31;
+                                                                $details = "AddTicket : " . $transMsg;
+                                                                $stat = 2;
+                                                                $APIMethod = 8;
+                                                                AuditLog::logAPITransactions($APIMethod, $source, $details, $voucherCode, $trackingID, $stat);
+                                                                Utilities::log("Error Message: " . $transMsg . " ErrorCode: " . $errorCode);
+                                                                $result = $commonController->getVerifyRetMsg($vouchertype, $errorCode, $transMsg, $voucherCode, $amount, $validFromDate, "", $validToDate);
+                                                            }
                                                         } else {
-                                                            $transMsg = 'Transaction failed.';
-                                                            $errorCode = 31;
-                                                            $details = "AddTicket : " . $transMsg;
-                                                            $stat = 2;
-                                                            $APIMethod = 8;
-                                                            AuditLog::logAPITransactions($APIMethod, $source, $details, $voucherCode, $trackingID, $stat);
+                                                            $transMsg = 'Terminal and StackerBatchID does not match in EGM session.';
+                                                            $errorCode = 42;
                                                             Utilities::log("Error Message: " . $transMsg . " ErrorCode: " . $errorCode);
                                                             $result = $commonController->getVerifyRetMsg($vouchertype, $errorCode, $transMsg, $voucherCode, $amount, $validFromDate, "", $validToDate);
                                                         }
                                                     } else {
-                                                        $transMsg = 'Terminal and StackerBatchID does not match in EGM session.';
-                                                        $errorCode = 42;
+                                                        $transMsg = 'StackerBatchID does not have a session.';
+                                                        $errorCode = 41;
                                                         Utilities::log("Error Message: " . $transMsg . " ErrorCode: " . $errorCode);
                                                         $result = $commonController->getVerifyRetMsg($vouchertype, $errorCode, $transMsg, $voucherCode, $amount, $validFromDate, "", $validToDate);
                                                     }
                                                 } else {
-                                                    $transMsg = 'StackerBatchID does not have a session.';
-                                                    $errorCode = 41;
+                                                    $transMsg = 'StackerBatchID does not exists.';
+                                                    $errorCode = 40;
                                                     Utilities::log("Error Message: " . $transMsg . " ErrorCode: " . $errorCode);
                                                     $result = $commonController->getVerifyRetMsg($vouchertype, $errorCode, $transMsg, $voucherCode, $amount, $validFromDate, "", $validToDate);
                                                 }
-                                            } else {
-                                                $transMsg = 'StackerBatchID does not exists.';
-                                                $errorCode = 40;
-                                                Utilities::log("Error Message: " . $transMsg . " ErrorCode: " . $errorCode);
-                                                $result = $commonController->getVerifyRetMsg($vouchertype, $errorCode, $transMsg, $voucherCode, $amount, $validFromDate, "", $validToDate);
                                             }
                                         }
                                     } else {
@@ -779,7 +807,7 @@ class WsvoucherController extends Controller {
             $voucherCode = $ticketCodeResult;
         }
 
-        $this->_sendResponse(200, CommonController::addTicketResponse($amount, $voucherCode, $validFromDate, $validToDate, $sequenceNo, $transMsg, $errorCode));
+        $this->_sendResponse(200, CommonController::addTicketResponse($amount, $voucherCode, $dateTime, $validToDate, $sequenceNo, $transMsg, $errorCode));
     }
 
     public function actionUseTicket() {
