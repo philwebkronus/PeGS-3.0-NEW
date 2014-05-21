@@ -58,17 +58,31 @@ class TerminalServicesModel{
     /**
      * Check if a terminal has mapped casino
      * @param int $terminalID ID of the terminal
+     * @param int $serviceID CasinoID
      * @return array Count
      * @author Mark Kenneth Esguerra [02-13-14]
      */
-    public function checkHasMappedCasino($terminalID)
+    public function checkHasMappedCasino($terminalID, $serviceID = null)
     {
-        $query = "SELECT COUNT(TerminalID) AS cnt FROM terminalservices 
-                  WHERE TerminalID = :terminalID";
-        
-        $command = $this->_connection->createCommand($query);
-        $command->bindParam(":terminalID", $terminalID);
-        $result = $command->queryRow();
+        if (!is_null($serviceID)) 
+        {
+            $query = "SELECT COUNT(TerminalID) AS cnt FROM terminalservices 
+                      WHERE TerminalID = :terminalID AND ServiceID = :serviceID AND Status = 1";
+
+            $command = $this->_connection->createCommand($query);
+            $command->bindParam(":terminalID", $terminalID);
+            $command->bindParam(":serviceID",  $serviceID);
+            $result = $command->queryRow();
+        }
+        else
+        {
+            $query = "SELECT COUNT(TerminalID) AS cnt FROM terminalservices 
+                      WHERE TerminalID = :terminalID AND Status = 1";
+
+            $command = $this->_connection->createCommand($query);
+            $command->bindParam(":terminalID", $terminalID);
+            $result = $command->queryRow();
+        }
         
         return $result;
     }

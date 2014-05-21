@@ -1083,7 +1083,7 @@ class WsKapiController extends Controller {
                 $refServices = new RefServicesModel();
                 $siteaccounts = new SiteAccountsModel();
                 $membersModel = new MembersModel();
-
+                
                 $sc = Yii::app()->params['SitePrefix'] . $terminalName;
                 $MID = $memberCardsModel->getMID($membershipcardnumber);
 
@@ -1124,8 +1124,7 @@ class WsKapiController extends Controller {
                             if (!empty($TerminalDetails)) {
                                 //Check Terminal Status
                                 if ($TerminalDetails['Status'] == 1) {
-                                    //Checked if terminal is currently mapped in the casion
-                                    $cnt_mapped = $terminalServicesModel->checkHasMappedCasino($TerminalDetails['TerminalID']);
+                                    $cnt_mapped = $terminalServicesModel->checkHasMappedCasino($TerminalDetails['TerminalID'], $casinoID);
                                     if ($cnt_mapped['cnt'] > 0) {
                                         $TerminalID = $TerminalDetails['TerminalID'];
                                         $siteid = $TerminalDetails['SiteID'];
@@ -1150,7 +1149,15 @@ class WsKapiController extends Controller {
 
                                             exit;
                                         }
+                                        //check if casino user mode is user-based
+                                        $usermode = $refServices->getServiceUserMode($casinoID);
+                                        if ($usermode != 1) {
+                                            $message = "Casino is not supported.";
+                                            $errCode = 62;
+                                            $this->_sendResponse(200, CommonController::creteEgmSessionResponse(0, '', $message, $errCode));
 
+                                            exit;
+                                        }
                                         //check if casino is mapped on the given terminal
                                         $match = $terminalServicesModel->getMatchedTerminalAndServiceID($TerminalID, $casinoID);
                                         if ($match > 0) {
@@ -1205,7 +1212,7 @@ class WsKapiController extends Controller {
                                             $this->_sendResponse(200, CommonController::creteEgmSessionResponse(0, '', $message, $errCode));
                                         }
                                     } else {
-                                        $message = 'There are no mapped casino in this terminal.';
+                                        $message = 'The casino is not mapped in this terminal.';
                                         $errCode = 49;
                                         $this->_sendResponse(200, CommonController::creteEgmSessionResponse(0, '', $message, $errCode));
                                     }
@@ -1424,7 +1431,9 @@ class WsKapiController extends Controller {
         $stackerSummaryModel = new StackerSummaryModel();
         $stackerdetails = new StackerDetailsModel();
         $sitedenomination = new SiteDenominationModel();
-
+        $terminalServicesModel = new TerminalServicesModel();
+        $egmsessions = new EGMSessionModel();
+        
         $request = $this->_readJsonRequest();
         $DateTime = '';
         $trackingID = '';
@@ -1474,6 +1483,21 @@ class WsKapiController extends Controller {
 
                 exit;
             }
+            //Check if casino is mapped in the terminal
+            $cnt_mapped = $terminalServicesModel->checkHasMappedCasino($terminalID, $casinoID);
+            
+            if ($cnt_mapped['cnt'] == 0) {
+                $message = "The casino is not mapped in this terminal.";
+                $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, $trackingID, $message, 63));
+
+                exit;
+            }
+            //Check if casino ID is exist in egmsession together with terminal name and mid
+            $casinoCnt = $egmsessions->checkIfCasinoExist($terminalID, $casinoID);
+            if ($casinoCnt == 0) {
+                $message = "Terminal name and Casino ID did not match.";
+                $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, $trackingID, $message, 20));
+            }
             //Check terminal type
             $ttype = $terminals->checkTerminalType($terminalID);
             if ($ttype == 0) {
@@ -1507,9 +1531,9 @@ class WsKapiController extends Controller {
             }
 
             $usermode = $refServices->getServiceUserMode($casinoID);
-            if ($usermode == 'false') {
-                $message = "Invalid Casino ID";
-                $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, $trackingID, $message, 45));
+            if ($usermode != 1) {
+                $message = "Casino is not supported.";
+                $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, $trackingID, $message, 62));
 
                 exit;
             }

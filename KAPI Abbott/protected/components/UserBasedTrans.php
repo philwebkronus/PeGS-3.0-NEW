@@ -992,9 +992,11 @@ class UserBasedTrans {
                     $terminalType = $terminalsModel->checkTerminalType($terminal_id);
                     /*********************INSERT TICKET***********************/
                     $source = Yii::app()->params['voucher_source'];
-                    //var_dump($terminal_name, $amount, $acct_id, $source, $loyalty_card, 1, $stackerbatchid, $voucherTicketBarcode, $trackingID);exit();
-                    $terminalName = trim(str_replace(Yii::app()->params['SitePrefix'], "", $terminal_name));
-                    $getvoucher = $voucherTicket->addTicket($terminalName, $amount, $acct_id, $source, $loyalty_card, 1, $stackerbatchid, $voucherTicketBarcode, $trackingID);
+                    //get reg terminal name
+                    $reg_terminal = trim(str_replace("VIP", "", $terminal_name));
+                    $regTerminal  = trim(str_replace(Yii::app()->params['SitePrefix'], "", $reg_terminal));
+                  
+                    $getvoucher = $voucherTicket->addTicket($regTerminal, $amount, $acct_id, $source, $loyalty_card, 1, $stackerbatchid, $voucherTicketBarcode, $trackingID);
                     if (isset($getvoucher['AddTicket']['ErrorCode']) && $getvoucher['AddTicket']['ErrorCode'] == 0) {
                         //success transaction
                         $ticketCode         = $getvoucher['AddTicket']['VoucherTicketBarcode'];
