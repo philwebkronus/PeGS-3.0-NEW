@@ -615,10 +615,28 @@ class FrontendController extends MI_Controller {
                                         $login_acct = $casinoUsername;
                                         $login_pwd = $casinoHashedPassword;
                                         //check if isVIP of chosen casino is match with the isVIP parameter thrown by loyalty getCardInfo function.
-                                        if($casinoIsVIP != $isVIP) {
-                                            $message = 'Please choose the appropriate regular/vip terminal classification for this card.';
-                                            logger($message);
-                                            $this->throwError($message);
+//                                       
+                                        if($casinoIsVIP == 1){
+                                            if($isVIP == 0){
+                                                $terminalcode = $terminalsmodel->getTerminalName($terminal_id);
+//                                            
+                                                $terminalcode = $terminalcode.'VIP';
+                                                $terminal_id = $terminalsmodel->getTerminalID($terminalcode);
+                                        }
+                                        }
+                                        else{
+                                            if($isVIP == 1){
+                                                $terminalcode = $terminalsmodel->getTerminalName($terminal_id);
+//                                            
+                                                $rest = preg_match('/VIP/', $terminalcode);
+                                        
+                                                if($rest > 0){
+                                                    $terminalcode = substr($terminalcode, 0, -3);
+
+                                                    $terminal_id = $terminalsmodel->getTerminalID($terminalcode);
+                                                }
+                                                
+                                            }
                                         }
                                         
                                         $result = $commonUBStartSession->start($terminal_id, $siteid, 'D', $paymentType, $startSessionFormModel->casino,
@@ -766,10 +784,29 @@ class FrontendController extends MI_Controller {
                         $login_acct = $casinoUsername;
                         $login_pwd = $casinoHashedPassword;
                         // check if isVIP of chosen casino is match with the isVIP parameter thrown by loyalty getCardInfo function.
-                        if($casinoIsVIP != $isVIP) {
-                            $message = 'Please choose the appropriate regular/vip terminal classification for this card.';
-                            logger($message);
-                            $this->throwError($message);
+                        
+                        if($casinoIsVIP == 1){
+                            if($isVIP == 0){
+                                $terminalcode = $terminalsmodel->getTerminalName($terminal_id);
+                                        
+                                $terminalcode = $terminalcode.'VIP';
+                                $terminal_id = $terminalsmodel->getTerminalID($terminalcode);
+                                    
+                        }
+                        }
+                        else{
+                            if($isVIP == 1){
+                                $terminalcode = $terminalsmodel->getTerminalName($terminal_id);
+                        
+                                $rest = preg_match('/VIP/', $terminalcode);
+                                
+                                if($rest > 0){
+                                    $terminalcode = substr($terminalcode, 0, -3);
+
+                                    $terminal_id = $terminalsmodel->getTerminalID($terminalcode);
+                                }
+
+                            }
                         }
                         
                         $result = $commonUBStartSession->start($terminal_id, $siteid, 'D', $paymentType, $startSessionFormModel->casino,

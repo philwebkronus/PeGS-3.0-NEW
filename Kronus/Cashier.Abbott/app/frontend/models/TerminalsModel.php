@@ -158,6 +158,17 @@ class TerminalsModel extends MI_Model {
         return $result['TerminalCode'];
     }
     
+    public function getTerminalID($terminalcode) {
+        
+        $sql = 'SELECT TerminalID FROM terminals WHERE TerminalCode = :terminal_code';
+        $param = array(':terminal_code'=>$terminalcode);
+        $this->exec($sql,$param);
+        $result = $this->find();
+        if(!isset($result['TerminalID']))
+            return false;
+        return $result['TerminalID'];
+    }
+    
     public function getTerminalsToStartSession($site_id,$len) {
         $sql = "SELECT A.TerminalID TId,SUBSTR(A.TerminalCode,$len) AS tc, A.TerminalCode TCode FROM terminals A " . 
                 "LEFT JOIN terminalsessions B ON A.TerminalID = B.TerminalID INNER JOIN terminalservices AS C ON A.TerminalID = C.TerminalID " . 
