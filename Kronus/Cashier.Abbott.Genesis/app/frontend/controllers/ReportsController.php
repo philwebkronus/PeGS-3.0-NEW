@@ -121,7 +121,7 @@ class ReportsController extends FrontendController{
         
         if($newdate == 0){
             $runningactivetickets1 =  $tickets->getrunningactivetickets($date, $enddate, $this->site_id);
-            var_dump($runningactivetickets1);exit;
+            
             $date2 = date('Y-m-d H:i:s', strtotime($date. ' - 1 days'));
             
             $enddate2 = date('Y-m-d H:i:s', strtotime($enddate. ' - 1 days'));
