@@ -1,0 +1,1 @@
+[2014-02-19 11:27:56.958828][ERROR] "Error: Can't get balance TerminalID=493 ServiceID=8 ErrorMessage=Response malformed" SiteID = 167 File: /var/www/Kronus_New/cashier.abbott.version/app/frontend/components/CasinoApiUB.php LINE: 215
