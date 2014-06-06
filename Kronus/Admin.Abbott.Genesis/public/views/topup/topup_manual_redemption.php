@@ -61,7 +61,7 @@ $vaccesspages = array('5');
         jQuery("#manualredemp").jqGrid({
             url : 'process/ProcessTopUpPaginate.php?action=getmanualredemption',
             datatype: "json",
-            colNames:['Site / PEGS Code','Site / PEGS Name','POS Account', 'Terminal Code', 'Reported Amount', 'Requested By', 'Transaction Date','Ticket ID','Transaction ID','Remarks','Status', 'Service Name'],
+            colNames:['Site / PEGS Code','Site / PEGS Name','POS Account', 'Terminal Code', 'Reported Amount', 'Processed By', 'Transaction Date','Ticket ID','Transaction ID','Remarks','Status', 'Service Name'],
             rowNum:10,
             height: 280,
             width: 1200,

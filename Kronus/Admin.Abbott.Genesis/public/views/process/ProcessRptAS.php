@@ -151,6 +151,8 @@ if($connected)
       $terminal = $_GET['Terminal'];
       $status = $_GET['Status'];
       
+      $dateto = date ( 'Y-m-d' , strtotime ('+1 day' , strtotime($dateto)));
+      
       $datefrom = $datefrom.' 06:00:00';
       $dateto = $dateto.' 06:00:00';
       
@@ -159,9 +161,19 @@ if($connected)
       $pdf = CTCPDF::c_getInstance();
       $pdf->c_commonReportFormat();
       $pdf->c_setHeader('Manual Casino Fulfillment History');
-      $pdf->html.='<div style="text-align:center;">As of ' . $datefrom . ' to '.$dateto.'</div>';
+      $pdf->html.='<div style="text-align:center;">From ' . $datefrom . ' to '.$dateto.'</div>';
       $pdf->SetFontSize(10);
-      $pdf->c_tableHeader(array('Site','Terminal', 'Transaction Type', 'Amount', 'Service Name', 'Transaction Date', 'Status', 'User Mode', 'Fulfilled By' ));
+      $pdf->c_tableHeader2(array(
+                array('value'=>'Site', 'width' => '40px'),
+                array('value'=>'Terminal', 'width' => '60px'),
+                array('value'=>'Transaction Type'),
+                array('value'=>'Amount'),
+                array('value'=>'Service Name'),
+                array('value'=>'Transaction Date'),
+                array('value'=>'Status'),
+                array('value'=>'User Mode'),
+                array('value'=>'Fulfilled By')
+             ));
       
       if(count($queries) > 0)
       {
@@ -197,8 +209,18 @@ if($connected)
                 $results = preg_split("/$results2/", $vview['TerminalCode']);
 
                 $sitecode = preg_split("/ICSA-/", $vview['SiteCode']);
-              
-             $pdf->c_tableRow(array($sitecode[1],$results[1],$vtranstype, number_format($vview['Amount'],2),$vview['ServiceName'],$vview['TransactionDate'],$vstatus, $usermode, $name));
+             
+                $pdf->c_tableRow2(array(
+                    array('value'=>$sitecode[1], 'width' => '40px'),
+                    array('value'=> $results[1], 'width' => '60px'),
+                    array('value'=>$vtranstype),
+                    array('value'=>number_format($vview['Amount'],2), 'align' => 'right'),
+                    array('value'=>$vview['ServiceName']),
+                    array('value'=>$vview['TransactionDate']),
+                    array('value'=>$vstatus),
+                    array('value'=>$usermode),
+                    array('value'=>$name),
+                 ));
           }
       }
       else

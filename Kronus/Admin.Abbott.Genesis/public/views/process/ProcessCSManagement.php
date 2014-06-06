@@ -640,7 +640,7 @@ if($connected)
         $limit = $_POST['rows']; // get how many rows we want to have into the grid
         $sidx = $_POST['sidx']; // get index row - i.e. user click to sort
         $direction = $_POST['sord']; // get the direction
-        $theProviders = $ocs->getallservices("ServiceName"); //Added on June 13, 2012
+        $theProviders = $ocs->getallservicesecitytrack("ServiceName"); //Added on June 13, 2012
         
         switch($vpaginate)
         {
@@ -812,7 +812,7 @@ if($connected)
                         }
 
                         $responce->rows[$i]['id']=$vview['TransactionReferenceID'];
-                        $responce->rows[$i]['cell']=array($vview['TransactionReferenceID'],$vview['TransactionSummaryID'],$vview['SiteID'], $vview['TerminalID'],$vtranstype,$serviceID, number_format($vview['Amount'],2),$vview['DateCreated'],$vview['UserName'], $vstatus);
+                        $responce->rows[$i]['cell']=array($vview['TransactionReferenceID'],$vview['TransactionSummaryID'],$vview['SiteID'], $vview['TerminalID'],$vtranstype,$serviceID, number_format($vview['Amount'],2),$vview['DateCreated'],$vview['Name'], $vstatus);
                         $i++;
                      }
                 }
@@ -944,7 +944,7 @@ if($connected)
                 $limit = (int)$limit;   
                 
                 $result = $ocs->gettranslogslp($vSiteID, $vTerminalID, $vFrom, $vTo, $vsummaryID, $start, $limit, $sort, $direction);
-
+                
                 if(count($result) > 0)
                 {
                      $i = 0;

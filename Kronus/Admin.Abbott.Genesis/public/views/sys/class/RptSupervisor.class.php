@@ -243,29 +243,143 @@ class RptSupervisor extends DBHandler
                                 AND s.SiteID = ?
                                 ORDER BY s.SiteCode";
         
-        $query2 = "SELECT 
+//        $query2 = "SELECT 
+//
+//                                -- DEPOSIT CASH --
+//                                CASE tr.TransactionType
+//                                  WHEN 'D' THEN
+//                                        CASE tr.PaymentType
+//                                          WHEN 2 THEN 0 -- Coupon
+//                                          ELSE -- Not Coupon
+//                                                CASE IFNULL(tr.StackerSummaryID, '')
+//                                                  WHEN '' THEN SUM(tr.Amount) -- Cash
+//                                                  ELSE  -- Check transtype in stackermanagement to find out if ticket or cash, from EGM
+//                                                        (SELECT IFNULL(SUM(Amount), 0)
+//                                                        FROM stackermanagement.stackerdetails sdtls
+//                                                        WHERE sdtls.stackersummaryID = tr.StackerSummaryID
+//                                                                  AND sdtls.TransactionType = 1
+//                                                                  AND sdtls.PaymentType = 0)  -- Deposit, Cash
+//                                                END
+//                                        END
+//                                  ELSE 0 -- Not Deposit
+//                                END As DepositCash,
+//
+//                                -- DEPOSIT TICKET --
+//                                CASE tr.TransactionType
+//                                  WHEN 'D' THEN
+//                                    CASE tr.PaymentType
+//                                      WHEN 2 THEN 0 -- Coupon
+//                                      ELSE -- Not Coupon
+//                                        CASE IFNULL(tr.StackerSummaryID, '')
+//                                          WHEN '' THEN 0 -- Cash
+//                                          ELSE  -- Check transtype in stackermanagement to find out if ticket or cash, from EGM
+//                                            (SELECT IFNULL(SUM(Amount), 0)
+//                                            FROM stackermanagement.stackerdetails sdtls
+//                                            WHERE sdtls.stackersummaryID = tr.StackerSummaryID
+//                                                  AND sdtls.TransactionType = 1
+//                                                  AND sdtls.PaymentType = 2)  -- Deposit, Ticket
+//                                        END
+//                                    END
+//                                  ELSE 0 -- Not Deposit
+//                                END As DepositTicket,
+//
+//                                -- RELOAD CASH --
+//                                CASE tr.TransactionType
+//                                  WHEN 'R' THEN
+//                                        CASE tr.PaymentType
+//                                          WHEN 2 THEN 0 -- Coupon
+//                                          ELSE -- Not Coupon
+//                                                CASE IFNULL(tr.StackerSummaryID, '')
+//                                                  WHEN '' THEN SUM(tr.Amount) -- Cash
+//                                                  ELSE  -- Check transtype in stackermanagement to find out if ticket or cash, from EGM
+//                                                        (SELECT IFNULL(SUM(Amount), 0)
+//                                                        FROM stackermanagement.stackerdetails sdtls
+//                                                        WHERE sdtls.stackersummaryID = tr.StackerSummaryID
+//                                                                  AND sdtls.TransactionType = 2
+//                                                                  AND sdtls.PaymentType = 0)  -- Reload, Cash
+//                                                END
+//                                        END
+//                                  ELSE 0 -- Not Reload
+//                                END As ReloadCash,
+//                                
+//                                -- RELOAD TICKET --
+//                                CASE tr.TransactionType
+//                                  WHEN 'R' THEN
+//                                    CASE tr.PaymentType
+//                                      WHEN 2 THEN 0 -- Coupon
+//                                      ELSE -- Not Coupon
+//                                        CASE IFNULL(tr.StackerSummaryID, '')
+//                                          WHEN '' THEN 0 -- Cash
+//                                          ELSE  -- Check transtype in stackermanagement to find out if ticket or cash, from EGM
+//                                            (SELECT IFNULL(SUM(Amount), 0)
+//                                            FROM stackermanagement.stackerdetails sdtls
+//                                            WHERE sdtls.stackersummaryID = tr.StackerSummaryID
+//                                                  AND sdtls.TransactionType = 2
+//                                                  AND sdtls.PaymentType = 2)  -- Reload, Ticket
+//                                        END
+//                                    END
+//                                  ELSE 0 -- Not Reload
+//                                END As ReloadTicket,
+//                                
+//                                -- REDEMPTION CASHIER --
+//                                CASE tr.TransactionType
+//                                  WHEN 'W' THEN
+//                                        CASE a.AccountTypeID
+//                                          WHEN 4 THEN SUM(tr.Amount) -- Cashier
+//                                          ELSE 0
+//                                        END -- Genesis
+//                                  ELSE 0 --  Not Redemption
+//                                END As RedemptionCashier,
+//
+//                                ts.DateStarted, ts.DateEnded, tr.SiteID
+//                                FROM npos.transactiondetails tr INNER JOIN npos.transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
+//                                INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
+//                                INNER JOIN npos.accounts a ON ts.CreatedByAID = a.AID
+//                                INNER JOIN npos.sites s ON tr.SiteID = s.SiteID
+//                                WHERE tr.SiteID IN (".$zsiteID.")
+//                                  AND tr.DateCreated >= ? AND tr.DateCreated < ?
+//                                  AND tr.Status IN(1,4)
+//                                GROUP By tr.TransactionType, tr.TransactionSummaryID
+//                                ORDER BY s.POSAccountNo"; 
+        
+        $query2 = "SELECT tr.TransactionSummaryID AS TransSummID, SUBSTR(t.TerminalCode,11) AS TerminalCode, tr.TransactionType AS TransType,
+
+                                -- TOTAL DEPOSIT --
+                                CASE tr.TransactionType
+                                  WHEN 'D' THEN SUM(tr.Amount)
+                                  ELSE 0
+                                END As TotalDeposit,
+
+                                -- DEPOSIT COUPON --
+                                SUM(CASE tr.TransactionType
+                                  WHEN 'D' THEN
+                                    CASE tr.PaymentType
+                                      WHEN 2 THEN tr.Amount
+                                      ELSE 0
+                                     END
+                                  ELSE 0 END) As DepositCoupon,
 
                                 -- DEPOSIT CASH --
-                                CASE tr.TransactionType
-                                  WHEN 'D' THEN
-                                        CASE tr.PaymentType
-                                          WHEN 2 THEN 0 -- Coupon
-                                          ELSE -- Not Coupon
-                                                CASE IFNULL(tr.StackerSummaryID, '')
-                                                  WHEN '' THEN SUM(tr.Amount) -- Cash
-                                                  ELSE  -- Check transtype in stackermanagement to find out if ticket or cash, from EGM
-                                                        (SELECT IFNULL(SUM(Amount), 0)
-                                                        FROM stackermanagement.stackerdetails sdtls
-                                                        WHERE sdtls.stackersummaryID = tr.StackerSummaryID
-                                                                  AND sdtls.TransactionType = 1
-                                                                  AND sdtls.PaymentType = 0)  -- Deposit, Cash
-                                                END
-                                        END
-                                  ELSE 0 -- Not Deposit
-                                END As DepositCash,
+                                SUM(CASE tr.TransactionType
+                                   WHEN 'D' THEN
+                                     CASE tr.PaymentType
+                                       WHEN 2 THEN 0 -- Coupon
+                                       ELSE -- Not Coupon
+                                         CASE IFNULL(tr.StackerSummaryID, '')
+                                           WHEN '' THEN tr.Amount -- Cash
+                                           ELSE  -- Check transtype in stackermanagement to find out if ticket or cash, from EGM
+                                             (SELECT IFNULL(SUM(Amount), 0)
+                                             FROM stackermanagement.stackerdetails sdtls
+                                             WHERE sdtls.stackersummaryID = tr.StackerSummaryID
+                                                   AND sdtls.TransactionType = 1
+                                                   AND sdtls.PaymentType = 0)  -- Deposit, Cash
+                                         END
+                                    END
+                                   ELSE 0 -- Not Deposit
+                                END) As DepositCash,
 
                                 -- DEPOSIT TICKET --
-                                CASE tr.TransactionType
+                                SUM(CASE tr.TransactionType
                                   WHEN 'D' THEN
                                     CASE tr.PaymentType
                                       WHEN 2 THEN 0 -- Coupon
@@ -281,29 +395,46 @@ class RptSupervisor extends DBHandler
                                         END
                                     END
                                   ELSE 0 -- Not Deposit
-                                END As DepositTicket,
+                                END) As DepositTicket,
+
+                                -- TOTAL RELOAD --
+                                CASE tr.TransactionType
+                                  WHEN 'R' THEN SUM(tr.Amount)
+                                  ELSE 0 -- Not Reload
+                                END As TotalReload,
+
+                                -- RELOAD COUPON --
+                                SUM(CASE tr.TransactionType
+                                  WHEN 'R' THEN
+                                    CASE tr.PaymentType
+                                      WHEN 2 THEN tr.Amount
+                                      ELSE 0
+                                     END
+                                  ELSE 0 END) As ReloadCoupon,
 
                                 -- RELOAD CASH --
-                                CASE tr.TransactionType
-                                  WHEN 'R' THEN
-                                        CASE tr.PaymentType
-                                          WHEN 2 THEN 0 -- Coupon
-                                          ELSE -- Not Coupon
-                                                CASE IFNULL(tr.StackerSummaryID, '')
-                                                  WHEN '' THEN SUM(tr.Amount) -- Cash
-                                                  ELSE  -- Check transtype in stackermanagement to find out if ticket or cash, from EGM
-                                                        (SELECT IFNULL(SUM(Amount), 0)
-                                                        FROM stackermanagement.stackerdetails sdtls
-                                                        WHERE sdtls.stackersummaryID = tr.StackerSummaryID
-                                                                  AND sdtls.TransactionType = 2
-                                                                  AND sdtls.PaymentType = 0)  -- Reload, Cash
-                                                END
-                                        END
-                                  ELSE 0 -- Not Reload
-                                END As ReloadCash,
-                                
+                                SUM(CASE tr.TransactionType
+                                   WHEN 'R' THEN
+                                     CASE tr.PaymentType
+                                       WHEN 2 THEN 0 -- Coupon
+                                       ELSE -- Not Coupon
+                                         CASE IFNULL(tr.StackerSummaryID, '')
+                                           WHEN '' THEN tr.Amount -- Cash
+                                           ELSE  -- Check transtype in stackermanagement to find out if ticket or cash, from EGM
+                                              (SELECT IFNULL(SUM(Amount), 0)
+                                --              (SELECT IFNULL(Amount, 0)
+                                             FROM stackermanagement.stackerdetails sdtls
+                                             WHERE sdtls.stackersummaryID = tr.StackerSummaryID
+                                                   AND tr.TransactionDetailsID = sdtls.TransactionDetailsID
+                                                   AND sdtls.TransactionType = 2
+                                                   AND sdtls.PaymentType = 0)  -- Reload, Cash
+                                         END
+                                     END
+                                   ELSE 0 -- Not Reload
+                                END) As ReloadCash,
+
                                 -- RELOAD TICKET --
-                                CASE tr.TransactionType
+                                SUM(CASE tr.TransactionType
                                   WHEN 'R' THEN
                                     CASE tr.PaymentType
                                       WHEN 2 THEN 0 -- Coupon
@@ -314,33 +445,49 @@ class RptSupervisor extends DBHandler
                                             (SELECT IFNULL(SUM(Amount), 0)
                                             FROM stackermanagement.stackerdetails sdtls
                                             WHERE sdtls.stackersummaryID = tr.StackerSummaryID
+                                                   AND tr.TransactionDetailsID = sdtls.TransactionDetailsID
                                                   AND sdtls.TransactionType = 2
                                                   AND sdtls.PaymentType = 2)  -- Reload, Ticket
                                         END
                                     END
                                   ELSE 0 -- Not Reload
-                                END As ReloadTicket,
-                                
+                                END) As ReloadTicket,
+
+                                -- TOTAL REDEMPTION --
+                                CASE tr.TransactionType
+                                  WHEN 'W' THEN SUM(tr.Amount)
+                                  ELSE 0
+                                END As TotalRedemption,
+
                                 -- REDEMPTION CASHIER --
                                 CASE tr.TransactionType
                                   WHEN 'W' THEN
-                                        CASE a.AccountTypeID
-                                          WHEN 4 THEN SUM(tr.Amount) -- Cashier
-                                          ELSE 0
-                                        END -- Genesis
+                                    CASE a.AccountTypeID
+                                      WHEN 4 THEN SUM(tr.Amount) -- Cashier
+                                      ELSE 0
+                                    END -- Genesis
                                   ELSE 0 --  Not Redemption
                                 END As RedemptionCashier,
+
+                                -- REDEMPTION GENESIS --
+                                CASE tr.TransactionType
+                                  WHEN 'W' THEN
+                                    CASE a.AccountTypeID
+                                      WHEN 15 THEN SUM(tr.Amount) -- Genesis
+                                      ELSE 0
+                                    END -- Cashier
+                                  ELSE 0 -- Not Redemption
+                                END As RedemptionGenesis,
 
                                 ts.DateStarted, ts.DateEnded, tr.SiteID
                                 FROM npos.transactiondetails tr INNER JOIN npos.transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
                                 INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
-                                INNER JOIN npos.accounts a ON ts.CreatedByAID = a.AID
-                                INNER JOIN npos.sites s ON tr.SiteID = s.SiteID
+                                INNER JOIN npos.accounts a ON tr.CreatedByAID = a.AID
                                 WHERE tr.SiteID IN (".$zsiteID.")
                                   AND tr.DateCreated >= ? AND tr.DateCreated < ?
                                   AND tr.Status IN(1,4)
                                 GROUP By tr.TransactionType, tr.TransactionSummaryID
-                                ORDER BY s.POSAccountNo"; 
+                                ORDER BY tr.TerminalID, tr.DateCreated DESC";
         
         $query3 = "SELECT tr.SiteID, IFNULL(SUM(stckr.Withdrawal), 0) AS PrintedTickets FROM npos.transactiondetails tr  -- Printed Tickets through W
                                 INNER JOIN npos.transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
@@ -368,7 +515,7 @@ class RptSupervisor extends DBHandler
         $qr1 = array();
         foreach($rows1 as $row1) {
             $qr1[] = array('SiteID'=>$row1['SiteID'], 'ManualRedemption' => $row1['ManualRedemption'],'PrintedTickets' => '0.00', 'EncashedTickets' => '0.00',
-                                        'LoadCash' => '0.00', 'LoadTicket' => '0.00', 'RedemptionCashier' => '0.00');
+                                        'LoadCash' => '0.00', 'LoadTicket' => '0.00', 'LoadCoupon' => '0.00', 'RedemptionCashier' => '0.00');
         }
         
         $this->prepare($query2);
@@ -387,6 +534,10 @@ class RptSupervisor extends DBHandler
                         $qr1[$keys]["LoadTicket"] = (float)$qr1[$keys]["LoadTicket"] + (float)$row2["DepositTicket"];
                     if($row2["ReloadTicket"] != '0.00')
                         $qr1[$keys]["LoadTicket"] = (float)$qr1[$keys]["LoadTicket"] + (float)$row2["ReloadTicket"];
+                    if($row2["DepositCoupon"] != '0.00')
+                        $qr1[$keys]["LoadCoupon"] = (float)$qr1[$keys]["LoadCoupon"] + (float)$row2["DepositCoupon"];
+                    if($row2["ReloadCoupon"] != '0.00')
+                        $qr1[$keys]["LoadCoupon"] = (float)$qr1[$keys]["LoadCoupon"] + (float)$row2["ReloadCoupon"];
                     if($row2["RedemptionCashier"] != '0.00')
                         $qr1[$keys]["RedemptionCashier"] = (float)$qr1[$keys]["RedemptionCashier"] + (float)$row2["RedemptionCashier"];
                     break;

@@ -55,7 +55,7 @@
                             cmbsitename: function() {return $("#cmbsite").val();}
                          },
                datatype: "json",
-               colNames:['Cashier Name', 'Total Deposit', 'Total Reload', 'Total Withdrawal', 'Gross Hold'],
+               colNames:['Cashier', 'Total Deposit', 'Total Reload', 'Total Withdrawal', 'Gross Hold'],
                colModel:[
                          {name:'Name',index:'uname', align: 'center', sortable:false},
                          {name:'TotalDeposit', align: 'right', sortable:false},
@@ -100,6 +100,7 @@
                        var grandsales = data.grandsales;
                        var loadcash = data.loadcash;
                        var loadticket = data.loadticket;
+                       var loadcoupon = data.loadcoupon;
                        var cashonhand = data.cashonhand;
                        var printedtickets = data.printedtickets;
                        var encashedtickets = data.encashedtickets;
@@ -111,6 +112,7 @@
                        document.getElementById('withdraw').innerHTML = grandwithdraw;
                        document.getElementById('cash').innerHTML = loadcash;
                        document.getElementById('tickets').innerHTML = loadticket;
+                       document.getElementById('coupons').innerHTML = loadcoupon;
                        document.getElementById('cashonhand').innerHTML = cashonhand;
                        document.getElementById('printedtickets').innerHTML = printedtickets;
                        document.getElementById('encashedtickets').innerHTML = encashedtickets;
@@ -124,6 +126,7 @@
                        document.getElementById('withdraw').innerHTML = "0.00";
                        document.getElementById('cash').innerHTML = "0.00";
                        document.getElementById('tickets').innerHTML = "0.00";
+                       document.getElementById('coupons').innerHTML = "0.00";
                        document.getElementById('cashonhand').innerHTML = "0.00";
                        document.getElementById('printedtickets').innerHTML = "0.00";
                        document.getElementById('encashedtickets').innerHTML = "0.00";
@@ -168,8 +171,8 @@
                         <td style="padding-left: 5px; padding-right: 25px;">Sales</td>
                         <td id="sales" style="font-weight: bold; text-align: right;width: 120px; padding: 2px;"></td>
                         <td style="width: 150px; "></td>
-                        <td style="padding-left: 5px; padding-right: 25px;">Total Redemption</td>
-                        <td id="totwithdraw" style="font-weight: bold; text-align: right;width: 120px; padding: 2px;"></td>
+                        <td style="padding-left: 5px; padding-right: 25px;">Redemption</td>
+                        <td id="withdraw" style="font-weight: bold; text-align: right;width: 120px; padding: 2px;"></td>
                     </tr>
                     <tr>
                         <td rowspan="3" style="padding-left: 5px; padding-right: 25px;">Grand Total</td>
@@ -177,8 +180,8 @@
                         <td style="padding-left: 5px; padding-right: 25px;">Total Sales</td>
                         <td id="totsales" style="font-weight: bold; text-align: right;width: 120px; padding: 2px;"></td>
                         <td style="width: 150px; "></td>
-                        <td style="padding-left: 5px; padding-right: 25px;">Redemption</td>
-                        <td id="withdraw" style="font-weight: bold; text-align: right;width: 120px; padding: 2px;"></td>
+                        <td style="padding-left: 5px; padding-right: 25px;">Total Redemption</td>
+                        <td id="totwithdraw" style="font-weight: bold; text-align: right;width: 120px; padding: 2px;"></td>
                     </tr>
                     <tr>
                         <td style="width: 150px; "></td>
@@ -197,7 +200,11 @@
                         <td id="encashedtickets" style="font-weight: bold; text-align: right;width: 120px; padding: 2px;"></td>
                     </tr>
                     <tr>
-                        <td colspan="5" ></td>
+                        <td style="width: 150px; "></td>
+                        <td style="width: 150px; "></td>
+                        <td style="padding-left: 5px; padding-right: 25px;"> - Coupons</td>
+                        <td id="coupons" style="font-weight: bold; text-align: right;width: 120px; padding: 2px;"></td>
+                        <td style="width: 150px; "></td>
                         <td style="padding-left: 5px; padding-right: 25px;">Cash on Hand</td>
                         <td id="cashonhand" style="font-weight: bold; text-align: right;width: 120px; padding: 2px;"></td>
                     </tr>

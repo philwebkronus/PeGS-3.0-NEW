@@ -386,7 +386,7 @@ $vaccesspages = array('6');
                             {name:'ServiceID',index:'ServiceID', align: 'center'},
                             {name:'Amount',index:'Amount', align: 'right'},
                             {name:'DateCreated',index:'DateCreated', align: 'center'},
-                            {name:'UserName',index:'UserName',align:'center'},
+                            {name:'Name',index:'Name',align:'center'},
                             {name:'Status',index:'Status', align: 'center'},
                     ],
 

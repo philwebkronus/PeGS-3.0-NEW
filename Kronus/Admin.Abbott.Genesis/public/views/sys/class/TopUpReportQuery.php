@@ -542,39 +542,172 @@ class TopUpReportQuery extends DBHandler{
                 $query5 = "SELECT SiteID, ActualAmount AS ActualAmount,TransactionDate FROM manualredemptions " . 
                         "WHERE TransactionDate >= ? AND TransactionDate < ? ";   
                 
-                $query6 = "SELECT 
+//                $query6 = "SELECT 
+//
+//                                -- DEPOSIT CASH --
+//                                CASE tr.TransactionType
+//                                  WHEN 'D' THEN
+//                                        CASE tr.PaymentType
+//                                          WHEN 2 THEN 0 -- Coupon
+//                                          ELSE -- Not Coupon
+//                                                CASE IFNULL(tr.StackerSummaryID, '')
+//                                                  WHEN '' THEN SUM(tr.Amount) -- Cash
+//                                                  ELSE  -- Check transtype in stackermanagement to find out if ticket or cash, from EGM
+//                                                        (SELECT IFNULL(SUM(Amount), 0)
+//                                                        FROM stackermanagement.stackerdetails sdtls
+//                                                        WHERE sdtls.stackersummaryID = tr.StackerSummaryID
+//                                                                  AND sdtls.TransactionType = 1
+//                                                                  AND sdtls.PaymentType = 0)  -- Deposit, Cash
+//                                                END
+//                                        END
+//                                  ELSE 0 -- Not Deposit
+//                                END As DepositCash,
+//                                
+//                                -- DEPOSIT COUPON --
+//                                CASE tr.TransactionType
+//                                    WHEN 'D' THEN
+//                                      CASE tr.PaymentType
+//                                        WHEN 2 THEN SUM(tr.Amount) -- Coupon
+//                                        ELSE 0
+//                                      END
+//                                    ELSE 0
+//                                END As DepositCoupon,
+//                                
+//                                -- DEPOSIT TICKET --
+//                                CASE tr.TransactionType
+//                                  WHEN 'D' THEN
+//                                    CASE tr.PaymentType
+//                                      WHEN 2 THEN 0 -- Coupon
+//                                      ELSE -- Not Coupon
+//                                        CASE IFNULL(tr.StackerSummaryID, '')
+//                                          WHEN '' THEN 0 -- Cash
+//                                          ELSE  -- Check transtype in stackermanagement to find out if ticket or cash, from EGM
+//                                            (SELECT IFNULL(SUM(Amount), 0)
+//                                            FROM stackermanagement.stackerdetails sdtls
+//                                            WHERE sdtls.stackersummaryID = tr.StackerSummaryID
+//                                                  AND sdtls.TransactionType = 1
+//                                                  AND sdtls.PaymentType = 2)  -- Deposit, Ticket
+//                                        END
+//                                    END
+//                                  ELSE 0 -- Not Deposit
+//                                END As DepositTicket,
+//                                
+//                                -- RELOAD COUPON --
+//                                CASE tr.TransactionType
+//                                  WHEN 'R' THEN
+//                                    CASE tr.PaymentType
+//                                      WHEN 2 THEN SUM(tr.Amount) -- Coupon
+//                                      ELSE 0
+//                                    END
+//                                  ELSE 0
+//                                END As ReloadCoupon,
+//
+//                                -- RELOAD CASH --
+//                                CASE tr.TransactionType
+//                                  WHEN 'R' THEN
+//                                        CASE tr.PaymentType
+//                                          WHEN 2 THEN 0 -- Coupon
+//                                          ELSE -- Not Coupon
+//                                                CASE IFNULL(tr.StackerSummaryID, '')
+//                                                  WHEN '' THEN SUM(tr.Amount) -- Cash
+//                                                  ELSE  -- Check transtype in stackermanagement to find out if ticket or cash, from EGM
+//                                                        (SELECT IFNULL(SUM(Amount), 0)
+//                                                        FROM stackermanagement.stackerdetails sdtls
+//                                                        WHERE sdtls.stackersummaryID = tr.StackerSummaryID
+//                                                                  AND sdtls.TransactionType = 2
+//                                                                  AND sdtls.PaymentType = 0)  -- Reload, Cash
+//                                                END
+//                                        END
+//                                  ELSE 0 -- Not Reload
+//                                END As ReloadCash,
+//                                
+//                                -- RELOAD TICKET --
+//                                CASE tr.TransactionType
+//                                  WHEN 'R' THEN
+//                                    CASE tr.PaymentType
+//                                      WHEN 2 THEN 0 -- Coupon
+//                                      ELSE -- Not Coupon
+//                                        CASE IFNULL(tr.StackerSummaryID, '')
+//                                          WHEN '' THEN 0 -- Cash
+//                                          ELSE  -- Check transtype in stackermanagement to find out if ticket or cash, from EGM
+//                                            (SELECT IFNULL(SUM(Amount), 0)
+//                                            FROM stackermanagement.stackerdetails sdtls
+//                                            WHERE sdtls.stackersummaryID = tr.StackerSummaryID
+//                                                  AND sdtls.TransactionType = 2
+//                                                  AND sdtls.PaymentType = 2)  -- Reload, Ticket
+//                                        END
+//                                    END
+//                                  ELSE 0 -- Not Reload
+//                                END As ReloadTicket,
+//
+//                                -- REDEMPTION CASHIER --
+//                                CASE tr.TransactionType
+//                                  WHEN 'W' THEN
+//                                        CASE a.AccountTypeID
+//                                          WHEN 4 THEN SUM(tr.Amount) -- Cashier
+//                                          ELSE 0
+//                                        END -- Genesis
+//                                  ELSE 0 --  Not Redemption
+//                                END As RedemptionCashier,
+//                                
+//                                -- REDEMPTION GENESIS --
+//                                CASE tr.TransactionType
+//                                  WHEN 'W' THEN
+//                                    CASE a.AccountTypeID
+//                                      WHEN 15 THEN SUM(tr.Amount) -- Genesis
+//                                      ELSE 0
+//                                    END -- Cashier
+//                                  ELSE 0 -- Not Redemption
+//                                END As RedemptionGenesis,
+//
+//                                ts.DateStarted, ts.DateEnded, tr.SiteID
+//                                FROM npos.transactiondetails tr INNER JOIN npos.transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
+//                                INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
+//                                INNER JOIN npos.accounts a ON ts.CreatedByAID = a.AID
+//                                INNER JOIN npos.sites s ON tr.SiteID = s.SiteID
+//                                WHERE tr.DateCreated >= ? AND tr.DateCreated < ?
+//                                  AND tr.Status IN(1,4)
+//                                GROUP By tr.TransactionType, tr.TransactionSummaryID
+//                                ORDER BY s.POSAccountNo"; 
+                
+                $query6 = "SELECT tr.TransactionSummaryID AS TransSummID, SUBSTR(t.TerminalCode,11) AS TerminalCode, tr.TransactionType AS TransType,
+
+                                -- TOTAL DEPOSIT --
+                                CASE tr.TransactionType
+                                  WHEN 'D' THEN SUM(tr.Amount)
+                                  ELSE 0
+                                END As TotalDeposit,
+
+                                -- DEPOSIT COUPON --
+                                SUM(CASE tr.TransactionType
+                                  WHEN 'D' THEN
+                                    CASE tr.PaymentType
+                                      WHEN 2 THEN tr.Amount
+                                      ELSE 0
+                                     END
+                                  ELSE 0 END) As DepositCoupon,
 
                                 -- DEPOSIT CASH --
-                                CASE tr.TransactionType
-                                  WHEN 'D' THEN
-                                        CASE tr.PaymentType
-                                          WHEN 2 THEN 0 -- Coupon
-                                          ELSE -- Not Coupon
-                                                CASE IFNULL(tr.StackerSummaryID, '')
-                                                  WHEN '' THEN SUM(tr.Amount) -- Cash
-                                                  ELSE  -- Check transtype in stackermanagement to find out if ticket or cash, from EGM
-                                                        (SELECT IFNULL(SUM(Amount), 0)
-                                                        FROM stackermanagement.stackerdetails sdtls
-                                                        WHERE sdtls.stackersummaryID = tr.StackerSummaryID
-                                                                  AND sdtls.TransactionType = 1
-                                                                  AND sdtls.PaymentType = 0)  -- Deposit, Cash
-                                                END
-                                        END
-                                  ELSE 0 -- Not Deposit
-                                END As DepositCash,
-                                
-                                -- DEPOSIT COUPON --
-                                CASE tr.TransactionType
-                                    WHEN 'D' THEN
-                                      CASE tr.PaymentType
-                                        WHEN 2 THEN SUM(tr.Amount) -- Coupon
-                                        ELSE 0
-                                      END
-                                    ELSE 0
-                                END As DepositCoupon,
-                                
+                                SUM(CASE tr.TransactionType
+                                   WHEN 'D' THEN
+                                     CASE tr.PaymentType
+                                       WHEN 2 THEN 0 -- Coupon
+                                       ELSE -- Not Coupon
+                                         CASE IFNULL(tr.StackerSummaryID, '')
+                                           WHEN '' THEN tr.Amount -- Cash
+                                           ELSE  -- Check transtype in stackermanagement to find out if ticket or cash, from EGM
+                                             (SELECT IFNULL(SUM(Amount), 0)
+                                             FROM stackermanagement.stackerdetails sdtls
+                                             WHERE sdtls.stackersummaryID = tr.StackerSummaryID
+                                                   AND sdtls.TransactionType = 1
+                                                   AND sdtls.PaymentType = 0)  -- Deposit, Cash
+                                         END
+                                    END
+                                   ELSE 0 -- Not Deposit
+                                END) As DepositCash,
+
                                 -- DEPOSIT TICKET --
-                                CASE tr.TransactionType
+                                SUM(CASE tr.TransactionType
                                   WHEN 'D' THEN
                                     CASE tr.PaymentType
                                       WHEN 2 THEN 0 -- Coupon
@@ -590,39 +723,46 @@ class TopUpReportQuery extends DBHandler{
                                         END
                                     END
                                   ELSE 0 -- Not Deposit
-                                END As DepositTicket,
-                                
-                                -- RELOAD COUPON --
+                                END) As DepositTicket,
+
+                                -- TOTAL RELOAD --
                                 CASE tr.TransactionType
+                                  WHEN 'R' THEN SUM(tr.Amount)
+                                  ELSE 0 -- Not Reload
+                                END As TotalReload,
+
+                                -- RELOAD COUPON --
+                                SUM(CASE tr.TransactionType
                                   WHEN 'R' THEN
                                     CASE tr.PaymentType
-                                      WHEN 2 THEN SUM(tr.Amount) -- Coupon
+                                      WHEN 2 THEN tr.Amount
                                       ELSE 0
-                                    END
-                                  ELSE 0
-                                END As ReloadCoupon,
+                                     END
+                                  ELSE 0 END) As ReloadCoupon,
 
                                 -- RELOAD CASH --
-                                CASE tr.TransactionType
-                                  WHEN 'R' THEN
-                                        CASE tr.PaymentType
-                                          WHEN 2 THEN 0 -- Coupon
-                                          ELSE -- Not Coupon
-                                                CASE IFNULL(tr.StackerSummaryID, '')
-                                                  WHEN '' THEN SUM(tr.Amount) -- Cash
-                                                  ELSE  -- Check transtype in stackermanagement to find out if ticket or cash, from EGM
-                                                        (SELECT IFNULL(SUM(Amount), 0)
-                                                        FROM stackermanagement.stackerdetails sdtls
-                                                        WHERE sdtls.stackersummaryID = tr.StackerSummaryID
-                                                                  AND sdtls.TransactionType = 2
-                                                                  AND sdtls.PaymentType = 0)  -- Reload, Cash
-                                                END
-                                        END
-                                  ELSE 0 -- Not Reload
-                                END As ReloadCash,
-                                
+                                SUM(CASE tr.TransactionType
+                                   WHEN 'R' THEN
+                                     CASE tr.PaymentType
+                                       WHEN 2 THEN 0 -- Coupon
+                                       ELSE -- Not Coupon
+                                         CASE IFNULL(tr.StackerSummaryID, '')
+                                           WHEN '' THEN tr.Amount -- Cash
+                                           ELSE  -- Check transtype in stackermanagement to find out if ticket or cash, from EGM
+                                              (SELECT IFNULL(SUM(Amount), 0)
+                                --              (SELECT IFNULL(Amount, 0)
+                                             FROM stackermanagement.stackerdetails sdtls
+                                             WHERE sdtls.stackersummaryID = tr.StackerSummaryID
+                                                   AND tr.TransactionDetailsID = sdtls.TransactionDetailsID
+                                                   AND sdtls.TransactionType = 2
+                                                   AND sdtls.PaymentType = 0)  -- Reload, Cash
+                                         END
+                                     END
+                                   ELSE 0 -- Not Reload
+                                END) As ReloadCash,
+
                                 -- RELOAD TICKET --
-                                CASE tr.TransactionType
+                                SUM(CASE tr.TransactionType
                                   WHEN 'R' THEN
                                     CASE tr.PaymentType
                                       WHEN 2 THEN 0 -- Coupon
@@ -633,23 +773,30 @@ class TopUpReportQuery extends DBHandler{
                                             (SELECT IFNULL(SUM(Amount), 0)
                                             FROM stackermanagement.stackerdetails sdtls
                                             WHERE sdtls.stackersummaryID = tr.StackerSummaryID
+                                                   AND tr.TransactionDetailsID = sdtls.TransactionDetailsID
                                                   AND sdtls.TransactionType = 2
                                                   AND sdtls.PaymentType = 2)  -- Reload, Ticket
                                         END
                                     END
                                   ELSE 0 -- Not Reload
-                                END As ReloadTicket,
+                                END) As ReloadTicket,
+
+                                -- TOTAL REDEMPTION --
+                                CASE tr.TransactionType
+                                  WHEN 'W' THEN SUM(tr.Amount)
+                                  ELSE 0
+                                END As TotalRedemption,
 
                                 -- REDEMPTION CASHIER --
                                 CASE tr.TransactionType
                                   WHEN 'W' THEN
-                                        CASE a.AccountTypeID
-                                          WHEN 4 THEN SUM(tr.Amount) -- Cashier
-                                          ELSE 0
-                                        END -- Genesis
+                                    CASE a.AccountTypeID
+                                      WHEN 4 THEN SUM(tr.Amount) -- Cashier
+                                      ELSE 0
+                                    END -- Genesis
                                   ELSE 0 --  Not Redemption
                                 END As RedemptionCashier,
-                                
+
                                 -- REDEMPTION GENESIS --
                                 CASE tr.TransactionType
                                   WHEN 'W' THEN
@@ -663,12 +810,11 @@ class TopUpReportQuery extends DBHandler{
                                 ts.DateStarted, ts.DateEnded, tr.SiteID
                                 FROM npos.transactiondetails tr INNER JOIN npos.transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
                                 INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
-                                INNER JOIN npos.accounts a ON ts.CreatedByAID = a.AID
-                                INNER JOIN npos.sites s ON tr.SiteID = s.SiteID
+                                INNER JOIN npos.accounts a ON tr.CreatedByAID = a.AID
                                 WHERE tr.DateCreated >= ? AND tr.DateCreated < ?
                                   AND tr.Status IN(1,4)
                                 GROUP By tr.TransactionType, tr.TransactionSummaryID
-                                ORDER BY s.POSAccountNo"; 
+                                ORDER BY tr.TerminalID, tr.DateCreated DESC"; 
                 
                 $query7 = "SELECT SiteID, IFNULL(SUM(Amount), 0) AS UnusedTickets FROM
                                             ((SELECT IFNULL(stckr.Withdrawal, 0) As Amount, stckr.TicketCode, tr.SiteID FROM npos.transactiondetails tr  -- Printed Tickets through W
@@ -676,12 +822,13 @@ class TopUpReportQuery extends DBHandler{
                                               INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
                                               INNER JOIN npos.accounts a ON tr.CreatedByAID = a.AID
                                               LEFT JOIN stackermanagement.stackersummary stckr ON stckr.StackerSummaryID = tr.StackerSummaryID
-                                              WHERE tr.DateCreated >= :startdate AND tr.DateCreated < :enddate
+                                              WHERE tr.SiteID = :siteid
+                                                AND tr.DateCreated >= :startdate AND tr.DateCreated < :enddate
                                                 AND tr.Status IN(1,4)
                                                 AND tr.TransactionType = 'W'
                                                 AND tr.StackerSummaryID IS NOT NULL
                                                 AND stckr.CreatedByAID In (SELECT acct.AID FROM npos.accounts acct WHERE acct.AccountTypeID = 15
-                                                AND acct.AID IN (SELECT sacct.AID FROM npos.siteaccounts sacct WHERE sacct.SiteID = tr.SiteID))
+                                                AND acct.AID IN (SELECT sacct.AID FROM npos.siteaccounts sacct WHERE sacct.SiteID =  :siteid))
                                                     )
                                             UNION ALL
                                             (SELECT IFNULL(stckr.Withdrawal, 0) As Amount, stckr.TicketCode, sa.SiteID FROM stackermanagement.stackersummary stckr -- Cancelled Tickets in Stacker
@@ -689,13 +836,14 @@ class TopUpReportQuery extends DBHandler{
                                               WHERE stckr.Status IN (1, 2)
                                               AND stckr.DateCancelledOn >= :startdate AND stckr.DateCancelledOn < :enddate
                                               AND stckr.CreatedByAID In (SELECT acct.AID FROM npos.accounts acct WHERE acct.AccountTypeID IN (4, 15))
+                                              AND sa.SiteID =  :siteid
                                               )) AS UnionPrintedTickets
                                             WHERE TicketCode NOT IN  
                                                     (SELECT tckt.TicketCode FROM vouchermanagement.tickets tckt -- Less: Encashed Tickets
                                                             INNER JOIN npos.accounts acct ON  tckt.EncashedByAID = acct.AID
                                                             INNER JOIN npos.siteaccounts sa ON tckt.EncashedByAID = sa.AID
                                                             WHERE tckt.DateEncashed >=  :startdate AND tckt.DateEncashed < :enddate
-                                                              AND acct.AccountTypeID = 4 
+                                                              AND acct.AccountTypeID = 4 AND sa.SiteID = :siteid
                                                             UNION ALL
                                                             (SELECT stckrdtls.VoucherCode AS TicketCode
                                                               FROM stackermanagement.stackersummary stckr
@@ -708,12 +856,13 @@ class TopUpReportQuery extends DBHandler{
                                                                             INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
                                                                             INNER JOIN npos.accounts a ON tr.CreatedByAID = a.AID
                                                                             LEFT JOIN stackermanagement.stackersummary stckr ON stckr.StackerSummaryID = tr.StackerSummaryID
-                                                                            WHERE tr.DateCreated >= :startdate AND tr.DateCreated < :enddate
+                                                                            WHERE tr.SiteID = :siteid
+                                                                              AND tr.DateCreated >= :startdate AND tr.DateCreated < :enddate
                                                                               AND tr.Status IN(1,4)
                                                                               AND tr.TransactionType In ('D', 'R')
                                                                                     AND tr.StackerSummaryID IS NOT NULL
                                                                               AND stckr.CreatedByAID In (SELECT acct.AID FROM npos.accounts acct WHERE acct.AccountTypeID = 15
-                                                                              AND acct.AID IN (SELECT sacct.AID FROM npos.siteaccounts sacct WHERE sacct.SiteID = SiteID)))
+                                                                              AND acct.AID IN (SELECT sacct.AID FROM npos.siteaccounts sacct WHERE sacct.SiteID =  :siteid)))
                                                             )
                                                     ) 
                                         GROUP BY SiteID";
@@ -725,12 +874,14 @@ class TopUpReportQuery extends DBHandler{
                                         LEFT JOIN stackermanagement.stackersummary stckr ON stckr.StackerSummaryID = tr.StackerSummaryID
                                         WHERE tr.DateCreated >= ? AND tr.DateCreated < ?
                                           AND tr.Status IN(1,4)
+                                          AND tr.SiteID = ?
                                           AND tr.TransactionType = 'W'
                                           AND tr.StackerSummaryID IS NOT NULL
                                           GROUP BY tr.SiteID";
                 
                 $query9 = "SELECT tckt.SiteID, IFNULL(SUM(tckt.Amount), 0) AS EncashedTickets FROM vouchermanagement.tickets tckt  -- Encashed Tickets
                                         WHERE tckt.DateEncashed >= ? AND tckt.DateEncashed < ?
+                                        AND tckt.SiteID = ?
                                         GROUP BY tckt.SiteID";
 
                 // to get beginning balance, sitecode, sitename
@@ -743,7 +894,7 @@ class TopUpReportQuery extends DBHandler{
                 foreach($rows1 as $row1) {
                     $qr1[] = array('SiteID'=>$row1['SiteID'],'BegBal'=>$row1['BeginningBalance'],'EndBal'=>$row1['EndingBalance'], 
                         'POSAccountNo' => $row1['POSAccountNo'],'SiteName' => $row1['Name'],'SiteCode'=>$row1['SiteCode'], 
-                        'InitialDeposit'=>'0.00','Reload'=>'0.00','Redemption'=>'0.00',
+                        'InitialDeposit'=>'0.00','Reload'=>'0.00','Redemption'=> '0.00',
                         'DateStart'=>$row1['DateFirstTransaction'],'DateLast'=>$row1['DateLastTransaction'],
                         'ReportDate'=>$row1['ReportDate'],'CutOff'=>$row1['DateCutOff'],'ManualRedemption'=>0,'Coupon'=>'0.00',
                         'PrintedTickets'=>'0.00','EncashedTickets'=>'0.00', 'RedemptionCashier'=>'0.00',
@@ -751,7 +902,7 @@ class TopUpReportQuery extends DBHandler{
                         'ReloadTicket'=>'0.00','DepositCoupon'=>'0.00','ReloadCoupon'=>'0.00', 'Replenishment'=>0,'Collection'=>0
                         );
                 }
-
+                
                 // to get confirmation made by cashier from provincial sites
                 $this->prepare($query2);
                 $this->bindparameter(1, $startdate);
@@ -799,92 +950,91 @@ class TopUpReportQuery extends DBHandler{
                 foreach ($rows6 as $row6) {
                     foreach ($qr1 as $keys => $value1) {
                         if($row6["SiteID"] == $value1["SiteID"]){
-                             if($row6["DepositCash"] != '0.00'){
-                                $qr1[$keys]["DepositCash"] = (float)$qr1[$keys]["DepositCash"] + (float)$row6["DepositCash"];
-                                $qr1[$keys]["InitialDeposit"] = (float)$qr1[$keys]["InitialDeposit"] + (float)$row6["DepositCash"];
-                            }
-                            if($row6["ReloadCash"] != '0.00'){
-                                $qr1[$keys]["ReloadCash"] = (float)$qr1[$keys]["ReloadCash"] + (float)$row6["ReloadCash"];
-                                $qr1[$keys]["Reload"] = (float)$qr1[$keys]["Reload"] + (float)$row6["ReloadCash"];
-                            }
-                            if($row6["RedemptionCashier"] != '0.00'){
-                                $qr1[$keys]["RedemptionCashier"] = (float)$qr1[$keys]["RedemptionCashier"] + (float)$row6["RedemptionCashier"];
-                                $qr1[$keys]["Redemption"] = (float)$qr1[$keys]["Redemption"] + (float)$row6["RedemptionCashier"];
-                            }
-                            if($row6["RedemptionGenesis"] != '0.00'){
-                                $qr1[$keys]["RedemptionGenesis"] = (float)$qr1[$keys]["RedemptionGenesis"] + (float)$row6["RedemptionGenesis"];
-                                $qr1[$keys]["Redemption"] = (float)$qr1[$keys]["Redemption"] + (float)$row6["RedemptionGenesis"];
-                            }
-                            if($row6["DepositCoupon"] != '0.00'){
-                                $qr1[$keys]["DepositCoupon"] = (float)$qr1[$keys]["DepositCoupon"] + (float)$row6["DepositCoupon"];
-                                $qr1[$keys]["Coupon"] = (float)$qr1[$keys]["Coupon"] + (float)$row6["DepositCoupon"];
-                                $qr1[$keys]["InitialDeposit"] = (float)$qr1[$keys]["InitialDeposit"] + (float)$row6["DepositCoupon"];
-                            }
-                            if($row6["ReloadCoupon"] != '0.00'){
-                                $qr1[$keys]["ReloadCoupon"] = (float)$qr1[$keys]["ReloadCoupon"] + (float)$row6["ReloadCoupon"];
-                                $qr1[$keys]["Coupon"] = (float)$qr1[$keys]["Coupon"] + (float)$row6["ReloadCoupon"];
-                                $qr1[$keys]["Reload"] = (float)$qr1[$keys]["Reload"] + (float)$row6["ReloadCoupon"];
-                            }
-                            if($row6["DepositTicket"] != '0.00'){
-                                $qr1[$keys]["DepositTicket"] = (float)$qr1[$keys]["DepositTicket"] + (float)$row6["DepositTicket"];
-                                $qr1[$keys]["InitialDeposit"] = (float)$qr1[$keys]["InitialDeposit"] + (float)$row6["DepositTicket"];
-                            }
-                            if($row6["ReloadTicket"] != '0.00'){
-                                $qr1[$keys]["ReloadTicket"] = (float)$qr1[$keys]["ReloadTicket"] + (float)$row6["ReloadTicket"];
-                                $qr1[$keys]["Reload"] = (float)$qr1[$keys]["Reload"] + (float)$row6["ReloadTicket"];
+                            if(($row6['DateStarted'] >= $value1['ReportDate']." ".BaseProcess::$cutoff) && ($row6['DateStarted'] < $value1['CutOff'])){
+                                if($row6["DepositCash"] != '0.00'){
+                                    $qr1[$keys]["DepositCash"] = (float)$qr1[$keys]["DepositCash"] + (float)$row6["DepositCash"];
+                                    $qr1[$keys]["InitialDeposit"] = (float)$qr1[$keys]["InitialDeposit"] + (float)$row6["DepositCash"];
+                                }
+                                if($row6["ReloadCash"] != '0.00'){
+                                    $qr1[$keys]["ReloadCash"] = (float)$qr1[$keys]["ReloadCash"] + (float)$row6["ReloadCash"];
+                                    $qr1[$keys]["Reload"] = (float)$qr1[$keys]["Reload"] + (float)$row6["ReloadCash"];
+                                }
+                                if($row6["RedemptionCashier"] != '0.00'){
+                                    $qr1[$keys]["RedemptionCashier"] = (float)$qr1[$keys]["RedemptionCashier"] + (float)$row6["RedemptionCashier"];
+                                    $qr1[$keys]["Redemption"] = (float)$qr1[$keys]["Redemption"] + (float)$row6["RedemptionCashier"];
+                                }
+                                if($row6["RedemptionGenesis"] != '0.00'){
+                                    $qr1[$keys]["RedemptionGenesis"] = (float)$qr1[$keys]["RedemptionGenesis"] + (float)$row6["RedemptionGenesis"];
+                                    $qr1[$keys]["Redemption"] = (float)$qr1[$keys]["Redemption"] + (float)$row6["RedemptionGenesis"];
+                                }
+                                if($row6["DepositCoupon"] != '0.00'){
+                                    $qr1[$keys]["DepositCoupon"] = (float)$qr1[$keys]["DepositCoupon"] + (float)$row6["DepositCoupon"];
+                                    $qr1[$keys]["Coupon"] = (float)$qr1[$keys]["Coupon"] + (float)$row6["DepositCoupon"];
+                                    $qr1[$keys]["InitialDeposit"] = (float)$qr1[$keys]["InitialDeposit"] + (float)$row6["DepositCoupon"];
+                                }
+                                if($row6["ReloadCoupon"] != '0.00'){
+                                    $qr1[$keys]["ReloadCoupon"] = (float)$qr1[$keys]["ReloadCoupon"] + (float)$row6["ReloadCoupon"];
+                                    $qr1[$keys]["Coupon"] = (float)$qr1[$keys]["Coupon"] + (float)$row6["ReloadCoupon"];
+                                    $qr1[$keys]["Reload"] = (float)$qr1[$keys]["Reload"] + (float)$row6["ReloadCoupon"];
+                                }
+                                if($row6["DepositTicket"] != '0.00'){
+                                    $qr1[$keys]["DepositTicket"] = (float)$qr1[$keys]["DepositTicket"] + (float)$row6["DepositTicket"];
+                                    $qr1[$keys]["InitialDeposit"] = (float)$qr1[$keys]["InitialDeposit"] + (float)$row6["DepositTicket"];
+                                }
+                                if($row6["ReloadTicket"] != '0.00'){
+                                    $qr1[$keys]["ReloadTicket"] = (float)$qr1[$keys]["ReloadTicket"] + (float)$row6["ReloadTicket"];
+                                    $qr1[$keys]["Reload"] = (float)$qr1[$keys]["Reload"] + (float)$row6["ReloadTicket"];
+                                }
                             }
                             break;
                         }
                     }     
                 }
                 
-                //Get the total Unused Tickets per site
-                $this->prepare($query7);
-                $this->bindparameter(":startdate", $startdate);
-                $this->bindparameter(":enddate", $enddate);
-                $this->execute();  
-                $rows7 =  $this->fetchAllData();
-
-                foreach ($rows7 as $row7) {
-                    foreach ($qr1 as $keys => $value2) {
+                foreach ($qr1 as $keys => $value2) {
+                    //Get the total Unused Tickets per site
+                    $this->prepare($query7);
+                    $this->bindparameter(":siteid", $value2["SiteID"]);
+                    $this->bindparameter(":startdate", $value2["ReportDate"]." ".BaseProcess::$cutoff);
+                    $this->bindparameter(":enddate", $value2["CutOff"]);
+                    $this->execute();  
+                    $rows7 =  $this->fetchAllData();
+                    foreach ($rows7 as $row7) {
                         if($row7["SiteID"] == $value2["SiteID"]){
                             $qr1[$keys]["UnusedTickets"] = (float)$row7["UnusedTickets"];
-                            break;
                         }
-                    }  
-                }
-                
-                //Get the total Printed Tickets per site
-                $this->prepare($query8);
-                $this->bindparameter(1, $startdate);
-                $this->bindparameter(2, $enddate);
-                $this->execute();  
-                $rows8 =  $this->fetchAllData();
-
-                foreach ($rows8 as $row8) {
-                    foreach ($qr1 as $keys => $value2) {
+                    }
+                    
+                    //Get the total Printed Tickets per site
+                    $this->prepare($query8);
+                    $this->bindparameter(1, $startdate);
+                    $this->bindparameter(2, $enddate);
+                    $this->bindparameter(3, $value2["SiteID"]);
+                    $this->execute();  
+                    $rows8 =  $this->fetchAllData();
+                    
+                    foreach ($rows8 as $row8) {
                         if($row8["SiteID"] == $value2["SiteID"]){
                             $qr1[$keys]["PrintedTickets"] = (float)$row8["PrintedTickets"];
                             break;
                         }
-                    }  
-                }
-                
-                //Get the total Encashed Tickets per site
-                $this->prepare($query9);
-                $this->bindparameter(1, $startdate);
-                $this->bindparameter(2, $enddate);
-                $this->execute();  
-                $rows9 =  $this->fetchAllData();
-
-                foreach ($rows9 as $row9) {
-                    foreach ($qr1 as $keys => $value2) {
+                    }
+                    
+                    //Get the total Encashed Tickets per site
+                    $this->prepare($query9);
+                    $this->bindparameter(1, $startdate);
+                    $this->bindparameter(2, $enddate);
+                    $this->bindparameter(3, $value2["SiteID"]);
+                    $this->execute();  
+                    $rows9 =  $this->fetchAllData();
+                    
+                    foreach ($rows9 as $row9) {
                         if($row9["SiteID"] == $value2["SiteID"]){
                             $qr1[$keys]["EncashedTickets"] = (float)$row9["EncashedTickets"];
                             break;
                         }
-                    }  
-                }
+                    }
+                }  
 
                 $ctr = 0;
                 while($ctr < count($qr1))
@@ -895,7 +1045,7 @@ class TopUpReportQuery extends DBHandler{
                         if($qr1[$ctr]['SiteID'] == $qr5[$ctr2]['SiteID'])
                         {
                             $amount = 0;
-                            if(($qr5[$ctr2]['MRTransDate'] >= $qr1[$ctr]['ReportDate']) && ($qr5[$ctr2]['MRTransDate'] < $qr1[$ctr]['CutOff']))
+                            if(($qr5[$ctr2]['MRTransDate'] >= $qr1[$ctr]['ReportDate']." ".BaseProcess::$cutoff) && ($qr5[$ctr2]['MRTransDate'] < $qr1[$ctr]['CutOff']))
                             {              
                                  if($qr1[$ctr]['ManualRedemption'] == 0) 
                                      $qr1[$ctr]['ManualRedemption'] = $qr5[$ctr2]['ManualRedemption'];
@@ -915,7 +1065,7 @@ class TopUpReportQuery extends DBHandler{
                         if($qr1[$ctr]['SiteID'] == $qr2[$ctr3]['SiteID'])
                         {
                             $amount = 0;
-                            if(($qr2[$ctr3]['DateCredit'] >= $qr1[$ctr]['ReportDate']) && ($qr2[$ctr3]['DateCredit'] < $qr1[$ctr]['CutOff']))
+                            if(($qr2[$ctr3]['DateCredit'] >= $qr1[$ctr]['ReportDate']." ".BaseProcess::$cutoff) && ($qr2[$ctr3]['DateCredit'] < $qr1[$ctr]['CutOff']))
                             {
                                 if($qr1[$ctr]['Replenishment'] == 0) 
                                     $qr1[$ctr]['Replenishment'] = $qr2[$ctr3]['Amount'];
@@ -934,7 +1084,7 @@ class TopUpReportQuery extends DBHandler{
                         if($qr1[$ctr]['SiteID'] == $qr3[$ctr4]['SiteID'])
                         {         
                             $amount = 0;
-                            if(($qr3[$ctr4]['DateCredit'] >= $qr1[$ctr]['ReportDate']) && ($qr3[$ctr4]['DateCredit'] < $qr1[$ctr]['CutOff']))
+                            if(($qr3[$ctr4]['DateCredit'] >= $qr1[$ctr]['ReportDate']." ".BaseProcess::$cutoff) && ($qr3[$ctr4]['DateCredit'] < $qr1[$ctr]['CutOff']))
                             {
                                 if($qr1[$ctr]['Collection'] == 0) 
                                 {
@@ -973,39 +1123,173 @@ class TopUpReportQuery extends DBHandler{
                 $query5 = "SELECT SiteID, ActualAmount AS ActualAmount,TransactionDate FROM manualredemptions " . 
                         "WHERE TransactionDate >= ? AND TransactionDate < ? AND SiteID = ? ";   
                 
-                $query6 = "SELECT 
+//                $query6 = "SELECT 
+//
+//                                -- DEPOSIT CASH --
+//                                CASE tr.TransactionType
+//                                  WHEN 'D' THEN
+//                                        CASE tr.PaymentType
+//                                          WHEN 2 THEN 0 -- Coupon
+//                                          ELSE -- Not Coupon
+//                                                CASE IFNULL(tr.StackerSummaryID, '')
+//                                                  WHEN '' THEN SUM(tr.Amount) -- Cash
+//                                                  ELSE  -- Check transtype in stackermanagement to find out if ticket or cash, from EGM
+//                                                        (SELECT IFNULL(SUM(Amount), 0)
+//                                                        FROM stackermanagement.stackerdetails sdtls
+//                                                        WHERE sdtls.stackersummaryID = tr.StackerSummaryID
+//                                                                  AND sdtls.TransactionType = 1
+//                                                                  AND sdtls.PaymentType = 0)  -- Deposit, Cash
+//                                                END
+//                                        END
+//                                  ELSE 0 -- Not Deposit
+//                                END As DepositCash,
+//                                
+//                                -- DEPOSIT COUPON --
+//                                CASE tr.TransactionType
+//                                    WHEN 'D' THEN
+//                                      CASE tr.PaymentType
+//                                        WHEN 2 THEN SUM(tr.Amount) -- Coupon
+//                                        ELSE 0
+//                                      END
+//                                    ELSE 0
+//                                END As DepositCoupon,
+//                                
+//                                -- DEPOSIT TICKET --
+//                                CASE tr.TransactionType
+//                                  WHEN 'D' THEN
+//                                    CASE tr.PaymentType
+//                                      WHEN 2 THEN 0 -- Coupon
+//                                      ELSE -- Not Coupon
+//                                        CASE IFNULL(tr.StackerSummaryID, '')
+//                                          WHEN '' THEN 0 -- Cash
+//                                          ELSE  -- Check transtype in stackermanagement to find out if ticket or cash, from EGM
+//                                            (SELECT IFNULL(SUM(Amount), 0)
+//                                            FROM stackermanagement.stackerdetails sdtls
+//                                            WHERE sdtls.stackersummaryID = tr.StackerSummaryID
+//                                                  AND sdtls.TransactionType = 1
+//                                                  AND sdtls.PaymentType = 2)  -- Deposit, Ticket
+//                                        END
+//                                    END
+//                                  ELSE 0 -- Not Deposit
+//                                END As DepositTicket,
+//                                
+//                                -- RELOAD COUPON --
+//                                CASE tr.TransactionType
+//                                  WHEN 'R' THEN
+//                                    CASE tr.PaymentType
+//                                      WHEN 2 THEN SUM(tr.Amount) -- Coupon
+//                                      ELSE 0
+//                                    END
+//                                  ELSE 0
+//                                END As ReloadCoupon,
+//                                
+//                                -- RELOAD CASH --
+//                                CASE tr.TransactionType
+//                                  WHEN 'R' THEN
+//                                        CASE tr.PaymentType
+//                                          WHEN 2 THEN 0 -- Coupon
+//                                          ELSE -- Not Coupon
+//                                                CASE IFNULL(tr.StackerSummaryID, '')
+//                                                  WHEN '' THEN SUM(tr.Amount) -- Cash
+//                                                  ELSE  -- Check transtype in stackermanagement to find out if ticket or cash, from EGM
+//                                                        (SELECT IFNULL(SUM(Amount), 0)
+//                                                        FROM stackermanagement.stackerdetails sdtls
+//                                                        WHERE sdtls.stackersummaryID = tr.StackerSummaryID
+//                                                                  AND sdtls.TransactionType = 2
+//                                                                  AND sdtls.PaymentType = 0)  -- Reload, Cash
+//                                                END
+//                                        END
+//                                  ELSE 0 -- Not Reload
+//                                END As ReloadCash,
+//                                
+//                                -- RELOAD TICKET --
+//                                CASE tr.TransactionType
+//                                  WHEN 'R' THEN
+//                                    CASE tr.PaymentType
+//                                      WHEN 2 THEN 0 -- Coupon
+//                                      ELSE -- Not Coupon
+//                                        CASE IFNULL(tr.StackerSummaryID, '')
+//                                          WHEN '' THEN 0 -- Cash
+//                                          ELSE  -- Check transtype in stackermanagement to find out if ticket or cash, from EGM
+//                                            (SELECT IFNULL(SUM(Amount), 0)
+//                                            FROM stackermanagement.stackerdetails sdtls
+//                                            WHERE sdtls.stackersummaryID = tr.StackerSummaryID
+//                                                  AND sdtls.TransactionType = 2
+//                                                  AND sdtls.PaymentType = 2)  -- Reload, Ticket
+//                                        END
+//                                    END
+//                                  ELSE 0 -- Not Reload
+//                                END As ReloadTicket,
+//
+//                                -- REDEMPTION CASHIER --
+//                                CASE tr.TransactionType
+//                                  WHEN 'W' THEN
+//                                        CASE a.AccountTypeID
+//                                          WHEN 4 THEN SUM(tr.Amount) -- Cashier
+//                                          ELSE 0
+//                                        END -- Genesis
+//                                  ELSE 0 --  Not Redemption
+//                                END As RedemptionCashier,
+//                                
+//                                -- REDEMPTION GENESIS --
+//                                CASE tr.TransactionType
+//                                  WHEN 'W' THEN
+//                                    CASE a.AccountTypeID
+//                                      WHEN 15 THEN SUM(tr.Amount) -- Genesis
+//                                      ELSE 0
+//                                    END -- Cashier
+//                                  ELSE 0 -- Not Redemption
+//                                END As RedemptionGenesis,
+//
+//                                ts.DateStarted, ts.DateEnded, tr.SiteID
+//                                FROM npos.transactiondetails tr INNER JOIN npos.transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
+//                                INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
+//                                INNER JOIN npos.accounts a ON ts.CreatedByAID = a.AID
+//                                INNER JOIN npos.sites s ON tr.SiteID = s.SiteID
+//                                WHERE tr.SiteID = ?
+//                                  AND tr.DateCreated >= ? AND tr.DateCreated < ?
+//                                  AND tr.Status IN(1,4)
+//                                GROUP By tr.TransactionType, tr.TransactionSummaryID
+//                                ORDER BY s.POSAccountNo"; 
+                
+                $query6 = "SELECT tr.TransactionSummaryID AS TransSummID, SUBSTR(t.TerminalCode,11) AS TerminalCode, tr.TransactionType AS TransType,
+
+                                -- TOTAL DEPOSIT --
+                                CASE tr.TransactionType
+                                  WHEN 'D' THEN SUM(tr.Amount)
+                                  ELSE 0
+                                END As TotalDeposit,
+
+                                -- DEPOSIT COUPON --
+                                SUM(CASE tr.TransactionType
+                                  WHEN 'D' THEN
+                                    CASE tr.PaymentType
+                                      WHEN 2 THEN tr.Amount
+                                      ELSE 0
+                                     END
+                                  ELSE 0 END) As DepositCoupon,
 
                                 -- DEPOSIT CASH --
-                                CASE tr.TransactionType
-                                  WHEN 'D' THEN
-                                        CASE tr.PaymentType
-                                          WHEN 2 THEN 0 -- Coupon
-                                          ELSE -- Not Coupon
-                                                CASE IFNULL(tr.StackerSummaryID, '')
-                                                  WHEN '' THEN SUM(tr.Amount) -- Cash
-                                                  ELSE  -- Check transtype in stackermanagement to find out if ticket or cash, from EGM
-                                                        (SELECT IFNULL(SUM(Amount), 0)
-                                                        FROM stackermanagement.stackerdetails sdtls
-                                                        WHERE sdtls.stackersummaryID = tr.StackerSummaryID
-                                                                  AND sdtls.TransactionType = 1
-                                                                  AND sdtls.PaymentType = 0)  -- Deposit, Cash
-                                                END
-                                        END
-                                  ELSE 0 -- Not Deposit
-                                END As DepositCash,
-                                
-                                -- DEPOSIT COUPON --
-                                CASE tr.TransactionType
-                                    WHEN 'D' THEN
-                                      CASE tr.PaymentType
-                                        WHEN 2 THEN SUM(tr.Amount) -- Coupon
-                                        ELSE 0
-                                      END
-                                    ELSE 0
-                                END As DepositCoupon,
-                                
+                                SUM(CASE tr.TransactionType
+                                   WHEN 'D' THEN
+                                     CASE tr.PaymentType
+                                       WHEN 2 THEN 0 -- Coupon
+                                       ELSE -- Not Coupon
+                                         CASE IFNULL(tr.StackerSummaryID, '')
+                                           WHEN '' THEN tr.Amount -- Cash
+                                           ELSE  -- Check transtype in stackermanagement to find out if ticket or cash, from EGM
+                                             (SELECT IFNULL(SUM(Amount), 0)
+                                             FROM stackermanagement.stackerdetails sdtls
+                                             WHERE sdtls.stackersummaryID = tr.StackerSummaryID
+                                                   AND sdtls.TransactionType = 1
+                                                   AND sdtls.PaymentType = 0)  -- Deposit, Cash
+                                         END
+                                    END
+                                   ELSE 0 -- Not Deposit
+                                END) As DepositCash,
+
                                 -- DEPOSIT TICKET --
-                                CASE tr.TransactionType
+                                SUM(CASE tr.TransactionType
                                   WHEN 'D' THEN
                                     CASE tr.PaymentType
                                       WHEN 2 THEN 0 -- Coupon
@@ -1021,39 +1305,46 @@ class TopUpReportQuery extends DBHandler{
                                         END
                                     END
                                   ELSE 0 -- Not Deposit
-                                END As DepositTicket,
-                                
-                                -- RELOAD COUPON --
+                                END) As DepositTicket,
+
+                                -- TOTAL RELOAD --
                                 CASE tr.TransactionType
+                                  WHEN 'R' THEN SUM(tr.Amount)
+                                  ELSE 0 -- Not Reload
+                                END As TotalReload,
+
+                                -- RELOAD COUPON --
+                                SUM(CASE tr.TransactionType
                                   WHEN 'R' THEN
                                     CASE tr.PaymentType
-                                      WHEN 2 THEN SUM(tr.Amount) -- Coupon
+                                      WHEN 2 THEN tr.Amount
                                       ELSE 0
-                                    END
-                                  ELSE 0
-                                END As ReloadCoupon,
-                                
+                                     END
+                                  ELSE 0 END) As ReloadCoupon,
+
                                 -- RELOAD CASH --
-                                CASE tr.TransactionType
-                                  WHEN 'R' THEN
-                                        CASE tr.PaymentType
-                                          WHEN 2 THEN 0 -- Coupon
-                                          ELSE -- Not Coupon
-                                                CASE IFNULL(tr.StackerSummaryID, '')
-                                                  WHEN '' THEN SUM(tr.Amount) -- Cash
-                                                  ELSE  -- Check transtype in stackermanagement to find out if ticket or cash, from EGM
-                                                        (SELECT IFNULL(SUM(Amount), 0)
-                                                        FROM stackermanagement.stackerdetails sdtls
-                                                        WHERE sdtls.stackersummaryID = tr.StackerSummaryID
-                                                                  AND sdtls.TransactionType = 2
-                                                                  AND sdtls.PaymentType = 0)  -- Reload, Cash
-                                                END
-                                        END
-                                  ELSE 0 -- Not Reload
-                                END As ReloadCash,
-                                
+                                SUM(CASE tr.TransactionType
+                                   WHEN 'R' THEN
+                                     CASE tr.PaymentType
+                                       WHEN 2 THEN 0 -- Coupon
+                                       ELSE -- Not Coupon
+                                         CASE IFNULL(tr.StackerSummaryID, '')
+                                           WHEN '' THEN tr.Amount -- Cash
+                                           ELSE  -- Check transtype in stackermanagement to find out if ticket or cash, from EGM
+                                              (SELECT IFNULL(SUM(Amount), 0)
+                                --              (SELECT IFNULL(Amount, 0)
+                                             FROM stackermanagement.stackerdetails sdtls
+                                             WHERE sdtls.stackersummaryID = tr.StackerSummaryID
+                                                   AND tr.TransactionDetailsID = sdtls.TransactionDetailsID
+                                                   AND sdtls.TransactionType = 2
+                                                   AND sdtls.PaymentType = 0)  -- Reload, Cash
+                                         END
+                                     END
+                                   ELSE 0 -- Not Reload
+                                END) As ReloadCash,
+
                                 -- RELOAD TICKET --
-                                CASE tr.TransactionType
+                                SUM(CASE tr.TransactionType
                                   WHEN 'R' THEN
                                     CASE tr.PaymentType
                                       WHEN 2 THEN 0 -- Coupon
@@ -1064,23 +1355,30 @@ class TopUpReportQuery extends DBHandler{
                                             (SELECT IFNULL(SUM(Amount), 0)
                                             FROM stackermanagement.stackerdetails sdtls
                                             WHERE sdtls.stackersummaryID = tr.StackerSummaryID
+                                                   AND tr.TransactionDetailsID = sdtls.TransactionDetailsID
                                                   AND sdtls.TransactionType = 2
                                                   AND sdtls.PaymentType = 2)  -- Reload, Ticket
                                         END
                                     END
                                   ELSE 0 -- Not Reload
-                                END As ReloadTicket,
+                                END) As ReloadTicket,
+
+                                -- TOTAL REDEMPTION --
+                                CASE tr.TransactionType
+                                  WHEN 'W' THEN SUM(tr.Amount)
+                                  ELSE 0
+                                END As TotalRedemption,
 
                                 -- REDEMPTION CASHIER --
                                 CASE tr.TransactionType
                                   WHEN 'W' THEN
-                                        CASE a.AccountTypeID
-                                          WHEN 4 THEN SUM(tr.Amount) -- Cashier
-                                          ELSE 0
-                                        END -- Genesis
+                                    CASE a.AccountTypeID
+                                      WHEN 4 THEN SUM(tr.Amount) -- Cashier
+                                      ELSE 0
+                                    END -- Genesis
                                   ELSE 0 --  Not Redemption
                                 END As RedemptionCashier,
-                                
+
                                 -- REDEMPTION GENESIS --
                                 CASE tr.TransactionType
                                   WHEN 'W' THEN
@@ -1094,13 +1392,12 @@ class TopUpReportQuery extends DBHandler{
                                 ts.DateStarted, ts.DateEnded, tr.SiteID
                                 FROM npos.transactiondetails tr INNER JOIN npos.transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
                                 INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
-                                INNER JOIN npos.accounts a ON ts.CreatedByAID = a.AID
-                                INNER JOIN npos.sites s ON tr.SiteID = s.SiteID
+                                INNER JOIN npos.accounts a ON tr.CreatedByAID = a.AID
                                 WHERE tr.SiteID = ?
                                   AND tr.DateCreated >= ? AND tr.DateCreated < ?
                                   AND tr.Status IN(1,4)
                                 GROUP By tr.TransactionType, tr.TransactionSummaryID
-                                ORDER BY s.POSAccountNo"; 
+                                ORDER BY tr.TerminalID, tr.DateCreated DESC"; 
                 
                 $query7 = "SELECT SiteID, IFNULL(SUM(Amount), 0) AS UnusedTickets FROM
                                             ((SELECT IFNULL(stckr.Withdrawal, 0) As Amount, stckr.TicketCode, tr.SiteID FROM npos.transactiondetails tr  -- Printed Tickets through W
@@ -1242,94 +1539,90 @@ class TopUpReportQuery extends DBHandler{
                 foreach ($rows6 as $row6) {
                     foreach ($qr1 as $keys => $value1) {
                         if($row6["SiteID"] == $value1["SiteID"]){
-                             if($row6["DepositCash"] != '0.00'){
-                                $qr1[$keys]["DepositCash"] = (float)$qr1[$keys]["DepositCash"] + (float)$row6["DepositCash"];
-                                $qr1[$keys]["InitialDeposit"] = (float)$qr1[$keys]["InitialDeposit"] + (float)$row6["DepositCash"];
+                            if(($row6['DateStarted'] >= $value1['ReportDate']." ".BaseProcess::$cutoff) && ($row6['DateStarted'] < $value1['CutOff'])){
+                                if($row6["DepositCash"] != '0.00'){
+                                    $qr1[$keys]["DepositCash"] = (float)$qr1[$keys]["DepositCash"] + (float)$row6["DepositCash"];
+                                    $qr1[$keys]["InitialDeposit"] = (float)$qr1[$keys]["InitialDeposit"] + (float)$row6["DepositCash"];
+                                }
+                                if($row6["ReloadCash"] != '0.00'){
+                                    $qr1[$keys]["ReloadCash"] = (float)$qr1[$keys]["ReloadCash"] + (float)$row6["ReloadCash"];
+                                    $qr1[$keys]["Reload"] = (float)$qr1[$keys]["Reload"] + (float)$row6["ReloadCash"];
+                                }
+                                if($row6["RedemptionCashier"] != '0.00'){
+                                    $qr1[$keys]["RedemptionCashier"] = (float)$qr1[$keys]["RedemptionCashier"] + (float)$row6["RedemptionCashier"];
+                                    $qr1[$keys]["Redemption"] = (float)$qr1[$keys]["Redemption"] + (float)$row6["RedemptionCashier"];
+                                }
+                                if($row6["RedemptionGenesis"] != '0.00'){
+                                    $qr1[$keys]["RedemptionGenesis"] = (float)$qr1[$keys]["RedemptionGenesis"] + (float)$row6["RedemptionGenesis"];
+                                    $qr1[$keys]["Redemption"] = (float)$qr1[$keys]["Redemption"] + (float)$row6["RedemptionGenesis"];
+                                }
+                                if($row6["DepositCoupon"] != '0.00'){
+                                    $qr1[$keys]["DepositCoupon"] = (float)$qr1[$keys]["DepositCoupon"] + (float)$row6["DepositCoupon"];
+                                    $qr1[$keys]["Coupon"] = (float)$qr1[$keys]["Coupon"] + (float)$row6["DepositCoupon"];
+                                    $qr1[$keys]["InitialDeposit"] = (float)$qr1[$keys]["InitialDeposit"] + (float)$row6["DepositCoupon"];
+                                }
+                                if($row6["ReloadCoupon"] != '0.00'){
+                                    $qr1[$keys]["ReloadCoupon"] = (float)$qr1[$keys]["ReloadCoupon"] + (float)$row6["ReloadCoupon"];
+                                    $qr1[$keys]["Coupon"] = (float)$qr1[$keys]["Coupon"] + (float)$row6["ReloadCoupon"];
+                                    $qr1[$keys]["Reload"] = (float)$qr1[$keys]["Reload"] + (float)$row6["ReloadCoupon"];
+                                }
+                                if($row6["DepositTicket"] != '0.00'){
+                                    $qr1[$keys]["DepositTicket"] = (float)$qr1[$keys]["DepositTicket"] + (float)$row6["DepositTicket"];
+                                    $qr1[$keys]["InitialDeposit"] = (float)$qr1[$keys]["InitialDeposit"] + (float)$row6["DepositTicket"];
+                                }
+                                if($row6["ReloadTicket"] != '0.00'){
+                                    $qr1[$keys]["ReloadTicket"] = (float)$qr1[$keys]["ReloadTicket"] + (float)$row6["ReloadTicket"];
+                                    $qr1[$keys]["Reload"] = (float)$qr1[$keys]["Reload"] + (float)$row6["ReloadTicket"];
+                                }
+                                break;
                             }
-                            if($row6["ReloadCash"] != '0.00'){
-                                $qr1[$keys]["ReloadCash"] = (float)$qr1[$keys]["ReloadCash"] + (float)$row6["ReloadCash"];
-                                $qr1[$keys]["Reload"] = (float)$qr1[$keys]["Reload"] + (float)$row6["ReloadCash"];
-                            }
-                            if($row6["RedemptionCashier"] != '0.00'){
-                                $qr1[$keys]["RedemptionCashier"] = (float)$qr1[$keys]["RedemptionCashier"] + (float)$row6["RedemptionCashier"];
-                                $qr1[$keys]["Redemption"] = (float)$qr1[$keys]["Redemption"] + (float)$row6["RedemptionCashier"];
-                            }
-                            if($row6["RedemptionGenesis"] != '0.00'){
-                                $qr1[$keys]["RedemptionGenesis"] = (float)$qr1[$keys]["RedemptionGenesis"] + (float)$row6["RedemptionGenesis"];
-                                $qr1[$keys]["Redemption"] = (float)$qr1[$keys]["Redemption"] + (float)$row6["RedemptionGenesis"];
-                            }
-                            if($row6["DepositCoupon"] != '0.00'){
-                                $qr1[$keys]["DepositCoupon"] = (float)$qr1[$keys]["DepositCoupon"] + (float)$row6["DepositCoupon"];
-                                $qr1[$keys]["Coupon"] = (float)$qr1[$keys]["Coupon"] + (float)$row6["DepositCoupon"];
-                                $qr1[$keys]["InitialDeposit"] = (float)$qr1[$keys]["InitialDeposit"] + (float)$row6["DepositCoupon"];
-                            }
-                            if($row6["ReloadCoupon"] != '0.00'){
-                                $qr1[$keys]["ReloadCoupon"] = (float)$qr1[$keys]["ReloadCoupon"] + (float)$row6["ReloadCoupon"];
-                                $qr1[$keys]["Coupon"] = (float)$qr1[$keys]["Coupon"] + (float)$row6["ReloadCoupon"];
-                                $qr1[$keys]["Reload"] = (float)$qr1[$keys]["Reload"] + (float)$row6["ReloadCoupon"];
-                            }
-                            if($row6["DepositTicket"] != '0.00'){
-                                $qr1[$keys]["DepositTicket"] = (float)$qr1[$keys]["DepositTicket"] + (float)$row6["DepositTicket"];
-                                $qr1[$keys]["InitialDeposit"] = (float)$qr1[$keys]["InitialDeposit"] + (float)$row6["DepositTicket"];
-                            }
-                            if($row6["ReloadTicket"] != '0.00'){
-                                $qr1[$keys]["ReloadTicket"] = (float)$qr1[$keys]["ReloadTicket"] + (float)$row6["ReloadTicket"];
-                                $qr1[$keys]["Reload"] = (float)$qr1[$keys]["Reload"] + (float)$row6["ReloadTicket"];
-                            }
-                            break;
                         }
                     }     
                 }
                 
-                //Get the total Unused Tickets per site
-                $this->prepare($query7);
-                $this->bindparameter(":siteid", $zsiteid);
-                $this->bindparameter(":startdate", $startdate);
-                $this->bindparameter(":enddate", $enddate);
-                $this->execute();  
-                $rows7 =  $this->fetchAllData();
-
-                foreach ($rows7 as $row7) {
-                    foreach ($qr1 as $keys => $value2) {
+                foreach ($qr1 as $keys => $value2) {
+                    //Get the total Unused Tickets per site
+                    $this->prepare($query7);
+                    $this->bindparameter(":siteid", $value2["SiteID"]);
+                    $this->bindparameter(":startdate", $value2["ReportDate"]." ".BaseProcess::$cutoff);
+                    $this->bindparameter(":enddate", $value2["CutOff"]);
+                    $this->execute();  
+                    $rows7 =  $this->fetchAllData();
+                    foreach ($rows7 as $row7) {
                         if($row7["SiteID"] == $value2["SiteID"]){
                             $qr1[$keys]["UnusedTickets"] = (float)$row7["UnusedTickets"];
-                            break;
                         }
-                    }  
-                }
-                
-                //Get the total Printed Tickets per site
-                $this->prepare($query8);
-                $this->bindparameter(1, $startdate);
-                $this->bindparameter(2, $enddate);
-                $this->bindparameter(3, $zsiteid);
-                $this->execute();  
-                $rows8 =  $this->fetchAllData();
-
-                foreach ($rows8 as $row8) {
-                    foreach ($qr1 as $keys => $value2) {
+                    }
+                    
+                    //Get the total Printed Tickets per site
+                    $this->prepare($query8);
+                    $this->bindparameter(1, $startdate);
+                    $this->bindparameter(2, $enddate);
+                    $this->bindparameter(3, $value2["SiteID"]);
+                    $this->execute();  
+                    $rows8 =  $this->fetchAllData();
+                    
+                    foreach ($rows8 as $row8) {
                         if($row8["SiteID"] == $value2["SiteID"]){
                             $qr1[$keys]["PrintedTickets"] = (float)$row8["PrintedTickets"];
                             break;
                         }
-                    }  
-                }
-                
-                //Get the total Encashed Tickets per site
-                $this->prepare($query9);
-                $this->bindparameter(1, $startdate);
-                $this->bindparameter(2, $enddate);
-                $this->bindparameter(3, $zsiteid);
-                $this->execute();  
-                $rows9 =  $this->fetchAllData();
-
-                foreach ($rows9 as $row9) {
-                    foreach ($qr1 as $keys => $value2) {
+                    }
+                    
+                    //Get the total Encashed Tickets per site
+                    $this->prepare($query9);
+                    $this->bindparameter(1, $startdate);
+                    $this->bindparameter(2, $enddate);
+                    $this->bindparameter(3, $value2["SiteID"]);
+                    $this->execute();  
+                    $rows9 =  $this->fetchAllData();
+                    
+                    foreach ($rows9 as $row9) {
                         if($row9["SiteID"] == $value2["SiteID"]){
                             $qr1[$keys]["EncashedTickets"] = (float)$row9["EncashedTickets"];
                             break;
                         }
-                    }  
+                    }
                 }
                 
                 $ctr = 0;
@@ -1446,7 +1739,7 @@ class TopUpReportQuery extends DBHandler{
           
               $query = "SELECT ts.TerminalID, t.TerminalName,s.SiteName, s.POSAccountNo, s.SiteCode,ts.ServiceID,
                         CASE t.TerminalType WHEN 0 THEN 'Regular' ELSE 'Genesis' END AS TerminalType, 
-                        t.TerminalCode, rs.ServiceName, ts.UserMode FROM terminalsessions ts
+                        t.TerminalCode, rs.ServiceName, ts.UserMode, ts.UBServiceLogin FROM terminalsessions ts
                         INNER JOIN terminals as t ON ts.TerminalID = t.terminalID 
                         INNER JOIN sites as s ON t.SiteID = s.SiteID 
                         INNER JOIN ref_services rs ON ts.ServiceID = rs.ServiceID

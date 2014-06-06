@@ -28,7 +28,7 @@
           });
           
             function sendIslandID(str){
-                var siteURL = window.location.protocol + "//" + window.location.host + "/" + "kronus_ub/admin2_ub.pagcoregames.com/public/views/process/ProcessSiteManagement.php";
+                var siteURL = window.location.protocol + "//" + window.location.host + "/" + "Kronus.UB.New/admin.abbott.genesis.version/public/views/process/ProcessSiteManagement.php";
                 $.post(siteURL,{sendIslandID: str},
                 function(data){
                     var options = $("#cmbregions");
@@ -39,7 +39,7 @@
             }
 
             function sendRegionID(str){
-                var siteURL = window.location.protocol + "//" + window.location.host + "/" + "kronus_ub/admin2_ub.pagcoregames.com/public/views/process/ProcessSiteManagement.php";
+                var siteURL = window.location.protocol + "//" + window.location.host + "/" + "Kronus.UB.New/admin.abbott.genesis.version/public/views/process/ProcessSiteManagement.php";
                 $.post(siteURL,{sendRegionID: str},
                 function(data){
                     var options = $("#cmbprovinces");
@@ -50,7 +50,7 @@
             }
 
             function sendProvID(str){
-                var siteURL = window.location.protocol + "//" + window.location.host + "/" + "kronus_ub/admin2_ub.pagcoregames.com/public/views/process/ProcessSiteManagement.php";
+                var siteURL = window.location.protocol + "//" + window.location.host + "/" + "Kronus.UB.New/admin.abbott.genesis.version/public/views/process/ProcessSiteManagement.php";
                 $.post(siteURL, {sendProvID: str},
                 function(data){
                     var options = $("#cmbcity");
@@ -61,7 +61,7 @@
             }
 
             function sendCityID(str){
-                var siteURL = window.location.protocol + "//" + window.location.host + "/" + "kronus_ub/admin2_ub.pagcoregames.com/public/views/process/ProcessSiteManagement.php";
+                var siteURL = window.location.protocol + "//" + window.location.host + "/" + "Kronus.UB.New/admin.abbott.genesis.version/public/views/process/ProcessSiteManagement.php";
                 $.post(siteURL, {sendCityID: str},
                 function(data){
                     var options = $("#cmbbrgy");
@@ -72,7 +72,7 @@
             }
 
              function sendSiteID(str){
-                var suppURL = window.location.protocol + "//" + window.location.host + "/" + "kronus_ub/admin2_ub.pagcoregames.com/public/views/process/ProcessAppSupport.php";
+                var suppURL = window.location.protocol + "//" + window.location.host + "/" + "Kronus.UB.New/admin.abbott.genesis.version/public/views/process/ProcessAppSupport.php";
                 $.post(suppURL,{sendSiteID: str},
                 function(data){
                     var terminal = $("#cmbterm");
@@ -85,7 +85,7 @@
             //this is for cashier per site
             function cashiersiteID(str)
             {
-                var suppURL = window.location.protocol + "//" + window.location.host + "/" + "kronus_ub/admin2_ub.pagcoregames.com/public/views/process/ProcessAppSupport.php";
+                var suppURL = window.location.protocol + "//" + window.location.host + "/" + "Kronus.UB.New/admin.abbott.genesis.version/public/views/process/ProcessAppSupport.php";
                 $.post(suppURL,{cashiersiteID: str},
                 function(data){
                     var cashier = $("#cmbcashier");          
@@ -98,7 +98,7 @@
             //check if with passkey
             function checkwithpasskey(str)
             {
-                var suppURL = window.location.protocol + "//" + window.location.host + "/" + "kronus_ub/admin2_ub.pagcoregames.com/public/views/process/ProcessAppSupport.php";
+                var suppURL = window.location.protocol + "//" + window.location.host + "/" + "Kronus.UB.New/admin.abbott.genesis.version/public/views/process/ProcessAppSupport.php";
                 $.post(suppURL,{cashierpasskey: str},
                 function(data){
 
@@ -115,7 +115,7 @@
 
             //this is for serviceassignment
             function sendSiteID1(str){
-                var suppURL = window.location.protocol + "//" + window.location.host + "/" + "kronus_ub/admin2_ub.pagcoregames.com/public/views/process/ProcessTerminalMgmt.php";
+                var suppURL = window.location.protocol + "//" + window.location.host + "/" + "Kronus.UB.New/admin.abbott.genesis.version/public/views/process/ProcessTerminalMgmt.php";
                 $.post(suppURL,{sendSiteID1: str},
                 function(data){                   
                     var terminal = $("#cmbterminals");
@@ -136,7 +136,7 @@
            
            //this is for casino service view 
             function sendServiceGroupID(str){
-                var suppURL = window.location.protocol + "//" + window.location.host + "/" + "Kronus_UB/admin2_ub.pagcoregames.com/public/views/process/ProcessCasinoMgmt.php";
+                var suppURL = window.location.protocol + "//" + window.location.host + "/" + "Kronus.UB.New/admin.abbott.genesis.version/public/views/process/ProcessCasinoMgmt.php";
                 $.post(suppURL,{sendServiceGroupID: str},
                 function(data){                   
                     var service = $("#cmbservice");
@@ -156,7 +156,7 @@
             
             //this is for account views
             function sendAccID(str){
-                var suppURL = window.location.protocol + "//" + window.location.host + "/" + "kronus_ub/admin2_ub.pagcoregames.com/public/views/process/ProcessAccManagement.php";
+                var suppURL = window.location.protocol + "//" + window.location.host + "/" + "Kronus.UB.New/admin.abbott.genesis.version/public/views/process/ProcessAccManagement.php";
                 $.post(suppURL,{sendAccID: str},
                 function(data){                
                     var acc = $("#cmbacc");
@@ -168,7 +168,7 @@
             
              //this is for siteremmitance
             function sendRemitID(str){
-                var suppURL = window.location.protocol + "//" + window.location.host + "/" + "kronus_ub/admin2_ub.pagcoregames.com/public/views/process/ProcessTopUp.php";
+                var suppURL = window.location.protocol + "//" + window.location.host + "/" + "Kronus.UB.New/admin.abbott.genesis.version/public/views/process/ProcessTopUp.php";
                 $.post(suppURL,{sendRemitID: str},
                 function(data){                   
                     var remit = $("#cmbsiteremit");
@@ -180,7 +180,7 @@
 
        //this is for siteremmitance for verified remmittances
             function sendRemitID2(str){
-                var suppURL = window.location.protocol + "//" + window.location.host + "/" + "kronus_ub/admin2_ub.pagcoregames.com/public/views/process/ProcessTopUp.php";
+                var suppURL = window.location.protocol + "//" + window.location.host + "/" + "Kronus.UB.New/admin.abbott.genesis.version/public/views/process/ProcessTopUp.php";
                 $.post(suppURL,{sendRemitID2: str},
                 function(data){                   
                     var remit = $("#cmbsiteremit");
@@ -192,7 +192,7 @@
             
             //this is for CS, manual redemption
             function sendSiteID2(str){
-                var suppURL = window.location.protocol + "//" + window.location.host + "/" + "kronus_ub/admin2_ub.pagcoregames.com/public/views/process/ProcessCSManagement.php";
+                var suppURL = window.location.protocol + "//" + window.location.host + "/" + "Kronus.UB.New/admin.abbott.genesis.version/public/views/process/ProcessCSManagement.php";
                 $.post(suppURL, {sendSiteID2: str},
                 function(data){
                     var terminal = $("#cmbterminal");
@@ -205,7 +205,7 @@
             
             //send terminal id to get providers list
             function sendTerminalID(str){
-                var suppURL = window.location.protocol + "//" + window.location.host + "/" + "kronus_ub/admin2_ub.pagcoregames.com/public/views/process/ProcessCSManagement.php";
+                var suppURL = window.location.protocol + "//" + window.location.host + "/" + "Kronus.UB.New/admin.abbott.genesis.version/public/views/process/ProcessCSManagement.php";
                 $.post(suppURL, {sendTerminalID: str},
                 function(data){
                     var services = $("#cmbservices");
@@ -218,7 +218,7 @@
             
             //send terminal name to get providers list
             function sendterminalname(str){
-                var suppURL = window.location.protocol + "//" + window.location.host + "/" + "kronus_ub/admin2_ub.pagcoregames.com/public/views/process/ProcessAppSupport.php";
+                var suppURL = window.location.protocol + "//" + window.location.host + "/" + "Kronus.UB.New/admin.abbott.genesis.version/public/views/process/ProcessAppSupport.php";
                 $.get(suppURL, {cmbterminal: str},
                 function(data){                    
                     $.each(data, function() {
@@ -233,7 +233,7 @@
              * 
              */
             function sendSiteID_cs(str){
-                var suppURL = window.location.protocol + "//" + window.location.host + "/" + "kronus_ub/admin2_ub.pagcoregames.com/public/views/process/ProcessAppSupport_cs.php";
+                var suppURL = window.location.protocol + "//" + window.location.host + "/" + "Kronus.UB.New/admin.abbott.genesis.version/public/views/process/ProcessAppSupport_cs.php";
                 $.post(suppURL,{sendSiteID: str},
                 function(data){
                     var terminal = $("#cmbterm");

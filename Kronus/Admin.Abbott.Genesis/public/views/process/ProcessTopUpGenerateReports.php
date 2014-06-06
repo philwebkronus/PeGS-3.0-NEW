@@ -606,7 +606,12 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         $rows = $topreport->getRptActiveTerminalsUB($cardnumber);
         
         foreach($rows as $key => $row) {
-            $balance = $this->getBalanceUB($row);
+            
+            if($row['UserMode'] == 0){
+                $balance = $this->getBalance($row);
+            }else{
+                $balance = $this->getBalanceUB($row);
+            }
             
             /********************* GET BALANCE API ****************************/
             if(is_string($balance['Balance'])) {
@@ -726,7 +731,12 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         $rows = $topreport->getRptActiveTerminalsUB($cardnumber);
         
         foreach($rows as $key => $row) {
-            $balance = $this->getBalanceUB($row);
+            
+            if($row['UserMode'] == 0){
+                $balance = $this->getBalance($row);
+            }else{
+                $balance = $this->getBalanceUB($row);
+            }
             
             /********************* GET BALANCE API ****************************/
             
@@ -758,7 +768,6 @@ class ProcessTopUpGenerateReports extends BaseProcess{
             $new_rows[] = array(
                     substr($row['SiteCode'], strlen(BaseProcess::$sitecode)),
                     $row['SiteName'],
-                    $row['POSAccountNo'],
                     substr($row['TerminalCode'], strlen($row['SiteCode'])),
                     $actualBalance,
                     $row['ServiceName'],
@@ -937,7 +946,7 @@ class ProcessTopUpGenerateReports extends BaseProcess{
                 array('value'=>'Redemption'),
                 array('value'=>'Manual Redemption'),
                 array('value'=>'Printed Tickets'),
-                array('value'=>'Active (Unused) Tickets'),
+                array('value'=>'Active Tickets for the Day'),
                 array('value'=>'Coupon'),
                 array('value'=>'Cash on Hand'),
                 array('value'=>'Gross Hold'),
@@ -1085,6 +1094,7 @@ class ProcessTopUpGenerateReports extends BaseProcess{
                                                     <td style="padding: 8px; border: 1px solid black;" ><b>End Balance</b></td><td style="padding: 8px; border: 1px solid black;" ></td><td style="padding: 8px; border: 1px solid black;" ></td><td id="endbal" style="padding: 8px; border: 1px solid black; text-align: right;" >'.number_format($row['EndBal'],2).'</td>
                                                 </tr>
                                             </table>';
+                break;
             }
         }
         
@@ -1098,7 +1108,7 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         $startdate = $_POST['startdate']." ".BaseProcess::$cutoff;
         $venddate = $_POST['enddate'];  
         $enddate = date ('Y-m-d' , strtotime (BaseProcess::$gaddeddate, strtotime($venddate)))." ".BaseProcess::$cutoff;           
-        $_SESSION['report_header'] = array('Site / PEGS Code','Cut Off Date','Beginning Balance','Initial Deposit','Reload','Redemption','Manual Redemption','Printed Tickets','Active (Unused) Tickets','Coupon','Cash on Hand','Gross Hold', 'Replenishment','Collection','Ending Balance');
+        $_SESSION['report_header'] = array('Site / PEGS Code','Cut Off Date','Beginning Balance','Initial Deposit','Reload','Redemption','Manual Redemption','Printed Tickets','Active Tickets for the Day','Coupon','Cash on Hand','Gross Hold', 'Replenishment','Collection','Ending Balance');
         $topreport = new TopUpReportQuery($this->getConnection());
         $topreport->open();
         $vsitecode = $_POST['selsitecode'];
@@ -1319,7 +1329,7 @@ class ProcessTopUpGenerateReports extends BaseProcess{
                     }
                     else{
                         $balance = $CasinoGamingCAPI->getBalance($providername, $row['ServiceID'], $url, 
-                            $_SESSION['ServiceUsername'], $capiusername, $capipassword, $capiplayername, 
+                            $row['UBServiceLogin'], $capiusername, $capipassword, $capiplayername, 
                             $capiserverID);   
                     }
                     break;

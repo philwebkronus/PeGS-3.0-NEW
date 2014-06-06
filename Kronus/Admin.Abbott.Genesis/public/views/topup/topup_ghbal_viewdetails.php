@@ -110,7 +110,7 @@ if(isset($param['SiteID']) && $param['SiteID'] != ''){
                     <td><b>End Balance</b></td><td></td><td></td><td id="endbal" style="text-align: right;"><?php echo $param['EndBal']; ?></td>
                 </tr>
                 <tr id="tbllightgray">
-                    <td colspan="4" ><a type="button" id="btnexportpdf" style="float: right; display: block; text-decoration: none; font-weight: bold;">Export to PDF</a></td>
+                    <td colspan="4" ><input type="button" id="btnexportpdf" value="Export to PDF" style="float: right; display: block; text-decoration: none;" /></td>
                 </tr>
             </table>
         </form>

@@ -83,6 +83,7 @@ class ProcessTopUpPaginate extends BaseProcess {
                         "ManualRedemption"=>(($row['ActualAmount'])?number_format($row['ActualAmount'],2):''),
                         "PrintedTickets"=>number_format($row['PrintedTickets'],2),
                         "UnusedTickets"=>number_format($row['UnusedTickets'],2),
+                        "RunningActiveTickets"=>number_format($row['RunningActiveTickets'],2),
                         "Coupon"=>number_format($row['Coupon'],2),
                         "CashonHand"=>number_format($cashonhand,2),
                         "GrossHold"=>number_format($gross_hold, 2),
@@ -1132,9 +1133,9 @@ class ProcessTopUpPaginate extends BaseProcess {
             $grosshold = (($row['InitialDeposit'] + $row['Reload']) - $row['Redemption']) - $row['ManualRedemption'];
             $cashonhand = ((($row['DepositCash'] + $row['ReloadCash']) - $row['RedemptionCashier']) - $row['ManualRedemption']) - $row['EncashedTickets'];
             $endbal = $grosshold + $row['Replenishment'] - $row['Collection'];
-            $viewdetails = "<input type='button' id='btnviewdetails' value='View Details' SiteID='".$row['SiteID']."' StartDate='".$startdate."' EndDate='".$enddate."'".
+            $viewdetails = "<input type='button' id='btnviewdetails' value='View Details' SiteID='".$row['SiteID']."' StartDate='".$row['ReportDate']." ".BaseProcess::$cutoff."' EndDate='".$row['CutOff']."'".
                                            " onClick = '$(\"#hdnsiteid\").val($(this).attr(\"SiteID\")); $(\"#hdnstartdate\").val($(this).attr(\"StartDate\")); $(\"#hdnenddate\").val($(this).attr(\"EndDate\"));".
-                                           " document.getElementById(\"frmexport\").submit();'/>";
+                                           "jQuery( \"#frmexport\").attr(\"action\",\"\"); jQuery(\"#frmexport\").attr(\"action\",\"GrossHoldBalanceViewDetails.php\");  document.getElementById(\"frmexport\").submit();'/>";
             $jqgrid->rows[] = array('id'=>$row['SiteID'],'cell'=>array(
                 substr($row['SiteCode'], strlen(BaseProcess::$sitecode)),
                 $row['CutOff'],
@@ -1172,7 +1173,7 @@ class ProcessTopUpPaginate extends BaseProcess {
         {
             $rows = $topup->getoldGHBalance($sort, $dir, $startdate, $enddate,$siteid); //get gross hold balance, (past)
         }
-        
+
         if(!empty($rows)){
             foreach ($rows as $value) {
                 $sitename = $value['SiteName'];
@@ -1198,6 +1199,19 @@ class ProcessTopUpPaginate extends BaseProcess {
                 $endbal = $value['EndBal'];
                 $grosshold = (($value['InitialDeposit'] + $value['Reload']) - $value['Redemption']) - $value['ManualRedemption'];
                 $cashonhand = ((($value['DepositCash'] + $value['ReloadCash']) - $value['RedemptionCashier']) - $value['ManualRedemption']) - $value['EncashedTickets'];
+            
+                $this->render('topup/topup_ghbal_viewdetails',array('SiteID' => $siteid,'SiteName'=> $sitename, 'SiteCode' => $sitecode, 'POSAccountNo' => $posaccnt, 'CutOff'=> $cutoff,
+                                            'BegBal' => number_format($begbal,2), 'TotalDeposit' => number_format($totaldeposit,2), 
+                                            'DepositCash' => number_format($depositcash,2), 'DepositTicket' => number_format($depositticket,2),
+                                            'DepositCoupon' => number_format($depositcoupon,2), 'TotalReload' => number_format($totalreload,2), 
+                                            'ReloadCash' => number_format($reloadcash,2),'ReloadTicket' => number_format($reloadticket,2), 
+                                            'ReloadCoupon' => number_format($reloadcoupon,2), 'TotalRedemption' => number_format($totalredemption,2),
+                                            'RedemptionCashier' => number_format($redemptioncashier,2), 'RedemptionGenesis' => number_format($redemptiongenesis,2),
+                                            'ManualRedemption' => number_format($manualredemption,2), 'EncashedTickets' => number_format($encashedtickets,2), 
+                                            'Replenishment' => number_format($replenishment,2),'Collection' => number_format($collection,2), 'EndBal' => number_format($endbal,2), 
+                                            'GrossHold' => number_format($grosshold,2), 'CashOnHand' => number_format($cashonhand,2), 'StartDate' => $startdate, 'EndDate' => $enddate));
+                $topup->close();
+                break;
             }
         } else {
             $sitename = 'N/A';
@@ -1223,19 +1237,19 @@ class ProcessTopUpPaginate extends BaseProcess {
             $endbal = '0.00';
             $grosshold = '0.00';
             $cashonhand = '0.00';
+            $this->render('topup/topup_ghbal_viewdetails',array('SiteID' => $siteid,'SiteName'=> $sitename, 'SiteCode' => $sitecode, 'POSAccountNo' => $posaccnt, 'CutOff'=> $cutoff,
+                                        'BegBal' => number_format($begbal,2), 'TotalDeposit' => number_format($totaldeposit,2), 
+                                        'DepositCash' => number_format($depositcash,2), 'DepositTicket' => number_format($depositticket,2),
+                                        'DepositCoupon' => number_format($depositcoupon,2), 'TotalReload' => number_format($totalreload,2), 
+                                        'ReloadCash' => number_format($reloadcash,2),'ReloadTicket' => number_format($reloadticket,2), 
+                                        'ReloadCoupon' => number_format($reloadcoupon,2), 'TotalRedemption' => number_format($totalredemption,2),
+                                        'RedemptionCashier' => number_format($redemptioncashier,2), 'RedemptionGenesis' => number_format($redemptiongenesis,2),
+                                        'ManualRedemption' => number_format($manualredemption,2), 'EncashedTickets' => number_format($encashedtickets,2), 
+                                        'Replenishment' => number_format($replenishment,2),'Collection' => number_format($collection,2), 'EndBal' => number_format($endbal,2), 
+                                        'GrossHold' => number_format($grosshold,2), 'CashOnHand' => number_format($cashonhand,2), 'StartDate' => $startdate, 'EndDate' => $enddate));
+            $topup->close();
         }
-        
-        $this->render('topup/topup_ghbal_viewdetails',array('SiteID' => $siteid,'SiteName'=> $sitename, 'SiteCode' => $sitecode, 'POSAccountNo' => $posaccnt, 'CutOff'=> $cutoff,
-                                    'BegBal' => number_format($begbal,2), 'TotalDeposit' => number_format($totaldeposit,2), 
-                                    'DepositCash' => number_format($depositcash,2), 'DepositTicket' => number_format($depositticket,2),
-                                    'DepositCoupon' => number_format($depositcoupon,2), 'TotalReload' => number_format($totalreload,2), 
-                                    'ReloadCash' => number_format($reloadcash,2),'ReloadTicket' => number_format($reloadticket,2), 
-                                    'ReloadCoupon' => number_format($reloadcoupon,2), 'TotalRedemption' => number_format($totalredemption,2),
-                                    'RedemptionCashier' => number_format($redemptioncashier,2), 'RedemptionGenesis' => number_format($redemptiongenesis,2),
-                                    'ManualRedemption' => number_format($manualredemption,2), 'EncashedTickets' => number_format($encashedtickets,2), 
-                                    'Replenishment' => number_format($replenishment,2),'Collection' => number_format($collection,2), 'EndBal' => number_format($endbal,2), 
-                                    'GrossHold' => number_format($grosshold,2), 'CashOnHand' => number_format($cashonhand,2), 'StartDate' => $startdate, 'EndDate' => $enddate));
-        $topup->close();
+
     }
 }
 

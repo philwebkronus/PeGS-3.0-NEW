@@ -85,14 +85,48 @@ document.getElementById('blockf').style.display='block';</script>";
                                 dataType: 'json',
                                 success: function(data)
                                 {
+                                    var pt = 0;
+                                    var rtg = 0;
+                                    var mg = 0;
+                                    
+                                    jQuery.each(data, function()
+                                    {
+                                        if(this.ServiceGroupID == 1){
+                                            rtg = parseInt(rtg) + 1;
+                                        }
+                                        
+                                        if(this.ServiceGroupID == 2){
+                                            mg = parseInt(mg) + 1;
+                                        }
+                                        
+                                        if(this.ServiceGroupID == 3){
+                                            pt = parseInt(pt) + 1;
+                                        }
+                                        
+                                        if(this.ServiceGroupID == 4){
+                                            rtg = parseInt(rtg) + 1;
+                                        }
+                                    });
+                                    
                                         var terminals = jQuery("#cmbterminals").val();
                                         var ctr;
                                         var tblRow = "";
                                         document.getElementById('light').style.display='block';
                                         document.getElementById('fade').style.display='block';
-                                        tblRow += "<tr><td>Terminal</td><td id =\"mg\" style=\"text-align: center;\"> MG Servers</td>";
-                                        tblRow += "<td id=\"pt\" style=\"text-align: center;\"> PT Servers</td>";
-                                        tblRow += "<td id=\"rtg\" style=\"text-align: center;\"> RTG Servers</td></tr>";
+                                        
+                                        
+                                        if(mg > 0){
+                                            tblRow += "<tr><td>Terminal</td><td id =\"mg\" style=\"text-align: center;\"> MG Servers</td>";
+                                        }
+                                        
+                                        if(pt > 0){
+                                            tblRow += "<td id=\"pt\" style=\"text-align: center;\"> PT Servers</td>";
+                                        }
+                                        
+                                        if(rtg > 0){
+                                            tblRow += "<td id=\"rtg\" style=\"text-align: center;\"> RTG Servers</td></tr>";
+                                        }
+                                        
                                         mgserver = 0;
                                         rtgserver = 0;
                                         ptserver = 0;

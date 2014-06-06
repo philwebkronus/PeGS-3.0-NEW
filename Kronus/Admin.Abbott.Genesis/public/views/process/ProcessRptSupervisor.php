@@ -265,6 +265,7 @@ if($connected)
            
             $loadcash = '0.00';
             $loadticket = '0.00';
+            $loadcoupon = '0.00';
             $printedtickets = '0.00';
             $encashedtickets = '0.00';
             $redemptioncashier = '0.00';
@@ -277,6 +278,8 @@ if($connected)
                         $loadcash = $result2[$ctr2]['LoadCash'];
                     if($result2[$ctr2]['LoadTicket'] != '0.00')
                         $loadticket = $result2[$ctr2]['LoadTicket'];
+                    if($result2[$ctr2]['LoadCoupon'] != '0.00')
+                        $loadcoupon = $result2[$ctr2]['LoadCoupon'];
                     if($result2[$ctr2]['PrintedTickets'] != '0.00')
                         $printedtickets = $result2[$ctr2]['PrintedTickets'];
                     if($result2[$ctr2]['EncashedTickets'] != '0.00')
@@ -316,6 +319,7 @@ if($connected)
                
                $vtotal->loadcash = number_format($loadcash, 2, '.', ',');
                $vtotal->loadticket = number_format($loadticket, 2, '.', ',');
+               $vtotal->loadcoupon = number_format($loadcoupon, 2, '.', ',');
                
                $vtotal->printedtickets = number_format($printedtickets, 2, '.', ',');
                $vtotal->encashedtickets = number_format($encashedtickets, 2, '.', ',');
@@ -362,7 +366,7 @@ if($connected)
       //setting the values of the headers and data of the excel file
       //and these values comes from the other file which file shows the data
         
-        $rheaders = array('Cashier Name', 'Total Deposit', 'Total Reload', 'Total Redemption', 'Gross Hold','');
+        $rheaders = array('Cashier', 'Total Deposit', 'Total Reload', 'Total Redemption', 'Gross Hold','');
         
         $result = $orptsup->viewgrosshold($dateFrom, $dateTo, $vsiteID, $start = null, $limit = null);
         
@@ -417,6 +421,7 @@ if($connected)
              
             $loadcash = '0.00';
             $loadticket = '0.00';
+            $loadcoupon = '0.00';
             $printedtickets = '0.00';
             $encashedtickets = '0.00';
             $redemptioncashier = '0.00';
@@ -429,6 +434,8 @@ if($connected)
                         $loadcash = $result2[$ctr2]['LoadCash'];
                     if($result2[$ctr2]['LoadTicket'] != '0.00')
                         $loadticket = $result2[$ctr2]['LoadTicket'];
+                    if($result2[$ctr2]['LoadCoupon'] != '0.00')
+                        $loadcoupon = $result2[$ctr2]['LoadCoupon'];
                     if($result2[$ctr2]['PrintedTickets'] != '0.00')
                         $printedtickets = $result2[$ctr2]['PrintedTickets'];
                     if($result2[$ctr2]['EncashedTickets'] != '0.00')
@@ -514,8 +521,8 @@ if($connected)
                        );
              $totals6 = array(0 => '       ',
                         1 => '     ',
-                        2 => '     ',
-                        3 => '     ',
+                        2 => '     Coupons',
+                        3 => number_format($loadcoupon, 2, '.', ','),
                         4 => 'Cash On Hand',
                         5 => number_format($vcashonhandamt, 2, '.', ',')
                        );
@@ -565,7 +572,7 @@ if($connected)
       $pdf->html.='<div style="text-align:center; ">As of ' . $dateFrom . ' To '.$dateTo.'</div><br/>';
       $pdf->SetFontSize(10);
       $pdf->c_tableHeader2(array(
-                array('value'=>'Cashier Name'),
+                array('value'=>'Cashier'),
                 array('value'=>'Total Deposit'),
                 array('value'=>'Total Reload'),
                 array('value'=>'Total Redemption'),
@@ -622,6 +629,7 @@ if($connected)
              
             $loadcash = '0.00';
             $loadticket = '0.00';
+            $loadcoupon = '0.00';
             $printedtickets = '0.00';
             $encashedtickets = '0.00';
             $redemptioncashier = '0.00';
@@ -634,6 +642,8 @@ if($connected)
                         $loadcash = $result2[$ctr2]['LoadCash'];
                     if($result2[$ctr2]['LoadTicket'] != '0.00')
                         $loadticket = $result2[$ctr2]['LoadTicket'];
+                    if($result2[$ctr2]['LoadCoupon'] != '0.00')
+                        $loadcoupon = $result2[$ctr2]['LoadCoupon'];
                     if($result2[$ctr2]['PrintedTickets'] != '0.00')
                         $printedtickets = $result2[$ctr2]['PrintedTickets'];
                     if($result2[$ctr2]['EncashedTickets'] != '0.00')
@@ -724,8 +734,8 @@ if($connected)
                        );
              $totals6 = array(0 => '       ',
                         1 => '     ',
-                        2 => '     ',
-                        3 => '     ',
+                        2 => '     Coupons',
+                        3 => '<span style="text-align: right;">'.number_format($loadcoupon, 2, '.', ',').'</span>',
                         4 => 'Cash On Hand',
                         5 => '<span style="text-align: right;">'.number_format($vcashonhandamt, 2, '.', ',').'</span>'
                        );

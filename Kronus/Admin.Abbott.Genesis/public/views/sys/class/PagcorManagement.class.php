@@ -900,7 +900,7 @@ class PagcorManagement extends DBHandler
                         if($qr1[$ctr]['siteid'] == $qr5[$ctr2]['siteid'])
                         {
                             $amount = 0;
-                            if(($qr5[$ctr2]['mrtransdate'] >= $qr1[$ctr]['reportdate']) && ($qr5[$ctr2]['mrtransdate'] < $qr1[$ctr]['cutoff']))
+                            if(($qr5[$ctr2]['mrtransdate'] >= $qr1[$ctr]['reportdate']." 06:00:00") && ($qr5[$ctr2]['mrtransdate'] < $qr1[$ctr]['cutoff']))
                             {              
                                  if($qr1[$ctr]['manualredemption'] == 0) 
                                      $qr1[$ctr]['manualredemption'] = $qr5[$ctr2]['manualredemption'];
@@ -920,7 +920,7 @@ class PagcorManagement extends DBHandler
                         if($qr1[$ctr]['siteid'] == $qr2[$ctr3]['siteid'])
                         {
                             $amount = 0;
-                            if(($qr2[$ctr3]['datecredit'] >= $qr1[$ctr]['reportdate']) && ($qr2[$ctr3]['datecredit'] < $qr1[$ctr]['cutoff']))
+                            if(($qr2[$ctr3]['datecredit'] >= $qr1[$ctr]['reportdate']." 06:00:00") && ($qr2[$ctr3]['datecredit'] < $qr1[$ctr]['cutoff']))
                             {
                                 if($qr1[$ctr]['replenishment'] == 0) 
                                     $qr1[$ctr]['replenishment'] = $qr2[$ctr3]['amount'];
@@ -939,7 +939,7 @@ class PagcorManagement extends DBHandler
                         if($qr1[$ctr]['siteid'] == $qr3[$ctr4]['siteid'])
                         {         
                             $amount = 0;
-                            if(($qr3[$ctr4]['datecredit'] >= $qr1[$ctr]['reportdate']) && ($qr3[$ctr4]['datecredit'] < $qr1[$ctr]['cutoff']))
+                            if(($qr3[$ctr4]['datecredit'] >= $qr1[$ctr]['reportdate']." 06:00:00") && ($qr3[$ctr4]['datecredit'] < $qr1[$ctr]['cutoff']))
                             {
                                 if($qr1[$ctr]['collection'] == 0) 
                                 {
@@ -1211,7 +1211,7 @@ class PagcorManagement extends DBHandler
                         if($qr1[$ctr]['siteid'] == $qr5[$ctr2]['siteid'])
                         {
                             $amount = 0;
-                            if(($qr5[$ctr2]['mrtransdate'] >= $qr1[$ctr]['reportdate']) && ($qr5[$ctr2]['mrtransdate'] < $qr1[$ctr]['cutoff']))
+                            if(($qr5[$ctr2]['mrtransdate'] >= $qr1[$ctr]['reportdate']." 06:00:00") && ($qr5[$ctr2]['mrtransdate'] < $qr1[$ctr]['cutoff']))
                             {              
                                  if($qr1[$ctr]['manualredemption'] == 0) 
                                      $qr1[$ctr]['manualredemption'] = $qr5[$ctr2]['manualredemption'];
@@ -1240,7 +1240,7 @@ class PagcorManagement extends DBHandler
                         if($qr1[$ctr]['siteid'] == $qr2[$ctr3]['siteid'])
                         {
                             $amount = 0;
-                            if(($qr2[$ctr3]['datecredit'] >= $qr1[$ctr]['reportdate']) && ($qr2[$ctr3]['datecredit'] < $qr1[$ctr]['cutoff']))
+                            if(($qr2[$ctr3]['datecredit'] >= $qr1[$ctr]['reportdate']." 06:00:00") && ($qr2[$ctr3]['datecredit'] < $qr1[$ctr]['cutoff']))
                             {
                                 if($qr1[$ctr]['replenishment'] == 0) 
                                     $qr1[$ctr]['replenishment'] = $qr2[$ctr3]['replenishment'];
@@ -1259,7 +1259,7 @@ class PagcorManagement extends DBHandler
                         if($qr1[$ctr]['siteid'] == $qr3[$ctr4]['siteid'])
                         {         
                             $amount = 0;
-                            if(($qr3[$ctr4]['datecredit'] >= $qr1[$ctr]['reportdate']) && ($qr3[$ctr4]['datecredit'] < $qr1[$ctr]['cutoff']))
+                            if(($qr3[$ctr4]['datecredit'] >= $qr1[$ctr]['reportdate']." 06:00:00") && ($qr3[$ctr4]['datecredit'] < $qr1[$ctr]['cutoff']))
                             {
                                 if($qr1[$ctr]['collection'] == 0) 
                                 {
@@ -1779,7 +1779,7 @@ class PagcorManagement extends DBHandler
                         if($qr1[$ctr]['siteid'] == $qr5[$ctr2]['siteid'])
                         {
                             $amount = 0;
-                            if(($qr5[$ctr2]['mrtransdate'] >= $qr1[$ctr]['reportdate']) && ($qr5[$ctr2]['mrtransdate'] < $qr1[$ctr]['cutoff']))
+                            if(($qr5[$ctr2]['mrtransdate'] >= $qr1[$ctr]['reportdate']." 06:00:00") && ($qr5[$ctr2]['mrtransdate'] < $qr1[$ctr]['cutoff']))
                             {              
                                  if($qr1[$ctr]['manualredemption'] == 0) 
                                      $qr1[$ctr]['manualredemption'] = $qr5[$ctr2]['manualredemption'];
@@ -1799,7 +1799,7 @@ class PagcorManagement extends DBHandler
                         if($qr1[$ctr]['siteid'] == $qr2[$ctr3]['siteid'])
                         {
                             $amount = 0;
-                            if(($qr2[$ctr3]['datecredit'] >= $qr1[$ctr]['reportdate']) && ($qr2[$ctr3]['datecredit'] < $qr1[$ctr]['cutoff']))
+                            if(($qr2[$ctr3]['datecredit'] >= $qr1[$ctr]['reportdate']." 06:00:00") && ($qr2[$ctr3]['datecredit'] < $qr1[$ctr]['cutoff']))
                             {
                                 if($qr1[$ctr]['replenishment'] == 0) 
                                     $qr1[$ctr]['replenishment'] = $qr2[$ctr3]['amount'];
@@ -1818,7 +1818,7 @@ class PagcorManagement extends DBHandler
                         if($qr1[$ctr]['siteid'] == $qr3[$ctr4]['siteid'])
                         {         
                             $amount = 0;
-                            if(($qr3[$ctr4]['datecredit'] >= $qr1[$ctr]['reportdate']) && ($qr3[$ctr4]['datecredit'] < $qr1[$ctr]['cutoff']))
+                            if(($qr3[$ctr4]['datecredit'] >= $qr1[$ctr]['reportdate']." 06:00:00") && ($qr3[$ctr4]['datecredit'] < $qr1[$ctr]['cutoff']))
                             {
                                 if($qr1[$ctr]['collection'] == 0) 
                                 {
@@ -2094,7 +2094,7 @@ class PagcorManagement extends DBHandler
                         if($qr1[$ctr]['siteid'] == $qr5[$ctr2]['siteid'])
                         {
                             $amount = 0;
-                            if(($qr5[$ctr2]['mrtransdate'] >= $qr1[$ctr]['reportdate']) && ($qr5[$ctr2]['mrtransdate'] < $qr1[$ctr]['cutoff']))
+                            if(($qr5[$ctr2]['mrtransdate'] >= $qr1[$ctr]['reportdate']." 06:00:00") && ($qr5[$ctr2]['mrtransdate'] < $qr1[$ctr]['cutoff']))
                             {              
                                  if($qr1[$ctr]['manualredemption'] == 0) 
                                      $qr1[$ctr]['manualredemption'] = $qr5[$ctr2]['manualredemption'];
@@ -2114,7 +2114,7 @@ class PagcorManagement extends DBHandler
                         if($qr1[$ctr]['siteid'] == $qr2[$ctr3]['siteid'])
                         {
                             $amount = 0;
-                            if(($qr2[$ctr3]['datecredit'] >= $qr1[$ctr]['reportdate']) && ($qr2[$ctr3]['datecredit'] < $qr1[$ctr]['cutoff']))
+                            if(($qr2[$ctr3]['datecredit'] >= $qr1[$ctr]['reportdate']." 06:00:00") && ($qr2[$ctr3]['datecredit'] < $qr1[$ctr]['cutoff']))
                             {
                                 if($qr1[$ctr]['replenishment'] == 0) 
                                     $qr1[$ctr]['replenishment'] = $qr2[$ctr3]['replenishment'];
@@ -2133,7 +2133,7 @@ class PagcorManagement extends DBHandler
                         if($qr1[$ctr]['siteid'] == $qr3[$ctr4]['siteid'])
                         {         
                             $amount = 0;
-                            if(($qr3[$ctr4]['datecredit'] >= $qr1[$ctr]['reportdate']) && ($qr3[$ctr4]['datecredit'] < $qr1[$ctr]['cutoff']))
+                            if(($qr3[$ctr4]['datecredit'] >= $qr1[$ctr]['reportdate']." 06:00:00") && ($qr3[$ctr4]['datecredit'] < $qr1[$ctr]['cutoff']))
                             {
                                 if($qr1[$ctr]['collection'] == 0) 
                                 {
