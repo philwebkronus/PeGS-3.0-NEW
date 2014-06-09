@@ -128,7 +128,7 @@ class WsKapiInvokerController extends Controller{
     private function _getTerminalInfo($terminalName){
         $url = Yii::app()->params['get_terminal_info'];
         $postdata = CJSON::encode(array('TerminalName'=>$terminalName));
-       
+        
         $result = $this->SubmitData($url, $postdata);
         
         return $result[1];
@@ -322,6 +322,35 @@ class WsKapiInvokerController extends Controller{
         //$url = "http://localhost/kronus-egm-ws-abbott/index.php/wsKapi/redeemsession";
         
         $postdata = CJSON::encode(array('TerminalName'=>$terminalName,'TrackingID'=>$trackingID, 'StackerBatchID'=>$stackerBatchID));
+       
+        $result = $this->SubmitData($url, $postdata);
+        
+        return $result[1];
+    }
+    
+    //Remove Egm Session Invoker Controller
+    public function actionRemoveegmsession(){
+        $this->pageTitle = 'KAPI - Remove EGM Session';
+        $result = '';
+        
+        if(isset($_POST['membershipcardnumber']) && isset($_POST['terminalname']) 
+                && isset($_POST['serviceid'])){
+            
+            $membershipcardnumber = $_POST['membershipcardnumber'];
+            $terminalname = $_POST['terminalname'];
+            $serviceid = $_POST['serviceid'];
+            
+            $result = $this->_removeEgmSession($membershipcardnumber, $terminalname, $serviceid);
+        }
+        
+        $this->render('removeegmsession', array('result'=>$result));
+    }
+    private function _removeEgmSession($membershipcardnumber, $terminalName, $casinoID){
+        $url = Yii::app()->params['remove_egm_session'];
+        //$url = "http://localhost/kronus-egm-ws-abbott/index.php/wsKapi/createegmsession";
+        $postdata = CJSON::encode(array('MembershipCardNumber'=>$membershipcardnumber,
+                                        'TerminalName'=>$terminalName, 
+                                        'CasinoID'=>$casinoID));
        
         $result = $this->SubmitData($url, $postdata);
         

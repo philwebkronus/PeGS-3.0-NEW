@@ -453,6 +453,14 @@ class CommonController {
                                                'ErrorCode'=>(int)$errCode))));
         
     }
+    /**
+     * Added by Mark Kenneth Esguerra
+     * @date June 5, 2014
+     */
+    public static function removeEgmSessionResponse($transMsg, $errCode){
+        return CJSON::encode(array('RemoveEgmSession'=>(array('TransactionMessage'=>$transMsg, 
+                                                              'ErrorCode'=>(int)$errCode))));
+    }
 }
 
 ?>

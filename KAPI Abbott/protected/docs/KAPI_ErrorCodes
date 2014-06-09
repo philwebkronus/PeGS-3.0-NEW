@@ -61,3 +61,6 @@ Code  Message
 59    -   Invalid Player Mode
 60    -   Invalid Amount.
 61    -   Amount should be equal or less than [MaximumDenom].
+62    -   Casino is not supported.
+63    -   The casino is not mapped in this terminal.
+64    -   Failed to Remove EGM Session

@@ -28,4 +28,7 @@
     <?php echo CHtml::link('CreateEgmSession', Yii::app()->createUrl('wsKapiInvoker/createegmsession'), array('target'=>'_blank')); ?>
     <br />
     <br />
+    <?php echo CHtml::link('RemoveEgmSession', Yii::app()->createUrl('wsKapiInvoker/removeegmsession'), array('target'=>'_blank')); ?>
+    <br />
+    <br />
 </div>

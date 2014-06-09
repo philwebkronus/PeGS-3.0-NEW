@@ -2707,6 +2707,264 @@ class WsKapiController extends Controller {
             }
       return $returnArray;
       }
+    /**
+     * Remove EGM Session API Controller
+     * @author Mark Kenneth Esguerra
+     * @date June 5, 2014
+     */  
+    public function actionRemoveegmsession()
+    {
+        $request = $this->_readJsonRequest();
+        $message = "";
+        $errCode = "";
+        $APIName = "Remove EGM Session";
+        
+        $membershipcardnumber   = trim($request['MembershipCardNumber']);
+        $terminalName           = trim($request['TerminalName']);
+        $casinoID               = trim($request['CasinoID']);
+        
+        if (((isset($membershipcardnumber) && $membershipcardnumber) != '') 
+              && ((isset($terminalName) && $terminalName) != '')  
+              && ((isset($casinoID) && $casinoID) != '')) 
+        {
+            if (Utilities::validateInput($membershipcardnumber) && Utilities::validateInput($terminalName) 
+                                                                && Utilities::validateInput($casinoID)) 
+            {
+                //Start of declaration of models to be used.
+                $terminalsModel = new TerminalsModel();
+                $gamingSessionsModel = new GamingSessionsModel();
+                $terminalServicesModel = new TerminalServicesModel();
+                $memberCardsModel = new MemberCardsModel();
+                $memberServicesModel = new MemberServicesModel();
+                $refServices = new RefServicesModel();
+                $siteaccounts = new SiteAccountsModel();
+                $membersModel = new MembersModel();
+                $audittrail = new AuditTrailModel();
+                //Check membership card
+                $sc = Yii::app()->params['SitePrefix'] . $terminalName;
+                $MID = $memberCardsModel->getMID($membershipcardnumber);
+
+                if (!empty($MID)) {
+                    $isCardVip = $memberServicesModel->isVip($MID);
+                    if ($isCardVip > 0) {
+                        $sc = $sc . 'Vip';
+                    } else {
+                        $isCardNumberVip = $membersModel->isVip($MID);
+                        if ($isCardNumberVip > 0) {
+                            $sc = $sc . 'Vip';
+                        } else {
+                            $sc = $sc;
+                        }
+                    }
+                } 
+                else 
+                {
+                    $transMsg = "Invalid Membership Card Number";
+                    $errCode = 24;
+                    $this->_sendResponse(200, CommonController::creteEgmSessionResponse(0, '', $transMsg, $errCode));
+                    exit;
+                }
+                $TerminalDetails = $terminalsModel->getTerminalSiteIDSolo($sc);
+                //Check if Terminal is an EGM
+                if (!empty($TerminalDetails)) {
+                    $terminaltype = $terminalsModel->checkTerminalType($TerminalDetails['TerminalID']);
+                } else {
+                    $terminaltype = 0;
+                }
+                if ($terminaltype == 1) 
+                {
+                    //Check if Member Card is Active
+                    $status = $memberCardsModel->checkCardStatus($membershipcardnumber);
+                    //if $status is Active it will return numeric 1 else it will return the Error Message
+                    if (is_numeric($status) && $status == 1) 
+                    {
+                        $MID = $memberCardsModel->getMID($membershipcardnumber);
+                        if (!empty($MID)) 
+                        {
+                            //Check Terminal if found by TerminalID which is not empty. If it exists or not empty then,
+                            if (!empty($TerminalDetails)) 
+                            {
+                                //Check Terminal Status
+                                if ($TerminalDetails['Status'] == 1) 
+                                {
+                                    $cnt_mapped = $terminalServicesModel->checkHasMappedCasino($TerminalDetails['TerminalID'], $casinoID);
+                                    if ($cnt_mapped['cnt'] > 0) 
+                                    {
+                                        $TerminalID = $TerminalDetails['TerminalID'];
+                                        $siteid = $TerminalDetails['SiteID'];
+                                        //get virtual cashier of the site
+                                        $this->acc_id = $siteaccounts->getVirtualCashier($siteid);
+
+                                        //check if casino id is a number
+                                        if (!is_numeric($casinoID)) 
+                                        {
+                                            $message = "Invalid Casino ID";
+                                            $errCode = 45;
+                                            $this->_sendResponse(200, CommonController::creteEgmSessionResponse(0, '', $message, $errCode));
+
+                                            exit;
+                                        }
+
+                                        //check if casino id is valid
+                                        $ServiceName = $refServices->getServiceNameById($casinoID);
+                                        if ($ServiceName == 'false' || $ServiceName == '') 
+                                       {
+                                            $message = "Invalid Casino ID";
+                                            $errCode = 45;
+                                            $this->_sendResponse(200, CommonController::creteEgmSessionResponse(0, '', $message, $errCode));
+
+                                            exit;
+                                        }
+                                        //check if casino user mode is user-based
+                                        $usermode = $refServices->getServiceUserMode($casinoID);
+                                        if ($usermode != 1) 
+                                        {
+                                            $message = "Casino is not supported.";
+                                            $errCode = 62;
+                                            $this->_sendResponse(200, CommonController::creteEgmSessionResponse(0, '', $message, $errCode));
+
+                                            exit;
+                                        }
+                                        //check if casino is mapped on the given terminal
+                                        $match = $terminalServicesModel->getMatchedTerminalAndServiceID($TerminalID, $casinoID);
+                                        if ($match > 0) //Start of removing of egm session
+                                        {
+                                           //check if there is an active egm session
+                                           $hasActive = $gamingSessionsModel->checkEgmSessionBoth($TerminalID, $MID);
+                                           if ($hasActive['Count'] > 0)
+                                           {
+                                               //get stacker batch id
+                                               $egmsessionID = $hasActive['EGMSessionID'];
+                                               $stackerBatchID = $gamingSessionsModel->getStackerBatchID($egmsessionID);
+                                               //delete egm
+                                               $deleteegm = $gamingSessionsModel->deleteGamingSessions($TerminalID, $stackerBatchID);
+                                               if ($deleteegm)
+                                               {
+                                                   //log to audit trail
+                                                   $transdetails = "Manual Remove of EGM Session (KAPI) | MID: ".$MID." | TerminalID: ".$TerminalID;
+                                                   $audittrail->logToAuditTrail($this->acc_id, $transdetails);
+                                                   
+                                                   $message = 'EGM Session Successfully Removed.';
+                                                   $errCode = 0;
+                                                   $this->_sendResponse(200, CommonController::removeEgmSessionResponse($message, $errCode));
+                                               }
+                                               else
+                                               {
+                                                   $message = "Failed to Remove EGM Session";
+                                                   $errCode = 64;
+                                                   $this->_sendResponse(200, CommonController::removeEgmSessionResponse($message, $errCode));
+                                               }
+                                           }
+                                           else
+                                           {
+                                               $message = 'Terminal has no active EGM session.';
+                                               $errCode = 55;
+                                               $this->_sendResponse(200, CommonController::removeEgmSessionResponse($message, $errCode));
+                                           }
+                                        } 
+                                        else 
+                                        {
+                                            $message = 'Terminal Name and Casino ID did not match.';
+                                            $errCode = 15;
+                                            $this->_sendResponse(200, CommonController::removeEgmSessionResponse($message, $errCode));
+                                        }
+                                    } 
+                                    else 
+                                    {
+                                        $message = 'The casino is not mapped in this terminal.';
+                                        $errCode = 49;
+                                        $this->_sendResponse(200, CommonController::removeEgmSessionResponse($message, $errCode));
+                                    }
+                                }//
+                                else 
+                                {
+                                    $message = 'Terminal is Inactive.';
+                                    $errCode = 48;
+                                    $this->_sendResponse(200, CommonController::removeEgmSessionResponse($message, $errCode));
+                                }
+                            } 
+                            else 
+                            {
+                                $message = "Cannot find Terminal.";
+                                $errCode = 7;
+                                $this->_sendResponse(200, CommonController::removeEgmSessionResponse($message, $errCode));
+                            }
+                        } 
+                        else 
+                        {
+                            $message = "Cannot find Card Number.";
+                            $errCode = 8;
+                            $this->_sendResponse(200, CommonController::removeEgmSessionResponse($message, $errCode));
+                        }
+                    } 
+                    else 
+                    {
+                        $message = $status;
+                        $errCode = 24;
+                        $this->_sendResponse(200, CommonController::removeEgmSessionResponse($message, $errCode));
+                    }
+                } 
+                else 
+                {
+                    $message = "Terminal type is not EGM";
+                    $errCode = 57;
+                    $this->_sendResponse(200, CommonController::removeEgmSessionResponse($message, $errCode));
+                }
+            }
+            //If membershipCardNumber is invalid. If invalid then
+            else if (!Utilities::validateInput($membershipcardnumber) && Utilities::validateInput($membershipcardnumber)) {
+                $message = "Membership Card Number may contain special characters.";
+                $errCode = 5;
+                $this->_sendResponse(200, CommonController::removeEgmSessionResponse($message, $errCode));
+            }
+            //If Terminal Name is invalid. If invalid then
+            else if (!Utilities::validateInput($terminalName) && Utilities::validateInput($casinoID)) {
+                $message = "Terminal Name may contain special characters.";
+                $errCode = 4;
+                $this->_sendResponse(200, CommonController::removeEgmSessionResponse($message, $errCode));
+            }
+            //If Tracking ID is invalid. If invalid then
+            else if (Utilities::validateInput($casinoID) && !Utilities::validateInput($casinoID)) {
+                $message = "Casino ID may contain special characters.";
+                $errCode = 16;
+                $this->_sendResponse(200, CommonController::removeEgmSessionResponse($message, $errCode));
+            }
+        }
+        //If Terminal Name is blank. If blank then
+        else if (((!isset($request['MembershipCardNumber']) && $request['MembershipCardNumber']) == '') && (isset($request['TerminalName']) && $request['TerminalName']) != '' && (isset($request['CasinoID']) && $request['CasinoID']) != '') {
+            $message = "Membership Card Number is not set or blank.";
+            $errCode = 2;
+            $this->_sendResponse(200, CommonController::removeEgmSessionResponse($message, $errCode));
+        }
+        //If Terminal Name is blank. If blank then
+        else if (((!isset($request['TerminalName']) && $request['TerminalName']) == '') && (isset($request['MembershipCardNumber']) && $request['MembershipCardNumber']) != '' && (isset($request['CasinoID']) && $request['CasinoID']) != '') {
+            $message = "Terminal Name is not set or blank.";
+            $errCode = 1;
+            $this->_sendResponse(200, CommonController::removeEgmSessionResponse($message, $errCode));
+        }
+        //If Tracking ID is blank. If blank then
+        else if (((isset($request['MembershipCardNumber']) && $request['MembershipCardNumber']) != '') && ((isset($request['TerminalName']) && $request['TerminalName']) != '') && (!isset($request['CasinoID']) && $request['CasinoID']) == '') {
+            $message = "Casino ID is not set or blank.";
+            $errCode = 18;
+            $this->_sendResponse(200, CommonController::removeEgmSessionResponse($message, $errCode));
+        } else if (((!isset($request['TerminalName']) && $request['TerminalName']) == '') && ((!isset($request['CasinoID']) && $request['CasinoID']) == '') && (isset($request['MembershipCardNumber']) && $request['MembershipCardNumber']) != '') {
+            $message = "Terminal Name and Casino ID is not set or blank.";
+            $errCode = 19;
+            $this->_sendResponse(200, CommonController::removeEgmSessionResponse($message, $errCode));
+        } else if (((!isset($request['TerminalName']) && $request['TerminalName']) == '') && ((!isset($request['MembershipCardNumber']) && $request['MembershipCardNumber']) == '') && (isset($request['CasinoID']) && $request['CasinoID']) != '') {
+            $message = "Membership Card Number and Terminal Name is not set or blank.";
+            $errCode = 54;
+            $this->_sendResponse(200, CommonController::removeEgmSessionResponse($message, $errCode));
+        } else if (((!isset($request['CasinoID']) && $request['CasinoID']) == '') && ((!isset($request['MembershipCardNumber']) && $request['MembershipCardNumber']) == '') && (isset($request['TerminalName']) && $request['TerminalName']) != '') {
+            $message = "Membership Card Number and Casino ID is not set or blank.";
+            $errCode = 53;
+            $this->_sendResponse(200, CommonController::removeEgmSessionResponse($message, $errCode));
+        } else if (($request['MembershipCardNumber'] == '') && ($request['TerminalName'] == '') && ($request['CasinoID'] == '')) {
+            $message = "Membership Card Number, Terminal Name, and Casino ID is not set or blank.";
+            $errCode = 52;
+            $this->_sendResponse(200, CommonController::removeEgmSessionResponse($message, $errCode));
+        }
+    }
 }
 
 ?>

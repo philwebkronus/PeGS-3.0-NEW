@@ -85,8 +85,10 @@ class GamingSessionsModel{
         
         //get cashier user
         $user = $siteaccounts->getAIDByAccountTypeIDAndTerminalID(15, $terminal_id);
-        
-        $updatestat = $stackerSummaryModel->updateStackerSummaryStatus($stackerbatchID, StackerSummaryModel::STATUS_WITHDRAW, $user);
+        if (!is_null($stackerbatchID))
+        {
+            $updatestat = $stackerSummaryModel->updateStackerSummaryStatus($stackerbatchID, StackerSummaryModel::STATUS_WITHDRAW, $user);
+        }
         try
         {
             $sql = 'DELETE FROM egmsessions WHERE TerminalID = :terminal_id';
@@ -219,7 +221,6 @@ class GamingSessionsModel{
         $row = $command->queryRow(true, $params);
         return $row;
     }
-    
     public function chkIfStackerBatchIDExist($stackerbatchID)
     {
         $sql = "SELECT COUNT(EGMSessionID) as Count FROM egmsessions 
@@ -229,6 +230,50 @@ class GamingSessionsModel{
         $result = $command->queryRow();
         
         return $result;
+    }
+    /**
+     * Check if has Active EGM Session by both checking of TerminalID and MID
+     * @param type $terminalID
+     * @param type $MID
+     * @return array Count
+     * @author Mark Kenneth Esguerra
+     * @date June 5, 2014
+     */
+    public function checkEgmSessionBoth($terminalID, $MID)
+    {
+        $sql = "SELECT COUNT(EGMSessionID) as Count, EGMSessionID FROM egmsessions 
+                WHERE TerminalID = :terminalID AND MID = :MID";
+        $command = $this->_connection->createCommand($sql);
+        $command->bindValue(":terminalID", $terminalID);
+        $command->bindValue(":MID", $MID);
+        $result = $command->queryRow();
+        
+        return $result;
+    }
+    /**
+     * Get StackerBatchID of the EGM Session
+     * @param type $terminalID
+     * @param type $MID
+     * @return array Stacker Batch ID
+     * @author Mark Kenneth Esguerra
+     * @date June 5, 2014
+     */
+    public function getStackerBatchID($egmsessionID)
+    {
+        $sql = "SELECT StackerBatchID FROM egmsessions 
+                WHERE EGMSessionID = :egmsessionID";
+        $command = $this->_connection->createCommand($sql);
+        $command->bindValue(":egmsessionID", $egmsessionID);
+        $result = $command->queryRow();
+        
+        if ($result['StackerBatchID'] != "")
+        {
+            return $result['StackerBatchID'];
+        }
+        else
+        {
+            return null;
+        }
     }
 }
 
