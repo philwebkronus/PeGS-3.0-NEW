@@ -383,6 +383,7 @@ class WsvoucherController extends Controller {
                                                         $errorCode = 45;
                                                         Utilities::log("Error Message: " . $transMsg . " ErrorCode: " . $errorCode);
                                                     } else {
+                                                        //Success
                                                         $date_now = date('Y-m-d');
                                                         $date1 = date($ticketData['ValidFromDate']);
                                                         $date2 = date($ticketData['ValidToDate']);
@@ -559,7 +560,7 @@ class WsvoucherController extends Controller {
 
                         if ($amount >= $allowedAmount) {
                             $trackingIDisExists = $_ticketModel->isTrackingIDExists($trackingID);
-                            if ($trackingIDisExists == 0) {
+                            if ($trackingIDisExists == 0 || $trackingIDisExists == false) {
                                 $m = $_memberCardsModel->getMIDByCardNumber($cardNumber);
                                 $MID = $m['MID'];
 
@@ -807,7 +808,7 @@ class WsvoucherController extends Controller {
             $voucherCode = $ticketCodeResult;
         }
 
-        $this->_sendResponse(200, CommonController::addTicketResponse($amount, $voucherCode, $dateTime, $validToDate, $sequenceNo, $transMsg, $errorCode));
+        $this->_sendResponse(200, CommonController::addTicketResponse($amount, $voucherCode, $validFromDate, $validToDate, $sequenceNo, $transMsg, $errorCode));
     }
 
     public function actionUseTicket() {
