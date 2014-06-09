@@ -30,7 +30,8 @@ class CouponModel extends CFormModel {
      * @param int $loyaltyCreditable
      * @return boolean success | failed transaction
      */
-    public function insertCoupon($voucherTypeID, $trackingID, $couponCode, $batchNo, $terminalID, $amount, $aid, $source, $couponBatchTable, $loyaltyCreditable, $dateExpiry) {
+    public function insertCoupon($voucherTypeID, $trackingID, $couponCode, $batchNo, 
+            $terminalID, $amount, $aid, $source, $couponBatchTable, $loyaltyCreditable, $dateExpiry) {
 
         $beginTrans = $this->_connection->beginTransaction();
 

@@ -14,6 +14,11 @@ class TicketModel extends CFormModel {
     CONST ACCOUNTTYPE_ID_SITE_SUPERVISOR = 3;
     CONST ACCOUNTTYPE_ID_SITE_CASHIER = 4;
 
+    CONST ACTIVE = 1;
+    CONST VOID = 2;
+    CONST USED = 3;
+    CONST ENCASHED = 4;
+    
     public function __construct() {
         $this->_connection = Yii::app()->db;
         $this->_connection2 = Yii::app()->db4;
@@ -25,7 +30,7 @@ class TicketModel extends CFormModel {
      * @param str $date
      * @return array
      */
-    public function getAllUsedTicketList($date) {
+    public function getAllUsedTicketList($date, $ticket_stat) {
         //get kronus database name
         $kronusConnString = Yii::app()->db2->connectionString;
         $dbnameresult = explode(";", $kronusConnString);
@@ -34,7 +39,23 @@ class TicketModel extends CFormModel {
         $datetime = new DateTime($date);
         $datetime->modify('+1 day');
         $vdate = $datetime->format('Y-m-d H:i:s');
-
+        
+        switch ($ticket_stat)
+        {
+            case self::ACTIVE:
+                $status = "t.Status IN (1, 2)";
+                break;
+            case 2:
+                $status = "t.Status IN (1, 2)";
+                break;
+            case self::USED: 
+                $status = "t.Status = 3";
+                break;
+            case self::ENCASHED:
+                $status = "t.Status = 4";
+                break;
+                
+        }
         if (($_SESSION['AccountType'] == self::ACCOUNTTYPE_ID_SITE_OPERATOR) ||
                 ($_SESSION['AccountType'] == self::ACCOUNTTYPE_ID_SITE_SUPERVISOR) ||
                 ($_SESSION['AccountType'] == self::ACCOUNTTYPE_ID_SITE_CASHIER)) {
@@ -45,7 +66,7 @@ class TicketModel extends CFormModel {
 		INNER JOIN $dbname.sites st ON st.SiteID = tr.SiteID
                 INNER JOIN $dbname.siteaccounts sa ON sa.SiteID = st.SiteID
                 INNER JOIN $dbname.accounts a ON a.AID = sa.AID
-                WHERE t.DateUpdated >= :transdate AND  t.DateUpdated < :vtransdate AND t.Status IN (1, 2, 3, 4)
+                WHERE t.DateUpdated >= :transdate AND  t.DateUpdated < :vtransdate AND ".$status."
                 AND a.AccountTypeID = :account_type_id AND a.AID = :aid
                 GROUP BY t.TicketCode
                 ORDER BY t.DateUpdated DESC";
@@ -60,7 +81,7 @@ class TicketModel extends CFormModel {
                 t.Source, t.IsCreditable FROM tickets t 
 		INNER JOIN $dbname.terminals tr ON tr.TerminalID=t.TerminalID
 		INNER JOIN $dbname.sites st ON st.SiteID = tr.SiteID
-                WHERE t.DateUpdated >= :transdate AND  t.DateUpdated < :vtransdate AND t.Status IN (1, 2, 3, 4)
+                WHERE t.DateUpdated >= :transdate AND  t.DateUpdated < :vtransdate AND ".$status."
                 GROUP BY t.TicketCode
                 ORDER BY t.DateUpdated DESC";
             $command = $this->_connection->createCommand($sql);
@@ -71,6 +92,52 @@ class TicketModel extends CFormModel {
         return $result;
     }
 
+        public function getAllActiveTicketList($date) {
+        //get kronus database name
+        $kronusConnString = Yii::app()->db2->connectionString;
+        $dbnameresult = explode(";", $kronusConnString);
+        $dbname = str_replace("dbname=", "", $dbnameresult[1]);
+
+        $datetime = new DateTime($date);
+        $datetime->modify('+1 day');
+        $vdate = $datetime->format('Y-m-d H:i:s');
+        
+        if (($_SESSION['AccountType'] == self::ACCOUNTTYPE_ID_SITE_OPERATOR) ||
+                ($_SESSION['AccountType'] == self::ACCOUNTTYPE_ID_SITE_SUPERVISOR) ||
+                ($_SESSION['AccountType'] == self::ACCOUNTTYPE_ID_SITE_CASHIER)) {
+            $sql = "SELECT DISTINCT(t.TicketID) AS VoucherID, '1' AS VoucherTypeID, st.SiteName, st.SiteCode, t.TicketCode AS VoucherCode, 
+                t.Status, t.TerminalID, t.Amount, t.DateCreated, t.CreatedByAID, t.DateUpdated, t.UpdatedByAID, t.DateEncashed, t.ValidToDate, 
+                t.Source, t.IsCreditable, SUM(t.Amount) AS TotalAmount FROM tickets t 
+		INNER JOIN $dbname.terminals tr ON tr.TerminalID=t.TerminalID
+		INNER JOIN $dbname.sites st ON st.SiteID = tr.SiteID
+                INNER JOIN $dbname.siteaccounts sa ON sa.SiteID = st.SiteID
+                INNER JOIN $dbname.accounts a ON a.AID = sa.AID
+                WHERE t.DateCreated >= :transdate AND  t.DateCreated < :vtransdate AND t.Status IN (1, 2)
+                AND a.AccountTypeID = :account_type_id AND a.AID = :aid
+                GROUP BY t.TicketCode
+                ORDER BY t.DateUpdated DESC";
+            $command = $this->_connection->createCommand($sql);
+            $command->bindValue(":transdate", $date);
+            $command->bindValue(":vtransdate", $vdate);
+            $command->bindValue(":account_type_id", $_SESSION['AccountType']);
+            $command->bindValue(":aid", $_SESSION['AID']);
+        } else {
+            $sql = "SELECT t.TicketID AS VoucherID, '1' AS VoucherTypeID, st.SiteName, st.SiteCode, t.TicketCode AS VoucherCode, 
+                t.Status, t.TerminalID, t.Amount, SUM(t.Amount) AS TotalAmount, t.DateCreated, t.CreatedByAID, t.DateUpdated, t.UpdatedByAID, t.DateEncashed, t.ValidToDate, 
+                t.Source, t.IsCreditable FROM tickets t 
+		INNER JOIN $dbname.terminals tr ON tr.TerminalID=t.TerminalID
+		INNER JOIN $dbname.sites st ON st.SiteID = tr.SiteID
+                WHERE t.DateCreated >= :transdate AND  t.DateCreated < :vtransdate AND t.Status IN (1, 2)
+                GROUP BY t.TicketCode
+                ORDER BY t.DateUpdated DESC";
+            $command = $this->_connection->createCommand($sql);
+            $command->bindValue(":transdate", $date);
+            $command->bindValue(":vtransdate", $vdate);
+        }
+        $result = $command->queryAll();
+        return $result;
+    }
+    
     /**
      * @author JunJun S. Hernandez
      * @datecreated 10/21/13
@@ -1382,22 +1449,343 @@ class TicketModel extends CFormModel {
      * @author Mark Kenneth Esguerra
      */
     public function getActiveTicketsDetails($sitecode) {
-        $connection = Yii::app()->db;
-
+        
         $query = "SELECT t.TicketID, t.TicketCode, s.SiteCode, t.DateCreated, t.Amount, 
                   t.ValidFromDate, t.ValidToDate 
                   FROM tickets t
                   INNER JOIN npos.terminals tmnl ON t.TerminalID = tmnl.TerminalID 
                   INNER JOIN npos.sites s ON t.SiteID = s.SiteID 
-                  WHERE t.Status IN (1, 2) AND t.SiteID = :siteID 
+                  WHERE t.Status IN (1, 2) AND t.SiteID = :siteID  
+                  ORDER BY t.DateCreated DESC
                   ";
-        $command = $connection->createCommand($query);
+        $command = $this->_connection->createCommand($query);
         $command->bindValue(":siteID", $sitecode);
         $result = $command->queryAll();
 
         return $result;
     }
+    /**
+     * Get printed tickets within the cut off
+     * @param int $sitecode Converted SiteID
+     * @param type $tdate Transaction date
+     * @author Mark Kenneth Esguerra
+     * @date May 22, 2014
+     */
+    public function getNumberOfPrintedTickets($tdatefrom, $tdateto, $sitecode)
+    {
+        if ($sitecode == 'All')
+        {
+            $sql = "SELECT COUNT(TicketID) as PrintedTickets, SUM(Amount) as Value FROM tickets 
+                    WHERE DateCreated >= :tdateFrom AND DateCreated < :tdateTo";
+            $command = $this->_connection->createCommand($sql);
+            $command->bindValue(":tdateFrom", $tdatefrom." 06:00:00");
+            $command->bindValue(":tdateTo", $tdateto." 06:00:00");
+        }
+        else
+        {
+            $sql = "SELECT COUNT(TicketID) as PrintedTickets, SUM(Amount) as Value FROM tickets 
+                    WHERE DateCreated >= :tdateFrom AND DateCreated < :tdateTo 
+                    AND SiteID = :siteid";
+            $command = $this->_connection->createCommand($sql);
+            $command->bindValue(":tdateFrom", $tdatefrom." 06:00:00");
+            $command->bindValue(":tdateTo", $tdateto." 06:00:00");
+            $command->bindValue(":siteid", $sitecode);
+        } 
+        $result = $command->queryRow();
 
+        return $result;
+    }
+    /**
+     * Get total number of Used tickets within the cut off
+     * @param date $tdatefrom The date from
+     * @param date $tdateto The date to
+     * @param type $sitecode Site ID
+     * @param int if for running tickets, regardless of date created
+     * @return array Result
+     * @author Mark Kenneth Esguerra
+     * @date May 23, 2013
+     */
+    public function getNumberOfUsedTickets($tdatefrom, $tdateto, $sitecode, $isrunning = null)
+    {
+        if (is_null($isrunning))
+        {
+            if ($sitecode == 'All')
+            {
+                $sql = "SELECT COUNT(TicketID) as UsedTickets, SUM(Amount) as Value FROM tickets 
+                        WHERE DateUpdated >= :tdateFrom AND DateUpdated < :tdateTo 
+                        AND DateCreated >= :tdateFrom AND DateCreated < :tdateTo 
+                        AND Status = 3";
+                $command = $this->_connection->createCommand($sql);
+                $command->bindValue(":tdateFrom", $tdatefrom." 06:00:00");
+                $command->bindValue(":tdateTo", $tdateto." 06:00:00");
+            }
+            else
+            {
+                $sql = "SELECT COUNT(TicketID) as UsedTickets, SUM(Amount) as Value FROM tickets 
+                        WHERE DateUpdated >= :tdateFrom AND DateUpdated < :tdateTo 
+                        AND DateCreated >= :tdateFrom AND DateCreated < :tdateTo 
+                        AND Status = 3 
+                        AND SiteID = :siteid";
+                $command = $this->_connection->createCommand($sql);
+                $command->bindValue(":tdateFrom", $tdatefrom." 06:00:00");
+                $command->bindValue(":tdateTo", $tdateto." 06:00:00");
+                $command->bindValue(":siteid", $sitecode);
+            } 
+        }
+        else
+        {
+            if ($sitecode == 'All')
+            {
+                $sql = "SELECT COUNT(TicketID) as UsedTickets, SUM(Amount) as Value FROM tickets 
+                        WHERE DateUpdated >= :tdateFrom AND DateUpdated < :tdateTo 
+                        AND Status = 3";
+                $command = $this->_connection->createCommand($sql);
+                $command->bindValue(":tdateFrom", $tdatefrom." 06:00:00");
+                $command->bindValue(":tdateTo", $tdateto." 06:00:00");
+            }
+            else
+            {
+                $sql = "SELECT COUNT(TicketID) as UsedTickets, SUM(Amount) as Value FROM tickets 
+                        WHERE DateUpdated >= :tdateFrom AND DateUpdated < :tdateTo 
+                        AND Status = 3 
+                        AND SiteID = :siteid";
+                $command = $this->_connection->createCommand($sql);
+                $command->bindValue(":tdateFrom", $tdatefrom." 06:00:00");
+                $command->bindValue(":tdateTo", $tdateto." 06:00:00");
+                $command->bindValue(":siteid", $sitecode);
+            } 
+        }
+        $result = $command->queryRow();
+
+        return $result;
+    }
+    /**
+     * Get total number of Encashed tickets within the cut off
+     * @param date $tdatefrom The date from
+     * @param date $tdateto The date to
+     * @param type $sitecode Site ID
+     * @param int if for running tickets, regardless of date created
+     * @return array Result
+     * @author Mark Kenneth Esguerra
+     * @date May 23, 2013
+     */
+    public function getNumberOfEncashedTickets($tdatefrom, $tdateto, $sitecode, $isrunning = null)
+    {
+        if (is_null($isrunning))
+        {
+            if ($sitecode == 'All')
+            {
+                $sql = "SELECT COUNT(TicketID) as EncashedTickets, SUM(Amount) as Value FROM tickets 
+                        WHERE DateEncashed >= :tdateFrom AND DateEncashed < :tdateTo 
+                        AND DateCreated >= :tdateFrom AND DateCreated < :tdateTo 
+                        AND Status = 4";
+                $command = $this->_connection->createCommand($sql);
+                $command->bindValue(":tdateFrom", $tdatefrom." 06:00:00");
+                $command->bindValue(":tdateTo", $tdateto." 06:00:00");
+            }
+            else
+            {
+                $sql = "SELECT COUNT(TicketID) as EncashedTickets, SUM(Amount) as Value FROM tickets 
+                        WHERE DateEncashed >= :tdateFrom AND DateEncashed < :tdateTo 
+                        AND DateCreated >= :tdateFrom AND DateCreated < :tdateTo 
+                        AND Status = 4 
+                        AND SiteID = :siteid";
+                $command = $this->_connection->createCommand($sql);
+                $command->bindValue(":tdateFrom", $tdatefrom." 06:00:00");
+                $command->bindValue(":tdateTo", $tdateto." 06:00:00");
+                $command->bindValue(":siteid", $sitecode);
+            } 
+        }
+        else
+        {
+            if ($sitecode == 'All')
+            {
+                $sql = "SELECT COUNT(TicketID) as EncashedTickets, SUM(Amount) as Value FROM tickets 
+                        WHERE DateEncashed >= :tdateFrom AND DateEncashed < :tdateTo 
+                        AND Status = 4";
+                $command = $this->_connection->createCommand($sql);
+                $command->bindValue(":tdateFrom", $tdatefrom." 06:00:00");
+                $command->bindValue(":tdateTo", $tdateto." 06:00:00");
+            }
+            else
+            {
+                $sql = "SELECT COUNT(TicketID) as EncashedTickets, SUM(Amount) as Value FROM tickets 
+                        WHERE DateEncashed >= :tdateFrom AND DateEncashed < :tdateTo 
+                        AND Status = 4 
+                        AND SiteID = :siteid";
+                $command = $this->_connection->createCommand($sql);
+                $command->bindValue(":tdateFrom", $tdatefrom." 06:00:00");
+                $command->bindValue(":tdateTo", $tdateto." 06:00:00");
+                $command->bindValue(":siteid", $sitecode);
+            } 
+        }
+        $result = $command->queryRow();
+
+        return $result;
+    }
+    /**
+     * Get the Used and Encashed Tickets with its details to 
+     * be displayed in transaction details
+     * @param type $tdatefrom
+     * @param type $tdateto
+     * @param type $sitecode
+     */
+    public function getTicketRedemptions($tdatefrom, $tdateto, $sitecode)
+    {
+        
+        if ($sitecode == 'All')
+        {
+            $sql = "SELECT t.TicketID, 
+                       trml.TerminalName, 
+                       s.SiteCode, 
+                       t.TicketCode, 
+                       t.DateCreated, 
+                       t.Amount, 
+                       t.ValidToDate, 
+                       t.Status, 
+                       t.DateUpdated, 
+                       t.DateEncashed
+                    FROM tickets t 
+                    INNER JOIN npos.sites s ON t.SiteID = s.SiteID 
+                    INNER JOIN npos.terminals trml ON t.TerminalID = trml.TerminalID 
+                    WHERE t.DateUpdated >= :tdateFrom AND t.DateUpdated < :tdateTo 
+                    AND t.DateCreated >= :tdateFrom AND t.DateCreated < :tdateTo 
+                    AND t.Status = 3 
+
+                    UNION ALL 
+
+                    SELECT t.TicketID, 
+                           trml.TerminalName, 
+                           s.SiteCode, 
+                           t.TicketCode, 
+                           t.DateCreated, 
+                           t.Amount, 
+                           t.ValidToDate, 
+                           t.Status, 
+                           t.DateUpdated, 
+                           t.DateEncashed
+                    FROM tickets t 
+                    INNER JOIN npos.sites s ON t.SiteID = s.SiteID 
+                    INNER JOIN npos.terminals trml ON t.TerminalID = trml.TerminalID 
+                    WHERE t.DateEncashed >= :tdateFrom AND t.DateEncashed < :tdateTo 
+                    AND t.DateCreated >= :tdateFrom AND t.DateCreated < :tdateTo 
+                    AND t.Status = 4
+               ";
+            $command = $this->_connection->createCommand($sql);
+            $command->bindValue(":tdateFrom", $tdatefrom." 06:00:00");
+            $command->bindValue(":tdateTo", $tdateto." 06:00:00");
+            $result = $command->queryAll();
+        }
+        else
+        {
+            $sql = "SELECT t.TicketID, 
+                        trml.TerminalName, 
+                        s.SiteCode, 
+                        t.TicketCode, 
+                        t.DateCreated, 
+                        t.Amount, 
+                        t.ValidToDate, 
+                        t.Status, 
+                        t.DateUpdated, 
+                        t.DateEncashed
+                    FROM tickets t 
+                    INNER JOIN npos.sites s ON t.SiteID = s.SiteID 
+                    INNER JOIN npos.terminals trml ON t.TerminalID = trml.TerminalID 
+                    WHERE t.DateUpdated >= :tdateFrom AND t.DateUpdated < :tdateTo 
+                    AND t.DateCreated >= :tdateFrom AND t.DateCreated < :tdateTo 
+                    AND t.Status = 3 AND t.SiteID = :siteID
+
+                    UNION ALL 
+
+                    SELECT t.TicketID, 
+                           trml.TerminalName, 
+                           s.SiteCode, 
+                           t.TicketCode, 
+                           t.DateCreated, 
+                           t.Amount, 
+                           t.ValidToDate, 
+                           t.Status, 
+                           t.DateUpdated, 
+                           t.DateEncashed
+                    FROM tickets t 
+                    INNER JOIN npos.sites s ON t.SiteID = s.SiteID 
+                    INNER JOIN npos.terminals trml ON t.TerminalID = trml.TerminalID 
+                    WHERE t.DateEncashed >= :tdateFrom AND t.DateEncashed < :tdateTo 
+                    AND t.DateCreated >= :tdateFrom AND t.DateCreated < :tdateTo 
+                    AND t.Status = 4 AND t.SiteID = :siteID
+                ";
+            $command = $this->_connection->createCommand($sql);
+            $command->bindValue(":tdateFrom", $tdatefrom." 06:00:00");
+            $command->bindValue(":tdateTo", $tdateto." 06:00:00");
+            $command->bindValue(":siteID", $sitecode);
+            $result = $command->queryAll();
+        }
+        return $result;
+    }
+    /**
+     * Get Unused Tickets. Tickets that are not used or encashed on the day it was printed
+     * @param type $tdatefrom
+     * @param type $tdateto
+     * @param type $sitecode
+     * @return type
+     */
+    public function getUnusedTickets($tdatefrom, $tdateto, $sitecode)
+    {
+        
+        if ($sitecode == 'All')
+        {
+            $sql = "SELECT COUNT(TicketID) as UnusedTickets, SUM(Amount) as Value FROM tickets 
+                    WHERE DateCreated >= :tdateFrom AND DateCreated < :tdateTo 
+                    AND DateUpdated IS NULL AND DateEncashed IS NULL";
+            $command = $this->_connection->createCommand($sql);
+            $command->bindValue(":tdateFrom", $tdatefrom." 06:00:00");
+            $command->bindValue(":tdateTo", $tdateto." 06:00:00");
+            $result = $command->queryRow();
+        }
+        else
+        {
+            $sql = "SELECT COUNT(TicketID) as UnusedTickets, SUM(Amount) as Value FROM tickets 
+                    WHERE DateCreated >= :tdateFrom AND DateCreated < :tdateTo 
+                    AND DateUpdated IS NULL AND DateEncashed IS NULL AND 
+                    SiteID = :siteID";
+            $command = $this->_connection->createCommand($sql);
+            $command->bindValue(":tdateFrom", $tdatefrom." 06:00:00");
+            $command->bindValue(":tdateTo", $tdateto." 06:00:00");
+            $command->bindValue(":siteID", $sitecode);
+            $result = $command->queryRow();
+        }
+                
+        return $result;
+    }
+    public function getRunningActiveTickets($dateFrom, $dateTo, $sitecode)
+    {
+        if ($sitecode == "All")
+        {
+            $sql = "SELECT COUNT(TicketID) as RunningActive, SUM(Amount) as Value 
+                    FROM tickets 
+                    WHERE DateCreated >= :datefrom AND DateCreated < :dateto AND 
+                    Status IN (1, 2)";   
+            $command = $this->_connection->createCommand($sql);
+            $command->bindValue(":datefrom", $dateFrom);
+            $command->bindValue(":dateto", $dateTo);
+            $result = $command->queryRow();
+        }
+        else
+        {
+            $sql = "SELECT COUNT(TicketID) as RunningActive, SUM(Amount) as Value 
+                    FROM tickets 
+                    WHERE DateCreated >= :datefrom AND DateCreated < :dateto AND 
+                    SiteID = :siteID 
+                    AND Status IN (1, 2)";   
+            $command = $this->_connection->createCommand($sql);
+            $command->bindValue(":datefrom", $dateFrom);
+            $command->bindValue(":dateto", $dateTo);
+            $command->bindValue(":siteID", $sitecode);
+            $result = $command->queryRow();
+        }
+        
+        return $result;
+    }
 }
 
 ?>

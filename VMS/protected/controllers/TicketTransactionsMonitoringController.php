@@ -357,7 +357,7 @@ class TicketTransactionsMonitoringController extends VMSBaseIdentity {
             $params = array(
                 'arrayDataProvider' => $arrayDataProvider,
             );
-
+            
             if (!isset($_GET['ajax'])) {
                 $this->renderPartial('ticketTransactions', $params);
             } else {
@@ -993,7 +993,15 @@ class TicketTransactionsMonitoringController extends VMSBaseIdentity {
             $this->render('ticket', array('model' => $_TransPerCutOff));
         }
     }
-
+    public function actionCheckDateRange()
+    {
+        $dateFrom   = $_POST['dateFrom'];
+        $dateTo     = $_POST['dateTo'];
+        
+        $dateDiff = round(abs(strtotime($dateFrom) - strtotime($dateTo)) / 86000);
+       
+        echo $dateDiff;
+    }
 }
 
 ?>

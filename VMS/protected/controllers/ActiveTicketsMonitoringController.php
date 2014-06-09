@@ -20,15 +20,15 @@ class ActiveTicketsMonitoringController extends VMSBaseIdentity
         $sites          = new SitesModel();
         $accessrights   = new AccessRights();
         
-        $submenuID = 33;
-        $hasRight  = $accessrights->checkSubMenuAccess(Yii::app()->session['AccountType'], $submenuID);
-        
+        $submenuID  = 33;
+        $hasRight   = $accessrights->checkSubMenuAccess(Yii::app()->session['AccountType'], $submenuID);
+        $autoselect = false;
         if ($hasRight)
         {
             //If the user is either SiteSup, SiteOps or Cashier, get only the sites under them
             if (Yii::app()->session['AccountType'] == 2 || 
                 Yii::app()->session['AccountType'] == 3 || 
-                Yii::app()->session['AccountType'] == 4)
+                Yii::app()->session['AccountType'] == 4 )
             {
                 $aid = Yii::app()->session['AID'];
                 
@@ -38,6 +38,7 @@ class ActiveTicketsMonitoringController extends VMSBaseIdentity
                 {
                     $arrSiteID[] = $s_id['SiteID'];
                 }
+                $autoselect = true;
             }
             else
             {
@@ -63,12 +64,17 @@ class ActiveTicketsMonitoringController extends VMSBaseIdentity
             $this->showalert = true;
             $this->messagealert = "User has no access right to this page";
         }
-        array_unshift($arrsitecodes, array('SiteID' => null, 'SiteCode' => '-Please Select-'));
+        if (!$autoselect)
+        {
+            array_unshift($arrsitecodes, array('SiteID' => null, 'SiteCode' => '-Please Select-'));
+        }
         $sitecodelist = CHtml::listData($arrsitecodes, 'SiteID', 'SiteCode');
         
         $this->render('index', array('model' => $model, 'sitecodes' => $sitecodelist));
     }
-    
+    /**
+     * Loads all tickets transactions
+     */
     public function actionLoadAllTicketInfo()
     {
         $tickets = new TicketModel();
@@ -151,21 +157,41 @@ class ActiveTicketsMonitoringController extends VMSBaseIdentity
         }
         echo json_encode($response);
     }
+    /**
+     * Get Total Active Tickets and its value
+     * @author Mark Kenneth Esguerra
+     * @date May 22, 2014
+     */
     public function actionGetTotalTickets()
     {
         $tickets = new TicketModel();
         
-        $sitecode   = $_POST['_sitecode'];
+        $sitecode       = $_POST['_sitecode'];
+        $totalamount    = 0; 
         //Get Tickets by SiteCodes
         $alltickets = $tickets->getActiveTicketsDetails($sitecode);
         //Get total active tickets
         $ticketcount = (int)count($alltickets);
-        
+        //Get ticket amount
+        foreach ($alltickets as $tickets)
+        {
+            $totalamount += $tickets['Amount'];
+        }
         $response = array();
         
-        $response['TotalCount'] = number_format($ticketcount);
+        $response['TotalCount']     = number_format($ticketcount);
+        $response['TotalAmount']    = number_format($totalamount, "2",".", ",");
         
         echo json_encode($response);
+    }
+    /**
+     * Export to Excel (Tickets)
+     * @date May 23, 2014
+     * @author Mark Kenneth Esguerra
+     */
+    public function actionExporttoexcelticket()
+    {
+        
     }
 }
 ?>

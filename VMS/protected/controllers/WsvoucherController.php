@@ -400,7 +400,7 @@ class WsvoucherController extends Controller {
                                                         $vouchertype = 1;
                                                         list($errorCode, $transMsg) = $this->_voucherStatus($ticketstatus, $vouchertype);
                                                     }
-                                                    $details = "VerifyTicket" . $transMsg;
+                                                    $details = "VerifyTicket : " . $transMsg;
                                                     $stat = 1;
                                                     AuditLog::logAPITransactions(9, $source, $details, $voucherCode, $trackingid, $stat);
                                                     $this->_sendResponse(200, CommonController::verifyTicketResponse($voucherCode, $amount, $dateCreated, $vouchertype, $loyaltyCreditable, $transMsg, $errorCode));
@@ -410,7 +410,7 @@ class WsvoucherController extends Controller {
                                                     $vouchertype = self::TICKET;
                                                     $stat = 2;
                                                     $transMsg = "Invalid ticket.";
-                                                    $details = "VerifyTicket" . $transMsg;
+                                                    $details = "VerifyTicket : " . $transMsg;
                                                     AuditLog::logAPITransactions(9, $source, $details, $voucherCode, $trackingid, $stat);
                                                     Utilities::log("Error Message: " . $transMsg . " ErrorCode: " . $errorCode);
                                                     $result = $commonController->getVerifyRetMsg($vouchertype, $errorCode, $transMsg, $voucherCode, $amount, $dateCreated, $loyaltyCreditable, $expirationDate);
@@ -626,17 +626,19 @@ class WsvoucherController extends Controller {
                                                                 $errorCode = 0;
                                                                 $details = "AddTicket : " . $transMsg;
                                                                 $stat = 'Success';
+                                                                $status = 1;
                                                                 $APIMethod = 8;
                                                                 $sequenceNo = $lastInsertedID;
-                                                                AuditLog::logAPITransactions($APIMethod, $source, $details, $voucherCode, $trackingID, $stat);
+                                                                AuditLog::logAPITransactions($APIMethod, $source, $details, $voucherCode, $trackingID, $status);
                                                                 $result = $commonController->getVerifyRetMsg($vouchertype, $errorCode, $transMsg, $voucherCode, $amount, $validFromDate, "", $validToDate, $sequenceNo);
                                                             } else {
                                                                 $transMsg = 'Transaction failed.';
                                                                 $errorCode = 31;
                                                                 $details = "AddTicket : " . $transMsg;
                                                                 $stat = 'Failed';
+                                                                $status = 2;
                                                                 $APIMethod = 8;
-                                                                AuditLog::logAPITransactions($APIMethod, $source, $details, $voucherCode, $trackingID, $stat);
+                                                                AuditLog::logAPITransactions($APIMethod, $source, $details, $voucherCode, $trackingID, $status);
                                                                 Utilities::log("Error Message: " . $transMsg . " ErrorCode: " . $errorCode);
                                                                 $result = $commonController->getVerifyRetMsg($vouchertype, $errorCode, $transMsg, $voucherCode, $amount, $validFromDate, "", $validToDate);
                                                             }

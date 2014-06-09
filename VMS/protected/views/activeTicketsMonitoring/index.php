@@ -26,6 +26,7 @@ $this->pageTitle = Yii::app()->name." - Active Tickets Monitoring";
                    success: function(data){
                        $("#disptotal").show();
                        $("#totaltickets").html(data.TotalCount);
+                       $("#totalamount").html(data.TotalAmount);
                        loadJqGrid(sitecode);
                    }
                 });
@@ -112,15 +113,16 @@ $this->endWidget();
 <br />
 <br />
 <div id="disptotal" class="view_div">
-    <br />
-    <h4><b>Total Active Tickets: </b><span id="totaltickets"></span><br /><br /></h4>
+    <h4><b>Total Active Tickets: </b><span id="totaltickets"></span><br /></h4>
+    <h4><b>Total Amount of Active Tickets: </b><span id="totalamount"></span><br /><br /><h4>
 </div>
 <br />
 <?php
 if (Yii::app()->session['AccountType'] == 8  || 
     Yii::app()->session['AccountType'] == 12 || 
     Yii::app()->session['AccountType'] == 5  || 
-    Yii::app()->session['AccountType'] == 16 )
+    Yii::app()->session['AccountType'] == 16 || 
+    Yii::app()->session['AccountType'] == 6)
 {
     
 ?>

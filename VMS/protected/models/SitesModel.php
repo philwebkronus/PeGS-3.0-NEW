@@ -39,47 +39,47 @@ class SitesModel extends CFormModel {
      * @return array sites
      */
     public function fetchAllActiveSites() {
-        if (($_SESSION['AccountType'] == self::ACCOUNTTYPE_ID_SITE_SUPERVISOR) ||
-                ($_SESSION['AccountType'] == self::ACCOUNTTYPE_ID_SITE_CASHIER)) {
-            $sql = "SELECT s.SiteID, s.SiteName FROM sites s
+        if ((Yii::app()->session['AccountType'] == self::ACCOUNTTYPE_ID_SITE_SUPERVISOR) ||
+                (Yii::app()->session['AccountType'] == self::ACCOUNTTYPE_ID_SITE_CASHIER)) {
+            $sql = "SELECT s.SiteID, s.SiteCode FROM sites s
                 INNER JOIN siteaccounts sa ON sa.SiteID = s.SiteID
                 INNER JOIN accounts a ON a.AID = sa.AID
                 WHERE s.Status = 1 AND s.SiteID <> 1 AND a.AccountTypeID = :account_type_id AND a.AID = :aid
-                ORDER BY s.SiteName ASC";
+                ORDER BY s.SiteCode ASC";
             $command = $this->_connection->createCommand($sql);
-            $command->bindValue(":account_type_id", $_SESSION['AccountType']);
-            $command->bindValue(":aid", $_SESSION['AID']);
+            $command->bindValue(":account_type_id", Yii::app()->session['AccountType']);
+            $command->bindValue(":aid", Yii::app()->session['AID']);
             $result = $command->queryAll();
 
             $site = array();
             foreach ($result as $row) {
-                $site[$row['SiteID']] = $row['SiteName'];
+                $site[$row['SiteID']] = str_replace(Yii::app()->params['sitePrefix'], "", $row['SiteCode']);
             }
-        } else if ($_SESSION['AccountType'] == self::ACCOUNTTYPE_ID_SITE_OPERATOR) {
-            $sql = "SELECT s.SiteID, s.SiteName FROM sites s
+        } else if (Yii::app()->session['AccountType'] == self::ACCOUNTTYPE_ID_SITE_OPERATOR) {
+            $sql = "SELECT s.SiteID, s.SiteCode FROM sites s
                 INNER JOIN siteaccounts sa ON sa.SiteID = s.SiteID
                 INNER JOIN accounts a ON a.AID = sa.AID
                 WHERE s.Status = 1 AND s.SiteID <> 1 AND a.AccountTypeID = :account_type_id AND a.AID = :aid
-                ORDER BY s.SiteName ASC";
+                ORDER BY s.SiteCode ASC";
             $command = $this->_connection->createCommand($sql);
-            $command->bindValue(":account_type_id", $_SESSION['AccountType']);
-            $command->bindValue(":aid", $_SESSION['AID']);
+            $command->bindValue(":account_type_id", Yii::app()->session['AccountType']);
+            $command->bindValue(":aid", Yii::app()->session['AID']);
             $result = $command->queryAll();
 
             $site = array('All' => 'All');
             foreach ($result as $row) {
-                $site[$row['SiteID']] = $row['SiteName'];
+                $site[$row['SiteID']] = str_replace(Yii::app()->params['sitePrefix'], "", $row['SiteCode']);
             }
         } else {
-            $sql = "SELECT SiteID, SiteName FROM sites WHERE Status = 1 AND SiteID <> 1
-                ORDER BY SiteName ASC";
+            $sql = "SELECT SiteID, SiteCode FROM sites WHERE Status = 1 AND SiteID <> 1
+                ORDER BY SiteCode ASC";
             $command = $this->_connection->createCommand($sql);
 
             $result = $command->queryAll();
 
             $site = array('All' => 'All');
             foreach ($result as $row) {
-                $site[$row['SiteID']] = $row['SiteName'];
+                $site[$row['SiteID']] = str_replace(Yii::app()->params['sitePrefix'], "", $row['SiteCode']);
             }
         }
 
