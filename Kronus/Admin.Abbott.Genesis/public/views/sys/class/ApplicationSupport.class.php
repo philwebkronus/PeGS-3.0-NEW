@@ -301,14 +301,32 @@ class ApplicationSupport extends DBHandler
           return $this->fetchData();          
       }
       
-      function updatecashierpasskey($zcashierid,$zpasskey)
+      function updatecashierpasskey($zcashierid,$zpasskey, $zgenpasskey = '', $zpasskeyexpire = '')
       {
-           $stmt ="UPDATE accounts SET WithPasskey = ? WHERE AID =? ";
-           $this->prepare($stmt);
-           $this->bindparameter(1,$zpasskey);
-           $this->bindparameter(2,$zcashierid);
+          if($zgenpasskey != '' && $zpasskeyexpire != ''){
+            $stmt ="UPDATE accounts SET WithPasskey = ?, Passkey = ?, DatePasskeyExpires = ? WHERE AID =? ";
+            $this->prepare($stmt);
+            $this->bindparameter(1,$zpasskey);
+            $this->bindparameter(2,$zgenpasskey);
+            $this->bindparameter(3,$zpasskeyexpire);
+            $this->bindparameter(4,$zcashierid);
+          } else {
+            $stmt ="UPDATE accounts SET WithPasskey = ? WHERE AID =? ";
+            $this->prepare($stmt);
+            $this->bindparameter(1,$zpasskey);
+            $this->bindparameter(2,$zcashierid);
+          }
+           
            $this->execute();
            return $this->rowCount();
+      }
+      
+      public function checkpasskeydetails($zcashierid){
+          $stmt = "SELECT Passkey, DatePasskeyExpires from  accounts WHERE AID = ? ";
+          $this->prepare($stmt);
+          $this->bindparameter(1,$zcashierid);
+          $this->execute();
+          return $this->fetchData();    
       }
       
       function getterminalname($zterminalID)

@@ -1184,7 +1184,18 @@ if($connected && $connected2)
         {
             case 'withpasskey':
                 $cashierid = $_POST['cmbcashier'];
-                $result = $oas->updatecashierpasskey($cashierid, $_POST['optpasskey'] );     
+                $data = $oas->checkpasskeydetails($cashierid);
+                $genpasskey = '';
+                $passkeyexpirydate = '';
+                
+                if(($data['Passkey'] == NULL || $data['Passkey'] == '') && ($data['DatePasskeyExpires'] == NULL || $data['DatePasskeyExpires'] == '')){
+                    $genpasskey = '12345678';
+                    $ddate = new DateTime(date());
+                    $ddate->sub(date_interval_create_from_date_string('8 hour'));
+                    $passkeyexpirydate = $ddate->format('Y-m-d H:i:s');
+                }
+                
+                $result = $oas->updatecashierpasskey($cashierid, $_POST['optpasskey'], $genpasskey, $passkeyexpirydate);        
                 if($result > 0)
                 {
                    $msg ="Application Support : Passkey tag successfully updated";

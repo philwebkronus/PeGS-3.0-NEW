@@ -687,6 +687,100 @@ if($connected)
                         exit;
               }
             break;
+            
+            case 'MCFHistory':
+                if(isset ($_POST['cmbsite']) && isset ($_POST['cmbterminal']) 
+                 && isset ($_POST['txtDate1']) && isset ($_POST['txtDate2']) 
+                 && isset($_POST['cmbstatus']))
+                 {
+                        $vSiteID = $_POST['cmbsite'];
+                        $vTerminalID = $_POST['cmbterminal'];
+                        $vdate1 = $_POST['txtDate1'];
+                        $vdate2 = $_POST['txtDate2'];
+                        $vFrom = $vdate1;
+                        $vTo = date ('Y-m-d', strtotime ('+1 day' , strtotime($vdate2)));
+                        $vtransstatus = $_POST['cmbstatus'];
+                        $vFrom = $vFrom.' 06;00:00';
+                        $vTo = $vTo.' 06;00:00';
+                        
+                        $rcount = $oas->countfulfillmenthistroy($vSiteID,$vTerminalID,$vtransstatus, $vFrom,$vTo); 
+
+                        $count = $rcount['Count'];
+
+                        if($count > 0 ) {
+                            $total_pages = ceil($count/$limit);
+                        } else {
+                            $total_pages = 0;
+                        }
+                        if ($page > $total_pages)
+                        {
+                            $page = $total_pages;
+                        }
+                        $start = $limit * $page - $limit;
+                        $limit = (int)$limit;   
+                        $result = $oas->getfulfillmenthistroy($vSiteID,$vTerminalID,$vtransstatus, $vFrom,$vTo, $start, $limit);  
+
+                        if(count($result) > 0)
+                        {
+                             $i = 0;
+                             $responce->page = $page;
+                             $responce->total = $total_pages;
+                             $responce->records = $count;                    
+                             foreach($result as $vview)
+                             {                     
+                                switch( $vview['Status'])
+                                {
+                                    case 0: $vstatus = 'Pending';break;
+                                    case 3: $vstatus = 'Fulfillment Approved';break;
+                                    case 4: $vstatus = 'Fulfillment Denied'; break;   
+                                    default: $vstatus = 'All'; break;
+                                } 
+
+                                switch($vview['TransactionType'])
+                                {
+                                   case 'D': $vtranstype = 'Deposit';break;
+                                   case 'W': $vtranstype = 'Withdrawal';break;
+                                   case 'R': $vtranstype = 'Reload';break;
+                                   case 'RD': $vtranstype = 'Redeposit';break;
+                                }    
+                                
+                                switch ($vview['UserMode']) {
+                                    case 0: $usermode = 'Terminal Based'; break;
+                                    case 1: $usermode = 'User Based'; break;
+                                    default:
+                                        break;
+                                }
+                                
+                                $name = $oas->getNamebyAid($vview['CreatedByAID']);
+                                
+                                $results2 = $oas->getsitecode($vSiteID);
+                                $results2 = $results2['SiteCode'];
+                                $results = preg_split("/$results2/", $vview['TerminalCode']);
+                                
+                                $sitecode = preg_split("/ICSA-/", $vview['SiteCode']);
+                                
+                                $responce->rows[$i]['id']=$vview['TransactionRequestLogID'];
+                                $responce->rows[$i]['cell']=array($sitecode[1],$results[1],$vtranstype, number_format($vview['Amount'],2),$vview['ServiceName'],$vview['TransactionDate'],$vstatus, $usermode,$name);
+                                $i++;
+                             }
+                        }
+                        else
+                        {
+                             $i = 0;
+                             $responce->page = $page;
+                             $responce->total = $total_pages;
+                             $responce->records = $count;
+                             $msg = "Application Support: No returned result";
+                             $responce->msg = $msg;
+                        }
+
+                        echo json_encode($responce);
+                        unset($result);
+                        $oas->close();
+                        exit;
+               }
+            break;
+            
             //page post for E-city transaction details tracking
             case 'LPTransactionDetails':
                 $vSiteID = $_POST['cmbsite'];
@@ -756,7 +850,7 @@ if($connected)
                         $results = preg_split("/$results2/", $vview['TerminalCode']);
                         
                         $responce->rows[$i]['id']=$vview['TransactionReferenceID'];
-                        $responce->rows[$i]['cell']=array($vview['TransactionReferenceID'],$vview['TransactionSummaryID'],$vview['POSAccountNo'], $results[1],$vtranstype,$vview['ServiceName'], number_format($vview['Amount'],2),$vview['DateCreated'],$vview['UserName'], $vstatus);
+                        $responce->rows[$i]['cell']=array($vview['TransactionReferenceID'],$vview['TransactionSummaryID'],$vview['POSAccountNo'], $results[1],$vtranstype,$vview['ServiceName'], number_format($vview['Amount'],2),$vview['DateCreated'],$vview['Name'], $vstatus);
                         $i++;
                      }
                 }
@@ -822,7 +916,7 @@ if($connected)
                         $results2 = $results2['SiteCode'];
                         $results = preg_split("/$results2/", $vview['TerminalCode']); 
                         $responce->rows[$i]['id']=$vview['TransactionsSummaryID'];
-                        $responce->rows[$i]['cell']=array($vview['TransactionsSummaryID'],$vview['POSAccountNo'], $results[1],  number_format($vview['Deposit'], 2), number_format($vview['Reload'],2), number_format($vview['Withdrawal'], 2), $vview['DateStarted'], $vview['DateEnded'], $vview['UserName']);
+                        $responce->rows[$i]['cell']=array($vview['TransactionsSummaryID'],$vview['POSAccountNo'], $results[1],  number_format($vview['Deposit'], 2), number_format($vview['Reload'],2), number_format($vview['Withdrawal'], 2), $vview['DateStarted'], $vview['DateEnded'], $vview['Name']);
                         $i++;
                      }
                 }
@@ -1008,7 +1102,18 @@ if($connected)
         {
             case 'withpasskey':
                 $cashierid = $_POST['cmbcashier'];
-                $result = $oas->updatecashierpasskey($cashierid, $_POST['optpasskey'] );     
+                $data = $oas->checkpasskeydetails($cashierid);
+                $genpasskey = '';
+                $passkeyexpirydate = '';
+                
+                if(($data['Passkey'] == NULL || $data['Passkey'] == '') && ($data['DatePasskeyExpires'] == NULL || $data['DatePasskeyExpires'] == '')){
+                    $genpasskey = '12345678';
+                    $ddate = new DateTime(date());
+                    $ddate->sub(date_interval_create_from_date_string('8 hour'));
+                    $passkeyexpirydate = $ddate->format('Y-m-d H:i:s');
+                }
+                
+                $result = $oas->updatecashierpasskey($cashierid, $_POST['optpasskey'], $genpasskey, $passkeyexpirydate);     
                 if($result > 0)
                 {
                    $msg ="Application Support : Passkey tag successfully updated";

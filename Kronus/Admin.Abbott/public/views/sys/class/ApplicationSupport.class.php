@@ -301,16 +301,34 @@ class ApplicationSupport extends DBHandler
           return $this->fetchData();          
       }
       
-      function updatecashierpasskey($zcashierid,$zpasskey)
+      function updatecashierpasskey($zcashierid,$zpasskey, $zgenpasskey = '', $zpasskeyexpire = '')
       {
-           $stmt ="UPDATE accounts SET WithPasskey = ? WHERE AID =? ";
-           $this->prepare($stmt);
-           $this->bindparameter(1,$zpasskey);
-           $this->bindparameter(2,$zcashierid);
+          if($zgenpasskey != '' && $zpasskeyexpire != ''){
+            $stmt ="UPDATE accounts SET WithPasskey = ?, Passkey = ?, DatePasskeyExpires = ? WHERE AID =? ";
+            $this->prepare($stmt);
+            $this->bindparameter(1,$zpasskey);
+            $this->bindparameter(2,$zgenpasskey);
+            $this->bindparameter(3,$zpasskeyexpire);
+            $this->bindparameter(4,$zcashierid);
+          } else {
+            $stmt ="UPDATE accounts SET WithPasskey = ? WHERE AID =? ";
+            $this->prepare($stmt);
+            $this->bindparameter(1,$zpasskey);
+            $this->bindparameter(2,$zcashierid);
+          }
+           
            $this->execute();
            return $this->rowCount();
       }
       
+      public function checkpasskeydetails($zcashierid){
+          $stmt = "SELECT Passkey, DatePasskeyExpires from  accounts WHERE AID = ? ";
+          $this->prepare($stmt);
+          $this->bindparameter(1,$zcashierid);
+          $this->execute();
+          return $this->fetchData();    
+      }
+
       function getterminalname($zterminalID)
       {
           $stmt = "SELECT TerminalName FROM terminals WHERE TerminalID = ?";
@@ -755,8 +773,8 @@ class ApplicationSupport extends DBHandler
         if($zsummaryID > 0)
         {
             $stmt = "SELECT tr.TransactionReferenceID, st.POSAccountNo, tr.TransactionSummaryID, tr.SiteID, tm.TerminalCode, tr.TerminalID, tr.Option2 AS LoyaltyCard,
-                 tr.TransactionType, tr.Amount, tr.DateCreated, tr.ServiceID,a.UserName, tr.Status, rs.ServiceName 
-                 FROM transactiondetails tr inner join accounts a on tr.CreatedByAID = a.AID
+                 tr.TransactionType, tr.Amount, tr.DateCreated, tr.ServiceID,ad.Name, tr.Status, rs.ServiceName 
+                 FROM transactiondetails tr inner join accountdetails ad on tr.CreatedByAID = ad.AID
                   INNER JOIN sites st ON tr.SiteID = st.SiteID
                   INNER JOIN ref_services rs ON rs.ServiceID = tr.ServiceID 
                   INNER JOIN terminals tm ON tr.TerminalID = tm.TerminalID WHERE tr.SiteID = ? AND tr.TerminalID = ? 
@@ -771,8 +789,8 @@ class ApplicationSupport extends DBHandler
         else
         {
             $stmt = "SELECT tr.TransactionReferenceID, st.POSAccountNo, tr.TransactionSummaryID, tr.SiteID, tm.TerminalCode, tr.TerminalID, tr.Option2 AS LoyaltyCard,
-                 tr.TransactionType, tr.Amount, tr.DateCreated, tr.ServiceID,a.UserName, tr.Status, rs.ServiceName 
-                 FROM transactiondetails tr inner join accounts a on tr.CreatedByAID = a.AID
+                 tr.TransactionType, tr.Amount, tr.DateCreated, tr.ServiceID,ad.Name, tr.Status, rs.ServiceName 
+                 FROM transactiondetails tr inner join accountdetails ad on tr.CreatedByAID = ad.AID
                   INNER JOIN sites st ON tr.SiteID = st.SiteID
                   INNER JOIN ref_services rs ON rs.ServiceID = tr.ServiceID
                   INNER JOIN terminals tm ON tr.TerminalID = tm.TerminalID WHERE tr.SiteID = ? AND tr.TerminalID = ? 
@@ -825,9 +843,10 @@ class ApplicationSupport extends DBHandler
     function gettransactionsummary($zsiteID, $zterminalID, $zdatefrom, $zdateto, $zstart, $zlimit, $zsort, $zdirection)
     {
         $stmt = "SELECT ts.TransactionsSummaryID, ts.SiteID, st.POSAccountNo, ts.TerminalID, t.TerminalCode, ts.Deposit, ts.Reload, ts.Option1 AS LoyaltyCard,
-                 ts.Withdrawal, ts.DateStarted, ts.DateEnded, acc.UserName 
+                 ts.Withdrawal, ts.DateStarted, ts.DateEnded, ad.Name 
                  FROM transactionsummary ts
                  INNER JOIN accounts acc ON ts.CreatedByAID = acc.AID
+                 INNER JOIN accountdetails ad ON acc.AID = ad.AID
                  INNER JOIN sites st ON ts.SiteID = st.SiteID
                  INNER JOIN terminals t ON ts.TerminalID = t.TerminalID
                  WHERE ts.SiteID = ? AND ts.TerminalID = ? AND DATE(ts.DateStarted) >= ?
@@ -1732,6 +1751,134 @@ class ApplicationSupport extends DBHandler
         $serviceName = $this->fetchData();
         $serviceName = $serviceName['ServiceGroupName'];
         return $serviceName;
+    }
+    
+    public function getNamebyAid($aid){
+        $sql = "SELECT Name FROM accountdetails WHERE AID = ?";
+        $this->prepare($sql);
+        $this->bindparameter(1, $aid);
+        $this->execute();
+        $Name = $this->fetchData();
+        $Name = $Name['Name'];
+        return $Name;
+    }
+
+    
+
+    public function countfulfillmenthistroy($SiteID,$TerminalID,$transstatus, $From,$To){
+        //validate if combo boxes of transaction status and transaction type are selected ALL 
+          if($transstatus == 'All')
+          {
+              $stmt = "SELECT COUNT(trl.TransactionRequestLogID) AS Count FROM transactionrequestlogs trl INNER JOIN transactiondetails td 
+                          ON td.TransactionReferenceID = trl.TransactionReferenceID INNER JOIN terminals t ON t.TerminalID = trl.TerminalID 
+                          INNER JOIN sites s ON s.SiteID = trl.SiteID INNER JOIN ref_services rs ON rs.ServiceID = trl.ServiceID
+                          WHERE trl.SiteID =? AND trl.TerminalID =? AND trl.StartDate >= ? 
+                          AND trl.StartDate < ? AND trl.Status IN (3,4)";
+              $this->prepare($stmt);
+              $this->bindparameter(1,$SiteID);
+              $this->bindparameter(2,$TerminalID);
+              $this->bindparameter(3,$From);
+              $this->bindparameter(4,$To);   
+          }
+          else {
+              $stmt = "SELECT COUNT(trl.TransactionRequestLogID) AS Count FROM transactionrequestlogs trl INNER JOIN transactiondetails td 
+                          ON td.TransactionReferenceID = trl.TransactionReferenceID INNER JOIN terminals t ON t.TerminalID = trl.TerminalID 
+                          INNER JOIN sites s ON s.SiteID = trl.SiteID INNER JOIN ref_services rs ON rs.ServiceID = trl.ServiceID
+                          WHERE trl.SiteID =? AND trl.TerminalID =? AND trl.StartDate >= ? 
+                          AND trl.StartDate < ? AND trl.Status = ?";
+              $this->prepare($stmt);
+              $this->bindparameter(1,$SiteID);
+              $this->bindparameter(2,$TerminalID);
+              $this->bindparameter(3,$From);
+              $this->bindparameter(4,$To);  
+              $this->bindparameter(5,$transstatus);  
+          }
+          
+          try {
+            $this->execute();
+          } catch(PDOException $e) {
+              var_dump($e->getMessage()); exit;
+          }
+          return $this->fetchData();
+    }
+    
+    public function getfulfillmenthistroy($SiteID,$TerminalID,$transstatus, $From,$To,$start, $limit){
+        //validate if combo boxes of transaction status and transaction type are selected ALL 
+          if($transstatus == 'All')
+          {
+              $stmt = "SELECT trl.TransactionRequestLogID, s.SiteCode, t.TerminalCode, trl.TransactionType, trl.Amount, rs.ServiceName, rs.UserMode, 
+			  td.LoyaltyCardNumber, td.CreatedByAID, trl.TransactionDate, trl.Status FROM transactionrequestlogs trl INNER JOIN transactiondetails td 
+                          ON td.TransactionReferenceID = trl.TransactionReferenceID INNER JOIN terminals t ON t.TerminalID = trl.TerminalID 
+                          INNER JOIN sites s ON s.SiteID = trl.SiteID INNER JOIN ref_services rs ON rs.ServiceID = trl.ServiceID
+                          WHERE trl.SiteID =? AND trl.TerminalID =? AND trl.StartDate >= ? 
+                          AND trl.StartDate < ? AND trl.Status IN (3,4) ORDER BY trl.StartDate LIMIT ".$start.", ".$limit."";
+              $this->prepare($stmt);
+              $this->bindparameter(1,$SiteID);
+              $this->bindparameter(2,$TerminalID);
+              $this->bindparameter(3,$From);
+              $this->bindparameter(4,$To);   
+          }
+          else {
+              $stmt = "SELECT trl.TransactionRequestLogID, s.SiteCode, t.TerminalCode, trl.TransactionType, trl.Amount, rs.ServiceName, rs.UserMode, 
+			  td.LoyaltyCardNumber, td.CreatedByAID, trl.TransactionDate, trl.Status FROM transactionrequestlogs trl INNER JOIN transactiondetails td 
+                          ON td.TransactionReferenceID = trl.TransactionReferenceID INNER JOIN terminals t ON t.TerminalID = trl.TerminalID 
+                          INNER JOIN sites s ON s.SiteID = trl.SiteID INNER JOIN ref_services rs ON rs.ServiceID = trl.ServiceID
+                          WHERE trl.SiteID =? AND trl.TerminalID =? AND trl.StartDate >= ? 
+                          AND trl.StartDate < ? AND trl.Status = ? ORDER BY trl.StartDate LIMIT ".$start.", ".$limit."";
+              $this->prepare($stmt);
+              $this->bindparameter(1,$SiteID);
+              $this->bindparameter(2,$TerminalID);
+              $this->bindparameter(3,$From);
+              $this->bindparameter(4,$To);  
+              $this->bindparameter(5,$transstatus);  
+          }
+          
+          try {
+            $this->execute();
+          } catch(PDOException $e) {
+              var_dump($e->getMessage()); exit;
+          }
+          return $this->fetchAllData();
+    }
+    
+    
+    public function exportfulfillmenthistroy($SiteID,$TerminalID,$transstatus, $From,$To){
+        //validate if combo boxes of transaction status and transaction type are selected ALL 
+          if($transstatus == 'All')
+          {
+              $stmt = "SELECT trl.TransactionRequestLogID, s.SiteCode, t.TerminalCode, trl.TransactionType, trl.Amount, rs.ServiceName, rs.UserMode, 
+			  td.LoyaltyCardNumber, td.CreatedByAID, trl.TransactionDate, trl.Status FROM transactionrequestlogs trl INNER JOIN transactiondetails td 
+                          ON td.TransactionReferenceID = trl.TransactionReferenceID INNER JOIN terminals t ON t.TerminalID = trl.TerminalID 
+                          INNER JOIN sites s ON s.SiteID = trl.SiteID INNER JOIN ref_services rs ON rs.ServiceID = trl.ServiceID
+                          WHERE trl.SiteID =? AND trl.TerminalID =? AND trl.StartDate >= ? 
+                          AND trl.StartDate < ? AND trl.Status IN (3,4) ORDER BY trl.StartDate";
+              $this->prepare($stmt);
+              $this->bindparameter(1,$SiteID);
+              $this->bindparameter(2,$TerminalID);
+              $this->bindparameter(3,$From);
+              $this->bindparameter(4,$To);   
+          }
+          else {
+              $stmt = "SELECT trl.TransactionRequestLogID, s.SiteCode, t.TerminalCode, trl.TransactionType, trl.Amount, rs.ServiceName, rs.UserMode, 
+			  td.LoyaltyCardNumber, td.CreatedByAID, trl.TransactionDate, trl.Status FROM transactionrequestlogs trl INNER JOIN transactiondetails td 
+                          ON td.TransactionReferenceID = trl.TransactionReferenceID INNER JOIN terminals t ON t.TerminalID = trl.TerminalID 
+                          INNER JOIN sites s ON s.SiteID = trl.SiteID INNER JOIN ref_services rs ON rs.ServiceID = trl.ServiceID
+                          WHERE trl.SiteID =? AND trl.TerminalID =? AND trl.StartDate >= ? 
+                          AND trl.StartDate < ? AND trl.Status = ? ORDER BY trl.StartDate";
+              $this->prepare($stmt);
+              $this->bindparameter(1,$SiteID);
+              $this->bindparameter(2,$TerminalID);
+              $this->bindparameter(3,$From);
+              $this->bindparameter(4,$To);  
+              $this->bindparameter(5,$transstatus);  
+          }
+          
+          try {
+            $this->execute();
+          } catch(PDOException $e) {
+              var_dump($e->getMessage()); exit;
+          }
+          return $this->fetchAllData();
     }
 }
 ?>
