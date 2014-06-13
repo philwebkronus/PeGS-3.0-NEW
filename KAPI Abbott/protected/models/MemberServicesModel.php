@@ -24,11 +24,11 @@ class MemberServicesModel{
         return self::$_instance;
     }
     
-    public function getDetailsByMIDAndCasinoID($MID){
+    public function getDetailsByMIDAndCasinoID($MID, $casinoID){
         $sql = "SELECT MemberServiceID, ServiceUsername, ServicePassword, HashedServicePassword
                 FROM memberservices e
-                WHERE MID = :mid";
-        $param = array(':mid'=>$MID);
+                WHERE MID = :mid AND ServiceID = :casinoID";
+        $param = array(':mid'=>$MID, ':casinoID' => $casinoID);
         $command = $this->_connection->createCommand($sql);
         return $command->queryRow(true, $param);
     }
