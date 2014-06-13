@@ -331,7 +331,7 @@ class TopUp extends DBHandler
                                                 AND tr.Status IN(1,4)
                                                 AND tr.TransactionType = 'W'
                                                 AND tr.StackerSummaryID IS NOT NULL
-                                                AND stckr.CreatedByAID In (SELECT acct.AID FROM npos.accounts acct WHERE acct.AccountTypeID = 15
+                                                AND stckr.CreatedByAID In (SELECT acct.AID FROM npos.accounts acct WHERE acct.AccountTypeID IN (4,15)
                                                 AND acct.AID IN (SELECT sacct.AID FROM npos.siteaccounts sacct WHERE sacct.SiteID =  :siteid))
                                                     )
                                             UNION ALL
@@ -365,7 +365,7 @@ class TopUp extends DBHandler
                                                                               AND tr.Status IN(1,4)
                                                                               AND tr.TransactionType In ('D', 'R')
                                                                                     AND tr.StackerSummaryID IS NOT NULL
-                                                                              AND stckr.CreatedByAID In (SELECT acct.AID FROM npos.accounts acct WHERE acct.AccountTypeID = 15
+                                                                              AND stckr.CreatedByAID In (SELECT acct.AID FROM npos.accounts acct WHERE acct.AccountTypeID IN (4,15)
                                                                               AND acct.AID IN (SELECT sacct.AID FROM npos.siteaccounts sacct WHERE sacct.SiteID =  :siteid)))
                                                             )
                                                     ) 
@@ -916,7 +916,7 @@ class TopUp extends DBHandler
                                                 AND tr.Status IN(1,4)
                                                 AND tr.TransactionType = 'W'
                                                 AND tr.StackerSummaryID IS NOT NULL
-                                                AND stckr.CreatedByAID In (SELECT acct.AID FROM npos.accounts acct WHERE acct.AccountTypeID = 15
+                                                AND stckr.CreatedByAID In (SELECT acct.AID FROM npos.accounts acct WHERE acct.AccountTypeID IN (4,15)
                                                 AND acct.AID IN (SELECT sacct.AID FROM npos.siteaccounts sacct WHERE sacct.SiteID =  :siteid))
                                                     )
                                             UNION ALL
@@ -950,7 +950,7 @@ class TopUp extends DBHandler
                                                                               AND tr.Status IN(1,4)
                                                                               AND tr.TransactionType In ('D', 'R')
                                                                                     AND tr.StackerSummaryID IS NOT NULL
-                                                                              AND stckr.CreatedByAID In (SELECT acct.AID FROM npos.accounts acct WHERE acct.AccountTypeID = 15
+                                                                              AND stckr.CreatedByAID In (SELECT acct.AID FROM npos.accounts acct WHERE acct.AccountTypeID IN (4,15)
                                                                               AND acct.AID IN (SELECT sacct.AID FROM npos.siteaccounts sacct WHERE sacct.SiteID =  :siteid)))
                                                             )
                                                     ) 
@@ -2396,7 +2396,7 @@ class TopUp extends DBHandler
                                             AND tr.Status IN(1,4)
                                             AND tr.TransactionType = 'W'
                                             AND tr.StackerSummaryID IS NOT NULL
-                                            AND stckr.CreatedByAID In (SELECT acct.AID FROM npos.accounts acct WHERE acct.AccountTypeID = 15
+                                            AND stckr.CreatedByAID In (SELECT acct.AID FROM npos.accounts acct WHERE acct.AccountTypeID IN (4,15)
                                             AND acct.AID IN (SELECT sacct.AID FROM npos.siteaccounts sacct WHERE sacct.SiteID IN ($sites)))
                                                 )
                                         UNION ALL
@@ -2430,7 +2430,7 @@ class TopUp extends DBHandler
                                                                           AND tr.Status IN(1,4)
                                                                           AND tr.TransactionType In ('D', 'R')
                                                                                 AND tr.StackerSummaryID IS NOT NULL
-                                                                          AND stckr.CreatedByAID In (SELECT acct.AID FROM npos.accounts acct WHERE acct.AccountTypeID = 15
+                                                                          AND stckr.CreatedByAID In (SELECT acct.AID FROM npos.accounts acct WHERE acct.AccountTypeID IN (4,15)
                                                                           AND acct.AID IN (SELECT sacct.AID FROM npos.siteaccounts sacct WHERE sacct.SiteID IN ($sites))))
                                                         )
                                                 )
