@@ -78,11 +78,11 @@ class ApplicationSupport extends DBHandler
           if($ztransstatus[0] == 'All' && $ztranstype == 'All')
           {
               $stmt = "SELECT td.TransactionDetailsID, td.TransactionReferenceID, td.SiteID, tm.TerminalCode, td.TerminalID, td.TransactionType, td.Amount, td.Option2 AS LoyaltyCard, rf.ServiceName,
-                  td.DateCreated, td.Status, trl.ServiceTransactionID, ad.Name FROM transactiondetails td 
+                  td.DateCreated, td.Status, trl.ServiceTransactionID, a.UserName FROM transactiondetails td 
                   INNER JOIN transactionrequestlogs trl ON td.TransactionReferenceID = trl.TransactionReferenceID 
-                  INNER JOIN accountdetails ad ON td.CreatedByAID = ad.AID
+                  INNER JOIN accounts a ON td.CreatedByAID = a.AID
                   INNER JOIN terminals tm ON td.TerminalID = tm.TerminalID
-                  INNER JOIN ref_services rf ON rf.ServiceID = td.ServiceID
+		 INNER JOIN ref_services rf ON rf.ServiceID = td.ServiceID
                   WHERE td.SiteID =? AND td.TerminalID =? AND Date(td.DateCreated) >=? 
                   AND Date(td.DateCreated) < ? ORDER BY td.DateCreated LIMIT ".$zStart.", ".$zLimit."";
               $this->prepare($stmt);
@@ -95,11 +95,11 @@ class ApplicationSupport extends DBHandler
           elseif($ztransstatus[0] <> 'All' && $ztranstype == 'All')
           {
               $stmt = "SELECT td.TransactionDetailsID, td.TransactionReferenceID, td.SiteID, tm.TerminalCode, td.TerminalID, td.TransactionType, td.Amount, td.Option2 AS LoyaltyCard, rf.ServiceName,
-                  td.DateCreated, td.Status, trl.ServiceTransactionID, ad.Name FROM transactiondetails td 
+                  td.DateCreated, td.Status, trl.ServiceTransactionID, a.UserName FROM transactiondetails td 
                   INNER JOIN transactionrequestlogs trl ON td.TransactionReferenceID = trl.TransactionReferenceID 
-                  INNER JOIN accountdetails ad ON td.CreatedByAID = ad.AID
+                  INNER JOIN accounts a ON td.CreatedByAID = a.AID
                   INNER JOIN terminals tm ON td.TerminalID = tm.TerminalID
-                  INNER JOIN ref_services rf ON rf.ServiceID = td.ServiceID
+		          INNER JOIN ref_services rf ON rf.ServiceID = td.ServiceID
                   WHERE td.SiteID =? AND td.TerminalID =? AND td.Status IN (".$status.") AND Date(td.DateCreated) >=? 
                   AND Date(td.DateCreated) < ? ORDER BY td.DateCreated LIMIT ".$zStart.", ".$zLimit."";
               $this->prepare($stmt);
@@ -112,9 +112,9 @@ class ApplicationSupport extends DBHandler
           elseif($ztransstatus[0] == 'All' && $ztranstype <> 'All')
           {
               $stmt = "SELECT td.TransactionDetailsID, td.TransactionReferenceID, td.SiteID, tm.TerminalCode, td.TerminalID, td.TransactionType, td.Amount, td.Option2 AS LoyaltyCard, rf.ServiceName,
-                  td.DateCreated, td.Status, trl.ServiceTransactionID, ad.Name FROM transactiondetails td 
+                  td.DateCreated, td.Status, trl.ServiceTransactionID, a.UserName FROM transactiondetails td 
                   INNER JOIN transactionrequestlogs trl ON td.TransactionReferenceID = trl.TransactionReferenceID 
-                  INNER JOIN accountdetails ad ON td.CreatedByAID = ad.AID
+                  INNER JOIN accounts a ON td.CreatedByAID = a.AID
                   INNER JOIN terminals tm ON td.TerminalID = tm.TerminalID
                   INNER JOIN ref_services rf ON rf.ServiceID = td.ServiceID
                   WHERE td.SiteID =? AND td.TerminalID =? AND td.TransactionType = ? AND Date(td.DateCreated) >=? 
@@ -130,9 +130,9 @@ class ApplicationSupport extends DBHandler
           else
           {
               $stmt = "SELECT td.TransactionDetailsID, td.TransactionReferenceID, td.SiteID, tm.TerminalCode, td.TerminalID, td.TransactionType, td.Amount, td.Option2 AS LoyaltyCard, rf.ServiceName,
-                  td.DateCreated, td.Status, trl.ServiceTransactionID, ad.Name FROM transactiondetails td 
+                  td.DateCreated, td.Status, trl.ServiceTransactionID, a.UserName FROM transactiondetails td 
                   INNER JOIN transactionrequestlogs trl ON td.TransactionReferenceID = trl.TransactionReferenceID 
-                  INNER JOIN accountdetails ad ON td.CreatedByAID = ad.AID
+                  INNER JOIN accounts a ON td.CreatedByAID = a.AID
                   INNER JOIN terminals tm ON td.TerminalID = tm.TerminalID
                   INNER JOIN ref_services rf ON rf.ServiceID = td.ServiceID
                   WHERE td.SiteID =? AND td.TerminalID =? AND td.Status IN (".$status.") AND td.TransactionType = ? AND Date(td.DateCreated) >=? 
@@ -328,7 +328,7 @@ class ApplicationSupport extends DBHandler
           $this->execute();
           return $this->fetchData();    
       }
-
+      
       function getterminalname($zterminalID)
       {
           $stmt = "SELECT TerminalName FROM terminals WHERE TerminalID = ?";
@@ -717,7 +717,7 @@ class ApplicationSupport extends DBHandler
     }
     
     //get terminalID of regular and vip by terminalcode
-     function getterminalacct($zterminalcode, $zsiteID, $zsitecode, $oldserviceid = '')
+     function getterminalacct($zterminalcode, $zsiteID, $zsitecode)
      {
            $terminal = array();
            foreach ($zterminalcode as $terminals)
@@ -725,25 +725,13 @@ class ApplicationSupport extends DBHandler
                $terminalcode = $zsitecode.$terminals;
                $vipterminal = $terminalcode."VIP";
                //$stmt = "SELECT TerminalID, TerminalCode FROM terminals where TerminalCode LIKE '".$terminalcode."%' AND SiteID = ?";
-               if(is_null($oldserviceid)){
-                    $stmt = "SELECT t.TerminalID, t.TerminalCode, ts.ServiceID, ts.ServicePassword, 
+               $stmt = "SELECT t.TerminalID, t.TerminalCode, ts.ServiceID, ts.ServicePassword, 
                         ts.HashedServicePassword, rs.ServiceName, rs.ServiceGroupID FROM terminals t
                         INNER JOIN terminalservices ts ON t.TerminalID = ts.TerminalID
                         INNER JOIN ref_services rs ON ts.ServiceID = rs.ServiceID
                         WHERE t.TerminalCode IN('$terminalcode','$vipterminal') AND t.SiteID = ? AND ts.Status IN (1,9) AND t.Status = 1";
-                    $this->prepare($stmt);
-                    $this->bindparameter(1, $zsiteID);
-               }
-               else{
-                    $stmt = "SELECT t.TerminalID, t.TerminalCode, ts.ServiceID, ts.ServicePassword, 
-                        ts.HashedServicePassword, rs.ServiceName, rs.ServiceGroupID FROM terminals t
-                        INNER JOIN terminalservices ts ON t.TerminalID = ts.TerminalID
-                        INNER JOIN ref_services rs ON ts.ServiceID = rs.ServiceID
-                        WHERE t.TerminalCode IN('$terminalcode','$vipterminal') AND t.SiteID = ? AND ts.Status IN (1,9) AND t.Status = 1 AND ts.ServiceID != ?";
-                    $this->prepare($stmt);
-                    $this->bindparameter(1, $zsiteID);
-                    $this->bindparameter(2, $oldserviceid);
-               }
+               $this->prepare($stmt);
+               $this->bindparameter(1, $zsiteID);
                $this->execute();
                $rterminals = $this->fetchAllData();
                array_push($terminal, $rterminals);
@@ -759,8 +747,8 @@ class ApplicationSupport extends DBHandler
         if($zsummaryID > 0)
         {
             $stmt = "SELECT tr.TransactionReferenceID, st.POSAccountNo, tr.TransactionSummaryID, tr.SiteID, tm.TerminalCode, tr.TerminalID, tr.Option2 AS LoyaltyCard,
-                  tr.TransactionType, tr.Amount, tr.DateCreated, tr.ServiceID,ad.Name, tr.Status, rs.ServiceName 
-                  FROM transactiondetails tr inner join accountdetails ad on tr.CreatedByAID = ad.AID
+                 tr.TransactionType, tr.Amount, tr.DateCreated, tr.ServiceID,a.UserName, tr.Status, rs.ServiceName 
+                 FROM transactiondetails tr inner join accounts a on tr.CreatedByAID = a.AID
                   INNER JOIN sites st ON tr.SiteID = st.SiteID
                   INNER JOIN ref_services rs ON rs.ServiceID = tr.ServiceID 
                   INNER JOIN terminals tm ON tr.TerminalID = tm.TerminalID WHERE tr.SiteID = ? AND tr.TerminalID = ? 
@@ -775,10 +763,10 @@ class ApplicationSupport extends DBHandler
         else
         {
             $stmt = "SELECT tr.TransactionReferenceID, st.POSAccountNo, tr.TransactionSummaryID, tr.SiteID, tm.TerminalCode, tr.TerminalID, tr.Option2 AS LoyaltyCard,
-                  tr.TransactionType, tr.Amount, tr.DateCreated, tr.ServiceID,ad.Name, tr.Status, rs.ServiceName 
-                  FROM transactiondetails tr inner join accountdetails ad on tr.CreatedByAID = ad.AID
+                 tr.TransactionType, tr.Amount, tr.DateCreated, tr.ServiceID,a.UserName, tr.Status, rs.ServiceName 
+                 FROM transactiondetails tr inner join accounts a on tr.CreatedByAID = a.AID
                   INNER JOIN sites st ON tr.SiteID = st.SiteID
-                  INNER JOIN ref_services rs ON rs.ServiceID = tr.ServiceID 
+                  INNER JOIN ref_services rs ON rs.ServiceID = tr.ServiceID
                   INNER JOIN terminals tm ON tr.TerminalID = tm.TerminalID WHERE tr.SiteID = ? AND tr.TerminalID = ? 
                  AND DATE(tr.DateCreated) >= ? AND DATE(tr.DateCreated) < ? ORDER BY ".$zsort." ".$zdirection." LIMIT ".$zstart.",".$zlimit."";
             $this->prepare($stmt);
@@ -829,10 +817,9 @@ class ApplicationSupport extends DBHandler
     function gettransactionsummary($zsiteID, $zterminalID, $zdatefrom, $zdateto, $zstart, $zlimit, $zsort, $zdirection)
     {
         $stmt = "SELECT ts.TransactionsSummaryID, ts.SiteID, st.POSAccountNo, ts.TerminalID, t.TerminalCode, ts.Deposit, ts.Reload, ts.Option1 AS LoyaltyCard,
-                 ts.Withdrawal, ts.DateStarted, ts.DateEnded, ad.Name 
+                 ts.Withdrawal, ts.DateStarted, ts.DateEnded, acc.UserName 
                  FROM transactionsummary ts
                  INNER JOIN accounts acc ON ts.CreatedByAID = acc.AID
-                 INNER JOIN accountdetails ad ON acc.AID = ad.AID
                  INNER JOIN sites st ON ts.SiteID = st.SiteID
                  INNER JOIN terminals t ON ts.TerminalID = t.TerminalID
                  WHERE ts.SiteID = ? AND ts.TerminalID = ? AND DATE(ts.DateStarted) >= ?
@@ -1512,8 +1499,8 @@ class ApplicationSupport extends DBHandler
         * get cashier username that is responsible for the transactions made
         */
       function getCashierUsername($zFrom, $zTo, $transRefID, $cardnumber){
-           $stmt = "SELECT a.Name FROM transactiondetails td USE INDEX (IX_transactiondetails_DateCreated)
-                    INNER JOIN accountdetails a ON td.CreatedByAID = a.AID
+           $stmt = "SELECT a.UserName FROM transactiondetails td USE INDEX (IX_transactiondetails_DateCreated)
+                    INNER JOIN accounts a ON td.CreatedByAID = a.AID
                     WHERE td.DateCreated >= ? AND td.DateCreated < ? AND 
                     TransactionReferenceID = ? AND LoyaltyCardNumber = ?";
               $this->prepare($stmt);
@@ -1528,7 +1515,7 @@ class ApplicationSupport extends DBHandler
               var_dump($e->getMessage()); exit;
           }
           $username = $this->fetchData();
-          return $username['Name'];
+          return $username['UserName'];
       }
       
       /**
@@ -1679,158 +1666,6 @@ class ApplicationSupport extends DBHandler
           return $this->fetchData();
       }
 
-      /**
-        * @author gvjagolino
-        * @param $terminalID
-        * @return string
-        * check terminal sessions
-        */
-      function checkTerminalSessions($terminalID,$vipterminalID)
-     {
-           $stmt = "SELECT COUNT(TerminalID) count FROM terminalsessions 
-                WHERE TerminalID IN (?,?) ";
-           $this->prepare($stmt);
-           $this->bindparameter(1, $terminalID);
-           $this->bindparameter(2, $vipterminalID);
-           $this->execute($stmt);
-           $count =  $this->fetchData();
-           return $count['count'];
-     }
-     
-     /**
-        * @author Gerardo V. Jagolino Jr.
-        * @param $terminalID
-        * @return int
-        * delete egm sessions from egmsessions table
-        */
-     function deleteEGMSessions($terminalID,$vipterminalID)
-     {
-        $this->begintrans();
-        $this->prepare("DELETE FROM egmsessions WHERE TerminalID IN (?,?)");
-        $this->bindparameter(1, $terminalID);
-        $this->bindparameter(2, $vipterminalID);
-        if($this->execute())
-        {
-            $this->committrans();
-            return 1;
-        }
-        else
-        {
-            $this->rollbacktrans();
-            return 0;
-        }
-     }
-     
-     /**
-     * @author Gerardo V. Jagolino Jr.
-     * @param $terminalID
-     * @return string
-     * check egm sessions of a specific terminal
-     */
-     function checkEGMSessions($terminalID,$vipterminalID)
-     {
-           $stmt = "SELECT COUNT(EGMSessionID) egmcount FROM egmsessions 
-                WHERE TerminalID IN (?,?) ";
-           $this->prepare($stmt);
-           $this->bindparameter(1, $terminalID);
-           $this->bindparameter(2, $vipterminalID);
-           $this->execute($stmt);
-           $count =  $this->fetchData();
-           return $count['egmcount'];
-     }
-     
-     
-     /**
-     * @author Gerardo V. Jagolino Jr.
-     * @param $terminalID
-     * @return string
-     * check egm sessions of a specific terminal
-     */
-     function getStackerBatchID($terminalID,$vipterminalID)
-     {
-           $stmt = "SELECT StackerBatchID FROM egmsessions 
-                WHERE TerminalID IN (?,?) ";
-           $this->prepare($stmt);
-           $this->bindparameter(1, $terminalID);
-           $this->bindparameter(2, $vipterminalID);
-           $this->execute($stmt);
-           $count =  $this->fetchData();
-           return $count['StackerBatchID'];
-     }
-     
-     /**
-     *counts details on cashier machine info (Disableing of cashier Terminal)
-     * @return array | object 
-     */
-    function getTerminalCode($terminalid)
-    {
-        $stmt = "SELECT TerminalCode FROM terminals WHERE TerminalID = ?";
-        $this->prepare($stmt);
-        $this->bindparameter(1, $terminalid);
-        $this->execute();
-        return $this->fetchData();
-    }
-    
-    
-    /**
-     *counts details on cashier machine info (Disableing of cashier Terminal)
-     * @return array | object 
-     */
-    function getTerminalIDs($terminalcode)
-    {
-        $stmt = "SELECT TerminalID FROM terminals WHERE TerminalCode = ?";
-        $this->prepare($stmt);
-        $this->bindparameter(1, $terminalcode);
-        $this->execute();
-        return $this->fetchData();
-    }
-     
-     
-     function getServiceUserMode($serviceID)
-     {
-           $stmt = "SELECT UserMode FROM ref_services 
-                WHERE ServiceID = ?";
-           $this->prepare($stmt);
-           $this->bindparameter(1, $serviceID);
-           $this->execute($stmt);
-           $result =  $this->fetchData();
-           return $result['UserMode'];
-     }
-     
-     
-     function getTerminalServicePassword($terminalid, $serviceID)
-     {
-           $stmt = "SELECT ServicePassword FROM terminalservices 
-                WHERE TerminalID = ? AND ServiceID = ?";
-           $this->prepare($stmt);
-           $this->bindparameter(1, $terminalid);
-           $this->bindparameter(2, $serviceID);
-           $this->execute($stmt);
-           $result =  $this->fetchData();
-           return $result['ServicePassword'];
-     }
-     
-     public function getServiceGrpNameById($service_id){
-        $sql = 'SELECT rsg.ServiceGroupName FROM ref_services rs
-                INNER JOIN ref_servicegroups rsg ON rs.ServiceGroupID = rsg.ServiceGroupID
-                WHERE rs.ServiceID = ?';
-        $this->prepare($sql);
-        $this->bindparameter(1, $service_id);
-        $this->execute($sql);
-        $result =  $this->fetchData();
-        if(!isset($result['ServiceGroupName']))
-            return false;
-        return $result['ServiceGroupName'];
-    }
-    
-    
-    public function updateSSStatus($aid,$stackerbatchid, $status){
-         $this->prepare("UPDATE stackersummary SET Status = ?, UpdatedByAID = ?, DateUpdated = now_usec() WHERE Status = 0 AND StackerSummaryID = ?");
-         $this->bindparameter(1, $status);
-         $this->bindparameter(2, $aid);
-         $this->bindparameter(3, $stackerbatchid);
-         $this->execute();
-         return $this->rowCount();
-    }
+  
 }
 ?>
