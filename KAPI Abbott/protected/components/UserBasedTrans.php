@@ -696,6 +696,7 @@ class UserBasedTrans {
         $transSummaryModel = new TransactionSummaryModel();
         $transDetailsModel = new TransactionDetailsModel();
         $siteBalance = new SiteBalanceModel();
+        $terminalsessions = new TerminalSessionsModel();
         $commonTransactionsModel = new CommonTransactionsModel();
         $sitesModel = new SitesModel();
         $pendingTerminalTransactionCountModel = new PendingTerminalTransactionCountModel();
@@ -724,6 +725,9 @@ class UserBasedTrans {
         list($terminal_balance,$service_name,$terminalSessionsModel,
                 $transReqLogsModel,$redeemable_amount,$casinoApiHandler,$mgaccount) = $getBalance;
         
+        //update last balance in terminal sessions
+        $updateBalance = $terminalsessions->updateTerminalBalance($terminal_id, $redeemable_amount);
+        $amount = $terminalsessions->getCurrentBalance($terminal_id, $service_id);
         
         $is_terminal_active = $terminalSessionsModel->isSessionActive($terminal_id);
         $is_egmsession_active = $gamingSessionsModel->chkActiveEgmSession($terminal_id);

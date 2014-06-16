@@ -291,5 +291,53 @@ class TerminalSessionsModel {
             return false;
         return $result['TransactionSummaryID'];
     }
+    /**
+     * Update Terminal Balance
+     * @author Mark Kenneth Esguerra
+     * @date June 16, 2014
+     * 
+     */
+    public function updateTerminalBalance($terminalID, $amount)
+    {
+        $pdo = $this->_connection->beginTransaction();
+        
+        try
+        {
+            $sql = "UPDATE terminalsessions SET LastBalance = :lastbalance 
+                    WHERE TerminalID = :terminalID";
+            $command = $this->_connection->createCommand($sql);
+            $command->bindValue(":lastbalance", $amount);
+            $command->bindValue(":terminalID", $terminalID);
+            $result = $command->execute();
+            
+            if ($result > 0)
+            {
+                try
+                {
+                    $pdo->commit();
+                    return array('TransCode' => 0, 
+                                 'TransMsg' => 'Successfully updated.');
+                }
+                catch (CDbException $e)
+                {
+                    $pdo->rollback();
+                    return array('TransCode' => 1, 
+                                 'TransMsg' => 'An error occured while updating records on database.');
+                }
+            }
+            else
+            {
+                $pdo->rollback();
+                return array('TransCode' => 1, 
+                             'TransMsg' => 'Nothing to update.');
+            }
+        }
+        catch (CDbException $e)
+        {
+            $pdo->rollback();
+            return array('TransCode' => 1, 
+                         'TransMsg' => 'An error occured while updating records on database.');
+        }
+    }
 }
 
