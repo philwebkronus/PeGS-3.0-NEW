@@ -15,9 +15,59 @@ class TransactionpercutoffController extends VMSBaseIdentity
     
     public function actionTicket()
     {
-        $model = new TransactionpercutoffForm();
-
-        $this->render('ticket', array('model' => $model));
+        $model          = new TransactionpercutoffForm();
+        $sites          = new SitesModel();
+        $accessrights   = new AccessRights();
+        
+        $submenuID  = 32;
+        $hasRight   = $accessrights->checkSubMenuAccess(Yii::app()->session['AccountType'], $submenuID);
+        $autoselect = false;
+        if ($hasRight)
+        {
+            //If the user is either SiteSup, SiteOps or Cashier, get only the sites under them
+            if (Yii::app()->session['AccountType'] == 2 || 
+                Yii::app()->session['AccountType'] == 3 || 
+                Yii::app()->session['AccountType'] == 4 )
+            {
+                $aid = Yii::app()->session['AID'];
+                
+                $siteIDs = $sites->getSiteIDs($aid);
+                $arrSiteID = array();
+                foreach($siteIDs as $s_id)
+                {
+                    $arrSiteID[] = $s_id['SiteID'];
+                }
+                $autoselect = true;
+            }
+            else
+            {
+                $arrSiteID = null;
+            }
+            //Get Site Codes
+            $sitecodes = $sites->getSiteCodes($arrSiteID);
+            if (count($sitecodes) > 0)
+            {
+                foreach ($sitecodes as $sitecode)
+                {
+                    $arrsitecodes[] = array('SiteID' => $sitecode['SiteID'], 'SiteCode' => trim(str_replace("ICSA-", "", $sitecode['SiteCode'])));
+                }
+            }
+            else
+            {
+                $arrsitecodes[] = array();
+            }
+        }
+        else
+        {
+            $arrsitecodes = array();
+            $this->showalert = true;
+            $this->messagealert = "User has no access right to this page";
+        }
+        
+        array_unshift($arrsitecodes, array('SiteID' => 'All', 'SiteCode' => 'All'));
+        $sitecodelist = CHtml::listData($arrsitecodes, 'SiteID', 'SiteCode');
+        
+        $this->render('ticket', array('model' => $model, 'sitecodes' => $sitecodelist));
     }
     
     public function actionGetTicketCuOffSummary()

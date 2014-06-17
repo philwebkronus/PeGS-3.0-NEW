@@ -144,7 +144,7 @@ else
         <tr>
         <td><?php echo CHtml::label("Site/PeGs Code : ", "site");?></td>    
         <td>
-                <?php echo $form->dropDownList($model, 'site', $sitesModel->fetchAllActiveSites(), array('id'=>'site')); ?>
+                <?php echo $form->dropDownList($model, 'site', $sitecodes, array('id'=>'site')); ?>
                 <?php echo $form->hiddenField($model, 'vouchertype', array('value' => 1, 'id'=>'vouchertype')); ?>
         </td>
         </tr>
