@@ -760,6 +760,8 @@ if(isset($_SESSION['RewardItemsInfo'])){
                         if ($("#redemptionquantity").dialog( "isOpen" ) !== true){
                         var ProductName = $("#hdnProductName").val();
                         var ItemPoints = "<?php echo $_SESSION['RewardItemsInfo']['Points']; ?>";
+                        $("#Quantity").val("");
+                        $("#ItemQuantity").val("");
                         $("#ItemName").html(ProductName);
                         $("#ItemPoints").html(ItemPoints);
                         $("#hdnItemName").val(ProductName);
