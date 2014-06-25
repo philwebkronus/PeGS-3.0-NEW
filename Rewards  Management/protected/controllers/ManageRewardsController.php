@@ -30,20 +30,20 @@ class ManageRewardsController extends Controller
         $arraydata = array();
         if (is_array($data) && $countdata > 0) {
             if (!array_key_exists('errcode', $data)) {
-                do {
-                    $arraynewlist['RewardItemID'] = $data[$ctr]['RewardItemID']; 
-                    $arraynewlist['PartnerName'] = urldecode($data[$ctr]['PartnerName']); 
-                    $arraynewlist['ItemName'] = "<a href='javascript:void(0)' title='View Details' RewardItemID='".$arraynewlist['RewardItemID']."'  id='viewlink'>".$data[$ctr]['ItemName']."</a>";
-                    $arraynewlist['Description'] = urldecode($data[$ctr]['Description']); 
-                    $arraynewlist['Category'] = urldecode($data[$ctr]['Category']); 
-                    $arraynewlist['Points'] = number_format($data[$ctr]['Points'], 0, '', ',');
-                    $arraynewlist['Eligibility'] = urldecode($data[$ctr]['Eligibility']); 
-                    $arraynewlist['Status'] = urldecode($data[$ctr]['Status']); 
-                    $OfferStartDate = new DateTime($data[$ctr]['OfferStartDate']);
-                    $data[$ctr]['OfferStartDate'] = $OfferStartDate->format("Y-m-d");
-                    $OfferEndDate = new DateTime($data[$ctr]['OfferEndDate']);
-                    $data[$ctr]['OfferEndDate'] = $OfferEndDate->format("Y-m-d");
-                    $arraynewlist['PromoPeriod'] = urldecode($data[$ctr]['OfferStartDate']." &mdash; ".$data[$ctr]['OfferEndDate']); 
+                foreach($data as $datavalue){
+                    $arraynewlist['RewardItemID'] = $datavalue['RewardItemID']; 
+                    $arraynewlist['PartnerName'] = urldecode($datavalue['PartnerName']); 
+                    $arraynewlist['ItemName'] = "<a href='javascript:void(0)' title='View Details' RewardItemID='".$arraynewlist['RewardItemID']."'  id='viewlink'>".$datavalue['ItemName']."</a>";
+                    $arraynewlist['Description'] = urldecode($datavalue['Description']); 
+                    $arraynewlist['Category'] = urldecode($datavalue['Category']); 
+                    $arraynewlist['Points'] = number_format($datavalue['Points'], 0, '', ',');
+                    $arraynewlist['Eligibility'] = urldecode($datavalue['Eligibility']); 
+                    $arraynewlist['Status'] = urldecode($datavalue['Status']); 
+                    $OfferStartDate = new DateTime($datavalue['OfferStartDate']);
+                    $datavalue['OfferStartDate'] = $OfferStartDate->format("Y-m-d");
+                    $OfferEndDate = new DateTime($datavalue['OfferEndDate']);
+                    $datavalue['OfferEndDate'] = $OfferEndDate->format("Y-m-d");
+                    $arraynewlist['PromoPeriod'] = urldecode($datavalue['OfferStartDate']." &mdash; ".$datavalue['OfferEndDate']); 
                     if($arraynewlist['Status'] != 'Active' && $arraynewlist['Status'] != 'Out-Of-Stock'){
                         $arraynewlist['Action'] = "<div title='actionbuttons' style='padding-top: 3px;'><a href='javascript:void(0)' title='Edit' Status='".$arraynewlist['Status']."'  RewardItemID='".$arraynewlist['RewardItemID']."' id='editbutton'><img id='editimage".$arraynewlist['RewardItemID']."' src='../../images/ui-icon-edit.png'></a>&nbsp;&nbsp;<a href='javascript:void(0)' title='Delete' RewardItemID='".$arraynewlist['RewardItemID']."' id='deletebutton'><img id='deleteimage".$arraynewlist['RewardItemID']."' src='../../images/ui-icon-delete.png'></a>&nbsp;&nbsp;<a href='javascript:void(0)' title='Replenish' RewardItemID='".$arraynewlist['RewardItemID']."' id='refillbutton'><img id='refillimage".$arraynewlist['RewardItemID']."' src='../../images/ui-icon-refill.png' ></a></div>";
                     } else {
@@ -51,7 +51,7 @@ class ManageRewardsController extends Controller
                     }                 
                     $arraydata[$ctr]=$arraynewlist;
                     $ctr++;
-                }while($ctr < $countdata);
+                }
             }
         }
         
@@ -198,7 +198,7 @@ class ManageRewardsController extends Controller
                 $rewarditemname = preg_replace("/[^a-zA-Z0-9+$]/", "-", $rewarditemname);
                 $newthblimitedphoto = $rewarditemname."_".$extname_thblimited.".".$ext_thblimited;
                 if(file_exists("$imagetmpdirectory".$thblimitedphoto)){
-					chmod("$imagetmpdirectory".$thblimitedphoto, 0777);
+                    chmod("$imagetmpdirectory".$thblimitedphoto, 0777);
                     $transferfile1 = copy("$imagetmpdirectory".$thblimitedphoto, "$imagedirector".$newthblimitedphoto);
                 }
             }
@@ -210,7 +210,7 @@ class ManageRewardsController extends Controller
                 $rewarditemname = preg_replace("/[^a-zA-Z0-9+$]/", "-", $rewarditemname);
                 $newthboutofstockphoto = $rewarditemname."_".$extname_thboutofstock.".".$ext_thboutofstock;
                 if(file_exists("$imagetmpdirectory".$thboutofstockphoto)){
-					chmod("$imagetmpdirectory".$thboutofstockphoto, 0777);
+                    chmod("$imagetmpdirectory".$thboutofstockphoto, 0777);
                     $transferfile2 = copy("$imagetmpdirectory".$thboutofstockphoto, "$imagedirector".$newthboutofstockphoto);
                 }
             }
@@ -222,7 +222,7 @@ class ManageRewardsController extends Controller
                 $rewarditemname = preg_replace("/[^a-zA-Z0-9+$]/", "-", $rewarditemname);
                 $newecouponphoto = $rewarditemname."_".$extname_ecoupon.".".$ext_ecoupon;
                 if(file_exists("$imagetmpdirectory".$ecouponphoto)){
-					chmod("$imagetmpdirectory".$ecouponphoto, 0777);
+                    chmod("$imagetmpdirectory".$ecouponphoto, 0777);
                     $transferfile3 = copy("$imagetmpdirectory".$ecouponphoto, "$imagedirector".$newecouponphoto);
                 }
             }
@@ -234,7 +234,7 @@ class ManageRewardsController extends Controller
                 $rewarditemname = preg_replace("/[^a-zA-Z0-9+$]/", "-", $rewarditemname);
                 $newlmlimitedphoto = $rewarditemname."_".$extname_lmlimited.".".$ext_lmlimited;
                 if(file_exists("$imagetmpdirectory".$lmlimitedphoto)){
-					chmod("$imagetmpdirectory".$lmlimitedphoto, 0777);
+                    chmod("$imagetmpdirectory".$lmlimitedphoto, 0777);
                     $transferfile4 = copy("$imagetmpdirectory".$lmlimitedphoto, "$imagedirector".$newlmlimitedphoto);
                 }
             }
@@ -246,7 +246,7 @@ class ManageRewardsController extends Controller
                 $rewarditemname = preg_replace("/[^a-zA-Z0-9+$]/", "-", $rewarditemname);
                 $newlmoutofstockphoto = $rewarditemname."_".$extname_lmoutofstock.".".$ext_lmoutofstock;
                 if(file_exists("$imagetmpdirectory".$lmoutofstockphoto)){
-					chmod("$imagetmpdirectory".$lmoutofstockphoto, 0777);
+                    chmod("$imagetmpdirectory".$lmoutofstockphoto, 0777);
                     $transferfile5 = copy("$imagetmpdirectory".$lmoutofstockphoto, "$imagedirector".$newlmoutofstockphoto);
                 }
             }
@@ -258,7 +258,7 @@ class ManageRewardsController extends Controller
                 $rewarditemname = preg_replace("/[^a-zA-Z0-9+$]/", "-", $rewarditemname);
                 $newwebsliderphoto = $rewarditemname."_".$extname_webslider.".".$ext_webslider;
                 if(file_exists("$imagetmpdirectory".$websliderphoto)){
-					chmod("$imagetmpdirectory".$websliderphoto, 0777);
+                    chmod("$imagetmpdirectory".$websliderphoto, 0777);
                     $transferfile6 = copy("$imagetmpdirectory".$websliderphoto, "$imagedirector".$newwebsliderphoto);
                 }                        
             }
@@ -349,7 +349,8 @@ class ManageRewardsController extends Controller
                 if($transferfile1 != true || $transferfile2 != true || $transferfile3 != true || $transferfile4 != true || $transferfile5 != true || $transferfile6 != true){
                     $this->showdialog = true;
                     $this->message = "Update Failed: Error in uploading of images.";
-
+                    $logmsg = "Update Failed: Error in uploading of images in rewarditems/ directory.";
+                    
                     if(file_exists("$imagetmpdirectory".$thblimitedphoto)){
                         $thblimitedphoto != "" ? unlink("$imagetmpdirectory".$thblimitedphoto):true;
                     }
@@ -368,7 +369,9 @@ class ManageRewardsController extends Controller
                     if(file_exists("$imagetmpdirectory".$websliderphoto)){
                         $websliderphoto != "" ? unlink("$imagetmpdirectory".$websliderphoto):true;
                     }
-
+                    
+                    //Log event in application logs
+                    Utilities::logger($logmsg);
                     $this->render('managerewards', array('model' => $model));
                 } else {
                     if(file_exists("$imagetmpdirectory".$thblimitedphoto)){
@@ -393,7 +396,11 @@ class ManageRewardsController extends Controller
                     //Check if the uploaded images in tmp are deleted.
                     if($unlink1 != true || $unlink2 != true || $unlink3 != true || $unlink4 != true || $unlink5 != true || $unlink6 != true){
                         $this->showdialog = true;
-                        $this->message = "Update Failed: Error in processing of images.";
+                        $this->message = "Add Failed: Error in processing of images.";
+                        $logmsg = "Error in image deletion in tmp/ directory.";
+                        
+                        //Log event in application logs.
+                        Utilities::logger($logmsg);
                         $this->render('managerewards', array('model' => $model));
                     } else {
                         $thblimitedphoto != "" ? $thblimitedphoto = $newthblimitedphoto: $thblimitedphoto = $thblimitedphoto;
@@ -447,11 +454,14 @@ class ManageRewardsController extends Controller
                     $this->showdialog = true;
                     if($rewardid == "2"){
                         $this->message = "Failed to add New Raffle e-Coupon.";
+                        Utilities::logger($this->message);
                     } else {
                         if($addnewrewarditem['TransCode'] == 3){
                             $this->message = $addnewrewarditem['TransMsg'];
+                            Utilities::logger($this->message);
                         } else {
                             $this->message = "Failed to add New Reward e-Coupon.";
+                            Utilities::logger($this->message);
                         }
                     }
                 }
@@ -460,8 +470,10 @@ class ManageRewardsController extends Controller
                 $this->showdialog = true;
                     if($rewardid == "2"){
                         $this->message = "Raffle e-Coupon already exist.";
+                        Utilities::logger($this->message);
                     } else {
                         $this->message = "Reward e-Coupon already exist.";
+                        Utilities::logger($this->message);
                     }
                 $this->render('managerewards', array('model' => $model));
             }
@@ -524,7 +536,7 @@ class ManageRewardsController extends Controller
                 $rewarditemname = preg_replace("/[^a-zA-Z0-9+$]/", "-", $rewarditemname);
                 $newthblimitedphoto = $rewarditemname."_".$extname_thblimited.".".$ext_thblimited;
                 if(file_exists("$imagetmpdirectory".$thblimitedphoto)){
-					chmod("$imagetmpdirectory".$thblimitedphoto, 0777);
+                    chmod("$imagetmpdirectory".$thblimitedphoto, 0777);
                     $transferfile1 = copy("$imagetmpdirectory".$thblimitedphoto, "$imagedirector".$newthblimitedphoto);
                 } else {
                     if(file_exists("$imagedirector".$thblimitedpicname)){
@@ -540,7 +552,7 @@ class ManageRewardsController extends Controller
                 $rewarditemname = preg_replace("/[^a-zA-Z0-9+$]/", "-", $rewarditemname);
                 $newthboutofstockphoto = $rewarditemname."_".$extname_thboutofstock.".".$ext_thboutofstock;
                 if(file_exists("$imagetmpdirectory".$thboutofstockphoto)){
-					chmod("$imagetmpdirectory".$thboutofstockphoto, 0777);
+                    chmod("$imagetmpdirectory".$thboutofstockphoto, 0777);
                     $transferfile2 = copy("$imagetmpdirectory".$thboutofstockphoto, "$imagedirector".$newthboutofstockphoto);
                 } else {
                     if(file_exists("$imagedirector".$thboutofstockpicname)){
@@ -556,7 +568,7 @@ class ManageRewardsController extends Controller
                 $rewarditemname = preg_replace("/[^a-zA-Z0-9+$]/", "-", $rewarditemname);
                 $newecouponphoto = $rewarditemname."_".$extname_ecoupon.".".$ext_ecoupon;
                 if(file_exists("$imagetmpdirectory".$ecouponphoto)){
-					chmod("$imagetmpdirectory".$ecouponphoto, 0777);
+                    chmod("$imagetmpdirectory".$ecouponphoto, 0777);
                     $transferfile3 = copy("$imagetmpdirectory".$ecouponphoto, "$imagedirector".$newecouponphoto);
                 } else {
                     if(file_exists("$imagedirector".$ecouponpicname)){
@@ -572,7 +584,7 @@ class ManageRewardsController extends Controller
                 $rewarditemname = preg_replace("/[^a-zA-Z0-9+$]/", "-", $rewarditemname);
                 $newlmlimitedphoto = $rewarditemname."_".$extname_lmlimited.".".$ext_lmlimited;
                 if(file_exists("$imagetmpdirectory".$lmlimitedphoto)){
-					chmod("$imagetmpdirectory".$lmlimitedphoto, 0777);
+                    chmod("$imagetmpdirectory".$lmlimitedphoto, 0777);
                     $transferfile4 = copy("$imagetmpdirectory".$lmlimitedphoto, "$imagedirector".$newlmlimitedphoto);
                 } else {
                     if(file_exists("$imagedirector".$lmlimitedpicname)){
@@ -588,7 +600,7 @@ class ManageRewardsController extends Controller
                 $rewarditemname = preg_replace("/[^a-zA-Z0-9+$]/", "-", $rewarditemname);
                 $newlmoutofstockphoto = $rewarditemname."_".$extname_lmoutofstock.".".$ext_lmoutofstock;
                 if(file_exists("$imagetmpdirectory".$lmoutofstockphoto)){
-					chmod("$imagetmpdirectory".$lmoutofstockphoto, 0777);
+                    chmod("$imagetmpdirectory".$lmoutofstockphoto, 0777);
                     $transferfile5 = copy("$imagetmpdirectory".$lmoutofstockphoto, "$imagedirector".$newlmoutofstockphoto);
                 } else {
                     if(file_exists("$imagedirector".$lmoutofstockpicname)){
@@ -604,7 +616,7 @@ class ManageRewardsController extends Controller
                 $rewarditemname = preg_replace("/[^a-zA-Z0-9+$]/", "-", $rewarditemname);
                 $newwebsliderphoto = $rewarditemname."_".$extname_webslider.".".$ext_webslider;
                 if(file_exists("$imagetmpdirectory".$websliderphoto)){
-					chmod("$imagetmpdirectory".$websliderphoto, 0777);
+                    chmod("$imagetmpdirectory".$websliderphoto, 0777);
                     $transferfile6 = copy("$imagetmpdirectory".$websliderphoto, "$imagedirector".$newwebsliderphoto);
                 } else {
                     if(file_exists("$imagedirector".$websliderpicname)){
@@ -670,6 +682,8 @@ class ManageRewardsController extends Controller
             if($transferfile1 != true || $transferfile2 != true || $transferfile3 != true || $transferfile4 != true || $transferfile5 != true || $transferfile6 != true){
                 $this->showdialog = true;
                 $this->message = "Update Failed: Error in uploading of images.";
+                $logmsg = "Update Failed: Error in uploading of images in rewarditems/ directory.";
+                
                 if(file_exists("$imagetmpdirectory".$thblimitedphoto)){
                     $thblimitedphoto != "" ? unlink("$imagetmpdirectory".$thblimitedphoto):true;
                 }
@@ -688,6 +702,9 @@ class ManageRewardsController extends Controller
                 if(file_exists("$imagetmpdirectory".$websliderphoto)){
                     $websliderphoto != "" ? unlink("$imagetmpdirectory".$websliderphoto):true;
                 }
+                
+                //Log event in application logs
+                Utilities::logger($logmsg);
                 $this->render('managerewards', array('model' => $model));
             } else {
                 if(file_exists("$imagetmpdirectory".$thblimitedphoto)){
@@ -713,6 +730,10 @@ class ManageRewardsController extends Controller
                 if($unlink1 != true || $unlink2 != true || $unlink3 != true || $unlink4 != true || $unlink5 != true || $unlink6 != true){
                     $this->showdialog = true;
                     $this->message = "Update Failed: Error in processing of images.";
+                    $logmsg = "Error in image deletion in tmp/ directory.";
+                        
+                    //Log event in application logs.
+                    Utilities::logger($logmsg);
                     $this->render('managerewards', array('model' => $model));
                 } else {
                     $thblimitedphoto != "" ? $thblimitedphoto = $newthblimitedphoto: $thblimitedphoto = $thblimitedphoto;
@@ -767,15 +788,19 @@ class ManageRewardsController extends Controller
                     $this->showdialog = true;
                     if($rewardid == "2"){
                         $this->message = "Raffle e-Coupon Details Unchanged.";
+                        Utilities::logger($this->message);
                     } else {
                         $this->message = "Reward e-Coupon Details Unchanged.";
+                        Utilities::logger($this->message);
                     }
                 } else {
                     $this->showdialog = true;
                     if($rewardid == "2"){
                         $this->message = "Failed to update Raffle e-Coupon.";
+                        Utilities::logger($this->message);
                     } else {
                         $this->message = "Failed to update Reward e-Coupon.";
+                        Utilities::logger($this->message);
                     }
                 }
             }
@@ -783,6 +808,7 @@ class ManageRewardsController extends Controller
             {
                 $this->showdialog = true;
                 $this->message = "Reward Item/Coupon is already exist";
+                Utilities::logger($this->message);
             }
             
             $this->render('managerewards', array('model' => $model));
@@ -854,17 +880,21 @@ class ManageRewardsController extends Controller
                         $this->showdialog = true;
                         if($result['TransCode'] == 3){
                             $this->message = $result['TransMsg'];
+                            Utilities::logger($this->message);
                         } else {
                             $this->message = "Failed to replenish Reward Item.";
+                            Utilities::logger($this->message);
                         }
                     }
                 } else {
                     $this->showdialog = true;
                     $this->message = "Failed to replenish Reward Item. New Item Count is invalid.";
+                    Utilities::logger($this->message);
                 }
             } else {
                 $this->showdialog = true;
                 $this->message = "Records unchanged.";
+                Utilities::logger($this->message);
             }
             
             $this->render('managerewards', array('model' => $model));
@@ -933,8 +963,10 @@ class ManageRewardsController extends Controller
                 $this->showdialog = true;
                 if($rewardtype == "1"){
                     $this->message = "Failed to delete Reward e-Coupon.";
+                    Utilities::logger($this->message);
                 } else {
                     $this->message = "Failed to delete Raffle e-Coupon.";
+                    Utilities::logger($this->message);
                 }
 
             }
@@ -1771,9 +1803,16 @@ class ManageRewardsController extends Controller
         } else {
             $result= "";
         }
-        
-        if(!isset($result['uploadedfile'])){
+
+        if(file_exists("$upload_location".$newname)){
+            if(!isset($result['uploadedfile'])){
+                $result['uploadedfile'] = '';
+            }
+        } else {
             $result['uploadedfile'] = '';
+            $result['message'] = "Failed to Upload Image";
+            $logmsg = "Failed to Upload Image  in tmp/ directory.";
+            Utilities::logger($logmsg);
         }
         
         Yii::app()->session['uploadedfile'] = $result['uploadedfile'];

@@ -57,10 +57,10 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog',array(
         'open' => 'js:function(event,ui){
                         $("#displaydetailsform").show();
                         var statusid = $("#statusid").val();
-                        if(statusid == "1"){
+                        if(statusid == "1" || statusid == "3"){ //non-editable page for active and out-of-stock rewards
                             $(this).siblings(".ui-dialog-buttonpane").find("button").eq(0).hide();
                             $(this).siblings(".ui-dialog-buttonpane").find("button").eq(1).show(); 
-                        } else {
+                        } else if(statusid == "2") { //editable page for inactive rewards
                             $(this).siblings(".ui-dialog-buttonpane").find("button").eq(0).show();
                             $(this).siblings(".ui-dialog-buttonpane").find("button").eq(1).hide();
                         }

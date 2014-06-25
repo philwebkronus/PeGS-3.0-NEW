@@ -67,12 +67,12 @@ class RewardItemsModel extends CFormModel
         if ($itemtype != NULL)
         {
             $sql = "SELECT RewardItemID, ItemName FROM rewarditems
-                    WHERE Status = 1 AND IsCoupon = :itemtype ORDER BY ItemName ASC";
+                    WHERE IsCoupon = :itemtype ORDER BY ItemName ASC";
         }
         else
         {
             $sql = "SELECT RewardItemID, ItemName FROM rewarditems
-                    WHERE Status = 1 ORDER BY ItemName ASC";
+                    ORDER BY ItemName ASC";
         }
         $command = $connection->createCommand($sql);
         $command->bindParam(":itemtype", $itemtype);
@@ -331,7 +331,9 @@ class RewardItemsModel extends CFormModel
                 return array('TransMsg'=>'One Record is successfully updated.','TransCode'=>0);
             } catch (CDbException $e) {
                 $pdo->rollback();
-                return array('TransMsg'=>'Error: '. $e->getMessage(),'TransCode'=>2);
+                $msg = array('TransMsg'=>'Error: '. $e->getMessage(),'TransCode'=>2);
+                Utilities::logger($msg);
+                return $msg;
             }
         } else {
             return array('TransMsg'=>'No record was updated.', 'TransCode'=>1);
@@ -643,6 +645,8 @@ class RewardItemsModel extends CFormModel
                 $rowCount = $command->execute();
                 return array('TransMsg'=>'Reward Item/Coupon has been successfully updated.','TransCode'=>0, 'AffectedRows' => $rowCount);
             } catch (CDbException $e) {
+                //Log event in application logs.
+                Utilities::logger($e->getMessage());
                 return array('TransMsg'=>'Error: '. $e->getMessage(),'TransCode'=>2);
             }
         }
@@ -692,7 +696,9 @@ class RewardItemsModel extends CFormModel
         
         if ($isExist['Count'] > 0)
         {
-            return array('TransMsg'=>'Mystery Reward Item already Exist','TransCode'=> 3);
+            $msg = array('TransMsg'=>'Mystery Reward Item already Exist','TransCode'=> 3);
+            Utilities::logger($msg);
+            return $msg;
         }
         else
         {
@@ -777,7 +783,9 @@ class RewardItemsModel extends CFormModel
                 $rowCount = $command->execute();
                 return array('TransMsg'=>'Mystery Reward has been successfully updated.','TransCode'=>0, "AffectedRows" => $rowCount);
             } catch (CDbException $e) {
-                return array('TransMsg'=>'Error: '. $e->getMessage(),'TransCode'=>2);
+                $msg = array('TransMsg'=>'Error: '. $e->getMessage(),'TransCode'=>2);;
+                Utilities::logger($msg);
+                return $msg;
             }
         }
     }
@@ -875,13 +883,17 @@ class RewardItemsModel extends CFormModel
                     $genserialcode->execute();
                     return array('TransMsg'=>'Reward Item/Coupon has been successfully added.','TransCode'=>0, 'LastInsertID' => $lastinsertedid);
                 } catch (CDbException $e) {
-                    return array('TransMsg'=>'Error: Reward Item Adding Failed. Error in serial code generation.','TransCode'=>3);
+                    $msg =  array('TransMsg'=>'Error: Reward Item Adding Failed. Error in serial code generation.','TransCode'=>3);
+                    Utilities::logger($msg["TransMsg"]);
+                    return $msg;
                 }
             } else {
                 return array('TransMsg'=>'Reward Item/Coupon has been successfully added.','TransCode'=>0, 'LastInsertID' => $lastinsertedid);
             }
         } catch (CDbException $e) {
-            return array('TransMsg'=>'Error: '. $e->getMessage(),'TransCode'=>2);
+            $msg =  array('TransMsg'=>'Error: '. $e->getMessage(),'TransCode'=>2);
+            Utilities::logger($msg["TransMsg"]);
+            return $msg;
         }
     }
     
@@ -962,13 +974,17 @@ class RewardItemsModel extends CFormModel
                     $genserialcode->execute();
                     return array('TransMsg'=>'Mystery Reward has been successfully added.','TransCode'=>0, 'LastInsertID' => $lastinsertedid);
                 } catch (CDbException $e) {
-                    return array('TransMsg'=>'Error: Reward Item Adding Failed. Error in serial code generation.','TransCode'=>3);
+                    $msg = array('TransMsg'=>'Error: Reward Item Adding Failed. Error in serial code generation.','TransCode'=>3);;
+                    Utilities::logger($msg["TransMsg"]);
+                    return $msg;
                 }
             } else {
                 return array('TransMsg'=>'Mystery Reward has been successfully added.','TransCode'=>0, 'LastInsertID' => $lastinsertedid);
             }
         } catch (CDbException $e) {
-            return array('TransMsg'=>'Error: '. $e->getMessage(),'TransCode'=>2);
+            $msg = array('TransMsg'=>'Error: '. $e->getMessage(),'TransCode'=>2);
+            Utilities::logger($msg["TransMsg"]);
+            return $msg;
         }
     }
     
