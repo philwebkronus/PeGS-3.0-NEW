@@ -765,6 +765,7 @@ class ApplicationSupport extends DBHandler
            
            return $terminal;
     }
+       
     
     //E-City Transaction Tracking: get transactiondetails data
     function gettransactiondetails($zsiteID,$zterminalID, $zdatefrom, $zdateto, $zsummaryID, $zstart, $zlimit, $zsort, $zdirection)
@@ -1741,6 +1742,20 @@ class ApplicationSupport extends DBHandler
     }
     
     
+    public function getServiceGrpIDById($service_id){
+        $sql = 'SELECT rsg.ServiceGroupID FROM ref_services rs
+                INNER JOIN ref_servicegroups rsg ON rs.ServiceGroupID = rsg.ServiceGroupID
+                WHERE rs.ServiceID = ?';
+        $this->prepare($sql);
+        $this->bindparameter(1, $service_id);
+        $this->execute($sql);
+        $result =  $this->fetchData();
+        if(!isset($result['ServiceGroupID']))
+            return false;
+        return $result['ServiceGroupID'];
+    }
+    
+    
     public function getServiceGrpName($casino){
         $sql = "SELECT ServiceGroupName FROM ref_services rs 
             INNER JOIN ref_servicegroups rsg ON rs.ServiceGroupID = rsg.ServiceGroupID 
@@ -1769,7 +1784,7 @@ class ApplicationSupport extends DBHandler
         //validate if combo boxes of transaction status and transaction type are selected ALL 
           if($transstatus == 'All')
           {
-              $stmt = "SELECT COUNT(trl.TransactionRequestLogID) AS Count FROM transactionrequestlogs trl INNER JOIN transactiondetails td 
+              $stmt = "SELECT COUNT(trl.TransactionRequestLogID) AS Count FROM transactionrequestlogs trl LEFT JOIN transactiondetails td 
                           ON td.TransactionReferenceID = trl.TransactionReferenceID INNER JOIN terminals t ON t.TerminalID = trl.TerminalID 
                           INNER JOIN sites s ON s.SiteID = trl.SiteID INNER JOIN ref_services rs ON rs.ServiceID = trl.ServiceID
                           WHERE trl.SiteID =? AND trl.TerminalID =? AND trl.StartDate >= ? 
@@ -1781,7 +1796,7 @@ class ApplicationSupport extends DBHandler
               $this->bindparameter(4,$To);   
           }
           else {
-              $stmt = "SELECT COUNT(trl.TransactionRequestLogID) AS Count FROM transactionrequestlogs trl INNER JOIN transactiondetails td 
+              $stmt = "SELECT COUNT(trl.TransactionRequestLogID) AS Count FROM transactionrequestlogs trl LEFT JOIN transactiondetails td 
                           ON td.TransactionReferenceID = trl.TransactionReferenceID INNER JOIN terminals t ON t.TerminalID = trl.TerminalID 
                           INNER JOIN sites s ON s.SiteID = trl.SiteID INNER JOIN ref_services rs ON rs.ServiceID = trl.ServiceID
                           WHERE trl.SiteID =? AND trl.TerminalID =? AND trl.StartDate >= ? 
@@ -1807,7 +1822,7 @@ class ApplicationSupport extends DBHandler
           if($transstatus == 'All')
           {
               $stmt = "SELECT trl.TransactionRequestLogID, s.SiteCode, t.TerminalCode, trl.TransactionType, trl.Amount, rs.ServiceName, rs.UserMode, 
-			  td.LoyaltyCardNumber, td.CreatedByAID, trl.TransactionDate, trl.Status FROM transactionrequestlogs trl INNER JOIN transactiondetails td 
+			  td.LoyaltyCardNumber, td.CreatedByAID, trl.TransactionDate, trl.Status FROM transactionrequestlogs trl LEFT JOIN transactiondetails td 
                           ON td.TransactionReferenceID = trl.TransactionReferenceID INNER JOIN terminals t ON t.TerminalID = trl.TerminalID 
                           INNER JOIN sites s ON s.SiteID = trl.SiteID INNER JOIN ref_services rs ON rs.ServiceID = trl.ServiceID
                           WHERE trl.SiteID =? AND trl.TerminalID =? AND trl.StartDate >= ? 
@@ -1820,7 +1835,7 @@ class ApplicationSupport extends DBHandler
           }
           else {
               $stmt = "SELECT trl.TransactionRequestLogID, s.SiteCode, t.TerminalCode, trl.TransactionType, trl.Amount, rs.ServiceName, rs.UserMode, 
-			  td.LoyaltyCardNumber, td.CreatedByAID, trl.TransactionDate, trl.Status FROM transactionrequestlogs trl INNER JOIN transactiondetails td 
+			  td.LoyaltyCardNumber, td.CreatedByAID, trl.TransactionDate, trl.Status FROM transactionrequestlogs trl LEFT JOIN transactiondetails td 
                           ON td.TransactionReferenceID = trl.TransactionReferenceID INNER JOIN terminals t ON t.TerminalID = trl.TerminalID 
                           INNER JOIN sites s ON s.SiteID = trl.SiteID INNER JOIN ref_services rs ON rs.ServiceID = trl.ServiceID
                           WHERE trl.SiteID =? AND trl.TerminalID =? AND trl.StartDate >= ? 
@@ -1847,7 +1862,7 @@ class ApplicationSupport extends DBHandler
           if($transstatus == 'All')
           {
               $stmt = "SELECT trl.TransactionRequestLogID, s.SiteCode, t.TerminalCode, trl.TransactionType, trl.Amount, rs.ServiceName, rs.UserMode, 
-			  td.LoyaltyCardNumber, td.CreatedByAID, trl.TransactionDate, trl.Status FROM transactionrequestlogs trl INNER JOIN transactiondetails td 
+			  td.LoyaltyCardNumber, td.CreatedByAID, trl.TransactionDate, trl.Status FROM transactionrequestlogs trl LEFT JOIN transactiondetails td 
                           ON td.TransactionReferenceID = trl.TransactionReferenceID INNER JOIN terminals t ON t.TerminalID = trl.TerminalID 
                           INNER JOIN sites s ON s.SiteID = trl.SiteID INNER JOIN ref_services rs ON rs.ServiceID = trl.ServiceID
                           WHERE trl.SiteID =? AND trl.TerminalID =? AND trl.StartDate >= ? 
@@ -1860,7 +1875,7 @@ class ApplicationSupport extends DBHandler
           }
           else {
               $stmt = "SELECT trl.TransactionRequestLogID, s.SiteCode, t.TerminalCode, trl.TransactionType, trl.Amount, rs.ServiceName, rs.UserMode, 
-			  td.LoyaltyCardNumber, td.CreatedByAID, trl.TransactionDate, trl.Status FROM transactionrequestlogs trl INNER JOIN transactiondetails td 
+			  td.LoyaltyCardNumber, td.CreatedByAID, trl.TransactionDate, trl.Status FROM transactionrequestlogs trl LEFT JOIN transactiondetails td 
                           ON td.TransactionReferenceID = trl.TransactionReferenceID INNER JOIN terminals t ON t.TerminalID = trl.TerminalID 
                           INNER JOIN sites s ON s.SiteID = trl.SiteID INNER JOIN ref_services rs ON rs.ServiceID = trl.ServiceID
                           WHERE trl.SiteID =? AND trl.TerminalID =? AND trl.StartDate >= ? 
