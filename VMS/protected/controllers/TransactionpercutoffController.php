@@ -8,6 +8,8 @@ class TransactionpercutoffController extends VMSBaseIdentity
 {
     public $showdialog;
     public $message;
+    public $showalert;
+    public $messagealert;
     
     CONST ACTIVE = 1;
     CONST USED = 3;

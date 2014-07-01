@@ -261,3 +261,25 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog',array(
 ?><p id="alertmessage"></p><?php
 $this->endWidget('zii.widgets.jui.CJuiDialog');
 ?>
+<?php
+$this->beginWidget('zii.widgets.jui.CJuiDialog',array(
+    'id'=>'alert-box2',
+    'options'=>array(
+        'autoOpen' => $this->showalert,
+        'modal' => true,
+        'resizable' => false,
+        'draggable' => false,
+        'show' => 'fade',
+        'hide' => 'fade',
+        'width' => 350,
+        'open'=>'js:function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }',
+        'buttons' => array
+        (
+            'OK'=>'js:function(){ window.location = "'.$this->createUrl('site/index').'"}',
+        ),
+    ),
+));
+echo $this->messagealert;
+
+$this->endWidget('zii.widgets.jui.CJuiDialog');
+?>
