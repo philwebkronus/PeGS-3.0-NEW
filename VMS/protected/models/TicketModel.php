@@ -30,7 +30,7 @@ class TicketModel extends CFormModel {
      * @param str $date
      * @return array
      */
-    public function getAllUsedTicketList($date, $ticket_stat) {
+    public function getAllUsedTicketList($date, $ticket_stat = null) {
         //get kronus database name
         $kronusConnString = Yii::app()->db2->connectionString;
         $dbnameresult = explode(";", $kronusConnString);
@@ -43,18 +43,20 @@ class TicketModel extends CFormModel {
         switch ($ticket_stat)
         {
             case self::ACTIVE:
-                $status = "t.Status IN (1, 2)";
+                $status = "AND t.Status IN (1, 2)";
                 break;
             case 2:
-                $status = "t.Status IN (1, 2)";
+                $status = "AND t.Status IN (1, 2)";
                 break;
             case self::USED: 
-                $status = "t.Status = 3";
+                $status = "AND t.Status = 3";
                 break;
             case self::ENCASHED:
-                $status = "t.Status = 4";
+                $status = "AND t.Status = 4";
                 break;
-                
+            default: 
+                $status = " ";
+                break;
         }
         if (($_SESSION['AccountType'] == self::ACCOUNTTYPE_ID_SITE_OPERATOR) ||
                 ($_SESSION['AccountType'] == self::ACCOUNTTYPE_ID_SITE_SUPERVISOR) ||
@@ -81,7 +83,7 @@ class TicketModel extends CFormModel {
                 t.Source, t.IsCreditable FROM tickets t 
 		INNER JOIN $dbname.terminals tr ON tr.TerminalID=t.TerminalID
 		INNER JOIN $dbname.sites st ON st.SiteID = tr.SiteID
-                WHERE t.DateUpdated >= :transdate AND  t.DateUpdated < :vtransdate AND ".$status."
+                WHERE t.DateUpdated >= :transdate AND  t.DateUpdated < :vtransdate ".$status."
                 GROUP BY t.TicketCode
                 ORDER BY t.DateUpdated DESC";
             $command = $this->_connection->createCommand($sql);
@@ -1769,7 +1771,7 @@ class TicketModel extends CFormModel {
             $command->bindValue(":datefrom", $dateFrom);
             $command->bindValue(":dateto", $dateTo);
             $result = $command->queryRow();
-        }
+        } 
         else
         {
             $sql = "SELECT COUNT(TicketID) as RunningActive, SUM(Amount) as Value 
