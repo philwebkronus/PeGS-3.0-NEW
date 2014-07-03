@@ -43,13 +43,14 @@ class WsKapiController extends Controller {
             if (Utilities::validateInput($terminalName)) {
 
                 //Start of declaration of models to be used.
-                $terminalsModel = new TerminalsModel();
-                $terminalSessionsModel = new TerminalSessionsModel();
-                $terminalServicesModel = new TerminalServicesModel();
-                $siteDenominationModel = new SiteDenominationModel();
-                $gamingSessionModel = new GamingSessionsModel();
-                $commonController = new CommonController();
-                $sitesModel = new SitesModel();
+                $terminalsModel         = new TerminalsModel();
+                $terminalSessionsModel  = new TerminalSessionsModel();
+                $terminalServicesModel  = new TerminalServicesModel();
+                $siteDenominationModel  = new SiteDenominationModel();
+                $gamingSessionModel     = new GamingSessionsModel();
+                $commonController       = new CommonController();
+                $sitesModel             = new SitesModel();
+                $membercards            = new MemberCardsModel();
                 //End of declaration of models to be used.
                 //Check if terminal is EGM
                 $_terminalName = Yii::app()->params['SitePrefix'] . $terminalName;
@@ -220,16 +221,24 @@ class WsKapiController extends Controller {
                                                                 $minmaxAmount = array_merge($regVal, $vipVal);
                                                             }
                                                         }
+                                                        //get MID in egmsessions
+                                                        $mid = $gamingSessionModel->getMIDByTerminalID($TerminalID[0]['TerminalID']);
+                                                        if ($mid == false)
+                                                        {
+                                                            $mid = $gamingSessionModel->getMIDByTerminalID($TerminalID[1]['TerminalID']);
+                                                        }
+                                                        //get card number
+                                                        $membershipCardNo = $membercards->getCardNumber($mid['MID']);
+                                                        
                                                         $sitec = $sitesModel->getSiteCode($siteID);
-                                                        $message = "Terminal has no active session.";
+                                                        $message = "Success";
                                                         $playingBalance = 0;
                                                         $playerMode = 0;
                                                         $currentCasino = 0;
-                                                        $membershipCardNo = '';
                                                         $siteCode = substr($sitec, 5);
                                                         $sessionMode = 0;
                                                         $startDateTime = '';
-                                                        $errCode = 10;
+                                                        $errCode = 0;
                                                         $this->_sendResponse(200, CommonController::getTerminalInfoResponse(1, $isPlaying, $playingBalance, $playerMode, $currentCasino, $mappedCasinos, $minmaxAmount, $sessionMode, $membershipCardNo, $siteCode, $startDateTime, '', $message, $errCode, $siteName));
                                                     }
                                                 } else {
@@ -2039,7 +2048,7 @@ class WsKapiController extends Controller {
         $siteaccounts = new SiteAccountsModel();
         $egmsessions = new GamingSessionsModel();
         $tickets = new TicketsModel();
-
+        
         $request = $this->_readJsonRequest();
         $DateTime = '';
         $trackingID = '';
@@ -2126,6 +2135,14 @@ class WsKapiController extends Controller {
             if (!$isSiteActive) {
                 $message = "Inactive Site.";
                 return array("message" => $message, "ErrorCode" => 56);
+            }
+            //check if terminal and stacker session are matched
+            $countMatchedID = $egmsessions->isTerminalAndBatchIDMatched($terminalid, $stackerBatchID);
+            if ($countMatchedID == 0) {
+                $message = "Terminal and StackerBatchID does not match in EGM session.";
+                $this->_sendResponse(200, CommonController::redeemSessionResponse(2, '', '', '', '', '', '', '', $message, 0, 42));
+            
+                exit;
             }
             //Generate Ticket
             $voucherTicketBarcode = Helpers::generate_ticket();

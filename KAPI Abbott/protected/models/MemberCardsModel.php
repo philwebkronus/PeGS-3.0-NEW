@@ -106,4 +106,21 @@ class MemberCardsModel {
         
         return $result['ctrMID'];
     }
+    /**
+     * Get card number by MID
+     * @param type $mid
+     * @return type
+     * @author Mark Kenneth Esguerra
+     * @date June 18, 2014
+     */
+    public function getCardNumber($mid)
+    {
+        $sql = "SELECT CardNumber FROM membercards 
+                WHERE MID = :mid AND Status = 1";
+        $command = $this->_connection->createCommand($sql);
+        $command->bindValue(":mid", $mid);
+        $result = $command->queryRow();
+        
+        return $result['CardNumber'];
+    }
 }

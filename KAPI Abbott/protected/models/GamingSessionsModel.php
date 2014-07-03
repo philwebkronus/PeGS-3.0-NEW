@@ -275,6 +275,38 @@ class GamingSessionsModel{
             return null;
         }
     }
+    /**
+     * Get MID by Terminal ID
+     * @param type $terminalID
+     * @return type
+     * @author Mark Kenneth Esguerra
+     * @date June 18, 2014
+     */
+    public function getMIDByTerminalID($terminalID)
+    {
+        $sql = "SELECT MID FROM egmsessions 
+                WHERE TerminalID = :terminalID";
+        $command = $this->_connection->createCommand($sql);
+        $command->bindValue(":terminalID", $terminalID);
+        $result = $command->queryRow();
+        
+        return $result;
+    }
+    /**
+     * @author JunJun S. Hernandez
+     * @datecreated 03/21/14
+     * @param int $terminalID
+     * @param int $stackerBatchID
+     * @return int
+     */
+    public function isTerminalAndBatchIDMatched($terminalID, $stackerBatchID){
+        $sql = "SELECT COUNT(EGMSessionID) ctrEGMSessionID FROM egmsessions WHERE TerminalID = :terminal_id AND StackerBatchID = :stacker_batch_id";
+        $command = $this->_connection->createCommand($sql);
+        $command->bindValue(":terminal_id", $terminalID);
+        $command->bindValue(":stacker_batch_id", $stackerBatchID);
+        $result = $command->queryRow();
+        return $result['ctrEGMSessionID'];
+    }
 }
 
 ?>
