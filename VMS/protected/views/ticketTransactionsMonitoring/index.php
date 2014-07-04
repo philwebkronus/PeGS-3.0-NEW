@@ -22,7 +22,6 @@ if (isset($_POST['TicketTransactionsMonitoringForm']) == '') {
         if(ticketCode == '') {
             var dateFrom = $('#dateFrom').val();
             var dateTo = $('#dateTo').val();
-            compareDates(dateFrom, dateTo, event);
             getDateDiff(dateFrom, dateTo);
         }
         else {
@@ -43,7 +42,13 @@ if (isset($_POST['TicketTransactionsMonitoringForm']) == '') {
                    alert("Your starting date and end date must be in 31 days frame.");
                }
                else {
-                   submit();
+                   var msg = compareDates(dateFrom, dateTo, event);
+                   if (msg == '') {
+                        submit();
+                   }
+                   else {
+                       alert(msg);
+                   }
                }
            }
         });
@@ -74,11 +79,7 @@ if (isset($_POST['TicketTransactionsMonitoringForm']) == '') {
         } else {
             msg = 'Please fill up the Dates!';
         }
-        if (msg !== '') {
-            event.preventDefault();
-            $('#ticketmonitoringgrid').css('display','none');
-            alert(msg);
-        }
+        return msg;
     }
     
     function isNumberKey(evt)
