@@ -57,6 +57,8 @@ class ProcessPointsAPI extends BaseEntity
                 $Points = ( $amount / $PointValue) * $EquivalentPoint;
             }
             
+            $Points = floor($Points);
+            
             $arrEntries['Points'] = $Points;
             
             $arrEntries['DateCreated'] = 'now_usec()';
