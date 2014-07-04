@@ -387,7 +387,7 @@ class TopUpReportQuery extends DBHandler{
                 INNER JOIN terminals tm ON mr.TerminalID = tm.TerminalID
                 INNER JOIN accounts at ON mr.ProcessedByAID = at.AID
                 LEFT JOIN ref_services rs ON mr.ServiceID = rs.ServiceID
-                WHERE mr.TransactionDate BETWEEN '$startdate' AND '$enddate' ORDER BY mr.ManualRedemptionsID ASC";
+                WHERE mr.TransactionDate BETWEEN '$startdate 06:00:00' AND '$enddate 06:00:00' ORDER BY mr.ManualRedemptionsID ASC";
             $this->prepare($query);
             $this->execute();
             return $this->fetchAllData();         

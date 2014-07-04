@@ -2829,7 +2829,7 @@ class TopUp extends DBHandler
                       JOIN sites st ON mr.SiteID = st.SiteID
                       JOIN terminals tm ON mr.TerminalID = tm.TerminalID
                       JOIN accounts at ON mr.ProcessedByAID = at.AID 
-                      WHERE mr.TransactionDate BETWEEN '$startdate ' AND '$enddate'";
+                      WHERE mr.TransactionDate >= '$startdate 06:00:00' AND mr.TransactionDate < '$enddate 06:00:00'";
             $this->prepare($query);
             $this->execute();
             
@@ -2861,7 +2861,7 @@ class TopUp extends DBHandler
                 INNER JOIN terminals tm ON mr.TerminalID = tm.TerminalID
                 INNER JOIN accounts at ON mr.ProcessedByAID = at.AID 
                 LEFT JOIN ref_services rs ON mr.ServiceID = rs.ServiceID
-                WHERE mr.TransactionDate BETWEEN '$startdate' AND '$enddate'
+                WHERE mr.TransactionDate >= '$startdate 06:00:00' AND mr.TransactionDate < '$enddate 06:00:00' 
                 ORDER BY $sort $dir LIMIT $start,$limit";
             $this->prepare($query);
             $this->execute();
