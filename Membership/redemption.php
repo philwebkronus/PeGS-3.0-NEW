@@ -761,7 +761,6 @@ if(isset($_SESSION['RewardItemsInfo'])){
                         var ProductName = $("#hdnProductName").val();
                         var ItemPoints = "<?php echo $_SESSION['RewardItemsInfo']['Points']; ?>";
                         $("#Quantity").val("");
-                        $("#ItemQuantity").val("");
                         $("#ItemName").html(ProductName);
                         $("#ItemPoints").html(ItemPoints);
                         $("#hdnItemName").val(ProductName);
@@ -773,6 +772,8 @@ if(isset($_SESSION['RewardItemsInfo'])){
                             var mysterypoints = parseInt($("#hdnItemPoints").val());
                             $("#TotalItemPoints").html('Total Points: ' + mysterypoints.toString().replace(/,/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                             $("#hdnTotalItemPoints").val(mysterypoints);
+                        } else {
+                            $("#ItemQuantity").val("");
                         }
                         var email = "<?php echo $result = $_MemberInfo->getEmail($_SESSION["MemberInfo"]["Member"]["MID"]); ?>";
                         if(email  == ""){

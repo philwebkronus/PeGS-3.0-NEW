@@ -1698,6 +1698,8 @@ class ManageRewardsController extends Controller
             unset(Yii::app()->session['uploadedfile']);
             unset(Yii::app()->session['message']);
         }
+		
+		$newname = '';
         
         echo "<script type='text/javascript' src='".
                 Yii::app()->request->baseUrl."/js/jquery-1.7.2.min.js'></script>";
