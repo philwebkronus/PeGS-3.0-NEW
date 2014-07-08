@@ -24,7 +24,8 @@ class RewardItems extends BaseEntity
         return $result[0];
     }
     
-    function updateAvailableItemCount($RewardItemID, $ItemCount, $UpdatedByAID){
+    function updateAvailableItemCount($RewardItemID, $UpdatedByAID){
+        $ItemCount = 1;
         $query = "UPDATE  $this->TableName SET AvailableItemCount = AvailableItemCount - $ItemCount,
                             UpdatedByAID=$UpdatedByAID, DateUpdated=now_usec()
                             WHERE RewardItemID = $RewardItemID";

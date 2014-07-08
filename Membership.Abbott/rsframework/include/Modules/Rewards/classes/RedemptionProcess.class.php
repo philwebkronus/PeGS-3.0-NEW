@@ -37,9 +37,13 @@ Class RedemptionProcess extends BaseEntity {
         $_ItemRedemptionLogs = new ItemRedemptionLogs();
         $Source == 1 ? $AID = $MID:$AID = $_SESSION['userinfo']['AID'];
         $totalpoints = $RedeemedPoints/$Quantity;
-        
+        $itemqtyitr = $Quantity;
         for($itr = 0; $itr < (int)$Quantity; $itr++)
         { 
+            
+            $processeditemqty = (int)$Quantity - (int)$itemqtyitr;
+            $processeditemqtyinword = $this->converttoword($processeditemqty);
+            
             try 
             {
                 $_ItemRedemptionLogs->StartTransaction();
@@ -62,10 +66,10 @@ Class RedemptionProcess extends BaseEntity {
                             if($IsPointsUpdated > 0 && $PlayerPoints[0]['CurrentPoints'] > 0)
                             {
                                 $CurrentItemCount = $_RewardItems->getAvailableItemCount($RewardItemID);
-                                if($CurrentItemCount["AvailableItemCount"] >= $Quantity)
+                                if($CurrentItemCount["AvailableItemCount"] >= $itemqtyitr && $CurrentItemCount["AvailableItemCount"] != 0)
                                 {
                                     $_RewardItems->setPDOConnection($CommonPDO);
-                                    $IsItemCountUpdated = $_RewardItems->updateAvailableItemCount($RewardItemID, $Quantity, $AID);
+                                    $IsItemCountUpdated = $_RewardItems->updateAvailableItemCount($RewardItemID, $AID);
                                     if($IsItemCountUpdated > 0)
                                     {
                                         $_ItemSerialCodes->setPDOConnection($CommonPDO);
@@ -106,13 +110,15 @@ Class RedemptionProcess extends BaseEntity {
                                                         $validitydate = $validdate->format("F j, Y");
                                                         $_SESSION['RewardOfferCopy']['ValidUntil'][$itr] = $validitydate;
                                                         $errMsg["LastInsertedID"][$itr] = $LastInsertedID;
+                                                        $itemqtyitr--;
                                                         if($itr < (int)$Quantity)
                                                             continue;
                                                 } else {
                                                     $_MemberCards->RollBackTransaction();
                                                     $_ItemRedemptionLogs->RollBackTransaction();
                                                     $errMsg["Message"] = "Pending Redemption. Error in updating redemption log.";
-                                                    $errorLogger->log($errorLogger->logdate, "[ITEM REDEMPTION ERROR] ", $errMsg["Message"]."(".$_ItemRedemptionLogs->getErrors().")");
+                                                    $errMsg["HiddenMessage"] = "Pending Redemption. Error in updating redemption log. Processed By: $AID, Request By:  $MID, RewardItemID: $RewardItemID. ";
+                                                    $errorLogger->log($errorLogger->logdate, "[ITEM REDEMPTION ERROR] ", $errMsg["HiddenMessage"]."(".$_ItemRedemptionLogs->getErrors().")");
                                                     App::ClearStatus();
                                                     $errMsg["LastInsertedID"] = $LastInsertedID;
                                                     $errMsg["IsSuccess"] = false;
@@ -129,23 +135,28 @@ Class RedemptionProcess extends BaseEntity {
                                                 if($IsStatusUpdated > 0)
                                                 {
                                                     $_ItemRedemptionLogs->CommitTransaction();
+                                                    App::ClearStatus();
                                                     switch ($IsSerialCodeUpdated["StatusCode"]) 
                                                     {
                                                         case 1:
                                                             $errMsg["Message"] = "Transaction Failed. [Err: 0001] Error in transactional table.";
-                                                            $errMsg["HiddenMessage"] = "Transaction Failed. Error in locking Item Serial Code table.";
+                                                            $errMsg["HiddenMessage"] = "Transaction Failed. Error in locking Item Serial Code table. Processed By: $AID, Request By:  $MID, RewardItemID: $RewardItemID, ".
+                                                                            "Total Quantity Requested: $Quantity, Total no. of Item successfully redeemed: $processeditemqty";
                                                             break;
                                                         case 2:
                                                             $errMsg["Message"] = "Transaction Failed. [Err: 0002] Error in transactional table.";
-                                                            $errMsg["HiddenMessage"] = "Transaction Failed. Error in unlocking Item Serial Code table.";
+                                                            $errMsg["HiddenMessage"] = "Transaction Failed. Error in unlocking Item Serial Code table. Processed By: $AID, Request By:  $MID, RewardItemID: $RewardItemID, ".
+                                                                            "Total Quantity Requested: $Quantity, Total no. of Item successfully redeemed: $processeditemqty";
                                                             break;
                                                         case 3:
                                                             $errMsg["Message"] = "Transaction Failed. [Err: 0003] Error in transactional table.";
-                                                            $errMsg["HiddenMessage"] = "Transaction Failed. Error in updating Item Serial Code table.";
+                                                            $errMsg["HiddenMessage"] = "Transaction Failed. Error in updating Item Serial Code table. Processed By: $AID, Request By:  $MID, RewardItemID: $RewardItemID, ".
+                                                                            "Total Quantity Requested: $Quantity, Total no. of Item successfully redeemed: $processeditemqty";
                                                             break;
                                                         case 4:
                                                             $errMsg["Message"] = "Transaction Failed. Serial Code is unavailable.";
-                                                            $errMsg["HiddenMessage"] = "Transaction Failed. Serial Code is unavailable.";
+                                                            $errMsg["HiddenMessage"] = "Transaction Failed. Serial Code is unavailable. Processed By: $AID, Request By:  $MID, RewardItemID: $RewardItemID, ".
+                                                                            "Total Quantity Requested: $Quantity, Total no. of Item successfully redeemed: $processeditemqty";
                                                             break;
                                                     }
                                                     $errorLogger->log($errorLogger->logdate, "[ITEM REDEMPTION ERROR] ", $errMsg["HiddenMessage"]);
@@ -156,19 +167,23 @@ Class RedemptionProcess extends BaseEntity {
                                                     {
                                                         case 1:
                                                             $errMsg["Message"] = "Pending Redemption. [Err: 0001] Error in transactional table.";
-                                                            $errMsg["HiddenMessage"] = "Pending Redemption. Error in locking Item Serial Code table.";
+                                                            $errMsg["HiddenMessage"] = "Pending Redemption. Error in locking Item Serial Code table. Processed By: $AID, Request By:  $MID, RewardItemID: $RewardItemID, ".
+                                                                            "Total Quantity Requested: $Quantity, Total no. of Item successfully redeemed: $processeditemqty";
                                                             break;
                                                         case 2:
                                                             $errMsg["Message"] = "Pending Redemption. [Err: 0002] Error in transactional table.";
-                                                            $errMsg["HiddenMessage"] = "Pending Redemption. Error in unlocking Item Serial Code table.";
+                                                            $errMsg["HiddenMessage"] = "Pending Redemption. Error in unlocking Item Serial Code table. Processed By: $AID, Request By:  $MID, RewardItemID: $RewardItemID, ".
+                                                                            "Total Quantity Requested: $Quantity, Total no. of Item successfully redeemed: $processeditemqty";
                                                             break;
                                                         case 3:
                                                             $errMsg["Message"] = "Pending Redemption. [Err: 0003] Error in transactional table.";
-                                                            $errMsg["HiddenMessage"] = "Pending Redemption. Error in updating Item Serial Code table.";
+                                                            $errMsg["HiddenMessage"] = "Pending Redemption. Error in updating Item Serial Code table. Processed By: $AID, Request By:  $MID, RewardItemID: $RewardItemID, ".
+                                                                            "Total Quantity Requested: $Quantity, Total no. of Item successfully redeemed: $processeditemqty";
                                                             break;
                                                         case 4:
                                                             $errMsg["Message"] = "Pending Redemption. Serial Code is unavailable.";
-                                                            $errMsg["HiddenMessage"] = "Pending Redemption. Serial Code is unavailable.";
+                                                            $errMsg["HiddenMessage"] = "Pending Redemption. Serial Code is unavailable. Processed By: $AID, Request By:  $MID, RewardItemID: $RewardItemID, ".
+                                                                            "Total Quantity Requested: $Quantity, Total no. of Item successfully redeemed: $processeditemqty";
                                                             break;
                                                     }
                                                     $errorLogger->log($errorLogger->logdate, "[ITEM REDEMPTION ERROR] ", $errMsg["HiddenMessage"]);
@@ -183,16 +198,18 @@ Class RedemptionProcess extends BaseEntity {
                                             if($IsActive['Status'] != "Active" && $IsActive['Status'] != "Deleted") 
                                             {
                                                 $errMsg["Message"] = "Transaction Failed. The Item you try to redeem is currently ".$IsActive["Status"].".";
-                                                $hiddenmsg = "Transaction Failed. The Item you try to redeem is currently ".$IsActive["Status"]." [CardNumber: ".$CardNumber."].";
-                                                $errorLogger->log($errorLogger->logdate, "[ITEM REDEMPTION ERROR] ", $hiddenmsg);
+                                                $errMsg["HiddenMessage"] = "Transaction Failed. The Item you try to redeem is currently ".$IsActive["Status"]." Processed By: $AID, Request By:  $MID, RewardItemID: $RewardItemID, ".
+                                                                            "Total Quantity Requested: $Quantity, Total no. of Item successfully redeemed: $processeditemqty";
+                                                $errorLogger->log($errorLogger->logdate, "[ITEM REDEMPTION ERROR] ", $errMsg["HiddenMessage"]);
                                                 App::ClearStatus();
                                                 $errMsg["LastInsertedID"] = $LastInsertedID;
                                                 $errMsg["IsSuccess"] = false;
                                                 return $errMsg;
                                             } else {
                                                 $errMsg["Message"] = "Transaction Failed. This Reward Item  no longer exists.";
-                                                $hiddenmsg = "Transaction Failed. This Reward Item  no longer exists [CardNumber: ".$CardNumber."].";
-                                                $errorLogger->log($errorLogger->logdate, "[ITEM REDEMPTION ERROR] ", $hiddenmsg);
+                                                $errMsg["HiddenMessage"] = "Transaction Failed. This Reward Item  no longer exists. Processed By: $AID, Request By:  $MID, RewardItemID: $RewardItemID, ".
+                                                                            "Total Quantity Requested: $Quantity, Total no. of Item successfully redeemed: $processeditemqty";
+                                                $errorLogger->log($errorLogger->logdate, "[ITEM REDEMPTION ERROR] ", $errMsg["HiddenMessage"]);
                                                 App::ClearStatus();
                                                 $errMsg["LastInsertedID"] = $LastInsertedID;
                                                 $errMsg["IsSuccess"] = false;
@@ -210,12 +227,16 @@ Class RedemptionProcess extends BaseEntity {
                                         {
                                             $_ItemRedemptionLogs->CommitTransaction();
                                             $errMsg["Message"] = "Transaction Failed. Failed in updating item inventory.";
-                                            $errorLogger->log($errorLogger->logdate, "[ITEM REDEMPTION ERROR] ", $errMsg["Message"]);
+                                            $errMsg["HiddenMessage"] = "Transaction Failed. Failed in updating item inventory. Processed By: $AID, Request By:  $MID, RewardItemID: $RewardItemID, ".
+                                                                            "Total Quantity Requested: $Quantity, Total no. of Item successfully redeemed: $processeditemqty";
+                                            $errorLogger->log($errorLogger->logdate, "[ITEM REDEMPTION ERROR] ", $errMsg["HiddenMessage"]);
                                         } else {
                                             $_ItemRedemptionLogs->RollBackTransaction();
                                             App::ClearStatus();
                                             $errMsg["Message"] = "Pending Redemption. Failed in updating item inventory.";
-                                            $errorLogger->log($errorLogger->logdate, "[ITEM REDEMPTION ERROR] ", $errMsg["Message"]);
+                                            $errMsg["HiddenMessage"] = "Pending Redemption. Failed in updating item inventory. Processed By: $AID, Request By:  $MID, RewardItemID: $RewardItemID, ".
+                                                                            "Total Quantity Requested: $Quantity, Total no. of Item successfully redeemed: $processeditemqty";
+                                            $errorLogger->log($errorLogger->logdate, "[ITEM REDEMPTION ERROR] ", $errMsg["HiddenMessage"]);
                                         }
                                         $errMsg["LastInsertedID"] = $LastInsertedID;
                                         $errMsg["IsSuccess"] = false;
@@ -232,12 +253,23 @@ Class RedemptionProcess extends BaseEntity {
                                     {
                                         $_ItemRedemptionLogs->CommitTransaction();
                                         $errMsg["Message"] = "Transaction Failed. Number of available item is insufficient.";
-                                        $errorLogger->log($errorLogger->logdate, "[ITEM REDEMPTION ERROR] ", $errMsg["Message"]);
+                                        $errMsg["HiddenMessage"] = "Transaction Failed. Number of available item is insufficient. Processed By: $AID, Request By:  $MID, RewardItemID: $RewardItemID, ".
+                                                                            "Total Quantity Requested: $Quantity, Total no. of Item successfully redeemed: $processeditemqty";
+                                        $errorLogger->log($errorLogger->logdate, "[ITEM REDEMPTION ERROR] ", $errMsg["HiddenMessage"]);
                                     } else {
                                         $_ItemRedemptionLogs->RollBackTransaction();
                                         App::ClearStatus();
-                                        $errMsg["Message"] = "Pending Redemption. Number of available item is insufficient.";
-                                        $errorLogger->log($errorLogger->logdate, "[ITEM REDEMPTION ERROR] ", $errMsg["Message"]);
+                                      
+                                        if($Quantity == $itemqtyitr){
+                                            $errMsg["Message"] = "Transaction Failed. Number of available item is insufficient.";
+                                            $errMsg["HiddenMessage"] = "Transaction Failed. Number of available item is insufficient. Processed By: $AID, Request By:  $MID, RewardItemID: $RewardItemID, ".
+                                                                            "Total Quantity Requested: $Quantity, Total no. of Item successfully redeemed: $processeditemqty";
+                                        } else {
+                                            $errMsg["Message"] = "Pending Redemption. Number of available item is insufficient. Total no. of Item successfully redeemed: ".$processeditemqtyinword." (".$processeditemqty.")";
+                                            $errMsg["HiddenMessage"] = "Pending Redemption. Number of available item is insufficient. Processed By: $AID, Request By:  $MID, RewardItemID: $RewardItemID, ".
+                                                                            "Total Quantity Requested: $Quantity, Total no. of Item successfully redeemed: $processeditemqty";
+                                        }
+                                        $errorLogger->log($errorLogger->logdate, "[ITEM REDEMPTION ERROR] ", $errMsg["HiddenMessage"]);
                                     }
                                     $errMsg["LastInsertedID"] = $LastInsertedID;
                                     $errMsg["IsSuccess"] = false;
@@ -254,12 +286,16 @@ Class RedemptionProcess extends BaseEntity {
                                 {
                                     $_ItemRedemptionLogs->CommitTransaction();
                                     $errMsg["Message"] = "Transaction Failed. Failed in updating Card points. Card may have insufficient points.";
-                                    $errorLogger->log($errorLogger->logdate, "[ITEM REDEMPTION ERROR] ", $errMsg["Message"]);
+                                    $errMsg["HiddenMessage"] = "Transaction Failed. Failed in updating Card points. Card may have insufficient points. Processed By: $AID, Request By:  $MID, RewardItemID: $RewardItemID, ".
+                                                                            "Total Quantity Requested: $Quantity, Total no. of Item successfully redeemed: $processeditemqty";
+                                    $errorLogger->log($errorLogger->logdate, "[ITEM REDEMPTION ERROR] ", $errMsg["HiddenMessage"]);
                                 } else {
                                     $_ItemRedemptionLogs->RollBackTransaction();
                                     App::ClearStatus();
                                     $errMsg["Message"] = "Pending Redemption. Failed in updating Card points. Card may have insufficient points";
-                                    $errorLogger->log($errorLogger->logdate, "[ITEM REDEMPTION ERROR] ", $errMsg["Message"]);
+                                    $errMsg["HiddenMessage"] = "Pending Redemption. Failed in updating Card points. Card may have insufficient points. Processed By: $AID, Request By:  $MID, RewardItemID: $RewardItemID, ".
+                                                                            "Total Quantity Requested: $Quantity, Total no. of Item successfully redeemed: $processeditemqty";
+                                    $errorLogger->log($errorLogger->logdate, "[ITEM REDEMPTION ERROR] ", $errMsg["HiddenMessage"]);
                                 }
                                 $errMsg["LastInsertedID"] = $LastInsertedID;
                                 $errMsg["IsSuccess"] = false;
@@ -275,12 +311,16 @@ Class RedemptionProcess extends BaseEntity {
                             {
                                 $_ItemRedemptionLogs->CommitTransaction();
                                 $errMsg["Message"] = "Transaction Failed. Card may have insufficient points.";
-                                $errorLogger->log($errorLogger->logdate, "[ITEM REDEMPTION ERROR] ", $errMsg["Message"]);
+                                $errMsg["HiddenMessage"] = "Transaction Failed. Card may have insufficient points. Processed By: $AID, Request By:  $MID, RewardItemID: $RewardItemID, ".
+                                                                            "Total Quantity Requested: $Quantity, Total no. of Item successfully redeemed: $processeditemqty";
+                                $errorLogger->log($errorLogger->logdate, "[ITEM REDEMPTION ERROR] ", $errMsg["HiddenMessage"]);
                             } else {
                                 $_ItemRedemptionLogs->RollBackTransaction();
                                 App::ClearStatus();
                                 $errMsg["Message"] = "Pending Redemption. Card may have insufficient points.";
-                                $errorLogger->log($errorLogger->logdate, "[ITEM REDEMPTION ERROR] ", $errMsg["Message"]);
+                                $errMsg["HiddenMessage"] = "Pending Redemption. Card may have insufficient points. Processed By: $AID, Request By:  $MID, RewardItemID: $RewardItemID, ".
+                                                                            "Total Quantity Requested: $Quantity, Total no. of Item successfully redeemed: $processeditemqty";
+                                $errorLogger->log($errorLogger->logdate, "[ITEM REDEMPTION ERROR] ", $errMsg["HiddenMessage"]);
                             }
                             $errMsg["LastInsertedID"] = $LastInsertedID;
                             $errMsg["IsSuccess"] = false;
@@ -297,13 +337,15 @@ Class RedemptionProcess extends BaseEntity {
                         {
                             $_ItemRedemptionLogs->CommitTransaction();
                             $errMsg["Message"] = "Transaction Failed. Serial Code is unavailable.";
-                            $errMsg["HiddenMessage"] = "Transaction Failed. Serial Code is unavailable.";
+                            $errMsg["HiddenMessage"] = "Transaction Failed. Serial Code is unavailable. Processed By: $AID, Request By:  $MID, RewardItemID: $RewardItemID, ".
+                                                                            "Total Quantity Requested: $Quantity, Total no. of Item successfully redeemed: $processeditemqty";
                             $errorLogger->log($errorLogger->logdate, "[ITEM REDEMPTION ERROR] ", $errMsg["HiddenMessage"]);
                         } else {
                             $_ItemRedemptionLogs->RollBackTransaction();
                             App::ClearStatus();
                             $errMsg["Message"] = "Pending Redemption. Serial Code is unavailable.";
-                            $errMsg["HiddenMessage"] = "Pending Redemption. Serial Code is unavailable.";
+                            $errMsg["HiddenMessage"] = "Pending Redemption. Serial Code is unavailable. Processed By: $AID, Request By:  $MID, RewardItemID: $RewardItemID, ".
+                                                                            "Total Quantity Requested: $Quantity, Total no. of Item successfully redeemed: $processeditemqty";
                             $errorLogger->log($errorLogger->logdate, "[ITEM REDEMPTION ERROR] ", $errMsg["HiddenMessage"]);
                         }
                         $errMsg["LastInsertedID"] = $LastInsertedID;
@@ -315,6 +357,9 @@ Class RedemptionProcess extends BaseEntity {
                     $errorLogger->log($errorLogger->logdate, "[ITEM REDEMPTION ERROR] ", App::GetErrorMessage());
                     App::ClearStatus();
                     $errMsg["Message"] = "Transaction Failed. Error in redemption logging.";
+                    $errMsg["HiddenMessage"] = "Transaction Failed. Error in redemption logging. Processed By: $AID, Request By:  $MID, RewardItemID: $RewardItemID, ".
+                                                                "Total Quantity Requested: $Quantity, Total no. of Item successfully redeemed: $processeditemqty";
+                    $errorLogger->log($errorLogger->logdate, "[ITEM REDEMPTION ERROR] ", $errMsg["HiddenMessage"]);
                     $errMsg["LastInsertedID"] = "";
                     $errMsg["IsSuccess"] = false;
                     return $errMsg;
@@ -324,6 +369,9 @@ Class RedemptionProcess extends BaseEntity {
                 App::ClearStatus();
                 $errorLogger->log($errorLogger->logdate, "[ITEM REDEMPTION ERROR] ", $error->getMessage());
                 $errMsg["Message"] = "Transaction Failed. Failed to Start Item Redemption.";
+                $errMsg["HiddenMessage"] = "Transaction Failed. Failed to Start Item Redemption. Processed By: $AID, Request By:  $MID, RewardItemID: $RewardItemID, ".
+                                                            "Total Quantity Requested: $Quantity, Total no. of Item successfully redeemed: $processeditemqty";
+                $errorLogger->log($errorLogger->logdate, "[ITEM REDEMPTION ERROR] ", $errMsg["HiddenMessage"]);
                 $errMsg["LastInsertedID"] = "";
                 $errMsg["IsSuccess"] = false;
                 return $errMsg;
@@ -610,6 +658,36 @@ Class RedemptionProcess extends BaseEntity {
             $errMsg["LastInsertedID"] = "";
             $errMsg["IsSuccess"] = false;
             return $errMsg;
+        }
+    }
+    
+    /**
+     * @Description: Convert the interger to word (range: 1-5 only)
+     * @Author: aqdepliyan
+     * @DateCreated: 2014-06-19
+     * @param type $digit
+     * @return string
+     */
+    private function converttoword($digit){
+        switch ($digit) {
+            case 1:
+                return "One";
+                break;
+            case 2:
+                return "Two";
+                break;
+            case 3:
+                return "Three";
+                break;
+            case 4:
+                return "Four";
+                break;
+            case 5:
+                return "Five";
+                break;
+            default:
+                return "Zero";
+                break;
         }
     }
     

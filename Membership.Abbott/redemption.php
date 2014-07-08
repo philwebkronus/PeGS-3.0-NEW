@@ -554,7 +554,7 @@ if(isset($_SESSION['RewardItemsInfo'])){
                                             "Print" : function() {
                                                 $("#Quantity").val("");
                                                 $("#ItemQuantity").val("");
-                                                var mywindow = window.open('http://'+localhost+'membership.rewards/admin/template/couponredemptiontemplate.php');
+                                                var mywindow = window.open('<?php echo App::getParam('coupontemplate'); ?>');
                                                 mywindow.document.write('</head><body >');
                                                 mywindow.document.write($("#couponmessagebody").html());
                                                 mywindow.document.write('</body></html>');
@@ -588,7 +588,7 @@ if(isset($_SESSION['RewardItemsInfo'])){
                                             "Print" : function() {
                                                 $("#Quantity").val("");
                                                 $("#ItemQuantity").val("");
-                                                var mywindow = window.open('http://'+localhost+'membership.rewards/admin/template/admin/template/itemredemptiontemplate.php');
+                                                var mywindow = window.open('<?php echo App::getParam('itemtemplate'); ?>');
                                                 mywindow.document.write('</head><body >');
                                                 mywindow.document.write($("#itemmessagebody").html());
                                                 mywindow.document.write('</body></html>');
@@ -760,6 +760,7 @@ if(isset($_SESSION['RewardItemsInfo'])){
                         if ($("#redemptionquantity").dialog( "isOpen" ) !== true){
                         var ProductName = $("#hdnProductName").val();
                         var ItemPoints = "<?php echo $_SESSION['RewardItemsInfo']['Points']; ?>";
+                        $("#Quantity").val("");         
                         $("#ItemName").html(ProductName);
                         $("#ItemPoints").html(ItemPoints);
                         $("#hdnItemName").val(ProductName);
