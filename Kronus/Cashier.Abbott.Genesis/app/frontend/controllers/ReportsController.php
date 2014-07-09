@@ -132,7 +132,7 @@ class ReportsController extends FrontendController{
             
             $enddate3 = date('Y-m-d H:i:s', strtotime($enddate. ' - 2 days'));
             
-            $runningactivetickets3 = $sitegrossholdcuttoff->getrunningActiveTickets($date3, $enddate3, $this->site_id);
+            $runningactivetickets3 = $sitegrossholdcuttoff->getrunningActiveTickets($enddate3, $this->site_id);
             
             $runningactivetickets = $runningactivetickets1 + $runningactivetickets2 + $runningactivetickets3;
             
@@ -140,7 +140,7 @@ class ReportsController extends FrontendController{
         else{
             if($newdate >= 2){
                 
-                $runningactivetickets = $sitegrossholdcuttoff->getrunningActiveTickets($date, $enddate, $this->site_id);
+                $runningactivetickets = $sitegrossholdcuttoff->getrunningActiveTickets($enddate, $this->site_id);
             }
             else{
                                 
@@ -148,7 +148,7 @@ class ReportsController extends FrontendController{
                 
                 $oneday = date('Y-m-d H:i:s', strtotime($datetoday. ' - 1 days'));
                 
-                $runningactivetickets = $sitegrossholdcuttoff->getrunningActiveTickets($date, $oneday, $this->site_id);
+                $runningactivetickets = $sitegrossholdcuttoff->getrunningActiveTickets($oneday, $this->site_id);
                 
                 $runningactivetickets2 =  $tickets->getrunningactivetickets($oneday, $datetoday, $this->site_id);
                 
