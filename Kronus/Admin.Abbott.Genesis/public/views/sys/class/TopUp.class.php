@@ -26,6 +26,7 @@ class TopUp extends DBHandler
        switch ($zsiteid)
        {
            case 'All':
+               //Query for the generated site gross hold per cutoff (this is only up to the last Cut off)
                 $query1 = "SELECT sgc.SiteID, sgc.BeginningBalance, sgc.EndingBalance, ad.Name, sd.SiteDescription, sgc.Coupon,
                             s.SiteCode, s.POSAccountNo,sgc.DateFirstTransaction,sgc.DateLastTransaction,sgc.ReportDate,
                             sgc.DateCutOff,sgc.Deposit AS InitialDeposit, sgc.Reload AS Reload , sgc.Withdrawal AS Redemption
@@ -33,16 +34,18 @@ class TopUp extends DBHandler
                             INNER JOIN sites s ON s.SiteID = sgc.SiteID
                             INNER JOIN accountdetails ad ON ad.AID = s.OwnerAID
                             INNER JOIN sitedetails sd ON sd.SiteID = sgc.SiteID
-                            WHERE sgc.DateFirstTransaction >= ?
-                            AND sgc.DateFirstTransaction < ?
-                            ORDER BY s.SiteCode, sgc.DateFirstTransaction";          
+                            WHERE sgc.DateCutOff > ? AND sgc.DateCutOff <= ?
+                            ORDER BY s.SiteCode, sgc.DateCutOff";          
 
+               //Query for Gross Hold Confirmation (per site/per cut off)
                 $query2 = "SELECT SiteID,DateCredited,AmountConfirmed FROM grossholdconfirmation 
                     WHERE DateCredited  >= ? AND DateCredited < ? ";
 
+                //Query for Site Remittance (per site/per cut off)
                 $query3 = "SELECT SiteID,Amount,StatusUpdateDate FROM siteremittance 
                     WHERE StatusUpdateDate  >= ? AND StatusUpdateDate < ? ";
-
+                
+                //Query for Manual Redemption (per site/per cut off)
                 $query5 = "SELECT SiteID, ActualAmount AS ActualAmount,TransactionDate FROM manualredemptions " . 
                         "WHERE TransactionDate >= ? AND TransactionDate < ? ";   
                 
@@ -174,6 +177,7 @@ class TopUp extends DBHandler
 //                                GROUP By tr.TransactionType, tr.TransactionSummaryID
 //                                ORDER BY s.POSAccountNo";
                 
+                //Query for Deposit (Cash,Coupon,Ticket),  Reload (Cash,Coupon,Ticket) and Redemption (Cashier,Genesis)
                 $query6 = "SELECT tr.TransactionSummaryID AS TransSummID, SUBSTR(t.TerminalCode,11) AS TerminalCode, tr.TransactionType AS TransType,
 
                                 -- TOTAL DEPOSIT --
@@ -311,7 +315,7 @@ class TopUp extends DBHandler
                                   ELSE 0 -- Not Redemption
                                 END As RedemptionGenesis,
 
-                                ts.DateStarted, ts.DateEnded, tr.SiteID
+                                tr.DateCreated, tr.SiteID
                                 FROM npos.transactiondetails tr INNER JOIN npos.transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
                                 INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
                                 INNER JOIN npos.accounts a ON tr.CreatedByAID = a.AID
@@ -320,8 +324,9 @@ class TopUp extends DBHandler
                                 GROUP By tr.TransactionType, tr.TransactionSummaryID
                                 ORDER BY tr.TerminalID, tr.DateCreated DESC"; 
                 
-                $query7 = "SELECT SiteID, IFNULL(SUM(Amount), 0) AS UnusedTickets FROM
-                                            ((SELECT IFNULL(stckr.Withdrawal, 0) As Amount, stckr.TicketCode, tr.SiteID FROM npos.transactiondetails tr  -- Printed Tickets through W
+                //Query for Unused or Active Tickets of the Pick Date (per site/per cutoff)
+                $query7 = "SELECT SiteID, IFNULL(SUM(Amount), 0) AS UnusedTickets, DateCreated FROM
+                                            ((SELECT IFNULL(stckr.Withdrawal, 0) As Amount, stckr.TicketCode, tr.SiteID, tr.DateCreated FROM npos.transactiondetails tr  -- Printed Tickets through W
                                               INNER JOIN npos.transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
                                               INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
                                               INNER JOIN npos.accounts a ON tr.CreatedByAID = a.AID
@@ -335,7 +340,7 @@ class TopUp extends DBHandler
                                                 AND acct.AID IN (SELECT sacct.AID FROM npos.siteaccounts sacct WHERE sacct.SiteID =  :siteid))
                                                     )
                                             UNION ALL
-                                            (SELECT IFNULL(stckr.Withdrawal, 0) As Amount, stckr.TicketCode, sa.SiteID FROM stackermanagement.stackersummary stckr -- Cancelled Tickets in Stacker
+                                            (SELECT IFNULL(stckr.Withdrawal, 0) As Amount, stckr.TicketCode, sa.SiteID, stckr.DateCancelledOn as DateCreated FROM stackermanagement.stackersummary stckr -- Cancelled Tickets in Stacker
                                               INNER JOIN npos.siteaccounts sa ON stckr.CreatedByAID = sa.AID
                                               WHERE stckr.Status IN (1, 2)
                                               AND stckr.DateCancelledOn >= :startdate AND stckr.DateCancelledOn < :enddate
@@ -371,7 +376,8 @@ class TopUp extends DBHandler
                                                     ) 
                                         GROUP BY SiteID";
                 
-                $query8 = "SELECT tr.SiteID, IFNULL(SUM(stckr.Withdrawal), 0) AS PrintedTickets FROM npos.transactiondetails tr  -- Printed Tickets through W
+                //Query for Printed Tickets of the pick date (per site/per cutoff)
+                $query8 = "SELECT tr.SiteID, IFNULL(SUM(stckr.Withdrawal), 0) AS PrintedTickets, tr.DateCreated FROM npos.transactiondetails tr  -- Printed Tickets through W
                                         INNER JOIN npos.transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
                                         INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
                                         INNER JOIN npos.accounts a ON ts.CreatedByAID = a.AID
@@ -383,7 +389,8 @@ class TopUp extends DBHandler
                                           AND tr.StackerSummaryID IS NOT NULL
                                           GROUP BY tr.SiteID";
                 
-                $query9 = "SELECT tckt.SiteID, IFNULL(SUM(tckt.Amount), 0) AS EncashedTickets FROM vouchermanagement.tickets tckt  -- Encashed Tickets
+                //Query for Encashed Tickets of the pick date (per site/per cutoff)
+                $query9 = "SELECT tckt.SiteID, IFNULL(SUM(tckt.Amount), 0) AS EncashedTickets, tckt.DateEncashed as DateCreated FROM vouchermanagement.tickets tckt  -- Encashed Tickets
                                         WHERE tckt.DateEncashed >= ? AND tckt.DateEncashed < ?
                                         AND tckt.SiteID = ?
                                         GROUP BY tckt.SiteID";
@@ -450,11 +457,11 @@ class TopUp extends DBHandler
                 $this->bindparameter(1, $startdate);
                 $this->bindparameter(2, $enddate);
                 $this->execute();  
-                $rows6 =  $this->fetchAllData();
+                $rows6 =  $this->fetchAllData();                
                 foreach ($rows6 as $row6) {
                     foreach ($qr1 as $keys => $value1) {
                         if($row6["SiteID"] == $value1["SiteID"]){
-                            if(($row6['DateStarted'] >= $value1['ReportDate']." ".BaseProcess::$cutoff) && ($row6['DateStarted'] < $value1['CutOff'])){
+                            if(($row6['DateCreated'] >= $value1['ReportDate']." ".BaseProcess::$cutoff) && ($row6['DateCreated'] < $value1['CutOff'])){
                                 if($row6["DepositCash"] != '0.00'){
                                     $qr1[$keys]["DepositCash"] = (float)$qr1[$keys]["DepositCash"] + (float)$row6["DepositCash"];
                                     $qr1[$keys]["InitialDeposit"] = (float)$qr1[$keys]["InitialDeposit"] + (float)$row6["DepositCash"];
@@ -490,7 +497,6 @@ class TopUp extends DBHandler
                                     $qr1[$keys]["Reload"] = (float)$qr1[$keys]["Reload"] + (float)$row6["ReloadTicket"];
                                 }
                             }
-                            break;
                         }
                     }     
                 }
@@ -505,7 +511,9 @@ class TopUp extends DBHandler
                     $rows7 =  $this->fetchAllData();
                     foreach ($rows7 as $row7) {
                         if($row7["SiteID"] == $value2["SiteID"]){
-                            $qr1[$keys]["UnusedTickets"] = (float)$row7["UnusedTickets"];
+                            if(($row7['DateCreated'] >= $value2['ReportDate']." ".BaseProcess::$cutoff) && ($row7['DateCreated'] < $value2['CutOff'])){
+                                $qr1[$keys]["UnusedTickets"] = (float)$row7["UnusedTickets"];
+                            }
                         }
                     }
                     
@@ -519,7 +527,9 @@ class TopUp extends DBHandler
                     
                     foreach ($rows8 as $row8) {
                         if($row8["SiteID"] == $value2["SiteID"]){
-                            $qr1[$keys]["PrintedTickets"] = (float)$row8["PrintedTickets"];
+                            if(($row8['DateCreated'] >= $value2['ReportDate']." ".BaseProcess::$cutoff) && ($row8['DateCreated'] < $value2['CutOff'])){
+                                $qr1[$keys]["PrintedTickets"] = (float)$row8["PrintedTickets"];
+                            }
                             break;
                         }
                     }
@@ -534,7 +544,9 @@ class TopUp extends DBHandler
                     
                     foreach ($rows9 as $row9) {
                         if($row9["SiteID"] == $value2["SiteID"]){
-                            $qr1[$keys]["EncashedTickets"] = (float)$row9["EncashedTickets"];
+                            if(($row9['DateCreated'] >= $value2['ReportDate']." ".BaseProcess::$cutoff) && ($row9['DateCreated'] < $value2['CutOff'])){
+                                $qr1[$keys]["EncashedTickets"] = (float)$row9["EncashedTickets"];
+                            }
                             break;
                         }
                     }
@@ -609,6 +621,7 @@ class TopUp extends DBHandler
                 }
                break;
            case $zsiteid > 0 :
+               //Query for the generated site gross hold per cutoff (this is only up to the last Cut off)
                 $query1 = "SELECT sgc.SiteID, sgc.BeginningBalance, sgc.EndingBalance, ad.Name, sd.SiteDescription, sgc.Coupon,
                             s.SiteCode, s.POSAccountNo,sgc.DateFirstTransaction,sgc.DateLastTransaction,sgc.ReportDate,
                             sgc.DateCutOff,sgc.Deposit AS InitialDeposit, sgc.Reload AS Reload , sgc.Withdrawal AS Redemption
@@ -616,16 +629,19 @@ class TopUp extends DBHandler
                             INNER JOIN sites s ON s.SiteID = sgc.SiteID
                             INNER JOIN accountdetails ad ON ad.AID = s.OwnerAID
                             INNER JOIN sitedetails sd ON sd.SiteID = sgc.SiteID
-                            WHERE sgc.DateFirstTransaction >= ?
-                            AND sgc.DateFirstTransaction < ? AND sgc.SiteID = ?
-                            ORDER BY s.SiteCode, sgc.DateFirstTransaction";          
+                            WHERE sgc.DateCutOff > ?
+                            AND sgc.DateCutOff <= ? AND sgc.SiteID = ?
+                            ORDER BY s.SiteCode, sgc.DateCutOff";          
 
+               //Query for Gross Hold Confirmation (per site/per cut off)
                 $query2 = "SELECT SiteID,DateCredited,AmountConfirmed FROM grossholdconfirmation 
                     WHERE DateCredited  >= ? AND DateCredited < ?  AND SiteID = ?";
 
+                //Query for Site Remittance (per site/per cut off)
                 $query3 = "SELECT SiteID,Amount,StatusUpdateDate FROM siteremittance 
                     WHERE StatusUpdateDate  >= ? AND StatusUpdateDate < ?  AND SiteID = ?";
 
+                //Query for Manual Redemption (per site/per cut off)
                 $query5 = "SELECT SiteID, ActualAmount AS ActualAmount,TransactionDate FROM manualredemptions " . 
                         "WHERE TransactionDate >= ? AND TransactionDate < ? AND SiteID = ? ";  
                 
@@ -757,7 +773,7 @@ class TopUp extends DBHandler
 //                                  AND tr.Status IN(1,4)
 //                                GROUP By tr.TransactionType, tr.TransactionSummaryID
 //                                ORDER BY s.POSAccountNo"; 
-                
+                //Query for Deposit (Cash,Coupon,Ticket),  Reload (Cash,Coupon,Ticket) and Redemption (Cashier,Genesis)
                 $query6 = "SELECT tr.TransactionSummaryID AS TransSummID, SUBSTR(t.TerminalCode,11) AS TerminalCode, tr.TransactionType AS TransType,
 
                                 -- TOTAL DEPOSIT --
@@ -895,7 +911,7 @@ class TopUp extends DBHandler
                                   ELSE 0 -- Not Redemption
                                 END As RedemptionGenesis,
 
-                                ts.DateStarted, ts.DateEnded, tr.SiteID
+                                tr.DateCreated,  tr.SiteID
                                 FROM npos.transactiondetails tr INNER JOIN npos.transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
                                 INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
                                 INNER JOIN npos.accounts a ON tr.CreatedByAID = a.AID
@@ -905,8 +921,9 @@ class TopUp extends DBHandler
                                 GROUP By tr.TransactionType, tr.TransactionSummaryID
                                 ORDER BY tr.TerminalID, tr.DateCreated DESC"; 
                 
-                $query7 = "SELECT SiteID, IFNULL(SUM(Amount), 0) AS UnusedTickets FROM
-                                            ((SELECT IFNULL(stckr.Withdrawal, 0) As Amount, stckr.TicketCode, tr.SiteID FROM npos.transactiondetails tr  -- Printed Tickets through W
+                //Query for Unused or Active Tickets of the Pick Date (per site/per cutoff)
+                $query7 = "SELECT SiteID, IFNULL(SUM(Amount), 0) AS UnusedTickets, DateCreated FROM
+                                            ((SELECT IFNULL(stckr.Withdrawal, 0) As Amount, stckr.TicketCode, tr.SiteID, tr.DateCreated FROM npos.transactiondetails tr  -- Printed Tickets through W
                                               INNER JOIN npos.transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
                                               INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
                                               INNER JOIN npos.accounts a ON tr.CreatedByAID = a.AID
@@ -920,7 +937,7 @@ class TopUp extends DBHandler
                                                 AND acct.AID IN (SELECT sacct.AID FROM npos.siteaccounts sacct WHERE sacct.SiteID =  :siteid))
                                                     )
                                             UNION ALL
-                                            (SELECT IFNULL(stckr.Withdrawal, 0) As Amount, stckr.TicketCode, sa.SiteID FROM stackermanagement.stackersummary stckr -- Cancelled Tickets in Stacker
+                                            (SELECT IFNULL(stckr.Withdrawal, 0) As Amount, stckr.TicketCode, sa.SiteID, stckr.DateCancelledOn as DateCreated FROM stackermanagement.stackersummary stckr -- Cancelled Tickets in Stacker
                                               INNER JOIN npos.siteaccounts sa ON stckr.CreatedByAID = sa.AID
                                               WHERE stckr.Status IN (1, 2)
                                               AND stckr.DateCancelledOn >= :startdate AND stckr.DateCancelledOn < :enddate
@@ -956,7 +973,8 @@ class TopUp extends DBHandler
                                                     ) 
                                         GROUP BY SiteID";
                 
-                $query8 = "SELECT tr.SiteID, IFNULL(SUM(stckr.Withdrawal), 0) AS PrintedTickets FROM npos.transactiondetails tr  -- Printed Tickets through W
+                //Query for Printed Tickets of the pick date (per site/per cutoff)
+                $query8 = "SELECT tr.SiteID, IFNULL(SUM(stckr.Withdrawal), 0) AS PrintedTickets, tr.DateCreated FROM npos.transactiondetails tr  -- Printed Tickets through W
                                         INNER JOIN npos.transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
                                         INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
                                         INNER JOIN npos.accounts a ON ts.CreatedByAID = a.AID
@@ -968,7 +986,8 @@ class TopUp extends DBHandler
                                           AND tr.StackerSummaryID IS NOT NULL
                                           GROUP BY tr.SiteID";
                 
-                $query9 = "SELECT tckt.SiteID, IFNULL(SUM(tckt.Amount), 0) AS EncashedTickets FROM vouchermanagement.tickets tckt  -- Encashed Tickets
+                //Query for Encashed Tickets of the pick date (per site/per cutoff)
+                $query9 = "SELECT tckt.SiteID, IFNULL(SUM(tckt.Amount), 0) AS EncashedTickets, tckt.DateEncashed as DateCreated FROM vouchermanagement.tickets tckt  -- Encashed Tickets
                                         WHERE tckt.DateEncashed >= ? AND tckt.DateEncashed < ?
                                         AND tckt.SiteID = ?
                                         GROUP BY tckt.SiteID";
@@ -1041,11 +1060,11 @@ class TopUp extends DBHandler
                 $this->bindparameter(3, $enddate);
                 $this->execute();  
                 $rows6 =  $this->fetchAllData();
-                
+
                 foreach ($rows6 as $row6) {
                     foreach ($qr1 as $keys => $value1) {
                         if($row6["SiteID"] == $value1["SiteID"]){
-                            if(($row6['DateStarted'] >= $value1['ReportDate']." ".BaseProcess::$cutoff) && ($row6['DateStarted'] < $value1['CutOff'])){
+                            if(($row6['DateCreated'] >= $value1['ReportDate']." ".BaseProcess::$cutoff) && ($row6['DateCreated'] < $value1['CutOff'])){
                                 if($row6["DepositCash"] != '0.00'){
                                     $qr1[$keys]["DepositCash"] = (float)$qr1[$keys]["DepositCash"] + (float)$row6["DepositCash"];
                                     $qr1[$keys]["InitialDeposit"] = (float)$qr1[$keys]["InitialDeposit"] + (float)$row6["DepositCash"];
@@ -1057,11 +1076,11 @@ class TopUp extends DBHandler
                                 if($row6["RedemptionCashier"] != '0.00'){
                                     $qr1[$keys]["RedemptionCashier"] = (float)$qr1[$keys]["RedemptionCashier"] + (float)$row6["RedemptionCashier"];
                                     $qr1[$keys]["Redemption"] = (float)$qr1[$keys]["Redemption"] + (float)$row6["RedemptionCashier"];
-                                }
+                                    }
                                 if($row6["RedemptionGenesis"] != '0.00'){
                                     $qr1[$keys]["RedemptionGenesis"] = (float)$qr1[$keys]["RedemptionGenesis"] + (float)$row6["RedemptionGenesis"];
                                     $qr1[$keys]["Redemption"] = (float)$qr1[$keys]["Redemption"] + (float)$row6["RedemptionGenesis"];
-                                }
+                                    }
                                 if($row6["DepositCoupon"] != '0.00'){
                                     $qr1[$keys]["DepositCoupon"] = (float)$qr1[$keys]["DepositCoupon"] + (float)$row6["DepositCoupon"];
                                     $qr1[$keys]["Coupon"] = (float)$qr1[$keys]["Coupon"] + (float)$row6["DepositCoupon"];
@@ -1080,12 +1099,11 @@ class TopUp extends DBHandler
                                     $qr1[$keys]["ReloadTicket"] = (float)$qr1[$keys]["ReloadTicket"] + (float)$row6["ReloadTicket"];
                                     $qr1[$keys]["Reload"] = (float)$qr1[$keys]["Reload"] + (float)$row6["ReloadTicket"];
                                 }
-                                break;
                             }
                         }
                     }     
                 }
-                
+
                 foreach ($qr1 as $keys => $value2) {
                     //Get the total Unused Tickets per site
                     $this->prepare($query7);
@@ -1096,36 +1114,42 @@ class TopUp extends DBHandler
                     $rows7 =  $this->fetchAllData();
                     foreach ($rows7 as $row7) {
                         if($row7["SiteID"] == $value2["SiteID"]){
-                            $qr1[$keys]["UnusedTickets"] = (float)$row7["UnusedTickets"];
+                            if(($row7['DateCreated'] >= $value2['ReportDate']." ".BaseProcess::$cutoff) && ($row7['DateCreated'] < $value2['CutOff'])){
+                                $qr1[$keys]["UnusedTickets"] = (float)$row7["UnusedTickets"];
+                            }
                         }
                     }
                     
                     //Get the total Printed Tickets per site
                     $this->prepare($query8);
-                    $this->bindparameter(1, $startdate);
-                    $this->bindparameter(2, $enddate);
+                    $this->bindparameter(1, $value2["ReportDate"]." ".BaseProcess::$cutoff);
+                    $this->bindparameter(2, $value2["CutOff"]);
                     $this->bindparameter(3, $value2["SiteID"]);
                     $this->execute();  
                     $rows8 =  $this->fetchAllData();
                     
                     foreach ($rows8 as $row8) {
                         if($row8["SiteID"] == $value2["SiteID"]){
-                            $qr1[$keys]["PrintedTickets"] = (float)$row8["PrintedTickets"];
+                            if(($row8['DateCreated'] >= $value2['ReportDate']." ".BaseProcess::$cutoff) && ($row8['DateCreated'] < $value2['CutOff'])){
+                                $qr1[$keys]["PrintedTickets"] = (float)$row8["PrintedTickets"];
+                            }
                             break;
                         }
                     }
                     
                     //Get the total Encashed Tickets per site
                     $this->prepare($query9);
-                    $this->bindparameter(1, $startdate);
-                    $this->bindparameter(2, $enddate);
+                    $this->bindparameter(1, $value2["ReportDate"]." ".BaseProcess::$cutoff);
+                    $this->bindparameter(2, $value2["CutOff"]);
                     $this->bindparameter(3, $value2["SiteID"]);
                     $this->execute();  
                     $rows9 =  $this->fetchAllData();
                     
                     foreach ($rows9 as $row9) {
                         if($row9["SiteID"] == $value2["SiteID"]){
-                            $qr1[$keys]["EncashedTickets"] = (float)$row9["EncashedTickets"];
+                            if(($row9['DateCreated'] >= $value2['ReportDate']." ".BaseProcess::$cutoff) && ($row9['DateCreated'] < $value2['CutOff'])){
+                                $qr1[$keys]["EncashedTickets"] = (float)$row9["EncashedTickets"];
+                            }
                             break;
                         }
                     }
@@ -2293,7 +2317,7 @@ class TopUp extends DBHandler
                                   ELSE 0 -- Not Redemption
                                 END As RedemptionGenesis,
 
-                                ts.DateStarted, ts.DateEnded, tr.SiteID
+                                tr.DateCreated, tr.SiteID
                                 FROM npos.transactiondetails tr INNER JOIN npos.transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
                                 INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
                                 INNER JOIN npos.accounts a ON tr.CreatedByAID = a.AID
@@ -2478,8 +2502,7 @@ class TopUp extends DBHandler
         $query7 = "SELECT SiteID, IFNULL(RunningActiveTickets, 0) AS RunningActiveTickets
                                 FROM sitegrossholdcutoff 
                                 WHERE SiteID IN ($sites)
-                                AND DateFirstTransaction >= :startdate
-                                AND DateFirstTransaction < :enddate ";
+                                AND DateCutOff = :cutoffdate ";
         
 
         if($formatteddate == $comparedate) { //Date Started is less than 1 day of the date today
@@ -2492,8 +2515,7 @@ class TopUp extends DBHandler
             //Get the Running Active Tickets of the date less than 2 days of the date today if the pick date is less than 1 day of the date today
             //ex: Current Date = June 1, Pick Date = May 31: Get the Active tickets for May 30
             $this->prepare($query7);
-            $this->bindparameter(':startdate', $date1);
-            $this->bindparameter(':enddate', $date2);
+            $this->bindparameter(':cutoffdate', $date2);
             $this->execute();  
             $rows7 =  $this->fetchAllData();
 
@@ -2517,8 +2539,7 @@ class TopUp extends DBHandler
             //Get the Running Active Tickets for Pick Date, if the Pick Date is not less than 1 day nor equal to the date today
             //ex: Current Date = June 4, Pick Date = June 2: Get the Active tickets from sitegrosshold for June 2
             $this->prepare($query7);
-            $this->bindparameter(':startdate', $startdate);
-            $this->bindparameter(':enddate', $enddate);
+            $this->bindparameter(':cutoffdate', $enddate);
             $this->execute();  
             $rows7 =  $this->fetchAllData();
 
@@ -2567,29 +2588,26 @@ class TopUp extends DBHandler
             $seconddate = new DateTime($date1);
             $seconddate->sub(date_interval_create_from_date_string('1 day'));
             $date3 = $seconddate->format('Y-m-d')." 06:00:00";
-            $date4 = $date1." 06:00:00";
             
             //Get the Running Active Tickets of the date less than 2 days of the date today if the pick date is equal to the date today
             //ex: Current Date = June 4, Pick Date = June 4: Get the Active tickets from sitegrosshold for June 2
             $this->prepare($query7);
-            $this->bindparameter(':startdate', $date3);
-            $this->bindparameter(':enddate', $date4);
+            $this->bindparameter(':cutoffdate', $date1);
             $this->execute();  
             $rows7 =  $this->fetchAllData();
 
             foreach ($rows7 as $value1) {
                 foreach ($varrmerge as $keys => $value2) {
                     if($value1["SiteID"] == $value2["SiteID"]){
-                        if($varrmerge[$keys]["RunningActiveTickets"] == "0.00"){
+                        if($varrmerge[$keys]["RunningActiveTickets"] == "0.0"){
                             $varrmerge[$keys]["RunningActiveTickets"] = (float)$varrmerge[$keys]["UnusedTickets"];
                             $varrmerge[$keys]["RunningActiveTickets"] = $varrmerge[$keys]["RunningActiveTickets"] + (float)$value1["RunningActiveTickets"];
                         } else {
-                            $varrmerge[$keys]["RunningActiveTickets"] = $varrmerge[$keys]["RunningActiveTickets"] + $varrmerge[$keys]["UnusedTickets"];
                             $varrmerge[$keys]["RunningActiveTickets"] = $varrmerge[$keys]["RunningActiveTickets"] + (float)$value1["RunningActiveTickets"];
                         }
                         break;
                     }
-                }  
+                }
             }
         }
 
