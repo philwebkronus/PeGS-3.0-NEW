@@ -971,7 +971,7 @@ if($fproc->IsPostBack){
                         }
                         
                         //Check if the coupon batch is active, if not display error message.
-                        if(returnValue == 'False' && $("#RewardID").val() == 1){ 
+                        if(returnValue == 'False' && $("#RewardID").val() == 2){ 
                             $('#redemption-errormsg').html('<p style="padding-top: 5px; padding-bottom: 5px; padding-left: 3px;">Raffle Coupons are unavailable.</p>');
                             $('#redemption-errormsg').css('display','block');
                         } else {
