@@ -475,7 +475,7 @@ class UserBasedTrans {
         
         //insert into transaction request log
         $trans_req_log_last_id = $transReqLogsModel->insert2($udate, $amount, 'R', $terminal_id, $site_id, $service_id,
-                $paymentType, $loyalty_card, $mid, $userMode, $stackerbatchid, $trackingid, $voucher_code, $transaction_id);
+                $paymentType, $loyalty_card, $mid, $userMode, $stackerbatchid, substr($trackingid, -30), $voucher_code, $transaction_id);
  
         if(!$trans_req_log_last_id) {
             $message = 'There was a pending transaction for this user / terminal.';
