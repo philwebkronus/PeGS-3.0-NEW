@@ -15,6 +15,10 @@ class TransactionpercutoffController extends VMSBaseIdentity
     CONST USED = 3;
     CONST ENCASHED = 4;
     
+    CONST SITE_OPTR = 2;
+    CONST SITE_SUP  = 3;
+    CONST CASHIER   = 4;
+    
     public function actionTicket()
     {
         $model          = new TransactionpercutoffForm();
@@ -23,13 +27,14 @@ class TransactionpercutoffController extends VMSBaseIdentity
         
         $submenuID  = 32;
         $hasRight   = $accessrights->checkSubMenuAccess(Yii::app()->session['AccountType'], $submenuID);
+
         $autoselect = false;
         if ($hasRight)
         {
             //If the user is either SiteSup, SiteOps or Cashier, get only the sites under them
-            if (Yii::app()->session['AccountType'] == 2 || 
-                Yii::app()->session['AccountType'] == 3 || 
-                Yii::app()->session['AccountType'] == 4 )
+            if (Yii::app()->session['AccountType'] == self::SITE_OPTR || 
+                Yii::app()->session['AccountType'] == self::SITE_SUP || 
+                Yii::app()->session['AccountType'] == self::CASHIER )
             {
                 $aid = Yii::app()->session['AID'];
                 
@@ -66,7 +71,15 @@ class TransactionpercutoffController extends VMSBaseIdentity
             $this->messagealert = "User has no access right to this page";
         }
         
-        array_unshift($arrsitecodes, array('SiteID' => 'All', 'SiteCode' => 'All'));
+        if (Yii::app()->session['AccountType'] != self::CASHIER &&
+            Yii::app()->session['AccountType'] != self::SITE_SUP &&
+            Yii::app()->session['AccountType'] != self::SITE_OPTR ) {
+            array_unshift($arrsitecodes, array('SiteID' => 'All', 'SiteCode' => 'All'));
+        }
+        
+        if (Yii::app()->session['AccountType'] == self::SITE_OPTR && (count($sitecodes) > 1)) {
+            array_unshift($arrsitecodes, array('SiteID' => 'All', 'SiteCode' => 'All'));
+        }
         $sitecodelist = CHtml::listData($arrsitecodes, 'SiteID', 'SiteCode');
         
         $this->render('ticket', array('model' => $model, 'sitecodes' => $sitecodelist));
@@ -74,7 +87,8 @@ class TransactionpercutoffController extends VMSBaseIdentity
     
     public function actionGetTicketCuOffSummary()
     {
-        $ticketModel = new TicketModel();
+        $ticketModel    = new TicketModel();
+        $sitesModel     = new SitesModel();
         
         $vouchertype        = $_POST['vouchertype'];
         $sitecode           = $_POST['sitecode'];
@@ -95,6 +109,18 @@ class TransactionpercutoffController extends VMSBaseIdentity
                 $less1day = date("Y-m-d", strtotime("-1 day", $currdate));
                 $less2days = date("Y-m-d", strtotime("-2 day", $currdate));
                 
+                if ((Yii::app()->session['AccountType'] == self::SITE_OPTR || 
+                     Yii::app()->session['AccountType'] == self::SITE_SUP || 
+                     Yii::app()->session['AccountType'] == self::CASHIER) && $sitecode == "All")
+                {
+                    //get designated sitecodes\
+                    $arrsitecodes = $sitesModel->getSiteIDs(Yii::app()->session['AID']);
+                    $sitecode = array(); //transform $sitecode into array
+                    foreach ($arrsitecodes as $arrsitecode)
+                    {
+                        $sitecode[] = $arrsitecode['SiteID']; //$sitecode value is the SiteID
+                    }
+                }
                 $totalPrintedTickets    = $ticketModel->getNumberOfPrintedTickets($transactiondate, $dateTo, $sitecode); //select printed tickets within the cut off
                 $totalUsedTickets       = $ticketModel->getNumberOfUsedTickets($transactiondate, $dateTo, $sitecode);//select used tickets within the cutoff
                 $totalEncashedTickets   = $ticketModel->getNumberOfEncashedTickets($transactiondate, $dateTo, $sitecode);//select encashed tickets within the cutoff
@@ -121,7 +147,7 @@ class TransactionpercutoffController extends VMSBaseIdentity
                     $runningactive1 = $this->getLess2DaysCutOff($less2days, $sitecode); //previuos 2 days
                     $runningactive2 = $this->getDayCutOff($less1day, $sitecode); //previous day
                     $runningactive3 = $this->getDayCutOff($transactiondate, $sitecode); //date today
-
+                    
                     $totalrunningactive     = (int)$runningactive1['SumCount'] + $runningactive2['SumCount'] + $runningactive3['SumCount'];
                     $totalrunningactiveval  = $runningactive1['SumValue'] + $runningactive2['SumValue'] + $runningactive3['SumValue'];
                 }
@@ -155,6 +181,7 @@ class TransactionpercutoffController extends VMSBaseIdentity
     public function actionGetTicketRedemptions()
     {
         $ticketModel = new TicketModel();
+        $sitesModel  = new SitesModel();
         
         $transactiondate    = $_POST['_transdate'];
         $sitecode           = $_POST['_sitecode'];
@@ -163,6 +190,20 @@ class TransactionpercutoffController extends VMSBaseIdentity
         //get DateTo for cut off
         $date = strtotime($transactiondate);
         $dateTo = date("Y-m-d", strtotime("+1 day", $date));
+        //check the logged-in user has designated sites if the selected sitecode is all
+        if ((Yii::app()->session['AccountType'] == self::SITE_OPTR || 
+             Yii::app()->session['AccountType'] == self::SITE_SUP || 
+             Yii::app()->session['AccountType'] == self::CASHIER) && $sitecode == "All")
+        {
+            //get designated sitecodes\
+            $arrsitecodes = $sitesModel->getSiteIDs(Yii::app()->session['AID']);
+            $sitecode = array(); //transform $sitecode into array
+            foreach ($arrsitecodes as $arrsitecode)
+            {
+                $sitecode[] = $arrsitecode['SiteID']; //$sitecode value is the SiteID
+            }
+        }
+                
         //get all tickets transactions (used and encashed)
         $getTicketRedemptions = $ticketModel->getTicketRedemptions($transactiondate, $dateTo, $sitecode);
         $redemptioncounts = count($getTicketRedemptions);
@@ -243,6 +284,8 @@ class TransactionpercutoffController extends VMSBaseIdentity
     public function actionExporttoexcelticket()
     {
         $ticketModel = new TicketModel(); 
+        $sitesModel  = new SitesModel();
+        include_once("protected/extensions/ExportToExcel.php");
                 
         $sitecode   = $_POST['sitecode'];
         $transactiondate  = $_POST['transdate'];
@@ -255,6 +298,22 @@ class TransactionpercutoffController extends VMSBaseIdentity
         //for running active tickets, less 2 days in current transaction date (date today)
         $less1day = date("Y-m-d", strtotime("-1 day", $currdate));
         $less2days = date("Y-m-d", strtotime("-2 day", $currdate));
+        
+                //check the logged-in user has designated sites if the selected sitecode is all
+        if ((Yii::app()->session['AccountType'] == self::SITE_OPTR || 
+             Yii::app()->session['AccountType'] == self::SITE_SUP || 
+             Yii::app()->session['AccountType'] == self::CASHIER) && $sitecode == "All")
+        {
+            //get designated sitecodes\
+            $arrsitecodes = $sitesModel->getSiteIDs(Yii::app()->session['AID']);
+            $sitecode = array(); //transform $sitecode into array
+            foreach ($arrsitecodes as $arrsitecode)
+            {
+                $sitecode[] = $arrsitecode['SiteID']; //$sitecode value is the SiteID
+            }
+        }
+             
+        
         //select printed tickets within the cut off
         $totalPrintedTickets = $ticketModel->getNumberOfPrintedTickets($transactiondate, $dateTo, $sitecode);
         //select used tickets within the cutoff
@@ -288,7 +347,7 @@ class TransactionpercutoffController extends VMSBaseIdentity
         {
             $runningactive1 = $this->getLess2DaysCutOff($less2days, $sitecode); //previuos 2 days
             $runningactive2 = $this->getDayCutOff($less1day, $sitecode); //previous day
-
+            
             $totalrunningactive     = (int)$runningactive1['SumCount'] + $runningactive2['SumCount'];
             $totalrunningactiveval  = $runningactive1['SumValue'] + $runningactive2['SumValue'];
         }
@@ -399,7 +458,7 @@ class TransactionpercutoffController extends VMSBaseIdentity
         $dateTo = date("Y-m-d", strtotime("+1 day", $date));
         
         $getRunningActive = $siteGHCutOff->getActiveTicketsByDate($transdate, $dateTo, $sitecode);
-        
+
         $sumCount = 0;
         $sumValue = 0.00;
         if (count($getRunningActive) > 0)
@@ -421,7 +480,7 @@ class TransactionpercutoffController extends VMSBaseIdentity
     private function getDayCutOff($transdate, $sitecode)
     {
         $ticketModel = new TicketModel();
-
+           
         //Cut Off Date To
         $date = strtotime($transdate);
         $dateTo = date("Y-m-d", strtotime("+1 day", $date));
@@ -429,7 +488,7 @@ class TransactionpercutoffController extends VMSBaseIdentity
         $getPrintedTickets  = $ticketModel->getNumberOfPrintedTickets($transdate, $dateTo, $sitecode);
         $getUsedTickets     = $ticketModel->getNumberOfUsedTickets($transdate, $dateTo, $sitecode, 1);
         $getEncashedTickets = $ticketModel->getNumberOfEncashedTickets($transdate, $dateTo, $sitecode, 1);
-
+        
         $sumCount       = $getPrintedTickets['PrintedTickets'] - ($getUsedTickets['UsedTickets'] + $getEncashedTickets['EncashedTickets']);
         $sumValue       = $getPrintedTickets['Value'] - ($getUsedTickets['Value'] + $getEncashedTickets['Value']);
         

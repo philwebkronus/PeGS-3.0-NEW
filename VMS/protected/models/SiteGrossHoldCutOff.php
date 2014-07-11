@@ -30,6 +30,19 @@ class SiteGrossHoldCutOff extends CFormModel
             $command->bindValue(":dateTo", $dateTo." 06:00:00");
             $result = $command->queryAll();
         }
+        else if (is_array($sitecode))
+        {
+            $sitecode = implode(",", $sitecode);
+            
+            $sql = "SELECT ReportDate, RunningActiveTickets, RunningActiveTicketCount 
+                FROM sitegrossholdcutoff 
+                WHERE ReportDate >= :transdate AND ReportDate  < :dateTo 
+                AND SiteID IN ($sitecode)";
+            $command = $this->connection->createCommand($sql);
+            $command->bindValue(":transdate", $transdate." 06:00:00");
+            $command->bindValue(":dateTo", $dateTo." 06:00:00");
+            $result = $command->queryAll();
+        }
         else
         {
             $sql = "SELECT ReportDate, RunningActiveTickets, RunningActiveTicketCount 

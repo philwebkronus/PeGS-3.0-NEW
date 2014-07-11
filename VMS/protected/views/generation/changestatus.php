@@ -205,7 +205,7 @@ $form = $this->beginWidget('CActiveForm', array(
         'clientOptions' => array(
             'validateOnSubmit' => true,
         ), 
-        'action' => 'changeTicketStatus'
+        'action' => 'changeCouponStatus'
     ));
 ?>
 <div id="gentool">
@@ -271,6 +271,7 @@ $form = $this->beginWidget('CActiveForm', array(
                             'buttonImageOnly' => true,
                             'changeMonth' => true,
                             'changeYear' => true,
+                            'minDate' =>'0',
                             'buttonText'=> 'Select Date From',
                             'buttonImage'=>Yii::app()->request->baseUrl.'/images/calendar.gif',
                             'dateFormat'=>'yy-mm-dd',
@@ -302,6 +303,7 @@ $form = $this->beginWidget('CActiveForm', array(
                             'buttonText'=> 'Select Date To',
                             'buttonImage'=>Yii::app()->request->baseUrl.'/images/calendar.gif',
                             'dateFormat'=>'yy-mm-dd',
+                            'minDate' =>'0',
                             'beforeShow' => 'js:function(){
                                 var selectedDate = $("#'.CHtml::activeId($model,'validfrom').'").datepicker("getDate");
                                 selectedDate.setDate(selectedDate.getDate() + 1);

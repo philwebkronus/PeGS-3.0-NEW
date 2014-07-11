@@ -1483,6 +1483,17 @@ class TicketModel extends CFormModel {
             $command->bindValue(":tdateFrom", $tdatefrom." 06:00:00");
             $command->bindValue(":tdateTo", $tdateto." 06:00:00");
         }
+        else if (is_array($sitecode))
+        {
+            $sitecode = implode(",", $sitecode);
+            
+            $sql = "SELECT COUNT(TicketID) as PrintedTickets, SUM(Amount) as Value FROM tickets 
+                    WHERE DateCreated >= :tdateFrom AND DateCreated < :tdateTo 
+                    AND SiteID IN ($sitecode)";
+            $command = $this->_connection->createCommand($sql);
+            $command->bindValue(":tdateFrom", $tdatefrom." 06:00:00");
+            $command->bindValue(":tdateTo", $tdateto." 06:00:00");
+        }
         else
         {
             $sql = "SELECT COUNT(TicketID) as PrintedTickets, SUM(Amount) as Value FROM tickets 
@@ -1521,6 +1532,18 @@ class TicketModel extends CFormModel {
                 $command->bindValue(":tdateFrom", $tdatefrom." 06:00:00");
                 $command->bindValue(":tdateTo", $tdateto." 06:00:00");
             }
+            else if (is_array($sitecode))
+            {
+                $sitecode = implode(",", $sitecode);
+                
+                $sql = "SELECT COUNT(TicketID) as UsedTickets, SUM(Amount) as Value FROM tickets 
+                        WHERE DateUpdated >= :tdateFrom AND DateUpdated < :tdateTo 
+                        AND DateCreated >= :tdateFrom AND DateCreated < :tdateTo 
+                        AND Status = 3 AND SiteID IN ($sitecode)";
+                $command = $this->_connection->createCommand($sql);
+                $command->bindValue(":tdateFrom", $tdatefrom." 06:00:00");
+                $command->bindValue(":tdateTo", $tdateto." 06:00:00");
+            }
             else
             {
                 $sql = "SELECT COUNT(TicketID) as UsedTickets, SUM(Amount) as Value FROM tickets 
@@ -1541,6 +1564,17 @@ class TicketModel extends CFormModel {
                 $sql = "SELECT COUNT(TicketID) as UsedTickets, SUM(Amount) as Value FROM tickets 
                         WHERE DateUpdated >= :tdateFrom AND DateUpdated < :tdateTo 
                         AND Status = 3";
+                $command = $this->_connection->createCommand($sql);
+                $command->bindValue(":tdateFrom", $tdatefrom." 06:00:00");
+                $command->bindValue(":tdateTo", $tdateto." 06:00:00");
+            }
+            else if (is_array($sitecode))
+            {
+                $sitecode = implode(",", $sitecode);
+                
+                $sql = "SELECT COUNT(TicketID) as UsedTickets, SUM(Amount) as Value FROM tickets 
+                        WHERE DateUpdated >= :tdateFrom AND DateUpdated < :tdateTo 
+                        AND Status = 3 AND SiteID IN ($sitecode)";
                 $command = $this->_connection->createCommand($sql);
                 $command->bindValue(":tdateFrom", $tdatefrom." 06:00:00");
                 $command->bindValue(":tdateTo", $tdateto." 06:00:00");
@@ -1585,8 +1619,22 @@ class TicketModel extends CFormModel {
                 $command->bindValue(":tdateFrom", $tdatefrom." 06:00:00");
                 $command->bindValue(":tdateTo", $tdateto." 06:00:00");
             }
+            else if (is_array($sitecode))
+            {
+                $sitecode = implode(",", $sitecode);
+                
+                $sql = "SELECT COUNT(TicketID) as EncashedTickets, SUM(Amount) as Value FROM tickets 
+                        WHERE DateEncashed >= :tdateFrom AND DateEncashed < :tdateTo 
+                        AND DateCreated >= :tdateFrom AND DateCreated < :tdateTo 
+                        AND Status = 4 
+                        AND SiteID IN ($sitecode)";
+                $command = $this->_connection->createCommand($sql);
+                $command->bindValue(":tdateFrom", $tdatefrom." 06:00:00");
+                $command->bindValue(":tdateTo", $tdateto." 06:00:00");
+            }
             else
             {
+                
                 $sql = "SELECT COUNT(TicketID) as EncashedTickets, SUM(Amount) as Value FROM tickets 
                         WHERE DateEncashed >= :tdateFrom AND DateEncashed < :tdateTo 
                         AND DateCreated >= :tdateFrom AND DateCreated < :tdateTo 
@@ -1605,6 +1653,18 @@ class TicketModel extends CFormModel {
                 $sql = "SELECT COUNT(TicketID) as EncashedTickets, SUM(Amount) as Value FROM tickets 
                         WHERE DateEncashed >= :tdateFrom AND DateEncashed < :tdateTo 
                         AND Status = 4";
+                $command = $this->_connection->createCommand($sql);
+                $command->bindValue(":tdateFrom", $tdatefrom." 06:00:00");
+                $command->bindValue(":tdateTo", $tdateto." 06:00:00");
+            }
+            else if (is_array($sitecode))
+            {
+                $sitecode = implode(",", $sitecode);
+                
+                $sql = "SELECT COUNT(TicketID) as EncashedTickets, SUM(Amount) as Value FROM tickets 
+                        WHERE DateEncashed >= :tdateFrom AND DateEncashed < :tdateTo 
+                        AND Status = 4 
+                        AND SiteID IN ($sitecode)";
                 $command = $this->_connection->createCommand($sql);
                 $command->bindValue(":tdateFrom", $tdatefrom." 06:00:00");
                 $command->bindValue(":tdateTo", $tdateto." 06:00:00");
@@ -1678,6 +1738,51 @@ class TicketModel extends CFormModel {
             $command->bindValue(":tdateTo", $tdateto." 06:00:00");
             $result = $command->queryAll();
         }
+        else if (is_array($sitecode))
+        {
+            $sitecode = implode(",", $sitecode);
+            
+            $sql = "SELECT t.TicketID, 
+                       trml.TerminalName, 
+                       s.SiteCode, 
+                       t.TicketCode, 
+                       t.DateCreated, 
+                       t.Amount, 
+                       t.ValidToDate, 
+                       t.Status, 
+                       t.DateUpdated, 
+                       t.DateEncashed
+                    FROM tickets t 
+                    INNER JOIN npos.sites s ON t.SiteID = s.SiteID 
+                    INNER JOIN npos.terminals trml ON t.TerminalID = trml.TerminalID 
+                    WHERE t.DateUpdated >= :tdateFrom AND t.DateUpdated < :tdateTo 
+                    AND t.DateCreated >= :tdateFrom AND t.DateCreated < :tdateTo 
+                    AND t.Status = 3 AND t.SiteID IN ($sitecode)
+
+                    UNION ALL 
+
+                    SELECT t.TicketID, 
+                           trml.TerminalName, 
+                           s.SiteCode, 
+                           t.TicketCode, 
+                           t.DateCreated, 
+                           t.Amount, 
+                           t.ValidToDate, 
+                           t.Status, 
+                           t.DateUpdated, 
+                           t.DateEncashed
+                    FROM tickets t 
+                    INNER JOIN npos.sites s ON t.SiteID = s.SiteID 
+                    INNER JOIN npos.terminals trml ON t.TerminalID = trml.TerminalID 
+                    WHERE t.DateEncashed >= :tdateFrom AND t.DateEncashed < :tdateTo 
+                    AND t.DateCreated >= :tdateFrom AND t.DateCreated < :tdateTo 
+                    AND t.Status = 4 AND t.SiteID IN ($sitecode)
+               ";
+            $command = $this->_connection->createCommand($sql);
+            $command->bindValue(":tdateFrom", $tdatefrom." 06:00:00");
+            $command->bindValue(":tdateTo", $tdateto." 06:00:00");
+            $result = $command->queryAll();        
+        }
         else
         {
             $sql = "SELECT t.TicketID, 
@@ -1744,6 +1849,19 @@ class TicketModel extends CFormModel {
             $command->bindValue(":tdateTo", $tdateto." 06:00:00");
             $result = $command->queryRow();
         }
+        else if (is_array($sitecode))
+        {
+            $sitecode = implode(",", $sitecode);
+            
+            $sql = "SELECT COUNT(TicketID) as UnusedTickets, SUM(Amount) as Value FROM tickets 
+                    WHERE DateCreated >= :tdateFrom AND DateCreated < :tdateTo 
+                    AND DateUpdated IS NULL AND DateEncashed IS NULL 
+                    AND SiteID IN ($sitecode)";
+            $command = $this->_connection->createCommand($sql);
+            $command->bindValue(":tdateFrom", $tdatefrom." 06:00:00");
+            $command->bindValue(":tdateTo", $tdateto." 06:00:00");
+            $result = $command->queryRow();
+        }
         else
         {
             $sql = "SELECT COUNT(TicketID) as UnusedTickets, SUM(Amount) as Value FROM tickets 
@@ -1767,6 +1885,19 @@ class TicketModel extends CFormModel {
                     FROM tickets 
                     WHERE DateCreated >= :datefrom AND DateCreated < :dateto AND 
                     Status IN (1, 2)";   
+            $command = $this->_connection->createCommand($sql);
+            $command->bindValue(":datefrom", $dateFrom);
+            $command->bindValue(":dateto", $dateTo);
+            $result = $command->queryRow();
+        } 
+        else if (is_array($sitecode))
+        {
+            $sitecode = implode(",", $sitecode);
+            
+            $sql = "SELECT COUNT(TicketID) as RunningActive, SUM(Amount) as Value 
+                    FROM tickets 
+                    WHERE DateCreated >= :datefrom AND DateCreated < :dateto AND 
+                    Status IN (1, 2) AND SiteID IN ($sitecode)";   
             $command = $this->_connection->createCommand($sql);
             $command->bindValue(":datefrom", $dateFrom);
             $command->bindValue(":dateto", $dateTo);
