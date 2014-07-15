@@ -61,13 +61,13 @@ Yii::app()->clientScript->registerScript("validation","
 	<div class="row">
 		<?php echo $form->labelEx($model,'UserName'); ?>
 		<?php echo $form->textField($model,'UserName',array('onkeypress' => 'return numberandletter(event);', 'maxlength' => 20)) ?>
-		<?php echo $form->error($model,'UserName'); ?>
+		<?php //echo $form->error($model,'UserName'); ?>
 	</div>
 
 	<div class="row">
 		<?php echo $form->labelEx($model,'Password'); ?>
 		<?php echo $form->passwordField($model,'Password',array('onkeypress' => 'return numberandletter(event);', 'maxlength' => 12)); ?>
-		<?php echo $form->error($model,'Password'); ?>
+		<?php //echo $form->error($model,'Password'); ?>
 	</div>
 	<div class="row buttons">
 		<?php echo CHtml::submitButton('Login'); ?>

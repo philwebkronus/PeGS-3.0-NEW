@@ -72,6 +72,12 @@ class SiteController extends VMSBaseIdentity {
 
                 // validate user input and redirect to the previous page if valid
                 if ($model->validate() && $model->login()) {
+                    
+                    // If login is successfull, reset login attempts to 0
+                    $username = $_POST['LoginForm']['UserName'];
+                    $update_attempts = new LoginForm();
+                    $update_attempts->updateLoginAttemptsByUsername($username, 0);
+              
                     //Log to audit trail
                     AuditLog::logTransactions(1, ' as ' . $model->UserName);
 
@@ -81,6 +87,47 @@ class SiteController extends VMSBaseIdentity {
                     $this->showDialog = true;
                     $this->dialogMsg = "No access rights found for this user";
                     Yii::app()->user->logout();
+                }
+                
+                else
+                {
+                    // Get Login Attempts and Display Appropriate Error Message
+                    $username = $_POST['LoginForm']['UserName'];
+                    
+                    $update_attempts = new LoginForm();
+                    $get_attempts = new LoginForm();
+                    $num_attempts = $get_attempts->getLoginAttemptsByUsername($username);
+                    $int_attempts = intval($num_attempts);
+                    
+                    if($int_attempts == 2)
+                    {
+                        $int_attempts = $int_attempts + 1;
+                        $update_attempts->updateLoginAttemptsByUsername($username, $int_attempts);
+                        $update_status = new AccountTypes();
+                        $update_status->changeStatusByUserName($username);
+                        
+                        //Prompt Lock Account
+                        $this->showDialog = true;
+                        $this->dialogMsg = "Access Denied. Please contact system administrator to have your account unlocked.";
+                  
+                    }
+                    else if($int_attempts >= 0 && $int_attempts <= 3)
+                    {
+                        if($int_attempts == 3)
+                        {
+                            //Prompt Lock Account
+                            $this->showDialog = true;
+                            $this->dialogMsg = "Access Denied. Please contact system administrator to have your account unlocked.";
+                        }
+                        else
+                        {
+                            $int_attempts = $int_attempts + 1;
+                            $update_attempts->updateLoginAttemptsByUsername($username, $int_attempts);
+                            //Prompt Invalid Password
+                            $this->showDialog = true;
+                            $this->dialogMsg = "Incorrect username or password.";
+                        }
+                    }
                 }
             }
 

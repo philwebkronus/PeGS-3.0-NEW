@@ -358,7 +358,7 @@ class TicketModel extends CFormModel {
         if (($_SESSION['AccountType'] == self::ACCOUNTTYPE_ID_SITE_OPERATOR) ||
                 ($_SESSION['AccountType'] == self::ACCOUNTTYPE_ID_SITE_SUPERVISOR) ||
                 ($_SESSION['AccountType'] == self::ACCOUNTTYPE_ID_SITE_CASHIER)) {
-
+            
             if ($status == 2) {
                 $sql = "SELECT DISTINCT(t.TicketID) AS VoucherID, '1' AS VoucherTypeID, st.SiteName, st.SiteCode, t.TicketCode AS VoucherCode, 
                 t.Status, t.TerminalID, t.Amount, t.DateCreated, t.CreatedByAID, t.DateUpdated, t.UpdatedByAID, t.DateEncashed, t.ValidToDate, 
@@ -367,7 +367,7 @@ class TicketModel extends CFormModel {
 		INNER JOIN $dbname.sites st ON st.SiteID = tr.SiteID
                 INNER JOIN $dbname.siteaccounts sa ON sa.SiteID = st.SiteID
                 INNER JOIN $dbname.accounts a ON a.AID = sa.AID
-                WHERE t.DateCreated >= :dateFrom AND  t.DateCreated < :dateTo
+                WHERE t.DateCreated >= :dateFrom AND  t.DateCreated < :dateTo AND t.Status = :status
                 AND t.ValidToDate > NOW(6)
                 AND a.AccountTypeID = :account_type_id AND a.AID = :aid
                 GROUP BY t.TicketCode
@@ -404,7 +404,7 @@ class TicketModel extends CFormModel {
 		INNER JOIN $dbname.sites st ON st.SiteID = tr.SiteID
                 INNER JOIN $dbname.siteaccounts sa ON sa.SiteID = st.SiteID
                 INNER JOIN $dbname.accounts a ON a.AID = sa.AID
-                WHERE t.ValidToDate >= :dateFrom AND t.ValidToDate < :dateTo
+                WHERE t.ValidToDate >= :dateFrom AND t.ValidToDate < :dateTo AND t.Status = :status 
                 AND a.AccountTypeID = :account_type_id AND a.AID = :aid
                 GROUP BY t.TicketCode
                 ORDER BY t.DateCreated DESC";
@@ -473,11 +473,12 @@ class TicketModel extends CFormModel {
                 t.Source, t.IsCreditable FROM tickets t 
 		INNER JOIN $dbname.terminals tr ON tr.TerminalID=t.TerminalID
 		INNER JOIN $dbname.sites st ON st.SiteID = tr.SiteID
-                WHERE t.ValidToDate >= :dateFrom AND t.ValidToDate < :dateTo
+                WHERE t.ValidToDate >= :dateFrom AND t.ValidToDate < :dateTo  AND t.Status = :status 
                 GROUP BY t.TicketCode
                 ORDER BY t.DateCreated DESC";
                 $command = $this->_connection->createCommand($sql);
                 $command->bindValue(":dateFrom", $dateFrom);
+                $command->bindValue(":status", $status);
             $command->bindValue(":dateTo", $dateTo);
             } else {
                 $sql = "SELECT t.TicketID AS VoucherID, '1' AS VoucherTypeID, st.SiteName, st.SiteCode, t.TicketCode AS VoucherCode, 
@@ -554,10 +555,12 @@ class TicketModel extends CFormModel {
                 t.Source, t.IsCreditable FROM tickets t 
 		INNER JOIN $dbname.terminals tr ON tr.TerminalID=t.TerminalID
 		INNER JOIN $dbname.sites st ON st.SiteID = tr.SiteID
-                WHERE st.SiteID = :site AND t.ValidToDate > :dateFrom AND t.ValidToDate < :dateTo
+                WHERE st.SiteID = :site AND t.ValidToDate > :dateFrom AND t.ValidToDate < :dateTo 
+                AND t.Status = :status 
                 GROUP BY t.TicketCode
                 ORDER BY t.DateCreated DESC";
             $command = $this->_connection->createCommand($sql);
+            $command->bindValue(":status", $status);
         } else {
             $sql = "SELECT t.TicketID AS VoucherID, '1' AS VoucherTypeID, st.SiteName, st.SiteCode, t.TicketCode AS VoucherCode, 
                 t.Status, t.TerminalID, t.Amount, SUM(t.Amount) AS TotalAmount, t.DateCreated, t.CreatedByAID, t.DateUpdated, t.UpdatedByAID, t.DateEncashed, t.ValidToDate, 
@@ -1680,6 +1683,49 @@ class TicketModel extends CFormModel {
                 $command->bindValue(":tdateTo", $tdateto." 06:00:00");
                 $command->bindValue(":siteid", $sitecode);
             } 
+        }
+        $result = $command->queryRow();
+
+        return $result;
+    }
+    /**
+     * Get Expired Ticket
+     * @param type $tdatefrom
+     * @param type $tdateto
+     * @param type $sitecode
+     * @param type $isrunning
+     * @return type
+     * @author Mark Kenneth Esguerra
+     * @date July 14, 2014
+     */
+    public function getNumberOfExpiredTickets($tdatefrom, $tdateto, $sitecode, $isrunning = null)
+    {
+        if ($sitecode == 'All')
+        {
+            $sql = "SELECT COUNT(TicketID) as ExpiredTickets, SUM(Amount) as Value FROM tickets 
+                    WHERE ValidToDate = :validtodate AND Status IN (1, 2)";
+            $command = $this->_connection->createCommand($sql);
+            $command->bindValue(":validtodate", $tdatefrom." 23:59:59.000000");
+        }
+        else if (is_array($sitecode))
+        {
+            $sitecode = implode(",", $sitecode);
+
+            $sql = "SELECT COUNT(TicketID) as ExpiredTickets, SUM(Amount) as Value FROM tickets 
+                    WHERE ValidToDate = :validtodate AND Status IN (1, 2) 
+                    AND SiteID IN ($sitecode)";
+            $command = $this->_connection->createCommand($sql);
+            $command->bindValue(":validtodate", $tdatefrom." 23:59:59.000000");
+        }
+        else
+        {
+
+            $sql = "SELECT COUNT(TicketID) as ExpiredTickets, SUM(Amount) as Value FROM tickets 
+                    WHERE ValidToDate = :validtodate AND Status IN (1, 2) 
+                    AND SiteID = :siteid";
+            $command = $this->_connection->createCommand($sql);
+            $command->bindValue(":siteid", $sitecode);
+            $command->bindValue(":validtodate", $tdatefrom." 23:59:59.000000");
         }
         $result = $command->queryRow();
 

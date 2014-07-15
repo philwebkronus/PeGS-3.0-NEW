@@ -292,134 +292,122 @@ class GenerationController extends VMSBaseIdentity
         $this->vtype    = self::COUPON; 
         $vouchers       = array('1' => 'Coupon');
         $title          = "Change Coupon Status";
-        $submenuID      = 27;
-        //Check if has access rights
-        $hasRight = $accessrights->checkSubMenuAccess(Yii::app()->session['AccountType'], $submenuID);
-        if ($hasRight == true)
+        
+        if (isset($_POST['ChangeStatusModel']))
         {
-            if (isset($_POST['ChangeStatusModel']))
+            $model->attributes = $_POST['ChangeStatusModel'];
+
+            $vouchertype    = $model->vouchertype;
+            $batch          = $model->batch;
+            $status         = $model->status;
+            $validfrom      = $model->validfrom;
+            $validto        = $model->validto;
+
+            if ($vouchertype != "")
             {
-                $model->attributes = $_POST['ChangeStatusModel'];
+                $user = Yii::app()->session['AID']; //Get AID
 
-                $vouchertype    = $model->vouchertype;
-                $batch          = $model->batch;
-                $status         = $model->status;
-                $validfrom      = $model->validfrom;
-                $validto        = $model->validto;
-
-                if ($vouchertype != "")
+                $this->vtype = self::COUPON;
+                if ($batch != "")
                 {
-                    $user = Yii::app()->session['AID']; //Get AID
+                    //Get BatchID
+                    $arrbatch = explode("-", $batch);
+                    $batch = $arrbatch[1];
 
-                    $this->vtype = self::COUPON;
-                    if ($batch != "")
+                    if ($status != -1)
                     {
-                        //Get BatchID
-                        $arrbatch = explode("-", $batch);
-                        $batch = $arrbatch[1];
-
-                        if ($status != -1)
+                        if ($status == 1)
                         {
-                            if ($status == 1)
+                            //check if valid  from and to date has values
+                            if ($validfrom != "" && $validto != "")
                             {
-                                //check if valid  from and to date has values
-                                if ($validfrom != "" && $validto != "")
+                                //Check date range
+                                if (strtotime($validfrom) < strtotime($validto))
                                 {
-                                    //Check date range
-                                    if (strtotime($validfrom) < strtotime($validto))
+                                    if (($validfrom && $validto) != "")
                                     {
-                                        if (($validfrom && $validto) != "")
-                                        {
-                                            $isSuccess = 1;
-                                        }
-                                        else
-                                        {
-                                            $isSuccess = 4;
-                                        }
+                                        $isSuccess = 1;
                                     }
                                     else
                                     {
-                                        $isSuccess = 3;
+                                        $isSuccess = 4;
                                     }
                                 }
                                 else
                                 {
-                                    $isSuccess = 2;
+                                    $isSuccess = 3;
                                 }
                             }
-                            else 
+                            else
                             {
-                                $isSuccess = 1;
+                                $isSuccess = 2;
                             }
                         }
-                        else
+                        else 
                         {
-                            $isSuccess = 4;
+                            $isSuccess = 1;
                         }
                     }
                     else
                     {
                         $isSuccess = 4;
                     }
-
-                    //Change Status
-                    switch ($isSuccess)
-                    {
-                        case 1:
-                            $result = $couponbatch->changeStatus($batch, $status, $validfrom, $validto, $user);
-                            switch($result['TransCode'])
-                            {
-                                case 1:
-                                    $this->showdialog = true;
-                                    $this->message = $result['TransMsg'];
-                                    $this->title = "SUCCESS MESSAGE";
-                                    break;
-                                case 0:
-                                    $this->showdialog = true;
-                                    $this->message = $result['TransMsg'];
-                                    $this->title = "ERROR MESSAGE";
-                                    break;
-                                default:
-                                    $this->showdialog = true;
-                                    $this->message = $result['TransMsg'];
-                                    $this->title = "MESSAGE";
-                                    break;
-                            }
-                            break;
-                        case 2:
-                            $this->showdialog = true;
-                            $this->message = "Please fill up all fields";
-                            $this->title = "ERROR MESSAGE";
-                            break;
-                        case 3:
-                            $this->showdialog = true;
-                            $this->message = "Invalid date range";
-                            $this->title = "ERROR MESSAGE";
-                            break;
-                        case 4:
-                            $this->showdialog = true;
-                            $this->message = "Please fill up all fields";
-                            $this->title = "ERROR MESSAGE";
-                            break;
-                    }
-                    $this->refresh = true;
                 }
                 else
                 {
-                    $this->showdialog = true;
-                    $this->message = "Please fill up all fields.";
-                    $this->title = "ERROR MESSAGE";
+                    $isSuccess = 4;
+                }
+
+                //Change Status
+                switch ($isSuccess)
+                {
+                    case 1:
+                        $result = $couponbatch->changeStatus($batch, $status, $validfrom, $validto, $user);
+                        switch($result['TransCode'])
+                        {
+                            case 1:
+                                $this->showdialog = true;
+                                $this->message = $result['TransMsg'];
+                                $this->title = "SUCCESS MESSAGE";
+                                break;
+                            case 0:
+                                $this->showdialog = true;
+                                $this->message = $result['TransMsg'];
+                                $this->title = "ERROR MESSAGE";
+                                break;
+                            default:
+                                $this->showdialog = true;
+                                $this->message = $result['TransMsg'];
+                                $this->title = "MESSAGE";
+                                break;
+                        }
+                        break;
+                    case 2:
+                        $this->showdialog = true;
+                        $this->message = "Please fill up all fields";
+                        $this->title = "ERROR MESSAGE";
+                        break;
+                    case 3:
+                        $this->showdialog = true;
+                        $this->message = "Invalid date range";
+                        $this->title = "ERROR MESSAGE";
+                        break;
+                    case 4:
+                        $this->showdialog = true;
+                        $this->message = "Please fill up all fields";
+                        $this->title = "ERROR MESSAGE";
+                        break;
                 }
                 $this->refresh = true;
             }
+            else
+            {
+                $this->showdialog = true;
+                $this->message = "Please fill up all fields.";
+                $this->title = "ERROR MESSAGE";
+            }
+            $this->refresh = true;
         }
-        else
-        {
-            $this->showalert = true;
-            $this->messagealert = "User has no access rights to this page.";
-        }
-        
-        
         $this->render('changestatus', array('model'=>$model, 'vouchers' => $vouchers, 'title' => $title));
     }
     /******************************
@@ -619,10 +607,10 @@ class GenerationController extends VMSBaseIdentity
         }
         $arrinfo['Status'] = $status;
         $result = $coupon->getVoucherInfo($batchID);
-        if ($result > 0)
+        if ($result['ValidFromDate'] != null && $result['ValidToDate'] != null)
         {
-            $arrinfo['ValidFromDate'] = date("Y-m-d", strtotime($result['ValidFromDate']));
-            $arrinfo['ValidToDate'] = date("Y-m-d", strtotime($result['ValidToDate']));
+                $arrinfo['ValidFromDate'] = date("Y-m-d", strtotime($result['ValidFromDate']));
+                $arrinfo['ValidToDate'] = date("Y-m-d", strtotime($result['ValidToDate']));
         }
         else
         {

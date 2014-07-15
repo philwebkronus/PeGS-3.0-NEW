@@ -75,6 +75,10 @@ class LoginForm extends CFormModel {
                 if ($this->_identity->errorCode == VMSUserIdentity::ERROR_USER_PENDING) {
                     $this->addError('Password', 'User account is not active.');
                 }
+                
+                if ($this->_identity->errorCode == VMSUserIdentity::ERROR_USER_DENIED) {
+                    $this->addError('Password', 'Access Denied. Please contact system administrator to have your account unlocked.');
+                }
                 else
                     $this->addError('UserName', '');
                 $this->addError('Password', 'Incorrect username or password.');
@@ -140,5 +144,47 @@ class LoginForm extends CFormModel {
         else
             return false;
     }
+    
+    /*
+     * Description: update login attempts of a certain account
+     * @author: jefloresca
+     * result: object array
+     * DateCreated: 2014-07-14
+     */
+    
+    public function updateLoginAttemptsByUsername($UserName, $attempts) {
+        $connection = Yii::app()->db2;
+
+        $sql = "UPDATE accounts SET LoginAttempts = :attempts
+            WHERE UserName = :UserName;";
+        $command = $connection->createCommand($sql);
+        $command->bindValue(':attempts', $attempts);
+        $command->bindValue(':UserName', $UserName);
+
+        return $command->execute();
+    }
+    
+    /*
+     * Description: get total login attempts
+     * @author: jefloresca
+     * result: object array
+     * DateCreated: 2014-07-14
+     */
+    
+    public function getLoginAttemptsByUsername($username) {
+        $connection = Yii::app()->db2;
+
+        $sql = "SELECT LoginAttempts FROM accounts 
+            WHERE UserName = :UserName;";
+        $command = $connection->createCommand($sql);
+        $command->bindValue(':UserName', $username);
+        $result = $command->queryRow();
+
+        return $result['LoginAttempts'];
+    }
+    
+    
+
+    
 
 }

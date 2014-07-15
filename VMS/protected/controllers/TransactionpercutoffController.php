@@ -144,7 +144,7 @@ class TransactionpercutoffController extends VMSBaseIdentity
                 }
                 else if ($transactiondate == date('Y-m-d'))//if date selected is the current date
                 {
-                    $runningactive1 = $this->getLess2DaysCutOff($less2days, $sitecode); //previuos 2 days
+                    $runningactive1 = $this->getLess2DaysCutOff($less2days, $sitecode); //previuos 2 days (site grosshold)
                     $runningactive2 = $this->getDayCutOff($less1day, $sitecode); //previous day
                     $runningactive3 = $this->getDayCutOff($transactiondate, $sitecode); //date today
                     
@@ -488,11 +488,15 @@ class TransactionpercutoffController extends VMSBaseIdentity
         $getPrintedTickets  = $ticketModel->getNumberOfPrintedTickets($transdate, $dateTo, $sitecode);
         $getUsedTickets     = $ticketModel->getNumberOfUsedTickets($transdate, $dateTo, $sitecode, 1);
         $getEncashedTickets = $ticketModel->getNumberOfEncashedTickets($transdate, $dateTo, $sitecode, 1);
-        
+        $getExpiredTickets  = $ticketModel->getNumberOfExpiredTickets($transdate, $dateTo, $sitecode);
+
         $sumCount       = $getPrintedTickets['PrintedTickets'] - ($getUsedTickets['UsedTickets'] + $getEncashedTickets['EncashedTickets']);
         $sumValue       = $getPrintedTickets['Value'] - ($getUsedTickets['Value'] + $getEncashedTickets['Value']);
+        //less expired tickets
+        $_sumCount = $sumCount - $getExpiredTickets['ExpiredTickets'];
+        $_sumValue = $sumValue - $getExpiredTickets['Value'];
         
-        return array("SumCount" => $sumCount, "SumValue" => $sumValue);
+        return array("SumCount" => $_sumCount, "SumValue" => $_sumValue);
     }
     
     public function actionCoupon()

@@ -49,5 +49,24 @@ class AccountTypes extends OcActiveRecord
             return "";
         }
     }
+    
+    /**
+     * Change Account Status to 3 (Locked)
+     * @param int $aid ID of the user
+     * @return none
+     * @author jefloresca
+     * @date created 2014-07-14
+     */
+    public function changeStatusByUserName($UserName)
+    {
+        $connection = Yii::app()->db2;
+        $sql = "UPDATE accounts SET Status = 3
+            WHERE UserName = :UserName;";
+        $command = $connection->createCommand($sql);
+        $command->bindValue(':UserName', $UserName);
+
+        return $command->execute();
+    }
+    
 }
 ?>

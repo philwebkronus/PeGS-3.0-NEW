@@ -19,6 +19,7 @@ class VMSUserIdentity extends CUserIdentity
         CONST ERROR_PASSWORD_EXPIRED = 6;
         CONST ERROR_USERNAME_INVALID = 7;
         CONST ERROR_PASSWORD_INVALID = 8;
+        CONST ERROR_USER_DENIED = 9;
         
                 
 	/**
@@ -49,11 +50,14 @@ class VMSUserIdentity extends CUserIdentity
                  */
                 if($user->Password !== $user->encrypt($this->password))
                 {
-                    $this->errorCode=self::ERROR_PASSWORD_INVALID;
+                    if($userStatus == 3)
+                    {
+                        $this->_id = $user->AID;
+                        $this->errorCode=self::ERROR_USER_DENIED;
+                    }
                 }
                 else
                 {
-                    
                     /**
                     * Check if user is active
                     */
@@ -74,7 +78,8 @@ class VMSUserIdentity extends CUserIdentity
                                 $this->errorCode = self::ERROR_USER_SUSPENDED;
                                 break;
                             case 3:
-                                $this->errorCode = self::ERROR_USER_LOCKED;
+                                //$this->errorCode = self::ERROR_USER_LOCKED;
+                                $this->errorCode = self::ERROR_USER_DENIED;
                                 break;
                             case 4:
                                 $this->errorCode = self::ERROR_ADMIN_LOCKED;

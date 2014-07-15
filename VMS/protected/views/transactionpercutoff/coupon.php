@@ -1,16 +1,15 @@
 <script type="text/javascript">
     $(document).ready(function(){
-       <?php
-        if(isset($_POST['TransactionpercutoffForm']) == ''){
-        ?>
+        var transdate = $("#transactiondate").val();
+        var dateToday = "<?php echo date("Y-m-d H:i:s"); ?>";
+        if (transdate > dateToday){
+            alert("Transaction Date must not be greater than Date Today");
             $('#transpercutoffgrid').hide();
-        <?php
-        } else {
-        ?>
-            $('#transpercutoffgrid').show();
-        <?php
+            return false;
         }
-        ?>
+        else {
+            $('#transpercutoffgrid').show();
+        }
     });
 </script>
 <?php
