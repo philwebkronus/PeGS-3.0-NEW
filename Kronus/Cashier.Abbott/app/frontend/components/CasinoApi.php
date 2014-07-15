@@ -528,7 +528,7 @@ class CasinoApi {
         switch($service_name) {
             // RTG
             case 'Magic Macau':
-                $casinoApiHandler = $this->configureRTG($terminal_id,$service_id);
+                $casinoApiHandler = $this->configureRTG2($terminal_id,$service_id);
                 MI_Database::close();
                 $balanceinfo = $casinoApiHandler->GetBalance($casinoUsername);
                 break;
