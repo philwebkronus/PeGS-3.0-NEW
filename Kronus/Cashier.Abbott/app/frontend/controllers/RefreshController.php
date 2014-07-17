@@ -50,7 +50,7 @@ class RefreshController extends FrontendController{
                                 $casinoServiceID, $this->acc_id, $casinoUsername, $casinoPassword);
             }
         }
-        echo 'Success';
+        echo true;
     }
 }
 
