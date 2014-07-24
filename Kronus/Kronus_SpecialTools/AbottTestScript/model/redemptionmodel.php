@@ -242,6 +242,51 @@ class redemptionmodel extends PDOLibrary{
         return $this->execute();
     }
      
+    
+    public function insertLoyaltyReqLogs($mid, $trans_type, $terminal_id, $amount, $trans_details_id, $paymentType, $isCreditable="") {
+        try{
+                $this->begintrans();
+                $this->prepare('INSERT INTO loyaltyrequestlogs (MID,'.
+                                'DateCreated, TransactionType, TransactionOrigin, TerminalID, Amount, TransactionDetailsID,'. 
+                                'PaymentType, IsCreditable, Status) VALUES (:mid, now_usec(),'.
+                                ':trans_type, :trans_org, :terminal_id, :amount, :transdetailsid,'.
+                                ':payment_type, :isCreditable, :trans_status)');
+
+                $this->bindparameter(':mid', $mid);
+                $this->bindparameter(':trans_type', $trans_type);
+                $this->bindparameter(':trans_org', 1);
+                $this->bindparameter(':terminal_id', $terminal_id);
+                $this->bindparameter(':amount', $amount);
+                $this->bindparameter(':transdetailsid', $trans_details_id);
+                $this->bindparameter(':payment_type', $paymentType);
+                $this->bindparameter(':isCreditable', $isCreditable);
+                $this->bindparameter(':trans_status', 0);
+                
+                $this->execute();
+                $loyaltyrequestlogsID = $this->insertedid();
+                try {
+                    $this->committrans();
+                    return $loyaltyrequestlogsID;
+                } catch(Exception $e) {
+                    $this->dbh->rollbacktrans();
+                    return false;
+                }
+        } catch (Exception $e) {
+            $this->dbh->rollbacktrans();
+            return false;
+        }
+        
+    }
+    
+    
+    public function updateLoyaltyRequestLogs($loyaltyrequestlogID,$status) {
+        $sql = 'UPDATE loyaltyrequestlogs SET Status = :trans_status, ' . 
+                'DateUpdated = now_usec() WHERE LoyaltyRequestLogID = :loyaltyrequestlogID';
+        $this->prepare($sql);
+        $this->bindparameter(':trans_status', $status);
+        $this->bindparameter(':loyaltyrequestlogID', $loyaltyrequestlogID);
+        return $this->execute();
+    }
      
     
 }
