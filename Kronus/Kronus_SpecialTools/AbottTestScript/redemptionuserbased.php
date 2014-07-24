@@ -66,8 +66,8 @@ class redemptionuserbased{
         }
         
         $cashierUrl = 'https://125.5.1.18/ABBOTTRUVMANSYWPLMXI/processor/ProcessorAPI/Cashier2.asmx';
-        $certFilepath = '/var/www/AbottTestScript/19/cert.pem';
-        $keyFilePath = '/var/www/AbottTestScript/19/key.pem';
+        $certFilepath = '/var/www/AbottAPITest/19/cert.pem';
+        $keyFilePath = '/var/www/AbottAPITest/19/key.pem';
 
         $cashierAPI = new RealtimeGamingCashierAPI($cashierUrl, $certFilepath, $keyFilePath, '');
         
@@ -227,6 +227,59 @@ class redemptionuserbased{
                 $confirm = array('message'=>'You have successfully redeemed the amount of PhP ' . $amount);
                 
                 array_push($timechecker, $confirm);
+                
+                $confirm2 = array('trans_details_id'=>$isredeemed);
+                
+                array_push($timechecker, $confirm2);
+                
+                
+                $udate =  $this->udate('Y-m-d H:i:s.u');
+       
+    
+                $loyaltyrequestlogsID = $redemptionmodel->insertLoyaltyReqLogs($mid, 'W', $terminal_id, $amount, $isredeemed,1,1);
+
+                $card_number = urlencode(trim($loyalty_card));
+                $transid = urlencode(trim($isredeemed));
+                $transdate = urlencode(trim($udate));
+                $transtype = urlencode(trim('W'));
+                $payment_type = urlencode(trim('1'));
+                $amount = urlencode(trim($amount));
+                $site_id = urlencode(trim($site_id));
+                $service_id = urlencode(trim($casinoServiceID));
+                $terminal_login = urlencode(trim($terminalcode));
+                $iscreditable  = urlencode(trim('1'));
+                $vouchercode  = urlencode(trim(''));
+
+                $ch = curl_init();
+                curl_setopt($ch,CURLOPT_URL, 'http://172.16.102.174/membership.rewards/API/addpoints.php' . '?cardnumber=' . $card_number.'&transactionid='.$transid.'&transdate='.$transdate.
+                                                                                                                        '&transtype='.$transtype.'&paymenttype='.$payment_type.'&amount='.$amount.'&siteid='.$site_id.
+                                                                                                                        '&serviceid='.$service_id.'&terminallogin='.$terminal_login.'&iscreditable='.$iscreditable.
+                                                                                                                        '&vouchercode='.$vouchercode);
+
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); 
+                $results = curl_exec($ch);
+                curl_close($ch);   
+
+                $isSuccessfuls = json_decode($results);
+
+                if($isSuccessfuls->AddPoints->StatusCode == 1){
+                    $isSuccessful = true;
+                } else {
+                    $isSuccessful = false;
+                }
+
+
+                if($isSuccessful){
+                    $redemptionmodel->updateLoyaltyRequestLogs($loyaltyrequestlogsID,1);
+
+                    $date = date("Y-m-d H:i:s") . substr((string)microtime(), 1, 8);
+                    $datetime3 = array('LoyaltyProcessPoints'=>$date);
+
+                    array_push($timechecker, $datetime3);
+
+                } else {
+                    $redemptionmodel->updateLoyaltyRequestLogs($loyaltyrequestlogsID,2);
+                } 
                 
                 return $timechecker;
                 
