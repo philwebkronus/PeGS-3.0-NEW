@@ -52,7 +52,6 @@ class CommonUBRedeem {
                 $transReqLogsModel,$redeemable_amount,$casinoApiHandler,$mgaccount,$currentbet) = $casinoApi->getBalanceUB($terminal_id, $site_id, 'W', 
                         $casinoServiceID, $acct_id, $casinoUsername, $casinoPassword, $login_pwd);
         
-        $startTime = microtime(true); //Test Timer
         $is_terminal_active = $terminalSessionsModel->isSessionActive($terminal_id);
         
         if($is_terminal_active === false) {
@@ -66,12 +65,7 @@ class CommonUBRedeem {
             logger($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id);
             CasinoApiUB::throwError($message);
         }
-        //Test Timer
-        $endTime = microtime(true);
-        $max_execution_time = ($endTime - $startTime) / 60;
-        
-        logger("CheckTerminalSessionIfActive Exec Time: ".$max_execution_time);
-        
+
         if($mgaccount != '') {
             $terminal_name = $mgaccount;
         } else {
@@ -90,7 +84,6 @@ class CommonUBRedeem {
             }
         }
 
-        $startTime = microtime(true); //Test Timer
         //check if there was a pending game bet for RTG
         if(strpos($service_name, 'RTG') !== false) {
             $PID = $casinoApiHandler->GetPIDLogin($terminal_name);
@@ -108,13 +101,7 @@ class CommonUBRedeem {
             $casinoApi->callSpyderAPI($commandId = 0, $terminal_id, $casinoUsername, $login_pwd, $service_id);
             CasinoApiUB::throwError($message);   
         }
-        
-        //Test Timer
-        $endTime = microtime(true);
-        $max_execution_time = ($endTime - $startTime) / 60;    
-        logger("CheckPendingGameBet Exec Time: ".$max_execution_time);
 
-         $startTime = microtime(true); //Test Timer
         //Get Last Transaction Summary ID from terminalsessions
         $trans_summary_id = $terminalSessionsModel->getLastSessSummaryID($terminal_id);
         if(!$trans_summary_id){
@@ -124,10 +111,6 @@ class CommonUBRedeem {
             logger($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id);
             CasinoApiUB::throwError($message);
         }
-        //Test Timer
-        $endTime = microtime(true);
-        $max_execution_time = ($endTime - $startTime) / 60;    
-        logger("CheckForTerminalSessionValidity Exec Time: ".$max_execution_time);
 
         //get last transaction ID if service is MG
         if(strpos($service_name, 'MG') !== false) {
@@ -143,8 +126,7 @@ class CommonUBRedeem {
         }
 
         $udate = CasinoApiUB::udate('YmdHisu');
-        
-        $startTime = microtime(true); //Test Timer
+
         //insert into transaction request log
         $trans_req_log_last_id = $transReqLogsModel->insert($udate, $amount, 'W', $paymentType,
                 $terminal_id, $site_id, $service_id,$loyalty_card, $mid, $userMode, $transaction_id);
@@ -155,11 +137,6 @@ class CommonUBRedeem {
             logger($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id);
             CasinoApiUB::throwError($message);
         }
-        
-        //Test Timer
-        $endTime = microtime(true);
-        $max_execution_time = ($endTime - $startTime) / 60;    
-        logger("InsertTransactionReqLogs Exec Time: ".$max_execution_time);
 
         if(toMoney($amount) != toMoney(toInt($redeemable_amount))) {
             $transReqLogsModel->update($trans_req_log_last_id, false, 2,null,$terminal_id);
@@ -178,7 +155,6 @@ class CommonUBRedeem {
             $tracking4 = $site_id;   
             $event_id = Mirage::app()->param['mgcapi_event_id'][2]; //Event ID for Withdraw
             
-            $startTime = microtime(true); //Test Timer
             // check if casino's reply is busy, added 05/17/12
             if (!(bool)$casinoApiHandler->IsAPIServerOK()) {
                 $transReqLogsModel->update($trans_req_log_last_id, 'false', 2,null,$terminal_id);
@@ -189,21 +165,11 @@ class CommonUBRedeem {
                 CasinoApiUB::throwError($message);
             }
             
-            //Test Timer
-            $endTime = microtime(true);
-            $max_execution_time = ($endTime - $startTime) / 60;    
-            logger("CheckAPIServerConnectivity Exec Time: ".$max_execution_time);
             
-            $startTime = microtime(true); //Test Timer
             /************************ WITHDRAW ************************************/
             $resultwithdraw = $casinoApiHandler->Withdraw($casinoUsername, $amount, 
                 $tracking1, $tracking2, $tracking3, $tracking4, $casinoPassword, $event_id, $transaction_id);   
-            //Test Timer
-            $endTime = microtime(true);
-            $max_execution_time = ($endTime - $startTime) / 60;    
-            logger("CasinoAPIWIthdraw Exec Time: ".$max_execution_time);
         
-            $startTime = microtime(true); //Test Timer
             //check if Withdraw API reply is null
             if(is_null($resultwithdraw)){
 
@@ -285,11 +251,6 @@ class CommonUBRedeem {
                     }
                 }
             }
-            
-            //Test Timer
-            $endTime = microtime(true);
-            $max_execution_time = ($endTime - $startTime) / 60;    
-            logger("CheckTransactionInCasinoAPI Exec Time: ".$max_execution_time);
             
             if ($apiresult == 'TRANSACTIONSTATUS_APPROVED' || $apiresult == 'true' || $apiresult == 'approved') {
                 $transstatus = '1';
