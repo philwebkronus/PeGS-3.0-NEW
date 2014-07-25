@@ -78,7 +78,10 @@ class WsKapiController extends Controller {
                                     if ($cnt_mapped['cnt'] > 0) {
                                         //Check Active EGM Session
                                         $isactiveEgmSession = $gamingSessionModel->chkActiveEgmSession($TerminalID[0]['TerminalID']);
-
+                                        //if no egm in regular, try vip
+                                        if ($isactiveEgmSession ==  false) {
+                                            $isactiveEgmSession = $gamingSessionModel->chkActiveEgmSession($TerminalID[1]['TerminalID']);
+                                        } 
                                         if (!empty($isactiveEgmSession)) {
                                             $isStarted = 1;
                                             $stackerBatchID = $isactiveEgmSession['StackerBatchID'];
@@ -1082,7 +1085,7 @@ class WsKapiController extends Controller {
 
             //If Terminal Name is valid. If valid then
             if (Utilities::validateInput($membershipcardnumber) && Utilities::validateInput($terminalName) && Utilities::validateInput($casinoID)) {
-
+                
                 //Start of declaration of models to be used.
                 $terminalsModel = new TerminalsModel();
                 $gamingSessionsModel = new GamingSessionsModel();
@@ -1265,7 +1268,7 @@ class WsKapiController extends Controller {
                 $this->_sendResponse(200, CommonController::creteEgmSessionResponse(0, '', $message, $errCode));
             }
             //If Tracking ID is invalid. If invalid then
-            else if (Utilities::validateInput($casinoID) && !Utilities::validateInput($casinoID)) {
+            else if (!Utilities::validateInput($casinoID)) {
                 $message = "Casino ID may contain special characters.";
                 $errCode = 16;
                 $this->_sendResponse(200, CommonController::creteEgmSessionResponse(0, '', $message, $errCode));
@@ -2956,7 +2959,7 @@ class WsKapiController extends Controller {
                 $this->_sendResponse(200, CommonController::removeEgmSessionResponse($message, $errCode));
             }
             //If Tracking ID is invalid. If invalid then
-            else if (Utilities::validateInput($casinoID) && !Utilities::validateInput($casinoID)) {
+            else if (!Utilities::validateInput($casinoID)) {
                 $message = "Casino ID may contain special characters.";
                 $errCode = 16;
                 $this->_sendResponse(200, CommonController::removeEgmSessionResponse($message, $errCode));
