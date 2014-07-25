@@ -148,6 +148,8 @@ class CasinoApiUB {
         Mirage::loadModels(array('TerminalSessionsModel','TerminalsModel',
                                  'RefServicesModel','TransactionRequestLogsModel'));
         
+        $startTime = microtime(true); //Test Timer
+        
         // instance of model
         $terminalSessionsModel = new TerminalSessionsModel();
         $refServicesModel = new RefServicesModel();
@@ -236,6 +238,15 @@ class CasinoApiUB {
         }
         
         $terminalSessionsModel->updateTerminalSessionById($terminal_id, $service_id, $terminal_balance);
+        
+        //Test Timer
+        $endTime = microtime(true);
+        $max_execution_time = ($endTime - $startTime) / 60;
+        
+        if($transtype == "W"){
+            logger("GetBalance Exec Time:".$max_execution_time);
+        }
+        
         return array($terminal_balance,$service_name,$terminalSessionsModel,$transReqLogsModel,$redeemable_amount,$casinoApiHandler,$mgaccount,$currentbet);
     }
     
@@ -623,6 +634,8 @@ class CasinoApiUB {
     public function callSpyderAPI($commandId, $terminal_id, $login_uname, $login_pwd,
                                      $service_id)
     {
+        $startTime = microtime(true); //Test TImer
+        
         //if spyder call was enabled in cashier config, call SAPI
         if($_SESSION['spyder_enabled'] == 1){
             
@@ -644,6 +657,13 @@ class CasinoApiUB {
                             'SpyderReqID'=>$spyder_req_id,'CasinoID'=>$service_id);
                         
             $asynchronousRequest->curl_request_async(Mirage::app()->param['Asynchronous_URI'], $params);
+        }
+        
+        //Test TImer
+        $endTime = microtime(true);
+        $max_execution_time = ($endTime - $startTime) / 60;
+        if($commandId == 1){
+            logger("CallSpyderAPI Exec Time: ".$max_execution_time);
         }
     }
 }

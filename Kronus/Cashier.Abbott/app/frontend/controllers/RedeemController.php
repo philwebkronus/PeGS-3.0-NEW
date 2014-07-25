@@ -16,7 +16,7 @@ class RedeemController extends FrontendController{
         
         $len = strlen($this->site_code) + 1;
         $terminals = $terminalsModel->getAllActiveTerminals($this->site_id, $len);        
-        
+        $startTime = microtime(true);
         if(isset($_POST['StartSessionFormModel']) && $this->isAjaxRequest()) {
             $startSessionFormModel->setAttributes($_POST['StartSessionFormModel']);
             if($startSessionFormModel->isValid(array('terminal_id','amount'),true)) {
@@ -24,6 +24,11 @@ class RedeemController extends FrontendController{
             }
             $this->throwError('Invalid Input');
         }
+        $endTime = microtime(true);
+        $max_execution_time = ($endTime - $startTime) / 60;
+        
+        logger("Total Exec Time: ".$max_execution_time);
+        
         $this->render('redeemsession_overview',array('startSessionFormModel'=>$startSessionFormModel,'terminals'=>$terminals));
     }
     

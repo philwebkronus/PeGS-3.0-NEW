@@ -179,6 +179,7 @@ class CommonTransactionsModel extends MI_Model{
                                       $terminal_id, $trans_type, $paymentType,$service_id, $acctid,
                                       $trans_status, $loyalty_card, $mid)
     {
+        $startTime = microtime(true); //Test Timer
         $beginTrans = $this->beginTransaction();
         try {
             $stmt = $this->dbh->prepare('UPDATE transactionsummary SET Withdrawal = :amount, DateEnded = now_usec()  
@@ -231,6 +232,11 @@ class CommonTransactionsModel extends MI_Model{
             $this->dbh->rollBack();
             return false;
         }   
+        
+        //Test Timer
+        $endTime = microtime(true);
+        $max_execution_time = ($endTime - $startTime) / 60;    
+        logger("UpdateTransactionalTables Exec Time: ".$max_execution_time);
     }
 }
 
