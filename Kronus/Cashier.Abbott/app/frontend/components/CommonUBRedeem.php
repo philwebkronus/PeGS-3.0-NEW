@@ -86,7 +86,7 @@ class CommonUBRedeem {
 
         //check if there was a pending game bet for RTG
         if(strpos($service_name, 'RTG') !== false) {
-            $PID = $casinoApiHandler->GetPIDLogin($terminal_name);
+            $PID = $casinoApiHandler->GetPIDLogin($casinoUsername);
             $pendingGames = $casinoApi->GetPendingGames($terminal_id, $service_id,$PID);    
         } else {
             $pendingGames = '';
