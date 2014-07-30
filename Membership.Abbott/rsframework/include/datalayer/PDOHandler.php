@@ -13,6 +13,7 @@ class PDOHandler extends BaseObject
     public $username;
     public $password;
     public $dbname;
+    public $port = '3306';
     private $conn = null;
     public $AffectedRows;
     public $LastInsertID;
@@ -32,9 +33,9 @@ class PDOHandler extends BaseObject
             $this->username = $pdodb["username"];
             $this->password = $pdodb["password"];
             $this->dbname = $pdodb["dbname"];
-            if (isset($mydb["port"]))
+            if (isset($pdodb["port"]))
             {
-                $this->port = $mydb["port"];
+                $this->port = $pdodb["port"];
             }
         }
         else
@@ -54,7 +55,7 @@ class PDOHandler extends BaseObject
         {
             try
             {
-                $this->conn = new PDO("$this->DatabaseType:host=" . $this->host . ";dbname=" . $this->dbname, $this->username, $this->password);
+                $this->conn = new PDO("$this->DatabaseType:host=" . $this->host .";port= " . $this->port .";dbname=" . $this->dbname, $this->username, $this->password);
                 $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
                 $connresult = true;
             }
@@ -69,7 +70,7 @@ class PDOHandler extends BaseObject
             //App::Pr("Reusing Connection");
             $connresult = true;
         }
-
+        
         if ($this->isStartTransaction == true)
         {
             //App::Pr("Beginning Transaction: ");
