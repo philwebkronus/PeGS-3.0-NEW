@@ -22,7 +22,6 @@ class wsStackerApiController extends Controller {
                 $transMsg = 'One or more fields is not set or is blank.';
                 $errorCode = 1;
                 Utilities::log("Error Message: " . $transMsg . " ErrorCode: " . $errorCode);
-                $this->_sendResponse(200, CJSON::encode(CommonController::StackerRetMsg($module, $transMsg, $errorCode)));
             } else {
                 if (ctype_alnum($request['TerminalName']) && ctype_alnum($request['SerialNumber']) && is_numeric($request['Action'])) {
 
@@ -392,20 +391,20 @@ class wsStackerApiController extends Controller {
                                                                                                     $referenceID = $stackerBatchID;
                                                                                                     $this->_updateAPILogs($APIMethodID, $logID, $apiStatus, $referenceID);
                                                                                                 } else {
-                                                                                                    $transMsg = 'VAPI - ' . $useVoucherResult['UseTicket']['TransMsg'];
+                                                                                                    $transMsg = $useVoucherResult['UseTicket']['TransactionMessage'];
                                                                                                     $errorCode = $useVoucherResult['UseTicket']['ErrorCode'];
                                                                                                     $otherInfo = "TerminalName: " . $terminalName . " | MID: " . $MID . " | TransType: " . $transType . " | CashType: " . $paymentType . " |  TicketCode: " . $voucherCode . " | Amount: " . $amount . "|";
                                                                                                     Utilities::errorLogger($transMsg, $module, $otherInfo);
                                                                                                 }
                                                                                             } else {
-                                                                                                $transMsg = 'VAPI: ' . $verifyVoucherResult['VerifyTicket']['TransactionMessage'];
+                                                                                                $transMsg = $verifyVoucherResult['VerifyTicket']['TransactionMessage'];
                                                                                                 $errorCode = $verifyVoucherResult['VerifyTicket']['ErrorCode'];
                                                                                                 $otherInfo = "TerminalName: " . $terminalName . " | MID: " . $MID . " | TransType: " . $transType . " | CashType: " . $paymentType . " |  TicketCode: " . $voucherCode . " | Amount: " . $amount . "|";
                                                                                                 Utilities::errorLogger($transMsg, $module, $otherInfo);
                                                                                             }
                                                                                         }
                                                                                     } else {
-                                                                                        $transMsg = 'VAPI - ' . $verifyVoucherResult['VerifyTicket']['TransactionMessage'];
+                                                                                        $transMsg = $verifyVoucherResult['VerifyTicket']['TransactionMessage'];
                                                                                         $errorCode = $verifyVoucherResult['VerifyTicket']['ErrorCode'];
                                                                                         $otherInfo = "TerminalName: " . $terminalName . " | MID: " . $MID . " | TransType: " . $transType . " | CashType: " . $paymentType . " |  TicketCode: " . $voucherCode . " | Amount: " . $amount . "|";
                                                                                         Utilities::errorLogger($transMsg, $module, $otherInfo);
@@ -514,7 +513,6 @@ class wsStackerApiController extends Controller {
                 $transMsg = 'One or more fields is not set or is blank.';
                 $errorCode = 1;
                 Utilities::log("Error Message: " . $transMsg . " ErrorCode: " . $errorCode);
-                $this->_sendResponse(200, CJSON::encode(CommonController::StackerRetMsg($module, $transMsg, $errorCode)));
             } else {
                 if (ctype_alnum($request['TerminalName']) && ctype_alnum($request['MembershipCardNumber'])) {
                     $_memberCardsModel = new MemberCardsModel();
@@ -676,7 +674,6 @@ class wsStackerApiController extends Controller {
                 $transMsg = 'One or more fields is not set or is blank.';
                 $errorCode = 1;
                 Utilities::log("Error Message: " . $transMsg . " ErrorCode: " . $errorCode);
-                $this->_sendResponse(200, CJSON::encode(CommonController::StackerRetMsg($module, $transMsg, $errorCode)));
             } else {
                 $stackerTagID = trim($request['StackerTagID']);
                 $serialNumber = trim($request['SerialNumber']);
@@ -1042,46 +1039,38 @@ class wsStackerApiController extends Controller {
         $errorCode = "";
 
         $request = $this->_readJsonRequest();
-        if (isset($request['StackerTagID']) && isset($request['SerialNumber'])) {
-            if (($request['StackerTagID']) == "" || ($request['SerialNumber']) == "") {
-                $transMsg = 'One or more fields is not set or is blank.';
+        if (isset($request['StackerTagID'])) {
+            if ($request['StackerTagID'] == "") {
+                $transMsg = 'StackerTagID is not set or is blank.';
                 $errorCode = 1;
                 Utilities::log("Error Message: " . $transMsg . " ErrorCode: " . $errorCode);
                 $this->_sendResponse(200, CJSON::encode(CommonController::StackerRetMsg($module, $transMsg, $errorCode)));
             } else {
                 $stackerTagID = trim($request['StackerTagID']);
-                $serialNumber = trim($request['SerialNumber']);
 
-                if (ctype_alnum($stackerTagID) && ctype_alnum($serialNumber)) {
+                if (ctype_alnum($stackerTagID)) {
                     $stackerInfoModel = new StackerInfoModel();
                     $isStackerTagIDExists = $stackerInfoModel->isStackerTagIDExists($stackerTagID);
                     if ($isStackerTagIDExists > 0) {
-                        $isSerialNumberExists = $stackerInfoModel->isSerialNumberExists($serialNumber);
-                        if ($isSerialNumberExists > 0) {
-                            $stackerInfo = $stackerInfoModel->getStackerInfoByStackerTagAndSerial($stackerTagID, $serialNumber);
-                            $apiTransdetails = 'StackerTagID = ' . $stackerTagID . ', SN = ' . $serialNumber;
-                            $logID = $this->_insertIntoAPILogs($APIMethodID, $apiTransdetails);
-                            if (!empty($stackerInfo)) {
-                                $terminalName = $stackerInfo['TerminalName'];
-                                $status = $stackerInfo['Status'];
-                                $transMsg = 'Transaction Successful.';
-                                $errorCode = 0;
-                                $apiStatus = 1;
-                                Utilities::log("Error Message: " . $transMsg . " ErrorCode: " . $errorCode);
-                                $this->_sendResponse(200, CJSON::encode(CommonController::StackerRetMsg($module, $transMsg, $errorCode, '', $terminalName, $status)));
-                            } else {
-                                $transMsg = 'Stacker Tag ID and Serial Number did not match.';
-                                $errorCode = 21;
-                                Utilities::log("Error Message: " . $transMsg . " ErrorCode: " . $errorCode);
-                                $this->_sendResponse(200, CJSON::encode(CommonController::StackerRetMsg($module, $transMsg, $errorCode)));
-                            }
-                            $this->_updateAPILogs($APIMethodID, $logID, $apiStatus);
+                        $stackerInfo = $stackerInfoModel->getStackerInfoByStackerTagAndSerial($stackerTagID);
+                        $apiTransdetails = 'StackerTagID = ' . $stackerTagID;
+                        $logID = $this->_insertIntoAPILogs($APIMethodID, $apiTransdetails);
+                        if (!empty($stackerInfo)) {
+                            $terminalName = $stackerInfo['TerminalName'];
+                            $status = $stackerInfo['Status'];
+                            $serialNumber = $stackerInfo['SerialNumber'];
+                            $transMsg = 'Transaction Successful.';
+                            $errorCode = 0;
+                            $apiStatus = 1;
+                            Utilities::log("Error Message: " . $transMsg . " ErrorCode: " . $errorCode);
+                            $this->_sendResponse(200, CJSON::encode(CommonController::StackerRetMsg($module, $transMsg, $errorCode, '', $terminalName, $status, '', '', '', '', '', '', '', $serialNumber)));
                         } else {
-                            $transMsg = 'Serial Number does not exist.';
-                            $errorCode = 18;
+                            $transMsg = 'Stacker Tag ID and Serial Number did not match.';
+                            $errorCode = 21;
                             Utilities::log("Error Message: " . $transMsg . " ErrorCode: " . $errorCode);
                             $this->_sendResponse(200, CJSON::encode(CommonController::StackerRetMsg($module, $transMsg, $errorCode)));
                         }
+                        $this->_updateAPILogs($APIMethodID, $logID, $apiStatus);
                     } else {
                         $transMsg = 'Stacker Tag ID does not exist.';
                         $errorCode = 17;
@@ -1131,6 +1120,7 @@ class wsStackerApiController extends Controller {
                 $_stackerDetailsModel = new StackerDetailsModel();
                 $_stackerSessionsModel = new StackerSessionsModel();
                 $_stackerSummaryModel = new StackerSummaryModels();
+                $_terminalSessions  = new TerminalSessionsModel();
                 $trackingIDExistsInStacker = $_stackerDetailsModel->isTrackingIDExists($trackingID);
 
                 if (is_numeric($stackerBatchID) && ctype_alnum($terminalName)) {
@@ -1234,50 +1224,61 @@ class wsStackerApiController extends Controller {
 
                                                             $apiTransdetails = 'SBatchID = ' . $stackerBatchID . ', TID = ' . $terminalID;
                                                             $logID = $this->_insertIntoAPILogs($APIMethodID, $apiTransdetails);
-                                                            $isCancelled = $_EGMSessionsModel->cancelDeposit($terminalID, $stackerBatchID, $AID);
-                                                            switch ($isCancelled) {
-                                                                case 0 :
-                                                                    $transMsg = 'Transaction was already canceled.';
-                                                                    $errorCode = 23;
-                                                                    $isCancelled = "";
-                                                                    $apiStatus = 2;
-                                                                    $otherInfo = "StackerBatchID:" . $stackerBatchID . " | TerminalName: " . $terminalName . " | ";
-                                                                    Utilities::errorLogger($transMsg, $module, $otherInfo);
-                                                                    break;
-                                                                case 1 :
-                                                                    $transMsg = 'Transaction successful.';
-                                                                    $errorCode = 0;
-                                                                    $isCancelled = 1;
-                                                                    $apiStatus = 1;
-                                                                    break;
-                                                                case 2 :
-                                                                    $transMsg = 'Transaction failed.';
-                                                                    $errorCode = 5;
-                                                                    $isCancelled = "";
-                                                                    $apiStatus = 2;
-                                                                    $otherInfo = "StackerBatchID:" . $stackerBatchID . " | TerminalName: " . $terminalName . " | ";
-                                                                    Utilities::errorLogger($transMsg, $module, $otherInfo);
-                                                                    break;
-                                                                default:
-                                                                    $transMsg = 'Transaction failed.';
-                                                                    $errorCode = 5;
-                                                                    $isCancelled = "";
-                                                                    $apiStatus = 2;
-                                                                    $otherInfo = "StackerBatchID:" . $stackerBatchID . " | TerminalName: " . $terminalName . " | ";
-                                                                    Utilities::errorLogger($transMsg, $module, $otherInfo);
-                                                                    break;
+                                                            //check if terminal has an active terminal session
+                                                            $hasActiveSession = $_terminalSessions->checkIfHasActiveSession($terminalID, $MID);
+                                                            if ($hasActiveSession == 0)
+                                                            {
+                                                                $isCancelled = $_EGMSessionsModel->cancelDeposit($terminalID, $stackerBatchID, $AID);
+                                                                switch ($isCancelled) {
+                                                                    case 0 :
+                                                                        $transMsg = 'Transaction was already canceled.';
+                                                                        $errorCode = 23;
+                                                                        $isCancelled = "";
+                                                                        $apiStatus = 2;
+                                                                        $otherInfo = "StackerBatchID:" . $stackerBatchID . " | TerminalName: " . $terminalName . " | ";
+                                                                        Utilities::errorLogger($transMsg, $module, $otherInfo);
+                                                                        break;
+                                                                    case 1 :
+                                                                        $transMsg = 'Transaction successful.';
+                                                                        $errorCode = 0;
+                                                                        $isCancelled = 1;
+                                                                        $apiStatus = 1;
+                                                                        break;
+                                                                    case 2 :
+                                                                        $transMsg = 'Transaction failed.';
+                                                                        $errorCode = 5;
+                                                                        $isCancelled = "";
+                                                                        $apiStatus = 2;
+                                                                        $otherInfo = "StackerBatchID:" . $stackerBatchID . " | TerminalName: " . $terminalName . " | ";
+                                                                        Utilities::errorLogger($transMsg, $module, $otherInfo);
+                                                                        break;
+                                                                    default:
+                                                                        $transMsg = 'Transaction failed.';
+                                                                        $errorCode = 5;
+                                                                        $isCancelled = "";
+                                                                        $apiStatus = 2;
+                                                                        $otherInfo = "StackerBatchID:" . $stackerBatchID . " | TerminalName: " . $terminalName . " | ";
+                                                                        Utilities::errorLogger($transMsg, $module, $otherInfo);
+                                                                        break;
+                                                                }
+                                                                $amount = $addTicket['AddTicket']['Amount'];
+                                                                $voucherTicketBarcode = $addTicket['AddTicket']['VoucherTicketBarcode'];
+                                                                $dateTime = $addTicket['AddTicket']['DateTime'];
+                                                                $expirationDate = $addTicket['AddTicket']['ExpirationDate'];
+                                                                $sequenceNo = $addTicket['AddTicket']['SequenceNo'];
+                                                                $this->_updateAPILogs($APIMethodID, $logID, $apiStatus);
+                                                                $this->_sendResponse(200, CJSON::encode(CommonController::StackerRetMsg($module, $transMsg, $errorCode, "", "", "", $isCancelled, "", $amount, $voucherTicketBarcode, $dateTime, $expirationDate, $sequenceNo)));
+                                                                exit;
+                                                            }  
+                                                            else
+                                                            {
+                                                                $transMsg = 'There is an existing terminal session for the terminal.';
+                                                                $errorCode = 65;
+                                                                $isCancelled = "";
                                                             }
-                                                            $amount = $addTicket['AddTicket']['Amount'];
-                                                            $voucherTicketBarcode = $addTicket['AddTicket']['VoucherTicketBarcode'];
-                                                            $dateTime = $addTicket['AddTicket']['DateTime'];
-                                                            $expirationDate = $addTicket['AddTicket']['ExpirationDate'];
-                                                            $sequenceNo = $addTicket['AddTicket']['SequenceNo'];
-                                                            $this->_updateAPILogs($APIMethodID, $logID, $apiStatus);
-                                                            $this->_sendResponse(200, CJSON::encode(CommonController::StackerRetMsg($module, $transMsg, $errorCode, "", "", "", $isCancelled, "", $amount, $voucherTicketBarcode, $dateTime, $expirationDate, $sequenceNo)));
-                                                            exit;
                                                         } else {
                                                             $amount = 0;
-                                                            $transMsg = "VAPI : " . $addTicket['AddTicket']['TransactionMessage'];
+                                                            $transMsg = $addTicket['AddTicket']['TransactionMessage'];
                                                             $errorCode = $addTicket['AddTicket']['ErrorCode'];
                                                             $isCancelled = "";
                                                             $otherInfo = "StackerBatchID:" . $stackerBatchID . " | TerminalName: " . $terminalName . " | ";

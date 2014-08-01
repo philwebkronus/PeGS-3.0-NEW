@@ -238,10 +238,10 @@ class StackerInfoModel {
      * @param string $serialNumber
      * @return array
      */
-    public function getStackerInfoByStackerTagAndSerial($stackerTagID, $serialNumber) {
-        $sql = "SELECT TerminalName, Status FROM stackerinfo WHERE StackerTagID = :stacker_tag_id AND SerialNumber = :serial_number";
+    public function getStackerInfoByStackerTagAndSerial($stackerTagID) {
+        $sql = "SELECT TerminalName, Status, SerialNumber FROM stackerinfo WHERE StackerTagID = :stacker_tag_id";
         $command = $this->_connection->createCommand($sql);
-        $command->bindValues(array(':stacker_tag_id' => $stackerTagID, ':serial_number' => $serialNumber));
+        $command->bindValues(array(':stacker_tag_id' => $stackerTagID));
         $result = $command->queryRow();
 
         if (!empty($result)) {

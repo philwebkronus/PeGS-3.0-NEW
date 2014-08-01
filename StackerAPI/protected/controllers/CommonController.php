@@ -29,31 +29,32 @@ class CommonController{
      * @param string $module
      * @return array
      */
-    public static function StackerRetMsg($module, $transMsg ='', $errorCode ='', $stackerSessionID = '', $terminalName = '', $status = '', $isCancelled = '', $stackerBatchID = '', $amount = '', $voucherTicketBarcode = '', $dateTime = '', $expirationDate = '', $sequenceNo = ''){
+    public static function StackerRetMsg($module, $transMsg ='', $errorCode ='', $stackerSessionID = '', $terminalName = '', $status = '', $isCancelled = '', $stackerBatchID = '', $amount = '', $voucherTicketBarcode = '', $dateTime = '', $expirationDate = '', $sequenceNo = '', $serialNumber = ''){
         if($module == 'LogStackerSession') {
-                  return array('LogStackerSession'=>array("TransMsg"=>$transMsg,
+                  return array('LogStackerSession'=>array("TransactionMessage"=>$transMsg,
                                "ErrorCode"=>$errorCode));
         } else if($module == 'GetStackerId') {
                   return array('GetStackerId'=>array("StackerBatchID"=>$stackerSessionID,
-                      "TransMsg"=>$transMsg,
+                      "TransactionMessage"=>$transMsg,
                                "ErrorCode"=>$errorCode));
         } else if($module == 'LogStackerTransaction') {
                   return array('LogStackerTransaction'=>array("StackerBatchID"=>$stackerBatchID,
-                      "TransMsg"=>$transMsg,
+                      "TransactionMessage"=>$transMsg,
                                "ErrorCode"=>$errorCode));
         } else if($module == 'VerifyLogStackerTransaction') {
-                  return array('VerifyLogStackerTransaction'=>array("TransMsg"=>$transMsg,
+                  return array('VerifyLogStackerTransaction'=>array("TransactionMessage"=>$transMsg,
                                "ErrorCode"=>$errorCode));
         } else if($module == 'AddStackerInfo') {
-                  return array('AddStackerInfo'=>array("TransMsg"=>$transMsg,
+                  return array('AddStackerInfo'=>array("TransactionMessage"=>$transMsg,
                                "ErrorCode"=>$errorCode));
         } else if($module == 'UpdateStackerInfo') {
-                  return array('UpdateStackerInfo'=>array("TransMsg"=>$transMsg,
+                  return array('UpdateStackerInfo'=>array("TransactionMessage"=>$transMsg,
                                "ErrorCode"=>$errorCode));
         } else if($module == 'GetStackerInfo') {
                   return array('GetStackerInfo'=>array("TerminalName"=>$terminalName,
                                "Status"=>$status,
-                               "TransMsg"=>$transMsg,
+                               "SerialNumber"=>$serialNumber,
+                               "TransactionMessage"=>$transMsg,
                                "ErrorCode"=>$errorCode));
         } else if($module == 'CancelDeposit') {
                   return array('CancelDeposit'=>array("IsCancelled"=>$isCancelled,
@@ -62,10 +63,10 @@ class CommonController{
                                "DateTime"=>$dateTime,
                                "ExpirationDate"=>$expirationDate,
                                "SequenceNo"=>$sequenceNo,
-                               "TransMsg"=>$transMsg,
+                               "TransactionMessage"=>$transMsg,
                                "ErrorCode"=>$errorCode));
         } else if($module == 'UpdateStackerSummaryStatus') {
-                return array('UpdateStackerSummaryStatus'=>array("TransMsg"=>$transMsg,
+                return array('UpdateStackerSummaryStatus'=>array("TransactionMessage"=>$transMsg,
                                "ErrorCode"=>$errorCode));
         }
     }

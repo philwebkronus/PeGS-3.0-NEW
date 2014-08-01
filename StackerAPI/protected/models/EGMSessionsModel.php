@@ -74,52 +74,89 @@ class EGMSessionsModel {
      * @param string $terminalID
      * @param int $stackerBatchID
      * @return int 0 - Success but no affected, 1 - Success with affected, 2 - Failed
+     * @modified Mark Kenneth Esguerra 07-09-14
      */
     public function cancelDeposit($terminalID, $stackerBatchID, $AID) {
         $beginTrans = $this->_connection->beginTransaction();
-        $sql = "DELETE FROM egmsessions WHERE TerminalID = :terminal_id AND StackerBatchID = :stacker_batch_id";
-        $param = array(':terminal_id' => $terminalID, ':stacker_batch_id' => $stackerBatchID);
-        $command = $this->_connection->createCommand($sql);
-        $command->bindValues($param);
-        $rowCount = $command->execute();
-        try {
-            $cancel = $this->getUpdated($stackerBatchID);
-            $dateCancelledOn = $cancel['DateUpdated'];
-            $beginTrans2 = $this->_connection2->beginTransaction();
-            $sql = "UPDATE stackersummary SET Status = 1, CancelledByAID = :cancelled_by_aid, DateCancelledOn = :date_cancelled_on WHERE StackerSummaryID = :stacker_batch_id AND Status = 0;";
-            $param = array(':stacker_batch_id' => $stackerBatchID, ':cancelled_by_aid' => $AID, ':date_cancelled_on' => $dateCancelledOn);
-            $command = $this->_connection2->createCommand($sql);
+        
+        try 
+        {
+            $sql = "DELETE FROM egmsessions WHERE TerminalID = :terminal_id AND StackerBatchID = :stacker_batch_id";
+            $param = array(':terminal_id' => $terminalID, ':stacker_batch_id' => $stackerBatchID);
+            $command = $this->_connection->createCommand($sql);
             $command->bindValues($param);
-            $rowCount2 = $command->execute();
-            try {
-                if ($rowCount > 0) {
-                    if ($rowCount2 > 0) {
-                        $beginTrans->commit();
-                        $beginTrans2->commit();
-                        return 1;
-                    } else {
+            $result = $command->execute();
+            
+            if ($result > 0)
+            {
+                try
+                {
+                    $cancel = $this->getUpdated($stackerBatchID);
+                    $dateCancelledOn = $cancel['DateUpdated'];
+                    $sql = "UPDATE stackersummary SET Status = 1, CancelledByAID = :cancelled_by_aid, DateCancelledOn = :date_cancelled_on WHERE StackerSummaryID = :stacker_batch_id AND Status = 0;";
+                    $param = array(':stacker_batch_id' => $stackerBatchID, ':cancelled_by_aid' => $AID, ':date_cancelled_on' => $dateCancelledOn);
+                    $command = $this->_connection2->createCommand($sql);
+                    $command->bindValues($param);
+                    $result2 = $command->execute();
+                    if ($result2 > 0)
+                    {
                         $beginTrans->commit();
                         return 1;
                     }
-                } else {
-                    if ($rowCount2 > 0) {
-                        $beginTrans2->commit();
-                        return 1;
-                    } else {
+                    else
+                    {
+                        $beginTrans->rollback();
                         return 0;
                     }
                 }
-            } catch (PDOException $e) {
-                $beginTrans->rollback();
-                $beginTrans2->rollback();
-                Utilities::log($e->getMessage());
-                return 2;
+                catch (CDbException $e)
+                {
+                    $beginTrans->rollback();
+                    Utilities::log($e->getMessage());
+                    return false;
+                }
             }
-        } catch (PDOException $e) {
+            else
+            {
+                $beginTrans->rollback();
+                return 0;
+            }
+        }
+        catch (CDbException $e)
+        {
             $beginTrans->rollback();
             Utilities::log($e->getMessage());
             return false;
         }
+            
+//            try {
+//                if ($rowCount > 0) {
+//                    if ($rowCount2 > 0) {
+//                        $beginTrans->commit();
+//                        return 1;
+//                    } else {
+//                        $beginTrans->commit();
+//                        return 1;
+//                    }
+//                } else {
+//                    if ($rowCount2 > 0) {
+//
+//                        return 1;
+//                    } else {
+//                        return 0;
+//                    }
+//                }
+//            } catch (PDOException $e) {
+//                $beginTrans->rollback();
+//                $beginTrans2->rollback();
+//                Utilities::log($e->getMessage());
+//                return 2;
+//            }
+//        } catch (PDOException $e) {
+//            $beginTrans->rollback();
+//            Utilities::log($e->getMessage());
+//            return false;
+//        }
     }
     
     /**
