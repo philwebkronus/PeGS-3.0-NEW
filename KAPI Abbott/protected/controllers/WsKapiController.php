@@ -1480,7 +1480,7 @@ class WsKapiController extends Controller {
                     (!Utilities::validateInput($playerMode)) || (!Utilities::validateInput($cardNumber)) ||
                     (!Utilities::validateInput($amount)) || (!Utilities::validateInput($trackingID)) || (!Utilities::validateInput($stackerbatchID))) {
                 $message = 'Parameters contains invalid special characters';
-                $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, $trackingID, $message, 21));
+                $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, '', $message, 21));
 
                 exit;
             }
@@ -1493,7 +1493,7 @@ class WsKapiController extends Controller {
                 $terminalID = $terminaldetails[0]['TerminalID'];
             } else {
                 $message = "Invalid Terminal Name";
-                $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, $trackingID, $message, 23));
+                $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, '', $message, 23));
 
                 exit;
             }
@@ -1502,7 +1502,7 @@ class WsKapiController extends Controller {
             
             if ($cnt_mapped['cnt'] == 0) {
                 $message = "The casino is not mapped in this terminal.";
-                $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, $trackingID, $message, 63));
+                $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, '', $message, 63));
 
                 exit;
             }
@@ -1510,13 +1510,13 @@ class WsKapiController extends Controller {
             $casinoCnt = $egmsessions->checkIfCasinoExist($terminalID, $casinoID);
             if ($casinoCnt == 0) {
                 $message = "Terminal name and Casino ID did not match.";
-                $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, $trackingID, $message, 20));
+                $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, '', $message, 20));
             }
             //Check terminal type
             $ttype = $terminals->checkTerminalType($terminalID);
             if ($ttype == 0) {
                 $message = "Terminal type is not EGM";
-                $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, $trackingID, $message, 57));
+                $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, '', $message, 57));
 
                 exit;
             }
@@ -1525,21 +1525,21 @@ class WsKapiController extends Controller {
             //will return integer 1 if Active, else Error Message
             if ($cardstat != 1) {
                 $message = $cardstat;
-                $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, $trackingID, $message, 24));
+                $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, '', $message, 24));
 
                 exit;
             }
 
             if (!is_numeric($casinoID)) {
                 $message = "Invalid Casino ID";
-                $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, $trackingID, $message, 45));
+                $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, '', $message, 45));
 
                 exit;
             }
 
             if (!is_numeric($stackerbatchID)) {
                 $message = "Invalid Stacker Batch ID";
-                $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, $trackingID, $message, 51));
+                $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, '', $message, 51));
 
                 exit;
             }
@@ -1547,7 +1547,7 @@ class WsKapiController extends Controller {
             $usermode = $refServices->getServiceUserMode($casinoID);
             if ($usermode != 1) {
                 $message = "Casino is not supported.";
-                $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, $trackingID, $message, 62));
+                $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, '', $message, 62));
 
                 exit;
             }
@@ -1594,14 +1594,14 @@ class WsKapiController extends Controller {
 
             if ($terminalID == false) {
                 $message = "Invalid Terminal Name";
-                $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, $trackingID, $message, 23));
+                $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, '', $message, 23));
 
                 exit;
             }
 
             if ($terminalID['Status'] != 1) {
                 $message = "Terminal is Inactive";
-                $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, $trackingID, $message, 23));
+                $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, '', $message, 23));
 
                 exit;
             }
@@ -1615,8 +1615,8 @@ class WsKapiController extends Controller {
 
             if ($total['TotalAmount'] != $amount) {
 
-                $message = "Error: Invalid Amount.";
-                $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, $trackingID, $message, 60));
+                $message = "Invalid Amount.";
+                $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, '', $message, 60));
 
                 Yii::app()->end();
                 ;
@@ -1634,7 +1634,7 @@ class WsKapiController extends Controller {
                         $message = "Amount should be numeric or a Ticket";
                         $this->status = 2;
                         $gamingRequestLogsModel->updateGamingLogsStatus($trans_id, $this->status, null, null, null);
-                        $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, $trackingID, $message, 22));
+                        $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, '', $message, 22));
 
                         exit;
                     }
@@ -1650,7 +1650,7 @@ class WsKapiController extends Controller {
                         $this->status = 2;
                         $gamingRequestLogsModel->updateGamingLogsStatus($trans_id, $this->status, null, null, null);
                         $message = $verifyVoucherResult;
-                        $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, $trackingID, $message, 46));
+                        $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, '', $message, 46));
 
                         Yii::app()->end();
                     }
@@ -1671,7 +1671,7 @@ class WsKapiController extends Controller {
                                         $this->status = 2;
                                         $gamingRequestLogsModel->updateGamingLogsStatus($trans_id, $this->status, null, null, null);
                                         $message = 'Amount should be equal or greater than ' . number_format($vipdenom[0]['VIPMin'], 2) . '.';
-                                        $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, $trackingID, $message, 47));
+                                        $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, '', $message, 47));
 
                                         Yii::app()->end();
                                     }
@@ -1680,7 +1680,7 @@ class WsKapiController extends Controller {
                                         $this->status = 2;
                                         $gamingRequestLogsModel->updateGamingLogsStatus($trans_id, $this->status, null, null, null);
                                         $message = 'Amount should be equal or less than ' . number_format($vipdenom[0]['VIPMax'], 2) . '.';
-                                        $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, $trackingID, $message, 61));
+                                        $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, '', $message, 61));
 
                                         Yii::app()->end();
                                     }
@@ -1691,7 +1691,7 @@ class WsKapiController extends Controller {
                                         $this->status = 2;
                                         $gamingRequestLogsModel->updateGamingLogsStatus($trans_id, $this->status, null, null, null);
                                         $message = 'Amount should be equal or greater than ' . number_format($regdenom[0]['RegMin'], 2) . '';
-                                        $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, $trackingID, $message, 47));
+                                        $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, '', $message, 47));
 
                                         Yii::app()->end();
                                     }
@@ -1700,7 +1700,7 @@ class WsKapiController extends Controller {
                                         $this->status = 2;
                                         $gamingRequestLogsModel->updateGamingLogsStatus($trans_id, $this->status, null, null, null);
                                         $message = 'Amount should be equal or less than ' . number_format($regdenom[0]['RegMax'], 2) . '';
-                                        $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, $trackingID, $message, 61));
+                                        $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, '', $message, 61));
 
                                         Yii::app()->end();
                                     }
@@ -1716,7 +1716,7 @@ class WsKapiController extends Controller {
                                     $this->status = 2;
                                     $gamingRequestLogsModel->updateGamingLogsStatus($trans_id, $this->status, null, null, null);
                                     $message = 'There are no mapped casino in this terminal';
-                                    $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, $trackingID, $message, 49));
+                                    $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, '', $message, 49));
 
                                     Yii::app()->end();
                                 }
@@ -1737,7 +1737,7 @@ class WsKapiController extends Controller {
                                     $this->status = 2;
                                     $gamingRequestLogsModel->updateGamingLogsStatus($trans_id, $this->status, null, null, null);
                                     $message = 'Amount should be equal or greater than ' . number_format($vipdenom[0]['VIPMin'], 2) . '.';
-                                    $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, $trackingID, $message, 47));
+                                    $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, '', $message, 47));
 
                                     Yii::app()->end();
                                 }
@@ -1751,7 +1751,7 @@ class WsKapiController extends Controller {
                                     $this->status = 2;
                                     $gamingRequestLogsModel->updateGamingLogsStatus($trans_id, $this->status, null, null, null);
                                     $message = 'There are no mapped casino in this terminal';
-                                    $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, $trackingID, $message, 49));
+                                    $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, '', $message, 49));
 
                                     Yii::app()->end();
                                 }
@@ -1820,7 +1820,7 @@ class WsKapiController extends Controller {
                                 $this->status = 2;
                                 $gamingRequestLogsModel->updateGamingLogsStatus($trans_id, $this->status, null, null, null);
                                 $message = 'Amount should be equal or greater than ' . number_format($vipdenom[0]['VIPMin'], 2) . '.';
-                                $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, $trackingID, $message, 47));
+                                $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, '', $message, 47));
 
                                 Yii::app()->end();
                             }
@@ -1829,7 +1829,7 @@ class WsKapiController extends Controller {
                                 $this->status = 2;
                                 $gamingRequestLogsModel->updateGamingLogsStatus($trans_id, $this->status, null, null, null);
                                 $message = 'Amount should be equal or less than ' . number_format($vipdenom[0]['VIPMax'], 2) . '.';
-                                $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, $trackingID, $message, 61));
+                                $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, '', $message, 61));
 
                                 Yii::app()->end();
                             }
@@ -1840,7 +1840,7 @@ class WsKapiController extends Controller {
                                 $this->status = 2;
                                 $gamingRequestLogsModel->updateGamingLogsStatus($trans_id, $this->status, null, null, null);
                                 $message = 'Amount should be equal or greater than ' . number_format($regdenom[0]['RegMin'], 2) . '';
-                                $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, $trackingID, $message, 47));
+                                $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, '', $message, 47));
 
                                 Yii::app()->end();
                             }
@@ -1849,7 +1849,7 @@ class WsKapiController extends Controller {
                                 $this->status = 2;
                                 $gamingRequestLogsModel->updateGamingLogsStatus($trans_id, $this->status, null, null, null);
                                 $message = 'Amount should be equal or less than ' . number_format($regdenom[0]['RegMax'], 2) . '';
-                                $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, $trackingID, $message, 61));
+                                $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, '', $message, 61));
 
                                 Yii::app()->end();
                             }
@@ -1875,7 +1875,7 @@ class WsKapiController extends Controller {
                             $this->status = 2;
                             $gamingRequestLogsModel->updateGamingLogsStatus($trans_id, $this->status, null, null, null);
                             $message = 'There are no mapped casino in this terminal';
-                            $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, $trackingID, $message, 49));
+                            $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, '', $message, 49));
 
                             Yii::app()->end();
                         }
@@ -1888,8 +1888,8 @@ class WsKapiController extends Controller {
                         if ($total['TotalAmount'] == $amount) {
                             $result = $terminalBasedTrans->start($terminalid, $siteid, 'D', $casinoID, Utilities::toInt($sitebalance), $amount, $this->acc_id, $card_number, $paymentType, $stackerbatchID, $casinoUsername, $casinoPassword, $casinoHashedPassword, $casinoServiceID, $mid, $usermode);
                         } else {
-                            $message = "Error: Invalid Amount.";
-                            $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, $trackingID, $message, 60));
+                            $message = "Invalid Amount.";
+                            $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, '', $message, 60));
 
                             Yii::app()->end();
                             ;
@@ -1904,7 +1904,7 @@ class WsKapiController extends Controller {
                             $this->status = 2;
                             $gamingRequestLogsModel->updateGamingLogsStatus($trans_id, $this->status, null, null, null);
                             $message = 'Casino not found.';
-                            $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, $trackingID, $message, 49));
+                            $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, '', $message, 49));
 
                             Yii::app()->end();
                         }
@@ -1918,7 +1918,7 @@ class WsKapiController extends Controller {
                             $this->status = 2;
                             $gamingRequestLogsModel->updateGamingLogsStatus($trans_id, $this->status, null, null, null);
                             $message = 'There are no mapped casino in this terminal';
-                            $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, $trackingID, $message, 49));
+                            $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, '', $message, 49));
 
                             Yii::app()->end();
                         }
@@ -1926,8 +1926,8 @@ class WsKapiController extends Controller {
                         if ($total['TotalAmount'] == $amount) {
                             $result = $userBasedTrans->start($terminalid, $siteid, 'D', $casinoID, Utilities::toInt($sitebalance), $amount, $this->acc_id, $card_number, $paymentType, $stackerbatchID, $casinoUsername, $casinoPassword, $casinoHashedPassword, $casinoServiceID, $mid, $usermode);
                         } else {
-                            $message = "Error: Invalid Amount.";
-                            $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, $trackingID, $message, 60));
+                            $message = "Invalid Amount.";
+                            $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, '', $message, 60));
 
                             Yii::app()->end();
                             ;
@@ -2011,12 +2011,12 @@ class WsKapiController extends Controller {
 //                    }
             } else {
                 $message = 'Tracking ID must be unique.';
-                $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, $trackingID, $message, 40));
+                $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, '', $message, 40));
             }
         } else {
 
             $message = "Parameters are not set";
-            $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, $trackingID, $message, 11));
+            $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, '', $message, 11));
         }
     }
 
@@ -2161,7 +2161,7 @@ class WsKapiController extends Controller {
             $trans_id = $gamingRequestLogsModel->insertGamingRequestLogs($trackingID, $amount, '0', 'W', $siteid, $terminalid, $casinoServiceID, $card_number, $mid);
             //check if tracking ID is unique in tickets table
             $isTrackIDExist = $tickets->checkIfTrackingIDExist($trackingID);
-            
+
             if ($trans_id != false && $isTrackIDExist == false) {
                 //checking if casino is terminal based
                 if ($casinoUserMode == 0) {
@@ -2262,11 +2262,11 @@ class WsKapiController extends Controller {
 
                 $gamingRequestLogsModel->updateGamingLogsStatus($trans_id, $this->status, null, null, null);
                 $message = 'Tracking ID must be unique.';
-                $this->_sendResponse(200, CommonController::redeemSessionResponse(2, '', '', '', '', '', '', $trackingID, $message, 0, 40));
+                $this->_sendResponse(200, CommonController::redeemSessionResponse(2, '', '', '', '', '', '', '', $message, 0, 40));
             }
         } else {
             $message = "Parameters are not set";
-            $this->_sendResponse(200, CommonController::redeemSessionResponse(2, '', '', '', '', '', '', $trackingID, $message, 0, 11));
+            $this->_sendResponse(200, CommonController::redeemSessionResponse(2, '', '', '', '', '', '', '', $message, 0, 11));
         }
     }
 
@@ -2328,7 +2328,7 @@ class WsKapiController extends Controller {
             if ((!Utilities::validateInput($terminalname)) || (!Utilities::validateInput($amount)) || (!Utilities::validateInput($trackingID)) || (!Utilities::validateInput($stackerbatchID))) {
 
                 $message = 'Parameters contains invalid special characters';
-                $this->_sendResponse(200, CommonController::reloadSessionResponse(2, $DateTime, $trackingID, $message, 21));
+                $this->_sendResponse(200, CommonController::reloadSessionResponse(2, $DateTime, '', $message, 21));
 
                 exit;
             }
@@ -2339,7 +2339,7 @@ class WsKapiController extends Controller {
 
             if ($terminalID == false) {
                 $message = "Invalid Terminal Name";
-                $this->_sendResponse(200, CommonController::reloadSessionResponse(2, $DateTime, $trackingID, $message, 23));
+                $this->_sendResponse(200, CommonController::reloadSessionResponse(2, $DateTime, '', $message, 23));
 
                 exit;
             }
@@ -2347,7 +2347,7 @@ class WsKapiController extends Controller {
 
             if (!is_numeric($stackerbatchID)) {
                 $message = "Invalid Stacker Batch ID";
-                $this->_sendResponse(200, CommonController::reloadSessionResponse(2, $DateTime, $trackingID, $message, 51));
+                $this->_sendResponse(200, CommonController::reloadSessionResponse(2, $DateTime, '', $message, 51));
 
                 exit;
             }
@@ -2374,7 +2374,7 @@ class WsKapiController extends Controller {
                 $hashedpw = $lastsessiondetails['UBHashedServicePassword'];
             } else {
                 $message = "Please start a session first";
-                $this->_sendResponse(200, CommonController::reloadSessionResponse(2, $DateTime, $trackingID, $message, 23));
+                $this->_sendResponse(200, CommonController::reloadSessionResponse(2, $DateTime, '', $message, 23));
 
                 exit;
             }
@@ -2384,8 +2384,8 @@ class WsKapiController extends Controller {
 
             //Check if entered amount is equal to amount in stacker details
             if ($amount != $reloadAmount['Amount']) {
-                $message = 'Error: Invalid Amount.';
-                $this->_sendResponse(200, CommonController::reloadSessionResponse(2, $DateTime, $trackingID, $message, 23));
+                $message = 'Invalid Amount.';
+                $this->_sendResponse(200, CommonController::reloadSessionResponse(2, $DateTime, '', $message, 23));
 
                 exit;
             }
@@ -2409,7 +2409,7 @@ class WsKapiController extends Controller {
                     $bool = substr($amount, 0, 1) === 'T';
                     if (!$bool) {
                         $message = "Amount should be numeric or a Ticket";
-                        $this->_sendResponse(200, CommonController::reloadSessionResponse(2, $DateTime, $trackingID, $message, 22));
+                        $this->_sendResponse(200, CommonController::reloadSessionResponse(2, $DateTime, '', $message, 22));
 
                         exit;
                     }
@@ -2445,7 +2445,7 @@ class WsKapiController extends Controller {
                                     $this->status = 2;
                                     $gamingRequestLogsModel->updateGamingLogsStatus($trans_id, $this->status, null, null, null);
                                     $message = 'There are no mapped casino in this terminal';
-                                    $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, $trackingID, $message, 49));
+                                    $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, '', $message, 49));
 
                                     Yii::app()->end();
                                 }
@@ -2457,8 +2457,8 @@ class WsKapiController extends Controller {
                                 if ($total['Amount'] == $amount) {
                                     $result = $terminalBasedTrans->reload(Utilities::toInt($sitebalance), $amount, $paymentType, $stackerbatchID, $terminalid, $siteid, $casinoServiceID, $this->acc_id, $loyaltyCardNo, $vouchercode, $trackingID, $mid, $casinoUserMode, $reloadAmount['StackerDetailID']);
                                 } else {
-                                    $message = "Error: Invalid Amount.";
-                                    $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, $trackingID, $message, 60));
+                                    $message = "Invalid Amount.";
+                                    $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, '', $message, 60));
 
                                     Yii::app()->end();
                                 }
@@ -2474,7 +2474,7 @@ class WsKapiController extends Controller {
                                     $this->status = 2;
                                     $gamingRequestLogsModel->updateGamingLogsStatus($trans_id, $this->status, null, null, null);
                                     $message = 'There are no mapped casino in this terminal';
-                                    $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, $trackingID, $message, 49));
+                                    $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, '', $message, 49));
 
                                     Yii::app()->end();
                                 }
@@ -2484,8 +2484,8 @@ class WsKapiController extends Controller {
                                 if ($total['Amount'] == $amount) {
                                     $result = $userBasedTrans->reload(Utilities::toInt($sitebalance), $amount, $paymentType, $stackerbatchID, $terminalid, $siteid, $casinoServiceID, $this->acc_id, $loyaltyCardNo, $vouchercode, $trackingID, $mid, $casinoUserMode, $casinoUsername, $casinoPassword, $casinoServiceID, $reloadAmount['StackerDetailID']);
                                 } else {
-                                    $message = "Error: Invalid Amount.";
-                                    $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, $trackingID, $message, 60));
+                                    $message = "Invalid Amount.";
+                                    $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, '', $message, 60));
 
                                     Yii::app()->end();
                                 }
@@ -2551,7 +2551,7 @@ class WsKapiController extends Controller {
                             $this->status = 2;
                             $gamingRequestLogsModel->updateGamingLogsStatus($trans_id, $this->status, null, null, null);
                             $message = 'There are no mapped casino in this terminal';
-                            $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, $trackingID, $message, 47));
+                            $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, '', $message, 47));
 
                             Yii::app()->end();
                         }
@@ -2564,8 +2564,8 @@ class WsKapiController extends Controller {
                         if ($total['Amount'] == $amount) {
                             $result = $terminalBasedTrans->reload(Utilities::toInt($sitebalance), $amount, $paymentType, $stackerbatchID, $terminalid, $siteid, $casinoServiceID, $this->acc_id, $loyaltyCardNo, $vouchercode, $trackingID, $mid, $casinoUserMode, $reloadAmount['StackerDetailID']);
                         } else {
-                            $message = "Error: Invalid Amount.";
-                            $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, $trackingID, $message, 60));
+                            $message = "Invalid Amount.";
+                            $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, '', $message, 60));
 
                             Yii::app()->end();
                         }
@@ -2581,7 +2581,7 @@ class WsKapiController extends Controller {
                             $this->status = 2;
                             $gamingRequestLogsModel->updateGamingLogsStatus($trans_id, $this->status, null, null, null);
                             $message = 'There are no mapped casino in this terminal';
-                            $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, $trackingID, $message, 47));
+                            $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, '', $message, 47));
 
                             Yii::app()->end();
                         }
@@ -2592,8 +2592,8 @@ class WsKapiController extends Controller {
                         if ($total['Amount'] == $amount) {
                             $result = $userBasedTrans->reload(Utilities::toInt($sitebalance), $amount, $paymentType, $stackerbatchID, $terminalid, $siteid, $casinoServiceID, $this->acc_id, $loyaltyCardNo, $vouchercode, $trackingID, $mid, $casinoUserMode, $casinoUsername, $casinoPassword, $casinoServiceID, $reloadAmount['StackerDetailID']);
                         } else {
-                            $message = "Error: Invalid Amount.";
-                            $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, $trackingID, $message, 60));
+                            $message = "Invalid Amount.";
+                            $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, '', $message, 60));
 
                             Yii::app()->end();
                         }
@@ -2649,12 +2649,12 @@ class WsKapiController extends Controller {
                 }
             } else {
                 $message = 'Tracking ID must be unique.';
-                $this->_sendResponse(200, CommonController::reloadSessionResponse(2, $DateTime, $trackingID, $message, 40));
+                $this->_sendResponse(200, CommonController::reloadSessionResponse(2, $DateTime, '', $message, 40));
             }
         } else {
 
             $message = "Parameters are not set";
-            $this->_sendResponse(200, CommonController::reloadSessionResponse(2, $DateTime, $trackingID, $message, 11));
+            $this->_sendResponse(200, CommonController::reloadSessionResponse(2, $DateTime, '', $message, 11));
         }
     }
 

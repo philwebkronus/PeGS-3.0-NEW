@@ -20,7 +20,7 @@ class UserBasedTrans {
         $siteCode = $sitesModel->getSiteCode($site_id);
         
         if($terminalsModel->isPartnerAlreadyStarted($terminal_id, $siteCode)) {
-            $message = 'Error: '. $terminalsModel->terminal_code . ' terminal already started';
+            $message = $terminalsModel->terminal_code . ' terminal already started';
             Utilities::errorLogger($message, "Start Session", 
                                     "TerminalID:".$terminal_id." | ".
                                     "MID: ".$mid." | ".
@@ -49,12 +49,12 @@ class UserBasedTrans {
 
         //check if session is active
         if($is_terminal_active === false) {
-            $message = 'Error: Can\'t get status.';
+            $message = 'Can\'t get status.';
             return array('TransMessage'=>$message,'ErrorCode'=>30);
         }
         
         if($is_terminal_active != 0) {
-            $message = 'Error: Terminal is already active.';
+            $message = 'Terminal is already active.';
             Utilities::errorLogger($message, "Start Session", 
                                     "TerminalID:".$terminal_id." | ".
                                     "MID: ".$mid." | ".
@@ -64,12 +64,12 @@ class UserBasedTrans {
         }
  
         if(!$is_egmsession_active){
-            $message = 'Error: Terminal has no active EGM session.';
+            $message = 'Terminal has no active EGM session.';
             return array('TransMessage'=>$message,'ErrorCode'=>55);
         }
         
         if($terminal_balance != 0) {
-            $message = 'Error: Please inform customer service for manual redemption.';
+            $message = 'Please inform customer service for manual redemption.';
             Utilities::errorLogger($message, "Start Session", 
                                     "TerminalID:".$terminal_id." | ".
                                     "MID: ".$mid." | ".
@@ -79,7 +79,7 @@ class UserBasedTrans {
         }
         
         if(($bcf - $initial_deposit) < 0) {
-            $message = 'Error: BCF is not enough.';
+            $message = 'BCF is not enough.';
             Utilities::errorLogger($message, "Start Session", 
                                     "TerminalID:".$terminal_id." | ".
                                     "MID: ".$mid." | ".
@@ -99,7 +99,7 @@ class UserBasedTrans {
             $trans_origin_id = 0; //cashier origin Id
             $transaction_id = $terminalsModel->insertserviceTransRef($service_id, $trans_origin_id);
             if(!$transaction_id){
-                $message = "Error: Failed to insert record in servicetransactionref";
+                $message = "Failed to insert record in servicetransactionref";
                 Utilities::errorLogger($message, "Start Session", 
                                     "TerminalID:".$terminal_id." | ".
                                     "MID: ".$mid." | ".
@@ -119,7 +119,7 @@ class UserBasedTrans {
                 $loyalty_card, $mid,$userMode, $casinoUsername, $casinoPassword, $casinoHashedPassword);
         
         if(!$is_terminal_exist){
-            $message = 'Error: Terminal has an existing session.';
+            $message = 'Terminal has an existing session.';
             Utilities::errorLogger($message, "Start Session", 
                                     "TerminalID:".$terminal_id." | ".
                                     "MID: ".$mid." | ".
@@ -217,7 +217,7 @@ class UserBasedTrans {
                 $transReqLogsModel->update($trans_req_log_last_id, 'false', 2,null,$terminal_id);
                 $gamingSessions->deleteGamingSessions($terminal_id, $stackerbatchid);
                 $terminalSessionsModel->deleteTerminalSessionById($terminal_id);
-                $message = 'Error: Failed to start session.';
+                $message = 'Failed to start session.';
                                 Utilities::errorLogger($message, "Start Session", 
                                     "TerminalID:".$terminal_id." | ".
                                     "MID: ".$mid." | ".
@@ -259,7 +259,7 @@ class UserBasedTrans {
                 $transReqLogsModel->update($trans_req_log_last_id, 'false', 2,null,$terminal_id);
                 $gamingSessions->deleteGamingSessions($terminal_id, $stackerbatchid);
                 $terminalSessionsModel->deleteTerminalSessionById($terminal_id);
-                $message = 'Error: Failed to start session.';
+                $message = 'Failed to start session.';
                 Utilities::errorLogger($message, "Start Session", 
                                     "TerminalID:".$terminal_id." | ".
                                     "MID: ".$mid." | ".
@@ -316,7 +316,7 @@ class UserBasedTrans {
                 $transReqLogsModel->update($trans_req_log_last_id, $apiresult, 2,null,$terminal_id);
                 $gamingSessions->deleteGamingSessions($terminal_id, $stackerbatchid);
                 $terminalSessionsModel->deleteTerminalSessionById($terminal_id);
-                $message = 'Error: Failed to insert records in transaction tables.';
+                $message = 'Failed to insert records in transaction tables.';
                 Utilities::errorLogger($message, "Start Session", 
                                     "TerminalID:".$terminal_id." | ".
                                     "MID: ".$mid." | ".
@@ -352,7 +352,7 @@ class UserBasedTrans {
             $transReqLogsModel->update($trans_req_log_last_id, $apiresult, 2,null,$terminal_id);
             $gamingSessions->deleteGamingSessions($terminal_id, $stackerbatchid);
             $terminalSessionsModel->deleteTerminalSessionById($terminal_id);
-            $message = 'Error: Request denied. Please try again.';
+            $message = 'Request denied. Please try again.';
             Utilities::errorLogger($message, "Start Session", 
                                     "TerminalID:".$terminal_id." | ".
                                     "MID: ".$mid." | ".
@@ -401,12 +401,12 @@ class UserBasedTrans {
         $is_egmsession_active = $gamingSessions->chkActiveEgmSession($terminal_id);
                
         if($is_terminal_active === false) {
-            $message = 'Error: Can\'t get status.';
+            $message = 'Can\'t get status.';
             return array('TransMessage'=>$message,'ErrorCode'=>30);
         }
         
         if($is_terminal_active < 1) {
-            $message = 'Error: Terminal has no active session.';
+            $message = 'Terminal has no active session.';
             Utilities::errorLogger($message, "Reload Session", 
                                     "TerminalID:".$terminal_id." | ".
                                     "MID: ".$mid." | ".
@@ -416,13 +416,13 @@ class UserBasedTrans {
         }
         
         if(!$is_egmsession_active){
-            $message = 'Error: Terminal has no active EGM session.';
+            $message = 'Terminal has no active EGM session.';
             return array('TransMessage'=>$message,'ErrorCode'=>55);
         }
         
         
         if(($bcf - $amount) < 0) {
-            $message = 'Error: BCF is not enough.';
+            $message = 'BCF is not enough.';
             Utilities::errorLogger($message, "Reload Session", 
                                     "TerminalID:".$terminal_id." | ".
                                     "MID: ".$mid." | ".
@@ -458,7 +458,7 @@ class UserBasedTrans {
             $trans_origin_id = 0; //cashier origin Id
             $transaction_id = $terminalsModel->insertserviceTransRef($service_id, $trans_origin_id);
             if(!$transaction_id){
-                $message = "Error: Failed to insert record in servicetransactionref";
+                $message = "Failed to insert record in servicetransactionref";
                 Utilities::errorLogger($message, "Reload Session", 
                                     "TerminalID:".$terminal_id." | ".
                                     "MID: ".$mid." | ".
@@ -547,7 +547,7 @@ class UserBasedTrans {
                 $transReqLogsModel->update($trans_req_log_last_id, 'false', 2,null,$terminal_id);
                 $gamingSessions->deleteGamingSessions($terminal_id, $stackerbatchid);
                 $terminalSessionsModel->deleteTerminalSessionById($terminal_id);
-                $message = 'Error: Failed to start session.';
+                $message = 'Failed to start session.';
                 Utilities::errorLogger($message, "Reload Session", 
                                     "TerminalID:".$terminal_id." | ".
                                     "MID: ".$mid." | ".
@@ -587,7 +587,7 @@ class UserBasedTrans {
             //check if TransactionSearchInfo API is not successful
             if(isset($resultdeposit['IsSucceed']) && $resultdeposit['IsSucceed'] == false) {
                 $transReqLogsModel->update($trans_req_log_last_id, 'false', 2,null,$terminal_id);
-                $message = 'Error: Failed to reload session.';
+                $message = 'Failed to reload session.';
                 Utilities::errorLogger($message, "Reload Session", 
                                     "TerminalID:".$terminal_id." | ".
                                     "MID: ".$mid." | ".
@@ -648,7 +648,7 @@ class UserBasedTrans {
                 $transReqLogsModel->update($trans_req_log_last_id, $apiresult, 2,null,$terminal_id);
                 $gamingSessions->deleteGamingSessions($terminal_id, $stackerbatchid);
                 $terminalSessionsModel->deleteTerminalSessionById($terminal_id);
-                $message = 'Error: Failed to insert records in transaction tables.';
+                $message = 'Failed to insert records in transaction tables.';
                 Utilities::errorLogger($message, "Reload Session", 
                                     "TerminalID:".$terminal_id." | ".
                                     "MID: ".$mid." | ".
@@ -669,7 +669,7 @@ class UserBasedTrans {
             $transReqLogsModel->update($trans_req_log_last_id, $apiresult, 2,null,$terminal_id);
             $gamingSessions->deleteGamingSessions($terminal_id, $stackerbatchid);
             $terminalSessionsModel->deleteTerminalSessionById($terminal_id);
-            $message = 'Error: Request denied. Please try again.';
+            $message = 'Request denied. Please try again.';
             Utilities::errorLogger($message, "Reload Session", 
                                     "TerminalID:".$terminal_id." | ".
                                     "MID: ".$mid." | ".
@@ -733,12 +733,12 @@ class UserBasedTrans {
         $is_egmsession_active = $gamingSessionsModel->chkActiveEgmSession($terminal_id);
         
         if($is_terminal_active === false) {
-            $message = 'Error: Can\'t get status.';
+            $message = 'Can\'t get status.';
             return array('TransMessage'=>$message,'ErrorCode'=>30);
         }
         
         if($is_terminal_active < 1) {
-            $message = 'Error: Terminal has no active session.';
+            $message = 'Terminal has no active session.';
             Utilities::errorLogger($message, "Redeem Session", 
                                     "TerminalID:".$terminal_id." | ".
                                     "MID: ".$mid." | ".
@@ -748,7 +748,7 @@ class UserBasedTrans {
         }
         
         if(!$is_egmsession_active){
-            $message = 'Error: Terminal has no active EGM session.';
+            $message = 'Terminal has no active EGM session.';
             return array('TransMessage'=>$message,'ErrorCode'=>55);
         }
         
@@ -818,7 +818,7 @@ class UserBasedTrans {
             $trans_origin_id = 0; //cashier origin Id
             $transaction_id = $terminalsModel->insertserviceTransRef($service_id, $trans_origin_id);
             if(!$transaction_id){
-                $message = "Error: Failed to insert record in servicetransactionref";
+                $message = "Failed to insert record in servicetransactionref";
                 Utilities::errorLogger($message, "Redeem Session", 
                                     "TerminalID:".$terminal_id." | ".
                                     "MID: ".$mid." | ".
@@ -848,7 +848,7 @@ class UserBasedTrans {
         
         if(Utilities::toMoney($amount) != Utilities::toMoney(Utilities::toInt($redeemable_amount))) {
             $transReqLogsModel->update($trans_req_log_last_id, false, 2,null,$terminal_id);
-            $message = 'Error: Redeemable amount is not equal.';
+            $message = 'Redeemable amount is not equal.';
             Utilities::errorLogger($message, "Redeem Session", 
                                     "TerminalID:".$terminal_id." | ".
                                     "MID: ".$mid." | ".
@@ -910,7 +910,7 @@ class UserBasedTrans {
                         $transReqLogsModel->update($trans_req_log_last_id, 'false', 2,null,$terminal_id);
                         $gamingSessionsModel->deleteGamingSessions($terminal_id, $stackerbatchid);
                         $terminalSessionsModel->deleteTerminalSessionById($terminal_id);
-                        $message = 'Error: Failed to start session.';
+                        $message = 'Failed to start session.';
                         Utilities::errorLogger($message, "Redeem Session", 
                                     "TerminalID:".$terminal_id." | ".
                                     "MID: ".$mid." | ".
@@ -949,7 +949,7 @@ class UserBasedTrans {
                     //check if TransactionSearchInfo API is not successful
                     if(isset($resultwithdraw['IsSucceed']) && $resultwithdraw['IsSucceed'] == false) {
                         $transReqLogsModel->update($trans_req_log_last_id, $apiresult, 2,null,$terminal_id);
-                        $message = 'Error: Request denied. Please try again.';
+                        $message = 'Request denied. Please try again.';
                         Utilities::errorLogger($message, "Redeem Session", 
                                     "TerminalID:".$terminal_id." | ".
                                     "MID: ".$mid." | ".
@@ -1039,7 +1039,7 @@ class UserBasedTrans {
 
 
                     if(!$isredeemed){
-                        $message = 'Error: Failed update records in transaction tables';
+                        $message = 'Failed update records in transaction tables';
                         Utilities::errorLogger($message, "Redeem Session", 
                                     "TerminalID:".$terminal_id." | ".
                                     "MID: ".$mid." | ".
@@ -1059,7 +1059,7 @@ class UserBasedTrans {
                 } else {
 
                     $transReqLogsModel->update($trans_req_log_last_id, $apiresult, 2,null,$terminal_id);
-                    $message = 'Error: Requests denied. Please try again.';
+                    $message = 'Requests denied. Please try again.';
                     Utilities::errorLogger($message, "Redeem Session", 
                                     "TerminalID:".$terminal_id." | ".
                                     "MID: ".$mid." | ".
@@ -1083,7 +1083,7 @@ class UserBasedTrans {
             $transReqLogsModel->updateTransReqLogDueZeroBal($terminal_id, $site_id, 'W', $trans_req_log_last_id);
                         
             if(!$isredeemed){
-                $message = 'Error: Failed update records in transaction tables';
+                $message = 'Failed update records in transaction tables';
                 Utilities::errorLogger($message, "Redeem Session", 
                                     "TerminalID:".$terminal_id." | ".
                                     "MID: ".$mid." | ".

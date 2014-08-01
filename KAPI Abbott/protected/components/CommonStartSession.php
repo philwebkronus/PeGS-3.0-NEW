@@ -33,7 +33,7 @@ class CommonStartSession {
         $siteCode = $sitesModel->getSiteCode($site_id);
         
         if($terminalsModel->isPartnerAlreadyStarted($terminal_id, $siteCode)) {
-            $message = 'Error: '. $terminalsModel->terminal_code . ' terminal already started';
+            $message = $terminalsModel->terminal_code . ' terminal already started';
             Utilities::log($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id);
             return array('TransMessage'=>$message,'ErrorCode'=>17);
         }
@@ -52,25 +52,25 @@ class CommonStartSession {
         $is_terminal_active = $terminalSessionsModel->isSessionActive($terminal_id);
         
         if($is_terminal_active === false) {
-            $message = 'Error: Can\'t get status.';
+            $message = 'Can\'t get status.';
             Utilities::log($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id);
             return array('TransMessage'=>$message,'ErrorCode'=>18);
         }
         
         if($is_terminal_active != 0) {
-            $message = 'Error: Terminal is already active.';
+            $message = 'Terminal is already active.';
             Utilities::log($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id);
             return array('TransMessage'=>$message,'ErrorCode'=>19);
         }
         
         if($terminal_balance != 0) {
-            $message = 'Error: Please inform customer service for manual redemption.';
+            $message = 'Please inform customer service for manual redemption.';
             Utilities::log($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id);
             return array('TransMessage'=>$message,'ErrorCode'=>20);
         }
          
         if(($bcf - $initial_deposit) < 0) {
-            $message = 'Error: BCF is not enough.';
+            $message = 'BCF is not enough.';
             Utilities::log($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id);
             return array('TransMessage'=>$message,'ErrorCode'=>21);
         }
@@ -86,7 +86,7 @@ class CommonStartSession {
             $trans_origin_id = 0; //cashier origin Id
             $transaction_id = $terminalsModel->insertserviceTransRef($service_id, $trans_origin_id);
             if(!$transaction_id){
-                $message = "Error: Failed to insert record in servicetransactionref";
+                $message = "Failed to insert record in servicetransactionref";
                 Utilities::log($message);
                 return array('TransMessage'=>$message,'ErrorCode'=>22);
             }
@@ -105,7 +105,7 @@ class CommonStartSession {
         $is_terminal_exist = $terminalSessionsModel->insert($terminal_id, $service_id, $initial_deposit, $trans_summary_max_id);
         
         if(!$is_terminal_exist){
-            $message = 'Error: Terminal has an existing session.';
+            $message = 'Terminal has an existing session.';
             Utilities::log($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id);
             return array('TransMessage'=>$message,'ErrorCode'=>23);
         }
@@ -114,7 +114,7 @@ class CommonStartSession {
         $trans_req_log_last_id = $transReqLogsModel->insert($udate, $initial_deposit, 'D', $terminal_id, $site_id, $service_id);
  
         if(!$trans_req_log_last_id) {
-            $message = 'Error: Failed to insert in transactionrequestlogs';
+            $message = 'Failed to insert in transactionrequestlogs';
             $terminalSessionsModel->deleteTerminalSessionById($terminal_id);
             Utilities::log($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id);
             return array('TransMessage'=>$message,'ErrorCode'=>24);
@@ -160,7 +160,7 @@ class CommonStartSession {
             {
                 $transReqLogsModel->update($trans_req_log_last_id, 'false', 2,null,$terminal_id);
                 $terminalSessionsModel->deleteTerminalSessionById($terminal_id);
-                $message = 'Error: Failed to start session.';
+                $message = 'Failed to start session.';
                 Utilities::log($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id. ' ErrorMessage='.$transSearchInfo['ErrorMessage']);
                 return array('TransMessage'=>$message,'ErrorCode'=>26);
             }
@@ -189,7 +189,7 @@ class CommonStartSession {
             if(isset($resultdeposit['IsSucceed']) && $resultdeposit['IsSucceed'] == false) {
                 $transReqLogsModel->update($trans_req_log_last_id, 'false', 2,null,$terminal_id);
                 $terminalSessionsModel->deleteTerminalSessionById($terminal_id);
-                $message = 'Error: Failed to start session.';
+                $message = 'Failed to start session.';
                 Utilities::log($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id. 'ErrorMessage = '.$resultdeposit['ErrorMessage']);
                 return array('TransMessage'=>$message,'ErrorCode'=>26);
             }
@@ -228,7 +228,7 @@ class CommonStartSession {
             {
                 $transReqLogsModel->update($trans_req_log_last_id, $apiresult, 2,null,$terminal_id);
                 $terminalSessionsModel->deleteTerminalSessionById($terminal_id);
-                $message = 'Error: Failed to insert records in transaction tables.';
+                $message = 'Failed to insert records in transaction tables.';
                 Utilities::log($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id);
                 return array('TransMessage'=>$message,'ErrorCode'=>27);
             }
@@ -248,7 +248,7 @@ class CommonStartSession {
         } else {
             $transReqLogsModel->update($trans_req_log_last_id, $apiresult, 2,null,$terminal_id);
             $terminalSessionsModel->deleteTerminalSessionById($terminal_id);
-            $message = 'Error: Request denied. Please try again.';
+            $message = 'Request denied. Please try again.';
             Utilities::log($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id);
             return array('TransMessage'=>$message,'ErrorCode'=>28);
         }

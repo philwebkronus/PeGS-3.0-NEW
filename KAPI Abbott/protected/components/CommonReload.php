@@ -38,13 +38,13 @@ class CommonReload {
         $is_terminal_active = $terminalSessionsModel->isSessionActive($terminal_id);
         
         if($is_terminal_active === false) {
-            $message = 'Error: Can\'t get status.';
+            $message = 'Can\'t get status.';
             Utilities::log($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id);
             return array('TransMessage'=>$message,'ErrorCode'=>18,'DateExpiry'=>'');
         }
         
         if($is_terminal_active < 1) {
-            $message = 'Error: Terminal has no active session.';
+            $message = 'Terminal has no active session.';
             Utilities::log($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id);
             return array('TransMessage'=>$message,'ErrorCode'=>43,'DateExpiry'=>'');
         }  
@@ -73,7 +73,7 @@ class CommonReload {
             $trans_origin_id = 0; //cashier origin Id
             $transaction_id = $terminalsModel->insertserviceTransRef($service_id, $trans_origin_id);
             if(!$transaction_id){
-                $message = "Error: Failed to insert record in servicetransactionref";
+                $message = "Failed to insert record in servicetransactionref";
                 Utilities::log($message);
                 return array('TransMessage'=>$message,'ErrorCode'=>22,'DateExpiry'=>'');
             }
@@ -91,7 +91,7 @@ class CommonReload {
         $trans_req_log_last_id = $transReqLogsModel->insert($udate, $amount, 'R', $terminal_id, $site_id, $service_id);
         
         if(!$trans_req_log_last_id) {
-            $message = 'Error: Failed to insert in transactionrequestlogs';
+            $message = 'Failed to insert in transactionrequestlogs';
             Utilities::log($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id);
             return array('TransMessage'=>$message,'ErrorCode'=>24,'DateExpiry'=>'');
         }
@@ -133,7 +133,7 @@ class CommonReload {
             if(isset($transSearchInfo['IsSucceed']) && $transSearchInfo['IsSucceed'] == false)
             {
                 $transReqLogsModel->update($trans_req_log_last_id, 'false', 2,null,$terminal_id);
-                $message = 'Error: Failed to reload session.';
+                $message = 'Failed to reload session.';
                 Utilities::log($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id.' ErrorMessage='.$transSearchInfo['ErrorMessage']);
                 return array('TransMessage'=>$message,'ErrorCode'=>44,'DateExpiry'=>'');
             }
@@ -161,7 +161,7 @@ class CommonReload {
             //check if TransactionSearchInfo API is not successful
             if(isset($resultdeposit['IsSucceed']) && $resultdeposit['IsSucceed'] == false) {
                 $transReqLogsModel->update($trans_req_log_last_id, 'false', 2,null,$terminal_id);
-                $message = 'Error: Failed to reload session.';
+                $message = 'Failed to reload session.';
                 Utilities::log($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id.' ErrorMessage='.$resultdeposit['ErrorMessage']);
                 return array('TransMessage'=>$message,'ErrorCode'=>44,'DateExpiry'=>'');
             }
@@ -207,7 +207,7 @@ class CommonReload {
             
             if(!$trans_details_id) {
                 $transReqLogsModel->update($trans_req_log_last_id, $apiresult, 2,null,$terminal_id);
-                $message = 'Error: Failed insert records in transaction tables';
+                $message = 'Failed insert records in transaction tables';
                 Utilities::log($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id);
                 return array('TransMessage'=>$message,'ErrorCode'=>27,'DateExpiry'=>'');
             }
@@ -231,7 +231,7 @@ class CommonReload {
             
         } else {
             $transReqLogsModel->update($trans_req_log_last_id, $apiresult, 2,null,$terminal_id);
-            $message = 'Error: Request denied. Please try again.';
+            $message = 'Request denied. Please try again.';
             Utilities::log($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id);
             return array('TransMessage'=>$message,'ErrorCode'=>28,'DateExpiry'=>'');
         }

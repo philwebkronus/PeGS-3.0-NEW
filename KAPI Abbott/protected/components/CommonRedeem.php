@@ -43,13 +43,13 @@ class CommonRedeem {
             $is_terminal_active = $terminalSessionsModel->isSessionActive($terminal_id);
             
             if($is_terminal_active === false) {
-                $message = 'Error: Can\'t get status.';
+                $message = 'Can\'t get status.';
                 Utilities::log($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id);
                 return array('TransMessage'=>$message,'ErrorCode'=>18,'DateExpiry'=>'');
             }
 
             if($is_terminal_active < 1) {
-                $message = 'Error: Terminal has no active session.';
+                $message = 'Terminal has no active session.';
                 Utilities::log($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id);
                 return array('TransMessage'=>$message,'ErrorCode'=>43,'DateExpiry'=>'');
             }
@@ -57,7 +57,7 @@ class CommonRedeem {
             $requeststatus = $transReqLogsModel->getTransReqLogStatus($site_id, $terminal_id);
 
             if($requeststatus == 0) {
-                $message = 'Error: Terminal already has a pending transaction request.';
+                $message = 'Terminal already has a pending transaction request.';
                 Utilities::log($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id);
                 return array('TransMessage'=>$message,'ErrorCode'=>45,'DateExpiry'=>'');
             }
@@ -73,7 +73,7 @@ class CommonRedeem {
                 $trans_origin_id = 0; //cashier origin Id
                 $transaction_id = $terminalsModel->insertserviceTransRef($service_id, $trans_origin_id);
                 if(!$transaction_id){
-                    $message = "Error: Failed to insert record in servicetransactionref";
+                    $message = "Failed to insert record in servicetransactionref";
                     Utilities::log($message);
                     return array('TransMessage'=>$message,'ErrorCode'=>22,'DateExpiry'=>'');
                 }
@@ -90,14 +90,14 @@ class CommonRedeem {
             $trans_req_log_last_id = $transReqLogsModel->insert($udate, $amount, 'W', $terminal_id, $site_id, $service_id);
 
             if(!$trans_req_log_last_id) {
-                $message = 'Error: Failed to insert transactionrequestlogs table';
+                $message = 'Failed to insert transactionrequestlogs table';
                 Utilities::log($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id);
                 return array('TransMessage'=>$message,'ErrorCode'=>24,'DateExpiry'=>'');
             }
 
             if(Utilities::toMoney($amount) != Utilities::toMoney(Utilities::toInt($redeemable_amount))) {
                 $transReqLogsModel->update($trans_req_log_last_id, false, 2,null,$terminal_id);
-                $message = 'Error: Redeemable amount is not equal.';
+                $message = 'Redeemable amount is not equal.';
                 Utilities::log($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id);
                 return array('TransMessage'=>$message,'ErrorCode'=>46,'DateExpiry'=>'');
             }
@@ -139,7 +139,7 @@ class CommonRedeem {
                 if(isset($transSearchInfo['IsSucceed']) && $transSearchInfo['IsSucceed'] == false)
                 {
                     $transReqLogsModel->update($trans_req_log_last_id, 'false', 2,null,$terminal_id);
-                    $message = 'Error: Request denied. Please try again.';
+                    $message = 'Request denied. Please try again.';
                     Utilities::log($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id.' ErrorMessage='.$transSearchInfo['ErrorMessage']);
                     return array('TransMessage'=>$message,'ErrorCode'=>25,'DateExpiry'=>'');
                 }
@@ -167,7 +167,7 @@ class CommonRedeem {
                 //check if TransactionSearchInfo API is not successful
                 if(isset($resultwithdraw['IsSucceed']) && $resultwithdraw['IsSucceed'] == false) {
                     $transReqLogsModel->update($trans_req_log_last_id, 'false', 2,null,$terminal_id);
-                    $message = 'Error: Request denied. Please try again.';
+                    $message = 'Request denied. Please try again.';
                     Utilities::log($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id.' ErrorMessage='.$resultwithdraw['ErrorMessage']);
                     return array('TransMessage'=>$message,'ErrorCode'=>28,'DateExpiry'=>'');
                 }
@@ -200,7 +200,7 @@ class CommonRedeem {
 
                 if(!$trans_details_id){
                     $transReqLogsModel->update($trans_req_log_last_id, $apiresult, 2,null,$terminal_id);
-                    $message = 'Error: Failed update records in transaction tables';
+                    $message = 'Failed update records in transaction tables';
                     Utilities::log($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id);
                     return array('TransMessage'=>$message,'ErrorCode'=>50,'DateExpiry'=>'');
                 }
@@ -215,7 +215,7 @@ class CommonRedeem {
                     'TransactionDate'=>$transDate);
             } else {
                 $transReqLogsModel->update($trans_req_log_last_id, $apiresult, 2,null,$terminal_id);
-                $message = 'Error: Request denied. Please try again.';
+                $message = 'Request denied. Please try again.';
                 Utilities::log($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id);
                 return array('TransMessage'=>$message,'ErrorCode'=>28,'DateExpiry'=>'');
             }
