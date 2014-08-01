@@ -249,7 +249,7 @@ class CommonController {
                     "LoyaltyCreditable" => (int) $loyaltyCreditable,
                     "ExpirationDate" => $expirationDate,
                     "SequenceNo" => $sequenceNo,
-                    "TransMsg" => $transMsg,
+                    "TransactionMessage" => $transMsg,
                     "ErrorCode" => (int) $errorCode,
                 );
                 break;
@@ -259,7 +259,7 @@ class CommonController {
                     "DateCreated" => "",
                     "VoucherTypeID" => "",
                     "ExpirationDate" => "",
-                    "TransMsg" => $transMsg,
+                    "TransactionMessage" => $transMsg,
                     "ErrorCode" => (int) $errorCode,
                 );
                 break;
@@ -279,13 +279,13 @@ class CommonController {
                 //todo for ticket API
                 break;
             case 2 :
-                return array("TransMsg" => $transMsg,
+                return array("TransactionMessage" => $transMsg,
                     "ErrorCode" => $errorCode);
                 break;
             default :
                 $errorCode = 7;
                 $transMsg = "Invalid voucher type";
-                return array("TransMsg" => $transMsg,
+                return array("TransactionMessage" => $transMsg,
                     "ErrorCode" => (int) $errorCode);
 
                 break;
@@ -302,7 +302,7 @@ class CommonController {
     public function getUseReturnMsg($voucherTypeID, $transMsg, $errorCode) {
         switch ($voucherTypeID) {
             case 1 :
-                return array("TransMsg" => $transMsg,
+                return array("TransactionMessage" => $transMsg,
                     "ErrorCode" => $errorCode);
                 break;
             case 2 :
@@ -312,7 +312,7 @@ class CommonController {
             default :
                 $errorCode = 7;
                 $transMsg = "Invalid voucher type";
-                return array("TransMsg" => $transMsg,
+                return array("TransactionMessage" => $transMsg,
                     "ErrorCode" => (int) $errorCode);
 
                 break;
@@ -531,12 +531,13 @@ class CommonController {
      * @param str $errCode
      * @return array
      */
-    public static function verifyTicketResponse($vouchercode, $amount, $datecreated, $vouchertypeid, $loyaltycreditable, $transMsg, $errCode) {
+    public static function verifyTicketResponse($vouchercode, $amount, $datecreated, $vouchertypeid, $loyaltycreditable, $expirationDate, $transMsg, $errCode) {
         return CJSON::encode(array('VerifyTicket' => (array('VoucherTicketBarcode' => $vouchercode,
                 'Amount' => $amount,
                 'DateCreated' => $datecreated,
                 'VoucherTypeID' => $vouchertypeid,
-                'LoyaltyCreditable' => $loyaltycreditable,
+                'LoyaltyCreditable' => $loyaltycreditable, 
+                'ExpirationDate' => $expirationDate, 
                 'TransactionMessage' => $transMsg,
                 'ErrorCode' => (int) $errCode))));
     }

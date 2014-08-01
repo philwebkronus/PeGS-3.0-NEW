@@ -284,7 +284,7 @@ class WsvoucherController extends Controller {
                                     $result = $commonController->getVerifyRetMsg($vouchertype, $errorCode, $transMsg, $vtcode, $amount, $dateCreated, $loyaltyCreditable, $expirationDate);
                                 }
                             }
-                            $this->_sendResponse(200, CommonController::verifyTicketResponse($vtcode, $amount, $dateCreated, $vouchertype, $loyaltyCreditable, $transMsg, $errorCode));
+                            $this->_sendResponse(200, CommonController::verifyTicketResponse($vtcode, $amount, $dateCreated, $vouchertype, $loyaltyCreditable, $expirationDate, $transMsg, $errorCode));
                             exit;
                         } else {
                             $amount = 0;
@@ -401,7 +401,7 @@ class WsvoucherController extends Controller {
                                                     $details = "VerifyTicket : " . $transMsg;
                                                     $stat = 1;
                                                     AuditLog::logAPITransactions(9, $source, $details, $voucherCode, $trackingid, $stat);
-                                                    $this->_sendResponse(200, CommonController::verifyTicketResponse($voucherCode, $amount, $dateCreated, $vouchertype, $loyaltyCreditable, $transMsg, $errorCode));
+                                                    $this->_sendResponse(200, CommonController::verifyTicketResponse($voucherCode, $amount, $dateCreated, $vouchertype, $loyaltyCreditable, $expirationDate, $transMsg, $errorCode));
                                                     $result = $commonController->getVerifyRetMsg($vouchertype, $errorCode, $transMsg, $voucherCode, $amount, $dateCreated, $loyaltyCreditable, $expirationDate);
                                                     exit;
                                                 } else {
@@ -412,7 +412,7 @@ class WsvoucherController extends Controller {
                                                     AuditLog::logAPITransactions(9, $source, $details, $voucherCode, $trackingid, $stat);
                                                     Utilities::log("Error Message: " . $transMsg . " ErrorCode: " . $errorCode);
                                                     $result = $commonController->getVerifyRetMsg($vouchertype, $errorCode, $transMsg, $voucherCode, $amount, $dateCreated, $loyaltyCreditable, $expirationDate);
-                                                    $this->_sendResponse(200, CommonController::verifyTicketResponse($voucherCode, $amount, $dateCreated, $vouchertype, $loyaltyCreditable, $transMsg, $errorCode));
+                                                    $this->_sendResponse(200, CommonController::verifyTicketResponse($voucherCode, $amount, $dateCreated, $vouchertype, $loyaltyCreditable, $expirationDate, $transMsg, $errorCode));
                                                     exit;
                                                 }
                                             } else {
@@ -499,7 +499,7 @@ class WsvoucherController extends Controller {
             $result = $commonController->getVerifyRetMsg($vouchertype, $errorCode, $transMsg, $voucherCode, $amount, $dateCreated, $loyaltyCreditable);
         }
 
-        $this->_sendResponse(200, CommonController::verifyTicketResponse($voucherCode, $amount, $dateCreated, $vouchertype, $loyaltyCreditable, $transMsg, $errorCode));
+        $this->_sendResponse(200, CommonController::verifyTicketResponse($voucherCode, $amount, $dateCreated, $vouchertype, $loyaltyCreditable, $expirationDate, $transMsg, $errorCode));
     }
 
     /**
