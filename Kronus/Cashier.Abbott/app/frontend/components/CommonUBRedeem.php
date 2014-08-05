@@ -91,6 +91,12 @@ class CommonUBRedeem {
         } else {
             $pendingGames = '';
         }
+        
+        //logout player
+        if(strpos($service_name, 'RTG') !== false) {
+            $PID = $casinoApiHandler->GetPIDLogin($casinoUsername);
+            $casinoApi->LogoutPlayer($terminal_id, $service_id,$PID);    
+        }
 
         //Display message
         if(is_array($pendingGames) && $pendingGames['IsSucceed'] == true){

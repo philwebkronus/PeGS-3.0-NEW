@@ -98,6 +98,12 @@ class CommonRedeem {
             $casinoApi->callSpyderAPI($commandId = 0, $terminal_id, $terminalname, $login_pwd, $service_id);
             CasinoApi::throwError($message);   
         }
+        
+        //logout player
+        if(strpos($service_name, 'RTG') !== false) {
+            $PID = $casinoApiHandler->GetPIDLogin($terminal_name);
+            $casinoApi->LogoutPlayer($terminal_id, $service_id,$PID);    
+        }
 
 
         //Get Last Transaction Summary ID
