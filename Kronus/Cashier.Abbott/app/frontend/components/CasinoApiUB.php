@@ -35,10 +35,12 @@ class CasinoApiUB {
         
         $configuration = array( 'URI' =>Mirage::app()->param['service_api'][$serverid - 1],
                     'URI_PID' =>Mirage::app()->param['game_api'][$serverid - 1],
+                    'URI_PID2' =>Mirage::app()->param['player_api'][$serverid - 1],
                     'isCaching' => FALSE,
                     'isDebug' => TRUE,
                     'certFilePath' => Mirage::app()->param['rtg_cert_dir'] . $serverid . '/cert.pem',
                     'keyFilePath' => Mirage::app()->param['rtg_cert_dir'] . $serverid . '/key.pem',
+                    'certkeyFilePath' => Mirage::app()->param['rtg_cert_dir'] . $serverid . '/cert-key.pem',
                     'depositMethodId' => Mirage::app()->param['deposit_method_id'],
                     'withdrawalMethodId' => Mirage::app()->param['withdrawal_method_id'],
                     'APIType' => $APIType);
@@ -610,6 +612,20 @@ class CasinoApiUB {
         $player_mode = Mirage::app()->param['revertbroken_api']['PLAYER_MODE'];
         $response = $_casinoAPIHandler->RevertBrokenGamesAPI($username, $player_mode, $game_mode);
         return $response;
+    }
+    
+    
+    /**
+     * Logout RTG Player
+     * @param int $terminal_id
+     * @param int $serverid
+     * @param str $PID
+     * @return obj
+     */
+    public function LogoutPlayer($terminal_id, $serverid, $PID){
+        $casinoAPIHandler = $this->configureRTG($terminal_id, $serverid,3);
+        $pendingGames = $casinoAPIHandler->LogoutPlayer($PID);
+        return $pendingGames;
     }
     
     /**

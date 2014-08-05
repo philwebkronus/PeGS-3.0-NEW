@@ -49,6 +49,12 @@ class CasinoCAPIHandler
      * @var string
      */
     private $_URIPID;
+    
+    /**
+     * API Endpoint
+     * @var string
+     */
+    private $_URIPID2;
 
     /**
      * Set API caching
@@ -118,13 +124,16 @@ class CasinoCAPIHandler
         else if ( $this->_gamingProvider == self::RTG )
         {
             $this->_URIPID = $configuration['URI_PID'];
+            $this->_URIPID2 = $configuration['URI_PID2'];
             $certFilePath = $configuration[ 'certFilePath' ];
             $keyFilePath = $configuration[ 'keyFilePath' ];
             
             if($configuration['APIType'] == 2){
-                    $this->_API = new RealtimeGamingAPIWrapper( $this->_URIPID, RealtimeGamingAPIWrapper::GAME_API, $certFilePath, $keyFilePath, $this->_isCaching );
-            } else {
-                    $this->_API = new RealtimeGamingAPIWrapper( $this->_URI, RealtimeGamingAPIWrapper::CASHIER_API, $certFilePath, $keyFilePath, $this->_isCaching );
+                    $this->_API = new RealtimeGamingUBAPIWrapper( $this->_URIPID, RealtimeGamingUBAPIWrapper::GAME_API, $certFilePath, $keyFilePath, $this->_isCaching );
+            } else if($configuration['APIType'] == 0){
+                    $this->_API = new RealtimeGamingUBAPIWrapper( $this->_URI, RealtimeGamingUBAPIWrapper::CASHIER_API, $certFilePath, $keyFilePath, $this->_isCaching );
+            } else{
+                    $this->_API = new RealtimeGamingAPIWrapper( $this->_URIPID2, RealtimeGamingAPIWrapper::PLAYER_API, $certFilePath, $keyFilePath, $this->_isCaching );
             }
 
             $this->_API->SetDebug( $this->_isDebug );
@@ -134,13 +143,16 @@ class CasinoCAPIHandler
         else if ( $this->_gamingProvider == self::RTG2 )
         {
             $this->_URIPID = $configuration['URI_PID'];
+            $this->_URIPID2 = $configuration['URI_PID2'];
             $certFilePath = $configuration[ 'certFilePath' ];
             $keyFilePath = $configuration[ 'keyFilePath' ];
             
             if($configuration['APIType'] == 2){
                     $this->_API = new RealtimeGamingUBAPIWrapper( $this->_URIPID, RealtimeGamingUBAPIWrapper::GAME_API, $certFilePath, $keyFilePath, $this->_isCaching );
-            } else {
+            } else if($configuration['APIType'] == 0){
                     $this->_API = new RealtimeGamingUBAPIWrapper( $this->_URI, RealtimeGamingUBAPIWrapper::CASHIER_API, $certFilePath, $keyFilePath, $this->_isCaching );
+            } else{
+                    $this->_API = new RealtimeGamingUBAPIWrapper( $this->_URIPID2, RealtimeGamingAPIWrapper::PLAYER_API, $certFilePath, $keyFilePath, $this->_isCaching );
             }
 
             $this->_API->SetDebug( $this->_isDebug );
@@ -400,6 +412,16 @@ class CasinoCAPIHandler
     public function KickPlayer($login) {
         if($this->_gamingProvider == self::PT)
             return $this->_API->KickPlayer($login);
+    }
+    
+    /**
+     * Logout Player
+     * @param type $pid
+     * @return object 
+     */
+    public function LogoutPlayer($pid) {
+        if($this->_gamingProvider == self::RTG)
+            return $this->_API->logoutPlayer($pid);
     }
     
     /**
