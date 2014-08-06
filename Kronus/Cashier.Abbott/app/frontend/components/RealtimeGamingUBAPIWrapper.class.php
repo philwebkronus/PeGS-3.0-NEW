@@ -12,7 +12,7 @@ Change Log History
 //Mirage::loadComponents('CasinoAPI/RealtimeGamingCashierAPI2.class');
 
 Mirage::loadComponents(array('CasinoAPI/RealtimeGamingCashierAPI2.class',
-                                                             'CasinoAPI/RealtimeGamingCasinoGamesAPI.class','CasinoAPI/RealtimeGamingWCFPlayerAPI.class'));
+                                                             'CasinoAPI/RealtimeGamingCasinoGamesAPI.class','CasinoAPI/RealtimeGamingPlayerAPI.class'));
 
 class RealtimeGamingUBAPIWrapper
 {
@@ -41,7 +41,7 @@ class RealtimeGamingUBAPIWrapper
                 }
             case self::PLAYER_API:
                 {
-                    $this->_API = new RealtimeGamingWCFPlayerAPI($URI, $certFilePath, $caching, ''); 
+                    $this->_API = new RealtimeGamingPlayerAPI($URI, $certFilePath, $keyFilePath, ''); 
                     break;
                 }
         }        

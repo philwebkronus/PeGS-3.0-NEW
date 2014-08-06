@@ -181,7 +181,7 @@ class RealtimeGamingPlayerAPI
         {
             $this->_APIresponse = $this->XML2Array( $response[1] );
 
-            $this->_APIresponse = array('changePlayerPWResult' => $this->_APIresponse );
+            $this->_APIresponse = array('LogoutPlayerResult' => $this->_APIresponse );
         }
         else
         {

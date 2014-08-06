@@ -40,7 +40,6 @@ class CasinoApiUB {
                     'isDebug' => TRUE,
                     'certFilePath' => Mirage::app()->param['rtg_cert_dir'] . $serverid . '/cert.pem',
                     'keyFilePath' => Mirage::app()->param['rtg_cert_dir'] . $serverid . '/key.pem',
-                    'certkeyFilePath' => Mirage::app()->param['rtg_cert_dir'] . $serverid . '/cert-key.pem',
                     'depositMethodId' => Mirage::app()->param['deposit_method_id'],
                     'withdrawalMethodId' => Mirage::app()->param['withdrawal_method_id'],
                     'APIType' => $APIType);
