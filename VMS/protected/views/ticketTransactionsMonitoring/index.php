@@ -1,5 +1,8 @@
 <script type="text/javascript">
     $(document).ready(function() {
+        $("#dateFrom").val('');
+        $("#dateTo").val('');
+        
         $('ticketcode').bind('keypress', function (e) {
         return !(e.which != 8 && e.which != 0 &&
                 (e.which < 48 || e.which > 57) && e.which != 46);
@@ -101,16 +104,6 @@ $this->breadcrumbs = array(
 $sitesModel = new SitesModel();
 if (isset($_POST['TicketTransactionsMonitoringForm'])) {
     $model->attributes = $_POST['TicketTransactionsMonitoringForm'];
-} else {
-    if (isset($_GET['page'])) {
-        $model->dateFrom = substr(Yii::app()->session['dateFrom'], 0, 10);
-        $model->dateTo = substr(Yii::app()->session['dateTo'], 0, 10);
-        $model->site = Yii::app()->session['site'];
-    } else {
-        $model->dateFrom = substr(Yii::app()->session['dateFrom'], 0, 10);
-        $model->dateTo = substr(Yii::app()->session['dateTo'], 0, 10);
-        $model->site = Yii::app()->session['site'];
-    }
 }
 ?>
 <h2>Ticket Transactions Monitoring</h2>

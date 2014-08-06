@@ -280,7 +280,7 @@ class TicketModel extends CFormModel {
 		INNER JOIN $dbname.sites st ON st.SiteID = tr.SiteID
                 INNER JOIN $dbname.siteaccounts sa ON sa.SiteID = st.SiteID
                 INNER JOIN $dbname.accounts a ON a.AID = sa.AID
-                WHERE t.DateCreated >= :dateFrom AND  t.DateCreated < :dateTo AND t.Status IN (2, 3, 4, 7)
+                WHERE t.DateCreated >= :dateFrom AND  t.DateCreated < :dateTo AND t.Status IN (3, 4, 7)
                 AND a.AccountTypeID = :account_type_id AND a.AID = :aid
                 GROUP BY t.TicketCode
                 ORDER BY t.DateCreated DESC";
@@ -295,7 +295,7 @@ class TicketModel extends CFormModel {
                 t.Source, t.IsCreditable FROM tickets t 
 		INNER JOIN $dbname.terminals tr ON tr.TerminalID=t.TerminalID
 		INNER JOIN $dbname.sites st ON st.SiteID = tr.SiteID
-                WHERE t.DateCreated >= :dateFrom AND  t.DateCreated < :dateTo AND t.Status IN (2, 3, 4, 7)
+                WHERE t.DateCreated >= :dateFrom AND  t.DateCreated < :dateTo AND t.Status IN (3, 4, 7)
                 GROUP BY t.TicketCode
                 ORDER BY t.DateCreated DESC";
             $command = $this->_connection->createCommand($sql);
@@ -328,7 +328,7 @@ class TicketModel extends CFormModel {
                 t.Source, t.IsCreditable FROM tickets t 
 		INNER JOIN $dbname.terminals tr ON tr.TerminalID=t.TerminalID
 		INNER JOIN $dbname.sites st ON st.SiteID = tr.SiteID
-                WHERE st.SiteID = :site AND t.DateCreated >= :dateFrom AND  t.DateCreated < :dateTo AND t.Status IN (2, 3, 4, 7)
+                WHERE st.SiteID = :site AND t.DateCreated >= :dateFrom AND  t.DateCreated < :dateTo AND t.Status IN (3, 4, 7)
                 GROUP BY t.TicketCode
                 ORDER BY t.DateCreated DESC";
         $command = $this->_connection->createCommand($sql);
@@ -605,7 +605,7 @@ class TicketModel extends CFormModel {
 		INNER JOIN $dbname.sites st ON st.SiteID = tr.SiteID
                 INNER JOIN $dbname.siteaccounts sa ON sa.SiteID = st.SiteID
                 INNER JOIN $dbname.accounts a ON a.AID = sa.AID
-                WHERE TicketCode = :ticketcode AND t.Status IN (2, 3, 4, 7)
+                WHERE TicketCode = :ticketcode AND t.Status IN (3, 4, 7)
                 AND a.AccountTypeID = :account_type_id AND a.AID = :aid
                 GROUP BY t.TicketCode
                 ORDER BY t.DateCreated DESC";
@@ -619,7 +619,7 @@ class TicketModel extends CFormModel {
                 t.Source, t.IsCreditable FROM tickets t 
 		INNER JOIN $dbname.terminals tr ON tr.TerminalID=t.TerminalID
 		INNER JOIN $dbname.sites st ON st.SiteID = tr.SiteID
-                WHERE TicketCode = :ticketcode AND t.Status IN (2, 3, 4, 7)
+                WHERE TicketCode = :ticketcode AND t.Status IN (3, 4, 7)
                 GROUP BY t.TicketCode
                 ORDER BY t.DateCreated DESC";
             $command = $this->_connection->createCommand($sql);
