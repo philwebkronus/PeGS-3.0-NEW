@@ -33,6 +33,7 @@
 
 	<?php echo $content; ?>
 
+        <br /><br /><br />
 	<div class="clear"></div>
 
 	<div id="footer">

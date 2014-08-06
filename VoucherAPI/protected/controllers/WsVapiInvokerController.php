@@ -71,10 +71,10 @@ class WsVapiInvokerController extends Controller{
         } 
         $this->render('verify', array('result'=>$result));
     }
-    
+
     private function _verify($trackingID, $terminalName, $voucherCode, $source, $aid){
-        $url = "http://vapi.dev.local/index.php/Wsvoucher/verify";
-        //$url = "localhost/voucher.api/index.php/Wsvoucher/verify";
+        $url = Yii::app()->params['verifyCoupon'];
+        //$url = "localhost/voucher-api/index.php/Wsvoucher/verify";
         
         $postdata = CJSON::encode(array('trackingid'=>$trackingID, 'terminalname'=>$terminalName,'vouchercode'=>$voucherCode, 'source'=>$source, 'aid'=>$aid));
         
@@ -105,14 +105,13 @@ class WsVapiInvokerController extends Controller{
     }
     
     private function _use($trackingid, $terminalid, $voucherticketbarcode, $source, $aid, $mid){
-        //$url = Yii::app()->params['authenticate_client'];
-        $url = "http://vapi.dev.local/index.php/Wsvoucher/use";
+        $url = Yii::app()->params['use'];
         //$url = "localhost/voucher.api/index.php/Wsvoucher/use";
         $postdata = CJSON::encode(array('TrackingID'=>$trackingid, 'TerminalID'=>$terminalid, 'VoucherTicketBarcode'=>$voucherticketbarcode, 'Source'=>$source, 'AID'=>$aid, 'MID'=>$mid));
         $result = $this->SubmitData($url, $postdata);
         return $result[1];
     }
-        public function actionVerifyTicket(){
+    public function actionVerifyTicket(){
         $this->pageTitle = 'VAPI - Verify Ticket';
         $result = '';
         
@@ -130,8 +129,8 @@ class WsVapiInvokerController extends Controller{
     }
     
     private function _verifyTicket($trackingID, $terminalName, $voucherCode, $source, $aid, $cardNumber){
-        $url = "http://vapi.dev.local/index.php/Wsvoucher/verifyTicket";
-        //$url = "localhost/voucher.api/index.php/Wsvoucher/verifyTicket";
+        $url = Yii::app()->params['verifyTicket'];
+        //$url = "localhost/voucher-api/index.php/Wsvoucher/verifyTicket";
         
         $postdata = CJSON::encode(array('TrackingID'=>$trackingID, 'TerminalName'=>$terminalName,
                                         'VoucherTicketBarcode'=>$voucherCode, 'Source'=>$source, 'AID'=>$aid,
@@ -162,9 +161,8 @@ class WsVapiInvokerController extends Controller{
     }
 
     private function _addTicket($trackingid, $terminalname, $cardnumber, $amount, $source, $aid, $purpose, $stackerbatchid, $vouchercode){
-        //$url = Yii::app()->params['authenticate_client'];
-        $url = "http://vapi.dev.local/index.php/Wsvoucher/addTicket";
-        //$url = "localhost/voucher.api/index.php/Wsvoucher/addTicket";
+        $url = Yii::app()->params['addTicket'];
+        //$url = "localhost/voucher-api/index.php/Wsvoucher/addTicket";
         $postdata = CJSON::encode(array('TrackingID'=>$trackingid, 'TerminalName'=>$terminalname, 'MembershipCardNumber'=>$cardnumber, 'Amount'=>$amount, 'Source'=>$source, 'AID'=>$aid, 'Purpose'=>$purpose, 'StackerBatchID'=>$stackerbatchid, 'VoucherTicketBarcode'=>$vouchercode));
         $result = $this->SubmitData($url, $postdata);
         return $result[1];
@@ -191,8 +189,7 @@ class WsVapiInvokerController extends Controller{
     }
 
     private function _useTicket($trackingid, $terminalname, $voucherticketbarcode, $source, $aid, $cardnumber, $amount){
-        //$url = Yii::app()->params['authenticate_client'];
-        $url = "http://vapi.dev.local/index.php/Wsvoucher/useTicket";
+        $url = Yii::app()->params['useTicket'];
         //$url = "localhost/voucher.api/index.php/Wsvoucher/useTicket";
         $postdata = CJSON::encode(array('TrackingID'=>$trackingid, 'TerminalName'=>$terminalname, 'VoucherTicketBarcode'=>$voucherticketbarcode, 'Source'=>$source, 'AID'=>$aid, 'MembershipCardNumber'=>$cardnumber, 'Amount'=>$amount));
         $result = $this->SubmitData($url, $postdata);

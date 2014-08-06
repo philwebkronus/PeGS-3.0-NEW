@@ -249,7 +249,7 @@ class CommonController {
                     "LoyaltyCreditable" => (int) $loyaltyCreditable,
                     "ExpirationDate" => $expirationDate,
                     "SequenceNo" => $sequenceNo,
-                    "TransactionMessage" => $transMsg,
+                    "TransMsg" => $transMsg,
                     "ErrorCode" => (int) $errorCode,
                 );
                 break;
