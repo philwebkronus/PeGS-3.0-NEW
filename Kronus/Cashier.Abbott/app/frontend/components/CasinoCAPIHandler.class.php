@@ -421,7 +421,7 @@ class CasinoCAPIHandler
      */
     public function LogoutPlayer($pid) {
         if($this->_gamingProvider == self::RTG)
-            return $this->_API->logoutPlayer($pid);
+            return $this->_API->LogoutPlayer($pid);
     }
     
     /**
