@@ -155,11 +155,10 @@ class WsStackerApiInvokerController extends Controller{
         $this->pageTitle = 'Stacker API - Get Stacker Info';
         $result = '';
         
-        if(isset($_POST['StackerTagID']) || isset($_POST['SerialNumber'])){
+        if(isset($_POST['StackerTagID'])){
             $stackerTagID = $_POST['StackerTagID'];
-            $serialNumber = $_POST['SerialNumber'];
                     
-            $result = $this->_getStackerInfo($stackerTagID, $serialNumber);
+            $result = $this->_getStackerInfo($stackerTagID);
         }
         
         $this->render('getStackerInfo', array('result'=>$result));
@@ -198,8 +197,8 @@ class WsStackerApiInvokerController extends Controller{
     }
     
     private function _logStackerSession($terminalName, $serialNumber, $action, $collectedBy) {
-        //$url = "http://localhost/stacker-mgmt/stapi-ws/index.php/wsStackerApi/logstackersession";
-        $url = "http://stapi.dev.local/index.php/wsStackerApi/logstackersession";
+        $url = Yii::app()->params['logStackerSession'];
+        //$url = "http://localhost/stapi-ws/index.php/wsStackerApi/logstackersession";
         $postdata = CJSON::encode(array('TerminalName'=>$terminalName, 'SerialNumber'=>$serialNumber, 'Action'=>$action, 'CollectedBy'=>$collectedBy));
         $result = $this->SubmitData($url, $postdata);
         
@@ -207,8 +206,8 @@ class WsStackerApiInvokerController extends Controller{
     }
     
     private function _getStackerBatchId($terminalName, $mcardnumber) {
+        $url = Yii::app()->params['getStackerBatchID'];
         //$url = "http://localhost/stacker-mgmt/stapi-ws/index.php/wsStackerApi/getstackerbatchid";
-        $url = "http://stapi.dev.local/index.php/wsStackerApi/getstackerbatchid";
         $postdata = CJSON::encode(array('TerminalName'=>$terminalName, 'MembershipCardNumber'=>$mcardnumber));
         $result = $this->SubmitData($url, $postdata);
         
@@ -216,8 +215,8 @@ class WsStackerApiInvokerController extends Controller{
     }
 
     private function _logStackerTransaction($trackingID, $terminalName, $transType, $amount, $cashType, $voucherCode, $source, $stackerBatchID, $cardNumber) {
+        $url = Yii::app()->params['logStackerTransaction'];
         //$url = "http://localhost/stacker-mgmt/stapi-ws/index.php/wsStackerApi/logstackertransaction";
-        $url = "http://stapi.dev.local/index.php/wsStackerApi/logstackertransaction";
         $postdata = CJSON::encode(array('TrackingID'=>$trackingID, 'TerminalName'=>$terminalName, 'TransType'=>$transType, 'Amount'=>$amount,
                                   'CashType'=>$cashType, 'VoucherTicketBarcode'=>$voucherCode, 'Source'=>$source, 'StackerBatchID'=>$stackerBatchID, 'MembershipCardNumber'=>$cardNumber));
         $result = $this->SubmitData($url, $postdata);
@@ -226,8 +225,8 @@ class WsStackerApiInvokerController extends Controller{
     }
     
     private function _VerifyLogStackerTransaction($trackingID) {
+        $url = Yii::app()->params['verifyLogStackerTransaction'];
         //$url = "http://localhost/stacker-mgmt/stapi-ws/index.php/wsStackerApi/verifylogstackertransaction";
-        $url = "http://stapi.dev.local/index.php/wsStackerApi/verifylogstackertransaction";
         $postdata = CJSON::encode(array('TrackingID'=>$trackingID));
         $result = $this->SubmitData($url, $postdata);
         
@@ -235,8 +234,8 @@ class WsStackerApiInvokerController extends Controller{
     }
     
     private function _addStackerInfo($stackerTagID, $serialNumber, $terminalName) {
+        $url = Yii::app()->params['addStackerInfo'];
         //$url = "http://localhost/stacker-mgmt/stapi-ws/index.php/wsStackerApi/addstackerinfo";
-        $url = "http://stapi.dev.local/index.php/wsStackerApi/addstackerinfo";
         $postdata = CJSON::encode(array('StackerTagID'=>$stackerTagID, 'SerialNumber'=>$serialNumber, 'TerminalName'=>$terminalName));
 
         $result = $this->SubmitData($url, $postdata);
@@ -245,8 +244,8 @@ class WsStackerApiInvokerController extends Controller{
     }
     
     private function _updateStackerInfo($stackerTagID, $serialNumber, $status, $terminalName) {
+        $url = Yii::app()->params['updateStackerInfo'];
         //$url = "http://localhost/stacker-mgmt/stapi-ws/index.php/wsStackerApi/updatestackerinfo";
-        $url = "http://stapi.dev.local/index.php/wsStackerApi/updatestackerinfo";
         $postdata = CJSON::encode(array('StackerTagID'=>$stackerTagID, 'SerialNumber'=>$serialNumber, 'Status'=>$status, 'TerminalName'=>$terminalName));
 
         $result = $this->SubmitData($url, $postdata);
@@ -254,10 +253,10 @@ class WsStackerApiInvokerController extends Controller{
         return $result[1];
     }
     
-    private function _getStackerInfo($stackerTagID, $serialNumber){
-        //$url = "http://localhost/stacker-mgmt/stapi-ws/index.php/wsStackerApi/getstackerinfo";
-        $url = "http://stapi.dev.local/index.php/wsStackerApi/getstackerinfo";
-        $postdata = CJSON::encode(array('StackerTagID'=>$stackerTagID, 'SerialNumber'=>$serialNumber));
+    private function _getStackerInfo($stackerTagID){
+        $url = Yii::app()->params['getStackerInfo'];
+        //$url = "http://localhost/stapi-ws/index.php/wsStackerApi/getstackerinfo";
+        $postdata = CJSON::encode(array('StackerTagID'=>$stackerTagID));
 
         $result = $this->SubmitData($url, $postdata);
         
@@ -265,8 +264,8 @@ class WsStackerApiInvokerController extends Controller{
     }
     
     private function _cancelDeposit($trackingID, $stackerBatchID, $terminalName) {
-        //$url = "http://localhost/stacker-mgmt/stapi-ws/index.php/wsStackerApi/canceldeposit";
-        $url = "http://stapi.dev.local/index.php/wsStackerApi/canceldeposit";
+        $url = Yii::app()->params['cancelDeposit'];
+        //$url = "http://localhost/stapi-ws/index.php/wsStackerApi/canceldeposit";
         $postdata = CJSON::encode(array('TrackingID'=>$trackingID, 'StackerBatchID'=>$stackerBatchID, 'TerminalName'=>$terminalName));
 
         $result = $this->SubmitData($url, $postdata);
