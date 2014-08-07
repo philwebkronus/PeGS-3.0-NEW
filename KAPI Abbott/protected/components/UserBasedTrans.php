@@ -1071,7 +1071,7 @@ class UserBasedTrans {
         } else {
             
             $isredeemed = $commonTransactionsModel->redeemSessionTransaction($amount, $trans_summary_id, $udate, $site_id, 
-                            $terminal_id, 'W', $paymentType, $service_id, $acct_id, 1, $loyalty_card, $mid);
+                            $terminal_id, 'W', $paymentType, $service_id, $acct_id, 1, $loyalty_card, $mid, $stackerbatchid);
             
             //check if terminaltype is Genesis
             $terminalType = $terminalsModel->checkTerminalType($terminal_id);
