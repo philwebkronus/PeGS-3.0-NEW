@@ -1,7 +1,5 @@
 <script type="text/javascript">
     $(document).ready(function() {
-        $("#dateFrom").val('');
-        $("#dateTo").val('');
         
         $('ticketcode').bind('keypress', function (e) {
         return !(e.which != 8 && e.which != 0 &&
