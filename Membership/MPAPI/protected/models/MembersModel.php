@@ -1,0 +1,184 @@
+<?php
+
+/**
+ * 
+ * @purpose Description of Members model
+ * @author fdlsison
+ * @date 06-13-2014
+ */
+
+class MembersModel {
+    public static $_instance = null;
+    public $_connection;
+
+
+    public function __construct() {
+        $this->_connection = Yii::app()->db;
+    }
+    
+    public static function model()
+    {
+        if(self::$_instance == null)
+            self::$_instance = new MembersModel();
+        return self::$_instance;
+    }
+    
+    //@purpose get Login details
+    public function getLoginInfo($username, $password) {
+        $sql = 'SELECT a.MID, a.UserName, a.IsVip, b.SessionID, c.CardTypeID
+                FROM members a
+                INNER JOIN membersessions b ON a.MID = b.MID
+                INNER JOIN loyaltydb.membercards d ON b.MID = d.MID
+                INNER JOIN loyaltydb.cards c ON d.CardID = c.CardID
+                WHERE a.UserName = :UserName AND a.Password = :Password';
+        //$param = array(':Username' => $username);
+        $command = $this->_connection->createCommand($sql);
+        $command->bindValues(array(':UserName' => $username, ':Password' => $password));
+        $result = $command->queryRow();
+        
+        return $result;    
+    }
+    
+    //@date 6-23-2014
+    public function updateForChangePasswordUsingMID($MID, $changePassword) {
+        $startTrans = $this->_connection->beginTransaction();
+        
+        try {
+            $sql = "UPDATE members SET ForChangePassword = :ChangePassword WHERE MID = :MID";
+            $param = array(':ChangePassword' => $changePassword,':MID' => $MID);
+            $command = $this->_connection->createCommand($sql);
+            $command->bindValues($param);
+            $command->execute();
+            
+            try {
+                $startTrans->commit();
+                return 1;
+            } catch (PDOException $e) {
+                $startTrans->rollback();
+                Utilities::log($e->getMessage());
+                return 0;
+            }
+        
+        } catch (Exception $e) {
+            $startTrans->rollback();
+            Utilities::log($e->getMessage());
+            return 0;
+        }
+    }
+    
+    //@date 6-26-2014
+    public function updateMemberUsername($MID, $email, $password) {
+        $startTrans = $this->_connection->beginTransaction();
+        
+        try {
+            if($password == '') {
+                $sql = 'UPDATE members SET UserName = :UserName WHERE MID = :MID';
+                $param = array(':UserName' => $email,':MID' => $MID);
+            }
+            else {
+                $sql = 'UPDATE members SET UserName = :UserName, Password = :Password WHERE MID = :MID';
+                $param = array(':UserName' => $email, ':Password' => $password, ':MID' => $MID);
+            }
+            $command = $this->_connection->createCommand($sql);
+            $command->bindValues($param);
+            $command->execute();
+                
+            try {
+                $startTrans->commit();
+                return 1;
+            } catch(PDOException $e) {
+                $startTrans->rollback();
+                Utilities::log($e->getMessage());
+                return 0;
+            } 
+        } catch(Exception $e) {
+            $startTrans->rollback();
+            Utilities::log($e->getMessage());
+            return 0;
+        }
+    }
+    
+    //@date 6-30-2014
+    //@purpose check if email is verified in live membership db
+    public function checkIfActiveVerifiedEmail($email) {
+        $sql = 'SELECT COUNT(MID)
+                FROM members
+                WHERE Email = :Email';
+        $param = array(':Email' => $email);
+        $command = $this->_connection->createCommand($sql);
+        $result = $command->queryRow(true, $param);
+        
+        return $result; 
+        
+    }
+    
+    //@date 07-04-2014
+    //@purpose get member's details
+    public function getMembersDetails($userName) {
+        $sql = 'SELECT *
+                FROM members
+                WHERE UserName = :userName';
+        $param = array(':userName' => $userName);
+        $command = $this->_connection->createCommand($sql);
+        $result = $command->queryRow(true, $param);
+        
+        return $result;
+    }
+    
+    //@date 07-07-2014
+    //@purpose get member's details by MID
+    public function getMemberDetailsByMID($MID) {
+        $sql = 'SELECT *
+                FROM members
+                WHERE MID = :MID';
+        $param = array(':MID' => $MID);
+        $command = $this->_connection->createCommand($sql);
+        $result = $command->queryRow(true, $param);
+        
+        return $result;
+    }
+    
+    //@date 07-28-2014
+    //@purpose check if member is permitted to change password
+    public function getForChangePasswordUsingCardNumber($cardNumber) {
+        $sql = 'SELECT m.ForChangePassword
+                FROM members m
+                INNER JOIN loyaltydb.membercards mc
+                    ON mc.MID = m.MID
+                WHERE mc.CardNumber = :cardNumber';
+        $command = $this->_connection->createCommand($sql);
+        $param = array(':cardNumber' => $cardNumber);
+        $result = $command->queryRow(true, $param);
+        
+        return $result;
+        
+    }
+    
+    //@purpose update password using MID
+    public function updatePasswordUsingMID($MID, $password) {
+        $startTrans = $this->_connection->beginTransaction();
+        
+        try {
+            $sql = 'UPDATE members
+                    SET Password = md5(:password)
+                    WHERE MID = :MID';
+            $param = array(':password' => $password, ':MID' => $MID);
+            $command = $this->_connection->createCommand($sql);
+            $command->bindValues($param);
+            $command->execute();
+                
+            try {
+                $startTrans->commit();
+                return 1;
+            } catch(PDOException $e) {
+                $startTrans->rollback();
+                Utilities::log($e->getMessage());
+                return 0;
+            } 
+        } catch(Exception $e) {
+            $startTrans->rollback();
+            Utilities::log($e->getMessage());
+            return 0;
+        }
+    }
+}
