@@ -110,6 +110,14 @@ class CommonUBStartSession {
             }
         }
         
+        $checkegmsession = $egmSessionsModel->checkEgmSession($service_id, $mid);
+        
+        if(!empty($checkegmsession)){
+                $message = 'Error: User has an ongoing EGM deposit session.';
+                logger($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id);
+                CasinoApi::throwError($message);
+        }
+        
         //insert into terminalsessions, throw error if there is existing session 
         //this terminal / user
         $trans_summary_max_id = null;

@@ -54,5 +54,12 @@ class EgmSessionsModel extends MI_Model {
         $param = array(':terminal_id' => $terminal_id);
         return $this->exec($sql,$param);
     }
+    
+    public function checkEgmSession($serviceid, $mid) {
+        $sql = 'SELECT * FROM egmsessions WHERE MID = :mid AND ServiceID = :serviceid';
+        $param = array(':mid' => $mid, ':serviceid' => $serviceid);
+        $this->exec($sql,$param);
+        return $this->find();
+    }
 }
 ?>
