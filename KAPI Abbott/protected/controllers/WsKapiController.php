@@ -32,6 +32,7 @@ class WsKapiController extends Controller {
         $transMsg = '';
         $errCode = '';
         $siteName = '';
+        $stackerAmount = 0.00;
 
         $terminalName = trim(trim($request['TerminalName']));
         //@author JunJun S. Hernandez
@@ -51,6 +52,7 @@ class WsKapiController extends Controller {
                 $commonController       = new CommonController();
                 $sitesModel             = new SitesModel();
                 $membercards            = new MemberCardsModel();
+                $stackerDetailsModel    = new StackerDetailsModel();
                 //End of declaration of models to be used.
                 //Check if terminal is EGM
                 $_terminalName = Yii::app()->params['SitePrefix'] . $terminalName;
@@ -85,7 +87,8 @@ class WsKapiController extends Controller {
                                         if (!empty($isactiveEgmSession)) {
                                             $isStarted = 1;
                                             $stackerBatchID = $isactiveEgmSession['StackerBatchID'];
-
+                                            //get total stacker amount
+                                            $stackerAmount = $stackerDetailsModel->getTotalStackerAmount($stackerBatchID);
                                             $isPlaying = $terminalSessionsModel->isSessionActive($TerminalID[0]['TerminalID']);
                                             $siteID = $terminalsModel->getSiteIDByTerminalID($TerminalID[0]['TerminalID']);
 
@@ -145,7 +148,8 @@ class WsKapiController extends Controller {
                                                 $message = "Success";
                                                 $membershipCardNo = $terminalSessionsModel->getLoyaltyCardNumber($TerminalID);
                                                 $startDateTime = $terminalSessionsModel->getStartDateTime($TerminalID);
-                                                $this->_sendResponse(200, CommonController::getTerminalInfoResponse($isStarted, $isPlaying, $playingBalance, $playerMode, $currentCasino, $mappedCasinos, $minmaxAmount, $sessionMode, $membershipCardNo, $siteCode, $startDateTime, $stackerBatchID, $message, $errCode, $siteName));
+                                                
+                                                $this->_sendResponse(200, CommonController::getTerminalInfoResponse($isStarted, $isPlaying, $playingBalance, $playerMode, $currentCasino, $mappedCasinos, $minmaxAmount, $sessionMode, $membershipCardNo, $siteCode, $startDateTime, $stackerBatchID, $stackerAmount, $message, $errCode, $siteName));
                                             } else {
                                                 if (isset($TerminalID[1]['TerminalID'])) {
                                                     $isPlayingVIP = $terminalSessionsModel->isSessionActive($TerminalID[1]['TerminalID']);
@@ -205,7 +209,7 @@ class WsKapiController extends Controller {
                                                         $message = "Success";
                                                         $membershipCardNo = $terminalSessionsModel->getLoyaltyCardNumber($TerminalID);
                                                         $startDateTime = $terminalSessionsModel->getStartDateTime($TerminalID);
-                                                        $this->_sendResponse(200, CommonController::getTerminalInfoResponse($isStarted, $isPlayingVIP, $playingBalance, $playerMode, $currentCasino, $mappedCasinos, $minmaxAmount, $sessionMode, $membershipCardNo, $siteCode, $startDateTime, $stackerBatchID, $message, $errCode, $siteName));
+                                                        $this->_sendResponse(200, CommonController::getTerminalInfoResponse($isStarted, $isPlayingVIP, $playingBalance, $playerMode, $currentCasino, $mappedCasinos, $minmaxAmount, $sessionMode, $membershipCardNo, $siteCode, $startDateTime, $stackerBatchID, $stackerAmount, $message, $errCode, $siteName));
                                                     }//If no active session then
                                                     else {
                                                         $siteID = $terminalsModel->getSiteIDByTerminalID($TerminalID[0]['TerminalID']);
@@ -242,12 +246,12 @@ class WsKapiController extends Controller {
                                                         $sessionMode = 0;
                                                         $startDateTime = '';
                                                         $errCode = 0;
-                                                        $this->_sendResponse(200, CommonController::getTerminalInfoResponse(1, $isPlaying, $playingBalance, $playerMode, $currentCasino, $mappedCasinos, $minmaxAmount, $sessionMode, $membershipCardNo, $siteCode, $startDateTime, '', $message, $errCode, $siteName));
+                                                        $this->_sendResponse(200, CommonController::getTerminalInfoResponse(1, $isPlaying, $playingBalance, $playerMode, $currentCasino, $mappedCasinos, $minmaxAmount, $sessionMode, $membershipCardNo, $siteCode, $startDateTime, $stackerBatchID, $stackerAmount, $message, $errCode, $siteName));
                                                     }
                                                 } else {
                                                     $message = "Cannot find Terminal.";
                                                     $errCode = 3;
-                                                    $this->_sendResponse(200, CommonController::getTerminalInfoResponse(0, $isPlaying, $playingBalance, $playerMode, $currentCasino, $mappedCasinos, $minmaxAmount, $sessionMode, $membershipCardNo, $siteCode, $startDateTime, '', $message, $errCode, $siteName));
+                                                    $this->_sendResponse(200, CommonController::getTerminalInfoResponse(0, $isPlaying, $playingBalance, $playerMode, $currentCasino, $mappedCasinos, $minmaxAmount, $sessionMode, $membershipCardNo, $siteCode, $startDateTime, $stackerBatchID, $stackerAmount, $message, $errCode, $siteName));
                                                 }
                                             }
                                         } else {
@@ -275,41 +279,42 @@ class WsKapiController extends Controller {
                                             $siteCode = substr($sitec, 5);
                                             $sessionMode = 0;
                                             $startDateTime = '';
+                                            $stackerBatchID = '';
                                             $message = "Terminal has no active EGM session.";
                                             $errCode = 50;
-                                            $this->_sendResponse(200, CommonController::getTerminalInfoResponse(0, $isPlaying, $playingBalance, $playerMode, $currentCasino, $mappedCasinos, $minmaxAmount, $sessionMode, $membershipCardNo, $siteCode, $startDateTime, '', $message, $errCode, $siteName));
+                                            $this->_sendResponse(200, CommonController::getTerminalInfoResponse(0, $isPlaying, $playingBalance, $playerMode, $currentCasino, $mappedCasinos, $minmaxAmount, $sessionMode, $membershipCardNo, $siteCode, $startDateTime, $stackerBatchID, $stackerAmount, $message, $errCode, $siteName));
                                         }
                                     } else {
                                         $message = "There are no mapped casino in this terminal.";
                                         $errCode = 49;
-                                        $this->_sendResponse(200, CommonController::getTerminalInfoResponse(0, $isPlaying, $playingBalance, $playerMode, $currentCasino, $mappedCasinos, $minmaxAmount, $sessionMode, $membershipCardNo, $siteCode, $startDateTime, '', $message, $errCode, $siteName));
+                                        $this->_sendResponse(200, CommonController::getTerminalInfoResponse(0, $isPlaying, $playingBalance, $playerMode, $currentCasino, $mappedCasinos, $minmaxAmount, $sessionMode, $membershipCardNo, $siteCode, $startDateTime, $stackerBatchID, $stackerAmount, $message, $errCode, $siteName));
                                     }
                                 } else {
                                     $message = "Terminal is Inactive.";
                                     $errCode = 48;
-                                    $this->_sendResponse(200, CommonController::getTerminalInfoResponse(0, $isPlaying, $playingBalance, $playerMode, $currentCasino, $mappedCasinos, $minmaxAmount, $sessionMode, $membershipCardNo, $siteCode, $startDateTime, '', $message, $errCode, $siteName));
+                                    $this->_sendResponse(200, CommonController::getTerminalInfoResponse(0, $isPlaying, $playingBalance, $playerMode, $currentCasino, $mappedCasinos, $minmaxAmount, $sessionMode, $membershipCardNo, $siteCode, $startDateTime, $stackerBatchID, $stackerAmount, $message, $errCode, $siteName));
                                 }
                             }
                             //If TerminalID was empty means it is not found. If it doesn't exists or empty then
                             else {
                                 $message = "Cannot find Terminal.";
                                 $errCode = 3;
-                                $this->_sendResponse(200, CommonController::getTerminalInfoResponse(0, $isPlaying, $playingBalance, $playerMode, $currentCasino, $mappedCasinos, $minmaxAmount, $sessionMode, $membershipCardNo, $siteCode, $startDateTime, '', $message, $errCode, $siteName));
+                                $this->_sendResponse(200, CommonController::getTerminalInfoResponse(0, $isPlaying, $playingBalance, $playerMode, $currentCasino, $mappedCasinos, $minmaxAmount, $sessionMode, $membershipCardNo, $siteCode, $startDateTime, $stackerBatchID, $stackerAmount, $message, $errCode, $siteName));
                             }
                         } else {
                             $message = "Site is Inactive.";
                             $errCode = 56;
-                            $this->_sendResponse(200, CommonController::getTerminalInfoResponse(0, $isPlaying, $playingBalance, $playerMode, $currentCasino, $mappedCasinos, $minmaxAmount, $sessionMode, $membershipCardNo, $siteCode, $startDateTime, '', $message, $errCode, $siteName));
+                            $this->_sendResponse(200, CommonController::getTerminalInfoResponse(0, $isPlaying, $playingBalance, $playerMode, $currentCasino, $mappedCasinos, $minmaxAmount, $sessionMode, $membershipCardNo, $siteCode, $startDateTime, $stackerBatchID, $stackerAmount, $message, $errCode, $siteName));
                         }
                     } else {
                         $message = "Cannot find Terminal.";
                         $errCode = 3;
-                        $this->_sendResponse(200, CommonController::getTerminalInfoResponse(0, $isPlaying, $playingBalance, $playerMode, $currentCasino, $mappedCasinos, $minmaxAmount, $sessionMode, $membershipCardNo, $siteCode, $startDateTime, '', $message, $errCode, $siteName));
+                        $this->_sendResponse(200, CommonController::getTerminalInfoResponse(0, $isPlaying, $playingBalance, $playerMode, $currentCasino, $mappedCasinos, $minmaxAmount, $sessionMode, $membershipCardNo, $siteCode, $startDateTime, $stackerBatchID, $stackerAmount, $stackerAmount, $message, $errCode, $siteName));
                     }
                 } else {
                     $message = "Terminal type is not EGM.";
                     $errCode = 57;
-                    $this->_sendResponse(200, CommonController::getTerminalInfoResponse(0, $isPlaying, $playingBalance, $playerMode, $currentCasino, $mappedCasinos, $minmaxAmount, $sessionMode, $membershipCardNo, $siteCode, $startDateTime, '', $message, $errCode, $siteName));
+                    $this->_sendResponse(200, CommonController::getTerminalInfoResponse(0, $isPlaying, $playingBalance, $playerMode, $currentCasino, $mappedCasinos, $minmaxAmount, $sessionMode, $membershipCardNo, $siteCode, $startDateTime, $stackerBatchID, $stackerAmount, $message, $errCode, $siteName));
                 }
                 $sc = Yii::app()->params['SitePrefix'] . $request['TerminalName'];
                 $TerminalID = array();
@@ -320,14 +325,14 @@ class WsKapiController extends Controller {
             else {
                 $message = "Terminal Name may contain special characters.";
                 $errCode = 2;
-                $this->_sendResponse(200, CommonController::getTerminalInfoResponse(0, $isPlaying, $playingBalance, $playerMode, $currentCasino, $mappedCasinos, $minmaxAmount, $sessionMode, $membershipCardNo, $siteCode, $startDateTime, '', $message, $errCode, $siteName));
+                $this->_sendResponse(200, CommonController::getTerminalInfoResponse(0, $isPlaying, $playingBalance, $playerMode, $currentCasino, $mappedCasinos, $minmaxAmount, $sessionMode, $membershipCardNo, $siteCode, $startDateTime, $stackerBatchID, $stackerAmount, $message, $errCode, $siteName));
             }
         }
         //If Terminal Name is blank. If blank then
         else {
             $message = "Terminal Name is not set or blank.";
             $errCode = 1;
-            $this->_sendResponse(200, CommonController::getTerminalInfoResponse(0, $isPlaying, $playingBalance, $playerMode, $currentCasino, $mappedCasinos, $minmaxAmount, $sessionMode, $membershipCardNo, $siteCode, $startDateTime, '', $message, $errCode, $siteName));
+            $this->_sendResponse(200, CommonController::getTerminalInfoResponse(0, $isPlaying, $playingBalance, $playerMode, $currentCasino, $mappedCasinos, $minmaxAmount, $sessionMode, $membershipCardNo, $siteCode, $startDateTime, $stackerBatchID, $stackerAmount, $message, $errCode, $siteName));
         }
         //End @author
     }
@@ -1095,6 +1100,7 @@ class WsKapiController extends Controller {
                 $refServices = new RefServicesModel();
                 $siteaccounts = new SiteAccountsModel();
                 $membersModel = new MembersModel();
+                $terminalSessionsModel = new TerminalSessionsModel();
                 
                 $sc = Yii::app()->params['SitePrefix'] . $terminalName;
                 $MID = $memberCardsModel->getMID($membershipcardnumber);
@@ -1140,7 +1146,7 @@ class WsKapiController extends Controller {
                                     if ($cnt_mapped['cnt'] > 0) {
                                         $TerminalID = $TerminalDetails['TerminalID'];
                                         $siteid = $TerminalDetails['SiteID'];
-
+                                        
                                         $this->acc_id = $siteaccounts->getVirtualCashier($siteid);
 
                                         //check if casino id is a number
@@ -1170,57 +1176,68 @@ class WsKapiController extends Controller {
 
                                             exit;
                                         }
-                                        //check if casino is mapped on the given terminal
-                                        $match = $terminalServicesModel->getMatchedTerminalAndServiceID($TerminalID, $casinoID);
-                                        if ($match > 0) {
+                                        //check if has Member has session in cashier using reg terminal
+                                        $hasSession = $terminalSessionsModel->checkIfHasTerminalSession($MID, $casinoID);
+                                        if ($hasSession == false) //no active session
+                                        {
+                                            //check if casino is mapped on the given terminal
+                                            $match = $terminalServicesModel->getMatchedTerminalAndServiceID($TerminalID, $casinoID);
+                                            if ($match > 0) {
 
-                                            $isactiveEgmSessionTerminal = $gamingSessionsModel->chkActiveEgmSession($TerminalID);
+                                                $isactiveEgmSessionTerminal = $gamingSessionsModel->chkActiveEgmSession($TerminalID);
 
-                                            if (!$isactiveEgmSessionTerminal) {
-                                                $isactiveEgmSessionMID = $gamingSessionsModel->chkActiveEgmSessionByMID($MID);
+                                                if (!$isactiveEgmSessionTerminal) {
+                                                    $isactiveEgmSessionMID = $gamingSessionsModel->chkActiveEgmSessionByMID($MID);
 
-                                                if (!$isactiveEgmSessionMID) {
-                                                    $egmsessionid = $gamingSessionsModel->insertEgmSession($MID, $TerminalID, $casinoID, $this->acc_id);
+                                                    if (!$isactiveEgmSessionMID) {
+                                                        $egmsessionid = $gamingSessionsModel->insertEgmSession($MID, $TerminalID, $casinoID, $this->acc_id);
 
-                                                    $egmdetails = $gamingSessionsModel->getlastinsertedegmsession($egmsessionid);
+                                                        $egmdetails = $gamingSessionsModel->getlastinsertedegmsession($egmsessionid);
 
-                                                    if (!empty($egmdetails)) {
-                                                        $datecreated = $egmdetails['DateCreated'];
+                                                        if (!empty($egmdetails)) {
+                                                            $datecreated = $egmdetails['DateCreated'];
 
-                                                        $transMsg = "EGM Session Successfully Created";
-                                                        $errCode = 0;
-                                                        $this->_sendResponse(200, CommonController::creteEgmSessionResponse(1, $datecreated, $transMsg, $errCode));
+                                                            $transMsg = "EGM Session Successfully Created";
+                                                            $errCode = 0;
+                                                            $this->_sendResponse(200, CommonController::creteEgmSessionResponse(1, $datecreated, $transMsg, $errCode));
+                                                        } else {
+                                                            $message = 'Failed to start a session.';
+                                                            $errCode = 42;
+                                                            Utilities::errorLogger($message, $APIName, 
+                                                                  "TerminalID:".$TerminalDetails['TerminalID']." | ".
+                                                                  "MID: ".$MID." | ".
+                                                                  "SiteID: ".$TerminalDetails['SiteID']." | ");
+                                                            $this->_sendResponse(200, CommonController::creteEgmSessionResponse(0, '', $message, $errCode));
+                                                        }
                                                     } else {
-                                                        $message = 'Failed to start a session.';
-                                                        $errCode = 42;
+                                                        $message = 'Card number is already being used in a current active session.';
+                                                        $errCode = 58;
                                                         Utilities::errorLogger($message, $APIName, 
-                                                              "TerminalID:".$TerminalDetails['TerminalID']." | ".
-                                                              "MID: ".$MID." | ".
-                                                              "SiteID: ".$TerminalDetails['SiteID']." | ");
+                                                                  "TerminalID:".$TerminalDetails['TerminalID']." | ".
+                                                                  "MID: ".$MID." | ".
+                                                                  "SiteID: ".$TerminalDetails['SiteID']." | ");
                                                         $this->_sendResponse(200, CommonController::creteEgmSessionResponse(0, '', $message, $errCode));
                                                     }
                                                 } else {
-                                                    $message = 'Card number is already being used in a current active session.';
-                                                    $errCode = 58;
+                                                    $message = 'Terminal already has an active session.';
+                                                    $errCode = 37;
                                                     Utilities::errorLogger($message, $APIName, 
-                                                              "TerminalID:".$TerminalDetails['TerminalID']." | ".
-                                                              "MID: ".$MID." | ".
-                                                              "SiteID: ".$TerminalDetails['SiteID']." | ");
+                                                                  "TerminalID:".$TerminalDetails['TerminalID']." | ".
+                                                                  "MID: ".$MID." | ".
+                                                                  "SiteID: ".$TerminalDetails['SiteID']." | ".
+                                                                  "CasinoID: ".$casinoID);
                                                     $this->_sendResponse(200, CommonController::creteEgmSessionResponse(0, '', $message, $errCode));
                                                 }
                                             } else {
-                                                $message = 'Terminal already has an active session.';
-                                                $errCode = 37;
-                                                Utilities::errorLogger($message, $APIName, 
-                                                              "TerminalID:".$TerminalDetails['TerminalID']." | ".
-                                                              "MID: ".$MID." | ".
-                                                              "SiteID: ".$TerminalDetails['SiteID']." | ".
-                                                              "CasinoID: ".$casinoID);
+                                                $message = 'Terminal Name and Casino ID did not match.';
+                                                $errCode = 15;
                                                 $this->_sendResponse(200, CommonController::creteEgmSessionResponse(0, '', $message, $errCode));
                                             }
-                                        } else {
-                                            $message = 'Terminal Name and Casino ID did not match.';
-                                            $errCode = 15;
+                                        }
+                                        else
+                                        {
+                                            $message = 'Starting a gaming session on same casino is not allowed.';
+                                            $errCode = 66;
                                             $this->_sendResponse(200, CommonController::creteEgmSessionResponse(0, '', $message, $errCode));
                                         }
                                     } else {

@@ -339,5 +339,26 @@ class TerminalSessionsModel {
                          'TransMsg' => 'An error occured while updating records on database.');
         }
     }
+    /**
+     * Checks if the player has Active Terminal Session
+     * @param type $MID MembeID of the Player/Member
+     * @param type $serviceID Casino ID 
+     * @return boolean/int Return 1 if has session, FALSE if none
+     * @author Mark Kenneth Esguerra
+     * @date August 14, 2014
+     */
+    public function checkIfHasTerminalSession($MID, $serviceID)
+    {
+        $sql = "SELECT MID 
+                FROM terminalsessions 
+                WHERE MID = :mid 
+                AND ServiceID = :serviceID";
+        $command = $this->_connection->createCommand($sql);
+        $command->bindValue(":mid", $MID);
+        $command->bindValue(":serviceID", $serviceID);
+        $result = $command->queryRow();
+        
+        return $result;
+    }
 }
 
