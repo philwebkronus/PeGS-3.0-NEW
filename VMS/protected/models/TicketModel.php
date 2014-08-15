@@ -1453,16 +1453,30 @@ class TicketModel extends CFormModel {
      * @return array Details of Active Tickets
      * @author Mark Kenneth Esguerra
      */
-    public function getActiveTicketsDetails($sitecode) {
-        
-        $query = "SELECT t.TicketID, t.TicketCode, s.SiteCode, t.DateCreated, t.Amount, 
-                  t.ValidFromDate, t.ValidToDate 
-                  FROM tickets t
-                  INNER JOIN npos.terminals tmnl ON t.TerminalID = tmnl.TerminalID 
-                  INNER JOIN npos.sites s ON t.SiteID = s.SiteID 
-                  WHERE t.Status IN (1, 2) AND t.SiteID = :siteID  
-                  ORDER BY t.DateCreated DESC
-                  ";
+    public function getActiveTicketsDetails($sitecode, $start = null, $limit = null) {
+        if (is_null($start) && is_null($limit))
+        {
+            $query = "SELECT t.TicketID, t.TicketCode, s.SiteCode, t.DateCreated, t.Amount, 
+                        t.ValidFromDate, t.ValidToDate 
+                        FROM tickets t
+                        INNER JOIN npos.terminals tmnl ON t.TerminalID = tmnl.TerminalID 
+                        INNER JOIN npos.sites s ON t.SiteID = s.SiteID 
+                        WHERE t.Status IN (1, 2) AND t.SiteID = :siteID  
+                        ORDER BY t.DateCreated DESC 
+                        ";
+        }
+        else
+        {
+            $query = "SELECT t.TicketID, t.TicketCode, s.SiteCode, t.DateCreated, t.Amount, 
+                        t.ValidFromDate, t.ValidToDate 
+                        FROM tickets t
+                        INNER JOIN npos.terminals tmnl ON t.TerminalID = tmnl.TerminalID 
+                        INNER JOIN npos.sites s ON t.SiteID = s.SiteID 
+                        WHERE t.Status IN (1, 2) AND t.SiteID = :siteID  
+                        ORDER BY t.DateCreated DESC 
+                        LIMIT $start, $limit 
+                        ";
+        }
         $command = $this->_connection->createCommand($query);
         $command->bindValue(":siteID", $sitecode);
         $result = $command->queryAll();

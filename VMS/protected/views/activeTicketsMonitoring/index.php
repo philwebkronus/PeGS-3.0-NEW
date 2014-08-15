@@ -57,16 +57,17 @@ $this->pageTitle = Yii::app()->name." - Active Tickets Monitoring";
                  {name:'DateTimePrinted',index:'UpdatedStatus', width:200, align:"center"},
                  {name:'Amount',index:'UpdatedStatus', width:130, align:"right"},
                  {name:'ExpirationDate',index:'UpdatedStatus', width:140, align:"center"},
-                 {name:'ValidityStatus',index:'ProcesssedBy', width:160, align:"center"}], 
+                 {name:'ValidityStatus',index:'ProcesssedBy', width:260, align:"center"}], 
              rowNum:10, 
              rowList:[10,20,30], 
              height: '300', 
              pager: '#pager1', 
              sortname: 'id', 
              viewrecords: true, 
-             loadonce: true, 
+             loadonce: false, 
              sortorder: "desc", 
-             caption: "Ticket Details"
+             caption: "Ticket Details",
+             shrinkToFit: false
         });
         jQuery("#list1").jqGrid('setGridWidth', '900'); 
         jQuery("#list1").jqGrid('navGrid','#pager1',{edit:false,add:false,del:false,search:false});

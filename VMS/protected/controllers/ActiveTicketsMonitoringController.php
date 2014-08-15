@@ -4,6 +4,8 @@
  * @author Mark Kenneth Esguerra
  * @date March 26, 2014
  */
+// Set timezone to Asia, Taipei and Philippnes has same timezone.
+date_default_timezone_set('Asia/Taipei');
 class ActiveTicketsMonitoringController extends VMSBaseIdentity
 {
     public $showdialog = false;
@@ -86,6 +88,9 @@ class ActiveTicketsMonitoringController extends VMSBaseIdentity
             $sitecode   = $_POST['_sitecode'];
             $page       = $_POST['page']; // get the requested page
             $limit      = $_POST['rows']; // get how many rows we want to have into the grid
+            $sord       = $_POST['sord'];
+            $sidx       = $_POST['sidx'];
+            
             if ($sitecode != null)
             {
                 //Get Tickets by SiteCodes
@@ -114,24 +119,46 @@ class ActiveTicketsMonitoringController extends VMSBaseIdentity
                     if ($ticketcount > 0)
                     {
                         $i = 0;
+                        $alltickets = $tickets->getActiveTicketsDetails($sitecode, $start, $limit);
                         foreach ($alltickets as $rows)
                         {
-                            $validtodate    = date('Y-m-d', strtotime($rows['ValidToDate']));
+                            $validtodate    = date('Y-m-d H:i:s.u', strtotime($rows['ValidToDate']));
+                            //$validitystat   = abs((strtotime($validtodate) - strtotime(date('Y-m-d'))))/86400;
+                            $dateExpire = new DateTime($validtodate);
+                            $now = new DateTime(date('Y-m-d H:i:s.u'));
+                            $num_days = intval($now->diff($dateExpire)->format("%d"));
+                            $num_hours= intval($now->diff($dateExpire)->format("%H"));
+                            $num_minutes= intval($now->diff($dateExpire)->format("%i"));
+                           
                             
-                            $validitystat   = abs((strtotime($validtodate) - strtotime(date('Y-m-d'))))/86400;
-                            if ($validitystat > 1)
-                                $adj = "days";
-                            else
-                                $adj = "day";
-         
-                            $response["rows"][$i]['id'] = $rows['TicketID'];
-                            $response["rows"][$i]['cell'] = array(
+                            if ($num_days > 1 && $num_days != 0){
+                                $show_days = "days";
+                            }  else {
+                               $show_days = "day"; 
+                            }
+                            
+                            if ($num_hours > 1 && $num_hours != 0){
+                                $show_hours = "hours";
+                            }  else {
+                               $show_hours = "hour"; 
+                            }
+                            
+                            if ($num_minutes > 1 && $num_minutes != 0){
+                                $show_mins = "minutes";
+                            }  else {
+                               $show_mins = "minute"; 
+                            }
+                            
+                                $response["rows"][$i]['id'] = $rows['TicketID'];
+                                $response["rows"][$i]['cell'] = array(
                                 trim(str_replace("ICSA-", "", $rows['SiteCode'])), 
                                 $rows['TicketCode'], 
                                 $rows['DateCreated'], 
                                 number_format($rows['Amount'], 2), 
-                                $validtodate, 
-                                $validitystat." ".$adj." left"
+                                date('Y-m-d', strtotime($rows['ValidToDate'])),
+                                // Get the time difference between expiration date and date today
+                                $now->diff($dateExpire)->format("%d $show_days, %H $show_hours and %i $show_mins")
+                                //$dateExpire->format("%d days, %H hours and %i minutes") //Check Time Zone
                             );
                             $i++;
                         }
