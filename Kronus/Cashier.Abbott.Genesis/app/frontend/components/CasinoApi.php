@@ -34,6 +34,7 @@ class CasinoApi {
         
         $configuration = array( 'URI' =>Mirage::app()->param['service_api'][$serverid - 1],
                     'URI_PID' =>Mirage::app()->param['game_api'][$serverid - 1],
+                    'URI_PID2' =>Mirage::app()->param['player_api'][$serverid - 1],
                     'isCaching' => FALSE,
                     'isDebug' => TRUE,
                     'certFilePath' => Mirage::app()->param['rtg_cert_dir'] . $serverid . '/cert.pem',
@@ -70,6 +71,7 @@ class CasinoApi {
         
         $configuration = array( 'URI' =>Mirage::app()->param['service_api'][$serverid - 1],
                     'URI_PID' =>Mirage::app()->param['game_api'][$serverid - 1],
+                    'URI_PID2' =>Mirage::app()->param['player_api'][$serverid - 1],
                     'isCaching' => FALSE,
                     'isDebug' => TRUE,
                     'certFilePath' => Mirage::app()->param['rtg_cert_dir'] . $serverid . '/cert.pem',
@@ -528,7 +530,7 @@ class CasinoApi {
         switch($service_name) {
             // RTG
             case 'Magic Macau':
-                $casinoApiHandler = $this->configureRTG($terminal_id,$service_id);
+                $casinoApiHandler = $this->configureRTG2($terminal_id,$service_id);
                 MI_Database::close();
                 $balanceinfo = $casinoApiHandler->GetBalance($casinoUsername);
                 break;
@@ -689,5 +691,18 @@ class CasinoApi {
                         
             $asynchronousRequest->curl_request_async(Mirage::app()->param['Asynchronous_URI'], $params);
         }
+    }
+    
+    /**
+     * Logout RTG Player
+     * @param int $terminal_id
+     * @param int $serverid
+     * @param str $PID
+     * @return obj
+     */
+    public function LogoutPlayer($terminal_id, $serverid, $PID){
+        $casinoAPIHandler = $this->configureRTG($terminal_id, $serverid,3);
+        $pendingGames = $casinoAPIHandler->LogoutPlayer($PID);
+        return $pendingGames;
     }
 }

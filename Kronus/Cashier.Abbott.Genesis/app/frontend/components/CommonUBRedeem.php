@@ -99,7 +99,7 @@ class CommonUBRedeem {
 
         //check if there was a pending game bet for RTG
         if(strpos($service_name, 'RTG') !== false) {
-            $PID = $casinoApiHandler->GetPIDLogin($terminal_name);
+            $PID = $casinoApiHandler->GetPIDLogin($casinoUsername);
             $pendingGames = $casinoApi->GetPendingGames($terminal_id, $service_id,$PID);    
         } else {
             $pendingGames = '';
@@ -115,6 +115,12 @@ class CommonUBRedeem {
             CasinoApiUB::throwError($message);   
         }
 
+        //logout player
+        if(strpos($service_name, 'RTG') !== false) {
+            $PID = $casinoApiHandler->GetPIDLogin($casinoUsername);
+            $casinoApi->LogoutPlayer($terminal_id, $service_id,$PID);    
+        }
+        
         //Get Last Transaction Summary ID from terminalsessions
         $trans_summary_id = $terminalSessionsModel->getLastSessSummaryID($terminal_id);
         if(!$trans_summary_id){

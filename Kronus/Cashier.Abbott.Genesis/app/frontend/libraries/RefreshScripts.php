@@ -8,7 +8,7 @@ $(document).ready(function(){
                     url : url,
                     type : 'post',
                     success : function(data) {
-                        if(data != 'Success') {
+                        if(data <= 0) {
                             alert('Oops! Something went wrong');
                         }
                         location.reload(true);

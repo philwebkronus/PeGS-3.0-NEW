@@ -12,7 +12,7 @@ Change Log History
 //Mirage::loadComponents('CasinoAPI/RealtimeGamingCashierAPI2.class');
 
 Mirage::loadComponents(array('CasinoAPI/RealtimeGamingCashierAPI2.class',
-                                                             'CasinoAPI/RealtimeGamingCasinoGamesAPI.class'));
+                                                             'CasinoAPI/RealtimeGamingCasinoGamesAPI.class','CasinoAPI/RealtimeGamingPlayerAPI.class'));
 
 class RealtimeGamingUBAPIWrapper
 {
@@ -41,7 +41,8 @@ class RealtimeGamingUBAPIWrapper
                 }
             case self::PLAYER_API:
                 {
-                    // RESERVED
+                    $this->_API = new RealtimeGamingPlayerAPI($URI, $certFilePath, $keyFilePath, ''); 
+                    break;
                 }
         }        
     }
@@ -352,6 +353,11 @@ class RealtimeGamingUBAPIWrapper
     
     public function GetPIDUsingLogin($login){
         return $this->_GetPIDFromLogin($login);
+    }
+    
+    
+    public function LogoutPlayer($PID){
+        return $response = $this->_API->logoutPlayer( $PID );
     }
 }
 
