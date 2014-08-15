@@ -336,7 +336,7 @@ class CommonController {
      */
     public static function getTerminalInfoResponse($isStarted, $isPlaying, $playingBalance, $playerMode, $currentCasino,
             $mappedCasinos, $minmaxAmount, $sessionMode, $membershipCardNo, $siteCode, $startDateTime,
-            $stackerBatchID,$transMsg,$errCode,$siteName){
+            $stackerBatchID, $stackerAmount, $transMsg,$errCode,$siteName){
         if(!empty($stackerBatchID)) {
             $stackerBatchID = $stackerBatchID;
         } else {
@@ -357,7 +357,8 @@ class CommonController {
         return CJSON::encode(array('GetTerminalInfo'=>(array('IsStarted'=>(int)$isStarted,'IsPlaying'=>(int)$isPlaying,'PlayingBalance'=>$playingBalance,
                                    'PlayerMode'=>(int)$playerMode,'CurrentCasino'=>(int)$currentCasino,'MappedCasinos'=>$mappedCasinos,
                                    'MinMaxAmount'=>$minmaxAmount,'SessionMode'=>(int)$sessionMode,'MembershipCardNumber'=>$membershipCardNo,'SiteName'=>$siteName,
-                                   'SiteCode'=>$siteCode,'StartDateTime'=>$startDateTime,'StackerBatchID'=>$stackerBatchID, 'MaxRedeemableAmount' => (float)Yii::app()->params['MaxRedeemableAmount'], 'MinTicketToPrintAmount' => (float)$minTicketToPrintAmt,
+                                   'SiteCode'=>$siteCode,'StartDateTime'=>$startDateTime,'StackerBatchID'=>$stackerBatchID, 'TotalStackerAmount' => $stackerAmount, 
+                                   'MaxRedeemableAmount' => (float)Yii::app()->params['MaxRedeemableAmount'], 'MinTicketToPrintAmount' => (float)$minTicketToPrintAmt,
                                    'TransactionMessage'=>$transMsg,'ErrorCode'=>(int)$errCode))));
     }
     

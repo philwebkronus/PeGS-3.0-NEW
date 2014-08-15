@@ -99,6 +99,29 @@ class StackerDetailsModel extends CFormModel
         }
         
     }
+    /**
+     * Get Total Stacker Amount.
+     * @param type $stackerBatchID
+     * @return array TotalStackerAmount
+     * @author Mark Kenneth Esguerra
+     * @date August 08, 2014
+     */
+    public function getTotalStackerAmount($stackerBatchID)
+    {
+        $sql = "SELECT IFNULL(SUM(Amount), 0) AS TotalStackerAmount 
+                FROM stackerdetails 
+                WHERE StackerSummaryID IN
+                    (SELECT StackerSummaryID 
+                     FROM stackersummary 
+                     WHERE StackerSummaryID = :stackerbatchID  
+                     AND Status = 0)";
+        $command = $this->_connection->createCommand($sql);
+        $command->bindValue(":stackerbatchID", $stackerBatchID);
+        $result = $command->queryRow();
+        
+        return $result['TotalStackerAmount'];
+        
+    }
 }
 ?>
 
