@@ -280,7 +280,7 @@ class TicketTransactionsMonitoringController extends VMSBaseIdentity {
                                 $ticketstatus = 'Expired';
                                 $ticketsEncashedCount = $ticketsEncashedCount + 1;
                                 $ticketsEncashedTotal = $ticketsEncashedTotal + $ticketamount;
-                                $dateupdated = $value['ValidToDate'];
+                                $dateupdated = $value['DateUpdated'];
                             } else {
                                 $ticketstatus = '';
                                 $dateupdated = $value['DateUpdated'];

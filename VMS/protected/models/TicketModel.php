@@ -354,7 +354,7 @@ class TicketModel extends CFormModel {
         $datetime = new DateTime($dateTo);
         $datetime->modify('+1 day');
         $dateTo = $datetime->format('Y-m-d H:i:s');
-
+        
         if (($_SESSION['AccountType'] == self::ACCOUNTTYPE_ID_SITE_OPERATOR) ||
                 ($_SESSION['AccountType'] == self::ACCOUNTTYPE_ID_SITE_SUPERVISOR) ||
                 ($_SESSION['AccountType'] == self::ACCOUNTTYPE_ID_SITE_CASHIER)) {
@@ -404,7 +404,7 @@ class TicketModel extends CFormModel {
 		INNER JOIN $dbname.sites st ON st.SiteID = tr.SiteID
                 INNER JOIN $dbname.siteaccounts sa ON sa.SiteID = st.SiteID
                 INNER JOIN $dbname.accounts a ON a.AID = sa.AID
-                WHERE t.ValidToDate >= :dateFrom AND t.ValidToDate < :dateTo AND t.Status = :status 
+                WHERE t.DateUpdated >= :dateFrom AND t.DateUpdated < :dateTo AND t.Status = :status 
                 AND a.AccountTypeID = :account_type_id AND a.AID = :aid
                 GROUP BY t.TicketCode
                 ORDER BY t.DateCreated DESC";
@@ -556,7 +556,7 @@ class TicketModel extends CFormModel {
                 t.Source, t.IsCreditable FROM tickets t 
 		INNER JOIN $dbname.terminals tr ON tr.TerminalID=t.TerminalID
 		INNER JOIN $dbname.sites st ON st.SiteID = tr.SiteID
-                WHERE st.SiteID = :site AND t.ValidToDate > :dateFrom AND t.ValidToDate < :dateTo 
+                WHERE st.SiteID = :site AND t.DateUpdated >= :dateFrom AND t.DateUpdated < :dateTo 
                 AND t.Status = :status 
                 GROUP BY t.TicketCode
                 ORDER BY t.DateCreated DESC";
