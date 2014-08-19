@@ -473,7 +473,7 @@ class TicketModel extends CFormModel {
                 t.Source, t.IsCreditable FROM tickets t 
 		INNER JOIN $dbname.terminals tr ON tr.TerminalID=t.TerminalID
 		INNER JOIN $dbname.sites st ON st.SiteID = tr.SiteID
-                WHERE t.ValidToDate >= :dateFrom AND t.ValidToDate < :dateTo  AND t.Status = :status 
+                WHERE t.DateUpdated >= :dateFrom AND t.DateUpdated < :dateTo  AND t.Status = :status 
                 GROUP BY t.TicketCode
                 ORDER BY t.DateCreated DESC";
                 $command = $this->_connection->createCommand($sql);
