@@ -1851,6 +1851,20 @@ class ApplicationSupport extends DBHandler
     }
     
     
+    public function getServiceGrpIDById($service_id){
+        $sql = 'SELECT rsg.ServiceGroupID FROM ref_services rs
+                INNER JOIN ref_servicegroups rsg ON rs.ServiceGroupID = rsg.ServiceGroupID
+                WHERE rs.ServiceID = ?';
+        $this->prepare($sql);
+        $this->bindparameter(1, $service_id);
+        $this->execute($sql);
+        $result =  $this->fetchData();
+        if(!isset($result['ServiceGroupID']))
+            return false;
+        return $result['ServiceGroupID'];
+    }
+    
+    
     public function getServiceGrpName($casino){
         $sql = "SELECT ServiceGroupName FROM ref_services rs 
             INNER JOIN ref_servicegroups rsg ON rs.ServiceGroupID = rsg.ServiceGroupID 
