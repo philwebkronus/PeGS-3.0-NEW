@@ -126,13 +126,25 @@ class ReportsController extends FrontendController{
             
             $enddate2 = date('Y-m-d H:i:s', strtotime($enddate. ' - 1 days'));
             
+            $enddate2s = date('Y-m-d', strtotime($enddate. ' - 1 days'));
+            
             $runningactivetickets2 =  $tickets->getrunningactivetickets($date2, $enddate2, $this->site_id);
+            
+            $expiredtickets = $tickets->getExpiredTickets($enddate2s, $this->site_id);
+            
+            $runningactivetickets2 = $runningactivetickets2 - $expiredtickets;
             
             $date3 = date('Y-m-d H:i:s', strtotime($date. ' - 2 days'));
             
             $enddate3 = date('Y-m-d H:i:s', strtotime($enddate. ' - 2 days'));
             
+            $enddate3s = date('Y-m-d', strtotime($enddate. ' - 2 days'));
+            
             $runningactivetickets3 = $sitegrossholdcuttoff->getrunningActiveTickets($enddate3, $this->site_id);
+            
+            $expiredtickets2 = $tickets->getExpiredTickets($enddate3s, $this->site_id);
+            
+            $runningactivetickets3 = $runningactivetickets3 - $expiredtickets2;
             
             $runningactivetickets = $runningactivetickets1 + $runningactivetickets2 + $runningactivetickets3;
             
@@ -148,9 +160,15 @@ class ReportsController extends FrontendController{
                 
                 $oneday = date('Y-m-d H:i:s', strtotime($datetoday. ' - 1 days'));
                 
+                $onedays = date('Y-m-d', strtotime($datetoday. ' - 1 days'));
+                
                 $runningactivetickets = $sitegrossholdcuttoff->getrunningActiveTickets($oneday, $this->site_id);
                 
                 $runningactivetickets2 =  $tickets->getrunningactivetickets($oneday, $datetoday, $this->site_id);
+                
+                $expiredtickets = $tickets->getExpiredTickets($onedays, $this->site_id);
+                
+                $runningactivetickets2 = $runningactivetickets2 - $expiredtickets;
                 
                 $runningactivetickets = $runningactivetickets + $runningactivetickets2;
             }

@@ -348,6 +348,9 @@ class TransactionSummaryModel extends MI_Model{
             if($value['TerminalType'] == 1){
                 $terminalCode = 'G'.$value['TerminalCode'];
             }
+            else{
+                $terminalCode = $value['TerminalCode']; 
+            }
             if(!isset($new_result[$value['TransactionSummaryID']])) {
                 $new_result[$value['TransactionSummaryID']] = array(
                     'TransactionSummaryID'=>$value['TransactionSummaryID'],
@@ -1126,6 +1129,9 @@ class TransactionSummaryModel extends MI_Model{
         foreach($result as $value) {
             if($value['TerminalType'] == 1){
                 $terminalCode = 'G'.$value['TerminalCode'];
+            }
+            else{
+                $terminalCode = $value['TerminalCode']; 
             }
             if(!isset($new_result[$value['TransactionSummaryID']])) {
                 $new_result[$value['TransactionSummaryID']] = array(
