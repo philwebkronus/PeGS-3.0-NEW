@@ -2504,6 +2504,14 @@ class TopUp extends DBHandler
                                 WHERE SiteID IN ($sites)
                                 AND DateCutOff = :cutoffdate ";
         
+        
+        $query8 = "SELECT SiteID, IFNULL(SUM(Amount), 0) AS ExpiredTickets FROM vouchermanagement.tickets
+                                WHERE SiteID IN ($sites) 
+                                 AND (ValidToDate >= :startlimitdate AND ValidToDate <= :endlimitdate) AND ValidToDate <= now(6)
+                                AND Status IN (1,2,7)
+                                AND DateEncashed IS NULL 
+                                GROUP BY SiteID ORDER BY SiteID";
+        
 
         if($formatteddate == $comparedate) { //Date Started is less than 1 day of the date today
             
@@ -2534,6 +2542,29 @@ class TopUp extends DBHandler
                 }  
             }
             
+            //Date to use for Expired Ticket Query
+             $sldate = new DateTime($startdate);
+            $startlimitdate = $sldate->format('Y-m-d')." 00:00:00.000000";
+            $eldate = new DateTime($startdate);
+            $endlimitdate = $eldate->format('Y-m-d')." 23:59:59.000000";
+            
+            //Get the Expired Tickets per site
+            $this->prepare($query8);
+            $this->bindparameter(':startlimitdate', $startlimitdate);
+            $this->bindparameter(':endlimitdate', $endlimitdate);
+            $this->execute();  
+            $rows8 =  $this->fetchAllData();
+            
+            //Less the Expired Tickets to Total Unused Tickets
+            foreach ($rows8 as $value1) {
+                foreach ($varrmerge as $keys => $value2) {
+                    if($value1["SiteID"] == $value2["SiteID"]){
+                            $varrmerge[$keys]["RunningActiveTickets"] = (float)$varrmerge[$keys]["RunningActiveTickets"]  - (float)$value1["ExpiredTickets"];
+                        break;
+                    }
+                }  
+            }
+            
         } else if($formatteddate != date('Y-m-d') && $formatteddate != $comparedate){ //Date Started is not less than 1 day nor equal to the date today
 
             //Get the Running Active Tickets for Pick Date, if the Pick Date is not less than 1 day nor equal to the date today
@@ -2555,7 +2586,7 @@ class TopUp extends DBHandler
                     }
                 }  
             }
-        } else if($formatteddate == date('Y-m-d')){ //Date Started is equal to the date today
+        } else if($formatteddate == date('Y-m-d')){ //Date Started/Pick Date is equal to the date today
             
             //Set the Date Range in getting the Unused Ticket for Pick Date less 1 Day Cutoff
             $firstdate = new DateTime($formatteddate);
@@ -2587,7 +2618,6 @@ class TopUp extends DBHandler
             //Set the Date Range in getting the Running Active Tickets for Pick Date less 2 Days Cutoff
             $seconddate = new DateTime($date1);
             $seconddate->sub(date_interval_create_from_date_string('1 day'));
-            $date3 = $seconddate->format('Y-m-d')." 06:00:00";
             
             //Get the Running Active Tickets of the date less than 2 days of the date today if the pick date is equal to the date today
             //ex: Current Date = June 4, Pick Date = June 4: Get the Active tickets from sitegrosshold for June 2
@@ -2609,6 +2639,31 @@ class TopUp extends DBHandler
                     }
                 }
             }
+            
+            //Date to use for Expired Ticket Query for the Date Today
+            $sldate = new DateTime($startdate);
+            $sldate->sub(date_interval_create_from_date_string('1 day'));
+            $startlimitdate = $sldate->format('Y-m-d')." 00:00:00.000000";
+            $eldate = new DateTime($startdate);
+            $endlimitdate = $eldate->format('Y-m-d')." 23:59:59.000000";
+            
+            //Get the Expired Tickets per site
+            $this->prepare($query8);
+            $this->bindparameter(':startlimitdate', $startlimitdate);
+            $this->bindparameter(':endlimitdate', $endlimitdate);
+            $this->execute();  
+            $rows8 =  $this->fetchAllData();
+
+            //Less the Expired Tickets to Total Unused Tickets
+            foreach ($rows8 as $value1) {
+                foreach ($varrmerge as $keys => $value2) {
+                    if($value1["SiteID"] == $value2["SiteID"]){
+                            $varrmerge[$keys]["RunningActiveTickets"] = (float)$varrmerge[$keys]["RunningActiveTickets"]  - (float)$value1["ExpiredTickets"];
+                        break;
+                    }
+                }  
+            }
+            
         }
 
           unset($query,$query2,$query3, $sort, $dir, $rows1);   

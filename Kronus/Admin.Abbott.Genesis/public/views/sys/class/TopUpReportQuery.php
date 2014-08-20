@@ -822,8 +822,8 @@ class TopUpReportQuery extends DBHandler{
                                 ORDER BY tr.TerminalID, tr.DateCreated DESC"; 
                 
                 //Query for Unused or Active Tickets of the Pick Date (per site/per cutoff)
-                $query7 = "SELECT SiteID, IFNULL(SUM(Amount), 0) AS UnusedTickets FROM
-                                            ((SELECT IFNULL(stckr.Withdrawal, 0) As Amount, stckr.TicketCode, tr.SiteID FROM npos.transactiondetails tr  -- Printed Tickets through W
+                $query7 = "SELECT SiteID, IFNULL(SUM(Amount), 0) AS UnusedTickets, DateCreated FROM
+                                            ((SELECT IFNULL(stckr.Withdrawal, 0) As Amount, stckr.TicketCode, tr.SiteID, tr.DateCreated FROM npos.transactiondetails tr  -- Printed Tickets through W
                                               INNER JOIN npos.transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
                                               INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
                                               INNER JOIN npos.accounts a ON tr.CreatedByAID = a.AID
@@ -837,7 +837,7 @@ class TopUpReportQuery extends DBHandler{
                                                 AND acct.AID IN (SELECT sacct.AID FROM npos.siteaccounts sacct WHERE sacct.SiteID =  :siteid))
                                                     )
                                             UNION ALL
-                                            (SELECT IFNULL(stckr.Withdrawal, 0) As Amount, stckr.TicketCode, sa.SiteID FROM stackermanagement.stackersummary stckr -- Cancelled Tickets in Stacker
+                                            (SELECT IFNULL(stckr.Withdrawal, 0) As Amount, stckr.TicketCode, sa.SiteID, stckr.DateCancelledOn as DateCreated FROM stackermanagement.stackersummary stckr -- Cancelled Tickets in Stacker
                                               INNER JOIN npos.siteaccounts sa ON stckr.CreatedByAID = sa.AID
                                               WHERE stckr.Status IN (1, 2)
                                               AND stckr.DateCancelledOn >= :startdate AND stckr.DateCancelledOn < :enddate
@@ -874,7 +874,7 @@ class TopUpReportQuery extends DBHandler{
                                         GROUP BY SiteID";
                 
                 //Query for Printed Tickets of the pick date (per site/per cutoff)
-                $query8 = "SELECT tr.SiteID, IFNULL(SUM(stckr.Withdrawal), 0) AS PrintedTickets FROM npos.transactiondetails tr  -- Printed Tickets through W
+                $query8 = "SELECT tr.SiteID, IFNULL(SUM(stckr.Withdrawal), 0) AS PrintedTickets, tr.DateCreated FROM npos.transactiondetails tr  -- Printed Tickets through W
                                         INNER JOIN npos.transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
                                         INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
                                         INNER JOIN npos.accounts a ON ts.CreatedByAID = a.AID
@@ -887,7 +887,7 @@ class TopUpReportQuery extends DBHandler{
                                           GROUP BY tr.SiteID";
                 
                 //Query for Encashed Tickets of the pick date (per site/per cutoff)
-                $query9 = "SELECT tckt.SiteID, IFNULL(SUM(tckt.Amount), 0) AS EncashedTickets FROM vouchermanagement.tickets tckt  -- Encashed Tickets
+                $query9 = "SELECT tckt.SiteID, IFNULL(SUM(tckt.Amount), 0) AS EncashedTickets, tckt.DateEncashed as DateCreated FROM vouchermanagement.tickets tckt  -- Encashed Tickets
                                         WHERE tckt.DateEncashed >= ? AND tckt.DateEncashed < ?
                                         AND tckt.SiteID = ?
                                         GROUP BY tckt.SiteID";
@@ -1418,8 +1418,8 @@ class TopUpReportQuery extends DBHandler{
                                 ORDER BY tr.TerminalID, tr.DateCreated DESC"; 
                 
                 //Query for Unused or Active Tickets of the Pick Date (per site/per cutoff)
-                $query7 = "SELECT SiteID, IFNULL(SUM(Amount), 0) AS UnusedTickets FROM
-                                            ((SELECT IFNULL(stckr.Withdrawal, 0) As Amount, stckr.TicketCode, tr.SiteID FROM npos.transactiondetails tr  -- Printed Tickets through W
+                $query7 = "SELECT SiteID, IFNULL(SUM(Amount), 0) AS UnusedTickets, DateCreated FROM
+                                            ((SELECT IFNULL(stckr.Withdrawal, 0) As Amount, stckr.TicketCode, tr.SiteID, tr.DateCreated FROM npos.transactiondetails tr  -- Printed Tickets through W
                                               INNER JOIN npos.transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
                                               INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
                                               INNER JOIN npos.accounts a ON tr.CreatedByAID = a.AID
@@ -1433,7 +1433,7 @@ class TopUpReportQuery extends DBHandler{
                                                 AND acct.AID IN (SELECT sacct.AID FROM npos.siteaccounts sacct WHERE sacct.SiteID =  :siteid))
                                                     )
                                             UNION ALL
-                                            (SELECT IFNULL(stckr.Withdrawal, 0) As Amount, stckr.TicketCode, sa.SiteID FROM stackermanagement.stackersummary stckr -- Cancelled Tickets in Stacker
+                                            (SELECT IFNULL(stckr.Withdrawal, 0) As Amount, stckr.TicketCode, sa.SiteID, stckr.DateCancelledOn as DateCreated FROM stackermanagement.stackersummary stckr -- Cancelled Tickets in Stacker
                                               INNER JOIN npos.siteaccounts sa ON stckr.CreatedByAID = sa.AID
                                               WHERE stckr.Status IN (1, 2)
                                               AND stckr.DateCancelledOn >= :startdate AND stckr.DateCancelledOn < :enddate
@@ -1470,7 +1470,7 @@ class TopUpReportQuery extends DBHandler{
                                         GROUP BY SiteID";
                 
                 //Query for Printed Tickets of the pick date (per site/per cutoff)
-                $query8 = "SELECT tr.SiteID, IFNULL(SUM(stckr.Withdrawal), 0) AS PrintedTickets FROM npos.transactiondetails tr  -- Printed Tickets through W
+                $query8 = "SELECT tr.SiteID, IFNULL(SUM(stckr.Withdrawal), 0) AS PrintedTickets, tr.DateCreated FROM npos.transactiondetails tr  -- Printed Tickets through W
                                         INNER JOIN npos.transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
                                         INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
                                         INNER JOIN npos.accounts a ON ts.CreatedByAID = a.AID
@@ -1483,7 +1483,7 @@ class TopUpReportQuery extends DBHandler{
                                           GROUP BY tr.SiteID";
                 
                 //Query for Encashed Tickets of the pick date (per site/per cutoff)
-                $query9 = "SELECT tckt.SiteID, IFNULL(SUM(tckt.Amount), 0) AS EncashedTickets FROM vouchermanagement.tickets tckt  -- Encashed Tickets
+                $query9 = "SELECT tckt.SiteID, IFNULL(SUM(tckt.Amount), 0) AS EncashedTickets, tckt.DateEncashed as DateCreated FROM vouchermanagement.tickets tckt  -- Encashed Tickets
                                         WHERE tckt.DateEncashed >= ? AND tckt.DateEncashed < ?
                                         AND tckt.SiteID = ?
                                         GROUP BY tckt.SiteID";

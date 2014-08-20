@@ -158,7 +158,7 @@ $vaccesspages = array('9');
                 <tr>
                     <td>Cashier Version</td>
                     <td>
-                        <input type="text" size="5" id="txtcashierversion" name="txtcashierversion" value="" maxlength="5" size="5" onkeypress="return loyaltycardnumber(event);" />
+                        <input type="text" size="5" id="txtcashierversion" name="txtcashierversion" value="" maxlength="5" size="5" onkeypress="return numberonly(event);" />
                     </td>
                 </tr>
             </table>
