@@ -91,9 +91,8 @@ class CommonRedeem {
 
         //Display message
         if(is_array($pendingGames) && $pendingGames['IsSucceed'] == true){
-            $message = "Info: There was a pending game bet on  ";
+            $message = "Redemption canceled-Pending bet encountered. Please Ask the player to complete the game.";
             logger($message.$pendingGames['PendingGames']['GetPendingGamesByPIDResult']['Gamename'].'.' . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id);
-            $message = "Info: There was a pending game bet. ";
             //unlock launchpad gaming terminal
             $casinoApi->callSpyderAPI($commandId = 0, $terminal_id, $terminalname, $login_pwd, $service_id);
             CasinoApi::throwError($message);   

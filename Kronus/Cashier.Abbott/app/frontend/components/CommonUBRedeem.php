@@ -91,21 +91,20 @@ class CommonUBRedeem {
         } else {
             $pendingGames = '';
         }
+
+        //Display message
+        if(is_array($pendingGames) && $pendingGames['IsSucceed'] == true){
+            $message = "Redemption canceled-Pending bet encountered. Please Ask the player to complete the game.";
+            logger($message.$pendingGames['PendingGames']['GetPendingGamesByPIDResult']['Gamename'].'.' . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id);
+            //unlock launchpad gaming terminal
+            $casinoApi->callSpyderAPI($commandId = 0, $terminal_id, $casinoUsername, $login_pwd, $service_id);
+            CasinoApiUB::throwError($message);   
+        }
         
         //logout player
         if(strpos($service_name, 'RTG') !== false) {
             $PID = $casinoApiHandler->GetPIDLogin($casinoUsername);
             $casinoApi->LogoutPlayer($terminal_id, $service_id,$PID);    
-        }
-
-        //Display message
-        if(is_array($pendingGames) && $pendingGames['IsSucceed'] == true){
-            $message = "Info: There was a pending game bet on  ";
-            logger($message.$pendingGames['PendingGames']['GetPendingGamesByPIDResult']['Gamename'].'.' . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id);
-            $message = "Info: There was a pending game bet. ";
-            //unlock launchpad gaming terminal
-            $casinoApi->callSpyderAPI($commandId = 0, $terminal_id, $casinoUsername, $login_pwd, $service_id);
-            CasinoApiUB::throwError($message);   
         }
 
         //Get Last Transaction Summary ID from terminalsessions
