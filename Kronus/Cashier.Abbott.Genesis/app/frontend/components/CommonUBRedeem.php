@@ -44,9 +44,6 @@ class CommonUBRedeem {
         $commonTransactionsModel = new CommonTransactionsModel();
         $pendingUserTransCountModel = new PendingUserTransactionCountModel();
         
-        //call SAPI, lock launchpad terminal
-        $casinoApi->callSpyderAPI($commandId = 1, $terminal_id, $casinoUsername, $login_pwd, $service_id);
-        
         //check terminal type if Genesis = 1
         $terminalType = $terminalsModel->checkTerminalType($terminal_id);
         
@@ -64,6 +61,9 @@ class CommonUBRedeem {
             CasinoApi::throwError($message);
           }  
         }
+        
+        //call SAPI, lock launchpad terminal
+        $casinoApi->callSpyderAPI($commandId = 1, $terminal_id, $casinoUsername, $login_pwd, $service_id);
         
         $is_terminal_active = $terminalSessionsModel->isSessionActive($terminal_id);
         
@@ -107,9 +107,8 @@ class CommonUBRedeem {
 
         //Display message
         if(is_array($pendingGames) && $pendingGames['IsSucceed'] == true){
-            $message = "Info: There was a pending game bet on  ";
+            $message = "Redemption canceled-Pending bet encountered. Please Ask the player to complete the game.";
             logger($message.$pendingGames['PendingGames']['GetPendingGamesByPIDResult']['Gamename'].'.' . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id);
-            $message = "Info: There was a pending game bet. ";
             //unlock launchpad gaming terminal
             $casinoApi->callSpyderAPI($commandId = 0, $terminal_id, $casinoUsername, $login_pwd, $service_id);
             CasinoApiUB::throwError($message);   
