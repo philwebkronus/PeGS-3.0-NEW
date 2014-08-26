@@ -7,6 +7,7 @@
 // This is the main Web application configuration. Any writable
 // CWebApplication properties can be configured here.
 return array(
+
 	'basePath'=>dirname(__FILE__).DIRECTORY_SEPARATOR.'..',
 	'name'=>'Authenticate Membership Portal API', //Application Programming Interface
         'defaultController'=>'AmpapiInvoker/overview',
@@ -68,12 +69,9 @@ return array(
                 'db'=>array(
                         'class'=>'CDbConnection',
 			'connectionString' => 'mysql:host=;dbname=membership',
-                        //'connectionString' => 'mysql:host=localhost;dbname=membership',
 			'emulatePrepare' => true,
 			'username' => 'membershipapi',
 			'password' => '',
-                        //'username' => 'root',
-			//'password' => '',
 			'charset' => 'utf8',
 		),
                 //db connection for loyaltydb
@@ -106,14 +104,13 @@ return array(
                 'db5'=>array(
                         'class'=>'CDbConnection',
 			'connectionString' => 'mysql:host=;dbname=accountsdb',
-                        //'connectionString' => 'mysql:host=localhost;dbname=accountsdb',
 			'emulatePrepare' => true,
 			'username' => 'accountsapi',
 			'password' => '',
-                        //'username' => 'root',
-                        //'password' => '',
 			'charset' => 'utf8',
                 ),
+
+
                 'CURL' =>array(
                         'class' => 'application.extensions.curl.CurlController',
                      //you can setup timeout,http_login,proxy,proxylogin,cookie, and setOPTIONS
@@ -137,6 +134,7 @@ return array(
 				*/
 			),
 		),
+
 	),
         // using Yii::app()->params['paramName']
 	'params'=>array(
@@ -145,7 +143,13 @@ return array(
             'app_id' => 'EGAMES',
             'DenominationPrefix'=>'PhP ',
             'allowedAmount'=>0,
+            'urlAMPAPI'=>'http://localhost/<AMPAPI DIRECTORY HERE>/index.php/Ampapi/',
+            'urlMPAPI'=>'http://<MPAPI DIRECTORY HERE>/index.php/MPapi/'
 
-            ),
+        ),
+
+
+
+
 );
 

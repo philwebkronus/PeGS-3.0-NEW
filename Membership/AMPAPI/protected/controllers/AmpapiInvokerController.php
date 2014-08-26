@@ -14,6 +14,8 @@
  */
 class AmpapiInvokerController extends Controller {
     
+   
+    
     /**
      * Set default action
      * @var string 
@@ -527,8 +529,7 @@ class AmpapiInvokerController extends Controller {
     }
     //This function dynamically generates URL string for the use of certain method
     private function genURL($moduleName = null){
-        return "http://localhost/membership.rewards/AMPAPI/index.php/Ampapi/".$moduleName;
-        //return "http://ampapi.dev.local/index.php/Ampapi".$moduleName;
+        return Yii::app()->params['urlAMPAPI'].$moduleName;
     }
     //----------------------------------------------
     

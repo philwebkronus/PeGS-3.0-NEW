@@ -15,9 +15,13 @@
 class AmpapiController extends Controller {
     
     //URL for AMPAPI, and MPAPI
-    public $urlMPAPI = 'http://172.16.102.174/mpapi.dev.local/index.php/MPapi/';
-    //public $urlMPAPI = 'http://localhost/membership.rewards/MPAPI/index.php/MPapi/';
-    public $urlAMPAPI = 'http://localhost/membership.rewards/AMPAPI/index.php/Ampapi/';
+    public $urlMPAPI;
+    public $urlAMPAPI;
+    
+    public function __construct() {
+        $this->urlAMPAPI = Yii::app()->params['urlAMPAPI'];
+        $this->urlMPAPI = Yii::app()->params['urlMPAPI'];
+    }
     
      /**
      * Set default action

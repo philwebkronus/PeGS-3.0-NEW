@@ -148,5 +148,6 @@ return array(
             'extra_imagepath' => "http://membership.egamescasino.ph/images/rewarditems/",
             'rewarditem_imagepath' => "172.16.102.174/rewards.management/images/rewarditems/",
             'MarketingEmail' => 'fdlsison@philweb.com.ph',
+	    'url' => 'http://<MPAPI URL HERE>/index.php/MPapi/', //local url
             ),
 );
