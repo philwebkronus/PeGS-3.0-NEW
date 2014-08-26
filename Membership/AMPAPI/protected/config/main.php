@@ -144,7 +144,7 @@ return array(
             'DenominationPrefix'=>'PhP ',
             'allowedAmount'=>0,
             'urlAMPAPI'=>'http://localhost/<AMPAPI DIRECTORY HERE>/index.php/Ampapi/',
-            'urlMPAPI'=>'http://<MPAPI DIRECTORY HERE>/index.php/MPapi/'
+            'urlMPAPI'=>'http://<MPAPI URL HERE>/index.php/MPapi/'
 
         ),
 
