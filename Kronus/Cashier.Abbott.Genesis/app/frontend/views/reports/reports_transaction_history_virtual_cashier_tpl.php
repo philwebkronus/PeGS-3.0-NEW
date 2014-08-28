@@ -195,7 +195,7 @@ $(document).ready(function(){
       </tr>
       <?php
       
-      $cashonhand = $totalcash - ($withdrawalcashier2 + $manualredemptions);
+      $cashonhand = $totalcash - ($withdrawalcashier + $manualredemptions);
       ?>
       <tr>
           <th colspan="1" align="left">Cash on Hand</th>
