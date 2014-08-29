@@ -115,7 +115,7 @@ class TicketTransactionsMonitoringController extends VMSBaseIdentity {
                         $dateNow = date("Y-m-d H:i:s");
                         if ($ticketdateexpiry < $dateNow) {
                             if ($ticketstatus == 2) {
-                                $ticketstatus = 'Expired';
+                                $ticketstatus = 'Cancelled';
                                 $ticketVoidCount = $ticketVoidCount + 1;
                                 $ticketVoidAmount = $ticketVoidAmount + $ticketamount;
                                 $dateupdated = $value['DateCreated'];
@@ -237,17 +237,17 @@ class TicketTransactionsMonitoringController extends VMSBaseIdentity {
                         $dateNow = date("Y-m-d H:i:s");
                         if ($ticketdateexpiry < $dateNow) {
                             if ($ticketstatus == 2) {
-                                $ticketstatus = 'Expired';
+                                $ticketstatus = 'Cancelled';
                                 $ticketVoidCount = $ticketVoidCount + 1;
                                 $ticketVoidAmount = $ticketVoidAmount + $ticketamount;
                                 $dateupdated = $value['DateCreated'];
                             } else if ($ticketstatus == 3) {
-                                $ticketstatus = 'Expired';
+                                $ticketstatus = 'Used';
                                 $ticketDepositReloadCount = $ticketDepositReloadCount + 1;
                                 $ticketDepositReloadAmount = $ticketDepositReloadAmount + $ticketamount;
                                 $dateupdated = $value['DateUpdated'];
                             } else if ($ticketstatus == 4) {
-                                $ticketstatus = 'Expired';
+                                $ticketstatus = 'Encashed';
                                 $ticketsEncashedCount = $ticketsEncashedCount + 1;
                                 $ticketsEncashedTotal = $ticketsEncashedTotal + $ticketamount;
                                 $dateupdated = $value['DateEncashed'];
