@@ -81,7 +81,8 @@
              viewrecords: true, 
              loadonce: true, 
              sortorder: "desc", 
-             shrinkToFit: true,  
+             shrinkToFit: true,
+             hidegrid : false,
              caption: "Transaction Details"
         });
         jQuery("#list1").jqGrid('setGridWidth', '920'); 

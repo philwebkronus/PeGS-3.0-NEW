@@ -67,6 +67,7 @@ $this->pageTitle = Yii::app()->name." - Active Tickets Monitoring";
              loadonce: false, 
              sortorder: "desc", 
              caption: "Ticket Details",
+             hidegrid : false,
              shrinkToFit: false
         });
         jQuery("#list1").jqGrid('setGridWidth', '900'); 
