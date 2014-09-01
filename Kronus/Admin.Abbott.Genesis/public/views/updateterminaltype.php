@@ -60,6 +60,8 @@ include "header.php";
                     dataType: 'json',
                     success: function(data){
                         var terminal = $("#cmbterminals");
+                        terminal.empty();
+                        terminal.append($("<option />").val("-1").text("Please Select"));
                         jQuery.each(data, function(){
                             terminal.append($("<option />").val(this.TerminalID).text(this.TerminalCode));
                         });
