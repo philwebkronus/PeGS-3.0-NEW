@@ -2512,7 +2512,14 @@ class TopUp extends DBHandler
                                 AND DateEncashed IS NULL 
                                 GROUP BY SiteID ORDER BY SiteID";
         
-
+        
+        $query9 = "SELECT SiteID, IFNULL(SUM(Amount), 0) AS LessTickets FROM vouchermanagement.tickets
+                                WHERE SiteID IN ($sites) 
+                                AND (DateUpdated >= :startlimitdate AND DateUpdated <= :endlimitdate)
+                                AND Status IN (4,3)
+                                AND DateEncashed IS NOT NULL
+                                ORDER BY SiteID";
+        
         if($formatteddate == $comparedate) { //Date Started is less than 1 day of the date today
             
             $firstdate = new DateTime($comparedate);
@@ -2560,6 +2567,28 @@ class TopUp extends DBHandler
                 foreach ($varrmerge as $keys => $value2) {
                     if($value1["SiteID"] == $value2["SiteID"]){
                             $varrmerge[$keys]["RunningActiveTickets"] = (float)$varrmerge[$keys]["RunningActiveTickets"]  - (float)$value1["ExpiredTickets"];
+                        break;
+                    }
+                }  
+            }
+            
+            //Date to use for Ticket Query To be less in active running tickets
+             $sldate = new DateTime($startdate);
+            $startlimitdate = $sldate->format('Y-m-d')." 06:00:00.000000";
+            $endlimitdate = date('Y-m-d')." 06:00:00.000000";
+            
+            //Get the Tickets to be less in active running tickets per site
+            $this->prepare($query9);
+            $this->bindparameter(':startlimitdate', $startlimitdate);
+            $this->bindparameter(':endlimitdate', $endlimitdate);
+            $this->execute();  
+            $rows9 =  $this->fetchAllData();
+            
+           //Less the tickets used/encashed for the recalculated dates
+            foreach ($rows9 as $value1) {
+                foreach ($varrmerge as $keys => $value2) {
+                    if($value1["SiteID"] == $value2["SiteID"]){
+                            $varrmerge[$keys]["RunningActiveTickets"] = (float)$varrmerge[$keys]["RunningActiveTickets"]  - (float)$value1["LessTickets"];
                         break;
                     }
                 }  
@@ -2659,6 +2688,32 @@ class TopUp extends DBHandler
                 foreach ($varrmerge as $keys => $value2) {
                     if($value1["SiteID"] == $value2["SiteID"]){
                             $varrmerge[$keys]["RunningActiveTickets"] = (float)$varrmerge[$keys]["RunningActiveTickets"]  - (float)$value1["ExpiredTickets"];
+                        break;
+                    }
+                }  
+            }
+            
+            
+            //Date to use for Ticket Query To be less in active running tickets
+            $sldate = new DateTime($startdate);
+            $sldate->sub(date_interval_create_from_date_string('1 day'));
+            $startlimitdate = $sldate->format('Y-m-d')." 06:00:00.000000";
+            $eldate = new DateTime($startdate);
+            $eldate->add(date_interval_create_from_date_string('1 day'));
+            $endlimitdate = $eldate->format('Y-m-d')." 06:00:00.000000";
+
+            //Get the Tickets to be less in active running tickets per site
+            $this->prepare($query9);
+            $this->bindparameter(':startlimitdate', $startlimitdate);
+            $this->bindparameter(':endlimitdate', $endlimitdate);
+            $this->execute();  
+            $rows9 =  $this->fetchAllData();
+            
+            //Less the tickets used/encashed for the recalculated dates
+            foreach ($rows9 as $value1) {
+                foreach ($varrmerge as $keys => $value2) {
+                    if($value1["SiteID"] == $value2["SiteID"]){
+                            $varrmerge[$keys]["RunningActiveTickets"] = (float)$varrmerge[$keys]["RunningActiveTickets"]  - (float)$value1["LessTickets"];
                         break;
                     }
                 }  
