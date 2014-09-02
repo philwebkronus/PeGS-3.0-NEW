@@ -356,7 +356,7 @@ class TransactionpercutoffController extends VMSBaseIdentity
             $runningactive1 = $this->getLess2DaysCutOff($less2days, $sitecode); //previuos 2 days
             $runningactive2 = $this->getDayCutOff($less1day, $sitecode); //previous day
             $runningactive3 = $this->getDayCutOff($transactiondate, $sitecode); //date today
-
+            
             $totalrunningactive     = (int)$runningactive1['SumCount'] + $runningactive2['SumCount'] + $runningactive3['SumCount'];
             $totalrunningactiveval  = $runningactive1['SumValue'] + $runningactive2['SumValue'] + $runningactive3['SumValue'];
         }

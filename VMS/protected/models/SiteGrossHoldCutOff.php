@@ -23,11 +23,10 @@ class SiteGrossHoldCutOff extends CFormModel
         if ($sitecode == 'All')
         {
             $sql = "SELECT ReportDate, RunningActiveTickets, RunningActiveTicketCount 
-                FROM sitegrossholdcutoff 
-                WHERE ReportDate >= :transdate AND ReportDate  < :dateTo";
+                    FROM sitegrossholdcutoff 
+                    WHERE ReportDate = :transdate";
             $command = $this->connection->createCommand($sql);
-            $command->bindValue(":transdate", $transdate." 06:00:00");
-            $command->bindValue(":dateTo", $dateTo." 06:00:00");
+            $command->bindValue(":transdate", $transdate);
             $result = $command->queryAll();
         }
         else if (is_array($sitecode))
@@ -36,22 +35,18 @@ class SiteGrossHoldCutOff extends CFormModel
             
             $sql = "SELECT ReportDate, RunningActiveTickets, RunningActiveTicketCount 
                 FROM sitegrossholdcutoff 
-                WHERE ReportDate >= :transdate AND ReportDate  < :dateTo 
-                AND SiteID IN ($sitecode)";
+                WHERE ReportDate = :transdate AND SiteID IN ($sitecode)";
             $command = $this->connection->createCommand($sql);
-            $command->bindValue(":transdate", $transdate." 06:00:00");
-            $command->bindValue(":dateTo", $dateTo." 06:00:00");
+            $command->bindValue(":transdate", $transdate);
             $result = $command->queryAll();
         }
         else
         {
             $sql = "SELECT ReportDate, RunningActiveTickets, RunningActiveTicketCount 
                 FROM sitegrossholdcutoff 
-                WHERE ReportDate >= :transdate AND ReportDate  < :dateTo 
-                AND SiteID = :siteID";
+                WHERE ReportDate = :transdate AND SiteID = :siteID";
             $command = $this->connection->createCommand($sql);
-            $command->bindValue(":transdate", $transdate." 06:00:00");
-            $command->bindValue(":dateTo", $dateTo." 06:00:00");
+            $command->bindValue(":transdate", $transdate);
             $command->bindValue(":siteID", $sitecode);
             $result = $command->queryAll();
         }
