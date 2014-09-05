@@ -49,6 +49,7 @@ if(isset($_SESSION['acctype']))
                 $vaddress = $resultviews['Address'];
                 $vDateCreated = $resultviews['DateCreated'];
                 $rdesignationID = $resultviews['DesignationID'];
+                $rstatus = $resultviews['Status'];
             }
 
             if(count($vlandLine) == 1)
@@ -256,7 +257,11 @@ if(isset($_SESSION['acctype']))
             </table>
             
             <div id="submitarea">
-                <input type="button" value="Change Status" onclick="window.location.href='process/ProcessAccManagement.php?accid=<?php echo $raid; ?>'+'&statuspage='+'UpdateStatus'"/>
+                <?php if($rstatus == 5){ //For Terminated Accounts disable change status button  ?>
+                        <input type="button" disabled="disabled" style="color: gray;"  value="Change Status" onclick="window.location.href='process/ProcessAccManagement.php?accid=<?php echo $raid; ?>'+'&statuspage='+'UpdateStatus'"/>
+                <?php } else { ?>
+                        <input type="button" value="Change Status" onclick="window.location.href='process/ProcessAccManagement.php?accid=<?php echo $raid; ?>'+'&statuspage='+'UpdateStatus'"/>
+                <?php }  ?>
                 <input type="submit" value="Submit" id="btnsubmit" onclick="return chkupdacc();" />
             </div>
             <table>

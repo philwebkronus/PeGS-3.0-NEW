@@ -52,6 +52,9 @@ include "header.php";
                 var site = document.getElementById('cmbsitename').value;
                 if(site > 0)
                 {
+                    $("#cmbterminals").empty();
+                    $("#cmbterminals").append($("<option />").val("-1").text("Please Select"));
+                    
                     //this will display terminalcode
                 jQuery.ajax({
                     url: 'process/ProcessAppSupport.php',
@@ -60,8 +63,6 @@ include "header.php";
                     dataType: 'json',
                     success: function(data){
                         var terminal = $("#cmbterminals");
-                        terminal.empty();
-                        terminal.append($("<option />").val("-1").text("Please Select"));
                         jQuery.each(data, function(){
                             terminal.append($("<option />").val(this.TerminalID).text(this.TerminalCode));
                         });
