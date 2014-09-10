@@ -360,10 +360,38 @@ function validateEmail()
        else
            return true;
     }
+       else
+    {
+        alert("Please Enter your Email Address");
+            emailID.focus();
+       return false;
+    }
+  }
+  
+function validateCorpEmail()
+ {
+    var corpemailID = document.getElementById('txtcorpemail');
+    if(document.getElementById('txtcorpemail').value != "")
+    {
+       if ((corpemailID.value==null)||(corpemailID.value==""))
+       {
+          alert("Please Enter your Email Address");
+          corpemailID.focus();
+          return false;
+       }
+       else if (echeck(corpemailID.value)==false)
+       {
+         corpemailID.value="";
+         corpemailID.focus();
+         return false;
+       }
+       else
+           return true;
+    }
     else
     {
-       alert("Please Enter your Email Address");
-       emailID.focus();
+        alert("Please Enter your Email Address");
+        corpemailID.focus();
        return false;
     }
   }

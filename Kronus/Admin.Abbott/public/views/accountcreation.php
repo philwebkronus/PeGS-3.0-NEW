@@ -255,9 +255,8 @@ if(isset($_SESSION['acctype']))
                         <?php 
                           if($_SESSION['acctype'] == 1)
                           {
-                            echo '<input type="text" id="txtcorpemail" name="txtcorpemail" maxlength="85" size="50"  onkeypress="return corpoemail(event);" />';
+                            echo '<input type="text" id="txtcorpemail" name="txtcorpemail" maxlength="85" size="50" onblur="validateCorpEmail();"  onkeypress="return emailkeypress(event);" />';
                             echo '<input type="hidden" id="txtemail" name="txtemail" value="hidden"/>';  
-                            echo "@philweb.com.ph";
                           }
                           
                           else{
