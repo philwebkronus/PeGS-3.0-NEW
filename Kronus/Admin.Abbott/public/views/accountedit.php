@@ -90,7 +90,7 @@ if(isset($_SESSION['acctype']))
             //if administrator type, use corporate email
             if($_SESSION['acctype'] == 1)
             {
-                   $vcorpemail = preg_replace("/[0-9]$/", "", $resultviews['Email']);
+                   $vcorpemail = preg_replace("/([0-9]+)$/", "", $resultviews['Email']);
                    $vemail = explode("@philweb.com.ph", $resultviews['Email']);
                    $vappendnum = explode($vcorpemail, $resultviews['Email']);
             }
@@ -214,10 +214,10 @@ if(isset($_SESSION['acctype']))
                         <?php 
                           if($_SESSION['acctype'] == 1)
                           {
-                                echo '<input type="text" id="txtcorpemail" name="txtcorpemail" maxlength="85" size="50" value="'.$vemail[0].'" onkeypress="return corpoemail(event);" />'.'@philweb.com.ph'.$vappendnum[1];
+                                echo '<input type="text" id="txtcorpemail" name="txtcorpemail" maxlength="85" size="50" value="'.$vcorpemail.'" onblur="validateCorpEmail();"  onkeypress="return emailkeypress(event);" />';
                                 echo '<input type="hidden" id="txtemail" name="txtemail" value="hidden"/>';  
                                 echo '<input type="hidden" id="txtappendnum" name="txtappendnum"  value="'.$vappendnum[1].'" />';  
-                                echo '<input type="hidden" id="txtemail2" name="txtemail2" value="'.$vemail[0].'"/>';  
+                                echo '<input type="hidden" id="txtemail2" name="txtemail2" value="'.$vcorpemail.'"/>';  
                           }
                           else
                           {
