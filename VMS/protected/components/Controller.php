@@ -29,4 +29,9 @@ class Controller extends CController
             Yii::app()->db->setActive(false);
             gc_collect_cycles(); //Free up memory resources
         }
+        
+        public function sanitize($string)
+        {
+            return trim(mysql_escape_string($string));
+        }
 }

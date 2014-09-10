@@ -37,5 +37,41 @@ class AccountsModel {
             return 0;
         }
     }
+    /**
+     * Get UserName by AID.
+     * @param type $aid Account ID of the user
+     * @return string Username
+     * @author Mark Kenneth Esguerra
+     * @date July 14, 2014
+     */
+    public function getUsername($aid)
+    {
+        $sql = "SELECT UserName FROM accounts 
+                WHERE AID = :aid";
+        
+        $command = $this->_connection2->createCommand($sql);
+        $command->bindValue(":aid", $aid);
+        $result = $command->queryRow();
 
+        return $result['UserName'];
+    }
+    /**
+     * Get AID by UserName
+     * @param string $username Entered username
+     * @return array AID
+     * @author Mark Kenneth Esguerra
+     * @date July 18, 2014
+     */
+    public function getAIDByUserName($username)
+    {
+        $sql = "SELECT AID FROM accounts 
+                WHERE UserName = :username";
+        $command = $this->_connection2->createCommand($sql);
+        $command->bindValue(":username", $username);
+        $result = $command->queryRow();
+        if ($result != "")
+            return $result['AID'];
+        else
+            return "";
+    }
 }

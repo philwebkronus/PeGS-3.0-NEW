@@ -17,7 +17,7 @@ class TerminalsModel extends CFormModel {
 
         $connection = Yii::app()->db2;
 
-        $sql = "SELECT TerminalID, TerminalName FROM terminals
+        $sql = "SELECT TerminalID, TerminalName, TerminalCode FROM terminals
                 WHERE SiteID = :siteid";
         $command = $connection->createCommand($sql);
         $command->bindValue(":siteid", $siteid);

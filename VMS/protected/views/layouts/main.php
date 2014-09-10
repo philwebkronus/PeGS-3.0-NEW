@@ -14,6 +14,7 @@
 	<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/main.css" />
 	<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/form.css" />
         <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/menu.css" />
+        <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/jquery-ui-timepicker-addon.css" />
         <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/template.css" />
         <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/js/jquery.jqGrid-4.3.1/css/ui.jqgrid.css" />
         <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/redmond/jquery-ui-1.9.2.custom.css" />
@@ -21,15 +22,13 @@
         <script src="http://code.jquery.com/jquery-1.8.3.js"></script>
         <script src="http://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>-->
         <?php 
+            //Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl . '/js/jquery-ui-1.10.4.custom.min.js');
             Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl . '/js/jquery.jqGrid-4.3.1/js/i18n/grid.locale-en.js');
             Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl . '/js/jquery.jqGrid-4.3.1/js/jquery.jqGrid.min.js');
-            // Added for submenus
-            Yii::app()->clientScript->registerCoreScript('jquery');
-            Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl . '/js/jquery-ui-1.9.2/ui/jquery-ui.js');
-            Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl . '/js/jquery-ui-1.9.2/ui/jquery.ui.dialog.js');
+            Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl . '/js/jquery-ui-timepicker-addon.js');
+            Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl . '/js/jquery.ui.slider.js');
+            Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl . '/js/slider-access.js');
 
-            Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl . '/js/menu.js');
-            Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl . '/js/helper.js');
         ?>
 	<title><?php echo CHtml::encode($this->pageTitle); ?></title>
 </head>

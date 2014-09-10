@@ -1,10 +1,10 @@
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
- */      
-      
+ */
+
 //currency format
-function CommaFormatted(num) 
+function CommaFormatted(num)
 {
     num = num.toString().replace(/\$|\,/g,'');
     if(isNaN(num))
@@ -23,8 +23,8 @@ function CommaFormatted(num)
 //removes spaces, special characters except (@, ., _) on email textboxes; modified 2012-02-14
 function emailkeypress(evt)
 {
-    var charCode = (evt.which) ? evt.which : evt.keyCode;    
-    if((charCode > 47 && charCode < 58) || (charCode > 64 && charCode < 91) || (charCode > 96 && charCode < 123) 
+    var charCode = (evt.which) ? evt.which : evt.keyCode;
+    if((charCode > 47 && charCode < 58) || (charCode > 64 && charCode < 91) || (charCode > 96 && charCode < 123)
         || charCode == 8 || charCode == 9 || charCode == 64 || charCode == 46 || charCode == 95 || charCode == 45)
         {
           return true;
@@ -67,12 +67,12 @@ function numberandletterscore(evt)
       {
           return false;
       }
-      
-            
+
+
       else if (charCode > 31 && (charCode < 33 || charCode > 38) && (charCode < 42 || charCode > 63) && (charCode < 95 || charCode > 122 || charCode == 47)){
           return false;
       }
-      
+
       else if(charCode == 9)
       {
           return true;
@@ -85,7 +85,7 @@ function numberandletterscore(evt)
 function urlvalidation(evt)
 {
     var charCode = (evt.which) ? evt.which : evt.keyCode;
-    return ((charCode > 45 && charCode < 58) || (charCode > 96 && charCode < 123) || 
+    return ((charCode > 45 && charCode < 58) || (charCode > 96 && charCode < 123) ||
             (charCode > 64 && charCode < 91) || charCode == 8 || charCode == 9);
 }
 
@@ -125,9 +125,9 @@ function numberonly(evt)
 //valiates input: accept all numbers but not 0
 function nozero(evt)
 {
-    
+
     var charCode = (evt.which) ? evt.which : evt.keyCode;
-    
+
     if (charCode > 31 && (charCode < 48 || charCode > 57))
           return false;
     else if(charCode == 48)
@@ -142,7 +142,7 @@ function nozero(evt)
 function numberonlyanddash(evt)
 {
     var charCode = (evt.which) ? evt.which : evt.keyCode;
-   
+
     if(charCode == 45)
     {
         return true;
@@ -196,7 +196,7 @@ function alphanumeric2(evt)
 {
     var charCode;
     charCode = (evt.which) ? evt.which : evt.keyCode;
-    return ((charCode > 47 && charCode < 58) || (charCode > 64 && charCode < 91) || 
+    return ((charCode > 47 && charCode < 58) || (charCode > 64 && charCode < 91) ||
              charCode == 8 || charCode == 9 || charCode == 45);
 }
 
@@ -210,7 +210,7 @@ function loyaltycardnumber(evt)
 }
 
 
-//letter and number with space and dash 
+//letter and number with space and dash
 function alphanumeric4(evt)
 {
     var charCode = (evt.which) ? evt.which : evt.keyCode;
@@ -233,6 +233,16 @@ function alphanumeric3(evt)
       else
           return false;
 }
+
+//validates input: accepts big and small letters and numbers only, no spaces, no dashes
+function alphanumeric5(evt)
+{
+    var charCode;
+    charCode = (evt.which) ? evt.which : evt.keyCode;
+    return ((charCode > 47 && charCode < 58) || (charCode > 64 && charCode < 91) ||
+             charCode == 8 || charCode == 9);
+}
+
 //letter only small and big no space
 function letteronly2(evt)
 {
@@ -491,12 +501,12 @@ function chkupdatepass()
       document.getElementById('txtnewpassword').focus();
       return false;
     }
-    else if(document.getElementById('txtconfirmpass').value.length == 0)    
+    else if(document.getElementById('txtconfirmpass').value.length == 0)
     {
       alert("Please confirm your new password");
       document.getElementById('txtconfirmpass').focus();
       return false;
-    }    
+    }
     else if((document.getElementById('txtnewpassword').value.length < 8) || (document.getElementById('txtnewpassword').value.length > 12))
     {
       alert("Password must not be less than 8 characters and not greater than 12 characters");
@@ -610,13 +620,13 @@ function chkcreatesites()
      {
         alert("Please input your country code");
         document.getElementById('txtctrycode').focus();
-        return false;            
+        return false;
      }
      else if(document.getElementById('txtareacode').value.length == 0)
      {
         alert("Please input your area code");
         document.getElementById('txtareacode').focus();
-        return false;            
+        return false;
      }
      else if(document.getElementById('txtphone').value.length == 0)
      {
@@ -702,7 +712,7 @@ function chkeditsites()
             alert("Site/PEGS Code less than 3 character");
             document.getElementById('txtsitecode').focus();
             return false;
-        }    
+        }
 //    else if(document.getElementById('txtsitedesc').value.length == 0)
 //        {
 //            alert("Please input site/pegs description");
@@ -726,7 +736,7 @@ function chkeditsites()
 //            alert("Please input Certificate To Operate #(CTO)");
 //            document.getElementById('txtcto').focus();
 //            return false;
-//        }  
+//        }
      else if(document.getElementById('txtpasscode').value.length == 0)
      {
         alert("Blank Passcode");
@@ -737,13 +747,13 @@ function chkeditsites()
      {
         alert("Please input your country code");
         document.getElementById('txtctrycode').focus();
-        return false;            
+        return false;
      }
      else if(document.getElementById('txtareacode').value.length == 0)
      {
         alert("Please input your area code");
         document.getElementById('txtareacode').focus();
-        return false;            
+        return false;
      }
      else if(document.getElementById('txtphone').value.length == 0)
      {
@@ -774,41 +784,41 @@ function chkeditservices()
     {
        alert("Blank or spaces are not allowed");
        document.getElementById("txtalias").focus();
-       return false; 
+       return false;
     }
     else if(document.getElementById("txtservicecode").value.indexOf(" ") == 0 || document.getElementById("txtservicecode").value == '')
     {
        alert("Blank or spaces are not allowed");
        document.getElementById("txtservicecode").focus();
-       return false; 
+       return false;
     }
     else if(document.getElementById('txtservicecode').value.length < 2)
         {
             alert("Service Code less than 2 character");
             document.getElementById('txtservicecode').focus();
             return false;
-        } 
+        }
     else if(document.getElementById('txtservcdesc').value.indexOf(" ") == 0 || document.getElementById("txtservcdesc").value == '')
     {
        alert("Blank or spaces are not allowed");
        document.getElementById("txtservcdesc").focus();
-       return false; 
+       return false;
     }
     else if(document.getElementById('cmbservicegrp').value.indexOf(" ") == 0 || document.getElementById("cmbservicegrp").value == '')
     {
        alert("Please Select Service Group");
        document.getElementById("cmbservicegrp").focus();
-       return false; 
+       return false;
     }
     else if(document.getElementById('usermode').value.indexOf(" ") == 0 || document.getElementById("usermode").value == '')
     {
        alert("Please Select User Mode");
        document.getElementById("usermode").focus();
-       return false; 
+       return false;
     }
     else
     {
-      return true;  
+      return true;
     }
 }
 
@@ -826,7 +836,7 @@ function chkcreateacc()
             alert("Please select Site/PEGS name");
             //document.getElementById('cmbsite').focus();
             return false;
-        }  
+        }
      else if((document.getElementById('txtusername').value.length == 0) || (document.getElementById("txtusername").value.indexOf(" ") == 0))
         {
             alert("Blank or username with leading space/s is/are not allowed");
@@ -844,14 +854,14 @@ function chkcreateacc()
             alert("Please input your Email Address");
             document.getElementById('txtemail').focus();
             return false;
-        }    
+        }
     else if((document.getElementById('txtcorpemail').value.length == 0) || (document.getElementById("txtcorpemail").value.indexOf(" ") == 0))
         {
             alert("Please input your Email Address");
             document.getElementById('txtcorpemail').focus();
             return false;
-        }        
-    else if(((document.getElementById('txtphone').value.length == 0) || (document.getElementById("txtphone").value.indexOf(" ") == 0)) 
+        }
+    else if(((document.getElementById('txtphone').value.length == 0) || (document.getElementById("txtphone").value.indexOf(" ") == 0))
         && ((document.getElementById('txtmobile').value.length == 0) || (document.getElementById("txtmobile").value.indexOf(" ") == 0)))
         {
             alert("Please input your phone number or mobile number");
@@ -868,20 +878,20 @@ function chkcreateacc()
          {
             alert("Please input your country code");
             //document.getElementById('txtctrycode').focus();
-            return false;            
+            return false;
          }
      else if(((document.getElementById('txtareacode').value.length == 0) || (document.getElementById("txtareacode").value.indexOf(" ") == 0)) && ((document.getElementById('txtareacode2').value.length == 0) || (document.getElementById("txtareacode2").value.indexOf(" ") == 0)))
          {
             alert("Please input your area code");
             //document.getElementById('txtareacode').focus();
-            return false;            
-         }         
+            return false;
+         }
      else if((document.getElementById('txtaddress').value.length == 0) || (document.getElementById("txtaddress").value.indexOf(" ") == 0))
         {
             alert("Blank or address with leading space/s is/are not allowed");
             document.getElementById('txtaddress').focus();
             return false;
-        }        
+        }
      else if(document.getElementById('cmbdesignation').value == "-1")
         {
             alert("Please select your designation");
@@ -913,20 +923,20 @@ function chkupdacc()
             document.getElementById('txtname').focus();
             return false;
         }
-   
+
     else if(document.getElementById('txtemail').value.length == 0)
         {
             alert("Please input your Email Address");
             document.getElementById('txtemail').focus();
             return false;
         }
-        
+
      else if(document.getElementById('txtcorpemail').value.length == 0)
         {
             alert("Please input your Email Address");
             document.getElementById('txtcorpemail').focus();
             return false;
-        }        
+        }
     else if((document.getElementById('txtphone').value.length == 0) && (document.getElementById('txtmobile').value.length == 0))
         {
             alert("Please input your phone number or mobile number");
@@ -943,14 +953,14 @@ function chkupdacc()
          {
             alert("Please input your country code");
             document.getElementById('txtctrycode').focus();
-            return false;            
+            return false;
          }
      else if((document.getElementById('txtareacode').value.length == 0) && (document.getElementById('txtareacode2').value.length == 0))
          {
             alert("Please input your area code");
             document.getElementById('txtareacode').focus();
-            return false;            
-         }   
+            return false;
+         }
     else if(document.getElementById('txtaddress').value.length == 0)
         {
             alert("Blank or address with leading space/s is/are not allowed");
@@ -963,7 +973,7 @@ function chkupdacc()
             document.getElementById('cmbdesignation').focus();
             return false;
         }
-    else  
+    else
        {
            return true
        }
@@ -973,12 +983,12 @@ function chkupdacc()
 function checkRadio (frmName, rbGroupName)
 {
     var radios = document[frmName].elements[rbGroupName];
-    for (var i=0; i <radios.length; i++) 
+    for (var i=0; i <radios.length; i++)
     {
          if (radios[i].checked)
          {
             return true;
-         } 
+         }
     }
     return false;
 }
@@ -1035,10 +1045,10 @@ function chktopupbal()
          maxbal = maxbal.replace(/,/g,"");
          amount = amount.replace(/,/g,"");
          prevbal = prevbal.replace(/,/g,"");
-     
+
      var total = eval(amount) + eval(prevbal);
-     
-     
+
+
      if(document.getElementById('txtamount').value.length == 0)
         {
             alert("Please input amount");
@@ -1051,7 +1061,7 @@ function chktopupbal()
             document.getElementById('txtamount').value = "";
             document.getElementById('txtamount').focus();
             return false;
-        }   
+        }
      else if(eval(total) > eval(maxbal))
         {
             alert("Amount must be lower than or equal to maximum balance");
@@ -1079,7 +1089,7 @@ function chktopup()
         minbal = minbal.replace(/,/g,"");
         maxbal = maxbal.replace(/,/g,"");
         amount = amount.replace(/,/g,"");
-    
+
     if((jQuery("#cmbsite").val() == "-1") && (jQuery("#txtposacc").val().length == 0))
         {
             alert("Please select Site/PEGS or input the pos account number");
@@ -1104,7 +1114,7 @@ function chktopup()
 //            document.getElementById('txttopupamt').focus();
 //            return false;
 //        }
-    else if( eval(minbal) > eval(amount) )    
+    else if( eval(minbal) > eval(amount) )
         {
             alert("Minimum balance must be less than or equal to amount");
             document.getElementById('txtminbal').value = "";
@@ -1154,14 +1164,14 @@ function chkupdtopup()
         maxbal = maxbal.replace(/,/g,"");
         amount = amount.replace(/,/g,"");
         //topupamt = topupamt.replace(/,/g,"");
-        
+
     if(document.getElementById('txtminbal').value.length == 0)
         {
             alert("Please input minimum balance");
             document.getElementById('txtminbal').focus();
             return false;
         }
-//    else if( parseFloat(minbal) > parseFloat(amount) )    
+//    else if( parseFloat(minbal) > parseFloat(amount) )
 //        {
 //            alert("Minimum balance must be less than or equal to site balance");
 //            document.getElementById('txtminbal').value = "";
@@ -1212,16 +1222,16 @@ function chkreversal()
      var maxbal = document.getElementById('txtmaxbal').value;
      var minbal = document.getElementById('txtminbal').value;
      var prevbal = document.getElementById('txtprevbal').value;
-    
+
          minbal = minbal.replace(/,/g,"");
          maxbal = maxbal.replace(/,/g,"");
          amount = amount.replace(/,/g,"");
-         prevbal = prevbal.replace(/,/g,"");        
-     
-     //var total = eval(amount) + eval(prevbal);  // deactivated due to error 
-     
+         prevbal = prevbal.replace(/,/g,"");
+
+     //var total = eval(amount) + eval(prevbal);  // deactivated due to error
+
      var total = eval(amount);
-     
+
       if((jQuery("#cmbsite").val() == "-1") && (jQuery("#txtposacc").val().length == 0))
         {
             alert("Please select Site/PEGS or input the pos account number");
@@ -1240,7 +1250,7 @@ function chkreversal()
             alert("Please input an amount greater than 0");
             document.getElementById('txtamount').focus();
             return false;
-        }   
+        }
      else if((eval(total)) > 0 && (eval(prevbal)) == 0) // lbt 06/26 added for existing balance EQ to 0 and amount entered GT 0
         {
             alert("No amount to be reversed");
@@ -1361,7 +1371,7 @@ function chksitegrp()
             alert("Please enter group name");
             document.getElementById('txtgrpname').focus();
             return false;
-   }        
+   }
     else if((document.getElementById('txtgrpdesc').value.length == 0) || (document.getElementById("txtgrpdesc").value.indexOf(" ") == 0))
    {
             alert("Please enter group description");
@@ -1390,32 +1400,32 @@ function chksitegrp()
           }
 
           var datenow = curr_year + '-'+ curr_month + '-'+ curr_date;
-          
+
           if((datenow) < (document.getElementById('rptDate').value))
           {
               alert("Queried date must not be greater than today");
               document.getElementById('rptDate').value = datenow;
               return false;
-          }           
+          }
           else if((datenow) < (document.getElementById('rptDate2').value))
           {
               alert("Queried date must not be greater than today");
               document.getElementById('rptDate2').value = datenow;
-              return false;         
-          }          
-          else if((document.getElementById('rptDate2').value) < 
+              return false;
+          }
+          else if((document.getElementById('rptDate2').value) <
                   (document.getElementById('rptDate').value))
           {
               alert("Start date must not greater than end date");
               document.getElementById('rptDate2').value = datenow;
-              return false;         
-          }          
+              return false;
+          }
           else
           {
               return true;
           }
    }
-   
+
 //if computername field is empty -->appdisableterminal.php
 function chkcomputername()
 {
@@ -1426,7 +1436,7 @@ function chkcomputername()
     }
     else if(document.getElementById("txtpcname").value.length == 0 || (document.getElementById("txtpcname").value.indexOf(" ") == 0))
     {
-        
+
         alert("Blank or credential information with leading space/s is/are not allowed ");
         document.getElementById("txtpcname").focus();
         return false;
@@ -1447,17 +1457,17 @@ function chkbatchterminal()
 {
     var terminals = jQuery("#cmbterminals").val();
     var ctr;
-    
+
     for(ctr = 1; ctr <= terminals; ctr++ )
     {
-        if (!(checkRadio('frmbatch','optserver['+ctr+']')) && !(checkRadio('frmbatch','optserver1['+ctr+']')) 
+        if (!(checkRadio('frmbatch','optserver['+ctr+']')) && !(checkRadio('frmbatch','optserver1['+ctr+']'))
                 && getCheckedValue(document.getElementById("optserver2["+ctr+"]")) == '')
         {
            alert("Please select server on terminal #"+ctr);
            return false;
         }
     }
-    
+
     return true;
 }
 
@@ -1488,21 +1498,21 @@ function chkagentcreation()
         document.getElementById('cmbsitename').focus();
         return false;
     }
-    
+
     else if(document.getElementById('txtusername').value.length == 0 || document.getElementById('txtusername').value.indexOf(" ") == 0)
     {
         alert("Please input agent name");
         document.getElementById('txtusername').focus();
         return false;
     }
-    
+
     else if(document.getElementById('txtpassword').value.length == 0 || document.getElementById('txtpassword').value.indexOf(" ") == 0)
     {
         alert("Please input agent password");
         document.getElementById('txtpassword').focus();
         return false;
     }
-    
+
     else
     {
         return true;
@@ -1528,44 +1538,44 @@ function chktrailingaccspaces()
     {
        alert("Blank or spaces are not allowed");
        document.getElementById("txtemail").focus();
-       return false; 
+       return false;
     }
     else if(document.getElementById("txtcorpemail").value.indexOf(" ") == 0)
     {
        alert("Blank or spaces are not allowed");
        document.getElementById("txtcorpemail").focus();
-       return false;  
+       return false;
     }
     else if(document.getElementById("txtphone").value.indexOf(" ") == 0)
     {
        alert("Blank or spaces are not allowed");
        document.getElementById("txtphone").focus();
-       return false;   
+       return false;
     }
     else if(document.getElementById("txtmobile").value.indexOf(" ") == 0)
     {
        alert("Blank or spaces are not allowed");
        document.getElementById("txtmobile").focus();
-       return false;    
+       return false;
     }
     else if((document.getElementById("txtctrycode").value.indexOf(" ") == 0) || (document.getElementById("txtctrycode2").value.indexOf(" ") == 0))
     {
        alert("Blank or spaces are not allowed");
        document.getElementById("txtctrycode").focus();
-       return false;   
+       return false;
     }
     else if((document.getElementById("txtareacode").value.indexOf(" ") == 0) || (document.getElementById("txtareacode2").value.indexOf(" ") == 0))
     {
        alert("Blank or spaces are not allowed");
        document.getElementById("txtareacode").focus();
-       return false;  
+       return false;
     }
-    
+
     else if(document.getElementById("txtaddress").value.indexOf(" ") == 0)
     {
        alert("Blank or spaces are not allowed");
        document.getElementById("txtaddress").focus();
-       return false;   
+       return false;
     }
     else{
         return true;
@@ -1585,41 +1595,41 @@ function chktrailingsitespaces()
     {
        alert("Blank or spaces are not allowed");
        document.getElementById("txtsitecode").focus();
-       return false; 
+       return false;
     }
     else if(document.getElementById("txtsitedesc").value.indexOf(" ") == 0)
     {
        alert("Blank or spaces are not allowed");
        document.getElementById("txtsitedesc").focus();
-       return false; 
+       return false;
     }
     else if(document.getElementById('txtsitealias').value.indexOf(" ") == 0)
     {
        alert("Blank or spaces are not allowed");
        document.getElementById("txtsitealias").focus();
-       return false; 
+       return false;
     }
 //    else if(document.getElementById('txtcto').value.indexOf(" ") == 0)
 //    {
 //       alert("Blank or spaces are not allowed");
 //       document.getElementById("txtcto").focus();
-//       return false; 
+//       return false;
 //    }
     else if(document.getElementById('txtsiteaddress').value.indexOf(" ") == 0)
     {
        alert("Blank or spaces are not allowed");
        document.getElementById("txtsiteaddress").focus();
-       return false; 
+       return false;
     }
     else if(document.getElementById('txtpasscode').value.indexOf(" ") == 0)
     {
        alert("Blank or spaces are not allowed");
        document.getElementById("txtpasscode").focus();
-       return false; 
+       return false;
     }
     else
     {
-      return true;  
+      return true;
     }
 }
 
@@ -1638,13 +1648,13 @@ function chktrailingservicespaces()
     {
        alert("Blank or spaces are not allowed");
        document.getElementById("txtalias").focus();
-       return false; 
+       return false;
     }
     else if(document.getElementById("txtservicecode").value.indexOf(" ") == 0 || document.getElementById("txtservicecode").value == '')
     {
        alert("Blank or spaces are not allowed");
        document.getElementById("txtservicecode").focus();
-       return false; 
+       return false;
     }
     else if(document.getElementById('txtservicecode').value.length < 2)
         {
@@ -1656,23 +1666,23 @@ function chktrailingservicespaces()
     {
        alert("Blank or spaces are not allowed");
        document.getElementById("txtservcdesc").focus();
-       return false; 
+       return false;
     }
     else if(document.getElementById('cmbservicegrp').value.indexOf(" ") == 0 || document.getElementById("cmbservicegrp").value == '')
     {
        alert("Please Select Service Group");
        document.getElementById("cmbservicegrp").focus();
-       return false; 
+       return false;
     }
     else if(document.getElementById('usermode').value.indexOf(" ") == 0 || document.getElementById("usermode").value == '')
     {
        alert("Please Select User Mode");
        document.getElementById("usermode").focus();
-       return false; 
+       return false;
     }
     else
     {
-      return true;  
+      return true;
     }
 }
 
@@ -1683,17 +1693,17 @@ function chkterminalspaces()
     {
        alert("Blank or spaces are not allowed");
        document.getElementById("txttermname").focus();
-       return false; 
+       return false;
     }
     else if(document.getElementById('txttermcode').value.indexOf(" ") == 0)
     {
        alert("Blank or spaces are not allowed");
        document.getElementById("txttermcode").focus();
-       return false;  
+       return false;
     }
     else
     {
-       return true; 
+       return true;
     }
 }
 
@@ -1731,10 +1741,10 @@ function checkdepositposting()
     }
     var datenow = curr_year + '-'+ curr_month + '-'+ curr_date;
     var pastdate = curr_year + '-'+ curr_month + '-'+ (curr_date1);
-    
+
     var sdate = document.getElementById('txtdate').value;
     var sitedate = sdate.substr(0,10);
-    
+
     if((jQuery("#cmbsitename").val() == "-1") && (jQuery("#txtposacc").val().length == 0))
     {
         alert("Please select Site/PEGS or input the pos account number");
@@ -1747,7 +1757,7 @@ function checkdepositposting()
           document.getElementById("ddlRemittanceType").focus();
           return false;
     }
-    
+
     //if with bank
     if ((sRemitType == 1) || (sRemitType == 3) || (sRemitType == 4) || (sRemitType == 6))
     {
@@ -1801,7 +1811,7 @@ function checkdepositposting()
         document.getElementById("txtdate").focus();
         return false;
     }
-    
+
     if (confirm("Are all the information supplied correct?"))
     {
         showBlockUI(null);
@@ -1869,14 +1879,14 @@ function chkconformation()
     var datenow = curr_year + '-'+ curr_month + '-'+ curr_date;
     var sdate = document.getElementById('txtdate').value;
     var transdate = sdate.substr(0,10);
-    
+
     if((datenow) < (transdate))
     {
         alert("Queried date must not be greater than today");
         document.getElementById("txtdate").focus();
         return false;
     }
-    
+
     else if((document.getElementById('txtwho').value.length == 0) || document.getElementById('txtwho').value.indexOf(" ") == 0)
     {
         alert("Please input the Site/PEGS representative");
@@ -1893,7 +1903,7 @@ function chkconformation()
     {
         return true;
     }
-} 
+}
 
 //validate the form for switching of server (AS)
 function chkswitchserver()
@@ -1978,12 +1988,12 @@ function copyToList(from,to)
     {
         toList.options.length = 0;
     }
-    
+
     var sel = false;
     for (i=0;i<fromList.options.length;i++)
     {
        var current = fromList.options[i];
-       
+
        if (current.selected)
        {
           sel = true;
@@ -1992,7 +2002,7 @@ function copyToList(from,to)
             alert ('You cannot move this text!');
             return;
           }
-          
+
           var txt = current.text;
           var val = current.value;
           toList.options[toList.length] = new Option(txt,val);
@@ -2009,7 +2019,7 @@ function allSelect()
     //List = document.forms[1].chosen;
     List = document.getElementById('chosen');
     if (List.length && List.options[0].value == 'temp') return;
-    
+
     for (i=0;i<List.length;i++)
     {
         List.options[i].selected = true;
@@ -2031,7 +2041,7 @@ function validatedate(txtdate)
                  curr_date = "0" + curr_date;
       }
       var datenow = curr_year + '-'+ curr_month + '-'+ curr_date;
-     
+
       if((datenow) < (txtdate))
       {
           alert("Queried date must not be greater than today");
@@ -2162,16 +2172,16 @@ function chkecitytrack()
     var curr_month = date.getMonth();
       curr_month = curr_month + 1;
     var curr_year = date.getFullYear();
-    
+
     if(curr_month < 10)
     {
         curr_month = "0" + curr_month;
         if(curr_date < 10)
              curr_date = "0" + curr_date;
     }
-    
+
     var datenow = curr_year + '-'+ curr_month + '-'+ curr_date;
-    
+
     if(document.getElementById('cmbsite').value == "-1")
     {
         alert("Please select Site/PEGS");
@@ -2188,7 +2198,7 @@ function chkecitytrack()
     {
         alert("Queried date must not be greater than today");
         document.getElementById('popupDatepicker1').value = datenow;
-        return false;         
+        return false;
     }
     else
     {
@@ -2213,7 +2223,7 @@ function chkreplenishment()
     var datenow = curr_year + '-'+ curr_month + '-'+ curr_date;
     var sdate = document.getElementById('txtdate').value;
     var sitedate = sdate.substr(0,10);
-    
+
     if((document.getElementById('txtamount').value.length == 0) || document.getElementById('txtamount').value.indexOf(" ") == 0)
     {
         alert("Please input the amount confirmed");
@@ -2273,14 +2283,14 @@ function chktransaction()
       var curr_month = date.getMonth();
       curr_month = curr_month + 1;
       var curr_year = date.getFullYear();
-      
+
       if(curr_month < 10)
       {
             curr_month = "0" + curr_month;
             if(curr_date < 10)
                  curr_date = "0" + curr_date;
       }
-    
+
       var datenow = curr_year + '-'+ curr_month + '-'+ curr_date;
 
       if((datenow) < (document.getElementById('popupDatepicker1').value))
@@ -2288,19 +2298,19 @@ function chktransaction()
           alert("Queried date must not be greater than today");
           document.getElementById('popupDatepicker1').value = datenow;
           return false;
-      }           
+      }
       else if((datenow) < (document.getElementById('popupDatepicker2').value))
       {
           alert("Queried date must not be greater than today");
           document.getElementById('popupDatepicker2').value = datenow;
-          return false;         
-      }          
-      else if((document.getElementById('popupDatepicker2').value) < 
+          return false;
+      }
+      else if((document.getElementById('popupDatepicker2').value) <
               (document.getElementById('popupDatepicker1').value))
       {
           alert("Start date must not greater than end date");
           document.getElementById('popupDatepicker1').value = datenow;
-          return false;         
+          return false;
       }
       else if(document.getElementById('cmbservices').value == "-1")
       {
@@ -2358,12 +2368,12 @@ function chkterminalpwd()
       document.getElementById('txtnewpwd').focus();
       return false;
     }
-    else if(document.getElementById('txtconfirmpass').value.length == 0)    
+    else if(document.getElementById('txtconfirmpass').value.length == 0)
     {
       alert("Please confirm your new password");
       document.getElementById('txtconfirmpass').focus();
       return false;
-    }      
+    }
     else if(document.getElementById('txtnewpwd').value != document.getElementById('txtconfirmpass').value)
     {
       alert("Password does not match");
@@ -2393,7 +2403,7 @@ function chksiteremove(){
         $("#cmbsite").focus();
         return false;
     }
-    else 
+    else
         return true;
 }
 
@@ -2416,7 +2426,7 @@ function chkResetCasinoAcct(){
         $("#cmbnewservice").focus();
         return false;
     }
-    else 
+    else
         return true;
 }
 
@@ -2431,13 +2441,13 @@ function chkOverride(){
         alert("Please choose to enable/disable auto Top-up");
         return false;
     }
-    else 
+    else
         return true;
 }
 
-       //checks if transaction was within 24 hr. frame 
+       //checks if transaction was within 24 hr. frame
        function validateDateTime (date) {
-           
+
             var fromDateTime = $("#popupDatepicker1").val().split(" ");
             var toDateTime = $("#popupDatepicker2").val().split(" ");
             var fromTimeArray = fromDateTime[1].split(":");
@@ -2460,8 +2470,8 @@ function chkOverride(){
 
             /**
              * @Code Block to check validity of date and time parameters
-             * 
-             */    
+             *
+             */
             if(month == 1 || month == 3 || month == 5 || month == 7 || month == 8 || month == 10 || month == 12) { //31 Days
 
                 if(month == 12) {
@@ -2573,17 +2583,17 @@ function chkOverride(){
                 return false;
             }
         }
-        
+
         function specialcharacter(elementvalue)
         {
-            var iChars = "!`@#$%^&*()+=[]\\\';,./{}|\":<>?~_";   
+            var iChars = "!`@#$%^&*()+=[]\\\';,./{}|\":<>?~_";
             var data = elementvalue;
             for (var i = 0; i < data.length; i++)
-            {      
+            {
                 if (iChars.indexOf(data.charAt(i)) != -1)
-                {    
-                    return false; 
-                } 
+                {
+                    return false;
+                }
             }
             return true;
         }

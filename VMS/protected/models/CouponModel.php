@@ -360,7 +360,12 @@ class CouponModel extends CFormModel {
     public function getVoucherInfo($batch) {
         $connection = Yii::app()->db;
 
-        $query = "SELECT ValidFromDate, ValidToDate FROM coupons WHERE CouponBatchID = :batch";
+        $query = "SELECT IsCreditable,
+                         ValidFromDate, 
+                         ValidToDate 
+                  FROM coupons 
+                  WHERE CouponBatchID = :batch 
+                  LIMIT 0, 1";
         $command = $connection->createCommand($query);
         $command->bindParam(":batch", $batch);
         $result = $command->queryRow();
@@ -379,7 +384,7 @@ class CouponModel extends CFormModel {
      * @author Mark Kenneth Esguerra
      * @date November 5, 2013
      */
-    public function regenerateCoupons($amount, $count, $couponbatch, $iscreditable, $user) {
+    public function regenerateCoupons($amount, $count, $couponbatch, $iscreditable, $user, $status, $validfrom, $validto) {
         $model = new GenerationToolModel();
 
         $connection = Yii::app()->db;
@@ -404,14 +409,18 @@ class CouponModel extends CFormModel {
                                                      Status,
                                                      DateCreated,
                                                      CreatedByAID,
-                                                     IsCreditable
+                                                     IsCreditable, 
+                                                     ValidFromDate, 
+                                                     ValidToDate 
                                 ) VALUES (:couponbatch,
                                           :couponcode,
                                           :amount,
-                                          0,
+                                          :status,
                                           NOW(6),
                                           :aid,
-                                          :iscreditable
+                                          :iscreditable, 
+                                          :validfrom, 
+                                          :validto 
                                 )";
                 $sql = $connection->createCommand($secondquery);
                 $sql->bindParam(":couponbatch", $couponbatch);
@@ -419,6 +428,10 @@ class CouponModel extends CFormModel {
                 $sql->bindParam(":amount", $amount);
                 $sql->bindParam(":aid", $user);
                 $sql->bindParam(":iscreditable", $iscreditable);
+                $sql->bindParam(":status", $status);
+                $sql->bindParam(":validfrom", $validfrom);
+                $sql->bindParam(":validto", $validto);
+                
                 $secondresult = $sql->execute();
                 if ($secondresult > 0) {
                     continue;
@@ -439,13 +452,13 @@ class CouponModel extends CFormModel {
                         $sql->bindParam(":couponbatchID", $couponbatch);
                         $totalcouponcount = $sql->queryRow();
                         //get generated coupons after duplication
-                        $querycount = "SELECT COUNT(CouponID) as CouponCount FROM coupons
+                        $querycount = "SELECT COUNT(CouponID) as GeneratedCoupon FROM coupons
                                    WHERE CouponBatchID = :couponbatch";
 
                         $sql = $connection->createCommand($querycount);
                         $sql->bindParam(":couponbatch", $couponbatch);
-                        $couponcount = $sql->queryAll();
-                        $remainingcoupon = (int) $totalcouponcount['CouponCount'] - (int) $couponcount[0]['CouponCount'];
+                        $couponcount = $sql->queryRow();
+                        $remainingcoupon = (int) $totalcouponcount['CouponCount'] - (int) $couponcount['GeneratedCoupon'];
 
                         return array('TransCode' => 2,
                             'TransMsg' => 'Coupon already exist. There are ' . $remainingcoupon . ' remaining coupons 
@@ -453,7 +466,11 @@ class CouponModel extends CFormModel {
                             'CouponBatchID' => $couponbatch,
                             'RemainingCoupon' => $remainingcoupon,
                             'Amount' => $amount,
-                            'IsCreditable' => $iscreditable);
+                            'IsCreditable' => $iscreditable, 
+                            'Status' => $status, 
+                            'ValidFrom' => $validfrom, 
+                            'ValidTo' => $validto);
+                        
                     } catch (CDbException $e) {
                         $pdo->rollback();
                         return array('TransCode' => 0,
@@ -653,7 +670,203 @@ class CouponModel extends CFormModel {
         $result = $command->queryAll();
         return $result;
     }
-
+    /**
+     * Search coupons based selected search fields
+     * @param string $wherefx WHERE function for the query.
+     * @param array $search array of FieldID and its Value
+     * @return array Coupon batch details
+     * @author Mark Kenneth Esguerra
+     * @date June 18, 2014
+     */
+    public function searchCouponBatch($wherefx, $search, $start = null, $limit = null)
+    {
+        
+        $pagination = "";
+        if (!is_null($start) && !is_null($limit))
+        {
+            $pagination = "LIMIT $start, $limit";
+        }
+        
+        $query = "SELECT cb.CouponBatchID, 
+                         c.ValidFromDate, 
+                         c.ValidToDate, 
+                         c.IsCreditable, 
+                         cb.CouponCount, 
+                         cb.Amount, 
+                         cb.DistributionTagID, 
+                         cb.Status, 
+                         cb.DateCreated, 
+                         cb.CreatedByAID, 
+                         cb.DateUpdated, 
+                         cb.UpdatedByAID,  
+                         cb.PromoName 
+                  FROM coupons c 
+                  INNER JOIN couponbatch cb ON cb.CouponBatchID = c.CouponBatchID 
+                  $wherefx 
+                  GROUP BY cb.CouponBatchID 
+                  $pagination 
+                  ";
+        $command = $this->_connection->createCommand($query);
+        //bind value of search fields
+        foreach ($search as $s)
+        {
+            switch ($s['FieldID'])
+            {
+                case 1: 
+                    $command->bindValue(":amount", $s['Value']);
+                    break;
+                case 2: 
+                    $command->bindValue(":distribtag", $s['Value']);
+                    break;
+                case 3:
+                    $command->bindValue(":creditable", $s['Value']);
+                    break;
+                case 4:
+                    $command->bindValue(":generatedfrom", $s['Value']." 00:00:00");
+                    break;
+                case 5:
+                    $command->bindValue(":generatedto", $s['Value']." 23:59:59");
+                    break;
+                case 6:
+                    $command->bindValue(":aid", $s['Value']);
+                    break;
+                case 7:
+                    $command->bindValue(":validfrom", $s['Value']);
+                    break;
+                case 8:
+                    $command->bindValue(":validto", $s['Value']);
+                    break;
+                case 9: 
+                    $command->bindValue(":status", $s['Value']);
+                    break;
+                case 10: 
+                    $command->bindValue(":promoname", $s['Value']);
+                    break;
+            }
+        }
+        $result = $command->queryAll();
+        return $result;
+    }
+    /**
+     * Get Coupons by Batch
+     * @param int $batchID Batch ID
+     * @return array Arrays of coupons
+     */
+    public function getCouponsByBatchID($batchID, $start = null, $limit = null)
+    {
+        $pagination = null;
+        if (!is_null($start) && !is_null($limit))
+        {
+            $pagination = "LIMIT $start, $limit";
+        }
+        $sql = "SELECT c.CouponID, 
+                       c.CouponBatchID, 
+                       c.CouponCode, 
+                       c.Amount, 
+                       cb.DistributionTagID, 
+                       c.IsCreditable, 
+                       c.DateCreated, 
+                       c.DateUpdated, 
+                       cb.CreatedByAID, 
+                       c.ValidFromDate, 
+                       c.ValidToDate, 
+                       c.SiteID, 
+                       c.TerminalID, 
+                       c.Status, 
+                       cb.PromoName, 
+                       c.DateReimbursed, 
+                       c.ReimbursedByAID 
+                FROM coupons c 
+                INNER JOIN couponbatch cb ON cb.CouponBatchID = c.CouponBatchID 
+                WHERE c.CouponBatchID = :batchID 
+                $pagination";
+        $command = $this->_connection->createCommand($sql);
+        $command->bindValue(":batchID", $batchID);
+        $result = $command->queryAll();
+        
+        return $result;
+    }
+    public function searchCoupons($wherefx, $search, $start = null, $limit = null)
+    {
+        $pagination = "";
+        if (!is_null($start) && !is_null($limit))
+        {
+            $pagination = "LIMIT $start, $limit";
+        }
+        
+        $sql = "SELECT c.CouponID, 
+                       c.CouponBatchID, 
+                       c.CouponCode, 
+                       c.Amount, 
+                       cb.DistributionTagID, 
+                       c.IsCreditable, 
+                       c.DateCreated, 
+                       c.DateUpdated, 
+                       cb.CreatedByAID, 
+                       cb.PromoName, 
+                       c.ValidFromDate, 
+                       c.ValidToDate, 
+                       c.SiteID, 
+                       c.TerminalID, 
+                       c.Status, 
+                       c.DateReimbursed, 
+                       c.ReimbursedByAID 
+                FROM coupons c 
+                INNER JOIN couponbatch cb ON cb.CouponBatchID = c.CouponBatchID 
+                $wherefx 
+                $pagination";
+        $command = $this->_connection->createCommand($sql);
+        //bind value of search fields
+        foreach ($search as $s)
+        {
+            switch ($s['FieldID'])
+            {
+                case 0: 
+                    $command->bindValue(":batchID", $s['Value']);
+                    break;
+                case 1: 
+                    $command->bindValue(":couponcode", $s['Value']);
+                    break;
+                case 2: 
+                    $command->bindValue(":status", $s['Value']);
+                    break;
+                case 3:
+                    $command->bindValue(":transdatefrom", $s['Value']);
+                    break;
+                case 4:
+                    $command->bindValue(":transdateto", $s['Value']);
+                    break;
+                case 5:
+                    $command->bindValue(":site", $s['Value']);
+                    break;
+                case 6:
+                    $command->bindValue(":terminal", $s['Value']);
+                    break;
+                case 7:
+                    $command->bindValue(":source", $s['Value']);
+                    break;
+                case 8:
+                    $command->bindValue(":promoname", $s['Value']);
+                    break;
+            }
+        }
+        $result = $command->queryAll();
+        
+        return $result;
+    }
+    public function getValidityOfCoupon($batchID)
+    {
+        $sql = "SELECT cb.Status, c.ValidFromDate, c.ValidToDate
+                FROM coupons c 
+                INNER JOIN couponbatch cb ON cb.CouponBatchID = c.CouponBatchID 
+                WHERE c.CouponBatchID = :batchID AND 
+                c.Status = 1 
+                LIMIT 0, 1";
+        $command = $this->_connection->createCommand($sql);
+        $command->bindValue(":batchID", $batchID);
+        $result = $command->queryRow();
+        
+        return $result;
+    }
 }
-
 ?>
