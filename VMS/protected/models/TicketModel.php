@@ -1772,7 +1772,6 @@ class TicketModel extends CFormModel {
                     INNER JOIN npos.sites s ON t.SiteID = s.SiteID 
                     INNER JOIN npos.terminals trml ON t.TerminalID = trml.TerminalID 
                     WHERE t.DateUpdated >= :tdateFrom AND t.DateUpdated < :tdateTo 
-                    AND t.DateCreated >= :tdateFrom AND t.DateCreated < :tdateTo 
                     AND t.Status = 3 
 
                     UNION ALL 
@@ -1791,7 +1790,6 @@ class TicketModel extends CFormModel {
                     INNER JOIN npos.sites s ON t.SiteID = s.SiteID 
                     INNER JOIN npos.terminals trml ON t.TerminalID = trml.TerminalID 
                     WHERE t.DateEncashed >= :tdateFrom AND t.DateEncashed < :tdateTo 
-                    AND t.DateCreated >= :tdateFrom AND t.DateCreated < :tdateTo 
                     AND t.Status = 4
                ";
             $command = $this->_connection->createCommand($sql);
@@ -1817,7 +1815,6 @@ class TicketModel extends CFormModel {
                     INNER JOIN npos.sites s ON t.SiteID = s.SiteID 
                     INNER JOIN npos.terminals trml ON t.TerminalID = trml.TerminalID 
                     WHERE t.DateUpdated >= :tdateFrom AND t.DateUpdated < :tdateTo 
-                    AND t.DateCreated >= :tdateFrom AND t.DateCreated < :tdateTo 
                     AND t.Status = 3 AND t.SiteID IN ($sitecode)
 
                     UNION ALL 
@@ -1836,7 +1833,6 @@ class TicketModel extends CFormModel {
                     INNER JOIN npos.sites s ON t.SiteID = s.SiteID 
                     INNER JOIN npos.terminals trml ON t.TerminalID = trml.TerminalID 
                     WHERE t.DateEncashed >= :tdateFrom AND t.DateEncashed < :tdateTo 
-                    AND t.DateCreated >= :tdateFrom AND t.DateCreated < :tdateTo 
                     AND t.Status = 4 AND t.SiteID IN ($sitecode)
                ";
             $command = $this->_connection->createCommand($sql);
@@ -1860,7 +1856,6 @@ class TicketModel extends CFormModel {
                     INNER JOIN npos.sites s ON t.SiteID = s.SiteID 
                     INNER JOIN npos.terminals trml ON t.TerminalID = trml.TerminalID 
                     WHERE t.DateUpdated >= :tdateFrom AND t.DateUpdated < :tdateTo 
-                    AND t.DateCreated >= :tdateFrom AND t.DateCreated < :tdateTo 
                     AND t.Status = 3 AND t.SiteID = :siteID
 
                     UNION ALL 
@@ -1879,7 +1874,6 @@ class TicketModel extends CFormModel {
                     INNER JOIN npos.sites s ON t.SiteID = s.SiteID 
                     INNER JOIN npos.terminals trml ON t.TerminalID = trml.TerminalID 
                     WHERE t.DateEncashed >= :tdateFrom AND t.DateEncashed < :tdateTo 
-                    AND t.DateCreated >= :tdateFrom AND t.DateCreated < :tdateTo 
                     AND t.Status = 4 AND t.SiteID = :siteID
                 ";
             $command = $this->_connection->createCommand($sql);

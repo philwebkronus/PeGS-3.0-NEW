@@ -121,12 +121,22 @@ class TransactionpercutoffController extends VMSBaseIdentity
                         $sitecode[] = $arrsitecode['SiteID']; //$sitecode value is the SiteID
                     }
                 }
+                /************GET ACTIVE TICKETS FOR THE DAY*********************/
                 $totalPrintedTickets    = $ticketModel->getNumberOfPrintedTickets($transactiondate, $dateTo, $sitecode); //select printed tickets within the cut off
                 $totalUsedTickets       = $ticketModel->getNumberOfUsedTickets($transactiondate, $dateTo, $sitecode);//select used tickets within the cutoff
                 $totalEncashedTickets   = $ticketModel->getNumberOfEncashedTickets($transactiondate, $dateTo, $sitecode);//select encashed tickets within the cutoff
+                
                 //get the total number of used tickets (UT = PT - UT - ET)
                 $unusedTickets      = $totalPrintedTickets['PrintedTickets'] - ($totalUsedTickets['UsedTickets'] + $totalEncashedTickets['EncashedTickets']);
                 $unusedTicketsVal   = $totalPrintedTickets['Value'] - ($totalUsedTickets['Value'] + $totalEncashedTickets['Value']);
+                
+                /******************************************************************/
+                
+                /**************************GET USED TICKET AND ENCASHED***************************************/
+                $_totalPrintedTickets    = $ticketModel->getNumberOfPrintedTickets($transactiondate, $dateTo, $sitecode); //select printed tickets within the cut off
+                $_totalUsedTickets       = $ticketModel->getNumberOfUsedTickets($transactiondate, $dateTo, $sitecode, 1);//select used tickets within the cutoff
+                $_totalEncashedTickets   = $ticketModel->getNumberOfEncashedTickets($transactiondate, $dateTo, $sitecode, 1);//select encashed tickets within the cutoff
+                /**************************************************************************************/                
                 //get running active tickets
                 if ($transactiondate <= $less2days) //if date selected less than 2 days of current date
                 {
@@ -152,14 +162,14 @@ class TransactionpercutoffController extends VMSBaseIdentity
                     $totalrunningactiveval  = $runningactive1['SumValue'] + $runningactive2['SumValue'] + $runningactive3['SumValue'];
                 }
 
-                $response['PrintedTickets']         = $totalPrintedTickets['PrintedTickets'];
-                $response['PrintedTicketsValue']    = number_format(($totalPrintedTickets['Value'] == "") ? '0.00' : $totalPrintedTickets['Value'], "2", ".", ",");
+                $response['PrintedTickets']         = $_totalPrintedTickets['PrintedTickets'];
+                $response['PrintedTicketsValue']    = number_format(($_totalPrintedTickets['Value'] == "") ? '0.00' : $_totalPrintedTickets['Value'], "2", ".", ",");
 
-                $response['UsedTickets']            = $totalUsedTickets['UsedTickets'];
-                $response['UsedTicketsValue']       = number_format(($totalUsedTickets['Value'] == "") ? '0.00' : $totalUsedTickets['Value'], "2", ".", ",");
+                $response['UsedTickets']            = $_totalUsedTickets['UsedTickets'];
+                $response['UsedTicketsValue']       = number_format(($_totalUsedTickets['Value'] == "") ? '0.00' : $_totalUsedTickets['Value'], "2", ".", ",");
 
-                $response['EncashedTickets']        = $totalEncashedTickets['EncashedTickets'];
-                $response['EncashedTicketsValue']   = number_format(($totalEncashedTickets['Value'] == "") ? '0.00' : $totalEncashedTickets['Value'], "2", ".", ",");
+                $response['EncashedTickets']        = $_totalEncashedTickets['EncashedTickets'];
+                $response['EncashedTicketsValue']   = number_format(($_totalEncashedTickets['Value'] == "") ? '0.00' : $_totalEncashedTickets['Value'], "2", ".", ",");
 
                 $response['UnusedTickets']          = $unusedTickets;
                 $response['UnusedTicketsValue']     = number_format(($unusedTicketsVal == "") ? '0.00' : $unusedTicketsVal, "2", ".", ",");
