@@ -367,6 +367,34 @@ function validateEmail()
        return false;
     }
   }
+  
+  function validateCorpEmail()
+ {
+    var corpemailID = document.getElementById('txtcorpemail');
+    if(document.getElementById('txtcorpemail').value != "")
+    {
+       if ((corpemailID.value==null)||(corpemailID.value==""))
+       {
+          alert("Please Enter your Email Address");
+          corpemailID.focus();
+          return false;
+       }
+       else if (echeck(corpemailID.value)==false)
+       {
+         corpemailID.value="";
+         corpemailID.focus();
+         return false;
+       }
+       else
+           return true;
+    }
+    else
+    {
+        alert("Please Enter your Email Address");
+        corpemailID.focus();
+       return false;
+    }
+  }
 
 //validates email format entered (except numbers on the last part of the string)
 function echeck1(str)

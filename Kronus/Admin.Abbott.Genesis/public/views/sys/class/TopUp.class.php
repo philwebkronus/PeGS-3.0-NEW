@@ -1990,6 +1990,7 @@ class TopUp extends DBHandler
           $rows1 =  $this->fetchAllData();
 
           $varrmerge = array();
+          $vtotprintedtickets = array();
           foreach($rows1 as $itr => $value) 
           {                
                  $varrmerge[$itr] = array(
@@ -2471,9 +2472,6 @@ class TopUp extends DBHandler
                 foreach ($varrmerge as $keys => $value2) {
                     if($value1["SiteID"] == $value2["SiteID"]){
                         $varrmerge[$keys]["UnusedTickets"] = (float)$value1["UnusedTickets"];
-                        if($formatteddate == date('Y-m-d')){
-                            $varrmerge[$keys]["RunningActiveTickets"] = (float)$value1["UnusedTickets"];
-                        }
                         break;
                     }
                 }  
@@ -2516,8 +2514,8 @@ class TopUp extends DBHandler
         $query9 = "SELECT SiteID, IFNULL(SUM(Amount), 0) AS LessTickets FROM vouchermanagement.tickets
                                 WHERE SiteID IN ($sites) 
                                 AND (DateUpdated >= :startlimitdate AND DateUpdated <= :endlimitdate)
-                                AND Status IN (4,3)
-                                AND DateEncashed IS NOT NULL
+                                AND (Status IN (4,3)
+                                    OR DateEncashed IS NOT NULL)
                                 ORDER BY SiteID";
         
         if($formatteddate == $comparedate) { //Date Started is less than 1 day of the date today
@@ -2538,10 +2536,8 @@ class TopUp extends DBHandler
                 foreach ($varrmerge as $keys => $value2) {
                     if($value1["SiteID"] == $value2["SiteID"]){
                         if($varrmerge[$keys]["RunningActiveTickets"] == "0.00"){
-                            $varrmerge[$keys]["RunningActiveTickets"] = (float)$varrmerge[$keys]["UnusedTickets"];
-                            $varrmerge[$keys]["RunningActiveTickets"] = $varrmerge[$keys]["RunningActiveTickets"] + (float)$value1["RunningActiveTickets"];
+                            $varrmerge[$keys]["RunningActiveTickets"] = (float)$value1["RunningActiveTickets"];
                         } else {
-                            $varrmerge[$keys]["RunningActiveTickets"] = $varrmerge[$keys]["RunningActiveTickets"] + $varrmerge[$keys]["UnusedTickets"];
                             $varrmerge[$keys]["RunningActiveTickets"] = $varrmerge[$keys]["RunningActiveTickets"] + (float)$value1["RunningActiveTickets"];
                         }
                         break;
@@ -2588,7 +2584,8 @@ class TopUp extends DBHandler
             foreach ($rows9 as $value1) {
                 foreach ($varrmerge as $keys => $value2) {
                     if($value1["SiteID"] == $value2["SiteID"]){
-                            $varrmerge[$keys]["RunningActiveTickets"] = (float)$varrmerge[$keys]["RunningActiveTickets"]  - (float)$value1["LessTickets"];
+                            $vaddtorunningtickets = (float)$varrmerge[$keys]["PrintedTickets"]  - (float)$value1["LessTickets"];
+                            $varrmerge[$keys]["RunningActiveTickets"] = (float)$varrmerge[$keys]["RunningActiveTickets"]  + (float)$vaddtorunningtickets;
                         break;
                     }
                 }  
@@ -2623,27 +2620,6 @@ class TopUp extends DBHandler
             $date1 = $firstdate->format('Y-m-d')." 06:00:00";
             $date2 = $formatteddate." 06:00:00";
             
-            //Get the total Unused Tickets per site for Pick Date less 1 Day Cutoff
-            //ex: Current Date = June 4, Pick Date = June 4: Get the Unused Tickets for June 3
-            $this->prepare($query5);
-            $this->bindparameter(":startdate", $date1);
-            $this->bindparameter(":enddate", $date2);
-            $this->execute();  
-            $rows5 =  $this->fetchAllData();
-            
-            foreach ($rows5 as $value1) {
-                foreach ($varrmerge as $keys => $value2) {
-                    if($value1["SiteID"] == $value2["SiteID"]){
-                        if($varrmerge[$keys]["RunningActiveTickets"] == "0.00"){
-                            $varrmerge[$keys]["RunningActiveTickets"] = (float)$value1["UnusedTickets"];
-                        } else {
-                            $varrmerge[$keys]["RunningActiveTickets"] = $varrmerge[$keys]["RunningActiveTickets"] + (float)$value1["UnusedTickets"];
-                        }
-                        break;
-                    }
-                }  
-            }
-            
             //Set the Date Range in getting the Running Active Tickets for Pick Date less 2 Days Cutoff
             $seconddate = new DateTime($date1);
             $seconddate->sub(date_interval_create_from_date_string('1 day'));
@@ -2659,8 +2635,7 @@ class TopUp extends DBHandler
                 foreach ($varrmerge as $keys => $value2) {
                     if($value1["SiteID"] == $value2["SiteID"]){
                         if($varrmerge[$keys]["RunningActiveTickets"] == "0.0"){
-                            $varrmerge[$keys]["RunningActiveTickets"] = (float)$varrmerge[$keys]["UnusedTickets"];
-                            $varrmerge[$keys]["RunningActiveTickets"] = $varrmerge[$keys]["RunningActiveTickets"] + (float)$value1["RunningActiveTickets"];
+                            $varrmerge[$keys]["RunningActiveTickets"] = (float)$value1["RunningActiveTickets"];
                         } else {
                             $varrmerge[$keys]["RunningActiveTickets"] = $varrmerge[$keys]["RunningActiveTickets"] + (float)$value1["RunningActiveTickets"];
                         }
@@ -2702,18 +2677,43 @@ class TopUp extends DBHandler
             $eldate->add(date_interval_create_from_date_string('1 day'));
             $endlimitdate = $eldate->format('Y-m-d')." 06:00:00.000000";
 
+            //Get the total Printed Tickets per site for 2 days
+            //ex: Current Date = June 4, Pick Date = June 4: Get the total printed tickets for June 4 and June3 Cutoff
+            $this->prepare($query4);
+            $this->bindparameter(":startdate", $startlimitdate);
+            $this->bindparameter(":enddate", $endlimitdate);
+            $this->execute();  
+            $rows4 =  $this->fetchAllData();
+
+            foreach($rows4 as $itr => $value) 
+            {                
+                   $vtotprintedtickets[$itr] = array(
+                      'SiteID'=>$value['SiteID'],
+                       'PrintedTickets'=>$value['PrintedTickets']); 
+            }
+
             //Get the Tickets to be less in active running tickets per site
             $this->prepare($query9);
             $this->bindparameter(':startlimitdate', $startlimitdate);
             $this->bindparameter(':endlimitdate', $endlimitdate);
             $this->execute();  
             $rows9 =  $this->fetchAllData();
-            
+
             //Less the tickets used/encashed for the recalculated dates
             foreach ($rows9 as $value1) {
+                foreach ($vtotprintedtickets as $keys => $value2) {
+                    if($value1["SiteID"] == $value2["SiteID"]){
+                            $vtotprintedtickets[$keys]["PrintedTickets"] = (float)$vtotprintedtickets[$keys]["PrintedTickets"]  - (float)$value1["LessTickets"];
+                        break;
+                    }
+                }  
+            }
+            
+            //Less the tickets used/encashed for the recalculated dates
+            foreach ($vtotprintedtickets as $value1) {
                 foreach ($varrmerge as $keys => $value2) {
                     if($value1["SiteID"] == $value2["SiteID"]){
-                            $varrmerge[$keys]["RunningActiveTickets"] = (float)$varrmerge[$keys]["RunningActiveTickets"]  - (float)$value1["LessTickets"];
+                            $varrmerge[$keys]["RunningActiveTickets"] = (float)$varrmerge[$keys]["RunningActiveTickets"]  + (float)$value1["PrintedTickets"];
                         break;
                     }
                 }  
