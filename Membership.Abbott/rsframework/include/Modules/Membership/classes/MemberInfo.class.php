@@ -56,10 +56,11 @@ class MemberInfo extends BaseEntity {
     public function getMemberInfoByUsername($Username) {
 
         $query = "SELECT
-                    m.Password, m.IsVIP,
+                    m.Password, m.IsVIP, mc.Status
                     mi.*
                   FROM memberinfo mi
                     INNER JOIN members m ON mi.MID = m.MID
+                    INNER JOIN membercards mc ON m.MID = mc.MID
                   WHERE m.Username = '$Username'";
 
         return parent::RunQuery($query);
@@ -343,7 +344,6 @@ class MemberInfo extends BaseEntity {
         return parent::RunQuery($query);
     }
     
-    
     public function updateAppendUsingMID($status, $MID, $email) {
         $query = "UPDATE " . $this->TableName . " SET Status = " . $status . ", Email = '$email' WHERE MID = " . $MID;
         $this->ExecuteQuery($query);
@@ -351,6 +351,11 @@ class MemberInfo extends BaseEntity {
             App::SetErrorMessage($this->getError());
             return false;
         }
+    }
+    
+    public function getFirstNameByMID($MID){
+        $query = "SELECT FirstName FROM membership.memberinfo WHERE MID = $MID;";
+        return parent::RunQuery($query);
     }
 
 }

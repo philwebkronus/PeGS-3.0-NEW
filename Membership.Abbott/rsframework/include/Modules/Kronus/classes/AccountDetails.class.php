@@ -19,5 +19,16 @@ class AccountDetails extends BaseEntity
                   WHERE AID = $AID";
         return parent::RunQuery($query);
     }
+    
+    
+    /**
+    * @author JDLachica
+    * @date Sept.15,2014
+    */
+    public function getNameAndEmailByAID($AID){
+        $query = "SELECT Email, Name FROM $this->TableName
+                  WHERE AID = $AID";
+        return parent::RunQuery($query);
+    }
 }
 ?>

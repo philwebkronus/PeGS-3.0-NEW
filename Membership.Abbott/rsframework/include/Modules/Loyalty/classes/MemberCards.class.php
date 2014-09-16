@@ -64,7 +64,7 @@ class MemberCards extends BaseEntity {
         $result = parent::RunQuery($query);
         return $result;
     }
-
+    
     public function getMemberPoints($cardnumber) {
         $row = $this->getMIDByCard($cardnumber);
 
@@ -169,10 +169,10 @@ class MemberCards extends BaseEntity {
      * @DateCreated: 2013-06-17 05:38:40PM
      */
     public function getMemberCardInfoByMID($MID) {
-        $query = "SELECT m.Status, mc.MemberCardID, mc.CardNumber
+        $query = "SELECT m.Status, mc.MemberCardID, mc.CardNumber, mc.Status as StatusMC
                             FROM membership.members as m
                             INNER JOIN " . $this->TableName . " as mc ON mc.MID = m.MID
-                            WHERE mc.Status IN(1,5,9) AND m.Status IN(1,5) AND m.MID =" . $MID;
+                            WHERE mc.Status IN(1,2,5,7,8,9) AND m.Status IN(1,5) AND m.MID =" . $MID;
 
         $result = parent::RunQuery($query);
         return $result;
@@ -256,14 +256,14 @@ class MemberCards extends BaseEntity {
         
         $this->StartTransaction();
         try {
-            $query = "UPDATE membercards SET LifetimePoints = '$lifetimepoints',
-                CurrentPoints = '$currentpoints', RedeemedPoints = '$redeemedpoints', DateUpdated = '$dateupdated',
-                Status = '$status1', UpdatedByAID = '$aid'
-                WHERE CardNumber = '$newcardnumber'";
+//            $query = "UPDATE membercards SET LifetimePoints = '$lifetimepoints',
+//                CurrentPoints = '$currentpoints', RedeemedPoints = '$redeemedpoints', DateUpdated = '$dateupdated',
+//                Status = '$status1', UpdatedByAID = '$aid'
+//                WHERE CardNumber = '$newcardnumber'";
+//
+//            $this->ExecuteQuery($query);
 
-            $this->ExecuteQuery($query);
-
-            if (!App::HasError()) {
+//            if (!App::HasError()) {
                 $query2 = "UPDATE membercards SET DateUpdated = '$dateupdated',
                     Status = '$status2', UpdatedByAID = '$aid' 
                     WHERE CardNumber = '$oldubcardnumber'";
@@ -294,9 +294,9 @@ class MemberCards extends BaseEntity {
                 } else {
                     $this->RollBackTransaction();
                 }
-            } else {
-                $this->RollBackTransaction();
-            }
+//            } else {
+//                $this->RollBackTransaction();
+//            }
         } catch (Exception $e) {
             $this->RollBackTransaction();
             App::SetErrorMessage($e->getMessage());
@@ -606,6 +606,16 @@ class MemberCards extends BaseEntity {
 
         $result = parent::RunQuery($query);
         return $result;
+    }
+    
+    //@author JDLachica
+    //@date 09/09/2014
+    public function validateAndReturnCardNumber($CardNumber){
+        $query = "SELECT COUNT(MemberCardID) as Count,Status FROM membercards WHERE CardNumber='$CardNumber' LIMIT 1";
+
+        $result = parent::RunQuery($query);
+        return $result; 
+        
     }
 
 }

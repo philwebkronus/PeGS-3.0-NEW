@@ -348,6 +348,27 @@ class RealtimeGamingUBAPIWrapper
         }
     }
     
+    public function GetPlayerClassification($pid)
+    {
+        $response = $this->_API->getPlayerClasification($pid);
+        if( !$this->_API->GetError() )
+        {
+            if ( $response['GetPlayerClassResult']['Data'] )
+            {          
+                return array('IsSucceed'=>true, 'ErrorCode' => 0, 'ErrorMessage'=> null, 'ClassID' => $response['GetPlayerClassResult']['Data']['PlayerClass']['ClassID']);
+            }
+            else
+            {
+                return array('IsSucceed'=>false, 'ErrorCode'=> 30,'ErrorMessage'=> 'Response malformed');
+            }
+            
+        }
+        else
+        {
+            return array('IsSucceed'=>false, 'ErrorCode' => 31, 'ErrorMessage'=>'API Error: ' . $this->_API->GetError());
+        }
+    }
+    
     
     /**
      * RTG : Reference for status 

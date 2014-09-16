@@ -167,6 +167,10 @@ Class CasinoAPIHandler
         return $this->_API->ChangeplayerClassification($pid, $playerClassID, $userID);
     }
     
+    public function GetPlayerClassification($pid) {
+        return $this->_API->GetPlayerClassification($pid);
+    }
+    
     public function RevertBrokenGamesAPI( $username, $playerMode, $revertMode ){
         return $this->_API->RevertBrokenGames( $username, $playerMode, $revertMode );
     }

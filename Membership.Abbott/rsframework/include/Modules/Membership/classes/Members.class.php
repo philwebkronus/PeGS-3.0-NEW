@@ -228,9 +228,11 @@ class Members extends BaseEntity {
                                                 $casinoAccounts[0]['HashedServicePassword'] = $hashpassword;
 
                                                 //START: Call Casino Create Account API Method
-                                                $apiResult = $casinoAPI->createAccount($serviceName, $serviceID, $userName,$password,
-                                                        $firstName,$lastName, $birthDate, $gender, $email, $phone, $address, $city, $countryCode, $vipLevel);
-
+//                                                $apiResult = $casinoAPI->createAccount($serviceName, $serviceID, $userName,$password,
+//                                                        $firstName,$lastName, $birthDate, $gender, $email, $phone, $address, $city, $countryCode, $vipLevel);
+                                                
+                                                $apiResult = array("IsSucceed" => true, "ErrorID" => 1);
+                                                
                                                 if(!$apiResult){
                                                     $apierror = "There was an error encountered in mapping the RTG casino.";
                                                     $_Log->logAPI(AuditFunctions::MIGRATE_TEMP, $newCard.':Failed', $apiResult['ErrorMessage']); //logging of API Error
@@ -838,18 +840,20 @@ class Members extends BaseEntity {
         return $result;
     }
     
+ 
     /**
      * This function is use to update the player classification.
      * @author Noel Antonio 11-25-2013
      * @param tinyint $isVip (0 - Regular, 1 - VIP)
      * @param int $mid Member Card ID
      * @return boolean
+     * 
      */
     public function changeIsVipByMid($isVip, $mid)
     {
         $query = "UPDATE $this->TableName SET IsVIP = '$isVip' WHERE MID = '$mid'";
         parent::ExecuteQuery($query);
-    }  
+    }
     
     public function getVIPLevel($MID){
         $query = "SELECT IsVIP FROM members WHERE MID = $MID;";
@@ -857,6 +861,17 @@ class Members extends BaseEntity {
         $result = parent::RunQuery($query);
         
         return $result[0]['IsVIP'];
+    }
+    
+    //@author fdlsison
+    //@date 09-01-2014
+    //@purpose updates player classification
+    public function updatePlayerClassificationByMID($isVIP, $MID) {
+        $query = "UPDATE $this->TableName
+                  SET IsVIP = $isVIP
+                  WHERE MID = $MID";
+        
+        return parent::ExecuteQuery($query);
     }
 }
 

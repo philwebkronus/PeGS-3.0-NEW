@@ -3,6 +3,9 @@
 /*
  * @author : owliber
  * @date : 2013-04-22
+ * 
+ * @Updated by: Joene Floresca
+ * @Date: September 3, 2014
  */
 
 class MemberServices extends BaseEntity
@@ -41,6 +44,8 @@ class MemberServices extends BaseEntity
      * 
      * @param int $MID - Member ID
      * @return string array of Casino services
+     * @modified 09-04-2014
+     * @purpose added VIPLevel column
      */
     public function getCasinoAccounts( $MID )
     {
@@ -51,6 +56,7 @@ class MemberServices extends BaseEntity
                     ServiceID,
                     UserMode,
                     isVIP,
+                    VIPLevel,
                     Status
                   FROM memberservices
                   WHERE MID = $MID;";
@@ -79,10 +85,12 @@ class MemberServices extends BaseEntity
      * @param tinyint $isVip (0 - Regular, 1 - VIP)
      * @param int $mid Member Card ID
      * @return boolean
+     * 
+     * Updated by Joene Floresca 09-01-2014
      */
-    public function changeIsVipByMid($isVip, $mid)
+    public function changeIsVipByMid($isVip, $vipLevel, $mid)
     {
-        $query = "UPDATE $this->TableName SET IsVIP = '$isVip' WHERE MID = '$mid'";
+        $query = "UPDATE $this->TableName SET IsVIP = '$isVip', VIPLevel = '$vipLevel' WHERE MID = '$mid'";
         return parent::ExecuteQuery($query);
     }
     
@@ -127,6 +135,42 @@ class MemberServices extends BaseEntity
         $result = parent::RunQuery($query);
                 
         return $result;
+    }
+
+    /**
+     * @author Joene Floresca 
+     * @param type int $mid
+     * @return array
+     * @desc Update VIPLevel
+     */
+    public function getVIPLevel($mid){
+        $query = "SELECT VIPLevel FROM $this->TableName WHERE MID = '$mid'";       
+        $result = parent::RunQuery($query);
+        return $result;
+    }
+    
+    /**
+     * @author Joene Floresca 
+     * @param type int $mid
+     * @return array
+     * @desc Check if VIPLevel Exist
+     */
+    public function checkVIPLevel($vipLevel){
+        $query = "SELECT VIPLeveL FROM $this->TableName WHERE ServiceID = 19 AND VIPLevel = '$vipLevel';";       
+        $result = parent::RunQuery($query);
+        return $result;
+    }
+
+    
+    //@author fdlsison
+    //@date 09-01-2014
+    //@purpose update player classification
+    public function updatePlayerClassificationByMIDAndServiceID($isVIP, $vipLevel, $MID, $serviceID) {
+        $query = "UPDATE memberservices
+                  SET IsVIP = $isVIP, VIPLevel = $vipLevel
+                  WHERE MID = $MID AND ServiceID = $serviceID";
+        parent::ExecuteQuery($query);
+        return $this->AffectedRows;
     }
 }
 ?>

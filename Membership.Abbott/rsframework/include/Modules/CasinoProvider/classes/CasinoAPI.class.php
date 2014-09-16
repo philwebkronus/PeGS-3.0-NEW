@@ -351,6 +351,23 @@
             return $response;
         }
         
+        public function GetPlayerClassification($casinoName, $pid, $serverID)
+        {
+            if(strpos($casinoName, 'RTG2') !== false){
+                $isPlayerAPI = 1;
+                $casinoAPIHandler = $this->configureRTG($serverID,$isPlayerAPI);
+            }
+            
+            if(!$casinoAPIHandler){
+                $response = false;
+            }
+            else{
+                $response = $casinoAPIHandler->GetPlayerClassification($pid);
+            }
+            
+            return $response;
+        }
+        
         
         public function GetPendingGames($user)
         {
