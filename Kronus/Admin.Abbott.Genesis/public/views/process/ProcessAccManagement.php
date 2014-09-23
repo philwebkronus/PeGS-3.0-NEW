@@ -568,7 +568,7 @@ if($connected)
                         //if corporate account type, email address must be the corporate email
                         if($_SESSION['acctype'] == 1)
                         {
-                            $vEmail = trim($_POST['txtcorpemail'])."@philweb.com.ph";
+                            $vEmail = trim($_POST['txtcorpemail']);
                             $vdesignationID = $_POST['cmbdesignation'];
                         }
 
@@ -787,8 +787,8 @@ if($connected)
                      //if corporate account type, email address must be the corporate email
                      if($_SESSION['acctype'] == 1)
                      {
-                        $vEmail = trim($_POST['txtcorpemail'])."@philweb.com.ph".$_POST['txtappendnum'];       
-                        $emailforcheck = trim($_POST['txtemail2'])."@philweb.com.ph".$_POST['txtappendnum'];
+                        $vEmail = trim($_POST['txtcorpemail']);       
+                        $emailforcheck = trim($_POST['txtemail2']).$_POST['txtappendnum'];
                         $vdesignationID = $_POST['cmbdesignation'];
                      }
                     

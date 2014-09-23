@@ -568,7 +568,7 @@ if($connected)
                         //if corporate account type, email address must be the corporate email
                         if($_SESSION['acctype'] == 1)
                         {
-                            $vEmail = trim($_POST['txtcorpemail'])."@philweb.com.ph";
+                            $vEmail = trim($_POST['txtcorpemail']);
                             $vdesignationID = $_POST['cmbdesignation'];
                         }
 
@@ -628,7 +628,7 @@ if($connected)
                                             <br />
                                                 For further inquiries, please call our Customer Service hotline at telephone numbers (02) 3383388 or toll free from
                                                 PLDT lines 1800-10PHILWEB (1800-107445932)
-                                                or email us at <b>customerservice@philweb.com.ph</b>.
+                                                or email us at <b>$csemail</b>.
                                             <br/><br/>
                                                 Thank you and good day!
                                             <br/><br/>
@@ -649,7 +649,7 @@ if($connected)
                                             monitor email traffic.
                                         </body>
                                      </html>";
-                             $headers="From: poskronusadmin@philweb.com.ph\r\nContent-type:text/html";
+                             $headers="From: $adminemailsender\r\nContent-type:text/html";
                              $sentEmail = mail($to, $subject, $message, $headers);
                              // Check if email is sent or not
                              if($sentEmail == 1)
@@ -787,8 +787,8 @@ if($connected)
                      //if corporate account type, email address must be the corporate email
                      if($_SESSION['acctype'] == 1)
                      {
-                        $vEmail = trim($_POST['txtcorpemail'])."@philweb.com.ph".$_POST['txtappendnum'];       
-                        $emailforcheck = trim($_POST['txtemail2'])."@philweb.com.ph".$_POST['txtappendnum'];
+                        $vEmail = trim($_POST['txtcorpemail']);       
+                        $emailforcheck = trim($_POST['txtemail2']).$_POST['txtappendnum'];
                         $vdesignationID = $_POST['cmbdesignation'];
                      }
                     
