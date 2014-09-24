@@ -2581,16 +2581,18 @@ class TopUp extends DBHandler
             $rows9 =  $this->fetchAllData();
             
            //Less the tickets used/encashed for the recalculated dates
-            foreach ($rows9 as $value1) {
-                foreach ($varrmerge as $keys => $value2) {
+            foreach ($varrmerge as $keys => $value2) {
+                foreach ($rows9 as $value1) {
                     if($value1["SiteID"] == $value2["SiteID"]){
                             $vaddtorunningtickets = (float)$varrmerge[$keys]["PrintedTickets"]  - (float)$value1["LessTickets"];
                             $varrmerge[$keys]["RunningActiveTickets"] = (float)$varrmerge[$keys]["RunningActiveTickets"]  + (float)$vaddtorunningtickets;
                         break;
+                    } else if($value2["PrintedTickets"] != "0.00" && $value1["SiteID"] != $value2["SiteID"]) {
+                        $varrmerge[$keys]["RunningActiveTickets"] = (float)$varrmerge[$keys]["RunningActiveTickets"]  + (float)$varrmerge[$keys]["PrintedTickets"] ;
                     }
                 }  
             }
-            
+
         } else if($formatteddate != date('Y-m-d') && $formatteddate != $comparedate){ //Date Started is not less than 1 day nor equal to the date today
 
             //Get the Running Active Tickets for Pick Date, if the Pick Date is not less than 1 day nor equal to the date today
