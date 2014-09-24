@@ -176,16 +176,19 @@ if ($fproc->IsPostBack)
             if($type == 0)
             {
                $status = "Regular"; 
+               $classid = 0;
                $type = 0;
             }
             else if($type == 1)
             {
                 $status = "VIP";
+                $classid = 1;
                 $type = 1;
             }
             else if($type == 2)
             {
                 $status = "Classic";
+                $classid = 2;
                 $type = 0;
             }
 
@@ -211,7 +214,7 @@ if ($fproc->IsPostBack)
 
                     $userID = 0;
 
-                    $changeplayerclassresult = $casinoAPI->ChangePlayerClassification('RTG2', $pid, $type, $userID, $serverID);
+                    $changeplayerclassresult = $casinoAPI->ChangePlayerClassification('RTG2', $pid, $classid, $userID, $serverID);
                     header("Content-Type:text/html");
 
                 }
