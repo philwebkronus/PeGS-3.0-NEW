@@ -140,7 +140,7 @@ class TransactionpercutoffController extends VMSBaseIdentity
                 //get running active tickets
                 if ($transactiondate <= $less2days) //if date selected less than 2 days of current date
                 {
-                    $runningactive1 = $this->getLess2DaysCutOff($less2days, $sitecode); //previuos 2 days
+                    $runningactive1 = $this->getLess2DaysCutOff($transactiondate, $sitecode); //previuos 2 days
                     $totalrunningactive     = (int)$runningactive1['SumCount'];
                     $totalrunningactiveval  = $runningactive1['SumValue'];
                 }

@@ -1718,29 +1718,39 @@ class TicketModel extends CFormModel {
         if ($sitecode == 'All')
         {
             $sql = "SELECT COUNT(TicketID) as ExpiredTickets, SUM(Amount) as Value FROM tickets 
-                    WHERE ValidToDate = :validtodate AND Status IN (1, 2)";
+                    WHERE (ValidToDate >= :from AND ValidToDate <= :to) 
+                    AND ValidToDate <= NOW(6) 
+                    AND Status IN (1, 2, 7) ";
             $command = $this->_connection->createCommand($sql);
-            $command->bindValue(":validtodate", $tdatefrom." 23:59:59.000000");
+            $command->bindValue(":from", $tdatefrom." 00:00:00.000000");
+            $command->bindValue(":to", $tdatefrom." 23:59:59.000000");
         }
         else if (is_array($sitecode))
         {
             $sitecode = implode(",", $sitecode);
 
             $sql = "SELECT COUNT(TicketID) as ExpiredTickets, SUM(Amount) as Value FROM tickets 
-                    WHERE ValidToDate = :validtodate AND Status IN (1, 2) 
+                    WHERE (ValidToDate >= :from AND ValidToDate <= :to) 
+                    AND ValidToDate <= NOW(6) 
+                    AND Status IN (1, 2, 7) 
                     AND SiteID IN ($sitecode)";
             $command = $this->_connection->createCommand($sql);
-            $command->bindValue(":validtodate", $tdatefrom." 23:59:59.000000");
+            $command->bindValue(":from", $tdatefrom." 00:00:00.000000");
+            $command->bindValue(":to", $tdatefrom." 23:59:59.000000");
         }
         else
         {
 
             $sql = "SELECT COUNT(TicketID) as ExpiredTickets, SUM(Amount) as Value FROM tickets 
-                    WHERE ValidToDate = :validtodate AND Status IN (1, 2) 
+                    WHERE (ValidToDate >= :from AND ValidToDate <= :to) 
+                    AND ValidToDate <= NOW(6) 
+                    AND Status IN (1, 2, 7) 
+                    AND DateEncashed IS NULL
                     AND SiteID = :siteid";
             $command = $this->_connection->createCommand($sql);
             $command->bindValue(":siteid", $sitecode);
-            $command->bindValue(":validtodate", $tdatefrom." 23:59:59.000000");
+            $command->bindValue(":from", $tdatefrom." 00:00:00.000000");
+            $command->bindValue(":to", $tdatefrom." 23:59:59.000000");
         }
         $result = $command->queryRow();
 
