@@ -500,6 +500,27 @@ class Helpers
                 break;
         }
     }
+    
+    //09-17-2014
+    public function sendEmailBT( $email, $name, $couponNumber, $expiryDate)
+    {
+       // App::LoadCore("PHPMailer.class.php");
+        $mailer = new PHPMailer();
+                        
+        $mailer->AddAddress($email, $name);
+        $mailer->IsHTML(true);
+        
+        $mailer->Body = "<html><body>Dear <label style='font-style: italic;'>$name</label>,<br />";
+        $mailer->Body .= "<br /><br />Your voucher code is ".$couponNumber. ". Present this msg & 1 valid ID at any e-Games cafe to get your FREE P500 casino load! Valid 'til ".$expiryDate. ". Help? Call 338-3388.";
+        $mailer->Body .= "<br /><br />Regards,";
+        $mailer->Body .= "<br />e-Games</p></body></html>";
+        
+        $mailer->From = "membership@egamescasino.ph";
+        $mailer->FromName = "E-Games Membership";
+        $mailer->Host = "localhost";
+        $mailer->Subject = "E-Games Membership";
+        $mailer->Send();
+    }
   
 }
 

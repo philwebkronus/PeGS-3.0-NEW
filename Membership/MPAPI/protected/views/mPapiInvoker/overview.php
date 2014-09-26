@@ -55,6 +55,9 @@
     <?php echo CHtml::link('GetCity', Yii::app()->createUrl('mPapiInvoker/getcity'), array('target'=>'_blank')); ?>
     <br />
     <br />
+    <?php echo CHtml::link('RegisterMemberBT', Yii::app()->createUrl('mPapiInvoker/registermemberbt'), array('target'=>'_blank')); ?>
+    <br />
+    <br />
     <?php echo CHtml::link('Logout', Yii::app()->createUrl('mPapiInvoker/logout'), array('target'=>'_blank')); ?>
     <br />
     <br />

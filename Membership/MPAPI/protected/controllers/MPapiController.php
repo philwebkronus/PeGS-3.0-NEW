@@ -63,11 +63,9 @@ class MPapiController extends Controller {
             switch($result['Status']) {
                 case 1:
                     if($result['Password'] != $strPass) {
-                        //$transMsg = "Incorrect Password.";
+                        
                         $logMessage = 'Password inputted is incorrect.';
-                        //$errorCode = 32;
-                        //Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
-                        //$this->_sendResponse(200, CJSON::encode(CommonController::retMsg($module, $transMsg, $errorCode)));
+                        
                         $logger->log($logger->logdate, " [LOGIN ERROR] ", $logMessage);
                         $apiDetails = 'LOGIN-Authenticate-Failed: Incorrect password.';
                         $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
@@ -76,17 +74,14 @@ class MPapiController extends Controller {
                             $logger->log($logger->logdate, " [LOGIN ERROR] ", $logMessage);
                         }
                         $retVal = false;
-                        //$retVal = "ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode;
+                        
                     }
                     else
                         $retVal = $result;
                     break;
                 case 0:
                     $logMessage = 'Account is Inactive';
-//                    $transMsg = "Account is Inactive.";
-//                    $errorCode = 33;
-//                    Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
-//                    $this->_sendResponse(200, CJSON::encode(CommonController::retMsg($module, $errorCode, $transMsg)));
+
                     $logger->log($logger->logdate, " [LOGIN ERROR] ", $logMessage);
                     $apiDetails = 'LOGIN-Authenticate-Failed: Member account is inactive.';
                     $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
@@ -98,10 +93,7 @@ class MPapiController extends Controller {
                     break;
                 case 2:
                     $logMessage = 'Account is Suspended.';
-//                    $transMsg = "Account is Suspended.";
-//                    $errorCode = 34;
-//                    Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
-//                    $this->_sendResponse(200, CJSON::encode(CommonController::retMsg($module,  $errorCode, $transMsg)));
+                    
                     $logger->log($logger->logdate, " [LOGIN ERROR] ", $logMessage);
                     $apiDetails = 'LOGIN-Authenticate-Failed: Member account is suspended.';
                     $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
@@ -113,10 +105,7 @@ class MPapiController extends Controller {
                     break;
                 case 3:
                     $logMessage = 'Account is Locked (Login Attempts).';
-//                    $transMsg = "Account is Locked (Login Attempts).";
-//                    $errorCode = 35;
-//                    Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
-                    //$this->_sendResponse(200, CJSON::encode(CommonController::retMsg($module,$errorCode,$transMsg)));
+
                     $logger->log($logger->logdate, " [LOGIN ERROR] ", $logMessage);
                     $apiDetails = 'LOGIN-Authenticate-Failed: Member account is locked (login attempts).';
                     $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
@@ -128,10 +117,7 @@ class MPapiController extends Controller {
                     break;
                 case 4:
                     $logMessage = 'Account is Locked (By Admin).';
-//                    $transMsg = "Account is Locked (By Admin).";
-//                    $errorCode = 36;
-//                    Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
-//                    $this->_sendResponse(200, CJSON::encode(CommonController::retMsg($module, $errorCode, $transMsg)));
+
                     $logger->log($logger->logdate, " [LOGIN ERROR] ", $logMessage);
                     $apiDetails = 'LOGIN-Authenticate-Failed: Member account is locked (admin).';
                     $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
@@ -143,10 +129,7 @@ class MPapiController extends Controller {
                     break;
                 case 5:
                     $logMessage = 'Account is Locked (By Admin).';
-//                    $transMsg = "Account is Locked (By Admin).";
-//                    $errorCode = 36;
-//                    Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
-//                    $this->_sendResponse(200, CJSON::encode(CommonController::retMsg($module, $errorCode, $transMsg)));
+
                     $logger->log($logger->logdate, " [LOGIN ERROR] ", $logMessage);
                     $apiDetails = 'LOGIN-Authenticate-Failed: Member account is locked (admin).';
                     $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
@@ -158,10 +141,7 @@ class MPapiController extends Controller {
                     break;
                 case 6:
                     $logMessage = 'Account is Terminated.';
-//                    $transMsg = "Account is Terminated.";
-//                    $errorCode = 37;
-//                    Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
-//                    $this->_sendResponse(200, CJSON::encode(CommonController::retMsg($module, $errorCode, $transMsg)));
+
                     $logger->log($logger->logdate, " [LOGIN ERROR] ", $logMessage);
                     $apiDetails = 'LOGIN-Authenticate-Failed: Member account is terminated.';
                     $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
@@ -173,10 +153,7 @@ class MPapiController extends Controller {
                     break;
                 default:
                     $logMessage = 'Account is Invalid.';
-//                    $transMsg = "Account is Invalid.";
-//                    $errorCode = 38;
-//                    Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
-//                    $this->_sendResponse(200, CJSON::encode(CommonController::retMsg($module, $errorCode, $transMsg)));
+
                     $logger->log($logger->logdate, " [LOGIN ERROR] ", $logMessage);
                     $apiDetails = 'LOGIN-Authenticate-Failed: Member account is invalid.';
                     $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
@@ -222,10 +199,7 @@ class MPapiController extends Controller {
             exit;
         }
         else {
-//            $transMsg = "Account is Invalid.";
-//            $errorCode = 38;
-//            Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
-//            $this->_sendResponse(200, CJSON::encode(CommonController::retMsg($module, $transMsg, $errorCode)));
+
             $isTempAcctExist = $membershipTempModel->checkTempUser($username);
 
             //check if account has no transactions yet in kronus cashier
@@ -262,10 +236,7 @@ class MPapiController extends Controller {
                 exit;
             }
         }
-        
-
-//        var_dump($retVal);
-//        exit;
+     
         return $retVal;
     }
     
@@ -290,20 +261,6 @@ class MPapiController extends Controller {
         $logger = new ErrorLogger();
         $apiLogsModel = new APILogsModel();
         
-        
-//        //$dateNow = new DateTime();
-//        $asia = new DateTimeZone('Asia/Taipei');
-//        //$dateNow = $this->_uDateTime("[d-M-Y H:i:s]");
-//        $dateNow = new DateTime();
-//        $dateNow->setTimezone($asia);
-//        
-//        var_dump($dateNow);
-//        //echo $dateNow->format('Y-m-d H:i:sP') . "\n";
-//        exit;
-        //$dateNow = $sDate->format("F j");
-        //$dateNow = $this->_getDate();
-       
-        //DelExpiredSession::deleteExpiredSession();
         //check if username & password is inputted
         if(isset($request['Username']) && isset($request['Password'])) {
             if (($request['Username'] == '') || ($request['Password'] == '')) {
@@ -322,7 +279,8 @@ class MPapiController extends Controller {
                 exit;
             }
             else {
-                if (Utilities::validateEmail($request['Username']) && ctype_alnum($request['Password'])) {
+     
+                if (Utilities::validateEmail($request['Username']) || ctype_alnum($request['Password'])) {
                     
                     $username = trim($request['Username']);
                     $password = trim($request['Password']);
@@ -337,15 +295,10 @@ class MPapiController extends Controller {
                     
                     $members = $this->_authenticate($username, $password);
                     
-                    //$credentials = $membersModel->getLoginInfo($username, $password);
-                    
-                    
-//                    $status = $members['Status'];
                     
                     if($members) {
                         $MID = $members['MID'];
-                        //$mpSessionID = $credentials['SessionID'];
-    //                    $cardTypeID = $members['CardTypeID'];
+                        
                         $isVIP = $members['IsVIP'];
                         $activeSession = $memberSessionsModel->checkSession($MID);
                         
@@ -355,9 +308,6 @@ class MPapiController extends Controller {
                         $mpSessionID = $session->getSessionID();
                         
                         $session->setSessionID($mpSessionID);
-                        
-                        //session_start();
-                        //$mpSessionID = session_id();
                         
                         if($activeSession['COUNT(MemberSessionID)'] > 0) {
                             $result = $memberSessionsModel->updateSession($mpSessionID, $MID, $remoteIP);
@@ -372,8 +322,8 @@ class MPapiController extends Controller {
                             $memberSessions = $memberSessionsModel->getMemberSessions($MID);
                             
                             
-                            $mpSessionid = $memberSessions['SessionID'];
-                            $endDate = $memberSessions['DateEnded'];
+                            $mpSessionID = $memberSessions['SessionID'];
+                            //$endDate = $memberSessions['DateEnded'];
                             
                             $memberCards = $memberCardsModel->getActiveMemberCardInfo($MID);
                             
@@ -385,23 +335,12 @@ class MPapiController extends Controller {
                             
                             $cardTypeID = $cards['CardTypeID'];
                             
-//                            $session['SessionID'] = $mpSessionid;
-//                            $session['MID'] = $MID;
-//                            $session['UserName'] = $username;
-//                            $session['CardTypeID'] = $cardTypeID;
-//                            $session['DateEnded'] = $endDate;
-//                            $session['Password'] = $password;
-                            
                             $refID = $username;
                             
                             $isSuccessful = $auditTrailModel->logEvent(AuditTrailModel::API_LOGIN, 'Username: '.$username, array('MID' => $MID, 'SessionID' => $mpSessionID, 'AID' => $MID));
                             if($isSuccessful == 0) {
                                 $logMessage = 'Failed to log event on Audittrail.';
                                 $logger->log($logger->logdate, " [LOGIN FAILED] ", $logMessage);
-//                                $transMsg = "Failed to log event on Audit Trail.";
-//                                $errorCode = 25;
-//                                Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
-//                                $this->_sendResponse(200, CJSON::encode(CommonController::retMsg($module, $transMsg, $errorCode)));
                             }
                             $isUpdated = $memberSessionsModel->updateTransactionDate($MID, $mpSessionID);
                             if($isUpdated > 0) {
@@ -514,9 +453,7 @@ class MPapiController extends Controller {
         $isInserted = '';
         $logger = new ErrorLogger();
         $apiLogsModel = new APILogsModel();
-        
-        //$dateNow = $this->_getDate();
-        
+       
         if(isset($request['EmailCardNumber'])) {
             if($request['EmailCardNumber'] == '') {
                 $transMsg = "One or more fields is not set or is blank.";
@@ -535,8 +472,7 @@ class MPapiController extends Controller {
             }
             else {
                 $emailCardNumber = trim($request['EmailCardNumber']);
-                
-                
+                               
                 //start of declaration of models to be used
                 $membersModel = new MembersModel();
                 $memberInfoModel = new MemberInfoModel();
@@ -545,76 +481,57 @@ class MPapiController extends Controller {
                 $helpers = new Helpers();
                 $cardsModel = new CardsModel();
                 $auditTrailModel = new AuditTrailModel();
-                //$logger = new ErrorLogger();
-                
-//                $activeSession = $this->_getActiveSession();
-//                if($activeSession) {
-//                    $mid = $activeSession['MID'];
-//                    $mpSessionID = $activeSession['SessionID'];
                     
-                    $refID = $emailCardNumber;
-                
-                    if(Utilities::validateEmail($emailCardNumber)) {
-                        $data = $memberInfoModel->getDetailsUsingEmail($emailCardNumber);
-                        
-                        if($data) {
-                            $MID = $data['MID'];
-                            $firstname = $data['FirstName'];
-                            $lastname = $data['LastName'];
-                            $fullname = $firstname.' '.$lastname;
-                            $ubCard = $memberCardsModel->getCardNumberUsingMID($MID);
-                            $hashedUBCard = base64_encode($ubCard);
-                            $result = $membersModel->updateForChangePasswordUsingMID($MID, 1);
-                            if($result > 0) {
-                                $helpers->sendEmailForgotPassword($emailCardNumber, $fullname, $hashedUBCard);
-                                $isSuccessful = $auditTrailModel->logEvent(AuditTrailModel::API_FORGOT_PASSWORD, 'EmailCardNumber: '.$emailCardNumber, array('MID' => $MID,'SessionID' => ''));
-                                if($isSuccessful == 0) {
-                                    $logMessage = "Failed to insert to Audittrail.";
-                                    $logger->log($logger->logdate, " [FORGOTPASSWORD ERROR] ", $logMessage);
-                                }
-                                $apiDetails = 'FORGOTPASSWORD-UpdateChangePass-Success: MID = '.$MID;
-                                $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 1);
+                $refID = $emailCardNumber;
+
+                if(Utilities::validateEmail($emailCardNumber)) {
+                    $data = $memberInfoModel->getDetailsUsingEmail($emailCardNumber);
+
+                    if($data) {
+                        $MID = $data['MID'];
+                        $firstname = $data['FirstName'];
+                        $lastname = $data['LastName'];
+                        $fullname = $firstname.' '.$lastname;
+                        $ubCard = $memberCardsModel->getCardNumberUsingMID($MID);
+                        $hashedUBCard = base64_encode($ubCard);
+                        $result = $membersModel->updateForChangePasswordUsingMID($MID, 1);
+                        if($result > 0) {
+                            $helpers->sendEmailForgotPassword($emailCardNumber, $fullname, $hashedUBCard);
+                            $isSuccessful = $auditTrailModel->logEvent(AuditTrailModel::API_FORGOT_PASSWORD, 'EmailCardNumber: '.$emailCardNumber, array('MID' => $MID,'SessionID' => ''));
+                            if($isSuccessful == 0) {
+                                $logMessage = "Failed to insert to Audittrail.";
+                                $logger->log($logger->logdate, " [FORGOTPASSWORD ERROR] ", $logMessage);
+                            }
+                            $apiDetails = 'FORGOTPASSWORD-UpdateChangePass-Success: MID = '.$MID;
+                            $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 1);
+                            if($isInserted == 0) {
+
+                                $logMessage = "Failed to insert to APILogs.";
+                                $logger->log($logger->logdate, " [FORGOTPASSWORD ERROR] ", $logMessage);
+                            }
+                            $isUpdated = $memberSessionsModel->updateTransactionDate($MID);
+                            if($isUpdated > 0) {
+                                $transMsg = 'Request for change password is successfully processed. Please verify the link sent to your email to reset your password.';
+                                $errorCode = 0;
+                                $this->_sendResponse(200, CJSON::encode(CommonController::retMsg($module, $errorCode, $transMsg)));
+                                $logMessage = 'Forgot Password successful.';
+                                $logger->log($logger->logdate, " [FORGOTPASSWORD SUCCESSFUL] ", $logMessage);
+                                $apiDetails = 'FORGOTPASSWORD-UpdateTransDate-Success: '.' MID = '.$MID;
+                                $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 1);
                                 if($isInserted == 0) {
+
                                     $logMessage = "Failed to insert to APILogs.";
                                     $logger->log($logger->logdate, " [FORGOTPASSWORD ERROR] ", $logMessage);
                                 }
-                                $isUpdated = $memberSessionsModel->updateTransactionDate($MID);
-                                if($isUpdated > 0) {
-                                    $transMsg = 'Request for change password is successfully processed. Please verify the link sent to your email to reset your password.';
-                                    $errorCode = 0;
-                                    $this->_sendResponse(200, CJSON::encode(CommonController::retMsg($module, $errorCode, $transMsg)));
-                                    //$logger->log($logger->logdate, " [FORGOTPASSWORD SUCCESSFUL] ", $logMessage);
-                                    $apiDetails = 'FORGOTPASSWORD-UpdateTransDate-Success: '.' MID = '.$MID;
-                                    $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 1);
-                                    if($isInserted == 0) {
-                                        $logMessage = "Failed to insert to APILogs.";
-                                        $logger->log($logger->logdate, " [FORGOTPASSWORD ERROR] ", $logMessage);
-                                    }
-                                    exit;
-                                }
-                                else {
-                                    $transMsg = 'Error in updating.';
-                                    $logMessage = 'Error in updating.';
-                                    $errorCode = 29;
-                                    $this->_sendResponse(200, CJSON::encode(CommonController::retMsg($module, $errorCode, $transMsg)));
-                                    $logger->log($logger->logdate, " [FORGOTPASSWORD ERROR] ", $logMessage);
-                                    $apiDetails = 'FORGOTPASSWORD-UpdateTransDate-Failed: '.' MID = '.$MID;
-                                    $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
-                                    if($isInserted == 0) {
-                                        $logMessage = "Failed to insert to APILogs.";
-                                        $logger->log($logger->logdate, " [FORGOTPASSWORD ERROR] ", $logMessage);
-                                    }
-                                    exit;
-                                }
+                                exit;
                             }
                             else {
-                                $transMsg = 'Transaction failed.';
-                                $logMessage = 'Transaction failed.';
-                                $errorCode = 4;
-                                Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                                $transMsg = 'Error in updating.';
+                                $logMessage = 'Error in updating.';
+                                $errorCode = 29;
                                 $this->_sendResponse(200, CJSON::encode(CommonController::retMsg($module, $errorCode, $transMsg)));
                                 $logger->log($logger->logdate, " [FORGOTPASSWORD ERROR] ", $logMessage);
-                                $apiDetails = 'FORGOTPASSWORD-UpdateChangePass-Failed: MID = '.$MID;
+                                $apiDetails = 'FORGOTPASSWORD-UpdateTransDate-Failed: '.' MID = '.$MID;
                                 $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
                                 if($isInserted == 0) {
                                     $logMessage = "Failed to insert to APILogs.";
@@ -624,100 +541,101 @@ class MPapiController extends Controller {
                             }
                         }
                         else {
-                            $transMsg = 'Invalid Email Address.';
-                            $logMessage = 'Invalid Email Address.';
-                            $errorCode = 5;
+                            $transMsg = 'Transaction failed.';
+                            $logMessage = 'Transaction failed.';
+                            $errorCode = 4;
                             Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
                             $this->_sendResponse(200, CJSON::encode(CommonController::retMsg($module, $errorCode, $transMsg)));
                             $logger->log($logger->logdate, " [FORGOTPASSWORD ERROR] ", $logMessage);
-                            $apiDetails = 'FORGOTPASSWORD-Failed: Email is not found in db. MID = '.$MID;
+                            $apiDetails = 'FORGOTPASSWORD-UpdateChangePass-Failed: MID = '.$MID;
                             $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
                             if($isInserted == 0) {
                                 $logMessage = "Failed to insert to APILogs.";
                                 $logger->log($logger->logdate, " [FORGOTPASSWORD ERROR] ", $logMessage);
                             }
-                            exit;   
+                            exit;
                         }
                     }
-                    else if(Utilities::validateAlphaNumeric($emailCardNumber)) {
-                        $isCardExist = $cardsModel->IsExist($emailCardNumber);
-                        $data = $memberCardsModel->getMemberDetailsByCard($emailCardNumber);
-                        if($data && count($isCardExist) > 0) {
-                            if(($data['Status'] == 1) || ($data['Status'] == 5)) {
-                                $MID = $data['MID'];
-                                $info = $memberInfoModel->getEmailFNameUsingMID($MID);
-                                if(isset($info['Email']) && $info['Email'] != '') {
-                                    $fullname = $info['FirstName'].' '.$info['LastName'];
-                                    $email = $info['Email'];
-                                    $hashedUBCard = base64_encode($emailCardNumber);
-                                    $result = $membersModel->updateForChangePasswordUsingMID($MID, 1);
-                                    if($result > 0) {
-                                        $helpers->sendEmailForgotPassword($email, $fullname, $hashedUBCard);
-                                        $isSuccessful = $auditTrailModel->logEvent(AuditTrailModel::API_FORGOT_PASSWORD, 'EmailCardNumber: '.$emailCardNumber, array('MID' => $MID,'SessionID' => ''));
-                                        if($isSuccessful == 0) {
-                                            $logMessage = "Failed to insert to Audittrail.";
-                                            $logger->log($logger->logdate, " [FORGOTPASSWORD ERROR] ", $logMessage);
-                                        }
-                                        $apiDetails = 'FORGOTPASSWORD-UpdateChangePass-Success: MID = '.$MID;
-                                        $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 1);
-                                        if($isInserted == 0) {
-                                            $logMessage = "Failed to insert to APILogs.";
-                                            $logger->log($logger->logdate, " [FORGOTPASSWORD ERROR] ", $logMessage);
-                                        }
-                                        $isUpdated = $memberSessionsModel->updateTransactionDate($MID);
-                                        if($isUpdated > 0) {
-                                            $transMsg = 'Request for change password is successfully processed. Please verify the link sent to your email to reset your password.';
-                                            $errorCode = 0;
-                                            $this->_sendResponse(200, CJSON::encode(CommonController::retMsg($module, $errorCode, $transMsg)));
-                                            //$logger->log($logger->logdate, " [FORGOTPASSWORD SUCCESSFUL] ", $logMessage);
-                                            $apiDetails = 'FORGOTPASSWORD-UpdateTransDate-Success: '.' MID = '.$MID;
-                                            $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 1);
-                                            if($isInserted == 0) {
-                                                $logMessage = "Failed to insert to APILogs.";
-                                                $logger->log($logger->logdate, " [FORGOTPASSWORD ERROR] ", $logMessage);
-                                            }
-                                            exit;
-                                        }
-                                        else {
-                                            $transMsg = 'Error in updating.';
-                                            $logMessage = 'Error in updating.';
-                                            $errorCode = 29;
-                                            $this->_sendResponse(200, CJSON::encode(CommonController::retMsg($module, $errorCode, $transMsg)));
-                                            $logger->log($logger->logdate, " [FORGOTPASSWORD ERROR] ", $logMessage);
-                                            $apiDetails = 'FORGOTPASSWORD-UpdateTransDate-Failed: '.' MID = '.$MID;
-                                            $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
-                                            if($isInserted == 0) {
-                                                $logMessage = "Failed to insert to APILogs.";
-                                                $logger->log($logger->logdate, " [FORGOTPASSWORD ERROR] ", $logMessage);
-                                            }
-                                            exit;
-                                        
-                                        }
-                                    }
-                                    else {
-                                        $transMsg = 'Transaction failed.';
-                                        $logMessage = 'Transaction failed.';
-                                        $errorCode = 4;
-                                        Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
-                                        $this->_sendResponse(200, CJSON::encode(CommonController::retMsg($module, $errorCode, $transMsg)));
+                    else {
+                        $transMsg = 'Invalid Email Address.';
+                        $logMessage = 'Invalid Email Address.';
+                        $errorCode = 5;
+                        Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                        $this->_sendResponse(200, CJSON::encode(CommonController::retMsg($module, $errorCode, $transMsg)));
+                        $logger->log($logger->logdate, " [FORGOTPASSWORD ERROR] ", $logMessage);
+                        $apiDetails = 'FORGOTPASSWORD-Failed: Email is not found in db. MID = '.$MID;
+                        $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
+                        if($isInserted == 0) {
+                            $logMessage = "Failed to insert to APILogs.";
+                            $logger->log($logger->logdate, " [FORGOTPASSWORD ERROR] ", $logMessage);
+                        }
+                        exit;   
+                    }
+                }
+                else if(Utilities::validateAlphaNumeric($emailCardNumber)) {
+                    $isCardExist = $cardsModel->IsExist($emailCardNumber);
+                    $data = $memberCardsModel->getMemberDetailsByCard($emailCardNumber);
+                    if($data && count($isCardExist) > 0) {
+                        if(($data['Status'] == 1) || ($data['Status'] == 5)) {
+                            $MID = $data['MID'];
+                            $info = $memberInfoModel->getEmailFNameUsingMID($MID);
+                            if(isset($info['Email']) && $info['Email'] != '') {
+                                $fullname = $info['FirstName'].' '.$info['LastName'];
+                                $email = $info['Email'];
+                                $hashedUBCard = base64_encode($emailCardNumber);
+                                $result = $membersModel->updateForChangePasswordUsingMID($MID, 1);
+                                if($result > 0) {
+                                    $helpers->sendEmailForgotPassword($email, $fullname, $hashedUBCard);
+                                    $isSuccessful = $auditTrailModel->logEvent(AuditTrailModel::API_FORGOT_PASSWORD, 'EmailCardNumber: '.$emailCardNumber, array('MID' => $MID,'SessionID' => ''));
+                                    if($isSuccessful == 0) {
+                                        $logMessage = "Failed to insert to Audittrail.";
                                         $logger->log($logger->logdate, " [FORGOTPASSWORD ERROR] ", $logMessage);
-                                        $apiDetails = 'FORGOTPASSWORD-UpdateChangePass-Failed: MID = '.$MID;
-                                        $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
+                                    }
+                                    $apiDetails = 'FORGOTPASSWORD-UpdateChangePass-Success: MID = '.$MID;
+                                    $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 1);
+                                    if($isInserted == 0) {
+                                        $logMessage = "Failed to insert to APILogs.";
+                                        $logger->log($logger->logdate, " [FORGOTPASSWORD ERROR] ", $logMessage);
+                                    }
+                                    $isUpdated = $memberSessionsModel->updateTransactionDate($MID);
+                                    if($isUpdated > 0) {
+                                        $transMsg = 'Request for change password is successfully processed. Please verify the link sent to your email to reset your password.';
+                                        $errorCode = 0;
+                                        $this->_sendResponse(200, CJSON::encode(CommonController::retMsg($module, $errorCode, $transMsg)));
+                                        $logMessage = 'Forgot Password successful.';
+                                        $logger->log($logger->logdate, " [FORGOTPASSWORD SUCCESSFUL] ", $logMessage);
+                                        $apiDetails = 'FORGOTPASSWORD-UpdateTransDate-Success: '.' MID = '.$MID;
+                                        $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 1);
                                         if($isInserted == 0) {
                                             $logMessage = "Failed to insert to APILogs.";
                                             $logger->log($logger->logdate, " [FORGOTPASSWORD ERROR] ", $logMessage);
                                         }
                                         exit;
                                     }
+                                    else {
+                                        $transMsg = 'Error in updating.';
+                                        $logMessage = 'Error in updating.';
+                                        $errorCode = 29;
+                                        $this->_sendResponse(200, CJSON::encode(CommonController::retMsg($module, $errorCode, $transMsg)));
+                                        $logger->log($logger->logdate, " [FORGOTPASSWORD ERROR] ", $logMessage);
+                                        $apiDetails = 'FORGOTPASSWORD-UpdateTransDate-Failed: '.' MID = '.$MID;
+                                        $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
+                                        if($isInserted == 0) {
+                                            $logMessage = "Failed to insert to APILogs.";
+                                            $logger->log($logger->logdate, " [FORGOTPASSWORD ERROR] ", $logMessage);
+                                        }
+                                        exit;
+
+                                    }
                                 }
                                 else {
-                                    $transMsg = 'No Email Address found for this user. Please contact Philweb Customer Service Hotline 338-3388.';
-                                    $logMessage = 'No Email Address found for this user. Please contact Philweb Customer Service Hotline 338-3388.';
-                                    $errorCode = 12;
+                                    $transMsg = 'Transaction failed.';
+                                    $logMessage = 'Transaction failed.';
+                                    $errorCode = 4;
                                     Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
                                     $this->_sendResponse(200, CJSON::encode(CommonController::retMsg($module, $errorCode, $transMsg)));
                                     $logger->log($logger->logdate, " [FORGOTPASSWORD ERROR] ", $logMessage);
-                                    $apiDetails = 'FORGOTPASSWORD-Failed: Email not found in db. MID = '.$MID;
+                                    $apiDetails = 'FORGOTPASSWORD-UpdateChangePass-Failed: MID = '.$MID;
                                     $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
                                     if($isInserted == 0) {
                                         $logMessage = "Failed to insert to APILogs.";
@@ -727,38 +645,13 @@ class MPapiController extends Controller {
                                 }
                             }
                             else {
-                                $transMsg = $helpers->setErrorMsgForCardStatus($data['Status']);
-                                
-                                if($transMsg == 'Membership Card is Inactive') {
-                                    $transMsg = 'Card is Inactive.';
-                                    $errorCode = 6;
-                                }
-                                else if($transMsg == 'Membership Card is Deactivated') {
-                                    $transMsg = 'Card is Deactivated.';
-                                    $errorCode = 11;
-                                }
-                                else if($transMsg == 'Membership Card is Newly Migrated') {
-                                    $transMsg = 'Card is Newly Migrated.';
-                                    $errorCode = 7;
-                                }
-                                else if($transMsg == 'Membership Card is Temporarily Migrated') {
-                                    $transMsg = 'Card is Temporarily Migrated.';
-                                    $errorCode = 8;
-                                }
-                                else if($transMsg == 'Membership Card is Banned') {
-                                    $transMsg = 'Card is Banned.';
-                                    $errorCode = 9;
-                                }
-                                else {
-                                    $transMsg = 'Card is Invalid';
-                                    $errorCode = 10;
-                                }
-                                
-                                $logMessage = $transMsg;
+                                $transMsg = 'No Email Address found for this user. Please contact Philweb Customer Service Hotline 338-3388.';
+                                $logMessage = 'No Email Address found for this user. Please contact Philweb Customer Service Hotline 338-3388.';
+                                $errorCode = 12;
                                 Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
                                 $this->_sendResponse(200, CJSON::encode(CommonController::retMsg($module, $errorCode, $transMsg)));
                                 $logger->log($logger->logdate, " [FORGOTPASSWORD ERROR] ", $logMessage);
-                                $apiDetails = 'FORGOTPASSWORD-Failed: '.$transMsg.'.'.'Status = '.$data['Status'].' MID = '.$MID;
+                                $apiDetails = 'FORGOTPASSWORD-Failed: Email not found in db. MID = '.$MID;
                                 $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
                                 if($isInserted == 0) {
                                     $logMessage = "Failed to insert to APILogs.";
@@ -768,69 +661,94 @@ class MPapiController extends Controller {
                             }
                         }
                         else {
-                            if($isCardExist == 0) {
-                                $transMsg = "Card is Invalid.";
-                                $logMessage = 'Card is Invalid.';
-                                $errorCode = 10;
-                                Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
-                                $this->_sendResponse(200, CJSON::encode(CommonController::retMsg($module, $errorCode,$transMsg)));
-                                $logger->log($logger->logdate, " [FORGOTPASSWORD ERROR] ", $logMessage);
-                                $apiDetails = 'FORGOTPASSWORD-Failed: Membership card is invalid. MID = '.$MID;
-                                $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
-                                if($isInserted == 0) {
-                                    $logMessage = "Failed to insert to APILogs.";
-                                    $logger->log($logger->logdate, " [FORGOTPASSWORD ERROR] ", $logMessage);
-                                }
-                                exit;
+                            $transMsg = $helpers->setErrorMsgForCardStatus($data['Status']);
+
+                            if($transMsg == 'Membership Card is Inactive') {
+                                $transMsg = 'Card is Inactive.';
+                                $errorCode = 6;
+                            }
+                            else if($transMsg == 'Membership Card is Deactivated') {
+                                $transMsg = 'Card is Deactivated.';
+                                $errorCode = 11;
+                            }
+                            else if($transMsg == 'Membership Card is Newly Migrated') {
+                                $transMsg = 'Card is Newly Migrated.';
+                                $errorCode = 7;
+                            }
+                            else if($transMsg == 'Membership Card is Temporarily Migrated') {
+                                $transMsg = 'Card is Temporarily Migrated.';
+                                $errorCode = 8;
+                            }
+                            else if($transMsg == 'Membership Card is Banned') {
+                                $transMsg = 'Card is Banned.';
+                                $errorCode = 9;
                             }
                             else {
-                                $transMsg = "Card is Inactive.";
-                                $logMessage = 'Card is Inactive.';
-                                $errorCode = 6;
-                                Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
-                                $this->_sendResponse(200, CJSON::encode(CommonController::retMsg($module, $errorCode, $transMsg)));
-                                $logger->log($logger->logdate, " [FORGOTPASSWORD ERROR] ", $logMessage);
-                                $apiDetails = 'FORGOTPASSWORD-Failed: Membership card is inactive. MID = '.$MID;
-                                $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
-                                if($isInserted == 0) {
-                                    $logMessage = "Failed to insert to APILogs.";
-                                    $logger->log($logger->logdate, " [FORGOTPASSWORD ERROR] ", $logMessage);
-                                }
-                                exit;
+                                $transMsg = 'Card is Invalid';
+                                $errorCode = 10;
                             }
+
+                            $logMessage = $transMsg;
+                            Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                            $this->_sendResponse(200, CJSON::encode(CommonController::retMsg($module, $errorCode, $transMsg)));
+                            $logger->log($logger->logdate, " [FORGOTPASSWORD ERROR] ", $logMessage);
+                            $apiDetails = 'FORGOTPASSWORD-Failed: '.$transMsg.'.'.'Status = '.$data['Status'].' MID = '.$MID;
+                            $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
+                            if($isInserted == 0) {
+                                $logMessage = "Failed to insert to APILogs.";
+                                $logger->log($logger->logdate, " [FORGOTPASSWORD ERROR] ", $logMessage);
+                            }
+                            exit;
                         }
                     }
                     else {
-                        $transMsg = "Invalid input.";
-                        $errorCode = 2;
-                        Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
-                        $this->_sendResponse(200, CJSON::encode(CommonController::retMsg($module, $errorCode, $transMsg)));
-                        $logMessage = 'Invalid input.';
-                        $logger->log($logger->logdate, " [FORGOTPASSWORD ERROR] ", $logMessage);
-                        $apiDetails = 'FORGOTPASSWORD-Failed: Invalid card number. MID = '.$MID;
-                        $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
-                        if($isInserted == 0) {
-                            $logMessage = "Failed to insert to APILogs.";
+                        if($isCardExist == 0) {
+                            $transMsg = "Card is Invalid.";
+                            $logMessage = 'Card is Invalid.';
+                            $errorCode = 10;
+                            Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                            $this->_sendResponse(200, CJSON::encode(CommonController::retMsg($module, $errorCode,$transMsg)));
                             $logger->log($logger->logdate, " [FORGOTPASSWORD ERROR] ", $logMessage);
+                            $apiDetails = 'FORGOTPASSWORD-Failed: Membership card is invalid. MID = '.$MID;
+                            $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
+                            if($isInserted == 0) {
+                                $logMessage = "Failed to insert to APILogs.";
+                                $logger->log($logger->logdate, " [FORGOTPASSWORD ERROR] ", $logMessage);
+                            }
+                            exit;
                         }
-                        exit;
+                        else {
+                            $transMsg = "Card is Inactive.";
+                            $logMessage = 'Card is Inactive.';
+                            $errorCode = 6;
+                            Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                            $this->_sendResponse(200, CJSON::encode(CommonController::retMsg($module, $errorCode, $transMsg)));
+                            $logger->log($logger->logdate, " [FORGOTPASSWORD ERROR] ", $logMessage);
+                            $apiDetails = 'FORGOTPASSWORD-Failed: Membership card is inactive. MID = '.$MID;
+                            $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
+                            if($isInserted == 0) {
+                                $logMessage = "Failed to insert to APILogs.";
+                                $logger->log($logger->logdate, " [FORGOTPASSWORD ERROR] ", $logMessage);
+                            }
+                            exit;
+                        }
                     }
-//                else {
-//                    session_destroy();
-//                    $transMsg = "Not connected.";
-//                    $errorCode = 13;
-//                    Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
-//                    $this->_sendResponse(200, CJSON::encode(CommonController::retMsg($module, $transMsg, $errorCode)));
-//                    $logMessage = 'Not connected.';
-//                    $logger->log($logger->logdate, " [FORGOTPASSWORD ERROR] ", $logMessage);
-//                    $apiDetails = 'FORGOTPASSWORD-GetActiveSession-Failed: There is no active session. '.'Username: '.$emailCardNumber;
-//                    $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $apiMethod.'-'.$ubCard.'-'.$logger->logdate, $apiDetails, '', 2);
-//                    if($isInserted == 0) {
-//                        $logMessage = "Failed to insert to APILogs.";
-//                        $logger->log($logger->logdate, " [FORGOTPASSWORD ERROR] ", $logMessage);
-//                    }
-//                    exit;
-//                }   
+                }
+                else {
+                    $transMsg = "Invalid input.";
+                    $errorCode = 2;
+                    Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                    $this->_sendResponse(200, CJSON::encode(CommonController::retMsg($module, $errorCode, $transMsg)));
+                    $logMessage = 'Invalid input.';
+                    $logger->log($logger->logdate, " [FORGOTPASSWORD ERROR] ", $logMessage);
+                    $apiDetails = 'FORGOTPASSWORD-Failed: Invalid card number. MID = '.$MID;
+                    $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
+                    if($isInserted == 0) {
+                        $logMessage = "Failed to insert to APILogs.";
+                        $logger->log($logger->logdate, " [FORGOTPASSWORD ERROR] ", $logMessage);
+                    }
+                    exit;
+                }  
             }
         }
         else {
@@ -848,6 +766,25 @@ class MPapiController extends Controller {
             }
             exit;
         }
+    }
+    
+    //@date 08-14-2014
+    //@purpose check if date is valid
+    private function _isRealDate($date) 
+    { 
+        if (false === strtotime($date)) 
+        { 
+            return false;
+        } 
+        else
+        { 
+            list($year, $month, $day) = explode('-', $date); 
+            if (false === checkdate($month, $day, $year)) 
+            { 
+                return false;
+            } 
+        } 
+        return true;
     }
     
     //@date 07-24-2014
@@ -896,38 +833,9 @@ class MPapiController extends Controller {
                 }
                 exit;
             }
-            else if(strlen($request['MobileNo']) < 9 || ($request['AlternateMobileNo'] != '' && strlen($request['AlternateMobileNo']) < 9)) {
-                $transMsg = "Mobile number should not be less than 9 digits long.";
-                $errorCode = 15;
-                Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
-                $this->_sendResponse(200, CJSON::encode(CommonController::retMsgRegisterMember($module, $errorCode, $transMsg)));
-                $logMessage = 'Mobile number should not be less than 9 digits long.';
-                $logger->log($logger->logdate, " [REGISTERMEMBER ERROR] ", $logMessage);
-                $apiDetails = 'REGISTERMEMBER-Failed: Invalid input parameters. ';
-                $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
-                if($isInserted == 0) {
-                    $logMessage = "Failed to insert to APILogs.";
-                    $logger->log($logger->logdate, " [REGISTERMEMBER ERROR] ", $logMessage);
-                }
-                exit;
-            }
-            else if(is_numeric($request['MobileNo'] == FALSE) || is_numeric($request['AlternateMobileNo'] == FALSE)) {
-                $transMsg = "Mobile number should consist of numbers only.";
-                $errorCode = 16;
-                Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
-                $this->_sendResponse(200, CJSON::encode(CommonController::retMsgRegisterMember($module, $errorCode, $transMsg)));
-                $logMessage = 'Mobile number should consist of numbers only.';
-                $logger->log($logger->logdate, " [REGISTERMEMBER ERROR] ", $logMessage);
-                $apiDetails = 'REGISTERMEMBER-Failed: Invalid input parameters. ';
-                $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
-                if($isInserted == 0) {
-                    $logMessage = "Failed to insert to APILogs.";
-                    $logger->log($logger->logdate, " [REGISTERMEMBER ERROR] ", $logMessage);
-                }
-                exit;
-            }
-            else if(ctype_alpha($request['FirstName']) == FALSE || ctype_alpha($request['MiddleName']) == FALSE ||
-                    ctype_alpha($request['LastName']) == FALSE || ctype_alpha($request['NickName']) == FALSE) {
+            else if(preg_match("/^[A-Za-z\s]+$/", trim($request['FirstName'])) == 0 || preg_match("/^[A-Za-z\s]+$/", trim($request['MiddleName'])) == 0 || preg_match("/^[A-Za-z\s]+$/", trim($request['LastName'])) == 0 || preg_match("/^[A-Za-z\s]+$/", trim($request['NickName'])) == 0) {
+//            else if(ctype_alpha($request['FirstName']) == FALSE || ctype_alpha($request['MiddleName']) == FALSE ||
+//                    ctype_alpha($request['LastName']) == FALSE || ctype_alpha($request['NickName']) == FALSE) {
                 $transMsg = "Name should consist of letters only.";
                 $errorCode = 17;
                 Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
@@ -972,12 +880,222 @@ class MPapiController extends Controller {
                 }
                 exit;
             }
+            else if(strlen($request['MobileNo']) < 9 || ($request['AlternateMobileNo'] != '' && strlen($request['AlternateMobileNo']) < 9)) {
+                $transMsg = "Mobile number should not be less than 9 digits long.";
+                $errorCode = 15;
+                Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                $this->_sendResponse(200, CJSON::encode(CommonController::retMsgRegisterMember($module, $errorCode, $transMsg)));
+                $logMessage = 'Mobile number should not be less than 9 digits long.';
+                $logger->log($logger->logdate, " [REGISTERMEMBER ERROR] ", $logMessage);
+                $apiDetails = 'REGISTERMEMBER-Failed: Invalid input parameters. ';
+                $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
+                if($isInserted == 0) {
+                    $logMessage = "Failed to insert to APILogs.";
+                    $logger->log($logger->logdate, " [REGISTERMEMBER ERROR] ", $logMessage);
+                }
+                exit;
+            }
+            else if((substr($request['MobileNo'],0, 2) != '09' && substr($request['MobileNo'],0, 3) != '639') && (substr($request['AlternateMobileNo'],0, 2) != '09' && substr($request['AlternateMobileNo'],0, 3) != '639') ) {
+                $transMsg = "Mobile number should begin with either '09' or '639'.";
+                $errorCode = 69;
+                Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                $this->_sendResponse(200, CJSON::encode(CommonController::retMsgRegisterMember($module, $errorCode, $transMsg)));
+                $logMessage = "Mobile number should begin with either '09' or '639'.";
+                $logger->log($logger->logdate, " [REGISTERMEMBER ERROR] ", $logMessage);
+                $apiDetails = 'REGISTERMEMBER-Failed: Invalid input parameters. ';
+                $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
+                if($isInserted == 0) {
+                    $logMessage = "Failed to insert to APILogs.";
+                    $logger->log($logger->logdate, " [REGISTERMEMBER ERROR] ", $logMessage);
+                }
+                exit;
+            }
+            else if(!is_numeric($request['MobileNo']) || !is_numeric($request['AlternateMobileNo'])) {
+                $transMsg = "Mobile number should consist of numbers only.";
+                $errorCode = 16;
+                Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                $this->_sendResponse(200, CJSON::encode(CommonController::retMsgRegisterMember($module, $errorCode, $transMsg)));
+                $logMessage = 'Mobile number should consist of numbers only.';
+                $logger->log($logger->logdate, " [REGISTERMEMBER ERROR] ", $logMessage);
+                $apiDetails = 'REGISTERMEMBER-Failed: Invalid input parameters. ';
+                $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
+                if($isInserted == 0) {
+                    $logMessage = "Failed to insert to APILogs.";
+                    $logger->log($logger->logdate, " [REGISTERMEMBER ERROR] ", $logMessage);
+                }
+                exit;
+            }
+            else if($request['MobileNo'] == $request['AlternateMobileNo']) {
+                $transMsg = "Mobile number should not be the same as alternate mobile number.";
+                $errorCode = 86;
+                Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                $this->_sendResponse(200, CJSON::encode(CommonController::retMsgRegisterMember($module, $errorCode, $transMsg)));
+                $logMessage = 'Mobile number should not be the same as alternate mobile number.';
+                $logger->log($logger->logdate, " [REGISTERMEMBER ERROR] ", $logMessage);
+                $apiDetails = 'REGISTERMEMBER-Failed: Invalid input parameters. ';
+                $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
+                if($isInserted == 0) {
+                    $logMessage = "Failed to insert to APILogs.";
+                    $logger->log($logger->logdate, " [REGISTERMEMBER ERROR] ", $logMessage);
+                }
+                exit;
+            }
             else if(!Utilities::validateEmail($request['EmailAddress']) || !Utilities::validateEmail($request['AlternateEmail']) ) {
                 $transMsg = "Invalid Email Address.";
                 $errorCode = 5;
                 Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
                 $this->_sendResponse(200, CJSON::encode(CommonController::retMsgRegisterMember($module, $errorCode, $transMsg)));
                 $logMessage = 'Invalid Email Address.';
+                $logger->log($logger->logdate, " [REGISTERMEMBER ERROR] ", $logMessage);
+                $apiDetails = 'REGISTERMEMBER-Failed: Invalid input parameters. ';
+                $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
+                if($isInserted == 0) {
+                    $logMessage = "Failed to insert to APILogs.";
+                    $logger->log($logger->logdate, " [REGISTERMEMBER ERROR] ", $logMessage);
+                }
+                exit;
+            }
+            else if($request['EmailAddress'] == $request['AlternateEmail']) {
+                $transMsg = "Email Address should not be the same as alternate email.";
+                $errorCode = 87;
+                Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                $this->_sendResponse(200, CJSON::encode(CommonController::retMsgRegisterMember($module, $errorCode, $transMsg)));
+                $logMessage = 'Email Address should not be the same as alternate email.';
+                $logger->log($logger->logdate, " [REGISTERMEMBER ERROR] ", $logMessage);
+                $apiDetails = 'REGISTERMEMBER-Failed: Invalid input parameters. ';
+                $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
+                if($isInserted == 0) {
+                    $logMessage = "Failed to insert to APILogs.";
+                    $logger->log($logger->logdate, " [REGISTERMEMBER ERROR] ", $logMessage);
+                }
+                exit;
+            }
+            else if($request['Gender'] != 1 && $request['Gender'] != 2) {
+                $transMsg = "Please input 1 for male or 2 for female.";
+                $errorCode = 77;
+                Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                $this->_sendResponse(200, CJSON::encode(CommonController::retMsgRegisterMember($module, $errorCode, $transMsg)));
+                $logMessage = 'Please input 1 for male or 2 for female.';
+                $logger->log($logger->logdate, " [REGISTERMEMBER ERROR] ", $logMessage);
+                $apiDetails = 'REGISTERMEMBER-Failed: Invalid input parameters. ';
+                $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
+                if($isInserted == 0) {
+                    $logMessage = "Failed to insert to APILogs.";
+                    $logger->log($logger->logdate, " [REGISTERMEMBER ERROR] ", $logMessage);
+                }
+                exit;
+            }
+            else if($request['IDPresented'] != 1 && $request['IDPresented'] != 2 && $request['IDPresented'] != 3 && $request['IDPresented'] != 4 && $request['IDPresented'] != 5 && $request['IDPresented'] != 6 && $request['IDPresented'] != 7 && $request['IDPresented'] != 8 && $request['IDPresented'] != 9) {
+                $transMsg = "Please input a valid ID Presented (1 to 9).";
+                $errorCode = 78;
+                Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                $this->_sendResponse(200, CJSON::encode(CommonController::retMsgRegisterMember($module, $errorCode, $transMsg)));
+                $logMessage = 'Please input a valid ID Presented (1 to 9).';
+                $logger->log($logger->logdate, " [REGISTERMEMBER ERROR] ", $logMessage);
+                $apiDetails = 'REGISTERMEMBER-Failed: Invalid input parameters. ';
+                $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
+                if($isInserted == 0) {
+                    $logMessage = "Failed to insert to APILogs.";
+                    $logger->log($logger->logdate, " [REGISTERMEMBER ERROR] ", $logMessage);
+                }
+                exit;
+            }
+            else if($request['Nationality'] != 1 && $request['Nationality'] != 2 && $request['Nationality'] != 3 && $request['Nationality'] != 4 && $request['Nationality'] != 5 && $request['Nationality'] != 6) {
+                $transMsg = "Please input a valid Nationality (1 to 6).";
+                $errorCode = 79;
+                Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                $this->_sendResponse(200, CJSON::encode(CommonController::retMsgRegisterMember($module, $errorCode, $transMsg)));
+                $logMessage = 'Please input a valid Nationality (1 to 6).';
+                $logger->log($logger->logdate, " [REGISTERMEMBER ERROR] ", $logMessage);
+                $apiDetails = 'REGISTERMEMBER-Failed: Invalid input parameters. ';
+                $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
+                if($isInserted == 0) {
+                    $logMessage = "Failed to insert to APILogs.";
+                    $logger->log($logger->logdate, " [REGISTERMEMBER ERROR] ", $logMessage);
+                }
+                exit;
+            }
+            else if($this->_isRealDate($request['Birthdate']) == FALSE) {
+                $transMsg = "Please input a valid Date (YYYY-MM-DD).";
+                $errorCode = 80;
+                Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                $this->_sendResponse(200, CJSON::encode(CommonController::retMsgRegisterMember($module, $errorCode, $transMsg)));
+                $logMessage = 'Please input a valid Date.';
+                $logger->log($logger->logdate, " [REGISTERMEMBER ERROR] ", $logMessage);
+                $apiDetails = 'REGISTERMEMBER-Failed: Invalid input parameters. ';
+                $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
+                if($isInserted == 0) {
+                    $logMessage = "Failed to insert to APILogs.";
+                    $logger->log($logger->logdate, " [REGISTERMEMBER ERROR] ", $logMessage);
+                }
+                exit;   
+            }
+            else if($request['Occupation'] != 1 && $request['Occupation'] != 2 && $request['Occupation'] != 3 && $request['Occupation'] != 4 && $request['Occupation'] != 5) {
+                $transMsg = "Please input a valid Occupation (1 to 5).";
+                $errorCode = 81;
+                Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                $this->_sendResponse(200, CJSON::encode(CommonController::retMsgRegisterMember($module, $errorCode, $transMsg)));
+                $logMessage = 'Please input a valid Occupation (1 to 5).';
+                $logger->log($logger->logdate, " [REGISTERMEMBER ERROR] ", $logMessage);
+                $apiDetails = 'REGISTERMEMBER-Failed: Invalid input parameters. ';
+                $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
+                if($isInserted == 0) {
+                    $logMessage = "Failed to insert to APILogs.";
+                    $logger->log($logger->logdate, " [REGISTERMEMBER ERROR] ", $logMessage);
+                }
+                exit;
+            }
+            else if($request['IsSmoker'] != 1 && $request['IsSmoker'] != 2) {
+                $transMsg = "Please input 1 for smoker or 2 for non-smoker.";
+                $errorCode = 82;
+                Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                $this->_sendResponse(200, CJSON::encode(CommonController::retMsgRegisterMember($module, $errorCode, $transMsg)));
+                $logMessage = 'Please input 1 for smoker or 2 for non-smoker.';
+                $logger->log($logger->logdate, " [REGISTERMEMBER ERROR] ", $logMessage);
+                $apiDetails = 'REGISTERMEMBER-Failed: Invalid input parameters. ';
+                $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
+                if($isInserted == 0) {
+                    $logMessage = "Failed to insert to APILogs.";
+                    $logger->log($logger->logdate, " [REGISTERMEMBER ERROR] ", $logMessage);
+                }
+                exit;
+            }
+            else if($request['ReferrerID'] != 1 && $request['ReferrerID'] != 2 && $request['ReferrerID'] != 3 && $request['ReferrerID'] != 4 && $request['ReferrerID'] != 5 && $request['ReferrerID'] != 6 && $request['ReferrerID'] != 7 && $request['ReferrerID'] != 8 && $request['ReferrerID'] != 9 && $request['ReferrerID'] != 10) {
+                $transMsg = "Please input a valid Referrer ID (1 to 10).";
+                $errorCode = 83;
+                Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                $this->_sendResponse(200, CJSON::encode(CommonController::retMsgRegisterMember($module, $errorCode, $transMsg)));
+                $logMessage = 'Please input a valid Referrer ID (1 to 10).';
+                $logger->log($logger->logdate, " [REGISTERMEMBER ERROR] ", $logMessage);
+                $apiDetails = 'REGISTERMEMBER-Failed: Invalid input parameters. ';
+                $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
+                if($isInserted == 0) {
+                    $logMessage = "Failed to insert to APILogs.";
+                    $logger->log($logger->logdate, " [REGISTERMEMBER ERROR] ", $logMessage);
+                }
+                exit;
+            }
+            else if($request['EmailSubscription'] != '0' && $request['EmailSubscription'] != '1') {
+                $transMsg = "Please input 0 for email non-subscription else input 1.";
+                $errorCode = 84;
+                Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                $this->_sendResponse(200, CJSON::encode(CommonController::retMsgRegisterMember($module, $errorCode, $transMsg)));
+                $logMessage = 'Please input 0 for email non-subscription else input 1.';
+                $logger->log($logger->logdate, " [REGISTERMEMBER ERROR] ", $logMessage);
+                $apiDetails = 'REGISTERMEMBER-Failed: Invalid input parameters. ';
+                $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
+                if($isInserted == 0) {
+                    $logMessage = "Failed to insert to APILogs.";
+                    $logger->log($logger->logdate, " [REGISTERMEMBER ERROR] ", $logMessage);
+                }
+                exit;
+            }
+            else if($request['SMSSubscription'] != '0' && $request['SMSSubscription'] != '1') {
+                $transMsg = "Please input 0 for sms non-subscription else input 1.";
+                $errorCode = 85;
+                Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                $this->_sendResponse(200, CJSON::encode(CommonController::retMsgRegisterMember($module, $errorCode, $transMsg)));
+                $logMessage = 'Please input 0 for sms non-subscription else input 1.';
                 $logger->log($logger->logdate, " [REGISTERMEMBER ERROR] ", $logMessage);
                 $apiDetails = 'REGISTERMEMBER-Failed: Invalid input parameters. ';
                 $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
@@ -1000,32 +1118,19 @@ class MPapiController extends Controller {
                 $smsRequestLogsModel = new SMSRequestLogsModel();
                 $ref_SMSApiMethodsModel = new Ref_SMSApiMethodsModel();
                 $blackListsModel = new BlackListsModel();
-                             
-//                $isExist = $memberSessionsModel->checkIfSessionExist($MID, $mpSessionID);
-//                if(count($isExist) > 0) {
-//                    //check if from old to newly migrated card
-//                    if(!is_null($email)) {
-//                        $tempMID = $membershipTempModel->getMID($email);
-//                        
-//                        if(empty($tempMID))
-//                            $tempMID = 0;
-//                        else
-//                            $mid = $tempMID;
-//                    }
-//                    else
-//                        $mid = $MID;
                     
                     $emailAddress = trim($request['EmailAddress']);
                     $firstname = trim($request['FirstName']);
+                    $firstname = str_replace(" ", "", $firstname);
                     $middlename = trim($request['MiddleName']);
                     if($middlename == '')
                         $middlename = '';
                     $lastname = trim($request['LastName']);
+                    $lastname = str_replace(" ", "", $lastname);
                     $nickname = trim($request['NickName']);
                     if($nickname == '')
                         $nickname = '';
                     $password = md5(trim($request['Password']));
-//                    $confirmPassword = md5(trim($request['ConfirmPassword']));
                     $permanentAddress = trim($request['PermanentAdd']);
                     $mobileNumber = trim($request['MobileNo']);
                     $alternateMobileNumber = trim($request['AlternateMobileNo']);
@@ -1040,6 +1145,9 @@ class MPapiController extends Controller {
                     if($gender == '')
                         $gender = '';
                     $birthdate = trim($request['Birthdate']);
+                    //$age = number_format((abs(strtotime($birthdate) - strtotime(date('Y-m-d'))) / 60 / 60 / 24 / 365), 0);
+                    $tz = new DateTimeZone("Asia/Taipei");
+                    $age = DateTime::createFromFormat('Y-m-d', $birthdate, $tz)->diff(new DateTime('now', $tz))->y;
                     $nationalityID = trim($request['Nationality']);
                     if($nationalityID == '')
                         $nationalityID = '';
@@ -1057,41 +1165,7 @@ class MPapiController extends Controller {
                         $referralCode = '';
                     $emailSubscription = trim($request['EmailSubscription']);
                     $smsSubscription = trim($request['SMSSubscription']);
-                    
-                   
-                    //$mpSessionID = trim($request['MPSessionID']);
-                    
-//                    $membersArray = array('UserName' => $emailAddress, 'Password' => $password);
-//                    $memberInfoArray = array('FirstName' => $firstname, 'MiddleName' => $middlename,
-//                                             'LastName' => $lastname, 'Address1' => $permanentAddress, 
-//                                             'IdentificationNumber' => $idNumber, 'IdentificationID' => $idPresented,
-//                                             'NickName' => $nickname, 'MobileNo' => $mobileNumber,
-//                                             'AlternateMobileNo' => $alternateMobileNumber,
-//                                             'Email' => $emailAddress, 'AlternateEmail' => $alternateEmail,
-//                                             'Birthdate' => $birthdate, 'NationalityID' => $nationalityID,
-//                                             'OccupationID' => $occupationID, 'ReferrerCode' => $referralCode,
-//                                             'Gender' => $gender, 'IsSmoker' => $isSmoker);
-                    
-//                    $tempHasEmailCount = $membershipTempModel->checkIfEmailExistsWithMID($mid, $emailAddress);
-//                    if(is_null($tempHasEmailCount))
-//                        $tempHasEmailCount = 0;      
-//                    else
-//                        $tempHasEmailCount = $tempHasEmailCount['COUNT'];
-//                    if($referrerID != 1 || $referrerID != 2 || $referrerID != 3 || $referrerID != 4 || $referrerID != 5 || $referrerID != 6 || $referrerID != 7 || $referrerID != 8 || $referrerID != 9 || $referrerID != 10) {
-//                        $transMsg = "Please input a valid Referrer ID (1 to 10).";
-//                        $errorCode = 68;
-//                        Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
-//                        $this->_sendResponse(200, CJSON::encode(CommonController::retMsgRegisterMember($module, $errorCode, $transMsg)));
-//                        $logMessage = 'Please input a valid Referrer ID (1 to 10).';
-//                        $logger->log($logger->logdate, " [REGISTERMEMBER ERROR] ", $logMessage);
-//                        $apiDetails = 'REGISTERMEMBER-Failed: Invalid input parameter.';
-//                        $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
-//                        if($isInserted == 0) {
-//                            $logMessage = "Failed to insert to APILogs.";
-//                            $logger->log($logger->logdate, " [REGISTERMEMBER ERROR] ", $logMessage);
-//                        }
-//                        exit;
-//                    }
+                  
                     $refID = $firstname.' '.$lastname;
                     
                     //check if member is blacklisted
@@ -1104,7 +1178,7 @@ class MPapiController extends Controller {
                         $errorCode = 21;
                         Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
                         $this->_sendResponse(200, CJSON::encode(CommonController::retMsgRegisterMember($module, $errorCode, $transMsg)));
-                        $logMessage = 'Sorry, ' . $emailAddress . 'already belongs to an existing account. Please enter another email address.';
+                        $logMessage = 'Sorry, ' . $emailAddress . ' already belongs to an existing account. Please enter another email address.';
                         $logger->log($logger->logdate, " [REGISTERMEMBER ERROR] ", $logMessage);
                         $apiDetails = 'REGISTERMEMBER-Failed: Email is already used. EmailAddress = '.$emailAddress;
                         $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
@@ -1122,6 +1196,21 @@ class MPapiController extends Controller {
                         $logMessage = 'Registration cannot proceed. Please contact Customer Service.';
                         $logger->log($logger->logdate, " [REGISTERMEMBER ERROR] ", $logMessage);
                         $apiDetails = 'REGISTERMEMBER-Failed: Player is blacklisted. Name = '.$firstname.' '.$lastname.', Birthdate = '.$birthdate;
+                        $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
+                        if($isInserted == 0) {
+                            $logMessage = "Failed to insert to APILogs.";
+                            $logger->log($logger->logdate, " [REGISTERMEMBER ERROR] ", $logMessage);
+                        }
+                        exit;
+                    }
+                    else if($age < 21) {
+                        $transMsg = "Must be at least 21 years old to register.";
+                        $errorCode = 89;
+                        Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                        $this->_sendResponse(200, CJSON::encode(CommonController::retMsgRegisterMember($module, $errorCode, $transMsg)));
+                        $logMessage = 'Must be at least 21 years old to register.';
+                        $logger->log($logger->logdate, " [REGISTERMEMBER ERROR] ", $logMessage);
+                        $apiDetails = 'REGISTERMEMBER-Failed: Player is under 21. Name = '.$firstname.' '.$lastname.', Birthdate = '.$birthdate;
                         $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
                         if($isInserted == 0) {
                             $logMessage = "Failed to insert to APILogs.";
@@ -1203,7 +1292,7 @@ class MPapiController extends Controller {
                                                         
                                                     }
                                                     else {
-                                                        $transMsg = "You have successfully registered!\n\nAn active Temporary Account will be sent to your email address or mobile number, which can be used to start session/credit points in the absence of Membership Card.\n\nPlease note that your Registered Account and Temporary Account will be activated only after 24 hours.";
+                                                        $transMsg = "You have successfully registered! An active Temporary Account will be sent to your email address or mobile number, which can be used to start session or credit points in the absence of Membership Card. Please note that your Registered Account and Temporary Account will be activated only after 24 hours.";
                                                         $errorCode = 0;
                                                         Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
                                                         $this->_sendResponse(200, CJSON::encode(CommonController::retMsgRegisterMember($module, $errorCode, nl2br($transMsg))));
@@ -1274,7 +1363,7 @@ class MPapiController extends Controller {
                                                             
                                                         }
                                                         else {
-                                                            $transMsg = "You have successfully registered!\n\nAn active Temporary Account will be sent to your email address or mobile number, which can be used to start session/credit points in the absence of Membership Card.\n\nPlease note that your Registered Account and Temporary Account will be activated only after 24 hours.";
+                                                            $transMsg = "You have successfully registered! An active Temporary Account will be sent to your email address or mobile number, which can be used to start session or credit points in the absence of Membership Card. Please note that your Registered Account and Temporary Account will be activated only after 24 hours.";
                                                             $errorCode = 0;
                                                             Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
                                                             $this->_sendResponse(200, CJSON::encode(CommonController::retMsgRegisterMember($module, $errorCode, nl2br($transMsg))));
@@ -1384,7 +1473,7 @@ class MPapiController extends Controller {
                                                                 
                                                             }
                                                             else {
-                                                                $transMsg = "You have successfully registered!\n\nAn active Temporary Account will be sent to your email address or mobile number, which can be used to start session/credit points in the absence of Membership Card.\n\nPlease note that your Registered Account and Temporary Account will be activated only after 24 hours.";
+                                                                $transMsg = "You have successfully registered! An active Temporary Account will be sent to your email address or mobile number, which can be used to start session or credit points in the absence of Membership Card. Please note that your Registered Account and Temporary Account will be activated only after 24 hours.";
                                                                 $errorCode = 0;
                                                                 Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
                                                                 $this->_sendResponse(200, CJSON::encode(CommonController::retMsgRegisterMember($module, $errorCode, nl2br($transMsg))));
@@ -1449,7 +1538,7 @@ class MPapiController extends Controller {
                                                                     
                                                                 }
                                                                 else {
-                                                                    $transMsg = "You have successfully registered!\n\nAn active Temporary Account will be sent to your email address or mobile number, which can be used to start session/credit points in the absence of Membership Card.\n\nPlease note that your Registered Account and Temporary Account will be activated only after 24 hours.";
+                                                                    $transMsg = "You have successfully registered! An active Temporary Account will be sent to your email address or mobile number, which can be used to start session or credit points in the absence of Membership Card. Please note that your Registered Account and Temporary Account will be activated only after 24 hours.";
                                                                     $errorCode = 0;
                                                                     Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
                                                                     $this->_sendResponse(200, CJSON::encode(CommonController::retMsgRegisterMember($module, $errorCode, nl2br($transMsg))));
@@ -1599,36 +1688,6 @@ class MPapiController extends Controller {
                 }
                 exit;
             }
-            else if(strlen($request['MobileNo']) < 9 || ($request['AlternateMobileNo'] != '' && strlen($request['AlternateMobileNo']) < 9)) {
-                $transMsg = "Mobile number should not be less than 9 digits long.";
-                $errorCode = 15;
-                Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
-                $this->_sendResponse(200, CJSON::encode(CommonController::retMsgUpdateProfile($module, $errorCode, $transMsg)));
-                $logMessage = 'Mobile number should not be less than 9 digits long.';
-                $logger->log($logger->logdate, " [UPDATEPROFILE ERROR] ", $logMessage);
-                $apiDetails = 'UPDATEPROFILE-Failed: Invalid input parameters. ';
-                $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
-                if($isInserted == 0) {
-                    $logMessage = "Failed to insert to APILogs.";
-                    $logger->log($logger->logdate, " [UPDATEPROFILE ERROR] ", $logMessage);
-                }
-                exit;
-            }
-            else if(is_numeric($request['MobileNo']) == FALSE || is_numeric($request['AlternateMobileNo']) == FALSE) {
-                $transMsg = "Mobile number should consist of numbers only.";
-                $errorCode = 16;
-                Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
-                $this->_sendResponse(200, CJSON::encode(CommonController::retMsgUpdateProfile($module, $errorCode, $transMsg)));
-                $logMessage = 'Mobile number should consist of numbers only.';
-                $logger->log($logger->logdate, " [UPDATEPROFILE ERROR] ", $logMessage);
-                $apiDetails = 'UPDATEPROFILE-Failed: Invalid input parameters. ';
-                $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
-                if($isInserted == 0) {
-                    $logMessage = "Failed to insert to APILogs.";
-                    $logger->log($logger->logdate, " [UPDATEPROFILE ERROR] ", $logMessage);
-                }
-                exit;
-            }
             else if(ctype_alpha($request['FirstName']) == FALSE || ctype_alpha($request['MiddleName']) == FALSE ||
                     ctype_alpha($request['LastName']) == FALSE || ctype_alpha($request['NickName']) == FALSE) {
                 $transMsg = "Name should consist of letters only.";
@@ -1675,6 +1734,66 @@ class MPapiController extends Controller {
                 }
                 exit;
             }
+            else if(strlen($request['MobileNo']) < 9 || ($request['AlternateMobileNo'] != '' && strlen($request['AlternateMobileNo']) < 9)) {
+                $transMsg = "Mobile number should not be less than 9 digits long.";
+                $errorCode = 15;
+                Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                $this->_sendResponse(200, CJSON::encode(CommonController::retMsgUpdateProfile($module, $errorCode, $transMsg)));
+                $logMessage = 'Mobile number should not be less than 9 digits long.';
+                $logger->log($logger->logdate, " [UPDATEPROFILE ERROR] ", $logMessage);
+                $apiDetails = 'UPDATEPROFILE-Failed: Invalid input parameters. ';
+                $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
+                if($isInserted == 0) {
+                    $logMessage = "Failed to insert to APILogs.";
+                    $logger->log($logger->logdate, " [UPDATEPROFILE ERROR] ", $logMessage);
+                }
+                exit;
+            }
+            else if((substr($request['MobileNo'],0, 2) != '09' && substr($request['MobileNo'],0, 3) != '639') && (substr($request['AlternateMobileNo'],0, 2) != '09' && substr($request['AlternateMobileNo'],0, 3) != '639') ) {
+                $transMsg = "Mobile number should begin with either '09' or '639'.";
+                $errorCode = 69;
+                Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                $this->_sendResponse(200, CJSON::encode(CommonController::retMsgUpdateProfile($module, $errorCode, $transMsg)));
+                $logMessage = "Mobile number should begin with either '09' or '639'.";
+                $logger->log($logger->logdate, " [UPDATEPROFILE ERROR] ", $logMessage);
+                $apiDetails = 'UPDATEPROFILE-Failed: Invalid input parameters. ';
+                $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
+                if($isInserted == 0) {
+                    $logMessage = "Failed to insert to APILogs.";
+                    $logger->log($logger->logdate, " [UPDATEPROFILE ERROR] ", $logMessage);
+                }
+                exit;
+            }
+            else if(!is_numeric($request['MobileNo']) || !is_numeric($request['AlternateMobileNo'])) {
+                $transMsg = "Mobile number should consist of numbers only.";
+                $errorCode = 16;
+                Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                $this->_sendResponse(200, CJSON::encode(CommonController::retMsgUpdateProfile($module, $errorCode, $transMsg)));
+                $logMessage = 'Mobile number should consist of numbers only.';
+                $logger->log($logger->logdate, " [UPDATEPROFILE ERROR] ", $logMessage);
+                $apiDetails = 'UPDATEPROFILE-Failed: Invalid input parameters. ';
+                $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
+                if($isInserted == 0) {
+                    $logMessage = "Failed to insert to APILogs.";
+                    $logger->log($logger->logdate, " [UPDATEPROFILE ERROR] ", $logMessage);
+                }
+                exit;
+            }
+            else if($request['MobileNo'] == $request['AlternateMobileNo']) {
+                $transMsg = "Mobile number should not be the same as alternate mobile number.";
+                $errorCode = 86;
+                Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                $this->_sendResponse(200, CJSON::encode(CommonController::retMsgUpdateProfile($module, $errorCode, $transMsg)));
+                $logMessage = 'Mobile number should not be the same as alternate mobile number.';
+                $logger->log($logger->logdate, " [UPDATEPROFILE ERROR] ", $logMessage);
+                $apiDetails = 'UPDATEPROFILE-Failed: Invalid input parameters. ';
+                $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
+                if($isInserted == 0) {
+                    $logMessage = "Failed to insert to APILogs.";
+                    $logger->log($logger->logdate, " [UPDATEPROFILE ERROR] ", $logMessage);
+                }
+                exit;
+            }
             else if(!Utilities::validateEmail($request['EmailAddress']) || !Utilities::validateEmail($request['AlternateEmail']) ) {
                 $transMsg = "Invalid Email Address.";
                 $errorCode = 5;
@@ -1689,6 +1808,111 @@ class MPapiController extends Controller {
                     $logger->log($logger->logdate, " [UPDATEPROFILE ERROR] ", $logMessage);
                 }
                 exit;
+            }
+            else if($request['EmailAddress'] == $request['AlternateEmail']) {
+                $transMsg = "Email Address should not be the same as alternate email.";
+                $errorCode = 87;
+                Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                $this->_sendResponse(200, CJSON::encode(CommonController::retMsgUpdateProfile($module, $errorCode, $transMsg)));
+                $logMessage = 'Email Address should not be the same as alternate email.';
+                $logger->log($logger->logdate, " [UPDATEPROFILE ERROR] ", $logMessage);
+                $apiDetails = 'UPDATEPROFILE-Failed: Invalid input parameters. ';
+                $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
+                if($isInserted == 0) {
+                    $logMessage = "Failed to insert to APILogs.";
+                    $logger->log($logger->logdate, " [UPDATEPROFILE ERROR] ", $logMessage);
+                }
+                exit;
+            }
+            else if($request['Gender'] != 1 && $request['Gender'] != 2) {
+                $transMsg = "Please input 1 for male or 2 for female.";
+                $errorCode = 77;
+                Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                $this->_sendResponse(200, CJSON::encode(CommonController::retMsgUpdateProfile($module, $errorCode, $transMsg)));
+                $logMessage = 'Please input 1 for male or 2 for female.';
+                $logger->log($logger->logdate, " [UPDATEPROFILE ERROR] ", $logMessage);
+                $apiDetails = 'UPDATEPROFILE-Failed: Invalid input parameters. ';
+                $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
+                if($isInserted == 0) {
+                    $logMessage = "Failed to insert to APILogs.";
+                    $logger->log($logger->logdate, " [UPDATEPROFILE ERROR] ", $logMessage);
+                }
+                exit;
+            }
+            else if($request['IDPresented'] != 1 && $request['IDPresented'] != 2 && $request['IDPresented'] != 3 && $request['IDPresented'] != 4 && $request['IDPresented'] != 5 && $request['IDPresented'] != 6 && $request['IDPresented'] != 7 && $request['IDPresented'] != 8 && $request['IDPresented'] != 9) {
+                $transMsg = "Please input a valid ID Presented (1 to 9).";
+                $errorCode = 78;
+                Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                $this->_sendResponse(200, CJSON::encode(CommonController::retMsgUpdateProfile($module, $errorCode, $transMsg)));
+                $logMessage = 'Please input a valid ID Presented (1 to 9).';
+                $logger->log($logger->logdate, " [UPDATEPROFILE ERROR] ", $logMessage);
+                $apiDetails = 'UPDATEPROFILE-Failed: Invalid input parameters. ';
+                $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
+                if($isInserted == 0) {
+                    $logMessage = "Failed to insert to APILogs.";
+                    $logger->log($logger->logdate, " [UPDATEPROFILE ERROR] ", $logMessage);
+                }
+                exit;
+            }
+            else if($request['Nationality'] != 1 && $request['Nationality'] != 2 && $request['Nationality'] != 3 && $request['Nationality'] != 4 && $request['Nationality'] != 5 && $request['Nationality'] != 6) {
+                $transMsg = "Please input a valid Nationality (1 to 6).";
+                $errorCode = 79;
+                Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                $this->_sendResponse(200, CJSON::encode(CommonController::retMsgUpdateProfile($module, $errorCode, $transMsg)));
+                $logMessage = 'Please input a valid Nationality (1 to 6).';
+                $logger->log($logger->logdate, " [UPDATEPROFILE ERROR] ", $logMessage);
+                $apiDetails = 'UPDATEPROFILE-Failed: Invalid input parameters. ';
+                $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
+                if($isInserted == 0) {
+                    $logMessage = "Failed to insert to APILogs.";
+                    $logger->log($logger->logdate, " [UPDATEPROFILE ERROR] ", $logMessage);
+                }
+                exit;
+            }
+            else if($request['Occupation'] != 1 && $request['Occupation'] != 2 && $request['Occupation'] != 3 && $request['Occupation'] != 4 && $request['Occupation'] != 5) {
+                $transMsg = "Please input a valid Occupation (1 to 5).";
+                $errorCode = 81;
+                Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                $this->_sendResponse(200, CJSON::encode(CommonController::retMsgUpdateProfile($module, $errorCode, $transMsg)));
+                $logMessage = 'Please input a valid Occupation (1 to 5).';
+                $logger->log($logger->logdate, " [UPDATEPROFILE ERROR] ", $logMessage);
+                $apiDetails = 'UPDATEPROFILE-Failed: Invalid input parameters. ';
+                $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
+                if($isInserted == 0) {
+                    $logMessage = "Failed to insert to APILogs.";
+                    $logger->log($logger->logdate, " [UPDATEPROFILE ERROR] ", $logMessage);
+                }
+                exit;
+            }
+            else if($request['IsSmoker'] != 1 && $request['IsSmoker'] != 2) {
+                $transMsg = "Please input 1 for smoker or 2 for non-smoker.";
+                $errorCode = 82;
+                Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                $this->_sendResponse(200, CJSON::encode(CommonController::retMsgUpdateProfile($module, $errorCode, $transMsg)));
+                $logMessage = 'Please input 1 for smoker or 2 for non-smoker.';
+                $logger->log($logger->logdate, " [UPDATEPROFILE ERROR] ", $logMessage);
+                $apiDetails = 'UPDATEPROFILE-Failed: Invalid input parameters. ';
+                $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
+                if($isInserted == 0) {
+                    $logMessage = "Failed to insert to APILogs.";
+                    $logger->log($logger->logdate, " [UPDATEPROFILE ERROR] ", $logMessage);
+                }
+                exit;
+            }
+            else if($this->_isRealDate($request['Birthdate']) == FALSE) {
+                $transMsg = "Please input a valid Date (YYYY-MM-DD).";
+                $errorCode = 80;
+                Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                $this->_sendResponse(200, CJSON::encode(CommonController::retMsgUpdateProfile($module, $errorCode, $transMsg)));
+                $logMessage = 'Please input a valid Date.';
+                $logger->log($logger->logdate, " [UPDATEPROFILE ERROR] ", $logMessage);
+                $apiDetails = 'UPDATEPROFILE-Failed: Invalid input parameters. ';
+                $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
+                if($isInserted == 0) {
+                    $logMessage = "Failed to insert to APILogs.";
+                    $logger->log($logger->logdate, " [UPDATEPROFILE ERROR] ", $logMessage);
+                }
+                exit;   
             }
             else {
                 
@@ -1729,7 +1953,6 @@ class MPapiController extends Controller {
                 $lastname = trim($request['LastName']);
                 $nickname = trim($request['NickName']);
                 $password = md5(trim($request['Password']));
-                //$confirmPassword = md5(trim($request['ConfirmPassword']));
                 $permanentAddress = trim($request['PermanentAdd']);
                 $mobileNumber = trim($request['MobileNo']);
                 $alternateMobileNumber = trim($request['AlternateMobileNo']);
@@ -1745,9 +1968,7 @@ class MPapiController extends Controller {
                 $mpSessionID = trim($request['MPSessionID']);
                 
                 $memberSessions = $memberSessionsModel->getMID($mpSessionID);
-                
-                
-                
+                          
                 if($memberSessions)
                     $MID = $memberSessions['MID'];
                 else {
@@ -1798,11 +2019,11 @@ class MPapiController extends Controller {
                         $hasEmailCount = $hasEmailCount['COUNT'];
                     
                     if(($tempHasEmailCount > 0) || ($hasEmailCount > 0)) {
-                        $transMsg = "Sorry, " . $emailAddress . "already belongs to an existing account. Please enter another email address.";
+                        $transMsg = "Sorry, " . $emailAddress . " already belongs to an existing account. Please enter another email address.";
                         $errorCode = 21;
                         Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
                         $this->_sendResponse(200, CJSON::encode(CommonController::retMsgUpdateProfile($module, $errorCode, $transMsg)));
-                        $logMessage = 'Sorry, ' . $emailAddress . 'already belongs to an existing account. Please enter another email address.';
+                        $logMessage = 'Sorry, ' . $emailAddress . ' already belongs to an existing account. Please enter another email address.';
                         $logger->log($logger->logdate, " [UPDATEPROFILE ERROR] ", $logMessage);
                         $apiDetails = 'UPDATEPROFILE-Failed: Email is already used. ';
                         $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
@@ -2084,7 +2305,7 @@ class MPapiController extends Controller {
                     $errorCode = 10;
                     Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
                     $this->_sendResponse(200, CJSON::encode(CommonController::retMsgCheckPoints($module, '', '', $errorCode, $transMsg)));
-                    $logMessage = 'Invalid Card Number.';
+                    $logMessage = 'Card is Invalid.';
                     $logger->log($logger->logdate, " [CHECKPOINTS ERROR] ", $logMessage);
                     $apiDetails = 'CHECKPOINTS-Failed: Membership card is invalid. Card Number = '.$cardNumber;
                     $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
@@ -3182,6 +3403,7 @@ class MPapiController extends Controller {
 //                                                        var_dump($quantity);
 //                                                        var_dump($totalItemPoints);
 //                                                        exit;
+                                                        var_dump($resultsArray['SessionSerialCode']);
                                                         
                                                         $totalPoints = $totalItemPoints/$quantity;
                                                         //exit;
@@ -3478,12 +3700,12 @@ class MPapiController extends Controller {
 //                    $mpSessionID = 0;
 //                }
 //                
-                $memberSessions = $memberSessionsModel->getMID($mpSessionID);
-                if($memberSessions)
-                    $MID = $memberSessions['MID'];
+                $memberExist = $memberCardsModel->getMIDUsingCard($cardNumber);
+                if($memberExist)
+                    $MID = $memberExist['MID'];
                 else {
-                    $transMsg = "MPSessionID does not exist.";
-                    $errorCode = 13;
+                    $transMsg = "Card number does not exist.";
+                    $errorCode = 61;
                     Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
                     $this->_sendResponse(200, CJSON::encode(CommonController::retMsgGetProfile($module, $profile, $errorCode, $transMsg)));
                     $logMessage = 'MPSessionID does not exist.';
@@ -3496,6 +3718,7 @@ class MPapiController extends Controller {
                     }
                     exit; 
                 }
+                
 //                
 //                if(isset($session['MID'])) {
 //                    $MID = $session['MID'];
@@ -3506,7 +3729,7 @@ class MPapiController extends Controller {
                              
                 $isExist = $memberSessionsModel->checkIfSessionExist($MID, $mpSessionID);
                 
-                if($isExist > 0) {
+                if($isExist['COUNT(*)'] > 0) {
                     $refID = $cardNumber;
                     if($MID == '' || $MID == null) {
                         $transMsg = "Account is Banned.";
@@ -4342,6 +4565,909 @@ class MPapiController extends Controller {
             501 => 'Not Implemented',
         );
         return (isset($codes[$status])) ? $codes[$status] : '';
+    }
+    
+    
+    //@date 09-15-2014
+    //@purpose member registration
+    public function actionRegisterMemberBT() {
+        $request = $this->_readJsonRequest();
+        $transMsg = '';
+        $errorCode = '';
+        $module = 'RegisterMemberBT';
+        $apiMethod = 18;
+        
+        $logger = new ErrorLogger();
+        $apiLogsModel = new APILogsModel();
+        
+        
+        if(isset($request['FirstName']) && isset($request['LastName']) && isset($request['MobileNo']) && isset($request['EmailAddress']) && isset($request['Birthdate'])) { //&& isset($request['Password']) && isset($request['IDPresented']) && isset($request['IDNumber'])) {
+            if(($request['FirstName'] == '') || ($request['LastName'] == '') || ($request['MobileNo'] == '') || ($request['EmailAddress'] == '') || ($request['Birthdate'] == '')) { //|| ($request['Password'] == '') || ($request['IDPresented'] == '') || ($request['IDNumber'] == '')) {
+                $transMsg = "One or more fields is not set or is blank.";
+                $errorCode = 1;
+                Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                $this->_sendResponse(200, CJSON::encode(CommonController::retMsgRegisterMemberBT($module,'','', $errorCode, $transMsg)));
+                $logMessage = 'One or more fields is not set or is blank.';
+                $logger->log($logger->logdate, " [REGISTERMEMBERBT ERROR] ", $logMessage);
+                $apiDetails = 'REGISTERMEMBERBT-Failed: Invalid input parameters. ';
+                $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
+                if($isInserted == 0) {
+                    $logMessage = "Failed to insert to APILogs.";
+                    $logger->log($logger->logdate, " [REGISTERMEMBERBT ERROR] ", $logMessage);
+                }
+                exit;
+            }
+            else if(strlen($request['FirstName']) < 2 || strlen($request['LastName']) < 2) {
+                $transMsg = "Name should not be less than 2 characters long.";
+                $errorCode = 14;
+                Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                $this->_sendResponse(200, CJSON::encode(CommonController::retMsgRegisterMemberBT($module,'','', $errorCode, $transMsg)));
+                $logMessage = 'Name should not be less than 2 characters long.';
+                $logger->log($logger->logdate, " [REGISTERMEMBERBT ERROR] ", $logMessage);
+                $apiDetails = 'REGISTERMEMBERBT-Failed: Invalid input parameters. ';
+                $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
+                if($isInserted == 0) {
+                    $logMessage = "Failed to insert to APILogs.";
+                    $logger->log($logger->logdate, " [REGISTERMEMBERBT ERROR] ", $logMessage);
+                }
+                exit;
+            }
+            else if(preg_match("/^[A-Za-z\s]+$/", trim($request['FirstName'])) == 0 || preg_match("/^[A-Za-z\s]+$/", trim($request['LastName'])) == 0) {
+            //else if(ctype_alpha($request['FirstName']) == FALSE || ctype_alpha($request['LastName']) == FALSE) {
+                $transMsg = "Name should consist of letters and spaces only.";
+                $errorCode = 17;
+                Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                $this->_sendResponse(200, CJSON::encode(CommonController::retMsgRegisterMemberBT($module,'','', $errorCode, $transMsg)));
+                $logMessage = 'Name should consist of letters only.';
+                $logger->log($logger->logdate, " [REGISTERMEMBERBT ERROR] ", $logMessage);
+                $apiDetails = 'REGISTERMEMBERBT-Failed: Invalid input parameters. ';
+                $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
+                if($isInserted == 0) {
+                    $logMessage = "Failed to insert to APILogs.";
+                    $logger->log($logger->logdate, " [REGISTERMEMBERBT ERROR] ", $logMessage);
+                }
+                exit;
+            }
+            else if(strlen($request['MobileNo']) < 9) {
+                $transMsg = "Mobile number should not be less than 9 digits long.";
+                $errorCode = 15;
+                Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                $this->_sendResponse(200, CJSON::encode(CommonController::retMsgRegisterMemberBT($module,'','', $errorCode, $transMsg)));
+                $logMessage = 'Mobile number should not be less than 9 digits long.';
+                $logger->log($logger->logdate, " [REGISTERMEMBERBT ERROR] ", $logMessage);
+                $apiDetails = 'REGISTERMEMBERBT-Failed: Invalid input parameters. ';
+                $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
+                if($isInserted == 0) {
+                    $logMessage = "Failed to insert to APILogs.";
+                    $logger->log($logger->logdate, " [REGISTERMEMBERBT ERROR] ", $logMessage);
+                }
+                exit;
+            }
+            else if((substr($request['MobileNo'],0, 2) != '09' && substr($request['MobileNo'],0, 3) != '639')) {
+                $transMsg = "Mobile number should begin with either '09' or '639'.";
+                $errorCode = 69;
+                Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                $this->_sendResponse(200, CJSON::encode(CommonController::retMsgRegisterMemberBT($module,'','', $errorCode, $transMsg)));
+                $logMessage = "Mobile number should begin with either '09' or '639'.";
+                $logger->log($logger->logdate, " [REGISTERMEMBERBT ERROR] ", $logMessage);
+                $apiDetails = 'REGISTERMEMBERBT-Failed: Invalid input parameters. ';
+                $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
+                if($isInserted == 0) {
+                    $logMessage = "Failed to insert to APILogs.";
+                    $logger->log($logger->logdate, " [REGISTERMEMBERBT ERROR] ", $logMessage);
+                }
+                exit;
+            }
+            else if(!is_numeric($request['MobileNo'])) {
+                $transMsg = "Mobile number should consist of numbers only.";
+                $errorCode = 16;
+                Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                $this->_sendResponse(200, CJSON::encode(CommonController::retMsgRegisterMemberBT($module,'','', $errorCode, $transMsg)));
+                $logMessage = 'Mobile number should consist of numbers only.';
+                $logger->log($logger->logdate, " [REGISTERMEMBERBT ERROR] ", $logMessage);
+                $apiDetails = 'REGISTERMEMBERBT-Failed: Invalid input parameters. ';
+                $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
+                if($isInserted == 0) {
+                    $logMessage = "Failed to insert to APILogs.";
+                    $logger->log($logger->logdate, " [REGISTERMEMBERBT ERROR] ", $logMessage);
+                }
+                exit;
+            }
+            else if(!Utilities::validateEmail($request['EmailAddress'])) {
+                $transMsg = "Invalid Email Address.";
+                $errorCode = 5;
+                Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                $this->_sendResponse(200, CJSON::encode(CommonController::retMsgRegisterMemberBT($module,'','', $errorCode, $transMsg)));
+                $logMessage = 'Invalid Email Address.';
+                $logger->log($logger->logdate, " [REGISTERMEMBERBT ERROR] ", $logMessage);
+                $apiDetails = 'REGISTERMEMBERBT-Failed: Invalid input parameters. ';
+                $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
+                if($isInserted == 0) {
+                    $logMessage = "Failed to insert to APILogs.";
+                    $logger->log($logger->logdate, " [REGISTERMEMBERBT ERROR] ", $logMessage);
+                }
+                exit;
+            }
+            else if($this->_isRealDate($request['Birthdate']) == FALSE) {
+                $transMsg = "Please input a valid Date (yyyy-mm-dd).";
+                $errorCode = 80;
+                Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                $this->_sendResponse(200, CJSON::encode(CommonController::retMsgRegisterMemberBT($module,'','', $errorCode, $transMsg)));
+                $logMessage = 'Please input a valid Date.';
+                $logger->log($logger->logdate, " [REGISTERMEMBERBT ERROR] ", $logMessage);
+                $apiDetails = 'REGISTERMEMBERBT-Failed: Invalid input parameters. ';
+                $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
+                if($isInserted == 0) {
+                    $logMessage = "Failed to insert to APILogs.";
+                    $logger->log($logger->logdate, " [REGISTERMEMBERBT ERROR] ", $logMessage);
+                }
+                exit;   
+            }
+//            else if(ctype_alnum($request['Password']) == FALSE || ctype_alnum($request['IDNumber']) == FALSE ) {
+//                $transMsg = "Password and ID Number should consist of letters and numbers only.";
+//                $errorCode = 18;
+//                Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+//                $this->_sendResponse(200, CJSON::encode(CommonController::retMsgRegisterMemberBT($module,'','', $errorCode, $transMsg)));
+//                $logMessage = 'Password and ID Number should consist of letters and numbers only.';
+//                $logger->log($logger->logdate, " [REGISTERMEMBERBT ERROR] ", $logMessage);
+//                $apiDetails = 'REGISTERMEMBERBT-Failed: Invalid input parameters. ';
+//                $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
+//                if($isInserted == 0) {
+//                    $logMessage = "Failed to insert to APILogs.";
+//                    $logger->log($logger->logdate, " [REGISTERMEMBERBT ERROR] ", $logMessage);
+//                }
+//                exit;
+//            }
+//            else if($request['Password'] != '' && strlen($request['Password']) < 5) {
+//                $transMsg = "Password should not be less than 5 characters long.";
+//                $errorCode = 19;
+//                Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+//                $this->_sendResponse(200, CJSON::encode(CommonController::retMsgRegisterMemberBT($module,'','', $errorCode, $transMsg)));
+//                $logMessage = 'Password should not be less than 5 characters long.';
+//                $logger->log($logger->logdate, " [REGISTERMEMBERBT ERROR] ", $logMessage);
+//                $apiDetails = 'REGISTERMEMBERBT-Failed: Invalid input parameters. ';
+//                $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
+//                if($isInserted == 0) {
+//                    $logMessage = "Failed to insert to APILogs.";
+//                    $logger->log($logger->logdate, " [REGISTERMEMBERBT ERROR] ", $logMessage);
+//                }
+//                exit;
+//            }
+//            else if($request['IDPresented'] != 1 && $request['IDPresented'] != 2 && $request['IDPresented'] != 3 && $request['IDPresented'] != 4 && $request['IDPresented'] != 5 && $request['IDPresented'] != 6 && $request['IDPresented'] != 7 && $request['IDPresented'] != 8 && $request['IDPresented'] != 9) {
+//                $transMsg = "Please input a valid ID Presented (1 to 9).";
+//                $errorCode = 78;
+//                Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+//                $this->_sendResponse(200, CJSON::encode(CommonController::retMsgRegisterMemberBT($module,'','', $errorCode, $transMsg)));
+//                $logMessage = 'Please input a valid ID Presented (1 to 9).';
+//                $logger->log($logger->logdate, " [REGISTERMEMBERBT ERROR] ", $logMessage);
+//                $apiDetails = 'REGISTERMEMBERBT-Failed: Invalid input parameters. ';
+//                $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
+//                if($isInserted == 0) {
+//                    $logMessage = "Failed to insert to APILogs.";
+//                    $logger->log($logger->logdate, " [REGISTERMEMBERBT ERROR] ", $logMessage);
+//                }
+//                exit;
+//            }
+            else {
+                //start of declaration of models to be used
+                $memberInfoModel = new MemberInfoModel();
+                $memberCardsModel = new MemberCardsModel();
+                $memberSessionsModel = new MemberSessionsModel();
+                $membershipTempModel = new MembershipTempModel();
+                $membersModel = new MembersModel();
+                $auditTrailModel = new AuditTrailModel();
+                $smsRequestLogsModel = new SMSRequestLogsModel();
+                $ref_SMSApiMethodsModel = new Ref_SMSApiMethodsModel();
+                $blackListsModel = new BlackListsModel();
+                $couponsModel = new CouponsModel();
+                    
+                $emailAddress = trim($request['EmailAddress']);
+                $firstname = trim($request['FirstName']);
+                
+                $lastname = trim($request['LastName']);
+                
+                $mobileNumber = trim($request['MobileNo']);
+                $birthdate = trim($request['Birthdate']);
+                //$age = number_format((abs(strtotime($birthdate) - strtotime(date('Y-m-d'))) / 60 / 60 / 24 / 365), 0);
+//                $password = trim($request['Password']);
+//                $idPresented = trim($request['IDPresented']);
+//                $idNumber = trim($request['IDNumber']);
+                $tz = new DateTimeZone("Asia/Taipei");
+                $age = DateTime::createFromFormat('Y-m-d', $birthdate, $tz)->diff(new DateTime('now', $tz))->y;
+                
+                $refID = $firstname.' '.$lastname;
+
+                //check if member is blacklisted
+                $isBlackListed = $blackListsModel->checkIfBlackListed($firstname, $lastname, $birthdate, 3);
+                //check if email is active and existing in live membership db
+                $activeEmail = $membershipTempModel->checkIfActiveVerifiedEmail($emailAddress);
+                
+
+                if($activeEmail['COUNT(MID)'] > 0) {
+                    $transMsg = "Sorry, " . $emailAddress . " already belongs to an existing account. Please enter another email address.";
+                    $errorCode = 21;
+                    Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                    $this->_sendResponse(200, CJSON::encode(CommonController::retMsgRegisterMemberBT($module,'','', $errorCode, $transMsg)));
+                    $logMessage = 'Sorry, ' . $emailAddress . ' already belongs to an existing account. Please enter another email address.';
+                    $logger->log($logger->logdate, " [REGISTERMEMBERBT ERROR] ", $logMessage);
+                    $apiDetails = 'REGISTERMEMBERBT-Failed: Email is already used. EmailAddress = '.$emailAddress;
+                    $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
+                    if($isInserted == 0) {
+                        $logMessage = "Failed to insert to APILogs.";
+                        $logger->log($logger->logdate, " [REGISTERMEMBERBT ERROR] ", $logMessage);
+                    }
+                    exit;
+                }
+                else if($isBlackListed['Count'] > 0) {
+                    $transMsg = "Registration cannot proceed. Please contact Customer Service.";
+                    $errorCode = 22;
+                    Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                    $this->_sendResponse(200, CJSON::encode(CommonController::retMsgRegisterMemberBT($module,'','', $errorCode, $transMsg)));
+                    $logMessage = 'Registration cannot proceed. Please contact Customer Service.';
+                    $logger->log($logger->logdate, " [REGISTERMEMBERBT ERROR] ", $logMessage);
+                    $apiDetails = 'REGISTERMEMBERBT-Failed: Player is blacklisted. Name = '.$firstname.' '.$lastname.', Birthdate = '.$birthdate;
+                    $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
+                    if($isInserted == 0) {
+                        $logMessage = "Failed to insert to APILogs.";
+                        $logger->log($logger->logdate, " [REGISTERMEMBERBT ERROR] ", $logMessage);
+                    }
+                    exit;
+                }
+                else if($age < 21) {
+                    $transMsg = "Must be at least 21 years old to register.";
+                    $errorCode = 89;
+                    Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                    $this->_sendResponse(200, CJSON::encode(CommonController::retMsgRegisterMemberBT($module,'','', $errorCode, $transMsg)));
+                    $logMessage = 'Must be at least 21 years old to register.';
+                    $logger->log($logger->logdate, " [REGISTERMEMBERBT ERROR] ", $logMessage);
+                    $apiDetails = 'REGISTERMEMBERBT-Failed: Player is under 21. Name = '.$firstname.' '.$lastname.', Birthdate = '.$birthdate;
+                    $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
+                    if($isInserted == 0) {
+                        $logMessage = "Failed to insert to APILogs.";
+                        $logger->log($logger->logdate, " [REGISTERMEMBERBT ERROR] ", $logMessage);
+                    }
+                    exit;
+                }
+                else {
+                    //check if email is already verified in temp table
+                    $tempEmail = $membershipTempModel->checkTempVerifiedEmail($emailAddress);
+
+                    if($tempEmail['COUNT(a.MID)'] > 0) {
+
+                        $transMsg = "Email is already verified. Please choose a different email address.";
+                        $errorCode = 52;
+                        Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                        $this->_sendResponse(200, CJSON::encode(CommonController::retMsgRegisterMemberBT($module,'','', $errorCode, $transMsg)));
+                        $logMessage = 'Email is already verified. Please choose a different email address.';
+                        $logger->log($logger->logdate, " [REGISTERMEMBERBT ERROR] ", $logMessage);
+                        $apiDetails = 'REGISTERMEMBERBT-Failed: Email is already verified. Email = '.$emailAddress;
+                        $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
+                        if($isInserted == 0) {
+                            $logMessage = "Failed to insert to APILogs.";
+                            $logger->log($logger->logdate, " [REGISTERMEMBERBT ERROR] ", $logMessage);
+                        }
+                        exit;
+                    }
+                    else {
+                        $lastInsertedMID = $membershipTempModel->registerBT($emailAddress, $firstname, $lastname, $mobileNumber, $birthdate); // ,$password, $idPresented, $idNumber);
+                        
+                        if($lastInsertedMID > 0) {
+                            $couponBatchID = Yii::app()->params["couponBatchID"];
+//                                if(isset($session['MID'])) {
+//                                    $ID = $session['MID'];
+//                                    $mpSessionID = $session['SessionID'];
+//                                }
+                      //      else {
+                                $MID = $lastInsertedMID;
+                                $mpSessionID = '';
+                               // $emailAddress = 'guest';
+                           // }
+
+                                $memberInfos = $membershipTempModel->getTempMemberInfoForSMS($lastInsertedMID);
+                                
+                                //match to 09 or 639 in mobile number
+                                $match = substr($memberInfos['MobileNumber'], 0, 3);
+                                if($match == "639"){
+                                    $mncount = count($memberInfos["MobileNumber"]);
+                                    if(!$mncount == 12){
+                                        $message = "Failed to send SMS. Invalid Mobile Number.";
+                                        $logger->log($logger->logdate,"[REGISTERMEMBERBT ERROR] ", $message);
+                                        $apiDetails = "REGISTERMEMBERBT-Failed: Failed to send SMS. Invalid Mobile Number [MID = $lastInsertedMID].";
+                                        $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
+                                        if($isInserted == 0) {
+                                            $logMessage = "Failed to insert to APILogs.";
+                                            $logger->log($logger->logdate, " [REGISTERMEMBERBT ERROR] ", $logMessage);
+                                        }
+
+                                    } else {
+     
+                                        $coupons = $couponsModel->getCoupon($couponBatchID);
+            
+                                        $couponNumber = $coupons['CouponCode'];
+                                        $expiryDate = $coupons['ValidToDate'];
+                                        $templateid = $ref_SMSApiMethodsModel->getSMSMethodTemplateID(Ref_SMSApiMethodsModel::PLAYER_REGISTRATION);
+                                        
+                                        $methodid = Ref_SMSApiMethodsModel::PLAYER_REGISTRATION;
+                                        
+                                        $mobileno = $memberInfos["MobileNumber"];
+                                        if($coupons) {
+                                            $templateidbt = $ref_SMSApiMethodsModel->getSMSMethodTemplateID(Ref_SMSApiMethodsModel::PLAYER_REGISTRATION_BT);
+                                            $templateidbt = $templateidbt['SMSTemplateID'];
+                                            $methodidbt = Ref_SMSApiMethodsModel::PLAYER_REGISTRATION_BT;
+                                            $smslastinsertedidbt = $smsRequestLogsModel->insertSMSRequestLogs($methodidbt, $mobileno, $memberInfos["DateCreated"]);
+                                        }
+                                        else {
+                                               
+                                            $smslastinsertedidbt = 0; 
+                                        }
+                                        $smslastinsertedid = $smsRequestLogsModel->insertSMSRequestLogs($methodid, $mobileno, $memberInfos["DateCreated"]);
+                                        
+                                        if(($smslastinsertedid != 0 && $smslastinsertedid != '') && ($smslastinsertedidbt != 0 && $smslastinsertedidbt != '') ){
+                                            $trackingid = "SMSR".$smslastinsertedid;
+                                            $trackingidbt = "SMSR".$smslastinsertedidbt;
+                                            $apiURL = Yii::app()->params["SMSURI"];    
+                                            $app_id = Yii::app()->params["app_id"];    
+                                            $membershipSMSApi = new MembershipSmsAPI($apiURL, $app_id);
+                                            $smsresult = $membershipSMSApi->sendRegistration($mobileno, $templateid['SMSTemplateID'], $memberInfos["DateCreated"], $memberInfos["TemporaryAccountCode"], $trackingid);
+                                            $smsresult2 = $membershipSMSApi->sendRegistrationBT($mobileno, $templateidbt['SMSTemplateID'], $expiryDate, $couponNumber, $trackingidbt);
+                                            
+                                            
+                                            if(isset($smsresult['status']) && isset($smsresult2['status'])){
+                                                if($smsresult['status'] != 1 && $smsresult2['status'] != 1){
+                                                    $message = "Failed to send SMS.";
+                                                    $logger->log($logger->logdate,"[REGISTERMEMBERBT ERROR] ", $message);
+                                                    $apiDetails = "REGISTERMEMBERBT-Failed: Failed to send SMS. [MID = $lastInsertedMID].";
+                                                    $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
+                                                    if($isInserted == 0) {
+                                                        $logMessage = "Failed to insert to APILogs.";
+                                                        $logger->log($logger->logdate, " [REGISTERMEMBERBT ERROR] ", $logMessage);
+                                                    }
+
+                                                }
+                                                else {
+                                                    $isUpdated = $coupons->updateCouponStatus($couponBatchID, $couponNumber, $MID);
+                                                    if(!$isUpdated) {
+                                                        $logMessage = "Failed to update coupon status.";
+                                                        $logger->log($logger->logdate, " [REGISTERMEMBERBT ERROR] ", $logMessage);
+                                                        exit;
+                                                    }
+                                                    $helpers = new Helpers();
+                                                    $helpers->sendEmailBT($emailAddress, $firstname . ' ' . $lastname, $couponNumber, $expiryDate);
+                                                    $transMsg = "You have successfully registered! An active Temporary Account will be sent to your email address or mobile number, which can be used to start session or credit points in the absence of Membership Card. Please note that your Registered Account and Temporary Account will be activated only after 24 hours.";
+                                                    $errorCode = 0;
+                                                    Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                                                    $this->_sendResponse(200, CJSON::encode(CommonController::retMsgRegisterMemberBT($module,$couponNumber,$expiryDate, $errorCode, nl2br($transMsg))));
+                                                    $logMessage = 'Registration is successful.';
+                                                    $logger->log($logger->logdate, " [REGISTERMEMBERBT SUCCESSFUL] ", $logMessage);
+                                                    $apiDetails = 'REGISTERMEMBERBT-Success: Registration is successful. MID = '.$lastInsertedMID;
+                                                    $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 1);
+                                                    if($isInserted == 0) {
+                                                        $logMessage = "Failed to insert to APILogs.";
+                                                        $logger->log($logger->logdate, " [REGISTERMEMBERBT ERROR] ", $logMessage);
+                                                    }
+
+                                                }
+                                            }
+                                            else {
+                                                $transMsg = 'Failed to get response from membershipsms api.';
+                                                $errorCode = 90;
+                                                Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                                                $this->_sendResponse(200, CJSON::encode(CommonController::retMsgRegisterMemberBT($module,'','', $errorCode, nl2br($transMsg))));
+                                                $logMessage = 'Failed to get response from membershipsms api.';
+                                                $logger->log($logger->logdate, " [REGISTERMEMBERBT ERROR] ", $logMessage);
+                                                $apiDetails = 'REGISTERMEMBERBT-Failed: Failed to get response from membershipsms api. MID = '.$lastInsertedMID;
+                                                $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
+                                                if($isInserted == 0) {
+                                                    $logMessage = "Failed to insert to APILogs.";
+                                                    $logger->log($logger->logdate, " [REGISTERMEMBERBT ERROR] ", $logMessage);
+                                                }
+                                            }
+                                        } else {
+                                            $message = "Failed to send SMS: Error on logging event in database.";
+                                            $logger->log($logger->logdate,"[REGISTERMEMBERBT ERROR] ", $message);
+                                            $apiDetails = "REGISTERMEMBERBT-Failed: Failed to send SMS. Error on logging event in database. [MID = $lastInsertedMID].";
+                                            $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
+                                            if($isInserted == 0) {
+                                                $logMessage = "Failed to insert to APILogs.";
+                                                $logger->log($logger->logdate, " [REGISTERMEMBERBT ERROR] ", $logMessage);
+                                            }
+                                            
+                                            $errorCode = 88;
+                                            Utilities::log("ReturnMessage: " . $message . " ErrorCode: " . $errorCode);
+                                            $this->_sendResponse(200, CJSON::encode(CommonController::retMsgRegisterMemberBT($module,'','', $errorCode, $message)));
+                                            
+                                           
+                                           
+
+                                        }
+                                    }
+                                } else {
+                                    $match = substr($memberInfos["MobileNumber"], 0, 2);
+                                    if($match == "09"){
+                                        $mncount = count($memberInfos["MobileNumber"]);
+
+                                        if(!$mncount == 11){
+                                             $message = "Failed to send SMS: Invalid Mobile Number.";
+                                             $logger->log($logger->logdate,"[REGISTERMEMBERBT ERROR] ", $message);
+                                             $apiDetails = "REGISTERMEMBERBT-Failed: Failed to send SMS. Invalid Mobile Number [MID = $lastInsertedMID].";
+                                             $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
+                                             if($isInserted == 0) {
+                                                $logMessage = "Failed to insert to APILogs.";
+                                                $logger->log($logger->logdate, " [REGISTERMEMBERBT ERROR] ", $logMessage);
+                                             }
+
+                                         } else {
+     
+                                            $coupons = $couponsModel->getCoupon($couponBatchID);
+                                            
+                                            $couponNumber = $coupons['CouponCode'];
+                                            $expiryDate = $coupons['ValidToDate'];
+                                            $expiryDate = date("Y-m-d", strtotime($expiryDate));
+                                            $cpNumber = $memberInfos["MobileNumber"];
+                                            $mobileno = $this->formatMobileNumber($cpNumber);
+                                            $templateid = $ref_SMSApiMethodsModel->getSMSMethodTemplateID(Ref_SMSApiMethodsModel::PLAYER_REGISTRATION);
+                                            $templateid = $templateid['SMSTemplateID'];
+                                            
+                                            if($coupons) {
+                                                $templateidbt = $ref_SMSApiMethodsModel->getSMSMethodTemplateID(Ref_SMSApiMethodsModel::PLAYER_REGISTRATION_BT);
+                                                $templateidbt = $templateidbt['SMSTemplateID'];
+                                                $methodidbt = Ref_SMSApiMethodsModel::PLAYER_REGISTRATION_BT;
+                                                $smslastinsertedidbt = $smsRequestLogsModel->insertSMSRequestLogs($methodidbt, $mobileno, $memberInfos["DateCreated"]);
+                                            }
+                                            else {
+                                               
+                                               $smslastinsertedidbt = 0; 
+                                            }
+                                            
+                                            
+                                            
+                                            $methodid = Ref_SMSApiMethodsModel::PLAYER_REGISTRATION;
+                                            
+                                            $smslastinsertedid = $smsRequestLogsModel->insertSMSRequestLogs($methodid, $mobileno, $memberInfos["DateCreated"]);
+                                            
+                                            if(($smslastinsertedid != 0 && $smslastinsertedid != '') && ($smslastinsertedidbt != 0 && $smslastinsertedidbt != '') ){
+                                                $trackingid = "SMSR".$smslastinsertedid;
+                                                $trackingidbt = "SMSR".$smslastinsertedidbt;
+                                                $apiURL = Yii::app()->params['SMSURI'];   
+                                                $app_id = Yii::app()->params['app_id'];  
+                                                $membershipSMSApi = new MembershipSmsAPI($apiURL, $app_id);
+                                                $smsresult = $membershipSMSApi->sendRegistration($mobileno, $templateid, $memberInfos["DateCreated"], $memberInfos["TemporaryAccountCode"], $trackingid);
+                                                $smsresult2 = $membershipSMSApi->sendRegistrationBT($mobileno, $templateidbt, $expiryDate, $couponNumber, $trackingidbt);
+                                                
+                                                if(isset($smsresult['status']) && isset($smsresult2['status'])){
+                                                    if($smsresult['status'] != 1 && $smsresult2['status'] != 1){
+
+//                                                        $message = "Failed to send SMS.";
+//                                                        $logger->log($logger->logdate,"[REGISTERMEMBERBT ERROR] ", $message);
+//                                                        $apiDetails = "REGISTERMEMBERBT-Failed: Failed to send SMS. [MID = $lastInsertedMID].";
+//                                                        $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
+//                                                        if($isInserted == 0) {
+//                                                            $logMessage = "Failed to insert to APILogs.";
+//                                                            $logger->log($logger->logdate, " [REGISTERMEMBERBT ERROR] ", $logMessage);
+//                                                        }
+                                                        $transMsg = 'Failed to get response from membershipsms api.';
+                                                    $errorCode = 90;
+                                                    Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                                                    $this->_sendResponse(200, CJSON::encode(CommonController::retMsgRegisterMemberBT($module,'','', $errorCode, nl2br($transMsg))));
+                                                    $logMessage = 'Failed to get response from membershipsms api.';
+                                                    $logger->log($logger->logdate, " [REGISTERMEMBERBT ERROR] ", $logMessage);
+                                                    $apiDetails = 'REGISTERMEMBERBT-Failed: Failed to get response from membershipsms api. MID = '.$lastInsertedMID;
+                                                    $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
+                                                    if($isInserted == 0) {
+                                                        $logMessage = "Failed to insert to APILogs.";
+                                                        $logger->log($logger->logdate, " [REGISTERMEMBERBT ERROR] ", $logMessage);
+                                                    }
+
+                                                    }
+                                                    else {
+                                                        $isUpdated = $couponsModel->updateCouponStatus($couponBatchID, $couponNumber, $MID);
+                                                        if(!$isUpdated) {
+                                                            $logMessage = "Failed to update coupon status.";
+                                                            $logger->log($logger->logdate, " [REGISTERMEMBERBT ERROR] ", $logMessage);
+                                                            exit;
+                                                        }
+                                                        $helpers = new Helpers();
+                                                        $helpers->sendEmailBT($emailAddress, $firstname . ' ' . $lastname, $couponNumber, $expiryDate);
+                                                        
+                                                        $transMsg = "You have successfully registered! An active Temporary Account will be sent to your email address or mobile number, which can be used to start session or credit points in the absence of Membership Card. Please note that your Registered Account and Temporary Account will be activated only after 24 hours.";
+                                                        $errorCode = 0;
+                                                        Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                                                        $this->_sendResponse(200, CJSON::encode(CommonController::retMsgRegisterMemberBT($module, $couponNumber, $expiryDate, $errorCode, nl2br($transMsg))));
+                                                        $logMessage = 'Registration is successful.';
+                                                        $logger->log($logger->logdate, " [REGISTERMEMBERBT SUCCESSFUL] ", $logMessage);
+                                                        $apiDetails = 'REGISTERMEMBERBT-Success: Registration is successful. MID = '.$lastInsertedMID;
+                                                        //var_dump($apiMethod, $refID, $apiDetails);
+                                                        $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 1);
+                                                        
+                                                        if($isInserted == 0) {
+                                                            $logMessage = "Failed to insert to APILogs.";
+                                                            $logger->log($logger->logdate, " [REGISTERMEMBERBT ERROR] ", $logMessage);
+                                                        }
+
+                                                    }
+                                                }
+                                                else {
+                                                    $transMsg = 'Failed to get response from membershipsms api.';
+                                                    $errorCode = 90;
+                                                    Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                                                    $this->_sendResponse(200, CJSON::encode(CommonController::retMsgRegisterMemberBT($module,'','', $errorCode, nl2br($transMsg))));
+                                                    $logMessage = 'Failed to get response from membershipsms api.';
+                                                    $logger->log($logger->logdate, " [REGISTERMEMBERBT ERROR] ", $logMessage);
+                                                    $apiDetails = 'REGISTERMEMBERBT-Failed: Failed to get response from membershipsms api. MID = '.$lastInsertedMID;
+                                                    $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
+                                                    if($isInserted == 0) {
+                                                        $logMessage = "Failed to insert to APILogs.";
+                                                        $logger->log($logger->logdate, " [REGISTERMEMBERBT ERROR] ", $logMessage);
+                                                    }
+                                                }  
+                                                
+                                            } else {
+                                                $message = "Failed to send SMS: Error on logging event in database.";
+                                                $logger->log($logger->logdate,"[BTREGISTRATION ERROR] ", $message);
+                                                $apiDetails = "REGISTERMEMBERBT-Failed: Failed to send SMS. Error on logging event in database [MID = $lastInsertedMID].";
+                                                $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
+                                                if($isInserted == 0) {
+                                                    $logMessage = "Failed to insert to APILogs.";
+                                                    $logger->log($logger->logdate, " [REGISTERMEMBERBT ERROR] ", $logMessage);
+                                                }
+                                                $errorCode = 88;
+                                                Utilities::log("ReturnMessage: " . $message . " ErrorCode: " . $errorCode);
+                                                $this->_sendResponse(200, CJSON::encode(CommonController::retMsgRegisterMemberBT($module,'','', $errorCode, $message)));
+                                                
+
+                                            }
+                                         }
+                                    } else {
+                                        $message = "Failed to send SMS: Invalid Mobile Number.";
+                                        $logger->log($logger->logdate,"[BTREGISTRATION ERROR] ", $message);
+                                        $apiDetails = "REGISTERMEMBERBT-Failed: Failed to send SMS. Invalid Mobile Number [MID = $lastInsertedMID].";
+                                        $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
+                                        if($isInserted == 0) {
+                                            $logMessage = "Failed to insert to APILogs.";
+                                            $logger->log($logger->logdate, " [REGISTERMEMBERBT ERROR] ", $logMessage);
+                                        }
+
+                                    }
+                                }
+
+                            $auditTrailModel->logEvent(AuditTrailModel::API_REGISTER_MEMBER_BT, 'Email: '.$emailAddress, array('MID' => $MID, 'SessionID' => $mpSessionID));
+
+                        }
+                        else {
+                            //check if email is already verified in temp table
+                            $tempEmail = $membershipTempModel->checkTempVerifiedEmail($emailAddress);
+                            if($tempEmail['COUNT(a.MID)'] > 0) {
+                                $transMsg = "Email is already verified. Please choose a different email address.";
+                                $errorCode = 52;
+                                Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                                $this->_sendResponse(200, CJSON::encode(CommonController::retMsgRegisterMemberBT($module,'','', $errorCode, $transMsg)));
+                                $logMessage = 'Email is already verified. Please choose a different email address.';
+                                $logger->log($logger->logdate, " [REGISTERMEMBERBT ERROR] ", $logMessage);
+                                $apiDetails = 'REGISTERMEMBERBT-Failed: Email is already verified. Email = '.$emailAddress;
+                                $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
+                                if($isInserted == 0) {
+                                    $logMessage = "Failed to insert to APILogs.";
+                                    $logger->log($logger->logdate, " [REGISTERMEMBERBT ERROR] ", $logMessage);
+                                }
+                                exit;
+                            }
+                            else {
+                                $lastInsertedMID = $membershipTempModel->registerBT($emailAddress, $firstname, $lastname, $mobileNumber, $birthdate);
+
+                                if($lastInsertedMID > 0) {
+
+
+                                        $ID = 0;
+                                        $mpSessionID = '';
+
+                                        $memberInfos = $membershipTempModel->getTempMemberInfoForSMS($lastInsertedMID);
+
+                                        //match to 09 or 639 in mobile number
+                                        $match = substr($memberInfos['MobileNumber'], 0, 3);
+                                        if($match == "639"){
+                                            $mncount = count($memberInfos["MobileNumber"]);
+                                            if(!$mncount == 12){
+                                                $message = "Failed to send SMS. Invalid Mobile Number.";
+                                                $logger->log($logger->logdate,"[REGISTERMEMBERBT ERROR] ", $message);
+                                                $apiDetails = "REGISTERMEMBERBT-Failed: Failed to send SMS. Invalid Mobile Number [MID = $lastInsertedMID].";
+                                                $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
+                                                if($isInserted == 0) {
+                                                    $logMessage = "Failed to insert to APILogs.";
+                                                    $logger->log($logger->logdate, " [REGISTERMEMBERBT ERROR] ", $logMessage);
+                                                }
+
+                                            } else {
+                                                $coupons = $couponsModel->getCoupon($couponBatchID);
+                                            
+                                                $couponNumber = $coupons['CouponCode'];
+                                                $expiryDate = $coupons['ValidToDate'];
+                                                $expiryDate = date("Y-m-d", strtotime($expiryDate));
+                                                $templateid = $ref_SMSApiMethodsModel->getSMSMethodTemplateID(Ref_SMSApiMethodsModel::PLAYER_REGISTRATION);
+                                                
+                                                $methodid = Ref_SMSApiMethodsModel::PLAYER_REGISTRATION;
+                                                
+                                                $mobileno = $memberInfos["MobileNumber"];
+                                                if($coupons) {
+                                                    $templateidbt = $ref_SMSApiMethodsModel->getSMSMethodTemplateID(Ref_SMSApiMethodsModel::PLAYER_REGISTRATION_BT);
+                                                    $templateidbt = $templateidbt['SMSTemplateID'];
+                                                    $methodidbt = Ref_SMSApiMethodsModel::PLAYER_REGISTRATION_BT;
+                                                    $smslastinsertedidbt = $smsRequestLogsModel->insertSMSRequestLogs($methodidbt, $mobileno, $memberInfos["DateCreated"]);
+                                                }
+                                                else {
+                                               
+                                                    $smslastinsertedidbt = 0; 
+                                                }
+                                                $smslastinsertedid = $smsRequestLogsModel->insertSMSRequestLogs($methodid, $mobileno, $memberInfos["DateCreated"]);
+                                                
+                                                if(($smslastinsertedid != 0 && $smslastinsertedid != '') && ($smslastinsertedidbt != 0 && $smslastinsertedidbt != '') ){
+                                                    $trackingid = "SMSR".$smslastinsertedid;
+                                                    $trackingidbt = "SMSR".$smslastinsertedidbt;
+                                                    $apiURL = Yii::app()->params["SMSURI"];    
+                                                    $app_id = Yii::app()->params["app_id"];    
+                                                    $membershipSMSApi = new MembershipSmsAPI($apiURL, $app_id);
+                                                    $smsresult = $membershipSMSApi->sendRegistration($mobileno, $templateid['SMSTemplateID'], $memberInfos["DateCreated"], $memberInfos["TemporaryAccountCode"], $trackingid);
+                                                    $smsresult2 = $membershipSMSApi->sendRegistrationBT($mobileno, $templateidbt['SMSTemplateID'], $expiryDate, $couponNumber, $trackingidbt);
+                                                    if(isset($smsresult['status']) && isset($smsresult2['status'])){
+                                                        if($smsresult['status'] != 1 && $smsresult2['status'] != 1){
+                                                            $message = "Failed to send SMS.";
+                                                            $logger->log($logger->logdate,"[REGISTERMEMBERBT ERROR] ", $message);
+                                                            $apiDetails = "REGISTERMEMBERBT-Failed: Failed to send SMS. [MID = $lastInsertedMID].";
+                                                            $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
+                                                            if($isInserted == 0) {
+                                                                $logMessage = "Failed to insert to APILogs.";
+                                                                $logger->log($logger->logdate, " [REGISTERMEMBERBT ERROR] ", $logMessage);
+                                                            }
+
+                                                        }
+                                                        else {
+                                                            $isUpdated = $couponsModel->updateCouponStatus($couponBatchID, $couponNumber, $MID);
+                                                            if(!$isUpdated) {
+                                                                $logMessage = "Failed to update coupon status.";
+                                                                $logger->log($logger->logdate, " [REGISTERMEMBERBT ERROR] ", $logMessage);
+                                                                exit;
+                                                            }
+                                                            $helpers = new Helpers();
+                                                            $helpers->sendEmailBT($emailAddress, $firstname . ' ' . $lastname, $couponNumber, $expiryDate);
+                                                            
+                                                            $transMsg = "You have successfully registered! An active Temporary Account will be sent to your email address or mobile number, which can be used to start session or credit points in the absence of Membership Card. Please note that your Registered Account and Temporary Account will be activated only after 24 hours.";
+                                                            $errorCode = 0;
+                                                            Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                                                            $this->_sendResponse(200, CJSON::encode(CommonController::retMsgRegisterMemberBT($module, $errorCode, nl2br($transMsg))));
+                                                            $logMessage = 'Registration is successful.';
+                                                            $logger->log($logger->logdate, " [REGISTERMEMBERBT SUCCESSFUL] ", $logMessage);
+                                                            $apiDetails = 'REGISTERMEMBERBT-Success: Registration is successful. MID = '.$lastInsertedMID;
+                                                            $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 1);
+                                                            if($isInserted == 0) {
+                                                                $logMessage = "Failed to insert to APILogs.";
+                                                                $logger->log($logger->logdate, " [REGISTERMEMBERBT ERROR] ", $logMessage);
+                                                            }
+
+                                                        }
+                                                    }
+                                                    else {
+                                                        $transMsg = 'Failed to get response from membershipsms api.';
+                                                        $errorCode = 90;
+                                                        Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                                                        $this->_sendResponse(200, CJSON::encode(CommonController::retMsgRegisterMemberBT($module,'','', $errorCode, nl2br($transMsg))));
+                                                        $logMessage = 'Failed to get response from membershipsms api.';
+                                                        $logger->log($logger->logdate, " [REGISTERMEMBERBT ERROR] ", $logMessage);
+                                                        $apiDetails = 'REGISTERMEMBERBT-Failed: Failed to get response from membershipsms api. MID = '.$lastInsertedMID;
+                                                        $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
+                                                        if($isInserted == 0) {
+                                                            $logMessage = "Failed to insert to APILogs.";
+                                                            $logger->log($logger->logdate, " [REGISTERMEMBERBT ERROR] ", $logMessage);
+                                                        }
+                                                    }
+                                                } else {
+                                                    $message = "Failed to send SMS: Error on logging event in database.";
+                                                    $logger->log($logger->logdate,"[REGISTERMEMBERBT ERROR] ", $message);
+                                                    $apiDetails = "REGISTERMEMBERBT-Failed: Failed to send SMS. Error on logging event in database. [MID = $lastInsertedMID].";
+                                                    $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
+                                                    if($isInserted == 0) {
+                                                        $logMessage = "Failed to insert to APILogs.";
+                                                        $logger->log($logger->logdate, " [REGISTERMEMBERBT ERROR] ", $logMessage);
+                                                    }
+                                                    $errorCode = 88;
+                                                    Utilities::log("ReturnMessage: " . $message . " ErrorCode: " . $errorCode);
+                                                    $this->_sendResponse(200, CJSON::encode(CommonController::retMsgRegisterMemberBT($module,'','', $errorCode, $message)));
+
+                                                }
+                                            }
+                                        } else {
+                                            $match = substr($memberInfos["MobileNumber"], 0, 2);
+                                            if($match == "09"){
+                                                $mncount = count($memberInfos["MobileNumber"]);
+                                                if(!$mncount == 11){
+                                                     $message = "Failed to send SMS: Invalid Mobile Number.";
+                                                     $logger->log($logger->logdate,"[REGISTERMEMBERBT ERROR] ", $message);
+                                                     $apiDetails = "REGISTERMEMBERBT-Failed: Failed to send SMS. Invalid Mobile Number [MID = $lastInsertedMID].";
+                                                     $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
+                                                     if($isInserted == 0) {
+                                                        $logMessage = "Failed to insert to APILogs.";
+                                                        $logger->log($logger->logdate, " [REGISTERMEMBERBT ERROR] ", $logMessage);
+                                                     }
+
+                                                 } else {
+                                                    $coupons = $couponsModel->getCoupon($couponBatchID);
+                                            
+                                                    $couponNumber = $coupons['CouponCode'];
+                                                    $expiryDate = $coupons['ValidToDate'];
+                                                    $expiryDate = date("Y-m-d", strtotime($expiryDate));
+                                                    $mobileno = str_replace("09", "639", $memberInfos["MobileNumber"]);
+                                                    $templateid = $ref_SMSApiMethodsModel->getSMSMethodTemplateID(Ref_SMSApiMethodsModel::PLAYER_REGISTRATION);
+                                                    
+                                                    $methodid = Ref_SMSApiMethodsModel::PLAYER_REGISTRATION;
+                                                    
+                                                    $smslastinsertedid = $smsRequestLogsModel->insertSMSRequestLogs($methodid, $mobileno, $memberInfos["DateCreated"]);
+                                                    if($coupons) {
+                                                        $templateidbt = $ref_SMSApiMethodsModel->getSMSMethodTemplateID(Ref_SMSApiMethodsModel::PLAYER_REGISTRATION_BT);
+                                                        $templateidbt = $templateidbt['SMSTemplateID'];
+                                                        $methodidbt = Ref_SMSApiMethodsModel::PLAYER_REGISTRATION_BT;
+                                                        $smslastinsertedidbt = $smsRequestLogsModel->insertSMSRequestLogs($methodidbt, $mobileno, $memberInfos["DateCreated"]);
+                                                    }
+                                                    else {
+                                               
+                                                        $smslastinsertedidbt = 0; 
+                                                    }
+                                                    if(($smslastinsertedid != 0 && $smslastinsertedid != '') && ($smslastinsertedidbt != 0 && $smslastinsertedidbt != '') ){
+                                                        $trackingid = "SMSR".$smslastinsertedid;
+                                                        $trackingidbt = "SMSR".$smslastinsertedidbt;
+                                                        $apiURL = Yii::app()->params['SMSURI'];   
+                                                        $app_id = Yii::app()->params['app_id'];  
+                                                        $membershipSMSApi = new MembershipSmsAPI($apiURL, $app_id);
+                                                        $smsresult = $membershipSMSApi->sendRegistration($mobileno, $templateid['SMSTemplateID'], $memberInfos["DateCreated"], $memberInfos["TemporaryAccountCode"], $trackingid);
+                                                        $smsresult2 = $membershipSMSApi->sendRegistrationBT($mobileno, $templateidbt['SMSTemplateID'], $expiryDate, $couponNumber, $trackingidbt);
+                                                        
+                                                        if(isset($smsresult['status']) && isset($smsresult2['status'])){
+                                                            if($smsresult['status'] != 1 && $smsresult2['status'] != 1){
+//                                                                $message = "Failed to send SMS.";
+//                                                                $logger->log($logger->logdate,"[REGISTERMEMBERBT ERROR] ", $message);
+//                                                                $apiDetails = "REGISTERMEMBERBT-Failed: Failed to send SMS. [MID = $lastInsertedMID].";
+//                                                                $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
+//                                                                if($isInserted == 0) {
+//                                                                    $logMessage = "Failed to insert to APILogs.";
+//                                                                    $logger->log($logger->logdate, " [REGISTERMEMBERBT ERROR] ", $logMessage);
+//                                                                }
+                                                                $transMsg = 'Failed to get response from membershipsms api.';
+                                                    $errorCode = 90;
+                                                    Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                                                    $this->_sendResponse(200, CJSON::encode(CommonController::retMsgRegisterMemberBT($module,'','', $errorCode, nl2br($transMsg))));
+                                                    $logMessage = 'Failed to get response from membershipsms api.';
+                                                    $logger->log($logger->logdate, " [REGISTERMEMBERBT ERROR] ", $logMessage);
+                                                    $apiDetails = 'REGISTERMEMBERBT-Failed: Failed to get response from membershipsms api. MID = '.$lastInsertedMID;
+                                                    $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
+                                                    if($isInserted == 0) {
+                                                        $logMessage = "Failed to insert to APILogs.";
+                                                        $logger->log($logger->logdate, " [REGISTERMEMBERBT ERROR] ", $logMessage);
+                                                    }
+
+                                                            }
+                                                            else {
+                                                                $isUpdated = $couponsModel->updateCouponStatus($couponBatchID, $couponNumber, $MID);
+                                                                if(!$isUpdated) {
+                                                                    $logMessage = "Failed to update coupon status.";
+                                                                    $logger->log($logger->logdate, " [REGISTERMEMBERBT ERROR] ", $logMessage);
+                                                                    exit;
+                                                                }
+                                                                $helpers = new Helpers();
+                                                                $helpers->sendEmailBT($emailAddress, $firstname . ' ' . $lastname, $couponNumber, $expiryDate);
+                                                                $transMsg = "You have successfully registered! An active Temporary Account will be sent to your email address or mobile number, which can be used to start session or credit points in the absence of Membership Card. Please note that your Registered Account and Temporary Account will be activated only after 24 hours.";
+                                                                $errorCode = 0;
+                                                                Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                                                                $this->_sendResponse(200, CJSON::encode(CommonController::retMsgRegisterMemberBT($module, $errorCode, nl2br($transMsg))));
+                                                                $logMessage = 'Registration is successful.';
+                                                                $logger->log($logger->logdate, " [REGISTERMEMBERBT SUCCESSFUL] ", $logMessage);
+                                                                $apiDetails = 'REGISTERMEMBERBT-Success: Registration is successful. MID = '.$lastInsertedMID;
+                                                                $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 1);
+                                                                if($isInserted == 0) {
+                                                                    $logMessage = "Failed to insert to APILogs.";
+                                                                    $logger->log($logger->logdate, " [REGISTERMEMBERBT ERROR] ", $logMessage);
+                                                                }
+
+                                                            }
+                                                        }
+                                                        else {
+                                                            $transMsg = 'Failed to get response from membershipsms api.';
+                                                            $errorCode = 90;
+                                                            Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                                                            $this->_sendResponse(200, CJSON::encode(CommonController::retMsgRegisterMemberBT($module,'','', $errorCode, nl2br($transMsg))));
+                                                            $logMessage = 'Failed to get response from membershipsms api.';
+                                                            $logger->log($logger->logdate, " [REGISTERMEMBERBT ERROR] ", $logMessage);
+                                                            $apiDetails = 'REGISTERMEMBERBT-Failed: Failed to get response from membershipsms api. MID = '.$lastInsertedMID;
+                                                            $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
+                                                            if($isInserted == 0) {
+                                                                $logMessage = "Failed to insert to APILogs.";
+                                                                $logger->log($logger->logdate, " [REGISTERMEMBERBT ERROR] ", $logMessage);
+                                                            }
+                                                        }
+                                                    } else {
+                                                        $message = "Failed to send SMS: Error on logging event in database.";
+                                                        $logger->log($logger->logdate,"[REGISTERMEMBERBT ERROR] ", $message);
+                                                        $apiDetails = "REGISTERMEMBERBT-Failed: Failed to send SMS. Error on logging event in database [MID = $lastInsertedMID].";
+                                                        $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
+                                                        if($isInserted == 0) {
+                                                            $logMessage = "Failed to insert to APILogs.";
+                                                            $logger->log($logger->logdate, " [REGISTERMEMBERBT ERROR] ", $logMessage);
+                                                        }
+                                                        $errorCode = 88;
+                                                        Utilities::log("ReturnMessage: " . $message . " ErrorCode: " . $errorCode);
+                                                        $this->_sendResponse(200, CJSON::encode(CommonController::retMsgRegisterMemberBT($module,'','', $errorCode, $message)));
+
+                                                    }
+                                                 }
+                                            } else {
+                                                $message = "Failed to send SMS: Invalid Mobile Number.";
+                                                $logger->log($logger->logdate,"[REGISTERMEMBERBT ERROR] ", $message);
+                                                $apiDetails = "REGISTERMEMBERBT-Failed: Failed to send SMS. Invalid Mobile Number [MID = $lastInsertedMID].";
+                                                $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
+                                                if($isInserted == 0) {
+                                                    $logMessage = "Failed to insert to APILogs.";
+                                                    $logger->log($logger->logdate, " [REGISTERMEMBERBT ERROR] ", $logMessage);
+                                                }
+
+                                            }
+                                        }
+
+
+                                    $auditTrailModel->logEvent(AuditTrailModel::API_REGISTER_MEMBER_BT, 'Email: '.$emailAddress, array('ID' => $ID));
+
+
+                                }
+                                else {
+                                    if(strpos($lastInsertedMID, " Integrity constraint violation: 1062 Duplicate entry") > 0) {
+                                        $transMsg = "Sorry, " . $emailAddress . "already belongs to an existing account. Please enter another email address.";
+                                        $errorCode = 21;
+                                        Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                                        $this->_sendResponse(200, CJSON::encode(CommonController::retMsgRegisterMemberBT($module,'','', $errorCode, $transMsg)));
+                                        $logMessage = "Sorry, " . $emailAddress . "already belongs to an existing account. Please enter another email address.";
+                                        $logger->log($logger->logdate, " [REGISTERMEMBERBT ERROR] ", $logMessage);
+                                        $apiDetails = 'REGISTERMEMBERBT-Failed: Email already exists. Please choose a different email address. Email = '.$emailAddress;
+                                        $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
+                                        if($isInserted == 0) {
+                                            $logMessage = "Failed to insert to APILogs.";
+                                            $logger->log($logger->logdate, " [REGISTERMEMBERBT ERROR] ", $logMessage);
+                                        }
+                                        exit;
+                                    }
+                                    else {
+                                        $transMsg = "Registration failed.";
+                                        $errorCode = 53;
+                                        Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                                        $this->_sendResponse(200, CJSON::encode(CommonController::retMsgRegisterMemberBT($module,'','', $errorCode, $transMsg)));
+                                        $logMessage = "Registration failed.";
+                                        $logger->log($logger->logdate, " [REGISTERMEMBERBT ERROR] ", $logMessage);
+                                        $apiDetails = 'REGISTERMEMBERBT-Failed: Registration failed.';
+                                        $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
+                                        if($isInserted == 0) {
+                                            $logMessage = "Failed to insert to APILogs.";
+                                            $logger->log($logger->logdate, " [REGISTERMEMBERBT ERROR] ", $logMessage);
+                                        }
+                                        exit;
+                                    }
+                                }
+
+                            }
+                        }
+
+                    }
+                }
+            }
+        }
+        else {
+            $transMsg = "One or more fields is not set or is blank.";
+            $errorCode = 1;
+            Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+            $this->_sendResponse(200, CJSON::encode(CommonController::retMsgRegisterMemberBT($module,'','', $errorCode, $transMsg)));
+            $logMessage = 'One or more fields is not set or is blank.';
+            $logger->log($logger->logdate, " [REGISTERMEMBERBT ERROR] ", $logMessage);
+            $apiDetails = 'REGISTERMEMBERBT-Failed: Invalid input parameters.';
+            $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
+            if($isInserted == 0) {
+                $logMessage = "Failed to insert to APILogs.";
+                $logger->log($logger->logdate, " [REGISTERMEMBERBT ERROR] ", $logMessage);
+            }
+            exit;
+        }
     }
     
     

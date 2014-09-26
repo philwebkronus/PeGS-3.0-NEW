@@ -197,6 +197,11 @@ class CommonController {
         $module = 'GetCity';
         return array($module => array('City' => $city));
     }
+    
+    public static function retMsgRegisterMemberBT($module, $couponNumber, $expiryDate, $errorCode, $transMsg) {
+        $module = 'RegisterMemberBT';
+        return array($module => array('CouponNumber' => $couponNumber, 'ExpiryDate' => $expiryDate, 'ErrorCode' => $errorCode, 'ReturnMessage' => $transMsg));
+    }
   
 }
 ?>

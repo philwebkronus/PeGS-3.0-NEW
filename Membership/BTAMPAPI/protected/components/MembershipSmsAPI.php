@@ -70,8 +70,6 @@ class MembershipSmsAPI {
      */
     public function sendItemRedemption($mobileNo, $msgTemplateID, $serialcode, $trackingId, $points){
         
-    
-        
         $placeholderValues = array("SERIAL_CODE"=>"$serialcode");
         
         $requestParameters = array('app_id'=>$this->_appId,
@@ -85,8 +83,6 @@ class MembershipSmsAPI {
         $this->_fullUri = $this->_apiUrl;
         
         $result = $this->submitData($this->_fullUri, $this->_postData);
-        
-        
         
         if($result[0] == 200){
             $response = $this->XML2Array($result[1]);
@@ -111,6 +107,7 @@ class MembershipSmsAPI {
      * @return string
      */
     public function sendRegistration($mobileNo,$msgTemplateID, $datecreated, $tempcode, $trackingId){
+        
         $code = str_replace("eGames", "", $tempcode);
         $date = date("Y-m-d", strtotime($datecreated));
         $placeholderValues = array("DATE"=>$date,"CODE"=>$code);
@@ -121,16 +118,9 @@ class MembershipSmsAPI {
                                    'placeholder_values'=>$placeholderValues,
                                    'tracking_id'=>$trackingId);
         
-                               
-        
         $this->_postData = json_encode($requestParameters);
         
-        
-        
-        
         $this->_fullUri = $this->_apiUrl;
-        
-        
         
         $result = $this->submitData($this->_fullUri, $this->_postData);
         
@@ -142,43 +132,6 @@ class MembershipSmsAPI {
         
         return $response;
     }
-    
-    public function sendRegistrationBT($mobileNo,$msgTemplateID, $expiryDate, $couponNumber, $trackingId){
-        //$code = str_replace("eGames", "", $tempcode);
-        $date = date("Y-m-d", strtotime($expiryDate));
-        $placeholderValues = array("DATE"=>$date,"VOUCHER_CODE"=>$couponNumber);
-        
-        $requestParameters = array('app_id'=>$this->_appId,
-                                   'to'=>$mobileNo,
-                                   'messagetemplate_id'=>$msgTemplateID,
-                                   'placeholder_values'=>$placeholderValues,
-                                   'tracking_id'=>$trackingId);
-        
-                               
-        
-        $this->_postData = json_encode($requestParameters);
-        
-        
-        
-        $this->_fullUri = $this->_apiUrl;
-        
-        
-        
-        $result = $this->submitData($this->_fullUri, $this->_postData);
-
-        
-        
-        
-        if($result[0] == 200){
-            $response = $this->XML2Array($result[1]);
-        } else {
-            $response = "HTTP Error";
-        }
-        
-//        var_dump($response);
-        return $response;
-    }
-    
     
     private function submitData($url, $postdata){
         $curl = curl_init();

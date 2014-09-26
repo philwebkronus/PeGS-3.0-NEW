@@ -310,102 +310,147 @@ class MPapiInvokerController extends Controller{
 
         $this->render('getcity', array('result'=>$result));
     }
-
+    
+    //@date 09-16-2014
+    public function actionRegisterMemberBT() {
+        $this->pageTitle = 'Membership Portal API - Register Member BT';
+        $result = '';
+        
+        if(isset($_POST['FirstName']) || isset($_POST['LastName']) || isset($_POST['MobileNo']) || isset($_POST['EmailAddress'])
+                || isset($_POST['Birthdate'])) {
+            $firstname = $_POST['FirstName'];
+            //$middlename = $_POST['MiddleName'];
+            //$nickname = $_POST['NickName'];
+            $lastname = $_POST['LastName'];
+            $mobileNumber = $_POST['MobileNo'];
+            //$alternateMobileNumber = $_POST['AlternateMobileNo'];
+            $emailAddress = $_POST['EmailAddress'];
+            //$alternateEmail = $_POST['AlternateEmail'];
+            //$gender = $_POST['Gender'];
+            //$idNumber = $_POST['IDNumber'];
+            $birthdate = $_POST['Birthdate'];
+//            $password = $_POST['Password'];
+//            $idPresented = $_POST['IDPresented'];
+//            $permanentAddress = $_POST['PermanentAdd'];
+//            $nationality = $_POST['Nationality'];
+//            $occupation = $_POST['Occupation'];
+//            $isSmoker = $_POST['IsSmoker'];
+//            $referrerID = $_POST['ReferrerID'];
+//            $referralCode = $_POST['ReferralCode'];
+//            $emailSubscription = $_POST['EmailSubscription'];
+//            $smsSubscription = $_POST['SMSSubscription'];
+                    
+            $result = $this->_registerMemberBT($firstname, $lastname, $mobileNumber, $emailAddress, $birthdate);
+        }
+        
+        $this->render('registermemberbt', array('result'=>$result));
+    }
+    
     private function _login($username, $password) {
         $postdata = CJSON::encode(array('Username' => $username, 'Password' => $password));
-        $result = $this->SubmitData(Yii::app()->params['url'].'login', $postdata);
-
+        $result = $this->SubmitData(Yii::app()->params['urlMPAPI'].'login', $postdata);
+        
         return $result[1];
     }
 
     private function _forgotPassword($emailCardNumber) {
         $postdata = CJSON::encode(array('EmailCardNumber'=>$emailCardNumber));
-        $result = $this->SubmitData(Yii::app()->params['url'].'forgotpassword', $postdata);
-
+        $result = $this->SubmitData(Yii::app()->params['urlMPAPI'].'forgotpassword', $postdata);
+        
         return $result[1];
     }
 
     private function _registerMember($firstname, $middlename, $lastname, $nickname, $mobileNumber, $alternateMobileNumber, $emailAddress, $alternateEmail, $gender, $idNumber, $birthdate, $password, $idPresented, $permanentAddress, $nationality, $occupation, $isSmoker, $referrerID, $referralCode, $emailSubscription, $smsSubscription) {
         $postdata = CJSON::encode(array('FirstName'=>$firstname, 'MiddleName' => $middlename, 'LastName'=>$lastname,'NickName' => $nickname, 'MobileNo'=>$mobileNumber, 'AlternateMobileNo' => $alternateMobileNumber, 'EmailAddress'=>$emailAddress,
                                   'AlternateEmail' => $alternateEmail,'Gender' => $gender, 'IDNumber'=>$idNumber, 'Birthdate'=>$birthdate, 'Password' => $password, 'IDPresented' => $idPresented, 'PermanentAdd' => $permanentAddress, 'Nationality' => $nationality, 'Occupation' => $occupation, 'IsSmoker' => $isSmoker, 'ReferrerID' => $referrerID, 'ReferralCode' => $referralCode, 'EmailSubscription' => $emailSubscription, 'SMSSubscription' => $smsSubscription));
-        $result = $this->SubmitData(Yii::app()->params['url'].'registermember', $postdata);
-
+        $result = $this->SubmitData(Yii::app()->params['urlMPAPI'].'registermember', $postdata);
+        
         return $result[1];
     }
 
     private function _updateProfile($mpSessionID, $firstname, $middlename, $lastname, $nickname, $mobileNumber, $alternateMobileNumber, $emailAddress, $alternateEmail, $gender, $idNumber, $birthdate, $password, $idPresented, $permanentAddress, $nationality, $occupation, $isSmoker) {
         $postdata = CJSON::encode(array('MPSessionID' => $mpSessionID, 'FirstName'=>$firstname,'MiddleName' => $middlename, 'LastName'=>$lastname, 'NickName' => $nickname, 'MobileNo'=>$mobileNumber,'AlternateMobileNo' => $alternateMobileNumber, 'EmailAddress'=>$emailAddress,
                                   'AlternateEmail' => $alternateEmail,'Gender' => $gender, 'IDNumber'=>$idNumber, 'Birthdate'=>$birthdate, 'Password' => $password, 'IDPresented' => $idPresented, 'PermanentAdd' => $permanentAddress, 'Nationality' => $nationality, 'Occupation' => $occupation, 'IsSmoker' => $isSmoker));
-        $result = $this->SubmitData(Yii::app()->params['url'].'updateprofile', $postdata);
-
+        $result = $this->SubmitData(Yii::app()->params['urlMPAPI'].'updateprofile', $postdata);
+        
         return $result[1];
     }
 
     private function _checkPoints($cardNumber) {
         $postdata = CJSON::encode(array('CardNumber'=>$cardNumber));
-        $result = $this->SubmitData(Yii::app()->params['url'].'checkpoints', $postdata);
-
+        $result = $this->SubmitData(Yii::app()->params['urlMPAPI'].'checkpoints', $postdata);
+        
         return $result[1];
     }
 
     private function _listItems($playerClassID, $mpSessionID) {
         $postdata = CJSON::encode(array('PlayerClassID' => $playerClassID, 'MPSessionID' => $mpSessionID));
-        $result = $this->SubmitData(Yii::app()->params['url'].'listitems', $postdata);
 
+        $result = $this->SubmitData(Yii::app()->params['urlMPAPI'].'listitems', $postdata);
+        
         return $result[1];
     }
 
     private function _redeemItems($mpSessionID, $cardNumber, $rewardID, $rewardItemID, $quantity, $source) {
         $postdata = CJSON::encode(array('MPSessionID' => $mpSessionID, 'CardNumber' => $cardNumber, 'RewardID' => $rewardID, 'RewardItemID' => $rewardItemID, 'Quantity' => $quantity, 'Source' => $source));
-        $result = $this->SubmitData(Yii::app()->params['url'].'redeemitems', $postdata);
 
+        $result = $this->SubmitData(Yii::app()->params['urlMPAPI'].'redeemitems', $postdata);
+        
         return $result[1];
     }
 
     private function _getProfile($cardNumber, $mpSessionID){
         $postdata = CJSON::encode(array('CardNumber' => $cardNumber, 'MPSessionID' => $mpSessionID));
-        $result = $this->SubmitData(Yii::app()->params['url'].'getprofile', $postdata);
 
+        $result = $this->SubmitData(Yii::app()->params['urlMPAPI'].'getprofile', $postdata);
+        
         return $result[1];
     }
 
     private function _getGender(){
         $postdata = CJSON::encode(array());
-        $result = $this->SubmitData(Yii::app()->params['url'].'getgender', $postdata);
 
+        $result = $this->SubmitData(Yii::app()->params['urlMPAPI'].'getgender', $postdata);
+        
+        
         return $result[1];
     }
 
     private function _getIDPresented(){
         $postdata = CJSON::encode(array());
-        $result = $this->SubmitData(Yii::app()->params['url'].'getidpresented', $postdata);
 
+        $result = $this->SubmitData(Yii::app()->params['urlMPAPI'].'getidpresented', $postdata);
+        
         return $result[1];
     }
 
     private function _getNationality(){
         $postdata = CJSON::encode(array());
-        $result = $this->SubmitData(Yii::app()->params['url'].'getnationality', $postdata);
 
+        $result = $this->SubmitData(Yii::app()->params['urlMPAPI'].'getnationality', $postdata);
+        
         return $result[1];
     }
 
     private function _getOccupation(){
         $postdata = CJSON::encode(array());
-        $result = $this->SubmitData(Yii::app()->params['url'].'getoccupation', $postdata);
 
+        $result = $this->SubmitData(Yii::app()->params['urlMPAPI'].'getoccupation', $postdata);
+        
         return $result[1];
     }
 
     private function _getIsSmoker(){
         $postdata = CJSON::encode(array());
-        $result = $this->SubmitData(Yii::app()->params['url'].'getissmoker', $postdata);
 
+        $result = $this->SubmitData(Yii::app()->params['urlMPAPI'].'getissmoker', $postdata);
+        
         return $result[1];
     }
 
     private function _deleteSession(){
-        $url = "";
+        //$url = "http://172.16.102.174/mpapi.dev.local/index.php/MPapi/getissmoker";
+        $url = "http://localhost/MPAPI/index.php/Cron/deletesession";
         $postdata = CJSON::encode(array());
         $result = $this->SubmitData($url, $postdata);
 
@@ -414,29 +459,43 @@ class MPapiInvokerController extends Controller{
 
     private function _logout($mpSessionID){
         $postdata = CJSON::encode(array('MPSessionID' => $mpSessionID));
-        $result = $this->SubmitData(Yii::app()->params['url'].'logout', $postdata);
 
+        $result = $this->SubmitData(Yii::app()->params['urlMPAPI'].'logout', $postdata);
+        
         return $result[1];
     }
 
     private function _getReferrer(){
         $postdata = CJSON::encode(array());
-        $result = $this->SubmitData(Yii::app()->params['url'].'getreferrer', $postdata);
 
+        $result = $this->SubmitData(Yii::app()->params['urlMPAPI'].'getreferrer', $postdata);
+        
         return $result[1];
     }
 
     private function _getRegion(){
         $postdata = CJSON::encode(array());
-        $result = $this->SubmitData(Yii::app()->params['url'].'getregion', $postdata);
 
+        $result = $this->SubmitData(Yii::app()->params['urlMPAPI'].'getregion', $postdata);
+        
         return $result[1];
     }
 
     private function _getCity(){
         $postdata = CJSON::encode(array());
-        $result = $this->SubmitData(Yii::app()->params['url'].'getcity', $postdata);
 
+        $result = $this->SubmitData(Yii::app()->params['urlMPAPI'].'getcity', $postdata);
+        
+        return $result[1];
+    }
+    
+    private function _registerMemberBT($firstname, $lastname, $mobileNumber, $emailAddress, $birthdate) {
+        //$url = "http://172.16.102.174/mpapi.dev.local/index.php/MPapi/registermember";
+        //$url = "http://localhost/MPAPI/index.php/MPapi/registermember";
+        $postdata = CJSON::encode(array('FirstName'=>$firstname, 'LastName'=>$lastname, 'MobileNo'=>$mobileNumber, 'EmailAddress'=>$emailAddress,
+                                   'Birthdate'=>$birthdate));
+        $result = $this->SubmitData(Yii::app()->params['urlMPAPI'].'registermemberbt', $postdata);
+        
         return $result[1];
     }
 
