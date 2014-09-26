@@ -7,7 +7,7 @@
 // This is the main Web application configuration. Any writable
 // CWebApplication properties can be configured here.
 return array(
-        
+
 	'basePath'=>dirname(__FILE__).DIRECTORY_SEPARATOR.'..',
 	'name'=>'Bar Tour App Membership Portal API', //Application Programming Interface
         'defaultController'=>'bTAmpapiInvoker/overview',
@@ -68,55 +68,49 @@ return array(
                 //db connection for membership
                 'db'=>array(
                         'class'=>'CDbConnection',
-			'connectionString' => 'mysql:host=172.16.102.157;dbname=membership',
-                        //'connectionString' => 'mysql:host=localhost;dbname=membership',
+			'connectionString' => 'mysql:host=;dbname=membership',
 			'emulatePrepare' => true,
 			'username' => 'membershipapi',
-			'password' => 'YTgERUImQoddm9iDd0Es',
-                        //'username' => 'root',
-			//'password' => '',
+			'password' => '',
 			'charset' => 'utf8',
 		),
                 //db connection for loyaltydb
                 'db2'=>array(
                         'class'=>'CDbConnection',
-			'connectionString' => 'mysql:host=172.16.102.157;dbname=loyaltydb',
+			'connectionString' => 'mysql:host=;dbname=loyaltydb',
 			'emulatePrepare' => true,
 			'username' => 'membershipapi',
-			'password' => 'YTgERUImQoddm9iDd0Es',
+			'password' => '',
 			'charset' => 'utf8',
 		),
                 //db connection for membership_temp
                 'db3'=>array(
                         'class'=>'CDbConnection',
-			'connectionString' => 'mysql:host=172.16.102.157;dbname=membership_temp',
+			'connectionString' => 'mysql:host=;dbname=membership_temp',
 			'emulatePrepare' => true,
 			'username' => 'membershipapi',
-			'password' => 'YTgERUImQoddm9iDd0Es',
+			'password' => '',
 			'charset' => 'utf8',
 		),
                 //db connection for rewardsdb
                 'db4'=>array(
                         'class'=>'CDbConnection',
-			'connectionString' => 'mysql:host=172.16.102.157;dbname=rewardsdb',
+			'connectionString' => 'mysql:host=;dbname=rewardsdb',
 			'emulatePrepare' => true,
 			'username' => 'membershipapi',
-			'password' => 'YTgERUImQoddm9iDd0Es',
+			'password' => '',
 			'charset' => 'utf8',
 		),
                 'db5'=>array(
                         'class'=>'CDbConnection',
-			'connectionString' => 'mysql:host=172.16.102.157;dbname=accountsdb',
-                        //'connectionString' => 'mysql:host=localhost;dbname=accountsdb',
+			'connectionString' => 'mysql:host=;dbname=accountsdb',
 			'emulatePrepare' => true,
 			'username' => 'accountsapi',
-			'password' => 'kkgdVhlCzhi1Lxm2K2IU',
-                        //'username' => 'root',
-                        //'password' => '',
+			'password' => '',
 			'charset' => 'utf8',
                 ),
-                
-            
+
+
                 'CURL' =>array(
                         'class' => 'application.extensions.curl.CurlController',
                      //you can setup timeout,http_login,proxy,proxylogin,cookie, and setOPTIONS
@@ -140,7 +134,7 @@ return array(
 				*/
 			),
 		),
-            
+
 	),
         // using Yii::app()->params['paramName']
 	'params'=>array(
@@ -149,15 +143,13 @@ return array(
             'app_id' => 'EGAMES',
             'DenominationPrefix'=>'PhP ',
             'allowedAmount'=>0,
-            //'urlBTAMPAPI'=>'http://localhost/BTAMPAPI/index.php/BTAmpapi/',
-            'urlBTAMPAPI'=>'http://172.16.102.174/btampapi.dev.local/index.php/BTAmpapi/',
-            'urlMPAPI'=>'http://172.16.102.174/mpapi.dev.local/index.php/MPapi/'
-            //'urlMPAPI'=>'http://localhost/MPAPI/index.php/MPapi/',
-        
+            'urlBTAMPAPI'=>'http://<BTAMPAPI DIRECTORY HERE>/index.php/BTAmpapi/',
+            'urlMPAPI'=>'http://<MPAPI URL HERE>/index.php/MPapi/'
+
         ),
-        
-        
-        
-        
+
+
+
+
 );
 
