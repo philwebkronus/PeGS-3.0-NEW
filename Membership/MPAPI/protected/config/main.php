@@ -143,11 +143,11 @@ return array(
             'app_id' => 'EGAMES',
             'DenominationPrefix'=>'PhP ',
             'allowedAmount'=>0,
-            //'extra_imagepath' => "172.16.102.174/membership.rewards/images/rewarditems/",
-            //'extra_imagepath' => "http://www.egamescasino.ph/wp-content/uploads/2013/05/",
             'extra_imagepath' => "http://membership.egamescasino.ph/images/rewarditems/",
-            'rewarditem_imagepath' => "172.16.102.174/rewards.management/images/rewarditems/",
-            'MarketingEmail' => 'fdlsison@philweb.com.ph',
+            //'rewarditem_imagepath' => "172.16.102.174/rewards.management/images/rewarditems/",
+            'MarketingEmail' => '@philweb.ph',
 	    'url' => 'http://<MPAPI URL HERE>/index.php/MPapi/', //local url
+            'urlMPAPI' => 'http://<MPAPI URL HERE>/index.php/MPapi/', //staging
+            'couponBatchID' => <Coupon Batch ID value>
             ),
 );
