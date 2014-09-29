@@ -177,7 +177,7 @@ class Autoemail {
       $stmt = "SELECT tr.TransactionRequestLogID, td.SiteID, td.TerminalID, tr.MID, 
           td.TransactionType,td.Amount as Redeem, 
           IF(ISNULL(s.POSAccountNo), '0000000000', s.POSAccountNo) as POS,
-            s.SiteName,a.Name,t.TerminalCode,tr.StartDate,tr.EndDate,td.ServiceID,
+            s.SiteName,s.SiteCode,a.Name,t.TerminalCode,tr.StartDate,tr.EndDate,td.ServiceID,
             td.DateCreated as EndDate,td.TransactionSummaryID,rs.ServiceName,rs.Code, tr.UserMode 
             FROM transactiondetails td 
             INNER JOIN transactionrequestlogs tr 

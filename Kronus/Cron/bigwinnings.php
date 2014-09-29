@@ -55,6 +55,7 @@ if($connected1 && $connected2 && $connected3)
                             $vreload = $vtotalload;
                             $vposno = $vbigwinnings[$vctr]['POS'];
                             $vsite = $vbigwinnings[$vctr]["SiteName"];
+                            $vsitecode = $vbigwinnings[$vctr]["SiteCode"];
                             $voperator = $vbigwinnings[$vctr]["Name"];
                             $vterminalcode = $vbigwinnings[$vctr]["TerminalCode"];
                             $vserver = $vbigwinnings[$vctr]["ServiceName"];
@@ -63,7 +64,9 @@ if($connected1 && $connected2 && $connected3)
                             $vsiteID = $vbigwinnings[$vctr]['SiteID'];
                             $vserviceID = $vbigwinnings[$vctr]['ServiceID'];        
                             $vMID = $vbigwinnings[$vctr]['MID'];        
-                            $vuserMode = $vbigwinnings[$vctr]['UserMode'];        
+                            $vuserMode = $vbigwinnings[$vctr]['UserMode'];
+                            $terminalcodez = $vterminalcode;
+                            $terminalnumber = str_replace($vsitecode, '', $terminalcodez);
                             
                             //check $vbracket vs $vnetwin
                             $ctrbracket = 0;
@@ -164,6 +167,10 @@ if($connected1 && $connected2 && $connected3)
                                                             DETAILS
                                                         <br/><br/>
                                                             --------------------------------------------------------------------------------------------- 
+                                                        <br/><br/>
+                                                            Site Name: $vsite
+                                                        <br/><br/>
+                                                            Terminal Number: $terminalnumber        
                                                         <br/><br/>
                                                             Time In: $vstart
                                                         <br/><br/>
