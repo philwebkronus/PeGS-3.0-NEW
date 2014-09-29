@@ -805,7 +805,7 @@ class BTAmpapiController extends Controller {
                 //$ActiveSession = $this->activeSession;
                 //if($ActiveSession===true){
                     $parse = CJSON::decode($result[1]);
-                    $ErrorCode = $parse[$moduleNameBTAMPAPI]['ErrorCode'];
+                    $ErrorCode = $parse[$moduleNameMPAPI]['ErrorCode'];
                     //$DateCreated = $parse[$moduleName]['DateCreated'];
                     if($ErrorCode==0){
                         $valid = true;
@@ -876,3 +876,4 @@ class BTAmpapiController extends Controller {
     }
     
 }
+                
