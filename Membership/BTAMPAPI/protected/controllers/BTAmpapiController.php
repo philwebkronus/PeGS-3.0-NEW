@@ -285,7 +285,7 @@ class BTAmpapiController extends Controller {
                     else{
                         $ApiMethodID = $this->ApiMethodID;
                         $this->_displayReturnMessage($module, 76, $module.' contains expired SessionID.');
-                        $this->_apiLogs($ApiMethodID[$module],'' , 76, '', 2, $module, $TPSessionID);
+                        $this->_apiLogs($ApiMethodID[$module],'' , 76, '', 2, $module, $Username);
                     }
                     
                 }
@@ -775,7 +775,7 @@ class BTAmpapiController extends Controller {
         return $valid;
     }
    
-   private function _validateTPSession($TPSessionID, $moduleNameMPAPI='', $moduleNameBTAMPAPI = 'GetActiveSession'){
+   private function _validateTPSession($TPSessionID, $moduleNameMPAPI='GetActiveSession', $moduleNameBTAMPAPI = ''){
         date_default_timezone_set('Asia/Manila');//setting to default timezone
         
         $ValidateTPSession = new ValidateTPSessionIDModel();

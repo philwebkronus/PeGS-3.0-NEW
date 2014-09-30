@@ -44,7 +44,9 @@ class AuditTrailModel
     public function logEvent($auditfunctionID, $transdetails, $info) {
         $startTrans = $this->_connection->beginTransaction();
         
-        $remoteip = gethostbyaddr($_SERVER['REMOTE_ADDR']);
+        
+        
+        $remoteip = $_SERVER['REMOTE_ADDR'];
         if (is_array($info) && count($info) > 0)
         {
             $aid= $info['AID']; $sessionID = $info['SessionID'];

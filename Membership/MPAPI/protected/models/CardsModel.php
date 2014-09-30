@@ -31,7 +31,7 @@ class CardsModel {
         $command = $this->_connection->createCommand($sql);
         $result = $command->queryRow(true, $param);
         
-        if(count($result) > 0)
+        if($result)
             return 1;
         else
             return 0;

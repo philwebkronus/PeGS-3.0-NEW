@@ -11,6 +11,7 @@ class Ref_SMSApiMethodsModel {
     const COUPON_REDEMPTION = 1;
     const ITEM_REDEMPTION = 2;
     const PLAYER_REGISTRATION = 3;
+    const PLAYER_REGISTRATION_BT = 4;
     
     public static $_instance = null;
     public $_connection;

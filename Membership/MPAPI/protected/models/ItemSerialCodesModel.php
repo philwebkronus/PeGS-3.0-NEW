@@ -52,9 +52,11 @@ class ItemSerialCodesModel {
         $isLocked = $command->execute();
         
         try {
-            $itemSerialCodeID = $this->getSerialCodeForRedemptionCopy($rewardItemID);
-            $itemSerialCodeID = $itemSerialCodeID['ItemSerialCodeID'];
-            if(isset($itemSerialCodeID['ItemSerialCodeID']) && $itemSerialCodeID['ItemSerialCodeID'] != '') {
+            $itemSerialCodeArray = $this->getSerialCodeForRedemptionCopy($rewardItemID);
+            $itemSerialCodeID = $itemSerialCodeArray['ItemSerialCodeID'];
+            $serialCode = $itemSerialCodeArray['SerialCode'];
+            
+            if(isset($itemSerialCodeArray['ItemSerialCodeID']) && $itemSerialCodeArray['ItemSerialCodeID'] != '') {
                 //proceed with the update query if the table is already locked.
                 
                 $updateSQL = 'UPDATE itemserialcodes
@@ -102,7 +104,8 @@ class ItemSerialCodesModel {
                 try {
                     //return results value if lock, update and unlock query all succeeds
                     $returningarray["IsSuccess"] = true;
-                    $returningarray["StatusCode"] = $itemSerialCodeID['SerialCode'];
+                    
+                    $returningarray["StatusCode"] = $itemSerialCodeArray['SerialCode'];
                     $startTrans->commit();
                     return $returningarray;
                 } catch (PDOException $e) {
@@ -255,7 +258,8 @@ class ItemSerialCodesModel {
     
     //@purpose fetching of pre-generated item serial code from db using reward item ID
     public function getSerialCodeForRedemptionCopy($rewardItemID) {
-        $sql = 'SELECT min(SerialCode) SerialCode, ItemSerialCodeID
+     
+        $sql = 'SELECT min(SerialCode) AS SerialCode, ItemSerialCodeID
                 FROM itemserialcodes
                 WHERE Status = 1 AND RewardItemID = :rewardItemID';
         $param = array(':rewardItemID' => $rewardItemID);

@@ -198,11 +198,12 @@ class MembershipTempModel {
             
             $command->execute();
            
+            $mid = Yii::app()->db3->getLastInsertID();
             
             
             
             try {
-                $mid = Yii::app()->db3->getLastInsertID();
+                
                
                 $sql2 = 'INSERT INTO memberinfo(MID, FirstName, MiddleName, LastName, NickName, Birthdate, Gender, Email, AlternateEmail, MobileNumber, AlternateMobileNumber, NationalityID, OccupationID, Address1, IdentificationID, IdentificationNumber, IsSmoker, DateCreated, ReferrerCode, EmailSubscription, SMSSubscription, ReferrerID)
                         VALUES(:MID, :FirstName, :MiddleName, :LastName, :NickName, :Birthdate, :Gender, :Email, :AlternateEmail, :MobileNumber, :AlternateMobileNumber, :Nationality, :Occupation, :PermanentAddress, :IDPresented, :IDNumber, :IsSmoker, NOW(6), :ReferrerCode, :emailSubscription, :smsSubscription, :referrerID)';
@@ -271,6 +272,85 @@ class MembershipTempModel {
         
         return $result; 
         
+    }
+    
+    //@date 09-16-2014
+    //@purpose member registration for BTA in temp db
+    public function registerBT($email, $firstname, $lastname, $mobileNumber, $birthdate) { //,$password, $idPresented, $idNumber) {
+    //public function register($membersArray, $memberInfoArray) {
+        $MID = '';
+        $password = sha1(str_replace('-', '', $birthdate));
+        $middlename = null;
+        $permanentAddress = null;
+        $idPresented = null;
+        $idNumber = null;
+        $nickname = null;
+        $alternateMobileNumber = null;
+        $alternateEmail = null;
+        $nationality = null;
+        $occupation = null;
+        $referrerCode = null;
+        $gender = null;
+        $isSmoker = null;
+        $emailSubscription = null;
+        $smsSubscription = null;
+        $referrerID = null;
+        
+        $startTrans = $this->_connection->beginTransaction();
+        
+        try {
+            $tempCode = 'eGames' . strtoupper(Utilities::generateAlphaNumeric(5));
+            
+            //$membersArray['TemporaryAccountCode'] = $tempCode;
+            $sql = 'INSERT INTO membership_temp.members(UserName, Password, ForChangePassword, TemporaryAccountCode, DateCreated, Status)
+                    VALUES(:Email, :Password, 1, :TempCode, NOW(6), 1)';
+            $param = array(':Email' => $email, ':Password' => $password, ':TempCode' => $tempCode);
+            $command = $this->_connection->createCommand($sql);
+            
+            $command->bindValues($param);
+            
+            $command->execute();
+           
+            $mid = Yii::app()->db3->getLastInsertID();
+            
+                  
+            try {
+                            
+                $sql2 = 'INSERT INTO memberinfo(MID, FirstName, MiddleName, LastName, NickName, Birthdate, Gender, Email, AlternateEmail, MobileNumber, AlternateMobileNumber, NationalityID, OccupationID, Address1, IdentificationID, IdentificationNumber, IsSmoker, DateCreated, ReferrerCode, EmailSubscription, SMSSubscription, ReferrerID)
+                        VALUES(:MID, :FirstName, :MiddleName, :LastName, :NickName, :Birthdate, :Gender, :Email, :AlternateEmail, :MobileNumber, :AlternateMobileNumber, :Nationality, :Occupation, :PermanentAddress, :IDPresented, :IDNumber, :IsSmoker, NOW(6), :ReferrerCode, :emailSubscription, :smsSubscription, :referrerID)';
+                $param2 = array(':MID' => $mid, ':FirstName' => $firstname, ':MiddleName' => $middlename, ':LastName' => $lastname, ':PermanentAddress' => $permanentAddress,
+                               ':IDPresented' => $idPresented, ':IDNumber' => $idNumber, ':NickName' => $nickname, ':MobileNumber' => $mobileNumber, ':AlternateMobileNumber' => $alternateMobileNumber,
+                               ':Email' => $email, ':AlternateEmail' => $alternateEmail, ':Birthdate' => $birthdate, ':Nationality' => $nationality, ':Occupation' => $occupation, 
+                               'ReferrerCode' => $referrerCode, ':Gender' => $gender, ':IsSmoker' => $isSmoker, ':emailSubscription' => $emailSubscription, ':smsSubscription' => $smsSubscription, ':referrerID' => $referrerID);
+                $command2 = $this->_connection->createCommand($sql2);
+                $command2->bindValues($param2);
+                $command2->execute();
+                
+                try {
+                    $startTrans->commit();
+                    $recipient = $firstname . ' ' . $lastname;
+                    $helpers = new Helpers();
+                    $helpers->sendEmailVerification($email, $recipient, $tempCode);
+                    $MID = $mid;
+                    
+                    return $MID;
+                    
+                } catch(PDOException $e) {
+                    $startTrans->rollback();
+                    Utilities::log($e->getMessage());
+                    return $e->getMessage();
+                } 
+            } catch(PDOException $e) {
+                $startTrans->rollback();
+                Utilities::log($e->getMessage());
+                return $e->getMessage();
+            } 
+            
+        } catch(Exception $e) {
+            $startTrans->rollback();
+            Utilities::log($e->getMessage());
+            return 0;
+        }
     }
      
 }

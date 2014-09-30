@@ -25,6 +25,7 @@ class APILogsModel
     CONST API_GET_NATIONALITY = 11;
     CONST API_GET_OCCUPATION = 12;
     CONST API_IS_SMOKER = 13;
+    CONST API_REGISTER_MEMBER_BT = 18;
     
     
     public static $_instance = null;
@@ -44,7 +45,7 @@ class APILogsModel
     
     
     public function insertAPIlogs($apiMethodID, $refID, $transDetails, $trackingID, $status) {
-        
+     
         
         $remoteIP = $_SERVER['REMOTE_ADDR'];
         $method = '';
@@ -88,6 +89,9 @@ class APILogsModel
             case 13:
                 $method = self::API_IS_SMOKER;
                 break;
+            case 18:
+                $method = self::API_REGISTER_MEMBER_BT;
+                break;
         }
         
         $startTrans = $this->_connection->beginTransaction();
@@ -104,19 +108,17 @@ class APILogsModel
             $command = $this->_connection->createCommand($sql);
             $command->bindValues($param);
             $command->execute();
-        
+            
             try {
                 $startTrans->commit();
                 return 1;
             } catch (PDOException $e) {
-                var_dump($e->getMessage());
                 $startTrans->rollback();
                 Utilities::log($e->getMessage());
                 return 0;
             }
         
         } catch (Exception $e) {
-            var_dump($e->getMessage());
             $startTrans->rollback();
             Utilities::log($e->getMessage());
             return 0;

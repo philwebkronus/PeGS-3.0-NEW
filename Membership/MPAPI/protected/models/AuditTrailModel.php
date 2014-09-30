@@ -71,6 +71,7 @@ class AuditTrailModel
     CONST API_CHECK_POINTS = 61;
     CONST API_LIST_ITEMS = 62;
     CONST API_REDEEM_ITEMS = 63;
+    CONST API_REGISTER_MEMBER_BT = 67;
     
     public static $_instance = null;
     public $_connection;
@@ -93,8 +94,8 @@ class AuditTrailModel
         
         
         $startTrans = $this->_connection->beginTransaction();
-        $aid = 0;       
-        $sessionID = ''; 
+        
+        $sessionID = '';
         $aid = 0;
         
         $remoteip = $_SERVER['REMOTE_ADDR'];
