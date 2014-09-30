@@ -4852,8 +4852,6 @@ class MPapiController extends Controller {
                         $lastInsertedMID = $membershipTempModel->registerBT($emailAddress, $firstname, $lastname, $mobileNumber, $birthdate); // ,$password, $idPresented, $idNumber);
                         
                         if($lastInsertedMID > 0) {
-                            $couponBatchID = Yii::app()->params["couponBatchID"];
-
                             $MID = $lastInsertedMID;
                             $mpSessionID = '';
 
@@ -4875,7 +4873,7 @@ class MPapiController extends Controller {
 
                                 } else {
 
-                                    $coupons = $couponsModel->getCoupon($couponBatchID);
+                                    $coupons = $couponsModel->getCoupon();
 
                                     $couponNumber = $coupons['CouponCode'];
                                     $expiryDate = $coupons['ValidToDate'];
@@ -4923,7 +4921,7 @@ class MPapiController extends Controller {
 
                                             }
                                             else {
-                                                $isUpdated = $coupons->updateCouponStatus($couponBatchID, $couponNumber, $MID);
+                                                $isUpdated = $coupons->updateCouponStatus($couponNumber, $MID);
                                                 if(!$isUpdated) {
                                                     $logMessage = "Failed to update coupon status.";
                                                     $logger->log($logger->logdate, " [REGISTERMEMBERBT ERROR] ", $logMessage);
@@ -4996,7 +4994,7 @@ class MPapiController extends Controller {
 
                                      } else {
 
-                                        $coupons = $couponsModel->getCoupon($couponBatchID);
+                                        $coupons = $couponsModel->getCoupon();
 
                                         $couponNumber = $coupons['CouponCode'];
                                         $expiryDate = $coupons['ValidToDate'];
@@ -5060,7 +5058,7 @@ class MPapiController extends Controller {
 
                                                 }
                                                 else {
-                                                    $isUpdated = $couponsModel->updateCouponStatus($couponBatchID, $couponNumber, $MID);
+                                                    $isUpdated = $couponsModel->updateCouponStatus($couponNumber, $MID);
                                                     if(!$isUpdated) {
                                                         $logMessage = "Failed to update coupon status.";
                                                         $logger->log($logger->logdate, " [REGISTERMEMBERBT ERROR] ", $logMessage);
@@ -5177,7 +5175,7 @@ class MPapiController extends Controller {
                                                 }
 
                                             } else {
-                                                $coupons = $couponsModel->getCoupon($couponBatchID);
+                                                $coupons = $couponsModel->getCoupon();
                                             
                                                 $couponNumber = $coupons['CouponCode'];
                                                 $expiryDate = $coupons['ValidToDate'];
@@ -5232,7 +5230,7 @@ class MPapiController extends Controller {
 
                                                         }
                                                         else {
-                                                            $isUpdated = $couponsModel->updateCouponStatus($couponBatchID, $couponNumber, $MID);
+                                                            $isUpdated = $couponsModel->updateCouponStatus($couponNumber, $MID);
                                                             if(!$isUpdated) {
                                                                 $logMessage = "Failed to update coupon status.";
                                                                 $logger->log($logger->logdate, " [REGISTERMEMBERBT ERROR] ", $logMessage);
@@ -5300,7 +5298,7 @@ class MPapiController extends Controller {
                                                      }
 
                                                  } else {
-                                                    $coupons = $couponsModel->getCoupon($couponBatchID);
+                                                    $coupons = $couponsModel->getCoupon();
                                             
                                                     $couponNumber = $coupons['CouponCode'];
                                                     $expiryDate = $coupons['ValidToDate'];
@@ -5355,7 +5353,7 @@ class MPapiController extends Controller {
 
                                                             }
                                                             else {
-                                                                $isUpdated = $couponsModel->updateCouponStatus($couponBatchID, $couponNumber, $MID);
+                                                                $isUpdated = $couponsModel->updateCouponStatus($couponNumber, $MID);
                                                                 if(!$isUpdated) {
                                                                     $logMessage = "Failed to update coupon status.";
                                                                     $logger->log($logger->logdate, " [REGISTERMEMBERBT ERROR] ", $logMessage);
