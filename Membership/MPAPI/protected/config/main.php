@@ -107,6 +107,15 @@ return array(
 			'password' => '',
 			'charset' => 'utf8',
 		),
+                //db connection for vouchermanagement
+                'db6'=>array(
+                        'class'=>'CDbConnection',
+			'connectionString' => 'mysql:host=;dbname=vouchermanagement',
+			'emulatePrepare' => true,
+			'username' => 'membershipapi',
+			'password' => '',
+			'charset' => 'utf8',
+		),
                 'CURL' =>array(
                         'class' => 'application.extensions.curl.CurlController',
                      //you can setup timeout,http_login,proxy,proxylogin,cookie, and setOPTIONS
@@ -146,7 +155,6 @@ return array(
             'extra_imagepath' => "http://membership.egamescasino.ph/images/rewarditems/",
             //'rewarditem_imagepath' => "172.16.102.174/rewards.management/images/rewarditems/",
             'MarketingEmail' => '@philweb.ph',
-            'urlMPAPI' => 'http://<MPAPI URL HERE>/index.php/MPapi/', 
-            'couponBatchID' => <Coupon Batch ID value>
+            'urlMPAPI' => 'http://<MPAPI URL HERE>/index.php/MPapi/',
             ),
 );
