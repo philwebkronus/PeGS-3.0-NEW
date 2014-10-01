@@ -351,7 +351,7 @@ class CouponGenerationController extends Controller
                     $tag = 1;
                     break;
                 case "SMS":
-                    $tag = 1;
+                    $tag = 2;
                     break;
                 case "EMAIL":
                     $tag = 3;
