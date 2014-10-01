@@ -460,5 +460,37 @@ class Helper extends BaseEntity
                     break;
         }
     }
+    
+        public function sendPlayerNotification($email,$name,$PClassName){
+        App::LoadCore("PHPMailer.class.php");
+        $mailer = new PHPMailer();
+        
+        $mailer->AddAddress($email, $name);
+        $mailer->IsHTML(true);
+        $processeddate = date("m/d/Y");
+        
+        $mailer->Body = "$processeddate<br />".
+                                        "$name<br /><br />".
+                                        "<label style='font-style: italic;'>Greetings MR./MRS./MS. ".$name."!</label><br />".
+                                        "<p>We are glad to inform you that your Membership Status has been upgraded to ".$PClassName." as of ".$processeddate.". Your ".$PClassName." status allows you now to place even ".
+                                        "higher bets in your favorite casino games. For the latest promotions and list of redeemable rewards, you can log on to your e-Games Casino Membership ".
+                                        "Portal through the Membership Tab of the e-Games Casino Website www.egamescasino.ph. </p>".
+                                        "<br />Thank you for your continued loyalty! ".
+                                        "<br /><br />e-Games Casino".
+
+                                        "<br /><br /><br /><p style='color: gray'>Disclaimer: This email and any attachments are confidential and may also be privileged. If you are not the addressee, do not disclose, copy, circulate or in any other way use or rely on the information contained in this".
+                                        "email or any attachments. If received in error, notify the sender immediately and delete this email and any attachments from your system. Any opinions expressed in this message do not necessarily ".
+                                        "represent the official positions of PhilWeb Corporation. Emails cannot be guaranteed to be secure or error free as the message and any attachments could be intercepted, corrupted, lost, delayed, incomplete".
+                                        "or amended. PhilWeb Corporation and its subsidiaries do not accept liability for damage caused by this email or any attachments and may monitor email traffic.</p>";
+
+       
+        
+        
+        $mailer->From = "membership@egamescasino.ph";
+        $mailer->FromName = "Philweb Membership";
+        $mailer->Host = "localhost";
+        $mailer->Subject = "Membership Status Upgrade to $PClassName";
+        $mailer->Send();
+    }
 }
 ?>

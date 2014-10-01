@@ -21,6 +21,7 @@ $currentpage = "Administration";
 
 App::LoadModuleClass("Membership", "Members");
 App::LoadModuleClass("Membership", "MemberInfo");
+App::LoadModuleClass("Membership", "Helper");
 App::LoadModuleClass("Loyalty", "MemberCards");
 App::LoadModuleClass("Membership", "MemberServices");
 App::LoadModuleClass("CasinoProvider", "CasinoAPI");
@@ -92,17 +93,40 @@ function sendEmail($email,$name, $message=''){
     $mailer->Subject = "Batch Player Classification Notification";
     $mailer->Send();
 }
-function emailUser($MID){
+function emailUser($MID,$VIPLevel){
     if(isset($MID)){
+        $_Helper = new Helper();
         $memberInfo = new MemberInfo();
         $EmailAddress = $memberInfo->getEmail($MID);
         if(isset($EmailAddress)){
             if($EmailAddress!=''){
                 $Result = $memberInfo->getFirstNameByMID($MID);
-                $FirstName = $Result[0]['FirstName'];
-                if(isset($FirstName)){
+                
+                //Check Name validity 
+                if($Result[0]['FirstName'] != "" || $Result[0]['FirstName'] != NULL){
+                    if($Result[0]['LastName'] != "" || $Result[0]['LastName'] != NULL){
+                        $Recipient = $Result[0]['FirstName']." ".$Result[0]['LastName'];
+                    }else{ $Recipient = $Result[0]['FirstName']; }
+                }else{
+                    if($Result[0]['LastName'] != "" || $Result[0]['LastName'] != NULL){
+                        $Recipient =$Result[0]['LastName'];
+                    }else{ $Recipient="Unknown"; }
+                }
+                
+                if(isset($Recipient)){
                     if($EmailAddress!=''){
-                        sendEmail($EmailAddress, $FirstName);
+                        switch ($VIPLevel) {
+                            case 1:
+                                $PClassName = "VIP";
+                                break;
+                            case 2:
+                                $PClassName = "Classic";
+                                break;
+                            default:
+                                $PClassName = "Regular";
+                                break;
+                        }
+                        $_Helper->sendPlayerNotification($EmailAddress, $Recipient, $PClassName);
                     }
                 }
             }
@@ -342,7 +366,7 @@ if($formCsvUpload->IsPostBack) {
                                             if($VIPLevel == 0 || $VIPLevel == 1 || $VIPLevel == 2) {
                                                 if($ToBeEmailed == 0 || $ToBeEmailed == 1) {
                                                     $Status = $memberCardStatus[0]['Status'];
-                                                    if($Status==1 || $Status==5){
+                                                    if($Status==1){
 
                                                         if(ubCardExists($UBCard,$listUBCard)==false){
                                                             $memberCardMID = $memberCards->getMIDByCard($UBCard);
@@ -374,7 +398,8 @@ if($formCsvUpload->IsPostBack) {
                                                                         $IsSucceed = false;
                                                                         if(!empty($PID)) {
                                                                             $userID = 0;
-
+                                                                            $getPClassID = $casinoAPI->GetPlayerClassification("RTG2", $PID, $serverID);
+                                                                            $oldPClassIDAPI = $getPClassID['IsSucceed'] == true ? $getPClassID['ClassID']:NULL;
                                                                             $changePlayerClassResult = $casinoAPI->ChangePlayerClassification('RTG2', $PID, $VIPLevel, $userID, $serverID);
                                                                             header("Content-Type:text/html");
                                                                             $IsSucceed= $changePlayerClassResult['IsSucceed'];
@@ -417,9 +442,12 @@ if($formCsvUpload->IsPostBack) {
                                                                                                 //$logMessage = 'Batch Player Classification Mapping has completed.';
                                                                                                 //$logger->log($logger->logdate, " [1] ", $logMessage
                                                                                                 array_push($listUBCard, $UBCard);
-
-                                                                                                if($ToBeEmailed==1){   
-                                                                                                    emailUser($MID);
+                                                                                                
+                                                                                                //Check if the Player has been promoted
+                                                                                                $IsPromoted = $oldPClassIDAPI == 1 && $VIPLevel != $oldPClassIDAPI ? 0:$VIPLevel > $oldPClassIDAPI ? 1:0;
+                                                                                                
+                                                                                                if($ToBeEmailed==1 && $IsPromoted == 1){   
+                                                                                                    emailUser($MID, $VIPLevel);
                                                                                                 }
                                                                                                 
                                                                                                 if($ctr==$ArraySize){
@@ -474,7 +502,7 @@ if($formCsvUpload->IsPostBack) {
                                                                                     }
                                                                                     $getPlayerClassResult = $casinoAPI->GetPlayerClassification("RTG2", $PID, $serverID);
                                                                                     if($getPlayerClassResult['IsSucceed'] == true) {
-                                                                                        if($VIPLevel == $getPlayerClassResult) {
+                                                                                        if($VIPLevel == $getPlayerClassResult['ClassID']) {
                                                                                             $members->RollBackTransaction();
                                                                                             $logMessage = "[ERROR] UB Card: $UBCard ";
                                                                                             $logMessage .= " Error Msg: Get Player classification failed.\r\n";
@@ -602,7 +630,7 @@ if($formCsvUpload->IsPostBack) {
                                                                 }
                                                         }
 
-                                                    }else{
+                                                    }else if($Status==0){
                                                         $logMessage = "[ERROR] UB Card: $UBCard ";
                                                         $logMessage .= " Error Msg: Card is inactive.\r\n";
                                                         //$logger->log($logger->logdate, " [ERROR] ", $logMessage);
@@ -614,7 +642,68 @@ if($formCsvUpload->IsPostBack) {
                                                             logError($CompiledLogMessages,true, $filename, $dateStarted);
                                                             sendErrorViaEmail($AID, $ErrorMessageToBeEmailed, $filename);
                                                         }
+                                                    }else if($Status==2){
+                                                        $logMessage = "[ERROR] UB Card: $UBCard ";
+                                                        $logMessage .= " Error Msg: Card is Deactivated.\r\n";
+                                                        //$logger->log($logger->logdate, " [ERROR] ", $logMessage);
+                                                        $CompiledLogMessages .=$logMessage;
+                                                        $ErrorMessageToBeEmailed .=generateMessage($UBCard, "Card is Deactivated.",$num+=1);
+                                                        
+                                                        if($ctr==$ArraySize){
+                                                            showDialog(0,'Batch Player Classification Mapping has completed. However, some of the cards failed to update. Kindly check your email.');
+                                                            logError($CompiledLogMessages,true, $filename, $dateStarted);
+                                                            sendErrorViaEmail($AID, $ErrorMessageToBeEmailed, $filename);
+                                                        }
+                                                    }else if($Status==5){
+                                                        $logMessage = "[ERROR] UB Card: $UBCard ";
+                                                        $logMessage .= " Error Msg: Temporary Cards are not allowed.\r\n";
+                                                        //$logger->log($logger->logdate, " [ERROR] ", $logMessage);
+                                                        $CompiledLogMessages .=$logMessage;
+                                                        $ErrorMessageToBeEmailed .=generateMessage($UBCard, "Temporary Cards are not allowed.",$num+=1);
+                                                        
+                                                        if($ctr==$ArraySize){
+                                                            showDialog(0,'Batch Player Classification Mapping has completed. However, some of the cards failed to update. Kindly check your email.');
+                                                            logError($CompiledLogMessages,true, $filename, $dateStarted);
+                                                            sendErrorViaEmail($AID, $ErrorMessageToBeEmailed, $filename);
+                                                        }
+                                                    }else if($Status==7){
+                                                        $logMessage = "[ERROR] UB Card: $UBCard ";
+                                                        $logMessage .= " Error Msg: Card is already Migrated to another red card.\r\n";
+                                                        //$logger->log($logger->logdate, " [ERROR] ", $logMessage);
+                                                        $CompiledLogMessages .=$logMessage;
+                                                        $ErrorMessageToBeEmailed .=generateMessage($UBCard, "Card is already Migrated to another red card .",$num+=1);
+                                                        
+                                                        if($ctr==$ArraySize){
+                                                            showDialog(0,'Batch Player Classification Mapping has completed. However, some of the cards failed to update. Kindly check your email.');
+                                                            logError($CompiledLogMessages,true, $filename, $dateStarted);
+                                                            sendErrorViaEmail($AID, $ErrorMessageToBeEmailed, $filename);
+                                                        }
+                                                    }else if($Status==8){
+                                                        $logMessage = "[ERROR] UB Card: $UBCard ";
+                                                        $logMessage .= " Error Msg: Temporary Card already Migrated.\r\n";
+                                                        //$logger->log($logger->logdate, " [ERROR] ", $logMessage);
+                                                        $CompiledLogMessages .=$logMessage;
+                                                        $ErrorMessageToBeEmailed .=generateMessage($UBCard, "Temporary Card already Migrated.",$num+=1);
+                                                        
+                                                        if($ctr==$ArraySize){
+                                                            showDialog(0,'Batch Player Classification Mapping has completed. However, some of the cards failed to update. Kindly check your email.');
+                                                            logError($CompiledLogMessages,true, $filename, $dateStarted);
+                                                            sendErrorViaEmail($AID, $ErrorMessageToBeEmailed, $filename);
+                                                        }
+                                                    }else if($Status==9){
+                                                        $logMessage = "[ERROR] UB Card: $UBCard ";
+                                                        $logMessage .= " Error Msg: Card is Banned.\r\n";
+                                                        //$logger->log($logger->logdate, " [ERROR] ", $logMessage);
+                                                        $CompiledLogMessages .=$logMessage;
+                                                        $ErrorMessageToBeEmailed .=generateMessage($UBCard, "Card is Banned.",$num+=1);
+                                                        
+                                                        if($ctr==$ArraySize){
+                                                            showDialog(0,'Batch Player Classification Mapping has completed. However, some of the cards failed to update. Kindly check your email.');
+                                                            logError($CompiledLogMessages,true, $filename, $dateStarted);
+                                                            sendErrorViaEmail($AID, $ErrorMessageToBeEmailed, $filename);
+                                                        }
                                                     }
+                                                    
                                                 }
                                                 else {
                                                     $logMessage = "[ERROR] UB Card: $UBCard  Error Msg: Invalid ToBeEmailed input.\r\n";
@@ -984,7 +1073,7 @@ else{
     function showDialog(Title, Message){
         var ContainerMessage='#containerReturnMessage';
         $("#dialogReturnMessage").dialog({
-            modal : true,title : Title,resizable : false,draggable :false,buttons : {'OK' : function(){$(this).dialog('close');$(ContainerMessage).text('');}}
+            modal : true,title : Title,resizable : false,draggable :false,buttons : {'OK' : function(){$(this).dialog('close');$(ContainerMessage).text('');window.location.href = "batchplayerclassificationmapping.php";}}
         });
         $(ContainerMessage).text(Message);
     }

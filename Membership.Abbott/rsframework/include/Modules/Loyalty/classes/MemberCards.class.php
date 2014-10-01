@@ -3,6 +3,8 @@
 /*
  * @author : owliber
  * @date : 2013-04-22
+ * @updated by Joene Floresca
+ * @date : 2014-10-01
  */
 
 class MemberCards extends BaseEntity {
@@ -111,10 +113,25 @@ class MemberCards extends BaseEntity {
     }
 
     public function getMIDByCard($cardnumber) {
-        $query = "SELECT mc.MID, c.Status
+        $query = "SELECT mc.MID, mc.Status
                   FROM membercards mc
-                    INNER JOIN cards c ON mc.CardID = c.CardID
-                  WHERE c.CardNumber = '$cardnumber'";
+                  WHERE mc.CardNumber = '$cardnumber'";
+
+        $result = parent::RunQuery($query);
+
+        return $result;
+    }
+    
+    /**
+     * @Author: Joene Floresca
+     * @Desc: Get Status of Card Number from MemberCards
+     * @param type $cardnumber
+     * @return type
+     */
+    public function getMIDByCardMemberCards($cardnumber) {
+        $query = "SELECT mc.MID, mc.Status
+                  FROM membercards mc
+                  WHERE mc.CardNumber = '$cardnumber';";
 
         $result = parent::RunQuery($query);
 

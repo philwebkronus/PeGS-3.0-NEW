@@ -100,10 +100,53 @@ if ($fproc->IsPostBack)
     $mid = '';
     if ($btnSearch->SubmittedValue == "SEARCH")
     { 
-        $arrCards = $loyaltyMemberCard->getMIDByCard($cardNumber);
-        if(isset($arrCards[0]['MID']))
+        $arrCards = $loyaltyMemberCard->getMIDByCardMemberCards($cardNumber);
+        if(isset($arrCards[0]['MID']) && $arrCards[0]['Status'] != 8 && $arrCards[0]['Status'] != 5 && $arrCards[0]['Status'] != 7 && $arrCards[0]['Status'] != 0 && $arrCards[0]['Status'] != 2 && $arrCards[0]['Status'] != 9)
         { 
             $mid = $arrCards[0]['MID'];
+        }
+        else
+        {
+            if(isset($arrCards[0]['Status']))
+            {
+                if($arrCards[0]['Status'] == 0)
+                {
+                   $showdialog = true;
+                   $msg = "Cannot change classification. Card is Inactive";
+                   $title = "Player Classification Assignment"; 
+                }
+                else if($arrCards[0]['Status'] == 2)
+                {
+                   $showdialog = true;
+                   $msg = "Cannot change classification. Card is Deactivated ";
+                   $title = "Player Classification Assignment"; 
+                }
+                else if($arrCards[0]['Status'] == 5)
+                {
+                   $showdialog = true;
+                   $msg = "Cannot change classification. Temporary Cards are not allowed";
+                   $title = "Player Classification Assignment"; 
+                }
+                else if($arrCards[0]['Status'] == 7)
+                {
+                   $showdialog = true;
+                   $msg = "Cannot change classification. Card is already Migrated to another red card";
+                   $title = "Player Classification Assignment"; 
+                }
+                else if($arrCards[0]['Status'] == 8)
+                {
+                   $showdialog = true;
+                   $msg = "Cannot change classification. Temporary Card already Migrated ";
+                   $title = "Player Classification Assignment"; 
+                }
+                else if($arrCards[0]['Status'] == 9)
+                {
+                   $showdialog = true;
+                   $msg = "Cannot change classification. Card is Banned";
+                   $title = "Player Classification Assignment"; 
+                }
+            }
+            
         }
         $hiddenMid->Text = $mid;
         $hiddenCard->Text = $cardNumber;

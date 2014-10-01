@@ -354,7 +354,7 @@ class MemberInfo extends BaseEntity {
     }
     
     public function getFirstNameByMID($MID){
-        $query = "SELECT FirstName FROM membership.memberinfo WHERE MID = $MID;";
+        $query = "SELECT FirstName, LastName FROM membership.memberinfo WHERE MID = $MID;";
         return parent::RunQuery($query);
     }
 
