@@ -701,7 +701,8 @@ class CouponGenerationController extends Controller
                         $creditable = $creditable == "YES" ? 1 : 0;
                         $amount = number_format(str_replace(",", "", $amount), 2, ".", "");
                         $stat = $this->stringStatus($status, 1);
-
+                        $count = (int)number_format(str_replace(",", "", $count), 2, ".", "");
+                        
                         $result = $couponbatchModel->insertCoupons($count, $amount, $distribtag, $creditable, $promoname, $user, $stat, $validfrom, $validto);
                         //check result
                         switch ($result['TransCode'])
@@ -713,7 +714,7 @@ class CouponGenerationController extends Controller
                             case 1: //display success message
                                 $response = array('ErrorCode' => 0,
                                                   'Message' => $result['TransMsg'],
-                                                  'Count' => number_format($count),
+                                                  'Count' => $count, 
                                                   'Amount' => number_format($amount, 2, ".", ","),
                                                   'PromoName' => $promoname,
                                                   'DistributionType' => $this->getDistributionTag($distribtag),
@@ -804,15 +805,16 @@ class CouponGenerationController extends Controller
                 }
 
                 $response = array('ErrorCode' => 0,
-                                  'Message' => $result['TransMsg'],
+                                  'Message' => $result['TransMsg'], 
+                                  'CouponBatchID' => $batchdtls['CouponBatchID'], 
                                   'Count' => number_format($batchdtls['CouponCount']),
                                   'Amount' => number_format($batchdtls['Amount'], 2, ".", ","),
                                   'PromoName' => $batchdtls['PromoName'],
                                   'DistributionType' => $this->getDistributionTag($batchdtls['DistributionTagID']),
                                   'Creditable' => $coupondtls['IsCreditable'] == 1 ? "YES" : "NO",
                                   'Status' => $this->stringStatus($batchdtls['Status']),
-                                  'ValidFrom' => date("M d, Y h:i A", strtotime($coupondtls['ValidFromDate'])),
-                                  'ValidTo' => date("M d, Y h:i A", strtotime($coupondtls['ValidToDate'])));
+                                  'ValidFromDate' => date("M d, Y h:i A", strtotime($coupondtls['ValidFromDate'])),
+                                  'ValidToDate' => date("M d, Y h:i A", strtotime($coupondtls['ValidToDate'])));
                 break;
             case 2: //display retry message if there's a generated coupon duplicates another
                 $response = array('ErrorCode' => 2,
@@ -821,7 +823,9 @@ class CouponGenerationController extends Controller
                                   'RemainingCount' => $result['RemainingCoupon'],
                                   'Amount' => $result['Amount'],
                                   'Creditable' => $result['IsCreditable'],
-                                  'Status' => $result['Status']);
+                                  'Status' => $result['Status'], 
+                                  'ValidFromDate' => $validfrom,
+                                  'ValidToDate' => $validto);
         }
         echo json_encode($response);
     }

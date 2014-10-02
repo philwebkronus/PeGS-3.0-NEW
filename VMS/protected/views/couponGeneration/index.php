@@ -335,6 +335,7 @@ $this->pageTitle = Yii::app()->name." - Coupon Generation Tool";
     function generateCoupons(count, amount, promoname, distribtype, creditable, status, validfrom, validto, confirmed) {
         $("#tblmessage").html("");
 
+        $(".modal_load").show();
         $.ajax({
             url : "generateCoupons",
             type : "post",
@@ -455,9 +456,9 @@ $this->pageTitle = Yii::app()->name." - Coupon Generation Tool";
                                var batchID = data.CouponBatchID;
                                var creditable = data.Creditable;
                                var status = data.Status;
-                               var validfrom = data.ValidFrom;
-                               var validto = data.ValidTo;
-
+                               var validfrom = data.ValidFromDate;
+                               var validto = data.ValidToDate;
+                               
                                regenerate(remainingcount, amount, batchID, creditable, status, validfrom, validto);
 
                                $(this).dialog("close");
@@ -475,11 +476,13 @@ $this->pageTitle = Yii::app()->name." - Coupon Generation Tool";
                     }
                     $("#alert-box").dialog("open");
                 }
-
+                $(".modal_load").hide();
             }
          });
     }
     function regenerate(remainingcount, amount, batchID, creditable, status, validfrom, validto) {
+         $(".modal_load").show();
+         
          $.ajax({
             url : 'regenerateCoupons',
             type : 'post',
@@ -538,7 +541,7 @@ $this->pageTitle = Yii::app()->name." - Coupon Generation Tool";
                                                     "<b>Distribution Type: </b>" +
                                                 "</td>" +
                                                 "<td>" +
-                                                    data.DistributionTagID +
+                                                    data.DistributionType +
                                                 "</td>" +
                                             "</tr><tr>" +
                                                 "<td class='edit-lbl'>" +
@@ -584,8 +587,8 @@ $this->pageTitle = Yii::app()->name." - Coupon Generation Tool";
                             var batchID = data.CouponBatchID;
                             var creditable = data.Creditable;
                             var status = data.Status;
-                            var validfrom = data.ValidFrom;
-                            var validto = data.ValidTo;
+                            var validfrom = data.ValidFromDate;
+                            var validto = data.ValidToDate;
 
                             regenerate(remainingcount, amount, batchID, creditable, status, validfrom, validto);
 
@@ -607,6 +610,7 @@ $this->pageTitle = Yii::app()->name." - Coupon Generation Tool";
                      $("#dlgmessage").html(data.Message);
                  }
                  $("#alert-box").dialog("open");
+                 $(".modal_load").hide();
             }
         });
      }
@@ -724,6 +728,44 @@ $this->pageTitle = Yii::app()->name." - Coupon Generation Tool";
 
            }
         });
+     }
+     function searchCouponBatch() {
+        var batchID = $("#s_batchid").val();
+        var amount = $("#s_amount").val();
+        var distributiontag = $("#s_distributiontag").val();
+        var creditable = $("#s_creditable").val();
+        var generatedfrom = $("#s_generatedfrom").val();
+        var generatedto = $("#s_generatedto").val();
+        var generatedby = $("#s_generatedby").val();
+        var validfrom = $("#s_validfrom").val();
+        var validto = $("#s_validto").val();
+        var status = $("#s_status").val();
+        var promoname = $("#s_promoname").val();
+
+        var result1 = checkDateRange(generatedfrom, generatedto);
+        var result2 = checkDateRange(validfrom, validto);
+        if (result1 == false) {
+            generatedfrom = "";
+            generatedto = "";
+        }
+        if (result2 == false) {
+            validfrom = "";
+            validto = "";
+        }
+        if (result1 && result2) {
+            $.ajax({
+                url : "getCouponBatches",
+                type : "post",
+                data : {stop : stop},
+            });
+            $("#dialog-search").dialog("close");
+        }
+        loadGrid(batchID, amount, distributiontag, creditable, generatedfrom, generatedto, generatedby, validfrom, validto, status, promoname);
+     }
+     function quickSearch(event) {
+         if (event.keyCode == 13) {
+             searchCouponBatch();
+         }
      }
 </script>
 <style>
@@ -847,4 +889,5 @@ echo CHtml::form('download', 'post', array('id' => 'dl-form'));
 echo CHtml::hiddenField('batchID', '', array('id' => 'hdnbatchID'));
 echo CHtml::endForm();
 ?>
+<div class="modal_load"></div>
 

@@ -289,3 +289,18 @@ div#gentool{
 table#gentooltbl tr td#label{
     width: 120px;
 }
+
+.modal_load {
+    display: none;
+    width: 100%;
+    height: 100%;
+    background: #000; 
+    position:   fixed;
+    z-index:    1000000;
+    top:        0;
+    left:       0;
+    background: rgba( 245, 245, 245, .4 ) 
+                url('../images/FhHRx.gif') 
+                50% 50% 
+                no-repeat;
+}
