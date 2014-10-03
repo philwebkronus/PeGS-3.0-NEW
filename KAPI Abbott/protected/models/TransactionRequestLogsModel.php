@@ -23,13 +23,13 @@ class TransactionRequestLogsModel{
         return self::$_instance;
     }
     
-    public function updateTransReqLogDueZeroBal($terminal_id,$site_id,$trans_type) {
+    public function updateTransReqLogDueZeroBal($terminal_id,$site_id,$trans_type, $trans_req_log_last_id) {
         $sql = "UPDATE transactionrequestlogs SET Status = '1', " . 
                 "EndDate = NOW(6) WHERE " . 
                 "Amount = '0' AND TerminalID = :terminal_id AND " . 
-                "SiteID = :site_id AND TransactionType = :transaction_type";
+                "SiteID = :site_id AND TransactionType = :transaction_type AND TransactionRequestLogID = :trlID";
         $param = array(':terminal_id'=>$terminal_id,':site_id'=>$site_id,
-            ':transaction_type'=>$trans_type);
+            ':transaction_type'=>$trans_type, ':trlID' => $trans_req_log_last_id);
         $command = $this->_connection->createCommand($sql);
         return $command->execute($param);
     }
