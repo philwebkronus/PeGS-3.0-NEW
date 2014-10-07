@@ -6,12 +6,10 @@
  */
 
 class MembershipTempModel {
-
     public static $_instance = null;
     public $_connection;
 
-
-    public function __construct() {
+    public function __construct() { 
         $this->_connection = Yii::app()->db3;
     }
     
@@ -24,7 +22,6 @@ class MembershipTempModel {
    
     //@purpose get MID using email
     public function getMID($email) {
-
         $sql = "SELECT MID
                 FROM members
                 WHERE UserName = :Email";
@@ -173,22 +170,33 @@ class MembershipTempModel {
         $command = $this->_connection->createCommand($sql);
         $result = $command->queryRow(true, $param);
 
-        return $result;
-        
+        return $result;        
     }
     
     //@date 07-24-2014
     //@purpose member registration in temp db
     public function register($email, $firstname, $middlename, $lastname, $nickname, $password, $permanentAddress, $mobileNumber, $alternateMobileNumber, $alternateEmail, $idNumber, $idPresented, $gender, $referrerCode, $birthdate, $occupation, $nationality, $isSmoker, $referrerID, $emailSubscription, $smsSubscription) {
-    //public function register($membersArray, $memberInfoArray) {
         $MID = '';
+        if($gender == '')
+            $gender = 1;
+        if($nationality == '')
+            $nationality = 1;
+        if($occupation == '')
+            $occupation = 1;
+        if($referrerID == '')
+            $referrerID = 1;
+        if($emailSubscription == '')
+            $emailSubscription = 0;
+        if($smsSubscription == '')
+            $smsSubscription = 0;
+        if($isSmoker == '')
+            $isSmoker = 2;
         
         $startTrans = $this->_connection->beginTransaction();
         
         try {
             $tempCode = 'eGames' . strtoupper(Utilities::generateAlphaNumeric(5));
             
-            //$membersArray['TemporaryAccountCode'] = $tempCode;
             $sql = 'INSERT INTO membership_temp.members(UserName, Password, ForChangePassword, TemporaryAccountCode, DateCreated, Status)
                     VALUES(:Email, :Password, 1, :TempCode, NOW(6), 1)';
             $param = array(':Email' => $email, ':Password' => $password, ':TempCode' => $tempCode);
@@ -197,23 +205,19 @@ class MembershipTempModel {
             $command->bindValues($param);
             
             $command->execute();
-           
+            
             $mid = Yii::app()->db3->getLastInsertID();
             
-            
-            
             try {
-                
-               
-                $sql2 = 'INSERT INTO memberinfo(MID, FirstName, MiddleName, LastName, NickName, Birthdate, Gender, Email, AlternateEmail, MobileNumber, AlternateMobileNumber, NationalityID, OccupationID, Address1, IdentificationID, IdentificationNumber, IsSmoker, DateCreated, ReferrerCode, EmailSubscription, SMSSubscription, ReferrerID)
+                $sql = 'INSERT INTO memberinfo(MID, FirstName, MiddleName, LastName, NickName, Birthdate, Gender, Email, AlternateEmail, MobileNumber, AlternateMobileNumber, NationalityID, OccupationID, Address1, IdentificationID, IdentificationNumber, IsSmoker, DateCreated, ReferrerCode, EmailSubscription, SMSSubscription, ReferrerID)
                         VALUES(:MID, :FirstName, :MiddleName, :LastName, :NickName, :Birthdate, :Gender, :Email, :AlternateEmail, :MobileNumber, :AlternateMobileNumber, :Nationality, :Occupation, :PermanentAddress, :IDPresented, :IDNumber, :IsSmoker, NOW(6), :ReferrerCode, :emailSubscription, :smsSubscription, :referrerID)';
-                $param2 = array(':MID' => $mid, ':FirstName' => $firstname, ':MiddleName' => $middlename, ':LastName' => $lastname, ':PermanentAddress' => $permanentAddress,
+                $param = array(':MID' => $mid, ':FirstName' => $firstname, ':MiddleName' => $middlename, ':LastName' => $lastname, ':PermanentAddress' => $permanentAddress,
                                ':IDPresented' => $idPresented, ':IDNumber' => $idNumber, ':NickName' => $nickname, ':MobileNumber' => $mobileNumber, ':AlternateMobileNumber' => $alternateMobileNumber,
                                ':Email' => $email, ':AlternateEmail' => $alternateEmail, ':Birthdate' => $birthdate, ':Nationality' => $nationality, ':Occupation' => $occupation, 
                                'ReferrerCode' => $referrerCode, ':Gender' => $gender, ':IsSmoker' => $isSmoker, ':emailSubscription' => $emailSubscription, ':smsSubscription' => $smsSubscription, ':referrerID' => $referrerID );
-                $command2 = $this->_connection->createCommand($sql2);
-                $command2->bindValues($param2);
-                $command2->execute();
+                $command = $this->_connection->createCommand($sql);
+                $command->bindValues($param);
+                $result = $command->execute();
                 
                 try {
                     $startTrans->commit();
@@ -301,7 +305,6 @@ class MembershipTempModel {
         try {
             $tempCode = 'eGames' . strtoupper(Utilities::generateAlphaNumeric(5));
             
-            //$membersArray['TemporaryAccountCode'] = $tempCode;
             $sql = 'INSERT INTO membership_temp.members(UserName, Password, ForChangePassword, TemporaryAccountCode, DateCreated, Status)
                     VALUES(:Email, :Password, 1, :TempCode, NOW(6), 1)';
             $param = array(':Email' => $email, ':Password' => $password, ':TempCode' => $tempCode);
@@ -312,10 +315,8 @@ class MembershipTempModel {
             $command->execute();
            
             $mid = Yii::app()->db3->getLastInsertID();
-            
-                  
-            try {
-                            
+                             
+            try {                           
                 $sql2 = 'INSERT INTO memberinfo(MID, FirstName, MiddleName, LastName, NickName, Birthdate, Gender, Email, AlternateEmail, MobileNumber, AlternateMobileNumber, NationalityID, OccupationID, Address1, IdentificationID, IdentificationNumber, IsSmoker, DateCreated, ReferrerCode, EmailSubscription, SMSSubscription, ReferrerID)
                         VALUES(:MID, :FirstName, :MiddleName, :LastName, :NickName, :Birthdate, :Gender, :Email, :AlternateEmail, :MobileNumber, :AlternateMobileNumber, :Nationality, :Occupation, :PermanentAddress, :IDPresented, :IDNumber, :IsSmoker, NOW(6), :ReferrerCode, :emailSubscription, :smsSubscription, :referrerID)';
                 $param2 = array(':MID' => $mid, ':FirstName' => $firstname, ':MiddleName' => $middlename, ':LastName' => $lastname, ':PermanentAddress' => $permanentAddress,
