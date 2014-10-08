@@ -682,81 +682,94 @@ class CouponGenerationController extends Controller
         if ($count != "" && $amount != "" && $promoname != ""
             && $distribtag != "" && $creditable != ""
             && $status != "" && $validfrom != ""
-            && $validto != "" && $count > 0 && $amount > 0)
+            && $validto != "")
         {
             //check if validity date range
             $isvalid = $this->checkDateRange($validfrom, $validto);
             $r = (array)json_decode($isvalid);
             if ($r['ErrorCode'] == 0)
             {
+                $amount = number_format(str_replace(",", "", $amount), 2, ".", "");
+                $count  = number_format(str_replace(",", "", $count), 2, ".", "");
+                
+                $maxCouponCount     = (int)Yii::app()->params['maxCouponCount'];
+                $maxCouponAmount    = (int)Yii::app()->params['maxCouponAmount'];
+                $minCouponAmount    = (int)Yii::app()->params['minCouponAmount'];
                 //check if count is less than or equal to 5000
-                if ($count <= 5000)
+                if ($count <= $maxCouponCount && $count >= 1)
                 {
-                    //check if already confirmed, if not prompt a confirmation message
-                    if ($confirmed == 1)
+                    if ($amount <= $maxCouponAmount && $amount >= $minCouponAmount)
                     {
-                        //start generation
-                        $user = Yii::app()->session['AID'];
-                        $distribtag = $this->getDistributionTag($distribtag, 1);
-                        $creditable = $creditable == "YES" ? 1 : 0;
-                        $amount = number_format(str_replace(",", "", $amount), 2, ".", "");
-                        $stat = $this->stringStatus($status, 1);
-                        $count = (int)number_format(str_replace(",", "", $count), 2, ".", "");
-                        
-                        $result = $couponbatchModel->insertCoupons($count, $amount, $distribtag, $creditable, $promoname, $user, $stat, $validfrom, $validto);
-                        //check result
-                        switch ($result['TransCode'])
+                        //check if already confirmed, if not prompt a confirmation message
+                        if ($confirmed == 1)
                         {
-                            case 0: //display error message
-                                $response = array('ErrorCode' => 1,
-                                                  'Message' => $result['TransMsg']);
-                                break;
-                            case 1: //display success message
-                                $response = array('ErrorCode' => 0,
-                                                  'Message' => $result['TransMsg'],
-                                                  'Count' => $count, 
-                                                  'Amount' => number_format($amount, 2, ".", ","),
-                                                  'PromoName' => $promoname,
-                                                  'DistributionType' => $this->getDistributionTag($distribtag),
-                                                  'Creditable' => $creditable == 1 ? "YES" : "NO",
-                                                  'Status' => $this->stringStatus($stat),
-                                                  'ValidFrom' => date("M d, Y h:i A", strtotime($validfrom)),
-                                                  'ValidTo' => date("M d, Y h:i A", strtotime($validto)),
-                                                  'ValidFromDate' => $validfrom, //original format
-                                                  'ValidToDate' => $validto); //original format
-                                break;
-                            case 2: //display retry message if there's a generated coupon duplicates another
-                                $response = array('ErrorCode' => 2,
-                                                  'Message' => $result['TransMsg'],
-                                                  'CouponBatchID' => $result['CouponBatchID'],
-                                                  'RemainingCount' => $result['RemainingCoupon'],
-                                                  'Amount' => $result['Amount'],
-                                                  'Creditable' => $result['IsCreditable'],
-                                                  'Status' => $this->stringStatus($result['Status']),
-                                                  'ValidFromDate' => $result['ValidFrom'],
-                                                  'ValidToDate' => $result['ValidTo']);
+                            //start generation
+                            $user = Yii::app()->session['AID'];
+                            $distribtag = $this->getDistributionTag($distribtag, 1);
+                            $creditable = $creditable == "YES" ? 1 : 0;
+                            $stat = $this->stringStatus($status, 1);
+
+                            $result = $couponbatchModel->insertCoupons($count, $amount, $distribtag, $creditable, $promoname, $user, $stat, $validfrom, $validto);
+                            //check result
+                            switch ($result['TransCode'])
+                            {
+                                case 0: //display error message
+                                    $response = array('ErrorCode' => 1,
+                                                      'Message' => $result['TransMsg']);
+                                    break;
+                                case 1: //display success message
+                                    $response = array('ErrorCode' => 0,
+                                                      'Message' => $result['TransMsg'],
+                                                      'Count' => $count, 
+                                                      'Amount' => number_format($amount, 2, ".", ","),
+                                                      'PromoName' => $promoname,
+                                                      'DistributionType' => $this->getDistributionTag($distribtag),
+                                                      'Creditable' => $creditable == 1 ? "YES" : "NO",
+                                                      'Status' => $this->stringStatus($stat),
+                                                      'ValidFrom' => date("M d, Y h:i A", strtotime($validfrom)),
+                                                      'ValidTo' => date("M d, Y h:i A", strtotime($validto)),
+                                                      'ValidFromDate' => $validfrom, //original format
+                                                      'ValidToDate' => $validto); //original format
+                                    break;
+                                case 2: //display retry message if there's a generated coupon duplicates another
+                                    $response = array('ErrorCode' => 2,
+                                                      'Message' => $result['TransMsg'],
+                                                      'CouponBatchID' => $result['CouponBatchID'],
+                                                      'RemainingCount' => $result['RemainingCoupon'],
+                                                      'Amount' => $result['Amount'],
+                                                      'Creditable' => $result['IsCreditable'],
+                                                      'Status' => $this->stringStatus($result['Status']),
+                                                      'ValidFromDate' => $result['ValidFrom'],
+                                                      'ValidToDate' => $result['ValidTo']);
+                            }
+                        }
+                        else
+                        {
+                           $response = array('ErrorCode' => 0,
+                                            'Confirmed' => 0,
+                                            'Count' => number_format($count),
+                                            'Amount' => number_format($amount, 2, ".", ","),
+                                            'PromoName' => $promoname,
+                                            'DistributionType' => $this->getDistributionTag($distribtag),
+                                            'Creditable' => $creditable == 1 ? "YES" : "NO",
+                                            'Status' => $this->stringStatus($status),
+                                            'ValidFrom' => date("M d, Y h:i A", strtotime($validfrom)),
+                                            'ValidTo' => date("M d, Y h:i A", strtotime($validto)),
+                                            'ValidFromDate' => $validfrom, //original format
+                                            'ValidToDate' => $validto); //original format);
                         }
                     }
                     else
                     {
-                       $response = array('ErrorCode' => 0,
-                                        'Confirmed' => 0,
-                                        'Count' => number_format($count),
-                                        'Amount' => number_format($amount, 2, ".", ","),
-                                        'PromoName' => $promoname,
-                                        'DistributionType' => $this->getDistributionTag($distribtag),
-                                        'Creditable' => $creditable == 1 ? "YES" : "NO",
-                                        'Status' => $this->stringStatus($status),
-                                        'ValidFrom' => date("M d, Y h:i A", strtotime($validfrom)),
-                                        'ValidTo' => date("M d, Y h:i A", strtotime($validto)),
-                                        'ValidFromDate' => $validfrom, //original format
-                                        'ValidToDate' => $validto); //original format);
+                        $response = array('ErrorCode' => 1,
+                                  'Message' => 'Invalid coupon amount. Amount should be between 500 and 50,000 only.');
                     }
+                        
                 }
                 else
                 {
                     $response = array('ErrorCode' => 1,
-                                      'Message' => 'Coupon count exceeds limit. Maximum coupon count is 5000.');
+                                  'Message' => ' Invalid coupon count. Count should be between 1 and 5,000 only.');
                 }
 
             }

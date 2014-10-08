@@ -68,7 +68,7 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog',array(
             <b>Distribution Type: </b>
         </td>
         <td>
-            <?php echo CHtml::dropDownList('distributiontag', '', array(1 => "PRINT", 2 => "SMS", 3 => "EMAIL"), 
+            <?php echo CHtml::dropDownList('distributiontag', '', array(1 => "Print", 3 => "Email", 2 => "SMS"), 
                                                                array('prompt' => '-Please Select-', 
                                                                      'id' => 'g_distributiontag'))?>
         </td>
@@ -78,7 +78,7 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog',array(
             <b>Creditable? </b>
         </td>
         <td>
-            <?php echo CHtml::dropDownList('creditable', '', array(1 => "YES", 2 => "NO"), 
+            <?php echo CHtml::dropDownList('creditable', '', array(1 => "Yes", 2 => "No"), 
                                                                array('prompt' => '-Please Select-',
                                                                      'id' => 'g_creditable'))?>
         </td>
@@ -88,8 +88,7 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog',array(
             <b>Status: </b>
         </td>
         <td>
-            <?php echo CHtml::dropDownList('status', '', array(1 => 'Actived', 
-                                                               0 => 'Inactive', 
+            <?php echo CHtml::dropDownList('status', '', array(1 => 'Activated', 
                                                                2 => 'Deactivated'), array('prompt' => '-Please Select-', 
                                                                                           'id' => 'g_status')); ?>
         </td>
