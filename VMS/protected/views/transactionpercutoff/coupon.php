@@ -79,8 +79,16 @@ else
 </div>
 <div>
     <?php
+            
             $this->actionTransactionPerCutOffDataTable(Yii::app()->session['rawData']);       
     ?>
 </div>
-<?php $this->endWidget(); ?>
+<?php  
+    $this->endWidget(); 
+    if (!empty(Yii::app()->session['rawData']))
+    {
+        echo CHtml::button('Export to Excel', array('style' => 'float:right;', 'submit' => array('transactionpercutoff/exporttoexcelcoupon')));
+    }
+?>
+<div class="clear"></div>
 <?php //$this->renderPartial('siteconversion', array('arrayDataProvider'=>$arrayDataProvider)) ?>

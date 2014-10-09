@@ -18,37 +18,7 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog',array(
         'buttons' => array
         (
             'Search'=>'js:function(){
-                var batchID = $("#s_batchid").val();
-                var amount = $("#s_amount").val();
-                var distributiontag = $("#s_distributiontag").val();
-                var creditable = $("#s_creditable").val();
-                var generatedfrom = $("#s_generatedfrom").val();
-                var generatedto = $("#s_generatedto").val();
-                var generatedby = $("#s_generatedby").val();
-                var validfrom = $("#s_validfrom").val();
-                var validto = $("#s_validto").val();
-                var status = $("#s_status").val();
-                var promoname = $("#s_promoname").val();
-
-                var result1 = checkDateRange(generatedfrom, generatedto);
-                var result2 = checkDateRange(validfrom, validto);
-                if (result1 == false) {
-                    generatedfrom = "";
-                    generatedto = "";
-                }
-                if (result2 == false) {
-                    validfrom = "";
-                    validto = "";
-                }
-                if (result1 && result2) {
-                    $.ajax({
-                        url : "getCouponBatches",
-                        type : "post",
-                        data : {stop : stop},
-                    });
-                    $(this).dialog("close");
-                }
-                loadGrid(batchID, amount, distributiontag, creditable, generatedfrom, generatedto, generatedby, validfrom, validto, status, promoname);
+                searchCouponBatch();
             }',
             'Cancel' => 'js:function(){
                 $(this).dialog("close");
@@ -64,8 +34,8 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog',array(
             <b>Batch ID: </b>
         </td>
         <td>
-            <?php echo CHtml::textField('batchid', '', array('id' => 's_batchid', 'onkeypress' => 'return numberonly(event);',
-                                                             'maxlength' => 6)); ?>
+            <?php echo CHtml::textField('batchid', '', array('id' => 's_batchid', 'onkeypress' => 'return numberonly(event); ',
+                                                             'maxlength' => 6, 'onkeyup' => 'return quickSearch(event);')); ?>
         </td>
     </tr>
     <tr>
@@ -73,7 +43,8 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog',array(
             <b>Amount: </b>
         </td>
         <td>
-            <?php echo CHtml::textField('amount', '', array('id' => 's_amount', 'onkeypress' => 'return numberonly(event);', 'maxlength' => 8)); ?>
+            <?php echo CHtml::textField('amount', '', array('id' => 's_amount', 'onkeypress' => 'return numberonly(event);', 'maxlength' => 8,
+                                        'onkeyup' => 'return quickSearch(event); ')); ?>
         </td>
     </tr>
     <tr>
@@ -81,9 +52,9 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog',array(
             <b>Distribution Type: </b>
         </td>
         <td>
-            <?php echo CHtml::dropDownList('distributiontag', '', array(1 => "PRINT", 2 => "SMS", 3 => "EMAIL"),
+            <?php echo CHtml::dropDownList('distributiontag', '', array(1 => "Print", 3 => "Email", 2 => "SMS"),
                                                                array('prompt' => '-Please Select-',
-                                                                     'id' => 's_distributiontag'))?>
+                                                                     'id' => 's_distributiontag', ))?>
         </td>
     </tr>
     <tr>
@@ -91,9 +62,9 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog',array(
             <b>Creditable? </b>
         </td>
         <td>
-            <?php echo CHtml::dropDownList('creditable', '', array(1 => "YES", 2 => "NO"),
+            <?php echo CHtml::dropDownList('creditable', '', array(1 => "Yes", 2 => "No"),
                                                                array('prompt' => '-Please Select-',
-                                                                     'id' => 's_creditable'))?>
+                                                                     'id' => 's_creditable', ))?>
         </td>
     </tr>
     <tr>
@@ -170,7 +141,8 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog',array(
         </td>
         <td>
             <?php echo CHtml::textField('generatedby', '', array('id' => 's_generatedby',
-                                                                 'onkeypress' => 'return alphanumeric4(event);', 'maxlength' => 50)); ?>
+                                                                 'onkeypress' => 'return alphanumeric4(event);', 'maxlength' => 50,
+                                        'onkeyup' => 'return quickSearch(event); ')); ?>
         </td>
     </tr>
     <tr>
@@ -247,9 +219,8 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog',array(
         </td>
         <td>
             <?php echo CHtml::dropDownList('status', '', array(1 => 'Activated',
-                                                               0 => 'Inactive',
                                                                2 => 'Deactivated'), array('prompt' => '-Please Select-',
-                                                                                          'id' => 's_status')); ?>
+                                                                                          'id' => 's_status', )); ?>
         </td>
     </tr>
     <tr>
@@ -257,7 +228,8 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog',array(
             <b>Promo Name: </b>
         </td>
         <td>
-            <?php echo CHtml::textField('amount', '', array('id' => 's_promoname')); ?>
+            <?php echo CHtml::textField('amount', '', array('id' => 's_promoname',
+                                        'onkeyup' => 'return quickSearch(event);')); ?>
         </td>
     </tr>
 </table>

@@ -5,7 +5,7 @@ ini_set('max_execution_time', 100);
  * @author Mark Kenneth Esguerra
  * @date July 14, 2014
  */
-class CouponGenerationController extends Controller
+class CouponGenerationController extends VMSBaseIdentity
 {
     public $exportTrue;
     public $filename;
@@ -70,14 +70,14 @@ class CouponGenerationController extends Controller
         $postvars['validto']            = $this->sanitize($_POST['validto']);
         $postvars['status']             = $this->sanitize($_POST['status']);
         $postvars['promoname']          = $this->sanitize($_POST['promoname']);
-        
+
         //if batch ID is set
         if ($postvars['batchID'] != "")
         {
             $allcouponbatch = $couponBatchModel->getCouponBatch($postvars['batchID']);
             $withcoupons = false;
             $query = 1;
-            
+
         }
         //if search using other fields
         else if ($postvars['amount'] != "" || $postvars['distributiontag'] != ""
@@ -137,22 +137,22 @@ class CouponGenerationController extends Controller
                 //execute the used query for getting coupon batch to apply pagination
                 switch ($query)
                 {
-                    case 1: 
+                    case 1:
                         $allcouponbatch = $couponBatchModel->getCouponBatch($postvars['batchID'], $start, $limit);
                         break;
-                    case 2: 
+                    case 2:
                         $allcouponbatch = $couponModel->searchCouponBatch($wherefx, $search, $start, $limit);
                         break;
                     case 3:
-                        
-                        $allcouponbatch = $couponBatchModel->getCouponBatch(null, null, null, null, null, null, null, null, 
+
+                        $allcouponbatch = $couponBatchModel->getCouponBatch(null, null, null, null, null, null, null, null,
                                                                             null, null, null, $start, $limit);
                         break;
-                    default: 
-                        $allcouponbatch = $couponBatchModel->getCouponBatch(null, null, null, null, null, null, null, null, 
+                    default:
+                        $allcouponbatch = $couponBatchModel->getCouponBatch(null, null, null, null, null, null, null, null,
                                                                             null, null, null, $start, $limit);
                         break;
-                        
+
                 }
                 $i = 0;
                 foreach ($allcouponbatch as $couponbatch)
@@ -162,13 +162,13 @@ class CouponGenerationController extends Controller
                         //get other details under coupons table
                         $details = $couponModel->getVoucherInfo($couponbatch['CouponBatchID']);
 
-                        $iscredibtale = $details['IsCreditable'] == 1 ? "YES" : "NO";
+                        $iscredibtale = $details['IsCreditable'] == 1 ? "Yes" : "No";
                         $validfromdate = $details['ValidFromDate'] == "" ? "" : date("M d, Y h:i A", strtotime($details['ValidFromDate']));
                         $validto = $details['ValidToDate'] == "" ? "" : date("M d, Y h:i A", strtotime($details['ValidToDate']));
                     }
                     else
                     {
-                        $iscredibtale = $couponbatch['IsCreditable'] == 1 ? "YES" : "NO";
+                        $iscredibtale = $couponbatch['IsCreditable'] == 1 ? "Yes" : "No";
                         $validfromdate = $couponbatch['ValidFromDate'] == "" ? "" : date("M d, Y h:i A", strtotime($couponbatch['ValidFromDate']));
                         $validto = $couponbatch['ValidToDate'] == "" ? "" : date("M d, Y h:i A", strtotime($couponbatch['ValidToDate']));
                     }
@@ -238,7 +238,7 @@ class CouponGenerationController extends Controller
                                   'Status' => $batchdetails['Status'],
                                   'StringedStatus' => $this->stringStatus($batchdetails['Status']),
                                   'PromoName' => $batchdetails['PromoName'],
-                                  'Creditable' => $coupondetails['IsCreditable'] == 0 ? "NO" : "YES",
+                                  'Creditable' => $coupondetails['IsCreditable'] == 0 ? "No" : "Yes",
                                   'ValidFrom' => $coupondetails['ValidFromDate'],
                                   'ValidTo' => $coupondetails['ValidToDate'],
                                   'ValidFromFormatted' => $coupondetails['ValidFromDate'] == "" ? "" : date("M d, Y h:i A", strtotime($coupondetails['ValidFromDate'])),
@@ -330,16 +330,16 @@ class CouponGenerationController extends Controller
             switch ($distribtag)
             {
                 case 1:
-                    $tag = "PRINT";
+                    $tag = "Print";
                     break;
                 case 2:
                     $tag = "SMS";
                     break;
                 case 3:
-                    $tag = "EMAIL";
+                    $tag = "Email";
                     break;
                 default:
-                    $tag = "PRINT";
+                    $tag = "Print";
                     break;
             }
         }
@@ -347,13 +347,13 @@ class CouponGenerationController extends Controller
         {
             switch ($distribtag)
             {
-                case "PRINT":
+                case "Print":
                     $tag = 1;
                     break;
                 case "SMS":
                     $tag = 2;
                     break;
-                case "EMAIL":
+                case "Email":
                     $tag = 3;
                     break;
                 default:
@@ -576,7 +576,7 @@ class CouponGenerationController extends Controller
                         $coupon['CouponCode'],
                         number_format($coupon['Amount'], 2, ".", ","),
                         $this->getDistributionTag($coupon['DistributionTagID']),
-                        $coupon['IsCreditable'] == 1 ? "YES" : "NO",
+                        $coupon['IsCreditable'] == 1 ? "Yes" : "No",
                         $coupon['DateCreated'] == "" ? "" : date("M d, Y h:i A", strtotime($coupon['DateCreated'])),
                         $createdby,
                         $coupon['ValidFromDate'] == "" ? "" : date("M d, Y h:i A", strtotime($coupon['ValidFromDate'])),
@@ -691,7 +691,7 @@ class CouponGenerationController extends Controller
             {
                 $amount = number_format(str_replace(",", "", $amount), 2, ".", "");
                 $count  = number_format(str_replace(",", "", $count), 2, ".", "");
-                
+
                 $maxCouponCount     = (int)Yii::app()->params['maxCouponCount'];
                 $maxCouponAmount    = (int)Yii::app()->params['maxCouponAmount'];
                 $minCouponAmount    = (int)Yii::app()->params['minCouponAmount'];
@@ -706,7 +706,7 @@ class CouponGenerationController extends Controller
                             //start generation
                             $user = Yii::app()->session['AID'];
                             $distribtag = $this->getDistributionTag($distribtag, 1);
-                            $creditable = $creditable == "YES" ? 1 : 0;
+                            $creditable = $creditable == "Yes" ? 1 : 0;
                             $stat = $this->stringStatus($status, 1);
 
                             $result = $couponbatchModel->insertCoupons($count, $amount, $distribtag, $creditable, $promoname, $user, $stat, $validfrom, $validto);
@@ -720,11 +720,11 @@ class CouponGenerationController extends Controller
                                 case 1: //display success message
                                     $response = array('ErrorCode' => 0,
                                                       'Message' => $result['TransMsg'],
-                                                      'Count' => $count, 
+                                                      'Count' => $count,
                                                       'Amount' => number_format($amount, 2, ".", ","),
                                                       'PromoName' => $promoname,
                                                       'DistributionType' => $this->getDistributionTag($distribtag),
-                                                      'Creditable' => $creditable == 1 ? "YES" : "NO",
+                                                      'Creditable' => $creditable == 1 ? "Yes" : "No",
                                                       'Status' => $this->stringStatus($stat),
                                                       'ValidFrom' => date("M d, Y h:i A", strtotime($validfrom)),
                                                       'ValidTo' => date("M d, Y h:i A", strtotime($validto)),
@@ -751,7 +751,7 @@ class CouponGenerationController extends Controller
                                             'Amount' => number_format($amount, 2, ".", ","),
                                             'PromoName' => $promoname,
                                             'DistributionType' => $this->getDistributionTag($distribtag),
-                                            'Creditable' => $creditable == 1 ? "YES" : "NO",
+                                            'Creditable' => $creditable == 1 ? "Yes" : "No",
                                             'Status' => $this->stringStatus($status),
                                             'ValidFrom' => date("M d, Y h:i A", strtotime($validfrom)),
                                             'ValidTo' => date("M d, Y h:i A", strtotime($validto)),
@@ -764,7 +764,7 @@ class CouponGenerationController extends Controller
                         $response = array('ErrorCode' => 1,
                                   'Message' => 'Invalid coupon amount. Amount should be between 500 and 50,000 only.');
                     }
-                        
+
                 }
                 else
                 {
@@ -818,13 +818,13 @@ class CouponGenerationController extends Controller
                 }
 
                 $response = array('ErrorCode' => 0,
-                                  'Message' => $result['TransMsg'], 
-                                  'CouponBatchID' => $batchdtls['CouponBatchID'], 
+                                  'Message' => $result['TransMsg'],
+                                  'CouponBatchID' => $batchdtls['CouponBatchID'],
                                   'Count' => number_format($batchdtls['CouponCount']),
                                   'Amount' => number_format($batchdtls['Amount'], 2, ".", ","),
                                   'PromoName' => $batchdtls['PromoName'],
                                   'DistributionType' => $this->getDistributionTag($batchdtls['DistributionTagID']),
-                                  'Creditable' => $coupondtls['IsCreditable'] == 1 ? "YES" : "NO",
+                                  'Creditable' => $coupondtls['IsCreditable'] == 1 ? "Yes" : "No",
                                   'Status' => $this->stringStatus($batchdtls['Status']),
                                   'ValidFromDate' => date("M d, Y h:i A", strtotime($coupondtls['ValidFromDate'])),
                                   'ValidToDate' => date("M d, Y h:i A", strtotime($coupondtls['ValidToDate'])));
@@ -836,7 +836,7 @@ class CouponGenerationController extends Controller
                                   'RemainingCount' => $result['RemainingCoupon'],
                                   'Amount' => $result['Amount'],
                                   'Creditable' => $result['IsCreditable'],
-                                  'Status' => $result['Status'], 
+                                  'Status' => $result['Status'],
                                   'ValidFromDate' => $validfrom,
                                   'ValidToDate' => $validto);
         }
@@ -884,7 +884,7 @@ class CouponGenerationController extends Controller
                                               'Amount' => number_format($details['Amount'], 2, ".", ","),
                                               'PromoName' => $details['PromoName'] != null ? $details['PromoName'] : "",
                                               'DistributionTagID' => $this->getDistributionTag($details['DistributionTagID']),
-                                              'Creditable' => $otherdetails['IsCreditable'] == 1 ? "YES" : "NO",
+                                              'Creditable' => $otherdetails['IsCreditable'] == 1 ? "Yes" : "No",
                                               'Status' => $this->stringStatus($details['Status']),
                                               'ValidFromDate' => date("M d, Y h:i A", strtotime($otherdetails['ValidFromDate'])),
                                               'ValidToDate' => date("M d, Y h:i A", strtotime($otherdetails['ValidToDate'])));
@@ -936,7 +936,7 @@ class CouponGenerationController extends Controller
             $couponbatch = $couponBatchModel->getCouponBatch($batchID); //get batch details
             $arrcoupons = $couponsModel->getCouponsByBatchID($batchID); //get coupons
             $validity = $couponsModel->getValidityOfCoupon($batchID);
-            
+
             $fp = fopen($filename, 'w');
             $headers = array('Batch ID', 'Coupon ID', 'Coupon Code', 'Amount', 'Distribution Type', 'Creditable?', 'Date Generated',
                              'Generated By', 'Valid From Date', 'Valid To Date', 'Status', 'Site', 'Terminal',
@@ -948,7 +948,7 @@ class CouponGenerationController extends Controller
                 $reimbursedby = $accountsModel->getUsername($coupons['ReimbursedByAID']);
                 $site = $sitesModel->getSiteName($coupons['SiteID']);
                 $terminal = $terminalModel->getTerminalNamesUsingTerminalID($coupons['TerminalID']);
-                
+
                 $transdate = "";
                 if ($coupons['Status'] == 3)
                 {
@@ -959,7 +959,7 @@ class CouponGenerationController extends Controller
                               'CouponCode' => $coupons['CouponCode'],
                               'Amount' => number_format($coupons['Amount'], 2, ".", ","),
                               'DistributionTagID' => $this->getDistributionTag($coupons['DistributionTagID']),
-                              'IsCreditable' => $coupons['IsCreditable'] == 1 ? "YES" : "NO",
+                              'IsCreditable' => $coupons['IsCreditable'] == 1 ? "Yes" : "No",
                               'DateCreated' => $coupons['DateCreated'] == "" ? "" : date("M d, Y h:i A", strtotime($coupons['DateCreated'])),
                               'CreatedByAID' => $createdby,
                               'ValidFromDate' => $coupons['ValidFromDate'] == "" ? "" : date("M d, Y h:i A", strtotime($coupons['ValidFromDate'])),
@@ -974,7 +974,7 @@ class CouponGenerationController extends Controller
                               'ReimbursedByAID' => $reimbursedby
                 );
                 fputcsv($fp, $rows);
-                $iscreditable = $coupons['IsCreditable'] == 1 ? "YES" : "NO"; //get creditable
+                $iscreditable = $coupons['IsCreditable'] == 1 ? "Yes" : "No"; //get creditable
             }
             fclose($fp);
 
@@ -991,7 +991,7 @@ class CouponGenerationController extends Controller
             $this->validto = $validity['ValidToDate'] == "" ? "" : date("M d, Y h:i A", strtotime($validity['ValidToDate']));
         }
         $this->render('index', array('model' => $model, 'sitelist' => array()));
-        
+
     }
     /**
      * Get status and include checking of valid date range once validfrom

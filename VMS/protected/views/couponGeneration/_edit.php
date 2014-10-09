@@ -114,7 +114,6 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog',array(
         </td>
         <td>
             <?php echo CHtml::dropDownList('status', '', array(1 => 'Activated',
-                                                               0 => 'Inactive',
                                                                2 => 'Deactivated'), array('id' => 'e_status')); ?>
         </td>
     </tr>
