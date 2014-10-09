@@ -10,7 +10,6 @@ class MemberSessionsModel {
     public static $_instance = null;
     public $_connection;
 
-
     public function __construct() {
         $this->_connection = Yii::app()->db;
     }
@@ -226,5 +225,29 @@ class MemberSessionsModel {
             return 0;
         }
     }
+    
+    //@date 10-08-2014
+    //@purpose get active member session
+    public function getActiveSession($mpSessionID) {
+        //$sql = 'SELECT COUNT(accs.AID) as Count,accs.AID, accs.SessionID, a.Username, accs.DateCreated FROM accountsessions accs, accounts a WHERE a.AID = accs.AID AND accs.SessionID=:SessionID AND a.Username=:Username AND a.Status=:Status';
+        $sql = 'SELECT COUNT(ms.MemberSessionID) as Count, ms.MemberSessionID, ms.MID, ms.SessionID, ms.TransactionDate FROM membersessions ms, members m WHERE m.MID = ms.MID AND ms.SessionID = :mpSessionID AND m.Status = :status';
+        $param = array(':mpSessionID'=>$mpSessionID,':Status'=>'1');
+        
+        $command = $this->_connection->createCommand($sql);
+        $result = $command->queryRow(true, $param);
+        //print_r($result);
+        return $result;
+    }
+    
+    //@purpose validate MP session ID
+    public function validateMPSessionID($mpSessionID) {
+        //$sql = 'SELECT COUNT(acs.AID) as Count,a.UserName,acs.AID, acs.DateCreated FROM accounts a, accountsessions acs WHERE acs.SessionID=:TPSessionID AND acs.AID=a.AID LIMIT 1';
+        $sql = 'SELECT COUNT(ms.MID) as Count, ms.MemberSessionID, ms.MID, ms.SessionID, ms.TransactionDate FROM membersessions ms, members m WHERE ms.SessionID =:MPSessionID AND ms.MID = m.MID LIMIT 1';
+        $param = array(':MPSessionID'=>$mpSessionID);
+        
+        $command = $this->_connection->createCommand($sql);
+        $result = $command->queryRow(true, $param);
+        //print_r($result);
+        return $result;
+    }
 }
-

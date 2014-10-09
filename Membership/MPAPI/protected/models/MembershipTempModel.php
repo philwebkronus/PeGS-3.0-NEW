@@ -353,6 +353,16 @@ class MembershipTempModel {
             return 0;
         }
     }
+    
+    //@date 10-09-2014
+    public function checkIfUsernameExistsWithMID($MID, $email) {
+        $sql = 'SELECT COUNT(UserName) AS COUNT FROM members WHERE MID != :MID AND UserName = :Email'; //AND Status = 9';
+        $param = array(':MID' => $MID, ':Email' => $email);
+        $command = $this->_connection->createCommand($sql);
+        $result = $command->queryRow(true, $param);
+        
+        return $result;
+    }
      
 }
 

@@ -11,7 +11,6 @@ class MembersModel {
     public static $_instance = null;
     public $_connection;
 
-
     public function __construct() {
         $this->_connection = Yii::app()->db;
     }
@@ -31,7 +30,6 @@ class MembersModel {
                 INNER JOIN loyaltydb.membercards d ON b.MID = d.MID
                 INNER JOIN loyaltydb.cards c ON d.CardID = c.CardID
                 WHERE a.UserName = :UserName AND a.Password = :Password';
-        //$param = array(':Username' => $username);
         $command = $this->_connection->createCommand($sql);
         $command->bindValues(array(':UserName' => $username, ':Password' => $password));
         $result = $command->queryRow();
@@ -108,8 +106,7 @@ class MembersModel {
         $command = $this->_connection->createCommand($sql);
         $result = $command->queryRow(true, $param);
         
-        return $result; 
-        
+        return $result;        
     }
     
     //@date 07-04-2014
@@ -150,8 +147,7 @@ class MembersModel {
         $param = array(':cardNumber' => $cardNumber);
         $result = $command->queryRow(true, $param);
         
-        return $result;
-        
+        return $result;     
     }
     
     //@purpose update password using MID
@@ -180,5 +176,15 @@ class MembersModel {
             Utilities::log($e->getMessage());
             return 0;
         }
+    }
+    
+    //@date 10-09-2014
+    public function checkIfUsernameExistsWithMID($MID, $email) {
+        $sql = 'SELECT COUNT(UserName) AS COUNT FROM members WHERE MID != :MID AND UserName = :Email'; //AND Status = 9';
+        $param = array(':MID' => $MID, ':Email' => $email);
+        $command = $this->_connection->createCommand($sql);
+        $result = $command->queryRow(true, $param);
+        
+        return $result;
     }
 }

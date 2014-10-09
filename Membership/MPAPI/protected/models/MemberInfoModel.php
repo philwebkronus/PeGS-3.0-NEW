@@ -6,10 +6,8 @@
  */
 
 class MemberInfoModel {
-
     public static $_instance = null;
     public $_connection;
-
 
     public function __construct() {
         $this->_connection = Yii::app()->db;
@@ -26,7 +24,6 @@ class MemberInfoModel {
     //@date 6-13-2014
     //@purpose get details using email
     public function getDetailsUsingEmail($email) {
-
         $sql = "SELECT MID, FirstName, LastName, Status
                   FROM memberinfo 
                   WHERE Email = :email";
@@ -41,7 +38,6 @@ class MemberInfoModel {
     //@date 6-19-2014
     //@purpose get member info using MID
     public function getMemberInfoUsingMID($MID) {
-
         $sql = "SELECT MID, FirstName, MiddleName, LastName, NickName, Address1, MobileNumber,
                        AlternateMobileNumber, Email, AlternateEmail, Gender, IdentificationID,
                        IdentificationNumber, NationalityID, OccupationID, IsSmoker, Birthdate
@@ -57,7 +53,6 @@ class MemberInfoModel {
     //@date 6-24-2014
     //@purpose get Email, name and status using MID
     public function getEmailFNameUsingMID($MID) {
-
         $sql = "SELECT Email, FirstName, LastName, Status
                 FROM memberinfo
                 WHERE MID = :MID LIMIT 1";
@@ -70,7 +65,7 @@ class MemberInfoModel {
     
     //@date 6-25-2014
     public function checkIfEmailExistsWithMID($MID, $email) {
-        $sql = 'SELECT COUNT(Email) AS COUNT FROM memberinfo WHERE MID != :MID AND Email = :Email AND Status = 9';
+        $sql = 'SELECT COUNT(Email) AS COUNT FROM memberinfo WHERE MID != :MID AND Email = :Email'; //AND Status = 9';
         $param = array(':MID' => $MID, ':Email' => $email);
         $command = $this->_connection->createCommand($sql);
         $result = $command->queryRow(true, $param);
@@ -80,6 +75,16 @@ class MemberInfoModel {
     
     public function updateProfile($firstname, $middlename, $lastname, $nickname, $MID, $permanentAddress, $mobileNumber, $alternateMobileNumber, $emailAddress, $alternateEmail, $birthdate, $nationalityID, $occupationID, $idNumber, $idPresented, $gender, $isSmoker) {
         $startTrans = $this->_connection->beginTransaction();
+        
+        if($gender == '')
+            $gender = 1;
+        if($nationalityID == '')
+            $nationalityID = 1;
+        if($occupationID == '')
+            $occupationID = 1;
+        if($isSmoker == '')
+            $isSmoker = 2;
+        
         try {
             $sql = "UPDATE memberinfo
                     SET FirstName = :FirstName, MiddleName = :MiddleName, LastName = :LastName,
@@ -98,8 +103,7 @@ class MemberInfoModel {
             
             $command->bindValues($param);
             $command->execute();
-            
-            
+                      
             try {
                 $startTrans->commit();
                 return 1;
@@ -110,7 +114,6 @@ class MemberInfoModel {
             }
         
         } catch (Exception $e) {
-     
             $startTrans->rollback();
             Utilities::log($e->getMessage());
             return 0;
@@ -128,8 +131,7 @@ class MemberInfoModel {
             $command = $this->_connection->createCommand($sql);
             $command->bindValues($param);
             $command->execute();
-            
-            
+                       
             try {
                 $startTrans->commit();
                 return 1;
@@ -158,8 +160,7 @@ class MemberInfoModel {
         
         return $result; 
         
-    }
-    
+    }  
 }
 
 ?>
