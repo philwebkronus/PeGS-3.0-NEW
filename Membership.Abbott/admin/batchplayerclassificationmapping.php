@@ -378,7 +378,7 @@ if($formCsvUpload->IsPostBack) {
 
                                                                 $TerminalSessions=$ctrTerminalSessions[0]['ctrTerminalSessions']; 
                                                                 if($TerminalSessions==0){
-                                                                    $memberServicesArr = $memberServices->getCasinoAccounts($MID);
+                                                                    $memberServicesArr = $memberServices->getCasinoAccountsByMIDAndServiceID($MID, 19);
                                                                     $serviceUsername = $memberServicesArr[0]['ServiceUsername'];
                                                                     $serverID = $memberServicesArr[0]['ServiceID'];
                                                                     if($serviceUsername!=null || $serviceUsername!=''){

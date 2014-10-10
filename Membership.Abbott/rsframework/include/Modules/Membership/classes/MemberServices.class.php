@@ -66,6 +66,32 @@ class MemberServices extends BaseEntity
         return $result;
     }
     
+    /**
+     * 
+     * @param int $MID - Member ID
+     * @param int $ServiceID - Service ID
+     * @return string array of Casino services
+     * @created 10/10/2014
+     * 
+     */
+    public function getCasinoAccountsByMIDAndServiceID($MID, $ServiceID){
+        $query = "SELECT
+                    ServiceUsername,
+                    ServicePassword,
+                    HashedServicePassword,
+                    ServiceID,
+                    UserMode,
+                    isVIP,
+                    VIPLevel,
+                    Status
+                  FROM memberservices
+                  WHERE MID = '$MID' AND ServiceID='$ServiceID';";
+        
+        $result = parent::RunQuery($query);
+
+        return $result;
+    }
+    
     public function getUserBasedMemberServices( $MID )
     {
         // 0 - Terminal Based; 1 - User Based
