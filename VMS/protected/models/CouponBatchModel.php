@@ -145,7 +145,7 @@ class CouponBatchModel {
 
                             return array('TransCode' => 2, 
                                          'TransMsg' => 'Coupon already exist. There are '.$remainingcoupon.' remaining coupons 
-                                                to generate. Click Retry to continue',
+                                                to generate. Click Continue.',
                                          'CouponBatchID' => $couponbatch,
                                          'RemainingCoupon' => $remainingcoupon,
                                          'Amount' =>$amount,

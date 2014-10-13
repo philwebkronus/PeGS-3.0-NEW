@@ -378,10 +378,10 @@ class CouponGenerationController extends VMSBaseIdentity
         $where_statement = "WHERE";
         $fieldsearched = count($search); //number of fields used to search
 
-        for ($i = 0; $fieldsearched > $i; $i++)
+        //searching coupon batch
+        if (is_null($searchcoupon))
         {
-            //searching coupon batch
-            if (is_null($searchcoupon))
+            for ($i = 0; $fieldsearched > $i; $i++)
             {
                 //get condition
                 switch ($search[$i]['FieldID'])
@@ -405,10 +405,10 @@ class CouponGenerationController extends VMSBaseIdentity
                         $condition = " cb.CreatedByAID = :aid";
                         break;
                     case 7:
-                        $condition = " c.ValidFromDate >= :validfrom";
+                        $condition = " (c.ValidFromDate >= :validfrom AND c.ValidFromDate < :validto)";
                         break;
                     case 8:
-                        $condition = " c.ValidToDate < :validto";
+                        $condition = " (c.ValidToDate >= :validfrom AND c.ValidToDate < :validto)";
                         break;
                     case 9:
                         $condition = " cb.Status = :status";
@@ -420,9 +420,17 @@ class CouponGenerationController extends VMSBaseIdentity
                         $condition = "";
                         break;
                 }
+                $where_statement = $where_statement.$condition;
+                if (($fieldsearched - ($i + 1)) > 0)
+                {
+                    $where_statement = $where_statement." OR";
+                }
             }
-            //searching coupons
-            else if ($searchcoupon == 1)
+        }
+        //searching coupons
+        else if ($searchcoupon == 1)
+        {
+            for ($i = 0; $fieldsearched > $i; $i++)
             {
                 //get condition
                 switch ($search[$i]['FieldID'])
@@ -458,14 +466,14 @@ class CouponGenerationController extends VMSBaseIdentity
                         $condition = "";
                         break;
                 }
+                $where_statement = $where_statement.$condition;
+                if (($fieldsearched - ($i + 1)) > 0)
+                {
+                    $where_statement = $where_statement." OR";
+                }
             }
-
-            $where_statement = $where_statement.$condition;
-            if (($fieldsearched - ($i + 1)) > 0)
-            {
-                $where_statement = $where_statement." AND";
-            }
-        }
+        }   
+        
         return $where_statement;
     }
     /**
@@ -720,7 +728,7 @@ class CouponGenerationController extends VMSBaseIdentity
                                 case 1: //display success message
                                     $response = array('ErrorCode' => 0,
                                                       'Message' => $result['TransMsg'],
-                                                      'Count' => $count,
+                                                      'Count' => number_format($count), 
                                                       'Amount' => number_format($amount, 2, ".", ","),
                                                       'PromoName' => $promoname,
                                                       'DistributionType' => $this->getDistributionTag($distribtag),
