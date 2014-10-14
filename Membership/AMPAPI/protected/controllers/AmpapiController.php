@@ -13,30 +13,30 @@
  * @date 07/21/2014
  */
 class AmpapiController extends Controller {
-    
+
     //URL for AMPAPI, and MPAPI
     public $urlMPAPI;
     public $urlAMPAPI;
-    
+
     public function __construct() {
         $this->urlAMPAPI = Yii::app()->params['urlAMPAPI'];
         $this->urlMPAPI = Yii::app()->params['urlMPAPI'];
     }
-    
+
      /**
      * Set default action
-     * @var string 
+     * @var string
      */
     public $defaultAction = 'overview';
-    
+
     /**
      * Set default layout
-     * @var string 
+     * @var string
      */
     public $layout = 'main';
-    
+
     public $pageTitle;
-    
+
     /**
      * Set caching of connection
      * @var boolean
@@ -54,23 +54,23 @@ class AmpapiController extends Controller {
      * @var integer
      */
     private $_connectionTimeout = 10;
-    
+
 
     /**
      * Maximum number of seconds before a call timeouts
      * @var integer
      */
     private $_timeout = 500;
-    
+
     private $activeSession = false;//Boolean: for Session
     private $currentAID = null;
-    public $redemptionType = 0;//1. Item or 2. Coupon 
-    
+    public $redemptionType = 0;//1. Item or 2. Coupon
+
 
 
     //@Variable : This variable contains an ARRAY OF ERROR MESSAGES (Associative Array Type)
     private $errorMessage = array(
-        '0'=>'No Error, Transaction successful.', 
+        '0'=>'No Error, Transaction successful.',
         '0.1'=>'Valid',
         '0.2'=>'One or more fields is not set or is blank.',
         '1'=>'One or more fields is not set or is blank.',
@@ -109,30 +109,30 @@ class AmpapiController extends Controller {
         '1649'=>'No response from Membership Portal API.',
         '1650'=>'Session has expired. Please login again.'
     );
-    
+
 //    private $returnMessage = array(
 //        '01'=>'Generated TPSessionID; Third Party session ID.',
 //        '02'=>'Valid.',
 //        '03'=>'No Error, Transaction successful.',
 //        '04'=>'Card is inactive.'
 //    );
-    
-  
+
+
     private $ApiMethodID = array(
-        'Login'=>APILogsModel::API_LOGIN, 
-        'ForgotPassword'=>APILogsModel::API_FORGOT_PASSWORD, 
+        'Login'=>APILogsModel::API_LOGIN,
+        'ForgotPassword'=>APILogsModel::API_FORGOT_PASSWORD,
         'RegisterMember'=>APILogsModel::API_REGISTER_MEMBER,
         'UpdateProfile'=>APILogsModel::API_UPDATE_PROFILE,
-        'GetProfile'=>APILogsModel::API_GET_PROFILE, 
-        'CheckPoints'=>APILogsModel::API_CHECK_POINTS, 
-        'ListItems'=>APILogsModel::API_LIST_ITEMS, 
-        'RedeemItems'=>APILogsModel::API_REDEEM_ITEMS, 
-        'AuthenticateSession'=>APILogsModel::API_AUTHENTICATE_SESSION, 
-        'GetActiveSession'=>APILogsModel::API_GET_ACTIVE_SESSION, 
-        'GetGender'=>APILogsModel::API_GET_GENDER, 
-        'GetIDPresented'=>APILogsModel::API_GET_ID_PRESENTED, 
-        'GetNationality'=>APILogsModel::API_GET_NATIONALITY, 
-        'GetOccupation'=>APILogsModel::API_GET_OCCUPATION, 
+        'GetProfile'=>APILogsModel::API_GET_PROFILE,
+        'CheckPoints'=>APILogsModel::API_CHECK_POINTS,
+        'ListItems'=>APILogsModel::API_LIST_ITEMS,
+        'RedeemItems'=>APILogsModel::API_REDEEM_ITEMS,
+        'AuthenticateSession'=>APILogsModel::API_AUTHENTICATE_SESSION,
+        'GetActiveSession'=>APILogsModel::API_GET_ACTIVE_SESSION,
+        'GetGender'=>APILogsModel::API_GET_GENDER,
+        'GetIDPresented'=>APILogsModel::API_GET_ID_PRESENTED,
+        'GetNationality'=>APILogsModel::API_GET_NATIONALITY,
+        'GetOccupation'=>APILogsModel::API_GET_OCCUPATION,
         'GetIsSmoker'=>APILogsModel::API_GET_IS_SMOKER,
         'GetReferrer'=>APILogsModel::API_GET_REFERRER,
         'GetRegion'=>APILogsModel::API_GET_REGION,
@@ -143,7 +143,7 @@ class AmpapiController extends Controller {
     public function actionIndex(){
         //echo "This is index page!";
     }
-    
+
     public function actionAuthenticateSession(){
         $request = $this->_readJsonRequest();
         $module = 'AuthenticateSession';
@@ -162,12 +162,12 @@ class AmpapiController extends Controller {
                 if(isset($result) && $result['Count']>0){
                     $this->_displayReturnMessage(2, $module, 'Invalid Input');//Invalid Input
                     $this->_apiLogs(APILogsModel::API_AUTHENTICATE_SESSION,'' , 2, '', 2, $module, $Username);
-                    
+
                 }else{
                     $this->_displayReturnMessage("3.1", $module, 'Third Party Account not found.');//Third Party Account not found
                     $this->_apiLogs(APILogsModel::API_AUTHENTICATE_SESSION,'' , '3.1', '', 2, $module, $Username);
                 }
-                
+
             }
         }
     }
@@ -178,7 +178,7 @@ class AmpapiController extends Controller {
             $count = $result['Count'];
             $SessionID = $result['SessionID'];
             session_start();
-            
+
             if($count==0 && $SessionID==null){
                 ///$this->_displayCustomMessages(1, $module, $transMsg);
                 $TPSessionID = session_id();//generated Session ID
@@ -190,12 +190,12 @@ class AmpapiController extends Controller {
                         $errorCode = 0;
                         $trackingID = '';
                         $status = 1;//1 is successful || 2 is failed.
-                        
+
                         $this->_displayMessage($errorCode, $module, $TPSessionID);
                         $this->_auditTrail(AuditTrailModel::AUTHENTICATE_SESSION,0,$AID, $TPSessionID, $module, $Details);
                         $this->_apiLogs(APILogsModel::API_AUTHENTICATE_SESSION, $apiLogsReferenceID, $errorCode, $trackingID, $status, $module, $Details);
                         $this->_logSuccess($module, 'TPSessionID generated Successfully.');
-                        
+
                     }
                     else if($result==0){
                         $this->_logError($module, 'Failed to generate TPSessionID.');
@@ -216,7 +216,7 @@ class AmpapiController extends Controller {
                         $errorCode = 0;
                         $trackingID = '';
                         $status = 1;//1 is successful || 2 is failed.
-                        
+
                         $this->_displayMessage($errorCode, $module, $TPSessionID);
                         $this->_auditTrail(AuditTrailModel::AUTHENTICATE_SESSION,0, $AID, $TPSessionID, $module, $Details);
                         $this->_apiLogs(APILogsModel::API_AUTHENTICATE_SESSION, $apiLogsReferenceID, $errorCode, $trackingID, $status, $module, $Details);
@@ -239,10 +239,10 @@ class AmpapiController extends Controller {
                 $this->_apiLogs(APILogsModel::API_AUTHENTICATE_SESSION,'' , 4, '', 2, $module, $Details);
             }
         }
-    
+
     public function actionGetActiveSession(){
         date_default_timezone_set('Asia/Manila');//setting to default timezone
-        
+
         $request = $this->_readJsonRequest();
         $GetActiveSessionModle = new GetActiveSessionModel();
         $module = 'GetActiveSession';
@@ -251,23 +251,23 @@ class AmpapiController extends Controller {
         if($validateRequiredFields===true){
             $TPSessionID = trim($request['TPSessionID']);
             $Username = trim($request['Username']);
-            
+
             $result = $GetActiveSessionModle->getActiveSession($TPSessionID, $Username);
-            
+
             if(isset($result['Count']) && $result['Count']!=0){
                 $resultTPSessionID = $result['SessionID'];
                 $resultUsername = $result['Username'];
                 $AID = $result['AID'];
-                
-                
+
+
                 if($TPSessionID == $resultTPSessionID && $Username==$resultUsername){
-                    
+
                     $SessionDateTime = strtotime($result['DateCreated']);
                     $CurrentDateTime = strtotime(date('Y-m-d H:i:s'));
                     $TimeInterval = round(abs($CurrentDateTime-$SessionDateTime)/60,2);//echo $TimeInterval.'='.$CurrentDateTime.'-'.$SessionDateTime;exit;
                     $AID=$result['AID'];
                     $MaxTime = 30.00;
-                    
+
                     if($TimeInterval<$MaxTime){
                         $this->_displaySuccessMessage('0.1', $module, 'GetActiveSession Success.');
 
@@ -275,8 +275,8 @@ class AmpapiController extends Controller {
                         $this->_apiLogs(APILogsModel::API_GET_ACTIVE_SESSION,'' , 0, '', 1, $module, $Username);
 
                         $ValidateTPSession = new ValidateTPSessionIDModel();
-                        $activeSession = true;  
-                        
+                        $activeSession = true;
+
                         //Update Session's DateCreated
                         if(!(isset($request['SentFromAMPAPI']))){
 
@@ -292,9 +292,9 @@ class AmpapiController extends Controller {
                         $this->_displayReturnMessage(76,$module, $module.' contains expired SessionID.');
                         $this->_apiLogs($ApiMethodID[$module],'' , 76, '', 2, $module, $TPSessionID);
                     }
-                    
+
                 }
-                
+
                 else{
                     $this->_displayReturnMessage('1.1', $module, 'Invalid Input.');
                     $this->_apiLogs(APILogsModel::API_GET_ACTIVE_SESSION,'' , '1.1', '', 2, $module, $Username);
@@ -306,9 +306,9 @@ class AmpapiController extends Controller {
                     $this->_apiLogs(APILogsModel::API_GET_ACTIVE_SESSION,'' , '1.1', '', 2, $module, $Username);
                 }
             }
-            
+
         }
-       
+
         if(isset($request['SentFromAMPAPI'])){
             if($request['SentFromAMPAPI']==1){
                 $AID = $request['AID'];
@@ -317,20 +317,20 @@ class AmpapiController extends Controller {
                 return $activeSession;
             }
         }
-//        
+//
         //$this->activeSession=$activeSession;
-     
+
     }
-    
+
     public function actionLogin(){
         $request = $this->_readJsonRequest();
         $module = 'Login';
         //$authenticateSession = new AuthenticateSessionModel();
-        
+
         $validateRequiredField = $this->validateRequiredFields($request, $module, array('TPSessionID'=>false, 'Username'=>false, 'Password'=>false));
         //$validateRequiredField=true;
         if($validateRequiredField===true){
-            
+
             $validateTPSessionID = $this->_validateTPSession($request['TPSessionID'], 'GetActiveSession', $module);
             if($validateTPSessionID===true){
                 $TPSessionID=$request['TPSessionID'];
@@ -341,7 +341,7 @@ class AmpapiController extends Controller {
                 $url = $this->genMPAPIURL($moduleName);
                 $postData = CJSON::encode(array('Username'=>$Username, 'Password'=>$Password));
                 $result = $this->SubmitData($url, $postData);
-                
+
                 if(isset($result[0]) && $result[0]==200){
                     $this->_sendResponse(200, $result[1]);
                     $this->_auditTrail(AuditTrailModel::LOGIN,0,$AID, $TPSessionID, $module, $Username);
@@ -352,21 +352,21 @@ class AmpapiController extends Controller {
                     $this->_apiLogs(APILogsModel::API_LOGIN,'' , 73, '', 2, $module, $Username);
                 }
             }
-            
+
         }
 
     }
-    
+
     public function actionForgotPassword(){
         $request = $this->_readJsonRequest();
         $module = 'ForgotPassword';
         $ForgotPassword = new ForgotPasswordModel();
-        
+
         $validateRequiredFields = $this->validateRequiredFields($request, $module, array('TPSessionID'=>false,'EmailCardNumber'=>false));
         if($validateRequiredFields===true){
-        
+
             $TPSessionID = trim($request['TPSessionID']);
-            
+
             $EmailCardNumber = trim($request['EmailCardNumber']);
             $validateTPSessionID = $this->_validateTPSession($TPSessionID, 'GetActiveSession', $module);
             if($validateTPSessionID===true){
@@ -375,33 +375,33 @@ class AmpapiController extends Controller {
                 $postData = CJSON::encode(array('EmailCardNumber'=>$EmailCardNumber));
                 $result = $this->SubmitData($url, $postData);
                 $AID = $this->currentAID;
-                
+
                 if(isset($result[0]) && $result[0]==200){
                     $this->_sendResponse(200, $result[1]);
                     $this->_auditTrail(AuditTrailModel::FORGOT_PASSWORD,0,$AID, $TPSessionID, $module, $EmailCardNumber);
                     $this->_apiLogs(APILogsModel::API_FORGOT_PASSWORD,'' , 0, '', 1, $module, $EmailCardNumber);
                 }
                 else{
-                    $this->_displayCustomMessages(73, $module, 'No response from Membership portal API.');//Error 73 
+                    $this->_displayCustomMessages(73, $module, 'No response from Membership portal API.');//Error 73
                     $this->_apiLogs(APILogsModel::API_FORGOT_PASSWORD,'' , 73, '', 2, $module, $EmailCardNumber);
                 }
             }
         }
-        
+
     }
-    
+
     public function actionRegisterMember(){
        $request = $this->_readJsonRequest();
        $module='RegisterMember';
-       
-    
+
+
        $fields = array('TPSessionID'=>false,'FirstName'=>false,'LastName'=>false,'Password'=>false,'PermanentAdd'=>false,'MobileNo'=>false,'EmailAddress'=>false,'IDPresented'=>false,'IDNumber'=>false,'Birthdate'=>false);
-           
+
        $validateRequiredFields = $this->validateRequiredFields($request, $module, $fields);
        if($validateRequiredFields ===true){
            $this->_registerMember($request, $module);
        }
-        
+
     }
         private function _registerMember($request, $module){
             $TPSessionID = trim($request['TPSessionID']);
@@ -429,11 +429,11 @@ class AmpapiController extends Controller {
                 $ReferrerID = trim($request['ReferrerID']);
                 $EmailSubscription = trim($request['EmailSubscription']);
                 $SMSubscription = trim($request['SMSSubscription']);
-                
-                
+
+
                 $moduleName =  strtolower($module);
                 $url = $this->genMPAPIURL($moduleName);
-                
+
                 $postData = CJSON::encode(array(
                     'FirstName'=>$FirstName,
                     'MiddleName'=>$MiddleName,
@@ -461,13 +461,13 @@ class AmpapiController extends Controller {
                 $AID = $this->currentAID;
                 if(isset($result[0]) && $result[0]==200){
                     $this->_sendResponse(200, $result[1]);$AID = $this->currentAID;
-                    
+
                     $ValidateResponse = $this->validateResponse($result[1], $module);
                     if($ValidateResponse==true){
                         $this->_auditTrail(AuditTrailModel::REGISTER_MEMBER,0,$AID, $TPSessionID, $module, $LastName.', '.$FirstName);
                         $this->_apiLogs(APILogsModel::API_REGISTER_MEMBER,'' , 0, '', 1, $module, $LastName.', '.$FirstName);
                     }
-                  
+
                 }
                 else{
                     $this->_displayCustomMessages(73, $module, 'No response from Membership portal API.');//Error 73
@@ -475,14 +475,14 @@ class AmpapiController extends Controller {
                 }
             }
         }
-        
+
     public function actionUpdateProfile(){
        $request = $this->_readJsonRequest();
        $module='UpdateProfile';
        //$UpdateProfile = new UpdateProfileModel();
        //isset($request['']) && $request['']!=null
-       $fields = array('TPSessionID'=>false,'MPSessionID'=>false, 'FirstName'=>false,'LastName'=>false,'MobileNo'=>false,'EmailAddress'=>false,'IDPresented'=>false,'IDNumber'=>false,'Birthdate'=>false);
-           
+       $fields = array('TPSessionID'=>false,'MPSessionID'=>false, 'FirstName'=>false,'LastName'=>false,'MobileNo'=>false,'EmailAddress'=>false,'Birthdate'=>false);
+
        $validateRequiredFields = $this->validateRequiredFields($request, $module, $fields);
        if($validateRequiredFields ===true){
            $validateMobileNoDataType = $this->validateContactNumberDataType($request, $module, array('MobileNo'=>false));
@@ -523,11 +523,11 @@ class AmpapiController extends Controller {
                 }
             }
         }
-       
+
     }
         private function _updateProfile($request, $module){
             $TPSessionID = trim($request['TPSessionID']);
-            
+
             $validateTPSessionID = $this->_validateTPSession($TPSessionID, '',$module);
             if($validateTPSessionID===true){
                 $MPSessionID=$request['MPSessionID'];
@@ -548,7 +548,9 @@ class AmpapiController extends Controller {
                 $Birthdate=trim($request['Birthdate']);
                 $Occupation=trim($request['Occupation']);
                 $IsSmoker=trim($request['IsSmoker']);
-                
+                $Region=trim($request['Region']);
+                $City=trim($request['City']);
+
                 $moduleName =  strtolower($module);
                 $url = $this->genMPAPIURL($moduleName);
                 $postData = CJSON::encode(array(
@@ -569,19 +571,21 @@ class AmpapiController extends Controller {
                     'Nationality'=>$Nationality,
                     'Occupation'=>$Occupation,
                     'IsSmoker'=>$IsSmoker,
-                    'Birthdate'=>$Birthdate
+                    'Birthdate'=>$Birthdate,
+                    'Region'=>$Region,
+                    'City'=>$City
                 ));
                 $result = $this->SubmitData($url, $postData);
                 $AID = $this->currentAID;
                 if(isset($result[0]) && $result[0]==200){
                     $this->_sendResponse(200, $result[1]);
-                      
+
                     $ValidateResponse = $this->validateResponse($result[1], $module);
                     if($ValidateResponse==true){
                         $this->_auditTrail(AuditTrailModel::UPDATE_PROFILE,0,$AID, $TPSessionID, $module, $LastName.', '.$FirstName);
                         $this->_apiLogs(APILogsModel::API_UPDATE_PROFILE,'' , 0, '', 1, $module, $LastName.', '.$FirstName);
                     }
-                      
+
                 }
                 else{
                     $this->_displayCustomMessages(73, $module, 'No response from Membership portal API.');//Error 73
@@ -598,7 +602,7 @@ class AmpapiController extends Controller {
             }
             return $return;
         }
-        
+
         private function validateAlternateMobileLength($request, $module, $fields){
             $return = true;
             if($request['AlternateMobileNo']!=null){
@@ -608,7 +612,7 @@ class AmpapiController extends Controller {
             }
             return $return;
         }
-        
+
         private function validateNotRequiredNames($request, $module, $fields,$index){
             $return = true;
             if($request[$index]!=null){
@@ -618,11 +622,11 @@ class AmpapiController extends Controller {
             }
             return $return;
         }
-  
+
     public function actionCheckPoints(){
         $request = $this->_readJsonRequest();//print_r($request);
         $module = 'CheckPoints';
-        
+
         $validateRequiredField = $this->validateRequiredFields($request, $module, array('TPSessionID'=>false, 'CardNumber'=>false));
         if($validateRequiredField===true){
             $TPSessionID = $request['TPSessionID'];
@@ -636,27 +640,27 @@ class AmpapiController extends Controller {
                 $AID = $this->currentAID;
                 if(isset($result[0]) && $result[0]==200){
                     $this->_sendResponse(200, $result[1]);
-                      
+
                     $ValidateResponse = $this->validateResponse($result[1], $module);
                     if($ValidateResponse==true){
                         $this->_auditTrail(AuditTrailModel::CHECK_POINTS,0,$AID, $TPSessionID, $module, $CardNumber);
                         $this->_apiLogs(APILogsModel::API_CHECK_POINTS,'' , 0, '', 1, $module);
                     }
-                      
+
                 }
                 else{
                     $this->_displayCustomMessages(73, $module, 'No response from Membership portal API.');//Error 73
-                    
+
                     $this->_apiLogs(APILogsModel::API_CHECK_POINTS,'' , 73, '', 2, $module);
                 }
             }
         }
     }
-    
+
     public function actionListItems(){
         $request = $this->_readJsonRequest();//print_r($request);
         $module = 'ListItems';
-        
+
         $validateRequiredField = $this->validateRequiredFields($request, $module, array('TPSessionID'=>false, 'MPSessionID'=>false,'PlayerClassID'=>false));
         if($validateRequiredField===true){
             $TPSessionID = trim($request['TPSessionID']);
@@ -671,13 +675,13 @@ class AmpapiController extends Controller {
                 $AID = $this->currentAID;
                 if(isset($result[0]) && $result[0]==200){
                     $this->_sendResponse(200, $result[1]);
-                    
+
                     $ValidateResponse = $this->validateResponse($result[1], $module);
                     if($ValidateResponse==true){
                         $this->_auditTrail(AuditTrailModel::LIST_ITEMS,0,$AID, $TPSessionID, $module, $PlayerClassID);
                         $this->_apiLogs(APILogsModel::API_LIST_ITEMS,'' , 0, '', 1, $module);
                     }
-                    
+
                 }
                 else{
                     $this->_displayCustomMessages(73, $module, 'No response from Membership portal API.');//Error 73
@@ -686,24 +690,24 @@ class AmpapiController extends Controller {
             }
         }
     }
-    
+
     public function actionRedeemItems(){
         $request = $this->_readJsonRequest();//print_r($request);
         $module = 'RedeemItems';
-    
+
         $validateRequiredField = $this->validateRequiredFields($request, $module, array('TPSessionID'=>false, 'MPSessionID'=>false,'CardNumber'=>false,'RewardID'=>false, 'RewardItemID'=>false, 'Quantity'=>false, 'Source'=>false));
         if($validateRequiredField===true){
             $TPSessionID = trim($request['TPSessionID']);
             $validateTPSessionID = $this->_validateTPSession($TPSessionID, 'GetActiveSession', $module);
             if($validateTPSessionID===true){
-               
+
                 $MPSessionID= trim($request['MPSessionID']);
                 $CardNumber= trim($request['CardNumber']);
                 $RewardID = trim($request['RewardID']);
                 $RewardItemID = trim($request['RewardItemID']);
                 $Quantity =trim($request['Quantity']);
                 $Source=trim($request['Source']);
-                
+
                 $moduleName =  strtolower($module);
                 $url = $this->genMPAPIURL($moduleName);
                 $postData = CJSON::encode(array('MPSessionID'=>$MPSessionID,'CardNumber'=>$CardNumber, 'RewardID'=>$RewardID, 'RewardItemID'=>$RewardItemID, 'Quantity'=>$Quantity,'Source'=>$Source));
@@ -711,13 +715,13 @@ class AmpapiController extends Controller {
                 $AID = $this->currentAID;
                 if(isset($result[0]) && $result[0]==200){
                     $this->_sendResponse(200, $result[1]);
-                    
+
                     $ValidateResponse = $this->validateResponse($result[1], $module);
                     if($ValidateResponse==true){
                         $this->_auditTrail(AuditTrailModel::REDEEM_ITEMS,0,$AID, $TPSessionID, $module, $CardNumber);
-                        $this->_apiLogs(APILogsModel::API_REDEEM_ITEMS,'' , 0, '', 1, $module, $CardNumber); 
+                        $this->_apiLogs(APILogsModel::API_REDEEM_ITEMS,'' , 0, '', 1, $module, $CardNumber);
                     }
-                    
+
                 }
                 else{
                     $this->_displayCustomMessages(73, $module, 'No response from Membership portal API.');//Error 73
@@ -726,14 +730,14 @@ class AmpapiController extends Controller {
             }
         }
         else{
-            
+
         }
     }
-    
+
     public function actionGetProfile(){
         $request = $this->_readJsonRequest();
         $module = 'GetProfile';
-        
+
         $validateRequiredField = $this->validateRequiredFields($request, $module, array('TPSessionID'=>false, 'MPSessionID'=>false, 'CardNumber'=>false));
         if($validateRequiredField===true){
             $TPSessionID = trim($request['TPSessionID']);
@@ -748,11 +752,11 @@ class AmpapiController extends Controller {
                 $AID = $this->currentAID;
                 if(isset($result[0]) && $result[0]==200){
                     $this->_sendResponse(200, $result[1]);
-                    
+
                     $ValidateResponse = $this->validateResponse($result[1], $module);
                     if($ValidateResponse==true){
                         $this->_auditTrail(AuditTrailModel::GET_PROFILE,0,$AID, $TPSessionID, $module, $CardNumber);
-                        $this->_apiLogs(APILogsModel::API_GET_PROFILE,'' , 0, '', 1, $module, $CardNumber); 
+                        $this->_apiLogs(APILogsModel::API_GET_PROFILE,'' , 0, '', 1, $module, $CardNumber);
                     }
                 }
                 else{
@@ -762,11 +766,11 @@ class AmpapiController extends Controller {
             }
         }
     }
-    
+
     public function actionGetGender(){
         $request = $this->_readJsonRequest();
         $module = 'GetGender';
-        
+
         $validateRequiredField = $this->validateRequiredFields2($request, $module, array('TPSessionID'=>false));
         if($validateRequiredField===true){
             $TPSessionID = trim($request['TPSessionID']);
@@ -776,7 +780,7 @@ class AmpapiController extends Controller {
                 $url = $this->genMPAPIURL($moduleName);
                 $postData = CJSON::encode(array());
                 $result = $this->SubmitData($url, $postData);
-                
+
                 if(isset($result[0]) && $result[0]==200){
                     $this->_sendResponse(200, $result[1]);
                 }
@@ -786,13 +790,13 @@ class AmpapiController extends Controller {
             }
         }
     }
-    
+
     public function actionGetIDPresented(){
         $request = $this->_readJsonRequest();
         $module = 'GetIDPresented';
-        
+
         $validateRequiredField = $this->validateRequiredFields2($request, $module, array('TPSessionID'=>false));
-       
+
         if($validateRequiredField===true){
             $TPSessionID = trim($request['TPSessionID']);
             $validateTPSessionID = $this->_validateTPSession($TPSessionID, 'GetActiveSession', $module);
@@ -801,7 +805,7 @@ class AmpapiController extends Controller {
                 $url = $this->genMPAPIURL($moduleName);
                 $postData = CJSON::encode(array());
                 $result = $this->SubmitData($url, $postData);
-                
+
                 if(isset($result[0]) && $result[0]==200){
                     $this->_sendResponse(200, $result[1]);
                 }
@@ -811,13 +815,13 @@ class AmpapiController extends Controller {
             }
         }
     }
-    
+
     public function actionGetNationality(){
         $request = $this->_readJsonRequest();
         $module = 'GetNationality';
-        
+
         $validateRequiredField = $this->validateRequiredFields2($request, $module, array('TPSessionID'=>false));
-       
+
         if($validateRequiredField===true){
             $TPSessionID = trim($request['TPSessionID']);
             $validateTPSessionID = $this->_validateTPSession($TPSessionID, 'GetActiveSession', $module);
@@ -826,7 +830,7 @@ class AmpapiController extends Controller {
                 $url = $this->genMPAPIURL($moduleName);
                 $postData = CJSON::encode(array());
                 $result = $this->SubmitData($url, $postData);
-                
+
                 if(isset($result[0]) && $result[0]==200){
                     $this->_sendResponse(200, $result[1]);
                 }
@@ -836,13 +840,13 @@ class AmpapiController extends Controller {
             }
         }
     }
-    
+
     public function actionGetOccupation(){
        $request = $this->_readJsonRequest();
         $module = 'GetOccupation';
-        
+
         $validateRequiredField = $this->validateRequiredFields2($request, $module, array('TPSessionID'=>false));
-       
+
         if($validateRequiredField===true){
             $TPSessionID = trim($request['TPSessionID']);
             $validateTPSessionID = $this->_validateTPSession($TPSessionID, 'GetActiveSession', $module);
@@ -851,7 +855,7 @@ class AmpapiController extends Controller {
                 $url = $this->genMPAPIURL($moduleName);
                 $postData = CJSON::encode(array());
                 $result = $this->SubmitData($url, $postData);
-                
+
                 if(isset($result[0]) && $result[0]==200){
                     $this->_sendResponse(200, $result[1]);
                 }
@@ -861,13 +865,13 @@ class AmpapiController extends Controller {
             }
         }
     }
-    
+
     public function actionGetIsSmoker(){
         $request = $this->_readJsonRequest();
         $module = 'GetIsSmoker';
-        
+
         $validateRequiredField = $this->validateRequiredFields2($request, $module, array('TPSessionID'=>false));
-       
+
         if($validateRequiredField===true){
             $TPSessionID = trim($request['TPSessionID']);
             $validateTPSessionID = $this->_validateTPSession($TPSessionID, 'GetActiveSession', $module);
@@ -876,7 +880,7 @@ class AmpapiController extends Controller {
                 $url = $this->genMPAPIURL($moduleName);
                 $postData = CJSON::encode(array());
                 $result = $this->SubmitData($url, $postData);
-                
+
                 if(isset($result[0]) && $result[0]==200){
                     $this->_sendResponse(200, $result[1]);
                 }
@@ -886,13 +890,13 @@ class AmpapiController extends Controller {
             }
         }
     }
-    
+
     public function actionGetReferrer(){
         $request = $this->_readJsonRequest();
         $module = 'GetReferrer';
-        
+
         $validateRequiredField = $this->validateRequiredFields2($request, $module, array('TPSessionID'=>false));
-       
+
         if($validateRequiredField===true){
             $TPSessionID = trim($request['TPSessionID']);
             $validateTPSessionID = $this->_validateTPSession($TPSessionID, 'GetActiveSession', $module);
@@ -901,7 +905,7 @@ class AmpapiController extends Controller {
                 $url = $this->genMPAPIURL($moduleName);
                 $postData = CJSON::encode(array());
                 $result = $this->SubmitData($url, $postData);
-                
+
                 if(isset($result[0]) && $result[0]==200){
                     $this->_sendResponse(200, $result[1]);
                 }
@@ -911,13 +915,13 @@ class AmpapiController extends Controller {
             }
         }
     }
-    
+
     public function actionGetRegion(){
         $request = $this->_readJsonRequest();
         $module = 'GetRegion';
-        
+
         $validateRequiredField = $this->validateRequiredFields2($request, $module, array('TPSessionID'=>false));
-       
+
         if($validateRequiredField===true){
             $TPSessionID = trim($request['TPSessionID']);
             $validateTPSessionID = $this->_validateTPSession($TPSessionID, 'GetActiveSession', $module);
@@ -926,7 +930,7 @@ class AmpapiController extends Controller {
                 $url = $this->genMPAPIURL($moduleName);
                 $postData = CJSON::encode(array());
                 $result = $this->SubmitData($url, $postData);
-                
+
                 if(isset($result[0]) && $result[0]==200){
                     $this->_sendResponse(200, $result[1]);
                 }
@@ -936,13 +940,13 @@ class AmpapiController extends Controller {
             }
         }
     }
-    
+
     public function actionGetCity(){
         $request = $this->_readJsonRequest();
         $module = 'GetCity';
-        
+
         $validateRequiredField = $this->validateRequiredFields2($request, $module, array('TPSessionID'=>false));
-       
+
         if($validateRequiredField===true){
             $TPSessionID = trim($request['TPSessionID']);
             $validateTPSessionID = $this->_validateTPSession($TPSessionID, 'GetActiveSession', $module);
@@ -951,7 +955,7 @@ class AmpapiController extends Controller {
                 $url = $this->genMPAPIURL($moduleName);
                 $postData = CJSON::encode(array());
                 $result = $this->SubmitData($url, $postData);
-                
+
                 if(isset($result[0]) && $result[0]==200){
                     $this->_sendResponse(200, $result[1]);
                 }
@@ -961,13 +965,13 @@ class AmpapiController extends Controller {
             }
         }
     }
-    
+
     public function actionLogout(){
         $request = $this->_readJsonRequest();
         $module = 'Logout';
-        
+
         $validateRequiredField = $this->validateRequiredFields2($request, $module, array('TPSessionID'=>false, 'MPSessionID'=>false));
-       
+
         if($validateRequiredField===true){
             $TPSessionID = trim($request['TPSessionID']);
             $validateTPSessionID = $this->_validateTPSession($TPSessionID, 'GetActiveSession', $module);
@@ -977,21 +981,21 @@ class AmpapiController extends Controller {
                 $MPSessionID = trim($request['MPSessionID']);
                 $postData = CJSON::encode(array('MPSessionID'=>$MPSessionID));
                 $result = $this->SubmitData($url, $postData);
-                
-                
+
+
                 if(isset($result[0]) && $result[0]==200){
                     $ValidateResponse = $this->validateResponse($result[1], $module);
                     if($ValidateResponse===true){
                         $AID = $this->currentAID;
                         $Logout = new LogoutModel();
-                        
-                        
+
+
                         $logoutResponse = $Logout->logout($AID, $TPSessionID);
                         if($logoutResponse==1){
                             $this->_sendResponse(200, $result[1]);
                             $this->_auditTrail(AuditTrailModel::LOGOUT,0,$AID, $TPSessionID, $module, $TPSessionID);
                             $this->_apiLogs(APILogsModel::API_LOGOUT,'' , 0, '', 1, $module, $TPSessionID);
-                            
+
                         }
                         else{
                             $this->_displayReturnMessage('2.2', $module, 'Failed to delete session.');//Error 73
@@ -1007,7 +1011,7 @@ class AmpapiController extends Controller {
             }
         }
     }
-    
+
     private function _readJsonRequest() {
 
         //read the post input (use this technique if you have no post variable name):
@@ -1018,12 +1022,12 @@ class AmpapiController extends Controller {
 
         return $data;
     }
-    
+
     /**
      *
      * @param type $status
      * @param string $body
-     * @param type $content_type 
+     * @param type $content_type
      * @link http://www.yiiframework.com/wiki/175/how-to-create-a-rest-api
      */
     private function _sendResponse($status = 200, $body = '', $content_type = 'text/html') {
@@ -1061,7 +1065,7 @@ class AmpapiController extends Controller {
                     break;
             }
 
-            // servers don't always have a signature turned on 
+            // servers don't always have a signature turned on
             // (this is an apache directive "ServerSignature On")
             $signature = ($_SERVER['SERVER_SIGNATURE'] == '') ? $_SERVER['SERVER_SOFTWARE'] . ' Server at ' . $_SERVER['SERVER_NAME'] . ' Port ' . $_SERVER['SERVER_PORT'] : $_SERVER['SERVER_SIGNATURE'];
 
@@ -1085,7 +1089,7 @@ class AmpapiController extends Controller {
         }
         //Yii::app()->end();
     }
-    
+
     /**
      * HTTP Status Code Message
      * @param string $status
@@ -1110,7 +1114,7 @@ class AmpapiController extends Controller {
     private function _displayMessage($errorCode, $module, $TPSessionID){
         if($module=='AuthenticateSession'){$transMsg=$TPSessionID;}
         else{$transMsg = $this->errorMessage[$errorCode];}
-        
+
         $this->_sendResponse(200, CJSON::encode(CommonController::retMsg($module, $transMsg, $errorCode, '','',$TPSessionID)));
         Utilities::log("ReturnMessage: " . $transMsg. " ErrorCode: " . $errorCode);
     }
@@ -1118,7 +1122,7 @@ class AmpapiController extends Controller {
         $transMsg = $this->returnMessage[$returnCode];
         $this->_sendResponse(200, CJSON::encode(CommonController::retMsg($module, $transMsg, $returnCode)));
     }
-    
+
     //This function invokes necessary method in displaying error messages based on '$errorMessage' php variable declared in this class.
     private function _displayReturnMessage($errorCode, $module, $logErrorMessage, $ApiLogsModel='', $RewardID=''){
         $transMsg = $this->errorMessage[$errorCode];
@@ -1129,16 +1133,16 @@ class AmpapiController extends Controller {
         $this->_logError($module, $logErrorMessage);
         //$this->_apiLogs($ApiLogsModel, $apiLogsReferenceID, $errorCode, $trackingID, $status, $module);
     }
-    
+
     private function _displaySuccessMessage($errorCode, $module, $logErrorMessage){
         $transMsg = $this->errorMessage[$errorCode];
-        
+
         $eCode = floor($errorCode);
         $this->_sendResponse(200, CJSON::encode(CommonController::retMsg($module, $transMsg, $eCode)));
         Utilities::log("ReturnMessage: " . $transMsg. " ErrorCode: " . $errorCode);
         $this->_logSuccess($module, $logErrorMessage);
     }
-    
+
     //This function invokes necessary method in displaying custom error message.
     private function _displayCustomMessages($errorCode, $module, $errorMessages){
         $transMsg = $errorMessages;
@@ -1148,7 +1152,7 @@ class AmpapiController extends Controller {
         Utilities::log("ReturnMessage: " . $transMsg. " ErrorCode: " . $eCode);
         $this->_logError($module, $errorMessages);
     }
-    
+
     private function _utilityLogs($transMsg, $errorCode){
         return "ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode;
     }
@@ -1156,12 +1160,12 @@ class AmpapiController extends Controller {
     private function _auditTrail($auditFunction,$errorCode, $AID, $sessionID, $module, $details=''){
         $auditTrailModel = new AuditTrailModel();
         $logger = new ErrorLogger();
-        
+
         $transMsg = $module.': '.$details;
         $result = $auditTrailModel->logEvent($auditFunction, $transMsg, array('AID' => $AID, 'SessionID' => $sessionID));
         //@Ternary function or conditional statement
         $result==1?$this->_logSuccess($module, "Audittrail log success."):$this->_logError($module, 'Failed to log event on Audittrail.');
-     
+
     }
     //This function inserts logs in apilogs table
     private function _apiLogs($apiMethodID, $refID, $errorCode, $trackingID, $status, $module, $details=''){
@@ -1171,7 +1175,7 @@ class AmpapiController extends Controller {
         //@Ternary function or conditional statement
         $isInserted ==1?$this->_logSuccess($module, 'APIlogs success.'):$this->_logError($module, 'Failed to insert to APILogs.');
     }
-    
+
     //This function creates logs for failed transaction
     private function _logError($module, $logMessage){
         $logger = new ErrorLogger();
@@ -1183,10 +1187,10 @@ class AmpapiController extends Controller {
         $logger->log($logger->logdate, " [".strtoupper($module)." SUCCESS] ", $logMessage);
         //$this->_apiLogs('', $refID, $errorCode, $trackingID, $status, $module)
     }
-    
-    
+
+
     //validation functions
-    
+
     private function validateRequiredFields($request, $module, $fields){
         $validateSuccess = false;
         foreach($fields as $key=>$value){
@@ -1195,7 +1199,7 @@ class AmpapiController extends Controller {
             }
             else{
                 $module=='GetActiveSession'?$ErrorCode=75:$ErrorCode=1;
-                $this->_displayReturnMessage($ErrorCode, $module, $key.' is not set or is blank.'); 
+                $this->_displayReturnMessage($ErrorCode, $module, $key.' is not set or is blank.');
                 $ApiMethodID = $this->ApiMethodID;
                 $this->_apiLogs($ApiMethodID[$module],'' , $ErrorCode, '', 2, $module, $key);
                 return false;
@@ -1204,8 +1208,8 @@ class AmpapiController extends Controller {
         $validateSuccess = $this->validateAllFields($fields);
         return $validateSuccess;
     }
-    
-    
+
+
     private function validateRequiredFields2($request, $module, $fields){
         $validateSuccess = false;
         foreach($fields as $key=>$value){
@@ -1224,12 +1228,12 @@ class AmpapiController extends Controller {
         return $validateSuccess;
     }
 
-    
-    //It validates contact number 
+
+    //It validates contact number
     private function validateContactNumberLength($request, $module, $fields){
-      
+
         foreach($fields as $key=>$value){
-            
+
             if(!(strlen($request[$key])<9)){
                 $fields[$key]=true;
             }
@@ -1240,9 +1244,9 @@ class AmpapiController extends Controller {
         }
         $validateSuccess = $this->validateAllFields($fields);
         return $validateSuccess;
-        
+
     }
-    
+
     //It validates field if it is number
     private function validateContactNumberDataType($request, $module, $fields){
         foreach($fields as $key=>$value){
@@ -1255,9 +1259,9 @@ class AmpapiController extends Controller {
             }
         }
         $validateSuccess = $this->validateAllFields($fields);
-        return $validateSuccess; 
+        return $validateSuccess;
     }
-    
+
     private function validateNames($request, $module, $fields){
         foreach($fields as $key=>$value){
             if((ctype_alpha($request[$key]))){
@@ -1272,7 +1276,7 @@ class AmpapiController extends Controller {
         $validateSuccess = $this->validateAllFields($fields);
         return $validateSuccess;
     }
-    
+
     private function validateEmail($request, $module, $fields){
         foreach($fields as $key=>$value){
             if(Utilities::validateEmail($request[$key])==true){
@@ -1298,7 +1302,7 @@ class AmpapiController extends Controller {
         }
     private function validateAlphaNumeric($request, $module, $fields, $index){
         $validateSuccess=true;
-        
+
         if($request[$index]!=null){
         foreach($fields as $key=>$value){
             if(Utilities::validateAlphaNumeric($request[$key])==true){
@@ -1330,9 +1334,9 @@ class AmpapiController extends Controller {
         }
         return $validateSuccess;
     }
-  
-    
-    
+
+
+
    private function validateAllFields($fields){
        $validateSuccess = false;
        foreach($fields as $value){
@@ -1345,9 +1349,9 @@ class AmpapiController extends Controller {
                 return false;
             }
         }
-        return $validateSuccess;  
+        return $validateSuccess;
    }
-   
+
    private function validateResponse($result, $moduleName){
         $valid = false;
         $parse = CJSON::decode($result);
@@ -1359,13 +1363,13 @@ class AmpapiController extends Controller {
         }
         return $valid;
     }
-   
+
    private function _validateTPSession($TPSessionID, $moduleNameMPAPI='GetActiveSession', $moduleNameAMPAPI = ''){
         date_default_timezone_set('Asia/Manila');//setting to default timezone
-        
+
         $ValidateTPSession = new ValidateTPSessionIDModel();
         $queryResult = $ValidateTPSession->validateTPSessionID(trim($TPSessionID));
-        
+
         $count = $queryResult['Count'];
         $valid = false;
         $ApiMethodID = $this->ApiMethodID;
@@ -1375,7 +1379,7 @@ class AmpapiController extends Controller {
             $TimeInterval = round(abs($CurrentDateTime-$SessionDateTime)/60,2);//echo $TimeInterval.'='.$CurrentDateTime.'-'.$SessionDateTime;exit;
             $AID=$queryResult['AID'];
             $MaxTime = 30.00;
-            
+
             if($TimeInterval<$MaxTime){
                 $TPUsername = $queryResult['UserName'];
                 $url = $this->genAMPAPIURL($moduleNameMPAPI);
@@ -1394,15 +1398,15 @@ class AmpapiController extends Controller {
                         $valid=false;
                     }
                 }
-                
+
             }else{
                 $valid=false;
                 $moduleNameAMPAPI=='GetCity'?$eCode=1650:$eCode=76;
                 $this->_displayReturnMessage($eCode, $moduleNameAMPAPI, $moduleNameAMPAPI.' contains expired SessionID.');
                 $this->_apiLogs($ApiMethodID[$moduleNameAMPAPI],'' , $eCode, '', 2, $moduleNameAMPAPI, $TPSessionID);
-                 
+
             }
-            
+
         }else{
             $valid=false;
             $moduleNameAMPAPI=='GetCity'?$eCode=1648:$eCode=71;
@@ -1418,12 +1422,12 @@ class AmpapiController extends Controller {
                 $this->_displayReturnMessage(72, $moduleNameAMPAPI, 'Error in Updating DateCreated.');
             }
         }
-        
-   
+
+
    private function SubmitData( $uri, $postdata)
     {
             $curl = curl_init( $uri );
-            
+
             curl_setopt( $curl, CURLOPT_FRESH_CONNECT, $this->_caching );
             curl_setopt( $curl, CURLOPT_CONNECTTIMEOUT, $this->_connectionTimeout );
             curl_setopt( $curl, CURLOPT_TIMEOUT, $this->_timeout );
@@ -1436,23 +1440,23 @@ class AmpapiController extends Controller {
             // Data+Files to be posted
             curl_setopt($curl, CURLOPT_POSTFIELDS, $postdata);
             $response = curl_exec( $curl );
-            
+
             $http_status = curl_getinfo( $curl, CURLINFO_HTTP_CODE );
-            
+
             curl_close( $curl );
-            
-            
+
+
             return array( $http_status, $response );
     }
-    
+
     //This functions generates URL String for the use of certain method.
     private function genMPAPIURL($moduleName = null){
         return $this->urlMPAPI.$moduleName;
     }
-    
+
     private function genAMPAPIURL($moduleName = null){
         return $this->urlAMPAPI.$moduleName;
     }
-    
+
 }
-                
+

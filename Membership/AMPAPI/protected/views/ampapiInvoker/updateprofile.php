@@ -58,11 +58,11 @@
             <?php echo CHtml::textField('Gender'); ?>
         </div>
         <div class="row">
-            <?php echo CHtml::label('*IDPresented','IDPresented'); ?>
+            <?php echo CHtml::label('IDPresented','IDPresented'); ?>
             <?php echo CHtml::textField('IDPresented'); ?>
         </div>
         <div class="row">
-            <?php echo CHtml::label('*IDNumber','IDNumber'); ?>
+            <?php echo CHtml::label('IDNumber','IDNumber'); ?>
             <?php echo CHtml::textField('IDNumber'); ?>
         </div>
         <div class="row">
@@ -80,6 +80,14 @@
         <div class="row">
             <?php echo CHtml::label('*Birthdate','Birthdate'); ?>
             <?php echo CHtml::textField('Birthdate'); ?>
+        </div>
+        <div class="row">
+            <?php echo CHtml::label('Region','Region'); ?>
+            <?php echo CHtml::textField('Region'); ?>
+        </div>
+        <div class="row">
+            <?php echo CHtml::label('City','City'); ?>
+            <?php echo CHtml::textField('City'); ?>
         </div>
         <div class="row" style="margin-left: 225px;">
             <?php echo CHtml::submitButton('Invoke'); ?>

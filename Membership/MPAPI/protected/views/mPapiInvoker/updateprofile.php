@@ -75,6 +75,14 @@
             <?php echo CHtml::label('Birthdate','Birthdate'); ?>
             <?php echo CHtml::textField('Birthdate'); ?>
         </div>
+        <div class="row">
+            <?php echo CHtml::label('Region','Region'); ?>
+            <?php echo CHtml::textField('Region'); ?>
+        </div>
+        <div class="row">
+            <?php echo CHtml::label('City','City'); ?>
+            <?php echo CHtml::textField('City'); ?>
+        </div>
         <div class="row" style="margin-left: 225px;">
             <?php echo CHtml::submitButton('Invoke'); ?>
         </div>

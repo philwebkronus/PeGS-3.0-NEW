@@ -13,23 +13,21 @@
  * @date 07/21/2014
  */
 class AmpapiInvokerController extends Controller {
-    
-   
-    
+
     /**
      * Set default action
-     * @var string 
+     * @var string
      */
     public $defaultAction = 'overview';
-    
+
     /**
      * Set default layout
-     * @var string 
+     * @var string
      */
     public $layout = 'main';
-    
+
     public $pageTitle;
-    
+
     /**
      * Set caching of connection
      * @var boolean
@@ -62,7 +60,7 @@ class AmpapiInvokerController extends Controller {
 //        $this->render('index');
 //
 //    }
-//    
+//
     public function actionOverview()
     {
             // renders the view file 'protected/views/site/index.php'
@@ -75,53 +73,53 @@ class AmpapiInvokerController extends Controller {
         $this->pageTitle= $this->genTitlePage('Authenticate Session');
         $result='';
         $moduleName ='authenticatesession';
-        
+
         if(isset($_POST['Username']) && isset($_POST['Password'])){
             $username = $_POST['Username'];
             $password = $_POST['Password'];
-              
+
             $result = $this->_AuthenticateSession($username, $password, $moduleName);
         }
-        
+
         $this->render($moduleName, array('result'=>$result));
     }
-    
+
         private function _AuthenticateSession($username, $password, $moduleName){
-            
+
             $url = $this->genURL($moduleName);
             $postData = CJSON::encode(array('Username'=>$username, 'Password'=>$password));
             $result = $this->SubmitData($url, $postData);
-            
+
             return $result[1];
         }
-    
+
     //Retrieves active session
     public function actionGetActiveSession(){
         $this->pageTitle= $this->genTitlePage('Get Active Session');
         $result='';
-        
+
         $moduleName ='getactivesession';
-        
+
         if(isset($_POST['TPSessionID']) && isset($_POST['Username'])){
             $TPSessionID = $_POST['TPSessionID'];
             $Username = $_POST['Username'];
             $result = $this->_GetActiveSession($TPSessionID,$Username, $moduleName);
         }
-        
+
         $this->render('getactivesession', array('result'=>$result));
     }
         private function _GetActiveSession($TPSessionID,$Username, $moduleName){
             $url = $this->genURL($moduleName);
             $postData = CJSON::encode(array('TPSessionID'=>$TPSessionID, 'Username'=>$Username));
             $result = $this->SubmitData($url, $postData);
-            
+
             return $result[1];
         }
-        
+
     public function actionLogin(){
         $this->pageTitle= $this->genTitlePage('Login');
         $result='';
-        
+
         $moduleName ='login';
         if(isset($_POST['TPSessionID']) && isset($_POST['Username']) && isset($_POST['Password'])){
             $TPSessionID = $_POST['TPSessionID'];
@@ -135,14 +133,14 @@ class AmpapiInvokerController extends Controller {
             $url = $this->genURL($moduleName);
             $postData = CJSON::encode(array('TPSessionID'=>$TPSessionID, 'Username'=>$Username, 'Password'=>$Password));
             $result = $this->SubmitData($url, $postData);
-            
+
             return $result[1];
         }
-    
+
     public function actionForgotPassword(){
         $this->pageTitle= $this->genTitlePage('Forgot Password');
         $result='';
-        
+
         $moduleName ='forgotpassword';
         if(isset($_POST['TPSessionID']) && isset($_POST['EmailAddressOrCardNumber'])){
             $TPSessionID = $_POST['TPSessionID'];
@@ -155,16 +153,16 @@ class AmpapiInvokerController extends Controller {
             $url = $this->genURL($moduleName);
             $postData = CJSON::encode(array('TPSessionID'=>$TPSessionID, 'EmailCardNumber'=>$EmailCardNumber));
             $result = $this->SubmitData($url, $postData);
-            
+
             return $result[1];
         }
-    
+
         public function actionRegisterMember(){
             $this->pageTitle= $this->genTitlePage('Register Member');
             $result='';
 
             $moduleName ='registermember';
-            
+
             if(isset($_POST['TPSessionID']) || isset($_POST['FirstName']) || isset($_POST['LastName']) || isset($_POST['Password']) ||isset($_POST['PermanentAdd']) ||isset($_POST['MobileNo']) || isset($_POST['EmailAddress']) && isset($_POST['IDPresented']) && isset($_POST['IDNumber']) && isset($_POST['Birthdate'])){
                 $TPSessionID = $_POST['TPSessionID'];
                 $FirstName = $_POST['FirstName'];
@@ -188,13 +186,13 @@ class AmpapiInvokerController extends Controller {
                 $ReferrerID = $_POST['ReferrerID'];
                 $EmailSubscription = $_POST['EmailSubscription'];
                 $SMSubscription = $_POST['SMSSubscription'];
-                
+
 
                 $result = $this->_registerMember($TPSessionID ,$FirstName ,$MiddleName , $LastName,$NickName ,$Password ,$PermanentAdd ,$MobileNo , $AlternateMobileNo,$EmailAddress ,$AlternateEmail ,$Gender ,$IDPresented ,$IDNumber, $Nationality,$Birthdate, $Occupation, $IsSmoker, $ReferralCode, $ReferrerID, $EmailSubscription, $SMSubscription,$moduleName);
             }
             $this->render($moduleName, array('result'=>$result));
         }
-        
+
             private function _registerMember($TPSessionID ,$FirstName ,$MiddleName , $LastName,$NickName ,$Password ,$PermanentAdd ,$MobileNo , $AlternateMobileNo,$EmailAddress ,$AlternateEmail ,$Gender ,$IDPresented ,$IDNumber, $Nationality,$Birthdate, $Occupation, $IsSmoker, $ReferralCode,$ReferrerID, $EmailSubscription, $SMSubscription, $moduleName){
                 $url = $this->genURL($moduleName);
                 $postData = CJSON::encode(array('TPSessionID'=>$TPSessionID,'FirstName'=>$FirstName ,'MiddleName'=>$MiddleName , 'LastName'=>$LastName,'NickName'=>$NickName ,'Password'=>$Password ,'PermanentAdd'=>$PermanentAdd ,'MobileNo'=>$MobileNo , 'AlternateMobileNo'=>$AlternateMobileNo,'EmailAddress'=>$EmailAddress ,'AlternateEmail'=>$AlternateEmail ,'Gender'=>$Gender ,'IDPresented'=>$IDPresented ,'IDNumber'=>$IDNumber, 'Nationality'=>$Nationality, 'Birthdate'=>$Birthdate, 'Occupation'=>$Occupation, 'IsSmoker'=>$IsSmoker, 'ReferralCode'=>$ReferralCode, 'ReferrerID'=>$ReferrerID, 'EmailSubscription'=>$EmailSubscription, 'SMSSubscription'=>$SMSubscription));
@@ -202,14 +200,14 @@ class AmpapiInvokerController extends Controller {
 
                 return $result[1];
             }
-    
+
     public function actionUpdateProfile(){
         $this->pageTitle= $this->genTitlePage('Update Profile');
-        
+
         $result='';
         $moduleName ='updateprofile';
-        
-        if(isset($_POST['TPSessionID']) && isset($_POST['MPSessionID']) && isset($_POST['FirstName']) && isset($_POST['LastName']) &&isset($_POST['MobileNo']) && isset($_POST['EmailAddress']) && isset($_POST['IDPresented']) && isset($_POST['IDNumber']) && isset($_POST['Birthdate'])){
+
+        if(isset($_POST['TPSessionID']) && isset($_POST['MPSessionID']) && isset($_POST['FirstName']) && isset($_POST['LastName']) && isset($_POST['MobileNo']) && isset($_POST['EmailAddress']) && isset($_POST['Birthdate'])){
             $TPSessionID = $_POST['TPSessionID'];
             $MPSessionID = $_POST['MPSessionID'];
             $FirstName = $_POST['FirstName'];
@@ -229,32 +227,34 @@ class AmpapiInvokerController extends Controller {
             $Occupation = $_POST['Occupation'];
             $IsSmoker = $_POST['IsSmoker'];
             $Birthdate = $_POST['Birthdate'];
-            
-            $result = $this->_UpdateProfile($TPSessionID,$MPSessionID ,$FirstName ,$MiddleName , $LastName,$NickName ,$Password ,$PermanentAdd ,$MobileNo , $AlternateMobileNo,$EmailAddress ,$AlternateEmail ,$Gender ,$IDPresented ,$IDNumber, $Nationality, $Occupation, $IsSmoker, $Birthdate, $moduleName);
+            $Region = $_POST['Region'];
+            $City = $_POST['City'];
+
+            $result = $this->_UpdateProfile($TPSessionID,$MPSessionID ,$FirstName ,$MiddleName , $LastName,$NickName ,$Password ,$PermanentAdd ,$MobileNo , $AlternateMobileNo,$EmailAddress ,$AlternateEmail ,$Gender ,$IDPresented ,$IDNumber, $Nationality, $Occupation, $IsSmoker, $Birthdate, $Region, $City, $moduleName);
         }
-        
+
         $this->render($moduleName, array('result'=>$result));
     }
-        private function _UpdateProfile($TPSessionID,$MPSessionID ,$FirstName ,$MiddleName , $LastName,$NickName ,$Password ,$PermanentAdd ,$MobileNo , $AlternateMobileNo,$EmailAddress ,$AlternateEmail ,$Gender ,$IDPresented ,$IDNumber, $Nationality, $Occupation, $IsSmoker, $Birthdate, $moduleName){
+        private function _UpdateProfile($TPSessionID,$MPSessionID ,$FirstName ,$MiddleName , $LastName,$NickName ,$Password ,$PermanentAdd ,$MobileNo , $AlternateMobileNo,$EmailAddress ,$AlternateEmail ,$Gender ,$IDPresented ,$IDNumber, $Nationality, $Occupation, $IsSmoker, $Birthdate, $Region, $City, $moduleName){
             $url = $this->genURL($moduleName);
-            $postData = CJSON::encode(array('TPSessionID'=>$TPSessionID,'MPSessionID'=>$MPSessionID ,'FirstName'=>$FirstName ,'MiddleName'=>$MiddleName , 'LastName'=>$LastName,'NickName'=>$NickName ,'Password'=>$Password ,'PermanentAdd'=>$PermanentAdd ,'MobileNo'=>$MobileNo , 'AlternateMobileNo'=>$AlternateMobileNo,'EmailAddress'=>$EmailAddress ,'AlternateEmail'=>$AlternateEmail ,'Gender'=>$Gender ,'IDPresented'=>$IDPresented ,'IDNumber'=>$IDNumber, 'Nationality'=>$Nationality, 'Occupation'=>$Occupation, 'IsSmoker'=>$IsSmoker, 'Birthdate'=>$Birthdate));
+            $postData = CJSON::encode(array('TPSessionID'=>$TPSessionID,'MPSessionID'=>$MPSessionID ,'FirstName'=>$FirstName ,'MiddleName'=>$MiddleName , 'LastName'=>$LastName,'NickName'=>$NickName ,'Password'=>$Password ,'PermanentAdd'=>$PermanentAdd ,'MobileNo'=>$MobileNo , 'AlternateMobileNo'=>$AlternateMobileNo,'EmailAddress'=>$EmailAddress ,'AlternateEmail'=>$AlternateEmail ,'Gender'=>$Gender ,'IDPresented'=>$IDPresented ,'IDNumber'=>$IDNumber, 'Nationality'=>$Nationality, 'Occupation'=>$Occupation, 'IsSmoker'=>$IsSmoker, 'Birthdate'=>$Birthdate, 'Region' => $Region, 'City' => $City));
             $result = $this->SubmitData($url, $postData);
-            
+
             return $result[1];
         }
-    
+
     public function actionCheckPoints(){
         $this->pageTitle= $this->genTitlePage('Check Points');
-        
+
         $result='';
         $moduleName ='checkpoints';
-        
+
         if(isset($_POST['TPSessionID']) && isset($_POST['CardNumber'])){
             $TPSessionID = trim($_POST['TPSessionID']);
             $CardNumber = trim($_POST['CardNumber']);
             $result = $this->_checkPoints($TPSessionID,$CardNumber,$moduleName);
         }
-        
+
         $this->render($moduleName, array('result'=>$result));
     }
         private function _checkPoints($TPSessionID,$CardNumber,$moduleName){
@@ -262,40 +262,40 @@ class AmpapiInvokerController extends Controller {
             $postData = CJSON::encode(array('TPSessionID'=>$TPSessionID, 'CardNumber'=>$CardNumber));
             //print_r($postData);
             $result = $this->SubmitData($url, $postData);
-            
+
             return $result[1];
         }
-    
-    
+
+
     public function actionListItems(){
         $this->pageTitle= $this->genTitlePage('List Items');
-        
+
         $result='';
         $moduleName ='listitems';
-        
+
         if(isset($_POST['TPSessionID']) && isset($_POST['MPSessionID']) && isset($_POST['PlayerClassID'])){
             $TPSessionID = $_POST['TPSessionID'];
             $MPSessionID = $_POST['MPSessionID'];
             $PlayerClassID = $_POST['PlayerClassID'];
             $result = $this->_listItems($TPSessionID,$MPSessionID,$PlayerClassID,$moduleName);
         }
-        
+
         $this->render($moduleName, array('result'=>$result));
     }
         private function _listItems($TPSessionID,$MPSessionID,$PlayerClassID,$moduleName){
             $url = $this->genURL($moduleName);
             $postData = CJSON::encode(array('TPSessionID'=>$TPSessionID, 'MPSessionID'=>$MPSessionID, 'PlayerClassID'=>$PlayerClassID));
             $result = $this->SubmitData($url, $postData);
-            
+
             return $result[1];
         }
-    
+
     public function actionRedeemItems(){
         $this->pageTitle= $this->genTitlePage('Redeem Items');
-        
+
         $result='';
         $moduleName ='redeemitems';
-        
+
         if(isset($_POST['TPSessionID']) || isset($_POST['MPSessionID']) || isset($_POST['CardNumber']) || isset($_POST['RewardID']) || isset($_POST['REwardItemID'])|| isset($_POST['Quantity']) || isset($_POST['Source'])){
             $TPSessionID = $_POST['TPSessionID'];
             $MPSessionID = $_POST['MPSessionID'];
@@ -306,127 +306,127 @@ class AmpapiInvokerController extends Controller {
             $Source = $_POST['Source'];
             $result = $this->_redeemItems($TPSessionID,$MPSessionID,$CardNumber,$RewardID,$RewardItemID,$Quantity,$Source,$moduleName);
         }
-        
+
         $this->render($moduleName, array('result'=>$result));
     }
         private function _redeemItems($TPSessionID,$MPSessionID,$CardNumber,$RewardID,$RewardItemID,$Quantity,$Source,$moduleName){
             $url = $this->genURL($moduleName);
             $postData = CJSON::encode(array('TPSessionID'=>$TPSessionID, 'MPSessionID'=>$MPSessionID, 'CardNumber'=>$CardNumber, 'RewardID'=>$RewardID, 'RewardItemID'=>$RewardItemID, 'Quantity'=>$Quantity, 'Source'=>$Source));
             $result = $this->SubmitData($url, $postData);
-            
+
             return $result[1];
         }
-    
+
     public function actionGetProfile(){
         $this->pageTitle= $this->genTitlePage('Get Profile');
-        
+
         $result='';
         $moduleName ='getprofile';
-        
+
         if(isset($_POST['TPSessionID']) && isset($_POST['MPSessionID']) && isset($_POST['CardNumber'])){
             $TPSessionID = $_POST['TPSessionID'];
             $MPSessionID = $_POST['MPSessionID'];
             $CardNumber = $_POST['CardNumber'];
             $result = $this->_getProfile($TPSessionID,$MPSessionID,$CardNumber,$moduleName);
         }
-        
+
         $this->render($moduleName, array('result'=>$result));
     }
         private function _getProfile($TPSessionID,$MPSessionID,$CardNumber,$moduleName){
             $url = $this->genURL($moduleName);
             $postData = CJSON::encode(array('TPSessionID'=>$TPSessionID, 'MPSessionID'=>$MPSessionID, 'CardNumber'=>$CardNumber));
             $result = $this->SubmitData($url, $postData);
-            
+
             return $result[1];
         }
-    
+
     public function actionGetGender(){
         $this->pageTitle= $this->genTitlePage('Get Gender');
-        
+
         $result='';
         $moduleName ='getgender';
         if(isset($_POST['TPSessionID'])){
             $TPSessionID = $_POST['TPSessionID'];
             $result = $this->_getGender($TPSessionID, $moduleName);
         }
-        
+
         $this->render($moduleName, array('result'=>$result));
     }
         private function _getGender($TPSessionID, $moduleName){
             $url = $this->genURL($moduleName);
             $postData = CJSON::encode(array('TPSessionID'=>$TPSessionID));
             $result = $this->SubmitData($url, $postData);
-            
+
             return $result[1];
         }
-    
+
     public function actionGetIDPresented(){
         $this->pageTitle= $this->genTitlePage('Get ID Presented');
-        
+
         $result='';
         $moduleName ='getidpresented';
-        
+
         if(isset($_POST['TPSessionID'])){
             $TPSessionID = $_POST['TPSessionID'];
             $result = $this->_getIDPresented($TPSessionID, $moduleName);
         }
-        
+
         $this->render($moduleName, array('result'=>$result));
     }
         private function _getIDPresented($TPSessionID, $moduleName){
             $url = $this->genURL($moduleName);
             $postData = CJSON::encode(array('TPSessionID'=>$TPSessionID));
             $result = $this->SubmitData($url, $postData);
-            
+
             return $result[1];
         }
-    
+
     public function actionGetNationality(){
         $this->pageTitle= $this->genTitlePage('Get Nationality');
-        
+
         $result='';
         $moduleName ='getnationality';
-        
+
         if(isset($_POST['TPSessionID'])){
             $TPSessionID = $_POST['TPSessionID'];
             $result = $this->_getNationality($TPSessionID, $moduleName);
         }
-        
+
         $this->render($moduleName, array('result'=>$result));
     }
         private function _getNationality($TPSessionID, $moduleName){
             $url = $this->genURL($moduleName);
             $postData = CJSON::encode(array('TPSessionID'=>$TPSessionID));
             $result = $this->SubmitData($url, $postData);
-            
+
             return $result[1];
         }
-    
+
     public function actionGetOccupation(){
         $this->pageTitle= $this->genTitlePage('Get Occupation');
-        
+
         $result='';
         $moduleName ='getoccupation';
-        
+
         if(isset($_POST['TPSessionID'])){
             $TPSessionID = $_POST['TPSessionID'];
             $result = $this->_getNationality($TPSessionID, $moduleName);
         }
-        
+
         $this->render($moduleName, array('result'=>$result));
     }
         private function _getOccupation($TPSessionID, $moduleName){
             $url = $this->genURL($moduleName);
             $postData = CJSON::encode(array('TPSessionID'=>$TPSessionID));
             $result = $this->SubmitData($url, $postData);
-            
+
             return $result[1];
         }
-    
+
     public function actionGetIsSmoker(){
         $this->pageTitle= $this->genTitlePage('Get IsSmoker');
         $result='';
-        
+
         $moduleName = 'getissmoker';
         if(isset($_POST['TPSessionID'])){
             $TPSessionID = $_POST['TPSessionID'];
@@ -438,14 +438,14 @@ class AmpapiInvokerController extends Controller {
             $url = $this->genURL($moduleName);
             $postData = CJSON::encode(array('TPSessionID'=>$TPSessionID));
             $result = $this->SubmitData($url, $postData);
-            
+
             return $result[1];
         }
-    
+
     public function actionGetReferrer(){
         $this->pageTitle= $this->genTitlePage('Get Referrer');
         $result='';
-        
+
         $moduleName = 'getreferrer';
         if(isset($_POST['TPSessionID'])){
             $TPSessionID = $_POST['TPSessionID'];
@@ -457,14 +457,14 @@ class AmpapiInvokerController extends Controller {
             $url = $this->genURL($moduleName);
             $postData = CJSON::encode(array('TPSessionID'=>$TPSessionID));
             $result = $this->SubmitData($url, $postData);
-            
+
             return $result[1];
         }
-    
+
     public function actionGetRegion(){
         $this->pageTitle= $this->genTitlePage('Get Region');
         $result='';
-        
+
         $moduleName = 'getregion';
         if(isset($_POST['TPSessionID'])){
             $TPSessionID = $_POST['TPSessionID'];
@@ -476,14 +476,14 @@ class AmpapiInvokerController extends Controller {
             $url = $this->genURL($moduleName);
             $postData = CJSON::encode(array('TPSessionID'=>$TPSessionID));
             $result = $this->SubmitData($url, $postData);
-            
+
             return $result[1];
         }
-    
+
     public function actionGetCity(){
         $this->pageTitle= $this->genTitlePage('Get City');
         $result='';
-        
+
         $moduleName = 'getcity';
         if(isset($_POST['TPSessionID'])){
             $TPSessionID = $_POST['TPSessionID'];
@@ -495,15 +495,15 @@ class AmpapiInvokerController extends Controller {
             $url = $this->genURL($moduleName);
             $postData = CJSON::encode(array('TPSessionID'=>$TPSessionID));
             $result = $this->SubmitData($url, $postData);
-            
+
             return $result[1];
         }
-    
-        
+
+
     public function actionLogout(){
         $this->pageTitle= $this->genTitlePage('Logout');
         $result='';
-        
+
         $moduleName = 'logout';
         if(isset($_POST['TPSessionID'])){
             $TPSessionID = $_POST['TPSessionID'];
@@ -516,13 +516,13 @@ class AmpapiInvokerController extends Controller {
             $url = $this->genURL($moduleName);
             $postData = CJSON::encode(array('TPSessionID'=>$TPSessionID, 'MPSessionID'=>$MPSessionID));
             $result = $this->SubmitData($url, $postData);
-            
+
             return $result[1];
         }
-        
-    
+
+
     //-------------------------Generator Functions-------------
-    
+
     //This function dynamically generates string for title page
     private function genTitlePage($moduleName = null){
         return "AMPAPI - ".$moduleName;
@@ -532,7 +532,7 @@ class AmpapiInvokerController extends Controller {
         return Yii::app()->params['urlAMPAPI'].$moduleName;
     }
     //----------------------------------------------
-    
+
     private function SubmitData( $uri, $postdata)
     {
             $curl = curl_init( $uri );
@@ -553,11 +553,11 @@ class AmpapiInvokerController extends Controller {
             $http_status = curl_getinfo( $curl, CURLINFO_HTTP_CODE );
 
             curl_close( $curl );
-            
+
             //print_r($uri);exit;
             return array( $http_status, $response );
     }
-    
+
     public function actionError()
     {
             if($error=Yii::app()->errorHandler->error)
@@ -568,7 +568,7 @@ class AmpapiInvokerController extends Controller {
                             $this->render('error', $error);
             }
     }
-      
+
 }
 
 ?>

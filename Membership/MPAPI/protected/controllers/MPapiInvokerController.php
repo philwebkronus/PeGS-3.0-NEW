@@ -1,8 +1,4 @@
 <?php
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
 /**
  * Description of MPapiInvokerController
@@ -10,6 +6,7 @@
  * @author fdlsison
  * @date 06-20-2014
  */
+
 class MPapiInvokerController extends Controller{
 
     /**
@@ -67,6 +64,7 @@ class MPapiInvokerController extends Controller{
             $result = $this->_login($username, $password);
         }
 
+
         $this->render('login', array('result'=>$result));
     }
 
@@ -122,7 +120,7 @@ class MPapiInvokerController extends Controller{
         $result = '';
 
         if(isset($_POST['FirstName']) || isset($_POST['LastName']) || isset($_POST['MobileNo']) || isset($_POST['EmailAddress'])
-                || isset($_POST['IDNumber']) || isset($_POST['Birthdate']) || isset($_POST['MPSessionID'])) {
+                || isset($_POST['IDNumber']) || isset($_POST['Birthdate']) || isset($_POST['MPSessionID']) || isset($_POST['Region']) || isset($_POST['City'])) {
             $mpSessionID = $_POST['MPSessionID'];
             $firstname = $_POST['FirstName'];
             $middlename = $_POST['MiddleName'];
@@ -141,8 +139,10 @@ class MPapiInvokerController extends Controller{
             $nationality = $_POST['Nationality'];
             $occupation = $_POST['Occupation'];
             $isSmoker = $_POST['IsSmoker'];
+            $region = $_POST['Region'];
+            $city = $_POST['City'];
 
-            $result = $this->_updateProfile($mpSessionID, $firstname, $middlename, $lastname, $nickname, $mobileNumber, $alternateMobileNumber, $emailAddress, $alternateEmail, $gender, $idNumber, $birthdate, $password, $idPresented, $permanentAddress, $nationality, $occupation, $isSmoker);
+            $result = $this->_updateProfile($mpSessionID, $firstname, $middlename, $lastname, $nickname, $mobileNumber, $alternateMobileNumber, $emailAddress, $alternateEmail, $gender, $idNumber, $birthdate, $password, $idPresented, $permanentAddress, $nationality, $occupation, $isSmoker, $region, $city);
         }
 
         $this->render('updateprofile', array('result'=>$result));
@@ -186,6 +186,7 @@ class MPapiInvokerController extends Controller{
             $rewardItemID = $_POST['RewardItemID'];
             $rewardID = $_POST['RewardID'];
             $quantity = $_POST['Quantity'];
+            //$itemQuantity = $_POST['ItemQuantity'];
             $source = $_POST['Source'];
 
             $result = $this->_redeemItems($mpSessionID, $cardNumber, $rewardID, $rewardItemID, $quantity, $source);
@@ -262,8 +263,7 @@ class MPapiInvokerController extends Controller{
         $this->pageTitle = 'Membership Portal API - Delete Session';
         $result = '';
 
-        //if(isset($_POST['yt0']))
-            $result = $this->_deleteSession();
+        $result = $this->_deleteSession();
 
         $this->render('deletesession', array('result'=>$result));
     }
@@ -310,53 +310,37 @@ class MPapiInvokerController extends Controller{
 
         $this->render('getcity', array('result'=>$result));
     }
-    
+
     //@date 09-16-2014
     public function actionRegisterMemberBT() {
         $this->pageTitle = 'Membership Portal API - Register Member BT';
         $result = '';
-        
+
         if(isset($_POST['FirstName']) || isset($_POST['LastName']) || isset($_POST['MobileNo']) || isset($_POST['EmailAddress'])
                 || isset($_POST['Birthdate'])) {
             $firstname = $_POST['FirstName'];
-            //$middlename = $_POST['MiddleName'];
-            //$nickname = $_POST['NickName'];
             $lastname = $_POST['LastName'];
             $mobileNumber = $_POST['MobileNo'];
-            //$alternateMobileNumber = $_POST['AlternateMobileNo'];
             $emailAddress = $_POST['EmailAddress'];
-            //$alternateEmail = $_POST['AlternateEmail'];
-            //$gender = $_POST['Gender'];
-            //$idNumber = $_POST['IDNumber'];
             $birthdate = $_POST['Birthdate'];
-//            $password = $_POST['Password'];
-//            $idPresented = $_POST['IDPresented'];
-//            $permanentAddress = $_POST['PermanentAdd'];
-//            $nationality = $_POST['Nationality'];
-//            $occupation = $_POST['Occupation'];
-//            $isSmoker = $_POST['IsSmoker'];
-//            $referrerID = $_POST['ReferrerID'];
-//            $referralCode = $_POST['ReferralCode'];
-//            $emailSubscription = $_POST['EmailSubscription'];
-//            $smsSubscription = $_POST['SMSSubscription'];
-                    
+
             $result = $this->_registerMemberBT($firstname, $lastname, $mobileNumber, $emailAddress, $birthdate);
         }
-        
+
         $this->render('registermemberbt', array('result'=>$result));
     }
-    
+
     private function _login($username, $password) {
         $postdata = CJSON::encode(array('Username' => $username, 'Password' => $password));
         $result = $this->SubmitData(Yii::app()->params['urlMPAPI'].'login', $postdata);
-        
+
         return $result[1];
     }
 
     private function _forgotPassword($emailCardNumber) {
         $postdata = CJSON::encode(array('EmailCardNumber'=>$emailCardNumber));
         $result = $this->SubmitData(Yii::app()->params['urlMPAPI'].'forgotpassword', $postdata);
-        
+
         return $result[1];
     }
 
@@ -364,7 +348,7 @@ class MPapiInvokerController extends Controller{
         $postdata = CJSON::encode(array('FirstName'=>$firstname, 'MiddleName' => $middlename, 'LastName'=>$lastname,'NickName' => $nickname, 'MobileNo'=>$mobileNumber, 'AlternateMobileNo' => $alternateMobileNumber, 'EmailAddress'=>$emailAddress,
                                   'AlternateEmail' => $alternateEmail,'Gender' => $gender, 'IDNumber'=>$idNumber, 'Birthdate'=>$birthdate, 'Password' => $password, 'IDPresented' => $idPresented, 'PermanentAdd' => $permanentAddress, 'Nationality' => $nationality, 'Occupation' => $occupation, 'IsSmoker' => $isSmoker, 'ReferrerID' => $referrerID, 'ReferralCode' => $referralCode, 'EmailSubscription' => $emailSubscription, 'SMSSubscription' => $smsSubscription));
         $result = $this->SubmitData(Yii::app()->params['urlMPAPI'].'registermember', $postdata);
-        
+
         return $result[1];
     }
 
@@ -372,14 +356,14 @@ class MPapiInvokerController extends Controller{
         $postdata = CJSON::encode(array('MPSessionID' => $mpSessionID, 'FirstName'=>$firstname,'MiddleName' => $middlename, 'LastName'=>$lastname, 'NickName' => $nickname, 'MobileNo'=>$mobileNumber,'AlternateMobileNo' => $alternateMobileNumber, 'EmailAddress'=>$emailAddress,
                                   'AlternateEmail' => $alternateEmail,'Gender' => $gender, 'IDNumber'=>$idNumber, 'Birthdate'=>$birthdate, 'Password' => $password, 'IDPresented' => $idPresented, 'PermanentAdd' => $permanentAddress, 'Nationality' => $nationality, 'Occupation' => $occupation, 'IsSmoker' => $isSmoker));
         $result = $this->SubmitData(Yii::app()->params['urlMPAPI'].'updateprofile', $postdata);
-        
+
         return $result[1];
     }
 
     private function _checkPoints($cardNumber) {
         $postdata = CJSON::encode(array('CardNumber'=>$cardNumber));
         $result = $this->SubmitData(Yii::app()->params['urlMPAPI'].'checkpoints', $postdata);
-        
+
         return $result[1];
     }
 
@@ -387,7 +371,7 @@ class MPapiInvokerController extends Controller{
         $postdata = CJSON::encode(array('PlayerClassID' => $playerClassID, 'MPSessionID' => $mpSessionID));
 
         $result = $this->SubmitData(Yii::app()->params['urlMPAPI'].'listitems', $postdata);
-        
+
         return $result[1];
     }
 
@@ -395,7 +379,7 @@ class MPapiInvokerController extends Controller{
         $postdata = CJSON::encode(array('MPSessionID' => $mpSessionID, 'CardNumber' => $cardNumber, 'RewardID' => $rewardID, 'RewardItemID' => $rewardItemID, 'Quantity' => $quantity, 'Source' => $source));
 
         $result = $this->SubmitData(Yii::app()->params['urlMPAPI'].'redeemitems', $postdata);
-        
+
         return $result[1];
     }
 
@@ -403,7 +387,7 @@ class MPapiInvokerController extends Controller{
         $postdata = CJSON::encode(array('CardNumber' => $cardNumber, 'MPSessionID' => $mpSessionID));
 
         $result = $this->SubmitData(Yii::app()->params['urlMPAPI'].'getprofile', $postdata);
-        
+
         return $result[1];
     }
 
@@ -411,8 +395,8 @@ class MPapiInvokerController extends Controller{
         $postdata = CJSON::encode(array());
 
         $result = $this->SubmitData(Yii::app()->params['urlMPAPI'].'getgender', $postdata);
-        
-        
+
+
         return $result[1];
     }
 
@@ -420,7 +404,7 @@ class MPapiInvokerController extends Controller{
         $postdata = CJSON::encode(array());
 
         $result = $this->SubmitData(Yii::app()->params['urlMPAPI'].'getidpresented', $postdata);
-        
+
         return $result[1];
     }
 
@@ -428,7 +412,7 @@ class MPapiInvokerController extends Controller{
         $postdata = CJSON::encode(array());
 
         $result = $this->SubmitData(Yii::app()->params['urlMPAPI'].'getnationality', $postdata);
-        
+
         return $result[1];
     }
 
@@ -436,7 +420,7 @@ class MPapiInvokerController extends Controller{
         $postdata = CJSON::encode(array());
 
         $result = $this->SubmitData(Yii::app()->params['urlMPAPI'].'getoccupation', $postdata);
-        
+
         return $result[1];
     }
 
@@ -444,14 +428,14 @@ class MPapiInvokerController extends Controller{
         $postdata = CJSON::encode(array());
 
         $result = $this->SubmitData(Yii::app()->params['urlMPAPI'].'getissmoker', $postdata);
-        
+
         return $result[1];
     }
 
     private function _deleteSession(){
-        //$url = "http://172.16.102.174/mpapi.dev.local/index.php/MPapi/getissmoker";
-        $url = "http://localhost/MPAPI/index.php/Cron/deletesession";
+        //$url = "http://localhost/MPAPI/index.php/Cron/deletesession";
         $postdata = CJSON::encode(array());
+
         $result = $this->SubmitData($url, $postdata);
 
         return $result[1];
@@ -461,7 +445,7 @@ class MPapiInvokerController extends Controller{
         $postdata = CJSON::encode(array('MPSessionID' => $mpSessionID));
 
         $result = $this->SubmitData(Yii::app()->params['urlMPAPI'].'logout', $postdata);
-        
+
         return $result[1];
     }
 
@@ -469,7 +453,7 @@ class MPapiInvokerController extends Controller{
         $postdata = CJSON::encode(array());
 
         $result = $this->SubmitData(Yii::app()->params['urlMPAPI'].'getreferrer', $postdata);
-        
+
         return $result[1];
     }
 
@@ -477,7 +461,7 @@ class MPapiInvokerController extends Controller{
         $postdata = CJSON::encode(array());
 
         $result = $this->SubmitData(Yii::app()->params['urlMPAPI'].'getregion', $postdata);
-        
+
         return $result[1];
     }
 
@@ -485,17 +469,15 @@ class MPapiInvokerController extends Controller{
         $postdata = CJSON::encode(array());
 
         $result = $this->SubmitData(Yii::app()->params['urlMPAPI'].'getcity', $postdata);
-        
+
         return $result[1];
     }
-    
+
     private function _registerMemberBT($firstname, $lastname, $mobileNumber, $emailAddress, $birthdate) {
-        //$url = "http://172.16.102.174/mpapi.dev.local/index.php/MPapi/registermember";
-        //$url = "http://localhost/MPAPI/index.php/MPapi/registermember";
         $postdata = CJSON::encode(array('FirstName'=>$firstname, 'LastName'=>$lastname, 'MobileNo'=>$mobileNumber, 'EmailAddress'=>$emailAddress,
                                    'Birthdate'=>$birthdate));
         $result = $this->SubmitData(Yii::app()->params['urlMPAPI'].'registermemberbt', $postdata);
-        
+
         return $result[1];
     }
 

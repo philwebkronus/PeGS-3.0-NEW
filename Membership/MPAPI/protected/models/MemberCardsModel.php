@@ -10,7 +10,6 @@ class MemberCardsModel {
     public static $_instance = null;
     public $_connection;
 
-
     public function __construct() {
         $this->_connection = Yii::app()->db2;
     }
@@ -25,7 +24,7 @@ class MemberCardsModel {
     //@author Ralph Sison
     //@date 6-18-2014
     public function getMemberDetailsByCard($cardNumber) {
-        $sql = 'SELECT a.MID, b.Status, b.CardTypeID
+        $sql = 'SELECT a.MID, a.CurrentPoints, b.Status, b.CardTypeID
                 FROM membercards a
                 INNER JOIN cards b ON a.CardID = b.CardID
                 WHERE b.CardNumber = :CardNumber';
@@ -45,11 +44,9 @@ class MemberCardsModel {
         $command = $this->_connection->createCommand($sql);
         $result = $command->queryRow(true, $param);
         
-        return $result;
-                
+        return $result;            
     }
-    
-    
+     
     public function getMIDUsingCard($cardNumber) {
         $sql = 'SELECT mc.MID, c.Status
                 FROM membercards mc
@@ -122,8 +119,5 @@ class MemberCardsModel {
             Utilities::log($e->getMessage());
             return 0;
         }
-    }
-    
-            
+    }           
 }
-

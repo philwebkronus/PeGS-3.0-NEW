@@ -4,10 +4,6 @@
     <br />
     <?php echo CHtml::beginForm(); ?>
         <div class="row">
-            <?php echo CHtml::label('TPSessionID','TPSessionID'); ?>
-            <?php echo CHtml::textField('TPSessionID'); ?>
-        </div>
-        <div class="row">
             <?php echo CHtml::label('FirstName','FirstName'); ?>
             <?php echo CHtml::textField('FirstName'); ?>
         </div>
@@ -75,7 +71,6 @@
             <?php echo CHtml::label('IsSmoker','IsSmoker'); ?>
             <?php echo CHtml::textField('IsSmoker'); ?>
         </div>
-        
         <div class="row">
             <?php echo CHtml::label('ReferrerID','ReferrerID'); ?>
             <?php echo CHtml::textField('ReferrerID'); ?>
