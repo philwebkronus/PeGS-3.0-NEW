@@ -48,7 +48,9 @@ class VMSBaseIdentity extends Controller
                                              'index','exportXls', 'viewTicketConf', 'ticketAutoGenConf', 'confirmConfigSetting', 
                                              'getConfigurationHistory', 'coupon', 'ticket', 'changeCouponStatus', 
                                              'changeTicketStatus','loadAllTicketInfo', 'getTotalTickets', 'getTicketRedemptions', 
-                                             'getTicketCuOffSummary', 'checkDateRange'
+                                             'getTicketCuOffSummary', 'checkDateRange', 'getCouponBatches', 'getBatchDetails', 
+                                             'getCoupons', 'getSiteTerminals', 'generateCoupons', 'regenerateCoupons', 'updateCouponBatch', 
+                                             'exporttocsv', 'getStatus', 'download'
                                        ),
                             'users'=>array('@'),
                     ),
