@@ -17,7 +17,7 @@
                 $botPath = LPConfig::app()->params['bot_path'];
                 $casinoPath = LPConfig::app()->params['game_client'][$casino['ServiceID']-1];
                 ?>
-                <a botpath="<?php echo $botPath ?>" casinopath="<?php echo $casinoPath ?>"  serviceType="<?php echo $casino['type']; ?>" serviceid="<?php echo $casino['ServiceID']; ?>" class="casino" href="<?php echo $this->createUrl('transfer'); ?>">
+                <a botpath="<?php echo $botPath ?>" casinopath="<?php echo $casinoPath ?>"  serviceType="<?php echo $casino['type']; ?>" serviceid="<?php echo $casino['ServiceID']; ?>" class="casino" href="<?php echo $this->createUrl('transfer'); ?>" chcksessionhref="<?php echo $this->createUrl('casinoServiceClick'); ?>" >
                 <?php endif; ?>
                     <?php if($key == 'SW'){?>
                         <img src="<?php echo Yii::app()->getModule('launchpad')->baseAssets; ?>/images/<?php echo Lib::getImage($key) ?>.png">

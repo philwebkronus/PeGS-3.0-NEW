@@ -213,6 +213,24 @@ class LobbyController extends CController
         Yii::app()->end();        
     }
     
+    public function actionCasinoServiceClick()
+    {
+        if(!Yii::app()->request->isAjaxRequest) {
+            throw new CHttpException(404, "Page not found");
+        }
+        
+        if(Yii::app()->user->isGuest) {
+            $response = array('currentbal'=>0, 'status' => 'not ok');
+        } else {            
+            list($currentBalance, $currentBet, $wcasinoApiHandler) = $this->getBalance($this->getCurrentServiceID(), $this->getCurrentServiceType());  
+            $response = array('currentbal'=>$currentBalance, 'status' => 'ok');
+        }
+
+        echo CJSON::encode($response);
+        Yii::app()->end();        
+    }
+    
+    
     /**
      * This action will be call if there is error in request
      */
@@ -231,292 +249,299 @@ class LobbyController extends CController
      */
     public function actionTransfer()
     {
-        if(!Yii::app()->request->isAjaxRequest) {
-            $this->log('Request should be should be ajax');
-            throw new CHttpException (404, 'Invalid Request');
-        }       
-        if(!isset($_GET['serviceID']) || $_GET['serviceID'] == '') {
-            $this->log('serviceID cannot be empty');
-            throw new CHttpException (404, 'Invalid Request');
-        }
         
-        if(!isset($_GET['serviceType']) || $_GET['serviceType'] == '') {
-            $this->log('$_GET[\'serviceType\'] cannot be empty');
-            throw new CHttpException(404, 'Invalid Request');
-        }
-            
-        // attach behavior CasinoConfigGenBehavior
-        $this->attachBehavior('casinoConfigGenerator', new CasinoConfigGenBehavior());        
-        
-        header('Content-type: application/json');
-        $currentServiceID = $this->getCurrentServiceID();
-        if(!$currentServiceID) {
-            throw new CHttpException(404,'<b style=\"width:125px\">Session Ended</b>');
-        }
-        
-        $currentServiceType = $this->getCurrentServiceType();
-        $pickServiceID = $_GET['serviceID'];
-        $pickServiceType = $_GET['serviceType'];
-        
-        list($currentBalance, $currentBet, $wcasinoApiHandler) = $this->getBalance($this->getCurrentServiceID(), $this->getCurrentServiceType());
-        
-        // die if can't get balance of current casino or rtg casino certificate is outdated
-        if($currentBalance == 'N/A' || !is_object($wcasinoApiHandler)) {
-            $this->log('[ServiceID: ' . $this->getCurrentServiceID() .'] can\'t get balance');
-            throw new CHttpException(404, 'Server is busy please try again. [ServiceID: ' . $this->getCurrentServiceID() .'] can\'t get balance');
-            
-        // die if current balance is less than or equal to zero    
-        } else if($currentBalance <= 0) {
-            $this->log('[ServiceID: ' . $this->getCurrentServiceID() .'] not enough balance');
-            throw new CHttpException(404, 'Unable to process request. You don\'t have enough balance. [ServiceID: ' . $this->getCurrentServiceID() .'] not enough balance');
-        }
-        
-        if($currentBet > 0){
-            $ptcurrentBet = $currentBet;
+        if(Yii::app()->user->isGuest) {
+            throw new CHttpException (404, 'Session Ended');
+            $this->redirect($this->createUrl('screensaver'));
         } else {
-            $ptcurrentBet = 0;
-        }
         
-        //check if there was a pending game bet for RTG
-        if(strpos($currentServiceType, 'rtg') !== false ){ 
-            $casinoAPI = new CasinoApi();
-            $terminalID = Yii::app()->user->getState('terminalID');
-            $PID = $wcasinoApiHandler->GetPID(Yii::app()->user->getState('tcode'));
-            $pendingGames = $casinoAPI->GetPendingGames($terminalID, $currentServiceID, $PID);
-        } else if (strpos($currentServiceType, 'rtg2') !== false ) {
-            $isUserBased = LPRefServices::model()->getUserMode($currentServiceID);
-            $casinoAPI = new CasinoApi();
-            if($isUserBased == 0){
-                $TerminalCode = $this->getTerminalCode();
-                $PID = $wcasinoApiHandler->GetPID($TerminalCode);
-                $pendingGames = $casinoAPI->GetPendingGames($TerminalCode, $currentServiceID, $PID);
+            if(!Yii::app()->request->isAjaxRequest) {
+                $this->log('Request should be should be ajax');
+                throw new CHttpException (404, 'Invalid Request');
+            }       
+            if(!isset($_GET['serviceID']) || $_GET['serviceID'] == '') {
+                $this->log('serviceID cannot be empty');
+                throw new CHttpException (404, 'Invalid Request');
+            }
+
+            if(!isset($_GET['serviceType']) || $_GET['serviceType'] == '') {
+                $this->log('$_GET[\'serviceType\'] cannot be empty');
+                throw new CHttpException(404, 'Invalid Request');
+            }
+
+            // attach behavior CasinoConfigGenBehavior
+            $this->attachBehavior('casinoConfigGenerator', new CasinoConfigGenBehavior());        
+
+            header('Content-type: application/json');
+            $currentServiceID = $this->getCurrentServiceID();
+            if(!$currentServiceID) {
+                throw new CHttpException(404,'<b style=\"width:125px\">Session Ended</b>');
+            }
+
+            $currentServiceType = $this->getCurrentServiceType();
+            $pickServiceID = $_GET['serviceID'];
+            $pickServiceType = $_GET['serviceType'];
+
+            list($currentBalance, $currentBet, $wcasinoApiHandler) = $this->getBalance($this->getCurrentServiceID(), $this->getCurrentServiceType());
+
+            // die if can't get balance of current casino or rtg casino certificate is outdated
+            if($currentBalance == 'N/A' || !is_object($wcasinoApiHandler)) {
+                $this->log('[ServiceID: ' . $this->getCurrentServiceID() .'] can\'t get balance');
+                throw new CHttpException(404, 'Server is busy please try again. [ServiceID: ' . $this->getCurrentServiceID() .'] can\'t get balance');
+
+            // die if current balance is less than or equal to zero    
+            } else if($currentBalance <= 0) {
+                $this->log('[ServiceID: ' . $this->getCurrentServiceID() .'] not enough balance');
+                throw new CHttpException(404, 'Unable to process request. You don\'t have enough balance. [ServiceID: ' . $this->getCurrentServiceID() .'] not enough balance');
+            }
+
+            if($currentBet > 0){
+                $ptcurrentBet = $currentBet;
             } else {
+                $ptcurrentBet = 0;
+            }
+
+            //check if there was a pending game bet for RTG
+            if(strpos($currentServiceType, 'rtg') !== false ){ 
+                $casinoAPI = new CasinoApi();
+                $terminalID = Yii::app()->user->getState('terminalID');
+                $PID = $wcasinoApiHandler->GetPID(Yii::app()->user->getState('tcode'));
+                $pendingGames = $casinoAPI->GetPendingGames($terminalID, $currentServiceID, $PID);
+            } else if (strpos($currentServiceType, 'rtg2') !== false ) {
+                $isUserBased = LPRefServices::model()->getUserMode($currentServiceID);
+                $casinoAPI = new CasinoApi();
+                if($isUserBased == 0){
+                    $TerminalCode = $this->getTerminalCode();
+                    $PID = $wcasinoApiHandler->GetPID($TerminalCode);
+                    $pendingGames = $casinoAPI->GetPendingGames($TerminalCode, $currentServiceID, $PID);
+                } else {
+                    $TerminalCode = $this->getTerminalCode();
+                    $MID = LPTerminalSessions::model()->getMID($TerminalCode);
+                    $logincredentials = LPMemberServices::model()->GetUBCredentials($pickServiceID, '', $MID);
+                    $terminalID = $logincredentials["ServiceUsername"];
+                    $PID = $wcasinoApiHandler->GetPID($terminalID);
+                    $pendingGames = $casinoAPI->GetPendingGames($terminalID, $currentServiceID, $PID);
+                }
+            } else {
+                $pendingGames = '';
+            }
+
+            //Log and Display error message if there was a pending game bet (for RTG casino only).
+            if(is_array($pendingGames) && $pendingGames['IsSucceed'] == true){
+                $message = "Unable to process request. There was a pending game bet on  ".$pendingGames['PendingGames']['GetPendingGamesByPIDResult']['Gamename'].'. TerminalID='.$terminalID. ' ServiceID='.$currentServiceID;
+                $this->log($message);
+                $message = "Unable to process request. There was a pending game bet.";
+                throw new CHttpException(404,$message);  
+            }
+
+            list($pickCasinoBalance, $currentBet, $dcasinoApiHandler) = $this->getBalance($pickServiceID, $pickServiceType);
+
+            // die if can't get balance if pick casino or rtg casino certificate is outdated
+            if($pickCasinoBalance == 'N/A' || !is_object($dcasinoApiHandler)) {
+                $this->log('[ServiceID: ' . $pickServiceID .'] can\'t get balance');
+                throw new CHttpException(404, 'Server is busy please try again. [ServiceID: ' . $pickServiceID .'] can\'t get balance');
+
+            // die if pick casino has greater than 0 balance    
+            } else if($pickCasinoBalance > 0) {
+                $this->log('[ServiceID: ' . $pickServiceID .'] has existing balance');
+                throw new CHttpException(404, 'Unable to process request. Next casino has an existing balance. [ServiceID: ' . $pickServiceID .'] has existing balance');   
+            }
+
+            // die if failed to insert to servicetransferhistory
+            if(!LPServiceTransferHistory::model()->insert($currentBalance, $pickServiceID)) {
+                $this->log("[CurrentServiceID:$currentServiceID, PickServiceID:$pickServiceID] failed to insert to servicetransferhistory");
+                throw new CHttpException(404, "Unable to process request. Server is Busy. Please try again. [CurrentServiceID:$currentServiceID, PickServiceID:$pickServiceID] failed to insert to transaction table [0003].");
+            }
+
+            //get membership card number
+            $terminalSessionDetails = LPTerminalSessions::model()->getTerminalDetails(Yii::app()->user->getState('terminalID'));
+            $loyaltyCardNo = $terminalSessionDetails['LoyaltyCardNumber'];
+            $mid = $terminalSessionDetails['MID'];
+            $userMode = $terminalSessionDetails['UserMode'];
+
+            $lpTransactionID = '';
+            if(strpos($currentServiceType, 'mg') !== false ){
+                $lpTransactionID = LPServiceTransferHistory::model()->insertServiceTransRef($currentServiceID, $origin_id = 1);
+            }
+
+            //get lastinsertid from table servicetransferhistory
+            $lastServID = LPServiceTransferHistory::model()->getLastInsertID();
+
+            // die if failed to insert to transactionrequestlogslp
+            if(!LPTransactionRequestLogsLp::model()->insert($currentBalance, $lastServID, 'W', 
+                    $currentServiceID, $loyaltyCardNo, $mid, $userMode, $lpTransactionID)) {
+                $this->log("[CurrentServiceID:$currentServiceID, PickServiceID:$pickServiceID] failed to insert to transactionrequestlogslp");
+                throw new CHttpException(404, "Unable to process request. Server is Busy. Please try again. [CurrentServiceID:$currentServiceID, PickServiceID:$pickServiceID] failed to insert to transaction table [0002].");           
+            }
+
+            $transRequestLogLPID = LPTransactionRequestLogsLp::model()->getLastInsertID();
+
+            // get reference insert id from transactionrequestlogslp
+            $referenceID = LPTransactionRequestLogsLp::model()->getReferenceID();
+
+            $tracking = array('LP'.$transRequestLogLPID,'W',$this->getTerminalID(),$this->getSiteID());
+
+            //get last inserted id from transactionrequestlogslp
+
+            /********************************* WITHDRAW ***************************/
+            if(!$this->withdraw($lpTransactionID,$currentServiceID, $currentServiceType, $currentBalance, $tracking, $wcasinoApiHandler, $ptcurrentBet)) {
+                $this->log("[CurrentServiceID:$currentServiceID, PickServiceID:$pickServiceID] failed to withdraw");
+
+                //update servicetransferhistory
+                LPServiceTransferHistory::model()->update(0, $lastServID);
+
+                //update transactionrequestlogslp
+                LPTransactionRequestLogsLp::model()->update(2, $this->_casinoTransactionID, $this->_apiActualResult, date('Y-m-d H:i:s'),$referenceID, $transRequestLogLPID);
+
+                throw new CHttpException(404, "Unable to process request. Server is Busy. Please try again. [CurrentServiceID:$currentServiceID, PickServiceID:$pickServiceID] failed to withdraw");
+
+            }
+            /**************************** END WITHDRAW ****************************/
+
+            //update transactionrequestlogslp
+            LPTransactionRequestLogsLp::model()->update(1, $this->_casinoTransactionID, $this->_apiActualResult, date('Y-m-d H:i:s'), $referenceID, $transRequestLogLPID);
+
+            $serviceInfo = LPRefServices::model()->getServiceInfoWithType($pickServiceID);
+            if(strpos($serviceInfo['type'], 'mg') !== false ){
+                $lpTransactionID = LPServiceTransferHistory::model()->insertServiceTransRef($pickServiceID, 1);
+            }
+
+            //Get the UserMode of the Pick Casino.
+            $duserMode = LPRefServices::model()->getUserMode($pickServiceID);
+
+            if(!LPTransactionRequestLogsLp::model()->insert($currentBalance, $lastServID, 'D', 
+                    $pickServiceID, $loyaltyCardNo, $mid, $userMode,$lpTransactionID)) {
+                $this->log("[CurrentServiceID:$currentServiceID, PickServiceID:$pickServiceID] failed to insert to transactionrequestlogslp for deposit"); 
+                throw new CHttpException(404, "Unable to process request. Server is Busy. Please try again. [CurrentServiceID:$currentServiceID, PickServiceID:$pickServiceID] failed to insert to transaction table for deposit [0002].");
+
+            }
+
+            $transRequestLogLPID = LPTransactionRequestLogsLp::model()->getLastInsertID();
+
+            // get last insert id from transactionrequestlogslp
+            $referenceID = LPTransactionRequestLogsLp::model()->getReferenceID();
+
+            $tracking = array('LP'.$transRequestLogLPID,'D',$this->getTerminalID(),$this->getSiteID());
+
+            $terminalPassword = LPTerminalSessions::model()->getTerminalPassword($this->getTerminalID(), 
+                                    $pickServiceID);
+
+            if($duserMode == 1){
                 $TerminalCode = $this->getTerminalCode();
                 $MID = LPTerminalSessions::model()->getMID($TerminalCode);
                 $logincredentials = LPMemberServices::model()->GetUBCredentials($pickServiceID, '', $MID);
-                $terminalID = $logincredentials["ServiceUsername"];
-                $PID = $wcasinoApiHandler->GetPID($terminalID);
-                $pendingGames = $casinoAPI->GetPendingGames($terminalID, $currentServiceID, $PID);
-            }
-        } else {
-            $pendingGames = '';
-        }
-
-        //Log and Display error message if there was a pending game bet (for RTG casino only).
-        if(is_array($pendingGames) && $pendingGames['IsSucceed'] == true){
-            $message = "Unable to process request. There was a pending game bet on  ".$pendingGames['PendingGames']['GetPendingGamesByPIDResult']['Gamename'].'. TerminalID='.$terminalID. ' ServiceID='.$currentServiceID;
-            $this->log($message);
-            $message = "Unable to process request. There was a pending game bet.";
-            throw new CHttpException(404,$message);  
-        }
-        
-        list($pickCasinoBalance, $currentBet, $dcasinoApiHandler) = $this->getBalance($pickServiceID, $pickServiceType);
-        
-        // die if can't get balance if pick casino or rtg casino certificate is outdated
-        if($pickCasinoBalance == 'N/A' || !is_object($dcasinoApiHandler)) {
-            $this->log('[ServiceID: ' . $pickServiceID .'] can\'t get balance');
-            throw new CHttpException(404, 'Server is busy please try again. [ServiceID: ' . $pickServiceID .'] can\'t get balance');
-            
-        // die if pick casino has greater than 0 balance    
-        } else if($pickCasinoBalance > 0) {
-            $this->log('[ServiceID: ' . $pickServiceID .'] has existing balance');
-            throw new CHttpException(404, 'Unable to process request. Next casino has an existing balance. [ServiceID: ' . $pickServiceID .'] has existing balance');   
-        }
-        
-        // die if failed to insert to servicetransferhistory
-        if(!LPServiceTransferHistory::model()->insert($currentBalance, $pickServiceID)) {
-            $this->log("[CurrentServiceID:$currentServiceID, PickServiceID:$pickServiceID] failed to insert to servicetransferhistory");
-            throw new CHttpException(404, "Unable to process request. Server is Busy. Please try again. [CurrentServiceID:$currentServiceID, PickServiceID:$pickServiceID] failed to insert to transaction table [0003].");
-        }
-        
-        //get membership card number
-        $terminalSessionDetails = LPTerminalSessions::model()->getTerminalDetails(Yii::app()->user->getState('terminalID'));
-        $loyaltyCardNo = $terminalSessionDetails['LoyaltyCardNumber'];
-        $mid = $terminalSessionDetails['MID'];
-        $userMode = $terminalSessionDetails['UserMode'];
-        
-        $lpTransactionID = '';
-        if(strpos($currentServiceType, 'mg') !== false ){
-            $lpTransactionID = LPServiceTransferHistory::model()->insertServiceTransRef($currentServiceID, $origin_id = 1);
-        }
-        
-        //get lastinsertid from table servicetransferhistory
-        $lastServID = LPServiceTransferHistory::model()->getLastInsertID();
-        
-        // die if failed to insert to transactionrequestlogslp
-        if(!LPTransactionRequestLogsLp::model()->insert($currentBalance, $lastServID, 'W', 
-                $currentServiceID, $loyaltyCardNo, $mid, $userMode, $lpTransactionID)) {
-            $this->log("[CurrentServiceID:$currentServiceID, PickServiceID:$pickServiceID] failed to insert to transactionrequestlogslp");
-            throw new CHttpException(404, "Unable to process request. Server is Busy. Please try again. [CurrentServiceID:$currentServiceID, PickServiceID:$pickServiceID] failed to insert to transaction table [0002].");           
-        }
-        
-        $transRequestLogLPID = LPTransactionRequestLogsLp::model()->getLastInsertID();
-        
-        // get reference insert id from transactionrequestlogslp
-        $referenceID = LPTransactionRequestLogsLp::model()->getReferenceID();
-        
-        $tracking = array('LP'.$transRequestLogLPID,'W',$this->getTerminalID(),$this->getSiteID());
-        
-        //get last inserted id from transactionrequestlogslp
-
-        /********************************* WITHDRAW ***************************/
-        if(!$this->withdraw($lpTransactionID,$currentServiceID, $currentServiceType, $currentBalance, $tracking, $wcasinoApiHandler, $ptcurrentBet)) {
-            $this->log("[CurrentServiceID:$currentServiceID, PickServiceID:$pickServiceID] failed to withdraw");
-            
-            //update servicetransferhistory
-            LPServiceTransferHistory::model()->update(0, $lastServID);
-            
-            //update transactionrequestlogslp
-            LPTransactionRequestLogsLp::model()->update(2, $this->_casinoTransactionID, $this->_apiActualResult, date('Y-m-d H:i:s'),$referenceID, $transRequestLogLPID);
-            
-            throw new CHttpException(404, "Unable to process request. Server is Busy. Please try again. [CurrentServiceID:$currentServiceID, PickServiceID:$pickServiceID] failed to withdraw");
-            
-        }
-        /**************************** END WITHDRAW ****************************/
-        
-        //update transactionrequestlogslp
-        LPTransactionRequestLogsLp::model()->update(1, $this->_casinoTransactionID, $this->_apiActualResult, date('Y-m-d H:i:s'), $referenceID, $transRequestLogLPID);
-        
-        $serviceInfo = LPRefServices::model()->getServiceInfoWithType($pickServiceID);
-        if(strpos($serviceInfo['type'], 'mg') !== false ){
-            $lpTransactionID = LPServiceTransferHistory::model()->insertServiceTransRef($pickServiceID, 1);
-        }
-        
-        //Get the UserMode of the Pick Casino.
-        $duserMode = LPRefServices::model()->getUserMode($pickServiceID);
-        
-        if(!LPTransactionRequestLogsLp::model()->insert($currentBalance, $lastServID, 'D', 
-                $pickServiceID, $loyaltyCardNo, $mid, $userMode,$lpTransactionID)) {
-            $this->log("[CurrentServiceID:$currentServiceID, PickServiceID:$pickServiceID] failed to insert to transactionrequestlogslp for deposit"); 
-            throw new CHttpException(404, "Unable to process request. Server is Busy. Please try again. [CurrentServiceID:$currentServiceID, PickServiceID:$pickServiceID] failed to insert to transaction table for deposit [0002].");
-            
-        }
-        
-        $transRequestLogLPID = LPTransactionRequestLogsLp::model()->getLastInsertID();
-        
-        // get last insert id from transactionrequestlogslp
-        $referenceID = LPTransactionRequestLogsLp::model()->getReferenceID();
-        
-        $tracking = array('LP'.$transRequestLogLPID,'D',$this->getTerminalID(),$this->getSiteID());
-        
-        $terminalPassword = LPTerminalSessions::model()->getTerminalPassword($this->getTerminalID(), 
-                                $pickServiceID);
-        
-        if($duserMode == 1){
-            $TerminalCode = $this->getTerminalCode();
-            $MID = LPTerminalSessions::model()->getMID($TerminalCode);
-            $logincredentials = LPMemberServices::model()->GetUBCredentials($pickServiceID, '', $MID);
-            $servicelogin = $logincredentials["ServiceUsername"];
-            $password = $logincredentials["ServicePassword"];
-            $hashedpassword = $logincredentials["HashedServicePassword"];
-        } else {
-            //get terminal password
-            $terminalPassword = LPTerminalSessions::model()->getTerminalPassword($this->getTerminalID(), 
-                                $pickServiceID);
-            $servicelogin = null;
-            $password = $terminalPassword['ServicePassword'];
-            $hashedpassword = $terminalPassword['HashedServicePassword'];
-        }
-        
-        Yii::app()->user->setState('terminalPwd', $password); // get current password by current service ID
-        Yii::app()->user->setState('encryptPwd', $hashedpassword); //get encrypted password by current service ID
-        
-        /***************************** DEPOSIT ********************************/
-        if(!$this->deposit($lpTransactionID,$pickServiceID, $pickServiceType, $currentBalance, $tracking, $dcasinoApiHandler)) {
-            
-            LPTransactionRequestLogsLp::model()->update(2, $this->_casinoTransactionID, $this->_apiActualResult, date('Y-m-d H:i:s'), $referenceID, $transRequestLogLPID);
-            
-            $serviceInfo = LPRefServices::model()->getServiceInfoWithType($currentServiceID);
-            if(strpos($serviceInfo['type'], 'mg') !== false ){
-                $lpTransactionID = LPServiceTransferHistory::model()->insertServiceTransRef($currentServiceID, $origin_id = 1);
-            }
-            
-            $duserMode = LPRefServices::model()->getUserMode($currentServiceID);
-            
-            if(!LPTransactionRequestLogsLp::model()->insert($currentBalance, $lastServID, 'RD', 
-                    $currentServiceID, $loyaltyCardNo, $mid, $duserMode, $lpTransactionID)) { 
-                $this->log("[CurrentServiceID:$currentServiceID, PickServiceID:$pickServiceID] failed to insert to transactionrequestlogslp for redeposit");
-                throw new CHttpException(404, "Unable to process request. Server is Busy. Please try again. [CurrentServiceID:$currentServiceID, PickServiceID:$pickServiceID] failed to insert to transaction table for redeposit [0002].");
-                
-            }
-            
-            $transRequestLogLPID = LPTransactionRequestLogsLp::model()->getLastInsertID();
-            
-            $referenceID = LPTransactionRequestLogsLp::model()->getReferenceID();
-        
-            if($userMode == 1){
-                $TerminalCode = $this->getTerminalCode();
-                $MID = LPTerminalSessions::model()->getMID($TerminalCode);
-                $logincredentials = LPMemberServices::model()->GetUBCredentials($currentServiceID, '', $MID);
                 $servicelogin = $logincredentials["ServiceUsername"];
                 $password = $logincredentials["ServicePassword"];
                 $hashedpassword = $logincredentials["HashedServicePassword"];
             } else {
                 //get terminal password
                 $terminalPassword = LPTerminalSessions::model()->getTerminalPassword($this->getTerminalID(), 
-                                    $currentServiceID);
+                                    $pickServiceID);
                 $servicelogin = null;
                 $password = $terminalPassword['ServicePassword'];
                 $hashedpassword = $terminalPassword['HashedServicePassword'];
             }
-        
+
             Yii::app()->user->setState('terminalPwd', $password); // get current password by current service ID
             Yii::app()->user->setState('encryptPwd', $hashedpassword); //get encrypted password by current service ID
-            
-            $tracking = array('LP'.$transRequestLogLPID,'RD',$this->getTerminalID(),$this->getSiteID());
-            
-            /************************** REDEPOSIT *****************************/
-            if(!$this->deposit($lpTransactionID,$currentServiceID, $currentServiceType, $currentBalance, $tracking, $wcasinoApiHandler)) {
-                if(!LPTransactionRequestLogsLp::model()->update(0, $this->_casinoTransactionID, $this->_apiActualResult, date('Y-m-d H:i:s'), $referenceID, $transRequestLogLPID))
-                    $this->log ("[CurrentServiceID:$currentServiceID, PickServiceID:$pickServiceID] failed to update to transactionrequestlogslp for redeposit");
-            
-                if(!LPServiceTransferHistory::model()->update(0, $lastServID)) {
-                    $this->log("[CurrentServiceID:$currentServiceID, PickServiceID:$pickServiceID] failed to update to servicetransferhistory for redeposit");
+
+            /***************************** DEPOSIT ********************************/
+            if(!$this->deposit($lpTransactionID,$pickServiceID, $pickServiceType, $currentBalance, $tracking, $dcasinoApiHandler)) {
+
+                LPTransactionRequestLogsLp::model()->update(2, $this->_casinoTransactionID, $this->_apiActualResult, date('Y-m-d H:i:s'), $referenceID, $transRequestLogLPID);
+
+                $serviceInfo = LPRefServices::model()->getServiceInfoWithType($currentServiceID);
+                if(strpos($serviceInfo['type'], 'mg') !== false ){
+                    $lpTransactionID = LPServiceTransferHistory::model()->insertServiceTransRef($currentServiceID, $origin_id = 1);
                 }
-            } else {
-                if(!LPTransactionRequestLogsLp::model()->update(1, $this->_casinoTransactionID, $this->_apiActualResult, date('Y-m-d H:i:s'), $referenceID, $transRequestLogLPID)) {
-                    $this->log("[CurrentServiceID:$currentServiceID, PickServiceID:$pickServiceID] failed to update to transactionrequestlogslp for redeposit");
+
+                $duserMode = LPRefServices::model()->getUserMode($currentServiceID);
+
+                if(!LPTransactionRequestLogsLp::model()->insert($currentBalance, $lastServID, 'RD', 
+                        $currentServiceID, $loyaltyCardNo, $mid, $duserMode, $lpTransactionID)) { 
+                    $this->log("[CurrentServiceID:$currentServiceID, PickServiceID:$pickServiceID] failed to insert to transactionrequestlogslp for redeposit");
+                    throw new CHttpException(404, "Unable to process request. Server is Busy. Please try again. [CurrentServiceID:$currentServiceID, PickServiceID:$pickServiceID] failed to insert to transaction table for redeposit [0002].");
+
                 }
-                $terminalPassword = LPTerminalSessions::model()->getTerminalPassword($this->getTerminalID(), 
-                                $currentServiceID);
-                
+
+                $transRequestLogLPID = LPTransactionRequestLogsLp::model()->getLastInsertID();
+
+                $referenceID = LPTransactionRequestLogsLp::model()->getReferenceID();
+
                 if($userMode == 1){
                     $TerminalCode = $this->getTerminalCode();
                     $MID = LPTerminalSessions::model()->getMID($TerminalCode);
                     $logincredentials = LPMemberServices::model()->GetUBCredentials($currentServiceID, '', $MID);
+                    $servicelogin = $logincredentials["ServiceUsername"];
                     $password = $logincredentials["ServicePassword"];
                     $hashedpassword = $logincredentials["HashedServicePassword"];
                 } else {
                     //get terminal password
                     $terminalPassword = LPTerminalSessions::model()->getTerminalPassword($this->getTerminalID(), 
                                         $currentServiceID);
+                    $servicelogin = null;
                     $password = $terminalPassword['ServicePassword'];
                     $hashedpassword = $terminalPassword['HashedServicePassword'];
                 }
-                
+
                 Yii::app()->user->setState('terminalPwd', $password); // get current password by current service ID
-                Yii::app()->user->setState('encryptPwd', $hashedpassword); //get current encrypted password by current service ID
+                Yii::app()->user->setState('encryptPwd', $hashedpassword); //get encrypted password by current service ID
+
+                $tracking = array('LP'.$transRequestLogLPID,'RD',$this->getTerminalID(),$this->getSiteID());
+
+                /************************** REDEPOSIT *****************************/
+                if(!$this->deposit($lpTransactionID,$currentServiceID, $currentServiceType, $currentBalance, $tracking, $wcasinoApiHandler)) {
+                    if(!LPTransactionRequestLogsLp::model()->update(0, $this->_casinoTransactionID, $this->_apiActualResult, date('Y-m-d H:i:s'), $referenceID, $transRequestLogLPID))
+                        $this->log ("[CurrentServiceID:$currentServiceID, PickServiceID:$pickServiceID] failed to update to transactionrequestlogslp for redeposit");
+
+                    if(!LPServiceTransferHistory::model()->update(0, $lastServID)) {
+                        $this->log("[CurrentServiceID:$currentServiceID, PickServiceID:$pickServiceID] failed to update to servicetransferhistory for redeposit");
+                    }
+                } else {
+                    if(!LPTransactionRequestLogsLp::model()->update(1, $this->_casinoTransactionID, $this->_apiActualResult, date('Y-m-d H:i:s'), $referenceID, $transRequestLogLPID)) {
+                        $this->log("[CurrentServiceID:$currentServiceID, PickServiceID:$pickServiceID] failed to update to transactionrequestlogslp for redeposit");
+                    }
+                    $terminalPassword = LPTerminalSessions::model()->getTerminalPassword($this->getTerminalID(), 
+                                    $currentServiceID);
+
+                    if($userMode == 1){
+                        $TerminalCode = $this->getTerminalCode();
+                        $MID = LPTerminalSessions::model()->getMID($TerminalCode);
+                        $logincredentials = LPMemberServices::model()->GetUBCredentials($currentServiceID, '', $MID);
+                        $password = $logincredentials["ServicePassword"];
+                        $hashedpassword = $logincredentials["HashedServicePassword"];
+                    } else {
+                        //get terminal password
+                        $terminalPassword = LPTerminalSessions::model()->getTerminalPassword($this->getTerminalID(), 
+                                            $currentServiceID);
+                        $password = $terminalPassword['ServicePassword'];
+                        $hashedpassword = $terminalPassword['HashedServicePassword'];
+                    }
+
+                    Yii::app()->user->setState('terminalPwd', $password); // get current password by current service ID
+                    Yii::app()->user->setState('encryptPwd', $hashedpassword); //get current encrypted password by current service ID
+                }
+                /************************ END REDEPOSIT ***************************/
+
+                throw new CHttpException(404, 'Unable to process request. Server is Busy. Please try again.');
             }
-            /************************ END REDEPOSIT ***************************/
-            
-            throw new CHttpException(404, 'Unable to process request. Server is Busy. Please try again.');
+            /*************************** END DEPOSIT ******************************/
+
+            if(!LPServiceTransferHistory::model()->update(1, $lastServID)) {
+                $this->log("[CurrentServiceID:$currentServiceID, PickServiceID:$pickServiceID] failed to update to servicetransferhistory for deposit");
+            }
+
+            if(!LPTransactionRequestLogsLp::model()->update(1, $this->_casinoTransactionID, $this->_apiActualResult, date('Y-m-d H:i:s'), $referenceID, $transRequestLogLPID)) {
+                $this->log("[CurrentServiceID:$currentServiceID, PickServiceID:$pickServiceID] failed to update to transactionrequestlogslp for deposit");
+            }
+
+            LPTerminalSessions::model()->updateCurrentServiceID($this->getTerminalID(), $pickServiceID);
+            $this->setCurrentServiceID($pickServiceID);
+            $this->setCurrentServiceType($pickServiceType);
+
+            echo CJSON::encode(array('html'=> $this->_getDisplaySuccessTransfer($currentBalance, $currentServiceID, $pickServiceID),'password'=>$terminalPassword['HashedServicePassword']));
+            Yii::app()->end();
         }
-        /*************************** END DEPOSIT ******************************/
-        
-        if(!LPServiceTransferHistory::model()->update(1, $lastServID)) {
-            $this->log("[CurrentServiceID:$currentServiceID, PickServiceID:$pickServiceID] failed to update to servicetransferhistory for deposit");
-        }
-        
-        if(!LPTransactionRequestLogsLp::model()->update(1, $this->_casinoTransactionID, $this->_apiActualResult, date('Y-m-d H:i:s'), $referenceID, $transRequestLogLPID)) {
-            $this->log("[CurrentServiceID:$currentServiceID, PickServiceID:$pickServiceID] failed to update to transactionrequestlogslp for deposit");
-        }
-        
-        LPTerminalSessions::model()->updateCurrentServiceID($this->getTerminalID(), $pickServiceID);
-        $this->setCurrentServiceID($pickServiceID);
-        $this->setCurrentServiceType($pickServiceType);
-        
-        echo CJSON::encode(array('html'=> $this->_getDisplaySuccessTransfer($currentBalance, $currentServiceID, $pickServiceID),'password'=>$terminalPassword['HashedServicePassword']));
-        Yii::app()->end();
     }
     
     public function actions()

@@ -184,11 +184,11 @@ class LaunchpadModule extends CWebModule
                             var currServiceID = '$currentServiceID';
                             var bot = $(this).attr('botpath');
                             var casinopath = $(this).attr('casinopath');
-                            
+
 //                            var formTitle = $(this).attr('formtitle');
 //                            var serviceID = $(this).attr('serviceid');
                             var data = {'serviceID':pickServiceID};
-                            
+
                             if(currServiceID != pickServiceID) { // transfer
                                 var url = $(this).attr('href');
                                 var serviceType = $(this).attr('serviceType');
@@ -237,19 +237,54 @@ class LaunchpadModule extends CWebModule
                                     });
                                 });
                             } else {
+                                var url = $(this).attr('chcksessionhref');
+                                var serviceType = $(this).attr('serviceType');
+                                
                                 showLightbox(function(){
-                                    try {
-                                        if($enableBlocker) {
-						  window.external.OpenGameClient(pickServiceID, login, terminalPass);
-                                        } else {
-                                            Shell.Run(casinopath);
+                                   $.ajax({
+                                        url:url,
+                                        dataType:'json',
+                                        success:function(data){
+                                            var currentbal = data.currentbal;
+                                            
+                                            try {
+                                                if(data.html == 'not ok') {
+                                                    displayMessageLightbox('<b style=\"width:125px\">Session Ended</b>',function(){
+                                                        location.reload();
+                                                        return false;
+                                                    })
+                                                } else {
+                                                    if(currentbal <= 0){
+                                                        displayMessageLightbox('<b style=\"width:125px\">Can\'t open Game Client: Balance is insufficient.</b>',function(){                                   
+                                                            setTimeout(\"redirectPage('$lobbyUrl')\",3000);
+                                                        })
+                                                    } else {
+                                                        try {
+                                                            if($enableBlocker) {
+                                                                window.external.OpenGameClient(pickServiceID, login, terminalPass);
+                                                            } else {
+                                                                Shell.Run(casinopath);
+                                                            }
+                                                            jQuery.fancybox.close();
+                                                        } catch(e) {
+                                                            displayMessageLightbox('<b style=\"width:125px\">Game client not found</b>',function(){
+                                                                setTimeout(\"redirectPage('$lobbyUrl')\",3000);
+                                                            });
+                                                        }
+                                                    }
+                                                }
+                                            } catch(e) {
+                                                displayMessageLightbox('<b style=\"width:125px\">Parse error</b>',function(){
+                                                    setTimeout(\"redirectPage('$lobbyUrl')\",3000);
+                                                });
+                                            }
+                                        },
+                                        error:function(e) {
+                                            displayMessageLightbox('<b style=\"width:125px\">'+e.responseText+'</b>',function(){
+                                                setTimeout(\"redirectPage('$lobbyUrl')\",3000);
+                                            });
                                         }
-                                        jQuery.fancybox.close();
-                                    } catch(e) {
-                                        displayMessageLightbox('<b style=\"width:125px\">Game client not found</b>',function(){
-                                            setTimeout(\"redirectPage('$lobbyUrl')\",3000);
-                                        });
-                                    }
+                                    }); 
                                 });
                             }
                             return false;
