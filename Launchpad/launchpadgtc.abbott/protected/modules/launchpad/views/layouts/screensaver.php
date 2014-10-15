@@ -106,6 +106,13 @@
 body{background-color: #010000}
 </style>
 <script type="text/javascript">
+        try {
+            window.external.ScreenBlocker(TRUE); 
+        } catch(e) {
+            //do nothing
+        }
+</script>
+<script type="text/javascript">
     $(document).ready(function(){
 //        $.ajax({
 //            url:'<?php //echo LPConfig::app()->params['rssFeedUrl'] ?>',
