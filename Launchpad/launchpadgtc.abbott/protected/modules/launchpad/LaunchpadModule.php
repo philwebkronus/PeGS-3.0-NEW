@@ -305,7 +305,7 @@ class LaunchpadModule extends CWebModule
                                     if( !localStorage.getItem( 'firstLoad' ) )
                                     {
                                       localStorage[ 'firstLoad' ] = true;
-                                      window.location.reload();
+                                      //window.location.reload();
                                     }  
                                     else
 					 {
