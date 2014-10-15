@@ -246,9 +246,6 @@ $this->pageTitle = Yii::app()->name." - Coupon Generation Tool";
                 transdatefrom : function(){
                     return transdatefrom;
                 },
-                transdateto : function(){
-                    return transdateto;
-                },
                 site : function(){
                     return site;
                 },

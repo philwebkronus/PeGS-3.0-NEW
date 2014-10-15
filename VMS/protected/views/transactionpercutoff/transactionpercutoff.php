@@ -9,7 +9,7 @@
         $datetime->modify('+1 day');
         $vdate = $datetime->format('Y-m-d');
         Yii::app()->session['vdate'] = $vdate;
-        echo Yii::app()->session['transactiondate']." to ".$vdate. " ".Yii::app()->params['cutofftimeend'];
+        //echo Yii::app()->session['transactiondate']." to ".$vdate. " ".Yii::app()->params['cutofftimeend'];
     }
 
         $grid = array(

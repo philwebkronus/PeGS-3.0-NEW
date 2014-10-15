@@ -31,9 +31,24 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog',array(
                 loadCouponGrid(batchID, couponcode, status, transdatefrom, transdateto, site, terminal, source, promoname)
 
                 $(this).dialog("close");
+
+                $("#sc_couponcode").val("");
+                $("#sc_status").val("");
+                $("#sc_transdatefrom").val("");
+                $("#sc_transdateto").val("");
+                $("#sc_site").val("");
+                $("#sc_terminal").val("");
+                $("#sc_source").val("");
             }',
             'Cancel' => 'js:function(){
                 $(this).dialog("close");
+                $("#sc_couponcode").val("");
+                $("#sc_status").val("");
+                $("#sc_transdatefrom").val("");
+                $("#sc_transdateto").val("");
+                $("#sc_site").val("");
+                $("#sc_terminal").val("");
+                $("#sc_source").val("");
             }'
         ),
     ),
@@ -64,7 +79,7 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog',array(
     </tr>
     <tr>
         <td class="edit-lbl">
-            <b>Transaction Date From: </b>
+            <b>Transaction Date: </b>
         </td>
         <td>
             <?php
@@ -91,40 +106,6 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog',array(
                             'timeFormat' => 'hh:mm:ss',
                             'changeYear' => true,
                             'buttonText'=> 'Select Date From:',
-                            'buttonImage'=>Yii::app()->request->baseUrl.'/images/calendar.gif',
-                            'dateFormat'=>'yy-mm-dd',
-                        )
-                    ));
-                 ?>
-        </td>
-    </tr>
-    <tr>
-        <td class="edit-lbl">
-            <b>Transaction Date To: </b>
-        </td>
-        <td>
-            <?php
-                    Yii::import('application.extensions.CJuiDateTimePicker.CJuiDateTimePicker');
-                    $this->widget('CJuiDateTimePicker', array(
-                        'model' => $model,
-                        'attribute' => 'transdateto',
-                        'language' => '',
-                        'mode' => 'datetime',
-                        'htmlOptions' => array(
-                            'size' => '20',         // textField size
-                            'maxlength' => '10',    // textField maxlength
-                            'readonly' => true,
-                            'height' => 40,
-                            'id' => 'sc_transdateto'
-                        ),
-                        'options' => array(
-                            'showOn'=>'button',
-                            'buttonImageOnly' => true,
-                            'changeMonth' => true,
-                            'showSecond' => true,
-                            'timeFormat' => 'hh:mm:ss',
-                            'changeYear' => true,
-                            'buttonText'=> 'Select Date To:',
                             'buttonImage'=>Yii::app()->request->baseUrl.'/images/calendar.gif',
                             'dateFormat'=>'yy-mm-dd',
                         )

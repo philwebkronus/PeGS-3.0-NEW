@@ -831,7 +831,8 @@ class CouponModel extends CFormModel {
                     $command->bindValue(":status", $s['Value']);
                     break;
                 case 3:
-                    $command->bindValue(":transdatefrom", $s['Value']);
+                    $command->bindValue(":transdatefrom", $s['Value']." 00:00:00");
+                    $command->bindValue(":transdateto", $s['Value']." 23:59:59");
                     break;
                 case 4:
                     $command->bindValue(":transdateto", $s['Value']);
