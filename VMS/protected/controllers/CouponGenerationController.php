@@ -238,7 +238,7 @@ class CouponGenerationController extends VMSBaseIdentity
                                   'Status' => $batchdetails['Status'],
                                   'StringedStatus' => $this->stringStatus($batchdetails['Status']),
                                   'PromoName' => $batchdetails['PromoName'],
-                                  'Creditable' => $coupondetails['IsCreditable'] == 0 ? "No" : "Yes",
+                                  'Creditable' => $coupondetails['IsCreditable'] == 2 ? "No" : "Yes",
                                   'ValidFrom' => $coupondetails['ValidFromDate'],
                                   'ValidTo' => $coupondetails['ValidToDate'],
                                   'ValidFromFormatted' => $coupondetails['ValidFromDate'] == "" ? "" : date("M d, Y h:i A", strtotime($coupondetails['ValidFromDate'])),
@@ -445,7 +445,7 @@ class CouponGenerationController extends VMSBaseIdentity
                         $condition = " c.Status = :status";
                         break;
                     case 3:
-                        $condition = " c.DateUpdated >= :transdatefrom AND c.DateUpdated <= :transdateto AND 
+                        $condition = " c.DateUpdated >= :transdatefrom AND c.DateUpdated <= :transdateto AND
                                        c.Status = 3";
                         break;
                     case 4:
@@ -501,8 +501,8 @@ class CouponGenerationController extends VMSBaseIdentity
         $limit          = $_POST['rows']; // get how many rows we want to have into the grid
         //retrieve data
         if ($postvars['status'] != "" || $postvars['transdatefrom'] != ""
-            || $postvars['siteID'] != ""  || $postvars['terminalID'] != "" 
-            || $postvars['source'] != "" || $postvars['promoname'] != "" 
+            || $postvars['siteID'] != ""  || $postvars['terminalID'] != ""
+            || $postvars['source'] != "" || $postvars['promoname'] != ""
             || $postvars['couponcode'])
         {
             //check what field used to search coupons
@@ -711,7 +711,7 @@ class CouponGenerationController extends VMSBaseIdentity
                             //start generation
                             $user = Yii::app()->session['AID'];
                             $distribtag = $this->getDistributionTag($distribtag, 1);
-                            $creditable = $creditable == "Yes" ? 1 : 0;
+                            $creditable = $creditable == "Yes" ? 1 : 2;
                             $stat = $this->stringStatus($status, 1);
 
                             $result = $couponbatchModel->insertCoupons($count, $amount, $distribtag, $creditable, $promoname, $user, $stat, $validfrom, $validto);
