@@ -349,11 +349,6 @@ class MPapiController extends Controller {
                                     $logger->log($logger->logdate, " [LOGIN ERROR] ", $logMessage);
                                 }
 
-                                $isInitialized = $memberInfoModel->initializeToken($MID);
-                                if($isInitialized == 0) {
-                                    $logMessage = "Failed to initialize token.";
-                                    $logger->log($logger->logdate, " [LOGIN ERROR] ", $logMessage);
-                                }
                             }
                             else {
                                 $logMessage = 'Failed to update transaction date in membersessions table WHERE MID = '.$MID.' AND SessionID = '.$mpSessionID;
