@@ -352,9 +352,9 @@ class MPapiInvokerController extends Controller{
         return $result[1];
     }
 
-    private function _updateProfile($mpSessionID, $firstname, $middlename, $lastname, $nickname, $mobileNumber, $alternateMobileNumber, $emailAddress, $alternateEmail, $gender, $idNumber, $birthdate, $password, $idPresented, $permanentAddress, $nationality, $occupation, $isSmoker) {
+    private function _updateProfile($mpSessionID, $firstname, $middlename, $lastname, $nickname, $mobileNumber, $alternateMobileNumber, $emailAddress, $alternateEmail, $gender, $idNumber, $birthdate, $password, $idPresented, $permanentAddress, $nationality, $occupation, $isSmoker, $region, $city) {
         $postdata = CJSON::encode(array('MPSessionID' => $mpSessionID, 'FirstName'=>$firstname,'MiddleName' => $middlename, 'LastName'=>$lastname, 'NickName' => $nickname, 'MobileNo'=>$mobileNumber,'AlternateMobileNo' => $alternateMobileNumber, 'EmailAddress'=>$emailAddress,
-                                  'AlternateEmail' => $alternateEmail,'Gender' => $gender, 'IDNumber'=>$idNumber, 'Birthdate'=>$birthdate, 'Password' => $password, 'IDPresented' => $idPresented, 'PermanentAdd' => $permanentAddress, 'Nationality' => $nationality, 'Occupation' => $occupation, 'IsSmoker' => $isSmoker));
+                                  'AlternateEmail' => $alternateEmail,'Gender' => $gender, 'IDNumber'=>$idNumber, 'Birthdate'=>$birthdate, 'Password' => $password, 'IDPresented' => $idPresented, 'PermanentAdd' => $permanentAddress, 'Nationality' => $nationality, 'Occupation' => $occupation, 'IsSmoker' => $isSmoker, 'Region' => $region, 'City' => $city));
         $result = $this->SubmitData(Yii::app()->params['urlMPAPI'].'updateprofile', $postdata);
 
         return $result[1];
