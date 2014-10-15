@@ -133,7 +133,7 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog',array(
             <b>Terminal: </b>
         </td>
         <td>
-            <?php echo CHtml::dropDownList('terminals', '', array(), array('id' => 'sc_terminal',
+            <?php echo CHtml::dropDownList('terminals', '', array(), array('id' => 'sc_terminals',
                                                                       'prompt' => '-Please Select-')); ?>
         </td>
     </tr>
