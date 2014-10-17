@@ -24,7 +24,7 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog',array(
                 var transdatefrom = $("#sc_transdatefrom").val();
                 var transdateto = $("#sc_transdateto").val();
                 var site = $("#sc_site").val();
-                var terminal = $("#sc_terminal").val();
+                var terminal = $("#sc_terminals").val();
                 var source = $("#sc_source").val();
                 var promoname = "";
 
@@ -37,7 +37,7 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog',array(
                 $("#sc_transdatefrom").val("");
                 $("#sc_transdateto").val("");
                 $("#sc_site").val("");
-                $("#sc_terminal").val("");
+                $("#sc_terminals").val("");
                 $("#sc_source").val("");
             }',
             'Cancel' => 'js:function(){
@@ -47,7 +47,7 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog',array(
                 $("#sc_transdatefrom").val("");
                 $("#sc_transdateto").val("");
                 $("#sc_site").val("");
-                $("#sc_terminal").val("");
+                $("#sc_terminals").val("");
                 $("#sc_source").val("");
             }'
         ),

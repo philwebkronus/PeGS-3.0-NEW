@@ -144,7 +144,6 @@ class CouponGenerationController extends VMSBaseIdentity
                         $allcouponbatch = $couponModel->searchCouponBatch($wherefx, $search, $start, $limit);
                         break;
                     case 3:
-
                         $allcouponbatch = $couponBatchModel->getCouponBatch(null, null, null, null, null, null, null, null,
                                                                             null, null, null, $start, $limit);
                         break;
