@@ -32,23 +32,9 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog',array(
 
                 $(this).dialog("close");
 
-                $("#sc_couponcode").val("");
-                $("#sc_status").val("");
-                $("#sc_transdatefrom").val("");
-                $("#sc_transdateto").val("");
-                $("#sc_site").val("");
-                $("#sc_terminals").val("");
-                $("#sc_source").val("");
             }',
             'Cancel' => 'js:function(){
                 $(this).dialog("close");
-                $("#sc_couponcode").val("");
-                $("#sc_status").val("");
-                $("#sc_transdatefrom").val("");
-                $("#sc_transdateto").val("");
-                $("#sc_site").val("");
-                $("#sc_terminals").val("");
-                $("#sc_source").val("");
             }'
         ),
     ),
