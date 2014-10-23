@@ -429,13 +429,14 @@ class CouponGenerationController extends VMSBaseIdentity
         //searching coupons
         else if ($searchcoupon == 1)
         {
+            $where_statement = "WHERE (";
             for ($i = 0; $fieldsearched > $i; $i++)
             {
                 //get condition
                 switch ($search[$i]['FieldID'])
                 {
                     case 0:
-                        $condition = " c.CouponBatchID = :batchID";
+                        $condition = "";
                         break;
                     case 1:
                         $condition = " c.CouponCode = :couponcode";
@@ -466,11 +467,14 @@ class CouponGenerationController extends VMSBaseIdentity
                 $where_statement = $where_statement.$condition;
                 if (($fieldsearched - ($i + 1)) > 0)
                 {
-                    $where_statement = $where_statement." AND";
+                    if ($condition != "")
+                    {
+                        $where_statement = $where_statement." OR";
+                    }
                 }
             }
+            $where_statement = $where_statement.") AND c.CouponBatchID = :batchID";
         }
-
         return $where_statement;
     }
     /**
@@ -499,7 +503,12 @@ class CouponGenerationController extends VMSBaseIdentity
         $page           = $_POST['page']; // get the requested page
         $limit          = $_POST['rows']; // get how many rows we want to have into the grid
         //retrieve data
-        if ($postvars['status'] != "" || $postvars['transdatefrom'] != ""
+        if ($postvars['couponcode'] != "")
+        {
+            $allcoupons = $couponsModel->getCouponsByCode($postvars['batchID'], $postvars['couponcode']);
+            $query = 3;
+        }
+        else if ($postvars['status'] != "" || $postvars['transdatefrom'] != ""
             || $postvars['siteID'] != ""  || $postvars['terminalID'] != ""
             || $postvars['source'] != "" || $postvars['promoname'] != ""
             || $postvars['couponcode'])
@@ -512,7 +521,7 @@ class CouponGenerationController extends VMSBaseIdentity
                 {
                     $search[] = array('FieldID' => $i, 'Value' => $vars);
                 }
-
+                
                 $i++;
             }
             //get WHERE statement depending on fields used to search coupons
@@ -548,14 +557,18 @@ class CouponGenerationController extends VMSBaseIdentity
 
             if ($couponcount > 0)
             {
-                //execute used to query to apply pagination
+                //execute used queries to re-query for pagination
                 if ($query == 1)
                 {
                     $allcoupons = $couponsModel->searchCoupons($wherefx, $search, $start, $limit);
                 }
-                else
+                else if ($query == 2)
                 {
                     $allcoupons = $couponsModel->getCouponsByBatchID($postvars['batchID'], $start, $limit);
+                }
+                else
+                {
+                    $allcoupons = $couponsModel->getCouponsByCode($postvars['batchID'], $postvars['couponcode']);
                 }
                 $i = 0;
                 foreach ($allcoupons as $coupon)
