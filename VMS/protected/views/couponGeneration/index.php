@@ -82,10 +82,10 @@ $this->pageTitle = Yii::app()->name." - Coupon Generation Tool";
         });
 
         $("#btnsearch").live("click", function(){
-            $("#s_validfrom").val('');
-            $("#s_validto").val('');
-            $("#s_generatedfrom").val('');
-            $("#s_generatedto").val('');
+            //$("#s_validfrom").val('');
+            //$("#s_validto").val('');
+            //$("#s_generatedfrom").val('');
+            //$("#s_generatedto").val('');
 
             $("#dialog-search").dialog('open');
         });
