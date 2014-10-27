@@ -395,10 +395,10 @@ class CouponGenerationController extends VMSBaseIdentity
                         $condition = " c.Iscreditable = :creditable";
                         break;
                     case 4:
-                        $condition = " cb.DateCreated >= :generatedfrom";
+                        $condition = " cb.DateCreated >= :generatedfrom AND cb.DateCreated < :generatedto";
                         break;
                     case 5:
-                        $condition = " cb.DateCreated < :generatedto";
+                        $condition = " cb.DateCreated >= :generatedfrom AND cb.DateCreated < :generatedto";
                         break;
                     case 6:
                         $condition = " cb.CreatedByAID = :aid";
@@ -521,7 +521,7 @@ class CouponGenerationController extends VMSBaseIdentity
                 {
                     $search[] = array('FieldID' => $i, 'Value' => $vars);
                 }
-                
+
                 $i++;
             }
             //get WHERE statement depending on fields used to search coupons
