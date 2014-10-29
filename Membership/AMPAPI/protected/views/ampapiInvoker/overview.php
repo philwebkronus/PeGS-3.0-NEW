@@ -55,6 +55,9 @@
     <?php echo CHtml::link('GetCity', Yii::app()->createUrl('ampapiInvoker/getcity'), array('target'=>'_blank')); ?>
     <br />
     <br />
+    <?php echo CHtml::link('CreateMobileInfo', Yii::app()->createUrl('ampapiInvoker/createmobileinfo'), array('target'=>'_blank')); ?>
+    <br />
+    <br />
     <?php echo CHtml::link('Logout', Yii::app()->createUrl('ampapiInvoker/logout'), array('target'=>'_blank')); ?>
     <br />
     <br />

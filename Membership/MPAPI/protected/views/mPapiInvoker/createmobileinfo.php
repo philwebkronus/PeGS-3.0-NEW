@@ -1,6 +1,6 @@
 <div class="form wide" style="margin-left: 20px;">
     <br />
-    <h1>Login</h1>
+    <h1>Create Mobile Info</h1>
     <br />
     <?php echo CHtml::beginForm(); ?>
         <div class="row">

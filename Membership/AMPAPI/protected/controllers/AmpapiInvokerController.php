@@ -121,17 +121,18 @@ class AmpapiInvokerController extends Controller {
         $result='';
 
         $moduleName ='login';
-        if(isset($_POST['TPSessionID']) && isset($_POST['Username']) && isset($_POST['Password'])){
+        if(isset($_POST['TPSessionID']) && isset($_POST['Username']) && isset($_POST['Password']) && isset($_POST['AlterStr'])){
             $TPSessionID = $_POST['TPSessionID'];
             $Username = $_POST['Username'];
             $Password = $_POST['Password'];
-            $result = $this->_Login($TPSessionID,$Username, $Password, $moduleName);
+            $AlterStr = $_POST['AlterStr'];
+            $result = $this->_Login($TPSessionID,$Username, $Password, $AlterStr, $moduleName);
         }
         $this->render('login', array('result'=>$result));
     }
-        private function _Login($TPSessionID, $Username, $Password, $moduleName){
+        private function _Login($TPSessionID, $Username, $Password, $AlterStr, $moduleName){
             $url = $this->genURL($moduleName);
-            $postData = CJSON::encode(array('TPSessionID'=>$TPSessionID, 'Username'=>$Username, 'Password'=>$Password));
+            $postData = CJSON::encode(array('TPSessionID'=>$TPSessionID, 'Username'=>$Username, 'Password'=>$Password, 'AlterStr' => $AlterStr));
             $result = $this->SubmitData($url, $postData);
 
             return $result[1];
@@ -296,7 +297,7 @@ class AmpapiInvokerController extends Controller {
         $result='';
         $moduleName ='redeemitems';
 
-        if(isset($_POST['TPSessionID']) || isset($_POST['MPSessionID']) || isset($_POST['CardNumber']) || isset($_POST['RewardID']) || isset($_POST['REwardItemID'])|| isset($_POST['Quantity']) || isset($_POST['Source'])){
+        if(isset($_POST['TPSessionID']) || isset($_POST['MPSessionID']) || isset($_POST['CardNumber']) || isset($_POST['RewardID']) || isset($_POST['REwardItemID'])|| isset($_POST['Quantity']) || isset($_POST['Source']) || isset($_POST['Tracking1']) || isset($_POST['Tracking2'])){
             $TPSessionID = $_POST['TPSessionID'];
             $MPSessionID = $_POST['MPSessionID'];
             $CardNumber = $_POST['CardNumber'];
@@ -304,14 +305,16 @@ class AmpapiInvokerController extends Controller {
             $RewardItemID = $_POST['RewardItemID'];
             $Quantity = $_POST['Quantity'];
             $Source = $_POST['Source'];
-            $result = $this->_redeemItems($TPSessionID,$MPSessionID,$CardNumber,$RewardID,$RewardItemID,$Quantity,$Source,$moduleName);
+            $Tracking1 = $_POST['Tracking1'];
+            $Tracking2 = $_POST['Tracking2'];
+            $result = $this->_redeemItems($TPSessionID,$MPSessionID,$CardNumber,$RewardID,$RewardItemID,$Quantity,$Source,$Tracking1,$Tracking2,$moduleName);
         }
 
         $this->render($moduleName, array('result'=>$result));
     }
-        private function _redeemItems($TPSessionID,$MPSessionID,$CardNumber,$RewardID,$RewardItemID,$Quantity,$Source,$moduleName){
+        private function _redeemItems($TPSessionID,$MPSessionID,$CardNumber,$RewardID,$RewardItemID,$Quantity,$Source,$Tracking1,$Tracking2,$moduleName){
             $url = $this->genURL($moduleName);
-            $postData = CJSON::encode(array('TPSessionID'=>$TPSessionID, 'MPSessionID'=>$MPSessionID, 'CardNumber'=>$CardNumber, 'RewardID'=>$RewardID, 'RewardItemID'=>$RewardItemID, 'Quantity'=>$Quantity, 'Source'=>$Source));
+            $postData = CJSON::encode(array('TPSessionID'=>$TPSessionID, 'MPSessionID'=>$MPSessionID, 'CardNumber'=>$CardNumber, 'RewardID'=>$RewardID, 'RewardItemID'=>$RewardItemID, 'Quantity'=>$Quantity, 'Source'=>$Source, 'Tracking1' => $Tracking1, 'Tracking2' => $Tracking2));
             $result = $this->SubmitData($url, $postData);
 
             return $result[1];
@@ -519,8 +522,38 @@ class AmpapiInvokerController extends Controller {
 
             return $result[1];
         }
+        
+    //@date 10-27-2014
+    //@author fdlsison
+    public function actionCreateMobileInfo(){
+        $this->pageTitle= $this->genTitlePage('Create Mobile Info');
+        $result='';
+        
+        $moduleName ='createmobileinfo';
+        if(isset($_POST['TPSessionID']) && isset($_POST['Username']) && isset($_POST['Password']) && isset($_POST['AlterStr'])){
+            $TPSessionID = $_POST['TPSessionID'];
+            $Username = $_POST['Username'];
+            $Password = $_POST['Password'];
+            $AlterStr = $_POST['AlterStr'];
+            $result = $this->_CreateMobileInfo($TPSessionID,$Username, $Password, $AlterStr, $moduleName);
+        }
+        $this->render('createmobileinfo', array('result'=>$result));
+    }
+    
+    private function _CreateMobileInfo($TPSessionID, $Username, $Password, $AlterStr, $moduleName){
+        $url = $this->genURL($moduleName);
+        $postData = CJSON::encode(array('TPSessionID'=>$TPSessionID, 'Username'=>$Username, 'Password'=>$Password, 'AlterStr' => $AlterStr));
+        $result = $this->SubmitData($url, $postData);
 
-
+        return $result[1];
+    }
+        
+        
+    
+        
+        
+        
+    
     //-------------------------Generator Functions-------------
 
     //This function dynamically generates string for title page

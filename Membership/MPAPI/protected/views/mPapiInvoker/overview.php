@@ -4,12 +4,6 @@
     <?php echo CHtml::link('Login', Yii::app()->createUrl('mPapiInvoker/login'), array('target'=>'_blank')); ?>
     <br />
     <br />
-    <?php // echo CHtml::link('AuthenticateSession', Yii::app()->createUrl('MPapiInvoker/authenticatesession'), array('target'=>'_blank')); ?>
-<!--    <br />
-    <br />-->
-    <?php //echo CHtml::link('GetActiveSession', Yii::app()->createUrl('MPapiInvoker/getactivesession'), array('target'=>'_blank')); ?>
-<!--    <br />
-    <br />-->
     <?php echo CHtml::link('ForgotPassword',  Yii::app()->createUrl('mPapiInvoker/forgotpassword'), array('target'=>'_blank')); ?>
     <br />
     <br />
@@ -58,10 +52,13 @@
     <?php echo CHtml::link('RegisterMemberBT', Yii::app()->createUrl('mPapiInvoker/registermemberbt'), array('target'=>'_blank')); ?>
     <br />
     <br />
+    <?php echo CHtml::link('CreateMobileInfo', Yii::app()->createUrl('mPapiInvoker/createmobileinfo'), array('target'=>'_blank')); ?>
+    <br />
+    <br />
     <?php echo CHtml::link('Logout', Yii::app()->createUrl('mPapiInvoker/logout'), array('target'=>'_blank')); ?>
     <br />
     <br />
-    <?php //echo CHtml::link('DeleteSession', Yii::app()->createUrl('mPapiInvoker/deletesession'), array('target'=>'_blank')); ?>
-<!--    <br />
-    <br />-->
+    <?php echo CHtml::link('VerifyTracking2', Yii::app()->createUrl('mPapiInvoker/verifytracking2'), array('target'=>'_blank')); ?>
+    <br />
+    <br />
 </div>

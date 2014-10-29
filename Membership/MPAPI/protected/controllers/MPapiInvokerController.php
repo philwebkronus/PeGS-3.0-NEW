@@ -57,11 +57,12 @@ class MPapiInvokerController extends Controller{
         $this->pageTitle = 'Membership Portal API - Login';
         $result = '';
 
-        if(isset($_POST['Username']) || isset($_POST['Password'])) {
+        if(isset($_POST['Username']) || isset($_POST['Password']) || isset($_POST['AlterStr'])) {
             $username = $_POST['Username'];
             $password = $_POST['Password'];
+            $alterStr = $_POST['AlterStr'];
 
-            $result = $this->_login($username, $password);
+            $result = $this->_login($username, $password, $alterStr);
         }
 
 
@@ -180,7 +181,7 @@ class MPapiInvokerController extends Controller{
         $result = '';
 
         if(isset($_POST['MPSessionID']) || isset($_POST['CardNumber']) || isset($_POST['RewardItemID']) || isset($_POST['RewardID']) || isset($_POST['Quantity'])
-          || isset($_POST['Source'])) {
+          || isset($_POST['Source']) || isset($_POST['Tracking1']) || isset($_POST['Tracking2'])) {
             $mpSessionID = $_POST['MPSessionID'];
             $cardNumber = $_POST['CardNumber'];
             $rewardItemID = $_POST['RewardItemID'];
@@ -188,8 +189,10 @@ class MPapiInvokerController extends Controller{
             $quantity = $_POST['Quantity'];
             //$itemQuantity = $_POST['ItemQuantity'];
             $source = $_POST['Source'];
+            $tracking1 = $_POST['Tracking1'];
+            $tracking2 = $_POST['Tracking2'];
 
-            $result = $this->_redeemItems($mpSessionID, $cardNumber, $rewardID, $rewardItemID, $quantity, $source);
+            $result = $this->_redeemItems($mpSessionID, $cardNumber, $rewardID, $rewardItemID, $quantity, $source, $tracking1, $tracking2);
         }
 
         $this->render('redeemitems', array('result'=>$result));
@@ -330,8 +333,38 @@ class MPapiInvokerController extends Controller{
         $this->render('registermemberbt', array('result'=>$result));
     }
 
-    private function _login($username, $password) {
-        $postdata = CJSON::encode(array('Username' => $username, 'Password' => $password));
+    //@date 10-27-2014
+    public function actionCreateMobileInfo() {
+        $this->pageTitle = 'Membership Portal API - Create Mobile Info';
+        $result = '';
+
+        if(isset($_POST['Username']) || isset($_POST['Password']) || isset($_POST['AlterStr'])) {
+            $username = $_POST['Username'];
+            $password = $_POST['Password'];
+            $alterStr = $_POST['AlterStr'];
+
+            $result = $this->_createMobileInfo($username, $password, $alterStr);
+        }
+
+        $this->render('createmobileinfo', array('result'=>$result));
+    }
+
+    public function actionverifyTracking2() {
+        $this->pageTitle = 'Membership Portal API - Verify Tracking2';
+        $result = '';
+
+        if(isset($_POST['Tracking1']) || isset($_POST['Remarks'])) {
+            $tracking1 = $_POST['Tracking1'];
+            $remarks = $_POST['Remarks'];
+
+            $result = $this->_verifyTracking2($tracking1, $remarks);
+        }
+
+        $this->render('verifytracking2', array('result'=>$result));
+    }
+
+    private function _login($username, $password, $alterStr) {
+        $postdata = CJSON::encode(array('Username' => $username, 'Password' => $password, 'AlterStr' => $alterStr));
         $result = $this->SubmitData(Yii::app()->params['urlMPAPI'].'login', $postdata);
 
         return $result[1];
@@ -375,8 +408,8 @@ class MPapiInvokerController extends Controller{
         return $result[1];
     }
 
-    private function _redeemItems($mpSessionID, $cardNumber, $rewardID, $rewardItemID, $quantity, $source) {
-        $postdata = CJSON::encode(array('MPSessionID' => $mpSessionID, 'CardNumber' => $cardNumber, 'RewardID' => $rewardID, 'RewardItemID' => $rewardItemID, 'Quantity' => $quantity, 'Source' => $source));
+    private function _redeemItems($mpSessionID, $cardNumber, $rewardID, $rewardItemID, $quantity, $source, $tracking1, $tracking2) {
+        $postdata = CJSON::encode(array('MPSessionID' => $mpSessionID, 'CardNumber' => $cardNumber, 'RewardID' => $rewardID, 'RewardItemID' => $rewardItemID, 'Quantity' => $quantity, 'Source' => $source, 'Tracking1' => $tracking1, 'Tracking2' => $tracking2));
 
         $result = $this->SubmitData(Yii::app()->params['urlMPAPI'].'redeemitems', $postdata);
 
@@ -477,6 +510,19 @@ class MPapiInvokerController extends Controller{
         $postdata = CJSON::encode(array('FirstName'=>$firstname, 'LastName'=>$lastname, 'MobileNo'=>$mobileNumber, 'EmailAddress'=>$emailAddress,
                                    'Birthdate'=>$birthdate));
         $result = $this->SubmitData(Yii::app()->params['urlMPAPI'].'registermemberbt', $postdata);
+
+        return $result[1];
+    }
+
+    private function _createMobileInfo($username, $password, $alterStr) {
+        $postdata = CJSON::encode(array('Username' => $username, 'Password' => $password, 'AlterStr' => $alterStr));
+        $result = $this->SubmitData(Yii::app()->params['urlMPAPI'].'createmobileinfo', $postdata);
+        return $result[1];
+    }
+
+    private function _verifyTracking2($tracking1, $remarks) {
+        $postdata = CJSON::encode(array('Tracking1' => $tracking1, 'Remarks' => $remarks));
+        $result = $this->SubmitData(Yii::app()->params['urlMPAPI'].'verifytracking2', $postdata);
 
         return $result[1];
     }

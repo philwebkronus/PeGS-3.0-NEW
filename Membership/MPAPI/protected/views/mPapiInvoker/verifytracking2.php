@@ -1,19 +1,15 @@
 <div class="form wide" style="margin-left: 20px;">
     <br />
-    <h1>Login</h1>
+    <h1>Verify Tracking2</h1>
     <br />
     <?php echo CHtml::beginForm(); ?>
         <div class="row">
-            <?php echo CHtml::label('Username','Username'); ?>
-            <?php echo CHtml::textField('Username'); ?>
+            <?php echo CHtml::label('Tracking1','Tracking1'); ?>
+            <?php echo CHtml::textField('Tracking1'); ?>
         </div>
         <div class="row">
-            <?php echo CHtml::label('Password','Password'); ?>
-            <?php echo CHtml::textField('Password'); ?>
-        </div>
-        <div class="row">
-            <?php echo CHtml::label('AlterStr','AlterStr'); ?>
-            <?php echo CHtml::textField('AlterStr'); ?>
+            <?php echo CHtml::label('Remarks','Remarks'); ?>
+            <?php echo CHtml::textField('Remarks'); ?>
         </div>
         <div class="row" style="margin-left: 225px;">
             <?php echo CHtml::submitButton('Invoke'); ?>
