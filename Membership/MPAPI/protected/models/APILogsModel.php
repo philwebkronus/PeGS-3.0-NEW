@@ -26,8 +26,8 @@ class APILogsModel
     CONST API_GET_OCCUPATION = 12;
     CONST API_IS_SMOKER = 13;
     CONST API_REGISTER_MEMBER_BT = 18;
-    CONST API_CREATE_MOBILE_INFO = 19;
-       
+    
+    
     public static $_instance = null;
     public $_connection;
 
@@ -91,9 +91,6 @@ class APILogsModel
                 break;
             case 18:
                 $method = self::API_REGISTER_MEMBER_BT;
-                break;
-            case 19:
-                $method = self::API_CREATE_MOBILE_INFO;
                 break;
         }
         

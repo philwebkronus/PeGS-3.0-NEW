@@ -31,7 +31,6 @@ class APILogsModel
     CONST API_GET_REFERRER = 17;
     CONST API_GET_REGION = 18;
     CONST API_GET_CITY = 19;
-    CONST API_CREATE_MOBILE_INFO = 21;
     
     
     

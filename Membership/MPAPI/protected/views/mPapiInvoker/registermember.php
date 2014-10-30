@@ -87,10 +87,19 @@
             <?php echo CHtml::label('SMSSubscription','SMSSubscription'); ?>
             <?php echo CHtml::textField('SMSSubscription'); ?>
         </div>
+<!--        <div class="row">
+            <?php //echo CHtml::label('Age','Age'); ?>
+            <?php //echo CHtml::textField('Age'); ?>
+        </div>
+        
+        <div class="row">
+            <?php //echo CHtml::label('I hereby confirm that I am at least 21 years old and have read and accepted the Terms And Conditions. ','I hereby confirm that I am at least 21 years old and have read and accepted the Terms And Conditions.'); ?>
+            <?php //echo CHtml::checkbox('ConfirmAge'); ?>
+        </div>-->
         <div class="row" style="margin-left: 225px;">
             <?php echo CHtml::submitButton('Invoke'); ?>
         </div>
-
+    
     <?php echo CHtml::endForm(); ?>
 </div>
 

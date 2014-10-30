@@ -128,16 +128,6 @@ class Utilities {
        for ($cl = strlen($c)-1, $i = 0; $i < $length; $s .= $c[mt_rand(0, $cl)], ++$i);
        return $s;
    }
-   
-   //@date 10-17-2014
-   public static function generateAlphaNumericUpper($strlen) {
-       $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-       $string = '';
-       for($i=0;$i < $strlen; $i++) {
-           $string .= $chars[rand(0, strlen($chars) -1)];
-       }
-       return $string;
-   }
 }
 
 ?>

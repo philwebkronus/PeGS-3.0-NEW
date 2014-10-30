@@ -37,16 +37,6 @@
             <?php echo CHtml::label('Source','Source'); ?>
             <?php echo CHtml::textField('Source'); ?>
         </div>
-    
-        <div class="row">
-            <?php echo CHtml::label('Tracking1','Tracking1'); ?>
-            <?php echo CHtml::textField('Tracking1'); ?>
-        </div>
-    
-        <div class="row">
-            <?php echo CHtml::label('Tracking2','Tracking2'); ?>
-            <?php echo CHtml::textField('Tracking2'); ?>
-        </div>
         
         <div class="row" style="margin-left: 225px;">
             <?php echo CHtml::submitButton('Invoke'); ?>

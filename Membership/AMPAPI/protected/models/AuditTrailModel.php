@@ -24,7 +24,6 @@ class AuditTrailModel
     CONST AUTHENTICATE_SESSION = 9;
     CONST GET_ACTIVE_SESSION = 10;
     CONST LOGOUT = 16;
-    CONST CREATE_MOBILE_INFO = 21;
     
     public static $_instance = null;
     public $_connection;

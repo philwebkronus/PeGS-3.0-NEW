@@ -11,10 +11,6 @@
             <?php echo CHtml::label('Password','Password'); ?>
             <?php echo CHtml::textField('Password'); ?>
         </div>
-        <div class="row">
-            <?php echo CHtml::label('AlterStr','AlterStr'); ?>
-            <?php echo CHtml::textField('AlterStr'); ?>
-        </div>
         <div class="row" style="margin-left: 225px;">
             <?php echo CHtml::submitButton('Invoke'); ?>
         </div>
@@ -22,7 +18,7 @@
     <?php echo CHtml::endForm(); ?>
 </div>
 
-<div class="result" style="margin-left: 20px; word-wrap: break-word;">
+<div class="result" style="margin-left: 20px;">
     <?php if (!is_null($result)) : ?>
         <p><strong>JSON Result :</strong></p>
         <?php echo $result; ?>

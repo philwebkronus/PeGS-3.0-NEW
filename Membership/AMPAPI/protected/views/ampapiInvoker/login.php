@@ -15,10 +15,7 @@
             <?php echo CHtml::label('Password','Password'); ?>
             <?php echo CHtml::textField('Password'); ?>
         </div>
-        <div class="row">
-            <?php echo CHtml::label('AlterStr','AlterStr'); ?>
-            <?php echo CHtml::textField('AlterStr'); ?>
-        </div>
+    
         <div class="row" style="margin-left: 225px;">
             <?php echo CHtml::submitButton('Invoke'); ?>
         </div>

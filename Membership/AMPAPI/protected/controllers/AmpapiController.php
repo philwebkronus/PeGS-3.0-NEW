@@ -93,7 +93,7 @@ class AmpapiController extends Controller {
         '14'=>'',
         '15'=>'Mobile number should not be less than 9 digits long.',
         '16'=>'Mobile number should consist of numbers only.',
-        '17'=>'Name should consist of letters and spaces only.',
+        '17'=>'Name should consist of letters only.',
         '18'=>'Password and ID Number should consist of letters and numbers only.',
         '19'=>'Password should not be less than 5 characters long.',
         '20'=>'Password should be the same as confirm password.',
@@ -137,7 +137,6 @@ class AmpapiController extends Controller {
         'GetReferrer'=>APILogsModel::API_GET_REFERRER,
         'GetRegion'=>APILogsModel::API_GET_REGION,
         'GetCity'=>APILogsModel::API_GET_CITY,
-        'CreateMobileInfo'=>APILogsModel::API_CREATE_MOBILE_INFO,
         'Logout'=>APILogsModel::API_LOGOUT
     );
     //@purpose AuthenticateSession
@@ -328,7 +327,7 @@ class AmpapiController extends Controller {
         $module = 'Login';
         //$authenticateSession = new AuthenticateSessionModel();
 
-        $validateRequiredField = $this->validateRequiredFields($request, $module, array('TPSessionID'=>false, 'Username'=>false, 'Password'=>false, 'AlterStr' =>false));
+        $validateRequiredField = $this->validateRequiredFields($request, $module, array('TPSessionID'=>false, 'Username'=>false, 'Password'=>false));
         //$validateRequiredField=true;
         if($validateRequiredField===true){
 
@@ -339,9 +338,8 @@ class AmpapiController extends Controller {
                 $moduleName ='login';
                 $Username = trim($request['Username']);
                 $Password = trim($request['Password']);
-                $AlterStr = trim($request['AlterStr']);
                 $url = $this->genMPAPIURL($moduleName);
-                $postData = CJSON::encode(array('Username'=>$Username, 'Password'=>$Password, 'AlterStr' => $AlterStr));
+                $postData = CJSON::encode(array('Username'=>$Username, 'Password'=>$Password));
                 $result = $this->SubmitData($url, $postData);
 
                 if(isset($result[0]) && $result[0]==200){
@@ -697,7 +695,7 @@ class AmpapiController extends Controller {
         $request = $this->_readJsonRequest();//print_r($request);
         $module = 'RedeemItems';
 
-        $validateRequiredField = $this->validateRequiredFields($request, $module, array('TPSessionID'=>false, 'MPSessionID'=>false,'CardNumber'=>false,'RewardID'=>false, 'RewardItemID'=>false, 'Quantity'=>false, 'Source'=>false, 'Tracking1'=>false, 'Tracking2'=>false));
+        $validateRequiredField = $this->validateRequiredFields($request, $module, array('TPSessionID'=>false, 'MPSessionID'=>false,'CardNumber'=>false,'RewardID'=>false, 'RewardItemID'=>false, 'Quantity'=>false, 'Source'=>false));
         if($validateRequiredField===true){
             $TPSessionID = trim($request['TPSessionID']);
             $validateTPSessionID = $this->_validateTPSession($TPSessionID, 'GetActiveSession', $module);
@@ -709,12 +707,10 @@ class AmpapiController extends Controller {
                 $RewardItemID = trim($request['RewardItemID']);
                 $Quantity =trim($request['Quantity']);
                 $Source=trim($request['Source']);
-                $Tracking1 = trim($request['Tracking1']);
-                $Tracking2 = trim($request['Tracking2']);
-                
+
                 $moduleName =  strtolower($module);
                 $url = $this->genMPAPIURL($moduleName);
-                $postData = CJSON::encode(array('MPSessionID'=>$MPSessionID,'CardNumber'=>$CardNumber, 'RewardID'=>$RewardID, 'RewardItemID'=>$RewardItemID, 'Quantity'=>$Quantity,'Source'=>$Source, 'Tracking1' => $Tracking1, 'Tracking2' => $Tracking2));
+                $postData = CJSON::encode(array('MPSessionID'=>$MPSessionID,'CardNumber'=>$CardNumber, 'RewardID'=>$RewardID, 'RewardItemID'=>$RewardItemID, 'Quantity'=>$Quantity,'Source'=>$Source));
                 $result = $this->SubmitData($url, $postData);
                 $AID = $this->currentAID;
                 if(isset($result[0]) && $result[0]==200){
@@ -1015,42 +1011,7 @@ class AmpapiController extends Controller {
             }
         }
     }
-    
-    //@date 10-27-2014
-    //@author fdlsison
-    public function actionCreateMobileInfo() {
-        $request = $this->_readJsonRequest();
-        $module = 'CreateMobileInfo';
-        
-        $validateRequiredField = $this->validateRequiredFields($request, $module, array('TPSessionID'=>false, 'Username'=>false, 'Password'=>false, 'AlterStr' =>false));
-        if($validateRequiredField===true){
-            
-            $validateTPSessionID = $this->_validateTPSession($request['TPSessionID'], 'GetActiveSession', $module);
-            if($validateTPSessionID===true){
-                $TPSessionID=$request['TPSessionID'];
-                $AID = $this->currentAID;
-                $moduleName ='createmobileinfo';
-                $Username = trim($request['Username']);
-                $Password = trim($request['Password']);
-                $AlterStr = trim($request['AlterStr']);
-                $url = $this->genMPAPIURL($moduleName);
-                $postData = CJSON::encode(array('Username'=>$Username, 'Password'=>$Password, 'AlterStr' => $AlterStr));
-                $result = $this->SubmitData($url, $postData);
-                
-                if(isset($result[0]) && $result[0]==200){
-                    $this->_sendResponse(200, $result[1]);
-                    $this->_auditTrail(AuditTrailModel::CREATE_MOBILE_INFO,0,$AID, $TPSessionID, $module, $Username);
-                    $this->_apiLogs(APILogsModel::API_CREATE_MOBILE_INFO,'' , 0, '', 1, $module, $Username);
-                }
-                else{
-                    $this->_displayCustomMessages(73, $module, 'No response from Membership portal API.');//Error 73
-                    $this->_apiLogs(APILogsModel::API_CREATE_MOBILE_INFO,'' , 73, '', 2, $module, $Username);
-                }
-            }
-            
-        }
-    }
-    
+
     private function _readJsonRequest() {
 
         //read the post input (use this technique if you have no post variable name):
@@ -1303,12 +1264,11 @@ class AmpapiController extends Controller {
 
     private function validateNames($request, $module, $fields){
         foreach($fields as $key=>$value){
-            //if((ctype_alpha($request[$key]))){
-            if((preg_match("/^[A-Za-z\s]+$/", trim($request[$key])) != 0)) {
+            if((ctype_alpha($request[$key]))){
                 $fields[$key]=true;
             }
             else{
-                $this->_displayReturnMessage(17, $module, $key.' should consist of letters and spaces only.');
+                $this->_displayReturnMessage(17, $module, $key.' should consist of letters only.');
                 return false;
             }
         }
