@@ -1,0 +1,50 @@
+.lightboxButton{width: 100px; height: 30px}
+
+body{background-color:#0e0209;}
+#page{width: 914px; color:#FFFFFF; margin: 90px auto 0; background: url(../images/bg_.jpg) top no-repeat; height: 444px;}
+#egames-logo-container{height: 45px; width: 159px; margin-left: 375px; margin-top: 4px;}
+#casinogames-wrapper{margin-top: 36px; height: 124px;}
+#magic-macau{margin-left:85px; width: 183px; height:152px; float:left;}
+#slots-world{margin-left:96px; width: 183px; height:152px; float:left;}
+#vibrant-vegas{margin-left:99px; width: 183px; height:152px;  float:left;}
+
+#magic-macau a{background: url(../images/magic_macau.jpg) no-repeat; width: 183px; height: 152px; display: block}
+#magic-macau a:hover{background: url(../images/magic_macau_hover.jpg) no-repeat;}
+
+#slots-world a{background: url(../images/slots_world.jpg) no-repeat; width: 183px; height: 152px; display: block}
+#slots-world a:hover{background: url(../images/slots_world_hover.jpg) no-repeat;}
+
+#vibrant-vegas a{background: url(../images/vibrant_vegas.jpg) no-repeat; width: 183px; height: 152px; display: block}
+#vibrant-vegas a:hover{background: url(../images/vibrant_vegas_hover.jpg) no-repeat;}
+
+#rockin-reno a{background: url(../images/rockin_reno.jpg) no-repeat; width: 183px; height: 152px; display: block}
+#rockin-reno a:hover{background: url(../images/rockin_reno_hover.jpg) no-repeat;}
+
+a:hover img{border:1px solid #000000;background: url(../images/magic_macau_hover.jpg) no-repeat;}
+a img{border:1px solid #480F00;}
+.clearer{clear:both;}
+#footer-wrapper{width: 914px; color:#FFFFFF; font-family: Arial;font-size: 11px; margin: 8px auto 0; text-align: center;}
+#copyright{width: 910px; margin:0 auto;}
+#logos{float:right;}
+#form-details{margin-top: 150px; color:#450122; margin-left: 285px; font-size: 14px;}
+.form-element{height: 18px; border:1px solid #450122; background-color: #fff; color: #000;}
+
+
+.link-container a, .link-container a:link, .link-container a:visited {
+display:block;
+}
+
+.link-container img {
+width:40%;
+height:40%;
+border:0;
+}
+
+.link-container a:hover img {
+visibility:hidden;
+}
+
+.money{text-align: right}
+#fancybox-overlay{overflow: hidden;}
+body{overflow: hidden}
+.bolder{font-weight: bolder}
