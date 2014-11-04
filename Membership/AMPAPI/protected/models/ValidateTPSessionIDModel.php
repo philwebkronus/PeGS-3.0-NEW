@@ -22,7 +22,7 @@ class ValidateTPSessionIDModel {
     }
     
     public function validateTPSessionID($TPSessionID){
-        $sql = 'SELECT COUNT(acs.AID) as Count,a.UserName,acs.AID, acs.DateCreated FROM accounts a, accountsessions acs WHERE acs.SessionID=:TPSessionID AND acs.AID=a.AID LIMIT 1';
+        $sql = 'SELECT COUNT(acs.AID) as Count,a.UserName,acs.AID, acs.DateCreated FROM accounts a, accountsessions acs WHERE acs.SessionID=:TPSessionID AND acs.AID=a.AID AND a.UserAccessTypeID = 1 LIMIT 1';
         $param = array(':TPSessionID'=>$TPSessionID);
         
         $command = $this->_connection->createCommand($sql);

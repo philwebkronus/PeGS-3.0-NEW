@@ -250,4 +250,44 @@ class MemberSessionsModel {
         //print_r($result);
         return $result;
     }
+    
+    //@date 10-23-2014
+    public function addRemarks($MID, $alterStr) {
+        $startTrans = $this->_connection->beginTransaction();
+        
+        try {
+            $sql = 'UPDATE membersessions SET Remarks = :alterStr WHERE MID = :MID';
+            $param = array(':alterStr' => $alterStr, ':MID' => $MID);
+            $command = $this->_connection->createCommand($sql);
+            $command->bindValues($param);
+            $command->execute();
+            
+            try {
+                $startTrans->commit();
+                return 1;
+            } catch (PDOException $e) {
+                $startTrans->rollback();
+                Utilities::log($e->getMessage());
+                return 0;
+            }
+            
+        } catch (Exception $e) {
+            $startTrans->rollback();
+            Utilities::log($e->getMessage());
+            return 0;
+        }
+    }
+    
+    //@date 10-24-2014
+    //@purpose get active IMEI
+    public function getAlterStr($MID) {
+        $sql = 'SELECT *
+                FROM membersessions
+                WHERE MID = :MID';
+        $param = array(':MID' => $MID);
+        $command = $this->_connection->createCommand($sql);
+        $result = $command->queryRow(true, $param);
+        
+        return $result;
+    }
 }

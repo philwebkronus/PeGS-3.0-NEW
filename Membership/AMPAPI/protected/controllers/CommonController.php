@@ -243,11 +243,15 @@ class CommonController {
                          'ReturnMessage' => $transMsg));
         }
         
+        else if($module == 'CreateMobileInfo') {
+            return array('CreateMobileInfo' => array('MPSessionID'=>$MPSessionID,'CardTypeID'=>$cardTypeID,'IsVIP' => $isVip,'ErrorCode'=>$errorCode, 'ReturnMessage' => $transMsg));
+        }
+        
     }
     //return message function for Login module
-    public static function retMsgLogin($module, $mpSessionID, $cardTypeID, $isVIP, $errorCode, $transMsg) {
+    public static function retMsgLogin($module, $mpSessionID, $cardTypeID, $isVIP, $errorCode, $transMsg, $alterStr) {
         if($module == 'Login')
-            return array('Login' => array('MPSessionID' => $mpSessionID, 'CardTypeID' => $cardTypeID, 'IsVIP' => $isVIP, 'ErrorCode' => $errorCode, 'ReturnMessage' => $transMsg));
+            return array('Login' => array('MPSessionID' => $mpSessionID, 'CardTypeID' => $cardTypeID, 'IsVIP' => $isVIP, 'ErrorCode' => $errorCode, 'ReturnMessage' => $transMsg, 'Remarks' => $alterStr));
             
     }
     

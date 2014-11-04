@@ -263,13 +263,13 @@ class MPapiController extends Controller {
         $apiLogsModel = new APILogsModel();
 
         //check if username & password is inputted
-        if(isset($request['Username']) && isset($request['Password'])) {
-            if (($request['Username'] == '') || ($request['Password'] == '')) {
+        if(isset($request['Username']) && isset($request['Password']) && isset($request['AlterStr'])) {
+            if (($request['Username'] == '') || ($request['Password'] == '') || ($request['AlterStr'] == '')) {
                 $logMessage = "One or more fields is not set or is blank.";
                 $transMsg = "One or more fields is not set or is blank.";
                 $errorCode = 1;
                 Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
-                $this->_sendResponse(200, CJSON::encode(CommonController::retMsgLogin($module, '', '', '', $errorCode, $transMsg)));
+                $this->_sendResponse(200, CJSON::encode(CommonController::retMsgLogin($module, '', '', '', $errorCode, $transMsg, '')));
                 $logger->log($logger->logdate, " [LOGIN ERROR] ", $logMessage);
                 $apiDetails = 'LOGIN-Failed: Invalid Login parameters.';
                 $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
@@ -281,10 +281,11 @@ class MPapiController extends Controller {
                 exit;
             }
             else {
-                if (Utilities::validateEmail($request['Username']) || ctype_alnum($request['Password'])) {
+                if ((Utilities::validateEmail($request['Username']) || ctype_alnum($request['Username'])) && ctype_alnum($request['Password']) && is_numeric($request['AlterStr'])) {
 
                     $username = trim($request['Username']);
                     $password = trim($request['Password']);
+                    $alterStr = trim($request['AlterStr']);
 
                     //start of declaration of models to be used
                     $memberSessionsModel = new MemberSessionsModel();
@@ -292,13 +293,51 @@ class MPapiController extends Controller {
                     $cardsModel = new CardsModel();
                     $auditTrailModel = new AuditTrailModel();
                     $memberInfoModel = new MemberInfoModel();
+                    $mobileIdentityModel = new MobileIdentityModel();
 
                     $members = $this->_authenticate($username, $password);
 
                     if($members) {
                         $MID = $members['MID'];
-
                         $isVIP = $members['IsVIP'];
+
+                        $alterStrLen = strlen($alterStr);
+
+                        if($alterStrLen > 16 || $alterStrLen < 14) {
+                            $logMessage = 'AlterStr should only be 14-16 characters long.';
+                            $transMsg = 'AlterStr should only be 14-16 characters long.';
+                            $errorCode = 92;
+                            Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                            $this->_sendResponse(200, CJSON::encode(CommonController::retMsgLogin($module, '', '', '', $errorCode, $transMsg, '')));
+                            $logger->log($logger->logdate, " [LOGIN ERROR] ", $logMessage);
+                            $apiDetails = 'LOGIN-Failed: Invalid AlterStr.';
+                            $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
+                            if($isInserted == 0) {
+                                $logMessage = "Failed to insert to APILogs.";
+                                $logger->log($logger->logdate, " [LOGIN ERROR] ", $logMessage);
+                            }
+
+                            exit;
+                        }
+
+                        $isValid = $mobileIdentityModel->validateAlterStr($alterStr, $MID);
+                        if($isValid['COUNT'] == 0) {
+                            $logMessage = 'Not a valid AlterStr.';
+                            $transMsg = 'Not a valid AlterStr.';
+                            $errorCode = 96;
+                            Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                            $this->_sendResponse(200, CJSON::encode(CommonController::retMsgLogin($module, '', '', '', $errorCode, $transMsg, '')));
+                            $logger->log($logger->logdate, " [LOGIN ERROR] ", $logMessage);
+                            $apiDetails = 'LOGIN-Failed: Invalid AlterStr.';
+                            $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
+                            if($isInserted == 0) {
+                                $logMessage = "Failed to insert to APILogs.";
+                                $logger->log($logger->logdate, " [LOGIN ERROR] ", $logMessage);
+                            }
+
+                            exit;
+                        }
+
                         $activeSession = $memberSessionsModel->checkSession($MID);
 
                         $remoteIP = $_SERVER['REMOTE_ADDR'];
@@ -337,10 +376,54 @@ class MPapiController extends Controller {
                             }
                             $isUpdated = $memberSessionsModel->updateTransactionDate($MID, $mpSessionID);
                             if($isUpdated > 0) {
+                                $alterStrRev = strrev($alterStr);
+                                $diffLen = 25 - $alterStrLen;
+                                $randNum = Utilities::generateAlphaNumericUpper($diffLen);
+                                $randNumLen = strlen($randNum);
+                                $remarks = '';
+                                $l= 0;
+                                $k=0;
+
+                                for($i=0; $i<$alterStrLen;$i++) {
+                                    $remarksArr[] = $alterStrRev[$i];
+                                }
+
+                                for($j=0; $j<$randNumLen;$j++) {
+                                    $remarksArr2[] = $randNum[$j];
+                                }
+
+                                while($k<$alterStrLen) {
+                                    $remarks .= $remarksArr[$k].$remarksArr2[$l];
+                                    $k++;
+                                    $l++;
+                                     if($l<$diffLen)
+                                         continue;
+                                     else
+                                         $remarksArr2[$l] = '';
+                                }
+
+                                $isAdded = $memberSessionsModel->addRemarks($MID, $remarks);
+                                if($isAdded == 0) {
+                                    $logMessage = 'Failed to update remarks in membersessions table WHERE MID = '.$MID;
+                                    $transMsg = 'Transaction failed.';
+                                    $errorCode = 4;
+                                    Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                                    $this->_sendResponse(200, CJSON::encode(CommonController::retMsgLogin($module, '', '', '', $errorCode, $transMsg, '')));
+                                    $logger->log($logger->logdate, " [LOGIN ERROR] ", $logMessage);
+                                    $apiDetails = 'LOGIN-Insert/UpdateMemberSession-Failed: MID = '.$MID;
+                                    $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
+                                    if($isInserted == 0) {
+                                        $logMessage = "Failed to insert to APILogs.";
+                                        $logger->log($logger->logdate, " [LOGIN ERROR] ", $logMessage);
+                                    }
+
+                                    exit;
+                                }
+
                                 $transMsg = $mpSessionID;
                                 $logMessage = 'Login successful.';
                                 $errorCode = 0;
-                                $this->_sendResponse(200, CJSON::encode(CommonController::retMsgLogin($module, $mpSessionID, $cardTypeID, $isVIP, $errorCode, $transMsg)));
+                                $this->_sendResponse(200, CJSON::encode(CommonController::retMsgLogin($module, $mpSessionID, $cardTypeID, $isVIP, $errorCode, $transMsg, $remarks)));
                                 $logger->log($logger->logdate, " [LOGIN SUCCESSFUL] ", $logMessage);
                                 $apiDetails = 'LOGIN-UpdateTransDate-Success: MID = '.$MID.' SessionID = '.$mpSessionID;
                                 $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 1);
@@ -355,7 +438,7 @@ class MPapiController extends Controller {
                                 $transMsg = 'Transaction failed.';
                                 $errorCode = 4;
                                 Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
-                                $this->_sendResponse(200, CJSON::encode(CommonController::retMsgLogin($module, '', '', '', $errorCode, $transMsg)));
+                                $this->_sendResponse(200, CJSON::encode(CommonController::retMsgLogin($module, '', '', '', $errorCode, $transMsg, '')));
                                 $logger->log($logger->logdate, " [LOGIN ERROR] ", $logMessage);
                                 $apiDetails = 'LOGIN-UpdateTransDate-Failed: '.'Username: '.$username.' MID = '.$MID.' SessionID = '.$mpSessionID;
                                 $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
@@ -373,7 +456,7 @@ class MPapiController extends Controller {
                             $transMsg = 'Transaction failed.';
                             $errorCode = 4;
                             Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
-                            $this->_sendResponse(200, CJSON::encode(CommonController::retMsgLogin($module, '', '', '', $errorCode, $transMsg)));
+                            $this->_sendResponse(200, CJSON::encode(CommonController::retMsgLogin($module, '', '', '', $errorCode, $transMsg, '')));
                             $logger->log($logger->logdate, " [LOGIN ERROR] ", $logMessage);
                             $apiDetails = 'LOGIN-Insert/UpdateMemberSession-Failed: MID = '.$MID.' SessionID = '.$mpSessionID;
                             $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
@@ -390,7 +473,7 @@ class MPapiController extends Controller {
                         $transMsg = 'Member not found';
                         $errorCode = 3;
                         Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
-                        $this->_sendResponse(200, CJSON::encode(CommonController::retMsgLogin($module, '', '', '', $errorCode, $transMsg)));
+                        $this->_sendResponse(200, CJSON::encode(CommonController::retMsgLogin($module, '', '', '', $errorCode, $transMsg, '')));
                         $logger->log($logger->logdate, " [LOGIN ERROR] ", $logMessage);
                         $apiDetails = 'LOGIN-Authenticate-Failed: Member account is invalid.';
                         $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
@@ -408,7 +491,7 @@ class MPapiController extends Controller {
                         $transMsg = 'Invalid input.';
                         $errorCode = 2;
                         Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
-                        $this->_sendResponse(200, CJSON::encode(CommonController::retMsgLogin($module, '', '', '', $errorCode, $transMsg)));
+                        $this->_sendResponse(200, CJSON::encode(CommonController::retMsgLogin($module, '', '', '', $errorCode, $transMsg, '')));
                         $logger->log($logger->logdate, " [LOGIN ERROR] ", $logMessage);
                         $apiDetails = 'LOGIN-Failed: Invalid input parameters';
                         $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
@@ -426,7 +509,7 @@ class MPapiController extends Controller {
             $transMsg = "One or more fields is not set or is blank.";
             $errorCode = 1;
             Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
-            $this->_sendResponse(200, CJSON::encode(CommonController::retMsgLogin($module, '', '', '', $errorCode, $transMsg)));
+            $this->_sendResponse(200, CJSON::encode(CommonController::retMsgLogin($module, '', '', '', $errorCode, $transMsg, '')));
             $logger->log($logger->logdate, " [LOGIN ERROR] ", $logMessage);
             $apiDetails = 'LOGIN-Failed: Invalid login parameters.';
             $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
@@ -850,11 +933,11 @@ class MPapiController extends Controller {
                 exit;
             }
             else if(preg_match("/^[A-Za-z\s]+$/", trim($request['FirstName'])) == 0 || (trim($request['MiddleName'] != '') && preg_match("/^[A-Za-z\s]+$/", trim($request['MiddleName'])) == 0) || preg_match("/^[A-Za-z\s]+$/", trim($request['LastName'])) == 0 || (trim($request['NickName'] != '') && preg_match("/^[A-Za-z\s]+$/", trim($request['NickName'])) == 0)) {
-                $transMsg = "Name should consist of letter and spaces only.";
+                $transMsg = "Name should consist of letters and spaces only.";
                 $errorCode = 17;
                 Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
                 $this->_sendResponse(200, CJSON::encode(CommonController::retMsgRegisterMember($module, $errorCode, $transMsg)));
-                $logMessage = 'Name should consist of letters only.';
+                $logMessage = 'Name should consist of letters and spaces only.';
                 $logger->log($logger->logdate, " [REGISTERMEMBER ERROR] ", $logMessage);
                 $apiDetails = 'REGISTERMEMBER-Failed: Invalid input parameters. ';
                 $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
@@ -1787,7 +1870,7 @@ class MPapiController extends Controller {
                 $errorCode = 17;
                 Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
                 $this->_sendResponse(200, CJSON::encode(CommonController::retMsgUpdateProfile($module, $errorCode, $transMsg)));
-                $logMessage = 'Name should consist of letters only.';
+                $logMessage = 'Name should consist of letters and spaces only.';
                 $logger->log($logger->logdate, " [UPDATEPROFILE ERROR] ", $logMessage);
                 $apiDetails = 'UPDATEPROFILE-Failed: Invalid input parameters. ';
                 $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
@@ -2799,6 +2882,9 @@ class MPapiController extends Controller {
         $memberSessionsModel = new MemberSessionsModel();
         $memberInfoModel = new MemberInfoModel();
 
+        $result = $memberSessionsModel->getMID($request['MPSessionID']);
+        $MID = $result['MID'];
+
         $isValid = $this->_validateMPSession($request['MPSessionID']);
         if(isset($isValid) && !$isValid) {
             $transMsg = "MPSessionID is already expired. Please login again.";
@@ -2808,7 +2894,7 @@ class MPapiController extends Controller {
             $logMessage = 'MPSessionID is already expired. Please login again.';
             $logger->log($logger->logdate, " [REDEEMITEMS ERROR] ", $logMessage);
             $apiDetails = 'REDEEMITEMS-Failed: MPSessionID is already expired. Please login again.. MID = '.$MID;
-            $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
+            $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
             if($isInserted == 0) {
                 $logMessage = "Failed to insert to APILogs.";
                 $logger->log($logger->logdate, " [REDEEMITEMS ERROR] ", $logMessage);
@@ -2816,9 +2902,6 @@ class MPapiController extends Controller {
 
             exit;
         }
-
-        $result = $memberSessionsModel->getMID($request['MPSessionID']);
-        $MID = $result['MID'];
 
         if(isset($result)) {
             $isUpdated = $memberSessionsModel->updateTransactionDate($MID);
@@ -2843,9 +2926,9 @@ class MPapiController extends Controller {
         $process = new Processing();
 
         if(isset($request['CardNumber']) && isset($request['RewardItemID']) && isset($request['Quantity'])
-           && isset($request['RewardID']) && isset($request['Source']) && isset($request['MPSessionID'])) {
+           && isset($request['RewardID']) && isset($request['Source']) && isset($request['MPSessionID']) && isset($request['Tracking1']) && isset($request['Tracking2'])) {
             if(($request['CardNumber'] == '') || ($request['RewardItemID'] == '') || ($request['RewardID'] == '') || ($request['Quantity'] == '')
-                || ($request['Source'] == '') || ($request['MPSessionID'] == '')) {
+                || ($request['Source'] == '') || ($request['MPSessionID'] == '') || ($request['Tracking1'] == '') || ($request['Tracking2'] == '')) {
                 $transMsg = "One or more fields is not set or is blank.";
                 $errorCode = 1;
                 Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
@@ -2868,6 +2951,8 @@ class MPapiController extends Controller {
                 $quantity = trim($request['Quantity']);
                 $source = trim($request['Source']);
                 $mpSessionID = trim($request['MPSessionID']);
+                $tracking1 = trim($request['Tracking1']);
+                $tracking2 = stripslashes(trim($request['Tracking2']));
 
                 $memberSessionsModel = new MemberSessionsModel();
                 $memberCardsModel = new MemberCardsModel();
@@ -2880,6 +2965,15 @@ class MPapiController extends Controller {
                 $itemSerialCodesModel = new ItemSerialCodesModel();
                 $refPartnersModel = new Ref_PartnersModel();
                 $helpers = new Helpers();
+                $mobileIdentityModel = new MobileIdentityModel();
+
+                $resultArr = $memberSessionsModel->getAlterStr($MID);
+                if(isset($resultArr)) {
+                    $remarks = $resultArr['Remarks'];
+                }
+
+                $cipher = new Cipher($remarks);
+                $encS = $cipher->encryptS($tracking1.$remarks);
 
                 if($rewardID == 1) {
                     $qty1 = $quantity;
@@ -3008,6 +3102,40 @@ class MPapiController extends Controller {
                             $logMessage = "Failed to insert to APILogs.";
                             $logger->log($logger->logdate, " [REDEEMITEMS ERROR] ", $logMessage);
                         }
+                        exit;
+                    }
+
+                    if($this->_validateTracking1($tracking1) == FALSE) {
+                        $transMsg = "Please input a valid Tracking1.";
+                        $errorCode = 92;
+                        Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                        $this->_sendResponse(200, CJSON::encode(CommonController::retMsgRedemption($module, $redemption, $errorCode, $transMsg)));
+                        $logMessage = 'Please input a valid Tracking1.';
+                        $logger->log($logger->logdate, " [REDEEMITEMS ERROR] ", $logMessage);
+                        $apiDetails = 'REDEEMITEMS-Failed: Tracking1 is invalid. [MID] = '.$MID;
+                        $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
+                        if($isInserted == 0) {
+                            $logMessage = "Failed to insert to APILogs.";
+                            $logger->log($logger->logdate, " [REDEEMITEMS ERROR] ", $logMessage);
+                        }
+
+                        exit;
+                    }
+
+                    if(($encS != $tracking2)) { //&& ($encR != $tracking2) && ($encB != $tracking2)) {
+                        $transMsg = "Please input a valid Tracking2.";
+                        $errorCode = 93;
+                        Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                        $this->_sendResponse(200, CJSON::encode(CommonController::retMsgRedemption($module, $redemption, $errorCode, $transMsg)));
+                        $logMessage = 'Please input a valid Tracking2.';
+                        $logger->log($logger->logdate, " [REDEEMITEMS ERROR] ", $logMessage);
+                        $apiDetails = 'REDEEMITEMS-Failed: Tracking2 is invalid. [MID] = '.$MID;
+                        $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
+                        if($isInserted == 0) {
+                            $logMessage = "Failed to insert to APILogs.";
+                            $logger->log($logger->logdate, " [REDEEMITEMS ERROR] ", $logMessage);
+                        }
+
                         exit;
                     }
 
@@ -3550,6 +3678,7 @@ class MPapiController extends Controller {
                                                         $redemptionDate = $resultsArray['RedemptionDate'];
                                                         $rDate = new DateTime(date($redemptionDate));
                                                         $redemptionDate = $rDate->format("F j, Y, g:i a");
+                                                        $email = $memberDetails['Email'];
 
                                                         if(isset($itemDetail['About'])) {
                                                             $about = $itemDetail['About'];
@@ -5521,6 +5650,317 @@ class MPapiController extends Controller {
         $d = DateTime::createFromFormat('Y-m-d', $date);
         return $d && $d->format('Y-m-d') == $date;
     }
+
+    //@date 10-20-2014
+    private function _validateTracking1($date) {
+        $d = DateTime::createFromFormat('YmdHis', $date);
+        return $d && $d->format('YmdHis') == $date;
+    }
+
+    //@date 10-27-2014
+    //@purpose creates mobile info for new members
+    public function actionCreateMobileInfo() {
+        $request = $this->_readJsonRequest();
+
+        $transMsg = '';
+        $errorCode = '';
+        $module = 'CreateMobileInfo';
+        $apiMethod = 19;
+
+        $logger = new ErrorLogger();
+        $apiLogsModel = new APILogsModel();
+
+        if(isset($request['Username']) && isset($request['Password']) && isset($request['AlterStr'])) {
+            if (($request['Username'] == '') || ($request['Password'] == '') || ($request['AlterStr'] == '')) {
+                $logMessage = "One or more fields is not set or is blank.";
+                $transMsg = "One or more fields is not set or is blank.";
+                $errorCode = 1;
+                Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                $this->_sendResponse(200, CJSON::encode(CommonController::retMsgCreateMobileInfo($module, '', '', '', $errorCode, $transMsg, '')));
+                $logger->log($logger->logdate, " [CREATEMOBILEINFO ERROR] ", $logMessage);
+                $apiDetails = 'CREATEMOBILEINFO-Failed: Invalid create mobile info parameters.';
+                $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
+                if($isInserted == 0) {
+                    $logMessage = "Failed to insert to APILogs.";
+                    $logger->log($logger->logdate, " [CREATEMOBILEINFO ERROR] ", $logMessage);
+                }
+
+                exit;
+            }
+            else {
+                if ((Utilities::validateEmail($request['Username']) || ctype_alnum($request['Username'])) && ctype_alnum($request['Password']) && is_numeric($request['AlterStr'])) {
+                    $username = trim($request['Username']);
+                    $password = trim($request['Password']);
+                    $alterStr = trim($request['AlterStr']);
+
+                    //start of declaration of models to be used
+                    $memberSessionsModel = new MemberSessionsModel();
+                    $memberCardsModel = new MemberCardsModel();
+                    $cardsModel = new CardsModel();
+                    $auditTrailModel = new AuditTrailModel();
+                    $memberInfoModel = new MemberInfoModel();
+                    $mobileIdentityModel = new MobileIdentityModel();
+
+                    $members = $this->_authenticate($username, $password);
+
+                    if($members) {
+                        $MID = $members['MID'];
+                        $isVIP = $members['IsVIP'];
+
+                        $alterStrLen = strlen($alterStr);
+
+                        if($alterStrLen > 16 || $alterStrLen < 14) {
+                            $logMessage = 'AlterStr should only be 14-16 characters long.';
+                            $transMsg = 'AlterStr should only be 14-16 characters long.';
+                            $errorCode = 92;
+                            Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                            $this->_sendResponse(200, CJSON::encode(CommonController::retMsgCreateMobileInfo($module, '', '', '', $errorCode, $transMsg, '')));
+                            $logger->log($logger->logdate, " [CREATEMOBILEINFO ERROR] ", $logMessage);
+                            $apiDetails = 'CREATEMOBILEINFO-Failed: Invalid AlterStr.';
+                            $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
+                            if($isInserted == 0) {
+                                $logMessage = "Failed to insert to APILogs.";
+                                $logger->log($logger->logdate, " [CREATEMOBILEINFO ERROR] ", $logMessage);
+                            }
+
+                            exit;
+                        }
+
+                        $isValid = $mobileIdentityModel->validateAlterStr($alterStr, $MID);
+                        if($isValid['COUNT'] != 0) {
+                            $logMessage = 'AlterStr already exists.';
+                            $transMsg = 'AlterStr already exists.';
+                            $errorCode = 95;
+                            Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                            $this->_sendResponse(200, CJSON::encode(CommonController::retMsgCreateMobileInfo($module, '', '', '', $errorCode, $transMsg, '')));
+                            $logger->log($logger->logdate, " [CREATEMOBILEINFO ERROR] ", $logMessage);
+                            $apiDetails = 'CREATEMOBILEINFO-Failed: AlterStr is existing.';
+                            $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
+                            if($isInserted == 0) {
+                                $logMessage = "Failed to insert to APILogs.";
+                                $logger->log($logger->logdate, " [CREATEMOBILEINFO ERROR] ", $logMessage);
+                            }
+
+                            exit;
+                        }
+
+                        $activeSession = $memberSessionsModel->checkSession($MID);
+
+                        $remoteIP = $_SERVER['REMOTE_ADDR'];
+                        $session=new CHttpSession();
+                        $session->open();
+                        $mpSessionID = $session->getSessionID();
+
+                        $session->setSessionID($mpSessionID);
+
+                        if($activeSession['COUNT(MemberSessionID)'] > 0) {
+                            $result = $memberSessionsModel->updateSession($mpSessionID, $MID, $remoteIP);
+                        }
+                        else {
+
+                            $result = $memberSessionsModel->insertMemberSession($MID, $mpSessionID, $remoteIP);
+                        }
+
+                        if($result > 0) {
+                            $memberSessions = $memberSessionsModel->getMemberSessions($MID);
+
+                            $mpSessionID = $memberSessions['SessionID'];
+
+                            $memberCards = $memberCardsModel->getActiveMemberCardInfo($MID);
+
+                            $cardNumber = $memberCards['CardNumber'];
+
+                            $cards = $cardsModel->getCardInfo($cardNumber);
+
+                            $cardTypeID = $cards['CardTypeID'];
+                            $refID = $username;
+
+                            $isSuccessful = $auditTrailModel->logEvent(AuditTrailModel::API_CREATE_MOBILE_INFO, 'Username: '.$username, array('MID' => $MID, 'SessionID' => $mpSessionID, 'AID' => $MID));
+                            if($isSuccessful == 0) {
+                                $logMessage = 'Failed to log event on Audittrail.';
+                                $logger->log($logger->logdate, " [CREATEMOBILEINFO FAILED] ", $logMessage);
+                            }
+                            $isUpdated = $memberSessionsModel->updateTransactionDate($MID, $mpSessionID);
+                            if($isUpdated > 0) {
+                                $success = $mobileIdentityModel->insertAlterStr($MID, $alterStr);
+                                if($success == 0) {
+                                    $logMessage = 'Failed to insert alter str.';
+                                    $transMsg = 'Failed to insert alter str.';
+                                    $errorCode = 94;
+                                    Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                                    $this->_sendResponse(200, CJSON::encode(CommonController::retMsgCreateMobileInfo($module, '', '', '', $errorCode, $transMsg, '')));
+                                    $logger->log($logger->logdate, " [CREATEMOBILEINFO ERROR] ", $logMessage);
+                                    $apiDetails = 'CREATEMOBILEINFO-Failed: Invalid AlterStr.';
+                                    $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
+                                    if($isInserted == 0) {
+                                        $logMessage = "Failed to insert to APILogs.";
+                                        $logger->log($logger->logdate, " [CREATEMOBILEINFO ERROR] ", $logMessage);
+                                    }
+
+                                    exit;
+                                }
+                                $alterStrRev = strrev($alterStr);
+                                $diffLen = 25 - $alterStrLen;
+                                $randNum = Utilities::generateAlphaNumericUpper($diffLen);
+                                $randNumLen = strlen($randNum);
+                                $remarks = '';
+                                $l= 0;
+                                $k=0;
+
+                                for($i=0; $i<$alterStrLen;$i++) {
+                                    $remarksArr[] = $alterStrRev[$i];
+                                }
+
+                                for($j=0; $j<$randNumLen;$j++) {
+                                    $remarksArr2[] = $randNum[$j];
+                                }
+
+                                while($k<$alterStrLen) {
+                                    $remarks .= $remarksArr[$k].$remarksArr2[$l];
+                                    $k++;
+                                    $l++;
+                                     if($l<$diffLen)
+                                         continue;
+                                     else
+                                         $remarksArr2[$l] = '';
+                                }
+
+                                $isAdded = $memberSessionsModel->addRemarks($MID, $remarks);
+                                if($isAdded == 0) {
+                                    $logMessage = 'Failed to update remarks in membersessions table WHERE MID = '.$MID;
+                                    $transMsg = 'Transaction failed.';
+                                    $errorCode = 4;
+                                    Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                                    $this->_sendResponse(200, CJSON::encode(CommonController::retMsgCreateMobileInfo($module, '', '', '', $errorCode, $transMsg, '')));
+                                    $logger->log($logger->logdate, " [CREATEMOBILEINFO ERROR] ", $logMessage);
+                                    $apiDetails = 'CREATEMOBILEINFO-Insert/UpdateMemberSession-Failed: MID = '.$MID;
+                                    $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
+                                    if($isInserted == 0) {
+                                        $logMessage = "Failed to insert to APILogs.";
+                                        $logger->log($logger->logdate, " [CREATEMOBILEINFO ERROR] ", $logMessage);
+                                    }
+
+                                    exit;
+                                }
+
+                                $transMsg = $mpSessionID;
+                                $logMessage = 'Create Mobile Info successful.';
+                                $errorCode = 0;
+                                $this->_sendResponse(200, CJSON::encode(CommonController::retMsgCreateMobileInfo($module, $mpSessionID, $cardTypeID, $isVIP, $errorCode, $transMsg, $remarks)));
+                                $logger->log($logger->logdate, " [CREATEMOBILEINFO SUCCESSFUL] ", $logMessage);
+                                $apiDetails = 'CREATEMOBILEINFO-UpdateTransDate-Success: MID = '.$MID.' SessionID = '.$mpSessionID;
+                                $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 1);
+                                if($isInserted == 0) {
+                                    $logMessage = "Failed to insert to APILogs.";
+                                    $logger->log($logger->logdate, " [CREATEMOBILEINFO ERROR] ", $logMessage);
+                                }
+
+                            }
+                            else {
+                                $logMessage = 'Failed to update transaction date in membersessions table WHERE MID = '.$MID.' AND SessionID = '.$mpSessionID;
+                                $transMsg = 'Transaction failed.';
+                                $errorCode = 4;
+                                Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                                $this->_sendResponse(200, CJSON::encode(CommonController::retMsgCreateMobileInfo($module, '', '', '', $errorCode, $transMsg, '')));
+                                $logger->log($logger->logdate, " [CREATEMOBILEINFO ERROR] ", $logMessage);
+                                $apiDetails = 'CREATEMOBILEINFO-UpdateTransDate-Failed: '.'Username: '.$username.' MID = '.$MID.' SessionID = '.$mpSessionID;
+                                $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
+                                if($isInserted == 0) {
+                                    $logMessage = "Failed to insert to APILogs.";
+                                    $logger->log($logger->logdate, " [CREATEMOBILEINFO ERROR] ", $logMessage);
+                                }
+
+                                exit;
+                            }
+
+                        }
+                        else {
+                            $logMessage = 'Failed to insert/update membersession in membersessions table WHERE MID = '.$MID.' AND SessionID = '.$mpSessionID.' AND RemoteIP = '.$remoteIP;
+                            $transMsg = 'Transaction failed.';
+                            $errorCode = 4;
+                            Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                            $this->_sendResponse(200, CJSON::encode(CommonController::retMsgCreateMobileInfo($module, '', '', '', $errorCode, $transMsg, '')));
+                            $logger->log($logger->logdate, " [CREATEMOBILEINFO ERROR] ", $logMessage);
+                            $apiDetails = 'CREATEMOBILEINFO-Insert/UpdateMemberSession-Failed: MID = '.$MID.' SessionID = '.$mpSessionID;
+                            $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
+                            if($isInserted == 0) {
+                                $logMessage = "Failed to insert to APILogs.";
+                                $logger->log($logger->logdate, " [CREATEMOBILEINFO ERROR] ", $logMessage);
+                            }
+
+                            exit;
+                        }
+                    }
+                    else {
+                        $logMessage = 'Member is not found in db.';
+                        $transMsg = 'Member not found';
+                        $errorCode = 3;
+                        Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                        $this->_sendResponse(200, CJSON::encode(CommonController::retMsgCreateMobileInfo($module, '', '', '', $errorCode, $transMsg, '')));
+                        $logger->log($logger->logdate, " [CREATEMOBILEINFO ERROR] ", $logMessage);
+                        $apiDetails = 'CREATEMOBILEINFO-Authenticate-Failed: Member account is invalid.';
+                        $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
+                        if($isInserted == 0) {
+                            $logMessage = "Failed to insert to APILogs.";
+                            $logger->log($logger->logdate, " [CREATEMOBILEINFO ERROR] ", $logMessage);
+                        }
+
+                        exit;
+                    }
+                }
+                else {
+                    $logMessage = 'Invalid input.';
+                    $transMsg = 'Invalid input.';
+                    $errorCode = 2;
+                    Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                    $this->_sendResponse(200, CJSON::encode(CommonController::retMsgCreateMobileInfo($module, '', '', '', $errorCode, $transMsg, '')));
+                    $logger->log($logger->logdate, " [CREATEMOBILEINFO ERROR] ", $logMessage);
+                    $apiDetails = 'CREATEMOBILEINFO-Failed: Invalid input parameters';
+                    $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
+                    if($isInserted == 0) {
+                        $logMessage = "Failed to insert to APILogs.";
+                        $logger->log($logger->logdate, " [CREATEMOBILEINFO ERROR] ", $logMessage);
+                    }
+
+                    exit;
+                }
+            }
+        }
+        else {
+            $logMessage = 'One or more fields is not set or is blank';
+            $transMsg = "One or more fields is not set or is blank.";
+            $errorCode = 1;
+            Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+            $this->_sendResponse(200, CJSON::encode(CommonController::retMsgCreateMobileInfo($module, '', '', '', $errorCode, $transMsg, '')));
+            $logger->log($logger->logdate, " [CREATEMOBILEINFO ERROR] ", $logMessage);
+            $apiDetails = 'CREATEMOBILEINFO-Failed: Invalid create mobile info parameters.';
+            $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
+            if($isInserted == 0) {
+                $logMessage = "Failed to insert to APILogs.";
+                $logger->log($logger->logdate, " [CREATEMOBILEINFO ERROR] ", $logMessage);
+            }
+
+            exit;
+        }
+    }
+
+  public function actionVerifyTracking2() {
+	$request = $this->_readJsonRequest();
+	$module = 'VerifyTracking2';
+	$errorCode = 0;
+	$transMsg = '';
+	$remarks = $request['Remarks'];
+	$tracking1 = $request['Tracking1'];
+
+ 	$cipher = new Cipher($remarks);
+        $encS = $cipher->encryptS($tracking1.$remarks);
+	$transMsg = $encS;
+
+	$this->_sendResponse(200, CJSON::encode(CommonController::retMsgVerifyTracking2($module, $tracking1 , $remarks, $errorCode, $transMsg)));
+
+	exit;
+    }
+
 }
 
 ?>
