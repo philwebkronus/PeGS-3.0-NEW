@@ -22,7 +22,7 @@
                         <!--<script type="text/javascript" src="https://getfirebug.com/firebug-lite.js"></script>-->
             
         <link rel="shortcut icon" href="http://pj.pagcoregames.com/favicon.ico" type="image/x-icon" />
-	<title>Lobby</title>
+	<title>Screen Saver</title>
         <script type="text/javascript">
             $(document).ready(function(){
 
