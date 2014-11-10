@@ -5612,7 +5612,7 @@ class MPapiController extends Controller {
             $sessionDateTime = strtotime($queryResult['TransactionDate']);
             $currentDateTime = strtotime(date('Y-m-d H:i:s'));
             $timeInterval = round(abs($currentDateTime-$sessionDateTime)/60,2);
-            $maxTime = 30.00;
+            $maxTime = 45.00;
 
             if($timeInterval < $maxTime) {
                 $logMessage = 'Validate MPSession is successful..';
