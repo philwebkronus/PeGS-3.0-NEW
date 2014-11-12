@@ -796,10 +796,10 @@ class UserBasedTrans {
         }
         
         //logout player
-        if(strpos($service_name, 'RTG2') !== false) {
-            $PID = $casinoApiHandler->GetPIDLogin($casinoUsername);
-            $casinoApi->LogoutPlayer($terminal_id, $service_id, $PID);    
-        }
+//        if(strpos($service_name, 'RTG2') !== false) {
+//            $PID = $casinoApiHandler->GetPIDLogin($casinoUsername);
+//            $casinoApi->LogoutPlayer($terminal_id, $service_id, $PID);    
+//        }
 
         //Display message
         if(is_array($pendingGames) && $pendingGames['IsSucceed'] == true){
