@@ -86,6 +86,7 @@ class Helpers
     //send automated email for member registration module
     public function sendEmailVerification( $email, $name, $tempcode)
     {
+        $urlVerify = Yii::app()->params["urlVerify"];
        // App::LoadCore("PHPMailer.class.php");
         $mailer = new PHPMailer();
                         
@@ -94,7 +95,7 @@ class Helpers
         
         $mailer->Body = "<html><body>Dear <label style='font-style: italic;'>$name</label>,<br />";
         $mailer->Body .= "<p style='text-align: justify; text-justify: inter-word;'><br />Thank you for signing up! This is to inform you that your User Account has been successfully created on this date ".date('m/d/Y',time())." and time (".date('H:i:s',time())."). Your Temporary Account Code is $tempcode. Present this code and one (1) government-issued ID at any e-Games cafe near you. ";
-        $mailer->Body .= "<br /><br />To verify your account, please click this link <b><a href='http://membership.rewards.dev.local/verify.php?email=$email&tempcode=$tempcode'>http://".$_SERVER['HTTP_HOST']."/verify.php?email=$email&tempcode=$tempcode</a></b>";
+        $mailer->Body .= "<br /><br />To verify your account, please click this link <b><a href='".$urlVerify."?email=$email&tempcode=$tempcode'>$urlVerify?email=$email&tempcode=$tempcode</a></b>";
         $mailer->Body .= "<br />To read the Terms & Conditions, please click this link <b><a href='http://www.egamescasino.ph/terms-and-conditions/'>http://www.egamescasino.ph/terms-and-conditions/</a></b>.";
         $mailer->Body .= "<br />To locate the e-Games cafes near you, please click this link <b><a href='http://www.egamescasino.ph/locations/'>http://www.egamescasino.ph/locations/</a></b>.";
         $mailer->Body .= "<br /><br />Please be advised that your Temporary Account Code will be activated only after 24 hours.";
