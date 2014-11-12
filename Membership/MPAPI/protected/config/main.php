@@ -157,5 +157,6 @@ return array(
             'MarketingEmail' => '@philweb.ph',
             'urlMPAPI' => 'http://<MPAPI URL HERE>/index.php/MPapi/',
             'SessionTimeOut' => 45.00,
+            'urlVerify' => 'http://<MEMBERSHIP INSTANCE HERE>/verify.php'
             ),
 );
