@@ -53,7 +53,7 @@ class Utilities {
      */
 
     public static function validateEmail($string) {
-        if (preg_match("/^[^@ ]+@[^@ ]+\.[^@ \.]+$/", $string))
+        if (preg_match("/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/", $string))
             return true;
         else
             return false;
