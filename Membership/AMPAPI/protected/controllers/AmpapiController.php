@@ -267,7 +267,7 @@ class AmpapiController extends Controller {
                     $CurrentDateTime = strtotime(date('Y-m-d H:i:s'));
                     $TimeInterval = round(abs($CurrentDateTime-$SessionDateTime)/60,2);//echo $TimeInterval.'='.$CurrentDateTime.'-'.$SessionDateTime;exit;
                     $AID=$result['AID'];
-                    $MaxTime = 45.00;
+                    $MaxTime = Yii::app()->params["SessionTimeOut"];// 45.00;
 
                     if($TimeInterval<$MaxTime){
                         $this->_displaySuccessMessage('0.1', $module, 'GetActiveSession Success.');
@@ -1417,7 +1417,7 @@ class AmpapiController extends Controller {
             $CurrentDateTime = strtotime(date('Y-m-d H:i:s'));
             $TimeInterval = round(abs($CurrentDateTime-$SessionDateTime)/60,2);//echo $TimeInterval.'='.$CurrentDateTime.'-'.$SessionDateTime;exit;
             $AID=$queryResult['AID'];
-            $MaxTime = 30.00;
+            $MaxTime = Yii::app()->params["SessionTimeOut"];// 30.00;
 
             if($TimeInterval<$MaxTime){
                 $TPUsername = $queryResult['UserName'];

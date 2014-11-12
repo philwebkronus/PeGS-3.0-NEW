@@ -156,5 +156,6 @@ return array(
             //'rewarditem_imagepath' => "172.16.102.174/rewards.management/images/rewarditems/",
             'MarketingEmail' => '@philweb.ph',
             'urlMPAPI' => 'http://<MPAPI URL HERE>/index.php/MPapi/',
+            'SessionTimeOut' => 45.00,
             ),
 );

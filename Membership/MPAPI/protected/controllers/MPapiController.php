@@ -176,7 +176,7 @@ class MPapiController extends Controller {
             $transMsg = "Card is Banned.";
             $errorCode = 9;
             Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
-            $this->_sendResponse(200, CJSON::encode(CommonController::retMsgLogin($module, '', '', '', $errorCode, $transMsg)));
+            $this->_sendResponse(200, CJSON::encode(CommonController::retMsgLogin($module, '', '', '', $errorCode, $transMsg, '')));
             $logMessage = 'Card is Banned.';
             $logger->log($logger->logdate, " [LOGIN ERROR] ", $logMessage);
             $apiDetails = 'LOGIN-Authenticate-Failed: Member card is banned.';
@@ -193,7 +193,7 @@ class MPapiController extends Controller {
             $transMsg = "Account is Invalid.";
             $errorCode = 38;
             Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
-            $this->_sendResponse(200, CJSON::encode(CommonController::retMsgLogin($module, '', '', '', $errorCode, $transMsg)));
+            $this->_sendResponse(200, CJSON::encode(CommonController::retMsgLogin($module, '', '', '', $errorCode, $transMsg, '')));
             $logMessage = 'Account is Invalid.';
             $logger->log($logger->logdate, " [LOGIN ERROR] ", $logMessage);
             $apiDetails = 'LOGIN-Authenticate-Failed: Member account is invalid.';
@@ -215,7 +215,7 @@ class MPapiController extends Controller {
                 $transMsg = "You need to transact at least one transaction before you can login.";
                 $errorCode = 39;
                 Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
-                $this->_sendResponse(200, CJSON::encode(CommonController::retMsgLogin($module, '', '', '', $errorCode, $transMsg)));
+                $this->_sendResponse(200, CJSON::encode(CommonController::retMsgLogin($module, '', '', '', $errorCode, $transMsg, '')));
                 $logMessage = 'You need to transact at least one transaction before you can login.';
                 $logger->log($logger->logdate, " [LOGIN ERROR] ", $logMessage);
                 $apiDetails = 'LOGIN-Authenticate-Failed: You need to transact at least one transaction before you can login.';
@@ -232,7 +232,7 @@ class MPapiController extends Controller {
                 $transMsg = "Account is Invalid.";
                 $errorCode = 38;
                 Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
-                $this->_sendResponse(200, CJSON::encode(CommonController::retMsgLogin($module, '', '', '', $errorCode, $transMsg)));
+                $this->_sendResponse(200, CJSON::encode(CommonController::retMsgLogin($module, '', '', '', $errorCode, $transMsg, '')));
                 $logMessage = 'Account is Invalid.';
                 $logger->log($logger->logdate, " [LOGIN ERROR] ", $logMessage);
                 $apiDetails = 'LOGIN-Authenticate-Failed: Member account is invalid.';
@@ -5563,7 +5563,7 @@ class MPapiController extends Controller {
             $sessionDateTime = strtotime($isActiveSession['TransactionDate']);
             $currentDateTime = strtotime(date('Y-m-d H:i:s'));
             $timeInterval = round(abs($currentDateTime-$sessionDateTime)/60,2);
-            $maxTime = 30.00;
+            $maxTime = Yii::app()->params["SessionTimeOut"];// 30.00;
 
             if($timeInterval < $maxTime) {
                 $logMessage = 'GetActiveMemberSession is successful.';
@@ -5612,7 +5612,7 @@ class MPapiController extends Controller {
             $sessionDateTime = strtotime($queryResult['TransactionDate']);
             $currentDateTime = strtotime(date('Y-m-d H:i:s'));
             $timeInterval = round(abs($currentDateTime-$sessionDateTime)/60,2);
-            $maxTime = 45.00;
+            $maxTime = Yii::app()->params["SessionTimeOut"];// 45.00;
 
             if($timeInterval < $maxTime) {
                 $logMessage = 'Validate MPSession is successful..';
