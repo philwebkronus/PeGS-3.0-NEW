@@ -725,6 +725,16 @@ class UserBasedTrans {
         list($terminal_balance,$service_name,$terminalSessionsModel,
                 $transReqLogsModel,$redeemable_amount,$casinoApiHandler,$mgaccount) = $getBalance;
         
+        if ($redeemable_amount != $amount)
+        {
+            $message = 'Error in redeemable amount. ';
+            Utilities::errorLogger($message, "Redeem Session", 
+                                    "TerminalID:".$terminal_id." | ".
+                                    "MID: ".$mid." | ".
+                                    "SiteID: ".$site_id." | ".
+                                    "CasinoID: ".$service_id);
+            return array('TransMessage'=>$message,'ErrorCode'=>24,'DateExpiry'=>'', 'amount' => '');
+        }
         //update last balance in terminal sessions
         $updateBalance = $terminalsessions->updateTerminalBalance($terminal_id, $redeemable_amount);
         $amount = $terminalsessions->getCurrentBalance($terminal_id, $service_id);
@@ -778,11 +788,17 @@ class UserBasedTrans {
         }
         
         //check if there was a pending game bet for RTG
-        if(strpos($service_name, 'RTG') !== false) {
+        if(strpos($service_name, 'RTG2') !== false) {
             $PID = $casinoApiHandler->GetPIDLogin($casinoUsername);
             $pendingGames = $casinoApi->GetPendingGames($terminal_id, $service_id,$PID);    
         } else {
             $pendingGames = '';
+        }
+        
+        //logout player
+        if(strpos($service_name, 'RTG2') !== false) {
+            $PID = $casinoApiHandler->GetPIDLogin($casinoUsername);
+            $casinoApi->LogoutPlayer($terminal_id, $service_id, $PID);    
         }
 
         //Display message

@@ -349,7 +349,7 @@ public function reloadSessionTransaction($amount, $trans_summary_id, $trans_ref_
             $stmt = $this->_connection->createCommand('UPDATE transactionsummary SET Reload = :amount 
                                                        WHERE TransactionsSummaryID = :trans_summary_id');
             
-            $stmt->bindValues(array(':amount'=>$terminal_balance, ':trans_summary_id'=>$trans_summary_id));
+            $stmt->bindValues(array(':amount'=>$amount, ':trans_summary_id'=>$trans_summary_id));
             
             $stmt->execute();
             

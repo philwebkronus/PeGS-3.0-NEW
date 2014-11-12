@@ -1,5 +1,4 @@
 <?php
-
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
@@ -323,7 +322,7 @@ class WsKapiController extends Controller {
             }
             //If Terminal Name is invalid. If invalid then
             else {
-                $message = "Terminal Name may contain special characters.";
+                $message = "Special characters are not allowed.";
                 $errCode = 2;
                 $this->_sendResponse(200, CommonController::getTerminalInfoResponse(0, $isPlaying, $playingBalance, $playerMode, $currentCasino, $mappedCasinos, $minmaxAmount, $sessionMode, $membershipCardNo, $siteCode, $startDateTime, $stackerBatchID, $stackerAmount, $message, $errCode, $siteName));
             }
@@ -460,7 +459,7 @@ class WsKapiController extends Controller {
             }
             //If Terminal Name is invalid. If invalid then
             else {
-                $message = "Terminal Name may contain special characters.";
+                $message = "Special characters are not allowed.";
                 $errCode = 2;
                 $this->_sendResponse(200, CommonController::getPlayingBalanceResponse($amount, $message, $errCode));
             }
@@ -534,8 +533,8 @@ class WsKapiController extends Controller {
                             $nickname = $memberinfo['FirstName'];
                         } else {
                             $nickname = '';
-                        }
-                    }
+                                }
+                            }
                     $gender = $memberinfo['Gender'] == 1 ? "Male" : "Female";
                     //$mappedCasinos = $terminalServicesModel->getCasinoByTerminal($TerminalID);
                     $services = $memberServices->getServiceIDByMID($MID);
@@ -680,7 +679,7 @@ class WsKapiController extends Controller {
             //If Card Number is invalid. If invalid then
 //            else if (Utilities::validateInput($terminalName) && !Utilities::validateInput($cardNumber)) {
             else if (!Utilities::validateInput($cardNumber)) {
-                $message = "Card Number may contain special characters.";
+                $message = "Special characters are not allowed.";
                 $errCode = 2;
                 $this->_sendResponse(200, CommonController::getMembershipInfo($status, $nickname, $gender, $classification, $mappedCasinos, $message, $errCode));
             }
@@ -827,21 +826,9 @@ class WsKapiController extends Controller {
                     $this->_sendResponse(200, CommonController::checkTransaction($status, $datetime, $transactionid, $amount, $voucherticketbarcode, $expirationdate, $message, $errCode));
                 }
             }
-            //If Terminal Name is invalid. If invalid then
-            else if (!Utilities::validateInput($terminalName) && Utilities::validateInput($trackingID)) {
-                $message = "Terminal Name may contain special characters.";
-                $errCode = 2;
-                $this->_sendResponse(200, CommonController::checkTransaction($status, $datetime, $transactionid, $amount, $voucherticketbarcode, $expirationdate, $message, $errCode));
-            }
-            //If Tracking ID is invalid. If invalid then
-            else if (Utilities::validateInput($terminalName) && !Utilities::validateInput($trackingID)) {
-                $message = "Tracking ID may contain special characters.";
-                $errCode = 11;
-                $this->_sendResponse(200, CommonController::checkTransaction($status, $datetime, $transactionid, $amount, $voucherticketbarcode, $expirationdate, $message, $errCode));
-            }
             //If Terminal Name and Tracking ID is invalid. If invalid then
-            else if (!Utilities::validateInput($terminalName) && !Utilities::validateInput($trackingID)) {
-                $message = "Terminal Name and Tracking ID may contain special characters.";
+            else {
+                $message = "Special characters are not allowed.";
                 $errCode = 12;
                 $this->_sendResponse(200, CommonController::checkTransaction($status, $datetime, $transactionid, $amount, $voucherticketbarcode, $expirationdate, $message, $errCode));
             }
@@ -1030,21 +1017,9 @@ class WsKapiController extends Controller {
                     $this->_sendResponse(200, CommonController::getLoginInfo($login, $hashedpassword, $plainpassword, $message, $errCode));
                 }
             }
-            //If Terminal Name is invalid. If invalid then
-            else if (!Utilities::validateInput($terminalName) && Utilities::validateInput($casinoID)) {
-                $message = "Terminal Name may contain special characters.";
-                $errCode = 2;
-                $this->_sendResponse(200, CommonController::getLoginInfo($login, $hashedpassword, $plainpassword, $message, $errCode));
-            }
-            //If Tracking ID is invalid. If invalid then
-            else if (Utilities::validateInput($terminalName) && !Utilities::validateInput($casinoID)) {
-                $message = "Casino ID may contain special characters.";
-                $errCode = 16;
-                $this->_sendResponse(200, CommonController::getLoginInfo($login, $hashedpassword, $plainpassword, $message, $errCode));
-            }
             //If Terminal Name and Tracking ID is invalid. If invalid then
-            else if (!Utilities::validateInput($terminalName) && !Utilities::validateInput($casinoID)) {
-                $message = "Terminal Name and Casino ID may contain special characters.";
+            else {
+                $message = "Special characters are not allowed.";
                 $errCode = 17;
                 $this->_sendResponse(200, CommonController::getLoginInfo($login, $hashedpassword, $plainpassword, $message, $errCode));
             }
@@ -1272,21 +1247,8 @@ class WsKapiController extends Controller {
                     $this->_sendResponse(200, CommonController::creteEgmSessionResponse(0, '', $message, $errCode));
                 }
             }
-            //If membershipCardNumber is invalid. If invalid then
-            else if (!Utilities::validateInput($membershipcardnumber) && Utilities::validateInput($membershipcardnumber)) {
-                $message = "Membership Card Number may contain special characters.";
-                $errCode = 5;
-                $this->_sendResponse(200, CommonController::creteEgmSessionResponse(0, '', $message, $errCode));
-            }
-            //If Terminal Name is invalid. If invalid then
-            else if (!Utilities::validateInput($terminalName) && Utilities::validateInput($casinoID)) {
-                $message = "Terminal Name may contain special characters.";
-                $errCode = 4;
-                $this->_sendResponse(200, CommonController::creteEgmSessionResponse(0, '', $message, $errCode));
-            }
-            //If Tracking ID is invalid. If invalid then
-            else if (!Utilities::validateInput($casinoID)) {
-                $message = "Casino ID may contain special characters.";
+            else  {
+                $message = "Special characters are not allowed.";
                 $errCode = 16;
                 $this->_sendResponse(200, CommonController::creteEgmSessionResponse(0, '', $message, $errCode));
             }
@@ -2048,6 +2010,7 @@ class WsKapiController extends Controller {
         Yii::import('application.components.AsynchronousRequest');
         Yii::import('application.components.VoucherManagement');
         Yii::import('application.components.VoucherTicketAPIWrapper');
+        Yii::import('application.components.CasinoApiUB');
 
         $voucherticket = new VoucherTicketAPIWrapper();
         $loyalty = new LoyaltyAPIWrapper();
@@ -2068,6 +2031,8 @@ class WsKapiController extends Controller {
         $siteaccounts = new SiteAccountsModel();
         $egmsessions = new GamingSessionsModel();
         $tickets = new TicketsModel();
+        
+        $casinoApi = new CasinoApiUB();
         
         $request = $this->_readJsonRequest();
         $DateTime = '';
@@ -2132,7 +2097,24 @@ class WsKapiController extends Controller {
                 $casinoUserMode = $lastsessiondetails['UserMode'];
                 $casinoServiceID = $lastsessiondetails['ServiceID'];
                 $hashedpw = $lastsessiondetails['UBHashedServicePassword'];
-                $amount = $lastsessiondetails['LastBalance'];
+                
+                /********************Call GetBalanceUB to get the amount in Casino**********/
+                $getBalance = $casinoApi->getBalanceUB($terminalid, $siteid, 'W', 
+                                $casinoServiceID, $this->acc_id, $casinoUsername, $casinoPassword);
+                if(is_string($getBalance)){
+                    $message = $getBalance;
+                    Utilities::errorLogger($message, "Redeem Session", 
+                                            "TerminalID:".$terminalid." | ".
+                                            "MID: ".$mid." | ".
+                                            "SiteID: ".$siteid." | ".
+                                            "CasinoID: ".$casinoServiceID);
+                    $this->_sendResponse(200, CommonController::redeemSessionResponse(2, '', '', '', '', '', '', '', $message, 0, 26));
+                }
+                list($terminal_balance,$service_name,$terminalSessionsModel,
+                        $transReqLogsModel,$redeemable_amount,$casinoApiHandler,$mgaccount) = $getBalance;
+                
+                $amount = $redeemable_amount;
+                /*******************************************************************************/
             } else {
                 $message = "Please start a session first";
                 $this->_sendResponse(200, CommonController::redeemSessionResponse(2, '', '', '', '', '', '', '', $message, 0, 23));
@@ -2802,7 +2784,7 @@ class WsKapiController extends Controller {
                 {
                     $transMsg = "Invalid Membership Card Number";
                     $errCode = 24;
-                    $this->_sendResponse(200, CommonController::creteEgmSessionResponse(0, '', $transMsg, $errCode));
+                    $this->_sendResponse(200, CommonController::removeEgmSessionResponse($transMsg, $errCode));
                     exit;
                 }
                 $TerminalDetails = $terminalsModel->getTerminalSiteIDSolo($sc);
@@ -2963,21 +2945,9 @@ class WsKapiController extends Controller {
                     $this->_sendResponse(200, CommonController::removeEgmSessionResponse($message, $errCode));
                 }
             }
-            //If membershipCardNumber is invalid. If invalid then
-            else if (!Utilities::validateInput($membershipcardnumber) && Utilities::validateInput($membershipcardnumber)) {
-                $message = "Membership Card Number may contain special characters.";
-                $errCode = 5;
-                $this->_sendResponse(200, CommonController::removeEgmSessionResponse($message, $errCode));
-            }
-            //If Terminal Name is invalid. If invalid then
-            else if (!Utilities::validateInput($terminalName) && Utilities::validateInput($casinoID)) {
-                $message = "Terminal Name may contain special characters.";
-                $errCode = 4;
-                $this->_sendResponse(200, CommonController::removeEgmSessionResponse($message, $errCode));
-            }
             //If Tracking ID is invalid. If invalid then
-            else if (!Utilities::validateInput($casinoID)) {
-                $message = "Casino ID may contain special characters.";
+            else {
+                $message = "Special characters are not allowed.";
                 $errCode = 16;
                 $this->_sendResponse(200, CommonController::removeEgmSessionResponse($message, $errCode));
             }
