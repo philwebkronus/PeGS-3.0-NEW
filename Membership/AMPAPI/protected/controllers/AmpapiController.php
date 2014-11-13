@@ -93,7 +93,7 @@ class AmpapiController extends Controller {
         '14'=>'',
         '15'=>'Mobile number should not be less than 9 digits long.',
         '16'=>'Mobile number should consist of numbers only.',
-        '17'=>'Name should consist of letters only.',
+        '17'=>'Name should consist of letters and spaces only.',
         '18'=>'Password and ID Number should consist of letters and numbers only.',
         '19'=>'Password should not be less than 5 characters long.',
         '20'=>'Password should be the same as confirm password.',
@@ -266,7 +266,7 @@ class AmpapiController extends Controller {
                     $CurrentDateTime = strtotime(date('Y-m-d H:i:s'));
                     $TimeInterval = round(abs($CurrentDateTime-$SessionDateTime)/60,2);//echo $TimeInterval.'='.$CurrentDateTime.'-'.$SessionDateTime;exit;
                     $AID=$result['AID'];
-                    $MaxTime = 30.00;
+                    $MaxTime = Yii::app()->params["SessionTimeOut"];// 45.00;
 
                     if($TimeInterval<$MaxTime){
                         $this->_displaySuccessMessage('0.1', $module, 'GetActiveSession Success.');
@@ -1264,11 +1264,11 @@ class AmpapiController extends Controller {
 
     private function validateNames($request, $module, $fields){
         foreach($fields as $key=>$value){
-            if((ctype_alpha($request[$key]))){
+            if((preg_match("/^[A-Za-z\s]+$/", trim($request[$key])) != 0)) {
                 $fields[$key]=true;
             }
             else{
-                $this->_displayReturnMessage(17, $module, $key.' should consist of letters only.');
+                $this->_displayReturnMessage(17, $module, $key.' should consist of letters and spaces only.');
                 return false;
             }
         }
@@ -1378,7 +1378,7 @@ class AmpapiController extends Controller {
             $CurrentDateTime = strtotime(date('Y-m-d H:i:s'));
             $TimeInterval = round(abs($CurrentDateTime-$SessionDateTime)/60,2);//echo $TimeInterval.'='.$CurrentDateTime.'-'.$SessionDateTime;exit;
             $AID=$queryResult['AID'];
-            $MaxTime = 30.00;
+            $MaxTime = Yii::app()->params["SessionTimeOut"];// 30.00;
 
             if($TimeInterval<$MaxTime){
                 $TPUsername = $queryResult['UserName'];

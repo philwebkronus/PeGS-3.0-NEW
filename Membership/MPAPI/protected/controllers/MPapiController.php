@@ -850,11 +850,11 @@ class MPapiController extends Controller {
                 exit;
             }
             else if(preg_match("/^[A-Za-z\s]+$/", trim($request['FirstName'])) == 0 || (trim($request['MiddleName'] != '') && preg_match("/^[A-Za-z\s]+$/", trim($request['MiddleName'])) == 0) || preg_match("/^[A-Za-z\s]+$/", trim($request['LastName'])) == 0 || (trim($request['NickName'] != '') && preg_match("/^[A-Za-z\s]+$/", trim($request['NickName'])) == 0)) {
-                $transMsg = "Name should consist of letter and spaces only.";
+                $transMsg = "Name should consist of letters and spaces only.";
                 $errorCode = 17;
                 Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
                 $this->_sendResponse(200, CJSON::encode(CommonController::retMsgRegisterMember($module, $errorCode, $transMsg)));
-                $logMessage = 'Name should consist of letters only.';
+                $logMessage = 'Name should consist of letters and spaces only.';
                 $logger->log($logger->logdate, " [REGISTERMEMBER ERROR] ", $logMessage);
                 $apiDetails = 'REGISTERMEMBER-Failed: Invalid input parameters. ';
                 $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
@@ -1787,7 +1787,7 @@ class MPapiController extends Controller {
                 $errorCode = 17;
                 Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
                 $this->_sendResponse(200, CJSON::encode(CommonController::retMsgUpdateProfile($module, $errorCode, $transMsg)));
-                $logMessage = 'Name should consist of letters only.';
+                $logMessage = 'Name should consist of letters and spaces only.';
                 $logger->log($logger->logdate, " [UPDATEPROFILE ERROR] ", $logMessage);
                 $apiDetails = 'UPDATEPROFILE-Failed: Invalid input parameters. ';
                 $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
@@ -5434,7 +5434,7 @@ class MPapiController extends Controller {
             $sessionDateTime = strtotime($isActiveSession['TransactionDate']);
             $currentDateTime = strtotime(date('Y-m-d H:i:s'));
             $timeInterval = round(abs($currentDateTime-$sessionDateTime)/60,2);
-            $maxTime = 30.00;
+            $maxTime = Yii::app()->params["SessionTimeOut"];// 30.00;
 
             if($timeInterval < $maxTime) {
                 $logMessage = 'GetActiveMemberSession is successful.';
@@ -5483,7 +5483,7 @@ class MPapiController extends Controller {
             $sessionDateTime = strtotime($queryResult['TransactionDate']);
             $currentDateTime = strtotime(date('Y-m-d H:i:s'));
             $timeInterval = round(abs($currentDateTime-$sessionDateTime)/60,2);
-            $maxTime = 30.00;
+            $maxTime = Yii::app()->params["SessionTimeOut"];// 45.00;
 
             if($timeInterval < $maxTime) {
                 $logMessage = 'Validate MPSession is successful..';
