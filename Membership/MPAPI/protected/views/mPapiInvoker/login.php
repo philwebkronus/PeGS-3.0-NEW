@@ -18,7 +18,7 @@
     <?php echo CHtml::endForm(); ?>
 </div>
 
-<div class="result" style="margin-left: 20px;">
+<div class="result" style="margin-left: 20px;word-wrap: break-word;">
     <?php if (!is_null($result)) : ?>
         <p><strong>JSON Result :</strong></p>
         <?php echo $result; ?>

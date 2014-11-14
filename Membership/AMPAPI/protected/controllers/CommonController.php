@@ -67,10 +67,10 @@ class CommonController {
     CONST IR_STATUS_FAILED = 1;
     
     
-    public static function retMsg($module, $transMsg = '',$errorCode='', $username = '', $password = '', $TPSessionID='', $MID='', $sessionID='', $cardTypeID='',$isVip='', $MPSessionID='', $CurrentPoints='', $RewardID='') { //$errorCode = '') {//,$idPresented = '', $nationality = '', $occupation = '', $isSmoker = '', $MID = '') {
+    public static function retMsg($module, $transMsg = '',$errorCode='', $username = '', $password = '', $TPSessionID='', $MID='', $sessionID='', $cardTypeID='',$isVip='', $cardNumber='', $MPSessionID='', $CurrentPoints='', $RewardID='') { //$errorCode = '') {//,$idPresented = '', $nationality = '', $occupation = '', $isSmoker = '', $MID = '') {
 
         if($module == 'Login') {
-            return array('Login' => array('MPSessionID'=>$MPSessionID,'CardTypeID'=>$cardTypeID,'IsVIP' => $isVip,'ErrorCode'=>$errorCode, 'ReturnMessage' => $transMsg));
+            return array('Login' => array('MPSessionID'=>$MPSessionID,'CardTypeID'=>$cardTypeID,'IsVIP' => $isVip,'CardNumber' => $cardNumber, 'ErrorCode'=>$errorCode, 'ReturnMessage' => $transMsg));
         }
         else if($module=='AuthenticateSession'){
             return array('AuthenticateSession' => array( 
@@ -245,9 +245,9 @@ class CommonController {
         
     }
     //return message function for Login module
-    public static function retMsgLogin($module, $mpSessionID, $cardTypeID, $isVIP, $errorCode, $transMsg) {
+    public static function retMsgLogin($module, $mpSessionID, $cardTypeID, $isVIP, $cardNumber, $errorCode, $transMsg) {
         if($module == 'Login')
-            return array('Login' => array('MPSessionID' => $mpSessionID, 'CardTypeID' => $cardTypeID, 'IsVIP' => $isVIP, 'ErrorCode' => $errorCode, 'ReturnMessage' => $transMsg));
+            return array('Login' => array('MPSessionID' => $mpSessionID, 'CardTypeID' => $cardTypeID, 'IsVIP' => $isVIP, 'CardNumber' => $cardNumber,  'ErrorCode' => $errorCode, 'ReturnMessage' => $transMsg));
             
     }
     
