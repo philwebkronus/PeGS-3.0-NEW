@@ -176,7 +176,7 @@ class MPapiController extends Controller {
             $transMsg = "Card is Banned.";
             $errorCode = 9;
             Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
-            $this->_sendResponse(200, CJSON::encode(CommonController::retMsgLogin($module, '', '', '', $errorCode, $transMsg, '')));
+            $this->_sendResponse(200, CJSON::encode(CommonController::retMsgLogin($module, '', '', '','', $errorCode, $transMsg, '')));
             $logMessage = 'Card is Banned.';
             $logger->log($logger->logdate, " [LOGIN ERROR] ", $logMessage);
             $apiDetails = 'LOGIN-Authenticate-Failed: Member card is banned.';
@@ -193,7 +193,7 @@ class MPapiController extends Controller {
             $transMsg = "Account is Invalid.";
             $errorCode = 38;
             Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
-            $this->_sendResponse(200, CJSON::encode(CommonController::retMsgLogin($module, '', '', '', $errorCode, $transMsg, '')));
+            $this->_sendResponse(200, CJSON::encode(CommonController::retMsgLogin($module, '', '', '','', $errorCode, $transMsg, '')));
             $logMessage = 'Account is Invalid.';
             $logger->log($logger->logdate, " [LOGIN ERROR] ", $logMessage);
             $apiDetails = 'LOGIN-Authenticate-Failed: Member account is invalid.';
@@ -215,7 +215,7 @@ class MPapiController extends Controller {
                 $transMsg = "You need to transact at least one transaction before you can login.";
                 $errorCode = 39;
                 Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
-                $this->_sendResponse(200, CJSON::encode(CommonController::retMsgLogin($module, '', '', '', $errorCode, $transMsg, '')));
+                $this->_sendResponse(200, CJSON::encode(CommonController::retMsgLogin($module, '', '', '','', $errorCode, $transMsg, '')));
                 $logMessage = 'You need to transact at least one transaction before you can login.';
                 $logger->log($logger->logdate, " [LOGIN ERROR] ", $logMessage);
                 $apiDetails = 'LOGIN-Authenticate-Failed: You need to transact at least one transaction before you can login.';
@@ -232,7 +232,7 @@ class MPapiController extends Controller {
                 $transMsg = "Account is Invalid.";
                 $errorCode = 38;
                 Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
-                $this->_sendResponse(200, CJSON::encode(CommonController::retMsgLogin($module, '', '', '', $errorCode, $transMsg, '')));
+                $this->_sendResponse(200, CJSON::encode(CommonController::retMsgLogin($module, '', '', '','', $errorCode, $transMsg, '')));
                 $logMessage = 'Account is Invalid.';
                 $logger->log($logger->logdate, " [LOGIN ERROR] ", $logMessage);
                 $apiDetails = 'LOGIN-Authenticate-Failed: Member account is invalid.';
@@ -269,7 +269,7 @@ class MPapiController extends Controller {
                 $transMsg = "One or more fields is not set or is blank.";
                 $errorCode = 1;
                 Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
-                $this->_sendResponse(200, CJSON::encode(CommonController::retMsgLogin($module, '', '', '', $errorCode, $transMsg, '')));
+                $this->_sendResponse(200, CJSON::encode(CommonController::retMsgLogin($module, '', '', '','', $errorCode, $transMsg, '')));
                 $logger->log($logger->logdate, " [LOGIN ERROR] ", $logMessage);
                 $apiDetails = 'LOGIN-Failed: Invalid Login parameters.';
                 $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
@@ -308,7 +308,7 @@ class MPapiController extends Controller {
                             $transMsg = 'AlterStr should only be 14-16 characters long.';
                             $errorCode = 92;
                             Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
-                            $this->_sendResponse(200, CJSON::encode(CommonController::retMsgLogin($module, '', '', '', $errorCode, $transMsg, '')));
+                            $this->_sendResponse(200, CJSON::encode(CommonController::retMsgLogin($module, '', '', '','', $errorCode, $transMsg, '')));
                             $logger->log($logger->logdate, " [LOGIN ERROR] ", $logMessage);
                             $apiDetails = 'LOGIN-Failed: Invalid AlterStr.';
                             $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
@@ -326,7 +326,7 @@ class MPapiController extends Controller {
                             $transMsg = 'Not a valid AlterStr.';
                             $errorCode = 96;
                             Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
-                            $this->_sendResponse(200, CJSON::encode(CommonController::retMsgLogin($module, '', '', '', $errorCode, $transMsg, '')));
+                            $this->_sendResponse(200, CJSON::encode(CommonController::retMsgLogin($module, '', '', '','', $errorCode, $transMsg, '')));
                             $logger->log($logger->logdate, " [LOGIN ERROR] ", $logMessage);
                             $apiDetails = 'LOGIN-Failed: Invalid AlterStr.';
                             $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
@@ -408,7 +408,7 @@ class MPapiController extends Controller {
                                     $transMsg = 'Transaction failed.';
                                     $errorCode = 4;
                                     Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
-                                    $this->_sendResponse(200, CJSON::encode(CommonController::retMsgLogin($module, '', '', '', $errorCode, $transMsg, '')));
+                                    $this->_sendResponse(200, CJSON::encode(CommonController::retMsgLogin($module, '', '', '','', $errorCode, $transMsg, '')));
                                     $logger->log($logger->logdate, " [LOGIN ERROR] ", $logMessage);
                                     $apiDetails = 'LOGIN-Insert/UpdateMemberSession-Failed: MID = '.$MID;
                                     $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
@@ -423,7 +423,7 @@ class MPapiController extends Controller {
                                 $transMsg = $mpSessionID;
                                 $logMessage = 'Login successful.';
                                 $errorCode = 0;
-                                $this->_sendResponse(200, CJSON::encode(CommonController::retMsgLogin($module, $mpSessionID, $cardTypeID, $isVIP, $errorCode, $transMsg, $remarks)));
+                                $this->_sendResponse(200, CJSON::encode(CommonController::retMsgLogin($module, $mpSessionID, $cardTypeID, $isVIP, $cardNumber, $errorCode, $transMsg, $remarks)));
                                 $logger->log($logger->logdate, " [LOGIN SUCCESSFUL] ", $logMessage);
                                 $apiDetails = 'LOGIN-UpdateTransDate-Success: MID = '.$MID.' SessionID = '.$mpSessionID;
                                 $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 1);
@@ -438,7 +438,7 @@ class MPapiController extends Controller {
                                 $transMsg = 'Transaction failed.';
                                 $errorCode = 4;
                                 Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
-                                $this->_sendResponse(200, CJSON::encode(CommonController::retMsgLogin($module, '', '', '', $errorCode, $transMsg, '')));
+                                $this->_sendResponse(200, CJSON::encode(CommonController::retMsgLogin($module, '', '', '','', $errorCode, $transMsg, '')));
                                 $logger->log($logger->logdate, " [LOGIN ERROR] ", $logMessage);
                                 $apiDetails = 'LOGIN-UpdateTransDate-Failed: '.'Username: '.$username.' MID = '.$MID.' SessionID = '.$mpSessionID;
                                 $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
@@ -456,7 +456,7 @@ class MPapiController extends Controller {
                             $transMsg = 'Transaction failed.';
                             $errorCode = 4;
                             Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
-                            $this->_sendResponse(200, CJSON::encode(CommonController::retMsgLogin($module, '', '', '', $errorCode, $transMsg, '')));
+                            $this->_sendResponse(200, CJSON::encode(CommonController::retMsgLogin($module, '', '', '','', $errorCode, $transMsg, '')));
                             $logger->log($logger->logdate, " [LOGIN ERROR] ", $logMessage);
                             $apiDetails = 'LOGIN-Insert/UpdateMemberSession-Failed: MID = '.$MID.' SessionID = '.$mpSessionID;
                             $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
@@ -473,7 +473,7 @@ class MPapiController extends Controller {
                         $transMsg = 'Member not found';
                         $errorCode = 3;
                         Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
-                        $this->_sendResponse(200, CJSON::encode(CommonController::retMsgLogin($module, '', '', '', $errorCode, $transMsg, '')));
+                        $this->_sendResponse(200, CJSON::encode(CommonController::retMsgLogin($module, '', '', '','', $errorCode, $transMsg, '')));
                         $logger->log($logger->logdate, " [LOGIN ERROR] ", $logMessage);
                         $apiDetails = 'LOGIN-Authenticate-Failed: Member account is invalid.';
                         $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
@@ -491,7 +491,7 @@ class MPapiController extends Controller {
                         $transMsg = 'Invalid input.';
                         $errorCode = 2;
                         Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
-                        $this->_sendResponse(200, CJSON::encode(CommonController::retMsgLogin($module, '', '', '', $errorCode, $transMsg, '')));
+                        $this->_sendResponse(200, CJSON::encode(CommonController::retMsgLogin($module, '', '', '','', $errorCode, $transMsg, '')));
                         $logger->log($logger->logdate, " [LOGIN ERROR] ", $logMessage);
                         $apiDetails = 'LOGIN-Failed: Invalid input parameters';
                         $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
@@ -509,7 +509,7 @@ class MPapiController extends Controller {
             $transMsg = "One or more fields is not set or is blank.";
             $errorCode = 1;
             Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
-            $this->_sendResponse(200, CJSON::encode(CommonController::retMsgLogin($module, '', '', '', $errorCode, $transMsg, '')));
+            $this->_sendResponse(200, CJSON::encode(CommonController::retMsgLogin($module, '', '', '','', $errorCode, $transMsg, '')));
             $logger->log($logger->logdate, " [LOGIN ERROR] ", $logMessage);
             $apiDetails = 'LOGIN-Failed: Invalid login parameters.';
             $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
