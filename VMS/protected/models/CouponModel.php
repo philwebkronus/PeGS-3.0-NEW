@@ -767,7 +767,7 @@ class CouponModel extends CFormModel {
                        c.IsCreditable,
                        c.DateCreated,
                        c.DateUpdated,
-                       cb.CreatedByAID,
+                       ad.Name  `CreatedBy`,
                        c.ValidFromDate,
                        c.ValidToDate,
                        c.SiteID,
@@ -778,6 +778,7 @@ class CouponModel extends CFormModel {
                        c.ReimbursedByAID
                 FROM coupons c
                 INNER JOIN couponbatch cb ON cb.CouponBatchID = c.CouponBatchID
+		LEFT JOIN npos.accountdetails ad ON cb.CreatedByAID = ad.AID
                 WHERE c.CouponBatchID = :batchID
                 $pagination";
         $command = $this->_connection->createCommand($sql);
@@ -801,7 +802,7 @@ class CouponModel extends CFormModel {
                        c.IsCreditable, 
                        c.DateCreated, 
                        c.DateUpdated, 
-                       cb.CreatedByAID, 
+                       ad.Name  `CreatedBy`,
                        cb.PromoName, 
                        c.ValidFromDate, 
                        c.ValidToDate, 
@@ -812,6 +813,7 @@ class CouponModel extends CFormModel {
                        c.ReimbursedByAID 
                 FROM coupons c 
                 INNER JOIN couponbatch cb ON cb.CouponBatchID = c.CouponBatchID 
+		LEFT JOIN npos.accountdetails ad ON cb.CreatedByAID = ad.AID
                 $wherefx 
                 $pagination";
         $command = $this->_connection->createCommand($sql);
@@ -866,7 +868,7 @@ class CouponModel extends CFormModel {
                        c.IsCreditable, 
                        c.DateCreated, 
                        c.DateUpdated, 
-                       cb.CreatedByAID, 
+                       ad.Name  `CreatedBy`,
                        c.ValidFromDate, 
                        c.ValidToDate, 
                        c.SiteID, 
@@ -877,6 +879,7 @@ class CouponModel extends CFormModel {
                        c.ReimbursedByAID 
                 FROM coupons c 
                 INNER JOIN couponbatch cb ON cb.CouponBatchID = c.CouponBatchID 
+                LEFT JOIN npos.accountdetails ad ON cb.CreatedByAID = ad.AID
                 WHERE c.CouponBatchID = :batchID AND CouponCode = :couponcode";
         $command = $this->_connection->createCommand($sql);
         $command->bindValue(":batchID", $batchID);

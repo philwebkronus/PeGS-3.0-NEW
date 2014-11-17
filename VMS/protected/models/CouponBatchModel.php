@@ -220,37 +220,44 @@ class CouponBatchModel {
             is_null($generatedby) && is_null($validfrom) && is_null($validto) &&
             is_null($status) && is_null($promoname))
         {
-            $query = "SELECT CouponBatchID, 
-                             CouponCount, 
-                             Amount, 
-                             DistributionTagID, 
-                             Status, 
-                             DateCreated, 
-                             CreatedByAID, 
-                             DateUpdated, 
-                             UpdatedByAID, 
-                             PromoName
-                      FROM couponbatch 
-                      ORDER BY CouponBatchID ASC 
+            $query = "SELECT cb.CouponBatchID,
+                             cb.CouponCount,
+                             cb.Amount,
+                             cb.DistributionTagID,
+                             cb.Status,
+                             cb.DateCreated,
+                             ad1.Name `CreatedBy`,
+                             cb.DateUpdated,
+			     ad2.Name `UpdatedBy`,
+                             cb.PromoName 
+			FROM couponbatch cb
+			  LEFT JOIN npos.accountdetails ad1
+			    ON cb.CreatedByAID = ad1.AID
+			  LEFT JOIN npos.accountdetails ad2
+			    ON cb.UpdatedByAID = ad2.AID
+                      ORDER BY cb.CouponBatchID ASC
                       $pagination";
             $command = $connection->createCommand($query);
             $result = $command->queryAll();
         }
         else if ($batchID != "")
         {
-            $query = "SELECT CouponBatchID, 
-                             CouponCount, 
-                             Amount, 
-                             PromoName, 
-                             DistributionTagID, 
-                             Status, 
-                             DateCreated, 
-                             CreatedByAID, 
-                             DateUpdated, 
-                             UpdatedByAID, 
-                             PromoName 
-                      FROM couponbatch 
-                      WHERE CouponBatchID = :batchID 
+            $query = "SELECT cb.CouponBatchID,
+                             cb.CouponCount,
+                             cb.Amount,
+                             cb.DistributionTagID,
+                             cb.Status,
+                             cb.DateCreated,
+                             ad1.Name `CreatedBy`,
+                             cb.DateUpdated,
+			     ad2.Name `UpdatedBy`,
+                             cb.PromoName 
+			FROM couponbatch cb
+			  LEFT JOIN npos.accountdetails ad1
+			    ON cb.CreatedByAID = ad1.AID
+			  LEFT JOIN npos.accountdetails ad2
+			    ON cb.UpdatedByAID = ad2.AID
+                      WHERE cb.CouponBatchID = :batchID
                       $pagination";
             $command = $connection->createCommand($query);
             $command->bindValue(":batchID", $batchID);

@@ -172,8 +172,8 @@ class CouponGenerationController extends VMSBaseIdentity
                         $validto = $couponbatch['ValidToDate'] == "" ? "" : date("M d, Y h:i A", strtotime($couponbatch['ValidToDate']));
                     }
                     //get usernames
-                    $createdby = $accountsModel->getUsername($couponbatch['CreatedByAID']);
-                    $updatedby = $accountsModel->getUsername($couponbatch['UpdatedByAID']);
+                    $createdby = $couponbatch['CreatedBy'];//$createdby = $accountsModel->getUsername($couponbatch['CreatedByAID']);
+                    $updatedby = $couponbatch['UpdatedBy'];//$updatedby = $accountsModel->getUsername($couponbatch['UpdatedByAID']);
 
                     $response['rows'][$i]['id'] = $couponbatch['CouponBatchID'];
                     $response['rows'][$i]['cell'] = array(
@@ -574,7 +574,7 @@ class CouponGenerationController extends VMSBaseIdentity
                 foreach ($allcoupons as $coupon)
                 {
                     //get usernames
-                    $createdby = $accountsModel->getUsername($coupon['CreatedByAID']);
+                    $createdby = $coupon['CreatedBy'];//$createdby = $accountsModel->getUsername($coupon['CreatedByAID']);
                     $reimbursedby = $accountsModel->getUsername($coupon['ReimbursedByAID']);
                     $site = $sitesModel->getSiteName($coupon['SiteID']);
                     $terminal = $terminalModel->getTerminalNamesUsingTerminalID($coupon['TerminalID']);
@@ -961,7 +961,7 @@ class CouponGenerationController extends VMSBaseIdentity
             fputcsv($fp, $headers);
 
             foreach ($arrcoupons as $coupons) {
-                $createdby = $accountsModel->getUsername($coupons['CreatedByAID']);
+                $createdby = $coupons['CreatedBy'];//$createdby = $accountsModel->getUsername($coupons['CreatedByAID']);
                 $site = $sitesModel->getSiteName($coupons['SiteID']);
                 $terminal = $terminalModel->getTerminalNamesUsingTerminalID($coupons['TerminalID']);
 
@@ -977,7 +977,7 @@ class CouponGenerationController extends VMSBaseIdentity
                               'DistributionTagID' => $this->getDistributionTag($coupons['DistributionTagID']),
                               'IsCreditable' => $coupons['IsCreditable'] == 1 ? "Yes" : "No",
                               'DateCreated' => $coupons['DateCreated'] == "" ? "" : date("M d, Y h:i A", strtotime($coupons['DateCreated'])),
-                              'CreatedByAID' => $createdby,
+                              'CreatedBy' => $createdby,
                               'ValidFromDate' => $coupons['ValidFromDate'] == "" ? "" : date("M d, Y h:i A", strtotime($coupons['ValidFromDate'])),
                               'ValidToDate' => $coupons['ValidToDate'] == "" ? "" : date("M d, Y h:i A", strtotime($coupons['ValidToDate'])),
                               'Status' => $this->stringStatus($coupons['Status']),
