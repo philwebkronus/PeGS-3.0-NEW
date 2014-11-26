@@ -2973,7 +2973,7 @@ class MPapiController extends Controller {
                 }
 
                 $cipher = new Cipher($remarks);
-                $encS = $cipher->encryptS($tracking1.$remarks);
+                $encR = $cipher->encryptR($tracking1.$remarks);
 
                 if($rewardID == 1) {
                     $qty1 = $quantity;
@@ -3122,7 +3122,7 @@ class MPapiController extends Controller {
                         exit;
                     }
 
-                    if(($encS != $tracking2)) { //&& ($encR != $tracking2) && ($encB != $tracking2)) {
+                    if(($encR != $tracking2)) { //&& ($encR != $tracking2) && ($encB != $tracking2)) {
                         $transMsg = "Please input a valid Tracking2.";
                         $errorCode = 93;
                         Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
@@ -4093,6 +4093,12 @@ class MPapiController extends Controller {
                             $isSmoker = $memberDetails['IsSmoker'];
                             if($isSmoker == null)
                                 $isSmoker = '';
+                            $regionID = $memberDetails['RegionID'];
+                            if($regionID == null)
+                                $regionID = '';
+                            $cityID = $memberDetails['CityID'];
+                            if($cityID == null)
+                                $cityID = '';
                             $birthDate = $memberDetails['Birthdate'];
                             $age = number_format((abs(strtotime($birthDate) - strtotime(date('Y-m-d'))) / 60 / 60 / 24 / 365), 0);
                             $currentPoints = $memberDetails['CurrentPoints'];
@@ -4115,7 +4121,8 @@ class MPapiController extends Controller {
                                              'IDNumber' => $idNumber, 'Nationality' => $nationality,
                                              'Occupation' => $occupation, 'IsSmoker' => $isSmoker,
                                              'Birthdate' => $birthDate, 'Age' => $age, 'CurrentPoints' => $currentPoints,
-                                             'BonusPoints' => $bonusPoints, 'RedeemedPoints' => $redeemedPoints, 'LifetimePoints' => $lifetimePoints, 'CardNumber' => $cardNumber);
+                                             'BonusPoints' => $bonusPoints, 'RedeemedPoints' => $redeemedPoints, 'LifetimePoints' => $lifetimePoints, 'CardNumber' => $cardNumber,
+                                             'RegionID' => $regionID, 'CityID' => $cityID);
 
                             $transMsg = 'No Error, Transaction successful.';
                             $errorCode = 0;
@@ -5953,8 +5960,8 @@ class MPapiController extends Controller {
 	$tracking1 = $request['Tracking1'];
 
  	$cipher = new Cipher($remarks);
-        $encS = $cipher->encryptS($tracking1.$remarks);
-	$transMsg = $encS;
+        $encR = $cipher->encryptR($tracking1.$remarks);
+	$transMsg = $encR;
 
 	$this->_sendResponse(200, CJSON::encode(CommonController::retMsgVerifyTracking2($module, $tracking1 , $remarks, $errorCode, $transMsg)));
 
