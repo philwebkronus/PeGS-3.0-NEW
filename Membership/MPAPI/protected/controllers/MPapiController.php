@@ -1397,13 +1397,13 @@ class MPapiController extends Controller {
 
                                         if(isset($smsresult['status'])){
                                             if($smsresult['status'] != 1){
-                                                $transMsg = 'Failed to get response from membershipsms api.';
-                                                $errorCode = 90;
+                                                $transMsg = 'Invalid Mobile Number.';
+                                                $errorCode = 97;
                                                 Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
                                                 $this->_sendResponse(200, CJSON::encode(CommonController::retMsgRegisterMember($module, $errorCode, $transMsg)));
-                                                $logMessage = 'Failed to get response from membershipsms api.';
+                                                $logMessage = 'Invalid Mobile Number.';
                                                 $logger->log($logger->logdate, " [REGISTERMEMBER ERROR] ", $logMessage);
-                                                $apiDetails = 'REGISTERMEMBER-Failed: Failed to get response from membershipsms api. MID = '.$lastInsertedMID;
+                                                $apiDetails = 'REGISTERMEMBER-Failed: Invalid Mobile Number. MID = '.$lastInsertedMID;
                                                 $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
                                                 if($isInserted == 0) {
                                                     $logMessage = "Failed to insert to APILogs.";
@@ -1468,13 +1468,13 @@ class MPapiController extends Controller {
                                             $smsresult = $membershipSMSApi->sendRegistration($mobileno, $templateid, $memberInfos["DateCreated"], $memberInfos["TemporaryAccountCode"], $trackingid);
                                             if(isset($smsresult['status'])){
                                                 if($smsresult['status'] != 1){
-                                                    $transMsg = 'Failed to get response from membershipsms api.';
-                                                    $errorCode = 90;
+                                                    $transMsg = 'Invalid Mobile Number.';
+                                                    $errorCode = 97;
                                                     Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
                                                     $this->_sendResponse(200, CJSON::encode(CommonController::retMsgRegisterMember($module, $errorCode, $transMsg)));
-                                                    $logMessage = 'Failed to get response from membershipsms api.';
+                                                    $logMessage = 'Invalid Mobile Number.';
                                                     $logger->log($logger->logdate, " [REGISTERMEMBER ERROR] ", $logMessage);
-                                                    $apiDetails = 'REGISTERMEMBER-Failed: Failed to get response from membershipsms api. MID = '.$lastInsertedMID;
+                                                    $apiDetails = 'REGISTERMEMBER-Failed: Invalid Mobile Number. MID = '.$lastInsertedMID;
                                                     $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
                                                     if($isInserted == 0) {
                                                         $logMessage = "Failed to insert to APILogs.";
@@ -1576,13 +1576,13 @@ class MPapiController extends Controller {
                                                 $smsresult = $membershipSMSApi->sendRegistration($mobileno, $templateid['SMSTemplateID'], $memberInfos["DateCreated"], $memberInfos["TemporaryAccountCode"], $trackingid);
                                                 if(isset($smsresult['status'])){
                                                     if($smsresult['status'] != 1){
-                                                        $transMsg = 'Failed to get response from membershipsms api.';
-                                                        $errorCode = 90;
+                                                        $transMsg = 'Invalid Mobile Number.';
+                                                        $errorCode = 97;
                                                         Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
                                                         $this->_sendResponse(200, CJSON::encode(CommonController::retMsgRegisterMember($module, $errorCode, $transMsg)));
-                                                        $logMessage = 'Failed to get response from membershipsms api.';
+                                                        $logMessage = 'Invalid Mobile Number.';
                                                         $logger->log($logger->logdate, " [REGISTERMEMBER ERROR] ", $logMessage);
-                                                        $apiDetails = 'REGISTERMEMBER-Failed: Failed to get response from membershipsms api. MID = '.$lastInsertedMID;
+                                                        $apiDetails = 'REGISTERMEMBER-Failed: Invalid Mobile Number. MID = '.$lastInsertedMID;
                                                         $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
                                                         if($isInserted == 0) {
                                                             $logMessage = "Failed to insert to APILogs.";
@@ -1644,13 +1644,13 @@ class MPapiController extends Controller {
                                                     $smsresult = $membershipSMSApi->sendRegistration($mobileno, $templateid['SMSTemplateID'], $memberInfos["DateCreated"], $memberInfos["TemporaryAccountCode"], $trackingid);
                                                     if(isset($smsresult['status'])){
                                                         if($smsresult['status'] != 1){
-                                                            $transMsg = 'Failed to get response from membershipsms api.';
-                                                            $errorCode = 90;
+                                                            $transMsg = 'Invalid Mobile Number.';
+                                                            $errorCode = 97;
                                                             Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
                                                             $this->_sendResponse(200, CJSON::encode(CommonController::retMsgRegisterMember($module, $errorCode, $transMsg)));
-                                                            $logMessage = 'Failed to get response from membershipsms api.';
+                                                            $logMessage = 'Invalid Mobile Number.';
                                                             $logger->log($logger->logdate, " [REGISTERMEMBER ERROR] ", $logMessage);
-                                                            $apiDetails = 'REGISTERMEMBER-Failed: Failed to get response from membershipsms api. MID = '.$lastInsertedMID;
+                                                            $apiDetails = 'REGISTERMEMBER-Failed: Invalid Mobile Number. MID = '.$lastInsertedMID;
                                                             $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
                                                             if($isInserted == 0) {
                                                                 $logMessage = "Failed to insert to APILogs.";
