@@ -23,11 +23,12 @@ class RaffleCouponsModel {
     //@date 07-01-2014
     //@purpose get all available raffle coupons
     public function getAvailableCoupons($rewardItemID, $couponQuantity) {
-        $sql = 'SELECT RaffleCouponID
-                FROM rafflecoupons_1
+        $activeRaffleCoupon = Yii::app()->params['activeRaffleCoupon'];
+        $sql = "SELECT RaffleCouponID
+                FROM " . $activeRaffleCoupon . "
                 WHERE Status = 0 AND RewardItemID = :RewardItemID
                 ORDER BY CouponNumber
-                LIMIT ' . $couponQuantity;
+                LIMIT " . $couponQuantity;
         $param = array(':RewardItemID' => $rewardItemID);
         $command = $this->_connection->createCommand($sql);
         $command->bindValues($param);
@@ -38,6 +39,7 @@ class RaffleCouponsModel {
 
     //@purpose updating of raffle coupon status
     public function updateRaffleCouponsStatus($quantity, $couponRedemptionLogID, $rewardItemID, $updatedbyaid) {
+        $activeRaffleCoupon = Yii::app()->params['activeRaffleCoupon'];
 
         $unlockedmsg = '';
         $resultmsg = '';
@@ -47,7 +49,7 @@ class RaffleCouponsModel {
         $startTrans = $this->_connection->beginTransaction();
 
         try {
-            $sql = 'LOCK TABLES rafflecoupons_1 WRITE';
+            $sql = "LOCK TABLES " . $activeRaffleCoupon . " WRITE";
             $command = $this->_connection->createCommand($sql);
             $isLocked = $command->execute();
 
@@ -57,8 +59,8 @@ class RaffleCouponsModel {
                 if (count($availableCoupon) == $quantity) {
                     try {
                         //Proceed with update query if the table is already locked.
-                        $sql = 'UPDATE rafflecoupons_1 SET CouponRedemptionLogID = :couponRedemptionLogID, Status = 1, UpdatedByAID = :updatedbyaid, DateUpdated = NOW(6)
-                                        WHERE CouponRedemptionLogID IS NULL AND Status = 0 AND RewardItemID = :rewardItemID ORDER BY CouponNumber ASC LIMIT ' . $quantity; //.$quantity;//.$quantity;
+                        $sql = "UPDATE " . $activeRaffleCoupon . " SET CouponRedemptionLogID = :couponRedemptionLogID, Status = 1, UpdatedByAID = :updatedbyaid, DateUpdated = NOW(6)
+                                        WHERE CouponRedemptionLogID IS NULL AND Status = 0 AND RewardItemID = :rewardItemID ORDER BY CouponNumber ASC LIMIT " . $quantity; //.$quantity;//.$quantity;
                         $param = array(':couponRedemptionLogID' => $couponRedemptionLogID, ':updatedbyaid' => $updatedbyaid, ':rewardItemID' => $rewardItemID);
                         $command = $this->_connection->createCommand($sql);
                         $command->bindValues($param);
@@ -135,11 +137,13 @@ class RaffleCouponsModel {
     }
 
     public function getCouponRedemptionInfo($couponRedemptionLogID) {
-        $sql = 'SELECT MIN(CouponNumber) MinCouponNumber,
+        $activeRaffleCoupon = Yii::app()->params['activeRaffleCoupon'];
+
+        $sql = "SELECT MIN(CouponNumber) MinCouponNumber,
                        MAX(CouponNumber) MaxCouponNumber,
                        COUNT(CouponNumber) CouponNumberCount
-                FROM rafflecoupons_1
-                WHERE CouponRedemptionLogID = :CouponRedemptionLogID';
+                FROM " . $activeRaffleCoupon . "
+                WHERE CouponRedemptionLogID = :CouponRedemptionLogID";
         $param = array(':CouponRedemptionLogID' => $couponRedemptionLogID);
         $command = $this->_connection->createCommand($sql);
         $result = $command->queryRow(true, $param);

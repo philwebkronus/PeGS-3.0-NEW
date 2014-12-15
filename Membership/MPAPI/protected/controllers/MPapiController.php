@@ -269,7 +269,7 @@ class MPapiController extends Controller {
                 $transMsg = "One or more fields is not set or is blank.";
                 $errorCode = 1;
                 Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
-                $this->_sendResponse(200, CJSON::encode(CommonController::retMsgLogin($module, '', '', '','', $errorCode, $transMsg)));
+                $this->_sendResponse(200, CJSON::encode(CommonController::retMsgLogin($module, '', '', '', '', $errorCode, $transMsg)));
                 $logger->log($logger->logdate, " [LOGIN ERROR] ", $logMessage);
                 $apiDetails = 'LOGIN-Failed: Invalid Login parameters.';
                 $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
@@ -355,7 +355,7 @@ class MPapiController extends Controller {
                                 $transMsg = 'Transaction failed.';
                                 $errorCode = 4;
                                 Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
-                                $this->_sendResponse(200, CJSON::encode(CommonController::retMsgLogin($module, '', '', '','', $errorCode, $transMsg)));
+                                $this->_sendResponse(200, CJSON::encode(CommonController::retMsgLogin($module, '', '', '', '', $errorCode, $transMsg)));
                                 $logger->log($logger->logdate, " [LOGIN ERROR] ", $logMessage);
                                 $apiDetails = 'LOGIN-UpdateTransDate-Failed: '.'Username: '.$username.' MID = '.$MID.' SessionID = '.$mpSessionID;
                                 $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
@@ -373,7 +373,7 @@ class MPapiController extends Controller {
                             $transMsg = 'Transaction failed.';
                             $errorCode = 4;
                             Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
-                            $this->_sendResponse(200, CJSON::encode(CommonController::retMsgLogin($module, '', '', '','', $errorCode, $transMsg)));
+                            $this->_sendResponse(200, CJSON::encode(CommonController::retMsgLogin($module, '', '', '', '', $errorCode, $transMsg)));
                             $logger->log($logger->logdate, " [LOGIN ERROR] ", $logMessage);
                             $apiDetails = 'LOGIN-Insert/UpdateMemberSession-Failed: MID = '.$MID.' SessionID = '.$mpSessionID;
                             $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
@@ -390,7 +390,7 @@ class MPapiController extends Controller {
                         $transMsg = 'Member not found';
                         $errorCode = 3;
                         Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
-                        $this->_sendResponse(200, CJSON::encode(CommonController::retMsgLogin($module, '', '', '','', $errorCode, $transMsg)));
+                        $this->_sendResponse(200, CJSON::encode(CommonController::retMsgLogin($module, '', '', '', '', $errorCode, $transMsg)));
                         $logger->log($logger->logdate, " [LOGIN ERROR] ", $logMessage);
                         $apiDetails = 'LOGIN-Authenticate-Failed: Member account is invalid.';
                         $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
@@ -426,7 +426,7 @@ class MPapiController extends Controller {
             $transMsg = "One or more fields is not set or is blank.";
             $errorCode = 1;
             Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
-            $this->_sendResponse(200, CJSON::encode(CommonController::retMsgLogin($module, '', '', '','', $errorCode, $transMsg)));
+            $this->_sendResponse(200, CJSON::encode(CommonController::retMsgLogin($module, '', '', '','',  $errorCode, $transMsg)));
             $logger->log($logger->logdate, " [LOGIN ERROR] ", $logMessage);
             $apiDetails = 'LOGIN-Failed: Invalid login parameters.';
             $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
@@ -1689,6 +1689,9 @@ class MPapiController extends Controller {
         $logger = new ErrorLogger();
         $apiLogsModel = new APILogsModel();
         $memberSessionsModel = new MemberSessionsModel();
+        
+        $result = $memberSessionsModel->getMID($request['MPSessionID']);
+        $MID = $result['MID'];
 
         $isValid = $this->_validateMPSession($request['MPSessionID']);
         if(isset($isValid) && !$isValid) {
@@ -1707,9 +1710,6 @@ class MPapiController extends Controller {
 
             exit;
         }
-
-        $result = $memberSessionsModel->getMID($request['MPSessionID']);
-        $MID = $result['MID'];
 
         if(isset($result)) {
             $isUpdated = $memberSessionsModel->updateTransactionDate($MID);
@@ -3187,7 +3187,7 @@ class MPapiController extends Controller {
                                                 $resultArray = $process->processCouponRedemption($MID, $rewardItemID, $quantity, $totalItemPoints, $cardNumber, 3, $redeemedDate);
 
                                                 if($resultArray['IsSuccess']) {
-                                                    $oldCurrentPoints = number_format($resultArray['OldCurrentPoints']);
+                                                    $oldCurrentPoints = number_format($resultArray['OldCP']);
                                                     $redeemedPoints = number_format($totalItemPoints);
                                                     $rewardItem = $rewardItemsModel->getItemDetails($rewardItemID);
                                                     $itemName = $rewardItem['ItemName'];
@@ -3241,9 +3241,13 @@ class MPapiController extends Controller {
                                                         $email = $memberDetails['Email'];
                                                         $contactNo = $memberDetails['MobileNumber'];
 
-                                                        for($itr = 0; $itr < count($rewardOffers); $itr++) {
-                                                            $eCouponImage[$itr] = $rewardOffers[$itr]["ECouponImage"];
-                                                            $partnerName[$itr] = $rewardOffers[$itr]["PartnerName"];
+                                                        //for($itr = 0; $itr < count($rewardOffers); $itr++) {
+                                                        //    $eCouponImage[$itr] = $rewardOffers[$itr]["ECouponImage"];
+                                                        //    $partnerName[$itr] = $rewardOffers[$itr]["PartnerName"];
+                                                        //}
+
+							if(isset($rewardOffers['ECouponImage'])) {
+                                                             $eCouponImage = $rewardOffers["ECouponImage"];
                                                         }
 
                                                         if(isset($rewardOffers['About'])) {
@@ -3257,14 +3261,14 @@ class MPapiController extends Controller {
                                                             $startYear = date('Y', strtotime($rewardOffers['StartDate']));
                                                             $endYear = date('Y', strtotime($rewardOffers['EndDate']));
                                                             if($startYear == $endYear) {
-                                                                $sDate = new DateTime(date($rewardOffers['Startdate']));
+                                                                $sDate = new DateTime(date($rewardOffers['StartDate']));
                                                                 $startDate = $sDate->format("F j");
                                                                 $eDate = new DateTime(date($rewardOffers['EndDate']));
                                                                 $endDate = $eDate->format("F j, Y");
                                                                 $promoPeriod = $startDate." to ".$endDate;
                                                             }
                                                             else {
-                                                                $sDate = new DateTime(date($rewardOffers['Startdate']));
+                                                                $sDate = new DateTime(date($rewardOffers['StartDate']));
                                                                 $startDate = $sDate->format("F j, Y");
                                                                 $eDate = new DateTime(date($rewardOffers['EndDate']));
                                                                 $endDate = $eDate->format("F j, Y");

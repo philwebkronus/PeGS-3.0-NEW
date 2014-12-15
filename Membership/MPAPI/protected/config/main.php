@@ -157,6 +157,7 @@ return array(
             'MarketingEmail' => '@philweb.ph',
             'urlMPAPI' => 'http://<MPAPI URL HERE>/index.php/MPapi/',
             'SessionTimeOut' => 45.00,
-            'urlVerify' => 'http://<MEMBERSHIP INSTANCE HERE>/verify.php'
+            'urlVerify' => 'http://<MEMBERSHIP INSTANCE HERE>/verify.php',
+            'activeRaffleCoupon' => 'rafflecoupons_<append active coupon batch here>' //example: rafflecoupons_3
             ),
 );
