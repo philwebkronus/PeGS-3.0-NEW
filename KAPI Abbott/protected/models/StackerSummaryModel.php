@@ -68,5 +68,23 @@ class StackerSummaryModel extends CFormModel
             return array('TransCode' => 2, 'An Error occured while updating the status.');
         }
     }
+    /**
+     * Get Deposited Amount by StackerBatchID
+     * @param type $stackerBatchID
+     * @return array Amount
+     * @author Mark Kenneth Esguerra
+     * @date December 10, 2014
+     */
+    public function getDepositedAmount($stackerBatchID)
+    {
+        $sql = "SELECT StackerSummaryID, Deposit 
+                FROM stackersummary 
+                WHERE StackerSummaryID = :stacker_batch_id";
+        $command = $this->_connection->createCommand($sql);
+        $command->bindValue(":stacker_batch_id", $stackerBatchID);
+        $result = $command->queryRow();
+        
+        return $result['Deposit'];
+    }
 }
 ?>

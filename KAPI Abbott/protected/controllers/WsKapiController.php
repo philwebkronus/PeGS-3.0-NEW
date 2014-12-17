@@ -57,7 +57,7 @@ class WsKapiController extends Controller {
                 $_terminalName = Yii::app()->params['SitePrefix'] . $terminalName;
                 $terminalID = $terminalsModel->getTerminalSiteIDSolo($_terminalName);
                 $terminaltype = $terminalsModel->checkTerminalType($terminalID['TerminalID']);
-
+                
                 if ($terminaltype == 1) {
                     $sc = Yii::app()->params['SitePrefix'] . $request['TerminalName'];
                     $TerminalID = array();
@@ -91,6 +91,9 @@ class WsKapiController extends Controller {
                                             $isPlaying = $terminalSessionsModel->isSessionActive($TerminalID[0]['TerminalID']);
                                             $siteID = $terminalsModel->getSiteIDByTerminalID($TerminalID[0]['TerminalID']);
 
+                                            //get last inserted amount (cash/ticket)
+//                                            $lastAmount = $stackerDetailsModel->getLastStackerAmount($stackerBatchID);
+//                                                
                                             //Check if session is active. If active then
                                             if ($isPlaying > 0) {
                                                 $TerminalID = $TerminalID[0]['TerminalID'];
@@ -143,7 +146,7 @@ class WsKapiController extends Controller {
                                                         $minmaxAmount = array_merge($regVal, $vipVal);
                                                     }
                                                 }
-                                                
+                                               
                                                 $message = "Success";
                                                 $membershipCardNo = $terminalSessionsModel->getLoyaltyCardNumber($TerminalID);
                                                 $startDateTime = $terminalSessionsModel->getStartDateTime($TerminalID);
@@ -2762,6 +2765,7 @@ class WsKapiController extends Controller {
                 $membersModel = new MembersModel();
                 $audittrail = new AuditTrailModel();
                 $terminalSessions = new TerminalSessionsModel();
+                $stackerSummary = new StackerSummaryModel();
                 
                 //Check membership card
                 $sc = Yii::app()->params['SitePrefix'] . $terminalName;
@@ -2860,26 +2864,34 @@ class WsKapiController extends Controller {
                                                $hasActive = $gamingSessionsModel->checkEgmSessionBoth($TerminalID, $MID);
                                                if ($hasActive['Count'] > 0)
                                                {
-                                                   //get stacker batch id
-                                                   $egmsessionID = $hasActive['EGMSessionID'];
-                                                   $stackerBatchID = $gamingSessionsModel->getStackerBatchID($egmsessionID);
-                                                   //delete egm
-                                                   $deleteegm = $gamingSessionsModel->deleteGamingSessions($TerminalID, $stackerBatchID);
-                                                   if ($deleteegm)
+                                                   //check if egm has already a deposited amount
+                                                   $depositedAmount = $stackerSummary->getDepositedAmount($hasActive['StackerBatchID']);
+                                                   if ((float)$depositedAmount <= 0.00)
                                                    {
-                                                       //log to audit trail
-                                                       $transdetails = "Manual Remove of EGM Session (KAPI) | MID: ".$MID." | TerminalID: ".$TerminalID;
-                                                       $audittrail->logToAuditTrail($this->acc_id, $transdetails);
+                                                        //delete egm
+                                                        $deleteegm = $gamingSessionsModel->deleteGamingSessions($TerminalID, $hasActive['StackerBatchID']);
+                                                        if ($deleteegm)
+                                                        {
+                                                            //log to audit trail
+                                                            $transdetails = "Manual Remove of EGM Session (KAPI) | MID: ".$MID." | TerminalID: ".$TerminalID;
+                                                            $audittrail->logToAuditTrail($this->acc_id, $transdetails);
 
-                                                       $message = 'EGM Session Successfully Removed.';
-                                                       $errCode = 0;
-                                                       $this->_sendResponse(200, CommonController::removeEgmSessionResponse($message, $errCode));
+                                                            $message = 'EGM Session Successfully Removed.';
+                                                            $errCode = 0;
+                                                            $this->_sendResponse(200, CommonController::removeEgmSessionResponse($message, $errCode));
+                                                        }
+                                                        else
+                                                        {
+                                                            $message = "Failed to Remove EGM Session";
+                                                            $errCode = 64;
+                                                            $this->_sendResponse(200, CommonController::removeEgmSessionResponse($message, $errCode));
+                                                        }   
                                                    }
                                                    else
                                                    {
-                                                       $message = "Failed to Remove EGM Session";
-                                                       $errCode = 64;
-                                                       $this->_sendResponse(200, CommonController::removeEgmSessionResponse($message, $errCode));
+                                                        $message = 'Failed to Remove EGM Session. Terminal has already a deposited amount.';
+                                                        $errCode = 55;
+                                                        $this->_sendResponse(200, CommonController::removeEgmSessionResponse($message, $errCode));
                                                    }
                                                }
                                                else
@@ -2916,7 +2928,7 @@ class WsKapiController extends Controller {
                                     $errCode = 65;
                                     $this->_sendResponse(200, CommonController::removeEgmSessionResponse($message, $errCode));
                                 }
-                            } 
+                            }
                             else 
                             {
                                 $message = "Cannot find Terminal.";

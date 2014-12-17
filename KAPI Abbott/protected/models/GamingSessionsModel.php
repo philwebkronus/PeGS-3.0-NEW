@@ -241,7 +241,8 @@ class GamingSessionsModel{
      */
     public function checkEgmSessionBoth($terminalID, $MID)
     {
-        $sql = "SELECT COUNT(EGMSessionID) as Count, EGMSessionID FROM egmsessions 
+        $sql = "SELECT COUNT(EGMSessionID) as Count, EGMSessionID, StackerBatchID 
+                FROM egmsessions 
                 WHERE TerminalID = :terminalID AND MID = :MID";
         $command = $this->_connection->createCommand($sql);
         $command->bindValue(":terminalID", $terminalID);
