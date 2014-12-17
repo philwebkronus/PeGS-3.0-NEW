@@ -965,26 +965,41 @@ class ApplicationSupport extends DBHandler
     
     //Logs Monitoring: get log file contents
     function getfilecontents($zfile)
-    {
+    {   
+        
+        
+        $exists = $this->remoteFileExists($zfile);
+        $arrdisplay = array();
         if(file_exists($zfile)){
             $file = fopen($zfile, "r");  
-            $arrcontent = array();
             while (!feof($file))   
             {
-               $display = fgets($file, filesize($zfile));
-
+               $display = fgets($file, strlen(file_get_contents($zfile)));
                if($display <> false)
                {
-                   $arrdisplay = array($display);  
-                   array_push($arrcontent, $display);
+                   if(trim($display)!=""){
+                   $arrdisplay[] = array("ERROR"=>trim($display));  
+                   } 
                }
             }  
             fclose($file); 
-            return $arrcontent;
-        }
-        else
+            return $arrdisplay;
+        }else if($exists){
+            //getting file from a remotesever not on local
+            $data = file_get_contents($zfile);
+            $convert = explode("\n", $data);
+            for ($i=0;$i<count($convert);$i++)  
+            {
+               if(trim($convert[$i])!=""){
+               $arrdisplay[] = array("ERROR"=>trim($convert[$i])); 
+               }
+            }
+            return $arrdisplay;
+        }else{
+            
             return false;
-       
+        }
+        
     }
     
     //Logs Monitoring: get cashier's logs path
@@ -1894,6 +1909,12 @@ class ApplicationSupport extends DBHandler
               var_dump($e->getMessage()); exit;
           }
           return $this->fetchAllData();
+    }
+
+    public function remoteFileExists($url) {
+     //check if file/ip in the given url is existing  
+        return(bool)preg_match('~HTTP/1\.\d\s+200\s+OK~',@current(get_headers($url)));
+
     }
 }
 ?>

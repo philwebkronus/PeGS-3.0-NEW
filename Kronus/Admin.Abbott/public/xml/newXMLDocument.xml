@@ -156,8 +156,8 @@
         <submenu id ="50" name='On/Off Passkey' path='apppasskey.php' group='Tracking' pagename="17"/>   
         <submenu id ='74' name='E-City Tracking' path='applptracking.php' group='Tracking' pagename='17' />
         <submenu id ='75' name='Logs Tracking' path='applogsmonitor.php' group='Tracking' pagename='17' />
-        <submenu id ='75' name='E-City Logs Tracking' path='launchPadLogsMonitor.php' group='Tracking' pagename='17' />
-        <submenu id ='76' name='Admin Logs Tracking' path='appadminlogsmonitor.php' group='Tracking' pagename='17' />
+<!--        <submenu id ='75' name='E-City Logs Tracking' path='launchPadLogsMonitor.php' group='Tracking' pagename='17' />
+        <submenu id ='76' name='Admin Logs Tracking' path='appadminlogsmonitor.php' group='Tracking' pagename='17' />-->
         <submenu id ="62" name='Disabling of Cashier Terminal' path='appdisableterminal.php' group='Terminal' pagename="17" />   
         <submenu id ="81" name='Adjust Cashier Terminal' path='appadjustterminal.php' group='Terminal' pagename="17" />   
         <submenu id="65" name='Switching of Servers' path='appswitchserver.php' group='Terminal' pagename="17" />
@@ -173,7 +173,8 @@
      <menu id ="19" name='Reports' path='blank.php' pagename="19">
         <submenu id ="54" name='Audit Trail' path='rptaudittrail.php' pagename="19"/>      
         <submenu id ="86" name='Change Terminal Password Logs' path='apprptpassword.php' pagename="19"/> 
-        <submenu id ="87" name='LP Deployment Created Terminals' path='apprptterminalscreated.php' pagename="19"/> 
+        <submenu id ="87" name='LP Deployment Created Terminals' path='apprptterminalscreated.php' pagename="19"/>
+        <submenu id ="90" name='Manual Casino Fulfillment History' path='manualcasinofulfillmenthistory.php' pagename="19"/> 
      </menu>
 </right>
 <right id="11">
