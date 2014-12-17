@@ -87,3 +87,6 @@ Code    Message
 89  -   Must be at least 21 years old to register.
 90  -   Failed to get response from membershipsms api.
 91  -   MPSessionID is already expired. Please login again.
+92  -   Card number and new password must consist of letters and numbers only.
+93  -   New password must be atleast 5 characters long.
+94  -   Change password failed.

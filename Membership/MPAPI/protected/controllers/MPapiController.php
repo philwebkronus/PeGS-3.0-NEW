@@ -439,6 +439,162 @@ class MPapiController extends Controller {
         }
     }
 
+    public function actionChangePassword() {
+        $request = $this->_readJsonRequest();
+
+        $transMsg = '';
+        $errorCode = '';
+        $module = 'ChangePassword';
+        $apiMethod = 20;
+        $logger = new ErrorLogger();
+        $apiLogsModel = new APILogsModel();
+
+        if(isset($request['CardNumber']) && isset($request['NewPassword'])) {
+            if(($request['CardNumber'] == '') || ($request['NewPassword'] == '')) {
+                $transMsg = "One or more fields is not set or is blank.";
+                $errorCode = 1;
+                Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                $this->_sendResponse(200, CJSON::encode(CommonController::retMsgChangePassword($module, $errorCode, $transMsg)));
+                $logMessage = 'One or more fields is not set or is blank.';
+                $logger->log($logger->logdate, " [CHANGEPASSWORD ERROR] ", $logMessage);
+                $apiDetails = 'CHANGEPASSWORD-Failed: Invalid input parameter.';
+                $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
+                if($isInserted == 0) {
+                    $logMessage = "Failed to insert to APILogs.";
+                    $logger->log($logger->logdate, " [CHANGEPASSWORD ERROR] ", $logMessage);
+                }
+
+                exit;
+            }
+            else {
+                $cardNumber = trim($request['CardNumber']);
+                $newPassword = trim($request['NewPassword']);
+
+                //start of declaration of models to be used
+                $membersModel = new MembersModel();
+                $memberCardsModel = new MemberCardsModel();
+                $memberSessionsModel = new MemberSessionsModel();
+                $helpers = new Helpers();
+                $cardsModel = new CardsModel();
+                $auditTrailModel = new AuditTrailModel();
+
+                if(ctype_alnum($cardNumber) == FALSE || ctype_alnum($newPassword) == FALSE) {
+                    $transMsg = "Card number and new password must consist of letters and numbers only.";
+                    $errorCode = 92;
+                    Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                    $this->_sendResponse(200, CJSON::encode(CommonController::retMsgChangePassword($module, $errorCode, $transMsg)));
+                    $logMessage = 'Card number and new password must consist of letters and numbers only.';
+                    $logger->log($logger->logdate, " [CHANGEPASSWORD ERROR] ", $logMessage);
+                    $apiDetails = 'CHANGEPASSWORD-Failed: Invalid input parameter.';
+                    $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
+                    if($isInserted == 0) {
+                        $logMessage = "Failed to insert to APILogs.";
+                        $logger->log($logger->logdate, " [CHANGEPASSWORD ERROR] ", $logMessage);
+                    }
+
+                    exit;
+                }
+                else if(strlen($newPassword) < 5){
+                    $transMsg = "New password must be atleast 5 characters long.";
+                    $errorCode = 93;
+                    Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                    $this->_sendResponse(200, CJSON::encode(CommonController::retMsgChangePassword($module, $errorCode, $transMsg)));
+                    $logMessage = 'New password must be atleast 5 characters long.';
+                    $logger->log($logger->logdate, " [CHANGEPASSWORD ERROR] ", $logMessage);
+                    $apiDetails = 'CHANGEPASSWORD-Failed: Invalid input parameter.';
+                    $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
+                    if($isInserted == 0) {
+                        $logMessage = "Failed to insert to APILogs.";
+                        $logger->log($logger->logdate, " [CHANGEPASSWORD ERROR] ", $logMessage);
+                    }
+
+                    exit;
+                }
+                else {
+                    $result = $memberCardsModel->getMIDUsingCard($cardNumber);
+                    if($result) {
+                        $MID = $result['MID'];
+                        $isUpdated = $membersModel->updatePasswordUsingMID($MID, $newPassword);
+                        $isSuccessful = $membersModel->updateForChangePasswordUsingMID($MID, 0);
+                        if($isUpdated > 0 && $isSuccessful > 0) {
+                            $transMsg = "Change password successful.";
+                            $errorCode = 0;
+                            Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                            $this->_sendResponse(200, CJSON::encode(CommonController::retMsgChangePassword($module, $errorCode, $transMsg)));
+                            $logMessage = 'Change password successful.';
+                            $logger->log($logger->logdate, " [CHANGEPASSWORD SUCCESSFUL] ", $logMessage);
+                            $apiDetails = 'CHANGEPASSWORD-Successful: MID = '.$MID;
+                            $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 1);
+                            if($isInserted == 0) {
+                                $logMessage = "Failed to insert to APILogs.";
+                                $logger->log($logger->logdate, " [CHANGEPASSWORD ERROR] ", $logMessage);
+                            }
+
+                            $isLogged = $auditTrailModel->logEvent(AuditTrailModel::API_CHANGE_PASSWORD, 'CardNumber: '.$cardNumber, array('MID' => $MID, 'SessionID' => ''));
+                            if($isLogged == 0) {
+                                $logMessage = 'Failed to log event on Audittrail.';
+                                $logger->log($logger->logdate, " [CHANGEPASSWORD FAILED] ", $logMessage);
+                            }
+
+                            exit;
+                        }
+                        else {
+                            $transMsg = "Change password failed.";
+                            $errorCode = 94;
+                            Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                            $this->_sendResponse(200, CJSON::encode(CommonController::retMsgChangePassword($module, $errorCode, $transMsg)));
+                            $logMessage = 'Change password failed.';
+                            $logger->log($logger->logdate, " [CHANGEPASSWORD ERROR] ", $logMessage);
+                            $apiDetails = 'CHANGEPASSWORD-UpdateMembersModel-Failed: Failed to update.';
+                            $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
+                            if($isInserted == 0) {
+                                $logMessage = "Failed to insert to APILogs.";
+                                $logger->log($logger->logdate, " [CHANGEPASSWORD ERROR] ", $logMessage);
+                            }
+
+                            exit;
+                        }
+                    }
+                    else {
+                        $transMsg = "Card number does not exist.";
+                        $errorCode = 61;
+                        Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                        $this->_sendResponse(200, CJSON::encode(CommonController::retMsgChangePassword($module, $errorCode, $transMsg)));
+                        $logMessage = 'Card number does not exist..';
+                        $logger->log($logger->logdate, " [CHANGEPASSWORD ERROR] ", $logMessage);
+                        $apiDetails = 'CHANGEPASSWORD-Failed: Invalid input parameter.';
+                        $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
+                        if($isInserted == 0) {
+                            $logMessage = "Failed to insert to APILogs.";
+                            $logger->log($logger->logdate, " [CHANGEPASSWORD ERROR] ", $logMessage);
+                        }
+
+                        exit;
+                    }
+
+                }
+
+
+            }
+        }
+        else {
+            $transMsg = "One or more fields is not set or is blank.";
+            $errorCode = 1;
+            Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+            $this->_sendResponse(200, CJSON::encode(CommonController::retMsgChangePassword($module, $errorCode, $transMsg)));
+            $logMessage = 'One or more fields is not set or is blank.';
+            $logger->log($logger->logdate, " [CHANGEPASSWORD ERROR] ", $logMessage);
+            $apiDetails = 'CHANGEPASSWORD-Failed: Invalid input parameter.';
+            $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
+            if($isInserted == 0) {
+                $logMessage = "Failed to insert to APILogs.";
+                $logger->log($logger->logdate, " [CHANGEPASSWORD ERROR] ", $logMessage);
+            }
+
+            exit;
+        }
+    }
+
     public function actionForgotPassword() {
         $request = $this->_readJsonRequest();
 
@@ -1689,7 +1845,7 @@ class MPapiController extends Controller {
         $logger = new ErrorLogger();
         $apiLogsModel = new APILogsModel();
         $memberSessionsModel = new MemberSessionsModel();
-        
+
         $result = $memberSessionsModel->getMID($request['MPSessionID']);
         $MID = $result['MID'];
 
@@ -2085,17 +2241,7 @@ class MPapiController extends Controller {
 
                 if(count($isExist) > 0) {
                     //check if from old to newly migrated card
-                    if(!is_null($emailAddress)) {
-                        $tempMID = $membershipTempModel->getMID($emailAddress);
-                        if(empty($tempMID)) {
-                            $tempMID['MID'] = 0;
-                            $mid = 0;
-                        }
-                        else
-                            $mid = $tempMID['MID'];
-                    }
-                    else
-                        $mid = $MID;
+                    $mid = $MID;
 
                     $tempHasEmailCount = $membershipTempModel->checkIfEmailExistsWithMID($mid, $emailAddress);
                     if(is_null($tempHasEmailCount))

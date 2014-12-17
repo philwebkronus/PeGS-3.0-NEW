@@ -120,6 +120,7 @@ class AmpapiController extends Controller {
 
     private $ApiMethodID = array(
         'Login'=>APILogsModel::API_LOGIN,
+        'ChangePassword'=>APILogsModel::API_CHANGE_PASSWORD,
         'ForgotPassword'=>APILogsModel::API_FORGOT_PASSWORD,
         'RegisterMember'=>APILogsModel::API_REGISTER_MEMBER,
         'UpdateProfile'=>APILogsModel::API_UPDATE_PROFILE,
@@ -350,6 +351,43 @@ class AmpapiController extends Controller {
                 else{
                     $this->_displayCustomMessages(73, $module, 'No response from Membership portal API.');//Error 73
                     $this->_apiLogs(APILogsModel::API_LOGIN,'' , 73, '', 2, $module, $Username);
+                }
+            }
+
+        }
+
+    }
+
+    public function actionChangePassword(){
+        $request = $this->_readJsonRequest();
+        $module = 'ChangePassword';
+        //$authenticateSession = new AuthenticateSessionModel();
+
+        $validateRequiredField = $this->validateRequiredFields($request, $module, array('TPSessionID'=>false, 'CardNumber'=>false, 'NewPassword'=>false));
+        //$validateRequiredField=true;
+        if($validateRequiredField===true){
+            $TPSessionID=$request['TPSessionID'];
+            $validateTPSessionID = $this->_validateTPSession($TPSessionID, 'GetActiveSession', $module);
+            if($validateTPSessionID===true){
+                $moduleName ='changepassword';
+                $cardNumber = trim($request['CardNumber']);
+                $newPassword = trim($request['NewPassword']);
+                $url = $this->genMPAPIURL($moduleName);
+                $postData = CJSON::encode(array('CardNumber'=>$cardNumber, 'NewPassword'=>$newPassword));
+                $result = $this->SubmitData($url, $postData);
+                $AID = $this->currentAID;
+
+                if(isset($result[0]) && $result[0]==200){
+                    $this->_sendResponse(200, $result[1]);
+                    $ValidateResponse = $this->validateResponse($result[1], $module);
+                    if($ValidateResponse==true){
+                        $this->_auditTrail(AuditTrailModel::CHANGE_PASSWORD,0,$AID, $TPSessionID, $module, $cardNumber);
+                        $this->_apiLogs(APILogsModel::API_CHANGE_PASSWORD,'' , 0, '', 1, $module, $cardNumber);
+                    }
+                }
+                else{
+                    $this->_displayCustomMessages(73, $module, 'No response from Membership portal API.');//Error 73
+                    $this->_apiLogs(APILogsModel::API_CHANGE_PASSWORD,'' , 73, '', 2, $module, $cardNumber);
                 }
             }
 
@@ -1158,11 +1196,13 @@ class AmpapiController extends Controller {
     }
     //This function creat audittrail logs
     private function _auditTrail($auditFunction,$errorCode, $AID, $sessionID, $module, $details=''){
+
         $auditTrailModel = new AuditTrailModel();
         $logger = new ErrorLogger();
 
         $transMsg = $module.': '.$details;
         $result = $auditTrailModel->logEvent($auditFunction, $transMsg, array('AID' => $AID, 'SessionID' => $sessionID));
+
         //@Ternary function or conditional statement
         $result==1?$this->_logSuccess($module, "Audittrail log success."):$this->_logError($module, 'Failed to log event on Audittrail.');
 
@@ -1384,6 +1424,7 @@ class AmpapiController extends Controller {
                 $TPUsername = $queryResult['UserName'];
                 $url = $this->genAMPAPIURL($moduleNameMPAPI);
                 $postData = CJSON::encode(array('TPSessionID'=>$TPSessionID, 'Username'=>$TPUsername, 'SentFromAMPAPI'=>1,'ModuleNameAMPAPI'=>$moduleNameAMPAPI, 'AID'=>$AID));
+
                 $result = $this->SubmitData($url, $postData);
                 $this->currentAID = $AID;
                 if(isset($result)){

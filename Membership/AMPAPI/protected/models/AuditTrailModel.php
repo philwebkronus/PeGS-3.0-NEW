@@ -24,13 +24,14 @@ class AuditTrailModel
     CONST AUTHENTICATE_SESSION = 9;
     CONST GET_ACTIVE_SESSION = 10;
     CONST LOGOUT = 16;
+    CONST CHANGE_PASSWORD = 69;
     
     public static $_instance = null;
     public $_connection;
 
 
     public function __construct() {
-        $this->_connection = Yii::app()->db5;
+        $this->_connection = Yii::app()->db;
     }
     
     public static function model()
@@ -41,7 +42,10 @@ class AuditTrailModel
     }
     
     public function logEvent($auditfunctionID, $transdetails, $info) {
+     
         $startTrans = $this->_connection->beginTransaction();
+        $aid = 0;
+        $sessionID = ' ';
         
         $remoteip = gethostbyaddr($_SERVER['REMOTE_ADDR']);
         if (is_array($info) && count($info) > 0)
@@ -49,8 +53,8 @@ class AuditTrailModel
             $aid= $info['AID']; $sessionID = $info['SessionID'];
         }
         try {
-            $sql = 'INSERT INTO audittrail(SessionID, AID, TransDetails, TransDate, DateCreated, RemoteIP, AuditTrailFunctionID)
-                    VALUES(:SessionID, :AID, :TransDetails, NOW(6), NOW(6),:RemoteIP, :AuditTrailFunctionID)';
+	    $sql = 'INSERT INTO audittrail(AuditFunctionID, ID, SessionID, TransactionDetails, TransactionDateTime, RemoteIP)
+                    VALUES(:AuditTrailFunctionID, :AID, :SessionID,  :TransDetails, NOW(6), :RemoteIP)';
             $param = array(':SessionID' => $sessionID, ':AID' => $aid, ':TransDetails' => $transdetails, ':RemoteIP' => $remoteip, ':AuditTrailFunctionID' => $auditfunctionID);
             $command = $this->_connection->createCommand($sql);
             $command->bindValues($param);$command->execute();

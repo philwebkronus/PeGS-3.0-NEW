@@ -31,6 +31,7 @@ class APILogsModel
     CONST API_GET_REFERRER = 17;
     CONST API_GET_REGION = 18;
     CONST API_GET_CITY = 19;
+    CONST API_CHANGE_PASSWORD = 20;
     
     
     
