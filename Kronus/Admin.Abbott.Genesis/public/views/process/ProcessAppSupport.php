@@ -392,31 +392,39 @@ if($connected && $connected2)
                             
                             $stackerbatchid = $oas->getStackerBatchID($terminalid,$vipterminalid);
                             
-                            if(is_null($stackerbatchid)){
-                                $updated = 1;
+                            $deposit = $oas->checkdeposit($stackerbatchid);
+                            
+                            if($deposit > 0){
+                                $response = 'Failed to remove EGM Session, Terminal has a Deposit amount';
                             }
                             else{
-                                $updated = $oas2->updateSSStatus($aid,$stackerbatchid,5);
-                                
-                                if($updated == 0){
+                                if(is_null($stackerbatchid)){
                                     $updated = 1;
+                                }
+                                else{
+                                    $updated = $oas2->updateSSStatus($aid,$stackerbatchid,5);
+
+                                    if($updated == 0){
+                                        $updated = 1;
+                                    }
+                                }
+
+                                if($updated > 0){
+                                    $deleted = $oas->deleteEGMSessions($terminalid,$vipterminalid);
+                                }
+                                else{
+                                    $deleted = 0;
+                                }
+
+
+                                if($deleted > 0 && $updated > 0){
+                                    $response = 'EGM Session Successfully Removed';
+                                }
+                                else{
+                                    $response = 'Failed to remove EGM Session';
                                 }
                             }
                             
-                            if($updated > 0){
-                                $deleted = $oas->deleteEGMSessions($terminalid,$vipterminalid);
-                            }
-                            else{
-                                $deleted = 0;
-                            }
-                            
-                        
-                            if($deleted > 0 && $updated > 0){
-                                $response = 'EGM Session Successfully Removed';
-                            }
-                            else{
-                                $response = 'Failed to remove EGM Session';
-                            }
                         }
                         else{
                             $response = 'Failed to remove EGM session, EGM session does not exist';
@@ -1179,7 +1187,6 @@ if($connected && $connected2)
     //for passkey on/off
     if(isset($_POST['page2']))
     {
-        
         $vpage2 = $_POST['page2'];
         switch ($vpage2)
         {
@@ -1693,18 +1700,14 @@ if($connected && $connected2)
                 exit;
             break;
             //Get log files upon loading of page
-case 'GetLogFile':
-                
-                $system = $_POST['system'];
-                $vfiles = array();
-                $vrealfolder = $oas->getlogspath($LogPaths[$_POST['system']][$_POST['link']]);
-                
-                if(file_exists($vrealfolder))
+            case 'GetLogFile':
+                $vrealfolder = $oas->getlogspath($cashierlogpath);
+                if(is_dir($vrealfolder))
                 {
                     $listfiles  = scandir($vrealfolder);
+                    $vfiles = array();
                     foreach($listfiles as $file)
                     {
-                        
                         //hides (.), (..), (index), and temporary files upon viewing
                         if(($file != '..') && ($file != '.') && (strstr($file, "index") == false) && 
                                 (strstr($file, "tmp") == false) && (strstr($file, "dev_application") == false))
@@ -1713,87 +1716,91 @@ case 'GetLogFile':
                             array_push($vfiles, $newarr);
                         }
                     }
+                    arsort($vfiles); //arrange files by ascending
+                    echo json_encode($vfiles);
+                    unset($vfiles);
                     unset($listfiles);
-                }else{
-                    $headers = @get_headers($vrealfolder,1);
-
-                    if(strpos($headers[0],'200')!=false)
-                    {
-                        $matches = array();
-                        preg_match_all("/(a href\=\")([^\?\"]*.log)(\")/i",getListFromServer($vrealfolder), $matches);
-                        $vfiles = array();
-                        foreach($matches[2] as $file)
-                        {
-
-                              $newarr = array(substr($file, 0, strrpos($file, ".")));
-                              array_push($vfiles, $newarr);
-
-                        }
-
-                    }else{
-                        echo "The logs directory does not exist";
-                        exit;
-                    }
                 }
-
-                arsort($vfiles); //arrange files by ascending
-                echo json_encode($vfiles);
-                unset($vfiles);
+                else
+                {
+                    echo "The logs directory does not exist";
+                }
                 $oas->close();
                 exit;
-              
             break;
-
-    case 'ShowLogContent':
-                $system = $_POST['system'];
-                $vrealfolder = $oas->getlogspath($LogPaths[$_POST['system']][$_POST['link']]);
+            //Get Launch Pad log files upon loading of page
+            case 'GetLaunchPadLogFile':
+                $vrealfolder = $oas->getlogspath($launchPadLogPath);
+                if(is_dir($vrealfolder))
+                {
+                    $listfiles  = scandir($vrealfolder);
+                    $vfiles = array();
+                    foreach($listfiles as $file)
+                    {
+                        //hides (.), (..), (index), and temporary files upon viewing
+                        if(($file != '..') && ($file != '.') && (strstr($file, "index") == false) && 
+                                (strstr($file, "tmp") == false) && (strstr($file, "dev_application") == false))
+                        {
+                            if(!preg_match("/gii-1.1/", $file)) { //Added on July 3, 2012 To remove gii-1.1 folder from list
+                                $newarr = array(substr($file, 0, strrpos($file, ".")));
+                                array_push($vfiles, $newarr);
+                            }
+                        }
+                    }
+                    arsort($vfiles); //arrange files by ascending
+                    echo json_encode($vfiles);
+                    unset($vfiles);
+                    unset($listfiles);
+                }
+                else
+                {
+                    echo "The logs directory does not exist";
+                }
+                $oas->close();
+                exit;
+            break;
+            //Get log files upon loading of page
+            case 'GetAdminLogFile':
+                $vrealfolder = $oas->getadminlogspath($adminlogpath);
+                if(is_dir($vrealfolder))
+                {
+                    $listfiles  = scandir($vrealfolder);
+                    $vfiles = array();
+                    foreach($listfiles as $file)
+                    {
+                        //hides (.), (..), (index), and temporary files upon viewing
+                        if(($file != '..') && ($file != '.') && (strstr($file, "index") == false) && 
+                                (strstr($file, "tmp") == false) && (strstr($file, "dev_application") == false))
+                        {
+                            $newarr = array(substr($file, 0, strrpos($file, ".")));
+                            array_push($vfiles, $newarr);
+                        }
+                    }
+                    arsort($vfiles); //arrange files by ascending
+                    echo json_encode($vfiles);
+                    unset($vfiles);
+                    unset($listfiles);
+                }
+                else
+                {
+                    echo "The logs directory does not exist";
+                }
+                $oas->close();
+                exit;
+            break;
+            //show log's content upon clicking of file
+            case 'ShowLogContent':
+                $vrealfolder = $oas->getlogspath($cashierlogpath);
                 $vfile = $_POST['logfile']; 
-                $rcontent="";
                 $vfullpath = $vrealfolder.$vfile.".log";
                 $vdatenow = date("Y-m-d");
-               
-                
                 //check first if file exists
-            
                 if(file_exists($vfullpath))   
                 {
-
-                        $datemodified = date("Y-m-d", filemtime($vfullpath));
-//                       $datemodified = '1970-01-01'; //get file modification/creation date
-                       //check if date today is the same with date modification of file, then create temp file
-                      
-                        if($vdatenow == $datemodified)
-                        {
-                            $tmpfile = $vrealfolder."tmp".$vdatenow.".log";
-                            //validate if temp file was exists
-                            if(file_exists($tmpfile) == true)
-                            {
-                                unlink($tmpfile); //removes the temp file if exists
-                                file_put_contents($tmpfile, file_get_contents($vfullpath), FILE_APPEND | LOCK_EX); //re-create the temp file
-                                $rcontent = $oas->getfilecontents($tmpfile);
-                            }
-                            else
-                            {
-                                file_put_contents($tmpfile, file_get_contents($vfullpath), FILE_APPEND | LOCK_EX); //create the temp file
-                                $rcontent = $oas->getfilecontents($tmpfile); //get contents
-                            }
-                        }
-                            else{
-                                $rcontent = $oas->getfilecontents($vfullpath);
-                            }          
-                        if($rcontent!=""){
-                            echo json_encode($rcontent);
-                        }else{
-                            
-                             $errmsg = "Log file does not exists";
-                             print $errmsg;
-                        }
-                }else{  
-                   $headers = @get_headers($vfullpath,1);
-                if(strpos($headers[0],'200')!=false)   
-                {
-                        $dm = strtotime($headers['Last-Modified']);  //get file modification/creation date
-                        $datemodified = date("Y-m-d",$dm);
+                    //then check if file is not empty
+                    if(filesize($vfullpath) > 0)
+                    {
+                        $datemodified = date("Y-m-d", filemtime($vfullpath)); //get file modification/creation date
                         //check if date today is the same with date modification of file, then create temp file
                         if($vdatenow == $datemodified)
                         {
@@ -1815,191 +1822,116 @@ case 'GetLogFile':
                         {
                             $rcontent = $oas->getfilecontents($vfullpath);
                         }
-                       
-                        if($rcontent!=""){
-                            echo json_encode($rcontent);
-                        }else{
-                            
-                            $errmsg = "Log file does not exists";
-                            print $errmsg;
-                        }
-                }else   
-                    {  
-                        $errmsg = "Log file does not exists";
-                        print $errmsg;
-                    } 
-                   
-           }
-    
-            exit;
+                    }
+                    else
+                    {
+                       $rcontent = "";
+                    }
+                    echo json_encode($rcontent);
+                }   
+                else   
+                {  
+                    $errmsg->error = "Log file does not exists";
+                    echo json_encode($errmsg);
+                } 
+                exit;
             break;
-////Get Launch Pad log files upon loading of page
-//            case 'GetLaunchPadLogFile':
-//                $vrealfolder = $oas->getlogspath($launchPadLogPath[$_POST['link']]);
-//                     
-//                $headers = @get_headers($vrealfolder);
-//                
-//                if(strpos($headers[0],'200')!=false)
-//                {
-//                    $matches = array();
-//                    preg_match_all("/(a href\=\")([^\?\"]*)(\")/i",getListFromServer($vrealfolder), $matches);
-//                    $vfiles = array();
-//                    foreach($matches[2] as $file)
-//                    {
-//                        //hides (.), (..), (index), and temporary files upon viewing
-//                        if(($file != '..') && ($file != '.') && (strstr($file, "index") == false) && 
-//                                (strstr($file, "tmp") == false) && (strstr($file, "dev_application") == false
-//                                        && (strstr($file, "launchpadgtc.dev") == false)))
-//                        {
-//                            if(!preg_match("/gii-1.1/", $file)) { //Added on July 3, 2012 To remove gii-1.1 folder from list
-//                                $newarr = array(substr($file, 0, strrpos($file, ".")));
-//                                array_push($vfiles, $newarr);
-//                            }
-//                        }
-//                    }
-//                    
-//                    arsort($vfiles); //arrange files by ascending
-//                    echo json_encode($vfiles);
-//                    unset($vfiles);
-//                    unset($matches);
-//                }
-//                else
-//                {
-//                    echo "The logs directory does not exist";
-//                }
-//                $oas->close();
-//                exit;
-//            break;
-//            //Get log files upon loading of page
-//            case 'GetAdminLogFile':
-//                $vrealfolder = $oas->getadminlogspath($adminlogpath[$_POST['link']]);
-//                $headers = @get_headers($vrealfolder);
-//                
-//                if(strpos($headers[0],'200')!=false)
-//                {
-//                    $matches = array();
-//                    preg_match_all("/(a href\=\")([^\?\"]*)(\")/i",getListFromServer($vrealfolder), $matches);
-//                    $vfiles = array();
-//                    foreach($matches[2] as $file)
-//                    {
-//                        //hides (.), (..), (index), and temporary files upon viewing
-//                        if(($file != '..') && ($file != '.') && (strstr($file, "index") == false) && 
-//                                (strstr($file, "tmp") == false) && (strstr($file, "dev_application") == false)
-//                                && (strstr($file, "/admin") == false))
-//                        {
-//                            $newarr = array(substr($file, 0, strrpos($file, ".")));
-//                            array_push($vfiles, $newarr);
-//                        }
-//                    }
-//                    arsort($vfiles); //arrange files by ascending
-//                    echo json_encode($vfiles);
-//                    unset($vfiles);
-//                    unset($matches);
-//                }
-//                else
-//                {
-//                    echo "The logs directory does not exist";
-//                }
-//                $oas->close();
-//                exit;
-//            break;
-//            //show log's content upon clicking of file
-//            //show Launch Pad log's content upon clicking of file
-//            case 'ShowLaunchPadLogContent':
-//                $vrealfolder = $oas->getlogspath($launchPadLogPath[$_POST['link']]);
-//                $vfile = $_POST['logfile']; 
-//                $vfullpath = $vrealfolder.$vfile.".log";
-//                $headers = @get_headers($vfullpath);
-//                $rcontent="";
-//                $vdatenow = date("Y-m-d");
-//                //check first if file exists
-//                if(strpos($headers[0],'200')!=false)   
-//                {
-//                    //then check if file is not empty
-//                    
-//                        $datemodified = '1970-01-01';  //get file modification/creation date
-//                        //check if date today is the same with date modification of file, then create temp file
-//                        if($vdatenow == $datemodified)
-//                        {
-//                            $tmpfile = $vrealfolder."tmp".$vdatenow.".log";
-//                            //validate if temp file was exists
-//                            if(file_exists($tmpfile) == true)
-//                            {
-//                                unlink($tmpfile); //removes the temp file if exists
-//                                file_put_contents($tmpfile, file_get_contents($vfullpath), FILE_APPEND | LOCK_EX); //re-create the temp file
-//                                $rcontent = $oas->getfilecontents($tmpfile);
-//                            }
-//                            else
-//                            {
-//                                file_put_contents($tmpfile, file_get_contents($vfullpath), FILE_APPEND | LOCK_EX); //create the temp file
-//                                $rcontent = $oas->getfilecontents($tmpfile); //get contents
-//                            }
-//                        }
-//                        else
-//                        {
-//                            $rcontent = $oas->getfilecontents($vfullpath);
-//                        }
-//                       
-//                        if($rcontent!=""){
-//                            echo json_encode($rcontent);
-//                        }
-//                }   
-//                else   
-//                {  
-//                    $errmsg->error = "Log file does not exists";
-//                    echo json_encode($errmsg);
-//                } 
-//                exit;
-//            break;
-//            case 'ShowAdminLogContent':
-//                $vrealfolder = $oas->getadminlogspath($adminlogpath[$_POST['link']]);
-//                $vfile = $_POST['logfile']; 
-//                $vfullpath = $vrealfolder.$vfile.".log";
-//                $headers = @get_headers($vfullpath);
-//                
-//                $rcontent="";
-//                $vdatenow = date("Y-m-d");
-//                //check first if file exists
-//                if(strpos($headers[0],'200')!=false)   
-//                {
-//                    //then check if file is not empty
-//                    
-//                        $datemodified = '1970-01-01';
-////                                date("Y-m-d", filemtime($vfullpath)); //get file modification/creation date
-//                        //check if date today is the same with date modification of file, then create temp file
-//                        if($vdatenow == $datemodified)
-//                        {
-//                            $tmpfile = $vrealfolder."tmp".$vdatenow.".log";
-//                            //validate if temp file was exists
-//                            if(file_exists($tmpfile) == true)
-//                            {
-//                                unlink($tmpfile); //removes the temp file if exists
-//                                file_put_contents($tmpfile, file_get_contents($vfullpath), FILE_APPEND | LOCK_EX); //re-create the temp file
-//                                $rcontent = $oas->getfilecontents($tmpfile);
-//                            }
-//                            else
-//                            {
-//                                file_put_contents($tmpfile, file_get_contents($vfullpath), FILE_APPEND | LOCK_EX); //create the temp file
-//                                $rcontent = $oas->getfilecontents($tmpfile); //get contents
-//                            }
-//                        }
-//                        else
-//                        {
-//                            $rcontent = $oas->getfilecontents($vfullpath);
-//                        }
-//                        if($rcontent!=""){
-//                            echo json_encode($rcontent);
-//                        }
-//                }   
-//                else   
-//                {  
-//                    $errmsg->error = "Log file does not exists";
-//                    echo json_encode($errmsg);
-//                } 
-//                exit;
-//            break;
-//            
-//Get log's content by modification date (onselect of datepicker)
+            //show Launch Pad log's content upon clicking of file
+            case 'ShowLaunchPadLogContent':
+                $vrealfolder = $oas->getlogspath($launchPadLogPath);
+                $vfile = $_POST['logfile']; 
+                $vfullpath = $vrealfolder.$vfile.".log";
+                $vdatenow = date("Y-m-d");
+                //check first if file exists
+                if(file_exists($vfullpath))   
+                {
+                    //then check if file is not empty
+                    if(filesize($vfullpath) > 0)
+                    {
+                        $datemodified = date("Y-m-d", filemtime($vfullpath)); //get file modification/creation date
+                        //check if date today is the same with date modification of file, then create temp file
+                        if($vdatenow == $datemodified)
+                        {
+                            $tmpfile = $vrealfolder."tmp".$vdatenow.".log";
+                            //validate if temp file was exists
+                            if(file_exists($tmpfile) == true)
+                            {
+                                unlink($tmpfile); //removes the temp file if exists
+                                file_put_contents($tmpfile, file_get_contents($vfullpath), FILE_APPEND | LOCK_EX); //re-create the temp file
+                                $rcontent = $oas->getfilecontents($tmpfile);
+                            }
+                            else
+                            {
+                                file_put_contents($tmpfile, file_get_contents($vfullpath), FILE_APPEND | LOCK_EX); //create the temp file
+                                $rcontent = $oas->getfilecontents($tmpfile); //get contents
+                            }
+                        }
+                        else
+                        {
+                            $rcontent = $oas->getfilecontents($vfullpath);
+                        }
+                    }
+                    else
+                    {
+                       $rcontent = "";
+                    }
+                    echo json_encode($rcontent);
+                }   
+                else   
+                {  
+                    $errmsg->error = "Log file does not exists";
+                    echo json_encode($errmsg);
+                } 
+                exit;
+            break;
+            case 'ShowAdminLogContent':
+                $vrealfolder = $oas->getadminlogspath($adminlogpath);
+                $vfile = $_POST['logfile']; 
+                $vfullpath = $vrealfolder.$vfile.".log";
+                $vdatenow = date("Y-m-d");
+                //check first if file exists
+                if(file_exists($vfullpath))   
+                {
+                    //then check if file is not empty
+                    if(filesize($vfullpath) > 0)
+                    {
+                        $datemodified = date("Y-m-d", filemtime($vfullpath)); //get file modification/creation date
+                        //check if date today is the same with date modification of file, then create temp file
+                        if($vdatenow == $datemodified)
+                        {
+                            $tmpfile = $vrealfolder."tmp".$vdatenow.".log";
+                            //validate if temp file was exists
+                            if(file_exists($tmpfile) == true)
+                            {
+                                unlink($tmpfile); //removes the temp file if exists
+                                file_put_contents($tmpfile, file_get_contents($vfullpath), FILE_APPEND | LOCK_EX); //re-create the temp file
+                                $rcontent = $oas->getfilecontents($tmpfile);
+                            }
+                            else
+                            {
+                                file_put_contents($tmpfile, file_get_contents($vfullpath), FILE_APPEND | LOCK_EX); //create the temp file
+                                $rcontent = $oas->getfilecontents($tmpfile); //get contents
+                            }
+                        }
+                        else
+                        {
+                            $rcontent = $oas->getfilecontents($vfullpath);
+                        }
+                    }
+                    else
+                    {
+                       $rcontent = "";
+                    }
+                    echo json_encode($rcontent);
+                }   
+                else   
+                {  
+                    $errmsg->error = "Log file does not exists";
+                    echo json_encode($errmsg);
+                } 
+                exit;
+            break;
+            //Get log's content by modification date (onselect of datepicker)
             case 'GetContentByModDate':
                 $vrealfolder = $oas->getlogspath($cashierlogpath);
                 $listfiles  = scandir($vrealfolder);
@@ -3057,22 +2989,9 @@ case 'GetLogFile':
                     echo json_encode($msg);
                     unset($site,$txtcversion,$txtoldcversion);
                 exit;    
-           break;
-           //checks the number of servers that has been set (web.config.php)
-           case 'CheckServers':
-                    $val = $_POST['file'];
-                    $serv;
-                    $list="";
-                    $serv = $LogPaths[$val];
-                    
-              for($i=0;$i<count($serv);$i++){   
-                    if($serv[$i]!="")
-                    $list.= "<option value=$i style='color:green;'>Server ".($i+1)."</option>";  
-              }    
-               echo $list;
-                 break;
-                 
-              default:
+           break; 
+           
+           default :
                 $msg = "Page not found";
                 $_SESSION['mess'] = $msg;
                 $oas->close();
@@ -3390,20 +3309,4 @@ else
     $msg = "Not Connected";    
     header("Location: login.php?mess=".$msg);
 }
-
-function getListFromServer($url)
-{
-    $content="";
-     $fp_load = fopen("$url", "rb");
-        if ( $fp_load )
-        {
-            while ( !feof($fp_load) )
-            {
-                $content .= fgets($fp_load, 8192);
-            }
-            fclose($fp_load);
-        return $content;
-        }
-}
-
 ?>
