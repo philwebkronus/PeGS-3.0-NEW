@@ -392,31 +392,39 @@ if($connected && $connected2)
                             
                             $stackerbatchid = $oas->getStackerBatchID($terminalid,$vipterminalid);
                             
-                            if(is_null($stackerbatchid)){
-                                $updated = 1;
+                            $deposit = $oas->checkdeposit($stackerbatchid);
+                            
+                            if($deposit > 0){
+                                $response = 'Failed to remove EGM Session, Terminal has a Deposit amount';
                             }
                             else{
-                                $updated = $oas2->updateSSStatus($aid,$stackerbatchid,5);
-                                
-                                if($updated == 0){
+                                if(is_null($stackerbatchid)){
                                     $updated = 1;
+                                }
+                                else{
+                                    $updated = $oas2->updateSSStatus($aid,$stackerbatchid,5);
+
+                                    if($updated == 0){
+                                        $updated = 1;
+                                    }
+                                }
+
+                                if($updated > 0){
+                                    $deleted = $oas->deleteEGMSessions($terminalid,$vipterminalid);
+                                }
+                                else{
+                                    $deleted = 0;
+                                }
+
+
+                                if($deleted > 0 && $updated > 0){
+                                    $response = 'EGM Session Successfully Removed';
+                                }
+                                else{
+                                    $response = 'Failed to remove EGM Session';
                                 }
                             }
                             
-                            if($updated > 0){
-                                $deleted = $oas->deleteEGMSessions($terminalid,$vipterminalid);
-                            }
-                            else{
-                                $deleted = 0;
-                            }
-                            
-                        
-                            if($deleted > 0 && $updated > 0){
-                                $response = 'EGM Session Successfully Removed';
-                            }
-                            else{
-                                $response = 'Failed to remove EGM Session';
-                            }
                         }
                         else{
                             $response = 'Failed to remove EGM session, EGM session does not exist';
