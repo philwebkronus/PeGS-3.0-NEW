@@ -100,17 +100,16 @@ class AmpapiInvokerController extends Controller {
 
         $moduleName ='getactivesession';
 
-        if(isset($_POST['TPSessionID']) && isset($_POST['Username'])){
-            $TPSessionID = $_POST['TPSessionID'];
+        if(isset($_POST['Username'])){
             $Username = $_POST['Username'];
-            $result = $this->_GetActiveSession($TPSessionID,$Username, $moduleName);
+            $result = $this->_GetActiveSession($Username, $moduleName);
         }
 
         $this->render('getactivesession', array('result'=>$result));
     }
-        private function _GetActiveSession($TPSessionID,$Username, $moduleName){
+        private function _GetActiveSession($Username, $moduleName){
             $url = $this->genURL($moduleName);
-            $postData = CJSON::encode(array('TPSessionID'=>$TPSessionID, 'Username'=>$Username));
+            $postData = CJSON::encode(array('Username'=>$Username));
             $result = $this->SubmitData($url, $postData);
 
             return $result[1];
