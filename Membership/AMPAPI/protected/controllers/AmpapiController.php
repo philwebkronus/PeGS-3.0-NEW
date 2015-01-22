@@ -243,85 +243,163 @@ class AmpapiController extends Controller {
 
     public function actionGetActiveSession(){
         date_default_timezone_set('Asia/Manila');//setting to default timezone
-
+        
         $request = $this->_readJsonRequest();
         $GetActiveSessionModle = new GetActiveSessionModel();
         $module = 'GetActiveSession';
         $activeSession = false;
-        $validateRequiredFields = $this->validateRequiredFields($request, $module, array('TPSessionID'=>false,'Username'=>false));
+        $validateRequiredFields = $this->validateRequiredFields($request, $module, array('Username'=>false));
         if($validateRequiredFields===true){
-            $TPSessionID = trim($request['TPSessionID']);
+            //$TPSessionID = trim($request['TPSessionID']);
             $Username = trim($request['Username']);
-
-            $result = $GetActiveSessionModle->getActiveSession($TPSessionID, $Username);
-
+            
+            $result = $GetActiveSessionModle->getActiveSession($Username);
+            
             if(isset($result['Count']) && $result['Count']!=0){
                 $resultTPSessionID = $result['SessionID'];
                 $resultUsername = $result['Username'];
                 $AID = $result['AID'];
+                         
+                //if($Username==$resultUsername){
+//                    $validateTPSessionID = $this->_validateTPSession($resultTPSessionID, 'GetActiveSession', $module);
+//                    
+//                    if($validateTPSessionID===true){
+//                        $this->_displayReturnMessage('1.1', $module, 'Invalid Input.');
+//                        $this->_apiLogs(APILogsModel::API_GET_ACTIVE_SESSION,'' , '1.1', '', 2, $module, $Username);
+//                    }
+//                    else {
+                            $SessionDateTime = strtotime($result['DateCreated']);
+                            $CurrentDateTime = strtotime(date('Y-m-d H:i:s'));
+                            $TimeInterval = round(abs($CurrentDateTime-$SessionDateTime)/60,2);//echo $TimeInterval.'='.$CurrentDateTime.'-'.$SessionDateTime;exit;
+                            $AID=$result['AID'];
+                            $MaxTime = Yii::app()->params["SessionTimeOut"];// 45.00;
 
+                            if($TimeInterval<$MaxTime){
+                                //$this->_displaySuccessMessage('0.1', $module, 'GetActiveSession Success.');
 
-                if($TPSessionID == $resultTPSessionID && $Username==$resultUsername){
+                                $this->_auditTrail(AuditTrailModel::GET_ACTIVE_SESSION,0,$AID, $resultTPSessionID, $module, $Username);
+                                $this->_apiLogs(APILogsModel::API_GET_ACTIVE_SESSION,'' , 0, '', 1, $module, $Username);
 
-                    $SessionDateTime = strtotime($result['DateCreated']);
-                    $CurrentDateTime = strtotime(date('Y-m-d H:i:s'));
-                    $TimeInterval = round(abs($CurrentDateTime-$SessionDateTime)/60,2);//echo $TimeInterval.'='.$CurrentDateTime.'-'.$SessionDateTime;exit;
-                    $AID=$result['AID'];
-                    $MaxTime = Yii::app()->params["SessionTimeOut"];// 45.00;
+                                $ValidateTPSession = new ValidateTPSessionIDModel();
+                                $activeSession = true;
+                                $this->_validateSessionIDForGetActiveSession($module, $AID, $resultUsername);//Executes '_validateSessionID' function
 
-                    if($TimeInterval<$MaxTime){
-                        $this->_displaySuccessMessage('0.1', $module, 'GetActiveSession Success.');
+                                //Update Session's DateCreated
+                                if(!(isset($request['SentFromAMPAPI']))){
 
-                        $this->_auditTrail(AuditTrailModel::GET_ACTIVE_SESSION,0,$AID, $TPSessionID, $module, $Username);
-                        $this->_apiLogs(APILogsModel::API_GET_ACTIVE_SESSION,'' , 0, '', 1, $module, $Username);
-
-                        $ValidateTPSession = new ValidateTPSessionIDModel();
-                        $activeSession = true;
-
-                        //Update Session's DateCreated
-                        if(!(isset($request['SentFromAMPAPI']))){
-
-                            $UpdateSessionDate = $ValidateTPSession->updateSessionDateCreated($TPSessionID, $AID);
-                            if($UpdateSessionDate==0){
-                                $this->_displayReturnMessage(72, $module, 'Error in Updating DateCreated.');
-                                $this->_apiLogs(APILogsModel::API_GET_ACTIVE_SESSION,'' , 72, '', 2, $module, $Username);
+                                    $UpdateSessionDate = $ValidateTPSession->updateSessionDateCreated($resultTPSessionID, $AID);
+                                    if($UpdateSessionDate==0){
+                                        $this->_displayReturnMessage(72, $module, 'Error in Updating DateCreated.');
+                                        $this->_apiLogs(APILogsModel::API_GET_ACTIVE_SESSION,'' , 72, '', 2, $module, $Username);
+                                    }
+                                }
                             }
-                        }
-                    }
-                    else{
-                        $ApiMethodID = $this->ApiMethodID;
-                        $this->_displayReturnMessage(76,$module, $module.' contains expired SessionID.');
-                        $this->_apiLogs($ApiMethodID[$module],'' , 76, '', 2, $module, $TPSessionID);
-                    }
-
-                }
-
-                else{
-                    $this->_displayReturnMessage('1.1', $module, 'Invalid Input.');
-                    $this->_apiLogs(APILogsModel::API_GET_ACTIVE_SESSION,'' , '1.1', '', 2, $module, $Username);
-                }
+                            else{
+                                $ApiMethodID = $this->ApiMethodID;
+                                $this->_displayReturnMessage(76,$module, $module.' contains expired SessionID.');
+                                $this->_apiLogs($ApiMethodID[$module],'' , 76, '', 2, $module, $resultTPSessionID);
+                            }
+                    
+                    
+//                }
+//                
+//                else{
+//                    $this->_displayReturnMessage('1.1', $module, 'Invalid Input.');
+//                    $this->_apiLogs(APILogsModel::API_GET_ACTIVE_SESSION,'' , '1.1', '', 2, $module, $Username);
+//                }
             }else{
-                $validateTPSessionID = $this->_validateTPSession($TPSessionID, 'GetActiveSession', $module);
-                if($validateTPSessionID===true){
+//                $validateTPSessionID = $this->_validateTPSession($TPSessionID, 'AuthenticateSession', $module);
+//                if($validateTPSessionID===true){
                     $this->_displayReturnMessage('1.1', $module, 'Invalid Input.');
                     $this->_apiLogs(APILogsModel::API_GET_ACTIVE_SESSION,'' , '1.1', '', 2, $module, $Username);
-                }
+                    
+                //}
             }
-
+            
         }
-
+       
         if(isset($request['SentFromAMPAPI'])){
             if($request['SentFromAMPAPI']==1){
                 $AID = $request['AID'];
                 $ModuleNameAMPAPI = $request['ModuleNameAMPAPI'];
-                $this->_updateSessionDate($TPSessionID, $AID, $ModuleNameAMPAPI);
+                $this->_updateSessionDate($resultTPSessionID, $AID, $ModuleNameAMPAPI);
                 return $activeSession;
+                //return $resultTPSessionID;
             }
         }
-//
+//        
         //$this->activeSession=$activeSession;
-
+     
     }
+    
+    private function _validateSessionIDForGetActiveSession($module, $AID, $Details){
+           // $module = 'AuthenticateSession';
+            $authenticateSession = new AuthenticateSessionModel();
+            $result = $authenticateSession->authenticateSession($AID);
+            $count = $result['Count'];
+            $SessionID = $result['SessionID'];
+            session_start();
+            
+            if($count==0 && $SessionID==null){
+                ///$this->_displayCustomMessages(1, $module, $transMsg);
+                $TPSessionID = session_id();//generated Session ID
+                if($TPSessionID!=null){
+                    $result = $authenticateSession->insertTPSessionID($AID, $TPSessionID);
+                    if($result==1){
+                        //$TPSID = $authenticateSession->getTPSessionID($AID);//TP Session ID
+                        $apiLogsReferenceID = '';
+                        $errorCode = 0;
+                        $trackingID = '';
+                        $status = 1;//1 is successful || 2 is failed.
+                        
+                        $this->_displayMessage($errorCode, $module, $TPSessionID);
+                        $this->_auditTrail(AuditTrailModel::AUTHENTICATE_SESSION,0,$AID, $TPSessionID, $module, $Details);
+                        $this->_apiLogs(APILogsModel::API_AUTHENTICATE_SESSION, $apiLogsReferenceID, $errorCode, $trackingID, $status, $module, $Details);
+                        $this->_logSuccess($module, 'TPSessionID generated Successfully.');
+                        
+                    }
+                    else if($result==0){
+                        $this->_logError($module, 'Failed to generate TPSessionID.');
+                        $this->_apiLogs(APILogsModel::API_AUTHENTICATE_SESSION,'' , 74, '', 2, $module, $Details);
+                    }
+                }
+                else{
+                    $this->_logError($module, 'Failed to generate TPSessionID.');
+                    $this->_apiLogs(APILogsModel::API_AUTHENTICATE_SESSION,'' , 74, '', 2, $module, $Details);
+                }
+            }
+            else if($count==1){
+                //$TPSessionID = session_id();//generated Session ID
+                //if($TPSessionID!=null){
+                    $result = $authenticateSession->updateTPSessionID($AID, $SessionID);
+                    if($result==1){
+                        $apiLogsReferenceID = '';
+                        $errorCode = 0;
+                        $trackingID = '';
+                        $status = 1;//1 is successful || 2 is failed.
+                        
+                        $this->_displayMessage($errorCode, $module, $SessionID);
+                        $this->_auditTrail(AuditTrailModel::AUTHENTICATE_SESSION,0, $AID, $SessionID, $module, $Details);
+                        $this->_apiLogs(APILogsModel::API_AUTHENTICATE_SESSION, $apiLogsReferenceID, $errorCode, $trackingID, $status, $module, $Details);
+                        $this->_logSuccess($module, 'TPSessionID Generate Successfully.');
+                    }
+                    else if($result==0){
+                        $this->_displayCustomMessages(1, $module, "Update Error");
+                        $this->_logError($module, 'Failed to generate TPSessionID.');
+                        $this->_apiLogs(APILogsModel::API_AUTHENTICATE_SESSION,'' , 74, '', 2, $module, $Details);
+                    }
+//                }
+//                else{
+//                    $this->_logError($module, 'Failed to generate TPSessionID.');
+//                    $this->_apiLogs(APILogsModel::API_AUTHENTICATE_SESSION,'' , 74, '', 2, $module, $Details);
+//                }
+            }
+            else{
+                $this->_displayCustomMessages(4, $module, "Transaction Failed.");
+                $this->_logError($module, 'Failed to generate TPSessionID.');
+                $this->_apiLogs(APILogsModel::API_AUTHENTICATE_SESSION,'' , 4, '', 2, $module, $Details);
+            }
+        }
 
     public function actionLogin(){
         $request = $this->_readJsonRequest();
@@ -1152,6 +1230,7 @@ class AmpapiController extends Controller {
     }
     private function _displayMessage($errorCode, $module, $TPSessionID){
         if($module=='AuthenticateSession'){$transMsg=$TPSessionID;}
+        else if($module=='GetActiveSession'){$transMsg='Valid';}
         else{$transMsg = $this->errorMessage[$errorCode];}
 
         $this->_sendResponse(200, CJSON::encode(CommonController::retMsg($module, $transMsg, $errorCode, '','',$TPSessionID)));
@@ -1405,10 +1484,10 @@ class AmpapiController extends Controller {
 
    private function _validateTPSession($TPSessionID, $moduleNameMPAPI='GetActiveSession', $moduleNameAMPAPI = ''){
         date_default_timezone_set('Asia/Manila');//setting to default timezone
-
+        
         $ValidateTPSession = new ValidateTPSessionIDModel();
         $queryResult = $ValidateTPSession->validateTPSessionID(trim($TPSessionID));
-
+        
         $count = $queryResult['Count'];
         $valid = false;
         $ApiMethodID = $this->ApiMethodID;
@@ -1417,8 +1496,7 @@ class AmpapiController extends Controller {
             $CurrentDateTime = strtotime(date('Y-m-d H:i:s'));
             $TimeInterval = round(abs($CurrentDateTime-$SessionDateTime)/60,2);//echo $TimeInterval.'='.$CurrentDateTime.'-'.$SessionDateTime;exit;
             $AID=$queryResult['AID'];
-            $MaxTime = Yii::app()->params["SessionTimeOut"];// 30.00;
-
+            $MaxTime = Yii::app()->params["SessionTimeOut"];// 45.00;
             if($TimeInterval<$MaxTime){
                 $TPUsername = $queryResult['UserName'];
                 $url = $this->genAMPAPIURL($moduleNameMPAPI);
@@ -1437,15 +1515,15 @@ class AmpapiController extends Controller {
                         $valid=false;
                     }
                 }
-
+                
             }else{
                 $valid=false;
                 $moduleNameAMPAPI=='GetCity'?$eCode=1650:$eCode=76;
-                $this->_displayReturnMessage($eCode, $moduleNameAMPAPI, $moduleNameAMPAPI.' contains expired SessionID.');
+                //$this->_displayReturnMessage($eCode, $moduleNameAMPAPI, $moduleNameAMPAPI.' contains expired SessionID.');
                 $this->_apiLogs($ApiMethodID[$moduleNameAMPAPI],'' , $eCode, '', 2, $moduleNameAMPAPI, $TPSessionID);
-
+                 
             }
-
+            
         }else{
             $valid=false;
             $moduleNameAMPAPI=='GetCity'?$eCode=1648:$eCode=71;
