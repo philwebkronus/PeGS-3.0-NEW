@@ -84,6 +84,7 @@ class CommonController {
             return array('GetActiveSession' => array(
                 'ErrorCode' => $errorCode,
                 'ReturnMessage' => $transMsg,
+                'TPSessionID'=>$TPSessionID,
             ));
         }
         else if($module == 'ForgotPassword') {
