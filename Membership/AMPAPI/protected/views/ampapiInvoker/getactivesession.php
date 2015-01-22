@@ -4,11 +4,6 @@
     <br />
     <?php echo CHtml::beginForm(); ?>
         <div class="row">
-            <?php echo CHtml::label('TPSessionID','TPSessionID'); ?>
-            <?php echo CHtml::textField('TPSessionID'); ?>
-        </div>
-    
-        <div class="row">
             <?php echo CHtml::label('Username','Username'); ?>
             <?php echo CHtml::textField('Username'); ?>
         </div>
