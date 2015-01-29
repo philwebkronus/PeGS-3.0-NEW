@@ -1069,21 +1069,14 @@ class AmpapiController extends Controller {
                     $ValidateResponse = $this->validateResponse($result[1], $module);
                     if($ValidateResponse===true){
                         $AID = $this->currentAID;
-                        $Logout = new LogoutModel();
-
-
-                        $logoutResponse = $Logout->logout($AID, $TPSessionID);
-                        if($logoutResponse==1){
+                        
                             $this->_sendResponse(200, $result[1]);
                             $this->_auditTrail(AuditTrailModel::LOGOUT,0,$AID, $TPSessionID, $module, $TPSessionID);
                             $this->_apiLogs(APILogsModel::API_LOGOUT,'' , 0, '', 1, $module, $TPSessionID);
-
-                        }
-                        else{
-                            $this->_displayReturnMessage('2.2', $module, 'Failed to delete session.');//Error 73
-                            $this->_apiLogs(APILogsModel::API_LOGOUT,'' , '2.2', '', 2, $module, $TPSessionID);
-                        }
-                    }else{
+                            
+                        
+                    }
+                    else{
                         $this->_sendResponse(200, $result[1]);
                     }
                 }
