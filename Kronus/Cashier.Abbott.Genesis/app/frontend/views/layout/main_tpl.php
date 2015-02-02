@@ -2,12 +2,18 @@
 <html>
     <head>
         <title><?php echo $this->title; ?></title>
+        <meta http-equiv="Page-Enter" content="blendTrans(duration=0)" />
+        <meta http-equiv="Page-Exit" content="blendTrans(duration=0)" />
         <link rel="stylesheet" type="text/css" media="screen" href="css/default.css" />
         <!--[if IE]>
             <link rel="stylesheet" href="css/ie.css" type="text/css" media="screen, projection">
         <![endif]-->
         <link rel="stylesheet" type="text/css" media="screen" href="jscripts/fancybox/jquery.fancybox-1.3.4.css" />
-        
+        <style>
+            html {
+                filter: expression(document.execCommand("BackgroundImageCache", false, true));
+            }
+        </style>
         <script type="text/javascript" src="jscripts/jquery.min.js"></script>
         <script type="text/javascript" src="jscripts/fancybox/jquery.mousewheel-3.0.4.pack.js"></script>
         <script type="text/javascript" src="jscripts/fancybox/jquery.fancybox-1.3.4.pack.js"></script>
@@ -15,7 +21,13 @@
         <script type="text/javascript" src="jscripts/accounting.min.js"></script>
         <script type="text/javascript" src="jscripts/jquery.helpers.js"></script>
         <script type="text/javascript" src="jscripts/autoNumeric-1.6.2.js"></script>
-      <script type="text/javascript" src="https://getfirebug.com/firebug-lite.js"></script>
+        <script type="text/javascript">
+            try {
+            document.execCommand('BackgroundImageCache', false, true);
+            }
+            catch(e) {};
+        </script>
+<!--        <script type="text/javascript" src="https://getfirebug.com/firebug-lite.js"></script>-->
     </head>
     <body lang="en">
         <div id="container">
