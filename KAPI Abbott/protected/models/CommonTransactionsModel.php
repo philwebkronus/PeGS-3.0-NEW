@@ -343,13 +343,15 @@ public function reloadSessionTransaction($amount, $trans_summary_id, $trans_ref_
                                       $loyalty_card, $mid, $stackerbatchid)               
     {
         $beginTrans = $this->_connection->beginTransaction();
-        
+        //get current reload in transactionssummary
+        $getReload = $this->getCurrTransSummaryReload($trans_summary_id);
+        $total_reload = $getReload['Reload'] + $amount;
         try{
             
             $stmt = $this->_connection->createCommand('UPDATE transactionsummary SET Reload = :amount 
                                                        WHERE TransactionsSummaryID = :trans_summary_id');
             
-            $stmt->bindValues(array(':amount'=>$amount, ':trans_summary_id'=>$trans_summary_id));
+            $stmt->bindValues(array(':amount'=> $total_reload, ':trans_summary_id'=>$trans_summary_id));
             
             $stmt->execute();
             
@@ -473,6 +475,22 @@ public function reloadSessionTransaction($amount, $trans_summary_id, $trans_ref_
             Utilities::log($e->getMessage());
             return false;
         }   
+    }
+    /**
+     * Get Current Reload in Transaction Summary
+     * @param type $transactionSummary
+     * @return type
+     */
+    public function getCurrTransSummaryReload($transactionSummary)
+    {
+        $sql = "SELECT Reload 
+                FROM transactionsummary 
+                WHERE TransactionsSummaryID = :transsummID";
+        $command = $this->_connection->createCommand($sql);
+        $command->bindValue(":transsummID", $transactionSummary);
+        $result = $command->queryRow();
+        
+        return $result;
     }
 }
 
