@@ -487,6 +487,7 @@ class WsKapiController extends Controller {
         $mappedCasinos = '';
         $message = '';
         $errCode = '';
+        $isEwallet = '';
 
         //$terminalName = trim($request['TerminalName']);
         $cardNumber = trim($request['MembershipCardNumber']);
@@ -522,6 +523,9 @@ class WsKapiController extends Controller {
                     $status = $memberCardsModel->getCardStatus($cardNumber); //Get Card Status
                     $memberinfo = $memberInfoModel->getMemberInfoByMID($MID);
                     $isVIP = $membersModel->isVip($MID);
+                    $checkEwallet = $membersModel->checkIfEwallet($MID);
+                    $isEwallet = (int)$checkEwallet['IsEwallet'];
+
                     if ($isVIP == 0) {
                         $classification = "Regular";
                     }
@@ -555,7 +559,7 @@ class WsKapiController extends Controller {
                     $errCode = 3;
                     $status = "Card does not exist";
                 }
-                    $this->_sendResponse(200, CommonController::getMembershipInfo($status, $nickname, $gender, $classification, $mappedCasinos, $message, $errCode));
+                    $this->_sendResponse(200, CommonController::getMembershipInfo($status, $nickname, $gender, $classification, $mappedCasinos, $isEwallet, $message, $errCode));
                             
                 //Check Terminal if found by TerminalID which is not empty. If it exists or not empty then,
 //                if (!empty($TerminalID)) {
@@ -684,7 +688,7 @@ class WsKapiController extends Controller {
             else if (!Utilities::validateInput($cardNumber)) {
                 $message = "Special characters are not allowed.";
                 $errCode = 2;
-                $this->_sendResponse(200, CommonController::getMembershipInfo($status, $nickname, $gender, $classification, $mappedCasinos, $message, $errCode));
+                $this->_sendResponse(200, CommonController::getMembershipInfo($status, $nickname, $gender, $classification, $mappedCasinos, $isEwallet, $message, $errCode));
             }
             //If Terminal Name and Card Number is invalid. If invalid then
 //            else if (!Utilities::validateInput($terminalName) && !Utilities::validateInput($cardNumber)) {
@@ -704,14 +708,14 @@ class WsKapiController extends Controller {
         else if ((!isset($request['MembershipCardNumber']) && $request['MembershipCardNumber']) == '') {
             $message = "CardNumber is not set or blank.";
             $errCode = 1;
-            $this->_sendResponse(200, CommonController::getMembershipInfo($status, $nickname, $gender, $classification, $mappedCasinos, $message, $errCode));
+            $this->_sendResponse(200, CommonController::getMembershipInfo($status, $nickname, $gender, $classification, $mappedCasinos, $isEwallet, $message, $errCode));
         }
         //If Terminal Name and Card Number is blank. If blank then
 //        else if (((!isset($request['TerminalName']) && $request['TerminalName']) == '') && ((!isset($request['MembershipCardNumber']) && $request['MembershipCardNumber']) == '')) {
         else if (((!isset($request['MembershipCardNumber']) && $request['MembershipCardNumber']) == '')) {
             $message = "Terminal Name and CardNumber are not set or blank.";
             $errCode = 1;
-            $this->_sendResponse(200, CommonController::getMembershipInfo($status, $nickname, $gender, $classification, $mappedCasinos, $message, $errCode));
+            $this->_sendResponse(200, CommonController::getMembershipInfo($status, $nickname, $gender, $classification, $mappedCasinos, $isEwallet, $message, $errCode));
         }
     }
 
@@ -1116,6 +1120,9 @@ class WsKapiController extends Controller {
                     if (is_numeric($status) && $status == 1) {
                         $MID = $memberCardsModel->getMID($membershipcardnumber);
                         if (!empty($MID)) {
+                            //check if ewallet
+                            $isEwallet = $membersModel->checkIfEwallet($MID);
+                            
                             //Check Terminal if found by TerminalID which is not empty. If it exists or not empty then,
                             if (!empty($TerminalDetails)) {
                                 //Check Terminal Status
@@ -2998,6 +3005,55 @@ class WsKapiController extends Controller {
             $errCode = 52;
             $this->_sendResponse(200, CommonController::removeEgmSessionResponse($message, $errCode));
         }
+    }
+    public function actionGetsitebalance()
+    {
+        $request    = $this->_readJsonRequest();
+        $message    = "";
+        $errorcode  = "";
+        $BCF        = "";
+        $APIName    = "Get Site Balance";
+        
+        $sitecode = trim($request['SiteCode']);
+        if (isset($sitecode))
+        {
+            //instantiate models
+            $sites          = new SitesModel();
+            $sitebalance    = new SiteBalanceModel();
+            //check if sitecode is blank
+            if ($sitecode != "")
+            {
+                //add icsa
+                $sitecode = "ICSA-".$sitecode;
+                //check if site code do exist
+                $isExist = $sites->isSiteExist($sitecode);
+                if ($isExist)
+                {
+                    $siteID = $sites->getSiteIDBySiteCode($sitecode);
+                    //get site balance
+                    $getbalance = $sitebalance->getSiteBalance($siteID);
+                    $BCF = $getbalance['Balance'];
+                    $errorcode = 0;
+                    $message = "Transaction Successful.";
+                }
+                else
+                {
+                    $errorcode  = 69;
+                    $message    = "Site code doesn't exist.";  
+                }
+            }
+            else
+            {
+                $errorcode  = 68;
+                $message    = "Site code is not set or blank.";
+            }
+        }
+        else
+        {
+            $errorcode  = 68;
+            $message    = "Site code is not set or blank.";
+        }
+        $this->_sendResponse(200, CommonController::getSiteBalanceResponse($BCF, $message, $errorcode));
     }
 }
 

@@ -66,3 +66,6 @@ Code  Message
 64    -   Failed to Remove EGM Session
 65    -   Failed to Remove EGM Session. There is an existing terminal session for this terminal. 
 66    -   Starting a gaming session on same casino is not allowed. 
+67    -   Failed to Remove EGM Session. Terminal has already a deposited amount.
+68    -   Site is not set or blank.
+69    -   Site code doesn't exist.

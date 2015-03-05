@@ -40,5 +40,21 @@ class MembersModel {
         
         return $result['ctrMID'];
     }
+    /**
+     * Check if Member/Card is converted into Ewallet
+     * @param type $MID
+     * @return type
+     * @author Ken
+     * @date feb 17, 2015
+     */
+    public function checkIfEwallet($MID)
+    {
+        $sql = "SELECT IsEwallet FROM members WHERE MID = :mid";
+        $command = $this->_connection->createCommand($sql);
+        $command->bindValue(":mid", $MID);
+        $result = $command->queryRow();
+        
+        return $result;
+    }
 }
 

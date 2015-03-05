@@ -31,4 +31,7 @@
     <?php echo CHtml::link('RemoveEgmSession', Yii::app()->createUrl('wsKapiInvoker/removeegmsession'), array('target'=>'_blank')); ?>
     <br />
     <br />
+    <?php echo CHtml::link('GetSiteBalance', Yii::app()->createUrl('wsKapiInvoker/getsitebalance'), array('target'=>'_blank')); ?>
+    <br />
+    <br />
 </div>

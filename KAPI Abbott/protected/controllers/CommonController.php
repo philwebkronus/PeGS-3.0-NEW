@@ -358,8 +358,8 @@ class CommonController {
                                    'PlayerMode'=>(int)$playerMode,'CurrentCasino'=>(int)$currentCasino,'MappedCasinos'=>$mappedCasinos,
                                    'MinMaxAmount'=>$minmaxAmount,'SessionMode'=>(int)$sessionMode,'MembershipCardNumber'=>$membershipCardNo,'SiteName'=>$siteName,
                                    'SiteCode'=>$siteCode,'StartDateTime'=>$startDateTime,'StackerBatchID'=>$stackerBatchID, 'TotalStackerAmount' => $stackerAmount, 
-                                   'MaxRedeemableAmount' => (float)Yii::app()->params['MaxRedeemableAmount'], 'MinTicketToPrintAmount' => (float)$minTicketToPrintAmt,
-                                   'TransactionMessage'=>$transMsg,'ErrorCode'=>(int)$errCode))));
+                                   'MaxRedeemableAmount' => (float)Yii::app()->params['MaxRedeemableAmount'], 
+                                   'MinTicketToPrintAmount' => (float)$minTicketToPrintAmt, 'TransactionMessage'=>$transMsg,'ErrorCode'=>(int)$errCode))));
     }
     
     /**
@@ -380,8 +380,8 @@ class CommonController {
      * @param int $errCode
      * @return json response
      */
-    public static function getMembershipInfo($status, $nickname, $gender, $classification, $mappedcasinos, $transMsg, $errCode){
-        return CJSON::encode(array('GetMembershipInfo'=>(array('Status'=>$status, 'Nickname'=>$nickname, 'Gender'=>$gender, 'PlayerClassification'=>$classification, 'MappedCasinos'=>$mappedcasinos, 'TransactionMessage'=>$transMsg, 'ErrorCode'=>(int)$errCode))));
+    public static function getMembershipInfo($status, $nickname, $gender, $classification, $mappedcasinos, $isEwallet, $transMsg, $errCode){
+        return CJSON::encode(array('GetMembershipInfo'=>(array('Status'=>$status, 'Nickname'=>$nickname, 'Gender'=>$gender, 'PlayerClassification'=>$classification, 'MappedCasinos'=>$mappedcasinos, 'IsEwallet' => $isEwallet, 'TransactionMessage'=>$transMsg, 'ErrorCode'=>(int)$errCode))));
     }
     /**
      * Sends a json response
@@ -460,6 +460,15 @@ class CommonController {
      */
     public static function removeEgmSessionResponse($transMsg, $errCode){
         return CJSON::encode(array('RemoveEgmSession'=>(array('TransactionMessage'=>$transMsg, 
+                                                              'ErrorCode'=>(int)$errCode))));
+    }
+    /**
+     * Added by Mark Kenneth Esguerra
+     * @date March 4, 2015
+     */
+    public static function getSiteBalanceResponse($BCF, $transMsg, $errCode){
+        return CJSON::encode(array('RemoveEgmSession'=>(array('BCF' => $BCF, 
+                                                              'TransactionMessage'=>$transMsg, 
                                                               'ErrorCode'=>(int)$errCode))));
     }
 }

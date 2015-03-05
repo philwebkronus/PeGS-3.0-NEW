@@ -347,10 +347,37 @@ class WsKapiInvokerController extends Controller{
     }
     private function _removeEgmSession($membershipcardnumber, $terminalName, $casinoID){
         $url = Yii::app()->params['remove_egm_session'];
-        //$url = "http://localhost/kronus-egm-ws-abbott/index.php/wsKapi/createegmsession";
+        //$url = "http://localhost/kronus-egm-ws-abbott/index.php/wsKapi/removeegmsession";
         $postdata = CJSON::encode(array('MembershipCardNumber'=>$membershipcardnumber,
                                         'TerminalName'=>$terminalName, 
                                         'CasinoID'=>$casinoID));
+       
+        $result = $this->SubmitData($url, $postdata);
+        
+        return $result[1];
+    }
+    
+    public function actionGetSiteBalance() 
+    {
+        $this->pageTitle = "KAPI - Get Site Balance";
+        $result = '';
+        
+        if(isset($_POST['txtsitecode'])){
+            
+            $sitecode = $_POST['txtsitecode'];
+            
+            $result = $this->_getSiteBalance($sitecode);
+        }
+        
+        $this->render('getsitebalance', array('result' => $result));
+    }
+    
+    private function _getSiteBalance($sitecode)
+    {
+        //$url = "http://localhost/kronus-egm-ws-abbott/index.php/wsKapi/getsitebalance";
+        $url = Yii::app()->params['get_site_balance'];
+        $postdata = CJSON::encode(array('SiteCode'=>$sitecode
+                                  ));
        
         $result = $this->SubmitData($url, $postdata);
         

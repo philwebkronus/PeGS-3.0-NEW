@@ -89,4 +89,45 @@ class SitesModel {
         $result = $command->queryRow(true, $param);
         return $result['SiteName'];
     }
+    /**
+     * Check if site exist using Site code
+     * @param string $sitecode Site Code
+     * @return boolean <b>TRUE</b> if do exist, <b>FALSE</b> if not.
+     * @author kenken
+     * @date 03-04-15
+     */
+    public function isSiteExist($sitecode)
+    {
+        $sql = "SELECT COUNT(SiteID) AS Count 
+                FROM sites 
+                WHERE SiteCode = :sitecode";
+        $command = $this->_connection->createCommand($sql);
+        $command->bindValue(":sitecode", $sitecode);
+        $result = $command->queryRow();
+        
+        if ($result['Count'] > 0)
+        {
+            return true;
+        }
+        else 
+        {
+            return false;
+        }
+    }
+    /**
+     * Get Site ID by Site Code
+     * @param type $sitecode SiteCode
+     * @return array SiteID
+     */
+    public function getSiteIDBySiteCode($sitecode)
+    {
+        $sql = "SELECT SiteID 
+                FROM sites 
+                WHERE SiteCode = :sitecode";
+        $command = $this->_connection->createCommand($sql);
+        $command->bindValue(":sitecode", $sitecode);
+        $result = $command->queryRow();
+        
+        return $result['SiteID'];
+    }
 }
