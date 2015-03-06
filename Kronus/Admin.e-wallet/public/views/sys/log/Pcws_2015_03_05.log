@@ -1,0 +1,8 @@
+[2015-03-05 09:20:06.390886][REQUEST][ForceLogout] Input: {"Login":"253000000125","SystemUsername":"kadmin","AccessDate":"2015-03-05 09:20:06","Token":"9d3e32e43e30f813dffb7377cfa450dfbea2b7a2"}
+[2015-03-05 09:20:06.509792][RESPONSE][ForceLogout] Token: 9d3e32e43e30f813dffb7377cfa450dfbea2b7a2, Output: {"ForceLogout":{"TransactionMessage":"Player must have an ewallet account.","ErrorCode":22}}
+[2015-03-05 09:20:06.510695][REQUEST][ForceLogout] Input: {"Login":"253000000125","SystemUsername":"kadmin","AccessDate":"2015-03-05 09:20:06","Token":"9d3e32e43e30f813dffb7377cfa450dfbea2b7a2"}
+[2015-03-05 09:20:06.613925][RESPONSE][ForceLogout] Token: 9d3e32e43e30f813dffb7377cfa450dfbea2b7a2, Output: {"ForceLogout":{"TransactionMessage":"Player must have an ewallet account.","ErrorCode":22}}
+[2015-03-05 09:20:36.608831][REQUEST][ForceLogout] Input: {"Login":"436000000019","SystemUsername":"kadmin","AccessDate":"2015-03-05 09:20:36","Token":"bb66b0e4598aca4b87f7cacce173fef502a431f2"}
+[2015-03-05 09:20:37.331078][RESPONSE][ForceLogout] Token: bb66b0e4598aca4b87f7cacce173fef502a431f2, Output: {"ForceLogout":{"TransactionMessage":"Transaction successful (all transaction) \/ valid","ErrorCode":0}}
+[2015-03-05 16:25:59.187999][REQUEST][ForceLogout] Input: {"Login":"545900000177","SystemUsername":"kadmin","AccessDate":"2015-03-05 16:25:59","Token":"d48c3c287a63edb11443beba111951322bc5b87b"}
+[2015-03-05 16:25:59.352533][RESPONSE][ForceLogout] Token: d48c3c287a63edb11443beba111951322bc5b87b, Output: {"ForceLogout":{"TransactionMessage":"Transaction successful (all transaction) \/ valid","ErrorCode":0}}

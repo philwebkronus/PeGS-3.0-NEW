@@ -1,0 +1,52 @@
+[06-Feb-2015 09:11:36] PHP Fatal error:  Call to a member function prepare() on a non-object in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\sys\class\DbHandler.class.php on line 91
+[06-Feb-2015 09:23:20] PHP Notice:  A session had already been started - ignoring session_start() in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessLogin.php on line 95
+[06-Feb-2015 10:29:16] PHP Warning:  PDOStatement::execute() [<a href='0pdostatement.execute0'>pdostatement.execute0</a>]: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\sys\class\DbHandler.class.php on line 71
+[06-Feb-2015 10:31:24] PHP Notice:  A session had already been started - ignoring session_start() in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessLogin.php on line 95
+[06-Feb-2015 11:43:15] PHP Notice:  Undefined index: TerminalCode in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessEwalletAppSupport.php on line 864
+[06-Feb-2015 11:43:15] PHP Notice:  Undefined offset: 1 in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessEwalletAppSupport.php on line 869
+[06-Feb-2015 11:43:15] PHP Notice:  Undefined index: TerminalCode in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessEwalletAppSupport.php on line 864
+[06-Feb-2015 11:43:15] PHP Notice:  Undefined offset: 1 in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessEwalletAppSupport.php on line 869
+[06-Feb-2015 14:19:26] PHP Fatal error:  Call to a member function prepare() on a non-object in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\sys\class\DbHandler.class.php on line 91
+[06-Feb-2015 14:19:34] PHP Notice:  A session had already been started - ignoring session_start() in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessLogin.php on line 95
+[06-Feb-2015 14:29:56] PHP Fatal error:  Call to a member function prepare() on a non-object in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\sys\class\DbHandler.class.php on line 91
+[06-Feb-2015 14:30:00] PHP Notice:  A session had already been started - ignoring session_start() in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessLogin.php on line 95
+[06-Feb-2015 14:32:54] PHP Notice:  A session had already been started - ignoring session_start() in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessLogin.php on line 95
+[06-Feb-2015 15:08:07] PHP Notice:  A session had already been started - ignoring session_start() in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessLogin.php on line 95
+[06-Feb-2015 15:21:24] PHP Notice:  Undefined index: Terminal in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessRptAS.php on line 151
+[06-Feb-2015 15:23:56] PHP Notice:  Undefined index: Terminal in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessRptAS.php on line 149
+[06-Feb-2015 15:25:05] PHP Notice:  Undefined variable: start in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessRptAS.php on line 97
+[06-Feb-2015 15:25:05] PHP Notice:  Undefined variable: limit in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessRptAS.php on line 97
+[06-Feb-2015 15:35:11] PHP Notice:  Undefined index: TransactionType in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessRptAS.php on line 111
+[06-Feb-2015 15:35:11] PHP Notice:  Undefined index: TerminalCode in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessRptAS.php on line 130
+[06-Feb-2015 15:35:11] PHP Notice:  Undefined offset: 1 in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessRptAS.php on line 134
+[06-Feb-2015 15:35:11] PHP Notice:  Undefined variable: vtranstype in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessRptAS.php on line 134
+[06-Feb-2015 15:35:11] PHP Notice:  Undefined index: TransactionDate in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessRptAS.php on line 134
+[06-Feb-2015 15:35:11] PHP Notice:  Undefined index: TransactionType in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessRptAS.php on line 111
+[06-Feb-2015 15:35:11] PHP Notice:  Undefined index: TerminalCode in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessRptAS.php on line 130
+[06-Feb-2015 15:35:11] PHP Notice:  Undefined offset: 1 in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessRptAS.php on line 134
+[06-Feb-2015 15:35:11] PHP Notice:  Undefined variable: vtranstype in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessRptAS.php on line 134
+[06-Feb-2015 15:35:11] PHP Notice:  Undefined index: TransactionDate in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessRptAS.php on line 134
+[06-Feb-2015 15:38:55] PHP Notice:  Undefined index: TransactionType in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessRptAS.php on line 111
+[06-Feb-2015 15:38:55] PHP Notice:  Undefined variable: vtranstype in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessRptAS.php on line 140
+[06-Feb-2015 15:38:55] PHP Notice:  Undefined index: TransactionDate in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessRptAS.php on line 140
+[06-Feb-2015 15:38:55] PHP Notice:  Undefined index: TransactionType in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessRptAS.php on line 111
+[06-Feb-2015 15:38:55] PHP Notice:  Undefined variable: vtranstype in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessRptAS.php on line 140
+[06-Feb-2015 15:38:55] PHP Notice:  Undefined index: TransactionDate in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessRptAS.php on line 140
+[06-Feb-2015 15:39:24] PHP Notice:  Undefined index: TransactionDate in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessRptAS.php on line 140
+[06-Feb-2015 15:39:24] PHP Notice:  Undefined index: TransactionDate in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessRptAS.php on line 140
+[06-Feb-2015 15:48:41] PHP Notice:  Undefined variable: start in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessRptAS.php on line 164
+[06-Feb-2015 15:48:41] PHP Notice:  Undefined variable: limit in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessRptAS.php on line 164
+[06-Feb-2015 15:48:41] PHP Notice:  Undefined index: TransactionType in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessRptAS.php on line 195
+[06-Feb-2015 15:48:41] PHP Notice:  Undefined index: TerminalCode in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessRptAS.php on line 214
+[06-Feb-2015 15:48:41] PHP Notice:  Undefined offset: 1 in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessRptAS.php on line 220
+[06-Feb-2015 15:48:41] PHP Notice:  Undefined variable: vtranstype in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessRptAS.php on line 221
+[06-Feb-2015 15:48:41] PHP Notice:  Undefined index: TransactionDate in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessRptAS.php on line 224
+[06-Feb-2015 15:48:41] PHP Notice:  Undefined index: TransactionType in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessRptAS.php on line 195
+[06-Feb-2015 15:48:41] PHP Notice:  Undefined index: TerminalCode in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessRptAS.php on line 214
+[06-Feb-2015 15:48:41] PHP Notice:  Undefined offset: 1 in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessRptAS.php on line 220
+[06-Feb-2015 15:48:41] PHP Notice:  Undefined variable: vtranstype in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessRptAS.php on line 221
+[06-Feb-2015 15:48:41] PHP Notice:  Undefined index: TransactionDate in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessRptAS.php on line 224
+[06-Feb-2015 15:50:01] PHP Notice:  Undefined variable: start in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessRptAS.php on line 164
+[06-Feb-2015 15:50:01] PHP Notice:  Undefined variable: limit in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessRptAS.php on line 164
+[06-Feb-2015 15:50:55] PHP Notice:  Undefined variable: start in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessRptAS.php on line 164
+[06-Feb-2015 15:50:55] PHP Notice:  Undefined variable: limit in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessRptAS.php on line 164

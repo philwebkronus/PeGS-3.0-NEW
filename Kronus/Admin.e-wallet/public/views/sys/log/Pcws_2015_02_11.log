@@ -1,0 +1,2 @@
+[2015-02-11 18:19:09.933982][REQUEST][ResetPIN] Input: {"CardNumber":"UB7NKKJ8","SystemUsername":"kadmin","AccessDate":"2015-02-11 18:19:09","Token":"ad359930228465d37c8cc50874567aa7896b24ca","ActionCode":0}
+[2015-02-11 18:19:10.32982][RESPONSE][ResetPIN] Token: ad359930228465d37c8cc50874567aa7896b24ca, Output: {"changePin":{"TransactionMessage":"PIN reset successful.","ErrorCode":0}}

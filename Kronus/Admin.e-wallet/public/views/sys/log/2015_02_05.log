@@ -1,0 +1,18 @@
+[05-Feb-2015 10:10:37] PHP Fatal error:  Call to a member function prepare() on a non-object in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\sys\class\DbHandler.class.php on line 91
+[05-Feb-2015 11:39:04] PHP Fatal error:  Call to a member function prepare() on a non-object in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\sys\class\DbHandler.class.php on line 91
+[05-Feb-2015 11:39:09] PHP Notice:  A session had already been started - ignoring session_start() in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessLogin.php on line 95
+[05-Feb-2015 13:32:38] PHP Notice:  Undefined variable: total_pages in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessEwalletAppSupport.php on line 878
+[05-Feb-2015 13:32:38] PHP Notice:  Undefined variable: count in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessEwalletAppSupport.php on line 879
+[05-Feb-2015 13:32:42] PHP Notice:  Undefined variable: total_pages in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessEwalletAppSupport.php on line 878
+[05-Feb-2015 13:32:42] PHP Notice:  Undefined variable: count in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessEwalletAppSupport.php on line 879
+[05-Feb-2015 13:33:36] PHP Notice:  Undefined variable: vSiteID in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessEwalletAppSupport.php on line 804
+[05-Feb-2015 13:33:36] PHP Notice:  Undefined variable: vTerminalID in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessEwalletAppSupport.php on line 804
+[05-Feb-2015 13:33:36] PHP Notice:  Undefined variable: vSiteID in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessEwalletAppSupport.php on line 819
+[05-Feb-2015 13:33:36] PHP Notice:  Undefined variable: vTerminalID in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessEwalletAppSupport.php on line 819
+[05-Feb-2015 13:33:36] PHP Warning:  PDOStatement::execute() [<a href='0pdostatement.execute0'>pdostatement.execute0</a>]: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\sys\class\DbHandler.class.php on line 71
+[05-Feb-2015 13:34:31] PHP Notice:  Undefined variable: vSiteID in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessEwalletAppSupport.php on line 853
+[05-Feb-2015 13:34:33] PHP Notice:  Undefined variable: vSiteID in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessEwalletAppSupport.php on line 853
+[05-Feb-2015 13:37:04] PHP Warning:  PDOStatement::execute() [<a href='0pdostatement.execute0'>pdostatement.execute0</a>]: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\sys\class\DbHandler.class.php on line 71
+[05-Feb-2015 15:24:58] PHP Fatal error:  Call to a member function prepare() on a non-object in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\sys\class\DbHandler.class.php on line 91
+[05-Feb-2015 15:25:02] PHP Notice:  A session had already been started - ignoring session_start() in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessLogin.php on line 95
+[05-Feb-2015 15:25:42] PHP Warning:  PDOStatement::execute() [<a href='0pdostatement.execute0'>pdostatement.execute0</a>]: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\sys\class\DbHandler.class.php on line 71

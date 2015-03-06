@@ -1,0 +1,19 @@
+[24-Feb-2015 13:41:25] PHP Fatal error:  Call to a member function prepare() on a non-object in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\sys\class\DbHandler.class.php on line 91
+[24-Feb-2015 13:46:37] PHP Notice:  Undefined index: loadbanknames in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessBanks.php on line 178
+[24-Feb-2015 16:12:08] PHP Fatal error:  Call to a member function prepare() on a non-object in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\sys\class\DbHandler.class.php on line 91
+[24-Feb-2015 16:17:45] PHP Notice:  Undefined index: txtbankcode in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessBanks.php on line 59
+[24-Feb-2015 16:17:45] PHP Notice:  Undefined index: txtbankname in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessBanks.php on line 60
+[24-Feb-2015 16:17:45] PHP Notice:  Undefined index: chkaccredited in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessBanks.php on line 61
+[24-Feb-2015 16:20:24] PHP Fatal error:  Uncaught exception 'PDOException' with message 'There is no active transaction' in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\sys\class\DbHandler.class.php:130
+Stack trace:
+#0 C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\sys\class\DbHandler.class.php(130): PDO->rollBack()
+#1 C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\sys\class\TopUp.class.php(4373): DBHandler->rollbacktrans()
+#2 C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessBanks.php(70): TopUp->insertBank('LBP', 'Land Bank of th...', 'undefined', 1)
+#3 {main}
+  thrown in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\sys\class\DbHandler.class.php on line 130
+[24-Feb-2015 19:29:48] PHP Fatal error:  Call to a member function prepare() on a non-object in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\sys\class\DbHandler.class.php on line 91
+[24-Feb-2015 19:30:16] PHP Notice:  A session had already been started - ignoring session_start() in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessLogin.php on line 95
+[24-Feb-2015 19:33:09] PHP Notice:  A session had already been started - ignoring session_start() in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessLogin.php on line 95
+[24-Feb-2015 20:00:35] PHP Notice:  Undefined variable: response in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessAppSupport.php on line 505
+[24-Feb-2015 20:04:26] PHP Notice:  Undefined variable: response in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessAppSupport.php on line 504
+[24-Feb-2015 20:06:09] PHP Notice:  Undefined variable: response in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessAppSupport.php on line 509

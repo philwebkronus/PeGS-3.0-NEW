@@ -1,0 +1,15 @@
+[03-Feb-2015 07:48:30] PHP Fatal error:  Call to a member function prepare() on a non-object in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\sys\class\DbHandler.class.php on line 91
+[03-Feb-2015 08:45:05] PHP Fatal error:  Call to undefined function curl_init() in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\sys\class\LoyaltyUBWrapper.class.php on line 17
+[03-Feb-2015 08:54:47] PHP Fatal error:  Maximum execution time of 30 seconds exceeded in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\sys\class\LoyaltyUBWrapper.class.php on line 20
+[03-Feb-2015 08:55:57] PHP Fatal error:  Maximum execution time of 30 seconds exceeded in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\sys\class\LoyaltyUBWrapper.class.php on line 20
+[03-Feb-2015 08:56:37] PHP Fatal error:  Maximum execution time of 30 seconds exceeded in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\sys\class\LoyaltyUBWrapper.class.php on line 20
+[03-Feb-2015 09:35:10] PHP Notice:  A session had already been started - ignoring session_start() in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessLogin.php on line 95
+[03-Feb-2015 15:47:01] PHP Notice:  Undefined index: cardnumber in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessEwalletManualAPIFulfillment.php on line 120
+[03-Feb-2015 15:47:47] PHP Fatal error:  Maximum execution time of 30 seconds exceeded in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\sys\class\LoyaltyUBWrapper.class.php on line 20
+[03-Feb-2015 15:48:11] PHP Notice:  Undefined index: cardnumber in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessEwalletManualAPIFulfillment.php on line 120
+[03-Feb-2015 15:48:57] PHP Fatal error:  Maximum execution time of 30 seconds exceeded in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\sys\class\LoyaltyUBWrapper.class.php on line 20
+[03-Feb-2015 15:49:52] PHP Notice:  Undefined index: cardnumber in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessEwalletManualAPIFulfillment.php on line 120
+[03-Feb-2015 15:50:37] PHP Fatal error:  Maximum execution time of 30 seconds exceeded in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\sys\class\LoyaltyUBWrapper.class.php on line 20
+[03-Feb-2015 15:51:24] PHP Notice:  Undefined index: cardnumber in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessEwalletManualAPIFulfillment.php on line 120
+[03-Feb-2015 15:52:07] PHP Fatal error:  Maximum execution time of 30 seconds exceeded in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\sys\class\LoyaltyUBWrapper.class.php on line 20
+[03-Feb-2015 15:53:07] PHP Fatal error:  Maximum execution time of 30 seconds exceeded in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\sys\class\LoyaltyUBWrapper.class.php on line 20

@@ -1,0 +1,17 @@
+[04-Mar-2015 15:31:23] PHP Notice:  Undefined index: txtcardnumber in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessAppSupport.php on line 286
+[04-Mar-2015 15:31:50] PHP Notice:  Undefined index: txtcardnumber in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessAppSupport.php on line 286
+[04-Mar-2015 15:36:48] PHP Notice:  A session had already been started - ignoring session_start() in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessLogin.php on line 95
+[04-Mar-2015 15:37:43] PHP Notice:  Undefined index: cardnumber in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessAppSupport.php on line 555
+[04-Mar-2015 15:37:43] PHP Notice:  Undefined variable: response in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessAppSupport.php on line 628
+[04-Mar-2015 15:38:03] PHP Notice:  Undefined variable: response in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessAppSupport.php on line 628
+[04-Mar-2015 15:38:25] PHP Notice:  Undefined variable: casinoinfo in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessAppSupport.php on line 628
+[04-Mar-2015 16:03:16] PHP Fatal error:  Call to a member function prepare() on a non-object in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\sys\class\DbHandler.class.php on line 91
+[04-Mar-2015 17:33:36] PHP Fatal error:  Uncaught exception 'Exception' with message 'Database connection not yet opened.' in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\sys\class\DbHandler.class.php:81
+Stack trace:
+#0 C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\sys\class\TerminalManagement.class.php(29): DBHandler->executeQuery('SELECT Terminal...')
+#1 C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessTerminalMgmt.php(1441): TerminalManagement->getallterminals()
+#2 C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\manualterminalremove.php(3): include('C:\xampp\htdocs...')
+#3 {main}
+  thrown in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\sys\class\DbHandler.class.php on line 81
+[04-Mar-2015 18:01:38] PHP Fatal error:  Call to a member function prepare() on a non-object in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\sys\class\DbHandler.class.php on line 91
+[04-Mar-2015 18:01:42] PHP Notice:  A session had already been started - ignoring session_start() in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessLogin.php on line 95

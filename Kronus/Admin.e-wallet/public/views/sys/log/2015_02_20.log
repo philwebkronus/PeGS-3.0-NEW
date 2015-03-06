@@ -1,0 +1,1 @@
+[20-Feb-2015 11:38:31] PHP Notice:  A session had already been started - ignoring session_start() in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessLogin.php on line 95

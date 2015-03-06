@@ -1,0 +1,8 @@
+[10-Feb-2015 11:10:28] PHP Fatal error:  Call to a member function prepare() on a non-object in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\sys\class\DbHandler.class.php on line 91
+[10-Feb-2015 13:55:04] PHP Warning:  session_destroy() [<a href='0function.session-destroy0'>function.session-destroy0</a>]: Session object destruction failed in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessAppSupport.php on line 46
+[10-Feb-2015 13:55:05] PHP Fatal error:  Call to a member function prepare() on a non-object in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\sys\class\DbHandler.class.php on line 91
+[10-Feb-2015 13:55:09] PHP Notice:  A session had already been started - ignoring session_start() in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessLogin.php on line 95
+[10-Feb-2015 13:55:27] PHP Fatal error:  Class 'PcwsWrapper' not found in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessAppSupport.php on line 450
+[10-Feb-2015 13:56:35] PHP Notice:  Undefined index: ErrorCode in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessAppSupport.php on line 483
+[10-Feb-2015 13:56:35] PHP Notice:  Undefined index: TransactionMessage in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessAppSupport.php on line 492
+[10-Feb-2015 14:07:44] PHP Notice:  Undefined index: CardNumber in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessAppSupport.php on line 481
