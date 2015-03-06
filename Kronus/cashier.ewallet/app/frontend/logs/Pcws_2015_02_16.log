@@ -1,0 +1,6 @@
+[2015-02-16 14:38:13.731791][REQUEST][CheckPin] Input: {"CardNumber":"UBTQE2DS","PIN":"123456","SystemUsername":"kcashier","AccessDate":"2015-02-16 14:38:13","Token":"4b5c1856cbad90149e16c0d96836efa711f1a8fc"}
+[2015-02-16 14:38:13.790791][RESPONSE][CheckPin] Token: 4b5c1856cbad90149e16c0d96836efa711f1a8fc Output: {"checkPin":{"TransactionMessage":"Transaction successful. PIN and UB Card is valid.","ErrorCode":0}}
+[2015-02-16 14:39:16.370791][REQUEST][CheckPin] Input: {"CardNumber":"adsad","PIN":"123456","SystemUsername":"kcashier","AccessDate":"2015-02-16 14:39:16","Token":"63a0195f29e7bc770616d36c695e64c39930ece4"}
+[2015-02-16 14:39:16.429791][RESPONSE][CheckPin] Token: 63a0195f29e7bc770616d36c695e64c39930ece4 Output: {"checkPin":{"TransactionMessage":"Card is Inactive or Banned.","ErrorCode":4}}
+[2015-02-16 14:39:37.861791][REQUEST][CheckPin] Input: {"CardNumber":"1321321321","PIN":"123456","SystemUsername":"kcashier","AccessDate":"2015-02-16 14:39:37","Token":"68d5f7456c9c53a0a27ad4f0501e7bf6db1ea50e"}
+[2015-02-16 14:39:37.918791][RESPONSE][CheckPin] Token: 68d5f7456c9c53a0a27ad4f0501e7bf6db1ea50e Output: {"checkPin":{"TransactionMessage":"Card is Inactive or Banned.","ErrorCode":4}}

@@ -1,0 +1,2 @@
+[2015-02-25 20:15:21.954566][REQUEST][Deposit] Input: {"ServiceID":19,"CardNumber":"UBTQE2DS","Amount":"500.00","PaymentType":1,"SiteID":217,"AID":394,"SystemUsername":"kcashier","AccessDate":"2015-02-25 20:15:21","Token":"aa87fe5f14ccd5c88199811ed0b1ba4c9f8f74db","TraceNumber":"TR000001","ReferenceNumber":"REF000001"}
+[2015-02-25 20:15:23.678664][RESPONSE][Deposit] Token: aa87fe5f14ccd5c88199811ed0b1ba4c9f8f74db Output: {"Deposit":{"TransactionMessage":"Ewallet loading successful","ErrorCode":0}}

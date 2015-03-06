@@ -1,0 +1,21 @@
+[2015-02-26 11:09:45.750935][NOTICE] "Undefined index: StartSessionFormModel" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\components\FrontendController.php Line: 177
+[2015-02-26 11:12:21.541165][NOTICE] "Undefined index: StartSessionFormModel" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\components\FrontendController.php Line: 177
+[2015-02-26 11:13:02.361228][NOTICE] "Undefined index: StartSessionFormModel" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\components\FrontendController.php Line: 177
+[2015-02-26 11:33:40.31068][NOTICE] "Undefined variable: banks" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\views\reloadsession\reloadsession_overview_tpl.php Line: 40
+[2015-02-26 11:33:40.32068][WARNING] "Invalid argument supplied for foreach()" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\mi\web\MI_HTML.php Line: 99
+[2015-02-26 11:33:40.678105][NOTICE] "Undefined variable: banks" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\views\reloadsession\reloadsession_overview_tpl.php Line: 40
+[2015-02-26 11:33:40.679105][WARNING] "Invalid argument supplied for foreach()" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\mi\web\MI_HTML.php Line: 99
+[2015-02-26 11:34:32.173050][NOTICE] "Undefined index: player_api" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\components\CasinoApi.php Line: 37
+[2015-02-26 11:34:32.480068][ERROR] "Error: Can't get balance TerminalID=1661 ServiceID=19 ErrorMessage=Response malformed" SiteID = 217 File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\components\CasinoApi.php LINE: 252
+[2015-02-26 11:34:34.611190][NOTICE] "Undefined variable: banks" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\views\reloadsession\reloadsession_overview_tpl.php Line: 40
+[2015-02-26 11:34:34.613190][WARNING] "Invalid argument supplied for foreach()" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\mi\web\MI_HTML.php Line: 99
+[2015-02-26 11:34:37.186337][NOTICE] "Undefined variable: banks" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\views\reloadsession\reloadsession_overview_tpl.php Line: 40
+[2015-02-26 11:34:37.186337][WARNING] "Invalid argument supplied for foreach()" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\mi\web\MI_HTML.php Line: 99
+[2015-02-26 11:40:39.238045][NOTICE] "Undefined property: StartSessionFormModel::$tracenumber" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\mi\web\MI_HTML.php Line: 166
+[2015-02-26 11:40:39.239045][NOTICE] "Undefined property: StartSessionFormModel::$referencenumber" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\mi\web\MI_HTML.php Line: 166
+[2015-02-26 11:51:40.719880][NOTICE] "Undefined index: player_api" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\components\CasinoApi.php Line: 37
+[2015-02-26 11:51:40.742881][ERROR] "Error: Can't get balance TerminalID=1661 ServiceID=19 ErrorMessage=Response malformed" SiteID = 217 File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\components\CasinoApi.php LINE: 252
+[2015-02-26 19:06:19.843101][NOTICE] "A session had already been started - ignoring session_start()" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\models\LoginFormModel.php Line: 527
+[2015-02-26 19:06:29.499653][NOTICE] "A session had already been started - ignoring session_start()" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\models\LoginFormModel.php Line: 527
+[2015-02-26 19:06:33.978909][NOTICE] "Undefined index: player_api" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\components\CasinoApi.php Line: 37
+[2015-02-26 19:06:34.31912][ERROR] "Error: Can't get balance TerminalID=1005 ServiceID=19 ErrorMessage=Response malformed" SiteID = 167 File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\components\CasinoApi.php LINE: 252

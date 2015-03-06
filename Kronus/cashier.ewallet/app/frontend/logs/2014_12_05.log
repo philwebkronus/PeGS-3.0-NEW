@@ -1,0 +1,11 @@
+[2014-12-05 11:26:57.5701][NOTICE] "Undefined offset: 19" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\components\CasinoApi.php Line: 30
+[2014-12-05 11:26:57.33204][NOTICE] "Undefined offset: 19" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\components\CasinoApi.php Line: 35
+[2014-12-05 11:26:57.35205][NOTICE] "Undefined offset: 19" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\components\CasinoApi.php Line: 36
+[2014-12-05 11:26:57.36205][NOTICE] "Undefined index: player_api" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\components\CasinoApi.php Line: 37
+[2014-12-05 11:26:57.37705][NOTICE] "Undefined index: scheme" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\components\CasinoCAPIHandler.class.php Line: 187
+[2014-12-05 11:26:57.38705][NOTICE] "Undefined index: host" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\components\common.class.php Line: 57
+[2014-12-05 11:26:57.263734][ERROR] "Error: Can't get balance TerminalID=1661 ServiceID=20 ErrorMessage=Response malformed" SiteID = 217 File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\components\CasinoApi.php LINE: 252
+[2014-12-05 13:59:23.311134][NOTICE] "Undefined index: StartSessionFormModel" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\components\FrontendController.php Line: 156
+[2014-12-05 16:49:32.986098][NOTICE] "A session had already been started - ignoring session_start()" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\models\LoginFormModel.php Line: 527
+[2014-12-05 17:02:23.195402][NOTICE] "Undefined index: StartSessionFormModel" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\components\FrontendController.php Line: 156
+[2014-12-05 17:03:49.514363][NOTICE] "Undefined index: StartSessionFormModel" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\components\FrontendController.php Line: 156
