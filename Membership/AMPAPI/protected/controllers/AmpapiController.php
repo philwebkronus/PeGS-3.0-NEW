@@ -120,7 +120,8 @@ class AmpapiController extends Controller {
 
     private $ApiMethodID = array(
         'Login'=>APILogsModel::API_LOGIN,
-        'ForgotPassword'=>APILogsModel::API_FORGOT_PASSWORD,
+        'ChangePassword'=>APILogsModel::API_CHANGE_PASSWORD,
+        'ForgotPassword'=>APILogsModel::API_FORGOT_PASSWORD, 
         'RegisterMember'=>APILogsModel::API_REGISTER_MEMBER,
         'UpdateProfile'=>APILogsModel::API_UPDATE_PROFILE,
         'GetProfile'=>APILogsModel::API_GET_PROFILE,
@@ -148,6 +149,13 @@ class AmpapiController extends Controller {
     public function actionAuthenticateSession(){
         $request = $this->_readJsonRequest();
         $module = 'AuthenticateSession';
+        
+        $appLogger = new AppLogger();
+                
+        $paramval = CJSON::encode($request);
+        $message = "[".$module."] Input: ".$paramval;
+        $appLogger->log($appLogger->logdate, "[request]",$message);
+        
         $authenticateSession = new AuthenticateSessionModel();
         $ValidateRequiredField = $this->validateRequiredFields($request, $module, array('Username'=>false, 'Password'=>false));
         if($ValidateRequiredField===true){
@@ -400,7 +408,58 @@ class AmpapiController extends Controller {
                 $this->_apiLogs(APILogsModel::API_AUTHENTICATE_SESSION,'' , 4, '', 2, $module, $Details);
             }
         }
-
+    
+    private function _validateTPSession($TPSessionID, $moduleNameMPAPI='GetActiveSession', $moduleNameAMPAPI = ''){
+        date_default_timezone_set('Asia/Manila');//setting to default timezone
+        
+        $ValidateTPSession = new ValidateTPSessionIDModel();
+        $queryResult = $ValidateTPSession->validateTPSessionID(trim($TPSessionID));
+        
+        $count = $queryResult['Count'];
+        $valid = false;
+        $ApiMethodID = $this->ApiMethodID;
+        if(isset($count) && $count==1){
+            $SessionDateTime = strtotime($queryResult['DateCreated']);
+            $CurrentDateTime = strtotime(date('Y-m-d H:i:s'));
+            $TimeInterval = round(abs($CurrentDateTime-$SessionDateTime)/60,2);//echo $TimeInterval.'='.$CurrentDateTime.'-'.$SessionDateTime;exit;
+            $AID=$queryResult['AID'];
+            $MaxTime = Yii::app()->params["SessionTimeOut"];// 45.00;
+            if($TimeInterval<$MaxTime){
+                $TPUsername = $queryResult['UserName'];
+                $url = $this->genAMPAPIURL($moduleNameMPAPI);
+                $postData = CJSON::encode(array('TPSessionID'=>$TPSessionID, 'Username'=>$TPUsername, 'SentFromAMPAPI'=>1,'ModuleNameAMPAPI'=>$moduleNameAMPAPI, 'AID'=>$AID));
+                $result = $this->SubmitData($url, $postData);
+                $this->currentAID = $AID;
+                if(isset($result)){
+                //$ActiveSession = $this->activeSession;
+                //if($ActiveSession===true){
+                    $parse = CJSON::decode($result[1]);
+                    $ErrorCode = $parse[$moduleNameMPAPI]['ErrorCode'];
+                    //$DateCreated = $parse[$moduleName]['DateCreated'];
+                    if($ErrorCode==0){
+                        $valid = true;
+                    }else{
+                        $valid=false;
+                    }
+                }
+                
+            }else{
+                $valid=false;
+                $moduleNameAMPAPI=='GetCity'?$eCode=1650:$eCode=76;
+                //$this->_displayReturnMessage($eCode, $moduleNameAMPAPI, $moduleNameAMPAPI.' contains expired SessionID.');
+                $this->_apiLogs($ApiMethodID[$moduleNameAMPAPI],'' , $eCode, '', 2, $moduleNameAMPAPI, $TPSessionID);
+                 
+            }
+            
+        }else{
+            $valid=false;
+            $moduleNameAMPAPI=='GetCity'?$eCode=1648:$eCode=71;
+            $this->_displayReturnMessage($eCode, $moduleNameAMPAPI, $moduleNameAMPAPI.' has invalid Session ID.');//ErrorMesssage:One or more fields is not set or is blank, ErrorCode:1
+            $this->_apiLogs($ApiMethodID[$moduleNameAMPAPI],'' , $eCode, '', 2, $moduleNameAMPAPI, $TPSessionID);
+        }
+        return $valid;
+    }
+    
     public function actionLogin(){
         $request = $this->_readJsonRequest();
         $module = 'Login';
@@ -432,11 +491,49 @@ class AmpapiController extends Controller {
                     $this->_apiLogs(APILogsModel::API_LOGIN,'' , 73, '', 2, $module, $Username);
                 }
             }
+            
+        }
+
+    }
+    
+    public function actionChangePassword(){
+        $request = $this->_readJsonRequest();
+        $module = 'ChangePassword';
+        //$authenticateSession = new AuthenticateSessionModel();
+
+        $validateRequiredField = $this->validateRequiredFields($request, $module, array('TPSessionID'=>false, 'CardNumber'=>false, 'NewPassword'=>false));
+        //$validateRequiredField=true;
+        if($validateRequiredField===true){
+            $TPSessionID=$request['TPSessionID'];
+            $validateTPSessionID = $this->_validateTPSession($TPSessionID, 'GetActiveSession', $module);
+            if($validateTPSessionID===true){             
+                $moduleName ='changepassword';
+                $cardNumber = trim($request['CardNumber']);
+                $newPassword = trim($request['NewPassword']);
+                $url = $this->genMPAPIURL($moduleName);
+                $postData = CJSON::encode(array('CardNumber'=>$cardNumber, 'NewPassword'=>$newPassword));
+                $result = $this->SubmitData($url, $postData);
+                $AID = $this->currentAID;
+                if(isset($result[0]) && $result[0]==200){
+                    $this->_sendResponse(200, $result[1]);
+                    $ValidateResponse = $this->validateResponse($result[1], $module);
+                    if($ValidateResponse==true){
+                        $this->_auditTrail(AuditTrailModel::CHANGE_PASSWORD,0,$AID, $TPSessionID, $module, $cardNumber);
+                        $this->_apiLogs(APILogsModel::API_CHANGE_PASSWORD,'' , 0, '', 1, $module, $cardNumber);
+                        $this->_logSuccess($module, 'Change Password is successful.');
+                    }
+                }
+                else{
+                    $this->_displayCustomMessages(73, $module, 'No response from Membership portal API.');//Error 73
+                    $this->_apiLogs(APILogsModel::API_CHANGE_PASSWORD,'' , 73, '', 2, $module, $cardNumber);
+                    $this->_logError($module, 'Change Password failed.');
+                }
+            }
 
         }
 
     }
-
+    
     public function actionForgotPassword(){
         $request = $this->_readJsonRequest();
         $module = 'ForgotPassword';
@@ -1222,11 +1319,17 @@ class AmpapiController extends Controller {
         return (isset($codes[$status])) ? $codes[$status] : '';
     }
     private function _displayMessage($errorCode, $module, $TPSessionID){
+        $appLogger = new AppLogger();
         if($module=='AuthenticateSession'){$transMsg=$TPSessionID;}
         else if($module=='GetActiveSession'){$transMsg='Valid';}
         else{$transMsg = $this->errorMessage[$errorCode];}
-
-        $this->_sendResponse(200, CJSON::encode(CommonController::retMsg($module, $transMsg, $errorCode, '','',$TPSessionID)));
+        
+        $data = CommonController::retMsg($module, $transMsg, $errorCode, '','',$TPSessionID);
+        $message = "[".$module."] Output: ".CJSON::encode($data);
+        $appLogger->log($appLogger->logdate, "[response]",$message);
+        //CLoggerModified::log($message, CLoggerModified::RESPONSE);
+        $this->_sendResponse(200, CJSON::encode($data));
+        //$this->_sendResponse(200, CJSON::encode(CommonController::retMsg($module, $transMsg, $errorCode, '','',$TPSessionID)));
         Utilities::log("ReturnMessage: " . $transMsg. " ErrorCode: " . $errorCode);
     }
     private function _displaySuccesfulMessage($returnCode, $module){
@@ -1236,12 +1339,18 @@ class AmpapiController extends Controller {
 
     //This function invokes necessary method in displaying error messages based on '$errorMessage' php variable declared in this class.
     private function _displayReturnMessage($errorCode, $module, $logErrorMessage, $ApiLogsModel='', $RewardID=''){
+        $appLogger = new AppLogger();
         $transMsg = $this->errorMessage[$errorCode];
 
         $eCode = floor($errorCode);
-        $this->_sendResponse(200, CJSON::encode(CommonController::retMsg($module, $transMsg, $eCode,'','','','','','','','','', $RewardID)));
+        $data = CommonController::retMsg($module, $transMsg, $eCode,'','','','','','','','','', $RewardID);
+        $message = "[".$module."] Output: ".CJSON::encode($data);
+        $appLogger->log($appLogger->logdate, "[response]",$message);
+        //CLoggerModified::log($message, CLoggerModified::RESPONSE);
+        $this->_sendResponse(200, CJSON::encode($data));
+        //$this->_sendResponse(200, CJSON::encode(CommonController::retMsg($module, $transMsg, $eCode,'','','','','','','','','', $RewardID)));
         Utilities::log("ReturnMessage: " . $transMsg. " ErrorCode: " . $errorCode);
-        $this->_logError($module, $logErrorMessage);
+        //$this->_logError($module, $logErrorMessage);
         //$this->_apiLogs($ApiLogsModel, $apiLogsReferenceID, $errorCode, $trackingID, $status, $module);
     }
 
@@ -1256,12 +1365,18 @@ class AmpapiController extends Controller {
 
     //This function invokes necessary method in displaying custom error message.
     private function _displayCustomMessages($errorCode, $module, $errorMessages){
+        $appLogger = new AppLogger();
         $transMsg = $errorMessages;
 //        strlen($errorCode)>2?$eCode = substr($errorCode, 0, 1):$eCode = substr($errorCode, 0, strlen($errorCode));
         $eCode = floor($errorCode);
-        $this->_sendResponse(200, CJSON::encode(CommonController::retMsg($module, $transMsg, $eCode)));
+        $data = CommonController::retMsg($module, $transMsg, $eCode);
+        $message = "[".$module."] Output: ".CJSON::encode($data);
+        $appLogger->log($appLogger->logdate, "[response]",$message);
+        //CLoggerModified::log($message, CLoggerModified::RESPONSE);
+        $this->_sendResponse(200, CJSON::encode($data));
+        //$this->_sendResponse(200, CJSON::encode(CommonController::retMsg($module, $transMsg, $eCode)));
         Utilities::log("ReturnMessage: " . $transMsg. " ErrorCode: " . $eCode);
-        $this->_logError($module, $errorMessages);
+        //$this->_logError($module, $errorMessages);
     }
 
     private function _utilityLogs($transMsg, $errorCode){
@@ -1273,7 +1388,11 @@ class AmpapiController extends Controller {
         $logger = new ErrorLogger();
 
         $transMsg = $module.': '.$details;
-        $result = $auditTrailModel->logEvent($auditFunction, $transMsg, array('AID' => $AID, 'SessionID' => $sessionID));
+        if($module == 'ChangePassword'){
+            $result = $auditTrailModel->logEvent($auditFunction, $transMsg, array('AID' => $AID, 'SessionID' => $sessionID));
+        }
+        else
+            $result = $auditTrailModel->logEvent($auditFunction, $transMsg, array('AID' => $AID, 'SessionID' => $sessionID));
         //@Ternary function or conditional statement
         $result==1?$this->_logSuccess($module, "Audittrail log success."):$this->_logError($module, 'Failed to log event on Audittrail.');
 
@@ -1289,14 +1408,21 @@ class AmpapiController extends Controller {
 
     //This function creates logs for failed transaction
     private function _logError($module, $logMessage){
-        $logger = new ErrorLogger();
-        $logger->log($logger->logdate, " [".strtoupper($module)." ERROR] ", $logMessage);
+//        $logger = new ErrorLogger();
+//        $logger->log($logger->logdate, " [".strtoupper($module)." ERROR] ", $logMessage);
+        
+        $appLogger = new AppLogger();
+        $message = "[".$module."] Output: ".$logMessage;
+        $appLogger->log($appLogger->logdate, "[response]",$message);
     }
     //This function creates logs for success transactions
     private function _logSuccess($module, $logMessage){
-        $logger = new ErrorLogger();
-        $logger->log($logger->logdate, " [".strtoupper($module)." SUCCESS] ", $logMessage);
+//        $logger = new ErrorLogger();
+//        $logger->log($logger->logdate, " [".strtoupper($module)." SUCCESS] ", $logMessage);
         //$this->_apiLogs('', $refID, $errorCode, $trackingID, $status, $module)
+        $appLogger = new AppLogger();
+        $message = "[".$module."] Output: ".$logMessage;
+        $appLogger->log($appLogger->logdate, "[response]",$message);
     }
 
 
@@ -1474,57 +1600,7 @@ class AmpapiController extends Controller {
         }
         return $valid;
     }
-
-   private function _validateTPSession($TPSessionID, $moduleNameMPAPI='GetActiveSession', $moduleNameAMPAPI = ''){
-        date_default_timezone_set('Asia/Manila');//setting to default timezone
-        
-        $ValidateTPSession = new ValidateTPSessionIDModel();
-        $queryResult = $ValidateTPSession->validateTPSessionID(trim($TPSessionID));
-        
-        $count = $queryResult['Count'];
-        $valid = false;
-        $ApiMethodID = $this->ApiMethodID;
-        if(isset($count) && $count==1){
-            $SessionDateTime = strtotime($queryResult['DateCreated']);
-            $CurrentDateTime = strtotime(date('Y-m-d H:i:s'));
-            $TimeInterval = round(abs($CurrentDateTime-$SessionDateTime)/60,2);//echo $TimeInterval.'='.$CurrentDateTime.'-'.$SessionDateTime;exit;
-            $AID=$queryResult['AID'];
-            $MaxTime = Yii::app()->params["SessionTimeOut"];// 45.00;
-            if($TimeInterval<$MaxTime){
-                $TPUsername = $queryResult['UserName'];
-                $url = $this->genAMPAPIURL($moduleNameMPAPI);
-                $postData = CJSON::encode(array('TPSessionID'=>$TPSessionID, 'Username'=>$TPUsername, 'SentFromAMPAPI'=>1,'ModuleNameAMPAPI'=>$moduleNameAMPAPI, 'AID'=>$AID));
-                $result = $this->SubmitData($url, $postData);
-                $this->currentAID = $AID;
-                if(isset($result)){
-                //$ActiveSession = $this->activeSession;
-                //if($ActiveSession===true){
-                    $parse = CJSON::decode($result[1]);
-                    $ErrorCode = $parse[$moduleNameMPAPI]['ErrorCode'];
-                    //$DateCreated = $parse[$moduleName]['DateCreated'];
-                    if($ErrorCode==0){
-                        $valid = true;
-                    }else{
-                        $valid=false;
-                    }
-                }
-                
-            }else{
-                $valid=false;
-                $moduleNameAMPAPI=='GetCity'?$eCode=1650:$eCode=76;
-                //$this->_displayReturnMessage($eCode, $moduleNameAMPAPI, $moduleNameAMPAPI.' contains expired SessionID.');
-                $this->_apiLogs($ApiMethodID[$moduleNameAMPAPI],'' , $eCode, '', 2, $moduleNameAMPAPI, $TPSessionID);
-                 
-            }
-            
-        }else{
-            $valid=false;
-            $moduleNameAMPAPI=='GetCity'?$eCode=1648:$eCode=71;
-            $this->_displayReturnMessage($eCode, $moduleNameAMPAPI, $moduleNameAMPAPI.' has invalid Session ID.');//ErrorMesssage:One or more fields is not set or is blank, ErrorCode:1
-            $this->_apiLogs($ApiMethodID[$moduleNameAMPAPI],'' , $eCode, '', 2, $moduleNameAMPAPI, $TPSessionID);
-        }
-        return $valid;
-    }
+   
         private function _updateSessionDate($TPSessionID, $AID, $moduleNameAMPAPI){
             $ValidateTPSession = new ValidateTPSessionIDModel();
             $UpdateSession = $ValidateTPSession->updateSessionDateCreated($TPSessionID, $AID);
@@ -1569,4 +1645,3 @@ class AmpapiController extends Controller {
     }
 
 }
-

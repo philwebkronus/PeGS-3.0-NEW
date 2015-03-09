@@ -87,3 +87,10 @@ Code    Message
 89  -   Must be at least 21 years old to register.
 90  -   Failed to get response from membershipsms api.
 91  -   MPSessionID is already expired. Please login again.
+92  -   Please input a valid Tracking1.
+93  -   Please input a valid Tracking2.
+94  -   Failed to insert alter str.
+95  -   AlterStr already exists.
+96  -   Not a valid AlterStr.
+97  -   Invalid Mobile Number.
+120 -   Cannot access PCWS API.

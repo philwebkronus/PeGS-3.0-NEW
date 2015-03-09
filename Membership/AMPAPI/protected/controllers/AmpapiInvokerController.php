@@ -133,6 +133,28 @@ class AmpapiInvokerController extends Controller {
             $url = $this->genURL($moduleName);
             $postData = CJSON::encode(array('TPSessionID'=>$TPSessionID, 'Username'=>$Username, 'Password'=>$Password, 'AlterStr' => $AlterStr));
             $result = $this->SubmitData($url, $postData);
+            
+            return $result[1];
+        }
+        
+        
+   public function actionChangePassword(){
+        $this->pageTitle= $this->genTitlePage('Change Password');
+        $result='';
+
+        $moduleName ='changepassword';
+        if(isset($_POST['TPSessionID']) && isset($_POST['CardNumber']) && isset($_POST['NewPassword'])){
+            $TPSessionID = $_POST['TPSessionID'];
+            $cardNumber = $_POST['CardNumber'];
+            $newPassword = $_POST['NewPassword'];
+            $result = $this->_changePassword($TPSessionID,$cardNumber, $newPassword, $moduleName);
+        }
+        $this->render('changepassword', array('result'=>$result));
+    }
+        private function _changePassword($TPSessionID, $cardNumber, $newPassword, $moduleName){
+            $url = $this->genURL($moduleName);
+            $postData = CJSON::encode(array('TPSessionID'=>$TPSessionID, 'CardNumber'=>$cardNumber, 'NewPassword'=>$newPassword));
+            $result = $this->SubmitData($url, $postData);
 
             return $result[1];
         }
@@ -602,5 +624,3 @@ class AmpapiInvokerController extends Controller {
     }
 
 }
-
-?>

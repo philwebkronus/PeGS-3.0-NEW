@@ -27,6 +27,7 @@ class APILogsModel
     CONST API_IS_SMOKER = 13;
     CONST API_REGISTER_MEMBER_BT = 18;
     CONST API_CREATE_MOBILE_INFO = 19;
+    CONST API_CHANGE_PASSWORD = 20;
        
     public static $_instance = null;
     public $_connection;
@@ -95,6 +96,9 @@ class APILogsModel
             case 19:
                 $method = self::API_CREATE_MOBILE_INFO;
                 break;
+            case 20:
+                $method = self::API_CHANGE_PASSWORD;
+                break;
         }
         
         $startTrans = $this->_connection->beginTransaction();
@@ -128,4 +132,3 @@ class APILogsModel
         }
      }  
 }
-?>
