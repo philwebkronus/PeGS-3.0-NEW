@@ -1,10 +1,5 @@
 <?php
 
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 /**
  * Get the return output of the MPapi
  * @return array
@@ -209,4 +204,3 @@ class CommonController {
     }
   
 }
-?>

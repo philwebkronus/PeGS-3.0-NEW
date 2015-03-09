@@ -527,5 +527,3 @@ class MPapiInvokerController extends Controller{
             return array( $http_status, $response );
     }
 }
-
-?>

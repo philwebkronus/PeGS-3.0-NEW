@@ -1,10 +1,4 @@
 <?php
-
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 /**
  * Description of APILogsModel
  * @date 07-18-2014
@@ -32,6 +26,7 @@ class APILogsModel
     CONST API_GET_REGION = 18;
     CONST API_GET_CITY = 19;
     CONST API_CHANGE_PASSWORD = 20;
+
     
     
     
@@ -86,4 +81,3 @@ class APILogsModel
         }
      }  
 }
-?>

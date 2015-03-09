@@ -148,6 +148,13 @@ class AmpapiController extends Controller {
     public function actionAuthenticateSession(){
         $request = $this->_readJsonRequest();
         $module = 'AuthenticateSession';
+        
+        $appLogger = new AppLogger();
+                
+        $paramval = CJSON::encode($request);
+        $message = "[".$module."] Input: ".$paramval;
+        $appLogger->log($appLogger->logdate, "[request]",$message);
+        
         $authenticateSession = new AuthenticateSessionModel();
         $ValidateRequiredField = $this->validateRequiredFields($request, $module, array('Username'=>false, 'Password'=>false));
         if($ValidateRequiredField===true){
@@ -383,11 +390,13 @@ class AmpapiController extends Controller {
                     if($ValidateResponse==true){
                         $this->_auditTrail(AuditTrailModel::CHANGE_PASSWORD,0,$AID, $TPSessionID, $module, $cardNumber);
                         $this->_apiLogs(APILogsModel::API_CHANGE_PASSWORD,'' , 0, '', 1, $module, $cardNumber);
+                        $this->_logSuccess($module, 'Change Password is successful.');
                     }
                 }
                 else{
                     $this->_displayCustomMessages(73, $module, 'No response from Membership portal API.');//Error 73
                     $this->_apiLogs(APILogsModel::API_CHANGE_PASSWORD,'' , 73, '', 2, $module, $cardNumber);
+                    $this->_logError($module, 'Change Password failed.');
                 }
             }
 
@@ -1150,10 +1159,16 @@ class AmpapiController extends Controller {
         return (isset($codes[$status])) ? $codes[$status] : '';
     }
     private function _displayMessage($errorCode, $module, $TPSessionID){
+        $appLogger = new AppLogger();
         if($module=='AuthenticateSession'){$transMsg=$TPSessionID;}
         else{$transMsg = $this->errorMessage[$errorCode];}
-
-        $this->_sendResponse(200, CJSON::encode(CommonController::retMsg($module, $transMsg, $errorCode, '','',$TPSessionID)));
+        
+        $data = CommonController::retMsg($module, $transMsg, $errorCode, '','',$TPSessionID);
+        $message = "[".$module."] Output: ".CJSON::encode($data);
+        $appLogger->log($appLogger->logdate, "[response]",$message);
+        //CLoggerModified::log($message, CLoggerModified::RESPONSE);
+        $this->_sendResponse(200, CJSON::encode($data));
+        //$this->_sendResponse(200, CJSON::encode(CommonController::retMsg($module, $transMsg, $errorCode, '','',$TPSessionID)));
         Utilities::log("ReturnMessage: " . $transMsg. " ErrorCode: " . $errorCode);
     }
     private function _displaySuccesfulMessage($returnCode, $module){
@@ -1163,12 +1178,18 @@ class AmpapiController extends Controller {
 
     //This function invokes necessary method in displaying error messages based on '$errorMessage' php variable declared in this class.
     private function _displayReturnMessage($errorCode, $module, $logErrorMessage, $ApiLogsModel='', $RewardID=''){
+        $appLogger = new AppLogger();
         $transMsg = $this->errorMessage[$errorCode];
 
         $eCode = floor($errorCode);
-        $this->_sendResponse(200, CJSON::encode(CommonController::retMsg($module, $transMsg, $eCode,'','','','','','','','','', $RewardID)));
+        $data = CommonController::retMsg($module, $transMsg, $eCode,'','','','','','','','','', $RewardID);
+        $message = "[".$module."] Output: ".CJSON::encode($data);
+        $appLogger->log($appLogger->logdate, "[response]",$message);
+        //CLoggerModified::log($message, CLoggerModified::RESPONSE);
+        $this->_sendResponse(200, CJSON::encode($data));
+        //$this->_sendResponse(200, CJSON::encode(CommonController::retMsg($module, $transMsg, $eCode,'','','','','','','','','', $RewardID)));
         Utilities::log("ReturnMessage: " . $transMsg. " ErrorCode: " . $errorCode);
-        $this->_logError($module, $logErrorMessage);
+        //$this->_logError($module, $logErrorMessage);
         //$this->_apiLogs($ApiLogsModel, $apiLogsReferenceID, $errorCode, $trackingID, $status, $module);
     }
 
@@ -1183,12 +1204,18 @@ class AmpapiController extends Controller {
 
     //This function invokes necessary method in displaying custom error message.
     private function _displayCustomMessages($errorCode, $module, $errorMessages){
+        $appLogger = new AppLogger();
         $transMsg = $errorMessages;
 //        strlen($errorCode)>2?$eCode = substr($errorCode, 0, 1):$eCode = substr($errorCode, 0, strlen($errorCode));
         $eCode = floor($errorCode);
-        $this->_sendResponse(200, CJSON::encode(CommonController::retMsg($module, $transMsg, $eCode)));
+        $data = CommonController::retMsg($module, $transMsg, $eCode);
+        $message = "[".$module."] Output: ".CJSON::encode($data);
+        $appLogger->log($appLogger->logdate, "[response]",$message);
+        //CLoggerModified::log($message, CLoggerModified::RESPONSE);
+        $this->_sendResponse(200, CJSON::encode($data));
+        //$this->_sendResponse(200, CJSON::encode(CommonController::retMsg($module, $transMsg, $eCode)));
         Utilities::log("ReturnMessage: " . $transMsg. " ErrorCode: " . $eCode);
-        $this->_logError($module, $errorMessages);
+        //$this->_logError($module, $errorMessages);
     }
 
     private function _utilityLogs($transMsg, $errorCode){
@@ -1201,8 +1228,12 @@ class AmpapiController extends Controller {
         $logger = new ErrorLogger();
 
         $transMsg = $module.': '.$details;
-        $result = $auditTrailModel->logEvent($auditFunction, $transMsg, array('AID' => $AID, 'SessionID' => $sessionID));
-
+        if($module == 'ChangePassword'){
+            $result = $auditTrailModel->logEvent($auditFunction, $transMsg, array('AID' => $AID, 'SessionID' => $sessionID));
+        }
+        else
+            $result = $auditTrailModel->logEvent($auditFunction, $transMsg, array('AID' => $AID, 'SessionID' => $sessionID));
+        
         //@Ternary function or conditional statement
         $result==1?$this->_logSuccess($module, "Audittrail log success."):$this->_logError($module, 'Failed to log event on Audittrail.');
 
@@ -1218,14 +1249,21 @@ class AmpapiController extends Controller {
 
     //This function creates logs for failed transaction
     private function _logError($module, $logMessage){
-        $logger = new ErrorLogger();
-        $logger->log($logger->logdate, " [".strtoupper($module)." ERROR] ", $logMessage);
+//        $logger = new ErrorLogger();
+//        $logger->log($logger->logdate, " [".strtoupper($module)." ERROR] ", $logMessage);
+        
+        $appLogger = new AppLogger();
+        $message = "[".$module."] Output: ".$logMessage;
+        $appLogger->log($appLogger->logdate, "[response]",$message);
     }
     //This function creates logs for success transactions
     private function _logSuccess($module, $logMessage){
-        $logger = new ErrorLogger();
-        $logger->log($logger->logdate, " [".strtoupper($module)." SUCCESS] ", $logMessage);
+//        $logger = new ErrorLogger();
+//        $logger->log($logger->logdate, " [".strtoupper($module)." SUCCESS] ", $logMessage);
         //$this->_apiLogs('', $refID, $errorCode, $trackingID, $status, $module)
+        $appLogger = new AppLogger();
+        $message = "[".$module."] Output: ".$logMessage;
+        $appLogger->log($appLogger->logdate, "[response]",$message);
     }
 
 
@@ -1500,4 +1538,3 @@ class AmpapiController extends Controller {
     }
 
 }
-
