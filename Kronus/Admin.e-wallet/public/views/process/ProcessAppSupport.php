@@ -491,7 +491,7 @@ if($connected && $connected2 && $connected3)
                                     else
                                     {
                                         $response = array('ErrorCode' => 1, 
-                                                          'Message' => 'Card Number is not for ewallet.');
+                                                          'Message' => 'Card Number is not for e-Wallet.');
                                         $terminalid = "";
                                     }
                                 }

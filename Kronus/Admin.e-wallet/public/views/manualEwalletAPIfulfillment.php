@@ -1,10 +1,10 @@
 <?php 
 /**
- * Manual ewallet Fulfillment View
+ * Manual e-Wallet Fulfillment View
  * @date Febraury 3, 2015
  * @author Mark Kenneth Esguerra
  */
-$pagetitle = "Manual ewallet Fulfillment";  
+$pagetitle = "Manual e-Wallet Fulfillment";  
 include "process/ProcessEwalletManualAPIFulfillment.php";
 include "header.php";
 $vaccesspages = array('9');

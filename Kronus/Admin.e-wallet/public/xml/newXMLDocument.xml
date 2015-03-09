@@ -101,9 +101,9 @@
       <submenu id="25" name='Top-up History' path='TopUpHistory.php' group="Top-up Monitoring" pagename="19" />
       <submenu id="29" name='Manual Top-up Reversal History' path='ReversalOfManualTopUp.php' group="Top-up Monitoring" pagename="19" />
       
-      <!--e-wallet transacation history-->
-      <submenu id="91" name='ewallet Transaction History Per Site' path='TopUpeWalletTransactionSiteHistory.php' group="ewallet Transaction History" pagename="19" />
-      <submenu id="91" name='ewallet Transaction History Per Membership Card' path='TopUpeWalletTransactionCardNumberHistory.php' group="ewallet Transaction History" pagename="19" />         
+      <!--e-Wallet transacation history-->
+      <submenu id="91" name='e-Wallet Transaction History Per Site' path='TopUpeWalletTransactionSiteHistory.php' group="e-Wallet Transaction History" pagename="19" />
+      <submenu id="91" name='e-Wallet Transaction History Per Membership Card' path='TopUpeWalletTransactionCardNumberHistory.php' group="e-Wallet Transaction History" pagename="19" />         
       
       <submenu id="30" name='Manual Redemption History' path='TopUpManualRedemption.php' group=" " pagename="19" />
       <submenu id="54" name='Audit Trail' path='rptaudittrail.php' group=" " pagename="19" />
@@ -127,8 +127,8 @@
       <submenu id="68" name='Terminal Based Redemption' path='csredemptions.php' pagename="19" group='Redemptions'/>     
       <submenu id="51" name='Playing Balance Per Site' path='PlayingBalance.php' pagename="19" group='Playing Balance' />
       <submenu id="52" name='Playing Balance Per Membership Card' path='PlayingBalanceub.php' group= "Playing Balance" pagename="19" />
-      <submenu id="98" name='ewallet Transaction History Per Site' path='TopUpeWalletTransactionSiteHistory.php' group="ewallet Transaction History" pagename="19" />
-      <submenu id="99" name='ewallet Transaction History Per Membership Card' path='TopUpeWalletTransactionCardNumberHistory.php' group="ewallet Transaction History" pagename="19" />     
+      <submenu id="98" name='e-Wallet Transaction History Per Site' path='TopUpeWalletTransactionSiteHistory.php' group="e-Wallet Transaction History" pagename="19" />
+      <submenu id="99" name='e-Wallet Transaction History Per Membership Card' path='TopUpeWalletTransactionCardNumberHistory.php' group="e-Wallet Transaction History" pagename="19" />     
       <submenu id ="54" name='Audit Trail' path='rptaudittrail.php' pagename="19" group=' '/> 
    </menu>
 </right>
@@ -189,19 +189,19 @@
         <submenu id="88" name="Reset Casino Account Terminal Based" path='appunlockterminal.php' group='Reset Casino Account'  pagename="17" />
         <submenu id="88" name="Reset Casino Account User Based" path='appunlockterminal_ub.php' group='Reset Casino Account'  pagename="17" />
         <submenu id="89" name="Manual Casino Fulfillment" path='manualAPIfulfillment.php' group=' '  pagename="17" />
-        <submenu id="95" name="Manual ewallet Fulfillment" path='manualEwalletAPIfulfillment.php' group=' '  pagename="17" />
+        <submenu id="95" name="Manual e-Wallet Fulfillment" path='manualEwalletAPIfulfillment.php' group=' '  pagename="17" />
         <submenu id="96" name="Active Session Checking" path='activesessionchecking.php' group=' '  pagename="17" />
         <submenu id="96" name="Enabling of Spyder" path='enablingofspyder.php' group=''  pagename="17" />
         <submenu id="97" name="Cashier URL Management" path='appurlmanagement.php' group=''  pagename="17" />
       </menu>
      <menu id ="19" name='Reports' path='blank.php' pagename="19">
-        <submenu id="98" name='ewallet Transaction History Per Site' path='TopUpeWalletTransactionSiteHistory.php' group="ewallet Transaction History" pagename="19" />
-      <submenu id="99" name='ewallet Transaction History Per Membership Card' path='TopUpeWalletTransactionCardNumberHistory.php' group="ewallet Transaction History" pagename="19" />  
+        <submenu id="98" name='e-Wallet Transaction History Per Site' path='TopUpeWalletTransactionSiteHistory.php' group="e-Wallet Transaction History" pagename="19" />
+      <submenu id="99" name='e-Wallet Transaction History Per Membership Card' path='TopUpeWalletTransactionCardNumberHistory.php' group="e-Wallet Transaction History" pagename="19" />  
         <submenu id ="54" name='Audit Trail' path='rptaudittrail.php' group=" " pagename="19"/>      
         <submenu id ="86" name='Change Terminal Password Logs' group=" " path='apprptpassword.php' pagename="19"/> 
         <submenu id ="87" name='LP Deployment Created Terminals' group=" " path='apprptterminalscreated.php' pagename="19"/>
         <submenu id ="96" name='Manual Casino Fulfillment History' group=" " path='manualcasinofulfillmenthistory.php' pagename="19"/> 
-        <submenu id ="97" name='Manual ewallet Fulfillment History' group=" " path='manualewalletfulfillmenthistory.php'  pagename="19" />   
+        <submenu id ="97" name='Manual e-Wallet Fulfillment History' group=" " path='manualewalletfulfillmenthistory.php'  pagename="19" />   
      </menu>
 </right>
 <right id="11">
@@ -215,8 +215,8 @@
 </right>
 <right id="12">
      <menu id="19" name='Reports' path='blank.php' pagename="19">
-        <submenu id="98" name='ewallet Transaction History Per Site' path='TopUpeWalletTransactionSiteHistory.php' group="ewallet Transaction History" pagename="19" />
-        <submenu id="99" name='ewallet Transaction History Per Membership Card' path='TopUpeWalletTransactionCardNumberHistory.php' group="ewallet Transaction History" pagename="19" /> 
+        <submenu id="98" name='e-Wallet Transaction History Per Site' path='TopUpeWalletTransactionSiteHistory.php' group="e-Wallet Transaction History" pagename="19" />
+        <submenu id="99" name='e-Wallet Transaction History Per Membership Card' path='TopUpeWalletTransactionCardNumberHistory.php' group="e-Wallet Transaction History" pagename="19" /> 
         <submenu id ='82' name='Transaction Tracking' path='rptfinancetrack.php' group=" " pagename='19' />
         <submenu id ='76' name='E-City Report' path='pagcorecityreport.php' group=" " pagename='19' />
         <submenu id="54" name='Audit Trail' path='rptaudittrail.php' group=" " pagename="19" />
@@ -235,8 +235,8 @@
       <submenu id="68" name='Terminal Based Redemption' path='csredemptions.php' pagename="19" group='Redemptions'/>     
       <submenu id="51" name='Playing Balance Per Site' path='PlayingBalance.php' pagename="19" group='Playing Balance' />
       <submenu id="52" name='Playing Balance Per Membership Card' path='PlayingBalanceub.php' group= "Playing Balance" pagename="19" />
-      <submenu id="98" name='ewallet Transaction History Per Site' path='TopUpeWalletTransactionSiteHistory.php' group="ewallet Transaction History" pagename="19" />
-        <submenu id="99" name='ewallet Transaction History Per Membership Card' path='TopUpeWalletTransactionCardNumberHistory.php' group="ewallet Transaction History" pagename="19" /> 
+      <submenu id="98" name='e-Wallet Transaction History Per Site' path='TopUpeWalletTransactionSiteHistory.php' group="e-Wallet Transaction History" pagename="19" />
+        <submenu id="99" name='e-Wallet Transaction History Per Membership Card' path='TopUpeWalletTransactionCardNumberHistory.php' group="e-Wallet Transaction History" pagename="19" /> 
       <submenu id ="54" name='Audit Trail' path='rptaudittrail.php' pagename="19" group=' '/> 
    </menu>
 </right>
