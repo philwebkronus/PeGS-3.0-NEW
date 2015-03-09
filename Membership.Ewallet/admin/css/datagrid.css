@@ -1,0 +1,54 @@
+/* 
+    Document   : datagrid.css
+    Created on : May 31, 2013, 1:50:42 PM
+    Author     : owliber
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+root { 
+    display: block;
+}
+.bg_tableheader2 th{
+    font-weight: normal;
+}
+.bg_tableheader2, .bg_tableheader2 td
+{
+    background-image: url('../images/tblfooterbg.jpg');
+    padding-left: 6px;
+    padding-right: 5px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    text-align: center;
+    line-height: 30px;
+    width: 100px;
+    white-space: nowrap;
+    background-repeat: repeat-x;
+}
+/* for DataTable Control */
+.reporttable
+{
+    background-color: #FFFFFF;
+    /* width: 600px; */
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.reporttable td
+{
+    padding: 5px 5px 5px 5px;
+}
+
+.reporttable td
+{
+    border-width: 1px;
+    border-style: solid;
+    border-collapse: collapse;
+    border-color: #999999;
+}
+
+.pad5 
+{
+    padding: 5px;
+}
+

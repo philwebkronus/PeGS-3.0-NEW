@@ -1,0 +1,37 @@
+[08-Aug-2014 14:36:35]  [GETREFERRER ERROR] TPSessionID is not set or is blank.
+[08-Aug-2014 14:38:20]  [GETREFERRER ERROR] TPSessionID is not set or is blank.
+[08-Aug-2014 14:38:20]  [GETREFERRER SUCCESS] APIlogs success.
+[08-Aug-2014 14:46:33]  [GETREFERRER ERROR] TPSessionID is not set or is blank.
+[08-Aug-2014 14:46:33]  [GETREFERRER SUCCESS] APIlogs success.
+[08-Aug-2014 14:46:41]  [GETREGION ERROR] TPSessionID is not set or is blank.
+[08-Aug-2014 14:46:41]  [GETREGION SUCCESS] APIlogs success.
+[08-Aug-2014 14:46:45]  [GETREFERRER ERROR] TPSessionID is not set or is blank.
+[08-Aug-2014 14:46:45]  [GETREFERRER SUCCESS] APIlogs success.
+[08-Aug-2014 14:47:31]  [GETREFERRER ERROR] TPSessionID is not set or is blank.
+[08-Aug-2014 14:47:31]  [GETREFERRER SUCCESS] APIlogs success.
+[08-Aug-2014 18:11:28]  [GETREGION ERROR] TPSessionID is not set or is blank.
+[08-Aug-2014 18:11:28]  [GETREGION SUCCESS] APIlogs success.
+[08-Aug-2014 19:16:28]  [AUTHENTICATESESSION SUCCESS] Audittrail log success.
+[08-Aug-2014 19:16:28]  [AUTHENTICATESESSION SUCCESS] APIlogs success.
+[08-Aug-2014 19:16:28]  [AUTHENTICATESESSION SUCCESS] TPSessionID Generate Successfully.
+[08-Aug-2014 19:16:32]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[08-Aug-2014 19:16:32]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[08-Aug-2014 19:16:32]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[08-Aug-2014 19:16:41]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[08-Aug-2014 19:16:41]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[08-Aug-2014 19:16:41]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[08-Aug-2014 19:17:21]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[08-Aug-2014 19:17:21]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[08-Aug-2014 19:17:21]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[08-Aug-2014 19:17:27]  [GETREFERRER ERROR] TPSessionID is not set or is blank.
+[08-Aug-2014 19:17:27]  [GETREFERRER SUCCESS] APIlogs success.
+[08-Aug-2014 19:17:28]  [GETREFERRER ERROR] TPSessionID is not set or is blank.
+[08-Aug-2014 19:17:28]  [GETREFERRER SUCCESS] APIlogs success.
+[08-Aug-2014 19:17:30]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[08-Aug-2014 19:17:30]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[08-Aug-2014 19:17:30]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[08-Aug-2014 19:17:35]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[08-Aug-2014 19:17:35]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[08-Aug-2014 19:17:35]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[08-Aug-2014 19:17:36]  [GETREFERRER ERROR] TPSessionID is not set or is blank.
+[08-Aug-2014 19:17:36]  [GETREFERRER SUCCESS] APIlogs success.

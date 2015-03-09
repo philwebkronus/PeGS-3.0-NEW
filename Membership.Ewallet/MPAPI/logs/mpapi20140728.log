@@ -1,0 +1,46 @@
+[28-Jul-2014 10:21:07]  [GETPROFILE ERROR] One or more fields is not set or is blank.
+[28-Jul-2014 10:21:26]  [GETPROFILE ERROR] One or more fields is not set or is blank.
+[28-Jul-2014 11:10:39]  [GETPROFILE ERROR] Failed to insert to Audittrail.
+[28-Jul-2014 11:10:39]  [GETPROFILE SUCCESS] Get member profile is successful.
+[28-Jul-2014 11:14:29]  [GETPROFILE ERROR] Account is banned.
+[28-Jul-2014 11:15:15]  [GETPROFILE ERROR] Account is banned.
+[28-Jul-2014 11:16:41]  [GETPROFILE ERROR] Failed to insert to Audittrail.
+[28-Jul-2014 11:16:41]  [GETPROFILE SUCCESS] Get member profile is successful.
+[28-Jul-2014 11:19:36]  [GETPROFILE ERROR] Failed to insert to Audittrail.
+[28-Jul-2014 11:19:36]  [GETPROFILE SUCCESS] Get member profile is successful.
+[28-Jul-2014 11:27:38]  [GETPROFILE ERROR] Failed to insert to Audittrail.
+[28-Jul-2014 11:27:38]  [GETPROFILE SUCCESS] Get member profile is successful.
+[28-Jul-2014 11:29:17]  [GETPROFILE ERROR] Failed to insert to Audittrail.
+[28-Jul-2014 11:29:17]  [GETPROFILE SUCCESS] Get member profile is successful.
+[28-Jul-2014 11:30:10]  [GETPROFILE ERROR] Failed to insert to Audittrail.
+[28-Jul-2014 11:30:10]  [GETPROFILE SUCCESS] Get member profile is successful.
+[28-Jul-2014 11:30:56]  [GETPROFILE ERROR] Failed to insert to Audittrail.
+[28-Jul-2014 11:30:56]  [GETPROFILE SUCCESS] Get member profile is successful.
+[28-Jul-2014 11:31:39]  [GETPROFILE ERROR] Failed to insert to Audittrail.
+[28-Jul-2014 11:31:39]  [GETPROFILE SUCCESS] Get member profile is successful.
+[28-Jul-2014 13:55:05]  [GETPROFILE ERROR] Account is banned.
+[28-Jul-2014 13:56:39]  [GETPROFILE ERROR] Account is banned.
+[28-Jul-2014 14:01:22]  [GETPROFILE ERROR] Account is banned.
+[28-Jul-2014 17:06:37]  [FORGOTPASSWORD ERROR] Failed to insert to Audittrail.
+[28-Jul-2014 17:06:37]  [FORGOTPASSWORD ERROR] Failed to insert to APILogs.
+[28-Jul-2014 17:08:36]  [FORGOTPASSWORD ERROR] Failed to insert to Audittrail.
+[28-Jul-2014 17:08:36]  [FORGOTPASSWORD ERROR] Failed to insert to APILogs.
+[28-Jul-2014 17:11:17]  [FORGOTPASSWORD ERROR] Failed to insert to Audittrail.
+[28-Jul-2014 17:11:17]  [FORGOTPASSWORD ERROR] Failed to insert to APILogs.
+[28-Jul-2014 17:16:06]  [FORGOTPASSWORD ERROR] Failed to insert to Audittrail.
+[28-Jul-2014 17:16:06]  [FORGOTPASSWORD ERROR] Failed to insert to APILogs.
+[28-Jul-2014 17:37:09]  [FORGOTPASSWORD ERROR] Failed to insert to Audittrail.
+[28-Jul-2014 17:37:09]  [FORGOTPASSWORD ERROR] Failed to insert to APILogs.
+[28-Jul-2014 17:50:01]  [FORGOTPASSWORD ERROR] Failed to insert to Audittrail.
+[28-Jul-2014 17:50:01]  [FORGOTPASSWORD ERROR] Failed to insert to APILogs.
+[28-Jul-2014 18:05:06]  [CHECKPOINTS ERROR] Failed to insert to Audittrail.
+[28-Jul-2014 18:05:06]  [CHECKPOINTS SUCCESSFUL] Check Points is successful.
+[28-Jul-2014 18:05:32]  [CHECKPOINTS ERROR] Failed to insert to Audittrail.
+[28-Jul-2014 18:05:32]  [CHECKPOINTS SUCCESSFUL] Check Points is successful.
+[28-Jul-2014 18:24:18]  [REGISTERMEMBER ERROR] Mobile number should not be less than 9 digits long.
+[28-Jul-2014 18:24:38]  [REGISTERMEMBER ERROR] Mobile number should consist of numbers only.
+[28-Jul-2014 18:24:53]  [REGISTERMEMBER ERROR] Mobile number should consist of numbers only.
+[28-Jul-2014 18:35:50]  [REGISTERMEMBER ERROR] One or more fields is not set or is blank.
+[28-Jul-2014 18:38:01]  [REGISTERMEMBER ERROR] Mobile number should consist of numbers only.
+[28-Jul-2014 18:39:05]  [REGISTERMEMBER ERROR] Mobile number should consist of numbers only.
+[28-Jul-2014 18:40:23]  [REGISTERMEMBER ERROR] Name should consist of letters only.

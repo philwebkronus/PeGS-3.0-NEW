@@ -1,0 +1,382 @@
+2014/06/23 04:24:27 [error] [application] Error Message: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (29)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/06/23 04:25:37 [error] [application] Error Message: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (29)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/06/23 04:26:02 [error] [application] Error Message: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (29)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/06/23 04:30:29 [error] [application] Error Message: Invalid input. ErrorCode: 2
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (64)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/06/23 04:40:21 [error] [application] Error Message: Invalid input. ErrorCode: 2
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (67)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/06/23 04:43:00 [error] [system.db.CDbCommand] CDbCommand::fetch() failed: SQLSTATE[42000]: Syntax error or access violation: 1142 SELECT command denied to user 'pegsconn'@'192.168.29.203' for table 'members'. The SQL statement executed was: SELECT a.MID, a.UserName, a.IsVip, b.SessionID, c.CardTypeID
+                FROM members a
+                INNER JOIN membersessions b ON a.MID = b.MID
+                INNER JOIN loyaltydb.membercards d ON b.MID = d.MID
+                INNER JOIN loyaltydb.cards c ON d.CardID = c.CardID
+                WHERE a.UserName = :UserName AND a.Password = :Password.
+in C:\xampp\htdocs\MPAPI\protected\models\MembersModel.php (56)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (41)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/06/23 04:43:01 [error] [exception.CDbException] exception 'CDbException' with message 'CDbCommand failed to execute the SQL statement: SQLSTATE[42000]: Syntax error or access violation: 1142 SELECT command denied to user 'pegsconn'@'192.168.29.203' for table 'members'. The SQL statement executed was: SELECT a.MID, a.UserName, a.IsVip, b.SessionID, c.CardTypeID
+                FROM members a
+                INNER JOIN membersessions b ON a.MID = b.MID
+                INNER JOIN loyaltydb.membercards d ON b.MID = d.MID
+                INNER JOIN loyaltydb.cards c ON d.CardID = c.CardID
+                WHERE a.UserName = :UserName AND a.Password = :Password' in C:\xampp\htdocs\yii\framework\db\CDbCommand.php:541
+Stack trace:
+#0 C:\xampp\htdocs\yii\framework\db\CDbCommand.php(414): CDbCommand->queryInternal('fetch', Array, Array)
+#1 C:\xampp\htdocs\MPAPI\protected\models\MembersModel.php(56): CDbCommand->queryRow(true, Array)
+#2 C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php(41): MembersModel->getLoginInfo('3cshimb@yopmail...')
+#3 C:\xampp\htdocs\yii\framework\web\actions\CInlineAction.php(49): MPapiController->actionLogin()
+#4 C:\xampp\htdocs\yii\framework\web\CController.php(308): CInlineAction->runWithParams(Array)
+#5 C:\xampp\htdocs\yii\framework\web\CController.php(286): CController->runAction(Object(CInlineAction))
+#6 C:\xampp\htdocs\yii\framework\web\CController.php(265): CController->runActionWithFilters(Object(CInlineAction), Array)
+#7 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(282): CController->run('login')
+#8 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController('MPapi/login')
+#9 C:\xampp\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#10 C:\xampp\htdocs\MPAPI\index.php(13): CApplication->run()
+#11 {main}
+REQUEST_URI=/MPAPI/index.php/MPapi/login
+---
+2014/06/23 04:45:06 [error] [system.db.CDbCommand] CDbCommand::fetch() failed: SQLSTATE[HY093]: Invalid parameter number: parameter was not defined. The SQL statement executed was: SELECT a.MID, a.UserName, a.IsVip, b.SessionID, c.CardTypeID
+                FROM members a
+                INNER JOIN membersessions b ON a.MID = b.MID
+                INNER JOIN loyaltydb.membercards d ON b.MID = d.MID
+                INNER JOIN loyaltydb.cards c ON d.CardID = c.CardID
+                WHERE a.UserName = :UserName AND a.Password = :Password.
+in C:\xampp\htdocs\MPAPI\protected\models\MembersModel.php (56)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (41)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/06/23 04:45:07 [error] [exception.CDbException] exception 'CDbException' with message 'CDbCommand failed to execute the SQL statement: SQLSTATE[HY093]: Invalid parameter number: parameter was not defined. The SQL statement executed was: SELECT a.MID, a.UserName, a.IsVip, b.SessionID, c.CardTypeID
+                FROM members a
+                INNER JOIN membersessions b ON a.MID = b.MID
+                INNER JOIN loyaltydb.membercards d ON b.MID = d.MID
+                INNER JOIN loyaltydb.cards c ON d.CardID = c.CardID
+                WHERE a.UserName = :UserName AND a.Password = :Password' in C:\xampp\htdocs\yii\framework\db\CDbCommand.php:541
+Stack trace:
+#0 C:\xampp\htdocs\yii\framework\db\CDbCommand.php(414): CDbCommand->queryInternal('fetch', Array, Array)
+#1 C:\xampp\htdocs\MPAPI\protected\models\MembersModel.php(56): CDbCommand->queryRow(true, Array)
+#2 C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php(41): MembersModel->getLoginInfo('3cshimb@yopmail...')
+#3 C:\xampp\htdocs\yii\framework\web\actions\CInlineAction.php(49): MPapiController->actionLogin()
+#4 C:\xampp\htdocs\yii\framework\web\CController.php(308): CInlineAction->runWithParams(Array)
+#5 C:\xampp\htdocs\yii\framework\web\CController.php(286): CController->runAction(Object(CInlineAction))
+#6 C:\xampp\htdocs\yii\framework\web\CController.php(265): CController->runActionWithFilters(Object(CInlineAction), Array)
+#7 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(282): CController->run('login')
+#8 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController('MPapi/login')
+#9 C:\xampp\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#10 C:\xampp\htdocs\MPAPI\index.php(13): CApplication->run()
+#11 {main}
+REQUEST_URI=/MPAPI/index.php/MPapi/login
+---
+2014/06/23 04:46:04 [error] [system.db.CDbCommand] CDbCommand::fetch() failed: SQLSTATE[HY093]: Invalid parameter number: parameter was not defined. The SQL statement executed was: SELECT a.MID, a.UserName, a.IsVip, b.SessionID, c.CardTypeID
+                FROM members a
+                INNER JOIN membersessions b ON a.MID = b.MID
+                INNER JOIN loyaltydb.membercards d ON b.MID = d.MID
+                INNER JOIN loyaltydb.cards c ON d.CardID = c.CardID
+                WHERE a.UserName = :UserName AND a.Password = :Password.
+in C:\xampp\htdocs\MPAPI\protected\models\MembersModel.php (56)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (41)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/06/23 04:46:05 [error] [exception.CDbException] exception 'CDbException' with message 'CDbCommand failed to execute the SQL statement: SQLSTATE[HY093]: Invalid parameter number: parameter was not defined. The SQL statement executed was: SELECT a.MID, a.UserName, a.IsVip, b.SessionID, c.CardTypeID
+                FROM members a
+                INNER JOIN membersessions b ON a.MID = b.MID
+                INNER JOIN loyaltydb.membercards d ON b.MID = d.MID
+                INNER JOIN loyaltydb.cards c ON d.CardID = c.CardID
+                WHERE a.UserName = :UserName AND a.Password = :Password' in C:\xampp\htdocs\yii\framework\db\CDbCommand.php:541
+Stack trace:
+#0 C:\xampp\htdocs\yii\framework\db\CDbCommand.php(414): CDbCommand->queryInternal('fetch', Array, Array)
+#1 C:\xampp\htdocs\MPAPI\protected\models\MembersModel.php(56): CDbCommand->queryRow(true, Array)
+#2 C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php(41): MembersModel->getLoginInfo('3cshimb@yopmail...', '5f4dcc3b5aa765d...')
+#3 C:\xampp\htdocs\yii\framework\web\actions\CInlineAction.php(49): MPapiController->actionLogin()
+#4 C:\xampp\htdocs\yii\framework\web\CController.php(308): CInlineAction->runWithParams(Array)
+#5 C:\xampp\htdocs\yii\framework\web\CController.php(286): CController->runAction(Object(CInlineAction))
+#6 C:\xampp\htdocs\yii\framework\web\CController.php(265): CController->runActionWithFilters(Object(CInlineAction), Array)
+#7 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(282): CController->run('login')
+#8 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController('MPapi/login')
+#9 C:\xampp\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#10 C:\xampp\htdocs\MPAPI\index.php(13): CApplication->run()
+#11 {main}
+REQUEST_URI=/MPAPI/index.php/MPapi/login
+---
+2014/06/23 04:48:51 [error] [system.db.CDbCommand] CDbCommand::fetch() failed: SQLSTATE[HY093]: Invalid parameter number: parameter was not defined. The SQL statement executed was: SELECT a.MID, a.UserName, a.IsVip, b.SessionID, c.CardTypeID
+                FROM members a
+                INNER JOIN membersessions b ON a.MID = b.MID
+                INNER JOIN loyaltydb.membercards d ON b.MID = d.MID
+                INNER JOIN loyaltydb.cards c ON d.CardID = c.CardID
+                WHERE a.UserName = :UserName AND a.Password = :Password.
+in C:\xampp\htdocs\MPAPI\protected\models\MembersModel.php (56)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (41)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/06/23 04:48:52 [error] [exception.CDbException] exception 'CDbException' with message 'CDbCommand failed to execute the SQL statement: SQLSTATE[HY093]: Invalid parameter number: parameter was not defined. The SQL statement executed was: SELECT a.MID, a.UserName, a.IsVip, b.SessionID, c.CardTypeID
+                FROM members a
+                INNER JOIN membersessions b ON a.MID = b.MID
+                INNER JOIN loyaltydb.membercards d ON b.MID = d.MID
+                INNER JOIN loyaltydb.cards c ON d.CardID = c.CardID
+                WHERE a.UserName = :UserName AND a.Password = :Password' in C:\xampp\htdocs\yii\framework\db\CDbCommand.php:541
+Stack trace:
+#0 C:\xampp\htdocs\yii\framework\db\CDbCommand.php(414): CDbCommand->queryInternal('fetch', Array, Array)
+#1 C:\xampp\htdocs\MPAPI\protected\models\MembersModel.php(56): CDbCommand->queryRow(true, Array)
+#2 C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php(41): MembersModel->getLoginInfo('3cshimb@yopmail...', '5f4dcc3b5aa765d...')
+#3 C:\xampp\htdocs\yii\framework\web\actions\CInlineAction.php(49): MPapiController->actionLogin()
+#4 C:\xampp\htdocs\yii\framework\web\CController.php(308): CInlineAction->runWithParams(Array)
+#5 C:\xampp\htdocs\yii\framework\web\CController.php(286): CController->runAction(Object(CInlineAction))
+#6 C:\xampp\htdocs\yii\framework\web\CController.php(265): CController->runActionWithFilters(Object(CInlineAction), Array)
+#7 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(282): CController->run('login')
+#8 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController('MPapi/login')
+#9 C:\xampp\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#10 C:\xampp\htdocs\MPAPI\index.php(13): CApplication->run()
+#11 {main}
+REQUEST_URI=/MPAPI/index.php/MPapi/login
+---
+2014/06/23 04:50:43 [error] [system.db.CDbCommand] CDbCommand::fetch() failed: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens. The SQL statement executed was: SELECT a.MID, a.UserName, a.IsVip, b.SessionID, c.CardTypeID
+                FROM members a
+                INNER JOIN membersessions b ON a.MID = b.MID
+                INNER JOIN loyaltydb.membercards d ON b.MID = d.MID
+                INNER JOIN loyaltydb.cards c ON d.CardID = c.CardID
+                WHERE a.UserName = :UserName AND a.Password = :Password.
+in C:\xampp\htdocs\MPAPI\protected\models\MembersModel.php (56)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (41)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/06/23 04:50:44 [error] [exception.CDbException] exception 'CDbException' with message 'CDbCommand failed to execute the SQL statement: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens. The SQL statement executed was: SELECT a.MID, a.UserName, a.IsVip, b.SessionID, c.CardTypeID
+                FROM members a
+                INNER JOIN membersessions b ON a.MID = b.MID
+                INNER JOIN loyaltydb.membercards d ON b.MID = d.MID
+                INNER JOIN loyaltydb.cards c ON d.CardID = c.CardID
+                WHERE a.UserName = :UserName AND a.Password = :Password' in C:\xampp\htdocs\yii\framework\db\CDbCommand.php:541
+Stack trace:
+#0 C:\xampp\htdocs\yii\framework\db\CDbCommand.php(414): CDbCommand->queryInternal('fetch', Array, Array)
+#1 C:\xampp\htdocs\MPAPI\protected\models\MembersModel.php(56): CDbCommand->queryRow(true, Array)
+#2 C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php(41): MembersModel->getLoginInfo('3cshimb@yopmail...')
+#3 C:\xampp\htdocs\yii\framework\web\actions\CInlineAction.php(49): MPapiController->actionLogin()
+#4 C:\xampp\htdocs\yii\framework\web\CController.php(308): CInlineAction->runWithParams(Array)
+#5 C:\xampp\htdocs\yii\framework\web\CController.php(286): CController->runAction(Object(CInlineAction))
+#6 C:\xampp\htdocs\yii\framework\web\CController.php(265): CController->runActionWithFilters(Object(CInlineAction), Array)
+#7 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(282): CController->run('login')
+#8 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController('MPapi/login')
+#9 C:\xampp\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#10 C:\xampp\htdocs\MPAPI\index.php(13): CApplication->run()
+#11 {main}
+REQUEST_URI=/MPAPI/index.php/MPapi/login
+---
+2014/06/23 04:51:38 [error] [system.db.CDbCommand] CDbCommand::fetch() failed: SQLSTATE[HY093]: Invalid parameter number: parameter was not defined. The SQL statement executed was: SELECT a.MID, a.UserName, a.IsVip, b.SessionID, c.CardTypeID
+                FROM members a
+                INNER JOIN membersessions b ON a.MID = b.MID
+                INNER JOIN loyaltydb.membercards d ON b.MID = d.MID
+                INNER JOIN loyaltydb.cards c ON d.CardID = c.CardID
+                WHERE a.UserName = :UserName.
+in C:\xampp\htdocs\MPAPI\protected\models\MembersModel.php (56)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (41)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/06/23 04:51:39 [error] [exception.CDbException] exception 'CDbException' with message 'CDbCommand failed to execute the SQL statement: SQLSTATE[HY093]: Invalid parameter number: parameter was not defined. The SQL statement executed was: SELECT a.MID, a.UserName, a.IsVip, b.SessionID, c.CardTypeID
+                FROM members a
+                INNER JOIN membersessions b ON a.MID = b.MID
+                INNER JOIN loyaltydb.membercards d ON b.MID = d.MID
+                INNER JOIN loyaltydb.cards c ON d.CardID = c.CardID
+                WHERE a.UserName = :UserName' in C:\xampp\htdocs\yii\framework\db\CDbCommand.php:541
+Stack trace:
+#0 C:\xampp\htdocs\yii\framework\db\CDbCommand.php(414): CDbCommand->queryInternal('fetch', Array, Array)
+#1 C:\xampp\htdocs\MPAPI\protected\models\MembersModel.php(56): CDbCommand->queryRow(true, Array)
+#2 C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php(41): MembersModel->getLoginInfo('3cshimb@yopmail...')
+#3 C:\xampp\htdocs\yii\framework\web\actions\CInlineAction.php(49): MPapiController->actionLogin()
+#4 C:\xampp\htdocs\yii\framework\web\CController.php(308): CInlineAction->runWithParams(Array)
+#5 C:\xampp\htdocs\yii\framework\web\CController.php(286): CController->runAction(Object(CInlineAction))
+#6 C:\xampp\htdocs\yii\framework\web\CController.php(265): CController->runActionWithFilters(Object(CInlineAction), Array)
+#7 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(282): CController->run('login')
+#8 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController('MPapi/login')
+#9 C:\xampp\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#10 C:\xampp\htdocs\MPAPI\index.php(13): CApplication->run()
+#11 {main}
+REQUEST_URI=/MPAPI/index.php/MPapi/login
+---
+2014/06/23 05:05:38 [error] [system.db.CDbCommand] CDbCommand::fetch() failed: SQLSTATE[42000]: Syntax error or access violation: 1142 SELECT command denied to user 'pegsconn'@'192.168.29.203' for table 'members'. The SQL statement executed was: SELECT a.MID, a.UserName, a.IsVip, b.SessionID, c.CardTypeID
+                FROM members a
+                INNER JOIN membersessions b ON a.MID = b.MID
+                INNER JOIN loyaltydb.membercards d ON b.MID = d.MID
+                INNER JOIN loyaltydb.cards c ON d.CardID = c.CardID
+                WHERE a.UserName = :UserName.
+in C:\xampp\htdocs\MPAPI\protected\models\MembersModel.php (57)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (41)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/06/23 05:05:39 [error] [exception.CDbException] exception 'CDbException' with message 'CDbCommand failed to execute the SQL statement: SQLSTATE[42000]: Syntax error or access violation: 1142 SELECT command denied to user 'pegsconn'@'192.168.29.203' for table 'members'. The SQL statement executed was: SELECT a.MID, a.UserName, a.IsVip, b.SessionID, c.CardTypeID
+                FROM members a
+                INNER JOIN membersessions b ON a.MID = b.MID
+                INNER JOIN loyaltydb.membercards d ON b.MID = d.MID
+                INNER JOIN loyaltydb.cards c ON d.CardID = c.CardID
+                WHERE a.UserName = :UserName' in C:\xampp\htdocs\yii\framework\db\CDbCommand.php:541
+Stack trace:
+#0 C:\xampp\htdocs\yii\framework\db\CDbCommand.php(414): CDbCommand->queryInternal('fetch', Array, Array)
+#1 C:\xampp\htdocs\MPAPI\protected\models\MembersModel.php(57): CDbCommand->queryRow()
+#2 C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php(41): MembersModel->getLoginInfo('3cshimb@yopmail...')
+#3 C:\xampp\htdocs\yii\framework\web\actions\CInlineAction.php(49): MPapiController->actionLogin()
+#4 C:\xampp\htdocs\yii\framework\web\CController.php(308): CInlineAction->runWithParams(Array)
+#5 C:\xampp\htdocs\yii\framework\web\CController.php(286): CController->runAction(Object(CInlineAction))
+#6 C:\xampp\htdocs\yii\framework\web\CController.php(265): CController->runActionWithFilters(Object(CInlineAction), Array)
+#7 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(282): CController->run('login')
+#8 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController('MPapi/login')
+#9 C:\xampp\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#10 C:\xampp\htdocs\MPAPI\index.php(13): CApplication->run()
+#11 {main}
+REQUEST_URI=/MPAPI/index.php/MPapi/login
+---
+2014/06/23 05:06:49 [error] [system.db.CDbCommand] CDbCommand::fetch() failed: SQLSTATE[42000]: Syntax error or access violation: 1142 SELECT command denied to user 'pegsconn'@'192.168.29.203' for table 'members'. The SQL statement executed was: SELECT a.MID, a.UserName, a.IsVip, b.SessionID, c.CardTypeID
+                FROM members a
+                INNER JOIN membersessions b ON a.MID = b.MID
+                INNER JOIN loyaltydb.membercards d ON b.MID = d.MID
+                INNER JOIN loyaltydb.cards c ON d.CardID = c.CardID
+                WHERE UserName = :UserName.
+in C:\xampp\htdocs\MPAPI\protected\models\MembersModel.php (57)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (41)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/06/23 05:06:50 [error] [exception.CDbException] exception 'CDbException' with message 'CDbCommand failed to execute the SQL statement: SQLSTATE[42000]: Syntax error or access violation: 1142 SELECT command denied to user 'pegsconn'@'192.168.29.203' for table 'members'. The SQL statement executed was: SELECT a.MID, a.UserName, a.IsVip, b.SessionID, c.CardTypeID
+                FROM members a
+                INNER JOIN membersessions b ON a.MID = b.MID
+                INNER JOIN loyaltydb.membercards d ON b.MID = d.MID
+                INNER JOIN loyaltydb.cards c ON d.CardID = c.CardID
+                WHERE UserName = :UserName' in C:\xampp\htdocs\yii\framework\db\CDbCommand.php:541
+Stack trace:
+#0 C:\xampp\htdocs\yii\framework\db\CDbCommand.php(414): CDbCommand->queryInternal('fetch', Array, Array)
+#1 C:\xampp\htdocs\MPAPI\protected\models\MembersModel.php(57): CDbCommand->queryRow()
+#2 C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php(41): MembersModel->getLoginInfo('3cshimb@yopmail...')
+#3 C:\xampp\htdocs\yii\framework\web\actions\CInlineAction.php(49): MPapiController->actionLogin()
+#4 C:\xampp\htdocs\yii\framework\web\CController.php(308): CInlineAction->runWithParams(Array)
+#5 C:\xampp\htdocs\yii\framework\web\CController.php(286): CController->runAction(Object(CInlineAction))
+#6 C:\xampp\htdocs\yii\framework\web\CController.php(265): CController->runActionWithFilters(Object(CInlineAction), Array)
+#7 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(282): CController->run('login')
+#8 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController('MPapi/login')
+#9 C:\xampp\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#10 C:\xampp\htdocs\MPAPI\index.php(13): CApplication->run()
+#11 {main}
+REQUEST_URI=/MPAPI/index.php/MPapi/login
+---
+2014/06/23 05:10:11 [error] [application] Error Message: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (75)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/06/23 05:10:41 [error] [application] Error Message: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (75)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/06/23 05:13:11 [error] [system.db.CDbCommand] CDbCommand::fetch() failed: SQLSTATE[42000]: Syntax error or access violation: 1142 SELECT command denied to user 'pegsconn'@'192.168.29.203' for table 'members'. The SQL statement executed was: SELECT a.MID, a.UserName, a.IsVip, b.SessionID, c.CardTypeID
+                FROM members a
+                INNER JOIN membersessions b ON a.MID = b.MID
+                INNER JOIN loyaltydb.membercards d ON b.MID = d.MID
+                INNER JOIN loyaltydb.cards c ON d.CardID = c.CardID
+                WHERE UserName = :UserName AND Password = :Password.
+in C:\xampp\htdocs\MPAPI\protected\models\MembersModel.php (57)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (41)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/06/23 05:13:12 [error] [exception.CDbException] exception 'CDbException' with message 'CDbCommand failed to execute the SQL statement: SQLSTATE[42000]: Syntax error or access violation: 1142 SELECT command denied to user 'pegsconn'@'192.168.29.203' for table 'members'. The SQL statement executed was: SELECT a.MID, a.UserName, a.IsVip, b.SessionID, c.CardTypeID
+                FROM members a
+                INNER JOIN membersessions b ON a.MID = b.MID
+                INNER JOIN loyaltydb.membercards d ON b.MID = d.MID
+                INNER JOIN loyaltydb.cards c ON d.CardID = c.CardID
+                WHERE UserName = :UserName AND Password = :Password' in C:\xampp\htdocs\yii\framework\db\CDbCommand.php:541
+Stack trace:
+#0 C:\xampp\htdocs\yii\framework\db\CDbCommand.php(414): CDbCommand->queryInternal('fetch', Array, Array)
+#1 C:\xampp\htdocs\MPAPI\protected\models\MembersModel.php(57): CDbCommand->queryRow()
+#2 C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php(41): MembersModel->getLoginInfo('3cshimb@yopmail...')
+#3 C:\xampp\htdocs\yii\framework\web\actions\CInlineAction.php(49): MPapiController->actionLogin()
+#4 C:\xampp\htdocs\yii\framework\web\CController.php(308): CInlineAction->runWithParams(Array)
+#5 C:\xampp\htdocs\yii\framework\web\CController.php(286): CController->runAction(Object(CInlineAction))
+#6 C:\xampp\htdocs\yii\framework\web\CController.php(265): CController->runActionWithFilters(Object(CInlineAction), Array)
+#7 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(282): CController->run('login')
+#8 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController('MPapi/login')
+#9 C:\xampp\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#10 C:\xampp\htdocs\MPAPI\index.php(13): CApplication->run()
+#11 {main}
+REQUEST_URI=/MPAPI/index.php/MPapi/login
+---
+2014/06/23 05:14:18 [error] [system.db.CDbCommand] CDbCommand::fetch() failed: SQLSTATE[42000]: Syntax error or access violation: 1142 SELECT command denied to user 'pegsconn'@'192.168.29.203' for table 'members'. The SQL statement executed was: SELECT a.MID, a.UserName, a.IsVip, b.SessionID, c.CardTypeID
+                FROM members a
+                INNER JOIN membersessions b ON a.MID = b.MID
+                INNER JOIN loyaltydb.membercards d ON b.MID = d.MID
+                INNER JOIN loyaltydb.cards c ON d.CardID = c.CardID
+                WHERE UserName = :UserName AND Password = :Password.
+in C:\xampp\htdocs\MPAPI\protected\models\MembersModel.php (57)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (41)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/06/23 05:14:19 [error] [exception.CDbException] exception 'CDbException' with message 'CDbCommand failed to execute the SQL statement: SQLSTATE[42000]: Syntax error or access violation: 1142 SELECT command denied to user 'pegsconn'@'192.168.29.203' for table 'members'. The SQL statement executed was: SELECT a.MID, a.UserName, a.IsVip, b.SessionID, c.CardTypeID
+                FROM members a
+                INNER JOIN membersessions b ON a.MID = b.MID
+                INNER JOIN loyaltydb.membercards d ON b.MID = d.MID
+                INNER JOIN loyaltydb.cards c ON d.CardID = c.CardID
+                WHERE UserName = :UserName AND Password = :Password' in C:\xampp\htdocs\yii\framework\db\CDbCommand.php:541
+Stack trace:
+#0 C:\xampp\htdocs\yii\framework\db\CDbCommand.php(414): CDbCommand->queryInternal('fetch', Array, Array)
+#1 C:\xampp\htdocs\MPAPI\protected\models\MembersModel.php(57): CDbCommand->queryRow()
+#2 C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php(41): MembersModel->getLoginInfo('3cshimb@yopmail...', '5f4dcc3b5aa765d...')
+#3 C:\xampp\htdocs\yii\framework\web\actions\CInlineAction.php(49): MPapiController->actionLogin()
+#4 C:\xampp\htdocs\yii\framework\web\CController.php(308): CInlineAction->runWithParams(Array)
+#5 C:\xampp\htdocs\yii\framework\web\CController.php(286): CController->runAction(Object(CInlineAction))
+#6 C:\xampp\htdocs\yii\framework\web\CController.php(265): CController->runActionWithFilters(Object(CInlineAction), Array)
+#7 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(282): CController->run('login')
+#8 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController('MPapi/login')
+#9 C:\xampp\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#10 C:\xampp\htdocs\MPAPI\index.php(13): CApplication->run()
+#11 {main}
+REQUEST_URI=/MPAPI/index.php/MPapi/login
+---
+2014/06/23 05:16:32 [error] [system.db.CDbCommand] CDbCommand::fetch() failed: SQLSTATE[42000]: Syntax error or access violation: 1142 SELECT command denied to user 'pegsconn'@'192.168.29.203' for table 'members'. The SQL statement executed was: SELECT a.MID, a.UserName, a.IsVip, b.SessionID, c.CardTypeID
+                FROM members a
+                INNER JOIN membersessions b ON a.MID = b.MID
+                INNER JOIN loyaltydb.membercards d ON b.MID = d.MID
+                INNER JOIN loyaltydb.cards c ON d.CardID = c.CardID
+                WHERE a.UserName = :UserName AND a.Password = :Password.
+in C:\xampp\htdocs\MPAPI\protected\models\MembersModel.php (57)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (41)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/06/23 05:16:33 [error] [exception.CDbException] exception 'CDbException' with message 'CDbCommand failed to execute the SQL statement: SQLSTATE[42000]: Syntax error or access violation: 1142 SELECT command denied to user 'pegsconn'@'192.168.29.203' for table 'members'. The SQL statement executed was: SELECT a.MID, a.UserName, a.IsVip, b.SessionID, c.CardTypeID
+                FROM members a
+                INNER JOIN membersessions b ON a.MID = b.MID
+                INNER JOIN loyaltydb.membercards d ON b.MID = d.MID
+                INNER JOIN loyaltydb.cards c ON d.CardID = c.CardID
+                WHERE a.UserName = :UserName AND a.Password = :Password' in C:\xampp\htdocs\yii\framework\db\CDbCommand.php:541
+Stack trace:
+#0 C:\xampp\htdocs\yii\framework\db\CDbCommand.php(414): CDbCommand->queryInternal('fetch', Array, Array)
+#1 C:\xampp\htdocs\MPAPI\protected\models\MembersModel.php(57): CDbCommand->queryRow()
+#2 C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php(41): MembersModel->getLoginInfo('3cshimb@yopmail...', '5f4dcc3b5aa765d...')
+#3 C:\xampp\htdocs\yii\framework\web\actions\CInlineAction.php(49): MPapiController->actionLogin()
+#4 C:\xampp\htdocs\yii\framework\web\CController.php(308): CInlineAction->runWithParams(Array)
+#5 C:\xampp\htdocs\yii\framework\web\CController.php(286): CController->runAction(Object(CInlineAction))
+#6 C:\xampp\htdocs\yii\framework\web\CController.php(265): CController->runActionWithFilters(Object(CInlineAction), Array)
+#7 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(282): CController->run('login')
+#8 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController('MPapi/login')
+#9 C:\xampp\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#10 C:\xampp\htdocs\MPAPI\index.php(13): CApplication->run()
+#11 {main}
+REQUEST_URI=/MPAPI/index.php/MPapi/login
+---
+2014/06/23 05:17:50 [error] [system.db.CDbCommand] CDbCommand::fetch() failed: SQLSTATE[42000]: Syntax error or access violation: 1142 SELECT command denied to user 'pegsconn'@'192.168.29.203' for table 'members'. The SQL statement executed was: SELECT a.MID, a.UserName, a.IsVip
+                FROM members a
+                WHERE a.UserName = :UserName AND a.Password = :Password.
+in C:\xampp\htdocs\MPAPI\protected\models\MembersModel.php (54)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (41)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/06/23 05:17:51 [error] [exception.CDbException] exception 'CDbException' with message 'CDbCommand failed to execute the SQL statement: SQLSTATE[42000]: Syntax error or access violation: 1142 SELECT command denied to user 'pegsconn'@'192.168.29.203' for table 'members'. The SQL statement executed was: SELECT a.MID, a.UserName, a.IsVip
+                FROM members a
+                WHERE a.UserName = :UserName AND a.Password = :Password' in C:\xampp\htdocs\yii\framework\db\CDbCommand.php:541
+Stack trace:
+#0 C:\xampp\htdocs\yii\framework\db\CDbCommand.php(414): CDbCommand->queryInternal('fetch', Array, Array)
+#1 C:\xampp\htdocs\MPAPI\protected\models\MembersModel.php(54): CDbCommand->queryRow()
+#2 C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php(41): MembersModel->getLoginInfo('3cshimb@yopmail...', '5f4dcc3b5aa765d...')
+#3 C:\xampp\htdocs\yii\framework\web\actions\CInlineAction.php(49): MPapiController->actionLogin()
+#4 C:\xampp\htdocs\yii\framework\web\CController.php(308): CInlineAction->runWithParams(Array)
+#5 C:\xampp\htdocs\yii\framework\web\CController.php(286): CController->runAction(Object(CInlineAction))
+#6 C:\xampp\htdocs\yii\framework\web\CController.php(265): CController->runActionWithFilters(Object(CInlineAction), Array)
+#7 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(282): CController->run('login')
+#8 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController('MPapi/login')
+#9 C:\xampp\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#10 C:\xampp\htdocs\MPAPI\index.php(13): CApplication->run()
+#11 {main}
+REQUEST_URI=/MPAPI/index.php/MPapi/login
+---

@@ -1,0 +1,451 @@
+[31-Jul-2014 09:28:57]  [REDEEMITEMS ERROR] TPSessionID is not set or is blank.
+[31-Jul-2014 09:29:58]  [REDEEMITEMS ERROR] TPSessionID is not set or is blank.
+[31-Jul-2014 09:31:04]  [REGISTERMEMBER ERROR] TPSessionID is not set or is blank.
+[31-Jul-2014 09:31:14]  [AUTHENTICATESESSION SUCCESS] Audittrail log success.
+[31-Jul-2014 09:31:15]  [AUTHENTICATESESSION SUCCESS] APIlogs success.
+[31-Jul-2014 09:31:15]  [AUTHENTICATESESSION SUCCESS] TPSessionID Generate Successfully.
+[31-Jul-2014 09:33:00]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[31-Jul-2014 09:36:06]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[31-Jul-2014 09:37:42]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[31-Jul-2014 09:38:19]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[31-Jul-2014 09:59:21]  [GETACTIVESESSION ERROR] Invalid Input.
+[31-Jul-2014 09:59:40]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[31-Jul-2014 10:01:09]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[31-Jul-2014 10:18:31]  [GETACTIVESESSION ERROR] Invalid Input.
+[31-Jul-2014 10:18:45]  [AUTHENTICATESESSION SUCCESS] Audittrail log success.
+[31-Jul-2014 10:18:45]  [AUTHENTICATESESSION SUCCESS] APIlogs success.
+[31-Jul-2014 10:18:45]  [AUTHENTICATESESSION SUCCESS] TPSessionID Generate Successfully.
+[31-Jul-2014 10:18:49]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[31-Jul-2014 10:19:08]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[31-Jul-2014 10:21:24]  [GETISSMOKER ERROR] GetIsSmoker has invalid Session ID.
+[31-Jul-2014 10:21:35]  [GETISSMOKER ERROR] GetIsSmoker has invalid Session ID.
+[31-Jul-2014 10:21:44]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[31-Jul-2014 10:21:48]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[31-Jul-2014 10:26:09]  [REGISTERMEMBER ERROR] RegisterMember has invalid Session ID.
+[31-Jul-2014 10:26:24]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[31-Jul-2014 10:37:43]  [GETPROFILE ERROR] TPSessionID is not set or is blank.
+[31-Jul-2014 10:39:46]  [GETPROFILE ERROR] TPSessionID is not set or is blank.
+[31-Jul-2014 10:40:53]  [GETPROFILE ERROR] TPSessionID is not set or is blank.
+[31-Jul-2014 10:41:02]  [GETPROFILE ERROR] TPSessionID is not set or is blank.
+[31-Jul-2014 10:41:23]  [GETPROFILE ERROR] TPSessionID is not set or is blank.
+[31-Jul-2014 10:41:25]  [GETPROFILE ERROR] TPSessionID is not set or is blank.
+[31-Jul-2014 10:42:21]  [GETISSMOKER ERROR] TPSessionID is not set or is blank.
+[31-Jul-2014 10:42:25]  [GETOCCUPATION ERROR] TPSessionID is not set or is blank.
+[31-Jul-2014 10:42:28]  [GETNATIONALITY ERROR] TPSessionID is not set or is blank.
+[31-Jul-2014 10:42:31]  [GETIDPRESENTED ERROR] TPSessionID is not set or is blank.
+[31-Jul-2014 10:42:36]  [GETGENDER ERROR] TPSessionID is not set or is blank.
+[31-Jul-2014 10:42:40]  [GETPROFILE ERROR] TPSessionID is not set or is blank.
+[31-Jul-2014 10:43:03]  [GETPROFILE ERROR] TPSessionID is not set or is blank.
+[31-Jul-2014 10:43:08]  [REDEEMITEMS ERROR] TPSessionID is not set or is blank.
+[31-Jul-2014 10:43:12]  [LISTITEMS ERROR] TPSessionID is not set or is blank.
+[31-Jul-2014 10:43:15]  [CHECKPOINTS ERROR] TPSessionID is not set or is blank.
+[31-Jul-2014 10:43:19]  [CHECKPOINTS ERROR] TPSessionID is not set or is blank.
+[31-Jul-2014 10:43:24]  [UPDATEPROFILE ERROR] TPSessionID is not set or is blank.
+[31-Jul-2014 10:43:30]  [FORGOTPASSWORD ERROR] TPSessionID is not set or is blank.
+[31-Jul-2014 10:43:33]  [LOGIN ERROR] TPSessionID is not set or is blank.
+[31-Jul-2014 10:43:38]  [GETACTIVESESSION ERROR] TPSessionID is not set or is blank.
+[31-Jul-2014 10:59:45]  [AUTHENTICATESESSION SUCCESS] Audittrail log success.
+[31-Jul-2014 11:25:02]  [AUTHENTICATESESSION SUCCESS] Audittrail log success.
+[31-Jul-2014 11:26:26]  [AUTHENTICATESESSION SUCCESS] Audittrail log success.
+[31-Jul-2014 11:28:14]  [AUTHENTICATESESSION SUCCESS] Audittrail log success.
+[31-Jul-2014 11:29:13]  [AUTHENTICATESESSION SUCCESS] Audittrail log success.
+[31-Jul-2014 11:34:30]  [AUTHENTICATESESSION SUCCESS] Audittrail log success.
+[31-Jul-2014 11:35:31]  [AUTHENTICATESESSION SUCCESS] Audittrail log success.
+[31-Jul-2014 11:36:59]  [AUTHENTICATESESSION SUCCESS] Audittrail log success.
+[31-Jul-2014 11:36:59]  [AUTHENTICATESESSION SUCCESS] APIlogs success.
+[31-Jul-2014 11:37:49]  [GETISSMOKER ERROR] GetIsSmoker has invalid Session ID.
+[31-Jul-2014 11:38:42]  [AUTHENTICATESESSION SUCCESS] Audittrail log success.
+[31-Jul-2014 11:38:42]  [AUTHENTICATESESSION SUCCESS] APIlogs success.
+[31-Jul-2014 11:38:42]  [AUTHENTICATESESSION SUCCESS] TPSessionID Generate Successfully.
+[31-Jul-2014 11:47:01]  [GETISSMOKER ERROR] GetIsSmoker has invalid Session ID.
+[31-Jul-2014 11:53:17]  [GETACTIVESESSION ERROR] Invalid Input.
+[31-Jul-2014 11:53:29]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[31-Jul-2014 11:56:58]  [GETISSMOKER ERROR] GetIsSmoker has invalid Session ID.
+[31-Jul-2014 11:57:07]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[31-Jul-2014 11:57:07]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[31-Jul-2014 13:14:53]  [REGISTERMEMBER ERROR] RegisterMember has invalid Session ID.
+[31-Jul-2014 13:15:01]  [AUTHENTICATESESSION SUCCESS] Audittrail log success.
+[31-Jul-2014 13:15:01]  [AUTHENTICATESESSION SUCCESS] APIlogs success.
+[31-Jul-2014 13:15:01]  [AUTHENTICATESESSION SUCCESS] TPSessionID Generate Successfully.
+[31-Jul-2014 13:15:11]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[31-Jul-2014 13:15:11]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[31-Jul-2014 13:16:40]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[31-Jul-2014 13:16:40]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[31-Jul-2014 13:17:02]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[31-Jul-2014 13:17:02]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[31-Jul-2014 13:24:24]  [REDEEMITEMS ERROR] TPSessionID is not set or is blank.
+[31-Jul-2014 13:24:32]  [AUTHENTICATESESSION SUCCESS] Audittrail log success.
+[31-Jul-2014 13:24:32]  [AUTHENTICATESESSION SUCCESS] APIlogs success.
+[31-Jul-2014 13:24:32]  [AUTHENTICATESESSION SUCCESS] TPSessionID Generate Successfully.
+[31-Jul-2014 13:25:13]  [REDEEMITEMS ERROR] TPSessionID is not set or is blank.
+[31-Jul-2014 13:25:17]  [REDEEMITEMS ERROR] TPSessionID is not set or is blank.
+[31-Jul-2014 13:25:38]  [REDEEMITEMS ERROR] TPSessionID is not set or is blank.
+[31-Jul-2014 13:26:03]  [REDEEMITEMS ERROR] TPSessionID is not set or is blank.
+[31-Jul-2014 13:26:20]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[31-Jul-2014 13:26:20]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[31-Jul-2014 13:29:52]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[31-Jul-2014 13:29:52]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[31-Jul-2014 13:31:12]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[31-Jul-2014 13:31:12]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[31-Jul-2014 13:31:24]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[31-Jul-2014 13:31:24]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[31-Jul-2014 13:33:05]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[31-Jul-2014 13:33:05]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[31-Jul-2014 13:36:30]  [LOGIN ERROR] TPSessionID is not set or is blank.
+[31-Jul-2014 13:38:14]  [LOGIN ERROR] TPSessionID is not set or is blank.
+[31-Jul-2014 13:43:06]  [LOGIN ERROR] TPSessionID is not set or is blank.
+[31-Jul-2014 13:43:30]  [LOGIN ERROR] TPSessionID is not set or is blank.
+[31-Jul-2014 13:43:31]  [LOGIN ERROR] TPSessionID is not set or is blank.
+[31-Jul-2014 13:43:31]  [LOGIN ERROR] TPSessionID is not set or is blank.
+[31-Jul-2014 13:46:49]  [LOGIN ERROR] TPSessionID is not set or is blank.
+[31-Jul-2014 13:53:05]  [LOGIN ERROR] TPSessionID is not set or is blank.
+[31-Jul-2014 13:53:40]  [CHECKPOINTS ERROR] TPSessionID is not set or is blank.
+[31-Jul-2014 14:18:02]  [LOGIN ERROR] TPSessionID is not set or is blank.
+[31-Jul-2014 14:18:08]  [CHECKPOINTS ERROR] TPSessionID is not set or is blank.
+[31-Jul-2014 14:51:37]  [AUTHENTICATESESSION SUCCESS] Audittrail log success.
+[31-Jul-2014 14:51:37]  [AUTHENTICATESESSION SUCCESS] APIlogs success.
+[31-Jul-2014 14:51:37]  [AUTHENTICATESESSION SUCCESS] TPSessionID Generate Successfully.
+[31-Jul-2014 14:51:50]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[31-Jul-2014 14:51:50]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[31-Jul-2014 14:51:50]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[31-Jul-2014 14:57:59]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[31-Jul-2014 14:57:59]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[31-Jul-2014 14:57:59]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[31-Jul-2014 15:03:18]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[31-Jul-2014 15:03:18]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[31-Jul-2014 15:03:18]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[31-Jul-2014 15:11:45]  [FORGOTPASSWORD ERROR] TPSessionID is not set or is blank.
+[31-Jul-2014 15:11:58]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[31-Jul-2014 15:11:58]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[31-Jul-2014 15:11:58]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[31-Jul-2014 15:11:58]  [FORGOTPASSWORD SUCCESS] Audittrail log success.
+[31-Jul-2014 15:11:58]  [FORGOTPASSWORD SUCCESS] APIlogs success.
+[31-Jul-2014 15:15:38]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[31-Jul-2014 15:15:38]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[31-Jul-2014 15:15:38]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[31-Jul-2014 15:15:38]  [FORGOTPASSWORD SUCCESS] Audittrail log success.
+[31-Jul-2014 15:15:38]  [FORGOTPASSWORD SUCCESS] APIlogs success.
+[31-Jul-2014 15:15:56]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[31-Jul-2014 15:15:56]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[31-Jul-2014 15:15:56]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[31-Jul-2014 15:15:56]  [FORGOTPASSWORD SUCCESS] Audittrail log success.
+[31-Jul-2014 15:15:56]  [FORGOTPASSWORD SUCCESS] APIlogs success.
+[31-Jul-2014 15:16:43]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[31-Jul-2014 15:16:43]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[31-Jul-2014 15:16:43]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[31-Jul-2014 15:16:43]  [FORGOTPASSWORD SUCCESS] Audittrail log success.
+[31-Jul-2014 15:16:43]  [FORGOTPASSWORD SUCCESS] APIlogs success.
+[31-Jul-2014 15:28:26]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[31-Jul-2014 15:28:26]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[31-Jul-2014 15:28:26]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[31-Jul-2014 15:28:27]  [FORGOTPASSWORD SUCCESS] Audittrail log success.
+[31-Jul-2014 15:28:27]  [FORGOTPASSWORD SUCCESS] APIlogs success.
+[31-Jul-2014 15:34:09]  [AUTHENTICATESESSION ERROR] One or more fields is not set or is blank.
+[31-Jul-2014 15:38:05]  [GETISSMOKER ERROR] TPSessionID is not set or is blank.
+[31-Jul-2014 15:39:56]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[31-Jul-2014 15:39:56]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[31-Jul-2014 15:39:56]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[31-Jul-2014 15:39:56]  [LOGIN SUCCESS] Audittrail log success.
+[31-Jul-2014 15:39:56]  [LOGIN SUCCESS] APIlogs success.
+[31-Jul-2014 16:09:48]  [AUTHENTICATESESSION SUCCESS] Audittrail log success.
+[31-Jul-2014 16:09:48]  [AUTHENTICATESESSION SUCCESS] APIlogs success.
+[31-Jul-2014 16:09:48]  [AUTHENTICATESESSION SUCCESS] TPSessionID Generate Successfully.
+[31-Jul-2014 16:12:34]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[31-Jul-2014 16:12:34]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[31-Jul-2014 16:12:34]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[31-Jul-2014 16:12:35]  [GETISSMOKER ERROR] TPSessionID is not set or is blank.
+[31-Jul-2014 16:12:52]  [GETISSMOKER ERROR] TPSessionID is not set or is blank.
+[31-Jul-2014 16:12:55]  [GETOCCUPATION ERROR] TPSessionID is not set or is blank.
+[31-Jul-2014 16:12:58]  [GETNATIONALITY ERROR] TPSessionID is not set or is blank.
+[31-Jul-2014 16:13:03]  [GETIDPRESENTED ERROR] TPSessionID is not set or is blank.
+[31-Jul-2014 16:13:07]  [GETIDPRESENTED ERROR] TPSessionID is not set or is blank.
+[31-Jul-2014 16:13:11]  [GETGENDER ERROR] TPSessionID is not set or is blank.
+[31-Jul-2014 16:13:15]  [GETPROFILE ERROR] TPSessionID is not set or is blank.
+[31-Jul-2014 16:21:07]  [ ERROR]  has invalid Session ID.
+[31-Jul-2014 16:21:22]  [ ERROR]  has invalid Session ID.
+[31-Jul-2014 16:21:43]  [AUTHENTICATESESSION SUCCESS] Audittrail log success.
+[31-Jul-2014 16:21:43]  [AUTHENTICATESESSION SUCCESS] APIlogs success.
+[31-Jul-2014 16:21:43]  [AUTHENTICATESESSION SUCCESS] TPSessionID Generate Successfully.
+[31-Jul-2014 16:21:50]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[31-Jul-2014 16:21:50]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[31-Jul-2014 16:21:50]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[31-Jul-2014 16:21:50]  [LOGIN SUCCESS] Audittrail log success.
+[31-Jul-2014 16:21:50]  [LOGIN SUCCESS] APIlogs success.
+[31-Jul-2014 16:22:04]  [ ERROR]  has invalid Session ID.
+[31-Jul-2014 16:23:39]  [LOGIN ERROR] Login has invalid Session ID.
+[31-Jul-2014 16:23:51]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[31-Jul-2014 16:23:51]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[31-Jul-2014 16:23:51]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[31-Jul-2014 16:23:51]  [LOGIN SUCCESS] Audittrail log success.
+[31-Jul-2014 16:23:51]  [LOGIN SUCCESS] APIlogs success.
+[31-Jul-2014 16:24:41]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[31-Jul-2014 16:24:41]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[31-Jul-2014 16:24:41]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[31-Jul-2014 16:24:41]  [LOGIN SUCCESS] Audittrail log success.
+[31-Jul-2014 16:24:41]  [LOGIN SUCCESS] APIlogs success.
+[31-Jul-2014 16:24:47]  [LOGIN ERROR] Login has invalid Session ID.
+[31-Jul-2014 16:26:07]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[31-Jul-2014 16:26:07]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[31-Jul-2014 16:26:07]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[31-Jul-2014 16:26:11]  [REGISTERMEMBER SUCCESS] Audittrail log success.
+[31-Jul-2014 16:26:11]  [REGISTERMEMBER SUCCESS] APIlogs success.
+[31-Jul-2014 16:26:46]  [REGISTERMEMBER ERROR] RegisterMember has invalid Session ID.
+[31-Jul-2014 16:26:58]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[31-Jul-2014 16:26:58]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[31-Jul-2014 16:26:58]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[31-Jul-2014 16:26:58]  [REGISTERMEMBER SUCCESS] Audittrail log success.
+[31-Jul-2014 16:26:58]  [REGISTERMEMBER SUCCESS] APIlogs success.
+[31-Jul-2014 16:30:08]  [UPDATEPROFILE ERROR] TPSessionID is not set or is blank.
+[31-Jul-2014 16:36:15]  [UPDATEPROFILE ERROR] UpdateProfile has invalid Session ID.
+[31-Jul-2014 16:41:25]  [UPDATEPROFILE SUCCESS] Audittrail log success.
+[31-Jul-2014 16:41:25]  [UPDATEPROFILE SUCCESS] APIlogs success.
+[31-Jul-2014 16:51:03]  [GETACTIVESESSION ERROR] TPSessionID is not set or is blank.
+[31-Jul-2014 16:51:25]  [AUTHENTICATESESSION SUCCESS] Audittrail log success.
+[31-Jul-2014 16:51:25]  [AUTHENTICATESESSION SUCCESS] APIlogs success.
+[31-Jul-2014 16:51:25]  [AUTHENTICATESESSION SUCCESS] TPSessionID Generate Successfully.
+[31-Jul-2014 16:57:39]  [UPDATEPROFILE SUCCESS] Audittrail log success.
+[31-Jul-2014 16:57:39]  [UPDATEPROFILE SUCCESS] APIlogs success.
+[31-Jul-2014 16:58:37]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[31-Jul-2014 16:58:37]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[31-Jul-2014 16:58:37]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[31-Jul-2014 17:00:54]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[31-Jul-2014 17:00:54]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[31-Jul-2014 17:00:54]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[31-Jul-2014 17:02:02]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[31-Jul-2014 17:02:02]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[31-Jul-2014 17:02:02]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[31-Jul-2014 17:05:42]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[31-Jul-2014 17:05:42]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[31-Jul-2014 17:05:42]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[31-Jul-2014 17:18:19]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[31-Jul-2014 17:18:19]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[31-Jul-2014 17:18:19]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[31-Jul-2014 17:28:41]  [AUTHENTICATESESSION ERROR] One or more fields is not set or is blank.
+[31-Jul-2014 17:28:47]  [GETACTIVESESSION ERROR] TPSessionID is not set or is blank.
+[31-Jul-2014 17:29:41]  [UPDATEPROFILE ERROR] MobileNo is not set or is blank.
+[31-Jul-2014 17:29:57]  [UPDATEPROFILE SUCCESS] Audittrail log success.
+[31-Jul-2014 17:29:57]  [UPDATEPROFILE SUCCESS] APIlogs success.
+[31-Jul-2014 17:30:03]  [UPDATEPROFILE SUCCESS] Audittrail log success.
+[31-Jul-2014 17:30:04]  [UPDATEPROFILE SUCCESS] APIlogs success.
+[31-Jul-2014 17:30:40]  [UPDATEPROFILE SUCCESS] Audittrail log success.
+[31-Jul-2014 17:30:40]  [UPDATEPROFILE SUCCESS] APIlogs success.
+[31-Jul-2014 17:34:15]  [UPDATEPROFILE SUCCESS] Audittrail log success.
+[31-Jul-2014 17:34:15]  [UPDATEPROFILE SUCCESS] APIlogs success.
+[31-Jul-2014 17:34:39]  [UPDATEPROFILE SUCCESS] Audittrail log success.
+[31-Jul-2014 17:34:39]  [UPDATEPROFILE SUCCESS] APIlogs success.
+[31-Jul-2014 17:35:49]  [UPDATEPROFILE SUCCESS] Audittrail log success.
+[31-Jul-2014 17:35:49]  [UPDATEPROFILE SUCCESS] APIlogs success.
+[31-Jul-2014 17:41:03]  [UPDATEPROFILE SUCCESS] Audittrail log success.
+[31-Jul-2014 17:41:03]  [UPDATEPROFILE SUCCESS] APIlogs success.
+[31-Jul-2014 17:43:22]  [UPDATEPROFILE SUCCESS] Audittrail log success.
+[31-Jul-2014 17:43:22]  [UPDATEPROFILE SUCCESS] APIlogs success.
+[31-Jul-2014 17:48:15]  [UPDATEPROFILE SUCCESS] Audittrail log success.
+[31-Jul-2014 17:48:15]  [UPDATEPROFILE SUCCESS] APIlogs success.
+[31-Jul-2014 17:54:29]  [REGISTERMEMBER ERROR] RegisterMember contains expired SessionID.
+[31-Jul-2014 17:54:40]  [AUTHENTICATESESSION SUCCESS] Audittrail log success.
+[31-Jul-2014 17:54:40]  [AUTHENTICATESESSION SUCCESS] APIlogs success.
+[31-Jul-2014 17:54:40]  [AUTHENTICATESESSION SUCCESS] TPSessionID Generate Successfully.
+[31-Jul-2014 17:54:45]  [REGISTERMEMBER ERROR] RegisterMember has invalid Session ID.
+[31-Jul-2014 17:54:55]  [AUTHENTICATESESSION SUCCESS] Audittrail log success.
+[31-Jul-2014 17:54:55]  [AUTHENTICATESESSION SUCCESS] APIlogs success.
+[31-Jul-2014 17:54:55]  [AUTHENTICATESESSION SUCCESS] TPSessionID Generate Successfully.
+[31-Jul-2014 17:55:03]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[31-Jul-2014 17:55:03]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[31-Jul-2014 17:55:03]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[31-Jul-2014 17:55:03]  [REGISTERMEMBER SUCCESS] Audittrail log success.
+[31-Jul-2014 17:55:03]  [REGISTERMEMBER SUCCESS] APIlogs success.
+[31-Jul-2014 17:55:35]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[31-Jul-2014 17:55:35]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[31-Jul-2014 17:55:35]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[31-Jul-2014 17:55:35]  [REGISTERMEMBER SUCCESS] Audittrail log success.
+[31-Jul-2014 17:55:35]  [REGISTERMEMBER SUCCESS] APIlogs success.
+[31-Jul-2014 17:56:02]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[31-Jul-2014 17:56:02]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[31-Jul-2014 17:56:02]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[31-Jul-2014 17:56:02]  [REGISTERMEMBER SUCCESS] Audittrail log success.
+[31-Jul-2014 17:56:02]  [REGISTERMEMBER SUCCESS] APIlogs success.
+[31-Jul-2014 17:56:36]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[31-Jul-2014 17:56:36]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[31-Jul-2014 17:56:36]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[31-Jul-2014 17:56:36]  [REGISTERMEMBER SUCCESS] Audittrail log success.
+[31-Jul-2014 17:56:36]  [REGISTERMEMBER SUCCESS] APIlogs success.
+[31-Jul-2014 17:56:44]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[31-Jul-2014 17:56:44]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[31-Jul-2014 17:56:44]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[31-Jul-2014 17:56:44]  [REGISTERMEMBER SUCCESS] Audittrail log success.
+[31-Jul-2014 17:56:44]  [REGISTERMEMBER SUCCESS] APIlogs success.
+[31-Jul-2014 17:56:50]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[31-Jul-2014 17:56:50]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[31-Jul-2014 17:56:50]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[31-Jul-2014 17:56:50]  [REGISTERMEMBER SUCCESS] Audittrail log success.
+[31-Jul-2014 17:56:50]  [REGISTERMEMBER SUCCESS] APIlogs success.
+[31-Jul-2014 17:57:04]  [REGISTERMEMBER ERROR] TPSessionID is not set or is blank.
+[31-Jul-2014 17:57:14]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[31-Jul-2014 17:57:14]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[31-Jul-2014 17:57:14]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[31-Jul-2014 17:57:14]  [REGISTERMEMBER SUCCESS] Audittrail log success.
+[31-Jul-2014 17:57:14]  [REGISTERMEMBER SUCCESS] APIlogs success.
+[31-Jul-2014 17:58:54]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[31-Jul-2014 17:58:54]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[31-Jul-2014 17:58:54]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[31-Jul-2014 17:58:54]  [REGISTERMEMBER SUCCESS] Audittrail log success.
+[31-Jul-2014 17:58:54]  [REGISTERMEMBER SUCCESS] APIlogs success.
+[31-Jul-2014 18:00:16]  [UPDATEPROFILE ERROR] UpdateProfile has invalid Session ID.
+[31-Jul-2014 18:00:31]  [UPDATEPROFILE SUCCESS] Audittrail log success.
+[31-Jul-2014 18:00:31]  [UPDATEPROFILE SUCCESS] APIlogs success.
+[31-Jul-2014 18:13:41]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[31-Jul-2014 18:13:41]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[31-Jul-2014 18:13:41]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[31-Jul-2014 18:13:48]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[31-Jul-2014 18:13:48]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[31-Jul-2014 18:13:48]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[31-Jul-2014 18:13:53]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[31-Jul-2014 18:13:53]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[31-Jul-2014 18:13:53]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[31-Jul-2014 18:13:58]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[31-Jul-2014 18:13:58]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[31-Jul-2014 18:13:58]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[31-Jul-2014 18:17:37]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[31-Jul-2014 18:17:37]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[31-Jul-2014 18:17:37]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[31-Jul-2014 18:17:37]  [REGISTERMEMBER SUCCESS] Audittrail log success.
+[31-Jul-2014 18:17:37]  [REGISTERMEMBER SUCCESS] APIlogs success.
+[31-Jul-2014 18:17:45]  [UPDATEPROFILE SUCCESS] Audittrail log success.
+[31-Jul-2014 18:17:45]  [UPDATEPROFILE SUCCESS] APIlogs success.
+[31-Jul-2014 18:37:14]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[31-Jul-2014 18:37:14]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[31-Jul-2014 18:37:14]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[31-Jul-2014 18:37:14]  [REGISTERMEMBER SUCCESS] Audittrail log success.
+[31-Jul-2014 18:37:14]  [REGISTERMEMBER SUCCESS] APIlogs success.
+[31-Jul-2014 18:42:57]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[31-Jul-2014 18:42:57]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[31-Jul-2014 18:42:57]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[31-Jul-2014 18:42:57]  [REGISTERMEMBER SUCCESS] Audittrail log success.
+[31-Jul-2014 18:42:57]  [REGISTERMEMBER SUCCESS] APIlogs success.
+[31-Jul-2014 21:47:07]  [REGISTERMEMBER ERROR] RegisterMember contains expired SessionID.
+[31-Jul-2014 21:47:15]  [AUTHENTICATESESSION SUCCESS] Audittrail log success.
+[31-Jul-2014 21:47:15]  [AUTHENTICATESESSION SUCCESS] APIlogs success.
+[31-Jul-2014 21:47:15]  [AUTHENTICATESESSION SUCCESS] TPSessionID Generate Successfully.
+[31-Jul-2014 21:47:22]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[31-Jul-2014 21:47:22]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[31-Jul-2014 21:47:22]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[31-Jul-2014 21:47:22]  [REGISTERMEMBER SUCCESS] Audittrail log success.
+[31-Jul-2014 21:47:22]  [REGISTERMEMBER SUCCESS] APIlogs success.
+[31-Jul-2014 21:48:20]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[31-Jul-2014 21:48:20]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[31-Jul-2014 21:48:20]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[31-Jul-2014 21:48:20]  [REGISTERMEMBER SUCCESS] Audittrail log success.
+[31-Jul-2014 21:48:20]  [REGISTERMEMBER SUCCESS] APIlogs success.
+[31-Jul-2014 21:49:16]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[31-Jul-2014 21:49:16]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[31-Jul-2014 21:49:16]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[31-Jul-2014 21:49:16]  [REGISTERMEMBER SUCCESS] Audittrail log success.
+[31-Jul-2014 21:49:16]  [REGISTERMEMBER SUCCESS] APIlogs success.
+[31-Jul-2014 21:50:58]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[31-Jul-2014 21:50:58]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[31-Jul-2014 21:50:58]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[31-Jul-2014 21:50:58]  [REGISTERMEMBER SUCCESS] Audittrail log success.
+[31-Jul-2014 21:50:58]  [REGISTERMEMBER SUCCESS] APIlogs success.
+[31-Jul-2014 21:51:15]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[31-Jul-2014 21:51:15]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[31-Jul-2014 21:51:15]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[31-Jul-2014 21:51:15]  [REGISTERMEMBER SUCCESS] Audittrail log success.
+[31-Jul-2014 21:51:15]  [REGISTERMEMBER SUCCESS] APIlogs success.
+[31-Jul-2014 22:07:37]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[31-Jul-2014 22:07:37]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[31-Jul-2014 22:07:37]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[31-Jul-2014 22:07:37]  [REGISTERMEMBER SUCCESS] Audittrail log success.
+[31-Jul-2014 22:07:37]  [REGISTERMEMBER SUCCESS] APIlogs success.
+[31-Jul-2014 22:08:56]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[31-Jul-2014 22:08:56]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[31-Jul-2014 22:08:56]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[31-Jul-2014 22:08:56]  [REGISTERMEMBER SUCCESS] Audittrail log success.
+[31-Jul-2014 22:08:56]  [REGISTERMEMBER SUCCESS] APIlogs success.
+[31-Jul-2014 22:09:30]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[31-Jul-2014 22:09:30]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[31-Jul-2014 22:09:30]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[31-Jul-2014 22:09:30]  [REGISTERMEMBER SUCCESS] Audittrail log success.
+[31-Jul-2014 22:09:30]  [REGISTERMEMBER SUCCESS] APIlogs success.
+[31-Jul-2014 22:13:25]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[31-Jul-2014 22:13:25]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[31-Jul-2014 22:13:25]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[31-Jul-2014 22:13:25]  [REGISTERMEMBER SUCCESS] Audittrail log success.
+[31-Jul-2014 22:13:25]  [REGISTERMEMBER SUCCESS] APIlogs success.
+[31-Jul-2014 22:14:49]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[31-Jul-2014 22:14:49]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[31-Jul-2014 22:14:49]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[31-Jul-2014 22:14:49]  [REGISTERMEMBER SUCCESS] Audittrail log success.
+[31-Jul-2014 22:14:49]  [REGISTERMEMBER SUCCESS] APIlogs success.
+[31-Jul-2014 22:15:24]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[31-Jul-2014 22:15:24]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[31-Jul-2014 22:15:24]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[31-Jul-2014 22:15:24]  [REGISTERMEMBER SUCCESS] Audittrail log success.
+[31-Jul-2014 22:15:24]  [REGISTERMEMBER SUCCESS] APIlogs success.
+[31-Jul-2014 22:16:16]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[31-Jul-2014 22:16:16]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[31-Jul-2014 22:16:16]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[31-Jul-2014 22:16:16]  [REGISTERMEMBER SUCCESS] Audittrail log success.
+[31-Jul-2014 22:16:16]  [REGISTERMEMBER SUCCESS] APIlogs success.
+[31-Jul-2014 22:18:37]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[31-Jul-2014 22:18:37]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[31-Jul-2014 22:18:37]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[31-Jul-2014 22:18:37]  [REGISTERMEMBER SUCCESS] Audittrail log success.
+[31-Jul-2014 22:18:37]  [REGISTERMEMBER SUCCESS] APIlogs success.
+[31-Jul-2014 22:22:04]  [REGISTERMEMBER ERROR] TPSessionID is not set or is blank.
+[31-Jul-2014 22:24:05]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[31-Jul-2014 22:24:05]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[31-Jul-2014 22:24:05]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[31-Jul-2014 22:24:05]  [REGISTERMEMBER SUCCESS] Audittrail log success.
+[31-Jul-2014 22:24:05]  [REGISTERMEMBER SUCCESS] APIlogs success.
+[31-Jul-2014 22:24:29]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[31-Jul-2014 22:24:29]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[31-Jul-2014 22:24:29]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[31-Jul-2014 22:24:29]  [REGISTERMEMBER SUCCESS] Audittrail log success.
+[31-Jul-2014 22:24:29]  [REGISTERMEMBER SUCCESS] APIlogs success.
+[31-Jul-2014 22:26:33]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[31-Jul-2014 22:26:33]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[31-Jul-2014 22:26:33]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[31-Jul-2014 22:26:41]  [REGISTERMEMBER SUCCESS] Audittrail log success.
+[31-Jul-2014 22:26:41]  [REGISTERMEMBER SUCCESS] APIlogs success.
+[31-Jul-2014 22:26:52]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[31-Jul-2014 22:26:52]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[31-Jul-2014 22:26:52]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[31-Jul-2014 22:26:52]  [REGISTERMEMBER SUCCESS] Audittrail log success.
+[31-Jul-2014 22:26:52]  [REGISTERMEMBER SUCCESS] APIlogs success.
+[31-Jul-2014 22:30:10]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[31-Jul-2014 22:30:10]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[31-Jul-2014 22:30:10]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[31-Jul-2014 22:30:17]  [REGISTERMEMBER SUCCESS] Audittrail log success.
+[31-Jul-2014 22:30:17]  [REGISTERMEMBER SUCCESS] APIlogs success.
+[31-Jul-2014 22:30:32]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[31-Jul-2014 22:30:32]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[31-Jul-2014 22:30:32]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[31-Jul-2014 22:30:32]  [REGISTERMEMBER SUCCESS] Audittrail log success.
+[31-Jul-2014 22:30:32]  [REGISTERMEMBER SUCCESS] APIlogs success.
+[31-Jul-2014 22:36:39]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[31-Jul-2014 22:36:39]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[31-Jul-2014 22:36:39]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[31-Jul-2014 22:37:23]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[31-Jul-2014 22:37:23]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[31-Jul-2014 22:37:23]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[31-Jul-2014 22:37:30]  [REGISTERMEMBER SUCCESS] Audittrail log success.
+[31-Jul-2014 22:37:30]  [REGISTERMEMBER SUCCESS] APIlogs success.
+[31-Jul-2014 22:38:38]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[31-Jul-2014 22:38:38]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[31-Jul-2014 22:38:38]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[31-Jul-2014 22:39:20]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[31-Jul-2014 22:39:20]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[31-Jul-2014 22:39:20]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[31-Jul-2014 22:39:55]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[31-Jul-2014 22:39:55]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[31-Jul-2014 22:39:55]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[31-Jul-2014 22:40:15]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[31-Jul-2014 22:40:15]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[31-Jul-2014 22:40:15]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[31-Jul-2014 22:41:17]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[31-Jul-2014 22:41:17]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[31-Jul-2014 22:41:17]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[31-Jul-2014 22:43:49]  [GETACTIVESESSION ERROR] TPSessionID is not set or is blank.
+[31-Jul-2014 22:45:41]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[31-Jul-2014 22:45:41]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[31-Jul-2014 22:45:41]  [GETACTIVESESSION SUCCESS] APIlogs success.

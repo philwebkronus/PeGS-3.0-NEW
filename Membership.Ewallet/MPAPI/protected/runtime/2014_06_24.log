@@ -1,0 +1,114 @@
+2014/06/24 06:58:06 [error] [application] Error Message: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (29)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/06/24 06:58:23 [error] [application] Error Message: Invalid input. ErrorCode: 2
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (85)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/06/24 07:21:00 [error] [application] Error Message: Member not found ErrorCode: 3
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (77)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/06/24 07:24:47 [error] [system.db.CDbCommand] CDbCommand::fetch() failed: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'membership.membercards' doesn't exist. The SQL statement executed was: SELECT MID
+                FROM membercards
+                WHERE CardNumber = :CardNumber.
+in C:\xampp\htdocs\MPAPI\protected\models\MemberCardsModel.php (84)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (467)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/06/24 07:24:48 [error] [exception.CDbException] exception 'CDbException' with message 'CDbCommand failed to execute the SQL statement: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'membership.membercards' doesn't exist. The SQL statement executed was: SELECT MID
+                FROM membercards
+                WHERE CardNumber = :CardNumber' in C:\xampp\htdocs\yii\framework\db\CDbCommand.php:541
+Stack trace:
+#0 C:\xampp\htdocs\yii\framework\db\CDbCommand.php(414): CDbCommand->queryInternal('fetch', Array, Array)
+#1 C:\xampp\htdocs\MPAPI\protected\models\MemberCardsModel.php(84): CDbCommand->queryRow(true, Array)
+#2 C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php(467): MemberCardsModel->getMIDUsingCard('UBW2L6H4')
+#3 C:\xampp\htdocs\yii\framework\web\actions\CInlineAction.php(49): MPapiController->actionGetProfile()
+#4 C:\xampp\htdocs\yii\framework\web\CController.php(308): CInlineAction->runWithParams(Array)
+#5 C:\xampp\htdocs\yii\framework\web\CController.php(286): CController->runAction(Object(CInlineAction))
+#6 C:\xampp\htdocs\yii\framework\web\CController.php(265): CController->runActionWithFilters(Object(CInlineAction), Array)
+#7 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(282): CController->run('getprofile')
+#8 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController('MPapi/getprofil...')
+#9 C:\xampp\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#10 C:\xampp\htdocs\MPAPI\index.php(13): CApplication->run()
+#11 {main}
+REQUEST_URI=/MPAPI/index.php/MPapi/getprofile
+---
+2014/06/24 07:25:14 [error] [system.db.CDbCommand] CDbCommand::fetch() failed: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens. The SQL statement executed was: SELECT ri.RewardItemID,rp.PartnerName, ri.ItemName, rc.Description as Category, ri.RequiredPoints as Points,rpc.Description as Eligibility, 
+                                    CASE ri.Status
+                                        WHEN 1 THEN 'Active'
+                                        WHEN 2 THEN 'Inactive'
+                                        WHEN 3 THEN 'Out-Of-Stock'
+                                    END as Status, ri.AvailableItemCount, ri.OfferStartDate, ri.OfferEndDate, ri.About, ri.Terms, ri.SubText as Description
+                                    FROM rewarditems ri
+                                    LEFT JOIN ref_partners rp ON rp.PartnerID = ri.PartnerID
+                                    INNER JOIN ref_playerclassification rpc ON rpc.PClassID = ri.PClassID
+                                    LEFT JOIN ref_category rc ON rc.CategoryID = ri.CategoryID
+                                    WHERE RewardID = :RewardType AND ri.Status IN (1,2,3).
+in C:\xampp\htdocs\MPAPI\protected\models\RewardItemsModel.php (83)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (386)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/06/24 07:25:15 [error] [exception.CDbException] exception 'CDbException' with message 'CDbCommand failed to execute the SQL statement: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens. The SQL statement executed was: SELECT ri.RewardItemID,rp.PartnerName, ri.ItemName, rc.Description as Category, ri.RequiredPoints as Points,rpc.Description as Eligibility, 
+                                    CASE ri.Status
+                                        WHEN 1 THEN 'Active'
+                                        WHEN 2 THEN 'Inactive'
+                                        WHEN 3 THEN 'Out-Of-Stock'
+                                    END as Status, ri.AvailableItemCount, ri.OfferStartDate, ri.OfferEndDate, ri.About, ri.Terms, ri.SubText as Description
+                                    FROM rewarditems ri
+                                    LEFT JOIN ref_partners rp ON rp.PartnerID = ri.PartnerID
+                                    INNER JOIN ref_playerclassification rpc ON rpc.PClassID = ri.PClassID
+                                    LEFT JOIN ref_category rc ON rc.CategoryID = ri.CategoryID
+                                    WHERE RewardID = :RewardType AND ri.Status IN (1,2,3)' in C:\xampp\htdocs\yii\framework\db\CDbCommand.php:541
+Stack trace:
+#0 C:\xampp\htdocs\yii\framework\db\CDbCommand.php(414): CDbCommand->queryInternal('fetch', Array, Array)
+#1 C:\xampp\htdocs\MPAPI\protected\models\RewardItemsModel.php(83): CDbCommand->queryRow(true, Array)
+#2 C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php(386): RewardItemsModel->getRewardItemsForManageRewards()
+#3 C:\xampp\htdocs\yii\framework\web\actions\CInlineAction.php(49): MPapiController->actionListItems()
+#4 C:\xampp\htdocs\yii\framework\web\CController.php(308): CInlineAction->runWithParams(Array)
+#5 C:\xampp\htdocs\yii\framework\web\CController.php(286): CController->runAction(Object(CInlineAction))
+#6 C:\xampp\htdocs\yii\framework\web\CController.php(265): CController->runActionWithFilters(Object(CInlineAction), Array)
+#7 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(282): CController->run('listitems')
+#8 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController('MPapi/listitems')
+#9 C:\xampp\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#10 C:\xampp\htdocs\MPAPI\index.php(13): CApplication->run()
+#11 {main}
+REQUEST_URI=/MPAPI/index.php/MPapi/listitems
+---
+2014/06/24 07:25:27 [error] [system.db.CDbCommand] CDbCommand::fetch() failed: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'membership.membercards' doesn't exist. The SQL statement executed was: SELECT a.MID, b.Status, b.CardTypeID
+                FROM membercards a
+                INNER JOIN cards b ON a.CardID = b.CardID
+                WHERE b.CardNumber = :CardNumber.
+in C:\xampp\htdocs\MPAPI\protected\models\MemberCardsModel.php (53)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (323)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/06/24 07:25:28 [error] [exception.CDbException] exception 'CDbException' with message 'CDbCommand failed to execute the SQL statement: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'membership.membercards' doesn't exist. The SQL statement executed was: SELECT a.MID, b.Status, b.CardTypeID
+                FROM membercards a
+                INNER JOIN cards b ON a.CardID = b.CardID
+                WHERE b.CardNumber = :CardNumber' in C:\xampp\htdocs\yii\framework\db\CDbCommand.php:541
+Stack trace:
+#0 C:\xampp\htdocs\yii\framework\db\CDbCommand.php(414): CDbCommand->queryInternal('fetch', Array, Array)
+#1 C:\xampp\htdocs\MPAPI\protected\models\MemberCardsModel.php(53): CDbCommand->queryRow(true, Array)
+#2 C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php(323): MemberCardsModel->getMemberDetailsByCard('UBW2L6H4')
+#3 C:\xampp\htdocs\yii\framework\web\actions\CInlineAction.php(49): MPapiController->actionCheckPoints()
+#4 C:\xampp\htdocs\yii\framework\web\CController.php(308): CInlineAction->runWithParams(Array)
+#5 C:\xampp\htdocs\yii\framework\web\CController.php(286): CController->runAction(Object(CInlineAction))
+#6 C:\xampp\htdocs\yii\framework\web\CController.php(265): CController->runActionWithFilters(Object(CInlineAction), Array)
+#7 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(282): CController->run('checkpoints')
+#8 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController('MPapi/checkpoin...')
+#9 C:\xampp\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#10 C:\xampp\htdocs\MPAPI\index.php(13): CApplication->run()
+#11 {main}
+REQUEST_URI=/MPAPI/index.php/MPapi/checkpoints
+---
+2014/06/24 07:33:36 [error] [application] Error Message: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (29)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/06/24 07:33:59 [error] [application] Error Message: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (29)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/06/24 07:35:35 [error] [application] Error Message: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (29)
+in C:\xampp\htdocs\MPAPI\index.php (13)

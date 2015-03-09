@@ -1,0 +1,6 @@
+[16-Feb-2015 03:48:48] Error "Card Number is blank" File: C:\xampp\htdocs\membership\membership.rewards\API\cardinquiry.php LINE: 70
+[16-Feb-2015 04:03:44] Error "Card Not Found[003]: sadasd" File: C:\xampp\htdocs\membership\membership.rewards\API\cardinquiry.php LINE: 205
+[16-Feb-2015 04:03:44] Error "Card Not Found[004]: sadasd" File: C:\xampp\htdocs\membership\membership.rewards\rsframework\include\Modules\Loyalty\classes\GetCardInfoAPI.class.php LINE: 621
+[16-Feb-2015 04:30:28] Error "Invalid card number: " File: C:\xampp\htdocs\membership\membership.rewards\API\cardinquiry.php LINE: 240
+[16-Feb-2015 04:30:31] Error "Card Not Found[003]: adsad" File: C:\xampp\htdocs\membership\membership.rewards\API\cardinquiry.php LINE: 205
+[16-Feb-2015 04:30:31] Error "Card Not Found[004]: adsad" File: C:\xampp\htdocs\membership\membership.rewards\rsframework\include\Modules\Loyalty\classes\GetCardInfoAPI.class.php LINE: 623

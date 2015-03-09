@@ -1,0 +1,131 @@
+2014/08/12 10:44:46 [error] [application] ReturnMessage: Redemption successful. ErrorCode: 0
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (3126)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/12 10:58:58 [error] [application] ReturnMessage: Redemption successful. ErrorCode: 0
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (3126)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/12 11:20:40 [error] [application] ReturnMessage: Redemption successful. ErrorCode: 0
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (3126)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/12 14:18:08 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (287)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/12 08:37:18 [error] [exception.Exception] exception 'Exception' with message 'DateTimeZone::__construct() [<a href='datetimezone.--construct'>datetimezone.--construct</a>]: Unknown or bad timezone (Asia)' in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php:281
+Stack trace:
+#0 C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php(281): DateTimeZone->__construct('Asia')
+#1 C:\xampp\htdocs\yii\framework\web\actions\CInlineAction.php(49): MPapiController->actionLogin()
+#2 C:\xampp\htdocs\yii\framework\web\CController.php(308): CInlineAction->runWithParams(Array)
+#3 C:\xampp\htdocs\yii\framework\web\CController.php(286): CController->runAction(Object(CInlineAction))
+#4 C:\xampp\htdocs\yii\framework\web\CController.php(265): CController->runActionWithFilters(Object(CInlineAction), Array)
+#5 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(282): CController->run('login')
+#6 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController('MPapi/login')
+#7 C:\xampp\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#8 C:\xampp\htdocs\MPAPI\index.php(13): CApplication->run()
+#9 {main}
+REQUEST_URI=/MPAPI/index.php/MPapi/login
+---
+2014/08/12 08:37:39 [error] [exception.Exception] exception 'Exception' with message 'DateTimeZone::__construct() [<a href='datetimezone.--construct'>datetimezone.--construct</a>]: Unknown or bad timezone (Asia/Pacific)' in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php:281
+Stack trace:
+#0 C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php(281): DateTimeZone->__construct('Asia/Pacific')
+#1 C:\xampp\htdocs\yii\framework\web\actions\CInlineAction.php(49): MPapiController->actionLogin()
+#2 C:\xampp\htdocs\yii\framework\web\CController.php(308): CInlineAction->runWithParams(Array)
+#3 C:\xampp\htdocs\yii\framework\web\CController.php(286): CController->runAction(Object(CInlineAction))
+#4 C:\xampp\htdocs\yii\framework\web\CController.php(265): CController->runActionWithFilters(Object(CInlineAction), Array)
+#5 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(282): CController->run('login')
+#6 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController('MPapi/login')
+#7 C:\xampp\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#8 C:\xampp\htdocs\MPAPI\index.php(13): CApplication->run()
+#9 {main}
+REQUEST_URI=/MPAPI/index.php/MPapi/login
+---
+2014/08/12 08:37:58 [error] [exception.Exception] exception 'Exception' with message 'DateTimeZone::__construct() [<a href='datetimezone.--construct'>datetimezone.--construct</a>]: Unknown or bad timezone (Pacific/Chatam)' in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php:281
+Stack trace:
+#0 C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php(281): DateTimeZone->__construct('Pacific/Chatam')
+#1 C:\xampp\htdocs\yii\framework\web\actions\CInlineAction.php(49): MPapiController->actionLogin()
+#2 C:\xampp\htdocs\yii\framework\web\CController.php(308): CInlineAction->runWithParams(Array)
+#3 C:\xampp\htdocs\yii\framework\web\CController.php(286): CController->runAction(Object(CInlineAction))
+#4 C:\xampp\htdocs\yii\framework\web\CController.php(265): CController->runActionWithFilters(Object(CInlineAction), Array)
+#5 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(282): CController->run('login')
+#6 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController('MPapi/login')
+#7 C:\xampp\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#8 C:\xampp\htdocs\MPAPI\index.php(13): CApplication->run()
+#9 {main}
+REQUEST_URI=/MPAPI/index.php/MPapi/login
+---
+2014/08/12 08:52:55 [error] [exception.Exception] exception 'Exception' with message 'DateTime::__construct() [<a href='datetime.--construct'>datetime.--construct</a>]: Failed to parse time string ([12-Aug-2014 08:52:54]) at position 0 ([): Unexpected character' in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php:296
+Stack trace:
+#0 C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php(296): DateTime->__construct('[12-Aug-2014 08...')
+#1 C:\xampp\htdocs\yii\framework\web\actions\CInlineAction.php(49): MPapiController->actionLogin()
+#2 C:\xampp\htdocs\yii\framework\web\CController.php(308): CInlineAction->runWithParams(Array)
+#3 C:\xampp\htdocs\yii\framework\web\CController.php(286): CController->runAction(Object(CInlineAction))
+#4 C:\xampp\htdocs\yii\framework\web\CController.php(265): CController->runActionWithFilters(Object(CInlineAction), Array)
+#5 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(282): CController->run('login')
+#6 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController('MPapi/login')
+#7 C:\xampp\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#8 C:\xampp\htdocs\MPAPI\index.php(13): CApplication->run()
+#9 {main}
+REQUEST_URI=/MPAPI/index.php/MPapi/login
+---
+2014/08/12 08:53:23 [error] [php] Object of class DateTime could not be converted to string (C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php:298)
+Stack trace:
+#0 C:\xampp\htdocs\yii\framework\web\CController.php(286): MPapiController->runAction()
+#1 C:\xampp\htdocs\yii\framework\web\CController.php(265): MPapiController->runActionWithFilters()
+#2 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(282): MPapiController->run()
+#3 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController()
+#4 C:\xampp\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#5 C:\xampp\htdocs\MPAPI\index.php(13): CWebApplication->run()
+REQUEST_URI=/MPAPI/index.php/MPapi/login
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (298)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/12 08:54:05 [error] [php] Object of class DateTime could not be converted to string (C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php:298)
+Stack trace:
+#0 C:\xampp\htdocs\yii\framework\web\CController.php(286): MPapiController->runAction()
+#1 C:\xampp\htdocs\yii\framework\web\CController.php(265): MPapiController->runActionWithFilters()
+#2 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(282): MPapiController->run()
+#3 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController()
+#4 C:\xampp\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#5 C:\xampp\htdocs\MPAPI\index.php(13): CWebApplication->run()
+REQUEST_URI=/MPAPI/index.php/MPapi/login
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (298)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/12 09:03:20 [error] [php] Object of class DateTime could not be converted to string (C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php:301)
+Stack trace:
+#0 C:\xampp\htdocs\yii\framework\web\CController.php(286): MPapiController->runAction()
+#1 C:\xampp\htdocs\yii\framework\web\CController.php(265): MPapiController->runActionWithFilters()
+#2 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(282): MPapiController->run()
+#3 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController()
+#4 C:\xampp\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#5 C:\xampp\htdocs\MPAPI\index.php(13): CWebApplication->run()
+REQUEST_URI=/MPAPI/index.php/MPapi/login
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (301)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/12 15:15:18 [error] [php] Object of class DateTime could not be converted to string (C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php:411)
+Stack trace:
+#0 C:\xampp\htdocs\yii\framework\web\CController.php(286): MPapiController->runAction()
+#1 C:\xampp\htdocs\yii\framework\web\CController.php(265): MPapiController->runActionWithFilters()
+#2 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(282): MPapiController->run()
+#3 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController()
+#4 C:\xampp\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#5 C:\xampp\htdocs\MPAPI\index.php(13): CWebApplication->run()
+REQUEST_URI=/MPAPI/index.php/MPapi/login
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (411)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/12 09:33:52 [error] [exception.Exception] exception 'Exception' with message 'DateTime::__construct() [<a href='datetime.--construct'>datetime.--construct</a>]: Failed to parse time string ([2014-08-12 09:33:51]) at position 0 ([): Unexpected character' in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php:270
+Stack trace:
+#0 C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php(270): DateTime->__construct('[2014-08-12 09:...')
+#1 C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php(300): MPapiController->_getDate()
+#2 C:\xampp\htdocs\yii\framework\web\actions\CInlineAction.php(49): MPapiController->actionLogin()
+#3 C:\xampp\htdocs\yii\framework\web\CController.php(308): CInlineAction->runWithParams(Array)
+#4 C:\xampp\htdocs\yii\framework\web\CController.php(286): CController->runAction(Object(CInlineAction))
+#5 C:\xampp\htdocs\yii\framework\web\CController.php(265): CController->runActionWithFilters(Object(CInlineAction), Array)
+#6 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(282): CController->run('login')
+#7 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController('MPapi/login')
+#8 C:\xampp\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#9 C:\xampp\htdocs\MPAPI\index.php(13): CApplication->run()
+#10 {main}
+REQUEST_URI=/MPAPI/index.php/MPapi/login
+---

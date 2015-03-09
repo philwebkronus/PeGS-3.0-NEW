@@ -1,0 +1,373 @@
+[05-Aug-2014 09:32:49]  [GETNATIONALITY ERROR] TPSessionID is not set or is blank.
+[05-Aug-2014 09:32:49]  [GETNATIONALITY SUCCESS] APIlogs success.
+[05-Aug-2014 09:32:59]  [AUTHENTICATESESSION ERROR] Username is not set or is blank.
+[05-Aug-2014 09:32:59]  [AUTHENTICATESESSION SUCCESS] APIlogs success.
+[05-Aug-2014 09:33:04]  [AUTHENTICATESESSION SUCCESS] Audittrail log success.
+[05-Aug-2014 09:33:04]  [AUTHENTICATESESSION SUCCESS] APIlogs success.
+[05-Aug-2014 09:33:04]  [AUTHENTICATESESSION SUCCESS] TPSessionID Generate Successfully.
+[05-Aug-2014 09:33:16]  [GETNATIONALITY ERROR] GetNationality has invalid Session ID.
+[05-Aug-2014 09:33:16]  [GETNATIONALITY SUCCESS] APIlogs success.
+[05-Aug-2014 09:33:24]  [GETACTIVESESSION ERROR] GetActiveSession contains expired SessionID.
+[05-Aug-2014 09:33:24]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[05-Aug-2014 09:34:31]  [GETACTIVESESSION ERROR] GetActiveSession contains expired SessionID.
+[05-Aug-2014 09:34:31]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[05-Aug-2014 09:35:01]  [GETACTIVESESSION ERROR] GetActiveSession contains expired SessionID.
+[05-Aug-2014 09:35:01]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[05-Aug-2014 09:36:58]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[05-Aug-2014 09:36:58]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[05-Aug-2014 09:36:58]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[05-Aug-2014 09:38:10]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[05-Aug-2014 09:38:10]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[05-Aug-2014 09:38:10]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[05-Aug-2014 09:39:47]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[05-Aug-2014 09:39:47]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[05-Aug-2014 09:39:47]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[05-Aug-2014 09:40:52]  [GETOCCUPATION ERROR] GetOccupation has invalid Session ID.
+[05-Aug-2014 09:40:52]  [GETOCCUPATION SUCCESS] APIlogs success.
+[05-Aug-2014 09:41:07]  [GETIDPRESENTED ERROR] GetIDPresented has invalid Session ID.
+[05-Aug-2014 09:41:07]  [GETIDPRESENTED SUCCESS] APIlogs success.
+[05-Aug-2014 09:41:33]  [GETIDPRESENTED ERROR] TPSessionID is not set or is blank.
+[05-Aug-2014 09:41:33]  [GETIDPRESENTED SUCCESS] APIlogs success.
+[05-Aug-2014 09:41:44]  [GETGENDER ERROR] TPSessionID is not set or is blank.
+[05-Aug-2014 09:41:44]  [GETGENDER SUCCESS] APIlogs success.
+[05-Aug-2014 09:41:52]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[05-Aug-2014 09:41:52]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[05-Aug-2014 09:41:52]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[05-Aug-2014 09:42:00]  [GETGENDER ERROR] GetGender has invalid Session ID.
+[05-Aug-2014 09:42:00]  [GETGENDER SUCCESS] APIlogs success.
+[05-Aug-2014 09:44:26]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[05-Aug-2014 09:44:26]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[05-Aug-2014 09:44:26]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[05-Aug-2014 09:44:26]  [LOGIN SUCCESS] Audittrail log success.
+[05-Aug-2014 09:44:26]  [LOGIN SUCCESS] APIlogs success.
+[05-Aug-2014 09:45:06]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[05-Aug-2014 09:45:06]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[05-Aug-2014 09:45:06]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[05-Aug-2014 09:45:27]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[05-Aug-2014 09:45:27]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[05-Aug-2014 09:45:27]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[05-Aug-2014 09:45:33]  [REDEEMITEMS ERROR] Source is not set or is blank.
+[05-Aug-2014 09:45:33]  [REDEEMITEMS SUCCESS] APIlogs success.
+[05-Aug-2014 09:45:54]  [CHECKPOINTS ERROR] CheckPoints has invalid Session ID.
+[05-Aug-2014 09:45:54]  [CHECKPOINTS SUCCESS] APIlogs success.
+[05-Aug-2014 09:50:29]  [GETISSMOKER ERROR] GetIsSmoker has invalid Session ID.
+[05-Aug-2014 09:50:29]  [GETISSMOKER SUCCESS] APIlogs success.
+[05-Aug-2014 09:50:47]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[05-Aug-2014 09:50:47]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[05-Aug-2014 09:50:47]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[05-Aug-2014 09:54:26]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[05-Aug-2014 09:54:26]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[05-Aug-2014 09:54:26]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[05-Aug-2014 09:54:26]  [LOGIN SUCCESS] Audittrail log success.
+[05-Aug-2014 09:54:26]  [LOGIN SUCCESS] APIlogs success.
+[05-Aug-2014 09:54:35]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[05-Aug-2014 09:54:35]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[05-Aug-2014 09:54:35]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[05-Aug-2014 09:54:35]  [LISTITEMS SUCCESS] APIlogs success.
+[05-Aug-2014 09:54:51]  [LISTITEMS ERROR] TPSessionID is not set or is blank.
+[05-Aug-2014 09:54:51]  [LISTITEMS SUCCESS] APIlogs success.
+[05-Aug-2014 09:55:23]  [LISTITEMS ERROR] TPSessionID is not set or is blank.
+[05-Aug-2014 09:55:24]  [LISTITEMS SUCCESS] APIlogs success.
+[05-Aug-2014 09:55:41]  [REDEEMITEMS ERROR] TPSessionID is not set or is blank.
+[05-Aug-2014 09:55:41]  [REDEEMITEMS SUCCESS] APIlogs success.
+[05-Aug-2014 09:57:13]  [CHECKPOINTS ERROR] CheckPoints has invalid Session ID.
+[05-Aug-2014 09:57:13]  [CHECKPOINTS SUCCESS] APIlogs success.
+[05-Aug-2014 09:57:47]  [GETACTIVESESSION ERROR] Invalid Input.
+[05-Aug-2014 09:57:47]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[05-Aug-2014 10:49:36]  [AUTHENTICATESESSION ERROR] Username is not set or is blank.
+[05-Aug-2014 10:49:37]  [AUTHENTICATESESSION SUCCESS] APIlogs success.
+[05-Aug-2014 11:10:00]  [CHECKPOINTS ERROR] TPSessionID is not set or is blank.
+[05-Aug-2014 11:10:00]  [CHECKPOINTS SUCCESS] APIlogs success.
+[05-Aug-2014 11:10:26]  [GETACTIVESESSION ERROR] Invalid Input.
+[05-Aug-2014 11:10:26]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[05-Aug-2014 11:10:34]  [AUTHENTICATESESSION SUCCESS] Audittrail log success.
+[05-Aug-2014 11:10:34]  [AUTHENTICATESESSION SUCCESS] APIlogs success.
+[05-Aug-2014 11:10:34]  [AUTHENTICATESESSION SUCCESS] TPSessionID Generate Successfully.
+[05-Aug-2014 11:10:45]  [UPDATEPROFILE ERROR] MPSessionID is not set or is blank.
+[05-Aug-2014 11:10:45]  [UPDATEPROFILE SUCCESS] APIlogs success.
+[05-Aug-2014 11:12:28]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[05-Aug-2014 11:12:28]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[05-Aug-2014 11:12:28]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[05-Aug-2014 11:12:28]  [LOGIN SUCCESS] Audittrail log success.
+[05-Aug-2014 11:12:28]  [LOGIN SUCCESS] APIlogs success.
+[05-Aug-2014 11:23:28]  [UPDATEPROFILE SUCCESS] APIlogs success.
+[05-Aug-2014 11:23:52]  [UPDATEPROFILE SUCCESS] Audittrail log success.
+[05-Aug-2014 11:23:52]  [UPDATEPROFILE SUCCESS] APIlogs success.
+[05-Aug-2014 11:24:50]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[05-Aug-2014 11:24:50]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[05-Aug-2014 11:24:50]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[05-Aug-2014 11:24:50]  [GETPROFILE SUCCESS] APIlogs success.
+[05-Aug-2014 11:25:09]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[05-Aug-2014 11:25:09]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[05-Aug-2014 11:25:09]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[05-Aug-2014 11:25:09]  [GETPROFILE SUCCESS] APIlogs success.
+[05-Aug-2014 11:25:20]  [GETPROFILE ERROR] GetProfile has invalid Session ID.
+[05-Aug-2014 11:25:20]  [GETPROFILE SUCCESS] APIlogs success.
+[05-Aug-2014 11:25:34]  [UPDATEPROFILE ERROR] UpdateProfile has invalid Session ID.
+[05-Aug-2014 11:25:34]  [UPDATEPROFILE SUCCESS] APIlogs success.
+[05-Aug-2014 11:25:50]  [UPDATEPROFILE ERROR] UpdateProfile has invalid Session ID.
+[05-Aug-2014 11:25:50]  [UPDATEPROFILE SUCCESS] APIlogs success.
+[05-Aug-2014 11:26:19]  [UPDATEPROFILE SUCCESS] Audittrail log success.
+[05-Aug-2014 11:26:19]  [UPDATEPROFILE SUCCESS] APIlogs success.
+[05-Aug-2014 11:26:44]  [GETPROFILE ERROR] TPSessionID is not set or is blank.
+[05-Aug-2014 11:26:44]  [GETPROFILE SUCCESS] APIlogs success.
+[05-Aug-2014 11:27:01]  [CHECKPOINTS ERROR] TPSessionID is not set or is blank.
+[05-Aug-2014 11:27:01]  [CHECKPOINTS SUCCESS] APIlogs success.
+[05-Aug-2014 11:27:53]  [LISTITEMS ERROR] TPSessionID is not set or is blank.
+[05-Aug-2014 11:27:53]  [LISTITEMS SUCCESS] APIlogs success.
+[05-Aug-2014 11:28:22]  [LOGIN ERROR] TPSessionID is not set or is blank.
+[05-Aug-2014 11:28:22]  [LOGIN SUCCESS] APIlogs success.
+[05-Aug-2014 11:31:45]  [GETACTIVESESSION ERROR] Invalid Input.
+[05-Aug-2014 11:31:45]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[05-Aug-2014 11:32:07]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[05-Aug-2014 11:32:07]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[05-Aug-2014 11:32:07]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[05-Aug-2014 11:33:54]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[05-Aug-2014 11:33:54]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[05-Aug-2014 11:33:54]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[05-Aug-2014 11:33:54]  [GETPROFILE SUCCESS] APIlogs success.
+[05-Aug-2014 11:37:46]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[05-Aug-2014 11:37:46]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[05-Aug-2014 11:37:46]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[05-Aug-2014 11:37:46]  [GETPROFILE SUCCESS] APIlogs success.
+[05-Aug-2014 11:40:54]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[05-Aug-2014 11:40:54]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[05-Aug-2014 11:40:54]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[05-Aug-2014 11:40:54]  [GETPROFILE ERROR] No response from Membership portal API.
+[05-Aug-2014 11:40:54]  [GETPROFILE SUCCESS] APIlogs success.
+[05-Aug-2014 11:52:05]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[05-Aug-2014 11:52:05]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[05-Aug-2014 11:52:05]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[05-Aug-2014 11:52:55]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[05-Aug-2014 11:52:55]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[05-Aug-2014 11:52:55]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[05-Aug-2014 11:52:55]  [GETPROFILE SUCCESS] Audittrail log success.
+[05-Aug-2014 11:52:55]  [GETPROFILE SUCCESS] APIlogs success.
+[05-Aug-2014 11:54:11]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[05-Aug-2014 11:54:11]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[05-Aug-2014 11:54:11]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[05-Aug-2014 11:54:36]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[05-Aug-2014 11:54:36]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[05-Aug-2014 11:54:36]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[05-Aug-2014 11:54:36]  [GETPROFILE SUCCESS] Audittrail log success.
+[05-Aug-2014 11:54:36]  [GETPROFILE SUCCESS] APIlogs success.
+[05-Aug-2014 11:58:00]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[05-Aug-2014 11:58:00]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[05-Aug-2014 11:58:00]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[05-Aug-2014 11:58:01]  [GETPROFILE SUCCESS] Audittrail log success.
+[05-Aug-2014 11:58:01]  [GETPROFILE SUCCESS] APIlogs success.
+[05-Aug-2014 13:40:23]  [AUTHENTICATESESSION ERROR] Username is not set or is blank.
+[05-Aug-2014 13:40:23]  [AUTHENTICATESESSION SUCCESS] APIlogs success.
+[05-Aug-2014 13:41:08]  [AUTHENTICATESESSION SUCCESS] Audittrail log success.
+[05-Aug-2014 13:41:08]  [AUTHENTICATESESSION SUCCESS] APIlogs success.
+[05-Aug-2014 13:41:08]  [AUTHENTICATESESSION SUCCESS] TPSessionID Generate Successfully.
+[05-Aug-2014 13:41:19]  [GETACTIVESESSION ERROR] TPSessionID is not set or is blank.
+[05-Aug-2014 13:41:19]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[05-Aug-2014 13:47:07]  [AUTHENTICATESESSION ERROR] Username is not set or is blank.
+[05-Aug-2014 13:47:07]  [AUTHENTICATESESSION SUCCESS] APIlogs success.
+[05-Aug-2014 13:47:25]  [GETACTIVESESSION ERROR] TPSessionID is not set or is blank.
+[05-Aug-2014 13:47:25]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[05-Aug-2014 13:47:42]  [LOGIN ERROR] TPSessionID is not set or is blank.
+[05-Aug-2014 13:47:42]  [LOGIN SUCCESS] APIlogs success.
+[05-Aug-2014 13:48:04]  [FORGOTPASSWORD ERROR] TPSessionID is not set or is blank.
+[05-Aug-2014 13:48:04]  [FORGOTPASSWORD SUCCESS] APIlogs success.
+[05-Aug-2014 13:48:16]  [REGISTERMEMBER ERROR] TPSessionID is not set or is blank.
+[05-Aug-2014 13:48:16]  [REGISTERMEMBER SUCCESS] APIlogs success.
+[05-Aug-2014 13:48:42]  [UPDATEPROFILE ERROR] TPSessionID is not set or is blank.
+[05-Aug-2014 13:48:42]  [UPDATEPROFILE SUCCESS] APIlogs success.
+[05-Aug-2014 13:49:17]  [GETPROFILE ERROR] TPSessionID is not set or is blank.
+[05-Aug-2014 13:49:17]  [GETPROFILE SUCCESS] APIlogs success.
+[05-Aug-2014 13:54:28]  [GETPROFILE ERROR] TPSessionID is not set or is blank.
+[05-Aug-2014 13:54:28]  [GETPROFILE SUCCESS] APIlogs success.
+[05-Aug-2014 13:56:01]  [UPDATEPROFILE ERROR] TPSessionID is not set or is blank.
+[05-Aug-2014 13:56:01]  [UPDATEPROFILE SUCCESS] APIlogs success.
+[05-Aug-2014 13:57:33]  [CHECKPOINTS ERROR] TPSessionID is not set or is blank.
+[05-Aug-2014 13:57:33]  [CHECKPOINTS SUCCESS] APIlogs success.
+[05-Aug-2014 13:57:56]  [LISTITEMS ERROR] TPSessionID is not set or is blank.
+[05-Aug-2014 13:57:56]  [LISTITEMS SUCCESS] APIlogs success.
+[05-Aug-2014 14:02:35]  [GETACTIVESESSION ERROR] TPSessionID is not set or is blank.
+[05-Aug-2014 14:02:35]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[05-Aug-2014 14:02:36]  [GETACTIVESESSION ERROR] TPSessionID is not set or is blank.
+[05-Aug-2014 14:02:36]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[05-Aug-2014 14:02:37]  [GETACTIVESESSION ERROR] TPSessionID is not set or is blank.
+[05-Aug-2014 14:02:37]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[05-Aug-2014 14:02:38]  [LISTITEMS ERROR] TPSessionID is not set or is blank.
+[05-Aug-2014 14:02:38]  [LISTITEMS SUCCESS] APIlogs success.
+[05-Aug-2014 14:05:09]  [REDEEMITEMS ERROR] TPSessionID is not set or is blank.
+[05-Aug-2014 14:05:09]  [REDEEMITEMS SUCCESS] APIlogs success.
+[05-Aug-2014 14:05:38]  [LISTITEMS ERROR] TPSessionID is not set or is blank.
+[05-Aug-2014 14:05:38]  [LISTITEMS SUCCESS] APIlogs success.
+[05-Aug-2014 14:06:56]  [LISTITEMS ERROR] TPSessionID is not set or is blank.
+[05-Aug-2014 14:06:56]  [LISTITEMS SUCCESS] APIlogs success.
+[05-Aug-2014 14:07:17]  [LISTITEMS ERROR] TPSessionID is not set or is blank.
+[05-Aug-2014 14:07:17]  [LISTITEMS SUCCESS] APIlogs success.
+[05-Aug-2014 14:09:18]  [REDEEMITEMS ERROR] TPSessionID is not set or is blank.
+[05-Aug-2014 14:09:18]  [REDEEMITEMS SUCCESS] APIlogs success.
+[05-Aug-2014 14:09:46]  [REDEEMITEMS ERROR] TPSessionID is not set or is blank.
+[05-Aug-2014 14:09:46]  [REDEEMITEMS SUCCESS] APIlogs success.
+[05-Aug-2014 14:10:57]  [AUTHENTICATESESSION SUCCESS] Audittrail log success.
+[05-Aug-2014 14:10:57]  [AUTHENTICATESESSION SUCCESS] APIlogs success.
+[05-Aug-2014 14:10:57]  [AUTHENTICATESESSION SUCCESS] TPSessionID Generate Successfully.
+[05-Aug-2014 14:11:21]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[05-Aug-2014 14:11:21]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[05-Aug-2014 14:11:21]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[05-Aug-2014 14:12:17]  [REDEEMITEMS ERROR] TPSessionID is not set or is blank.
+[05-Aug-2014 14:12:17]  [REDEEMITEMS SUCCESS] APIlogs success.
+[05-Aug-2014 14:12:19]  [REDEEMITEMS ERROR] TPSessionID is not set or is blank.
+[05-Aug-2014 14:12:19]  [REDEEMITEMS SUCCESS] APIlogs success.
+[05-Aug-2014 14:12:19]  [REDEEMITEMS ERROR] TPSessionID is not set or is blank.
+[05-Aug-2014 14:12:19]  [REDEEMITEMS SUCCESS] APIlogs success.
+[05-Aug-2014 14:12:19]  [REDEEMITEMS ERROR] TPSessionID is not set or is blank.
+[05-Aug-2014 14:12:19]  [REDEEMITEMS SUCCESS] APIlogs success.
+[05-Aug-2014 14:12:19]  [REDEEMITEMS ERROR] TPSessionID is not set or is blank.
+[05-Aug-2014 14:12:19]  [REDEEMITEMS SUCCESS] APIlogs success.
+[05-Aug-2014 14:12:19]  [REDEEMITEMS ERROR] TPSessionID is not set or is blank.
+[05-Aug-2014 14:12:19]  [REDEEMITEMS SUCCESS] APIlogs success.
+[05-Aug-2014 14:12:20]  [REDEEMITEMS ERROR] TPSessionID is not set or is blank.
+[05-Aug-2014 14:12:20]  [REDEEMITEMS SUCCESS] APIlogs success.
+[05-Aug-2014 14:12:20]  [REDEEMITEMS ERROR] TPSessionID is not set or is blank.
+[05-Aug-2014 14:12:20]  [REDEEMITEMS SUCCESS] APIlogs success.
+[05-Aug-2014 14:12:20]  [REDEEMITEMS ERROR] TPSessionID is not set or is blank.
+[05-Aug-2014 14:12:20]  [REDEEMITEMS SUCCESS] APIlogs success.
+[05-Aug-2014 14:12:21]  [REDEEMITEMS ERROR] TPSessionID is not set or is blank.
+[05-Aug-2014 14:12:21]  [REDEEMITEMS SUCCESS] APIlogs success.
+[05-Aug-2014 14:12:31]  [LOGIN ERROR] Login has invalid Session ID.
+[05-Aug-2014 14:12:31]  [LOGIN SUCCESS] APIlogs success.
+[05-Aug-2014 14:12:44]  [LOGIN ERROR] Login has invalid Session ID.
+[05-Aug-2014 14:12:45]  [LOGIN SUCCESS] APIlogs success.
+[05-Aug-2014 14:12:56]  [LOGIN ERROR] Login has invalid Session ID.
+[05-Aug-2014 14:12:56]  [LOGIN SUCCESS] APIlogs success.
+[05-Aug-2014 14:13:12]  [GETISSMOKER ERROR] GetIsSmoker has invalid Session ID.
+[05-Aug-2014 14:13:12]  [GETISSMOKER SUCCESS] APIlogs success.
+[05-Aug-2014 14:13:20]  [AUTHENTICATESESSION SUCCESS] Audittrail log success.
+[05-Aug-2014 14:13:20]  [AUTHENTICATESESSION SUCCESS] APIlogs success.
+[05-Aug-2014 14:13:20]  [AUTHENTICATESESSION SUCCESS] TPSessionID Generate Successfully.
+[05-Aug-2014 14:13:30]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[05-Aug-2014 14:13:30]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[05-Aug-2014 14:13:30]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[05-Aug-2014 14:13:30]  [LOGIN SUCCESS] Audittrail log success.
+[05-Aug-2014 14:13:30]  [LOGIN SUCCESS] APIlogs success.
+[05-Aug-2014 14:13:54]  [REDEEMITEMS ERROR] RedeemItems has invalid Session ID.
+[05-Aug-2014 14:13:54]  [REDEEMITEMS SUCCESS] APIlogs success.
+[05-Aug-2014 14:14:11]  [REDEEMITEMS ERROR] RedeemItems has invalid Session ID.
+[05-Aug-2014 14:14:11]  [REDEEMITEMS SUCCESS] APIlogs success.
+[05-Aug-2014 14:14:32]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[05-Aug-2014 14:14:32]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[05-Aug-2014 14:14:32]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[05-Aug-2014 14:14:56]  [GETGENDER ERROR] TPSessionID is not set or is blank.
+[05-Aug-2014 14:14:56]  [GETGENDER SUCCESS] APIlogs success.
+[05-Aug-2014 14:15:17]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[05-Aug-2014 14:15:17]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[05-Aug-2014 14:15:17]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[05-Aug-2014 14:15:21]  [GETGENDER ERROR] GetGender has invalid Session ID.
+[05-Aug-2014 14:15:21]  [GETGENDER SUCCESS] APIlogs success.
+[05-Aug-2014 14:15:24]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[05-Aug-2014 14:15:24]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[05-Aug-2014 14:15:24]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[05-Aug-2014 14:15:55]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[05-Aug-2014 14:15:55]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[05-Aug-2014 14:15:55]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[05-Aug-2014 14:16:05]  [GETISSMOKER ERROR] TPSessionID is not set or is blank.
+[05-Aug-2014 14:16:05]  [GETISSMOKER SUCCESS] APIlogs success.
+[05-Aug-2014 14:16:14]  [GETOCCUPATION ERROR] TPSessionID is not set or is blank.
+[05-Aug-2014 14:16:14]  [GETOCCUPATION SUCCESS] APIlogs success.
+[05-Aug-2014 14:16:17]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[05-Aug-2014 14:16:17]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[05-Aug-2014 14:16:17]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[05-Aug-2014 14:16:24]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[05-Aug-2014 14:16:24]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[05-Aug-2014 14:16:24]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[05-Aug-2014 14:16:27]  [GETNATIONALITY ERROR] GetNationality has invalid Session ID.
+[05-Aug-2014 14:16:27]  [GETNATIONALITY SUCCESS] APIlogs success.
+[05-Aug-2014 14:16:30]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[05-Aug-2014 14:16:30]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[05-Aug-2014 14:16:30]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[05-Aug-2014 14:16:33]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[05-Aug-2014 14:16:33]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[05-Aug-2014 14:16:33]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[05-Aug-2014 14:16:38]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[05-Aug-2014 14:16:38]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[05-Aug-2014 14:16:38]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[05-Aug-2014 14:16:56]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[05-Aug-2014 14:16:56]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[05-Aug-2014 14:16:56]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[05-Aug-2014 14:17:02]  [GETGENDER ERROR] GetGender has invalid Session ID.
+[05-Aug-2014 14:17:02]  [GETGENDER SUCCESS] APIlogs success.
+[05-Aug-2014 14:17:05]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[05-Aug-2014 14:17:05]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[05-Aug-2014 14:17:05]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[05-Aug-2014 14:17:08]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[05-Aug-2014 14:17:08]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[05-Aug-2014 14:17:08]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[05-Aug-2014 14:17:09]  [GETGENDER ERROR] TPSessionID is not set or is blank.
+[05-Aug-2014 14:17:09]  [GETGENDER SUCCESS] APIlogs success.
+[05-Aug-2014 14:17:13]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[05-Aug-2014 14:17:13]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[05-Aug-2014 14:17:13]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[05-Aug-2014 14:17:42]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[05-Aug-2014 14:17:42]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[05-Aug-2014 14:17:42]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[05-Aug-2014 14:18:04]  [LOGIN ERROR] Login has invalid Session ID.
+[05-Aug-2014 14:18:04]  [LOGIN SUCCESS] APIlogs success.
+[05-Aug-2014 14:18:08]  [LOGIN ERROR] Login has invalid Session ID.
+[05-Aug-2014 14:18:08]  [LOGIN SUCCESS] APIlogs success.
+[05-Aug-2014 14:18:22]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[05-Aug-2014 14:18:22]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[05-Aug-2014 14:18:22]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[05-Aug-2014 14:18:23]  [LOGIN SUCCESS] Audittrail log success.
+[05-Aug-2014 14:18:23]  [LOGIN SUCCESS] APIlogs success.
+[05-Aug-2014 14:18:42]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[05-Aug-2014 14:18:42]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[05-Aug-2014 14:18:42]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[05-Aug-2014 14:20:35]  [GETISSMOKER ERROR] GetIsSmoker has invalid Session ID.
+[05-Aug-2014 14:20:35]  [GETISSMOKER SUCCESS] APIlogs success.
+[05-Aug-2014 14:20:42]  [AUTHENTICATESESSION SUCCESS] Audittrail log success.
+[05-Aug-2014 14:20:42]  [AUTHENTICATESESSION SUCCESS] APIlogs success.
+[05-Aug-2014 14:20:42]  [AUTHENTICATESESSION SUCCESS] TPSessionID Generate Successfully.
+[05-Aug-2014 14:20:47]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[05-Aug-2014 14:20:47]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[05-Aug-2014 14:20:47]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[05-Aug-2014 14:27:22]  [REDEEMITEMS ERROR] RedeemItems has invalid Session ID.
+[05-Aug-2014 14:27:22]  [REDEEMITEMS SUCCESS] APIlogs success.
+[05-Aug-2014 20:13:28]  [LOGOUT ERROR] TPSessionID is not set or is blank.
+[05-Aug-2014 20:17:47]  [LOGOUT ERROR] TPSessionID is not set or is blank.
+[05-Aug-2014 20:19:00]  [LOGOUT ERROR] TPSessionID is not set or is blank.
+[05-Aug-2014 20:19:00]  [LOGOUT SUCCESS] APIlogs success.
+[05-Aug-2014 20:20:34]  [LOGOUT ERROR] TPSessionID is not set or is blank.
+[05-Aug-2014 20:20:34]  [LOGOUT SUCCESS] APIlogs success.
+[05-Aug-2014 20:21:56]  [AUTHENTICATESESSION SUCCESS] Audittrail log success.
+[05-Aug-2014 20:21:56]  [AUTHENTICATESESSION SUCCESS] APIlogs success.
+[05-Aug-2014 20:21:56]  [AUTHENTICATESESSION SUCCESS] TPSessionID Generate Successfully.
+[05-Aug-2014 20:22:07]  [LOGOUT ERROR] Logout has invalid Session ID.
+[05-Aug-2014 20:22:07]  [LOGOUT SUCCESS] APIlogs success.
+[05-Aug-2014 20:22:14]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[05-Aug-2014 20:22:14]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[05-Aug-2014 20:22:14]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[05-Aug-2014 20:22:22]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[05-Aug-2014 20:22:22]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[05-Aug-2014 20:22:22]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[05-Aug-2014 20:22:45]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[05-Aug-2014 20:22:45]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[05-Aug-2014 20:22:45]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[05-Aug-2014 20:24:41]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[05-Aug-2014 20:24:41]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[05-Aug-2014 20:24:41]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[05-Aug-2014 20:25:33]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[05-Aug-2014 20:25:33]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[05-Aug-2014 20:25:33]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[05-Aug-2014 20:25:34]  [LOGOUT ERROR] TPSessionID is not set or is blank.
+[05-Aug-2014 20:25:34]  [LOGOUT SUCCESS] APIlogs success.
+[05-Aug-2014 20:26:28]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[05-Aug-2014 20:26:28]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[05-Aug-2014 20:26:28]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[05-Aug-2014 20:26:45]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[05-Aug-2014 20:26:45]  [GETACTIVESESSION SUCCESS] Audittrail log success.
+[05-Aug-2014 20:26:45]  [GETACTIVESESSION SUCCESS] APIlogs success.
+[05-Aug-2014 20:34:20]  [LOGOUT ERROR] TPSessionID is not set or is blank.
+[05-Aug-2014 20:34:20]  [LOGOUT SUCCESS] APIlogs success.
+[05-Aug-2014 20:34:26]  [LOGOUT ERROR] TPSessionID is not set or is blank.
+[05-Aug-2014 20:34:26]  [LOGOUT SUCCESS] APIlogs success.
+[05-Aug-2014 20:34:27]  [LOGOUT ERROR] TPSessionID is not set or is blank.
+[05-Aug-2014 20:34:27]  [LOGOUT SUCCESS] APIlogs success.
+[05-Aug-2014 20:34:27]  [LOGOUT ERROR] TPSessionID is not set or is blank.
+[05-Aug-2014 20:34:27]  [LOGOUT SUCCESS] APIlogs success.

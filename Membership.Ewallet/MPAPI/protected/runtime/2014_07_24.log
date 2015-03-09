@@ -1,0 +1,118 @@
+2014/07/24 03:29:48 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (445)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/07/24 03:31:18 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (250)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/07/24 03:31:49 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (445)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/07/24 03:38:29 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (445)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/07/24 03:38:54 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`membership`.`audittrail`, CONSTRAINT `FK_ref_auditfunctions_AuditFunctionID` FOREIGN KEY (`AuditFunctionID`) REFERENCES `ref_auditfunctions` (`AuditFunctionID`)). The SQL statement executed was: INSERT INTO audittrail(SessionID, ID, TransactionDetails, TransactionDateTime, RemoteIP, AuditFunctionID)
+                    VALUES(:SessionID, :AID, :TransDetails, NOW(6), :RemoteIP, :AuditTrailFunctionID).
+in C:\xampp\htdocs\MPAPI\protected\models\AuditTrailModel.php (104)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (488)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/07/24 03:38:54 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`membership`.`audittrail`, CONSTRAINT `FK_ref_auditfunctions_AuditFunctionID` FOREIGN KEY (`AuditFunctionID`) REFERENCES `ref_auditfunctions` (`AuditFunctionID`)). The SQL statement executed was: INSERT INTO audittrail(SessionID, ID, TransactionDetails, TransactionDateTime, RemoteIP, AuditFunctionID)
+                    VALUES(:SessionID, :AID, :TransDetails, NOW(6), :RemoteIP, :AuditTrailFunctionID)
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\models\AuditTrailModel.php (117)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (488)
+2014/07/24 04:23:36 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (250)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/07/24 04:37:58 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (250)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/07/24 04:40:03 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (250)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/07/24 04:55:08 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (250)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/07/24 04:55:59 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (250)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/07/24 05:50:05 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (250)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/07/24 05:50:33 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (250)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/07/24 05:51:11 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (250)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/07/24 05:51:24 [error] [application] ReturnMessage: Member not found ErrorCode: 3
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (382)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/07/24 05:52:50 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (250)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/07/24 05:53:02 [error] [application] ReturnMessage: Member not found ErrorCode: 3
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (382)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/07/24 05:58:28 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (250)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/07/24 05:58:40 [error] [application] ReturnMessage: Member not found ErrorCode: 3
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (382)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/07/24 05:58:50 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (445)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/07/24 05:59:11 [error] [application] ReturnMessage: Membership Card is Inactive ErrorCode: 7
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (669)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/07/24 05:59:26 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`membership`.`audittrail`, CONSTRAINT `FK_ref_auditfunctions_AuditFunctionID` FOREIGN KEY (`AuditFunctionID`) REFERENCES `ref_auditfunctions` (`AuditFunctionID`)). The SQL statement executed was: INSERT INTO audittrail(SessionID, ID, TransactionDetails, TransactionDateTime, RemoteIP, AuditFunctionID)
+                    VALUES(:SessionID, :AID, :TransDetails, NOW(6), :RemoteIP, :AuditTrailFunctionID).
+in C:\xampp\htdocs\MPAPI\protected\models\AuditTrailModel.php (104)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (488)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/07/24 05:59:26 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`membership`.`audittrail`, CONSTRAINT `FK_ref_auditfunctions_AuditFunctionID` FOREIGN KEY (`AuditFunctionID`) REFERENCES `ref_auditfunctions` (`AuditFunctionID`)). The SQL statement executed was: INSERT INTO audittrail(SessionID, ID, TransactionDetails, TransactionDateTime, RemoteIP, AuditFunctionID)
+                    VALUES(:SessionID, :AID, :TransDetails, NOW(6), :RemoteIP, :AuditTrailFunctionID)
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\models\AuditTrailModel.php (117)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (488)
+2014/07/24 06:02:13 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (445)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/07/24 06:02:31 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`membership`.`audittrail`, CONSTRAINT `FK_ref_auditfunctions_AuditFunctionID` FOREIGN KEY (`AuditFunctionID`) REFERENCES `ref_auditfunctions` (`AuditFunctionID`)). The SQL statement executed was: INSERT INTO audittrail(SessionID, ID, TransactionDetails, TransactionDateTime, RemoteIP, AuditFunctionID)
+                    VALUES(:SessionID, :AID, :TransDetails, NOW(6), :RemoteIP, :AuditTrailFunctionID).
+in C:\xampp\htdocs\MPAPI\protected\models\AuditTrailModel.php (104)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (488)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/07/24 06:02:31 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`membership`.`audittrail`, CONSTRAINT `FK_ref_auditfunctions_AuditFunctionID` FOREIGN KEY (`AuditFunctionID`) REFERENCES `ref_auditfunctions` (`AuditFunctionID`)). The SQL statement executed was: INSERT INTO audittrail(SessionID, ID, TransactionDetails, TransactionDateTime, RemoteIP, AuditFunctionID)
+                    VALUES(:SessionID, :AID, :TransDetails, NOW(6), :RemoteIP, :AuditTrailFunctionID)
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\models\AuditTrailModel.php (117)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (488)
+2014/07/24 07:03:42 [error] [application] ReturnMessage: Invalid Email Address. ErrorCode: 5
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (550)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/07/24 14:34:08 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (250)
+in C:\xampp\htdocs\MPAPI\index.php (13)

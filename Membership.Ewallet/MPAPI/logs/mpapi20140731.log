@@ -1,0 +1,145 @@
+[31-Jul-2014 07:25:20]  [LOGIN SUCCESS] Login successful.
+[31-Jul-2014 07:27:10]  [UPDATEPROFILE ERROR] One or more fields is not set or is blank.
+[31-Jul-2014 07:44:45]  [UPDATEPROFILE ERROR] One or more fields is not set or is blank.
+[31-Jul-2014 07:51:48]  [UPDATEPROFILE ERROR] One or more fields is not set or is blank.
+[31-Jul-2014 07:57:46]  [UPDATEPROFILE ERROR] Mobile number should consist of numbers only.
+[31-Jul-2014 08:02:08]  [UPDATEPROFILE ERROR] Transaction failed.
+[31-Jul-2014 08:03:44]  [UPDATEPROFILE ERROR] Transaction failed.
+[31-Jul-2014 08:22:41]  [UPDATEPROFILE ERROR] Transaction failed.
+[31-Jul-2014 08:27:12]  [UPDATEPROFILE ERROR] Transaction failed.
+[31-Jul-2014 08:32:31]  [UPDATEPROFILE ERROR] Transaction failed.
+[31-Jul-2014 09:36:40]  [LOGIN SUCCESS] Login successful.
+[31-Jul-2014 10:10:00]  [REDEEMITEMS ERROR] One or more fields is not set or is blank.
+[31-Jul-2014 10:10:07]  [REDEEMITEMS ERROR] Not connected.
+[31-Jul-2014 10:23:54]  [LOGIN SUCCESS] Login successful.
+[31-Jul-2014 10:24:21]  [GETPROFILE ERROR] Account is banned.
+[31-Jul-2014 10:24:51]  [GETPROFILE ERROR] Failed to insert to Audittrail.
+[31-Jul-2014 10:24:51]  [GETPROFILE SUCCESS] Get member profile is successful.
+[31-Jul-2014 10:36:31]  [LISTITEMS ERROR] Not connected.
+[31-Jul-2014 10:48:24]  [UPDATEPROFILE ERROR] One or more fields is not set or is blank.
+[31-Jul-2014 10:56:05]  [UPDATEPROFILE ERROR] Transaction failed.
+[31-Jul-2014 10:57:30]  [UPDATEPROFILE ERROR] Transaction failed.
+[31-Jul-2014 11:00:15]  [UPDATEPROFILE SUCCESS] Update profile successful.
+[31-Jul-2014 11:12:17]  [REGISTERMEMBER ERROR] Sorry, ralph.sison@gmail.comalready belongs to an existing account. Please enter another email address.
+[31-Jul-2014 11:12:36]  [REGISTERMEMBER ERROR] Sorry, wolfgang24amadeus@yahoo.comalready belongs to an existing account. Please enter another email address.
+[31-Jul-2014 11:14:18]  [REGISTERMEMBER SUCCESS] Registration is successful.
+[31-Jul-2014 11:28:52]  [REGISTERMEMBER ERROR] Sorry, fdlsison@philweb.com.phalready belongs to an existing account. Please enter another email address.
+[31-Jul-2014 11:29:10]  [REGISTERMEMBER ERROR] Sorry, fdlsison@philweb.com.phalready belongs to an existing account. Please enter another email address.
+[31-Jul-2014 11:32:41]  [LISTITEMS ERROR] Failed to insert to Audittrail.
+[31-Jul-2014 11:32:41]  [LISTITEMS SUCCESSFUL] List Items is successful.
+[31-Jul-2014 11:32:53]  [LISTITEMS ERROR] Failed to insert to Audittrail.
+[31-Jul-2014 11:32:53]  [LISTITEMS SUCCESSFUL] List Items is successful.
+[31-Jul-2014 11:41:01]  [LISTITEMS ERROR] Failed to insert to Audittrail.
+[31-Jul-2014 11:41:01]  [LISTITEMS SUCCESSFUL] List Items is successful.
+[31-Jul-2014 11:41:51]  [UPDATEPROFILE SUCCESS] Update profile successful.
+[31-Jul-2014 13:19:41]  [REDEEMITEMS ERROR] Not connected.
+[31-Jul-2014 13:28:12]  [UPDATEPROFILE SUCCESS] Update profile successful.
+[31-Jul-2014 13:43:08]  [REDEEMITEMS ERROR] Transaction failed. Card has insufficient points.
+[31-Jul-2014 13:43:08] Failed to log event on Audit Trail.
+[31-Jul-2014 13:43:08]  [REDEEMITEMS SUCCESS] Redemption successful.
+[31-Jul-2014 13:54:54]  [REDEEMITEMS ERROR] Transaction failed. Card has insufficient points.
+[31-Jul-2014 13:54:54]  [REDEEMITEMS ERROR] Transaction failed. Card has insufficient points.
+[31-Jul-2014 13:55:23]  [REDEEMITEMS ERROR] Transaction failed. Card has insufficient points.
+[31-Jul-2014 13:55:23]  [REDEEMITEMS ERROR] Transaction failed. Card has insufficient points.
+[31-Jul-2014 13:55:37]  [REDEEMITEMS ERROR] Transaction failed. Card has insufficient points.
+[31-Jul-2014 13:55:37]  [REDEEMITEMS ERROR] Transaction failed. Card has insufficient points.
+[31-Jul-2014 13:57:54]  [REDEEMITEMS ERROR] Transaction failed. Card has insufficient points.
+[31-Jul-2014 13:57:54]  [REDEEMITEMS ERROR] Transaction failed. Card has insufficient points.
+[31-Jul-2014 14:08:00]  [REDEEMITEMS ERROR] Transaction failed. Card has insufficient points.
+[31-Jul-2014 14:08:00]  [REDEEMITEMS ERROR] Transaction failed. Card has insufficient points.
+[31-Jul-2014 15:36:27] [REGISTERMEMBER ERROR] Failed to send SMS.
+[31-Jul-2014 15:36:27]  [REGISTERMEMBER ERROR] Failed to insert to APILogs.
+[31-Jul-2014 15:37:16] [REGISTERMEMBER ERROR] Failed to send SMS.
+[31-Jul-2014 15:37:16]  [REGISTERMEMBER ERROR] Failed to insert to APILogs.
+[31-Jul-2014 15:48:12]  [REDEEMITEMS ERROR] Transaction failed. Card has insufficient points.
+[31-Jul-2014 15:48:12]  [REDEEMITEMS ERROR] Failed to insert to APILogs.
+[31-Jul-2014 15:48:12]  [REDEEMITEMS ERROR] Transaction failed. Card has insufficient points.
+[31-Jul-2014 15:48:12]  [REDEEMITEMS ERROR] Failed to insert to APILogs.
+[31-Jul-2014 15:49:40]  [REDEEMITEMS ERROR] Transaction failed. Card has insufficient points.
+[31-Jul-2014 15:49:40]  [REDEEMITEMS ERROR] Failed to insert to APILogs.
+[31-Jul-2014 15:49:40]  [REDEEMITEMS ERROR] Transaction failed. Card has insufficient points.
+[31-Jul-2014 15:49:40]  [REDEEMITEMS ERROR] Failed to insert to APILogs.
+[31-Jul-2014 16:32:40]  [REDEEMITEMS ERROR] Transaction failed. Error in redemption logging.
+[31-Jul-2014 16:32:40]  [REDEEMITEMS ERROR] Failed to insert to APILogs.
+[31-Jul-2014 16:32:40]  [REDEEMITEMS ERROR] Transaction failed.
+[31-Jul-2014 16:32:40]  [REDEEMITEMS ERROR] Failed to insert to APILogs.
+[31-Jul-2014 16:37:02]  [REDEEMITEMS ERROR] Error in locking.
+[31-Jul-2014 16:37:02]  [REDEEMITEMS ERROR] Failed to insert to APILogs.
+[31-Jul-2014 16:37:35]  [REDEEMITEMS ERROR] Transaction failed. Card has a pending redemption.
+[31-Jul-2014 16:37:35]  [REDEEMITEMS ERROR] Failed to insert to APILogs.
+[31-Jul-2014 17:05:52]  [REDEEMITEMS ERROR] Transaction failed. Card has a pending redemption.
+[31-Jul-2014 17:05:52]  [REDEEMITEMS ERROR] Failed to insert to APILogs.
+[31-Jul-2014 17:12:58]  [REDEEMITEMS ERROR] Transaction failed. Card has a pending redemption.
+[31-Jul-2014 17:12:58]  [REDEEMITEMS ERROR] Failed to insert to APILogs.
+[31-Jul-2014 17:21:39]  [REDEEMITEMS ERROR] Transaction failed. Card has a pending redemption.
+[31-Jul-2014 17:21:39]  [REDEEMITEMS ERROR] Failed to insert to APILogs.
+[31-Jul-2014 18:04:53]  [REDEEMITEMS ERROR] Transaction failed. Card has a pending redemption.
+[31-Jul-2014 18:04:53]  [REDEEMITEMS ERROR] Failed to insert to APILogs.
+[31-Jul-2014 18:07:39]  [REDEEMITEMS ERROR] Transaction failed. Failed to start coupon redemption.
+[31-Jul-2014 18:07:39]  [REDEEMITEMS ERROR] Failed to insert to APILogs.
+[31-Jul-2014 18:07:39]  [REDEEMITEMS ERROR] Transaction failed.
+[31-Jul-2014 18:07:39]  [REDEEMITEMS ERROR] Failed to insert to APILogs.
+[31-Jul-2014 18:08:20]  [REDEEMITEMS ERROR] Transaction failed. Card has a pending redemption.
+[31-Jul-2014 18:08:20]  [REDEEMITEMS ERROR] Failed to insert to APILogs.
+[31-Jul-2014 18:08:30]  [REDEEMITEMS ERROR] Transaction failed. Failed to start coupon redemption.
+[31-Jul-2014 18:08:30]  [REDEEMITEMS ERROR] Failed to insert to APILogs.
+[31-Jul-2014 18:08:30]  [REDEEMITEMS ERROR] Transaction failed.
+[31-Jul-2014 18:08:30]  [REDEEMITEMS ERROR] Failed to insert to APILogs.
+[31-Jul-2014 18:09:36]  [REDEEMITEMS ERROR] Transaction failed. Failed to start coupon redemption.
+[31-Jul-2014 18:09:36]  [REDEEMITEMS ERROR] Failed to insert to APILogs.
+[31-Jul-2014 18:09:36]  [REDEEMITEMS ERROR] Transaction failed.
+[31-Jul-2014 18:09:36]  [REDEEMITEMS ERROR] Failed to insert to APILogs.
+[31-Jul-2014 18:09:50]  [REDEEMITEMS ERROR] Transaction failed. Failed to start coupon redemption.
+[31-Jul-2014 18:09:50]  [REDEEMITEMS ERROR] Failed to insert to APILogs.
+[31-Jul-2014 18:09:50]  [REDEEMITEMS ERROR] Transaction failed.
+[31-Jul-2014 18:09:50]  [REDEEMITEMS ERROR] Failed to insert to APILogs.
+[31-Jul-2014 18:20:48]  [REDEEMITEMS ERROR] Transaction failed. Card has a pending redemption.
+[31-Jul-2014 18:20:48]  [REDEEMITEMS ERROR] Failed to insert to APILogs.
+[31-Jul-2014 18:24:29]  [REDEEMITEMS ERROR] Transaction failed. Card has a pending redemption.
+[31-Jul-2014 18:24:29]  [REDEEMITEMS ERROR] Failed to insert to APILogs.
+[31-Jul-2014 18:25:40]  [REDEEMITEMS ERROR] Transaction failed. Card has a pending redemption.
+[31-Jul-2014 18:25:40]  [REDEEMITEMS ERROR] Failed to insert to APILogs.
+[31-Jul-2014 18:27:09]  [REDEEMITEMS ERROR] Transaction failed. Card has a pending redemption.
+[31-Jul-2014 18:27:09]  [REDEEMITEMS ERROR] Failed to insert to APILogs.
+[31-Jul-2014 18:28:15]  [REDEEMITEMS ERROR] Transaction failed. Card has a pending redemption.
+[31-Jul-2014 18:28:15]  [REDEEMITEMS ERROR] Failed to insert to APILogs.
+[31-Jul-2014 18:28:24]  [REDEEMITEMS ERROR] Transaction failed. Failed to start coupon redemption.
+[31-Jul-2014 18:28:24]  [REDEEMITEMS ERROR] Failed to insert to APILogs.
+[31-Jul-2014 18:28:24]  [REDEEMITEMS ERROR] Transaction failed.
+[31-Jul-2014 18:28:24]  [REDEEMITEMS ERROR] Failed to insert to APILogs.
+[31-Jul-2014 18:29:45]  [REDEEMITEMS ERROR] Transaction failed. Card has a pending redemption.
+[31-Jul-2014 18:29:45]  [REDEEMITEMS ERROR] Failed to insert to APILogs.
+[31-Jul-2014 18:29:54]  [REDEEMITEMS ERROR] Transaction failed. Failed to start coupon redemption.
+[31-Jul-2014 18:29:54]  [REDEEMITEMS ERROR] Failed to insert to APILogs.
+[31-Jul-2014 18:29:54]  [REDEEMITEMS ERROR] Transaction failed.
+[31-Jul-2014 18:29:54]  [REDEEMITEMS ERROR] Failed to insert to APILogs.
+[31-Jul-2014 18:30:41]  [REDEEMITEMS ERROR] Transaction failed. Failed to start coupon redemption.
+[31-Jul-2014 18:30:41]  [REDEEMITEMS ERROR] Failed to insert to APILogs.
+[31-Jul-2014 18:30:41]  [REDEEMITEMS ERROR] Transaction failed.
+[31-Jul-2014 18:30:41]  [REDEEMITEMS ERROR] Failed to insert to APILogs.
+[31-Jul-2014 18:32:59]  [REDEEMITEMS ERROR] Transaction failed. Failed to start coupon redemption.
+[31-Jul-2014 18:32:59]  [REDEEMITEMS ERROR] Failed to insert to APILogs.
+[31-Jul-2014 18:32:59]  [REDEEMITEMS ERROR] Transaction failed.
+[31-Jul-2014 18:32:59]  [REDEEMITEMS ERROR] Failed to insert to APILogs.
+[31-Jul-2014 18:35:37]  [REDEEMITEMS ERROR] Transaction failed. Card has a pending redemption.
+[31-Jul-2014 18:35:37]  [REDEEMITEMS ERROR] Failed to insert to APILogs.
+[31-Jul-2014 18:35:52]  [REDEEMITEMS ERROR] Transaction failed. Failed to start coupon redemption.
+[31-Jul-2014 18:35:52]  [REDEEMITEMS ERROR] Failed to insert to APILogs.
+[31-Jul-2014 18:35:52]  [REDEEMITEMS ERROR] Transaction failed.
+[31-Jul-2014 18:35:52]  [REDEEMITEMS ERROR] Failed to insert to APILogs.
+[31-Jul-2014 18:40:29]  [REGISTERMEMBER ERROR] One or more fields is not set or is blank.
+[31-Jul-2014 18:40:29]  [REGISTERMEMBER ERROR] Failed to insert to APILogs.
+[31-Jul-2014 18:53:20]  [REGISTERMEMBER ERROR] One or more fields is not set or is blank.
+[31-Jul-2014 18:53:20]  [REGISTERMEMBER ERROR] Failed to insert to APILogs.
+[31-Jul-2014 19:35:27]  [REDEEMITEMS ERROR] Transaction failed. Card has a pending redemption.
+[31-Jul-2014 19:35:27]  [REDEEMITEMS ERROR] Failed to insert to APILogs.
+[31-Jul-2014 19:36:02]  [REDEEMITEMS ERROR] Error in locking.
+[31-Jul-2014 19:36:02]  [REDEEMITEMS ERROR] Failed to insert to APILogs.
+[31-Jul-2014 19:36:02]  [REDEEMITEMS ERROR] Transaction failed.
+[31-Jul-2014 19:36:02]  [REDEEMITEMS ERROR] Failed to insert to APILogs.
+[31-Jul-2014 20:42:47]  [REDEEMITEMS ERROR] Transaction failed. Card has a pending redemption.
+[31-Jul-2014 20:42:47]  [REDEEMITEMS ERROR] Failed to insert to APILogs.
+[31-Jul-2014 21:13:55]  [REDEEMITEMS ERROR] Transaction failed. Card has a pending redemption.
+[31-Jul-2014 21:13:55]  [REDEEMITEMS ERROR] Failed to insert to APILogs.
+[31-Jul-2014 21:21:27]  [REDEEMITEMS ERROR] Transaction failed. Card has a pending redemption.
+[31-Jul-2014 21:21:27]  [REDEEMITEMS ERROR] Failed to insert to APILogs.

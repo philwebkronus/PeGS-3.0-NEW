@@ -1,0 +1,30 @@
+[24-Jul-2014 03:29:48]  [FORGOTPASSWORD ERROR] One or more fields is not set or is blank.
+[24-Jul-2014 03:31:18]  [LOGIN ERROR] One or more fields is not set or is blank.
+[24-Jul-2014 03:31:49]  [FORGOTPASSWORD ERROR] One or more fields is not set or is blank.
+[24-Jul-2014 03:38:29]  [FORGOTPASSWORD ERROR] One or more fields is not set or is blank.
+[24-Jul-2014 03:38:54]  [FORGOTPASSWORD ERROR] Failed to insert to Audittrail.
+[24-Jul-2014 03:38:54]  [FORGOTPASSWORD ERROR] Failed to insert to APILogs.
+[24-Jul-2014 04:23:36]  [LOGIN ERROR] One or more fields is not set or is blank.
+[24-Jul-2014 04:37:58]  [LOGIN ERROR] One or more fields is not set or is blank.
+[24-Jul-2014 04:40:03]  [LOGIN ERROR] One or more fields is not set or is blank.
+[24-Jul-2014 04:55:59]  [LOGIN ERROR] One or more fields is not set or is blank.
+[24-Jul-2014 05:50:05]  [LOGIN ERROR] One or more fields is not set or is blank.
+[24-Jul-2014 05:50:33]  [LOGIN ERROR] One or more fields is not set or is blank.
+[24-Jul-2014 05:51:11]  [LOGIN ERROR] One or more fields is not set or is blank.
+[24-Jul-2014 05:51:24]  [LOGIN ERROR] Password inputted is incorrect.
+[24-Jul-2014 05:51:24]  [LOGIN ERROR] Member is not found in db.
+[24-Jul-2014 05:52:50]  [LOGIN ERROR] One or more fields is not set or is blank.
+[24-Jul-2014 05:53:02]  [LOGIN ERROR] Password inputted is incorrect.
+[24-Jul-2014 05:53:02]  [LOGIN ERROR] Member is not found in db.
+[24-Jul-2014 05:58:28]  [LOGIN ERROR] One or more fields is not set or is blank.
+[24-Jul-2014 05:58:40]  [LOGIN ERROR] Password inputted is incorrect.
+[24-Jul-2014 05:58:40]  [LOGIN ERROR] Member is not found in db.
+[24-Jul-2014 05:58:50]  [FORGOTPASSWORD ERROR] One or more fields is not set or is blank.
+[24-Jul-2014 05:59:11]  [FORGOTPASSWORD ERROR] Membership Card is Inactive
+[24-Jul-2014 05:59:26]  [FORGOTPASSWORD ERROR] Failed to insert to Audittrail.
+[24-Jul-2014 05:59:26]  [FORGOTPASSWORD ERROR] Failed to insert to APILogs.
+[24-Jul-2014 06:02:13]  [FORGOTPASSWORD ERROR] One or more fields is not set or is blank.
+[24-Jul-2014 06:02:31]  [FORGOTPASSWORD ERROR] Failed to insert to Audittrail.
+[24-Jul-2014 06:02:31]  [FORGOTPASSWORD ERROR] Failed to insert to APILogs.
+[24-Jul-2014 07:03:42]  [FORGOTPASSWORD ERROR] Invalid Email Address.
+[24-Jul-2014 14:34:08]  [LOGIN ERROR] One or more fields is not set or is blank.

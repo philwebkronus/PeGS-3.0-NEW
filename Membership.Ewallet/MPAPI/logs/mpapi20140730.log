@@ -1,0 +1,52 @@
+[30-Jul-2014 11:54:03]  [LOGIN SUCCESS] Login successful.
+[30-Jul-2014 11:58:48]  [LOGIN SUCCESS] Login successful.
+[30-Jul-2014 12:03:08]  [LOGIN SUCCESS] Login successful.
+[30-Jul-2014 13:18:56]  [REGISTERMEMBER ERROR] Name should consist of letters only.
+[30-Jul-2014 13:19:11]  [REGISTERMEMBER ERROR] Name should consist of letters only.
+[30-Jul-2014 13:19:36]  [REGISTERMEMBER ERROR] Name should consist of letters only.
+[30-Jul-2014 13:27:42]  [REGISTERMEMBER ERROR] Invalid Email Address.
+[30-Jul-2014 13:29:18]  [REGISTERMEMBER ERROR] Invalid Email Address.
+[30-Jul-2014 13:59:22]  [REGISTERMEMBER ERROR] Sorry, wala@yahoo.com.phalready belongs to an existing account. Please enter another email address.
+[30-Jul-2014 14:03:48]  [REGISTERMEMBER ERROR] Email is already verified. Please choose a different email address.
+[30-Jul-2014 14:06:44]  [REGISTERMEMBER ERROR] Email is already verified. Please choose a different email address.
+[30-Jul-2014 14:08:20]  [REGISTERMEMBER ERROR] Email is already verified. Please choose a different email address.
+[30-Jul-2014 14:09:30]  [REGISTERMEMBER ERROR] Registration failed.
+[30-Jul-2014 14:11:42]  [REGISTERMEMBER ERROR] Registration failed.
+[30-Jul-2014 14:13:38]  [REGISTERMEMBER ERROR] Registration failed.
+[30-Jul-2014 14:14:47]  [REGISTERMEMBER ERROR] Registration failed.
+[30-Jul-2014 14:15:02]  [REGISTERMEMBER ERROR] Registration failed.
+[30-Jul-2014 14:15:54]  [REGISTERMEMBER ERROR] Registration failed.
+[30-Jul-2014 14:29:04]  [REGISTERMEMBER ERROR] Registration failed.
+[30-Jul-2014 14:32:04]  [REGISTERMEMBER ERROR] Registration failed.
+[30-Jul-2014 15:15:59]  [REGISTERMEMBER ERROR] Registration failed.
+[30-Jul-2014 15:18:38]  [REGISTERMEMBER ERROR] Registration failed.
+[30-Jul-2014 15:26:31] [REGISTERMEMBER ERROR] Failed to send SMS.
+[30-Jul-2014 15:39:38] [REGISTERMEMBER ERROR] Failed to send SMS.
+[30-Jul-2014 15:58:25] [REGISTERMEMBER ERROR] Failed to send SMS.
+[30-Jul-2014 16:15:54]  [LOGIN SUCCESS] Login successful.
+[30-Jul-2014 16:21:56]  [LISTITEMS ERROR] Failed to insert to Audittrail.
+[30-Jul-2014 16:21:56]  [LISTITEMS SUCCESSFUL] List Items is successful.
+[30-Jul-2014 16:28:07]  [LISTITEMS ERROR] Failed to insert to Audittrail.
+[30-Jul-2014 16:28:07]  [LISTITEMS SUCCESSFUL] List Items is successful.
+[30-Jul-2014 16:38:18]  [LOGIN ERROR] One or more fields is not set or is blank.
+[30-Jul-2014 16:38:30]  [LOGIN SUCCESS] Login successful.
+[30-Jul-2014 16:46:37]  [LOGIN SUCCESS] Login successful.
+[30-Jul-2014 17:14:32]  [LISTITEMS ERROR] Failed to insert to Audittrail.
+[30-Jul-2014 17:14:32]  [LISTITEMS SUCCESSFUL] List Items is successful.
+[30-Jul-2014 18:09:56]  [GETPROFILE ERROR] Account is banned.
+[30-Jul-2014 18:10:09]  [GETPROFILE ERROR] Account is banned.
+[30-Jul-2014 18:10:18]  [GETPROFILE ERROR] Account is banned.
+[30-Jul-2014 18:10:25]  [GETPROFILE ERROR] Account is banned.
+[30-Jul-2014 18:13:56] [REGISTERMEMBER ERROR] Failed to send SMS.
+[30-Jul-2014 18:20:40]  [GETPROFILE ERROR] Account is banned.
+[30-Jul-2014 18:25:15]  [LISTITEMS ERROR] Failed to insert to Audittrail.
+[30-Jul-2014 18:25:15]  [LISTITEMS SUCCESSFUL] List Items is successful.
+[30-Jul-2014 18:28:54]  [LISTITEMS ERROR] Failed to insert to Audittrail.
+[30-Jul-2014 18:28:54]  [LISTITEMS SUCCESSFUL] List Items is successful.
+[30-Jul-2014 18:35:25]  [LISTITEMS ERROR] Not connected.
+[30-Jul-2014 19:05:55]  [GETPROFILE ERROR] Failed to insert to Audittrail.
+[30-Jul-2014 19:05:55]  [GETPROFILE SUCCESS] Get member profile is successful.
+[30-Jul-2014 19:17:18]  [LOGIN ERROR] Account is Invalid.
+[30-Jul-2014 19:19:05]  [LOGIN SUCCESS] Login successful.
+[30-Jul-2014 19:21:54]  [LOGIN SUCCESS] Login successful.
+[30-Jul-2014 19:49:04] [REGISTERMEMBER ERROR] Failed to send SMS.

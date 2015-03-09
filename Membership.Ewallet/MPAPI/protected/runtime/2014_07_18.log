@@ -1,0 +1,4 @@
+2014/07/18 04:03:59 [error] [application] ReturnMessage: Account is Banned. ErrorCode: 40
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (1496)
+in C:\xampp\htdocs\MPAPI\index.php (13)

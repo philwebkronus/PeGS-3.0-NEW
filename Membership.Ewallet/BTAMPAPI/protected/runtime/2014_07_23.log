@@ -1,0 +1,929 @@
+2014/07/23 03:48:07 [error] [exception.CHttpException.400] exception 'CHttpException' with message 'Your request is invalid.' in C:\xampp\htdocs\yii\framework\web\CController.php:336
+Stack trace:
+#0 C:\xampp\htdocs\yii\framework\web\CController.php(309): CController->invalidActionParams(Object(CInlineAction))
+#1 C:\xampp\htdocs\yii\framework\web\CController.php(286): CController->runAction(Object(CInlineAction))
+#2 C:\xampp\htdocs\yii\framework\web\CController.php(265): CController->runActionWithFilters(Object(CInlineAction), Array)
+#3 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(282): CController->run('authenticateses...')
+#4 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController('Ampapi/authenti...')
+#5 C:\xampp\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#6 C:\xampp\htdocs\AMPAPI\index.php(13): CApplication->run()
+#7 {main}
+REQUEST_URI=/AMPAPI/index.php/Ampapi/authenticatesession
+---
+2014/07/23 04:12:26 [error] [exception.CHttpException.400] exception 'CHttpException' with message 'Your request is invalid.' in C:\xampp\htdocs\yii\framework\web\CController.php:336
+Stack trace:
+#0 C:\xampp\htdocs\yii\framework\web\CController.php(309): CController->invalidActionParams(Object(CInlineAction))
+#1 C:\xampp\htdocs\yii\framework\web\CController.php(286): CController->runAction(Object(CInlineAction))
+#2 C:\xampp\htdocs\yii\framework\web\CController.php(265): CController->runActionWithFilters(Object(CInlineAction), Array)
+#3 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(282): CController->run('authenticateses...')
+#4 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController('Ampapi/authenti...')
+#5 C:\xampp\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#6 C:\xampp\htdocs\AMPAPI\index.php(13): CApplication->run()
+#7 {main}
+REQUEST_URI=/AMPAPI/index.php/Ampapi/authenticatesession
+---
+2014/07/23 04:33:10 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'The system is unable to find the requested action "create".' in C:\xampp\htdocs\yii\framework\web\CController.php:483
+Stack trace:
+#0 C:\xampp\htdocs\yii\framework\web\CController.php(270): CController->missingAction('create')
+#1 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(282): CController->run('create')
+#2 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController('Ampapi/create')
+#3 C:\xampp\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#4 C:\xampp\htdocs\AMPAPI\index.php(13): CApplication->run()
+#5 {main}
+REQUEST_URI=/AMPAPI/index.php/Ampapi/authenticatesession
+---
+2014/07/23 04:34:19 [error] [exception.CHttpException.400] exception 'CHttpException' with message 'Your request is invalid.' in C:\xampp\htdocs\yii\framework\web\CController.php:336
+Stack trace:
+#0 C:\xampp\htdocs\yii\framework\web\CController.php(309): CController->invalidActionParams(Object(CInlineAction))
+#1 C:\xampp\htdocs\yii\framework\web\CController.php(286): CController->runAction(Object(CInlineAction))
+#2 C:\xampp\htdocs\yii\framework\web\CController.php(265): CController->runActionWithFilters(Object(CInlineAction), Array)
+#3 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(282): CController->run('authenticateses...')
+#4 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController('Ampapi/authenti...')
+#5 C:\xampp\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#6 C:\xampp\htdocs\AMPAPI\index.php(13): CApplication->run()
+#7 {main}
+REQUEST_URI=/AMPAPI/index.php/Ampapi/authenticatesession
+---
+2014/07/23 04:41:48 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "api/list".' in C:\xampp\htdocs\yii\framework\web\CWebApplication.php:286
+Stack trace:
+#0 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController('api/list')
+#1 C:\xampp\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#2 C:\xampp\htdocs\AMPAPI\index.php(13): CApplication->run()
+#3 {main}
+REQUEST_URI=/AMPAPI/index.php/api/posts
+---
+2014/07/23 04:56:20 [error] [exception.CHttpException.400] exception 'CHttpException' with message 'Your request is invalid.' in C:\xampp\htdocs\yii\framework\web\CController.php:336
+Stack trace:
+#0 C:\xampp\htdocs\yii\framework\web\CController.php(309): CController->invalidActionParams(Object(CInlineAction))
+#1 C:\xampp\htdocs\yii\framework\web\CController.php(286): CController->runAction(Object(CInlineAction))
+#2 C:\xampp\htdocs\yii\framework\web\CController.php(265): CController->runActionWithFilters(Object(CInlineAction), Array)
+#3 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(282): CController->run('authenticateses...')
+#4 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController('Ampapi/authenti...')
+#5 C:\xampp\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#6 C:\xampp\htdocs\AMPAPI\index.php(13): CApplication->run()
+#7 {main}
+REQUEST_URI=/AMPAPI/index.php/Ampapi/authenticatesession
+---
+2014/07/23 04:57:41 [error] [exception.CHttpException.400] exception 'CHttpException' with message 'Your request is invalid.' in C:\xampp\htdocs\yii\framework\web\CController.php:336
+Stack trace:
+#0 C:\xampp\htdocs\yii\framework\web\CController.php(309): CController->invalidActionParams(Object(CInlineAction))
+#1 C:\xampp\htdocs\yii\framework\web\CController.php(286): CController->runAction(Object(CInlineAction))
+#2 C:\xampp\htdocs\yii\framework\web\CController.php(265): CController->runActionWithFilters(Object(CInlineAction), Array)
+#3 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(282): CController->run('authenticateses...')
+#4 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController('Ampapi/authenti...')
+#5 C:\xampp\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#6 C:\xampp\htdocs\AMPAPI\index.php(13): CApplication->run()
+#7 {main}
+REQUEST_URI=/AMPAPI/index.php/Ampapi/authenticatesession
+---
+2014/07/23 04:57:42 [error] [exception.CHttpException.400] exception 'CHttpException' with message 'Your request is invalid.' in C:\xampp\htdocs\yii\framework\web\CController.php:336
+Stack trace:
+#0 C:\xampp\htdocs\yii\framework\web\CController.php(309): CController->invalidActionParams(Object(CInlineAction))
+#1 C:\xampp\htdocs\yii\framework\web\CController.php(286): CController->runAction(Object(CInlineAction))
+#2 C:\xampp\htdocs\yii\framework\web\CController.php(265): CController->runActionWithFilters(Object(CInlineAction), Array)
+#3 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(282): CController->run('authenticateses...')
+#4 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController('Ampapi/authenti...')
+#5 C:\xampp\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#6 C:\xampp\htdocs\AMPAPI\index.php(13): CApplication->run()
+#7 {main}
+REQUEST_URI=/AMPAPI/index.php/Ampapi/authenticatesession
+---
+2014/07/23 05:03:09 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'The system is unable to find the requested action "posts".' in C:\xampp\htdocs\yii\framework\web\CController.php:483
+Stack trace:
+#0 C:\xampp\htdocs\yii\framework\web\CController.php(270): CController->missingAction('posts')
+#1 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(282): CController->run('posts')
+#2 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController('Ampapi/posts/au...')
+#3 C:\xampp\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#4 C:\xampp\htdocs\AMPAPI\index.php(13): CApplication->run()
+#5 {main}
+REQUEST_URI=/AMPAPI/index.php/Ampapi/posts/authenticatesession
+---
+2014/07/23 05:03:23 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "post/index".' in C:\xampp\htdocs\yii\framework\web\CWebApplication.php:286
+Stack trace:
+#0 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController('post/index')
+#1 C:\xampp\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#2 C:\xampp\htdocs\AMPAPI\index.php(13): CApplication->run()
+#3 {main}
+REQUEST_URI=/AMPAPI/index.php/posts/authenticatesession
+---
+2014/07/23 05:03:43 [error] [exception.CHttpException.400] exception 'CHttpException' with message 'Your request is invalid.' in C:\xampp\htdocs\yii\framework\web\CController.php:336
+Stack trace:
+#0 C:\xampp\htdocs\yii\framework\web\CController.php(309): CController->invalidActionParams(Object(CInlineAction))
+#1 C:\xampp\htdocs\yii\framework\web\CController.php(286): CController->runAction(Object(CInlineAction))
+#2 C:\xampp\htdocs\yii\framework\web\CController.php(265): CController->runActionWithFilters(Object(CInlineAction), Array)
+#3 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(282): CController->run('authenticateses...')
+#4 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController('Ampapi/authenti...')
+#5 C:\xampp\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#6 C:\xampp\htdocs\AMPAPI\index.php(13): CApplication->run()
+#7 {main}
+REQUEST_URI=/AMPAPI/index.php/Ampapi/posts
+---
+2014/07/23 05:15:50 [error] [exception.CHttpException.400] exception 'CHttpException' with message 'Your request is invalid.' in C:\xampp\htdocs\yii\framework\web\CController.php:336
+Stack trace:
+#0 C:\xampp\htdocs\yii\framework\web\CController.php(309): CController->invalidActionParams(Object(CInlineAction))
+#1 C:\xampp\htdocs\yii\framework\web\CController.php(286): CController->runAction(Object(CInlineAction))
+#2 C:\xampp\htdocs\yii\framework\web\CController.php(265): CController->runActionWithFilters(Object(CInlineAction), Array)
+#3 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(282): CController->run('authenticateses...')
+#4 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController('Ampapi/authenti...')
+#5 C:\xampp\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#6 C:\xampp\htdocs\AMPAPI\index.php(13): CApplication->run()
+#7 {main}
+REQUEST_URI=/AMPAPI/index.php/Ampapi/AuthenticateSession
+---
+2014/07/23 05:18:51 [error] [php] Undefined variable: module (C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php:27)
+Stack trace:
+#0 C:\xampp\htdocs\yii\framework\web\CController.php(286): AmpapiController->runAction()
+#1 C:\xampp\htdocs\yii\framework\web\CController.php(265): AmpapiController->runActionWithFilters()
+#2 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(282): AmpapiController->run()
+#3 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController()
+#4 C:\xampp\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#5 C:\xampp\htdocs\AMPAPI\index.php(13): CWebApplication->run()
+REQUEST_URI=/AMPAPI/index.php/Ampapi/authenticatesession
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (27)
+in C:\xampp\htdocs\AMPAPI\index.php (13)
+2014/07/23 05:19:14 [error] [php] Undefined variable: Username (C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php:27)
+Stack trace:
+#0 C:\xampp\htdocs\yii\framework\web\CController.php(286): AmpapiController->runAction()
+#1 C:\xampp\htdocs\yii\framework\web\CController.php(265): AmpapiController->runActionWithFilters()
+#2 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(282): AmpapiController->run()
+#3 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController()
+#4 C:\xampp\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#5 C:\xampp\htdocs\AMPAPI\index.php(13): CWebApplication->run()
+REQUEST_URI=/AMPAPI/index.php/Ampapi/authenticatesession
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (27)
+in C:\xampp\htdocs\AMPAPI\index.php (13)
+2014/07/23 05:19:25 [error] [php] Undefined variable: errorCode (C:\xampp\htdocs\AMPAPI\protected\controllers\CommonController.php:85)
+Stack trace:
+#0 C:\xampp\htdocs\yii\framework\web\CController.php(308): CInlineAction->runWithParams()
+#1 C:\xampp\htdocs\yii\framework\web\CController.php(286): AmpapiController->runAction()
+#2 C:\xampp\htdocs\yii\framework\web\CController.php(265): AmpapiController->runActionWithFilters()
+#3 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(282): AmpapiController->run()
+#4 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController()
+#5 C:\xampp\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#6 C:\xampp\htdocs\AMPAPI\index.php(13): CWebApplication->run()
+REQUEST_URI=/AMPAPI/index.php/Ampapi/authenticatesession
+in C:\xampp\htdocs\AMPAPI\protected\controllers\CommonController.php (85)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (27)
+in C:\xampp\htdocs\AMPAPI\index.php (13)
+2014/07/23 05:19:33 [error] [php] Undefined variable: errorCode (C:\xampp\htdocs\AMPAPI\protected\controllers\CommonController.php:85)
+Stack trace:
+#0 C:\xampp\htdocs\yii\framework\web\CController.php(308): CInlineAction->runWithParams()
+#1 C:\xampp\htdocs\yii\framework\web\CController.php(286): AmpapiController->runAction()
+#2 C:\xampp\htdocs\yii\framework\web\CController.php(265): AmpapiController->runActionWithFilters()
+#3 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(282): AmpapiController->run()
+#4 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController()
+#5 C:\xampp\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#6 C:\xampp\htdocs\AMPAPI\index.php(13): CWebApplication->run()
+REQUEST_URI=/AMPAPI/index.php/Ampapi/authenticatesession
+in C:\xampp\htdocs\AMPAPI\protected\controllers\CommonController.php (85)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (27)
+in C:\xampp\htdocs\AMPAPI\index.php (13)
+2014/07/23 05:23:21 [error] [php] Undefined variable: errorCode (C:\xampp\htdocs\AMPAPI\protected\controllers\CommonController.php:85)
+Stack trace:
+#0 C:\xampp\htdocs\yii\framework\web\CController.php(308): CInlineAction->runWithParams()
+#1 C:\xampp\htdocs\yii\framework\web\CController.php(286): AmpapiController->runAction()
+#2 C:\xampp\htdocs\yii\framework\web\CController.php(265): AmpapiController->runActionWithFilters()
+#3 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(282): AmpapiController->run()
+#4 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController()
+#5 C:\xampp\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#6 C:\xampp\htdocs\AMPAPI\index.php(13): CWebApplication->run()
+REQUEST_URI=/AMPAPI/index.php/Ampapi/authenticatesession
+in C:\xampp\htdocs\AMPAPI\protected\controllers\CommonController.php (85)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (27)
+in C:\xampp\htdocs\AMPAPI\index.php (13)
+2014/07/23 05:27:05 [error] [php] Undefined variable: errorCode (C:\xampp\htdocs\AMPAPI\protected\controllers\CommonController.php:85)
+Stack trace:
+#0 C:\xampp\htdocs\yii\framework\web\CController.php(308): CInlineAction->runWithParams()
+#1 C:\xampp\htdocs\yii\framework\web\CController.php(286): AmpapiController->runAction()
+#2 C:\xampp\htdocs\yii\framework\web\CController.php(265): AmpapiController->runActionWithFilters()
+#3 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(282): AmpapiController->run()
+#4 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController()
+#5 C:\xampp\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#6 C:\xampp\htdocs\AMPAPI\index.php(13): CWebApplication->run()
+REQUEST_URI=/AMPAPI/index.php/Ampapi/authenticatesession
+in C:\xampp\htdocs\AMPAPI\protected\controllers\CommonController.php (85)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (27)
+in C:\xampp\htdocs\AMPAPI\index.php (13)
+2014/07/23 05:27:10 [error] [php] Undefined variable: errorCode (C:\xampp\htdocs\AMPAPI\protected\controllers\CommonController.php:85)
+Stack trace:
+#0 C:\xampp\htdocs\yii\framework\web\CController.php(308): CInlineAction->runWithParams()
+#1 C:\xampp\htdocs\yii\framework\web\CController.php(286): AmpapiController->runAction()
+#2 C:\xampp\htdocs\yii\framework\web\CController.php(265): AmpapiController->runActionWithFilters()
+#3 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(282): AmpapiController->run()
+#4 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController()
+#5 C:\xampp\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#6 C:\xampp\htdocs\AMPAPI\index.php(13): CWebApplication->run()
+REQUEST_URI=/AMPAPI/index.php/Ampapi/authenticatesession
+in C:\xampp\htdocs\AMPAPI\protected\controllers\CommonController.php (85)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (27)
+in C:\xampp\htdocs\AMPAPI\index.php (13)
+2014/07/23 05:31:55 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "api/list".' in C:\xampp\htdocs\yii\framework\web\CWebApplication.php:286
+Stack trace:
+#0 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController('api/list')
+#1 C:\xampp\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#2 C:\xampp\htdocs\AMPAPI\index.php(13): CApplication->run()
+#3 {main}
+REQUEST_URI=/AMPAPI/index.php/api/posts
+---
+2014/07/23 05:31:56 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "api/list".' in C:\xampp\htdocs\yii\framework\web\CWebApplication.php:286
+Stack trace:
+#0 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController('api/list')
+#1 C:\xampp\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#2 C:\xampp\htdocs\AMPAPI\index.php(13): CApplication->run()
+#3 {main}
+REQUEST_URI=/AMPAPI/index.php/api/posts
+---
+2014/07/23 08:19:27 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (222)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (58)
+2014/07/23 08:19:44 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (222)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (58)
+2014/07/23 08:19:44 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (222)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (58)
+2014/07/23 08:19:44 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (222)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (58)
+2014/07/23 08:19:44 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (222)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (58)
+2014/07/23 09:36:51 [error] [php] Undefined variable: request (C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiInvokerController.php:78)
+Stack trace:
+#0 C:\xampp\htdocs\yii\framework\web\CController.php(286): AmpapiInvokerController->runAction()
+#1 C:\xampp\htdocs\yii\framework\web\CController.php(265): AmpapiInvokerController->runActionWithFilters()
+#2 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(282): AmpapiInvokerController->run()
+#3 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController()
+#4 C:\xampp\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#5 C:\xampp\htdocs\AMPAPI\index.php(13): CWebApplication->run()
+REQUEST_URI=/AMPAPI/index.php/AmpapiInvoker/authenticatesession
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiInvokerController.php (78)
+in C:\xampp\htdocs\AMPAPI\index.php (13)
+2014/07/23 09:37:00 [error] [php] Undefined variable: request (C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiInvokerController.php:78)
+Stack trace:
+#0 C:\xampp\htdocs\yii\framework\web\CController.php(286): AmpapiInvokerController->runAction()
+#1 C:\xampp\htdocs\yii\framework\web\CController.php(265): AmpapiInvokerController->runActionWithFilters()
+#2 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(282): AmpapiInvokerController->run()
+#3 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController()
+#4 C:\xampp\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#5 C:\xampp\htdocs\AMPAPI\index.php(13): CWebApplication->run()
+REQUEST_URI=/AMPAPI/index.php/AmpapiInvoker/authenticatesession
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiInvokerController.php (78)
+in C:\xampp\htdocs\AMPAPI\index.php (13)
+2014/07/23 09:56:30 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (227)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (66)
+2014/07/23 10:01:18 [error] [php] Undefined property: AuthenticateSessionModel::$_connection (C:\xampp\htdocs\AMPAPI\protected\models\AuthenticateSessionModel.php:20)
+Stack trace:
+#0 C:\xampp\htdocs\yii\framework\web\CController.php(308): CInlineAction->runWithParams()
+#1 C:\xampp\htdocs\yii\framework\web\CController.php(286): AmpapiController->runAction()
+#2 C:\xampp\htdocs\yii\framework\web\CController.php(265): AmpapiController->runActionWithFilters()
+#3 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(282): AmpapiController->run()
+#4 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController()
+#5 C:\xampp\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#6 C:\xampp\htdocs\AMPAPI\index.php(13): CWebApplication->run()
+REQUEST_URI=/AMPAPI/index.php/Ampapi/authenticatesession
+in C:\xampp\htdocs\AMPAPI\protected\models\AuthenticateSessionModel.php (20)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (60)
+in C:\xampp\htdocs\AMPAPI\index.php (13)
+2014/07/23 10:07:57 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (227)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (66)
+2014/07/23 10:09:32 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (227)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (66)
+2014/07/23 10:11:10 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (227)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (66)
+2014/07/23 10:12:07 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (228)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (67)
+2014/07/23 10:12:08 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (228)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (67)
+2014/07/23 10:12:09 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (228)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (67)
+2014/07/23 10:12:09 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (228)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (67)
+2014/07/23 10:12:30 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (227)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (66)
+2014/07/23 10:12:33 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (227)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (66)
+2014/07/23 10:14:32 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (231)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (66)
+2014/07/23 10:23:59 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (239)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (73)
+2014/07/23 10:25:27 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (239)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (73)
+2014/07/23 10:25:27 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (239)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (73)
+2014/07/23 10:29:11 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (237)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (71)
+2014/07/23 10:29:13 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (237)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (71)
+2014/07/23 10:31:42 [error] [php] Undefined offset: 1 (C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php:230)
+Stack trace:
+#0 C:\xampp\htdocs\yii\framework\web\CController.php(308): CInlineAction->runWithParams()
+#1 C:\xampp\htdocs\yii\framework\web\CController.php(286): AmpapiController->runAction()
+#2 C:\xampp\htdocs\yii\framework\web\CController.php(265): AmpapiController->runActionWithFilters()
+#3 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(282): AmpapiController->run()
+#4 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController()
+#5 C:\xampp\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#6 C:\xampp\htdocs\AMPAPI\index.php(13): CWebApplication->run()
+REQUEST_URI=/AMPAPI/index.php/Ampapi/authenticatesession
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (230)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (68)
+in C:\xampp\htdocs\AMPAPI\index.php (13)
+2014/07/23 10:32:07 [error] [php] Undefined offset: 1 (C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php:230)
+Stack trace:
+#0 C:\xampp\htdocs\yii\framework\web\CController.php(308): CInlineAction->runWithParams()
+#1 C:\xampp\htdocs\yii\framework\web\CController.php(286): AmpapiController->runAction()
+#2 C:\xampp\htdocs\yii\framework\web\CController.php(265): AmpapiController->runActionWithFilters()
+#3 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(282): AmpapiController->run()
+#4 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController()
+#5 C:\xampp\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#6 C:\xampp\htdocs\AMPAPI\index.php(13): CWebApplication->run()
+REQUEST_URI=/AMPAPI/index.php/Ampapi/authenticatesession
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (230)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (68)
+in C:\xampp\htdocs\AMPAPI\index.php (13)
+2014/07/23 10:32:14 [error] [php] Undefined offset: 1 (C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php:230)
+Stack trace:
+#0 C:\xampp\htdocs\yii\framework\web\CController.php(308): CInlineAction->runWithParams()
+#1 C:\xampp\htdocs\yii\framework\web\CController.php(286): AmpapiController->runAction()
+#2 C:\xampp\htdocs\yii\framework\web\CController.php(265): AmpapiController->runActionWithFilters()
+#3 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(282): AmpapiController->run()
+#4 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController()
+#5 C:\xampp\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#6 C:\xampp\htdocs\AMPAPI\index.php(13): CWebApplication->run()
+REQUEST_URI=/AMPAPI/index.php/Ampapi/authenticatesession
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (230)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (68)
+in C:\xampp\htdocs\AMPAPI\index.php (13)
+2014/07/23 10:32:25 [error] [php] Undefined offset: 1 (C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php:230)
+Stack trace:
+#0 C:\xampp\htdocs\yii\framework\web\CController.php(308): CInlineAction->runWithParams()
+#1 C:\xampp\htdocs\yii\framework\web\CController.php(286): AmpapiController->runAction()
+#2 C:\xampp\htdocs\yii\framework\web\CController.php(265): AmpapiController->runActionWithFilters()
+#3 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(282): AmpapiController->run()
+#4 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController()
+#5 C:\xampp\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#6 C:\xampp\htdocs\AMPAPI\index.php(13): CWebApplication->run()
+REQUEST_URI=/AMPAPI/index.php/Ampapi/authenticatesession
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (230)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (68)
+in C:\xampp\htdocs\AMPAPI\index.php (13)
+2014/07/23 10:32:32 [error] [php] Undefined offset: 1 (C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php:230)
+Stack trace:
+#0 C:\xampp\htdocs\yii\framework\web\CController.php(308): CInlineAction->runWithParams()
+#1 C:\xampp\htdocs\yii\framework\web\CController.php(286): AmpapiController->runAction()
+#2 C:\xampp\htdocs\yii\framework\web\CController.php(265): AmpapiController->runActionWithFilters()
+#3 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(282): AmpapiController->run()
+#4 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController()
+#5 C:\xampp\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#6 C:\xampp\htdocs\AMPAPI\index.php(13): CWebApplication->run()
+REQUEST_URI=/AMPAPI/index.php/Ampapi/authenticatesession
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (230)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (68)
+in C:\xampp\htdocs\AMPAPI\index.php (13)
+2014/07/23 10:33:13 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (238)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (72)
+2014/07/23 10:33:48 [error] [php] Undefined offset: 1 (C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php:230)
+Stack trace:
+#0 C:\xampp\htdocs\yii\framework\web\CController.php(308): CInlineAction->runWithParams()
+#1 C:\xampp\htdocs\yii\framework\web\CController.php(286): AmpapiController->runAction()
+#2 C:\xampp\htdocs\yii\framework\web\CController.php(265): AmpapiController->runActionWithFilters()
+#3 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(282): AmpapiController->run()
+#4 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController()
+#5 C:\xampp\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#6 C:\xampp\htdocs\AMPAPI\index.php(13): CWebApplication->run()
+REQUEST_URI=/AMPAPI/index.php/Ampapi/authenticatesession
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (230)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (68)
+in C:\xampp\htdocs\AMPAPI\index.php (13)
+2014/07/23 10:34:50 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (238)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (72)
+2014/07/23 10:34:52 [error] [php] Undefined offset: 1 (C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php:230)
+Stack trace:
+#0 C:\xampp\htdocs\yii\framework\web\CController.php(308): CInlineAction->runWithParams()
+#1 C:\xampp\htdocs\yii\framework\web\CController.php(286): AmpapiController->runAction()
+#2 C:\xampp\htdocs\yii\framework\web\CController.php(265): AmpapiController->runActionWithFilters()
+#3 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(282): AmpapiController->run()
+#4 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController()
+#5 C:\xampp\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#6 C:\xampp\htdocs\AMPAPI\index.php(13): CWebApplication->run()
+REQUEST_URI=/AMPAPI/index.php/Ampapi/authenticatesession
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (230)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (68)
+in C:\xampp\htdocs\AMPAPI\index.php (13)
+2014/07/23 10:38:56 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (238)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (71)
+2014/07/23 10:54:24 [error] [application] ReturnMessage: Member not found. ErrorCode: 3
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (243)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (72)
+2014/07/23 10:54:34 [error] [application] ReturnMessage: Member not found. ErrorCode: 3
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (243)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (72)
+2014/07/23 10:56:18 [error] [php] Trying to get property of non-object (C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php:66)
+Stack trace:
+#0 C:\xampp\htdocs\yii\framework\web\CController.php(286): AmpapiController->runAction()
+#1 C:\xampp\htdocs\yii\framework\web\CController.php(265): AmpapiController->runActionWithFilters()
+#2 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(282): AmpapiController->run()
+#3 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController()
+#4 C:\xampp\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#5 C:\xampp\htdocs\AMPAPI\index.php(13): CWebApplication->run()
+REQUEST_URI=/AMPAPI/index.php/Ampapi/authenticatesession
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (66)
+in C:\xampp\htdocs\AMPAPI\index.php (13)
+2014/07/23 11:05:52 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (244)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (78)
+2014/07/23 11:10:43 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (244)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (78)
+2014/07/23 11:30:21 [error] [system.db.CDbCommand] CDbCommand::fetch() failed: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ''1'' at line 1. The SQL statement executed was: SELECT COUNT(`AID`) as Count,`AID`, `Username`, `Password`, `Status` FROM `Status`=:Status.
+in C:\xampp\htdocs\AMPAPI\protected\models\AuthenticateSessionModel.php (32)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (65)
+in C:\xampp\htdocs\AMPAPI\index.php (13)
+2014/07/23 11:30:21 [error] [exception.CDbException] exception 'CDbException' with message 'CDbCommand failed to execute the SQL statement: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ''1'' at line 1. The SQL statement executed was: SELECT COUNT(`AID`) as Count,`AID`, `Username`, `Password`, `Status` FROM `Status`=:Status' in C:\xampp\htdocs\yii\framework\db\CDbCommand.php:541
+Stack trace:
+#0 C:\xampp\htdocs\yii\framework\db\CDbCommand.php(414): CDbCommand->queryInternal('fetch', Array, Array)
+#1 C:\xampp\htdocs\AMPAPI\protected\models\AuthenticateSessionModel.php(32): CDbCommand->queryRow(true, Array)
+#2 C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php(65): AuthenticateSessionModel->authenticateSession('tpadminjem', '5f4dcc3b5aa765d...')
+#3 C:\xampp\htdocs\yii\framework\web\actions\CInlineAction.php(49): AmpapiController->actionAuthenticateSession()
+#4 C:\xampp\htdocs\yii\framework\web\CController.php(308): CInlineAction->runWithParams(Array)
+#5 C:\xampp\htdocs\yii\framework\web\CController.php(286): CController->runAction(Object(CInlineAction))
+#6 C:\xampp\htdocs\yii\framework\web\CController.php(265): CController->runActionWithFilters(Object(CInlineAction), Array)
+#7 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(282): CController->run('authenticateses...')
+#8 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController('Ampapi/authenti...')
+#9 C:\xampp\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#10 C:\xampp\htdocs\AMPAPI\index.php(13): CApplication->run()
+#11 {main}
+REQUEST_URI=/AMPAPI/index.php/Ampapi/authenticatesession
+---
+2014/07/23 11:34:56 [error] [application] ReturnMessage: Member not found. ErrorCode: 3
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (244)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (73)
+2014/07/23 11:35:13 [error] [application] ReturnMessage: Member not found. ErrorCode: 3
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (244)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (73)
+2014/07/23 11:38:59 [error] [application] ReturnMessage: Member not found. ErrorCode: 3
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (244)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (73)
+2014/07/23 11:39:12 [error] [application] ReturnMessage: Member not found. ErrorCode: 3
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (244)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (73)
+2014/07/23 11:56:41 [error] [application] ReturnMessage: Invalid input. ErrorCode: 2
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (248)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (73)
+2014/07/23 11:57:32 [error] [application] ReturnMessage: Member not found. ErrorCode: 3
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (247)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (76)
+2014/07/23 12:13:50 [error] [php] Undefined index: AID (C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php:70)
+Stack trace:
+#0 C:\xampp\htdocs\yii\framework\web\CController.php(286): AmpapiController->runAction()
+#1 C:\xampp\htdocs\yii\framework\web\CController.php(265): AmpapiController->runActionWithFilters()
+#2 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(282): AmpapiController->run()
+#3 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController()
+#4 C:\xampp\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#5 C:\xampp\htdocs\AMPAPI\index.php(13): CWebApplication->run()
+REQUEST_URI=/AMPAPI/index.php/Ampapi/authenticatesession
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (70)
+in C:\xampp\htdocs\AMPAPI\index.php (13)
+2014/07/23 12:15:29 [error] [php] Undefined index: AID (C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php:70)
+Stack trace:
+#0 C:\xampp\htdocs\yii\framework\web\CController.php(286): AmpapiController->runAction()
+#1 C:\xampp\htdocs\yii\framework\web\CController.php(265): AmpapiController->runActionWithFilters()
+#2 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(282): AmpapiController->run()
+#3 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController()
+#4 C:\xampp\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#5 C:\xampp\htdocs\AMPAPI\index.php(13): CWebApplication->run()
+REQUEST_URI=/AMPAPI/index.php/Ampapi/authenticatesession
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (70)
+in C:\xampp\htdocs\AMPAPI\index.php (13)
+2014/07/23 12:15:57 [error] [php] Undefined index: Count (C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php:72)
+Stack trace:
+#0 C:\xampp\htdocs\yii\framework\web\CController.php(286): AmpapiController->runAction()
+#1 C:\xampp\htdocs\yii\framework\web\CController.php(265): AmpapiController->runActionWithFilters()
+#2 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(282): AmpapiController->run()
+#3 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController()
+#4 C:\xampp\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#5 C:\xampp\htdocs\AMPAPI\index.php(13): CWebApplication->run()
+REQUEST_URI=/AMPAPI/index.php/Ampapi/authenticatesession
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (72)
+in C:\xampp\htdocs\AMPAPI\index.php (13)
+2014/07/23 12:35:41 [error] [application] ReturnMessage: Count:0;Session:null ErrorCode: 1
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (264)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (89)
+2014/07/23 12:35:55 [error] [application] ReturnMessage: Count:0;Session:null ErrorCode: 1
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (264)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (89)
+2014/07/23 12:37:40 [error] [application] ReturnMessage:  ErrorCode: 1
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (266)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (90)
+2014/07/23 12:42:14 [error] [application] ReturnMessage:  ErrorCode: 1
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (266)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (90)
+2014/07/23 12:51:39 [error] [application] ReturnMessage:  ErrorCode: 1
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (266)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (90)
+2014/07/23 12:51:58 [error] [application] ReturnMessage:  ErrorCode: 1
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (266)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (90)
+2014/07/23 12:58:23 [error] [application] ReturnMessage: cb9ie0l0gg5mvd4jbeoa4ihl20 ErrorCode: 1
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (267)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (91)
+2014/07/23 12:58:28 [error] [application] ReturnMessage: 7tos271a8ho7cobgf37m65jt85 ErrorCode: 1
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (267)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (91)
+2014/07/23 12:58:31 [error] [application] ReturnMessage: 4jqlbdam3rt0qmrub23gc8u6s6 ErrorCode: 1
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (267)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (91)
+2014/07/23 12:58:33 [error] [application] ReturnMessage: tcjcn1iu46vsgv2lgsn42u7pd4 ErrorCode: 1
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (267)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (91)
+2014/07/23 12:58:36 [error] [application] ReturnMessage: jbdu68ic5al8hhe0dbjb5p52d5 ErrorCode: 1
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (267)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (91)
+2014/07/23 12:59:00 [error] [application] ReturnMessage: h4enu3hhsf9o7bu56e2rer00t3 ErrorCode: 1
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (267)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (91)
+2014/07/23 12:59:03 [error] [application] ReturnMessage: geknc8vlbi95lsmm4t3tld0rn4 ErrorCode: 1
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (267)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (91)
+2014/07/23 13:01:42 [error] [application] ReturnMessage: 5e8adptpk7daepdigchgu0suv4 ErrorCode: 1
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (268)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (91)
+2014/07/23 13:01:45 [error] [application] ReturnMessage: lhklsuke7all4djnadr8hvdak1 ErrorCode: 1
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (268)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (91)
+2014/07/23 13:01:49 [error] [application] ReturnMessage: u868trglvrh7l2e7ujhtov16c1 ErrorCode: 1
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (268)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (91)
+2014/07/23 13:16:38 [error] [php] Undefined offset: 1 (C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php:265)
+Stack trace:
+#0 C:\xampp\htdocs\yii\framework\web\actions\CInlineAction.php(49): AmpapiController->actionAuthenticateSession()
+#1 C:\xampp\htdocs\yii\framework\web\CController.php(308): CInlineAction->runWithParams()
+#2 C:\xampp\htdocs\yii\framework\web\CController.php(286): AmpapiController->runAction()
+#3 C:\xampp\htdocs\yii\framework\web\CController.php(265): AmpapiController->runActionWithFilters()
+#4 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(282): AmpapiController->run()
+#5 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController()
+#6 C:\xampp\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#7 C:\xampp\htdocs\AMPAPI\index.php(13): CWebApplication->run()
+REQUEST_URI=/AMPAPI/index.php/Ampapi/authenticatesession
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (265)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (97)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (68)
+2014/07/23 13:31:54 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`accountsdb`.`accountsessions`, CONSTRAINT `FK_accountsessions_accounts_AID` FOREIGN KEY (`AID`) REFERENCES `accounts` (`AID`)). The SQL statement executed was: INSERT INTO accountsessions(AID,SessionID,DateCreated) VALUES (:AID,:SessionID, NOW(6)).
+in C:\xampp\htdocs\AMPAPI\protected\models\AuthenticateSessionModel.php (53)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (94)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (68)
+2014/07/23 13:31:54 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`accountsdb`.`accountsessions`, CONSTRAINT `FK_accountsessions_accounts_AID` FOREIGN KEY (`AID`) REFERENCES `accounts` (`AID`)). The SQL statement executed was: INSERT INTO accountsessions(AID,SessionID,DateCreated) VALUES (:AID,:SessionID, NOW(6))
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\models\AuthenticateSessionModel.php (65)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (94)
+2014/07/23 13:33:21 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`accountsdb`.`accountsessions`, CONSTRAINT `FK_accountsessions_accounts_AID` FOREIGN KEY (`AID`) REFERENCES `accounts` (`AID`)). The SQL statement executed was: INSERT INTO accountsessions(AID,SessionID,DateCreated) VALUES (:AID,:SessionID, NOW(6)).
+in C:\xampp\htdocs\AMPAPI\protected\models\AuthenticateSessionModel.php (53)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (94)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (68)
+2014/07/23 13:33:21 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`accountsdb`.`accountsessions`, CONSTRAINT `FK_accountsessions_accounts_AID` FOREIGN KEY (`AID`) REFERENCES `accounts` (`AID`)). The SQL statement executed was: INSERT INTO accountsessions(AID,SessionID,DateCreated) VALUES (:AID,:SessionID, NOW(6))
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\models\AuthenticateSessionModel.php (65)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (94)
+2014/07/23 13:33:41 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`accountsdb`.`accountsessions`, CONSTRAINT `FK_accountsessions_accounts_AID` FOREIGN KEY (`AID`) REFERENCES `accounts` (`AID`)). The SQL statement executed was: INSERT INTO accountsessions(AID,SessionID,DateCreated) VALUES (:AID,:SessionID, NOW(6)).
+in C:\xampp\htdocs\AMPAPI\protected\models\AuthenticateSessionModel.php (53)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (94)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (68)
+2014/07/23 13:33:41 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`accountsdb`.`accountsessions`, CONSTRAINT `FK_accountsessions_accounts_AID` FOREIGN KEY (`AID`) REFERENCES `accounts` (`AID`)). The SQL statement executed was: INSERT INTO accountsessions(AID,SessionID,DateCreated) VALUES (:AID,:SessionID, NOW(6))
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\models\AuthenticateSessionModel.php (65)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (94)
+2014/07/23 13:36:09 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[HY093]: Invalid parameter number: parameter was not defined. The SQL statement executed was: UPDATE accountsessions SET `SessionID`=:SessionID, `DataCreated`=NOW(6) WHERE `AID`=:AID.
+in C:\xampp\htdocs\AMPAPI\protected\models\AuthenticateSessionModel.php (78)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (109)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (68)
+2014/07/23 13:36:09 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[HY093]: Invalid parameter number: parameter was not defined. The SQL statement executed was: UPDATE accountsessions SET `SessionID`=:SessionID, `DataCreated`=NOW(6) WHERE `AID`=:AID
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\models\AuthenticateSessionModel.php (91)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (109)
+2014/07/23 13:37:08 [error] [application] ReturnMessage: Member not found. ErrorCode: 3
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (284)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (74)
+2014/07/23 13:38:11 [error] [application] ReturnMessage: Member not found. ErrorCode: 3
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (284)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (74)
+2014/07/23 13:39:08 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[HY093]: Invalid parameter number: parameter was not defined. The SQL statement executed was: UPDATE accountsessions SET `SessionID`=:SessionID, `DataCreated`=NOW(6) WHERE `AID`=:AID.
+in C:\xampp\htdocs\AMPAPI\protected\models\AuthenticateSessionModel.php (78)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (109)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (68)
+2014/07/23 13:39:08 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[HY093]: Invalid parameter number: parameter was not defined. The SQL statement executed was: UPDATE accountsessions SET `SessionID`=:SessionID, `DataCreated`=NOW(6) WHERE `AID`=:AID
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\models\AuthenticateSessionModel.php (91)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (109)
+2014/07/23 13:39:15 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[HY093]: Invalid parameter number: parameter was not defined. The SQL statement executed was: UPDATE accountsessions SET `SessionID`=:SessionID, `DataCreated`=NOW(6) WHERE `AID`=:AID.
+in C:\xampp\htdocs\AMPAPI\protected\models\AuthenticateSessionModel.php (78)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (109)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (68)
+2014/07/23 13:39:15 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[HY093]: Invalid parameter number: parameter was not defined. The SQL statement executed was: UPDATE accountsessions SET `SessionID`=:SessionID, `DataCreated`=NOW(6) WHERE `AID`=:AID
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\models\AuthenticateSessionModel.php (91)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (109)
+2014/07/23 13:39:49 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[HY093]: Invalid parameter number: parameter was not defined. The SQL statement executed was: UPDATE accountsessions SET `SessionID`=:SessionID, `DataCreated`=NOW(6) WHERE `AID`=:AID.
+in C:\xampp\htdocs\AMPAPI\protected\models\AuthenticateSessionModel.php (78)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (109)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (68)
+2014/07/23 13:39:49 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[HY093]: Invalid parameter number: parameter was not defined. The SQL statement executed was: UPDATE accountsessions SET `SessionID`=:SessionID, `DataCreated`=NOW(6) WHERE `AID`=:AID
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\models\AuthenticateSessionModel.php (91)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (109)
+2014/07/23 13:40:01 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[HY093]: Invalid parameter number: parameter was not defined. The SQL statement executed was: UPDATE accountsessions SET `SessionID`=:SessionID, `DataCreated`=NOW(6) WHERE `AID`=:AID.
+in C:\xampp\htdocs\AMPAPI\protected\models\AuthenticateSessionModel.php (78)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (109)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (68)
+2014/07/23 13:40:01 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[HY093]: Invalid parameter number: parameter was not defined. The SQL statement executed was: UPDATE accountsessions SET `SessionID`=:SessionID, `DataCreated`=NOW(6) WHERE `AID`=:AID
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\models\AuthenticateSessionModel.php (91)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (109)
+2014/07/23 13:40:39 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[HY093]: Invalid parameter number: parameter was not defined. The SQL statement executed was: UPDATE accountsessions SET `SessionID`=:SessionID, `DataCreated`=NOW(6) WHERE `AID`=:AID.
+in C:\xampp\htdocs\AMPAPI\protected\models\AuthenticateSessionModel.php (78)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (109)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (68)
+2014/07/23 13:40:39 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[HY093]: Invalid parameter number: parameter was not defined. The SQL statement executed was: UPDATE accountsessions SET `SessionID`=:SessionID, `DataCreated`=NOW(6) WHERE `AID`=:AID
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\models\AuthenticateSessionModel.php (91)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (109)
+2014/07/23 13:40:57 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[HY093]: Invalid parameter number: parameter was not defined. The SQL statement executed was: UPDATE accountsessions SET `SessionID`=:SessionID, `DataCreated`=NOW(6) WHERE `AID`=:AID.
+in C:\xampp\htdocs\AMPAPI\protected\models\AuthenticateSessionModel.php (78)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (109)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (68)
+2014/07/23 13:40:57 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[HY093]: Invalid parameter number: parameter was not defined. The SQL statement executed was: UPDATE accountsessions SET `SessionID`=:SessionID, `DataCreated`=NOW(6) WHERE `AID`=:AID
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\models\AuthenticateSessionModel.php (91)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (109)
+2014/07/23 13:41:26 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[HY093]: Invalid parameter number: parameter was not defined. The SQL statement executed was: UPDATE accountsessions SET `SessionID`=:SessionID, `DataCreated`=NOW(6) WHERE `AID`=:AID.
+in C:\xampp\htdocs\AMPAPI\protected\models\AuthenticateSessionModel.php (78)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (109)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (68)
+2014/07/23 13:41:26 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[HY093]: Invalid parameter number: parameter was not defined. The SQL statement executed was: UPDATE accountsessions SET `SessionID`=:SessionID, `DataCreated`=NOW(6) WHERE `AID`=:AID
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\models\AuthenticateSessionModel.php (91)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (109)
+2014/07/23 13:42:53 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[HY093]: Invalid parameter number: parameter was not defined. The SQL statement executed was: UPDATE accountsessions SET `SessionID`=:SessionID, `DataCreated`=NOW(6) WHERE `AID`=:AID.
+in C:\xampp\htdocs\AMPAPI\protected\models\AuthenticateSessionModel.php (78)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (109)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (68)
+2014/07/23 13:42:53 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[HY093]: Invalid parameter number: parameter was not defined. The SQL statement executed was: UPDATE accountsessions SET `SessionID`=:SessionID, `DataCreated`=NOW(6) WHERE `AID`=:AID
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\models\AuthenticateSessionModel.php (91)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (109)
+2014/07/23 13:44:18 [error] [php] Missing argument 2 for AuthenticateSessionModel::authenticateCredentials(), called in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php on line 85 and defined (C:\xampp\htdocs\AMPAPI\protected\models\AuthenticateSessionModel.php:26)
+Stack trace:
+#0 C:\xampp\htdocs\yii\framework\web\actions\CInlineAction.php(49): AmpapiController->actionAuthenticateSession()
+#1 C:\xampp\htdocs\yii\framework\web\CController.php(308): CInlineAction->runWithParams()
+#2 C:\xampp\htdocs\yii\framework\web\CController.php(286): AmpapiController->runAction()
+#3 C:\xampp\htdocs\yii\framework\web\CController.php(265): AmpapiController->runActionWithFilters()
+#4 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(282): AmpapiController->run()
+#5 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController()
+#6 C:\xampp\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#7 C:\xampp\htdocs\AMPAPI\index.php(13): CWebApplication->run()
+REQUEST_URI=/AMPAPI/index.php/Ampapi/authenticatesession
+in C:\xampp\htdocs\AMPAPI\protected\models\AuthenticateSessionModel.php (26)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (85)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (68)
+2014/07/23 13:44:58 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[HY093]: Invalid parameter number: parameter was not defined. The SQL statement executed was: UPDATE accountsessions SET `SessionID`=:SessionID, `DataCreated`=NOW(6) WHERE `AID`=:AID.
+in C:\xampp\htdocs\AMPAPI\protected\models\AuthenticateSessionModel.php (78)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (109)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (68)
+2014/07/23 13:44:58 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[HY093]: Invalid parameter number: parameter was not defined. The SQL statement executed was: UPDATE accountsessions SET `SessionID`=:SessionID, `DataCreated`=NOW(6) WHERE `AID`=:AID
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\models\AuthenticateSessionModel.php (91)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (109)
+2014/07/23 13:46:54 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[HY093]: Invalid parameter number: parameter was not defined. The SQL statement executed was: UPDATE accountsessions SET `SessionID`=:SessionID, `DataCreated`=NOW(6) WHERE `AID`=:AID.
+in C:\xampp\htdocs\AMPAPI\protected\models\AuthenticateSessionModel.php (78)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (109)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (68)
+2014/07/23 13:46:54 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[HY093]: Invalid parameter number: parameter was not defined. The SQL statement executed was: UPDATE accountsessions SET `SessionID`=:SessionID, `DataCreated`=NOW(6) WHERE `AID`=:AID
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\models\AuthenticateSessionModel.php (91)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (109)
+2014/07/23 13:46:54 [error] [application] ReturnMessage: Update Error ErrorCode: 1
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (291)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (114)
+2014/07/23 13:47:21 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[HY093]: Invalid parameter number: parameter was not defined. The SQL statement executed was: UPDATE accountsessions SET `SessionID`=:SessionID, `DateCreated`=NOW(6) WHERE `AID`=:AID.
+in C:\xampp\htdocs\AMPAPI\protected\models\AuthenticateSessionModel.php (78)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (109)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (68)
+2014/07/23 13:47:21 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[HY093]: Invalid parameter number: parameter was not defined. The SQL statement executed was: UPDATE accountsessions SET `SessionID`=:SessionID, `DateCreated`=NOW(6) WHERE `AID`=:AID
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\models\AuthenticateSessionModel.php (91)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (109)
+2014/07/23 13:47:21 [error] [application] ReturnMessage: Update Error ErrorCode: 1
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (291)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (114)
+2014/07/23 13:49:38 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[HY093]: Invalid parameter number: parameter was not defined. The SQL statement executed was: UPDATE accountsessions SET `SessionID`=:SessionID, `DateCreated`=NOW(6) WHERE `AID`=:AID.
+in C:\xampp\htdocs\AMPAPI\protected\models\AuthenticateSessionModel.php (78)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (109)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (68)
+2014/07/23 13:49:38 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[HY093]: Invalid parameter number: parameter was not defined. The SQL statement executed was: UPDATE accountsessions SET `SessionID`=:SessionID, `DateCreated`=NOW(6) WHERE `AID`=:AID
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\models\AuthenticateSessionModel.php (91)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (109)
+2014/07/23 13:49:38 [error] [application] ReturnMessage: Update Error ErrorCode: 1
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (294)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (114)
+2014/07/23 13:50:56 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[HY093]: Invalid parameter number: parameter was not defined. The SQL statement executed was: UPDATE accountsessions SET `SessionID`=:SessionID, `DateCreated`=NOW(6) WHERE `AID`=:AID.
+in C:\xampp\htdocs\AMPAPI\protected\models\AuthenticateSessionModel.php (78)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (109)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (68)
+2014/07/23 13:50:56 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[HY093]: Invalid parameter number: parameter was not defined. The SQL statement executed was: UPDATE accountsessions SET `SessionID`=:SessionID, `DateCreated`=NOW(6) WHERE `AID`=:AID
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\models\AuthenticateSessionModel.php (91)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (109)
+2014/07/23 13:50:56 [error] [application] ReturnMessage: Update Error ErrorCode: 1
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (294)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (114)
+2014/07/23 13:51:06 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[HY093]: Invalid parameter number: parameter was not defined. The SQL statement executed was: UPDATE accountsessions SET `SessionID`=:SessionID, `DateCreated`=NOW(6) WHERE `AID`=:AID.
+in C:\xampp\htdocs\AMPAPI\protected\models\AuthenticateSessionModel.php (78)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (109)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (68)
+2014/07/23 13:51:06 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[HY093]: Invalid parameter number: parameter was not defined. The SQL statement executed was: UPDATE accountsessions SET `SessionID`=:SessionID, `DateCreated`=NOW(6) WHERE `AID`=:AID
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\models\AuthenticateSessionModel.php (91)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (109)
+2014/07/23 13:51:06 [error] [application] ReturnMessage: Update Error ErrorCode: 1
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (294)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (114)
+2014/07/23 13:51:22 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[HY093]: Invalid parameter number: parameter was not defined. The SQL statement executed was: UPDATE accountsessions SET `SessionID`=:SessionID, `DateCreated`=NOW(6) WHERE `AID`=:AID.
+in C:\xampp\htdocs\AMPAPI\protected\models\AuthenticateSessionModel.php (78)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (109)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (68)
+2014/07/23 13:51:22 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[HY093]: Invalid parameter number: parameter was not defined. The SQL statement executed was: UPDATE accountsessions SET `SessionID`=:SessionID, `DateCreated`=NOW(6) WHERE `AID`=:AID
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\models\AuthenticateSessionModel.php (91)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (109)
+2014/07/23 13:51:22 [error] [php] Undefined property: CDbException::$getMessage (C:\xampp\htdocs\AMPAPI\protected\models\AuthenticateSessionModel.php:92)
+Stack trace:
+#0 C:\xampp\htdocs\yii\framework\web\actions\CInlineAction.php(49): AmpapiController->actionAuthenticateSession()
+#1 C:\xampp\htdocs\yii\framework\web\CController.php(308): CInlineAction->runWithParams()
+#2 C:\xampp\htdocs\yii\framework\web\CController.php(286): AmpapiController->runAction()
+#3 C:\xampp\htdocs\yii\framework\web\CController.php(265): AmpapiController->runActionWithFilters()
+#4 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(282): AmpapiController->run()
+#5 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController()
+#6 C:\xampp\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#7 C:\xampp\htdocs\AMPAPI\index.php(13): CWebApplication->run()
+REQUEST_URI=/AMPAPI/index.php/Ampapi/authenticatesession
+in C:\xampp\htdocs\AMPAPI\protected\models\AuthenticateSessionModel.php (92)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (109)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (68)
+2014/07/23 13:51:35 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[HY093]: Invalid parameter number: parameter was not defined. The SQL statement executed was: UPDATE accountsessions SET `SessionID`=:SessionID, `DateCreated`=NOW(6) WHERE `AID`=:AID.
+in C:\xampp\htdocs\AMPAPI\protected\models\AuthenticateSessionModel.php (78)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (109)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (68)
+2014/07/23 13:51:35 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[HY093]: Invalid parameter number: parameter was not defined. The SQL statement executed was: UPDATE accountsessions SET `SessionID`=:SessionID, `DateCreated`=NOW(6) WHERE `AID`=:AID
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\models\AuthenticateSessionModel.php (91)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (109)
+2014/07/23 13:51:35 [error] [application] ReturnMessage: Update Error ErrorCode: 1
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (294)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (114)
+2014/07/23 13:54:45 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[HY093]: Invalid parameter number: parameter was not defined. The SQL statement executed was: UPDATE accountsessions SET `SessionID`=:SessionID,`DateCreated`=NOW(6) WHERE `AID`=:AID.
+in C:\xampp\htdocs\AMPAPI\protected\models\AuthenticateSessionModel.php (78)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (109)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (68)
+2014/07/23 13:54:45 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[HY093]: Invalid parameter number: parameter was not defined. The SQL statement executed was: UPDATE accountsessions SET `SessionID`=:SessionID,`DateCreated`=NOW(6) WHERE `AID`=:AID
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\models\AuthenticateSessionModel.php (91)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (109)
+2014/07/23 13:54:45 [error] [application] ReturnMessage: Update Error ErrorCode: 1
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (291)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (114)
+2014/07/23 13:55:35 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[HY093]: Invalid parameter number: parameter was not defined. The SQL statement executed was: UPDATE accountsessions SET `SessionID`=:SessionID,`DateCreated`=NOW(6) WHERE `AID`=:AID.
+in C:\xampp\htdocs\AMPAPI\protected\models\AuthenticateSessionModel.php (79)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (109)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (68)
+2014/07/23 13:55:35 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[HY093]: Invalid parameter number: parameter was not defined. The SQL statement executed was: UPDATE accountsessions SET `SessionID`=:SessionID,`DateCreated`=NOW(6) WHERE `AID`=:AID
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\models\AuthenticateSessionModel.php (92)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (109)
+2014/07/23 13:55:35 [error] [application] ReturnMessage: Update Error ErrorCode: 1
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (291)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (114)
+2014/07/23 13:55:52 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[HY093]: Invalid parameter number: parameter was not defined. The SQL statement executed was: UPDATE accountsessions SET `SessionID`=:SessionID,`DateCreated`=NOW(6) WHERE `AID`=:AID.
+in C:\xampp\htdocs\AMPAPI\protected\models\AuthenticateSessionModel.php (79)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (109)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (68)
+2014/07/23 13:55:52 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[HY093]: Invalid parameter number: parameter was not defined. The SQL statement executed was: UPDATE accountsessions SET `SessionID`=:SessionID,`DateCreated`=NOW(6) WHERE `AID`=:AID
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\models\AuthenticateSessionModel.php (92)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (109)
+2014/07/23 13:55:52 [error] [application] ReturnMessage: Update Error ErrorCode: 1
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (291)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (114)
+2014/07/23 14:15:43 [error] [php] Undefined variable: errorMessages (C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php:276)
+Stack trace:
+#0 C:\xampp\htdocs\yii\framework\web\actions\CInlineAction.php(49): AmpapiController->actionAuthenticateSession()
+#1 C:\xampp\htdocs\yii\framework\web\CController.php(308): CInlineAction->runWithParams()
+#2 C:\xampp\htdocs\yii\framework\web\CController.php(286): AmpapiController->runAction()
+#3 C:\xampp\htdocs\yii\framework\web\CController.php(265): AmpapiController->runActionWithFilters()
+#4 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(282): AmpapiController->run()
+#5 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController()
+#6 C:\xampp\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#7 C:\xampp\htdocs\AMPAPI\index.php(13): CWebApplication->run()
+REQUEST_URI=/AMPAPI/index.php/Ampapi/authenticatesession
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (276)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (112)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (68)
+2014/07/23 14:16:21 [error] [application] ReturnMessage: No Error, Transaction successful. ErrorCode: 0
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (278)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (112)
+2014/07/23 14:17:20 [error] [application] ReturnMessage: No Error, Transaction successful. ErrorCode: 0
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (278)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (112)
+2014/07/23 14:17:23 [error] [application] ReturnMessage: No Error, Transaction successful. ErrorCode: 0
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (278)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (112)
+2014/07/23 14:17:35 [error] [application] ReturnMessage: No Error, Transaction successful. ErrorCode: 0
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (278)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (112)
+2014/07/23 14:18:21 [error] [application] ReturnMessage: No Error, Transaction successful. ErrorCode: 0
+in C:\xampp\htdocs\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (278)
+in C:\xampp\htdocs\AMPAPI\protected\controllers\AmpapiController.php (112)

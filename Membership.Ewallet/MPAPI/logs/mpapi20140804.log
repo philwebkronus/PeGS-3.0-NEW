@@ -1,0 +1,62 @@
+[04-Aug-2014 07:27:49]  [LOGIN SUCCESS] Login successful.
+[04-Aug-2014 07:40:12] [ITEM REDEMPTION ERROR] Failed to log event on Audit Trail.
+[04-Aug-2014 07:40:12]  [REDEEMITEMS ERROR] CP: 32,554, Item: , RP: 10
+[04-Aug-2014 07:40:12]  [REDEEMITEMS SUCCESS] No error, Transaction successful.
+[04-Aug-2014 07:54:09] [ITEM REDEMPTION ERROR] Failed to log event on Audit Trail.
+[04-Aug-2014 07:54:09]  [REDEEMITEMS ERROR] CP: 32,544, Item: , RP: 10
+[04-Aug-2014 07:54:09]  [REDEEMITEMS SUCCESS] No error, Transaction successful.
+[04-Aug-2014 07:56:49] [ITEM REDEMPTION ERROR] Failed to log event on Audit Trail.
+[04-Aug-2014 07:56:49]  [REDEEMITEMS ERROR] Transaction failed. Serial code is unavailable.
+[04-Aug-2014 08:00:15] [ITEM REDEMPTION ERROR] Failed to log event on Audit Trail.
+[04-Aug-2014 08:00:15]  [REDEEMITEMS ERROR] Transaction failed. Serial code is unavailable.
+[04-Aug-2014 08:17:17] [ITEM REDEMPTION ERROR] Failed to log event on Audit Trail.
+[04-Aug-2014 08:17:17]  [REDEEMITEMS ERROR] Transaction failed. Serial code is unavailable.
+[04-Aug-2014 08:28:07]  [LOGIN SUCCESS] Login successful.
+[04-Aug-2014 08:28:21]  [LOGIN ERROR] One or more fields is not set or is blank.
+[04-Aug-2014 08:34:10] [ITEM REDEMPTION ERROR] Transaction Failed. This Reward Item  no longer exists.
+[04-Aug-2014 08:34:10] [ITEM REDEMPTION ERROR] Failed to log event on Audit Trail.
+[04-Aug-2014 08:34:10]  [REDEEMITEMS ERROR] Transaction Failed. This Reward Item  no longer exists.
+[04-Aug-2014 08:34:10]  [REDEEMITEMS ERROR] Transaction Failed. This Reward Item  no longer exists.
+[04-Aug-2014 08:36:24] [ITEM REDEMPTION ERROR] Failed to log event on Audit Trail.
+[04-Aug-2014 08:36:24]  [REDEEMITEMS ERROR] CP: 32,519, Item: , RP: 15
+[04-Aug-2014 08:36:24]  [REDEEMITEMS SUCCESS] No error, Transaction successful.
+[04-Aug-2014 09:23:11]  [LOGIN ERROR] One or more fields is not set or is blank.
+[04-Aug-2014 09:30:16]  [LOGIN ERROR] Password inputted is incorrect.
+[04-Aug-2014 09:30:16]  [LOGIN ERROR] Member is not found in db.
+[04-Aug-2014 09:30:47]  [LOGIN ERROR] Password inputted is incorrect.
+[04-Aug-2014 09:30:47]  [LOGIN ERROR] Member is not found in db.
+[04-Aug-2014 09:41:54]  [LOGIN ERROR] Password inputted is incorrect.
+[04-Aug-2014 09:41:54]  [LOGIN ERROR] Failed to insert/update membersession in membersessions table WHERE MID = P AND SessionID = 2d5vmp3ainv22jbca3go7gdt55 AND RemoteIP = 127.0.0.1
+[04-Aug-2014 09:46:46]  [REGISTERMEMBER ERROR] Sorry, fdlsison@philweb.com.phalready belongs to an existing account. Please enter another email address.
+[04-Aug-2014 09:47:58]  [REGISTERMEMBER ERROR] Sorry, fdlsison@philweb.com.phalready belongs to an existing account. Please enter another email address.
+[04-Aug-2014 09:48:10]  [REGISTERMEMBER ERROR] Sorry, fdlsison@philweb.com.phalready belongs to an existing account. Please enter another email address.
+[04-Aug-2014 09:51:56]  [REGISTERMEMBER ERROR] Sorry, fdlsison@philweb.com.phalready belongs to an existing account. Please enter another email address.
+[04-Aug-2014 09:52:40]  [LOGIN SUCCESS] Login successful.
+[04-Aug-2014 09:53:03]  [REGISTERMEMBER ERROR] Sorry, fdlsison@philweb.com.phalready belongs to an existing account. Please enter another email address.
+[04-Aug-2014 09:55:33]  [REGISTERMEMBER ERROR] Sorry, fdlsison@philweb.com.phalready belongs to an existing account. Please enter another email address.
+[04-Aug-2014 09:55:57]  [REGISTERMEMBER ERROR] Sorry, fdlsison@philweb.com.phalready belongs to an existing account. Please enter another email address.
+[04-Aug-2014 09:58:09]  [REGISTERMEMBER SUCCESS] Registration is successful.
+[04-Aug-2014 10:00:00]  [REGISTERMEMBER ERROR] Sorry, jdlachica@philweb.com.phalready belongs to an existing account. Please enter another email address.
+[04-Aug-2014 10:04:20]  [REGISTERMEMBER SUCCESS] Registration is successful.
+[04-Aug-2014 10:23:17]  [LOGIN ERROR] Password inputted is incorrect.
+[04-Aug-2014 10:23:17]  [LOGIN ERROR] Failed to insert/update membersession in membersessions table WHERE MID = P AND SessionID = pv04d8qbkbhlhivghk16qj4o60 AND RemoteIP = 127.0.0.1
+[04-Aug-2014 10:25:55]  [LOGIN ERROR] Password inputted is incorrect.
+[04-Aug-2014 10:27:30]  [LOGIN ERROR] Password inputted is incorrect.
+[04-Aug-2014 10:27:30]  [LOGIN ERROR] Member is not found in db.
+[04-Aug-2014 10:32:12]  [LOGIN ERROR] Password inputted is incorrect.
+[04-Aug-2014 10:32:12]  [LOGIN ERROR] Member is not found in db.
+[04-Aug-2014 11:24:31]  [LOGIN SUCCESS] Login successful.
+[04-Aug-2014 11:24:50] [ITEM REDEMPTION ERROR] Failed to log event on Audit Trail.
+[04-Aug-2014 11:24:50]  [REDEEMITEMS ERROR] Transaction failed. Serial code is unavailable.
+[04-Aug-2014 11:27:47] [ITEM REDEMPTION ERROR] Failed to log event on Audit Trail.
+[04-Aug-2014 11:27:47]  [REDEEMITEMS ERROR] CP: 32,504, Item: , RP: 15
+[04-Aug-2014 11:27:47]  [REDEEMITEMS SUCCESS] No error, Transaction successful.
+[04-Aug-2014 13:16:37] [ITEM REDEMPTION ERROR] Failed to log event on Audit Trail.
+[04-Aug-2014 13:16:37]  [REDEEMITEMS ERROR] CP: 32,249, Item: , RP: 15
+[04-Aug-2014 13:16:37]  [REDEEMITEMS SUCCESS] No error, Transaction successful.
+[04-Aug-2014 13:55:57]  [LOGIN SUCCESS] Login successful.
+[04-Aug-2014 16:10:00]  [LOGIN SUCCESS] Login successful.
+[04-Aug-2014 16:20:49] [ITEM REDEMPTION ERROR] Failed to log event on Audit Trail.
+[04-Aug-2014 16:20:49]  [REDEEMITEMS ERROR] CP: 31,754, Item: MysteryItem10, RP: 1
+[04-Aug-2014 16:20:49]  [REDEEMITEMS SUCCESS] Redemption successful.
+[04-Aug-2014 16:21:29]  [REDEEMITEMS ERROR] Item to be redeemed is a mystery item. Only one mystery item per redeem is allowed.

@@ -1,0 +1,80 @@
+2014/08/11 10:15:01 [error] [application] ReturnMessage: Redemption successful. ErrorCode: 0
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (3143)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/11 10:18:03 [error] [application] ReturnMessage: Redemption successful. ErrorCode: 0
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (3143)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/11 10:46:22 [error] [application] ReturnMessage: Please input 2 for regular or 3 for vip. ErrorCode: 13
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (2157)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/11 11:16:59 [error] [application] ReturnMessage: Card number does not exist. ErrorCode: 61
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (2501)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/11 11:17:11 [error] [application] ReturnMessage: Redemption successful. ErrorCode: 0
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (3150)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/11 11:18:03 [error] [application] ReturnMessage: Redemption successful. ErrorCode: 0
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (3151)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/11 11:23:01 [error] [application] ReturnMessage: Redemption successful. ErrorCode: 0
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (3151)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/11 11:27:54 [error] [application] ReturnMessage: Redemption successful. ErrorCode: 0
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (3151)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/11 11:28:47 [error] [application] ReturnMessage: Redemption successful. ErrorCode: 0
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (3151)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/11 11:30:26 [error] [application] ReturnMessage: Redemption successful. ErrorCode: 0
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (3151)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/11 11:33:21 [error] [application] ReturnMessage: Redemption successful. ErrorCode: 0
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (3151)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/11 13:43:54 [error] [application] ReturnMessage: Redemption successful. ErrorCode: 0
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (3162)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/11 15:32:07 [error] [application] ReturnMessage: Transaction failed. Number of available item is insufficient. ErrorCode: 58
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (3329)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/11 15:32:42 [error] [application] ReturnMessage: Transaction Failed. The Item you try to redeem is currently Out-Of-Stock. ErrorCode: 56
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (3123)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/11 15:34:46 [error] [application] ReturnMessage: Transaction failed. Serial code is unavailable. ErrorCode: 57
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (3302)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/11 15:35:30 [error] [application] ReturnMessage: Transaction failed. Card has a pending redemption. ErrorCode: 26
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (3062)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/11 15:35:44 [error] [application] ReturnMessage: Transaction Failed. The Item you try to redeem is currently Out-Of-Stock. ErrorCode: 56
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (3123)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/11 15:37:26 [error] [application] ReturnMessage: Transaction failed. Card has a pending redemption. ErrorCode: 26
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (3062)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/11 15:37:59 [error] [application] ReturnMessage: Redemption successful. ErrorCode: 0
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (3175)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/11 16:39:56 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (2375)
+in C:\xampp\htdocs\MPAPI\index.php (13)

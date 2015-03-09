@@ -1,0 +1,121 @@
+[25-Jul-2014 09:48:13]  [CHECKPOINTS ERROR] One or more fields is not set or is blank.
+[25-Jul-2014 10:03:32]  [CHECKPOINTS ERROR] Failed to insert to Audittrail.
+[25-Jul-2014 10:03:32]  [CHECKPOINTS SUCCESSFUL] Check Points is successful.
+[25-Jul-2014 10:09:03]  [CHECKPOINTS ERROR] Failed to insert to Audittrail.
+[25-Jul-2014 10:09:03]  [CHECKPOINTS SUCCESSFUL] Check Points is successful.
+[25-Jul-2014 10:09:56]  [CHECKPOINTS ERROR] Failed to insert to Audittrail.
+[25-Jul-2014 10:09:56]  [CHECKPOINTS SUCCESSFUL] Check Points is successful.
+[25-Jul-2014 10:10:41]  [CHECKPOINTS ERROR] Failed to insert to Audittrail.
+[25-Jul-2014 10:10:41]  [CHECKPOINTS SUCCESSFUL] Check Points is successful.
+[25-Jul-2014 10:10:57]  [CHECKPOINTS ERROR] Failed to insert to Audittrail.
+[25-Jul-2014 10:10:57]  [CHECKPOINTS SUCCESSFUL] Check Points is successful.
+[25-Jul-2014 10:18:31]  [CHECKPOINTS ERROR] Failed to insert to Audittrail.
+[25-Jul-2014 10:18:31]  [CHECKPOINTS SUCCESSFUL] Check Points is successful.
+[25-Jul-2014 10:21:03]  [CHECKPOINTS ERROR] Failed to insert to Audittrail.
+[25-Jul-2014 10:21:03]  [CHECKPOINTS SUCCESSFUL] Check Points is successful.
+[25-Jul-2014 10:22:47]  [CHECKPOINTS ERROR] Failed to insert to Audittrail.
+[25-Jul-2014 10:22:47]  [CHECKPOINTS SUCCESSFUL] Check Points is successful.
+[25-Jul-2014 10:24:03]  [CHECKPOINTS ERROR] Failed to insert to Audittrail.
+[25-Jul-2014 10:24:03]  [CHECKPOINTS SUCCESSFUL] Check Points is successful.
+[25-Jul-2014 10:24:45]  [REGISTERMEMBER ERROR] One or more fields is not set or is blank.
+[25-Jul-2014 10:33:59]  [FORGOTPASSWORD ERROR] One or more fields is not set or is blank.
+[25-Jul-2014 10:35:06]  [FORGOTPASSWORD ERROR] Membership Card is Inactive
+[25-Jul-2014 10:35:50]  [FORGOTPASSWORD ERROR] Membership Card is Inactive
+[25-Jul-2014 10:38:34]  [FORGOTPASSWORD ERROR] Invalid Email Address.
+[25-Jul-2014 10:44:41]  [FORGOTPASSWORD ERROR] Invalid Email Address.
+[25-Jul-2014 10:47:00]  [FORGOTPASSWORD ERROR] Failed to insert to Audittrail.
+[25-Jul-2014 10:47:00]  [FORGOTPASSWORD ERROR] Failed to insert to APILogs.
+[25-Jul-2014 10:47:25]  [FORGOTPASSWORD ERROR] Invalid input.
+[25-Jul-2014 10:48:07]  [FORGOTPASSWORD ERROR] Invalid Email Address.
+[25-Jul-2014 10:56:08]  [CHECKPOINTS ERROR] Invalid Card Number.
+[25-Jul-2014 11:03:25]  [CHECKPOINTS ERROR] One or more fields is not set or is blank.
+[25-Jul-2014 11:09:39]  [CHECKPOINTS ERROR] One or more fields is not set or is blank.
+[25-Jul-2014 11:10:17]  [LOGIN SUCCESS] Login successful.
+[25-Jul-2014 11:11:28]  [CHECKPOINTS ERROR] One or more fields is not set or is blank.
+[25-Jul-2014 11:12:05]  [CHECKPOINTS ERROR] One or more fields is not set or is blank.
+[25-Jul-2014 11:13:28]  [CHECKPOINTS ERROR] One or more fields is not set or is blank.
+[25-Jul-2014 11:14:23]  [CHECKPOINTS ERROR] One or more fields is not set or is blank.
+[25-Jul-2014 11:16:11]  [CHECKPOINTS ERROR] One or more fields is not set or is blank.
+[25-Jul-2014 11:17:14]  [CHECKPOINTS ERROR] One or more fields is not set or is blank.
+[25-Jul-2014 11:17:49]  [CHECKPOINTS ERROR] One or more fields is not set or is blank.
+[25-Jul-2014 11:17:54]  [CHECKPOINTS ERROR] One or more fields is not set or is blank.
+[25-Jul-2014 11:18:14]  [CHECKPOINTS ERROR] One or more fields is not set or is blank.
+[25-Jul-2014 11:19:11]  [CHECKPOINTS ERROR] One or more fields is not set or is blank.
+[25-Jul-2014 11:19:29]  [CHECKPOINTS ERROR] One or more fields is not set or is blank.
+[25-Jul-2014 11:20:19]  [CHECKPOINTS ERROR] One or more fields is not set or is blank.
+[25-Jul-2014 11:21:24]  [CHECKPOINTS ERROR] One or more fields is not set or is blank.
+[25-Jul-2014 11:23:13]  [LOGIN ERROR] One or more fields is not set or is blank.
+[25-Jul-2014 11:23:14]  [CHECKPOINTS ERROR] One or more fields is not set or is blank.
+[25-Jul-2014 11:37:34]  [LOGIN ERROR] One or more fields is not set or is blank.
+[25-Jul-2014 11:39:00]  [CHECKPOINTS ERROR] One or more fields is not set or is blank.
+[25-Jul-2014 11:39:11]  [CHECKPOINTS ERROR] Invalid Card Number.
+[25-Jul-2014 11:39:29]  [LOGIN ERROR] Password inputted is incorrect.
+[25-Jul-2014 11:39:29]  [LOGIN ERROR] Member is not found in db.
+[25-Jul-2014 11:39:48]  [LOGIN SUCCESS] Login successful.
+[25-Jul-2014 11:40:18]  [LOGIN SUCCESS] Login successful.
+[25-Jul-2014 11:45:18]  [CHECKPOINTS ERROR] One or more fields is not set or is blank.
+[25-Jul-2014 11:48:53]  [CHECKPOINTS ERROR] Failed to insert to Audittrail.
+[25-Jul-2014 11:48:53]  [CHECKPOINTS SUCCESSFUL] Check Points is successful.
+[25-Jul-2014 11:59:41]  [FORGOTPASSWORD ERROR] Invalid Email Address.
+[25-Jul-2014 12:00:48]  [FORGOTPASSWORD ERROR] Invalid Email Address.
+[25-Jul-2014 13:02:22]  [REGISTERMEMBER ERROR] One or more fields is not set or is blank.
+[25-Jul-2014 13:03:37]  [REGISTERMEMBER ERROR] One or more fields is not set or is blank.
+[25-Jul-2014 13:04:22]  [REGISTERMEMBER ERROR] One or more fields is not set or is blank.
+[25-Jul-2014 13:06:33]  [LISTITEMS ERROR] One or more fields is not set or is blank.
+[25-Jul-2014 13:09:35]  [LISTITEMS ERROR] One or more fields is not set or is blank.
+[25-Jul-2014 13:09:45]  [LISTITEMS ERROR] One or more fields is not set or is blank.
+[25-Jul-2014 13:57:08]  [LOGIN ERROR] One or more fields is not set or is blank.
+[25-Jul-2014 14:10:52]  [UPDATEPROFILE ERROR] One or more fields is not set or is blank.
+[25-Jul-2014 14:11:36]  [REGISTERMEMBER ERROR] One or more fields is not set or is blank.
+[25-Jul-2014 14:12:39]  [REGISTERMEMBER ERROR] One or more fields is not set or is blank.
+[25-Jul-2014 14:18:56]  [LOGIN ERROR] One or more fields is not set or is blank.
+[25-Jul-2014 14:19:10]  [LOGIN ERROR] Password inputted is incorrect.
+[25-Jul-2014 14:19:10]  [LOGIN ERROR] Member is not found in db.
+[25-Jul-2014 14:19:48]  [LOGIN ERROR] Invalid input.
+[25-Jul-2014 14:20:02]  [LOGIN SUCCESS] Login successful.
+[25-Jul-2014 14:25:46]  [FORGOTPASSWORD ERROR] One or more fields is not set or is blank.
+[25-Jul-2014 14:26:19]  [FORGOTPASSWORD ERROR] Invalid input.
+[25-Jul-2014 14:26:41]  [FORGOTPASSWORD ERROR] Invalid Email Address.
+[25-Jul-2014 14:27:13]  [FORGOTPASSWORD ERROR] Invalid Email Address.
+[25-Jul-2014 14:28:41]  [FORGOTPASSWORD ERROR] Failed to insert to Audittrail.
+[25-Jul-2014 14:28:41]  [FORGOTPASSWORD ERROR] Failed to insert to APILogs.
+[25-Jul-2014 14:32:54]  [FORGOTPASSWORD ERROR] Failed to insert to Audittrail.
+[25-Jul-2014 14:32:54]  [FORGOTPASSWORD ERROR] Failed to insert to APILogs.
+[25-Jul-2014 14:37:41]  [LISTITEMS ERROR] One or more fields is not set or is blank.
+[25-Jul-2014 14:38:14]  [LISTITEMS ERROR] One or more fields is not set or is blank.
+[25-Jul-2014 14:51:39]  [FORGOTPASSWORD ERROR] Failed to insert to Audittrail.
+[25-Jul-2014 14:51:39]  [FORGOTPASSWORD ERROR] Failed to insert to APILogs.
+[25-Jul-2014 14:52:50]  [FORGOTPASSWORD ERROR] Failed to insert to Audittrail.
+[25-Jul-2014 14:52:50]  [FORGOTPASSWORD ERROR] Failed to insert to APILogs.
+[25-Jul-2014 15:02:29]  [REGISTERMEMBER ERROR] One or more fields is not set or is blank.
+[25-Jul-2014 15:03:53]  [LOGIN ERROR] One or more fields is not set or is blank.
+[25-Jul-2014 15:06:46]  [REGISTERMEMBER ERROR] One or more fields is not set or is blank.
+[25-Jul-2014 15:08:08]  [REGISTERMEMBER ERROR] One or more fields is not set or is blank.
+[25-Jul-2014 15:11:00]  [REGISTERMEMBER ERROR] One or more fields is not set or is blank.
+[25-Jul-2014 15:19:09]  [REGISTERMEMBER ERROR] Name should not be less than 2 characters long.
+[25-Jul-2014 15:43:34]  [LISTITEMS ERROR] One or more fields is not set or is blank.
+[25-Jul-2014 15:44:20]  [LOGIN SUCCESS] Login successful.
+[25-Jul-2014 15:44:35]  [LISTITEMS ERROR] One or more fields is not set or is blank.
+[25-Jul-2014 15:51:59]  [LISTITEMS ERROR] One or more fields is not set or is blank.
+[25-Jul-2014 15:57:15]  [LISTITEMS ERROR] One or more fields is not set or is blank.
+[25-Jul-2014 15:57:27]  [LISTITEMS ERROR] One or more fields is not set or is blank.
+[25-Jul-2014 16:04:09]  [LOGIN SUCCESS] Login successful.
+[25-Jul-2014 16:10:03]  [LOGIN SUCCESS] Login successful.
+[25-Jul-2014 16:52:20]  [LOGIN ERROR] One or more fields is not set or is blank.
+[25-Jul-2014 16:52:31]  [LOGIN ERROR] One or more fields is not set or is blank.
+[25-Jul-2014 16:54:02]  [LISTITEMS ERROR] Failed to insert to Audittrail.
+[25-Jul-2014 16:54:02]  [LISTITEMS SUCCESSFUL] List Items is successful.
+[25-Jul-2014 16:54:18]  [REGISTERMEMBER ERROR] Mobile number should consist of numbers only.
+[25-Jul-2014 16:54:53]  [LISTITEMS ERROR] Failed to insert to Audittrail.
+[25-Jul-2014 16:54:53]  [LISTITEMS SUCCESSFUL] List Items is successful.
+[25-Jul-2014 16:54:57]  [REGISTERMEMBER ERROR] Mobile number should consist of numbers only.
+[25-Jul-2014 17:00:02]  [LOGIN SUCCESS] Login successful.
+[25-Jul-2014 17:00:24]  [LISTITEMS ERROR] One or more fields is not set or is blank.
+[25-Jul-2014 17:01:59]  [LISTITEMS ERROR] Failed to insert to Audittrail.
+[25-Jul-2014 17:01:59]  [LISTITEMS SUCCESSFUL] List Items is successful.
+[25-Jul-2014 17:03:29]  [LISTITEMS ERROR] Failed to insert to Audittrail.
+[25-Jul-2014 17:03:29]  [LISTITEMS SUCCESSFUL] List Items is successful.
+[25-Jul-2014 17:03:40]  [LISTITEMS ERROR] One or more fields is not set or is blank.
+[25-Jul-2014 17:03:50]  [LISTITEMS ERROR] Failed to insert to Audittrail.
+[25-Jul-2014 17:03:50]  [LISTITEMS SUCCESSFUL] List Items is successful.
+[25-Jul-2014 17:06:15]  [LOGIN SUCCESS] Login successful.

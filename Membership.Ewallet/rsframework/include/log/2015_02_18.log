@@ -1,0 +1,2 @@
+[18-Feb-2015 11:26:44 Europe/Berlin] PHP Notice:  Undefined index: CompBalance in C:\xampp\htdocs\membership\membership.rewards\rsframework\include\Modules\Loyalty\classes\GetCardInfoAPI.class.php on line 695
+[18-Feb-2015 11:26:54 Europe/Berlin] PHP Notice:  Undefined index: CompBalance in C:\xampp\htdocs\membership\membership.rewards\rsframework\include\Modules\Loyalty\classes\GetCardInfoAPI.class.php on line 695

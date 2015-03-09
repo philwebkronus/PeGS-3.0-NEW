@@ -1,0 +1,25 @@
+[08-Aug-2014 08:53:50]  [LOGIN SUCCESS] Login successful.
+[08-Aug-2014 08:57:48]  [REDEEMITEMS SUCCESS] Redemption successful.
+[08-Aug-2014 09:01:41]  [REDEEMITEMS SUCCESS] Redemption successful.
+[08-Aug-2014 09:05:04]  [REDEEMITEMS SUCCESS] Redemption successful.
+[08-Aug-2014 11:22:30]  [LOGIN SUCCESS] Login successful.
+[08-Aug-2014 11:22:51]  [REDEEMITEMS SUCCESS] CP: 26,538, Item: Sample Brownies, RP: 15
+[08-Aug-2014 11:22:51]  [REDEEMITEMS SUCCESS] Redemption successful.
+[08-Aug-2014 11:24:44]  [REDEEMITEMS ERROR] Transaction failed. Number of available item is insufficient.
+[08-Aug-2014 11:25:16]  [REDEEMITEMS SUCCESS] CP: 26,523, Item: Sample Brownies, RP: 15
+[08-Aug-2014 11:25:16]  [REDEEMITEMS SUCCESS] Redemption successful.
+[08-Aug-2014 11:28:06]  [REDEEMITEMS SUCCESS] CP: 26,508, Item: Sample Brownies, RP: 15
+[08-Aug-2014 11:28:06]  [REDEEMITEMS SUCCESS] Redemption successful.
+[08-Aug-2014 11:29:19]  [REDEEMITEMS SUCCESS] CP: 26,493, Item: Sample Brownies, RP: 15
+[08-Aug-2014 11:29:19]  [REDEEMITEMS SUCCESS] Redemption successful.
+[08-Aug-2014 11:30:02]  [REDEEMITEMS ERROR] Transaction failed. Serial code is unavailable.
+[08-Aug-2014 11:30:13]  [REDEEMITEMS SUCCESS] CP: 26,478, Item: Sample Brownies, RP: 15
+[08-Aug-2014 11:30:13]  [REDEEMITEMS SUCCESS] Redemption successful.
+[08-Aug-2014 20:14:40]  [LOGIN SUCCESS] Login successful.
+[08-Aug-2014 20:25:34]  [REDEEMITEMS ERROR] One or more fields is not set or is blank.
+[08-Aug-2014 20:25:39]  [REDEEMITEMS SUCCESS] CP: 26,463, Item: Indulgent 60-Minute Body Massage, RP: 50
+[08-Aug-2014 20:25:39]  [REDEEMITEMS SUCCESS] Redemption successful.
+[08-Aug-2014 20:29:14]  [REDEEMITEMS SUCCESS] CP: 26,413, Item: Indulgent 60-Minute Body Massage, RP: 50
+[08-Aug-2014 20:29:15]  [REDEEMITEMS SUCCESS] Redemption successful.
+[08-Aug-2014 20:46:03]  [REDEEMITEMS SUCCESS] CP: 26,363, Item: Indulgent 60-Minute Body Massage, RP: 50
+[08-Aug-2014 20:46:03]  [REDEEMITEMS SUCCESS] Redemption successful.

@@ -1,0 +1,341 @@
+[30-Jul-2014 13:40:56]  [AUTHENTICATESESSION ERROR] One or more fields is not set or is blank.
+[30-Jul-2014 13:41:08]  [AUTHENTICATESESSION ERROR] Third Party Account not found.
+[30-Jul-2014 13:42:23]  [AUTHENTICATESESSION ERROR] Third Party Account not found.
+[30-Jul-2014 13:55:48]  [AUTHENTICATESESSION ERROR] Third Party Account not found.
+[30-Jul-2014 13:59:39]  [AUTHENTICATESESSION ERROR] Invalid Input
+[30-Jul-2014 14:00:01]  [AUTHENTICATESESSION ERROR] Invalid Input
+[30-Jul-2014 14:00:13]  [AUTHENTICATESESSION ERROR] Third Party Account not found.
+[30-Jul-2014 14:00:19]  [AUTHENTICATESESSION ERROR] Invalid Input
+[30-Jul-2014 14:03:15]  [AUTHENTICATESESSION ERROR] Third Party Account not found.
+[30-Jul-2014 14:03:33]  [AUTHENTICATESESSION ERROR] Third Party Account not found.
+[30-Jul-2014 14:03:57]  [AUTHENTICATESESSION ERROR] Invalid Input
+[30-Jul-2014 14:04:04]  [AUTHENTICATESESSION ERROR] Third Party Account not found.
+[30-Jul-2014 14:04:17]  [AUTHENTICATESESSION ERROR] Invalid Input
+[30-Jul-2014 14:10:56]  [AUTHENTICATESESSION ERROR] Third Party Account not found.
+[30-Jul-2014 14:13:23]  [AUTHENTICATESESSION ERROR] Third Party Account not found.
+[30-Jul-2014 14:13:23]  [AUTHENTICATESESSION ERROR] One or more fields is not set or is blank.
+[30-Jul-2014 14:15:25]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 14:16:50]  [AUTHENTICATESESSION ERROR] Third Party Account not found.
+[30-Jul-2014 14:17:17]  [AUTHENTICATESESSION ERROR] Third Party Account not found.
+[30-Jul-2014 14:18:36]  [AUTHENTICATESESSION SUCCESS] Audittrail log success.
+[30-Jul-2014 14:18:36]  [AUTHENTICATESESSION SUCCESS] APIlogs success.
+[30-Jul-2014 14:18:36]  [AUTHENTICATESESSION SUCCESS] TPSessionID Generate Successfully.
+[30-Jul-2014 14:21:51]  [AUTHENTICATESESSION SUCCESS] Audittrail log success.
+[30-Jul-2014 14:21:51]  [AUTHENTICATESESSION SUCCESS] APIlogs success.
+[30-Jul-2014 14:21:51]  [AUTHENTICATESESSION SUCCESS] TPSessionID Generate Successfully.
+[30-Jul-2014 14:22:06]  [AUTHENTICATESESSION ERROR] Third Party Account not found.
+[30-Jul-2014 14:35:27]  [AUTHENTICATESESSION ERROR] Invalid Input
+[30-Jul-2014 14:35:38]  [AUTHENTICATESESSION SUCCESS] Audittrail log success.
+[30-Jul-2014 14:35:38]  [AUTHENTICATESESSION SUCCESS] APIlogs success.
+[30-Jul-2014 14:35:38]  [AUTHENTICATESESSION SUCCESS] TPSessionID Generate Successfully.
+[30-Jul-2014 14:35:53]  [AUTHENTICATESESSION ERROR] Third Party Account not found.
+[30-Jul-2014 14:36:43]  [AUTHENTICATESESSION ERROR] Third Party Account not found.
+[30-Jul-2014 14:36:46]  [AUTHENTICATESESSION ERROR] One or more fields is not set or is blank.
+[30-Jul-2014 14:36:47]  [AUTHENTICATESESSION ERROR] One or more fields is not set or is blank.
+[30-Jul-2014 14:36:48]  [AUTHENTICATESESSION ERROR] One or more fields is not set or is blank.
+[30-Jul-2014 14:36:49]  [AUTHENTICATESESSION ERROR] One or more fields is not set or is blank.
+[30-Jul-2014 14:36:56]  [AUTHENTICATESESSION ERROR] Invalid Input
+[30-Jul-2014 14:37:06]  [AUTHENTICATESESSION SUCCESS] Audittrail log success.
+[30-Jul-2014 14:37:06]  [AUTHENTICATESESSION SUCCESS] APIlogs success.
+[30-Jul-2014 14:37:06]  [AUTHENTICATESESSION SUCCESS] TPSessionID Generate Successfully.
+[30-Jul-2014 14:37:27]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 09:17:27]  [AUTHENTICATESESSION ERROR] One or more fields is not set or is blank.
+[30-Jul-2014 09:18:00]  [AUTHENTICATESESSION SUCCESS] Audittrail log success.
+[30-Jul-2014 09:18:00]  [AUTHENTICATESESSION SUCCESS] APIlogs success.
+[30-Jul-2014 09:18:00]  [AUTHENTICATESESSION SUCCESS] TPSessionID Generate Successfully.
+[30-Jul-2014 09:18:08]  [AUTHENTICATESESSION SUCCESS] Audittrail log success.
+[30-Jul-2014 09:18:08]  [AUTHENTICATESESSION SUCCESS] APIlogs success.
+[30-Jul-2014 09:18:08]  [AUTHENTICATESESSION SUCCESS] TPSessionID Generate Successfully.
+[30-Jul-2014 09:54:48]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 09:57:18]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 09:59:50]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 10:00:19]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 10:00:30]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 10:00:46]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 10:01:10]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 10:01:31]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 10:01:57]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 10:02:07]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 10:02:24]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 10:03:28]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 10:05:02]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 10:05:45]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 10:07:00]  [FORGOTPASSWORD ERROR] TPSessionID is not set or is blank.
+[30-Jul-2014 10:07:00]  [FORGOTPASSWORD ERROR] One or more fields is not set or is blank.
+[30-Jul-2014 10:07:28]  [FORGOTPASSWORD ERROR] TPSessionID is not set or is blank.
+[30-Jul-2014 10:07:28]  [FORGOTPASSWORD ERROR] One or more fields is not set or is blank.
+[30-Jul-2014 10:08:57]  [FORGOTPASSWORD ERROR] TPSessionID is not set or is blank.
+[30-Jul-2014 10:15:46]  [UPDATEPROFILE ERROR] TPSessionID is not set or is blank.
+[30-Jul-2014 10:44:28]  [UPDATEPROFILE ERROR] MobileNumber should not be less than 9 digits long.
+[30-Jul-2014 10:44:42]  [UPDATEPROFILE ERROR] FirstName should consist of letters only.
+[30-Jul-2014 10:44:57]  [UPDATEPROFILE ERROR] FirstName should consist of letters only.
+[30-Jul-2014 10:45:08]  [UPDATEPROFILE ERROR] MiddleName should consist of letters only.
+[30-Jul-2014 10:45:20]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 10:45:43]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 10:50:28]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 10:50:47]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 10:50:55]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 10:51:01]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 10:53:32]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 10:53:52]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 10:54:08]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 10:54:53]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 10:56:06]  [AUTHENTICATESESSION SUCCESS] Audittrail log success.
+[30-Jul-2014 10:56:06]  [AUTHENTICATESESSION SUCCESS] APIlogs success.
+[30-Jul-2014 10:56:06]  [AUTHENTICATESESSION SUCCESS] TPSessionID Generate Successfully.
+[30-Jul-2014 10:56:15]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 11:07:10]  [GETISSMOKER ERROR] TPSessionID is not set or is blank.
+[30-Jul-2014 11:08:40]  [UPDATEPROFILE ERROR] TPSessionID is not set or is blank.
+[30-Jul-2014 11:13:36]  [GETACTIVESESSION ERROR] One or more fields is not set or is blank.
+[30-Jul-2014 11:13:46]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 11:13:56]  [GETACTIVESESSION ERROR] One or more fields is not set or is blank.
+[30-Jul-2014 11:16:42]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 11:18:24]  [GETACTIVESESSION ERROR] One or more fields is not set or is blank.
+[30-Jul-2014 11:22:22]  [GETACTIVESESSION ERROR] TPSessionID is not set or is blank.
+[30-Jul-2014 11:22:35]  [GETACTIVESESSION ERROR] TPSessionID is not set or is blank.
+[30-Jul-2014 11:23:37]  [GETACTIVESESSION ERROR] TPSessionID is not set or is blank.
+[30-Jul-2014 11:23:42]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 11:24:23]  [GETOCCUPATION ERROR] TPSessionID is not set or is blank.
+[30-Jul-2014 11:25:04]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 11:29:52]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 11:29:53]  [GETACTIVESESSION ERROR] TPSessionID is not set or is blank.
+[30-Jul-2014 11:30:14]  [GETACTIVESESSION ERROR] TPSessionID is not set or is blank.
+[30-Jul-2014 11:31:02]  [GETACTIVESESSION ERROR] TPSessionID is not set or is blank.
+[30-Jul-2014 11:31:36]  [GETACTIVESESSION ERROR] TPSessionID is not set or is blank.
+[30-Jul-2014 11:31:54]  [GETACTIVESESSION ERROR] TPSessionID is not set or is blank.
+[30-Jul-2014 11:32:05]  [GETACTIVESESSION ERROR] TPSessionID is not set or is blank.
+[30-Jul-2014 11:32:57]  [GETACTIVESESSION ERROR] TPSessionID is not set or is blank.
+[30-Jul-2014 11:34:08]  [AUTHENTICATESESSION ERROR] One or more fields is not set or is blank.
+[30-Jul-2014 11:36:37]  [GETACTIVESESSION ERROR] TPSessionID is not set or is blank.
+[30-Jul-2014 11:37:31]  [GETACTIVESESSION ERROR] TPSessionID is not set or is blank.
+[30-Jul-2014 11:38:01]  [GETACTIVESESSION ERROR] TPSessionID is not set or is blank.
+[30-Jul-2014 11:44:33]  [GETACTIVESESSION ERROR] TPSessionID is not set or is blank.
+[30-Jul-2014 11:45:00]  [GETACTIVESESSION ERROR] TPSessionID is not set or is blank.
+[30-Jul-2014 11:45:20]  [GETACTIVESESSION ERROR] TPSessionID is not set or is blank.
+[30-Jul-2014 11:46:02]  [GETACTIVESESSION ERROR] TPSessionID is not set or is blank.
+[30-Jul-2014 11:46:20]  [GETACTIVESESSION ERROR] TPSessionID is not set or is blank.
+[30-Jul-2014 11:46:21]  [GETACTIVESESSION ERROR] TPSessionID is not set or is blank.
+[30-Jul-2014 11:46:21]  [GETACTIVESESSION ERROR] TPSessionID is not set or is blank.
+[30-Jul-2014 11:46:23]  [GETACTIVESESSION ERROR] TPSessionID is not set or is blank.
+[30-Jul-2014 11:46:50]  [GETACTIVESESSION ERROR] TPSessionID is not set or is blank.
+[30-Jul-2014 11:47:22]  [GETACTIVESESSION ERROR] TPSessionID is not set or is blank.
+[30-Jul-2014 11:47:23]  [GETACTIVESESSION ERROR] TPSessionID is not set or is blank.
+[30-Jul-2014 11:47:26]  [FORGOTPASSWORD ERROR] TPSessionID is not set or is blank.
+[30-Jul-2014 11:47:31]  [GETACTIVESESSION ERROR] TPSessionID is not set or is blank.
+[30-Jul-2014 11:47:43]  [GETACTIVESESSION ERROR] TPSessionID is not set or is blank.
+[30-Jul-2014 11:48:20]  [GETACTIVESESSION ERROR] TPSessionID is not set or is blank.
+[30-Jul-2014 11:51:32]  [GETACTIVESESSION ERROR] TPSessionID is not set or is blank.
+[30-Jul-2014 11:51:46]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 11:51:51]  [GETACTIVESESSION ERROR] One or more fields is not set or is blank.
+[30-Jul-2014 11:52:36]  [GETACTIVESESSION ERROR] TPSessionID is not set or is blank.
+[30-Jul-2014 11:52:44]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 11:52:49]  [GETACTIVESESSION ERROR] One or more fields is not set or is blank.
+[30-Jul-2014 11:52:53]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 11:54:27]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 11:54:37]  [GETACTIVESESSION ERROR] TPSessionID is not set or is blank.
+[30-Jul-2014 11:55:32]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 11:55:33]  [GETACTIVESESSION ERROR] TPSessionID is not set or is blank.
+[30-Jul-2014 11:55:58]  [GETACTIVESESSION ERROR] TPSessionID is not set or is blank.
+[30-Jul-2014 11:56:59]  [GETACTIVESESSION ERROR] One or more fields is not set or is blank.
+[30-Jul-2014 11:58:03]  [GETACTIVESESSION ERROR] Invalid Input.
+[30-Jul-2014 11:58:15]  [GETACTIVESESSION ERROR] Invalid Input.
+[30-Jul-2014 11:58:28]  [GETACTIVESESSION ERROR] Invalid Input.
+[30-Jul-2014 11:58:53]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 11:58:59]  [GETACTIVESESSION ERROR] Invalid Input.
+[30-Jul-2014 11:59:10]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 12:03:11]  [GETISSMOKER ERROR] TPSessionID is not set or is blank.
+[30-Jul-2014 12:03:28]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 13:18:03]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 13:19:08]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 13:19:13]  [GETACTIVESESSION ERROR] TPSessionID is not set or is blank.
+[30-Jul-2014 13:19:18]  [GETACTIVESESSION ERROR] Invalid Input.
+[30-Jul-2014 13:31:20]  [AUTHENTICATESESSION SUCCESS] Audittrail log success.
+[30-Jul-2014 13:31:20]  [AUTHENTICATESESSION SUCCESS] APIlogs success.
+[30-Jul-2014 13:31:20]  [AUTHENTICATESESSION SUCCESS] TPSessionID Generate Successfully.
+[30-Jul-2014 13:42:18]  [UPDATEPROFILE ERROR] MiddleName should consist of letters only.
+[30-Jul-2014 13:42:51]  [UPDATEPROFILE ERROR] MiddleName should consist of letters only.
+[30-Jul-2014 13:43:18]  [UPDATEPROFILE ERROR] MiddleName should consist of letters only.
+[30-Jul-2014 13:50:55]  [AUTHENTICATESESSION ERROR] One or more fields is not set or is blank.
+[30-Jul-2014 13:50:59]  [AUTHENTICATESESSION SUCCESS] Audittrail log success.
+[30-Jul-2014 13:50:59]  [AUTHENTICATESESSION SUCCESS] APIlogs success.
+[30-Jul-2014 13:50:59]  [AUTHENTICATESESSION SUCCESS] TPSessionID Generate Successfully.
+[30-Jul-2014 13:51:07]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 13:52:36]  [UPDATEPROFILE ERROR] MiddleName should consist of letters only.
+[30-Jul-2014 13:55:14]  [UPDATEPROFILE ERROR] MiddleName should consist of letters only.
+[30-Jul-2014 13:55:38]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 14:26:53]  [ ERROR]  is not set or is blank.
+[30-Jul-2014 14:37:47]  [CHECKPOINTS ERROR] TPSessionID is not set or is blank.
+[30-Jul-2014 14:38:18]  [CHECKPOINTS ERROR] TPSessionID is not set or is blank.
+[30-Jul-2014 14:39:12]  [CHECKPOINTS ERROR] TPSessionID is not set or is blank.
+[30-Jul-2014 14:39:43]  [CHECKPOINTS ERROR] TPSessionID is not set or is blank.
+[30-Jul-2014 14:39:52]  [GETISSMOKER ERROR] TPSessionID is not set or is blank.
+[30-Jul-2014 14:41:05]  [ ERROR]  is not set or is blank.
+[30-Jul-2014 14:41:16]  [ ERROR]  is not set or is blank.
+[30-Jul-2014 14:41:27]  [ ERROR]  is not set or is blank.
+[30-Jul-2014 14:42:00]  [GETISSMOKER ERROR] TPSessionID is not set or is blank.
+[30-Jul-2014 14:42:07]  [ ERROR]  is not set or is blank.
+[30-Jul-2014 14:44:09]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 14:44:13]  [GETISSMOKER ERROR] TPSessionID is not set or is blank.
+[30-Jul-2014 14:44:21]  [GETISSMOKER ERROR] TPSessionID is not set or is blank.
+[30-Jul-2014 14:44:21]  [GETISSMOKER ERROR] TPSessionID is not set or is blank.
+[30-Jul-2014 14:44:21]  [GETISSMOKER ERROR] TPSessionID is not set or is blank.
+[30-Jul-2014 14:44:21]  [GETISSMOKER ERROR] TPSessionID is not set or is blank.
+[30-Jul-2014 14:44:22]  [GETISSMOKER ERROR] TPSessionID is not set or is blank.
+[30-Jul-2014 14:44:22]  [GETISSMOKER ERROR] TPSessionID is not set or is blank.
+[30-Jul-2014 14:44:22]  [GETISSMOKER ERROR] TPSessionID is not set or is blank.
+[30-Jul-2014 14:44:25]  [ ERROR]  is not set or is blank.
+[30-Jul-2014 14:45:25]  [ ERROR]  is not set or is blank.
+[30-Jul-2014 14:45:31]  [ ERROR]  is not set or is blank.
+[30-Jul-2014 14:46:20]  [ ERROR]  is not set or is blank.
+[30-Jul-2014 14:47:42]  [ ERROR]  is not set or is blank.
+[30-Jul-2014 14:48:00]  [ ERROR]  is not set or is blank.
+[30-Jul-2014 14:48:56]  [ ERROR]  is not set or is blank.
+[30-Jul-2014 14:50:51]  [ ERROR]  is not set or is blank.
+[30-Jul-2014 14:51:28]  [CHECKPOINTS ERROR] TPSessionID is not set or is blank.
+[30-Jul-2014 14:52:50]  [ ERROR]  is not set or is blank.
+[30-Jul-2014 14:54:32]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 14:55:28]  [ ERROR]  is not set or is blank.
+[30-Jul-2014 14:56:18]  [CHECKPOINTS ERROR] TPSessionID is not set or is blank.
+[30-Jul-2014 14:56:41]  [ ERROR]  is not set or is blank.
+[30-Jul-2014 14:57:05]  [CHECKPOINTS ERROR] TPSessionID is not set or is blank.
+[30-Jul-2014 14:57:09]  [ ERROR]  is not set or is blank.
+[30-Jul-2014 15:01:31]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 15:03:32]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 15:06:25]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 15:16:44]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 15:18:52]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 15:20:31]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 15:22:00]  [ ERROR]  is not set or is blank.
+[30-Jul-2014 15:22:11]  [ ERROR]  is not set or is blank.
+[30-Jul-2014 15:37:52]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 15:38:35]  [CHECKPOINTS ERROR] CheckPoints is not set or is blank.
+[30-Jul-2014 15:42:04]  [CHECKPOINTS ERROR] CheckPoints is not set or is blank.
+[30-Jul-2014 15:42:12]  [CHECKPOINTS ERROR] CheckPoints is not set or is blank.
+[30-Jul-2014 15:50:23]  [CHECKPOINTS ERROR] CheckPoints has invalid Session ID.
+[30-Jul-2014 15:51:20]  [CHECKPOINTS ERROR] CheckPoints has invalid Session ID.
+[30-Jul-2014 15:52:00]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 15:52:05]  [CHECKPOINTS ERROR] TPSessionID is not set or is blank.
+[30-Jul-2014 15:54:06]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 15:54:14]  [CHECKPOINTS ERROR] CheckPoints has invalid Session ID.
+[30-Jul-2014 15:54:28]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 15:54:31]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 15:55:08]  [GETISSMOKER ERROR] TPSessionID is not set or is blank.
+[30-Jul-2014 15:55:18]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 15:55:24]  [ ERROR]  has invalid Session ID.
+[30-Jul-2014 15:55:42]  [ ERROR]  has invalid Session ID.
+[30-Jul-2014 15:55:52]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 15:55:55]  [ ERROR]  has invalid Session ID.
+[30-Jul-2014 15:56:25]  [ ERROR]  has invalid Session ID.
+[30-Jul-2014 15:57:35]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 15:57:38]  [GETGENDER ERROR] GetGender has invalid Session ID.
+[30-Jul-2014 16:00:18]  [GETGENDER ERROR] TPSessionID is not set or is blank.
+[30-Jul-2014 16:00:39]  [GETGENDER ERROR] TPSessionID is not set or is blank.
+[30-Jul-2014 16:14:07]  [AUTHENTICATESESSION SUCCESS] Audittrail log success.
+[30-Jul-2014 16:14:07]  [AUTHENTICATESESSION SUCCESS] APIlogs success.
+[30-Jul-2014 16:14:07]  [AUTHENTICATESESSION SUCCESS] TPSessionID Generate Successfully.
+[30-Jul-2014 16:14:18]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 16:21:47]  [AUTHENTICATESESSION SUCCESS] Audittrail log success.
+[30-Jul-2014 16:21:47]  [AUTHENTICATESESSION SUCCESS] APIlogs success.
+[30-Jul-2014 16:21:47]  [AUTHENTICATESESSION SUCCESS] TPSessionID Generate Successfully.
+[30-Jul-2014 16:24:50]  [GETGENDER ERROR] GetGender has invalid Session ID.
+[30-Jul-2014 16:24:59]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 16:25:05]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 16:31:51]  [GETGENDER ERROR] GetGender has invalid Session ID.
+[30-Jul-2014 16:32:02]  [GETISSMOKER ERROR] GetIsSmoker contains expired SessionID.
+[30-Jul-2014 16:33:16]  [GETISSMOKER ERROR] GetIsSmoker contains expired SessionID.
+[30-Jul-2014 16:34:25]  [GETISSMOKER ERROR] GetIsSmoker contains expired SessionID.
+[30-Jul-2014 16:35:23]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 16:36:05]  [GETISSMOKER ERROR] GetIsSmoker contains expired SessionID.
+[30-Jul-2014 16:36:26]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 16:37:52]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 16:38:30]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 16:54:45]  [GETGENDER ERROR] GetGender has invalid Session ID.
+[30-Jul-2014 16:55:14]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 16:56:25]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 16:57:20]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 16:58:21]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 17:00:24]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 17:00:49]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 17:01:43]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 17:02:15]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 17:02:55]  [GETGENDER ERROR] GetGender contains expired SessionID.
+[30-Jul-2014 17:03:33]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 17:10:22]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 17:11:47]  [GETGENDER ERROR] GetGender contains expired SessionID.
+[30-Jul-2014 17:12:06]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 17:27:09]  [LISTITEMS ERROR] PlayerClassID is not set or is blank.
+[30-Jul-2014 17:27:33]  [LISTITEMS ERROR] PlayerClassID is not set or is blank.
+[30-Jul-2014 17:29:48]  [LISTITEMS ERROR] PlayerClassID is not set or is blank.
+[30-Jul-2014 17:30:17]  [LISTITEMS ERROR] PlayerClassID is not set or is blank.
+[30-Jul-2014 17:31:06]  [LISTITEMS ERROR] PlayerClassID is not set or is blank.
+[30-Jul-2014 17:31:22]  [LISTITEMS ERROR] PlayerClassID is not set or is blank.
+[30-Jul-2014 17:31:45]  [LISTITEMS ERROR] PlayerClassID is not set or is blank.
+[30-Jul-2014 17:32:41]  [LISTITEMS ERROR] PlayerClassID is not set or is blank.
+[30-Jul-2014 17:35:16]  [LISTITEMS ERROR] PlayerClassID is not set or is blank.
+[30-Jul-2014 17:36:40]  [LISTITEMS ERROR] PlayerClassID is not set or is blank.
+[30-Jul-2014 17:38:10]  [LISTITEMS ERROR] PlayerClassID is not set or is blank.
+[30-Jul-2014 17:38:34]  [LISTITEMS ERROR] PlayerClassID is not set or is blank.
+[30-Jul-2014 17:39:41]  [LISTITEMS ERROR] PlayerClassID is not set or is blank.
+[30-Jul-2014 17:41:50]  [LISTITEMS ERROR] PlayerClassID is not set or is blank.
+[30-Jul-2014 17:42:01]  [LISTITEMS ERROR] PlayerClassID is not set or is blank.
+[30-Jul-2014 17:42:42]  [LISTITEMS ERROR] PlayerClassID is not set or is blank.
+[30-Jul-2014 17:43:06]  [LISTITEMS ERROR] ListItems contains expired SessionID.
+[30-Jul-2014 17:43:34]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 17:43:50]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 17:45:11]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 17:45:22]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 17:45:28]  [LISTITEMS ERROR] TPSessionID is not set or is blank.
+[30-Jul-2014 17:46:04]  [LISTITEMS ERROR] TPSessionID is not set or is blank.
+[30-Jul-2014 17:46:12]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 17:54:57]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 17:55:34]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 17:55:55]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 17:56:24]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 17:56:37]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 17:57:57]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 18:53:17]  [LISTITEMS ERROR] ListItems contains expired SessionID.
+[30-Jul-2014 18:53:26]  [AUTHENTICATESESSION SUCCESS] Audittrail log success.
+[30-Jul-2014 18:53:26]  [AUTHENTICATESESSION SUCCESS] APIlogs success.
+[30-Jul-2014 18:53:26]  [AUTHENTICATESESSION SUCCESS] TPSessionID Generate Successfully.
+[30-Jul-2014 18:53:56]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 18:57:00]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 19:18:17]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 19:18:32]  [LISTITEMS ERROR] TPSessionID is not set or is blank.
+[30-Jul-2014 19:19:21]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 20:13:44]  [AUTHENTICATESESSION SUCCESS] Audittrail log success.
+[30-Jul-2014 20:13:44]  [AUTHENTICATESESSION SUCCESS] APIlogs success.
+[30-Jul-2014 20:13:44]  [AUTHENTICATESESSION SUCCESS] TPSessionID Generate Successfully.
+[30-Jul-2014 20:14:31]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 20:24:30]  [AUTHENTICATESESSION SUCCESS] Audittrail log success.
+[30-Jul-2014 20:24:30]  [AUTHENTICATESESSION SUCCESS] APIlogs success.
+[30-Jul-2014 20:24:30]  [AUTHENTICATESESSION SUCCESS] TPSessionID Generate Successfully.
+[30-Jul-2014 20:36:45]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 20:37:15]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 20:42:40]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 20:45:37]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 20:46:54]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 20:49:38]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 20:55:04]  [REGISTERMEMBER ERROR] TPSessionID is not set or is blank.
+[30-Jul-2014 20:59:10]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 21:02:33]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 21:04:44]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 21:05:19]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 21:07:21]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 21:10:29]  [GETISSMOKER ERROR] TPSessionID is not set or is blank.
+[30-Jul-2014 21:10:36]  [GETACTIVESESSION SUCCESS] GetActiveSession Success.
+[30-Jul-2014 21:20:34]  [AUTHENTICATESESSION ERROR] One or more fields is not set or is blank.
+[30-Jul-2014 21:20:37]  [GETACTIVESESSION ERROR] TPSessionID is not set or is blank.
+[30-Jul-2014 21:20:40]  [LOGIN ERROR] TPSessionID is not set or is blank.
+[30-Jul-2014 21:20:45]  [REGISTERMEMBER ERROR] TPSessionID is not set or is blank.
+[30-Jul-2014 21:20:48]  [UPDATEPROFILE ERROR] TPSessionID is not set or is blank.
+[30-Jul-2014 21:20:53]  [CHECKPOINTS ERROR] TPSessionID is not set or is blank.
+[30-Jul-2014 21:20:56]  [LISTITEMS ERROR] TPSessionID is not set or is blank.
+[30-Jul-2014 21:21:00]  [LISTITEMS ERROR] TPSessionID is not set or is blank.
+[30-Jul-2014 21:21:05]  [LISTITEMS ERROR] ListItems has invalid Session ID.
+[30-Jul-2014 21:22:16]  [LISTITEMS ERROR] MPSessionID is not set or is blank.
+[30-Jul-2014 21:22:21]  [LISTITEMS ERROR] PlayerClassID is not set or is blank.
+[30-Jul-2014 21:22:26]  [LISTITEMS ERROR] ListItems has invalid Session ID.
+[30-Jul-2014 21:23:01]  [LISTITEMS ERROR] ListItems has invalid Session ID.
+[30-Jul-2014 21:24:06]  [CHECKPOINTS ERROR] TPSessionID is not set or is blank.
+[30-Jul-2014 21:24:09]  [LISTITEMS ERROR] TPSessionID is not set or is blank.
+[30-Jul-2014 21:24:17]  [GETPROFILE ERROR] TPSessionID is not set or is blank.

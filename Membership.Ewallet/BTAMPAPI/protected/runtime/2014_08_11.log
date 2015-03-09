@@ -1,0 +1,434 @@
+2014/08/11 10:58:35 [error] [application] ReturnMessage: evdkiiktodcppk83oa32qqhhp5 ErrorCode: 0
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1097)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (212)
+2014/08/11 10:58:44 [error] [application] ReturnMessage: Valid ErrorCode: 0.1
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1120)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (261)
+2014/08/11 10:59:06 [error] [application] ReturnMessage: Valid ErrorCode: 0.1
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1120)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (261)
+2014/08/11 11:08:07 [error] [application] ReturnMessage: Valid ErrorCode: 0.1
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1120)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (261)
+2014/08/11 11:08:17 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1110)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1179)
+2014/08/11 11:08:31 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1110)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1179)
+2014/08/11 11:08:31 [error] [php] Undefined index: RedeemItems2 (C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php:1181)
+Stack trace:
+#0 C:\xampp\htdocs\yii\framework\web\CController.php(308): CInlineAction->runWithParams()
+#1 C:\xampp\htdocs\yii\framework\web\CController.php(286): AmpapiController->runAction()
+#2 C:\xampp\htdocs\yii\framework\web\CController.php(265): AmpapiController->runActionWithFilters()
+#3 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(282): AmpapiController->run()
+#4 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController()
+#5 C:\xampp\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#6 C:\xampp\htdocs\membership.rewards\AMPAPI\index.php(13): CWebApplication->run()
+REQUEST_URI=/membership.rewards/AMPAPI/index.php/Ampapi/redeemitems
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1181)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (681)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\index.php (13)
+2014/08/11 11:12:13 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1105)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1174)
+2014/08/11 11:12:18 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1105)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1174)
+2014/08/11 11:29:22 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1105)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1176)
+2014/08/11 11:29:29 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1105)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1176)
+2014/08/11 11:30:44 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1105)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1176)
+2014/08/11 11:32:15 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1105)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1176)
+2014/08/11 11:32:55 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1105)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1176)
+2014/08/11 05:37:19 [error] [php] Undefined variable: RewardID (C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php:1175)
+Stack trace:
+#0 C:\xampp\htdocs\yii\framework\web\CController.php(308): CInlineAction->runWithParams()
+#1 C:\xampp\htdocs\yii\framework\web\CController.php(286): AmpapiController->runAction()
+#2 C:\xampp\htdocs\yii\framework\web\CController.php(265): AmpapiController->runActionWithFilters()
+#3 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(282): AmpapiController->run()
+#4 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController()
+#5 C:\xampp\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#6 C:\xampp\htdocs\membership.rewards\AMPAPI\index.php(13): CWebApplication->run()
+REQUEST_URI=/membership.rewards/AMPAPI/index.php/Ampapi/redeemitems
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1175)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (676)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\index.php (13)
+2014/08/11 11:37:50 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1105)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1176)
+2014/08/11 11:39:27 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1105)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1176)
+2014/08/11 11:40:33 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1105)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1176)
+2014/08/11 11:42:02 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1105)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1176)
+2014/08/11 11:43:01 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1105)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1176)
+2014/08/11 11:44:00 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1105)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1176)
+2014/08/11 11:47:16 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1105)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1178)
+2014/08/11 11:47:25 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1105)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1176)
+2014/08/11 11:47:31 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1105)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1176)
+2014/08/11 12:02:25 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1105)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1212)
+2014/08/11 12:02:30 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 0.2
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1105)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1192)
+2014/08/11 12:03:09 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 0.2
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1105)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1192)
+2014/08/11 12:03:42 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 0.2
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1105)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1192)
+2014/08/11 12:03:43 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 0.2
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1105)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1192)
+2014/08/11 12:03:44 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 0.2
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1105)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1192)
+2014/08/11 12:03:52 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 0.2
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1105)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1192)
+2014/08/11 13:16:44 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1105)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1174)
+2014/08/11 13:16:47 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 65
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1105)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1174)
+2014/08/11 13:16:53 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1105)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1174)
+2014/08/11 13:17:11 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1105)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1174)
+2014/08/11 13:17:23 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 65
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1105)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1174)
+2014/08/11 13:17:43 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1105)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1174)
+2014/08/11 13:18:09 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1105)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1174)
+2014/08/11 13:18:38 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1105)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1174)
+2014/08/11 13:18:54 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1105)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1174)
+2014/08/11 13:19:11 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1105)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1174)
+2014/08/11 13:22:40 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1105)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1174)
+2014/08/11 13:23:54 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1105)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1174)
+2014/08/11 13:37:39 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1105)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1174)
+2014/08/11 13:38:55 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1105)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1214)
+2014/08/11 13:40:18 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1105)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1214)
+2014/08/11 13:43:22 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1105)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1214)
+2014/08/11 13:47:15 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1105)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1214)
+2014/08/11 13:47:43 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1105)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1212)
+2014/08/11 13:50:37 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1105)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1214)
+2014/08/11 13:51:22 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1105)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1212)
+2014/08/11 13:52:32 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 0.2
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1105)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1192)
+2014/08/11 13:52:52 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 0.2
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1105)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1192)
+2014/08/11 13:53:11 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 0.2
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1105)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1192)
+2014/08/11 13:53:36 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 0.2
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1105)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1192)
+2014/08/11 13:54:22 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 0.2
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1105)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1192)
+2014/08/11 13:54:47 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 0.2
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1105)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1192)
+2014/08/11 13:54:59 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 0.2
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1105)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1192)
+2014/08/11 13:55:12 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 0.2
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1105)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1192)
+2014/08/11 13:55:20 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 0.2
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1105)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1192)
+2014/08/11 14:07:12 [error] [application] ReturnMessage: Invalid input. ErrorCode: 2
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1105)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (155)
+2014/08/11 14:08:04 [error] [application] ReturnMessage: Third Party Account not found. ErrorCode: 3.1
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1105)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (159)
+2014/08/11 14:10:52 [error] [application] ReturnMessage: 7rma15f7b21k9jqji712vvqbp7 ErrorCode: 0
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1092)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (212)
+2014/08/11 14:10:52 [error] [application] ReturnMessage: 9rdo4b3d6ts4bjijtmsvlift30 ErrorCode: 0
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1092)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (212)
+2014/08/11 14:11:05 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1105)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1174)
+2014/08/11 14:11:34 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 65
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1105)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1174)
+2014/08/11 14:12:16 [error] [application] ReturnMessage: e3dvim80i9nhkvrta4nsikvh21 ErrorCode: 0
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1092)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (212)
+2014/08/11 14:12:30 [error] [application] ReturnMessage: Invalid. ErrorCode: 1.1
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1105)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (294)
+2014/08/11 14:12:50 [error] [application] ReturnMessage: Valid ErrorCode: 0.1
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1115)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (261)
+2014/08/11 14:14:01 [error] [application] ReturnMessage: Invalid. ErrorCode: 1.1
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1105)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (294)
+2014/08/11 14:14:30 [error] [application] ReturnMessage: Invalid input. ErrorCode: 2
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1105)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (281)
+2014/08/11 14:16:11 [error] [application] ReturnMessage: Session has expired. Please login again ErrorCode: 2.1
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1105)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (281)
+2014/08/11 14:16:43 [error] [application] ReturnMessage: Session has expired. Please login again ErrorCode: 2.1
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1105)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (281)
+2014/08/11 14:16:46 [error] [application] ReturnMessage: Invalid. ErrorCode: 1.1
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1105)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (294)
+2014/08/11 14:16:52 [error] [application] ReturnMessage: Session has expired. Please login again ErrorCode: 2.1
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1105)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (281)
+2014/08/11 14:16:57 [error] [application] ReturnMessage: msi5e9j3d01dmk0715emobl556 ErrorCode: 0
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1092)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (212)
+2014/08/11 14:17:03 [error] [application] ReturnMessage: Valid ErrorCode: 0.1
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1115)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (261)
+2014/08/11 14:17:31 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1105)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1174)
+2014/08/11 14:18:15 [error] [application] ReturnMessage: Invalid Session ID. ErrorCode: 61
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1105)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1410)
+2014/08/11 14:28:50 [error] [application] ReturnMessage: Valid ErrorCode: 0.1
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1115)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (261)
+2014/08/11 14:29:13 [error] [application] ReturnMessage: Valid ErrorCode: 0.1
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1115)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (261)
+2014/08/11 14:29:28 [error] [application] ReturnMessage: Invalid Session ID. ErrorCode: 61
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1105)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1410)
+2014/08/11 14:29:33 [error] [application] ReturnMessage: Valid ErrorCode: 0.1
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1115)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (261)
+2014/08/11 14:29:42 [error] [application] ReturnMessage: Valid ErrorCode: 0.1
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1115)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (261)
+2014/08/11 14:30:21 [error] [application] ReturnMessage: Valid ErrorCode: 0.1
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1115)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (261)
+2014/08/11 15:13:07 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 0.2
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1105)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1192)
+2014/08/11 15:13:21 [error] [application] ReturnMessage: Session has expired. Please login again ErrorCode: 2.1
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1105)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1403)
+2014/08/11 15:13:30 [error] [application] ReturnMessage: 4k9goqb6uoi77313vk6omg1656 ErrorCode: 0
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1092)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (212)
+2014/08/11 15:13:36 [error] [application] ReturnMessage: Invalid Session ID. ErrorCode: 61
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1105)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1410)
+2014/08/11 15:13:56 [error] [application] ReturnMessage: Invalid Session ID. ErrorCode: 61
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1105)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1410)
+2014/08/11 15:16:00 [error] [application] ReturnMessage: Invalid Session ID. ErrorCode: 61
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1105)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1410)
+2014/08/11 15:16:08 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 0.2
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1105)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1192)
+2014/08/11 15:16:09 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 0.2
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1105)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1192)
+2014/08/11 15:16:29 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 0.2
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1105)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1192)
+2014/08/11 15:16:30 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 0.2
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1105)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1192)
+2014/08/11 15:16:31 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 0.2
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1105)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1192)
+2014/08/11 15:16:44 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 0.2
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1105)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1192)
+2014/08/11 15:17:09 [error] [application] ReturnMessage: cpsornocnb1m4gtf7g5nu5ahq2 ErrorCode: 0
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1092)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (212)
+2014/08/11 15:17:28 [error] [application] ReturnMessage: Valid ErrorCode: 0.1
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1115)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (261)
+2014/08/11 15:17:28 [error] [application] ReturnMessage: No response from Membership portal API. ErrorCode: 63
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1124)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (766)
+2014/08/11 15:19:15 [error] [application] ReturnMessage: Valid ErrorCode: 0.1
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1115)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (261)
+2014/08/11 15:19:15 [error] [application] ReturnMessage: No response from Membership portal API. ErrorCode: 63
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1124)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (982)
+2014/08/11 15:33:09 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 0.2
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1105)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1192)
+2014/08/11 15:33:18 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 0.2
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1105)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (1192)

@@ -1,0 +1,629 @@
+2014/08/07 03:49:40 [error] [system.db.CDbCommand] CDbCommand::fetch() failed: SQLSTATE[42000]: Syntax error or access violation: 1142 SELECT command denied to user 'membershipapi'@'192.168.29.203' for table 'couponbatches'. The SQL statement executed was: SELECT *
+                FROM couponbatches
+                WHERE Status = 1
+                LIMIT 1.
+in C:\xampp\htdocs\MPAPI\protected\models\CouponBatchesModel.php (32)
+in C:\xampp\htdocs\MPAPI\protected\components\Processing.php (30)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (2638)
+2014/08/07 03:49:41 [error] [exception.CDbException] exception 'CDbException' with message 'CDbCommand failed to execute the SQL statement: SQLSTATE[42000]: Syntax error or access violation: 1142 SELECT command denied to user 'membershipapi'@'192.168.29.203' for table 'couponbatches'. The SQL statement executed was: SELECT *
+                FROM couponbatches
+                WHERE Status = 1
+                LIMIT 1' in C:\xampp\htdocs\yii\framework\db\CDbCommand.php:541
+Stack trace:
+#0 C:\xampp\htdocs\yii\framework\db\CDbCommand.php(414): CDbCommand->queryInternal('fetch', Array, Array)
+#1 C:\xampp\htdocs\MPAPI\protected\models\CouponBatchesModel.php(32): CDbCommand->queryRow()
+#2 C:\xampp\htdocs\MPAPI\protected\components\Processing.php(30): CouponBatchesModel->getRaffleCouponSuffix()
+#3 C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php(2638): Processing->processCouponRedemption('32', '25', '3', 150, 'UBX82PPH', 3, '2014-08-07 09:5...')
+#4 C:\xampp\htdocs\yii\framework\web\actions\CInlineAction.php(49): MPapiController->actionRedeemItems()
+#5 C:\xampp\htdocs\yii\framework\web\CController.php(308): CInlineAction->runWithParams(Array)
+#6 C:\xampp\htdocs\yii\framework\web\CController.php(286): CController->runAction(Object(CInlineAction))
+#7 C:\xampp\htdocs\yii\framework\web\CController.php(265): CController->runActionWithFilters(Object(CInlineAction), Array)
+#8 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(282): CController->run('redeemitems')
+#9 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController('MPapi/redeemite...')
+#10 C:\xampp\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#11 C:\xampp\htdocs\MPAPI\index.php(13): CApplication->run()
+#12 {main}
+REQUEST_URI=/MPAPI/index.php/MPapi/redeemitems
+---
+2014/08/07 10:17:03 [error] [application] ReturnMessage: MPSessionID does not exist. ErrorCode: 13
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (2365)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/07 10:17:22 [error] [application] ReturnMessage: MPSessionID does not exist. ErrorCode: 13
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (2365)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/07 10:17:36 [error] [application] ReturnMessage: Transaction failed. Serial code is unavailable. ErrorCode: 57
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (3162)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/07 10:18:09 [error] [application] ReturnMessage: Redemption successful. ErrorCode: 0
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (3048)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/07 11:32:36 [error] [application] ReturnMessage: Membership Card is Invalid ErrorCode: 6
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (725)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/07 11:52:07 [error] [application] ReturnMessage: Transaction failed. Serial code is unavailable. ErrorCode: 57
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (3163)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/07 11:54:32 [error] [application] ReturnMessage: Redemption successful. ErrorCode: 0
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (3049)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/07 13:20:45 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[42000]: Syntax error or access violation: 1142 UPDATE command denied to user 'membershipapi'@'192.168.29.203' for table 'couponredemtionlogs'. The SQL statement executed was: UPDATE couponredemtionlogs
+                    SET Status = :status, DateUpdated = NOW(6), UpdatedByAID = :updatedByAID,
+                        SerialCode = :serialCode, SecurityCode = :securityCode, ValidFrom = :validFrom,
+                        ValidTo = :validTo, RedeemedPoints = :totalItemPoints
+                    WHERE CouponRedemptionLogID = :couponRedemptionLogID.
+in C:\xampp\htdocs\MPAPI\protected\models\CouponRedemptionLogsModel.php (72)
+in C:\xampp\htdocs\MPAPI\protected\components\Processing.php (85)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (2639)
+2014/08/07 13:20:45 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[42000]: Syntax error or access violation: 1142 UPDATE command denied to user 'membershipapi'@'192.168.29.203' for table 'couponredemtionlogs'. The SQL statement executed was: UPDATE couponredemtionlogs
+                    SET Status = :status, DateUpdated = NOW(6), UpdatedByAID = :updatedByAID,
+                        SerialCode = :serialCode, SecurityCode = :securityCode, ValidFrom = :validFrom,
+                        ValidTo = :validTo, RedeemedPoints = :totalItemPoints
+                    WHERE CouponRedemptionLogID = :couponRedemptionLogID
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\models\CouponRedemptionLogsModel.php (84)
+in C:\xampp\htdocs\MPAPI\protected\components\Processing.php (85)
+2014/08/07 13:20:45 [error] [application] ReturnMessage: Pending Redemption. Error in updating redemption log. ErrorCode: 56
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (2674)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/07 13:38:56 [error] [application] ReturnMessage: Transaction failed. Card has a pending redemption. ErrorCode: 26
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (2636)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/07 13:40:55 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[42000]: Syntax error or access violation: 1142 UPDATE command denied to user 'membershipapi'@'192.168.29.203' for table 'couponredemtionlogs'. The SQL statement executed was: UPDATE couponredemtionlogs
+                    SET Status = :status, DateUpdated = NOW(6), UpdatedByAID = :updatedByAID,
+                        SerialCode = :serialCode, SecurityCode = :securityCode, ValidFrom = :validFrom,
+                        ValidTo = :validTo, RedeemedPoints = :totalItemPoints
+                    WHERE CouponRedemptionLogID = :couponRedemptionLogID.
+in C:\xampp\htdocs\MPAPI\protected\models\CouponRedemptionLogsModel.php (72)
+in C:\xampp\htdocs\MPAPI\protected\components\Processing.php (87)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (2650)
+2014/08/07 13:40:55 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[42000]: Syntax error or access violation: 1142 UPDATE command denied to user 'membershipapi'@'192.168.29.203' for table 'couponredemtionlogs'. The SQL statement executed was: UPDATE couponredemtionlogs
+                    SET Status = :status, DateUpdated = NOW(6), UpdatedByAID = :updatedByAID,
+                        SerialCode = :serialCode, SecurityCode = :securityCode, ValidFrom = :validFrom,
+                        ValidTo = :validTo, RedeemedPoints = :totalItemPoints
+                    WHERE CouponRedemptionLogID = :couponRedemptionLogID
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\models\CouponRedemptionLogsModel.php (84)
+in C:\xampp\htdocs\MPAPI\protected\components\Processing.php (87)
+2014/08/07 13:40:55 [error] [application] ReturnMessage: Pending Redemption. Error in updating redemption log. ErrorCode: 56
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (2685)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/07 13:46:31 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[42000]: Syntax error or access violation: 1142 UPDATE command denied to user 'membershipapi'@'192.168.29.203' for table 'couponredemtionlogs'. The SQL statement executed was: UPDATE couponredemtionlogs
+                    SET Status = :status, DateUpdated = NOW(6), UpdatedByAID = :updatedByAID,
+                        SerialCode = :serialCode, SecurityCode = :securityCode, ValidFrom = :validFrom,
+                        ValidTo = :validTo, RedeemedPoints = :totalItemPoints
+                    WHERE CouponRedemptionLogID = :couponRedemptionLogID.
+in C:\xampp\htdocs\MPAPI\protected\models\CouponRedemptionLogsModel.php (72)
+in C:\xampp\htdocs\MPAPI\protected\components\Processing.php (87)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (2650)
+2014/08/07 13:46:31 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[42000]: Syntax error or access violation: 1142 UPDATE command denied to user 'membershipapi'@'192.168.29.203' for table 'couponredemtionlogs'. The SQL statement executed was: UPDATE couponredemtionlogs
+                    SET Status = :status, DateUpdated = NOW(6), UpdatedByAID = :updatedByAID,
+                        SerialCode = :serialCode, SecurityCode = :securityCode, ValidFrom = :validFrom,
+                        ValidTo = :validTo, RedeemedPoints = :totalItemPoints
+                    WHERE CouponRedemptionLogID = :couponRedemptionLogID
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\models\CouponRedemptionLogsModel.php (84)
+in C:\xampp\htdocs\MPAPI\protected\components\Processing.php (87)
+2014/08/07 13:46:31 [error] [application] ReturnMessage: Pending Redemption. Error in updating redemption log. ErrorCode: 56
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (2685)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/07 13:48:40 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[42000]: Syntax error or access violation: 1142 UPDATE command denied to user 'membershipapi'@'192.168.29.203' for table 'couponredemtionlogs'. The SQL statement executed was: UPDATE couponredemtionlogs
+                    SET Status = :status, DateUpdated = NOW(6), UpdatedByAID = :updatedByAID,
+                        SerialCode = :serialCode, SecurityCode = :securityCode, ValidFrom = :validFrom,
+                        ValidTo = :validTo, RedeemedPoints = :totalItemPoints
+                    WHERE CouponRedemptionLogID = :couponRedemptionLogID.
+in C:\xampp\htdocs\MPAPI\protected\models\CouponRedemptionLogsModel.php (72)
+in C:\xampp\htdocs\MPAPI\protected\components\Processing.php (87)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (2650)
+2014/08/07 13:48:40 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[42000]: Syntax error or access violation: 1142 UPDATE command denied to user 'membershipapi'@'192.168.29.203' for table 'couponredemtionlogs'. The SQL statement executed was: UPDATE couponredemtionlogs
+                    SET Status = :status, DateUpdated = NOW(6), UpdatedByAID = :updatedByAID,
+                        SerialCode = :serialCode, SecurityCode = :securityCode, ValidFrom = :validFrom,
+                        ValidTo = :validTo, RedeemedPoints = :totalItemPoints
+                    WHERE CouponRedemptionLogID = :couponRedemptionLogID
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\models\CouponRedemptionLogsModel.php (84)
+in C:\xampp\htdocs\MPAPI\protected\components\Processing.php (87)
+2014/08/07 13:48:40 [error] [application] ReturnMessage: Pending Redemption. Error in updating redemption log. ErrorCode: 56
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (2685)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/07 13:54:41 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[42000]: Syntax error or access violation: 1142 UPDATE command denied to user 'membershipapi'@'192.168.29.203' for table 'couponredemtionlogs'. The SQL statement executed was: UPDATE couponredemtionlogs
+                    SET Status = :status, DateUpdated = NOW(6), UpdatedByAID = :updatedByAID,
+                        SerialCode = :serialCode, SecurityCode = :securityCode, ValidFrom = :validFrom,
+                        ValidTo = :validTo, RedeemedPoints = :totalItemPoints
+                    WHERE CouponRedemptionLogID = :couponRedemptionLogID.
+in C:\xampp\htdocs\MPAPI\protected\models\CouponRedemptionLogsModel.php (72)
+in C:\xampp\htdocs\MPAPI\protected\components\Processing.php (87)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (2650)
+2014/08/07 13:54:42 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[42000]: Syntax error or access violation: 1142 UPDATE command denied to user 'membershipapi'@'192.168.29.203' for table 'couponredemtionlogs'. The SQL statement executed was: UPDATE couponredemtionlogs
+                    SET Status = :status, DateUpdated = NOW(6), UpdatedByAID = :updatedByAID,
+                        SerialCode = :serialCode, SecurityCode = :securityCode, ValidFrom = :validFrom,
+                        ValidTo = :validTo, RedeemedPoints = :totalItemPoints
+                    WHERE CouponRedemptionLogID = :couponRedemptionLogID
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\models\CouponRedemptionLogsModel.php (84)
+in C:\xampp\htdocs\MPAPI\protected\components\Processing.php (87)
+2014/08/07 13:54:42 [error] [application] ReturnMessage: Pending Redemption. Error in updating redemption log. ErrorCode: 56
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (2685)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/07 13:56:04 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[42000]: Syntax error or access violation: 1142 UPDATE command denied to user 'membershipapi'@'192.168.29.203' for table 'couponredemtionlogs'. The SQL statement executed was: UPDATE couponredemtionlogs
+                    SET Status = :status, DateUpdated = NOW(6), UpdatedByAID = :updatedByAID,
+                        SerialCode = :serialCode, SecurityCode = :securityCode, ValidFrom = :validFrom,
+                        ValidTo = :validTo, RedeemedPoints = :totalItemPoints
+                    WHERE CouponRedemptionLogID = :couponRedemptionLogID.
+in C:\xampp\htdocs\MPAPI\protected\models\CouponRedemptionLogsModel.php (72)
+in C:\xampp\htdocs\MPAPI\protected\components\Processing.php (87)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (2650)
+2014/08/07 13:56:04 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[42000]: Syntax error or access violation: 1142 UPDATE command denied to user 'membershipapi'@'192.168.29.203' for table 'couponredemtionlogs'. The SQL statement executed was: UPDATE couponredemtionlogs
+                    SET Status = :status, DateUpdated = NOW(6), UpdatedByAID = :updatedByAID,
+                        SerialCode = :serialCode, SecurityCode = :securityCode, ValidFrom = :validFrom,
+                        ValidTo = :validTo, RedeemedPoints = :totalItemPoints
+                    WHERE CouponRedemptionLogID = :couponRedemptionLogID
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\models\CouponRedemptionLogsModel.php (84)
+in C:\xampp\htdocs\MPAPI\protected\components\Processing.php (87)
+2014/08/07 13:56:04 [error] [application] ReturnMessage: Pending Redemption. Error in updating redemption log. ErrorCode: 56
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (2685)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/07 13:56:23 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[42000]: Syntax error or access violation: 1142 UPDATE command denied to user 'membershipapi'@'192.168.29.203' for table 'couponredemtionlogs'. The SQL statement executed was: UPDATE couponredemtionlogs
+                    SET Status = :status, DateUpdated = NOW(6), UpdatedByAID = :updatedByAID,
+                        SerialCode = :serialCode, SecurityCode = :securityCode, ValidFrom = :validFrom,
+                        ValidTo = :validTo, RedeemedPoints = :totalItemPoints
+                    WHERE CouponRedemptionLogID = :couponRedemptionLogID.
+in C:\xampp\htdocs\MPAPI\protected\models\CouponRedemptionLogsModel.php (72)
+in C:\xampp\htdocs\MPAPI\protected\components\Processing.php (87)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (2650)
+2014/08/07 13:56:23 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[42000]: Syntax error or access violation: 1142 UPDATE command denied to user 'membershipapi'@'192.168.29.203' for table 'couponredemtionlogs'. The SQL statement executed was: UPDATE couponredemtionlogs
+                    SET Status = :status, DateUpdated = NOW(6), UpdatedByAID = :updatedByAID,
+                        SerialCode = :serialCode, SecurityCode = :securityCode, ValidFrom = :validFrom,
+                        ValidTo = :validTo, RedeemedPoints = :totalItemPoints
+                    WHERE CouponRedemptionLogID = :couponRedemptionLogID
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\models\CouponRedemptionLogsModel.php (84)
+in C:\xampp\htdocs\MPAPI\protected\components\Processing.php (87)
+2014/08/07 13:56:23 [error] [application] ReturnMessage: Pending Redemption. Error in updating redemption log. ErrorCode: 56
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (2685)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/07 13:58:44 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[42000]: Syntax error or access violation: 1142 UPDATE command denied to user 'membershipapi'@'192.168.29.203' for table 'couponredemtionlogs'. The SQL statement executed was: UPDATE couponredemtionlogs
+                    SET Status = :status, DateUpdated = NOW(6), UpdatedByAID = :updatedByAID,
+                        SerialCode = :serialCode, SecurityCode = :securityCode, ValidFrom = :validFrom,
+                        ValidTo = :validTo, RedeemedPoints = :totalItemPoints
+                    WHERE CouponRedemptionLogID = :couponRedemptionLogID.
+in C:\xampp\htdocs\MPAPI\protected\models\CouponRedemptionLogsModel.php (72)
+in C:\xampp\htdocs\MPAPI\protected\components\Processing.php (87)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (2650)
+2014/08/07 13:58:44 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[42000]: Syntax error or access violation: 1142 UPDATE command denied to user 'membershipapi'@'192.168.29.203' for table 'couponredemtionlogs'. The SQL statement executed was: UPDATE couponredemtionlogs
+                    SET Status = :status, DateUpdated = NOW(6), UpdatedByAID = :updatedByAID,
+                        SerialCode = :serialCode, SecurityCode = :securityCode, ValidFrom = :validFrom,
+                        ValidTo = :validTo, RedeemedPoints = :totalItemPoints
+                    WHERE CouponRedemptionLogID = :couponRedemptionLogID
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\models\CouponRedemptionLogsModel.php (84)
+in C:\xampp\htdocs\MPAPI\protected\components\Processing.php (87)
+2014/08/07 13:58:44 [error] [application] ReturnMessage: Pending Redemption. Error in updating redemption log. ErrorCode: 56
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (2685)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/07 14:00:22 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[42000]: Syntax error or access violation: 1142 UPDATE command denied to user 'membershipapi'@'192.168.29.203' for table 'couponredemtionlogs'. The SQL statement executed was: UPDATE couponredemtionlogs
+                    SET Status = :status, DateUpdated = NOW(6), UpdatedByAID = :updatedByAID,
+                        SerialCode = :serialCode, SecurityCode = :securityCode, ValidFrom = :validFrom,
+                        ValidTo = :validTo, RedeemedPoints = :totalItemPoints
+                    WHERE CouponRedemptionLogID = :couponRedemptionLogID.
+in C:\xampp\htdocs\MPAPI\protected\models\CouponRedemptionLogsModel.php (72)
+in C:\xampp\htdocs\MPAPI\protected\components\Processing.php (87)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (2650)
+2014/08/07 14:00:22 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[42000]: Syntax error or access violation: 1142 UPDATE command denied to user 'membershipapi'@'192.168.29.203' for table 'couponredemtionlogs'. The SQL statement executed was: UPDATE couponredemtionlogs
+                    SET Status = :status, DateUpdated = NOW(6), UpdatedByAID = :updatedByAID,
+                        SerialCode = :serialCode, SecurityCode = :securityCode, ValidFrom = :validFrom,
+                        ValidTo = :validTo, RedeemedPoints = :totalItemPoints
+                    WHERE CouponRedemptionLogID = :couponRedemptionLogID
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\models\CouponRedemptionLogsModel.php (84)
+in C:\xampp\htdocs\MPAPI\protected\components\Processing.php (87)
+2014/08/07 14:00:22 [error] [application] ReturnMessage: Pending Redemption. Error in updating redemption log. ErrorCode: 56
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (2685)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/07 14:09:25 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[42000]: Syntax error or access violation: 1142 UPDATE command denied to user 'membershipapi'@'192.168.29.203' for table 'couponredemtionlogs'. The SQL statement executed was: UPDATE couponredemtionlogs
+                    SET Status = :status, DateUpdated = NOW(6), UpdatedByAID = :updatedByAID,
+                        SerialCode = :serialCode, SecurityCode = :securityCode, ValidFrom = :validFrom,
+                        ValidTo = :validTo, RedeemedPoints = :totalItemPoints
+                    WHERE CouponRedemptionLogID = :couponRedemptionLogID.
+in C:\xampp\htdocs\MPAPI\protected\models\CouponRedemptionLogsModel.php (72)
+in C:\xampp\htdocs\MPAPI\protected\components\Processing.php (87)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (2650)
+2014/08/07 14:09:25 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[42000]: Syntax error or access violation: 1142 UPDATE command denied to user 'membershipapi'@'192.168.29.203' for table 'couponredemtionlogs'. The SQL statement executed was: UPDATE couponredemtionlogs
+                    SET Status = :status, DateUpdated = NOW(6), UpdatedByAID = :updatedByAID,
+                        SerialCode = :serialCode, SecurityCode = :securityCode, ValidFrom = :validFrom,
+                        ValidTo = :validTo, RedeemedPoints = :totalItemPoints
+                    WHERE CouponRedemptionLogID = :couponRedemptionLogID
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\models\CouponRedemptionLogsModel.php (84)
+in C:\xampp\htdocs\MPAPI\protected\components\Processing.php (87)
+2014/08/07 14:09:25 [error] [application] ReturnMessage: Pending Redemption. Error in updating redemption log. ErrorCode: 56
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (2685)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/07 14:16:17 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[42000]: Syntax error or access violation: 1142 UPDATE command denied to user 'membershipapi'@'192.168.29.203' for table 'couponredemtionlogs'. The SQL statement executed was: UPDATE couponredemtionlogs
+                    SET Status = :status, DateUpdated = NOW(6), UpdatedByAID = :updatedByAID,
+                        SerialCode = :serialCode, SecurityCode = :securityCode, ValidFrom = :validFrom,
+                        ValidTo = :validTo, RedeemedPoints = :totalItemPoints
+                    WHERE CouponRedemptionLogID = :couponRedemptionLogID.
+in C:\xampp\htdocs\MPAPI\protected\models\CouponRedemptionLogsModel.php (72)
+in C:\xampp\htdocs\MPAPI\protected\components\Processing.php (87)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (2650)
+2014/08/07 14:16:17 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[42000]: Syntax error or access violation: 1142 UPDATE command denied to user 'membershipapi'@'192.168.29.203' for table 'couponredemtionlogs'. The SQL statement executed was: UPDATE couponredemtionlogs
+                    SET Status = :status, DateUpdated = NOW(6), UpdatedByAID = :updatedByAID,
+                        SerialCode = :serialCode, SecurityCode = :securityCode, ValidFrom = :validFrom,
+                        ValidTo = :validTo, RedeemedPoints = :totalItemPoints
+                    WHERE CouponRedemptionLogID = :couponRedemptionLogID
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\models\CouponRedemptionLogsModel.php (84)
+in C:\xampp\htdocs\MPAPI\protected\components\Processing.php (87)
+2014/08/07 14:16:17 [error] [application] ReturnMessage: Pending Redemption. Error in updating redemption log. ErrorCode: 56
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (2685)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/07 14:17:26 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ''3'' at line 2. The SQL statement executed was: UPDATE rafflecoupons_1 SET CouponRedemptionLogID = :couponRedemptionLogID, Status = 1, UpdatedByAID = :updatedbyaid, DateUpdated = NOW(6) 
+                                        WHERE CouponRedemptionLogID IS NULL AND Status = 0 AND RewardItemID = :rewardItemID ORDER BY CouponNumber LIMIT :quantity.
+in C:\xampp\htdocs\MPAPI\protected\models\RaffleCouponsModel.php (105)
+in C:\xampp\htdocs\MPAPI\protected\components\Processing.php (67)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (2650)
+2014/08/07 14:17:26 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ''3'' at line 2. The SQL statement executed was: UPDATE rafflecoupons_1 SET CouponRedemptionLogID = :couponRedemptionLogID, Status = 1, UpdatedByAID = :updatedbyaid, DateUpdated = NOW(6) 
+                                        WHERE CouponRedemptionLogID IS NULL AND Status = 0 AND RewardItemID = :rewardItemID ORDER BY CouponNumber LIMIT :quantity
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\models\RaffleCouponsModel.php (164)
+in C:\xampp\htdocs\MPAPI\protected\components\Processing.php (67)
+2014/08/07 14:17:26 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[42000]: Syntax error or access violation: 1142 UPDATE command denied to user 'membershipapi'@'192.168.29.203' for table 'couponredemtionlogs'. The SQL statement executed was: UPDATE couponredemtionlogs
+                    SET Status = :status, DateUpdated = NOW(6), UpdatedByAID = :updatedByAID,
+                        SerialCode = :serialCode, SecurityCode = :securityCode, ValidFrom = :validFrom,
+                        ValidTo = :validTo, RedeemedPoints = :totalItemPoints
+                    WHERE CouponRedemptionLogID = :couponRedemptionLogID.
+in C:\xampp\htdocs\MPAPI\protected\models\CouponRedemptionLogsModel.php (72)
+in C:\xampp\htdocs\MPAPI\protected\components\Processing.php (136)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (2650)
+2014/08/07 14:17:26 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[42000]: Syntax error or access violation: 1142 UPDATE command denied to user 'membershipapi'@'192.168.29.203' for table 'couponredemtionlogs'. The SQL statement executed was: UPDATE couponredemtionlogs
+                    SET Status = :status, DateUpdated = NOW(6), UpdatedByAID = :updatedByAID,
+                        SerialCode = :serialCode, SecurityCode = :securityCode, ValidFrom = :validFrom,
+                        ValidTo = :validTo, RedeemedPoints = :totalItemPoints
+                    WHERE CouponRedemptionLogID = :couponRedemptionLogID
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\models\CouponRedemptionLogsModel.php (84)
+in C:\xampp\htdocs\MPAPI\protected\components\Processing.php (136)
+2014/08/07 14:17:26 [error] [application] ReturnMessage:  ErrorCode: 56
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (2685)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/07 14:21:54 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ''3'' at line 2. The SQL statement executed was: UPDATE rafflecoupons_1 SET CouponRedemptionLogID = :couponRedemptionLogID, Status = 1, UpdatedByAID = :updatedbyaid, DateUpdated = NOW(6) 
+                                        WHERE CouponRedemptionLogID IS NULL AND Status = 0 AND RewardItemID = :rewardItemID ORDER BY CouponNumber ASC LIMIT :quantity.
+in C:\xampp\htdocs\MPAPI\protected\models\RaffleCouponsModel.php (105)
+in C:\xampp\htdocs\MPAPI\protected\components\Processing.php (67)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (2650)
+2014/08/07 14:21:54 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ''3'' at line 2. The SQL statement executed was: UPDATE rafflecoupons_1 SET CouponRedemptionLogID = :couponRedemptionLogID, Status = 1, UpdatedByAID = :updatedbyaid, DateUpdated = NOW(6) 
+                                        WHERE CouponRedemptionLogID IS NULL AND Status = 0 AND RewardItemID = :rewardItemID ORDER BY CouponNumber ASC LIMIT :quantity
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\models\RaffleCouponsModel.php (164)
+in C:\xampp\htdocs\MPAPI\protected\components\Processing.php (67)
+2014/08/07 14:21:54 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[42000]: Syntax error or access violation: 1142 UPDATE command denied to user 'membershipapi'@'192.168.29.203' for table 'couponredemtionlogs'. The SQL statement executed was: UPDATE couponredemtionlogs
+                    SET Status = :status, DateUpdated = NOW(6), UpdatedByAID = :updatedByAID,
+                        SerialCode = :serialCode, SecurityCode = :securityCode, ValidFrom = :validFrom,
+                        ValidTo = :validTo, RedeemedPoints = :totalItemPoints
+                    WHERE CouponRedemptionLogID = :couponRedemptionLogID.
+in C:\xampp\htdocs\MPAPI\protected\models\CouponRedemptionLogsModel.php (72)
+in C:\xampp\htdocs\MPAPI\protected\components\Processing.php (136)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (2650)
+2014/08/07 14:21:54 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[42000]: Syntax error or access violation: 1142 UPDATE command denied to user 'membershipapi'@'192.168.29.203' for table 'couponredemtionlogs'. The SQL statement executed was: UPDATE couponredemtionlogs
+                    SET Status = :status, DateUpdated = NOW(6), UpdatedByAID = :updatedByAID,
+                        SerialCode = :serialCode, SecurityCode = :securityCode, ValidFrom = :validFrom,
+                        ValidTo = :validTo, RedeemedPoints = :totalItemPoints
+                    WHERE CouponRedemptionLogID = :couponRedemptionLogID
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\models\CouponRedemptionLogsModel.php (84)
+in C:\xampp\htdocs\MPAPI\protected\components\Processing.php (136)
+2014/08/07 14:21:54 [error] [application] ReturnMessage:  ErrorCode: 56
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (2685)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/07 14:23:35 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[42000]: Syntax error or access violation: 1142 UPDATE command denied to user 'membershipapi'@'192.168.29.203' for table 'couponredemtionlogs'. The SQL statement executed was: UPDATE couponredemtionlogs
+                    SET Status = :status, DateUpdated = NOW(6), UpdatedByAID = :updatedByAID,
+                        SerialCode = :serialCode, SecurityCode = :securityCode, ValidFrom = :validFrom,
+                        ValidTo = :validTo, RedeemedPoints = :totalItemPoints
+                    WHERE CouponRedemptionLogID = :couponRedemptionLogID.
+in C:\xampp\htdocs\MPAPI\protected\models\CouponRedemptionLogsModel.php (72)
+in C:\xampp\htdocs\MPAPI\protected\components\Processing.php (87)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (2650)
+2014/08/07 14:23:35 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[42000]: Syntax error or access violation: 1142 UPDATE command denied to user 'membershipapi'@'192.168.29.203' for table 'couponredemtionlogs'. The SQL statement executed was: UPDATE couponredemtionlogs
+                    SET Status = :status, DateUpdated = NOW(6), UpdatedByAID = :updatedByAID,
+                        SerialCode = :serialCode, SecurityCode = :securityCode, ValidFrom = :validFrom,
+                        ValidTo = :validTo, RedeemedPoints = :totalItemPoints
+                    WHERE CouponRedemptionLogID = :couponRedemptionLogID
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\models\CouponRedemptionLogsModel.php (84)
+in C:\xampp\htdocs\MPAPI\protected\components\Processing.php (87)
+2014/08/07 14:23:35 [error] [application] ReturnMessage: Pending Redemption. Error in updating redemption log. ErrorCode: 56
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (2685)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/07 14:24:53 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[42000]: Syntax error or access violation: 1142 UPDATE command denied to user 'membershipapi'@'192.168.29.203' for table 'couponredemtionlogs'. The SQL statement executed was: UPDATE couponredemtionlogs
+                    SET Status = :status, DateUpdated = NOW(6), UpdatedByAID = :updatedByAID,
+                        SerialCode = :serialCode, SecurityCode = :securityCode, ValidFrom = :validFrom,
+                        ValidTo = :validTo, RedeemedPoints = :totalItemPoints
+                    WHERE CouponRedemptionLogID = :couponRedemptionLogID.
+in C:\xampp\htdocs\MPAPI\protected\models\CouponRedemptionLogsModel.php (72)
+in C:\xampp\htdocs\MPAPI\protected\components\Processing.php (87)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (2650)
+2014/08/07 14:24:53 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[42000]: Syntax error or access violation: 1142 UPDATE command denied to user 'membershipapi'@'192.168.29.203' for table 'couponredemtionlogs'. The SQL statement executed was: UPDATE couponredemtionlogs
+                    SET Status = :status, DateUpdated = NOW(6), UpdatedByAID = :updatedByAID,
+                        SerialCode = :serialCode, SecurityCode = :securityCode, ValidFrom = :validFrom,
+                        ValidTo = :validTo, RedeemedPoints = :totalItemPoints
+                    WHERE CouponRedemptionLogID = :couponRedemptionLogID
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\models\CouponRedemptionLogsModel.php (84)
+in C:\xampp\htdocs\MPAPI\protected\components\Processing.php (87)
+2014/08/07 14:24:53 [error] [application] ReturnMessage: Pending Redemption. Error in updating redemption log. ErrorCode: 56
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (2685)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/07 14:25:29 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[42000]: Syntax error or access violation: 1142 UPDATE command denied to user 'membershipapi'@'192.168.29.203' for table 'couponredemtionlogs'. The SQL statement executed was: UPDATE couponredemtionlogs
+                    SET Status = :status, DateUpdated = NOW(6), UpdatedByAID = :updatedByAID,
+                        SerialCode = :serialCode, SecurityCode = :securityCode, ValidFrom = :validFrom,
+                        ValidTo = :validTo, RedeemedPoints = :totalItemPoints
+                    WHERE CouponRedemptionLogID = :couponRedemptionLogID.
+in C:\xampp\htdocs\MPAPI\protected\models\CouponRedemptionLogsModel.php (72)
+in C:\xampp\htdocs\MPAPI\protected\components\Processing.php (87)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (2650)
+2014/08/07 14:25:29 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[42000]: Syntax error or access violation: 1142 UPDATE command denied to user 'membershipapi'@'192.168.29.203' for table 'couponredemtionlogs'. The SQL statement executed was: UPDATE couponredemtionlogs
+                    SET Status = :status, DateUpdated = NOW(6), UpdatedByAID = :updatedByAID,
+                        SerialCode = :serialCode, SecurityCode = :securityCode, ValidFrom = :validFrom,
+                        ValidTo = :validTo, RedeemedPoints = :totalItemPoints
+                    WHERE CouponRedemptionLogID = :couponRedemptionLogID
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\models\CouponRedemptionLogsModel.php (84)
+in C:\xampp\htdocs\MPAPI\protected\components\Processing.php (87)
+2014/08/07 14:25:29 [error] [application] ReturnMessage: Pending Redemption. Error in updating redemption log. ErrorCode: 56
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (2685)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/07 14:26:10 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[42000]: Syntax error or access violation: 1327 Undeclared variable: $quantity. The SQL statement executed was: UPDATE rafflecoupons_1 SET CouponRedemptionLogID = :couponRedemptionLogID, Status = 1, UpdatedByAID = :updatedbyaid, DateUpdated = NOW(6) 
+                                        WHERE CouponRedemptionLogID IS NULL AND Status = 0 AND RewardItemID = :rewardItemID ORDER BY CouponNumber ASC LIMIT $quantity.
+in C:\xampp\htdocs\MPAPI\protected\models\RaffleCouponsModel.php (106)
+in C:\xampp\htdocs\MPAPI\protected\components\Processing.php (67)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (2650)
+2014/08/07 14:26:10 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[42000]: Syntax error or access violation: 1327 Undeclared variable: $quantity. The SQL statement executed was: UPDATE rafflecoupons_1 SET CouponRedemptionLogID = :couponRedemptionLogID, Status = 1, UpdatedByAID = :updatedbyaid, DateUpdated = NOW(6) 
+                                        WHERE CouponRedemptionLogID IS NULL AND Status = 0 AND RewardItemID = :rewardItemID ORDER BY CouponNumber ASC LIMIT $quantity
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\models\RaffleCouponsModel.php (165)
+in C:\xampp\htdocs\MPAPI\protected\components\Processing.php (67)
+2014/08/07 14:26:10 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[42000]: Syntax error or access violation: 1142 UPDATE command denied to user 'membershipapi'@'192.168.29.203' for table 'couponredemtionlogs'. The SQL statement executed was: UPDATE couponredemtionlogs
+                    SET Status = :status, DateUpdated = NOW(6), UpdatedByAID = :updatedByAID,
+                        SerialCode = :serialCode, SecurityCode = :securityCode, ValidFrom = :validFrom,
+                        ValidTo = :validTo, RedeemedPoints = :totalItemPoints
+                    WHERE CouponRedemptionLogID = :couponRedemptionLogID.
+in C:\xampp\htdocs\MPAPI\protected\models\CouponRedemptionLogsModel.php (72)
+in C:\xampp\htdocs\MPAPI\protected\components\Processing.php (136)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (2650)
+2014/08/07 14:26:10 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[42000]: Syntax error or access violation: 1142 UPDATE command denied to user 'membershipapi'@'192.168.29.203' for table 'couponredemtionlogs'. The SQL statement executed was: UPDATE couponredemtionlogs
+                    SET Status = :status, DateUpdated = NOW(6), UpdatedByAID = :updatedByAID,
+                        SerialCode = :serialCode, SecurityCode = :securityCode, ValidFrom = :validFrom,
+                        ValidTo = :validTo, RedeemedPoints = :totalItemPoints
+                    WHERE CouponRedemptionLogID = :couponRedemptionLogID
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\models\CouponRedemptionLogsModel.php (84)
+in C:\xampp\htdocs\MPAPI\protected\components\Processing.php (136)
+2014/08/07 14:26:10 [error] [application] ReturnMessage:  ErrorCode: 56
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (2685)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/07 14:26:34 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[42000]: Syntax error or access violation: 1142 UPDATE command denied to user 'membershipapi'@'192.168.29.203' for table 'couponredemtionlogs'. The SQL statement executed was: UPDATE couponredemtionlogs
+                    SET Status = :status, DateUpdated = NOW(6), UpdatedByAID = :updatedByAID,
+                        SerialCode = :serialCode, SecurityCode = :securityCode, ValidFrom = :validFrom,
+                        ValidTo = :validTo, RedeemedPoints = :totalItemPoints
+                    WHERE CouponRedemptionLogID = :couponRedemptionLogID.
+in C:\xampp\htdocs\MPAPI\protected\models\CouponRedemptionLogsModel.php (72)
+in C:\xampp\htdocs\MPAPI\protected\components\Processing.php (87)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (2650)
+2014/08/07 14:26:34 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[42000]: Syntax error or access violation: 1142 UPDATE command denied to user 'membershipapi'@'192.168.29.203' for table 'couponredemtionlogs'. The SQL statement executed was: UPDATE couponredemtionlogs
+                    SET Status = :status, DateUpdated = NOW(6), UpdatedByAID = :updatedByAID,
+                        SerialCode = :serialCode, SecurityCode = :securityCode, ValidFrom = :validFrom,
+                        ValidTo = :validTo, RedeemedPoints = :totalItemPoints
+                    WHERE CouponRedemptionLogID = :couponRedemptionLogID
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\models\CouponRedemptionLogsModel.php (84)
+in C:\xampp\htdocs\MPAPI\protected\components\Processing.php (87)
+2014/08/07 14:26:34 [error] [application] ReturnMessage: Pending Redemption. Error in updating redemption log. ErrorCode: 56
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (2685)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/07 14:33:53 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[42000]: Syntax error or access violation: 1142 UPDATE command denied to user 'membershipapi'@'192.168.29.203' for table 'couponredemtionlogs'. The SQL statement executed was: UPDATE couponredemtionlogs
+                    SET Status = :status, DateUpdated = NOW(6), UpdatedByAID = :updatedByAID,
+                        SerialCode = :serialCode, SecurityCode = :securityCode, ValidFrom = :validFrom,
+                        ValidTo = :validTo, RedeemedPoints = :totalItemPoints
+                    WHERE CouponRedemptionLogID = :couponRedemptionLogID.
+in C:\xampp\htdocs\MPAPI\protected\models\CouponRedemptionLogsModel.php (72)
+in C:\xampp\htdocs\MPAPI\protected\components\Processing.php (87)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (2650)
+2014/08/07 14:33:53 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[42000]: Syntax error or access violation: 1142 UPDATE command denied to user 'membershipapi'@'192.168.29.203' for table 'couponredemtionlogs'. The SQL statement executed was: UPDATE couponredemtionlogs
+                    SET Status = :status, DateUpdated = NOW(6), UpdatedByAID = :updatedByAID,
+                        SerialCode = :serialCode, SecurityCode = :securityCode, ValidFrom = :validFrom,
+                        ValidTo = :validTo, RedeemedPoints = :totalItemPoints
+                    WHERE CouponRedemptionLogID = :couponRedemptionLogID
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\models\CouponRedemptionLogsModel.php (84)
+in C:\xampp\htdocs\MPAPI\protected\components\Processing.php (87)
+2014/08/07 14:33:53 [error] [application] ReturnMessage: Pending Redemption. Error in updating redemption log. ErrorCode: 56
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (2685)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/07 14:41:52 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[42000]: Syntax error or access violation: 1142 UPDATE command denied to user 'membershipapi'@'192.168.29.203' for table 'couponredemtionlogs'. The SQL statement executed was: UPDATE couponredemtionlogs
+                    SET Status = :status, DateUpdated = NOW(6), UpdatedByAID = :updatedByAID,
+                        SerialCode = :serialCode, SecurityCode = :securityCode, ValidFrom = :validFrom,
+                        ValidTo = :validTo, RedeemedPoints = :totalItemPoints
+                    WHERE CouponRedemptionLogID = :couponRedemptionLogID.
+in C:\xampp\htdocs\MPAPI\protected\models\CouponRedemptionLogsModel.php (74)
+in C:\xampp\htdocs\MPAPI\protected\components\Processing.php (87)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (2650)
+2014/08/07 14:41:52 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[42000]: Syntax error or access violation: 1142 UPDATE command denied to user 'membershipapi'@'192.168.29.203' for table 'couponredemtionlogs'. The SQL statement executed was: UPDATE couponredemtionlogs
+                    SET Status = :status, DateUpdated = NOW(6), UpdatedByAID = :updatedByAID,
+                        SerialCode = :serialCode, SecurityCode = :securityCode, ValidFrom = :validFrom,
+                        ValidTo = :validTo, RedeemedPoints = :totalItemPoints
+                    WHERE CouponRedemptionLogID = :couponRedemptionLogID
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\models\CouponRedemptionLogsModel.php (86)
+in C:\xampp\htdocs\MPAPI\protected\components\Processing.php (87)
+2014/08/07 14:41:52 [error] [application] ReturnMessage: Pending Redemption. Error in updating redemption log. ErrorCode: 56
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (2685)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/07 14:43:37 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[42000]: Syntax error or access violation: 1142 UPDATE command denied to user 'membershipapi'@'192.168.29.203' for table 'couponredemtionlogs'. The SQL statement executed was: UPDATE couponredemtionlogs
+                    SET Status = :status, DateUpdated = NOW(6), UpdatedByAID = :updatedByAID,
+                        SerialCode = :serialCode, SecurityCode = :securityCode, ValidFrom = :validFrom,
+                        ValidTo = :validTo, RedeemedPoints = :totalItemPoints
+                    WHERE CouponRedemptionLogID = :couponRedemptionLogID.
+in C:\xampp\htdocs\MPAPI\protected\models\CouponRedemptionLogsModel.php (74)
+in C:\xampp\htdocs\MPAPI\protected\components\Processing.php (87)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (2650)
+2014/08/07 14:43:37 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[42000]: Syntax error or access violation: 1142 UPDATE command denied to user 'membershipapi'@'192.168.29.203' for table 'couponredemtionlogs'. The SQL statement executed was: UPDATE couponredemtionlogs
+                    SET Status = :status, DateUpdated = NOW(6), UpdatedByAID = :updatedByAID,
+                        SerialCode = :serialCode, SecurityCode = :securityCode, ValidFrom = :validFrom,
+                        ValidTo = :validTo, RedeemedPoints = :totalItemPoints
+                    WHERE CouponRedemptionLogID = :couponRedemptionLogID
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\models\CouponRedemptionLogsModel.php (88)
+in C:\xampp\htdocs\MPAPI\protected\components\Processing.php (87)
+2014/08/07 14:43:37 [error] [application] ReturnMessage: Pending Redemption. Error in updating redemption log. ErrorCode: 56
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (2685)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/07 14:44:10 [error] [application] ReturnMessage: Redemption successful. ErrorCode: 0
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (2692)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/07 14:50:49 [error] [application] ReturnMessage: Redemption successful. ErrorCode: 0
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (2693)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/07 16:48:07 [error] [application] ReturnMessage: MPSessionID does not exist. ErrorCode: 13
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (2365)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/07 17:12:07 [error] [application] ReturnMessage: Redemption successful. ErrorCode: 0
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (3071)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/07 17:12:34 [error] [application] ReturnMessage: Transaction failed. Serial code is unavailable. ErrorCode: 57
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (3191)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/07 17:14:28 [error] [application] ReturnMessage: Redemption successful. ErrorCode: 0
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (3071)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/07 17:15:44 [error] [application] ReturnMessage: Redemption successful. ErrorCode: 0
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (3071)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/07 17:23:31 [error] [application] ReturnMessage: Transaction failed. Number of available item is insufficient. ErrorCode: 58
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (3218)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/07 17:24:28 [error] [application] ReturnMessage: Redemption successful. ErrorCode: 0
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (3071)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/07 17:40:58 [error] [application] ReturnMessage: MPSessionID does not exist. ErrorCode: 13
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (2365)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/07 17:41:22 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (2299)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/07 17:43:40 [error] [application] ReturnMessage: Redemption successful. ErrorCode: 0
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (3071)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/07 18:05:43 [error] [application] ReturnMessage: Redemption successful. ErrorCode: 0
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (3071)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/07 18:10:41 [error] [application] ReturnMessage: Redemption successful. ErrorCode: 0
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (3071)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/07 18:12:23 [error] [application] ReturnMessage: Redemption successful. ErrorCode: 0
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (3071)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/07 18:13:59 [error] [application] ReturnMessage: Redemption successful. ErrorCode: 0
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (3071)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/07 18:14:36 [error] [application] ReturnMessage: Redemption successful. ErrorCode: 0
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (3071)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/07 18:16:00 [error] [application] ReturnMessage: Redemption successful. ErrorCode: 0
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (3071)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/07 19:53:18 [error] [application] ReturnMessage: Please input 2 for regular or 3 for vip. ErrorCode: 13
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (2127)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/07 19:55:37 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (2317)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/07 20:28:44 [error] [application] ReturnMessage: Membership Card is Invalid ErrorCode: 6
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (725)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/07 20:35:59 [error] [application] ReturnMessage: Membership Card is Invalid ErrorCode: 6
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (725)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/07 20:39:04 [error] [application] ReturnMessage: Membership Card is Invalid ErrorCode: 6
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (725)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/07 20:43:39 [error] [application] ReturnMessage: No error, transaction successful. ErrorCode: 0
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (4001)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/07 20:56:13 [error] [application] ReturnMessage: Redemption successful. ErrorCode: 0
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (3097)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/07 21:16:55 [error] [application] ReturnMessage: Redemption successful. ErrorCode: 0
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (3097)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/07 21:18:06 [error] [application] ReturnMessage: Redemption successful. ErrorCode: 0
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (3097)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/07 21:21:55 [error] [application] ReturnMessage: Redemption successful. ErrorCode: 0
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (3097)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/07 21:24:08 [error] [application] ReturnMessage: Redemption successful. ErrorCode: 0
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (3097)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/07 21:24:30 [error] [application] ReturnMessage: Redemption successful. ErrorCode: 0
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (3097)
+in C:\xampp\htdocs\MPAPI\index.php (13)

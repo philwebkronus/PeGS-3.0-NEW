@@ -1,0 +1,316 @@
+2014/08/13 09:53:51 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (313)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/13 09:54:30 [error] [application] ReturnMessage: Member not found ErrorCode: 3
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (458)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/13 09:55:36 [error] [application] ReturnMessage: Account is Invalid. ErrorCode: 38
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (211)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (338)
+2014/08/13 13:19:39 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (525)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/13 13:20:01 [error] [application] ReturnMessage: Card is Inactive. ErrorCode: 6
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (793)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/13 13:21:26 [error] [application] ReturnMessage: Card is Inactive. ErrorCode: 6
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (794)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/13 13:27:40 [error] [application] ReturnMessage: Card is Inactive. ErrorCode: 6
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (794)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/13 13:28:33 [error] [application] ReturnMessage: Card is Invalid. ErrorCode: 10
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (779)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/13 13:36:05 [error] [application] ReturnMessage: Member not found ErrorCode: 3
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (458)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/13 13:39:49 [error] [application] ReturnMessage: Invalid input. ErrorCode: 2
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (475)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/13 13:40:04 [error] [application] ReturnMessage: Invalid input. ErrorCode: 2
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (475)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/13 13:42:26 [error] [application] ReturnMessage: Invalid input. ErrorCode: 2
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (476)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/13 13:43:01 [error] [application] ReturnMessage: Invalid input. ErrorCode: 2
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (477)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/13 13:43:48 [error] [application] ReturnMessage: Member not found ErrorCode: 3
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (459)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/13 15:13:43 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (790)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/13 15:15:08 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (790)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/13 15:16:42 [error] [application] ReturnMessage: Name should not be less than 2 characters long. ErrorCode: 14
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (805)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/13 15:17:02 [error] [application] ReturnMessage: Name should not be less than 2 characters long. ErrorCode: 14
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (805)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/13 15:17:14 [error] [application] ReturnMessage: Mobile number should not be less than 9 digits long. ErrorCode: 15
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (820)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/13 15:23:24 [error] [application] ReturnMessage: Mobile number should not be less than 9 digits long. ErrorCode: 15
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (820)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/13 15:23:38 [error] [application] ReturnMessage: Password should not be less than 5 characters long. ErrorCode: 19
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (881)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/13 15:25:06 [error] [application] ReturnMessage: Password should not be less than 5 characters long. ErrorCode: 19
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (851)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/13 15:25:20 [error] [application] ReturnMessage: Invalid Email Address. ErrorCode: 5
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (896)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/13 15:26:18 [error] [application] ReturnMessage: Invalid Email Address. ErrorCode: 5
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (899)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/13 15:27:02 [error] [application] ReturnMessage: Invalid Email Address. ErrorCode: 5
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (899)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/13 15:27:46 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`membership_temp`.`memberinfo`, CONSTRAINT `FK_ref_identifications_IdentificationID` FOREIGN KEY (`IdentificationID`) REFERENCES `ref_identifications` (`IdentificationID`)). The SQL statement executed was: INSERT INTO memberinfo(MID, FirstName, MiddleName, LastName, NickName, Birthdate, Gender, Email, AlternateEmail, MobileNumber, AlternateMobileNumber, NationalityID, OccupationID, Address1, IdentificationID, IdentificationNumber, IsSmoker, DateCreated, ReferrerCode, EmailSubscription, SMSSubscription, ReferrerID)
+                        VALUES(:MID, :FirstName, :MiddleName, :LastName, :NickName, :Birthdate, :Gender, :Email, :AlternateEmail, :MobileNumber, :AlternateMobileNumber, :Nationality, :Occupation, :PermanentAddress, :IDPresented, :IDNumber, :IsSmoker, NOW(6), :ReferrerCode, :emailSubscription, :smsSubscription, :referrerID).
+in C:\xampp\htdocs\MPAPI\protected\models\MembershipTempModel.php (215)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (1074)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/13 15:27:46 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`membership_temp`.`memberinfo`, CONSTRAINT `FK_ref_identifications_IdentificationID` FOREIGN KEY (`IdentificationID`) REFERENCES `ref_identifications` (`IdentificationID`)). The SQL statement executed was: INSERT INTO memberinfo(MID, FirstName, MiddleName, LastName, NickName, Birthdate, Gender, Email, AlternateEmail, MobileNumber, AlternateMobileNumber, NationalityID, OccupationID, Address1, IdentificationID, IdentificationNumber, IsSmoker, DateCreated, ReferrerCode, EmailSubscription, SMSSubscription, ReferrerID)
+                        VALUES(:MID, :FirstName, :MiddleName, :LastName, :NickName, :Birthdate, :Gender, :Email, :AlternateEmail, :MobileNumber, :AlternateMobileNumber, :Nationality, :Occupation, :PermanentAddress, :IDPresented, :IDNumber, :IsSmoker, NOW(6), :ReferrerCode, :emailSubscription, :smsSubscription, :referrerID)
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\models\MembershipTempModel.php (239)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (1074)
+2014/08/13 15:27:47 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`membership_temp`.`memberinfo`, CONSTRAINT `FK_ref_identifications_IdentificationID` FOREIGN KEY (`IdentificationID`) REFERENCES `ref_identifications` (`IdentificationID`)). The SQL statement executed was: INSERT INTO memberinfo(MID, FirstName, MiddleName, LastName, NickName, Birthdate, Gender, Email, AlternateEmail, MobileNumber, AlternateMobileNumber, NationalityID, OccupationID, Address1, IdentificationID, IdentificationNumber, IsSmoker, DateCreated, ReferrerCode, EmailSubscription, SMSSubscription, ReferrerID)
+                        VALUES(:MID, :FirstName, :MiddleName, :LastName, :NickName, :Birthdate, :Gender, :Email, :AlternateEmail, :MobileNumber, :AlternateMobileNumber, :Nationality, :Occupation, :PermanentAddress, :IDPresented, :IDNumber, :IsSmoker, NOW(6), :ReferrerCode, :emailSubscription, :smsSubscription, :referrerID).
+in C:\xampp\htdocs\MPAPI\protected\models\MembershipTempModel.php (215)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (1260)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/13 15:27:47 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`membership_temp`.`memberinfo`, CONSTRAINT `FK_ref_identifications_IdentificationID` FOREIGN KEY (`IdentificationID`) REFERENCES `ref_identifications` (`IdentificationID`)). The SQL statement executed was: INSERT INTO memberinfo(MID, FirstName, MiddleName, LastName, NickName, Birthdate, Gender, Email, AlternateEmail, MobileNumber, AlternateMobileNumber, NationalityID, OccupationID, Address1, IdentificationID, IdentificationNumber, IsSmoker, DateCreated, ReferrerCode, EmailSubscription, SMSSubscription, ReferrerID)
+                        VALUES(:MID, :FirstName, :MiddleName, :LastName, :NickName, :Birthdate, :Gender, :Email, :AlternateEmail, :MobileNumber, :AlternateMobileNumber, :Nationality, :Occupation, :PermanentAddress, :IDPresented, :IDNumber, :IsSmoker, NOW(6), :ReferrerCode, :emailSubscription, :smsSubscription, :referrerID)
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\models\MembershipTempModel.php (239)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (1260)
+2014/08/13 15:27:47 [error] [application] ReturnMessage: Registration failed. ErrorCode: 53
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (1437)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/13 15:28:15 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`membership_temp`.`memberinfo`, CONSTRAINT `FK_ref_identifications_IdentificationID` FOREIGN KEY (`IdentificationID`) REFERENCES `ref_identifications` (`IdentificationID`)). The SQL statement executed was: INSERT INTO memberinfo(MID, FirstName, MiddleName, LastName, NickName, Birthdate, Gender, Email, AlternateEmail, MobileNumber, AlternateMobileNumber, NationalityID, OccupationID, Address1, IdentificationID, IdentificationNumber, IsSmoker, DateCreated, ReferrerCode, EmailSubscription, SMSSubscription, ReferrerID)
+                        VALUES(:MID, :FirstName, :MiddleName, :LastName, :NickName, :Birthdate, :Gender, :Email, :AlternateEmail, :MobileNumber, :AlternateMobileNumber, :Nationality, :Occupation, :PermanentAddress, :IDPresented, :IDNumber, :IsSmoker, NOW(6), :ReferrerCode, :emailSubscription, :smsSubscription, :referrerID).
+in C:\xampp\htdocs\MPAPI\protected\models\MembershipTempModel.php (215)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (1074)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/13 15:28:15 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`membership_temp`.`memberinfo`, CONSTRAINT `FK_ref_identifications_IdentificationID` FOREIGN KEY (`IdentificationID`) REFERENCES `ref_identifications` (`IdentificationID`)). The SQL statement executed was: INSERT INTO memberinfo(MID, FirstName, MiddleName, LastName, NickName, Birthdate, Gender, Email, AlternateEmail, MobileNumber, AlternateMobileNumber, NationalityID, OccupationID, Address1, IdentificationID, IdentificationNumber, IsSmoker, DateCreated, ReferrerCode, EmailSubscription, SMSSubscription, ReferrerID)
+                        VALUES(:MID, :FirstName, :MiddleName, :LastName, :NickName, :Birthdate, :Gender, :Email, :AlternateEmail, :MobileNumber, :AlternateMobileNumber, :Nationality, :Occupation, :PermanentAddress, :IDPresented, :IDNumber, :IsSmoker, NOW(6), :ReferrerCode, :emailSubscription, :smsSubscription, :referrerID)
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\models\MembershipTempModel.php (239)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (1074)
+2014/08/13 15:28:15 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`membership_temp`.`memberinfo`, CONSTRAINT `FK_ref_identifications_IdentificationID` FOREIGN KEY (`IdentificationID`) REFERENCES `ref_identifications` (`IdentificationID`)). The SQL statement executed was: INSERT INTO memberinfo(MID, FirstName, MiddleName, LastName, NickName, Birthdate, Gender, Email, AlternateEmail, MobileNumber, AlternateMobileNumber, NationalityID, OccupationID, Address1, IdentificationID, IdentificationNumber, IsSmoker, DateCreated, ReferrerCode, EmailSubscription, SMSSubscription, ReferrerID)
+                        VALUES(:MID, :FirstName, :MiddleName, :LastName, :NickName, :Birthdate, :Gender, :Email, :AlternateEmail, :MobileNumber, :AlternateMobileNumber, :Nationality, :Occupation, :PermanentAddress, :IDPresented, :IDNumber, :IsSmoker, NOW(6), :ReferrerCode, :emailSubscription, :smsSubscription, :referrerID).
+in C:\xampp\htdocs\MPAPI\protected\models\MembershipTempModel.php (215)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (1260)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/13 15:28:15 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`membership_temp`.`memberinfo`, CONSTRAINT `FK_ref_identifications_IdentificationID` FOREIGN KEY (`IdentificationID`) REFERENCES `ref_identifications` (`IdentificationID`)). The SQL statement executed was: INSERT INTO memberinfo(MID, FirstName, MiddleName, LastName, NickName, Birthdate, Gender, Email, AlternateEmail, MobileNumber, AlternateMobileNumber, NationalityID, OccupationID, Address1, IdentificationID, IdentificationNumber, IsSmoker, DateCreated, ReferrerCode, EmailSubscription, SMSSubscription, ReferrerID)
+                        VALUES(:MID, :FirstName, :MiddleName, :LastName, :NickName, :Birthdate, :Gender, :Email, :AlternateEmail, :MobileNumber, :AlternateMobileNumber, :Nationality, :Occupation, :PermanentAddress, :IDPresented, :IDNumber, :IsSmoker, NOW(6), :ReferrerCode, :emailSubscription, :smsSubscription, :referrerID)
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\models\MembershipTempModel.php (239)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (1260)
+2014/08/13 15:28:15 [error] [application] ReturnMessage: Registration failed. ErrorCode: 53
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (1437)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/13 15:29:32 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`membership_temp`.`memberinfo`, CONSTRAINT `FK_ref_identifications_IdentificationID` FOREIGN KEY (`IdentificationID`) REFERENCES `ref_identifications` (`IdentificationID`)). The SQL statement executed was: INSERT INTO memberinfo(MID, FirstName, MiddleName, LastName, NickName, Birthdate, Gender, Email, AlternateEmail, MobileNumber, AlternateMobileNumber, NationalityID, OccupationID, Address1, IdentificationID, IdentificationNumber, IsSmoker, DateCreated, ReferrerCode, EmailSubscription, SMSSubscription, ReferrerID)
+                        VALUES(:MID, :FirstName, :MiddleName, :LastName, :NickName, :Birthdate, :Gender, :Email, :AlternateEmail, :MobileNumber, :AlternateMobileNumber, :Nationality, :Occupation, :PermanentAddress, :IDPresented, :IDNumber, :IsSmoker, NOW(6), :ReferrerCode, :emailSubscription, :smsSubscription, :referrerID).
+in C:\xampp\htdocs\MPAPI\protected\models\MembershipTempModel.php (216)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (1074)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/13 15:29:32 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`membership_temp`.`memberinfo`, CONSTRAINT `FK_ref_identifications_IdentificationID` FOREIGN KEY (`IdentificationID`) REFERENCES `ref_identifications` (`IdentificationID`)). The SQL statement executed was: INSERT INTO memberinfo(MID, FirstName, MiddleName, LastName, NickName, Birthdate, Gender, Email, AlternateEmail, MobileNumber, AlternateMobileNumber, NationalityID, OccupationID, Address1, IdentificationID, IdentificationNumber, IsSmoker, DateCreated, ReferrerCode, EmailSubscription, SMSSubscription, ReferrerID)
+                        VALUES(:MID, :FirstName, :MiddleName, :LastName, :NickName, :Birthdate, :Gender, :Email, :AlternateEmail, :MobileNumber, :AlternateMobileNumber, :Nationality, :Occupation, :PermanentAddress, :IDPresented, :IDNumber, :IsSmoker, NOW(6), :ReferrerCode, :emailSubscription, :smsSubscription, :referrerID)
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\models\MembershipTempModel.php (240)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (1074)
+2014/08/13 15:29:32 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`membership_temp`.`memberinfo`, CONSTRAINT `FK_ref_identifications_IdentificationID` FOREIGN KEY (`IdentificationID`) REFERENCES `ref_identifications` (`IdentificationID`)). The SQL statement executed was: INSERT INTO memberinfo(MID, FirstName, MiddleName, LastName, NickName, Birthdate, Gender, Email, AlternateEmail, MobileNumber, AlternateMobileNumber, NationalityID, OccupationID, Address1, IdentificationID, IdentificationNumber, IsSmoker, DateCreated, ReferrerCode, EmailSubscription, SMSSubscription, ReferrerID)
+                        VALUES(:MID, :FirstName, :MiddleName, :LastName, :NickName, :Birthdate, :Gender, :Email, :AlternateEmail, :MobileNumber, :AlternateMobileNumber, :Nationality, :Occupation, :PermanentAddress, :IDPresented, :IDNumber, :IsSmoker, NOW(6), :ReferrerCode, :emailSubscription, :smsSubscription, :referrerID).
+in C:\xampp\htdocs\MPAPI\protected\models\MembershipTempModel.php (216)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (1260)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/13 15:29:32 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`membership_temp`.`memberinfo`, CONSTRAINT `FK_ref_identifications_IdentificationID` FOREIGN KEY (`IdentificationID`) REFERENCES `ref_identifications` (`IdentificationID`)). The SQL statement executed was: INSERT INTO memberinfo(MID, FirstName, MiddleName, LastName, NickName, Birthdate, Gender, Email, AlternateEmail, MobileNumber, AlternateMobileNumber, NationalityID, OccupationID, Address1, IdentificationID, IdentificationNumber, IsSmoker, DateCreated, ReferrerCode, EmailSubscription, SMSSubscription, ReferrerID)
+                        VALUES(:MID, :FirstName, :MiddleName, :LastName, :NickName, :Birthdate, :Gender, :Email, :AlternateEmail, :MobileNumber, :AlternateMobileNumber, :Nationality, :Occupation, :PermanentAddress, :IDPresented, :IDNumber, :IsSmoker, NOW(6), :ReferrerCode, :emailSubscription, :smsSubscription, :referrerID)
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\models\MembershipTempModel.php (240)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (1260)
+2014/08/13 15:29:32 [error] [application] ReturnMessage: Registration failed. ErrorCode: 53
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (1437)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/13 15:32:38 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`membership_temp`.`memberinfo`, CONSTRAINT `FK_ref_identifications_IdentificationID` FOREIGN KEY (`IdentificationID`) REFERENCES `ref_identifications` (`IdentificationID`)). The SQL statement executed was: INSERT INTO memberinfo(MID, FirstName, MiddleName, LastName, NickName, Birthdate, Gender, Email, AlternateEmail, MobileNumber, AlternateMobileNumber, NationalityID, OccupationID, Address1, IdentificationID, IdentificationNumber, IsSmoker, DateCreated, ReferrerCode, EmailSubscription, SMSSubscription, ReferrerID)
+                        VALUES(:MID, :FirstName, :MiddleName, :LastName, :NickName, :Birthdate, :Gender, :Email, :AlternateEmail, :MobileNumber, :AlternateMobileNumber, :Nationality, :Occupation, :PermanentAddress, :IDPresented, :IDNumber, :IsSmoker, NOW(6), :ReferrerCode, :emailSubscription, :smsSubscription, :referrerID).
+in C:\xampp\htdocs\MPAPI\protected\models\MembershipTempModel.php (216)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (1076)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/13 15:32:38 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`membership_temp`.`memberinfo`, CONSTRAINT `FK_ref_identifications_IdentificationID` FOREIGN KEY (`IdentificationID`) REFERENCES `ref_identifications` (`IdentificationID`)). The SQL statement executed was: INSERT INTO memberinfo(MID, FirstName, MiddleName, LastName, NickName, Birthdate, Gender, Email, AlternateEmail, MobileNumber, AlternateMobileNumber, NationalityID, OccupationID, Address1, IdentificationID, IdentificationNumber, IsSmoker, DateCreated, ReferrerCode, EmailSubscription, SMSSubscription, ReferrerID)
+                        VALUES(:MID, :FirstName, :MiddleName, :LastName, :NickName, :Birthdate, :Gender, :Email, :AlternateEmail, :MobileNumber, :AlternateMobileNumber, :Nationality, :Occupation, :PermanentAddress, :IDPresented, :IDNumber, :IsSmoker, NOW(6), :ReferrerCode, :emailSubscription, :smsSubscription, :referrerID)
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\models\MembershipTempModel.php (240)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (1076)
+2014/08/13 15:32:38 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`membership_temp`.`memberinfo`, CONSTRAINT `FK_ref_identifications_IdentificationID` FOREIGN KEY (`IdentificationID`) REFERENCES `ref_identifications` (`IdentificationID`)). The SQL statement executed was: INSERT INTO memberinfo(MID, FirstName, MiddleName, LastName, NickName, Birthdate, Gender, Email, AlternateEmail, MobileNumber, AlternateMobileNumber, NationalityID, OccupationID, Address1, IdentificationID, IdentificationNumber, IsSmoker, DateCreated, ReferrerCode, EmailSubscription, SMSSubscription, ReferrerID)
+                        VALUES(:MID, :FirstName, :MiddleName, :LastName, :NickName, :Birthdate, :Gender, :Email, :AlternateEmail, :MobileNumber, :AlternateMobileNumber, :Nationality, :Occupation, :PermanentAddress, :IDPresented, :IDNumber, :IsSmoker, NOW(6), :ReferrerCode, :emailSubscription, :smsSubscription, :referrerID).
+in C:\xampp\htdocs\MPAPI\protected\models\MembershipTempModel.php (216)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (1262)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/13 15:32:38 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`membership_temp`.`memberinfo`, CONSTRAINT `FK_ref_identifications_IdentificationID` FOREIGN KEY (`IdentificationID`) REFERENCES `ref_identifications` (`IdentificationID`)). The SQL statement executed was: INSERT INTO memberinfo(MID, FirstName, MiddleName, LastName, NickName, Birthdate, Gender, Email, AlternateEmail, MobileNumber, AlternateMobileNumber, NationalityID, OccupationID, Address1, IdentificationID, IdentificationNumber, IsSmoker, DateCreated, ReferrerCode, EmailSubscription, SMSSubscription, ReferrerID)
+                        VALUES(:MID, :FirstName, :MiddleName, :LastName, :NickName, :Birthdate, :Gender, :Email, :AlternateEmail, :MobileNumber, :AlternateMobileNumber, :Nationality, :Occupation, :PermanentAddress, :IDPresented, :IDNumber, :IsSmoker, NOW(6), :ReferrerCode, :emailSubscription, :smsSubscription, :referrerID)
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\models\MembershipTempModel.php (240)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (1262)
+2014/08/13 15:32:38 [error] [application] ReturnMessage: Registration failed. ErrorCode: 53
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (1439)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/13 15:33:32 [error] [application] ReturnMessage: Mobile number should consist of numbers only. ErrorCode: 16
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (885)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/13 15:34:03 [error] [application] ReturnMessage: Password and ID Number should consist of letters and numbers only. ErrorCode: 18
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (839)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/13 15:37:21 [error] [application] ReturnMessage: Password and ID Number should consist of letters and numbers only. ErrorCode: 18
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (839)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/13 15:37:33 [error] [application] ReturnMessage: Mobile number should consist of numbers only. ErrorCode: 16
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (884)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/13 15:37:48 [error] [application] ReturnMessage: Mobile number should not be less than 9 digits long. ErrorCode: 15
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (869)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/13 15:47:19 [error] [application] ReturnMessage: Invalid input. ErrorCode: 2
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (884)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/13 15:48:16 [error] [application] ReturnMessage: Invalid input. ErrorCode: 2
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (884)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/13 15:50:06 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (793)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/13 15:50:15 [error] [application] ReturnMessage: Invalid input. ErrorCode: 2
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (884)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/13 15:51:18 [error] [application] ReturnMessage: Mobile number should not be less than 9 digits long. ErrorCode: 15
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (868)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/13 15:51:25 [error] [application] ReturnMessage: Mobile number should not be less than 9 digits long. ErrorCode: 15
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (868)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/13 15:51:50 [error] [application] ReturnMessage: Invalid input. ErrorCode: 2
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (883)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/13 15:52:39 [error] [application] ReturnMessage: Invalid input. ErrorCode: 2
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (883)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/13 15:53:38 [error] [application] ReturnMessage: Invalid input. ErrorCode: 2
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (883)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/13 15:55:36 [error] [application] ReturnMessage: Invalid input. ErrorCode: 2
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (884)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/13 15:56:11 [error] [application] ReturnMessage: Invalid input. ErrorCode: 2
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (884)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/13 15:56:25 [error] [application] ReturnMessage: Invalid input. ErrorCode: 2
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (884)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/13 15:57:24 [error] [application] ReturnMessage: Mobile number should consist of numbers only. ErrorCode: 16
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (899)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/13 15:57:49 [error] [application] ReturnMessage: Invalid input. ErrorCode: 2
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (929)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/13 16:01:28 [error] [application] ReturnMessage: Invalid input. ErrorCode: 2
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (929)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/13 16:01:40 [error] [application] ReturnMessage: Invalid input. ErrorCode: 2
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (929)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/13 16:13:39 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (790)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/13 16:15:02 [error] [application] ReturnMessage: Invalid Email Address. ErrorCode: 5
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (911)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/13 16:15:16 [error] [application] ReturnMessage: Invalid input. ErrorCode: 2
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (926)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/13 16:17:37 [error] [application] ReturnMessage: Invalid input. ErrorCode: 2
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (941)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/13 16:19:34 [error] [application] ReturnMessage: Password and ID Number should consist of letters and numbers only. ErrorCode: 18
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (836)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/13 16:21:10 [error] [application] ReturnMessage: Invalid input. ErrorCode: 2
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (956)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/13 16:32:06 [error] [application] ReturnMessage: Invalid input. ErrorCode: 2
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (956)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/13 17:42:51 [error] [application] ReturnMessage: Please input a valid Date. ErrorCode: 80
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (971)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/08/13 17:56:32 [error] [application] ReturnMessage: Please input a valid Date. ErrorCode: 80
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (971)
+in C:\xampp\htdocs\MPAPI\index.php (13)

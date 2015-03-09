@@ -1,0 +1,206 @@
+2014/07/22 04:00:31 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (270)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/07/22 04:01:29 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (270)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/07/22 04:01:55 [error] [application] ReturnMessage: Invalid input. ErrorCode: 2
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (423)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/07/22 04:01:55 [error] [application] ReturnMessage: Failed to insert to APILogs. ErrorCode: 51
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (431)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/07/22 05:22:58 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (270)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/07/22 05:51:54 [error] [application] ReturnMessage: Invalid input. ErrorCode: 2
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (391)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/07/22 05:58:30 [error] [application] ReturnMessage: Invalid input. ErrorCode: 2
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (391)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/07/22 07:24:24 [error] [application] ReturnMessage: Invalid input. ErrorCode: 2
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (391)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/07/22 07:45:27 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (742)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/07/22 07:48:15 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (742)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/07/22 07:48:30 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (742)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/07/22 07:52:55 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (742)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/07/22 08:14:08 [error] [application] ReturnMessage: Incorrect Password. ErrorCode: 32
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (64)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (273)
+2014/07/22 08:14:08 [error] [application] ReturnMessage: Member not found ErrorCode: 3
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (374)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/07/22 08:15:36 [error] [application] ReturnMessage: Member not found ErrorCode: 3
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (374)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/07/22 08:16:13 [error] [application] ReturnMessage: Invalid input. ErrorCode: 2
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (391)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/07/22 08:16:24 [error] [application] ReturnMessage: Member not found ErrorCode: 3
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (374)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/07/22 08:17:05 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (742)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/07/22 08:17:17 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'AID' in 'field list'. The SQL statement executed was: INSERT INTO audittrail(SessionID, AID, TransDetails, TransDateTime, RemoteIP, AuditTrailFunctionID)
+                    VALUES(:SessionID, :AID, :TransDetails, NOW(6), :RemoteIP, :AuditTrailFunctionID).
+in C:\xampp\htdocs\MPAPI\protected\models\AuditTrailModel.php (99)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (316)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/07/22 08:17:17 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'AID' in 'field list'. The SQL statement executed was: INSERT INTO audittrail(SessionID, AID, TransDetails, TransDateTime, RemoteIP, AuditTrailFunctionID)
+                    VALUES(:SessionID, :AID, :TransDetails, NOW(6), :RemoteIP, :AuditTrailFunctionID)
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\models\AuditTrailModel.php (112)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (316)
+2014/07/22 08:17:17 [error] [application] ReturnMessage: Failed to log event on Audit Trail. ErrorCode: 25
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (320)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/07/22 08:17:32 [error] [application] ReturnMessage: Member not found ErrorCode: 3
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (374)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/07/22 08:17:51 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'AID' in 'field list'. The SQL statement executed was: INSERT INTO audittrail(SessionID, AID, TransDetails, TransDateTime, RemoteIP, AuditTrailFunctionID)
+                    VALUES(:SessionID, :AID, :TransDetails, NOW(6), :RemoteIP, :AuditTrailFunctionID).
+in C:\xampp\htdocs\MPAPI\protected\models\AuditTrailModel.php (99)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (316)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/07/22 08:17:51 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'AID' in 'field list'. The SQL statement executed was: INSERT INTO audittrail(SessionID, AID, TransDetails, TransDateTime, RemoteIP, AuditTrailFunctionID)
+                    VALUES(:SessionID, :AID, :TransDetails, NOW(6), :RemoteIP, :AuditTrailFunctionID)
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\models\AuditTrailModel.php (112)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (316)
+2014/07/22 08:17:51 [error] [application] ReturnMessage: Failed to log event on Audit Trail. ErrorCode: 25
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (320)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/07/22 08:22:30 [error] [application] ReturnMessage: Member not found ErrorCode: 3
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (374)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/07/22 08:23:07 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (742)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/07/22 08:23:16 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (742)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/07/22 08:23:31 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (742)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/07/22 08:23:49 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (742)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/07/22 08:23:59 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'AID' in 'field list'. The SQL statement executed was: INSERT INTO audittrail(SessionID, AID, TransDetails, TransDateTime, RemoteIP, AuditTrailFunctionID)
+                    VALUES(:SessionID, :AID, :TransDetails, NOW(6), :RemoteIP, :AuditTrailFunctionID).
+in C:\xampp\htdocs\MPAPI\protected\models\AuditTrailModel.php (99)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (316)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/07/22 08:23:59 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'AID' in 'field list'. The SQL statement executed was: INSERT INTO audittrail(SessionID, AID, TransDetails, TransDateTime, RemoteIP, AuditTrailFunctionID)
+                    VALUES(:SessionID, :AID, :TransDetails, NOW(6), :RemoteIP, :AuditTrailFunctionID)
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\models\AuditTrailModel.php (112)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (316)
+2014/07/22 08:23:59 [error] [application] ReturnMessage: Failed to log event on Audit Trail. ErrorCode: 25
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (320)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/07/22 08:24:17 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (742)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/07/22 08:24:27 [error] [application] ReturnMessage: Account is Invalid. ErrorCode: 38
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (176)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (273)
+2014/07/22 12:47:00 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (248)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/07/22 12:48:24 [error] [application] ReturnMessage: Invalid input. ErrorCode: 2
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (391)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/07/22 12:48:55 [error] [application] ReturnMessage: Member not found ErrorCode: 3
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (374)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/07/22 12:57:48 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'AID' in 'field list'. The SQL statement executed was: INSERT INTO audittrail(SessionID, AID, TransDetails, TransDateTime, RemoteIP, AuditTrailFunctionID)
+                    VALUES(:SessionID, :AID, :TransDetails, NOW(6), :RemoteIP, :AuditTrailFunctionID).
+in C:\xampp\htdocs\MPAPI\protected\models\AuditTrailModel.php (101)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (316)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/07/22 12:57:48 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'AID' in 'field list'. The SQL statement executed was: INSERT INTO audittrail(SessionID, AID, TransDetails, TransDateTime, RemoteIP, AuditTrailFunctionID)
+                    VALUES(:SessionID, :AID, :TransDetails, NOW(6), :RemoteIP, :AuditTrailFunctionID)
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\models\AuditTrailModel.php (114)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (316)
+2014/07/22 12:57:48 [error] [application] ReturnMessage: Failed to log event on Audit Trail. ErrorCode: 25
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (320)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/07/22 12:59:46 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'AID' in 'field list'. The SQL statement executed was: INSERT INTO audittrail(SessionID, AID, TransDetails, TransDateTime, RemoteIP, AuditTrailFunctionID)
+                    VALUES(:SessionID, :AID, :TransDetails, NOW(6), :RemoteIP, :AuditTrailFunctionID).
+in C:\xampp\htdocs\MPAPI\protected\models\AuditTrailModel.php (101)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (316)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/07/22 12:59:46 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'AID' in 'field list'. The SQL statement executed was: INSERT INTO audittrail(SessionID, AID, TransDetails, TransDateTime, RemoteIP, AuditTrailFunctionID)
+                    VALUES(:SessionID, :AID, :TransDetails, NOW(6), :RemoteIP, :AuditTrailFunctionID)
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\models\AuditTrailModel.php (114)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (316)
+2014/07/22 12:59:46 [error] [application] ReturnMessage: Failed to log event on Audit Trail. ErrorCode: 25
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (320)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/07/22 13:16:20 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (742)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/07/22 13:16:52 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (742)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/07/22 13:17:47 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (1261)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/07/22 13:20:23 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (742)
+in C:\xampp\htdocs\MPAPI\index.php (13)
+2014/07/22 13:31:33 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\MPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\MPAPI\protected\controllers\MPapiController.php (1261)
+in C:\xampp\htdocs\MPAPI\index.php (13)

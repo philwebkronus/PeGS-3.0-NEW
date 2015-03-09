@@ -1,0 +1,119 @@
+[07-Aug-2014 09:48:58]  [LOGIN SUCCESS] Login successful.
+[07-Aug-2014 10:17:03]  [REDEEMITEMS ERROR] MPSessionID does not exist.
+[07-Aug-2014 10:17:11]  [LOGIN SUCCESS] Login successful.
+[07-Aug-2014 10:17:22]  [REDEEMITEMS ERROR] MPSessionID does not exist.
+[07-Aug-2014 10:17:36]  [REDEEMITEMS ERROR] Transaction failed. Serial code is unavailable.
+[07-Aug-2014 10:18:09]  [REDEEMITEMS SUCCESS] CP: 31,173, Item: Sample Brownies, RP: 15
+[07-Aug-2014 10:18:09]  [REDEEMITEMS SUCCESS] Redemption successful.
+[07-Aug-2014 11:32:36]  [FORGOTPASSWORD ERROR] Membership Card is Invalid
+[07-Aug-2014 11:51:13]  [LOGIN SUCCESS] Login successful.
+[07-Aug-2014 11:51:57]  [LOGIN SUCCESS] Login successful.
+[07-Aug-2014 11:52:07]  [REDEEMITEMS ERROR] Transaction failed. Serial code is unavailable.
+[07-Aug-2014 11:54:32]  [REDEEMITEMS SUCCESS] CP: 31,158, Item: Sample Brownies, RP: 15
+[07-Aug-2014 11:54:32]  [REDEEMITEMS SUCCESS] Redemption successful.
+[07-Aug-2014 13:20:25]  [LOGIN SUCCESS] Login successful.
+[07-Aug-2014 13:20:45] [COUPON REDEMPTION ERROR] Pending Redemption. Error in updating redemption log.
+[07-Aug-2014 13:20:45]  [REDEEMITEMS ERROR] Transaction failed.
+[07-Aug-2014 13:27:10]  [REDEEMITEMS ERROR] Transaction failed. Card has a pending redemption.
+[07-Aug-2014 13:31:23]  [REDEEMITEMS ERROR] Transaction failed. Card has a pending redemption.
+[07-Aug-2014 13:32:18]  [REDEEMITEMS ERROR] Transaction failed. Card has a pending redemption.
+[07-Aug-2014 13:38:56]  [REDEEMITEMS ERROR] Transaction failed. Card has a pending redemption.
+[07-Aug-2014 13:38:56]  [REDEEMITEMS ERROR] Transaction failed. Card has a pending redemption.
+[07-Aug-2014 13:40:55] [COUPON REDEMPTION ERROR] Pending Redemption. Error in updating redemption log.
+[07-Aug-2014 13:40:55]  [REDEEMITEMS ERROR] Transaction failed.
+[07-Aug-2014 13:46:31] [COUPON REDEMPTION ERROR] Pending Redemption. Error in updating redemption log.
+[07-Aug-2014 13:46:31]  [REDEEMITEMS ERROR] Transaction failed.
+[07-Aug-2014 13:48:40] [COUPON REDEMPTION ERROR] Pending Redemption. Error in updating redemption log.
+[07-Aug-2014 13:48:40]  [REDEEMITEMS ERROR] Transaction failed.
+[07-Aug-2014 13:54:42] [COUPON REDEMPTION ERROR] Pending Redemption. Error in updating redemption log.
+[07-Aug-2014 13:54:42]  [REDEEMITEMS ERROR] Transaction failed.
+[07-Aug-2014 13:56:04] [COUPON REDEMPTION ERROR] Pending Redemption. Error in updating redemption log.
+[07-Aug-2014 13:56:04]  [REDEEMITEMS ERROR] Transaction failed.
+[07-Aug-2014 13:56:23] [COUPON REDEMPTION ERROR] Pending Redemption. Error in updating redemption log.
+[07-Aug-2014 13:56:23]  [REDEEMITEMS ERROR] Transaction failed.
+[07-Aug-2014 13:58:44] [COUPON REDEMPTION ERROR] Pending Redemption. Error in updating redemption log.
+[07-Aug-2014 13:58:44]  [REDEEMITEMS ERROR] Transaction failed.
+[07-Aug-2014 14:00:22] [COUPON REDEMPTION ERROR] Pending Redemption. Error in updating redemption log.
+[07-Aug-2014 14:00:22]  [REDEEMITEMS ERROR] Transaction failed.
+[07-Aug-2014 14:09:25] [COUPON REDEMPTION ERROR] Pending Redemption. Error in updating redemption log.
+[07-Aug-2014 14:09:25]  [REDEEMITEMS ERROR] Transaction failed.
+[07-Aug-2014 14:16:17] [COUPON REDEMPTION ERROR] Pending Redemption. Error in updating redemption log.
+[07-Aug-2014 14:16:17]  [REDEEMITEMS ERROR] Transaction failed.
+[07-Aug-2014 14:17:26] [COUPON REDEMPTION ERROR] 
+[07-Aug-2014 14:17:26]  [REDEEMITEMS ERROR] Transaction failed.
+[07-Aug-2014 14:21:54] [COUPON REDEMPTION ERROR] 
+[07-Aug-2014 14:21:54]  [REDEEMITEMS ERROR] Transaction failed.
+[07-Aug-2014 14:23:35] [COUPON REDEMPTION ERROR] Pending Redemption. Error in updating redemption log.
+[07-Aug-2014 14:23:35]  [REDEEMITEMS ERROR] Transaction failed.
+[07-Aug-2014 14:24:53] [COUPON REDEMPTION ERROR] Pending Redemption. Error in updating redemption log.
+[07-Aug-2014 14:24:53]  [REDEEMITEMS ERROR] Transaction failed.
+[07-Aug-2014 14:25:29] [COUPON REDEMPTION ERROR] Pending Redemption. Error in updating redemption log.
+[07-Aug-2014 14:25:29]  [REDEEMITEMS ERROR] Transaction failed.
+[07-Aug-2014 14:26:10] [COUPON REDEMPTION ERROR] 
+[07-Aug-2014 14:26:10]  [REDEEMITEMS ERROR] Transaction failed.
+[07-Aug-2014 14:26:34] [COUPON REDEMPTION ERROR] Pending Redemption. Error in updating redemption log.
+[07-Aug-2014 14:26:34]  [REDEEMITEMS ERROR] Transaction failed.
+[07-Aug-2014 14:33:53] [COUPON REDEMPTION ERROR] Pending Redemption. Error in updating redemption log.
+[07-Aug-2014 14:33:53]  [REDEEMITEMS ERROR] Transaction failed.
+[07-Aug-2014 14:41:52] [COUPON REDEMPTION ERROR] Pending Redemption. Error in updating redemption log.
+[07-Aug-2014 14:41:52]  [REDEEMITEMS ERROR] Transaction failed.
+[07-Aug-2014 14:43:37] [COUPON REDEMPTION ERROR] Pending Redemption. Error in updating redemption log.
+[07-Aug-2014 14:43:37]  [REDEEMITEMS ERROR] Transaction failed.
+[07-Aug-2014 14:44:10]  [REDEEMITEMS SUCCESS] Redemption successful.
+[07-Aug-2014 14:44:11] [COUPON REDEMPTION ERROR] Failed to send SMS [CouponRedemptionLogID:  216].
+[07-Aug-2014 14:50:49]  [REDEEMITEMS SUCCESS] Redemption successful.
+[07-Aug-2014 14:50:50] [COUPON REDEMPTION ERROR] Failed to send SMS [CouponRedemptionLogID:  217].
+[07-Aug-2014 16:26:56]  [LOGIN SUCCESS] Login successful.
+[07-Aug-2014 16:48:07]  [REDEEMITEMS ERROR] MPSessionID does not exist.
+[07-Aug-2014 17:12:07]  [REDEEMITEMS SUCCESS] CP: 27,393, Item: Sample Brownies, RP: 15
+[07-Aug-2014 17:12:07]  [REDEEMITEMS SUCCESS] Redemption successful.
+[07-Aug-2014 17:12:34]  [REDEEMITEMS ERROR] Transaction failed. Serial code is unavailable.
+[07-Aug-2014 17:14:28]  [REDEEMITEMS SUCCESS] CP: 27,378, Item: Sample Brownies, RP: 15
+[07-Aug-2014 17:14:28]  [REDEEMITEMS SUCCESS] Redemption successful.
+[07-Aug-2014 17:15:44]  [REDEEMITEMS SUCCESS] CP: 27,363, Item: Sample Brownies, RP: 15
+[07-Aug-2014 17:15:44]  [REDEEMITEMS SUCCESS] Redemption successful.
+[07-Aug-2014 17:23:31]  [REDEEMITEMS ERROR] Transaction failed. Number of available item is insufficient.
+[07-Aug-2014 17:24:28]  [REDEEMITEMS SUCCESS] CP: 27,348, Item: Sample Brownies, RP: 15
+[07-Aug-2014 17:24:28]  [REDEEMITEMS SUCCESS] Redemption successful.
+[07-Aug-2014 17:30:59]  [LISTITEMS SUCCESSFUL] List Items is successful.
+[07-Aug-2014 17:31:09]  [LISTITEMS SUCCESSFUL] List Items is successful.
+[07-Aug-2014 17:40:58]  [REDEEMITEMS ERROR] MPSessionID does not exist.
+[07-Aug-2014 17:41:11]  [LOGIN SUCCESS] Login successful.
+[07-Aug-2014 17:41:22]  [REDEEMITEMS ERROR] One or more fields is not set or is blank.
+[07-Aug-2014 17:43:40]  [REDEEMITEMS SUCCESS] CP: 27,333, Item: Sample Brownies, RP: 15
+[07-Aug-2014 17:43:40]  [REDEEMITEMS SUCCESS] Redemption successful.
+[07-Aug-2014 18:05:43]  [REDEEMITEMS SUCCESS] CP: 27,318, Item: Sample Brownies, RP: 15
+[07-Aug-2014 18:05:43]  [REDEEMITEMS SUCCESS] Redemption successful.
+[07-Aug-2014 18:10:41]  [REDEEMITEMS SUCCESS] CP: 27,303, Item: Sample Brownies, RP: 15
+[07-Aug-2014 18:10:41]  [REDEEMITEMS SUCCESS] Redemption successful.
+[07-Aug-2014 18:12:22]  [REDEEMITEMS SUCCESS] CP: 27,288, Item: Sample Brownies, RP: 15
+[07-Aug-2014 18:12:23]  [REDEEMITEMS SUCCESS] Redemption successful.
+[07-Aug-2014 18:13:59]  [REDEEMITEMS SUCCESS] CP: 27,273, Item: Sample Brownies, RP: 15
+[07-Aug-2014 18:13:59]  [REDEEMITEMS SUCCESS] Redemption successful.
+[07-Aug-2014 18:14:36]  [REDEEMITEMS SUCCESS] CP: 27,258, Item: Sample Brownies, RP: 15
+[07-Aug-2014 18:14:36]  [REDEEMITEMS SUCCESS] Redemption successful.
+[07-Aug-2014 18:16:00]  [REDEEMITEMS SUCCESS] CP: 27,243, Item: Sample Brownies, RP: 15
+[07-Aug-2014 18:16:00]  [REDEEMITEMS SUCCESS] Redemption successful.
+[07-Aug-2014 19:48:02]  [LISTITEMS SUCCESSFUL] List Items is successful.
+[07-Aug-2014 19:48:47]  [LISTITEMS SUCCESSFUL] List Items is successful.
+[07-Aug-2014 19:49:06]  [LISTITEMS SUCCESSFUL] List Items is successful.
+[07-Aug-2014 19:49:41]  [LISTITEMS SUCCESSFUL] List Items is successful.
+[07-Aug-2014 19:53:18]  [LISTITEMS ERROR] Please input 2 for regular or 3 for vip.
+[07-Aug-2014 19:55:37]  [REDEEMITEMS ERROR] One or more fields is not set or is blank.
+[07-Aug-2014 20:28:44]  [FORGOTPASSWORD ERROR] Membership Card is Invalid
+[07-Aug-2014 20:35:59]  [FORGOTPASSWORD ERROR] Membership Card is Invalid
+[07-Aug-2014 20:39:04]  [FORGOTPASSWORD ERROR] Membership Card is Invalid
+[07-Aug-2014 20:43:39]  [LOGOUT SUCCESS] No error, transaction successful.
+[07-Aug-2014 20:55:54]  [LOGIN SUCCESS] Login successful.
+[07-Aug-2014 20:56:12]  [REDEEMITEMS SUCCESS] CP: 27,228, Item: Sample Brownies, RP: 15
+[07-Aug-2014 20:56:13]  [REDEEMITEMS SUCCESS] Redemption successful.
+[07-Aug-2014 21:16:55]  [REDEEMITEMS SUCCESS] CP: 27,213, Item: Sample Brownies, RP: 15
+[07-Aug-2014 21:16:55]  [REDEEMITEMS SUCCESS] Redemption successful.
+[07-Aug-2014 21:18:06]  [REDEEMITEMS SUCCESS] CP: 27,198, Item: Sample Brownies, RP: 15
+[07-Aug-2014 21:18:06]  [REDEEMITEMS SUCCESS] Redemption successful.
+[07-Aug-2014 21:21:55]  [REDEEMITEMS SUCCESS] CP: 27,183, Item: Sample Brownies, RP: 15
+[07-Aug-2014 21:21:55]  [REDEEMITEMS SUCCESS] Redemption successful.
+[07-Aug-2014 21:24:08]  [REDEEMITEMS SUCCESS] CP: 27,168, Item: Sample Brownies, RP: 15
+[07-Aug-2014 21:24:08]  [REDEEMITEMS SUCCESS] Redemption successful.
+[07-Aug-2014 21:24:30]  [REDEEMITEMS SUCCESS] CP: 27,153, Item: Sample Brownies, RP: 15
+[07-Aug-2014 21:24:30]  [REDEEMITEMS SUCCESS] Redemption successful.

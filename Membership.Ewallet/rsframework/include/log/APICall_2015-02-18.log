@@ -1,0 +1,4 @@
+[2015-02-18 11:26:43][REQUEST][Method] =>GetCompPoints [Input] =>{"CardNumber":"UBTQE2DS","SystemUsername":"madmin","AccessDate":"2015-02-18 11:26:43","Token":"19d78e9b647199b2e4bba0ef372868b79e0eb708"}
+[2015-02-18 11:26:44][RESPONSE][Method] =>GetCompPoints [Output] =>{"System Access Authentication":{"TransactionMessage":"Request time out.","ErrorCode":2}}
+[2015-02-18 11:26:54][REQUEST][Method] =>GetCompPoints [Input] =>{"CardNumber":"UBTQE2DS","SystemUsername":"madmin","AccessDate":"2015-02-18 11:26:54","Token":"52f71978d0080cf8165271c881a69791eee4a4e7"}
+[2015-02-18 11:26:54][RESPONSE][Method] =>GetCompPoints [Output] =>{"System Access Authentication":{"TransactionMessage":"Request time out.","ErrorCode":2}}

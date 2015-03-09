@@ -1,0 +1,8 @@
+2014/08/02 17:07:26 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (961)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (158)
+2014/08/02 17:07:31 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (961)
+in C:\xampp\htdocs\membership.rewards\AMPAPI\protected\controllers\AmpapiController.php (158)

@@ -1,0 +1,119 @@
+[25-Jul-2014 13:29:34]  [AUTHENTICATESESSION ERROR] One or more fields is not set or is blank.
+[25-Jul-2014 14:04:22]  [AUTHENTICATESESSION ERROR] One or more fields is not set or is blank.
+[25-Jul-2014 14:04:27]  [GETACTIVESESSION ERROR] One or more fields is not set or is blanks.
+[25-Jul-2014 14:46:54]  [AUTHENTICATESESSION ERROR] Invalid Input
+[25-Jul-2014 14:46:58]  [AUTHENTICATESESSION SUCCESS] Audittrail log success.
+[25-Jul-2014 14:46:58]  [AUTHENTICATESESSION SUCCESS] APIlogs success.
+[25-Jul-2014 14:46:58]  [AUTHENTICATESESSION SUCCESS] TPSessionID Generate Successfully.
+[25-Jul-2014 09:26:00]  [AUTHENTICATESESSION ERROR] One or more fields is not set or is blank.
+[25-Jul-2014 10:58:27]  [UPDATEPROFILE ERROR] TPSessionID is not set or is blank.
+[25-Jul-2014 10:59:05]  [UPDATEPROFILE ERROR] TPSessionID is not set or is blank.
+[25-Jul-2014 11:00:49]  [UPDATEPROFILE ERROR] TPSessionID is not set or is blank.
+[25-Jul-2014 11:01:45]  [UPDATEPROFILE ERROR] TPSessionID is not set or is blank.
+[25-Jul-2014 11:02:15]  [UPDATEPROFILE ERROR] TPSessionID is not set or is blank.
+[25-Jul-2014 11:02:28]  [UPDATEPROFILE ERROR] MPSessionID is not set or is blank.
+[25-Jul-2014 11:02:42]  [UPDATEPROFILE ERROR] FirstName is not set or is blank.
+[25-Jul-2014 11:02:53]  [UPDATEPROFILE ERROR] LastName is not set or is blank.
+[25-Jul-2014 11:11:50]  [UPDATEPROFILE ERROR] TPSessionID is not set or is blank.
+[25-Jul-2014 11:12:14]  [UPDATEPROFILE ERROR] MPSessionID is not set or is blank.
+[25-Jul-2014 11:12:22]  [UPDATEPROFILE ERROR] FirstName is not set or is blank.
+[25-Jul-2014 11:12:30]  [UPDATEPROFILE ERROR] LastName is not set or is blank.
+[25-Jul-2014 11:12:39]  [UPDATEPROFILE ERROR] MobileNumber is not set or is blank.
+[25-Jul-2014 11:15:08]  [UPDATEPROFILE ERROR] EmailAddress is not set or is blank.
+[25-Jul-2014 11:15:22]  [UPDATEPROFILE ERROR] IDPresented is not set or is blank.
+[25-Jul-2014 11:15:39]  [UPDATEPROFILE ERROR] IDNumber is not set or is blank.
+[25-Jul-2014 11:15:51]  [UPDATEPROFILE ERROR] BirthDate is not set or is blank.
+[25-Jul-2014 11:16:05]  [UPDATEPROFILE ERROR] BirthDate is not set or is blank.
+[25-Jul-2014 11:17:16]  [UPDATEPROFILE ERROR] BirthDate is not set or is blank.
+[25-Jul-2014 11:25:03]  [AUTHENTICATESESSION ERROR] One or more fields is not set or is blank.
+[25-Jul-2014 11:26:41]  [AUTHENTICATESESSION ERROR] Third Party Account not found.
+[25-Jul-2014 11:27:46]  [AUTHENTICATESESSION ERROR] Third Party Account not found.
+[25-Jul-2014 11:27:57]  [AUTHENTICATESESSION ERROR] Third Party Account not found.
+[25-Jul-2014 11:28:06]  [AUTHENTICATESESSION ERROR] Third Party Account not found.
+[25-Jul-2014 11:29:28]  [AUTHENTICATESESSION ERROR] Invalid Input
+[25-Jul-2014 11:30:26]  [AUTHENTICATESESSION ERROR] Invalid Input
+[25-Jul-2014 11:31:39]  [AUTHENTICATESESSION ERROR] Third Party Account not found.
+[25-Jul-2014 11:34:59]  [AUTHENTICATESESSION SUCCESS] Audittrail log success.
+[25-Jul-2014 11:34:59]  [AUTHENTICATESESSION SUCCESS] APIlogs success.
+[25-Jul-2014 11:34:59]  [AUTHENTICATESESSION SUCCESS] TPSessionID Generate Successfully.
+[25-Jul-2014 11:35:37]  [AUTHENTICATESESSION SUCCESS] Audittrail log success.
+[25-Jul-2014 11:35:37]  [AUTHENTICATESESSION SUCCESS] APIlogs success.
+[25-Jul-2014 11:35:37]  [AUTHENTICATESESSION SUCCESS] TPSessionID Generate Successfully.
+[25-Jul-2014 11:36:34]  [GETACTIVESESSION ERROR] One or more fields is not set or is blanks.
+[25-Jul-2014 11:37:14]  [GETACTIVESESSION ERROR] One or more fields is not set or is blanks.
+[25-Jul-2014 11:37:18]  [GETACTIVESESSION ERROR] One or more fields is not set or is blanks.
+[25-Jul-2014 11:37:41]  [GETACTIVESESSION ERROR] One or more fields is not set or is blanks.
+[25-Jul-2014 11:37:53]  [GETACTIVESESSION ERROR] One or more fields is not set or is blanks.
+[25-Jul-2014 11:38:07]  [GETACTIVESESSION ERROR] One or more fields is not set or is blanks.
+[25-Jul-2014 11:40:51]  [GETACTIVESESSION ERROR] GetActiveSession Success.
+[25-Jul-2014 11:41:09]  [GETACTIVESESSION ERROR] One or more fields is not set or is blanks.
+[25-Jul-2014 11:41:19]  [GETACTIVESESSION ERROR] GetActiveSession Success.
+[25-Jul-2014 11:50:04]  [UPDATEPROFILE ERROR] AlternateMobileNumber should consist of numbers only.
+[25-Jul-2014 11:50:38]  [UPDATEPROFILE ERROR] MobileNumber should not be less than 9 digits long.
+[25-Jul-2014 11:50:52]  [UPDATEPROFILE ERROR] AlternateMobileNumber should not be less than 9 digits long.
+[25-Jul-2014 13:33:39]  [UPDATEPROFILE ERROR] TPSessionID is not set or is blank.
+[25-Jul-2014 13:33:39]  [UPDATEPROFILE ERROR] MobileNumber should consist of numbers only.
+[25-Jul-2014 13:33:39]  [UPDATEPROFILE ERROR] MobileNumber should not be less than 9 digits long.
+[25-Jul-2014 13:39:48]  [UPDATEPROFILE ERROR] TPSessionID is not set or is blank.
+[25-Jul-2014 13:48:23]  [UPDATEPROFILE ERROR] TPSessionID is not set or is blank.
+[25-Jul-2014 13:52:13]  [UPDATEPROFILE ERROR] AlternateMobileNumber should consist of numbers only.
+[25-Jul-2014 14:08:04]  [UPDATEPROFILE ERROR] AlternateMobileNumber should consist of numbers only.
+[25-Jul-2014 14:15:40]  [UPDATEPROFILE ERROR] TPSessionID is not set or is blank.
+[25-Jul-2014 14:16:13]  [UPDATEPROFILE ERROR] MobileNumber should not be less than 9 digits long.
+[25-Jul-2014 14:17:06]  [UPDATEPROFILE ERROR] MobileNumber is not set or is blank.
+[25-Jul-2014 14:17:13]  [UPDATEPROFILE ERROR] MobileNumber should not be less than 9 digits long.
+[25-Jul-2014 14:17:18]  [UPDATEPROFILE ERROR] MobileNumber should consist of numbers only.
+[25-Jul-2014 14:17:50]  [UPDATEPROFILE ERROR] MobileNumber should not be less than 9 digits long.
+[25-Jul-2014 14:32:31]  [GETACTIVESESSION ERROR] GetActiveSession Success.
+[25-Jul-2014 14:32:31]  [UPDATEPROFILE ERROR] MobileNumber should not be less than 9 digits long.
+[25-Jul-2014 14:32:44]  [UPDATEPROFILE ERROR] AlternateMobileNumber should consist of numbers only.
+[25-Jul-2014 14:34:11]  [UPDATEPROFILE ERROR] FirstName should consist of letters only.
+[25-Jul-2014 14:35:50]  [UPDATEPROFILE ERROR] AlternateMobileNumber should not be less than 9 digits long.
+[25-Jul-2014 14:44:32]  [UPDATEPROFILE ERROR] AlternateMobileNumber should not be less than 9 digits long.
+[25-Jul-2014 14:44:53]  [UPDATEPROFILE ERROR] MiddleName should consist of letters only.
+[25-Jul-2014 14:45:50]  [UPDATEPROFILE ERROR] MiddleName should consist of letters only.
+[25-Jul-2014 14:46:12]  [UPDATEPROFILE ERROR] NickName should consist of letters only.
+[25-Jul-2014 15:07:56]  [UPDATEPROFILE ERROR] NickName should consist of letters only.
+[25-Jul-2014 15:08:04]  [UPDATEPROFILE ERROR] EmailAddress contains invalid email.
+[25-Jul-2014 15:10:05]  [UPDATEPROFILE ERROR] AlternateEmail contains invalid email.
+[25-Jul-2014 15:10:15]  [UPDATEPROFILE ERROR] AlternateEmail contains invalid email.
+[25-Jul-2014 15:23:16]  [UPDATEPROFILE ERROR] 0 should not be less than 5 characters long.
+[25-Jul-2014 15:24:09]  [UPDATEPROFILE ERROR] Password should not be less than 5 characters long.
+[25-Jul-2014 15:24:56]  [UPDATEPROFILE ERROR] Password should not be less than 5 characters long.
+[25-Jul-2014 15:25:03]  [UPDATEPROFILE ERROR] Password should consist of letters and numbers only.
+[25-Jul-2014 15:37:46]  [UPDATEPROFILE ERROR] Birthdate is not set or is blank.
+[25-Jul-2014 16:39:24]  [UPDATEPROFILE ERROR] Password should not be less than 5 characters long.
+[25-Jul-2014 16:39:37]  [UPDATEPROFILE ERROR] Password should consist of letters and numbers only.
+[25-Jul-2014 16:42:31]  [UPDATEPROFILE ERROR] Password should consist of letters and numbers only.
+[25-Jul-2014 16:42:40]  [UPDATEPROFILE ERROR] Password should not be less than 5 characters long.
+[25-Jul-2014 16:42:45]  [UPDATEPROFILE ERROR] Password should not be less than 5 characters long.
+[25-Jul-2014 16:42:53]  [UPDATEPROFILE ERROR] Password should not be less than 5 characters long.
+[25-Jul-2014 16:47:08]  [UPDATEPROFILE ERROR] Password should not be less than 5 characters long.
+[25-Jul-2014 16:49:32]  [UPDATEPROFILE ERROR] Password should not be less than 5 characters long.
+[25-Jul-2014 16:49:36]  [UPDATEPROFILE ERROR] Password should not be less than 5 characters long.
+[25-Jul-2014 16:50:27]  [UPDATEPROFILE ERROR] Password should not be less than 5 characters long.
+[25-Jul-2014 16:50:49]  [UPDATEPROFILE ERROR] Password should not be less than 5 characters long.
+[25-Jul-2014 16:51:37]  [UPDATEPROFILE ERROR] IDNumber should consist of letters and numbers only.
+[25-Jul-2014 17:02:01]  [UPDATEPROFILE ERROR] IDNumber should consist of letters and numbers only.
+[25-Jul-2014 17:02:09]  [UPDATEPROFILE ERROR] TPSessionID is not set or is blank.
+[25-Jul-2014 17:39:10]  [AUTHENTICATESESSION ERROR] Third Party Account not found.
+[25-Jul-2014 17:51:44]  [AUTHENTICATESESSION ERROR] Third Party Account not found.
+[25-Jul-2014 17:52:00]  [AUTHENTICATESESSION SUCCESS] Audittrail log success.
+[25-Jul-2014 17:52:00]  [AUTHENTICATESESSION SUCCESS] APIlogs success.
+[25-Jul-2014 17:52:00]  [AUTHENTICATESESSION SUCCESS] TPSessionID Generate Successfully.
+[25-Jul-2014 19:12:55]  [AUTHENTICATESESSION ERROR] TPSessionID is not set or is blank.
+[25-Jul-2014 19:12:55]  [AUTHENTICATESESSION ERROR] One or more fields is not set or is blank.
+[25-Jul-2014 19:13:44]  [AUTHENTICATESESSION ERROR] Passsword is not set or is blank.
+[25-Jul-2014 19:13:44]  [AUTHENTICATESESSION ERROR] One or more fields is not set or is blank.
+[25-Jul-2014 19:14:55]  [AUTHENTICATESESSION ERROR] TPSessionID is not set or is blank.
+[25-Jul-2014 19:14:55]  [AUTHENTICATESESSION ERROR] One or more fields is not set or is blank.
+[25-Jul-2014 19:16:22]  [AUTHENTICATESESSION ERROR] Passsword is not set or is blank.
+[25-Jul-2014 19:16:22]  [AUTHENTICATESESSION ERROR] One or more fields is not set or is blank.
+[25-Jul-2014 19:16:36]  [AUTHENTICATESESSION ERROR] Passsword is not set or is blank.
+[25-Jul-2014 19:17:56]  [AUTHENTICATESESSION ERROR] Passsword is not set or is blank.
+[25-Jul-2014 19:39:04]  [UPDATEPROFILE ERROR] TPSessionID is not set or is blank.
+[25-Jul-2014 19:42:53]  [LOGIN ERROR] TPSessionID is not set or is blank.
+[25-Jul-2014 19:42:53]  [LOGIN ERROR] One or more fields is not set or is blank.
+[25-Jul-2014 19:43:38]  [LOGIN ERROR] TPSessionID is not set or is blank.
+[25-Jul-2014 19:43:59]  [LOGIN ERROR] Passsword is not set or is blank.
+[25-Jul-2014 19:45:04]  [LOGIN ERROR] Passsword is not set or is blank.

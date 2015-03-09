@@ -1,0 +1,89 @@
+[24-Jul-2014 05:34:43]  [LOGIN FAILED] Failed to log event on Audittrail.
+[24-Jul-2014 07:58:06]  [AUTHENTICATESESSION SUCCESS] Audittrail log success.
+[24-Jul-2014 07:58:06]  [AUTHENTICATESESSION ERROR] APIlogs success.
+[24-Jul-2014 07:58:12]  [AUTHENTICATESESSION SUCCESS] Audittrail log success.
+[24-Jul-2014 07:58:12]  [AUTHENTICATESESSION ERROR] APIlogs success.
+[24-Jul-2014 08:02:19]  [AUTHENTICATESESSION SUCCESS] Audittrail log success.
+[24-Jul-2014 08:02:19]  [AUTHENTICATESESSION ERROR] Failed to insert to APILogs.
+[24-Jul-2014 08:03:06]  [AUTHENTICATESESSION SUCCESS] Audittrail log success.
+[24-Jul-2014 08:03:06]  [AUTHENTICATESESSION ERROR] APIlogs success.
+[24-Jul-2014 08:10:26]  [AUTHENTICATESESSION SUCCESS] Audittrail log success.
+[24-Jul-2014 08:10:26]  [AUTHENTICATESESSION ERROR] APIlogs success.
+[24-Jul-2014 08:12:14]  [AUTHENTICATESESSION SUCCESS] Audittrail log success.
+[24-Jul-2014 08:12:14]  [AUTHENTICATESESSION SUCCESS] APIlogs success.
+[24-Jul-2014 08:15:32]  [AUTHENTICATESESSION SUCCESS] Audittrail log success.
+[24-Jul-2014 08:15:32]  [AUTHENTICATESESSION SUCCESS] APIlogs success.
+[24-Jul-2014 08:21:06]  [AUTHENTICATESESSION SUCCESS] Audittrail log success.
+[24-Jul-2014 08:21:06]  [AUTHENTICATESESSION SUCCESS] APIlogs success.
+24-Jul-2014 08:23:29 [AUTHENTICATESESSION SUCCESS] Audittrail log success.
+24-Jul-2014 08:23:29 [AUTHENTICATESESSION SUCCESS] APIlogs success.
+[24-Jul-2014 08:25:54]  [AUTHENTICATESESSION SUCCESS] Audittrail log success.
+[24-Jul-2014 08:25:54]  [AUTHENTICATESESSION SUCCESS] APIlogs success.
+[24-Jul-2014 14:32:17]  [AUTHENTICATESESSION SUCCESS] Audittrail log success.
+[24-Jul-2014 14:32:17]  [AUTHENTICATESESSION SUCCESS] APIlogs success.
+[24-Jul-2014 14:40:26]  [AUTHENTICATESESSION SUCCESS] Audittrail log success.
+[24-Jul-2014 14:40:26]  [AUTHENTICATESESSION SUCCESS] APIlogs success.
+[24-Jul-2014 14:40:26]  [AUTHENTICATESESSION SUCCESS] TPSessionID Generate Successfully.
+[24-Jul-2014 15:13:12]  [AUTHENTICATESESSION SUCCESS] Audittrail log success.
+[24-Jul-2014 15:13:12]  [AUTHENTICATESESSION SUCCESS] APIlogs success.
+[24-Jul-2014 15:13:12]  [AUTHENTICATESESSION SUCCESS] TPSessionID Generate Successfully.
+[24-Jul-2014 15:15:56]  [AUTHENTICATESESSION SUCCESS] Audittrail log success.
+[24-Jul-2014 15:15:56]  [AUTHENTICATESESSION SUCCESS] APIlogs success.
+[24-Jul-2014 15:15:56]  [AUTHENTICATESESSION SUCCESS] TPSessionID Generate Successfully.
+[24-Jul-2014 15:25:10]  [AUTHENTICATESESSION SUCCESS] Audittrail log success.
+[24-Jul-2014 15:25:10]  [AUTHENTICATESESSION SUCCESS] APIlogs success.
+[24-Jul-2014 15:25:10]  [AUTHENTICATESESSION SUCCESS] TPSessionID Generate Successfully.
+[24-Jul-2014 16:04:45]  [AUTHENTICATESESSION SUCCESS] Audittrail log success.
+[24-Jul-2014 16:04:45]  [AUTHENTICATESESSION SUCCESS] APIlogs success.
+[24-Jul-2014 16:04:45]  [AUTHENTICATESESSION SUCCESS] TPSessionID Generate Successfully.
+[24-Jul-2014 16:04:49]  [AUTHENTICATESESSION ERROR] Third Party Account not found.
+[24-Jul-2014 16:04:56]  [AUTHENTICATESESSION ERROR] Invalid Input
+[24-Jul-2014 16:57:30]  [AUTHENTICATESESSION ERROR] Invalid Input
+[24-Jul-2014 16:57:37]  [AUTHENTICATESESSION ERROR] Third Party Account not found.
+[24-Jul-2014 17:06:01]  [AUTHENTICATESESSION ERROR] Third Party Account not found.
+[24-Jul-2014 17:07:40]  [AUTHENTICATESESSION ERROR] Third Party Account not found.
+[24-Jul-2014 17:08:36]  [AUTHENTICATESESSION ERROR] Third Party Account not found.
+[24-Jul-2014 17:17:42]  [GETACTIVESESSION ERROR] One or more fields is not set or is blanks.
+[24-Jul-2014 17:18:49]  [GETACTIVESESSION ERROR] One or more fields is not set or is blanks.
+[24-Jul-2014 17:18:50]  [GETACTIVESESSION ERROR] One or more fields is not set or is blanks.
+[24-Jul-2014 17:18:50]  [GETACTIVESESSION ERROR] One or more fields is not set or is blanks.
+[24-Jul-2014 17:18:50]  [GETACTIVESESSION ERROR] One or more fields is not set or is blanks.
+[24-Jul-2014 17:18:50]  [GETACTIVESESSION ERROR] One or more fields is not set or is blanks.
+[24-Jul-2014 17:18:51]  [GETACTIVESESSION ERROR] One or more fields is not set or is blanks.
+[24-Jul-2014 17:19:25]  [GETACTIVESESSION ERROR] One or more fields is not set or is blanks.
+[24-Jul-2014 17:19:25]  [GETACTIVESESSION ERROR] One or more fields is not set or is blanks.
+[24-Jul-2014 17:19:25]  [GETACTIVESESSION ERROR] One or more fields is not set or is blanks.
+[24-Jul-2014 17:19:26]  [GETACTIVESESSION ERROR] One or more fields is not set or is blanks.
+[24-Jul-2014 17:19:26]  [GETACTIVESESSION ERROR] One or more fields is not set or is blanks.
+[24-Jul-2014 17:19:26]  [GETACTIVESESSION ERROR] One or more fields is not set or is blanks.
+[24-Jul-2014 17:19:26]  [GETACTIVESESSION ERROR] One or more fields is not set or is blanks.
+[24-Jul-2014 17:19:26]  [GETACTIVESESSION ERROR] One or more fields is not set or is blanks.
+[24-Jul-2014 17:19:45]  [GETACTIVESESSION ERROR] One or more fields is not set or is blanks.
+[24-Jul-2014 17:20:52]  [AUTHENTICATESESSION ERROR] One or more fields is not set or is blank.
+[24-Jul-2014 17:21:51]  [GETACTIVESESSION ERROR] One or more fields is not set or is blanks.
+[24-Jul-2014 17:21:57]  [GETACTIVESESSION ERROR] One or more fields is not set or is blanks.
+[24-Jul-2014 17:22:28]  [GETACTIVESESSION ERROR] One or more fields is not set or is blanks.
+[24-Jul-2014 17:24:30]  [AUTHENTICATESESSION ERROR] One or more fields is not set or is blank.
+[24-Jul-2014 17:24:35]  [AUTHENTICATESESSION SUCCESS] Audittrail log success.
+[24-Jul-2014 17:24:35]  [AUTHENTICATESESSION SUCCESS] APIlogs success.
+[24-Jul-2014 17:24:35]  [AUTHENTICATESESSION SUCCESS] TPSessionID Generate Successfully.
+[24-Jul-2014 17:26:38]  [GETACTIVESESSION ERROR] One or more fields is not set or is blanks.
+[24-Jul-2014 17:27:14]  [GETACTIVESESSION ERROR] One or more fields is not set or is blanks.
+[24-Jul-2014 17:27:30]  [AUTHENTICATESESSION SUCCESS] Audittrail log success.
+[24-Jul-2014 17:27:30]  [AUTHENTICATESESSION SUCCESS] APIlogs success.
+[24-Jul-2014 17:27:30]  [AUTHENTICATESESSION SUCCESS] TPSessionID Generate Successfully.
+[24-Jul-2014 17:27:38]  [GETACTIVESESSION ERROR] GetActiveSession Success.
+[24-Jul-2014 17:28:26]  [GETACTIVESESSION ERROR] GetActiveSession Success.
+[24-Jul-2014 17:28:49]  [GETACTIVESESSION ERROR] GetActiveSession Success.
+[24-Jul-2014 17:28:59]  [GETACTIVESESSION ERROR] GetActiveSession Success.
+[24-Jul-2014 17:29:22]  [AUTHENTICATESESSION SUCCESS] Audittrail log success.
+[24-Jul-2014 17:29:22]  [AUTHENTICATESESSION SUCCESS] APIlogs success.
+[24-Jul-2014 17:29:22]  [AUTHENTICATESESSION SUCCESS] TPSessionID Generate Successfully.
+[24-Jul-2014 17:29:38]  [GETACTIVESESSION ERROR] GetActiveSession Success.
+[24-Jul-2014 17:30:48]  [GETACTIVESESSION ERROR] GetActiveSession Success.
+[24-Jul-2014 17:35:49]  [GETACTIVESESSION ERROR] One or more fields is not set or is blanks.
+[24-Jul-2014 17:36:10]  [GETACTIVESESSION ERROR] GetActiveSession Success.
+[24-Jul-2014 17:37:03]  [GETACTIVESESSION ERROR] One or more fields is not set or is blanks.
+[24-Jul-2014 17:37:10]  [GETACTIVESESSION ERROR] GetActiveSession Success.
+[24-Jul-2014 17:37:20]  [GETACTIVESESSION ERROR] One or more fields is not set or is blanks.
+[24-Jul-2014 17:37:26]  [GETACTIVESESSION ERROR] GetActiveSession Success.

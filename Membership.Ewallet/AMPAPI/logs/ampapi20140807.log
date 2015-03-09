@@ -1,0 +1,8 @@
+[07-Aug-2014 14:27:12]  [LISTITEMS ERROR] TPSessionID is not set or is blank.
+[07-Aug-2014 14:27:12]  [LISTITEMS SUCCESS] APIlogs success.
+[07-Aug-2014 14:31:37]  [REDEEMITEMS ERROR] TPSessionID is not set or is blank.
+[07-Aug-2014 14:31:37]  [REDEEMITEMS SUCCESS] APIlogs success.
+[07-Aug-2014 14:37:34]  [AUTHENTICATESESSION ERROR] Username is not set or is blank.
+[07-Aug-2014 14:37:34]  [AUTHENTICATESESSION SUCCESS] APIlogs success.
+[07-Aug-2014 14:37:37]  [GETACTIVESESSION ERROR] TPSessionID is not set or is blank.
+[07-Aug-2014 14:37:37]  [GETACTIVESESSION SUCCESS] APIlogs success.
