@@ -279,7 +279,19 @@ if($connected)
          }
          else
          {
-                $count = $oterminal->checkTerminalSessions($vterminalID);
+                $terminalcode = $oterminal->getterminalCode($vterminalID);
+                
+                $izVIP = preg_match('/VIP/', $terminalcode);
+                
+                if($izVIP){
+                   $tterminalID2 = $oterminal->getTerminalIDz($terminalcode); 
+                }
+                else{
+                   $terminalcode = $terminalcode.'VIP';
+                   $tterminalID2 = $oterminal->getTerminalIDz($terminalcode); 
+                }
+                
+                $count = $oterminal->checkTerminalSessions2($vterminalID, $tterminalID2);
 
                 //check number of sessions in a certain site
                 if($count > 0)

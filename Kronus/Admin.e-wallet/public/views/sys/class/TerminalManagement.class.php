@@ -647,6 +647,24 @@ class TerminalManagement extends DBHandler
            return $count['count'];
      }
      
+     /**
+    * @author Gerardo V. Jagolino Jr.
+    * @param $terminalID
+    * @return int
+    * check the number of cashier sessions enable in a certain site
+    */ 
+     function checkTerminalSessions2($terminalID, $terminalID2)
+     {
+           $stmt = "SELECT COUNT(TerminalID) count FROM terminalsessions 
+                WHERE TerminalID IN (?,?)";
+           $this->prepare($stmt);
+           $this->bindparameter(1, $terminalID);
+           $this->bindparameter(2, $terminalID2);
+           $this->execute($stmt);
+           $count =  $this->fetchData();
+           return $count['count'];
+     }
+     
         function getServiceUserMode($serviceID)
      {
            $stmt = "SELECT UserMode FROM ref_services 
@@ -696,6 +714,24 @@ class TerminalManagement extends DBHandler
            $this->execute($stmt);
            $result =  $this->fetchAllData();
            return $result;
+     }
+     
+     function getterminalCode($terminalid){
+           $stmt = "SELECT TerminalCode FROM terminals WHERE TerminalID = ?";
+           $this->prepare($stmt);
+           $this->bindparameter(1, $terminalid);
+           $this->execute($stmt);
+           $result =  $this->fetchData();
+           return $result['TerminalCode'];
+     }
+     
+     function getTerminalIDz($terminalcode){
+           $stmt = "SELECT TerminalID FROM terminals WHERE TerminalCode = ?";
+           $this->prepare($stmt);
+           $this->bindparameter(1, $terminalcode);
+           $this->execute($stmt);
+           $result =  $this->fetchData();
+           return $result['TerminalID'];
      }
      
 }
