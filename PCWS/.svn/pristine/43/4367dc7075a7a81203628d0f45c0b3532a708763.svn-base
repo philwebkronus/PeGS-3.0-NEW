@@ -1,0 +1,22 @@
+/*
+
+To export the private key without a passphrase or password.
+Type: openssl pkcs12 -in filename.pfx -nocerts -nodes -out key.pem
+
+To Generate a public version of the private RSAkey
+Type: openssl rsa -in key.pem -out server.key
+
+To export the Certificate
+Type: openssl pkcs12 -in filename.pfx -clcerts -nokeys -out cert.pem
+
+The directory will now have a file cert.pem and a key.pem.
+
+1 - Alpha v9.1
+2 - Gamma v9.1
+3 - Sigma v9.1
+4 - Sigma v10.1
+5 - Alpha v10.1
+6 - Gamma v10.1
+999 - ECF Test
+
+*/
