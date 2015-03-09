@@ -93,14 +93,18 @@ return array(
 		
 		'errorHandler'=>array(
 			// use 'site/error' action to display errors
-			'errorAction'=>'site/error',
+			'errorAction'=>'pcws',
 		),
 		'log'=>array(
 			'class'=>'CLogRouter',
 			'routes'=>array(
 				array(
-					'class'=>'CFileLogRoute',
+					'class'=>'CFileLogRouteModified',
 					'levels'=>'error, warning',
+				),
+				array(
+					'class'=>'CFileRequestLogRoute',
+					'levels'=>'request, response',
 				),
 				// uncomment the following to show log messages on web pages
 				/*
