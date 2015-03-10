@@ -50,7 +50,7 @@
                             'Redemption'=>array('link'=>$this->createUrl('redeem'),'act'=>'overview','con'=>'Redeem','attr'=>'desc="End a player\'s session and process cash redemption"'),
                             'Reports'=>array('link'=>$this->createUrl('reports'),'act'=>'overview','con'=>'Reports','attr'=>'desc="List of all player session transactions"'),
                             'View Transaction History'=>array('link'=>$this->createUrl('viewtrans/history'),'act'=>'history','con'=>'ViewTransaction','attr'=>'desc="View Transactions History"'),
-                            'Load & Withdraw'=>array('link'=>$this->createUrl('forcet'),'act'=>'overview','con'=>'ForceT','attr'=>'desc="Load and Withdraw"'),
+                            'e-Wallet Load & Withdraw'=>array('link'=>$this->createUrl('forcet'),'act'=>'overview','con'=>'ForceT','attr'=>'desc="Load and Withdraw"'),
                             'Refresh'=>array('link'=>'','attr'=>'desc="Refresh the page" id="refresh_getbal"','visible'=>$this->show_refresh)
                         )); 
                     ?>
