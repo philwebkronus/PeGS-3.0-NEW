@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Controller for Membership Portal API
+ * Controller for Membership Portal API v1
  * @date 6-13-2014
  * @author fdlsison
  */
