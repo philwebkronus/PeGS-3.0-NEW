@@ -1082,18 +1082,44 @@ class MPapiController extends Controller {
 
                 exit;
             }
-            else if(strlen($request['MobileNo']) < 9 || strlen($request['MobileNo']) < 9 || ($request['AlternateMobileNo'] != '' && strlen($request['AlternateMobileNo']) > 11) || ($request['AlternateMobileNo'] != '' && strlen($request['AlternateMobileNo']) < 9)) {
-                $transMsg = "Mobile number should not be less than 9 digits long.";
-                $errorCode = 15;
+            else if((substr($request['MobileNo'], 0, 3) == "639" && strlen($request['MobileNo']) != 12) || (substr($request['MobileNo'], 0, 2) == "09" && strlen($request['MobileNo']) != 11)) {
+            //else if(strlen($request['MobileNo']) < 9 || strlen($request['MobileNo']) < 9 || ($request['AlternateMobileNo'] != '' && strlen($request['AlternateMobileNo']) > 11) || ($request['AlternateMobileNo'] != '' && strlen($request['AlternateMobileNo']) < 9)) {
+                $transMsg = "Invalid Mobile Number.";
+                $errorCode = 97;
                 Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
-                $data = CommonController::retMsgRegisterMember($module, $errorCode, $transMsg);                $message = "[".$module."] Output: ".CJSON::encode($data);                $appLogger->log($appLogger->logdate, "[response]",$message);                $this->_sendResponse(200, CJSON::encode($data));
-                $logMessage = 'Mobile number should not be less than 9 digits long.';
-                $logger->log($logger->logdate, " [REGISTERMEMBER ERROR] ", $logMessage);
+                $data = CommonController::retMsgRegisterMember($module, $errorCode, $transMsg);
+                $message = "[".$module."] Output: ".CJSON::encode($data);
+                $appLogger->log($appLogger->logdate, "[response]",$message);
+                //CLoggerModified::log($message, CLoggerModified::RESPONSE);
+                $this->_sendResponse(200, CJSON::encode($data));
+                $logMessage = 'Invalid Mobile Number.';
+                $logger->log($logger->logdate, "[REGISTERMEMBER ERROR]: " . $request['FirstName'] . " || " . $request['LastName'] . " || " . $request['MobileNo'] . " || " . $request['EmailAddress'] . " || " . $request['Birthdate'] . " || ", $logMessage);
                 $apiDetails = 'REGISTERMEMBER-Failed: Invalid input parameters. ';
                 $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
                 if($isInserted == 0) {
                     $logMessage = "Failed to insert to APILogs.";
-                    $logger->log($logger->logdate, " [REGISTERMEMBER ERROR] ", $logMessage);
+                    $logger->log($logger->logdate, "[REGISTERMEMBER ERROR]: " . $request['FirstName'] . " || " . $request['LastName'] . " || " . $request['MobileNo'] . " || " . $request['EmailAddress'] . " || " . $request['Birthdate'] . " || ", $logMessage);
+                }
+
+                exit;
+            }
+            else if((substr($request['AlternateMobileNo'], 0, 3) == "639" && strlen($request['AlternateMobileNo']) != 12) || (substr($request['AlternateMobileNo'], 0, 2) == "09" && strlen($request['AlternateMobileNo']) != 11)) {
+            //else if(strlen($request['MobileNo']) < 9 || strlen($request['MobileNo']) < 9 || ($request['AlternateMobileNo'] != '' && strlen($request['AlternateMobileNo']) > 11) || ($request['AlternateMobileNo'] != '' && strlen($request['AlternateMobileNo']) < 9)) {
+                $transMsg = "Invalid Mobile Number.";
+                $errorCode = 97;
+                Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                $data = CommonController::retMsgRegisterMember($module, $errorCode, $transMsg);
+                $message = "[".$module."] Output: ".CJSON::encode($data);
+                $appLogger->log($appLogger->logdate, "[response]",$message);
+                //CLoggerModified::log($message, CLoggerModified::RESPONSE);
+                $this->_sendResponse(200, CJSON::encode($data));
+                $logMessage = 'Invalid Mobile Number.';
+                $logger->log($logger->logdate, "[REGISTERMEMBER ERROR]: " . $request['FirstName'] . " || " . $request['LastName'] . " || " . $request['MobileNo'] . " || " . $request['EmailAddress'] . " || " . $request['Birthdate'] . " || ", $logMessage);
+                $apiDetails = 'REGISTERMEMBER-Failed: Invalid input parameters. ';
+                $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
+                if($isInserted == 0) {
+                    $logMessage = "Failed to insert to APILogs.";
+                    $logger->log($logger->logdate, "[REGISTERMEMBER ERROR]: " . $request['FirstName'] . " || " . $request['LastName'] . " || " . $request['MobileNo'] . " || " . $request['EmailAddress'] . " || " . $request['Birthdate'] . " || ", $logMessage);
                 }
 
                 exit;
@@ -1391,7 +1417,7 @@ class MPapiController extends Controller {
                 //check if member is blacklisted
                 $isBlackListed = $blackListsModel->checkIfBlackListed($firstname, $lastname, $birthdate, 3);
                 //check if email is active and existing in live membership db
-                $activeEmail = $membershipTempModel->checkIfActiveVerifiedEmail($emailAddress);
+                $activeEmail = $memberInfoModel->checkIfActiveVerifiedEmail($emailAddress);
 
                 if($activeEmail['COUNT(MID)'] > 0) {
                     $transMsg = "Sorry, " . $emailAddress . " already belongs to an existing account. Please enter another email address.";
