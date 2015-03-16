@@ -117,6 +117,11 @@ class CommonController {
             
     }
     
+    public static function retMsgChangePassword($module, $errorCode, $transMsg) {
+        if($module == 'ChangePassword')
+            return array('ChangePassword' => array('ErrorCode' => $errorCode, 'ReturnMessage' => $transMsg));
+    }
+    
     public static function retMsgCheckPoints($module, $currentPoints, $cardNumber, $errorCode, $transMsg) {
         if($module == 'CheckPoints')
             return array('CheckPoints' => array('CurrentPoints' => $currentPoints, 'CardNumber' => $cardNumber, 'ErrorCode' => $errorCode, 'ReturnMessage' => $transMsg));

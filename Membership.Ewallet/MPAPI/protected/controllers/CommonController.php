@@ -111,9 +111,9 @@ class CommonController {
     }
 
     //return message function for Login module
-    public static function retMsgLogin($module, $mpSessionID, $cardTypeID, $isVIP, $errorCode, $transMsg, $alterStr) {
+    public static function retMsgLogin($module, $mpSessionID, $cardTypeID, $isVIP, $cardNumber, $errorCode, $transMsg, $alterStr) {
         if($module == 'Login')
-            return array('Login' => array('MPSessionID' => $mpSessionID, 'CardTypeID' => $cardTypeID, 'IsVIP' => $isVIP, 'ErrorCode' => $errorCode, 'ReturnMessage' => $transMsg, 'Remarks' => $alterStr));
+            return array('Login' => array('MPSessionID' => $mpSessionID, 'CardTypeID' => $cardTypeID, 'IsVIP' => $isVIP,'CardNumber' => $cardNumber, 'ErrorCode' => $errorCode, 'ReturnMessage' => $transMsg, 'Remarks' => $alterStr));
 
     }
     

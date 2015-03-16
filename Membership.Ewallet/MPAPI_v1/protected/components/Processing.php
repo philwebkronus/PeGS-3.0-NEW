@@ -22,11 +22,10 @@ class Processing
         $couponRedemptionLogsModel = new CouponRedemptionLogsModel();
         $logger = new ErrorLogger();
         $apiLogsModel = new APILogsModel();
+        $pcwsWrapper = new PcwsWrapper();
         
         $apiMethod = 8;
         $oldCurrentPoints = 0;
-        
-        //var_dump($MID, $rewardItemID, $quantity, $redeemedPoints, $cardNumber, $redeemedDate);
         
         //set table for raffle coupon based on active coupon batch
         $raffleCouponSuffix = $couponBatchesModel->getRaffleCouponSuffix();
@@ -46,18 +45,23 @@ class Processing
                     
                     if(count($availableCoupon) == $quantity) {
                         //get current points for validation
-                        $playerPoints = $memberCardsModel->getMemberPointsAndStatus($cardNumber);
-  
+                        //$playerPoints = $memberCardsModel->getMemberPointsAndStatus($cardNumber);
+                        $playerPoints = $pcwsWrapper->getCompPoints($cardNumber, 0);
+                        $playerPoints = $playerPoints['GetCompPoints']['CompBalance']; 
                         
-                        $oldCurrentPoints = $playerPoints['CurrentPoints'];
+                        $oldCurrentPoints = $playerPoints;
                         if($oldCurrentPoints >= $redeemedPoints) {
                             //update card points (deduct the total redeemed points)
                             $isPointsUpdated = $memberCardsModel->updateCardPoints($MID, $redeemedPoints);
-                            
-                            $playerPoints = $memberCardsModel->getMemberPointsAndStatus($cardNumber);
+                            $amt = $oldCurrentPoints - $redeemedPoints;
+                            $isPointsDeducted = $pcwsWrapper->deductCompPoints($cardNumber, $amt, '', 0);
+                            $playerPoints = $pcwsWrapper->getCompPoints($cardNumber, 0);
+                            $playerPoints = $playerPoints['GetCompPoints']['CompBalance'];
+                            $oldCurrentPoints = $playerPoints;
+                            //$playerPoints = $memberCardsModel->getMemberPointsAndStatus($cardNumber);
                             
                             //check if points is greater than or equal to 0
-                            if($isPointsUpdated > 0 && $playerPoints['CurrentPoints'] >= 0) {
+                            if($isPointsUpdated > 0 && $isPointsDeducted && $oldCurrentPoints >= 0) {
                                 
                                 //get and check status of the reward item
                                 $isActive = $rewardItemsModel->checkStatus($rewardItemID);
@@ -335,6 +339,7 @@ class Processing
         $itemRedemptionLogsModel = new ItemRedemptionLogsModel();
         $apiLogsModel = new APILogsModel();
         $helpers = new Helpers();
+        $pcwsWrapper = new PcwsWrapper();
         
         $AID = $MID;
         $totalPoints = $redeemedPoints/$quantity;
@@ -345,21 +350,25 @@ class Processing
             
             $processedItemQtyInWord = $helpers->convertToWord($processedItemQty);
             
-            //var_dump($redeemedDate, $MID, $rewardItemID);
-            
             try {
                 $lastInsertedID = $itemRedemptionLogsModel->insertItemLogs($redeemedDate, $MID, $rewardItemID, 1);
-                //var_dump($lastInsertedID);
                 if($lastInsertedID != '' && $lastInsertedID != 0) {
                     //check item serial code availability
                     $availableSerialCode = $itemSerialCodesModel->getAvailableSerialCodeCount($rewardItemID, 1);
                     if(count($availableSerialCode) == 1) {
-                        $playerPoints = $memberCardsModel->getMemberPointsAndStatus($cardNumber);
-                        $oldCurrentPoints = $playerPoints['CurrentPoints'];
-                        if($playerPoints['CurrentPoints'] >= $totalPoints) {
+                        //$playerPoints = $memberCardsModel->getMemberPointsAndStatus($cardNumber);
+                        $playerPoints = $pcwsWrapper->getCompPoints($cardNumber, 0);
+                        $playerPoints = $playerPoints['GetCompPoints']['CompBalance'];
+                        $oldCurrentPoints = $playerPoints;
+                        if($oldCurrentPoints >= $totalPoints) {
                             $isPointsUpdated = $memberCardsModel->updateCardPoints($MID, $totalPoints);
-                            $playerPoints = $memberCardsModel->getMemberPointsAndStatus($cardNumber);
-                            if($isPointsUpdated > 0 && $playerPoints['CurrentPoints'] > 0) {
+                            $amt = $oldCurrentPoints - $totalPoints;
+                            $isPointsDeducted = $pcwsWrapper->deductCompPoints($cardNumber, $amt, '', 0);
+                            //$playerPoints = $memberCardsModel->getMemberPointsAndStatus($cardNumber);
+                            $playerPoints = $pcwsWrapper->getCompPoints($cardNumber, 0);
+                            $playerPoints = $playerPoints['GetCompPoints']['CompBalance'];
+                            $oldCurrentPoints = $playerPoints;
+                            if($isPointsUpdated > 0 && $oldCurrentPoints > 0 && $isPointsDeducted) {
                                 $currentItemCount = $rewardItemsModel->getAvailableItemCount($rewardItemID);
                                 if($currentItemCount['AvailableItemCount'] >= $itemQtyItr && $currentItemCount['AvailableItemCount'] != 0) {
                                     $isItemCountUpdated = $rewardItemsModel->updateAvailableItemCount($rewardItemID, $AID);

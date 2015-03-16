@@ -67,6 +67,21 @@ class MPapiInvokerController extends Controller{
 
         $this->render('login', array('result'=>$result));
     }
+    
+    public function actionChangePassword(){
+        $this->pageTitle = 'Membership Portal API - Change Password';
+        $result = '';
+
+        if(isset($_POST['CardNumber']) || isset($_POST['NewPassword'])) {
+            $cardNumber = $_POST['CardNumber'];
+            $newPassword = $_POST['NewPassword'];
+
+            $result = $this->_changePassword($cardNumber, $newPassword);
+        }
+
+
+        $this->render('changepassword', array('result'=>$result));
+    }
 
     public function actionForgotPassword(){
         $this->pageTitle = 'Membership Portal API - Forgot Password';
@@ -333,6 +348,13 @@ class MPapiInvokerController extends Controller{
     private function _login($username, $password) {
         $postdata = CJSON::encode(array('Username' => $username, 'Password' => $password));
         $result = $this->SubmitData(Yii::app()->params['urlMPAPI'].'login', $postdata);
+
+        return $result[1];
+    }
+    
+    private function _changePassword($cardNumber, $newPassword) {
+        $postdata = CJSON::encode(array('CardNumber'=>$cardNumber, 'NewPassword' => $newPassword));
+        $result = $this->SubmitData(Yii::app()->params['urlMPAPI'].'changepassword', $postdata);
 
         return $result[1];
     }

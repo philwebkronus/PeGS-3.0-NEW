@@ -28,6 +28,10 @@
             <?php echo CHtml::textField('Password'); ?>
         </div>
         <div class="row">
+            <?php echo CHtml::label('ConfirmPassword','ConfirmPassword'); ?>
+            <?php echo CHtml::textField('ConfirmPassword'); ?>
+        </div>
+        <div class="row">
             <?php echo CHtml::label('PermanentAdd','PermanentAdd'); ?>
             <?php echo CHtml::textField('PermanentAdd'); ?>
         </div>

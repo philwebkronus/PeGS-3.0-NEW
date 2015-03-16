@@ -86,6 +86,10 @@ class CommonController {
                 'ReturnMessage' => $transMsg,
             ));
         }
+        else if($module == 'ChangePassword') {
+            return array('ChangePassword' => array('ErrorCode' => $errorCode, 
+                         'ReturnMessage' => $transMsg));
+        }
         else if($module == 'ForgotPassword') {
             return array('ForgotPassword' => array('ErrorCode' => $errorCode, 
                          'ReturnMessage' => $transMsg));
@@ -301,9 +305,9 @@ class CommonController {
         return array($module => array('Profile' => $profile, 'ErrorCode' => $errorCode, 'ReturnMessage' => $transMsg));
     }
     
-    public static function retMsgResetPin($module, $result) {
-        $module == 'ResetPin';
-        return $result;
+    public static function retMsgChangePassword($module, $errorCode, $transMsg) {
+        $module = 'ChangePassword';
+        return array($module => array('ErrorCode' => $errorCode, 'ReturnMessage' => $transMsg));
     }
     
 }

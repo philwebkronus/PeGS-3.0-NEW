@@ -8,7 +8,7 @@ class Cipher
         // Uncomment if key hashing is needed.
         //$this->securekey = hash('sha256',$textkey,TRUE);
         $this->securekey = $textkey;
-        $this->iv = mcrypt_create_iv(32);
+        $this->iv = mcrypt_create_iv(32, MCRYPT_DEV_URANDOM);
     }
 
     function encryptS($input) 

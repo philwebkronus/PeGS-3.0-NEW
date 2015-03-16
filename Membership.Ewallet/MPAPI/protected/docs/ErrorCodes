@@ -93,3 +93,4 @@ Code    Message
 95  -   AlterStr already exists.
 96  -   Not a valid AlterStr.
 97  -   Invalid Mobile Number.
+120 -   Cannot access PCWS API.

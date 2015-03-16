@@ -12,6 +12,8 @@ class Ref_SMSApiMethodsModel {
     const ITEM_REDEMPTION = 2;
     const PLAYER_REGISTRATION = 3;
     const PLAYER_REGISTRATION_BT = 4;
+    const PLAYER_REGISTRATION_1OF2 = 5;
+    const PLAYER_REGISTRATION_2OF2 = 6;
     
     public static $_instance = null;
     public $_connection;
