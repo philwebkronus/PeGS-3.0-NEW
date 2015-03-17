@@ -75,7 +75,7 @@ if (isset($_POST['pager'])) {
                 if(isset($_POST['Card']) && isset($_POST['CasinoService'])){
                     $cardnumber = $_POST['Card'];
                     $serviceID = $_POST['CasinoService'];
-                    $DateCreated =  "now_usec()";
+                    $DateCreated =  "NOW(6)";
                    
                     //get card details using cardnumber
                     $cardinfo = $_MemberCards->getMemberCardInfoByCardNumber($cardnumber);

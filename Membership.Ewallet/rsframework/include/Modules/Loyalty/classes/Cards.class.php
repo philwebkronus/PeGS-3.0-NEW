@@ -67,7 +67,7 @@ class Cards extends BaseEntity
         
         $arrEntries['CardNumber'] = $cardnumber;
         $arrEntries['CardTypeID'] = $_CardTypes->getCardTypeByName('Temporary');
-        $arrEntries['DateCreated'] = 'now_usec()';
+        $arrEntries['DateCreated'] = 'NOW(6)';
         $arrEntries['CreatedByAID'] = $AID;
         $arrEntries['Status'] = CardStatus::ACTIVE;
         

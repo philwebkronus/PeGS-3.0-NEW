@@ -203,7 +203,7 @@ if ($fproc->IsPostBack) {
             $_SESSION['msg'] = "Failed to update reward offer : " . $_RewardOffers->getErrors();
         } else {
             $_RewardOffers->CommitTransaction();
-            $updateOffers["DateUpdated"] = "now_usec()";
+            $updateOffers["DateUpdated"] = "NOW(6)";
             $updateOffers["UpdatedByAID"] = $_SESSION['aID'];
             $_RewardOffers->StartTransaction();
             if ($_RewardOffers->HasError) {
@@ -217,7 +217,7 @@ if ($fproc->IsPostBack) {
                     $_SESSION['msg'] = "Reward Offer details unchanged.";
                     header("Location: viewrewardoffers.php");
                 } else {
-                    $updateOffers["DateUpdated"] = "now_usec()";
+                    $updateOffers["DateUpdated"] = "NOW(6)";
                     $updateOffers["UpdatedByAID"] = $_SESSION['aID'];
                     $_RewardOffers->UpdateByArray($updateOffers);
                     $_SESSION['msg'] = "Reward offer successfully updated.";

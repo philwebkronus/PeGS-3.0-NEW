@@ -26,7 +26,7 @@ Class PlayerBanningWrapper {
         $banningdata['MID'] = $entries['MID'];
         $banningdata['Status'] = $entries['Status'] == "5" ? "1":"0";
         $banningdata['Remarks'] = $entries['txtRemarks'];
-        $banningdata['DateCreated'] = 'now_usec()';
+        $banningdata['DateCreated'] = 'NOW(6)';
         $banningdata['CreatedByAID'] = $entries['AID'];
         $_BanningHistory = new BanningHistory();
         $_BanningHistory->StartTransaction();

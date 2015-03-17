@@ -62,7 +62,7 @@ class RaffleCoupons extends BaseEntity
             
             if(count($availablecoupon) == $Quantity) {
                 //Proceed with update query if the table is already locked.
-                $update = "UPDATE $this->TableName SET CouponRedemptionLogID = $CouponRedemptionLogID, Status = 1, UpdatedByAID = $updatedbyaid, DateUpdated = now_usec() 
+                $update = "UPDATE $this->TableName SET CouponRedemptionLogID = $CouponRedemptionLogID, Status = 1, UpdatedByAID = $updatedbyaid, DateUpdated = NOW(6) 
                                     WHERE CouponRedemptionLogID IS NULL AND Status = 0 AND RewardItemID = $RewardItemID ORDER BY CouponNumber LIMIT $Quantity";
                 parent::ExecuteQuery($update);
                 $result = $this->AffectedRows;
@@ -149,7 +149,7 @@ class RaffleCoupons extends BaseEntity
             App::SetErrorMessage($this->getError());
             return false;
         } else {
-            $query = "UPDATE loyaltydb.couponredemptionlogs SET Status = 1, DateUpdated = now_usec() WHERE CouponRedemptionLogID = $CouponRedemptionLogID";
+            $query = "UPDATE loyaltydb.couponredemptionlogs SET Status = 1, DateUpdated = NOW(6) WHERE CouponRedemptionLogID = $CouponRedemptionLogID";
             parent::ExecuteQuery($query);
             if ($this->HasError)
             {

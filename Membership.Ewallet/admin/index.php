@@ -285,7 +285,7 @@ if ($fproc->IsPostBack) {
     }
 
     if ($btnUpdate->SubmittedValue == 'Update') {
-        $dateupdated = 'now_usec()';
+        $dateupdated = 'NOW(6)';
         $arrMembers["DateUpdated"] = $dateupdated;
 
         $arrMembers["MID"] = $hdnMID->SubmittedValue;

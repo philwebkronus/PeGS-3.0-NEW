@@ -106,7 +106,7 @@ class Members extends BaseEntity {
                     $_MemberServices = new MemberServices();
                     $_PcwsWrapper = new PcwsWrapper();
                     
-                    $datecreated = "now_usec()";
+                    $datecreated = "NOW(6)";
 
                     $ArrCardID = $_OldCards->getOldCardDetails($loyaltyCard);
                     $ArrayOldCardID = $ArrCardID[0];

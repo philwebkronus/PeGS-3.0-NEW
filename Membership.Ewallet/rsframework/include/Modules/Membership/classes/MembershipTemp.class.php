@@ -33,7 +33,7 @@ class MembershipTemp extends BaseEntity {
     }
     
     public function updateTempProfileDateUpdated($HiddenMID, $arrMemberInfo, $aid) {
-        $arrMemberInfo['DateUpdated'] = 'now_usec()';
+        $arrMemberInfo['DateUpdated'] = 'NOW(6)';
         $DateUpdated = $arrMemberInfo['DateUpdated'];
         $query = "UPDATE membership.memberinfo SET DateUpdated = '$DateUpdated',
                                      UpdatedByAID = '$aid'
@@ -42,7 +42,7 @@ class MembershipTemp extends BaseEntity {
     }
     
     public function updateTempProfileDateUpdatedAdmin($HiddenMID, $arrMemberInfo, $aid) {
-        $arrMemberInfo['DateUpdated'] = 'now_usec()';
+        $arrMemberInfo['DateUpdated'] = 'NOW(6)';
         $DateUpdated = $arrMemberInfo['DateUpdated'];
         $query = "UPDATE membership.memberinfo SET DateUpdated = '$DateUpdated',
                                      UpdatedByAID = '$aid'

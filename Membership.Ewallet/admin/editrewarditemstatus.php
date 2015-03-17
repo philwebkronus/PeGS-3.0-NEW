@@ -99,7 +99,7 @@ if ($fproc->IsPostBack) {
             //check affected rows
             if ($lastid > 0) {
                 $arrEntry2['RewardItemID'] = $rewarditemid;
-                $arrEntry2['DateUpdated'] = "now_usec()";
+                $arrEntry2['DateUpdated'] = "NOW(6)";
                 $arrEntry2['UpdatedByAID'] = $_SESSION['aID'];
 
                 $rewarditems->UpdateByArray($arrEntry2);

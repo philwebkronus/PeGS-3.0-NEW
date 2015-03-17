@@ -82,7 +82,7 @@ class CouponRedemptionLogs extends BaseEntity
         } else {
             $updatedbyaid = $_SESSION['userinfo']['AID'];
         }
-        $query = "UPDATE ".$this->GetDBName().".".$this->TableName." SET Status = $status, DateUpdated = now_usec(),UpdatedByAID = $updatedbyaid,
+        $query = "UPDATE ".$this->GetDBName().".".$this->TableName." SET Status = $status, DateUpdated = NOW(6),UpdatedByAID = $updatedbyaid,
                             SerialCode='$serialcode', SecurityCode='$securitycode', ValidFrom='$validfrom', ValidTo='$validto', RedeemedPoints=$totalitempoints
                             WHERE CouponRedemptionLogID = $CouponRedemptionLogID";
         parent::ExecuteQuery($query);

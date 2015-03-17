@@ -381,7 +381,7 @@ class PDOHandler extends BaseObject
 //    {
 //        $query = str_replace("'Now()'", "Now()", $query);
 //        $query = str_replace("'now()'", "now()", $query);
-//        $query = str_replace("'now_usec()'", "now_usec()", $query);
+//        $query = str_replace("'NOW(6)'", "NOW(6)", $query);
 //        $query = str_replace("'UUID()'", "UUID()", $query);
 //        $query = str_replace("'uuid()'", "uuid()", $query);
 //        return $query;
@@ -421,7 +421,7 @@ class PDOHandler extends BaseObject
         {
             $hasfunction = true;
         }
-        if (strpos($strquery, "now_usec()") > -1)
+        if (strpos($strquery, "NOW(6)") > -1)
         {
             $hasfunction = true;
         }
@@ -436,7 +436,7 @@ class PDOHandler extends BaseObject
     {
         $query = str_replace("'Now()'", "Now()", $query);
         $query = str_replace("'now()'", "now()", $query);
-        $query = str_replace("'now_usec()'", "now_usec()", $query);
+        $query = str_replace("'NOW(6)'", "NOW(6)", $query);
         $query = str_replace("'UUID()'", "UUID()", $query);
         $query = str_replace("'uuid()'", "uuid()", $query);
         
@@ -445,13 +445,13 @@ class PDOHandler extends BaseObject
             $ds = new DateSelector();
             $nowusec = $ds->GetNowUSec();
             $now = $ds->GetNowUSec(false);
-            $query = str_replace("now_usec()", "'" . $nowusec . "'", $query);
+            $query = str_replace("NOW(6)", "'" . $nowusec . "'", $query);
             $query = str_replace("now()", "'" . $now . "'", $query);
         }
         
         if (App::getParam("applicationmicroseconds") == true)
         {
-            $query = str_replace("now_usec()", "'" . $this->GetNowUSec() . "'", $query);
+            $query = str_replace("NOW(6)", "'" . $this->GetNowUSec() . "'", $query);
         }
         return $query;
     }

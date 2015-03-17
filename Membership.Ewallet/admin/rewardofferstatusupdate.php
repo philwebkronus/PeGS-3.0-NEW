@@ -108,7 +108,7 @@ if ($fproc->IsPostBack) {
                 $_SESSION['msg'] = "Reward Offer details unchanged.";
                 header("Location: viewrewardoffers.php");
             } else {
-                $_RewardOffers->updateRewardOfferStatus($rewardoffer_id, $rdogroupstat, "now_usec()", $_SESSION['aID']);
+                $_RewardOffers->updateRewardOfferStatus($rewardoffer_id, $rdogroupstat, "NOW(6)", $_SESSION['aID']);
                 if ($_RewardOffers->HasError) {
                     $_RewardOffers->RollBackTransaction();
                     $_SESSION['msg'] = "Cannot add the Date of Update.";

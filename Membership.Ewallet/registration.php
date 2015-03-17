@@ -264,7 +264,7 @@ $fproc->AddControl($rdoGroupSmoker);
 
 $fproc->ProcessForms();
 
-$datecreated = "now_usec()";
+$datecreated = "NOW(6)";
 $isEmailUnique = true;
 
 App::GetErrorMessage();
@@ -300,7 +300,7 @@ if ($fproc->IsPostBack)
         $arrMemberInfo['Gender'] = $rdoGroupGender->SubmittedValue;
         $arrMemberInfo['IsSmoker'] = $rdoGroupSmoker->SubmittedValue;
 
-        $arrMemberInfo['DateCreated'] = 'now_usec()';
+        $arrMemberInfo['DateCreated'] = 'NOW(6)';
 
         $chkEmailNotification->SubmittedValue == 1 ? $arrMemberInfo['EmailSubscription'] = 1 : $arrMemberInfo['EmailSubscription'] = 0;
         $chkSMSNotification->SubmittedValue == 1 ? $arrMemberInfo['SMSSubscription'] = 1 : $arrMemberInfo['SMSSubscription'] = 0;

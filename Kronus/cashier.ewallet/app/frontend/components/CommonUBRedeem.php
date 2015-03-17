@@ -63,7 +63,13 @@ class CommonUBRedeem {
         }
         
         //call SAPI, lock launchpad terminal
-        $casinoApi->callSpyderAPI($commandId = 1, $terminal_id, $casinoUsername, $login_pwd, $service_id);
+        //call SAPI, lock launchpad terminal
+        if($terminalType == 2){
+            $casinoApi->callSpyderAPI($commandId = 9, $terminal_id, $casinoUsername, $login_pwd, $service_id);
+        }
+        else{
+            $casinoApi->callSpyderAPI($commandId = 1, $terminal_id, $casinoUsername, $login_pwd, $service_id);
+        }
         
         $is_terminal_active = $terminalSessionsModel->isSessionActive($terminal_id);
         

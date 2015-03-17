@@ -51,7 +51,7 @@ class GeneratedPasswordBatch extends BaseEntity
     
     public function updatePasswordBatch($MID, $genpassbacthID)
     {
-        $query = "UPDATE generatedpasswordbatch SET DateUsed = now_usec(), MID = $MID, Status = 1 WHERE GeneratedPasswordBatchID = $genpassbacthID";
+        $query = "UPDATE generatedpasswordbatch SET DateUsed = NOW(6), MID = $MID, Status = 1 WHERE GeneratedPasswordBatchID = $genpassbacthID";
         return parent::ExecuteQuery($query);
     }
     

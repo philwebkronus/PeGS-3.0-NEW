@@ -15,6 +15,8 @@ App::LoadModuleClass('Loyalty', 'Cards');
 App::LoadModuleClass('Loyalty', 'CardTransactions');
 App::LoadModuleClass('Kronus', 'Sites');
 App::LoadModuleClass('Membership', 'PcwsWrapper');
+App::LoadModuleClass("Membership", "AuditFunctions");
+App::LoadModuleClass("Membership", "AuditTrail");
 
 App::LoadCore('Validation.class.php');
 App::LoadCore('ErrorLogger.php');
@@ -24,6 +26,7 @@ App::LoadControl("Button");
 
 $_MemberCards = new MemberCards();
 $_CardTransactions = new CardTransactions();
+$_Log = new AuditTrail();
 $_Sites = new Sites();
 $_Cards = new Cards();
 
@@ -149,10 +152,13 @@ if (isset($_SESSION['CardInfo']))
         if($api['GetCompPoints']['ErrorCode'] == 0)
         {
             $currentPoints2 = number_format($api['GetCompPoints']['CompBalance'], 0);
+            $_Log->logEvent(AuditFunctions::GET_COMP_POINTS, 'MID:' . $MID .'CardNumber :'.$CardNumber. ': Successful', array('ID' => $_SESSION['userinfo']['AID'], 'SessionID' => $_SESSION['userinfo']['SessionID']));
+            
         }
         else
         {
             $currentPoints2 = $api['GetCompPoints']['TransactionMessage'];
+            $_Log->logEvent(AuditFunctions::GET_COMP_POINTS, 'MID:' . $MID .'CardNumber :'.$CardNumber.' Message: '.$currentPoints2.': Failed', array('ID' => $_SESSION['userinfo']['AID'], 'SessionID' => $_SESSION['userinfo']['SessionID']));
         }
         
         $loyaltyinfo = $loyaltyinfo[0];

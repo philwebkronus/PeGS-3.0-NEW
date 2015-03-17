@@ -27,7 +27,7 @@ class RewardItems extends BaseEntity
     function updateAvailableItemCount($RewardItemID, $UpdatedByAID){
         $ItemCount = 1;
         $query = "UPDATE  $this->TableName SET AvailableItemCount = AvailableItemCount - $ItemCount,
-                            UpdatedByAID=$UpdatedByAID, DateUpdated=now_usec()
+                            UpdatedByAID=$UpdatedByAID, DateUpdated=NOW(6)
                             WHERE RewardItemID = $RewardItemID";
         parent::ExecuteQuery($query);
         return $this->AffectedRows;
@@ -55,8 +55,8 @@ class RewardItems extends BaseEntity
                             LEFT JOIN ref_partners rp ON rp.PartnerID = ri.PartnerID
                             WHERE ri.PClassID IN ($playerclassification, 1)
                             AND ri.Status IN (1,3)
-                            AND ri.OfferStartDate <= now_usec() 
-                            AND ri.OfferEndDate >= now_usec()
+                            AND ri.OfferStartDate <= NOW(6) 
+                            AND ri.OfferEndDate >= NOW(6)
                             ORDER BY $sortby $sorttype";
        
         return parent::RunQuery($query);
@@ -69,7 +69,7 @@ class RewardItems extends BaseEntity
     * @return array
     */
     function getOfferEndDate($RewardItemID){
-        $query = "SELECT  OfferEndDate, curdate() as CurrentDate, now_usec() as ItemCurrentDate FROM $this->TableName
+        $query = "SELECT  OfferEndDate, curdate() as CurrentDate, NOW(6) as ItemCurrentDate FROM $this->TableName
                             WHERE RewardItemID=$RewardItemID";
         $result = parent::RunQuery($query);
         return $result[0];
@@ -239,7 +239,7 @@ class RewardItems extends BaseEntity
         $query = "UPDATE $this->TableName SET RewardItemName = '$rewarditemname', RewardItemDescription = '$rewarditemdesc',
             RewardItemCode = '$rewarditemcode', RewardItemImagePath = '$rewarditemimagepath', ExpiryDate = '$expdate', 
                 RewardItemCount = $rewarditemcount, RewardItemPrice = $rewarditemprice, IsCoupon = $iscoupon, 
-                    ShowInHomePage = $showinhomepage, DateUpdated = 'now_usec()', UpdatedByAID = $aid 
+                    ShowInHomePage = $showinhomepage, DateUpdated = 'NOW(6)', UpdatedByAID = $aid 
                         WHERE RewardItemID = $rewarditemid";
 
         return parent::ExecuteQuery($query);

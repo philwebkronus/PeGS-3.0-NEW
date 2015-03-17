@@ -35,7 +35,7 @@ class RewardOffers extends BaseEntity
     * Get Reward Offer End Date.
     */
     function getOfferEndDate($RewardOfferID){
-        $query = "SELECT  OfferEndDate, now_usec() as CurrentDate FROM $this->TableName
+        $query = "SELECT  OfferEndDate, NOW(6) as CurrentDate FROM $this->TableName
                             WHERE RewardOfferID=$RewardOfferID";
         $result = parent::RunQuery($query);
         return $result[0];
@@ -59,7 +59,7 @@ class RewardOffers extends BaseEntity
                             AND ri.Status = 1 
                             AND p.Status = 1 
                             AND ro.Status = 1
-                            AND ro.OfferEndDate >= now_usec()
+                            AND ro.OfferEndDate >= NOW(6)
                             ORDER BY $sortby $sorttype";
         return parent::RunQuery($query);
     }
@@ -116,7 +116,7 @@ class RewardOffers extends BaseEntity
     function updateStatus($status, $rewarditemid, $aid){
         
         $query = "UPDATE rewardoffers SET Status = $status, 
-            DateUpdated = 'now_usec()', UpdatedByAID = $aid 
+            DateUpdated = 'NOW(6)', UpdatedByAID = $aid 
                 WHERE RewardItemID = $rewarditemid";
     
         return parent::ExecuteQuery($query);

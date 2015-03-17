@@ -153,7 +153,7 @@ if ($fproc->IsPostBack) {
         $arrRewardOffer['RequiredPoints'] = $RequiredPoints->SubmittedValue;
         $arrRewardOffer['OfferStartDate'] = $fromDate->SubmittedValue;
         $arrRewardOffer['OfferEndDate'] = $toDate->SubmittedValue;
-        $arrRewardOffer['DateCreated'] = "now_usec()";
+        $arrRewardOffer['DateCreated'] = "NOW(6)";
         $arrRewardOffer['CreatedByAID'] = $_SESSION['aID'];
         $arrRewardOffer['Status'] = 1;
 

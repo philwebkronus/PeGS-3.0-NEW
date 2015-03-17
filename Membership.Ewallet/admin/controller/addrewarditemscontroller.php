@@ -254,7 +254,7 @@ if ($fproc->IsPostBack) {
                             $arrEntry['AvailableItemCount'] = "$rewarditemcount";
                             $arrEntry['RewardItemImagePath'] = "$name" . "." . "$exten";
                             $arrEntry['ExpiryDate'] = $expirationdate;
-                            $arrEntry['DateCreated'] = "now_usec()";
+                            $arrEntry['DateCreated'] = "NOW(6)";
                             $arrEntry['CreatedByAID'] = $_SESSION['aID'];
                             $arrEntry['IsCoupon'] = $rewardtype;
                             $arrEntry['ShowInHomePage'] = $viewhomepage;

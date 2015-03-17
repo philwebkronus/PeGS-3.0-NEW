@@ -60,7 +60,7 @@ class TempMembership extends BaseEntity
         
         if(count($result) > 0) //Account exist
         {
-            $query2 = "UPDATE members SET DateVerified = now_usec(), IsVerified = 1
+            $query2 = "UPDATE members SET DateVerified = NOW(6), IsVerified = 1
                        WHERE UserName = '$email'
                         AND TemporaryAccountCode = '$tempcode'";
             

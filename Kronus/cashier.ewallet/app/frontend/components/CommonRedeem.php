@@ -58,9 +58,13 @@ class CommonRedeem {
             CasinoApi::throwError($message);
           }  
         }
-        
         //call SAPI, lock launchpad terminal
-        $casinoApi->callSpyderAPI($commandId = 1, $terminal_id, $terminalname, $login_pwd, $service_id);
+        if($terminalType == 2){
+            $casinoApi->callSpyderAPI($commandId = 9, $terminal_id, $terminalname, $login_pwd, $service_id);
+        }
+        else{
+            $casinoApi->callSpyderAPI($commandId = 1, $terminal_id, $terminalname, $login_pwd, $service_id);
+        }
         
         $is_terminal_active = $terminalSessionsModel->isSessionActive($terminal_id);
         

@@ -105,7 +105,7 @@ if($fproc->IsPostBack)
                         $arrEntry['SessionID'] = session_id();
                         $arrEntry['AID'] = $row['AID'];
                         $arrEntry['RemoteIP'] = $_SERVER['REMOTE_ADDR'];
-                        $arrEntry['DateStarted'] = "now_usec()";
+                        $arrEntry['DateStarted'] = "NOW(6)";
                         
                         $activesession = $_AccountSessions->checkSession($row['AID']);
                         foreach ($activesession as $value) {

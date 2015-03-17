@@ -33,7 +33,7 @@ class AuditTrail extends BaseEntity
         $arrEntries['AuditFunctionID'] = $auditfunctionid;
         $arrEntries['SessionID'] = $sessionid;
         $arrEntries['TransactionDetails'] = $_AuditFunction->getAuditFunctions($auditfunctionid) . ':' . $details;
-        $arrEntries['TransactionDateTime'] = "now_usec()";
+        $arrEntries['TransactionDateTime'] = "NOW(6)";
         $arrEntries['RemoteIP'] = $remoteIP;
         
         $this->Insert($arrEntries);
@@ -51,7 +51,7 @@ class AuditTrail extends BaseEntity
         $arrEntries['ID'] = $AID;
         $arrEntries['SessionID'] = $sessionid;
         $arrEntries['TransactionDetails'] = $_AuditFunction->getAuditFunctions($auditfunctionid) . ':' . $details;
-        $arrEntries['TransactionDateTime'] = "now_usec()";
+        $arrEntries['TransactionDateTime'] = "NOW(6)";
         $arrEntries['RemoteIP'] = $remoteIP;
         
         $this->Insert($arrEntries);

@@ -92,7 +92,7 @@ if ($fproc->IsPostBack && $btnLogin->SubmittedValue == "Login")
         {
             $_MemberSessions = new MemberSessions();
 
-            $datenow = "now_usec()";
+            $datenow = "NOW(6)";
             $remoteip = $_SERVER['REMOTE_ADDR'];
 
             $arrMemberSessions["MID"] = $members["MID"];

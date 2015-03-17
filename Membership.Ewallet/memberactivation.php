@@ -188,7 +188,7 @@ if ((isset($_GET["oldnumber"]) && (htmlentities($_GET["oldnumber"])))
 
             if ($ConfirmButton->SubmittedValue == "Confirm") {
 
-                $dateCreated = "now_usec()";
+                $dateCreated = "NOW(6)";
                 if (empty($oldCardEmail)) {
                     $noemail = true;
                     $Memberstable["UserName"] = $NewMembershipCardNumber;

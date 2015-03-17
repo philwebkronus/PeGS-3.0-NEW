@@ -82,7 +82,7 @@ class CasinoServices extends BaseEntity
         $services['ServicePassword'] = strtoupper($_Randomizer->GenerateAlphaNumeric(8));  
         $services['HashedServicePassword'] = $services['ServicePassword'];
         $services['UserMode'] = 1;
-        $services['DateCreated'] = 'now_usec()';
+        $services['DateCreated'] = 'NOW(6)';
         $services['isVIP'] = $isVIP;
         $services['Status'] = 1;
         $services['VIPLevel'] = $vipLevel;

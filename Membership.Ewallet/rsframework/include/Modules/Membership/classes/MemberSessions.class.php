@@ -28,7 +28,7 @@ class MemberSessions extends BaseEntity
     {
         $null = null;
         $query = "UPDATE membersessions SET SessionID = '$sessionid', RemoteIP = '$remoteip', 
-            DateStarted = 'now_usec()', TransactionDate = 'now_usec()', DateEnded = '$null' WHERE MID = $aid";
+            DateStarted = 'NOW(6)', TransactionDate = 'NOW(6)', DateEnded = '$null' WHERE MID = $aid";
         
         return parent::ExecuteQuery($query);
     }

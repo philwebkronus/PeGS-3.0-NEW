@@ -187,7 +187,7 @@ class MemberInfo extends BaseEntity {
     }
     
     public function updateProfileDateUpdated($HiddenMID, $arrMemberInfo, $aid) {
-        $arrMemberInfo['DateUpdated'] = 'now_usec()';
+        $arrMemberInfo['DateUpdated'] = 'NOW(6)';
         $DateUpdated = $arrMemberInfo['DateUpdated'];
         $query = "UPDATE membership.memberinfo SET DateUpdated = '$DateUpdated',
                                      UpdatedByAID = '$aid'
@@ -225,7 +225,7 @@ class MemberInfo extends BaseEntity {
     }
     
     public function updateProfileDateUpdatedAdmin($HiddenMID, $arrMemberInfo, $aid) {
-        $arrMemberInfo['DateUpdated'] = 'now_usec()';
+        $arrMemberInfo['DateUpdated'] = 'NOW(6)';
         $DateUpdated = $arrMemberInfo['DateUpdated'];
         $query = "UPDATE membership.memberinfo SET DateUpdated = '$DateUpdated',
                                      UpdatedByAID = '$aid'

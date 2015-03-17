@@ -114,7 +114,7 @@ if((isset($_GET["oldnumber"]) && ctype_alnum($_GET["oldnumber"])) &&
         $newcurrentpoints = ($oldrow["LifetimePoints"] - $oldrow["RedeemedPoints"]) + ($newrow["LifetimePoints"] - $newrow["RedeemedPoints"]);
         $newredeemedpoints = $oldrow["RedeemedPoints"] + $newrow["RedeemedPoints"];
 
-        $datecreated = "now_usec()";
+        $datecreated = "NOW(6)";
         $oldtonew = "1";
 
         //Array to insert to CardPointsTransfer Table

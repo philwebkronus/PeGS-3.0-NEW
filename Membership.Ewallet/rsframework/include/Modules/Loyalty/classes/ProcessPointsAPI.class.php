@@ -61,7 +61,7 @@ class ProcessPointsAPI extends BaseEntity
             
             $arrEntries['Points'] = $Points;
             
-            $arrEntries['DateCreated'] = 'now_usec()';
+            $arrEntries['DateCreated'] = 'NOW(6)';
             
             $this->TableName = "cardtransactions";
             

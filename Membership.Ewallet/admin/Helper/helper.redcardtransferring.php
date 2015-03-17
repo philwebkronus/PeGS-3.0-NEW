@@ -370,7 +370,7 @@ if (isset($_POST['pager'])) {
                 $newcard = $_POST['NewCard'];
                 $MID = $_POST['MID'];
 
-                $datecreated = "now_usec()";
+                $datecreated = "NOW(6)";
 
                 $carddetails = $_MemberCards->getCardDetails($oldcard);
                 $carddetails = $carddetails[0];
@@ -649,7 +649,7 @@ if (isset($_POST['pager'])) {
                 $newcard = $_POST['NewCard'];
                 $MID = $_POST['MID'];
 
-                $datecreated = "now_usec()";
+                $datecreated = "NOW(6)";
 
                 $MIDResult = $_Members->getMIDbyUserName($username);
                 $MID = $MIDResult[0]['MID'];

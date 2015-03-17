@@ -125,7 +125,7 @@ class ComboBox extends BaseDataControl
      */
     function DataBind()
     {
-
+        $i = '';
         if (isset($this->DataSourceText) && isset($this->DataSourceValue))
         {
             $this->DataColumns = array($this->DataSourceText, $this->DataSourceValue);

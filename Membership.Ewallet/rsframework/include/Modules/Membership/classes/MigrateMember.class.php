@@ -44,7 +44,7 @@ class MigrateMember extends BaseEntity
         $arrMembers['UserName'] = $result[0]['UserName'];
         $arrMembers['Password'] = $result[0]['Password'];
         $arrMembers['AccountTypeID'] = $result[0]['AccountTypeID'];
-        $arrMembers['DateCreated'] = 'now_usec()';
+        $arrMembers['DateCreated'] = 'NOW(6)';
         
         $queryMemberInfo = "SELECT FirstName, MiddleName, LastName, NickName, Birthdate, Gender, Email,
                                    AlternateEmail, MobileNumber, AlternateMobileNumber, NationalityID,
@@ -77,7 +77,7 @@ class MigrateMember extends BaseEntity
         $arrMemberInfo['EmailSubscription'] = $result2[0]['EmailSubscription'];
         $arrMemberInfo['SMSSubscription'] = $result2[0]['SMSSubscription'];
         $arrMemberInfo['IsCompleteInfo'] = $result2[0]['IsCompleteInfo'];
-        $arrMemberInfo['DateCreated'] = 'now_usec()';
+        $arrMemberInfo['DateCreated'] = 'NOW(6)';
         $arrMemberInfo['DateVerified'] = $result[0]['DateVerified'];                
                           
         $this->TableName = "members";
@@ -124,7 +124,7 @@ class MigrateMember extends BaseEntity
 
         $arrEntries['CardNumber'] = $this->CardNumber;
         $arrEntries['CardTypeID'] = Helper::getCardTypeByName('Temporary');
-        $arrEntries['DateCreated'] = 'now_usec()';
+        $arrEntries['DateCreated'] = 'NOW(6)';
         $arrEntries['CreatedByAID'] = 1;
         $arrEntries['Status'] = CardStatus::ACTIVE_TEMPORARY;
 
@@ -156,7 +156,7 @@ class MigrateMember extends BaseEntity
             $MemberName = $memberinfo[0]['FirstName'] . ' ' . $memberinfo[0]['LastName'];
             $arrMemberCard['MemberCardName'] = $MemberName;
             $arrMemberCard['SiteID'] = 1; //To be supplied from the cashier
-            $arrMemberCard['DateCreated'] = 'now_usec()';
+            $arrMemberCard['DateCreated'] = 'NOW(6)';
             $arrMemberCard['CreatedByAID'] = 1; //To be supplied from the cashier
             $arrMemberCard['Status'] = 1; //Active card
 

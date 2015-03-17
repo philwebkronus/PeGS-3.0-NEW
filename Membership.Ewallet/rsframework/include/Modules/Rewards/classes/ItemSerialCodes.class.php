@@ -60,7 +60,7 @@ Class ItemSerialCodes extends BaseEntity {
             $ItemSerialCodeID = $this->getSerialCodeForRedemptionCopy($RewardItemID);
             if(isset($ItemSerialCodeID[0]["ItemSerialCodeID"]) && $ItemSerialCodeID[0]["ItemSerialCodeID"] != ""){
                 //Proceed with update query if the table is already locked.
-                $update = "UPDATE $this->TableName SET Status=2, UpdatedByAID=$UpdatedByAID, DateUpdated=now_usec()
+                $update = "UPDATE $this->TableName SET Status=2, UpdatedByAID=$UpdatedByAID, DateUpdated=NOW(6)
                                 WHERE Status = 1 AND ItemSerialCodeID = ".$ItemSerialCodeID[0]["ItemSerialCodeID"];
                 parent::ExecuteQuery($update);
                 $result = $this->AffectedRows;

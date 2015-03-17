@@ -172,7 +172,7 @@ if((isset($_GET["tempnumber"]) && (htmlentities($_GET["tempnumber"]))) &&
 
             if($btnSubmit->SubmittedValue == "Confirm")
             {
-                $datecreated = "now_usec()";
+                $datecreated = "NOW(6)";
                 
                 $tempcardresult = $_Cards->getCardInfo($tempAccountCode); //getMemberCardInfoByCard($MembershipCardNumber);
                 $tempcardinfo = $tempcardresult[0];
