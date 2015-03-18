@@ -255,6 +255,13 @@ class AmpapiController extends Controller {
         $request = $this->_readJsonRequest();
         $GetActiveSessionModle = new GetActiveSessionModel();
         $module = 'GetActiveSession';
+        
+        $appLogger = new AppLogger();
+                
+        $paramval = CJSON::encode($request);
+        $message = "[".$module."] Input: ".$paramval;
+        $appLogger->log($appLogger->logdate, "[request]",$message);
+        
         $activeSession = false;
         $validateRequiredFields = $this->validateRequiredFields($request, $module, array('Username'=>false));
         if($validateRequiredFields===true){
@@ -463,6 +470,13 @@ class AmpapiController extends Controller {
     public function actionLogin(){
         $request = $this->_readJsonRequest();
         $module = 'Login';
+        
+        $appLogger = new AppLogger();
+                
+        $paramval = CJSON::encode($request);
+        $message = "[".$module."] Input: ".$paramval;
+        $appLogger->log($appLogger->logdate, "[request]",$message);
+        
         //$authenticateSession = new AuthenticateSessionModel();
 
         $validateRequiredField = $this->validateRequiredFields($request, $module, array('TPSessionID'=>false, 'Username'=>false, 'Password'=>false, 'AlterStr' =>false));
@@ -480,6 +494,10 @@ class AmpapiController extends Controller {
                 $url = $this->genMPAPIURL($moduleName);
                 $postData = CJSON::encode(array('Username'=>$Username, 'Password'=>$Password, 'AlterStr' => $AlterStr));
                 $result = $this->SubmitData($url, $postData);
+                
+                //$data = CommonController::retMsg($module, $transMsg, $eCode);
+                $message = "[".$module."] Output: ".CJSON::encode($result);
+                $appLogger->log($appLogger->logdate, "[response]",$message);
 
                 if(isset($result[0]) && $result[0]==200){
                     $this->_sendResponse(200, $result[1]);
@@ -499,6 +517,13 @@ class AmpapiController extends Controller {
     public function actionChangePassword(){
         $request = $this->_readJsonRequest();
         $module = 'ChangePassword';
+        
+        $appLogger = new AppLogger();
+                
+        $paramval = CJSON::encode($request);
+        $message = "[".$module."] Input: ".$paramval;
+        $appLogger->log($appLogger->logdate, "[request]",$message);
+        
         //$authenticateSession = new AuthenticateSessionModel();
 
         $validateRequiredField = $this->validateRequiredFields($request, $module, array('TPSessionID'=>false, 'CardNumber'=>false, 'NewPassword'=>false));
@@ -514,6 +539,11 @@ class AmpapiController extends Controller {
                 $postData = CJSON::encode(array('CardNumber'=>$cardNumber, 'NewPassword'=>$newPassword));
                 $result = $this->SubmitData($url, $postData);
                 $AID = $this->currentAID;
+                
+                //$data = CommonController::retMsg($module, $transMsg, $eCode);
+                $message = "[".$module."] Output: ".CJSON::encode($result);
+                $appLogger->log($appLogger->logdate, "[response]",$message);
+                
                 if(isset($result[0]) && $result[0]==200){
                     $this->_sendResponse(200, $result[1]);
                     $ValidateResponse = $this->validateResponse($result[1], $module);
@@ -537,6 +567,13 @@ class AmpapiController extends Controller {
     public function actionForgotPassword(){
         $request = $this->_readJsonRequest();
         $module = 'ForgotPassword';
+        
+        $appLogger = new AppLogger();
+                
+        $paramval = CJSON::encode($request);
+        $message = "[".$module."] Input: ".$paramval;
+        $appLogger->log($appLogger->logdate, "[request]",$message);
+        
         $ForgotPassword = new ForgotPasswordModel();
 
         $validateRequiredFields = $this->validateRequiredFields($request, $module, array('TPSessionID'=>false,'EmailCardNumber'=>false));
@@ -552,6 +589,10 @@ class AmpapiController extends Controller {
                 $postData = CJSON::encode(array('EmailCardNumber'=>$EmailCardNumber));
                 $result = $this->SubmitData($url, $postData);
                 $AID = $this->currentAID;
+                
+                //$data = CommonController::retMsg($module, $transMsg, $eCode);
+                $message = "[".$module."] Output: ".CJSON::encode($result);
+                $appLogger->log($appLogger->logdate, "[response]",$message);
 
                 if(isset($result[0]) && $result[0]==200){
                     $this->_sendResponse(200, $result[1]);
@@ -571,7 +612,12 @@ class AmpapiController extends Controller {
        $request = $this->_readJsonRequest();
        $module='RegisterMember';
 
-
+       $appLogger = new AppLogger();
+                
+        $paramval = CJSON::encode($request);
+        $message = "[".$module."] Input: ".$paramval;
+        $appLogger->log($appLogger->logdate, "[request]",$message);
+        
        $fields = array('TPSessionID'=>false,'FirstName'=>false,'LastName'=>false,'Password'=>false,'PermanentAdd'=>false,'MobileNo'=>false,'EmailAddress'=>false,'IDPresented'=>false,'IDNumber'=>false,'Birthdate'=>false);
 
        $validateRequiredFields = $this->validateRequiredFields($request, $module, $fields);
@@ -636,6 +682,13 @@ class AmpapiController extends Controller {
                 ));
                 $result = $this->SubmitData($url, $postData);
                 $AID = $this->currentAID;
+                
+                $appLogger = new AppLogger();
+                
+                //$data = CommonController::retMsg($module, $transMsg, $eCode);
+                $message = "[".$module."] Output: ".CJSON::encode($result);
+                $appLogger->log($appLogger->logdate, "[response]",$message);
+                
                 if(isset($result[0]) && $result[0]==200){
                     $this->_sendResponse(200, $result[1]);$AID = $this->currentAID;
 
@@ -656,6 +709,13 @@ class AmpapiController extends Controller {
     public function actionUpdateProfile(){
        $request = $this->_readJsonRequest();
        $module='UpdateProfile';
+       
+       $appLogger = new AppLogger();
+                
+        $paramval = CJSON::encode($request);
+        $message = "[".$module."] Input: ".$paramval;
+        $appLogger->log($appLogger->logdate, "[request]",$message);
+        
        //$UpdateProfile = new UpdateProfileModel();
        //isset($request['']) && $request['']!=null
        $fields = array('TPSessionID'=>false,'MPSessionID'=>false, 'FirstName'=>false,'LastName'=>false,'MobileNo'=>false,'EmailAddress'=>false,'Birthdate'=>false);
@@ -754,6 +814,13 @@ class AmpapiController extends Controller {
                 ));
                 $result = $this->SubmitData($url, $postData);
                 $AID = $this->currentAID;
+                
+                $appLogger = new AppLogger();
+                
+                //$data = CommonController::retMsg($module, $transMsg, $eCode);
+                $message = "[".$module."] Output: ".CJSON::encode($result);
+                $appLogger->log($appLogger->logdate, "[response]",$message);
+                
                 if(isset($result[0]) && $result[0]==200){
                     $this->_sendResponse(200, $result[1]);
 
@@ -803,6 +870,12 @@ class AmpapiController extends Controller {
     public function actionCheckPoints(){
         $request = $this->_readJsonRequest();//print_r($request);
         $module = 'CheckPoints';
+        
+        $appLogger = new AppLogger();
+                
+        $paramval = CJSON::encode($request);
+        $message = "[".$module."] Input: ".$paramval;
+        $appLogger->log($appLogger->logdate, "[request]",$message);
 
         $validateRequiredField = $this->validateRequiredFields($request, $module, array('TPSessionID'=>false, 'CardNumber'=>false));
         if($validateRequiredField===true){
@@ -815,6 +888,11 @@ class AmpapiController extends Controller {
                 $postData = CJSON::encode(array('CardNumber'=>$CardNumber));
                 $result = $this->SubmitData($url, $postData);
                 $AID = $this->currentAID;
+                
+                //$data = CommonController::retMsg($module, $transMsg, $eCode);
+                $message = "[".$module."] Output: ".CJSON::encode($result);
+                $appLogger->log($appLogger->logdate, "[response]",$message);
+                
                 if(isset($result[0]) && $result[0]==200){
                     $this->_sendResponse(200, $result[1]);
 
@@ -837,6 +915,12 @@ class AmpapiController extends Controller {
     public function actionListItems(){
         $request = $this->_readJsonRequest();//print_r($request);
         $module = 'ListItems';
+        
+        $appLogger = new AppLogger();
+                
+        $paramval = CJSON::encode($request);
+        $message = "[".$module."] Input: ".$paramval;
+        $appLogger->log($appLogger->logdate, "[request]",$message);
 
         $validateRequiredField = $this->validateRequiredFields($request, $module, array('TPSessionID'=>false, 'MPSessionID'=>false,'PlayerClassID'=>false));
         if($validateRequiredField===true){
@@ -850,6 +934,11 @@ class AmpapiController extends Controller {
                 $postData = CJSON::encode(array('MPSessionID'=>$MPSessionID,'PlayerClassID'=>$PlayerClassID));
                 $result = $this->SubmitData($url, $postData);
                 $AID = $this->currentAID;
+                
+                //$data = CommonController::retMsg($module, $transMsg, $eCode);
+                $message = "[".$module."] Output: ".CJSON::encode($result);
+                $appLogger->log($appLogger->logdate, "[response]",$message);
+                
                 if(isset($result[0]) && $result[0]==200){
                     $this->_sendResponse(200, $result[1]);
 
@@ -871,6 +960,12 @@ class AmpapiController extends Controller {
     public function actionRedeemItems(){
         $request = $this->_readJsonRequest();//print_r($request);
         $module = 'RedeemItems';
+        
+        $appLogger = new AppLogger();
+                
+        $paramval = CJSON::encode($request);
+        $message = "[".$module."] Input: ".$paramval;
+        $appLogger->log($appLogger->logdate, "[request]",$message);
 
         $validateRequiredField = $this->validateRequiredFields($request, $module, array('TPSessionID'=>false, 'MPSessionID'=>false,'CardNumber'=>false,'RewardID'=>false, 'RewardItemID'=>false, 'Quantity'=>false, 'Source'=>false, 'Tracking1'=>false, 'Tracking2'=>false));
         if($validateRequiredField===true){
@@ -892,6 +987,11 @@ class AmpapiController extends Controller {
                 $postData = CJSON::encode(array('MPSessionID'=>$MPSessionID,'CardNumber'=>$CardNumber, 'RewardID'=>$RewardID, 'RewardItemID'=>$RewardItemID, 'Quantity'=>$Quantity,'Source'=>$Source, 'Tracking1' => $Tracking1, 'Tracking2' => $Tracking2));
                 $result = $this->SubmitData($url, $postData);
                 $AID = $this->currentAID;
+                
+                //$data = CommonController::retMsg($module, $transMsg, $eCode);
+                $message = "[".$module."] Output: ".CJSON::encode($result);
+                $appLogger->log($appLogger->logdate, "[response]",$message);
+                
                 if(isset($result[0]) && $result[0]==200){
                     $this->_sendResponse(200, $result[1]);
 
@@ -916,6 +1016,12 @@ class AmpapiController extends Controller {
     public function actionGetProfile(){
         $request = $this->_readJsonRequest();
         $module = 'GetProfile';
+        
+        $appLogger = new AppLogger();
+                
+        $paramval = CJSON::encode($request);
+        $message = "[".$module."] Input: ".$paramval;
+        $appLogger->log($appLogger->logdate, "[request]",$message);
 
         $validateRequiredField = $this->validateRequiredFields($request, $module, array('TPSessionID'=>false, 'MPSessionID'=>false, 'CardNumber'=>false));
         if($validateRequiredField===true){
@@ -929,6 +1035,11 @@ class AmpapiController extends Controller {
                 $postData = CJSON::encode(array('MPSessionID'=>$MPSessionID, 'CardNumber'=>$CardNumber));
                 $result = $this->SubmitData($url, $postData);
                 $AID = $this->currentAID;
+                
+                //$data = CommonController::retMsg($module, $transMsg, $eCode);
+                $message = "[".$module."] Output: ".CJSON::encode($result);
+                $appLogger->log($appLogger->logdate, "[response]",$message);
+                
                 if(isset($result[0]) && $result[0]==200){
                     $this->_sendResponse(200, $result[1]);
 
@@ -1148,6 +1259,12 @@ class AmpapiController extends Controller {
     public function actionLogout(){
         $request = $this->_readJsonRequest();
         $module = 'Logout';
+        
+        $appLogger = new AppLogger();
+                
+        $paramval = CJSON::encode($request);
+        $message = "[".$module."] Input: ".$paramval;
+        $appLogger->log($appLogger->logdate, "[request]",$message);
 
         $validateRequiredField = $this->validateRequiredFields2($request, $module, array('TPSessionID'=>false, 'MPSessionID'=>false));
 
@@ -1161,6 +1278,9 @@ class AmpapiController extends Controller {
                 $postData = CJSON::encode(array('MPSessionID'=>$MPSessionID));
                 $result = $this->SubmitData($url, $postData);
 
+                //$data = CommonController::retMsg($module, $transMsg, $eCode);
+                $message = "[".$module."] Output: ".CJSON::encode($result);
+                $appLogger->log($appLogger->logdate, "[response]",$message);
 
                 if(isset($result[0]) && $result[0]==200){
                     $ValidateResponse = $this->validateResponse($result[1], $module);
@@ -1189,6 +1309,12 @@ class AmpapiController extends Controller {
     public function actionCreateMobileInfo() {
         $request = $this->_readJsonRequest();
         $module = 'CreateMobileInfo';
+        
+        $appLogger = new AppLogger();
+                
+        $paramval = CJSON::encode($request);
+        $message = "[".$module."] Input: ".$paramval;
+        $appLogger->log($appLogger->logdate, "[request]",$message);
 
         $validateRequiredField = $this->validateRequiredFields($request, $module, array('TPSessionID'=>false, 'Username'=>false, 'Password'=>false, 'AlterStr' =>false));
         if($validateRequiredField===true){
@@ -1204,7 +1330,11 @@ class AmpapiController extends Controller {
                 $url = $this->genMPAPIURL($moduleName);
                 $postData = CJSON::encode(array('Username'=>$Username, 'Password'=>$Password, 'AlterStr' => $AlterStr));
                 $result = $this->SubmitData($url, $postData);
-
+                
+                //$data = CommonController::retMsg($module, $transMsg, $eCode);
+                $message = "[".$module."] Output: ".CJSON::encode($result);
+                $appLogger->log($appLogger->logdate, "[response]",$message);
+                
                 if(isset($result[0]) && $result[0]==200){
                     $this->_sendResponse(200, $result[1]);
                     $this->_auditTrail(AuditTrailModel::CREATE_MOBILE_INFO,0,$AID, $TPSessionID, $module, $Username);
