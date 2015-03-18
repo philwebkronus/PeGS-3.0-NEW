@@ -6408,7 +6408,7 @@ class MPapiController extends Controller {
                 $transMsg = "One or more fields is not set or is blank.";
                 $errorCode = 1;
                 Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
-                $data = CommonController::retMsgCreateMobileInfo($module, '', '', '', $errorCode, $transMsg, '');
+                $data = CommonController::retMsgCreateMobileInfo($module, '', '', '', '', $errorCode, $transMsg, '');
                 $message = "[".$module."] Output: ".CJSON::encode($data);
                 $appLogger->log($appLogger->logdate, "[response]",$message);
                 //CLoggerModified::log($message, CLoggerModified::RESPONSE);
@@ -6451,7 +6451,7 @@ class MPapiController extends Controller {
                             $transMsg = 'AlterStr should only be 14-16 characters long.';
                             $errorCode = 92;
                             Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
-                            $data = CommonController::retMsgCreateMobileInfo($module, '', '', '', $errorCode, $transMsg, '');                $message = "[".$module."] Output: ".CJSON::encode($data);                $appLogger->log($appLogger->logdate, "[response]",$message);                $this->_sendResponse(200, CJSON::encode($data));
+                            $data = CommonController::retMsgCreateMobileInfo($module, '', '', '', '', $errorCode, $transMsg, '');                $message = "[".$module."] Output: ".CJSON::encode($data);                $appLogger->log($appLogger->logdate, "[response]",$message);                $this->_sendResponse(200, CJSON::encode($data));
                             $logger->log($logger->logdate, " [CREATEMOBILEINFO ERROR]: " . $MID . " || " . $alterStr  . " || " , $logMessage);
                             $apiDetails = 'CREATEMOBILEINFO-Failed: Invalid AlterStr.';
                             $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
@@ -6469,7 +6469,7 @@ class MPapiController extends Controller {
                             $transMsg = 'AlterStr already exists.';
                             $errorCode = 95;
                             Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
-                            $data = CommonController::retMsgCreateMobileInfo($module, '', '', '', $errorCode, $transMsg, '');                $message = "[".$module."] Output: ".CJSON::encode($data);                $appLogger->log($appLogger->logdate, "[response]",$message);                $this->_sendResponse(200, CJSON::encode($data));
+                            $data = CommonController::retMsgCreateMobileInfo($module, '', '', '', '', $errorCode, $transMsg, '');                $message = "[".$module."] Output: ".CJSON::encode($data);                $appLogger->log($appLogger->logdate, "[response]",$message);                $this->_sendResponse(200, CJSON::encode($data));
                             $logger->log($logger->logdate, " [CREATEMOBILEINFO ERROR]: " . $MID . " || " . $alterStr  . " || " , $logMessage);
                             $apiDetails = 'CREATEMOBILEINFO-Failed: AlterStr is existing.';
                             $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
@@ -6525,7 +6525,7 @@ class MPapiController extends Controller {
                                     $transMsg = 'Failed to insert alter str.';
                                     $errorCode = 94;
                                     Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
-                                    $data = CommonController::retMsgCreateMobileInfo($module, '', '', '', $errorCode, $transMsg, '');                $message = "[".$module."] Output: ".CJSON::encode($data);                $appLogger->log($appLogger->logdate, "[response]",$message);                $this->_sendResponse(200, CJSON::encode($data));
+                                    $data = CommonController::retMsgCreateMobileInfo($module, '', '', '', '', $errorCode, $transMsg, '');                $message = "[".$module."] Output: ".CJSON::encode($data);                $appLogger->log($appLogger->logdate, "[response]",$message);                $this->_sendResponse(200, CJSON::encode($data));
                                     $logger->log($logger->logdate, " [CREATEMOBILEINFO ERROR]: " . $MID . " || " . $alterStr  . " || " , $logMessage);
                                     $apiDetails = 'CREATEMOBILEINFO-Failed: Invalid AlterStr.';
                                     $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
@@ -6568,7 +6568,7 @@ class MPapiController extends Controller {
                                     $transMsg = 'Transaction failed.';
                                     $errorCode = 4;
                                     Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
-                                    $data = CommonController::retMsgCreateMobileInfo($module, '', '', '', $errorCode, $transMsg, '');                $message = "[".$module."] Output: ".CJSON::encode($data);                $appLogger->log($appLogger->logdate, "[response]",$message);                $this->_sendResponse(200, CJSON::encode($data));
+                                    $data = CommonController::retMsgCreateMobileInfo($module, '', '', '', '', $errorCode, $transMsg, '');                $message = "[".$module."] Output: ".CJSON::encode($data);                $appLogger->log($appLogger->logdate, "[response]",$message);                $this->_sendResponse(200, CJSON::encode($data));
                                     $logger->log($logger->logdate, " [CREATEMOBILEINFO ERROR]: " . $MID . " || " . $alterStr  . " || " , $logMessage);
                                     $apiDetails = 'CREATEMOBILEINFO-Insert/UpdateMemberSession-Failed: MID = '.$MID;
                                     $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
@@ -6583,7 +6583,7 @@ class MPapiController extends Controller {
                                 $transMsg = $mpSessionID;
                                 $logMessage = 'Create Mobile Info successful.';
                                 $errorCode = 0;
-                                $data = CommonController::retMsgCreateMobileInfo($module, $mpSessionID, $cardTypeID, $isVIP, $errorCode, $transMsg, $remarks);                $message = "[".$module."] Output: ".CJSON::encode($data);                $appLogger->log($appLogger->logdate, "[response]",$message);                $this->_sendResponse(200, CJSON::encode($data));
+                                $data = CommonController::retMsgCreateMobileInfo($module, $mpSessionID, $cardTypeID, $isVIP, $cardNumber, $errorCode, $transMsg, $remarks);                $message = "[".$module."] Output: ".CJSON::encode($data);                $appLogger->log($appLogger->logdate, "[response]",$message);                $this->_sendResponse(200, CJSON::encode($data));
                                 //$this->_sendResponse(200, CJSON::encode(CommonController::retMsgCreateMobileInfo($module, $mpSessionID, $cardTypeID, $isVIP, $errorCode, $transMsg, $remarks)));
                                 $logger->log($logger->logdate, " [CREATEMOBILEINFO SUCCESSFUL]: " . $MID . " || " . $alterStr  . " || " , $logMessage);
                                 $apiDetails = 'CREATEMOBILEINFO-UpdateTransDate-Success: MID = '.$MID.' SessionID = '.$mpSessionID;
@@ -6599,7 +6599,7 @@ class MPapiController extends Controller {
                                 $transMsg = 'Transaction failed.';
                                 $errorCode = 4;
                                 Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
-                                $data = CommonController::retMsgCreateMobileInfo($module, '', '', '', $errorCode, $transMsg, '');                $message = "[".$module."] Output: ".CJSON::encode($data);                $appLogger->log($appLogger->logdate, "[response]",$message);                $this->_sendResponse(200, CJSON::encode($data));
+                                $data = CommonController::retMsgCreateMobileInfo($module, '', '', '', '', $errorCode, $transMsg, '');                $message = "[".$module."] Output: ".CJSON::encode($data);                $appLogger->log($appLogger->logdate, "[response]",$message);                $this->_sendResponse(200, CJSON::encode($data));
                                 $logger->log($logger->logdate, " [CREATEMOBILEINFO ERROR]: " . $MID . " || " . $alterStr  . " || " , $logMessage);
                                 $apiDetails = 'CREATEMOBILEINFO-UpdateTransDate-Failed: '.'Username: '.$username.' MID = '.$MID.' SessionID = '.$mpSessionID;
                                 $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
@@ -6617,7 +6617,7 @@ class MPapiController extends Controller {
                             $transMsg = 'Transaction failed.';
                             $errorCode = 4;
                             Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
-                            $data = CommonController::retMsgCreateMobileInfo($module, '', '', '', $errorCode, $transMsg, '');                $message = "[".$module."] Output: ".CJSON::encode($data);                $appLogger->log($appLogger->logdate, "[response]",$message);                $this->_sendResponse(200, CJSON::encode($data));
+                            $data = CommonController::retMsgCreateMobileInfo($module, '', '', '', '', $errorCode, $transMsg, '');                $message = "[".$module."] Output: ".CJSON::encode($data);                $appLogger->log($appLogger->logdate, "[response]",$message);                $this->_sendResponse(200, CJSON::encode($data));
                             $logger->log($logger->logdate, " [CREATEMOBILEINFO ERROR]: " . $MID . " || " . $alterStr  . " || " , $logMessage);
                             $apiDetails = 'CREATEMOBILEINFO-Insert/UpdateMemberSession-Failed: MID = '.$MID.' SessionID = '.$mpSessionID;
                             $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
@@ -6634,7 +6634,7 @@ class MPapiController extends Controller {
                         $transMsg = 'Member not found';
                         $errorCode = 3;
                         Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
-                        $data = CommonController::retMsgCreateMobileInfo($module, '', '', '', $errorCode, $transMsg, '');                $message = "[".$module."] Output: ".CJSON::encode($data);                $appLogger->log($appLogger->logdate, "[response]",$message);                $this->_sendResponse(200, CJSON::encode($data));
+                        $data = CommonController::retMsgCreateMobileInfo($module, '', '', '', '', $errorCode, $transMsg, '');                $message = "[".$module."] Output: ".CJSON::encode($data);                $appLogger->log($appLogger->logdate, "[response]",$message);                $this->_sendResponse(200, CJSON::encode($data));
                         $logger->log($logger->logdate, " [CREATEMOBILEINFO ERROR]: " . $username . " || " . $alterStr  . " || " , $logMessage);
                         $apiDetails = 'CREATEMOBILEINFO-Authenticate-Failed: Member account is invalid.';
                         $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
@@ -6651,7 +6651,7 @@ class MPapiController extends Controller {
                     $transMsg = 'Invalid input.';
                     $errorCode = 2;
                     Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
-                    $data = CommonController::retMsgCreateMobileInfo($module, '', '', '', $errorCode, $transMsg, '');                $message = "[".$module."] Output: ".CJSON::encode($data);                $appLogger->log($appLogger->logdate, "[response]",$message);                $this->_sendResponse(200, CJSON::encode($data));
+                    $data = CommonController::retMsgCreateMobileInfo($module, '', '', '', '', $errorCode, $transMsg, '');                $message = "[".$module."] Output: ".CJSON::encode($data);                $appLogger->log($appLogger->logdate, "[response]",$message);                $this->_sendResponse(200, CJSON::encode($data));
                     $logger->log($logger->logdate, " [CREATEMOBILEINFO ERROR]: " . $username . " || " . $alterStr  . " || " , $logMessage);
                     $apiDetails = 'CREATEMOBILEINFO-Failed: Invalid input parameters';
                     $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
@@ -6669,7 +6669,7 @@ class MPapiController extends Controller {
             $transMsg = "One or more fields is not set or is blank.";
             $errorCode = 1;
             Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
-            $data = CommonController::retMsgCreateMobileInfo($module, '', '', '', $errorCode, $transMsg, '');                $message = "[".$module."] Output: ".CJSON::encode($data);                $appLogger->log($appLogger->logdate, "[response]",$message);                $this->_sendResponse(200, CJSON::encode($data));
+            $data = CommonController::retMsgCreateMobileInfo($module, '', '', '', '', $errorCode, $transMsg, '');                $message = "[".$module."] Output: ".CJSON::encode($data);                $appLogger->log($appLogger->logdate, "[response]",$message);                $this->_sendResponse(200, CJSON::encode($data));
             $logger->log($logger->logdate, " [CREATEMOBILEINFO ERROR]: " . $request['Username'] . " || " . $request['AlterStr']  . " || " , $logMessage);
             $apiDetails = 'CREATEMOBILEINFO-Failed: Invalid create mobile info parameters.';
             $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);

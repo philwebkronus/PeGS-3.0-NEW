@@ -249,7 +249,7 @@ class CommonController {
         }
         
         else if($module == 'CreateMobileInfo') {
-            return array('CreateMobileInfo' => array('MPSessionID'=>$MPSessionID,'CardTypeID'=>$cardTypeID,'IsVIP' => $isVip,'ErrorCode'=>$errorCode, 'ReturnMessage' => $transMsg));
+            return array('CreateMobileInfo' => array('MPSessionID'=>$MPSessionID,'CardTypeID'=>$cardTypeID,'IsVIP' => $isVip,'CardNumber' => $cardNumber, 'ErrorCode'=>$errorCode, 'ReturnMessage' => $transMsg));
         }
         
     }

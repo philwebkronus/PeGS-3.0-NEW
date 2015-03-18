@@ -209,9 +209,9 @@ class CommonController {
     }
 
     //@date 10-27-2014
-    public static function retMsgCreateMobileInfo($module, $mpSessionID, $cardTypeID, $isVIP, $errorCode, $transMsg, $alterStr) {
+    public static function retMsgCreateMobileInfo($module, $mpSessionID, $cardTypeID, $isVIP, $cardNumber, $errorCode, $transMsg, $alterStr) {
         $module == 'CreateMobileInfo';
-        return array('CreateMobileInfo' => array('MPSessionID' => $mpSessionID, 'CardTypeID' => $cardTypeID, 'IsVIP' => $isVIP, 'ErrorCode' => $errorCode, 'ReturnMessage' => $transMsg, 'Remarks' => $alterStr));
+        return array('CreateMobileInfo' => array('MPSessionID' => $mpSessionID, 'CardTypeID' => $cardTypeID, 'IsVIP' => $isVIP, 'CardNumber' => $cardNumber, 'ErrorCode' => $errorCode, 'ReturnMessage' => $transMsg, 'Remarks' => $alterStr));
             
     }
 
