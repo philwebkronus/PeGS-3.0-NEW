@@ -1416,7 +1416,7 @@ if($connected)
                        $vcheckno = $_POST['txtChequeNo'];
                    }
                    $vbankID = $_POST['ddlBank'];
-                   $vbranch = $_POST['txtBranch'];    
+                   $vbranch = preg_replace('/\s\s+/', ' ', trim($_POST['txtBranch']));    
                    $vbanktransID = $_POST['txtBankTransID'];
                    $vbanktransdate = $_POST['txtBankTransDate'];
                    $rresult = $otopup->insertdepositposting($vremittancetypeID, $vbankID, $vbranch, $vamount, $vbanktransID, $vbanktransdate, $vcheckno, $vCreatedByAID, $vparticulars, $vsiteID, $vStatus, $vDateCreated, $vsitedate);

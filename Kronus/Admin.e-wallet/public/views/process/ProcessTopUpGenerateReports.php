@@ -579,6 +579,7 @@ class ProcessTopUpGenerateReports extends BaseProcess{
     public function playingBalancePdf() {
         include_once __DIR__.'/../sys/class/CasinoGamingCAPI.class.php';
         //$rows = $_SESSION['playing_balance'];
+        $acctype = $_SESSION['acctype'];
         $topreport = new TopUpReportQuery($this->getConnection());
         $topreport->open();
         $vsitecode = $_POST['selsite'];
@@ -601,7 +602,8 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         $pdf->html.='<div style="text-align:center;">As of ' . date('l') . ', ' .
               date('F d, Y') . ' ' . date('H:i:s A') .'</div>';
         $pdf->SetFontSize(5);
-        $pdf->c_tableHeader2(array(
+        
+        $header = array(
                 array('value'=>'Site / PEGS Code'),
                 array('value'=>'Site / PEGS Name'),
                 array('value'=>'Terminal Code'),
@@ -610,8 +612,14 @@ class ProcessTopUpGenerateReports extends BaseProcess{
                 array('value'=>'User Mode'),
                 array('value'=>'Terminal Type'),
                 array('value'=>'e-Wallet?')
-             ));
-          
+             );
+        
+        if($acctype == 6 || $acctype == 18){
+            array_pop($header);
+        }
+        
+        $pdf->c_tableHeader2($header);
+
         foreach($rows as $row) {
             $isEwallet = "No";
             if($row['UserMode'] == 0){
@@ -627,7 +635,8 @@ class ProcessTopUpGenerateReports extends BaseProcess{
             if($row['PlayingBalance'] == 0){
                     $row['PlayingBalance'] = "N/A";
             }
-            $pdf->c_tableRow2(array(
+            
+            $data = array(
                 array('value'=>substr($row['SiteCode'], strlen(BaseProcess::$sitecode))), //removes ICSA-
                 array('value'=>$row['SiteName']),
                 array('value'=>substr($row['TerminalCode'], strlen($row['SiteCode']))), //removes ICSA-($row['SiteCode'])
@@ -636,7 +645,13 @@ class ProcessTopUpGenerateReports extends BaseProcess{
                 array('value'=>$row['UserMode']),
                 array('value'=>$row['TerminalType']),
                 array('value'=>$isEwallet)
-             ));
+            );
+            
+            if($acctype == 6 || $acctype == 18){
+                array_pop($data);
+            }
+                    
+            $pdf->c_tableRow2($data);
         }
         $pdf->c_tableEnd();
         $pdf->c_generatePDF('PlayingBalance.pdf');
@@ -681,14 +696,19 @@ class ProcessTopUpGenerateReports extends BaseProcess{
                 array('value'=>'Playing Balance'),
                 array('value'=>'Service Name'),
                 array('value'=>'User Mode'),
-                array('value'=>'Terminal Type')
+                array('value'=>'Terminal Type'),
+                array('value'=>'e-Wallet?'),
              ));
         foreach($rows as $row) {
+            $isEwallet = "No";
             if($row['UserMode'] == 0){
                 $row['UserMode'] = "Terminal Based";
             }
             else{
                 $row['UserMode'] = "User Based";
+                if($row['IsEwallet'] == 1){
+                    $isEwallet = "Yes";
+                }
             }
             
             if($row['PlayingBalance'] == 0){
@@ -703,6 +723,7 @@ class ProcessTopUpGenerateReports extends BaseProcess{
                 array('value'=>$row['ServiceName']),
                 array('value'=>$row['UserMode']),
                 array('value'=>$row['TerminalType']),
+                array('value'=>$isEwallet)
              ));
         }
         $pdf->c_tableEnd();
@@ -713,8 +734,15 @@ class ProcessTopUpGenerateReports extends BaseProcess{
     //Playing Balance History Report (Excel)
     public function playingBalanceExcel() {
         include_once __DIR__.'/../sys/class/CasinoGamingCAPI.class.php';
-        $_SESSION['report_header'] = array('Site / PEGS Code','Site / PEGS Name','Terminal Code','Playing Balance','Service Name', 'User Mode', 'Terminal Type');
-        //$rows = $_SESSION['playing_balance'];
+        
+        $acctype = $_SESSION['acctype'];
+        
+        $_SESSION['report_header'] = array('Site / PEGS Code','Site / PEGS Name','Terminal Code','Playing Balance','Service Name', 'User Mode', 'Terminal Type', 'e-Wallet?');
+        
+        if($acctype == 6 || $acctype == 18){
+            array_pop($_SESSION['report_header']);
+        }
+        
         $topreport = new TopUpReportQuery($this->getConnection());
         $topreport->open();
         $vsitecode = $_POST['selsite'];
@@ -755,7 +783,18 @@ class ProcessTopUpGenerateReports extends BaseProcess{
             else{
                 $actualBalance = number_format($actualBalance,2, '.', ',');
             }
-            $new_rows[] = array(
+            
+            $new_rows1[] = array(
+                    substr($row['SiteCode'], strlen(BaseProcess::$sitecode)),
+                    $row['SiteName'],
+                    substr($row['TerminalCode'], strlen($row['SiteCode'])),
+                   $actualBalance,
+                    $row['ServiceName'],
+                    $row['UserMode'],
+                    $row['TerminalType']
+                );
+            
+            $new_rows2[] = array(
                     substr($row['SiteCode'], strlen(BaseProcess::$sitecode)),
                     $row['SiteName'],
                     substr($row['TerminalCode'], strlen($row['SiteCode'])),
@@ -765,6 +804,13 @@ class ProcessTopUpGenerateReports extends BaseProcess{
                     $row['TerminalType'],
                     $isEwallet
                 );
+            
+            if($acctype == 6 || $acctype == 18){
+                $new_rows = $new_rows1;
+            }
+            else{
+                $new_rows = $new_rows2;
+            }
         }
         $_SESSION['report_values'] = $new_rows;
         $_GET['fn'] = 'PlayingBalance';
@@ -776,7 +822,7 @@ class ProcessTopUpGenerateReports extends BaseProcess{
     //Playing Balance History Report (Excel)
     public function playingBalanceExcelUB() {
         include_once __DIR__.'/../sys/class/CasinoGamingCAPI.class.php';
-        $_SESSION['report_header'] = array('Site / PEGS Code','Site / PEGS Name', 'Terminal Code','Playing Balance','Service Name', 'User Mode', 'Terminal Type');
+        $_SESSION['report_header'] = array('Site / PEGS Code','Site / PEGS Name', 'Terminal Code','Playing Balance','Service Name', 'User Mode', 'Terminal Type', 'e-Wallet?');
         //$rows = $_SESSION['playing_balance'];
         $topreport = new TopUpReportQuery($this->getConnection());
         $topreport->open();
@@ -805,11 +851,15 @@ class ProcessTopUpGenerateReports extends BaseProcess{
             } else {
                 $actualBalance = $row['PlayingBalance'];
             }
+            $isEwallet = "No";
             if($row['UserMode'] == 0){
                 $row['UserMode'] = "Terminal Based";
             }
             else{
                 $row['UserMode'] = "User Based";
+                if($row['IsEwallet'] == 1){
+                    $isEwallet = "Yes";
+                }
             }
             
             if($actualBalance == 0){
@@ -825,7 +875,8 @@ class ProcessTopUpGenerateReports extends BaseProcess{
                     $actualBalance,
                     $row['ServiceName'],
                     $row['UserMode'],
-                    $row['TerminalType']
+                    $row['TerminalType'],
+                    $isEwallet
                 );
         }
         $_SESSION['report_values'] = $new_rows;
@@ -1009,7 +1060,7 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         $topreport->open();
         $startdate = $_POST['startdate']." ".BaseProcess::$cutoff;
         $venddate = $_POST['enddate'];  
-        $enddate = date ('Y-m-d' , strtotime (ewalletTransactionsitehistoryPDFBaseProcess::$gaddeddate, strtotime($venddate)))." ".BaseProcess::$cutoff;   
+        $enddate = date ('Y-m-d' , strtotime (BaseProcess::$gaddeddate, strtotime($venddate)))." ".BaseProcess::$cutoff;   
         $vsitecode = $_POST['selsitecode'];
         $datenow = date("Y-m-d")." ".BaseProcess::$cutoff;
         $rows = array();

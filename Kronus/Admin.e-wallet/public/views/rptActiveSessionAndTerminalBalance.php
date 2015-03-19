@@ -55,12 +55,13 @@ if(isset($_SESSION['acctype']))
                             ActiveSession : true,
                             ActiveSessionAction : "sessionrecord"
                         },
-                        colNames : ["Terminal Type","Terminal Code", "Playing Balance","User Mode"],
+                        colNames : ["Terminal Type","Terminal Code", "Playing Balance","User Mode","e-Wallet?"],
                         colModel : [
                             {name:'TerminalType',index:'TerminalType', width: 300, sortable:false},
                             {name:'TerminalCode',index:'TerminalCode', width: 300, sortable:false},
                             {name:'PlayingBalance',index:'PlayingBalance', width: 400, align: 'right', sortable:false},
-                            {name:'UserMode',index:'UserMode', width: 400, align: 'center', sortable:false}
+                            {name:'UserMode',index:'UserMode', width: 400, align: 'center', sortable:false},
+                            {name:'IsEWallet',index:'IsEWallet', width: 250, align: 'center', sortable:false}
                         ],
                         rowNum : 10,
                         rowList:[10,20,30], 

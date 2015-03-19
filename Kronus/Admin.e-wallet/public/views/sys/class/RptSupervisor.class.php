@@ -155,6 +155,20 @@ class RptSupervisor extends DBHandler
                                 AND tckt.SiteID IN (".$zsiteID.")
                                 GROUP BY tckt.SiteID";
         
+        $query5 = "SELECT trl.SiteID, IFNULL(SUM(trl.Amount), 0) AS NonEwalletBancnet FROM npos.transactionrequestlogs trl -- Non-Ewallet Bancnet
+                                INNER JOIN npos.banktransactionlogs btl ON trl.TransactionRequestLogID = btl.TransactionRequestLogID
+                                WHERE trl.StartDate > = ? AND trl.EndDate < ?
+                                AND trl.SiteID IN (".$zsiteID.")
+                                AND trl.TransactionType = 'D'
+                                GROUP BY trl.SiteID";
+        
+        $query6 = "SELECT ewt.SiteID, IFNULL(SUM(ewt.Amount), 0) AS EwalletBancnet FROM npos.ewallettrans ewt -- Ewallet Bancnet
+                                WHERE ewt.StartDate > = ? AND ewt.EndDate < ?
+                                AND ewt.SiteID IN (".$zsiteID.")
+                                AND ewt.TransType = 'D'
+                                AND ewt.TraceNumber IS NOT NULL AND ewt.ReferenceNumber IS NOT NULL
+                                GROUP BY ewt.SiteID";
+        
         $this->prepare($query1);
         $this->bindparameter(1, $zdatefrom);
         $this->bindparameter(2, $zdateto);
@@ -165,7 +179,7 @@ class RptSupervisor extends DBHandler
             $qr1[] = array('SiteID'=>$row1['SiteID'],'TerminalID'=>$row1['TerminalID'],'DateCreated'=>$row1['DateCreated'],
                     'CreatedByAID' => $row1['CreatedByAID'],'TransactionType' => $row1['TransactionType'],'Amount'=>$row1['Amount'], 
                     'UserName'=>$row1['UserName'],'Name'=>$row1['Name'], 'PrintedTickets' => '0.00', 'EncashedTickets' => '0.00',
-                    'LoadCash' => '0.00', 'LoadTicket' => '0.00'
+                    'LoadCash' => '0.00', 'LoadTicket' => '0.00', 'Bancnet' => '0.00'
                 );
         }
         
@@ -219,6 +233,38 @@ class RptSupervisor extends DBHandler
                 }
             } 
         }
+        
+        $this->prepare($query5);
+        $this->bindparameter(1, $zdatefrom);
+        $this->bindparameter(2, $zdateto);
+        $this->execute();
+        $rows5 = $this->fetchAllData();
+        foreach($rows5 as $row5) {
+            foreach ($qr1 as $keys => $value2) {
+                if($row5["SiteID"] == $value2["SiteID"]){
+                    if($row5["NonEwalletBancnet"] != '0.00')
+                        $qr1[$keys]["Bancnet"] = (float)$qr1[$keys]["Bancnet"] + (float)$row5["NonEwalletBancnet"];
+                    break;
+                }
+            } 
+        }
+        
+        $this->prepare($query6);
+        $this->bindparameter(1, $zdatefrom);
+        $this->bindparameter(2, $zdateto);
+        $this->execute();
+        $rows6 = $this->fetchAllData();
+        foreach($rows6 as $row6) {
+            foreach ($qr1 as $keys => $value2) {
+                if($row6["SiteID"] == $value2["SiteID"]){
+                    if($row6["EwalletBancnet"] != '0.00')
+                        $qr1[$keys]["Bancnet"] = (float)$qr1[$keys]["Bancnet"] + (float)$row6["EwalletBancnet"];
+                    break;
+                }
+            } 
+        }
+        
+        //$qr1[$keys]["Bancnet"] = (float)$qr1[$keys]["EwalletBancnet"] + (float)$qr1[$keys]["NonEwalletBancnet"];
         
         return $qr1;
     }
@@ -506,6 +552,20 @@ class RptSupervisor extends DBHandler
                                 AND tckt.SiteID IN (".$zsiteID.")
                                 GROUP BY tckt.SiteID";
         
+        $query5 = "SELECT trl.SiteID, IFNULL(SUM(trl.Amount), 0) AS NonEwalletBancnet FROM npos.transactionrequestlogs trl -- Non-Ewallet Bancnet
+                                INNER JOIN npos.banktransactionlogs btl ON trl.TransactionRequestLogID = btl.TransactionRequestLogID
+                                WHERE trl.StartDate > = ? AND trl.EndDate < ?
+                                AND trl.SiteID IN (".$zsiteID.")
+                                AND trl.TransactionType = 'D'
+                                GROUP BY trl.SiteID";
+        
+        $query6 = "SELECT ewt.SiteID, IFNULL(SUM(ewt.Amount), 0) AS EwalletBancnet FROM npos.ewallettrans ewt -- Ewallet Bancnet
+                                WHERE ewt.StartDate > = ? AND ewt.EndDate < ?
+                                AND ewt.SiteID IN (".$zsiteID.")
+                                AND ewt.TransType = 'D'
+                                AND ewt.TraceNumber IS NOT NULL AND ewt.ReferenceNumber IS NOT NULL
+                                GROUP BY ewt.SiteID";
+        
         $this->prepare($query1);
         $this->bindparameter(1, $zdatefrom);
         $this->bindparameter(2, $zdateto);
@@ -515,7 +575,7 @@ class RptSupervisor extends DBHandler
         $qr1 = array();
         foreach($rows1 as $row1) {
             $qr1[] = array('SiteID'=>$row1['SiteID'], 'ManualRedemption' => $row1['ManualRedemption'],'PrintedTickets' => '0.00', 'EncashedTickets' => '0.00',
-                                        'LoadCash' => '0.00', 'LoadTicket' => '0.00', 'LoadCoupon' => '0.00', 'RedemptionCashier' => '0.00');
+                                        'LoadCash' => '0.00', 'LoadTicket' => '0.00', 'LoadCoupon' => '0.00', 'RedemptionCashier' => '0.00', 'Bancnet' => '0.00');
         }
         
         $this->prepare($query2);
@@ -574,6 +634,38 @@ class RptSupervisor extends DBHandler
                 }
             } 
         }
+        
+        $this->prepare($query5);
+        $this->bindparameter(1, $zdatefrom);
+        $this->bindparameter(2, $zdateto);
+        $this->execute();
+        $rows5 = $this->fetchAllData();
+        foreach($rows5 as $row5) {
+            foreach ($qr1 as $keys => $value2) {
+                if($row5["SiteID"] == $value2["SiteID"]){
+                    if($row5["NonEwalletBancnet"] != '0.00')
+                        $qr1[$keys]["Bancnet"] = (float)$qr1[$keys]["Bancnet"] + (float)$row5["NonEwalletBancnet"];
+                    break;
+                }
+            } 
+        }
+        
+        $this->prepare($query6);
+        $this->bindparameter(1, $zdatefrom);
+        $this->bindparameter(2, $zdateto);
+        $this->execute();
+        $rows6 = $this->fetchAllData();
+        foreach($rows6 as $row6) {
+            foreach ($qr1 as $keys => $value2) {
+                if($row6["SiteID"] == $value2["SiteID"]){
+                    if($row6["EwalletBancnet"] != '0.00')
+                        $qr1[$keys]["Bancnet"] = (float)$qr1[$keys]["Bancnet"] + (float)$row6["EwalletBancnet"];
+                    break;
+                }
+            } 
+        }
+        
+        //$qr1[$keys]["Bancnet"] = (float)$qr1[$keys]["EwalletBancnet"] + (float)$qr1[$keys]["NonEwalletBancnet"];
         
         return $qr1;
     }

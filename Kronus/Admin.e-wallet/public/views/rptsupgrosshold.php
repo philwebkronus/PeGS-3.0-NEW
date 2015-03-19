@@ -61,7 +61,7 @@
                          {name:'TotalDeposit', align: 'right', sortable:false},
                          {name:'TotalReload', align: 'right', sortable:false},
                          {name:'TotalWithdrawal', align: 'right', sortable:false},
-                         {name:'GrossHold', align: 'right', sortable:false}
+                         {name:'CashOnHand', align: 'right', sortable:false}
                         ],
                rowNum:10,
                rowList:[10,20,30],
@@ -104,6 +104,8 @@
                        var cashonhand = data.cashonhand;
                        var printedtickets = data.printedtickets;
                        var encashedtickets = data.encashedtickets;
+                       var bancnet = data.bancnet;
+                       
                        document.getElementById('trans').style.display='block';
                        //display summary per page
                        document.getElementById('totsales').innerHTML = sales;
@@ -116,6 +118,7 @@
                        document.getElementById('cashonhand').innerHTML = cashonhand;
                        document.getElementById('printedtickets').innerHTML = printedtickets;
                        document.getElementById('encashedtickets').innerHTML = encashedtickets;
+                       document.getElementById('bancnet').innerHTML = bancnet;
                    },
                    error: function(e)
                    {
@@ -130,6 +133,7 @@
                        document.getElementById('cashonhand').innerHTML = "0.00";
                        document.getElementById('printedtickets').innerHTML = "0.00";
                        document.getElementById('encashedtickets').innerHTML = "0.00";
+                       document.getElementById('bancnet').innerHTML = "0.00";
                    }
                 });
             }
@@ -193,8 +197,8 @@
                     </tr>
                     <tr>
                         <td style="width: 150px; "></td>
-                        <td style="padding-left: 5px; padding-right: 25px;"> - Tickets</td>
-                        <td id="tickets" style="font-weight: bold; text-align: right;width: 120px; padding: 2px;"></td>
+                        <td style="padding-left: 5px; padding-right: 25px;"> - Bancnet</td>
+                        <td id="bancnet" style="font-weight: bold; text-align: right;width: 120px; padding: 2px;"></td>
                         <td style="width: 150px; "></td>
                         <td style="padding-left: 5px; padding-right: 25px;">Encashed Tickets</td>
                         <td id="encashedtickets" style="font-weight: bold; text-align: right;width: 120px; padding: 2px;"></td>
@@ -202,11 +206,17 @@
                     <tr>
                         <td style="width: 150px; "></td>
                         <td style="width: 150px; "></td>
-                        <td style="padding-left: 5px; padding-right: 25px;"> - Coupons</td>
-                        <td id="coupons" style="font-weight: bold; text-align: right;width: 120px; padding: 2px;"></td>
+                        <td style="padding-left: 5px; padding-right: 25px;"> - Tickets</td>
+                        <td id="tickets" style="font-weight: bold; text-align: right;width: 120px; padding: 2px;"></td>
                         <td style="width: 150px; "></td>
                         <td style="padding-left: 5px; padding-right: 25px;">Cash on Hand</td>
                         <td id="cashonhand" style="font-weight: bold; text-align: right;width: 120px; padding: 2px;"></td>
+                    </tr>
+                    <tr>
+                        <td style="width: 150px; "></td>
+                        <td style="width: 150px; "></td>
+                        <td style="padding-left: 5px; padding-right: 25px;"> - Coupons</td>
+                        <td id="coupons" style="font-weight: bold; text-align: right;width: 120px; padding: 2px;"></td>
                     </tr>
                 </table>
             </div>

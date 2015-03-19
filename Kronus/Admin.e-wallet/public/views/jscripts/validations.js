@@ -1860,12 +1860,12 @@ function checkdepositposting()
               document.getElementById("ddlBank").focus();
               return false;
         }
-        if (sBranch.length == 0 || sBranch.indexOf(" ") == 0)
-        {
-              alert("Please supply the branch.");
-              document.getElementById("txtBranch").focus();
-              return false;
-        }
+//        if (sBranch.length == 0 || sBranch.indexOf(" ") == 0)
+//        {
+//              alert("Please supply the branch.");
+//              document.getElementById("txtBranch").focus();
+//              return false;
+//        }
         if (sBankTransID.length == 0 || sBankTransID.indexOf(" ") == 0)
         {
               alert("Please supply the bank transaction id.");

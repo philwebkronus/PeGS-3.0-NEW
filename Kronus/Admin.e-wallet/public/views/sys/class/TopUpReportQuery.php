@@ -1735,7 +1735,7 @@ class TopUpReportQuery extends DBHandler{
           if($zsitecode == "all")
           {
               $query = "SELECT ts.TerminalID, t.TerminalName,s.SiteName, s.POSAccountNo, s.SiteCode,ts.ServiceID,
-                        CASE t.TerminalType WHEN 0 THEN 'Regular' ELSE 'Genesis' END AS TerminalType, 
+                        CASE t.TerminalType WHEN 0 THEN 'Regular' WHEN 1 THEN 'Genesis' ELSE 'e-Wallet' END AS TerminalType, 
                         t.TerminalCode, rs.ServiceName, ts.UserMode, m.IsEwallet FROM terminalsessions ts
                         INNER JOIN terminals as t ON ts.TerminalID = t.terminalID 
                         INNER JOIN sites as s ON t.SiteID = s.SiteID 
@@ -1747,7 +1747,7 @@ class TopUpReportQuery extends DBHandler{
           else
           {
               $query = "SELECT ts.TerminalID, t.TerminalName,s.SiteName, s.POSAccountNo, s.SiteCode,ts.ServiceID,
-                        CASE t.TerminalType WHEN 0 THEN 'Regular' ELSE 'Genesis' END AS TerminalType, 
+                        CASE t.TerminalType WHEN 0 THEN 'Regular' WHEN 1 THEN 'Genesis' ELSE 'e-Wallet' END AS TerminalType, 
                         t.TerminalCode, rs.ServiceName, ts.UserMode, m.IsEwallet FROM terminalsessions ts
                         INNER JOIN terminals as t ON ts.TerminalID = t.terminalID 
                         INNER JOIN sites as s ON t.SiteID = s.SiteID 
@@ -1771,11 +1771,12 @@ class TopUpReportQuery extends DBHandler{
     {
           
               $query = "SELECT ts.TerminalID, t.TerminalName,s.SiteName, s.POSAccountNo, s.SiteCode,ts.ServiceID,
-                        CASE t.TerminalType WHEN 0 THEN 'Regular' ELSE 'Genesis' END AS TerminalType, 
-                        t.TerminalCode, rs.ServiceName, ts.UserMode, ts.UBServiceLogin FROM terminalsessions ts
+                        CASE t.TerminalType WHEN 0 THEN 'Regular' WHEN 1 THEN 'Genesis' ELSE 'e-Wallet' END AS TerminalType, 
+                        t.TerminalCode, rs.ServiceName, ts.UserMode, ts.UBServiceLogin, m.IsEwallet FROM terminalsessions ts
                         INNER JOIN terminals as t ON ts.TerminalID = t.terminalID 
                         INNER JOIN sites as s ON t.SiteID = s.SiteID 
                         INNER JOIN ref_services rs ON ts.ServiceID = rs.ServiceID
+                        INNER JOIN membership.members m ON m.MID = ts.MID
                         WHERE ts.LoyaltyCardNumber = '".$cardnumber."' ORDER BY s.SiteCode, t.TerminalCode ASC";
               $this->prepare($query);
              

@@ -228,7 +228,7 @@ $vaccesspages = array('5','6', '18');
         jQuery("#playingbal").jqGrid({
             url : 'process/ProcessTopUpPaginate.php?action=getplayingbalance',
             datatype: "json",
-            colNames:['Site / PEGS Code', 'Site / PEGS Name', 'Terminal Code', 'Playing Balance','Service Name', 'User Mode', 'Terminal Type'],
+            colNames:['Site / PEGS Code', 'Site / PEGS Name', 'Terminal Code', 'Playing Balance','Service Name', 'User Mode', 'Terminal Type','e-Wallet?'],
             rowNum:10,
             height: 280,
             width: 1200,
@@ -245,9 +245,10 @@ $vaccesspages = array('5','6', '18');
                 {name:'ServiceName', index:'ServiceName', align:'center', sortable:false},
                 {name:'UserMode', index:'UserMode', align:'center', sortable:false},
                 {name:'TerminalType', index:'TerminalType', align:'center', sortable:false},
+                {name:'Ewallet', index:'Ewallet', align:'center', sortable:false}
             ],     
             resizable:true
-        });        
+        });
     });
     
     function showCardInfoTable()

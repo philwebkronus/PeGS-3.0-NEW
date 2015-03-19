@@ -169,7 +169,9 @@ if($connected)
                      $arrdepositamt = array();
                      $arrreloadamt = array();
                      $arrwithdrawamt = array();
+                     $arrgrossholdamt = array();
                      $i = 0;
+                     $response = new stdClass();
                      $response->page = $page;
                      $response->total = $total_pages;
                      $response->records = $count;        
@@ -190,21 +192,24 @@ if($connected)
                             array_push($arrdepositamt, $depositamt);
                             array_push($arrreloadamt, $reloadamt);
                             array_push($arrwithdrawamt, $withdrawamt);
+                            array_push($arrgrossholdamt, $grossholdamt);
                      }
                      // Get the sum of all  transaction types
                       $totaldeposit = array_sum($arrdepositamt); 
                       $totalreload = array_sum($arrreloadamt); 
                       $totalwithdraw = array_sum($arrwithdrawamt);
+                      $cashonhand = array_sum($arrgrossholdamt);
 
-                      unset($arrdepositamt, $arrreloadamt, $arrwithdrawamt, $trans_details);
+                      unset($arrdepositamt, $arrreloadamt, $arrwithdrawamt, $arrgrossholdamt, $trans_details);
                       
                       //session variable to store transaction types in an array; to used on ajax call later on this program
                       $_SESSION['total'] = array("TotalDeposit" => $totaldeposit, 
-                                     "TotalReload" => $totalreload, "TotalWithdraw" => $totalwithdraw);
+                                     "TotalReload" => $totalreload, "TotalWithdraw" => $totalwithdraw, "CashOnHand" => $cashonhand);
                 }
                 else
                 {
                      $i = 0;
+                     $response = new stdClass();
                      $response->page = 0;
                      $response->total = 0;
                      $response->records = 0;
@@ -270,6 +275,7 @@ if($connected)
             $encashedtickets = '0.00';
             $redemptioncashier = '0.00';
             $manualredemption = 0.00;
+            $bancnet = '0.00';
            
            if(count($result2) > 0){
                while($ctr2 < count($result2))
@@ -288,6 +294,8 @@ if($connected)
                         $redemptioncashier = $result2[$ctr2]['RedemptionCashier'];
                     if($result2[$ctr2]['ManualRedemption'] != '0.00')
                         $manualredemption = (float)$result2[$ctr2]['ManualRedemption'];
+                    if($result2[$ctr2]['Bancnet'] != '0.00')
+                        $bancnet = (float)$result2[$ctr2]['Bancnet'];
                     $ctr2++;
                 }
            }
@@ -305,6 +313,7 @@ if($connected)
            if((count($arrtotal) > 0) && (count($arrgrand) > 0))
            {
                /**** Get Total Per Page  *****/
+               $vtotal = new stdClass();
                $vtotal->deposit = number_format($arrtotal["TotalDeposit"], 2, '.', ',');
                $vtotal->reload = number_format($arrtotal["TotalReload"], 2, '.', ',');
                $vtotal->withdraw = number_format($arrtotal["TotalWithdraw"], 2, '.', ',');
@@ -323,14 +332,17 @@ if($connected)
                
                $vtotal->printedtickets = number_format($printedtickets, 2, '.', ',');
                $vtotal->encashedtickets = number_format($encashedtickets, 2, '.', ',');
+               
+               $vtotal->bancnet = number_format($bancnet, 2, '.', ',');
 
                // count site grosshold
                $vgrossholdamt = $arrgrand["GrandDeposit"] + $arrgrand["GrandReload"] - $arrgrand["GrandWithdraw"];
-               $vtotal->grosshold = number_format($vgrossholdamt, 2, '.', ',');
+               //$vtotal->grosshold = number_format($vgrossholdamt, 2, '.', ',');
+               $vtotal->cashonhand = number_format($vgrossholdamt, 2, '.', ',');
                
                // count site cash on hand
-               $vcashonhandamt = $loadcash - $redemptioncashier - $manualredemption - $encashedtickets;
-               $vtotal->cashonhand = number_format($vcashonhandamt, 2, '.', ',');
+//               $vcashonhandamt = $loadcash - $redemptioncashier - $manualredemption - $encashedtickets;
+//               $vtotal->cashonhand = number_format($vcashonhandamt, 2, '.', ',');
                echo json_encode($vtotal); 
            }
            else 
@@ -366,7 +378,7 @@ if($connected)
       //setting the values of the headers and data of the excel file
       //and these values comes from the other file which file shows the data
         
-        $rheaders = array('Cashier', 'Total Deposit', 'Total Reload', 'Total Redemption', 'Gross Hold','');
+        $rheaders = array('Cashier', 'Total Deposit', 'Total Reload', 'Total Redemption', 'Cash on Hand','');
         
         $result = $orptsup->viewgrosshold($dateFrom, $dateTo, $vsiteID, $start = null, $limit = null);
         
@@ -426,6 +438,7 @@ if($connected)
             $encashedtickets = '0.00';
             $redemptioncashier = '0.00';
             $manualredemption = 0.00;
+            $bancnet = '0.00';
 
            if(count($result2) > 0){
                while($ctr2 < count($result2))
@@ -444,6 +457,8 @@ if($connected)
                         $redemptioncashier = $result2[$ctr2]['RedemptionCashier'];
                     if($result2[$ctr2]['ManualRedemption'] != '0.00')
                         $manualredemption = (float)$result2[$ctr2]['ManualRedemption'];
+                    if($result2[$ctr2]['Bancnet'] != '0.00')
+                        $bancnet = (float)$result2[$ctr2]['Bancnet'];
                     $ctr2++;
                 }
            }
@@ -480,7 +495,7 @@ if($connected)
              $totalwithdraw = array_sum($vwithdraw);
                      
            //array variable to store an array of transaction types, GH; used on ajax call
-             $arrtotal = array("TotalGH" => $totalgh, "TotalDeposit" => $totaldeposit, 
+             $arrtotal = array("CashOnHand" => $totalgh, "TotalDeposit" => $totaldeposit, 
                          "TotalReload" => $totalreload, "TotalWithdraw" => $totalwithdraw);
            
            //array for displaying totals on excel file
@@ -514,17 +529,24 @@ if($connected)
                        );
              $totals5 = array(0 => '       ',
                         1 => '',
-                        2 => '     Tickets',
-                        3 => number_format($loadticket, 2, '.', ','),
+                        2 => '     Bancnet',
+                        3 => number_format($bancnet, 2, '.', ','),
                         4 => 'Encashed Tickets',
                         5 => number_format($encashedtickets, 2, '.', ',')
                        );
              $totals6 = array(0 => '       ',
                         1 => '     ',
+                        2 => '     Tickets',
+                        3 => number_format($loadticket, 2, '.', ','),
+                        4 => 'Cash On Hand',
+                        5 => number_format($totalgh, 2, '.', ',')
+                       );
+             $totals7 = array(0 => '       ',
+                        1 => '     ',
                         2 => '     Coupons',
                         3 => number_format($loadcoupon, 2, '.', ','),
-                        4 => 'Cash On Hand',
-                        5 => number_format($vcashonhandamt, 2, '.', ',')
+                        4 => '',
+                        5 => ''
                        );
              array_push($combined, $totals1);
              array_push($combined, $totals2);
@@ -532,6 +554,7 @@ if($connected)
              array_push($combined, $totals4);
              array_push($combined, $totals5);
              array_push($combined, $totals6);
+             array_push($combined, $totals7);
         }
         else
         {
@@ -576,7 +599,7 @@ if($connected)
                 array('value'=>'Total Deposit'),
                 array('value'=>'Total Reload'),
                 array('value'=>'Total Redemption'),
-                array('value'=>'Gross Hold'),
+                array('value'=>'Cash on Hand'),
                 array('value'=>'')
              ));
 
@@ -634,7 +657,8 @@ if($connected)
             $encashedtickets = '0.00';
             $redemptioncashier = '0.00';
             $manualredemption = 0.00;
-
+            $bancnet = '0.00';
+            
            if(count($result2) > 0){
                while($ctr2 < count($result2))
                 {
@@ -652,6 +676,8 @@ if($connected)
                         $redemptioncashier = $result2[$ctr2]['RedemptionCashier'];
                     if($result2[$ctr2]['ManualRedemption'] != '0.00')
                         $manualredemption = (float)$result2[$ctr2]['ManualRedemption'];
+                    if($result2[$ctr2]['Bancnet'] != '0.00')
+                        $bancnet = (float)$result2[$ctr2]['Bancnet'];
                     $ctr2++;
                 }
            }
@@ -692,7 +718,7 @@ if($connected)
               $totalwithdraw = array_sum($vwithdraw);
                      
            //array variable to store an array of transaction types, GH; used on ajax call
-           $arrtotal = array("TotalGH" => $totalgh, "TotalDeposit" => $totaldeposit, 
+           $arrtotal = array("CashOnHand" => $totalgh, "TotalDeposit" => $totaldeposit, 
                          "TotalReload" => $totalreload, "TotalWithdraw" => $totalwithdraw);
            
            //array for displaying totals on excel file
@@ -727,17 +753,24 @@ if($connected)
                        );
              $totals5 = array(0 => '       ',
                         1 => '',
-                        2 => '     Tickets',
-                        3 => '<span style="text-align: right;">'.number_format($loadticket, 2, '.', ',').'</span>',
+                        2 => '     Bancnet',
+                        3 => '<span style="text-align: right;">'.number_format($bancnet, 2, '.', ',').'</span>',
                         4 => 'Encashed Tickets',
                         5 => '<span style="text-align: right;">'.number_format($encashedtickets, 2, '.', ',').'</span>'
                        );
              $totals6 = array(0 => '       ',
                         1 => '     ',
+                        2 => '     Tickets',
+                        3 => '<span style="text-align: right;">'.number_format($loadticket, 2, '.', ',').'</span>',
+                        4 => 'Cash On Hand',
+                        5 => '<span style="text-align: right;">'.number_format($totalgh, 2, '.', ',').'</span>'
+                       );
+             $totals7 = array(0 => '       ',
+                        1 => '     ',
                         2 => '     Coupons',
                         3 => '<span style="text-align: right;">'.number_format($loadcoupon, 2, '.', ',').'</span>',
-                        4 => 'Cash On Hand',
-                        5 => '<span style="text-align: right;">'.number_format($vcashonhandamt, 2, '.', ',').'</span>'
+                        4 => '',
+                        5 => ''
                        );
 
            //array_push($combined, $totals); 
@@ -747,6 +780,7 @@ if($connected)
            $pdf->c_tableRow($totals4);
            $pdf->c_tableRow($totals5);
            $pdf->c_tableRow($totals6);
+           $pdf->c_tableRow($totals7);
         }
         else
         {

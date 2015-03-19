@@ -199,12 +199,12 @@ $vaccesspages = array('5','6', '18');
                             colModel:[
                                 {name:'SiteCode',index:'SiteCode',align:'left'},
                                 {name:'SiteName',index:'SiteName',align:'left'},
-                                {name:'TerminalCode',index:'TerminalCode',align:'center'},
+                                {name:'TerminalCode',index:'TerminalCode',align:'left'},
                                 {name:'PlayingBalance',index:'PlayingBalance',align:'right',sortable:false},
                                 {name:'ServiceName', index:'ServiceName', align:'center', sortable:false},
                                 {name:'UserMode', index:'UserMode', align:'center', sortable:false},
                                 {name:'TerminalType', index:'TerminalType', align:'center', sortable:false},
-                                {name:'Ewallet', index:'Ewallet', align:'center', sortable:false},
+                                {name:'Ewallet', index:'Ewallet', align:'center', sortable:false}
                             ], 
                             rowNum:10,
                             rowList:[10,20,30],
@@ -218,7 +218,15 @@ $vaccesspages = array('5','6', '18');
                     });
                     jQuery("#playingbal").jqGrid('navGrid','#pager2',{edit:false,add:false,del:false, search:false, refresh: true});
                     $('#playingbal').trigger("reloadGrid");
-        })
+                    var acctype = <?php echo $_SESSION['acctype']; ?>;
+                    if(acctype == 6 || acctype == 18){
+                        jQuery("#playingbal").hideCol("Ewallet");
+                        jQuery("#senchaexport1").css("width","1030px");
+                    }
+                    else{
+                        jQuery("#playingbal").showCol("Ewallet");
+                    }
+        });
         
    
     });

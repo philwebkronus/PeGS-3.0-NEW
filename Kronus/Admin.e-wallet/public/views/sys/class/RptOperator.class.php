@@ -316,22 +316,27 @@ return $this->fetchAllData();
                     t.TerminalCode, 
                     CASE t.TerminalType WHEN 0
                         THEN 'Regular'
-                        ELSE 'Genesis'
+                        ELSE 'e-Wallet'
                     END AS TerminalType, 
                     rs.ServiceID,
                     rs.ServiceName,
                     ts.UBServiceLogin,
-                    ts.UserMode
+                    ts.UserMode, 
+                    m.IsEWallet
                   FROM 
                     terminalsessions as ts, 
                     terminals as t,
-                    ref_services as rs
+                    ref_services as rs, 
+                    membership.members as m
                   WHERE
                     t.TerminalID = ts.TerminalID
                     AND
                     ts.ServiceID = rs.ServiceID
                     AND
                     t.SiteID = :siteID
+                    AND
+                    m.MID = ts.MID
+                 
                   ORDER BY
                     t.TerminalID ASC";
         
@@ -422,9 +427,15 @@ return $this->fetchAllData();
             
             if($r["UserMode"]== 0){
                 $r["UserMode"] = "Terminal Based";
+                $r['IsEWallet']='No';
             }
             else{
                 $r["UserMode"] = "User Based";
+                if($r['IsEWallet']==1){
+                    $r['IsEWallet']='Yes';
+                }else{
+                    $r['IsEWallet']='No';
+                }
             }
             
             if($r["PlayingBalance"] == 0){
@@ -443,12 +454,13 @@ return $this->fetchAllData();
                 $r["TerminalCode"],
                 $r["PlayingBalance"],
                 $r["UserMode"],
+                $r['IsEWallet']
             );
             
             $ctr++;
             
         }
-        
+       
         return json_encode($row);
         
     }
@@ -660,22 +672,26 @@ return $this->fetchAllData();
                     t.TerminalCode, 
                     CASE t.TerminalType WHEN 0
                         THEN 'Regular'
-                        ELSE 'Genesis'
+                        ELSE 'e-Wallet'
                     END AS TerminalType, 
                     rs.ServiceID,
                     rs.ServiceName,
                     ts.UBServiceLogin,
-                    ts.UserMode
+                    ts.UserMode,
+                    m.IsEWallet
                   FROM 
                     terminalsessions as ts, 
                     terminals as t,
-                    ref_services as rs
+                    ref_services as rs, 
+                    membership.members as m
                   WHERE
                     t.TerminalID = ts.TerminalID
                     AND
                     ts.ServiceID = rs.ServiceID
                     AND
                     ts.LoyaltyCardNumber = :cardnum
+                    AND
+                    m.MID = ts.MID
                   ORDER BY
                     t.TerminalID ASC";
         
@@ -764,9 +780,11 @@ return $this->fetchAllData();
             //check if user mode is terminal or user based
             if($r["UserMode"] == '0'){
                 $r["UserMode"] = "Terminal Based";
+                $r['IsEWallet'] = 'No';
             }
             else{
                 $r["UserMode"] = "User Based";
+                $r['IsEWallet'] = $r['IsEWallet']==1?'Yes':'No';
             }
 
             if($r["PlayingBalance"] ==  0){
@@ -784,8 +802,8 @@ return $this->fetchAllData();
                 $r["TerminalType"],
                 $r["TerminalCode"],
                 $r["PlayingBalance"],
-                $r["UserMode"]
-                
+                $r["UserMode"],
+                $r['IsEWallet']
             );
             
             $ctr++;

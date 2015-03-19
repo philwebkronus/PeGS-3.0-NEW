@@ -3294,7 +3294,7 @@ class TopUp extends DBHandler
               $condition = '';
           }
 
-          $query = "SELECT ts.TerminalID, t.TerminalName,  CASE t.TerminalType WHEN 0 THEN 'Regular' ELSE 'Genesis' END AS TerminalType, 
+          $query = "SELECT ts.TerminalID, t.TerminalName,  CASE t.TerminalType WHEN 0 THEN 'Regular' WHEN 1 THEN 'Genesis' ELSE 'e-Wallet' END AS TerminalType, 
                             s.SiteName, s.POSAccountNo, s.SiteCode,ts.ServiceID,
                             t.TerminalCode, rs.ServiceName, ts.UserMode, m.IsEwallet FROM terminalsessions ts
                             INNER JOIN terminals as t ON ts.TerminalID = t.terminalID 
@@ -3358,20 +3358,22 @@ class TopUp extends DBHandler
       */
       public function getActiveTerminalsub($sort, $dir, $start, $limit) {
           $cardnumber = $_GET['cardnumber'];
-          
+          $acctype = $_SESSION['acctype'];
           $condition = " WHERE ts.LoyaltyCardNumber = '$cardnumber' ";
           if($_GET['cardnumber'] == 'all') {
               $condition = '';
           }
           
-          $query = "SELECT ts.TerminalID, t.TerminalName,CASE t.TerminalType WHEN 0 THEN 'Regular' ELSE 'Genesis' END AS TerminalType,
+          $query = "SELECT ts.TerminalID, t.TerminalName,CASE t.TerminalType WHEN 0 THEN 'Regular' WHEN 1 THEN 'Genesis' ELSE 'e-Wallet' END AS TerminalType,
                             s.SiteName, s.POSAccountNo, s.SiteCode,ts.ServiceID,
-                            t.TerminalCode, rs.ServiceName, ts.UserMode FROM terminalsessions ts
+                            t.TerminalCode, rs.ServiceName, ts.UserMode, m.IsEwallet FROM terminalsessions ts
                             INNER JOIN terminals as t ON ts.TerminalID = t.terminalID 
                             INNER JOIN sites as s ON t.SiteID = s.SiteID 
                             INNER JOIN ref_services rs ON ts.ServiceID = rs.ServiceID
+                            INNER JOIN membership.members as m ON m.MID = ts.MID
                             $condition
                             ORDER BY $sort $dir LIMIT $start,$limit";
+          
           $this->prepare($query);
           $this->execute();
           return $this->fetchAllData();

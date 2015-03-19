@@ -696,11 +696,16 @@ class ProcessTopUpPaginate extends BaseProcess {
                     $row['PlayingBalance'] = "N/A";
                 }
             }
+            
+            $ewallet = 'No';
             if($row['UserMode'] == 0){
                 $row['UserMode'] = "Terminal Based";
             }
             else{
                 $row['UserMode'] = "User Based";
+                if($row['IsEwallet'] == 1){
+                    $ewallet = 'Yes';
+                }
             }
             $jqgrid->rows[] = array('id'=>$row['TerminalID'],'cell'=>array(
                 substr($row['SiteCode'], strlen(BaseProcess::$sitecode)),
@@ -710,6 +715,7 @@ class ProcessTopUpPaginate extends BaseProcess {
                 $row['ServiceName'],
                 $row['UserMode'],
                 $row['TerminalType'],
+                $ewallet
             ));
         }
         echo json_encode($jqgrid);

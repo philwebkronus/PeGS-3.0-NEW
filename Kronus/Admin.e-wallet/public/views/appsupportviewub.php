@@ -3,9 +3,15 @@ $pagetitle = "UB Transaction Tracking";
 include "process/ProcessAppSupport.php";
 include "header.php";
 $vaccesspages = array('9','6','18');
+$flag = false;
     $vctr = 0;
     if(isset($_SESSION['acctype']))
     {
+        if($_SESSION['acctype'] == 9)
+        {
+           
+         $flag = true;
+        }
         foreach ($vaccesspages as $val)
         {
             if($_SESSION['acctype'] == $val)
@@ -25,13 +31,19 @@ $vaccesspages = array('9','6','18');
         }
         else
         {
+            
 ?>
 
 <div id="workarea">
         <script type="text/javascript">
+        var flag = '<?php echo $flag; ?>';
+        
         $(document).ready(function()
-        {  
-            
+        {
+            if(flag == 1)
+            {
+                $("#cmbsource option[value='4']").remove();
+            }
             $("#txtcardnumber").focus(function(){
                     $("#txtcardnumber").bind('paste', function(event) {
                         setTimeout(function(event) {
@@ -55,7 +67,8 @@ $vaccesspages = array('9','6','18');
                 if(source == "3") {
                     document.getElementById('cmbtranstype').disabled=true;
                     $("#cmbstatus option[value='3']").attr('disabled','disabled');
-                    $("#cmbstatus option[value='4']").attr('disabled','disabled');                    
+                    $("#cmbstatus option[value='4']").attr('disabled','disabled');  
+                    document.getElementById('cmbstatus').disabled=false;
                 } 
                 //source is Cashier
                 else if(source == "1"){
@@ -64,6 +77,7 @@ $vaccesspages = array('9','6','18');
                     $("#cmbstatus option[value='3']").attr('disabled',false);
                     $("#cmbstatus option[value='4']").attr('disabled',false);
                     document.getElementById('cmbtranstype').disabled=false;
+                    document.getElementById('cmbstatus').disabled=false;
                 }
                 //source is Launchpad
                 else if(source == "2"){
@@ -138,8 +152,9 @@ $vaccesspages = array('9','6','18');
                            return false;         
                          }
                          else
-                         {
-                            showCardInfoTable();  
+                         {  
+                            showCardInfoTable();
+                            
                          }
                     }
                 }
@@ -158,8 +173,44 @@ $vaccesspages = array('9','6','18');
                 
                 //submit button event to display jqgrid
             $('#btnSubmit').click(function()
-            {      
+            {   
                    showjqgrid();
+                   $("#info").empty();
+                   $("#info").append("<p align='left'>Transactions of " + jQuery("#txtcardnumber").val() + ", " + formatDate($("#popupDatepicker1").val()) + " to " + formatDate($("#popupDatepicker2").val())+"</p>");
+                  
+                    function formatDate(date)
+                    {
+                        var ampm = "AM";
+                        var m_names = new Array("January", "February", "March", 
+                        "April", "May", "June", "July", "August", "September", 
+                        "October", "November", "December");
+                        var weekday = new Array("Sunday", "Monday", "Tuesday", "Wednesday", 
+                        "Thursday", "Friday", "Saturday");
+                        var new_date = date.replace(" ", "T"); 
+                        var d = new Date(new_date+"+08:00");
+                        var curr_day = d.getDay();
+                        var curr_date = d.getDate();
+                        var curr_month = d.getMonth();
+                        var curr_year = d.getFullYear();
+                        var curr_hours = ('0'+d.getHours()).slice(-2);
+//                        if(curr_hours > 11)
+//                        {
+//                            ampm = "PM";
+//                            if(curr_hours != 12)
+//                            {
+//                                curr_hours -= 12;
+//                            }
+//                        }
+//                        else if(curr_hours == 0)
+//                        {
+//                            //curr_hours = 12;
+//                            ampm = "AM";
+//                        }    
+                        var curr_minutes = ('0'+d.getMinutes()).slice(-2);
+                        var curr_seconds = ('0'+d.getSeconds()).slice(-2);
+                        return weekday[curr_day] + ", " + m_names[curr_month] + " " + curr_date + ", " + curr_year + " " + curr_hours + ":" + curr_minutes + ":" + curr_seconds;
+
+                    }
             });
         });
         
@@ -416,13 +467,13 @@ $vaccesspages = array('9','6','18');
                             datatype: "json",
                             colNames:['Site', 'Service Name','Starting Balance', 'Total Ewallet Loads', 'EndingBalance','StartDate','EndDate'],
                             colModel:[
-                                    {name:'SiteCode',index:'SiteCode', align: 'center', width:150},
-                                    {name:'ServiceName',index:'ServiceName',align: 'center', width:120},
-                                    {name:'StartingBalance',index:'StartingBalance', align: 'center'},
-                                    {name:'TotalEwalletReload',index:'TotalEwalletReload', align: 'right', width:100},
-                                    {name:'EndingBalance',index:'EndingBalance', align: 'right', width:210},
-                                    {name:'StartDate',index:'StartDate', align: 'center', width:150},
-                                    {name:'EndDate',index:'EndDate', align: 'center', width:150}
+                                    {name:'SiteCode',index:'SiteCode', align: 'left', width:150},
+                                    {name:'ServiceName',index:'ServiceName',align: 'left', width:120},
+                                    {name:'StartingBalance',index:'StartingBalance', align: 'left'},
+                                    {name:'TotalEwalletReload',index:'TotalEwalletReload', align: 'left', width:100},
+                                    {name:'EndingBalance',index:'EndingBalance', align: 'left', width:210},
+                                    {name:'StartDate',index:'StartDate', align: 'left', width:150},
+                                    {name:'EndDate',index:'EndDate', align: 'left', width:150}
                                     ],
 
                             rowNum:10,
@@ -433,34 +484,14 @@ $vaccesspages = array('9','6','18');
                             refresh: true,
                             viewrecords: true,
                             sortorder: "asc",
-                            caption:"Ewallet Transaction Tracking"
+                            caption:"e-Wallet Transaction Tracking"
                         });
                         jQuery("#userdata4").jqGrid('navGrid','#pager2',{edit:false,add:false,del:false, search:false, refresh: true});
                         $('#userdata4').trigger("reloadGrid");
                     }
                     
                     
-                    function formatDate(date)
-                    {
-                        var m_names = new Array("January", "February", "March", 
-                        "April", "May", "June", "July", "August", "September", 
-                        "October", "November", "December");
-                        var weekday = new Array("Sunday", "Monday", "Tuesday", "Wednesday", 
-                        "Thurdsay", "Friday", "Saturday");
-
-                        var d = new Date(date);
-                        var curr_day = d.getDay();
-                        var curr_date = d.getDate();
-                        var curr_month = d.getMonth();
-                        var curr_year = d.getFullYear();
-                        var curr_hours = ('0'+d.getHours()).slice(-2);
-                        var curr_minutes = ('0'+d.getMinutes()).slice(-2);
-                        var curr_seconds = ('0'+d.getSeconds()).slice(-2);
-                        return weekday[curr_day] + ", " + m_names[curr_month] + " " + curr_date + ", " + curr_year + " " + curr_hours + ":" + curr_minutes + ":" + curr_seconds;
-                   
-                    }
                     
-                    $( "#info" ).empty().append( "<p align='left'>Transaction of "+ $("#txtcardnumber").val() +", "+formatDate($("#popupDatepicker1").val())+" to "+formatDate($("#popupDatepicker2").val()));
         }
     </script>
         <div id="pagetitle">UB Transaction Tracking</div>
@@ -485,7 +516,7 @@ $vaccesspages = array('9','6','18');
                         <option value="1">Cashier</option>
                         <option value="2">Launchpad</option>
                         <option value="3">Manual Redemption</option>
-                        <option value="4">Ewallet</option>
+                        <option value="4">e-Wallet</option>
                     </select>
                 </td>
                 </tr>
