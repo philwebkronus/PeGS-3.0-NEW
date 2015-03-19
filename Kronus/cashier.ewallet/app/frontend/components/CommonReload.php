@@ -105,11 +105,7 @@ class CommonReload {
                 $site_id, $service_id,$loyalty_card, $mid, $userMode, $trackingid, $voucher_code, $transaction_id);
         
         $bankTransactionStatus = null;
-        if($traceNumber!='' && $referenceNumber!=''){
-            if($trans_req_log_last_id){
-                $bankTransactionStatus = $bankTransactionLogs->insertBankTransaction($trans_req_log_last_id, $traceNumber, $referenceNumber, $paymentType);
-            }
-        }
+        
         
         if(!$trans_req_log_last_id) {
             $pendingTerminalTransactionCountModel->updatePendingTerminalCount($terminal_id);
@@ -118,7 +114,15 @@ class CommonReload {
             CasinoApi::throwError($message);
         }
         
+        //CasinoApi::throwError($trans_req_log_last_id.'-'.$traceNumber.'-'.$referenceNumber.'-'.$paymentType);
+        if($traceNumber!='' && $referenceNumber!=''){
+            if($trans_req_log_last_id){
+                $bankTransactionStatus = $bankTransactionLogs->insertBankTransaction($trans_req_log_last_id, $traceNumber, $referenceNumber, $paymentType);
+            }
+        }
+        
         if($bankTransactionStatus===false){
+            $transReqLogsModel->update($trans_req_log_last_id, 'false', 2,null,$terminal_id);
             $message = 'Bank Transaction Failed.';
             logger($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id);
             CasinoApi::throwError($message);

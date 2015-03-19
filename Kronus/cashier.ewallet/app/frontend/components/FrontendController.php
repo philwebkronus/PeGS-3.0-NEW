@@ -429,9 +429,11 @@ class FrontendController extends MI_Controller {
                 
                  //checking if casino is terminal based
                 if($casinoUserMode == 0){
+                    
                     $result = $commonReload->reload(toInt($this->getSiteBalance()),$amount, $paymentType,
-                        $terminal_id,$siteid,$cid,$accid,$loyaltyCardNo,$vouchercode,$trackingId, 
-                        $mid, $casinoUserMode,$casinoUsername,$casinoPassword,$casinoServiceID, $traceNumber, $referenceNumber);
+                            $terminal_id,$siteid,$cid,$accid,$loyaltyCardNo,$vouchercode,$trackingId, 
+                            $mid, $casinoUserMode,$traceNumber, $referenceNumber);
+                    
                 } 
 
                 //checking if casino is user based

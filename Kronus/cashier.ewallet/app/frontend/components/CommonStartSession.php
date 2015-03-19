@@ -140,12 +140,6 @@ class CommonStartSession {
             $terminal_id, $site_id, $service_id,$loyalty_card, $mid, $userMode, 
             $trackingid, $voucher_code, $transaction_id);
         
-        if($traceNumber!='' && $referenceNumber!=''){
-            if($trans_req_log_last_id){
-                $bankTransactionStatus = $bankTransactionLogs->insertBankTransaction($trans_req_log_last_id, $traceNumber, $referenceNumber, $paymentType);
-            }
-        }
-        
         if(!$trans_req_log_last_id) {
             $pendingTerminalTransactionCountModel->updatePendingTerminalCount($terminal_id);
             $message = 'There was a pending transaction for this user / terminal.';
@@ -155,8 +149,15 @@ class CommonStartSession {
             CasinoApi::throwError($message);
         }
         
+        if($traceNumber!='' && $referenceNumber!=''){
+            if($trans_req_log_last_id){
+                $bankTransactionStatus = $bankTransactionLogs->insertBankTransaction($trans_req_log_last_id, $traceNumber, $referenceNumber, $paymentType);
+            }
+        }
+        
         if($bankTransactionStatus===false){
             $message = 'Bank Transaction Failed.';
+            $transReqLogsModel->update($trans_req_log_last_id, 'false', 2,null,$terminal_id);
             $terminalSessionsModel->deleteTerminalSessionById($terminal_id);
             $egmSessionsModel->deleteEgmSessionById($terminal_id);
             logger($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id);

@@ -147,12 +147,6 @@ class CommonUBStartSession {
             $terminal_id, $site_id, $service_id,$loyalty_card, $mid, $userMode, 
             $trackingid, $voucher_code, $transaction_id);
         
-        if($traceNumber!='' && $referenceNumber!=''){
-            if($trans_req_log_last_id){
-                $bankTransactionStatus = $bankTransactionLogs->insertBankTransaction($trans_req_log_last_id, $traceNumber, $referenceNumber, $paymentType);
-            }
-        }
-        
         if(!$trans_req_log_last_id) {
             $pendingUserTransCountModel->updatePendingUserCount($loyalty_card);
             $message = 'There was a pending transaction for this user / terminal.';
@@ -162,8 +156,15 @@ class CommonUBStartSession {
             CasinoApiUB::throwError($message);
         }
         
+        if($traceNumber!='' && $referenceNumber!=''){
+            if($trans_req_log_last_id){
+                $bankTransactionStatus = $bankTransactionLogs->insertBankTransaction($trans_req_log_last_id, $traceNumber, $referenceNumber, $paymentType);
+            }
+        }
+        
         if($bankTransactionStatus===false){
             $message = 'Bank Transaction Failed.';
+            $transReqLogsModel->update($trans_req_log_last_id, 'false', 2,null,$terminal_id);
             $terminalSessionsModel->deleteTerminalSessionById($terminal_id);
             $egmSessionsModel->deleteEgmSessionById($terminal_id);
             logger($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id);

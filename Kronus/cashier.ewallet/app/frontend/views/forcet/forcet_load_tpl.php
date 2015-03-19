@@ -151,6 +151,31 @@
                 $('#ForceTFormModel_voucher_code').attr('disabled','disabled');
                 $('#ForceTFormModel_sel_amount').val('');
                 $('#ForceTFormModel_voucher_code').val('');
+                $('#ForceTFormModel_tracenumber').focus(function(){
+                        $("#ForceTFormModel_tracenumber").bind("keypress", function (event) {
+                                if (event.charCode!=0) {
+                                    var regex = new RegExp("^[a-zA-Z0-9]+$");
+                                    var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+                                    if (!regex.test(key)) {
+                                        event.preventDefault();
+                                        return false;
+                                    }
+                                }
+                        });
+                });
+
+                $('#ForceTFormModel_referencenumber').focus(function(){
+                        $("#ForceTFormModel_referencenumber").bind("keypress", function (event) {
+                                if (event.charCode!=0) {
+                                    var regex = new RegExp("^[a-zA-Z0-9]+$");
+                                    var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+                                    if (!regex.test(key)) {
+                                        event.preventDefault();
+                                        return false;
+                                    }
+                                }
+                        });
+                });
             } else {
                 $('#ForceTFormModel_amount').val('');
                 $('#ForceTFormModel_tracenumber').val('');
@@ -248,6 +273,7 @@
             $('#ForceTFormModel_voucher_code').attr('disabled','disabled');
             $('#ForceTFormModel_sel_amount').val('');
             $('#ForceTFormModel_voucher_code').val('');
+            
         } else {
             $('#ForceTFormModel_amount').val('');
             $('#ForceTFormModel_tracenumber').val('');

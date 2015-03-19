@@ -291,6 +291,31 @@ $(document).ready(function(){
             $('.auto').select();
             $('#StartSessionFormModel_voucher_code').hide();
             $('#StartSessionFormModel_voucher_code').val("");
+            $('#StartSessionFormModel_trace_number').focus(function(){
+                    $("#StartSessionFormModel_trace_number").bind("keypress", function (event) {
+                            if (event.charCode!=0) {
+                                var regex = new RegExp("^[a-zA-Z0-9]+$");
+                                var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+                                if (!regex.test(key)) {
+                                    event.preventDefault();
+                                    return false;
+                                }
+                            }
+                    });
+            });
+            
+            $('#StartSessionFormModel_reference_number').focus(function(){
+                    $("#StartSessionFormModel_reference_number").bind("keypress", function (event) {
+                            if (event.charCode!=0) {
+                                var regex = new RegExp("^[a-zA-Z0-9]+$");
+                                var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+                                if (!regex.test(key)) {
+                                    event.preventDefault();
+                                    return false;
+                                }
+                            }
+                    });
+            });
         }
         
         
