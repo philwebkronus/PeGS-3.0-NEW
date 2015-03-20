@@ -61,7 +61,7 @@ class CommonEWalletTransactionsModel extends CFormModel {
                     $transactionRequestLogID = $this->connection->getLastInsertID();
                     
                     $sql3 = "INSERT INTO transactionsummary (SiteID, TerminalID, Deposit, DateStarted, DateEnded, CreatedByAID, StartBalance, LoyaltyCardNumber, MID) "
-                            . "VALUES (:siteID, :terminalID, :deposit, now(6), now(6), :createdByAID, :startBalance, :loyaltyCardNumber, :mid)";
+                            . "VALUES (:siteID, :terminalID, :deposit, now(6), 0, :createdByAID, :startBalance, :loyaltyCardNumber, :mid)";
                     
                     $param3 = array(':siteID'=>$siteID, ':terminalID'=>$terminalID, ':deposit'=>$deposit, ':createdByAID'=>$AID, ':loyaltyCardNumber'=>$loyaltyCardNumber, ':mid'=>$mid, ':startBalance'=>$balance);
                     
@@ -192,7 +192,7 @@ class CommonEWalletTransactionsModel extends CFormModel {
     
     public function forceLogout($mid, $terminalID, $serviceID, $loyaltyCardNumber, $userMode,
             $transactionReferenceID, $amount, $transactionType, $siteID, $trackingID,
-            $voucherCode, $paymentType, $serviceTransactionID, $AID, $transactionSummaryID, $withdrawal){
+            $voucherCode, $paymentType, $serviceTransactionID, $AID, $transactionSummaryID, $withdrawal, $balance){
         
         $startTrans = $this->connection->beginTransaction();
         
@@ -215,9 +215,9 @@ class CommonEWalletTransactionsModel extends CFormModel {
             try {
                 $transactionRequestLogID = $this->connection->getLastInsertID();
 
-                $sql3 = "UPDATE transactionsummary SET Withdrawal=:withdrawal, DateEnded=NOW(6) WHERE TransactionsSummaryID=:transactionSummaryID";
+                $sql3 = "UPDATE transactionsummary SET Withdrawal=:withdrawal,EndBalance=:endBalance, DateEnded=NOW(6) WHERE TransactionsSummaryID=:transactionSummaryID";
 
-                $param3 = array(':withdrawal'=>$withdrawal, 'transactionSummaryID'=>$transactionSummaryID);
+                $param3 = array(':withdrawal'=>$withdrawal, 'transactionSummaryID'=>$transactionSummaryID, ':endBalance'=>$balance);
 
                 $command3 = $this->connection->createCommand($sql3);
                 $command3->bindValues($param3);

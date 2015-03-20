@@ -241,7 +241,7 @@ class PcwsController extends Controller{
                                 if($isupdatedewallet){
                                     if($transstatus == 1){
                                         $errCode = 0;
-                                        $transMsg = 'e-Wallet loading successful';
+                                        $transMsg = 'e-wallet loading successful';
                                         $newbal = $bcf - $amount;
                                         
                                         $sitebalancemodel->updateBcf($newbal, $siteid, 'load');
@@ -577,7 +577,7 @@ class PcwsController extends Controller{
 
                                 $ewallet->updateEwallet($playablebalance, $transrefid, $apiresult, $aid, $transstatus, $tracking1);
                                 $errCode = 0;
-                                $transMsg = 'e-Wallet withdraw successful';
+                                $transMsg = 'e-wallet withdraw successful';
 
                                 $memberservices->UpdateBalances($playablebalance, "withdraw-$tracking1", $mid, $serviceid);
 
@@ -1453,6 +1453,7 @@ class PcwsController extends Controller{
                 $eWalletModel = new CommonEWalletTransactionsModel();
                 $membersModel = new MembersModel();
                 
+                
                 if($validate->isAllNotEmpty(array($terminalCode, $serviceID, $cardNumber, $systemUsername))){
                     if(ctype_alnum($cardNumber)){
                         $mid = Utilities::fetchFirstValue($memberCardsModel->getMID($cardNumber));
@@ -1498,14 +1499,20 @@ class PcwsController extends Controller{
                                                                     $paymentType=1;
                                                                     $serviceTransactionID='';
                                                                     $deposit='0';
-                                                                    $AID='1';
+                                                                    
+                                                                    $accountsModel = new AccountsModel();
+                                                                    $AID = Utilities::fetchFirstValue($accountsModel->getAIDBySiteID($siteID));
+                                                                    if($AID){
 
-                                                                    $transactionResult = $eWalletModel->insert($mid, $terminalID, $serviceID, $cardNumber, $userMode, $serviceUsername, $servicePassword, $hashedServicePassword, $transactionReferenceID, $amount, $transactionType, $siteID, $trackingID, $voucherCode, $paymentType, $serviceTransactionID, $deposit, $AID, $balance);
+                                                                        $transactionResult = $eWalletModel->insert($mid, $terminalID, $serviceID, $cardNumber, $userMode, $serviceUsername, $servicePassword, $hashedServicePassword, $transactionReferenceID, $amount, $transactionType, $siteID, $trackingID, $voucherCode, $paymentType, $serviceTransactionID, $deposit, $AID, $balance);
 
-                                                                    if($transactionResult){
-                                                                        $eCode=0;
+                                                                        if($transactionResult){
+                                                                            $eCode=0;
+                                                                        }else{
+                                                                            $eCode=18;//Failed to start session
+                                                                        }
                                                                     }else{
-                                                                        $eCode=18;//Failed to start session
+                                                                        $eCode=4;
                                                                     }
 
                                                                 }else{
@@ -1653,10 +1660,10 @@ class PcwsController extends Controller{
                                 $AID = Utilities::fetchFirstValue($accountsModel->getAIDBySiteID($siteID));
                                 if($AID){
                                     
-                                    $balance = $casinocontroller->GetBalance($serviceUsername);
+                                    $balances = $casinocontroller->GetBalance($serviceUsername);
 
-                                    if(is_array($balance) && !empty($balance)){
-
+                                    if(is_array($balances) && !empty($balances)){
+                                        $balance = $balances['balance'];
                                         $serviceID = $casinoDetails['ServiceID'];
                                         $cardNumber = $casinoDetails['LoyaltyCardNumber'];
                                         $mid = $casinoDetails['MID'];
@@ -1676,7 +1683,7 @@ class PcwsController extends Controller{
 
                                         $isWallet = Utilities::fetchFirstValue($membersModel->getIsWalletByMID($mid));
                                         if($isWallet==1){
-                                            $transactionResult = $eWalletModel->forceLogout($mid, $terminalID, $serviceID, $cardNumber, $userMode, $transactionReferenceID, $amount, $transactionType, $siteID, $trackingID, $voucherCode, $paymentType, $serviceTransactionID, $AID, $transactionSummaryID, $withdrawal);
+                                            $transactionResult = $eWalletModel->forceLogout($mid, $terminalID, $serviceID, $cardNumber, $userMode, $transactionReferenceID, $amount, $transactionType, $siteID, $trackingID, $voucherCode, $paymentType, $serviceTransactionID, $AID, $transactionSummaryID, $withdrawal, $balance);
 
                                             if($transactionResult){
                                                 $eCode=0;
