@@ -296,7 +296,7 @@ $(document).ready(function(){
                             tbody+='</tr>';
                             
                             tbody+='<tr>';
-                            tbody+='<th colspan="1" align="center">e-Wallet Deposits</th>';
+                            tbody+='<th colspan="1" align="center">e-wallet Deposits</th>';
                             tbody+='<td class="right" colspan="1">'+ toMoney(eWalletDeposit,'no') +'</td>';
                             tbody+='</tr>';
                             
@@ -555,7 +555,7 @@ $(document).ready(function(){
                             tbody+='</tr>';
                             
                             tbody+='<tr>';
-                            tbody+='<th colspan="1" align="center">e-Wallet Deposits</th>';
+                            tbody+='<th colspan="1" align="center">e-wallet Deposits</th>';
                             tbody+='<td class="right" colspan="1">'+ toMoney(eWalletDeposit,'no') +'</td>';
                             tbody+='</tr>';
 

@@ -259,7 +259,7 @@ class FrontendController extends MI_Controller {
             list($is_loyalty, $card_number,$loyalty, $casinos, $mid, $casinoarray_count, $isewallet) = 
                 $this->getCardInfo($loyaltyCardNo, $this->site_id, 2);
             if($isewallet > 0){
-                $message = 'Reload Failed, Player is an ewallet account.';
+                $message = 'Reload failed. Player is an e-wallet account.';
                 logger($message);
                 $this->throwError($message);
             }
@@ -506,7 +506,7 @@ class FrontendController extends MI_Controller {
         
         //verify if card is ewallet
         if($isewallet < 1){
-            $message = 'Loading Failed, Player must be an ewallet account.';
+            $message = 'Loading failed. Player must be an e-wallet account.';
             logger($message);
             $this->throwError($message);
         }
@@ -751,7 +751,7 @@ class FrontendController extends MI_Controller {
             list($is_loyalty, $card_number,$loyalty, $casinos, $mid, $casinoarray_count, $isewallet) = 
                 $this->getCardInfo($loyaltyCardNo, $this->site_id, 2);
             if($isewallet > 0){
-                $message = 'Redemption Failed, Player is an ewallet account.';
+                $message = 'Redemption failed. Player is an e-wallet account.';
                 logger($message);
                 $this->throwError($message);
             }
@@ -866,7 +866,7 @@ class FrontendController extends MI_Controller {
         
         //verify if card is ewallet
         if($isewallet < 1){
-            $message = 'Withdraw Failed, Player must be an ewallet account.';
+            $message = 'Withdraw failed. Player must be an e-wallet account.';
             logger($message);
             $this->throwError($message);
         }
@@ -1194,7 +1194,7 @@ class FrontendController extends MI_Controller {
                                     if($ref_service['Code'] == 'MM'){
                                         //verify if card is ewallet
                                         if($isewallet > 0){
-                                            $message = 'Start Session Failed, Player is already an ewallet account.';
+                                            $message = 'Start session failed. Player is already an e-wallet account.';
                                             logger($message);
                                             $this->throwError($message);
                                         }
@@ -1365,7 +1365,7 @@ class FrontendController extends MI_Controller {
             if($ref_service['Code'] == 'MM'){
                 //verify if card is ewallet
                 if($isewallet > 0){
-                    $message = 'Start Session Failed, Player is already an ewallet account.';
+                    $message = 'Start session failed. Player is already an e-wallet account.';
                     logger($message);
                     $this->throwError($message);
                 }
