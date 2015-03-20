@@ -1,5 +1,5 @@
 <?php 
-$pagetitle = "e-Wallet Transaction History Per Membership Card"; 
+$pagetitle = "e-wallet Transaction History Per Membership Card"; 
 include "header.php";
 $vaccesspages = array('5','6','9','12','18');
     $vctr = 0;
@@ -176,7 +176,7 @@ $vaccesspages = array('5','6','9','12','18');
             pager: '#pager2',
             viewrecords: true,
             sortorder: "asc",
-            caption: "e-Wallet Transaction History",
+            caption: "e-wallet Transaction History",
             colModel:[
                 {name:'LoyaltyCardNumber',index:'LoyaltyCardNumber',align: 'center', width:150},
                                     {name:'StartDate',index:'StartDate', align: 'center', width:185},

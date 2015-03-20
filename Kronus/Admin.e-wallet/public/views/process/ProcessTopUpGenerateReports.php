@@ -611,7 +611,7 @@ class ProcessTopUpGenerateReports extends BaseProcess{
                 array('value'=>'Service Name'),
                 array('value'=>'User Mode'),
                 array('value'=>'Terminal Type'),
-                array('value'=>'e-Wallet?')
+                array('value'=>'e-wallet?')
              );
         
         if($acctype == 6 || $acctype == 18){
@@ -697,7 +697,7 @@ class ProcessTopUpGenerateReports extends BaseProcess{
                 array('value'=>'Service Name'),
                 array('value'=>'User Mode'),
                 array('value'=>'Terminal Type'),
-                array('value'=>'e-Wallet?'),
+                array('value'=>'e-wallet?'),
              ));
         foreach($rows as $row) {
             $isEwallet = "No";
@@ -737,7 +737,7 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         
         $acctype = $_SESSION['acctype'];
         
-        $_SESSION['report_header'] = array('Site / PEGS Code','Site / PEGS Name','Terminal Code','Playing Balance','Service Name', 'User Mode', 'Terminal Type', 'e-Wallet?');
+        $_SESSION['report_header'] = array('Site / PEGS Code','Site / PEGS Name','Terminal Code','Playing Balance','Service Name', 'User Mode', 'Terminal Type', 'e-wallet?');
         
         if($acctype == 6 || $acctype == 18){
             array_pop($_SESSION['report_header']);
@@ -822,7 +822,7 @@ class ProcessTopUpGenerateReports extends BaseProcess{
     //Playing Balance History Report (Excel)
     public function playingBalanceExcelUB() {
         include_once __DIR__.'/../sys/class/CasinoGamingCAPI.class.php';
-        $_SESSION['report_header'] = array('Site / PEGS Code','Site / PEGS Name', 'Terminal Code','Playing Balance','Service Name', 'User Mode', 'Terminal Type', 'e-Wallet?');
+        $_SESSION['report_header'] = array('Site / PEGS Code','Site / PEGS Name', 'Terminal Code','Playing Balance','Service Name', 'User Mode', 'Terminal Type', 'e-wallet?');
         //$rows = $_SESSION['playing_balance'];
         $topreport = new TopUpReportQuery($this->getConnection());
         $topreport->open();
@@ -1390,7 +1390,7 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         $topreport->close();
     }
     
-    //e-Wallet Transaction History per site Report (PDF)
+    //e-wallet Transaction History per site Report (PDF)
     public function ewalletTransactionsitehistoryPDF($site, $transType, $transStatus, $startDate, $endDate) {
         $aid = 0;
         if(isset($_SESSION['sessionID'])) {
@@ -1442,7 +1442,7 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         $topreport->close();
     }
     
-     //e-Wallet Transaction History Report per site (Excel)
+     //e-wallet Transaction History Report per site (Excel)
     public function ewalletTransactionsitehistoryExcel($site, $transType, $transStatus, $startDate, $endDate) {
         $_SESSION['report_header'] = array('Card Number','Start Date', 'End Date','Amount','Transaction Type',
             'Status','Created By');
@@ -1485,7 +1485,7 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         $topreport->close();
     }
     
-     //e-Wallet Transaction History per card Report (PDF)
+     //e-wallet Transaction History per card Report (PDF)
     public function ewalletTransactioncardhistoryPDF($cardNumber, $transType, $transStatus, $startDate, $endDate) {
         $aid = 0;
         if(isset($_SESSION['sessionID'])) {
@@ -1537,7 +1537,7 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         $topreport->close();
     }
     
-     //e-Wallet Transaction History Report per card (Excel)
+     //e-wallet Transaction History Report per card (Excel)
     public function ewalletTransactioncardhistoryExcel($cardNumber, $transType, $transStatus, $startDate, $endDate) {
         $_SESSION['report_header'] = array('Card Number','Start Date', 'End Date','Amount','Transaction Type',
             'Status','Created By');

@@ -55,7 +55,7 @@ if(isset($_SESSION['acctype']))
                             ActiveSession : true,
                             ActiveSessionAction : "pagcorsessionrecord"
                         },
-                        colNames : ["Terminal Code", "Playing Balance","User Mode", "e-Wallet?"],
+                        colNames : ["Terminal Code", "Playing Balance","User Mode", "e-wallet?"],
                         colModel : [
                             {name:'TerminalCode',index:'TerminalCode', width: 300, sortable:false},
                             {name:'PlayingBalance',index:'PlayingBalance', width: 400, align: 'right', sortable:false},

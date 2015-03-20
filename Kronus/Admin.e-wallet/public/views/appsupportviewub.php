@@ -175,8 +175,12 @@ $flag = false;
             $('#btnSubmit').click(function()
             {   
                    showjqgrid();
-                   $("#info").empty();
-                   $("#info").append("<p align='left'>Transactions of " + jQuery("#txtcardnumber").val() + ", " + formatDate($("#popupDatepicker1").val()) + " to " + formatDate($("#popupDatepicker2").val())+"</p>");
+                   if(flag != 1)
+                    {
+                       $("#info").empty();
+                       $("#info").append("<p align='left'>Transactions of " + jQuery("#txtcardnumber").val() + ", " + formatDate($("#popupDatepicker1").val()) + " to " + formatDate($("#popupDatepicker2").val())+"</p>");
+                    }
+                   
                   
                     function formatDate(date)
                     {
@@ -465,13 +469,14 @@ $flag = false;
                                     paginate: function() {return $("#paginate").val();}
                                       },
                             datatype: "json",
-                            colNames:['Site', 'Service Name','Starting Balance', 'Total Ewallet Loads', 'EndingBalance','StartDate','EndDate'],
+                            colNames:['Site', 'Terminal','Service Name','Starting Balance', 'Total e-wallet Loads<br/>(with session)', 'EndingBalance','StartDate','EndDate'],
                             colModel:[
-                                    {name:'SiteCode',index:'SiteCode', align: 'left', width:150},
+                                    {name:'SiteCode',index:'SiteCode', align: 'left', width:100},
+                                    {name:'TerminalCode',index:'TerminalCode',align: 'center', width:90},
                                     {name:'ServiceName',index:'ServiceName',align: 'left', width:120},
-                                    {name:'StartingBalance',index:'StartingBalance', align: 'left'},
-                                    {name:'TotalEwalletReload',index:'TotalEwalletReload', align: 'left', width:100},
-                                    {name:'EndingBalance',index:'EndingBalance', align: 'left', width:210},
+                                    {name:'StartingBalance',index:'StartingBalance', align: 'right',width:120},
+                                    {name:'TotalEwalletload',index:'TotalEwalletReload', align: 'right', width:140},
+                                    {name:'EndingBalance',index:'EndingBalance', align: 'right', width:120},
                                     {name:'StartDate',index:'StartDate', align: 'left', width:150},
                                     {name:'EndDate',index:'EndDate', align: 'left', width:150}
                                     ],
@@ -484,10 +489,12 @@ $flag = false;
                             refresh: true,
                             viewrecords: true,
                             sortorder: "asc",
-                            caption:"e-Wallet Transaction Tracking"
+                            caption:"e-wallet Transaction Tracking"
                         });
                         jQuery("#userdata4").jqGrid('navGrid','#pager2',{edit:false,add:false,del:false, search:false, refresh: true});
                         $('#userdata4').trigger("reloadGrid");
+                        $('#jqgh_userdata4_TotalEwalletload').css("height","");
+                        $('#jqgh_userdata4_TotalEwalletload').css("height","40px");
                     }
                     
                     
@@ -516,7 +523,7 @@ $flag = false;
                         <option value="1">Cashier</option>
                         <option value="2">Launchpad</option>
                         <option value="3">Manual Redemption</option>
-                        <option value="4">e-Wallet</option>
+                        <option value="4">e-wallet</option>
                     </select>
                 </td>
                 </tr>
@@ -596,13 +603,13 @@ echo $datetime_from; ?>"/>
         </form>
      
            <div id="results" align="center">
+            <div id='info'></div>
              <table border="1" id="userdata">
 
              </table>
                <table border="1" id="userdata3">
 
              </table>
-                <div id='info'></div>
              <table border="1" id="userdata4">
 
              </table>  

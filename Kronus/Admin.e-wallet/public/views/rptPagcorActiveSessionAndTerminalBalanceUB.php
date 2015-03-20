@@ -63,7 +63,7 @@ if(isset($_SESSION['acctype']))
                             ActiveSession : true,
                             ActiveSessionAction : "pagcorsessionrecordub"
                         },
-                        colNames : ["Terminal Code", "Playing Balance","User Mode","e-Wallet?"],
+                        colNames : ["Terminal Code", "Playing Balance","User Mode","e-wallet?"],
                         colModel : [
                            
                             {name:'TerminalCode',index:'TerminalCode', width: 300, sortable:false},

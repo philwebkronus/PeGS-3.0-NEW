@@ -575,8 +575,6 @@ if($connected)
                                         $transsummaryid = $transsummaryid['summaryID'];
                                         $issucess = $otopup->updateManualRedemptionub($vstatus, $vactualAmt, 
                                                 $vtransactionID, $fmteffdate, $vtransStatus, $lastmrid);
-                                        // update player session - F&F
-                                        $otopup->updatePlayerSession($mid, $ubserviceID, $vactualAmt);
                                         if($issucess > 0)
                                         {
                                             //update member services

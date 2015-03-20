@@ -4,7 +4,7 @@
  * @date Febraury 3, 2015
  * @author Mark Kenneth Esguerra
  */
-$pagetitle = "Manual e-Wallet Fulfillment";  
+$pagetitle = "Manual e-wallet Fulfillment";  
 include "process/ProcessEwalletManualAPIFulfillment.php";
 include "header.php";
 $vaccesspages = array('9');

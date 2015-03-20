@@ -203,7 +203,7 @@ $vaccesspages = array('9');
                             refresh: true,
                             viewrecords: true,
                             sortorder: "asc",
-                            caption:"Manual e-Wallet Fulfillment History"
+                            caption:"Manual e-wallet Fulfillment History"
                     });
                     jQuery("#userdata").jqGrid('navGrid','#pager2',{edit:false,add:false,del:false, search:false, refresh: true});
                     $('#userdata').trigger("reloadGrid");
@@ -215,7 +215,7 @@ $vaccesspages = array('9');
 //            });
         });
     </script>
-        <div id="pagetitle">Manual e-Wallet Fulfillment History</div>
+        <div id="pagetitle">Manual e-wallet Fulfillment History</div>
         <br />
         <form method="post" action="" id="frmapps" name="frmapps">
             <input type="hidden" name="paginate" id="paginate" value="MCFHistory" />

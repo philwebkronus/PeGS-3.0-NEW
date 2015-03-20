@@ -192,12 +192,14 @@ include "header.php";
                             $("#fade").hide();
                        }
                        else {
+                           hideLoading();
                            alert(data.Message);
                            window.location.href = "manualterminalremove.php";
                        }
                        hideLoading();
                    }, 
                    error : function(XMLHttpRequest, e) {
+                       hideLoading();
                        alert(XMLHttpRequest.responseText);
                        if (XMLHttpRequest.status == 401) {
                            window.locaton.reload();
@@ -232,7 +234,7 @@ include "header.php";
             <div id="light2" class="white_content" style="width: 370px; height:140px;">
                 <br />
                 <div align="center">
-                  Are you sure you want to remove the session for this terminal?
+                  Are you sure you want to end the session for this terminal?
                 </div>
                 <br />  
                 <br />

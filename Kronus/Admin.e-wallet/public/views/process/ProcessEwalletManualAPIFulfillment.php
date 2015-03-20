@@ -1,6 +1,6 @@
 <?php
 /**
- * Manual e-Wallet Fulfillment Process
+ * Manual e-wallet Fulfillment Process
  * @author Mark Kenneth Esguerra
  * @date Febraury 3, 2015
  */
@@ -97,12 +97,12 @@ if($connected && $connected2)
                                    'CardNumber' => $cardnumber, 
                                    'MID' => $MID, 
                                    'Source' => $hasPending['RequestSource'], 
-                                   'Message' => 'Manual ewallet Fulfillment: Has Pending Transaction.');
+                                   'Message' => 'Manual e-wallet Fulfillment: Has Pending Transaction.');
                        }
                        else
                        {
                            $result = array('ErrorCode' => 1, 
-                                   'Message' => 'Manual ewallet Fulfillment: Player has no pending transaction.');
+                                   'Message' => 'Manual e-wallet Fulfillment: Player has no pending transaction.');
                        }
                    }
                    else
@@ -123,7 +123,7 @@ if($connected && $connected2)
                $cardnumber  = $_POST['cardnumber'];
                $MID         = $_POST['mid'];
                $source      = $_POST['source'];
-               //get transaction details in ewallet trans
+               //get transaction details in e-wallet trans
                $transdetails = $maf->getEwalletTransInfo($MID);
                //display source
                switch ($source)
@@ -219,7 +219,7 @@ if($connected && $connected2)
                   {
                       $result = array('ErrorCode' => 1, 
                                       'Casino' => $serviceID, 
-                                      'Message' => 'Manual ewallet Fulfillment: Casino is empty');
+                                      'Message' => 'Manual e-wallet Fulfillment: Casino is empty');
                       echo json_encode($result);
                       
                   }
@@ -548,7 +548,7 @@ if($connected && $connected2)
                                $updatebcf = $maf->updateBcfEwallet($newbal, $site, "Start Session");
                                if ($updatebcf)
                                {
-                                    $msg = 'Manual ewallet Fulfillment: Transaction Successful';
+                                    $msg = 'Manual e-wallet Fulfillment: Transaction Successful';
 
                                     $zaid = $aid;
                                     $zdate = $vdate;
@@ -558,12 +558,12 @@ if($connected && $connected2)
                                }
                                else
                                {
-                                    $msg = 'Manual ewallet Fulfillment: Failed to update BCF.';
+                                    $msg = 'Manual e-wallet Fulfillment: Failed to update BCF.';
                                }
                           }
                           else
                           {
-                              $msg = 'Manual ewallet Fulfillment: Failed to Update Transaction Status';
+                              $msg = 'Manual e-wallet Fulfillment: Failed to Update Transaction Status';
                           }
                     }
                     else if ($txtsource == "KAPI")
@@ -606,7 +606,7 @@ if($connected && $connected2)
 //                                        $maf->updateEgmRequestLogs($status, $transrefid, $egmreqid);
 //                                    }
 //                                }  
-                                $msg = 'Manual ewallet Fulfillment: Transaction Successful';
+                                $msg = 'Manual e-wallet Fulfillment: Transaction Successful';
 
                                 $zaid = $aid;
                                 $zdate = $vdate;
@@ -616,7 +616,7 @@ if($connected && $connected2)
                           }
                           else
                           {
-                              $msg = 'Manual ewallet Fulfillment: Failed to Update Transaction Status';
+                              $msg = 'Manual e-wallet Fulfillment: Failed to Update Transaction Status';
                           }
                     }
                     else if ($txtsource == "KAPI")

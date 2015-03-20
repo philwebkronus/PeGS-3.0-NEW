@@ -195,7 +195,7 @@ $vaccesspages = array('5','6', '18');
                                     sitecode: function() {return $('#selsite').val(); }
                                       },
                             datatype: "json",
-                            colNames:['Site / PEGS Code', 'Site / PEGS Name', 'Terminal Code', 'Playing Balance','Service Name', 'User Mode','Terminal Type','e-Wallet?'],
+                            colNames:['Site / PEGS Code', 'Site / PEGS Name', 'Terminal Code', 'Playing Balance','Service Name', 'User Mode','Terminal Type','e-wallet?'],
                             colModel:[
                                 {name:'SiteCode',index:'SiteCode',align:'left'},
                                 {name:'SiteName',index:'SiteName',align:'left'},

@@ -421,7 +421,7 @@ class ApplicationSupport extends DBHandler
       * @return array
       * count all manualredemptions to paginate, validate if status and transtype was selected
       */
-      function countmanualredemptionsub($cardnumber, $zFrom,$zTo)
+      function countmanualredemptionsub($cardnumber, $ztransstatus, $zFrom,$zTo)
       {           
           
           //validate if combo boxes of transaction status and transaction type are selected ALL 
@@ -2429,9 +2429,14 @@ class ApplicationSupport extends DBHandler
       */
       function countUBTransactionEwallet($cardnumber, $zFrom, $zTo)
       {     
-              $stmt = "SELECT COUNT(e.EwalletTransID) as count FROM npos.ewallettrans e  
-                    WHERE e.LoyaltyCardNumber = ? AND e.StartDate >= ?
-                    AND e.StartDate < ?";
+              $stmt = "SELECT COUNT(ts.TransactionsSummaryID) as count
+                                FROM transactionsummary ts 
+                                INNER JOIN ewallettrans et ON ts.TransactionsSummaryID = et.TransactionSummaryID
+                                LEFT JOIN ref_services rs ON et.ServiceID = rs.ServiceID
+                                LEFT JOIN terminals t ON et.TerminalID = t.TerminalID
+                                LEFT JOIN sites s ON s.SiteID = et.SiteID 
+                                WHERE ts.LoyaltyCardNumber = ? AND ts.DateStarted >= ? AND ts.DateStarted < ?
+                                ORDER BY ts.DateStarted";
               $this->prepare($stmt);
               $this->bindparameter(1,$cardnumber);
               $this->bindparameter(2,$zFrom);
@@ -2444,13 +2449,16 @@ class ApplicationSupport extends DBHandler
       function selectUBTransactionEwallet($cardnumber,  $zFrom,$zTo, $zStart, $zLimit)
       { 
       
-              $stmt = "SELECT a.EwalletTransID, d.SiteCode, b.ServiceName, a.FromBalance as StartingBalance, 
-                       a.Amount as TotalEwalletReload, a.ToBalance as EndingBalance, a.StartDate, a.EndDate
-                       from npos.ewallettrans a 
-                       LEFT JOIN npos.ref_services b ON a.ServiceID = b.ServiceID
-                       LEFT JOIN npos.terminals c ON a.TerminalID = c.TerminalID
-                       LEFT JOIN npos.sites d ON d.SiteID = a.SiteID
-                       WHERE a.LoyaltyCardNumber = ? AND a.StartDate >= ? AND a.StartDate < ? ORDER BY a.StartDate LIMIT ".$zStart.", ".$zLimit."";
+              $stmt = "SELECT ts.TransactionsSummaryID, t.TerminalCode, et.EwalletTransID, s.SiteCode, rs.ServiceName, ts.StartBalance as StartingBalance, 
+                            SUM(et.Amount) as TotalEwalletload, ts.EndBalance as EndingBalance, ts.DateStarted as StartDate, ts.DateEnded as EndDate
+                             FROM transactionsummary ts 
+                             INNER JOIN ewallettrans et ON ts.TransactionsSummaryID = et.TransactionSummaryID
+                             LEFT JOIN npos.ref_services rs ON et.ServiceID = rs.ServiceID
+                             LEFT JOIN npos.terminals t ON et.TerminalID = t.TerminalID
+                             LEFT JOIN npos.sites s ON s.SiteID = ts.SiteID 
+                             WHERE ts.LoyaltyCardNumber = ? AND ts.DateStarted >= ? AND ts.DateStarted < ?
+                             GROUP BY ts.TransactionsSummaryID
+                             ORDER BY ts.DateStarted LIMIT ".$zStart.", ".$zLimit."";
               $this->prepare($stmt);
               $this->bindparameter(1,$cardnumber);
               $this->bindparameter(2,$zFrom);

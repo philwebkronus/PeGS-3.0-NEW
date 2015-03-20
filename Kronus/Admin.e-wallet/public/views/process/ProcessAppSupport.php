@@ -491,7 +491,7 @@ if($connected && $connected2 && $connected3)
                                     else
                                     {
                                         $response = array('ErrorCode' => 1, 
-                                                          'Message' => 'Card Number is not for e-Wallet.');
+                                                          'Message' => 'Card Number is not for e-wallet.');
                                         $terminalid = "";
                                     }
                                 }
@@ -573,24 +573,33 @@ if($connected && $connected2 && $connected3)
                             $loyaltyResult = $loyalty->getCardInfo2($cardnumber, $cardinfo, 1);
                             $obj_result = json_decode($loyaltyResult);
 
-                           $casinocount = count($obj_result->CardInfo->CasinoArray);
-                           if ($casinocount > 0)
-                           {
-                               $details = $oas->getTerminalCode($terminalid);
-                               //get site code
-                               $getSiteCode = $oas->getSiteCode($details['SiteID']);
-                               $response = array('ErrorCode' => 0, 
-                                                 'Login' => $hasTerminal['UBServiceLogin'] == "" ? "N/A" : $hasTerminal['UBServiceLogin'], 
-                                                 'CardNumber' => $cardnumber, 
-                                                 'SiteCode' => trim(str_replace('ICSA-', '', $getSiteCode['SiteCode'])), 
-                                                 'TerminalCode' => trim(str_replace('ICSA-', '', $details['TerminalCode'])), 
-                                        );
-                                    }
-                              else 
-                              {
-                               $response = array('ErrorCode' => 1, 
-                                                 'Message' => 'There is no mapped casino for this Card Number.');
-                              }  
+                            if ($obj_result->CardInfo->IsEwallet > 0)
+                            {
+                                $casinocount = count($obj_result->CardInfo->CasinoArray);
+                                if ($casinocount > 0)
+                                {
+                                    $details = $oas->getTerminalCode($terminalid);
+                                    //get site code
+                                    $getSiteCode = $oas->getSiteCode($details['SiteID']);
+                                    $response = array('ErrorCode' => 0, 
+                                                      'Login' => $hasTerminal['UBServiceLogin'] == "" ? "N/A" : $hasTerminal['UBServiceLogin'], 
+                                                      'CardNumber' => $cardnumber, 
+                                                      'SiteCode' => trim(str_replace('ICSA-', '', $getSiteCode['SiteCode'])), 
+                                                      'TerminalCode' => trim(str_replace('ICSA-', '', $details['TerminalCode'])), 
+                                             );
+                                         }
+                                else 
+                                {
+                                     $response = array('ErrorCode' => 1, 
+                                                      'Message' => 'There is no mapped casino for this Card Number.');
+                                }
+                            }
+                            else
+                            {
+                                $response = array('ErrorCode' => 1, 
+                                                          'Message' => 'Card number should be an e-wallet account.');
+                                $terminalid = "";
+                            }
                         }
                         else
                         {
@@ -1160,21 +1169,11 @@ if($connected && $connected2 && $connected3)
                                     foreach($result as $vview)
                                     {   
                                         list($site, $sitecode) = split("-", $vview['SiteCode']);
-//                                       if(isset($vview['TerminalCode']))
-//                                       {
-//                                           $results = $vview['TerminalCode'];
-////                                           if(substr($vview['TerminalCode'], strlen($vview['SiteCode'])))
-////                                           {
-////                                               $results = substr($vview['TerminalCode'], strlen($vview['SiteCode']));
-////                                           }
-////                                           else
-////                                           {
-////                                              $results = ''; 
-////                                           }
-//                                       }
+                                       $terminalcode = preg_replace("/[^0-9][^VIP]/", "", $vview['TerminalCode']);
+                                       $enddate = $vview['EndDate'] == 0 ? "Still playing ...":date('Y-m-d H:i:s', strtotime($vview['EndDate']));
                                        $responce->rows[$i]['id']=$vview['EwalletTransID'];
-                                       $responce->rows[$i]['cell']=array($sitecode,$vview['ServiceName'],number_format($vview['StartingBalance'],2), 
-                                           number_format($vview['TotalEwalletReload'],2),number_format($vview['EndingBalance'],2),date('Y-m-d H:i:s', strtotime($vview['StartDate'])),date('Y-m-d H:i:s', strtotime($vview['EndDate'])));
+                                       $responce->rows[$i]['cell']=array($sitecode,$terminalcode,$vview['ServiceName'],number_format($vview['StartingBalance'],2), 
+                                           number_format($vview['TotalEwalletload'],2),number_format($vview['EndingBalance'],2),date('Y-m-d H:i:s', strtotime($vview['StartDate'])),$enddate);
                                        $i++;
                                     }
                                 }
@@ -3474,10 +3473,7 @@ if($connected && $connected2 && $connected3)
                     echo json_encode($msg);
                     unset($site,$txtcversion,$txtoldcversion);
                 exit;    
-           break; 
-           case "RemoveTerminal": 
-               echo "Fsadfgsa";
-           break;                     
+           break;                   
            default :
                 $msg = "Page not found";
                 $_SESSION['mess'] = $msg;
