@@ -34,7 +34,7 @@
                         echo Menu::display(array(
                             'Reports'=>array('link'=>$this->createUrl('reports'),'act'=>'overview','con'=>'Reports','attr'=>'desc="List of all player session transactions"'),
                             'View Transaction History'=>array('link'=>$this->createUrl('viewtrans/history'),'act'=>'history','con'=>'ViewTransaction','attr'=>'desc="View Transactions History"'),
-                            'e-Wallet Load & Withdraw'=>array('link'=>$this->createUrl('forcet'),'act'=>'overview','con'=>'ForceT','attr'=>'desc="Load and Withdraw"'),
+                            'e-wallet Load & Withdraw'=>array('link'=>$this->createUrl('forcet'),'act'=>'overview','con'=>'ForceT','attr'=>'desc="Load and Withdraw"'),
                             'Refresh'=>array('link'=>'','attr'=>'desc="Refresh the page" id="refresh_getbal"','visible'=>$this->show_refresh)
                         )); 
                     ?>

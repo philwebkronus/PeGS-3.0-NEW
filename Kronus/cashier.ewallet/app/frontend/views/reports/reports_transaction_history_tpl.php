@@ -137,7 +137,7 @@ $(document).ready(function(){
             $withdrawalgenesis2 += $r['WGenesis'];
         }
         
-       $grosholdregular = (($regdepositcash + $regdepositticket + $regdepositcoupon)+($regreloadcash + $regreloadticket + $regreloadcoupon))-($withdrawalcashier2 + $forcetredemptions);
+       $grosholdregular = (($regdepositcash + $regdepositticket + $regdepositcoupon)+($regreloadcash + $regreloadticket + $regreloadcoupon))-($withdrawalcashier2);
        $grosholdgenesis = (($gendepositcash + $gendepositticket + $gendepositcoupon)+($genreloadcash + $genreloadticket + $genreloadcoupon))-($withdrawalgenesis2);
        
        /*--- SUBTOTAL ---*/
@@ -240,7 +240,7 @@ $(document).ready(function(){
           <td class="right" colspan="1" align="center"><?php echo number_format($totalcoupons,2);?></td>
       </tr>
       <tr>
-          <th colspan="1" align="center">e-Wallet Deposits</th>
+          <th colspan="1" align="center">e-wallet Deposits</th>
           <td class="right" colspan="1" align="center"><?php echo number_format($eWalletDeposits,2);?></td>
       </tr>
       <tr>

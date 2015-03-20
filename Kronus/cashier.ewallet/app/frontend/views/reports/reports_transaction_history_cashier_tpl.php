@@ -110,7 +110,7 @@ $(document).ready(function(){
        $totalreload = $reloadcash + $reloadticket + $reloadcoupon;
        $totalwithdraw = $withdrawalcashier + $withdrawalgenesis;
        
-       $totalgrosshold = $grossholdtotal + $forcetredemptions;
+       $totalgrosshold = $grossholdtotal;
        
        $subtotaldcash = $depositcash + $reloadcash;
        
@@ -169,7 +169,7 @@ $(document).ready(function(){
           <td class="right" colspan="1" align="center"><?php echo number_format($totalcoupons,2);?></td>
       </tr>
       <tr>
-          <th colspan="1" align="center">e-Wallet Deposits</th>
+          <th colspan="1" align="center">e-wallet Deposits</th>
           <td class="right" colspan="1" align="center"><?php echo number_format($eWalletDeposits,2);?></td>
       </tr>
       <tr>
