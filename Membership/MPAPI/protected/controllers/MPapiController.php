@@ -4494,6 +4494,8 @@ class MPapiController extends Controller {
                 exit;
             }
         }
+        
+        return $smsResult['status'];
     }
 
     //@date 07-04-2014
