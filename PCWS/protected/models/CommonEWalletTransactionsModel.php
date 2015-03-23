@@ -238,7 +238,7 @@ class CommonEWalletTransactionsModel extends CFormModel {
 
                     try {
 
-                    $sql5 = "DELETE FROM terminalsessions WHERE TerminalID = :terminalID AND LoyaltyCardNumber=:loyaltyCardNumber";
+                    $sql5 = "DELETE FROM terminalsessions WHERE TerminalID = :terminalID AND LoyaltyCardNumber=:loyaltyCardNumber AND ServiceID=19";
                     $param5 = array(':terminalID'=>$terminalID, ':loyaltyCardNumber'=>$loyaltyCardNumber);
 
                     $command5 = $this->connection->createCommand($sql5);
