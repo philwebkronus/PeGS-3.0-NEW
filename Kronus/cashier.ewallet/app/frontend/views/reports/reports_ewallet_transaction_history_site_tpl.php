@@ -9,7 +9,7 @@ $(document).ready(function(){
     });
 })
 </script>
-<h1>e-Wallet Transaction History Per Site</h1>
+<h1>e-wallet Transaction History Per Site</h1>
 <form id="frmtranshist">
     <?php // this hidden field is just indicator for javascript because it also use javascript of per history ?>
 <!--    <input type="hidden" id="hidpercashierindicator" />-->

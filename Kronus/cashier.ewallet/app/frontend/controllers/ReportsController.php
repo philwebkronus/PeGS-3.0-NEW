@@ -17,8 +17,8 @@ class ReportsController extends FrontendController{
             $this->createUrl('reports/transactionhistory')=>'Transaction History Per Site',
             $this->createUrl('reports/transactionhistorypercashier')=>'Transaction History Per Cashier',
             $this->createUrl('reports/transactionhistorypervirtualcashier')=>'Transaction History Per Virtual Cashier',
-            $this->createUrl('reports/eWalletPerSite')=>'e-Wallet Transaction History Per Site',
-            $this->createUrl('reports/eWalletPerCashier')=>'e-Wallet Transaction History Per Cashier'
+            $this->createUrl('reports/eWalletPerSite')=>'e-wallet Transaction History Per Site',
+            $this->createUrl('reports/eWalletPerCashier')=>'e-wallet Transaction History Per Cashier'
         );
         $this->render('reports_overview',array('reportsFormModel'=>$reportsFormModel,'reports_type'=>$reports_type));
     }
@@ -66,14 +66,14 @@ class ReportsController extends FrontendController{
             
             $manualredemptions = $this->getmanualRedemptions($date, $enddate);
             
-            $forcetredemptions = $this->getforcetRedemptions($date, $enddate);
+            //$forcetredemptions = $this->getforcetRedemptions($date, $enddate);
             
             $runningactivetickets = $this->getrunningactivetickets($date, $enddate);
             
             $coverage = 'Coverage ' . date('l , F d, Y ',strtotime($date)) . ' ' .Mirage::app()->param['cut_off'].' AM to ' . date('l , F d, Y ',strtotime($enddate)) . ' ' .Mirage::app()->param['cut_off'].' AM';
             
             echo json_encode(array('rows'=>$rows,'total_rows'=>$total_rows,'page_count'=>$page_count,
-                'displayingpageof'=>$displayingpageof,'coverage'=>$coverage, 'ticketlist'=>$ticketlist, 'manualredemptions'=>$manualredemptions, 'forcetredemptions'=>$forcetredemptions, 'runningactivetickets'=>$runningactivetickets,'eWalletDeposits'=>$eWalletDeposits, 'eWalletWithdrawals'=>$eWalletWithdrawals));
+                'displayingpageof'=>$displayingpageof,'coverage'=>$coverage, 'ticketlist'=>$ticketlist, 'manualredemptions'=>$manualredemptions, 'runningactivetickets'=>$runningactivetickets,'eWalletDeposits'=>$eWalletDeposits, 'eWalletWithdrawals'=>$eWalletWithdrawals));
             Mirage::app()->end();
         } else {
             list($rows,$total_rows,$page_count,$displayingpageof, $eWalletDeposits, $eWalletWithdrawals)=  $this->_getTransHistory($date, $enddate, $start, $limit);
@@ -82,14 +82,14 @@ class ReportsController extends FrontendController{
             
             $manualredemptions = $this->getmanualRedemptions($date, $enddate);
             
-            $forcetredemptions = $this->getforcetRedemptions($date, $enddate);
+            //$forcetredemptions = $this->getforcetRedemptions($date, $enddate);
             
             $runningactivetickets = $this->getrunningactivetickets($date, $enddate);
          
             $coverage = 'Coverage ' . date('l , F d, Y ',strtotime($date)) . ' ' .Mirage::app()->param['cut_off'].' AM to ' . date('l , F d, Y ',strtotime($enddate)) . ' ' .Mirage::app()->param['cut_off'].' AM';
             
             $this->renderPartial('reports_transaction_history',array('reportsFormModel'=>$reportsFormModel,
-                'rows'=>$rows,'total_rows'=>$total_rows,'page_count'=>$page_count,'displayingpageof'=>$displayingpageof,'coverage'=>$coverage, 'ticketlist'=>$ticketlist, 'manualredemptions'=>$manualredemptions, 'forcetredemptions'=>$forcetredemptions, 'runningactivetickets'=>$runningactivetickets,'eWalletDeposits'=>(int)$eWalletDeposits, 'eWalletWithdrawals'=>$eWalletWithdrawals));
+                'rows'=>$rows,'total_rows'=>$total_rows,'page_count'=>$page_count,'displayingpageof'=>$displayingpageof,'coverage'=>$coverage, 'ticketlist'=>$ticketlist, 'manualredemptions'=>$manualredemptions, 'runningactivetickets'=>$runningactivetickets,'eWalletDeposits'=>(int)$eWalletDeposits, 'eWalletWithdrawals'=>$eWalletWithdrawals));
         }
     }
     
@@ -291,7 +291,7 @@ class ReportsController extends FrontendController{
             }
             $end_date = addOneDay($start_date);   
             
-            $forcetredemptions = $this->getforcetRedemptions($start_date, $end_date, $this->acc_id);
+            //$forcetredemptions = $this->getforcetRedemptions($start_date, $end_date, $this->acc_id);
             
             list($rows,$total_rows,$page_count,$displayingpageof, $eWalletDeposits, $eWalletWithdrawals) = $this->_getTransHistoryPerCashier($start_date, $end_date, $start, $limit);
             $coverage = 'Coverage ' . date('l , F d, Y ',strtotime($start_date)) . ' ' .Mirage::app()->param['cut_off'].' AM to ' . date('l , F d, Y ',strtotime($end_date)) . ' ' .Mirage::app()->param['cut_off'].' AM';
@@ -299,17 +299,17 @@ class ReportsController extends FrontendController{
             
            
             echo json_encode(array('rows'=>$rows,'total_rows'=>$total_rows,'page_count'=>$page_count,
-                'displayingpageof'=>$displayingpageof, 'forcetredemptions'=>$forcetredemptions, 'coverage'=>$coverage,'ticketlist'=>$ticketlist, 'eWalletDeposits'=>$eWalletDeposits, 'eWalletWithdrawals'=>$eWalletWithdrawals));
+                'displayingpageof'=>$displayingpageof, 'coverage'=>$coverage,'ticketlist'=>$ticketlist, 'eWalletDeposits'=>$eWalletDeposits, 'eWalletWithdrawals'=>$eWalletWithdrawals));
             Mirage::app()->end();            
         } else {
             list($rows,$total_rows,$page_count,$displayingpageof, $eWalletDeposits, $eWalletWithdrawals) = $this->_getTransHistoryPerCashier($start_date, $end_date, $start, $limit);
             $ticketlist = $this->getTicketListperCashier($start_date, $end_date, $this->acc_id);
-            $forcetredemptions = $this->getforcetRedemptions($start_date, $end_date, $this->acc_id);
+            //$forcetredemptions = $this->getforcetRedemptions($start_date, $end_date, $this->acc_id);
             $coverage = 'Coverage ' . date('l , F d, Y ',strtotime($start_date)) . ' ' .Mirage::app()->param['cut_off'].' AM to ' . date('l , F d, Y ',strtotime($end_date)) . ' ' .Mirage::app()->param['cut_off'].' AM';
             $manualRedemption = $manualRedemptionsModel->getManualRedemptionsPerCashier($start_date, $end_date, $this->site_id, $this->acc_id);
             
             $this->renderPartial('reports_transaction_history_cashier',array('reportsFormModel'=>$reportsFormModel,
-                'rows'=>$rows,'total_rows'=>$total_rows,'page_count'=>$page_count,'displayingpageof'=>$displayingpageof, 'forcetredemptions'=>$forcetredemptions, 'coverage'=>$coverage,'ticketlist'=>$ticketlist, 'eWalletDeposits'=>$eWalletDeposits, 'eWalletWithdrawals'=>$eWalletWithdrawals));
+                'rows'=>$rows,'total_rows'=>$total_rows,'page_count'=>$page_count,'displayingpageof'=>$displayingpageof, 'coverage'=>$coverage,'ticketlist'=>$ticketlist, 'eWalletDeposits'=>$eWalletDeposits, 'eWalletWithdrawals'=>$eWalletWithdrawals));
         }
     }
     
