@@ -73,13 +73,11 @@ class CommonUBStartSession {
         //check terminal type if Genesis = 1
         $terminaltype = $terminalsModel->checkTerminalType($terminal_id);
         
-        if($terminaltype == 1){
-            if($terminal_balance != 0) {
-                $alias = $refServicesModel->getAliasById($service_id);
-                $message = 'Error: Only one active session for '.$alias. ' casino is allowed for this card.';
-                logger($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id);
-                CasinoApiUB::throwError($message);
-            }   
+        if($terminal_balance != 0) {
+            $alias = $refServicesModel->getAliasById($service_id);
+            $message = 'Error: Only one active session for '.$alias. ' casino is allowed for this card.';
+            logger($message . ' TerminalID='.$terminal_id . ' ServiceID='.$service_id);
+            CasinoApiUB::throwError($message);
         }
          
         if(($bcf - $initial_deposit) < 0) {
