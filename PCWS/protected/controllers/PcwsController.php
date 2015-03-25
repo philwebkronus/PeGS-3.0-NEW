@@ -1008,18 +1008,27 @@ class PcwsController extends Controller{
                                     // Get PIN by MID
                                     $members = new MembersModel();
                                     $memberpin = $members->getPIN2($MID['MID']);
-
-                                    if(sha1($pin) == $memberpin['PIN'])
-                                    {
-                                        $transMsg = 'Transaction successful. PIN and UB Card is valid.'; 
-                                        $errCode = 0;
-                                        $data = CommonController::checkPin($transMsg, $errCode);
-                                    }
-                                    else
-                                    {
-                                        $transMsg = 'Mismatch Card Number and PIN Code'; 
+                                    
+                                    $pinlogattempts = $members->checkPINLoginAttempts($MID['MID']);
+                                    
+                                    if((int)$pinlogattempts['PINLoginAttemps'] >=  Yii::app()->params['maxPinAttempts']){
+                                        $transMsg = 'PIN is locked.'; 
                                         $errCode = 14;
-                                        $data = CommonController::checkPin($transMsg, $errCode);
+                                        $data = CommonController::checkPin($transMsg, $errCode);  
+                                    }else{
+                                        if(sha1($pin) == $memberpin['PIN'])
+                                        {
+                                            $transMsg = 'Transaction successful. PIN and UB Card is valid.'; 
+                                            $errCode = 0;
+                                            $data = CommonController::checkPin($transMsg, $errCode);
+                                        }
+                                        else
+                                        {
+                                            $members->incrementLoginAttempts($MID['MID']);
+                                            $transMsg = 'Mismatch Card Number and PIN Code'; 
+                                            $errCode = 14;
+                                            $data = CommonController::checkPin($transMsg, $errCode);
+                                        }
                                     }
                                     break;
                                     
@@ -1134,7 +1143,7 @@ class PcwsController extends Controller{
                             case 0:
                                 $transMsg = 'Card is Invalid.'; 
                                 $errCode = 4;
-                                $data = CommonController::checkPin($transMsg, $errCode);
+                                $data = CommonController::changePin($transMsg, $errCode);
                                 break;
 
                             case 1:
@@ -1233,37 +1242,37 @@ class PcwsController extends Controller{
                             case 2:
                                 $transMsg = 'Cheking of PIN is not allowed for Deactivated Card.'; 
                                 $errCode = 4;
-                                $data = CommonController::checkPin($transMsg, $errCode);
+                                $data = CommonController::changePin($transMsg, $errCode);
                                 break;
 
                             case 5:
                                 $transMsg = 'Cheking of PIN is not allowed for Active Temporary Card.'; 
                                 $errCode = 4;
-                                $data = CommonController::checkPin($transMsg, $errCode);
+                                $data = CommonController::changePin($transMsg, $errCode);
                                 break;
 
                             case 7:
                                 $transMsg = 'Cheking of PIN is not allowed for New Migrated Card.'; 
                                 $errCode = 4;
-                                $data = CommonController::checkPin($transMsg, $errCode);
+                                $data = CommonController::changePin($transMsg, $errCode);
                                 break;
 
                             case 8:
                                 $transMsg = 'Cheking of PIN is not allowed for Temporary Migrated Card.'; 
                                 $errCode = 4;
-                                $data = CommonController::checkPin($transMsg, $errCode);
+                                $data = CommonController::changePin($transMsg, $errCode);
                                 break;
 
                             case 9:
                                 $transMsg = 'Cheking of PIN is not allowed for Banned Card.'; 
                                 $errCode = 4;
-                                $data = CommonController::checkPin($transMsg, $errCode);
+                                $data = CommonController::changePin($transMsg, $errCode);
                                 break;
 
                             default:
                                 $transMsg = 'Invalid Card.'; 
                                 $errCode = 4;
-                                $data = CommonController::checkPin($transMsg, $errCode);
+                                $data = CommonController::changePin($transMsg, $errCode);
                         }
                     }
                     else

@@ -118,6 +118,31 @@ class MembersModel extends CFormModel
     }
     
     
+    public function incrementLoginAttempts($MID){
+        $startTrans = $this->connection->beginTransaction();
+        
+        try {
+            $sql = "UPDATE members SET PINLoginAttemps = PINLoginAttemps + 1 WHERE MID = :MID";
+            $param = array(':MID' => $MID);
+            $command = $this->connection->createCommand($sql);
+            $command->bindValues($param);
+            $command->execute();
+            try {
+                $startTrans->commit();
+                return 1;
+            } catch (PDOException $e) {
+                $startTrans->rollback();
+                Utilities::log($e->getMessage());
+                return 0;
+            }
+             
+        } catch (Exception $e) {
+            $startTrans->rollback();
+            Utilities::log($e->getMessage());
+            return 1000;
+        }
+    }
+    
     
     
     
