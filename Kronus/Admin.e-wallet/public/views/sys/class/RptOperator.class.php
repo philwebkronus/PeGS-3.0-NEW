@@ -302,9 +302,12 @@ return $this->fetchAllData();
      * @param String $_MicrogamingCurrency
      * @return Mixed 
      */
-    public final function getActiveSessionPlayingBalance ($siteID, $_ServiceAPI,$_CAPIUsername, $_CAPIPassword, $_CAPIPlayerName, $_MicrogamingCurrency, $_ptcasinoname,$_PlayerAPI,$_ptsecretkey) {
+    public final function getActiveSessionPlayingBalance ($cardinfo, $siteID, $_ServiceAPI,$_CAPIUsername, $_CAPIPassword, $_CAPIPlayerName, $_MicrogamingCurrency, $_ptcasinoname,$_PlayerAPI,$_ptsecretkey) {
         
         include_once __DIR__.'/../../sys/class/CasinoCAPIHandler.class.php';
+        include_once __DIR__.'/../../sys/class/LoyaltyUBWrapper.class.php';
+        
+        $loyalty = new LoyaltyUBWrapper();
         
         $row = new stdClass();
         
@@ -316,26 +319,25 @@ return $this->fetchAllData();
                     t.TerminalCode, 
                     CASE t.TerminalType WHEN 0
                         THEN 'Regular'
-                        ELSE 'e-Wallet'
+                        WHEN 1
+                        THEN 'Genesis'
+                        ELSE 'e-wallet'
                     END AS TerminalType, 
                     rs.ServiceID,
                     rs.ServiceName,
                     ts.UBServiceLogin,
                     ts.UserMode, 
-                    m.IsEWallet
+                    ts.LoyaltyCardNumber
                   FROM 
                     terminalsessions as ts, 
                     terminals as t,
-                    ref_services as rs, 
-                    membership.members as m
+                    ref_services as rs
                   WHERE
                     t.TerminalID = ts.TerminalID
                     AND
                     ts.ServiceID = rs.ServiceID
                     AND
                     t.SiteID = :siteID
-                    AND
-                    m.MID = ts.MID
                  
                   ORDER BY
                     t.TerminalID ASC";
@@ -425,16 +427,17 @@ return $this->fetchAllData();
                 }
             }
             
+            $loyalty_result = json_decode($loyalty->getCardInfo2($r['LoyaltyCardNumber'], $cardinfo, 1));
+            
+            $isEwallet = "No";
+            
             if($r["UserMode"]== 0){
                 $r["UserMode"] = "Terminal Based";
-                $r['IsEWallet']='No';
             }
             else{
                 $r["UserMode"] = "User Based";
-                if($r['IsEWallet']==1){
-                    $r['IsEWallet']='Yes';
-                }else{
-                    $r['IsEWallet']='No';
+                if($loyalty_result->CardInfo->IsEwallet === 1){
+                    $isEwallet = "Yes";           
                 }
             }
             
@@ -454,7 +457,7 @@ return $this->fetchAllData();
                 $r["TerminalCode"],
                 $r["PlayingBalance"],
                 $r["UserMode"],
-                $r['IsEWallet']
+                $isEwallet
             );
             
             $ctr++;
@@ -484,9 +487,12 @@ return $this->fetchAllData();
      * @param String $_MicrogamingCurrency
      * @return Mixed 
      */
-    public final function getPagcorActiveSessionPlayingBalance ($siteID, $_ServiceAPI,$_CAPIUsername, $_CAPIPassword, $_CAPIPlayerName, $_MicrogamingCurrency, $_ptcasinoname,$_PlayerAPI,$_ptsecretkey) {
+    public final function getPagcorActiveSessionPlayingBalance ($cardinfo, $siteID, $_ServiceAPI,$_CAPIUsername, $_CAPIPassword, $_CAPIPlayerName, $_MicrogamingCurrency, $_ptcasinoname,$_PlayerAPI,$_ptsecretkey) {
         
         include_once __DIR__.'/../../sys/class/CasinoCAPIHandler.class.php';
+        include_once __DIR__.'/../../sys/class/LoyaltyUBWrapper.class.php';
+        
+        $loyalty = new LoyaltyUBWrapper();
         
         $row = new stdClass();
         
@@ -500,20 +506,17 @@ return $this->fetchAllData();
                 rs.ServiceName,
                 ts.UBServiceLogin,
                 ts.UserMode,
-                m.IsEwallet
+                ts.LoyaltyCardNumber
                 FROM 
                 terminalsessions as ts, 
                 terminals as t,
-                ref_services as rs,
-                membership.members as m
+                ref_services as rs
                 WHERE
                 t.TerminalID = ts.TerminalID
                 AND
                 ts.ServiceID = rs.ServiceID
                 AND
-                t.SiteID = 217
-                AND
-                m.MID = ts.MID
+                t.SiteID = :siteID
                 ORDER BY
                 t.TerminalID ASC";
         
@@ -602,13 +605,15 @@ return $this->fetchAllData();
                 }
             }
             
+            $loyalty_result = json_decode($loyalty->getCardInfo2($r['LoyaltyCardNumber'], $cardinfo, 1));
+            
             $isEwallet = "No";
             if($r["UserMode"]== 0){
                 $r["UserMode"] = "Terminal Based";
             }
             else{
                 $r["UserMode"] = "User Based";
-                if($r["IsEwallet"] == 1){
+                if($loyalty_result->CardInfo->IsEwallet === 1){
                     $isEwallet = "Yes";
                 }
             }
@@ -658,9 +663,12 @@ return $this->fetchAllData();
      * @param String $_MicrogamingCurrency
      * @return Mixed 
      */
-    public final function getActiveSessionPlayingBalanceub ($cardnumber, $serviceusername, $_ServiceAPI,$_CAPIUsername, $_CAPIPassword, $_CAPIPlayerName, $_MicrogamingCurrency, $_ptcasinoname,$_PlayerAPI,$_ptsecretkey) {
+    public final function getActiveSessionPlayingBalanceub ($cardinfo, $cardnumber, $serviceusername, $_ServiceAPI,$_CAPIUsername, $_CAPIPassword, $_CAPIPlayerName, $_MicrogamingCurrency, $_ptcasinoname,$_PlayerAPI,$_ptsecretkey) {
         
         include_once __DIR__.'/../../sys/class/CasinoCAPIHandler.class.php';
+        include_once __DIR__.'/../../sys/class/LoyaltyUBWrapper.class.php';
+        
+        $loyalty = new LoyaltyUBWrapper();
         
         $row = new stdClass();
         
@@ -672,26 +680,24 @@ return $this->fetchAllData();
                     t.TerminalCode, 
                     CASE t.TerminalType WHEN 0
                         THEN 'Regular'
+                        WHEN 1
+                        THEN 'Genesis'
                         ELSE 'e-Wallet'
                     END AS TerminalType, 
                     rs.ServiceID,
                     rs.ServiceName,
                     ts.UBServiceLogin,
-                    ts.UserMode,
-                    m.IsEWallet
+                    ts.UserMode
                   FROM 
                     terminalsessions as ts, 
                     terminals as t,
-                    ref_services as rs, 
-                    membership.members as m
+                    ref_services as rs
                   WHERE
                     t.TerminalID = ts.TerminalID
                     AND
                     ts.ServiceID = rs.ServiceID
                     AND
                     ts.LoyaltyCardNumber = :cardnum
-                    AND
-                    m.MID = ts.MID
                   ORDER BY
                     t.TerminalID ASC";
         
@@ -773,18 +779,19 @@ return $this->fetchAllData();
                 }
                 else{
                     $r["PlayingBalance"] = 0;
-                }
-                
-                
+                }        
             }
+            
+            $loyalty_result = json_decode($loyalty->getCardInfo2($cardnumber, $cardinfo, 1));
+            
             //check if user mode is terminal or user based
             if($r["UserMode"] == '0'){
                 $r["UserMode"] = "Terminal Based";
-                $r['IsEWallet'] = 'No';
+                $isEwallet = 'No';
             }
             else{
                 $r["UserMode"] = "User Based";
-                $r['IsEWallet'] = $r['IsEWallet']==1?'Yes':'No';
+                $isEwallet = ($loyalty_result->CardInfo->IsEwallet)==1?'Yes':'No';
             }
 
             if($r["PlayingBalance"] ==  0){
@@ -803,7 +810,7 @@ return $this->fetchAllData();
                 $r["TerminalCode"],
                 $r["PlayingBalance"],
                 $r["UserMode"],
-                $r['IsEWallet']
+                $isEwallet
             );
             
             $ctr++;
@@ -833,9 +840,12 @@ return $this->fetchAllData();
      * @param String $_MicrogamingCurrency
      * @return Mixed 
      */
-    public final function getPagcorActiveSessionPlayingBalanceub ($cardnumber, $serviceusername, $_ServiceAPI,$_CAPIUsername, $_CAPIPassword, $_CAPIPlayerName, $_MicrogamingCurrency, $_ptcasinoname,$_PlayerAPI,$_ptsecretkey) {
+    public final function getPagcorActiveSessionPlayingBalanceub ($cardinfo, $cardnumber, $serviceusername, $_ServiceAPI,$_CAPIUsername, $_CAPIPassword, $_CAPIPlayerName, $_MicrogamingCurrency, $_ptcasinoname,$_PlayerAPI,$_ptsecretkey) {
         
         include_once __DIR__.'/../../sys/class/CasinoCAPIHandler.class.php';
+        include_once __DIR__.'/../../sys/class/LoyaltyUBWrapper.class.php';
+        
+        $loyalty = new LoyaltyUBWrapper();
         
         $row = new stdClass();
         
@@ -848,21 +858,17 @@ return $this->fetchAllData();
                     rs.ServiceID,
                     rs.ServiceName,
                     ts.UBServiceLogin,
-                    ts.UserMode,
-                    m.IsEwallet
+                    ts.UserMode
                   FROM 
                     terminalsessions as ts, 
                     terminals as t,
-                    ref_services as rs,
-                    membership.members as m
+                    ref_services as rs
                   WHERE
                     t.TerminalID = ts.TerminalID
                     AND
                     ts.ServiceID = rs.ServiceID
                     AND
                     ts.LoyaltyCardNumber = :cardnum
-                    AND
-                    m.MID = ts.MID
                   ORDER BY
                     t.TerminalID ASC";
         
@@ -948,6 +954,9 @@ return $this->fetchAllData();
                 
                 
             }
+            
+            $loyalty_result = json_decode($loyalty->getCardInfo2($cardnumber, $cardinfo, 1));
+
             //check if user mode is terminal or user based
             
             $isEwallet = "No";
@@ -957,7 +966,7 @@ return $this->fetchAllData();
             }
             else{
                 $r["UserMode"] = "User Based";
-                if($r["IsEwallet"] == 1){
+                if($loyalty_result->CardInfo->IsEwallet == 1){
                     $isEwallet = "Yes";
                 }
             }

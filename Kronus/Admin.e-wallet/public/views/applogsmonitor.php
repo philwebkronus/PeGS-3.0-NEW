@@ -52,6 +52,7 @@ var mygrid="";
                                     '<option value="0" selected="selected">Select Logs</option>'+
                                     '</select>');
             if(sys!=100){
+                
                 ServerLog = sys;
                 checkServers(ServerLog);
                
@@ -61,7 +62,7 @@ var mygrid="";
                 jQuery("#cmbpick").hide();
                 jQuery_1('#cmbpick').prop('selectedIndex',0);
                 jQuery_1("#datagrid").jqGrid("clearGridData");
-                jQuery_1("#datagrid").jqGrid('setCaption',ServerLog);
+                jQuery_1('.ui-jqgrid').hide();
                
             }else{
                 jQuery("#allPick").hide();
@@ -71,7 +72,8 @@ var mygrid="";
                 jQuery_1('#cmbpick').prop('selectedIndex',0);
                 jQuery("#submitarea").hide();
                 jQuery_1("#datagrid").jqGrid("clearGridData");
-                jQuery_1("#datagrid").jqGrid('setCaption',ServerLog);
+                jQuery_1('.ui-jqgrid').hide();
+                 
             }    
         });
         
@@ -87,7 +89,7 @@ var mygrid="";
                 jQuery("#submitarea").show();
             
                 jQuery_1("#datagrid").jqGrid("clearGridData");
-                jQuery_1("#datagrid").jqGrid('setCaption',ServerLog);
+                jQuery_1('.ui-jqgrid').hide();
             }else{
                 
                 jQuery("#cmbpick").hide();
@@ -96,7 +98,7 @@ var mygrid="";
                 jQuery("#submitarea").hide();
                 jQuery_1('#cmbpick').prop('selectedIndex',0);
                 jQuery_1("#datagrid").jqGrid("clearGridData");
-                jQuery_1("#datagrid").jqGrid('setCaption',ServerLog);
+                jQuery_1('.ui-jqgrid').hide();
             }
         });
 
@@ -117,6 +119,7 @@ var mygrid="";
            {    
                 if(jQuery("#cmbserver").val()!=100){
                    getlogcontents('ShowLogContent',date,linkIndex,ServerLog);
+                   jQuery_1('.ui-jqgrid').show();
                }else
                {
                    alert("Please Select a Server");
@@ -162,6 +165,7 @@ var mygrid="";
     //get and display log contents
     function getlogcontents(page,file,link,system)
     {   
+        
         var url = 'process/ProcessAppSupport.php';
        
         var gridParam = { url: url, datatype: "json",postData:{page2:function(){return page;},

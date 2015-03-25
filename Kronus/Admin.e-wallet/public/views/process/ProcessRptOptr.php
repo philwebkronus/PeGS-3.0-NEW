@@ -539,15 +539,14 @@ if($connected)
                
                break;
            
-           case "sessionrecord":
-                     
-               $data = $orptoptr->getActiveSessionPlayingBalance($siteID, $_ServiceAPI, 
+           case "sessionrecord": 
+               $data = $orptoptr->getActiveSessionPlayingBalance($cardinfo, $siteID, $_ServiceAPI, 
                        $_CAPIUsername, $_CAPIPassword, $_CAPIPlayerName, $_MicrogamingCurrency, $_ptcasinoname,$_PlayerAPI,$_ptsecretkey);
                
                break;
            case "pagcorsessionrecord":
                $orptoptr2->open(); 
-               $data = $orptoptr->getPagcorActiveSessionPlayingBalance($siteID, $_ServiceAPI, 
+               $data = $orptoptr->getPagcorActiveSessionPlayingBalance($cardinfo, $siteID, $_ServiceAPI, 
                        $_CAPIUsername, $_CAPIPassword, $_CAPIPlayerName, $_MicrogamingCurrency, $_ptcasinoname,$_PlayerAPI,$_ptsecretkey);
                
                break;
@@ -556,7 +555,7 @@ if($connected)
               
                $cardnumber = $_POST["txtcardnumber"];
                
-               $data = $orptoptr->getActiveSessionPlayingBalanceub($cardnumber, $_SESSION['ServiceUserName'], $_ServiceAPI, 
+               $data = $orptoptr->getActiveSessionPlayingBalanceub($cardinfo, $cardnumber, $_SESSION['ServiceUserName'], $_ServiceAPI, 
                        $_CAPIUsername, $_CAPIPassword, $_CAPIPlayerName, $_MicrogamingCurrency, $_ptcasinoname,$_PlayerAPI,$_ptsecretkey);
                
                break;
@@ -566,7 +565,7 @@ if($connected)
                $orptoptr2->open(); 
                $cardnumber = $_POST["txtcardnumber"];
                
-               $data = $orptoptr->getPagcorActiveSessionPlayingBalanceub($cardnumber, $_SESSION['ServiceUserName'], $_ServiceAPI, 
+               $data = $orptoptr->getPagcorActiveSessionPlayingBalanceub($cardinfo, $cardnumber, $_SESSION['ServiceUserName'], $_ServiceAPI, 
                        $_CAPIUsername, $_CAPIPassword, $_CAPIPlayerName, $_MicrogamingCurrency, $_ptcasinoname,$_PlayerAPI,$_ptsecretkey);
                
                break;

@@ -65,6 +65,7 @@ $_SESSION['menugroup'] = $menugroup;
         <link rel="stylesheet" type="text/css" href="jscripts/jquery.jqGrid-4.3.1v/css/ui.jqgrid.css" />
         <script type="text/javascript" src="jscripts/jquery.jqGrid-4.3.1v/js/i18n/grid.locale-en.js"></script>
         <script type="text/javascript" src="jscripts/jquery.jqGrid-4.3.1v/js/jquery.jqGrid.min.js"></script>
+        <script type="text/javascript" src="jscripts/accounting.min.js"></script>
 
         <link rel="stylesheet" type="text/css" href="css/npos.css" media="screen" />
 <!--        <link rel="stylesheet" type="text/css" href="../css/jquery.datepick.css" media="screen" />-->

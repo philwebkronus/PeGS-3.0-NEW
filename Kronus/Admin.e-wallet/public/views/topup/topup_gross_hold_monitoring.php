@@ -66,14 +66,14 @@ if(isset($_SESSION['acctype']))
                 <img name="cal" src="images/cal.gif" width="16" height="16" border="0" alt="Pick a date" onClick="displayDatePicker('startdate', false, 'ymd', '-');"/>
             </td>
         </tr>
-        <tr>
+<!--        <tr>
             <td>Site / PEGS </td>
             <td>
                  <select name="selSiteCode" id="selSiteCode">
                     <option value="">All</option>
-                    <?php foreach($param['sitCode'] as $v): ?>
-                    <option label="<?php echo $v['SiteName']." / ".$v['POSAccountNo']; ?>" value="<?php echo $v['SiteID']; ?>"><?php echo substr($v['SiteCode'], strlen(BaseProcess::$sitecode)); ?></option>
-                    <?php endforeach; ?>
+                    <?php //foreach($param['sitCode'] as $v): ?>
+                    <option label="<?php //echo $v['SiteName']." / ".$v['POSAccountNo']; ?>" value="<?php //echo $v['SiteID']; ?>"><?php //echo substr($v['SiteCode'], strlen(BaseProcess::$sitecode)); ?></option>
+                    <?php //endforeach; ?>
                 </select>       
                 <label id="lblsitename"></label>
             </td>
@@ -81,15 +81,15 @@ if(isset($_SESSION['acctype']))
         <tr>
             <td>Amount Range </td>
             <td>
-                <?php echo createSelect('sel1comp'); ?>
+                <?php //echo createSelect('sel1comp'); ?>
                 <input type="text" id="firstamount" name="firstamount" class="auto" />
             </td>
             <td align="center">AND</td>
             <td>
-                <?php echo createSelect('sel2comp'); ?>
+                <?php //echo createSelect('sel2comp'); ?>
                 <input type="text" id="secondamount" name="secondamount" class="auto" />      
             </td>
-        </tr>
+        </tr>-->
 <!--        <tr>
             <td>With Confirmation</td>
             <td>
@@ -100,7 +100,7 @@ if(isset($_SESSION['acctype']))
                 </select>
             </td>
         </tr>-->        
-        <tr>
+<!--        <tr>
             <td>Location</td>
             <td>
                 <select name="sellocation" id="sellocation">
@@ -109,16 +109,21 @@ if(isset($_SESSION['acctype']))
                     <option value="Provincial">Provincial</option>
                 </select>
             </td>
-        </tr>
+        </tr>-->
     </table>
     <div id="loading" style="position: fixed; z-index: 5000; background: url('images/Please_wait.gif') no-repeat; height: 162px; width: 260px; margin: 50px 0 0 400px; display: none;"></div>
     <div id="submitarea">
         <input type="button" value="Search" id="btnsearch"/>
     </div>
     <br />
-    <div  id="tblgrosshold" style="display: none;width: 1200px; height: 358px; overflow-y: auto;">
+    <div  id="tblgrosshold" style="display: none;width: 1500px; height: 358px; overflow-y: auto;">
         <table id="tblgrossholdbody"></table>
     </div>
+    <br/>
+   <div  id="tbltotalgh" style="display: none;width: 1500px; height: 70px; ">
+    <table id="tbltotalghbody">       
+    </table>
+   </div>    
     <div id="fade" class="black_overlay" oncontextmenu="return false"></div>
 </div>
 </form>    
@@ -139,7 +144,7 @@ if(isset($_SESSION['acctype']))
        border-bottom: 3px solid #AAAAAA;
        /*border: 2px solid #AAAAAA;*/
    }
-   
+      
    #tblgrossholdbody {
        background-color: #fcfdfd;
    }
@@ -154,6 +159,40 @@ if(isset($_SESSION['acctype']))
    }
    
    #tblgrossholdbody {
+       border-radius: 5px 5px 5px 5px;
+       -moz-border-top-left-radius: 5px;
+       -moz-border-top-right-radius: 5px;
+       -moz-border-radius-bottomleft: 5px;
+       -moz-border-radius-bottomright: 5px;   
+   }
+   
+   #tbltotalgh {
+       border-radius: 5px 5px 5px 5px;
+       -moz-border-top-left-radius: 5px;
+       -moz-border-top-right-radius: 5px;
+       -moz-border-radius-bottomleft: 5px;
+       -moz-border-radius-bottomright: 5px;   
+       border-left: 2px solid #AAAAAA;
+       border-top: 2px solid #AAAAAA;
+       border-right: 3px solid #AAAAAA;
+       border-bottom: 3px solid #AAAAAA;
+       /*border: 2px solid #AAAAAA;*/
+   }
+   
+   #tbltotalghbody {
+       background-color: #fcfdfd;
+   }
+   
+   #tbltotalghbody td {
+       border: 2px solid #AAAAAA;
+       height: 20px;
+   }
+   
+   #tbltotalghbody {
+       border-collapse:collapse;
+   }
+   
+   #tbltotalghbody {
        border-radius: 5px 5px 5px 5px;
        -moz-border-top-left-radius: 5px;
        -moz-border-top-right-radius: 5px;
@@ -251,6 +290,16 @@ if(isset($_SESSION['acctype']))
 //      });
 //      jQuery("#ghmgrid").jqGrid('navGrid','#pager2',{edit:false,add:false,del:false, search:false, refresh: true});
 
+    function toMoney(val,noprefix) {
+        var pre = 'PhP ';
+        if(noprefix != undefined) {
+            pre = '';
+        }
+
+    //    return accounting.formatMoney(val, pre, 2, ".", ",");
+        return accounting.formatMoney(val, pre, 2, ",", ".");
+    }
+
       jQuery('#selSiteCode').live('change', function(){
           jQuery('#lblsitename').html(jQuery(this).children('option:selected').attr('label'));
       });
@@ -260,28 +309,33 @@ if(isset($_SESSION['acctype']))
               return false;
           }
           
-          var siteid = jQuery('#selSiteCode option:selected').val();
+          //var siteid = jQuery('#selSiteCode option:selected').val();
+          var siteid = '';
           var startdate = jQuery('#startdate').val();
-          var comp1 = jQuery('#sel1comp option:selected').val();
-          var comp2 = jQuery('#sel2comp option:selected').val();
-          var num1 = jQuery('#firstamount').val();
-          var num2 = jQuery('#secondamount').val();
+          //var comp1 = jQuery('#sel1comp option:selected').val();
+          var comp1 = '';
+          //var comp2 = jQuery('#sel2comp option:selected').val();
+          var comp2 = '';
+          //var num1 = jQuery('#firstamount').val();
+          var num1 = '';
+          //var num2 = jQuery('#secondamount').val();
+          var num2 = '';
           
-          if(comp1 == '' && num1 != '') {
-              alert('Please select first comparison'); return false;
-          }
-          
-          if(comp1 != '' && num1 == '') {
-              alert('Please enter first number'); return false;
-          }
-          
-          if(comp2 == '' && num2 != '' && comp1 != '') {
-              alert('Please select second comparison'); return false;
-          }
-          
-          if(comp2 != '' && num2 == '' && comp1 != '') {
-              alert('Please enter second number'); return false;
-          }          
+//          if(comp1 == '' && num1 != '') {
+//              alert('Please select first comparison'); return false;
+//          }
+//          
+//          if(comp1 != '' && num1 == '') {
+//              alert('Please enter first number'); return false;
+//          }
+//          
+//          if(comp2 == '' && num2 != '' && comp1 != '') {
+//              alert('Please select second comparison'); return false;
+//          }
+//          
+//          if(comp2 != '' && num2 == '' && comp1 != '') {
+//              alert('Please enter second number'); return false;
+//          }          
           
 //          if(Date.parse(startdate) > Date.parse(enddate)) {
 //              alert('Start date should less than end date'); return false;
@@ -290,22 +344,23 @@ if(isset($_SESSION['acctype']))
         document.getElementById('fade').style.display='block';
         
         $.ajax({
-                url: 'process/ProcessTopUpPaginate.php?action=getdata&sellocation='+jQuery('#sellocation option:selected').val()+'&comp1='+jQuery('#sel1comp option:selected').val()+'&num1='+jQuery('#firstamount').val()+'&comp2='+jQuery('#sel2comp option:selected').val()+'&num2='+jQuery('#secondamount').val(),
+                url: 'process/ProcessTopUpPaginate.php?action=getdata&sellocation='+''+'&comp1='+''+'&num1='+''+'&comp2='+''+'&num2='+'',
                 type: 'GET',
                 data : {
-                                sord : function() {return "asc"; },
-                                startdate : function(){return startdate;},
-                                siteid : function(){return siteid;}
-                            },
+                            sord : function() {return "asc"; },
+                            startdate : function(){return startdate;},
+                            siteid : function(){return siteid;}
+                        },
                 dataType: 'json',
                 success: function(data)
                 {
                     $("#tblgrosshold").css("display", "block");
+                    $("#tbltotalgh").css("display", "block");
                     
-                    var header = "<thead style='position: relative; top:0; left: 0; height: -63px;'><tr><td  id='tblheader-banner' colspan='13' style='font-style: Arial, calibri, helvetica; font-size: 14px; font-weight: bold; background-color: #3d561c; color: white; height: 30px;'>Gross Hold Monitoring</td>"+
+                    var header = "<thead style='position: relative; top:0; left: 0; height: -63px;'><tr><td  id='tblheader-banner' colspan='15' style='font-style: Arial, calibri, helvetica; font-size: 14px; font-weight: bold; background-color: #3d561c; color: white; height: 30px;'>Gross Hold Monitoring</td>"+
                                             "</tr><tr style='font-style: Arial, calibri, helvetica; font-size: 12px; text-align: center;font-weight: bold; background-color: #D6EB99; color: black; height: 25px;'>"+
-                                            "<td style='width: 230px;'>Site / PEGS Name</td><td style='width: 130px;'>BCF</td><td style='width: 130px;'>Deposit</td>"+
-                                            "<td style='width: 130px;'>Reload</td><td style='width: 130px;'>Redemptions</td><td style='width: 130px;'>Manual Redemption</td>"+
+                                            "<td style='width: 230px;'>Site / PEGS Name</td><td style='width: 130px;'>BCF</td><td style='width: 130px;'>Deposit</td><td style='width: 130px;'>e-wallet Loads</td>"+
+                                            "<td style='width: 130px;'>Reload</td><td style='width: 130px;'>Redemptions</td><td style='width: 130px;'>e-wallet Withdrawal</td><td style='width: 130px;'>Manual Redemption</td>"+
                                             "<td style='width: 130px;'>Printed Tickets</td><td style='width: 130px;'>Active Tickets\n for the Day</td><td style='width: 130px;'>Running Active\n Tickets</td><td style='width: 130px;'>Coupons</td>"+
                                             "<td style='width: 130px;'>Cash on Hand</td><td style='width: 130px;'>Gross Hold</td><td style='width: 90px;'>Location</td>"+
                                             "</tr></thead>";
@@ -314,6 +369,7 @@ if(isset($_SESSION['acctype']))
                                             "<td colspan='11' id='tblfooter-banner'></td></tr></tfoot>";
                                         
                     $("#tblgrossholdbody").html("");
+                    $("#tbltotalghbody").html("");
                     $("#tblgrossholdbody").html(header);
                     
                      
@@ -322,13 +378,78 @@ if(isset($_SESSION['acctype']))
                     document.getElementById('loading').style.display='none';
                     document.getElementById('fade').style.display='none';
                     $("#tblgrossholdbody").append("<tbody>");
+                    
+                    var totaldeposit = 0;
+                    var totalewalletdeposit = 0;
+                    var totalreload = 0;
+                    var totalredemptions = 0;
+                    var totalewalletwithdrawal = 0;
+                    var totalmanualredemption = 0;
+                    var totalprintedtickets = 0;
+                    var totalactivetickets = 0;
+                    var totalrunningtickets = 0;
+                    var totalcoupons = 0;
+                    var totalcoh = 0;
+                    var totalgrosshold = 0;
+                    
+                    var totaldepositz = 0;
+                    var totalewalletdepositz = 0;
+                    var totalreloadz = 0;
+                    var totalredemptionsz = 0;
+                    var totalewalletwithdrawalz = 0;
+                    var totalmanualredemptionz = 0;
+                    var totalprintedticketsz = 0;
+                    var totalactiveticketsz = 0;
+                    var totalrunningticketsz = 0;
+                    var totalcouponsz = 0;
+                    var totalcohz = 0;
+                    var totalgrossholdz = 0;
+                    
                     for(var itr = 0; itr < data.CountOfSites; itr++){
+                        data[itr].CashonHand = '200000';
+                    
                         var part = "<tr id='"+data[itr].POS+"'><td>"+data[itr].SiteName+"</td><td style='text-align: right;'>"+data[itr].BCF+"</td>"+
-                                            "<td style='text-align: right;'>"+data[itr].Deposit+"</td><td style='text-align: right;'>"+data[itr].Reload+"</td><td style='text-align: right;'>"+data[itr].Withdrawal+"</td><td style='text-align: right;'>"+data[itr].ManualRedemption+"</td>"+
+                                            "<td style='text-align: right;'>"+data[itr].Deposit+"</td><td style='text-align: right;'>"+data[itr].EwalletLoad+"</td><td style='text-align: right;'>"+data[itr].Reload+"</td><td style='text-align: right;'>"+data[itr].Withdrawal+"</td><td style='text-align: right;'>"+data[itr].EwalletWithdrawal+"</td><td style='text-align: right;'>"+data[itr].ManualRedemption+"</td>"+
                                             "<td style='text-align: right;'>"+data[itr].PrintedTickets+"</td>"+"<td style='text-align: right;'>"+data[itr].UnusedTickets+"</td>"+"<td style='text-align: right;'>"+data[itr].RunningActiveTickets+"</td>"+"<td style='text-align: right;'>"+data[itr].Coupon+"</td>"+
                                             "<td style='text-align: right;'>"+data[itr].CashonHand+"</td><td style='text-align: right;'>"+data[itr].GrossHold+"</td><td>"+data[itr].Location+"</td></tr>";
                         
                         $("#tblgrossholdbody").append(part);
+                        
+                        totaldepositz = data[itr].Deposit;
+                        totaldeposit += Number(totaldepositz.replace(/[^0-9\.]+/g,""));
+                        
+                        totalewalletdepositz = data[itr].EwalletLoad;
+                        totalewalletdeposit += Number(totalewalletdepositz.replace(/[^0-9\.]+/g,""));
+                        
+                        totalreloadz = data[itr].Reload;
+                        totalreload += Number(totalreloadz.replace(/[^0-9\.]+/g,""));
+                        
+                        totalredemptionsz = data[itr].Withdrawal;
+                        totalredemptions += Number(totalredemptionsz.replace(/[^0-9\.]+/g,""));
+                        
+                        totalewalletwithdrawalz = data[itr].EwalletWithdrawal;
+                        totalewalletwithdrawal += Number(totalewalletwithdrawalz.replace(/[^0-9\.]+/g,""));
+                        
+                        totalmanualredemptionz = data[itr].ManualRedemption;
+                        totalmanualredemption += Number(totalmanualredemptionz.replace(/[^0-9\.]+/g,""));
+                        
+                        totalprintedticketsz = data[itr].PrintedTickets;
+                        totalprintedtickets += Number(totalprintedticketsz.replace(/[^0-9\.]+/g,""));
+                        
+                        totalactiveticketsz = data[itr].UnusedTickets;
+                        totalactivetickets += Number(totalactiveticketsz.replace(/[^0-9\.]+/g,""));
+                        
+                        totalrunningticketsz = data[itr].RunningActiveTickets;
+                        totalrunningtickets += Number(totalrunningticketsz.replace(/[^0-9\.]+/g,""));
+                        
+                        totalcouponsz = data[itr].Coupon;
+                        totalcoupons += Number(totalcouponsz.replace(/[^0-9\.]+/g,""));
+                        
+                        totalcohz = data[itr].CashonHand;
+                        totalcoh += Number(totalcohz.replace(/[^0-9\.]+/g,""));
+                        
+                        totalgrossholdz = data[itr].GrossHold;
+                        totalgrosshold += Number(totalgrossholdz.replace(/[^0-9\.]+/g,""));
                         
                         var grosshold = data[itr].GrossHold;
                         var balance = data[itr].BCF;
@@ -336,17 +457,35 @@ if(isset($_SESSION['acctype']))
                         var bcf = balance.replace(/,/g,"");
                         var threshold = data[itr].MinBalance;
                         
-                        //if gross hold >= 200K, color row will be green
-                        if(parseFloat(gh) >= parseFloat('<?php echo _GREEN_1; ?>')) {
-                             $('#' + data[itr].POS).css('background-color','#32CD32');
-                        } 
+                        
                         
                         //if site balance < minimum threshold, color will be red
-                        if(parseFloat(bcf) < parseFloat(threshold)) {
+                        if(parseFloat(bcf) < parseFloat('<?php echo _RED2_; ?>')) {
                              $('#' + data[itr].POS).css('background-color','red');
+                        }
+                        else{
+                            //if gross hold >= 200K, color row will be green
+                            if(parseFloat(totalcoh) >= parseFloat('<?php echo _GREEN_1; ?>')) {
+                                 $('#' + data[itr].POS).css('background-color','#32CD32');
+                            } 
+                            
                         }
 
                     }
+                    var totalgh = "<thead style='position: relative; top:0; left: 0; height: -63px;'><tr>"+
+                                            "</tr><tr style='font-style: Arial, calibri, helvetica; font-size: 12px; text-align: center;font-weight: bold; background-color: #D6EB99; color: black; height: 25px;'>"+
+                                            "<td style='width: 130px;'>Total</td><td style='width: 130px;'>Deposit</td><td style='width: 130px;'>e-wallet Loads</td>"+
+                                            "<td style='width: 130px;'>Reload</td><td style='width: 130px;'>Redemptions</td><td style='width: 130px;'>e-wallet Withdrawal</td><td style='width: 130px;'>Manual Redemption</td>"+
+                                            "<td style='width: 130px;'>Printed Tickets</td><td style='width: 130px;'>Active Tickets\n for the Day</td><td style='width: 130px;'>Running Active\n Tickets</td><td style='width: 130px;'>Coupons</td>"+
+                                            "<td style='width: 130px;'>Cash on Hand</td><td style='width: 130px;'>Gross Hold</td>"+
+                                            "</tr></thead>"+
+                                            "<tr>"+
+                                            "<td style='width: 130px; '></td><td style='width: 130px; text-align: right;'>"+toMoney(totaldeposit,'')+"</td><td style='width: 130px; text-align: right;'>"+toMoney(totalewalletdeposit,'')+"</td>"+
+                                            "<td style='width: 130px; text-align: right;'>"+toMoney(totalreload,'')+"</td><td style='width: 130px; text-align: right;'>"+toMoney(totalredemptions,'')+"</td><td style='width: 130px; text-align: right;'>"+toMoney(totalewalletwithdrawal,'')+"</td><td style='width: 130px; text-align: right;'>"+toMoney(totalmanualredemption,'')+"</td>"+
+                                            "<td style='width: 130px; text-align: right;'>"+toMoney(totalprintedtickets,'')+"</td><td style='width: 130px; text-align: right;'>"+toMoney(totalactivetickets,'')+"</td><td style='width: 130px; text-align: right;'>"+toMoney(totalrunningtickets,'')+"</td><td style='width: 130px; text-align: right;'>"+toMoney(totalcoupons,'')+"</td>"+
+                                            "<td style='width: 130px; text-align: right;'>"+toMoney(totalcoh,'')+"</td><td style='width: 130px; text-align: right;'>"+toMoney(totalgrosshold,'')+"</td>"+
+                                            "</tr>";
+                    $("#tbltotalghbody").append(totalgh);
                     $("#tblgrossholdbody").append("</tbody>");          
                 }
         });

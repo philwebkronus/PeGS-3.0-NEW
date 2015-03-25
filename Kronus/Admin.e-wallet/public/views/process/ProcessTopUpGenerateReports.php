@@ -1081,15 +1081,17 @@ class ProcessTopUpGenerateReports extends BaseProcess{
                 array('value'=>'Site / PEGS Code'),
                 array('value'=>'Cut Off Date', 'width' => '70px'),
                 array('value'=>'Beginning Balance'),
-                array('value'=>'Initial Deposit'),
+                array('value'=>'Deposit'),
+                array('value'=>'e-wallet Loads'),
                 array('value'=>'Reload'),
                 array('value'=>'Redemption'),
+                array('value'=>'e-wallet Withdrawal'),
                 array('value'=>'Manual Redemption'),
                 array('value'=>'Printed Tickets'),
                 array('value'=>'Active Tickets for the Day'),
                 array('value'=>'Coupon'),
                 array('value'=>'Cash on Hand'),
-                array('value'=>'Gross Hold'),
+//                array('value'=>'Gross Hold'),
                 array('value'=>'Replenishment'),
                 array('value'=>'Collection'),
                 array('value'=>'Ending Balance')
@@ -1098,24 +1100,26 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         if(count($rows) > 0){
             foreach($rows as $row) {
                 $grosshold = (($row['InitialDeposit'] + $row['Reload']) - $row['Redemption']) - $row['ManualRedemption'];
-                $cashonhand = ((($row['DepositCash'] + $row['ReloadCash']) - $row['RedemptionCashier']) - $row['ManualRedemption']) - $row['EncashedTickets'];
-                $endbal = $grosshold + $row['Replenishment'] - $row['Collection'];
+                $cashonhand = (((($row['DepositCash'] + $row['EwalletDeposits'] + $row['ReloadCash']) - $row['RedemptionCashier']) - $row['EwalletWithdrawals']) - $row['ManualRedemption']) - $row['EncashedTickets'];
+                $endbal = $cashonhand + $row['Replenishment'] - $row['Collection'];
                 $pdf->c_tableRow2(array(
                     array('value'=>substr($row['SiteCode'], strlen(BaseProcess::$sitecode))),
                     array('value'=> $row['CutOff'], 'width' => '70px'),
                     array('value'=>number_format($row['BegBal'],2), 'align' => 'right'),
                     array('value'=>number_format($row['InitialDeposit'],2), 'align' => 'right'),
+                    array('value'=>number_format($row['EwalletDeposits'],2), 'align' => 'right'),
                     array('value'=>number_format($row['Reload'],2), 'align' => 'right'),
                     array('value'=>number_format($row['Redemption'],2), 'align' => 'right'),
+                    array('value'=>number_format($row['EwalletWithdrawals'],2), 'align' => 'right'),
                     array('value'=>number_format($row['ManualRedemption'], 2), 'align' => 'right'),
                     array('value'=>number_format($row['PrintedTickets'], 2), 'align' => 'right'),
                     array('value'=>number_format($row['UnusedTickets'], 2), 'align' => 'right'),
                     array('value'=>number_format($row['Coupon'], 2), 'align' => 'right'),
                     array('value'=>number_format($cashonhand, 2), 'align' => 'right'),
-                    array('value'=>number_format($grosshold,2), 'align' => 'right'),
+//                    array('value'=>number_format($grosshold,2), 'align' => 'right'),
                     array('value'=>number_format($row['Replenishment'],2), 'align' => 'right'),
                     array('value'=>number_format($row['Collection'],2), 'align' => 'right'),
-                    array('value'=>number_format($row['EndBal'],2), 'align' => 'right'),
+                    array('value'=>number_format($endbal,2), 'align' => 'right'),
                  ));
             }
         }
@@ -1248,7 +1252,7 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         $startdate = $_POST['startdate']." ".BaseProcess::$cutoff;
         $venddate = $_POST['enddate'];  
         $enddate = date ('Y-m-d' , strtotime (BaseProcess::$gaddeddate, strtotime($venddate)))." ".BaseProcess::$cutoff;           
-        $_SESSION['report_header'] = array('Site / PEGS Code','Cut Off Date','Beginning Balance','Initial Deposit','Reload','Redemption','Manual Redemption','Printed Tickets','Active Tickets for the Day','Coupon','Cash on Hand','Gross Hold', 'Replenishment','Collection','Ending Balance');
+        $_SESSION['report_header'] = array('Site / PEGS Code','Cut Off Date','Beginning Balance','Deposit', 'e-wallet Loads', 'Reload','Redemption', 'e-wallet Withdrawal','Manual Redemption','Printed Tickets','Active Tickets for the Day','Coupon','Cash on Hand', 'Replenishment','Collection','Ending Balance');
         $topreport = new TopUpReportQuery($this->getConnection());
         $topreport->open();
         $vsitecode = $_POST['selsitecode'];
@@ -1265,24 +1269,26 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         if(count($rows) > 0){
             foreach($rows as $row) {
                 $grosshold = (($row['InitialDeposit'] + $row['Reload']) - $row['Redemption']) - $row['ManualRedemption'];
-                $cashonhand = ((($row['DepositCash'] + $row['ReloadCash']) - $row['RedemptionCashier']) - $row['ManualRedemption']) - $row['EncashedTickets'];
-                $endbal = $grosshold + $row['Replenishment'] - $row['Collection'];
+                $cashonhand = (((($row['DepositCash'] + $row['EwalletDeposits'] + $row['ReloadCash']) - $row['RedemptionCashier']) - $row['EwalletWithdrawals']) - $row['ManualRedemption']) - $row['EncashedTickets'];
+                $endbal = $cashonhand + $row['Replenishment'] - $row['Collection'];
                 $new_rows[] = array(
                                 substr($row['SiteCode'], strlen(BaseProcess::$sitecode)),
                                 $row['CutOff'],
                                 number_format($row['BegBal'],2),
                                 number_format($row['InitialDeposit'],2),
+                                number_format($row['EwalletDeposits'],2),
                                 number_format($row['Reload'],2),
                                 number_format($row['Redemption'],2),
+                                number_format($row['EwalletWithdrawals'],2),
                                 number_format($row['ManualRedemption'],2),
                                 number_format($row['PrintedTickets'],2),
                                 number_format($row['UnusedTickets'],2),
                                 number_format($row['Coupon'],2),
                                 number_format($cashonhand,2),
-                                number_format($grosshold,2),
+//                                number_format($grosshold,2),
                                 number_format($row['Replenishment'],2),
                                 number_format($row['Collection'],2),
-                                number_format($row['EndBal'],2),
+                                number_format($endbal,2),
                 );
             }
         }

@@ -69,7 +69,7 @@ class ProcessTopUpPaginate extends BaseProcess {
         ini_set('max_execution_time', '220');
         $arrdetails = array();
         foreach($rows as $id => $row) {
-            $gross_hold = ((($row['Deposit'] + $row['Reload']) - $row['Redemption']) - $row['ActualAmount']);
+            $gross_hold = ((($row['Deposit'] + $row['Reload'] + $row['EwalletLoads']) - ($row['Redemption'] - $row['EwalletWithdrawal'])) - $row['ActualAmount']);
             $cashonhand =((($row['DepositCash'] + $row['ReloadCash']) - $row['RedemptionCashier']) - $row['ActualAmount']) - $row["EncashedTickets"];
             
             $temp = array(
@@ -79,8 +79,10 @@ class ProcessTopUpPaginate extends BaseProcess {
                         "POS"=>$row['POSAccountNo'],
                         "BCF"=>number_format($row['BCF'],2),
                         "Deposit"=>number_format($row['Deposit'],2),
+                        "EwalletLoad"=>number_format($row['EwalletLoads'],2),
                         "Reload"=>number_format($row['Reload'],2),
                         "Withdrawal"=>number_format($row['Redemption'],2),
+                        "EwalletWithdrawal"=>number_format($row['EwalletWithdrawal'],2),
                         "ManualRedemption"=>(($row['ActualAmount'])?number_format($row['ActualAmount'],2):''),
                         "PrintedTickets"=>number_format($row['PrintedTickets'],2),
                         "UnusedTickets"=>number_format($row['UnusedTickets'],2),
@@ -546,10 +548,13 @@ class ProcessTopUpPaginate extends BaseProcess {
      //pagination for Playing Balance: get active terminals only
     public function getActiveTerminals() {
         include_once __DIR__.'/../sys/class/TopUp.class.php';
+        include_once __DIR__.'/../sys/class/LoyaltyUBWrapper.class.php';
         //include_once __DIR__.'/../sys/class/CasinoAPIHandler.class.php';
         include_once __DIR__.'/../sys/class/CasinoGamingCAPI.class.php';
         
         $topup = new TopUp($this->getConnection());
+        $loyalty = new LoyaltyUBWrapper();
+        $cardinfo = BaseProcess::$cardinfo;
         $topup->open();   
         $sitecode = $_POST['sitecode'];
         
@@ -612,7 +617,9 @@ class ProcessTopUpPaginate extends BaseProcess {
                 if($row['PlayingBalance'] == "Error: Cannot get balance"){
                         $row['PlayingBalance'] = "N/A";
                 }
-
+                
+                $loyalty_result = json_decode($loyalty->getCardInfo2($row['LoyaltyCardNumber'], $cardinfo, 1));
+                
                 $isEwallet = "No";
                 
                 if($row['UserMode'] == 0){
@@ -620,7 +627,7 @@ class ProcessTopUpPaginate extends BaseProcess {
                 }
                 else{
                     $row['UserMode'] = "User Based";
-                    if($row["IsEwallet"] == 1){
+                    if($loyalty_result->CardInfo->IsEwallet == 1){
                         $isEwallet = "Yes";
                     }
                 }
@@ -649,11 +656,14 @@ class ProcessTopUpPaginate extends BaseProcess {
      //pagination for Playing Balance: get active terminals only user based
     public function getActiveTerminalsUb() {
         include_once __DIR__.'/../sys/class/TopUp.class.php';
+        include_once __DIR__.'/../sys/class/LoyaltyUBWrapper.class.php';
         //include_once __DIR__.'/../sys/class/CasinoAPIHandler.class.php';
         include_once __DIR__.'/../sys/class/CasinoGamingCAPI.class.php';
         
         $topup = new TopUp($this->getConnection());
-        $topup->open();   
+        $loyalty = new LoyaltyUBWrapper();
+        $topup->open();
+        $cardinfo = BaseProcess::$cardinfo;
         
         $total_row = $topup->getActiveTerminalsTotalub();
         $params = $this->getJqgrid($total_row, 'ts.TerminalID');
@@ -681,6 +691,9 @@ class ProcessTopUpPaginate extends BaseProcess {
                     }
             }
         }
+        
+        $loyalty_result = json_decode($loyalty->getCardInfo2($_GET['cardnumber'], $cardinfo, 1));
+        
         foreach($rows as $row) {
             $temp_pbal = explode('.', $row['PlayingBalance']);
             if(count($temp_pbal) != 2) {
@@ -703,7 +716,7 @@ class ProcessTopUpPaginate extends BaseProcess {
             }
             else{
                 $row['UserMode'] = "User Based";
-                if($row['IsEwallet'] == 1){
+                if($loyalty_result->CardInfo->IsEwallet == 1){
                     $ewallet = 'Yes';
                 }
             }
@@ -1201,28 +1214,30 @@ class ProcessTopUpPaginate extends BaseProcess {
         $jqgrid = $params['jqgrid'];
         foreach($rresult as $row) {
             $grosshold = (($row['InitialDeposit'] + $row['Reload']) - $row['Redemption']) - $row['ManualRedemption'];
-            $cashonhand = ((($row['DepositCash'] + $row['ReloadCash']) - $row['RedemptionCashier']) - $row['ManualRedemption']) - $row['EncashedTickets'];
-            $endbal = $grosshold + $row['Replenishment'] - $row['Collection'];
-            $viewdetails = "<input type='button' id='btnviewdetails' value='View Details' SiteID='".$row['SiteID']."' StartDate='".$row['ReportDate']." ".BaseProcess::$cutoff."' EndDate='".$row['CutOff']."'".
-                                           " onClick = '$(\"#hdnsiteid\").val($(this).attr(\"SiteID\")); $(\"#hdnstartdate\").val($(this).attr(\"StartDate\")); $(\"#hdnenddate\").val($(this).attr(\"EndDate\"));".
-                                           "jQuery( \"#frmexport\").attr(\"action\",\"\"); jQuery(\"#frmexport\").attr(\"action\",\"GrossHoldBalanceViewDetails.php\");  document.getElementById(\"frmexport\").submit();'/>";
+            $cashonhand = (((($row['DepositCash'] + $row['EwalletDeposits'] + $row['ReloadCash']) - $row['RedemptionCashier']) - $row['EwalletWithdrawals']) - $row['ManualRedemption']) - $row['EncashedTickets'];
+            $endbal = $cashonhand + $row['Replenishment'] - $row['Collection'];
+//            $viewdetails = "<input type='button' id='btnviewdetails' value='View Details' SiteID='".$row['SiteID']."' StartDate='".$row['ReportDate']." ".BaseProcess::$cutoff."' EndDate='".$row['CutOff']."'".
+//                                           " onClick = '$(\"#hdnsiteid\").val($(this).attr(\"SiteID\")); $(\"#hdnstartdate\").val($(this).attr(\"StartDate\")); $(\"#hdnenddate\").val($(this).attr(\"EndDate\"));".
+//                                           "jQuery( \"#frmexport\").attr(\"action\",\"\"); jQuery(\"#frmexport\").attr(\"action\",\"GrossHoldBalanceViewDetails.php\");  document.getElementById(\"frmexport\").submit();'/>";
             $jqgrid->rows[] = array('id'=>$row['SiteID'],'cell'=>array(
                 substr($row['SiteCode'], strlen(BaseProcess::$sitecode)),
                 $row['CutOff'],
                 number_format($row['BegBal'],2),
                 number_format($row['InitialDeposit'],2),
+                number_format($row['EwalletDeposits'],2),
                 number_format($row['Reload'],2),
                 number_format($row['Redemption'],2),
+                number_format($row['EwalletWithdrawals'],2),
                 number_format($row['ManualRedemption'],2),
                 number_format($row['PrintedTickets'],2),
                 number_format($row['UnusedTickets'],2),
                 number_format($row['Coupon'],2),
                 number_format($cashonhand,2),
-                number_format($grosshold,2),
+//                number_format($grosshold,2),
                 number_format($row['Replenishment'],2),
                 number_format($row['Collection'],2),
-                number_format($row['EndBal'],2),
-                $viewdetails
+                number_format($endbal,2),
+//                $viewdetails
             ));
         }        
         echo json_encode($jqgrid); 

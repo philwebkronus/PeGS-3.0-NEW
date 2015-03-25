@@ -31,13 +31,13 @@ include "header.php";
 <div id="workarea">      
         <div id="pagetitle"><?php echo $pagetitle; ?></div>
         <br />
-        <form method="post">
+        <form method="post" class="frmmembership">
             <input type="hidden" name="page" value="ResetPin">
             <table>
                 <tr>
                     <td>Card Number</td>
                     <td>
-                    <input type="text" name="cardno" id="cardno" maxlength="30" size="30" onkeypress="return loyaltycardnumber(event);" />
+                    <input type="text" name="txtcardnumber" class="txtmembership" id="txtcardnumber" maxlength="30" size="30" onkeypress="return loyaltycardnumber(event);" />
                     </td>
                 </tr>
             </table>
@@ -78,20 +78,20 @@ include "header.php";
         $('#light').hide();
         $('#light').hide();
         $('#fade').hide();
-        $("#cardno").focus(function(){
-            $("#cardno").bind('paste', function(event) {
+        $("#txtcardnumber").focus(function(){
+            $("#txtcardnumber").bind('paste', function(event) {
                 setTimeout(function(event) {
-                    var data = $("#cardno").val();
+                    var data = $("#txtcardnumber").val();
                     if(!specialcharacter(data)){
-                        $("#cardno").val("");
-                        $("#cardno").focus();
+                        $("#txtcardnumber").val("");
+                        $("#txtcardnumber").focus();
                     }
                 }, 0);
             });
         });
         
     jQuery('#btnSubmit').click(function(){
-            if(document.getElementById('cardno').value == "")
+            if(document.getElementById('txtcardnumber').value == "")
            {
                alert("Please Enter Membership Card Number");
                jQuery('#gridwrapper').hide();
@@ -107,14 +107,14 @@ include "header.php";
         });
         
     jQuery('#btnOK').click(function(){
-        var cardnumber = $("#cardno").val();
+        var cardnumber = $("#txtcardnumber").val();
         jQuery.ajax({
             url: "process/ProcessCSManagement.php",
             type: 'post',
             data: {page: function(){ return "ResetPin";}, cardno: function(){return cardnumber;}},
             success: function(data){
                 alert(data);
-                $("#cardno").val("");
+                $("#txtcardnumber").val("");
             },
             error: function(XMLHttpRequest, e)
                    {
@@ -131,7 +131,7 @@ include "header.php";
 
     function showCardInfoTable()
         {
-            var cardnumber = jQuery("#cardno").val();
+            var cardnumber = jQuery("#txtcardnumber").val();
                 //for displaying site / pegs information
                 jQuery.ajax(
                 {
@@ -192,7 +192,7 @@ include "header.php";
                    error: function(XMLHttpRequest, e)
                    {
                          alert(XMLHttpRequest.responseText);
-                         jQuery("#cardno").val("");
+                         jQuery("#txtcardnumber").val("");
                          if(XMLHttpRequest.status == 401)
                          {
                              window.location.reload();

@@ -38,14 +38,14 @@ $vaccesspages = array('5');
                 <td>
                     <input type="text" value="<?php echo date('Y-m-d') ?>" id="startdate" readonly="readonly" name="startdate" />&nbsp;<img name="cal" src="images/cal.gif" width="16" height="16" border="0" alt="Pick a date" onClick="displayDatePicker('startdate', false, 'ymd', '-');"/>
                 </td>
-                <td>End Date</td>
+                <td> End Date</td>
                 <td>
                     <input type="text" value="<?php echo date('Y-m-d',strtotime(date("Y-m-d", strtotime(date('Y-m-d'))))) ?>" id="enddate" readonly="readonly" name="enddate" />&nbsp;<img name="cal" src="images/cal.gif" width="16" height="16" border="0" alt="Pick a date" onClick="displayDatePicker('enddate', false, 'ymd', '-');"/> 
                 </td>
             </tr>
             <tr>
                 <td>Site / PEGS</td>
-                <td>
+                <td colspan ="3">
                     <select name="selsitecode" id="selsitecode">
                         <option value="All">All</option>
                         <?php foreach($param['sites'] as $site): ?>
@@ -92,8 +92,8 @@ $vaccesspages = array('5');
         jQuery('#tblreplenish').jqGrid({
             url : 'process/ProcessTopUpPaginate.php?action=grossholdbalance&site='+jQuery('#selsitecode').val(),
             datatype: "json",
-            colNames:['Site / PEGS Code', 'Cut Off Date', 'Beginning Balance', 'Deposit', 'Reload','Redemption','Manual Redemption','Printed Tickets',
-                                'Active Tickets for the Day','Coupons','Cash on Hand','Gross Hold','Replenishment','Collection','Ending Balance', 'View Details'],
+            colNames:['Site / PEGS Code', 'Cut Off Date', 'Beginning Balance', 'Deposit', 'e-wallet Loads','Reload','Redemption','e-wallet Withdrawal','Manual Redemption','Printed Tickets',
+                                'Active Tickets for the Day','Coupons','Cash on Hand','Replenishment','Collection','Ending Balance'], // 'View Details'],
             rowNum:10,
             height: 280,
             width: 1800,
@@ -107,18 +107,20 @@ $vaccesspages = array('5');
                 {name:'cutoff', index:'cutoff',align:'center'},
                 {name:'BeginningBalance',index:'BeginningBalance',align:'right'},
                 {name:'InitialDeposit',index:'InitialDeposit',align:'right'},
+                {name:'EwalletDeposits',index:'EwalletDeposits',align:'right'},
                 {name:'Reload',index:'Reload',align:'right'},
                 {name:'Redemption',index:'Redemption',align:'right'},
+                {name:'EwalletWithdrawals',index:'EwalletWithdrawals',align:'right'},
                 {name:'ManualRedemption',index:'manualredemption',align:'right'},
                 {name:'PrintedTickets',index:'PrintedTickets',align:'right'},
                 {name:'UnusedTickets',index:'UnusedTickets',align:'right'},
                 {name:'Coupon',index:'Coupon',align:'right'},
                 {name:'CashonHand',index:'CashonHand',align:'right'},
-                {name:'GrossHold',index:'GrossHold',align:'right'},
+//                {name:'GrossHold',index:'GrossHold',align:'right'},
                 {name:'Replenishment',index:'Replenishment',align:'right'},
                 {name:'Collection',index:'Collection',align:'right'},
                 {name:'EndingBalance',index:'EndingBalance',align:'right'},
-                {name:'GHBalCutOffInfo',index:'GHBalCutOffInfo',align:'center'}
+//                {name:'GHBalCutOffInfo',index:'GHBalCutOffInfo',align:'center'}
             ]
         });
         

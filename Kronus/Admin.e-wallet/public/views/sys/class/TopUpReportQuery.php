@@ -530,7 +530,7 @@ class TopUpReportQuery extends DBHandler{
                //Query for the generated site gross hold per cutoff (this is only up to the last Cut off)
                 $query1 = "SELECT sgc.SiteID, sgc.BeginningBalance, sgc.EndingBalance, ad.Name, sd.SiteDescription, sgc.Coupon,
                             s.SiteCode, s.POSAccountNo,sgc.DateFirstTransaction,sgc.DateLastTransaction,sgc.ReportDate,
-                            sgc.DateCutOff,sgc.Deposit AS InitialDeposit, sgc.Reload AS Reload , sgc.Withdrawal AS Redemption
+                            sgc.DateCutOff,sgc.Deposit AS InitialDeposit, sgc.Reload AS Reload , sgc.Withdrawal AS Redemption, sgc.EwalletDeposits,  sgc.EwalletWithdrawals
                             FROM sitegrossholdcutoff sgc
                             INNER JOIN sites s ON s.SiteID = sgc.SiteID
                             INNER JOIN accountdetails ad ON ad.AID = s.OwnerAID
@@ -539,13 +539,13 @@ class TopUpReportQuery extends DBHandler{
                             AND sgc.DateCutOff <= ?
                             ORDER BY s.SiteCode, sgc.DateCutOff";          
 
-               //Query for Gross Hold Confirmation (per site/per cut off)
-                $query2 = "SELECT SiteID,DateCredited,AmountConfirmed FROM grossholdconfirmation 
-                    WHERE DateCredited  >= ? AND DateCredited < ? ";
+               //Query for Replenishments
+                $query2 = "SELECT SiteID, Amount, DateCreated FROM replenishments
+                                    WHERE DateCreated >= ? AND DateCreated < ? ";
 
-                //Query for Site Remittance (per site/per cut off)
-                $query3 = "SELECT SiteID,Amount,StatusUpdateDate FROM siteremittance 
-                    WHERE StatusUpdateDate  >= ? AND StatusUpdateDate < ? ";
+                //Query for Collection
+                $query3 = "SELECT SiteID, Amount, DateCreated FROM siteremittance
+                                    WHERE Status = 3 AND DateCreated >= ? AND DateCreated < ? ";
 
                 //Query for Manual Redemption (per site/per cut off)
                 $query5 = "SELECT SiteID, ActualAmount AS ActualAmount,TransactionDate FROM manualredemptions " . 
@@ -912,7 +912,8 @@ class TopUpReportQuery extends DBHandler{
                         'ReportDate'=>$row1['ReportDate'],'CutOff'=>$row1['DateCutOff'],'ManualRedemption'=>0,'Coupon'=>'0.00',
                         'PrintedTickets'=>'0.00','EncashedTickets'=>'0.00', 'RedemptionCashier'=>'0.00',
                         'RedemptionGenesis'=>'0.00','DepositCash'=>'0.00','ReloadCash'=>'0.00','UnusedTickets'=>'0.00','DepositTicket'=>'0.00',
-                        'ReloadTicket'=>'0.00','DepositCoupon'=>'0.00','ReloadCoupon'=>'0.00', 'Replenishment'=>0,'Collection'=>0
+                        'ReloadTicket'=>'0.00','DepositCoupon'=>'0.00','ReloadCoupon'=>'0.00', 'Replenishment'=>0,'Collection'=>0,
+                        'EwalletDeposits' => $row1['EwalletDeposits'], 'EwalletWithdrawals' => $row1['EwalletWithdrawals']
                         );
                 }
                 
@@ -925,8 +926,8 @@ class TopUpReportQuery extends DBHandler{
                 $qr2 = array();
                 foreach($rows2 as $row2) 
                 {
-                    $qr2[] = array('SiteID'=>$row2['SiteID'],'DateCredit'=>$row2['DateCredited'],
-                        'Amount'=>$row2['AmountConfirmed']);
+                    $qr2[] = array('SiteID'=>$row2['SiteID'],'DateCreated'=>$row2['DateCreated'],
+                        'Amount'=>$row2['Amount']);
                 }
 
                 // to get deposits made by cashier from metro manila
@@ -938,7 +939,7 @@ class TopUpReportQuery extends DBHandler{
                 $qr3 = array();
                 foreach($rows3 as $row3) 
                 {
-                    $qr3[] = array('SiteID'=>$row3['SiteID'],'DateCredit'=>$row3['StatusUpdateDate'],
+                    $qr3[] = array('SiteID'=>$row3['SiteID'],'DateCreated'=>$row3['DateCreated'],
                         'Amount'=>$row3['Amount']);
                 }  
                 // to get manual redemptions based on date range
@@ -1083,7 +1084,7 @@ class TopUpReportQuery extends DBHandler{
                         if($qr1[$ctr]['SiteID'] == $qr2[$ctr3]['SiteID'])
                         {
                             $amount = 0;
-                            if(($qr2[$ctr3]['DateCredit'] >= $qr1[$ctr]['ReportDate']." ".BaseProcess::$cutoff) && ($qr2[$ctr3]['DateCredit'] < $qr1[$ctr]['CutOff']))
+                            if(($qr2[$ctr3]['DateCreated'] >= $qr1[$ctr]['ReportDate']." ".BaseProcess::$cutoff) && ($qr2[$ctr3]['DateCreated'] < $qr1[$ctr]['CutOff']))
                             {
                                 if($qr1[$ctr]['Replenishment'] == 0) 
                                     $qr1[$ctr]['Replenishment'] = $qr2[$ctr3]['Amount'];
@@ -1102,7 +1103,7 @@ class TopUpReportQuery extends DBHandler{
                         if($qr1[$ctr]['SiteID'] == $qr3[$ctr4]['SiteID'])
                         {         
                             $amount = 0;
-                            if(($qr3[$ctr4]['DateCredit'] >= $qr1[$ctr]['ReportDate']." ".BaseProcess::$cutoff) && ($qr3[$ctr4]['DateCredit'] < $qr1[$ctr]['CutOff']))
+                            if(($qr3[$ctr4]['DateCreated'] >= $qr1[$ctr]['ReportDate']." ".BaseProcess::$cutoff) && ($qr3[$ctr4]['DateCreated'] < $qr1[$ctr]['CutOff']))
                             {
                                 if($qr1[$ctr]['Collection'] == 0) 
                                 {
@@ -1124,7 +1125,7 @@ class TopUpReportQuery extends DBHandler{
                //Query for the generated site gross hold per cutoff (this is only up to the last Cut off)
                 $query1 = "SELECT sgc.SiteID, sgc.BeginningBalance, sgc.EndingBalance, ad.Name, sd.SiteDescription, sgc.Coupon,
                             s.SiteCode, s.POSAccountNo,sgc.DateFirstTransaction,sgc.DateLastTransaction,sgc.ReportDate,
-                            sgc.DateCutOff,sgc.Deposit AS InitialDeposit, sgc.Reload AS Reload , sgc.Withdrawal AS Redemption
+                            sgc.DateCutOff,sgc.Deposit AS InitialDeposit, sgc.Reload AS Reload , sgc.Withdrawal AS Redemption, sgc.EwalletDeposits,  sgc.EwalletWithdrawals
                             FROM sitegrossholdcutoff sgc
                             INNER JOIN sites s ON s.SiteID = sgc.SiteID
                             INNER JOIN accountdetails ad ON ad.AID = s.OwnerAID
@@ -1133,13 +1134,13 @@ class TopUpReportQuery extends DBHandler{
                             AND sgc.DateCutOff <= ? AND sgc.SiteID = ?
                             ORDER BY s.SiteCode, sgc.DateCutOff";          
 
-               //Query for Gross Hold Confirmation (per site/per cut off)
-                $query2 = "SELECT SiteID,DateCredited,AmountConfirmed FROM grossholdconfirmation 
-                    WHERE DateCredited  >= ? AND DateCredited < ?  AND SiteID = ?";
+               //Query for Replenishments
+                $query2 = "SELECT SiteID, Amount, DateCreated FROM replenishments
+                                    WHERE DateCreated >= ? AND DateCreated < ? AND SiteID = ? ";
 
-                //Query for Site Remittance (per site/per cut off)
-                $query3 = "SELECT SiteID,Amount,StatusUpdateDate FROM siteremittance 
-                    WHERE StatusUpdateDate  >= ? AND StatusUpdateDate < ?  AND SiteID = ?";
+                //Query for Collection
+                $query3 = "SELECT SiteID, Amount, DateCreated FROM siteremittance
+                                    WHERE Status = 3 AND DateCreated >= ? AND DateCreated < ? AND SiteID = ? ";
 
                 //Query for Manual Redemption (per site/per cut off)
                 $query5 = "SELECT SiteID, ActualAmount AS ActualAmount,TransactionDate FROM manualredemptions " . 
@@ -1509,7 +1510,8 @@ class TopUpReportQuery extends DBHandler{
                             'ReportDate'=>$row1['ReportDate'],'CutOff'=>$row1['DateCutOff'],'ManualRedemption'=>0,'Coupon'=>'0.00',
                             'PrintedTickets'=>'0.00','EncashedTickets'=>'0.00', 'RedemptionCashier'=>'0.00',
                             'RedemptionGenesis'=>'0.00','DepositCash'=>'0.00','ReloadCash'=>'0.00','UnusedTickets'=>'0.00','DepositTicket'=>'0.00',
-                            'ReloadTicket'=>'0.00','DepositCoupon'=>'0.00','ReloadCoupon'=>'0.00', 'Replenishment'=>0,'Collection'=>0
+                            'ReloadTicket'=>'0.00','DepositCoupon'=>'0.00','ReloadCoupon'=>'0.00', 'Replenishment'=>0,'Collection'=>0,
+                            'EwalletDeposits' => $row1['EwalletDeposits'], 'EwalletWithdrawals' => $row1['EwalletWithdrawals']
                         );
                 }
 
@@ -1523,8 +1525,8 @@ class TopUpReportQuery extends DBHandler{
                 $qr2 = array();
                 foreach($rows2 as $row2) 
                 {
-                    $qr2[] = array('SiteID'=>$row2['SiteID'],'DateCredit'=>$row2['DateCredited'],
-                        'Amount'=>$row2['AmountConfirmed']);
+                    $qr2[] = array('SiteID'=>$row2['SiteID'],'DateCreated'=>$row2['DateCreated'],
+                        'Amount'=>$row2['Amount']);
                 }
 
                 // to get deposits made by cashier from metro manila
@@ -1537,7 +1539,7 @@ class TopUpReportQuery extends DBHandler{
                 $qr3 = array();
                 foreach($rows3 as $row3) 
                 {
-                    $qr3[] = array('SiteID'=>$row3['SiteID'],'DateCredit'=>$row3['StatusUpdateDate'],
+                    $qr3[] = array('SiteID'=>$row3['SiteID'],'DateCreated'=>$row3['DateCreated'],
                         'Amount'=>$row3['Amount']);
                 }  
                 // to get manual redemptions based on date range
@@ -1685,7 +1687,7 @@ class TopUpReportQuery extends DBHandler{
                         if($qr1[$ctr]['SiteID'] == $qr2[$ctr3]['SiteID'])
                         {
                             $amount = 0;
-                            if(($qr2[$ctr3]['DateCredit'] >= $qr1[$ctr]['ReportDate']." ".BaseProcess::$cutoff) && ($qr2[$ctr3]['DateCredit'] < $qr1[$ctr]['CutOff']))
+                            if(($qr2[$ctr3]['DateCreated'] >= $qr1[$ctr]['ReportDate']." ".BaseProcess::$cutoff) && ($qr2[$ctr3]['DateCreated'] < $qr1[$ctr]['CutOff']))
                             {
                                 if($qr1[$ctr]['Replenishment'] == 0) 
                                     $qr1[$ctr]['Replenishment'] = $qr2[$ctr3]['Amount'];
@@ -1704,7 +1706,7 @@ class TopUpReportQuery extends DBHandler{
                         if($qr1[$ctr]['SiteID'] == $qr3[$ctr4]['SiteID'])
                         {         
                             $amount = 0;
-                            if(($qr3[$ctr4]['DateCredit'] >= $qr1[$ctr]['ReportDate']." ".BaseProcess::$cutoff) && ($qr3[$ctr4]['DateCredit'] < $qr1[$ctr]['CutOff']))
+                            if(($qr3[$ctr4]['DateCreated'] >= $qr1[$ctr]['ReportDate']." ".BaseProcess::$cutoff) && ($qr3[$ctr4]['DateCreated'] < $qr1[$ctr]['CutOff']))
                             {
                                 if($qr1[$ctr]['Collection'] == 0) 
                                 {
