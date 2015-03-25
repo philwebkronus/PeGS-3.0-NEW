@@ -467,12 +467,24 @@ class PcwsController extends Controller{
                     $ewallet = new EwallettransModel();
                     $terminalsessions = new TerminalSessionsModel();
                     $casinocontroller = new CasinoController();
+                    $members = new MembersModel();
 
                     $mid = $membercards->getMID($cardnumber);
 
                    if(is_array($mid)){
 
                        $mid = $mid['MID'];
+                       
+                       $checkpinloginattempts = $members->checkPINLoginAttempts($mid);
+                       
+                       if($checkpinloginattempts['PINLoginAttemps'] >  Yii::app()->params['maxPinAttempts']){
+                            $transMsg = 'Withdraw Failed, PIN is locked.'; 
+                            $errCode = 13;
+
+                            $data = CommonController::withdraw($transMsg, $errCode);
+                            $this->_sendResponse(200, $data);
+                            exit;
+                       }
 
                        $terminalid = $terminalsessions->checkSessionIDwithcard($cardnumber, $serviceid);
                        if(is_array($terminalid)){

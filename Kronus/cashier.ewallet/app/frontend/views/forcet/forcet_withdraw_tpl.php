@@ -58,6 +58,10 @@
                 return false;
             }
             
+            var issuccess = identifyCard3();
+            
+            if(issuccess == "false"){
+            
             if($('#ForceTFormModel_amount').val() == '') {
                 alert('Please Enter Amount to be withdrawn');
                 return false;
@@ -131,6 +135,9 @@
                 alert('<?php echo Mirage::app()->param['pegsstationerrormsg'] ?>');
             }
             <?php endif; ?>
+            
+            }
+            return false;
         });
          
             $('#ForceTFormModel_loyalty_card').bind("enterKey",function(e){

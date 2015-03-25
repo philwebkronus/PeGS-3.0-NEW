@@ -108,6 +108,15 @@ class MembersModel extends CFormModel
         return $result;
     }
     
+    public function checkPINLoginAttempts($mid){
+        $sql='SELECT PINLoginAttemps FROM members WHERE MID = :mid';
+        $command = $this->connection->createCommand($sql);
+        $command->bindValue(":mid", $mid);
+        $result = $command->queryRow();
+        
+        return $result;
+    }
+    
     
     
     
