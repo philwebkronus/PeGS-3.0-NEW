@@ -2746,11 +2746,11 @@ class TopUp extends DBHandler
             }
             
         }
-        
+
         //Get the Expired Tickets per site
         $this->prepare($query10);
-        $this->bindparameter(':startlimitdate', $startlimitdate);
-        $this->bindparameter(':endlimitdate', $endlimitdate);
+        $this->bindparameter(':startlimitdate', $startdate);
+        $this->bindparameter(':endlimitdate', $enddate);
         $this->execute();  
         $rows10 =  $this->fetchAllData();
 
@@ -2767,8 +2767,8 @@ class TopUp extends DBHandler
         
         //Get the Expired Tickets per site
         $this->prepare($query11);
-        $this->bindparameter(':startlimitdate', $startlimitdate);
-        $this->bindparameter(':endlimitdate', $endlimitdate);
+        $this->bindparameter(':startlimitdate', $startdate);
+        $this->bindparameter(':endlimitdate', $enddate);
         $this->execute();  
         $rows11 =  $this->fetchAllData();
 
