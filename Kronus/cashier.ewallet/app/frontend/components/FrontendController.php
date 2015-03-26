@@ -486,7 +486,7 @@ class FrontendController extends MI_Controller {
         $vmsrequestlogs = new VMSRequestLogsModel();
         $terminalsmodel = new TerminalsModel();
         
-        $terminal_id = $startSessionFormModel->terminal_id;
+        $terminal_id = 0;//$startSessionFormModel->terminal_id;
         $siteid = $this->site_id;
         $accid = $this->acc_id;
         $vouchercode = '';
@@ -592,7 +592,7 @@ class FrontendController extends MI_Controller {
 //                                    } else {
 //                                        $loyaltyrequestlogs->updateLoyaltyRequestLogs($loyaltyrequestlogsID,2);
 //                                    }
-                                    
+                                    $trackingId = "c".$casinoAPI->udate('YmdHisu');
                                     //Insert to vmsrequestlogs
                                     $vmsrequestlogsID = $vmsrequestlogs->insert($vouchercode, $accid, $terminal_id,$trackingId);
                                     
