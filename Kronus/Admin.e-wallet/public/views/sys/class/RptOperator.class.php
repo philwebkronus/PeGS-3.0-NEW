@@ -27,29 +27,32 @@ class RptOperator extends DBHandler
     
     // for site transactions report
 	// for site transactions report
-function viewtransactionperday($zdateFROM, $zdateto, $zsiteID)
-{
-$listsite = array();
-foreach ($zsiteID as $row)
-{
-array_push($listsite, "'".$row."'");
-}
-$site = implode(',', $listsite);
-$stmt = "select tr.TransactionSummaryID,ts.DateStarted,ts.DateEnded,tr.DateCreated, ts.LoyaltyCardNumber, tr.TerminalID,tr.SiteID,
-t.TerminalCode as TerminalCode, tr.TransactionType, sum(tr.Amount) AS amount,a.UserName from transactiondetails tr
-inner join transactionsummary ts on ts.TransactionsSummaryID = tr.TransactionSummaryID
-inner join terminals t on t.TerminalID = tr.TerminalID
-inner join accounts a on a.AID = tr.CreatedByAID
-where tr.SiteID IN(".$site.") AND
-tr.DateCreated >= ? and tr.DateCreated < ? and tr.Status IN(1,4)
-group by tr.TransactionType,tr.TransactionSummaryID order by t.TerminalCode,tr.DateCreated Desc ";
-$this->prepare($stmt);
-$this->bindparameter(1, $zdateFROM);
-$this->bindparameter(2, $zdateto);
-$this->execute();
-unset($listsite);
-return $this->fetchAllData();
-}
+    function viewtransactionperday($zdateFROM, $zdateto, $zsiteID)
+    {
+        
+        $listsite = array();
+        foreach ($zsiteID as $row)
+        {
+        array_push($listsite, "'".$row."'");
+        }
+        $site = implode(',', $listsite);
+        $stmt = "select tr.TransactionSummaryID,ts.DateStarted,ts.DateEnded,tr.DateCreated, ts.LoyaltyCardNumber, tr.TerminalID,tr.SiteID,
+        t.TerminalCode as TerminalCode, tr.TransactionType, sum(tr.Amount) AS amount,a.UserName from transactiondetails tr
+        inner join transactionrequestlogs trl on tr.TransactionReferenceID = trl.TransactionReferenceID
+        inner join transactionsummary ts on ts.TransactionsSummaryID = tr.TransactionSummaryID
+        inner join terminals t on t.TerminalID = tr.TerminalID
+        inner join accounts a on a.AID = tr.CreatedByAID
+        where tr.SiteID IN(".$site.") AND
+        ts.DateStarted >= ? and ts.DateStarted < ? AND tr.Status IN(1,4)
+        and trl.Status IN(1,3) and (tr.StackerSummaryID IS NULL OR trim(tr.StackerSummaryID) <> '')
+        group by tr.TransactionType,tr.TransactionSummaryID order by t.TerminalCode,ts.DateStarted Desc ";
+        $this->prepare($stmt);
+        $this->bindparameter(1, $zdateFROM);
+        $this->bindparameter(2, $zdateto);
+        $this->execute();
+        unset($listsite);
+        return $this->fetchAllData();
+    }
     /*function viewtransactionperday($zdateFROM, $zdateto, $zsiteID)
     {
         $listsite = array();
@@ -1093,6 +1096,114 @@ return $this->fetchAllData();
         $usermode = $this->fetchData();
         $usermode = $usermode['UserMode'];
         return $usermode;
+    }
+    
+    // for site transactions report
+    // for ewallet loads and withdraws
+    //@date added 03-20-2015
+    //@author fdlsison
+    function viewewtransactionperday($zdateFROM, $zdateto, $zsiteID)
+    {
+        $listsite = array();
+        foreach ($zsiteID as $row)
+        {
+            array_push($listsite, "'".$row."'");
+        }
+        $site = implode(',', $listsite);
+//        $stmt = "select tr.TransactionSummaryID,ts.DateStarted,ts.DateEnded,tr.DateCreated, ts.LoyaltyCardNumber, tr.TerminalID,tr.SiteID,
+//                t.TerminalCode as TerminalCode, tr.TransactionType, sum(tr.Amount) AS amount,a.UserName from transactiondetails tr
+//                inner join transactionsummary ts on ts.TransactionsSummaryID = tr.TransactionSummaryID
+//                inner join terminals t on t.TerminalID = tr.TerminalID
+//                inner join accounts a on a.AID = tr.CreatedByAID
+//                where tr.SiteID IN(".$site.") AND
+//                tr.DateCreated >= ? and tr.DateCreated < ? and tr.Status IN(1,4)
+//                group by tr.TransactionType,tr.TransactionSummaryID order by t.TerminalCode,tr.DateCreated Desc ";
+        $stmt1 = "SELECT EwalletTransID, SiteID, LoyaltyCardNumber, StartDate, EndDate, TransType,
+                  IFNULL(CASE WHEN TransType = 'D' THEN Amount END,0) AS EWLoads,
+                  IFNULL(CASE WHEN TransType = 'W' THEN Amount END,0) AS EWWithdrawals
+                  FROM ewallettrans
+                  WHERE SiteID IN(".$site.") AND
+                  StartDate >= ? AND StartDate < ? AND Status IN(1,3)";
+         //
+//        $stmt2 = "SELECT SiteID, LoyaltyCardNumber, Amount AS EWLoads, StartDate, EndDate
+//                  FROM ewallettrans
+//                  WHERE SiteID IN(".$site.") AND
+//                  StartDate >= ? AND EndDate < ? AND Status = 1 and TransType = 'D'";
+//        $stmt3 = "SELECT SiteID, LoyaltyCardNumber, Amount AS EWWithdrawals, StartDate, EndDate
+//                  FROM ewallettrans
+//                  WHERE SiteID IN(".$site.") AND
+//                  StartDate >= ? AND EndDate < ? AND Status = 1 and TransType = 'W'
+//                  GROUP BY TransType ORDER BY StartDate DESC";
+        
+        $this->prepare($stmt1);
+        $this->bindparameter(1, $zdateFROM);
+        $this->bindparameter(2, $zdateto);
+        $this->execute();
+        $rows1 = $this->fetchAllData();
+        
+//        $qr1 = array();
+//        foreach($rows1 as $row1) {
+//            $qr1[] = array('SiteID'=>$row1['SiteID'],'LoyaltyCardNumber'=>$row1['LoyaltyCardNumber'],
+//                    'StartDate' => $row1['StartDate'],'EndDate'=>$row1['EndDate'], 'EWLoads'=>$row1['EWLoads'],
+//                    'EWWithdrawals' => $row1['EWWithdrawals']
+//                );
+//        }
+        
+//        var_dump($qr1);exit;
+//        
+//        $this->prepare($stmt2);
+//        $this->bindparameter(1, $zdateFROM);
+//        $this->bindparameter(2, $zdateto);
+//        $this->execute();
+//        $rows2 = $this->fetchAllData();
+//        foreach($rows2 as $row2) {
+//            foreach ($qr1 as $keys => $value2) {
+//                if($row2["SiteID"] == $value2["SiteID"]){
+//                    if($row2["EWLoads"] != '0.00')
+//                        $qr1[$keys]["EWLoads"] = (float)$qr1[$keys]["EWLoads"] + (float)$row2["EWLoads"];
+//                    break;
+//                }
+//            } 
+//        }
+//        
+//        $this->prepare($stmt3);
+//        $this->bindparameter(1, $zdateFROM);
+//        $this->bindparameter(2, $zdateto);
+//        $this->execute();
+//        $rows3 = $this->fetchAllData();
+//        foreach($rows3 as $row3) {
+//            foreach ($qr1 as $keys => $value3) {
+//                if($row3["SiteID"] == $value3["SiteID"]){
+//                    if($row3["EWWithdrawals"] != '0.00')
+//                        $qr1[$keys]["EWWithdrawals"] = (float)$qr1[$keys]["EWWithdrawals"] + (float)$row3["EWWithdrawals"];
+//                    break;
+//                }
+//            } 
+//        }
+//        
+        unset($listsite);
+        //return $this->fetchAllData();
+        return $rows1;
+    }
+    
+    function getTotalTicketEncashment($zdateFROM, $zdateto, $zsiteID) {
+        $listsite = array();
+        foreach ($zsiteID as $row)
+        {
+            array_push($listsite, "'".$row."'");
+        }
+        $site = implode(',', $listsite);
+        $stmt = "SELECT tckt.SiteID, IFNULL(SUM(tckt.Amount), 0) AS EncashedTickets FROM vouchermanagement.tickets tckt  -- Encashed Tickets
+                                WHERE tckt.DateEncashed >= ? AND tckt.DateEncashed < ?
+                                AND tckt.SiteID IN (".$site.")";
+        $this->prepare($stmt);
+        $this->bindparameter(1, $zdateFROM);
+        $this->bindparameter(2, $zdateto);
+        $this->execute();
+        $rows = $this->fetchAllData();
+ 
+        //return $rows['EncashedTicket;
+        return (float)$rows[0]['EncashedTickets'];
     }
     
 }

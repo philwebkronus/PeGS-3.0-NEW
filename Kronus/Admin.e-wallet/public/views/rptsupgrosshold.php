@@ -55,7 +55,7 @@
                             cmbsitename: function() {return $("#cmbsite").val();}
                          },
                datatype: "json",
-               colNames:['Cashier', 'Total Deposit', 'Total Reload', 'Total Withdrawal', 'Cash on Hand'],
+               colNames:['Cashier', 'Total Deposit', 'Total Reload', 'Total Withdrawal and<br/>encashment', 'Cash on Hand'],
                colModel:[
                          {name:'Name',index:'uname', align: 'center', sortable:false},
                          {name:'TotalDeposit', align: 'right', sortable:false},
@@ -74,6 +74,8 @@
                caption:"Gross Hold"
             });
             jQuery("#userdata").jqGrid('navGrid','#pager2',{edit:false,add:false,del:false, search:false});
+            $('#jqgh_userdata_TotalWithdrawal').css("height","");
+            $('#jqgh_userdata_TotalWithdrawal').css("height","40px");
             
             function gettotal()
             {
@@ -110,8 +112,8 @@
                        //display summary per page
                        document.getElementById('totsales').innerHTML = sales;
                        document.getElementById('totwithdraw').innerHTML = withdraw;
-                       document.getElementById('sales').innerHTML = grandsales;
-                       document.getElementById('withdraw').innerHTML = grandwithdraw;
+//                       document.getElementById('sales').innerHTML = grandsales;
+//                       document.getElementById('withdraw').innerHTML = grandwithdraw;
                        document.getElementById('cash').innerHTML = loadcash;
                        document.getElementById('tickets').innerHTML = loadticket;
                        document.getElementById('coupons').innerHTML = loadcoupon;
@@ -125,8 +127,8 @@
                        alert(e.responseText);
                        document.getElementById('totsales').innerHTML = "0.00";
                        document.getElementById('totwithdraw').innerHTML = "0.00";
-                       document.getElementById('sales').innerHTML = "0.00";
-                       document.getElementById('withdraw').innerHTML = "0.00";
+//                       document.getElementById('sales').innerHTML = "0.00";
+//                       document.getElementById('withdraw').innerHTML = "0.00";
                        document.getElementById('cash').innerHTML = "0.00";
                        document.getElementById('tickets').innerHTML = "0.00";
                        document.getElementById('coupons').innerHTML = "0.00";
@@ -169,7 +171,7 @@
             <table border="1" id="userdata"></table>
             <div id="pager2" style="height: 260px;">
                 <table id="trans" style="background-color:#D6EB99; display: none; font-size: 14px; height: 70% ">
-                    <tr>
+<!--                    <tr>
                         <td style="padding-left: 5px; padding-right: 25px;">Summary per Page</td>
                         <td style="width: 150px; "></td>
                         <td style="padding-left: 5px; padding-right: 25px;">Sales</td>
@@ -177,7 +179,7 @@
                         <td style="width: 150px; "></td>
                         <td style="padding-left: 5px; padding-right: 25px;">Redemption</td>
                         <td id="withdraw" style="font-weight: bold; text-align: right;width: 120px; padding: 2px;"></td>
-                    </tr>
+                    </tr>-->
                     <tr>
                         <td rowspan="3" style="padding-left: 5px; padding-right: 25px;">Grand Total</td>
                         <td style="width: 150px; "></td>

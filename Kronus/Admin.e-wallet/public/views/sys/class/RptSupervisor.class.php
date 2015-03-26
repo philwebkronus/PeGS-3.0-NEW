@@ -41,13 +41,13 @@ class RptSupervisor extends DBHandler
     
     function viewgrosshold($zdatefrom, $zdateto, $zsiteID)
     {
-        $query1 = "select tr.DateCreated, tr.TerminalID,tr.SiteID, tr.CreatedByAID, 
-                     tr.TransactionType, tr.Amount,a.UserName, ad.Name from transactiondetails tr 
-                     inner join accounts a on a.AID = tr.CreatedByAID
-                     inner join accountdetails ad on ad.AID = tr.CreatedByAID
-                     where tr.SiteID IN(".$zsiteID.") AND 
-                     tr.DateCreated >= ? and tr.DateCreated <  ? and tr.Status IN(1,4)
-                     order by tr.CreatedByAID ASC";
+        $query1 = "SELECT tr.StackerSummaryID, tr.DateCreated, tr.TerminalID,tr.SiteID, tr.CreatedByAID, 
+                     tr.TransactionType, tr.Amount,a.UserName, ad.Name FROM npos.transactiondetails tr 
+                     INNER JOIN npos.accounts a ON a.AID = tr.CreatedByAID
+                     INNER JOIN npos.accountdetails ad ON ad.AID = tr.CreatedByAID
+                     WHERE tr.SiteID IN (".$zsiteID.") AND 
+                     tr.DateCreated >= ? AND tr.DateCreated < ? AND tr.Status IN (1,4)
+                     ORDER BY tr.CreatedByAID ASC";
         
         $query2 = "SELECT 
 
@@ -176,7 +176,7 @@ class RptSupervisor extends DBHandler
         $rows1 = $this->fetchAllData();
         $qr1 = array();
         foreach($rows1 as $row1) {
-            $qr1[] = array('SiteID'=>$row1['SiteID'],'TerminalID'=>$row1['TerminalID'],'DateCreated'=>$row1['DateCreated'],
+            $qr1[] = array('SiteID'=>$row1['SiteID'],'TerminalID'=>$row1['TerminalID'],'DateCreated'=>$row1['DateCreated'], 'StackerSummaryID' => $row1['StackerSummaryID'],
                     'CreatedByAID' => $row1['CreatedByAID'],'TransactionType' => $row1['TransactionType'],'Amount'=>$row1['Amount'], 
                     'UserName'=>$row1['UserName'],'Name'=>$row1['Name'], 'PrintedTickets' => '0.00', 'EncashedTickets' => '0.00',
                     'LoadCash' => '0.00', 'LoadTicket' => '0.00', 'Bancnet' => '0.00'
@@ -286,7 +286,7 @@ class RptSupervisor extends DBHandler
                                 LEFT JOIN manualredemptions mr FORCE INDEX(IX_manualredemptions_TransactionDate) ON s.SiteID = mr.SiteID
                                   AND mr.TransactionDate >= ? AND mr.TransactionDate < ?
                                 WHERE s.SiteID NOT IN (1, 235)
-                                AND s.SiteID = ?
+                                AND s.SiteID IN (".$zsiteID.")
                                 ORDER BY s.SiteCode";
         
 //        $query2 = "SELECT 
@@ -569,7 +569,6 @@ class RptSupervisor extends DBHandler
         $this->prepare($query1);
         $this->bindparameter(1, $zdatefrom);
         $this->bindparameter(2, $zdateto);
-        $this->bindparameter(3, $zsiteID);
         $this->execute(); 
         $rows1 = $this->fetchAllData();        
         $qr1 = array();

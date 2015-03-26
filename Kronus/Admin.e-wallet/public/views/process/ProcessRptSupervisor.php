@@ -113,22 +113,27 @@ if($connected)
                              $mergedep = 0;
                              $mergerel = 0;
                              $mergewith = 0; 
+                             $encashedtickets = 0;
                              $supdetails[$value['CreatedByAID']] = array(
                                 'CreatedByAID'=>$value['CreatedByAID'],
                                 'Name'=>$value['Name'],
                                 'DateCreated'=>$value['DateCreated'],
                                 'TerminalID'=>$value['TerminalID'],
                                 'SiteID'=>$value['SiteID'],
-                                'Withdrawal'=>$mergedep,
-                                'Deposit'=>$mergerel,
-                                'Reload'=>$mergewith
+                                'Withdrawal'=>$mergewith,
+                                 'EncashedTickets' => $encashedtickets,
+                                'Deposit'=>$mergedep,
+                                'Reload'=>$mergerel
                              ); 
                         }
                         $trans = array();
                         switch ($value['TransactionType']) 
                         {
                             case 'W':
-                                $mergewith = $mergewith + $value['Amount'];
+                                if($value['StackerSummaryID'] == NULL) {
+                                    $mergewith = $mergewith + $value['Amount'];     
+                                    $value['EncashedTickets'] != 0 ? $mergewith = $mergewith + $value['EncashedTickets']:$mergewith = $mergewith;
+                                }
                                 $trans = array('Withdrawal'=>$mergewith);
                             break;
                             case 'D':
@@ -139,7 +144,7 @@ if($connected)
                                 $mergerel = $mergerel + $value['Amount']; 
                                 $trans = array('Reload'=>$mergerel);
                             break;
-                        }
+                        }                   
                         $supdetails[$value['CreatedByAID']] = array_merge($supdetails[$value['CreatedByAID']], $trans);
                      }
                      
@@ -262,7 +267,12 @@ if($connected)
                          array_push($arrreload, $result[$ctr1]['Amount']);
                      break;
                      case 'W':
-                         array_push($arrwithdraw, $result[$ctr1]['Amount']);
+                         if($result[$ctr1]['StackerSummaryID'] == NULL){
+                             $withamt = $result[$ctr1]['Amount'];
+                         } else { $withamt = 0; }
+                         if($result[$ctr1]['EncashedTickets'] != 0){ 
+                             array_push($arrwithdraw, ($withamt + $result[$ctr1]['EncashedTickets']));
+                         }
                      break;
                }
                $ctr1++;
@@ -299,7 +309,7 @@ if($connected)
                     $ctr2++;
                 }
            }
-           
+
            /**** GET Total Summary *****/
            $granddeposit = array_sum($arrdeposit);
            $grandreload = array_sum($arrreload);
@@ -378,7 +388,7 @@ if($connected)
       //setting the values of the headers and data of the excel file
       //and these values comes from the other file which file shows the data
         
-        $rheaders = array('Cashier', 'Total Deposit', 'Total Reload', 'Total Redemption', 'Cash on Hand','');
+        $rheaders = array('Cashier', 'Total Deposit', 'Total Reload', 'Total Withdrawal and encashment', 'Cash on Hand','');
         
         $result = $orptsup->viewgrosshold($dateFrom, $dateTo, $vsiteID, $start = null, $limit = null);
         
@@ -506,13 +516,13 @@ if($connected)
                       4 => '',
                       5 => ''
                      );
-             $totals2 = array(0 => 'Summary per Page',
-                        1 => '',
-                        2 => 'Sales',
-                        3 => number_format($arrtotal["TotalDeposit"] + $arrtotal["TotalReload"], 2, '.', ','),
-                        4 => 'Redemption',
-                        5 => number_format($arrtotal["TotalWithdraw"], 2, '.', ',')
-                       );
+//             $totals2 = array(0 => 'Summary per Page',
+//                        1 => '',
+//                        2 => 'Sales',
+//                        3 => number_format($arrtotal["TotalDeposit"] + $arrtotal["TotalReload"], 2, '.', ','),
+//                        4 => 'Redemption',
+//                        5 => number_format($arrtotal["TotalWithdraw"], 2, '.', ',')
+//                       );
              $totals3 = array(0 => 'Grand Total',
                         1 => '',
                         2 => 'Total Sales',
@@ -549,7 +559,7 @@ if($connected)
                         5 => ''
                        );
              array_push($combined, $totals1);
-             array_push($combined, $totals2);
+//             array_push($combined, $totals2);
              array_push($combined, $totals3);
              array_push($combined, $totals4);
              array_push($combined, $totals5);
@@ -598,7 +608,7 @@ if($connected)
                 array('value'=>'Cashier'),
                 array('value'=>'Total Deposit'),
                 array('value'=>'Total Reload'),
-                array('value'=>'Total Redemption'),
+                array('value'=>'Total Withdrawal and<br/>encashment'),
                 array('value'=>'Cash on Hand'),
                 array('value'=>'')
              ));
@@ -730,13 +740,13 @@ if($connected)
                       4 => '',
                       5 => ''
                      );
-             $totals2 = array(0 => 'Summary per Page',
-                        1 => '',
-                        2 => 'Sales',
-                        3 => '<span style="text-align: right;">'.number_format($arrtotal["TotalDeposit"] + $arrtotal["TotalReload"], 2, '.', ',').'</span>',
-                        4 => 'Redemption',
-                        5 => '<span style="text-align: right;">'.number_format($arrtotal["TotalWithdraw"], 2, '.', ',').'</span>'
-                       );
+//             $totals2 = array(0 => 'Summary per Page',
+//                        1 => '',
+//                        2 => 'Sales',
+//                        3 => '<span style="text-align: right;">'.number_format($arrtotal["TotalDeposit"] + $arrtotal["TotalReload"], 2, '.', ',').'</span>',
+//                        4 => 'Redemption',
+//                        5 => '<span style="text-align: right;">'.number_format($arrtotal["TotalWithdraw"], 2, '.', ',').'</span>'
+//                       );
              $totals3 = array(0 => 'Grand Total',
                         1 => '',
                         2 => 'Total Sales',
@@ -775,7 +785,7 @@ if($connected)
 
            //array_push($combined, $totals); 
            $pdf->c_tableRow($totals1);
-           $pdf->c_tableRow($totals2);
+//           $pdf->c_tableRow($totals2);
            $pdf->c_tableRow($totals3);
            $pdf->c_tableRow($totals4);
            $pdf->c_tableRow($totals5);

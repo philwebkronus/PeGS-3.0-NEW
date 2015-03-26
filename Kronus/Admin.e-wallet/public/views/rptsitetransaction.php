@@ -33,24 +33,6 @@ if(isset($_SESSION['acctype']))
     jQuery(document).ready(function()
     {
        var sitecode;
-       jQuery('#btnsubmit').click(function(){
-           $('#userdata').trigger("reloadGrid");
-           var result = validatedate(jQuery("#rptDate").val());
-           
-           if(result == true)
-           {
-               if(document.getElementById('cmbsite').value == "-1")
-               {
-                   alert("Please select site");
-                   return false;
-               }
-               else
-               {
-                   jqgrid();
-                   jQuery("#senchaexport1").show();   
-               }
-           }
-       });
        
        jQuery("#cmbsite").live('change', function(){
           var url = 'process/ProcessRptOptr.php';
@@ -66,7 +48,7 @@ if(isset($_SESSION['acctype']))
                                 jQuery("#txtposaccno").text(data.POSAccNo);
                               }
                               else
-                              {   
+                              {    
                                 jQuery("#txtsitename").text(" ");
                                 jQuery("#txtposaccno").text(" ");
                               }
@@ -80,6 +62,43 @@ if(isset($_SESSION['acctype']))
                           }
                     }); 
        });
+       
+       jQuery('#btnsubmit').click(function(){
+           
+           
+           var result = validatedate(jQuery("#rptDate").val());
+           
+           if(result == true)
+           {
+               if(document.getElementById('cmbsite').value == "-1")
+               {
+                   alert("Please select site");
+                   return false;
+               }
+               else
+               {
+                   jqgrid();
+                   jqgrid2();
+               }
+           }
+           
+           
+//           var result = validatedate(jQuery("#rptDate").val());
+//           
+//           if(result == true)
+//           {
+//               if(document.getElementById('cmbsite').value == "-1")
+//               {
+//                   alert("Please select site");
+//                   return false;
+//               }
+//               else
+//               {
+//                   jqgrid();
+//                   jQuery("#senchaexport1").show();   
+//               }
+//           }
+       });
    });
     
     //function for jqgrid
@@ -90,13 +109,14 @@ if(isset($_SESSION['acctype']))
            url:'process/ProcessRptOptr.php',
            mtype: 'post',
            postData: {
-                        paginate: function() {return $("#paginate").val();},
+                        //paginate: function() {return $("#paginate").val();},
+                        paginate: function() {return 'DailySiteTransaction';},
                         rptDate: function() {return $("#rptDate").val();},
                         cmbsitename: function() {return $("#cmbsite").val();},
                         sitecode: function(){return $('#cmbsite').find("option:selected").text();}
                      },
            datatype: "json",
-           colNames:['Transaction Summary ID', 'Site Code','Terminal Code', 'Deposit','Reload','Redemption','Date Started','Date Ended'],
+           colNames:['Transaction Summary ID', 'Site Code','Terminal Code', 'Deposit','Reload','Withdrawal','Date Started','Date Ended'],
            colModel:[
                      {name:'TransactionSummaryID',index:'TransactionsSummaryID',align: 'center', sortable: false},
                      {name:'SiteCode', index:'SiteCode', align:'center', sortable: false},
@@ -109,16 +129,59 @@ if(isset($_SESSION['acctype']))
                     ],
            rowNum:10,
            rowList:[10,20,30],
-           height: 220,
+           height: 150,
+           width: 1200,
+           pager: '#pager1',
+           refresh: true,
+           viewrecords: true,
+           sortorder: "asc",
+           //loadComplete: function (){gettotal();},
+           caption:"Site Transaction Per Day"
+     });
+     jQuery("#userdata").jqGrid('navGrid','#pager1',{edit:false,add:false,del:false, search:false, refresh: true});
+     jQuery('#userdata').trigger("reloadGrid");
+     jQuery("#senchaexport1").show();
+     
+   }
+   
+   //function for jqgrid
+    function jqgrid2()
+    {
+       
+     jQuery("#userdata2").jqGrid(
+       {    
+           url:'process/ProcessRptOptr.php',
+           mtype: 'post',
+           postData: {
+                        paginate: function() {return 'DailySiteTransaction2';},
+                        rptDate: function() {return $("#rptDate").val();},
+                        cmbsitename: function() {return $("#cmbsite").val();},
+                        sitecode: function(){return $('#cmbsite').find("option:selected").text();}
+                     },
+           datatype: "json",
+           colNames:['Site Code', 'Card Number','e-wallet Loads', 'e-wallet Withdrawals','Start Date','End Date'],
+           colModel:[
+                     {name:'SiteCode',index:'SiteCode',align: 'center', sortable: false},
+                     {name:'CardNumber', index:'CardNumber', align:'center', sortable: false},
+                     {name:'EwalletLoads',index:'EwalletLoads', align: 'center', sortable: false},
+                     {name:'EwalletWithdrawals',index:'EwalletWithdrawals', align: 'right', sortable: false},
+                     {name:'StartDate',index:'StartDate', align: 'center', sortable: false},
+                     {name:'EndDate', index:'EndDate',align:'center', sortable: false}
+                    ],
+           rowNum:10,
+           rowList:[10,20,30],
+           height: 150,
            width: 1200,
            pager: '#pager2',
            refresh: true,
            viewrecords: true,
            sortorder: "asc",
            loadComplete: function (){gettotal();},
-           caption:"Site Transaction Per Day"
+           caption:"e-wallet Transactions Per Day"
      });
-     jQuery("#userdata").jqGrid('navGrid','#pager2',{edit:false,add:false,del:false, search:false, refresh: true});
+     jQuery("#userdata2").jqGrid('navGrid','#pager2',{edit:false,add:false,del:false, search:false, refresh: true});
+     jQuery('#userdata2').trigger("reloadGrid");
+     jQuery("#senchaexport2").show();  
    }
     
     //function for getting the sum of each transaction type
@@ -134,22 +197,27 @@ if(isset($_SESSION['acctype']))
                    type: 'post',
                    dataType: 'json',
                    success: function (data){
-                       var withdraw = data.withdraw;
-                       var deposit = data.deposit;
-                       var reload = data.reload;
-                       var granddeposit = data.granddeposit;
-                       var grandreload = data.grandreload;
-                       var grandwithdraw = data.grandwithdraw;
-                       var sales = data.sales;
+                       //var withdraw = data.withdraw;
+                       //var deposit = data.deposit;
+                       //var reload = data.reload;
                        var grandsales = data.grandsales;
+                       var grandredemption = data.grandredemption;
+                       var grandticketencashment = data.grandticketencashment;
+//                       var sales = data.sales;
+//                       var redemption = data.redemption;                       //var grandsales = data.grandsales;
+                       var grandcashonhand = data.grandcashonhand;
+                       //var ticketencashment = data.ticketencashment;
                        
                        document.getElementById('trans').style.display='block';
                        //display summary per page
-                       document.getElementById('totsales').innerHTML = sales;
-                       document.getElementById('totwithdraw').innerHTML = withdraw;
+                       //document.getElementById('totsales').innerHTML = sales;
+                       //document.getElementById('totwithdraw').innerHTML = withdraw;
                        document.getElementById('sales').innerHTML = grandsales;
-                       document.getElementById('withdraw').innerHTML = grandwithdraw;
-                       document.getElementById('grosshold').innerHTML = data.grosshold;
+                       document.getElementById('redemption').innerHTML = grandredemption;
+                       document.getElementById('ticketencashment').innerHTML = grandticketencashment;
+                       //document.getElementById('grosshold').innerHTML = data.grosshold;
+                       document.getElementById('cashonhand').innerHTML = grandcashonhand;
+                       //document.getElementById('encashment').innerHTML = data.encashment;
                    },
                    error: function(e)
                    {
@@ -179,7 +247,8 @@ if(isset($_SESSION['acctype']))
                    $vsite = $_SESSION['siteids'];
                    echo "<select id=\"cmbsite\" name=\"cmbsite\">";
                    echo "<option value=\"-1\">Please Select</option>";
-                                
+                   echo "<option value=\"0\">All</option>";
+                   
                    foreach ($vsite as $result)
                    {
                       $vsiteID = $result['SiteID'];
@@ -225,37 +294,63 @@ if(isset($_SESSION['acctype']))
   <!--jqgrid pagination on this part-->
   <div align="center">
     <table border="1" id="userdata"></table>
-    <div id="pager2" style="height: 150px;">
-        <table id="trans" style="background-color:#D6EB99; padding-left: 10px; display: none; font-size: 14px; height: 40% ">
-            <tr>
-                <td>Summary per Page</td>
-                <td style="padding-left: 170px;"></td>
-                <td>Total Sales</td>
-                <td id="totsales" style="font-weight: bold;"></td>
-                <td style="padding-left: 90px;"></td>
-                <td>Total Redemption</td>
-                <td id="totwithdraw" style="font-weight: bold;"></td>
-            </tr>
+    <input type="hidden" name="paginate" id="paginate" value="DailySiteTransaction" />
+    <div id="pager1" style="height: 100px;">
+<!--        <table id="trans" style="background-color:#D6EB99; padding-left: 10px; display: none; font-size: 14px; height: 40% ">
             <tr>
                 <td>Grand Total</td>
-                <td style="padding-left: 300px;"></td>
+                <td style="padding-left: 30px;"></td>
                 <td>Sales</td>
                 <td id="sales" style="font-weight: bold;"></td>
-                <td style="padding-left: 90px;"></td>
-                <td>Redemption</td>
-                <td id="withdraw" style="font-weight: bold;"></td>
                 <td style="padding-left: 30px;"></td>
-                <td>Gross Hold</td>
-                <td id="grosshold" style="font-weight: bold;"></td>
+                <td>Redemption</td>
+                <td id="redemption" style="font-weight: bold;"></td>
+                <td style="padding-left: 30px;"></td>
+                <td>Ticket Encashments</td>
+                <td id="ticketencashment" style="font-weight: bold;"></td>
+                <td style="padding-left: 30px;"></td>
+                <td>Cash on Hand</td>
+                <td id="cashonhand" style="font-weight: bold;"></td>
+                <td style="padding-left: 30px;"></td>
             </tr>
-        </table>
+        </table>-->
     </div>
     <div id="senchaexport1" style="background-color: #6A6A6A; padding-bottom: 60px; display: none; width: 1200px;">
         <br />
         <input type='button' name='exportPDF' id='exportPDF' value='Export to PDF File' 
-               onclick="window.location.href='process/ProcessRptOptr.php?pdf=sitetrans&date='+document.getElementById('rptDate').value+'&cmbsitename='+document.getElementById('cmbsite').value+'&sitecode='+$('#cmbsite').find('option:selected').text()" style="float: right;" />  
+               onclick="window.location.href='process/ProcessRptOptr.php?pdf=sitetrans&date='+document.getElementById('rptDate').value+'&cmbsitename='+<?php echo $_SESSION['siteid1'];?>+'&sitecode='+$('#cmbsite').find('option:selected').text()" style="float: right;" />  
         <input type="button" name="exportExcel" id="exportExcel" value="Export to Excel File" 
-               onclick="window.location.href='process/ProcessRptOptr.php?excel=sitetrans&date='+document.getElementById('rptDate').value+'&fn=Site_Transaction_for_'+document.getElementById('rptDate').value+'&cmbsitename='+document.getElementById('cmbsite').value+'&sitecode='+$('#cmbsite').find('option:selected').text()" style="float: right;"/>
+               onclick="window.location.href='process/ProcessRptOptr.php?excel=sitetrans&date='+document.getElementById('rptDate').value+'&fn=Site_Transaction_for_'+document.getElementById('rptDate').value+'&cmbsitename='+<?php echo $_SESSION['siteid1'];?>+'&sitecode='+$('#cmbsite').find('option:selected').text()" style="float: right;"/>
+    </div>
+    <br />
+    <table border="1" id="userdata2"></table>
+    <input type="hidden" name="paginate2" id="paginate2" value="DailySiteTransaction2" />
+    <div id="pager2" style="height: 50px;">
+        <table id="trans" style="background-color:#D6EB99; padding-left: 10px; display: none; font-size: 14px; height: 40% ">
+            <tr>
+                <td>Grand Total</td>
+                <td style="padding-left: 30px;"></td>
+                <td>Sales</td>
+                <td id="sales" style="font-weight: bold;"></td>
+                <td style="padding-left: 30px;"></td>
+                <td>Redemption</td>
+                <td id="redemption" style="font-weight: bold;"></td>
+                <td style="padding-left: 30px;"></td>
+                <td>Ticket Encashments</td>
+                <td id="ticketencashment" style="font-weight: bold;"></td>
+                <td style="padding-left: 30px;"></td>
+                <td>Cash on Hand</td>
+                <td id="cashonhand" style="font-weight: bold;"></td>
+<!--                <td style="padding-left: 30px;"></td>-->
+            </tr>
+        </table>
+    </div>
+    <div id="senchaexport2" style="background-color: #6A6A6A; padding-bottom: 60px; display: none; width: 1200px;">
+        <br />
+        <input type='button' name='exportPDF' id='exportPDF' value='Export to PDF File' 
+               onclick="window.location.href='process/ProcessRptOptr.php?pdf2=e-walletsitetrans&date='+document.getElementById('rptDate').value+'&cmbsitename='+<?php echo $_SESSION['siteid2'];?>+'&sitecode='+$('#cmbsite').find('option:selected').text()" style="float: right;" />  
+        <input type="button" name="exportExcel" id="exportExcel" value="Export to Excel File" 
+               onclick="window.location.href='process/ProcessRptOptr.php?excel2=e-walletsitetrans&date='+document.getElementById('rptDate').value+'&fn=e-wallet_Transaction_for_'+document.getElementById('rptDate').value+'&cmbsitename='+<?php echo $_SESSION['siteid2'];?>+'&sitecode='+$('#cmbsite').find('option:selected').text()" style="float: right;"/>
     </div>
   </div>
 </div>
