@@ -344,7 +344,7 @@ if(isset($_SESSION['acctype']))
         document.getElementById('fade').style.display='block';
         
         $.ajax({
-                url: 'process/ProcessTopUpPaginate.php?action=getdata&sellocation='+''+'&comp1='+''+'&num1='+''+'&comp2='+''+'&num2='+'',
+                url: 'process/ProcessTopUpPaginate.php?action=getdata2&sellocation='+''+'&comp1='+''+'&num1='+''+'&comp2='+''+'&num2='+'',
                 type: 'GET',
                 data : {
                             sord : function() {return "asc"; },

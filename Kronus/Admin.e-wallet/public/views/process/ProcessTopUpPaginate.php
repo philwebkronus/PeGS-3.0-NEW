@@ -69,8 +69,100 @@ class ProcessTopUpPaginate extends BaseProcess {
         ini_set('max_execution_time', '220');
         $arrdetails = array();
         foreach($rows as $id => $row) {
-            $gross_hold = ((($row['Deposit'] + $row['Reload'] + $row['EwalletLoads']) - ($row['Redemption'] - $row['EwalletWithdrawal'])) - $row['ActualAmount']);
+            $gross_hold = ((($row['Deposit'] + $row['Reload']) - ($row['Redemption'])) - $row['ActualAmount']);
             $cashonhand =((($row['DepositCash'] + $row['ReloadCash']) - $row['RedemptionCashier']) - $row['ActualAmount']) - $row["EncashedTickets"];
+            
+            $temp = array(
+                        "SiteName"=>$row['SiteName'],
+//                        "SiteCode"=>substr($row['SiteCode'], strlen(BaseProcess::$sitecode)),
+                        "MinBalance" => $row["MinBalance"],
+                        "POS"=>$row['POSAccountNo'],
+                        "BCF"=>number_format($row['BCF'],2),
+                        "Deposit"=>number_format($row['Deposit'],2),
+                        "EwalletLoad"=>number_format($row['EwalletLoads'],2),
+                        "Reload"=>number_format($row['Reload'],2),
+                        "Withdrawal"=>number_format($row['Redemption'],2),
+                        "EwalletWithdrawal"=>number_format($row['EwalletWithdrawal'],2),
+                        "ManualRedemption"=>(($row['ActualAmount'])?number_format($row['ActualAmount'],2):''),
+                        "PrintedTickets"=>number_format($row['PrintedTickets'],2),
+                        "UnusedTickets"=>number_format($row['UnusedTickets'],2),
+                        "RunningActiveTickets"=>number_format($row['RunningActiveTickets'],2),
+                        "Coupon"=>number_format($row['Coupon'],2),
+                        "CashonHand"=>number_format($cashonhand,2),
+                        "GrossHold"=>number_format($gross_hold, 2),
+                        "Location"=>$row['Location'],
+                    );        
+            
+                    if($_GET['sellocation'] != '') {
+                        if($row['Location'] != $_GET['sellocation']) {
+                            continue;
+                        }
+                    }            
+
+            //check the amount range
+            if(isset($_GET['comp1']) && isset($_GET['comp2']) && $_GET['comp1'] != '' && $_GET['comp2'] != '') {
+                $val1 = str_replace(',', '', $_GET['num1']);
+                $val2 = str_replace(',', '', $_GET['num2']);
+                $comp1 = $_GET['comp1'];
+                $comp2 = $_GET['comp2'];
+                if(eval("return \$gross_hold $comp1 \$val1;") && eval("return \$gross_hold $comp2 \$val2;")) {
+                    $arrdetails[] = $temp;
+                }
+            } else if(isset($_GET['comp1']) && $_GET['comp1'] != '') {
+                $val1 = str_replace(',', '', $_GET['num1']);
+                $comp1 = $_GET['comp1'];
+                if(eval("return \$gross_hold $comp1 \$val1;")) {                    
+                    $arrdetails[] = $temp;
+                }               
+            } else {
+                $arrdetails[] = $temp;
+            }
+        }
+
+        $arrdetails["CountOfSites"] = count($arrdetails);
+        echo json_encode($arrdetails);
+        $topup->close();
+        unset($rows, $startdate, $enddate, $arrdetails, $temp);
+        exit;
+    }
+    
+    
+    public function getdata2() {
+        include_once __DIR__.'/../sys/class/TopUp.class.php';
+        
+        $startdate = date('Y-m-d')." ".BaseProcess::$cutoff;
+
+        if(isset($_GET['startdate']))
+            $startdate = $_GET['startdate']." ".BaseProcess::$cutoff;
+        
+//        if(isset($_GET['enddate']))
+//            $enddate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($_GET['enddate'])) .BaseProcess::$gaddeddate))." ".BaseProcess::$cutoff;
+//            
+        $enddate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($startdate)) .BaseProcess::$gaddeddate))." ".BaseProcess::$cutoff; 
+        
+        // to check if greater than 1 day
+        // since this program must support current cut-off,
+        // all dates GT or LT current cut-off
+        // must not permitted to retrieve data     
+        
+        $topup = new TopUp($this->getConnection());
+        $topup->open();
+        $dir = $_GET['sord'];
+        $sort = "POSAccountNo";
+
+        if(strlen($_GET['sidx']) > 0){
+            $sort = $_GET['sidx'];
+        }
+        ob_get_clean();
+        
+        //array containing complete details
+        $rows = $topup->grossHoldMonitoring($sort, $dir, $startdate,$enddate); 
+        ini_set('memory_limit', '-1'); 
+        ini_set('max_execution_time', '220');
+        $arrdetails = array();
+        foreach($rows as $id => $row) {
+            $gross_hold = ((($row['Deposit'] + $row['Reload'] + $row['EwalletLoads']) - ($row['Redemption'] - $row['EwalletWithdrawal'])) - $row['ActualAmount']);
+            $cashonhand =((($row['DepositCash'] + $row['ReloadCash'] + $row['EwalletLoads']) - $row['RedemptionCashier']) - $row['ActualAmount']) - $row["EncashedTickets"] - $row['EwalletWithdrawal'];
             
             $temp = array(
                         "SiteName"=>$row['SiteName'],

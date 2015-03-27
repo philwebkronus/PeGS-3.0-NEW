@@ -38,6 +38,9 @@ switch($_GET['action']) {
     case 'getdata':
         $process->getdata();
         break;
+    case 'getdata2':
+        $process->getdata();
+        break;
     case 'posteddeposit':
         $process->postedDepositOverview();
         break;
