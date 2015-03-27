@@ -39,7 +39,7 @@ switch($_GET['action']) {
         $process->getdata();
         break;
     case 'getdata2':
-        $process->getdata();
+        $process->getdata2();
         break;
     case 'posteddeposit':
         $process->postedDepositOverview();
