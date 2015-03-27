@@ -204,7 +204,7 @@ if($connected)
                       $totalreload = array_sum($arrreloadamt); 
                       $totalwithdraw = array_sum($arrwithdrawamt);
                       $cashonhand = array_sum($arrgrossholdamt);
-
+                      
                       unset($arrdepositamt, $arrreloadamt, $arrwithdrawamt, $arrgrossholdamt, $trans_details);
                       
                       //session variable to store transaction types in an array; to used on ajax call later on this program
@@ -346,9 +346,8 @@ if($connected)
                $vtotal->bancnet = number_format($bancnet, 2, '.', ',');
 
                // count site grosshold
-               $vgrossholdamt = $arrgrand["GrandDeposit"] + $arrgrand["GrandReload"] - $arrgrand["GrandWithdraw"];
                //$vtotal->grosshold = number_format($vgrossholdamt, 2, '.', ',');
-               $vtotal->cashonhand = number_format($vgrossholdamt, 2, '.', ',');
+               $vtotal->cashonhand = number_format($arrtotal['CashOnHand'], 2, '.', ',');
                
                // count site cash on hand
 //               $vcashonhandamt = $loadcash - $redemptioncashier - $manualredemption - $encashedtickets;
