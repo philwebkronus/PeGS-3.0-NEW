@@ -56,7 +56,60 @@ class Membership {
         $result = $sth->fetch(PDO::FETCH_LAZY);
         return $result;
     }
-
+    public function checkLockedPINs($max_attempts)
+    {
+        $query = "SELECT MID, DatePINLocked 
+                  FROM membership.members 
+                  WHERE PINLoginAttemps >= :max_attempts";
+        $sth = $this->_dbh->prepare($query);   
+        $sth->bindParam(":max_attempts", $max_attempts);
+        $sth->execute();
+        $result = $sth->fetchAll(PDO::FETCH_ASSOC);
+        
+        return $result;
+    }
+    /**
+     * Reset PIN Login Attempts per MID
+     * @param type $MID
+     * @return type
+     * @author Mark Kenneth Esguerra
+     * @date Febraury 13, 2015
+     */
+    public function resetPINLoginAttempts($MID)
+    {
+        $this->_dbh->beginTransaction();
+        
+        try
+        {
+            $query = "UPDATE membership.members SET PINLoginAttemps = 0 
+                      WHERE MID = :mid";
+            $sth = $this->_dbh->prepare($query);
+            $sth->bindParam(":mid", $MID);
+            if ($sth->execute())
+            {
+                try
+                {
+                    $this->_dbh->commit();
+                    return array('ErrorCode' => 0);
+                }
+                catch (PDOException $e)
+                {
+                    $this->_dbh->rollBack();
+                    return array('ErrorCode' => 1, 'ErrorMsg' => $e->getMessage());
+                }
+            }
+            else
+            {
+                $this->_dbh->rollBack();
+                return array('ErrorCode' => 1);
+            }
+        }
+        catch (PDOException $e)
+        {
+            $this->_dbh->rollBack();
+            return array('ErrorCode' => 1, 'ErrorMsg' => $e->getMessage());
+        }
+    }
 }
 
 ?>

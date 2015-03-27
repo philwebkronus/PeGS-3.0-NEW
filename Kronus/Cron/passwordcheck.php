@@ -14,12 +14,11 @@
     $dbh = new PDO( $oconnectionstring1, $oconnectionstring2, $oconnectionstring3);
     $stmt = "SELECT p.AID,a.UserName, MAX(p.DateChanged) as DateChanged from passwordcheck p
             INNER JOIN accounts a ON a.AID = p.AID
-            WHERE a.Status = 1 AND a.AccountTypeID = 15
+            WHERE a.Status = 1 AND a.AccountTypeID NOT IN (15,19) AND a.AID = 2
             group by p.AID order by p.DateChanged ASC";
     $sth = $dbh->prepare($stmt);
     $sth->execute();
     $result = $sth->fetchAll(PDO::FETCH_ASSOC);
-
     $vrescount = count($result);
     //$vrescount = 1;
     if($vrescount > 0)
@@ -33,7 +32,6 @@
             $vdiffdate = (int)strtotime($datenow) - (int)strtotime($vdatechange); //get the day difference
             $vctrdate = round($vdiffdate/86400); //actual day difference
             $noofdays = (int)$vctrdate;
-            
             //get an email address
             $stmt = "SELECT a.UserName,ad.Email, a.AccountTypeID FROM accounts a
                 INNER JOIN accountdetails ad ON a.AID = ad.AID WHERE a.AID = ?";
@@ -41,7 +39,6 @@
             $sth->bindParam(1,$vaid);
             $sth->execute();
             $resemail = $sth->fetch(PDO::FETCH_LAZY);
-            
             $acctypeid = $resemail['AccountTypeID'];
             //check if cashier
             if($acctypeid == 4)
@@ -117,6 +114,7 @@
                 if($vsentEmail <> 1){
                     echo "Message sending failed";
                 }
+                else{echo "Sent";}
             }
             $vcounter++;
         }      

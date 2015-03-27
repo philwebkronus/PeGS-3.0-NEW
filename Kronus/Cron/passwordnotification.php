@@ -14,14 +14,13 @@
     $dbh = new PDO( $oconnectionstring1, $oconnectionstring2, $oconnectionstring3);
     $stmt = "SELECT p.AID,a.UserName, MAX(p.DateChanged) as DateChanged from passwordcheck p
             INNER JOIN accounts a ON a.AID = p.AID
-            WHERE a.Status = 1 AND a.AccountTypeID = 15
+            WHERE a.Status = 1 AND a.AccountTypeID NOT IN (15,17) AND a.AID = 124
             group by p.AID order by p.DateChanged ASC";
     $sth = $dbh->prepare($stmt);
     $sth->execute();
     $result = $sth->fetchAll(PDO::FETCH_ASSOC);
-
     $vrescount = count($result);
-    //$vrescount = 1;
+
     if($vrescount > 0)
     {
         $vcounter = 0;
@@ -41,7 +40,6 @@
             $sth->bindParam(1,$vaid);
             $sth->execute();
             $resemail = $sth->fetch(PDO::FETCH_LAZY);
-            
             $acctypeid = $resemail['AccountTypeID'];
             if($acctypeid == 4)
             {
