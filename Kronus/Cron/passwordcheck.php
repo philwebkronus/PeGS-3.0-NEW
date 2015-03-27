@@ -14,7 +14,7 @@
     $dbh = new PDO( $oconnectionstring1, $oconnectionstring2, $oconnectionstring3);
     $stmt = "SELECT p.AID,a.UserName, MAX(p.DateChanged) as DateChanged from passwordcheck p
             INNER JOIN accounts a ON a.AID = p.AID
-            WHERE a.Status = 1 AND a.AccountTypeID NOT IN (15,19) AND a.AID = 2
+            WHERE a.Status = 1 AND a.AccountTypeID NOT IN (15,19)
             group by p.AID order by p.DateChanged ASC";
     $sth = $dbh->prepare($stmt);
     $sth->execute();
