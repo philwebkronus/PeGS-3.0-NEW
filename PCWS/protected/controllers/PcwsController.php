@@ -1013,8 +1013,9 @@ class PcwsController extends Controller{
                                     
                                     if((int)$pinlogattempts['PINLoginAttemps'] >=  Yii::app()->params['maxPinAttempts']){
                                         $transMsg = 'PIN is locked.'; 
-                                        $errCode = 14;
+                                        $errCode = 25;
                                         $data = CommonController::checkPin($transMsg, $errCode);  
+                                        $members->incrementLoginAttempts($MID['MID']);
                                     }else{
                                         if(sha1($pin) == $memberpin['PIN'])
                                         {
