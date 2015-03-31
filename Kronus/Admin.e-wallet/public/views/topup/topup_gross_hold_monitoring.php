@@ -456,6 +456,7 @@ if(isset($_SESSION['acctype']))
                         var gh = grosshold.replace(/,/g,"");
                         var bcf = balance.replace(/,/g,"");
                         var threshold = data[itr].MinBalance;
+                        var cazhonhand = data[itr].CashonHand;
                         
                         
                         
@@ -465,7 +466,7 @@ if(isset($_SESSION['acctype']))
                         }
                         else{
                             //if gross hold >= 200K, color row will be green
-                            if(parseFloat(totalcoh) >= parseFloat('<?php echo _GREEN_1; ?>')) {
+                            if(parseFloat(cazhonhand) >= parseFloat('<?php echo _GREEN_1; ?>')) {
                                  $('#' + data[itr].POS).css('background-color','#32CD32');
                             } 
                             
