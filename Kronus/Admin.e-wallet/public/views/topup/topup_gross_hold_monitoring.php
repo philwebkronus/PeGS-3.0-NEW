@@ -406,7 +406,7 @@ if(isset($_SESSION['acctype']))
                     var totalgrossholdz = 0;
                     
                     for(var itr = 0; itr < data.CountOfSites; itr++){
-                        data[itr].CashonHand = '200000';
+                        //data[itr].CashonHand = '200000';
                     
                         var part = "<tr id='"+data[itr].POS+"'><td>"+data[itr].SiteName+"</td><td style='text-align: right;'>"+data[itr].BCF+"</td>"+
                                             "<td style='text-align: right;'>"+data[itr].Deposit+"</td><td style='text-align: right;'>"+data[itr].EwalletLoad+"</td><td style='text-align: right;'>"+data[itr].Reload+"</td><td style='text-align: right;'>"+data[itr].Withdrawal+"</td><td style='text-align: right;'>"+data[itr].EwalletWithdrawal+"</td><td style='text-align: right;'>"+data[itr].ManualRedemption+"</td>"+
@@ -416,40 +416,40 @@ if(isset($_SESSION['acctype']))
                         $("#tblgrossholdbody").append(part);
                         
                         totaldepositz = data[itr].Deposit;
-                        totaldeposit += Number(totaldepositz.replace(/[^0-9\.]+/g,""));
+                        totaldeposit += Number(totaldepositz.replace(/[^0-9-\.]+/g,""));
                         
                         totalewalletdepositz = data[itr].EwalletLoad;
-                        totalewalletdeposit += Number(totalewalletdepositz.replace(/[^0-9\.]+/g,""));
+                        totalewalletdeposit += Number(totalewalletdepositz.replace(/[^0-9-\.]+/g,""));
                         
                         totalreloadz = data[itr].Reload;
-                        totalreload += Number(totalreloadz.replace(/[^0-9\.]+/g,""));
+                        totalreload += Number(totalreloadz.replace(/[^0-9-\.]+/g,""));
                         
                         totalredemptionsz = data[itr].Withdrawal;
-                        totalredemptions += Number(totalredemptionsz.replace(/[^0-9\.]+/g,""));
+                        totalredemptions += Number(totalredemptionsz.replace(/[^0-9-\.]+/g,""));
                         
                         totalewalletwithdrawalz = data[itr].EwalletWithdrawal;
-                        totalewalletwithdrawal += Number(totalewalletwithdrawalz.replace(/[^0-9\.]+/g,""));
+                        totalewalletwithdrawal += Number(totalewalletwithdrawalz.replace(/[^0-9-\.]+/g,""));
                         
                         totalmanualredemptionz = data[itr].ManualRedemption;
-                        totalmanualredemption += Number(totalmanualredemptionz.replace(/[^0-9\.]+/g,""));
+                        totalmanualredemption += Number(totalmanualredemptionz.replace(/[^0-9-\.]+/g,""));
                         
                         totalprintedticketsz = data[itr].PrintedTickets;
-                        totalprintedtickets += Number(totalprintedticketsz.replace(/[^0-9\.]+/g,""));
+                        totalprintedtickets += Number(totalprintedticketsz.replace(/[^0-9-\.]+/g,""));
                         
                         totalactiveticketsz = data[itr].UnusedTickets;
-                        totalactivetickets += Number(totalactiveticketsz.replace(/[^0-9\.]+/g,""));
+                        totalactivetickets += Number(totalactiveticketsz.replace(/[^0-9-\.]+/g,""));
                         
                         totalrunningticketsz = data[itr].RunningActiveTickets;
-                        totalrunningtickets += Number(totalrunningticketsz.replace(/[^0-9\.]+/g,""));
+                        totalrunningtickets += Number(totalrunningticketsz.replace(/[^0-9-\.]+/g,""));
                         
                         totalcouponsz = data[itr].Coupon;
-                        totalcoupons += Number(totalcouponsz.replace(/[^0-9\.]+/g,""));
+                        totalcoupons += Number(totalcouponsz.replace(/[^0-9-\.]+/g,""));
                         
                         totalcohz = data[itr].CashonHand;
-                        totalcoh += Number(totalcohz.replace(/[^0-9\.]+/g,""));
+                        totalcoh += Number(totalcohz.replace(/[^0-9-\.]+/g,""));
                         
                         totalgrossholdz = data[itr].GrossHold;
-                        totalgrosshold += Number(totalgrossholdz.replace(/[^0-9\.]+/g,""));
+                        totalgrosshold += Number(totalgrossholdz.replace(/[^0-9-\.]+/g,""));
                         
                         var grosshold = data[itr].GrossHold;
                         var balance = data[itr].BCF;
