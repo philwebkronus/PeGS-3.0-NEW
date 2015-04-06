@@ -1171,7 +1171,7 @@ if($connected && $connected2 && $connected3)
                                         list($site, $sitecode) = split("-", $vview['SiteCode']);
                                        $terminalcode = preg_replace("/[^0-9][^VIP]/", "", $vview['TerminalCode']);
                                        $enddate = $vview['EndDate'] == 0 ? "Still playing ...":date('Y-m-d H:i:s', strtotime($vview['EndDate']));
-                                       $responce->rows[$i]['id']=$vview['EwalletTransID'];
+                                       $responce->rows[$i]['id']=$vview['TransactionsSummaryID'];
                                        $responce->rows[$i]['cell']=array($sitecode,$terminalcode,$vview['ServiceName'],number_format($vview['StartingBalance'],2), 
                                            number_format($vview['TotalEwalletload'],2),number_format($vview['EndingBalance'],2),date('Y-m-d H:i:s', strtotime($vview['StartDate'])),$enddate);
                                        $i++;
