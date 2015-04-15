@@ -141,35 +141,36 @@
         });
          
             $('#ForceTFormModel_loyalty_card').bind("enterKey",function(e){
-                var issuccess = identifyCard3();
-                
-                if(issuccess == 'false'){
-                    var url = '<?php echo Mirage::app()->createUrl('redeem/getbalance') ?>';
-                    var data = 'loyalty_card='+$('#ForceTFormModel_loyalty_card').val();
-                    var tbody = '';
-//                    var total_reload = 0;
-                    showLightbox(function(){
-                        $.ajax({
-                            type : 'post',
-                            url : url,
-                            data : data,
-                            success : function(data) {
-                                try {
-                                    var json = $.parseJSON(data);
-                                    $('#cur_playing_bal').html('PhP ' + json.amount);
-                                } catch(e) {
-                                    alert('Oops! Something went wrong');
-                                    location.reload(true);
-                                }
-                                hideLightbox();
-                            },
-                            error : function(e) {
-                                displayError(e);
-                            }
-                        });
-                    });
-                }
-                return false
+                identifyCard3();
+//                var issuccess = identifyCard3();
+//                
+//                if(issuccess == 'false'){
+//                    var url = '<?php // echo Mirage::app()->createUrl('redeem/getbalance') ?>';
+//                    var data = 'loyalty_card='+$('#ForceTFormModel_loyalty_card').val();
+//                    var tbody = '';
+////                    var total_reload = 0;
+//                    showLightbox(function(){
+//                        $.ajax({
+//                            type : 'post',
+//                            url : url,
+//                            data : data,
+//                            success : function(data) {
+//                                try {
+//                                    var json = $.parseJSON(data);
+//                                    $('#cur_playing_bal').html('PhP ' + json.amount);
+//                                } catch(e) {
+//                                    alert('Oops! Something went wrong');
+//                                    location.reload(true);
+//                                }
+//                                hideLightbox();
+//                            },
+//                            error : function(e) {
+//                                displayError(e);
+//                            }
+//                        });
+//                    });
+//                }
+//                return false
             });
             $('#ForceTFormModel_loyalty_card').keyup(function(e){
                 if(e.keyCode == 13)

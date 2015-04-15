@@ -2017,7 +2017,7 @@ class FrontendController extends MI_Controller {
         $casinoServiceID = '';
         $casinoStatus = '';
 
-        $casinos = $this->loopAndFindCasinoService($casinos, 'ServiceID', 20);
+        $casinos = $this->loopAndFindCasinoService($casinos, 'ServiceID', 19);
 
         
         if(empty($casinos)){
@@ -2158,7 +2158,7 @@ class FrontendController extends MI_Controller {
         
             $mid = $obj_result->CardInfo->MID;
             $isewallet = $obj_result->CardInfo->IsEwallet;
-            
+
         return array($is_loyalty, $card_number, $loyalty, $casinos, $mid, $casinoarray_count, $isewallet);
     }
     
