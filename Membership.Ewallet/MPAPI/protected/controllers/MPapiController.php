@@ -2556,12 +2556,29 @@ class MPapiController extends Controller {
 
                 exit;
             }
-            else if(strlen($request['MobileNo']) < 9 || ($request['AlternateMobileNo'] != '' && strlen($request['AlternateMobileNo']) < 9)) {
-                $transMsg = "Mobile number should not be less than 9 digits long.";
-                $errorCode = 15;
+            else if((substr($request['MobileNo'], 0, 3) == "639" && strlen($request['MobileNo']) != 12) || (substr($request['MobileNo'], 0, 2) == "09" && strlen($request['MobileNo']) != 11)) {
+            //else if(strlen($request['MobileNo']) < 9 || ($request['AlternateMobileNo'] != '' && strlen($request['AlternateMobileNo']) < 9)) {
+                $transMsg = "Invalid Mobile Number.";
+                $errorCode = 95;
                 Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
                 $data = CommonController::retMsgUpdateProfile($module, $errorCode, $transMsg);                $message = "[".$module."] Output: ".CJSON::encode($data);                $appLogger->log($appLogger->logdate, "[response]",$message);                $this->_sendResponse(200, CJSON::encode($data));
-                $logMessage = 'Mobile number should not be less than 9 digits long.';
+                $logMessage = 'Invalid Mobile Number.';
+                $logger->log($logger->logdate, "[UPDATEPROFILE ERROR]: MID " . $MID . " || ", $logMessage);
+                $apiDetails = 'UPDATEPROFILE-Failed: Invalid input parameters. ';
+                $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
+                if($isInserted == 0) {
+                    $logMessage = "Failed to insert to APILogs.";
+                    $logger->log($logger->logdate, "[UPDATEPROFILE ERROR]: MID " . $MID . " || ", $logMessage);
+                }
+
+                exit;
+            }
+            else if((substr($request['AlternateMobileNo'], 0, 3) == "639" && strlen($request['AlternateMobileNo']) != 12) || (substr($request['AlternateMobileNo'], 0, 2) == "09" && strlen($request['AlternateMobileNo']) != 11)) {
+                $transMsg = "Invalid Mobile Number.";
+                $errorCode = 95;
+                Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                $data = CommonController::retMsgUpdateProfile($module, $errorCode, $transMsg);                $message = "[".$module."] Output: ".CJSON::encode($data);                $appLogger->log($appLogger->logdate, "[response]",$message);                $this->_sendResponse(200, CJSON::encode($data));
+                $logMessage = 'Invalid Mobile Number.';
                 $logger->log($logger->logdate, "[UPDATEPROFILE ERROR]: MID " . $MID . " || ", $logMessage);
                 $apiDetails = 'UPDATEPROFILE-Failed: Invalid input parameters. ';
                 $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
