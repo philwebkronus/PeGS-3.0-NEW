@@ -294,6 +294,7 @@ class MySQLDatabase extends BaseObject
             }
 
             $strInsert = "insert into $strTable (" . implode(", ", $strKeys) . ") values ('" . implode("','", $strVals) . "')";
+
             $mysqlreturnid = $this->Query($strInsert); //mysql_query($strInsert);
             //if (mysql_error()) $this->setError(mysql_error());
         }

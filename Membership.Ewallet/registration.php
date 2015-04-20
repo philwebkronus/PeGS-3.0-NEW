@@ -300,7 +300,7 @@ if ($fproc->IsPostBack)
         $arrMemberInfo['Gender'] = $rdoGroupGender->SubmittedValue;
         $arrMemberInfo['IsSmoker'] = $rdoGroupSmoker->SubmittedValue;
 
-        $arrMemberInfo['DateCreated'] = 'NOW(6)';
+        $arrMemberInfo['DateCreated'] = "NOW(6)";
 
         $chkEmailNotification->SubmittedValue == 1 ? $arrMemberInfo['EmailSubscription'] = 1 : $arrMemberInfo['EmailSubscription'] = 0;
         $chkSMSNotification->SubmittedValue == 1 ? $arrMemberInfo['SMSSubscription'] = 1 : $arrMemberInfo['SMSSubscription'] = 0;
@@ -333,7 +333,6 @@ if ($fproc->IsPostBack)
             else{
                 
                 $lastinsertMID = $_TempMembers->Register($arrMembers, $arrMemberInfo);
-
                 $isOpen = 'true';
                 if (!App::HasError())
                 {
