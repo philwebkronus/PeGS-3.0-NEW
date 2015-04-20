@@ -278,67 +278,67 @@ if($connected)
          }
          else
          {
-             $count = $oterminal->checkTerminalSessions($vterminalID);
-
-                    //check number of sessions in a certain site
-                    if($count > 0)
-                    {
-                        $msg = 'Failed to update terminal classification, There is an existing session for this terminal.';
-                    }
-                    else
-                    {   
-                        $terminaldetails = $oterminal->viewterminals($vterminalID);
-         
-                        foreach($terminaldetails as $row)
-                        {
-                            $rterminalcode = $row['TerminalCode'];
-                        }
-                        if(strpos($rterminalcode, 'VIP') == true){
-                            $vip = 1;
-                            $terminalCode = str_replace('VIP', '', $rterminalcode);
-                            $terminalidresult = $oterminal->viewterminalsbyTerminalCode($terminalCode);
-                            if(empty($terminalidresult)){
-                                $vterminalID2 = 0;
-                            }
-                            else{
-                                foreach ($terminalidresult as $value) {
-                                    $terminalID2 = $value['TerminalID'];
-                                }
-                            }
-                            
-                                $vterminalID2 = $terminalID2;
+                $terminaldetails = $oterminal->viewterminals($vterminalID);
+                foreach($terminaldetails as $row)
+                {
+                    $rterminalcode = $row['TerminalCode'];
+                }
+                $terminalIDs = $oterminal->getRegVipTerminalID($rterminalcode);//get reg and vip terminal ID
+                //check number of sessions in a certain site
+                $count = $oterminal->checkTerminalSessions($terminalIDs[0]['TerminalID'], 
+                                                           $terminalIDs[1]['TerminalID']);
+                if($count > 0)
+                {
+                    $msg = 'Failed to update terminal classification, There is an existing session for this terminal.';
+                }
+                else
+                {   
+                    if(strpos($rterminalcode, 'VIP') == true){
+                        $vip = 1;
+                        $terminalCode = str_replace('VIP', '', $rterminalcode);
+                        $terminalidresult = $oterminal->viewterminalsbyTerminalCode($terminalCode);
+                        if(empty($terminalidresult)){
+                            $vterminalID2 = 0;
                         }
                         else{
-                            $vip = 0;
-                            $terminalCode = $rterminalcode.'vip';
-                            $terminalidresult = $oterminal->viewterminalsbyTerminalCode($terminalCode);
-                            if(empty($terminalidresult)){
-                                $terminalID2 = 0;
+                            foreach ($terminalidresult as $value) {
+                                $terminalID2 = $value['TerminalID'];
                             }
-                            else{
-                                foreach ($terminalidresult as $value) {
-                                    $terminalID2 = $value['TerminalID'];
-                                }
-                            }
-                            
-
-                            $vterminalID2 = $terminalID2;
                         }
 
-                           $updateresult = $oterminal->updateterminaltype($terminalType, $vterminalID, $vterminalID2);
+                            $vterminalID2 = $terminalID2;
+                    }
+                    else{
+                        $vip = 0;
+                        $terminalCode = $rterminalcode.'vip';
+                        $terminalidresult = $oterminal->viewterminalsbyTerminalCode($terminalCode);
+                        if(empty($terminalidresult)){
+                            $terminalID2 = 0;
+                        }
+                        else{
+                            foreach ($terminalidresult as $value) {
+                                $terminalID2 = $value['TerminalID'];
+                            }
+                        }
 
-                           if($updateresult > 0){
-                               $msg = 'Update Terminal Classification: Update Successful';
 
-                               $vtransdetails = "TerminalID ".$vterminalID." and TerminalID " .$vterminalID2." Change Terminal Type to ".$terminalType ;
-                               $vauditfuncID = 77;
-                               $oterminal->logtoaudit($new_sessionid, $aid, $vtransdetails, $vdate, $vipaddress, $vauditfuncID); //insert in audittrail
-                           }
-                           else
-                           {
-                               $msg = 'Update Terminal Classification: Failed to Update Terminal Type';
-                           }
-                    } 
+                        $vterminalID2 = $terminalID2;
+                    }
+
+                   $updateresult = $oterminal->updateterminaltype($terminalType, $vterminalID, $vterminalID2);
+
+                   if($updateresult > 0){
+                       $msg = 'Update Terminal Classification: Update Successful';
+
+                       $vtransdetails = "TerminalID ".$vterminalID." and TerminalID " .$vterminalID2." Change Terminal Type to ".$terminalType ;
+                       $vauditfuncID = 77;
+                       $oterminal->logtoaudit($new_sessionid, $aid, $vtransdetails, $vdate, $vipaddress, $vauditfuncID); //insert in audittrail
+                   }
+                   else
+                   {
+                       $msg = 'Update Terminal Classification: Failed to Update Terminal Type';
+                   }
+                } 
          }
          
          echo json_encode($msg);
