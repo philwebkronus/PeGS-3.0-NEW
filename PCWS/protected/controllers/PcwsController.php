@@ -1706,7 +1706,6 @@ class PcwsController extends Controller{
                                         $userMode = $casinoDetails['UserMode'];
 
                                         $isWallet = Utilities::fetchFirstValue($membersModel->getIsWalletByMID($mid));
-                                        var_dump($isWallet);exit;
                                         if($isWallet==1){
                                             $transactionResult = $eWalletModel->forceLogout($mid, $terminalID, $serviceID, $cardNumber, $userMode, $transactionReferenceID, $amount, $transactionType, $siteID, $trackingID, $voucherCode, $paymentType, $serviceTransactionID, $AID, $transactionSummaryID, $withdrawal, $balance);
 
