@@ -4,6 +4,23 @@ $(document).ready(function(){
     $('input.auto').autoNumeric();
     $('#StartSessionFormModel_voucher_code').hide();
     $('.bankContainer').hide();
+    $('.hideControls').hide();
+    
+    $('#StartSessionFormModel_loyalty_card').bind('keydown', function(event) {
+        
+        $('.hideControls').hide();
+        $('.bankContainer').hide();
+        isEwalletSessionMode = false;
+        isValidated = false;
+        $('#StartSessionFormModel_sel_amount').val(0);
+        $('#StartSessionFormModel_amount').val('');
+        $('#StartSessionFormModel_voucher_code').val('');
+        $('#StartSessionFormModel_trace_number').val('');
+        $('#StartSessionFormModel_reference_number').val('');
+        $('#StartSessionFormModel_amount').autoNumeric();
+        document.getElementById('StartSessionFormModel_sel_amount').selectedIndex = 0;
+        
+   });
 })
 </script>
 <form id="frmhotkey">
@@ -16,11 +33,23 @@ $(document).ready(function(){
     <input type="hidden" name="sitecode" id="sitecode" value="<?php echo $_SESSION['site_code'] ?>" />
     <table id="tblstartsession">
         <tbody>
+            
+            
             <tr>
                 <th><?php echo MI_HTML::label($startSessionFormModel, 'terminal_id', 'TERMINAL') ?></th>
                 <td><?php echo MI_HTML::dropDownArray($startSessionFormModel, 'terminal_id', $terminals, 'id', 'code', array(''=>'Select Terminal'), array(),array('class'=>'width204')) ?></td>
             </tr>
+            
             <tr>
+                <th><?php echo MI_HTML::label($startSessionFormModel, 'loyalty_card', 'Membership Card') ?></th><td><?php echo MI_HTML::inputPassword($startSessionFormModel, 'loyalty_card', array('class'=>'width200')) ?></td>
+            </tr>
+            
+            <tr>
+                <th colspan ="2"><center><a href="javascript:void(0);" id="get_info_card">Get Card Info</a></center></th>
+                <!--<td><b><a href="javascript:void(0);" id="register">Register</a></b></td>-->
+            </tr>
+            
+            <tr class='hideControls'>
                 <th><?php echo MI_HTML::label($startSessionFormModel, 'sel_amount', 'AMOUNT') ?></th>
                 <td>
                     <div>
@@ -37,18 +66,18 @@ $(document).ready(function(){
                 </td>
             </tr>
             
-            <tr class="bankContainer">
-                <th><?php echo MI_HTML::label($startSessionFormModel, 'lbl_traceNumber', 'TRACE NUMBER') ?></th>
-                <td><?php echo MI_HTML::inputText($startSessionFormModel, 'trace_number',array('class'=>'width200','maxlength'=>20)); ?> <td>
+            <tr class="hideControls">
+                <th class='bankContainer'><?php echo MI_HTML::label($startSessionFormModel, 'lbl_traceNumber', 'TRACE NUMBER') ?></th>
+                <td class='bankContainer'><?php echo MI_HTML::inputText($startSessionFormModel, 'trace_number',array('class'=>'width200','maxlength'=>20)); ?> <td>
             </tr>
             
-            <tr class="bankContainer">
-                <th><?php echo MI_HTML::label($startSessionFormModel, 'lbl_refNumber', 'REFERENCE NUMBER') ?></th>
-                <td><?php echo MI_HTML::inputText($startSessionFormModel, 'reference_number',array('class'=>'width200','maxlength'=>20)); ?><td>
+            <tr class="hideControls">
+                <th class='bankContainer'><?php echo MI_HTML::label($startSessionFormModel, 'lbl_refNumber', 'REFERENCE NUMBER') ?></th>
+                <td class='bankContainer'><?php echo MI_HTML::inputText($startSessionFormModel, 'reference_number',array('class'=>'width200','maxlength'=>20)); ?><td>
                     
             </tr>
            
-            <tr>
+            <tr class='hideControls'>
                 <th><?php echo MI_HTML::label($startSessionFormModel, 'casino', 'CASINO'); ?></th>
                 <td>
                     <?php 
@@ -61,14 +90,8 @@ $(document).ready(function(){
                     ?>
                 </td>
             </tr>
+              
             <tr>
-                <th><?php echo MI_HTML::label($startSessionFormModel, 'loyalty_card', 'Membership Card') ?></th><td><?php echo MI_HTML::inputPassword($startSessionFormModel, 'loyalty_card', array('class'=>'width200')) ?></td>
-            </tr>
-            <tr>
-                <th colspan ="2"><center><a href="javascript:void(0);" id="get_info_card">Get Card Info</a></center></th>
-                <!--<td><b><a href="javascript:void(0);" id="register">Register</a></b></td>-->
-            </tr>    
-            <tr >
                 <th colspan="2" class="childtableCell center" style="padding-left:100px;">
                     <div><input id="btnInitailDepositHk" type="button" value="Submit" /></div>
                     <div><input class="btnClose" type="button" value="Cancel" /></div>

@@ -15,11 +15,16 @@
             <td><?php echo MI_HTML::dropDownArray($startSessionFormModel, 'terminal_id', $terminals, 'id', 'code', array(''=>'--Select Terminal--'), array(), array('class'=>'width204')) ?></td>
         </tr>
         <tr>
+            <th><?php echo MI_HTML::label($startSessionFormModel, 'loyalty_card', 'Membership Card') ?></th>
+            <td><?php echo MI_HTML::inputPassword($startSessionFormModel, 'loyalty_card', array('class'=>'width200')) ?></td>
+            <td><a href="javascript:void(0);" id="get_info_card">Get Card Info</a><a style="display: none;" href="javascript:void(0);" id="register">Register</a></td>
+        </tr>
+        <tr class='hideControls'>
             <th><?php echo MI_HTML::label($startSessionFormModel, 'casino', 'Casino'); ?></th>
             <td><?php echo MI_HTML::dropDown($startSessionFormModel, 'casino', array(''=>'Select Casino'), array(), array(), array('class'=>'width204'))  ?></td>
         </tr>
         
-        <tr>
+        <tr class='hideControls'>
             <th><?php echo MI_HTML::label($startSessionFormModel, 'sel_amount', 'Initial Deposit'); ?></th>
             <td><?php echo MI_HTML::dropDown($startSessionFormModel, 'sel_amount', array(''=>'Select Amount'),array(), array(), array('class'=>'width204')) ?></td>
             <th>
@@ -29,34 +34,30 @@
             <td><?php echo MI_HTML::inputText($startSessionFormModel, 'amount', array('disabled'=>'disabled','class'=>'auto','maxlength'=>8, 'class'=>'width200')) ?></td>
         </tr>
         
-        <tr class="bankContainer">
+        <tr class="bankContainer hideControls">
             <th>
                 <input type="checkbox" id="chkbancnet" disabled="disabled" name="chkbancnet"/>
                 <?php echo MI_HTML::label($startSessionFormModel, 'lblbancnet', 'Bancnet',array('id'=>'lblbancnet'))  ?>
             </th>
         </tr>
     
-        <tr class="bankContainer">
+        <tr class="bankContainer hideControls">
             <th>
                 <?php echo MI_HTML::label($startSessionFormModel, 'lbl_traceNumber', 'Trace Number') ?>
             </th>
             <td><?php echo MI_HTML::inputText($startSessionFormModel, 'trace_number',array('class'=>'width200','maxlength'=>20, 'disabled'=>'disabled')); ?> <td>
         </tr>
 
-        <tr class="bankContainer">
+        <tr class="bankContainer hideControls">
             <th><?php echo MI_HTML::label($startSessionFormModel, 'lbl_refNumber', 'Reference Number') ?></th>
             <td><?php echo MI_HTML::inputText($startSessionFormModel, 'reference_number',array('class'=>'width200','maxlength'=>20, 'disabled'=>'disabled')); ?><td>
 
         </tr>
-        <tr>
+        <tr class='hideControls'>
             <th><?php echo MI_HTML::label($startSessionFormModel, 'voucher_code', 'Voucher Code') ?></th>
             <td><?php echo MI_HTML::inputText($startSessionFormModel, 'voucher_code', array('maxlength'=>20,'class'=>'width200')) ?></td>
         </tr>
-        <tr>
-            <th><?php echo MI_HTML::label($startSessionFormModel, 'loyalty_card', 'Membership Card') ?></th>
-            <td><?php echo MI_HTML::inputPassword($startSessionFormModel, 'loyalty_card', array('class'=>'width200')) ?></td>
-            <td><a href="javascript:void(0);" id="get_info_card">Get Card Info</a><a style="display: none;" href="javascript:void(0);" id="register">Register</a></td>
-        </tr>
+       
         <tr>
             <td><input type="button" value="Start Session" id="btnstartsessionsa"/></td>
         </tr>
@@ -67,6 +68,7 @@
 <script type="text/javascript" src="jscripts/check_partner.js"></script>
 <script type="text/javascript">
     $(document).ready(function(){
+        $('.hideControls').hide();
         $('#StartSessionFormModel_terminal_id').focus();
         $('#chkbancnet').removeAttr('disabled');
         $('#StartSessionFormModel_amount').autoNumeric();
@@ -82,17 +84,23 @@
             if(issuccess == "false")
             {
                     //check voucher length
-                    if(voucher.length == 0){
-                        //alert(toMoney($('#StartSessionFormModel_amount').val()));return false;
-                        if(!confirm('Are you sure you want to start a new session with the initial playing balance of  ' + toMoney($('#StartSessionFormModel_amount').val())+'?')) {
+                    
+                    if(isEwalletSessionMode==false){
+                        if(voucher.length == 0){
+                            //alert(toMoney($('#StartSessionFormModel_amount').val()));return false;
+                            if(!confirm('Are you sure you want to start a new session with the initial playing balance of  ' + toMoney($('#StartSessionFormModel_amount').val())+'?')) {
+                                return false;
+                            }
+                        } else {
+                            $("#StartSessionFormModel_voucher_code").val(voucher);
+                            if(!confirm('Are you sure you want to start a new session using a voucher?')) {
+                                return false;
+                            }  
+                        }
+                    }else{
+                        if(!confirm('Are you sure you want to unlock this terminal?')) {
                             return false;
                         }
-                    } else {
-                        $("#StartSessionFormModel_voucher_code").val(voucher);
-                        if(!confirm('Are you sure you want to start a new session using a voucher?')) {
-                            return false;
-                        }
-                         
                     }
 
                     //get terminal code for blocking
@@ -202,6 +210,10 @@
                     }
                 }); 
             });
+            
+            $('#StartSessionFormModel_loyalty_card').val('');
+            $('.hideControls').hide();
+             
         });
         
         $('#lblotheramount').click(function(){
@@ -301,6 +313,7 @@
                 if($('#StartSessionFormModel_sel_amount').val() != '' ){
                         $('#StartSessionFormModel_voucher_code').val('');
                 }
+                
             });
         });
         $('#StartSessionFormModel_amount').focus(function() {
@@ -367,6 +380,34 @@
                 $('#StartSessionFormModel_trace_number').val('');
             }
         });
-       
+        
+        
+        $('#StartSessionFormModel_loyalty_card').bind('keydown', function(event) {
+            
+            $('.hideControls').hide();
+            $('.bankContainer').hide();
+            isEwalletSessionMode = false;
+            isValidated = false;
+
+            $('#StartSessionFormModel_amount').val('');
+            $('#StartSessionFormModel_voucher_code').val('');
+            $('#StartSessionFormModel_amount').val('');
+            $('#StartSessionFormModel_amount').attr('disabled','disabled');
+            $('#StartSessionFormModel_bankid').attr('disabled','disabled');
+            $('#StartSessionFormModel_amount').attr('disabled','disabled');
+            $('#chkotheramount').removeAttr('disabled');
+            $('#chkbancnet').attr('checked', false);
+            $('#StartSessionFormModel_reference_number').val('');
+            $('#StartSessionFormModel_reference_number').attr('disabled', 'disabled');
+            $('#StartSessionFormModel_sel_amount').removeAttr('disabled');
+            $('#StartSessionFormModel_voucher_code').removeAttr('disabled');
+            $('#StartSessionFormModel_trace_number').attr('disabled','disabled');
+            $('#StartSessionFormModel_trace_number').val('');
+            $('#StartSessionFormModel_sel_amount').val(0);
+            $('#StartSessionFormModel_amount').autoNumeric();
+            document.getElementById('StartSessionFormModel_sel_amount').selectedIndex = 0;
+            
+       });
+        
     })
 </script>

@@ -86,6 +86,9 @@
             
             var preffixCode = '<?php echo $_SESSION['last_code']; ?>';
             var terminalCode = $('#StartSessionFormModel_terminal_id > option:selected').html();
+            var tid = $('#StartSessionFormModel_terminal_id').val();
+            var isEwalletSession = false;
+            
             if(terminalCode == null){
                 terminalCode = $('#terminal_code').html();
             }
@@ -93,9 +96,35 @@
             terminalCode = terminalCode.replace(/vip/i,'');
             terminalCode = preffixCode+terminalCode;
             
-            if(!confirm('Are you sure you want to redeem the amount of ' + toMoney(amount) + '?')) {
-                return false;
+             $.ajax({
+                type : 'post',
+                async: false,
+                url : '<?php echo Mirage::app()->createUrl('terminal/isEwallet') ?>',
+                data : {'tid':tid},
+                success : function(data) {
+                    try{
+                        var json = JSON.parse(data);
+                        isEwalletSession = json.IsEWallet;
+                    }catch(e){
+                    }
+                },
+                error : function(e) {
+                    displayError(e);
+                }
+
+            });
+            
+            
+            if(isEwalletSession){
+                if(!confirm('Are you sure you want to lock this terminal?')) {
+                    return false;
+                }
+            }else{
+                if(!confirm('Are you sure you want to redeem the amount of ' + toMoney(amount) + '?')) {
+                    return false;
+                }
             }
+            
             showLightbox(function(){
                 var url = '<?php echo Mirage::app()->createUrl('redeem') ?>';
                 var data =  $('#frmredeemsa').serialize()+'&StartSessionFormModel[amount]='+amount;

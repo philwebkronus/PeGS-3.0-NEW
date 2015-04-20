@@ -110,11 +110,23 @@
                     success : function(data) {
                         try {
                             var json = $.parseJSON(data);
-                           alert(json.message);
+                            var msg = json.message;
+                                if (msg.indexOf('successful') !== -1) { 
+                                    alert(json.message);
+                                    location.reload(true);
+                                }
+                                else{
+                                    updateLightbox( '<center><label  style="font-size: 24px; color: red; font-weight: bold;">'+ json.message +'</label>' + 
+                                                                    '<br /></center>' + 
+                                                                    '<br /><input type="button" style="float: right; width: 50px; height: 25px;"  value="Ok" class="btnClr" />',
+                                                                    ''          
+                                    );
+                                }
                         }catch(e) {
                             alert('Oops! Something went wrong');
+                            location.reload(true);
                         }
-                        location.reload(true);
+                        
                     },
                     error : function(e) {
                         displayError(e);
@@ -141,11 +153,10 @@
         });
          
             $('#ForceTFormModel_loyalty_card').bind("enterKey",function(e){
-                identifyCard3();
-//                var issuccess = identifyCard3();
-//                
+                var issuccess = identifyCard3();
+                
 //                if(issuccess == 'false'){
-//                    var url = '<?php // echo Mirage::app()->createUrl('redeem/getbalance') ?>';
+//                    var url = '<?php //echo Mirage::app()->createUrl('redeem/getbalance') ?>';
 //                    var data = 'loyalty_card='+$('#ForceTFormModel_loyalty_card').val();
 //                    var tbody = '';
 ////                    var total_reload = 0;

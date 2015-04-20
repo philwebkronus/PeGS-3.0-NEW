@@ -7,10 +7,13 @@
 ?>
 
 <script type="text/javascript">
-
+var isEwalletSessionMode = false;
+var isValidated = false;
 function identifyCard()
 {
-                var url = '<?php echo Mirage::app()->createUrl('loyalty/cardinquiry') ?>'; 
+    
+                var url = '<?php echo Mirage::app()->createUrl('loyalty/cardinquiry') ?>';
+                var urlGetCasinoServices = '<?php echo Mirage::app()->createUrl('terminal/getCasinoServices') ?>';
                 var url_transfer = '<?php echo Mirage::app()->createUrl('loyalty/transferpoints') ?>'; 
                 var url_activate = '<?php echo Mirage::app()->param['member_activation']?>'; 
                 var url_tempactivate = '<?php echo Mirage::app()->param['temp_activation']?>'; 
@@ -23,6 +26,32 @@ function identifyCard()
                 var card_number = $('#StartSessionFormModel_loyalty_card').val();
                 var data = 'card_number='+card_number+'&isreg=0'+'&siteid='+siteid;
                 var response = '';
+                var tid = $("#StartSessionFormModel_terminal_id").val();
+                var servicesCount = '';
+                var serviceID = '';
+                
+                
+                if(tid ==''){
+                    $('.hideControls').hide();
+                    alert('Please select terminal');
+                    return false;
+                }
+                
+                $.ajax({
+                    type : 'post',
+                    async: false,
+                    url : urlGetCasinoServices,
+                    data : {'tid':tid},
+                    success : function(data) {
+                        var obj = JSON.parse(data);
+                        servicesCount = obj.ServicesCount;
+                        serviceID = obj.ServiceID;
+                    },
+                    error : function(e) {
+                        displayError(e);
+                    }
+                    
+                });
 
                 $.ajax({
                     type : 'post',
@@ -35,10 +64,29 @@ function identifyCard()
                             
                             //get status value
                              var StatusValue = getStatusValue(json.CardInfo.StatusCode);
+                             
+                             //get isewallet value
+                             var IsEwallet = json.CardInfo.IsEwallet;
 
                             if(StatusValue == "Active" || StatusValue == "Active Temporary" || StatusValue == "New Migrated"){
+                                
+                                if(servicesCount == 1){
+                                    if(IsEwallet==1 && serviceID==19){
+                                       isEwalletSessionMode = true;
+                                       $('.hideControls').hide();
+                                    }else{
+                                        isEwalletSessionMode = false;
+                                        isValidated = true;
+                                       $('.hideControls').show(); 
+                                    }
                                     response = "false";
+                                }else{
+                                    $('.hideControls').hide();
+                                    alert('More than 1 casinos are mapped in this terminal');
+                                }
+                                
                             } else if (StatusValue == 'Banned Card'){
+                                $('.hideControls').hide();
                                     updateLightbox( '<center><label  style="font-size: 24px; color: red; font-weight: bold;">Card is BANNED.</label>' + 
                                                                     '<br /><br /><label style="font-size: 20px;  font-weight: bold;">Please contact Philweb Customer</label>' + 
                                                                     '<br /><label style="font-size: 20px;  font-weight: bold;">Service Hotline 338-3388.</label></center>' + 
@@ -46,7 +94,7 @@ function identifyCard()
                                                                     ''          
                                     ); 
                             } else {
-
+                                $('.hideControls').hide();
                                 showLightbox(function(){
                                     if(StatusValue == ''){
                                         updateLightbox( '<center><label  style="font-size: 24px; color: red; font-weight: bold;">Error[000]: Card Number is INVALID.</label>' + 
@@ -205,7 +253,7 @@ function identifyCard2()
                 var card_number = $('#UnlockTerminalFormModel_loyalty_card').val();
                 var data = 'card_number='+card_number+'&isreg=0'+'&siteid='+siteid;
                 var response = '';
-
+                
                 $.ajax({
                     type : 'post',
                     async: false,

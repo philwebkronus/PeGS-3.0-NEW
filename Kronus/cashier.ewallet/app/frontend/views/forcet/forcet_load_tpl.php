@@ -391,11 +391,24 @@
                         success : function(data) {
                             try {
                                 var json = $.parseJSON(data);
-                                alert(json.message);
+                                var msg = json.message;
+                                
+                                if (msg.indexOf('successful') !== -1) { 
+                                    alert(json.message);
+                                    location.reload(true);
+                                }
+                                else{
+                                    updateLightbox( '<center><label  style="font-size: 24px; color: red; font-weight: bold;">'+ json.message +'</label>' + 
+                                                                    '<br /></center>' + 
+                                                                    '<br /><input type="button" style="float: right; width: 50px; height: 25px;"  value="Ok" class="btnClr" />',
+                                                                    ''          
+                                    );
+                                }
+                                
                             }catch(e) {
                                 alert('Oops! Something went wrong');
+                                location.reload(true);
                             }
-                            location.reload(true);
                         },
                         error : function(e) {
                             displayError(e);

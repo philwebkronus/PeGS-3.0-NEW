@@ -3,6 +3,7 @@
 $(document).ready(function(){
     $('input.auto').autoNumeric();
     $('#UnlockTerminalFormModel_voucher_code').hide();
+    
 })
 </script>
 <form id="frmunlock">

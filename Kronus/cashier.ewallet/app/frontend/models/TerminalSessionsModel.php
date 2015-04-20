@@ -204,4 +204,26 @@ class TerminalSessionsModel extends MI_Model {
         
         return isset($result['UBServiceLogin'])?$result['UBServiceLogin']:false;
     }
+    
+    public function isEWalletSessionByCardNumber($cardNumber){
+        $sql = "SELECT COUNT(ts.LoyaltyCardNumber) as IsEwallet FROM npos.terminalsessions ts INNER JOIN membership.members m ON ts.MID=m.MID WHERE ts.LoyaltyCardNumber=:cardNumber AND ts.ServiceID=19 AND m.IsEwallet=1";
+        
+        $param = array(":cardNumber"=>$cardNumber);
+        $this->exec($sql, $param);
+        $result =  $this->find();
+        
+        return isset($result['IsEwallet'])?$result['IsEwallet']:false;
+    }
+    
+    public function getUBCardNumberByTerminalID($terminalID){
+        $sql = "SELECT LoyaltyCardNumber FROM terminalsessions WHERE TerminalID=:terminalID AND ServiceID=19 LIMIT 1";
+        
+        $param = array(":terminalID"=>$terminalID);
+
+        $this->exec($sql, $param);
+        
+        $result =  $this->find();
+        
+        return $result['LoyaltyCardNumber'];
+    }
 }

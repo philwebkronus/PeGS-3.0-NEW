@@ -59,12 +59,18 @@ $(document).ready(function(){
        
         if(issuccess == "false")
         {
-                if($("#StartSessionFormModel_sel_amount").val() != 'voucher'){
-                    if(!confirm('Are you sure you want to start a new session with the initial playing balance of  ' + toMoney($('#StartSessionFormModel_amount').val())+'?')) {
-                        return false;
+                if(isEwalletSessionMode==false){
+                    if($("#StartSessionFormModel_sel_amount").val() != 'voucher'){
+                        if(!confirm('Are you sure you want to start a new session with the initial playing balance of  ' + toMoney($('#StartSessionFormModel_amount').val())+'?')) {
+                            return false;
+                        }
+                    } else {
+                        if(!confirm('Are you sure you want to start a new session using a voucher?')) {
+                            return false;
+                        }
                     }
-                } else {
-                    if(!confirm('Are you sure you want to start a new session using a voucher?')) {
+                }else{
+                    if(!confirm('Are you sure you want to unlock this terminal?')) {
                         return false;
                     }
                 }
@@ -94,7 +100,13 @@ $(document).ready(function(){
                                     alert('<?php echo Mirage::app()->param['pegsstationerrormsg'] ?>');
                                 }
                                 <?php endif; ?>
-                            alert('Transaction Successful \n New player session started. The player initial playing balance is PhP ' + json.initial_deposit);
+                                var unlock = json.Unlock;
+                                if(unlock == 1){
+                                    alert('Transaction Successful Terminal is now unlocked.');
+                                }
+                                else{
+                                    alert('Transaction Successful \n New player session started. The player initial playing balance is PhP ' + json.initial_deposit);
+                                }
                             location.reload(true);
                             } catch(e) {
                                 updateLightbox(data,'START SESSION');
@@ -112,7 +124,7 @@ $(document).ready(function(){
     });
     
     $('#btnReload').live('click',function(){
-        if(!startSessionChecking()) {
+        if(!reloadSessionChecking()) {
             return false;
         }
 

@@ -4,7 +4,41 @@ $(document).ready(function(){
     $('input.auto').autoNumeric();
     $('#StartSessionFormModel_voucher_code').hide();
     $('.bankContainer').hide();
-})
+    $('.hideControls').hide();
+   
+    $('#StartSessionFormModel_loyalty_card').bind('keydown', function(event) {
+        
+        $('.hideControls').hide();
+        $('.bankContainer').hide();
+        isEwalletSessionMode = false;
+        isValidated = false;
+        $('#StartSessionFormModel_sel_amount').val(0);
+        $('#StartSessionFormModel_amount').val('');
+        $('#StartSessionFormModel_voucher_code').val('');
+        $('#StartSessionFormModel_trace_number').val('');
+        $('#StartSessionFormModel_reference_number').val('');
+        $('#StartSessionFormModel_amount').autoNumeric();
+        document.getElementById('StartSessionFormModel_sel_amount').selectedIndex = 0;
+        
+   });
+});
+
+ 
+function emptyForm(){
+    $('.hideControls').hide();
+    $('.bankContainer').hide();
+    isEwalletSessionMode = false;
+    isValidated = false;
+    
+    $('#StartSessionFormModel_amount').val('');
+    $('#StartSessionFormModel_voucher_code').val('');
+    $('#StartSessionFormModel_trace_number').val('');
+    $('#StartSessionFormModel_reference_number').val('');
+    $('#StartSessionFormModel_amount').autoNumeric();
+    $('#StartSessionFormModel_sel_amount').val(0);
+    document.getElementById('StartSessionFormModel_sel_amount').selectedIndex = 0;
+}
+
 </script>
 <form id="frmstartsession">
     <?php echo MI_HTML::inputHidden($startSession, 'terminal_id') ?>
@@ -20,11 +54,17 @@ $(document).ready(function(){
     <table id="tblstartsession">
         <tbody>
             <tr>
+                <th><?php echo MI_HTML::label($startSession, 'loyalty_card', 'Membership Card') ?></th><td><?php echo MI_HTML::inputPassword($startSession, 'loyalty_card',  array('class'=>'width200')); ?></td>
+            </tr>
+            <tr>
+                <th colspan="2"><center><a href="javascript:void(0);" id="get_info_card">Get Card Info</a></center></th>
+                <!--<td><b><a style="display: none;" href="javascript:void(0);" id="register">Register</a></b></td>-->
+            </tr>  
+            <tr class='hideControls'>
                 <th><?php echo MI_HTML::label($startSession, 'sel_amount', 'AMOUNT') ?></th>
                 <td>
                     <div>
-                        <?php echo MI_HTML::dropDown($startSession, 'sel_amount', 
-                                $denomination,array(''=>'Select Amount'),array('--'=>'Other denomination','voucher'=>'Voucher', 'bancnet'=>'Bancnet'), array('class'=>'width204')); ?>
+                        <?php echo MI_HTML::dropDown($startSession, 'sel_amount', $denomination,array(''=>'Select Amount'),array('--'=>'Other denomination','voucher'=>'Voucher', 'bancnet'=>'Bancnet'), array('class'=>'width204')); ?>
                     </div>
                         <?php echo MI_HTML::inputText($startSession, 'amount',array('readonly'=>'readonly','class'=>'auto width200','maxlength'=>8)); ?>
                     
@@ -32,27 +72,21 @@ $(document).ready(function(){
                 </td>
             </tr>
             
-            <tr class="bankContainer">
-                <th><?php echo MI_HTML::label($startSession, 'lbl_traceNumber', 'TRACE NUMBER') ?></th>
-                <td><?php echo MI_HTML::inputText($startSession, 'trace_number',array('class'=>'width200','maxlength'=>20)); ?> <td>
+            <tr class="hideControls">
+                <th class='bankContainer'><?php echo MI_HTML::label($startSession, 'lbl_traceNumber', 'TRACE NUMBER') ?></th>
+                <td class='bankContainer'><?php echo MI_HTML::inputText($startSession, 'trace_number',array('class'=>'width200','maxlength'=>20)); ?> <td>
             </tr>
             
-            <tr class="bankContainer">
-                <th><?php echo MI_HTML::label($startSession, 'lbl_refNumber', 'REFERENCE NUMBER') ?></th>
-                <td><?php echo MI_HTML::inputText($startSession, 'reference_number',array('class'=>'width200','maxlength'=>20)); ?><td>
+            <tr class="hideControls">
+                <th class='bankContainer'><?php echo MI_HTML::label($startSession, 'lbl_refNumber', 'REFERENCE NUMBER') ?></th>
+                <td class='bankContainer'><?php echo MI_HTML::inputText($startSession, 'reference_number',array('class'=>'width200','maxlength'=>20)); ?><td>
                     
             </tr>
-            <tr>
+            <tr class='hideControls'>
                 <th><?php echo MI_HTML::label($startSession, 'casino', 'CASINO'); ?></th>
                 <td><?php echo MI_HTML::dropDown($startSession, 'casino', $casinos, array(), array(), array('class'=>'width204')) ?></td>
             </tr>
-            <tr>
-                <th><?php echo MI_HTML::label($startSession, 'loyalty_card', 'Membership Card') ?></th><td><?php echo MI_HTML::inputPassword($startSession, 'loyalty_card',  array('class'=>'width200')); ?></td>
-            </tr>
-            <tr>
-                <th colspan="2"><center><a href="javascript:void(0);" id="get_info_card">Get Card Info</a></center></th>
-                <!--<td><b><a style="display: none;" href="javascript:void(0);" id="register">Register</a></b></td>-->
-            </tr>    
+              
             <tr>
                 <th colspan="2" class="childtableCell center" style="padding-left:100px;">
                     <div><input id="btnInitailDeposit" type="button" value="Submit" /></div>

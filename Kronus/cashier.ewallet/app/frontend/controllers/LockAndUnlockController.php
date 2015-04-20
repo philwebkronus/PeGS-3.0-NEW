@@ -19,9 +19,11 @@ class LockAndUnlockController extends FrontendController {
         $LockAndUnlockFormModel = new LockAndUnlockFormModel();
         $transaction_type = array(
             ''=>'Please select transaction type',
-            $this->createUrl('lock')=>'Lock',
             $this->createUrl('unlock')=>'Unlock',
+            $this->createUrl('lock')=>'Lock',
+            
         );
         $this->render('lockandunlock_overview', array('LockAndUnlockFormModel'=>$LockAndUnlockFormModel, 'transaction_type'=>$transaction_type));
     }
+    
 }

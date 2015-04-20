@@ -76,7 +76,7 @@ class AuthenticateController extends MI_Controller{
         if(isset($_POST['LoginFormModel'])) {
             $loginForm->setAttributes($_POST['LoginFormModel']);
             if($loginForm->isValid(array('passkey')) && $loginForm->authenticatePasskey()) {
-                $this->redirect($this->createUrl('terminal/overview'));
+                $this->redirect($this->createUrl('forcet'));
             } else {
 //                if($loginForm->getAttributeErrorMessage('message')) {
 //                    $_SESSION['error_message'] = $loginForm->getAttributeErrorMessage('message');

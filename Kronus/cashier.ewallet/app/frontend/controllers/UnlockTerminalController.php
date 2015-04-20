@@ -21,12 +21,11 @@ class UnlockTerminalController extends FrontendController{
         $terminalsModel = new TerminalsModel();
         
         $terminals = $terminalsModel->getAllNotActiveForceTTerminals($this->site_id, $this->len);
+        
         if(isset($_POST['UnlockTerminalFormModel']) && $this->isAjaxRequest()) {
             $UTFormModel->setAttributes($_POST['UnlockTerminalFormModel']);
-            //$terminal_id = $UTFormModel->terminal_id;
-            $unlockTerminalFM->amount = toInt($UTFormModel->amount);
+            $UTFormModel->amount = 0;
             $this->_unlockSession($UTFormModel);
-            $unlockTerminalFM->amount = toMoney($UTFormModel->amount);
         }
         
         $this->renderPartial('unlockterminal_overview',array('UTFormModel'=>$UTFormModel,'terminals'=>$terminals));

@@ -381,16 +381,31 @@
                         return false;
                     }
                 }
+                
+                if (event.keyCode == 8 || event.charCode == 8) {
+                    $('.hideControls').hide();
+                    $('.bankContainer').hide();
+                    isEwalletSessionMode = false;
+                    isValidated = false;
+                    $('#StartSessionFormModel_sel_amount').val(0);
+                    $('#StartSessionFormModel_amount').val('');
+                    $('#StartSessionFormModel_voucher_code').val('');
+                    $('#StartSessionFormModel_trace_number').val('');
+                    $('#StartSessionFormModel_reference_number').val('');
+                }
             });  
     });
     
     $("#UnlockTerminalFormModel_loyalty_card").focus(function(){
             $("#UnlockTerminalFormModel_loyalty_card").bind("keydown", function (event) { 
+                
                 if (event.keyCode == 13 || event.charCode == 13) {
+                    
                     var issuccess = identifyCard2();
                     if(issuccess == "false"){
                         return false;
                     }
+                    event.preventDefault();
                 }
             });  
     });

@@ -276,7 +276,7 @@ class TerminalController extends FrontendController {
             }
             $this->throwError('Invalid Input');
         }
-        $this->renderPartial('terminal_close_hk',array('UnlockTerminalFormModel'=>$unlockTerminalFormModel,'terminals'=>$terminals));
+        $this->renderPartial('terminal_lock_hk',array('UnlockTerminalFormModel'=>$unlockTerminalFormModel,'terminals'=>$terminals));
     }
     
     
@@ -291,7 +291,7 @@ class TerminalController extends FrontendController {
             }
             $this->throwError('Invalid Input');
         
-        $this->renderPartial('terminal_close_hk',array('UnlockTerminalFormModel'=>$unlockTerminalFormModel,'terminals'=>$terminals));
+        $this->renderPartial('terminal_lock_hk',array('UnlockTerminalFormModel'=>$unlockTerminalFormModel,'terminals'=>$terminals));
     }
     
     /**
@@ -349,15 +349,8 @@ class TerminalController extends FrontendController {
         $casinos = array();
         
         if(isset($_POST['UnlockTerminalFormModel'])) {
-            $denominationtype = DENOMINATION_TYPE::INITIAL_DEPOSIT;
-            $deno_casino_min_max = $this->_getDenoCasinoMinMax($denominationtype);
-            $UTFormModel->max_deposit = $deno_casino_min_max['max_denomination'];
-            $UTFormModel->min_deposit = $deno_casino_min_max['min_denomination'];
-            $casinos = $deno_casino_min_max['casino'];
-            $UTFormModel->sel_amount = $deno_casino_min_max['denomination'];
             $UTFormModel->setAttributes($_POST['UnlockTerminalFormModel']);
-            $denomination = $deno_casino_min_max['denomination'];
-            $UTFormModel->amount = toInt($UTFormModel->amount);
+            $UTFormModel->amount = 0;
             $this->_unlockSession($UTFormModel);
         }
         $this->renderPartial('terminal_unlock_hk',array('unlock'=>$UTFormModel,
@@ -633,6 +626,38 @@ class TerminalController extends FrontendController {
     
     public function pingAction(){
         die('ok');
+    }
+    
+    public function getAndCountCasinoServicesAction(){
+        if(!$this->isAjaxRequest())
+            Mirage::app()->error404();
+        
+        if(isset($_POST['tid'])){
+            Mirage::loadModels('TerminalServicesModel');
+            $tid = $_POST['tid'];
+            $terminalServicesModel = new TerminalServicesModel();
+            
+            $result = $terminalServicesModel->getAndCountCasinoServicesByTerminalID($tid);
+            echo json_encode($result);
+        }
+        
+    }
+    
+    public function isEwalletSessionAction(){
+        if(!$this->isAjaxRequest())
+            Mirage::app()->error404();
+        
+        if(isset($_POST['tid'])){
+            Mirage::loadModels('TerminalSessionsModel');
+            $tid = $_POST['tid'];
+            $terminalSessionsModel = new TerminalSessionsModel();
+            
+            $cardNumber = $terminalSessionsModel->getUBCardNumberByTerminalID($tid);
+            $isEwallet = $terminalSessionsModel->isEWalletSessionByCardNumber($cardNumber);
+            
+            echo json_encode(array('IsEWallet'=>$isEwallet==1?true:false));
+        }
+        
     }
     
     

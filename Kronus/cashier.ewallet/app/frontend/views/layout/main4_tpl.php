@@ -56,7 +56,7 @@
         <div class="clear"></div>
         <?php if($this->show_refresh): ?>
         <div>
-            <b>HOT KEYS <i>D</i></b> - Start Session <b><i>R</i></b> - Reload <b><i>W</i></b> - Redeem <b><i>Esc</i></b>
+            <b>HOT KEYS <i>D</i></b> - Start Session <b><i>R</i></b> - Reload <b><i>W</i></b> - Redeem <b><i>Esc</i></b> - Close form
         </div>
         <?php endif; ?>
         <div style="text-align: center">e-Games Station Manager. Copyright &copy; 2011. PhilWeb Corporation. All rights reserved.</div>

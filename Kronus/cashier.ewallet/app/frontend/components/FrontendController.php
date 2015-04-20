@@ -176,7 +176,12 @@ class FrontendController extends MI_Controller {
         if(isset($_POST['terminal_id'])) {
             $terminal_id = $_POST['terminal_id'];
         } else {
-            $terminal_id = $_POST['StartSessionFormModel']['terminal_id'];
+            if(isset($_POST['StartSessionFormModel']['terminal_id'])){
+                $terminal_id = $_POST['StartSessionFormModel']['terminal_id'];
+            }
+            else{
+                $terminal_id = 0;
+            }
         }
         
 //        $denomination_type = DENOMINATION_TYPE::INITIAL_DEPOSIT;
@@ -258,8 +263,8 @@ class FrontendController extends MI_Controller {
         if($ref_service['Code'] == 'MM'){
             list($is_loyalty, $card_number,$loyalty, $casinos, $mid, $casinoarray_count, $isewallet) = 
                 $this->getCardInfo($loyaltyCardNo, $this->site_id, 2);
-            if($isewallet > 0){
-                $message = "Reload failed. Player's account is already e-wallet.";
+            if($isewallet > 0 && $casinoServiceID == 19){
+                $message = "Reload failed. Please reload in the Ewallet Load Tab.";
                 logger($message);
                 $this->throwError($message);
             }
@@ -508,7 +513,10 @@ class FrontendController extends MI_Controller {
         if($isewallet < 1){
             $message = "Load failed. Player's account must be e-wallet.";
             logger($message);
-            $this->throwError($message);
+            
+            $result = array('message'=>$message);
+            echo json_encode($result);
+            Mirage::app()->end(); 
         }
         
         $casinos = $this->loopAndFindCasinoService($casinos, 'ServiceID', $cid);
@@ -542,7 +550,10 @@ class FrontendController extends MI_Controller {
                     $this->status = 2;
                     $message = $verifyVoucherResult;
                     logger($message);
-                    $this->throwError($message);
+                    
+                    $result = array('message'=>$message);
+                    echo json_encode($result);
+                    Mirage::app()->end(); 
                 }
 
                 //check if voucher is not yet claim
@@ -562,7 +573,10 @@ class FrontendController extends MI_Controller {
                                 $min_deno = toInt($min_deno);
                                 $message = 'Amount should be greater than or equal to '.number_format($min_deno,2);
                                 logger($message);
-                                $this->throwError($message);
+                                
+                                $result = array('message'=>$message);
+                                echo json_encode($result);
+                                Mirage::app()->end(); 
                                 } elseif(isset($max_deno) && $amount > toInt($max_deno)) {
                                     $max_deno = toInt($max_deno);
                                     $message = 'Amount should be less than or equal to '.number_format($max_deno,2);
@@ -571,7 +585,10 @@ class FrontendController extends MI_Controller {
                                 } elseif ($amount % 100 != 0 ) {
                                     $message = 'Amount should be divisible by 100';
                                     logger($message);
-                                    $this->throwError($message);  
+                                    
+                                    $result = array('message'=>$message);
+                                    echo json_encode($result);
+                                    Mirage::app()->end(); 
                                 } else {
                                     
                                         $systemusername = Mirage::app()->param['pcwssysusername'];
@@ -620,7 +637,10 @@ class FrontendController extends MI_Controller {
                                                 if(isset($useVoucherResult['UseVoucher']['ErrorCode']) && $useVoucherResult['UseVoucher']['ErrorCode'] != 0)
                                                 {
                                                         $vmsrequestlogs->updateVMSRequestLogs($vmsrequestlogsID, 2);
-                                                        $this->throwError($useVoucherResult['UseVoucher']['TransMsg']);
+                                                        
+                                                        $result = array('message'=>$useVoucherResult['UseVoucher']['TransMsg']);
+                                                        echo json_encode($result);
+                                                        Mirage::app()->end(); 
                                                 } else {
                                                         //check if the useVoucher is successful, if success insert to vmsrequestlogs and status = 1 else 2
                                                         $vmsrequestlogs->updateVMSRequestLogs($vmsrequestlogsID, 1);
@@ -637,14 +657,20 @@ class FrontendController extends MI_Controller {
                         {
                                 $message = 'Amount is not set';
                                 logger($message);
-                                $this->throwError($message);
+                                
+                                $result = array('message'=>$message);
+                                echo json_encode($result);
+                                Mirage::app()->end(); 
                         }
                 }
                 else
                 {
                         $message = 'VMS: '.$verifyVoucherResult['VerifyVoucher']['TransMsg'];
                         logger($message);
-                        $this->throwError($message);
+                        
+                        $result = array('message'=>$message);
+                        echo json_encode($result);
+                        Mirage::app()->end(); 
                 }
         }
         else
@@ -681,25 +707,26 @@ class FrontendController extends MI_Controller {
         }
         if($result[0] == 200){
             $result = json_decode($result[1]);
+            
+            $result = $result->Deposit->TransactionMessage;
+        
+            if(preg_match('/\Successful\b/', $result)) {
+                $result = array('message'=>$result);
+
+            }
+            else{
+                $result = array('message'=>$result);
+                logger($message);
+            }    
+            
         }
         else{
             $message = 'Error: Deposit Failed';
+            $result = array('message'=>$message);
             logger($message);
-            $this->throwError($message);
-        }
+        }    
         
-        $result = $result->Deposit->TransactionMessage;
-        
-        if(preg_match('/\Successful\b/', $result)) {
-            $result = array('message'=>$result);
-            echo json_encode($result);
-        }
-        else{
-            $message = $result;
-            logger($message);
-            $this->throwError($message);
-        }        
-        
+        echo json_encode($result);
         Mirage::app()->end();
     }
     
@@ -747,52 +774,58 @@ class FrontendController extends MI_Controller {
             $casinoServiceID = $val['ServiceID'];
         }
         
-        if($ref_service['Code'] == 'MM'){
+//        if($ref_service['Code'] == 'MM'){
             list($is_loyalty, $card_number,$loyalty, $casinos, $mid, $casinoarray_count, $isewallet) = 
                 $this->getCardInfo($loyaltyCardNo, $this->site_id, 2);
-            if($isewallet > 0){
-                $message = "Redemption failed. Player's account is already e-wallet.";
-                logger($message);
-                $this->throwError($message);
-            }
-        }        
-        //checking if casino is terminal based
-        if($ref_service['UserMode'] == 0){
-             $login_acct = $terminalName;
-             $terminal_pwd = $terminalsmodel->getTerminalPassword($startSessionFormModel->terminal_id, 
-                                $service_id);
-             $login_pwd = $terminal_pwd['HashedServicePassword'];
-             $result = $commonRedeem->redeem($login_pwd, $startSessionFormModel->terminal_id, $this->site_id, $bcf, 
-                            $service_id, $startSessionFormModel->amount, $paymentType, $this->acc_id, 
-                            $loyaltyCardNo, $mid, $casinoUserMode,$casinoUsername,
-                            $casinoPassword,$casinoServiceID);
-        } 
-
-        //checking if casino is user based
-        if($ref_service['UserMode'] == 1){
-             $login_acct = $casinoUsername;
-             $login_pwd  = $casinoHashedPwd;
-             $result = $commonUBRedeem->redeem($login_pwd, $startSessionFormModel->terminal_id, $this->site_id, $bcf, 
-                            $service_id, $startSessionFormModel->amount, $paymentType, $this->acc_id, 
-                            $loyaltyCardNo, $mid, $casinoUserMode,$casinoUsername,
-                            $casinoPassword,$casinoServiceID);
+//            if($isewallet > 0){
+//                $message = "Redemption failed. Player's account is already e-wallet.";
+//                logger($message);
+//                $this->throwError($message);
+//            }
+//        }
+        
+        if($isewallet > 0 && $service_id == 19){
+            $result = $this->_lock($startSessionFormModel->terminal_id);
         }
-        
-        
-        /**************************** LOYALTY *****************************/
-        $pos_account_no = $sitesModel->getPosAccountNo($this->site_id);
-        
-        //Insert to loyaltyrequestlogs
-        $loyaltyrequestlogsID = $loyaltyrequestlogs->insert($mid, 'W', $startSessionFormModel->terminal_id, $startSessionFormModel->amount, $result["trans_details_id"],$paymentType,$isCreditable);
-        $transdate = CasinoApi::udate('Y-m-d H:i:s.u');
-        $isSuccessful = $loyalty->processPoints($loyaltyCardNo, $transdate, 1, 'W', $startSessionFormModel->amount,$this->site_id, $result["trans_details_id"],
-                                                                                                                $result['terminal_name'], $isCreditable,'', 7, 1);
-        
-         //check if the loyaltydeposit is successful, if success insert to loyaltyrequestlogs and status = 1 else 2
-        if($isSuccessful){
-            $loyaltyrequestlogs->updateLoyaltyRequestLogs($loyaltyrequestlogsID,1);
-        } else {
-            $loyaltyrequestlogs->updateLoyaltyRequestLogs($loyaltyrequestlogsID,2);
+        else{
+            //checking if casino is terminal based
+            if($ref_service['UserMode'] == 0){
+                 $login_acct = $terminalName;
+                 $terminal_pwd = $terminalsmodel->getTerminalPassword($startSessionFormModel->terminal_id, 
+                                    $service_id);
+                 $login_pwd = $terminal_pwd['HashedServicePassword'];
+                 $result = $commonRedeem->redeem($login_pwd, $startSessionFormModel->terminal_id, $this->site_id, $bcf, 
+                                $service_id, $startSessionFormModel->amount, $paymentType, $this->acc_id, 
+                                $loyaltyCardNo, $mid, $casinoUserMode,$casinoUsername,
+                                $casinoPassword,$casinoServiceID);
+            } 
+
+            //checking if casino is user based
+            if($ref_service['UserMode'] == 1){
+                 $login_acct = $casinoUsername;
+                 $login_pwd  = $casinoHashedPwd;
+                 $result = $commonUBRedeem->redeem($login_pwd, $startSessionFormModel->terminal_id, $this->site_id, $bcf, 
+                                $service_id, $startSessionFormModel->amount, $paymentType, $this->acc_id, 
+                                $loyaltyCardNo, $mid, $casinoUserMode,$casinoUsername,
+                                $casinoPassword,$casinoServiceID);
+            }
+
+
+            /**************************** LOYALTY *****************************/
+            $pos_account_no = $sitesModel->getPosAccountNo($this->site_id);
+
+            //Insert to loyaltyrequestlogs
+            $loyaltyrequestlogsID = $loyaltyrequestlogs->insert($mid, 'W', $startSessionFormModel->terminal_id, $startSessionFormModel->amount, $result["trans_details_id"],$paymentType,$isCreditable);
+            $transdate = CasinoApi::udate('Y-m-d H:i:s.u');
+            $isSuccessful = $loyalty->processPoints($loyaltyCardNo, $transdate, 1, 'W', $startSessionFormModel->amount,$this->site_id, $result["trans_details_id"],
+                                                                                                                    $result['terminal_name'], $isCreditable,'', 7, 1);
+
+             //check if the loyaltydeposit is successful, if success insert to loyaltyrequestlogs and status = 1 else 2
+            if($isSuccessful){
+                $loyaltyrequestlogs->updateLoyaltyRequestLogs($loyaltyrequestlogsID,1);
+            } else {
+                $loyaltyrequestlogs->updateLoyaltyRequestLogs($loyaltyrequestlogsID,2);
+            }
         }
         
         echo json_encode($result);
@@ -825,7 +858,10 @@ class FrontendController extends MI_Controller {
         if($hassession > 0){
             $message = 'Error: Please end session first.';
             logger($message);
-            $this->throwError($message);
+            
+            $result = array('message'=>$message);
+            echo json_encode($result);
+            Mirage::app()->end();  
         }
         
         $checkpinresult = $pcws->CheckPin($loyaltycard, $pin, $systemusername);
@@ -836,7 +872,10 @@ class FrontendController extends MI_Controller {
         else{
             $message = 'Error: Checking of PIN Failed';
             logger($message);
-            $this->throwError($message);
+            
+            $result = array('message'=>$message);
+            echo json_encode($result);
+            Mirage::app()->end(); 
         }
         
         $checkpinresult = $checkpinresult->checkPin->TransactionMessage;
@@ -844,7 +883,10 @@ class FrontendController extends MI_Controller {
         if(!preg_match('/\Successful\b/', $checkpinresult)){
             $message = $checkpinresult;
             logger($message);
-            $this->throwError($message);
+            
+            $result = array('message'=>$message);
+            echo json_encode($result);
+            Mirage::app()->end(); 
         }
         
         $terminalcount = $terminalSessionsModel->checkSession($loyaltycard, $service_id);
@@ -852,7 +894,10 @@ class FrontendController extends MI_Controller {
         if($terminalcount > 0){
             $message = 'User still has a pending terminal session.';
             logger($message);
-            $this->throwError($message); 
+            
+            $result = array('message'=>$message);
+            echo json_encode($result);
+            Mirage::app()->end(); 
         }
         
         list($is_loyalty, $card_number,$loyalty, $casinos, $mid, $casinoarray_count, $isewallet) = 
@@ -868,7 +913,10 @@ class FrontendController extends MI_Controller {
         if($isewallet < 1){
             $message = "Withdraw failed. Player's account must be e-wallet.";
             logger($message);
-            $this->throwError($message);
+            
+            $result = array('message'=>$message);
+            echo json_encode($result);
+            Mirage::app()->end(); 
         }
 
         $casinos = $this->loopAndFindCasinoService($casinos, 'ServiceID', $service_id);
@@ -877,7 +925,10 @@ class FrontendController extends MI_Controller {
         if(empty($casinos)){
             $message = 'Please use appropriate membership/temporary card for this casino';
             logger($message);
-            $this->throwError($message); 
+            
+            $result = array('message'=>$message);
+            echo json_encode($result);
+            Mirage::app()->end(); 
         }
         
         $casinoarray_count = count($casinos);
@@ -897,25 +948,25 @@ class FrontendController extends MI_Controller {
             
         if($result[0] == 200){
             $result = json_decode($result[1]);
+            
+            $result = $result->Withdraw->TransactionMessage;
+        
+            if(preg_match('/\Successful\b/', $result)) {
+                $result = array('message'=>$result);
+
+            }
+            else{
+                $result = array('message'=>$result);
+                logger($message);
+            }  
         }
         else{
             $message = 'Error: Withdraw Transaction Failed';
+            $result = array('message'=>$message);
             logger($message);
-            $this->throwError($message);
-        }
+        } 
         
-        $result = $result->Withdraw->TransactionMessage;
-        
-        if(preg_match('/\Successful\b/', $result)) {
-            $result = array('message'=>$result);
-            echo json_encode($result);
-        }
-        else{
-            $message = $result;
-            logger($message);
-            $this->throwError($message);
-        }   
-        
+        echo json_encode($result);
         Mirage::app()->end();        
     }
     
@@ -979,16 +1030,35 @@ class FrontendController extends MI_Controller {
     
     public function _lock($terminalID){
         Mirage::loadComponents(array('PCWSAPI.class'));
-        Mirage::loadModels(array('TerminalSessionsModel', 'TerminalsModel'));
         
         $pcwsAPI = new PCWSAPI();
         $terminalSessionsModel = new TerminalSessionsModel();
         $terminalsModel = new TerminalsModel();
+        $casinoApi = new CasinoApi();
        
-        $login = $terminalSessionsModel->getUBServiceLoginByTerminalID($terminalID);
+        $casinoUBDetails = $terminalSessionsModel->getLastSessionDetails($terminalID);
+        
+        foreach ($casinoUBDetails as $val){
+            $casinoUsername = $val['UBServiceLogin'];
+            $casinoPassword = $val['UBServicePassword'];
+            $login_pwd = $val['UBHashedServicePassword'];
+            $mid = $val['MID'];
+            $loyaltyCardNo = $val['LoyaltyCardNumber'];
+            $casinoUserMode = $val['UserMode'];
+            $casinoServiceID = $val['ServiceID'];
+        }
         $systemusername = Mirage::app()->param['pcwssysusername'];
-     
-        $result = $pcwsAPI->Lock($systemusername, $login);
+        
+        $terminalType = $terminalsModel->checkTerminalType($terminalID);
+        
+        if($terminalType == 2){
+            $casinoApi->callSpyderAPI($commandId = 9, $terminalID, $casinoUsername, $login_pwd, $casinoServiceID);
+        }
+        else{
+            $casinoApi->callSpyderAPI($commandId = 1, $terminalID, $casinoUsername, $login_pwd, $casinoServiceID);
+        }
+        
+        $result = $pcwsAPI->Lock($systemusername, $casinoUsername);
       
         if($result[0] == 200){
             $result = json_decode($result[1]);
@@ -1003,28 +1073,28 @@ class FrontendController extends MI_Controller {
         
         if(preg_match('/\Successful\b/', $result)) {
             $result = array('message'=>$result);
-            echo json_encode($result);
         }
         else{
+            $casinoApi->callSpyderAPI($commandId = 0, $terminalID, $casinoUsername, $login_pwd, $casinoServiceID);
             $message = $result;
             logger($message);
             $this->throwError($message);
         }        
         
-      
-        echo json_encode(array('message'=>$message));
-        Mirage::app()->end();
+        return $result; 
         
     }
     
     public function _Unlock($tCode, $cardNumber){
-        Mirage::loadComponents(array('PCWSAPI.class', 'LoyaltyAPIWrapper.class'));
-        Mirage::loadModels(array('TerminalSessionsModel', 'TerminalsModel', 'TerminalServicesModel'));
- 
+        Mirage::loadComponents(array('PCWSAPI.class', 'AsynchronousRequest.class'));
+        Mirage::loadModels(array('TerminalServicesModel'));
+         
         $pcwsAPI = new PCWSAPI();
         $terminalSessionsModel = new TerminalSessionsModel();
         $terminalsModel = new TerminalsModel();
         $terminalServices = new TerminalServicesModel();
+        $spyderReqLogsModel = new SpyderRequestLogsModel();
+        $asynchronousRequest = new AsynchronousRequest();
        
         $terminalID = $terminalsModel->getTerminalID($tCode);
         $service_id = $terminalServices->getServiceIDByTerminalID($terminalID);
@@ -1032,6 +1102,22 @@ class FrontendController extends MI_Controller {
         
         list($is_loyalty, $card_number,$loyalty, $casinos, $mid, $casinoarray_count) = 
                                             $this->getCardInfo($cardNumber, $this->site_id, $terminaltype);
+        
+        $casinos = $this->loopAndFindCasinoService($casinos, 'ServiceID', $service_id);
+
+            $casinoarray_count = count($casinos);
+
+            for($ctr = 0; $ctr < $casinoarray_count; $ctr++)
+            {
+                    if($service_id == $casinos[$ctr]['ServiceID'] ){
+                        $casinoUsername = $casinos[$ctr]['ServiceUsername'];
+                        $casinoPassword = $casinos[$ctr]['ServicePassword'];
+                        $casinoHashedPassword = $casinos[$ctr]['HashedServicePassword'];
+                        $casinoServiceID = $casinos[$ctr]['ServiceID'];
+                        $casinoStatus = $casinos[$ctr]['Status'];
+                        $casinoIsVIP = $casinos[$ctr]['isVIP'];
+                    }
+            }
         
         $terminalCode = trim(str_replace('ICSA-','',$tCode));
         $systemusername = Mirage::app()->param['pcwssysusername'];
@@ -1049,20 +1135,29 @@ class FrontendController extends MI_Controller {
         
         $result = $result->Unlock->TransactionMessage;
         
+        //if spyder call was enabled in cashier config, call SAPI
+        if($_SESSION['spyder_enabled'] == 1){
+            $commandId = 0; //unlock
+            $spyder_req_id = $spyderReqLogsModel->insert($tCode, $commandId);
+            $terminal = substr($tCode, strlen("ICSA-")); //removes the "icsa-
+            $computerName = str_replace("VIP", '', $terminal);
+            
+            $params = array('r'=>'spyder/run','TerminalName'=>$computerName,'CommandID'=>$commandId,
+                            'UserName'=>$casinoUsername,'Password'=>$casinoHashedPassword,'Type'=> Mirage::app()->param['SAPI_Type'],
+                            'SpyderReqID'=>$spyder_req_id,'CasinoID'=>$service_id);
+
+            $asynchronousRequest->curl_request_async(Mirage::app()->param['Asynchronous_URI'], $params);
+        }
+        
         if(preg_match('/\Successful\b/', $result)) {
-            $result = array('message'=>$result);
-            echo json_encode($result);
+            $result = array('message'=>$result,'Unlock'=>'1');
         }
         else{
             $message = $result;
             logger($message);
             $this->throwError($message);
-        }        
-        
-      
-        echo json_encode(array('message'=>$message));
-        Mirage::app()->end();
-        
+        }
+        return $result;
     }
     
     /**
@@ -1122,375 +1217,377 @@ class FrontendController extends MI_Controller {
             $isVIP = $_POST['isvip'];
        }
        
-//        //check if voucher
-        if(isset($startSessionFormModel->voucher_code) && $startSessionFormModel->voucher_code !='')
-        {
-                    $paymentType = 2; //payment type is coupon 
-                    $vouchercode = $startSessionFormModel->voucher_code;
-                    $source = Mirage::app()->param['voucher_source'];
-                    $trackingId = '';
-                    $verifyVoucherResult = $voucherManagement->verifyVoucher($vouchercode, $accid, $source, $trackingId);
-                   
-                    //verify if vms API has no error/reachable
-                    if(is_string($verifyVoucherResult)){
-                        $message = $verifyVoucherResult;
-                        logger($message);
-                        $this->throwError($message);
-                    }
+       list($is_loyalty, $card_number,$loyalty, $casinos, $mid, $casinoarray_count, $isewallet) = 
+                                            $this->getCardInfo($startSessionFormModel->loyalty_card, $this->site_id, $terminaltype);
+       
+       if($isewallet > 0 && $ref_service['ServiceID'] == 19){
+           $result = $this->_Unlock($terminalname, $startSessionFormModel->loyalty_card);
+       }
+       else{
+           //        //check if voucher
+                if(isset($startSessionFormModel->voucher_code) && $startSessionFormModel->voucher_code !='')
+                {
+                            $paymentType = 2; //payment type is coupon 
+                            $vouchercode = $startSessionFormModel->voucher_code;
+                            $source = Mirage::app()->param['voucher_source'];
+                            $trackingId = '';
+                            $verifyVoucherResult = $voucherManagement->verifyVoucher($vouchercode, $accid, $source, $trackingId);
 
-                    //check if voucher is not yet claimed
-                    if(isset($verifyVoucherResult['VerifyVoucher']['ErrorCode']) && $verifyVoucherResult['VerifyVoucher']['ErrorCode'] == 0)
-                    {
-                        if(isset($verifyVoucherResult['VerifyVoucher']['Amount']) && $verifyVoucherResult['VerifyVoucher']['Amount'] != '')
-                        {
-                            $isCreditable = $verifyVoucherResult['VerifyVoucher']['LoyaltyCreditable'];
-                            $amount = $verifyVoucherResult['VerifyVoucher']['Amount'];
-                            $denominationtype = DENOMINATION_TYPE::INITIAL_DEPOSIT;
-                            
-                            $denomination = $this->_getDenoCasinoMinMax($denominationtype);
-                            $min_deno = $denomination['min_denomination'];
-                            $max_deno = $denomination['max_denomination'];
-
-                            //check if the amount of initial deposit is in denomination range and divisible by 100
-                            if(isset($min_deno) && $amount < toInt($min_deno)){
-                                $min_deno = toInt($min_deno);
-                                $message = 'Amount should be greater than or equal to '.number_format($min_deno,2);
+                            //verify if vms API has no error/reachable
+                            if(is_string($verifyVoucherResult)){
+                                $message = $verifyVoucherResult;
                                 logger($message);
                                 $this->throwError($message);
-                            } elseif(isset($max_deno) && $amount > toInt($max_deno)) {
-                                    $max_deno = toInt($max_deno);
-                                    $message = 'Amount should be less than or equal to '.number_format($max_deno,2);
-                                    logger($message);
-                                    $this->throwError($message);       
-                            } elseif ($amount % 100 != 0 ) {
-                                    $message = 'Amount should be divisible by 100';
-                                    logger($message);
-                                    $this->throwError($message);  
-                            } else {
-                                
-                                    $trackingId = "c".$casinoAPI->udate('YmdHisu');
-                                    
-                                    list($is_loyalty, $card_number,$loyalty, $casinos, $mid, $casinoarray_count, $isewallet) = 
-                                            $this->getCardInfo($startSessionFormModel->loyalty_card, $this->site_id, $terminaltype);
-                                    
-                                    $casinoUsername = '';
-                                    $casinoPassword = '';
-                                    $casinoHashedPassword = '';
-                                    $casinoServiceID = '';
-                                    $casinoStatus = '';
+                            }
 
-                                    for($ctr = 0; $ctr < $casinoarray_count; $ctr++)
-                                    {
-                                            if($ref_service['ServiceID'] == $casinos[$ctr]['ServiceID'] ){
-                                                $casinoUsername = $casinos[$ctr]['ServiceUsername'];
-                                                $casinoPassword = $casinos[$ctr]['ServicePassword'];
-                                                $casinoHashedPassword = $casinos[$ctr]['HashedServicePassword'];
-                                                $casinoServiceID = $casinos[$ctr]['ServiceID'];
-                                                $casinoStatus = $casinos[$ctr]['Status'];
-                                                $casinoIsVIP = $casinos[$ctr]['isVIP'];
-                                            }
-                                    }
-                                    
-                                    if($ref_service['Code'] == 'MM'){
-                                        //verify if card is ewallet
-                                        if($isewallet > 0){
-                                            $message = "Start session failed. Player's account is already e-wallet.";
+                            //check if voucher is not yet claimed
+                            if(isset($verifyVoucherResult['VerifyVoucher']['ErrorCode']) && $verifyVoucherResult['VerifyVoucher']['ErrorCode'] == 0)
+                            {
+                                if(isset($verifyVoucherResult['VerifyVoucher']['Amount']) && $verifyVoucherResult['VerifyVoucher']['Amount'] != '')
+                                {
+                                    $isCreditable = $verifyVoucherResult['VerifyVoucher']['LoyaltyCreditable'];
+                                    $amount = $verifyVoucherResult['VerifyVoucher']['Amount'];
+                                    $denominationtype = DENOMINATION_TYPE::INITIAL_DEPOSIT;
+
+                                    $denomination = $this->_getDenoCasinoMinMax($denominationtype);
+                                    $min_deno = $denomination['min_denomination'];
+                                    $max_deno = $denomination['max_denomination'];
+
+                                    //check if the amount of initial deposit is in denomination range and divisible by 100
+                                    if(isset($min_deno) && $amount < toInt($min_deno)){
+                                        $min_deno = toInt($min_deno);
+                                        $message = 'Amount should be greater than or equal to '.number_format($min_deno,2);
+                                        logger($message);
+                                        $this->throwError($message);
+                                    } elseif(isset($max_deno) && $amount > toInt($max_deno)) {
+                                            $max_deno = toInt($max_deno);
+                                            $message = 'Amount should be less than or equal to '.number_format($max_deno,2);
                                             logger($message);
-                                            $this->throwError($message);
-                                        }
-                                    }
-                                    
-                                    //checking if casino is terminal based
-                                    if($ref_service['UserMode'] == 0){
-                                        $login_acct = $terminalname;
-                                        $terminal_pwd = $terminalsmodel->getTerminalPassword($terminal_id, $startSessionFormModel->casino);
-                                        $login_pwd = $terminal_pwd['HashedServicePassword'];
-                                        $result = $commonStartSession->start($terminal_id, $siteid, 'D', $paymentType, $startSessionFormModel->casino,
-                                                           toInt($this->getSiteBalance()),toInt($amount),$accid,$card_number, 
-                                                           $startSessionFormModel->voucher_code, $trackingId, $casinoUsername,
-                                                           $casinoPassword, $casinoHashedPassword, $casinoServiceID, $mid, $ref_service['UserMode']);
-                                    } 
-
-                                    //checking if casino is user based
-                                    if($ref_service['UserMode'] == 1)
-                                    {
-                                        $login_acct = $casinoUsername;
-                                        $login_pwd = $casinoHashedPassword;
-                                        //check if isVIP of chosen casino is match with the isVIP parameter thrown by loyalty getCardInfo function.
-//                                       
-                                        if($casinoIsVIP == 1){
-                                            if($isVIP == 0){
-                                                $terminalcode = $terminalsmodel->getTerminalName($terminal_id);
-//                                            
-                                                $terminalcode = $terminalcode.'VIP';
-                                                $terminal_id = $terminalsmodel->getTerminalID($terminalcode);
-                                            }
-                                        }
-                                        else{
-                                            if($isVIP == 1){
-                                                $terminalcode = $terminalsmodel->getTerminalName($terminal_id);
-//                                            
-                                                $rest = preg_match('/VIP/', $terminalcode);
-
-                                                if($rest > 0){
-                                                    $terminalcode = substr($terminalcode, 0, -3);
-
-                                                    $terminal_id = $terminalsmodel->getTerminalID($terminalcode);
-                                                }
-                                                
-                                            }
-                                        }
-                                        
-                                        $result = $commonUBStartSession->start($terminal_id, $siteid, 'D', $paymentType, $startSessionFormModel->casino,
-                                                           toInt($this->getSiteBalance()),toInt($amount),$accid,$card_number, 
-                                                           $startSessionFormModel->voucher_code,$trackingId, $casinoUsername,
-                                                           $casinoPassword, $casinoHashedPassword, $casinoServiceID, $mid, $ref_service['UserMode']);
-                                    }
-
-                                    $pos_account_no = $sitesModel->getPosAccountNo($this->site_id);
-                                    
-                                    /************************ FOR LOYALTY *************************/
-                                    
-                                    //Insert to loyaltyrequestlogs
-//                                    $loyaltyrequestlogsID = $loyaltyrequestlogs->insert($mid, 'D', $terminal_id, $amount, $result["trans_details_id"], $paymentType, $isCreditable);
-//                                    $transdate = CasinoApi::udate('Y-m-d H:i:s.u');
-//                                    if($is_loyalty) {
-//                                        $isSuccessful = $loyalty->processPoints($startSessionFormModel->loyalty_card, $transdate, 2, 'D', $amount,$siteid, $result["trans_details_id"],
-//                                                                                                                $result['terminal_name'], $isCreditable,$startSessionFormModel->voucher_code, 7, 1);
-//                                    }
-//                                                                
-//                                     //check if the loyaltydeposit is successful, if success insert to loyaltyrequestlogs and status = 1 else 2
-//                                    if($isSuccessful){
-//                                        $loyaltyrequestlogs->updateLoyaltyRequestLogs($loyaltyrequestlogsID,1);
-//                                    } else {
-//                                        $loyaltyrequestlogs->updateLoyaltyRequestLogs($loyaltyrequestlogsID,2);
-//                                    }
-                                    
-                                    //Insert to vmsrequestlogs
-                                    $vmsrequestlogsID = $vmsrequestlogs->insert($vouchercode, $accid, $terminal_id,$trackingId);
-                                    
-                                    //use voucher, and check result
-                                    $useVoucherResult = $voucherManagement->useVoucher($accid, $trackingId, $vouchercode, $terminal_id, $source, $siteid, $mid);
-                                    
-                                    //If first try of use voucher fails, retry
-                                    if(isset($useVoucherResult['UseVoucher']['ErrorCode']) && $useVoucherResult['UseVoucher']['ErrorCode'] != 0)
-                                    {
-                                        $vmsrequestlogs->updateVMSRequestLogs($vmsrequestlogsID, 2);
-                                        
-                                        //verify tracking id, if tracking id is not found and voucher is unclaimed proceed to use voucher
-                                        $verifyVoucherResult = $voucherManagement->verifyVoucher('', $accid, $source, $trackingId);
-
-                                        //check if tracking result is not found that means transaction was not successful on the first try
-                                        if(isset($verifyVoucherResult['VerifyVoucher']['ErrorCode']) && $verifyVoucherResult['VerifyVoucher']['ErrorCode'] != 0){
+                                            $this->throwError($message);       
+                                    } elseif ($amount % 100 != 0 ) {
+                                            $message = 'Amount should be divisible by 100';
+                                            logger($message);
+                                            $this->throwError($message);  
+                                    } else {
 
                                             $trackingId = "c".$casinoAPI->udate('YmdHisu');
 
-                                            //Insert to vmsrequestlogs
-                                            $vmsrequestlogs->insert($vouchercode, $accid, $terminal_id,$trackingId);
+                                            $casinoUsername = '';
+                                            $casinoPassword = '';
+                                            $casinoHashedPassword = '';
+                                            $casinoServiceID = '';
+                                            $casinoStatus = '';
 
+                                            for($ctr = 0; $ctr < $casinoarray_count; $ctr++)
+                                            {
+                                                    if($ref_service['ServiceID'] == $casinos[$ctr]['ServiceID'] ){
+                                                        $casinoUsername = $casinos[$ctr]['ServiceUsername'];
+                                                        $casinoPassword = $casinos[$ctr]['ServicePassword'];
+                                                        $casinoHashedPassword = $casinos[$ctr]['HashedServicePassword'];
+                                                        $casinoServiceID = $casinos[$ctr]['ServiceID'];
+                                                        $casinoStatus = $casinos[$ctr]['Status'];
+                                                        $casinoIsVIP = $casinos[$ctr]['isVIP'];
+                                                    }
+                                            }
+
+//                                            if($ref_service['Code'] == 'MM'){
+//                                                //verify if card is ewallet
+//                                                if($isewallet > 0){
+//                                                    $message = "Start session failed. Player's account is already e-wallet.";
+//                                                    logger($message);
+//                                                    $this->throwError($message);
+//                                                }
+//                                            }
+
+                                            //checking if casino is terminal based
+                                            if($ref_service['UserMode'] == 0){
+                                                $login_acct = $terminalname;
+                                                $terminal_pwd = $terminalsmodel->getTerminalPassword($terminal_id, $startSessionFormModel->casino);
+                                                $login_pwd = $terminal_pwd['HashedServicePassword'];
+                                                $result = $commonStartSession->start($terminal_id, $siteid, 'D', $paymentType, $startSessionFormModel->casino,
+                                                                   toInt($this->getSiteBalance()),toInt($amount),$accid,$card_number, 
+                                                                   $startSessionFormModel->voucher_code, $trackingId, $casinoUsername,
+                                                                   $casinoPassword, $casinoHashedPassword, $casinoServiceID, $mid, $ref_service['UserMode']);
+                                            } 
+
+                                            //checking if casino is user based
+                                            if($ref_service['UserMode'] == 1)
+                                            {
+                                                $login_acct = $casinoUsername;
+                                                $login_pwd = $casinoHashedPassword;
+                                                //check if isVIP of chosen casino is match with the isVIP parameter thrown by loyalty getCardInfo function.
+        //                                       
+                                                if($casinoIsVIP == 1){
+                                                    if($isVIP == 0){
+                                                        $terminalcode = $terminalsmodel->getTerminalName($terminal_id);
+        //                                            
+                                                        $terminalcode = $terminalcode.'VIP';
+                                                        $terminal_id = $terminalsmodel->getTerminalID($terminalcode);
+                                                    }
+                                                }
+                                                else{
+                                                    if($isVIP == 1){
+                                                        $terminalcode = $terminalsmodel->getTerminalName($terminal_id);
+        //                                            
+                                                        $rest = preg_match('/VIP/', $terminalcode);
+
+                                                        if($rest > 0){
+                                                            $terminalcode = substr($terminalcode, 0, -3);
+
+                                                            $terminal_id = $terminalsmodel->getTerminalID($terminalcode);
+                                                        }
+
+                                                    }
+                                                }
+
+                                                $result = $commonUBStartSession->start($terminal_id, $siteid, 'D', $paymentType, $startSessionFormModel->casino,
+                                                                   toInt($this->getSiteBalance()),toInt($amount),$accid,$card_number, 
+                                                                   $startSessionFormModel->voucher_code,$trackingId, $casinoUsername,
+                                                                   $casinoPassword, $casinoHashedPassword, $casinoServiceID, $mid, $ref_service['UserMode']);
+                                            }
+
+                                            $pos_account_no = $sitesModel->getPosAccountNo($this->site_id);
+
+                                            /************************ FOR LOYALTY *************************/
+
+                                            //Insert to loyaltyrequestlogs
+        //                                    $loyaltyrequestlogsID = $loyaltyrequestlogs->insert($mid, 'D', $terminal_id, $amount, $result["trans_details_id"], $paymentType, $isCreditable);
+        //                                    $transdate = CasinoApi::udate('Y-m-d H:i:s.u');
+        //                                    if($is_loyalty) {
+        //                                        $isSuccessful = $loyalty->processPoints($startSessionFormModel->loyalty_card, $transdate, 2, 'D', $amount,$siteid, $result["trans_details_id"],
+        //                                                                                                                $result['terminal_name'], $isCreditable,$startSessionFormModel->voucher_code, 7, 1);
+        //                                    }
+        //                                                                
+        //                                     //check if the loyaltydeposit is successful, if success insert to loyaltyrequestlogs and status = 1 else 2
+        //                                    if($isSuccessful){
+        //                                        $loyaltyrequestlogs->updateLoyaltyRequestLogs($loyaltyrequestlogsID,1);
+        //                                    } else {
+        //                                        $loyaltyrequestlogs->updateLoyaltyRequestLogs($loyaltyrequestlogsID,2);
+        //                                    }
+
+                                            //Insert to vmsrequestlogs
+                                            $vmsrequestlogsID = $vmsrequestlogs->insert($vouchercode, $accid, $terminal_id,$trackingId);
+
+                                            //use voucher, and check result
                                             $useVoucherResult = $voucherManagement->useVoucher($accid, $trackingId, $vouchercode, $terminal_id, $source, $siteid, $mid);
 
+                                            //If first try of use voucher fails, retry
                                             if(isset($useVoucherResult['UseVoucher']['ErrorCode']) && $useVoucherResult['UseVoucher']['ErrorCode'] != 0)
                                             {
-                                                    $vmsrequestlogs->updateVMSRequestLogs($vmsrequestlogsID, 2);
-                                                    $this->throwError($useVoucherResult['UseVoucher']['TransMsg']);
+                                                $vmsrequestlogs->updateVMSRequestLogs($vmsrequestlogsID, 2);
+
+                                                //verify tracking id, if tracking id is not found and voucher is unclaimed proceed to use voucher
+                                                $verifyVoucherResult = $voucherManagement->verifyVoucher('', $accid, $source, $trackingId);
+
+                                                //check if tracking result is not found that means transaction was not successful on the first try
+                                                if(isset($verifyVoucherResult['VerifyVoucher']['ErrorCode']) && $verifyVoucherResult['VerifyVoucher']['ErrorCode'] != 0){
+
+                                                    $trackingId = "c".$casinoAPI->udate('YmdHisu');
+
+                                                    //Insert to vmsrequestlogs
+                                                    $vmsrequestlogs->insert($vouchercode, $accid, $terminal_id,$trackingId);
+
+                                                    $useVoucherResult = $voucherManagement->useVoucher($accid, $trackingId, $vouchercode, $terminal_id, $source, $siteid, $mid);
+
+                                                    if(isset($useVoucherResult['UseVoucher']['ErrorCode']) && $useVoucherResult['UseVoucher']['ErrorCode'] != 0)
+                                                    {
+                                                            $vmsrequestlogs->updateVMSRequestLogs($vmsrequestlogsID, 2);
+                                                            $this->throwError($useVoucherResult['UseVoucher']['TransMsg']);
+                                                    } else {
+                                                            //check if the useVoucher is successful, if success insert to vmsrequestlogs and status = 1 else 2
+                                                            $vmsrequestlogs->updateVMSRequestLogs($vmsrequestlogsID, 1);
+                                                    }
+
+                                                }
+
                                             } else {
-                                                    //check if the useVoucher is successful, if success insert to vmsrequestlogs and status = 1 else 2
-                                                    $vmsrequestlogs->updateVMSRequestLogs($vmsrequestlogsID, 1);
+                                                //check if the useVoucher is successful, if success insert to vmsrequestlogs and status = 1 else 2
+                                                $vmsrequestlogs->updateVMSRequestLogs($vmsrequestlogsID, 1);
                                             }
 
                                         }
-                                        
-                                    } else {
-                                        //check if the useVoucher is successful, if success insert to vmsrequestlogs and status = 1 else 2
-                                        $vmsrequestlogs->updateVMSRequestLogs($vmsrequestlogsID, 1);
-                                    }
-                                    
+                                } 
+                                else 
+                                {
+                                        $message = 'Amount is not set';
+                                        logger($message);
+                                        $this->throwError($message);
                                 }
-                        } 
-                        else 
-                        {
-                                $message = 'Amount is not set';
+                            } 
+                            else 
+                            {
+                                $message = 'VMS: '.$verifyVoucherResult['VerifyVoucher']['TransMsg'];
                                 logger($message);
                                 $this->throwError($message);
+                            }
+                }
+                else 
+                {
+                    $paymentType = 1; //payment type is cash
+                    $isCreditable = 1;
+
+                    //check if amount is other denomination
+                    if($startSessionFormModel->sel_amount == '' || $startSessionFormModel->sel_amount == '--'){
+                        $amount = $startSessionFormModel->amount; //amount inputted
+                    } else {
+                        $amount = $startSessionFormModel->sel_amount; //amount selected
+                    }
+
+                    //check if amount is bancnet
+                    if($startSessionFormModel->sel_amount=='bancnet'){
+                        if($traceNumber==''){
+                            $message = 'Trace number cannot be empty.';
+                            logger($message);
+                            $this->throwError($message);
                         }
-                    } 
-                    else 
+
+                        if($referenceNumber==''){
+                            $message = 'Reference Number cannot be empty.';
+                            logger($message);
+                            $this->throwError($message);
+                        }
+                        $amount = $startSessionFormModel->amount;
+
+                    }else if(!empty($traceNumber) && !empty($referenceNumber)){
+                        $amount = $startSessionFormModel->amount;
+                    }
+
+                    $casinoUsername = '';
+                    $casinoPassword = '';
+                    $casinoHashedPassword = '';
+                    $casinoServiceID = '';
+                    $casinoStatus = '';
+
+//                    if($ref_service['Code'] == 'MM'){
+//                        //verify if card is ewallet
+//                        if($isewallet > 0){
+//                            $message = "Start session failed. Player's account is already e-wallet.";
+//                            logger($message);
+//                            $this->throwError($message);
+//                        }
+//                    }
+
+                    $casinos = $this->loopAndFindCasinoService($casinos, 'ServiceID', $ref_service['ServiceID']);
+
+                    if($ref_service['UserMode'] == 1){
+                        if(empty($casinos)){
+                            $message = 'Please use appropriate membership/temporary card for this casino';
+                            logger($message);
+                            $this->throwError($message); 
+                        }
+                    }
+
+
+                    $casinoarray_count = count($casinos);
+
+                    for($ctr = 0; $ctr < $casinoarray_count; $ctr++)
                     {
-                        $message = 'VMS: '.$verifyVoucherResult['VerifyVoucher']['TransMsg'];
-                        logger($message);
-                        $this->throwError($message);
+                            if($ref_service['ServiceID'] == $casinos[$ctr]['ServiceID'] ){
+                                $casinoUsername = $casinos[$ctr]['ServiceUsername'];
+                                $casinoPassword = $casinos[$ctr]['ServicePassword'];
+                                $casinoHashedPassword = $casinos[$ctr]['HashedServicePassword'];
+                                $casinoServiceID = $casinos[$ctr]['ServiceID'];
+                                $casinoStatus = $casinos[$ctr]['Status'];
+                                $casinoIsVIP = $casinos[$ctr]['isVIP'];
+                            }
                     }
-        }
-        else 
-        {
-            $paymentType = 1; //payment type is cash
-            $isCreditable = 1;
-            
-            //check if amount is other denomination
-            if($startSessionFormModel->sel_amount == '' || $startSessionFormModel->sel_amount == '--'){
-                $amount = $startSessionFormModel->amount; //amount inputted
-            } else {
-                $amount = $startSessionFormModel->sel_amount; //amount selected
-            }
-            
-            //check if amount is bancnet
-            if($startSessionFormModel->sel_amount=='bancnet'){
-                if($traceNumber==''){
-                    $message = 'Trace number cannot be empty.';
-                    logger($message);
-                    $this->throwError($message);
-                }
 
-                if($referenceNumber==''){
-                    $message = 'Reference Number cannot be empty.';
-                    logger($message);
-                    $this->throwError($message);
-                }
-                $amount = $startSessionFormModel->amount;
-                
-            }else if(!empty($traceNumber) && !empty($referenceNumber)){
-                $amount = $startSessionFormModel->amount;
-            }
+                    //checking if casino is terminal based
+                    if($ref_service['UserMode'] == 0){
+                        $login_acct = $terminalname;
+                        $terminal_pwd = $terminalsmodel->getTerminalPassword($terminal_id, $startSessionFormModel->casino);
+                        $login_pwd = $terminal_pwd['HashedServicePassword'];
 
-            list($is_loyalty, $card_number,$loyalty, $casinos, $mid, $casinoarray_count, $isewallet) = 
-                    $this->getCardInfo($startSessionFormModel->loyalty_card, $this->site_id, $terminaltype);
+                        $result = $commonStartSession->start($terminal_id, $siteid, 'D', $paymentType, $startSessionFormModel->casino,
+                                           toInt($this->getSiteBalance()),toInt($amount),$accid,$card_number, 
+                                           $vouchercode, $trackingId, $casinoUsername,
+                                           $casinoPassword, $casinoHashedPassword, $casinoServiceID, $mid, $ref_service['UserMode'],$traceNumber, $referenceNumber);
+                    } 
 
-            $casinoUsername = '';
-            $casinoPassword = '';
-            $casinoHashedPassword = '';
-            $casinoServiceID = '';
-            $casinoStatus = '';
-            
-            if($ref_service['Code'] == 'MM'){
-                //verify if card is ewallet
-                if($isewallet > 0){
-                    $message = "Start session failed. Player's account is already e-wallet.";
-                    logger($message);
-                    $this->throwError($message);
-                }
-            }
+                    //checking if casino is user based
+                    if($ref_service['UserMode'] == 1)
+                    {
+                        $login_acct = $casinoUsername;
+                        $login_pwd = $casinoHashedPassword;
+                        // check if isVIP of chosen casino is match with the isVIP parameter thrown by loyalty getCardInfo function.
 
-            $casinos = $this->loopAndFindCasinoService($casinos, 'ServiceID', $ref_service['ServiceID']);
+                        if($casinoIsVIP == 1){
+                            if($isVIP == 0){
+                                $terminalcode = $terminalsmodel->getTerminalName($terminal_id);
 
-            if($ref_service['UserMode'] == 1){
-                if(empty($casinos)){
-                    $message = 'Please use appropriate membership/temporary card for this casino';
-                    logger($message);
-                    $this->throwError($message); 
-                }
-            }
+                                $terminalcode = $terminalcode.'VIP';
+                                $terminal_id = $terminalsmodel->getTerminalID($terminalcode);
 
+                            }
+                        }
+                        else{
+                            if($isVIP == 1){
+                                $terminalcode = $terminalsmodel->getTerminalName($terminal_id);
 
-            $casinoarray_count = count($casinos);
+                                $rest = preg_match('/VIP/', $terminalcode);
 
-            for($ctr = 0; $ctr < $casinoarray_count; $ctr++)
-            {
-                    if($ref_service['ServiceID'] == $casinos[$ctr]['ServiceID'] ){
-                        $casinoUsername = $casinos[$ctr]['ServiceUsername'];
-                        $casinoPassword = $casinos[$ctr]['ServicePassword'];
-                        $casinoHashedPassword = $casinos[$ctr]['HashedServicePassword'];
-                        $casinoServiceID = $casinos[$ctr]['ServiceID'];
-                        $casinoStatus = $casinos[$ctr]['Status'];
-                        $casinoIsVIP = $casinos[$ctr]['isVIP'];
-                    }
-            }
+                                if($rest > 0){
+                                    $terminalcode = substr($terminalcode, 0, -3);
 
-            //checking if casino is terminal based
-            if($ref_service['UserMode'] == 0){
-                $login_acct = $terminalname;
-                $terminal_pwd = $terminalsmodel->getTerminalPassword($terminal_id, $startSessionFormModel->casino);
-                $login_pwd = $terminal_pwd['HashedServicePassword'];
-                
-                $result = $commonStartSession->start($terminal_id, $siteid, 'D', $paymentType, $startSessionFormModel->casino,
-                                   toInt($this->getSiteBalance()),toInt($amount),$accid,$card_number, 
-                                   $vouchercode, $trackingId, $casinoUsername,
-                                   $casinoPassword, $casinoHashedPassword, $casinoServiceID, $mid, $ref_service['UserMode'],$traceNumber, $referenceNumber);
-            } 
+                                    $terminal_id = $terminalsmodel->getTerminalID($terminalcode);
+                                }
 
-            //checking if casino is user based
-            if($ref_service['UserMode'] == 1)
-            {
-                $login_acct = $casinoUsername;
-                $login_pwd = $casinoHashedPassword;
-                // check if isVIP of chosen casino is match with the isVIP parameter thrown by loyalty getCardInfo function.
-
-                if($casinoIsVIP == 1){
-                    if($isVIP == 0){
-                        $terminalcode = $terminalsmodel->getTerminalName($terminal_id);
-
-                        $terminalcode = $terminalcode.'VIP';
-                        $terminal_id = $terminalsmodel->getTerminalID($terminalcode);
-
-                    }
-                }
-                else{
-                    if($isVIP == 1){
-                        $terminalcode = $terminalsmodel->getTerminalName($terminal_id);
-
-                        $rest = preg_match('/VIP/', $terminalcode);
-
-                        if($rest > 0){
-                            $terminalcode = substr($terminalcode, 0, -3);
-
-                            $terminal_id = $terminalsmodel->getTerminalID($terminalcode);
+                            }
                         }
 
+                        //$this->throwError($bank.' : '.$approvalCode);
+                        $result = $commonUBStartSession->start($terminal_id, $siteid, 'D', $paymentType, $startSessionFormModel->casino,
+                                           toInt($this->getSiteBalance()),toInt($amount),$accid,$card_number, 
+                                           $vouchercode,$trackingId, $casinoUsername,
+                                           $casinoPassword, $casinoHashedPassword, $casinoServiceID, $mid, $ref_service['UserMode'],$traceNumber, $referenceNumber);
                     }
+
+                    $pos_account_no = $sitesModel->getPosAccountNo($this->site_id);
+
+                    /************************ FOR LOYALTY *************************/
+
+                    //Insert to loyaltyrequestlogs
+            //        $loyaltyrequestlogsID = $loyaltyrequestlogs->insert($mid, 'D', $terminal_id, $amount, $result["trans_details_id"], $paymentType,$isCreditable);
+            //        $transdate = CasinoApi::udate('Y-m-d H:i:s.u');
+            //        if($is_loyalty) {
+            //            $isSuccessful = $loyalty->processPoints($startSessionFormModel->loyalty_card, $transdate, 1, 'D', $amount,$siteid, $result["trans_details_id"],
+            //                                                                                    $result['terminal_name'], $isCreditable,$startSessionFormModel->voucher_code, 7, 1);
+            //        }
+            //
+            //         //check if the loyaltydeposit is successful, if success insert to loyaltyrequestlogs and status = 1 else 2
+            //        if($isSuccessful){
+            //            $loyaltyrequestlogs->updateLoyaltyRequestLogs($loyaltyrequestlogsID,1);
+            //        } else {
+            //            $loyaltyrequestlogs->updateLoyaltyRequestLogs($loyaltyrequestlogsID,2);
+            //        }
+
                 }
-                
-                //$this->throwError($bank.' : '.$approvalCode);
-                $result = $commonUBStartSession->start($terminal_id, $siteid, 'D', $paymentType, $startSessionFormModel->casino,
-                                   toInt($this->getSiteBalance()),toInt($amount),$accid,$card_number, 
-                                   $vouchercode,$trackingId, $casinoUsername,
-                                   $casinoPassword, $casinoHashedPassword, $casinoServiceID, $mid, $ref_service['UserMode'],$traceNumber, $referenceNumber);
-            }
 
-            $pos_account_no = $sitesModel->getPosAccountNo($this->site_id);
+                $res = $terminalSessionsModel->getDataById($terminal_id);
+                $asof = ' as of '.date('m/d/Y H:i:s',strtotime($res['LastTransactionDate']));
+                $time_playing = getTimePlaying($res['minutes']);
+                $result = array_merge($result,array('id'=>$terminal_id,'casino'=>$ref_service['Code'],
+                    'service_id'=>$startSessionFormModel->casino,'time_playing'=>$time_playing,
+                    'asof'=>$asof,'Unlock'=>'0'));
 
-            /************************ FOR LOYALTY *************************/
+                if($return) {
+                    return $result;
+                }
 
-            //Insert to loyaltyrequestlogs
-    //        $loyaltyrequestlogsID = $loyaltyrequestlogs->insert($mid, 'D', $terminal_id, $amount, $result["trans_details_id"], $paymentType,$isCreditable);
-    //        $transdate = CasinoApi::udate('Y-m-d H:i:s.u');
-    //        if($is_loyalty) {
-    //            $isSuccessful = $loyalty->processPoints($startSessionFormModel->loyalty_card, $transdate, 1, 'D', $amount,$siteid, $result["trans_details_id"],
-    //                                                                                    $result['terminal_name'], $isCreditable,$startSessionFormModel->voucher_code, 7, 1);
-    //        }
-    //
-    //         //check if the loyaltydeposit is successful, if success insert to loyaltyrequestlogs and status = 1 else 2
-    //        if($isSuccessful){
-    //            $loyaltyrequestlogs->updateLoyaltyRequestLogs($loyaltyrequestlogsID,1);
-    //        } else {
-    //            $loyaltyrequestlogs->updateLoyaltyRequestLogs($loyaltyrequestlogsID,2);
-    //        }
-                    
-        }
-        
-        $res = $terminalSessionsModel->getDataById($terminal_id);
-        $asof = ' as of '.date('m/d/Y H:i:s',strtotime($res['LastTransactionDate']));
-        $time_playing = getTimePlaying($res['minutes']);
-        $result = array_merge($result,array('id'=>$terminal_id,'casino'=>$ref_service['Code'],
-            'service_id'=>$startSessionFormModel->casino,'time_playing'=>$time_playing,
-            'asof'=>$asof));
-        
-        if($return) {
-            return $result;
-        }
-        
-        //if spyder call was enabled in cashier config, call SAPI
-        if($_SESSION['spyder_enabled'] == 1){
-            $commandId = 0; //unlock
-            $spyder_req_id = $spyderReqLogsModel->insert($terminalname, $commandId);
-            $terminal = substr($terminalname, strlen("ICSA-")); //removes the "icsa-
-            $computerName = str_replace("VIP", '', $terminal);
-            
-            $params = array('r'=>'spyder/run','TerminalName'=>$computerName,'CommandID'=>$commandId,
-                            'UserName'=>$login_acct,'Password'=>$login_pwd,'Type'=> Mirage::app()->param['SAPI_Type'],
-                            'SpyderReqID'=>$spyder_req_id,'CasinoID'=>$startSessionFormModel->casino);
+                //if spyder call was enabled in cashier config, call SAPI
+                if($_SESSION['spyder_enabled'] == 1){
+                    $commandId = 0; //unlock
+                    $spyder_req_id = $spyderReqLogsModel->insert($terminalname, $commandId);
+                    $terminal = substr($terminalname, strlen("ICSA-")); //removes the "icsa-
+                    $computerName = str_replace("VIP", '', $terminal);
 
-            $asynchronousRequest->curl_request_async(Mirage::app()->param['Asynchronous_URI'], $params);
-        }
+                    $params = array('r'=>'spyder/run','TerminalName'=>$computerName,'CommandID'=>$commandId,
+                                    'UserName'=>$login_acct,'Password'=>$login_pwd,'Type'=> Mirage::app()->param['SAPI_Type'],
+                                    'SpyderReqID'=>$spyder_req_id,'CasinoID'=>$startSessionFormModel->casino);
+
+                    $asynchronousRequest->curl_request_async(Mirage::app()->param['Asynchronous_URI'], $params);
+                }
+       }
         
         echo json_encode($result);
         Mirage::app()->end();
@@ -2158,7 +2255,7 @@ class FrontendController extends MI_Controller {
         
             $mid = $obj_result->CardInfo->MID;
             $isewallet = $obj_result->CardInfo->IsEwallet;
-
+            
         return array($is_loyalty, $card_number, $loyalty, $casinos, $mid, $casinoarray_count, $isewallet);
     }
     

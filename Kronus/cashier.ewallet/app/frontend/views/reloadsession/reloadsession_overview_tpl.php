@@ -91,7 +91,7 @@
         
         $('#btnreloadsa').click(function(){
             var voucher = $("#StartSessionFormModel_voucher_code").val();
-            if(!startSessionStandAloneChecking()) {
+            if(!reloadSessionStandAloneChecking()) {
                 return false;
             }
 //            if($('#StartSessionFormModel_sel_amount').is(':disabled')) {

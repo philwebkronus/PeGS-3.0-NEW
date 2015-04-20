@@ -49,5 +49,14 @@ class TerminalServicesModel extends MI_Model{
         return $result['ServiceID'];
     }
     
+    public function getAndCountCasinoServicesByTerminalID($terminalID){
+        $sql = 'SELECT COUNT(ServiceID) as ServicesCount, ServiceID FROM terminalservices WHERE TerminalID=:terminalID AND Status=1';
+        $param = array(':terminalID'=>$terminalID);
+        $this->exec($sql,$param);
+        $result =  $this->find();
+        
+        return $result;
+    }
+    
 }
 

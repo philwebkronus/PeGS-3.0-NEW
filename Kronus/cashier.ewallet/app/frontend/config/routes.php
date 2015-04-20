@@ -37,6 +37,8 @@ return array(
     'terminal/unlockhk'=>'Terminal/unlockHotKey',
     'terminal/calllock'=>'Terminal/callLock',
     'terminal/callUnlock'=>'Terminal/callUnlock',
+    'terminal/getCasinoServices'=>'Terminal/getAndCountCasinoServices',
+    'terminal/isEwallet'=>'Terminal/isEwalletSession',
     
     // routes for (forceT) termin monitoring
     'fterminal/overview'=>'ForceTTerminal/overview',

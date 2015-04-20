@@ -12,23 +12,7 @@
             <th><?php echo MI_HTML::label($UTFormModel, 'terminal_id', 'Gaming Terminal'); ?></th>
             <td><?php echo MI_HTML::dropDownArray($UTFormModel, 'terminal_id', $terminals, 'id', 'code', array(''=>'--Select Terminal--')) ?></td>
         </tr>
-        <tr>
-            <th><?php echo MI_HTML::label($UTFormModel, 'casino', 'Casino'); ?></th>
-            <td><?php echo MI_HTML::dropDown($UTFormModel, 'casino', array(''=>'Select Casino'))  ?></td>
-        </tr>
-        <tr>
-            <th><?php echo MI_HTML::label($UTFormModel, 'sel_amount', 'Initial Deposit'); ?></th>
-            <td><?php echo MI_HTML::dropDown($UTFormModel, 'sel_amount', array(''=>'Select Amount', '0.00'=>'0.00')) ?></td>
-            <th>
-                <input type="checkbox" id="chkotheramount" disabled="disabled" name="chkotheramount"/>
-                <?php echo MI_HTML::label($UTFormModel, 'amount', 'Other Amount',array('id'=>'lblotheramount'))  ?>
-            </th>
-            <td><?php echo MI_HTML::inputText($UTFormModel, 'amount', array('disabled'=>'disabled','class'=>'auto','maxlength'=>8)) ?></td>
-        </tr>
-        <tr>
-            <th><?php echo MI_HTML::label($UTFormModel, 'voucher_code', 'Voucher Code') ?></th>
-            <td><?php echo MI_HTML::inputText($UTFormModel, 'voucher_code', array('maxlength'=>20)) ?></td>
-        </tr>
+       
         <tr>
             <th><?php echo MI_HTML::label($UTFormModel, 'loyalty_card', 'Membership Card') ?></th>
             <td><?php echo MI_HTML::inputPassword($UTFormModel, 'loyalty_card') ?></td>
