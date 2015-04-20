@@ -88,10 +88,11 @@ class PcwsController extends Controller{
 
                        $mid = $mid['MID'];
 
-                       $terminalid = $terminalsessions->checkSessionIDwithcard($cardnumber, $serviceid);
-                       if(is_array($terminalid)){
-                            $terminalid = $terminalid['TerminalID'];
-                            
+                       
+                       $hasTerminalSession = $terminalsessions->checkSessionIDwithcard($cardnumber, $serviceid);
+                       if(is_array($hasTerminalSession)){
+                            $terminalid = $hasTerminalSession['TerminalID'];
+                            $tID = $terminalid;
                             $siteID = $terminalsmodel->getSiteID($terminalid);
                             
                             if($siteID['SiteID'] != $siteid){
@@ -105,6 +106,7 @@ class PcwsController extends Controller{
                        }
                        else{
                             $terminalid = $siteid;
+                            $tID = null;
                        }
 
                        $casinocredentials = $memberservices->getCasinoCredentialsAbbott($mid);
@@ -138,8 +140,8 @@ class PcwsController extends Controller{
                                 else{
                                     $transsumid = null;
                                 }
-
-                                $tracking1 = $ewallet->insertEwallet($cardnumber, $siteid, $mid, $amount, $playablebalance, 'D', $serviceid, 1, $paymenttype, $aid, $transsumid, $terminalid, $tracenumber, $referencenumber);
+                                
+                                $tracking1 = $ewallet->insertEwallet($cardnumber, $siteid, $mid, $amount, $playablebalance, 'D', $serviceid, 1, $paymenttype, $aid, $transsumid, $tID, $tracenumber, $referencenumber);
                                 $tracking2 = 'D';
                                 $tracking3 = $terminalid;
                                 $tracking4 = $siteid;
@@ -1430,7 +1432,7 @@ class PcwsController extends Controller{
         
         $transactionMessage = array(
             null=>'',
-            0=>'Transaction successful',
+            0=>'Transaction successful, Terminal is now unlocked.',
             4=>'All fields are required',
             5=>'Card not found',
             6=>'Card does not have existing casino account',
@@ -1624,7 +1626,7 @@ class PcwsController extends Controller{
         
         $transactionMessage = array(
             null=>'',
-            0=>'Transaction successful (all transaction) / valid',
+            0=>'Transaction successful, Terminal is now locked.',
             4=>'Incomplete data / Invalid data',
             23=>'Card does not have an existing session',
             8=>'Can\'t get balance',
@@ -1704,6 +1706,7 @@ class PcwsController extends Controller{
                                         $userMode = $casinoDetails['UserMode'];
 
                                         $isWallet = Utilities::fetchFirstValue($membersModel->getIsWalletByMID($mid));
+                                        var_dump($isWallet);exit;
                                         if($isWallet==1){
                                             $transactionResult = $eWalletModel->forceLogout($mid, $terminalID, $serviceID, $cardNumber, $userMode, $transactionReferenceID, $amount, $transactionType, $siteID, $trackingID, $voucherCode, $paymentType, $serviceTransactionID, $AID, $transactionSummaryID, $withdrawal, $balance);
 
