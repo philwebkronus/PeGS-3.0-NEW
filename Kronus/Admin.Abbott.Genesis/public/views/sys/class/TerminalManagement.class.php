@@ -636,12 +636,13 @@ class TerminalManagement extends DBHandler
     * @return int
     * check the number of cashier sessions enable in a certain site
     */ 
-     function checkTerminalSessions($terminalID)
+     function checkTerminalSessions($terminalIDreg, $terminalIDvip)
      {
            $stmt = "SELECT COUNT(TerminalID) count FROM terminalsessions 
-                WHERE TerminalID = ?";
+                WHERE TerminalID IN (?, ?)";
            $this->prepare($stmt);
-           $this->bindparameter(1, $terminalID);
+           $this->bindparameter(1, $terminalIDreg);
+           $this->bindparameter(2, $terminalIDvip);
            $this->execute($stmt);
            $count =  $this->fetchData();
            return $count['count'];
@@ -682,6 +683,26 @@ class TerminalManagement extends DBHandler
            $this->execute($stmt);
            $result =  $this->fetchData();
            return $result['ServicePassword'];
+     }
+     /**
+      * Get the Reg and VIP ID of the terminal
+      * @param type $terminalcode
+      * @return type
+      * @author Mark Kenneth Esguerra
+      * @date April 7, 2015
+      */
+     function getRegVipTerminalID($terminalcode) {
+         $vipterminalcode = $terminalcode."VIP";
+         
+         $stmt = "SELECT TerminalID FROM terminals 
+                  WHERE TerminalCode IN (?, ?)";
+         $this->prepare($stmt);
+         $this->bindparameter(1, $terminalcode);
+         $this->bindparameter(2, $vipterminalcode);
+         $this->execute();
+         $result = $this->fetchAllData();
+         
+         return $result;
      }
 }
 ?>
