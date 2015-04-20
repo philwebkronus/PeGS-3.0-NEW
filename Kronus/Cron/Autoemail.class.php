@@ -159,7 +159,7 @@ class Autoemail {
     public function getredeem($cdateforprocess)
     { 
         $stmt = "SELECT MAX(td.Amount) as Amount, now_usec() as querytime 
-            FROM transactiondetails td 
+            FROM transactiondetails td FORCE INDEX(IX_transactiondetails_DateCreated)
             INNER JOIN sites s ON s.SiteID = td.SiteID 
             WHERE td.TransactionType = 'W' 
             AND td.DateCreated > ?
