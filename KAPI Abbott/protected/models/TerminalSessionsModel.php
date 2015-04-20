@@ -360,5 +360,22 @@ class TerminalSessionsModel {
         
         return $result;
     }
+    /**
+     * Check if terminal (regular or vip) has on-going 
+     * terminal session
+     * @author Mark Kenneth Esguerra
+     * @date April 6, 2015
+     */
+    public function isTerminalActive ($terminal_reg, $terminal_vip) {
+        $sql = "SELECT COUNT(TerminalID) as Count 
+                FROM terminalsessions 
+                WHERE TerminalID IN (:terminal_reg, :terminal_vip)";
+        $command = $this->_connection->createCommand($sql);
+        $command->bindValue(":terminal_reg", $terminal_reg);
+        $command->bindValue(":terminal_vip", $terminal_vip);
+        $result = $command->queryRow();
+        
+        return $result['Count'];
+    }
 }
 

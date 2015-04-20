@@ -69,3 +69,4 @@ Code  Message
 67    -   Failed to Remove EGM Session. Terminal has already a deposited amount.
 68    -   Site is not set or blank.
 69    -   Site code doesn't exist.
+70    -   Terminal has on-going session. Please ask the GA for assistance.
