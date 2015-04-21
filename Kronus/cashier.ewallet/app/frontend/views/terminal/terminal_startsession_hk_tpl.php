@@ -8,17 +8,19 @@ $(document).ready(function(){
     
     $('#StartSessionFormModel_loyalty_card').bind('keydown', function(event) {
         
-        $('.hideControls').hide();
-        $('.bankContainer').hide();
-        isEwalletSessionMode = false;
-        isValidated = false;
-        $('#StartSessionFormModel_sel_amount').val(0);
-        $('#StartSessionFormModel_amount').val('');
-        $('#StartSessionFormModel_voucher_code').val('');
-        $('#StartSessionFormModel_trace_number').val('');
-        $('#StartSessionFormModel_reference_number').val('');
-        $('#StartSessionFormModel_amount').autoNumeric();
-        document.getElementById('StartSessionFormModel_sel_amount').selectedIndex = 0;
+        if(event.keyCode!=9){
+            $('.hideControls').hide();
+            $('.bankContainer').hide();
+            isEwalletSessionMode = false;
+            isValidated = false;
+            $('#StartSessionFormModel_sel_amount').val(0);
+            $('#StartSessionFormModel_amount').val('');
+            $('#StartSessionFormModel_voucher_code').val('');
+            $('#StartSessionFormModel_trace_number').val('');
+            $('#StartSessionFormModel_reference_number').val('');
+            $('#StartSessionFormModel_amount').autoNumeric();
+            document.getElementById('StartSessionFormModel_sel_amount').selectedIndex = 0;
+        }
         
    });
 })

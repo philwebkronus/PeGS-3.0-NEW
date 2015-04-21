@@ -383,31 +383,33 @@
         
         
         $('#StartSessionFormModel_loyalty_card').bind('keydown', function(event) {
-            
-            $('.hideControls').hide();
-            $('.bankContainer').hide();
-            isEwalletSessionMode = false;
-            isValidated = false;
 
-            $('#StartSessionFormModel_amount').val('');
-            $('#StartSessionFormModel_voucher_code').val('');
-            $('#StartSessionFormModel_amount').val('');
-            $('#StartSessionFormModel_amount').attr('disabled','disabled');
-            $('#StartSessionFormModel_bankid').attr('disabled','disabled');
-            $('#StartSessionFormModel_amount').attr('disabled','disabled');
-            $('#chkotheramount').removeAttr('disabled');
-            $('#chkbancnet').attr('checked', false);
-            $('#StartSessionFormModel_reference_number').val('');
-            $('#StartSessionFormModel_reference_number').attr('disabled', 'disabled');
-            $('#StartSessionFormModel_sel_amount').removeAttr('disabled');
-            $('#StartSessionFormModel_voucher_code').removeAttr('disabled');
-            $('#StartSessionFormModel_trace_number').attr('disabled','disabled');
-            $('#StartSessionFormModel_trace_number').val('');
-            $('#StartSessionFormModel_sel_amount').val(0);
-            $('#StartSessionFormModel_amount').autoNumeric();
-            document.getElementById('StartSessionFormModel_sel_amount').selectedIndex = 0;
-            
+
+            if(event.keyCode !=9){
+                $('.hideControls').hide();
+                $('.bankContainer').hide();
+                isEwalletSessionMode = false;
+                isValidated = false;
+
+                $('#StartSessionFormModel_amount').val('');
+                $('#StartSessionFormModel_voucher_code').val('');
+                $('#StartSessionFormModel_amount').val('');
+                $('#StartSessionFormModel_amount').attr('disabled','disabled');
+                $('#StartSessionFormModel_bankid').attr('disabled','disabled');
+                $('#StartSessionFormModel_amount').attr('disabled','disabled');
+                $('#chkotheramount').removeAttr('disabled');
+                $('#chkbancnet').attr('checked', false);
+                $('#StartSessionFormModel_reference_number').val('');
+                $('#StartSessionFormModel_reference_number').attr('disabled', 'disabled');
+                $('#StartSessionFormModel_sel_amount').removeAttr('disabled');
+                $('#StartSessionFormModel_voucher_code').removeAttr('disabled');
+                $('#StartSessionFormModel_trace_number').attr('disabled','disabled');
+                $('#StartSessionFormModel_trace_number').val('');
+                $('#StartSessionFormModel_sel_amount').val(0);
+                $('#StartSessionFormModel_amount').autoNumeric();
+                document.getElementById('StartSessionFormModel_sel_amount').selectedIndex = 0;
+            }
        });
-        
+
     })
 </script>
