@@ -383,8 +383,8 @@
         
         
         $('#StartSessionFormModel_loyalty_card').bind('keydown', function(event) {
-
-
+            
+            
             if(event.keyCode !=9){
                 $('.hideControls').hide();
                 $('.bankContainer').hide();
@@ -410,6 +410,6 @@
                 document.getElementById('StartSessionFormModel_sel_amount').selectedIndex = 0;
             }
        });
-
+        
     })
 </script>
