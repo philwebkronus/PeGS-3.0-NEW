@@ -1135,6 +1135,15 @@ class FrontendController extends MI_Controller {
         
         $result = $result->Unlock->TransactionMessage;
         
+        if(preg_match('/\Successful\b/', $result)) {
+            $result = array('message'=>$result,'Unlock'=>'1');
+        }
+        else{
+            $message = $result;
+            logger($message);
+            $this->throwError($message);
+        }
+        
         //if spyder call was enabled in cashier config, call SAPI
         if($_SESSION['spyder_enabled'] == 1){
             $commandId = 0; //unlock
@@ -1149,14 +1158,6 @@ class FrontendController extends MI_Controller {
             $asynchronousRequest->curl_request_async(Mirage::app()->param['Asynchronous_URI'], $params);
         }
         
-        if(preg_match('/\Successful\b/', $result)) {
-            $result = array('message'=>$result,'Unlock'=>'1');
-        }
-        else{
-            $message = $result;
-            logger($message);
-            $this->throwError($message);
-        }
         return $result;
     }
     

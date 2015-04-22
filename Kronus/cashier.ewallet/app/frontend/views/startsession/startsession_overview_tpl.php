@@ -59,7 +59,7 @@
         </tr>
        
         <tr>
-            <td><input type="button" value="Start Session" id="btnstartsessionsa"/></td>
+            <td><input type="button" value="Start Session" id="btnstartsessionsa" class="btnSubmit"/></td>
         </tr>
     </table>
 </form>

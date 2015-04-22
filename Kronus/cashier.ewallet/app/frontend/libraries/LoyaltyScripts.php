@@ -375,12 +375,22 @@
    */
     $("#StartSessionFormModel_loyalty_card").focus(function(){
             $("#StartSessionFormModel_loyalty_card").bind("keydown", function (event) { 
-                if (event.keyCode == 13 || event.charCode == 13) {
+                if (event.keyCode == 13 || event.charCode == 13 || event.keyCode==9) {
+                    var cardNumber = $('#StartSessionFormModel_loyalty_card').val();
+                    if(cardNumber==''){
+                        alert('Please enter loyalty card number.');
+                        return false;
+                    }
                     var issuccess = identifyCard();
                     if(issuccess == "false"){
+                        
+                        $('.btnSubmit').focus();
+                        $('#StartSessionFormModel_sel_amount').focus();
                         return false;
                     }
                 }
+                
+                
                 
                 if (event.keyCode == 8 || event.charCode == 8) {
                     $('.hideControls').hide();

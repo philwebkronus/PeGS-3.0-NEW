@@ -91,7 +91,7 @@ function emptyForm(){
               
             <tr>
                 <th colspan="2" class="childtableCell center" style="padding-left:100px;">
-                    <div><input id="btnInitailDeposit" type="button" value="Submit" /></div>
+                    <div><input id="btnInitailDeposit" type="button" value="Submit" class="btnSubmit" /></div>
                     <div><input class="btnClose" type="button" value="Cancel" /></div>
                 </th>
 <!--                <td class="">
