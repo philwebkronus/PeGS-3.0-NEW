@@ -2828,23 +2828,27 @@ class MPapiController extends Controller {
 
                 if(count($isExist) > 0) {
                     //check if from old to newly migrated card
-                    if(!is_null($emailAddress)) {
-                        $tempMID = $membershipTempModel->getMID($emailAddress);
-                        if(empty($tempMID)) {
-                            $tempMID['MID'] = 0;
-                            $mid = 0;
-                        }
-                        else
-                            $mid = $tempMID['MID'];
-                    }
-                    else
-                        $mid = $MID;
-
-//                    $tempHasEmailCount = $membershipTempModel->checkIfEmailExistsWithMID($mid, $emailAddress);
-//                    if(is_null($tempHasEmailCount))
-//                        $tempHasEmailCount = 0;
+//                    if(!is_null($emailAddress)) {
+//                        $tempMID = $membershipTempModel->getMID($emailAddress);
+//                        if(empty($tempMID)) {
+//                            $tempMID['MID'] = 0;
+//                            $mid = 0;
+//                        }
+//                        else
+//                            $mid = $tempMID['MID'];
+//                    }
 //                    else
-//                        $tempHasEmailCount = $tempHasEmailCount['COUNT'];
+//                        $mid = $MID;
+                    $mid = $MID;
+                    $cardNumber = $memberCardsModel->getTempMigratedCardUsingMID($mid);
+                    
+                    $tempAcctCode = $membershipTempModel->getTempCodeUsingCard($cardNumber);
+                    
+                    $tempHasEmailCount = $membershipTempModel->checkIfEmailExistsWithMID($mid, $emailAddress);
+                    if(is_null($tempHasEmailCount))
+                        $tempHasEmailCount = 0;
+                    else
+                        $tempHasEmailCount = $tempHasEmailCount['COUNT'];
 
                     $hasEmailCount = $memberInfoModel->checkIfEmailExistsWithMID($MID, $emailAddress);
 
@@ -2853,7 +2857,7 @@ class MPapiController extends Controller {
                     else
                         $hasEmailCount = $hasEmailCount['COUNT'];
 
-                    if(($hasEmailCount > 0)) {
+                    if(($hasEmailCount > 0) && ($tempHasEmailCount > 0)) {
                         $transMsg = "Sorry, " . $emailAddress . " already belongs to an existing account. Please enter another email address.";
                         $errorCode = 21;
                         Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
@@ -2888,8 +2892,8 @@ class MPapiController extends Controller {
                     else {
                         $refID = $firstname.' '.$lastname;
 
-                        $hasEmail = $membersModel->checkIfUsernameExistsWithMID($MID, $emailAddress);
-                        $tempHasEmail = $membershipTempModel->checkIfUsernameExistsWithMID($mid, $emailAddress);
+                        //$hasEmail = $membersModel->checkIfUsernameExistsWithMID($MID, $emailAddress);
+                        $tempHasEmail = $membershipTempModel->checkIfUsernameExistsWithTAC($emailAddress, $tempAcctCode);
 
 
                         if(is_null($tempHasEmail))
@@ -2897,12 +2901,12 @@ class MPapiController extends Controller {
                         else
                             $tempHasEmail = $tempHasEmail['COUNT'];
 
-                        if(is_null($hasEmail))
-                            $hasEmail = 0;
-                        else
-                            $hasEmail = $hasEmail['COUNT'];
+//                        if(is_null($hasEmail))
+//                            $hasEmail = 0;
+//                        else
+//                            $hasEmail = $hasEmail['COUNT'];
 
-                        if(($tempHasEmail > 0) || ($hasEmail > 0)) {
+                        if(($tempHasEmail > 0)) {
                             $transMsg = "Sorry, " . $emailAddress . " already belongs to an existing account. Please enter another email address.";
                             $errorCode = 21;
                             Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
@@ -2946,10 +2950,10 @@ class MPapiController extends Controller {
                             $result2 = $membersModel->updateMemberUsername($mid, $emailAddress, $password);
 
                             if($result2 > 0) {
-                                $result3 = $membershipTempModel->updateTempEmail($MID, $emailAddress);
+                                $result3 = $membershipTempModel->updateTempEmail($mid, $emailAddress);
 
                                 if($result3 > 0) {
-                                    $result4 = $membershipTempModel->updateTempMemberUsername($MID, $emailAddress, $password);
+                                    $result4 = $membershipTempModel->updateTempMemberUsername($tempAcctCode, $emailAddress, $password);
 
                                     if($result4 > 0) {
                                         $isSuccessful = $auditTrailModel->logEvent(AuditTrailModel::API_UPDATE_PROFILE, 'Email: '.$emailAddress, array('MID' => $MID, 'SessionID' => $mpSessionID));

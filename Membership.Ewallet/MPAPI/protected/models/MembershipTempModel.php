@@ -72,21 +72,21 @@ class MembershipTempModel {
     }
     
     
-    public function updateTempMemberUsername($MID, $email, $password) {
+    public function updateTempMemberUsername($tempAcctCode, $email, $password) {
         $startTrans = $this->_connection->beginTransaction();
         
         try {
             if($password == '') {
                 $sql = 'UPDATE members
                         SET UserName = :UserName
-                        WHERE MID = :MID';
-                $param = array(':UserName' => $email,':MID' => $MID);
+                        WHERE TemporaryAccountCode = :TAC';
+                $param = array(':UserName' => $email,':TAC' => $tempAcctCode);
             }
             else {
                 $sql = 'UPDATE members
                         SET UserName = :UserName, Password = :Password
-                        WHERE MID = :MID';
-                $param = array(':UserName' => $email, ':Password' => $password, ':MID' => $MID);
+                        WHERE TemporaryAccountCode = :TAC';
+                $param = array(':UserName' => $email, ':Password' => $password, ':TAC' => $tempAcctCode);
             }
             
             $command = $this->_connection->createCommand($sql);
@@ -355,9 +355,33 @@ class MembershipTempModel {
     }
     
     //@date 10-09-2014
-    public function checkIfUsernameExistsWithMID($MID, $email) {
-        $sql = 'SELECT COUNT(UserName) AS COUNT FROM members WHERE MID != :MID AND UserName = :Email'; //AND Status = 9';
-        $param = array(':MID' => $MID, ':Email' => $email);
+    public function checkIfUsernameExistsWithTAC($email, $tempAcctCode) {
+        $sql = 'SELECT COUNT(UserName) AS COUNT FROM members WHERE UserName = :Email AND TemporaryAccountCode != :TAC AND IsVerified IN(0,1)'; //AND Status = 9';
+        $param = array(':Email' => $email, ':TAC' => $tempAcctCode);
+        $command = $this->_connection->createCommand($sql);
+        $result = $command->queryRow(true, $param);
+        
+        return $result;
+    }
+    
+    //@date 04-24-2015
+    public function getTempCodeUsingCard($cardNumber) {
+        $sql = 'SELECT mtm.TemporaryAccountCode AS TAC FROM membership_temp.members mtm
+                        INNER JOIN loyaltydb.membercards mmc ON mtm.TemporaryAccountCode = mmc.CardNumber
+                        INNER JOIN membership.members mm ON mmc.MID = mm.MID
+                WHERE mmc.Status = 8 AND mmc.CardNumber = :cardNumber'; //AND Status = 9';
+        $param = array(':cardNumber' => $cardNumber);
+        $command = $this->_connection->createCommand($sql);
+        $result = $command->queryRow(true, $param);
+        
+        return $result['TAC'];
+    }
+    
+    public function checkIfEmailExistsWithTAC($tempAcctCode, $email) {
+        $sql = 'SELECT COUNT(UserName) AS COUNT
+                FROM members
+                WHERE UserName = :Email AND TemporaryAccountCode = :TAC';
+        $param = array(':Email' => $email, ':TAC' => $tempAcctCode);
         $command = $this->_connection->createCommand($sql);
         $result = $command->queryRow(true, $param);
         
