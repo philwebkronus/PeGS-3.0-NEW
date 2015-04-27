@@ -119,5 +119,18 @@ class MemberCardsModel {
             Utilities::log($e->getMessage());
             return 0;
         }
-    }           
+    }
+    
+    //@date 04-27-2015
+    //@purpose get temp migrated card
+    public function getTempMigratedCardUsingMID($MID) {
+        $sql = 'SELECT CardNumber
+                FROM membercards
+                WHERE MID = :MID AND Status = 8';
+        $param = array(':MID' => $MID);
+        $command = $this->_connection->createCommand($sql);
+        $result = $command->queryRow(true, $param);
+        
+        return $result['CardNumber'];
+    }
 }
