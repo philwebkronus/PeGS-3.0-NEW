@@ -30,9 +30,12 @@ if(isset($_SESSION['accID']))
 }
 
 $oas= new ApplicationSupport($_DBConnectionString[0]);
+$oas2= new ApplicationSupport($_DBConnectionString[2]);
 $loyalty= new LoyaltyUBWrapper();
 $connected = $oas->open();
-if($connected)
+$connected2 = $oas2->open();
+
+if($connected && $connected2)
 {     
    $vipaddress = gethostbyaddr($_SERVER['REMOTE_ADDR']);
    $vdate = $oas->getDate();    
@@ -356,6 +359,85 @@ if($connected)
                 $oas->close();
                 exit;
           break;  
+          
+          case 'EGMManualRemoving':
+                if($_POST['cmbterminals'] != "")
+                {
+                   $terminalid = $_POST['cmbterminals'];
+                   
+                   $terminalcode = $oas->getTerminalCode($terminalid);
+                        
+                    if(!empty($terminalcode)){
+                        $terminalcode = $terminalcode['TerminalCode'];
+                    }
+                    
+                    $vipterminalid = $oas->getTerminalIDs($terminalcode.'VIP');
+                        
+                    if(!empty($vipterminalid)){
+                        $vipterminalid = $vipterminalid['TerminalID'];
+                    }
+                   
+                   $count = $oas->checkTerminalSessions($terminalid,$vipterminalid);
+                  
+                    //check number of sessions in a certain site
+                    if($count > 0)
+                    {
+                        $response = 'Failed to remove EGM Session, There is an existing terminal session for this terminal.';
+                    }
+                    else
+                    {   
+                        $egmcheck = $oas->checkEGMSessions($terminalid,$vipterminalid);
+                        
+                        if($egmcheck > 0){
+                            
+                            $stackerbatchid = $oas->getStackerBatchID($terminalid,$vipterminalid);
+                            
+                            if(is_null($stackerbatchid)){
+                                $updated = 1;
+                            }
+                            else{
+                                $updated = $oas2->updateSSStatus($aid,$stackerbatchid,5);
+                                
+                                if($updated == 0){
+                                    $updated = 1;
+                                }
+                            }
+                            
+                            if($updated > 0){
+                                $deleted = $oas->deleteEGMSessions($terminalid,$vipterminalid);
+                            }
+                            else{
+                                $deleted = 0;
+                            }
+                            
+                        
+                            if($deleted > 0 && $updated > 0){
+                                $response = 'EGM Session Successfully Removed';
+                            }
+                            else{
+                                $response = 'Failed to remove EGM Session';
+                            }
+                        }
+                        else{
+                            $response = 'Failed to remove EGM session, EGM session does not exist';
+                        }
+                    }
+                    
+                    $vtransdetails = $response.", terminalid ".$terminalid;
+                    $vauditfuncID = 78;
+                    $oas->logtoaudit($new_sessionid, $aid, $vtransdetails, $vdate, $vipaddress, $vauditfuncID);
+                }
+                else
+                {
+                    $response = "All fields are requred"; 
+                }
+
+                echo json_encode($response);
+                unset($egmcheck, $deleted, $terminalid, $count);
+                $oas->close();
+                $oas2->close();
+                exit;
+            break;
           
         
        }
