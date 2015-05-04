@@ -30,12 +30,9 @@ if(isset($_SESSION['accID']))
 }
 
 $oas= new ApplicationSupport($_DBConnectionString[0]);
-$oas2= new ApplicationSupport($_DBConnectionString[2]);
-
 $loyalty= new LoyaltyUBWrapper();
 $connected = $oas->open();
-$connected2 = $oas2->open();
-if($connected && $connected2)
+if($connected)
 {     
    $vipaddress = gethostbyaddr($_SERVER['REMOTE_ADDR']);
    $vdate = $oas->getDate();    
@@ -359,93 +356,6 @@ if($connected && $connected2)
                 $oas->close();
                 exit;
           break;  
-          
-          case 'EGMManualRemoving':
-                if($_POST['cmbterminals'] != "")
-                {
-                   $terminalid = $_POST['cmbterminals'];
-                   
-                   $terminalcode = $oas->getTerminalCode($terminalid);
-                        
-                    if(!empty($terminalcode)){
-                        $terminalcode = $terminalcode['TerminalCode'];
-                    }
-                    
-                    $vipterminalid = $oas->getTerminalIDs($terminalcode.'VIP');
-                        
-                    if(!empty($vipterminalid)){
-                        $vipterminalid = $vipterminalid['TerminalID'];
-                    }
-                   
-                   $count = $oas->checkTerminalSessions($terminalid,$vipterminalid);
-                  
-                    //check number of sessions in a certain site
-                    if($count > 0)
-                    {
-                        $response = 'Failed to remove EGM Session, There is an existing terminal session for this terminal.';
-                    }
-                    else
-                    {   
-                        $egmcheck = $oas->checkEGMSessions($terminalid,$vipterminalid);
-                        
-                        if($egmcheck > 0){
-                            
-                            $stackerbatchid = $oas->getStackerBatchID($terminalid,$vipterminalid);
-                            
-                            $deposit = $oas->checkdeposit($stackerbatchid);
-                            
-                            if($deposit > 0){
-                                $response = 'Failed to remove EGM Session, Terminal has a Deposit amount';
-                            }
-                            else{
-                                if(is_null($stackerbatchid)){
-                                    $updated = 1;
-                                }
-                                else{
-                                    $updated = $oas2->updateSSStatus($aid,$stackerbatchid,5);
-
-                                    if($updated == 0){
-                                        $updated = 1;
-                                    }
-                                }
-
-                                if($updated > 0){
-                                    $deleted = $oas->deleteEGMSessions($terminalid,$vipterminalid);
-                                }
-                                else{
-                                    $deleted = 0;
-                                }
-
-
-                                if($deleted > 0 && $updated > 0){
-                                    $response = 'EGM Session Successfully Removed';
-                                }
-                                else{
-                                    $response = 'Failed to remove EGM Session';
-                                }
-                            }
-                            
-                        }
-                        else{
-                            $response = 'Failed to remove EGM session, EGM session does not exist';
-                        }
-                    }
-                    
-                    $vtransdetails = $response.", terminalid ".$terminalid;
-                    $vauditfuncID = 78;
-                    $oas->logtoaudit($new_sessionid, $aid, $vtransdetails, $vdate, $vipaddress, $vauditfuncID);
-                }
-                else
-                {
-                    $response = "All fields are requred"; 
-                }
-
-                echo json_encode($response);
-                unset($egmcheck, $deleted, $terminalid, $count);
-                $oas->close();
-                $oas2->close();
-                exit;
-            break;
           
         
        }
@@ -876,9 +786,9 @@ if($connected && $connected2)
                 $vSiteID = $_POST['cmbsite'];
                 $vTerminalID = $_POST['cmbterminal'];
                 $vdate1 = $_POST['txtDate1'];
-                $vdate2 = $_POST['txtDate2'];
+                //$vdate2 = $_POST['txtDate2'];
                 $vFrom = $vdate1;
-                $vTo = date ('Y-m-d', strtotime ('+1 day' , strtotime($vdate2)));
+                $vTo = date ('Y-m-d', strtotime ('+1 day' , strtotime($vdate1)));
                 $vsummaryID = $_POST['summaryID'];
                 
                 //for sorting
@@ -964,9 +874,9 @@ if($connected && $connected2)
                 $vSiteID = $_POST['cmbsite'];
                 $vTerminalID = $_POST['cmbterminal'];
                 $vdate1 = $_POST['txtDate1'];
-                $vdate2 = $_POST['txtDate2'];
+//                $vdate2 = $_POST['txtDate2'];
                 $vFrom = $vdate1;
-                $vTo = date ('Y-m-d', strtotime ('+1 day' , strtotime($vdate2)));
+                $vTo = date ('Y-m-d', strtotime ('+1 day' , strtotime($vdate1)));
                 //for sorting
                 if($_POST['sidx'] != "")
                 {
@@ -1030,9 +940,9 @@ if($connected && $connected2)
                 $vSiteID = $_POST['cmbsite'];
                 $vTerminalID = $_POST['cmbterminal'];
                 $vdate1 = $_POST['txtDate1'];
-                $vdate2 = $_POST['txtDate2'];
+//                $vdate2 = $_POST['txtDate2'];
                 $vFrom = $vdate1;
-                $vTo = date ('Y-m-d', strtotime ('+1 day' , strtotime($vdate2)));
+                $vTo = date ('Y-m-d', strtotime ('+1 day' , strtotime($vdate1)));
                 $vsummaryID = $_POST['summaryID'];
                 
                 //for sorting
@@ -1187,7 +1097,6 @@ if($connected && $connected2)
     //for passkey on/off
     if(isset($_POST['page2']))
     {
-        
         $vpage2 = $_POST['page2'];
         switch ($vpage2)
         {
@@ -1204,7 +1113,7 @@ if($connected && $connected2)
                     $passkeyexpirydate = $ddate->format('Y-m-d H:i:s');
                 }
                 
-                $result = $oas->updatecashierpasskey($cashierid, $_POST['optpasskey'], $genpasskey, $passkeyexpirydate);        
+                $result = $oas->updatecashierpasskey($cashierid, $_POST['optpasskey'], $genpasskey, $passkeyexpirydate);     
                 if($result > 0)
                 {
                    $msg ="Application Support : Passkey tag successfully updated";
@@ -1700,7 +1609,7 @@ if($connected && $connected2)
                 $oas->close();
                 exit;
             break;
-            //Get log files upon loading of page
+     //Get log files upon loading of page     
 case 'GetLogFile':
                 
                 $system = $_POST['system'];
@@ -1753,6 +1662,7 @@ case 'GetLogFile':
             break;
 
     case 'ShowLogContent':
+        
                 $system = $_POST['system'];
                 $vrealfolder = $oas->getlogspath($LogPaths[$_POST['system']][$_POST['link']]);
                 $vfile = $_POST['logfile']; 
@@ -1760,69 +1670,74 @@ case 'GetLogFile':
                 $vfullpath = $vrealfolder.$vfile.".log";
                 $vdatenow = date("Y-m-d");
                
-                
+              
                 //check first if file exists
             
                 if(file_exists($vfullpath))   
                 {
-
-                        $datemodified = date("Y-m-d", filemtime($vfullpath));
-//                       $datemodified = '1970-01-01'; //get file modification/creation date
-                       //check if date today is the same with date modification of file, then create temp file
-                      
-                        if($vdatenow == $datemodified)
-                        {
-                            $tmpfile = $vrealfolder."tmp".$vdatenow.".log";
-                            //validate if temp file was exists
-                            if(file_exists($tmpfile) == true)
-                            {
-                                unlink($tmpfile); //removes the temp file if exists
-                                file_put_contents($tmpfile, file_get_contents($vfullpath), FILE_APPEND | LOCK_EX); //re-create the temp file
-                                $rcontent = $oas->getfilecontents($tmpfile);
-                            }
-                            else
-                            {
-                                file_put_contents($tmpfile, file_get_contents($vfullpath), FILE_APPEND | LOCK_EX); //create the temp file
-                                $rcontent = $oas->getfilecontents($tmpfile); //get contents
-                            }
-                        }
-                            else{
+                     
+//                        $datemodified = date("Y-m-d", filemtime($vfullpath));
+////                       $datemodified = '1970-01-01'; //get file modification/creation date
+//                       //check if date today is the same with date modification of file, then create temp file
+//                      
+//                        if($vdatenow == $datemodified)
+//                        {
+//                            
+//                            $tmpfile = $vrealfolder."tmp".$vdatenow.".log";
+//                            //validate if temp file was exists
+//                            if(file_exists($tmpfile) == true)
+//                            {
+//                                unlink($tmpfile); //removes the temp file if exists
+//                                file_put_contents($tmpfile, file_get_contents($vfullpath), FILE_APPEND | LOCK_EX); //re-create the temp file
+//                                $rcontent = $oas->getfilecontents($tmpfile);
+//                            }
+//                            else
+//                            {
+//                                file_put_contents($tmpfile, file_get_contents($vfullpath), FILE_APPEND | LOCK_EX); //create the temp file
+//                                $rcontent = $oas->getfilecontents($tmpfile); //get contents
+//                            }
+//                        }
+//                            else{
                                 $rcontent = $oas->getfilecontents($vfullpath);
-                            }          
+                            //}          
                         if($rcontent!=""){
                             echo json_encode($rcontent);
-                        }else{
-                            
+                        }
+                        else{
                              $errmsg = "Log file does not exists";
                              print $errmsg;
                         }
                 }else{  
+                    
                    $headers = @get_headers($vfullpath,1);
+                  
                 if(strpos($headers[0],'200')!=false)   
                 {
-                        $dm = strtotime($headers['Last-Modified']);  //get file modification/creation date
-                        $datemodified = date("Y-m-d",$dm);
+//                        $dm = strtotime($headers['Last-Modified']);  //get file modification/creation date
+//                        $datemodified = date("Y-m-d",$dm);
                         //check if date today is the same with date modification of file, then create temp file
-                        if($vdatenow == $datemodified)
-                        {
-                            $tmpfile = $vrealfolder."tmp".$vdatenow.".log";
-                            //validate if temp file was exists
-                            if(file_exists($tmpfile) == true)
-                            {
-                                unlink($tmpfile); //removes the temp file if exists
-                                file_put_contents($tmpfile, file_get_contents($vfullpath), FILE_APPEND | LOCK_EX); //re-create the temp file
-                                $rcontent = $oas->getfilecontents($tmpfile);
-                            }
-                            else
-                            {
-                                file_put_contents($tmpfile, file_get_contents($vfullpath), FILE_APPEND | LOCK_EX); //create the temp file
-                                $rcontent = $oas->getfilecontents($tmpfile); //get contents
-                            }
-                        }
-                        else
-                        {
+//                        if($vdatenow == $datemodified)
+//                        {
+//                            $tmpfile = $vrealfolder."tmp".$vdatenow.".log";
+//                            //validate if temp file was exists
+//                            if(file_exists($tmpfile) == true)
+//                            {
+//                                unlink($tmpfile); //removes the temp file if exists
+//                                file_put_contents($tmpfile, file_get_contents($vfullpath), FILE_APPEND | LOCK_EX); //re-create the temp file
+//                                $rcontent = $oas->getfilecontents($tmpfile);
+//                            }
+//                            else
+//                            {
+//                                file_put_contents($tmpfile, file_get_contents($vfullpath), FILE_APPEND | LOCK_EX); //create the temp file
+//                                $rcontent = $oas->getfilecontents($tmpfile); //get contents
+//                            }
+//                        }
+//                        else
+//                        {
+                             
                             $rcontent = $oas->getfilecontents($vfullpath);
-                        }
+                        
+                        //}
                        
                         if($rcontent!=""){
                             echo json_encode($rcontent);
@@ -1841,23 +1756,18 @@ case 'GetLogFile':
     
             exit;
             break;
-////Get Launch Pad log files upon loading of page
+//            //Get Launch Pad log files upon loading of page
 //            case 'GetLaunchPadLogFile':
-//                $vrealfolder = $oas->getlogspath($launchPadLogPath[$_POST['link']]);
-//                     
-//                $headers = @get_headers($vrealfolder);
-//                
-//                if(strpos($headers[0],'200')!=false)
+//                $vrealfolder = $oas->getlogspath($launchPadLogPath);
+//                if(is_dir($vrealfolder))
 //                {
-//                    $matches = array();
-//                    preg_match_all("/(a href\=\")([^\?\"]*)(\")/i",getListFromServer($vrealfolder), $matches);
+//                    $listfiles  = scandir($vrealfolder);
 //                    $vfiles = array();
-//                    foreach($matches[2] as $file)
+//                    foreach($listfiles as $file)
 //                    {
 //                        //hides (.), (..), (index), and temporary files upon viewing
 //                        if(($file != '..') && ($file != '.') && (strstr($file, "index") == false) && 
-//                                (strstr($file, "tmp") == false) && (strstr($file, "dev_application") == false
-//                                        && (strstr($file, "launchpadgtc.dev") == false)))
+//                                (strstr($file, "tmp") == false) && (strstr($file, "dev_application") == false))
 //                        {
 //                            if(!preg_match("/gii-1.1/", $file)) { //Added on July 3, 2012 To remove gii-1.1 folder from list
 //                                $newarr = array(substr($file, 0, strrpos($file, ".")));
@@ -1865,11 +1775,10 @@ case 'GetLogFile':
 //                            }
 //                        }
 //                    }
-//                    
 //                    arsort($vfiles); //arrange files by ascending
 //                    echo json_encode($vfiles);
 //                    unset($vfiles);
-//                    unset($matches);
+//                    unset($listfiles);
 //                }
 //                else
 //                {
@@ -1880,20 +1789,16 @@ case 'GetLogFile':
 //            break;
 //            //Get log files upon loading of page
 //            case 'GetAdminLogFile':
-//                $vrealfolder = $oas->getadminlogspath($adminlogpath[$_POST['link']]);
-//                $headers = @get_headers($vrealfolder);
-//                
-//                if(strpos($headers[0],'200')!=false)
+//                $vrealfolder = $oas->getadminlogspath($adminlogpath);
+//                if(is_dir($vrealfolder))
 //                {
-//                    $matches = array();
-//                    preg_match_all("/(a href\=\")([^\?\"]*)(\")/i",getListFromServer($vrealfolder), $matches);
+//                    $listfiles  = scandir($vrealfolder);
 //                    $vfiles = array();
-//                    foreach($matches[2] as $file)
+//                    foreach($listfiles as $file)
 //                    {
 //                        //hides (.), (..), (index), and temporary files upon viewing
 //                        if(($file != '..') && ($file != '.') && (strstr($file, "index") == false) && 
-//                                (strstr($file, "tmp") == false) && (strstr($file, "dev_application") == false)
-//                                && (strstr($file, "/admin") == false))
+//                                (strstr($file, "tmp") == false) && (strstr($file, "dev_application") == false))
 //                        {
 //                            $newarr = array(substr($file, 0, strrpos($file, ".")));
 //                            array_push($vfiles, $newarr);
@@ -1902,7 +1807,7 @@ case 'GetLogFile':
 //                    arsort($vfiles); //arrange files by ascending
 //                    echo json_encode($vfiles);
 //                    unset($vfiles);
-//                    unset($matches);
+//                    unset($listfiles);
 //                }
 //                else
 //                {
@@ -1914,18 +1819,17 @@ case 'GetLogFile':
 //            //show log's content upon clicking of file
 //            //show Launch Pad log's content upon clicking of file
 //            case 'ShowLaunchPadLogContent':
-//                $vrealfolder = $oas->getlogspath($launchPadLogPath[$_POST['link']]);
+//                $vrealfolder = $oas->getlogspath($launchPadLogPath);
 //                $vfile = $_POST['logfile']; 
 //                $vfullpath = $vrealfolder.$vfile.".log";
-//                $headers = @get_headers($vfullpath);
-//                $rcontent="";
 //                $vdatenow = date("Y-m-d");
 //                //check first if file exists
-//                if(strpos($headers[0],'200')!=false)   
+//                if(file_exists($vfullpath))   
 //                {
 //                    //then check if file is not empty
-//                    
-//                        $datemodified = '1970-01-01';  //get file modification/creation date
+//                    if(filesize($vfullpath) > 0)
+//                    {
+//                        $datemodified = date("Y-m-d", filemtime($vfullpath)); //get file modification/creation date
 //                        //check if date today is the same with date modification of file, then create temp file
 //                        if($vdatenow == $datemodified)
 //                        {
@@ -1947,10 +1851,12 @@ case 'GetLogFile':
 //                        {
 //                            $rcontent = $oas->getfilecontents($vfullpath);
 //                        }
-//                       
-//                        if($rcontent!=""){
-//                            echo json_encode($rcontent);
-//                        }
+//                    }
+//                    else
+//                    {
+//                       $rcontent = "";
+//                    }
+//                    echo json_encode($rcontent);
 //                }   
 //                else   
 //                {  
@@ -1960,20 +1866,17 @@ case 'GetLogFile':
 //                exit;
 //            break;
 //            case 'ShowAdminLogContent':
-//                $vrealfolder = $oas->getadminlogspath($adminlogpath[$_POST['link']]);
+//                $vrealfolder = $oas->getadminlogspath($adminlogpath);
 //                $vfile = $_POST['logfile']; 
 //                $vfullpath = $vrealfolder.$vfile.".log";
-//                $headers = @get_headers($vfullpath);
-//                
-//                $rcontent="";
 //                $vdatenow = date("Y-m-d");
 //                //check first if file exists
-//                if(strpos($headers[0],'200')!=false)   
+//                if(file_exists($vfullpath))   
 //                {
 //                    //then check if file is not empty
-//                    
-//                        $datemodified = '1970-01-01';
-////                                date("Y-m-d", filemtime($vfullpath)); //get file modification/creation date
+//                    if(filesize($vfullpath) > 0)
+//                    {
+//                        $datemodified = date("Y-m-d", filemtime($vfullpath)); //get file modification/creation date
 //                        //check if date today is the same with date modification of file, then create temp file
 //                        if($vdatenow == $datemodified)
 //                        {
@@ -1995,9 +1898,12 @@ case 'GetLogFile':
 //                        {
 //                            $rcontent = $oas->getfilecontents($vfullpath);
 //                        }
-//                        if($rcontent!=""){
-//                            echo json_encode($rcontent);
-//                        }
+//                    }
+//                    else
+//                    {
+//                       $rcontent = "";
+//                    }
+//                    echo json_encode($rcontent);
 //                }   
 //                else   
 //                {  
@@ -2006,8 +1912,7 @@ case 'GetLogFile':
 //                } 
 //                exit;
 //            break;
-//            
-//Get log's content by modification date (onselect of datepicker)
+            //Get log's content by modification date (onselect of datepicker)
             case 'GetContentByModDate':
                 $vrealfolder = $oas->getlogspath($cashierlogpath);
                 $listfiles  = scandir($vrealfolder);
@@ -3027,6 +2932,69 @@ case 'GetLogFile':
                     unset($count,$site,$txtoldspyder,$txtspyder);
                 exit;    
            break;
+           
+           //Update Cashier Menu Tab
+           case 'UpdateCashierTab':
+               
+                 $siteID = $_POST['cmbsite'];
+                 $tmTab = $_POST['tmTab'];
+                 $srrTab = $_POST['srrTab'];
+                 $oldTM = $_POST['oldTM'];
+                 $oldSRR = $_POST['oldSRR'];
+                 
+                 
+                    $updateResult = $oas->updateCashierMenuTab($siteID, $tmTab, $srrTab);
+
+                    if($updateResult > 0)
+                    {
+                        $msg = 'Cashier Menu Management: Update Successful';
+                        
+                        if($oldTM!=$tmTab&&$oldSRR==$srrTab){
+                            if($oldTM == 0 && $tmTab == 1)
+                            {
+                                $vtransdetails = "TM Menu Enabled in Site ID ".$siteID;
+                            }
+                            if($oldTM == 1 && $tmTab == 0)
+                            {
+                                 $vtransdetails = "TM Menu Disabled in Site ID ".$siteID;
+                            }
+                        }
+                        
+                        if($oldTM==$tmTab&&$oldSRR!=$srrTab){
+                            
+                            if($oldSRR == 0 && $srrTab == 1)
+                            {
+                                 $vtransdetails = "SR Menu Enabled in Site ID ".$siteID;
+                            }
+                            if($oldSRR == 1 && $srrTab == 0)
+                            {
+                                 $vtransdetails = "SR Menu Disabled in Site ID ".$siteID;
+                            }
+                        }
+                        if($oldTM!=$tmTab&&$oldSRR!=$srrTab){
+                            if(($oldTM == 0 && $tmTab == 1)&&($oldSRR == 0 && $srrTab == 1))
+                            {
+                                $vtransdetails = "TM and SR Menu Enabled in Site ID ".$siteID;
+                            }
+                            if(($oldTM == 1 && $tmTab == 0)&&($oldSRR == 1 && $srrTab == 0))
+                            {
+                                $vtransdetails = "TM and SR Menu Disabled in Site ID ".$siteID;
+                            }
+                        }
+                        
+                        $vauditfuncID = 87;
+// 
+                        $oas->logtoaudit($new_sessionid, $aid, $vtransdetails, $vdate, $vipaddress, $vauditfuncID); //insert in audittrail
+                    }else
+                    {
+                        $msg = 'Cashier Menu Management: Update Failed';
+                    }
+                    
+                 echo json_encode($msg);
+                 unset($siteID,$tmTab,$srrTab);
+                 break;
+           
+           
            //Update Casher Version
            case 'UpCashierVersion':
                
@@ -3065,8 +3033,9 @@ case 'GetLogFile':
                     echo json_encode($msg);
                     unset($site,$txtcversion,$txtoldcversion);
                 exit;    
-           break;
-           //checks the number of servers that has been set (web.config.php)
+           break; 
+           
+          //checks the number of servers that has been set (web.config.php)
            case 'CheckServers':
                     $val = $_POST['file'];
                     $serv;
@@ -3080,7 +3049,7 @@ case 'GetLogFile':
                echo $list;
                  break;
                  
-              default:
+           default:
                 $msg = "Page not found";
                 $_SESSION['mess'] = $msg;
                 $oas->close();
@@ -3246,6 +3215,7 @@ case 'GetLogFile':
         }
         if(count($rresult) > 0)
         {
+            
             $vsiteName->SiteName = $rsitename;
             $vsiteName->POSAccNo = $rposaccno;
         }
@@ -3375,6 +3345,16 @@ case 'GetLogFile':
         exit;
     }
     
+    elseif (isset($_POST['cashierTab'])) 
+    {
+        $siteID = $_POST['cashierTab'];
+        $result = $oas->getCashierTab($siteID);
+        echo json_encode($result);
+        unset($result);
+        $oas->close();
+        exit;
+    }
+    
     elseif(isset ($_POST['cmbsitez']))
     {
         $vsiteID = $_POST['cmbsitez'];
@@ -3413,5 +3393,4 @@ function getListFromServer($url)
         return $content;
         }
 }
-
 ?>

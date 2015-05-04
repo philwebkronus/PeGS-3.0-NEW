@@ -786,9 +786,9 @@ if($connected)
                 $vSiteID = $_POST['cmbsite'];
                 $vTerminalID = $_POST['cmbterminal'];
                 $vdate1 = $_POST['txtDate1'];
-                $vdate2 = $_POST['txtDate2'];
+                //$vdate2 = $_POST['txtDate2'];
                 $vFrom = $vdate1;
-                $vTo = date ('Y-m-d', strtotime ('+1 day' , strtotime($vdate2)));
+                $vTo = date ('Y-m-d', strtotime ('+1 day' , strtotime($vdate1)));
                 $vsummaryID = $_POST['summaryID'];
                 
                 //for sorting
@@ -874,9 +874,9 @@ if($connected)
                 $vSiteID = $_POST['cmbsite'];
                 $vTerminalID = $_POST['cmbterminal'];
                 $vdate1 = $_POST['txtDate1'];
-                $vdate2 = $_POST['txtDate2'];
+//                $vdate2 = $_POST['txtDate2'];
                 $vFrom = $vdate1;
-                $vTo = date ('Y-m-d', strtotime ('+1 day' , strtotime($vdate2)));
+                $vTo = date ('Y-m-d', strtotime ('+1 day' , strtotime($vdate1)));
                 //for sorting
                 if($_POST['sidx'] != "")
                 {
@@ -940,9 +940,9 @@ if($connected)
                 $vSiteID = $_POST['cmbsite'];
                 $vTerminalID = $_POST['cmbterminal'];
                 $vdate1 = $_POST['txtDate1'];
-                $vdate2 = $_POST['txtDate2'];
+//                $vdate2 = $_POST['txtDate2'];
                 $vFrom = $vdate1;
-                $vTo = date ('Y-m-d', strtotime ('+1 day' , strtotime($vdate2)));
+                $vTo = date ('Y-m-d', strtotime ('+1 day' , strtotime($vdate1)));
                 $vsummaryID = $_POST['summaryID'];
                 
                 //for sorting
@@ -1676,33 +1676,34 @@ case 'GetLogFile':
                 if(file_exists($vfullpath))   
                 {
                      
-                        $datemodified = date("Y-m-d", filemtime($vfullpath));
-//                       $datemodified = '1970-01-01'; //get file modification/creation date
-                       //check if date today is the same with date modification of file, then create temp file
-                      
-                        if($vdatenow == $datemodified)
-                        {
-                            $tmpfile = $vrealfolder."tmp".$vdatenow.".log";
-                            //validate if temp file was exists
-                            if(file_exists($tmpfile) == true)
-                            {
-                                unlink($tmpfile); //removes the temp file if exists
-                                file_put_contents($tmpfile, file_get_contents($vfullpath), FILE_APPEND | LOCK_EX); //re-create the temp file
-                                $rcontent = $oas->getfilecontents($tmpfile);
-                            }
-                            else
-                            {
-                                file_put_contents($tmpfile, file_get_contents($vfullpath), FILE_APPEND | LOCK_EX); //create the temp file
-                                $rcontent = $oas->getfilecontents($tmpfile); //get contents
-                            }
-                        }
-                            else{
+//                        $datemodified = date("Y-m-d", filemtime($vfullpath));
+////                       $datemodified = '1970-01-01'; //get file modification/creation date
+//                       //check if date today is the same with date modification of file, then create temp file
+//                      
+//                        if($vdatenow == $datemodified)
+//                        {
+//                            
+//                            $tmpfile = $vrealfolder."tmp".$vdatenow.".log";
+//                            //validate if temp file was exists
+//                            if(file_exists($tmpfile) == true)
+//                            {
+//                                unlink($tmpfile); //removes the temp file if exists
+//                                file_put_contents($tmpfile, file_get_contents($vfullpath), FILE_APPEND | LOCK_EX); //re-create the temp file
+//                                $rcontent = $oas->getfilecontents($tmpfile);
+//                            }
+//                            else
+//                            {
+//                                file_put_contents($tmpfile, file_get_contents($vfullpath), FILE_APPEND | LOCK_EX); //create the temp file
+//                                $rcontent = $oas->getfilecontents($tmpfile); //get contents
+//                            }
+//                        }
+//                            else{
                                 $rcontent = $oas->getfilecontents($vfullpath);
-                            }          
-                        
+                            //}          
                         if($rcontent!=""){
                             echo json_encode($rcontent);
-                        }else{
+                        }
+                        else{
                              $errmsg = "Log file does not exists";
                              print $errmsg;
                         }
@@ -1712,31 +1713,31 @@ case 'GetLogFile':
                   
                 if(strpos($headers[0],'200')!=false)   
                 {
-                        $dm = strtotime($headers['Last-Modified']);  //get file modification/creation date
-                        $datemodified = date("Y-m-d",$dm);
+//                        $dm = strtotime($headers['Last-Modified']);  //get file modification/creation date
+//                        $datemodified = date("Y-m-d",$dm);
                         //check if date today is the same with date modification of file, then create temp file
-                        if($vdatenow == $datemodified)
-                        {
-                            $tmpfile = $vrealfolder."tmp".$vdatenow.".log";
-                            //validate if temp file was exists
-                            if(file_exists($tmpfile) == true)
-                            {
-                                unlink($tmpfile); //removes the temp file if exists
-                                file_put_contents($tmpfile, file_get_contents($vfullpath), FILE_APPEND | LOCK_EX); //re-create the temp file
-                                $rcontent = $oas->getfilecontents($tmpfile);
-                            }
-                            else
-                            {
-                                file_put_contents($tmpfile, file_get_contents($vfullpath), FILE_APPEND | LOCK_EX); //create the temp file
-                                $rcontent = $oas->getfilecontents($tmpfile); //get contents
-                            }
-                        }
-                        else
-                        {
+//                        if($vdatenow == $datemodified)
+//                        {
+//                            $tmpfile = $vrealfolder."tmp".$vdatenow.".log";
+//                            //validate if temp file was exists
+//                            if(file_exists($tmpfile) == true)
+//                            {
+//                                unlink($tmpfile); //removes the temp file if exists
+//                                file_put_contents($tmpfile, file_get_contents($vfullpath), FILE_APPEND | LOCK_EX); //re-create the temp file
+//                                $rcontent = $oas->getfilecontents($tmpfile);
+//                            }
+//                            else
+//                            {
+//                                file_put_contents($tmpfile, file_get_contents($vfullpath), FILE_APPEND | LOCK_EX); //create the temp file
+//                                $rcontent = $oas->getfilecontents($tmpfile); //get contents
+//                            }
+//                        }
+//                        else
+//                        {
                              
                             $rcontent = $oas->getfilecontents($vfullpath);
                         
-                        }
+                        //}
                        
                         if($rcontent!=""){
                             echo json_encode($rcontent);
@@ -2931,6 +2932,69 @@ case 'GetLogFile':
                     unset($count,$site,$txtoldspyder,$txtspyder);
                 exit;    
            break;
+           
+           //Update Cashier Menu Tab
+           case 'UpdateCashierTab':
+               
+                 $siteID = $_POST['cmbsite'];
+                 $tmTab = $_POST['tmTab'];
+                 $srrTab = $_POST['srrTab'];
+                 $oldTM = $_POST['oldTM'];
+                 $oldSRR = $_POST['oldSRR'];
+                 
+                 
+                    $updateResult = $oas->updateCashierMenuTab($siteID, $tmTab, $srrTab);
+
+                    if($updateResult > 0)
+                    {
+                        $msg = 'Cashier Menu Management: Update Successful';
+                        
+                        if($oldTM!=$tmTab&&$oldSRR==$srrTab){
+                            if($oldTM == 0 && $tmTab == 1)
+                            {
+                                $vtransdetails = "TM Menu Enabled in Site ID ".$siteID;
+                            }
+                            if($oldTM == 1 && $tmTab == 0)
+                            {
+                                 $vtransdetails = "TM Menu Disabled in Site ID ".$siteID;
+                            }
+                        }
+                        
+                        if($oldTM==$tmTab&&$oldSRR!=$srrTab){
+                            
+                            if($oldSRR == 0 && $srrTab == 1)
+                            {
+                                 $vtransdetails = "SR Menu Enabled in Site ID ".$siteID;
+                            }
+                            if($oldSRR == 1 && $srrTab == 0)
+                            {
+                                 $vtransdetails = "SR Menu Disabled in Site ID ".$siteID;
+                            }
+                        }
+                        if($oldTM!=$tmTab&&$oldSRR!=$srrTab){
+                            if(($oldTM == 0 && $tmTab == 1)&&($oldSRR == 0 && $srrTab == 1))
+                            {
+                                $vtransdetails = "TM and SR Menu Enabled in Site ID ".$siteID;
+                            }
+                            if(($oldTM == 1 && $tmTab == 0)&&($oldSRR == 1 && $srrTab == 0))
+                            {
+                                $vtransdetails = "TM and SR Menu Disabled in Site ID ".$siteID;
+                            }
+                        }
+                        
+                        $vauditfuncID = 87;
+// 
+                        $oas->logtoaudit($new_sessionid, $aid, $vtransdetails, $vdate, $vipaddress, $vauditfuncID); //insert in audittrail
+                    }else
+                    {
+                        $msg = 'Cashier Menu Management: Update Failed';
+                    }
+                    
+                 echo json_encode($msg);
+                 unset($siteID,$tmTab,$srrTab);
+                 break;
+           
+           
            //Update Casher Version
            case 'UpCashierVersion':
                
@@ -3151,6 +3215,7 @@ case 'GetLogFile':
         }
         if(count($rresult) > 0)
         {
+            
             $vsiteName->SiteName = $rsitename;
             $vsiteName->POSAccNo = $rposaccno;
         }
@@ -3276,6 +3341,16 @@ case 'GetLogFile':
         $rresult = $rresult['Spyder'];
         echo json_encode($rresult);
         unset($rresult);
+        $oas->close();
+        exit;
+    }
+    
+    elseif (isset($_POST['cashierTab'])) 
+    {
+        $siteID = $_POST['cashierTab'];
+        $result = $oas->getCashierTab($siteID);
+        echo json_encode($result);
+        unset($result);
         $oas->close();
         exit;
     }
