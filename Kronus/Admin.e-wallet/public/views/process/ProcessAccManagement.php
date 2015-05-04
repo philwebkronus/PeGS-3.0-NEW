@@ -7,7 +7,6 @@
  * Modified By: Edson L. Perez
  */
 include __DIR__."/../sys/class/AccountManagement.class.php";
-include __DIR__."/../sys/class/PcwsWrapper.class.php";
 require  __DIR__."/../sys/core/init.php";
 
 $aid = 0;

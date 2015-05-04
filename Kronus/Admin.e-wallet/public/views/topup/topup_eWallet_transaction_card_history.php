@@ -33,7 +33,8 @@ $vaccesspages = array('5','6','9','12','18');
              <tr>
                 <td>Card Number</td>
                 <td>
-                    <input type='text' id='cardnum' name='cardnum' maxlength="30" size='30'/>
+                    <input type='text' id='cardnum' name='cardnum' maxlength="30" size='30'
+                           onkeypress="return loyaltycardnumber(event)"/>
                 </td>
                 <td>Membership | Temporary</td>
             </tr>
@@ -98,6 +99,8 @@ $vaccesspages = array('5','6','9','12','18');
     jQuery(document).ready(function(){
         
         var msg="";
+        
+        
         jQuery("#cardnum").change(function(){
             
            var cardNumber = jQuery("#cardnum").val();
@@ -138,7 +141,6 @@ $vaccesspages = array('5','6','9','12','18');
         });
         
         
-        
         jQuery('#btnpdf').click(function(){
             var cardNumber = jQuery("#cardnum").val();
             var transStatus = jQuery("#transacStatus").val();
@@ -168,7 +170,7 @@ $vaccesspages = array('5','6','9','12','18');
         jQuery("#ewalletThistory").jqGrid({
             url : 'process/ProcessTopUpPaginate.php?action=getewalletcardhistory',
             datatype: "json",
-            colNames:['Card Number','Start Date','End Date', 'Amount', 'Transaction Type', 'Status','Created By'],
+            colNames:['Site / PEGS Code','Card Number','Start Date','End Date', 'Amount', 'Transaction Type', 'Status','Created By'],
             rowNum:10,
             height: 280,
             width: 1200,
@@ -178,12 +180,13 @@ $vaccesspages = array('5','6','9','12','18');
             sortorder: "asc",
             caption: "e-wallet Transaction History",
             colModel:[
-                {name:'LoyaltyCardNumber',index:'LoyaltyCardNumber',align: 'center', width:150},
+                {name:'SiteCode',index:'SiteCode',align: 'center', width:120},
+                {name:'LoyaltyCardNumber',index:'LoyaltyCardNumber',align: 'center', width:120},
                                     {name:'StartDate',index:'StartDate', align: 'center', width:185},
                                     {name:'EndDate',index:'EndDate', align: 'left',width:185},
                                     {name:'Amount',index:'Amount', align: 'right', width:100},
-                                    {name:'TransType',index:'TransType', align: 'center', width:150},
-                                    {name:'Status',index:'Status', align: 'center', width:150},
+                                    {name:'TransType',index:'TransType', align: 'center', width:125},
+                                    {name:'Status',index:'Status', align: 'center', width:125},
                                     {name:'Name',index:'Name', align: 'center', width:100}
             ],     
             resizable:true
@@ -207,7 +210,7 @@ $vaccesspages = array('5','6','9','12','18');
             
             if(new Date(startdate) > new Date(enddate)){
                 
-                alert('Start date must not greater than end date');
+                alert('Start date must not be greater than end date');
                 return false;
             }
             if(new Date(enddate) > new Date()){

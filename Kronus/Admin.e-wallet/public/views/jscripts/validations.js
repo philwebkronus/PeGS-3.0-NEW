@@ -1496,19 +1496,19 @@ function chksitegrp()
               document.getElementById('rptDate').value = datenow;
               return false;
           }           
-          else if((datenow) < (document.getElementById('rptDate2').value))
-          {
-              alert("Queried date must not be greater than today");
-              document.getElementById('rptDate2').value = datenow;
-              return false;         
-          }          
-          else if((document.getElementById('rptDate2').value) < 
-                  (document.getElementById('rptDate').value))
-          {
-              alert("Start date must not greater than end date");
-              document.getElementById('rptDate2').value = datenow;
-              return false;         
-          }          
+//          else if((datenow) < (document.getElementById('rptDate2').value))
+//          {
+//              alert("Queried date must not be greater than today");
+//              document.getElementById('rptDate2').value = datenow;
+//              return false;         
+//          }          
+//          else if((document.getElementById('rptDate2').value) < 
+//                  (document.getElementById('rptDate').value))
+//          {
+//              alert("Start date must not greater than end date");
+//              document.getElementById('rptDate2').value = datenow;
+//              return false;         
+//          }          
           else
           {
               return true;

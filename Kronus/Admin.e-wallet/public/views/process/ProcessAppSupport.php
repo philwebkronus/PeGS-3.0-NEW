@@ -543,7 +543,7 @@ if($connected && $connected2 && $connected3)
                              $response = array('ErrorCode' => 0, 
                                                'Message' => 'Terminal session succesfully removed.');
                              
-                             $vtransdetails = "Successfully removed. Login=$login; TerminalCode=$terminal;CardNumber=$cardnumber";
+                             $vtransdetails = "Successfully removed. TerminalCode=$terminal;CardNumber=$cardnumber";
                              $vauditfuncID = 86;
                              $oas->logtoaudit($new_sessionid, $aid, $vtransdetails, $vdate, $vipaddress, $vauditfuncID);
                          }
@@ -2324,67 +2324,68 @@ if($connected && $connected2 && $connected3)
                 if(file_exists($vfullpath))   
                 {
                      
-                        $datemodified = date("Y-m-d", filemtime($vfullpath));
-//                       $datemodified = '1970-01-01'; //get file modification/creation date
-                       //check if date today is the same with date modification of file, then create temp file
-                      
-                        if($vdatenow == $datemodified)
-                        {
-                            $tmpfile = $vrealfolder."tmp".$vdatenow.".log";
-                            //validate if temp file was exists
-                            if(file_exists($tmpfile) == true)
-                            {
-                                unlink($tmpfile); //removes the temp file if exists
-                                file_put_contents($tmpfile, file_get_contents($vfullpath), FILE_APPEND | LOCK_EX); //re-create the temp file
-                                $rcontent = $oas->getfilecontents($tmpfile);
-                            }
-                            else
-                            {
-                                file_put_contents($tmpfile, file_get_contents($vfullpath), FILE_APPEND | LOCK_EX); //create the temp file
-                                $rcontent = $oas->getfilecontents($tmpfile); //get contents
-                            }
-                        }
-                            else{
+//                        $datemodified = date("Y-m-d", filemtime($vfullpath));
+////                       $datemodified = '1970-01-01'; //get file modification/creation date
+//                       //check if date today is the same with date modification of file, then create temp file
+//                      
+//                        if($vdatenow == $datemodified)
+//                        {
+//                            
+//                            $tmpfile = $vrealfolder."tmp".$vdatenow.".log";
+//                            //validate if temp file was exists
+//                            if(file_exists($tmpfile) == true)
+//                            {
+//                                unlink($tmpfile); //removes the temp file if exists
+//                                file_put_contents($tmpfile, file_get_contents($vfullpath), FILE_APPEND | LOCK_EX); //re-create the temp file
+//                                $rcontent = $oas->getfilecontents($tmpfile);
+//                            }
+//                            else
+//                            {
+//                                file_put_contents($tmpfile, file_get_contents($vfullpath), FILE_APPEND | LOCK_EX); //create the temp file
+//                                $rcontent = $oas->getfilecontents($tmpfile); //get contents
+//                            }
+//                        }
+//                            else{
                                 $rcontent = $oas->getfilecontents($vfullpath);
-                            }          
-                        
+                            //}          
                         if($rcontent!=""){
                             echo json_encode($rcontent);
-                        }else{
+                        }
+                        else{
                              $errmsg = "Log file does not exists";
                              print $errmsg;
                         }
                 }else{  
                     
-                   $headers = @get_headers($vfullpath,1);
+                $headers = @get_headers($vfullpath,1);
                   
                 if(strpos($headers[0],'200')!=false)   
                 {
-                        $dm = strtotime($headers['Last-Modified']);  //get file modification/creation date
-                        $datemodified = date("Y-m-d",$dm);
+//                        $dm = strtotime($headers['Last-Modified']);  //get file modification/creation date
+//                        $datemodified = date("Y-m-d",$dm);
                         //check if date today is the same with date modification of file, then create temp file
-                        if($vdatenow == $datemodified)
-                        {
-                            $tmpfile = $vrealfolder."tmp".$vdatenow.".log";
-                            //validate if temp file was exists
-                            if(file_exists($tmpfile) == true)
-                            {
-                                unlink($tmpfile); //removes the temp file if exists
-                                file_put_contents($tmpfile, file_get_contents($vfullpath), FILE_APPEND | LOCK_EX); //re-create the temp file
-                                $rcontent = $oas->getfilecontents($tmpfile);
-                            }
-                            else
-                            {
-                                file_put_contents($tmpfile, file_get_contents($vfullpath), FILE_APPEND | LOCK_EX); //create the temp file
-                                $rcontent = $oas->getfilecontents($tmpfile); //get contents
-                            }
-                        }
-                        else
-                        {
+//                        if($vdatenow == $datemodified)
+//                        {
+//                            $tmpfile = $vrealfolder."tmp".$vdatenow.".log";
+//                            //validate if temp file was exists
+//                            if(file_exists($tmpfile) == true)
+//                            {
+//                                unlink($tmpfile); //removes the temp file if exists
+//                                file_put_contents($tmpfile, file_get_contents($vfullpath), FILE_APPEND | LOCK_EX); //re-create the temp file
+//                                $rcontent = $oas->getfilecontents($tmpfile);
+//                            }
+//                            else
+//                            {
+//                                file_put_contents($tmpfile, file_get_contents($vfullpath), FILE_APPEND | LOCK_EX); //create the temp file
+//                                $rcontent = $oas->getfilecontents($tmpfile); //get contents
+//                            }
+//                        }
+//                        else
+//                        {
                              
                             $rcontent = $oas->getfilecontents($vfullpath);
                         
-                        }
+                        //}
                        
                         if($rcontent!=""){
                             echo json_encode($rcontent);

@@ -583,7 +583,8 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         $topreport = new TopUpReportQuery($this->getConnection());
         $topreport->open();
         $vsitecode = $_POST['selsite'];
-        $rows = $topreport->getRptActiveTerminals($vsitecode);
+        $vterminalid = $_POST['selterminal'];
+        $rows = $topreport->getRptActiveTerminals($vsitecode,$vterminalid);
 
         foreach($rows as $key => $row) {
             $balance = $this->getBalance($row);
@@ -746,7 +747,8 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         $topreport = new TopUpReportQuery($this->getConnection());
         $topreport->open();
         $vsitecode = $_POST['selsite'];
-        $rows = $topreport->getRptActiveTerminals($vsitecode);
+        $vterminalid = $_POST['selterminal'];
+        $rows = $topreport->getRptActiveTerminals($vsitecode,$vterminalid);
         
         foreach($rows as $key => $row) {
             $balance = $this->getBalance($row);
@@ -1059,8 +1061,9 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         $topreport = new TopUpReportQuery($this->getConnection());
         $topreport->open();
         $startdate = $_POST['startdate']." ".BaseProcess::$cutoff;
-        $venddate = $_POST['enddate'];  
-        $enddate = date ('Y-m-d' , strtotime (BaseProcess::$gaddeddate, strtotime($venddate)))." ".BaseProcess::$cutoff;   
+//        $venddate = $_POST['enddate'];  
+//        $enddate = date ('Y-m-d' , strtotime (BaseProcess::$gaddeddate, strtotime($venddate)))." ".BaseProcess::$cutoff;   
+        $enddate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($startdate)) .BaseProcess::$gaddeddate))." ".BaseProcess::$cutoff;    
         $vsitecode = $_POST['selsitecode'];
         $datenow = date("Y-m-d")." ".BaseProcess::$cutoff;
         $rows = array();
@@ -1100,7 +1103,7 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         if(count($rows) > 0){
             foreach($rows as $row) {
                 $grosshold = (($row['InitialDeposit'] + $row['Reload']) - $row['Redemption']) - $row['ManualRedemption'];
-                $cashonhand = (((($row['DepositCash'] + $row['EwalletDeposits'] + $row['ReloadCash']) - $row['RedemptionCashier']) - $row['EwalletWithdrawals']) - $row['ManualRedemption']) - $row['EncashedTickets'];
+                $cashonhand = (((($row['DepositCash'] + $row['EwalletCashLoads'] + $row['ReloadCash']) - $row['RedemptionCashier']) - $row['EwalletWithdrawals']) - $row['ManualRedemption']) - $row['EncashedTickets'];
                 $endbal = $cashonhand + $row['Replenishment'] - $row['Collection'];
                 $pdf->c_tableRow2(array(
                     array('value'=>substr($row['SiteCode'], strlen(BaseProcess::$sitecode))),
@@ -1250,8 +1253,9 @@ class ProcessTopUpGenerateReports extends BaseProcess{
     //added on 11-18-2011, for gross hold monitoring per cut off (Excel)
     public function grossHoldCutoffExcel() {
         $startdate = $_POST['startdate']." ".BaseProcess::$cutoff;
-        $venddate = $_POST['enddate'];  
-        $enddate = date ('Y-m-d' , strtotime (BaseProcess::$gaddeddate, strtotime($venddate)))." ".BaseProcess::$cutoff;           
+//        $venddate = $_POST['enddate'];  
+//        $enddate = date ('Y-m-d' , strtotime (BaseProcess::$gaddeddate, strtotime($venddate)))." ".BaseProcess::$cutoff;           
+        $enddate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($startdate)) .BaseProcess::$gaddeddate))." ".BaseProcess::$cutoff; 
         $_SESSION['report_header'] = array('Site / PEGS Code','Cut Off Date','Beginning Balance','Deposit', 'e-wallet Loads', 'Reload','Redemption', 'e-wallet Withdrawal','Manual Redemption','Printed Tickets','Active Tickets for the Day','Coupon','Cash on Hand', 'Replenishment','Collection','Ending Balance');
         $topreport = new TopUpReportQuery($this->getConnection());
         $topreport->open();
@@ -1269,7 +1273,7 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         if(count($rows) > 0){
             foreach($rows as $row) {
                 $grosshold = (($row['InitialDeposit'] + $row['Reload']) - $row['Redemption']) - $row['ManualRedemption'];
-                $cashonhand = (((($row['DepositCash'] + $row['EwalletDeposits'] + $row['ReloadCash']) - $row['RedemptionCashier']) - $row['EwalletWithdrawals']) - $row['ManualRedemption']) - $row['EncashedTickets'];
+                $cashonhand = (((($row['DepositCash'] + $row['EwalletCashLoads'] + $row['ReloadCash']) - $row['RedemptionCashier']) - $row['EwalletWithdrawals']) - $row['ManualRedemption']) - $row['EncashedTickets'];
                 $endbal = $cashonhand + $row['Replenishment'] - $row['Collection'];
                 $new_rows[] = array(
                                 substr($row['SiteCode'], strlen(BaseProcess::$sitecode)),
@@ -1296,7 +1300,7 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         $_SESSION['report_values'] = $new_rows;
         $_GET['fn'] = 'grossholdpercutoff';
         include 'ProcessTopUpExcel.php';
-        unset($new_rows, $rows, $startdate, $venddate, $enddate, $datenow);
+        unset($new_rows, $rows, $startdate, $enddate, $datenow);
         $topreport->close();
     }
     
@@ -1415,7 +1419,7 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         $rows = $topreport->geteWalletTransactionHistoryReport($site, $transType, $transStatus, $startDate, $endDate);
         $pdf = CTCPDF::c_getInstance();
         $pdf->c_commonReportFormat();
-        $pdf->c_setHeader('ewallet Transaction History Per Site');
+        $pdf->c_setHeader('e-wallet Transaction History Per Site');
         
         $pdf->html.='<div style="text-align:center;">Date Range: <b>  From </b> ' .$startDate. ' AM <b>     To </b>' .$endDate.' AM </div>';
         $pdf->SetFontSize(8);
@@ -1510,7 +1514,7 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         $rows = $topreport->geteWalletTransactionCardHistoryReport($cardNumber, $transType, $transStatus, $startDate, $endDate);
         $pdf = CTCPDF::c_getInstance();
         $pdf->c_commonReportFormat();
-        $pdf->c_setHeader('ewallet Transaction History Per Membership Card'); 
+        $pdf->c_setHeader('e-wallet Transaction History Per Membership Card'); 
         $pdf->html.='<div style="text-align:center;">Date Range: <b>  From </b> ' .$startDate. ' AM <b>     To </b>' .$endDate.' AM </div>';
         $pdf->SetFontSize(8);
         $pdf->c_tableHeader2(array(

@@ -163,7 +163,7 @@ include "header.php";
                        if (data.ErrorCode == 0) {
                             $("#txtlogin").val(data.Login);
                             $("#txtterminal").val(data.TerminalCode);
-                            $("#txt-card-number").val(data.TerminalCode);
+                            $("#txt-card-number").val(data.CardNumber);
                             
                             var tblRow = "<thead>"
                                         +"<tr>"

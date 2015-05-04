@@ -1156,8 +1156,7 @@ class ManualAPIFulfillment extends DBHandler
      {
          $stmt = "SELECT MID 
                   FROM loyaltydb.membercards 
-                  WHERE CardNumber = ? 
-                  AND Status IN (1,5)";
+                  WHERE CardNumber = ?";
          $this->prepare($stmt);
          $this->bindparameter(1, $cardnumber);
          $this->execute();

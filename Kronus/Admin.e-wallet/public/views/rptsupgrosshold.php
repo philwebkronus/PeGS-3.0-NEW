@@ -51,11 +51,11 @@
                postData: {
                             paginate: function() {return "GrossHold";},
                             strDate: function() {return $("#rptDate").val();},
-                            endDate: function() {return $("#rptDate2").val();},
+//                            endDate: function() {return $("#rptDate2").val();},
                             cmbsitename: function() {return $("#cmbsite").val();}
                          },
                datatype: "json",
-               colNames:['Cashier', 'Total Deposit', 'Total Reload', 'Total Withdrawal and<br/>encashment', 'Cash on Hand'],
+               colNames:['Cashier', 'Total Deposit', 'Total Reload', 'Total Withdrawal', 'Cash on Hand'],
                colModel:[
                          {name:'Name',index:'uname', align: 'center', sortable:false},
                          {name:'TotalDeposit', align: 'right', sortable:false},
@@ -74,8 +74,8 @@
                caption:"Gross Hold"
             });
             jQuery("#userdata").jqGrid('navGrid','#pager2',{edit:false,add:false,del:false, search:false});
-            $('#jqgh_userdata_TotalWithdrawal').css("height","");
-            $('#jqgh_userdata_TotalWithdrawal').css("height","40px");
+//            $('#jqgh_userdata_TotalWithdrawal').css("height","");
+//            $('#jqgh_userdata_TotalWithdrawal').css("height","40px");
             
             function gettotal()
             {
@@ -84,7 +84,7 @@
                    data: {
                              gettotal: function(){return "GetTotals"},
                              strDate: function() {return $("#rptDate").val();},
-                             endDate: function() {return $("#rptDate2").val();},
+//                             endDate: function() {return $("#rptDate2").val();},
                              cmbsitename: function() {return $("#cmbsite").val();}
                          },
                    type: 'post',
@@ -104,6 +104,7 @@
                        var loadticket = data.loadticket;
                        var loadcoupon = data.loadcoupon;
                        var cashonhand = data.cashonhand;
+                       var manualredemption = data.manualredemption;
                        var printedtickets = data.printedtickets;
                        var encashedtickets = data.encashedtickets;
                        var bancnet = data.bancnet;
@@ -118,6 +119,7 @@
                        document.getElementById('tickets').innerHTML = loadticket;
                        document.getElementById('coupons').innerHTML = loadcoupon;
                        document.getElementById('cashonhand').innerHTML = cashonhand;
+                       document.getElementById('manualredemption').innerHTML = manualredemption;
                        document.getElementById('printedtickets').innerHTML = printedtickets;
                        document.getElementById('encashedtickets').innerHTML = encashedtickets;
                        document.getElementById('bancnet').innerHTML = bancnet;
@@ -133,6 +135,7 @@
                        document.getElementById('tickets').innerHTML = "0.00";
                        document.getElementById('coupons').innerHTML = "0.00";
                        document.getElementById('cashonhand').innerHTML = "0.00";
+                       document.getElementById('manualredemption').innerHTML = "0.00";
                        document.getElementById('printedtickets').innerHTML = "0.00";
                        document.getElementById('encashedtickets').innerHTML = "0.00";
                        document.getElementById('bancnet').innerHTML = "0.00";
@@ -148,19 +151,20 @@
         <input type="hidden" id="txtDate" value="<?php echo date("Y-m-d");?>" />
         <table>
             <tr>
-                <td>Start Date</td>
+                <!--<td>Start Date</td>-->
+                <td>Transaction Date</td>
                 <td>
                     <input name='strDate' id='rptDate' readonly value="<?php echo date("Y-m-d");?>" />
                     <img name="cal" src="images/cal.gif" width="16" height="16" border="0" alt="Pick a date" onClick="displayDatePicker('strDate', false, 'ymd', '-');"/>
                 </td>
             </tr>
-            <tr>
+<!--            <tr>
                 <td>End Date</td>
                 <td>
-                    <input name='endDate' id='rptDate2' readonly value="<?php echo date ( 'Y-m-d'); ?>" />
+                    <input name='endDate' id='rptDate2' readonly value="<?php // echo date ( 'Y-m-d'); ?>" />
                     <img name="cal" src="images/cal.gif" width="16" height="16" border="0" alt="Pick a date" onClick="displayDatePicker('endDate', false, 'ymd', '-');"/>
                 </td>
-            </tr>
+            </tr>-->
         </table>
         <div id="submitarea">
             <input type="button" value="Query" id="btnquery"/>
@@ -194,16 +198,16 @@
                         <td style="padding-left: 5px; padding-right: 25px;"> - Cash</td>
                         <td id="cash" style="font-weight: bold; text-align: right;width: 120px; padding: 2px;"></td>
                         <td style="width: 150px; "></td>
-                        <td style="padding-left: 5px; padding-right: 25px;">Printed Tickets</td>
-                        <td id="printedtickets" style="font-weight: bold; text-align: right;width: 120px; padding: 2px;"></td>
+                        <td style="padding-left: 5px; padding-right: 25px;">Manual Redemption</td>
+                        <td id="manualredemption" style="font-weight: bold; text-align: right;width: 120px; padding: 2px;"></td>
                     </tr>
                     <tr>
                         <td style="width: 150px; "></td>
                         <td style="padding-left: 5px; padding-right: 25px;"> - Bancnet</td>
                         <td id="bancnet" style="font-weight: bold; text-align: right;width: 120px; padding: 2px;"></td>
                         <td style="width: 150px; "></td>
-                        <td style="padding-left: 5px; padding-right: 25px;">Encashed Tickets</td>
-                        <td id="encashedtickets" style="font-weight: bold; text-align: right;width: 120px; padding: 2px;"></td>
+                        <td style="padding-left: 5px; padding-right: 25px;">Printed Tickets</td>
+                        <td id="printedtickets" style="font-weight: bold; text-align: right;width: 120px; padding: 2px;"></td>
                     </tr>
                     <tr>
                         <td style="width: 150px; "></td>
@@ -211,23 +215,28 @@
                         <td style="padding-left: 5px; padding-right: 25px;"> - Tickets</td>
                         <td id="tickets" style="font-weight: bold; text-align: right;width: 120px; padding: 2px;"></td>
                         <td style="width: 150px; "></td>
-                        <td style="padding-left: 5px; padding-right: 25px;">Cash on Hand</td>
-                        <td id="cashonhand" style="font-weight: bold; text-align: right;width: 120px; padding: 2px;"></td>
+                        <td style="padding-left: 5px; padding-right: 25px;">Encashed Tickets</td>
+                        <td id="encashedtickets" style="font-weight: bold; text-align: right;width: 120px; padding: 2px;"></td>
                     </tr>
                     <tr>
                         <td style="width: 150px; "></td>
                         <td style="width: 150px; "></td>
                         <td style="padding-left: 5px; padding-right: 25px;"> - Coupons</td>
                         <td id="coupons" style="font-weight: bold; text-align: right;width: 120px; padding: 2px;"></td>
+                        <td style="width: 150px; "></td>
+                        <td style="padding-left: 5px; padding-right: 25px;">Cash on Hand</td>
+                        <td id="cashonhand" style="font-weight: bold; text-align: right;width: 120px; padding: 2px;"></td>
                     </tr>
                 </table>
             </div>
             <div id="senchaexport1" style="background-color: #6A6A6A; width: 1000px; padding-bottom: 60px; display: none;">
                 <br />
                 <input type='button' name='exportPDF' id='exportPDF' value='Export to PDF File' 
-                       onclick="window.location.href='process/ProcessRptSupervisor.php?pdf=generatepdf&DateFrom='+document.getElementById('rptDate').value+'&DateTo='+document.getElementById('rptDate2').value" style="float: right;" />  
+                       onclick="window.location.href='process/ProcessRptSupervisor.php?pdf=generatepdf&DateFrom='+document.getElementById('rptDate').value+'&fn=GrossHold_for_'+document.getElementById('rptDate').value" style="float: right;" />  
+                       <!--onclick="window.location.href='process/ProcessRptSupervisor.php?pdf=generatepdf&DateFrom='+document.getElementById('rptDate').value" style="float: right;" />  onclick="window.location.href='process/ProcessRptSupervisor.php?pdf=generatepdf&DateFrom='+document.getElementById('rptDate').value+'&DateTo='+document.getElementById('rptDate2').value" style="float: right;" />-->  
                 <input type="button" name="exportExcel" id="exportExcel" value="Export to Excel File" 
-                       onclick="window.location.href='process/ProcessRptSupervisor.php?excel=generateexel&DateFrom='+document.getElementById('rptDate').value+'&DateTo='+document.getElementById('rptDate2').value+'&fn=GrossHold_for_'+document.getElementById('rptDate').value" style="float: right;"/>
+                       onclick="window.location.href='process/ProcessRptSupervisor.php?excel=generateexel&DateFrom='+document.getElementById('rptDate').value+'&fn=GrossHold_for_'+document.getElementById('rptDate').value" style="float: right;"/>
+                       <!--onclick="window.location.href='process/ProcessRptSupervisor.php?excel=generateexel&DateFrom='+document.getElementById('rptDate').value+'&DateTo='+document.getElementById('rptDate2').value+'&fn=GrossHold_for_'+document.getElementById('rptDate').value" style="float: right;"/>-->
             </div>
         <!--</div>-->
 </div>

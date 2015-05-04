@@ -29,19 +29,19 @@ $vaccesspages = array('5');
     <form method="post" id="frmexport" method='POST' action='GrossHoldBalanceViewDetails.php'>
         <input type='hidden' name='hdnsiteid' id='hdnsiteid' value='' />
         <input type='hidden' name='hdnstartdate' id='hdnstartdate' value='' />
-        <input type='hidden' name='hdnenddate' id='hdnenddate' value='' />
+<!--        <input type='hidden' name='hdnenddate' id='hdnenddate' value='' />-->
         <div id="pagetitle"><?php echo $pagetitle; ?></div>
         <br />
         <table>
             <tr>
-                <td>Start Date</td>
-                <td>
+                <td>Transaction Date</td>
+                <td colspan="3">
                     <input type="text" value="<?php echo date('Y-m-d') ?>" id="startdate" readonly="readonly" name="startdate" />&nbsp;<img name="cal" src="images/cal.gif" width="16" height="16" border="0" alt="Pick a date" onClick="displayDatePicker('startdate', false, 'ymd', '-');"/>
                 </td>
-                <td> End Date</td>
+<!--                <td> End Date</td>
                 <td>
-                    <input type="text" value="<?php echo date('Y-m-d',strtotime(date("Y-m-d", strtotime(date('Y-m-d'))))) ?>" id="enddate" readonly="readonly" name="enddate" />&nbsp;<img name="cal" src="images/cal.gif" width="16" height="16" border="0" alt="Pick a date" onClick="displayDatePicker('enddate', false, 'ymd', '-');"/> 
-                </td>
+                    <input type="text" value="<?php // echo date('Y-m-d',strtotime(date("Y-m-d", strtotime(date('Y-m-d'))))) ?>" id="enddate" readonly="readonly" name="enddate" />&nbsp;<img name="cal" src="images/cal.gif" width="16" height="16" border="0" alt="Pick a date" onClick="displayDatePicker('enddate', false, 'ymd', '-');"/> 
+                </td>-->
             </tr>
             <tr>
                 <td>Site / PEGS</td>
@@ -132,7 +132,8 @@ $vaccesspages = array('5');
             var enddate = jQuery('#enddate').val();
             var site = jQuery('#selsitecode').val();
             jQuery("#tblreplenish").jqGrid('setGridParam',{url:"process/ProcessTopUpPaginate.php?action=grossholdbalance&startdate="+startdate+
-                "&enddate="+enddate+"&site="+site,page:1}).trigger("reloadGrid");  
+//                "&enddate="+enddate+"&site="+site,page:1}).trigger("reloadGrid");  
+                "&site="+site,page:1}).trigger("reloadGrid");  
         });
     });
 </script>

@@ -162,8 +162,10 @@ class ProcessTopUpPaginate extends BaseProcess {
         $arrdetails = array();
         foreach($rows as $id => $row) {
             $gross_hold = ((($row['Deposit'] + $row['Reload'] + $row['EwalletLoads']) - ($row['Redemption'] - $row['EwalletWithdrawal'])) - $row['ActualAmount']);
-            $cashonhand =((($row['DepositCash'] + $row['ReloadCash'] + $row['EwalletLoads']) - $row['RedemptionCashier']) - $row['ActualAmount']) - $row["EncashedTickets"] - $row['EwalletWithdrawal'];
-            
+            $cashonhand =((($row['DepositCash'] + $row['ReloadCash'] + $row['EwalletCashLoads']) - $row['RedemptionCashier']) - $row['ActualAmount']) - $row["EncashedTickets"] - $row['EwalletWithdrawal'];
+//            if($row['SiteID'] == 167){
+//                var_dump($row['DepositCash'],$row['ReloadCash'],$row['EwalletCashLoads'],$row['RedemptionCashier'],$row['ActualAmount'],$row["EncashedTickets"], $row['EwalletWithdrawal']);exit;
+//            }
             $temp = array(
                         "SiteName"=>$row['SiteName'],
 //                        "SiteCode"=>substr($row['SiteCode'], strlen(BaseProcess::$sitecode)),
@@ -449,12 +451,13 @@ class ProcessTopUpPaginate extends BaseProcess {
         $siteID = $_POST['siteID'];
         if($siteID == 'all'){
             $siteID = $_POST['siteID'];
-        }
-        else{
+            $terminalID = 'all';
+        } else {
             $siteID = $topup->getSiteID($siteID);
+            $terminalID = isset($_POST['terminalID']) ? $_POST['terminalID']:'all';
         }
 
-        $count = $topup->getActiveSessionCount($siteID, $txtcardnumber = '');
+        $count = $topup->getActiveSessionCount($siteID, $txtcardnumber = '', $terminalID);
         echo "$count";
         $topup->close();
         unset($count);
@@ -469,12 +472,13 @@ class ProcessTopUpPaginate extends BaseProcess {
         $siteID = $_POST['siteID'];
         if($siteID == 'all'){
             $siteID = $_POST['siteID'];
-        }
-        else{
+            $terminalID = '';
+        } else {
             $siteID = $topup->getSiteID($siteID);
+            $terminalID = isset($_POST['terminalID']) ? $_POST['terminalID']:'';
         }
         $usermode = 0;
-        $count = $topup->getActiveSessionCountMod($siteID, $cardnumber = '', $usermode);
+        $count = $topup->getActiveSessionCountMod($siteID, $cardnumber = '', $usermode,$terminalID);
         echo "$count";
         $topup->close();
         unset($count);
@@ -489,12 +493,13 @@ class ProcessTopUpPaginate extends BaseProcess {
         $siteID = $_POST['siteID'];
         if($siteID == 'all'){
             $siteID = $_POST['siteID'];
-        }
-        else{
+            $terminalID = '';
+        } else {
             $siteID = $topup->getSiteID($siteID);
+            $terminalID = isset($_POST['terminalID']) ? $_POST['terminalID']:'';
         }
         $usermode = 1;
-        $count = $topup->getActiveSessionCountMod($siteID, $cardnumber = '', $usermode);
+        $count = $topup->getActiveSessionCountMod($siteID, $cardnumber = '', $usermode, $terminalID);
         echo "$count";
         $topup->close();
         unset($count);
@@ -537,6 +542,42 @@ class ProcessTopUpPaginate extends BaseProcess {
         echo "$count";
         $topup->close();
         unset($count);
+    }
+    
+    public function getListOfTerminals() 
+    {
+        include_once __DIR__.'/../sys/class/TopUp.class.php';
+        $topup = new TopUp($this->getConnection());
+        $topup->open();  
+        $sitecode = $_POST['sitecode'];
+        
+        if($sitecode == 'all'){
+            $siteID = '';
+        } else {
+            $siteID = $topup->getSiteID($sitecode);
+        }
+        
+        $result = $topup->getlistofterminals($siteID);
+
+        if(count($result) > 0){
+            $terminals = array();
+            foreach($result as $row) {
+                $rsitecode = $topup->getsitecode($row['SiteID']);
+                $rterminalID = $row['TerminalID'];
+                $rterminalName = $row['TerminalName'];
+
+                //remove the "icsa-[SiteCode]"
+                    $rterminalCode = substr($row['TerminalCode'], strlen($rsitecode['SiteCode']));
+
+                //create a new array to populate the combobox
+                $newvalue = array("TerminalID" => $rterminalID, "TerminalCode" => $rterminalCode, "TerminalName" => $rterminalName);
+                array_push($terminals, $newvalue);
+            }
+        }
+
+        echo json_encode($terminals);
+        $topup->close();
+        unset($result);
     }
     
     //this will render on Playing Balance Page User Based
@@ -649,8 +690,8 @@ class ProcessTopUpPaginate extends BaseProcess {
         $cardinfo = BaseProcess::$cardinfo;
         $topup->open();   
         $sitecode = $_POST['sitecode'];
-        
-        $rcount = $topup->countActiveTerminals2($sitecode);
+        $terminalID = isset($_POST['terminalID']) ? $_POST['terminalID']:'';
+        $rcount = $topup->countActiveTerminals2($sitecode,$terminalID);
         
         foreach ($rcount as $value) {
             $count = $value['rcount'];
@@ -673,7 +714,7 @@ class ProcessTopUpPaginate extends BaseProcess {
 
         $start = (int)(((int)$page * $limit) - $limit);
         $limit = (int)$limit;   
-        $rows = $topup->getActiveTerminals2($sitecode, $direction, $start, $limit);
+        $rows = $topup->getActiveTerminals2($sitecode, $terminalID, $direction, $start, $limit);
         
         if(count($rows) == 0){
             $jqgrid = array();
@@ -1257,9 +1298,11 @@ class ProcessTopUpPaginate extends BaseProcess {
         if(isset($_GET['startdate']))
             $startdate = $_GET['startdate']." ".BaseProcess::$cutoff;
         
-        if(isset($_GET['enddate']))
-            $enddate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($_GET['enddate'])) .BaseProcess::$gaddeddate))." ".BaseProcess::$cutoff;
+//        if(isset($_GET['enddate']))
+//            $enddate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($_GET['enddate'])) .BaseProcess::$gaddeddate))." ".BaseProcess::$cutoff;
         
+        $enddate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($startdate)) .BaseProcess::$gaddeddate))." ".BaseProcess::$cutoff; 
+
         $dir = $_GET['sord'];
         $sort = "s.SiteCode";
         $siteID = $_GET['site'];
@@ -1306,7 +1349,7 @@ class ProcessTopUpPaginate extends BaseProcess {
         $jqgrid = $params['jqgrid'];
         foreach($rresult as $row) {
             $grosshold = (($row['InitialDeposit'] + $row['Reload']) - $row['Redemption']) - $row['ManualRedemption'];
-            $cashonhand = (((($row['DepositCash'] + $row['EwalletDeposits'] + $row['ReloadCash']) - $row['RedemptionCashier']) - $row['EwalletWithdrawals']) - $row['ManualRedemption']) - $row['EncashedTickets'];
+            $cashonhand = (((($row['DepositCash'] + $row['EwalletCashLoads'] + $row['ReloadCash']) - $row['RedemptionCashier']) - $row['EwalletWithdrawals']) - $row['ManualRedemption']) - $row['EncashedTickets'];
             $endbal = $cashonhand + $row['Replenishment'] - $row['Collection'];
 //            $viewdetails = "<input type='button' id='btnviewdetails' value='View Details' SiteID='".$row['SiteID']."' StartDate='".$row['ReportDate']." ".BaseProcess::$cutoff."' EndDate='".$row['CutOff']."'".
 //                                           " onClick = '$(\"#hdnsiteid\").val($(this).attr(\"SiteID\")); $(\"#hdnstartdate\").val($(this).attr(\"StartDate\")); $(\"#hdnenddate\").val($(this).attr(\"EndDate\"));".
@@ -1550,6 +1593,7 @@ class ProcessTopUpPaginate extends BaseProcess {
             if($row['Status']==3){$row['Status']="Fulfillment Approved";};
             if($row['Status']==4){$row['Status']="Fulfillment Denied";};
             $jqgrid->rows[] = array('id'=>$row['EwalletTransID'],'cell'=>array(
+                substr($row['SiteCode'], strlen(BaseProcess::$sitecode)),
                 $row['LoyaltyCardNumber'], 
                 $row['StartDate'],
                 $row['EndDate'],

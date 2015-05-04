@@ -173,7 +173,7 @@ $vaccesspages = array('5','6','9','12','18');
             
             if(new Date(startdate) > new Date(enddate)){
                 
-                alert('Start date must not greater than end date');
+                alert('Start date must not be greater than end date');
                 return false;
             }
             if(new Date(enddate) > new Date()){

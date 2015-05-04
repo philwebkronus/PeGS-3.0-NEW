@@ -88,21 +88,35 @@ if($connected && $connected2)
                    $isExist = $maf->checkMemberCardExist($cardnumber);
                    if (!empty($isExist))
                    {
-                       $MID = $isExist['MID'];
-                       //check if player has pending trans
-                       $hasPending = $maf->checkPendingEwalletTrans($MID);
-                       if ($hasPending['Count'] > 0) 
+                       //Check Card Status
+                       $loyaltyResult = $loyalty->getCardInfo2($cardnumber, $cardinfo, 1);
+                       $obj_result = json_decode($loyaltyResult);
+                       $statuscode = $obj_result->CardInfo->StatusCode;
+                       //Active and Active Temp cards are the only cards allowed for fulfillment
+                       if ($statuscode == 1 || $statuscode == 5)
                        {
-                           $result = array('ErrorCode' => 0, 
-                                   'CardNumber' => $cardnumber, 
-                                   'MID' => $MID, 
-                                   'Source' => $hasPending['RequestSource'], 
-                                   'Message' => 'Manual e-wallet Fulfillment: Has Pending Transaction.');
+                            $MID = $isExist['MID'];
+                            //check if player has pending trans
+                            $hasPending = $maf->checkPendingEwalletTrans($MID);
+                            if ($hasPending['Count'] > 0) 
+                            {
+                                $result = array('ErrorCode' => 0, 
+                                        'CardNumber' => $cardnumber, 
+                                        'MID' => $MID, 
+                                        'Source' => $hasPending['RequestSource'], 
+                                        'Message' => 'Manual e-wallet Fulfillment: Has Pending Transaction.');
+                            }
+                            else
+                            {
+                                $result = array('ErrorCode' => 1, 
+                                        'Message' => 'Manual e-wallet Fulfillment: Player has no pending transaction.');
+                            }   
                        }
                        else
                        {
+                           $msg = $maf->membershipcardStatus($statuscode);
                            $result = array('ErrorCode' => 1, 
-                                   'Message' => 'Manual e-wallet Fulfillment: Player has no pending transaction.');
+                                           'Message' => $msg);
                        }
                    }
                    else

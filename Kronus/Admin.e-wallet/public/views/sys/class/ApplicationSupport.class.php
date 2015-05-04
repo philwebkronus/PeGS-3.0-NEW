@@ -2305,7 +2305,7 @@ class ApplicationSupport extends DBHandler
     {
         $stmt = "SELECT TerminalID, UserMode, UBServiceLogin, ServiceID    
                  FROM terminalsessions 
-                 WHERE LoyaltyCardNumber = ?";
+                 WHERE LoyaltyCardNumber = ? AND UserMode = 1";
         $this->prepare($stmt);
         $this->bindparameter(1, $cardnumber);
         $this->execute();

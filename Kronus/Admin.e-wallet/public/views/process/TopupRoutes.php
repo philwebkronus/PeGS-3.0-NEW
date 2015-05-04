@@ -134,6 +134,10 @@ switch($_GET['action']) {
     case 'cohadjustmentdata':
         $process->getCohAdjustmentData();
         break;
+    
+    case 'getlistofterminal':
+        $process->getListOfTerminals();
+        break;
 
     default :
         die('Page not found');

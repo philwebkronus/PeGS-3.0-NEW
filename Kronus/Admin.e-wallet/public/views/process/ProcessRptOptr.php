@@ -117,31 +117,19 @@ if($connected)
               {
                   $arrsiteID = array($vsiteID);
               }
-              
-//              if($_POST['cmbsitename'] == 'All') {
-//                  foreach($arrsiteID as $siteidsingle){
-//                    var_dump($siteidsingle);
-//                  }
-//              }
-                          
+
               $result = $orptoptr->viewtransactionperday($dateFrom, $dateTo, $arrsiteID);
-                         
+              
               if(count($result) > 0)
               {   
                  $totaldeposit = 0;
                  $totalreload = 0;
                  $totalwithdraw = 0;
-                 
-                
-                 $rsitecode = $orptoptr->getrptsitecode($arrsiteID); //get the sitecode first
-                 
-                 
- 
-                 
-                 
+
                  $optrdetails = array();
                  foreach($result as $value) 
-                 {                
+                 {
+                    $rsitecode = $orptoptr->getsitecode($value['SiteID']);
                     if(!isset($optrdetails[$value['TransactionSummaryID']])) 
                     {
                          $optrdetails[$value['TransactionSummaryID']] = array(
@@ -151,6 +139,7 @@ if($connected)
                             'DateCreated'=>$value['DateCreated'],
                             'TerminalID'=>$value['TerminalID'],
                             'SiteID'=>$value['SiteID'],
+                            'SiteCode'=>$rsitecode['SiteCode'],
                             'TerminalCode'=>$value['TerminalCode'],
                             'Withdrawal'=>'0.00',
                             'Deposit'=>'0.00',
@@ -212,7 +201,7 @@ if($connected)
                  {
                      $rterminalCode = $vview['TerminalCode'];
                     //search first if the sitecode was found in the terminal code
-                    if(strstr($rterminalCode, $rsitecode['SiteCode']) == false)
+                    if(strstr($rterminalCode, $vview['SiteCode']) == false)
                     {
                         //remove all the letters from terminal code
                         $rterminalCode = ereg_replace("[^0-9]", "", $rterminalCode);
@@ -220,14 +209,14 @@ if($connected)
                     else
                     {
                         //remove the "icsa-[SiteCode]"
-                        $rterminalCode = substr($rterminalCode, strlen($rsitecode['SiteCode']));
+                        $rterminalCode = substr($rterminalCode, strlen($vview['SiteCode']));
                     }
 
                     $vdeposit = $vview['Deposit'];
                     $vreload = $vview['Reload'];
                     $vwithdraw = $vview['Withdrawal'];
                     $response->rows[$i]['id']=$vview['TransactionSummaryID'];
-                    $response->rows[$i]['cell']=array($vview['TransactionSummaryID'], $rsitecode['SiteCode'], $rterminalCode, 
+                    $response->rows[$i]['cell']=array($vview['SiteCode'], $rterminalCode, 
                         number_format($vdeposit, 2), number_format($vreload, 2), number_format($vwithdraw, 2),
                         $vview['DateStarted'], $vview['DateEnded']);
                     $i++;
@@ -307,15 +296,16 @@ if($connected)
                  $totalewloads = 0;
                  $totalewwithdrawals = 0;
                  
-                 $rsitecode = $orptoptr->getrptsitecode($arrsiteID); //get the sitecode first
                  $optrdetails2 = array();
                  foreach($result2 as $value2) 
                  {                
+                     $rsitecode = $orptoptr->getsitecode($value2['SiteID']);
                     if(!isset($optrdetails2[$value2['SiteID']])) 
                     {
                          $optrdetails2[$value2['EwalletTransID']] = array(
                             'EwalletTransID'=>$value2['EwalletTransID'],
                             'SiteID'=>$value2['SiteID'],
+                            'SiteCode'=>$rsitecode['SiteCode'],
                             'LoyaltyCardNumber'=>$value2['LoyaltyCardNumber'],
                             'StartDate'=>$value2['StartDate'],
                             'EndDate'=>$value2['EndDate'],
@@ -373,24 +363,11 @@ if($connected)
                  //display to jqgrid
                  foreach($trans_details2 as $vview2)
                  {
-//                     $rterminalCode = $vview2['TerminalCode'];
-//                    //search first if the sitecode was found in the terminal code
-//                    if(strstr($rterminalCode, $rsitecode['SiteCode']) == false)
-//                    {
-//                        //remove all the letters from terminal code
-//                        $rterminalCode = ereg_replace("[^0-9]", "", $rterminalCode);
-//                    }
-//                    else
-//                    {
-//                        //remove the "icsa-[SiteCode]"
-//                        $rterminalCode = substr($rterminalCode, strlen($rsitecode['SiteCode']));
-//                    }
-
                     $vewloads = $vview2['EWLoads'];
                     $vewwithdrawals = $vview2['EWWithdrawals'];
                     $response->rows[$j]['id']=$vview2['EwalletTransID'];
                     //$response2->rows[$j]['cell']=array($vview2['SiteID'], $_POST['sitecode'], $rterminalCode, 
-                    $response->rows[$j]['cell']=array($rsitecode['SiteCode'], $vview2['LoyaltyCardNumber'],
+                    $response->rows[$j]['cell']=array($vview2['SiteCode'], $vview2['LoyaltyCardNumber'],
                         number_format($vewloads, 2), number_format($vewwithdrawals, 2),
                         $vview2['StartDate'], $vview2['EndDate']);
                     $j++;
@@ -401,10 +378,37 @@ if($connected)
                  }
                  
                  $_SESSION['siteid2'] = $_POST['cmbsitename'];
+                 
+                 $arrwithdraw = array();
+                 $arrreload = array();
+                 $arrdeposit = array();
+                 $result = $orptoptr->viewtransactionperday($dateFrom, $dateTo, $arrsiteID);
+                 $ctr2 = 0;
+       while($ctr2 < count($result))
+       {
+                $trans = array();
+                switch ($result[$ctr2]['TransactionType']) 
+                {
+                    case 'W':
+                        $trans = array('Withdrawal'=>$result[$ctr2]['amount']);
+                        array_push($arrwithdraw, $trans);
+                        break;
+                    case 'D':
+                        $trans = array('Deposit'=>$result[$ctr2]['amount']);
+                        array_push($arrdeposit, $trans);
+                        break;
+                    case 'R':
+                        $trans = array('Reload'=>$result[$ctr2]['amount']);
+                        array_push($arrreload, $trans);
+                        break;
+                }
+                $ctr2++;
+                 
+       }
                                    
 //                 // Get the sum of all  transaction types
-                   $sales = $_SESSION['total']['TotalDeposit']+$_SESSION['total']['TotalReload']+array_sum($arrewloadsamt);
-                   $redemption = $_SESSION['total']['TotalWithdraw']+array_sum($arrewwithdrawalsamt);
+                   $sales = array_sum($arrdeposit)+array_sum($arrreload)+array_sum($arrewloadsamt);
+                   $redemption = array_sum($arrwithdraw)+array_sum($arrewwithdrawalsamt);
                    $ticketencashment = $orptoptr->getTotalTicketEncashment($dateFrom, $dateTo, $arrsiteID);
                    $cashonhand = $sales-$redemption-$ticketencashment;
 //                 $totalreload = array_sum($arrreloadamt); 
@@ -426,6 +430,7 @@ if($connected)
                   $response->msg = $msg2;
                   unset($_SESSION['total2']);                 
               }
+              
               
               echo json_encode($response);
               //echo json_encode($response2);
@@ -580,39 +585,31 @@ if($connected)
    //on ajax call from rptsitetransaction.php
    elseif(isset($_POST['gettotal']) == "GetTotals")
    {
-       $arrtotal = 0;
-       $arrtotal2 = 0;
-//       $granddeposit = 0;
-//       $grandreload = 0;
-//       $grandwithdraw = 0;
-       $grandsales = 0;
-       $grandredemption = 0;
-       $grandticketencashment = 0;
-       $grandcashonhand = 0;
-//       $arrdeposit = array();
-//       $arrreload = array();
-//       $arrwithdraw = array();
+       $grandsales = 0.00;
+       $grandredemption = 0.00;
+       $grandticketencashment = 0.00;
+       $grandcashonhand = 0.00;
        $arrewloads = array();
        $arrewwithdrawals = array();
        $arrdeposit = array();
        $arrwithdraw = array();
        $arrreload = array();
        
-       if(isset($_SESSION['total2']))
-       {
-           $arrtotal = $_SESSION['total2'];
-       }
-       else {
-           $arrtotal = null;
-       }
-       
-       if(isset($_SESSION['total']))
-       {
-           $arrtotal2 = $_SESSION['total'];
-       }
-       else {
-           $arrtotal2 = null;
-       }
+//       if(isset($_SESSION['total2']))
+//       {
+//           $arrtotal = $_SESSION['total2'];
+//       }
+//       else {
+//           $arrtotal = 0;
+//       }
+//       
+//       if(isset($_SESSION['total']))
+//       {
+//           $arrtotal2 = $_SESSION['total'];
+//       }
+//       else {
+//           $arrtotal2 = 0;
+//       }
        
        $vdatefrom = $_POST['rptDate'];
        $vdateto = date ( 'Y-m-d' , strtotime ($gaddeddate, strtotime($vdatefrom)));
@@ -634,25 +631,9 @@ if($connected)
           $arrsiteID = array($vsiteID);
        }
        
-       //used this method to get the grand total of all tranction types
-       $result = $orptoptr->viewewtransactionperday($dateFrom, $dateTo, $arrsiteID, $start = null, $limit=null, $sort = "StartDate", $direction = "DESC");
-       
-       $ctr1 = 0;
-       while($ctr1 < count($result))
-       {
-           switch($result[$ctr1]['TransType'])
-           {
-                 case 'D' :
-                     array_push($arrewloads, $result[$ctr1]['EWLoads']);
-                 break;
-                 case 'W':
-                     array_push($arrewwithdrawals, $result[$ctr1]['EWWithdrawals']);
-                 break;
-           }
-           $ctr1++;
-       }
-       
        $result2 = $orptoptr->viewtransactionperday($dateFrom, $dateTo, $arrsiteID);
+       
+       if($result2) {
        $ctr2 = 0;
        while($ctr2 < count($result2))
        {
@@ -660,56 +641,170 @@ if($connected)
                 switch ($result2[$ctr2]['TransactionType']) 
                 {
                     case 'W':
-                        $trans = array('Withdrawal'=>$result2[$ctr2]['amount']);
+                        $trans = array('Withdrawal'=>(float)$result2[$ctr2]['amount']);
                         array_push($arrwithdraw, $trans);
                         break;
                     case 'D':
-                        $trans = array('Deposit'=>$result2[$ctr2]['amount']);
+                        $trans = array('Deposit'=>(float)$result2[$ctr2]['amount']);
                         array_push($arrdeposit, $trans);
                         break;
                     case 'R':
-                        $trans = array('Reload'=>$result2[$ctr2]['amount']);
+                        $trans = array('Reload'=>(float)$result2[$ctr2]['amount']);
                         array_push($arrreload, $trans);
                         break;
                 }
                 $ctr2++;
                  
        }
+       } else {
+           $grandsum = 0.00;
+       }
        
-//       if(isset($_SESSION['total'])) {
-//           $arrtotal2 = $_SESSION['total'];
-//       }
-       
-       /**** GET Total Summary *****/
-//       $granddeposit = array_sum($arrdeposit);
-//       $grandreload = array_sum($arrreload);
-//       $grandwithdraw = array_sum($arrwithdraw);
-//       $sales = $_SESSION['total']['TotalDeposit']+$_SESSION['total']['TotalReload']+array_sum($arrewloadsamt);
-//                   $redemption = $_SESSION['total']['TotalWithdraw']+array_sum($arrewwithdrawalsamt);
-//                   $ticketencashment = $orptoptr->getTotalTicketEncashment($dateFrom, $dateTo, $arrsiteID);
-//                   $cashonhand = $sales-$redemption-$ticketencashment;
-       //$grandsales = $_SESSION['total2']['Sales'];
-       //$grandsales = array_sum($arrewloads)+$arrtotal2['TotalDeposit'];
-       $grandsales = array_sum($arrewloads)+array_sum($arrdeposit)+array_sum($arrreload);
-       //$grandredemption = array_sum($arrewwithdrawals)+$arrtotal2['TotalWithdraw'];
-       $grandredemption = array_sum($arrewwithdrawals)+array_sum($arrwithdraw);
-       //$grandredemption = $_SESSION['total2']['Redemption'];
-       if($arrtotal == null) {
-           $grandticketencashment = 0.00;
+       //used this method to get the grand total of all tranction types
+       $result = $orptoptr->viewewtransactionperday($dateFrom, $dateTo, $arrsiteID, $start = null, $limit=null, $sort = "StartDate", $direction = "DESC");
+       if($result) {
+           
+        $ctr1 = 0;
+        while($ctr1 < count($result))
+        {
+            switch($result[$ctr1]['TransType'])
+            {
+                  case 'D' :
+                      array_push($arrewloads, (float)$result[$ctr1]['EWLoads']);
+                  break;
+                  case 'W':
+                      array_push($arrewwithdrawals, (float)$result[$ctr1]['EWWithdrawals']);
+                  break;
+            }
+            $ctr1++;
+        }
+        
+        
+        
        }
        else {
-           $grandticketencashment = $arrtotal['TicketEncashment'];
+           
+         $grandsumew = 0.00;
        }
        
-       $grandcashonhand = $grandsales-$grandredemption-$grandticketencashment;
-                        
+       if($result && $result2){
+           
+           if($arrdeposit){
+               foreach($arrdeposit as $arrdepositsingle) {
+               
+                $arrdepositsum[] = (float)$arrdepositsingle['Deposit'];
+               }
+           }
+           else {
+               $arrdepositsum = array('Deposit' => 0.00);
+           }
+           
+           if($arrreload) {
+                foreach($arrreload as $arrreloadsingle) {
+                
+                    $arrreloadsum[] = (float)$arrreloadsingle['Reload'];
+                }
+           }
+           else {
+               $arrreloadsum = array('Reload' => 0.00);
+           }
+           
+           if($arrwithdraw) {
+               foreach($arrwithdraw as $arrwithdrawsingle) {
+                    $arrwithdrawsum[] = (float)$arrwithdrawsingle['Withdrawal'];
+                }
+           }
+           else {
+               $arrwithdrawsum = array('Withdrawal' => 0.00);
+           }
+
+           if($arrewloads) {
+               $arrewloadssum = array_sum($arrewloads);
+           }
+           else {
+               $arrewloadssum = 0.00;
+           }
+           
+           if($arrewwithdrawals) {
+               $arrewwithdrawalssum = array_sum($arrewwithdrawals);
+           }
+           else {
+               $arrewwithdrawalssum = 0.00;
+           }
+           
+           $grandsales = $arrewloadssum+array_sum($arrdepositsum)+array_sum($arrreloadsum);
+           $grandredemption = $arrewwithdrawalssum+array_sum($arrwithdrawsum);
+       }
+       else if($result && !$result2) {
+           if($arrewloads) {
+               $arrewloadssum = array_sum($arrewloads);
+           }
+           else {
+               $arrewloadssum = 0.00;
+           }
+           
+           if($arrewwithdrawals) {
+               $arrewwithdrawalssum = array_sum($arrewwithdrawals);
+           }
+           else {
+               $arrewwithdrawalssum = 0.00;
+           }
+           
+           
+           $grandsales = $arrewloadssum+$grandsum;
+           $grandredemption = $arrewwithdrawalssum+$grandsum;
+       }
+       else if(!$result && $result2) {
+           if($arrdeposit){
+               foreach($arrdeposit as $arrdepositsingle) {
+               
+                $arrdepositsum[] = (float)$arrdepositsingle['Deposit'];
+               }
+           }
+           else {
+               $arrdepositsum = array('Deposit' => 0.00);
+           }
+           
+           if($arrreload) {
+                foreach($arrreload as $arrreloadsingle) {
+                
+                    $arrreloadsum[] = (float)$arrreloadsingle['Reload'];
+                }
+           }
+           else {
+               $arrreloadsum = array('Reload' => 0.00);
+           }
+           
+           if($arrwithdraw) {
+               foreach($arrwithdraw as $arrwithdrawsingle) {
+                    $arrwithdrawsum[] = (float)$arrwithdrawsingle['Withdrawal'];
+                }
+           }
+           else {
+               $arrwithdrawsum = array('Withdrawal' => 0.00);
+           }
+           
+           $grandsales = $grandsumew+array_sum($arrdepositsum)+array_sum($arrreloadsum);
+           $grandredemption = $grandsumew+array_sum($arrwithdrawsum);
+       }
+       else {
+           $grandsales = 0.00;
+           $grandredemption = 0.00;
+       }
+
+       //Compute for total Cash On Hand of the sites under the current operator
+       $cohdata = $orptoptr->getCashOnHandDetails($dateFrom, $dateTo, $arrsiteID);
+       $grandticketencashment = $orptoptr->getTotalTicketEncashment($dateFrom, $dateTo, $arrsiteID);
+       
+       $grandcashonhand = (($cohdata['TotalCashLoad']-$cohdata['TotalCashRedemption']) - $cohdata['TotalMR'])-$grandticketencashment;
+       
        // store the grand total of transaction types into an array 
        $arrgrand = array("GrandSales" => $grandsales, "GrandRedemption" => $grandredemption,
                             "GrandTicketEncashment" => $grandticketencashment, "GrandCashOnHand" => $grandcashonhand);
        
        //results will be fetch here:
-       if((count($arrtotal) > 0) && (count($arrgrand) > 0))
-       {
+//       if(count($arrgrand) > 0)
+//       {
            /**** Get Total Per Page  *****/
            $vtotal = new stdClass();
 //           $vtotal->deposit = number_format($arrtotal["TotalDeposit"], 2, '.', ',');
@@ -726,11 +821,11 @@ if($connected)
 //           $vgrossholdamt = $arrgrand["GrandDeposit"] + $arrgrand["GrandReload"] - $arrgrand["GrandWithdraw"];
 //           $vtotal->grosshold = number_format($vgrossholdamt, 2, '.', ',');
            echo json_encode($vtotal); 
-       }
-       else 
-       {
-           echo "No Results Found";
-       }
+       //}
+//       else 
+//       {
+//           echo "No Results Found";
+//       }
        unset($arrgrand);
        $orptoptr->close();
        exit;
@@ -907,199 +1002,336 @@ if($connected)
    /***************************** EXPORTING EXCEL STARTS HERE *******************************/
    elseif(isset($_GET['excel2']) == "e-walletsitetrans")
    {
-       $fn = $_GET['fn'].".xls"; //this will be the filename of the excel file
-       $vdatefrom = $_GET['date'];
-       $vdateto = date ( 'Y-m-d' , strtotime ($gaddeddate, strtotime($vdatefrom)));
-      
-       $dateFrom = $vdatefrom." ".$vcutofftime;
-       $dateTo = $vdateto." ".$vcutofftime;
-       
-       $vsiteID = $_SESSION['siteid2'];
-       
-       //checks if siteID was selected all;
-       $arrsiteID = array(); 
-       if($vsiteID == 0)
-       {
-         foreach($rsitesowned as $row)
-         {
-            $vsiteID = $row['SiteID'];
-            array_push($arrsiteID, $vsiteID);
-         }   
-       }
-       else
-       {
-          $arrsiteID = array($vsiteID);
-       }
+       $fn = $_GET['fn'] . ".xls";
+
+        $vdatefrom = $_GET['date'];
+        $vdateto = date('Y-m-d', strtotime($gaddeddate, strtotime($vdatefrom)));
+
+        $dateFrom = $vdatefrom . " " . $vcutofftime;
+        $dateTo = $vdateto . " " . $vcutofftime;
+
+        $vsiteID = $_SESSION['siteid1'];
+
+
+        $arrsiteID = array();
+
+        if ($vsiteID == 0) {
+            foreach ($rsitesowned as $row) {
+                $vsiteID = $row['SiteID'];
+                array_push($arrsiteID, $vsiteID);
+            }
+        } else {
+            $arrsiteID = array($vsiteID);
+        }
       //create the instance of the exportexcel format
         $excel_obj = new ExportExcel("$fn");
-      //setting the values of the headers and data of the excel file
-      //and these values comes from the other file which file shows the data
-        $rheaders = array('Site Code', 'Card Number', 'e-wallet Loads','e-wallet Withdrawals','Start Date','End Date');
+
+        //Headers for non e-wallet transactions
+        //$rheaders = array('Site Transaction', '', '','','','','','');
+//        $rheaders = array('Transaction Summary ID', 'Site Code', 'Terminal Code', 'Deposit', 'Reload', 'Redemption', 'Date Started', 'Date Ended');
+        $rheaders = array( 'Site / PEGS Code', 'Terminal Code', 'Deposit', 'Reload', 'Redemption', 'Date Started', 'Date Ended');
         $completeexcelvalues = array();
         
-        $arrewloads = array();
-        $arrewwithdrawals = array();
-        
-        $result2 = $orptoptr->viewewtransactionperday($dateFrom, $dateTo, $arrsiteID, $start = null, $limit = null, $sort = null, $direction = null);
-        
-        if(count($result2) > 0)
-        {                
-           $rsitecode = $orptoptr->getrptsitecode($arrsiteID); //get the sitecode first
-           
-           $optrdetails2 = array();
-           foreach($result2 as $value2) 
-           {                
-               if(!isset($optrdetails2[$value2['EwalletTransID']])) 
-               {
-                     $optrdetails2[$value2['EwalletTransID']] = array(
-                        'EwalletTransID'=>$value2['EwalletTransID'],
-                        'SiteID'=>$value2['SiteID'],
-                        'LoyaltyCardNumber'=>$value2['LoyaltyCardNumber'],
-                        'StartDate'=>$value2['StartDate'],
-                        'EndDate'=>$value2['EndDate'],
-                        'EWLoads'=>$value2['EWLoads'],
-                        'EWWithdrawals'=>$value2['EWWithdrawals']
-                     ); 
-               }
-               $trans2 = array();
-                switch ($value2['TransType']) 
-                {
+        $arrdeposit = array();
+        $arrreload = array();
+        $arrwithdraw = array();
+        $result = $orptoptr->viewtransactionperday($dateFrom, $dateTo, $arrsiteID, $start = null, $limit = null, $sort = null, $direction = null);
+
+        if (count($result) > 0) {
+            $optrdetails = array();
+            foreach ($result as $value) {
+                $rsitecode = $orptoptr->getsitecode($value['SiteID']); //get the sitecode first
+                
+                if (!isset($optrdetails[$value['TransactionSummaryID']])) {
+                    $optrdetails[$value['TransactionSummaryID']] = array(
+                        'TransactionSummaryID' => $value['TransactionSummaryID'],
+                        'DateStarted' => $value['DateStarted'],
+                        'DateEnded' => $value['DateEnded'],
+                        'DateCreated' => $value['DateCreated'],
+                        'TerminalID' => $value['TerminalID'],
+                        'SiteID' => $value['SiteID'],
+                        'SiteCode' => $rsitecode['SiteCode'],
+                        'TerminalCode' => $value['TerminalCode'],
+                        'Withdrawal' => '0.00',
+                        'Deposit' => '0.00',
+                        'Reload' => '0.00'
+                    );
+                }
+                $trans = array();
+                switch ($value['TransactionType']) {
                     case 'W':
-                        $trans2 = array('EWWithdrawals'=>$value2['EWWithdrawals']);
+                        $trans = array('Withdrawal' => $value['amount']);
                         break;
                     case 'D':
-                        $trans2 = array('EWLoads'=>$value2['EWLoads']);
+                        $trans = array('Deposit' => $value['amount']);
+                        break;
+                    case 'R':
+                        $trans = array('Reload' => $value['amount']);
+                        break;
+                }
+                $optrdetails[$value['TransactionSummaryID']] = array_merge($optrdetails[$value['TransactionSummaryID']], $trans);
+            }
+
+            $granddeposit = 0;
+            $grandreload = 0;
+            $grandwithdraw = 0;
+            $arrdeposit = array();
+            $arrreload = array();
+            $arrwithdraw = array();
+
+            foreach ($optrdetails as $vview) {
+                $rterminalCode = $vview['TerminalCode'];
+                //search first if the sitecode was found in the terminal code
+                if (strstr($rterminalCode, $vview['SiteCode']) == false) {
+                    //remove all the letters from terminal code
+                    $rterminalCode = ereg_replace("[^0-9]", "", $rterminalCode);
+                } else {
+                    //remove the "icsa-[SiteCode]"
+                    $rterminalCode = substr($rterminalCode, strlen($vview['SiteCode']));
+                }
+                $vdeposit = $vview['Deposit'];
+                $vreload = $vview['Reload'];
+                $vwithdraw = $vview['Withdrawal'];
+                $excelvalues = array(//0 => $vview['TransactionSummaryID'],
+                    0 => $vview['SiteCode'],
+                    1 => $rterminalCode,
+                    2 => number_format($vdeposit, 2, '.', ','),
+                    3 => number_format($vreload, 2, '.', ','),
+                    4 => number_format($vwithdraw, 2, '.', ','),
+                    5 => $vview['DateStarted'],
+                    6 => $vview['DateEnded']
+                );
+                array_push($completeexcelvalues, $excelvalues); //push the values for site transactions per day
+                array_push($arrdeposit, $vdeposit);
+                array_push($arrreload, $vreload);
+                array_push($arrwithdraw, $vwithdraw);
+            }
+        }
+
+        /**
+         * For e-wallet transaction
+         */
+        $arrspace = array('', '', '', '', '', '', '', '');
+        array_push($completeexcelvalues, $arrspace);
+
+        //Headers for e-wallet transactions
+        $xheaders = array('Site / PEGS Code', 'Card Number', 'e-wallet Loads', 'e-wallet Withdrawals', 'Date Started', 'Date Ended', '', '');
+        array_push($completeexcelvalues, $xheaders);
+
+        $arrewloads = array();
+        $arrewwithdrawals = array();
+
+        $result1 = $orptoptr->viewewtransactionperday($dateFrom, $dateTo, $arrsiteID, $start = null, $limit = null, $sort = null, $direction = null);
+
+        if (count($result1) > 0) {
+
+            $optrdetails2 = array();
+            foreach ($result1 as $value2) {
+                $rsitecode = $orptoptr->getsitecode($value2['SiteID']);
+                if (!isset($optrdetails2[$value2['EwalletTransID']])) {
+                    $optrdetails2[$value2['EwalletTransID']] = array(
+                        'EwalletTransID' => $value2['EwalletTransID'],
+                        'SiteID' => $value2['SiteID'],
+                        'SiteCode' => $rsitecode['SiteCode'],
+                        'LoyaltyCardNumber' => $value2['LoyaltyCardNumber'],
+                        'StartDate' => $value2['StartDate'],
+                        'EndDate' => $value2['EndDate'],
+                        'EWLoads' => $value2['EWLoads'],
+                        'EWWithdrawals' => $value2['EWWithdrawals']
+                    );
+                }
+                $trans2 = array();
+                switch ($value2['TransType']) {
+                    case 'W':
+                        $trans2 = array('EWWithdrawals' => $value2['EWWithdrawals']);
+                        break;
+                    case 'D':
+                        $trans2 = array('EWLoads' => $value2['EWLoads']);
                         break;
                 }
                 $optrdetails2[$value2['EwalletTransID']] = array_merge($optrdetails2[$value2['EwalletTransID']], $trans2);
-           }
+            }
+
+            $grandsales = 0;
+            $grandredemption = 0;
+            $grandticketencashment = 0;
+            $grandcashonhand = 0;
+            $arrewloads = array();
+            $arrewwithdrawals = array();
+
+            foreach ($optrdetails2 as $vview2) {
+                $vewloads = $vview2['EWLoads'];
+                $vewwithdrawals = $vview2['EWWithdrawals'];
+                $excelvalues = array(0 => $vview2['SiteCode'],
+                    1 => $vview2['LoyaltyCardNumber'],
+                    2 => number_format($vewloads, 2, '.', ','),
+                    3 => number_format($vewwithdrawals, 2, '.', ','),
+                    4 => $vview2['StartDate'],
+                    5 => $vview2['EndDate']
+                );
+                array_push($completeexcelvalues, $excelvalues); //push the values for site transactions per day
+                array_push($arrewloads, $vewloads);
+                array_push($arrewwithdrawals, $vewwithdrawals);
+            }
+
+            $arrdeposit = array();
+            $arrwithdraw = array();
+            $arrreload = array();
+
+            $result2 = $orptoptr->viewtransactionperday($dateFrom, $dateTo, $arrsiteID);
+
+            if ($result2) {
+                $ctr2 = 0;
+                while ($ctr2 < count($result2)) {
+                    $trans = array();
+                    switch ($result2[$ctr2]['TransactionType']) {
+                        case 'W':
+                            $trans = array('Withdrawal' => (float) $result2[$ctr2]['amount']);
+                            array_push($arrwithdraw, $trans);
+                            break;
+                        case 'D':
+                            $trans = array('Deposit' => (float) $result2[$ctr2]['amount']);
+                            array_push($arrdeposit, $trans);
+                            break;
+                        case 'R':
+                            $trans = array('Reload' => (float) $result2[$ctr2]['amount']);
+                            array_push($arrreload, $trans);
+                            break;
+                    }
+                    $ctr2++;
+                }
+            } else {
+                $grandsum = 0.00;
+            }
+
+            $grandsumew = 0.00;
+
+
+            if ($result1 && $result2) {
+
+                if ($arrdeposit) {
+                    foreach ($arrdeposit as $arrdepositsingle) {
+                        $arrdepositsum[] = (float) $arrdepositsingle['Deposit'];
+                    }
+                } else {
+                    $arrdepositsum = array('Deposit' => 0.00);
+                }
+
+                if ($arrreload) {
+                    foreach ($arrreload as $arrreloadsingle) {
+                        $arrreloadsum[] = (float) $arrreloadsingle['Reload'];
+                    }
+                } else {
+                    $arrreloadsum = array('Reload' => 0.00);
+                }
+
+                if ($arrwithdraw) {
+                    foreach ($arrwithdraw as $arrwithdrawsingle) {
+                        $arrwithdrawsum[] = (float) $arrwithdrawsingle['Withdrawal'];
+                    }
+                } else {
+                    $arrwithdrawsum = array('Withdrawal' => 0.00);
+                }
+
+                if ($arrewloads) {
+                    $arrewloadssum = array_sum($arrewloads);
+                } else {
+                    $arrewloadssum = 0.00;
+                }
+
+                if ($arrewwithdrawals) {
+                    $arrewwithdrawalssum = array_sum($arrewwithdrawals);
+                } else {
+                    $arrewwithdrawalssum = 0.00;
+                }
+
+                $grandsales = $arrewloadssum + array_sum($arrdepositsum) + array_sum($arrreloadsum);
+                $grandredemption = $arrewwithdrawalssum + array_sum($arrwithdrawsum);
+            } else if ($result1 && !$result2) {
+                if ($arrewloads) {
+                    $arrewloadssum = array_sum($arrewloads);
+                } else {
+                    $arrewloadssum = 0.00;
+                }
+
+                if ($arrewwithdrawals) {
+                    $arrewwithdrawalssum = array_sum($arrewwithdrawals);
+                } else {
+                    $arrewwithdrawalssum = 0.00;
+                }
+
+                $grandsales = $arrewloadssum + $grandsum;
+                $grandredemption = $arrewwithdrawalssum + $grandsum;
+            } else if (!$result1 && $result2) {
+                if ($arrdeposit) {
+                    foreach ($arrdeposit as $arrdepositsingle) {
+                        $arrdepositsum[] = (float) $arrdepositsingle['Deposit'];
+                    }
+                } else {
+                    $arrdepositsum = array('Deposit' => 0.00);
+                }
+
+                if ($arrreload) {
+                    foreach ($arrreload as $arrreloadsingle) {
+                        $arrreloadsum[] = (float) $arrreloadsingle['Reload'];
+                    }
+                } else {
+                    $arrreloadsum = array('Reload' => 0.00);
+                }
+
+                if ($arrwithdraw) {
+                    foreach ($arrwithdraw as $arrwithdrawsingle) {
+                        $arrwithdrawsum[] = (float) $arrwithdrawsingle['Withdrawal'];
+                    }
+                } else {
+                    $arrwithdrawsum = array('Withdrawal' => 0.00);
+                }
+
+                $grandsales = $grandsumew + array_sum($arrdepositsum) + array_sum($arrreloadsum);
+                $grandredemption = $grandsumew + array_sum($arrwithdrawsum);
+            } else {
+                $grandsales = 0.00;
+                $grandredemption = 0.00;
+            }
+
+            //Compute for total Cash On Hand of the sites under the current operator
+            $cohdata = $orptoptr->getCashOnHandDetails($dateFrom, $dateTo, $arrsiteID);
+            $grandticketencashment = $orptoptr->getTotalTicketEncashment($dateFrom, $dateTo, $arrsiteID);
+
+            $grandcashonhand = (($cohdata['TotalCashLoad'] - $cohdata['TotalCashRedemption']) - $cohdata['TotalMR']) - $grandticketencashment;
             
-           $grandsales = 0;
-           $grandredemption = 0;
-           $grandticketencashment = 0;
-           $grandcashonhand = 0;
-           $arrewloads = array();
-           $arrewwithdrawals = array();
-           
-           foreach($optrdetails2 as $vview2)
-           {    
-//             $rterminalCode = $vview2['TerminalCode'];
-//             //search first if the sitecode was found in the terminal code
-//             if(strstr($rterminalCode, $rsitecode['SiteCode']) == false)
-//             {
-//                //remove all the letters from terminal code
-//                $rterminalCode = ereg_replace("[^0-9]", "", $rterminalCode);
-//             }
-//             else
-//             {
-//                //remove the "icsa-[SiteCode]"
-//                $rterminalCode = substr($rterminalCode, strlen($rsitecode['SiteCode']));
-//             }
-             $vewloads = $vview2['EWLoads'];
-             $vewwithdrawals = $vview2['EWWithdrawals'];
-             $excelvalues = array(0 => $rsitecode['SiteCode'],
-                                  1 => $vview2['LoyaltyCardNumber'],
-                                  2 => number_format($vewloads, 2, '.', ','), 
-                                  3 => number_format($vewwithdrawals, 2, '.', ','), 
-                                  4 => $vview2['StartDate'],
-                                  5 => $vview2['EndDate']
-                                 );
-             array_push($completeexcelvalues,$excelvalues); //push the values for site transactions per day
-             array_push($arrewloads, $vewloads);
-             array_push($arrewwithdrawals, $vewwithdrawals);
-             //array_push($arrwithdraw, $vwithdraw);
-           }
-           
-           if(isset($_SESSION['total2'])){
-               $arrtotal = $_SESSION['total2'];
-           }
-           
-           if(isset($_SESSION['total'])){
-               $arrtotal2 = $_SESSION['total'];
-           }
-           
-           $arrdeposit = array();
-           $arrwithdraw = array();
-           $arrreload = array();
-           
-           $result = $orptoptr->viewtransactionperday($dateFrom, $dateTo, $arrsiteID);
-              
-            $ctr = 0;
-            while($ctr < count($result))
-            {
-                     $trans = array();
-                     switch ($result[$ctr]['TransactionType']) 
-                     {
-                         case 'W':
-                             $trans = array('Withdrawal'=>$result[$ctr]['amount']);
-                             array_push($arrwithdraw, $trans);
-                             break;
-                         case 'D':
-                             $trans = array('Deposit'=>$result[$ctr]['amount']);
-                             array_push($arrdeposit, $trans);
-                             break;
-                         case 'R':
-                             $trans = array('Reload'=>$result[$ctr]['amount']);
-                             array_push($arrreload, $trans);
-                             break;
-                     }
-                     $ctr++;
-
-            }
-
-
-            $grandsales = array_sum($arrewloads)+array_sum($arrdeposit)+array_sum($arrreload);
-            //$grandredemption = array_sum($arrewwithdrawals)+$arrtotal2['TotalWithdraw'];
-            $grandredemption = array_sum($arrewwithdrawals)+array_sum($arrwithdraw);
-            //$grandredemption = $_SESSION['total2']['Redemption'];
-            if($arrtotal == null) {
-                $grandticketencashment = 0.00;
-            }
-            else {
-                $grandticketencashment = $arrtotal['TicketEncashment'];
-            }
-           
-//            //get the total sales, redemption, ticket encashment and cash on hand
-//            $grandsales = array_sum($arrewloads)+$arrtotal2['TotalDeposit'];
-//            //$grandredemption = $_SESSION['total2']['Redemption'];
-//            $grandredemption = array_sum($arrewwithdrawals)+$arrtotal2['TotalWithdraw'];
-//            $grandticketencashment = $arrtotal['TicketEncashment'];
-            $grandcashonhand = $grandsales-$grandredemption-$grandticketencashment;
-            
-//            $vsales = $granddeposit + $grandreload;
-//            $vgrossholdamt = ($granddeposit + $grandreload) - $grandwithdraw; 
+            $arrspace = array('', '', '', '', '', '', '', '');
+            array_push($completeexcelvalues, $arrspace);
 
             //array for displaying total sales on excel file
             $totalsales = array(0 => 'Sales',
-                                1 => number_format($grandsales, 2, '.',',')
-             );
+                1 => number_format($grandsales, 2, '.', ',')
+            );
             array_push($completeexcelvalues, $totalsales); //push the total sales for the site transaction
-
             //array for displaying total redeemed on excel file
             $totalredeem = array(0 => 'Redemption',
-                                1 => number_format($grandredemption, 2, '.', ',')
-             );
+                1 => number_format($grandredemption, 2, '.', ',')
+            );
             array_push($completeexcelvalues, $totalredeem); //push the total withdraw for the site transaction
-
-             //array for displaying total ticket encashment on excel file
+            //array for displaying total ticket encashment on excel file
             $totalticketencashment = array(0 => 'Ticket Encashments',
-                               1 => number_format($grandticketencashment, 2, '.', ',')
+                1 => number_format($grandticketencashment, 2, '.', ',')
             );
             array_push($completeexcelvalues, $totalticketencashment);
-            
-             //array for displaying total cash on hand on excel file
+
+            //array for displaying total cash on hand on excel file
             $totalcashonhand = array(0 => 'Cash on Hand',
-                               1 => number_format($grandcashonhand, 2, '.', ',')
+                1 => number_format($grandcashonhand, 2, '.', ',')
             );
             array_push($completeexcelvalues, $totalcashonhand);
         }
-        
+
         $vauditfuncID = 41; //export to excel
-        $vtransdetails = "Site Transactions 2";
+        $vtransdetails = "Site Transactions";
         $orptoptr->logtoaudit($new_sessionid, $aid, $vtransdetails, $vdate, $vipaddress, $vauditfuncID);
         $excel_obj->setHeadersAndValues($rheaders, $completeexcelvalues);
         unset($rheaders);
-        unset($completeexcelvalues, $optrdetails2);
+        unset($completeexcelvalues, $optrdetails);
         unset($arrsiteID);
         $excel_obj->GenerateExcelFile(); //now generate the excel file with the data and headers set
         $orptoptr->close();
@@ -1113,7 +1345,8 @@ if($connected)
        $dateFrom = $vdatefrom." ".$vcutofftime;
        $dateTo = $vdateto." ".$vcutofftime;
        
-        $vsiteID = $_SESSION['siteid1'];
+       $vsiteID = $_SESSION['siteid1'];
+       //$vsiteID = $_GET['cmbsitename'];
        
        
        //checks if siteID was selected all;
@@ -1399,180 +1632,356 @@ if($connected)
    }
    elseif(isset($_GET['pdf2']) == "e-walletsitetrans2" )
    {
-      $granddeposit = 0;
-      $grandreload = 0;
-      $grandwithdraw = 0;
-      $arrdeposit = array();
-      $arrreload = array();
-      $arrwithdraw = array(); 
-      $vdatefrom = $_GET['date'];
-      $vdateto = date ( 'Y-m-d' , strtotime ($gaddeddate, strtotime($vdatefrom)));
-      
-      $dateFrom = $vdatefrom." ".$vcutofftime;
-      $dateTo = $vdateto." ".$vcutofftime;
-      
-        $vsiteID = $_SESSION['siteid2'];
-      
-      
-      //checks if siteID was selected all;
-       $arrsiteID = array(); 
-       if($vsiteID == 0)
-       {
-         foreach($rsitesowned as $row)
-         {
-            $vsiteID = $row['SiteID'];
-            array_push($arrsiteID, $vsiteID);
-         }   
-       }
-       else
-       {
-          $arrsiteID = array($vsiteID);
-       }
-      
-      /**** set this configuration for exporting large quantity of records into pdf; *****/
-      /**** prevents program from exceeding ,max execution time *****/
-      ini_set('memory_limit', '-1'); 
-      ini_set('max_execution_time', '120');
-      
-      
-      $result2 = $orptoptr->viewewtransactionperday($dateFrom, $dateTo, $arrsiteID, $start = null, $limit = null, $sort = null, $direction = null);
-      $pdf = CTCPDF::c_getInstance(); //call method of tcpdf
-      $pdf->c_commonReportFormat();
-      $pdf->c_setHeader('e-wallet Site Transaction Per Day'); //filename
-      $pdf->html.='<div style="text-align:center;">As of ' . $dateFrom .' To '.$dateTo.'</div>';
-      $pdf->SetFontSize(10);
-      $pdf->c_tableHeader(array('Site Code', 'Card Number', 'e-wallet Loads','e-wallet Withdrawals','Start Date','End Date'));
-      $rsitecode = $orptoptr->getrptsitecode($arrsiteID); //get the sitecode first
-      if(count($result2) > 0)
-      {
-          $optrdetails2 = array();
-          foreach($result2 as $value2) 
-          {                
-               if(!isset($optrdetails2[$value2['EwalletTransID']])) 
-               {
-                     $optrdetails2[$value2['EwalletTransID']] = array(
-                        'EwalletTransID'=>$value2['EwalletTransID'],
-                        'SiteID'=>$value2['SiteID'],
-                        'LoyaltyCardNumber'=>$value2['LoyaltyCardNumber'],
-                        'EWLoads'=>$value2['EWLoads'],
-                        'EWWithdrawals'=>$value2['EWWithdrawals'],
-                        'StartDate'=>$value2['StartDate'],
-                        'EndDate'=>$value2['EndDate']
-                     ); 
-               }
-                $trans2 = array();
-                switch ($value2['TransType']) 
-                {
+        $granddeposit = 0;
+        $grandreload = 0;
+        $grandwithdraw = 0;
+        $arrdeposit = array();
+        $arrreload = array();
+        $arrwithdraw = array();
+        $vdatefrom = $_GET['date'];
+        $vdateto = date('Y-m-d', strtotime($gaddeddate, strtotime($vdatefrom)));
+
+        $dateFrom = $vdatefrom . " " . $vcutofftime;
+        $dateTo = $vdateto . " " . $vcutofftime;
+
+        $vsiteID = $_SESSION['siteid1'];
+
+        //checks if siteID was selected all
+        $arrsiteID = array();
+        if ($vsiteID == 0) {
+            foreach ($rsitesowned as $row) {
+                $vsiteID = $row['SiteID'];
+                array_push($arrsiteID, $vsiteID);
+            }
+        } else {
+            $arrsiteID = array($vsiteID);
+        }
+
+        /*         * ** set this configuration for exporting large quantity of records into pdf; **** */
+        /*         * ** prevents program from exceeding ,max execution time **** */
+        ini_set('memory_limit', '-1');
+        ini_set('max_execution_time', '120');
+
+        $result = $orptoptr->viewtransactionperday($dateFrom, $dateTo, $arrsiteID, $start = null, $limit = null, $sort = null, $direction = null);
+        $pdf = CTCPDF::c_getInstance(); //call method of tcpdf
+        $pdf->c_commonReportFormat();
+        $pdf->c_setHeader('Site Transaction Per Day'); //filename
+        $pdf->html.='<div style="text-align:center;">As of ' . $dateFrom . ' To ' . $dateTo . '</div>';
+        $pdf->SetFontSize(9);
+//        $pdf->c_tableHeader(array('Transaction Summary ID', 'Site / PEGS Code', 'Terminal Code', 'Deposit', 'Reload', 'Redemption', 'Date Started', 'Date Ended'));
+        $pdf->c_tableHeader2(array(
+                array('value'=>'Site / PEGS Code','width' => '100px'),
+                array('value'=>'Terminal Code','width' => '100px'),
+                array('value'=>'Deposit'),
+                array('value'=>'Reload'),
+                array('value'=>'Redemption'),
+                array('value'=>'Date Started','width' => '130px'),
+                array('value'=>'Date Ended','width' => '130px')
+             ));
+
+        if (count($result) > 0) {
+            $optrdetails = array();
+            foreach ($result as $value) {
+                $rsitecode = $orptoptr->getsitecode($value['SiteID']);
+                if (!isset($optrdetails[$value['TransactionSummaryID']])) {
+                    $optrdetails[$value['TransactionSummaryID']] = array(
+                        'TransactionSummaryID' => $value['TransactionSummaryID'],
+                        'DateStarted' => $value['DateStarted'],
+                        'DateEnded' => $value['DateEnded'],
+                        'DateCreated' => $value['DateCreated'],
+                        'TerminalID' => $value['TerminalID'],
+                        'SiteID' => $value['SiteID'],
+                        'SiteCode' => $rsitecode['SiteCode'],
+                        'TerminalCode' => $value['TerminalCode'],
+                        'Withdrawal' => '0.00',
+                        'Deposit' => '0.00',
+                        'Reload' => '0.00'
+                    );
+                }
+                $trans = array();
+                switch ($value['TransactionType']) {
                     case 'W':
-                        $trans2 = array('EWWithdrawals'=>$value2['EWWithdrawals']);
+                        $trans = array('Withdrawal' => $value['amount']);
                         break;
                     case 'D':
-                        $trans2 = array('EWLoads'=>$value2['EWLoads']);
+                        $trans = array('Deposit' => $value['amount']);
+                        break;
+                    case 'R':
+                        $trans = array('Reload' => $value['amount']);
+                        break;
+                }
+                $optrdetails[$value['TransactionSummaryID']] = array_merge($optrdetails[$value['TransactionSummaryID']], $trans);
+            }
+
+            $arrdeposit2 = array();
+            $arrreload2 = array();
+            $arrwithdraw2 = array();
+            foreach ($optrdetails as $vview) {
+                $vterminalCode = $vview['TerminalCode'];
+                //remove the "icsa-[SiteCode]"
+                $rterminalCode = substr($vterminalCode, strlen($vview['SiteCode']));
+                $vdeposit = $vview['Deposit'];
+                $vreload = $vview['Reload'];
+                $vwithdraw = $vview['Withdrawal'];
+
+                //push the values for site transactions per day
+                $pdf->c_tableRow2(array(
+                    array('value'=>$vview['SiteCode'], 'width' => '100px'),
+                    array('value'=>$rterminalCode,'width' => '100px'),
+                    array('value'=>number_format($vdeposit,2),'align'=>'right'),
+                    array('value'=>number_format($vreload,2),'align'=>'right'),
+                    array('value'=>number_format($vwithdraw,2),'align'=>'right'),
+                    array('value'=>$vview['DateStarted'], 'width' => '130px'),
+                    array('value'=>$vview['DateEnded'], 'width' => '130px')
+                 ));
+                
+                array_push($arrdeposit2, $vdeposit);
+                array_push($arrreload2, $vreload);
+                array_push($arrwithdraw2, $vwithdraw);
+            }
+        } else {
+            $pdf->html.= '<div style="text-align: center; border: 1px solid black;">';
+            $pdf->html.= ' No Results Found';
+            $pdf->html.= '</div>';
+        }
+        $pdf->c_tableEnd();
+
+        /**
+         * For e-wallet transactions
+         */
+        $result1 = $orptoptr->viewewtransactionperday($dateFrom, $dateTo, $arrsiteID, $start = null, $limit = null, $sort = null, $direction = null);
+        $pdf->html.='<div style="text-align:center;"></div>';
+//        $pdf->c_tableHeader(array('Site / PEGS Code', 'Card Number', 'e-wallet Loads', 'e-wallet Withdrawals', 'Date Started', 'Date Ended'));
+        $pdf->c_tableHeader2(array(
+                array('value'=>'Site / PEGS Code'),
+                array('value'=>'Card Number'),
+                array('value'=>'e-wallet Loads'),
+                array('value'=>'e-wallet Withdrawals'),
+                array('value'=>'Date Started'),
+                array('value'=>'Date Ended')
+             ));
+        
+        if (count($result1) > 0) {
+            $optrdetails2 = array();
+            foreach ($result1 as $value2) {
+                $rsitecode = $orptoptr->getsitecode($value2['SiteID']);
+                if (!isset($optrdetails2[$value2['EwalletTransID']])) {
+                    $optrdetails2[$value2['EwalletTransID']] = array(
+                        'EwalletTransID' => $value2['EwalletTransID'],
+                        'SiteID' => $value2['SiteID'],
+                        'SiteCode' => $rsitecode['SiteCode'],
+                        'LoyaltyCardNumber' => $value2['LoyaltyCardNumber'],
+                        'EWLoads' => $value2['EWLoads'],
+                        'EWWithdrawals' => $value2['EWWithdrawals'],
+                        'StartDate' => $value2['StartDate'],
+                        'EndDate' => $value2['EndDate']
+                    );
+                }
+                $trans2 = array();
+                switch ($value2['TransType']) {
+                    case 'W':
+                        $trans2 = array('EWWithdrawals' => $value2['EWWithdrawals']);
+                        break;
+                    case 'D':
+                        $trans2 = array('EWLoads' => $value2['EWLoads']);
                         break;
                 }
                 $optrdetails2[$value2['EwalletTransID']] = array_merge($optrdetails2[$value2['EwalletTransID']], $trans2);
-          }
-           
-          $arrewloads = array();
-          $arrewwithdrawals = array();
-          
-          foreach($optrdetails2 as $vview2)
-          {
-//              $vterminalCode = $vview['TerminalCode'];
-//              //remove the "icsa-[SiteCode]"
-//              $rterminalCode = substr($vterminalCode, strlen($rsitecode['SiteCode']));
-              $vewloads = $vview2['EWLoads'];
-              $vewwithdrawals = $vview2['EWWithdrawals'];
-
-              //push the values for e-wallet site transactions per day
-              $pdf->c_tableRow(array(0 => $rsitecode['SiteCode'],
-                                     1 => $vview2['LoyaltyCardNumber'],
-                                     2 => number_format($vewloads, 2, '.', ','),
-                                     3 => number_format($vewwithdrawals, 2, '.', ','),
-                                     4 => $vview2['StartDate'],
-                                     5 => $vview2['EndDate']
-                               ));
-              
-              array_push($arrewloads, $vewloads);
-              array_push($arrewwithdrawals, $vewwithdrawals);
-              //array_push($arrwithdraw2, $vwithdraw);            
-          }
-          
-          if(isset($_SESSION['total'])){
-              $arrtotal2 = $_SESSION['total'];
-          }
-           
-          if(isset($_SESSION['total2'])){
-              $arrtotal = $_SESSION['total2'];
-          }
-          
-          $result = $orptoptr->viewtransactionperday($dateFrom, $dateTo, $arrsiteID);
-              
-            $ctr = 0;
-            while($ctr < count($result))
-            {
-                     $trans = array();
-                     switch ($result[$ctr]['TransactionType']) 
-                     {
-                         case 'W':
-                             $trans = array('Withdrawal'=>$result[$ctr]['amount']);
-                             array_push($arrwithdraw, $trans);
-                             break;
-                         case 'D':
-                             $trans = array('Deposit'=>$result[$ctr]['amount']);
-                             array_push($arrdeposit, $trans);
-                             break;
-                         case 'R':
-                             $trans = array('Reload'=>$result[$ctr]['amount']);
-                             array_push($arrreload, $trans);
-                             break;
-                     }
-                     $ctr++;
-
             }
 
+            $arrewloads = array();
+            $arrewwithdrawals = array();
 
-            $grandsales = array_sum($arrewloads)+array_sum($arrdeposit)+array_sum($arrreload);
-            //$grandredemption = array_sum($arrewwithdrawals)+$arrtotal2['TotalWithdraw'];
-            $grandredemption = array_sum($arrewwithdrawals)+array_sum($arrwithdraw);
-            //$grandredemption = $_SESSION['total2']['Redemption'];
-            if($arrtotal == null) {
-                $grandticketencashment = 0.00;
+            foreach ($optrdetails2 as $vview2) {
+                //              $vterminalCode = $vview['TerminalCode'];
+                //              //remove the "icsa-[SiteCode]"
+                //              $rterminalCode = substr($vterminalCode, strlen($rsitecode['SiteCode']));
+                $vewloads = $vview2['EWLoads'];
+                $vewwithdrawals = $vview2['EWWithdrawals'];
+
+                //push the values for e-wallet site transactions per day
+                $pdf->c_tableRow2(array(
+                    array('value'=>$vview2['SiteCode']),
+                    array('value'=>$vview2['LoyaltyCardNumber']),
+                    array('value'=>number_format($vewloads, 2, '.', ','),'align'=>'right'),
+                    array('value'=>number_format($vewwithdrawals, 2, '.', ','),'align'=>'right'),
+                    array('value'=>$vview2['StartDate']),
+                    array('value'=>$vview2['EndDate'])
+                 ));
+
+                array_push($arrewloads, $vewloads);
+                array_push($arrewwithdrawals, $vewwithdrawals);
             }
-            else {
-                $grandticketencashment = $arrtotal['TicketEncashment'];
+
+            $result2 = $orptoptr->viewtransactionperday($dateFrom, $dateTo, $arrsiteID);
+
+            if ($result2) {
+                $ctr2 = 0;
+                while ($ctr2 < count($result2)) {
+                    $trans = array();
+                    switch ($result2[$ctr2]['TransactionType']) {
+                        case 'W':
+                            $trans = array('Withdrawal' => (float) $result2[$ctr2]['amount']);
+                            array_push($arrwithdraw, $trans);
+                            break;
+                        case 'D':
+                            $trans = array('Deposit' => (float) $result2[$ctr2]['amount']);
+                            array_push($arrdeposit, $trans);
+                            break;
+                        case 'R':
+                            $trans = array('Reload' => (float) $result2[$ctr2]['amount']);
+                            array_push($arrreload, $trans);
+                            break;
+                    }
+                    $ctr2++;
+                }
+            } else {
+                $grandsum = 0.00;
             }
+
+            $grandsumew = 0.00;
+
+
+            if ($result1 && $result2) {
+
+                if ($arrdeposit) {
+                    foreach ($arrdeposit as $arrdepositsingle) {
+
+                        $arrdepositsum[] = (float) $arrdepositsingle['Deposit'];
+                    }
+                } else {
+                    $arrdepositsum = array('Deposit' => 0.00);
+                }
+
+                if ($arrreload) {
+                    foreach ($arrreload as $arrreloadsingle) {
+
+                        $arrreloadsum[] = (float) $arrreloadsingle['Reload'];
+                    }
+                } else {
+                    $arrreloadsum = array('Reload' => 0.00);
+                }
+
+                if ($arrwithdraw) {
+                    foreach ($arrwithdraw as $arrwithdrawsingle) {
+                        $arrwithdrawsum[] = (float) $arrwithdrawsingle['Withdrawal'];
+                    }
+                } else {
+                    $arrwithdrawsum = array('Withdrawal' => 0.00);
+                }
+
+                if ($arrewloads) {
+                    $arrewloadssum = array_sum($arrewloads);
+                } else {
+                    $arrewloadssum = 0.00;
+                }
+
+                if ($arrewwithdrawals) {
+                    $arrewwithdrawalssum = array_sum($arrewwithdrawals);
+                } else {
+                    $arrewwithdrawalssum = 0.00;
+                }
+
+                $grandsales = $arrewloadssum + array_sum($arrdepositsum) + array_sum($arrreloadsum);
+                $grandredemption = $arrewwithdrawalssum + array_sum($arrwithdrawsum);
+            } else if ($result1 && !$result2) {
+
+                if ($arrewloads) {
+                    $arrewloadssum = array_sum($arrewloads);
+                } else {
+                    $arrewloadssum = 0.00;
+                }
+
+                if ($arrewwithdrawals) {
+                    $arrewwithdrawalssum = array_sum($arrewwithdrawals);
+                } else {
+                    $arrewwithdrawalssum = 0.00;
+                }
+
+
+                $grandsales = $arrewloadssum + $grandsum;
+                $grandredemption = $arrewwithdrawalssum + $grandsum;
+            } else if (!$result1 && $result2) {
+                if ($arrdeposit) {
+                    foreach ($arrdeposit as $arrdepositsingle) {
+                        $arrdepositsum[] = (float) $arrdepositsingle['Deposit'];
+                    }
+                } else {
+                    $arrdepositsum = array('Deposit' => 0.00);
+                }
+
+                if ($arrreload) {
+                    foreach ($arrreload as $arrreloadsingle) {
+                        $arrreloadsum[] = (float) $arrreloadsingle['Reload'];
+                    }
+                } else {
+                    $arrreloadsum = array('Reload' => 0.00);
+                }
+
+                if ($arrwithdraw) {
+                    foreach ($arrwithdraw as $arrwithdrawsingle) {
+                        $arrwithdrawsum[] = (float) $arrwithdrawsingle['Withdrawal'];
+                    }
+                } else {
+                    $arrwithdrawsum = array('Withdrawal' => 0.00);
+                }
+
+                $grandsales = $grandsumew + array_sum($arrdepositsum) + array_sum($arrreloadsum);
+                $grandredemption = $grandsumew + array_sum($arrwithdrawsum);
+            } else {
+                $grandsales = 0.00;
+                $grandredemption = 0.00;
+            }
+
+            //Compute for total Cash On Hand of the sites under the current operator
+            $cohdata = $orptoptr->getCashOnHandDetails($dateFrom, $dateTo, $arrsiteID);
+            $grandticketencashment = $orptoptr->getTotalTicketEncashment($dateFrom, $dateTo, $arrsiteID);
+
+            $grandcashonhand = (($cohdata['TotalCashLoad'] - $cohdata['TotalCashRedemption']) - $cohdata['TotalMR']) - $grandticketencashment;
+
+//            $pdf->html.= '<div style="text-align: center; ">';
+//            $pdf->html.= ' Sales ' . number_format($grandsales, 2, '.', ',') . '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+//            $pdf->html.= ' Redemption ' . number_format($grandredemption, 2, '.', ',') . '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+//            $pdf->html.= ' Ticket Encashment ' . number_format($grandticketencashment, 2, '.', ',') . '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+//            $pdf->html.= ' Cash on Hand ' . number_format($grandcashonhand, 2, '.', ',');
+//            $pdf->html.= '</div>';
+            $pdf->c_tableEnd();
+            $pdf->html .= '<div style="text-align: center; ">';
+            $pdf->html .= '</div>';
+            $pdf->html .= '<style type="text/css">table{border:solid 1px #000;border-collapse:collapse;} td{border:solid 1px #000;}</style><table><thead><tr>';
+            $pdf->html .='<th colspan="2" style="text-align:center; width: 260px;"><b>Grand Total</b></th>';
+            $pdf->html .='</tr></thead>';
             
-          //get the total withdraw, loads, ticket encashment and cash on hand
-//          $grandsales = array_sum($arrewloads)+$arrtotal2['TotalDeposit'];
-//          //$grandredemption = $_SESSION['total2']['Redemption'];
-//          $grandredemption = array_sum($arrewwithdrawals)+$arrtotal2['TotalWithdraw'];
-//          $grandticketencashment = $arrtotal['TicketEncashment'];
-          $grandcashonhand = $grandsales-$grandredemption-$grandticketencashment;
+            $pdf->c_tableRow2(array(
+                array('value'=>'Sales', 'width'=>'130px'),
+                array('value'=>number_format($grandsales, 2, '.', ','), 'width'=>'130px', 'align' => 'right')
+             ));
+            $pdf->c_tableRow2(array(
+                array('value'=>'Redemption', 'width'=>'130px'),
+                array('value'=>number_format($grandredemption, 2, '.', ','), 'width'=>'130px', 'align' => 'right')
+             ));
+            $pdf->c_tableRow2(array(
+                array('value'=>'Ticket Encashment', 'width'=>'130px'),
+                array('value'=>number_format($grandticketencashment, 2, '.', ','), 'width'=>'130px', 'align' => 'right')
+             ));
+            $pdf->c_tableRow2(array(
+                array('value'=>'Cash on Hand', 'width'=>'130px'),
+                array('value'=>number_format($grandcashonhand, 2, '.', ','), 'width'=>'130px', 'align' => 'right')
+             ));
+            
+        } else {
+            $pdf->html.= '<div style="text-align: center; border: 1px solid black;">';
+            $pdf->html.= ' No Results Found';
+            $pdf->html.= '</div>';
+        }
 
-//          $vsales = $granddeposit + $grandreload;
-//          $vgrossholdamt = ($granddeposit + $grandreload) - $grandwithdraw; 
-
-          $pdf->html.= '<div style="text-align: center;">';
-          $pdf->html.= ' Sales '.number_format($grandsales, 2, '.', ',');
-          $pdf->html.= ' Redemption '.number_format($grandredemption, 2, '.', ',');
-          $pdf->html.= ' Ticket Encashment '.number_format($grandticketencashment, 2, '.', ','); 
-          $pdf->html.= ' Cash on Hand '.number_format($grandcashonhand, 2, '.', ',');
-          $pdf->html.= '</div>';
-      }
-      else
-      {
-          $pdf->html.= '<div style="text-align: center;">';
-          $pdf->html.= ' No Results Found';
-          $pdf->html.= '</div>';
-      }
-      $pdf->c_tableEnd();
-      $vauditfuncID = 40; //export to pdf
-      $vtransdetails = "e-wallet Site Transactions";
-      $orptoptr->logtoaudit($new_sessionid, $aid, $vtransdetails, $vdate, $vipaddress, $vauditfuncID);
-      unset($arrsiteID, $optrdetails2);
-      $pdf->c_generatePDF('e-walletSiteTransactionPerDay.pdf'); 
-      $orptoptr->close();
+        $pdf->c_tableEnd();
+        $vauditfuncID = 40; //export to pdf
+        $vtransdetails = "Site Transactions";
+        $orptoptr->logtoaudit($new_sessionid, $aid, $vtransdetails, $vdate, $vipaddress, $vauditfuncID);
+        unset($arrsiteID, $optrdetails, $optrdetails2);
+        $pdf->c_generatePDF('SiteTransactionPerDay.pdf');
+        $orptoptr->close();
    }
    //for displaying site name on label
    elseif(isset($_POST['cmbsitename']))

@@ -317,7 +317,7 @@ if ($connected)
     {
         
         $option = "<option value=''>-Please Select-</option>";
-        $banknames = $topup->getbanknames();
+        $banknames = $topup->getAllBankNames();
         foreach ($banknames as $bank)
         {
             $option .= "<option value=".$bank['BankID'].">".$bank['BankName']."</option>";

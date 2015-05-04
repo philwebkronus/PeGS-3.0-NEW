@@ -29,11 +29,9 @@ class RptOperator extends DBHandler
 	// for site transactions report
     function viewtransactionperday($zdateFROM, $zdateto, $zsiteID)
     {
-        
         $listsite = array();
-        foreach ($zsiteID as $row)
-        {
-        array_push($listsite, "'".$row."'");
+        foreach ($zsiteID as $row) {
+            array_push($listsite,$row);
         }
         $site = implode(',', $listsite);
         $stmt = "select tr.TransactionSummaryID,ts.DateStarted,ts.DateEnded,tr.DateCreated, ts.LoyaltyCardNumber, tr.TerminalID,tr.SiteID,
@@ -1098,6 +1096,161 @@ class RptOperator extends DBHandler
         return $usermode;
     }
     
+    
+    function getCashOnHandDetails($datefrom, $dateto, $siteid) {
+        $listsite = array();
+        $cohdata = array('TotalCashLoad' => 0, 'TotalCashRedemption' => 0, 'TotalMR' => 0);
+        foreach ($siteid as $row){ array_push($listsite, "".$row.""); }
+        $site = implode(',', $listsite);
+
+        $query1 = "SELECT tr.SiteID, tr.CreatedByAID,
+
+                                -- DEPOSIT CASH --
+                                SUM(CASE tr.TransactionType
+                                   WHEN 'D' THEN
+                                     CASE tr.PaymentType
+                                       WHEN 2 THEN 0 -- Coupon
+                                       ELSE -- Not Coupon
+                                         CASE IFNULL(tr.StackerSummaryID, '')
+                                           WHEN '' THEN tr.Amount -- Cash
+                                           ELSE  -- Check transtype in stackermanagement to find out if ticket or cash, from EGM
+                                             (SELECT IFNULL(SUM(Amount), 0)
+                                             FROM stackermanagement.stackerdetails sdtls
+                                             WHERE sdtls.stackersummaryID = tr.StackerSummaryID
+                                                   AND sdtls.TransactionType = 1
+                                                   AND sdtls.PaymentType = 0)  -- Deposit, Cash
+                                         END
+                                    END
+                                   ELSE 0 -- Not Deposit
+                                END) As DepositCash,
+
+                                -- RELOAD CASH --
+                                SUM(CASE tr.TransactionType
+                                   WHEN 'R' THEN
+                                     CASE tr.PaymentType
+                                       WHEN 2 THEN 0 -- Coupon
+                                       ELSE -- Not Coupon
+                                         CASE IFNULL(tr.StackerSummaryID, '')
+                                           WHEN '' THEN tr.Amount -- Reload, Cash
+                                           ELSE  -- Check transtype in stackermanagement to find out if ticket or cash, from EGM
+                                              (SELECT IFNULL(SUM(Amount), 0)
+                                --              (SELECT IFNULL(Amount, 0)
+                                             FROM stackermanagement.stackerdetails sdtls
+                                             WHERE sdtls.stackersummaryID = tr.StackerSummaryID
+                                                   AND tr.TransactionDetailsID = sdtls.TransactionDetailsID
+                                                   AND sdtls.TransactionType = 2
+                                                   AND sdtls.PaymentType = 0)  -- Reload, Cash
+                                         END
+                                     END
+                                   ELSE 0 -- Not Reload
+                                END) As ReloadCash,
+                                
+                                -- REDEMPTION CASHIER --
+                                SUM(CASE tr.TransactionType
+                                  WHEN 'W' THEN
+                                        CASE a.AccountTypeID
+                                          WHEN 4 THEN tr.Amount -- Cashier
+                                          ELSE 0
+                                        END -- Genesis
+                                  ELSE 0 --  Not Redemption
+                                END) As RedemptionCashier,
+
+                                tr.DateCreated
+                                FROM transactiondetails tr INNER JOIN transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
+                                INNER JOIN terminals t ON t.TerminalID = tr.TerminalID
+                                INNER JOIN accounts a ON ts.CreatedByAID = a.AID
+                                INNER JOIN sites s ON tr.SiteID = s.SiteID
+                                WHERE tr.SiteID IN (".$site.")
+                                  AND tr.DateCreated >= ? AND tr.DateCreated < ?
+                                  AND tr.Status IN(1,4) AND a.AccountTypeID NOT IN (17)
+                                GROUP By tr.SiteID";
+        
+        $query2 = "SELECT SiteID, 
+                                        SUM(CASE IFNULL(TraceNumber,'')
+                                                WHEN '' THEN  
+                                                        CASE IFNULL(ReferenceNumber, '')
+                                                        WHEN '' THEN -- if not bancnet
+                                                                CASE TransType
+                                                                WHEN 'D' THEN -- if deposit
+                                                                        CASE PaymentType 
+                                                                        WHEN 1 THEN Amount -- if Cash
+                                                                        ELSE 0 -- if not Cash
+                                                                        END
+                                                                ELSE 0 -- if not deposit
+                                                                END
+                                                        ELSE 0 -- if bancnet
+                                                        END
+                                                ELSE 0
+                                        END) AS EwalletCashDeposit,
+
+                                        SUM(CASE IFNULL(TraceNumber,'')
+                                                WHEN '' THEN 0
+                                                ELSE CASE IFNULL(ReferenceNumber, '')
+                                                        WHEN '' THEN 0 -- if not bancnet
+                                                        ELSE CASE TransType -- if bancnet
+                                                                WHEN 'D' THEN Amount -- if deposit
+                                                                ELSE 0 -- if not deposit
+                                                                END
+                                                        END
+                                        END) AS EwalletBancnetDeposit,
+                                        
+                                        -- Total e-wallet Withdrawal
+                                        SUM(CASE TransType
+                                                WHEN 'W' THEN Amount -- if redemption
+                                                ELSE 0 -- if not redemption
+                                        END) AS EwalletRedemption
+
+                                    FROM ewallettrans WHERE StartDate >= ? AND StartDate < ?
+                                    AND SiteID IN (".$site.") AND Status IN (1,4) GROUP BY SiteID";
+        
+        $query3 = "SELECT SiteID, SUM(ActualAmount) AS ManualRedemption FROM manualredemptions
+                            WHERE TransactionDate >= ? AND TransactionDate < ?
+                            AND SiteID IN (".$site.") GROUP BY SiteID";   
+        
+        //Get total deposit cash and reload cash (with bancnet transaction included)
+        $this->prepare($query1);
+        $this->bindparameter(1, $datefrom);
+        $this->bindparameter(2, $dateto);
+        $this->execute();
+        $rows1 = $this->fetchAllData();
+        
+        //Get the summation of total cash load and cash redemption
+        foreach ($rows1 as $value) {
+            $cohdata['TotalCashLoad'] += (float)$value['DepositCash'];
+            $cohdata['TotalCashLoad'] += (float)$value['ReloadCash'];
+            $cohdata['TotalCashRedemption'] += (float)$value['RedemptionCashier'];
+        }
+       
+        //Get total e-wallet loaded cash (with bancnet transaction included)
+        $this->prepare($query2);
+        $this->bindparameter(1, $datefrom);
+        $this->bindparameter(2, $dateto);
+        $this->execute();
+        $rows2 = $this->fetchAllData();
+        
+        //Add the total e-wallet cash load and e-wallet cash redemption
+        foreach ($rows2 as $value) {
+            $cohdata['TotalCashLoad'] += (float)$value['EwalletCashDeposit'];
+            $cohdata['TotalCashLoad'] += (float)$value['EwalletBancnetDeposit'];
+            $cohdata['TotalCashRedemption'] += (float)$value['EwalletRedemption'];
+        }
+
+        //Get total manual redemption per site
+        $this->prepare($query3);
+        $this->bindparameter(1, $datefrom);
+        $this->bindparameter(2, $dateto);
+        $this->execute();
+        $rows3 = $this->fetchAllData();
+        
+        //Add the total e-wallet cash load and e-wallet cash redemption
+        foreach ($rows3 as $value) {
+            $cohdata['TotalMR'] += (float)$value['ManualRedemption'];
+        }
+
+        unset($listsite);
+        return $cohdata;
+    }
+    
     // for site transactions report
     // for ewallet loads and withdraws
     //@date added 03-20-2015
@@ -1110,100 +1263,46 @@ class RptOperator extends DBHandler
             array_push($listsite, "'".$row."'");
         }
         $site = implode(',', $listsite);
-//        $stmt = "select tr.TransactionSummaryID,ts.DateStarted,ts.DateEnded,tr.DateCreated, ts.LoyaltyCardNumber, tr.TerminalID,tr.SiteID,
-//                t.TerminalCode as TerminalCode, tr.TransactionType, sum(tr.Amount) AS amount,a.UserName from transactiondetails tr
-//                inner join transactionsummary ts on ts.TransactionsSummaryID = tr.TransactionSummaryID
-//                inner join terminals t on t.TerminalID = tr.TerminalID
-//                inner join accounts a on a.AID = tr.CreatedByAID
-//                where tr.SiteID IN(".$site.") AND
-//                tr.DateCreated >= ? and tr.DateCreated < ? and tr.Status IN(1,4)
-//                group by tr.TransactionType,tr.TransactionSummaryID order by t.TerminalCode,tr.DateCreated Desc ";
         $stmt1 = "SELECT EwalletTransID, SiteID, LoyaltyCardNumber, StartDate, EndDate, TransType,
                   IFNULL(CASE WHEN TransType = 'D' THEN Amount END,0) AS EWLoads,
                   IFNULL(CASE WHEN TransType = 'W' THEN Amount END,0) AS EWWithdrawals
                   FROM ewallettrans
                   WHERE SiteID IN(".$site.") AND
-                  StartDate >= ? AND StartDate < ? AND Status IN(1,3)";
-         //
-//        $stmt2 = "SELECT SiteID, LoyaltyCardNumber, Amount AS EWLoads, StartDate, EndDate
-//                  FROM ewallettrans
-//                  WHERE SiteID IN(".$site.") AND
-//                  StartDate >= ? AND EndDate < ? AND Status = 1 and TransType = 'D'";
-//        $stmt3 = "SELECT SiteID, LoyaltyCardNumber, Amount AS EWWithdrawals, StartDate, EndDate
-//                  FROM ewallettrans
-//                  WHERE SiteID IN(".$site.") AND
-//                  StartDate >= ? AND EndDate < ? AND Status = 1 and TransType = 'W'
-//                  GROUP BY TransType ORDER BY StartDate DESC";
+                  StartDate >= ? AND StartDate < ? AND Status IN(1,4)";
         
         $this->prepare($stmt1);
         $this->bindparameter(1, $zdateFROM);
         $this->bindparameter(2, $zdateto);
         $this->execute();
         $rows1 = $this->fetchAllData();
-        
-//        $qr1 = array();
-//        foreach($rows1 as $row1) {
-//            $qr1[] = array('SiteID'=>$row1['SiteID'],'LoyaltyCardNumber'=>$row1['LoyaltyCardNumber'],
-//                    'StartDate' => $row1['StartDate'],'EndDate'=>$row1['EndDate'], 'EWLoads'=>$row1['EWLoads'],
-//                    'EWWithdrawals' => $row1['EWWithdrawals']
-//                );
-//        }
-        
-//        var_dump($qr1);exit;
-//        
-//        $this->prepare($stmt2);
-//        $this->bindparameter(1, $zdateFROM);
-//        $this->bindparameter(2, $zdateto);
-//        $this->execute();
-//        $rows2 = $this->fetchAllData();
-//        foreach($rows2 as $row2) {
-//            foreach ($qr1 as $keys => $value2) {
-//                if($row2["SiteID"] == $value2["SiteID"]){
-//                    if($row2["EWLoads"] != '0.00')
-//                        $qr1[$keys]["EWLoads"] = (float)$qr1[$keys]["EWLoads"] + (float)$row2["EWLoads"];
-//                    break;
-//                }
-//            } 
-//        }
-//        
-//        $this->prepare($stmt3);
-//        $this->bindparameter(1, $zdateFROM);
-//        $this->bindparameter(2, $zdateto);
-//        $this->execute();
-//        $rows3 = $this->fetchAllData();
-//        foreach($rows3 as $row3) {
-//            foreach ($qr1 as $keys => $value3) {
-//                if($row3["SiteID"] == $value3["SiteID"]){
-//                    if($row3["EWWithdrawals"] != '0.00')
-//                        $qr1[$keys]["EWWithdrawals"] = (float)$qr1[$keys]["EWWithdrawals"] + (float)$row3["EWWithdrawals"];
-//                    break;
-//                }
-//            } 
-//        }
-//        
+       
         unset($listsite);
-        //return $this->fetchAllData();
         return $rows1;
     }
     
     function getTotalTicketEncashment($zdateFROM, $zdateto, $zsiteID) {
         $listsite = array();
+        $totalencashedtickets = 0;
         foreach ($zsiteID as $row)
         {
             array_push($listsite, "'".$row."'");
         }
         $site = implode(',', $listsite);
-        $stmt = "SELECT tckt.SiteID, IFNULL(SUM(tckt.Amount), 0) AS EncashedTickets FROM vouchermanagement.tickets tckt  -- Encashed Tickets
-                                WHERE tckt.DateEncashed >= ? AND tckt.DateEncashed < ?
-                                AND tckt.SiteID IN (".$site.")";
+        $stmt = "SELECT SiteID, IFNULL(SUM(Amount), 0) AS EncashedTickets FROM vouchermanagement.tickets  -- Encashed Tickets
+                                WHERE DateEncashed >= ? AND DateEncashed < ?
+                                AND SiteID IN (".$site.") GROUP BY SiteID";
         $this->prepare($stmt);
         $this->bindparameter(1, $zdateFROM);
         $this->bindparameter(2, $zdateto);
         $this->execute();
         $rows = $this->fetchAllData();
- 
-        //return $rows['EncashedTicket;
-        return (float)$rows[0]['EncashedTickets'];
+        
+        //combine total encashed tickets
+        foreach ($rows as $value) {
+            $totalencashedtickets += (float)$value['EncashedTickets'];
+        }
+        
+        return $totalencashedtickets;
     }
     
 }
