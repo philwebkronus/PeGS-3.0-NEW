@@ -26,18 +26,6 @@ class AccountsModel extends MI_Model{
         return $result['LoginAttempts'];
     }
     
-    public function getAccountTypebyUN($username) {
-        $sql = 'Select AccountTypeID from accounts WHERE UserName =  :username';
-        $param = array(':username'=>$username);
-        $this->exec($sql, $param);
-        $result =  $this->find();
-        
-        if(!$result) {
-            return 0;
-        }
-        return $result['AccountTypeID'];
-    }
-    
 //    //when login is successful, it must updated attempt to 0, passkey if any
 //    public function updateonlogin($zloginattempt, $zdate,$zusername){
 //        $this->prepare("Update  accounts  SET LoginAttempts = :loginattempt, DateLastLogin = :lastlogin  WHERE UserName = :username");
@@ -65,9 +53,9 @@ class AccountsModel extends MI_Model{
     }
     
     //check if passkey entered is equal to the passkey saved in table
-    public function checkpasskey($zPasskey) {
-        $sql = 'SELECT Passkey FROM accounts WHERE Passkey = :passkey';
-        $param = array(':passkey'=>$zPasskey);
+    public function checkpasskey($zPasskey, $aid) {
+        $sql = 'SELECT Passkey FROM accounts WHERE Passkey = :passkey AND AID = :aid';
+        $param = array(':passkey'=>$zPasskey, ':aid'=>$aid);
         $this->exec($sql, $param);
         $result = $this->find();
         if(isset($result['Passkey']) && $result['Passkey'] != '')

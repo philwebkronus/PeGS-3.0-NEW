@@ -71,14 +71,6 @@ class LoginFormModel extends MI_Model{
         $attempt_count = $accountsModel->queryattempt($this->username);
         $date = $this->getDate();
 
-        $accounttype = $accountsModel->getAccountTypebyUN($this->username);
-        
-        if($accounttype == 15){
-            $this->setAttributeErrorMessage('message', "User has no acccess rights..");
-            $this->close();
-            return false;
-        }
-        
         $attempt_count++;
         $accountsModel->updateAttempt($attempt_count, $this->username);          
         
@@ -351,7 +343,7 @@ class LoginFormModel extends MI_Model{
         $date = $this->getDate();
         
         //check passkey
-        if(!$accountsModel->checkpasskey($this->passkey)) {
+        if(!$accountsModel->checkpasskey($this->passkey, $aid)) {
             $this->setAttributeErrorMessage('message', 'Invalid Passkey');
               if (isset($aid)){  
             $auditTrailModel->logToAudit($new_sessionid, $aid, $vusername, $date, gethostbyaddr($_SERVER['REMOTE_ADDR']), '69');

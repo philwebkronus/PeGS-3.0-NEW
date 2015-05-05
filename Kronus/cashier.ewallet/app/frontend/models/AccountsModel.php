@@ -65,9 +65,9 @@ class AccountsModel extends MI_Model{
     }
     
     //check if passkey entered is equal to the passkey saved in table
-    public function checkpasskey($zPasskey) {
-        $sql = 'SELECT Passkey FROM accounts WHERE Passkey = :passkey';
-        $param = array(':passkey'=>$zPasskey);
+    public function checkpasskey($zPasskey, $aid) {
+        $sql = 'SELECT Passkey FROM accounts WHERE Passkey = :passkey AND AID = :aid';
+        $param = array(':passkey'=>$zPasskey, ':aid'=>$aid);
         $this->exec($sql, $param);
         $result = $this->find();
         if(isset($result['Passkey']) && $result['Passkey'] != '')

@@ -351,7 +351,7 @@ class LoginFormModel extends MI_Model{
         $date = $this->getDate();
         
         //check passkey
-        if(!$accountsModel->checkpasskey($this->passkey)) {
+        if(!$accountsModel->checkpasskey($this->passkey, $aid)) {
             $this->setAttributeErrorMessage('message', 'Invalid Passkey');
               if (isset($aid)){  
             $auditTrailModel->logToAudit($new_sessionid, $aid, $vusername, $date, gethostbyaddr($_SERVER['REMOTE_ADDR']), '69');
