@@ -990,7 +990,7 @@ class PcwsController extends Controller{
                 $status = $membercards->getCardStatus($cardnumber);
                 //Check if Card is Active
                
-                    if(isset($cardnumber) && $cardnumber != "" && isset($pin) && $pin != "")
+                    if(isset($cardnumber) && $cardnumber != "" && isset($pin) && $pin != "" && $cardnumber != "" && isset($this->_dt) && $this->_dt != "" && isset($this->_tkn) && $this->_tkn != "")
                     {
                         // Check IF PIN is Numeric and not more than 6 digits
                         if(is_numeric($pin) && strlen($pin) <= 6)
@@ -1036,31 +1036,31 @@ class PcwsController extends Controller{
                                     break;
                                     
                                 case 2:
-                                    $transMsg = 'Cheking of PIN is not allowed for Deactivated Card.'; 
+                                    $transMsg = 'Checking of PIN is not allowed for Deactivated Card.'; 
                                     $errCode = 4;
                                     $data = CommonController::checkPin($transMsg, $errCode);
                                     break;
                                 
                                 case 5:
-                                    $transMsg = 'Cheking of PIN is not allowed for Active Temporary Card.'; 
+                                    $transMsg = 'Checking of PIN is not allowed for Active Temporary Card.'; 
                                     $errCode = 4;
                                     $data = CommonController::checkPin($transMsg, $errCode);
                                     break;
                                 
                                 case 7:
-                                    $transMsg = 'Cheking of PIN is not allowed for New Migrated Card.'; 
+                                    $transMsg = 'Checking of PIN is not allowed for New Migrated Card.'; 
                                     $errCode = 4;
                                     $data = CommonController::checkPin($transMsg, $errCode);
                                     break;
                                 
                                 case 8:
-                                    $transMsg = 'Cheking of PIN is not allowed for Temporary Migrated Card.'; 
+                                    $transMsg = 'Checking of PIN is not allowed for Temporary Migrated Card.'; 
                                     $errCode = 4;
                                     $data = CommonController::checkPin($transMsg, $errCode);
                                     break;
                                 
                                 case 9:
-                                    $transMsg = 'Cheking of PIN is not allowed for Banned Card.'; 
+                                    $transMsg = 'Checking of PIN is not allowed for Banned Card.'; 
                                     $errCode = 4;
                                     $data = CommonController::checkPin($transMsg, $errCode);
                                     break;
@@ -1485,7 +1485,7 @@ class PcwsController extends Controller{
                             $isVIP = Utilities::fetchFirstValue($membersModel->getIsVIPByMID($mid));
                             if($isVIP!==false){
                                 if(ctype_alnum($terminalCode)){
-                                    
+                                    $terminalCode = str_replace("VIP", '', $terminalCode);
                                     $terminalCode .= $isVIP==1?'VIP':'';
                                     $terminalID = Utilities::fetchFirstValue($terminalsModel->getTerminalID($terminalCode));
                                     if($terminalID){
