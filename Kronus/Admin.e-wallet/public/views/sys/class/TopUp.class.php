@@ -558,15 +558,15 @@ class TopUp extends DBHandler
                             ORDER BY s.SiteCode, sgc.DateCutOff";          
 
                //Query for Replenishments
-                $query2 = "SELECT SiteID, Amount FROM replenishments
+                $query2 = "SELECT SiteID, Amount, DateCreated FROM replenishments
                                     WHERE DateCreated >= ? AND DateCreated < ? AND SiteID = ?";
 
                 //Query for Collection
-                $query3 = "SELECT SiteID, Amount FROM siteremittance
+                $query3 = "SELECT SiteID, Amount, DateCreated FROM siteremittance
                                     WHERE Status = 3 AND DateCreated >= ? AND DateCreated < ? AND SiteID = ? ";
 
                 //Query for Manual Redemption (per site/per cut off)
-                $query5 = "SELECT SiteID, ActualAmount AS ActualAmount FROM manualredemptions " . 
+                $query5 = "SELECT SiteID, ActualAmount AS ActualAmount, TransactionDate FROM manualredemptions " . 
                         "WHERE TransactionDate >= ? AND TransactionDate < ? AND SiteID = ? ";  
                 
                 //Query for Deposit (Cash,Coupon,Ticket),  Reload (Cash,Coupon,Ticket) and Redemption (Cashier,Genesis)
