@@ -1518,21 +1518,24 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         $pdf->html.='<div style="text-align:center;">Date Range: <b>  From </b> ' .$startDate. ' AM <b>     To </b>' .$endDate.' AM </div>';
         $pdf->SetFontSize(8);
         $pdf->c_tableHeader2(array(
+                array('value'=>'Site / PEGS Code', 'width' => '80px'),
                 array('value'=>'Card Number'),
-                array('value'=>'Start Date'),
-                array('value'=>'End Date'),
+                array('value'=>'Start Date', 'width' => '120px'),
+                array('value'=>'End Date', 'width' => '120px'),
                 array('value'=>'Amount'),
-                array('value'=>'Transaction Type'),
+                array('value'=>'Transaction Type', 'width' => '80px'),
                 array('value'=>'Status'),
                 array('value'=>'Created By'),
              ));
         foreach($rows as $row) {
+            $sitecode = $topreport->getsitecode($row['SiteID']);
             $pdf->c_tableRow2(array(
+                array('value'=>substr($sitecode['SiteCode'], strlen(BaseProcess::$sitecode)), 'width' => '80px'),
                 array('value'=>$row['LoyaltyCardNumber']),
-                array('value'=>$row['StartDate']),
-                array('value'=>$row['EndDate']),
+                array('value'=>$row['StartDate'], 'width' => '120px'),
+                array('value'=>$row['EndDate'], 'width' => '120px'),
                 array('value'=>number_format($row['Amount'],2),'align'=>'right'),
-                array('value'=>$row['TransType']),
+                array('value'=>$row['TransType'], 'width' => '80px'),
                 array('value'=>$row['Status']),
                 array('value'=>$row['Name']), 
              ));
@@ -1549,7 +1552,7 @@ class ProcessTopUpGenerateReports extends BaseProcess{
     
      //e-wallet Transaction History Report per card (Excel)
     public function ewalletTransactioncardhistoryExcel($cardNumber, $transType, $transStatus, $startDate, $endDate) {
-        $_SESSION['report_header'] = array('Card Number','Start Date', 'End Date','Amount','Transaction Type',
+        $_SESSION['report_header'] = array('Site / PEGS Code','Card Number','Start Date', 'End Date','Amount','Transaction Type',
             'Status','Created By');
         
         $aid = 0;
@@ -1569,7 +1572,9 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         $rows = $topreport->geteWalletTransactionCardHistoryReport($cardNumber, $transType, $transStatus, $startDate, $endDate);
         $new_rows = array();
         foreach($rows as $row) {
+            $sitecode = $topreport->getsitecode($row['SiteID']);
             $new_rows[] = array(
+                    substr($sitecode['SiteCode'], strlen(BaseProcess::$sitecode)),
                     $row['LoyaltyCardNumber'],
                     $row['StartDate'],
                     $row['EndDate'],

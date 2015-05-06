@@ -102,6 +102,7 @@ $vaccesspages = array('5');
             rowList:[10,20,30],
             sortorder: "asc",
             caption: "GH Balance Per Cut-off",            
+            ajaxGridOptions: { timeout: 900000 },
             colModel:[
                 {name:'SiteCode',index:'SiteCode',align:'left'},
                 {name:'cutoff', index:'cutoff',align:'center'},
@@ -121,7 +122,14 @@ $vaccesspages = array('5');
                 {name:'Collection',index:'Collection',align:'right'},
                 {name:'EndingBalance',index:'EndingBalance',align:'right'},
 //                {name:'GHBalCutOffInfo',index:'GHBalCutOffInfo',align:'center'}
-            ]
+            ],
+            loadError : function(xhr,st,err) {
+                var ismatch = err.match(/Invalid JSON:/g);
+                if(st == "parsererror" && xhr.status == 200 && xhr.statusText == "OK" && ismatch != ""){
+                    alert("Connection timeout. Please try again.");
+                }
+            }
+                
         });
         
         jQuery('#btnsearch').click(function(){

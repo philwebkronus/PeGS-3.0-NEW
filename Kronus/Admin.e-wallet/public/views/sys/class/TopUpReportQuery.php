@@ -1862,7 +1862,7 @@ class TopUpReportQuery extends DBHandler{
       public function geteWalletTransactionCardHistoryReport($cardNum,$transType,$transStatus,$startDate,$endDate)
       {
           $where="";
-         
+
          if($transType != 'All' && $transStatus != 'All'){
             
              $where.="WHERE a.LoyaltyCardNumber='$cardNum'"
@@ -1897,7 +1897,7 @@ class TopUpReportQuery extends DBHandler{
          
         
           $stmt = "SELECT a.EwalletTransID,a.LoyaltyCardNumber, a.StartDate ,"
-                  ." a.EndDate , a.Amount, a.TransType,a.Status,
+                  ." a.EndDate , a.Amount, a.TransType,a.Status,a.SiteID,
                       CASE a.Status 
                             WHEN 0 THEN 'Pending'
                             WHEN 1 THEN 'Success'
