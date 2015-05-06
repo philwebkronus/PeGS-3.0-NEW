@@ -2,17 +2,6 @@
 
 include "modelDBTimer.php";
 
-function timer($time){
-    $vcashier = new modelDBTimer('mysql:host=172.16.102.157;dbname=npos,pegsconn,pegsconnpass');
-        echo date('h:i:s') . "<br>";
-
-        //sleep for 5 seconds
-        sleep($time);
-
-        //start again
-        echo date('h:i:s');
-        $vcashier->close();
-}
 
 if(isset($_GET['time'])){
     $time = $_GET['time'];
@@ -25,10 +14,24 @@ if(isset($_GET['time'])){
             $result = $vcashier->getTime();
             
             $result = $result['NOW(6)'];
-            $time = $time * 60;
+            $time = $time;
             echo 'SELECT NOW(6) Result '.$result;
             echo "<br/>";
-            timer($time);
+            
+            echo date('h:i:s') . "<br>";
+
+            sleep($time);
+
+            //start again
+            echo date('h:i:s');
+
+            $result2 = $vcashier->getTime();
+
+            $result2 = $result2['NOW(6)'];
+
+            echo 'SELECT NOW(6) Result2 '.$result2;
+
+            $vcashier->close();
             
             
         }
