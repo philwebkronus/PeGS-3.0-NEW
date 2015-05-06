@@ -835,7 +835,6 @@ class TopUp extends DBHandler
                     $qr1[] = array('SiteID'=>$row1['SiteID'],'BegBal'=>$row1['BeginningBalance'],'EndBal'=>$row1['EndingBalance'],
                             'POSAccountNo' => $row1['POSAccountNo'],'SiteName' => $row1['Name'],'SiteCode'=>$row1['SiteCode'], 
                             'InitialDeposit'=>'0.00','Reload'=>'0.00','Redemption'=>'0.00',
-                            'DateStart'=>$row1['DateFirstTransaction'],'DateLast'=>$row1['DateLastTransaction'],
                             'ReportDate'=>$row1['ReportDate'],'CutOff'=>$row1['DateCutOff'],'ManualRedemption'=>0,'Coupon'=>'0.00',
                             'PrintedTickets'=>'0.00','EncashedTickets'=>'0.00', 'RedemptionCashier'=>'0.00',
                             'RedemptionGenesis'=>'0.00','DepositCash'=>'0.00','ReloadCash'=>'0.00','UnusedTickets'=>'0.00','DepositTicket'=>'0.00',
