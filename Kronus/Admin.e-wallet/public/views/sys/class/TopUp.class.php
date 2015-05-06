@@ -832,7 +832,7 @@ class TopUp extends DBHandler
                 $rows1 = $this->fetchAllData();        
                 $qr1 = array();
                 foreach($rows1 as $row1) {
-                    $qr1[] = array('SiteID'=>$row1['SiteID'],'BegBal'=>$row1['BeginningBalance'],'EndBal'=>$row1['EndingBalance'],
+                    $qr1[] = array('SiteID'=>$row1['SiteID'],'BegBal'=>$row1['BeginningBalance'],
                             'POSAccountNo' => $row1['POSAccountNo'],'SiteName' => $row1['Name'],'SiteCode'=>$row1['SiteCode'], 
                             'InitialDeposit'=>'0.00','Reload'=>'0.00','Redemption'=>'0.00',
                             'ReportDate'=>$row1['ReportDate'],'CutOff'=>$row1['DateCutOff'],'ManualRedemption'=>0,'Coupon'=>'0.00',
