@@ -31,6 +31,7 @@ document.getElementById('blockf').style.display='block';</script>";
        var url = "process/ProcessBanks.php";
        
        $("#btnSubmit").live('click', function(){
+           var is_checked = $("#chkaccredited").is(":checked");
            $.ajax ({
                url : url, 
                type : 'post', 
@@ -40,7 +41,7 @@ document.getElementById('blockf').style.display='block';</script>";
                        process : function() { return "AddBankInputs"; }, 
                        bankcode : function() { return $("#txtbankcode").val(); }, 
                        bankname : function() { return $("#txtbankname").val(); }, 
-                       isaccredited : function () { return $("#isaccredited").val(); }
+                       isaccredited : function () { return is_checked; }
                },
                success : function(data) {
                    if (data.ErrorCode == 0) {
@@ -62,6 +63,7 @@ document.getElementById('blockf').style.display='block';</script>";
            
        });
        $("#btnYes").live("click", function(){
+           var is_checked = $("#chkaccredited").is(":checked");
            $.ajax ({
                url : url, 
                type : 'post', 
@@ -70,7 +72,7 @@ document.getElementById('blockf').style.display='block';</script>";
                        sitepage : function(){ return $("#txtsitepage").val(); }, 
                        bankcode : function() { return $("#txtbankcode").val(); }, 
                        bankname : function() { return $("#txtbankname").val(); }, 
-                       isaccredited : function () { return $("#isaccredited").val(); }
+                       isaccredited : function () { return is_checked; }
                },
                success : function(data) {
                    $("#light2").hide();
@@ -117,7 +119,7 @@ document.getElementById('blockf').style.display='block';</script>";
                 Is Accredited: 
             </td>
             <td>
-                <input type="checkbox" name="=chkaccredited" id="chkaccredited" value="1" />
+                <input type="checkbox" name="=chkaccredited" id="chkaccredited" />
             </td>
         </tr>    
     </table>    

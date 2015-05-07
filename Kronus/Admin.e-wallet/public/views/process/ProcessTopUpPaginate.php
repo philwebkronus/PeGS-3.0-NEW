@@ -231,13 +231,13 @@ class ProcessTopUpPaginate extends BaseProcess {
         include_once __DIR__.'/../sys/class/TopUp.class.php';
         $topup = new TopUp($this->getConnection());
         $topup->open();
-        $startdate = date('Y-m-d');
-        $enddate = date('Y-m-d',strtotime(date("Y-m-d", strtotime(date('Y-m-d'))) .BaseProcess::$gaddeddate));  
+        $startdate = date('Y-m-d')." ".BaseProcess::$cutoff;
+        $enddate = date('Y-m-d',strtotime(date("Y-m-d", strtotime(date('Y-m-d'))) .BaseProcess::$gaddeddate))." ".BaseProcess::$cutoff;  
         if(isset($_GET['startdate']))
-            $startdate = $_GET['startdate'];
+            $startdate = $_GET['startdate']." ".BaseProcess::$cutoff;
         
         if(isset($_GET['enddate']))
-            $enddate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($_GET['enddate'])) .BaseProcess::$gaddeddate));
+            $enddate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($_GET['enddate'])) .BaseProcess::$gaddeddate))." ".BaseProcess::$cutoff;
         $total_row = $topup->getCohAdjustmentHistoryTotal($startdate, $enddate);
         $params = $this->getJqgrid($total_row, 'b.SiteName');
         $jqgrid = $params['jqgrid'];
@@ -272,13 +272,13 @@ class ProcessTopUpPaginate extends BaseProcess {
         include_once __DIR__.'/../sys/class/TopUp.class.php';
         $topup = new TopUp($this->getConnection());
         $topup->open();
-        $startdate = date('Y-m-d');
-        $enddate = date('Y-m-d',strtotime(date("Y-m-d", strtotime(date('Y-m-d'))) .BaseProcess::$gaddeddate));  
+        $startdate = date('Y-m-d')." ".BaseProcess::$cutoff;
+        $enddate = date('Y-m-d',strtotime(date("Y-m-d", strtotime(date('Y-m-d'))) .BaseProcess::$gaddeddate))." ".BaseProcess::$cutoff;  
         if(isset($_GET['startdate']))
-            $startdate = $_GET['startdate'];
+            $startdate = $_GET['startdate']." ".BaseProcess::$cutoff;
         
         if(isset($_GET['enddate']))
-            $enddate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($_GET['enddate'])) .BaseProcess::$gaddeddate));
+            $enddate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($_GET['enddate'])) .BaseProcess::$gaddeddate))." ".BaseProcess::$cutoff;  ;
         $total_row = $topup->getBankDepositHistoryTotal($startdate, $enddate);
         $params = $this->getJqgrid($total_row, 'sr.DateCreated');
         $jqgrid = $params['jqgrid'];
@@ -320,12 +320,12 @@ class ProcessTopUpPaginate extends BaseProcess {
         include_once __DIR__.'/../sys/class/TopUp.class.php';
         $topup = new TopUp($this->getConnection());
         $topup->open();
-        $startdate = date('Y-m-d');
-        $enddate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($startdate)) .BaseProcess::$gaddeddate));
+        $startdate = date('Y-m-d')." ".BaseProcess::$cutoff;
+        $enddate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($startdate)) .BaseProcess::$gaddeddate))." ".BaseProcess::$cutoff;
         if(isset($_GET['startdate']))
-            $startdate = $_GET['startdate'];   
+            $startdate = $_GET['startdate']." ".BaseProcess::$cutoff;   
         if(isset($_GET['enddate']))
-            $enddate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($_GET['enddate'])) .BaseProcess::$gaddeddate));
+            $enddate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($_GET['enddate'])) .BaseProcess::$gaddeddate))." ".BaseProcess::$cutoff;
         $type = '';
         if(isset($_GET['type']))
             $type = $_GET['type'];
@@ -400,12 +400,12 @@ class ProcessTopUpPaginate extends BaseProcess {
     //pagination for Manual Top-up Reversal History
     public function getReversalManual() {
         include_once __DIR__.'/../sys/class/TopUp.class.php';
-        $startdate = date('Y-m-d');
-        $enddate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($startdate)) .BaseProcess::$gaddeddate));
+        $startdate = date('Y-m-d')." ".BaseProcess::$cutoff;
+        $enddate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($startdate)) .BaseProcess::$gaddeddate))." ".BaseProcess::$cutoff;
         if(isset($_GET['startdate']))
-            $startdate = $_GET['startdate'];   
+            $startdate = $_GET['startdate']." ".BaseProcess::$cutoff;   
         if(isset($_GET['enddate']))
-            $enddate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($_GET['enddate'])) .BaseProcess::$gaddeddate));
+            $enddate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($_GET['enddate'])) .BaseProcess::$gaddeddate))." ".BaseProcess::$cutoff;
         $topup = new TopUp($this->getConnection());
         $topup->open();        
         $total_row = $topup->getReversalManualTotal($startdate, $enddate);
@@ -959,14 +959,14 @@ class ProcessTopUpPaginate extends BaseProcess {
         include_once __DIR__.'/../sys/class/TopUp.class.php';
         $topup = new TopUp($this->getConnection());
         $topup->open(); 
-        $startdate = date('Y-m-d');
-        $enddate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($startdate)) .BaseProcess::$gaddeddate));
+        $startdate = date('Y-m-d')." ".BaseProcess::$cutoff;
+        $enddate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($startdate)) .BaseProcess::$gaddeddate))." ".BaseProcess::$cutoff;
         //$enddate = date('Y-m-d', strtotime(""));
         if(isset($_GET['startdate']))
-            $startdate = $_GET['startdate'];
+            $startdate = $_GET['startdate']." ".BaseProcess::$cutoff;
         
         if(isset($_GET['enddate']))
-            $enddate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($_GET['enddate'])) .BaseProcess::$gaddeddate));
+            $enddate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($_GET['enddate'])) .BaseProcess::$gaddeddate))." ".BaseProcess::$cutoff;
         $total_row = $topup->getManualRedemptionTotal($startdate, $enddate);
         $params = $this->getJqgrid($total_row, 'st.SiteCode'); //get jqgrid pagination parameters
         // get manual redemption history details
@@ -1209,13 +1209,13 @@ class ProcessTopUpPaginate extends BaseProcess {
         include_once __DIR__.'/../sys/class/helper/common.class.php';
         $topup = new TopUp($this->getConnection());
         $topup->open(); 
-        $startdate = date('Y-m-d');
-        $enddate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($startdate)) .BaseProcess::$gaddeddate));
+        $startdate = date('Y-m-d')." ".BaseProcess::$cutoff;
+        $enddate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($startdate)) .BaseProcess::$gaddeddate))." ".BaseProcess::$cutoff;
         if(isset($_GET['startdate']))
-            $startdate = $_GET['startdate'];
+            $startdate = $_GET['startdate']." ".BaseProcess::$cutoff;
         
         if(isset($_GET['enddate']))
-            $enddate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($_GET['enddate'])) .BaseProcess::$gaddeddate));
+            $enddate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($_GET['enddate'])) .BaseProcess::$gaddeddate))." ".BaseProcess::$cutoff;
         
         $total_row = $topup->getReplenishmentTotal($startdate, $enddate);
         $params = $this->getJqgrid($total_row, 'r.DateCreated'); //get jqgrid pagination
@@ -1248,13 +1248,13 @@ class ProcessTopUpPaginate extends BaseProcess {
         include_once __DIR__.'/../sys/class/helper/common.class.php';
         $topup = new TopUp($this->getConnection());
         $topup->open(); 
-        $startdate = date('Y-m-d');
-        $enddate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($startdate)) .BaseProcess::$gaddeddate));
+        $startdate = date('Y-m-d')." ".BaseProcess::$cutoff;
+        $enddate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($startdate)) .BaseProcess::$gaddeddate))." ".BaseProcess::$cutoff;
         if(isset($_GET['startdate']))
-            $startdate = $_GET['startdate'];
+            $startdate = $_GET['startdate']." ".BaseProcess::$cutoff;
         
         if(isset($_GET['enddate']))
-            $enddate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($_GET['enddate'])) .BaseProcess::$gaddeddate));
+            $enddate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($_GET['enddate'])) .BaseProcess::$gaddeddate))." ".BaseProcess::$cutoff;
         $total_row = $topup->getConfirmationTotal($startdate, $enddate);
         $params = $this->getJqgrid($total_row, 's.SiteCode'); //get jqgrid pagination
         $rows = $topup->getConfirmation($params['sort'], $params['dir'], $params['start'], $params['limit'],$startdate,$enddate);

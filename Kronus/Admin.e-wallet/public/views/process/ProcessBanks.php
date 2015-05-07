@@ -124,10 +124,11 @@ if ($connected)
                     if ($isExist['Count'] == 0)
                     {
                         $status = 1;
+                        $isaccredited = ($isaccredited == "true") ? $isaccredited = 1 : 0;
                         $response = $topup->insertBank($bankcode, $bankname, $isaccredited, $status);
-                        $isaccredited = ($isaccredited == 1) ? "YES" : "NO";
+                        $txtisaccredited = ($isaccredited == "true") ? "YES" : "NO";
                         if ($response['ErrorCode'] == 0)
-                            $vtransdetails = $response['Message'].", bankcode: ".$bankcode.", bankname: ". $bankname. ", isaccredited: ".$isaccredited;
+                            $vtransdetails = $response['Message'].", bankcode: ".$bankcode.", bankname: ". $bankname. ", isaccredited: ".$txtisaccredited;
                             $vauditfuncID = 94;
                             $topup->logtoaudit($new_sessionid, $aid, $vtransdetails, $vdate, $vipaddress, $vauditfuncID);
                     }
