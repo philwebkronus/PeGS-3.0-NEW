@@ -75,6 +75,8 @@ return array(
     'viewtrans'=>'ViewTransaction/viewTransaction',
     'viewtranspervc'=>'ViewTransaction/viewTransactionPerVirtualCashier',
     'viewtrans/history'=>'ViewTransaction/history',
+    'viewtrans/ewalletPerSite'=>'ViewTransaction/viewEwalletTransactionPerSite',
+    'viewtrans/ewalletPerCashier'=>'ViewTransaction/viewEwalletTransactionPerCashier',
     
     // routes for refresh
     'refresh'=>'Refresh/getBalancePerPage',

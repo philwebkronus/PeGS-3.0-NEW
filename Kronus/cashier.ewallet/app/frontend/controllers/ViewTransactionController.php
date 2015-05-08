@@ -149,10 +149,57 @@ class ViewTransactionController extends FrontendController {
             ''=>'Please select history type',
             $this->createUrl('viewtrans/overview')=>'Transaction History Per Cashier',
             $this->createUrl('viewtrans/overview2')=>'Transaction History Per Virtual Cashier',
+            $this->createUrl('viewtrans/ewalletPerCashier')=>'e-wallet Transaction History Per Cashier'
         );
         
         $this->render('viewtransaction_history', array('viewTransactionFormModel'=>$viewTransactionFormModel, 'history_type'=>$history_type));
     }
-   
+    
+    
+    public function viewEwalletTransactionPerCashierAction()
+    {
+        if(!$this->isAjaxRequest()) {
+            Mirage::app()->error404();
+        }
+        
+        Mirage::loadModels(array('EWalletTransModel'));
+        $eWalletModel = new EWalletTransModel();
+        
+        $jsonMode = false;
+        if(isset($_GET['limit']) && isset($_GET['date'])){
+            $jsonMode=true;
+            $limit = $_GET['limit'];
+            $createdBy = $_SESSION['accID'];
+            $start_date = $_GET['date'];
+            $cutoff = Mirage::app()->param['cut_off'];
+        }else{
+            $limit = 50;
+            $createdBy = $_SESSION['accID'];
+            $start_date = date('Y-m-d');
+            $cutoff = Mirage::app()->param['cut_off'];
+        }
+        $datenow = date('Y-m-d');
+        $time = date('H:i:s');
+       
+        //if time was less than the cutoff
+        if($start_date == $datenow)
+        {
+            //if date is today, check the cutoff time;
+            if($time < $cutoff)
+            {
+                //get the -1 day
+                $start_date = minusOneDay($start_date); 
+            }
+        }
+        $end_date = addOneDay($start_date);
+        $rows = $eWalletModel->getEWalletTransactionPerCashier($start_date, $end_date, $this->site_id, $this->acc_id, $limit);
+        $transactionHistory = json_encode(array('trans_details'=>$rows,'site_code'=>$_SESSION['site_code']));
+        if($jsonMode){
+            echo $transactionHistory;
+        }else{
+            $this->renderPartial('viewtransaction_ewallet_per_cashier', array('transactionHistory'=>$transactionHistory));
+        }
+    }
+    
     
 }

@@ -6,7 +6,32 @@ $(document).ready(function(){
         changeYear: true,
         dateFormat: 'yy-mm-dd',
         maxDate : '<?php echo date('Y-m-d') ?>'
-    });        
+    });
+    
+    $('#txtDate').change(function(){
+        var url = $('#transhistorypage').attr('url');
+        var limit = $('#transhistorypage option:selected').val();
+        var d = $('#txtDate').val();
+        var data = 'limit='+limit+'&date='+d;
+        showLightbox(function(){
+             $.ajax({
+                url:url,
+                data:data,
+                success:function(data){
+                    try{
+                       displayData(JSON.parse(data));
+                    }catch(e) {
+                        alert('Oops! Something went wrong. Please try again');
+                    }
+                    hideLightbox();
+                },
+                error:function(e) {
+                    alert('Oops! Something went wrong. Please try again');
+                    hideLightbox();
+                }
+            });
+        });
+    });
 });
 var transactionHistory = <?php echo $transactionHistory; ?>; 
 
@@ -64,3 +89,5 @@ displayData(transactionHistory);
         <tr></tr>
     </tbody>
 </table>
+
+

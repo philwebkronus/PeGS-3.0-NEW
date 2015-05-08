@@ -12,23 +12,24 @@
  * @author jdlachica
  */
 class EWalletTransModel extends MI_Model {
-    public function getEWalletTransactionPerSite($startDate, $endDate, $siteID){
+    public function getEWalletTransactionPerSite($startDate, $endDate, $siteID, $limit=null){
         $cutoff_time = Mirage::app()->param['cut_off'];
-        $sql = "SELECT StartDate, LoyaltyCardNumber, Amount, TransType FROM ewallettrans WHERE StartDate>=:startDate AND EndDate<=:endDate AND Status=1 AND SiteID=:siteID";
+        $sql = "SELECT StartDate, LoyaltyCardNumber, Amount, TransType FROM ewallettrans WHERE StartDate>=:startDate AND EndDate<=:endDate AND Status=1 AND SiteID=:siteID".(!empty($limit)?" LIMIT $limit":"");
         
         $param = array(
             ':startDate'=>$startDate.' '.$cutoff_time,
             ':endDate'=>$endDate.' '.$cutoff_time,
-            ':siteID'=>$siteID
+            ':siteID'=>$siteID, 
+            //':limit'=>$limit
         );
         $this->exec($sql, $param);
         $result = $this->findAll();
         return $result;
     }
     
-    public function getEWalletTransactionPerCashier($startDate, $endDate, $siteID, $aid){
+    public function getEWalletTransactionPerCashier($startDate, $endDate, $siteID, $aid, $limit=null){
         $cutoff_time = Mirage::app()->param['cut_off'];
-        $sql = "SELECT StartDate, LoyaltyCardNumber, Amount, TransType FROM ewallettrans WHERE StartDate>=:startDate AND EndDate<=:endDate AND Status=1 AND SiteID=:siteID AND CreatedByAID=:aid";
+        $sql = "SELECT StartDate, LoyaltyCardNumber, Amount, TransType FROM ewallettrans WHERE StartDate>=:startDate AND EndDate<=:endDate AND Status=1 AND SiteID=:siteID AND CreatedByAID=:aid".(!empty($limit)?" LIMIT $limit":"");
         
         $param = array(
             ':startDate'=>$startDate.' '.$cutoff_time,
