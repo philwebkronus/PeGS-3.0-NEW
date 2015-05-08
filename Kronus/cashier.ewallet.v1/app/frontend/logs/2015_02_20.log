@@ -1,0 +1,7 @@
+[2015-02-20 15:38:20.226702][NOTICE] "Undefined index: last_code" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\views\startsession\startsession_overview_tpl.php Line: 77
+[2015-02-20 17:57:35.71103][NOTICE] "Undefined index: player_api" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\components\CasinoApi.php Line: 37
+[2015-02-20 17:57:35.476143][ERROR] "Error: Can't get balance TerminalID=1663 ServiceID=19 ErrorMessage=Response malformed" SiteID = 217 File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\components\CasinoApi.php LINE: 252
+[2015-02-20 17:57:40.218617][NOTICE] "Undefined index: player_api" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\components\CasinoApi.php Line: 37
+[2015-02-20 17:57:40.231619][ERROR] "Error: Can't get balance TerminalID=1663 ServiceID=19 ErrorMessage=Response malformed" SiteID = 217 File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\components\CasinoApi.php LINE: 252
+[2015-02-20 17:57:44.568052][NOTICE] "Undefined index: player_api" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\components\CasinoApi.php Line: 37
+[2015-02-20 17:57:44.604056][ERROR] "Error: Can't get balance TerminalID=1663 ServiceID=19 ErrorMessage=Response malformed" SiteID = 217 File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\components\CasinoApi.php LINE: 252

@@ -1,0 +1,48 @@
+[2015-02-09 11:22:01.580449][NOTICE] "A session had already been started - ignoring session_start()" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\models\LoginFormModel.php Line: 527
+[2015-02-09 11:54:25.976662][NOTICE] "A session had already been started - ignoring session_start()" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\models\LoginFormModel.php Line: 527
+[2015-02-09 13:13:32.703159][NOTICE] "A session had already been started - ignoring session_start()" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\models\LoginFormModel.php Line: 527
+[2015-02-09 13:13:38.658500][NOTICE] "Undefined index: StartSessionFormModel" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\components\FrontendController.php Line: 160
+[2015-02-09 13:13:48.473061][NOTICE] "Undefined index: StartSessionFormModel" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\components\FrontendController.php Line: 160
+[2015-02-09 16:12:30.865347][NOTICE] "A session had already been started - ignoring session_start()" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\models\LoginFormModel.php Line: 527
+[2015-02-09 18:28:50.481194][NOTICE] "Undefined index: StartSessionFormModel" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\components\FrontendController.php Line: 160
+[2015-02-09 18:33:57.498754][NOTICE] "Undefined index: StartSessionFormModel" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\components\FrontendController.php Line: 160
+[2015-02-09 18:41:31.123700][NOTICE] "Undefined index: last_code" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\views\startsession\startsession_overview_tpl.php Line: 77
+[2015-02-09 18:43:56.759030][NOTICE] "Undefined index: last_code" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\views\startsession\startsession_overview_tpl.php Line: 77
+[2015-02-09 18:43:56.813033][NOTICE] "Undefined index: last_code" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\views\startsession\startsession_overview_tpl.php Line: 77
+[2015-02-09 18:43:56.890038][NOTICE] "Undefined index: last_code" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\views\startsession\startsession_overview_tpl.php Line: 77
+[2015-02-09 18:43:57.3044][NOTICE] "Undefined index: last_code" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\views\startsession\startsession_overview_tpl.php Line: 77
+[2015-02-09 18:43:57.192055][NOTICE] "Undefined index: last_code" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\views\startsession\startsession_overview_tpl.php Line: 77
+[2015-02-09 18:43:57.334063][NOTICE] "Undefined index: last_code" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\views\startsession\startsession_overview_tpl.php Line: 77
+[2015-02-09 18:43:57.419068][NOTICE] "Undefined index: last_code" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\views\startsession\startsession_overview_tpl.php Line: 77
+[2015-02-09 18:43:57.575077][NOTICE] "Undefined index: last_code" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\views\startsession\startsession_overview_tpl.php Line: 77
+[2015-02-09 18:43:57.653081][NOTICE] "Undefined index: last_code" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\views\startsession\startsession_overview_tpl.php Line: 77
+[2015-02-09 18:43:57.755087][NOTICE] "Undefined index: last_code" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\views\startsession\startsession_overview_tpl.php Line: 77
+[2015-02-09 18:43:57.915096][NOTICE] "Undefined index: last_code" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\views\startsession\startsession_overview_tpl.php Line: 77
+[2015-02-09 18:43:57.996101][NOTICE] "Undefined index: last_code" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\views\startsession\startsession_overview_tpl.php Line: 77
+[2015-02-09 18:43:58.151110][NOTICE] "Undefined index: last_code" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\views\startsession\startsession_overview_tpl.php Line: 77
+[2015-02-09 18:48:00.666981][NOTICE] "Undefined index: StartSessionFormModel" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\components\FrontendController.php Line: 160
+[2015-02-09 18:53:13.509874][NOTICE] "Undefined property: ForceTFormModel::$pin2" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\mi\web\MI_HTML.php Line: 166
+[2015-02-09 18:53:38.809321][NOTICE] "Undefined property: ForceTFormModel::$pin2" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\mi\web\MI_HTML.php Line: 166
+[2015-02-09 18:53:38.810322][NOTICE] "Undefined property: ForceTFormModel::$pin2" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\mi\web\MI_HTML.php Line: 166
+[2015-02-09 18:54:13.904329][NOTICE] "Undefined property: ForceTFormModel::$pin2" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\mi\web\MI_HTML.php Line: 166
+[2015-02-09 18:54:13.905329][NOTICE] "Undefined property: ForceTFormModel::$pin2" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\mi\web\MI_HTML.php Line: 166
+[2015-02-09 18:56:01.819501][NOTICE] "Undefined index: StartSessionFormModel" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\components\FrontendController.php Line: 160
+[2015-02-09 18:56:03.680608][WARNING] "array_merge(): Argument #2 is not an array" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\mi\web\MI_HTML.php Line: 205
+[2015-02-09 18:56:03.681608][WARNING] "Invalid argument supplied for foreach()" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\mi\web\MI_HTML.php Line: 207
+[2015-02-09 19:01:37.743715][NOTICE] "Undefined property: ForceTFormModel::$amount2" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\mi\web\MI_HTML.php Line: 166
+[2015-02-09 19:02:08.262460][NOTICE] "Undefined property: ForceTFormModel::$amount2" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\mi\web\MI_HTML.php Line: 166
+[2015-02-09 19:10:52.888467][NOTICE] "Undefined property: ForceTFormModel::$pin2" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\mi\web\MI_HTML.php Line: 166
+[2015-02-09 19:10:52.890468][NOTICE] "Undefined property: ForceTFormModel::$pin2" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\mi\web\MI_HTML.php Line: 166
+[2015-02-09 19:17:45.323057][NOTICE] "Undefined index: StartSessionFormModel" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\components\FrontendController.php Line: 160
+[2015-02-09 19:27:50.943697][NOTICE] "Undefined property: ForceTFormModel::$amountsss" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\mi\web\MI_HTML.php Line: 166
+[2015-02-09 19:28:15.868122][NOTICE] "Undefined index: StartSessionFormModel" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\components\FrontendController.php Line: 160
+[2015-02-09 19:28:25.966700][NOTICE] "Undefined property: ForceTFormModel::$amountsss" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\mi\web\MI_HTML.php Line: 166
+[2015-02-09 19:35:04.171476][NOTICE] "Undefined index: StartSessionFormModel" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\components\FrontendController.php Line: 160
+[2015-02-09 19:50:57.19976][NOTICE] "Undefined index: loyalty_card" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\components\FrontendController.php Line: 745
+[2015-02-09 19:50:57.20976][NOTICE] "Undefined index: pin" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\components\FrontendController.php Line: 746
+[2015-02-09 19:50:57.93980][ERROR] "Card is Inactive." SiteID = 217 File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\components\FrontendController.php LINE: 774
+[2015-02-09 19:51:37.368284][NOTICE] "Undefined index: StartSessionFormModel" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\components\FrontendController.php Line: 160
+[2015-02-09 19:51:48.529922][NOTICE] "Undefined index: loyalty_card" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\components\FrontendController.php Line: 745
+[2015-02-09 19:51:48.530922][NOTICE] "Undefined index: pin" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\components\FrontendController.php Line: 746
+[2015-02-09 19:51:48.608927][ERROR] "Card is Inactive." SiteID = 217 File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\components\FrontendController.php LINE: 774
+[2015-02-09 19:58:17.820188][ERROR] "PIN code and Cardnumber does not match." SiteID = 217 File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\components\FrontendController.php LINE: 774

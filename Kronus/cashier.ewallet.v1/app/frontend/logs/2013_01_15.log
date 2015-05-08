@@ -1,0 +1,8 @@
+[2013-01-15 10:11:02.54332][ERROR] "Error: Failed to reload session. TerminalID=851 ServiceID=8 ErrorMessage=(16) declined" SiteID = 167 File: /var/www/Kronus_UB/cashier2.pagcoregames.com/app/frontend/components/CommonReload.php LINE: 162
+[2013-01-15 10:30:46.118645][ERROR] "Error: Failed to reload session. TerminalID=851 ServiceID=8 ErrorMessage=Account has been frozen." SiteID = 167 File: /var/www/Kronus_UB/cashier2.pagcoregames.com/app/frontend/components/CommonReload.php LINE: 162
+[2013-01-15 10:34:47.46691][ERROR] "Error: Failed to reload session. TerminalID=851 ServiceID=8 ErrorMessage=Account has been frozen." SiteID = 167 File: /var/www/Kronus_UB/cashier2.pagcoregames.com/app/frontend/components/CommonReload.php LINE: 162
+[2013-01-15 14:41:18.806817][NOTICE] "Undefined index: status" File: /var/www/Kronus_UB/cashier2.pagcoregames.com/app/frontend/components/PlayTechAPIWrapper.class.php Line: 70
+[2013-01-15 14:41:18.807911][NOTICE] "Undefined index: tranid" File: /var/www/Kronus_UB/cashier2.pagcoregames.com/app/frontend/components/PlayTechAPIWrapper.class.php Line: 71
+[2013-01-15 14:41:18.814995][ERROR] "Error: Request denied. Please try again. TerminalID=851 ServiceID=8" SiteID = 167 File: /var/www/Kronus_UB/cashier2.pagcoregames.com/app/frontend/components/CommonReload.php LINE: 228
+[2013-01-15 14:41:40.633112][ERROR] "Error: Failed to reload session. TerminalID=851 ServiceID=8 ErrorMessage=Account has been frozen." SiteID = 167 File: /var/www/Kronus_UB/cashier2.pagcoregames.com/app/frontend/components/CommonReload.php LINE: 162
+[2013-01-15 15:01:19.426108][ERROR] "Error: Can't get balance TerminalID=926 ServiceID=7" SiteID = 167 File: /var/www/Kronus_UB/cashier2.pagcoregames.com/app/frontend/components/CasinoApi.php LINE: 202

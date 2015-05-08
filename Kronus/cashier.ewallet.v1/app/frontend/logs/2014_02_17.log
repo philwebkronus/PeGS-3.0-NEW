@@ -1,0 +1,5 @@
+[2014-02-17 17:08:56.959575][ERROR] "Error: Can't get balance TerminalID= 999 ServiceID= 19 ErrorMessage=Response malformed" SiteID = 167 File: /var/www/Kronus_New/cashier.abbott.version/app/frontend/components/CasinoApi.php LINE: 365
+[2014-02-17 17:09:23.884589][NOTICE] "Undefined index: PID" File: /var/www/Kronus_New/cashier.abbott.version/app/frontend/components/CasinoCAPIHandlerUB.class.php Line: 397
+[2014-02-17 17:09:25.871784][NOTICE] "Trying to get property of non-object" File: /var/www/Kronus_New/cashier.abbott.version/app/frontend/components/LoyaltyAPIWrapper.class.php Line: 98
+[2014-02-17 17:09:25.872016][NOTICE] "Trying to get property of non-object" File: /var/www/Kronus_New/cashier.abbott.version/app/frontend/components/LoyaltyAPIWrapper.class.php Line: 98
+[2014-02-17 18:10:33.110024][ERROR] "Error: Redeemable amount is not equal. TerminalID=957 ServiceID=19" SiteID = 167 File: /var/www/Kronus_New/cashier.abbott.version/app/frontend/components/CommonRedeem.php LINE: 146

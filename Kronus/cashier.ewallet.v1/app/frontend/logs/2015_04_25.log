@@ -1,0 +1,13 @@
+[2015-04-25 00:40:08.370534][NOTICE] "Undefined variable: depositcash" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_transaction_history_cashier_tpl.php Line: 76
+[2015-04-25 00:40:08.370838][NOTICE] "Undefined variable: depositticket" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_transaction_history_cashier_tpl.php Line: 77
+[2015-04-25 00:40:08.371025][NOTICE] "Undefined variable: depositcoupon" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_transaction_history_cashier_tpl.php Line: 78
+[2015-04-25 00:40:08.371227][NOTICE] "Undefined variable: reloadcash" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_transaction_history_cashier_tpl.php Line: 80
+[2015-04-25 00:40:08.371398][NOTICE] "Undefined variable: reloadticket" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_transaction_history_cashier_tpl.php Line: 81
+[2015-04-25 00:40:08.371565][NOTICE] "Undefined variable: reloadcoupon" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_transaction_history_cashier_tpl.php Line: 82
+[2015-04-25 00:40:08.371734][NOTICE] "Undefined variable: withdrawalcashier" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_transaction_history_cashier_tpl.php Line: 85
+[2015-04-25 00:40:08.371946][NOTICE] "Undefined variable: withdrawalgenesis" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_transaction_history_cashier_tpl.php Line: 86
+[2015-04-25 00:40:08.372133][NOTICE] "Undefined variable: grossholdtotal" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_transaction_history_cashier_tpl.php Line: 89
+[2015-04-25 22:20:16.336929][NOTICE] "Undefined index: accID" File: /var/www/kronusew.egamescasino.ph/app/frontend/models/LoginFormModel.php Line: 345
+[2015-04-25 22:20:16.337180][NOTICE] "Undefined index: uname" File: /var/www/kronusew.egamescasino.ph/app/frontend/models/LoginFormModel.php Line: 346
+[2015-04-25 22:20:16.337358][NOTICE] "Undefined index: acctype" File: /var/www/kronusew.egamescasino.ph/app/frontend/models/LoginFormModel.php Line: 348
+[2015-04-25 22:20:46.39463][NOTICE] "Undefined index: StartSessionFormModel" File: /var/www/kronusew.egamescasino.ph/app/frontend/components/FrontendController.php Line: 179

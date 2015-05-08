@@ -1,0 +1,2 @@
+[2014-02-25 18:58:11.435291][ERROR] "Error: Failed to start session. TerminalID=999 ServiceID=19ErrorMessage = Session ID error" SiteID = 167 File: /var/www/Kronus_New/cashier.abbott.version/app/frontend/components/CommonUBStartSession.php LINE: 212
+[2014-02-25 19:02:19.111199][ERROR] SQLSTATE[HY000] [2003] Can't connect to MySQL server on '172.16.102.157' (113)

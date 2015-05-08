@@ -1,0 +1,23 @@
+[2014-06-13 10:41:56.523834][ERROR] "Error: Can't get balance TerminalID=1773 ServiceID=19 ErrorMessage=Response malformed" SiteID = 216 File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/components/CasinoApiUB.php LINE: 215
+[2014-06-13 14:15:52.582144][NOTICE] "Undefined index: startlimit" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/controllers/ReportsController.php Line: 241
+[2014-06-13 14:15:54.528406][NOTICE] "Undefined index: startlimit" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/controllers/ReportsController.php Line: 241
+[2014-06-13 14:15:57.418479][NOTICE] "Undefined index: startlimit" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/controllers/ReportsController.php Line: 56
+[2014-06-13 14:16:00.123501][NOTICE] "Undefined index: startlimit" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/controllers/ReportsController.php Line: 56
+[2014-06-13 14:16:00.178561][NOTICE] "Undefined variable: terminalCode" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/models/TransactionSummaryModel.php Line: 359
+[2014-06-13 14:16:00.182480][NOTICE] "Undefined variable: terminalCode" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/models/TransactionSummaryModel.php Line: 359
+[2014-06-13 14:16:00.182988][NOTICE] "Undefined variable: terminalCode" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/models/TransactionSummaryModel.php Line: 359
+[2014-06-13 14:16:00.183464][NOTICE] "Undefined variable: terminalCode" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/models/TransactionSummaryModel.php Line: 359
+[2014-06-13 14:16:00.183961][NOTICE] "Undefined variable: terminalCode" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/models/TransactionSummaryModel.php Line: 359
+[2014-06-13 14:16:00.184494][NOTICE] "Undefined variable: terminalCode" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/models/TransactionSummaryModel.php Line: 359
+[2014-06-13 14:16:00.184956][NOTICE] "Undefined variable: terminalCode" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/models/TransactionSummaryModel.php Line: 359
+[2014-06-13 14:16:00.185431][NOTICE] "Undefined variable: terminalCode" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/models/TransactionSummaryModel.php Line: 359
+[2014-06-13 14:16:00.185904][NOTICE] "Undefined variable: terminalCode" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/models/TransactionSummaryModel.php Line: 359
+[2014-06-13 14:16:00.186296][NOTICE] "Undefined variable: terminalCode" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/models/TransactionSummaryModel.php Line: 359
+[2014-06-13 14:16:00.187162][NOTICE] "Undefined variable: terminalCode" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/models/TransactionSummaryModel.php Line: 359
+[2014-06-13 14:16:00.187348][NOTICE] "Undefined variable: terminalCode" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/models/TransactionSummaryModel.php Line: 359
+[2014-06-13 14:16:00.187568][NOTICE] "Undefined variable: terminalCode" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/models/TransactionSummaryModel.php Line: 359
+[2014-06-13 14:16:00.187749][NOTICE] "Undefined variable: terminalCode" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/models/TransactionSummaryModel.php Line: 359
+[2014-06-13 14:16:00.187935][NOTICE] "Undefined variable: terminalCode" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/models/TransactionSummaryModel.php Line: 359
+[2014-06-13 16:29:25.649288][ERROR] "Error: Can't get balance TerminalID= 1651 ServiceID= 7 ErrorMessage=Response malformed" SiteID = 216 File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/components/CasinoApi.php LINE: 365
+[2014-06-13 19:26:03.255680][NOTICE] "A session had already been started - ignoring session_start()" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/models/LoginFormModel.php Line: 527
+[2014-06-13 19:27:03.817606][ERROR] "Error: Can't get balance TerminalID= 876 ServiceID= 13 ErrorMessage=Response malformed" SiteID = 167 File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/components/CasinoApi.php LINE: 365

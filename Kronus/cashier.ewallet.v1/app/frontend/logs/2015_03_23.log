@@ -1,0 +1,23 @@
+[2015-03-23 10:14:54.942116][NOTICE] "A session had already been started - ignoring session_start()" File: /var/www/kronusew.egamescasino.ph/app/frontend/models/LoginFormModel.php Line: 527
+[2015-03-23 10:19:48.397277][NOTICE] "A session had already been started - ignoring session_start()" File: /var/www/kronusew.egamescasino.ph/app/frontend/models/LoginFormModel.php Line: 527
+[2015-03-23 10:23:28.843541][NOTICE] "A session had already been started - ignoring session_start()" File: /var/www/kronusew.egamescasino.ph/app/frontend/models/LoginFormModel.php Line: 527
+[2015-03-23 10:24:18.964342][NOTICE] "A session had already been started - ignoring session_start()" File: /var/www/kronusew.egamescasino.ph/app/frontend/models/LoginFormModel.php Line: 527
+[2015-03-23 10:27:58.767595][NOTICE] "A session had already been started - ignoring session_start()" File: /var/www/kronusew.egamescasino.ph/app/frontend/models/LoginFormModel.php Line: 527
+[2015-03-23 10:30:04.505362][NOTICE] "A session had already been started - ignoring session_start()" File: /var/www/kronusew.egamescasino.ph/app/frontend/models/LoginFormModel.php Line: 527
+[2015-03-23 10:57:54.295962][NOTICE] "A session had already been started - ignoring session_start()" File: /var/www/kronusew.egamescasino.ph/app/frontend/models/LoginFormModel.php Line: 527
+[2015-03-23 10:58:01.17347][NOTICE] "Undefined index: StartSessionFormModel" File: /var/www/kronusew.egamescasino.ph/app/frontend/components/FrontendController.php Line: 179
+[2015-03-23 11:02:52.127233][WARNING] "Missing argument 5 for TransactionSummaryModel::getTransactionSummaryPerCashierTotals(), called in /var/www/kronusew.egamescasino.ph/app/frontend/controllers/ReportsController.php on line 449 and defined" File: /var/www/kronusew.egamescasino.ph/app/frontend/models/TransactionSummaryModel.php Line: 1111
+[2015-03-23 11:02:52.127500][NOTICE] "Undefined variable: end_date" File: /var/www/kronusew.egamescasino.ph/app/frontend/models/TransactionSummaryModel.php Line: 1125
+[2015-03-23 11:13:24.223830][NOTICE] "Undefined index: StartSessionFormModel" File: /var/www/kronusew.egamescasino.ph/app/frontend/components/FrontendController.php Line: 179
+[2015-03-23 11:14:23.829020][NOTICE] "Undefined index: StartSessionFormModel" File: /var/www/kronusew.egamescasino.ph/app/frontend/components/FrontendController.php Line: 179
+[2015-03-23 13:50:17.957167][NOTICE] "Undefined index: StartSessionFormModel" File: /var/www/kronusew.egamescasino.ph/app/frontend/components/FrontendController.php Line: 179
+[2015-03-23 13:50:58.825509][NOTICE] "Undefined index: StartSessionFormModel" File: /var/www/kronusew.egamescasino.ph/app/frontend/components/FrontendController.php Line: 179
+[2015-03-23 14:42:58.940102][NOTICE] "A session had already been started - ignoring session_start()" File: /var/www/kronusew.egamescasino.ph/app/frontend/models/LoginFormModel.php Line: 527
+[2015-03-23 14:57:24.222625][ERROR] "Error: Terminal is already active. TerminalID=6260 ServiceID=19" SiteID = 233 File: /var/www/kronusew.egamescasino.ph/app/frontend/components/CommonUBStartSession.php LINE: 62
+[2015-03-23 17:36:56.889585][ERROR] "Reload failed. Player is an e-wallet account." SiteID = 233 File: /var/www/kronusew.egamescasino.ph/app/frontend/components/FrontendController.php LINE: 263
+[2015-03-23 18:03:28.524892][ERROR] "Table 'npos.forcetredemptions' doesn't exist" File: /var/www/kronusew.egamescasino.ph/app/frontend/models/ForceTRedemptions.php LINE: 77
+[2015-03-23 18:03:36.81963][ERROR] "Table 'npos.forcetredemptions' doesn't exist" File: /var/www/kronusew.egamescasino.ph/app/frontend/models/ForceTRedemptions.php LINE: 77
+[2015-03-23 18:03:41.777284][WARNING] "Missing argument 5 for TransactionSummaryModel::getTransactionSummaryPerCashierTotals(), called in /var/www/kronusew.egamescasino.ph/app/frontend/controllers/ReportsController.php on line 449 and defined" File: /var/www/kronusew.egamescasino.ph/app/frontend/models/TransactionSummaryModel.php Line: 1111
+[2015-03-23 18:03:41.777541][NOTICE] "Undefined variable: end_date" File: /var/www/kronusew.egamescasino.ph/app/frontend/models/TransactionSummaryModel.php Line: 1125
+[2015-03-23 18:03:52.988641][NOTICE] "Undefined variable: totalDeposit" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_ewallet_transaction_history_cashier_tpl.php Line: 67
+[2015-03-23 18:03:52.988867][NOTICE] "Undefined variable: totalWithdrawal" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_ewallet_transaction_history_cashier_tpl.php Line: 71

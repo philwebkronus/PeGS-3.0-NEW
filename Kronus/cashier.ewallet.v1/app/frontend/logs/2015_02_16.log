@@ -1,0 +1,6 @@
+[2015-02-16 14:37:56.838791][NOTICE] "Undefined index: StartSessionFormModel" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\components\FrontendController.php Line: 177
+[2015-02-16 14:38:01.576791][ERROR] "Loading Failed, Player must be an ewallet account." SiteID = 217 File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\components\FrontendController.php LINE: 471
+[2015-02-16 14:38:13.846791][ERROR] "Loading Failed, Player must be an ewallet account." SiteID = 217 File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\components\FrontendController.php LINE: 822
+[2015-02-16 14:39:04.508791][NOTICE] "Undefined index: StartSessionFormModel" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\components\FrontendController.php Line: 177
+[2015-02-16 14:39:16.431791][ERROR] "Card is Inactive or Banned." SiteID = 217 File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\components\FrontendController.php LINE: 798
+[2015-02-16 14:39:37.920791][ERROR] "Card is Inactive or Banned." SiteID = 217 File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\components\FrontendController.php LINE: 798

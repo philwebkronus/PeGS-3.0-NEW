@@ -1,0 +1,6 @@
+[2015-04-03 19:46:25.544826][NOTICE] "Undefined index: macid" File: /var/www/kronusew.egamescasino.ph/app/frontend/controllers/AuthenticateController.php Line: 46
+[2015-04-03 20:15:31.408759][NOTICE] "A session had already been started - ignoring session_start()" File: /var/www/kronusew.egamescasino.ph/app/frontend/models/LoginFormModel.php Line: 527
+[2015-04-03 20:16:24.539662][NOTICE] "Undefined variable: totalDeposit" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_ewallet_transaction_history_cashier_tpl.php Line: 67
+[2015-04-03 20:16:24.539898][NOTICE] "Undefined variable: totalWithdrawal" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_ewallet_transaction_history_cashier_tpl.php Line: 71
+[2015-04-03 20:16:33.192967][NOTICE] "Undefined index: StartSessionFormModel" File: /var/www/kronusew.egamescasino.ph/app/frontend/components/FrontendController.php Line: 179
+[2015-04-03 20:30:39.595288][NOTICE] "Undefined index: StartSessionFormModel" File: /var/www/kronusew.egamescasino.ph/app/frontend/components/FrontendController.php Line: 179

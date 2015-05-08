@@ -1,0 +1,4 @@
+[2015-04-29 07:52:14.623599][NOTICE] "A session had already been started - ignoring session_start()" File: /var/www/kronusew.egamescasino.ph/app/frontend/models/LoginFormModel.php Line: 527
+[2015-04-29 15:27:09.584539][NOTICE] "A session had already been started - ignoring session_start()" File: /var/www/kronusew.egamescasino.ph/app/frontend/models/LoginFormModel.php Line: 527
+[2015-04-29 17:58:57.868813][NOTICE] "A session had already been started - ignoring session_start()" File: /var/www/kronusew.egamescasino.ph/app/frontend/models/LoginFormModel.php Line: 527
+[2015-04-29 19:45:18.915360][NOTICE] "A session had already been started - ignoring session_start()" File: /var/www/kronusew.egamescasino.ph/app/frontend/models/LoginFormModel.php Line: 527

@@ -1,0 +1,125 @@
+[2015-04-04 03:07:41.362056][ERROR] "Error: Can't get balance TerminalID=6261 ServiceID=19 ErrorMessage=Response malformed" SiteID = 233 File: /var/www/kronusew.egamescasino.ph/app/frontend/components/CasinoApi.php LINE: 252
+[2015-04-04 03:28:08.59424][NOTICE] "A session had already been started - ignoring session_start()" File: /var/www/kronusew.egamescasino.ph/app/frontend/models/LoginFormModel.php Line: 527
+[2015-04-04 04:06:54.339401][NOTICE] "A session had already been started - ignoring session_start()" File: /var/www/kronusew.egamescasino.ph/app/frontend/models/LoginFormModel.php Line: 527
+[2015-04-04 04:32:26.20994][NOTICE] "Undefined index: StartSessionFormModel" File: /var/www/kronusew.egamescasino.ph/app/frontend/components/FrontendController.php Line: 179
+[2015-04-04 04:32:59.890275][NOTICE] "Undefined index: StartSessionFormModel" File: /var/www/kronusew.egamescasino.ph/app/frontend/components/FrontendController.php Line: 179
+[2015-04-04 04:38:18.754392][NOTICE] "Undefined index: StartSessionFormModel" File: /var/www/kronusew.egamescasino.ph/app/frontend/components/FrontendController.php Line: 179
+[2015-04-04 04:39:40.122337][NOTICE] "Undefined index: StartSessionFormModel" File: /var/www/kronusew.egamescasino.ph/app/frontend/components/FrontendController.php Line: 179
+[2015-04-04 04:42:33.161418][ERROR] "Error: Please end session first." SiteID = 233 File: /var/www/kronusew.egamescasino.ph/app/frontend/components/FrontendController.php LINE: 827
+[2015-04-04 04:47:12.738388][ERROR] "Error: Withdraw Transaction Failed" SiteID = 233 File: /var/www/kronusew.egamescasino.ph/app/frontend/components/FrontendController.php LINE: 903
+[2015-04-04 04:47:50.730412][ERROR] "Withdraw Failed, There was a pending transaction for this card." SiteID = 233 File: /var/www/kronusew.egamescasino.ph/app/frontend/components/FrontendController.php LINE: 915
+[2015-04-04 05:02:37.56580][NOTICE] "Undefined index: StartSessionFormModel" File: /var/www/kronusew.egamescasino.ph/app/frontend/components/FrontendController.php Line: 179
+[2015-04-04 05:04:14.338348][ERROR] "Load failed. Player's account must be e-wallet." SiteID = 233 File: /var/www/kronusew.egamescasino.ph/app/frontend/components/FrontendController.php LINE: 510
+[2015-04-04 05:11:55.836417][ERROR] "Please use appropriate membership/temporary card for this casino" SiteID = 233 File: /var/www/kronusew.egamescasino.ph/app/frontend/components/FrontendController.php LINE: 1379
+[2015-04-04 05:12:17.745092][ERROR] "Please use appropriate membership/temporary card for this casino" SiteID = 233 File: /var/www/kronusew.egamescasino.ph/app/frontend/components/FrontendController.php LINE: 1379
+[2015-04-04 05:13:54.316827][ERROR] "Please use appropriate membership/temporary card for this casino" SiteID = 233 File: /var/www/kronusew.egamescasino.ph/app/frontend/components/FrontendController.php LINE: 1379
+[2015-04-04 05:25:48.349526][ERROR] "Start session failed. Player's account is already e-wallet." SiteID = 233 File: /var/www/kronusew.egamescasino.ph/app/frontend/components/FrontendController.php LINE: 1369
+[2015-04-04 05:27:27.81206][ERROR] "Start session failed. Player's account is already e-wallet." SiteID = 233 File: /var/www/kronusew.egamescasino.ph/app/frontend/components/FrontendController.php LINE: 1369
+[2015-04-04 12:22:04.260818][NOTICE] "A session had already been started - ignoring session_start()" File: /var/www/kronusew.egamescasino.ph/app/frontend/models/LoginFormModel.php Line: 527
+[2015-04-04 12:34:27.221774][NOTICE] "A session had already been started - ignoring session_start()" File: /var/www/kronusew.egamescasino.ph/app/frontend/models/LoginFormModel.php Line: 527
+[2015-04-04 13:09:38.200547][NOTICE] "A session had already been started - ignoring session_start()" File: /var/www/kronusew.egamescasino.ph/app/frontend/models/LoginFormModel.php Line: 527
+[2015-04-04 13:10:24.984029][NOTICE] "A session had already been started - ignoring session_start()" File: /var/www/kronusew.egamescasino.ph/app/frontend/models/LoginFormModel.php Line: 527
+[2015-04-04 16:12:35.195771][NOTICE] "Undefined index: last_code" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/redeem/redeemsession_overview_tpl.php Line: 87
+[2015-04-04 16:13:04.88261][NOTICE] "Undefined index: last_code" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/redeem/redeemsession_overview_tpl.php Line: 87
+[2015-04-04 16:13:05.926440][NOTICE] "Undefined index: last_code" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/startsession/startsession_overview_tpl.php Line: 99
+[2015-04-04 16:13:33.356197][NOTICE] "Undefined index: last_code" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/startsession/startsession_overview_tpl.php Line: 99
+[2015-04-04 16:14:13.20443][NOTICE] "Undefined index: last_code" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/startsession/startsession_overview_tpl.php Line: 99
+[2015-04-04 16:19:21.962531][NOTICE] "Undefined index: last_code" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/redeem/redeemsession_overview_tpl.php Line: 87
+[2015-04-04 16:20:08.710118][NOTICE] "Undefined index: last_code" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/redeem/redeemsession_overview_tpl.php Line: 87
+[2015-04-04 16:20:08.727249][NOTICE] "Undefined index: last_code" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/redeem/redeemsession_overview_tpl.php Line: 87
+[2015-04-04 16:20:08.744644][NOTICE] "Undefined index: last_code" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/redeem/redeemsession_overview_tpl.php Line: 87
+[2015-04-04 16:20:08.768838][NOTICE] "Undefined index: last_code" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/redeem/redeemsession_overview_tpl.php Line: 87
+[2015-04-04 16:20:08.799040][NOTICE] "Undefined index: last_code" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/redeem/redeemsession_overview_tpl.php Line: 87
+[2015-04-04 16:20:10.313212][NOTICE] "Undefined index: last_code" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/redeem/redeemsession_overview_tpl.php Line: 87
+[2015-04-04 16:20:28.975918][NOTICE] "Undefined index: last_code" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/startsession/startsession_overview_tpl.php Line: 99
+[2015-04-04 16:20:40.569312][NOTICE] "Undefined index: last_code" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/startsession/startsession_overview_tpl.php Line: 99
+[2015-04-04 16:21:36.215924][NOTICE] "Undefined index: last_code" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/startsession/startsession_overview_tpl.php Line: 99
+[2015-04-04 16:23:49.358148][NOTICE] "Undefined variable: depositcash" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_transaction_history_cashier_tpl.php Line: 76
+[2015-04-04 16:23:49.358363][NOTICE] "Undefined variable: depositticket" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_transaction_history_cashier_tpl.php Line: 77
+[2015-04-04 16:23:49.358561][NOTICE] "Undefined variable: depositcoupon" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_transaction_history_cashier_tpl.php Line: 78
+[2015-04-04 16:23:49.358755][NOTICE] "Undefined variable: reloadcash" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_transaction_history_cashier_tpl.php Line: 80
+[2015-04-04 16:23:49.358942][NOTICE] "Undefined variable: reloadticket" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_transaction_history_cashier_tpl.php Line: 81
+[2015-04-04 16:23:49.359154][NOTICE] "Undefined variable: reloadcoupon" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_transaction_history_cashier_tpl.php Line: 82
+[2015-04-04 16:23:49.359347][NOTICE] "Undefined variable: withdrawalcashier" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_transaction_history_cashier_tpl.php Line: 85
+[2015-04-04 16:23:49.359532][NOTICE] "Undefined variable: withdrawalgenesis" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_transaction_history_cashier_tpl.php Line: 86
+[2015-04-04 16:23:49.359744][NOTICE] "Undefined variable: grossholdtotal" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_transaction_history_cashier_tpl.php Line: 89
+[2015-04-04 16:24:21.321718][NOTICE] "Undefined variable: totalDeposit" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_ewallet_transaction_history_cashier_tpl.php Line: 67
+[2015-04-04 16:24:21.322005][NOTICE] "Undefined variable: totalWithdrawal" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_ewallet_transaction_history_cashier_tpl.php Line: 71
+[2015-04-04 16:24:29.937052][WARNING] "Missing argument 5 for TransactionSummaryModel::getTransactionSummaryPerCashierTotals(), called in /var/www/kronusew.egamescasino.ph/app/frontend/controllers/ReportsController.php on line 449 and defined" File: /var/www/kronusew.egamescasino.ph/app/frontend/models/TransactionSummaryModel.php Line: 1111
+[2015-04-04 16:24:29.937282][NOTICE] "Undefined variable: end_date" File: /var/www/kronusew.egamescasino.ph/app/frontend/models/TransactionSummaryModel.php Line: 1125
+[2015-04-04 16:24:35.667968][NOTICE] "Undefined variable: depositcash" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_transaction_history_cashier_tpl.php Line: 76
+[2015-04-04 16:24:35.668198][NOTICE] "Undefined variable: depositticket" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_transaction_history_cashier_tpl.php Line: 77
+[2015-04-04 16:24:35.668403][NOTICE] "Undefined variable: depositcoupon" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_transaction_history_cashier_tpl.php Line: 78
+[2015-04-04 16:24:35.668604][NOTICE] "Undefined variable: reloadcash" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_transaction_history_cashier_tpl.php Line: 80
+[2015-04-04 16:24:35.668798][NOTICE] "Undefined variable: reloadticket" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_transaction_history_cashier_tpl.php Line: 81
+[2015-04-04 16:24:35.669004][NOTICE] "Undefined variable: reloadcoupon" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_transaction_history_cashier_tpl.php Line: 82
+[2015-04-04 16:24:35.669199][NOTICE] "Undefined variable: withdrawalcashier" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_transaction_history_cashier_tpl.php Line: 85
+[2015-04-04 16:24:35.669393][NOTICE] "Undefined variable: withdrawalgenesis" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_transaction_history_cashier_tpl.php Line: 86
+[2015-04-04 16:24:35.669598][NOTICE] "Undefined variable: grossholdtotal" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_transaction_history_cashier_tpl.php Line: 89
+[2015-04-04 16:25:21.716482][NOTICE] "Undefined index: last_code" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/redeem/redeemsession_overview_tpl.php Line: 87
+[2015-04-04 16:26:08.148357][NOTICE] "Undefined index: last_code" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/redeem/redeemsession_overview_tpl.php Line: 87
+[2015-04-04 16:26:08.165432][NOTICE] "Undefined index: last_code" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/redeem/redeemsession_overview_tpl.php Line: 87
+[2015-04-04 16:26:08.182950][NOTICE] "Undefined index: last_code" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/redeem/redeemsession_overview_tpl.php Line: 87
+[2015-04-04 16:26:08.199683][NOTICE] "Undefined index: last_code" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/redeem/redeemsession_overview_tpl.php Line: 87
+[2015-04-04 16:26:10.274107][NOTICE] "Undefined index: last_code" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/redeem/redeemsession_overview_tpl.php Line: 87
+[2015-04-04 16:26:11.671905][NOTICE] "Undefined index: last_code" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/startsession/startsession_overview_tpl.php Line: 99
+[2015-04-04 16:26:19.671968][NOTICE] "Undefined index: last_code" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/startsession/startsession_overview_tpl.php Line: 99
+[2015-04-04 16:31:17.432430][NOTICE] "Undefined index: last_code" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/redeem/redeemsession_overview_tpl.php Line: 87
+[2015-04-04 16:32:06.717461][NOTICE] "Undefined index: last_code" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/redeem/redeemsession_overview_tpl.php Line: 87
+[2015-04-04 16:32:06.739988][NOTICE] "Undefined index: last_code" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/redeem/redeemsession_overview_tpl.php Line: 87
+[2015-04-04 16:32:08.313598][NOTICE] "Undefined index: last_code" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/redeem/redeemsession_overview_tpl.php Line: 87
+[2015-04-04 16:32:09.606946][NOTICE] "Undefined index: last_code" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/startsession/startsession_overview_tpl.php Line: 99
+[2015-04-04 16:32:16.933603][NOTICE] "Undefined index: last_code" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/startsession/startsession_overview_tpl.php Line: 99
+[2015-04-04 16:34:50.819513][NOTICE] "Undefined variable: depositcash" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_transaction_history_cashier_tpl.php Line: 76
+[2015-04-04 16:34:50.819806][NOTICE] "Undefined variable: depositticket" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_transaction_history_cashier_tpl.php Line: 77
+[2015-04-04 16:34:50.820016][NOTICE] "Undefined variable: depositcoupon" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_transaction_history_cashier_tpl.php Line: 78
+[2015-04-04 16:34:50.820227][NOTICE] "Undefined variable: reloadcash" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_transaction_history_cashier_tpl.php Line: 80
+[2015-04-04 16:34:50.820429][NOTICE] "Undefined variable: reloadticket" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_transaction_history_cashier_tpl.php Line: 81
+[2015-04-04 16:34:50.820633][NOTICE] "Undefined variable: reloadcoupon" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_transaction_history_cashier_tpl.php Line: 82
+[2015-04-04 16:34:50.820835][NOTICE] "Undefined variable: withdrawalcashier" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_transaction_history_cashier_tpl.php Line: 85
+[2015-04-04 16:34:50.821039][NOTICE] "Undefined variable: withdrawalgenesis" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_transaction_history_cashier_tpl.php Line: 86
+[2015-04-04 16:34:50.821255][NOTICE] "Undefined variable: grossholdtotal" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_transaction_history_cashier_tpl.php Line: 89
+[2015-04-04 16:49:48.660285][NOTICE] "Undefined variable: depositcash" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_transaction_history_cashier_tpl.php Line: 76
+[2015-04-04 16:49:48.660542][NOTICE] "Undefined variable: depositticket" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_transaction_history_cashier_tpl.php Line: 77
+[2015-04-04 16:49:48.660753][NOTICE] "Undefined variable: depositcoupon" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_transaction_history_cashier_tpl.php Line: 78
+[2015-04-04 16:49:48.660987][NOTICE] "Undefined variable: reloadcash" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_transaction_history_cashier_tpl.php Line: 80
+[2015-04-04 16:49:48.661200][NOTICE] "Undefined variable: reloadticket" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_transaction_history_cashier_tpl.php Line: 81
+[2015-04-04 16:49:48.661410][NOTICE] "Undefined variable: reloadcoupon" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_transaction_history_cashier_tpl.php Line: 82
+[2015-04-04 16:49:48.661637][NOTICE] "Undefined variable: withdrawalcashier" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_transaction_history_cashier_tpl.php Line: 85
+[2015-04-04 16:49:48.661846][NOTICE] "Undefined variable: withdrawalgenesis" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_transaction_history_cashier_tpl.php Line: 86
+[2015-04-04 16:49:48.662067][NOTICE] "Undefined variable: grossholdtotal" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_transaction_history_cashier_tpl.php Line: 89
+[2015-04-04 16:52:14.782799][NOTICE] "Undefined variable: depositcash" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_transaction_history_cashier_tpl.php Line: 76
+[2015-04-04 16:52:14.783057][NOTICE] "Undefined variable: depositticket" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_transaction_history_cashier_tpl.php Line: 77
+[2015-04-04 16:52:14.783314][NOTICE] "Undefined variable: depositcoupon" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_transaction_history_cashier_tpl.php Line: 78
+[2015-04-04 16:52:14.783555][NOTICE] "Undefined variable: reloadcash" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_transaction_history_cashier_tpl.php Line: 80
+[2015-04-04 16:52:14.783771][NOTICE] "Undefined variable: reloadticket" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_transaction_history_cashier_tpl.php Line: 81
+[2015-04-04 16:52:14.783984][NOTICE] "Undefined variable: reloadcoupon" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_transaction_history_cashier_tpl.php Line: 82
+[2015-04-04 16:52:14.784200][NOTICE] "Undefined variable: withdrawalcashier" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_transaction_history_cashier_tpl.php Line: 85
+[2015-04-04 16:52:14.784415][NOTICE] "Undefined variable: withdrawalgenesis" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_transaction_history_cashier_tpl.php Line: 86
+[2015-04-04 16:52:14.784662][NOTICE] "Undefined variable: grossholdtotal" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_transaction_history_cashier_tpl.php Line: 89
+[2015-04-04 17:01:09.800827][ERROR] "Error: Terminal / User has an existing session. TerminalID=8139 ServiceID=18" SiteID = 65 File: /var/www/kronusew.egamescasino.ph/app/frontend/components/CommonStartSession.php LINE: 133
+[2015-04-04 17:01:24.510861][ERROR] "Error: Terminal / User has an existing session. TerminalID=8139 ServiceID=18" SiteID = 65 File: /var/www/kronusew.egamescasino.ph/app/frontend/components/CommonStartSession.php LINE: 133
+[2015-04-04 17:01:48.741150][ERROR] "Error: Terminal / User has an existing session. TerminalID=8139 ServiceID=18" SiteID = 65 File: /var/www/kronusew.egamescasino.ph/app/frontend/components/CommonStartSession.php LINE: 133
+[2015-04-04 17:24:13.884605][NOTICE] "Undefined variable: depositcash" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_transaction_history_cashier_tpl.php Line: 76
+[2015-04-04 17:24:13.884884][NOTICE] "Undefined variable: depositticket" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_transaction_history_cashier_tpl.php Line: 77
+[2015-04-04 17:24:13.885117][NOTICE] "Undefined variable: depositcoupon" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_transaction_history_cashier_tpl.php Line: 78
+[2015-04-04 17:24:13.885339][NOTICE] "Undefined variable: reloadcash" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_transaction_history_cashier_tpl.php Line: 80
+[2015-04-04 17:24:13.885561][NOTICE] "Undefined variable: reloadticket" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_transaction_history_cashier_tpl.php Line: 81
+[2015-04-04 17:24:13.885796][NOTICE] "Undefined variable: reloadcoupon" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_transaction_history_cashier_tpl.php Line: 82
+[2015-04-04 17:24:13.886033][NOTICE] "Undefined variable: withdrawalcashier" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_transaction_history_cashier_tpl.php Line: 85
+[2015-04-04 17:24:13.886255][NOTICE] "Undefined variable: withdrawalgenesis" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_transaction_history_cashier_tpl.php Line: 86
+[2015-04-04 17:24:13.886482][NOTICE] "Undefined variable: grossholdtotal" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_transaction_history_cashier_tpl.php Line: 89
+[2015-04-04 17:26:01.948036][NOTICE] "Undefined variable: totalDeposit" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_ewallet_transaction_history_cashier_tpl.php Line: 67
+[2015-04-04 17:26:01.948302][NOTICE] "Undefined variable: totalWithdrawal" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_ewallet_transaction_history_cashier_tpl.php Line: 71
+[2015-04-04 17:26:38.409359][NOTICE] "Undefined variable: depositcash" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_transaction_history_cashier_tpl.php Line: 76
+[2015-04-04 17:26:38.409637][NOTICE] "Undefined variable: depositticket" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_transaction_history_cashier_tpl.php Line: 77
+[2015-04-04 17:26:38.409874][NOTICE] "Undefined variable: depositcoupon" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_transaction_history_cashier_tpl.php Line: 78
+[2015-04-04 17:26:38.410108][NOTICE] "Undefined variable: reloadcash" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_transaction_history_cashier_tpl.php Line: 80
+[2015-04-04 17:26:38.410341][NOTICE] "Undefined variable: reloadticket" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_transaction_history_cashier_tpl.php Line: 81
+[2015-04-04 17:26:38.410576][NOTICE] "Undefined variable: reloadcoupon" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_transaction_history_cashier_tpl.php Line: 82
+[2015-04-04 17:26:38.410810][NOTICE] "Undefined variable: withdrawalcashier" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_transaction_history_cashier_tpl.php Line: 85
+[2015-04-04 17:26:38.411045][NOTICE] "Undefined variable: withdrawalgenesis" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_transaction_history_cashier_tpl.php Line: 86
+[2015-04-04 17:26:38.411319][NOTICE] "Undefined variable: grossholdtotal" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_transaction_history_cashier_tpl.php Line: 89
+[2015-04-04 17:48:57.242518][NOTICE] "A session had already been started - ignoring session_start()" File: /var/www/kronusew.egamescasino.ph/app/frontend/models/LoginFormModel.php Line: 527
+[2015-04-04 18:10:10.192206][NOTICE] "A session had already been started - ignoring session_start()" File: /var/www/kronusew.egamescasino.ph/app/frontend/models/LoginFormModel.php Line: 527
+[2015-04-04 18:34:14.631025][NOTICE] "A session had already been started - ignoring session_start()" File: /var/www/kronusew.egamescasino.ph/app/frontend/models/LoginFormModel.php Line: 527

@@ -1,0 +1,12 @@
+/* 
+    Document   : ie.css
+    Created on : 11 16, 11, 10:12:43 AM
+    Author     : Bryan Salazar
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+/*** fix for ie on head spacer***/
+#head-spacer {
+    margin-top: -3px !important;
+}

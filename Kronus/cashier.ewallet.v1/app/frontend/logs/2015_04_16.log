@@ -1,0 +1,22 @@
+[2015-04-16 04:28:46.161245][NOTICE] "Undefined variable: depositcash" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_transaction_history_cashier_tpl.php Line: 76
+[2015-04-16 04:28:46.161567][NOTICE] "Undefined variable: depositticket" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_transaction_history_cashier_tpl.php Line: 77
+[2015-04-16 04:28:46.161746][NOTICE] "Undefined variable: depositcoupon" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_transaction_history_cashier_tpl.php Line: 78
+[2015-04-16 04:28:46.161935][NOTICE] "Undefined variable: reloadcash" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_transaction_history_cashier_tpl.php Line: 80
+[2015-04-16 04:28:46.162106][NOTICE] "Undefined variable: reloadticket" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_transaction_history_cashier_tpl.php Line: 81
+[2015-04-16 04:28:46.162275][NOTICE] "Undefined variable: reloadcoupon" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_transaction_history_cashier_tpl.php Line: 82
+[2015-04-16 04:28:46.162445][NOTICE] "Undefined variable: withdrawalcashier" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_transaction_history_cashier_tpl.php Line: 85
+[2015-04-16 04:28:46.162615][NOTICE] "Undefined variable: withdrawalgenesis" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_transaction_history_cashier_tpl.php Line: 86
+[2015-04-16 04:28:46.162797][NOTICE] "Undefined variable: grossholdtotal" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_transaction_history_cashier_tpl.php Line: 89
+[2015-04-16 13:50:32.400540][ERROR] "Mismatch Card Number and PIN Code" SiteID = 139 File: /var/www/kronusew.egamescasino.ph/app/frontend/components/FrontendController.php LINE: 846
+[2015-04-16 13:51:24.15811][ERROR] "Mismatch Card Number and PIN Code" SiteID = 139 File: /var/www/kronusew.egamescasino.ph/app/frontend/components/FrontendController.php LINE: 846
+[2015-04-16 13:52:53.982705][ERROR] "PIN is locked." SiteID = 139 File: /var/www/kronusew.egamescasino.ph/app/frontend/components/FrontendController.php LINE: 846
+[2015-04-16 13:54:04.514964][ERROR] "Input amount is greater than existing balance." SiteID = 139 File: /var/www/kronusew.egamescasino.ph/app/frontend/components/FrontendController.php LINE: 915
+[2015-04-16 13:57:48.902452][NOTICE] "Undefined variable: totalWithdrawal" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_ewallet_transaction_history_cashier_tpl.php Line: 52
+[2015-04-16 13:57:48.902734][NOTICE] "Undefined variable: totalDeposit" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_ewallet_transaction_history_cashier_tpl.php Line: 67
+[2015-04-16 13:58:12.415177][NOTICE] "Undefined variable: totalWithdrawal" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_ewallet_transaction_history_cashier_tpl.php Line: 52
+[2015-04-16 13:58:12.415461][NOTICE] "Undefined variable: totalDeposit" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_ewallet_transaction_history_cashier_tpl.php Line: 67
+[2015-04-16 14:04:22.751820][NOTICE] "Undefined variable: totalWithdrawal" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_ewallet_transaction_history_cashier_tpl.php Line: 52
+[2015-04-16 14:04:22.752061][NOTICE] "Undefined variable: totalDeposit" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_ewallet_transaction_history_cashier_tpl.php Line: 67
+[2015-04-16 14:04:39.583788][NOTICE] "Undefined index: startlimit" File: /var/www/kronusew.egamescasino.ph/app/frontend/controllers/ReportsController.php Line: 288
+[2015-04-16 14:04:54.467122][NOTICE] "Undefined variable: totalWithdrawal" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_ewallet_transaction_history_cashier_tpl.php Line: 52
+[2015-04-16 14:04:54.467362][NOTICE] "Undefined variable: totalDeposit" File: /var/www/kronusew.egamescasino.ph/app/frontend/views/reports/reports_ewallet_transaction_history_cashier_tpl.php Line: 67

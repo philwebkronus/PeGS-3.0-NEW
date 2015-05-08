@@ -1,0 +1,1 @@
+[2015-04-13 13:55:16.939189][NOTICE] "A session had already been started - ignoring session_start()" File: /var/www/kronusew.egamescasino.ph/app/frontend/models/LoginFormModel.php Line: 527

@@ -1,0 +1,6 @@
+[2015-03-05 14:48:44.553252][NOTICE] "Undefined index: player_api" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\components\CasinoApi.php Line: 37
+[2015-03-05 14:48:44.823267][ERROR] "Error: Can't get balance TerminalID= 495 ServiceID= 7 ErrorMessage=Response malformed" SiteID = 167 File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\components\CasinoApi.php LINE: 440
+[2015-03-05 14:51:44.845564][NOTICE] "A session had already been started - ignoring session_start()" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\models\LoginFormModel.php Line: 527
+[2015-03-05 15:02:25.297196][NOTICE] "A session had already been started - ignoring session_start()" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\models\LoginFormModel.php Line: 527
+[2015-03-05 15:12:10.199650][NOTICE] "Undefined index: player_api" File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\components\CasinoApi.php Line: 37
+[2015-03-05 15:12:10.232652][ERROR] "Error: Can't get balance TerminalID= 495 ServiceID= 7 ErrorMessage=Response malformed" SiteID = 167 File: C:\xampp\htdocs\Kronus_ForceT\cashier.forcet\app\frontend\components\CasinoApi.php LINE: 440

@@ -1,0 +1,4 @@
+[2015-05-07 14:23:18.208089][REQUEST][CheckPin] Input: {"CardNumber":"ub52oo33","PIN":"888888","SystemUsername":"kcashier","AccessDate":"2015-05-07 14:23:18","Token":"005ec604cefacf6d0397d8f446b6cb2a70c1b820"}
+[2015-05-07 14:23:18.249361][RESPONSE][CheckPin] Token: 005ec604cefacf6d0397d8f446b6cb2a70c1b820 Output: {"checkPin":{"TransactionMessage":"Transaction successful. PIN and UB Card is valid.","ErrorCode":0}}
+[2015-05-07 14:23:18.460344][REQUEST][Withdraw] Input: {"ServiceID":"19","CardNumber":"ub52oo33","Amount":"1.00","SiteID":"65","AID":"5621","SystemUsername":"kcashier","AccessDate":"2015-05-07 14:23:18","Token":"005ec604cefacf6d0397d8f446b6cb2a70c1b820"}
+[2015-05-07 14:23:19.9411][RESPONSE][Withdraw] Token: 005ec604cefacf6d0397d8f446b6cb2a70c1b820 Output: {"Withdraw":{"TransactionMessage":"e-wallet withdraw successful","ErrorCode":0}}

@@ -1,0 +1,15 @@
+[2014-08-14 13:51:48.77171][ERROR] SQLSTATE[28000] [1045] Access denied for user 'pegsqaconn'@'192.168.29.203' (using password: YES)
+[2014-08-14 13:52:56.918414][NOTICE] "Undefined index: startlimit" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/controllers/ReportsController.php Line: 56
+[2014-08-14 13:53:42.687125][NOTICE] "Undefined index: startlimit" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/controllers/ReportsController.php Line: 56
+[2014-08-14 13:58:13.964669][NOTICE] "A session had already been started - ignoring session_start()" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/models/LoginFormModel.php Line: 527
+[2014-08-14 14:00:51.379479][NOTICE] "Undefined index: startlimit" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/controllers/ReportsController.php Line: 56
+[2014-08-14 14:04:13.728251][NOTICE] "Undefined index: startlimit" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/controllers/ReportsController.php Line: 56
+[2014-08-14 14:15:45.985230][NOTICE] "Undefined index: startlimit" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/controllers/ReportsController.php Line: 56
+[2014-08-14 14:17:40.945717][NOTICE] "Undefined index: startlimit" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/controllers/ReportsController.php Line: 56
+[2014-08-14 14:22:23.849975][NOTICE] "Undefined index: startlimit" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/controllers/ReportsController.php Line: 56
+[2014-08-14 14:22:42.180492][NOTICE] "Undefined index: startlimit" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/controllers/ReportsController.php Line: 56
+[2014-08-14 14:23:48.862115][NOTICE] "Undefined index: startlimit" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/controllers/ReportsController.php Line: 56
+[2014-08-14 14:27:37.933971][NOTICE] "Undefined index: startlimit" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/controllers/ReportsController.php Line: 56
+[2014-08-14 15:19:38.865846][NOTICE] "Undefined index: startlimit" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/controllers/ReportsController.php Line: 56
+[2014-08-14 15:19:58.316854][NOTICE] "Undefined index: startlimit" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/controllers/ReportsController.php Line: 56
+[2014-08-14 15:54:43.952435][NOTICE] "Undefined index: startlimit" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/controllers/ReportsController.php Line: 56

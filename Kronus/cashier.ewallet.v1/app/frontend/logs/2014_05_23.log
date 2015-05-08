@@ -1,0 +1,66 @@
+[2014-05-23 11:43:54.385943][NOTICE] "Undefined index: startlimit" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/controllers/ReportsController.php Line: 56
+[2014-05-23 11:43:54.406706][NOTICE] "Undefined variable: terminalCode" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/models/TransactionSummaryModel.php Line: 359
+[2014-05-23 11:43:54.407201][NOTICE] "Undefined variable: terminalCode" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/models/TransactionSummaryModel.php Line: 359
+[2014-05-23 11:43:54.407730][NOTICE] "Undefined variable: terminalCode" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/models/TransactionSummaryModel.php Line: 359
+[2014-05-23 11:43:54.408776][NOTICE] "Undefined variable: terminalCode" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/models/TransactionSummaryModel.php Line: 359
+[2014-05-23 11:43:54.409246][NOTICE] "Undefined variable: terminalCode" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/models/TransactionSummaryModel.php Line: 359
+[2014-05-23 11:43:54.409718][NOTICE] "Undefined variable: terminalCode" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/models/TransactionSummaryModel.php Line: 359
+[2014-05-23 11:43:54.410174][NOTICE] "Undefined variable: terminalCode" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/models/TransactionSummaryModel.php Line: 359
+[2014-05-23 11:43:54.410635][NOTICE] "Undefined variable: terminalCode" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/models/TransactionSummaryModel.php Line: 359
+[2014-05-23 11:43:54.411089][NOTICE] "Undefined variable: terminalCode" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/models/TransactionSummaryModel.php Line: 359
+[2014-05-23 11:43:54.411549][NOTICE] "Undefined variable: terminalCode" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/models/TransactionSummaryModel.php Line: 359
+[2014-05-23 11:43:54.411913][NOTICE] "Undefined variable: terminalCode" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/models/TransactionSummaryModel.php Line: 359
+[2014-05-23 11:43:54.412275][NOTICE] "Undefined variable: terminalCode" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/models/TransactionSummaryModel.php Line: 359
+[2014-05-23 11:43:54.412728][NOTICE] "Undefined variable: terminalCode" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/models/TransactionSummaryModel.php Line: 359
+[2014-05-23 11:43:54.413174][NOTICE] "Undefined variable: terminalCode" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/models/TransactionSummaryModel.php Line: 359
+[2014-05-23 11:43:54.413648][NOTICE] "Undefined variable: terminalCode" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/models/TransactionSummaryModel.php Line: 359
+[2014-05-23 11:43:54.414069][NOTICE] "Undefined variable: terminalCode" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/models/TransactionSummaryModel.php Line: 359
+[2014-05-23 11:43:54.414523][NOTICE] "Undefined variable: terminalCode" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/models/TransactionSummaryModel.php Line: 359
+[2014-05-23 11:43:54.414961][NOTICE] "Undefined variable: terminalCode" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/models/TransactionSummaryModel.php Line: 359
+[2014-05-23 11:43:54.415419][NOTICE] "Undefined variable: terminalCode" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/models/TransactionSummaryModel.php Line: 359
+[2014-05-23 11:43:54.415673][NOTICE] "Undefined variable: terminalCode" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/models/TransactionSummaryModel.php Line: 359
+[2014-05-23 11:43:54.416156][NOTICE] "Undefined variable: terminalCode" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/models/TransactionSummaryModel.php Line: 359
+[2014-05-23 11:43:54.416626][NOTICE] "Undefined variable: terminalCode" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/models/TransactionSummaryModel.php Line: 359
+[2014-05-23 11:43:54.417083][NOTICE] "Undefined variable: terminalCode" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/models/TransactionSummaryModel.php Line: 359
+[2014-05-23 11:43:54.417339][NOTICE] "Undefined variable: terminalCode" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/models/TransactionSummaryModel.php Line: 359
+[2014-05-23 11:43:54.417675][NOTICE] "Undefined variable: terminalCode" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/models/TransactionSummaryModel.php Line: 359
+[2014-05-23 11:43:54.418187][NOTICE] "Undefined variable: terminalCode" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/models/TransactionSummaryModel.php Line: 359
+[2014-05-23 11:43:54.418648][NOTICE] "Undefined variable: terminalCode" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/models/TransactionSummaryModel.php Line: 359
+[2014-05-23 11:44:11.928878][NOTICE] "Undefined index: startlimit" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/controllers/ReportsController.php Line: 174
+[2014-05-23 11:44:14.397568][NOTICE] "Undefined index: startlimit" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/controllers/ReportsController.php Line: 174
+[2014-05-23 11:44:16.382652][NOTICE] "Undefined index: startlimit" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/controllers/ReportsController.php Line: 174
+[2014-05-23 11:44:16.396431][NOTICE] "Undefined variable: terminalCode" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/models/TransactionSummaryModel.php Line: 1138
+[2014-05-23 11:44:16.396709][NOTICE] "Undefined variable: terminalCode" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/models/TransactionSummaryModel.php Line: 1138
+[2014-05-23 11:44:16.396931][NOTICE] "Undefined variable: terminalCode" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/models/TransactionSummaryModel.php Line: 1138
+[2014-05-23 11:44:16.397159][NOTICE] "Undefined variable: terminalCode" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/models/TransactionSummaryModel.php Line: 1138
+[2014-05-23 11:44:16.397380][NOTICE] "Undefined variable: terminalCode" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/models/TransactionSummaryModel.php Line: 1138
+[2014-05-23 11:44:16.397607][NOTICE] "Undefined variable: terminalCode" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/models/TransactionSummaryModel.php Line: 1138
+[2014-05-23 11:44:16.397815][NOTICE] "Undefined variable: terminalCode" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/models/TransactionSummaryModel.php Line: 1138
+[2014-05-23 11:44:16.398036][NOTICE] "Undefined variable: terminalCode" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/models/TransactionSummaryModel.php Line: 1138
+[2014-05-23 11:44:16.398264][NOTICE] "Undefined variable: terminalCode" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/models/TransactionSummaryModel.php Line: 1138
+[2014-05-23 11:44:22.585392][NOTICE] "Undefined index: startlimit" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/controllers/ReportsController.php Line: 56
+[2014-05-23 11:44:24.476847][NOTICE] "Undefined index: startlimit" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/controllers/ReportsController.php Line: 56
+[2014-05-23 11:44:24.487694][NOTICE] "Undefined variable: terminalCode" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/models/TransactionSummaryModel.php Line: 359
+[2014-05-23 11:44:24.487967][NOTICE] "Undefined variable: terminalCode" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/models/TransactionSummaryModel.php Line: 359
+[2014-05-23 11:44:24.488200][NOTICE] "Undefined variable: terminalCode" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/models/TransactionSummaryModel.php Line: 359
+[2014-05-23 11:44:24.488403][NOTICE] "Undefined variable: terminalCode" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/models/TransactionSummaryModel.php Line: 359
+[2014-05-23 11:44:30.277455][WARNING] "Missing argument 5 for TransactionSummaryModel::getTransactionSummaryPerCashierTotals(), called in /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/controllers/ReportsController.php on line 322 and defined" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/models/TransactionSummaryModel.php Line: 1106
+[2014-05-23 11:44:30.278427][NOTICE] "Undefined variable: end_date" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/models/TransactionSummaryModel.php Line: 1120
+[2014-05-23 11:44:32.585889][NOTICE] "Undefined index: startlimit" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/controllers/ReportsController.php Line: 262
+[2014-05-23 11:44:32.595101][WARNING] "Missing argument 5 for TransactionSummaryModel::getTransactionSummaryPerCashierTotals(), called in /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/controllers/ReportsController.php on line 322 and defined" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/models/TransactionSummaryModel.php Line: 1106
+[2014-05-23 11:44:32.595148][NOTICE] "Undefined variable: end_date" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/models/TransactionSummaryModel.php Line: 1120
+[2014-05-23 11:44:32.602841][NOTICE] "Undefined variable: terminalCode" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/models/TransactionSummaryModel.php Line: 359
+[2014-05-23 11:44:32.603047][NOTICE] "Undefined variable: terminalCode" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/models/TransactionSummaryModel.php Line: 359
+[2014-05-23 11:44:32.603259][NOTICE] "Undefined variable: terminalCode" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/models/TransactionSummaryModel.php Line: 359
+[2014-05-23 11:44:32.603451][NOTICE] "Undefined variable: terminalCode" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/models/TransactionSummaryModel.php Line: 359
+[2014-05-23 11:45:28.65230][WARNING] "Missing argument 5 for TransactionSummaryModel::getTransactionSummaryPerCashierTotals(), called in /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/controllers/ReportsController.php on line 322 and defined" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/models/TransactionSummaryModel.php Line: 1106
+[2014-05-23 11:45:28.65944][NOTICE] "Undefined variable: end_date" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/models/TransactionSummaryModel.php Line: 1120
+[2014-05-23 11:45:30.232386][NOTICE] "Undefined index: startlimit" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/controllers/ReportsController.php Line: 262
+[2014-05-23 11:45:30.242625][WARNING] "Missing argument 5 for TransactionSummaryModel::getTransactionSummaryPerCashierTotals(), called in /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/controllers/ReportsController.php on line 322 and defined" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/models/TransactionSummaryModel.php Line: 1106
+[2014-05-23 11:45:30.243090][NOTICE] "Undefined variable: end_date" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/models/TransactionSummaryModel.php Line: 1120
+[2014-05-23 11:45:30.250766][NOTICE] "Undefined variable: terminalCode" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/models/TransactionSummaryModel.php Line: 359
+[2014-05-23 11:45:30.251074][NOTICE] "Undefined variable: terminalCode" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/models/TransactionSummaryModel.php Line: 359
+[2014-05-23 11:45:30.251558][NOTICE] "Undefined variable: terminalCode" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/models/TransactionSummaryModel.php Line: 359
+[2014-05-23 11:45:30.253097][NOTICE] "Undefined variable: terminalCode" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/models/TransactionSummaryModel.php Line: 359
+[2014-05-23 13:41:45.881419][NOTICE] "A session had already been started - ignoring session_start()" File: /var/www/Kronus_GenesisAbbott/cashier.genesis.abbott/app/frontend/models/LoginFormModel.php Line: 527
+[2014-05-23 15:11:31.409593][ERROR] SQLSTATE[HY000] [2003] Can't connect to MySQL server on '172.16.102.157' (113)

@@ -1,0 +1,2 @@
+[2015-05-06 22:20:58.111347][NOTICE] "Undefined index: macid" File: /var/www/kronusew.egamescasino.ph/app/frontend/controllers/AuthenticateController.php Line: 46
+[2015-05-06 22:22:17.784674][NOTICE] "A session had already been started - ignoring session_start()" File: /var/www/kronusew.egamescasino.ph/app/frontend/models/LoginFormModel.php Line: 527
