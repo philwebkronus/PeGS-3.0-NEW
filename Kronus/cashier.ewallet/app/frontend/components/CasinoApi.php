@@ -762,7 +762,7 @@ class CasinoApi {
                             'UserName'=>$login_uname,'Password'=>$login_pwd,'Type'=> Mirage::app()->param['SAPI_Type'],
                             'SpyderReqID'=>$spyder_req_id,'CasinoID'=>$service_id);
                         
-            $asynchronousRequest->curl_request_async(Mirage::app()->param['Asynchronous_URI'], $params);
+            $asynchronousRequest->sapiconnect(http_build_query($params));
         }
     }
     

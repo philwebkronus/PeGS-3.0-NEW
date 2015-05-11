@@ -1154,8 +1154,8 @@ class FrontendController extends MI_Controller {
             $params = array('r'=>'spyder/run','TerminalName'=>$computerName,'CommandID'=>$commandId,
                             'UserName'=>$casinoUsername,'Password'=>$casinoHashedPassword,'Type'=> Mirage::app()->param['SAPI_Type'],
                             'SpyderReqID'=>$spyder_req_id,'CasinoID'=>$service_id);
-
-            $asynchronousRequest->curl_request_async(Mirage::app()->param['Asynchronous_URI'], $params);
+            
+            $asynchronousRequest->sapiconnect(http_build_query($params));
         }
         
         return $result;
@@ -1586,7 +1586,7 @@ class FrontendController extends MI_Controller {
                                     'UserName'=>$login_acct,'Password'=>$login_pwd,'Type'=> Mirage::app()->param['SAPI_Type'],
                                     'SpyderReqID'=>$spyder_req_id,'CasinoID'=>$startSessionFormModel->casino);
 
-                    $asynchronousRequest->curl_request_async(Mirage::app()->param['Asynchronous_URI'], $params);
+                    $asynchronousRequest->sapiconnect(http_build_query($params));
                 }
        }
         
@@ -1784,7 +1784,7 @@ class FrontendController extends MI_Controller {
                             'UserName'=>$login_acct,'Password'=>$login_pwd,'Type'=> Mirage::app()->param['SAPI_Type'],
                             'SpyderReqID'=>$spyder_req_id,'CasinoID'=>$UnlockTerminalFormModel->casino);
 
-            $asynchronousRequest->curl_request_async(Mirage::app()->param['Asynchronous_URI'], $params);
+            $asynchronousRequest->sapiconnect(http_build_query($params));
         }
         
         echo json_encode($result);
