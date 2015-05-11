@@ -2585,7 +2585,7 @@ class TopUp extends DBHandler
                     LEFT JOIN npos.sites b ON a.SiteID = b.SiteID
                     LEFT JOIN npos.accountdetails c ON a.CreatedByAID = c.AID
                     LEFT JOIN npos.accountdetails d ON a.ApprovedByAID = d.AID
-                WHERE DATE_FORMAT(a.DateCreated,'%Y-%m-%d') BETWEEN '$startdate' AND '$enddate'
+                WHERE a.DateCreated BETWEEN '$startdate' AND '$enddate'
                 ORDER BY $sort $dir, a.DateCreated ASC LIMIT $start,$limit";
           
          $this->prepare($query);
@@ -2600,7 +2600,7 @@ class TopUp extends DBHandler
                     LEFT JOIN npos.sites b ON a.SiteID = b.SiteID
                     LEFT JOIN npos.accountdetails c ON a.CreatedByAID = c.AID
                     LEFT JOIN npos.accountdetails d ON a.ApprovedByAID = d.AID" .
-                " WHERE DATE_FORMAT(a.DateCreated,'%Y-%m-%d') BETWEEN '$startdate' AND '$enddate'";
+                " WHERE a.DateCreated BETWEEN '$startdate' AND '$enddate'";
          $this->prepare($query);
          $this->execute();
          $row =  $this->fetchAllData();

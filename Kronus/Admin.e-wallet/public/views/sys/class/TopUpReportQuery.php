@@ -255,7 +255,7 @@ class TopUpReportQuery extends DBHandler{
                 LEFT JOIN ref_remittancetype rt ON sr.RemittanceTypeID = rt.RemittanceTypeID 
                 LEFT JOIN ref_banks bk ON sr.BankID = bk.BankID 
                 LEFT JOIN accounts ats ON sr.VerifiedBy = ats.CreatedByAID 
-                WHERE DATE_FORMAT(sr.DateCreated,'%Y-%m-%d') BETWEEN '$startdate' AND '$enddate' AND sr.Status = 3 
+                WHERE sr.DateCreated BETWEEN '$startdate' AND '$enddate' AND sr.Status = 3 
                 ORDER BY sr.DateCreated ASC";
          $this->prepare($query);
          $this->execute();
