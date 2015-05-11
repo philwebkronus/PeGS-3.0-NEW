@@ -2534,7 +2534,7 @@ class TopUp extends DBHandler
                 "LEFT JOIN ref_remittancetype rt ON sr.RemittanceTypeID = rt.RemittanceTypeID " .
                 "LEFT JOIN ref_banks bk ON sr.BankID = bk.BankID " .
                 "LEFT JOIN accounts ats ON sr.VerifiedBy = ats.CreatedByAID " .
-                "WHERE DATE_FORMAT(sr.DateCreated,'%Y-%m-%d') BETWEEN '$startdate' AND '$enddate' AND sr.Status = 3 ";
+                "WHERE sr.DateCreated BETWEEN '$startdate' AND '$enddate' AND sr.Status = 3 ";
          $this->prepare($query);
          $this->execute();
          $row =  $this->fetchAllData();
@@ -2570,7 +2570,7 @@ class TopUp extends DBHandler
                 LEFT JOIN ref_remittancetype rt ON sr.RemittanceTypeID = rt.RemittanceTypeID 
                 LEFT JOIN ref_banks bk ON sr.BankID = bk.BankID 
                 LEFT JOIN accounts ats ON sr.VerifiedBy = ats.CreatedByAID 
-                WHERE DATE_FORMAT(sr.DateCreated,'%Y-%m-%d') BETWEEN '$startdate' AND '$enddate' AND sr.Status = 3 
+                WHERE sr.DateCreated BETWEEN '$startdate' AND '$enddate' AND sr.Status = 3 
                 ORDER BY $sort $dir LIMIT $start,$limit";
          $this->prepare($query);
          $this->execute();
@@ -2822,7 +2822,7 @@ class TopUp extends DBHandler
                 INNER JOIN terminals tm ON mr.TerminalID = tm.TerminalID
                 INNER JOIN accounts at ON mr.ProcessedByAID = at.AID 
                 LEFT JOIN ref_services rs ON mr.ServiceID = rs.ServiceID
-                WHERE mr.TransactionDate >= '$startdate 06:00:00' AND mr.TransactionDate < '$enddate 06:00:00' 
+                WHERE mr.TransactionDate >= '$startdate' AND mr.TransactionDate < '$enddate' 
                 ORDER BY $sort $dir LIMIT $start,$limit";
             $this->prepare($query);
             $this->execute();

@@ -270,7 +270,7 @@ class TopUpReportQuery extends DBHandler{
                     LEFT JOIN npos.sites b ON a.SiteID = b.SiteID
                     LEFT JOIN npos.accountdetails c ON a.CreatedByAID = c.AID
                     LEFT JOIN npos.accountdetails d ON a.ApprovedByAID = d.AID
-                WHERE DATE_FORMAT(a.DateCreated,'%Y-%m-%d') BETWEEN '$startdate' AND '$enddate' ORDER BY a.DateCreated ASC";
+                WHERE a.DateCreated BETWEEN '$startdate' AND '$enddate' ORDER BY a.DateCreated ASC";
          $this->prepare($query);
          $this->execute();
          return $this->fetchAllData();
