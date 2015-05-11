@@ -54,14 +54,18 @@ class AsynchronousRequest {
     public function sapiconnect($params){
         $return_transfer = 1;
         $ch = curl_init();
+        curl_setopt( $ch, CURLOPT_FRESH_CONNECT, 0 );
+        curl_setopt( $ch, CURLOPT_CONNECTTIMEOUT, 10 );
+        curl_setopt( $ch, CURLOPT_TIMEOUT, 1 );
+        curl_setopt( $ch, CURLOPT_SSL_VERIFYHOST, FALSE );
+        curl_setopt( $ch, CURLOPT_SSL_VERIFYPEER, FALSE );
         curl_setopt($ch,CURLOPT_URL, Mirage::app()->param['SAPI_URI'] . '?'.$params);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, $return_transfer);
         curl_setopt( $ch, CURLOPT_POST, FALSE );
         curl_setopt( $ch, CURLOPT_HTTPHEADER, array( 'Content-Type: text/plain; charset=utf-8' ) );
         curl_setopt( $ch, CURLOPT_SSLVERSION, 3 );
-        $result = curl_exec($ch);
-        curl_close($ch);   
-        return $result;
+        curl_exec($ch);
+        curl_close($ch);  
     }
 
 
