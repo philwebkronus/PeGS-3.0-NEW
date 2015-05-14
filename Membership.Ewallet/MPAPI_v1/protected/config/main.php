@@ -158,6 +158,12 @@ return array(
             'urlMPAPI' => 'http://<MPAPI URL HERE>/index.php/MPapi/',
             'SessionTimeOut' => 45.00,
             'urlVerify' => 'http://<MEMBERSHIP INSTANCE HERE>/verify.php',
+            'getcomppoints' => 'http://172.16.102.174/PCWS/index.php/pcws/getcomppoints',
+            'getbalance' => 'http://172.16.102.174/PCWS/index.php/pcws/getbalance',
+            'deductcomppoints' => 'http://172.16.102.174/PCWS/index.php/pcws/deductcomppoints',
+            'SystemCode'=>array('madmin' => '4896816', 'mportal' => '48452098','pcws' => '4761'),
+            'SysUsernameMA' => 'madmin',
+            'SysUsernameMP' => 'mportal',
             'activeRaffleCoupon' => 'rafflecoupons_<append active coupon batch here>' //example: rafflecoupons_3
             ),
 );

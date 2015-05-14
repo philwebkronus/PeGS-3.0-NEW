@@ -344,6 +344,21 @@ class MPapiInvokerController extends Controller{
 
         $this->render('registermemberbt', array('result'=>$result));
     }
+    
+    //@date 05-07-2015
+    public function actionGetBalance(){
+        $this->pageTitle = 'Membership Portal API - Get Balance';
+        $result = '';
+
+        if(isset($_POST['CardNumber']) || isset($_POST['MPSessionID'])) {
+            $cardNumber = $_POST['CardNumber'];
+            $mpSessionID = $_POST['MPSessionID'];
+
+            $result = $this->_getBalance($cardNumber, $mpSessionID);
+        }
+
+        $this->render('getbalance', array('result'=>$result));
+    }
 
     private function _login($username, $password) {
         $postdata = CJSON::encode(array('Username' => $username, 'Password' => $password));
@@ -499,6 +514,14 @@ class MPapiInvokerController extends Controller{
         $postdata = CJSON::encode(array('FirstName'=>$firstname, 'LastName'=>$lastname, 'MobileNo'=>$mobileNumber, 'EmailAddress'=>$emailAddress,
                                    'Birthdate'=>$birthdate));
         $result = $this->SubmitData(Yii::app()->params['urlMPAPI'].'registermemberbt', $postdata);
+
+        return $result[1];
+    }
+    
+    private function _getBalance($cardNumber, $mpSessionID){
+        $postdata = CJSON::encode(array('CardNumber' => $cardNumber, 'MPSessionID' => $mpSessionID));
+
+        $result = $this->SubmitData(Yii::app()->params['urlMPAPI'].'getbalance', $postdata);
 
         return $result[1];
     }

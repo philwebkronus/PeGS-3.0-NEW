@@ -1,11 +1,5 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 /**
  * Description of AmpapiInvokerController
  *
@@ -354,6 +348,29 @@ class AmpapiInvokerController extends Controller {
         $this->render($moduleName, array('result'=>$result));
     }
         private function _getProfile($TPSessionID,$MPSessionID,$CardNumber,$moduleName){
+            $url = $this->genURL($moduleName);
+            $postData = CJSON::encode(array('TPSessionID'=>$TPSessionID, 'MPSessionID'=>$MPSessionID, 'CardNumber'=>$CardNumber));
+            $result = $this->SubmitData($url, $postData);
+
+            return $result[1];
+        }
+        
+        public function actionGetBalance(){
+        $this->pageTitle= $this->genTitlePage('Get Balance');
+
+        $result='';
+        $moduleName ='getbalance';
+
+        if(isset($_POST['TPSessionID']) && isset($_POST['MPSessionID']) && isset($_POST['CardNumber'])){
+            $TPSessionID = $_POST['TPSessionID'];
+            $MPSessionID = $_POST['MPSessionID'];
+            $CardNumber = $_POST['CardNumber'];
+            $result = $this->_getBalance($TPSessionID,$MPSessionID,$CardNumber,$moduleName);
+        }
+
+        $this->render($moduleName, array('result'=>$result));
+    }
+        private function _getBalance($TPSessionID,$MPSessionID,$CardNumber,$moduleName){
             $url = $this->genURL($moduleName);
             $postData = CJSON::encode(array('TPSessionID'=>$TPSessionID, 'MPSessionID'=>$MPSessionID, 'CardNumber'=>$CardNumber));
             $result = $this->SubmitData($url, $postData);

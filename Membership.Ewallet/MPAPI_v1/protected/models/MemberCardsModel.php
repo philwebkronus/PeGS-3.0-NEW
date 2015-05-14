@@ -35,8 +35,8 @@ class MemberCardsModel {
         return $result;
     }
     
-    public function getCardStatus($cardNumber) {
-        $sql = 'SELECT Status
+    public function getMemberPointsAndStatus($cardNumber) {
+        $sql = 'SELECT Status, CurrentPoints
                 FROM membercards
                 WHERE CardNumber = :CardNumber AND Status IN (1,5)
                 GROUP BY MID';
@@ -99,7 +99,7 @@ class MemberCardsModel {
         
         try {
             $sql = 'UPDATE membercards
-                    SET RedeemedPoints = RedeemedPoints + :RedeemTotalPoints
+                    SET RedeemedPoints = RedeemedPoints + :RedeemTotalPoints, CurrentPoints = CurrentPoints - :RedeemTotalPoints
                     WHERE MID = :MID AND Status IN (1,5)';
             $param = array(':RedeemTotalPoints' => $redeemTotalPoints, ':MID' => $MID);
             $command = $this->_connection->createCommand($sql);

@@ -4,6 +4,9 @@
     <?php echo CHtml::link('Login', Yii::app()->createUrl('mPapiInvoker/login'), array('target'=>'_blank')); ?>
     <br />
     <br />
+    <?php echo CHtml::link('ChangePassword',  Yii::app()->createUrl('mPapiInvoker/changepassword'), array('target'=>'_blank')); ?>
+    <br />
+    <br />
     <?php // echo CHtml::link('AuthenticateSession', Yii::app()->createUrl('MPapiInvoker/authenticatesession'), array('target'=>'_blank')); ?>
 <!--    <br />
     <br />-->
@@ -12,7 +15,7 @@
     <br />-->
     <?php echo CHtml::link('ForgotPassword',  Yii::app()->createUrl('mPapiInvoker/forgotpassword'), array('target'=>'_blank')); ?>
     <br />
-    <br />
+    <br /> 
     <?php echo CHtml::link('RegisterMember',  Yii::app()->createUrl('mPapiInvoker/registermember'), array('target'=>'_blank')); ?>
     <br />
     <br />
@@ -56,6 +59,9 @@
     <br />
     <br />
     <?php echo CHtml::link('RegisterMemberBT', Yii::app()->createUrl('mPapiInvoker/registermemberbt'), array('target'=>'_blank')); ?>
+    <br />
+    <br />
+    <?php echo CHtml::link('GetBalance', Yii::app()->createUrl('mPapiInvoker/getbalance'), array('target'=>'_blank')); ?>
     <br />
     <br />
     <?php echo CHtml::link('Logout', Yii::app()->createUrl('mPapiInvoker/logout'), array('target'=>'_blank')); ?>

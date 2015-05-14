@@ -15,7 +15,6 @@
             $message = "\n" . $message; //Determine the new line
 
         $log_path = 'logs/'; //URL of the file where the error log should be stored
-        //
         //Check if the file already exists
         if (!file_exists($log_path . $logname)) {
             $create_file = fopen($log_path . $logname, "w+"); //create the new file
@@ -37,8 +36,7 @@
         return date(preg_replace('`(?<!\\\\)u`', $milliseconds, $format), $timestamp);
     }
     
-    
-     function logger($logdate, $type, $message) {
+    function logger($logdate, $type, $message) {
         $trace = debug_backtrace();
 
         $last_trace = $trace[0];

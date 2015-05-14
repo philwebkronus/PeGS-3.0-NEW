@@ -1,10 +1,5 @@
 <?php
 
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 /**
  * Description of AuditTrailModel
  *
@@ -24,14 +19,15 @@ class AuditTrailModel
     CONST AUTHENTICATE_SESSION = 9;
     CONST GET_ACTIVE_SESSION = 10;
     CONST LOGOUT = 16;
-    CONST CHANGE_PASSWORD = 69;
+    CONST CHANGE_PASSWORD = 22;
+    CONST GET_BALANCE = 23;
     
     public static $_instance = null;
     public $_connection;
 
 
     public function __construct() {
-        $this->_connection = Yii::app()->db;
+        $this->_connection = Yii::app()->db5;
     }
     
     public static function model()

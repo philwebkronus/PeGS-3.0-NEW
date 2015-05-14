@@ -25,10 +25,8 @@ class AuditTrailModel
     CONST GET_ACTIVE_SESSION = 10;
     CONST LOGOUT = 16;
     CONST CREATE_MOBILE_INFO = 21;
-    //mpapi db 
-    //CONST CHANGE_PASSWORD = 69;
-    //ampapi db accountsdb
     CONST CHANGE_PASSWORD = 22;
+    CONST GET_BALANCE = 23;
     
     public static $_instance = null;
     public $_connection;

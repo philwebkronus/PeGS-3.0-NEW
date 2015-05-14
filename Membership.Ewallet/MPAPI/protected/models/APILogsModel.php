@@ -24,6 +24,7 @@ class APILogsModel
     CONST API_REGISTER_MEMBER_BT = 18;
     CONST API_CREATE_MOBILE_INFO = 19;
     CONST API_CHANGE_PASSWORD = 20;
+    CONST API_GET_BALANCE = 21;
        
     public static $_instance = null;
     public $_connection;
@@ -91,6 +92,9 @@ class APILogsModel
                 break;
             case 20:
                 $method = self::API_CHANGE_PASSWORD;
+                break;
+            case 21:
+                $method = self::API_GET_BALANCE;
                 break;
         }
         

@@ -65,55 +65,55 @@ return array(
                 //db connection for membership
                 'db'=>array(
                         'class'=>'CDbConnection',
-			'connectionString' => 'mysql:host=172.16.102.157;dbname=membership',
+			'connectionString' => 'mysql:host=;dbname=membership',
 			'emulatePrepare' => true,
 			'username' => 'membershipapi',
-			'password' => 'YTgERUImQoddm9iDd0Es',
+			'password' => '',
 			'charset' => 'utf8',
 		),
                 //db connection for loyaltydb
                 'db2'=>array(
                         'class'=>'CDbConnection',
-			'connectionString' => 'mysql:host=172.16.102.157;dbname=loyaltydb',
+			'connectionString' => 'mysql:host=;dbname=loyaltydb',
 			'emulatePrepare' => true,
 			'username' => 'membershipapi',
-			'password' => 'YTgERUImQoddm9iDd0Es',
+			'password' => '',
 			'charset' => 'utf8',
 		),
                 //db connection for membership_temp
                 'db3'=>array(
                         'class'=>'CDbConnection',
-			'connectionString' => 'mysql:host=172.16.102.157;dbname=membership_temp',
+			'connectionString' => 'mysql:host=;dbname=membership_temp',
 			'emulatePrepare' => true,
 			'username' => 'membershipapi',
-			'password' => 'YTgERUImQoddm9iDd0Es',
+			'password' => '',
 			'charset' => 'utf8',
 		),
                 //db connection for rewardsdb
                 'db4'=>array(
                         'class'=>'CDbConnection',
-			'connectionString' => 'mysql:host=172.16.102.157;dbname=rewardsdb',
+			'connectionString' => 'mysql:host=;dbname=rewardsdb',
 			'emulatePrepare' => true,
 			'username' => 'membershipapi',
-			'password' => 'YTgERUImQoddm9iDd0Es',
+			'password' => '',
 			'charset' => 'utf8',
 		),
                 //db connection for npos
                 'db5'=>array(
                         'class'=>'CDbConnection',
-			'connectionString' => 'mysql:host=172.16.102.157;dbname=npos',
+			'connectionString' => 'mysql:host=;dbname=npos',
 			'emulatePrepare' => true,
 			'username' => 'membershipapi',
-			'password' => 'YTgERUImQoddm9iDd0Es',
+			'password' => '',
 			'charset' => 'utf8',
 		),
                 //db connection for vouchermanagement
                 'db6'=>array(
                         'class'=>'CDbConnection',
-			'connectionString' => 'mysql:host=172.16.102.157;dbname=vouchermanagement',
+			'connectionString' => 'mysql:host=;dbname=vouchermanagement',
 			'emulatePrepare' => true,
 			'username' => 'membershipapi',
-			'password' => 'YTgERUImQoddm9iDd0Es',
+			'password' => '',
 			'charset' => 'utf8',
 		),
                 'CURL' =>array(
@@ -160,6 +160,12 @@ return array(
             //'url' => 'http://localhost/MPAPI/index.php/MPapi/', //local url
             'urlMPAPI' => 'http://172.16.102.174/mpapi.dev.local/index.php/MPapi/', //staging
             'SessionTimeOut' => 45.00,
-            'urlVerify' => 'http://membershipsb.genesis.local/verify.php'
+            'urlVerify' => 'http://membershipsb.genesis.local/verify.php',
+            'getcomppoints' => 'http://172.16.102.174/PCWS/index.php/pcws/getcomppoints',
+            'getbalance' => 'http://172.16.102.174/PCWS/index.php/pcws/getbalance',
+            'deductcomppoints' => 'http://172.16.102.174/PCWS/index.php/pcws/deductcomppoints',
+            'SystemCode'=>array('madmin' => '4896816', 'mportal' => '48452098','pcws' => '4761'),
+            'SysUsernameMA' => 'madmin',
+            'SysUsernameMP' => 'mportal'
             ),
 );

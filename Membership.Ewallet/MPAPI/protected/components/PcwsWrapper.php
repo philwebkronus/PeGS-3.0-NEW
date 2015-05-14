@@ -91,6 +91,18 @@ class PcwsWrapper
        return json_decode($result[1], true);
     }
     
+    public function getBalance($CardNumber,$index)
+    {
+       $module = 'GetBalance';
+       $postdata = json_encode(array('CardNumber'=>$CardNumber,'SystemUsername'=>  $this->_username[$index], 'AccessDate'=>  $this->_accessdate, 
+                                'Token'=>  $this->_tkn[$this->_username[$index]]));
+       $this->_Log($module, 0, $postdata);
+       $result = $this->curlApi(Yii::app()->params['getbalance'], $postdata);
+       $this->_Log($module, 1, $result[1], $index);
+       
+       return json_decode($result[1], true);
+    }
+    
     public function deductCompPoints($CardNumber,$amt, $siteID, $index)
     {
        $module = 'DeductCompPoints';

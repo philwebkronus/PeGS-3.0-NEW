@@ -10,6 +10,9 @@
     <?php echo CHtml::link('Login', Yii::app()->createUrl('ampapiInvoker/login'), array('target'=>'_blank')); ?>
     <br />
     <br />
+    <?php echo CHtml::link('ChangePassword', Yii::app()->createUrl('ampapiInvoker/changepassword'), array('target'=>'_blank')); ?>
+    <br />
+    <br />
     <?php echo CHtml::link('ForgotPassword',  Yii::app()->createUrl('ampapiInvoker/forgotpassword'), array('target'=>'_blank')); ?>
     <br />
     <br />
@@ -55,10 +58,13 @@
     <?php echo CHtml::link('GetCity', Yii::app()->createUrl('ampapiInvoker/getcity'), array('target'=>'_blank')); ?>
     <br />
     <br />
-    <?php echo CHtml::link('Logout', Yii::app()->createUrl('ampapiInvoker/logout'), array('target'=>'_blank')); ?>
+    <?php echo CHtml::link('GetBalance', Yii::app()->createUrl('ampapiInvoker/getbalance'), array('target'=>'_blank')); ?>
     <br />
     <br />
     <?php echo CHtml::link('ResetPIN', Yii::app()->createUrl('ampapiInvoker/resetpin'), array('target'=>'_blank')); ?>
+    <br />
+    <br />
+    <?php echo CHtml::link('Logout', Yii::app()->createUrl('ampapiInvoker/logout'), array('target'=>'_blank')); ?>
     <br />
     <br />
 </div>

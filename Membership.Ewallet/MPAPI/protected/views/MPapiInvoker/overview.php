@@ -64,6 +64,9 @@
     <?php echo CHtml::link('VerifyTracking2', Yii::app()->createUrl('mPapiInvoker/verifytracking2'), array('target'=>'_blank')); ?>
     <br />
     <br />
+    <?php echo CHtml::link('GetBalance', Yii::app()->createUrl('mPapiInvoker/getbalance'), array('target'=>'_blank')); ?>
+    <br />
+    <br />
     <?php echo CHtml::link('ResetPIN', Yii::app()->createUrl('mPapiInvoker/resetpin'), array('target'=>'_blank')); ?>
     <br />
     <br />
