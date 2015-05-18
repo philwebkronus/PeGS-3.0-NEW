@@ -187,75 +187,78 @@ if ((isset($_GET["oldnumber"]) && (htmlentities($_GET["oldnumber"])))
         if ($fproc->IsPostBack) {
 
             if ($ConfirmButton->SubmittedValue == "Confirm") {
-
-                $dateCreated = "NOW(6)";
-                if (empty($oldCardEmail)) {
-                    $noemail = true;
-                    $Memberstable["UserName"] = $NewMembershipCardNumber;
-                } else {
-                    $noemail = false;
-                    $Memberstable["UserName"] = $txtEmail->SubmittedValue;
-                }
-
-                $tempEmail = 0;
-                if($txtEmail->SubmittedValue != ""){
-                    
-                    //check if email is already verified in temp table
-                    $tempEmail = $_TempMembers->chkTmpVerifiedEmailAddress(trim($txtEmail->SubmittedValue));
-                    
-                }
                 
-                if($tempEmail > 0){
-                    App::SetErrorMessage("Email already verified. Please choose a different email address.");
-                    $_Log->logAPI(AuditFunctions::MIGRATE_OLD, $tempEmail.':'.$txtEmail->SubmittedValue.':Failed', 0, 0);
-                    $isSuccess = false;
-                    $error = "Email already verified. Please choose a different email address.";
-                    $logger->logger($logdate, $logtype, $error);
-                } else {
-                    $Memberstable['DateCreated'] = $dateCreated;
-                    $Memberstable['Status'] = '1';
-
-                    $PlayerName = $txtplayername->SubmittedValue;
-
-                    $MemberInfo["FirstName"] = $PlayerName;
-                    $MemberInfo["Birthdate"] = $dtBirthDate->SubmittedValue;
-                    if(!$noemail) $MemberInfo["Email"] = $Memberstable["UserName"];
-                    $MemberInfo["NationalityID"] = 1;
-                    $MemberInfo["OccupationID"] = 1;
-                    $MemberInfo["IdentificationID"] = $ComboID->SubmittedValue;
-                    $MemberInfo["IdentificationNumber"] = $txtplayerIDNumber->SubmittedValue;
-                    $MemberInfo["Email"] = $txtEmail->SubmittedValue;
-                    $MemberInfo["MobileNumber"] = $txtMobile->SubmittedValue;
-                    $MemberInfo["DateCreated"] = $dateCreated;
-                    $MemberInfo["DateVerified"] = $dateCreated;
-
-                    $rdoGroupGender->SubmittedValue == 1 ? $MemberInfo['Gender'] = 1 : $MemberInfo['Gender'] = 2;
-
-                    $result = $_Members->Migrate($Memberstable, $MemberInfo, $AID, $siteid, $LoyatyCardNumber, $NewMembershipCardNumber, $oldCardEmail, $isVIP, false);
-
-                    $status = $result['status'];
-
-                    if ($status == 'OK')
-                    {
-                        $isSuccess = true;
-                        $_Log->logAPI(AuditFunctions::MIGRATE_OLD, $LoyatyCardNumber.':'.$NewMembershipCardNumber.':'.$_Members->password.':Success',$siteCode, $AID);
-                    }
-                    else
-                    {
-                        $isSuccess = false;
-                        $error = $result['error'];
-                        $_Log->logAPI(AuditFunctions::MIGRATE_OLD, $LoyatyCardNumber.':'.$NewMembershipCardNumber.':Failed', $siteCode, $AID);
-                        $logger->logger($logdate, $logtype, $error);
-                    }
-
-                    /*
-                     * Load message dialog box
-                     */
-
+                    $isSuccess = 'NA';
                     $ActivationDialogOpen = 'true';
-
-                    $displayPassword = $_Members->password; //$arrgetMID['Password'];
-                }
+                    
+//                $dateCreated = "NOW(6)";
+//                if (empty($oldCardEmail)) {
+//                    $noemail = true;
+//                    $Memberstable["UserName"] = $NewMembershipCardNumber;
+//                } else {
+//                    $noemail = false;
+//                    $Memberstable["UserName"] = $txtEmail->SubmittedValue;
+//                }
+//
+//                $tempEmail = 0;
+//                if($txtEmail->SubmittedValue != ""){
+//                    
+//                    //check if email is already verified in temp table
+//                    $tempEmail = $_TempMembers->chkTmpVerifiedEmailAddress(trim($txtEmail->SubmittedValue));
+//                    
+//                }
+//                
+//                if($tempEmail > 0){
+//                    App::SetErrorMessage("Email already verified. Please choose a different email address.");
+//                    $_Log->logAPI(AuditFunctions::MIGRATE_OLD, $tempEmail.':'.$txtEmail->SubmittedValue.':Failed', 0, 0);
+//                    $isSuccess = false;
+//                    $error = "Email already verified. Please choose a different email address.";
+//                    $logger->logger($logdate, $logtype, $error);
+//                } else {
+//                    $Memberstable['DateCreated'] = $dateCreated;
+//                    $Memberstable['Status'] = '1';
+//
+//                    $PlayerName = $txtplayername->SubmittedValue;
+//
+//                    $MemberInfo["FirstName"] = $PlayerName;
+//                    $MemberInfo["Birthdate"] = $dtBirthDate->SubmittedValue;
+//                    if(!$noemail) $MemberInfo["Email"] = $Memberstable["UserName"];
+//                    $MemberInfo["NationalityID"] = 1;
+//                    $MemberInfo["OccupationID"] = 1;
+//                    $MemberInfo["IdentificationID"] = $ComboID->SubmittedValue;
+//                    $MemberInfo["IdentificationNumber"] = $txtplayerIDNumber->SubmittedValue;
+//                    $MemberInfo["Email"] = $txtEmail->SubmittedValue;
+//                    $MemberInfo["MobileNumber"] = $txtMobile->SubmittedValue;
+//                    $MemberInfo["DateCreated"] = $dateCreated;
+//                    $MemberInfo["DateVerified"] = $dateCreated;
+//
+//                    $rdoGroupGender->SubmittedValue == 1 ? $MemberInfo['Gender'] = 1 : $MemberInfo['Gender'] = 2;
+//
+//                    $result = $_Members->Migrate($Memberstable, $MemberInfo, $AID, $siteid, $LoyatyCardNumber, $NewMembershipCardNumber, $oldCardEmail, $isVIP, false);
+//
+//                    $status = $result['status'];
+//
+//                    if ($status == 'OK')
+//                    {
+//                        $isSuccess = true;
+//                        $_Log->logAPI(AuditFunctions::MIGRATE_OLD, $LoyatyCardNumber.':'.$NewMembershipCardNumber.':'.$_Members->password.':Success',$siteCode, $AID);
+//                    }
+//                    else
+//                    {
+//                        $isSuccess = false;
+//                        $error = $result['error'];
+//                        $_Log->logAPI(AuditFunctions::MIGRATE_OLD, $LoyatyCardNumber.':'.$NewMembershipCardNumber.':Failed', $siteCode, $AID);
+//                        $logger->logger($logdate, $logtype, $error);
+//                    }
+//
+//                    /*
+//                     * Load message dialog box
+//                     */
+//
+//                    $ActivationDialogOpen = 'true';
+//
+//                    $displayPassword = $_Members->password; //$arrgetMID['Password'];
+//                }
             }
         }
     }
@@ -431,20 +434,25 @@ if ((isset($_GET["oldnumber"]) && (htmlentities($_GET["oldnumber"])))
 <?php if ($ActivationDialogOpen == 'true') {
     ?>
     <div id="ActivationDialog" title="Member Card Activation">
+        <?php if ($isSuccess == 'NA') {
+        ?>
+
+            <p>Account Migration is not available at this moment.
+            </p>
+            <?php } else{?>
     <?php if ($isSuccess) {
         ?>
 
             <p>Account migration is successful. <br />                    
                 Temporary password for the membership website is  <b> <?php echo $displayPassword; ?></b>.
             </p>
-
         <?php } else {
         ?>
             <p>Account migration has failed. <br />
                 <?php echo $error; ?>.<br />
                 Contact customer service for assistance.
             </p>
-            <?php }
+<?php } }
         ?>
     </div>
     <?php }
