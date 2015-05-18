@@ -1,3 +1,0 @@
-<?php
-    DelExpiredSession::deleteExpiredSession();
-?>

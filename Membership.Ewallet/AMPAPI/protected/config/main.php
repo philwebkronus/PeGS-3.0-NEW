@@ -143,8 +143,8 @@ return array(
             'app_id' => 'EGAMES',
             'DenominationPrefix'=>'PhP ',
             'allowedAmount'=>0,
-            'urlAMPAPI'=>'http://172.16.102.174/ampapi.dev.local/index.php/Ampapi/',
-            'urlMPAPI'=>'http://172.16.102.174/mpapi.dev.local/index.php/MPapi/',
+            'urlAMPAPI'=>'http://localhost/<AMPAPI DIRECTORY HERE>/index.php/Ampapi/',
+            'urlMPAPI'=>'http://<MPAPI URL HERE>/index.php/MPapi/',
             'SessionTimeOut' => 45.00
         ),
 
