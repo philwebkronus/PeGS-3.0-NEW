@@ -32,6 +32,9 @@ switch($_GET['action']) {
     case 'grossholdmonitoring':
         $process->grossHoldMonitoring();
         break;
+    case 'grossholdmonitoring2':
+        $process->grossHoldMonitoring2();
+        break;
     case 'pagcorgrossholdmonitoring':
         $process->pagcorGrossHoldMonitoring();
         break;
@@ -40,6 +43,9 @@ switch($_GET['action']) {
         break;
     case 'getdata2':
         $process->getdata2();
+        break;
+    case 'getdataz3':
+        $process->getdataz3();
         break;
     case 'posteddeposit':
         $process->postedDepositOverview();
