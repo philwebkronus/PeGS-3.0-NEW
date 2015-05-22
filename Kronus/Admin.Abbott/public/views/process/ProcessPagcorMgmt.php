@@ -96,9 +96,10 @@ if($connected)
                 if(isset($_GET['startdate']))
                     $startdate = $_GET['startdate']." ".$cutoff_time;
                 
-                if(isset($_GET['enddate']))
-                    $enddate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($_GET['enddate'])) .$gaddeddate))." ".$cutoff_time;
+//                if(isset($_GET['enddate']))
+//                    $enddate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($_GET['enddate'])) .$gaddeddate))." ".$cutoff_time;
 
+                $enddate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($startdate)) .BaseProcess::$gaddeddate))." ".BaseProcess::$cutoff; 
                 $dir = $_GET['sord'];
                 $sort = "s.SiteCode";
                 $zsiteid = $_GET['site'];

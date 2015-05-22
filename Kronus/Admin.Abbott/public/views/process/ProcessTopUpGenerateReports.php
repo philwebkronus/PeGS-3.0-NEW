@@ -124,7 +124,7 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         $topreport = new TopUpReportQuery($this->getConnection());
         $topreport->open();
         $startdate = $_POST['startdate'];
-        $venddate = date ('Y-m-d' , strtotime (BaseProcess::$gaddeddate, strtotime($_POST['enddate'])));
+        $venddate = date ('Y-m-d' , strtotime (BaseProcess::$gaddeddate, strtotime($startdate)));
         $rows = $topreport->bankDeposit($startdate, $venddate);
         $pdf = CTCPDF::c_getInstance();
         $pdf->c_commonReportFormat();
@@ -171,7 +171,7 @@ class ProcessTopUpGenerateReports extends BaseProcess{
     //Collection History Report (Excel)
     public function bankDepositExcel() {
         $startdate = $_POST['startdate'];
-        $venddate = date ('Y-m-d' , strtotime (BaseProcess::$gaddeddate, strtotime($_POST['enddate'])));
+        $venddate = date ('Y-m-d' , strtotime (BaseProcess::$gaddeddate, strtotime($startdate)));
         $_SESSION['report_header'] = array('Site / PEGS Name','POS Account','Bank','Branch','Bank Transaction ID','Deposit Date','Cheque Number','Amount','Remittance Type','Site Transaction Date','Date Created', 'Verified By');
         $topreport = new TopUpReportQuery($this->getConnection());
         $topreport->open();
@@ -262,17 +262,13 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         ini_set('max_execution_time', '180');
         $topreport = new TopUpReportQuery($this->getConnection());
         $topreport->open();
-        if(isset($_POST['startdate']) && isset($_POST['enddate']))
-        {
-            $startdate = $_POST['startdate'];
-            $venddate = $_POST['enddate'];  
-            $enddate = date ('Y-m-d' , strtotime (BaseProcess::$gaddeddate, strtotime($venddate)));
-        }
-        else
-        {
-            $startdate = date("Y-m-d");
-            $enddate = date ('Y-m-d' , strtotime (BaseProcess::$gaddeddate, strtotime($startdate)));
-        }
+        
+        $vstartdate = date('Y-m-d');
+        if(isset($_POST['startdate']))
+            $vstartdate = $_POST['startdate'];   
+        
+        $startdate = $vstartdate." ".BaseProcess::$cutoff;
+        $enddate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($vstartdate)) .BaseProcess::$gaddeddate))." ".BaseProcess::$cutoff; 
         
         $rows = $topreport->topUpHistory($startdate, $enddate, $_POST['seltopuptype'],$_POST['selSiteCode']);
         $pdf = CTCPDF::c_getInstance();
@@ -324,17 +320,12 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         $topreport = new TopUpReportQuery($this->getConnection());
         $topreport->open();
         
-        if(isset($_POST['startdate']) && isset($_POST['enddate']))
-        {
-            $startdate = $_POST['startdate'];
-            $venddate = $_POST['enddate'];  
-            $enddate = date ('Y-m-d' , strtotime (BaseProcess::$gaddeddate, strtotime($venddate)));
-        }
-        else
-        {
-            $startdate = date("Y-m-d");
-            $enddate = date ('Y-m-d' , strtotime (BaseProcess::$gaddeddate, strtotime($startdate)));
-        }
+        $vstartdate = date('Y-m-d');
+        if(isset($_POST['startdate']))
+            $vstartdate = $_POST['startdate'];   
+        
+        $startdate = $vstartdate." ".BaseProcess::$cutoff;
+        $enddate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($vstartdate)) .BaseProcess::$gaddeddate))." ".BaseProcess::$cutoff; 
         
         $rows = $topreport->topUpHistory($startdate, $enddate, $_POST['seltopuptype'],$_POST['selSiteCode']);
         
@@ -374,9 +365,15 @@ class ProcessTopUpGenerateReports extends BaseProcess{
     public function reversalManualPdf() {
         $topreport = new TopUpReportQuery($this->getConnection());
         $topreport->open();
-        $vstartdate = $_POST['startdate'];
-        $venddate = date ('Y-m-d' , strtotime (BaseProcess::$gaddeddate, strtotime($_POST['enddate'])));
-        $rows = $topreport->reversalManual($vstartdate, $venddate);
+        $vstartdate = date('Y-m-d');
+        
+        if(isset($_POST['startdate']))
+            $vstartdate = $_POST['startdate'];   
+        
+        $startdate = $vstartdate." ".BaseProcess::$cutoff;
+        $enddate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($vstartdate)) .BaseProcess::$gaddeddate))." ".BaseProcess::$cutoff; 
+        
+        $rows = $topreport->reversalManual($startdate, $enddate);
         $pdf = CTCPDF::c_getInstance();
         $pdf->c_commonReportFormat();
         $pdf->c_setHeader('Manual Top-up Reversal History');
@@ -416,9 +413,15 @@ class ProcessTopUpGenerateReports extends BaseProcess{
             'Reversed Amount','Transaction Date','Reversed By');
         $topreport = new TopUpReportQuery($this->getConnection());
         $topreport->open();
-        $vstartdate = $_POST['startdate'];
-        $venddate = date ('Y-m-d' , strtotime (BaseProcess::$gaddeddate, strtotime($_POST['enddate'])));
-        $rows = $topreport->reversalManual($vstartdate, $venddate);
+        $vstartdate = date('Y-m-d');
+        
+        if(isset($_POST['startdate']))
+            $vstartdate = $_POST['startdate'];   
+        
+        $startdate = $vstartdate." ".BaseProcess::$cutoff;
+        $enddate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($vstartdate)) .BaseProcess::$gaddeddate))." ".BaseProcess::$cutoff; 
+        
+        $rows = $topreport->reversalManual($startdate, $enddate);
         $new_rows = array();
         foreach($rows as $row) {
             $new_rows[] = array(
@@ -459,9 +462,15 @@ class ProcessTopUpGenerateReports extends BaseProcess{
     public function manualRedemptionPdf() {
         $topreport = new TopUpReportQuery($this->getConnection());
         $topreport->open();
-        $vstartdate = $_POST['startdate'];
-        $venddate = date ('Y-m-d' , strtotime (BaseProcess::$gaddeddate, strtotime($_POST['enddate'])));
-        $rows = $topreport->manualRedemption($vstartdate, $venddate);
+        $vstartdate = date('Y-m-d');
+        
+        if(isset($_POST['startdate']))
+            $vstartdate = $_POST['startdate'];   
+        
+        $startdate = $vstartdate." ".BaseProcess::$cutoff;
+        $enddate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($vstartdate)) .BaseProcess::$gaddeddate))." ".BaseProcess::$cutoff; 
+        
+        $rows = $topreport->manualRedemption($startdate, $enddate);
         $pdf = CTCPDF::c_getInstance();
         $pdf->c_commonReportFormat();
         $pdf->c_setHeader('Manual Redemption History');
@@ -509,9 +518,15 @@ class ProcessTopUpGenerateReports extends BaseProcess{
             'Requested By','Transaction Date','Ticket ID','Transaction ID','Remarks','Status', 'Service Name');
         $topreport = new TopUpReportQuery($this->getConnection());
         $topreport->open();
-        $vstartdate = $_POST['startdate'];
-        $venddate = $enddate = date ('Y-m-d' , strtotime (BaseProcess::$gaddeddate, strtotime($_POST['enddate'])));
-        $rows = $topreport->manualRedemption($vstartdate, $venddate);
+        $vstartdate = date('Y-m-d');
+        
+        if(isset($_POST['startdate']))
+            $vstartdate = $_POST['startdate'];   
+        
+        $startdate = $vstartdate." ".BaseProcess::$cutoff;
+        $enddate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($vstartdate)) .BaseProcess::$gaddeddate))." ".BaseProcess::$cutoff; 
+        
+        $rows = $topreport->manualRedemption($startdate, $enddate);
         $new_rows = array();
         foreach($rows as $row) {
             $new_rows[] = array(
@@ -777,7 +792,7 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         $topreport = new TopUpReportQuery($this->getConnection());
         $topreport->open();
         $startdate = $_POST['startdate'];
-        $enddate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($_POST['enddate'])) .BaseProcess::$gaddeddate));
+        $enddate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($startdate)) .BaseProcess::$gaddeddate));
         $rows = $topreport->replenish($startdate, $enddate);
         
         $pdf = CTCPDF::c_getInstance();
@@ -799,8 +814,8 @@ class ProcessTopUpGenerateReports extends BaseProcess{
                 array('value'=>substr($row['SiteCode'], strlen(BaseProcess::$sitecode))),
                 array('value'=>$row['POSAccountNo']),
                 array('value'=>number_format($row['Amount'],2),'align'=>'right'),
-                array('value'=>date('Y-m-d H:i:s',strtotime($row['DateCredited']))),
-                array('value'=>date('Y-m-d H:i:s',strtotime($row['DateCreated']))),
+                array('value'=> !empty($row['DateCredited']) ? date('Y-m-d H:i:s',strtotime($row['DateCredited'])):""),
+                array('value'=>!empty($row['DateCreated']) ? date('Y-m-d H:i:s',strtotime($row['DateCreated'])):""),
                 array('value'=>$row['UserName']),
              ));
         }
@@ -815,7 +830,7 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         $topreport = new TopUpReportQuery($this->getConnection());
         $topreport->open();
         $startdate = $_POST['startdate'];
-        $enddate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($_POST['enddate'])) .BaseProcess::$gaddeddate));
+        $enddate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($startdate)) .BaseProcess::$gaddeddate));
         $rows = $topreport->replenish($startdate, $enddate);
         $new_rows = array();
         foreach($rows as $row) {
@@ -823,8 +838,8 @@ class ProcessTopUpGenerateReports extends BaseProcess{
                     substr($row['SiteCode'], strlen(BaseProcess::$sitecode)),
                     $row['POSAccountNo'],
                     number_format($row['Amount'],2),
-                    date('Y-m-d H:i:s',strtotime($row['DateCredited'])),
-                    date('Y-m-d H:i:s',strtotime($row['DateCreated'])),
+                    !empty($row['DateCredited']) ? date('Y-m-d H:i:s',strtotime($row['DateCredited'])):"",
+                    !empty($row['DateCreated']) ? date('Y-m-d H:i:s',strtotime($row['DateCreated'])):"",
                     $row['UserName']
                 );
         }
@@ -909,8 +924,7 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         $topreport = new TopUpReportQuery($this->getConnection());
         $topreport->open();
         $startdate = $_POST['startdate']." ".BaseProcess::$cutoff;
-        $venddate = $_POST['enddate'];  
-        $enddate = date ('Y-m-d' , strtotime (BaseProcess::$gaddeddate, strtotime($venddate)))." ".BaseProcess::$cutoff;   
+        $enddate = date ('Y-m-d' , strtotime (BaseProcess::$gaddeddate, strtotime($startdate)))." ".BaseProcess::$cutoff;   
         $vsitecode = $_POST['selsitecode'];
         $datenow = date("Y-m-d")." ".BaseProcess::$cutoff;
         $rows = array();
@@ -980,8 +994,7 @@ class ProcessTopUpGenerateReports extends BaseProcess{
     //added on 11-18-2011, for gross hold monitoring per cut off (Excel)
     public function grossHoldCutoffExcel() {
         $startdate = $_POST['startdate']." ".BaseProcess::$cutoff;
-        $venddate = $_POST['enddate'];  
-        $enddate = date ('Y-m-d' , strtotime (BaseProcess::$gaddeddate, strtotime($venddate)))." ".BaseProcess::$cutoff;           
+        $enddate = date ('Y-m-d' , strtotime (BaseProcess::$gaddeddate, strtotime($startdate)))." ".BaseProcess::$cutoff;           
         $_SESSION['report_header'] = array('Site / PEGS Code','Site / PEGS Name', 'POS Account','Cut Off Date','Beginning Balance','Initial Deposit','Reload','Redemption','Manual Redemption','Voucher','Cash on Hand','Gross Hold', 'Replenishment','Collection','Ending Balance');
         $topreport = new TopUpReportQuery($this->getConnection());
         $topreport->open();

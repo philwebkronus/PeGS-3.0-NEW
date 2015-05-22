@@ -75,17 +75,17 @@ $vaccesspages = array('6');
                 </td>
             </tr>
             <tr>
-                <td>Date Range</td>
+                <td>Transaction Date</td>
                 <td>
-                From: 
+               
                  <input name="txtDate1" id="popupDatepicker1" readonly value="<?php echo date('Y-m-d')." "."06:00:00"; ?>"/>
                  <img name="cal" src="images/cal.gif" width="16" height="16" border="0" alt="Pick a date" onClick="unloadDataGrid(); javascript:NewCssCal('popupDatepicker1','yyyyMMdd','dropdown',true,'24',true)"/>
                 </td>
-                <td>
+<!--                <td>
                 To:
                 <input name="txtDate2" id="popupDatepicker2" readonly value="<?php echo date('Y-m-d')." "."06:00:00"; ?>"/>
                 <img name="cal" src="images/cal.gif" width="16" height="16" border="0" alt="Pick a date" onClick="unloadDataGrid(); javascript:NewCssCal('popupDatepicker2','yyyyMMdd','dropdown',true,'24',true)"/>
-                </td>
+                </td>-->
             </tr>
         </table>
         <table border="1" id="tblproviders" align="right" width="20%" style="text-align: center;">
@@ -239,8 +239,8 @@ $vaccesspages = array('6');
             if( site != '-1' && term != '-1' )
             {
                 
-                var isValidDateTime = validateDateTime();
-                
+                //var isValidDateTime = validateDateTime();
+                var isValidDateTime = true;
                 if(isValidDateTime == true ) {
                 
                     //for displaying transaction details
@@ -258,7 +258,7 @@ $vaccesspages = array('6');
                                         cmbsite: function() {return $('#cmbsite').val(); },
                                         cmbterminal: function() { return $("#cmbterm").val(); },
                                         txtDate1: function() { return $("#popupDatepicker1").val(); },
-                                        txtDate2: function() { return $("#popupDatepicker2").val(); },
+//                                        txtDate2: function() { return $("#popupDatepicker2").val(); },
                                         paginate: function() {return 'LPTransactionSummary';}
                                         },
                                 datatype: "json",
@@ -324,7 +324,7 @@ $vaccesspages = array('6');
                             cmbsite: function() {return $('#cmbsite').val(); },
                             cmbterminal: function() { return $("#cmbterm").val(); },
                             txtDate1: function() { return $("#popupDatepicker1").val(); },
-                            txtDate2: function() { return $("#popupDatepicker2").val(); },
+//                            txtDate2: function() { return $("#popupDatepicker2").val(); },
                             paginate: function() {return 'LPTransactionLogs';},
                             summaryID: function() {return summaryid;}
                               },
@@ -371,7 +371,7 @@ $vaccesspages = array('6');
                             cmbsite: function() {return $('#cmbsite').val(); },
                             cmbterminal: function() { return $("#cmbterm").val(); },
                             txtDate1: function() { return $("#popupDatepicker1").val(); },
-                            txtDate2: function() { return $("#popupDatepicker2").val(); },
+//                            txtDate2: function() { return $("#popupDatepicker2").val(); },
                             paginate: function() {return 'LPTransactionDetails';},
                             summaryID: function() {return value;}
                               },
@@ -386,7 +386,7 @@ $vaccesspages = array('6');
                             {name:'ServiceID',index:'ServiceID', align: 'center'},
                             {name:'Amount',index:'Amount', align: 'right'},
                             {name:'DateCreated',index:'DateCreated', align: 'center'},
-                            {name:'UserName',index:'UserName',align:'center'},
+                            {name:'Name',index:'Name',align:'center'},
                             {name:'Status',index:'Status', align: 'center'},
                     ],
 
@@ -432,14 +432,14 @@ $vaccesspages = array('6');
    function validateDateTime () {
        
        var fromDateTime = $("#popupDatepicker1").val().split(" ");
-       var toDateTime = $("#popupDatepicker2").val().split(" ");
+//       var toDateTime = $("#popupDatepicker2").val().split(" ");
        var fromTimeArray = fromDateTime[1].split(":");
        var fromTime = parseInt("".concat(fromTimeArray[0]).concat(fromTimeArray[1]).concat(fromTimeArray[2]), 10);
-       var toTimeArray = toDateTime[1].split(":");
+       //var toTimeArray = toDateTime[1].split(":");
        var toTime = parseInt("".concat(toTimeArray[0]).concat(toTimeArray[1]).concat(toTimeArray[2]),10);
        var fromDate = fromDateTime[0].split("-");
-       var toDateArray = toDateTime[0].split("-");
-       var toDate = parseInt("".concat(toDateArray[0]).concat(toDateArray[1]).concat(toDateArray[2]));
+       //var toDateArray = toDateTime[0].split("-");
+       //var toDate = parseInt("".concat(toDateArray[0]).concat(toDateArray[1]).concat(toDateArray[2]));
        var fromDateAsInt = parseInt("".concat(fromDate[0]).concat(fromDate[1]).concat(fromDate[2]));
        
        var year = parseInt(fromDate[0], 10);

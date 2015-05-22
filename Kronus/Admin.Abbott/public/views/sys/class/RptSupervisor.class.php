@@ -42,12 +42,14 @@ class RptSupervisor extends DBHandler
     function viewgrosshold($zdatefrom, $zdateto, $zsiteID)
     {
         $stmt = "select tr.DateCreated, tr.TerminalID,tr.SiteID, tr.CreatedByAID, 
-                     tr.TransactionType, tr.Amount,a.UserName, ad.Name from transactiondetails tr 
+                     tr.TransactionType, tr.Amount,a.UserName, ad.Name from transactiondetails tr
+                     FORCE INDEX(IX_transactiondetails_DateCreated)
                      inner join accounts a on a.AID = tr.CreatedByAID
                      inner join accountdetails ad on ad.AID = tr.CreatedByAID
                      where tr.SiteID IN(".$zsiteID.") AND 
                      tr.DateCreated >= ? and tr.DateCreated <  ? and tr.Status IN(1,4)
                      order by tr.CreatedByAID ASC";
+        
         $this->prepare($stmt);
         $this->bindparameter(1, $zdatefrom);
         $this->bindparameter(2, $zdateto);

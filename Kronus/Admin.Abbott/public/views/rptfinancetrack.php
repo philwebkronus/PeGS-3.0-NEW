@@ -83,17 +83,16 @@ $vaccesspages = array('12');
                 </td>
             </tr>
             <tr>
-                <td>Date Range</td>
+                <td>Transaction Date</td>
                 <td>
-                From: 
                  <input name="txtDate1" id="popupDatepicker1" readonly="readonly" value="<?php echo date('Y-m-d')?>"/>
                  <img name="cal" src="images/cal.gif" width="16" height="16" border="0" alt="Pick a date" onClick="displayDatePicker('txtDate1', false, 'ymd', '-');"/>
                 </td>
-                <td>
+<!--                <td>
                 To:
-                <input name="txtDate2" id="popupDatepicker2" readonly="readonly" value="<?php echo date ( 'Y-m-d'); ?>"/>
+                <input name="txtDate2" id="popupDatepicker2" readonly="readonly" value=""/>
                 <img name="cal" src="images/cal.gif" width="16" height="16" border="0" alt="Pick a date" onClick="displayDatePicker('txtDate2', false, 'ymd', '-');"/>
-                </td>
+                </td>-->
             </tr>
         </table>
         <table border="1" id="tblproviders" align="right" width="20%" style="text-align: center;">
@@ -277,12 +276,12 @@ $vaccesspages = array('12');
                var siteid = $('#cmbsite').val(); 
                var terminal = jQuery("#cmbterm").val();
                var datefrom = jQuery("#popupDatepicker1").val();
-               var dateto = jQuery("#popupDatepicker2").val();
+//               var dateto = jQuery("#popupDatepicker2").val();
                var transtype = jQuery("#cmbtranstype").val();
                jQuery("#senchaexport1").show(); //show export button
                jQuery('#transdetails').GridUnload();
                createtable(); //call creating of table
-               jqgrid(url, siteid, terminal, datefrom, dateto, transtype);
+               jqgrid(url, siteid, terminal, datefrom, transtype);
            }
         });
         
@@ -290,7 +289,7 @@ $vaccesspages = array('12');
     });
     
     //function for jqgrid
-    function jqgrid(url, siteid, terminal, datefrom, dateto, transtype)
+    function jqgrid(url, siteid, terminal, datefrom, transtype)
     {
            jQuery("#transdetails").jqGrid(
            {    
@@ -299,7 +298,7 @@ $vaccesspages = array('12');
                postData: {
                             paginate: function() {return 'TransactionDetails';},
                             txtDate1: function() {return datefrom;},
-                            txtDate2: function() {return dateto},
+//                            txtDate2: function() {return dateto},
                             cmbtranstype : function() {return transtype},
                             cmbsite: function() {return siteid; },
                             cmbterminal : function() {return terminal },
@@ -326,7 +325,7 @@ $vaccesspages = array('12');
                refresh: true,
                viewrecords: true,
                sortorder: "asc",
-               loadComplete: function (){ gettotal(url,siteid, terminal, datefrom, dateto, transtype);},
+               loadComplete: function (){ gettotal(url,siteid, terminal, datefrom, transtype);},
                
                caption:"Transaction Tracking"
          });
@@ -334,14 +333,14 @@ $vaccesspages = array('12');
     }
     
     //function for getting the sum of each transaction type
-    function gettotal(url, siteid, terminal, datefrom, dateto, transtype)
+    function gettotal(url, siteid, terminal, datefrom, transtype)
     {
                 jQuery.ajax({
                    url: url,
                    data: {
                              gettotal: function(){return "GetTotals"},
                              txtDate1: function() {return datefrom;},
-                             txtDate2: function() {return dateto},
+//                             txtDate2: function() {return dateto},
                              cmbtranstype : function() {return transtype},
                              cmbsite: function() {return siteid; },
                              cmbterminal : function() {return terminal }

@@ -1425,19 +1425,19 @@ function chksitegrp()
               document.getElementById('rptDate').value = datenow;
               return false;
           }           
-          else if((datenow) < (document.getElementById('rptDate2').value))
-          {
-              alert("Queried date must not be greater than today");
-              document.getElementById('rptDate2').value = datenow;
-              return false;         
-          }          
-          else if((document.getElementById('rptDate2').value) < 
-                  (document.getElementById('rptDate').value))
-          {
-              alert("Start date must not greater than end date");
-              document.getElementById('rptDate2').value = datenow;
-              return false;         
-          }          
+//          else if((datenow) < (document.getElementById('rptDate2').value))
+//          {
+//              alert("Queried date must not be greater than today");
+//              document.getElementById('rptDate2').value = datenow;
+//              return false;         
+//          }          
+//          else if((document.getElementById('rptDate2').value) < 
+//                  (document.getElementById('rptDate').value))
+//          {
+//              alert("Start date must not greater than end date");
+//              document.getElementById('rptDate2').value = datenow;
+//              return false;         
+//          }          
           else
           {
               return true;
@@ -2467,7 +2467,32 @@ function chkOverride(){
        function validateDateTime (date) {
            
             var fromDateTime = $("#popupDatepicker1").val().split(" ");
-            var toDateTime = $("#popupDatepicker2").val().split(" ");
+            var d=fromDateTime[0].split("-");
+            var t=fromDateTime[1].split(":");
+            var setdate = new Date(d[0],(d[1]-1),d[2],t[0],t[1],t[2]);
+            var vtoDateTime = new Date(setdate); 
+            var ftoDateTime =  new Date(vtoDateTime.setDate(vtoDateTime.getDate() + 1));
+
+            var toMon = ftoDateTime.getMonth() + 1;
+            var toDay = ftoDateTime.getDate();
+            var toYear = ftoDateTime.getFullYear();
+            var toHour = ftoDateTime.getHours();
+            var toMin = ftoDateTime.getMinutes();
+            var toSec = ftoDateTime.getSeconds();
+
+            //condition for formatting month
+            toMon = toMon < 10 ? toMon = "0"+toMon:toMon=toMon;
+
+            //condition for formatting day
+            toDay = toDay < 10 ? toDay = "0"+toDay:toDay=toDay;
+
+            //conditions for formatting time
+            toHour = toHour < 10 ? toHour = "0"+toHour:toHour = toHour;
+            toMin = toMin < 10 ? toMin = "0"+toMin:toMin=toMin;
+            toSec = toSec < 10 ? toSec = "0"+toSec:toSec=toSec;
+
+            var fftoDateTime = toYear + "-" + toMon + "-" + toDay +  " " + toHour + ":" + toMin + ":" + toSec;
+            var toDateTime = fftoDateTime.split(" ");
             var fromTimeArray = fromDateTime[1].split(":");
             var fromTime = parseInt("".concat(fromTimeArray[0]).concat(fromTimeArray[1]).concat(fromTimeArray[2]), 10);
             var toTimeArray = toDateTime[1].split(":");

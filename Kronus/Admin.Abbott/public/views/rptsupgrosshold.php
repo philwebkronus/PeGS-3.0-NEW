@@ -51,7 +51,7 @@
                postData: {
                             paginate: function() {return "GrossHold";},
                             strDate: function() {return $("#rptDate").val();},
-                            endDate: function() {return $("#rptDate2").val();},
+//                            endDate: function() {return $("#rptDate2").val();},
                             cmbsitename: function() {return $("#cmbsite").val();}
                          },
                datatype: "json",
@@ -82,7 +82,7 @@
                    data: {
                              gettotal: function(){return "GetTotals"},
                              strDate: function() {return $("#rptDate").val();},
-                             endDate: function() {return $("#rptDate2").val();},
+//                             endDate: function() {return $("#rptDate2").val();},
                              cmbsitename: function() {return $("#cmbsite").val();}
                          },
                    type: 'post',
@@ -128,19 +128,19 @@
         <input type="hidden" id="txtDate" value="<?php echo date("Y-m-d");?>" />
         <table>
             <tr>
-                <td>Start Date</td>
+                <td>Transaction Date</td>
                 <td>
                     <input name='strDate' id='rptDate' readonly value="<?php echo date("Y-m-d");?>" />
                     <img name="cal" src="images/cal.gif" width="16" height="16" border="0" alt="Pick a date" onClick="displayDatePicker('strDate', false, 'ymd', '-');"/>
                 </td>
             </tr>
-            <tr>
+<!--            <tr>
                 <td>End Date</td>
                 <td>
                     <input name='endDate' id='rptDate2' readonly value="<?php echo date ( 'Y-m-d'); ?>" />
                     <img name="cal" src="images/cal.gif" width="16" height="16" border="0" alt="Pick a date" onClick="displayDatePicker('endDate', false, 'ymd', '-');"/>
                 </td>
-            </tr>
+            </tr>-->
         </table>
         <div id="submitarea">
             <input type="button" value="Query" id="btnquery"/>
@@ -179,10 +179,12 @@
             </div>
             <div id="senchaexport1" style="background-color: #6A6A6A; width: 1000px; padding-bottom: 60px; display: none;">
                 <br />
-                <input type='button' name='exportPDF' id='exportPDF' value='Export to PDF File' 
-                       onclick="window.location.href='process/ProcessRptSupervisor.php?pdf=generatepdf&DateFrom='+document.getElementById('rptDate').value+'&DateTo='+document.getElementById('rptDate2').value" style="float: right;" />  
+                 <input type='button' name='exportPDF' id='exportPDF' value='Export to PDF File' 
+                       onclick="window.location.href='process/ProcessRptSupervisor.php?pdf=generatepdf&DateFrom='+document.getElementById('rptDate').value+'&fn=GrossHold_for_'+document.getElementById('rptDate').value" style="float: right;" />  
+                       <!--onclick="window.location.href='process/ProcessRptSupervisor.php?pdf=generatepdf&DateFrom='+document.getElementById('rptDate').value" style="float: right;" />  onclick="window.location.href='process/ProcessRptSupervisor.php?pdf=generatepdf&DateFrom='+document.getElementById('rptDate').value+'&DateTo='+document.getElementById('rptDate2').value" style="float: right;" />-->  
                 <input type="button" name="exportExcel" id="exportExcel" value="Export to Excel File" 
-                       onclick="window.location.href='process/ProcessRptSupervisor.php?excel=generateexel&DateFrom='+document.getElementById('rptDate').value+'&DateTo='+document.getElementById('rptDate2').value+'&fn=GrossHold_for_'+document.getElementById('rptDate').value" style="float: right;"/>
+                       onclick="window.location.href='process/ProcessRptSupervisor.php?excel=generateexel&DateFrom='+document.getElementById('rptDate').value+'&fn=GrossHold_for_'+document.getElementById('rptDate').value" style="float: right;"/>
+                       <!--onclick="window.location.href='process/ProcessRptSupervisor.php?excel=generateexel&DateFrom='+document.getElementById('rptDate').value+'&DateTo='+document.getElementById('rptDate2').value+'&fn=GrossHold_for_'+document.getElementById('rptDate').value" style="float: right;"/>-->
             </div>
         </div>
 </div>

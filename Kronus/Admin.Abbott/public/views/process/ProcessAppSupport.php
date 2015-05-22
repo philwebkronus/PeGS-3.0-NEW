@@ -371,16 +371,16 @@ if($connected)
         {
             //page post for transaction tracking
             case 'ViewSupport':
+                
                 if(isset ($_POST['cmbsite']) && isset ($_POST['cmbterminal']) 
-                 && isset ($_POST['txtDate1']) && isset ($_POST['txtDate2']) 
-                 && isset($_POST['cmbstatus']))
+                 && isset ($_POST['txtDate1']) && isset($_POST['cmbstatus']))
                  {
                         $vSiteID = $_POST['cmbsite'];
                         $vTerminalID = $_POST['cmbterminal'];
                         $vdate1 = $_POST['txtDate1'];
-                        $vdate2 = $_POST['txtDate2'];
+                        //$vdate2 = $_POST['txtDate2'];
                         $vFrom = $vdate1;
-                        $vTo = date ('Y-m-d', strtotime ('+1 day' , strtotime($vdate2)));
+                        $vTo = date ('Y-m-d', strtotime ('+1 day' , strtotime($vdate1)));
                         $vtransstatus = $_POST['cmbstatus'];
                         $vtranstype = $_POST['cmbtranstype'];
                         
@@ -469,18 +469,18 @@ if($connected)
             
             //view transaction logs for user based transactions
             case 'ViewSupportUB':
-                if(isset ($_POST['cmbsource']) && isset ($_POST['txtDate1']) && isset ($_POST['txtDate2']) 
+                if(isset ($_POST['cmbsource']) && isset ($_POST['txtDate1']) 
                  && isset($_POST['cmbstatus']))
                  {
                         $vSource = $_POST['cmbsource'];
                         $vCardNum = $_POST['txtcardnumber'];
                         $vdate1 = $_POST['txtDate1'];
-                        $vdate2 = $_POST['txtDate2'];
+                        //$vdate2 = $_POST['txtDate2'];
                         $vFrom = $vdate1;
-                        $vTo = $vdate2;
+                        $vTo = date ('Y-m-d', strtotime ('+1 day' , strtotime($vdate1)))." 06:00:00";
                         $vtransstatus = $_POST['cmbstatus'];
                         $vtranstype = $_POST['cmbtranstype'];
-                        
+
                         switch ($vSource){
                             //if source is Cashier
                             case 1:
@@ -700,8 +700,8 @@ if($connected)
                         $vFrom = $vdate1;
                         $vTo = date ('Y-m-d', strtotime ('+1 day' , strtotime($vdate2)));
                         $vtransstatus = $_POST['cmbstatus'];
-                        $vFrom = $vFrom.' 06;00:00';
-                        $vTo = $vTo.' 06;00:00';
+                        $vFrom = $vFrom.' 06:00:00';
+                        $vTo = $vTo.' 06:00:00';
                         
                         $rcount = $oas->countfulfillmenthistroy($vSiteID,$vTerminalID,$vtransstatus, $vFrom,$vTo); 
 
@@ -2932,68 +2932,6 @@ case 'GetLogFile':
                     unset($count,$site,$txtoldspyder,$txtspyder);
                 exit;    
            break;
-           
-           //Update Cashier Menu Tab
-           case 'UpdateCashierTab':
-               
-                 $siteID = $_POST['cmbsite'];
-                 $tmTab = $_POST['tmTab'];
-                 $srrTab = $_POST['srrTab'];
-                 $oldTM = $_POST['oldTM'];
-                 $oldSRR = $_POST['oldSRR'];
-                 
-                 
-                    $updateResult = $oas->updateCashierMenuTab($siteID, $tmTab, $srrTab);
-
-                    if($updateResult > 0)
-                    {
-                        $msg = 'Cashier Menu Management: Update Successful';
-                        
-                        if($oldTM!=$tmTab&&$oldSRR==$srrTab){
-                            if($oldTM == 0 && $tmTab == 1)
-                            {
-                                $vtransdetails = "TM Menu Enabled in Site ID ".$siteID;
-                            }
-                            if($oldTM == 1 && $tmTab == 0)
-                            {
-                                 $vtransdetails = "TM Menu Disabled in Site ID ".$siteID;
-                            }
-                        }
-                        
-                        if($oldTM==$tmTab&&$oldSRR!=$srrTab){
-                            
-                            if($oldSRR == 0 && $srrTab == 1)
-                            {
-                                 $vtransdetails = "SR Menu Enabled in Site ID ".$siteID;
-                            }
-                            if($oldSRR == 1 && $srrTab == 0)
-                            {
-                                 $vtransdetails = "SR Menu Disabled in Site ID ".$siteID;
-                            }
-                        }
-                        if($oldTM!=$tmTab&&$oldSRR!=$srrTab){
-                            if(($oldTM == 0 && $tmTab == 1)&&($oldSRR == 0 && $srrTab == 1))
-                            {
-                                $vtransdetails = "TM and SR Menu Enabled in Site ID ".$siteID;
-                            }
-                            if(($oldTM == 1 && $tmTab == 0)&&($oldSRR == 1 && $srrTab == 0))
-                            {
-                                $vtransdetails = "TM and SR Menu Disabled in Site ID ".$siteID;
-                            }
-                        }
-                        
-                        $vauditfuncID = 87;
-// 
-                        $oas->logtoaudit($new_sessionid, $aid, $vtransdetails, $vdate, $vipaddress, $vauditfuncID); //insert in audittrail
-                    }else
-                    {
-                        $msg = 'Cashier Menu Management: Update Failed';
-                    }
-                    
-                 echo json_encode($msg);
-                 unset($siteID,$tmTab,$srrTab);
-                 break;
-           
            
            //Update Casher Version
            case 'UpCashierVersion':

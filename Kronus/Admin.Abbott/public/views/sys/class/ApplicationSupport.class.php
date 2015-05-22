@@ -69,7 +69,7 @@ class ApplicationSupport extends DBHandler
           $liststatus = array();
           foreach ($ztransstatus as $row)
           {
-              $rstatus = $row;
+              $rstatus = $row;  
               array_push($liststatus, $rstatus);
           }
           $status = implode(',', $liststatus); 
@@ -644,6 +644,15 @@ class ApplicationSupport extends DBHandler
            return $this->fetchData();
      }
      
+     function getCashierTab($siteID)
+     {
+           $stmt = "SELECT TMTab,SRRTab FROM sites WHERE SiteID = ?";
+           $this->prepare($stmt);
+           $this->bindparameter(1, $siteID);
+           $this->execute($stmt);
+           return $this->fetchData();
+     }
+     
      /**
     * @author Gerardo V. Jagolino Jr.
     * @param $zsiteID
@@ -692,6 +701,19 @@ class ApplicationSupport extends DBHandler
            $this->bindparameter(2, $zsiteID);
            $this->execute($stmt);
            return $this->rowCount();
+     }
+     
+     function updateCashierMenuTab($siteID,$tmTab,$srrTab)
+     {
+         
+           $stmt = "UPDATE sites SET TMTab = ?,SRRTab = ? WHERE SiteID = ?";
+           $this->prepare($stmt);
+           $this->bindparameter(1, $tmTab);
+           $this->bindparameter(2, $srrTab);
+           $this->bindparameter(3, $siteID);
+           $this->execute($stmt);
+           return $this->rowCount();
+         
      }
      
      /**

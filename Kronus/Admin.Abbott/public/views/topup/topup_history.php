@@ -31,7 +31,7 @@ $vaccesspages = array('5');
         <br />
         <table>
             <tr>
-                <td>Start Date</td>
+                <td>Transaction Date</td>
                 <td>
                     <input type="text" value="<?php echo date('Y-m-d') ?>" id="startdate" readonly="readonly" name="startdate" />
                     &nbsp;
@@ -39,12 +39,12 @@ $vaccesspages = array('5');
                 </td>
             </tr>
             <tr>
-                <td>End Date</td>
+<!--                <td>End Date</td>
                 <td>
                     <input type="text" value="<?php echo date('Y-m-d',strtotime(date("Y-m-d", strtotime(date('Y-m-d'))))) ?>" id="enddate" readonly="readonly" name="enddate" />
                     &nbsp;
                     <img name="cal" src="images/cal.gif" width="16" height="16" border="0" alt="Pick a date" onClick="displayDatePicker('enddate', false, 'ymd', '-');"/> 
-                </td>
+                </td>-->
             </tr>
             <tr>
                 <td>Top-up Type</td>

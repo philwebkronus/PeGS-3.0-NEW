@@ -90,10 +90,10 @@ if($connected)
                 $sord = $_POST['sord']; // get the direction
                 
                 $vdatefrom = $_POST['strDate'];
-                $vdateto = $_POST['endDate'];
+                //$vdateto = $_POST['endDate'];
                 $dateFrom = $vdatefrom." ".$vcutofftime;
                 
-                $dateTo = date ('Y-m-d' , strtotime ($gaddeddate, strtotime($vdateto)))." ".$vcutofftime;
+                $dateTo = date ('Y-m-d' , strtotime ($gaddeddate, strtotime($vdatefrom)))." ".$vcutofftime;
                 $rsiteID = $orptsup->viewsitebyowner($aid); //get all sites owned by operator
                 $vsiteID = $rsiteID['SiteID'];
                 
@@ -220,11 +220,14 @@ if($connected)
    //Get totals per page, grand total
    elseif(isset($_POST['gettotal']) == "GetTotals")
    {
-       $vdatefrom = $_POST['strDate'];
-       $vdateto = $_POST['endDate'];
+      $vdatefrom = $_POST['strDate'];
+      //       $vdateto = $_POST['endDate'];
                 
+//       $dateFrom = $vdatefrom." ".$vcutofftime;
+//       $dateTo = date ('Y-m-d' , strtotime ($gaddeddate, strtotime($vdateto)))." ".$vcutofftime;
+       
+       $dateTo = date('Y-m-d',strtotime(date("Y-m-d", strtotime($vdatefrom)) .$gaddeddate))." ".$vcutofftime; 
        $dateFrom = $vdatefrom." ".$vcutofftime;
-       $dateTo = date ('Y-m-d' , strtotime ($gaddeddate, strtotime($vdateto)))." ".$vcutofftime;
        
        $rsiteID = $orptsup->viewsitebyowner($aid); //get all sites owned by operator
        $vsiteID = $rsiteID['SiteID'];
@@ -307,10 +310,13 @@ if($connected)
    {
        $fn = $_GET['fn'].".xls"; //this will be the filename of the excel file
        $vfromdate = $_GET['DateFrom'];
-       $vtodate = $_GET['DateTo']; 
-      
+       
+//       $vtodate = $_GET['DateTo']; 
+//       $dateFrom = $vfromdate." ".$vcutofftime;
+//       $dateTo = date ('Y-m-d' , strtotime ($gaddeddate, strtotime($vtodate)))." ".$vcutofftime;
+       
+       $dateTo = date('Y-m-d',strtotime(date("Y-m-d", strtotime($vfromdate)) .$gaddeddate))." ".$vcutofftime; 
        $dateFrom = $vfromdate." ".$vcutofftime;
-       $dateTo = date ('Y-m-d' , strtotime ($gaddeddate, strtotime($vtodate)))." ".$vcutofftime;
             
        $rsiteID = $orptsup->viewsitebyowner($aid); //get all sites owned by operator
        $vsiteID = $rsiteID['SiteID'];
@@ -427,17 +433,19 @@ if($connected)
    /***************************** EXPORTING PDF STARTS HERE *******************************/
    elseif(isset($_GET['pdf']))
    {
-      $vfromdate = $_GET['DateFrom'];
-      $vtodate = $_GET['DateTo']; 
-      
-      $dateFrom = $vfromdate." ".$vcutofftime;
-      $dateTo = date ('Y-m-d' , strtotime ($gaddeddate, strtotime($vtodate)))." ".$vcutofftime;
-       
-      $rsiteID = $orptsup->viewsitebyowner($aid); //get all sites owned by operator
-      $vsiteID = $rsiteID['SiteID'];
-                
-      $rsitecashier = $orptsup->getsitecashier($vsiteID);
+        $fn = $_GET['fn'].".pdf"; //this will be the filename of the pdf file
+        $vfromdate = $_GET['DateFrom'];
 
+//       $vtodate = $_GET['DateTo']; 
+//       $dateFrom = $vfromdate." ".$vcutofftime;
+//       $dateTo = date ('Y-m-d' , strtotime ($gaddeddate, strtotime($vtodate)))." ".$vcutofftime;
+       
+       $dateTo = date('Y-m-d',strtotime(date("Y-m-d", strtotime($vfromdate)) .$gaddeddate))." ".$vcutofftime; 
+       $dateFrom = $vfromdate." ".$vcutofftime;
+
+      $rsitecashier = $orptsup->viewsitebyowner($aid);
+      $vsiteID = $rsitecashier['SiteID'];
+      
       $result = $orptsup->viewgrosshold($dateFrom, $dateTo, $vsiteID, $start = null, $limit = null);
       $pdf = CTCPDF::c_getInstance();
       $pdf->c_commonReportFormat();
