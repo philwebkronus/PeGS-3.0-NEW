@@ -148,19 +148,46 @@ include "header.php";
                                 cmbterminals: function(){return jQuery("#cmbterminals").val();}},
                             dataType: 'json',
                             success: function(data){
-                                    $('input:radio').attr('disabled', 'disabled');
-                                    $('#oldterminaltype').val('');
-                                    $('#terminaltype').val('');
-                                    $('#terminaltype0').attr('checked',false);    
-                                    $('#terminaltype1').attr('checked',false);
-                                    jQuery("#txtsitename").text(" ");
-                                    jQuery("#txtposaccno").text(" ");
-                                    jQuery("#txttermname").text(" ");
-                                    document.getElementById('cmbsitename').value="-1";
-                                    $('#cmbterminals').empty();
-                                    $('#cmbterminals').append($("<option />").val("-1").text("Please Select"));
-                                    alert(data);
-
+                                    if (data.hasDeposited == 1) {
+                                        var r = confirm(data.Message);
+                                        if (r) {
+                                            $.ajax({
+                                                url : url, 
+                                                type : 'post', 
+                                                dataType : 'json', 
+                                                data : {
+                                                    stackerbatchid : data.StackerBatchID, 
+                                                    AID : data.AID, 
+                                                    terminals : data.Terminals, 
+                                                    page : "RemoveWithDeposited"
+                                                }, 
+                                                success : function(data) {
+                                                    alert(data.Message);
+                                                }, 
+                                                error: function(XMLHttpRequest, e){
+                                                    alert(XMLHttpRequest.responseText);
+                                                    if(XMLHttpRequest.status == 401)
+                                                    {
+                                                        window.location.reload();
+                                                    }
+                                                }
+                                            });
+                                        }
+                                    }
+                                    else {
+                                        $('input:radio').attr('disabled', 'disabled');
+                                        $('#oldterminaltype').val('');
+                                        $('#terminaltype').val('');
+                                        $('#terminaltype0').attr('checked',false);    
+                                        $('#terminaltype1').attr('checked',false);
+                                        jQuery("#txtsitename").text(" ");
+                                        jQuery("#txtposaccno").text(" ");
+                                        jQuery("#txttermname").text(" ");
+                                        document.getElementById('cmbsitename').value="-1";
+                                        $('#cmbterminals').empty();
+                                        $('#cmbterminals').append($("<option />").val("-1").text("Please Select"));
+                                        alert(data.Message);
+                                    }
                             },
                             error: function(XMLHttpRequest, e){
                                 alert(XMLHttpRequest.responseText);

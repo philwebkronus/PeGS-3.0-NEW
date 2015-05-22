@@ -1983,7 +1983,7 @@ class ApplicationSupport extends DBHandler
      
      function checkdeposit($stackerbatchid){
             $stmt = "SELECT Deposit FROM stackermanagement.stackersummary 
-                WHERE StackerSummaryID = ?";
+                WHERE StackerSummaryID = ? AND Status = 0";
            $this->prepare($stmt);
            $this->bindparameter(1, $stackerbatchid);
            $this->execute($stmt);
@@ -2469,6 +2469,21 @@ class ApplicationSupport extends DBHandler
               var_dump($e->getMessage()); exit;
           }
           return $this->fetchAllData();
+      }
+      /**
+       * Get Transaction Summary ID via login.
+       * @param type $login
+       */
+      public function getTransactionSummaryViaLogin($login) {
+          $stmt = "SELECT TransactionSummaryID 
+                   FROM terminalsessions 
+                   WHERE UBServiceLogin = ?";
+          $this->prepare($stmt);
+          $this->bindparameter(1, $login);
+          $this->execute();
+          $result = $this->fetchData();
+          
+          return $result['TransactionSummaryID'];
       }
 }
 ?>

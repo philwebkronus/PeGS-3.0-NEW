@@ -1541,7 +1541,8 @@ class ApplicationSupport extends DBHandler
         * get cashier username that is responsible for the transactions made
         */
       function getCashierUsername($zFrom, $zTo, $transRefID, $cardnumber){
-           $stmt = "SELECT a.Name FROM npos.transactiondetails td USE INDEX (IX_transactiondetails_DateCreated)
+           $stmt = "SELECT a.Name FROM npos.transactiondetails td
+                    FORCE INDEX (IX_transactiondetails_DateCreated)
                     INNER JOIN npos.accountdetails a ON td.CreatedByAID = a.AID
                     WHERE td.DateCreated >= ? AND td.DateCreated < ? AND 
                     TransactionReferenceID = ? AND LoyaltyCardNumber = ?";
@@ -1786,17 +1787,18 @@ class ApplicationSupport extends DBHandler
            $count =  $this->fetchData();
            return $count['StackerBatchID'];
      }
-	 
-	 function checkdeposit($stackerbatchid){
+     
+     function checkdeposit($stackerbatchid){
             $stmt = "SELECT Deposit FROM stackermanagement.stackersummary 
-                WHERE StackerSummaryID = ?";
+                WHERE StackerSummaryID = ? AND Status = 0";
            $this->prepare($stmt);
            $this->bindparameter(1, $stackerbatchid);
            $this->execute($stmt);
            $count =  $this->fetchData();
            return $count['Deposit'];
      }
-     
+
+
      /**
      *counts details on cashier machine info (Disableing of cashier Terminal)
      * @return array | object 

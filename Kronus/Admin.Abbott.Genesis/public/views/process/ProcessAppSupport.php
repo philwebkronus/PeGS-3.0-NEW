@@ -360,6 +360,13 @@ if($connected && $connected2)
                 exit;
           break;  
           
+          /**
+           * NOTE: 
+           * Test this module with scenarios like the ff
+           * 1. Remove the EGM session while having an existing Terminal session
+           * 2. has already deposited amount
+           * 3. 
+           */
           case 'EGMManualRemoving':
                 if($_POST['cmbterminals'] != "")
                 {
@@ -382,7 +389,8 @@ if($connected && $connected2)
                     //check number of sessions in a certain site
                     if($count > 0)
                     {
-                        $response = 'Failed to remove EGM Session, There is an existing terminal session for this terminal.';
+                        $response = array('hasDeposited' => 0, 
+                                          'Message' => 'Failed to remove EGM Session, There is an existing terminal session for this terminal.');
                     }
                     else
                     {   
@@ -391,35 +399,22 @@ if($connected && $connected2)
                         if($egmcheck > 0){
                             
                             $stackerbatchid = $oas->getStackerBatchID($terminalid,$vipterminalid);
-                            
-                            if(is_null($stackerbatchid)){
-                                $updated = 1;
-                            }
-                            else{
-                                $updated = $oas2->updateSSStatus($aid,$stackerbatchid,5);
-                                
-                                if($updated == 0){
-                                    $updated = 1;
-                                }
-                            }
-                            
-                            if($updated > 0){
-                                $deleted = $oas->deleteEGMSessions($terminalid,$vipterminalid);
-                            }
-                            else{
-                                $deleted = 0;
-                            }
-                            
-                        
-                            if($deleted > 0 && $updated > 0){
-                                $response = 'EGM Session Successfully Removed';
-                            }
-                            else{
-                                $response = 'Failed to remove EGM Session';
+                            $deposit_amt = $oas->checkdeposit($stackerbatchid);
+                            //if there's already a deposited amount, prompt the user if wants to continue.
+                            if ($deposit_amt > 0) {
+                                $details = array('hasDeposited' => 1 ,'AID' => $aid, 'StackerBatchID' => $stackerbatchid, 
+                                                 'Terminals' => array($terminalid, $vipterminalid), 
+                                                 'Message' => "Terminal has already a deposited amount of $deposit_amt. Would you like to proceed anyway?");
+                                echo json_encode($details);
+                                exit();
+                            } 
+                            else {
+                                $response = removeEGMSessionMain($oas2, $oas, $aid, $stackerbatchid, $terminalid, $vipterminalid);
                             }
                         }
                         else{
-                            $response = 'Failed to remove EGM session, EGM session does not exist';
+                            $response = array('hasDeposited' => 0, 
+                                              'Message' => 'Failed to remove EGM session, EGM session does not exist.');
                         }
                     }
                     
@@ -438,7 +433,21 @@ if($connected && $connected2)
                 $oas2->close();
                 exit;
             break;
-          
+            case "RemoveWithDeposited":
+                unset($stackerbatchid, $terminals, $aid); //unset previous used variables
+                
+                $stackerbatchid = trim($_POST['stackerbatchid']);
+                $terminals      = $_POST['terminals'];
+                $aid            = trim($_POST['AID']);
+                
+                $response = removeEGMSessionMain($oas2, $oas, $aid, $stackerbatchid, $terminals[0], $terminals[1]);
+                
+                echo json_encode($response);
+                unset($egmcheck, $response['Deleted'], $terminalid, $count);
+                $oas->close();
+                $oas2->close();
+                exit;
+            break;
         
        }
    }
@@ -454,15 +463,14 @@ if($connected && $connected2)
             //page post for transaction tracking
             case 'ViewSupport':
                 if(isset ($_POST['cmbsite']) && isset ($_POST['cmbterminal']) 
-                 && isset ($_POST['txtDate1']) && isset ($_POST['txtDate2']) 
-                 && isset($_POST['cmbstatus']))
+                 && isset ($_POST['txtDate1']) && isset($_POST['cmbstatus']))
                  {
                         $vSiteID = $_POST['cmbsite'];
                         $vTerminalID = $_POST['cmbterminal'];
                         $vdate1 = $_POST['txtDate1'];
-                        $vdate2 = $_POST['txtDate2'];
+                        //$vdate2 = $_POST['txtDate2'];
                         $vFrom = $vdate1;
-                        $vTo = date ('Y-m-d', strtotime ('+1 day' , strtotime($vdate2)));
+                        $vTo = date ('Y-m-d', strtotime ('+1 day' , strtotime($vdate1)));
                         $vtransstatus = $_POST['cmbstatus'];
                         $vtranstype = $_POST['cmbtranstype'];
                         
@@ -551,15 +559,14 @@ if($connected && $connected2)
             
             //view transaction logs for user based transactions
             case 'ViewSupportUB':
-                if(isset ($_POST['cmbsource']) && isset ($_POST['txtDate1']) && isset ($_POST['txtDate2']) 
-                 && isset($_POST['cmbstatus']))
+                if(isset ($_POST['cmbsource']) && isset ($_POST['txtDate1']) && isset($_POST['cmbstatus']))
                  {
                         $vSource = $_POST['cmbsource'];
                         $vCardNum = $_POST['txtcardnumber'];
                         $vdate1 = $_POST['txtDate1'];
-                        $vdate2 = $_POST['txtDate2'];
+                        //$vdate2 = $_POST['txtDate2'];
                         $vFrom = $vdate1;
-                        $vTo = $vdate2;
+                        $vTo = date ('Y-m-d', strtotime ('+1 day' , strtotime($vdate1)));
                         $vtransstatus = $_POST['cmbstatus'];
                         $vtranstype = $_POST['cmbtranstype'];
                         
@@ -772,15 +779,14 @@ if($connected && $connected2)
             
             case 'MCFHistory':
                 if(isset ($_POST['cmbsite']) && isset ($_POST['cmbterminal']) 
-                 && isset ($_POST['txtDate1']) && isset ($_POST['txtDate2']) 
-                 && isset($_POST['cmbstatus']))
+                 && isset ($_POST['txtDate1']) && isset($_POST['cmbstatus']))
                  {
                         $vSiteID = $_POST['cmbsite'];
                         $vTerminalID = $_POST['cmbterminal'];
                         $vdate1 = $_POST['txtDate1'];
-                        $vdate2 = $_POST['txtDate2'];
+                        //$vdate2 = $_POST['txtDate2'];
                         $vFrom = $vdate1;
-                        $vTo = date ('Y-m-d', strtotime ('+1 day' , strtotime($vdate2)));
+                        $vTo = date ('Y-m-d', strtotime ('+1 day' , strtotime($vdate1)));
                         $vtransstatus = $_POST['cmbstatus'];
                         $vFrom = $vFrom.' 06;00:00';
                         $vTo = $vTo.' 06;00:00';
@@ -3474,5 +3480,34 @@ function getListFromServer($url)
             fclose($fp_load);
         return $content;
         }
+}
+function removeEGMSessionMain($oas2, $oas, $aid, $stackerbatchid, $terminalid,$vipterminalid) {
+    if(is_null($stackerbatchid)){
+        $updated = 1;
+    }
+    else{
+        $updated = $oas2->updateSSStatus($aid,$stackerbatchid,5);
+
+        if($updated == 0){
+            $updated = 1;
+        }
+    }
+
+    if($updated > 0){
+        $deleted = $oas->deleteEGMSessions($terminalid,$vipterminalid);
+    }
+    else{
+        $deleted = 0;
+    }
+
+
+    if($deleted > 0 && $updated > 0){
+        $response = 'EGM Session Successfully Removed';
+    }
+    else{
+        $response = 'Failed to remove EGM Session';
+    }
+
+    return array('Message' => $response, 'Deleted' => $deleted, 'Updated' => $updated, 'hasDeposited' => 0);
 }
 ?>
