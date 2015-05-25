@@ -223,11 +223,12 @@ class AmpapiController extends Controller {
 
         $paramval = CJSON::encode($request);
         $message = "[" . $module . "] " . $rand . " Input: " . $paramval;
+        //$appLogger->log($appLogger->logdate, "[request]", $message);
 
         $activeSession = false;
         $validateRequiredFields = $this->validateRequiredFields($request, $module, array('TPSessionID' => false, 'Username' => false), $rand);
         if ($validateRequiredFields === true) {
-	    $TPSessionID = trim($request['TPSessionID']);
+            $TPSessionID = trim($request['TPSessionID']);
             $Username = trim($request['Username']);
             $result = $GetActiveSessionModle->getActiveSession($TPSessionID, $Username);
 
@@ -1270,7 +1271,8 @@ class AmpapiController extends Controller {
             $appLogger->log($appLogger->logdate, "[response]", $message);
         }
         $this->_sendResponse(200, CJSON::encode($data));
-        Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+        if ($module != 'AuthenticateSession')
+            Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
     }
 
     private function _displaySuccesfulMessage($returnCode, $module) {
@@ -1301,9 +1303,10 @@ class AmpapiController extends Controller {
         $message = "[" . $module . "] " . $randchars . " Output: " . CJSON::encode($data);
         if ($module != 'GetActiveSession') {
             $appLogger->log($appLogger->logdate, "[response]", $message);
+            Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
         }
         $this->_sendResponse(200, CJSON::encode($data));
-        Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+
     }
 
     //This function invokes necessary method in displaying custom error message.

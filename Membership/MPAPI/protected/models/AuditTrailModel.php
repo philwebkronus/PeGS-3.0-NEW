@@ -73,6 +73,7 @@ class AuditTrailModel
     CONST API_REDEEM_ITEMS = 63;
     CONST API_REGISTER_MEMBER_BT = 67;
     CONST API_CHANGE_PASSWORD = 69;
+    CONST API_GET_BALANCE = 72;
     
     public static $_instance = null;
     public $_connection;

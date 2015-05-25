@@ -58,6 +58,12 @@
     <?php echo CHtml::link('GetCity', Yii::app()->createUrl('ampapiInvoker/getcity'), array('target'=>'_blank')); ?>
     <br />
     <br />
+    <?php echo CHtml::link('GetBalance', Yii::app()->createUrl('ampapiInvoker/getbalance'), array('target'=>'_blank')); ?>
+    <br />
+    <br />
+    <?php echo CHtml::link('ResetPIN', Yii::app()->createUrl('ampapiInvoker/resetpin'), array('target'=>'_blank')); ?>
+    <br />
+    <br />
     <?php echo CHtml::link('Logout', Yii::app()->createUrl('ampapiInvoker/logout'), array('target'=>'_blank')); ?>
     <br />
     <br />

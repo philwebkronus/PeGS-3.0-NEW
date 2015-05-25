@@ -4,8 +4,7 @@
  * @date 07-18-2014
  * @author fdlsison
  */
-class APILogsModel
-{
+class APILogsModel {
     CONST API_LOGIN = 1;
     CONST API_FORGOT_PASSWORD = 2;
     CONST API_REGISTER_MEMBER = 3;
@@ -25,28 +24,22 @@ class APILogsModel
     CONST API_GET_REFERRER = 17;
     CONST API_GET_REGION = 18;
     CONST API_GET_CITY = 19;
-    CONST API_CHANGE_PASSWORD = 20;
+    CONST API_CHANGE_PASSWORD = 22;
+    CONST API_GET_BALANCE = 23;
 
-    
-    
-    
-    
     public static $_instance = null;
     public $_connection;
-
 
     public function __construct() {
         $this->_connection = Yii::app()->db5;
     }
-    
-    public static function model()
-    {
-        if(self::$_instance == null)
+
+    public static function model() {
+        if (self::$_instance == null)
             self::$_instance = new APILogsModel();
         return self::$_instance;
     }
-    
-    
+
     public function insertAPIlogs($apiMethodID, $refID, $transDetails, $trackingID, $status) {
         $startTrans = $this->_connection->beginTransaction();
         
@@ -81,3 +74,4 @@ class APILogsModel
         }
      }  
 }
+?>

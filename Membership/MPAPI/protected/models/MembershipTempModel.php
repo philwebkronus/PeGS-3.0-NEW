@@ -35,7 +35,7 @@ class MembershipTempModel {
     public function checkIfEmailExistsWithMID($MID, $email) {
         $sql = 'SELECT COUNT(Email) AS COUNT
                 FROM memberinfo
-                WHERE MID != :MID AND Email = :Email AND Status = 2';
+                WHERE MID != :MID AND Email = :Email'; //AND Status = 2';
         $param = array(':MID' => $MID, ':Email' => $email);
         $command = $this->_connection->createCommand($sql);
         $result = $command->queryRow(true, $param);

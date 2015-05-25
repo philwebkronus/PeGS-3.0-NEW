@@ -354,6 +354,29 @@ class AmpapiInvokerController extends Controller {
 
             return $result[1];
         }
+        
+        public function actionGetBalance(){
+        $this->pageTitle= $this->genTitlePage('Get Balance');
+
+        $result='';
+        $moduleName ='getbalance';
+
+        if(isset($_POST['TPSessionID']) && isset($_POST['MPSessionID']) && isset($_POST['CardNumber'])){
+            $TPSessionID = $_POST['TPSessionID'];
+            $MPSessionID = $_POST['MPSessionID'];
+            $CardNumber = $_POST['CardNumber'];
+            $result = $this->_getBalance($TPSessionID,$MPSessionID,$CardNumber,$moduleName);
+        }
+
+        $this->render($moduleName, array('result'=>$result));
+    }
+        private function _getBalance($TPSessionID,$MPSessionID,$CardNumber,$moduleName){
+            $url = $this->genURL($moduleName);
+            $postData = CJSON::encode(array('TPSessionID'=>$TPSessionID, 'MPSessionID'=>$MPSessionID, 'CardNumber'=>$CardNumber));
+            $result = $this->SubmitData($url, $postData);
+
+            return $result[1];
+        }
 
     public function actionGetGender(){
         $this->pageTitle= $this->genTitlePage('Get Gender');
@@ -534,6 +557,28 @@ class AmpapiInvokerController extends Controller {
 
             return $result[1];
         }
+        
+    public function actionResetPin(){
+        $this->pageTitle= $this->genTitlePage('Reset PIN');
+        $result = '';
+        
+        $moduleName = 'resetpin';
+        if(isset($_POST['txtcardnumber'])) {
+            $txtcardnumber = $_POST['txtcardnumber'];
+
+            $result = $this->_resetPin($txtcardnumber, $moduleName);
+        }
+
+        $this->render('resetpin', array('result'=>$result));
+    }
+        
+        
+    private function _resetPin($CardNumber, $moduleName){
+            $url = $this->genURL($moduleName);
+            $postData = CJSON::encode(array('CardNumber'=>$CardNumber));
+            $result = $this->SubmitData($url, $postData);
+            return $result[1];
+        }
 
 
     //-------------------------Generator Functions-------------
@@ -585,3 +630,5 @@ class AmpapiInvokerController extends Controller {
     }
 
 }
+
+?>

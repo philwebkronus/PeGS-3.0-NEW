@@ -48,7 +48,7 @@ class AuditTrailModel
             $aid= $info['AID']; $sessionID = $info['SessionID'];
         }
         try {
-	    $sql = 'INSERT INTO audittrail(AuditFunctionID, ID, SessionID, TransactionDetails, TransactionDateTime, RemoteIP)
+	    $sql = 'INSERT INTO audittrail(AuditTrailFunctionID, AID, SessionID, TransDetails, DateCreated, RemoteIP)
                     VALUES(:AuditTrailFunctionID, :AID, :SessionID,  :TransDetails, NOW(6), :RemoteIP)';
             $param = array(':SessionID' => $sessionID, ':AID' => $aid, ':TransDetails' => $transdetails, ':RemoteIP' => $remoteip, ':AuditTrailFunctionID' => $auditfunctionID);
             $command = $this->_connection->createCommand($sql);
