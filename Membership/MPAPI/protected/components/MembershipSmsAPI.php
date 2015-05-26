@@ -241,3 +241,5 @@ class MembershipSmsAPI {
         return json_decode( $json, TRUE );
     }
 }
+
+?>
