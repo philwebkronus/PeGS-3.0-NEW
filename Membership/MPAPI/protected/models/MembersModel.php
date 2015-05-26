@@ -100,7 +100,7 @@ class MembersModel {
     //@purpose check if email is verified in live membership db
     public function checkIfActiveVerifiedEmail($email) {
         $sql = 'SELECT COUNT(MID)
-                FROM members
+                FROM memberinfo
                 WHERE Email = :Email';
         $param = array(':Email' => $email);
         $command = $this->_connection->createCommand($sql);

@@ -65,7 +65,7 @@ class Utilities {
         else
             return false;
     }
-    
+
     //@date 6-25-2014
     public static function validateAlpha($string) {
         if (preg_match("/^[A-Za-z]+$/", $string))

@@ -18,7 +18,6 @@ class Ref_SMSApiMethodsModel {
     public static $_instance = null;
     public $_connection;
 
-
     public function __construct() {
         $this->_connection = Yii::app()->db4;
     }
@@ -41,8 +40,5 @@ class Ref_SMSApiMethodsModel {
         $result = $command->queryRow(true, $param);
         
         return $result;
-    }
-    
-    
-            
+    }           
 }

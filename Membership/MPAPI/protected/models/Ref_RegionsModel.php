@@ -10,7 +10,6 @@ class Ref_RegionsModel {
     public static $_instance = null;
     public $_connection;
 
-
     public function __construct() {
         $this->_connection = Yii::app()->db5;
     }
@@ -23,7 +22,7 @@ class Ref_RegionsModel {
     }
     
     //@date 07-04-2014
-    //@purpose retrieve list of nationality
+    //@purpose retrieve list of regions
     public function getRegionList() {
         $sql = 'SELECT *
                 FROM ref_regions';

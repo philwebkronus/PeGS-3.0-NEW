@@ -10,7 +10,6 @@ class CouponsModel {
     public static $_instance = null;
     public $_connection;
 
-
     public function __construct() {
         $this->_connection = Yii::app()->db6;
     }
@@ -64,19 +63,5 @@ class CouponsModel {
         }
 
     }
-
-
-//    public function getRaffleCouponSuffix() {
-//        $sql = 'SELECT *
-//                FROM couponbatches
-//                WHERE Status = 1
-//                LIMIT 1';
-//        $command = $this->_connection->createCommand($sql);
-//        $result = $command->queryRow();
-//
-//
-//        return $result;
-//    }
-
 }
 

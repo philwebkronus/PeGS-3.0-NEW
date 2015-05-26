@@ -23,7 +23,7 @@ class Ref_ReferrerModel {
     }
     
     //@date 07-04-2014
-    //@purpose retrieve list of nationality
+    //@purpose retrieve list of referrers
     public function getReferrerList() {
         $sql = 'SELECT *
                 FROM ref_referrer';

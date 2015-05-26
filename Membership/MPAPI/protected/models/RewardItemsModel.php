@@ -168,7 +168,5 @@ class RewardItemsModel {
         $result = $command->queryRow(true, $param);
         
         return $result;
-    }
-            
+    }           
 }
-

@@ -1,8 +1,12 @@
 <div class="form wide" style="margin-left: 20px;">
     <br />
-    <h1>Check Points</h1>
+    <h1>Get Balance</h1>
     <br />
     <?php echo CHtml::beginForm(); ?>
+        <div class="row">
+            <?php echo CHtml::label('MPSessionID','MPSessionID'); ?>
+            <?php echo CHtml::textField('MPSessionID'); ?>
+        </div>
         <div class="row">
             <?php echo CHtml::label('CardNumber','CardNumber'); ?>
             <?php echo CHtml::textField('CardNumber'); ?>

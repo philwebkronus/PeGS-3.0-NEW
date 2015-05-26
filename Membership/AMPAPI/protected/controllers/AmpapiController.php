@@ -1642,7 +1642,6 @@ class AmpapiController extends Controller {
         //shuffle($temp_array);
         //return implode('', $temp_array);
     }
-
     private function _updateSessionDate($TPSessionID, $AID, $moduleNameAMPAPI, $randchars) {
         $ValidateTPSession = new ValidateTPSessionIDModel();
         $UpdateSession = $ValidateTPSession->updateSessionDateCreated($TPSessionID, $AID);

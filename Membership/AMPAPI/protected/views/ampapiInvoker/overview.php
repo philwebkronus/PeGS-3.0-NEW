@@ -10,6 +10,9 @@
     <?php echo CHtml::link('Login', Yii::app()->createUrl('ampapiInvoker/login'), array('target'=>'_blank')); ?>
     <br />
     <br />
+    <?php //echo CHtml::link('ChangePassword', Yii::app()->createUrl('ampapiInvoker/changepassword'), array('target'=>'_blank')); ?>
+    <br />
+    <br />
     <?php echo CHtml::link('ForgotPassword',  Yii::app()->createUrl('ampapiInvoker/forgotpassword'), array('target'=>'_blank')); ?>
     <br />
     <br />

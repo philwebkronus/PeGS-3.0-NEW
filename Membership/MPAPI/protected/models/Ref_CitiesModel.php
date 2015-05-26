@@ -10,7 +10,6 @@ class Ref_CitiesModel {
     public static $_instance = null;
     public $_connection;
 
-
     public function __construct() {
         $this->_connection = Yii::app()->db5;
     }
@@ -23,7 +22,7 @@ class Ref_CitiesModel {
     }
     
     //@date 07-04-2014
-    //@purpose retrieve list of nationality
+    //@purpose retrieve list of cities
     public function getCityList() {
         $sql = 'SELECT *
                 FROM ref_cities';

@@ -10,7 +10,6 @@ class CardsModel {
     public static $_instance = null;
     public $_connection;
 
-
     public function __construct() {
         $this->_connection = Yii::app()->db2;
     }
@@ -64,8 +63,5 @@ class CardsModel {
         $result = $command->queryRow(true, $param);
         
         return $result;
-    }
-    
-            
+    }           
 }
-

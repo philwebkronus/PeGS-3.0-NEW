@@ -14,21 +14,21 @@
  */
 class GetActiveSessionModel {
     //put your code here
-
+    
     public function __construct() {
         $this->_connection = Yii::app()->db5;
     }
-
+    
     public function getActiveSession($Username){
         $sql = 'SELECT COUNT(accs.AID) as Count,accs.AID, accs.SessionID, a.Username, accs.DateCreated FROM accountsessions accs, accounts a WHERE a.AID = accs.AID AND a.Username=:Username AND a.Status=:Status AND a.UserAccessTypeID = 1';
 
         $param = array(':Username'=>$Username,':Status'=>'1');
-
+        
         $command = $this->_connection->createCommand($sql);
         $result = $command->queryRow(true, $param);
         //print_r($result);
         return $result;
     }
-
-
+    
+    
 }

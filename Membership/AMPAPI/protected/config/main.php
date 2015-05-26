@@ -146,7 +146,6 @@ return array(
             'urlAMPAPI'=>'http://localhost/<AMPAPI DIRECTORY HERE>/index.php/Ampapi/',
             'urlMPAPI'=>'http://<MPAPI URL HERE>/index.php/MPapi/',
             'SessionTimeOut' => 45.00
-
         ),
 
 

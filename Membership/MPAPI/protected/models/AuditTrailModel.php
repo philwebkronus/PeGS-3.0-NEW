@@ -1,15 +1,11 @@
 <?php
 
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 /**
  * Description of AuditTrailModel
  *
  * @author fdlsison
  */
+
 class AuditTrailModel
 {
     CONST LOGIN = 1;
@@ -74,10 +70,10 @@ class AuditTrailModel
     CONST API_REGISTER_MEMBER_BT = 67;
     CONST API_CREATE_MOBILE_INFO = 68;
     CONST API_CHANGE_PASSWORD = 69;
+    CONST API_GET_BALANCE = 72;
     
     public static $_instance = null;
     public $_connection;
-
 
     public function __construct() {
         $this->_connection = Yii::app()->db;
@@ -89,12 +85,8 @@ class AuditTrailModel
             self::$_instance = new AuditTrailModel();
         return self::$_instance;
     }
-    
-    
-    public function logEvent($auditfunctionID, $transdetails, $info) {
-        
-        
-        
+       
+    public function logEvent($auditfunctionID, $transdetails, $info) {    
         $startTrans = $this->_connection->beginTransaction();
         
         $sessionID = '';
@@ -106,9 +98,7 @@ class AuditTrailModel
             $aid        = $info['MID'];
             $sessionID  = $info['SessionID'];
         }
-        
-        
-        
+               
         try {
             $sql = 'INSERT INTO audittrail(AuditFunctionID, ID, SessionID, TransactionDetails, TransactionDateTime, RemoteIP)
                     VALUES(:AuditTrailFunctionID, :AID, :SessionID,  :TransDetails, NOW(6), :RemoteIP)';
@@ -133,3 +123,4 @@ class AuditTrailModel
         }
      }
 }
+?>

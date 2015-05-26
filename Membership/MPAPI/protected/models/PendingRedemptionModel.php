@@ -10,7 +10,6 @@ class PendingRedemptionModel {
     public static $_instance = null;
     public $_connection;
 
-
     public function __construct() {
         $this->_connection = Yii::app()->db4;
     }
@@ -38,9 +37,5 @@ class PendingRedemptionModel {
         else {
             return false;
         }
-  
-    }
-    
-            
+   }           
 }
-

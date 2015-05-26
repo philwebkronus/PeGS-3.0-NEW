@@ -209,8 +209,8 @@ class MembershipTempModel {
             $mid = Yii::app()->db3->getLastInsertID();
             
             try {
-                $sql = 'INSERT INTO memberinfo(MID, FirstName, MiddleName, LastName, NickName, Birthdate, Gender, Email, AlternateEmail, MobileNumber, AlternateMobileNumber, NationalityID, OccupationID, Address1, IdentificationID, IdentificationNumber, IsSmoker, DateCreated, ReferrerCode, EmailSubscription, SMSSubscription, ReferrerID)
-                        VALUES(:MID, :FirstName, :MiddleName, :LastName, :NickName, :Birthdate, :Gender, :Email, :AlternateEmail, :MobileNumber, :AlternateMobileNumber, :Nationality, :Occupation, :PermanentAddress, :IDPresented, :IDNumber, :IsSmoker, NOW(6), :ReferrerCode, :emailSubscription, :smsSubscription, :referrerID)';
+                $sql = 'INSERT INTO memberinfo(MID, FirstName, MiddleName, LastName, NickName, Birthdate, Gender, Email, AlternateEmail, MobileNumber, AlternateMobileNumber, NationalityID, OccupationID, Address1, IdentificationID, IdentificationNumber, IsSmoker, DateCreated, ReferrerCode, EmailSubscription, SMSSubscription, ReferrerID, RegistrationOrigin)
+                        VALUES(:MID, :FirstName, :MiddleName, :LastName, :NickName, :Birthdate, :Gender, :Email, :AlternateEmail, :MobileNumber, :AlternateMobileNumber, :Nationality, :Occupation, :PermanentAddress, :IDPresented, :IDNumber, :IsSmoker, NOW(6), :ReferrerCode, :emailSubscription, :smsSubscription, :referrerID, 3)';
                 $param = array(':MID' => $mid, ':FirstName' => $firstname, ':MiddleName' => $middlename, ':LastName' => $lastname, ':PermanentAddress' => $permanentAddress,
                                ':IDPresented' => $idPresented, ':IDNumber' => $idNumber, ':NickName' => $nickname, ':MobileNumber' => $mobileNumber, ':AlternateMobileNumber' => $alternateMobileNumber,
                                ':Email' => $email, ':AlternateEmail' => $alternateEmail, ':Birthdate' => $birthdate, ':Nationality' => $nationality, ':Occupation' => $occupation, 
@@ -317,8 +317,8 @@ class MembershipTempModel {
             $mid = Yii::app()->db3->getLastInsertID();
                              
             try {                           
-                $sql2 = 'INSERT INTO memberinfo(MID, FirstName, MiddleName, LastName, NickName, Birthdate, Gender, Email, AlternateEmail, MobileNumber, AlternateMobileNumber, NationalityID, OccupationID, Address1, IdentificationID, IdentificationNumber, IsSmoker, DateCreated, ReferrerCode, EmailSubscription, SMSSubscription, ReferrerID)
-                        VALUES(:MID, :FirstName, :MiddleName, :LastName, :NickName, :Birthdate, :Gender, :Email, :AlternateEmail, :MobileNumber, :AlternateMobileNumber, :Nationality, :Occupation, :PermanentAddress, :IDPresented, :IDNumber, :IsSmoker, NOW(6), :ReferrerCode, :emailSubscription, :smsSubscription, :referrerID)';
+                $sql2 = 'INSERT INTO memberinfo(MID, FirstName, MiddleName, LastName, NickName, Birthdate, Gender, Email, AlternateEmail, MobileNumber, AlternateMobileNumber, NationalityID, OccupationID, Address1, IdentificationID, IdentificationNumber, IsSmoker, DateCreated, ReferrerCode, EmailSubscription, SMSSubscription, ReferrerID, RegistrationOrigin)
+                        VALUES(:MID, :FirstName, :MiddleName, :LastName, :NickName, :Birthdate, :Gender, :Email, :AlternateEmail, :MobileNumber, :AlternateMobileNumber, :Nationality, :Occupation, :PermanentAddress, :IDPresented, :IDNumber, :IsSmoker, NOW(6), :ReferrerCode, :emailSubscription, :smsSubscription, :referrerID, 4)';
                 $param2 = array(':MID' => $mid, ':FirstName' => $firstname, ':MiddleName' => $middlename, ':LastName' => $lastname, ':PermanentAddress' => $permanentAddress,
                                ':IDPresented' => $idPresented, ':IDNumber' => $idNumber, ':NickName' => $nickname, ':MobileNumber' => $mobileNumber, ':AlternateMobileNumber' => $alternateMobileNumber,
                                ':Email' => $email, ':AlternateEmail' => $alternateEmail, ':Birthdate' => $birthdate, ':Nationality' => $nationality, ':Occupation' => $occupation, 

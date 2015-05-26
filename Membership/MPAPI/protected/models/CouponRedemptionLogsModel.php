@@ -10,7 +10,6 @@ class CouponRedemptionLogsModel {
     public static $_instance = null;
     public $_connection;
 
-
     public function __construct() {
         $this->_connection = Yii::app()->db4;
     }
@@ -21,8 +20,7 @@ class CouponRedemptionLogsModel {
             self::$_instance = new CouponRedemptionLogsModel();
         return self::$_instance;
     }
-    
-    
+        
     //@purpose insert new record in coupon redemption logs
     public function insertCouponLogs($MID, $rewardItemID, $couponCount, $redeemedDate = '', $siteID = '', $serviceID = '') {
         $startTrans = $this->_connection->beginTransaction();
@@ -57,8 +55,6 @@ class CouponRedemptionLogsModel {
     public function updateLogsStatus($couponRedemptionLogID, $status, $MID = '', $totalItemPoints = '', $serialCode = '', $securityCode = '', $validFrom = null, $validTo = null) {
         $startTrans = $this->_connection->beginTransaction();
         
-        //var_dump($couponRedemptionLogID, $status, $MID, $totalItemPoints, $serialCode, $securityCode);
-        
         try {
             $updatedByAID = $MID;
             $sql = 'UPDATE couponredemptionlogs
@@ -72,23 +68,18 @@ class CouponRedemptionLogsModel {
             $command = $this->_connection->createCommand($sql);
             $command->bindValues($param);
             $result = $command->execute();
-            //var_dump($result);
             try {
                 $startTrans->commit();
                 return $MID;
             } catch (PDOException $e) {
-     //var_dump($e->getMessage());
                 $startTrans->rollback();
                 Utilities::log($e->getMessage());
                 return 0;
             }
         } catch (Exception $e) {
-            //var_dump($e->getMessage());
             $startTrans->rollback();
             Utilities::log($e->getMessage());
             return 0;
         }
-    }
-            
+    }           
 }
-

@@ -10,7 +10,6 @@ class ItemSerialCodesModel {
     public static $_instance = null;
     public $_connection;
 
-
     public function __construct() {
         $this->_connection = Yii::app()->db4;
     }
@@ -66,9 +65,7 @@ class ItemSerialCodesModel {
                 $command = $this->_connection->createCommand($updateSQL);
                 $command->bindValues($param);
                 $result = $command->execute();
-                
-                
-                
+                              
                 if($result == FALSE || $result == 0) {
                     $resultMsg = 'Failed to update itemserialcodes table.';
                     
@@ -90,10 +87,7 @@ class ItemSerialCodesModel {
                         $returningarray["StatusCode"] = $returnvalue;
                         $startTrans->rollback();
                         return $returningarray;
-                    }
-                    
-                    
-                    
+                    }                   
                 }
                 
                 //unlock table if update query succeeds
@@ -116,45 +110,6 @@ class ItemSerialCodesModel {
                     $startTrans->rollback();
                     return $returningarray;
                 }
-//                try {
-//                    //unlock the table if the update query succeeded.
-//                    $unlockSQL = 'UNLOCK TABLES';
-//                    $command2 = $this->_connection->createCommand($unlockSQL);
-//                    $result2 = $command2->execute();
-//                    if($result2 == false || !$result2){
-//                        $unlockedMsg = $resultMsg;
-//                        $returningArray["IsSuccess"] = $result2;
-//                        $returningArray["StatusCode"] = 2;
-//                        return $returningArray;
-//                    }
-//
-//                    //return results value if the lock, update and unlock query all succeed.
-//                    $returningArray["IsSuccess"] = true;
-//                    $returningArray["StatusCode"] = $itemSerialCodeID['SerialCode'];
-//                    return $returningArray;
-//                } catch (PDOException $e) {
-//                    $startTrans->rollback();
-//                    Utilities::log($e->getMessage());
-//
-//                    $resultMsg = "Updating of itemserialcodes table failed.";
-//                    //Unlock table if the update query failed.
-//                    $unlockSQL = 'UNLOCK TABLES';
-//                    $command = $this->_connection->createCommand($unlockSQL);
-//                    $isUnlocked = $command->execute();
-//                    if($isUnlocked == false || !$isUnlocked) {
-//                        $unlockedMsg = $resultMsg;
-//                    }
-//                    $result == 0 ? $returnValue = 3: $returnValue = 2;
-//                    $returningArray["IsSuccess"] = false;
-//                    $returningArray["StatusCode"] = $returnValue;
-//                    return $returningArray;
-//                    //return $resultMsg;
-//                }
-//                } catch (Exception $e) {
-//                    $startTrans->rollback();
-//                    Utilities::log($e->getMessage());
-//                    return 0;
-//                }
             }
             else {
                 $unlockSQL = 'UNLOCK TABLES';
@@ -172,18 +127,8 @@ class ItemSerialCodesModel {
                     $returningarray["IsSuccess"] = $isUnLocked;
                     $returningarray["StatusCode"] = 2;
                     return $returningarray;
-                }
-                
-//                if($isUnlocked == false || !$isUnlocked) {
-//                    $unlockedMsg = $resultMsg;
-//                    $returningarray["IsSuccess"] = $isunlocked;
-//                    $returningarray["StatusCode"] = 2;
-//                    return $returningarray;
-//                }
-                
+                }                
             }
-//            $startTrans->commit();
-//            return 1;
         }
         catch (PDOException $e) {
             
@@ -194,71 +139,10 @@ class ItemSerialCodesModel {
             
         }
         
-//        if($isLocked == false || !$isLocked) {
-//            $returningArray['IsSuccess'] = $isLocked;
-//            $returningArray['StatusCode'] = 1;
-//            return $returningArray;
-//        }
-//        else {
-//            $itemSerialCodeID = $this->getSerialCodeForRedemptionCopy($rewardItemID);
-//            if(isset($itemSerialCodeID['ItemSerialCodeID']) && $itemSerialCodeID['ItemSerialCodeID'] != '') {
-//                //proceed with the update query if the table is already locked.
-//                try {
-//                    $updateSQL = 'UPDATE itemserialcodes
-//                                  SET Status = 2, UpdatedByAID = :updatedByAID, DateUpdated = NOW(6)
-//                                  WHERE Status = 1 AND ItemSerialCodeID = :itemSerialCodeID';
-//                    $param = array(':updatedByAID' => $updatedByAID, ':itemSerialCodeID' => $itemSerialCodeID);
-//                    $command = $this->_connection->createCommand($updateSQL);
-//                    $command->bindValues($param);
-//                    $result = $command->execute();
-//                    
-//                    try {
-//                        //unlock the table if the update query succeeded.
-//                        $unlockSQL = 'UNLOCK TABLES';
-//                        $command2 = $this->_connection->createCommand($unlockSQL);
-//                        $result2 = $command2->execute();
-//                        if($result2 == false || !$result2){
-//                            $unlockedMsg = $resultMsg;
-//                            $returningArray["IsSuccess"] = $result2;
-//                            $returningArray["StatusCode"] = 2;
-//                            return $returningArray;
-//                        }
-//                        
-//                        //return results value if the lock, update and unlock query all succeed.
-//                        $returningArray["IsSuccess"] = true;
-//                        $returningArray["StatusCode"] = $itemSerialCodeID['SerialCode'];
-//                        return $returningArray;
-//                    } catch (PDOException $e) {
-//                        $startTrans->rollback();
-//                        Utilities::log($e->getMessage());
-//                        
-//                        $resultMsg = "Updating of itemserialcodes table failed.";
-//                        //Unlock table if the update query failed.
-//                        $unlockSQL = 'UNLOCK TABLES';
-//                        $command = $this->_connection->createCommand($unlockSQL);
-//                        $isUnlocked = $command->execute();
-//                        if($isUnlocked == false || !$isUnlocked) {
-//                            $unlockedMsg = $resultMsg;
-//                        }
-//                        $result == 0 ? $returnValue = 3: $returnValue = 2;
-//                        $returningArray["IsSuccess"] = false;
-//                        $returningArray["StatusCode"] = $returnValue;
-//                        return $returningArray;
-//                        //return $resultMsg;
-//                    }
-//                } catch (Exception $e) {
-//                    $startTrans->rollback();
-//                    Utilities::log($e->getMessage());
-//                    return 0;
-//                }
-//            }  
-        
-        
     }
     
     //@purpose fetching of pre-generated item serial code from db using reward item ID
-    public function getSerialCodeForRedemptionCopy($rewardItemID) {
-     
+    public function getSerialCodeForRedemptionCopy($rewardItemID) {   
         $sql = 'SELECT min(SerialCode) AS SerialCode, ItemSerialCodeID
                 FROM itemserialcodes
                 WHERE Status = 1 AND RewardItemID = :rewardItemID';
@@ -267,9 +151,5 @@ class ItemSerialCodesModel {
         $result = $command->queryRow(true, $param);
         
         return $result;
-    }
-    
-    
-            
+    }           
 }
-

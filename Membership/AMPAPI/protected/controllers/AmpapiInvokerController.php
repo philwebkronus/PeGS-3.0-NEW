@@ -539,7 +539,6 @@ class AmpapiInvokerController extends Controller {
             return $result[1];
         }
 
-
     public function actionLogout(){
         $this->pageTitle= $this->genTitlePage('Logout');
         $result='';
@@ -559,13 +558,13 @@ class AmpapiInvokerController extends Controller {
 
             return $result[1];
         }
-
+        
     //@date 10-27-2014
     //@author fdlsison
     public function actionCreateMobileInfo(){
         $this->pageTitle= $this->genTitlePage('Create Mobile Info');
         $result='';
-
+        
         $moduleName ='createmobileinfo';
         if(isset($_POST['TPSessionID']) && isset($_POST['Username']) && isset($_POST['Password']) && isset($_POST['AlterStr'])){
             $TPSessionID = $_POST['TPSessionID'];

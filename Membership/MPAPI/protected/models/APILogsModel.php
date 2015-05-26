@@ -1,10 +1,5 @@
 <?php
 
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 /**
  * Description of APILogsModel
  * @date 07-18-2014
@@ -28,10 +23,10 @@ class APILogsModel
     CONST API_REGISTER_MEMBER_BT = 18;
     CONST API_CREATE_MOBILE_INFO = 19;
     CONST API_CHANGE_PASSWORD = 20;
+    CONST API_GET_BALANCE = 21;
        
     public static $_instance = null;
     public $_connection;
-
 
     public function __construct() {
         $this->_connection = Yii::app()->db4;
@@ -42,12 +37,9 @@ class APILogsModel
         if(self::$_instance == null)
             self::$_instance = new APILogsModel();
         return self::$_instance;
-    }
+    }   
     
-    
-    public function insertAPIlogs($apiMethodID, $refID, $transDetails, $trackingID, $status) {
-     
-        
+    public function insertAPIlogs($apiMethodID, $refID, $transDetails, $trackingID, $status) {  
         $remoteIP = $_SERVER['REMOTE_ADDR'];
         $method = '';
         switch($apiMethodID) {
@@ -99,6 +91,9 @@ class APILogsModel
             case 20:
                 $method = self::API_CHANGE_PASSWORD;
                 break;
+            case 21:
+                $method = self::API_GET_BALANCE;
+                break;
         }
         
         $startTrans = $this->_connection->beginTransaction();
@@ -132,3 +127,4 @@ class APILogsModel
         }
      }  
 }
+?>

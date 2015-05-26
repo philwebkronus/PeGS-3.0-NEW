@@ -10,7 +10,6 @@ class ItemRedemptionLogsModel {
     public static $_instance = null;
     public $_connection;
 
-
     public function __construct() {
         $this->_connection = Yii::app()->db4;
     }
@@ -24,11 +23,6 @@ class ItemRedemptionLogsModel {
     
     //$purpose for inserting redemption logs on database
     public function insertItemLogs($redeemedDate, $MID, $rewardItemID, $itemCount, $siteID = '', $serviceID = '') {
-     //var_dump($redeemedDate, $MID, $rewardItemID, $itemCount, $siteID, $serviceID);
-     
-        //$startTrans = $this->_connection->beginTransaction();
-        
-      //  try {
             $sql = 'INSERT INTO itemredemptionlogs (MID, SiteID, ServiceID, RewardItemID, ItemCount, Source, DateCreated, CreatedByAID)
                     VALUES(:MID, :siteID, :serviceID, :rewardItemID, :itemCount, 1, :redeemedDate, :MID)';
             $param = array(':MID' => $MID, ':rewardItemID' => $rewardItemID, ':itemCount' => $itemCount, ':serviceID' => $serviceID,
@@ -44,31 +38,6 @@ class ItemRedemptionLogsModel {
             else {
                 return 0;
             }
-            
-//            var_dump($result);
-//             if($result == 1 || $result == TRUE) {
-//                 $startTrans->commit();
-//                 $lastInsertedID = $this->_connection->getLastInsertID();
-//                 return $lastInsertedID;
-//             }
-//             else {
-//                 $startTrans->rollback();
-//                 Utilities::log($e->getMessage());
-//                 return 0;
-//             }
-//            try {              
-//               // $startTrans->commit();                
-//                return $lastInsertedID;
-//            } catch (PDOException $e) {
-//                $startTrans->rollback();
-//                Utilities::log($e->getMessage());
-//                return 0;
-//            }
-//        } catch (Exception $e) {
-//           // $startTrans->rollback();
-//            Utilities::log($e->getMessage());
-//            return 0;
-//        }
     }
     
     //@date 07-15-2014
@@ -103,11 +72,5 @@ class ItemRedemptionLogsModel {
             return 0;
         }
         
-    }
-    
-    
-    
-    
-            
+    }           
 }
-

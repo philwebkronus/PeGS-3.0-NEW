@@ -157,6 +157,12 @@ return array(
             'MarketingEmail' => '@philweb.ph',
             'urlMPAPI' => 'http://<MPAPI URL HERE>/index.php/MPapi/',
             'SessionTimeOut' => 45.00,
-            'urlVerify' => 'http://<MEMBERSHIP INSTANCE HERE>/verify.php'
+            'urlVerify' => 'http://membershipsb.genesis.local/verify.php',
+            'getcomppoints' => 'http://<PCWS URL HERE>/PCWS/index.php/pcws/getcomppoints',
+            'getbalance' => 'http://<PCWS URL HERE>/PCWS/index.php/pcws/getbalance',
+            'deductcomppoints' => 'http://<PCWS URL HERE>/PCWS/index.php/pcws/deductcomppoints',
+            'SystemCode'=>array('madmin' => '4896816', 'mportal' => '48452098','pcws' => '4761'),
+            'SysUsernameMA' => 'madmin',
+            'SysUsernameMP' => 'mportal'
             ),
 );

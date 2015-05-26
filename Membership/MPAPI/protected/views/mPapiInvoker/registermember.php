@@ -90,7 +90,7 @@
         <div class="row" style="margin-left: 225px;">
             <?php echo CHtml::submitButton('Invoke'); ?>
         </div>
-
+    
     <?php echo CHtml::endForm(); ?>
 </div>
 

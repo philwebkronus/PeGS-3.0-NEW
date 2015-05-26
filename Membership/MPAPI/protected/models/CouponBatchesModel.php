@@ -10,7 +10,6 @@ class CouponBatchesModel {
     public static $_instance = null;
     public $_connection;
 
-
     public function __construct() {
         $this->_connection = Yii::app()->db4;
     }
@@ -21,8 +20,7 @@ class CouponBatchesModel {
             self::$_instance = new CouponBatchesModel();
         return self::$_instance;
     }
-    
-    
+      
     public function getRaffleCouponSuffix() {
         $sql = 'SELECT *
                 FROM couponbatches
@@ -33,7 +31,5 @@ class CouponBatchesModel {
         
         
         return $result;
-    }
-            
+    }           
 }
-

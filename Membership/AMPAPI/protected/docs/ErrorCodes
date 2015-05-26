@@ -70,7 +70,7 @@ Code    Message
 57  -   Transaction failed. Serial Code is unavailable.
 58  -   Transaction failed. Number of available item is insufficient.
 59  -   Transaction failed. Invalid Item or Coupon Quantity.
-60  -   Item to be redeemed is a mystery item. Only one mystery item per redeem is allowed.
+60  -   Item to be redeemed is a mystery item. Only one mystery item per redeem is allowed. 
 61  -   Card number does not exist.
 62  -   RewardID does not exist.
 63  -   RewardItemID does not exist.

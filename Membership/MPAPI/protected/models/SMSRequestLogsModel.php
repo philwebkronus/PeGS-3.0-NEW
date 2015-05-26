@@ -6,15 +6,13 @@
  * @date 07-11-2014
  */
 
-class SMSRequestLogsModel {
-    
+class SMSRequestLogsModel {   
     const COUPON_REDEMPTION = 1;
     const ITEM_REDEMPTION = 2;
     const PLAYER_REGISTRATION = 3;
     
     public static $_instance = null;
     public $_connection;
-
 
     public function __construct() {
         $this->_connection = Yii::app()->db4;
@@ -56,11 +54,5 @@ class SMSRequestLogsModel {
             Utilities::log($e->getMessage());
             return 0;
         }
-    }
-    
-    
-    
-    
-            
+    }           
 }
-
