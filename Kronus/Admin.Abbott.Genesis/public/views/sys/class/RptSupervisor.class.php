@@ -43,6 +43,7 @@ class RptSupervisor extends DBHandler
     {
         $query1 = "select tr.DateCreated, tr.TerminalID,tr.SiteID, tr.CreatedByAID, 
                      tr.TransactionType, tr.Amount,a.UserName, ad.Name from transactiondetails tr 
+                     FORCE INDEX(IX_transactiondetails_DateCreated)
                      inner join accounts a on a.AID = tr.CreatedByAID
                      inner join accountdetails ad on ad.AID = tr.CreatedByAID
                      where tr.SiteID IN(".$zsiteID.") AND 
@@ -128,7 +129,9 @@ class RptSupervisor extends DBHandler
                                 END As ReloadTicket,
 
                                 ts.DateStarted, ts.DateEnded, tr.SiteID
-                                FROM npos.transactiondetails tr INNER JOIN npos.transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
+                                FROM npos.transactiondetails tr 
+                                FORCE INDEX(IX_transactiondetails_DateCreated)
+                                INNER JOIN npos.transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
                                 INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
                                 INNER JOIN npos.accounts a ON ts.CreatedByAID = a.AID
                                 INNER JOIN npos.sites s ON tr.SiteID = s.SiteID
@@ -138,7 +141,9 @@ class RptSupervisor extends DBHandler
                                 GROUP By tr.TransactionType, tr.TransactionSummaryID
                                 ORDER BY s.POSAccountNo"; 
         
-        $query3 = "SELECT tr.SiteID, IFNULL(SUM(stckr.Withdrawal), 0) AS PrintedTickets FROM npos.transactiondetails tr  -- Printed Tickets through W
+        $query3 = "SELECT tr.SiteID, IFNULL(SUM(stckr.Withdrawal), 0) AS PrintedTickets 
+                                FROM npos.transactiondetails tr  -- Printed Tickets through W
+                                FORCE INDEX(IX_transactiondetails_DateCreated)
                                 INNER JOIN npos.transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
                                 INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
                                 INNER JOIN npos.accounts a ON ts.CreatedByAID = a.AID

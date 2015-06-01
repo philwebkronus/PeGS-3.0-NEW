@@ -444,7 +444,7 @@ if($connected)
                                 monitor email traffic.
                             </body>
                         </html>";
-                    $headers="From: poskronusadmin@philweb.com.ph\r\nContent-type:text/html";
+                    $headers="From: $adminemailsender\r\nContent-type:text/html";
                     $sentEmail = mail($to, $subject, $message, $headers);   
                     if($sentEmail == 1)
                     {
@@ -743,9 +743,9 @@ if($connected)
                 $vSiteID = $_POST['cmbsite'];
                 $vTerminalID = $_POST['cmbterminal'];
                 $vdate1 = $_POST['txtDate1'];
-                $vdate2 = $_POST['txtDate2'];
+                //$vdate2 = $_POST['txtDate2'];
                 $vFrom = $vdate1;
-                $vTo = $vdate2; //date ('Y-m-d', strtotime ('+1 day' , strtotime($vdate2)));
+                $vTo = date ('Y-m-d', strtotime ('+1 day' , strtotime($vdate1)));
                 $vsummaryID = $_POST['summaryID'];
                 
                 //for sorting
@@ -837,9 +837,9 @@ if($connected)
                 $vSiteID = $_POST['cmbsite'];
                 $vTerminalID = $_POST['cmbterminal'];
                 $vdate1 = $_POST['txtDate1'];
-                $vdate2 = $_POST['txtDate2'];
+                //$vdate2 = $_POST['txtDate2'];
                 $vFrom = $vdate1;
-                $vTo = $vdate2; //date ('Y-m-d', strtotime ('+1 day' , strtotime($vdate2)));
+                $vTo = date ('Y-m-d', strtotime ('+1 day' , strtotime($vdate1)));
                 //for sorting
                 if($_POST['sidx'] != "")
                 {
@@ -911,9 +911,9 @@ if($connected)
                 $vSiteID = $_POST['cmbsite'];
                 $vTerminalID = $_POST['cmbterminal'];
                 $vdate1 = $_POST['txtDate1'];
-                $vdate2 = $_POST['txtDate2'];
+                //$vdate2 = $_POST['txtDate2'];
                 $vFrom = $vdate1;
-                $vTo = $vdate2; //date ('Y-m-d', strtotime ('+1 day' , strtotime($vdate2)));
+                $vTo = date ('Y-m-d', strtotime ('+1 day' , strtotime($vdate1)));
                 $vsummaryID = $_POST['summaryID'];
                 
                 //for sorting

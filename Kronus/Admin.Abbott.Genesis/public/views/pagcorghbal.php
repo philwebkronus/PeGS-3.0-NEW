@@ -32,13 +32,13 @@ $vaccesspages = array('11');
         <br />
         <table>
             <tr>
-                <td>Start Date</td>
+                <td>Transaction Date:</td>
                 <td>
                     <input type="text" value="<?php echo date('Y-m-d') ?>" id="startdate" readonly="readonly" name="startdate" />&nbsp;<img name="cal" src="images/cal.gif" width="16" height="16" border="0" alt="Pick a date" onClick="displayDatePicker('startdate', false, 'ymd', '-');"/>
                 &nbsp;
-                End Date
+<!--                End Date
                 &nbsp;
-                    <input type="text" value="<?php echo date('Y-m-d',strtotime(date("Y-m-d", strtotime(date('Y-m-d'))))) ?>" id="enddate" readonly="readonly" name="enddate" />&nbsp;<img name="cal" src="images/cal.gif" width="16" height="16" border="0" alt="Pick a date" onClick="displayDatePicker('enddate', false, 'ymd', '-');"/> 
+                    <input type="text" value="<?php echo date('Y-m-d',strtotime(date("Y-m-d", strtotime(date('Y-m-d'))))) ?>" id="enddate" readonly="readonly" name="enddate" />&nbsp;<img name="cal" src="images/cal.gif" width="16" height="16" border="0" alt="Pick a date" onClick="displayDatePicker('enddate', false, 'ymd', '-');"/> -->
                 </td>
             </tr>
             <tr>
@@ -168,11 +168,11 @@ $vaccesspages = array('11');
               return false;
             }
             var startdate = jQuery('#startdate').val();
-            var enddate = jQuery('#enddate').val();
+            //var enddate = jQuery('#enddate').val();
             var site = jQuery('#selsitecode').val();
             
             jQuery("#tblreplenish").jqGrid('setGridParam',{url:"process/ProcessPagcorMgmt.php?action=GHBalancePerCutoff&startdate="+startdate+
-                "&enddate="+enddate+"&site="+site,page:0}).trigger("reloadGrid");  
+                "&site="+site,page:0}).trigger("reloadGrid");  
         });
     });
 </script>

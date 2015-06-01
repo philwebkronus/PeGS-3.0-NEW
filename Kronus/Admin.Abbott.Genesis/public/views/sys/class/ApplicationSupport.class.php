@@ -1790,7 +1790,7 @@ class ApplicationSupport extends DBHandler
      
      function checkdeposit($stackerbatchid){
             $stmt = "SELECT Deposit FROM stackermanagement.stackersummary 
-                WHERE StackerSummaryID = ? AND Status = 0";
+                WHERE StackerSummaryID = ?";
            $this->prepare($stmt);
            $this->bindparameter(1, $stackerbatchid);
            $this->execute($stmt);

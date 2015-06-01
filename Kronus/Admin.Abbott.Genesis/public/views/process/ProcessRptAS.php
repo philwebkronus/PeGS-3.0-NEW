@@ -76,7 +76,7 @@ if($connected)
    {
        
        $datefrom = $_GET['DateFrom'];
-       $dateto = $_GET['DateTo'];
+       //$dateto = $_GET['DateTo'];
        $site= $_GET['Site'];
        $terminal = $_GET['Terminal'];
        $status = $_GET['Status'];
@@ -89,7 +89,7 @@ if($connected)
         $rheaders = array('Site','Terminal', 'Transaction Type', 'Amount', 'Service Name', 'Transaction Date', 'Status', 'User Mode', 'Fulfilled By' );
         $completeexcelvalues = array();
         
-        $dateto = date ( 'Y-m-d' , strtotime ('+1 day' , strtotime($dateto)));
+        $dateto = date ( 'Y-m-d' , strtotime ('+1 day' , strtotime($datefrom)));
         
         $datefrom = $datefrom.' 06:00:00';
         $dateto = $dateto.' 06:00:00';
@@ -146,12 +146,12 @@ if($connected)
    {
       $completePDFArray = array();
       $datefrom = $_GET['DateFrom'];
-      $dateto = $_GET['DateTo'];
+      //$dateto = $_GET['DateTo'];
       $site= $_GET['Site'];
       $terminal = $_GET['Terminal'];
       $status = $_GET['Status'];
       
-      $dateto = date ( 'Y-m-d' , strtotime ('+1 day' , strtotime($dateto)));
+      $dateto = date ( 'Y-m-d' , strtotime ('+1 day' , strtotime($datefrom)));
       
       $datefrom = $datefrom.' 06:00:00';
       $dateto = $dateto.' 06:00:00';

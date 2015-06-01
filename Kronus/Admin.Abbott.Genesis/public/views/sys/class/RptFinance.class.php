@@ -65,6 +65,7 @@ class RptFinance extends DBHandler{
                     $stmt = "SELECT tr.TransactionSummaryID,ts.DateStarted,ts.DateEnded,tr.DateCreated, tr.TerminalID,tr.SiteID, tr.Option2 AS LoyaltyCard,
                         t.TerminalCode as TerminalCode, tr.TransactionType, tr.ServiceID, sum(tr.Amount) AS amount, 
                         a.UserName, r.ServiceName FROM transactiondetails tr 
+                        FORCE INDEX(IX_transactiondetails_DateCreated)
                         INNER JOIN transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID 
                         INNER JOIN terminals t ON t.TerminalID = tr.TerminalID
                         INNER JOIN ref_services r on tr.ServiceID = r.ServiceID
@@ -81,6 +82,7 @@ class RptFinance extends DBHandler{
                     $stmt = "SELECT tr.TransactionSummaryID,ts.DateStarted,ts.DateEnded,tr.DateCreated, tr.TerminalID,tr.SiteID, tr.Option2 AS LoyaltyCard,
                         t.TerminalCode as TerminalCode, tr.TransactionType, tr.ServiceID, sum(tr.Amount) AS amount, 
                         a.UserName, r.ServiceName FROM transactiondetails tr 
+                        FORCE INDEX(IX_transactiondetails_DateCreated)
                         INNER JOIN transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID 
                         INNER JOIN terminals t ON t.TerminalID = tr.TerminalID
                         INNER JOIN ref_services r on tr.ServiceID = r.ServiceID

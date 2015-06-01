@@ -29,8 +29,8 @@ $vaccesspages = array('5');
     <div id="workarea">
         <div id="pagetitle"><?php echo $pagetitle; ?></div>
         <br />
-        <label>Start Date</label>&nbsp;<input type="text" value="<?php echo date('Y-m-d') ?>" id="startdate" readonly="readonly" name="startdate" />&nbsp;<img name="cal" src="images/cal.gif" width="16" height="16" border="0" alt="Pick a date" onClick="displayDatePicker('startdate', false, 'ymd', '-');"/>
-        <label>End Date</label>&nbsp;<input type="text" value="<?php echo date('Y-m-d',strtotime(date("Y-m-d", strtotime(date('Y-m-d'))))) ?>" id="enddate" readonly="readonly" name="enddate" />&nbsp;<img name="cal" src="images/cal.gif" width="16" height="16" border="0" alt="Pick a date" onClick="displayDatePicker('enddate', false, 'ymd', '-');"/> 
+        <label>Transaction Date:</label>&nbsp;<input type="text" value="<?php echo date('Y-m-d') ?>" id="startdate" readonly="readonly" name="startdate" />&nbsp;<img name="cal" src="images/cal.gif" width="16" height="16" border="0" alt="Pick a date" onClick="displayDatePicker('startdate', false, 'ymd', '-');"/>
+<!--        <label>End Date</label>&nbsp;<input type="text" value="<?php echo date('Y-m-d',strtotime(date("Y-m-d", strtotime(date('Y-m-d'))))) ?>" id="enddate" readonly="readonly" name="enddate" />&nbsp;<img name="cal" src="images/cal.gif" width="16" height="16" border="0" alt="Pick a date" onClick="displayDatePicker('enddate', false, 'ymd', '-');"/> -->
         <input type="button" value="Search" id="btnsearch"/>
         <br /><br />
         <div align="center" id="pagination">
@@ -64,13 +64,13 @@ $vaccesspages = array('5');
               return false;
             }  
           var startdate = jQuery('#startdate').val();
-          var enddate = jQuery('#enddate').val();
-          if(Date.parse(startdate) > Date.parse(enddate)) {
-              alert('Start date should less than End Date'); return false;
-          }
+          //var enddate = jQuery('#enddate').val();
+//          if(Date.parse(startdate) > Date.parse(enddate)) {
+//              alert('Start date should less than End Date'); return false;
+//          }
           
-          jQuery("#pdgrid").jqGrid('setGridParam',{url:"process/ProcessTopUpPaginate.php?action=getdataposteddeposit&startdate="+startdate+
-            "&enddate="+enddate,page:1}).trigger("reloadGrid"); 
+          jQuery("#pdgrid").jqGrid('setGridParam',{url:"process/ProcessTopUpPaginate.php?action=getdataposteddeposit&startdate="+startdate
+            ,page:1}).trigger("reloadGrid"); 
         });
         
         jQuery("#pdgrid").jqGrid({

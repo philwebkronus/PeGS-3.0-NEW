@@ -662,8 +662,7 @@ class PagcorManagement extends DBHandler
                             INNER JOIN sites s ON s.SiteID = sgc.SiteID
                             INNER JOIN accountdetails ad ON ad.AID = s.OwnerAID
                             INNER JOIN sitedetails sd ON sd.SiteID = sgc.SiteID
-                            WHERE sgc.DateFirstTransaction >= ?
-                            AND sgc.DateFirstTransaction < ?
+                            WHERE  sgc.DateCutOff > ? AND sgc.DateCutOff <= ?
                             ORDER BY s.SiteCode, sgc.DateFirstTransaction";          
 
                 $query2 = "SELECT SiteID,DateCredited,AmountConfirmed FROM grossholdconfirmation 
@@ -796,7 +795,9 @@ class PagcorManagement extends DBHandler
                                 END As RedemptionGenesis,
 
                                 ts.DateStarted, ts.DateEnded, tr.SiteID
-                                FROM npos.transactiondetails tr INNER JOIN npos.transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
+                                FROM npos.transactiondetails tr 
+                                FORCE INDEX(IX_transactiondetails_DateCreated) 
+                                INNER JOIN npos.transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
                                 INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
                                 INNER JOIN npos.accounts a ON ts.CreatedByAID = a.AID
                                 INNER JOIN npos.sites s ON tr.SiteID = s.SiteID
@@ -965,8 +966,8 @@ class PagcorManagement extends DBHandler
                             INNER JOIN sites s ON s.SiteID = sgc.SiteID
                             INNER JOIN accountdetails ad ON ad.AID = s.OwnerAID
                             INNER JOIN sitedetails sd ON sd.SiteID = sgc.SiteID
-                            WHERE sgc.DateFirstTransaction >= ?
-                            AND sgc.DateFirstTransaction < ? AND sgc.SiteID = ?
+                            WHERE sgc.DateCutOff > ? AND sgc.DateCutOff <= ?
+                            AND sgc.SiteID = ?
                             ORDER BY s.SiteCode, sgc.DateFirstTransaction";          
 
                 $query2 = "SELECT SiteID,DateCredited,AmountConfirmed FROM grossholdconfirmation 
@@ -1540,8 +1541,7 @@ class PagcorManagement extends DBHandler
                             INNER JOIN sites s ON s.SiteID = sgc.SiteID
                             INNER JOIN accountdetails ad ON ad.AID = s.OwnerAID
                             INNER JOIN sitedetails sd ON sd.SiteID = sgc.SiteID
-                            WHERE sgc.DateFirstTransaction >= ?
-                            AND sgc.DateFirstTransaction < ?
+                            WHERE  sgc.DateCutOff > ? AND sgc.DateCutOff <= ?
                             ORDER BY s.SiteCode, sgc.DateFirstTransaction";          
 
                 $query2 = "SELECT SiteID,DateCredited,AmountConfirmed FROM grossholdconfirmation 
@@ -1672,7 +1672,9 @@ class PagcorManagement extends DBHandler
                                 END As RedemptionGenesis,
 
                                 ts.DateStarted, ts.DateEnded, tr.SiteID
-                                FROM npos.transactiondetails tr INNER JOIN npos.transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
+                                FROM npos.transactiondetails tr 
+                                FORCE INDEX(IX_transactiondetails_DateCreated) 
+                                INNER JOIN npos.transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
                                 INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
                                 INNER JOIN npos.accounts a ON ts.CreatedByAID = a.AID
                                 INNER JOIN npos.sites s ON tr.SiteID = s.SiteID
@@ -1844,8 +1846,8 @@ class PagcorManagement extends DBHandler
                             INNER JOIN sites s ON s.SiteID = sgc.SiteID
                             INNER JOIN accountdetails ad ON ad.AID = s.OwnerAID
                             INNER JOIN sitedetails sd ON sd.SiteID = sgc.SiteID
-                            WHERE sgc.DateFirstTransaction >= ?
-                            AND sgc.DateFirstTransaction < ? AND sgc.SiteID = ?
+                            WHERE sgc.DateCutOff > ? AND sgc.DateCutOff <= ?
+                            AND sgc.SiteID = ?
                             ORDER BY s.SiteCode, sgc.DateFirstTransaction";          
 
                 $query2 = "SELECT SiteID,DateCredited,AmountConfirmed FROM grossholdconfirmation 

@@ -110,28 +110,28 @@ $vaccesspages = array('9');
                         document.getElementById('popupDatepicker1').focus();
                         return false;
                     }
-                    else if(document.getElementById('popupDatepicker2').value == "Date")
-                    {
-                        alert("Please choose date");
-                        document.getElementById('popupDatepicker2').focus();
-                        return false;
-                    }  
-                    
-                    else if((document.getElementById('popupDatepicker2').value) < 
-                        (document.getElementById('popupDatepicker1').value))
-                    {
-                      alert("Invalid date. Please check date range");
-                      $('#pager2').hide();
-                      return false;         
-                    }
-                    
-                    else if((datenow) < 
-                        (document.getElementById('popupDatepicker2').value))
-                    {
-                      alert("Queried date must not be greater than today");
-                      $('#pager2').hide();
-                      return false;         
-                    }
+//                    else if(document.getElementById('popupDatepicker2').value == "Date")
+//                    {
+//                        alert("Please choose date");
+//                        document.getElementById('popupDatepicker2').focus();
+//                        return false;
+//                    }  
+//                    
+//                    else if((document.getElementById('popupDatepicker2').value) < 
+//                        (document.getElementById('popupDatepicker1').value))
+//                    {
+//                      alert("Invalid date. Please check date range");
+//                      $('#pager2').hide();
+//                      return false;         
+//                    }
+//                    
+//                    else if((datenow) < 
+//                        (document.getElementById('popupDatepicker2').value))
+//                    {
+//                      alert("Queried date must not be greater than today");
+//                      $('#pager2').hide();
+//                      return false;         
+//                    }
                     
                     else{
                         $('#pager2').show();
@@ -146,7 +146,7 @@ $vaccesspages = array('9');
                                     cmbsite: function() {return $('#cmbsite').val(); },
                                     cmbterminal: function() { return $("#cmbterm").val(); },
                                     txtDate1: function() { return $("#popupDatepicker1").val(); },
-                                    txtDate2: function() { return $("#popupDatepicker2").val(); },
+                                    //txtDate2: function() { return $("#popupDatepicker2").val(); },
                                     cmbstatus: function(){return $("#cmbstatus").val();},
                                     paginate: function() {return $("#paginate").val();}
                                       },
@@ -250,17 +250,16 @@ $vaccesspages = array('9');
                     </td>
                 </tr>
                 <tr>
-                    <td>Date Range</td>
+                    <td>Transaction Date:</td>
                     <td>
-                    From: 
                      <input name="txtDate1" id="popupDatepicker1" readonly value="<?php echo date('Y-m-d')?>"/>
                      <img name="cal" src="images/cal.gif" width="16" height="16" border="0" alt="Pick a date" onClick="displayDatePicker('txtDate1', false, 'ymd', '-');"/>
                     </td>
-                    <td>
+<!--                    <td>
                     To:
                     <input name="txtDate2" id="popupDatepicker2" readonly value="<?php echo date ( 'Y-m-d'); ?>"/>
                     <img name="cal" src="images/cal.gif" width="16" height="16" border="0" alt="Pick a date" onClick="displayDatePicker('txtDate2', false, 'ymd', '-');"/>
-                    </td>
+                    </td>-->
                 </tr>
             </table>
             
@@ -281,9 +280,9 @@ $vaccesspages = array('9');
           <div id="senchaexport1" style="background-color: #6A6A6A; padding-bottom: 60px; width: 1100px;">
            <br />
            <input type='button' name='exportPDF' id='exportPDF' value='Export to PDF File' 
-                       onclick="window.location.href='process/ProcessRptAS.php?pdf=MCFHistory&DateFrom='+document.getElementById('popupDatepicker1').value+'&DateTo='+document.getElementById('popupDatepicker2').value+'&Site='+document.getElementById('cmbsite').value+'&Terminal='+document.getElementById('cmbterm').value+'&Status='+document.getElementById('cmbstatus').value" style="float: right;" />  
+                       onclick="window.location.href='process/ProcessRptAS.php?pdf=MCFHistory&DateFrom='+document.getElementById('popupDatepicker1').value+'&Site='+document.getElementById('cmbsite').value+'&Terminal='+document.getElementById('cmbterm').value+'&Status='+document.getElementById('cmbstatus').value" style="float: right;" />  
            <input type="button" name="exportExcel" id="exportExcel" value="Export to Excel File" 
-                       onclick="window.location.href='process/ProcessRptAS.php?excel=MCFHistory&DateFrom='+document.getElementById('popupDatepicker1').value+'&DateTo='+document.getElementById('popupDatepicker2').value+'&Site='+document.getElementById('cmbsite').value+'&Terminal='+document.getElementById('cmbterm').value+'&Status='+document.getElementById('cmbstatus').value+'&fn=MCFHistory_for_'+document.getElementById('popupDatepicker1').value+'_to_'+document.getElementById('popupDatepicker2').value" style="float: right;" />
+                       onclick="window.location.href='process/ProcessRptAS.php?excel=MCFHistory&DateFrom='+document.getElementById('popupDatepicker1').value+'&Site='+document.getElementById('cmbsite').value+'&Terminal='+document.getElementById('cmbterm').value+'&Status='+document.getElementById('cmbstatus').value+'&fn=MCFHistory_for_'+document.getElementById('popupDatepicker1').value" style="float: right;" />
           </div>  
             
      

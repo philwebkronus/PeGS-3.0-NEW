@@ -90,10 +90,10 @@ if($connected)
                 $sord = $_POST['sord']; // get the direction
                 
                 $vdatefrom = $_POST['strDate'];
-                $vdateto = $_POST['endDate'];
+                //$vdateto = $_POST['endDate'];
                 $dateFrom = $vdatefrom." ".$vcutofftime;
                 
-                $dateTo = date ('Y-m-d' , strtotime ($gaddeddate, strtotime($vdateto)))." ".$vcutofftime;
+                $dateTo = date ('Y-m-d' , strtotime ($gaddeddate, strtotime($vdatefrom)))." ".$vcutofftime;
                 $rsiteID = $orptsup->viewsitebyowner($aid); //get all sites owned by operator
                 $vsiteID = $rsiteID['SiteID'];
                 
@@ -221,10 +221,10 @@ if($connected)
    elseif(isset($_POST['gettotal']) == "GetTotals")
    {
        $vdatefrom = $_POST['strDate'];
-       $vdateto = $_POST['endDate'];
+       //$vdateto = $_POST['endDate'];
                 
        $dateFrom = $vdatefrom." ".$vcutofftime;
-       $dateTo = date ('Y-m-d' , strtotime ($gaddeddate, strtotime($vdateto)))." ".$vcutofftime;
+       $dateTo = date ('Y-m-d' , strtotime ($gaddeddate, strtotime($vdatefrom)))." ".$vcutofftime;
        
        $rsiteID = $orptsup->viewsitebyowner($aid); //get all sites owned by operator
        $vsiteID = $rsiteID['SiteID'];
@@ -551,10 +551,10 @@ if($connected)
    elseif(isset($_GET['pdf']))
    {
       $vfromdate = $_GET['DateFrom'];
-      $vtodate = $_GET['DateTo']; 
+      //$vtodate = $_GET['DateTo']; 
       
       $dateFrom = $vfromdate." ".$vcutofftime;
-      $dateTo = date ('Y-m-d' , strtotime ($gaddeddate, strtotime($vtodate)))." ".$vcutofftime;
+      $dateTo = date ('Y-m-d' , strtotime ($gaddeddate, strtotime($vfromdate)))." ".$vcutofftime;
        
       $rsiteID = $orptsup->viewsitebyowner($aid); //get all sites owned by operator
       $vsiteID = $rsiteID['SiteID'];
