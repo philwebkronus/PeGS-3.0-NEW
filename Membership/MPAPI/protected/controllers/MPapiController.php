@@ -2977,31 +2977,8 @@ class MPapiController extends Controller {
                 //start of declaration of models to be used
                 $memberCardsModel = new MemberCardsModel();
                 $auditTrailModel = new AuditTrailModel();
-                $pcwsWrapper = new PcwsWrapper();
 
-                $result = $pcwsWrapper->getCompPoints($cardNumber, 1);
-                if ($result) {
-                    $currentPoints = $result['GetCompPoints']['CompBalance'];
-                } else {
-                    $transMsg = "Cannot access PCWS API.";
-                    $errorCode = 120;
-                    Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
-                    $data = CommonController::retMsgCheckPoints($module, '', '', $errorCode, $transMsg);
-                    $message = "[" . $module . "] Output: " . CJSON::encode($data);
-                    $appLogger->log($appLogger->logdate, "[response]", $message);
-                    $this->_sendResponse(200, CJSON::encode($data));
-                    $logMessage = 'Cannot access PCWS API.';
-                    $logger->log($logger->logdate, "[CHECKPOINTS ERROR]: " . $cardNumber . " || ", $logMessage);
-                    $apiDetails = 'CHECKPOINTS-Failed: Cannot access PCWS API. Card Number = ' . $cardNumber;
-                    $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
-                    if ($isInserted == 0) {
-                        $logMessage = "Failed to insert to APILogs.";
-                        $logger->log($logger->logdate, "[CHECKPOINTS ERROR]: " . $cardNumber . " || ", $logMessage);
-                    }
-
-                    exit;
-                }
-
+                $memberPoints = $memberCardsModel->getMemberPointsAndStatus($cardNumber);
                 $memberDetails = $memberCardsModel->getMemberDetailsByCard($cardNumber);
 
                 if (!empty($memberDetails))
@@ -3010,6 +2987,7 @@ class MPapiController extends Controller {
                     $MID = 0;
 
                 if (!empty($memberDetails)) {
+                    $currentPoints = $memberDetails['CurrentPoints'];
 
                     $status = $memberDetails['Status'];
 
