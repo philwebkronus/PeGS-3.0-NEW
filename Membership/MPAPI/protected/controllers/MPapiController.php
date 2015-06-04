@@ -2916,6 +2916,7 @@ class MPapiController extends Controller {
                     $MID = 0;
 
                 if (!empty($memberDetails)) {
+ 		    $currentPoints = $memberDetails['CurrentPoints'];
 
                     $status = $memberDetails['Status'];
 
