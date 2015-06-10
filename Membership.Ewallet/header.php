@@ -1,5 +1,5 @@
 <?php
-/* * ***************** 
+/* * *****************
  * Author: Roger Sanchez
  * Date Created: 2013-04-08
  * Company: Philweb
@@ -46,7 +46,7 @@ if (isset($stylesheets) && count($stylesheets) > 0)
     }
 }
 
-$pagetitle = (isset($pagetitle) && $pagetitle != "" ) ? $pagetitle : "Dashboard V2";
+$pagetitle = (isset($pagetitle) && $pagetitle != "" ) ? $pagetitle : "e-Games Membership Portal";
 $curdate = new DateSelector('now', 'Y,m,d, H,i,s');
 $curdate->SetTimeZone("Asia/Manila");
 $timezone = $curdate->GetCurrentDateFormat('O (T)');
@@ -77,7 +77,7 @@ if (isset($customtags) && count($customtags) > 0)
 
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title><?php echo $pagetitle; ?></title>
-    <?php echo $headerinfo; ?> 
+    <?php echo $headerinfo; ?>
     <!--[if gt IE 5]>
                 <link rel="stylesheet" type="text/css" href="css/ie.css" />
     <![endif]-->
@@ -88,22 +88,22 @@ if (isset($customtags) && count($customtags) > 0)
         $(document).ready(function(){
             $("#MainForm").validationEngine();
         });
-        
+
         function preventBackandForward()
         {
             window.history.forward();
         }
-        
+
         preventBackandForward();
         window.inhibited_load=preventBackandForward;
         window.onpageshow=function(evt){if(evt.persisted)preventBackandForward();};
         window.inhibited_unload=function(){void(0);};
 
     </script>
-    <?php 
+    <?php
     if($useCustomHeader)
     {
-        echo $arrbody[0]; 
+        echo $arrbody[0];
         echo $arrbody[1];
     }
     ?>
