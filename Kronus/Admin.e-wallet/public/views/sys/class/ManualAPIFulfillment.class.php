@@ -1131,7 +1131,7 @@ class ManualAPIFulfillment extends DBHandler
            return $count['StackerBatchID'];
      }
      /**
-      * Check Pending E-wallet Trans
+      * Check Pending e-SAFE Trans
       * @param type $terminalID
       * @return type
       */

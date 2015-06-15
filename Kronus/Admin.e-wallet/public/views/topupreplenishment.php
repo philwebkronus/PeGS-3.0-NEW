@@ -113,6 +113,17 @@ $vaccesspages = array('5');
             } 
         });
         
+        jQuery("#cmbreplenishment").live('change', function(){
+            var replenishmenttype = jQuery("#cmbreplenishment").val();
+            if(replenishmenttype == 1) {
+                $('#txtrefnum').val("");
+                $('#txtrefnum').attr("disabled", true);
+            } else {
+                $('#txtrefnum').val("");
+                $('#txtrefnum').attr("disabled", false);
+            } 
+        });
+        
         //disable enter key
         jQuery('body').bind('keypress', function (e) {
             var code = (e.keyCode ? e.keyCode : e.which);

@@ -280,7 +280,7 @@ $vaccesspages = array('5','6', '18');
                                         terminalID: function(){return jQuery("#selterminal").val();}
                                       },
                             datatype: "json",
-                            colNames:['Site / PEGS Code', 'Site / PEGS Name', 'Terminal Code', 'Playing Balance','Service Name', 'User Mode','Terminal Type','e-wallet?'],
+                            colNames:['Site / PEGS Code', 'Site / PEGS Name', 'Terminal Code', 'Playing Balance','Service Name', 'User Mode','Terminal Type','e-SAFE?'],
                             colModel:[
                                 {name:'SiteCode',index:'SiteCode',align:'left'},
                                 {name:'SiteName',index:'SiteName',align:'left'},

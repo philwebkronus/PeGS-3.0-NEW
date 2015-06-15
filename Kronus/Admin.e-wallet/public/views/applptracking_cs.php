@@ -75,17 +75,16 @@ $vaccesspages = array('6','18');
                 </td>
             </tr>
             <tr>
-                <td>Date Range</td>
+                <td>Transaction Date</td>
                 <td>
-                From: 
                  <input name="txtDate1" id="popupDatepicker1" readonly value="<?php echo date('Y-m-d')." "."06:00:00"; ?>"/>
                  <img name="cal" src="images/cal.gif" width="16" height="16" border="0" alt="Pick a date" onClick="unloadDataGrid(); javascript:NewCssCal('popupDatepicker1','yyyyMMdd','dropdown',true,'24',true)"/>
                 </td>
-                <td>
+<!--                <td>
                 To:
                 <input name="txtDate2" id="popupDatepicker2" readonly value="<?php echo date('Y-m-d')." "."06:00:00"; ?>"/>
                 <img name="cal" src="images/cal.gif" width="16" height="16" border="0" alt="Pick a date" onClick="unloadDataGrid(); javascript:NewCssCal('popupDatepicker2','yyyyMMdd','dropdown',true,'24',true)"/>
-                </td>
+                </td>-->
             </tr>
         </table>
         <table border="1" id="tblproviders" align="right" width="20%" style="text-align: center;">
@@ -239,7 +238,9 @@ $vaccesspages = array('6','18');
             if( site != '-1' && term != '-1' )
             {
                 
-                var isValidDateTime = validateDateTime();
+//                var isValidDateTime = validateDateTime();
+                  
+                  var isValidDateTime = true;
                 
                 if(isValidDateTime == true ) {
                 
@@ -258,7 +259,7 @@ $vaccesspages = array('6','18');
                                         cmbsite: function() {return $('#cmbsite').val(); },
                                         cmbterminal: function() { return $("#cmbterm").val(); },
                                         txtDate1: function() { return $("#popupDatepicker1").val(); },
-                                        txtDate2: function() { return $("#popupDatepicker2").val(); },
+                                        //txtDate2: function() { return $("#popupDatepicker2").val(); },
                                         paginate: function() {return 'LPTransactionSummary';}
                                         },
                                 datatype: "json",
@@ -324,7 +325,7 @@ $vaccesspages = array('6','18');
                             cmbsite: function() {return $('#cmbsite').val(); },
                             cmbterminal: function() { return $("#cmbterm").val(); },
                             txtDate1: function() { return $("#popupDatepicker1").val(); },
-                            txtDate2: function() { return $("#popupDatepicker2").val(); },
+                            //txtDate2: function() { return $("#popupDatepicker2").val(); },
                             paginate: function() {return 'LPTransactionLogs';},
                             summaryID: function() {return summaryid;}
                               },

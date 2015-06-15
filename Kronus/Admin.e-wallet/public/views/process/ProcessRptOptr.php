@@ -1026,7 +1026,7 @@ if($connected)
       //create the instance of the exportexcel format
         $excel_obj = new ExportExcel("$fn");
 
-        //Headers for non e-wallet transactions
+        //Headers for non e-SAFE transactions
         //$rheaders = array('Site Transaction', '', '','','','','','');
 //        $rheaders = array('Transaction Summary ID', 'Site Code', 'Terminal Code', 'Deposit', 'Reload', 'Redemption', 'Date Started', 'Date Ended');
         $rheaders = array( 'Site / PEGS Code', 'Terminal Code', 'Deposit', 'Reload', 'Redemption', 'Date Started', 'Date Ended');
@@ -1109,13 +1109,13 @@ if($connected)
         }
 
         /**
-         * For e-wallet transaction
+         * For e-SAFE transaction
          */
         $arrspace = array('', '', '', '', '', '', '', '');
         array_push($completeexcelvalues, $arrspace);
 
-        //Headers for e-wallet transactions
-        $xheaders = array('Site / PEGS Code', 'Card Number', 'e-wallet Loads', 'e-wallet Withdrawals', 'Date Started', 'Date Ended', '', '');
+        //Headers for e-SAFE transactions
+        $xheaders = array('Site / PEGS Code', 'Card Number', 'e-SAFE Loads', 'e-SAFE Withdrawals', 'Date Started', 'Date Ended', '', '');
         array_push($completeexcelvalues, $xheaders);
 
         $arrewloads = array();
@@ -1747,16 +1747,16 @@ if($connected)
         $pdf->c_tableEnd();
 
         /**
-         * For e-wallet transactions
+         * For e-SAFE transactions
          */
         $result1 = $orptoptr->viewewtransactionperday($dateFrom, $dateTo, $arrsiteID, $start = null, $limit = null, $sort = null, $direction = null);
         $pdf->html.='<div style="text-align:center;"></div>';
-//        $pdf->c_tableHeader(array('Site / PEGS Code', 'Card Number', 'e-wallet Loads', 'e-wallet Withdrawals', 'Date Started', 'Date Ended'));
+//        $pdf->c_tableHeader(array('Site / PEGS Code', 'Card Number', 'e-SAFE Loads', 'e-SAFE Withdrawals', 'Date Started', 'Date Ended'));
         $pdf->c_tableHeader2(array(
                 array('value'=>'Site / PEGS Code'),
                 array('value'=>'Card Number'),
-                array('value'=>'e-wallet Loads'),
-                array('value'=>'e-wallet Withdrawals'),
+                array('value'=>'e-SAFE Loads'),
+                array('value'=>'e-SAFE Withdrawals'),
                 array('value'=>'Date Started'),
                 array('value'=>'Date Ended')
              ));
@@ -1799,7 +1799,7 @@ if($connected)
                 $vewloads = $vview2['EWLoads'];
                 $vewwithdrawals = $vview2['EWWithdrawals'];
 
-                //push the values for e-wallet site transactions per day
+                //push the values for e-SAFE site transactions per day
                 $pdf->c_tableRow2(array(
                     array('value'=>$vview2['SiteCode']),
                     array('value'=>$vview2['LoyaltyCardNumber']),

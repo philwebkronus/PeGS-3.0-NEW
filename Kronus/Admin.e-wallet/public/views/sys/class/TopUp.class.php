@@ -2234,13 +2234,13 @@ class TopUp extends DBHandler
                                 ORDER BY SiteID";
         
         $query10 = "SELECT et.SiteID, et.CreatedByAID, ad.Name,
-                                -- Total e-wallet Deposits
+                                -- Total e-SAFE Deposits
                                 SUM(CASE et.TransType
                                         WHEN 'D' THEN et.Amount -- if deposit
                                         ELSE 0 -- if not deposit
                                 END) AS EwalletDeposits,
 
-                                -- Total e-wallet Withdrawal
+                                -- Total e-SAFE Withdrawal
                                 SUM(CASE et.TransType
                                         WHEN 'W' THEN et.Amount -- if redemption
                                         ELSE 0 -- if not redemption
@@ -3043,7 +3043,7 @@ class TopUp extends DBHandler
               $condition .= " AND ts.TerminalID = $terminalID ";
           }
 
-          $query = "SELECT ts.TerminalID, t.TerminalName,  CASE t.TerminalType WHEN 0 THEN 'Regular' WHEN 1 THEN 'Genesis' ELSE 'e-wallet' END AS TerminalType, 
+          $query = "SELECT ts.TerminalID, t.TerminalName,  CASE t.TerminalType WHEN 0 THEN 'Regular' WHEN 1 THEN 'Genesis' ELSE 'e-SAFE' END AS TerminalType, 
                             s.SiteName, s.POSAccountNo, s.SiteCode,ts.ServiceID,
                             t.TerminalCode, rs.ServiceName, ts.UserMode, ts.LoyaltyCardNumber FROM terminalsessions ts
                             INNER JOIN terminals as t ON ts.TerminalID = t.terminalID 
@@ -3116,7 +3116,7 @@ class TopUp extends DBHandler
               $condition = '';
           }
           
-          $query = "SELECT ts.TerminalID, t.TerminalName,CASE t.TerminalType WHEN 0 THEN 'Regular' WHEN 1 THEN 'Genesis' ELSE 'e-wallet' END AS TerminalType,
+          $query = "SELECT ts.TerminalID, t.TerminalName,CASE t.TerminalType WHEN 0 THEN 'Regular' WHEN 1 THEN 'Genesis' ELSE 'e-SAFE' END AS TerminalType,
                             s.SiteName, s.POSAccountNo, s.SiteCode,ts.ServiceID,
                             t.TerminalCode, rs.ServiceName, ts.UserMode FROM terminalsessions ts
                             INNER JOIN terminals as t ON ts.TerminalID = t.terminalID 

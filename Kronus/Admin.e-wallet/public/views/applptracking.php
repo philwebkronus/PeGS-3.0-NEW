@@ -75,17 +75,16 @@ $vaccesspages = array('9');
                 </td>
             </tr>
             <tr>
-                <td>Date Range</td>
+                <td>Transaction Date</td>
                 <td>
-                From: 
                  <input name="txtDate1" id="popupDatepicker1" readonly value="<?php echo date('Y-m-d')?>"/>
                  <img name="cal" src="images/cal.gif" width="16" height="16" border="0" alt="Pick a date" onClick="displayDatePicker('txtDate1', false, 'ymd', '-');"/>
                 </td>
-                <td>
+<!--                <td>
                 To:
                 <input name="txtDate2" id="popupDatepicker2" readonly value="<?php echo date ( 'Y-m-d'); ?>"/>
                 <img name="cal" src="images/cal.gif" width="16" height="16" border="0" alt="Pick a date" onClick="displayDatePicker('txtDate2', false, 'ymd', '-');"/>
-                </td>
+                </td>-->
             </tr>
         </table>
         <table border="1" id="tblproviders" align="right" width="20%" style="text-align: center;">
@@ -197,8 +196,8 @@ $vaccesspages = array('9');
        //upon clicking of button; display 3 grids(Transaction details, summary, logs)
        jQuery("#btnquery").click(function()
        {
-            var validate = chkecitytrack(); //validate form
-            
+            //var validate = chkecitytrack(); //validate form
+            var validate = true;
             if(validate == true)
             {
                 //for displaying transaction details
@@ -213,7 +212,7 @@ $vaccesspages = array('9');
                                 cmbsite: function() {return $('#cmbsite').val(); },
                                 cmbterminal: function() { return $("#cmbterm").val(); },
                                 txtDate1: function() { return $("#popupDatepicker1").val(); },
-                                txtDate2: function() { return $("#popupDatepicker2").val(); },
+                                //txtDate2: function() { return $("#popupDatepicker2").val(); },
                                 paginate: function() {return 'LPTransactionSummary';}
                                   },
                         datatype: "json",
@@ -269,7 +268,7 @@ $vaccesspages = array('9');
                             cmbsite: function() {return $('#cmbsite').val(); },
                             cmbterminal: function() { return $("#cmbterm").val(); },
                             txtDate1: function() { return $("#popupDatepicker1").val(); },
-                            txtDate2: function() { return $("#popupDatepicker2").val(); },
+                            //txtDate2: function() { return $("#popupDatepicker2").val(); },
                             paginate: function() {return 'LPTransactionLogs';},
                             summaryID: function() {return summaryid;}
                               },
@@ -316,7 +315,7 @@ $vaccesspages = array('9');
                             cmbsite: function() {return $('#cmbsite').val(); },
                             cmbterminal: function() { return $("#cmbterm").val(); },
                             txtDate1: function() { return $("#popupDatepicker1").val(); },
-                            txtDate2: function() { return $("#popupDatepicker2").val(); },
+                            //txtDate2: function() { return $("#popupDatepicker2").val(); },
                             paginate: function() {return 'LPTransactionDetails';},
                             summaryID: function() {return value;}
                               },

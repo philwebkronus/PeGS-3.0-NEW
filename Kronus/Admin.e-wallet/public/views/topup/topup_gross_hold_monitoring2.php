@@ -316,8 +316,8 @@ if(isset($_SESSION['acctype']))
                     
                     var header = "<thead ><tr><th  id='tblheader-banner' colspan='15' style='font-style: Arial, calibri, helvetica; font-size: 14px; font-weight: bold; background-color: #3d561c; color: white; height: 30px;'>Gross Hold Monitoring</th>"+
                                             "</tr><tr style='font-style: Arial, calibri, helvetica; font-size: 12px; text-align: center;font-weight: bold; background-color: #D6EB99; color: black; height: 40px;'>"+
-                                            "<th>Site / PEGS Name</th><th>BCF</th><th>Deposit</th><th>e-wallet Loads</th>"+
-                                            "<th>Reload</th><th>Redemptions</th><th>e-wallet Withdrawal</th><th>Manual Redemption</th>"+
+                                            "<th>Site / PEGS Name</th><th>BCF</th><th>Deposit</th><th>e-SAFE Loads</th>"+
+                                            "<th>Reload</th><th>Redemptions</th><th>e-SAFE Withdrawal</th><th>Manual Redemption</th>"+
                                             "<th>Printed Tickets</th><th>Active Tickets\n for the Day</th><th>Running Active\n Tickets</th><th>Coupons</th>"+
                                             "<th>Cash on Hand</th><th>Location</th>"+
                                             "</tr></thead>";
@@ -427,8 +427,8 @@ if(isset($_SESSION['acctype']))
                     }
                     var totalgh = "<thead style='position: relative; top:0; left: 0; height: -63px;'><tr>"+
                                             "</tr><tr style='font-style: Arial, calibri, helvetica; font-size: 12px; text-align: center;font-weight: bold; background-color: #D6EB99; color: black; height: 25px;'>"+
-                                            "<td style='width: 130px;'>Total</td><td style='width: 130px;'>Deposit</td><td style='width: 130px;'>e-wallet Loads</td>"+
-                                            "<td style='width: 130px;'>Reload</td><td style='width: 130px;'>Redemptions</td><td style='width: 130px;'>e-wallet Withdrawal</td><td style='width: 130px;'>Manual Redemption</td>"+
+                                            "<td style='width: 130px;'>Total</td><td style='width: 130px;'>Deposit</td><td style='width: 130px;'>e-SAFE Loads</td>"+
+                                            "<td style='width: 130px;'>Reload</td><td style='width: 130px;'>Redemptions</td><td style='width: 130px;'>e-SAFE Withdrawal</td><td style='width: 130px;'>Manual Redemption</td>"+
                                             "<td style='width: 130px;'>Printed Tickets</td><td style='width: 130px;'>Active Tickets\n for the Day</td><td style='width: 130px;'>Running Active\n Tickets</td><td style='width: 130px;'>Coupons</td>"+
                                             "<td style='width: 130px;'>Cash on Hand</td>"+
                                             "</tr></thead>"+

@@ -454,7 +454,7 @@ class TopUp2 extends DBHandler{
         
         $query10 = "SELECT et.SiteID, et.CreatedByAID, ad.Name,
 
-                                -- Total e-wallet Withdrawal
+                                -- Total e-SAFE Withdrawal
                                 SUM(CASE et.TransType
                                         WHEN 'W' THEN et.Amount -- if redemption
                                         ELSE 0 -- if not redemption

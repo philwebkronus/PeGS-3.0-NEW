@@ -789,7 +789,7 @@ if($connected && $connected2 && $connected3)
             
             case 'MCFHistory':
                 if((isset ($_POST['txtcardnumber']) || isset($_POST['cmbsite'])) 
-                 && isset ($_POST['txtDate1']) && isset ($_POST['txtDate2']) 
+                 && isset ($_POST['txtDate1']) 
                  && isset($_POST['cmbstatus']))
                  {
                         $cardnumber = trim($_POST['txtcardnumber']);
@@ -805,9 +805,9 @@ if($connected && $connected2 && $connected3)
                                 $cardnumber = null;
                             }
                             $vdate1 = $_POST['txtDate1'];
-                            $vdate2 = $_POST['txtDate2'];
+                            //$vdate2 = $_POST['txtDate2'];
                             $vFrom = $vdate1;
-                            $vTo = date ('Y-m-d', strtotime ('+1 day' , strtotime($vdate2)));
+                            $vTo = date ('Y-m-d', strtotime ('+1 day' , strtotime($vdate1)));
                             $vtransstatus = $_POST['cmbstatus'];
                             $vFrom = $vFrom.' 06;00:00';
                             $vTo = $vTo.' 06;00:00';
@@ -876,7 +876,7 @@ if($connected && $connected2 && $connected3)
                                     $sitecode = preg_split("/ICSA-/", $vview['SiteCode']);
 
                                     $responce->rows[$i]['id']=$vview['EwalletTransID'];
-                                    $responce->rows[$i]['cell']=array($sitecode[1],$terminalcode,$vtranstype, number_format($vview['Amount'],2),$vview['ServiceName'],$vview['StartDate'],$vstatus, $usermode,$name);
+                                    $responce->rows[$i]['cell']=array($sitecode[1],$vtranstype, number_format($vview['Amount'],2),$vview['ServiceName'],$vview['StartDate'],$vstatus, $usermode,$name);
                                     $i++;
                                  }
                             }

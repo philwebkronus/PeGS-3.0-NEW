@@ -95,6 +95,10 @@ $vaccesspages = array('9');
                     if(document.getElementById('txtCardNumber').value == "" 
                        && document.getElementById('cmbsite').value == "-1")
                     {
+                        $("#senchaexport1").hide();
+                        $("#pager2").hide();
+                        $("div.grid-label").empty();
+                        $("#userdata").hide();
                         alert("Please select Site or Card Number.");
                         document.getElementById('txtCardNumber').focus();
                         return false;
@@ -115,53 +119,62 @@ $vaccesspages = array('9');
                         $("#pager2").hide();
                         return false;
                     }
-                    else if(document.getElementById('popupDatepicker2').value == "Date")
-                    {
-                        alert("Please choose date");
-                        document.getElementById('popupDatepicker2').focus();
-                        $("#senchaexport1").hide();
-                        $("#pager2").hide();
-                        return false;
-                    }  
-                    
-                    else if((document.getElementById('popupDatepicker2').value) < 
-                        (document.getElementById('popupDatepicker1').value))
-                    {
-                      alert("Invalid date. Please check date range");
-                      $("#senchaexport1").hide();
-                      $("#pager2").hide();
-                      return false;         
-                    }
-                    
-                    else if((datenow) < 
-                        (document.getElementById('popupDatepicker2').value))
-                    {
-                      alert("Queried date must not be greater than today");
-                      $("#senchaexport1").hide();
-                      $("#pager2").hide();
-                      return false;         
-                    }
+//                    else if(document.getElementById('popupDatepicker2').value == "Date")
+//                    {
+//                        alert("Please choose date");
+//                        document.getElementById('popupDatepicker2').focus();
+//                        $("#senchaexport1").hide();
+//                        $("#pager2").hide();
+//                        return false;
+//                    }  
+//                    
+//                    else if((document.getElementById('popupDatepicker2').value) < 
+//                        (document.getElementById('popupDatepicker1').value))
+//                    {
+//                      $("#senchaexport1").hide();
+//                      $("#pager2").hide();
+//                      alert("Invalid date. Please check date range");
+//                      return false;         
+//                    }
+//                    
+//                    else if((datenow) < 
+//                        (document.getElementById('popupDatepicker2').value))
+//                    {
+//                      alert("Queried date must not be greater than today");
+//                      $("#senchaexport1").hide();
+//                      $("#pager2").hide();
+//                      return false;         
+//                    }
                     
                     else{
+                        var card = $("#txtCardNumber").val();
                         $("div.grid-label").empty();
-                        $("div.grid-label").append("Transactions of " + $("#txtCardNumber").val() + ", " + formatDate($("#popupDatepicker1").val(), "from") + " 6:00:00 AM to " + formatDate($("#popupDatepicker2").val(), "to") + " 6:00:00 AM");
+                        if(card.length > 0){
+                            $("div.grid-label").append("Transactions of " + card + ", " + formatDate($("#popupDatepicker1").val(), "from") + " 6:00:00 AM to " + formatDate($("#popupDatepicker1").val(), "to") + " 6:00:00 AM");
+                        }
+                        else{
+                            $("div.grid-label").append("Transactions from " + $("#txtsitename").text() + ", " + formatDate($("#popupDatepicker1").val(), "from") + " 6:00:00 AM to " + formatDate($("#popupDatepicker1").val(), "to") + " 6:00:00 AM");
+                        }
                         $('#pager2').show();
                         $('#senchaexport1').show();
                     }
                     
                     function formatDate(date, label){
+                        
                         var m_names = new Array("January", "February", "March", 
                                                 "April", "May", "June", "July", "August", "September", 
                                                 "October", "November", "December");
                         var weekday = new Array("Sunday", "Monday", "Tuesday", "Wednesday", "Thurdsay", 
                                                 "Friday", "Saturday");
 
-                        var d = new Date(date);
+                        var d = new Date(date.replace(/-/g, '/'));
+                        
+                        if(label == "to"){
+                            d.setDate(d.getDate() + 1);
+                        }
+                        
                         var curr_day = d.getDay();
                         var curr_date = d.getDate();
-                        if(label == "to"){
-                            curr_date = d.getDate() + 1;
-                        }
                         var curr_month = d.getMonth();
                         var curr_year = d.getFullYear();
                         return weekday[curr_day] + ", " + m_names[curr_month] + " " + curr_date + ", " + curr_year;
@@ -174,21 +187,20 @@ $vaccesspages = array('9');
                             postData: {
                                     txtcardnumber: function(){ return $("#txtCardNumber").val(); }, 
                                     txtDate1: function() { return $("#popupDatepicker1").val(); },
-                                    txtDate2: function() { return $("#popupDatepicker2").val(); }, 
+                                    //txtDate2: function() { return $("#popupDatepicker2").val(); }, 
                                     cmbsite: function() { return $("#cmbsite").val(); }, 
                                     cmbstatus: function(){return $("#cmbstatus").val();},
                                     paginate: function() {return $("#paginate").val();}
                                       },
                             datatype: "json",
-                            colNames:['Site', 'Terminal', 'Transaction Type', 'Amount','Service Name', 'Transaction Date','Status','User Mode', 'Fulfilled By'],
+                            colNames:['Site', 'Transaction Type', 'Amount','Service Name', 'Transaction Date','Status','User Mode', 'Fulfilled By'],
                             colModel:[
                                     //{name:'LoyaltyCard',index:'LoyaltyCard', align: 'center', width:150},
-                                    {name:'SiteCode',index:'SiteCode',align: 'center', width:120},
-                                    {name:'TerminalID',index:'TerminalID', align: 'center', width:120},
-                                    {name:'TransactionType',index:'TransactionType', align: 'left'},
+                                    {name:'SiteCode',index:'SiteCode',align: 'center', width:100},
+                                    {name:'TransactionType',index:'TransactionType', align: 'left', width:120},
                                     {name:'Amount',index:'Amount', align: 'right', width:120},
                                     {name:'ServiceName',index:'ServiceName', align: 'left', width:150},
-                                    {name:'TransactionDate',index:'TransactionDate', align: 'center', width:180},
+                                    {name:'TransactionDate',index:'TransactionDate', align: 'center', width:240},
                                     {name:'Status',index:'Status', align: 'center', width:210},
                                     {name:'UserMode', index:'UserMode', align: 'center', width:150},
                                     {name:'CreatedByAID', index:'CreatedByAID', align: 'center', width:150}
@@ -203,7 +215,7 @@ $vaccesspages = array('9');
                             refresh: true,
                             viewrecords: true,
                             sortorder: "asc",
-                            caption:"Manual e-wallet Fulfillment History"
+                            caption:"Manual e-SAFE Fulfillment History"
                     });
                     jQuery("#userdata").jqGrid('navGrid','#pager2',{edit:false,add:false,del:false, search:false, refresh: true});
                     $('#userdata').trigger("reloadGrid");
@@ -215,7 +227,7 @@ $vaccesspages = array('9');
 //            });
         });
     </script>
-        <div id="pagetitle">Manual e-wallet Fulfillment History</div>
+        <div id="pagetitle">Manual e-SAFE Fulfillment History</div>
         <br />
         <form method="post" action="" id="frmapps" name="frmapps">
             <input type="hidden" name="paginate" id="paginate" value="MCFHistory" />
@@ -276,17 +288,17 @@ $vaccesspages = array('9');
                     </td>
                 </tr>
                 <tr>
-                    <td>Date Range</td>
+                    <td>Transaction Date</td>
                     <td>
-                    From: 
+                    
                      <input name="txtDate1" id="popupDatepicker1" readonly value="<?php echo date('Y-m-d')?>"/>
                      <img name="cal" src="images/cal.gif" width="16" height="16" border="0" alt="Pick a date" onClick="displayDatePicker('txtDate1', false, 'ymd', '-');"/>
                     </td>
-                    <td>
+<!--                    <td>
                     To:
                     <input name="txtDate2" id="popupDatepicker2" readonly value="<?php echo date ( 'Y-m-d'); ?>"/>
                     <img name="cal" src="images/cal.gif" width="16" height="16" border="0" alt="Pick a date" onClick="displayDatePicker('txtDate2', false, 'ymd', '-');"/>
-                    </td>
+                    </td>-->
                 </tr>
             </table>
             
@@ -308,9 +320,9 @@ $vaccesspages = array('9');
           <div id="senchaexport1" style="background-color: #6A6A6A; padding-bottom: 60px; width: 1100px;">
            <br />
            <input type='button' name='exportPDF' id='exportPDF' value='Export to PDF File' 
-                       onclick="window.location.href='process/ProcessRptAS.php?pdf=MCFHistory&DateFrom='+document.getElementById('popupDatepicker1').value+'&DateTo='+document.getElementById('popupDatepicker2').value+'&Site='+document.getElementById('cmbsite').value+'&CardNumber='+document.getElementById('txtCardNumber').value+'&Status='+document.getElementById('cmbstatus').value" style="float: right;" />  
+                       onclick="window.location.href='process/ProcessRptAS.php?pdf=MCFHistory&IsEwallet=true&DateFrom='+document.getElementById('popupDatepicker1').value+'&Site='+document.getElementById('cmbsite').value+'&CardNumber='+document.getElementById('txtCardNumber').value+'&Status='+document.getElementById('cmbstatus').value" style="float: right;" />  
            <input type="button" name="exportExcel" id="exportExcel" value="Export to Excel File" 
-                       onclick="window.location.href='process/ProcessRptAS.php?excel=MCFHistory&DateFrom='+document.getElementById('popupDatepicker1').value+'&DateTo='+document.getElementById('popupDatepicker2').value+'&Site='+document.getElementById('cmbsite').value+'&CardNumber='+document.getElementById('txtCardNumber').value+'&Status='+document.getElementById('cmbstatus').value+'&fn=MCFHistory_for_'+document.getElementById('popupDatepicker1').value+'_to_'+document.getElementById('popupDatepicker2').value" style="float: right;" />
+                       onclick="window.location.href='process/ProcessRptAS.php?excel=MCFHistory&IsEwallet=true&DateFrom='+document.getElementById('popupDatepicker1').value+'&Site='+document.getElementById('cmbsite').value+'&CardNumber='+document.getElementById('txtCardNumber').value+'&Status='+document.getElementById('cmbstatus').value+'&fn=MCFHistory_for_'+document.getElementById('popupDatepicker1').value" style="float: right;" />
           </div>  
             
      

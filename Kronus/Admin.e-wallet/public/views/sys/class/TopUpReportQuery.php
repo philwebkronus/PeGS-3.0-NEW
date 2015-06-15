@@ -1610,7 +1610,7 @@ class TopUpReportQuery extends DBHandler{
           if($zsitecode == "all")
           {
               $query = "SELECT ts.TerminalID, t.TerminalName,s.SiteName, s.POSAccountNo, s.SiteCode,ts.ServiceID,
-                        CASE t.TerminalType WHEN 0 THEN 'Regular' WHEN 1 THEN 'Genesis' ELSE 'e-Wallet' END AS TerminalType, 
+                        CASE t.TerminalType WHEN 0 THEN 'Regular' WHEN 1 THEN 'Genesis' ELSE 'e-SAFE' END AS TerminalType, 
                         t.TerminalCode, rs.ServiceName, ts.UserMode, m.IsEwallet FROM terminalsessions ts
                         INNER JOIN terminals as t ON ts.TerminalID = t.terminalID 
                         INNER JOIN sites as s ON t.SiteID = s.SiteID 
@@ -1623,7 +1623,7 @@ class TopUpReportQuery extends DBHandler{
           {
               $terminalid != "all" ? $additionalcond = "AND ts.TerminalID = $terminalid ": $additionalcond = "";
               $query = "SELECT ts.TerminalID, t.TerminalName,s.SiteName, s.POSAccountNo, s.SiteCode,ts.ServiceID,
-                        CASE t.TerminalType WHEN 0 THEN 'Regular' WHEN 1 THEN 'Genesis' ELSE 'e-Wallet' END AS TerminalType, 
+                        CASE t.TerminalType WHEN 0 THEN 'Regular' WHEN 1 THEN 'Genesis' ELSE 'e-SAFE' END AS TerminalType, 
                         t.TerminalCode, rs.ServiceName, ts.UserMode, m.IsEwallet FROM terminalsessions ts
                         INNER JOIN terminals as t ON ts.TerminalID = t.terminalID 
                         INNER JOIN sites as s ON t.SiteID = s.SiteID 
@@ -1647,7 +1647,7 @@ class TopUpReportQuery extends DBHandler{
     {
           
               $query = "SELECT ts.TerminalID, t.TerminalName,s.SiteName, s.POSAccountNo, s.SiteCode,ts.ServiceID,
-                        CASE t.TerminalType WHEN 0 THEN 'Regular' WHEN 1 THEN 'Genesis' ELSE 'e-Wallet' END AS TerminalType, 
+                        CASE t.TerminalType WHEN 0 THEN 'Regular' WHEN 1 THEN 'Genesis' ELSE 'e-SAFE' END AS TerminalType, 
                         t.TerminalCode, rs.ServiceName, ts.UserMode, ts.UBServiceLogin, m.IsEwallet FROM terminalsessions ts
                         INNER JOIN terminals as t ON ts.TerminalID = t.terminalID 
                         INNER JOIN sites as s ON t.SiteID = s.SiteID 

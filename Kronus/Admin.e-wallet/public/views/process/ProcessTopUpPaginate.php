@@ -334,20 +334,16 @@ class ProcessTopUpPaginate extends BaseProcess {
         include_once __DIR__.'/../sys/class/TopUp.class.php';
         $topup = new TopUp($this->getConnection());
         $topup->open();
-        $startdate = date('Y-m-d')." ".BaseProcess::$cutoff;
+        $vstartdate = date('Y-m-d');
+        $startdate = $vstartdate." ".BaseProcess::$cutoff;
         $enddate = date('Y-m-d',strtotime(date("Y-m-d", strtotime(date('Y-m-d'))) .BaseProcess::$gaddeddate))." ".BaseProcess::$cutoff;  
         if(isset($_GET['startdate']))
             $startdate = $_GET['startdate']." ".BaseProcess::$cutoff;
         
-
 //        if(isset($_GET['enddate']))
-//            $enddate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($_GET['enddate'])) .BaseProcess::$gaddeddate));
-        
-        $enddate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($startdate)) .BaseProcess::$gaddeddate))." ".BaseProcess::$cutoff; 
-        
+//            $enddate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($_GET['enddate'])) .BaseProcess::$gaddeddate))." ".BaseProcess::$cutoff;
 
-        if(isset($_GET['enddate']))
-            $enddate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($_GET['enddate'])) .BaseProcess::$gaddeddate))." ".BaseProcess::$cutoff;
+        $enddate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($vstartdate)) .BaseProcess::$gaddeddate))." ".BaseProcess::$cutoff; 
 
         $total_row = $topup->getCohAdjustmentHistoryTotal($startdate, $enddate);
         $params = $this->getJqgrid($total_row, 'b.SiteName');
@@ -1347,19 +1343,18 @@ if(isset($_GET['enddate']))
         include_once __DIR__.'/../sys/class/helper/common.class.php';
         $topup = new TopUp($this->getConnection());
         $topup->open(); 
+        $vstartdate = date('Y-m-d');
         $startdate = date('Y-m-d')." ".BaseProcess::$cutoff;
-        $enddate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($startdate)) .BaseProcess::$gaddeddate))." ".BaseProcess::$cutoff;
+        
         if(isset($_GET['startdate']))
             $startdate = $_GET['startdate']." ".BaseProcess::$cutoff;
-        
 
 //        if(isset($_GET['enddate']))
-//            $enddate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($_GET['enddate'])) .BaseProcess::$gaddeddate));
+//            $enddate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($_GET['enddate'])) .BaseProcess::$gaddeddate))." ".BaseProcess::$cutoff;
         
-        $enddate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($startdate)) .BaseProcess::$gaddeddate))." ".BaseProcess::$cutoff; 
+        $enddate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($vstartdate)) .BaseProcess::$gaddeddate))." ".BaseProcess::$cutoff; 
 
-        if(isset($_GET['enddate']))
-            $enddate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($_GET['enddate'])) .BaseProcess::$gaddeddate))." ".BaseProcess::$cutoff;
+        
 
         
         $total_row = $topup->getReplenishmentTotal($startdate, $enddate);

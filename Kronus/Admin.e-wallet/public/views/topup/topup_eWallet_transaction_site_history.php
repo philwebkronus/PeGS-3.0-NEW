@@ -1,5 +1,5 @@
 <?php 
-$pagetitle = "e-wallet Transaction History Per Site"; 
+$pagetitle = "e-SAFE Transaction History Per Site"; 
 include "header.php";
 $vaccesspages = array('5','6','9','12','18');
     $vctr = 0;
@@ -69,17 +69,17 @@ $vaccesspages = array('5','6','9','12','18');
             <table>
                
             <tr>
-                 <td>Date Range</td>
+                 <td>Transaction Date</td>
                     <td>
-                    From: 
+
                      <input name="txtDate1" id="popupDatepicker1" readonly value="<?php echo date('Y-m-d')?>"/>
                      <img name="cal" src="images/cal.gif" width="16" height="16" border="0" alt="Pick a date" onClick="displayDatePicker('txtDate1', false, 'ymd', '-');"/>
                     </td>
-                    <td>
+<!--                    <td>
                     To:
                     <input name="txtDate2" id="popupDatepicker2" readonly value="<?php echo date ( 'Y-m-d'); ?>"/>
                     <img name="cal" src="images/cal.gif" width="16" height="16" border="0" alt="Pick a date" onClick="displayDatePicker('txtDate2', false, 'ymd', '-');"/>
-                    </td>
+                    </td>-->
             </tr>
         </table>
        <div id="submitarea">
@@ -110,11 +110,10 @@ $vaccesspages = array('5','6','9','12','18');
             var transStatus = jQuery("#transacStatus").val();
             var transType = jQuery("#transacType").val();
             var startdate = jQuery("#popupDatepicker1").val();
-            var enddate = jQuery("#popupDatepicker2").val();
+            //var enddate = jQuery("#popupDatepicker2").val();
             
             jQuery('#frmexport').attr('action',"process/ProcessTopUpGenerateReports.php?action=ewalletTransactionsitehistoryPDF&cmbsite="+site+
-                                    "&cmbtransStatus="+transStatus+"&cmbtransType="+transType+"&dateFrom="+startdate+
-                             "&dateTo="+enddate);
+                                    "&cmbtransStatus="+transStatus+"&cmbtransType="+transType+"&dateFrom="+startdate);
             jQuery('#frmexport').submit();                 
         });
         
@@ -123,11 +122,10 @@ $vaccesspages = array('5','6','9','12','18');
             var transStatus = jQuery("#transacStatus").val();
             var transType = jQuery("#transacType").val();
             var startdate = jQuery("#popupDatepicker1").val();
-            var enddate = jQuery("#popupDatepicker2").val();
+            //var enddate = jQuery("#popupDatepicker2").val();
             
             jQuery('#frmexport').attr('action',"process/ProcessTopUpGenerateReports.php?action=ewalletTransactionsitehistoryExcel&cmbsite="+site+
-                                    "&cmbtransStatus="+transStatus+"&cmbtransType="+transType+"&dateFrom="+startdate+
-                             "&dateTo="+enddate);
+                                    "&cmbtransStatus="+transStatus+"&cmbtransType="+transType+"&dateFrom="+startdate);
             jQuery('#frmexport').submit();
         });
         
@@ -142,7 +140,7 @@ $vaccesspages = array('5','6','9','12','18');
             pager: '#pager2',
             viewrecords: true,
             sortorder: "asc",
-            caption: "e-wallet Transaction History",
+            caption: "e-SAFE Transaction History",
             colModel:[
                 {name:'LoyaltyCardNumber',index:'LoyaltyCardNumber',align: 'center', width:150},
                                     {name:'StartDate',index:'StartDate', align: 'center', width:185},
@@ -171,20 +169,19 @@ $vaccesspages = array('5','6','9','12','18');
             }
             
             
-            if(new Date(startdate) > new Date(enddate)){
-                
-                alert('Start date must not be greater than end date');
-                return false;
-            }
-            if(new Date(enddate) > new Date()){
-                alert('Queried date must not be greater than today');
-                return false;
-            }
+//            if(new Date(startdate) > new Date(enddate)){
+//                
+//                alert('Start date must not be greater than end date');
+//                return false;
+//            }
+//            if(new Date(enddate) > new Date()){
+//                alert('Queried date must not be greater than today');
+//                return false;
+//            }
         
             
             jQuery("#ewalletThistory").jqGrid('setGridParam',{url:"process/ProcessTopUpPaginate.php?action=getewalletsitehistory&cmbsite="+site+
-                                    "&cmbtransStatus="+transStatus+"&cmbtransType="+transType+"&dateFrom="+startdate+
-                             "&dateTo="+enddate,page:1}).trigger('reloadGrid');
+                                    "&cmbtransStatus="+transStatus+"&cmbtransType="+transType+"&dateFrom="+startdate,page:1}).trigger('reloadGrid');
   
            jQuery("html, body").animate({ scrollTop: "500px" });
                                                  

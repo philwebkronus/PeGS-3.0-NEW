@@ -145,25 +145,25 @@ $flag = false;
                     }
                     else
                     {
-                         if((datenow) < (document.getElementById('popupDatepicker2').value))
-                         {
-                           alert("Queried date must not be greater than today");
-                           $('#pager2').hide();
-                           return false;         
-                         }
-                         else
-                         {  
+//                         if((datenow) < (document.getElementById('popupDatepicker2').value))
+//                         {
+//                           alert("Queried date must not be greater than today");
+//                           $('#pager2').hide();
+//                           return false;         
+//                         }
+//                         else
+                         //{  
                             showCardInfoTable();
                             
-                         }
+                        //}
                     }
                 }
-                else if((datenow) < (document.getElementById('popupDatepicker2').value))
-                {
-                   alert("Queried date must not be greater than today");
-                   $('#pager2').hide();
-                   return false;         
-                }
+//                else if((datenow) < (document.getElementById('popupDatepicker2').value))
+//                {
+//                   alert("Queried date must not be greater than today");
+//                   $('#pager2').hide();
+//                   return false;         
+//                }
                 else
                 {
                      showCardInfoTable(); 
@@ -178,7 +178,7 @@ $flag = false;
                    if(flag != 1)
                     {
                        $("#info").empty();
-                       $("#info").append("<p align='left'>Transactions of " + jQuery("#txtcardnumber").val() + ", " + formatDate($("#popupDatepicker1").val()) + " to " + formatDate($("#popupDatepicker2").val())+"</p>");
+                       $("#info").append("<p align='left'>Transactions of " + jQuery("#txtcardnumber").val() + ", " + formatDate($("#popupDatepicker1").val())+"</p>");
                     }
                    
                   
@@ -224,7 +224,10 @@ $flag = false;
             var url = 'process/ProcessAppSupport.php';
             $('#results').hide();
             var date = "<?php echo date("Ymd");?>"
-            var isValidDateTime = validateDateTime(date);
+//            var isValidDateTime = validateDateTime(date);
+
+            var isValidDateTime = true;
+            
             if(isValidDateTime == true ) 
             {
                 //for displaying site / pegs information
@@ -341,7 +344,7 @@ $flag = false;
                                     cmbsource: function() { return $("#cmbsource").val(); },
                                     txtcardnumber: function() { return $("#txtcardnumber").val(); },
                                     txtDate1: function() { return $("#popupDatepicker1").val(); },
-                                    txtDate2: function() { return $("#popupDatepicker2").val(); },
+                                    //txtDate2: function() { return $("#popupDatepicker2").val(); },
                                     cmbstatus: function(){return $("#cmbstatus").val();},
                                     cmbtranstype: function(){ return $("#cmbtranstype").val();},
                                     paginate: function() {return $("#paginate").val();}
@@ -383,7 +386,7 @@ $flag = false;
                                     cmbsource: function() { return $("#cmbsource").val(); },
                                     txtcardnumber: function() { return $("#txtcardnumber").val(); },
                                     txtDate1: function() { return $("#popupDatepicker1").val(); },
-                                    txtDate2: function() { return $("#popupDatepicker2").val(); },
+                                    //txtDate2: function() { return $("#popupDatepicker2").val(); },
                                     cmbstatus: function(){return $("#cmbstatus").val();},
                                     cmbtranstype: function(){ return $("#cmbtranstype").val();},
                                     paginate: function() {return $("#paginate").val();}
@@ -425,7 +428,7 @@ $flag = false;
                                     cmbsource: function() { return $("#cmbsource").val(); },
                                     txtcardnumber: function() { return $("#txtcardnumber").val(); },
                                     txtDate1: function() { return $("#popupDatepicker1").val(); },
-                                    txtDate2: function() { return $("#popupDatepicker2").val(); },
+                                    //txtDate2: function() { return $("#popupDatepicker2").val(); },
                                     cmbstatus: function(){return $("#cmbstatus").val();},
                                     cmbtranstype: function(){ return $("#cmbtranstype").val();},
                                     paginate: function() {return $("#paginate").val();}
@@ -465,11 +468,11 @@ $flag = false;
                                     cmbsource: function() { return $("#cmbsource").val(); },
                                     txtcardnumber: function() { return $("#txtcardnumber").val(); },
                                     txtDate1: function() { return $("#popupDatepicker1").val(); },
-                                    txtDate2: function() { return $("#popupDatepicker2").val(); },
+                                   // txtDate2: function() { return $("#popupDatepicker2").val(); },
                                     paginate: function() {return $("#paginate").val();}
                                       },
                             datatype: "json",
-                            colNames:['Site', 'Terminal','Service Name','Starting Balance', 'Total e-wallet Loads<br/>(with session)', 'EndingBalance','StartDate','EndDate'],
+                            colNames:['Site', 'Terminal','Service Name','Starting Balance', 'Total e-SAFE Loads<br/>(with session)', 'EndingBalance','StartDate','EndDate'],
                             colModel:[
                                     {name:'SiteCode',index:'SiteCode', align: 'left', width:100},
                                     {name:'TerminalCode',index:'TerminalCode',align: 'center', width:90},
@@ -489,7 +492,7 @@ $flag = false;
                             refresh: true,
                             viewrecords: true,
                             sortorder: "asc",
-                            caption:"e-wallet Transaction Tracking"
+                            caption:"e-SAFE Transaction Tracking"
                         });
                         jQuery("#userdata4").jqGrid('navGrid','#pager2',{edit:false,add:false,del:false, search:false, refresh: true});
                         $('#userdata4').trigger("reloadGrid");
@@ -523,7 +526,7 @@ $flag = false;
                         <option value="1">Cashier</option>
                         <option value="2">Launchpad</option>
                         <option value="3">Manual Redemption</option>
-                        <option value="4">e-wallet</option>
+                        <option value="4">e-SAFE</option>
                     </select>
                 </td>
                 </tr>
@@ -557,19 +560,19 @@ $flag = false;
                 </tr>
                 
                 <tr>
-                <td>Date Range</td>
+                <td>Transaction Date</td>
                 <td>
-                From: 
+               
                  <input name="txtDate1" id="popupDatepicker1" readonly value="<?php $thestime = date('Y-m-d H:i:s');;
 $datetime_from = date("Y-m-d H:i:s",strtotime("-24 hours",strtotime($thestime)));
 echo $datetime_from; ?>"/>
                  <img name="cal" src="images/cal.gif" width="16" height="16" border="0" alt="Pick a date" onClick="javascript:NewCssCal('popupDatepicker1','yyyyMMdd','dropdown',true,'24',true)"/>
                 </td>
-                <td>
+<!--                <td>
                 To:
                 <input name="txtDate2" id="popupDatepicker2" readonly value="<?php echo date('Y-m-d H:i:s'); ?>"/>
                 <img name="cal" src="images/cal.gif" width="16" height="16" border="0" alt="Pick a date" onClick="javascript:NewCssCal('popupDatepicker2','yyyyMMdd','dropdown',true,'24',true)"/>
-                </td>
+                </td>-->
             </tr>
             </table>
             

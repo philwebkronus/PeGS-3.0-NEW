@@ -120,6 +120,23 @@ Class PcwsWrapper
 
         return json_decode($result[1], true);
     }
+    
+    public function removeSession($url, $terminalCode, $cardNumber) {
+        $postdata = json_encode(array('TerminalCode'=>$terminalCode, 
+            'CardNumber' => $cardNumber, 
+            'SystemUsername'=> $this->_username, 
+            'AccessDate'=>  $this->_accessdate, 
+            'Token'=> $this->_tkn));
+        
+        $logger = new CasinoLogger();
+        $methodname = "Remove Session";
+        $message = "[$methodname] Input: ".print_r($postdata,true);     
+        $logger->logger($message, "Request", "", true);
+
+        $result = $this->curlApi($url, $postdata,$methodname,$logger);
+
+        return json_decode($result[1], true);
+    }
 }
 
 ?>

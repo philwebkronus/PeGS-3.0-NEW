@@ -228,7 +228,7 @@ $vaccesspages = array('5','6', '18');
         jQuery("#playingbal").jqGrid({
             url : 'process/ProcessTopUpPaginate.php?action=getplayingbalance',
             datatype: "json",
-            colNames:['Site / PEGS Code', 'Site / PEGS Name', 'Terminal Code', 'Playing Balance','Service Name', 'User Mode', 'Terminal Type','e-wallet?'],
+            colNames:['Site / PEGS Code', 'Site / PEGS Name', 'Terminal Code', 'Playing Balance','Service Name', 'User Mode', 'Terminal Type','e-SAFE?'],
             rowNum:10,
             height: 280,
             width: 1200,

@@ -30,7 +30,7 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         $pdf->c_commonReportFormat();
         $pdf->c_setHeader('Gross Hold Monitoring');
         $pdf->html.='<div style="text-align:center;">As of ' . date('l') . ', ' .
-              date('F d, Y') . ' ' . date('H:i:s A') .'</div>';
+              date('F d, Y') . ' ' . date('h:i:s A') .'</div>';
         $pdf->SetFontSize(5);
         $pdf->c_tableHeader2(array(
                 array('value'=>'Site / PEGS Name'),
@@ -138,15 +138,20 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         $ipaddress = gethostbyaddr($_SERVER['REMOTE_ADDR']);
         $topreport = new TopUpReportQuery($this->getConnection());
         $topreport->open();
+
+        $startdate = $_POST['startdate'];
+        $venddate = date ('Y-m-d' , strtotime (BaseProcess::$gaddeddate, strtotime($startdate)));
+
         $startdate = $_POST['startdate']." ".BaseProcess::$cutoff;
         $venddate = date ('Y-m-d' , strtotime (BaseProcess::$gaddeddate, strtotime($_POST['enddate'])))." ".BaseProcess::$cutoff;
+
         $rows = $topreport->bankDeposit($startdate, $venddate);
         
         $pdf = CTCPDF::c_getInstance();
         $pdf->c_commonReportFormat();
         $pdf->c_setHeader('Collection History');
         $pdf->html.='<div style="text-align:center;">As of ' . date('l') . ', ' .
-              date('F d, Y') . ' ' . date('H:i:s.u') .'</div>';
+              date('F d, Y') . ' ' . date('h:i:s A') .'</div>';
         $pdf->SetFontSize(5);
         $pdf->c_tableHeader2(array(
                 array('value'=>'Site / PEGS'),
@@ -187,6 +192,11 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         }
         $pdf->c_tableEnd();
         $pdf->c_generatePDF('collectionhistory.pdf');
+        $topreport->close();
+        
+        //Point the connection to master DB to insert audit trail
+        $topreport = new TopUpReportQuery($this->getMasterConnection());
+        $topreport->open();
         $transdetails = " DateRange:".$startdate." To ".$venddate;
         $date = $topreport->getDate();
         $auditfuncid = 100;
@@ -206,8 +216,14 @@ class ProcessTopUpGenerateReports extends BaseProcess{
             $aid = $_SESSION['accID'];
         }
         $ipaddress = gethostbyaddr($_SERVER['REMOTE_ADDR']);
+
+        $startdate = $_POST['startdate'];
+        $venddate = date ('Y-m-d' , strtotime (BaseProcess::$gaddeddate, strtotime($startdate)));
+
+        
         $startdate = $_POST['startdate']." ".BaseProcess::$cutoff;
         $venddate = date ('Y-m-d' , strtotime (BaseProcess::$gaddeddate, strtotime($_POST['enddate'])))." ".BaseProcess::$cutoff;
+
         $_SESSION['report_header'] = array('Site / PEGS','POS Account','Bank name','Branch','Bank Transaction ID','Bank Transaction Date','Cheque Number','Amount','Particulars','Remittance Type','Date Created', 'Processed By');
         $topreport = new TopUpReportQuery($this->getConnection());
         $topreport->open();
@@ -232,6 +248,11 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         $_SESSION['report_values'] = $new_rows;
         $_GET['fn'] = 'collectionhistory';
         include 'ProcessTopUpExcel.php';
+        $topreport->close();
+        
+        //Point the connection to master DB to insert audit trail
+        $topreport = new TopUpReportQuery($this->getMasterConnection());
+        $topreport->open();
         $transdetails = " DateRange:".$startdate." To ".$venddate;
         $date = $topreport->getDate();
         $auditfuncid = 99;
@@ -251,7 +272,7 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         $pdf->c_commonReportFormat();
         $pdf->c_setHeader('Betting Credit');
         $pdf->html.='<div style="text-align:center;">As of ' . date('l') . ', ' .
-              date('F d, Y') . ' ' . date('H:i:s A') .'</div>';
+              date('F d, Y') . ' ' . date('h:i:s A') .'</div>';
         $pdf->SetFontSize(5);
         $pdf->c_tableHeader2(array(
                 array('value'=>'Site / PEGS Code'),
@@ -302,11 +323,16 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         ini_set('max_execution_time', '180');
         $topreport = new TopUpReportQuery($this->getConnection());
         $topreport->open();
-        if(isset($_POST['startdate']) && isset($_POST['enddate']))
+        if(isset($_POST['startdate']))
         {
             $startdate = $_POST['startdate']." ".BaseProcess::$cutoff;
+
+            
+            $enddate = date ('Y-m-d' , strtotime (BaseProcess::$gaddeddate, strtotime($startdate)));
+
             $venddate = $_POST['enddate'];  
             $enddate = date ('Y-m-d' , strtotime (BaseProcess::$gaddeddate, strtotime($venddate)))." ".BaseProcess::$cutoff;
+
         }
         else
         {
@@ -319,7 +345,7 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         $pdf->c_commonReportFormat();
         $pdf->c_setHeader('Top-up History');
         $pdf->html.='<div style="text-align:center;">As of ' . date('l') . ', ' .
-              date('F d, Y') . ' ' . date('H:i:s A') .'</div>';
+              date('F d, Y') . ' ' . date('h:i:s A') .'</div>';
         $pdf->SetFontSize(5);
         $pdf->c_tableHeader2(array(
                 array('value'=>'SiteName'),
@@ -364,11 +390,16 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         $topreport = new TopUpReportQuery($this->getConnection());
         $topreport->open();
         
-        if(isset($_POST['startdate']) && isset($_POST['enddate']))
+        if(isset($_POST['startdate']))
         {
             $startdate = $_POST['startdate']." ".BaseProcess::$cutoff;
+
+            
+            $enddate = date ('Y-m-d' , strtotime (BaseProcess::$gaddeddate, strtotime($startdate)));
+
             $venddate = $_POST['enddate'];  
             $enddate = date ('Y-m-d' , strtotime (BaseProcess::$gaddeddate, strtotime($venddate)))." ".BaseProcess::$cutoff;
+
         }
         else
         {
@@ -414,14 +445,19 @@ class ProcessTopUpGenerateReports extends BaseProcess{
     public function reversalManualPdf() {
         $topreport = new TopUpReportQuery($this->getConnection());
         $topreport->open();
+
+        $vstartdate = $_POST['startdate'];
+        $venddate = date ('Y-m-d' , strtotime (BaseProcess::$gaddeddate, strtotime($vstartdate)));
+
         $vstartdate = $_POST['startdate']." ".BaseProcess::$cutoff;
         $venddate = date ('Y-m-d' , strtotime (BaseProcess::$gaddeddate, strtotime($_POST['enddate'])))." ".BaseProcess::$cutoff;
+
         $rows = $topreport->reversalManual($vstartdate, $venddate);
         $pdf = CTCPDF::c_getInstance();
         $pdf->c_commonReportFormat();
         $pdf->c_setHeader('Manual Top-up Reversal History');
         $pdf->html.='<div style="text-align:center;">As of ' . date('l') . ', ' .
-              date('F d, Y') . ' ' . date('H:i:s A') .'</div>';
+              date('F d, Y') . ' ' . date('h:i:s A') .'</div>';
         $pdf->SetFontSize(5);
         $pdf->c_tableHeader2(array(
                 array('value'=>'Site / PEGS Code'),
@@ -456,8 +492,13 @@ class ProcessTopUpGenerateReports extends BaseProcess{
             'Reversed Amount','Transaction Date','Reversed By');
         $topreport = new TopUpReportQuery($this->getConnection());
         $topreport->open();
+
+        $vstartdate = $_POST['startdate'];
+        $venddate = date ('Y-m-d' , strtotime (BaseProcess::$gaddeddate, strtotime($vstartdate)));
+
         $vstartdate = $_POST['startdate']." ".BaseProcess::$cutoff;
         $venddate = date ('Y-m-d' , strtotime (BaseProcess::$gaddeddate, strtotime($_POST['enddate'])))." ".BaseProcess::$cutoff;
+
         $rows = $topreport->reversalManual($vstartdate, $venddate);
         $new_rows = array();
         foreach($rows as $row) {
@@ -499,14 +540,19 @@ class ProcessTopUpGenerateReports extends BaseProcess{
     public function manualRedemptionPdf() {
         $topreport = new TopUpReportQuery($this->getConnection());
         $topreport->open();
+
+        $vstartdate = $_POST['startdate'];
+        $venddate = date ('Y-m-d' , strtotime (BaseProcess::$gaddeddate, strtotime($vstartdate)));
+
         $vstartdate = $_POST['startdate']." ".BaseProcess::$cutoff;
         $venddate = date ('Y-m-d' , strtotime (BaseProcess::$gaddeddate, strtotime($_POST['enddate'])))." ".BaseProcess::$cutoff;
+
         $rows = $topreport->manualRedemption($vstartdate, $venddate);
         $pdf = CTCPDF::c_getInstance();
         $pdf->c_commonReportFormat();
         $pdf->c_setHeader('Manual Redemption History');
         $pdf->html.='<di style="text-align:center;">As of ' . date('l') . ', ' .
-              date('F d, Y') . ' ' . date('H:i:s A') .'</div>';
+              date('F d, Y') . ' ' . date('h:i:s A') .'</div>';
         $pdf->SetFontSize(5);
         $pdf->c_tableHeader2(array(
                 array('value'=>'Site / PEGS Code'),
@@ -549,8 +595,14 @@ class ProcessTopUpGenerateReports extends BaseProcess{
             'Requested By','Transaction Date','Ticket ID','Transaction ID','Remarks','Status', 'Service Name');
         $topreport = new TopUpReportQuery($this->getConnection());
         $topreport->open();
+
+        $vstartdate = $_POST['startdate'];
+        $venddate = $enddate = date ('Y-m-d' , strtotime (BaseProcess::$gaddeddate, strtotime($vstartdate)));
+
         $vstartdate = $_POST['startdate']." ".BaseProcess::$cutoff;
         $venddate = $enddate = date ('Y-m-d' , strtotime (BaseProcess::$gaddeddate, strtotime($_POST['enddate'])))." ".BaseProcess::$cutoff;
+
+        
         $rows = $topreport->manualRedemption($vstartdate, $venddate);
         $new_rows = array();
         foreach($rows as $row) {
@@ -601,7 +653,7 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         $pdf->c_commonReportFormat();
         $pdf->c_setHeader('Playing Balance');
         $pdf->html.='<div style="text-align:center;">As of ' . date('l') . ', ' .
-              date('F d, Y') . ' ' . date('H:i:s A') .'</div>';
+              date('F d, Y') . ' ' . date('h:i:s A') .'</div>';
         $pdf->SetFontSize(5);
         
         $header = array(
@@ -612,7 +664,7 @@ class ProcessTopUpGenerateReports extends BaseProcess{
                 array('value'=>'Service Name'),
                 array('value'=>'User Mode'),
                 array('value'=>'Terminal Type'),
-                array('value'=>'e-wallet?')
+                array('value'=>'e-SAFE?')
              );
         
         if($acctype == 6 || $acctype == 18){
@@ -688,7 +740,7 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         $pdf->c_commonReportFormat();
         $pdf->c_setHeader('Playing Balance');
         $pdf->html.='<div style="text-align:center;">As of ' . date('l') . ', ' .
-              date('F d, Y') . ' ' . date('H:i:s A') .'</div>';
+              date('F d, Y') . ' ' . date('h:i:s A') .'</div>';
         $pdf->SetFontSize(5);
         $pdf->c_tableHeader2(array(
                 array('value'=>'Site / PEGS Code'),
@@ -698,7 +750,7 @@ class ProcessTopUpGenerateReports extends BaseProcess{
                 array('value'=>'Service Name'),
                 array('value'=>'User Mode'),
                 array('value'=>'Terminal Type'),
-                array('value'=>'e-wallet?'),
+                array('value'=>'e-SAFE?'),
              ));
         foreach($rows as $row) {
             $isEwallet = "No";
@@ -738,7 +790,7 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         
         $acctype = $_SESSION['acctype'];
         
-        $_SESSION['report_header'] = array('Site / PEGS Code','Site / PEGS Name','Terminal Code','Playing Balance','Service Name', 'User Mode', 'Terminal Type', 'e-wallet?');
+        $_SESSION['report_header'] = array('Site / PEGS Code','Site / PEGS Name','Terminal Code','Playing Balance','Service Name', 'User Mode', 'Terminal Type', 'e-SAFE?');
         
         if($acctype == 6 || $acctype == 18){
             array_pop($_SESSION['report_header']);
@@ -824,7 +876,7 @@ class ProcessTopUpGenerateReports extends BaseProcess{
     //Playing Balance History Report (Excel)
     public function playingBalanceExcelUB() {
         include_once __DIR__.'/../sys/class/CasinoGamingCAPI.class.php';
-        $_SESSION['report_header'] = array('Site / PEGS Code','Site / PEGS Name', 'Terminal Code','Playing Balance','Service Name', 'User Mode', 'Terminal Type', 'e-wallet?');
+        $_SESSION['report_header'] = array('Site / PEGS Code','Site / PEGS Name', 'Terminal Code','Playing Balance','Service Name', 'User Mode', 'Terminal Type', 'e-SAFE?');
         //$rows = $_SESSION['playing_balance'];
         $topreport = new TopUpReportQuery($this->getConnection());
         $topreport->open();
@@ -904,15 +956,20 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         
         $topreport = new TopUpReportQuery($this->getConnection());
         $topreport->open();
+
+        $startdate = $_POST['startdate'];
+        $enddate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($startdate)) .BaseProcess::$gaddeddate));
+
         $startdate = $_POST['startdate']." ".BaseProcess::$cutoff;
         $enddate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($_POST['enddate'])) .BaseProcess::$gaddeddate))." ".BaseProcess::$cutoff;
+
         $rows = $topreport->replenish($startdate, $enddate);
         
         $pdf = CTCPDF::c_getInstance();
         $pdf->c_commonReportFormat();
         $pdf->c_setHeader('Replenishment History');
         $pdf->html.='<div style="text-align:center;">As of ' . date('l') . ', ' .
-              date('F d, Y') . ' ' . date('H:i:s') .'</div>';
+              date('F d, Y') . ' ' . date('h:i:s A') .'</div>';
         $pdf->SetFontSize(5);
         $pdf->c_tableHeader2(array(
                 array('value'=>'Site / PEGS Code'),
@@ -937,6 +994,11 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         }
         $pdf->c_tableEnd();
         $pdf->c_generatePDF('replenishment.pdf');
+        $topreport->close();
+        
+        //Point the connection to master DB to insert audit trail
+        $topreport = new TopUpReportQuery($this->getMasterConnection());
+        $topreport->open();
         $transdetails = " DateRange:".$startdate." To ".$enddate;
         $date = $topreport->getDate();
         $auditfuncid = 103;
@@ -961,8 +1023,13 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         $_SESSION['report_header'] = array('Site / PEGS Code','POS Account','Amount', 'Date Created','Processed By', 'Reference Number', 'Type');
         $topreport = new TopUpReportQuery($this->getConnection());
         $topreport->open();
+
+        $startdate = $_POST['startdate'];
+        $enddate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($startdate)) .BaseProcess::$gaddeddate));
+
         $startdate = $_POST['startdate']." ".BaseProcess::$cutoff;
         $enddate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($_POST['enddate'])) .BaseProcess::$gaddeddate))." ".BaseProcess::$cutoff;
+
         $rows = $topreport->replenish($startdate, $enddate);
         $new_rows = array();
         foreach($rows as $row) {
@@ -979,6 +1046,11 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         $_SESSION['report_values'] = $new_rows;
         $_GET['fn'] = 'replenishment';
         include 'ProcessTopUpExcel.php';  
+        $topreport->close();
+        
+        //Point the connection to master DB to insert audit trail
+        $topreport = new TopUpReportQuery($this->getMasterConnection());
+        $topreport->open();
         $transdetails = " DateRange:".$startdate." To ".$enddate;
         $date = $topreport->getDate();
         $auditfuncid = 102;
@@ -998,7 +1070,7 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         $pdf->c_commonReportFormat();
         $pdf->c_setHeader('Confirmation History');
         $pdf->html.='<div style="text-align:center;">As of ' . date('l') . ', ' .
-              date('F d, Y') . ' ' . date('H:i:s A') .'</div>';
+              date('F d, Y') . ' ' . date('h:i:s A') .'</div>';
         $pdf->SetFontSize(5);
         $pdf->c_tableHeader2(array(
                 array('value'=>'Account Name'),
@@ -1078,17 +1150,17 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         $pdf->c_commonReportFormat();
         $pdf->c_setHeader('Gross Hold Monitoring Per Cut-off');
         $pdf->html.='<div style="text-align:center;">As of ' . date('l') . ', ' .
-              date('F d, Y') . ' ' . date('H:i:s A') .'</div>';
+              date('F d, Y') . ' ' . date('h:i:s A') .'</div>';
         $pdf->SetFontSize(6);
         $pdf->c_tableHeader2(array(
                 array('value'=>'Site / PEGS Code'),
                 array('value'=>'Cut Off Date', 'width' => '70px'),
                 array('value'=>'Beginning Balance'),
                 array('value'=>'Deposit'),
-                array('value'=>'e-wallet Loads'),
+                array('value'=>'e-SAFE Loads'),
                 array('value'=>'Reload'),
                 array('value'=>'Redemption'),
-                array('value'=>'e-wallet Withdrawal'),
+                array('value'=>'e-SAFE Withdrawal'),
                 array('value'=>'Manual Redemption'),
                 array('value'=>'Printed Tickets'),
                 array('value'=>'Active Tickets for the Day'),
@@ -1156,7 +1228,7 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         $pdf->c_commonReportFormat();
         $pdf->c_setHeader('Gross Hold Monitoring Per Cut-off Details');
         $pdf->html.='<div style="text-align:center;">As of ' . date('l') . ', ' .
-              date('F d, Y') . ' ' . date('H:i:s A') .'</div>';
+              date('F d, Y') . ' ' . date('h:i:s A') .'</div>';
         $pdf->SetFontSize(10);
         $pdf->SetCellPadding(1);
         if(count($rows) > 0){
@@ -1256,7 +1328,7 @@ class ProcessTopUpGenerateReports extends BaseProcess{
 //        $venddate = $_POST['enddate'];  
 //        $enddate = date ('Y-m-d' , strtotime (BaseProcess::$gaddeddate, strtotime($venddate)))." ".BaseProcess::$cutoff;           
         $enddate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($startdate)) .BaseProcess::$gaddeddate))." ".BaseProcess::$cutoff; 
-        $_SESSION['report_header'] = array('Site / PEGS Code','Cut Off Date','Beginning Balance','Deposit', 'e-wallet Loads', 'Reload','Redemption', 'e-wallet Withdrawal','Manual Redemption','Printed Tickets','Active Tickets for the Day','Coupon','Cash on Hand', 'Replenishment','Collection','Ending Balance');
+        $_SESSION['report_header'] = array('Site / PEGS Code','Cut Off Date','Beginning Balance','Deposit', 'e-SAFE Loads', 'Reload','Redemption', 'e-SAFE Withdrawal','Manual Redemption','Printed Tickets','Active Tickets for the Day','Coupon','Cash on Hand', 'Replenishment','Collection','Ending Balance');
         $topreport = new TopUpReportQuery($this->getConnection());
         $topreport->open();
         $vsitecode = $_POST['selsitecode'];
@@ -1315,8 +1387,13 @@ class ProcessTopUpGenerateReports extends BaseProcess{
             $aid = $_SESSION['accID'];
         }
         $ipaddress = gethostbyaddr($_SERVER['REMOTE_ADDR']);
+
+        $startdate = $_POST['startdate'];
+        $venddate = date ('Y-m-d' , strtotime (BaseProcess::$gaddeddate, strtotime($startdate)));
+
         $startdate = $_POST['startdate']." ".BaseProcess::$cutoff;
         $venddate = date ('Y-m-d' , strtotime (BaseProcess::$gaddeddate, strtotime($_POST['enddate'])))." ".BaseProcess::$cutoff;
+
         $_SESSION['report_header'] = array('Site / PEGS Name','POS Account','Amount','Reason','Approved By','Processed By','Date Created');
         $topreport = new TopUpReportQuery($this->getConnection());
         $topreport->open();
@@ -1339,6 +1416,11 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         $_SESSION['report_values'] = $new_rows;
         $_GET['fn'] = 'cohadjustmenthistory';
         include 'ProcessTopUpExcel.php';
+        $topreport->close();
+        
+        //Point the connection to master DB to insert audit trail
+        $topreport = new TopUpReportQuery($this->getMasterConnection());
+        $topreport->open();
         $transdetails = "DateRange:".$startdate." To ".$venddate;
         $date = $topreport->getDate();
         $auditfuncid = 97;
@@ -1359,14 +1441,19 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         $ipaddress = gethostbyaddr($_SERVER['REMOTE_ADDR']);
         $topreport = new TopUpReportQuery($this->getConnection());
         $topreport->open();
+
+        $startdate = $_POST['startdate'];
+        $venddate = date ('Y-m-d' , strtotime (BaseProcess::$gaddeddate, strtotime($startdate)));
+
         $startdate = $_POST['startdate']." ".BaseProcess::$cutoff;
         $venddate = date ('Y-m-d' , strtotime (BaseProcess::$gaddeddate, strtotime($_POST['enddate'])))." ".BaseProcess::$cutoff;
+
         $rows = $topreport->getCohAdjustment($startdate, $venddate);
         $pdf = CTCPDF::c_getInstance();
         $pdf->c_commonReportFormat();
         $pdf->c_setHeader('Cash on Hand Adjustment History');
         $pdf->html.='<div style="text-align:center;">As of ' . date('l') . ', ' .
-              date('F d, Y') . ' ' . date('H:i:s') .'</div>';
+              date('F d, Y') . ' ' . date('h:i:s A') .'</div>';
         $pdf->SetFontSize(5);
         $pdf->c_tableHeader2(array(
                 array('value'=>'Site / PEGS Name'),
@@ -1393,6 +1480,11 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         }
         $pdf->c_tableEnd();
         $pdf->c_generatePDF('cohadjustmenthistory.pdf');
+        $topreport->close();
+        
+        //Point the connection to master DB to insert audit trail
+        $topreport = new TopUpReportQuery($this->getMasterConnection());
+        $topreport->open();
         $transdetails = "DateRange:".$startdate." To ".$venddate;
         $date = $topreport->getDate();
         $auditfuncid = 98;
@@ -1400,7 +1492,7 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         $topreport->close();
     }
     
-    //e-wallet Transaction History per site Report (PDF)
+    //e-SAFE Transaction History per site Report (PDF)
     public function ewalletTransactionsitehistoryPDF($site, $transType, $transStatus, $startDate, $endDate) {
         $aid = 0;
         if(isset($_SESSION['sessionID'])) {
@@ -1419,7 +1511,7 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         $rows = $topreport->geteWalletTransactionHistoryReport($site, $transType, $transStatus, $startDate, $endDate);
         $pdf = CTCPDF::c_getInstance();
         $pdf->c_commonReportFormat();
-        $pdf->c_setHeader('e-wallet Transaction History Per Site');
+        $pdf->c_setHeader('e-SAFE Transaction History Per Site');
         
         $pdf->html.='<div style="text-align:center;">Date Range: <b>  From </b> ' .$startDate. ' AM <b>     To </b>' .$endDate.' AM </div>';
         $pdf->SetFontSize(8);
@@ -1444,7 +1536,12 @@ class ProcessTopUpGenerateReports extends BaseProcess{
              ));
         }
         $pdf->c_tableEnd();
-        $pdf->c_generatePDF('ewalletTransactionHistoryPerSite.pdf');
+        $pdf->c_generatePDF('eSAFETransactionHistoryPerSite.pdf');
+        $topreport->close();
+        
+        //Point the connection to master DB to insert audit trail
+        $topreport = new TopUpReportQuery($this->getMasterConnection());
+        $topreport->open();
         $transdetails = " (SiteID:".$site." TransType:".$transType." TransStatus:".$transStatus." DateRange:".$startDate." To ".$endDate.")";
         $date = $topreport->getDate();
         $auditfuncid = 91;
@@ -1452,7 +1549,7 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         $topreport->close();
     }
     
-     //e-wallet Transaction History Report per site (Excel)
+     //e-SAFE Transaction History Report per site (Excel)
     public function ewalletTransactionsitehistoryExcel($site, $transType, $transStatus, $startDate, $endDate) {
         $_SESSION['report_header'] = array('Card Number','Start Date', 'End Date','Amount','Transaction Type',
             'Status','Created By');
@@ -1485,9 +1582,13 @@ class ProcessTopUpGenerateReports extends BaseProcess{
                 );
         }
         $_SESSION['report_values'] = $new_rows;
-        $_GET['fn'] = 'ewalletTransactionHistoryPerSite';
+        $_GET['fn'] = 'eSAFETransactionHistoryPerSite';
         include 'ProcessTopUpExcel.php';        
+        $topreport->close();
         
+        //Point the connection to master DB to insert audit trail
+        $topreport = new TopUpReportQuery($this->getMasterConnection());
+        $topreport->open();
         $transdetails = " (SiteID:".$site." TransType:".$transType." TransStatus:".$transStatus." DateRange:".$startDate." To ".$endDate.")";
         $date = $topreport->getDate();
         $auditfuncid = 90;
@@ -1495,7 +1596,7 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         $topreport->close();
     }
     
-     //e-wallet Transaction History per card Report (PDF)
+     //e-SAFE Transaction History per card Report (PDF)
     public function ewalletTransactioncardhistoryPDF($cardNumber, $transType, $transStatus, $startDate, $endDate) {
         $aid = 0;
         if(isset($_SESSION['sessionID'])) {
@@ -1514,7 +1615,7 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         $rows = $topreport->geteWalletTransactionCardHistoryReport($cardNumber, $transType, $transStatus, $startDate, $endDate);
         $pdf = CTCPDF::c_getInstance();
         $pdf->c_commonReportFormat();
-        $pdf->c_setHeader('e-wallet Transaction History Per Membership Card'); 
+        $pdf->c_setHeader('e-SAFE Transaction History Per Membership Card'); 
         $pdf->html.='<div style="text-align:center;">Date Range: <b>  From </b> ' .$startDate. ' AM <b>     To </b>' .$endDate.' AM </div>';
         $pdf->SetFontSize(8);
         $pdf->c_tableHeader2(array(
@@ -1541,8 +1642,12 @@ class ProcessTopUpGenerateReports extends BaseProcess{
              ));
         }
         $pdf->c_tableEnd();
-        $pdf->c_generatePDF('ewalletTransactionHistoryPerMembershipCard.pdf');
+        $pdf->c_generatePDF('eSAFETransactionHistoryPerMembershipCard.pdf');
+        $topreport->close();
         
+        //Point the connection to master DB to insert audit trail
+        $topreport = new TopUpReportQuery($this->getMasterConnection());
+        $topreport->open();
         $transdetails = " (CardNumber:".$cardNumber." TransType:".$transType." TransStatus:".$transStatus." DateRange:".$startDate." To ".$endDate.")";
         $date = $topreport->getDate();
         $auditfuncid = 93;
@@ -1550,7 +1655,7 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         $topreport->close();
     }
     
-     //e-wallet Transaction History Report per card (Excel)
+     //e-SAFE Transaction History Report per card (Excel)
     public function ewalletTransactioncardhistoryExcel($cardNumber, $transType, $transStatus, $startDate, $endDate) {
         $_SESSION['report_header'] = array('Site / PEGS Code','Card Number','Start Date', 'End Date','Amount','Transaction Type',
             'Status','Created By');
@@ -1585,9 +1690,13 @@ class ProcessTopUpGenerateReports extends BaseProcess{
                 );
         }
         $_SESSION['report_values'] = $new_rows;
-        $_GET['fn'] = 'ewalletTransactionHistoryPerMembershipCard';
+        $_GET['fn'] = 'eSAFETransactionHistoryPerMembershipCard';
         include 'ProcessTopUpExcel.php';        
+        $topreport->close();
         
+        //Point the connection to master DB to insert audit trail
+        $topreport = new TopUpReportQuery($this->getMasterConnection());
+        $topreport->open();
         $transdetails = " (CardNumber:".$cardNumber." TransType:".$transType." TransStatus:".$transStatus." DateRange:".$startDate." To ".$endDate.")";
         $date = $topreport->getDate();
         $auditfuncid = 92;
@@ -1908,8 +2017,8 @@ switch($_GET['action']) {
         
         if(isset($_GET['dateFrom']))
             $startDate = $_GET['dateFrom']." ".BaseProcess::$cutoff;
-        if(isset($_GET['dateTo']))
-            $endDate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($_GET['dateTo'])) .BaseProcess::$gaddeddate))." ".BaseProcess::$cutoff;
+//        if(isset($_GET['dateTo']))
+            $endDate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($startDate)) .BaseProcess::$gaddeddate))." ".BaseProcess::$cutoff;
         if(isset($_GET['cmbtransStatus']))
             $transStatus = $_GET['cmbtransStatus'];
         if(isset($_GET['cmbtransType']))
@@ -1930,8 +2039,8 @@ switch($_GET['action']) {
 
             if(isset($_GET['dateFrom']))
                 $startDate = $_GET['dateFrom']." ".BaseProcess::$cutoff;
-            if(isset($_GET['dateTo']))
-                $endDate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($_GET['dateTo'])) .BaseProcess::$gaddeddate))." ".BaseProcess::$cutoff;
+//            if(isset($_GET['dateTo']))
+               $endDate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($startDate)) .BaseProcess::$gaddeddate))." ".BaseProcess::$cutoff;
             if(isset($_GET['cmbtransStatus']))
                 $transStatus = $_GET['cmbtransStatus'];
             if(isset($_GET['cmbtransType']))
@@ -1952,8 +2061,8 @@ switch($_GET['action']) {
         
         if(isset($_GET['dateFrom']))
             $startDate = $_GET['dateFrom']." ".BaseProcess::$cutoff;
-        if(isset($_GET['dateTo']))
-            $endDate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($_GET['dateTo'])) .BaseProcess::$gaddeddate))." ".BaseProcess::$cutoff;
+//        if(isset($_GET['dateTo']))
+            $endDate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($startDate)) .BaseProcess::$gaddeddate))." ".BaseProcess::$cutoff;
         if(isset($_GET['cmbtransStatus']))
             $transStatus = $_GET['cmbtransStatus'];
         if(isset($_GET['cmbtransType']))
@@ -1974,8 +2083,8 @@ switch($_GET['action']) {
 
             if(isset($_GET['dateFrom']))
                 $startDate = $_GET['dateFrom']." ".BaseProcess::$cutoff;
-            if(isset($_GET['dateTo']))
-                $endDate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($_GET['dateTo'])) .BaseProcess::$gaddeddate))." ".BaseProcess::$cutoff;
+//            if(isset($_GET['dateTo']))
+                $endDate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($startDate)) .BaseProcess::$gaddeddate))." ".BaseProcess::$cutoff;
             if(isset($_GET['cmbtransStatus']))
                 $transStatus = $_GET['cmbtransStatus'];
             if(isset($_GET['cmbtransType']))

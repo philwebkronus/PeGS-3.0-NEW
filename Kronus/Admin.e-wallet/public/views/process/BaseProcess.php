@@ -10,6 +10,7 @@ require __DIR__.'/../sys/core/init.php';
 
 class BaseProcess {
    private static $_connection;
+   private static $_connectionmaster;
    public static $service_api;
    public static $player_api;
    public static $service_api_caching;
@@ -30,6 +31,10 @@ class BaseProcess {
       return self::$_connection;
    }
    
+   public function getMasterConnection() {
+      return self::$_connectionmaster;
+   }
+   
    public function __construct() {
       
    }
@@ -41,6 +46,10 @@ class BaseProcess {
    
     public static function setConnection($connection) {
         self::$_connection = $connection;
+    }
+    
+    public static function setMasterConnection($connection) {
+        self::$_connectionmaster = $connection;
     }
    
     
@@ -100,7 +109,8 @@ class jQGrid {
    public $rows = array();
 }
 
-BaseProcess::setConnection($_DBConnectionString[1]); //connect to report db
+BaseProcess::setMasterConnection($_DBConnectionString[0]); //connect to master DB
+BaseProcess::setConnection($_DBConnectionString[1]); //connect to report/Slave db
 BaseProcess::setConfig($_ServiceAPI,$_PlayerAPI,$_ServiceAPICaching,$_MicrogamingCurrency, 
                        $terminalcode, $cutoff_time, $gaddeddate, $_CAPIUsername, $_CAPIPassword, 
                        $_CAPIPlayerName,$_ptsecretkey,$_ptcasinoname, $cardinfo);

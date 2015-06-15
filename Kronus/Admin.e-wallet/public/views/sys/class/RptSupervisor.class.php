@@ -235,13 +235,13 @@ class RptSupervisor extends DBHandler
                             GROUP BY AID, tckt.SiteID";
 
         $query5 = "SELECT et.SiteID, et.CreatedByAID, ad.Name,
-                                -- Total e-wallet Deposits
+                                -- Total e-SAFE Deposits
                                 SUM(CASE et.TransType
                                         WHEN 'D' THEN et.Amount -- if deposit
                                         ELSE 0 -- if not deposit
                                 END) AS EwalletDeposits,
 
-                                -- Total e-wallet Withdrawal
+                                -- Total e-SAFE Withdrawal
                                 SUM(CASE et.TransType
                                         WHEN 'W' THEN et.Amount -- if redemption
                                         ELSE 0 -- if not redemption

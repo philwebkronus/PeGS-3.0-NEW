@@ -132,7 +132,10 @@ if($connected && $connected2)
                                             $ocs->logtoaudit($new_sessionid, $aid, $vtransdetails, $vdate, $vipaddress, $vauditfuncID);
                                             
                                         }
-                                        $msg = $result['changePin']['TransactionMessage'];
+                                        $msg = array();
+                                        $msg = $result;
+//                                        $msg = $result['changePin']['TransactionMessage'];
+//                                        $msg = "New PIN: " . $result['changePin']['NewPIN'];
                                    }    
                                }
                            }
@@ -142,7 +145,7 @@ if($connected && $connected2)
                         $msg = "Reset Player PIN : Card Number Not Set";
                    }
                    $ocs2->close();
-                   echo $msg;
+                   echo json_encode($msg);
                    break;
                 
                 case 'ManualRedemption':
@@ -781,7 +784,7 @@ if($connected && $connected2)
                 $vSiteID = $_POST['cmbsite'];
                 $vTerminalID = $_POST['cmbterminal'];
                 $vdate1 = $_POST['txtDate1'];
-                $vdate2 = $_POST['txtDate2'];
+                //$vdate2 = $_POST['txtDate2'];
                 $vFrom = $vdate1;
                 $vTo = $vdate2; //date ('Y-m-d', strtotime ('+1 day' , strtotime($vdate2)));
                 $vsummaryID = $_POST['summaryID'];
@@ -875,9 +878,9 @@ if($connected && $connected2)
                 $vSiteID = $_POST['cmbsite'];
                 $vTerminalID = $_POST['cmbterminal'];
                 $vdate1 = $_POST['txtDate1'];
-                $vdate2 = $_POST['txtDate2'];
+                //$vdate2 = $_POST['txtDate2'];
                 $vFrom = $vdate1;
-                $vTo = $vdate2; //date ('Y-m-d', strtotime ('+1 day' , strtotime($vdate2)));
+                $vTo = date ('Y-m-d', strtotime ('+1 day' , strtotime($vdate1)));
                 //for sorting
                 if($_POST['sidx'] != "")
                 {
@@ -949,9 +952,9 @@ if($connected && $connected2)
                 $vSiteID = $_POST['cmbsite'];
                 $vTerminalID = $_POST['cmbterminal'];
                 $vdate1 = $_POST['txtDate1'];
-                $vdate2 = $_POST['txtDate2'];
+                //$vdate2 = $_POST['txtDate2'];
                 $vFrom = $vdate1;
-                $vTo = $vdate2; //date ('Y-m-d', strtotime ('+1 day' , strtotime($vdate2)));
+                $vTo = date ('Y-m-d', strtotime ('+1 day' , strtotime($vdate1)));
                 $vsummaryID = $_POST['summaryID'];
                 
                 //for sorting

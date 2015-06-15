@@ -363,13 +363,6 @@ if($connected && $connected2 && $connected3)
                 exit;
           break;  
           
-          /**
-           * NOTE: 
-           * Test this module with scenarios like the ff
-           * 1. Remove the EGM session while having an existing Terminal session
-           * 2. has already deposited amount
-           * 3. 
-           */
           case 'EGMManualRemoving':
                 if($_POST['cmbterminals'] != "")
                 {
@@ -392,8 +385,7 @@ if($connected && $connected2 && $connected3)
                     //check number of sessions in a certain site
                     if($count > 0)
                     {
-                        $response = array('hasDeposited' => 0, 
-                                          'Message' => 'Failed to remove EGM Session, There is an existing terminal session for this terminal.');
+                        $response = 'Failed to remove EGM Session, There is an existing terminal session for this terminal.';
                     }
                     else
                     {   
@@ -403,21 +395,34 @@ if($connected && $connected2 && $connected3)
                             
                             $stackerbatchid = $oas->getStackerBatchID($terminalid,$vipterminalid);
                             $deposit_amt = $oas->checkdeposit($stackerbatchid);
-                            //if there's already a deposited amount, prompt the user if wants to continue.
-                            if ($deposit_amt > 0) {
-                                $details = array('hasDeposited' => 1 ,'AID' => $aid, 'StackerBatchID' => $stackerbatchid, 
-                                                 'Terminals' => array($terminalid, $vipterminalid), 
-                                                 'Message' => "Terminal has already a deposited amount of $deposit_amt. Would you like to proceed anyway?");
-                                echo json_encode($details);
-                                exit();
-                            } 
-                            else {
-                                $response = removeEGMSessionMain($oas2, $oas, $aid, $stackerbatchid, $terminalid, $vipterminalid);
+                            //if there's already a deposited amount, prompt the user if wants to continue.      
+                            if(is_null($stackerbatchid)){
+                                $updated = 1;
+                            }
+                            else{
+                                $updated = $oas2->updateSSStatus($aid,$stackerbatchid,5);
+
+                                if($updated == 0){
+                                    $updated = 1;
+                                }
+                            }
+
+                           if($updated > 0){
+                                $deleted = $oas->deleteEGMSessions($terminalid,$vipterminalid);
+                           }
+                            else{
+                                $deleted = 0;
+                            }
+
+                            if($deleted > 0 && $updated > 0){
+                                $response = 'EGM Session Successfully Removed';
+                            }
+                            else{
+                               $response = 'Failed to remove EGM Session';
                             }
                         }
                         else{
-                            $response = array('hasDeposited' => 0, 
-                                              'Message' => 'Failed to remove EGM session, EGM session does not exist.');
+                            $response = 'Failed to remove EGM session, EGM session does not exist';
                         }
                     }
                     
@@ -432,21 +437,6 @@ if($connected && $connected2 && $connected3)
 
                 echo json_encode($response);
                 unset($egmcheck, $deleted, $terminalid, $count);
-                $oas->close();
-                $oas2->close();
-                exit;
-            break;
-            case "RemoveWithDeposited":
-                unset($stackerbatchid, $terminals, $aid); //unset previous used variables
-                
-                $stackerbatchid = trim($_POST['stackerbatchid']);
-                $terminals      = $_POST['terminals'];
-                $aid            = trim($_POST['AID']);
-                
-                $response = removeEGMSessionMain($oas2, $oas, $aid, $stackerbatchid, $terminals[0], $terminals[1]);
-                
-                echo json_encode($response);
-                unset($egmcheck, $response['Deleted'], $terminalid, $count);
                 $oas->close();
                 $oas2->close();
                 exit;
@@ -493,7 +483,7 @@ if($connected && $connected2 && $connected3)
                                     else
                                     {
                                         $response = array('ErrorCode' => 1, 
-                                                          'Message' => 'Card Number is not for e-wallet.');
+                                                          'Message' => 'Card Number is not for e-SAFE.');
                                         $terminalid = "";
                                     }
                                 }
@@ -610,7 +600,7 @@ if($connected && $connected2 && $connected3)
                             else
                             {
                                 $response = array('ErrorCode' => 1, 
-                                                          'Message' => 'Card number should be an e-wallet account.');
+                                                          'Message' => 'Card number should be an e-SAFE account.');
                                 $terminalid = "";
                             }
                         }
@@ -1259,7 +1249,7 @@ if($connected && $connected2 && $connected3)
                                     default: $vstatus = 'All'; break;
                                 } 
 
-                                switch($vview['TransType'])
+                                switch($vview['TransactionType'])
                                 {
                                    case 'D': $vtranstype = 'Deposit';break;
                                    case 'W': $vtranstype = 'Withdrawal';break;
@@ -3990,35 +3980,5 @@ else
                fclose($fp_load);
            return $content;
            }
-    }
-    
-    function removeEGMSessionMain($oas2, $oas, $aid, $stackerbatchid, $terminalid,$vipterminalid) {
-        if(is_null($stackerbatchid)){
-            $updated = 1;
-        }
-        else{
-            $updated = $oas2->updateSSStatus($aid,$stackerbatchid,5);
-
-            if($updated == 0){
-                $updated = 1;
-            }
-        }
-
-        if($updated > 0){
-            $deleted = $oas->deleteEGMSessions($terminalid,$vipterminalid);
-        }
-        else{
-            $deleted = 0;
-        }
-
-
-        if($deleted > 0 && $updated > 0){
-            $response = 'EGM Session Successfully Removed';
-        }
-        else{
-            $response = 'Failed to remove EGM Session';
-        }
-        
-        return array('Message' => $response, 'Deleted' => $deleted, 'Updated' => $updated, 'hasDeposited' => 0);
     }
 ?>

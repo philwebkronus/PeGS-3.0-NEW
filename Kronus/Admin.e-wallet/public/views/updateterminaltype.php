@@ -298,7 +298,7 @@ include "header.php";
                     <td>
                             Regular<input type="radio" id="terminaltype0" name="terminaltype0" value="0"/>
                             EGM<input type="radio" id="terminaltype1" name="terminaltype1" value="1"  />
-                            e-wallet<input type="radio" id="terminaltype2" name="terminaltype2" value="2"  />
+                            e-SAFE<input type="radio" id="terminaltype2" name="terminaltype2" value="2"  />
                     </td>
                 </tr>
                 </table>

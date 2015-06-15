@@ -69,12 +69,19 @@ include "header.php";
                 </div>        
             </div>
             <div id="fade" class="black_overlay"></div>
-            
+            <div id="success-dialog" class="white_page pinreset">
+                <div class="close_popup" id="btnClose2" onclick="document.getElementById('success-dialog').style.display='none';document.getElementById('fade').style.display='none';"></div>        
+                <p></p>
+                <div align="right">
+                     <input type="button" value="Ok" id="btnOK2" onclick="document.getElementById('success-dialog').style.display='none';document.getElementById('fade').style.display='none';"/>       
+                </div>  
+            </div>
         </form>
 </div>
 
 <script type="text/javascript">
     jQuery(document).ready(function(){
+        $('#success-dialog').hide();
         $('#light').hide();
         $('#light').hide();
         $('#fade').hide();
@@ -113,7 +120,15 @@ include "header.php";
             type: 'post',
             data: {page: function(){ return "ResetPin";}, cardno: function(){return cardnumber;}},
             success: function(data){
-                alert(data);
+                data = JSON.parse(data);
+                if(data['changePin']['ErrorCode'] === 0){
+                    document.getElementById('success-dialog').style.display='block';
+                    document.getElementById('fade').style.display='block';
+                    $("#success-dialog p").html(data['changePin']['TransactionMessage'] + "<br/><br/>New PIN: <b>" + data['changePin']['NewPIN'] + "<b>");
+                }
+                else{
+                    alert(data['changePin']['TransactionMessage']); 
+                }            
                 $("#txtcardnumber").val("");
             },
             error: function(XMLHttpRequest, e)

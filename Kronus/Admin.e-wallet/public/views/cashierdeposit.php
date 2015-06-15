@@ -30,6 +30,34 @@ $vaccesspages = array('5');
     jQuery(document).ready(function(){
         var url = 'process/ProcessTopUp.php';
         
+        //Check if the amount > 100,000,00
+        jQuery("#txtAmount").live('change',function(){
+            var nStr = jQuery("#txtAmount").val();
+            var splitnum = nStr.split(/,/);
+            var itr = 0;
+            var input = '';
+            var lastnum = '';
+            if(splitnum.length > 0){
+                while(itr <= splitnum.length-1){
+                    if(itr == splitnum.length-1){
+                        lastnum = splitnum[itr].split(/\./);
+                        input += lastnum[0];
+                    }else{
+                        input +=splitnum[itr];
+                    }
+                    ++itr;
+                }
+            }
+
+            if(input.length > 8){
+                alert("Amount should not be greater than or equal to 100,000,000");
+                $("#txtAmount").val("");
+                return false;
+            } else {
+                return true;
+            }      
+        });   
+              
         jQuery("#cmbsitename").live('change', function(){
             var site = jQuery("#cmbsitename").val();
             
@@ -223,7 +251,7 @@ $vaccesspages = array('5');
         <tr>
            <td>Amount</td>
            <td>
-               <input class="auto" id="txtAmount" name="txtAmount" maxlength='10' onkeypress="javascript: return numberonlydecimal(event);"/>
+               <input class="auto" id="txtAmount" name="txtAmount" maxlength='11'  onkeypress="javascript: return numberonlydecimal(event);"/>
            </td>
         </tr>
         <tr>

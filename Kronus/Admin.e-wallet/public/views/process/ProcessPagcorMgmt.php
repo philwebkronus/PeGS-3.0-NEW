@@ -96,8 +96,10 @@ if($connected)
                 if(isset($_GET['startdate']))
                     $startdate = $_GET['startdate']." ".$cutoff_time;
                 
-                if(isset($_GET['enddate']))
-                    $enddate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($_GET['enddate'])) .$gaddeddate))." ".$cutoff_time;
+//                if(isset($_GET['enddate']))
+//                    $enddate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($_GET['enddate'])) .$gaddeddate))." ".$cutoff_time;
+                
+                $enddate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($startdate)) .BaseProcess::$gaddeddate))." ".BaseProcess::$cutoff; 
 
                 $dir = $_GET['sord'];
                 $sort = "s.SiteCode";
@@ -911,7 +913,8 @@ if($connected)
             break;
             case 'grossholdbalanceexcel':
                 $startdate = $_POST['startdate']." ".$cutoff_time;
-                $enddate = date ('Y-m-d' , strtotime ($gaddeddate, strtotime($_POST['enddate'])))." ".$cutoff_time;           
+//                $enddate = date ('Y-m-d' , strtotime ($gaddeddate, strtotime($_POST['enddate'])))." ".$cutoff_time;           
+                $enddate = date('Y-m-d',strtotime(date("Y-m-d", strtotime($startdate)) .BaseProcess::$gaddeddate))." ".BaseProcess::$cutoff; 
                 $header = array('Site / PEGS Code','Site / PEGS Name', 'POS Account','Initial Deposit','Reload','Redemption','Manual Redemption','Gross Hold');
                 $vsitecode = $_POST['selsitecode'];
                 $datenow = date("Y-m-d")." ".$cutoff_time;
@@ -954,7 +957,8 @@ if($connected)
             break;
             case 'grossholdbalancepdf':
                 $startdate = $_POST['startdate']." ".$cutoff_time; 
-                $enddate = date ('Y-m-d' , strtotime ($gaddeddate, strtotime($_POST['enddate'])))." ".$cutoff_time;   
+//                $enddate = date ('Y-m-d' , strtotime ($gaddeddate, strtotime($_POST['enddate'])))." ".$cutoff_time;   
+                
                 $vsitecode = $_POST['selsitecode'];
                 $datenow = date("Y-m-d")." ".$cutoff_time;
                 $rows = array();

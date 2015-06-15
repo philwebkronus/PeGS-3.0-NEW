@@ -90,9 +90,9 @@ if($connected)
                 $vSiteID = $_POST['cmbsite'];
                 $vTerminalID = $_POST['cmbterminal'];
                 $vdate1 = $_POST['txtDate1'];
-                $vdate2 = $_POST['txtDate2'];
+                //$vdate2 = $_POST['txtDate2'];
                 $vFrom = $vdate1." ".$cutoff_time;
-                $vTo = date ('Y-m-d' , strtotime ('+1 day' , strtotime($vdate2)))." ".$cutoff_time;
+                $vTo = date ('Y-m-d' , strtotime ('+1 day' , strtotime($vdate1)))." ".$cutoff_time;
                 $vtranstype = $_POST['cmbtranstype'];
                 $vsitecode = $terminalcode.$_POST['sitecode'];
                 $result = $orptfinance->showtranstracking($type="paginate",$vSiteID, $vTerminalID, $vtranstype, $vFrom, $vTo);
@@ -229,9 +229,9 @@ if($connected)
        $vSiteID = $_POST['cmbsite'];
        $vTerminalID = $_POST['cmbterminal'];
        $vdate1 = $_POST['txtDate1'];
-       $vdate2 = $_POST['txtDate2'];
+       //$vdate2 = $_POST['txtDate2'];
        $vFrom = $vdate1." ".$cutoff_time;
-       $vTo = date ('Y-m-d' , strtotime ('+1 day' , strtotime($vdate2)))." ".$cutoff_time;
+       $vTo = date ('Y-m-d' , strtotime ('+1 day' , strtotime($vdate1)))." ".$cutoff_time;
        $vtranstype = $_POST['cmbtranstype'];
      
        //used this method to get the grand total of all tranction types
@@ -410,9 +410,9 @@ if($connected)
     {
         $vgetpage = $_GET['export'];
         $vdate1 = $_POST['txtDate1'];
-        $vdate2 = $_POST['txtDate2'];
+        //$vdate2 = $_POST['txtDate2'];
         $vdatefrom = $vdate1." ".$cutoff_time;
-        $vdateto = date ('Y-m-d' , strtotime ('+1 day' , strtotime($vdate2)))." ".$cutoff_time;
+        $vdateto = date ('Y-m-d' , strtotime ('+1 day' , strtotime($vdate1)))." ".$cutoff_time;
         $vSiteID = $_POST['cmbsite'];
         $vTerminalID = $_POST['cmbterminal'];
         $vtranstype = $_POST['cmbtranstype'];

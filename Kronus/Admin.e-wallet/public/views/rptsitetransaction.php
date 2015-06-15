@@ -161,7 +161,7 @@ if(isset($_SESSION['acctype']))
                         sitecode: function(){return $('#cmbsite').find("option:selected").text();}
                      },
            datatype: "json",
-           colNames:['Site / PEGS Code', 'Card Number','e-wallet Loads', 'e-wallet Withdrawals','Date Started','Date Ended'],
+           colNames:['Site / PEGS Code', 'Card Number','e-SAFE Loads', 'e-SAFE Withdrawals','Date Started','Date Ended'],
            colModel:[
                      {name:'SiteCode',index:'SiteCode',align: 'center', sortable: false},
                      {name:'CardNumber', index:'CardNumber', align:'center', sortable: false},
@@ -179,7 +179,7 @@ if(isset($_SESSION['acctype']))
            viewrecords: true,
            sortorder: "asc",
            //loadComplete: function (){gettotal();},
-           caption:"e-wallet Transactions Per Day"
+           caption:"e-SAFE Transactions Per Day"
      });
      jQuery("#userdata2").jqGrid('navGrid','#pager2',{edit:false,add:false,del:false, search:false, refresh: true});
      jQuery('#userdata2').trigger("reloadGrid");

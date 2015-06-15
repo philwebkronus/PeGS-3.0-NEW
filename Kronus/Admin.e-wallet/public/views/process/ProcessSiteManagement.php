@@ -322,10 +322,10 @@ if($connected)
                              $headers="From: poskronusadmin@philweb.com.ph\r\nContent-type:text/html";
                              mail($to, $subject, $message, $headers);
                                 if($resultid0 == 0){
-                                   $msg = "Site/PEGS Creation : Sites/PEGS successfully created, EGM and e-wallet Virtual Cashier Creation Failed";
+                                   $msg = "Site/PEGS Creation : Sites/PEGS successfully created, EGM and e-SAFE Virtual Cashier Creation Failed";
                                 }
                                 else {
-                                   $msg = "Site/PEGS Creation : Sites/PEGS successfully created, e-wallet Virtual Cashier Creation Failed";
+                                   $msg = "Site/PEGS Creation : Sites/PEGS successfully created, e-SAFE Virtual Cashier Creation Failed";
                                 }
                             }
                             else{
@@ -790,7 +790,7 @@ if($connected)
                         $sha = substr(sha1($username), -3);
                         $UserName = $_virtual_prefix_ewallet.$nsiteCode.$sha;
                         $vUserName = strtoupper($UserName);
-                        $vName = 'e-wallet - '.$nsiteCode;
+                        $vName = 'e-SAFE - '.$nsiteCode;
                         $vEmail = $_virtual_email_ew;
                         $vAccountTypeID = 17;
                         

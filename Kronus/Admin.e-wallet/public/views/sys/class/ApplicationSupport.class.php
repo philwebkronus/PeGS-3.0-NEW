@@ -154,7 +154,7 @@ class ApplicationSupport extends DBHandler
           return $this->fetchAllData();
       }
       /**
-       * Select e-Wallet Transaction Details for Manual e-Wallet Casino Fulfillment
+       * Select e-SAFE Transaction Details for Manual e-SAFE Casino Fulfillment
        * @param type $vtransstatus
        * @param type $vFrom
        * @param type $vTo
@@ -179,8 +179,8 @@ class ApplicationSupport extends DBHandler
                       INNER JOIN npos.sites s ON s.SiteID = ewl.SiteID 
                       INNER JOIN npos.ref_services rs ON ewl.ServiceID = rs.ServiceID 
                       WHERE ewl.LoyaltyCardNumber = ? 
-                      AND ewl.Status IN (3, 4) AND Date(ewl.StartDate) >= ?
-                      AND Date(ewl.StartDate) < ?
+                      AND ewl.Status IN (3, 4) AND ewl.StartDate >= ?
+                      AND ewl.StartDate < ?
                       ORDER BY ewl.StartDate";
               }
               else
@@ -192,8 +192,8 @@ class ApplicationSupport extends DBHandler
                       INNER JOIN npos.sites s ON s.SiteID = ewl.SiteID 
                       INNER JOIN npos.ref_services rs ON ewl.ServiceID = rs.ServiceID 
                       WHERE ewl.SiteID = ? 
-                      AND ewl.Status IN (3, 4) AND Date(ewl.StartDate) >= ?
-                      AND Date(ewl.StartDate) < ?
+                      AND ewl.Status IN (3, 4) AND ewl.StartDate >= ?
+                      AND ewl.StartDate < ?
                       ORDER BY ewl.StartDate";
               }
               $this->prepare($stmt);
@@ -212,8 +212,8 @@ class ApplicationSupport extends DBHandler
                       INNER JOIN npos.sites s ON s.SiteID = ewl.SiteID 
                       INNER JOIN npos.ref_services rs ON ewl.ServiceID = rs.ServiceID 
                       WHERE ewl.LoyaltyCardNumber = ? 
-                      AND ewl.Status = ? AND Date(ewl.StartDate) >= ?
-                      AND Date(ewl.StartDate) < ?
+                      AND ewl.Status = ? AND ewl.StartDate >= ?
+                      AND ewl.StartDate < ?
                       ORDER BY ewl.StartDate";
               }
               else
@@ -225,8 +225,8 @@ class ApplicationSupport extends DBHandler
                       INNER JOIN npos.sites s ON s.SiteID = ewl.SiteID 
                       INNER JOIN npos.ref_services rs ON ewl.ServiceID = rs.ServiceID 
                       WHERE ewl.SiteID = ? 
-                      AND ewl.Status = ? AND Date(ewl.StartDate) >= ?
-                      AND Date(ewl.StartDate) < ?
+                      AND ewl.Status = ? AND ewl.StartDate >= ?
+                      AND ewl.StartDate < ?
                       ORDER BY ewl.StartDate";
               }
               
@@ -244,7 +244,7 @@ class ApplicationSupport extends DBHandler
           return $this->fetchAllData();
       }
       /**
-       * Count all e-wallet trans for Manual e-Wallet Casino fulfillment
+       * Count all e-SAFE trans for Manual e-SAFE Casino fulfillment
        * @param type $zSiteID
        * @param type $zTerminalID
        * @param type $ztransstatus
@@ -268,8 +268,8 @@ class ApplicationSupport extends DBHandler
                            INNER JOIN npos.sites s ON s.SiteID = ewl.SiteID 
                            INNER JOIN npos.ref_services rs ON ewl.ServiceID = rs.ServiceID 
                            WHERE ewl.LoyaltyCardNumber = ? 
-                           AND ewl.Status IN (3, 4) AND Date(ewl.StartDate) >= ? 
-                           AND Date(ewl.StartDate) < ? 
+                           AND ewl.Status IN (3, 4) AND ewl.StartDate >= ? 
+                           AND ewl.StartDate < ? 
                            ORDER BY ewl.StartDate";
               }
               else //SITE
@@ -279,8 +279,8 @@ class ApplicationSupport extends DBHandler
                            INNER JOIN npos.sites s ON s.SiteID = ewl.SiteID 
                            INNER JOIN npos.ref_services rs ON ewl.ServiceID = rs.ServiceID 
                            WHERE ewl.SiteID = ? 
-                           AND ewl.Status IN (3, 4) AND Date(ewl.StartDate) >= ? 
-                           AND Date(ewl.StartDate) < ? 
+                           AND ewl.Status IN (3, 4) AND ewl.StartDate >= ? 
+                           AND ewl.StartDate < ? 
                            ORDER BY ewl.StartDate";
               }
               $this->prepare($stmt);
@@ -297,8 +297,8 @@ class ApplicationSupport extends DBHandler
                       INNER JOIN npos.sites s ON s.SiteID = ewl.SiteID 
                       INNER JOIN npos.ref_services rs ON ewl.ServiceID = rs.ServiceID 
                       WHERE ewl.LoyaltyCardNumber = ? 
-                      AND ewl.Status = ? AND Date(ewl.StartDate) >= ? 
-                      AND Date(ewl.StartDate) < ? 
+                      AND ewl.Status = ? AND ewl.StartDate >= ? 
+                      AND ewl.StartDate < ? 
                       ORDER BY ewl.StartDate";
               }
               else
@@ -308,8 +308,8 @@ class ApplicationSupport extends DBHandler
                       INNER JOIN npos.sites s ON s.SiteID = ewl.SiteID 
                       INNER JOIN npos.ref_services rs ON ewl.ServiceID = rs.ServiceID 
                       WHERE ewl.SiteID = ? 
-                      AND ewl.Status = ? AND Date(ewl.StartDate) >= ? 
-                      AND Date(ewl.StartDate) < ? 
+                      AND ewl.Status = ? AND ewl.StartDate >= ? 
+                      AND ewl.StartDate < ? 
                       ORDER BY ewl.StartDate";
               }
               $this->prepare($stmt);
@@ -1983,7 +1983,7 @@ class ApplicationSupport extends DBHandler
      
      function checkdeposit($stackerbatchid){
             $stmt = "SELECT Deposit FROM stackermanagement.stackersummary 
-                WHERE StackerSummaryID = ? AND Status = 0";
+                WHERE StackerSummaryID = ?";
            $this->prepare($stmt);
            $this->bindparameter(1, $stackerbatchid);
            $this->execute($stmt);

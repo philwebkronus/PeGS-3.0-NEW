@@ -322,7 +322,7 @@ class RptOperator extends DBHandler
                         THEN 'Regular'
                         WHEN 1
                         THEN 'Genesis'
-                        ELSE 'e-wallet'
+                        ELSE 'e-SAFE'
                     END AS TerminalType, 
                     rs.ServiceID,
                     rs.ServiceName,
@@ -683,7 +683,7 @@ class RptOperator extends DBHandler
                         THEN 'Regular'
                         WHEN 1
                         THEN 'Genesis'
-                        ELSE 'e-Wallet'
+                        ELSE 'e-SAFE'
                     END AS TerminalType, 
                     rs.ServiceID,
                     rs.ServiceName,
@@ -1194,7 +1194,7 @@ class RptOperator extends DBHandler
                                                         END
                                         END) AS EwalletBancnetDeposit,
                                         
-                                        -- Total e-wallet Withdrawal
+                                        -- Total e-SAFE Withdrawal
                                         SUM(CASE TransType
                                                 WHEN 'W' THEN Amount -- if redemption
                                                 ELSE 0 -- if not redemption
@@ -1221,14 +1221,14 @@ class RptOperator extends DBHandler
             $cohdata['TotalCashRedemption'] += (float)$value['RedemptionCashier'];
         }
        
-        //Get total e-wallet loaded cash (with bancnet transaction included)
+        //Get total e-SAFE loaded cash (with bancnet transaction included)
         $this->prepare($query2);
         $this->bindparameter(1, $datefrom);
         $this->bindparameter(2, $dateto);
         $this->execute();
         $rows2 = $this->fetchAllData();
         
-        //Add the total e-wallet cash load and e-wallet cash redemption
+        //Add the total e-SAFE cash load and e-SAFE cash redemption
         foreach ($rows2 as $value) {
             $cohdata['TotalCashLoad'] += (float)$value['EwalletCashDeposit'];
             $cohdata['TotalCashLoad'] += (float)$value['EwalletBancnetDeposit'];
@@ -1242,7 +1242,7 @@ class RptOperator extends DBHandler
         $this->execute();
         $rows3 = $this->fetchAllData();
         
-        //Add the total e-wallet cash load and e-wallet cash redemption
+        //Add the total e-SAFE cash load and e-SAFE cash redemption
         foreach ($rows3 as $value) {
             $cohdata['TotalMR'] += (float)$value['ManualRedemption'];
         }
