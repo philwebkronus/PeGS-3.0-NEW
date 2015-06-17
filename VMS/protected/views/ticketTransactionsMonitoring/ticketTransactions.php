@@ -184,9 +184,7 @@
         'htmlOptions' => array('style' => 'text-align:center'),    
         ), 
         );
-        
-        
-        
+       
         $this->widget('zii.widgets.grid.CGridView', array(
         'dataProvider' => $arrayDataProvider,
         'enablePagination' => true,

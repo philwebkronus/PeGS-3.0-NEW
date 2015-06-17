@@ -70,7 +70,7 @@ Yii::app()->clientScript->registerScript("validation","
 		<?php //echo $form->error($model,'Password'); ?>
 	</div>
 	<div class="row buttons">
-		<?php echo CHtml::submitButton('Login'); ?>
+		<?php echo CHtml::submitButton('Login', array('id' =>'btnsubmit')); ?>
 	</div>
 
 <?php $this->endWidget(); ?>

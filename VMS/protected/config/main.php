@@ -170,6 +170,8 @@ return array(
                 'time_stamp'=>'23:59:59', //replace 00:00:00 with H:i:s if current timestamp is needed
                 'maxCouponCount' => 5000,
                 'maxCouponAmount' => 50000,
-                'minCouponAmount' => 500
+                'minCouponAmount' => 500,
+                'referrer' => 'http://<CHANGE DOMAIN HERE>/',
+	        'referrer2' => 'http://<CHANGE DOMAIN HERE>/index.php/site/login'
 	),
 );

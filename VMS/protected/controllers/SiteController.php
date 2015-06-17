@@ -70,6 +70,14 @@ class SiteController extends VMSBaseIdentity {
             if (isset($_POST['LoginForm'])) {
                 $model->attributes = $_POST['LoginForm'];
 
+                if((Yii::app()->params['referrer'] != Yii::app()->request->urlReferrer) && (Yii::app()->params['referrer2'] != Yii::app()->request->urlReferrer)) {
+                    header('HTTP/1.0 403 Forbidden');
+                    $this->showDialog = true;
+                    $this->dialogMsg = "Forbidden";
+                    $this->render('login', array('model' => $model));
+                    Yii::app()->end();
+
+                }
                 // validate user input and redirect to the previous page if valid
                 if ($model->validate() && $model->login()) {
                     
