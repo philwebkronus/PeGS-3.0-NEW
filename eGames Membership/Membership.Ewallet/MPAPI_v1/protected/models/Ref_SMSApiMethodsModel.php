@@ -46,4 +46,3 @@ class Ref_SMSApiMethodsModel {
     
             
 }
-
