@@ -35,6 +35,39 @@
                    document.oncontextmenu = mischandler;
                    document.onmousedown = mousehandler;
                    document.onmouseup = mousehandler;
+                   
+                   jQuery('form').submit(function(e){
+                       e.preventDefault();
+                      
+                       //var hidreferrer = jQuery('#hidreferrer').val();
+                       var self = this;
+
+                       jQuery.ajax({
+                            url: 'checkreferrer.php',
+                            type: 'post',
+//                            data: {hidreferrer: hidreferrer,
+//
+//                                  },
+                            dataType: 'text',
+                            cache: false,
+                            success: function(result){
+                                  if($.trim(result) == "Authorized")
+                                      self.submit();
+
+                            },
+                            error: function(XMLHttpRequest, e){
+
+                                  alert('Forbidden');
+//                                  if(XMLHttpRequest.status == 403)
+//                                  {
+//                                      window.location.reload();
+//                                  }
+                            }
+
+                            });
+               
+
+                       });
              });
              
              function preventBackandForward()
@@ -54,6 +87,7 @@
             <input type="hidden" name ="browser" id="browser" />
             <input type="hidden" name="version" id="version" />
             <input type="hidden" name="chrome" id="chrome"  />
+<!--            <input type="hidden" name="hidreferrer" id="hidreferrer" value="<?php //echo $_SERVER['HTTP_REFERER'];?>"/>-->
                        
             <fieldset>
                 <p class ="legend">POS Kronus - Login</p>
