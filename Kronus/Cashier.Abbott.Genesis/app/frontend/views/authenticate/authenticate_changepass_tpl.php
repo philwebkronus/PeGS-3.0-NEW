@@ -9,7 +9,8 @@
                 'onkeypress'=>'javascript: return numberandletter(event);',
                 'ondragstart'=>'return false',
                 'onselectstart'=>'return false',
-                'onpaste'=>'return false')) ?>
+                'onpaste'=>'return false',
+                'maxlength'=>20)) ?>
         </div> 
         <div class="row1 push-down20 append20">
             <?php echo MI_HTML::label($loginForm, 'email', 'Email Address:') ?>

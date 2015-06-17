@@ -16,6 +16,7 @@ return array(
     'forgotpass'=>'Authenticate/forgotPassword',
     'forgotuser'=>'Authenticate/forgotUsername',
     'updatepassword'=>'Authenticate/updatepassword',
+    'checkreferrer'=>'Authenticate/checkReferrer',
     
     // routes for terminal monitoring
     'terminal/overview'=>'Terminal/overview',
