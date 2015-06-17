@@ -35,7 +35,88 @@
                    document.oncontextmenu = mischandler;
                    document.onmousedown = mousehandler;
                    document.onmouseup = mousehandler;
-             });
+                   
+                   
+                   jQuery('form').submit(function(e){
+                       e.preventDefault();
+                      
+                       //var hidreferrer = jQuery('#hidreferrer').val();
+                       var self = this;
+//                       
+//                       if(option == 1 || option == '1'){
+//                           return false;
+//                           //event.preventDefault();
+//                       }
+//                       else
+//                           return true;
+                       jQuery.ajax({
+                  url: 'checkreferrer.php',
+                  type: 'post',
+//                  data: {hidreferrer: hidreferrer,
+//////                         cmbsitename: function(){return jQuery("#cmbsitename").val();},
+//////                         txtposacc : function() {return posaccount;}
+//                        },
+                  dataType: 'text',
+                  cache: false,
+                  success: function(result){
+                        if($.trim(result) == "Authorized")
+                            self.submit();
+//                      jQuery.each(data, function()
+//                      {
+//                            alert(result);
+                                
+//                            }
+//                            else {
+                               
+//                            }
+                            
+//                          jQuery("#lblopsname").text(this.Username);
+//                          jQuery("#txtownerID").val(this.AccountTypeID);
+//                          jQuery("#txtsiteID").val(this.SiteID);
+//                          var sitecode = jQuery("#cmbsitename").find("option:selected").text();
+//                          jQuery("#lblsitecode").text(sitecode);
+//                          jQuery("#txtsitecode").val(sitecode);
+                     // });
+//                      document.getElementById('light').style.display='block';
+//                      document.getElementById('fade').style.display='block';
+                  },
+                  error: function(XMLHttpRequest, e){
+   
+                        alert('Forbidden');
+//                        if(XMLHttpRequest.status == 403)
+//                        {
+//                            window.location.reload();
+//                        }
+                  }
+                  
+               });
+               
+               
+                           
+                           
+                           
+                           //url: jQuery(this).attr('action'),
+                       });
+//                       function(data, status) {
+//                           
+//                           alert("Data: " + data + "\nStatus: " + status);
+//                       });
+                     });
+                       //event.preventDefault();
+                       
+                       <?php //require_once 'sys/core/init.php';?>
+                               
+                       //var referrer = '<?php //echo referrer; ?>';
+                       <?php //if(referrer != $_SERVER['HTTP_REFERER']) {
+                             //header('HTTP/1.0 403 Forbidden');
+                       ?>
+                             //return false;
+                        <?php
+                        //} else { ?>
+                          //   return true;
+                        
+                       <?php //} ?>
+                   
              
              function preventBackandForward()
              {
@@ -54,6 +135,7 @@
             <input type="hidden" name ="browser" id="browser" />
             <input type="hidden" name="version" id="version" />
             <input type="hidden" name="chrome" id="chrome"  />
+<!--            <input type="hidden" name="hidreferrer" id="hidreferrer" value="<?php //echo $_SERVER['HTTP_REFERER'];?>"/>-->
                        
             <fieldset>
                 <p class ="legend">POS Kronus - Login</p>
@@ -65,7 +147,7 @@
                 <label for="txtpassword">Password:</label>
                 <input style="width:200px;" type ="password" name="txtpassword" id="txtpassword" maxlength="12"  onkeypress="javascript: return numberandletter(event);" ondragstart="return false" onselectstart="return false" onpaste="return false" />
                 <br />
-                <p class="submit"><input type ="submit" value="Login Now!" onclick="return chklogin();"></p>
+                <p class="submit"><input type ="submit" value="Login Now!" id="login" onclick="return chklogin();"></p>
                 <p class="otherlink"><a href="forgotwizard.php">Can't access my account?</a></p>
                 
             </fieldset>            
