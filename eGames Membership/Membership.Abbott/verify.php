@@ -23,9 +23,9 @@ if(isset($_GET['email']) && isset($_GET['tempcode']))
     $tempcode = $_GET['tempcode'];
     
     //check if email address already verified
-    $isVerified = $_TempMembers->chkTmpVerifiedEmailAddress($email);
+    $isVerified = $_TempMembers->chkTmpVerifiedEmailAddressWithSP($email);
     if($isVerified == 0){
-        $result = $_TempMembers->verifyEmailAccount($email, $tempcode);
+        $result = $_TempMembers->verifyEmailAccountSP($email, $tempcode);
 
         if($result == 1)
         {

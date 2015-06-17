@@ -30,7 +30,42 @@ class MemberInfo extends BaseEntity {
 
         return parent::RunQuery($query);
     }
-
+    public function getGenericInfo($MID) {
+        $query = "SELECT
+                    m.Status, m.DateCreated, mi.Gender, mi.Birthdate, mi.IsCompleteInfo, mi.DateVerified
+                  FROM memberinfo mi
+                    INNER JOIN members m ON mi.MID = m.MID
+                  WHERE m.MID = $MID";
+        return parent::RunQuery($query);
+    }
+    public function getMemInfoUsingSP($MID) {
+        
+        $query = "SELECT
+                    m.Status, m.DateCreated, mi.Birthdate, mi.IsCompleteInfo, mi.DateVerified
+                  FROM memberinfo mi
+                    INNER JOIN members m ON mi.MID = m.MID
+                  WHERE m.MID = $MID";
+        
+        $data1 = parent::RunQuery($query);
+        
+        $neededfields = "'FirstName,LastName,Email,MobileNumber'";
+        $infos =  array();
+        $query1 = "CALL sp_select_data(1,1,0,$MID,$neededfields,@ReturnCode, @ReturnMessage, @ReturnFields);";
+        $query2 = "SELECT @ReturnCode, @ReturnMessage, @ReturnFields;";
+        $query3 = "CALL sp_select_data(1,0,0,$MID,'UserName',@ReturnCode, @ReturnMessage, @ReturnFields);";
+        parent::RunQuery($query1);
+        $data = parent::RunQuery($query2);
+        $username = parent::RunQuery($query3);
+        $keys = explode(",", $neededfields);
+        $infodata = explode(';', $data[0]['@ReturnFields']);
+        foreach ($keys as $key => $value) {
+            $infos[trim($value," '")] = $infodata[$key];
+        }
+        $info = array_merge($data1[0],$infos);
+        isset($username[0]["OUTfldListRet"]) ? $info["UserName"] = $username[0]["OUTfldListRet"]:$info["UserName"] = "";
+        return $info;
+        unset($infos,$info);
+    }
     public function getEmail($MID) {
         $query = "SELECT Email FROM $this->TableName WHERE MID=$MID";
         $result = parent::RunQuery($query);
@@ -357,7 +392,20 @@ class MemberInfo extends BaseEntity {
         $query = "SELECT FirstName, LastName FROM membership.memberinfo WHERE MID = $MID;";
         return parent::RunQuery($query);
     }
-
+    public function getMemberDtlsByMID($MID) {
+        $query = "CALL membership.sp_select_data(1, 1, 0, ".$MID.", 
+                                                                 'FirstName, MiddleName, LastName, IdentificationNumber,Email',
+                                                                 @RetCode, @Ret2, @Ret3)";
+        $result = parent::RunQuery($query);
+        return explode(";",$result[0]['OUTfldListRet']);
+    }
+     public function getMemberByMID($MID) {
+        $query = "CALL membership.sp_select_data(1, 0, 'MID', ".$MID.", 
+                                                                 'UserName',  
+                                                                 @RetCode, @Ret2, @Ret3)";
+        $result = parent::RunQuery($query);
+        return explode(";",$result[0]['OUTfldListRet']);
+    }
 }
 
 ?>

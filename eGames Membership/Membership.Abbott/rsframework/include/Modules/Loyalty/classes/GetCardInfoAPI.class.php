@@ -83,8 +83,8 @@ class GetCardInfoAPI extends BaseEntity
                 
                 $cardinfo = $_MemberCards->getMemberPoints( $cardnumber );                
                  
-                $memberInfo = $_MemberInfo->getMemberInfo($cardinfo[0]['MID']);
-                $row = array_merge($cardinfo[0],$memberInfo[0]);
+                $memberInfo = $_MemberInfo->getMemInfoUsingSP($cardinfo[0]['MID']);
+                $row = array_merge($cardinfo[0],$memberInfo);
                 
                 $members = $_Members->getVIP($cardinfo[0]['MID']);
                                 
@@ -273,8 +273,8 @@ class GetCardInfoAPI extends BaseEntity
                             $members = $_Members->getVIP($MID);
                         
                             $casinoAccounts = $_MemberServices->getCasinoAccounts( $MID );                            
-                            $memberInfo = $_MemberInfo->getMemberInfo( $MID );
-                            $row = $memberInfo[0];
+                            $memberInfo = $_MemberInfo->getMemInfoUsingSP( $MID );
+                            $row = $memberInfo;
 
                             $cardinfo = $_MemberCards->getMemberCardInfoByCard( $cardnumber );
                             $points = $cardinfo[0];
@@ -386,17 +386,15 @@ class GetCardInfoAPI extends BaseEntity
                     {
                         $points = $cardinfo[0];
                         $MID = $points['MID'];
-                                                
-                        $memberInfo = $_MemberInfo->getMemberInfo( $MID );                        
-                        $row = $memberInfo[0];
                         
+                        $memberInfo = $_MemberInfo->getMemInfoUsingSP( $MID );
+                        $row = $memberInfo;
+
                         $members = $_Members->getVIP($MID);
                         
                         $casinoAccounts = $_MemberServices->getCasinoAccounts( $MID );
                         
-                    }
-                    
-                    $result = array("CardInfo"=>array(
+                        $result = array("CardInfo"=>array(
                                          "MID"                      => $MID,
                                          "Username"                 => "",
                                          "CardNumber"               => $cardnumber,//$row['CardNumber'],
@@ -421,7 +419,36 @@ class GetCardInfoAPI extends BaseEntity
                                          "StatusCode"               => intval(CardStatus::ACTIVE_TEMPORARY),
                                          "StatusMsg"                => 'Active Temporary Account',
                                          )
+                           );
+                    }else {
+                         $result = array("CardInfo"=>array(
+                                         "MID"                      => "",
+                                         "Username"                 => "",
+                                         "CardNumber"               => "",//$row['CardNumber'],
+                                         "MemberUsername"           => "",
+                                         "CardType"                 => "",
+                                         "MemberName"               => "",
+                                         "RegistrationDate"         => "",
+                                         "Birthdate"                => "",
+                                         "CurrentPoints"            => "", 
+                                         "LifetimePoints"           => "",
+                                         "RedeemedPoints"           => "",
+                                         "IsCompleteInfo"           => "",
+                                         "MemberID"                 => "",    
+                                         "MemberClassification"     => "",
+                                         "CasinoArray"              => "",
+                                         "CardStatus"               => "",
+                                         "DateVerified"             => "",
+                                         "MobileNumber"             => "",
+                                         "Email"                    => "",                                         
+                                         "IsReg"                    => intval($isreg),
+                                         "CoolingPeriod"            => $_Helper->getParameterValue('COOLING_PERIOD'),
+                                         "StatusCode"               => intval(CardStatus::ACTIVE_TEMPORARY),
+                                         "StatusMsg"                => 'Card doesn\'t have Card Account',
+                                         )
                             );
+                        
+                    }
                     
                 }
                 
@@ -482,12 +509,11 @@ class GetCardInfoAPI extends BaseEntity
                        WHERE
                          c.CardNumber = '$cardnumber'";
         
-                $cardinfo = parent::RunQuery($query);        
-                $memberInfo = $_MemberInfo->getMemberInfo($cardinfo[0]['MID']);
-                
+                $cardinfo = parent::RunQuery($query);  
                 $members = $_Members->getVIP($cardinfo[0]['MID']);
 
-                $row = array_merge($cardinfo[0],$memberInfo[0]);
+                $memberInfo = $_MemberInfo->getMemInfoUsingSP($cardinfo[0]['MID']);
+                $row = array_merge($cardinfo[0],$memberInfo);
                 
                 //Get Member's casino services
                 $casinoAccounts = $_MemberServices->getCasinoAccounts( $row['MID'] );
@@ -610,8 +636,8 @@ class GetCardInfoAPI extends BaseEntity
                 
                 $MID = $card['MID'];
                 
-                $memberinfo = $_MemberInfo->getMemberInfo($MID);
-                $row = $memberinfo[0];
+                $memberinfo = $_MemberInfo->getMemInfoUsingSP($MID);
+                $row = $memberinfo;
                 
                 $members = $_Members->getVIP($MID);
                 
@@ -619,7 +645,7 @@ class GetCardInfoAPI extends BaseEntity
                 
                 $result = array("CardInfo"=>array(
                                         "MID"                   => $MID,
-                                        "Username"              => $row['UserName'],
+                                        "Username"              => "",
                                         "CardNumber"            => $card['CardNumber'],
                                         "MemberUsername"        => $row['UserName'],
                                         "CardType"              => $card['CardTypeID'],

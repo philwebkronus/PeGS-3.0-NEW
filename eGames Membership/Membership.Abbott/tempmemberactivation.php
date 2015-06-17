@@ -134,17 +134,22 @@ if((isset($_GET["tempnumber"]) && (htmlentities($_GET["tempnumber"]))) &&
     
     if($isreg == 1)
     {    
-        $memberinfo = $_MemberInfo->getMemberInfo($MID);
+        $memberinfo = $_MemberInfo->getGenericInfo($MID);
+        $memberinfo1 = $_MemberInfo->getMemberByMID($MID);
+        $memberinfo2 = $_MemberInfo->getMemberDtlsByMID($MID);
+        
         $siteresult = $_Sites->getSiteByCode($sitecode);
                 
         $row = $memberinfo[0];
-  
-        $username = $row["UserName"];
-        $membername = $row["FirstName"]." ".$row["MiddleName"]." ".$row["LastName"];
+        $row1 = $memberinfo1;
+        $row2 = $memberinfo2;
+
+        $username = $row1[0];
+        $membername = $row2[0]." ".$row2[1]." ".$row2[2];
         $createdon = date("m-d-Y H:i", strtotime($row["DateCreated"]));
         $birthdate = $row["Birthdate"];
         $gender = $row["Gender"];
-        $idpresented = $row['IdentificationNumber'];
+        $idpresented = $row2[3];
 
         $site = $siteresult[0];
         $sitename = $site["SiteName"];
@@ -172,133 +177,131 @@ if((isset($_GET["tempnumber"]) && (htmlentities($_GET["tempnumber"]))) &&
 
             if($btnSubmit->SubmittedValue == "Confirm")
             {
-                $isSuccess = 'NA';
-//                $datecreated = "NOW(6)";
-//                
-//                $tempcardresult = $_Cards->getCardInfo($tempAccountCode); //getMemberCardInfoByCard($MembershipCardNumber);
-//                $tempcardinfo = $tempcardresult[0];
-//                $tempcardid = $tempcardinfo["CardID"];
-//                
-//                $tempcardresult2 = $_MemberCards->getMemberCardInfoByCard($tempAccountCode);
-//                $tempcarddetails = $tempcardresult2[0];
-//                $lifetimePoints = $tempcarddetails["LifetimePoints"];
-//                $currentpoints = $tempcarddetails["CurrentPoints"];
-//                $redeemedpoints = $tempcarddetails["RedeemedPoints"];
-//                
-//                $cardresult = $_Cards->getCardInfo($MembershipCardNumber); //getMemberCardInfoByCard($MembershipCardNumber);
-//                $cardinfo = $cardresult[0];
-//                $cardid = $cardinfo["CardID"];
-//
-//                $arrMemberCards["MID"] = $MID;
-//                $arrMemberCards["CardID"]= $cardid;
-//                $arrMemberCards["SiteID"]= $siteid;
-//                $arrMemberCards["CardNumber"] = $MembershipCardNumber;
-//                $arrMemberCards["LifetimePoints"] = $lifetimePoints;
-//                $arrMemberCards["CurrentPoints"] = $currentpoints;
-//                $arrMemberCards["RedeemedPoints"] = $redeemedpoints;
-//                $arrMemberCards["DateCreated"] = $datecreated;
-//                $arrMemberCards["CreatedByAID"] = $AID;
-//                $arrMemberCards["Status"] = CardStatus::ACTIVE;
-//                
-//                $arrTempMemberCards["MemberCardID"] = $tempcardid;
-//                $arrTempMemberCards["Status"] = CardStatus::TEMPORARY_MIGRATED;
-//                $arrTempMemberCards["UpdatedByAID"] = $AID;
-//                $arrTempMemberCards["DateUpdated"] = $datecreated;
-//                
-//                $_MemberCards->processMemberCard($arrMemberCards, $arrTempMemberCards);
-//
-//                if(!App::HasError())
-//                {
-//                    $arrNewCard["CardID"] = $cardid;
-//                    $arrNewCard["UpdatedByAID"] = $AID;
-//                    $arrNewCard["DateUpdated"] = $datecreated;
-//                    $arrNewCard["Status"]= CardStatus::ACTIVE;
-//
-//                    $arrTempCard["CardID"] = $tempcardid;
-////                    $arrTempCard["SiteID"] = $siteid; need to double check the saving of site id
-//                    //$arrTempCard["SiteID"] = 1;
-//                    $arrTempCard["UpdatedByAID"] = $AID;
-//                    $arrTempCard["DateUpdated"] = $datecreated;
-//                    $arrTempCard["Status"]= CardStatus::TEMPORARY_MIGRATED;
-//
-//                    $_Cards->updateCardStatus($arrNewCard, $arrTempCard);
-//                    
-//                    if(!App::HasError())
-//                    {
-//                        $playername = $txtName->SubmittedValue;
-//                        $list = explode(' ', $playername, 3);
-//                        
-//                        if(count($list) == 1)
-//                        {
-//                            $fname = $list[0];
-//                            $mname = "";
-//                            $lname = "";
-//                        }
-//                        
-//                        if(count($list) == 2)
-//                        {
-//                            $fname = $list[0];
-//                            $mname = $list[1];
-//                            $lname = "";
-//                        }
-//                        
-//                        if(count($list) == 3)
-//                        {
-//                            $fname = $list[0];
-//                            $mname = $list[1];
-//                            $lname = $list[2];
-//                        }
-//                        
-//                        if(count($list) > 3)
-//                        {
-//                            $fname = $list[0];
-//                            $mname = $list[1];
-//                            $lname = $list[2] . ' ' . $list[3];
-//                        }
-//                        
-//                        $arrMemberInfo["MID"] = $MID;
-//                        $arrMemberInfo["FirstName"] = $fname;
-//                        $arrMemberInfo["MiddleName"] = $mname;
-//                        $arrMemberInfo["LastName"] = $lname;
-//                        $arrMemberInfo["Birthdate"] = $dtBirthDate->SubmittedValue;
-//                        $arrMemberInfo["Email"] = $username;
-//                        $arrMemberInfo["IdentificationID"] = $cboIDSelection->SubmittedValue;
-//                        $arrMemberInfo["IdentificationNumber"] = $txtIDPresented->SubmittedValue;
-//                        $arrMemberInfo["DateUpdated"] = $datecreated;
-//                        $arrMemberInfo["UpdatedByAID"] = $AID;
-//                        $rdoGroupGender->SubmittedValue == 1 ? $arrMemberInfo['Gender'] = 1 : $arrMemberInfo['Gender'] = 2; 
-//
-//                        $_Members->UpdateProfile($arrMemberInfo);
-//
-//                        if(!App::HasError()){
-//
-//                            $isSuccess = true;
-//                            $_Log->logAPI(AuditFunctions::MIGRATE_TEMP, $tempAccountCode.':'.$MembershipCardNumber.':Success', $sitecode, $AID);
-//
-//                        }else
-//                        {
-//                            $isSuccess = false;
-//                            $_Log->logAPI(AuditFunctions::MIGRATE_TEMP, $tempAccountCode.':'.$MembershipCardNumber.':Failed', $sitecode, $AID);
-//                            $error = "Failed to update member profile in memberinfo table";
-//                            $logger->logger($logdate, $logtype, $error);
-//                        }
-//                    }
-//                    else
-//                    {
-//                        $isSuccess = false;
-//                        $_Log->logAPI(AuditFunctions::MIGRATE_TEMP, $tempAccountCode.':'.$MembershipCardNumber.':Failed', $sitecode, $AID);
-//                        $error = "Failed to update card status";
-//                        $logger->logger($logdate, $logtype, $error);
-//                    }                    
-//                }
-//                else
-//                {
-//                    $isSuccess = false;
-//                    $_Log->logAPI(AuditFunctions::MIGRATE_TEMP, $tempAccountCode.':'.$MembershipCardNumber.':Failed', $sitecode, $AID);
-//                    $error = "Failed to insert in membercards table";
-//                    $logger->logger($logdate, $logtype, $error);
-//                }
-                $isSuccess = 'NA';
+                $datecreated = "NOW(6)";
+                
+                $tempcardresult = $_Cards->getCardInfo($tempAccountCode); //getMemberCardInfoByCard($MembershipCardNumber);
+                $tempcardinfo = $tempcardresult[0];
+                $tempcardid = $tempcardinfo["CardID"];
+                
+                $tempcardresult2 = $_MemberCards->getMemberCardInfoByCard($tempAccountCode);
+                $tempcarddetails = $tempcardresult2[0];
+                $lifetimePoints = $tempcarddetails["LifetimePoints"];
+                $currentpoints = $tempcarddetails["CurrentPoints"];
+                $redeemedpoints = $tempcarddetails["RedeemedPoints"];
+                
+                $cardresult = $_Cards->getCardInfo($MembershipCardNumber); //getMemberCardInfoByCard($MembershipCardNumber);
+                $cardinfo = $cardresult[0];
+                $cardid = $cardinfo["CardID"];
+
+                $arrMemberCards["MID"] = $MID;
+                $arrMemberCards["CardID"]= $cardid;
+                $arrMemberCards["SiteID"]= $siteid;
+                $arrMemberCards["CardNumber"] = $MembershipCardNumber;
+                $arrMemberCards["LifetimePoints"] = $lifetimePoints;
+                $arrMemberCards["CurrentPoints"] = $currentpoints;
+                $arrMemberCards["RedeemedPoints"] = $redeemedpoints;
+                $arrMemberCards["DateCreated"] = $datecreated;
+                $arrMemberCards["CreatedByAID"] = $AID;
+                $arrMemberCards["Status"] = CardStatus::ACTIVE;
+                
+                $arrTempMemberCards["MemberCardID"] = $tempcardid;
+                $arrTempMemberCards["Status"] = CardStatus::TEMPORARY_MIGRATED;
+                $arrTempMemberCards["UpdatedByAID"] = $AID;
+                $arrTempMemberCards["DateUpdated"] = $datecreated;
+                
+                $_MemberCards->processMemberCard($arrMemberCards, $arrTempMemberCards);
+
+                if(!App::HasError())
+                {
+                    $arrNewCard["CardID"] = $cardid;
+                    $arrNewCard["UpdatedByAID"] = $AID;
+                    $arrNewCard["DateUpdated"] = $datecreated;
+                    $arrNewCard["Status"]= CardStatus::ACTIVE;
+
+                    $arrTempCard["CardID"] = $tempcardid;
+//                    $arrTempCard["SiteID"] = $siteid; need to double check the saving of site id
+                    //$arrTempCard["SiteID"] = 1;
+                    $arrTempCard["UpdatedByAID"] = $AID;
+                    $arrTempCard["DateUpdated"] = $datecreated;
+                    $arrTempCard["Status"]= CardStatus::TEMPORARY_MIGRATED;
+
+                    $_Cards->updateCardStatus($arrNewCard, $arrTempCard);
+                    
+                    if(!App::HasError())
+                    {
+                        $playername = $txtName->SubmittedValue;
+                        $list = explode(' ', $playername, 3);
+                        
+                        if(count($list) == 1)
+                        {
+                            $fname = $list[0];
+                            $mname = "";
+                            $lname = "";
+                        }
+                        
+                        if(count($list) == 2)
+                        {
+                            $fname = $list[0];
+                            $mname = $list[1];
+                            $lname = "";
+                        }
+                        
+                        if(count($list) == 3)
+                        {
+                            $fname = $list[0];
+                            $mname = $list[1];
+                            $lname = $list[2];
+                        }
+                        
+                        if(count($list) > 3)
+                        {
+                            $fname = $list[0];
+                            $mname = $list[1];
+                            $lname = $list[2] . ' ' . $list[3];
+                        }
+                        
+                        $arrMemberInfo["MID"] = $MID;
+                        $arrMemberInfo["FirstName"] = $fname;
+                        $arrMemberInfo["MiddleName"] = $mname;
+                        $arrMemberInfo["LastName"] = $lname;
+                        $arrMemberInfo["Birthdate"] = $dtBirthDate->SubmittedValue;
+                        $arrMemberInfo["Email"] = $username;
+                        $arrMemberInfo["IdentificationID"] = $cboIDSelection->SubmittedValue;
+                        $arrMemberInfo["IdentificationNumber"] = $txtIDPresented->SubmittedValue;
+                        $arrMemberInfo["DateUpdated"] = $datecreated;
+                        $arrMemberInfo["UpdatedByAID"] = $AID;
+                        $rdoGroupGender->SubmittedValue == 1 ? $arrMemberInfo['Gender'] = 1 : $arrMemberInfo['Gender'] = 2; 
+
+                        $r = $_Members->UpdateMemberProfile($arrMemberInfo); 
+
+                        if($r['TransCode'] == 0){
+
+                            $isSuccess = true;
+                            $_Log->logAPI(AuditFunctions::MIGRATE_TEMP, $tempAccountCode.':'.$MembershipCardNumber.':Success', $sitecode, $AID);
+
+                        }else
+                        {
+                            $isSuccess = false;
+                            $_Log->logAPI(AuditFunctions::MIGRATE_TEMP, $tempAccountCode.':'.$MembershipCardNumber.':Failed', $sitecode, $AID);
+                            $error = "Failed to update member profile in memberinfo table";
+                            $logger->logger($logdate, $logtype, $error);
+                        }
+                    }
+                    else
+                    {
+                        $isSuccess = false;
+                        $_Log->logAPI(AuditFunctions::MIGRATE_TEMP, $tempAccountCode.':'.$MembershipCardNumber.':Failed', $sitecode, $AID);
+                        $error = "Failed to update card status";
+                        $logger->logger($logdate, $logtype, $error);
+                    }                    
+                }
+                else
+                {
+                    $isSuccess = false;
+                    $_Log->logAPI(AuditFunctions::MIGRATE_TEMP, $tempAccountCode.':'.$MembershipCardNumber.':Failed', $sitecode, $AID);
+                    $error = "Failed to insert in membercards table";
+                    $logger->logger($logdate, $logtype, $error);
+                }
             }
         }
         else
@@ -467,15 +470,6 @@ if((isset($_GET["tempnumber"]) && (htmlentities($_GET["tempnumber"]))) &&
 </div>
 <?php 
 if($isSubmitted){
-    if($isSuccess == 'NA') 
-    {?>
-
-    <!-- <script>alert('Temporary Account Migration Successful!'); </script>-->
-    <div id="dialog" title="Membership">
-        <p>Temporary Account Migration is not available at this moment.</p>
-    </div>
-    <?php
-    }
     if($isSuccess) 
     {?>
 

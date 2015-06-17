@@ -10,7 +10,7 @@
 class MemberCards extends BaseEntity {
 
     public function MemberCards() {
-        $this->TableName = "loyaltydb.membercards";
+        $this->TableName = "membercards";
         $this->ConnString = 'loyalty';
         $this->Identity = "MemberCardID";
         $this->DatabaseType = DatabaseTypes::PDO;
