@@ -42,42 +42,41 @@ class ActivateMember extends BaseEntity
         $_Log = new AuditTrail();
         $_MemberServices = new MemberServices();
                
-        $queryMember = "SELECT UserName, Password, DateCreated, DateVerified
+        $queryMember = "SELECT Password, DateCreated, DateVerified
                         FROM membership_temp.members
                         WHERE TemporaryAccountCode = '$this->CardNumber'";
         
         $result = $_TempMembers->RunQuery($queryMember);
-        
-        //$neededfields = "'UserName,MID'";
-        //$query1 = "CALL membership.sp_select_data(0,0,1,'$this->CardNumber', $neededfields, @ReturnCode, @ReturnMessage, @ReturnFields);";
-        //$query2 = "SELECT @ReturnCode, @ReturnMessage, @ReturnFields;";
-        //$_TempMembers->RunQuery($queryMember);
-        //$data = $_TempMembers->RunQuery($query2);
+        $neededfields = 'UserName,MID';
+        $query1 = "CALL membership.sp_select_data(0,0,1,'$this->CardNumber', '$neededfields', @ReturnCode, @ReturnMessage, @ReturnFields);";
+        $data = $_MemberServices->RunQuery($query1);
+        $keys = explode(",", $neededfields);
+        $infodata = explode(';', $data[0]['OUTfldListRet']);
+        foreach ($keys as $key => $value) {
+            $result[0][trim($value," '")] = $infodata[$key];
+        }
 
-//        $keys = explode(",", $neededfields);
-//        $infodata = explode(';', $data[0]['@ReturnFields']);
-//        foreach ($keys as $key => $value) {
-//            $infos[trim($value," '")] = $infodata[$key];
-//        }
-//        $info = array_merge($result[0],$infos);
-//        var_dump($info);exit;
         $arrMembers['UserName'] = $result[0]['UserName'];
         $arrMembers['Password'] = $result[0]['Password'];
         $arrMembers['DateCreated'] = 'NOW(6)';
-        
-        //$result1 = $_TempMemberInfo->getMembersByMID( $MID );
-        //var_dump($result1);exit;
-        $queryMemberInfo = "SELECT FirstName, MiddleName, LastName, NickName, Birthdate, Gender, Email,
-                                   AlternateEmail, MobileNumber, AlternateMobileNumber, NationalityID,
-                                   OccupationID, ReferrerID, Address1, Address2, IdentificationID, IdentificationNumber,
-                                   RegistrationOrigin, EmailSubscription, SMSSubscription, IsSmoker, IsCompleteInfo,
-                                   DateVerified, ReferrerCode
-                            FROM membership_temp.memberinfo mi
-                                INNER JOIN members m ON mi.MID = m.MID
-                            WHERE m.TemporaryAccountCode = '$this->CardNumber'";
-//        $neededfields2 = "'FirstName, MiddleName, LastName, NickName, Gender, Email,AlternateEmail, MobileNumber, AlternateMobileNumber, Address1, Address2, IdentificationNumber'";
-//        $queryMemberInfo = "CALL membership.sp_select_data(0,1,0,'$MID', $neededfields2, @ReturnCode, @ReturnMessage, @ReturnFields);";
+        $tempMID = $result[0]['MID'];
+        $arrMembers['Status'] = 1;
+
+        $queryMemberInfo = "SELECT Birthdate, Gender, NationalityID, OccupationID, ReferrerID, IdentificationID, RegistrationOrigin, EmailSubscription, 
+                                                SMSSubscription, IsSmoker, IsCompleteInfo, DateVerified, ReferrerCode
+                                                FROM membership_temp.memberinfo mi
+                                                    INNER JOIN membership_temp.members m ON mi.MID = m.MID
+                                                WHERE m.TemporaryAccountCode = '$this->CardNumber'";
         $result2 = $_TempMemberInfo->RunQuery($queryMemberInfo);
+        $neededfields ="FirstName,MiddleName,LastName,NickName,Email,AlternateEmail,MobileNumber,AlternateMobileNumber,Address1,Address2,IdentificationNumber";
+        $queryMemberInfo2 = "CALL membership.sp_select_data(0,1,0,$tempMID, '$neededfields', @ReturnCode, @ReturnMessage, @ReturnFields);";
+        
+        $data2 = $_MemberServices->RunQuery($queryMemberInfo2);
+        $keys = explode(",", $neededfields);
+        $infodata = explode(';', $data2[0]['OUTfldListRet']);
+        foreach ($keys as $key => $value) {
+            $result2[0][trim($value," '")] = $infodata[$key];
+        }
 
         $arrMemberInfo['FirstName'] = $result2[0]['FirstName'];
         $arrMemberInfo['MiddleName'] = $result2[0]['MiddleName'];
@@ -102,23 +101,14 @@ class ActivateMember extends BaseEntity
         $arrMemberInfo['DateCreated'] = 'NOW(6)';
         $arrMemberInfo['DateVerified'] = $result[0]['DateVerified'];                
         $arrMemberInfo['ReferrerCode'] = $result2[0]['ReferrerCode'];   
-
         try
         {
-            $this->Insert($arrMembers);                       
-            $this->MID = $this->LastInsertID;
-        
-            if(!App::HasError())
-            {
-                $this->TableName = "membership.memberinfo";
-                                
-                $arrMemberInfo['MID'] = $this->MID;
-                $this->Insert($arrMemberInfo);
+                $IsInsert = $this->insertMembers($arrMembers, $arrMemberInfo);
                 
-                if(!App::HasError())
+                if(!App::HasError() && $IsInsert["MID"] > 0)
                 {
                     $this->TableName = "loyaltydb.cards";
-
+                    $this->MID = $IsInsert["MID"];
                     App::LoadModuleClass("Loyalty", "CardStatus");
                     App::LoadModuleClass("Membership", "Helper");
 
@@ -459,15 +449,8 @@ class ActivateMember extends BaseEntity
                 else
                 {
                     $this->RollBackTransaction();
-                    return array("MID"=>$this->MID,"status"=>'error');
+                    return array("Failed to transfer members data: MID"=>$this->MID,"status"=>'error');
                 }
-
-            }
-            else
-            {
-                $this->RollBackTransaction();
-                return array("MID"=>$this->MID,"status"=>'error');
-            }
         }
         catch(Exception $e)
         {
