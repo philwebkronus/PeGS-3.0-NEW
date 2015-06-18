@@ -18,6 +18,43 @@ class ActivateMember extends BaseEntity
         $this->TableName = "membership.members";
     }
     
+    private function insertMembers($arrMembers, $arrMemberInfo){
+        //Defaults 
+        $query = "CALL membership.sp_insert_data(0,'".$arrMembers['UserName']."','"     
+                                         .$arrMemberInfo['FirstName']."','"                                                     
+                                         .$arrMemberInfo['MiddleName']."','"                                                 
+                                         .$arrMemberInfo['LastName']."','"                                                      
+                                         .$arrMemberInfo['LastName']."','"                                                     
+                                         .$arrMemberInfo['Email']."','"                                                             
+                                         .$arrMemberInfo['AlternateEmail']."','"                                            
+                                         .$arrMemberInfo['MobileNumber']."','"                                            
+                                         .$arrMemberInfo['AlternateMobileNumber']."','"                           
+                                         .$arrMemberInfo['Address1']."','"                                                       
+                                         .$arrMemberInfo['Address2']."','"                                                       
+                                         .$arrMemberInfo['IdentificationNumber']."','"                                
+                                         .$arrMembers['Password']."',"                                                            
+                                         ."0".",'"                                                                                                    
+                                         .""."',"                                                                                                      
+                                         .$arrMembers['Status'].",'"                                                                 
+                                         .$arrMemberInfo['Birthdate']."',"                                                      
+                                         .$arrMemberInfo['Gender'].","                                                          
+                                         .$arrMemberInfo['NationalityID'].","                                               
+                                         .$arrMemberInfo['OccupationID'].","                                             
+                                         .$arrMemberInfo['IdentificationID'].","                                         
+                                         .$arrMemberInfo['IsSmoker'].",'"                                                   
+                                         .$arrMemberInfo['ReferrerCode']."',"                                           
+                                         .$arrMemberInfo['EmailSubscription'].","                                    
+                                         .$arrMemberInfo['SMSSubscription'].","                                     
+                                         ."Null".","                                                                                             
+                                         ."0".",'"                                                                                                  
+                                         .$arrMemberInfo['DateVerified']."',"                                              
+                                         ."Null,@ReturnCode,@ReturnMessage,@ReturnLastInsertedID)";
+        $result = parent::RunQuery($query);
+        return array('TransCode' => $result[0]['@OUT_ResultCode'], 
+                     'TransMsg' => $result[0]['@OUT_Result'], 
+                     'MID' => $result[0]['@OUT_MID']);
+    }
+    
     /**
      * Migrate temporary member records
      * to permanent database
