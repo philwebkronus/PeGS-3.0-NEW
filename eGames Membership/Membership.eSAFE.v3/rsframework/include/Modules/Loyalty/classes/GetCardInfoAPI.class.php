@@ -399,10 +399,6 @@ class GetCardInfoAPI extends BaseEntity
                     {
                         $points = $cardinfo[0];
                         $MID = $points['MID'];
-                        
-                        $querymember = "CALL membership.sp_select_data(1,0,0,$MID,'UserName',@ReturnCode, @ReturnMessage, @ReturnFields);";
-                        $result3 = parent::RunQuery($querymember);
-                        $result3 = explode(";", $result3[0]['OUTfldListRet']);
 
                         $memberInfo = $_MemberInfo->getMemInfoUsingSP( $MID );
                         $row = $memberInfo;
@@ -663,11 +659,7 @@ class GetCardInfoAPI extends BaseEntity
                 $card = $cardinfo[0];
                 
                 $MID = $card['MID'];
-                
-                $querymember = "CALL membership.sp_select_data(1,0,0,$MID,'UserName',@ReturnCode, @ReturnMessage, @ReturnFields);";
-                $result3 = parent::RunQuery($querymember);
-                $result3 = explode(";", $result3[0]['OUTfldListRet']);
-                        
+
                 $memberinfo = $_MemberInfo->getMemInfoUsingSP($MID);
 
                 $row = $memberinfo;
@@ -680,9 +672,9 @@ class GetCardInfoAPI extends BaseEntity
                 $currentPoints = $this->getCompPoints($cardnumber);
                 $result = array("CardInfo"=>array(
                                         "MID"                   => $MID,
-                                        "Username"              => $result3[0],
+                                        "Username"              => "",
                                         "CardNumber"            => $card['CardNumber'],
-                                        "MemberUsername"        => $result3[0],
+                                        "MemberUsername"        => $row['UserName'],
                                         "CardType"              => $card['CardTypeID'],
                                         "MemberName"            => $row['FirstName'] . ' ' . $row['LastName'],
                                         "RegistrationDate"      => $row['DateCreated'],
