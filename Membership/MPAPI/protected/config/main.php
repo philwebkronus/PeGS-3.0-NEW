@@ -158,11 +158,20 @@ return array(
             'urlMPAPI' => 'http://<MPAPI URL HERE>/index.php/MPapi/',
             'SessionTimeOut' => 45.00,
             'urlVerify' => 'http://membershipsb.genesis.local/verify.php',
+'activeRaffleCoupon' => 'rafflecoupons_1',//'<<INSERT ACTIVE rafflecoupons table here (where RewardID = 2, Status = 1 and OfferStartDate >= today's date>>'
             'getcomppoints' => 'http://<PCWS URL HERE>/PCWS/index.php/pcws/getcomppoints',
             'getbalance' => 'http://<PCWS URL HERE>/PCWS/index.php/pcws/getbalance',
             'deductcomppoints' => 'http://<PCWS URL HERE>/PCWS/index.php/pcws/deductcomppoints',
             'SystemCode'=>array('madmin' => '4896816', 'mportal' => '48452098','pcws' => '4761'),
             'SysUsernameMA' => 'madmin',
-            'SysUsernameMP' => 'mportal'
+            'SysUsernameMP' => 'mportal',
+            'instanceURL' => '',
+            //'redirectURI' => '',
+            'apiVersion' => '',
+            'cKey' => '',
+            'cSecret' => '',
+            'sfLogin' => '',
+            'sfPassword' => '',
+            'secToken' => ''
             ),
 );

@@ -517,12 +517,12 @@ class MPapiController extends Controller {
                         $message = "[Login] Output: " . CJSON::encode($data);
                         $appLogger->log($appLogger->logdate, "[response]", $message);
                         $this->_sendResponse(200, CJSON::encode($data));
-                        $logger->log($logger->logdate, "[LOGIN ERROR]: " . $MID . " || ", $logMessage);
+                        $logger->log($logger->logdate, "[LOGIN ERROR]: " . $username . " || ", $logMessage);
                         $apiDetails = 'LOGIN-Authenticate-Failed: Member account is invalid.';
                         $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
                         if ($isInserted == 0) {
                             $logMessage = "Failed to insert to APILogs.";
-                            $logger->log($logger->logdate, "[LOGIN ERROR]: " . $MID . " || ", $logMessage);
+                            $logger->log($logger->logdate, "[LOGIN ERROR]: " . $username . " || ", $logMessage);
                         }
 
                         exit;
@@ -536,12 +536,12 @@ class MPapiController extends Controller {
                     $message = "[Login] Output: " . CJSON::encode($data);
                     $appLogger->log($appLogger->logdate, "[response]", $message);
                     $this->_sendResponse(200, CJSON::encode($data));
-                    $logger->log($logger->logdate, "[LOGIN ERROR]: " . $MID . " || ", $logMessage);
+                    $logger->log($logger->logdate, "[LOGIN ERROR]: " . $username . " || ", $logMessage);
                     $apiDetails = 'LOGIN-Failed: Invalid input parameters';
                     $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
                     if ($isInserted == 0) {
                         $logMessage = "Failed to insert to APILogs.";
-                        $logger->log($logger->logdate, "[LOGIN ERROR]: " . $MID . " || ", $logMessage);
+                        $logger->log($logger->logdate, "[LOGIN ERROR]: " . $username . " || ", $logMessage);
                     }
 
                     exit;
@@ -1590,7 +1590,6 @@ class MPapiController extends Controller {
 
                 exit;
             } else {
-
                 //start of declaration of models to be used
                 $memberInfoModel = new MemberInfoModel();
                 $memberCardsModel = new MemberCardsModel();
@@ -1741,7 +1740,7 @@ class MPapiController extends Controller {
                         $lastInsertedMID = $membershipTempModel->register($emailAddress, $firstname, $middlename, $lastname, $nickname, $password, $permanentAddress, $mobileNumber, $alternateMobileNumber, $alternateEmail, $idNumber, $idPresented, $gender, $referralCode, $birthdate, $occupationID, $nationalityID, $isSmoker, $referrerID, $emailSubscription, $smsSubscription);
 
                         if ($lastInsertedMID > 0) {
-                            $MID = $lastInsertedMID;
+			    $lastInsertedMID = $lastInsertedMID['MID'];
                             $mpSessionID = '';
 
                             $memberInfos = $membershipTempModel->getTempMemberInfoForSMS($lastInsertedMID);
@@ -1762,6 +1761,8 @@ class MPapiController extends Controller {
                                 } else {
                                     $templateid1 = $ref_SMSApiMethodsModel->getSMSMethodTemplateID(Ref_SMSApiMethodsModel::PLAYER_REGISTRATION_1OF2);
                                     $templateid2 = $ref_SMSApiMethodsModel->getSMSMethodTemplateID(Ref_SMSApiMethodsModel::PLAYER_REGISTRATION_2OF2);
+                                    $templateid1 = $templateid1['SMSTemplateID'];
+                                    $templateid2 = $templateid2['SMSTemplateID'];
                                     $methodid1 = Ref_SMSApiMethodsModel::PLAYER_REGISTRATION_1OF2;
                                     $methodid2 = Ref_SMSApiMethodsModel::PLAYER_REGISTRATION_2OF2;
                                     $mobileno = $memberInfos["MobileNumber"];
@@ -1912,7 +1913,7 @@ class MPapiController extends Controller {
                                     }
                                 }
                             }
-                            $auditTrailModel->logEvent(AuditTrailModel::API_REGISTER_MEMBER, 'Email: ' . $emailAddress, array('MID' => $MID, 'SessionID' => $mpSessionID));
+                            $auditTrailModel->logEvent(AuditTrailModel::API_REGISTER_MEMBER, 'Email: ' . $emailAddress, array('MID' => $lastInsertedMID, 'SessionID' => $mpSessionID));
                         } else {
                             //check if email is already verified in temp table
                             $tempEmail = $membershipTempModel->checkTempVerifiedEmail($emailAddress);
@@ -1938,6 +1939,8 @@ class MPapiController extends Controller {
                                 $lastInsertedMID = $membershipTempModel->register($emailAddress, $firstname, $middlename, $lastname, $nickname, $password, $permanentAddress, $mobileNumber, $alternateMobileNumber, $alternateEmail, $idNumber, $idPresented, $gender, $referralCode, $birthdate, $occupationID, $nationalityID, $isSmoker, $emailSubscription, $smsSubscription, $referrerID);
 
                                 if ($lastInsertedMID > 0) {
+                                    $SFID = $lastInsertedMID['SFID'];
+                                    $lastInsertedMID = $lastInsertedMID['MID'];
                                     $ID = 0;
                                     $mpSessionID = '';
 
@@ -2107,7 +2110,7 @@ class MPapiController extends Controller {
 
                                     $auditTrailModel->logEvent(AuditTrailModel::API_REGISTER_MEMBER, 'Email: ' . $emailAddress, array('ID' => $ID));
                                 } else {
-                                    if (strpos($lastInsertedMID, " Integrity constraint violation: 1062 Duplicate entry") > 0) {
+                                    if (strpos($lastInsertedMID['MID'], " Integrity constraint violation: 1062 Duplicate entry") > 0) {
                                         $transMsg = "Sorry, " . $emailAddress . "already belongs to an existing account. Please enter another email address.";
                                         $errorCode = 21;
                                         Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
@@ -2193,6 +2196,9 @@ class MPapiController extends Controller {
         $apiLogsModel = new APILogsModel();
         $memberSessionsModel = new MemberSessionsModel();
 
+        $result = $memberSessionsModel->getMID($request['MPSessionID']);
+        $MID = $result['MID'];
+
         $isValid = $this->_validateMPSession($request['MPSessionID']);
         if (isset($isValid) && !$isValid) {
             $transMsg = "MPSessionID is already expired. Please login again.";
@@ -2213,9 +2219,6 @@ class MPapiController extends Controller {
 
             exit;
         }
-
-        $result = $memberSessionsModel->getMID($request['MPSessionID']);
-        $MID = $result['MID'];
 
         if (isset($result)) {
             $isUpdated = $memberSessionsModel->updateTransactionDate($MID);
@@ -2705,8 +2708,8 @@ class MPapiController extends Controller {
                     } else {
                         $refID = $firstname . ' ' . $lastname;
 
-                        $tempHasEmail = $membershipTempModel->checkIfUsernameExistsWithTAC($emailAddress, $tempAcctCode);
-
+                        //$hasEmail = $membersModel->checkIfUsernameExistsWithMID($MID, $emailAddress);
+                        $tempHasEmail = $membershipTempModel->checkIfUsernameExistsWithTAC($mid, $emailAddress);
 
                         if (is_null($tempHasEmail))
                             $tempHasEmail = 0;
@@ -2732,7 +2735,6 @@ class MPapiController extends Controller {
 
                             exit;
                         }
-
                         //proceed with the updating of member profile
                         if ($region != '' && $city != '' && $idNumber == '' && $idPresented == '')
                             $result = $memberInfoModel->updateProfilev2($firstname, $middlename, $lastname, $nickname, $mid, $permanentAddress, $mobileNumber, $alternateMobileNumber, $emailAddress, $alternateEmail, $birthdate, $nationalityID, $occupationID, $gender, $isSmoker, $region, $city);
@@ -2987,7 +2989,7 @@ class MPapiController extends Controller {
                     $MID = 0;
 
                 if (!empty($memberDetails)) {
-                    $currentPoints = $memberDetails['CurrentPoints'];
+ 		    $currentPoints = $memberDetails['CurrentPoints'];
 
                     $status = $memberDetails['Status'];
 
@@ -3055,7 +3057,6 @@ class MPapiController extends Controller {
                     $message = "[" . $module . "] Output: " . CJSON::encode($data);
                     $appLogger->log($appLogger->logdate, "[response]", $message);
                     $this->_sendResponse(200, CJSON::encode($data));
-
                     $logMessage = 'Card is Invalid.';
                     $logger->log($logger->logdate, "[CHECKPOINTS ERROR]: " . $cardNumber . " || ", $logMessage);
                     $apiDetails = 'CHECKPOINTS-Failed: Membership card is invalid. Card Number = ' . $cardNumber;
@@ -3619,7 +3620,7 @@ class MPapiController extends Controller {
 
                             exit;
                         }
-                        $result = $memberCardsModel->getCardStatus($cardNumber);
+                        $result = $memberCardsModel->getMemberPointsAndStatus($cardNumber);
 
                         $memberDetails = $memberInfoModel->getMemberInfoUsingMID($MID);
                     } else {
@@ -3909,7 +3910,7 @@ class MPapiController extends Controller {
                                                 $resultArray = $process->processCouponRedemption($MID, $rewardItemID, $quantity, $totalItemPoints, $cardNumber, 3, $redeemedDate);
 
                                                 if ($resultArray['IsSuccess']) {
-                                                    $oldCurrentPoints = number_format($resultArray['OldCurrentPoints']);
+                                                    $oldCurrentPoints = number_format($resultArray['OldCP']);
                                                     $redeemedPoints = number_format($totalItemPoints);
                                                     $rewardItem = $rewardItemsModel->getItemDetails($rewardItemID);
                                                     $itemName = $rewardItem['ItemName'];
@@ -3967,9 +3968,13 @@ class MPapiController extends Controller {
                                                         $email = $memberDetails['Email'];
                                                         $contactNo = $memberDetails['MobileNumber'];
 
-                                                        for ($itr = 0; $itr < count($rewardOffers); $itr++) {
-                                                            $eCouponImage[$itr] = $rewardOffers[$itr]["ECouponImage"];
-                                                            $partnerName[$itr] = $rewardOffers[$itr]["PartnerName"];
+                                                        //for($itr = 0; $itr < count($rewardOffers); $itr++) {
+                                                        //    $eCouponImage[$itr] = $rewardOffers[$itr]["ECouponImage"];
+                                                        //    $partnerName[$itr] = $rewardOffers[$itr]["PartnerName"];
+                                                        //}
+
+                                                        if (isset($rewardOffers['ECouponImage'])) {
+                                                            $eCouponImage = $rewardOffers["ECouponImage"];
                                                         }
 
                                                         if (isset($rewardOffers['About'])) {
@@ -5625,6 +5630,7 @@ class MPapiController extends Controller {
                         $lastInsertedMID = $membershipTempModel->registerBT($emailAddress, $firstname, $lastname, $mobileNumber, $birthdate); // ,$password, $idPresented, $idNumber);
 
                         if ($lastInsertedMID > 0) {
+                            $lastInsertedMID = $lastInsertedMID['MID'];
                             $MID = $lastInsertedMID;
                             $mpSessionID = '';
 
@@ -5648,9 +5654,11 @@ class MPapiController extends Controller {
 
                                     $couponNumber = $coupons['CouponCode'];
                                     $expiryDate = $coupons['ValidToDate'];
-                                    $templateid = $ref_SMSApiMethodsModel->getSMSMethodTemplateID(Ref_SMSApiMethodsModel::PLAYER_REGISTRATION);
+                                    $templateid1 = $ref_SMSApiMethodsModel->getSMSMethodTemplateID(Ref_SMSApiMethodsModel::PLAYER_REGISTRATION_1OF2);
+                                    $templateid2 = $ref_SMSApiMethodsModel->getSMSMethodTemplateID(Ref_SMSApiMethodsModel::PLAYER_REGISTRATION_2OF2);
 
-                                    $methodid = Ref_SMSApiMethodsModel::PLAYER_REGISTRATION;
+                                    $methodid1 = Ref_SMSApiMethodsModel::PLAYER_REGISTRATION_1OF2;
+                                    $methodid2 = Ref_SMSApiMethodsModel::PLAYER_REGISTRATION_2OF2;
 
                                     $mobileno = $memberInfos["MobileNumber"];
                                     if ($coupons) {
@@ -5662,19 +5670,22 @@ class MPapiController extends Controller {
                                         $smslastinsertedidbt = 0;
                                     }
 
-                                    $smslastinsertedid = $smsRequestLogsModel->insertSMSRequestLogs($methodid, $mobileno, $memberInfos["DateCreated"]);
+                                    $smslastinsertedid1 = $smsRequestLogsModel->insertSMSRequestLogs($methodid1, $mobileno, $memberInfos["DateCreated"]);
+                                    $smslastinsertedid2 = $smsRequestLogsModel->insertSMSRequestLogs($methodid2, $mobileno, $memberInfos["DateCreated"]);
 
-                                    if (($smslastinsertedid != 0 && $smslastinsertedid != '') && ($smslastinsertedidbt != 0 && $smslastinsertedidbt != '')) {
-                                        $trackingid = "SMSR" . $smslastinsertedid;
+                                    if (($smslastinsertedid1 != 0 && $smslastinsertedid1 != '') && ($smslastinsertedid2 != 0 && $smslastinsertedid2 != '') && ($smslastinsertedidbt != 0 && $smslastinsertedidbt != '')) {
+                                        $trackingid1 = "SMSR" . $smslastinsertedid1;
+                                        $trackingid2 = "SMSR" . $smslastinsertedid2;
                                         $trackingidbt = "SMSR" . $smslastinsertedidbt;
                                         $apiURL = Yii::app()->params["SMSURI"];
                                         $app_id = Yii::app()->params["app_id"];
                                         $membershipSMSApi = new MembershipSmsAPI($apiURL, $app_id);
-                                        $smsresult = $membershipSMSApi->sendRegistration($mobileno, $templateid['SMSTemplateID'], $memberInfos["DateCreated"], $memberInfos["TemporaryAccountCode"], $trackingid);
-                                        $smsresult2 = $membershipSMSApi->sendRegistrationBT($mobileno, $templateidbt['SMSTemplateID'], $expiryDate, $couponNumber, $trackingidbt);
+                                        $smsresult1 = $membershipSMSApi->sendRegistration1($mobileno, $templateid1['SMSTemplateID'], $memberInfos["DateCreated"], $memberInfos["TemporaryAccountCode"], $trackingid1);
+                                        $smsresult2 = $membershipSMSApi->sendRegistration2($mobileno, $templateid2['SMSTemplateID'], $memberInfos["DateCreated"], $memberInfos["TemporaryAccountCode"], $trackingid2);
+                                        $smsresult3 = $membershipSMSApi->sendRegistrationBT($mobileno, $templateidbt['SMSTemplateID'], $expiryDate, $couponNumber, $trackingidbt);
 
-                                        if (isset($smsresult['status']) && isset($smsresult2['status'])) {
-                                            if ($smsresult['status'] != 1 && $smsresult2['status'] != 1) {
+                                        if (isset($smsresult1['status']) && isset($smsresult2['status']) && isset($smsresult3['status'])) {
+                                            if ($smsresult1['status'] != 1 && $smsresult2['status'] != 1 && $smsresult3['status'] != 1) {
                                                 $transMsg = 'Failed to get response from membershipsms api.';
                                                 $errorCode = 90;
                                                 Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
@@ -5768,8 +5779,10 @@ class MPapiController extends Controller {
                                         $expiryDate = date("Y-m-d", strtotime($expiryDate));
                                         $cpNumber = $memberInfos["MobileNumber"];
                                         $mobileno = $this->formatMobileNumber($cpNumber);
-                                        $templateid = $ref_SMSApiMethodsModel->getSMSMethodTemplateID(Ref_SMSApiMethodsModel::PLAYER_REGISTRATION);
-                                        $templateid = $templateid['SMSTemplateID'];
+                                        $templateid1 = $ref_SMSApiMethodsModel->getSMSMethodTemplateID(Ref_SMSApiMethodsModel::PLAYER_REGISTRATION_1OF2);
+                                        $templateid2 = $ref_SMSApiMethodsModel->getSMSMethodTemplateID(Ref_SMSApiMethodsModel::PLAYER_REGISTRATION_2OF2);
+                                        $templateid1 = $templateid1['SMSTemplateID'];
+                                        $templateid2 = $templateid2['SMSTemplateID'];
 
                                         if ($coupons) {
                                             $templateidbt = $ref_SMSApiMethodsModel->getSMSMethodTemplateID(Ref_SMSApiMethodsModel::PLAYER_REGISTRATION_BT);
@@ -5781,23 +5794,26 @@ class MPapiController extends Controller {
                                             $smslastinsertedidbt = 0;
                                         }
 
-                                        $methodid = Ref_SMSApiMethodsModel::PLAYER_REGISTRATION;
+                                        $methodid1 = Ref_SMSApiMethodsModel::PLAYER_REGISTRATION_1OF2;
+                                        $methodid2 = Ref_SMSApiMethodsModel::PLAYER_REGISTRATION_2OF2;
 
-                                        $smslastinsertedid = $smsRequestLogsModel->insertSMSRequestLogs($methodid, $mobileno, $memberInfos["DateCreated"]);
+                                        $smslastinsertedid1 = $smsRequestLogsModel->insertSMSRequestLogs($methodid1, $mobileno, $memberInfos["DateCreated"]);
+                                        $smslastinsertedid2 = $smsRequestLogsModel->insertSMSRequestLogs($methodid2, $mobileno, $memberInfos["DateCreated"]);
 
-                                        if (($smslastinsertedid != 0 && $smslastinsertedid != '') && ($smslastinsertedidbt != 0 && $smslastinsertedidbt != '')) {
-                                            $trackingid = "SMSR" . $smslastinsertedid;
+                                        if (($smslastinsertedid1 != 0 && $smslastinsertedid1 != '') && ($smslastinsertedidbt != 0 && $smslastinsertedidbt != '') && ($smslastinsertedid2 != 0 && $smslastinsertedid2 != '')) {
+                                            $trackingid1 = "SMSR" . $smslastinsertedid1;
+                                            $trackingid2 = "SMSR" . $smslastinsertedid2;
                                             $trackingidbt = "SMSR" . $smslastinsertedidbt;
                                             $apiURL = Yii::app()->params['SMSURI'];
                                             $app_id = Yii::app()->params['app_id'];
                                             $membershipSMSApi = new MembershipSmsAPI($apiURL, $app_id);
 
-                                            $smsresult = $membershipSMSApi->sendRegistration($mobileno, $templateid, $memberInfos["DateCreated"], $memberInfos["TemporaryAccountCode"], $trackingid);
+                                            $smsresult1 = $membershipSMSApi->sendRegistration1($mobileno, $templateid1, $memberInfos["DateCreated"], $memberInfos["TemporaryAccountCode"], $trackingid1);
+                                            $smsresult2 = $membershipSMSApi->sendRegistration2($mobileno, $templateid2, $memberInfos["DateCreated"], $memberInfos["TemporaryAccountCode"], $trackingid2);
+                                            $smsresult3 = $membershipSMSApi->sendRegistrationBT($mobileno, $templateidbt, $expiryDate, $couponNumber, $trackingidbt);
 
-                                            $smsresult2 = $membershipSMSApi->sendRegistrationBT($mobileno, $templateidbt, $expiryDate, $couponNumber, $trackingidbt);
-
-                                            if (isset($smsresult['status']) && isset($smsresult2['status'])) {
-                                                if ($smsresult['status'] != 1 && $smsresult2['status'] != 1) {
+                                            if (isset($smsresult1['status']) && isset($smsresult2['status']) && isset($smsresult3['status'])) {
+                                                if ($smsresult1['status'] != 1 && $smsresult2['status'] != 1 && $smsresult3['status'] != 1) {
                                                     $transMsg = 'Failed to get response from membershipsms api.';
                                                     $errorCode = 90;
                                                     Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
@@ -5886,7 +5902,7 @@ class MPapiController extends Controller {
                                 }
                             }
 
-                            $auditTrailModel->logEvent(AuditTrailModel::API_REGISTER_MEMBER_BT, 'Email: ' . $emailAddress, array('MID' => $MID, 'SessionID' => $mpSessionID));
+                            $auditTrailModel->logEvent(AuditTrailModel::API_REGISTER_MEMBER_BT, 'Email: ' . $emailAddress, array('MID' => $lastInsertedMID, 'SessionID' => $mpSessionID));
                         } else {
                             //check if email is already verified in temp table
                             $tempEmail = $membershipTempModel->checkTempVerifiedEmail($emailAddress);
@@ -5912,6 +5928,8 @@ class MPapiController extends Controller {
                                 $lastInsertedMID = $membershipTempModel->registerBT($emailAddress, $firstname, $lastname, $mobileNumber, $birthdate);
 
                                 if ($lastInsertedMID > 0) {
+                                    $SFID = $lastInsertedMID['SFID'];
+                                    $lastInsertedMID = $lastInsertedMID['MID'];
                                     $ID = 0;
                                     $mpSessionID = '';
 
@@ -5936,9 +5954,11 @@ class MPapiController extends Controller {
                                             $couponNumber = $coupons['CouponCode'];
                                             $expiryDate = $coupons['ValidToDate'];
                                             $expiryDate = date("Y-m-d", strtotime($expiryDate));
-                                            $templateid = $ref_SMSApiMethodsModel->getSMSMethodTemplateID(Ref_SMSApiMethodsModel::PLAYER_REGISTRATION);
+                                            $templateid1 = $ref_SMSApiMethodsModel->getSMSMethodTemplateID(Ref_SMSApiMethodsModel::PLAYER_REGISTRATION_1OF2);
+                                            $templateid2 = $ref_SMSApiMethodsModel->getSMSMethodTemplateID(Ref_SMSApiMethodsModel::PLAYER_REGISTRATION_2OF2);
 
-                                            $methodid = Ref_SMSApiMethodsModel::PLAYER_REGISTRATION;
+                                            $methodid1 = Ref_SMSApiMethodsModel::PLAYER_REGISTRATION_1OF2;
+                                            $methodid2 = Ref_SMSApiMethodsModel::PLAYER_REGISTRATION_2OF2;
 
                                             $mobileno = $memberInfos["MobileNumber"];
                                             if ($coupons) {
@@ -5950,18 +5970,21 @@ class MPapiController extends Controller {
 
                                                 $smslastinsertedidbt = 0;
                                             }
-                                            $smslastinsertedid = $smsRequestLogsModel->insertSMSRequestLogs($methodid, $mobileno, $memberInfos["DateCreated"]);
+                                            $smslastinsertedid1 = $smsRequestLogsModel->insertSMSRequestLogs($methodid1, $mobileno, $memberInfos["DateCreated"]);
+                                            $smslastinsertedid2 = $smsRequestLogsModel->insertSMSRequestLogs($methodid2, $mobileno, $memberInfos["DateCreated"]);
 
-                                            if (($smslastinsertedid != 0 && $smslastinsertedid != '') && ($smslastinsertedidbt != 0 && $smslastinsertedidbt != '')) {
-                                                $trackingid = "SMSR" . $smslastinsertedid;
+                                            if (($smslastinsertedid1 != 0 && $smslastinsertedid1 != '') && ($smslastinsertedidbt != 0 && $smslastinsertedidbt != '') && ($smslastinsertedid2 != 0 && $smslastinsertedid2 != '')) {
+                                                $trackingid1 = "SMSR" . $smslastinsertedid1;
+                                                $trackingid2 = "SMSR" . $smslastinsertedid2;
                                                 $trackingidbt = "SMSR" . $smslastinsertedidbt;
                                                 $apiURL = Yii::app()->params["SMSURI"];
                                                 $app_id = Yii::app()->params["app_id"];
                                                 $membershipSMSApi = new MembershipSmsAPI($apiURL, $app_id);
-                                                $smsresult = $membershipSMSApi->sendRegistration($mobileno, $templateid['SMSTemplateID'], $memberInfos["DateCreated"], $memberInfos["TemporaryAccountCode"], $trackingid);
-                                                $smsresult2 = $membershipSMSApi->sendRegistrationBT($mobileno, $templateidbt['SMSTemplateID'], $expiryDate, $couponNumber, $trackingidbt);
-                                                if (isset($smsresult['status']) && isset($smsresult2['status'])) {
-                                                    if ($smsresult['status'] != 1 && $smsresult2['status'] != 1) {
+                                                $smsresult1 = $membershipSMSApi->sendRegistration1($mobileno, $templateid1['SMSTemplateID'], $memberInfos["DateCreated"], $memberInfos["TemporaryAccountCode"], $trackingid1);
+                                                $smsresult2 = $membershipSMSApi->sendRegistration2($mobileno, $templateid2['SMSTemplateID'], $memberInfos["DateCreated"], $memberInfos["TemporaryAccountCode"], $trackingid2);
+                                                $smsresult3 = $membershipSMSApi->sendRegistrationBT($mobileno, $templateidbt['SMSTemplateID'], $expiryDate, $couponNumber, $trackingidbt);
+                                                if (isset($smsresult1['status']) && isset($smsresult2['status']) && isset($smsresult3['status'])) {
+                                                    if ($smsresult1['status'] != 1 && $smsresult2['status'] != 1 && $smsresult3['status'] != 1) {
                                                         $transMsg = 'Failed to get response from membershipsms api.';
                                                         $errorCode = 90;
                                                         Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
@@ -6057,11 +6080,14 @@ class MPapiController extends Controller {
                                                 $expiryDate = $coupons['ValidToDate'];
                                                 $expiryDate = date("Y-m-d", strtotime($expiryDate));
                                                 $mobileno = str_replace("09", "639", $memberInfos["MobileNumber"]);
-                                                $templateid = $ref_SMSApiMethodsModel->getSMSMethodTemplateID(Ref_SMSApiMethodsModel::PLAYER_REGISTRATION);
+                                                $templateid1 = $ref_SMSApiMethodsModel->getSMSMethodTemplateID(Ref_SMSApiMethodsModel::PLAYER_REGISTRATION_1OF2);
+                                                $templateid2 = $ref_SMSApiMethodsModel->getSMSMethodTemplateID(Ref_SMSApiMethodsModel::PLAYER_REGISTRATION_2OF2);
 
-                                                $methodid = Ref_SMSApiMethodsModel::PLAYER_REGISTRATION;
+                                                $methodid1 = Ref_SMSApiMethodsModel::PLAYER_REGISTRATION_1OF2;
+                                                $methodid2 = Ref_SMSApiMethodsModel::PLAYER_REGISTRATION_2OF2;
 
-                                                $smslastinsertedid = $smsRequestLogsModel->insertSMSRequestLogs($methodid, $mobileno, $memberInfos["DateCreated"]);
+                                                $smslastinsertedid1 = $smsRequestLogsModel->insertSMSRequestLogs($methodid1, $mobileno, $memberInfos["DateCreated"]);
+                                                $smslastinsertedid2 = $smsRequestLogsModel->insertSMSRequestLogs($methodid2, $mobileno, $memberInfos["DateCreated"]);
                                                 if ($coupons) {
                                                     $templateidbt = $ref_SMSApiMethodsModel->getSMSMethodTemplateID(Ref_SMSApiMethodsModel::PLAYER_REGISTRATION_BT);
                                                     $templateidbt = $templateidbt['SMSTemplateID'];
@@ -6070,17 +6096,19 @@ class MPapiController extends Controller {
                                                 } else {
                                                     $smslastinsertedidbt = 0;
                                                 }
-                                                if (($smslastinsertedid != 0 && $smslastinsertedid != '') && ($smslastinsertedidbt != 0 && $smslastinsertedidbt != '')) {
-                                                    $trackingid = "SMSR" . $smslastinsertedid;
+                                                if (($smslastinsertedid1 != 0 && $smslastinsertedid1 != '') && ($smslastinsertedidbt != 0 && $smslastinsertedidbt != '') && ($smslastinsertedid2 != 0 && $smslastinsertedid2 != '')) {
+                                                    $trackingid1 = "SMSR" . $smslastinsertedid1;
+                                                    $trackingid2 = "SMSR" . $smslastinsertedid2;
                                                     $trackingidbt = "SMSR" . $smslastinsertedidbt;
                                                     $apiURL = Yii::app()->params['SMSURI'];
                                                     $app_id = Yii::app()->params['app_id'];
                                                     $membershipSMSApi = new MembershipSmsAPI($apiURL, $app_id);
-                                                    $smsresult = $membershipSMSApi->sendRegistration($mobileno, $templateid['SMSTemplateID'], $memberInfos["DateCreated"], $memberInfos["TemporaryAccountCode"], $trackingid);
-                                                    $smsresult2 = $membershipSMSApi->sendRegistrationBT($mobileno, $templateidbt['SMSTemplateID'], $expiryDate, $couponNumber, $trackingidbt);
+                                                    $smsresult1 = $membershipSMSApi->sendRegistration1($mobileno, $templateid1['SMSTemplateID'], $memberInfos["DateCreated"], $memberInfos["TemporaryAccountCode"], $trackingid1);
+                                                    $smsresult2 = $membershipSMSApi->sendRegistration2($mobileno, $templateid2['SMSTemplateID'], $memberInfos["DateCreated"], $memberInfos["TemporaryAccountCode"], $trackingid2);
+                                                    $smsresult3 = $membershipSMSApi->sendRegistrationBT($mobileno, $templateidbt['SMSTemplateID'], $expiryDate, $couponNumber, $trackingidbt);
 
-                                                    if (isset($smsresult['status']) && isset($smsresult2['status'])) {
-                                                        if ($smsresult['status'] != 1 && $smsresult2['status'] != 1) {
+                                                    if (isset($smsresult1['status']) && isset($smsresult2['status']) && isset($smsresult3['status'])) {
+                                                        if ($smsresult1['status'] != 1 && $smsresult2['status'] != 1 && $smsresult3['status'] != 1) {
                                                             $transMsg = 'Failed to get response from membershipsms api.';
                                                             $errorCode = 90;
                                                             Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
@@ -6169,7 +6197,7 @@ class MPapiController extends Controller {
 
                                     $auditTrailModel->logEvent(AuditTrailModel::API_REGISTER_MEMBER_BT, 'Email: ' . $emailAddress, array('ID' => $ID));
                                 } else {
-                                    if (strpos($lastInsertedMID, " Integrity constraint violation: 1062 Duplicate entry") > 0) {
+                                    if (strpos($lastInsertedMID['MID'], " Integrity constraint violation: 1062 Duplicate entry") > 0) {
                                         $transMsg = "Sorry, " . $emailAddress . "already belongs to an existing account. Please enter another email address.";
                                         $errorCode = 21;
                                         Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
