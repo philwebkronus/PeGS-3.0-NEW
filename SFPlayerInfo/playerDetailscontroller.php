@@ -137,8 +137,15 @@ else
         $row['IdentificationNumber'] = $res2[0]['IdentificationNumber'];
         $mid = $res2[0]['MID'];
 
-        $res3 = $_Ref_Identifications->getIDPresented($row['IdentificationID']);
-        $row2 = $res3[0];
+        if ($row['IdentificationID'] != '')
+        {
+            $res3 = $_Ref_Identifications->getIDPresented($row['IdentificationID']);
+            $row2 = $res3[0];
+        }
+        else
+        {
+            $row2 = '';
+        }
         $row3['TransactionDate'] = '';
 
         $res4 = $_MembersTemp->getTempCode($mid);
