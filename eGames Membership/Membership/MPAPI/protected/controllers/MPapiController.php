@@ -1494,7 +1494,6 @@ class MPapiController extends Controller {
 
                 exit;
             } else {
-
                 //start of declaration of models to be used
                 $memberInfoModel = new MemberInfoModel();
                 $memberCardsModel = new MemberCardsModel();
@@ -1645,7 +1644,7 @@ class MPapiController extends Controller {
                         $lastInsertedMID = $membershipTempModel->register($emailAddress, $firstname, $middlename, $lastname, $nickname, $password, $permanentAddress, $mobileNumber, $alternateMobileNumber, $alternateEmail, $idNumber, $idPresented, $gender, $referralCode, $birthdate, $occupationID, $nationalityID, $isSmoker, $referrerID, $emailSubscription, $smsSubscription);
 
                         if ($lastInsertedMID > 0) {
-                            $MID = $lastInsertedMID;
+			    $lastInsertedMID = $lastInsertedMID['MID'];
                             $mpSessionID = '';
 
                             $memberInfos = $membershipTempModel->getTempMemberInfoForSMS($lastInsertedMID);
@@ -1818,7 +1817,7 @@ class MPapiController extends Controller {
                                     }
                                 }
                             }
-                            $auditTrailModel->logEvent(AuditTrailModel::API_REGISTER_MEMBER, 'Email: ' . $emailAddress, array('MID' => $MID, 'SessionID' => $mpSessionID));
+                            $auditTrailModel->logEvent(AuditTrailModel::API_REGISTER_MEMBER, 'Email: ' . $emailAddress, array('MID' => $lastInsertedMID, 'SessionID' => $mpSessionID));
                         } else {
                             //check if email is already verified in temp table
                             $tempEmail = $membershipTempModel->checkTempVerifiedEmail($emailAddress);
@@ -1844,6 +1843,8 @@ class MPapiController extends Controller {
                                 $lastInsertedMID = $membershipTempModel->register($emailAddress, $firstname, $middlename, $lastname, $nickname, $password, $permanentAddress, $mobileNumber, $alternateMobileNumber, $alternateEmail, $idNumber, $idPresented, $gender, $referralCode, $birthdate, $occupationID, $nationalityID, $isSmoker, $emailSubscription, $smsSubscription, $referrerID);
 
                                 if ($lastInsertedMID > 0) {
+                                    $SFID = $lastInsertedMID['SFID'];
+                                    $lastInsertedMID = $lastInsertedMID['MID'];
                                     $ID = 0;
                                     $mpSessionID = '';
 
@@ -2013,7 +2014,7 @@ class MPapiController extends Controller {
 
                                     $auditTrailModel->logEvent(AuditTrailModel::API_REGISTER_MEMBER, 'Email: ' . $emailAddress, array('ID' => $ID));
                                 } else {
-                                    if (strpos($lastInsertedMID, " Integrity constraint violation: 1062 Duplicate entry") > 0) {
+                                    if (strpos($lastInsertedMID['MID'], " Integrity constraint violation: 1062 Duplicate entry") > 0) {
                                         $transMsg = "Sorry, " . $emailAddress . "already belongs to an existing account. Please enter another email address.";
                                         $errorCode = 21;
                                         Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
@@ -2638,7 +2639,6 @@ class MPapiController extends Controller {
 
                             exit;
                         }
-
                         //proceed with the updating of member profile
                         if ($region != '' && $city != '' && $idNumber == '' && $idPresented == '')
                             $result = $memberInfoModel->updateProfilev2($firstname, $middlename, $lastname, $nickname, $mid, $permanentAddress, $mobileNumber, $alternateMobileNumber, $emailAddress, $alternateEmail, $birthdate, $nationalityID, $occupationID, $gender, $isSmoker, $region, $city);
@@ -5495,6 +5495,7 @@ class MPapiController extends Controller {
                         $lastInsertedMID = $membershipTempModel->registerBT($emailAddress, $firstname, $lastname, $mobileNumber, $birthdate); // ,$password, $idPresented, $idNumber);
 
                         if ($lastInsertedMID > 0) {
+                            $lastInsertedMID = $lastInsertedMID['MID'];
                             $MID = $lastInsertedMID;
                             $mpSessionID = '';
 
@@ -5766,7 +5767,7 @@ class MPapiController extends Controller {
                                 }
                             }
 
-                            $auditTrailModel->logEvent(AuditTrailModel::API_REGISTER_MEMBER_BT, 'Email: ' . $emailAddress, array('MID' => $MID, 'SessionID' => $mpSessionID));
+                            $auditTrailModel->logEvent(AuditTrailModel::API_REGISTER_MEMBER_BT, 'Email: ' . $emailAddress, array('MID' => $lastInsertedMID, 'SessionID' => $mpSessionID));
                         } else {
                             //check if email is already verified in temp table
                             $tempEmail = $membershipTempModel->checkTempVerifiedEmail($emailAddress);
@@ -5792,6 +5793,8 @@ class MPapiController extends Controller {
                                 $lastInsertedMID = $membershipTempModel->registerBT($emailAddress, $firstname, $lastname, $mobileNumber, $birthdate);
 
                                 if ($lastInsertedMID > 0) {
+                                    $SFID = $lastInsertedMID['SFID'];
+                                    $lastInsertedMID = $lastInsertedMID['MID'];
                                     $ID = 0;
                                     $mpSessionID = '';
 
@@ -6059,7 +6062,7 @@ class MPapiController extends Controller {
 
                                     $auditTrailModel->logEvent(AuditTrailModel::API_REGISTER_MEMBER_BT, 'Email: ' . $emailAddress, array('ID' => $ID));
                                 } else {
-                                    if (strpos($lastInsertedMID, " Integrity constraint violation: 1062 Duplicate entry") > 0) {
+                                    if (strpos($lastInsertedMID['MID'], " Integrity constraint violation: 1062 Duplicate entry") > 0) {
                                         $transMsg = "Sorry, " . $emailAddress . "already belongs to an existing account. Please enter another email address.";
                                         $errorCode = 21;
                                         Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
@@ -6196,7 +6199,6 @@ class MPapiController extends Controller {
         $d = DateTime::createFromFormat('Y-m-d', $date);
         return $d && $d->format('Y-m-d') == $date;
     }
-
     //@date added 05-07-2015
     public function actionGetBalance() {
         $request = $this->_readJsonRequest();
