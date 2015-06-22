@@ -332,9 +332,8 @@ class AmpapiController extends Controller {
         }
     }
 
-    private function _validateTPSession($TPSessionID, $moduleNameMPAPI='GetActiveSession', $moduleNameAMPAPI = '') {
+    private function _validateTPSession($TPSessionID, $moduleNameMPAPI='GetActiveSession', $moduleNameAMPAPI = '', $randchars) {
         date_default_timezone_set('Asia/Manila'); //setting to default timezone
-        $rand = $this->random_string();
 
         $ValidateTPSession = new ValidateTPSessionIDModel();
         $queryResult = $ValidateTPSession->validateTPSessionID(trim($TPSessionID));
@@ -371,7 +370,7 @@ class AmpapiController extends Controller {
         } else {
             $valid = false;
             $moduleNameAMPAPI == 'GetCity' ? $eCode = 1648 : $eCode = 71;
-            $this->_displayReturnMessage($eCode, $moduleNameAMPAPI, $moduleNameAMPAPI . ' has invalid Session ID.', $rand);
+            $this->_displayReturnMessage($eCode, $moduleNameAMPAPI, $moduleNameAMPAPI . ' has invalid Session ID.', $randchars);
             $this->_apiLogs($ApiMethodID[$moduleNameAMPAPI], '', $eCode, '', 2, $moduleNameAMPAPI, $TPSessionID);
         }
         return $valid;
