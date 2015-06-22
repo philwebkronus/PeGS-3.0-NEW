@@ -4132,6 +4132,8 @@ class MPapiController extends Controller {
                                                             $about = $itemDetail['About'];
                                                             $terms = $itemDetail['Terms'];
                                                         }
+                                                        
+                                                        $email = $memberDetails['Email'];
 
                                                         $itemRedemptionArray = array('ItemImage' => $itemImage, 'ItemName' => $itemName, 'PartnerName' => $partnerName, 'PlayerName' => $playerName, 'CardNumber' => $cardNumber, 'RedemptionDate' => $redemptionDate, 'SerialNumber' => $resultsArray['SessionSerialCode'], 'SecurityCode' => $resultsArray['SessionSecurityCode'], 'ValidityDate' => $resultsArray['ValidUntil'], 'CompanyAddress' => $companyAddress, 'CompanyPhone' => $companyPhone, 'CompanyWebsite' => $companyWebsite, 'Quantity' => $quantity, 'SiteCode' => $siteCode, 'PromoCode' => $promoCode, 'PromoTitle' => $promoTitle,
                                                             'PromoPeriod' => $promoPeriod, 'DrawDate' => $drawDate, 'Address' => $address, 'Birthdate' => $birthdate, 'EmailAddress' => $email, 'ContactNo' => $contactNo, 'CheckSum' => $checkSum, 'About' => $about, 'Terms' => $terms);
