@@ -2883,30 +2883,30 @@ class MPapiController extends Controller {
                 //start of declaration of models to be used
                 $memberCardsModel = new MemberCardsModel();
                 $auditTrailModel = new AuditTrailModel();
-                $pcwsWrapper = new PcwsWrapper();
-
-                $result = $pcwsWrapper->getCompPoints($cardNumber, 1);
-                if ($result) {
-                    $currentPoints = $result['GetCompPoints']['CompBalance'];
-                } else {
-                    $transMsg = "Cannot access PCWS API.";
-                    $errorCode = 120;
-                    Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
-                    $data = CommonController::retMsgCheckPoints($module, '', '', $errorCode, $transMsg);
-                    $message = "[" . $module . "] Output: " . CJSON::encode($data);
-                    $appLogger->log($appLogger->logdate, "[response]", $message);
-                    $this->_sendResponse(200, CJSON::encode($data));
-                    $logMessage = 'Cannot access PCWS API.';
-                    $logger->log($logger->logdate, "[CHECKPOINTS ERROR]: " . $cardNumber . " || ", $logMessage);
-                    $apiDetails = 'CHECKPOINTS-Failed: Cannot access PCWS API. Card Number = ' . $cardNumber;
-                    $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
-                    if ($isInserted == 0) {
-                        $logMessage = "Failed to insert to APILogs.";
-                        $logger->log($logger->logdate, "[CHECKPOINTS ERROR]: " . $cardNumber . " || ", $logMessage);
-                    }
-
-                    exit;
-                }
+//                $pcwsWrapper = new PcwsWrapper();
+//
+//                $result = $pcwsWrapper->getCompPoints($cardNumber, 1);
+//                if ($result) {
+//                    $currentPoints = $result['GetCompPoints']['CompBalance'];
+//                } else {
+//                    $transMsg = "Cannot access PCWS API.";
+//                    $errorCode = 120;
+//                    Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+//                    $data = CommonController::retMsgCheckPoints($module, '', '', $errorCode, $transMsg);
+//                    $message = "[" . $module . "] Output: " . CJSON::encode($data);
+//                    $appLogger->log($appLogger->logdate, "[response]", $message);
+//                    $this->_sendResponse(200, CJSON::encode($data));
+//                    $logMessage = 'Cannot access PCWS API.';
+//                    $logger->log($logger->logdate, "[CHECKPOINTS ERROR]: " . $cardNumber . " || ", $logMessage);
+//                    $apiDetails = 'CHECKPOINTS-Failed: Cannot access PCWS API. Card Number = ' . $cardNumber;
+//                    $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
+//                    if ($isInserted == 0) {
+//                        $logMessage = "Failed to insert to APILogs.";
+//                        $logger->log($logger->logdate, "[CHECKPOINTS ERROR]: " . $cardNumber . " || ", $logMessage);
+//                    }
+//
+//                    exit;
+//                }
 
                 $memberDetails = $memberCardsModel->getMemberDetailsByCard($cardNumber);
 
@@ -3514,31 +3514,9 @@ class MPapiController extends Controller {
                 if (count($isExist) > 0) {
                     $refID = $cardNumber . ';' . $rewardID . ';' . $rewardItemID . ';' . $quantity;
                     if ($source == 3) {
-                        $result = $pcwsWrapper->getCompPoints($cardNumber, 1);
-                        if ($result) {
-                            $currentPoints = $result['GetCompPoints']['CompBalance'];
-                        } else {
-                            $transMsg = "Cannot access PCWS API.";
-                            $errorCode = 120;
-                            Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
-                            $data = CommonController::retMsgRedemption($module, $redemption, $errorCode, $transMsg);
-                            $message = "[" . $module . "] Output: " . CJSON::encode($data);
-                            $appLogger->log($appLogger->logdate, "[response]", $message);
-                            $this->_sendResponse(200, CJSON::encode($data));
-                            $logMessage = 'Cannot access PCWS API.';
-                            $logger->log($logger->logdate, "[REDEEMITEMS ERROR]: " . $cardNumber . " || ", $logMessage);
-                            $apiDetails = 'REDEEMITEMS-Failed: Cannot access PCWS API. Card Number = ' . $cardNumber;
-                            $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
-                            if ($isInserted == 0) {
-                                $logMessage = "Failed to insert to APILogs.";
-                                $logger->log($logger->logdate, "[REDEEMITEMS ERROR]: " . $cardNumber . " || ", $logMessage);
-                            }
-
-                            exit;
-                        }
                         $result = $memberCardsModel->getMemberPointsAndStatus($cardNumber);
-
                         $memberDetails = $memberInfoModel->getMemberInfoUsingMID($MID);
+                        $currentPoints = $result['CurrentPoints'];
                     } else {
                         $transMsg = "Please input 3 as source.";
                         $errorCode = 23;
@@ -4598,32 +4576,34 @@ class MPapiController extends Controller {
                                 $isSmoker = '';
                             $birthDate = $memberDetails['Birthdate'];
                             $age = number_format((abs(strtotime($birthDate) - strtotime(date('Y-m-d'))) / 60 / 60 / 24 / 365), 0);
+                            $currentPoints = $memberDetails['CurrentPoints'];
+                            $bonusPoints = $memberDetails['BonusPoints'];
                             $redeemedPoints = $memberDetails['RedeemedPoints'];
                             $lifetimePoints = $memberDetails['LifetimePoints'];
 
-                            $result = $pcwsWrapper->getCompPoints($cardNumber, 1);
-                            if ($result) {
-                                $currentPoints = $result['GetCompPoints']['CompBalance'];
-                                $bonusPoints = 0;
-                            } else {
-                                $transMsg = "Cannot access PCWS API.";
-                                $errorCode = 120;
-                                Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
-                                $data = CommonController::retMsgGetProfile($module, $profile, $errorCode, $transMsg);
-                                $message = "[" . $module . "] Output: " . CJSON::encode($data);
-                                $appLogger->log($appLogger->logdate, "[response]", $message);
-                                $this->_sendResponse(200, CJSON::encode($data));
-                                $logMessage = 'Cannot access PCWS API.';
-                                $logger->log($logger->logdate, "[GETPROFILE ERROR]: MID " . $MID . " || ", $logMessage);
-                                $apiDetails = 'GETPROFILE-Failed: Cannot access PCWS API. Card Number = ' . $cardNumber;
-                                $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
-                                if ($isInserted == 0) {
-                                    $logMessage = "Failed to insert to APILogs.";
-                                    $logger->log($logger->logdate, "[GETPROFILE ERROR]: MID " . $MID . " || ", $logMessage);
-                                }
-
-                                exit;
-                            }
+//                            $result = $pcwsWrapper->getCompPoints($cardNumber, 1);
+//                            if ($result) {
+//                                $currentPoints = $result['GetCompPoints']['CompBalance'];
+//                                $bonusPoints = 0;
+//                            } else {
+//                                $transMsg = "Cannot access PCWS API.";
+//                                $errorCode = 120;
+//                                Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+//                                $data = CommonController::retMsgGetProfile($module, $profile, $errorCode, $transMsg);
+//                                $message = "[" . $module . "] Output: " . CJSON::encode($data);
+//                                $appLogger->log($appLogger->logdate, "[response]", $message);
+//                                $this->_sendResponse(200, CJSON::encode($data));
+//                                $logMessage = 'Cannot access PCWS API.';
+//                                $logger->log($logger->logdate, "[GETPROFILE ERROR]: MID " . $MID . " || ", $logMessage);
+//                                $apiDetails = 'GETPROFILE-Failed: Cannot access PCWS API. Card Number = ' . $cardNumber;
+//                                $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
+//                                if ($isInserted == 0) {
+//                                    $logMessage = "Failed to insert to APILogs.";
+//                                    $logger->log($logger->logdate, "[GETPROFILE ERROR]: MID " . $MID . " || ", $logMessage);
+//                                }
+//
+//                                exit;
+//                            }
 
                             $result = $auditTrailModel->logEvent(AuditTrailModel::API_GET_PROFILE, 'CardNumber: ' . $cardNumber, array('MID' => $MID, 'SessionID' => $mpSessionID));
                             if ($result == 0) {
