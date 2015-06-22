@@ -77,6 +77,18 @@ class LoginController extends Controller
         if(isset($_POST['LoginForm']))
         {
             $model->attributes=$_POST['LoginForm'];
+            
+            if((Yii::app()->params['referrer'] != Yii::app()->request->urlReferrer) && (Yii::app()->params['referrer2'] != Yii::app()->request->urlReferrer)) {
+                    header('HTTP/1.0 403 Forbidden');
+                    $this->showDialog = true;
+                    $this->dialogMsg = "Forbidden";
+                    $this->render('login', array('model' => $model));
+                    Yii::app()->end();
+
+                //$referrer = $_SERVER['HTTP_REFERER'];
+                //echo $referrer;
+                //return $header;
+                }
 
             $username = $model->UserName;
             $password = $model->Password;
@@ -320,6 +332,26 @@ class LoginController extends Controller
         
         // display the login form
         $this->render('login',array('model'=>$model));
+    }
+    
+    public function actionCheckReferrer() {
+        if(isset($_POST['ajax'])) {
+
+            if(Yii::app()->param['referrer'] != $_SERVER['HTTP_REFERER']) {
+                header('HTTP/1.0 403 Forbidden');
+                Yii::app()->end();
+                $option = '';
+
+                //$referrer = $_SERVER['HTTP_REFERER'];
+                //echo $referrer;
+                //return $header;
+            }
+            else {
+                $option = 'Authorized';
+            }
+            echo $option;
+            
+        } 
     }
 
     /**

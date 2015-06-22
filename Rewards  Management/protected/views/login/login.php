@@ -1,5 +1,37 @@
+<script type="text/javascript" src="<?php echo Yii::app()->request->baseUrl;?>/js/jquery-ui.min.js">
+    $(document).ready(function(){
+       jQuery('.yt0').click(function(e){
+                       e.preventDefault();
+                      
+                       var self = this;
+
+                       $.ajax({
+                            url: '<?php echo Yii::app()->createUrl('login/checkreferrer'); ?>',
+                            type: 'post',
+                            dataType: 'text',
+                            cahe: false,
+                            success: function(result){
+                                  if($.trim(result) == 'Authorized')
+                                      self.submit();
+
+                            },
+                            error: function(XMLHttpRequest, e){
+
+                                  alert('Forbidden');
+                                  if(XMLHttpRequest.status == 403)
+                                  {
+                                      window.location.reload();
+                                  }
+                            }
+
+                            });
+               
+
+                       }); 
+    });
+</script>
 <?php
-/** @var $this SiteController */
+/* @var $this SiteController */
 /* @var $model LoginForm */
 /* @var $form CActiveForm  */
 $this->layout = '/layouts/login';
@@ -36,6 +68,8 @@ Yii::app()->clientScript->registerScript("validation","
                    document.oncontextmenu = mischandler;
                    document.onmousedown = mousehandler;
                    document.onmouseup = mousehandler;
+                   
+                   
              });
              
              function preventBackandForward()
@@ -64,10 +98,9 @@ $this->breadcrumbs=array(
 )); ?>
 
 	<p class="note">Only authorized users are allowed.</p>
-
 	<div class="row">
 		<?php echo $form->labelEx($model,'UserName'); ?>
-		<?php echo $form->textField($model,'UserName',array('onkeypress' => 'return numberandletter1(event);', 'maxlength' => 20)) ?>
+		<?php echo $form->textField($model,'UserName',array('onkeypress' => 'return numberandletter(event);', 'maxlength' => 20)) ?>
 		<?php echo $form->error($model,'UserName'); ?>
 	</div>
 
