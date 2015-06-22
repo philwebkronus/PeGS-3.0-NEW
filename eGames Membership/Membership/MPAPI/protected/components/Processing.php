@@ -367,7 +367,7 @@ class Processing
                             $playerPoints = $memberCardsModel->getMemberPointsAndStatus($cardNumber);
 //                            $playerPoints = $pcwsWrapper->getCompPoints($cardNumber, 0);
 //                            $playerPoints = $playerPoints['GetCompPoints']['CompBalance'];
-                            $oldCurrentPoints = $playerPoints;
+                            $oldCurrentPoints = $playerPoints['CurrentPoints'];
                             if($isPointsUpdated > 0 && $playerPoints['CurrentPoints'] > 0) {
                                 $currentItemCount = $rewardItemsModel->getAvailableItemCount($rewardItemID);
                                 if($currentItemCount['AvailableItemCount'] >= $itemQtyItr && $currentItemCount['AvailableItemCount'] != 0) {
