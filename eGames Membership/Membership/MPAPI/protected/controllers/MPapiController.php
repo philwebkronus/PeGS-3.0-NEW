@@ -3886,11 +3886,16 @@ class MPapiController extends Controller {
 
                                                         $fBirthdate = date("F j, Y", strtotime($birthdate));
                                                         $siteCode = 'Website';
+                                                        
+                                                        $couponSeries = $resultArray['CouponSeries'];
+                                                        $raQuantity = $resultArray["Quantity"];
+                                                        $raCheckSum = $resultArray["CheckSum"];
+                                                        $serialNumber = $resultArray["SerialNumber"];
 
-                                                        $helpers->sendEmailCouponRedemption($playerName, $address, $siteCode, $cardNumber, $fBirthdate, $email, $contactNo, '', '', $newHeader, $newFooter, $itemImage, $resultArray['CouponSeries'], $resultArray["Quantity"], $resultArray["CheckSum"], $resultArray["SerialNumber"], $redemptionDate, $promoCode, $promoName, $promoPeriod, $drawDate, $about, $terms);
+                                                        $helpers->sendEmailCouponRedemption($playerName, $address, $siteCode, $cardNumber, $fBirthdate, $email, $contactNo, '', '', $newHeader, $newFooter, $itemImage, $couponSeries, $raQuantity, $raCheckSum, $serialNumber, $redemptionDate, $promoCode, $promoName, $promoPeriod, $drawDate, $about, $terms);
                                                     }
 
-                                                    $couponRedemptionArray = array('ItemImage' => $itemImage, 'ItemName' => $itemName, 'PartnerName' => $partnerName, 'PlayerName' => $playerName, 'CardNumber' => $cardNumber, 'RedemptionDate' => $redemptionDate, 'SerialNumber' => $resultArray['SerialNumber'], 'SecurityCode' => $resultArray['CouponSeries'], 'ValidityDate' => $validUntil, 'CompanyAddress' => $companyAddress, 'CompanyPhone' => $companyPhone, 'CompanyWebsite' => $companyWebsite, 'Quantity' => $resultArray['Quantity'], 'SiteCode' => $siteCode, 'PromoCode' => $promoCode, 'PromoTitle' => $promoName, 'PromoPeriod' => $promoPeriod, 'DrawDate' => $drawDate, 'Address' => $address, 'Birthdate' => $birthdate, 'EmailAddress' => $email, 'ContactNo' => $contactNo, 'CheckSum' => $resultArray['CheckSum'], 'About' => $about, 'Terms' => $terms);
+                                                    $couponRedemptionArray = array('ItemImage' => $itemImage, 'ItemName' => $itemName, 'PartnerName' => $partnerName, 'PlayerName' => $playerName, 'CardNumber' => $cardNumber, 'RedemptionDate' => $redemptionDate, 'SerialNumber' => $serialNumber, 'SecurityCode' => $couponSeries, 'ValidityDate' => '', 'CompanyAddress' => $companyAddress, 'CompanyPhone' => $companyPhone, 'CompanyWebsite' => $companyWebsite, 'Quantity' => $raQuantity, 'SiteCode' => $siteCode, 'PromoCode' => $promoCode, 'PromoTitle' => $promoName, 'PromoPeriod' => $promoPeriod, 'DrawDate' => $drawDate, 'Address' => $address, 'Birthdate' => $birthdate, 'EmailAddress' => $email, 'ContactNo' => $contactNo, 'CheckSum' => $raCheckSum, 'About' => $about, 'Terms' => $terms);
                                                     Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
                                                     $this->_sendResponse(200, CJSON::encode(CommonController::retMsgCouponRedemptionSuccess($module, $couponRedemptionArray, $errorCode, $transMsg)));
                                                     $logMessage = $transMsg;
@@ -4134,8 +4139,11 @@ class MPapiController extends Controller {
                                                         }
                                                         
                                                         $email = $memberDetails['Email'];
+                                                        $sessionSerialCode = $resultsArray['SessionSerialCode'];
+                                                        $sessionSecurityCode  = $resultsArray['SessionSecurityCode'];
+                                                        $sessionValidUntil = $resultsArray['ValidUntil'];
 
-                                                        $itemRedemptionArray = array('ItemImage' => $itemImage, 'ItemName' => $itemName, 'PartnerName' => $partnerName, 'PlayerName' => $playerName, 'CardNumber' => $cardNumber, 'RedemptionDate' => $redemptionDate, 'SerialNumber' => $resultsArray['SessionSerialCode'], 'SecurityCode' => $resultsArray['SessionSecurityCode'], 'ValidityDate' => $resultsArray['ValidUntil'], 'CompanyAddress' => $companyAddress, 'CompanyPhone' => $companyPhone, 'CompanyWebsite' => $companyWebsite, 'Quantity' => $quantity, 'SiteCode' => $siteCode, 'PromoCode' => $promoCode, 'PromoTitle' => $promoTitle,
+                                                        $itemRedemptionArray = array('ItemImage' => $itemImage, 'ItemName' => $itemName, 'PartnerName' => $partnerName, 'PlayerName' => $playerName, 'CardNumber' => $cardNumber, 'RedemptionDate' => $redemptionDate, 'SerialNumber' => $sessionSerialCode, 'SecurityCode' => $sessionSecurityCode, 'ValidityDate' => $sessionValidUntil, 'CompanyAddress' => $companyAddress, 'CompanyPhone' => $companyPhone, 'CompanyWebsite' => $companyWebsite, 'Quantity' => $quantity, 'SiteCode' => $siteCode, 'PromoCode' => $promoCode, 'PromoTitle' => $promoTitle,
                                                             'PromoPeriod' => $promoPeriod, 'DrawDate' => $drawDate, 'Address' => $address, 'Birthdate' => $birthdate, 'EmailAddress' => $email, 'ContactNo' => $contactNo, 'CheckSum' => $checkSum, 'About' => $about, 'Terms' => $terms);
 
                                                         Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
