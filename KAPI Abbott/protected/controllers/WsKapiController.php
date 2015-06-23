@@ -592,6 +592,7 @@ class WsKapiController extends Controller {
                 if (!empty($MID)) {
                     $status = $memberCardsModel->getCardStatus($cardNumber); //Get Card Status
                     $memberinfo = $memberInfoModel->getMemberInfoByMID($MID);
+                    $memberinfo2 = $memberInfoModel->getMemberInfoByMIDSP($MID);
                     $isVIP = $membersModel->isVip($MID);
                     $checkEwallet = $membersModel->checkIfEwallet($MID);
                     $isEwallet = (int)$checkEwallet['IsEwallet'];
@@ -602,12 +603,12 @@ class WsKapiController extends Controller {
                     else {
                         $classification = "VIP";
                     }
-                    $name = $memberinfo['NickName'];
+                    $name = $memberinfo2['NickName'];
                     if (!empty($name)) {
                         $nickname = $name;
                     } else {
-                        if (!empty($memberinfo['FirstName'])) {
-                            $nickname = $memberinfo['FirstName'];
+                        if (!empty($memberinfo2['FirstName'])) {
+                            $nickname = $memberinfo2['FirstName'];
                         } else {
                             $nickname = '';
                                 }
@@ -629,7 +630,7 @@ class WsKapiController extends Controller {
                     $errCode = 3;
                     $status = "Card does not exist";
                 }
-                    $this->_sendResponse(200, CommonController::getMembershipInfo($status, $nickname, $gender, $classification, $mappedCasinos, $isEwallet, $message, $errCode));
+                 $this->_sendResponse(200, CommonController::getMembershipInfo($status, $nickname, $gender, $classification, $mappedCasinos, $isEwallet, $message, $errCode));
                             
                 //Check Terminal if found by TerminalID which is not empty. If it exists or not empty then,
 //                if (!empty($TerminalID)) {

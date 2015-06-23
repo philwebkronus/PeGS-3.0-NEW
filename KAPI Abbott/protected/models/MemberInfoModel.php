@@ -29,4 +29,14 @@ class MemberInfoModel {
         $result = $command->queryRow(true, $param);
         return $result;
     }
+    
+    public function getMemberInfoByMIDSP($MID) {
+        $sql = "CALL membership.sp_select_data(1, 1, 0, $MID, 'FirstName, NickName', @ResultCode, @ResultMsg, @ResultFields)";
+        $command = $this->_connection->createCommand($sql);
+        $result = $command->queryRow();
+        $exp = explode(";", $result['OUTfldListRet']);
+
+        return array('FirstName' => $exp[0], 
+                     'NickName' => $exp[1]);
+    }
 }
