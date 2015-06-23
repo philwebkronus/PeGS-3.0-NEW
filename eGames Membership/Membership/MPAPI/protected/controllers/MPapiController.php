@@ -3887,13 +3887,11 @@ class MPapiController extends Controller {
                                                         $fBirthdate = date("F j, Y", strtotime($birthdate));
                                                         $siteCode = 'Website';
                                                         
-                                                        for($i=0;$i<$itemQty1;$i++){
-                                                            $raCheckSum[] = $resultArray['CheckSum'][$i];
-                                                            $serialNumber[] = $resultArray['SerialNumber'][$i];
-                                                        }
-                                                        $couponSeries = $resultArray['CouponSeries'][0];
-                                                        $raQuantity = $resultArray["Quantity"][0];
-
+                                                        $raCheckSum = $resultArray['CheckSum'];
+                                                        $serialNumber = $resultArray['SerialNumber'];                                                  
+                                                        $couponSeries = $resultArray['CouponSeries'];
+                                                        $raQuantity = $resultArray["Quantity"];
+  
                                                         $helpers->sendEmailCouponRedemption($playerName, $address, $siteCode, $cardNumber, $fBirthdate, $email, $contactNo, '', '', $newHeader, $newFooter, $itemImage, $couponSeries, $raQuantity, $raCheckSum, $serialNumber, $redemptionDate, $promoCode, $promoName, $promoPeriod, $drawDate, $about, $terms);
                                                     }
 
