@@ -1740,7 +1740,7 @@ class MPapiController extends Controller {
                         $lastInsertedMID = $membershipTempModel->register($emailAddress, $firstname, $middlename, $lastname, $nickname, $password, $permanentAddress, $mobileNumber, $alternateMobileNumber, $alternateEmail, $idNumber, $idPresented, $gender, $referralCode, $birthdate, $occupationID, $nationalityID, $isSmoker, $referrerID, $emailSubscription, $smsSubscription);
 
                         if ($lastInsertedMID > 0) {
-			    $lastInsertedMID = $lastInsertedMID['MID'];
+                            $lastInsertedMID = $lastInsertedMID['MID'];
                             $mpSessionID = '';
 
                             $memberInfos = $membershipTempModel->getTempMemberInfoForSMS($lastInsertedMID);
@@ -2989,7 +2989,7 @@ class MPapiController extends Controller {
                     $MID = 0;
 
                 if (!empty($memberDetails)) {
- 		    $currentPoints = $memberDetails['CurrentPoints'];
+                    $currentPoints = $memberDetails['CurrentPoints'];
 
                     $status = $memberDetails['Status'];
 
@@ -3571,9 +3571,10 @@ class MPapiController extends Controller {
                 }
 
                 $memberInfo = $memberInfoModel->getMemberInfoUsingMID($MID);
-                if ($memberInfo)
+                if ($memberInfo) {
                     $mobileNumber = $memberInfo['MobileNumber'];
-                else {
+                    $currentPoints = $memberInfo['CurrentPoints'];
+                } else {
                     $transMsg = "No member found for that account.";
                     $errorCode = 55;
                     Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
@@ -3598,28 +3599,29 @@ class MPapiController extends Controller {
                 if (count($isExist) > 0) {
                     $refID = $cardNumber . ';' . $rewardID . ';' . $rewardItemID . ';' . $quantity;
                     if ($source == 3) {
-                        $result = $pcwsWrapper->getCompPoints($cardNumber, 1);
-                        if ($result) {
-                            $currentPoints = $result['GetCompPoints']['CompBalance'];
-                        } else {
-                            $transMsg = "Cannot access PCWS API.";
-                            $errorCode = 120;
-                            Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
-                            $data = CommonController::retMsgRedemption($module, $redemption, $errorCode, $transMsg);
-                            $message = "[" . $module . "] Output: " . CJSON::encode($data);
-                            $appLogger->log($appLogger->logdate, "[response]", $message);
-                            $this->_sendResponse(200, CJSON::encode($data));
-                            $logMessage = 'Cannot access PCWS API.';
-                            $logger->log($logger->logdate, "[REDEEMITEMS ERROR]: " . $cardNumber . " || ", $logMessage);
-                            $apiDetails = 'REDEEMITEMS-Failed: Cannot access PCWS API. Card Number = ' . $cardNumber;
-                            $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
-                            if ($isInserted == 0) {
-                                $logMessage = "Failed to insert to APILogs.";
-                                $logger->log($logger->logdate, "[REDEEMITEMS ERROR]: " . $cardNumber . " || ", $logMessage);
-                            }
 
-                            exit;
-                        }
+                        /* $result = $pcwsWrapper->getCompPoints($cardNumber, 1);
+                          if ($result) {
+                          $currentPoints = $result['GetCompPoints']['CompBalance'];
+                          } else {
+                          $transMsg = "Cannot access PCWS API.";
+                          $errorCode = 120;
+                          Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                          $data = CommonController::retMsgRedemption($module, $redemption, $errorCode, $transMsg);
+                          $message = "[" . $module . "] Output: " . CJSON::encode($data);
+                          $appLogger->log($appLogger->logdate, "[response]", $message);
+                          $this->_sendResponse(200, CJSON::encode($data));
+                          $logMessage = 'Cannot access PCWS API.';
+                          $logger->log($logger->logdate, "[REDEEMITEMS ERROR]: " . $cardNumber . " || ", $logMessage);
+                          $apiDetails = 'REDEEMITEMS-Failed: Cannot access PCWS API. Card Number = ' . $cardNumber;
+                          $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
+                          if ($isInserted == 0) {
+                          $logMessage = "Failed to insert to APILogs.";
+                          $logger->log($logger->logdate, "[REDEEMITEMS ERROR]: " . $cardNumber . " || ", $logMessage);
+                          }
+
+                          exit;
+                          } */
                         $result = $memberCardsModel->getMemberPointsAndStatus($cardNumber);
 
                         $memberDetails = $memberInfoModel->getMemberInfoUsingMID($MID);
@@ -4734,10 +4736,11 @@ class MPapiController extends Controller {
                             $age = number_format((abs(strtotime($birthDate) - strtotime(date('Y-m-d'))) / 60 / 60 / 24 / 365), 0);
                             $redeemedPoints = $memberDetails['RedeemedPoints'];
                             $lifetimePoints = $memberDetails['LifetimePoints'];
+                            $currentPoints = $memberDetails['CurrentPoints'];
 
                             $result = $pcwsWrapper->getCompPoints($cardNumber, 1);
                             if ($result) {
-                                $currentPoints = $result['GetCompPoints']['CompBalance'];
+                                //$currentPoints = $result['GetCompPoints']['CompBalance'];
                                 $bonusPoints = 0;
                             } else {
                                 $transMsg = "Cannot access PCWS API.";
