@@ -3887,10 +3887,12 @@ class MPapiController extends Controller {
                                                         $fBirthdate = date("F j, Y", strtotime($birthdate));
                                                         $siteCode = 'Website';
                                                         
-                                                        $couponSeries = $resultArray['CouponSeries'];
-                                                        $raQuantity = $resultArray["Quantity"];
-                                                        $raCheckSum = $resultArray["CheckSum"];
-                                                        $serialNumber = $resultArray["SerialNumber"];
+                                                        for($i=0;$i<$itemQty1;$i++){
+                                                            $raCheckSum[] = $resultArray['CheckSum'][$i];
+                                                            $serialNumber[] = $resultArray['SerialNumber'][$i];
+                                                        }
+                                                        $couponSeries = $resultArray['CouponSeries'][0];
+                                                        $raQuantity = $resultArray["Quantity"][0];
 
                                                         $helpers->sendEmailCouponRedemption($playerName, $address, $siteCode, $cardNumber, $fBirthdate, $email, $contactNo, '', '', $newHeader, $newFooter, $itemImage, $couponSeries, $raQuantity, $raCheckSum, $serialNumber, $redemptionDate, $promoCode, $promoName, $promoPeriod, $drawDate, $about, $terms);
                                                     }
@@ -4139,9 +4141,11 @@ class MPapiController extends Controller {
                                                         }
                                                         
                                                         $email = $memberDetails['Email'];
-                                                        $sessionSerialCode = $resultsArray['SessionSerialCode'];
-                                                        $sessionSecurityCode  = $resultsArray['SessionSecurityCode'];
-                                                        $sessionValidUntil = $resultsArray['ValidUntil'];
+                                                        for($i=0;$i<$quantity;$i++){
+                                                            $sessionSerialCode[] = $resultsArray['SessionSerialCode'][$i];
+                                                            $sessionSecurityCode[] = $resultsArray['SessionSecurityCode'][$i];
+                                                        }
+                                                        $sessionValidUntil = $resultsArray['ValidUntil'][0];
 
                                                         $itemRedemptionArray = array('ItemImage' => $itemImage, 'ItemName' => $itemName, 'PartnerName' => $partnerName, 'PlayerName' => $playerName, 'CardNumber' => $cardNumber, 'RedemptionDate' => $redemptionDate, 'SerialNumber' => $sessionSerialCode, 'SecurityCode' => $sessionSecurityCode, 'ValidityDate' => $sessionValidUntil, 'CompanyAddress' => $companyAddress, 'CompanyPhone' => $companyPhone, 'CompanyWebsite' => $companyWebsite, 'Quantity' => $quantity, 'SiteCode' => $siteCode, 'PromoCode' => $promoCode, 'PromoTitle' => $promoTitle,
                                                             'PromoPeriod' => $promoPeriod, 'DrawDate' => $drawDate, 'Address' => $address, 'Birthdate' => $birthdate, 'EmailAddress' => $email, 'ContactNo' => $contactNo, 'CheckSum' => $checkSum, 'About' => $about, 'Terms' => $terms);
