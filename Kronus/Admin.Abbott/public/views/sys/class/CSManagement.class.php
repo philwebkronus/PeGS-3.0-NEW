@@ -20,11 +20,11 @@ class CSManagement extends DBHandler{
       {
           if($zsiteID > 0)
           {
-              $stmt = "SELECT TerminalID, TerminalCode FROM terminals where SiteID = '".$zsiteID."' AND Status = 1 ORDER BY TerminalID ASC";
+              $stmt = "SELECT TerminalID, TerminalCode FROM terminals where SiteID = '".$zsiteID."' AND (Status = 0 OR 1) ORDER BY TerminalID ASC";
           }
           else
 	  {
-              $stmt = "SELECT TerminalID, TerminalCode FROM terminals WHERE Status = 1 ORDER BY TerminalID ASC";
+              $stmt = "SELECT TerminalID, TerminalCode FROM terminals WHERE (Status = 0 OR 1) ORDER BY TerminalID ASC";
           }
           $this->executeQuery($stmt);
           return $this->fetchAllData();
@@ -194,6 +194,37 @@ class CSManagement extends DBHandler{
              *  
              */
             $stmt = "SELECT * FROM ref_services WHERE Status = 1 ORDER BY $sort";
+            $this->prepare($stmt);
+            $this->execute();
+            $record = $this->fetchAllData();
+            $data = array();
+            foreach($record as $r) {
+                
+                $data[$r["ServiceID"]] = $r;
+                
+            }
+            
+            return $data;
+            
+        }
+        
+        //Separated function for E-City Tracking in CS & AS for fetching all casino services disregarded whether the casino is already inactive.
+        function getallservicesecitytrack($sort)
+        {
+            /**
+             *Deprecated as of June 13, 2012 
+             */
+            /*$stmt = "SELECT * FROM ref_services WHERE Status = 1 ORDER BY $sort";
+            $this->prepare($stmt);
+            $this->execute();
+            return $this->fetchAllData();*/
+            
+            /**
+             *Modified as of June 13, 2012
+             * @author Marx Lenin Topico
+             *  
+             */
+            $stmt = "SELECT * FROM ref_services ORDER BY $sort";
             $this->prepare($stmt);
             $this->execute();
             $record = $this->fetchAllData();
@@ -402,8 +433,10 @@ class CSManagement extends DBHandler{
             if($zsummaryID > 0)
             {
                 $stmt = "SELECT tr.TransactionReferenceID, tr.TransactionSummaryID, tr.SiteID, tr.TerminalID, 
-                    tr.TransactionType, tr.Amount, tr.DateCreated, tr.ServiceID,a.UserName, tr.Status 
-                    FROM transactiondetails tr inner join accounts a on tr.CreatedByAID = a.AID WHERE tr.SiteID = ? AND tr.TerminalID = ? 
+                    tr.TransactionType, tr.Amount, tr.DateCreated, tr.ServiceID,a.UserName, ad.Name, tr.Status 
+                    FROM transactiondetails tr inner join accounts a on tr.CreatedByAID = a.AID 
+                    inner join accountdetails ad on a.AID = ad.AID
+                    WHERE tr.SiteID = ? AND tr.TerminalID = ? 
                     AND tr.DateCreated >= ? AND tr.DateCreated <= ? AND tr.TransactionSummaryID = ? ORDER BY ".$zsort." ".$zdirection." LIMIT ".$zstart.",".$zlimit."";
                 $this->prepare($stmt);
                 $this->bindparameter(1, $zsiteID);
@@ -415,8 +448,10 @@ class CSManagement extends DBHandler{
             else
             {
                 $stmt = "SELECT tr.TransactionReferenceID, tr.TransactionSummaryID, tr.SiteID, tr.TerminalID, 
-                    tr.TransactionType, tr.Amount, tr.DateCreated, tr.ServiceID, a.UserName, tr.Status 
-                    FROM transactiondetails tr inner join accounts a on tr.CreatedByAID = a.AID WHERE tr.SiteID = ? AND tr.TerminalID = ? 
+                    tr.TransactionType, tr.Amount, tr.DateCreated, tr.ServiceID, a.UserName, ad.Name, tr.Status 
+                    FROM transactiondetails tr inner join accounts a on tr.CreatedByAID = a.AID 
+                    inner join accountdetails ad on a.AID = ad.AID
+                    WHERE tr.SiteID = ? AND tr.TerminalID = ? 
                     AND tr.DateCreated >= ? AND tr.DateCreated <= ? ORDER BY ".$zsort." ".$zdirection." LIMIT ".$zstart.",".$zlimit."";
                 $this->prepare($stmt);
                 $this->bindparameter(1, $zsiteID);
@@ -451,7 +486,7 @@ class CSManagement extends DBHandler{
         function gettransactionsummary($zsiteID, $zterminalID, $zdatefrom, $zdateto, $zstart, $zlimit, $zsort, $zdirection)
         {
             $stmt = "SELECT ts.TransactionsSummaryID, ts.SiteID, ts.TerminalID, tm.TerminalCode, ts.Deposit, ts.Reload,
-                    ts.Withdrawal, ts.DateStarted, ts.DateEnded, acc.Name, s.POSAccountNo
+                    ts.Withdrawal, ts.DateStarted, ts.DateEnded, acc.Name, s.POSAccountNo, s.SiteCode
                     FROM transactionsummary ts
                     INNER JOIN accountdetails acc ON ts.CreatedByAID = acc.AID
                     INNER JOIN terminals tm ON ts.TerminalID = tm.TerminalID
