@@ -24,8 +24,8 @@ class Helpers
         $mailer->Body .= "<p style='text-align: justify; text-justify: inter-word;'><br />Your password has been reset on ".date('m-d-Y',time())." ".date('H:i:s',time()).".";
         $mailer->Body .= "<br /><br />It is advisable that you change your password upon log-in. ";
         $mailer->Body .= "<br /><br />Please click through the link provided below to log-in to your account. ";
-//        $mailer->Body .= "<br /><br /><b><a href='http://".$_SERVER['HTTP_HOST']."/changepassword.php?CardNumber=$hashedubcards'>Forgot Password</a></b> ";
-        $mailer->Body .= "<br /><br /><b><a href='http://membership.rewards.dev.local/changepassword.php?CardNumber=$hashedubcards'>Forgot Password</a></b> ";
+        $mailer->Body .= "<br /><br /><b><a href='http://".$_SERVER['HTTP_HOST']."/changepassword.php?CardNumber=$hashedubcards'>Forgot Password</a></b> ";
+        //$mailer->Body .= "<br /><br /><b><a href='http://membership.rewards.dev.local/changepassword.php?CardNumber=$hashedubcards'>Forgot Password</a></b> ";
         $mailer->Body .= "<br /><br />For inquiries, please call our 24-hour Customer Service Hotlines at (02) 338-3388 / Toll Free 1800-10-7445932. You can also send an email to our Customer Service Team at <b>customerservice@philweb.com.ph</b>.";
         $mailer->Body .= "<br /><br />Thank you and good day! ";
         $mailer->Body .= "<br /><br />Best Regards, ";
