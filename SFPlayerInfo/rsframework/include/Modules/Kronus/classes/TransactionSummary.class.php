@@ -16,7 +16,7 @@ class TransactionSummary extends BaseEntity
         $query = "SELECT a.TransactionsSummaryID, a.DateEnded, a.DateStarted,
                          TIMEDIFF(a.DateEnded, a.DateStarted) AS PlayingTime,
                          a.SiteID,a.LoyaltyCardNumber, ROUND(SUM(a.Deposit),2) AS TotalDeposit, ROUND(SUM(a.Reload),2) AS TotalReload,
-                         ROUND(SUM(a.Withdrawal),2) AS TotalWithdrawal, a.DateStarted, a.DateEnded
+                         ROUND(SUM(a.Withdrawal),2) AS TotalWithdrawal, a.DateStarted, a.DateEnded, b.FirstName, b.LastName
                     FROM $this->TableName a INNER JOIN membership.memberinfo b ON a.MID = b.MID WHERE b.SFID = '$MID' GROUP BY SiteID";
 
         $result = parent::RunQuery($query);

@@ -38,6 +38,12 @@ class MemberInfo extends BaseEntity
         $query = "SELECT SFID FROM $this->TableName WHERE SFID = '$SFID'";
         return parent::RunQuery($query);
     }
+       
+    public function getUpdatedRecords($date)
+    {
+        $query = "SELECT FirstName, LastName, Birthdate, Status, MID, SFID FROM $this->TableName WHERE DateUpdated > '$date'";
+        return parent::RunQuery($query);        
+    }
 
 }
 

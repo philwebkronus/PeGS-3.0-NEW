@@ -44,6 +44,18 @@ class MemberCards extends BaseEntity
         return $result;
     }
 
+    public function getNewRecords($date)
+    {
+        $query = "SELECT MID, CardNumber, DateCreated FROM $this->TableName where CardNumber NOT LIKE 'eGames%' AND DateCreated > '$date' AND DateCreated <> 'NOW(6)' AND DateCreated <> 'now_usec'";
+        return parent::RunQuery($query);
+    }
+
+    public function getTempCard($mid)
+    {
+        $query = "SELECT CardNumber, DateCreated FROM $this->TableName where CardNumber LIKE 'eGames%' AND MID = $mid";
+        return parent::RunQuery($query);
+    }
+
 }
 
 ?>

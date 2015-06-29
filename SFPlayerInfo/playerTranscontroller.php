@@ -36,11 +36,13 @@ $un = $_GET['SFUser'];
 $PTS = $_TransactionSummary->getTransSummaryPerSiteByMID($SFID);
 $ptsResult = $PTS[0];
 $ptsCount = count($PTS);
+$fname = $PTS[0]['FirstName'];
+$lname = $PTS[0]['LastName'];
 
 $path = dirname(__FILE__) . '/rsframework/include/log/SFLogs/';
 $fn = $path . 'logs_' . date("Ymd") . '.txt';
 $fp = fopen($fn, "a");
-fwrite($fp, date("[d-M-Y H:i:s]") . ' || Player Transactions || ' . $un . "\r\n");
+fwrite($fp, date("[d-M-Y H:i:s]") . ' || Player Transactions: ' . $fname . ' ' . $lname . ' || ' . $un . "\r\n");
 fclose($fp);
 
 function get_domain($url)
