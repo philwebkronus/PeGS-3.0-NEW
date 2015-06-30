@@ -1214,7 +1214,12 @@ class WsKapiController extends Controller {
                                             $siteid = $TerminalDetails['SiteID'];
 
                                             $this->acc_id = $siteaccounts->getVirtualCashier($siteid);
+                                            if ($this->acc_id == false) {
+                                                $message = "Terminal has no virtual cashier.";
+                                                $this->_sendResponse(200, CommonController::creteEgmSessionResponse(0, '', $message, 71));
 
+                                                exit;
+                                            }
                                             //check if casino id is a number
                                             if (!is_numeric($casinoID)) {
                                                 $message = "Invalid Casino ID";
@@ -1686,7 +1691,12 @@ class WsKapiController extends Controller {
             $siteid = $terminalID['SiteID'];
 
             $this->acc_id = $siteaccounts->getVirtualCashier($siteid);
+            if ($this->acc_id == false) {
+                $message = "Terminal has no virtual cashier.";
+                $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, '', $message, 71));
 
+                exit;
+            }
             $total = $stackerdetails->getStackerTotalAmount($stackerbatchID);
 
             if ($total['TotalAmount'] != $amount) {
@@ -2182,7 +2192,12 @@ class WsKapiController extends Controller {
             $siteid = $terminalID[0]['SiteID'];
 
             $this->acc_id = $siteaccounts->getVirtualCashier($siteid);
+            if ($this->acc_id == false) {
+                $message = "Terminal has no virtual cashier.";
+                $this->_sendResponse(200, CommonController::redeemSessionResponse(2, '', '', '', '', '', '', '', $message, 0, 71));
 
+                exit;
+            }
             $lastsessiondetails = $terminalsessions->getLastSessionDetails($terminalidreg, $terminalidvip);
             
             if (!empty($lastsessiondetails)) {
@@ -2456,7 +2471,12 @@ class WsKapiController extends Controller {
             }
 
             $this->acc_id = $siteaccounts->getVirtualCashier($siteid);
+            if ($this->acc_id == false) {
+                $message = "Terminal has no virtual cashier.";
+                $this->_sendResponse(200, CommonController::reloadSessionResponse(2, $DateTime, '', $message, 71));
 
+                exit;
+            }
             $lastsessiondetails = $terminalsessions->getLastSessionDetails($terminalidreg, $terminalidvip);
 
             if (!empty($lastsessiondetails)) {
@@ -2919,13 +2939,19 @@ class WsKapiController extends Controller {
                                             $siteid = $TerminalDetails['SiteID'];
                                             //get virtual cashier of the site
                                             $this->acc_id = $siteaccounts->getVirtualCashier($siteid);
+                                            if ($this->acc_id == false) {
+                                                $message = "Terminal has no virtual cashier.";
+                                                $errCode = 71;
+                                                $this->_sendResponse(200, CommonController::removeEgmSessionResponse($message, $errCode));
 
+                                                exit;
+                                            }
                                             //check if casino id is a number
                                             if (!is_numeric($casinoID)) 
                                             {
                                                 $message = "Invalid Casino ID";
                                                 $errCode = 45;
-                                                $this->_sendResponse(200, CommonController::creteEgmSessionResponse(0, '', $message, $errCode));
+                                                $this->_sendResponse(200, CommonController::removeEgmSessionResponse($message, $errCode));
 
                                                 exit;
                                             }
@@ -2936,7 +2962,7 @@ class WsKapiController extends Controller {
                                            {
                                                 $message = "Invalid Casino ID";
                                                 $errCode = 45;
-                                                $this->_sendResponse(200, CommonController::creteEgmSessionResponse(0, '', $message, $errCode));
+                                                $this->_sendResponse(200, CommonController::removeEgmSessionResponse($message, $errCode));
 
                                                 exit;
                                             }
@@ -2946,7 +2972,7 @@ class WsKapiController extends Controller {
                                             {
                                                 $message = "Casino is not supported.";
                                                 $errCode = 62;
-                                                $this->_sendResponse(200, CommonController::creteEgmSessionResponse(0, '', $message, $errCode));
+                                                $this->_sendResponse(200, CommonController::removeEgmSessionResponse($message, $errCode));
 
                                                 exit;
                                             }

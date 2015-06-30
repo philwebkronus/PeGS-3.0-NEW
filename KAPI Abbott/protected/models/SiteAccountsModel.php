@@ -39,12 +39,15 @@ class SiteAccountsModel {
     }
     
     public function getVirtualCashier($siteid){
-        $sql = "SELECT sa.AID FROM siteaccounts sa INNER JOIN accounts a ON a.AID = sa.AID WHERE AccountTypeID = 15 AND sa.SiteID = :site_id";
+        $sql = "SELECT sa.AID FROM siteaccounts sa 
+                INNER JOIN accounts a ON a.AID = sa.AID 
+                WHERE AccountTypeID = 15 AND sa.SiteID = :site_id 
+                AND sa.Status = 1 AND a.Status = 1";
         $param = array(':site_id'=>$siteid);
         $command = $this->_connection->createCommand($sql);
         $result = $command->queryRow(true, $param);
         if($result == ''){
-            $result['AID'] = 282;
+            return false;
         }
         return $result['AID'];
     }
