@@ -46,7 +46,7 @@ if (isset($stylesheets) && count($stylesheets) > 0)
     }
 }
 
-$pagetitle = (isset($pagetitle) && $pagetitle != "" ) ? $pagetitle : "Dashboard V2";
+$pagetitle = (isset($pagetitle) && $pagetitle != "" ) ? $pagetitle : "e-Games Membership Portal";
 $curdate = new DateSelector('now', 'Y,m,d, H,i,s');
 $curdate->SetTimeZone("Asia/Manila");
 $timezone = $curdate->GetCurrentDateFormat('O (T)');
