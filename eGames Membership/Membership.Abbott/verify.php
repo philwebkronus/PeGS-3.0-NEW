@@ -87,7 +87,7 @@ else
         <div id="StatusDialog">You have successfully verified your email. Please wait for 24 hours in order for your account to be activated.</div>
     <?php }else{ ?>
 <!--        <div id="StatusDialog">Verification failed. <br />Please contact customer service at (02) 338 3388.</div>-->
-        <div id="StatusDialog">Email was already verified.</div>
+        <div id="StatusDialog">Same email with either this or another temp code was already verified.</div>
     <?php
     }?>
 <?php
