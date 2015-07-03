@@ -284,6 +284,54 @@ class TempMembers extends BaseEntity
          }
     }
     /**
+     * @author Mark Kenneth Esguerra
+     * @param type $MID
+     * @param type $newemail
+     * @return string|boolean
+     */
+    public function TerminateTempAccountSP($MID,$newemail){
+        
+        $errorLogger = new ErrorLogger();
+         $this->StartTransaction();
+         try {
+                    //$query2 = "UPDATE membership_temp.memberinfo SET Status = 2, Email = '$newemail' WHERE MID = '$MID'";
+                    $query2 = "CALL membership.sp_update_data(0, 1, 'MID', $MID, 'Status,Email', '2;$newemail', @ResultCode, @ResultMsg)";
+                    $ismeminfotempupdated = parent::ExecuteQuery($query2);
+
+                    if($ismeminfotempupdated){
+                        //$query3 = "UPDATE membership_temp.members SET UserName = '$newemail' WHERE MID = '$MID'";
+                        $query3 = "CALL membership.sp_update_data(0, 1, 'MID', $MID, 'UserName', '$newemail', @ResultCode, @ResultMsg)";
+                        $ismemtempupdated = parent::ExecuteQuery($query3);
+
+                        if(!$ismemtempupdated){
+
+                            $this->RollBackTransaction();
+                            $errMsg = "Player Termination: Transaction Failed.";
+                            $errorLogger->log($errorLogger->logdate, "error", $errMsg);
+                            return $errMsg;
+                        }
+                        else{
+                            $this->CommitTransaction();
+                            return true;
+                        }
+                    }
+                    else{
+                        $this->RollBackTransaction();
+                        $errMsg = "Player Termination: Transaction Failed.";
+                        $errorLogger->log($errorLogger->logdate, "error", $errMsg);
+                        return $errMsg;
+                    }
+                
+                
+                }catch(Exception $e){
+             $this->RollBackTransaction();
+             $errorLogger->log($errorLogger->logdate, "error", $e->getMessage());
+             $errMsg = "Player Termination: Transaction Failed.";
+             return $errMsg;
+         }
+    }
+    
+    /**
      * Check if email was already verified in temp db using SP
      * @author aqdepliyan
      * @date 06/04/15

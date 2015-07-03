@@ -93,7 +93,8 @@ if ($fproc->IsPostBack)
         $aid = $_SESSION['userinfo']['AID'];
         if (isset($hdnBLId->SubmittedValue))
             $blackListedID = $hdnBLId->SubmittedValue;
-        
+        else
+            $blackListedID = null;
         if ($process != 3)
         {
             $lastname   = formatName(mysql_escape_string($txtLastname->SubmittedValue));
@@ -105,7 +106,7 @@ if ($fproc->IsPostBack)
                 if (validateNames($lastname) && validateNames($firstname))
                 {
                     //Check if entered data are already exist in records
-                    $checkifexist = $blacklist->checkIfExist($lastname, $firstname, $birthdate, $process, $blackListedID);
+                    $checkifexist = $blacklist->checkIfExistSP($lastname, $firstname, $birthdate, $process, $blackListedID);
                     if (count($checkifexist) > 0)
                     {
                         //ADD
@@ -139,7 +140,7 @@ if ($fproc->IsPostBack)
                             else if ($checkifexist[0]['Status'] == 1)
                             {
                                 $showdialog = true;
-                                $msg = "The player is already black listed";
+                                $msg = "The player is already black listed.";
                                 $title = "ERROR MESSAGE";
                             }
                         }
@@ -166,7 +167,7 @@ if ($fproc->IsPostBack)
                         //Check if what process Add or Update
                         if ($process == 1) // Add to Black List
                         {
-                            $result = $blacklist->addToBlackList($lastname, $firstname, $birthdate, $remarks, $aid);
+                            $result = $blacklist->addToBlackListSP($lastname, $firstname, $birthdate, $remarks, $aid);
                         }
                         else if ($process == 2) //Update BlackList
                         {

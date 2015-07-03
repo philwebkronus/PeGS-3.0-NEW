@@ -25,6 +25,7 @@ $_MemberCards = new MemberCards();
 $_CardTransactions = new CardTransactions();
 $_Sites = new Sites();
 $_Cards = new Cards();
+$_MemberInfo = new MemberInfo();
 
 $logger = new ErrorLogger();
 $logdate = $logger->logdate;
@@ -79,8 +80,7 @@ if ($fproc->IsPostBack)
         $searchValue = $txtSearch->SubmittedValue;
         if ($validate->validateEmail($searchValue))
         {
-            $result = $_MemberInfo->getMemberInfoByUsername($searchValue);
-
+            $result = $_MemberInfo->getMemberInfoByUsernameSP($searchValue);
             if (count($result) > 0)
             {
                 $_SESSION['CardInfo']['Username'] = $searchValue;

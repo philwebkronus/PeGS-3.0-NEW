@@ -603,8 +603,7 @@ if (isset($_POST['pager'])) {
                 }
                 else{
                      if($email != ''){
-                        $midbyemail = $_MemberInfo->getMIDByEmail($email);
-                        
+                        $midbyemail = $_MemberInfo->getMIDByEmailSP($email);
                         if(!empty($midbyemail)){
                             foreach ($midbyemail as $value1) {
                                 $mid2 = $value1['MID'];

@@ -102,7 +102,6 @@ if(isset($_POST["functiontype"]) && $_POST["functiontype"] != ""){
                                                     $rewardoffers[$itr]["Action"] = "<input type='button' value='Redeem' id='csredeem-button' disabled='disabled' Email = '$EmailAddress' ProductName='$ProductName' RewardItemID='$RewardItemID' RewardID='$RewardID' RequiredPoints='$RequiredPoints' eCouponImage='$eCouponImage' PartnerName='$PartnerName' IsMystery = '$IsMystery' >";
                                                 }
                                         }
-
                                         $response->rows[$ctr]['id'] = $rewardoffers[$itr]["RewardItemID"];
                                         $response->rows[$itr]['cell'] = array(
                                                                                                     $ProductName,
@@ -130,13 +129,13 @@ if(isset($_POST["functiontype"]) && $_POST["functiontype"] != ""){
                                         $searchValue = $_POST["datavar"];
                                         if ($validate->validateEmail($searchValue))
                                         {
-                                            $result = $_MemberInfo->getMemberInfoByUsername($searchValue);
-
+                                            $result = $_MemberInfo->getMemberInfoByUsernameSP($searchValue);
+                                            //$result2 = $_MemberInfo->getMemberInfoByUsernameSP($searchValue);
                                             if (count($result) > 0)
                                             {
                                                 $_SESSION['CardRed']['Username'] = $searchValue;
                                                 $MID = $result[0]['MID'];
-                                                $_SESSION['CardRed']['Email'] = $result[0]['Email'];
+                                                $_SESSION['CardRed']['Email'] = $result[0]["Email"];
                                                 $cardInfo = $_MemberCards->getMemberCardInfoRedemption($MID);
                                                 $CardNumber = $cardInfo[0]['CardNumber'];
                                                 $_SESSION['CardRed']['CardNumber'] = $CardNumber;
@@ -230,7 +229,7 @@ if(isset($_POST["functiontype"]) && $_POST["functiontype"] != ""){
                                                 $_SESSION['CardRed']['CardTypeID'] = $membercards[0]['CardTypeID'];
                                                 $_SESSION['CardRed']['IsVIP'] = $membercards[0]['IsVIP'];
                                                 $CardNumber = $searchValue;
-                                                $email = $_MemberInfo->getEmail($MID);
+                                                $email = $_MemberInfo->getEmailSP($MID);
                                                 $_SESSION['CardRed']['Email'] = $email;
                                                 switch ($membercards[0]['CardTypeID']) {
                                                     case 1:
@@ -244,8 +243,8 @@ if(isset($_POST["functiontype"]) && $_POST["functiontype"] != ""){
                                                         break;
                                                 }
                                                 
-                                                $memberinfo = $_MemberInfo->getMemberInfo($_SESSION["CardRed"]["MID"]);
-                                                $ArrMemberInfo = $memberinfo[0];
+                                                $memberinfo = $_MemberInfo->getMemInfoUsingSP($_SESSION["CardRed"]["MID"]);
+                                                $ArrMemberInfo = $memberinfo;
                                                 
                                                 //check if region and city are valid
                                                 if(isset($ArrMemberInfo["CityID"]) && $ArrMemberInfo["CityID"] != "" && isset($ArrMemberInfo["RegionID"]) && $ArrMemberInfo["RegionID"] != ""){

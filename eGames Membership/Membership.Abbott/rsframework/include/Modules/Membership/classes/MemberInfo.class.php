@@ -32,23 +32,37 @@ class MemberInfo extends BaseEntity {
     }
     public function getGenericInfo($MID) {
         $query = "SELECT
-                    m.Status, m.DateCreated, mi.Gender, mi.Birthdate, mi.IsCompleteInfo, mi.DateVerified
+                    m.Status, m.DateCreated, mi.Gender, mi.Birthdate, mi.IsCompleteInfo, mi.DateVerified, 
+                    mi.Gender, mi.IsSmoker, mi.Birthdate, mi.IdentificationID, mi.OccupationID, mi.NationalityID, 
+                    mi.RegionID, mi.CityID, m.IsVIP, mi.MemberInfoID        
                   FROM memberinfo mi
                     INNER JOIN members m ON mi.MID = m.MID
                   WHERE m.MID = $MID";
         return parent::RunQuery($query);
     }
-    public function getMemInfoUsingSP($MID) {
+    public function getMemInfoUsingSP($MID, $forBanning = null) {
         
-        $query = "SELECT
-                    m.Status, m.DateCreated, mi.Birthdate, mi.IsCompleteInfo, mi.DateVerified
-                  FROM memberinfo mi
-                    INNER JOIN members m ON mi.MID = m.MID
-                  WHERE m.MID = $MID";
+        if (is_null($forBanning)) {
+            $query = "SELECT
+                        m.Status, m.DateCreated, mi.Birthdate, mi.IsCompleteInfo, mi.DateVerified, mi.RegionID, mi.CityID, 
+                        mi.IdentificationID, mi.MemberInfoID 
+                      FROM memberinfo mi
+                        INNER JOIN members m ON mi.MID = m.MID
+                      WHERE m.MID = $MID";
+        }
+        else {
+            $query = "SELECT
+                        m.Status, m.DateCreated, mi.Birthdate, mi.IsCompleteInfo, mi.DateVerified, mi.RegionID, mi.CityID, 
+                        mi.IdentificationID, mi.MemberInfoID, ri.IdentificationName  
+                      FROM memberinfo mi
+                        INNER JOIN members m ON mi.MID = m.MID 
+                        INNER JOIN ref_identifications ri ON mi.IdentificationID = ri.IdentificationID 
+                      WHERE m.MID = $MID";
+        }
         
         $data1 = parent::RunQuery($query);
         
-        $neededfields = "'FirstName,LastName,Email,MobileNumber'";
+        $neededfields = "'FirstName,LastName,MiddleName,NickName,Email,MobileNumber,AlternateMobileNumber,AlternateEmail,Address1,Address2,IdentificationNumber'";
         $infos =  array();
         $query1 = "CALL sp_select_data(1,1,0,$MID,$neededfields,@ReturnCode, @ReturnMessage, @ReturnFields);";
         $query2 = "SELECT @ReturnCode, @ReturnMessage, @ReturnFields;";
@@ -71,7 +85,11 @@ class MemberInfo extends BaseEntity {
         $result = parent::RunQuery($query);
         return $result[0]["Email"];
     }
-
+    public function getEmailSP($MID) {
+        $query = "CALL membership.sp_select_data(1, 1, 0, $MID, 'Email', @ResultCode, @ResultMsg, @ResultField)";
+        $result = parent::RunQuery($query);
+        return $result[0]["OUTfldListRet"];
+    }
     public function getMIDFNameUsingEmail($email) {
 
         $query = "SELECT MID, FirstName, LastName FROM " . $this->TableName . "
@@ -100,7 +118,35 @@ class MemberInfo extends BaseEntity {
 
         return parent::RunQuery($query);
     }
+    public function getMemberInfoByUsernameSP($Username) {
+        
+        $query = "CALL membership.sp_select_data(1, 1, 4, '$Username', 'mi.FirstName,mi.MiddleName,mi.LastName,mi.NickName,mi.Email,mi.AlternateEmail,mi.MobileNumber,mi.AlternateMobileNumber,mi.Address1,mi.Address2,mi.IdentificationNumber,mi.MID', @ResultCode, @ResultMsg, @ResultFields)";
+        $result = parent::RunQuery($query);
+        
+        if (count($result) > 0) {
+            $exp = explode(";", $result[0]['OUTfldListRet']);
+            $MID = $exp[11];
+            $result2 = $this->getGenericInfo($MID);
 
+            $arrdtls = array(0 => array('FirstName' => $exp[0], 
+                                    'MiddleName' => $exp[1], 
+                                    'LastName' => $exp[2], 
+                                    'NickName' => $exp[3],
+                                    'Email' => $exp[4], 
+                                    'AlternateEmail' => $exp[5], 
+                                    'MobileNumber' => $exp[6], 
+                                    'AlternateMobileNumber' => $exp[7], 
+                                    'Address1' => $exp[8], 
+                                    'Address2' => $exp[9], 
+                                    'IdentificationNumber' => $exp[10], 
+                                    'MID' => $MID));
+
+            return array(array_merge($arrdtls[0], $result2[0]));
+        }
+        else {
+            return array();
+        }
+    }
     /*
      * Description: Get Member Info using name that match either the firstname, middlename or the lastname.
      * @author: aqdepliyan
@@ -115,6 +161,24 @@ class MemberInfo extends BaseEntity {
                             WHERE mi.FirstName like '%" . $name . "%' OR mi.LastName like '%" . $name . "%' OR
                             CONCAT(mi.FirstName, ' ', mi.LastName) LIKE  '%" . $name . "%'";
         return parent::RunQuery($query);
+    }
+    public function getMemberInfoByNameSP($name) {
+        $query = "CALL membership.sp_select_data(1, 1, 7, '$name', 'mi.MID,mi.FirstName,mi.LastName,mi.Birthdate,mi.IdentificationNumber,ri.IdentificationName', @OUTRetCode, @OUTRetMessage, @OUTfldListRet)";
+        $result = parent::RunQuery($query);
+        //get all records
+        $arr_result = array();
+        if (count($result) > 0) {
+            foreach ($result as $row) {
+                $exp = explode(';', $row['OUTfldListRet']);
+                $arr_result[] = array('MID' => $exp[0], 
+                                      'FirstName' => $exp[1], 
+                                      'LastName' => $exp[2], 
+                                      'Birthdate' => $exp[3], 
+                                      'IdentificationNumber' => $exp[4], 
+                                      'IdentificationName' => $exp[5]);
+            }
+        }
+        return $arr_result;
     }
 
     /*
@@ -186,12 +250,22 @@ class MemberInfo extends BaseEntity {
      */
 
     public function getMemberInfoByID($MID) {
-        $query = "SELECT mi.FirstName, mi.MiddleName, mi.LastName, mi.Birthdate, YEAR(current_date)-YEAR(mi.Birthdate) as Age, mi.MID, mi.Gender, m.Status FROM memberinfo mi
+        $query = "SELECT mi.Birthdate, YEAR(current_date)-YEAR(mi.Birthdate) as Age, mi.MID, mi.Gender, m.Status FROM memberinfo mi
                     INNER JOIN members m ON mi.MID = m.MID
                   WHERE m.MID = $MID";
         return parent::RunQuery($query);
     }
 
+    public function getPlayerName($MID) {
+        $query = "CALL membership.sp_select_data(1, 1, 0, $MID, 'FirstName,MiddleName,LastName,MID', @ResultCode, @ResultMsg, @ResultField)";
+        $result = parent::RunQuery($query);
+
+        $exp = explode(";", $result[0]['OUTfldListRet']);
+        return array(0 => array('FirstName' => $exp[0], 
+                                'MiddleName' => $exp[1], 
+                                'LastName' => $exp[2], 
+                                'MID' => $exp[3]));
+    }
     public function updateProfile($arrMembers, $arrMemberInfo) {
         $FirstName = $arrMemberInfo['FirstName'];
         $MiddleName = $arrMemberInfo['MiddleName'];
@@ -258,7 +332,69 @@ class MemberInfo extends BaseEntity {
                                      WHERE MID = '$HiddenMID'";
         parent::ExecuteQuery($query);
     }
-    
+    /**
+     * @author Mark Kenneth Esguerra
+     * @date June 24, 2015
+     * @param type $HiddenMID
+     * @param type $arrMemberInfo
+     */
+    public function updateMemberProfileSP($HiddenMID, $arrMemberInfo, $forRedemption = null){
+        if (is_null($forRedemption)) {
+            $FirstName = $arrMemberInfo['FirstName'];
+            $MiddleName = $arrMemberInfo['MiddleName'];
+            $LastName = $arrMemberInfo['LastName'];
+            $NickName = $arrMemberInfo['NickName'];
+            $Birthdate = $arrMemberInfo['Birthdate'];
+            $Gender = $arrMemberInfo['Gender'];
+            $Email = $arrMemberInfo['Email'];
+            $AlternateEmail = $arrMemberInfo['AlternateEmail'];
+            $MobileNumber = $arrMemberInfo['MobileNumber'];
+            $AlternateMobileNumber = $arrMemberInfo['AlternateMobileNumber'];
+            $NationalityID = $arrMemberInfo['NationalityID'];
+            $OccupationID = $arrMemberInfo['OccupationID'];
+            $Address1 = $arrMemberInfo['Address1'];
+            $Address2 = $arrMemberInfo['Address2'];
+            $IdentificationID = $arrMemberInfo['IdentificationID'];
+            $IdentificationNumber = $arrMemberInfo['IdentificationNumber'];
+            $IsSmoker = $arrMemberInfo['IsSmoker'];
+            
+            $field_to_update = 'FirstName,MiddleName,LastName,NickName,Email,AlternateEmail,MobileNumber,AlternateMobileNumber,Address1,Address2,IdentificationNumber';
+            $query = "CALL membership.sp_update_data(1, 1, 'MID', $HiddenMID, '$field_to_update','$FirstName;$MiddleName;$LastName;$NickName;$Email;$AlternateEmail;$MobileNumber;$AlternateMobileNumber;$Address1;$Address2;$IdentificationNumber', @OUT_intResultCode, @OUT_intResultMsg)";
+            $result = parent::ExecuteQuery($query);
+            if (count($result > 0)){
+                if ($result[0]['OUT_intResultCode'] == 0) {
+                    $query2 = "UPDATE membership.memberinfo SET Birthdate = '$Birthdate', 
+                                                                Gender = $Gender, 
+                                                                NationalityID = $NationalityID,
+                                                                OccupationID = $OccupationID, 
+                                                                IdentificationID = $IdentificationID, 
+                                                                IsSmoker = $IsSmoker 
+                               WHERE MID = $HiddenMID";
+                    parent::ExecuteQuery($query2);
+                }
+            }
+        }
+        else {
+            $FirstName = $arrMemberInfo['FirstName'];
+            $LastName = $arrMemberInfo['LastName'];
+            $Birthdate = $arrMemberInfo['Birthdate'];
+            $Email = $arrMemberInfo['Email'];
+            $MobileNumber = $arrMemberInfo['MobileNumber'];
+            $Address1 = $arrMemberInfo['Address1'];
+            
+            $field_to_update = 'FirstName,LastName,Email,MobileNumber,Address1';
+            $query = "CALL membership.sp_update_data(1, 1, 'MID', $HiddenMID, '$field_to_update','$FirstName;$LastName;$Email;$MobileNumber;$Address1', @OUT_intResultCode, @OUT_intResultMsg)";
+            $result = parent::ExecuteQuery($query);
+            if (count($result > 0)){
+                if ($result[0]['OUT_intResultCode'] == 0) {
+                    $query2 = "UPDATE membership.memberinfo SET Birthdate = '$Birthdate' 
+                               WHERE MID = $HiddenMID";
+                    parent::ExecuteQuery($query2);
+                }
+            }
+            
+        }
+    }
     public function updateProfileDateUpdatedAdmin($HiddenMID, $arrMemberInfo, $aid) {
         $arrMemberInfo['DateUpdated'] = 'now_usec()';
         $DateUpdated = $arrMemberInfo['DateUpdated'];
@@ -295,6 +431,8 @@ class MemberInfo extends BaseEntity {
     }
 
     function updateProfileWithNoEmail($arrEntries) {
+        $_MemberInfo = new MemberInfo();
+        
         unset($_SESSION["PreviousRedemption"]);
         $this->Identity = "MemberInfoID";
         parse_str($arrEntries, $entries);
@@ -307,7 +445,8 @@ class MemberInfo extends BaseEntity {
         if (isset($_SESSION["CardRed"])) {
             $entries["MemberInfoID"] = $_SESSION["CardRed"]["MemberInfoID"];
         }
-        parent::UpdateByArray($entries);
+        $forRedemption = 1;
+        $_MemberInfo->updateMemberProfileSP($entries["MemberInfoID"], $entries, $forRedemption);
         if ($this->HasError) {
             parse_str($arrEntries, $entries);
             $retval = "Sorry, " . $entries['Email'] . " already belongs to an existing account. Please enter another email address!";
@@ -352,7 +491,19 @@ class MemberInfo extends BaseEntity {
         $query = "SELECT COUNT(Email) AS COUNT FROM memberinfo WHERE MID != $MID AND Email = '$Email' AND Status = 9;";
         return parent::RunQuery($query);
     }
-    
+    /**
+     * @author Mark Kenneth Esguerra
+     * @param type $MID
+     * @param type $Email
+     * @return type
+     */
+    public function checkIfEmailExistsWithMIDSP($MID, $Email) {
+        $query = "CALL membership.sp_select_data(1, 1, 5, '$MID,$Email', 'MID,Email', @OUTRetCode, @OUTRetMessage, @OUTfldListRet)";
+        $result = parent::RunQuery($query);
+        $exp = explode(";", $result[0]['OUTfldListRet']);
+        
+        return array(0 => array('COUNT' => $exp[0]));        
+    }
     public function getMID($Email) {
         $query = "SELECT MID FROM membership.members WHERE UserName = '$Email'";
         return parent::RunQuery($query);
@@ -372,7 +523,18 @@ class MemberInfo extends BaseEntity {
         $query = "SELECT MID FROM memberinfo WHERE Email = '$Email'";
         return parent::RunQuery($query);
     }
-    
+    public function getMIDByEmailSP($email, $isTemp = null) {
+        if (is_null($isTemp)) {
+            $query = "CALL membership.sp_select_data(1, 1, 2, '$email','MID',@ReturnCode, @ReturnMessage, @ReturnFields)";
+        }
+        else {
+            $query = "CALL membership.sp_select_data(0, 1, 2, '$email','MID',@ReturnCode, @ReturnMessage, @ReturnFields)";
+        }
+        $result = parent::RunQuery($query);
+        $exp = explode(";",$result[0]['OUTfldListRet']);
+        
+        return array(0 => array('MID' => $exp[0]));
+    }
     public function getEmailByMID2($MID) {
        
         $query = "SELECT Email FROM membership.memberinfo WHERE MID = $MID;";

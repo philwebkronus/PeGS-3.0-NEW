@@ -272,8 +272,8 @@ if($fproc->IsPostBack){
             $resultrewardid = $_RewardItems->getRewardID($RewardItemID);
             $_SESSION['CardRed']['RewardID'] = $resultrewardid[0]['RewardID'];
             
-            $memberinfo = $_MemberInfo->getMemberInfo($_SESSION["CardRed"]["MID"]);
-            $ArrMemberInfo = $memberinfo[0];
+            $memberinfo = $_MemberInfo->getMemInfoUsingSP($_SESSION["CardRed"]["MID"]);
+            $ArrMemberInfo = $memberinfo;
             
             //Check if the coupon batch is active, if not display error message.
             if($_SESSION['CardRed']['RewardID'] == 2 || $_SESSION['CardRed']['RewardID'] == "2"){
@@ -416,7 +416,6 @@ if($fproc->IsPostBack){
 
                 //Format Reward Offer Copy for email and popup window.
                 if(!isset($_SESSION['RewardOfferCopy']["CouponSeries"])){
-                    
                     //Get Partner Details
                     $partnersd = $_Partners->getPartnerDetailsUsingPartnerName($partnername);
                     if(isset($partnersd[0])){

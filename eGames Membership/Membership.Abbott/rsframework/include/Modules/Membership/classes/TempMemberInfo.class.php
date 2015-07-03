@@ -56,7 +56,16 @@ class TempMemberInfo extends BaseEntity
         
         return $result;
     }
-   
+    public function getEmailByMIDSP( $MID )
+    {
+        $query = "CALL membership.sp_select_data(0, 1, 0, $MID, 'Email', @RetCode, @RetMsg, @RetFiled)";
+        
+        $result = parent::RunQuery($query);
+        
+        $exp = explode(";", $result);
+        
+        return array(0 => array('Email' => $exp[0]));
+    }
 
 }
 

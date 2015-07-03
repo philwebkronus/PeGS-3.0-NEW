@@ -634,7 +634,43 @@ class MemberCards extends BaseEntity {
         return $result; 
         
     }
+    /**
+     * @author Mark Kenneth Esguerra
+     * @param type $cardNumber
+     */
+    public function getMemberCardInfoByCardSP($cardNumber) {
+        $query = "SELECT MID FROM loyaltydb.membercards 
+                  WHERE CardNumber = '$cardNumber'";
+        $getMID = parent::RunQuery($query);
 
+        if (count($getMID) > 0) {
+            $mid = $getMID[0]['MID'];
+            $query1 = "CALL membership.sp_select_data(1, 1, 0, $mid, 'FirstName,MiddleName,LastName,NickName,Email,AlternateEmail,MobileNumber,AlternateMobileNumber,Address1,Address2,IdentificationNumber', @ResultCode, @ResultMsg, @ResultFields)";
+            $result = parent::RunQuery($query1);
+            
+            $_memberInfo = new MemberInfo();
+            $result2 = $_memberInfo->getGenericInfo($mid);
+            
+            $exp = explode(";", $result[0]['OUTfldListRet']);
+            $arrdtls = array(0 => array('MID' => $mid, 
+                                    'FirstName' => $exp[0], 
+                                    'MiddleName' => $exp[1], 
+                                    'LastName' => $exp[2], 
+                                    'NickName' => $exp[3],
+                                    'Email' => $exp[4], 
+                                    'AlternateEmail' => $exp[5], 
+                                    'MobileNumber' => $exp[6], 
+                                    'AlternateMobileNumber' => $exp[7], 
+                                    'Address1' => $exp[8], 
+                                    'Address2' => $exp[9], 
+                                    'IdentificationNumber' => $exp[10]));
+            
+            return array_merge($arrdtls[0], $result2[0]);
+        }
+        else {
+            return array();
+        }
+    }
 }
 
 ?>

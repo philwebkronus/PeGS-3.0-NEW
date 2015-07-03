@@ -54,12 +54,24 @@ class MembershipTemp extends BaseEntity {
         $query = "UPDATE membership_temp.memberinfo SET Email = '$Email' WHERE Email = '$hdnEmail'";
         return parent::ExecuteQuery($query);
     }
-    
+    public function updateTempProfileEmailAdminSP($Email, $hdnEmail) {
+        $query = "CALL membership.sp_update_data(0, 1, 'Email', '$hdnEmail', 'Email', '$Email', @ResultCode, @ResultMsg)";
+        return parent::ExecuteQuery($query);
+    }
     public function updateTempMemberUsernameAdmin($Email, $hdnEmail) {
         $query = "UPDATE membership_temp.members SET UserName = '$Email' WHERE UserName = '$hdnEmail'";
         return parent::ExecuteQuery($query);
     }
-
+    /**
+     * @author Mark Kenneth Esguerra
+     * @date June 26, 2015
+     * @param type $MID
+     * @param type $Email
+     */
+    public function updateTempMemberUsernameAdminSP($Email, $hdnEmail) {
+        $query = "CALL membership.sp_update_data(0, 0, 'UserName', '$hdnEmail', 'UserName', '$Email', @ResultCode, @ResultMsg)";
+        parent::ExecuteQuery($query);
+    }
     public function getMID($Email) {
         $query = "SELECT MID FROM membership_temp.members WHERE UserName = '$Email'";
         return parent::RunQuery($query);
@@ -79,7 +91,19 @@ class MembershipTemp extends BaseEntity {
         $query = "SELECT COUNT(Email) AS COUNT FROM memberinfo WHERE MID != $MID AND Email = '$Email' AND Status = 2;";
         return parent::RunQuery($query);
     }
-    
+    /**
+     * @author Mark Kenneth Esguerra
+     * @param type $MID
+     * @param type $Email
+     * @return type
+     */
+    public function checkIfEmailExistsWithMIDSP($MID, $Email) {
+        $query = "CALL membership.sp_select_data(0, 1, 5, '$MID,$Email', 'MID,Email', @OUTRetCode, @OUTRetMessage, @OUTfldListRet)";
+        $result = parent::RunQuery($query);
+        $exp = explode(";", $result[0]['OUTfldListRet']);
+        
+        return array(0 => array('COUNT' => $exp[0]));       
+    }
     public function getTempEmailByMID() {
         $query = "SELECT Email FROM membership_temp.memberinfo WHERE MID = $MID;";
         return parent::RunQuery($query);

@@ -92,7 +92,9 @@ if (isset($_POST['pager'])) {
                         } else {
                             $cardpoints = $_MemberCards->getPointsByCard($cardnumber);
 
-                            $MemberInfoResult = $_MemberInfo->getMemberInfoByID($MIDResult[0]['MID']);
+                            $MemberInfoResult2 = $_MemberInfo->getMemberInfoByID($MIDResult[0]['MID']);
+                            $MemberInfoResult = $_MemberInfo->getPlayerName(1, 0, $MIDResult[0]['MID'], 'FirstName, MiddleName');
+                            $MemberInfoResult[0] = array_merge($MemberInfoResult[0], $MemberInfoResult2[0]);
                             if (isset($MemberInfoResult[0]['MID']) && $MemberInfoResult[0]['MID'] != '') {
                                 $count = $_TerminalSessions->isSessionExists($MemberInfoResult[0]['MID']);
                                 if ($count[0]['ctrTerminalID'] == 0) {
@@ -213,7 +215,8 @@ if (isset($_POST['pager'])) {
             case "ProfileData2":
                 if (isset($_POST['UserName']) && $_POST['UserName'] != '') {
                     $username = $_POST['UserName'];
-                    $MIDResult = $_Members->getMIDbyUserName($username);
+                    $MIDResult = $_Members->getMIDbyUserNameSP($username);
+
                     $countMD = count($MIDResult);
 
                     if ($countMD > 0) {
@@ -239,7 +242,10 @@ if (isset($_POST['pager'])) {
                             } else {
                                 $cardpoints = $_MemberCards->getPointsByCard($oldcard);
 
-                                $MemberInfoResult = $_MemberInfo->getMemberInfoByID($MIDResult[0]['MID']);
+                                $MemberInfoResult2 = $_MemberInfo->getMemberInfoByID($MIDResult[0]['MID']);
+                                $MemberInfoResult = $_MemberInfo->getPlayerName($MIDResult[0]['MID']);
+                                $MemberInfoResult[0] = array_merge($MemberInfoResult[0], $MemberInfoResult2[0]);
+
                                 if (isset($MemberInfoResult[0]['MID']) && $MemberInfoResult[0]['MID'] != '') {
                                     $count = $_TerminalSessions->isSessionExists($MemberInfoResult[0]['MID']);
                                     if ($count[0]['ctrTerminalID'] == 0) {
@@ -370,7 +376,7 @@ if (isset($_POST['pager'])) {
                 $newcard = $_POST['NewCard'];
                 $MID = $_POST['MID'];
 
-                $datecreated = "now_usec()";
+                $datecreated = "NOW(6)";
 
                 $carddetails = $_MemberCards->getCardDetails($oldcard);
                 $carddetails = $carddetails[0];
@@ -649,9 +655,9 @@ if (isset($_POST['pager'])) {
                 $newcard = $_POST['NewCard'];
                 $MID = $_POST['MID'];
 
-                $datecreated = "now_usec()";
+                $datecreated = "NOW(6)";
 
-                $MIDResult = $_Members->getMIDbyUserName($username);
+                $MIDResult = $_Members->getMIDbyUserNameSP($username);
                 $MID = $MIDResult[0]['MID'];
 
                 $oldcard = $_MemberCards->getOldUBCardNumberUsingMID($MID);

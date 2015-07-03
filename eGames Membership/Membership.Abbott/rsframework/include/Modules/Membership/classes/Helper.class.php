@@ -216,7 +216,7 @@ class Helper extends BaseEntity
     {
         App::LoadCore("PHPMailer.class.php");
         $mailer = new PHPMailer();
-                        
+        
         $mailer->AddAddress($email, $playername);
         $mailer->IsHTML(true);
         

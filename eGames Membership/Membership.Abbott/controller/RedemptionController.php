@@ -27,6 +27,10 @@ if(isset($_SESSION['userinfo'])){
     App::LoadModuleClass("Admin", "AccessRights");
     App::LoadModuleClass("Admin", "AccountSessions");
     App::LoadModuleClass("Kronus", "Accounts");
+    App::LoadModuleClass("Membership", "MemberInfo");
+    
+    $_MemberInfo = new MemberInfo();
+    
     $sessioncount = $_AccountSessions->checkifsessionexist($aid, $sessionid);
     foreach ($sessioncount as $value) {
             foreach ($value as $value2) {
@@ -127,7 +131,7 @@ if($sessioncount > 0)
             $redemptiondata["CardNumber"] = $_SESSION["CardRed"]["CardNumber"];
             $PlayerPoints = $_MemberCards->getCurrentPointsByCardNumber($redemptiondata["CardNumber"]);
             $redemptiondata["PlayerPoints"] = $PlayerPoints[0]['CurrentPoints'];
-            $personaldetails = $_MemberInfo->SelectByWhere('WHERE MID = '.$redemptiondata["MID"]);
+            $personaldetails = $_MemberInfo->getMemInfoUsingSP($redemptiondata["MID"]);
             if(isset($personaldetails[0]) && $personaldetails[0] != ""){
                 $redemptiondata["PlayerName"] = $personaldetails[0]['FirstName']." ".$personaldetails[0]['LastName'];
                 $redemptiondata["Birthdate"] = $personaldetails[0]['Birthdate'];
