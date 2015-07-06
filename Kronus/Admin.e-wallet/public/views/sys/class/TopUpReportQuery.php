@@ -291,7 +291,7 @@ class TopUpReportQuery extends DBHandler{
                            tuth.TopupCount,tuth.CreatedByAID, st.SiteName,st.SiteCode,st.POSAccountNo
                            FROM topuptransactionhistory tuth JOIN sites st ON tuth.SiteID = st.SiteID
                            WHERE tuth.DateCreated >= ?
-                           AND tuth.DateCreated < ? AND tuth.TopupType IN(0,1)
+                           AND tuth.DateCreated < ? AND tuth.TopupTransactionType IN(0,1)
                            ORDER BY tuth.TopupHistoryID ASC";
                 $this->prepare($stmt);
                 $this->bindparameter(1, $startdate);
@@ -307,7 +307,7 @@ class TopUpReportQuery extends DBHandler{
                            FROM topuptransactionhistory tuth JOIN sites st ON tuth.SiteID = st.SiteID
                            WHERE tuth.DateCreated >= ?
                            AND tuth.DateCreated < ?
-                           AND tuth.TopupType = ? 
+                           AND tuth.TopupTransactionType = ? 
                            ORDER BY tuth.TopupHistoryID ASC";      
                 $this->prepare($stmt);
                 $this->bindparameter(1, $startdate);
@@ -327,7 +327,7 @@ class TopUpReportQuery extends DBHandler{
                            tuth.TopupCount,tuth.CreatedByAID, st.SiteName,st.SiteCode,st.POSAccountNo
                            FROM topuptransactionhistory tuth JOIN sites st ON tuth.SiteID = st.SiteID
                            WHERE tuth.DateCreated >= ?
-                           AND tuth.DateCreated < ? AND tuth.TopupType IN(0,1)
+                           AND tuth.DateCreated < ? AND tuth.TopupTransactionType IN(0,1)
                            AND tuth.SiteID = ? ORDER BY tuth.TopupHistoryID ASC";
                 $this->prepare($stmt);
                 $this->bindparameter(1, $startdate);
@@ -344,7 +344,7 @@ class TopUpReportQuery extends DBHandler{
                            FROM topuptransactionhistory tuth JOIN sites st ON tuth.SiteID = st.SiteID
                            WHERE tuth.DateCreated >= ?
                            AND tuth.DateCreated < ?
-                           AND tuth.TopupType = ? AND tuth.SiteID = ? 
+                           AND tuth.TopupTransactionType = ? AND tuth.SiteID = ? 
                            ORDER BY tuth.TopupHistoryID ASC";      
                 $this->prepare($stmt);
                 $this->bindparameter(1, $startdate);
