@@ -41,13 +41,13 @@ $vaccesspages = array('5');
 <!--            <tr>
                 <td>End Date</td>
                 <td>
-                    <input type="text" value="<?php echo date('Y-m-d',strtotime(date("Y-m-d", strtotime(date('Y-m-d'))))) ?>" id="enddate" readonly="readonly" name="enddate" />
+                    <input type="text" value="<?php // echo date('Y-m-d',strtotime(date("Y-m-d", strtotime(date('Y-m-d'))))) ?>" id="enddate" readonly="readonly" name="enddate" />
                     &nbsp;
                     <img name="cal" src="images/cal.gif" width="16" height="16" border="0" alt="Pick a date" onClick="displayDatePicker('enddate', false, 'ymd', '-');"/> 
                 </td>
             </tr>-->
             <tr>
-                <td>Top-up Type</td>
+                <td>Top-up Transaction Type</td>
                 <td>
                     <select id="seltopuptype" name="seltopuptype">
                         <option value="">All</option>

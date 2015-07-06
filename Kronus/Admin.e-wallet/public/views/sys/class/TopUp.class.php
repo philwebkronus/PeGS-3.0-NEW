@@ -2680,7 +2680,8 @@ class TopUp extends DBHandler
                     $stmt = "SELECT count(tuth.TopupHistoryID) AS totalrow
                              FROM topuptransactionhistory tuth JOIN sites st ON tuth.SiteID = st.SiteID
                              WHERE tuth.DateCreated >= ?
-                             AND tuth.DateCreated < ? AND tuth.TopupType IN(0,1)";
+                             AND tuth.DateCreated < ?
+                             AND tuth.TopupTransactionType IN(0,1)";
                     $this->prepare($stmt);
                     $this->bindparameter(1, $startdate);
                     $this->bindparameter(2, $enddate);
@@ -2691,7 +2692,7 @@ class TopUp extends DBHandler
                              FROM topuptransactionhistory tuth JOIN sites st ON tuth.SiteID = st.SiteID
                              WHERE tuth.DateCreated >= ?
                              AND tuth.DateCreated < ?
-                             AND tuth.TopupType = ?";      
+                             AND tuth.TopupTransactionType = ?";      
                     $this->prepare($stmt);
                     $this->bindparameter(1, $startdate);
                     $this->bindparameter(2, $enddate);
@@ -2707,7 +2708,7 @@ class TopUp extends DBHandler
                              FROM topuptransactionhistory tuth JOIN sites st ON tuth.SiteID = st.SiteID
                              WHERE tuth.DateCreated >= ?
                              AND tuth.DateCreated < ? AND tuth.SiteID = ? 
-                             AND tuth.TopupType IN(0,1)";
+                             AND tuth.TopupTransactionType IN(0,1)";
                     $this->prepare($stmt);
                     $this->bindparameter(1, $startdate);
                     $this->bindparameter(2, $enddate);
@@ -2719,7 +2720,7 @@ class TopUp extends DBHandler
                              FROM topuptransactionhistory tuth JOIN sites st ON tuth.SiteID = st.SiteID
                              WHERE tuth.DateCreated >= ?
                              AND tuth.DateCreated < ?
-                             AND tuth.TopupType = ? AND tuth.SiteID = ?";      
+                             AND tuth.TopupTransactionType = ? AND tuth.SiteID = ?";      
                     $this->prepare($stmt);
                     $this->bindparameter(1, $startdate);
                     $this->bindparameter(2, $enddate);
@@ -2745,7 +2746,7 @@ class TopUp extends DBHandler
                                tuth.TopupCount,tuth.CreatedByAID, st.SiteName,st.SiteCode,st.POSAccountNo
                                FROM topuptransactionhistory tuth JOIN sites st ON tuth.SiteID = st.SiteID
                                WHERE tuth.DateCreated >= ?
-                               AND tuth.DateCreated < ? AND tuth.TopupType IN(0,1)
+                               AND tuth.DateCreated < ? AND tuth.TopupTransactionType IN(0,1)
                                ORDER BY $sort $dir LIMIT $start,$limit";
                     $this->prepare($stmt);
                     $this->bindparameter(1, $startdate);
@@ -2761,7 +2762,7 @@ class TopUp extends DBHandler
                                FROM topuptransactionhistory tuth JOIN sites st ON tuth.SiteID = st.SiteID
                                WHERE tuth.DateCreated >= ?
                                AND tuth.DateCreated < ?
-                               AND tuth.TopupType = ? 
+                               AND tuth.TopupTransactionType = ? 
                                ORDER BY $sort $dir LIMIT $start,$limit";      
                     $this->prepare($stmt);
                     $this->bindparameter(1, $startdate);
@@ -2781,7 +2782,7 @@ class TopUp extends DBHandler
                                tuth.TopupCount,tuth.CreatedByAID, st.SiteName,st.SiteCode,st.POSAccountNo
                                FROM topuptransactionhistory tuth JOIN sites st ON tuth.SiteID = st.SiteID
                                WHERE tuth.DateCreated >= ?
-                               AND tuth.DateCreated < ? AND tuth.TopupType IN(0,1)
+                               AND tuth.DateCreated < ? AND tuth.TopupTransactionType IN(0,1)
                                AND tuth.SiteID = ? ORDER BY $sort $dir LIMIT $start,$limit";
                     $this->prepare($stmt);
                     $this->bindparameter(1, $startdate);
@@ -2798,7 +2799,7 @@ class TopUp extends DBHandler
                                FROM topuptransactionhistory tuth JOIN sites st ON tuth.SiteID = st.SiteID
                                WHERE tuth.DateCreated >= ?
                                AND tuth.DateCreated < ?
-                               AND tuth.TopupType = ? AND tuth.SiteID = ? 
+                               AND tuth.TopupTransactionType = ? AND tuth.SiteID = ? 
                                ORDER BY $sort $dir LIMIT $start,$limit";      
                     $this->prepare($stmt);
                     $this->bindparameter(1, $startdate);
