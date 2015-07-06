@@ -446,11 +446,16 @@ class MemberInfo extends BaseEntity {
             $entries["MemberInfoID"] = $_SESSION["CardRed"]["MemberInfoID"];
         }
         $forRedemption = 1;
-        $_MemberInfo->updateMemberProfileSP($entries["MemberInfoID"], $entries, $forRedemption);
-        if ($this->HasError) {
+        //check if email address already exist
+        $isExist = $this->getMIDByEmailSP($entries['Email']);
+        //var_dump($isExist);exit;
+        if ($isExist[0]['MID'] != "") { //email exists
             parse_str($arrEntries, $entries);
             $retval = "Sorry, " . $entries['Email'] . " already belongs to an existing account. Please enter another email address!";
         } else {
+            //var_dump($arrEntries, $entries);exit;
+            $MID = $this->getMIDByMemberInfoID($entries["MemberInfoID"]);
+            $_MemberInfo->updateMemberProfileSP($MID, $entries, $forRedemption);
             $retval = "Profile Updated Successfully.";
         }
         return $retval;
@@ -561,12 +566,18 @@ class MemberInfo extends BaseEntity {
         $result = parent::RunQuery($query);
         return explode(";",$result[0]['OUTfldListRet']);
     }
-     public function getMemberByMID($MID) {
+    public function getMemberByMID($MID) {
         $query = "CALL membership.sp_select_data(1, 0, 'MID', ".$MID.", 
                                                                  'UserName',  
                                                                  @RetCode, @Ret2, @Ret3)";
         $result = parent::RunQuery($query);
         return explode(";",$result[0]['OUTfldListRet']);
+    }
+    private function getMIDByMemberInfoID ($MemInfoID) {
+        $query = "SELECT MID FROM memberinfo WHERE MemberInfoID = $MemInfoID";
+        $result = parent::RunQuery($query);
+        
+        return $result[0]['MID'];
     }
 }
 
