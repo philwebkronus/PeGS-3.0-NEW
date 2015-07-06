@@ -1821,6 +1821,14 @@ class TopUp extends DBHandler
                                     WHERE s.SiteID NOT IN (1, 235)
                                     AND s.SiteID = ?
                                     ORDER BY s.$sort $dir";
+                
+                //Query for Replenishments
+                $replenish = "SELECT SiteID, Amount, DateCreated FROM replenishments
+                                    WHERE DateCreated >= ? AND DateCreated < ? AND SiteID = ?";
+
+                //Query for Collection
+                $collection = "SELECT SiteID, Amount, DateCreated FROM siteremittance
+                                    WHERE Status = 3 AND DateCreated >= ? AND DateCreated < ? AND SiteID = ? ";
               
           } else {
                 $query = "SELECT s.SiteID, s.POSAccountNo , s.SiteName, IFNULL(sb.Balance, 0) AS BCF,
@@ -1835,6 +1843,14 @@ class TopUp extends DBHandler
                                     WHERE s.SiteID NOT IN (1, 235)
                                     GROUP By s.SiteID
                                     ORDER BY s.$sort $dir";
+                
+                //Query for Replenishments
+                $replenish = "SELECT SiteID, Amount, DateCreated FROM replenishments
+                                    WHERE DateCreated >= ? AND DateCreated < ?";
+
+                //Query for Collection
+                $collection = "SELECT SiteID, Amount, DateCreated FROM siteremittance
+                                    WHERE Status = 3 AND DateCreated >= ? AND DateCreated < ?";
               
           }
           $this->prepare($query);
@@ -1843,7 +1859,7 @@ class TopUp extends DBHandler
           if(isset($_GET['siteid']) && $_GET['siteid']) {
             $this->bindparameter(3, $_GET['siteid']);
           }    
-        
+          
           $this->execute();        
           $rows1 =  $this->fetchAllData();
 
@@ -1872,10 +1888,54 @@ class TopUp extends DBHandler
                     'DepositCash'=>"0.00",
                     'ReloadCash'=>"0.00",
                     'RedemptionCashier'=>"0.00",
-                    'Coupon'=>"0.00"
+                    'Coupon'=>"0.00",
+                    'Replenishment'=>"0.00",
+                    'Collection'=>"0.00"
                  ); 
           }
           
+          $this->prepare($replenish);
+          $this->bindparameter(1, $startdate);
+          $this->bindparameter(2, $enddate);
+          if(isset($_GET['siteid']) && $_GET['siteid']) { $this->bindparameter(3, $_GET['siteid']); }    
+          $this->execute();        
+          $replenishdata =  $this->fetchAllData();
+          
+          //Get the replenishment total amount per site
+          foreach ($replenishdata as $value1) {
+                foreach ($varrmerge as $keys => $value2) {
+                    if($value1["SiteID"] == $value2["SiteID"]){
+                        if($varrmerge[$keys]["Replenishment"] == "0.00"){
+                            $varrmerge[$keys]["Replenishment"] = (float)$value1["Amount"];
+                        } else {
+                            $varrmerge[$keys]["Replenishment"] += (float)$value1["Amount"];
+                        }
+                        break;
+                    }
+                }  
+          }
+          
+          $this->prepare($collection);
+          $this->bindparameter(1, $startdate);
+          $this->bindparameter(2, $enddate);
+          if(isset($_GET['siteid']) && $_GET['siteid']) { $this->bindparameter(3, $_GET['siteid']); }    
+          $this->execute();        
+          $collectiondata =  $this->fetchAllData();
+          
+          //Get the collection total amount per site
+          foreach ($collectiondata as $value1) {
+                foreach ($varrmerge as $keys => $value2) {
+                    if($value1["SiteID"] == $value2["SiteID"]){
+                        if($varrmerge[$keys]["Collection"] == "0.00"){
+                            $varrmerge[$keys]["Collection"] = (float)$value1["Amount"];
+                        } else {
+                            $varrmerge[$keys]["Collection"] += (float)$value1["Amount"];
+                        }
+                        break;
+                    }
+                }  
+          }
+
           foreach($varrmerge as $key => $trans) {
                 $vsiteID[$key] = $trans['SiteID'];
           }
@@ -2620,7 +2680,7 @@ class TopUp extends DBHandler
                     $stmt = "SELECT count(tuth.TopupHistoryID) AS totalrow
                              FROM topuptransactionhistory tuth JOIN sites st ON tuth.SiteID = st.SiteID
                              WHERE tuth.DateCreated >= ?
-                             AND tuth.DateCreated < ? AND tuth.TopupTransactionType IN(0,1)";
+                             AND tuth.DateCreated < ? AND tuth.TopupType IN(0,1)";
                     $this->prepare($stmt);
                     $this->bindparameter(1, $startdate);
                     $this->bindparameter(2, $enddate);
@@ -2631,7 +2691,7 @@ class TopUp extends DBHandler
                              FROM topuptransactionhistory tuth JOIN sites st ON tuth.SiteID = st.SiteID
                              WHERE tuth.DateCreated >= ?
                              AND tuth.DateCreated < ?
-                             AND tuth.TopupTransactionType = ?";      
+                             AND tuth.TopupType = ?";      
                     $this->prepare($stmt);
                     $this->bindparameter(1, $startdate);
                     $this->bindparameter(2, $enddate);
@@ -2647,7 +2707,7 @@ class TopUp extends DBHandler
                              FROM topuptransactionhistory tuth JOIN sites st ON tuth.SiteID = st.SiteID
                              WHERE tuth.DateCreated >= ?
                              AND tuth.DateCreated < ? AND tuth.SiteID = ? 
-                             AND tuth.TopupTransactionType IN(0,1)";
+                             AND tuth.TopupType IN(0,1)";
                     $this->prepare($stmt);
                     $this->bindparameter(1, $startdate);
                     $this->bindparameter(2, $enddate);
@@ -2659,7 +2719,7 @@ class TopUp extends DBHandler
                              FROM topuptransactionhistory tuth JOIN sites st ON tuth.SiteID = st.SiteID
                              WHERE tuth.DateCreated >= ?
                              AND tuth.DateCreated < ?
-                             AND tuth.TopupTransactionType = ? AND tuth.SiteID = ?";      
+                             AND tuth.TopupType = ? AND tuth.SiteID = ?";      
                     $this->prepare($stmt);
                     $this->bindparameter(1, $startdate);
                     $this->bindparameter(2, $enddate);
@@ -2685,7 +2745,7 @@ class TopUp extends DBHandler
                                tuth.TopupCount,tuth.CreatedByAID, st.SiteName,st.SiteCode,st.POSAccountNo
                                FROM topuptransactionhistory tuth JOIN sites st ON tuth.SiteID = st.SiteID
                                WHERE tuth.DateCreated >= ?
-                               AND tuth.DateCreated < ? AND tuth.TopupTransactionType IN(0,1)
+                               AND tuth.DateCreated < ? AND tuth.TopupType IN(0,1)
                                ORDER BY $sort $dir LIMIT $start,$limit";
                     $this->prepare($stmt);
                     $this->bindparameter(1, $startdate);
@@ -2701,7 +2761,7 @@ class TopUp extends DBHandler
                                FROM topuptransactionhistory tuth JOIN sites st ON tuth.SiteID = st.SiteID
                                WHERE tuth.DateCreated >= ?
                                AND tuth.DateCreated < ?
-                               AND tuth.TopupTransactionType = ? 
+                               AND tuth.TopupType = ? 
                                ORDER BY $sort $dir LIMIT $start,$limit";      
                     $this->prepare($stmt);
                     $this->bindparameter(1, $startdate);
@@ -2721,7 +2781,7 @@ class TopUp extends DBHandler
                                tuth.TopupCount,tuth.CreatedByAID, st.SiteName,st.SiteCode,st.POSAccountNo
                                FROM topuptransactionhistory tuth JOIN sites st ON tuth.SiteID = st.SiteID
                                WHERE tuth.DateCreated >= ?
-                               AND tuth.DateCreated < ? AND tuth.TopupTransactionType IN(0,1)
+                               AND tuth.DateCreated < ? AND tuth.TopupType IN(0,1)
                                AND tuth.SiteID = ? ORDER BY $sort $dir LIMIT $start,$limit";
                     $this->prepare($stmt);
                     $this->bindparameter(1, $startdate);
@@ -2738,7 +2798,7 @@ class TopUp extends DBHandler
                                FROM topuptransactionhistory tuth JOIN sites st ON tuth.SiteID = st.SiteID
                                WHERE tuth.DateCreated >= ?
                                AND tuth.DateCreated < ?
-                               AND tuth.TopupTransactionType = ? AND tuth.SiteID = ? 
+                               AND tuth.TopupType = ? AND tuth.SiteID = ? 
                                ORDER BY $sort $dir LIMIT $start,$limit";      
                     $this->prepare($stmt);
                     $this->bindparameter(1, $startdate);

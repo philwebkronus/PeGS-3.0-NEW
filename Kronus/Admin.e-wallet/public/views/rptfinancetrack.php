@@ -340,7 +340,7 @@ $vaccesspages = array('12');
                    data: {
                              gettotal: function(){return "GetTotals"},
                              txtDate1: function() {return datefrom;},
-                             txtDate2: function() {return dateto},
+//                             txtDate2: function() {return dateto},
                              cmbtranstype : function() {return transtype},
                              cmbsite: function() {return siteid; },
                              cmbterminal : function() {return terminal }
