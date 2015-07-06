@@ -14,23 +14,24 @@ require_once("init.inc.php");
 App::LoadModuleClass("Membership", "TempMembers");
 
 $_TempMembers = new TempMembers();
-$isOpen = false; //Prevent dialog to open 
+$isOpen = false; //Prevent dialog to open
 $useCustomHeader = false;
 
 if(isset($_GET['email']) && isset($_GET['tempcode']))
 {
     $email = $_GET['email'];
     $tempcode = $_GET['tempcode'];
-    
+
     //check if email address already verified
     $isVerified = $_TempMembers->chkTmpVerifiedEmailAddress($email);
-    if($isVerified == 0){
+    $verifiedCode = $isVerified[0]['TemporaryAccountCode'];
+    if($isVerified[0]['ctrtemp'] == 0){
         $result = $_TempMembers->verifyEmailAccount($email, $tempcode);
 
         if($result == 1)
         {
             $isSuccess = true;
-            $result = "Success";        
+            $result = "Success";
         }
         else
         {
@@ -69,7 +70,7 @@ else
             modal: true,
             width: '400',
             title : 'Email Verification',
-            closeOnEscape: true,            
+            closeOnEscape: true,
             buttons: {
                 "Close": function() {
                     $(this).dialog("close");
@@ -80,14 +81,13 @@ else
     });
 </script>
 
-<?php if($isOpen) 
+<?php if($isOpen)
 {?>
     <?php if($isSuccess)
     {?>
         <div id="StatusDialog">You have successfully verified your email. Please wait for 24 hours in order for your account to be activated.</div>
     <?php }else{ ?>
-<!--        <div id="StatusDialog">Verification failed. <br />Please contact customer service at (02) 338 3388.</div>-->
-        <div id="StatusDialog">Same email with either this or another temp code was already verified.</div>
+        <div id="StatusDialog">This email <?php echo $email; ?> has already been verified using this tempcode: <?php echo $verifiedCode; ?>.</div>
     <?php
     }?>
 <?php
