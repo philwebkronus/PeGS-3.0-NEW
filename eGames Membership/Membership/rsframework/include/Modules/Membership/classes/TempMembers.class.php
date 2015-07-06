@@ -1,6 +1,6 @@
 <?php
 
-/* * ***************** 
+/* * *****************
  * Author: Roger Sanchez
  * Date Created: 2013-04-08
  * Company: Philweb
@@ -22,12 +22,12 @@ class TempMembers extends BaseEntity
     public function getMembersByAccount( $TempAccountCode )
     {
         $query = "SELECT * FROM members WHERE TemporaryAccountCode = '$TempAccountCode'";
-        
+
         $result = parent::RunQuery($query);
-        
+
         return $result;
     }
-    
+
     public function getTempMemberInfo($tempAccountCode)
     {
         $query = "SELECT m.*, mi.*
@@ -37,11 +37,11 @@ class TempMembers extends BaseEntity
                    ON m.MID = mi.MID
                    WHERE
                      m.TemporaryAccountCode = '$tempAccountCode'";
-        
+
         $result = parent::RunQuery($query);
         return $result;
     }
-    
+
     /**
      * @Description: for fetching account code and date created using MID
      * @Author aqdepliyan
@@ -56,33 +56,33 @@ class TempMembers extends BaseEntity
                             INNER JOIN membership_temp.memberinfo mi
                             ON m.MID = mi.MID
                             WHERE m.MID = ".$MID;
-        
+
         $result = parent::RunQuery($query);
         if(is_array($result) && isset($result[0])){
             return $result[0];
         } else { return $result = ''; }
     }
-    
+
     public function verifyEmailAccount($email,$tempcode)
     {
         $this->StartTransaction();
-        
+
         $query = "SELECT * FROM members
                   WHERE UserName = '$email'
                      AND TemporaryAccountCode = '$tempcode'
                      AND IsVerified = 0";
-        
+
         $result = parent::RunQuery($query);
-        
+
         if(count($result) > 0) //Account exist
         {
             $query2 = "UPDATE members SET DateVerified = now_usec(), IsVerified = 1
                        WHERE UserName = '$email'
                         AND TemporaryAccountCode = '$tempcode'";
-            
+
             $this->ExecuteQuery($query2);
             //parent::ExecuteQuery($query2);
-            
+
             if(!App::HasError())
             {
                 $this->CommitTransaction();
@@ -98,49 +98,49 @@ class TempMembers extends BaseEntity
             return self::VERIFY_EMAIL_FAILED;
         }
     }
-    
+
     function Register($arrMembers,$arrMemberInfo)
     {
         $MID = '';
-        
+
         //Load module and instantiate model
         App::LoadModuleClass("Membership", "Helper");
         $_Helper = new Helper();
-        
+
         $this->StartTransaction();
-        
-        try 
+
+        try
         {
             App::LoadCore('Randomizer.class.php');
             $randomizer = new Randomizer();
-            
+
             //Generate temporary Account code;
             $tempcode = 'eGames' . strtoupper($randomizer->GenerateAlphaNumeric(5));
-                    
+
             $arrMembers['TemporaryAccountCode'] = $tempcode;
-            
-            $this->Insert($arrMembers);        
-        
+
+            $this->Insert($arrMembers);
+
             if(!App::HasError())
             {
                 App::LoadModuleClass("Membership", "TempMemberInfo");
                 $_MemberInfo = new TempMemberInfo();
                 $_MemberInfo->PDODB = $this->PDODB;
-                
+
                 $arrMemberInfo['MID'] = $this->LastInsertID;
                 $_MemberInfo->Insert($arrMemberInfo);
 
-                if(!App::HasError())     
+                if(!App::HasError())
                 {
                     $this->CommitTransaction();
-                    
-                    $Recipient = $arrMemberInfo['FirstName'] . ' ' . $arrMemberInfo['LastName'];                    
+
+                    $Recipient = $arrMemberInfo['FirstName'] . ' ' . $arrMemberInfo['LastName'];
                     $_Helper->sendEmailVerification($arrMemberInfo['Email'], $Recipient, $tempcode);
                     $MID = $arrMemberInfo['MID'];
                 } else
                 {
                     $this->RollBackTransaction ();
-                    
+
                 }
 
             }
@@ -154,24 +154,24 @@ class TempMembers extends BaseEntity
             $this->RollBackTransaction();
             App::SetErrorMessage($e->getMessage());
         }
-        
+
         return $MID;
-        
+
     }
-    
+
     public function Migrate( $cardnumber ) //Temporary account code
     {
         //Load module class from permanent database
         App::LoadModuleClass("Membership", "Members");
         $_Members = new Members();
-        
-        $queryMember = "SELECT Username,Password, AccountTypeID, 
+
+        $queryMember = "SELECT Username,Password, AccountTypeID,
                                TemporaryAccountCode, DateCreated, DateVerified
                         FROM members
                         WHERE TemporaryAccountCode = '$cardnumber'";
-        
+
         $arrMembers = parent::RunQuery($queryMember);
-        
+
         $queryMemberInfo = "SELECT FirstName, MiddleName, LastName, NickName, Birthdate, Gender, Email,
                                    AlternateEmail, MobileNumber, AlternateMobileNumber, NationalityID,
                                    OccupationID, ReferrerID, Address1, Address2, IdentificationID, IdentificationNumber,
@@ -180,15 +180,15 @@ class TempMembers extends BaseEntity
                             FROM memberinfo mi
                                 INNER JOIN members m ON mi.MID = m.MID
                             WHERE m.TemporaryAccountCode = '$cardnumber'";
-        
+
         $arrMemberInfo = parent::RunQuery($queryMemberInfo);
-        
+
         $_Members->Migrate($arrMembers, $arrMemberInfo);
-                
-        
-        
+
+
+
     }
-    
+
     /**
      * Check if email was already verified in temp db
      * @author elperez
@@ -197,15 +197,15 @@ class TempMembers extends BaseEntity
      * @return int
      */
     public function chkTmpVerifiedEmailAddress($email){
-        $query = "SELECT COUNT(m.MID) ctrtemp FROM members m 
+        $query = "SELECT COUNT(m.MID) ctrtemp, m.TemporaryAccountCode  FROM members m
                 INNER JOIN memberinfo mi ON m.MID = mi.MID
                 WHERE m.IsVerified = 1 AND mi.Email = '$email'";
-        
+
         $result = parent::RunQuery($query);
-        
-        return $result[0]['ctrtemp'];
+
+        return $result;//$result[0]['ctrtemp'];
     }
-    
+
     /**
      * @author Edson Perez
      * @date 7/10/2013
@@ -216,21 +216,21 @@ class TempMembers extends BaseEntity
     public function chkTempUser($username){
         App::LoadCore("Validation.class.php");
         $validate = new Validation();
-        
+
         //if supplied username is email
         if ($validate->validateEmail($username)) {
             $query = "SELECT COUNT(MID) as ctruser FROM members WHERE UserName='$username'";
-            
+
         } else {
             $query = "SELECT COUNT(MID) as ctruser FROM members WHERE TemporaryAccountCode='$username'";
         }
-        
+
         $result = parent::RunQuery($query);
         return $result[0]['ctruser'];
     }
     /**
      * Check if the UserName entered in the login Form is exist in Membership Temp
-     * 
+     *
      * @author Mark Kenneth Esguerra
      * @date July 19, 2013
      * @param string $username Email Address as Username
@@ -242,21 +242,21 @@ class TempMembers extends BaseEntity
         $result = parent::RunQuery($query);
         return $result[0]['Count'];
     }
-    
-    
+
+
     public function deactivateAccount( $email , $newemail)
     {
         $query = "UPDATE members SET UserName = '$newemail' WHERE UserName = '$email'";
-        
+
         $this->ExecuteQuery($query);
         if ($this->HasError) {
             App::SetErrorMessage($this->getError());
             return false;
         }
     }
-    
+
     public function TerminateTempAccount($MID,$newemail){
-        
+
         $errorLogger = new ErrorLogger();
          $this->StartTransaction();
          try {
@@ -287,8 +287,8 @@ class TempMembers extends BaseEntity
                         $errorLogger->log($errorLogger->logdate, "error", $errMsg);
                         return $errMsg;
                     }
-                
-                
+
+
                 }catch(Exception $e){
              $this->RollBackTransaction();
              $errorLogger->log($errorLogger->logdate, "error", $e->getMessage());
@@ -296,7 +296,7 @@ class TempMembers extends BaseEntity
              return $errMsg;
          }
     }
-    
+
 }
 
 ?>

@@ -24,7 +24,8 @@ if(isset($_GET['email']) && isset($_GET['tempcode']))
 
     //check if email address already verified
     $isVerified = $_TempMembers->chkTmpVerifiedEmailAddress($email);
-    if($isVerified == 0){
+    $verifiedCode = $isVerified[0]['TemporaryAccountCode'];
+    if($isVerified[0]['ctrtemp'] == 0){
         $result = $_TempMembers->verifyEmailAccount($email, $tempcode);
 
         if($result == 1)
@@ -86,7 +87,7 @@ else
     {?>
         <div id="StatusDialog">You have successfully verified your email. Please wait for 24 hours in order for your account to be activated.</div>
     <?php }else{ ?>
-        <div id="StatusDialog">This email <?php echo $email; ?> has already been verified using this tempcode: <?php echo $tempcode; ?>.</div>
+        <div id="StatusDialog">This email <?php echo $email; ?> has already been verified using this tempcode: <?php echo $verifiedCode; ?>.</div>
     <?php
     }?>
 <?php
