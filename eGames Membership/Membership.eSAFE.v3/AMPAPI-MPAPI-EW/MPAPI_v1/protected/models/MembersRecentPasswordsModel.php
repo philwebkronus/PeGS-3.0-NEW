@@ -88,6 +88,7 @@ class MembersRecentPasswordsModel {
     }
     
     public function isDuplicate($MID, $password) {
+        $password = md5($password);
         $sql = 'SELECT COUNT(Password) AS countpassword
                 FROM membersrecentpasswords
                 WHERE MID = :MID AND Password = :password';
