@@ -66,14 +66,12 @@ class SalesforceAPI extends APIAbstract {
         $this->instance_url = $instance_url . '/services/data/v' . $version . '/';
         //$this->instance_url = $instance_url . '/services/data/v/';
 
-        $this->headers = [
-            'Content-Type' => 'application/json'
-        ];
+        $this->headers = Array('Content-Type' => 'application/json');
 
         // If the cURL handle doesn't exist, create it
         if(is_null($this->handle)) {
             $this->handle = curl_init();
-            $options = [
+            $options = Array(
                 CURLOPT_SSL_VERIFYPEER => false,
                 CURLOPT_SSL_VERIFYHOST => false,
                 CURLOPT_CONNECTTIMEOUT => 5,
@@ -81,7 +79,7 @@ class SalesforceAPI extends APIAbstract {
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_BUFFERSIZE => 128000
 
-            ];
+            );
             curl_setopt_array($this->handle, $options);
         }
     }
@@ -99,13 +97,13 @@ class SalesforceAPI extends APIAbstract {
     public function login($username, $password, $security_token)
     {
         // Set the login data
-        $login_data = [
+        $login_data = Array(
             'grant_type' => self::GRANT_TYPE,
             'client_id' => $this->client_id,
             'client_secret' => $this->client_secret,
             'username' => $username,
             'password' => $password . $security_token
-        ];
+        );
         // Change the content type to a form
 //        $headers = [
 //            'Content-Type' => 'application/x-www-form-urlencoded'
@@ -205,7 +203,7 @@ class SalesforceAPI extends APIAbstract {
      */
     public function getObjectMetadata($object_name, $all = false, DateTime $since = null)
     {
-        $headers = [];
+        $headers = '';
         // Check if the If-Modified-Since header should be set
         if($since !== null && $since instanceof DateTime) {
             $headers['IF-Modified-Since'] = $since->format('D, j M Y H:i:s e');
@@ -216,9 +214,9 @@ class SalesforceAPI extends APIAbstract {
 
         // Should this return all meta data including information about each field, URLs, and child relationships
         if($all === true)
-            return $this->request( self::OBJECT_PATH . $object_name . '/describe/',[],self::METH_GET, $headers);
+            return $this->request(array(self::OBJECT_PATH . $object_name . '/describe/','',self::METH_GET, $headers));
         else
-            return $this->request( self::OBJECT_PATH . $object_name,[],self::METH_GET,$headers);
+            return $this->request(array(self::OBJECT_PATH . $object_name,'',self::METH_GET,$headers));
     }
 
     /*========= Working with Records ==========*/
@@ -416,9 +414,9 @@ private function _unsecure($curl) {
      * @throws SalesforceAPIException
      */
     public function searchSOQL($query, $all = false, $explain = false) {
-        $search_data = [
+        $search_data = Array(
             'q' => $query
-        ];
+        );
 
         // If the explain flag is set, it will return feedback on the query performance
         if($explain) {
@@ -442,14 +440,14 @@ private function _unsecure($curl) {
             throw new SalesforceAPIException('You have not logged in yet.');
 
         // Set the Authorization header
-        $request_headers = [
+        $request_headers = Array(
             'Authorization' => 'Bearer ' . $this->access_token
-        ];
+        );
 
         // Merge all the headers
-        $request_headers = array_merge($request_headers, []);
+        $request_headers = array_merge($request_headers, '');
 
-        return $this->httpRequest( $this->base_url .$query,[],$request_headers);
+        return $this->httpRequest( $this->base_url .$query,'',$request_headers);
     }
 
     /**
@@ -462,16 +460,16 @@ private function _unsecure($curl) {
      * @return mixed
      * @throws SalesforceAPIException
      */
-    protected function request($url, $path, $params = [], $method = self::METH_GET, $headers = [])
+    protected function request($url, $path, $params = '', $method = self::METH_GET, $headers = '')
     {
         // Throw an error if no access token
         if(!isset($this->access_token))
             throw new SalesforceAPIException('You have not logged in yet.');
 
         // Set the Authorization header
-        $request_headers = [
+        $request_headers = Array(
             'Authorization' => 'Bearer ' . $this->access_token
-        ];
+        );
 
 
         // Merge all the headers
@@ -520,7 +518,7 @@ private function _unsecure($curl) {
                 break;
             case 'GET':
 //                curl_setopt($this->handle, CURLOPT_CUSTOMREQUEST, null);
-                curl_setopt($this->handle, CURLOPT_POSTFIELDS, []);
+                curl_setopt($this->handle, CURLOPT_POSTFIELDS, '');
                 curl_setopt($this->handle, CURLOPT_POST, false);
                 if(isset($params) && $params !== null && !empty($params))
                     $url .= '?' . http_build_query($params, '', '&', PHP_QUERY_RFC3986);
@@ -554,7 +552,7 @@ private function _unsecure($curl) {
      * @return array
      */
     private function createCurlHeaderArray($headers) {
-        $curl_headers = [];
+        $curl_headers = '';
         // Create the header array for the request
         foreach($headers as $key => $header) {
             $curl_headers[] = $key . ': ' . $header;
@@ -578,17 +576,19 @@ private function _unsecure($curl) {
         }
         $request_info = curl_getinfo($handle);
 
+        $message = 'message';
+        $success = 'success';
         switch($request_info['http_code']) {
             case 304:
-                if($response === '')
-                    return json_encode(['message' => 'The requested object has not changed since the specified time']);
-                break;
+            //if($response === '')
+            //return json_encode($message->'The requested object has not changed since the specified time');
+            //    break;
             case 300:
             case 200:
             case 201:
             case 204:
                 if($response === '')
-                    return json_encode(['success' => true]);
+                    return json_encode($success->true);
                 break;
             default:
                 if(empty($response) || $response !== '')
