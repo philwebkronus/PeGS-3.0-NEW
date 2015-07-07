@@ -1215,7 +1215,7 @@ class WsKapiController extends Controller {
 
                                             $this->acc_id = $siteaccounts->getVirtualCashier($siteid);
                                             if ($this->acc_id == false) {
-                                                $message = "Terminal has no virtual cashier.";
+                                                $message = "Terminal has no virtual cashier. Please contact Philweb Customer Service Hotline 338-3388.";
                                                 $this->_sendResponse(200, CommonController::creteEgmSessionResponse(0, '', $message, 71));
 
                                                 exit;
@@ -1692,7 +1692,7 @@ class WsKapiController extends Controller {
 
             $this->acc_id = $siteaccounts->getVirtualCashier($siteid);
             if ($this->acc_id == false) {
-                $message = "Terminal has no virtual cashier.";
+                $message = "Terminal has no virtual cashier. Please contact Philweb Customer Service Hotline 338-3388.";
                 $this->_sendResponse(200, CommonController::startSessionResponse(2, $DateTime, '', $message, 71));
 
                 exit;
@@ -2193,7 +2193,7 @@ class WsKapiController extends Controller {
 
             $this->acc_id = $siteaccounts->getVirtualCashier($siteid);
             if ($this->acc_id == false) {
-                $message = "Terminal has no virtual cashier.";
+                $message = "Terminal has no virtual cashier. Please contact Philweb Customer Service Hotline 338-3388.";
                 $this->_sendResponse(200, CommonController::redeemSessionResponse(2, '', '', '', '', '', '', '', $message, 0, 71));
 
                 exit;
@@ -2472,7 +2472,7 @@ class WsKapiController extends Controller {
 
             $this->acc_id = $siteaccounts->getVirtualCashier($siteid);
             if ($this->acc_id == false) {
-                $message = "Terminal has no virtual cashier.";
+                $message = "Terminal has no virtual cashier. Please contact Philweb Customer Service Hotline 338-3388.";
                 $this->_sendResponse(200, CommonController::reloadSessionResponse(2, $DateTime, '', $message, 71));
 
                 exit;
@@ -2940,7 +2940,7 @@ class WsKapiController extends Controller {
                                             //get virtual cashier of the site
                                             $this->acc_id = $siteaccounts->getVirtualCashier($siteid);
                                             if ($this->acc_id == false) {
-                                                $message = "Terminal has no virtual cashier.";
+                                                $message = "Terminal has no virtual cashier. Please contact Philweb Customer Service Hotline 338-3388.";
                                                 $errCode = 71;
                                                 $this->_sendResponse(200, CommonController::removeEgmSessionResponse($message, $errCode));
 
