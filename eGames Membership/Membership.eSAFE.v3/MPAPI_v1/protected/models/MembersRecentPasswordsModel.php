@@ -24,7 +24,7 @@ class MembersRecentPasswordsModel {
     
     public function insertRecentPassword($MID, $password) {
         $startTrans = $this->_connection->beginTransaction();
-        
+        $password = md5($password);
         try {
             $sql = 'INSERT INTO membersrecentpasswords(MID, Password, DateCreated)
                     VALUES(:MID, :password, NOW(6))';
@@ -51,7 +51,7 @@ class MembersRecentPasswordsModel {
     
     public function updateRecentPassword($MID, $password, $date) {
         $startTrans = $this->_connection->beginTransaction();
-        
+        $password = md5($password);
         try {
             $sql = 'UPDATE membersrecentpasswords SET Password = :password, DateCreated = NOW(6)
                     WHERE MID = :MID AND DateCreated = :date';
