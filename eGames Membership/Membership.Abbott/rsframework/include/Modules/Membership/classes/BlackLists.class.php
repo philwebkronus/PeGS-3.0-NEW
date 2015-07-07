@@ -209,15 +209,23 @@ class BlackLists extends BaseEntity
      */
     public function addToBlackListSP($lastname, $firstname, $birthdate, $remarks, $aid)
     {
+        App::LoadModuleClass("Membership","AuditTrail");
+        App::LoadModuleClass("Membership","AuditFunctions");
+        $_Log = new AuditTrail();
+        
+        $sessionID = $_SESSION['userinfo']['SessionID'];
+        
         $query = "CALL membership.sp_insert_data2(1, Null, Null, 1, Null, $aid, 2, Null, '$remarks', '$lastname', '$firstname', '$birthdate', @OUT_ResultCode, @OUT_Result, @OUT_ID)";
-        $result = parent::ExecuteQuery($query);
-       
-        if ($result) {
-            return array('TransCode' => 0,
+        $result = parent::RunQuery($query);
+        
+        if ($result[0]['@OUT_ResultCode'] == 0) {
+            $blackListedID = $result[0]['@OUT_ID'];
+            $_Log->logEvent(AuditFunctions::PLAYER_BLACKLISTING, "BlacklistedID: ".$blackListedID." successful", array('ID'=>$aid, 'SessionID'=>$sessionID));
+            return array('TransCode' => 1,
                          'TransMsg' => 'The player was successfully added in the blacklist.');
         }
         else {
-            return array('TransCode' => 1, 
+            return array('TransCode' => 0, 
                          'TransMsg' => 'An error occured while inserting to database');
         }
         
@@ -300,7 +308,7 @@ class BlackLists extends BaseEntity
                             try
                             {
                                 $this->CommitTransaction();
-                                $_Log->logEvent(AuditFunctions::UPDATE_BLACKLISTED_PLAYER, $firstname." ".$lastname." successful", array('ID'=>$AID, 'SessionID'=>$sessionID));
+                                $_Log->logEvent(AuditFunctions::UPDATE_BLACKLISTED_PLAYER, "BlacklistedID: ".$blackListedID." successful", array('ID'=>$AID, 'SessionID'=>$sessionID));
                                 return array('TransCode' => 1,
                                              'TransMsg' => 'Blacklisted details successfully updated');
                             }
