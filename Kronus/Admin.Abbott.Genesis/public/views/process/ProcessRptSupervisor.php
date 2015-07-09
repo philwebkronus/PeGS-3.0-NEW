@@ -351,11 +351,14 @@ if($connected)
    {
        $fn = $_GET['fn'].".xls"; //this will be the filename of the excel file
        $vfromdate = $_GET['DateFrom'];
-       $vtodate = $_GET['DateTo']; 
-      
+       
+//       $vtodate = $_GET['DateTo']; 
+//       $dateFrom = $vfromdate." ".$vcutofftime;
+//       $dateTo = date ('Y-m-d' , strtotime ($gaddeddate, strtotime($vtodate)))." ".$vcutofftime;
+       
+       $dateTo = date('Y-m-d',strtotime(date("Y-m-d", strtotime($vfromdate)) .$gaddeddate))." ".$vcutofftime; 
        $dateFrom = $vfromdate." ".$vcutofftime;
-       $dateTo = date ('Y-m-d' , strtotime ($gaddeddate, strtotime($vtodate)))." ".$vcutofftime;
-            
+       
        $rsiteID = $orptsup->viewsitebyowner($aid); //get all sites owned by operator
        $vsiteID = $rsiteID['SiteID'];
                 

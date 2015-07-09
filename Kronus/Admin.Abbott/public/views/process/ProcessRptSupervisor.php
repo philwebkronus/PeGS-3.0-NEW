@@ -442,9 +442,11 @@ if($connected)
        
        $dateTo = date('Y-m-d',strtotime(date("Y-m-d", strtotime($vfromdate)) .$gaddeddate))." ".$vcutofftime; 
        $dateFrom = $vfromdate." ".$vcutofftime;
+       
+       $rsiteID = $orptsup->viewsitebyowner($aid); //get all sites owned by operator
+        $vsiteID = $rsiteID['SiteID'];
 
-      $rsitecashier = $orptsup->viewsitebyowner($aid);
-      $vsiteID = $rsitecashier['SiteID'];
+      $rsitecashier = $orptsup->getsitecashier($vsiteID);
       
       $result = $orptsup->viewgrosshold($dateFrom, $dateTo, $vsiteID, $start = null, $limit = null);
       $pdf = CTCPDF::c_getInstance();
