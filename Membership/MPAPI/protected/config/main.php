@@ -152,13 +152,13 @@ return array(
             'app_id' => 'EGAMES',
             'DenominationPrefix'=>'PhP ',
             'allowedAmount'=>0,
-            'extra_imagepath' => "http://membership.egamescasino.ph/images/rewarditems/",
-            //'rewarditem_imagepath' => "172.16.102.174/rewards.management/images/rewarditems/",
+            'extra_imagepath' => "https://membership.egamescasino.ph/images/rewarditems/extra_images/",
+            'rewarditem_imagepath' => "https://membership.egamescasino.ph/rewardsmanagement/images/rewarditems/",
             'MarketingEmail' => '@philweb.ph',
             'urlMPAPI' => 'http://<MPAPI URL HERE>/index.php/MPapi/',
             'SessionTimeOut' => 45.00,
             'urlVerify' => 'http://membershipsb.genesis.local/verify.php',
-'activeRaffleCoupon' => 'rafflecoupons_1',//'<<INSERT ACTIVE rafflecoupons table here (where RewardID = 2, Status = 1 and OfferStartDate >= today's date>>'
+            'activeRaffleCoupon' => 'rafflecoupons_1',//'<<INSERT ACTIVE rafflecoupons table here (where RewardID = 2, Status = 1 and OfferStartDate >= today's date>>'
             'getcomppoints' => 'http://<PCWS URL HERE>/PCWS/index.php/pcws/getcomppoints',
             'getbalance' => 'http://<PCWS URL HERE>/PCWS/index.php/pcws/getbalance',
             'deductcomppoints' => 'http://<PCWS URL HERE>/PCWS/index.php/pcws/deductcomppoints',
