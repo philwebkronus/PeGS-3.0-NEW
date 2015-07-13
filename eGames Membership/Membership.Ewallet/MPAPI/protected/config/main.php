@@ -152,10 +152,8 @@ return array(
             'app_id' => 'EGAMES',
             'DenominationPrefix'=>'PhP ',
             'allowedAmount'=>0,
-            //'extra_imagepath' => "172.16.102.174/membership.rewards/images/rewarditems/",
-            //'extra_imagepath' => "http://www.egamescasino.ph/wp-content/uploads/2013/05/",
-            'extra_imagepath' => "http://membership.egamescasino.ph/images/rewarditems/",
-            'rewarditem_imagepath' => "172.16.102.174/rewards.management/images/rewarditems/",
+            'extra_imagepath' => "https://membership.egamescasino.ph/images/rewarditems/extra_images/",
+            'rewarditem_imagepath' => "https://membership.egamescasino.ph/rewardsmanagement/images/rewarditems/",
             'MarketingEmail' => 'fdlsison@philweb.ph',
             //'url' => 'http://localhost/MPAPI/index.php/MPapi/', //local url
             'urlMPAPI' => 'http://172.16.102.174/mpapi.dev.local/index.php/MPapi/', //staging
