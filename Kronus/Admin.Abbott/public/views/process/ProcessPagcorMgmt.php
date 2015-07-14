@@ -911,8 +911,9 @@ if($connected)
                     $opagcor->close();
             break;
             case 'grossholdbalanceexcel':
-                $startdate = $_POST['startdate']." ".$cutoff_time;
-                $enddate = date ('Y-m-d' , strtotime ($gaddeddate, strtotime($_POST['enddate'])))." ".$cutoff_time;           
+                $startdate = $_POST['startdate'];
+                $enddate = date ('Y-m-d' , strtotime ($gaddeddate, strtotime($startdate)))." ".$cutoff_time;        
+                $startdate .= " ".$cutoff_time;
                 $header = array('Site / PEGS Code','Site / PEGS Name', 'POS Account','Initial Deposit','Reload','Redemption','Manual Redemption','Gross Hold');
                 $vsitecode = $_POST['selsitecode'];
                 $datenow = date("Y-m-d")." ".$cutoff_time;
@@ -954,8 +955,9 @@ if($connected)
                     $opagcor->close();
             break;
             case 'grossholdbalancepdf':
-                $startdate = $_POST['startdate']." ".$cutoff_time; 
-                $enddate = date ('Y-m-d' , strtotime ($gaddeddate, strtotime($_POST['enddate'])))." ".$cutoff_time;   
+                $startdate = $_POST['startdate'];
+                $enddate = date ('Y-m-d' , strtotime ($gaddeddate, strtotime($startdate)))." ".$cutoff_time;   
+                $startdate .= " ".$cutoff_time; 
                 $vsitecode = $_POST['selsitecode'];
                 $datenow = date("Y-m-d")." ".$cutoff_time;
                 $rows = array();
