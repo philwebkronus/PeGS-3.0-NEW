@@ -11,6 +11,28 @@ $(document).ready(function(){
 });
 var transactionHistory = <?php echo $transactionHistory; ?>; 
 
+function displayData(data){
+    var html = '';
+    for(i=0;i < data.trans_details.length;i++) {
+        html+='<tr>';
+        var datetime = data.trans_details[i].DateCreated;
+        datetime = datetime.split('.');
+        html+='<td>'+formatDateAMPM(datetime[0])+'</td>';
+        var terminal_name = data.trans_details[i].TerminalCode;
+
+        terminal_name = terminal_name.replace(data.site_code,'');
+        if(data.trans_details[i].TerminalType == 1){
+            terminal_name = 'G'+terminal_name;
+        }
+
+        html+='<td>'+terminal_name+'</td>';
+        html+='<td>'+getTransType(data.trans_details[i].TransactionType)+'</td>';
+        html+='<td class="right">'+toMoney(data.trans_details[i].Amount)+'</td>';
+        html+='</tr>';
+    }
+    $('#tbodyviewtrans').html(html);
+}
+
 displayData(transactionHistory);
 </script>
 

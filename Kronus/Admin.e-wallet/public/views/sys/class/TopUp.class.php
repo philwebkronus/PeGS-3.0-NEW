@@ -2561,20 +2561,20 @@ class TopUp extends DBHandler
 //        $this->execute();  
 //        $rows10 =  $this->fetchAllData();
         
-        //Get the Expired Tickets per site
+        //Get the e-SAFE Transactions
         $this->prepare($query10);
         $this->bindparameter(':startlimitdate', $startdate);
         $this->bindparameter(':endlimitdate', $enddate);
         $this->execute();  
         $rows11 =  $this->fetchAllData();
 
-        //Less the Expired Tickets to Total Unused Tickets
         foreach ($rows11 as $value1) {
             foreach ($varrmerge as $keys => $value2) {
                 if($value1["SiteID"] == $value2["SiteID"]){
                         $varrmerge[$keys]["EwalletWithdrawal"] += (float)$value1["EwalletRedemption"];
                         $varrmerge[$keys]["EwalletCashLoads"] += (float)$value1["EwalletCashDeposit"];
                         $varrmerge[$keys]["EwalletCashLoads"] += (float)$value1["EwalletBancnetDeposit"];
+                        $varrmerge[$keys]["EwalletLoads"] += (float)$value1["EwalletDeposits"];
                         $varrmerge[$keys]["Coupon"] += (float)$value1["EwalletVoucherDeposit"];
                     break;
                 }

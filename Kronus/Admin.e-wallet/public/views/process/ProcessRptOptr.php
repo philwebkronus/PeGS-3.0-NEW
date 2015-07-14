@@ -797,7 +797,7 @@ if($connected)
        $grandticketencashment = $orptoptr->getTotalTicketEncashment($dateFrom, $dateTo, $arrsiteID);
        
        $grandcashonhand = (($cohdata['TotalCashLoad']-$cohdata['TotalCashRedemption']) - $cohdata['TotalMR'])-$grandticketencashment;
-       
+       $grandredemption += $cohdata['TotalMR'];
        // store the grand total of transaction types into an array 
        $arrgrand = array("GrandSales" => $grandsales, "GrandRedemption" => $grandredemption,
                             "GrandTicketEncashment" => $grandticketencashment, "GrandCashOnHand" => $grandcashonhand);
@@ -1299,7 +1299,7 @@ if($connected)
             $grandticketencashment = $orptoptr->getTotalTicketEncashment($dateFrom, $dateTo, $arrsiteID);
 
             $grandcashonhand = (($cohdata['TotalCashLoad'] - $cohdata['TotalCashRedemption']) - $cohdata['TotalMR']) - $grandticketencashment;
-            
+            $grandredemption += $cohdata['TotalMR'];
             $arrspace = array('', '', '', '', '', '', '', '');
             array_push($completeexcelvalues, $arrspace);
 
@@ -1936,7 +1936,7 @@ if($connected)
             //Compute for total Cash On Hand of the sites under the current operator
             $cohdata = $orptoptr->getCashOnHandDetails($dateFrom, $dateTo, $arrsiteID);
             $grandticketencashment = $orptoptr->getTotalTicketEncashment($dateFrom, $dateTo, $arrsiteID);
-
+            $grandredemption += $cohdata['TotalMR'];
             $grandcashonhand = (($cohdata['TotalCashLoad'] - $cohdata['TotalCashRedemption']) - $cohdata['TotalMR']) - $grandticketencashment;
 
 //            $pdf->html.= '<div style="text-align: center; ">';
