@@ -272,17 +272,51 @@ if($fproc->IsPostBack){
             $resultrewardid = $_RewardItems->getRewardID($RewardItemID);
             $_SESSION['CardRed']['RewardID'] = $resultrewardid[0]['RewardID'];
             
-            $memberinfo = $_MemberInfo->getMemberInfo($_SESSION["CardRed"]["MID"]);
-            $ArrMemberInfo = $memberinfo[0];
-            
-            //Check if the coupon batch is active, if not display error message.
-            if($_SESSION['CardRed']['RewardID'] == 2 || $_SESSION['CardRed']['RewardID'] == "2"){
-                //Set Table for raffle coupon based on active coupon batch.
-                $getRaffleCouponSuffix = $_CouponBatches->SelectByWhere(" WHERE Status = 1 LIMIT 1");
-                
-                if(isset($getRaffleCouponSuffix[0]) && $getRaffleCouponSuffix[0]['CouponBatchID'] != ""){
-                    $_RaffleCoupons->TableName = "rafflecoupons_".$getRaffleCouponSuffix[0]['CouponBatchID'];
-                    
+            $memberinfo = $_MemberInfo->getMemInfoUsingSP($_SESSION["CardRed"]["MID"]);
+            $ArrMemberInfo = $memberinfo;
+            if ($ArrMemberInfo["Email"] != "") {
+                //Check if the coupon batch is active, if not display error message.
+                if($_SESSION['CardRed']['RewardID'] == 2 || $_SESSION['CardRed']['RewardID'] == "2"){
+                    //Set Table for raffle coupon based on active coupon batch.
+                    $getRaffleCouponSuffix = $_CouponBatches->SelectByWhere(" WHERE Status = 1 LIMIT 1");
+
+                    if(isset($getRaffleCouponSuffix[0]) && $getRaffleCouponSuffix[0]['CouponBatchID'] != ""){
+                        $_RaffleCoupons->TableName = "rafflecoupons_".$getRaffleCouponSuffix[0]['CouponBatchID'];
+
+                        //Get Reward Offer Coupon/Item Transaction details
+                        //check if player has region id and city id, if not set both region id and city id to 0;
+                        if((isset($ArrMemberInfo["RegionID"]) && $ArrMemberInfo["RegionID"] != '' && $ArrMemberInfo["RegionID"] != 0) && (isset($ArrMemberInfo["RegionID"]) && $ArrMemberInfo["RegionID"] != '' && $ArrMemberInfo["RegionID"] != 0)){
+                            $regionname = $_Ref_region->getRegionName($ArrMemberInfo["RegionID"]);
+                            $cityname = $_Ref_city->getCityName($ArrMemberInfo["CityID"]);
+                        } else {
+                            $regionname = "";
+                            $cityname = "";
+                        }
+
+                        $playername = $ArrMemberInfo["FirstName"]." ".$ArrMemberInfo["LastName"];
+                        $address = $ArrMemberInfo["Address1"];
+                        $birthdate = $ArrMemberInfo["Birthdate"];
+                        $email = $ArrMemberInfo["Email"];
+                        $sitecode = $_SESSION['userinfo']['SiteID'];
+
+                        $siteresult = $_Sites->getSiteName($sitecode);
+                        if(count($siteresult) > 0){
+                            $sitename = $siteresult[0]["SiteName"];
+                        } else {
+                            $sitename = "";
+                        }
+
+                        $contactno = $ArrMemberInfo["MobileNumber"];
+                        $source = 0; //0-Cashier; 1-Player
+
+                        //Redemption Process for both Coupon and Item.
+                        include("../controller/RedemptionController.php");
+
+                    } else {
+                        $txtQuantity->Text = '';
+                        App::SetErrorMessage("Raffle Coupons are unavailable.");
+                    }
+                } else {
                     //Get Reward Offer Coupon/Item Transaction details
                     //check if player has region id and city id, if not set both region id and city id to 0;
                     if((isset($ArrMemberInfo["RegionID"]) && $ArrMemberInfo["RegionID"] != '' && $ArrMemberInfo["RegionID"] != 0) && (isset($ArrMemberInfo["RegionID"]) && $ArrMemberInfo["RegionID"] != '' && $ArrMemberInfo["RegionID"] != 0)){
@@ -292,7 +326,6 @@ if($fproc->IsPostBack){
                         $regionname = "";
                         $cityname = "";
                     }
-
                     $playername = $ArrMemberInfo["FirstName"]." ".$ArrMemberInfo["LastName"];
                     $address = $ArrMemberInfo["Address1"];
                     $birthdate = $ArrMemberInfo["Birthdate"];
@@ -308,189 +341,160 @@ if($fproc->IsPostBack){
 
                     $contactno = $ArrMemberInfo["MobileNumber"];
                     $source = 0; //0-Cashier; 1-Player
-                    
+
                     //Redemption Process for both Coupon and Item.
                     include("../controller/RedemptionController.php");
-                    
-                } else {
-                    $txtQuantity->Text = '';
-                    App::SetErrorMessage("Raffle Coupons are unavailable.");
-                }
-            } else {
-                //Get Reward Offer Coupon/Item Transaction details
-                //check if player has region id and city id, if not set both region id and city id to 0;
-                if((isset($ArrMemberInfo["RegionID"]) && $ArrMemberInfo["RegionID"] != '' && $ArrMemberInfo["RegionID"] != 0) && (isset($ArrMemberInfo["RegionID"]) && $ArrMemberInfo["RegionID"] != '' && $ArrMemberInfo["RegionID"] != 0)){
-                    $regionname = $_Ref_region->getRegionName($ArrMemberInfo["RegionID"]);
-                    $cityname = $_Ref_city->getCityName($ArrMemberInfo["CityID"]);
-                } else {
-                    $regionname = "";
-                    $cityname = "";
-                }
-                $playername = $ArrMemberInfo["FirstName"]." ".$ArrMemberInfo["LastName"];
-                $address = $ArrMemberInfo["Address1"];
-                $birthdate = $ArrMemberInfo["Birthdate"];
-                $email = $ArrMemberInfo["Email"];
-                $sitecode = $_SESSION['userinfo']['SiteID'];
-
-                $siteresult = $_Sites->getSiteName($sitecode);
-                if(count($siteresult) > 0){
-                    $sitename = $siteresult[0]["SiteName"];
-                } else {
-                    $sitename = "";
                 }
 
-                $contactno = $ArrMemberInfo["MobileNumber"];
-                $source = 0; //0-Cashier; 1-Player
-                
-                //Redemption Process for both Coupon and Item.
-                include("../controller/RedemptionController.php");
-            }
-            
-            $partnername = $hdnPartnerName->SubmittedValue;
-            $eCouponImage = $hdneCouponImage->SubmittedValue;
+                $partnername = $hdnPartnerName->SubmittedValue;
+                $eCouponImage = $hdneCouponImage->SubmittedValue;
 
-            /*Check if coupon or item and display appropriate reward 
-            offer transaction printable copy and send to legit player email.*/
-            if ($showcouponredemptionwindow == true && isset($_SESSION['RewardOfferCopy']))
-            {
-                $cardnumber = $_SESSION["CardRed"]["CardNumber"];
-                $dateRange = $_RewardItems->getOfferDateRange($RewardItemID);
+                /*Check if coupon or item and display appropriate reward 
+                offer transaction printable copy and send to legit player email.*/
+                if ($showcouponredemptionwindow == true && isset($_SESSION['RewardOfferCopy']))
+                {
+                    $cardnumber = $_SESSION["CardRed"]["CardNumber"];
+                    $dateRange = $_RewardItems->getOfferDateRange($RewardItemID);
 
-                //Set Redemption Date and Time format.
-                $rdate = new DateTime(date($_SESSION['RewardOfferCopy']["RedemptionDate"]));
-                $redemptiondate = $rdate->format("F j, Y, g:i a");
-                
-                //Set Promo Period Date Format
-                if(isset($_SESSION['RewardOfferCopy']["CouponSeries"])){
-                    $startyear = date('Y', strtotime($dateRange["StartDate"]));
-                    $endyear = date('Y', strtotime($dateRange["EndDate"]));
-                    if($startyear == $endyear){
-                        $sdate = new DateTime(date($dateRange["StartDate"]));
-                        $startdate = $sdate->format("F j");
-                        $edate = new DateTime(date($dateRange["EndDate"]));
-                        $enddate = $edate->format("F j, Y");
-                        $promoperiod = $startdate." to ".$enddate;
+                    //Set Redemption Date and Time format.
+                    $rdate = new DateTime(date($_SESSION['RewardOfferCopy']["RedemptionDate"]));
+                    $redemptiondate = $rdate->format("F j, Y, g:i a");
+
+                    //Set Promo Period Date Format
+                    if(isset($_SESSION['RewardOfferCopy']["CouponSeries"])){
+                        $startyear = date('Y', strtotime($dateRange["StartDate"]));
+                        $endyear = date('Y', strtotime($dateRange["EndDate"]));
+                        if($startyear == $endyear){
+                            $sdate = new DateTime(date($dateRange["StartDate"]));
+                            $startdate = $sdate->format("F j");
+                            $edate = new DateTime(date($dateRange["EndDate"]));
+                            $enddate = $edate->format("F j, Y");
+                            $promoperiod = $startdate." to ".$enddate;
+                        } else {
+                            $sdate = new DateTime(date($dateRange["StartDate"]));
+                            $startdate = $sdate->format("F j, Y");
+                            $edate = new DateTime(date($dateRange["EndDate"]));
+                            $enddate = $edate->format("F j, Y");
+                            $promoperiod = $startdate." to ".$enddate;
+                        }
                     } else {
+
                         $sdate = new DateTime(date($dateRange["StartDate"]));
                         $startdate = $sdate->format("F j, Y");
                         $edate = new DateTime(date($dateRange["EndDate"]));
                         $enddate = $edate->format("F j, Y");
                         $promoperiod = $startdate." to ".$enddate;
                     }
-                } else {
-                    
-                    $sdate = new DateTime(date($dateRange["StartDate"]));
-                    $startdate = $sdate->format("F j, Y");
-                    $edate = new DateTime(date($dateRange["EndDate"]));
-                    $enddate = $edate->format("F j, Y");
-                    $promoperiod = $startdate." to ".$enddate;
-                }
-                
-                if($dateRange['IsMystery'] == 1 && $dateRange['AvailableItemCount'] > 0) {
-                    $itemname = $dateRange['MysteryName'];
-                } else {
-                    $itemname = $dateRange['ItemName'];
-                }
-               
-                // For Coupon Only : Set Draw Date Format.
-                if($dateRange["DrawDate"] != '' && $dateRange["DrawDate"] != null){
-                    $ddate = new DateTime(date($dateRange["DrawDate"]));
-                    $drawdate = $ddate->format("F j, Y gA");
-                } else {
-                    $drawdate = '';
-                }
-                
-                $newheader = App::getParam('extra_imagepath')."extra_images/newheader.jpg";
-                $newfooter = App::getParam('extra_imagepath')."extra_images/newfooter.jpg";
-                $itemimage = App::getParam('rewarditem_imagepath').$eCouponImage;
-                $importantreminder = App::getParam('extra_imagepath')."important_reminders.jpg";
-                
-                //Get About the Reward Description and its terms and condition
-                $rewarddetails = $_RewardItems->getAboutandTerms($RewardItemID);
-                if(isset($rewarddetails['About'])){
-                    $about = $rewarddetails['About'];
-                    $term = $rewarddetails['Terms'];
-                    $promoname = $rewarddetails['PromoName'];
-                    $promocode = $rewarddetails['PromoCode'];
-                }
 
-                //Format Reward Offer Copy for email and popup window.
-                if(!isset($_SESSION['RewardOfferCopy']["CouponSeries"])){
-                    
-                    //Get Partner Details
-                    $partnersd = $_Partners->getPartnerDetailsUsingPartnerName($partnername);
-                    if(isset($partnersd[0])){
-                        $companyaddress = $partnersd[0]['CompanyAddress'];
-                        $companyphone = $partnersd[0]['CompanyPhone'];
-                        $companywebsite = $partnersd[0]['CompanyWebsite'];
+                    if($dateRange['IsMystery'] == 1 && $dateRange['AvailableItemCount'] > 0) {
+                        $itemname = $dateRange['MysteryName'];
                     } else {
-                        $companyaddress = '';
-                        $companyphone = '';
-                        $companywebsite = '';
+                        $itemname = $dateRange['ItemName'];
                     }
 
-                    $ctr = count($_SESSION['RewardOfferCopy']["SerialNumber"]);
-                    for($itr=0; $itr < $ctr; $itr++){
-                            $_Helper->sendEmailItemRedemption($email, $newheader, $itemimage, $itemname, $partnername,$playername,$cardnumber,$redemptiondate,
-                                                                                                $_SESSION['RewardOfferCopy']["SerialNumber"][$itr],$_SESSION['RewardOfferCopy']["SecurityCode"][$itr],$_SESSION['RewardOfferCopy']['ValidUntil'][$itr],
-                                                                                                $companyaddress,$companyphone, $companywebsite, $importantreminder,$about, $term, $newfooter);
-                            
-                            if($dateRange['IsMystery'] == 1){
-                                    $rddate = new DateTime(date($_SESSION['RewardOfferCopy']["RedemptionDate"]));
-                                    $redeemeddate = $rddate->format("m-d-Y");
-                                    $redeemedtime = $rddate->format("G:i A");
-                                    $sender = App::getParam('MarketingEmail');
-                                    if($_SESSION['CardRed']['IsVIP'] == 0){
-                                        $statusvalue = "Regular";
-                                    } else {
-                                        $statusvalue = "VIP";
-                                    }
-                                    $modeofredemption = "via cashier";
-                                    $_Helper->sendMysteryRewardEmail($redeemeddate, $redeemedtime, $_SESSION['RewardOfferCopy']["SerialNumber"][$itr], $_SESSION['RewardOfferCopy']["SecurityCode"][$itr], 
-                                                                                                                $dateRange['MysteryName'], $dateRange['ItemName'], $cardnumber, $playername, 
-                                                                                                                $statusvalue, $modeofredemption, $sender);
-                            }
+                    // For Coupon Only : Set Draw Date Format.
+                    if($dateRange["DrawDate"] != '' && $dateRange["DrawDate"] != null){
+                        $ddate = new DateTime(date($dateRange["DrawDate"]));
+                        $drawdate = $ddate->format("F j, Y gA");
+                    } else {
+                        $drawdate = '';
                     }
-                    
-                } else {
-                    
-                    $fbirthdate = date("F j, Y", strtotime($birthdate));
-                    App::LoadCore("File.class.php");
-                    $filename = dirname(__FILE__) . "/template/couponredemptiontemplate.php";
-                    $fp = new File($filename);
-                    $emailmessage = $fp->ReadToEnd();
-                    $emailmessage = str_replace('$playername', $playername, $emailmessage);
-                    $emailmessage = str_replace('$address', $address, $emailmessage);
-                    $emailmessage = str_replace('$sitecode', $sitename, $emailmessage);
-                    $emailmessage = str_replace('$cardno', $cardnumber, $emailmessage);
-                    $emailmessage = str_replace('$birthdate', date("F j, Y", strtotime($birthdate)), $emailmessage);
-                    $emailmessage = str_replace('$email', $email, $emailmessage);
-                    $emailmessage = str_replace('$contactno', $contactno, $emailmessage);
-                    $emailmessage = str_replace('$actualcity', $cityname, $emailmessage);
-                    $emailmessage = str_replace('$actualregion', $regionname, $emailmessage);
-                    $emailmessage = str_replace('$newheader', $newheader, $emailmessage);
-                    $emailmessage = str_replace('$newfooter', $newfooter, $emailmessage);
-                    $emailmessage = str_replace('$couponimage', $itemimage, $emailmessage);
-                    $emailmessage = str_replace('$couponseries', $_SESSION['RewardOfferCopy']["CouponSeries"], $emailmessage);
-                    $emailmessage = str_replace('$quantity', $_SESSION['RewardOfferCopy']["Quantity"], $emailmessage);
-                    $emailmessage = str_replace('$checksum', $_SESSION['RewardOfferCopy']["CheckSum"], $emailmessage);
-                    $emailmessage = str_replace('$serialcode', $_SESSION['RewardOfferCopy']["SerialNumber"], $emailmessage);
-                    $emailmessage = str_replace('$redemptiondate', $redemptiondate, $emailmessage);
-                    $emailmessage = str_replace('$promocode', $promocode, $emailmessage);
-                    $emailmessage = str_replace('$promoname', $promoname, $emailmessage);
-                    $emailmessage = str_replace('$promoperiod', $promoperiod, $emailmessage);
-                    $emailmessage = str_replace('$drawdate', $drawdate, $emailmessage);
-                    $emailmessage = str_replace('$about', $about, $emailmessage);
-                    $emailmessage = str_replace('$term', $term, $emailmessage);
 
-                    $_Helper->sendEmailCouponRedemption($playername,$address,$sitename,$cardnumber,$fbirthdate,$email,$contactno,$cityname,
-                                                                                    $regionname,$newheader,$newfooter,$itemimage,$_SESSION['RewardOfferCopy']["CouponSeries"],
-                                                                                    $_SESSION['RewardOfferCopy']["Quantity"],$_SESSION['RewardOfferCopy']["CheckSum"],
-                                                                                    $_SESSION['RewardOfferCopy']["SerialNumber"],$redemptiondate,$promocode,
-                                                                                    $promoname,$promoperiod,$drawdate,$about,$term);
-                    
-                    unset($_SESSION['RewardOfferCopy']);
+                    $newheader = App::getParam('extra_imagepath')."extra_images/newheader.jpg";
+                    $newfooter = App::getParam('extra_imagepath')."extra_images/newfooter.jpg";
+                    $itemimage = App::getParam('rewarditem_imagepath').$eCouponImage;
+                    $importantreminder = App::getParam('extra_imagepath')."important_reminders.jpg";
+
+                    //Get About the Reward Description and its terms and condition
+                    $rewarddetails = $_RewardItems->getAboutandTerms($RewardItemID);
+                    if(isset($rewarddetails['About'])){
+                        $about = $rewarddetails['About'];
+                        $term = $rewarddetails['Terms'];
+                        $promoname = $rewarddetails['PromoName'];
+                        $promocode = $rewarddetails['PromoCode'];
+                    }
+
+                    //Format Reward Offer Copy for email and popup window.
+                    if(!isset($_SESSION['RewardOfferCopy']["CouponSeries"])){
+
+                        //Get Partner Details
+                        $partnersd = $_Partners->getPartnerDetailsUsingPartnerName($partnername);
+                        if(isset($partnersd[0])){
+                            $companyaddress = $partnersd[0]['CompanyAddress'];
+                            $companyphone = $partnersd[0]['CompanyPhone'];
+                            $companywebsite = $partnersd[0]['CompanyWebsite'];
+                        } else {
+                            $companyaddress = '';
+                            $companyphone = '';
+                            $companywebsite = '';
+                        }
+
+                        $ctr = count($_SESSION['RewardOfferCopy']["SerialNumber"]);
+                        for($itr=0; $itr < $ctr; $itr++){
+                                $_Helper->sendEmailItemRedemption($email, $newheader, $itemimage, $itemname, $partnername,$playername,$cardnumber,$redemptiondate,
+                                                                                                    $_SESSION['RewardOfferCopy']["SerialNumber"][$itr],$_SESSION['RewardOfferCopy']["SecurityCode"][$itr],$_SESSION['RewardOfferCopy']['ValidUntil'][$itr],
+                                                                                                    $companyaddress,$companyphone, $companywebsite, $importantreminder,$about, $term, $newfooter);
+
+                                if($dateRange['IsMystery'] == 1){
+                                        $rddate = new DateTime(date($_SESSION['RewardOfferCopy']["RedemptionDate"]));
+                                        $redeemeddate = $rddate->format("m-d-Y");
+                                        $redeemedtime = $rddate->format("G:i A");
+                                        $sender = App::getParam('MarketingEmail');
+                                        if($_SESSION['CardRed']['IsVIP'] == 0){
+                                            $statusvalue = "Regular";
+                                        } else {
+                                            $statusvalue = "VIP";
+                                        }
+                                        $modeofredemption = "via cashier";
+                                        $_Helper->sendMysteryRewardEmail($redeemeddate, $redeemedtime, $_SESSION['RewardOfferCopy']["SerialNumber"][$itr], $_SESSION['RewardOfferCopy']["SecurityCode"][$itr], 
+                                                                                                                    $dateRange['MysteryName'], $dateRange['ItemName'], $cardnumber, $playername, 
+                                                                                                                    $statusvalue, $modeofredemption, $sender);
+                                }
+                        }
+
+                    } else {
+
+                        $fbirthdate = date("F j, Y", strtotime($birthdate));
+                        App::LoadCore("File.class.php");
+                        $filename = dirname(__FILE__) . "/template/couponredemptiontemplate.php";
+                        $fp = new File($filename);
+                        $emailmessage = $fp->ReadToEnd();
+                        $emailmessage = str_replace('$playername', $playername, $emailmessage);
+                        $emailmessage = str_replace('$address', $address, $emailmessage);
+                        $emailmessage = str_replace('$sitecode', $sitename, $emailmessage);
+                        $emailmessage = str_replace('$cardno', $cardnumber, $emailmessage);
+                        $emailmessage = str_replace('$birthdate', date("F j, Y", strtotime($birthdate)), $emailmessage);
+                        $emailmessage = str_replace('$email', $email, $emailmessage);
+                        $emailmessage = str_replace('$contactno', $contactno, $emailmessage);
+                        $emailmessage = str_replace('$actualcity', $cityname, $emailmessage);
+                        $emailmessage = str_replace('$actualregion', $regionname, $emailmessage);
+                        $emailmessage = str_replace('$newheader', $newheader, $emailmessage);
+                        $emailmessage = str_replace('$newfooter', $newfooter, $emailmessage);
+                        $emailmessage = str_replace('$couponimage', $itemimage, $emailmessage);
+                        $emailmessage = str_replace('$couponseries', $_SESSION['RewardOfferCopy']["CouponSeries"], $emailmessage);
+                        $emailmessage = str_replace('$quantity', $_SESSION['RewardOfferCopy']["Quantity"], $emailmessage);
+                        $emailmessage = str_replace('$checksum', $_SESSION['RewardOfferCopy']["CheckSum"], $emailmessage);
+                        $emailmessage = str_replace('$serialcode', $_SESSION['RewardOfferCopy']["SerialNumber"], $emailmessage);
+                        $emailmessage = str_replace('$redemptiondate', $redemptiondate, $emailmessage);
+                        $emailmessage = str_replace('$promocode', $promocode, $emailmessage);
+                        $emailmessage = str_replace('$promoname', $promoname, $emailmessage);
+                        $emailmessage = str_replace('$promoperiod', $promoperiod, $emailmessage);
+                        $emailmessage = str_replace('$drawdate', $drawdate, $emailmessage);
+                        $emailmessage = str_replace('$about', $about, $emailmessage);
+                        $emailmessage = str_replace('$term', $term, $emailmessage);
+
+                        $_Helper->sendEmailCouponRedemption($playername,$address,$sitename,$cardnumber,$fbirthdate,$email,$contactno,$cityname,
+                                                                                        $regionname,$newheader,$newfooter,$itemimage,$_SESSION['RewardOfferCopy']["CouponSeries"],
+                                                                                        $_SESSION['RewardOfferCopy']["Quantity"],$_SESSION['RewardOfferCopy']["CheckSum"],
+                                                                                        $_SESSION['RewardOfferCopy']["SerialNumber"],$redemptiondate,$promocode,
+                                                                                        $promoname,$promoperiod,$drawdate,$about,$term);
+
+                        unset($_SESSION['RewardOfferCopy']);
+                    }
                 }
+            }
+            else {
+                App::SetErrorMessage("Invalid Email Address. Please try again.");
             }
     }
     

@@ -6,7 +6,7 @@
 * DateCreated: 2013-06-18 06:47:08PM
 */
 
-Class PlayerBanningWrapper {
+Class PlayerBanningWrapper extends BaseEntity{
     
     public function updatePlayerStatus($arrEntries){
         
@@ -22,68 +22,19 @@ Class PlayerBanningWrapper {
             $entries[$key] = urldecode($val);
         }
         
-        $banningdata['MemberCardID'] = $entries['MemberCardID'];
-        $banningdata['MID'] = $entries['MID'];
-        $banningdata['Status'] = $entries['Status'] == "5" ? "1":"0";
-        $banningdata['Remarks'] = $entries['txtRemarks'];
-        $banningdata['DateCreated'] = 'NOW(6)';
-        $banningdata['CreatedByAID'] = $entries['AID'];
+        $MemberCardID = $entries['MemberCardID'];
+        $MID = $entries['MID'];
+        $Status = $entries['Status'] == "5" ? "1":"0";
+        $Remarks = $entries['txtRemarks'];
+        $DateCreated = 'now_usec()';
+        $CreatedByAID = $entries['AID'];
+        
         $_BanningHistory = new BanningHistory();
-        $_BanningHistory->StartTransaction();
-        $_BanningHistory->Insert($banningdata);
-        $CommonPDOConn = $_BanningHistory->getPDOConnection();
         
-        $_Members = new Members();
-        $_Members->setPDOConnection($CommonPDOConn);
-        $_Members->updateMemberStatusUsingMID($entries['Status'], $entries['MID']);
-        
-        if($entries['Status'] == "5"){
-            $status = 9;
-        } else {
-            $status = strpos($entries['CardNumber'], 'eGames') !== false ? 5:1;
-        }
-        
-        $_MemberCards = new MemberCards();
-        $_MemberCards->setPDOConnection($CommonPDOConn);
-        $_MemberCards->updateMemberCardStatusUsingCardNumber($status, $entries['CardNumber']);
-        if(!App::HasError()){
-            $_BanningHistory->CommitTransaction();
-            if($entries['Status'] == "5"){
-                $message = "Player Banning/Unbanning: Transaction Successful.";
-                $_AuditTrail = new AuditTrail();
-                $_AuditTrail->StartTransaction();
-                $_AuditTrail->logEvent(AuditFunctions::BAN_PLAYER, $message, array('ID'=>$_SESSION['userinfo']['AID'], 'SessionID'=>$_SESSION['userinfo']['SessionID']));
-                if(!App::HasError()){
-                    $_AuditTrail->CommitTransaction();
-                    return $message;
-                } else {
-                    $message = "Failed to log event on database.";
-                    $_AuditTrail->RollBackTransaction();
-                    return $message;
-                }
-            } else {
-                $message = "Player Banning/Unbanning: Transaction Successful.";
-                $_AuditTrail = new AuditTrail();
-                $_AuditTrail->StartTransaction();
-                $_AuditTrail->logEvent(AuditFunctions::UNBAN_PLAYER, $message, array('ID'=>$_SESSION['userinfo']['AID'], 'SessionID'=>$_SESSION['userinfo']['SessionID']));
-                if(!App::HasError()){
-                    $_AuditTrail->CommitTransaction();
-                    return $message;
-                } else {
-                    $message = "Failed to log event on database.";
-                    $_AuditTrail->RollBackTransaction();
-                    return $message;
-                }
-            }
-            
-        } else {
-            $_BanningHistory->RollBackTransaction();
-            $message = "Player Banning/Unbanning: Transaction Failed.";
-            return $message;
-        }
+        $msg = $_BanningHistory->insertBanningHistory($entries, $MemberCardID, $MID, $Status, $Remarks, $DateCreated, $CreatedByAID);
+    
+        return $msg;
     }
-
-            
 }
 
 ?>

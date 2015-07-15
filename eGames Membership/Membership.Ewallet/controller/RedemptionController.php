@@ -27,6 +27,11 @@ if(isset($_SESSION['userinfo'])){
     App::LoadModuleClass("Admin", "AccessRights");
     App::LoadModuleClass("Admin", "AccountSessions");
     App::LoadModuleClass("Kronus", "Accounts");
+    App::LoadModuleClass("Membership", "PcwsWrapper");
+    App::LoadModuleClass("Membership", "MemberInfo");
+    
+    $_MemberInfo = new MemberInfo();
+    
     $sessioncount = $_AccountSessions->checkifsessionexist($aid, $sessionid);
     foreach ($sessioncount as $value) {
             foreach ($value as $value2) {
@@ -91,6 +96,8 @@ if(isset($_SESSION['MID'])){
 //Check if session is existing, if not destroy session and redirect to login page.
 if($sessioncount > 0)
 {
+        $_PcwsWrapper = new PcwsWrapper();
+        
         App::LoadCore('ErrorLogger.php');
         $logger = new ErrorLogger();
         
@@ -133,7 +140,7 @@ if($sessioncount > 0)
             $PlayerPoints = $api['GetCompPoints']['CompBalance'];
             $redemptiondata["PlayerPoints"] = $PlayerPoints;
             //$redemptiondata["PlayerPoints"] = $PlayerPoints[0]['CurrentPoints'];
-            $personaldetails = $_MemberInfo->SelectByWhere('WHERE MID = '.$redemptiondata["MID"]);
+            $personaldetails = $_MemberInfo->getMemInfoUsingSP($redemptiondata["MID"]);
             if(isset($personaldetails[0]) && $personaldetails[0] != ""){
                 $redemptiondata["PlayerName"] = $personaldetails[0]['FirstName']." ".$personaldetails[0]['LastName'];
                 $redemptiondata["Birthdate"] = $personaldetails[0]['Birthdate'];
@@ -340,7 +347,7 @@ if($sessioncount > 0)
                     }
 
                 } else {
-
+                    
                     //Check if the available item is greater than or match with the quantity avail by the player.
                     $availableitemcount = $_RewardItems->getAvailableItemCount($redemptiondata["RewardItemID"]);
 

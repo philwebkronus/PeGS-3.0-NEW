@@ -98,7 +98,28 @@ class TempMembers extends BaseEntity
             return self::VERIFY_EMAIL_FAILED;
         }
     }
-    
+    public function verifyEmailAccountSP($email,$tempcode)
+    {
+        $this->StartTransaction();
+        
+        $query = "CALL membership.sp_select_data(0, 0, 3, '$tempcode,$email', 'UserName', @RetCode, @RetMsg, @RetFields)";       
+        $result = parent::RunQuery($query);
+        if ($result[0]['OUTfldListRet'] > 0) {
+            $query2 = "CALL membership.sp_update_data(0, 0, 'UserName,TemporaryAccountCode','$email;$tempcode','DateVerified,IsVerified','NOW(6);1',@ResultCode,@Result)";
+            $result = parent::RunQuery($query2);
+
+            if ($result[0]['@OUT_intResultCode'] == 0) {
+                
+                return self::VERIFY_EMAIL_SUCCESS;
+            }
+            else {
+                return self::VERIFY_EMAIL_FAILED;
+            }
+        }
+        else {
+            return self::VERIFY_EMAIL_FAILED;
+        }
+    }
     function Register($arrMembers,$arrMemberInfo)
     {
         $MID = '';
@@ -197,13 +218,29 @@ class TempMembers extends BaseEntity
      * @return int
      */
     public function chkTmpVerifiedEmailAddress($email){
-        $query = "SELECT COUNT(m.MID) ctrtemp, m.TemporaryAccountCode  FROM members m
+        $query = "SELECT COUNT(m.MID) ctrtemp FROM members m 
                 INNER JOIN memberinfo mi ON m.MID = mi.MID
                 WHERE m.IsVerified = 1 AND mi.Email = '$email'";
         
         $result = parent::RunQuery($query);
-
-        return $result;//$result[0]['ctrtemp'];
+        
+        return $result[0]['ctrtemp'];
+    }
+    
+    /**
+     * Check if email was already verified in temp db using SP
+     * @author aqdepliyan
+     * @date 06/04/15
+     * @param str $email
+     * @return int
+     */
+    public function chkTmpVerifiedEmailAddressWithSP($email){
+        $this->ConnString = "membership";
+        $query1 = "CALL sp_select_data(0,1,2,'$email', 'FirstName', @ReturnCode, @ReturnMessage, @ReturnFields);";
+        $query2 = "SELECT @ReturnCode, @ReturnMessage, @ReturnFields;";
+        parent::RunQuery($query1);
+        $result = parent::RunQuery($query2);
+        return $result[0]['@ReturnFields'];
     }
     
     /**
