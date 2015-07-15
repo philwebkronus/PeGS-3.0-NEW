@@ -1233,6 +1233,11 @@ class FrontendController extends MI_Controller {
                                             $this->getCardInfo($startSessionFormModel->loyalty_card, $this->site_id, $terminaltype);
        
        if($isewallet > 0 && $ref_service['ServiceID'] == 19){
+           if($terminaltype != 2){
+                $message = 'e-SAFE card cannot start a session on this terminal. Map terminal to e-SAFE type.';
+                logger($message);
+                $this->throwError($message);
+           }
            $result = $this->_Unlock($terminalname, $startSessionFormModel->loyalty_card);
        }
        else{
