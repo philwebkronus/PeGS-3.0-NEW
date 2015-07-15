@@ -444,7 +444,7 @@ if($connected)
                                 monitor email traffic.
                             </body>
                         </html>";
-                    $headers="From: $adminemailsender\r\nContent-type:text/html";
+                    $headers="From: poskronusadmin@philweb.com.ph\r\nContent-type:text/html";
                     $sentEmail = mail($to, $subject, $message, $headers);   
                     if($sentEmail == 1)
                     {
@@ -744,8 +744,8 @@ if($connected)
                 $vTerminalID = $_POST['cmbterminal'];
                 $vdate1 = $_POST['txtDate1'];
                 //$vdate2 = $_POST['txtDate2'];
-                $vFrom = $vdate1;
-                $vTo = date ('Y-m-d', strtotime ('+1 day' , strtotime($vdate1)));
+                $vFrom = $vdate1." ".$cutoff_time;
+                $vTo = date ('Y-m-d', strtotime ('+1 day' , strtotime($vdate1)))." ".$cutoff_time;
                 $vsummaryID = $_POST['summaryID'];
                 
                 //for sorting
@@ -838,8 +838,8 @@ if($connected)
                 $vTerminalID = $_POST['cmbterminal'];
                 $vdate1 = $_POST['txtDate1'];
                 //$vdate2 = $_POST['txtDate2'];
-                $vFrom = $vdate1;
-                $vTo = date ('Y-m-d', strtotime ('+1 day' , strtotime($vdate1)));
+                $vTo = date ('Y-m-d', strtotime ('+1 day' , strtotime($vdate1)))." ".$cutoff_time;
+                $vFrom = $vdate1." ".$cutoff_time;
                 //for sorting
                 if($_POST['sidx'] != "")
                 {
@@ -912,8 +912,8 @@ if($connected)
                 $vTerminalID = $_POST['cmbterminal'];
                 $vdate1 = $_POST['txtDate1'];
                 //$vdate2 = $_POST['txtDate2'];
-                $vFrom = $vdate1;
-                $vTo = date ('Y-m-d', strtotime ('+1 day' , strtotime($vdate1)));
+                $vFrom = $vdate1." ".$cutoff_time;
+                $vTo = date ('Y-m-d', strtotime ('+1 day' , strtotime($vdate1)))." ".$cutoff_time;
                 $vsummaryID = $_POST['summaryID'];
                 
                 //for sorting

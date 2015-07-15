@@ -78,7 +78,7 @@ $vaccesspages = array('6');
                 <td>Transaction Date:</td>
                 <td>
                  <input name="txtDate1" id="popupDatepicker1" readonly value="<?php echo date('Y-m-d')." "."06:00:00"; ?>"/>
-                 <img name="cal" src="images/cal.gif" width="16" height="16" border="0" alt="Pick a date" onClick="unloadDataGrid(); javascript:NewCssCal('popupDatepicker1','yyyyMMdd','dropdown',true,'24',true)"/>
+                 <img name="cal" src="images/cal.gif" width="16" height="16" border="0" alt="Pick a date" onClick="$('#lbldaterange').html('');unloadDataGrid(); javascript:NewCssCal('popupDatepicker1','yyyyMMdd','dropdown',true,'24',true)"/>
                 </td>
 <!--                <td>
                 To:
@@ -93,7 +93,7 @@ $vaccesspages = array('6');
         <div id="submitarea" style="float: right;">
             <input type="button" id="btnquery" value="Query" />
         </div>
-        
+        <div id="lbldaterange" align="left" style="float: left;"></div>
         <!-- Transaction Summary Grid-->
         <div align="center" style="float: left;">
             <table border="1" id="transsummary">
@@ -160,6 +160,37 @@ $vaccesspages = array('6');
                 }
            }
        });*/
+                                          
+        //Get Date Range
+        function getDateRange(startdate){
+            var extract6am = startdate.toString(20).substring(0, 10);
+            var date1= new Date(extract6am);
+            var msg = "";
+            var numberOfDaysToAdd = 1;
+            date1.setDate(date1.getDate() + numberOfDaysToAdd); 
+
+            //Format Date Year-Month-Day Hour:Minutes:Seconds
+            var mm = date1.getMonth() + 1;
+            var dd = date1.getDate();
+            var yy = date1.getFullYear();
+            var hh = startdate.toString(20).substring(11, 13);
+            var ii = startdate.toString(20).substring(14, 16);
+            var ss = startdate.toString(20).substring(17, 19)
+            var ampm = "AM";
+            
+            //condition for formatting of AM:PM
+            ampm = hh < 12 ? "AM": ii > 0 ? "PM": ss > 0 ? "PM":"AM";
+            
+            //condition for formatting month
+            mm = mm < 10 ? mm = "0"+mm:mm=mm;
+
+            //condition for formatting day
+            dd = dd < 10 ? dd = "0"+dd:dd=dd;
+
+            var date2 =  yy + "-" + mm + "-" + dd + " 06:00:00";
+            msg = "Report Date Range: " + startdate + "  " + ampm + "  to  " + date2 + " AM";
+            return msg;
+        }
        
        //ajax call: loading of sites
        jQuery('#cmbsite').live('change', function()
@@ -241,6 +272,14 @@ $vaccesspages = array('6');
                 //var isValidDateTime = validateDateTime();
                 var isValidDateTime = true;
                 if(isValidDateTime == true ) {
+                    
+                    //Get Date Range
+                    $("#lbldaterange").html("");
+                    var date1 = $("#popupDatepicker1").val();
+                    var daterange = "";
+                     //get date range label
+                    daterange = getDateRange(date1);
+                    $("#lbldaterange").html("<p>"+daterange+"</p>");
                 
                     //for displaying transaction details
                     //var value = 0;

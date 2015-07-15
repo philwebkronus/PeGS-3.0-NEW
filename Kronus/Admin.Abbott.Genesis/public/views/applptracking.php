@@ -94,7 +94,7 @@ $vaccesspages = array('9');
         <div id="submitarea" style="float: right;">
             <input type="button" id="btnquery" value="Query" />
         </div>
-        
+        <div id="lbldaterange" align="left" style="float: left;"></div>
         <!-- Transaction Summary Grid-->
         <div align="center" style="float: left;">
             <table border="1" id="transsummary">
@@ -132,7 +132,27 @@ $vaccesspages = array('9');
     {
        var url = 'process/ProcessAppSupport.php';
        
-   
+       function getDateRange(startdate){
+            var date1= new Date(startdate);
+            var msg = "";
+            var numberOfDaysToAdd = 1;
+            date1.setDate(date1.getDate() + numberOfDaysToAdd); 
+
+            //Format Date Year-Month-Day Hour:Minutes:Seconds
+            var mm = date1.getMonth() + 1;
+            var dd = date1.getDate();
+            var yy = date1.getFullYear();
+            
+            //condition for formatting month
+            mm = mm < 10 ? mm = "0"+mm:mm=mm;
+
+            //condition for formatting day
+            dd = dd < 10 ? dd = "0"+dd:dd=dd;
+
+            var date2 =  yy + "-" + mm + "-" + dd + " 06:00:00";
+            msg = "Report Date Range: " + startdate + " 06:00:00 AM  to  " + date2 + " AM";
+            return msg;
+        }
        
        //ajax call: loading of sites
        jQuery('#cmbsite').live('change', function()
@@ -201,6 +221,13 @@ $vaccesspages = array('9');
             var validate = true; //validate form
             if(validate == true)
             {
+                $("#lbldaterange").html("");
+                var date1 = $("#popupDatepicker1").val();
+                var daterange = "";
+                 //get date range label
+                daterange = getDateRange(date1);
+                $("#lbldaterange").html("<p>"+daterange+"</p>");
+                
                 //for displaying transaction details
                var value = 0;
                getdetailsbyID(value); //call function for transaction detailsddd
@@ -307,6 +334,7 @@ $vaccesspages = array('9');
     //function for posting transaction details
     function getdetailsbyID(value)
     {
+        
         jQuery("#transdetails").GridUnload();
         var url = 'process/ProcessAppSupport.php';
         jQuery("#transdetails").jqGrid({

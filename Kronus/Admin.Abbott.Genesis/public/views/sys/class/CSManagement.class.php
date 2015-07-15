@@ -20,11 +20,11 @@ class CSManagement extends DBHandler{
       {
           if($zsiteID > 0)
           {
-              $stmt = "SELECT TerminalID, TerminalCode FROM terminals where SiteID = '".$zsiteID."' AND Status = 1 ORDER BY TerminalID ASC";
+              $stmt = "SELECT TerminalID, TerminalCode FROM terminals where SiteID = '".$zsiteID."' AND (Status = 0 OR 1) ORDER BY TerminalID ASC";
           }
           else
 	  {
-              $stmt = "SELECT TerminalID, TerminalCode FROM terminals WHERE Status = 1 ORDER BY TerminalID ASC";
+              $stmt = "SELECT TerminalID, TerminalCode FROM terminals WHERE (Status = 0 OR 1) ORDER BY TerminalID ASC";
           }
           $this->executeQuery($stmt);
           return $this->fetchAllData();
@@ -437,7 +437,7 @@ class CSManagement extends DBHandler{
                     FROM transactiondetails tr inner join accounts a on tr.CreatedByAID = a.AID 
                     inner join accountdetails ad on a.AID = ad.AID
                     WHERE tr.SiteID = ? AND tr.TerminalID = ? 
-                    AND tr.DateCreated >= ? AND tr.DateCreated <= ? AND tr.TransactionSummaryID = ? ORDER BY ".$zsort." ".$zdirection." LIMIT ".$zstart.",".$zlimit."";
+                    AND tr.DateCreated >= ? AND tr.DateCreated < ? AND tr.TransactionSummaryID = ? ORDER BY ".$zsort." ".$zdirection." LIMIT ".$zstart.",".$zlimit."";
                 $this->prepare($stmt);
                 $this->bindparameter(1, $zsiteID);
                 $this->bindparameter(2, $zterminalID);
@@ -452,7 +452,7 @@ class CSManagement extends DBHandler{
                     FROM transactiondetails tr inner join accounts a on tr.CreatedByAID = a.AID 
                     inner join accountdetails ad on a.AID = ad.AID
                     WHERE tr.SiteID = ? AND tr.TerminalID = ? 
-                    AND tr.DateCreated >= ? AND tr.DateCreated <= ? ORDER BY ".$zsort." ".$zdirection." LIMIT ".$zstart.",".$zlimit."";
+                    AND tr.DateCreated >= ? AND tr.DateCreated < ? ORDER BY ".$zsort." ".$zdirection." LIMIT ".$zstart.",".$zlimit."";
                 $this->prepare($stmt);
                 $this->bindparameter(1, $zsiteID);
                 $this->bindparameter(2, $zterminalID);
@@ -472,7 +472,7 @@ class CSManagement extends DBHandler{
                     FROM transactionsummary ts 
                     INNER JOIN accounts acc ON ts.CreatedByAID = acc.AID
                     WHERE ts.SiteID = ? AND ts.TerminalID = ? AND ts.DateStarted >= ?
-                    AND ts.DateStarted <= ?";
+                    AND ts.DateStarted < ?";
             $this->prepare($stmt);
             $this->bindparameter(1, $zsiteID);
             $this->bindparameter(2, $zterminalID);
@@ -492,7 +492,7 @@ class CSManagement extends DBHandler{
                     INNER JOIN terminals tm ON ts.TerminalID = tm.TerminalID
                     INNER JOIN sites s ON ts.SiteID = s.SiteID
                     WHERE ts.SiteID = ? AND ts.TerminalID = ? AND ts.DateStarted >= ?
-                    AND ts.DateStarted <= ? ORDER BY ".$zsort." ".$zdirection." LIMIT ".$zstart.",".$zlimit."";
+                    AND ts.DateStarted < ? ORDER BY ".$zsort." ".$zdirection." LIMIT ".$zstart.",".$zlimit."";
             $this->prepare($stmt);
             $this->bindparameter(1, $zsiteID);
             $this->bindparameter(2, $zterminalID);
@@ -510,7 +510,7 @@ class CSManagement extends DBHandler{
             {
                 $stmt = "SELECT COUNT(*) ctrlogs FROM transactionrequestlogslp 
                         WHERE SiteID = ? AND TerminalID = ? AND StartDate >= ? 
-                        AND EndDate <= ? AND TransactionSummaryID = ?";
+                        AND EndDate < ? AND TransactionSummaryID = ?";
                 $this->prepare($stmt);
                 $this->bindparameter(1, $zsiteID);
                 $this->bindparameter(2, $zterminalID);
@@ -522,7 +522,7 @@ class CSManagement extends DBHandler{
             {
                 $stmt = "SELECT COUNT(*) ctrlogs FROM transactionrequestlogslp 
                         WHERE SiteID = ? AND TerminalID = ? AND StartDate >= ? 
-                        AND EndDate <= ?";
+                        AND EndDate < ?";
                 $this->prepare($stmt);
                 $this->bindparameter(1, $zsiteID);
                 $this->bindparameter(2, $zterminalID);
@@ -543,7 +543,7 @@ class CSManagement extends DBHandler{
                 $stmt = "SELECT TransactionRequestLogLPID, TransactionReferenceID, Amount, StartDate, 
                     EndDate, TransactionType, TerminalID, Status, SiteID, ServiceTransactionID, 
                     ServiceStatus, ServiceTransferHistoryID, ServiceID FROM transactionrequestlogslp 
-                    WHERE SiteID = ? AND TerminalID = ? AND StartDate >= ? AND EndDate <= ? 
+                    WHERE SiteID = ? AND TerminalID = ? AND StartDate >= ? AND EndDate < ? 
                     AND TransactionSummaryID = ? ORDER BY ".$zsort." ".$zdirection." LIMIT ".$zstart.",".$zlimit."";
                 $this->prepare($stmt);
                 $this->bindparameter(1, $zsiteID);
@@ -557,7 +557,7 @@ class CSManagement extends DBHandler{
                 $stmt = "SELECT TransactionRequestLogLPID, TransactionReferenceID, Amount, StartDate, 
                     EndDate, TransactionType, TerminalID, Status, SiteID, ServiceTransactionID, 
                     ServiceStatus, ServiceTransferHistoryID, ServiceID FROM transactionrequestlogslp 
-                    WHERE SiteID = ? AND TerminalID = ? AND StartDate >= ? AND EndDate <= ? 
+                    WHERE SiteID = ? AND TerminalID = ? AND StartDate >= ? AND EndDate < ? 
                     ORDER BY ".$zsort." ".$zdirection." LIMIT ".$zstart.",".$zlimit."";
                 $this->prepare($stmt);
                 $this->bindparameter(1, $zsiteID);
