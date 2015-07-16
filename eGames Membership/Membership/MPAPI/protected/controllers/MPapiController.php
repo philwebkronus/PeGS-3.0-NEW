@@ -29,27 +29,72 @@ class MPapiController extends Controller {
         $appLogger = new AppLogger();
         $membersModel = new MembersModel();
         $memberCardsModel = new MemberCardsModel();
-        $membershipTempModel = new MembershipTempModel();
+        //$membershipTempModel = new MembershipTempModel();
         $logger = new ErrorLogger();
         $apiLogsModel = new APILogsModel();
         //check if username is in members and is already verified
         if (Utilities::validateEmail($username)) {
-            $result = $membersModel->getMembersDetails($username);
+            $result = $membersModel->getMembersDetailsWithSP($username);
             $refID = $username;
+            if(!$result)
+            {
+                $transMsg = "Member not found.";
+                $errorCode = 3;
+                Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                $data = CommonController::retMsgLogin($module, '', '', '', '', $errorCode, $transMsg);
+                $message = "[Login] Output: " . CJSON::encode($data);
+                $appLogger->log($appLogger->logdate, "[response]", $message);
+                $this->_sendResponse(200, CJSON::encode($data));
+                $logMessage = 'Member not found.';
+                $logger->log($logger->logdate, "[LOGIN ERROR]: " . $username . " || ", $logMessage);
+                $apiDetails = 'LOGIN-Authenticate-Failed: Member not found.';
+                $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
+                if ($isInserted == 0) {
+                    $logMessage = "Failed to insert to APILogs.";
+                    $logger->log($logger->logdate, "[LOGIN ERROR]: " . $username . " || ", $logMessage);
+                }
+
+                exit;
+            }
         } else {
             $cardInfo = $memberCardsModel->getMIDUsingCard($username);
-            if ($cardInfo > 0) {
-                if ($cardInfo['Status'] == 1 || $cardInfo['Status'] == 5) {
-                    $MID = $cardInfo['MID'];
-                    $result = $membersModel->getMemberDetailsByMID($MID);
-                } else if ($cardInfo['Status'] == 9) {
-                    $result = "Card is banned.";
-                } else {
-                    $result = 0;
+            if(!$cardInfo)
+            {
+                $transMsg = "Card number does not exist.";
+                $errorCode = 61;
+                Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                $data = CommonController::retMsgLogin($module, '', '', '', '', $errorCode, $transMsg);
+                $message = "[Login] Output: " . CJSON::encode($data);
+                $appLogger->log($appLogger->logdate, "[response]", $message);
+                $this->_sendResponse(200, CJSON::encode($data));
+                $logMessage = 'Card number does not exist.';
+                $logger->log($logger->logdate, "[LOGIN ERROR]: " . $username . " || ", $logMessage);
+                $apiDetails = 'LOGIN-Authenticate-Failed: Card number does not exist.';
+                $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
+                if ($isInserted == 0) {
+                    $logMessage = "Failed to insert to APILogs.";
+                    $logger->log($logger->logdate, "[LOGIN ERROR]: " . $username . " || ", $logMessage);
                 }
-            } else {
-                $result = array();
+
+                exit;
             }
+            $result = $membersModel->getUsernameByMIDWithSP($cardInfo['MID']); //newly added
+            $result = $membersModel->getMembersDetailsWithSP($result['UserName']);
+//            if ($cardInfo > 0) {
+//                if ($cardInfo['Status'] == 1 || $cardInfo['Status'] == 5) {
+//                    $MID = $cardInfo['MID'];
+//                    $result = $membersModel->getMemberDetailsByMIDWithSP($MID);
+//                    var_dump($result);exit;
+//                } else if ($cardInfo['Status'] == 9) {
+//                    $result = "Card is banned.";
+//                } else {
+//                    $result = 0;
+//                }
+//            } else {
+//                $result = array();
+//            }
+            
+
             $refID = $username;
         }
         $retVal = '';
@@ -187,9 +232,11 @@ class MPapiController extends Controller {
             $retVal = false;
             exit;
         } else {
-            $isTempAcctExist = $membershipTempModel->checkTempUser($username);
-            //check if account has no transactions yet in kronus cashier
-            if ($isTempAcctExist > 0) {
+
+//            $isTempAcctExist = $membershipTempModel->checkTempUser($username); //newly added
+//
+//            //check if account has no transactions yet in kronus cashier
+//            if ($isTempAcctExist > 0) {
                 $transMsg = "You need to transact at least one transaction before you can login.";
                 $errorCode = 39;
                 Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
@@ -207,25 +254,26 @@ class MPapiController extends Controller {
                 }
                 $retVal = false;
                 exit;
-            } else {
-                $transMsg = "Account is Invalid.";
-                $errorCode = 38;
-                Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
-                $data = CommonController::retMsgLogin($module, '', '', '', '', $errorCode, $transMsg);
-                $message = "[Login] Output: " . CJSON::encode($data);
-                $appLogger->log($appLogger->logdate, "[response]", $message);
-                $this->_sendResponse(200, CJSON::encode($data));
-                $logMessage = 'Account is Invalid.';
-                $logger->log($logger->logdate, "[LOGIN ERROR]: " . $username . " || ", $logMessage);
-                $apiDetails = 'LOGIN-Authenticate-Failed: Member account is invalid.';
-                $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
-                if ($isInserted == 0) {
-                    $logMessage = "Failed to insert to APILogs.";
-                    $logger->log($logger->logdate, "[LOGIN ERROR]: " . $username . " || ", $logMessage);
-                }
-                $retVal = false;
-                exit;
-            }
+//            } else {
+//                $transMsg = "Account is Invalid.";
+//                $errorCode = 38;
+//                Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+//                $data = CommonController::retMsgLogin($module, '', '', '', '', $errorCode, $transMsg);
+//                $message = "[Login] Output: " . CJSON::encode($data);
+//                $appLogger->log($appLogger->logdate, "[response]", $message);
+//                $this->_sendResponse(200, CJSON::encode($data));
+//                $logMessage = 'Account is Invalid.';
+//                $logger->log($logger->logdate, "[LOGIN ERROR]: " . $username . " || ", $logMessage);
+//                $apiDetails = 'LOGIN-Authenticate-Failed: Member account is invalid.';
+//                $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
+//                if ($isInserted == 0) {
+//                    $logMessage = "Failed to insert to APILogs.";
+//                    $logger->log($logger->logdate, "[LOGIN ERROR]: " . $username . " || ", $logMessage);
+//                }
+//
+//                $retVal = false;
+//                exit;
+//            }
         }
         return $retVal;
     }
@@ -271,10 +319,12 @@ class MPapiController extends Controller {
                     $cardsModel = new CardsModel();
                     $auditTrailModel = new AuditTrailModel();
                     $memberInfoModel = new MemberInfoModel();
+                    $membersModel = new MembersModel(); //newly added
                     $members = $this->_authenticate($username, $password);
                     if ($members) {
                         $MID = $members['MID'];
-                        $isVIP = $members['IsVIP'];
+                        $isVIPResult = $membersModel->getIsVIPUsingMID($MID); //newly added
+                        $isVIP = $isVIPResult['IsVIP'];
                         $activeSession = $memberSessionsModel->checkSession($MID);
                         $remoteIP = $_SERVER['REMOTE_ADDR'];
                         $session = new CHttpSession();
@@ -680,15 +730,20 @@ class MPapiController extends Controller {
                 $auditTrailModel = new AuditTrailModel();
                 $refID = $emailCardNumber;
                 if (Utilities::validateEmail($emailCardNumber)) {
-                    $data = $memberInfoModel->getDetailsUsingEmail($emailCardNumber);
+                    $data = $memberInfoModel->getDetailsUsingEmailWithSP($emailCardNumber);
+
                     if ($data) {
                         $MID = $data['MID'];
                         $firstname = $data['FirstName'];
+                        $middleName = $data['MiddleName'];
                         $lastname = $data['LastName'];
-                        $fullname = $firstname . ' ' . $lastname;
+                        $fullname = $firstname . ' ' .$middleName.' '.$lastname;
+
                         $ubCard = $memberCardsModel->getCardNumberUsingMID($MID);
                         $hashedUBCard = base64_encode($ubCard);
-                        $result = $membersModel->updateForChangePasswordUsingMID($MID, 1);
+
+                        $result = $membersModel->updateForChangePasswordUsingMIDWithSP($MID, 1);
+                        
                         if ($result > 0) {
                             $helpers->sendEmailForgotPassword($emailCardNumber, $fullname, $hashedUBCard);
                             $isSuccessful = $auditTrailModel->logEvent(AuditTrailModel::API_FORGOT_PASSWORD, 'EmailCardNumber: ' . $emailCardNumber, array('MID' => $MID, 'SessionID' => ''));
@@ -778,12 +833,13 @@ class MPapiController extends Controller {
                     if ($data && count($isCardExist) > 0) {
                         if (($data['Status'] == 1) || ($data['Status'] == 5)) {
                             $MID = $data['MID'];
-                            $info = $memberInfoModel->getEmailFNameUsingMID($MID);
+                            //$info = $memberInfoModel->getEmailFNameUsingMID($MID);
+                            $info = $memberInfoModel->getEmailFNameUsingMIDWithSP($MID);
                             if (isset($info['Email']) && $info['Email'] != '') {
-                                $fullname = $info['FirstName'] . ' ' . $info['LastName'];
+                                $fullname = $info['FirstName'] . ' '.$info['MiddleName'].' ' . $info['LastName'];
                                 $email = $info['Email'];
                                 $hashedUBCard = base64_encode($emailCardNumber);
-                                $result = $membersModel->updateForChangePasswordUsingMID($MID, 1);
+                                $result = $membersModel->updateForChangePasswordUsingMIDWithSP($MID, 1);
                                 if ($result > 0) {
                                     $helpers->sendEmailForgotPassword($email, $fullname, $hashedUBCard);
                                     $isSuccessful = $auditTrailModel->logEvent(AuditTrailModel::API_FORGOT_PASSWORD, 'EmailCardNumber: ' . $emailCardNumber, array('MID' => $MID, 'SessionID' => ''));
@@ -1375,7 +1431,7 @@ class MPapiController extends Controller {
                 $nickname = trim($request['NickName']);
                 if ($nickname == '')
                     $nickname = '';
-                $password = md5(trim($request['Password']));
+                $password = trim($request['Password']);
                 $permanentAddress = trim($request['PermanentAdd']);
                 $mobileNumber = trim($request['MobileNo']);
                 $alternateMobileNumber = trim($request['AlternateMobileNo']);
@@ -1417,8 +1473,10 @@ class MPapiController extends Controller {
                 //check if member is blacklisted
                 $isBlackListed = $blackListsModel->checkIfBlackListed($firstname, $lastname, $birthdate, 3);
                 //check if email is active and existing in live membership db
-                $activeEmail = $memberInfoModel->checkIfActiveVerifiedEmail($emailAddress);
-                if ($activeEmail['COUNT(MID)'] > 0) {
+                //$activeEmail = $memberInfoModel->checkIfActiveVerifiedEmailWithSP($emailAddress);
+                $activeEmail = $memberInfoModel->getDetailsUsingEmailWithSP($emailAddress);
+
+                if ($activeEmail) {
                     $transMsg = "Sorry, " . $emailAddress . " already belongs to an existing account. Please enter another email address.";
                     $errorCode = 21;
                     Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
@@ -1471,8 +1529,10 @@ class MPapiController extends Controller {
                     exit;
                 } else {
                     //check if email is already verified in temp table
-                    $tempEmail = $membershipTempModel->checkTempVerifiedEmail($emailAddress);
-                    if ($tempEmail['COUNT(a.MID)'] > 0) {
+                    $tempEmail = $membershipTempModel->checkTempVerifiedEmailWithSP($emailAddress);
+
+                    if ($tempEmail['Count'] > 0) {
+
                         $transMsg = "Email is already verified. Please choose a different email address.";
                         $errorCode = 52;
                         Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
@@ -1490,14 +1550,15 @@ class MPapiController extends Controller {
                         }
                         exit;
                     } else {
-                        $lastInsertedMID = $membershipTempModel->register($emailAddress, $firstname, $middlename, $lastname, $nickname, $password, $permanentAddress, $mobileNumber, $alternateMobileNumber, $alternateEmail, $idNumber, $idPresented, $gender, $referralCode, $birthdate, $occupationID, $nationalityID, $isSmoker, $referrerID, $emailSubscription, $smsSubscription);
-                        if ($lastInsertedMID  > 0) {
+                        $lastInsertedMID = $membershipTempModel->registerWithSP($emailAddress, $firstname, $middlename, $lastname, $nickname, $password, $permanentAddress, $mobileNumber, $alternateMobileNumber, $alternateEmail, $idNumber, $idPresented, $gender, $referralCode, $birthdate, $occupationID, $nationalityID, $isSmoker, $referrerID, $emailSubscription, $smsSubscription);
+                        if ($lastInsertedMID > 0) {
+                            $MID = $lastInsertedMID;
                             $mpSessionID = '';
                             $memberInfos = $membershipTempModel->getTempMemberInfoForSMS($lastInsertedMID);
                             //match to 09 or 639 in mobile number
-                            $match = substr($memberInfos['MobileNumber'], 0, 3);
+                            $match = substr($mobileNumber, 0, 3);
                             if ($match == "639") {
-                                $mncount = count($memberInfos["MobileNumber"]);
+                                $mncount = count($mobileNumber);
                                 if (!$mncount == 12) {
                                     $message = "Failed to send SMS. Invalid Mobile Number.";
                                     $logger->log($logger->logdate, "[REGISTERMEMBER ERROR]: " . $request['FirstName'] . " || " . $request['LastName'] . " || " . $request['MobileNo'] . " || " . $request['EmailAddress'] . " || " . $request['Birthdate'] . " || ", $message);
@@ -1514,7 +1575,7 @@ class MPapiController extends Controller {
                                     $templateid2 = $templateid2['SMSTemplateID'];
                                     $methodid1 = Ref_SMSApiMethodsModel::PLAYER_REGISTRATION_1OF2;
                                     $methodid2 = Ref_SMSApiMethodsModel::PLAYER_REGISTRATION_2OF2;
-                                    $mobileno = $memberInfos["MobileNumber"];
+                                    $mobileno = $mobileNumber;
                                     $smslastinsertedid1 = $smsRequestLogsModel->insertSMSRequestLogs($methodid1, $mobileno, $memberInfos["DateCreated"]);
                                     $smslastinsertedid2 = $smsRequestLogsModel->insertSMSRequestLogs($methodid2, $mobileno, $memberInfos["DateCreated"]);
                                     if (($smslastinsertedid1 != 0 && $smslastinsertedid1 != '') && ($smslastinsertedid2 != 0 && $smslastinsertedid2 != '')) {
@@ -1572,9 +1633,10 @@ class MPapiController extends Controller {
                                     }
                                 }
                             } else {
-                                $match = substr($memberInfos["MobileNumber"], 0, 2);
+                                $match = substr($mobileNumber, 0, 2);
                                 if ($match == "09") {
-                                    $mncount = count($memberInfos["MobileNumber"]);
+                                    $mncount = count($mobileNumber);
+
                                     if (!$mncount == 11) {
                                         $message = "Failed to send SMS: Invalid Mobile Number.";
                                         $logger->log($logger->logdate, "[REGISTERMEMBER ERROR]: " . $request['FirstName'] . " || " . $request['LastName'] . " || " . $request['MobileNo'] . " || " . $request['EmailAddress'] . " || " . $request['Birthdate'] . " || ", $message);
@@ -1585,7 +1647,7 @@ class MPapiController extends Controller {
                                             $logger->log($logger->logdate, "[REGISTERMEMBER ERROR]: " . $request['FirstName'] . " || " . $request['LastName'] . " || " . $request['MobileNo'] . " || " . $request['EmailAddress'] . " || " . $request['Birthdate'] . " || ", $logMessage);
                                         }
                                     } else {
-                                        $cpNumber = $memberInfos["MobileNumber"];
+                                        $cpNumber = $mobileNumber;
                                         $mobileno = $this->formatMobileNumber($cpNumber);
                                         $templateid1 = $ref_SMSApiMethodsModel->getSMSMethodTemplateID(Ref_SMSApiMethodsModel::PLAYER_REGISTRATION_1OF2);
                                         $templateid2 = $ref_SMSApiMethodsModel->getSMSMethodTemplateID(Ref_SMSApiMethodsModel::PLAYER_REGISTRATION_2OF2);
@@ -1660,11 +1722,11 @@ class MPapiController extends Controller {
                                     }
                                 }
                             }
-                            $auditTrailModel->logEvent(AuditTrailModel::API_REGISTER_MEMBER, 'Email: ' . $emailAddress, array('MID' => $lastInsertedMID, 'SessionID' => $mpSessionID));
+                            $auditTrailModel->logEvent(AuditTrailModel::API_REGISTER_MEMBER, 'Email: ' . $emailAddress, array('MID' => $MID, 'SessionID' => $mpSessionID));
                         } else {
                             //check if email is already verified in temp table
-                            $tempEmail = $membershipTempModel->checkTempVerifiedEmail($emailAddress);
-                            if ($tempEmail['COUNT(a.MID)'] > 0) {
+                            $tempEmail = $membershipTempModel->checkTempVerifiedEmailWithSP($emailAddress);
+                            if ($tempEmail['Count'] > 0) {
                                 $transMsg = "Email is already verified. Please choose a different email address.";
                                 $errorCode = 52;
                                 Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
@@ -1682,15 +1744,16 @@ class MPapiController extends Controller {
                                 }
                                 exit;
                             } else {
-                                $lastInsertedMID = $membershipTempModel->register($emailAddress, $firstname, $middlename, $lastname, $nickname, $password, $permanentAddress, $mobileNumber, $alternateMobileNumber, $alternateEmail, $idNumber, $idPresented, $gender, $referralCode, $birthdate, $occupationID, $nationalityID, $isSmoker, $emailSubscription, $smsSubscription, $referrerID);
-                                if ($lastInsertedMID > 0){
+                                $lastInsertedMID = $membershipTempModel->registerWithSP($emailAddress, $firstname, $middlename, $lastname, $nickname, $password, $permanentAddress, $mobileNumber, $alternateMobileNumber, $alternateEmail, $idNumber, $idPresented, $gender, $referralCode, $birthdate, $occupationID, $nationalityID, $isSmoker, $emailSubscription, $smsSubscription, $referrerID);
+
+                                if ($lastInsertedMID > 0) {
                                     $ID = 0;
                                     $mpSessionID = '';
                                     $memberInfos = $membershipTempModel->getTempMemberInfoForSMS($lastInsertedMID);
                                     //match to 09 or 639 in mobile number
-                                    $match = substr($memberInfos['MobileNumber'], 0, 3);
+                                    $match = substr($mobileNumber, 0, 3);
                                     if ($match == "639") {
-                                        $mncount = count($memberInfos["MobileNumber"]);
+                                        $mncount = count($mobileNumber);
                                         if (!$mncount == 12) {
                                             $message = "Failed to send SMS. Invalid Mobile Number.";
                                             $logger->log($logger->logdate, "[REGISTERMEMBER ERROR]: " . $request['FirstName'] . " || " . $request['LastName'] . " || " . $request['MobileNo'] . " || " . $request['EmailAddress'] . " || " . $request['Birthdate'] . " || ", $message);
@@ -1705,7 +1768,7 @@ class MPapiController extends Controller {
                                             $templateid2 = $ref_SMSApiMethodsModel->getSMSMethodTemplateID(Ref_SMSApiMethodsModel::PLAYER_REGISTRATION_2OF2);
                                             $methodid1 = Ref_SMSApiMethodsModel::PLAYER_REGISTRATION_1OF2;
                                             $methodid2 = Ref_SMSApiMethodsModel::PLAYER_REGISTRATION_2OF2;
-                                            $mobileno = $memberInfos["MobileNumber"];
+                                            $mobileno = $mobileNumber;
                                             $smslastinsertedid1 = $smsRequestLogsModel->insertSMSRequestLogs($methodid1, $mobileno, $memberInfos["DateCreated"]);
                                             $smslastinsertedid2 = $smsRequestLogsModel->insertSMSRequestLogs($methodid2, $mobileno, $memberInfos["DateCreated"]);
                                             if (($smslastinsertedid1 != 0 && $smslastinsertedid1 != '') && ($smslastinsertedid2 != 0 && $smslastinsertedid2 != '')) {
@@ -1763,9 +1826,9 @@ class MPapiController extends Controller {
                                             }
                                         }
                                     } else {
-                                        $match = substr($memberInfos["MobileNumber"], 0, 2);
+                                        $match = substr($mobileNumber, 0, 2);
                                         if ($match == "09") {
-                                            $mncount = count($memberInfos["MobileNumber"]);
+                                            $mncount = count($mobileNumber);
                                             if (!$mncount == 11) {
                                                 $message = "Failed to send SMS: Invalid Mobile Number.";
                                                 $logger->log($logger->logdate, "[REGISTERMEMBER ERROR]: " . $request['FirstName'] . " || " . $request['LastName'] . " || " . $request['MobileNo'] . " || " . $request['EmailAddress'] . " || " . $request['Birthdate'] . " || ", $message);
@@ -1776,7 +1839,7 @@ class MPapiController extends Controller {
                                                     $logger->log($logger->logdate, "[REGISTERMEMBER ERROR]: " . $request['FirstName'] . " || " . $request['LastName'] . " || " . $request['MobileNo'] . " || " . $request['EmailAddress'] . " || " . $request['Birthdate'] . " || ", $logMessage);
                                                 }
                                             } else {
-                                                $mobileno = str_replace("09", "639", $memberInfos["MobileNumber"]);
+                                                $mobileno = str_replace("09", "639", $mobileNumber);
                                                 $templateid1 = $ref_SMSApiMethodsModel->getSMSMethodTemplateID(Ref_SMSApiMethodsModel::PLAYER_REGISTRATION_1OF2);
                                                 $templateid2 = $ref_SMSApiMethodsModel->getSMSMethodTemplateID(Ref_SMSApiMethodsModel::PLAYER_REGISTRATION_2OF2);
                                                 $methodid1 = Ref_SMSApiMethodsModel::PLAYER_REGISTRATION_1OF2;
@@ -1850,7 +1913,7 @@ class MPapiController extends Controller {
                                     }
                                     $auditTrailModel->logEvent(AuditTrailModel::API_REGISTER_MEMBER, 'Email: ' . $emailAddress, array('ID' => $ID));
                                 } else {
-                                    if (strpos($lastInsertedMID['MID'], " Integrity constraint violation: 1062 Duplicate entry") > 0) {
+                                    if (strpos($lastInsertedMID, " Integrity constraint violation: 1062 Duplicate entry") > 0) {
                                         $transMsg = "Sorry, " . $emailAddress . "already belongs to an existing account. Please enter another email address.";
                                         $errorCode = 21;
                                         Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
@@ -2307,7 +2370,7 @@ class MPapiController extends Controller {
                 $lastname = trim($request['LastName']);
                 $nickname = trim($request['NickName']);
                 if (trim($request['Password']) != '')
-                    $password = md5(trim($request['Password']));
+                    $password = trim($request['Password']);
                 else
                     $password = '';
                 $permanentAddress = trim($request['PermanentAdd']);
@@ -2353,16 +2416,15 @@ class MPapiController extends Controller {
                     $mid = $MID;
                     $cardNumber = $memberCardsModel->getTempMigratedCardUsingMID($mid);
                     $tempAcctCode = $membershipTempModel->getTempCodeUsingCard($cardNumber);
-                    $tempHasEmailCount = $membershipTempModel->checkIfEmailExistsWithMID($mid, $emailAddress);
+                    $tempHasEmailCount = $membershipTempModel->checkIfEmailExistsWithMIDWithSP($mid,$emailAddress);
                     if (is_null($tempHasEmailCount))
                         $tempHasEmailCount = 0;
-                    else
-                        $tempHasEmailCount = $tempHasEmailCount['COUNT'];
-                    $hasEmailCount = $memberInfoModel->checkIfEmailExistsWithMID($MID, $emailAddress);
+
+                    $hasEmailCount = $memberInfoModel->checkIfEmailExistsWithMIDWithSP($MID, $emailAddress);
+
                     if (is_null($hasEmailCount))
                         $hasEmailCount = 0;
-                    else
-                        $hasEmailCount = $hasEmailCount['COUNT'];
+
                     if (($hasEmailCount > 0) && ($tempHasEmailCount > 0)) {
                         $transMsg = "Sorry, " . $emailAddress . " already belongs to an existing account. Please enter another email address.";
                         $errorCode = 21;
@@ -2400,11 +2462,11 @@ class MPapiController extends Controller {
                     } else {
                         $refID = $firstname . ' ' . $lastname;
                         //$hasEmail = $membersModel->checkIfUsernameExistsWithMID($MID, $emailAddress);
-                        $tempHasEmail = $membershipTempModel->checkIfUsernameExistsWithTAC($mid, $emailAddress);
+                        $tempHasEmail = $membershipTempModel->checkIfUsernameExistsWithTACWithSP($emailAddress, $tempAcctCode);
+
                         if (is_null($tempHasEmail))
                             $tempHasEmail = 0;
-                        else
-                            $tempHasEmail = $tempHasEmail['COUNT'];
+
                         if (($tempHasEmail > 0)) {
                             $transMsg = "Sorry, " . $emailAddress . " already belongs to an existing account. Please enter another email address.";
                             $errorCode = 21;
@@ -2425,11 +2487,11 @@ class MPapiController extends Controller {
                         }
                         //proceed with the updating of member profile
                         if ($region != '' && $city != '' && $idNumber == '' && $idPresented == '')
-                            $result = $memberInfoModel->updateProfilev2($firstname, $middlename, $lastname, $nickname, $mid, $permanentAddress, $mobileNumber, $alternateMobileNumber, $emailAddress, $alternateEmail, $birthdate, $nationalityID, $occupationID, $gender, $isSmoker, $region, $city);
+                            $result = $memberInfoModel->updateProfilev2WithSP($firstname, $middlename, $lastname, $nickname, $mid, $permanentAddress, $mobileNumber, $alternateMobileNumber, $emailAddress, $alternateEmail, $birthdate, $nationalityID, $occupationID, $gender, $isSmoker, $region, $city);
                         else if ($region == '' && $city == '' && $idNumber != '' && $idPresented != '')
-                            $result = $memberInfoModel->updateProfile($firstname, $middlename, $lastname, $nickname, $mid, $permanentAddress, $mobileNumber, $alternateMobileNumber, $emailAddress, $alternateEmail, $birthdate, $nationalityID, $occupationID, $idNumber, $idPresented, $gender, $isSmoker);
+                            $result = $memberInfoModel->updateProfileWithSP($firstname, $middlename, $lastname, $nickname, $mid, $permanentAddress, $mobileNumber, $alternateMobileNumber, $emailAddress, $alternateEmail, $birthdate, $nationalityID, $occupationID, $idNumber, $idPresented, $gender, $isSmoker);
                         else if ($region != '' && $city != '' && $idNumber != '' && $idPresented != '')
-                            $result = $memberInfoModel->updateProfilev3($firstname, $middlename, $lastname, $nickname, $mid, $permanentAddress, $mobileNumber, $alternateMobileNumber, $emailAddress, $alternateEmail, $birthdate, $nationalityID, $occupationID, $idNumber, $idPresented, $gender, $isSmoker, $region, $city);
+                            $result = $memberInfoModel->updateProfilev3WithSP($firstname, $middlename, $lastname, $nickname, $mid, $permanentAddress, $mobileNumber, $alternateMobileNumber, $emailAddress, $alternateEmail, $birthdate, $nationalityID, $occupationID, $idNumber, $idPresented, $gender, $isSmoker, $region, $city);
                         else {
                             $transMsg = 'One or more fields is not set or is blank.';
                             $errorCode = 1;
@@ -2448,19 +2510,24 @@ class MPapiController extends Controller {
                             exit;
                         }
                         if ($result > 0) {
-                            $result2 = $membersModel->updateMemberUsername($mid, $emailAddress, $password);
+                            $result2 = $membersModel->updateMemberUsernameWithSP($mid, $emailAddress, $password);
+
                             if ($result2 > 0) {
-                                $result3 = $membershipTempModel->updateTempEmail($mid, $emailAddress);
+                                $result3 = $membershipTempModel->updateTempEmailWithSP($mid, $emailAddress);
+                                
                                 if ($result3 > 0) {
-                                    $result4 = $membershipTempModel->updateTempMemberUsername($tempAcctCode, $emailAddress, $password);
+                                    $result4 = $membershipTempModel->updateTempMemberUsernameWithSP($tempAcctCode, $emailAddress, $password);
+
                                     if ($result4 > 0) {
                                         $isSuccessful = $auditTrailModel->logEvent(AuditTrailModel::API_UPDATE_PROFILE, 'Email: ' . $emailAddress, array('MID' => $MID, 'SessionID' => $mpSessionID));
                                         if ($isSuccessful == 0) {
                                             $logMessage = "Failed to insert to Audittrail.";
                                             $logger->log($logger->logdate, "[UPDATEPROFILE ERROR]: MID " . $MID . " || ", $logMessage);
                                         }
-                                        $result5 = $memberInfoModel->updateProfileDateUpdated($MID, $mid);
-                                        $result6 = $membershipTempModel->updateTempProfileDateUpdated($MID, $mid);
+
+                                        $result5 = $memberInfoModel->updateProfileDateUpdatedWithSP($MID, $mid);
+                                        $result6 = $membershipTempModel->updateTempProfileDateUpdatedWithSP($MID, $mid);
+
                                         if ($result5 > 0 && $result6 > 0) {
                                             $transMsg = 'No Error, Transaction successful.';
                                             $errorCode = 0;
@@ -2667,6 +2734,8 @@ class MPapiController extends Controller {
 //
 //                    exit;
 //                }
+
+                $memberPoints = $memberCardsModel->getMemberPointsAndStatus($cardNumber);
                 $memberDetails = $memberCardsModel->getMemberDetailsByCard($cardNumber);
                 if (!empty($memberDetails))
                     $MID = $memberDetails['MID'];
@@ -3139,7 +3208,8 @@ class MPapiController extends Controller {
                 $itemSerialCodesModel = new ItemSerialCodesModel();
                 $refPartnersModel = new Ref_PartnersModel();
                 $helpers = new Helpers();
-                $pcwsWrapper = new PcwsWrapper();
+                //$pcwsWrapper = new PcwsWrapper();
+
                 if ($rewardID == 1) {
                     $qty1 = $quantity;
                 } else if ($rewardID == 2) {
@@ -3183,9 +3253,16 @@ class MPapiController extends Controller {
                     }
                     exit;
                 }
-                $memberInfo = $memberInfoModel->getMemberInfoUsingMID($MID);
+
+                //$memberInfo = $memberInfoModel->getMemberInfoUsingMID($MID);
+                $memberInfo = $memberInfoModel->getEmailFNameUsingMIDWIthSP($MID);
                 if ($memberInfo)
-                    $mobileNumber = $memberInfo['MobileNumber'];
+                {
+                    $Email = $memberInfo['Email'];
+                    $memberInfo = $memberInfoModel->getMemberInfoUsingMID($MID);
+                    $memberDetails = $memberInfoModel->getDetailsUsingEmailWithSP($Email);
+                    $mobileNumber = $memberDetails['MobileNumber'];
+                }
                 else {
                     $transMsg = "No member found for that account.";
                     $errorCode = 55;
@@ -3208,9 +3285,33 @@ class MPapiController extends Controller {
                 if (count($isExist) > 0) {
                     $refID = $cardNumber . ';' . $rewardID . ';' . $rewardItemID . ';' . $quantity;
                     if ($source == 3) {
+                        //$result = $pcwsWrapper->getCompPoints($cardNumber, 1);
                         $result = $memberCardsModel->getMemberPointsAndStatus($cardNumber);
-                        $memberDetails = $memberInfoModel->getMemberInfoUsingMID($MID);
                         $currentPoints = $result['CurrentPoints'];
+//                        if ($result) {
+//                            $currentPoints = $result['GetCompPoints']['CompBalance'];
+//                        } else {
+//                            $transMsg = "Cannot access PCWS API.";
+//                            $errorCode = 120;
+//                            Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+//                            $data = CommonController::retMsgRedemption($module, $redemption, $errorCode, $transMsg);
+//                            $message = "[" . $module . "] Output: " . CJSON::encode($data);
+//                            $appLogger->log($appLogger->logdate, "[response]", $message);
+//                            $this->_sendResponse(200, CJSON::encode($data));
+//                            $logMessage = 'Cannot access PCWS API.';
+//                            $logger->log($logger->logdate, "[REDEEMITEMS ERROR]: " . $cardNumber . " || ", $logMessage);
+//                            $apiDetails = 'REDEEMITEMS-Failed: Cannot access PCWS API. Card Number = ' . $cardNumber;
+//                            $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
+//                            if ($isInserted == 0) {
+//                                $logMessage = "Failed to insert to APILogs.";
+//                                $logger->log($logger->logdate, "[REDEEMITEMS ERROR]: " . $cardNumber . " || ", $logMessage);
+//                            }
+//
+//                            exit;
+//                        }
+//                        $result = $memberCardsModel->getMemberPointsAndStatus($cardNumber);
+//
+//                        $memberDetails = $memberInfoModel->getMemberInfoUsingMID($MID);
                     } else {
                         $transMsg = "Please input 3 as source.";
                         $errorCode = 23;
@@ -3483,8 +3584,9 @@ class MPapiController extends Controller {
                                                     if ($showcouponredemptionwindow == true) {
                                                         //get reward item details
                                                         $rewardOffers = $rewardItemsModel->getRewardItemDetails($rewardItemID);
-                                                        $birthdate = $memberDetails['Birthdate'];
-                                                        $playerName = $memberDetails['FirstName'] . ' ' . $memberDetails['LastName'];
+
+                                                        $birthdate = $memberInfo['Birthdate'];
+                                                        $playerName = $memberDetails['FirstName'] . ' ' .$memberDetails['MiddleName'].' '. $memberDetails['LastName'];
                                                         $address = $memberDetails['Address1'];
                                                         $email = $memberDetails['Email'];
                                                         $contactNo = $memberDetails['MobileNumber'];
@@ -3553,7 +3655,8 @@ class MPapiController extends Controller {
                                                         $raQuantity = $resultArray["Quantity"][0];
                                                         $helpers->sendEmailCouponRedemption($playerName, $address, $siteCode, $cardNumber, $fBirthdate, $email, $contactNo, '', '', $newHeader, $newFooter, $itemImage, $couponSeries, $raQuantity, $raCheckSum, $serialNumber, $redemptionDate, $promoCode, $promoName, $promoPeriod, $drawDate, $about, $terms);
                                                     }
-                                                    $couponRedemptionArray = array('ItemImage' => $itemImage, 'ItemName' => $itemName, 'PartnerName' => $partnerName, 'PlayerName' => $playerName, 'CardNumber' => $cardNumber, 'RedemptionDate' => $redemptionDate, 'SerialNumber' => $serialNumber, 'SecurityCode' => $couponSeries, 'ValidityDate' => '', 'CompanyAddress' => $companyAddress, 'CompanyPhone' => $companyPhone, 'CompanyWebsite' => $companyWebsite, 'Quantity' => $raQuantity, 'SiteCode' => $siteCode, 'PromoCode' => $promoCode, 'PromoTitle' => $promoName, 'PromoPeriod' => $promoPeriod, 'DrawDate' => $drawDate, 'Address' => $address, 'Birthdate' => $birthdate, 'EmailAddress' => $email, 'ContactNo' => $contactNo, 'CheckSum' => $raCheckSum, 'About' => $about, 'Terms' => $terms);
+
+                                                    $couponRedemptionArray = array('ItemImage' => $itemImage, 'ItemName' => $itemName, 'PartnerName' => $partnerName, 'PlayerName' => $playerName, 'CardNumber' => $cardNumber, 'RedemptionDate' => $redemptionDate, 'SerialNumber' => $serialNumber, 'SecurityCode' => $couponSeries, 'ValidityDate' => $validUntil, 'CompanyAddress' => $companyAddress, 'CompanyPhone' => $companyPhone, 'CompanyWebsite' => $companyWebsite, 'Quantity' => $raQuantity, 'SiteCode' => $siteCode, 'PromoCode' => $promoCode, 'PromoTitle' => $promoName, 'PromoPeriod' => $promoPeriod, 'DrawDate' => $drawDate, 'Address' => $address, 'Birthdate' => $birthdate, 'EmailAddress' => $email, 'ContactNo' => $contactNo, 'CheckSum' => $raCheckSum, 'About' => $about, 'Terms' => $terms);
                                                     Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
                                                     $this->_sendResponse(200, CJSON::encode(CommonController::retMsgCouponRedemptionSuccess($module, $couponRedemptionArray, $errorCode, $transMsg)));
                                                     $logMessage = $transMsg;
@@ -4110,7 +4213,8 @@ $itemRedemptionArray = array('ItemImage' => $itemImage, 'ItemName' => $itemName,
                 $memberSessionsModel = new MemberSessionsModel();
                 $cardsModel = new CardsModel();
                 $auditTrailModel = new AuditTrailModel();
-                $pcwsWrapper = new PcwsWrapper();
+                //$pcwsWrapper = new PcwsWrapper();
+
                 $memberExist = $memberCardsModel->getMIDUsingCard($cardNumber);
                 if ($memberExist)
                     $MID = $memberExist['MID'];
@@ -4153,8 +4257,13 @@ $itemRedemptionArray = array('ItemImage' => $itemImage, 'ItemName' => $itemName,
                         }
                         exit;
                     } else {
-                        $memberDetails = $cardsModel->getMemberInfoUsingCardNumber($cardNumber);
+                        $result = $memberInfoModel->getEmailFNameUsingMIDWIthSP($MID);
+                        $emailAddress = $result['Email'];
+                        $memberDetails = $memberInfoModel->getDetailsUsingEmailWithSP($emailAddress);
+                        
                         if ($memberDetails) {
+                            $memberInfo = $memberInfoModel->getMemberInfoUsingMID($MID);
+                            $memberPoints = $cardsModel->getMemberInfoUsingCardNumber($cardNumber);
                             $firstname = $memberDetails['FirstName'];
                             $middlename = $memberDetails['MiddleName'];
                             if ($middlename == null)
@@ -4168,30 +4277,31 @@ $itemRedemptionArray = array('ItemImage' => $itemImage, 'ItemName' => $itemName,
                             $alternateMobileNumber = $memberDetails['AlternateMobileNumber'];
                             if ($alternateMobileNumber == null)
                                 $alternateMobileNumber = '';
-                            $emailAddress = $memberDetails['Email'];
+                            //$emailAddress = $memberDetails['Email'];
                             $alternateEmail = $memberDetails['AlternateEmail'];
                             if ($alternateEmail == null)
                                 $alternateEmail = '';
-                            $gender = $memberDetails['Gender'];
+                            $gender = $memberInfo['Gender'];
                             if ($gender == null)
                                 $gender = '';
-                            $idPresented = $memberDetails['IdentificationID'];
+                            $idPresented = $memberInfo['IdentificationID'];
                             $idNumber = $memberDetails['IdentificationNumber'];
-                            $nationality = $memberDetails['NationalityID'];
+                            $nationality = $memberInfo['NationalityID'];
                             if ($nationality == null)
                                 $nationality = '';
-                            $occupation = $memberDetails['OccupationID'];
+                            $occupation = $memberInfo['OccupationID'];
                             if ($occupation == null)
                                 $occupation = '';
-                            $isSmoker = $memberDetails['IsSmoker'];
+                            $isSmoker = $memberInfo['IsSmoker'];
                             if ($isSmoker == null)
                                 $isSmoker = '';
-                            $birthDate = $memberDetails['Birthdate'];
+                            $birthDate = $memberInfo['Birthdate'];
                             $age = number_format((abs(strtotime($birthDate) - strtotime(date('Y-m-d'))) / 60 / 60 / 24 / 365), 0);
-                            $currentPoints = $memberDetails['CurrentPoints'];
-                            $bonusPoints = $memberDetails['BonusPoints'];
-                            $redeemedPoints = $memberDetails['RedeemedPoints'];
-                            $lifetimePoints = $memberDetails['LifetimePoints'];
+                            $currentPoints = $memberPoints['CurrentPoints'];
+                            $bonusPoints = $memberPoints['BonusPoints'];
+                            $redeemedPoints = $memberPoints['RedeemedPoints'];
+                            $lifetimePoints = $memberPoints['LifetimePoints'];
+
 //                            $result = $pcwsWrapper->getCompPoints($cardNumber, 1);
 //                            if ($result) {
 //                                $currentPoints = $result['GetCompPoints']['CompBalance'];
@@ -4911,8 +5021,9 @@ $itemRedemptionArray = array('ItemImage' => $itemImage, 'ItemName' => $itemName,
                 //check if member is blacklisted
                 $isBlackListed = $blackListsModel->checkIfBlackListed($firstname, $lastname, $birthdate, 3);
                 //check if email is active and existing in live membership db
-                $activeEmail = $membershipTempModel->checkIfActiveVerifiedEmail($emailAddress);
-                if ($activeEmail['COUNT(MID)'] > 0) {
+                $activeEmail = $memberInfoModel->getDetailsUsingEmailWithSP($emailAddress);
+
+                if ($activeEmail) {
                     $transMsg = "Sorry, " . $emailAddress . " already belongs to an existing account. Please enter another email address.";
                     $errorCode = 21;
                     Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
@@ -4965,8 +5076,10 @@ $itemRedemptionArray = array('ItemImage' => $itemImage, 'ItemName' => $itemName,
                     exit;
                 } else {
                     //check if email is already verified in temp table
-                    $tempEmail = $membershipTempModel->checkTempVerifiedEmail($emailAddress);
-                    if ($tempEmail['COUNT(a.MID)'] > 0) {
+                    $tempEmail = $membershipTempModel->checkTempVerifiedEmailWithSP($emailAddress);
+
+                    if ($tempEmail['Count'] > 0) {
+
                         $transMsg = "Email is already verified. Please choose a different email address.";
                         $errorCode = 52;
                         Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
@@ -4984,14 +5097,16 @@ $itemRedemptionArray = array('ItemImage' => $itemImage, 'ItemName' => $itemName,
                         }
                         exit;
                     } else {
-                        $lastInsertedMID = $membershipTempModel->registerBT($emailAddress, $firstname, $lastname, $mobileNumber, $birthdate); // ,$password, $idPresented, $idNumber);
+                        $lastInsertedMID = $membershipTempModel->registerBTWithSP($emailAddress, $firstname, $lastname, $mobileNumber, $birthdate); // ,$password, $idPresented, $idNumber);
+
                         if ($lastInsertedMID > 0) {
+                            $MID = $lastInsertedMID;
                             $mpSessionID = '';
                             $memberInfos = $membershipTempModel->getTempMemberInfoForSMS($lastInsertedMID);
                             //match to 09 or 639 in mobile number
-                            $match = substr($memberInfos['MobileNumber'], 0, 3);
+                            $match = substr($mobileNumber, 0, 3);
                             if ($match == "639") {
-                                $mncount = count($memberInfos["MobileNumber"]);
+                                $mncount = count($mobileNumber);
                                 if (!$mncount == 12) {
                                     $message = "Failed to send SMS. Invalid Mobile Number.";
                                     $logger->log($logger->logdate, "[REGISTERMEMBERBT ERROR]: MID " . $MID . " || " . $mobileNumber . " || ", $message);
@@ -5009,7 +5124,8 @@ $itemRedemptionArray = array('ItemImage' => $itemImage, 'ItemName' => $itemName,
                                     $templateid2 = $ref_SMSApiMethodsModel->getSMSMethodTemplateID(Ref_SMSApiMethodsModel::PLAYER_REGISTRATION_2OF2);
                                     $methodid1 = Ref_SMSApiMethodsModel::PLAYER_REGISTRATION_1OF2;
                                     $methodid2 = Ref_SMSApiMethodsModel::PLAYER_REGISTRATION_2OF2;
-                                    $mobileno = $memberInfos["MobileNumber"];
+
+                                    $mobileno = $mobileNumber;
                                     if ($coupons) {
                                         $templateidbt = $ref_SMSApiMethodsModel->getSMSMethodTemplateID(Ref_SMSApiMethodsModel::PLAYER_REGISTRATION_BT);
                                         $templateidbt = $templateidbt['SMSTemplateID'];
@@ -5104,9 +5220,10 @@ $itemRedemptionArray = array('ItemImage' => $itemImage, 'ItemName' => $itemName,
                                     }
                                 }
                             } else {
-                                $match = substr($memberInfos["MobileNumber"], 0, 2);
+                                $match = substr($mobileNumber, 0, 2);
                                 if ($match == "09") {
-                                    $mncount = count($memberInfos["MobileNumber"]);
+                                    $mncount = count($mobileNumber);
+
                                     if (!$mncount == 11) {
                                         $message = "Failed to send SMS: Invalid Mobile Number.";
                                         $logger->log($logger->logdate, "[REGISTERMEMBERBT ERROR]: MID " . $MID . " || " . $mobileNumber . " || ", $message);
@@ -5121,7 +5238,7 @@ $itemRedemptionArray = array('ItemImage' => $itemImage, 'ItemName' => $itemName,
                                         $couponNumber = $coupons['CouponCode'];
                                         $expiryDate = $coupons['ValidToDate'];
                                         $expiryDate = date("Y-m-d", strtotime($expiryDate));
-                                        $cpNumber = $memberInfos["MobileNumber"];
+                                        $cpNumber = $mobileNumber;
                                         $mobileno = $this->formatMobileNumber($cpNumber);
                                         $templateid1 = $ref_SMSApiMethodsModel->getSMSMethodTemplateID(Ref_SMSApiMethodsModel::PLAYER_REGISTRATION_1OF2);
                                         $templateid2 = $ref_SMSApiMethodsModel->getSMSMethodTemplateID(Ref_SMSApiMethodsModel::PLAYER_REGISTRATION_2OF2);
@@ -5236,11 +5353,12 @@ $itemRedemptionArray = array('ItemImage' => $itemImage, 'ItemName' => $itemName,
                                     }
                                 }
                             }
-                            $auditTrailModel->logEvent(AuditTrailModel::API_REGISTER_MEMBER_BT, 'Email: ' . $emailAddress, array('MID' => $lastInsertedMID, 'SessionID' => $mpSessionID));
+
+                            $auditTrailModel->logEvent(AuditTrailModel::API_REGISTER_MEMBER_BT, 'Email: ' . $emailAddress, array('MID' => $MID, 'SessionID' => $mpSessionID));
                         } else {
                             //check if email is already verified in temp table
-                            $tempEmail = $membershipTempModel->checkTempVerifiedEmail($emailAddress);
-                            if ($tempEmail['COUNT(a.MID)'] > 0) {
+                            $tempEmail = $membershipTempModel->checkTempVerifiedEmailWithSP($emailAddress);
+                            if ($tempEmail['Count'] > 0) {
                                 $transMsg = "Email is already verified. Please choose a different email address.";
                                 $errorCode = 52;
                                 Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
@@ -5258,15 +5376,16 @@ $itemRedemptionArray = array('ItemImage' => $itemImage, 'ItemName' => $itemName,
                                 }
                                 exit;
                             } else {
-                                $lastInsertedMID = $membershipTempModel->registerBT($emailAddress, $firstname, $lastname, $mobileNumber, $birthdate);
+                                $lastInsertedMID = $membershipTempModel->registerBTWithSP($emailAddress, $firstname, $lastname, $mobileNumber, $birthdate);
+
                                 if ($lastInsertedMID > 0) {
                                     $ID = 0;
                                     $mpSessionID = '';
                                     $memberInfos = $membershipTempModel->getTempMemberInfoForSMS($lastInsertedMID);
                                     //match to 09 or 639 in mobile number
-                                    $match = substr($memberInfos['MobileNumber'], 0, 3);
+                                    $match = substr($mobileNumber, 0, 3);
                                     if ($match == "639") {
-                                        $mncount = count($memberInfos["MobileNumber"]);
+                                        $mncount = count($mobileNumber);
                                         if (!$mncount == 12) {
                                             $message = "Failed to send SMS. Invalid Mobile Number.";
                                             $logger->log($logger->logdate, "[REGISTERMEMBERBT ERROR]: MID " . $MID . " || " . $mobileNumber . " || ", $message);
@@ -5285,7 +5404,8 @@ $itemRedemptionArray = array('ItemImage' => $itemImage, 'ItemName' => $itemName,
                                             $templateid2 = $ref_SMSApiMethodsModel->getSMSMethodTemplateID(Ref_SMSApiMethodsModel::PLAYER_REGISTRATION_2OF2);
                                             $methodid1 = Ref_SMSApiMethodsModel::PLAYER_REGISTRATION_1OF2;
                                             $methodid2 = Ref_SMSApiMethodsModel::PLAYER_REGISTRATION_2OF2;
-                                            $mobileno = $memberInfos["MobileNumber"];
+
+                                            $mobileno = $mobileNumber;
                                             if ($coupons) {
                                                 $templateidbt = $ref_SMSApiMethodsModel->getSMSMethodTemplateID(Ref_SMSApiMethodsModel::PLAYER_REGISTRATION_BT);
                                                 $templateidbt = $templateidbt['SMSTemplateID'];
@@ -5383,9 +5503,9 @@ $itemRedemptionArray = array('ItemImage' => $itemImage, 'ItemName' => $itemName,
                                             }
                                         }
                                     } else {
-                                        $match = substr($memberInfos["MobileNumber"], 0, 2);
+                                        $match = substr($mobileNumber, 0, 2);
                                         if ($match == "09") {
-                                            $mncount = count($memberInfos["MobileNumber"]);
+                                            $mncount = count($mobileNumber);
                                             if (!$mncount == 11) {
                                                 $message = "Failed to send SMS: Invalid Mobile Number.";
                                                 $logger->log($logger->logdate, "[REGISTERMEMBERBT ERROR]: MID " . $MID . " || " . $mobileNumber . " || ", $message);
@@ -5400,7 +5520,7 @@ $itemRedemptionArray = array('ItemImage' => $itemImage, 'ItemName' => $itemName,
                                                 $couponNumber = $coupons['CouponCode'];
                                                 $expiryDate = $coupons['ValidToDate'];
                                                 $expiryDate = date("Y-m-d", strtotime($expiryDate));
-                                                $mobileno = str_replace("09", "639", $memberInfos["MobileNumber"]);
+                                                $mobileno = str_replace("09", "639", $mobileNumber);
                                                 $templateid1 = $ref_SMSApiMethodsModel->getSMSMethodTemplateID(Ref_SMSApiMethodsModel::PLAYER_REGISTRATION_1OF2);
                                                 $templateid2 = $ref_SMSApiMethodsModel->getSMSMethodTemplateID(Ref_SMSApiMethodsModel::PLAYER_REGISTRATION_2OF2);
                                                 $methodid1 = Ref_SMSApiMethodsModel::PLAYER_REGISTRATION_1OF2;
@@ -5514,7 +5634,7 @@ $itemRedemptionArray = array('ItemImage' => $itemImage, 'ItemName' => $itemName,
                                     }
                                     $auditTrailModel->logEvent(AuditTrailModel::API_REGISTER_MEMBER_BT, 'Email: ' . $emailAddress, array('ID' => $ID));
                                 } else {
-                                    if (strpos($lastInsertedMID['MID'], " Integrity constraint violation: 1062 Duplicate entry") > 0) {
+                                    if (strpos($lastInsertedMID, " Integrity constraint violation: 1062 Duplicate entry") > 0) {
                                         $transMsg = "Sorry, " . $emailAddress . "already belongs to an existing account. Please enter another email address.";
                                         $errorCode = 21;
                                         Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
@@ -5523,12 +5643,12 @@ $itemRedemptionArray = array('ItemImage' => $itemImage, 'ItemName' => $itemName,
                                         $appLogger->log($appLogger->logdate, "[response]", $message);
                                         $this->_sendResponse(200, CJSON::encode($data));
                                         $logMessage = "Sorry, " . $emailAddress . "already belongs to an existing account. Please enter another email address.";
-                                        $logger->log($logger->logdate, "[REGISTERMEMBERBT ERROR]: MID " . $MID . " || " . $mobileNumber . " || ", $logMessage);
+                                        $logger->log($logger->logdate, "[REGISTERMEMBERBT ERROR]: MID " . '' . " || " . $mobileNumber . " || ", $logMessage);
                                         $apiDetails = 'REGISTERMEMBERBT-Failed: Email already exists. Please choose a different email address. Email = ' . $emailAddress;
                                         $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
                                         if ($isInserted == 0) {
                                             $logMessage = "Failed to insert to APILogs.";
-                                            $logger->log($logger->logdate, "[REGISTERMEMBERBT ERROR]: MID " . $MID . " || " . $mobileNumber . " || ", $logMessage);
+                                            $logger->log($logger->logdate, "[REGISTERMEMBERBT ERROR]: MID " . '' . " || " . $mobileNumber . " || ", $logMessage);
                                         }
                                         exit;
                                     } else {
@@ -5540,12 +5660,12 @@ $itemRedemptionArray = array('ItemImage' => $itemImage, 'ItemName' => $itemName,
                                         $appLogger->log($appLogger->logdate, "[response]", $message);
                                         $this->_sendResponse(200, CJSON::encode($data));
                                         $logMessage = "Registration failed.";
-                                        $logger->log($logger->logdate, "[REGISTERMEMBERBT ERROR]: MID " . $MID . " || " . $mobileNumber . " || ", $logMessage);
+                                        $logger->log($logger->logdate, "[REGISTERMEMBERBT ERROR]: MID " . '' . " || " . $mobileNumber . " || ", $logMessage);
                                         $apiDetails = 'REGISTERMEMBERBT-Failed: Registration failed.';
                                         $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
                                         if ($isInserted == 0) {
                                             $logMessage = "Failed to insert to APILogs.";
-                                            $logger->log($logger->logdate, "[REGISTERMEMBERBT ERROR]: MID " . $MID . " || " . $mobileNumber . " || ", $logMessage);
+                                            $logger->log($logger->logdate, "[REGISTERMEMBERBT ERROR]: MID " . '' . " || " . $mobileNumber . " || ", $logMessage);
                                         }
                                         exit;
                                     }
@@ -5808,12 +5928,12 @@ $itemRedemptionArray = array('ItemImage' => $itemImage, 'ItemName' => $itemName,
                     $appLogger->log($appLogger->logdate, "[response]", $message);
                     $this->_sendResponse(200, CJSON::encode($data));
                     $logMessage = 'Cannot access PCWS API.';
-                    $logger->log($logger->logdate, "[CHECKPOINTS ERROR]: " . $cardNumber . " || ", $logMessage);
-                    $apiDetails = 'CHECKPOINTS-Failed: Cannot access PCWS API. Card Number = ' . $cardNumber;
+                    $logger->log($logger->logdate, "[GETBALANCE ERROR]: " . $cardNumber . " || ", $logMessage);
+                    $apiDetails = 'GETBALANCE-Failed: Cannot access PCWS API. Card Number = ' . $cardNumber;
                     $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
                     if ($isInserted == 0) {
                         $logMessage = "Failed to insert to APILogs.";
-                        $logger->log($logger->logdate, "[CHECKPOINTS ERROR]: " . $cardNumber . " || ", $logMessage);
+                        $logger->log($logger->logdate, "[GETBALANCE ERROR]: " . $cardNumber . " || ", $logMessage);
                     }
                     exit;
                 }

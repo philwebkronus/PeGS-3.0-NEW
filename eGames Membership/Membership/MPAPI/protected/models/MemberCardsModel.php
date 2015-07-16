@@ -36,7 +36,7 @@ class MemberCardsModel {
     }
     
     public function getMemberPointsAndStatus($cardNumber) {
-        $sql = 'SELECT Status, CurrentPoints
+        $sql = 'SELECT Status, CurrentPoints, BonusPoints, RedeemedPoints, LifetimePoints
                 FROM membercards
                 WHERE CardNumber = :CardNumber AND Status IN (1,5)
                 GROUP BY MID';
