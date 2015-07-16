@@ -591,6 +591,7 @@ class WsKapiController extends Controller {
                 if (!empty($MID)) {
                     $status = $memberCardsModel->getCardStatus($cardNumber); //Get Card Status
                     $memberinfo = $memberInfoModel->getMemberInfoByMID($MID);
+                    $memberinfo2 = $memberInfoModel->getMemberInfoByMIDSP($MID);
                     $isVIP = $membersModel->isVip($MID);
                     $checkEwallet = $membersModel->checkIfEwallet($MID);
                     $isEwallet = (int)$checkEwallet['IsEwallet'];
@@ -601,12 +602,12 @@ class WsKapiController extends Controller {
                     else {
                         $classification = "VIP";
                     }
-                    $name = $memberinfo['NickName'];
+                    $name = $memberinfo2['NickName'];
                     if (!empty($name)) {
                         $nickname = $name;
                     } else {
-                        if (!empty($memberinfo['FirstName'])) {
-                            $nickname = $memberinfo['FirstName'];
+                        if (!empty($memberinfo2['FirstName'])) {
+                            $nickname = $memberinfo2['FirstName'];
                         } else {
                             $nickname = '';
                         }
