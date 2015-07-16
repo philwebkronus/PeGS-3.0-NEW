@@ -10,7 +10,7 @@
 class MemberCards extends BaseEntity {
 
     public function MemberCards() {
-        $this->TableName = "membercards";
+        $this->TableName = "loyaltydb.membercards";
         $this->ConnString = 'loyalty';
         $this->Identity = "MemberCardID";
         $this->DatabaseType = DatabaseTypes::PDO;
@@ -270,10 +270,7 @@ class MemberCards extends BaseEntity {
     }
 
     public function transferMemberCard($mid, $cardid, $siteid, $lifetimepoints, $currentpoints, $redeemedpoints, $newcardnumber, $oldubcardnumber, $status1, $status2, $aid, $dateupdated, $cardtypeid1) {
-
-        $currentpoints = (int)$currentpoints;
-        $lifetimepoints = (int)$lifetimepoints;
-
+        
         $this->StartTransaction();
         try {
 //            $query = "UPDATE membercards SET LifetimePoints = '$lifetimepoints',
@@ -285,16 +282,15 @@ class MemberCards extends BaseEntity {
 
 //            if (!App::HasError()) {
                 $query2 = "UPDATE membercards SET DateUpdated = '$dateupdated',
-                    Status = '$status2', UpdatedByAID = '$aid', 
-                    CurrentPoints = $currentpoints, LifetimePoints = $lifetimepoints  
+                    Status = '$status2', UpdatedByAID = '$aid' 
                     WHERE CardNumber = '$oldubcardnumber'";
 
                 $this->ExecuteQuery($query2);
-                
+
                 if (!App::HasError()) {
                     $query3 = "INSERT INTO membercards SET MID = '$mid', CardID = '$cardid', CardNumber = '$newcardnumber',
                                                            SiteID = '$siteid', LifetimePoints = '$lifetimepoints',
-                                                           CurrentPoints = 0, RedeemedPoints = '$redeemedpoints',
+                                                           CurrentPoints = '$currentpoints', RedeemedPoints = '$redeemedpoints',
                                                            DateCreated = '$dateupdated' , Status = '$status1'";
 
                     $this->ExecuteQuery($query3);
@@ -650,47 +646,7 @@ class MemberCards extends BaseEntity {
         
         return parent::ExecuteQuery($query);
     }
-    
-    public function insertMemberCards($membercards){
-        parent::Insert($membercards);
-    }
-    /**
-     * @author Mark Kenneth Esguerra
-     * @param type $cardNumber
-     */
-    public function getMemberCardInfoByCardSP($cardNumber) {
-        $query = "SELECT MID FROM loyaltydb.membercards 
-                  WHERE CardNumber = '$cardNumber'";
-        $getMID = parent::RunQuery($query);
 
-        if (count($getMID) > 0) {
-            $mid = $getMID[0]['MID'];
-            $query1 = "CALL membership.sp_select_data(1, 1, 0, $mid, 'FirstName,MiddleName,LastName,NickName,Email,AlternateEmail,MobileNumber,AlternateMobileNumber,Address1,Address2,IdentificationNumber', @ResultCode, @ResultMsg, @ResultFields)";
-            $result = parent::RunQuery($query1);
-            
-            $_memberInfo = new MemberInfo();
-            $result2 = $_memberInfo->getGenericInfo($mid);
-            
-            $exp = explode(";", $result[0]['OUTfldListRet']);
-            $arrdtls = array(0 => array('MID' => $mid, 
-                                    'FirstName' => $exp[0], 
-                                    'MiddleName' => $exp[1], 
-                                    'LastName' => $exp[2], 
-                                    'NickName' => $exp[3],
-                                    'Email' => $exp[4], 
-                                    'AlternateEmail' => $exp[5], 
-                                    'MobileNumber' => $exp[6], 
-                                    'AlternateMobileNumber' => $exp[7], 
-                                    'Address1' => $exp[8], 
-                                    'Address2' => $exp[9], 
-                                    'IdentificationNumber' => $exp[10]));
-            
-            return array_merge($arrdtls[0], $result2[0]);
-        }
-        else {
-            return array();
-        }
-    }
 }
 
 ?>

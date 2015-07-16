@@ -315,7 +315,7 @@ if ($fproc->IsPostBack) {
         //check if from old to new migrated card
         if (!is_null($_SESSION['HiddenEmail'])) {
 
-            $tempMID = $_MemberInfo->getMIDByEmailSP($_SESSION['HiddenEmail']);
+            $tempMID = $_MemberTemp->getMID($_SESSION['HiddenEmail']);
             if(empty($tempMID)){
                 $tempMID = 0;
             } else {
@@ -324,7 +324,7 @@ if ($fproc->IsPostBack) {
             }
             }
             
-            $emailcountz = $_MemberTemp->checkIfEmailExistsWithMIDSP($tempMID, $SubmittedEmail);
+            $emailcountz = $_MemberTemp->checkIfEmailExistsWithMID($tempMID, $SubmittedEmail);
             if ($emailcountz > 0) {
                 foreach ($emailcountz as $value) {
                     $emailcount = $value['COUNT'];
@@ -332,7 +332,7 @@ if ($fproc->IsPostBack) {
             } else {
                 $emailcount = 0;
             }
-            $emailcounty = $_MemberInfo->checkIfEmailExistsWithMIDSP($HiddenMID, $SubmittedEmail);
+            $emailcounty = $_MemberInfo->checkIfEmailExistsWithMID($HiddenMID, $SubmittedEmail);
             if ($emailcounty > 0) {
                 foreach ($emailcounty as $value) {
                     $emailcounty = $value['COUNT'];
@@ -357,7 +357,7 @@ if ($fproc->IsPostBack) {
             } else {
                 //Proceed with the update profile
                 $_MemberInfo->StartTransaction();
-                $_MemberInfo->updateMemberProfileSP($HiddenMID, $arrMemberInfo);
+                $_MemberInfo->updateProfileAdmin($HiddenMID, $arrMemberInfo);
                 $CommonPDOConn = $_MemberInfo->getPDOConnection();
                 $_Members->setPDOConnection($CommonPDOConn);
                 if (App::HasError()) {
@@ -367,7 +367,7 @@ if ($fproc->IsPostBack) {
                     $isSuccess = false;
                 } else {
                     $_Members->setPDOConnection($CommonPDOConn);
-                    $_Members->updateMemberUsernameAdminSP($HiddenMID, $SubmittedEmail);
+                    $_Members->updateMemberUsernameAdmin($HiddenMID, $SubmittedEmail);
                     if ($_Members->HasError) {
                         $_MemberInfo->RollBackTransaction();
                         $error = $_Members->errormessage;
@@ -390,14 +390,14 @@ if ($fproc->IsPostBack) {
                         //if does exists in membership_temp
                         else {
                             $_MemberTemp->setPDOConnection($CommonPDOConn);
-                            $_MemberTemp->updateTempProfileEmailAdminSP($SubmittedEmail, $_SESSION['HiddenEmail']);
+                            $_MemberTemp->updateTempProfileEmailAdmin($SubmittedEmail, $_SESSION['HiddenEmail']);
                             if ($_MemberTemp->HasError) {
                                 $_MemberInfo->RollBackTransaction();
                                 $error = $_MemberTemp->errormessage;
                                 $logger->logger($logdate, $logtype, $error);
                                 $isSuccess = false;
                             } else {
-                                $_MemberTemp->updateTempMemberUsernameAdminSP($SubmittedEmail, $_SESSION['HiddenEmail']);
+                                $_MemberTemp->updateTempMemberUsernameAdmin($SubmittedEmail, $_SESSION['HiddenEmail']);
                                 if ($_MemberTemp->HasError) {
                                     $_MemberInfo->RollBackTransaction();
                                     $error = $_MemberTemp->errormessage;
@@ -419,7 +419,6 @@ if ($fproc->IsPostBack) {
                             }
                         }
                     }
-                    $message = $retMsg;
                 }
             }
         }
@@ -433,16 +432,20 @@ if ($fproc->IsPostBack) {
 if (isset($_SESSION['CardInfo'])) {
     $showcardinfo = true;
     $showprofile = true;
-    
+
     if (isset($_SESSION['CardInfo']['Username'])) {
-        $result = $_MemberInfo->getMemberInfoByUsernameSP($_SESSION['CardInfo']['Username']);
-        $row = $result[0];
-        
+        $result = $_MemberInfo->getMemberInfoByUsername($_SESSION['CardInfo']['Username']);
+        $MID = $result[0]['MID'];
     } else {
-        $row = $_MemberCards->getMemberCardInfoByCardSP($_SESSION['CardInfo']['CardNumber']);
+        $membercards = $_MemberCards->getMemberCardInfoByCard($_SESSION['CardInfo']['CardNumber']);
+        $MID = $membercards[0]['MID'];
+
+        $result = $_MemberInfo->getMemberInfo($MID);
     }
-    
-    $hdnMID->Text = $row['MID'];
+
+    $row = $result[0];
+
+    $hdnMID->Text = $MID;
     $txtFirstName->Text = $row['FirstName'];
     $txtMiddleName->Text = $row['MiddleName'];
     $txtLastName->Text = $row['LastName'];

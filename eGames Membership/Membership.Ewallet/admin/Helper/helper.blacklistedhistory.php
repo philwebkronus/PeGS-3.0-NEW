@@ -17,7 +17,7 @@ $limit = $_POST['rows'];
 
 $blackListedID = $_POST['blacklistedID'];
 //get the total number of blacklisted players
-$blacklisted = $blacklisthistory->getAllBlackListedHistSP($blackListedID);
+$blacklisted = $blacklisthistory->getAllBlackListedHist($blackListedID);
 $count = count($blacklisted);
 if ($count > 0)
 {

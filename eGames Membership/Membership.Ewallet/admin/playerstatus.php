@@ -334,6 +334,7 @@ if ($fproc->IsPostBack)
                 <br />
                 <div align="center" id="pagination">
                     <table border="1" id="playerstatus">
+
                     </table>
                     <div id="pager2"></div>
                     <span id="errorMessage"></span>

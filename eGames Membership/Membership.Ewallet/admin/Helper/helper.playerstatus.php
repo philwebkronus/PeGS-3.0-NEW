@@ -61,7 +61,8 @@ if(isset($_POST['pager'])){
 
 
         if($validate->validateAlphaSpaceDashAndDot($searchValue)){
-            $result =  $_MemberInfo->getMemberInfoByNameSP($searchValue);
+            $result =  $_MemberInfo->getMemberInfoByName($searchValue);
+            
             if(!empty($result)){
                 $count = count($result);
             $_SESSION['CardData']['CardNumber'] = '';
@@ -71,7 +72,7 @@ if(isset($_POST['pager'])){
                    $cardInfo = $_MemberCards->getMemberCardInfoByMID($MID);
                    if(isset($cardInfo[0])){
                        $bhstatus = $cardInfo[0]['Status'] == 1 ? "0":"1";
-                       $remarks = $_BanningHistory->getRemarksSP($MID, $bhstatus);
+                       $remarks = $_BanningHistory->getRemarks($MID, $bhstatus);
                        if(isset($remarks[0]) && $remarks[0]['Remarks'] != ''){
                            $memInfo[0]['Remarks'] =  $remarks[0]['Remarks'];
                        } else {
@@ -122,7 +123,7 @@ if(isset($_POST['pager'])){
                             }
                             $response->rows[$itr]['id'] = $row['MID'];
                             $response->rows[$itr]['cell'] = array(
-                                $row['FullName'], $row['CardNumber'], $row['ID'],$row['Birthdate'], $row['Status'],$row['Remarks']
+                                                            $row['FullName'], $row['CardNumber'], $row['ID'],$row['Birthdate'], $row['Status'],$row['Remarks']
                             );
                             $itr++;
                         }
@@ -142,21 +143,20 @@ if(isset($_POST['pager'])){
                        $data = $_MemberCards->getMemberCardInfoByMID($MID);
                        if(isset($data[0])){
                            $bhstatus = $data[0]['Status'] == 1 ? "0":"1";
-                           $remarks = $_BanningHistory->getRemarksSP($MID, $bhstatus);
+                           $remarks = $_BanningHistory->getRemarks($MID, $bhstatus);
                            if(isset($remarks[0]['Remarks']) && $remarks[0]['Remarks'] != ''){
-                               $memInfo[$ctr2]['Remarks'] = $remarks[0]['Remarks'];
+                               $data[0]['Remarks'] = $remarks[0]['Remarks'];
                            } else {
-                               $memInfo[$ctr2]['Remarks'] = '';
+                               $data[0]['Remarks'] = '';
                            }
-                           $memInfo[$ctr2]['MID'] = $MID;
-                           $memInfo[$ctr2]['CardNumber'] = $data[0]['CardNumber'];
-                           $memInfo[$ctr2]['FullName'] = $result[$ctr1]['LastName'].', '.$result[$ctr1]['FirstName'];
-                           $memInfo[$ctr2]['ID'] = $result[$ctr1]['IdentificationName'].' - '.$result[$ctr1]['IdentificationNumber'];
+                           $data[0]['MID'] = $MID;
+                           $data[0]['FullName'] = $result[$ctr1]['LastName'].', '.$result[$ctr1]['FirstName'];
+                           $data[0]['ID'] = $result[$ctr1]['IdentificationName'].' - '.$result[$ctr1]['IdentificationNumber'];
                            $bdate = new DateTime($result[$ctr1]['Birthdate']);
-                           $memInfo[$ctr2]['Birthdate'] = $bdate->format('m/d/Y');
+                           $data[0]['Birthdate'] = $bdate->format('m/d/Y');
                            $statusvalue = $data[0]['Status'] == 1  ?  "Active" : ($data[0]['Status'] == 5 ? "Banned": "");
                            
-                           switch($data[0]['Status'])
+                           switch($cardInfo[0]['Status'])
                             {
                                 case 1: $statusvalue = 'Active';    break;
                                 case 2: $statusvalue = 'Suspended';break;
@@ -166,17 +166,18 @@ if(isset($_POST['pager'])){
                                 case 6: $statusvalue = 'Terminated';  break;
                                 default: $statusvalue = 'Card Not Found'; break;
                             }
-                           $memInfo[$ctr2]['Status'] = $data[0]['Status'];
-                           $memInfo[$ctr2]['StatusValue'] = $statusvalue;
-                           $memInfo[$ctr2]['MemberCardID'] = $data[0]['MemberCardID'];
+                           $data[0]['StatusValue'] = $statusvalue;
+                           $memInfo[$ctr2] = $data[0];
                            $ctr2++;
                        }
                        $ctr1++;
                    }while($ctr1 != $count);
+
+
                     if(count($memInfo) > 0){
-                        
+
                         $itr = 0;
-                        $response->records = count($memInfo);
+                        $response->records = count($memInfo);    
                         foreach ($memInfo as $value) {
                             $row = $value;
                             $MemCardID = $row['MemberCardID'];
@@ -221,14 +222,14 @@ if(isset($_POST['pager'])){
             $count = count($membercards);
             $_SESSION['CardData']['Name'] = '';
             $_SESSION['CardData']['CardNumber'] = $searchValue;
+
             if($count > 0){
                     $MID = $membercards[0]['MID'];
-                    $forBanning = 1;
-                    $result = $_MemberInfo->getMemInfoUsingSP($MID, $forBanning);
+                    $result = $_MemberInfo->getMemberInfoByMID($MID);
                     $CardNumber = $_SESSION['CardData']['CardNumber'];
 
                     $bhstatus = $result[0]['Status'] == 1 ? "0":"1";
-                    $remarks = $_BanningHistory->getRemarksSP($MID, $bhstatus);
+                    $remarks = $_BanningHistory->getRemarks($MID, $bhstatus);
                     if(isset($remarks[0])){
                         $memInfo[0]['Remarks'] =  $remarks[0]['Remarks'];
                     } else {
@@ -236,12 +237,12 @@ if(isset($_POST['pager'])){
                     }
                     $memInfo[0]['MID'] =  $MID;
                     $memInfo[0]['CardNumber'] = $CardNumber;
-                    $memInfo[0]['FullName'] = $result['LastName'].', '.$result['FirstName'];
-                    $memInfo[0]['ID'] = $result['IdentificationName'].' - '.$result['IdentificationNumber'];
-                    $bdate = new DateTime($result['Birthdate']);
+                    $memInfo[0]['FullName'] = $result[0]['LastName'].', '.$result[0]['FirstName'];
+                    $memInfo[0]['ID'] = $result[0]['IdentificationName'].' - '.$result[0]['IdentificationNumber'];
+                    $bdate = new DateTime($result[0]['Birthdate']);
                     $memInfo[0]['Birthdate'] = $bdate->format('m/d/Y');
-                    $memInfo[0]['Status'] = $result['Status'];
-                    $statusvalue = $result['Status'] == 1  ?  "Active" : ($result['Status'] == 5 ? "Banned": "");
+                    $memInfo[0]['Status'] = $result[0]['Status'];
+                    $statusvalue = $result[0]['Status'] == 1  ?  "Active" : ($result[0]['Status'] == 5 ? "Banned": "");
                    
                     switch($result[0]['Status'])
                     {
@@ -300,20 +301,18 @@ if(isset($_POST['pager'])){
             }
             
         } elseif (preg_match ("/^[A-Za-z0-9]+$/", $searchValue)) {
-            $membercards = $_MemberCards->getMemberCardInfoByCardSP($searchValue);
+            $membercards = $_MemberCards->getMemberCardInfoByCardNumber($searchValue);
             $count = count($membercards);
             $_SESSION['CardData']['Name'] = '';
             $_SESSION['CardData']['CardNumber'] = $searchValue;
 
             if($count > 0){
                     $MID = $membercards[0]['MID'];
-
-                    $forBanning = 1;
-                    $result = $_MemberInfo->getMemInfoUsingSP($MID, $forBanning);
+                    $result = $_MemberInfo->getMemberInfoByMID($MID);
                     $CardNumber = $_SESSION['CardData']['CardNumber'];
 
-                    $bhstatus = $result['Status'] == 1 ? "0":"1";
-                    $remarks = $_BanningHistory->getRemarksSP($MID, $bhstatus);
+                    $bhstatus = $result[0]['Status'] == 1 ? "0":"1";
+                    $remarks = $_BanningHistory->getRemarks($MID, $bhstatus);
                     if(isset($remarks[0])){
                         $memInfo[0]['Remarks'] =  $remarks[0]['Remarks'];
                     } else {
@@ -321,13 +320,13 @@ if(isset($_POST['pager'])){
                     }
                     $memInfo[0]['MID'] =  $MID;
                     $memInfo[0]['CardNumber'] = $CardNumber;
-                    $memInfo[0]['FullName'] = $result['LastName'].', '.$result['FirstName'];
-                    $memInfo[0]['ID'] = $result['IdentificationName'].' - '.$result['IdentificationNumber'];
-                    $bdate = new DateTime($result['Birthdate']);
+                    $memInfo[0]['FullName'] = $result[0]['LastName'].', '.$result[0]['FirstName'];
+                    $memInfo[0]['ID'] = $result[0]['IdentificationName'].' - '.$result[0]['IdentificationNumber'];
+                    $bdate = new DateTime($result[0]['Birthdate']);
                     $memInfo[0]['Birthdate'] = $bdate->format('m/d/Y');
-                    $memInfo[0]['Status'] = $result['Status'];
-                    $statusvalue = $result['Status'] == 1  ?  "Active" : ($result['Status'] == 5 ? "Banned": "");
-                    switch($result['Status'])
+                    $memInfo[0]['Status'] = $result[0]['Status'];
+                    $statusvalue = $result[0]['Status'] == 1  ?  "Active" : ($result[0]['Status'] == 5 ? "Banned": "");
+                    switch($result[0]['Status'])
                     {
                         case 1: $statusvalue = 'Active';    break;
                                 case 2: $statusvalue = 'Suspended';break;
@@ -340,6 +339,7 @@ if(isset($_POST['pager'])){
                     
                     $memInfo[0]['StatusValue'] = $statusvalue;
                     $memInfo[0]['MemberCardID'] = $membercards[0]['MemberCardID'];
+
                     if(count($memInfo) > 0){
                         $itr = 0;
                         $response->records = count($memInfo);    
@@ -420,7 +420,7 @@ if(isset($_POST['pager'])){
         $limit = $_POST['rows'];
 
         if($validate->validateAlphaSpaceDashAndDot($searchValue)){
-            $result =  $_MemberInfo->getMemberInfoByNameSP($searchValue);
+            $result =  $_MemberInfo->getMemberInfoByName($searchValue);
             
             if(!empty($result)){
                 $count = count($result);
@@ -431,7 +431,7 @@ if(isset($_POST['pager'])){
                    $cardInfo = $_MemberCards->getMemberCardInfoByMID($MID);
                    if(isset($cardInfo[0])){
                        $bhstatus = $cardInfo[0]['Status'] == 1 ? "0":"1";
-                       $remarks = $_BanningHistory->getRemarksSP($MID, $bhstatus);
+                       $remarks = $_BanningHistory->getRemarks($MID, $bhstatus);
                        if(isset($remarks[0]) && $remarks[0]['Remarks'] != ''){
                            $memInfo[0]['Remarks'] =  $remarks[0]['Remarks'];
                        } else {
@@ -510,20 +510,18 @@ if(isset($_POST['pager'])){
                        $data = $_MemberCards->getMemberCardInfoByMID($MID);
                        if(isset($data[0])){
                            $bhstatus = $data[0]['Status'] == 1 ? "0":"1";
-                           $remarks = $_BanningHistory->getRemarksSP($MID, $bhstatus);
+                           $remarks = $_BanningHistory->getRemarks($MID, $bhstatus);
                            if(isset($remarks[0]['Remarks']) && $remarks[0]['Remarks'] != ''){
-                               $memInfo[$ctr2]['Remarks'] = $remarks[0]['Remarks'];
+                               $data[0]['Remarks'] = $remarks[0]['Remarks'];
                            } else {
-                               $memInfo[$ctr2]['Remarks'] = '';
+                               $data[0]['Remarks'] = '';
                            }
-                           $memInfo[$ctr2]['MID'] = $MID;
-                           $memInfo[$ctr2]['CardNumber'] = $data[0]['CardNumber'];
-                           $memInfo[$ctr2]['FullName'] = $result[$ctr1]['LastName'].', '.$result[$ctr1]['FirstName'];
-                           $memInfo[$ctr2]['ID'] = $result[$ctr1]['IdentificationName'].' - '.$result[$ctr1]['IdentificationNumber'];
+                           $data[0]['MID'] = $MID;
+                           $data[0]['FullName'] = $result[$ctr1]['LastName'].', '.$result[$ctr1]['FirstName'];
+                           $data[0]['ID'] = $result[$ctr1]['IdentificationName'].' - '.$result[$ctr1]['IdentificationNumber'];
                            $bdate = new DateTime($result[$ctr1]['Birthdate']);
-                           $memInfo[$ctr2]['Birthdate'] = $bdate->format('m/d/Y');
+                           $data[0]['Birthdate'] = $bdate->format('m/d/Y');
                            $statusvalue = $data[0]['Status'] == 1  ?  "Active" : ($data[0]['Status'] == 5 ? "Banned": "");
-                           
                            switch($data[0]['Status'])
                             {
                                 case 1: $statusvalue = 'Active';    break;
@@ -534,25 +532,25 @@ if(isset($_POST['pager'])){
                                 case 6: $statusvalue = 'Terminated';  break;
                                 default: $statusvalue = 'Card Not Found'; break;
                             }
-                           $memInfo[$ctr2]['Status'] = $data[0]['Status'];
-                           $memInfo[$ctr2]['StatusValue'] = $statusvalue;
-                           $memInfo[$ctr2]['MemberCardID'] = $data[0]['MemberCardID'];
+                           
+                           $data[0]['StatusValue'] = $statusvalue;
+                           $memInfo[$ctr2] = $data[0];
                            $ctr2++;
                        }
                        $ctr1++;
                    }while($ctr1 != $count);
+
+                   $total_pages = ceil(count($memInfo)/$limit);
+                    if ($page > $total_pages) {
+                        $page = $total_pages;
+                    }
+
                     if(count($memInfo) > 0){
 
-                        $total_pages = ceil(count($memInfo)/$limit);
-                        if ($page > $total_pages) {
-                            $page = $total_pages;
-                        }
-
-                        $start = $limit * $page -$limit;
-                    
                         $itr = 0;
                         $response->page = $page;
-                        $response->records = count($memInfo);
+                        $response->total = $total_pages;
+                        $response->records = count($memInfo);    
                         foreach ($memInfo as $value) {
                             $row = $value;
                             $MemCardID = $row['MemberCardID'];
@@ -600,12 +598,11 @@ if(isset($_POST['pager'])){
 
             if($count > 0){
                     $MID = $membercards[0]['MID'];
-                    $forBanning = 1;
-                    $result = $_MemberInfo->getMemInfoUsingSP($MID, $forBanning);
+                    $result = $_MemberInfo->getMemberInfoByMID($MID);
                     $CardNumber = $_SESSION['CardData']['CardNumber'];
 
                     $bhstatus = $result[0]['Status'] == 1 ? "0":"1";
-                    $remarks = $_BanningHistory->getRemarksSP($MID, $bhstatus);
+                    $remarks = $_BanningHistory->getRemarks($MID, $bhstatus);
                     if(isset($remarks[0])){
                         $memInfo[0]['Remarks'] =  $remarks[0]['Remarks'];
                     } else {
@@ -613,12 +610,12 @@ if(isset($_POST['pager'])){
                     }
                     $memInfo[0]['MID'] =  $MID;
                     $memInfo[0]['CardNumber'] = $CardNumber;
-                    $memInfo[0]['FullName'] = $result['LastName'].', '.$result['FirstName'];
-                    $memInfo[0]['ID'] = $result['IdentificationName'].' - '.$result['IdentificationNumber'];
-                    $bdate = new DateTime($result['Birthdate']);
+                    $memInfo[0]['FullName'] = $result[0]['LastName'].', '.$result[0]['FirstName'];
+                    $memInfo[0]['ID'] = $result[0]['IdentificationName'].' - '.$result[0]['IdentificationNumber'];
+                    $bdate = new DateTime($result[0]['Birthdate']);
                     $memInfo[0]['Birthdate'] = $bdate->format('m/d/Y');
-                    $memInfo[0]['Status'] = $result['Status'];
-                    $statusvalue = $result['Status'] == 1  ?  "Active" : ($result['Status'] == 5 ? "Banned": "");
+                    $memInfo[0]['Status'] = $result[0]['Status'];
+                    $statusvalue = $result[0]['Status'] == 1  ?  "Active" : ($result[0]['Status'] == 5 ? "Banned": "");
                     
                     switch($result[0]['Status'])
                     {
@@ -690,12 +687,11 @@ if(isset($_POST['pager'])){
 
             if($count > 0){
                     $MID = $membercards[0]['MID'];
-                    $forBanning = 1;
-                    $result = $_MemberInfo->getMemInfoUsingSP($MID, $forBanning);
+                    $result = $_MemberInfo->getMemberInfoByMID($MID);
                     $CardNumber = $_SESSION['CardData']['CardNumber'];
-                    
-                    $bhstatus = $result['Status'] == 1 ? "0":"1";
-                    $remarks = $_BanningHistory->getRemarksSP($MID, $bhstatus);
+
+                    $bhstatus = $result[0]['Status'] == 1 ? "0":"1";
+                    $remarks = $_BanningHistory->getRemarks($MID, $bhstatus);
                     if(isset($remarks[0])){
                         $memInfo[0]['Remarks'] =  $remarks[0]['Remarks'];
                     } else {
@@ -703,13 +699,13 @@ if(isset($_POST['pager'])){
                     }
                     $memInfo[0]['MID'] =  $MID;
                     $memInfo[0]['CardNumber'] = $CardNumber;
-                    $memInfo[0]['FullName'] = $result['LastName'].', '.$result['FirstName'];
-                    $memInfo[0]['ID'] = $result['IdentificationName'].' - '.$result['IdentificationNumber'];
-                    $bdate = new DateTime($result['Birthdate']);
+                    $memInfo[0]['FullName'] = $result[0]['LastName'].', '.$result[0]['FirstName'];
+                    $memInfo[0]['ID'] = $result[0]['IdentificationName'].' - '.$result[0]['IdentificationNumber'];
+                    $bdate = new DateTime($result[0]['Birthdate']);
                     $memInfo[0]['Birthdate'] = $bdate->format('m/d/Y');
-                    $memInfo[0]['Status'] = $result['Status'];
-                    $statusvalue = $result['Status'] == 1  ?  "Active" : ($result['Status'] == 5 ? "Banned": "");
-                    switch($result['Status'])
+                    $memInfo[0]['Status'] = $result[0]['Status'];
+                    $statusvalue = $result[0]['Status'] == 1  ?  "Active" : ($result[0]['Status'] == 5 ? "Banned": "");
+                    switch($result[0]['Status'])
                     {
                         case 1: $statusvalue = 'Active';    break;
                                 case 2: $statusvalue = 'Suspended';break;

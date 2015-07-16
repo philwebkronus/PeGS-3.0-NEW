@@ -68,7 +68,7 @@ Class RedemptionProcess extends BaseEntity {
                             $_MemberCards->StartTransaction();
                             $IsPointsUpdated = $_MemberCards->UpdateCardPoints($MID, $totalpoints);
                             $amt = $OldCP - $totalpoints;
-                            $isPointsDeducted = $_PcwsWrapper->deductCompPoints($CardNumber, $totalpoints, '', 1);
+                            $isPointsDeducted = $_PcwsWrapper->deductCompPoints($CardNumber, $amt, '', 1);
                             //$PlayerPoints = $_MemberCards->getCurrentPointsByCardNumber($CardNumber);
                             $OldCP = $_PcwsWrapper->getCompPoints($CardNumber, 1);
                             $OldCP = $OldCP['GetCompPoints']['CompBalance'];
@@ -456,7 +456,7 @@ Class RedemptionProcess extends BaseEntity {
                                 $_MemberCards->StartTransaction();
                                 $IsPointsUpdated = $_MemberCards->UpdateCardPoints($MID, $RedeemedPoints);
                                 $amt = $OldCP - $RedeemedPoints;
-                                $isPointsDeducted = $_PcwsWrapper->deductCompPoints($CardNumber, $RedeemedPoints, '', 1);
+                                $isPointsDeducted = $_PcwsWrapper->deductCompPoints($CardNumber, $amt, '', 1);
                                 //Check if the points is greater than or  equal to 0
                                 //$PlayerPoints = $_MemberCards->getCurrentPointsByCardNumber($CardNumber);
                                 $OldCP = $_PcwsWrapper->getCompPoints($CardNumber, 1);

@@ -16,7 +16,7 @@ $page = $_POST['page'];
 $limit = $_POST['rows'];
 
 //get the total number of blacklisted players
-$blacklisted = $blacklist->getAllBlackListedSP();
+$blacklisted = $blacklist->getAllBlackListed();
 $count = count($blacklisted);
 if ($count > 0)
 {
@@ -45,7 +45,7 @@ if(count($blacklisted) > 0)
     $i = 0; 
     foreach($blacklisted as $row)
     {
-        $remarks = $blacklisthistory->getRemarksSP($row['BlackListedID']);
+        $remarks = $blacklisthistory->getRemarks($row['BlackListedID']);
         $response->rows[$i]['id'] = $row['BlackListedID'];
         $response->rows[$i]['cell'] = array(
                                         "<input type='button' class='statuslink' id='blacklistedhist' value='".$row['LastName']."' 

@@ -62,8 +62,8 @@ if(isset($_POST['pager'])){
 
 
         if($validate->validateAlphaSpaceDashAndDot($searchValue)){
-            $result =  $_MemberInfo->getMemberInfoByNameSP($searchValue);
-            
+            $result =  $_MemberInfo->getMemberInfoByName($searchValue);
+          
             if(!empty($result)){
                 $count = count($result);
                 $_SESSION['CardData']['CardNumber'] = '';
@@ -142,21 +142,28 @@ if(isset($_POST['pager'])){
                        do{
                            $MID = $result[$ctr1]['MID'];
                            $data = $_MemberCards->getMemberCardInfoByMIDAllStat($MID);
-                           if(isset($data[0])){
-                               $statusmc = $data[0]['MCStatus'];
 
-                               switch($statusmc)
-                               {
-                                   case 0: $vstatus = 'InActive';break;
-                                   case 1: $vstatus = 'Active';    break;
-                                   case 2: $vstatus = 'Deactivated';break;
-                                   case 5: $vstatus = 'Active Temporary';break;
-                                   case 7: $vstatus = 'Migrated'; break;   
-                                   case 8: $vstatus = 'Temporary Migrated';  break;
-                                   case 9: $vstatus = 'Banned';  break;
-                                   default: $vstatus = 'Card Not Found'; break;
-                               }
-                            
+                           if(empty($data)){
+
+                                break;
+
+                           }
+
+                           $statusmc = $data[0]['MCStatus'];
+
+                            switch($statusmc)
+                            {
+                                case 0: $vstatus = 'InActive';break;
+                                case 1: $vstatus = 'Active';    break;
+                                case 2: $vstatus = 'Deactivated';break;
+                                case 5: $vstatus = 'Active Temporary';break;
+                                case 7: $vstatus = 'Migrated'; break;   
+                                case 8: $vstatus = 'Temporary Migrated';  break;
+                                case 9: $vstatus = 'Banned';  break;
+                                default: $vstatus = 'Card Not Found'; break;
+                            }
+
+                           if(isset($data[0])){
                                $bhstatus = $data[0]['Status'] == 1 ? "0":"1";
 
                                $data[0]['MID'] = $MID;
@@ -511,17 +518,16 @@ if(isset($_POST['pager'])){
 
                 if($count > 0){
                         $MID = $membercards[0]['MID'];
-                        $forBanning = 1;
-                        $result = $_MemberInfo->getMemInfoUsingSP($MID, $forBanning);
+                        $result = $_MemberInfo->getMemberInfoByMID($MID);
                         $CardNumber = $_SESSION['CardData']['CardNumber'];
 
                         $bhstatus = $result[0]['Status'] == 1 ? "0":"1";
 
                         $memInfo[0]['MID'] =  $MID;
                         $memInfo[0]['CardNumber'] = $CardNumber;
-                        $memInfo[0]['FullName'] = $result['LastName'].', '.$result['FirstName'];
-                        $memInfo[0]['ID'] = $result['IdentificationName'].' - '.$result['IdentificationNumber'];
-                        $bdate = new DateTime($result['Birthdate']);
+                        $memInfo[0]['FullName'] = $result[0]['LastName'].', '.$result[0]['FirstName'];
+                        $memInfo[0]['ID'] = $result[0]['IdentificationName'].' - '.$result[0]['IdentificationNumber'];
+                        $bdate = new DateTime($result[0]['Birthdate']);
                         $memInfo[0]['Birthdate'] = $bdate->format('m/d/Y');
                         $memInfo[0]['Status'] = $statusmc;
                         $statusvalue = $vstatus;
@@ -698,13 +704,15 @@ if(isset($_POST['pager'])){
     
     }
     elseif($pager == 'GetBanUnbanGrid'){
+        
         if(isset($_POST['txtSearch']) && $_POST['txtSearch'] != '' ){
     
         $page = $_POST['page'];
         $limit = $_POST['rows'];
 
         if($validate->validateAlphaSpaceDashAndDot($searchValue)){
-            $result =  $_MemberInfo->getMemberInfoByNameSP(trim($searchValue));
+            $result =  $_MemberInfo->getMemberInfoByName($searchValue);
+            
             if(!empty($result)){
                 $count = count($result);
             $_SESSION['CardData']['CardNumber'] = '';
@@ -741,7 +749,7 @@ if(isset($_POST['pager'])){
                        $memInfo[0]['StatusValue'] = $statusvalue;
                        $memInfo[0]['MemberCardID'] = $cardInfo[0]['MemberCardID'];
                    }
-                   
+
                    $total_pages = ceil(count($memInfo)/$limit);
                     if ($page > $total_pages) {
                         $page = $total_pages;
@@ -790,20 +798,26 @@ if(isset($_POST['pager'])){
                    do{
                        $MID = $result[$ctr1]['MID'];
                        $data = $_MemberCards->getMemberCardInfoByMIDAllStat($MID);
-                       if(count($data) > 0){
-                           $statusmc = $data[0]['MCStatus'];
+                       
+                       if(empty($data)){
+                           break;
+                       }
+                       
+                       $statusmc = $data[0]['MCStatus'];
             
-                           switch($statusmc)
-                           {
-                               case 0: $vstatus = 'InActive';break;
-                               case 1: $vstatus = 'Active';    break;
-                               case 2: $vstatus = 'Deactivated';break;
-                               case 5: $vstatus = 'Active Temporary';break;
-                               case 7: $vstatus = 'Migrated'; break;   
-                               case 8: $vstatus = 'Temporary Migrated';  break;
-                               case 9: $vstatus = 'Banned';  break;
-                               default: $vstatus = 'Card Not Found'; break;
-                           }
+                        switch($statusmc)
+                        {
+                            case 0: $vstatus = 'InActive';break;
+                            case 1: $vstatus = 'Active';    break;
+                            case 2: $vstatus = 'Deactivated';break;
+                            case 5: $vstatus = 'Active Temporary';break;
+                            case 7: $vstatus = 'Migrated'; break;   
+                            case 8: $vstatus = 'Temporary Migrated';  break;
+                            case 9: $vstatus = 'Banned';  break;
+                            default: $vstatus = 'Card Not Found'; break;
+                        }
+                        
+                       if(isset($data[0])){
                            $bhstatus = $data[0]['Status'] == 1 ? "0":"1";
                            
                            $data[0]['MID'] = $MID;
@@ -868,8 +882,8 @@ if(isset($_POST['pager'])){
                 if(!empty($tempaccount)){
                     
                     $count = count($tempaccount);
-                    $_SESSION['CardData']['Name'] = '';
-                    $_SESSION['CardData']['CardNumber'] = $searchValue;
+                $_SESSION['CardData']['Name'] = '';
+                $_SESSION['CardData']['CardNumber'] = $searchValue;
 
                 $statusmc = $tempaccount[0]['Status'];
 
@@ -1068,17 +1082,16 @@ if(isset($_POST['pager'])){
 
                 if($count > 0){
                         $MID = $membercards[0]['MID'];
-                        $forBanning = 1;
-                        $result = $_MemberInfo->getMemInfoUsingSP($MID, $forBanning);
+                        $result = $_MemberInfo->getMemberInfoByMID($MID);
                         $CardNumber = $_SESSION['CardData']['CardNumber'];
 
                         $bhstatus = $result[0]['Status'] == 1 ? "0":"1";
 
                         $memInfo[0]['MID'] =  $MID;
                         $memInfo[0]['CardNumber'] = $CardNumber;
-                        $memInfo[0]['FullName'] = $result['LastName'].', '.$result['FirstName'];
-                        $memInfo[0]['ID'] = $result['IdentificationName'].' - '.$result['IdentificationNumber'];
-                        $bdate = new DateTime($result['Birthdate']);
+                        $memInfo[0]['FullName'] = $result[0]['LastName'].', '.$result[0]['FirstName'];
+                        $memInfo[0]['ID'] = $result[0]['IdentificationName'].' - '.$result[0]['IdentificationNumber'];
+                        $bdate = new DateTime($result[0]['Birthdate']);
                         $memInfo[0]['Birthdate'] = $bdate->format('m/d/Y');
                         $memInfo[0]['Status'] = $statusmc;
                         $statusvalue = $vstatus;
@@ -1252,17 +1265,16 @@ if(isset($_POST['pager'])){
 
             if($count > 0){
                     $MID = $membercards[0]['MID'];
-                    $forBanning = 1;
-                    $result = $_MemberInfo->getMemInfoUsingSP($MID, $forBanning);
+                    $result = $_MemberInfo->getMemberInfoByMID($MID);
                     $CardNumber = $_SESSION['CardData']['CardNumber'];
 
                     $bhstatus = $result[0]['Status'] == 1 ? "0":"1";
                     
                     $memInfo[0]['MID'] =  $MID;
                     $memInfo[0]['CardNumber'] = $CardNumber;
-                    $memInfo[0]['FullName'] = $result['LastName'].', '.$result['FirstName'];
-                    $memInfo[0]['ID'] = $result['IdentificationName'].' - '.$result['IdentificationNumber'];
-                    $bdate = new DateTime($result['Birthdate']);
+                    $memInfo[0]['FullName'] = $result[0]['LastName'].', '.$result[0]['FirstName'];
+                    $memInfo[0]['ID'] = $result[0]['IdentificationName'].' - '.$result[0]['IdentificationNumber'];
+                    $bdate = new DateTime($result[0]['Birthdate']);
                     $memInfo[0]['Birthdate'] = $bdate->format('m/d/Y');
                     $memInfo[0]['Status'] = $statusmc;
                     $statusvalue = $vstatus;

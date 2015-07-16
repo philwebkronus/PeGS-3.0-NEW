@@ -54,59 +54,6 @@ class BlackLists extends BaseEntity
         return $result;
     }
     /**
-     * @author Mark Kenneth Esguerra
-     * @param type $lastname
-     * @param type $firstname
-     * @param type $birthdate
-     * @param type $process
-     * @param type $blacklistID
-     * @return type
-     */
-    public function checkIfExistSP($lastname, $firstname, $birthdate, $process, $blacklistID = NULL)
-    {
-        if ($process == 1) //A
-        {
-            $query = "CALL membership.sp_select_data(1, 4, 11, '$lastname,$firstname,$birthdate','Status,BlackListedID',@OUTRetCode,@OUTRetMessage,@OUTfldListRet)";
-            $result = parent::RunQuery($query);
-            
-            $arr_result = array();
-            foreach ($result as $row) {
-                $exp = explode(";", $row['OUTfldListRet']);
-                $arr_result[] = array('Status' => $exp[0], 
-                                      'BlackListedID' => $exp[1]);
-            }
-            return $arr_result;
-        }
-        else if($process == 2)
-        {
-            $query = "CALL membership.sp_select_data(1, 4, 11, '$lastname,$firstname,$birthdate,$blacklistID', 'Status,BlackListedID', @OUTRetCode,@OUTRetMessage, @OUTfldListRet)";
-            $result = parent::RunQuery($query);
-            
-            $arr_result = array();
-            foreach ($result as $row) {
-                $exp = explode(";", $row['OUTfldListRet']);
-                $arr_result[] = array('Status' => $exp[0], 
-                                      'BlackListedID' => $exp[1]);
-            }
-            return $arr_result;
-        }
-        else if ($process == 3) //Checking in Registration
-        {
-            $query = "CALL sp_select_data(1, 4, 12, '$lastname,$firstname,$birthdate,1', 'BlackListedID', @OUTRetCode,@OUTRetMessage, @OUTfldListRet)";
-            $result = parent::RunQuery($query);
-            
-            $arr_result = array();
-            foreach ($result as $row) {
-                $exp = explode(";", $row['OUTfldListRet']);
-                $arr_result[] = array('Status' => $exp[0], 
-                                      'BlackListedID' => $exp[1]);
-            }
-            return $arr_result;
-        }
-        
-        return $result;
-    }
-    /**
      * Add player to blacklists if the player is not yet listed
      * @param string $lastname Last name of the player to be blacklisted
      * @param string $firstname First name of the player
@@ -166,28 +113,28 @@ class BlackLists extends BaseEntity
                         catch (Exception $e)
                         {
                             $this->RollBackTransaction();
-                            return array('TransCode' => 1,
+                            return array('TransCode' => 0,
                                          'TransMsg' => $e->getMessage());
                         }
                     }
                     else
                     {
                         $this->RollBackTransaction();
-                        return array('TransCode' => 1, 
+                        return array('TransCode' => 0, 
                                      'TransMsg' => 'An error occured while inserting to database');
                     }
                 }
                 catch (Exception $e)
                 {
                     $this->RollBackTransaction();
-                    return array('TransCode' => 1,
+                    return array('TransCode' => 0,
                                  'TransMsg' => $e->getMessage());
                 }
             }
             else
             {
                 $this->RollBackTransaction();
-                return array('TransCode' => 1, 
+                return array('TransCode' => 0, 
                              'TransMsg' => 'An error occured while inserting to database');
             }
         }
@@ -197,38 +144,6 @@ class BlackLists extends BaseEntity
             return array('TransCode' => 0,
                          'TransMsg' => $e->getMessage());
         }
-    }
-    /**
-     * @author Mark Kenneth Esguerra
-     * @param type $lastname
-     * @param type $firstname
-     * @param type $birthdate
-     * @param type $remarks
-     * @param type $aid
-     * @return type
-     */
-    public function addToBlackListSP($lastname, $firstname, $birthdate, $remarks, $aid)
-    {
-        App::LoadModuleClass("Membership","AuditTrail");
-        App::LoadModuleClass("Membership","AuditFunctions");
-        $_Log = new AuditTrail();
-        
-        $sessionID = $_SESSION['userinfo']['SessionID'];
-        
-        $query = "CALL membership.sp_insert_data2(1, Null, Null, 1, Null, $aid, 2, Null, '$remarks', '$lastname', '$firstname', '$birthdate', @OUT_ResultCode, @OUT_Result, @OUT_ID)";
-        $result = parent::RunQuery($query);
-        
-        if ($result[0]['@OUT_ResultCode'] == 0) {
-            $blackListedID = $result[0]['@OUT_ID'];
-            $_Log->logEvent(AuditFunctions::PLAYER_BLACKLISTING, "BlacklistedID: ".$blackListedID." successful", array('ID'=>$aid, 'SessionID'=>$sessionID));
-            return array('TransCode' => 1,
-                         'TransMsg' => 'The player was successfully added in the blacklist.');
-        }
-        else {
-            return array('TransCode' => 0, 
-                         'TransMsg' => 'An error occured while inserting to database');
-        }
-        
     }
     /**
      * Get the details of all black listed players
@@ -246,23 +161,6 @@ class BlackLists extends BaseEntity
         $result = parent::RunQuery($query);
         
         return $result;
-    }
-    public function getAllBlackListedSP() {
-        $query =  " CALL sp_select_data(1, 4, 10, 1, 'BlackListedID,LastName,FirstName,BirthDate,DateCreated',@OUTRetCode,@OUTRetMessage, @OUTfldListRet)";
-        $result = parent::RunQuery($query);
-        $arr_result = array();
-        if (count($result) > 0) {
-            foreach ($result as $row) {
-                $exp = explode(";", $row['OUTfldListRet']);
-                
-                $arr_result[] = array('BlackListedID' => $exp[0], 
-                                    'LastName' => $exp[1], 
-                                    'FirstName' => $exp[2], 
-                                    'BirthDate' => $exp[3], 
-                                    'DateCreated' => $exp[4]);
-            }
-        }
-        return $arr_result;
     }
     /**
      * Update the Black Listed player's details
@@ -288,7 +186,10 @@ class BlackLists extends BaseEntity
         //Update details in blacklists table
         try
         {
-            $query = "CALL membership.sp_update_data(1, 2, 'BlackListedID, Status', '$blackListedID;1', 'LastName,FirstName,BirthDate', '$lastname;$firstname;$birthdate', @OUT_intResultCode, @OUT_strResult);";
+            $query = "UPDATE $this->TableName SET LastName = '$lastname',
+                                                  FirstName = '$firstname', 
+                                                  BirthDate = '$birthdate' 
+                      WHERE BlackListedID = $blackListedID AND Status = 1";
             $result = parent::ExecuteQuery($query);
             //Check if there affected rows
             $affectedrows1 = $this->AffectedRows;
@@ -297,7 +198,9 @@ class BlackLists extends BaseEntity
                 //Update remarks in blacklisthistory
                 try
                 {
-                    $query = "CALL sp_update_data(1, 3, 'BlackListedID', $blackListedID, 'Remarks', '$remarks', @OUT_intResultCode, @OUT_strResult)";
+                    $query = "UPDATE blacklisthistory SET Remarks = '$remarks' 
+                              WHERE BlackListedID = $blackListedID AND Status = 1 
+                              ORDER BY DateCreated DESC LIMIT 1";
                     $result = parent::ExecuteQuery($query);
                     //Check if there affected rows
                     $affectedrows2 = $this->AffectedRows;
@@ -308,7 +211,7 @@ class BlackLists extends BaseEntity
                             try
                             {
                                 $this->CommitTransaction();
-                                $_Log->logEvent(AuditFunctions::UPDATE_BLACKLISTED_PLAYER, "BlacklistedID: ".$blackListedID." successful", array('ID'=>$AID, 'SessionID'=>$sessionID));
+                                $_Log->logEvent(AuditFunctions::UPDATE_BLACKLISTED_PLAYER, $firstname." ".$lastname." successful", array('ID'=>$AID, 'SessionID'=>$sessionID));
                                 return array('TransCode' => 1,
                                              'TransMsg' => 'Blacklisted details successfully updated');
                             }
@@ -386,7 +289,19 @@ class BlackLists extends BaseEntity
                 {
                     try
                     {
-                        $query = "CALL sp_insert_data2(1, Null, Null, 1, Null, $aid, 1, Null, '$remarks', Null, Null, Null, @OUT_ResultCode, @OUT_Result, @OUT_ID)";
+                        $query = "INSERT INTO blacklisthistory (
+                                                        BlackListedID, 
+                                                        CreatedByAID, 
+                                                        DateCreated, 
+                                                        Remarks, 
+                                                        Status 
+                                  ) VALUES (
+                                    $blacklistedID, 
+                                    $aid,
+                                    NOW_USEC(), 
+                                    '$remarks', 
+                                    1
+                        )";
                         $result = parent::ExecuteQuery($query);
                         if ($result)
                         {
@@ -445,7 +360,19 @@ class BlackLists extends BaseEntity
                 {
                     try
                     {
-                        $query = "CALL membership.sp_insert_data2(1, Null, Null, 0, Null, $aid, 1, Null, '$remarks', Null, Null, Null, @OUT_ResultCode, @OUT_Result, @OUT_ID)";
+                        $query = "INSERT INTO blacklisthistory (
+                                                        BlackListedID, 
+                                                        CreatedByAID, 
+                                                        DateCreated, 
+                                                        Remarks, 
+                                                        Status
+                                  ) VALUES (
+                                    $blacklistedID, 
+                                    $aid,
+                                    NOW_USEC(), 
+                                    'Whitelisted', 
+                                    0
+                        )";
                         $result = parent::ExecuteQuery($query);
                         if ($result)
                         {

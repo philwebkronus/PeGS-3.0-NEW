@@ -23,7 +23,6 @@ App::LoadModuleClass("Membership", "AuditFunctions");
 App::LoadModuleClass("Loyalty", "MemberPointsTransferLog");
 App::LoadModuleClass("Admin", "AccountSessions");
 App::LoadModuleClass("Kronus", "TerminalSessions");
-App::LoadModuleClass("Membership", "PcwsWrapper");
 
 //Load Needed Core Class.
 App::LoadCore('Validation.class.php');
@@ -39,7 +38,6 @@ $_Log = new AuditTrail();
 $_MemberPointsTransferLog = new MemberPointsTransferLog();
 $_AccountSessions = new AccountSessions();
 $_TerminalSessions = new TerminalSessions();
-$_PcwsWrapper = new PcwsWrapper();
 $profile = null;
 $response = null;
 
@@ -94,13 +92,7 @@ if (isset($_POST['pager'])) {
                         } else {
                             $cardpoints = $_MemberCards->getPointsByCard($cardnumber);
 
-                            $currentpoints = $_PcwsWrapper->getCompPoints($cardnumber, 0);
-                            $currentpoints = $currentpoints['GetCompPoints']['CompBalance'];
-                            
-                            $MemberInfoResult2 = $_MemberInfo->getMemberInfoByID($MIDResult[0]['MID']);
-                            $MemberInfoResult = $_MemberInfo->getPlayerName($MIDResult[0]['MID']);
-                            
-                            $MemberInfoResult[0] = array_merge($MemberInfoResult[0], $MemberInfoResult2[0]);
+                            $MemberInfoResult = $_MemberInfo->getMemberInfoByID($MIDResult[0]['MID']);
                             if (isset($MemberInfoResult[0]['MID']) && $MemberInfoResult[0]['MID'] != '') {
                                 $count = $_TerminalSessions->isSessionExists($MemberInfoResult[0]['MID']);
                                 if ($count[0]['ctrTerminalID'] == 0) {
@@ -131,7 +123,7 @@ if (isset($_POST['pager'])) {
                                     $profile->Gender = $memberinfovalue['Gender'];
                                     $profile->Status = $memberinfovalue['Status'];
                                     $profile->LifeTimePoints = number_format($cardpoints['LifeTimePoints']);
-                                    $profile->CurrentPoints = number_format($currentpoints);
+                                    $profile->CurrentPoints = number_format($cardpoints['CurrentPoints']);
                                     $profile->RedeemedPoints = number_format($cardpoints['RedeemedPoints']);
                                     $profile->BonusPoints = number_format($cardpoints['BonusPoints']);
                                 } else {
@@ -221,8 +213,7 @@ if (isset($_POST['pager'])) {
             case "ProfileData2":
                 if (isset($_POST['UserName']) && $_POST['UserName'] != '') {
                     $username = $_POST['UserName'];
-                    $MIDResult = $_Members->getMIDbyUserNameSP($username);
-
+                    $MIDResult = $_Members->getMIDbyUserName($username);
                     $countMD = count($MIDResult);
 
                     if ($countMD > 0) {
@@ -248,13 +239,7 @@ if (isset($_POST['pager'])) {
                             } else {
                                 $cardpoints = $_MemberCards->getPointsByCard($oldcard);
 
-                                $currentpoints = $_PcwsWrapper->getCompPoints($oldcard, 0);
-                                $currentpoints = $currentpoints['GetCompPoints']['CompBalance'];
-                                        
-                                $MemberInfoResult2 = $_MemberInfo->getMemberInfoByID($MIDResult[0]['MID']);
-                                $MemberInfoResult = $_MemberInfo->getPlayerName($MIDResult[0]['MID']);
-                                $MemberInfoResult[0] = array_merge($MemberInfoResult[0], $MemberInfoResult2[0]);
-
+                                $MemberInfoResult = $_MemberInfo->getMemberInfoByID($MIDResult[0]['MID']);
                                 if (isset($MemberInfoResult[0]['MID']) && $MemberInfoResult[0]['MID'] != '') {
                                     $count = $_TerminalSessions->isSessionExists($MemberInfoResult[0]['MID']);
                                     if ($count[0]['ctrTerminalID'] == 0) {
@@ -284,7 +269,7 @@ if (isset($_POST['pager'])) {
                                         $profile->Gender = $memberinfovalue['Gender'];
                                         $profile->Status = $memberinfovalue['Status'];
                                         $profile->LifeTimePoints = number_format($cardpoints['LifeTimePoints']);
-                                        $profile->CurrentPoints = number_format($currentpoints);
+                                        $profile->CurrentPoints = number_format($cardpoints['CurrentPoints']);
                                         $profile->RedeemedPoints = number_format($cardpoints['RedeemedPoints']);
                                         $profile->BonusPoints = number_format($cardpoints['BonusPoints']);
                                     } else {
@@ -409,14 +394,8 @@ if (isset($_POST['pager'])) {
                         $newcarddetailz = $newcarddetails[0];
                     }
                     $siteid = $carddetails['SiteID'];
-                    //get comp points from RTG
-                    $comp_points = $_PcwsWrapper->getCompPoints($oldcard, 0);
-                    $comp_points = $comp_points['GetCompPoints']['CompBalance'];
-                    if ($comp_points == "") { $comp_points = 0; }
-                    
                     $lifetimepoints = $carddetails['LifetimePoints'] + $newcarddetailz['LifetimePoints'];
-                    //$currentpoints = $carddetails['CurrentPoints'] + $newcarddetailz['CurrentPoints'];
-                    $currentpoints = $comp_points;
+                    $currentpoints = $carddetails['CurrentPoints'] + $newcarddetailz['CurrentPoints'];
                     $redeemedpoints = $carddetails['RedeemedPoints'] + $newcarddetailz['RedeemedPoints'];
 
                     $newcardnumber = $newcard;
@@ -456,7 +435,7 @@ if (isset($_POST['pager'])) {
                             $msg = 'Migration failed. Card has negative current points.';
                             $profile->Msg = $msg;
                         } else {
-                            $_MemberCards->transferMemberCard($MID, $cardid2, $siteid, $lifetimepoints, $currentpoints, $redeemedpoints, $newcardnumber, $oldcard, $status1, $status2, $aid, $datecreated, $cardtypeid1);
+                            $_MemberCards->transferMemberCard($MID, $cardid2, $siteid, $lifetimepoints, $currentpoints, $redeemedpoints, $newcardnumber, $oldubcardnumber, $status1, $status2, $aid, $datecreated, $cardtypeid1);
 
                             if (!App::HasError()) {
 
@@ -532,7 +511,7 @@ if (isset($_POST['pager'])) {
                                     $profile->Msg = $msg;
                                 }
                             } else {
-                                
+
                                 $isSuccess = false;
                                 $_Log->logAPI(AuditFunctions::MARKETING_RED_CARD_TRANSFERRING, 'From Card: ' . $oldcard . ', Pts: ' . $currentpoints . '; To Card: ' . $newcard . ', Pts: ' . $newcarddetailz["CurrentPoints"] . ', Failed', $_SESSION['aID']);
                                 $error = "Failed to transfer points";
@@ -672,7 +651,7 @@ if (isset($_POST['pager'])) {
 
                 $datecreated = "NOW(6)";
 
-                $MIDResult = $_Members->getMIDbyUserNameSP($username);
+                $MIDResult = $_Members->getMIDbyUserName($username);
                 $MID = $MIDResult[0]['MID'];
 
                 $oldcard = $_MemberCards->getOldUBCardNumberUsingMID($MID);
@@ -688,7 +667,7 @@ if (isset($_POST['pager'])) {
 
                 $siteid = $carddetails[0]['SiteID'];
                 $lifetimepoints = $carddetails[0]['LifetimePoints'];
-                //$currentpoints = $carddetails[0]['CurrentPoints'];
+                $currentpoints = $carddetails[0]['CurrentPoints'];
                 $redeemedpoints = $carddetails[0]['RedeemedPoints'];
 
                 $newcardnumber = $newcard;
@@ -718,10 +697,6 @@ if (isset($_POST['pager'])) {
                         $msg = 'Migration failed. Card has negative current points.';
                         $profile->Msg = $msg;
                     } else {
-                        //get comp points 
-                        $currentpoints = $_PcwsWrapper->getCompPoints($oldcard, 0);
-                        $currentpoints = $currentpoints['GetCompPoints']['CompBalance'];
-                
                         if ($lifetimepoints == '') {
                             $lifetimepoints = 0;
                         } else {
@@ -729,8 +704,9 @@ if (isset($_POST['pager'])) {
                         }
                         if ($currentpoints == '') {
                             $currentpoints = 0;
-                        } 
-                        
+                        } else {
+                            $currentpoints = $currentpoints;
+                        }
                         if ($redeemedpoints == '') {
                             $redeemedpoints = 0;
                         } else {

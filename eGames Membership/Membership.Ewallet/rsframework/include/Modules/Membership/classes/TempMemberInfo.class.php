@@ -56,8 +56,8 @@ class TempMemberInfo extends BaseEntity
         
         return $result;
     }
-    
-    
+   
+
 }
 
 ?>
