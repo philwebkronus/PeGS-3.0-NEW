@@ -972,12 +972,12 @@ class FrontendController extends MI_Controller {
                     Mirage::app()->end();
                 }
                 
-                //if playername and if SiteGroup is BGI
+                /*//if playername and if SiteGroup is BGI
                 elseif($obj_result->CardInfo->MemberName == null){
                     Mirage::loadLibraries('LoyaltyScripts');
                     header('HTTP/1.0 401 Unauthorized');
                     Mirage::app()->end();
-                }
+                }*/
                 
                 //if player status is deactivated and Site Group is BGI
                 elseif($obj_result->CardInfo->StatusCode != 1 && $obj_result->CardInfo->StatusCode != 5 )
