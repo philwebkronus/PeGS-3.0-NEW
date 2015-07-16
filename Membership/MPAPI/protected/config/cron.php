@@ -65,7 +65,7 @@ return array(
         // using Yii::app()->params['paramName']
 	'params'=>array(
             'SitePrefix'=>'',
-            'SMSURI' => 'http://rtmessagegw.egamescasino.ph/send',
+            'SMSURI' => 'http://sms.egamescasino.ph/send',
             'app_id' => 'EGAMES',
             'DenominationPrefix'=>'PhP ',
             'allowedAmount'=>0,
