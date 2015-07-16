@@ -17,7 +17,6 @@ class Processing
         $couponRedemptionLogsModel = new CouponRedemptionLogsModel();
         $logger = new ErrorLogger();
         $apiLogsModel = new APILogsModel();
-        $pcwsWrapper = new PcwsWrapper();
         
         $apiMethod = 8;
         $oldCurrentPoints = 0;
@@ -275,7 +274,6 @@ class Processing
         $itemRedemptionLogsModel = new ItemRedemptionLogsModel();
         $apiLogsModel = new APILogsModel();
         $helpers = new Helpers();
-        $pcwsWrapper = new PcwsWrapper();
         
         $AID = $MID;
         $totalPoints = $redeemedPoints/$quantity;

@@ -34,14 +34,29 @@ class MemberInfoModel {
         return $result;
     }
     
+    public function getDetailsUsingEmailWithSP($email) {
+        $sql = "CALL sp_select_data(1,1,2,'$email','MID,FirstName,MiddleName,LastName,NickName,Email, AlternateEmail,MobileNumber,AlternateMobileNumber,Address1,IdentificationNumber',@ReturnCode, @ReturnMessage, @ReturnFields)";
+        //$param = array(':email' => $email);
+        $command = $this->_connection->createCommand($sql);
+        $result = $command->queryRow(true);
+        if($result['OUTfldListRet'] == '')
+            return array();
+        else
+        {
+            $result = explode(";", $result['OUTfldListRet']);
+            return array('MID' => $result[0], 'FirstName' => $result[1], 'MiddleName' => $result[2], 'LastName' => $result[3], 'NickName' => $result[4], 'Email' => $result[5],
+                         'AlternateEmail' => $result[6], 'MobileNumber' => $result[7], 'AlternateMobileNumber' => $result[8],
+                         'Address1' => $result[9], 'IdentificationNumber' => $result[10]);
+        }
+    }
+
     //@author Ralph Sison
     //@date 6-19-2014
     //@purpose get member info using MID
     public function getMemberInfoUsingMID($MID) {
-        $sql = "SELECT MID, FirstName, MiddleName, LastName, NickName, Address1, MobileNumber,
-                       AlternateMobileNumber, Email, AlternateEmail, Gender, IdentificationID,
-                       IdentificationNumber, NationalityID, OccupationID, IsSmoker, Birthdate
-                FROM memberinfo 
+        $sql = "SELECT MID, Gender, IdentificationID,
+                       NationalityID, OccupationID, IsSmoker, Birthdate, CityID, RegionID
+                FROM memberinfo
                 WHERE MID = :MID";
         $param = array(':MID' => $MID);
         $command = $this->_connection->createCommand($sql);
@@ -63,6 +78,16 @@ class MemberInfoModel {
         return $result;
     }
     
+    public function getEmailFNameUsingMIDWIthSP($MID) {
+        $sql = "CALL sp_select_data(1,1,0,'$MID','Email,FirstName,MiddleName,LastName',@ReturnCode, @ReturnMessage, @ReturnFields)";
+        //$param = array(':MID' => $MID);
+        $command = $this->_connection->createCommand($sql);
+        $result = $command->queryRow(true);
+        $result = explode(";", $result['OUTfldListRet']);
+
+        return array('Email' => $result[0], 'FirstName' => $result[1], 'MiddleName' => $result[2], 'LastName' => $result[3]);
+    }
+
     //@date 6-25-2014
     public function checkIfEmailExistsWithMID($MID, $email) {
         $sql = 'SELECT COUNT(Email) AS COUNT FROM memberinfo WHERE MID != :MID AND Email = :Email'; //AND Status = 9';
@@ -73,6 +98,18 @@ class MemberInfoModel {
         return $result;
     }
     
+    public function checkIfEmailExistsWithMIDWithSP($MID,$email) {
+        $sql = "CALL sp_select_data(1,1,3,'$MID,$email', 'Email', @OUTRetCode, @OUTRetMessage, @OUTfldListRet)"; //AND Status = 9';
+        //$param = array(':MID' => $MID, ':Email' => $email);
+        $command = $this->_connection->createCommand($sql);
+        $result = $command->queryRow(true);
+        if($result['OUTfldListRet'] == "")
+            return array();
+        else
+            return $result['OUTfldListRet'];
+
+    }
+
     public function updateProfile($firstname, $middlename, $lastname, $nickname, $MID, $permanentAddress, $mobileNumber, $alternateMobileNumber, $emailAddress, $alternateEmail, $birthdate, $nationalityID, $occupationID, $idNumber, $idPresented, $gender, $isSmoker) {
         $startTrans = $this->_connection->beginTransaction();
         
@@ -112,7 +149,47 @@ class MemberInfoModel {
                 Utilities::log($e->getMessage());
                 return 0;
             }
-        
+
+        } catch (Exception $e) {
+            $startTrans->rollback();
+            Utilities::log($e->getMessage());
+            return 0;
+        }
+    }
+    
+    public function updateProfileWithSP($firstname, $middlename, $lastname, $nickname, $MID, $permanentAddress, $mobileNumber, $alternateMobileNumber, $emailAddress, $alternateEmail, $birthdate, $nationalityID, $occupationID, $idNumber, $idPresented, $gender, $isSmoker) {
+        $startTrans = $this->_connection->beginTransaction();
+
+        if($gender == '')
+            $gender = 1;
+        if($nationalityID == '')
+            $nationalityID = 1;
+        if($occupationID == '')
+            $occupationID = 1;
+        if($isSmoker == '')
+            $isSmoker = 2;
+
+        try {
+            $sql = "CALL sp_update_data(1,1,'MID',$MID,'FirstName,MiddleName,LastName,NickName,Address1,MobileNumber,AlternateMobileNumber,Email,AlternateEmail,BirthDate,NationalityID,OccupationID,IdentificationNumber,IdentificationID,Gender,IsSmoker','$firstname;$middlename;$lastname;$nickname;$permanentAddress;$mobileNumber;$alternateMobileNumber;$emailAddress;$alternateEmail;$birthdate;$nationalityID;$occupationID;$idNumber;$idPresented;$gender;$isSmoker',@OUT_intResultCode,@OUT_strResult);";
+//            $param = array(':FirstName' => $firstname,':MiddleName' => $middlename, ':LastName' => $lastname, ':NickName' => $nickname,
+//                           ':Address' => $permanentAddress,':MobileNumber' => $mobileNumber, ':AlternateMobileNumber' => $alternateMobileNumber,
+//                           ':Email' => $emailAddress,':AlternateEmail' => $alternateEmail, ':Birthdate' => $birthdate,
+//                           ':NationalityID' => $nationalityID,':OccupationID' => $occupationID, ':IdentificationNumber' => $idNumber, ':IdentificationID' => $idPresented,
+//                           ':Gender' => $gender, ':IsSmoker' => $isSmoker, ':MID' => $MID);
+            $command = $this->_connection->createCommand($sql);
+
+           // $command->bindValues($param);
+            $command->execute();
+
+            try {
+                $startTrans->commit();
+                return 1;
+            } catch (PDOException $e) {
+                $startTrans->rollback();
+                Utilities::log($e->getMessage());
+                return 0;
+            }
+
         } catch (Exception $e) {
             $startTrans->rollback();
             Utilities::log($e->getMessage());
@@ -148,6 +225,31 @@ class MemberInfoModel {
         }
     }
     
+    public function updateProfileDateUpdatedWithSP($MID, $mid) {
+        $startTrans = $this->_connection->beginTransaction();
+
+        try {
+            $sql = "CALL sp_update_data(1,1,'MID',$MID,'DateUpdated,UpdatedByAID','NOW(6);$mid',@OUT_intResultCode,@OUT_strResult);";
+            //$param = array(':mid' => $mid, ':MID' => $MID);
+            $command = $this->_connection->createCommand($sql);
+           // $command->bindValues($param);
+            $command->execute();
+
+            try {
+                $startTrans->commit();
+                return 1;
+            } catch (PDOException $e) {
+                $startTrans->rollback();
+                Utilities::log($e->getMessage());
+                return 0;
+            }
+
+        } catch (Exception $e) {
+            $startTrans->rollback();
+            Utilities::log($e->getMessage());
+            return 0;
+        }
+    }
     //@date 6-30-2014
     //@purpose check if email is verified in live membership db
     public function checkIfActiveVerifiedEmail($email) {
@@ -280,7 +382,7 @@ class MemberInfoModel {
         }
     }
     
-    public function updateProfilev3($firstname, $middlename, $lastname, $nickname, $MID, $permanentAddress, $mobileNumber, $alternateMobileNumber, $emailAddress, $alternateEmail, $birthdate, $nationalityID, $occupationID, $idNumber, $idPresented, $gender, $isSmoker, $region, $city) {
+    public function updateProfilev2WithSP($firstname, $middlename, $lastname, $nickname, $MID, $permanentAddress, $mobileNumber, $alternateMobileNumber, $emailAddress, $alternateEmail, $birthdate, $nationalityID, $occupationID, $gender, $isSmoker, $region, $city) {
         $startTrans = $this->_connection->beginTransaction();
         
         if($gender == '')
@@ -291,7 +393,47 @@ class MemberInfoModel {
             $occupationID = 1;
         if($isSmoker == '')
             $isSmoker = 2;
-        
+
+        try {
+            $sql = "CALL sp_update_data(1,1,'MID',$MID,'FirstName,MiddleName,LastName,NickName,Address1,MobileNumber,AlternateMobileNumber,Email,AlternateEmail,BirthDate,NationalityID,OccupationID,Gender,IsSmoker,RegionID,CityID','$firstname;$middlename;$lastname;$nickname;$permanentAddress;$mobileNumber;$alternateMobileNumber;$emailAddress;$alternateEmail;$birthdate;$nationalityID;$occupationID;$gender;$isSmoker;$region;$city',@OUT_intResultCode,@OUT_strResult)";
+//            $param = array(':FirstName' => $firstname,':MiddleName' => $middlename, ':LastName' => $lastname, ':NickName' => $nickname,
+//                           ':Address' => $permanentAddress,':MobileNumber' => $mobileNumber, ':AlternateMobileNumber' => $alternateMobileNumber,
+//                           ':Email' => $emailAddress,':AlternateEmail' => $alternateEmail, ':Birthdate' => $birthdate,
+//                           ':NationalityID' => $nationalityID,':OccupationID' => $occupationID,
+//                           ':Gender' => $gender, ':IsSmoker' => $isSmoker,':Region' => $region, ':City' => $city, ':MID' => $MID);
+            $command = $this->_connection->createCommand($sql);
+
+            //$command->bindValues($param);
+            $command->execute();
+
+            try {
+                $startTrans->commit();
+                return 1;
+            } catch (PDOException $e) {
+                $startTrans->rollback();
+                Utilities::log($e->getMessage());
+                return 0;
+            }
+
+        } catch (Exception $e) {
+            $startTrans->rollback();
+            Utilities::log($e->getMessage());
+            return 0;
+        }
+    }
+
+    public function updateProfilev3($firstname, $middlename, $lastname, $nickname, $MID, $permanentAddress, $mobileNumber, $alternateMobileNumber, $emailAddress, $alternateEmail, $birthdate, $nationalityID, $occupationID, $idNumber, $idPresented, $gender, $isSmoker, $region, $city) {
+        $startTrans = $this->_connection->beginTransaction();
+
+        if($gender == '')
+            $gender = 1;
+        if($nationalityID == '')
+            $nationalityID = 1;
+        if($occupationID == '')
+            $occupationID = 1;
+        if($isSmoker == '')
+            $isSmoker = 2;
+
         try {
             $sql = "UPDATE memberinfo
                     SET FirstName = :FirstName, MiddleName = :MiddleName, LastName = :LastName,
@@ -319,7 +461,47 @@ class MemberInfoModel {
                 Utilities::log($e->getMessage());
                 return 0;
             }
-        
+
+        } catch (Exception $e) {
+            $startTrans->rollback();
+            Utilities::log($e->getMessage());
+            return 0;
+        }
+    }
+    
+    public function updateProfilev3WithSP($firstname, $middlename, $lastname, $nickname, $MID, $permanentAddress, $mobileNumber, $alternateMobileNumber, $emailAddress, $alternateEmail, $birthdate, $nationalityID, $occupationID, $idNumber, $idPresented, $gender, $isSmoker, $region, $city) {
+        $startTrans = $this->_connection->beginTransaction();
+
+        if($gender == '')
+            $gender = 1;
+        if($nationalityID == '')
+            $nationalityID = 1;
+        if($occupationID == '')
+            $occupationID = 1;
+        if($isSmoker == '')
+            $isSmoker = 2;
+
+        try {
+            $sql = "CALL sp_update_data(1,1,'MID',$MID,'FirstName,MiddleName,LastName,NickName,Address1,MobileNumber,AlternateMobileNumber,Email,AlternateEmail,BirthDate,NationalityID,OccupationID,IdentificationNumber,IdentificationID,Gender,IsSmoker,RegionID,CityID','$firstname;$middlename;$lastname;$nickname;$permanentAddress;$mobileNumber;$alternateMobileNumber;$emailAddress;$alternateEmail;$birthdate;$nationalityID;$occupationID;$idNumber;$idPresented;$gender;$isSmoker;$region;$city',@OUT_intResultCode,@OUT_strResult);";
+//            $param = array(':FirstName' => $firstname,':MiddleName' => $middlename, ':LastName' => $lastname, ':NickName' => $nickname,
+//                           ':Address' => $permanentAddress,':MobileNumber' => $mobileNumber, ':AlternateMobileNumber' => $alternateMobileNumber,
+//                           ':Email' => $emailAddress,':AlternateEmail' => $alternateEmail, ':Birthdate' => $birthdate,
+//                           ':NationalityID' => $nationalityID,':OccupationID' => $occupationID, ':IdentificationNumber' => $idNumber, ':IdentificationID' => $idPresented,
+//                           ':Gender' => $gender, ':IsSmoker' => $isSmoker,':Region' => $region, ':City' => $city, ':MID' => $MID);
+            $command = $this->_connection->createCommand($sql);
+
+            //$command->bindValues($param);
+            $command->execute();
+
+            try {
+                $startTrans->commit();
+                return 1;
+            } catch (PDOException $e) {
+                $startTrans->rollback();
+                Utilities::log($e->getMessage());
+                return 0;
+            }
+
         } catch (Exception $e) {
             $startTrans->rollback();
             Utilities::log($e->getMessage());

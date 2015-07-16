@@ -38,9 +38,7 @@ class CardsModel {
     
     //@purpose get member details using card number
     public function getMemberInfoUsingCardNumber($cardNumber) {
-        $sql = 'SELECT b.CurrentPoints, b.BonusPoints, b.RedeemedPoints, b.LifetimePoints, a.CardNumber, c.MID, c.FirstName, c.MiddleName, c.LastName, c.NickName, c.Birthdate,
-                c.Gender, c.Email, c.AlternateEmail, c.MobileNumber, c.AlternateMobileNumber,
-                c.NationalityID, c.OccupationID, c.Address1, c.IdentificationID, c.IdentificationNumber, c.IsSmoker, c.RegionID, c.CityID
+        $sql = 'SELECT b.CurrentPoints, b.BonusPoints, b.RedeemedPoints, b.LifetimePoints
                 FROM cards a
                 INNER JOIN membercards b ON a.CardID = b.CardID
                 INNER JOIN membership.memberinfo c ON b.MID = c.MID

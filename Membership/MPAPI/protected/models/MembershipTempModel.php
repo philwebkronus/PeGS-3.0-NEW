@@ -43,6 +43,14 @@ class MembershipTempModel {
         return $result;
     }
     
+    public function checkIfEmailExistsWithMIDWithSP($MID,$email) {
+        $sql = "CALL membership.sp_select_data(0,1,3,'$MID,$email', 'Email', @OUTRetCode, @OUTRetMessage, @OUTfldListRet)"; //AND Status = 2';
+        //$param = array(':MID' => $MID, ':Email' => $email);
+        $command = $this->_connection->createCommand($sql);
+        $result = $command->queryRow(true);
+        return $result;
+    }
+    
     //@date 6-26-2014
     public function updateTempEmail($MID, $email) {
         $startTrans = $this->_connection->beginTransaction();
@@ -56,6 +64,30 @@ class MembershipTempModel {
             $command->bindValues($param);
             $command->execute();
                 
+            try {
+                $startTrans->commit();
+                return 1;
+            } catch(PDOException $e) {
+                $startTrans->rollback();
+                Utilities::log($e->getMessage());
+                return 0;
+            } 
+        } catch(Exception $e) {
+            $startTrans->rollback();
+            Utilities::log($e->getMessage());
+            return 0;
+        }
+    }
+    
+    public function updateTempEmailWithSP($MID, $email) {
+        $startTrans = $this->_connection->beginTransaction();
+        
+        try {
+            $sql = "CALL membership.sp_update_data(0,1,'MID',$MID,'Email','$email',@OUT_intResultCode,@OUT_strResult);";
+            //$param = array(':Email' => $email,':MID' => $MID);
+            $command = $this->_connection->createCommand($sql);
+            //$command->bindValues($param);
+            $command->execute();
             try {
                 $startTrans->commit();
                 return 1;
@@ -108,6 +140,38 @@ class MembershipTempModel {
         }
     }
     
+    public function updateTempMemberUsernameWithSP($tempAcctCode, $email, $password) {
+        $startTrans = $this->_connection->beginTransaction();
+        
+        try {
+            if($password == '') {
+                $sql = " CALL membership.sp_update_data(0,0,'TemporaryAccountCode','$tempAcctCode','UserName','$email',@OUT_intResultCode,@OUT_strResult)";
+                //$param = array(':UserName' => $email,':TAC' => $tempAcctCode);
+            }
+            else {
+                $sql = "CALL membership.sp_update_data(0,0,'TemporaryAccountCode','$tempAcctCode','UserName,Password','$email;$password',@OUT_intResultCode,@OUT_strResult);";
+                //$param = array(':UserName' => $email, ':Password' => $password, ':TAC' => $tempAcctCode);
+            }
+            
+            $command = $this->_connection->createCommand($sql);
+            //$command->bindValues($param);
+            $command->execute();
+                
+            try {
+                $startTrans->commit();
+                return 1;
+            } catch(PDOException $e) {
+                $startTrans->rollback();
+                Utilities::log($e->getMessage());
+                return 0;
+            } 
+        } catch(Exception $e) {
+            $startTrans->rollback();
+            Utilities::log($e->getMessage());
+            return 0;
+        }
+    }
+    
     public function updateTempProfileDateUpdated($MID, $mid) {
         $startTrans = $this->_connection->beginTransaction();
         
@@ -137,6 +201,33 @@ class MembershipTempModel {
         }
     }
     
+    public function updateTempProfileDateUpdatedWithSP($MID, $mid) {
+        $startTrans = $this->_connection->beginTransaction();
+        
+        try {
+            $sql = "CALL membership.sp_update_data(0,1,'MID',$MID,'DateUpdated,UpdatedByMID','NOW(6);$mid',@OUT_intResultCode,@OUT_strResult)";
+            //$param = array(':mid' => $mid, ':MID' => $MID);
+            
+            
+            $command = $this->_connection->createCommand($sql);
+            //$command->bindValues($param);
+            $command->execute();
+                
+            try {
+                $startTrans->commit();
+                return 1;
+            } catch(PDOException $e) {
+                $startTrans->rollback();
+                Utilities::log($e->getMessage());
+                return 0;
+            } 
+        } catch(Exception $e) {
+            $startTrans->rollback();
+            Utilities::log($e->getMessage());
+            return 0;
+        }
+    }
+    
     //@date 6-30-2014
     //@purpose Check if email is/was already verified in temp db
     public function checkTempVerifiedEmail($email) {
@@ -148,6 +239,19 @@ class MembershipTempModel {
         $param = array(':Email' => $email);
         $command = $this->_connection->createCommand($sql);
         $result = $command->queryRow(true, $param);
+        
+        return $result;
+    }
+    
+    public function checkTempVerifiedEmailWithSP($email) {
+        $sql = "CALL membership.sp_select_data(0,1,2,'$email','MID',@OUTRetCode, @OUTRetMessage, @OUTfldListRet)";
+        //$param = array(':Email' => $email);
+        $command = $this->_connection->createCommand($sql);
+        $result = $command->queryRow(true);
+        if($result['OUTfldListRet'] == "")
+            return array('Count' => 0);
+        else
+            return array('Count' => 1);
         
         return $result;
     }
@@ -238,6 +342,84 @@ class MembershipTempModel {
                 Utilities::log($e->getMessage());
                 return $e->getMessage();
             } 
+            
+        } catch(Exception $e) {
+            $startTrans->rollback();
+            Utilities::log($e->getMessage());
+            return 0;
+        }
+    }
+    
+    public function registerWithSP($email, $firstname, $middlename, $lastname, $nickname, $password, $permanentAddress, $mobileNumber, $alternateMobileNumber, $alternateEmail, $idNumber, $idPresented, $gender, $referrerCode, $birthdate, $occupation, $nationality, $isSmoker, $referrerID, $emailSubscription, $smsSubscription) {
+        $MID = '';
+        if($gender == '')
+            $gender = 1;
+        if($nationality == '')
+            $nationality = 1;
+        if($occupation == '')
+            $occupation = 1;
+        if($referrerID == '')
+            $referrerID = 1;
+        if($emailSubscription == '')
+            $emailSubscription = 0;
+        if($smsSubscription == '')
+            $smsSubscription = 0;
+        if($isSmoker == '')
+            $isSmoker = 2;
+        
+        $startTrans = $this->_connection->beginTransaction();
+        
+        try {
+            $tempCode = 'eGames' . strtoupper(Utilities::generateAlphaNumeric(5));
+            
+            $sql = "CALL membership.sp_insert_data(1,
+  '$email', -- UserName
+  '$firstname', -- FirstName
+  '$middlename', -- MiddleName
+  '$lastname', -- LastName
+    '$nickname', -- NickName
+    '$email', -- Email
+    '$alternateEmail', -- AlterNate Email
+    '$mobileNumber', -- MobileNumber
+  '$alternateMobileNumber', -- AlterNate MobileNumber
+    '$permanentAddress', -- Address1
+    Null, -- Address2
+    '$idNumber', -- IdentificationNumber
+    '$password',  -- Password
+  1, -- ForChangePassword
+  '$tempCode',  -- TemporaryAccountCode
+  1, -- Status
+  '$birthdate', -- BirthDate
+  0, -- Gender
+  1, -- NationalityID
+  1, -- OccupationID
+  1, -- IdentificationID
+  0, -- IsSmoker
+  '$referrerCode', -- Referrer Code
+  1, -- Email Subscription
+  1, -- SMS Subscription
+  2, -- Referrer ID
+  0, -- IsCompleteInfo
+  Null, -- DateVerified
+  3, -- Registration Origin
+  @OUT_ResultCode, @OUT_Result, @OUT_MID);";
+            //$param = array(':Email' => $email, ':Password' => $password, ':TempCode' => $tempCode);
+            $command = $this->_connection->createCommand($sql);
+            $result = $command->queryRow(true);
+            
+            try {
+                    $startTrans->commit();
+                    $recipient = $firstname . ' ' . $lastname;
+                    $helpers = new Helpers();
+                    $helpers->sendEmailVerification($email, $recipient, $tempCode);
+                    return $result['@OUT_MID'];
+                    
+                } catch(PDOException $e) {
+                    $startTrans->rollback();
+                    Utilities::log($e->getMessage());
+                    return $e->getMessage();
+                } 
+            
             
         } catch(Exception $e) {
             $startTrans->rollback();
@@ -362,6 +544,17 @@ class MembershipTempModel {
         $result = $command->queryRow(true, $param);
         
         return $result;
+    }
+    
+    public function checkIfUsernameExistsWithTACWithSP($email, $tempAcctCode) {
+        $sql = "CALL membership.sp_select_data(0,0,3,'$tempAcctCode,$email', 'UserName', @OUTRetCode, @OUTRetMessage, @OUTfldListRet)"; //AND Status = 9';
+        //$param = array(':Email' => $email, ':TAC' => $tempAcctCode);
+        $command = $this->_connection->createCommand($sql);
+        $result = $command->queryRow(true);
+        if($result['OUTfldListRet'] == "")
+            return array();
+        else
+            return $result['OUTfldListRet'];
     }
     
     //@date 04-24-2015

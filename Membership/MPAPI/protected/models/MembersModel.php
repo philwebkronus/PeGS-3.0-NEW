@@ -64,6 +64,32 @@ class MembersModel {
         }
     }
     
+    public function updateForChangePasswordUsingMIDWithSP($MID, $changePassword) {
+        $startTrans = $this->_connection->beginTransaction();
+        
+        try {
+            $sql = "CALL sp_update_data(1, 0, 'MID', $MID, 'ForChangePassword', '$changePassword', @OUT_intResultCode, @OUT_strResult)";
+            //$param = array(':ChangePassword' => $changePassword,':MID' => $MID);
+            $command = $this->_connection->createCommand($sql);
+            //$command->bindValues($param);
+            $command->execute();
+            
+            try {
+                $startTrans->commit();
+                return 1;
+            } catch (PDOException $e) {
+                $startTrans->rollback();
+                Utilities::log($e->getMessage());
+                return 0;
+            }
+        
+        } catch (Exception $e) {
+            $startTrans->rollback();
+            Utilities::log($e->getMessage());
+            return 0;
+        }
+    }
+    
     //@date 6-26-2014
     public function updateMemberUsername($MID, $email, $password) {
         $startTrans = $this->_connection->beginTransaction();
@@ -79,6 +105,37 @@ class MembersModel {
             }
             $command = $this->_connection->createCommand($sql);
             $command->bindValues($param);
+            $command->execute();
+                
+            try {
+                $startTrans->commit();
+                return 1;
+            } catch(PDOException $e) {
+                $startTrans->rollback();
+                Utilities::log($e->getMessage());
+                return 0;
+            } 
+        } catch(Exception $e) {
+            $startTrans->rollback();
+            Utilities::log($e->getMessage());
+            return 0;
+        }
+    }
+    
+    public function updateMemberUsernameWithSP($MID, $email, $password) {
+        $startTrans = $this->_connection->beginTransaction();
+        
+        try {
+            if($password == '') {
+                $sql = "CALL sp_update_data(1,0,'MID',$MID,'UserName','$email',@OUT_intResultCode,@OUT_strResult)";
+                //$param = array(':UserName' => $email,':MID' => $MID);
+            }
+            else {
+                $sql = "CALL sp_update_data(1,0,'MID',$MID,'UserName,Password','$email;$password',@OUT_intResultCode,@OUT_strResult)";
+                //$param = array(':UserName' => $email, ':Password' => $password, ':MID' => $MID);
+            }
+            $command = $this->_connection->createCommand($sql);
+           // $command->bindValues($param);
             $command->execute();
                 
             try {
@@ -122,6 +179,22 @@ class MembersModel {
         return $result;
     }
     
+    public function getMembersDetailsWithSP($userName) {
+        $sql = "CALL sp_select_data(1,0,4,'$userName','MID,Status,Password',@ReturnCode, @ReturnMessage, @ReturnFields)";
+        //$param = array(':userName' => $userName);
+        $command = $this->_connection->createCommand($sql);
+        $result = $command->queryRow(true);
+        //var_dump($result);exit;
+        //$result = explode(";", $result['OUTfldListRet']);
+        
+        if($result['OUTfldListRet'] == "")
+            return array();
+        else {
+            $result = explode(";", $result['OUTfldListRet']);
+            return array("MID" => $result[0], "Status" => $result[1], "Password" => $result[2]);
+        }
+    }
+    
     //@date 07-07-2014
     //@purpose get member's details by MID
     public function getMemberDetailsByMID($MID) {
@@ -134,6 +207,17 @@ class MembersModel {
         
         return $result;
     }
+    
+//    public function getMemberDetailsByMIDWithSP($MID) {
+//        $sql = "CALL sp_select_data(1,0,0,'$MID','MID,Status,UserName,Password',@ReturnCode, @ReturnMessage, @ReturnFields)";
+//        //$param = array(':MID' => $MID);
+//        $command = $this->_connection->createCommand($sql);
+//        $result = $command->queryRow(true);
+//        var_dump($result);exit;
+//        $result = explode(";", $result['OUTfldListRet']);
+//        
+//        return array("MID" => $result[0], "Status" => $result[1], "Password" => $result[2]);
+//    }
     
     //@date 07-28-2014
     //@purpose check if member is permitted to change password
@@ -182,6 +266,30 @@ class MembersModel {
     public function checkIfUsernameExistsWithMID($MID, $email) {
         $sql = 'SELECT COUNT(UserName) AS COUNT FROM members WHERE MID != :MID AND UserName = :Email'; //AND Status = 9';
         $param = array(':MID' => $MID, ':Email' => $email);
+        $command = $this->_connection->createCommand($sql);
+        $result = $command->queryRow(true, $param);
+        
+        return $result;
+    }
+    
+    //@date 06-14-2015
+    public function getUsernameByMIDWithSP($MID)
+    {
+        $sql = "CALL sp_select_data(1,0,0,'$MID','UserName',@ReturnCode, @ReturnMessage, @ReturnFields)";
+        //$param = array(':MID' => $MID, ':Email' => $email);
+        $command = $this->_connection->createCommand($sql);
+        $result = $command->queryRow(true);
+        $result = explode(";", $result['OUTfldListRet']);
+        
+        return array('UserName' => $result[0]);
+    }
+    
+    public function getIsVIPUsingMID($MID)
+    {
+        $sql = 'SELECT IsVIP
+                FROM members
+                WHERE MID = :MID';
+        $param = array(':MID' => $MID);
         $command = $this->_connection->createCommand($sql);
         $result = $command->queryRow(true, $param);
         
