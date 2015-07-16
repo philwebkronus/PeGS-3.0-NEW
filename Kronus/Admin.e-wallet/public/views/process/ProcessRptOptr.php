@@ -816,6 +816,7 @@ if($connected)
            $vtotal->grandticketencashment = number_format($arrgrand['GrandTicketEncashment'], 2, '.', ',');
            $vtotal->grandcashonhand = number_format($arrgrand["GrandCashOnHand"], 2, '.', ',');
            $vtotal->grandsales = number_format($arrgrand["GrandSales"], 2, '.', ',');
+           $vtotal->grandMR = number_format($cohdata['TotalMR'], 2, '.', ',');
            
 //           // count site grosshold
 //           $vgrossholdamt = $arrgrand["GrandDeposit"] + $arrgrand["GrandReload"] - $arrgrand["GrandWithdraw"];

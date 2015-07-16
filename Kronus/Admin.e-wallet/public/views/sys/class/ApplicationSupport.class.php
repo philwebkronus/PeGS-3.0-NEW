@@ -972,7 +972,7 @@ class ApplicationSupport extends DBHandler
                   INNER JOIN sites st ON tr.SiteID = st.SiteID
                   INNER JOIN ref_services rs ON rs.ServiceID = tr.ServiceID 
                   INNER JOIN terminals tm ON tr.TerminalID = tm.TerminalID WHERE tr.SiteID = ? AND tr.TerminalID = ? 
-                 AND DATE(tr.DateCreated) >= ? AND DATE(tr.DateCreated) < ? AND tr.TransactionSummaryID = ? ORDER BY ".$zsort." ".$zdirection." LIMIT ".$zstart.",".$zlimit."";
+                 AND tr.DateCreated >= ? AND tr.DateCreated < ? AND tr.TransactionSummaryID = ? ORDER BY ".$zsort." ".$zdirection." LIMIT ".$zstart.",".$zlimit."";
             $this->prepare($stmt);
             $this->bindparameter(1, $zsiteID);
             $this->bindparameter(2, $zterminalID);
@@ -988,7 +988,7 @@ class ApplicationSupport extends DBHandler
                   INNER JOIN sites st ON tr.SiteID = st.SiteID
                   INNER JOIN ref_services rs ON rs.ServiceID = tr.ServiceID
                   INNER JOIN terminals tm ON tr.TerminalID = tm.TerminalID WHERE tr.SiteID = ? AND tr.TerminalID = ? 
-                 AND DATE(tr.DateCreated) >= ? AND DATE(tr.DateCreated) < ? ORDER BY ".$zsort." ".$zdirection." LIMIT ".$zstart.",".$zlimit."";
+                 AND tr.DateCreated >= ? AND tr.DateCreated < ? ORDER BY ".$zsort." ".$zdirection." LIMIT ".$zstart.",".$zlimit."";
             $this->prepare($stmt);
             $this->bindparameter(1, $zsiteID);
             $this->bindparameter(2, $zterminalID);
@@ -1009,7 +1009,7 @@ class ApplicationSupport extends DBHandler
         {
             $stmt = "SELECT COUNT(*) ctrtdetails 
                  FROM transactiondetails WHERE SiteID = ? AND TerminalID = ? 
-                 AND DATE(DateCreated) >= ? AND DATE(DateCreated) < ? AND TransactionSummaryID = ?";
+                 AND DateCreated >= ? AND DateCreated < ? AND TransactionSummaryID = ?";
             $this->prepare($stmt);
             $this->bindparameter(1, $zsiteID);
             $this->bindparameter(2, $zterminalID);
@@ -1021,7 +1021,7 @@ class ApplicationSupport extends DBHandler
         {
             $stmt = "SELECT COUNT(*) ctrtdetails 
                  FROM transactiondetails WHERE SiteID = ? AND TerminalID = ? 
-                 AND DATE(DateCreated) >= ? AND DATE(DateCreated) < ?";
+                 AND DateCreated >= ? AND DateCreated < ?";
             $this->prepare($stmt);
             $this->bindparameter(1, $zsiteID);
             $this->bindparameter(2, $zterminalID);
@@ -1043,8 +1043,8 @@ class ApplicationSupport extends DBHandler
                  INNER JOIN accountdetails ad ON acc.AID = ad.AID
                  INNER JOIN sites st ON ts.SiteID = st.SiteID
                  INNER JOIN terminals t ON ts.TerminalID = t.TerminalID
-                 WHERE ts.SiteID = ? AND ts.TerminalID = ? AND DATE(ts.DateStarted) >= ?
-                 AND DATE(ts.DateStarted) < ? ORDER BY ".$zsort." ".$zdirection." LIMIT ".$zstart.",".$zlimit."";
+                 WHERE ts.SiteID = ? AND ts.TerminalID = ? AND ts.DateStarted >= ?
+                 AND ts.DateStarted < ? ORDER BY ".$zsort." ".$zdirection." LIMIT ".$zstart.",".$zlimit."";
         $this->prepare($stmt);
         $this->bindparameter(1, $zsiteID);
         $this->bindparameter(2, $zterminalID);
@@ -1060,8 +1060,8 @@ class ApplicationSupport extends DBHandler
         $stmt = "SELECT COUNT(*) ctrtsum
                  FROM transactionsummary ts 
                  INNER JOIN accounts acc ON ts.CreatedByAID = acc.AID
-                 WHERE SiteID = ? AND TerminalID = ? AND DATE(DateStarted) >= ?
-                 AND DATE(DateStarted) < ?";
+                 WHERE SiteID = ? AND TerminalID = ? AND DateStarted >= ?
+                 AND DateStarted < ?";
         $this->prepare($stmt);
         $this->bindparameter(1, $zsiteID);
         $this->bindparameter(2, $zterminalID);
@@ -1083,7 +1083,7 @@ class ApplicationSupport extends DBHandler
                  INNER JOIN sites st ON st.SiteID = trl.SiteID
                  INNER JOIN terminals t ON t.TerminalID = trl.TerminalID
 		         INNER JOIN ref_services rs ON rs.ServiceID = trl.ServiceID  
-                 WHERE trl.SiteID = ? AND trl.TerminalID = ? AND DATE(trl.StartDate) >= ? AND DATE(trl.EndDate) < ? 
+                 WHERE trl.SiteID = ? AND trl.TerminalID = ? AND trl.StartDate >= ? AND trl.EndDate < ? 
                  AND trl.TransactionSummaryID = ? ORDER BY ".$zsort." ".$zdirection." LIMIT ".$zstart.",".$zlimit."";
             $this->prepare($stmt);
             $this->bindparameter(1, $zsiteID);
@@ -1100,7 +1100,7 @@ class ApplicationSupport extends DBHandler
                  INNER JOIN sites st ON st.SiteID = trl.SiteID
                  INNER JOIN terminals t ON t.TerminalID = trl.TerminalID
 		         INNER JOIN ref_services rs ON rs.ServiceID = trl.ServiceID 
-                 WHERE trl.SiteID = ? AND trl.TerminalID = ? AND DATE(trl.StartDate) >= ? AND DATE(trl.EndDate) < ? 
+                 WHERE trl.SiteID = ? AND trl.TerminalID = ? AND trl.StartDate >= ? AND trl.EndDate < ? 
                  ORDER BY ".$zsort." ".$zdirection." LIMIT ".$zstart.",".$zlimit."";
             $this->prepare($stmt);
             $this->bindparameter(1, $zsiteID);
@@ -1120,8 +1120,8 @@ class ApplicationSupport extends DBHandler
         if($zsummaryID > 0)
         {
             $stmt = "SELECT COUNT(*) ctrlogs FROM transactionrequestlogslp 
-                     WHERE SiteID = ? AND TerminalID = ? AND DATE(StartDate) >= ? 
-                     AND DATE(EndDate) < ? AND TransactionSummaryID = ?";
+                     WHERE SiteID = ? AND TerminalID = ? AND StartDate >= ? 
+                     AND EndDate < ? AND TransactionSummaryID = ?";
             $this->prepare($stmt);
             $this->bindparameter(1, $zsiteID);
             $this->bindparameter(2, $zterminalID);
@@ -1983,7 +1983,7 @@ class ApplicationSupport extends DBHandler
      
      function checkdeposit($stackerbatchid){
             $stmt = "SELECT Deposit FROM stackermanagement.stackersummary 
-                WHERE StackerSummaryID = ?";
+                WHERE StackerSummaryID = ? AND Status = 0";
            $this->prepare($stmt);
            $this->bindparameter(1, $stackerbatchid);
            $this->execute($stmt);

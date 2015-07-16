@@ -662,8 +662,7 @@ class PagcorManagement extends DBHandler
                             INNER JOIN sites s ON s.SiteID = sgc.SiteID
                             INNER JOIN accountdetails ad ON ad.AID = s.OwnerAID
                             INNER JOIN sitedetails sd ON sd.SiteID = sgc.SiteID
-                            WHERE sgc.DateFirstTransaction >= ?
-                            AND sgc.DateFirstTransaction < ?
+                            WHERE sgc.DateCutOff > ? AND sgc.DateCutOff <= ?
                             ORDER BY s.SiteCode, sgc.DateFirstTransaction";          
 
                 $query2 = "SELECT SiteID,DateCredited,AmountConfirmed FROM grossholdconfirmation 
@@ -965,8 +964,8 @@ class PagcorManagement extends DBHandler
                             INNER JOIN sites s ON s.SiteID = sgc.SiteID
                             INNER JOIN accountdetails ad ON ad.AID = s.OwnerAID
                             INNER JOIN sitedetails sd ON sd.SiteID = sgc.SiteID
-                            WHERE sgc.DateFirstTransaction >= ?
-                            AND sgc.DateFirstTransaction < ? AND sgc.SiteID = ?
+                            WHERE sgc.DateCutOff > ? AND sgc.DateCutOff <= ?
+                            AND sgc.SiteID = ?
                             ORDER BY s.SiteCode, sgc.DateFirstTransaction";          
 
                 $query2 = "SELECT SiteID,DateCredited,AmountConfirmed FROM grossholdconfirmation 
@@ -1540,8 +1539,7 @@ class PagcorManagement extends DBHandler
                             INNER JOIN sites s ON s.SiteID = sgc.SiteID
                             INNER JOIN accountdetails ad ON ad.AID = s.OwnerAID
                             INNER JOIN sitedetails sd ON sd.SiteID = sgc.SiteID
-                            WHERE sgc.DateFirstTransaction >= ?
-                            AND sgc.DateFirstTransaction < ?
+                            WHERE sgc.DateCutOff > ? AND sgc.DateCutOff <= ?
                             ORDER BY s.SiteCode, sgc.DateFirstTransaction";          
 
                 $query2 = "SELECT SiteID,DateCredited,AmountConfirmed FROM grossholdconfirmation 
@@ -1844,8 +1842,8 @@ class PagcorManagement extends DBHandler
                             INNER JOIN sites s ON s.SiteID = sgc.SiteID
                             INNER JOIN accountdetails ad ON ad.AID = s.OwnerAID
                             INNER JOIN sitedetails sd ON sd.SiteID = sgc.SiteID
-                            WHERE sgc.DateFirstTransaction >= ?
-                            AND sgc.DateFirstTransaction < ? AND sgc.SiteID = ?
+                            WHERE sgc.DateCutOff > ? AND sgc.DateCutOff <= ?
+                            AND sgc.SiteID = ?
                             ORDER BY s.SiteCode, sgc.DateFirstTransaction";          
 
                 $query2 = "SELECT SiteID,DateCredited,AmountConfirmed FROM grossholdconfirmation 

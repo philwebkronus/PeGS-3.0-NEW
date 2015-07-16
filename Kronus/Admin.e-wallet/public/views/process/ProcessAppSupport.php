@@ -1300,8 +1300,8 @@ if($connected && $connected2 && $connected3)
                 $vTerminalID = $_POST['cmbterminal'];
                 $vdate1 = $_POST['txtDate1'];
                 //$vdate2 = $_POST['txtDate2'];
-                $vFrom = $vdate1;
-                $vTo = date ('Y-m-d', strtotime ('+1 day' , strtotime($vdate1)));
+                $vFrom = $vdate1." ".$cutoff_time;
+                $vTo = date ('Y-m-d', strtotime ('+1 day' , strtotime($vdate1)))." ".$cutoff_time;
                 $vsummaryID = $_POST['summaryID'];
                 
                 //for sorting
@@ -1388,8 +1388,8 @@ if($connected && $connected2 && $connected3)
                 $vTerminalID = $_POST['cmbterminal'];
                 $vdate1 = $_POST['txtDate1'];
                 //$vdate2 = $_POST['txtDate2'];
-                $vFrom = $vdate1;
-                $vTo = date ('Y-m-d', strtotime ('+1 day' , strtotime($vdate1)));
+                $vFrom = $vdate1." ".$cutoff_time;
+                $vTo = date ('Y-m-d', strtotime ('+1 day' , strtotime($vdate1)))." ".$cutoff_time;
                 //for sorting
                 if($_POST['sidx'] != "")
                 {
@@ -1454,8 +1454,8 @@ if($connected && $connected2 && $connected3)
                 $vTerminalID = $_POST['cmbterminal'];
                 $vdate1 = $_POST['txtDate1'];
                 //$vdate2 = $_POST['txtDate2'];
-                $vFrom = $vdate1;
-                $vTo = date ('Y-m-d', strtotime ('+1 day' , strtotime($vdate1)));
+                $vFrom = $vdate1." ".$cutoff_time;
+                $vTo = date ('Y-m-d', strtotime ('+1 day' , strtotime($vdate1)))." ".$cutoff_time;
                 $vsummaryID = $_POST['summaryID'];
                 
                 //for sorting

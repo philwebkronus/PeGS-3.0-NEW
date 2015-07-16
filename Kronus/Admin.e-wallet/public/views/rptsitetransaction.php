@@ -210,6 +210,7 @@ if(isset($_SESSION['acctype']))
 //                       var sales = data.sales;
 //                       var redemption = data.redemption;                       //var grandsales = data.grandsales;
                        var grandcashonhand = data.grandcashonhand;
+                       var grandMR = data.grandMR;
                        //var ticketencashment = data.ticketencashment;
                        
                        document.getElementById('trans').style.display='block';
@@ -221,6 +222,7 @@ if(isset($_SESSION['acctype']))
                        document.getElementById('ticketencashment').innerHTML = grandticketencashment;
                        //document.getElementById('grosshold').innerHTML = data.grosshold;
                        document.getElementById('cashonhand').innerHTML = grandcashonhand;
+                       document.getElementById('manualredemption').innerHTML = grandMR;
                        //document.getElementById('encashment').innerHTML = data.encashment;
                    },
                    error: function(e)
@@ -344,6 +346,9 @@ if(isset($_SESSION['acctype']))
                 <td style="padding-left: 30px;"></td>
                 <td>Ticket Encashments</td>
                 <td id="ticketencashment" style="font-weight: bold;"></td>
+                <td style="padding-left: 30px;"></td>
+                <td>Manual Redemption</td>
+                <td id="manualredemption" style="font-weight: bold;"></td>
                 <td style="padding-left: 30px;"></td>
                 <td>Cash on Hand</td>
                 <td id="cashonhand" style="font-weight: bold;"></td>

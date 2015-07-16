@@ -204,8 +204,8 @@ class TopUp extends DBHandler
                                               INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
                                               INNER JOIN npos.accounts a ON tr.CreatedByAID = a.AID
                                               LEFT JOIN stackermanagement.stackersummary stckr ON stckr.StackerSummaryID = tr.StackerSummaryID
-                                              WHERE tr.SiteID = :siteid
-                                                AND tr.DateCreated >= :startdate AND tr.DateCreated < :enddate
+                                              WHERE tr.DateCreated >= :startdate AND tr.DateCreated < :enddate
+                                                AND tr.SiteID = :siteid
                                                 AND tr.Status IN(1,4)
                                                 AND tr.TransactionType = 'W'
                                                 AND tr.StackerSummaryID IS NOT NULL
@@ -238,8 +238,8 @@ class TopUp extends DBHandler
                                                                             INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
                                                                             INNER JOIN npos.accounts a ON tr.CreatedByAID = a.AID
                                                                             LEFT JOIN stackermanagement.stackersummary stckr ON stckr.StackerSummaryID = tr.StackerSummaryID
-                                                                            WHERE tr.SiteID = :siteid
-                                                                              AND tr.DateCreated >= :startdate AND tr.DateCreated < :enddate
+                                                                            WHERE tr.DateCreated >= :startdate AND tr.DateCreated < :enddate
+                                                                              AND tr.SiteID = :siteid
                                                                               AND tr.Status IN(1,4)
                                                                               AND tr.TransactionType In ('D', 'R')
                                                                                     AND tr.StackerSummaryID IS NOT NULL
@@ -712,8 +712,8 @@ class TopUp extends DBHandler
                                 INNER JOIN npos.transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
                                 INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
                                 INNER JOIN npos.accounts a ON tr.CreatedByAID = a.AID
-                                WHERE tr.SiteID = ?
-                                  AND tr.DateCreated >= ? AND tr.DateCreated < ?
+                                WHERE tr.DateCreated >= ? AND tr.DateCreated < ?
+                                  AND tr.SiteID = ?
                                   AND tr.Status IN(1,4)
                                 GROUP By tr.TransactionType, tr.TransactionSummaryID
                                 ORDER BY tr.TerminalID, tr.DateCreated DESC"; 
@@ -725,8 +725,8 @@ class TopUp extends DBHandler
                                               INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
                                               INNER JOIN npos.accounts a ON tr.CreatedByAID = a.AID
                                               LEFT JOIN stackermanagement.stackersummary stckr ON stckr.StackerSummaryID = tr.StackerSummaryID
-                                              WHERE tr.SiteID = :siteid
-                                                AND tr.DateCreated >= :startdate AND tr.DateCreated < :enddate
+                                              WHERE tr.DateCreated >= :startdate AND tr.DateCreated < :enddate
+                                                AND tr.SiteID = :siteid
                                                 AND tr.Status IN(1,4)
                                                 AND tr.TransactionType = 'W'
                                                 AND tr.StackerSummaryID IS NOT NULL
@@ -759,8 +759,8 @@ class TopUp extends DBHandler
                                                                             INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
                                                                             INNER JOIN npos.accounts a ON tr.CreatedByAID = a.AID
                                                                             LEFT JOIN stackermanagement.stackersummary stckr ON stckr.StackerSummaryID = tr.StackerSummaryID
-                                                                            WHERE tr.SiteID = :siteid
-                                                                              AND tr.DateCreated >= :startdate AND tr.DateCreated < :enddate
+                                                                            WHERE tr.DateCreated >= :startdate AND tr.DateCreated < :enddate
+                                                                              AND tr.SiteID = :siteid
                                                                               AND tr.Status IN(1,4)
                                                                               AND tr.TransactionType In ('D', 'R')
                                                                                     AND tr.StackerSummaryID IS NOT NULL
@@ -1945,12 +1945,13 @@ class TopUp extends DBHandler
                                 IFNULL(SUM(CASE tr.TransactionType WHEN 'D' THEN tr.Amount ELSE 0 END), 0) AS TotalDeposit,                     -- TOTAL DEPOSITS
                                 IFNULL(SUM(CASE tr.TransactionType WHEN 'R' THEN tr.Amount ELSE 0 END), 0) AS TotalReload,                      -- TOTAL RELOAD
                                 IFNULL(SUM(CASE tr.TransactionType WHEN 'W' THEN tr.Amount ELSE 0 END), 0) AS TotalRedemption           -- TOTAL REDEMPTION
-                                FROM npos.transactiondetails tr INNER JOIN npos.transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
+                                FROM npos.transactiondetails tr FORCE INDEX (IX_transactiondetails_DateCreated) 
+                                INNER JOIN npos.transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
                                 INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
                                 INNER JOIN npos.accounts a ON ts.CreatedByAID = a.AID
                                 INNER JOIN npos.sites s ON tr.SiteID = s.SiteID
-                                WHERE tr.SiteID IN ($sites)
-                                    AND tr.DateCreated >= ? AND tr.DateCreated < ?
+                                WHERE tr.DateCreated >= ? AND tr.DateCreated < ?
+                                    AND tr.SiteID IN ($sites)
                                     AND tr.Status IN(1,4)
                                 GROUP By tr.SiteID
                                 ORDER BY s.$sort $dir"; 
@@ -2097,8 +2098,8 @@ class TopUp extends DBHandler
                                 INNER JOIN npos.transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
                                 INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
                                 INNER JOIN npos.accounts a ON tr.CreatedByAID = a.AID
-                                WHERE tr.SiteID IN ($sites)
-                                  AND tr.DateCreated >= ? AND tr.DateCreated < ?
+                                WHERE tr.DateCreated >= ? AND tr.DateCreated < ?
+                                  AND tr.SiteID IN ($sites)
                                   AND tr.Status IN(1,4)
                                 GROUP By tr.TransactionType, tr.TransactionSummaryID
                                 ORDER BY tr.TerminalID, tr.DateCreated DESC"; 
@@ -2153,8 +2154,8 @@ class TopUp extends DBHandler
                             INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
                             INNER JOIN npos.accounts a ON ts.CreatedByAID = a.AID
                             LEFT JOIN stackermanagement.stackersummary stckr ON stckr.StackerSummaryID = tr.StackerSummaryID
-                            WHERE tr.SiteID IN ($sites)
-                              AND tr.DateCreated >= :startdate AND tr.DateCreated < :enddate
+                            WHERE tr.DateCreated >= :startdate AND tr.DateCreated < :enddate
+                              AND tr.SiteID IN ($sites)
                               AND tr.Status IN(1,4)
                               AND tr.TransactionType = 'W'
                               AND tr.StackerSummaryID IS NOT NULL
@@ -2191,8 +2192,8 @@ class TopUp extends DBHandler
                                           INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
                                           INNER JOIN npos.accounts a ON tr.CreatedByAID = a.AID
                                           LEFT JOIN stackermanagement.stackersummary stckr ON stckr.StackerSummaryID = tr.StackerSummaryID
-                                          WHERE tr.SiteID IN ($sites)
-                                            AND tr.DateCreated >= :startdate AND tr.DateCreated < :enddate
+                                          WHERE tr.DateCreated >= :startdate AND tr.DateCreated < :enddate
+                                            AND tr.SiteID IN ($sites)
                                             AND tr.Status IN(1,4)
                                             AND tr.TransactionType = 'W'
                                             AND tr.StackerSummaryID IS NOT NULL
@@ -2225,8 +2226,8 @@ class TopUp extends DBHandler
                                                                         INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
                                                                         INNER JOIN npos.accounts a ON tr.CreatedByAID = a.AID
                                                                         LEFT JOIN stackermanagement.stackersummary stckr ON stckr.StackerSummaryID = tr.StackerSummaryID
-                                                                        WHERE tr.SiteID IN ($sites)
-                                                                          AND tr.DateCreated >= :startdate AND tr.DateCreated < :enddate
+                                                                        WHERE tr.DateCreated >= :startdate AND tr.DateCreated < :enddate
+                                                                          AND tr.SiteID IN ($sites)
                                                                           AND tr.Status IN(1,4)
                                                                           AND tr.TransactionType In ('D', 'R')
                                                                                 AND tr.StackerSummaryID IS NOT NULL

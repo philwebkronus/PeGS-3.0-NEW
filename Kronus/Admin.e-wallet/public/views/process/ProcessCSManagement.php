@@ -786,7 +786,7 @@ if($connected && $connected2)
                 $vdate1 = $_POST['txtDate1'];
                 //$vdate2 = $_POST['txtDate2'];
                 $vFrom = $vdate1;
-                $vTo = $vdate2; //date ('Y-m-d', strtotime ('+1 day' , strtotime($vdate2)));
+                $vTo = date ('Y-m-d', strtotime ('+1 day' , strtotime($vdate1)))." ".$cutoff_time;
                 $vsummaryID = $_POST['summaryID'];
                 
                 //for sorting
@@ -880,7 +880,7 @@ if($connected && $connected2)
                 $vdate1 = $_POST['txtDate1'];
                 //$vdate2 = $_POST['txtDate2'];
                 $vFrom = $vdate1;
-                $vTo = date ('Y-m-d', strtotime ('+1 day' , strtotime($vdate1)));
+                $vTo = date ('Y-m-d', strtotime ('+1 day' , strtotime($vdate1)))." ".$cutoff_time;
                 //for sorting
                 if($_POST['sidx'] != "")
                 {
