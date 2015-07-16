@@ -174,7 +174,7 @@ if (isset($_SESSION['CardRed'])) {
             document.getElementById('fade').style.display='block';
             $.ajax(
                     {
-                        url: "Helper/helper.ubplayerchangepassword",
+                        url: "Helper/helper.ubplayerchangepassword.php",
                         type: 'post',
                         data: {
                             pager: function() {

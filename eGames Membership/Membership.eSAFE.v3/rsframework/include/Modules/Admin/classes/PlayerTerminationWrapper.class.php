@@ -29,33 +29,39 @@ Class PlayerTerminationWrapper {
         $_MemberInfo = new MemberInfo();
         $_TempMemberInfo = new TempMemberInfo();
         $_TempMembers = new TempMembers();
+        $_AuditTrail = new AuditTrail();
         
-        $email = $_MemberInfo->getEmailByMID2($entries['MID']);
-        
-        if(!empty($email)){
-        foreach ($email as $value) {
-           $email = $value['Email'];
+        $email = $_MemberInfo->getEmailSP($entries['MID']);
+        if($email != ""){
+//        if(!empty($email)){
+//        foreach ($email as $value) {
+//           $email = $value['Email'];
+//        }
+        $isTemp = 1;
+        $checkemail = $_MemberInfo->getMIDByEmailSP($email, $isTemp);
+        if ($checkemail[0]['MID'] != "") {
+            $checkemailcount = count($checkemail);
         }
-        
-        $checkemail = $_TempMemberInfo->checkExistingEmail($email);
-        $checkemailcount = $checkemail[0]['COUNT'];
-        
+        else {
+            $checkemailcount = 0;
+        }
         $_Members = new Members();
-        
-        $message = $_Members->TerminateAccount($entries['Status'], $entries['MID'], $email.$entries['MID'], 
+        $message = $_Members->TerminateAccountv2($entries['Status'], $entries['MID'], $email.$entries['MID'], 
                 $email, $entries['CardNumber'], $checkemailcount);
         if(!$message){
             $message = $message;
         }
         else{
             $message = 'Player Termination: Transaction Successful.';
+            $details = $message.";".$entries['CardNumber'];
+            $_AuditTrail->logEvent(AuditFunctions::TERMINATE, $details, array('ID'=>$_SESSION['userinfo']['AID'], 'SessionID'=>$_SESSION['userinfo']['SessionID']));
         }
         
          return $message;
         
         }
         else{
-            $tempinfo = $_TempMemberInfo->getMembersByMID($entries['MID']);
+            $tempinfo = $_TempMemberInfo->getEmailByMIDSP($entries['MID']);
             
             if(!empty($tempinfo)){
                 foreach ($tempinfo as $value) {

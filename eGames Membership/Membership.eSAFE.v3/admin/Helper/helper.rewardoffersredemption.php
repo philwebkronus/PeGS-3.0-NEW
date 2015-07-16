@@ -134,8 +134,7 @@ if(isset($_POST["functiontype"]) && $_POST["functiontype"] != ""){
                                         $searchValue = $_POST["datavar"];
                                         if ($validate->validateEmail($searchValue))
                                         {
-                                            $result = $_MemberInfo->getMemberInfoByUsername($searchValue);
-
+                                            $result = $_MemberInfo->getMemberInfoByUsernameSP($searchValue);
                                             if (count($result) > 0)
                                             {
                                                 $_SESSION['CardRed']['Username'] = $searchValue;
@@ -239,7 +238,7 @@ if(isset($_POST["functiontype"]) && $_POST["functiontype"] != ""){
                                                 $_SESSION['CardRed']['CardTypeID'] = $membercards[0]['CardTypeID'];
                                                 $_SESSION['CardRed']['IsVIP'] = $membercards[0]['IsVIP'];
                                                 $CardNumber = $searchValue;
-                                                $email = $_MemberInfo->getEmail($MID);
+                                                $email = $_MemberInfo->getEmailSP($MID);
                                                 $_SESSION['CardRed']['Email'] = $email;
                                                 switch ($membercards[0]['CardTypeID']) {
                                                     case 1:
@@ -253,8 +252,8 @@ if(isset($_POST["functiontype"]) && $_POST["functiontype"] != ""){
                                                         break;
                                                 }
                                                 
-                                                $memberinfo = $_MemberInfo->getMemberInfo($_SESSION["CardRed"]["MID"]);
-                                                $ArrMemberInfo = $memberinfo[0];
+                                                $memberinfo = $_MemberInfo->getMemInfoUsingSP($_SESSION["CardRed"]["MID"]);
+                                                $ArrMemberInfo = $memberinfo;
                                                 
                                                 //check if region and city are valid
                                                 if(isset($ArrMemberInfo["CityID"]) && $ArrMemberInfo["CityID"] != "" && isset($ArrMemberInfo["RegionID"]) && $ArrMemberInfo["RegionID"] != ""){

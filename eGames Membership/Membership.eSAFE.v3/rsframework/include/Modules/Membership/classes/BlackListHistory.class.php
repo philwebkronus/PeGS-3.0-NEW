@@ -31,6 +31,24 @@ class BlackListHistory extends BaseEntity
         return $result[0]['Remarks'];
     }
     /**
+     * @author Mark Kenneth Esguerra
+     * @date June 30, 2015
+     * @param type $blacklistID
+     * @return type
+     */
+    public function getRemarksSP($blacklistID) {
+        $query = "CALL membership.sp_select_data(1, 3, 8, '$blacklistID,1', 'Remarks', @OUTRetCode, @OUTRetMessage, @OUTfldListRet)";
+        $result = parent::RunQuery($query);
+        $arr_result = array();
+        if (count($result) > 0) {
+            foreach ($result as $row) {
+                $exp = explode(";", $row['OUTfldListRet']);
+                $arr_result[] = array('Remarks' => $exp[0]);
+            }
+        }
+        return $arr_result[0]['Remarks'];
+    }
+    /**
      * Get the blacklisted's entire history
      * @param int $blacklistID ID of the blacklisted player
      * @return array Array of recorded history
@@ -44,6 +62,22 @@ class BlackListHistory extends BaseEntity
         $result = parent::RunQuery($query);
         
         return $result;
+    }
+    public function getAllBlackListedHistSP($blacklistID)
+    {
+        $query = "CALL sp_select_data_v2(1, 3, 9, $blacklistID, 'BlackListHistoryID,DateCreated,Remarks,CreatedByAID', @OUTRetCode,@OUTRetMessage, @OUTfldListRet);";
+        $result = parent::RunQuery($query);
+        $arr_result = array();
+        if (count($result) > 0) {
+            foreach ($result as $row) {
+                $exp = explode(";", $row['OUTfldListRet']);
+                $arr_result[] = array('BlackListHistoryID' => $exp[0], 
+                                      'DateCreated' => $exp[1], 
+                                      'Remarks' => $exp[2], 
+                                      'CreatedByAID' => $exp[3]);
+            }
+        }
+        return $arr_result;
     }
 }
 ?>

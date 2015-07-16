@@ -218,13 +218,13 @@ class TempMembers extends BaseEntity
      * @return int
      */
     public function chkTmpVerifiedEmailAddress($email){
-        $query = "SELECT COUNT(m.MID) ctrtemp, m.TemporaryAccountCode  FROM members m
+        $query = "SELECT COUNT(m.MID) ctrtemp FROM members m 
                 INNER JOIN memberinfo mi ON m.MID = mi.MID
                 WHERE m.IsVerified = 1 AND mi.Email = '$email'";
         
         $result = parent::RunQuery($query);
         
-        return $result;//$result[0]['ctrtemp'];
+        return $result[0]['ctrtemp'];
     }
     
     /**

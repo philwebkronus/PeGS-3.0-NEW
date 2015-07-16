@@ -24,7 +24,7 @@ App::LoadModuleClass("Loyalty", "MemberPointsTransferLog");
 App::LoadModuleClass("Loyalty", "CardStatus");
 App::LoadModuleClass("Membership", "AuditTrail");
 App::LoadModuleClass("Membership", "AuditFunctions");
-
+App::LoadModuleClass("Membership", "PcwsWrapper");
 
 //Load Needed Core Class.
 App::LoadCore('Validation.class.php');
@@ -41,6 +41,8 @@ $_TempMember = new TempMembers();
 $_TransactionSummary = new TransactionSummary();
 $_Sites = new Sites();
 $_Log = new AuditTrail();
+$_PcwsWrapper = new PcwsWrapper();
+
 $profile = null;
 $response = null;
 
@@ -57,11 +59,13 @@ if (isset($_POST['pager'])) {
             
         $card = $_POST['Card'];
         $cardtype = $_POST['CardType'];
-            
+        
         switch ($cardtype) {
             case "1":
-                $carddetails = $_MemberCards->getTempcardDetails($card);
-                
+               $carddetails = $_MemberCards->getTempcardDetails($card);
+               $comppoints = $_PcwsWrapper->getCompPoints($card, 0);
+               $comppoints = $comppoints['GetCompPoints']['CompBalance'];
+                      
                if(!empty($carddetails)){
                    
                     foreach ($carddetails as $value) {
@@ -69,7 +73,7 @@ if (isset($_POST['pager'])) {
                      $status = $value['Status'];
                      $siteid = $value['SiteID'];
                      $lifetimepoints = number_format($value['LifeTimePoints']);
-                     $currentpoints = number_format($value['CurrentPoints']);
+                     $currentpoints = number_format($comppoints);
                      $redeemedpoints = number_format($value['RedeemedPoints']);
                      $bonuspoints = number_format($value['BonusPoints']);
                  }
@@ -119,7 +123,10 @@ if (isset($_POST['pager'])) {
                  elseif($status == 8){
                     
                      $membercarddetails = $_MemberCards->getCardDetailsActiveDeactivateBanned($mid);
-                     
+                      
+                     $comppoints = $_PcwsWrapper->getCompPoints($card, 0);
+                     $comppoints = $comppoints['GetCompPoints']['CompBalance'];
+                      
                      if(!empty($membercarddetails)){
                          foreach ($membercarddetails as $value) {
                             $cardnumber = $value['CardNumber'];
@@ -163,14 +170,16 @@ if (isset($_POST['pager'])) {
                  elseif($status == 2){
                     
                      $membercarddetails = $_MemberCards->getCardDetailsActiveDeactivateBanned($mid);
-                     
+                     $comppoints = $_PcwsWrapper->getCompPoints($card, 0);
+                     $comppoints = $comppoints['GetCompPoints']['CompBalance'];
+                      
                      if(!empty($membercarddetails)){
                          foreach ($membercarddetails as $value) {
                             $cardnumber = $value['CardNumber'];
                             $activestatus = $value['Status'];
                             $datetimemigration = date("Y-m-d H:i:s",strtotime($value['DateCreated']));
                             $lifetimepoints = number_format($value['LifeTimePoints']);
-                            $currentpoints = number_format($value['CurrentPoints']);
+                            $currentpoints = number_format($comppoints);
                             $redeemedpoints = number_format($value['BonusPoints']);
                             $bonuspoints = number_format($value['BonusPoints']);
                         }
@@ -224,6 +233,9 @@ if (isset($_POST['pager'])) {
                 $card = $_POST['Card'];
                 $cardtype = $_POST['CardType'];
                 
+                $comppoints = $_PcwsWrapper->getCompPoints($card, 0);
+                $comppoints = $comppoints['GetCompPoints']['CompBalance'];
+                      
                 $oldcarddetails = $_OldCards->getOldCardInfo($card);
                 if(!empty($oldcarddetails)){
                         foreach ($oldcarddetails as $val) {
@@ -304,17 +316,20 @@ if (isset($_POST['pager'])) {
             break;  
         
             case "3":
-                    $card = $_POST['Card'];
-                    $cardtype = $_POST['CardType'];
+                $card = $_POST['Card'];
+                $cardtype = $_POST['CardType'];
                 
                 $ubcarddetails = $_MemberCards->getUBCardDetails($card);
+                $comppoints = $_PcwsWrapper->getCompPoints($card, 0);
+                $comppoints = $comppoints['GetCompPoints']['CompBalance'];
+                      
                 if(!empty($ubcarddetails)){
                         foreach ($ubcarddetails as $arr1) {
                             $membercardID = $arr1['MemberCardID'];
                             $mid = $arr1['MID'];
                             $status = $arr1['Status'];
                             $lifetimepoints = number_format($arr1['LifeTimePoints']);
-                            $currentpoints = number_format($arr1['CurrentPoints']);
+                            $currentpoints = number_format($comppoints);
                             $redeemedpoints = number_format($arr1['RedeemedPoints']);
                             $bonuspoints = number_format($arr1['BonusPoints']);
                             $datecreated = date("Y-m-d H:i:s",strtotime($arr1['DateCreated']));
@@ -363,6 +378,7 @@ if (isset($_POST['pager'])) {
                             
                             if($vstatus == 'New Migrated' || $vstatus == 'Temporary Migrated' ){
                                 $msg->Msg = 'Membership Card is already Migrated';
+                                $currentpoints = number_format($arr1['CurrentPoints']);
                             }
                             else{
                                 $msg->Msg = 'Card is '.$vstatus;
@@ -401,11 +417,15 @@ if (isset($_POST['pager'])) {
                                 
                                 $fromcardid = $_MemberPointsTransferLog->getFromCardID($membercardID);
                                 
+                                $comppoints = $_PcwsWrapper->getCompPoints($card, 0);
+                                $comppoints = $comppoints['GetCompPoints']['CompBalance'];
+                      
+                     
                                 if(!empty($fromcardid)){
                                     foreach ($fromcardid as $arg) {
                                         $fromcardid = $arg['FromMemberCardID'];
                                         $redcardlifetimepoints = number_format($arg['LifeTimePoints']);
-                                        $redcardcurrentpoints = number_format($arg['CurrentPoints']);
+                                        $redcardcurrentpoints = number_format($comppoints);
                                         $redcardredeemedpoints = number_format($arg['RedeemedPoints']);
                                         $redcardbonuspoints = 0;
                                         $redcarddatecreated = date("Y-m-d H:i:s",strtotime($arg['DateTransferred']));
@@ -490,11 +510,15 @@ if (isset($_POST['pager'])) {
                                 
                                 $fromcardid = $_MemberPointsTransferLog->getFromCardID($membercardID);
                                 
+                                $comppoints = $_PcwsWrapper->getCompPoints($card, 0);
+                                $comppoints = $comppoints['GetCompPoints']['CompBalance'];
+                      
+
                                 if(!empty($fromcardid)){
                                     foreach ($fromcardid as $arg) {
                                         $fromcardid = $arg['FromMemberCardID'];
                                         $redcardlifetimepoints = number_format($arg['LifeTimePoints']);
-                                        $redcardcurrentpoints = number_format($arg['CurrentPoints']);
+                                        $redcardcurrentpoints = number_format($comppoints);
                                         $redcardredeemedpoints = number_format($arg['RedeemedPoints']);
                                         $redcardbonuspoints = 0;
                                         $redcarddatecreated = date("Y-m-d H:i:s",strtotime($arg['DateTransferred']));
@@ -505,7 +529,9 @@ if (isset($_POST['pager'])) {
                                     $redcarddetails = array();
                                 }    
                                     
-
+                                $comppoints = $_PcwsWrapper->getCompPoints($card, 0);
+                                $comppoints = $comppoints['GetCompPoints']['CompBalance'];
+                                 
                                 if(!empty($migratedtempcarddetails)){
                                     foreach ($migratedtempcarddetails as $mgrtdtemp) {
                                         $migratedcardnumber = $mgrtdtemp['CardNumber'];
@@ -603,8 +629,7 @@ if (isset($_POST['pager'])) {
                 }
                 else{
                      if($email != ''){
-                        $midbyemail = $_MemberInfo->getMIDByEmail($email);
-                        
+                        $midbyemail = $_MemberInfo->getMIDByEmailSP($email);
                         if(!empty($midbyemail)){
                             foreach ($midbyemail as $value1) {
                                 $mid2 = $value1['MID'];
@@ -645,6 +670,8 @@ if (isset($_POST['pager'])) {
                             }
                             $ubcarddetails = $_MemberCards->getUBCardDetails($card);
                             
+                        $comppoints = $_PcwsWrapper->getCompPoints($card, 0);
+                        $comppoints = $comppoints['GetCompPoints']['CompBalance'];
                         if(!empty($ubcarddetails)){
                            foreach ($ubcarddetails as $arr1) {
                                     $membercardID = $arr1['MemberCardID'];
@@ -652,7 +679,7 @@ if (isset($_POST['pager'])) {
                                     $status = $arr1['Status'];
                                     $lifetimepoints = number_format($arr1['LifeTimePoints']);
                                     $currentpoints = number_format($arr1['CurrentPoints']);
-                                    $redeemedpoints = number_format($arr1['RedeemedPoints']);
+                                    $redeemedpoints = number_format($comppoints);
                                     $bonuspoints = number_format($arr1['BonusPoints']);
                                     $datecreated = date("Y-m-d H:i:s",  strtotime($arr1['DateCreated']));
                                     $siteid = $arr1['SiteID'];
@@ -701,12 +728,15 @@ if (isset($_POST['pager'])) {
                                 $migratedtempcarddetails = $_MemberCards->getCardDetailsFromStatus($mid, 8);
                                 
                                  $fromcardid = $_MemberPointsTransferLog->getFromCardID($membercardID);
-                                 
+                                
+                                $comppoints = $_PcwsWrapper->getCompPoints($card, 0);
+                                $comppoints = $comppoints['GetCompPoints']['CompBalance'];
+                                
                                 if(!empty($fromcardid)){
                                     foreach ($fromcardid as $arg) {
                                         $fromcardid = $arg['FromMemberCardID'];
                                         $redcardlifetimepoints = number_format($arg['LifeTimePoints']);
-                                        $redcardcurrentpoints = number_format($arg['CurrentPoints']);
+                                        $redcardcurrentpoints = number_format($comppoints);
                                         $redcardredeemedpoints = number_format($arg['RedeemedPoints']);
                                         $redcardbonuspoints = 0;
                                         $redcarddatecreated = date("Y-m-d H:i:s",strtotime($arg['DateTransferred']));
@@ -723,7 +753,7 @@ if (isset($_POST['pager'])) {
                                         $migratedmid = $mgrtdtemp['MID'];
                                         $migratedstatus = $mgrtdtemp['Status'];
                                         $migratedlifetimepoints = number_format($mgrtdtemp['LifeTimePoints']);
-                                        $migratedcurrentpoints = number_format($mgrtdtemp['CurrentPoints']);
+                                        $migratedcurrentpoints = number_format($comppoints);
                                         $migratedredeemedpoints = number_format($mgrtdtemp['RedeemedPoints']);
                                         $migratedbonuspoints = number_format($mgrtdtemp['BonusPoints']);
                                         $migrateddatecreated = date("Y-m-d H:i:s",strtotime($mgrtdtemp['DateCreated']));
@@ -798,7 +828,7 @@ if (isset($_POST['pager'])) {
                                     $mid = $arr1['MID'];
                                     $status = $arr1['Status'];
                                     $lifetimepoints = number_format($arr1['LifeTimePoints']);
-                                    $currentpoints = number_format($arr1['CurrentPoints']);
+                                    $currentpoints = number_format($comppoints);
                                     $redeemedpoints = number_format($arr1['RedeemedPoints']);
                                     $bonuspoints = number_format($arr1['BonusPoints']);
                                     $datecreated = date("Y-m-d H:i:s",  strtotime($arr1['DateCreated']));
@@ -851,7 +881,7 @@ if (isset($_POST['pager'])) {
                                     foreach ($fromcardid as $arg) {
                                         $fromcardid = $arg['FromMemberCardID'];
                                         $redcardlifetimepoints = number_format($arg['LifeTimePoints']);
-                                        $redcardcurrentpoints = number_format($arg['CurrentPoints']);
+                                        $redcardcurrentpoints = number_format($comppoints);
                                         $redcardredeemedpoints = number_format($arg['RedeemedPoints']);
                                         $redcardbonuspoints = 0;
                                         $redcarddatecreated = date("Y-m-d H:i:s",strtotime($arg['DateTransferred']));
@@ -868,7 +898,7 @@ if (isset($_POST['pager'])) {
                                         $migratedmid = $mgrtdtemp['MID'];
                                         $migratedstatus = $mgrtdtemp['Status'];
                                         $migratedlifetimepoints = number_format($mgrtdtemp['LifeTimePoints']);
-                                        $migratedcurrentpoints = number_format($mgrtdtemp['CurrentPoints']);
+                                        $migratedcurrentpoints = number_format($comppoints);
                                         $migratedredeemedpoints = number_format($mgrtdtemp['RedeemedPoints']);
                                         $migratedbonuspoints = number_format($mgrtdtemp['BonusPoints']);
                                         $migrateddatecreated = date("Y-m-d H:i:s",strtotime($mgrtdtemp['DateCreated']));
@@ -960,7 +990,7 @@ if (isset($_POST['pager'])) {
                                     $mid = $arr1['MID'];
                                     $status = $arr1['Status'];
                                     $lifetimepoints = number_format($arr1['LifeTimePoints']);
-                                    $currentpoints = number_format($arr1['CurrentPoints']);
+                                    $currentpoints = number_format($comppoints);
                                     $redeemedpoints = number_format($arr1['RedeemedPoints']);
                                     $bonuspoints = number_format($arr1['BonusPoints']);
                                     $datecreated = date("Y-m-d H:i:s",  strtotime($arr1['DateCreated']));
