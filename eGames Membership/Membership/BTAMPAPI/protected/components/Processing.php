@@ -1,10 +1,5 @@
 <?php
 
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 /**
  * Description of Processing
  * @date 07-01-2014
@@ -123,10 +118,6 @@ class Processing
                                                     return 0;
                                                 }
                                             }
-                                            //return $lastInsertedID;
-//                                            $transMsg = 'No Error, Transaction successful.';
-//                                            $errorCode = 0;
-//                                            $this->_sendResponse(200, CJSON::encode(CommonController::retMsg($module, $transMsg, $errorCode)));
                                         }
                                         else {
                                             $isUnlocked = $raffleCouponsModel->unlockRaffleCoupons();
@@ -140,8 +131,7 @@ class Processing
                                             $transMsg = 'Serial code unavailable.';
                                             $errorCode = 30;
                                             Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
-                                            $this->_sendResponse(200, CJSON::encode(CommonController::retMsg($module, $transMsg, $errorCode)));              
-                                            
+                                            $this->_sendResponse(200, CJSON::encode(CommonController::retMsg($module, $transMsg, $errorCode)));                            
                                         }
                                     }
                                     else {
@@ -149,9 +139,7 @@ class Processing
                                         $errorCode = 27;
                                         Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
                                         $this->_sendResponse(200, CJSON::encode(CommonController::retMsg($module, $transMsg, $errorCode)));
-                                    }
-                                    
-                                    
+                                    }              
                                 }
                                 else {
                                     if($isActive['Status'] != 'Active' && $isActive['Status'] != "Deleted") {
@@ -159,14 +147,12 @@ class Processing
                                         $errorCode = 43;
                                         Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
                                         $this->_sendResponse(200, CJSON::encode(CommonController::retMsg($module, $transMsg, $errorCode)));
-                                     
                                     }
                                     else {
                                         $transMsg = 'Transaction failed. This reward item no longer exists.';
                                         $errorCode = 43;
                                         Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
-                                        $this->_sendResponse(200, CJSON::encode(CommonController::retMsg($module, $transMsg, $errorCode)));
-                                        
+                                        $this->_sendResponse(200, CJSON::encode(CommonController::retMsg($module, $transMsg, $errorCode))); 
                                     }
                                     return 0;
                                 }

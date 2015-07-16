@@ -1,21 +1,12 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 /**
- * Description of AmpapiInvokerController
+ * Description of BTAmpapiInvokerController
  *
- * @author jdlachica
- * @date 07/21/2014
+ * @author fdlsison
+ * @date 09/15/2014
  */
 class BTAmpapiInvokerController extends Controller {
-
-
-
     /**
      * Set default action
      * @var string
@@ -72,13 +63,11 @@ class BTAmpapiInvokerController extends Controller {
             $password = $_POST['Password'];
             $result = $this->_AuthenticateSession($username, $password, $moduleName);
         }
-
-
+        
         $this->render($moduleName, array('result'=>$result));
     }
 
     private function _AuthenticateSession($username, $password, $moduleName){
-
         $url = $this->genURL($moduleName);
                
         $postData = CJSON::encode(array('Username'=>$username, 'Password'=>$password));
@@ -101,15 +90,13 @@ class BTAmpapiInvokerController extends Controller {
 
         $this->render('getactivesession', array('result'=>$result));
     }
-
-    private function _GetActiveSession($TPSessionID,$Username, $moduleName){
-
+    
+    private function _GetActiveSession($TPSessionID,$Username, $moduleName){   
         $url = $this->genURL($moduleName);
         $postData = CJSON::encode(array('TPSessionID'=>$TPSessionID, 'Username'=>$Username));
 
         $result = $this->SubmitData($url, $postData);
-
-
+        
         return $result[1];
     }
 
@@ -173,8 +160,7 @@ class BTAmpapiInvokerController extends Controller {
             curl_close( $curl );
 
             return array( $http_status, $response );
-    }
-
+    }    
 }
 
 ?>

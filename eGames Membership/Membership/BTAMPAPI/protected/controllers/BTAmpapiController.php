@@ -60,8 +60,6 @@ class BTAmpapiController extends Controller {
     private $currentAID = null;
     public $redemptionType = 0;//1. Item or 2. Coupon 
     
-
-
     //@Variable : This variable contains an ARRAY OF ERROR MESSAGES (Associative Array Type)
     private $errorMessage = array(
         '0'=>'No Error, Transaction successful.', 
@@ -104,35 +102,10 @@ class BTAmpapiController extends Controller {
         '1650'=>'Session has expired. Please login again.'
     );
     
-//    private $returnMessage = array(
-//        '01'=>'Generated TPSessionID; Third Party session ID.',
-//        '02'=>'Valid.',
-//        '03'=>'No Error, Transaction successful.',
-//        '04'=>'Card is inactive.'
-//    );
-    
-  
     private $ApiMethodID = array(
-//        'Login'=>APILogsModel::API_LOGIN, 
-//        'ForgotPassword'=>APILogsModel::API_FORGOT_PASSWORD, 
-//        'RegisterMember'=>APILogsModel::API_REGISTER_MEMBER,
-//        'UpdateProfile'=>APILogsModel::API_UPDATE_PROFILE,
-//        'GetProfile'=>APILogsModel::API_GET_PROFILE, 
-//        'CheckPoints'=>APILogsModel::API_CHECK_POINTS, 
-//        'ListItems'=>APILogsModel::API_LIST_ITEMS, 
-//        'RedeemItems'=>APILogsModel::API_REDEEM_ITEMS,
         'RegisterMemberBT'=>APILogsModel::API_REGISTER_MEMBER_BT,
         'AuthenticateSession'=>APILogsModel::API_AUTHENTICATE_SESSION, 
         'GetActiveSession'=>APILogsModel::API_GET_ACTIVE_SESSION, 
-//        'GetGender'=>APILogsModel::API_GET_GENDER, 
-//        'GetIDPresented'=>APILogsModel::API_GET_ID_PRESENTED, 
-//        'GetNationality'=>APILogsModel::API_GET_NATIONALITY, 
-//        'GetOccupation'=>APILogsModel::API_GET_OCCUPATION, 
-//        'GetIsSmoker'=>APILogsModel::API_GET_IS_SMOKER,
-//        'GetReferrer'=>APILogsModel::API_GET_REFERRER,
-//        'GetRegion'=>APILogsModel::API_GET_REGION,
-//        'GetCity'=>APILogsModel::API_GET_CITY,
-//        'Logout'=>APILogsModel::API_LOGOUT
     );
     //@purpose AuthenticateSession
     public function actionIndex(){
@@ -161,8 +134,7 @@ class BTAmpapiController extends Controller {
                 }else{
                     $this->_displayReturnMessage($module, "3.1", $Username.': Third Party Account not found.');//Third Party Account not found
                     $this->_apiLogs(APILogsModel::API_AUTHENTICATE_SESSION,'' , '3.1', '', 2, $module, $Username);
-                }
-                
+                }       
             }
         }
     }
@@ -176,12 +148,10 @@ class BTAmpapiController extends Controller {
         session_start();
 
         if($count==0 && $SessionID==null){
-            ///$this->_displayCustomMessages(1, $module, $transMsg);
             $TPSessionID = session_id();//generated Session ID
             if($TPSessionID!=null){
                 $result = $authenticateSession->insertTPSessionID($AID, $TPSessionID);
                 if($result==1){
-                    //$TPSID = $authenticateSession->getTPSessionID($AID);//TP Session ID
                     $apiLogsReferenceID = '';
                     $errorCode = 0;
                     $trackingID = '';
@@ -260,7 +230,7 @@ class BTAmpapiController extends Controller {
                     
                     $SessionDateTime = strtotime($result['DateCreated']);
                     $CurrentDateTime = strtotime(date('Y-m-d H:i:s'));
-                    $TimeInterval = round(abs($CurrentDateTime-$SessionDateTime)/60,2);//echo $TimeInterval.'='.$CurrentDateTime.'-'.$SessionDateTime;exit;
+                    $TimeInterval = round(abs($CurrentDateTime-$SessionDateTime)/60,2);
                     $AID=$result['AID'];
                     $MaxTime = 30.00;
                     
@@ -294,11 +264,8 @@ class BTAmpapiController extends Controller {
                     $this->_apiLogs(APILogsModel::API_GET_ACTIVE_SESSION,'' , '1.1', '', 2, $module, $Username);
                 }
             }else{
-//                $validateTPSessionID = $this->_validateTPSession($TPSessionID, $module, 'GetActiveSession');
-//                if($validateTPSessionID===true){
-                    $this->_displayReturnMessage($module, '1.1', 'Invalid Input.');
-                    $this->_apiLogs(APILogsModel::API_GET_ACTIVE_SESSION,'' , '1.1', '', 2, $module, $Username);
-                //}
+                $this->_displayReturnMessage($module, '1.1', 'Invalid Input.');
+                $this->_apiLogs(APILogsModel::API_GET_ACTIVE_SESSION,'' , '1.1', '', 2, $module, $Username);
             }
             
         }
@@ -310,13 +277,9 @@ class BTAmpapiController extends Controller {
                 $this->_updateSessionDate($TPSessionID, $AID, $ModuleNameBTAMPAPI);
                 return $activeSession;
             }
-        }
-//        
-        //$this->activeSession=$activeSession;
-     
+        }     
     }
-    
-    
+      
     public function actionRegisterMemberBT(){
        $request = $this->_readJsonRequest();
        $module='RegisterMemberBT';
@@ -325,8 +288,7 @@ class BTAmpapiController extends Controller {
        $validateRequiredFields = $this->validateRequiredFieldsRBT($request, $module, $fields);
        if($validateRequiredFields ===true){
            $this->_registerMemberBT($request, $module);
-       }
-        
+       }      
     }
     
     private function _registerMemberBT($request, $module){
@@ -336,57 +298,23 @@ class BTAmpapiController extends Controller {
         $LastName = trim($request['LastName']);
         
         $validateTPSessionID = $this->_validateTPSession($TPSessionID, 'GetActiveSession', $module);
-        if($validateTPSessionID===true){//print_r($request);
+        if($validateTPSessionID===true){
             $TPSessionID=trim($request['TPSessionID']);
             $FirstName=trim($request['FirstName']);
-            
-            //$MiddleName=trim($request['MiddleName']);
             $LastName=trim($request['LastName']);
-            
-            //$NickName=trim($request['NickName']);
-            //$Password=trim($request['Password']);
-            //$PermanentAdd=trim($request['PermanentAdd']);
-            $MobileNo=trim($request['MobileNo']);
-            //$AlternateMobileNo=trim($request['AlternateMobileNo']);
+            $MobileNo=trim($request['MobileNo']);     
             $EmailAddress=trim($request['EmailAddress']);
-            //$AlternateEmail=trim($request['AlternateEmail']);
-            //$Gender=trim($request['Gender']);
-            //$IDPresented=trim($request['IDPresented']);
-            //$IDNumber=trim($request['IDNumber']);
-            //$Nationality=trim($request['Nationality']);
             $Birthdate=trim($request['Birthdate']);
-            //$Occupation=trim($request['Occupation']);
-            //$IsSmoker=trim($request['IsSmoker']);
-            //$ReferralCode = trim($request['ReferralCode']);
-            //$ReferrerID = trim($request['ReferrerID']);
-            //$EmailSubscription = trim($request['EmailSubscription']);
-            //$SMSubscription = trim($request['SMSSubscription']);
             
             $moduleName =  strtolower($module);
             $url = $this->genMPAPIURL($moduleName);
             
             $postData = CJSON::encode(array(
                 'FirstName'=>$FirstName,
-                //'MiddleName'=>$MiddleName,
                 'LastName'=>$LastName,
-                //'NickName'=>$NickName,
-                //'Password'=>$Password,
-                //'PermanentAdd'=>$PermanentAdd,
                 'MobileNo'=>$MobileNo,
-                //'AlternateMobileNo'=>$AlternateMobileNo,
                 'EmailAddress'=>$EmailAddress,
-                //'AlternateEmail'=>$AlternateEmail,
-                //'Gender'=>$Gender,
-                //'IDPresented'=>$IDPresented,
-                //'IDNumber'=>$IDNumber,
-                //'Nationality'=>$Nationality,
                 'Birthdate'=>$Birthdate
-                //'Occupation'=>$Occupation,
-                //'IsSmoker'=>$IsSmoker,
-                //'ReferralCode'=>$ReferralCode,
-                //'ReferrerID'=>$ReferrerID,
-                //'EmailSubscription'=>$EmailSubscription,
-                //'SMSSubscription'=>$SMSubscription
             ));
             $result = $this->SubmitData($url, $postData);
            
@@ -407,14 +335,9 @@ class BTAmpapiController extends Controller {
                 $this->_apiLogs(APILogsModel::API_REGISTER_MEMBER_BT,'' , 73, '', 2, $module, $LastName.', '.$FirstName);
             }
         }
-//        else {
-//            $this->_displayCustomMessages($module, 76, 'Session has expired. Please login again.');//Error 73
-//            $this->_apiLogs(APILogsModel::API_REGISTER_MEMBER_BT,'' , 76, '', 2, $module, $LastName.', '.$FirstName);
-//        }
     }
     
     private function _readJsonRequest() {
-
         //read the post input (use this technique if you have no post variable name):
         $post = file_get_contents("php://input");
 
@@ -488,7 +411,6 @@ class BTAmpapiController extends Controller {
 
             echo $body;
         }
-        //Yii::app()->end();
     }
     
     /**
@@ -534,7 +456,6 @@ class BTAmpapiController extends Controller {
         $this->_sendResponse(200, CJSON::encode(CommonController::retMsg($module, '', '', $eCode, $transMsg)));
         Utilities::log("ReturnMessage: " . $transMsg. " ErrorCode: " . $errorCode);
         $this->_logError($module, $logErrorMessage);
-        //$this->_apiLogs($ApiLogsModel, $apiLogsReferenceID, $errorCode, $trackingID, $status, $module);
     }
     
     private function _displayReturnMessageRBT($module, $couponNumber, $expiryDate, $errorCode, $logErrorMessage){
@@ -544,7 +465,6 @@ class BTAmpapiController extends Controller {
         $this->_sendResponse(200, CJSON::encode(CommonController::retMsg($module, $couponNumber, $expiryDate, $eCode, $transMsg)));
         Utilities::log("ReturnMessage: " . $transMsg. " ErrorCode: " . $errorCode);
         $this->_logError($module, $logErrorMessage);
-        //$this->_apiLogs($ApiLogsModel, $apiLogsReferenceID, $errorCode, $trackingID, $status, $module);
     }
     
     private function _displaySuccessMessage($module, $errorCode, $logErrorMessage){
@@ -561,7 +481,7 @@ class BTAmpapiController extends Controller {
         $couponNumber = '';
         $expiryDate = '';
         $transMsg = $errorMessages;
-//        strlen($errorCode)>2?$eCode = substr($errorCode, 0, 1):$eCode = substr($errorCode, 0, strlen($errorCode));
+
         $eCode = floor($errorCode);
         $this->_sendResponse(200, CJSON::encode(CommonController::retMsg($module, $couponNumber, $expiryDate, $eCode, $transMsg)));
         Utilities::log("ReturnMessage: " . $transMsg. " ErrorCode: " . $eCode);
@@ -571,7 +491,7 @@ class BTAmpapiController extends Controller {
     private function _utilityLogs($transMsg, $errorCode){
         return "ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode;
     }
-    //This function creat audittrail logs
+    //This function creates audittrail logs
     private function _auditTrail($auditFunction,$errorCode, $AID, $sessionID, $module, $details=''){
         $auditTrailModel = new AuditTrailModel();
         $logger = new ErrorLogger();
@@ -602,10 +522,8 @@ class BTAmpapiController extends Controller {
         $logger->log($logger->logdate, " [".strtoupper($module)." SUCCESS] ", $logMessage);
         //$this->_apiLogs('', $refID, $errorCode, $trackingID, $status, $module)
     }
-    
-    
-    //validation functions
-    
+     
+    //validation functions    
     private function validateRequiredFields($request, $module, $fields){
         $validateSuccess = false;
         foreach($fields as $key=>$value){
@@ -644,9 +562,6 @@ class BTAmpapiController extends Controller {
         return $validateSuccess;
     }
     
-    
-    
-    
     private function validateRequiredFields2($request, $module, $fields){
         $validateSuccess = false;
         foreach($fields as $key=>$value){
@@ -665,10 +580,8 @@ class BTAmpapiController extends Controller {
         return $validateSuccess;
     }
 
-    
     //It validates contact number 
     private function validateContactNumberLength($request, $module, $fields){
-      
         foreach($fields as $key=>$value){
             
             if(!(strlen($request[$key])<9)){
@@ -781,7 +694,6 @@ class BTAmpapiController extends Controller {
         $ValidateTPSession = new ValidateTPSessionIDModel();
         $queryResult = $ValidateTPSession->validateTPSessionID(trim($TPSessionID));
         
-        
         $count = $queryResult['Count'];
         $valid = false;
         $ApiMethodID = $this->ApiMethodID;
@@ -789,7 +701,7 @@ class BTAmpapiController extends Controller {
         if(isset($count) && $count==1){
             $SessionDateTime = strtotime($queryResult['DateCreated']);
             $CurrentDateTime = strtotime(date('Y-m-d H:i:s'));
-            $TimeInterval = round(abs($CurrentDateTime-$SessionDateTime)/60,2);//echo $TimeInterval.'='.$CurrentDateTime.'-'.$SessionDateTime;exit;
+            $TimeInterval = round(abs($CurrentDateTime-$SessionDateTime)/60,2);
             $AID=$queryResult['AID'];
             $MaxTime = 30.00;
             
@@ -802,11 +714,9 @@ class BTAmpapiController extends Controller {
                 
                 $this->currentAID = $AID;
                 if(isset($result)){
-                //$ActiveSession = $this->activeSession;
-                //if($ActiveSession===true){
                     $parse = CJSON::decode($result[1]);
                     $ErrorCode = $parse[$moduleNameMPAPI]['ErrorCode'];
-                    //$DateCreated = $parse[$moduleName]['DateCreated'];
+  
                     if($ErrorCode==0){
                         $valid = true;
                     }else{
@@ -873,7 +783,5 @@ class BTAmpapiController extends Controller {
     
     private function genBTAMPAPIURL($moduleName = null){
         return $this->urlBTAMPAPI.$moduleName;
-    }
-    
-}
-                
+    }   
+}            
