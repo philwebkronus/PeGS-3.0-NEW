@@ -10,7 +10,7 @@ return array(
 
 	'basePath'=>dirname(__FILE__).DIRECTORY_SEPARATOR.'..',
 	'name'=>'Authenticate Membership Portal API', //Application Programming Interface
-        'defaultController'=>'AmpapiInvoker/overview',
+        'defaultController'=>'ampapiInvoker/overview',
 	// preloading 'log' component
 	'preload'=>array('log'),
 
