@@ -6,11 +6,10 @@
  */
 
 class MembershipTempModel {
-
     public static $_instance = null;
     public $_connection;
 
-    public function __construct() {
+    public function __construct() { 
         $this->_connection = Yii::app()->db3;
     }
 
@@ -203,10 +202,9 @@ class MembershipTempModel {
             $command->execute();
 
             $mid = Yii::app()->db3->getLastInsertID();
-
             try {
-                $sql = 'INSERT INTO memberinfo(MID, FirstName, MiddleName, LastName, NickName, Birthdate, Gender, Email, AlternateEmail, MobileNumber, AlternateMobileNumber, NationalityID, OccupationID, Address1, IdentificationID, IdentificationNumber, IsSmoker, DateCreated, ReferrerCode, EmailSubscription, SMSSubscription, ReferrerID)
-                        VALUES(:MID, :FirstName, :MiddleName, :LastName, :NickName, :Birthdate, :Gender, :Email, :AlternateEmail, :MobileNumber, :AlternateMobileNumber, :Nationality, :Occupation, :PermanentAddress, :IDPresented, :IDNumber, :IsSmoker, NOW(6), :ReferrerCode, :emailSubscription, :smsSubscription, :referrerID)';
+                $sql = 'INSERT INTO memberinfo(MID, FirstName, MiddleName, LastName, NickName, Birthdate, Gender, Email, AlternateEmail, MobileNumber, AlternateMobileNumber, NationalityID, OccupationID, Address1, IdentificationID, IdentificationNumber, IsSmoker, DateCreated, ReferrerCode, EmailSubscription, SMSSubscription, ReferrerID, RegistrationOrigin)
+                        VALUES(:MID, :FirstName, :MiddleName, :LastName, :NickName, :Birthdate, :Gender, :Email, :AlternateEmail, :MobileNumber, :AlternateMobileNumber, :Nationality, :Occupation, :PermanentAddress, :IDPresented, :IDNumber, :IsSmoker, NOW(6), :ReferrerCode, :emailSubscription, :smsSubscription, :referrerID, 3)';
                 $param = array(':MID' => $mid, ':FirstName' => $firstname, ':MiddleName' => $middlename, ':LastName' => $lastname, ':PermanentAddress' => $permanentAddress,
                     ':IDPresented' => $idPresented, ':IDNumber' => $idNumber, ':NickName' => $nickname, ':MobileNumber' => $mobileNumber, ':AlternateMobileNumber' => $alternateMobileNumber,
                     ':Email' => $email, ':AlternateEmail' => $alternateEmail, ':Birthdate' => $birthdate, ':Nationality' => $nationality, ':Occupation' => $occupation,
@@ -216,59 +214,15 @@ class MembershipTempModel {
                 $result = $command->execute();
 
                 try {
-                    $instanceURL = Yii::app()->params['instanceURL'];
-                    $apiVersion = Yii::app()->params['apiVersion'];
-                    $cKey = Yii::app()->params['cKey'];
-                    $cSecret = Yii::app()->params['cSecret'];
-                    $sfLogin = Yii::app()->params['sfLogin'];
-                    $sfPassword = Yii::app()->params['sfPassword'];
-                    $secToken = Yii::app()->params['secToken'];
-                    //$redirectURI = Yii::app()->params['redirectURI'];
-
-                    $sfapi = new SalesforceAPI($instanceURL, $apiVersion, $cKey, $cSecret);
-
-                    $sfSuccessful = $sfapi->login($sfLogin, $sfPassword, $secToken);
-
-                    if ($sfSuccessful) {
-                        $newBaseUrl = $sfSuccessful->instance_url;
-                        $accessToken = $sfSuccessful->access_token;
-
-                        if ($gender == 1) {
-                            $salutation = 'Mr.';
-                        } else {
-                            $salutation = 'Ms.';
-                        }
-
-                        $playertype = 'Regular';
-                        $sfID = $sfapi->create_account($lastname, $firstname, $birthdate, $salutation, $playertype, $tempCode, $newBaseUrl, $accessToken);
-                        if ($sfID) {
-                            $sql = 'UPDATE memberinfo
-                                    SET SFID = :SFID
-                                    WHERE MID = :MID';
-                            $param = array(':SFID' => $sfID, ':MID' => $mid);
-
-                            $command = $this->_connection->createCommand($sql);
-                            $command->bindValues($param);
-                            $result = $command->execute();
-
-                            if ($result > 0) {
-                                $startTrans->commit();
-                                $recipient = $firstname . ' ' . $lastname;
-                                $helpers = new Helpers();
-                                $helpers->sendEmailVerification($email, $recipient, $tempCode);
-                                $MID = $mid;
-
-                                return array('MID' => $MID, 'SFID' => $sfID);
-                            } else {
-                                $startTrans->rollback();
-                            }
-                        } else {
-                            $startTrans->rollback();
-                        }
-                    } else {
-                        $startTrans->rollback();
-                    }
-                } catch (PDOException $e) {
+                    $startTrans->commit();
+                    $recipient = $firstname . ' ' . $lastname;
+                    $helpers = new Helpers();
+                    $helpers->sendEmailVerification($email, $recipient, $tempCode);
+                    $MID = $mid;
+                    
+                    return $MID;
+                    
+                } catch(PDOException $e) {
                     $startTrans->rollback();
                     Utilities::log($e->getMessage());
                     return $e->getMessage();
@@ -355,8 +309,8 @@ class MembershipTempModel {
             $mid = Yii::app()->db3->getLastInsertID();
 
             try {
-                $sql2 = 'INSERT INTO memberinfo(MID, FirstName, MiddleName, LastName, NickName, Birthdate, Gender, Email, AlternateEmail, MobileNumber, AlternateMobileNumber, NationalityID, OccupationID, Address1, IdentificationID, IdentificationNumber, IsSmoker, DateCreated, ReferrerCode, EmailSubscription, SMSSubscription, ReferrerID)
-                        VALUES(:MID, :FirstName, :MiddleName, :LastName, :NickName, :Birthdate, :Gender, :Email, :AlternateEmail, :MobileNumber, :AlternateMobileNumber, :Nationality, :Occupation, :PermanentAddress, :IDPresented, :IDNumber, :IsSmoker, NOW(6), :ReferrerCode, :emailSubscription, :smsSubscription, :referrerID)';
+                $sql2 = 'INSERT INTO memberinfo(MID, FirstName, MiddleName, LastName, NickName, Birthdate, Gender, Email, AlternateEmail, MobileNumber, AlternateMobileNumber, NationalityID, OccupationID, Address1, IdentificationID, IdentificationNumber, IsSmoker, DateCreated, ReferrerCode, EmailSubscription, SMSSubscription, ReferrerID, RegistrationOrigin)
+                        VALUES(:MID, :FirstName, :MiddleName, :LastName, :NickName, :Birthdate, :Gender, :Email, :AlternateEmail, :MobileNumber, :AlternateMobileNumber, :Nationality, :Occupation, :PermanentAddress, :IDPresented, :IDNumber, :IsSmoker, NOW(6), :ReferrerCode, :emailSubscription, :smsSubscription, :referrerID, 4)';
                 $param2 = array(':MID' => $mid, ':FirstName' => $firstname, ':MiddleName' => $middlename, ':LastName' => $lastname, ':PermanentAddress' => $permanentAddress,
                     ':IDPresented' => $idPresented, ':IDNumber' => $idNumber, ':NickName' => $nickname, ':MobileNumber' => $mobileNumber, ':AlternateMobileNumber' => $alternateMobileNumber,
                     ':Email' => $email, ':AlternateEmail' => $alternateEmail, ':Birthdate' => $birthdate, ':Nationality' => $nationality, ':Occupation' => $occupation,
@@ -366,59 +320,15 @@ class MembershipTempModel {
                 $command2->execute();
 
                 try {
-                    $instanceURL = Yii::app()->params['instanceURL'];
-                    $apiVersion = Yii::app()->params['apiVersion'];
-                    $cKey = Yii::app()->params['cKey'];
-                    $cSecret = Yii::app()->params['cSecret'];
-                    $sfLogin = Yii::app()->params['sfLogin'];
-                    $sfPassword = Yii::app()->params['sfPassword'];
-                    $secToken = Yii::app()->params['secToken'];
-                    //$redirectURI = Yii::app()->params['redirectURI'];
-
-                    $sfapi = new SalesforceAPI($instanceURL, $apiVersion, $cKey, $cSecret);
-
-                    $sfSuccessful = $sfapi->login($sfLogin, $sfPassword, $secToken);
-
-                    if ($sfSuccessful) {
-                        $newBaseUrl = $sfSuccessful->instance_url;
-                        $accessToken = $sfSuccessful->access_token;
-
-                        if ($gender == 1) {
-                            $salutation = 'Mr.';
-                        } else {
-                            $salutation = 'Ms.';
-                        }
-
-                        $playertype = 'Regular';
-                        $sfID = $sfapi->create_account($lastname, $firstname, $birthdate, $salutation, $playertype, $tempCode, $newBaseUrl, $accessToken);
-                        if ($sfID) {
-                            $sql = 'UPDATE memberinfo
-                                    SET SFID = :SFID
-                                    WHERE MID = :MID';
-                            $param = array(':SFID' => $sfID, ':MID' => $mid);
-
-                            $command = $this->_connection->createCommand($sql);
-                            $command->bindValues($param);
-                            $result = $command->execute();
-
-                            if ($result > 0) {
-                                $startTrans->commit();
-                                $recipient = $firstname . ' ' . $lastname;
-                                $helpers = new Helpers();
-                                $helpers->sendEmailVerification($email, $recipient, $tempCode);
-                                $MID = $mid;
-
-                                return array('MID' => $MID, 'SFID' => $sfID);
-                            } else {
-                                $startTrans->rollback();
-                            }
-                        } else {
-                            $startTrans->rollback();
-                        }
-                    } else {
-                        $startTrans->rollback();
-                    }
-                } catch (PDOException $e) {
+                    $startTrans->commit();
+                    $recipient = $firstname . ' ' . $lastname;
+                    $helpers = new Helpers();
+                    $helpers->sendEmailVerification($email, $recipient, $tempCode);
+                    $MID = $mid;
+                    
+                    return $MID;
+                    
+                } catch(PDOException $e) {
                     $startTrans->rollback();
                     Utilities::log($e->getMessage());
                     return $e->getMessage();
@@ -468,37 +378,7 @@ class MembershipTempModel {
 
         return $result;
     }
-
-    //@date 06-11-2015
-    private function _updateSFID($SFID, $MID) {
-        $startTrans = $this->_connection->beginTransaction();
-
-        try {
-            $sql = 'UPDATE memberinfo
-                    SET SFID = :SFID
-                    WHERE MID = :MID';
-            $param = array(':SFID' => $SFID, ':MID' => $MID);
-
-
-            $command = $this->_connection->createCommand($sql);
-            $command->bindValues($param);
-            $command->execute();
-
-            try {
-                $startTrans->commit();
-                return 1;
-            } catch (PDOException $e) {
-                $startTrans->rollback();
-                Utilities::log($e->getMessage());
-                return 0;
-            }
-        } catch (Exception $e) {
-            $startTrans->rollback();
-            Utilities::log($e->getMessage());
-            return 0;
-        }
-    }
-
+     
 }
 
 ?>

@@ -38,7 +38,6 @@ class CouponsModel {
     //@date 09-18-2014
     public function updateCouponStatus($couponNumber, $MID) {
         $startTrans = $this->_connection->beginTransaction();
-
         try {
             $query = "UPDATE coupons
                       SET Option1 = :MID

@@ -148,7 +148,7 @@ return array(
         // using Yii::app()->params['paramName']
 	'params'=>array(
             'SitePrefix'=>'',
-            'SMSURI' => 'http://rtmessagegw.egamescasino.ph/send',
+            'SMSURI' => 'http://sms.egamescasino.ph/send',
             'app_id' => 'EGAMES',
             'DenominationPrefix'=>'PhP ',
             'allowedAmount'=>0,
@@ -164,14 +164,6 @@ return array(
             'SystemCode'=>array('madmin' => '4896816', 'mportal' => '48452098','pcws' => '4761'),
             'SysUsernameMA' => 'madmin',
             'SysUsernameMP' => 'mportal',
-            'activeRaffleCoupon' => 'rafflecoupons_<append active coupon batch here>', //example: rafflecoupons_3
-            'instanceURL' => '',
-            //'redirectURI' => '',
-            'apiVersion' => '',
-            'cKey' => '',
-            'cSecret' => '',
-            'sfLogin' => '',
-            'sfPassword' => '',
-            'secToken' => ''
+            'activeRaffleCoupon' => 'rafflecoupons_<append active coupon batch here>' //example: rafflecoupons_3
             ),
 );
