@@ -11,4 +11,5 @@ $_CONFIG["useapplicationdatetime"] = true;
 
 //PCWS API
 $_CONFIG['getbalance'] = '<PCWS URL HERE>/PCWS/index.php/pcws/getbalance';
+$_CONFIG['getcomppoints'] = '<PCWS URL HERE>/PCWS/index.php/pcws/getcomppoints';
 ?>

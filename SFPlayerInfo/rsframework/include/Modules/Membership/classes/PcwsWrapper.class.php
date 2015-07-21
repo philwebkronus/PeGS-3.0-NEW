@@ -90,9 +90,9 @@ Class PcwsWrapper extends BaseEntity
     {
        $postdata = json_encode(array('CardNumber'=>$CardNumber,'SystemUsername'=>  $this->_username[$index], 'AccessDate'=>  $this->_accessdate, 
                                 'Token'=>  $this->_tkn[$this->_username[$index]]));
-       //$this->_logger->_logRequest("GetCompPoints", $postdata);
+       $this->_logger->_logRequest("GetCompPoints", $postdata);
        $result = $this->curlApi(App::getParam('getbalance'), $postdata);
-       //$this->_logger->_logResponse("GetCompPoints", $result[1]);
+       $this->_logger->_logResponse("GetCompPoints", $result[1]);
        
        return json_decode($result[1], true);
     }

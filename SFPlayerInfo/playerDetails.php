@@ -26,14 +26,14 @@ include_once("playerDetailscontroller.php");
                         Name:
                     </th>
                     <td>
-                        <?php echo $row['FirstName'] . " " . $row['MiddleName'] . " " . $row['LastName']; ?>
+                        <?php echo $rowEnc['FirstName'] . " " . $rowEnc['MiddleName'] . " " . $rowEnc['LastName']; ?>
                     </td>
                     <th>
                         Card Number
                     </th>
                     <td>
                         <?php
-                        echo $row['CardNumber'];
+                        echo $cardNumber;
                         ?>
                     </td>
                 </tr>
@@ -42,14 +42,14 @@ include_once("playerDetailscontroller.php");
                         Birthdate:
                     </th>
                     <td>
-                        <?php echo date('d-M-y', strtotime($row['Birthdate'])); ?>
+                        <?php echo date('d-M-y', strtotime($rowNonEnc['Birthdate'])); ?>
                     </td>
                     <th>
                         Membership Type:
                     </th>
                     <td>
                         <?php
-                        if (strlen($row['CardNumber'] > 8))
+                        if (strlen($cardNumber > 8))
                             echo 'Migrated';
                         else
                             echo 'New';
@@ -61,13 +61,13 @@ include_once("playerDetailscontroller.php");
                         Address:
                     </th>
                     <td>
-                        <?php echo $row['Address1']; ?>
+                        <?php echo $rowEnc['Address1']; ?>
                     </td>
                     <th>
                         Member Status:
                     </th>
                     <td>
-                        <?php echo $row['Status']; ?>
+                        <?php echo $rowEnc['Status']; ?>
                     </td>
                 </tr>
                 <tr>
@@ -75,7 +75,7 @@ include_once("playerDetailscontroller.php");
                         Email:
                     </th>
                     <td>
-                        <?php echo $row['Email']; ?>
+                        <?php echo $rowEnc['Email']; ?>
                     </td>
                     <th>
                         Date of Membership (Red):
@@ -84,10 +84,10 @@ include_once("playerDetailscontroller.php");
                         <?php
                         if (!$isnew)
                         {
-                            if (strlen($row['CardNumber'] > 8))
+                            if (strlen($cardNumber > 8))
                                 echo 'N/A';
                             else
-                                echo date('d-M-y', strtotime($row['DateCreated']));
+                                echo date('d-M-y', strtotime($cardDateCreated));
                         }
                         ?>
                     </td>
@@ -97,7 +97,7 @@ include_once("playerDetailscontroller.php");
                         ID Presented:
                     </th>
                     <td>
-                        <?php echo $row2['IdentificationName']; ?>
+                        <?php echo $rowIDPresented; ?>
                     </td>
                     <th>
                         Date of Membership (Green):
@@ -106,8 +106,8 @@ include_once("playerDetailscontroller.php");
                         <?php
                         if (!$isnew)
                         {
-                            if (strlen($row['CardNumber'] > 8))
-                                echo date('d-M-y', strtotime($row['DateCreated']));
+                            if (strlen($cardNumber > 8))
+                                echo date('d-M-y', strtotime($cardDateCreated));
                             else
                                 echo 'N/A';
                         }
@@ -119,13 +119,13 @@ include_once("playerDetailscontroller.php");
                         ID Number:
                     </th>
                     <td>
-                        <?php echo $row['IdentificationNumber']; ?>
+                        <?php echo $rowEnc['IdentificationNumber']; ?>
                     </td>
                     <th>
                         Mobile Number:
                     </th>
                     <td>
-                        <?php echo $row['MobileNumber']; ?>
+                        <?php echo $rowEnc['MobileNumber']; ?>
                     </td>
                 </tr>
                 <tr>
@@ -133,13 +133,13 @@ include_once("playerDetailscontroller.php");
                         Current Points:
                     </th>
                     <td>
-                        <?php echo $isnew ? 0 : number_format($row['CurrentPoints']); ?>
+                        <?php echo $isnew ? 0 : number_format($currentPoints); ?>
                     </td>
                     <th>
                         Last Site Played:
                     </th>
                     <td>
-                        <?php echo $isnew ? '' : $row4['SiteName']; ?>
+                        <?php echo $isnew ? '' : $rowSite['SiteName']; ?>
                     </td>
                 </tr>
                 <tr>
@@ -147,14 +147,14 @@ include_once("playerDetailscontroller.php");
                         Lifetime Points:
                     </th>
                     <td>
-                        <?php echo $isnew ? 0 : number_format($row['LifetimePoints']); ?>
+                        <?php echo $isnew ? 0 : number_format($lifetimePoints); ?>
                     </td>
                     <th>
                         Last Date Played:
                     </th>
                     <td>
                         <?php
-                        echo $isnew ? '' : (isset($row3['TransactionDate']) ? date('M d, Y ', strtotime($row3['TransactionDate'])) : '');
+                        echo $isnew ? '' : (isset($rowLastTransaction['TransactionDate']) ? date('M d, Y ', strtotime($rowLastTransaction['TransactionDate'])) : '');
                         ?>
                     </td>
                 </tr>
@@ -164,13 +164,13 @@ include_once("playerDetailscontroller.php");
                     </th>
                     <td>
 
-                        <?php echo $isnew ? 0 : number_format($row['RedeemedPoints']); ?>
+                        <?php echo $isnew ? 0 : number_format($redeemedPoints); ?>
                     </td>
                     <th>
                         Last Reload Amount:
                     </th>
                     <td>
-                        <?php echo $isnew ? 0.00 : number_format($row5['Amount'], 2); ?>
+                        <?php echo $isnew ? 0.00 : number_format($rowLastReloadTransaction['Amount'], 2); ?>
                     </td>
 
                 </tr>
@@ -181,7 +181,7 @@ include_once("playerDetailscontroller.php");
                         e-SAFE Playable Balance:
                     </th>
                     <td>
-                        <?php echo $pb; ?>
+                        <?php echo $playableBalance; ?>
                     </td>
                 </tr>
             </table>

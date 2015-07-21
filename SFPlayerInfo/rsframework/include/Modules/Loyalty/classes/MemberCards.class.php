@@ -55,7 +55,16 @@ class MemberCards extends BaseEntity
         $query = "SELECT CardNumber, DateCreated FROM $this->TableName where CardNumber LIKE 'eGames%' AND MID = $mid";
         return parent::RunQuery($query);
     }
+    
+    public function getCardInfoUsingMID($MID) {
+        $query = "SELECT mc.CardNumber,mc.DateCreated,mc.LifetimePoints,mc.RedeemedPoints,mc.BonusPoints
+                            FROM membercards mc
+                            INNER JOIN cards c ON c.CardID = mc.CardID
+                            WHERE mc.MID = $MID AND mc.Status IN(1,5)";
 
+        $result = parent::RunQuery($query);
+        return $result[0];
+    }
 }
 
 ?>

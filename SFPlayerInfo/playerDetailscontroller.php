@@ -25,6 +25,7 @@ App::LoadModuleClass('Membership', 'Identifications');
 App::LoadModuleClass('Kronus', 'Sites');
 App::LoadModuleClass('Membership', 'PcwsWrapper');
 App::LoadModuleClass('Kronus', 'TransactionSummary');
+App::LoadModuleClass('Kronus', 'EwalletTrans');
 
 $_MemberInfo = new MemberInfo();
 $_MembershipTempInfo = new MembershipTempInfo();
@@ -35,6 +36,8 @@ $_CardTransactions = new CardTransactions();
 $_Ref_Identifications = new Identifications();
 $_Sites = new Sites();
 $_TransactionSummary = new TransactionSummary();
+$_MemberCards = new MemberCards();
+$_EwalletTrans = new EwalletTrans();
 
 $SFID = $_GET['SFDCID'];
 $un = $_GET['SFUser'];
@@ -43,75 +46,93 @@ $currentPoints = 0;
 $lifetimePoints = 0;
 $bonusPoints = 0;
 $redeemedPoints = 0;
-$CardNumber = "";
+$cardNumber = "";
 $siteName = "";
 $transDate = "";
 $msg = '';
-$pb = 0;
+$playableBalance = 0;
 $isnew = true;
 
-//if SFID exists in membership db
-$res = $_MemberInfo->checkIfSFIDExists($SFID);
-if (count($res) > 0)
+//check if SFID exists in membership db
+$resultMembershipSFID = $_MemberInfo->checkIfSFIDExists($SFID);
+if (count($resultMembershipSFID) > 0)
 {
-    $result = $_MemberCards->getPOCDetails($SFID);
-    $row = $result[0];
+    $MID = $_MemberInfo->getMIDUsingSFID($SFID);
+    $resultCardNumberInfo = $_MemberCards->getCardInfoUsingMID($MID);
+    $cardNumber = $resultCardNumberInfo['CardNumber'];
+    $cardDateCreated = $resultCardNumberInfo['DateCreated'];
+    $lifetimePoints = $resultCardNumberInfo['LifetimePoints'];
+    $redeemedPoints = $resultCardNumberInfo['RedeemedPoints'];
+    $bonusPoints = $resultCardNumberInfo['BonusPoints'];
+    $resultEnc = $_MemberInfo->getEncPOCDetails($MID);
+    $resultNonEnc = $_MemberInfo->getGenericInfo($MID);
+    $rowEnc = $resultEnc[0]; //row1
+    $rowNonEnc = $resultNonEnc[0];
     $isnew = false;
-    $mid = $result[0]['MID'];
 
-    if ($row)
+    if ($rowEnc)
     {
-        $result2 = $_Ref_Identifications->getIDPresented($row['IdentificationID']);
-        $row2 = $result2[0];
+        $resultIDPresented = $_Ref_Identifications->getIDPresented($rowNonEnc['IdentificationID']);
+        $rowIDPresented = $resultIDPresented[0]['IdentificationName']; //row2
 
-        $result3 = $_CardTransactions->getLastTransaction($row['CardNumber']);
-        $row3 = $result3[0];
+        $resultLastTransaction = $_CardTransactions->getLastTransaction($cardNumber);
+        $rowLastTransaction = $resultLastTransaction[0]; //row3
 
-        if ($row3)
+        if ($rowLastTransaction)
         {
-            $result4 = $_Sites->getSite($row3['SiteID']);
-            $row4 = $result4[0];
+            $resultSite = $_Sites->getSite($rowLastTransaction['SiteID']);
+            $rowSite = $resultSite[0]; //row4
 
-            $result5 = $_CardTransactions->getLastReloadTransaction($row['CardNumber']);
-            $row5 = $result5[0];
+            $resultLastReloadTransaction = $_EwalletTrans->getLastReloadTransaction($cardNumber);
+            $rowLastReloadTransaction = $resultLastReloadTransaction[0]; //row5
 
             $pcws = new PcwsWrapper();
-            $result6 = $pcws->getBalance($row['CardNumber'], 1);
-            if ($result6['GetBalance']['ErrorCode'] == 0)
+            $resultBalance = $pcws->getBalance($cardNumber, 1); //row6
+            if ($resultBalance['GetBalance']['ErrorCode'] == 0)
             {
-                $pb = number_format($result6['GetBalance']['PlayableBalance'], 2);
+                $playableBalance = number_format($resultBalance['GetBalance']['PlayableBalance'], 2);
             }
             else
             {
-                $pb = $result6['GetBalance']['TransactionMessage'];
+                $playableBalance = $resultBalance['GetBalance']['TransactionMessage'];
+            }
+            
+            $resultCompPoints = $pcws->getCompPoints($cardNumber, 1);
+            if ($resultCompPoints['GetCompPoints']['ErrorCode'] == 0)
+            {
+                $currentPoints = number_format($resultCompPoints['GetCompPoints']['CompBalance'], 2);
+            }
+            else
+            {
+                $currentPoints = $resultCompPoints['GetCompPoints']['TransactionMessage'];
             }
         }
 
-        $result7 = $_Members->getMemberStatus($mid);
-        if (count($result7) > 0)
+        $resultStatus = $_Members->getMemberStatus($MID); //row7
+        if (count($resultStatus) > 0)
         {
-            switch ($result7[0]['Status'])
+            switch ($resultStatus[0]['Status'])
             {
                 case 1:
-                    $row['Status'] = 'Active';
+                    $rowEnc['Status'] = 'Active';
                     break;
                 case 2:
-                    $row['Status'] = 'Suspended';
+                    $rowEnc['Status'] = 'Suspended';
                     break;
                 case 3:
-                    $row['Status'] = 'Locked (Attempts)';
+                    $rowEnc['Status'] = 'Locked (Attempts)';
                     break;
                 case 4:
-                    $row['Status'] = 'Locked (Admin)';
+                    $rowEnc['Status'] = 'Locked (Admin)';
                     break;
                 case 5:
-                    $row['Status'] = 'Banned';
+                    $rowEnc['Status'] = 'Banned';
                     break;
                 case 6:
-                    $row['Status'] = 'Terminated';
+                    $rowEnc['Status'] = 'Terminated';
                     break;
                 default:
-                    $row['Status'] = 'Inactive';
+                    $rowEnc['Status'] = 'Inactive';
             }
         }
     }
@@ -122,63 +143,66 @@ if (count($res) > 0)
 }
 else
 {
-    $res2 = $_MembershipTempInfo->checkIfSFIDExists($SFID);
-    if (count($res2) > 0)
+    //check if SFID exists in membership_temp db
+    $resultMembershipTempSFID = $_MembershipTempInfo->checkIfSFIDExists($SFID);
+    if (count($resultMembershipTempSFID) > 0)
     {
-        $row['FirstName'] = $res2[0]['FirstName'];
-        $row['MiddleName'] = $res2[0]['MiddleName'];
-        $row['LastName'] = $res2[0]['LastName'];
-        $row['Birthdate'] = $res2[0]['Birthdate'];
-        $row['Address1'] = $res2[0]['Address1'];
-        $row['Birthdate'] = $res2[0]['Birthdate'];
-        $row['MobileNumber'] = $res2[0]['MobileNumber'];
-        $row['Email'] = $res2[0]['Email'];
-        $row['IdentificationID'] = $res2[0]['IdentificationID'];
-        $row['IdentificationNumber'] = $res2[0]['IdentificationNumber'];
-        $mid = $res2[0]['MID'];
+        $MID = $_MemberInfo->getMIDUsingSFID($SFID);
+//        $row['FirstName'] = $rowEnc['FirstName'];
+//        $row['MiddleName'] = $rowEnc['MiddleName'];
+//        $row['LastName'] = $rowEnc['LastName'];
+//        $row['Birthdate'] = $rowNonEnc['Birthdate'];
+//        $row['Address1'] = $rowEnc['Address1'];
+//        $row['MobileNumber'] = $res2[0]['MobileNumber'];
+//        $row['Email'] = $res2[0]['Email'];
+//        $row['IdentificationID'] = $res2[0]['IdentificationID'];
+//        $row['IdentificationNumber'] = $res2[0]['IdentificationNumber'];
+//        $mid = $res2[0]['MID'];
 
-        if ($row['IdentificationID'] != '')
+        if ($rowNonEnc['IdentificationID'] != '')
         {
-            $res3 = $_Ref_Identifications->getIDPresented($row['IdentificationID']);
-            $row2 = $res3[0];
+            $resultIDPresented = $_Ref_Identifications->getIDPresented($rowNonEnc['IdentificationID']);
+            $rowIDPresented = $resultIDPresented[0];
         }
         else
         {
-            $row2 = '';
-        }
-        $row3['TransactionDate'] = '';
-
-        $res4 = $_MembersTemp->getTempCode($mid);
-        if (count($res4) > 0)
-        {
-            $row['CardNumber'] = $res4[0]['TemporaryAccountCode'];
+            $rowIDPresented = '';
         }
 
-        $res5 = $_MembersTemp->getMemberStatus($mid);
-        if (count($res5) > 0)
+        //$row3['TransactionDate'] = '';
+        $rowLastTransaction['TransactionDate'] = '';
+
+        $resultTempCode = $_MembersTemp->getTempCode($MID);
+        if (count($resultTempCode) > 0)
         {
-            switch ($res5[0]['Status'])
+            $cardNumber = $resultTempCode[0]['TemporaryAccountCode'];
+        }
+
+        $resultMemberStatus = $_MembersTemp->getMemberStatus($MID);
+        if (count($resultMemberStatus) > 0)
+        {
+            switch ($resultMemberStatus[0]['Status'])
             {
                 case 1:
-                    $row['Status'] = 'Active';
+                    $rowEnc['Status'] = 'Active';
                     break;
                 case 2:
-                    $row['Status'] = 'Suspended';
+                    $rowEnc['Status'] = 'Suspended';
                     break;
                 case 3:
-                    $row['Status'] = 'Locked (Attempts)';
+                    $rowEnc['Status'] = 'Locked (Attempts)';
                     break;
                 case 4:
-                    $row['Status'] = 'Locked (Admin)';
+                    $rowEnc['Status'] = 'Locked (Admin)';
                     break;
                 case 5:
-                    $row['Status'] = 'Banned';
+                    $rowEnc['Status'] = 'Banned';
                     break;
                 case 6:
-                    $row['Status'] = 'Terminated';
+                    $rowEnc['Status'] = 'Terminated';
                     break;
                 default:
-                    $row['Status'] = 'Inactive';
+                    $rowEnc['Status'] = 'Inactive';
             }
         }
     }
@@ -187,7 +211,7 @@ else
 $path = dirname(__FILE__) . '/rsframework/include/log/SFLogs/';
 $fn = $path . 'logs_' . date("Ymd") . '.txt';
 $fp = fopen($fn, "a");
-fwrite($fp, date("[d-M-Y H:i:s]") . ' || Player Details: ' . $row['FirstName'] . ' ' . $row['LastName'] . ' || ' . $un . "\r\n");
+fwrite($fp, date("[d-M-Y H:i:s]") . ' || Player Details: ' . $rowEnc['FirstName'] . ' ' . $rowEnc['LastName'] . ' || ' . $un . "\r\n");
 fclose($fp);
 
 function get_domain($url)

@@ -23,6 +23,12 @@ class Members extends BaseEntity
                 m.MID = mi.MID WHERE m.DateCreated > '$date'"; var_dump($query);exit;
         return parent::RunQuery($query);
     }
+    
+    public function checkisVIPStatus($date)
+    {
+        $query = "SELECT isVIP FROM $this->TableName where";
+        return parent::RunQuery($query);
+    }
 }
 
 ?>
