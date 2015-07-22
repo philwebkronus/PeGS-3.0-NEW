@@ -295,4 +295,13 @@ class MembersModel {
         
         return $result;
     }
+    //@date 07-20-2015
+    public function checkIfEwallet($MID) {
+        $sql = 'SELECT IsEwallet FROM members WHERE MID = :MID'; //AND Status = 9';
+        $param = array(':MID' => $MID);
+        $command = $this->_connection->createCommand($sql);
+        $result = $command->queryRow(true, $param);
+        
+        return $result;
+    }
 }

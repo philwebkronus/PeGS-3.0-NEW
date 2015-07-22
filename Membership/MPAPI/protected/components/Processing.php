@@ -17,6 +17,7 @@ class Processing
         $couponRedemptionLogsModel = new CouponRedemptionLogsModel();
         $logger = new ErrorLogger();
         $apiLogsModel = new APILogsModel();
+        $membersModel = new MembersModel();
         
         $apiMethod = 8;
         $oldCurrentPoints = 0;
@@ -24,6 +25,7 @@ class Processing
         //set table for raffle coupon based on active coupon batch
         $raffleCouponSuffix = $couponBatchesModel->getRaffleCouponSuffix();
         if(isset($raffleCouponSuffix) && $raffleCouponSuffix['CouponBatchID'] != '') {
+            
             $AID = $MID;
             
             try {
@@ -35,15 +37,268 @@ class Processing
                     $availableCoupon = $raffleCouponsModel->getAvailableCoupons($rewardItemID, $quantity);
                     
                     if(count($availableCoupon) == $quantity) {
+                        $resultIsEwallet = $membersModel->checkIfEwallet($MID);
+                        $isEwallet = $resultIsEwallet['IsEwallet'];
+                        if($isEwallet == 1)
+                        {
+                            $pcwsWrapper = new PcwsWrapper();
+                            $result = $pcwsWrapper->getCompPoints($cardNumber, 1);
+                            if($result)
+                            {
+                                $playerPoints = $result['GetCompPoints']['CompBalance'];
+                                $oldCurrentPoints = (int)$playerPoints;
+                                if($oldCurrentPoints >= $redeemedPoints) {
+                                //update card points (deduct the total redeemed points)
+                                $isPointsUpdated = $memberCardsModel->updateCardPoints($MID, $redeemedPoints);
+                                $amt = $redeemedPoints;
+                                $isPointsDeducted = $pcwsWrapper->deductCompPoints($cardNumber, $amt, '', 0);
+                                $playerPoints = $pcwsWrapper->getCompPoints($cardNumber, 0);
+                                $playerPoints = $playerPoints['GetCompPoints']['CompBalance'];
+                                $oldCurrentPoints = $playerPoints;
+                                //$playerPoints = $memberCardsModel->getMemberPointsAndStatus($cardNumber);
+
+                                //check if points is greater than or equal to 0
+                                if($isPointsUpdated > 0 && $isPointsDeducted && $oldCurrentPoints >= 0) {
+
+                                    //get and check status of the reward item
+                                    $isActive = $rewardItemsModel->checkStatus($rewardItemID);
+
+                                    if($isActive['Status'] == 'Active') {
+                                        //update raffle coupons
+                                        $raffleCouponResults = $raffleCouponsModel->updateRaffleCouponsStatus($quantity, $lastInsertedID, $rewardItemID, $AID);
+    //                                    
+                                        //$raffleCouponResults = $raffleCouponsModel->lockRaffleCoupons();
+                                        if($raffleCouponResults['IsSuccess'] === true) {
+
+                                            //get details for serial code and coupon series for this reward e-coupon
+                                            $redemptionInfo = $raffleCouponsModel->getCouponRedemptionInfo($lastInsertedID);
+                                            $minCouponNumber = str_pad($redemptionInfo['MinCouponNumber'], 7, "0", STR_PAD_LEFT);
+                                            $maxCouponNumber = str_pad($redemptionInfo['MaxCouponNumber'], 7, "0", STR_PAD_LEFT);
+
+                                        //prepare coupon series for this reward e-coupon
+                                        if($redemptionInfo['MinCouponNumber'] == $redemptionInfo['MaxCouponNumber'])
+                                            $couponSeries = $minCouponNumber;
+                                        else
+                                            $couponSeries = $minCouponNumber . " - " . $maxCouponNumber;
+
+                                        //prepare serial code and security code for this reward e-coupon
+                                        $serialCode = str_pad($lastInsertedID, 7, "0", STR_PAD_LEFT) . "A" . Utilities::getMod10($minCouponNumber) . "B" . Utilities::getMod10($maxCouponNumber);
+                                        $securityCode = Utilities::mt_rand_str(8);
+
+                                            $isStatusUpdated = $couponRedemptionLogsModel->updateLogsStatus($lastInsertedID, 1, $MID, $redeemedPoints, $serialCode, $securityCode);
+                                           // var_dump($isStatusUpdated);
+                                            if($isStatusUpdated > 0) {
+
+                                                //if redemption is successful, build sessions for needed data and return an array of response.
+                                                $session['PreviousRedemption'] = $lastInsertedID;
+                                                $session['RewardOfferCopy']['CouponSeries'] = $couponSeries;
+                                                $session['RewardOfferCopy']['Quantity'] = $quantity;
+                                                $session['RewardOfferCopy']['RedemptionDate'] = $redeemedDate;
+                                                $session['RewardOfferCopy']['CheckSum'] = $securityCode;
+                                                $session['RewardOfferCopy']['SerialNumber'] = $serialCode;
+
+
+
+    //                                                    $transMsg = 'No Error, Transaction successful.';
+    //                                                    $errorCode = 0;
+    //                                                    $this->_sendResponse(200, CJSON::encode(CommonController::retMsg($module, $transMsg, $errorCode, $lastInsertedID, $oldCurrentPoints)));
+
+    //                                            $resultArray = array('LastInsertedID' => $lastInsertedID, 'OldCurrentPoints' => $oldCurrentPoints);
+    //                                            return $resultArray;
+                                                $errMsg["Message"] = "Player Redemption: Transaction Successful.";
+                                                $errMsg["LastInsertedID"] = $lastInsertedID;
+                                                $errMsg["IsSuccess"] = true;
+                                                $errMsg["OldCP"] = $oldCurrentPoints;
+                                                $errMsg["CouponSeries"] = $session['RewardOfferCopy']['CouponSeries'];
+                                                $errMsg["Quantity"] = $session['RewardOfferCopy']['Quantity'];
+                                                $errMsg["CheckSum"] = $session['RewardOfferCopy']['CheckSum'];
+                                                $errMsg["SerialNumber"] = $session['RewardOfferCopy']['SerialNumber'];
+                                                $errMsg["RedemptionDate"] = $session['RewardOfferCopy']['RedemptionDate'];
+                                                return $errMsg;
+                                            }
+                                            else {
+                                                $errMsg["Message"] = "Pending Redemption. Error in updating redemption log.";
+                                                $logger->log($logger->logdate, "[COUPON REDEMPTION ERROR] ", $errMsg["Message"]);
+                                                $apiDetails = 'REDEEMITEMS-UpdateLogsStatus-Failed: Updating of Logs status of couponredemptionlogs. CouponRedemptionLogID = '.$lastInsertedID;
+                                                $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $apiMethod.'-'.$cardNumber.'-'.$logger->logdate, $apiDetails, $lastInsertedID, 2);
+                                                if($isInserted == 0) {
+                                                    $logMessage = "Failed to insert to APILogs.";
+                                                    $logger->log($logger->logdate, " [REDEEMITEMS ERROR] ", $logMessage);
+                                                }
+                                                $errMsg["LastInsertedID"] = $lastInsertedID;
+                                                $errMsg["IsSuccess"] = false;
+                                                return $errMsg;
+
+                                            }
+                                        }
+                                        else {
+
+                                            //update coupon redemption logs status to 2 - Failed
+                                            $isStatusUpdated = $couponRedemptionLogsModel->updateLogsStatus($lastInsertedID, 2, $MID, 0);
+
+    //                                        $transMsg = 'Error in Locking.';
+    //                                        $errorCode = 27;
+    //                                        Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+    //                                        $this->_sendResponse(200, CJSON::encode(CommonController::retMsg($module, $transMsg, $errorCode)));
+                                            if($isStatusUpdated > 0) {
+                                                switch ($raffleCouponResults["StatusCode"]) {
+                                                    case 1:
+                                                        $errMsg["Message"] = "Transaction Failed. [Err: 0001] Error in transactional table.";
+                                                        $errMsg["HiddenMessage"] = "Transaction Failed. Error in locking Raffle Coupons table.";
+                                                        break;
+                                                    case 2:
+                                                        $errMsg["Message"] = "Transaction Failed. [Err: 0002] Error in transactional table.";
+                                                        $errMsg["HiddenMessage"] = "Transaction Failed. Error in unlocking Raffle Coupons table.";
+                                                        break;
+                                                    case 3:
+                                                        $errMsg["Message"] = "Transaction Failed. [Err: 0003] Error in transactional table.";
+                                                        $errMsg["HiddenMessage"] = "Transaction Failed. Error in updating Raffle Coupons table.";
+                                                        break;
+                                                    case 4:
+                                                        $errMsg["Message"] = "Transaction Failed. Raffle Coupons is either insufficient or unavailable.";
+                                                        $errMsg["HiddenMessage"] = "Transaction Failed. Raffle Coupons is either insufficient or unavailable.";
+                                                        break;
+                                                }
+                                                $logger->log($logger->logdate, "[COUPON REDEMPTION ERROR] ", $errMsg["HiddenMessage"]);
+                                            }
+                                            else {
+                                                switch ($raffleCouponResults["StatusCode"]) {
+                                                    case 1:
+                                                        $errMsg["Message"] = "Pending Redemption. [Err: 0001] Error in transactional table..";
+                                                        $errMsg["HiddenMessage"] = "Pending Redemption. Error in locking Item Serial Code table.";
+                                                        break;
+                                                    case 2:
+                                                        $errMsg["Message"] = "Pending Redemption. [Err: 0002] Error in transactional table..";
+                                                        $errMsg["HiddenMessage"] = "Pending Redemption. Error in unlocking Item Serial Code table.";
+                                                        break;
+                                                    case 3:
+                                                        $errMsg["Message"] = "Pending Redemption. [Err: 0003] Error in transactional table..";
+                                                        $errMsg["HiddenMessage"] = "Pending Redemption. Error in updating Item Serial Code table.";
+                                                        break;
+                                                    case 4:
+                                                        $errMsg["Message"] = "Pending Redemption. Raffle Coupons is either insufficient or unavailable.";
+                                                        $errMsg["HiddenMessage"] = "Pending Redemption. Raffle Coupons is either insufficient or unavailable.";
+                                                        break;
+                                                }
+                                                $logger->log($logger->logdate, "[COUPON REDEMPTION ERROR] ", $errMsg["HiddenMessage"]);
+                                            }
+                                            $errMsg["LastInsertedID"] = $lastInsertedID;
+                                            $errMsg["IsSuccess"] = false;
+                                            return $errMsg;
+                                        }   
+                                    }
+                                    else {
+                                        if($isActive['Status'] != 'Active' && $isActive['Status'] != "Deleted") {
+                                            $errMsg["Message"] = "Transaction Failed. The Item you try to redeem is currently ".$isActive["Status"].".";
+                                            $hiddenmsg = "Transaction Failed. The Item you try to redeem is currently ".$isActive["Status"]."[CardNumber: ".$cardNumber."].";
+                                            $logger->log($logger->logdate, "[COUPON REDEMPTION ERROR] ", $hiddenmsg);
+                                            $apiDetails = 'REDEEMITEMS-Failed: Item being redeemed is '.$isActive['Status'].'. RewardItemID = '.$rewardItemID;
+                                            $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $apiMethod.'-'.$cardNumber.'-'.$logger->logdate, $apiDetails, $lastInsertedID, 2);
+                                            if($isInserted == 0) {
+                                                $logMessage = "Failed to insert to APILogs.";
+                                                $logger->log($logger->logdate, " [REDEEMITEMS ERROR] ", $logMessage);
+                                            }
+                                            $errMsg["LastInsertedID"] = $lastInsertedID;
+                                            $errMsg["IsSuccess"] = false;
+                                            return $errMsg;
+                                        }
+                                        else {
+                                            $errMsg["Message"] = "Transaction Failed. This Reward Item  no longer exists.";
+                                            $hiddenmsg = "Transaction Failed. This Reward Item  no longer exists [CardNumber: ".$cardNumber."].";
+                                            $logger->log($logger->logdate, "[COUPON REDEMPTION ERROR] ", $hiddenmsg);
+                                            $errMsg["LastInsertedID"] = $lastInsertedID;
+                                            $errMsg["IsSuccess"] = false;
+                                            return $errMsg; 
+                                        }
+                                    }
+                                }
+                                else {
+                                    //update couponredemptionlog status to 2 - Failed
+                                    $isStatusUpdated = $couponRedemptionLogsModel->updateLogsStatus($lastInsertedID, 2, $MID, 0);
+                                    if($isStatusUpdated > 0) {
+                                        $errMsg["Message"] = "Failed in updating Card points. Card may have insufficient points.";
+                                        $logger->log($logger->logdate, "[COUPON REDEMPTION ERROR] ", $errMsg["Message"]);
+    //                                    $transMsg = 'Transaction failed. Card has insufficient points.';
+    //                                    $errorCode = 24;
+    //                                    Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+    //                                    $this->_sendResponse(200, CJSON::encode(CommonController::retMsg($module, $transMsg, $errorCode)));
+    //                                    $logMessage = 'Transaction failed. Card has insufficient points.';
+    //                                    $logger->log($logger->logdate, " [REDEEMITEMS ERROR] ", $logMessage);
+    //                                    $apiDetails = 'REDEEMITEMS-Failed: Card has insufficient points. CurrentPoints = '.$playerPoints['CurrentPoints'];
+    //                                    $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $apiMethod.'-'.$cardNumber.'-'.$logger->logdate, $apiDetails, $lastInsertedID, 2);
+    //                                    if($isInserted == 0) {
+    //                                        $logMessage = "Failed to insert to APILogs.";
+    //                                        $logger->log($logger->logdate, " [REDEEMITEMS ERROR] ", $logMessage);
+    //                                    }
+                                    }
+                                    else {
+                                        $errMsg["Message"] = "Pending Redemption. Failed in updating Card points. Card may have insufficient points.";
+                                        $logger->log($logger->logdate, "[COUPON REDEMPTION ERROR] ", $errMsg["Message"]);
+    //                                    $transMsg = 'Pending Redemption. Card has insufficient points.';
+    //                                    $errorCode = 44;
+    //                                    Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+    //                                    $this->_sendResponse(200, CJSON::encode(CommonController::retMsg($module, $transMsg, $errorCode)));
+    //                                    $logMessage = 'Pending Redemption. Card has insufficient points';
+    //                                    $logger->log($logger->logdate, " [REDEEMITEMS ERROR] ", $logMessage);
+    //                                    $apiDetails = 'REDEEMITEMS-Failed: Pending Redemption. Card has insufficient points. CurrenPoints = '.$playerPoints['CurrentPoints'];
+    //                                    $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $apiMethod.'-'.$cardNumber.'-'.$logger->logdate, $apiDetails, $lastInsertedID, 2);
+    //                                    if($isInserted == 0) {
+    //                                        $logMessage = "Failed to insert to APILogs.";
+    //                                        $logger->log($logger->logdate, " [REDEEMITEMS ERROR] ", $logMessage);
+    //                                    }
+                                    }
+                                    $apiDetails = 'REDEEMITEMS-Failed: Pending Redemption. Card has insufficient points. CurrenPoints = '.$playerPoints['CurrentPoints'];
+                                    $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $apiMethod.'-'.$cardNumber.'-'.$logger->logdate, $apiDetails, $lastInsertedID, 2);
+                                    if($isInserted == 0) {
+                                        $logMessage = "Failed to insert to APILogs.";
+                                        $logger->log($logger->logdate, " [REDEEMITEMS ERROR] ", $logMessage);
+                                    }
+                                    $errMsg["IsSuccess"] = false;
+                                    return $errMsg;
+                                }
+                            } else {
+                                //update couponredemptionlog status to 2 - Failed
+                                $isStatusUpdated = $couponRedemptionLogsModel->updateLogsStatus($lastInsertedID, 2, $MID, 0);
+                                if($isStatusUpdated > 0) {
+                                    $errMsg["Message"] = "Transaction Failed. Card may have insufficient points.";
+                                    $logger->log($logger->logdate, "[COUPON REDEMPTION ERROR] ", $errMsg["Message"]);
+    //                                $transMsg = 'Transaction failed. Card has insufficient points.';
+    //                                $errorCode = 24;
+    //                                Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+    //                                $this->_sendResponse(200, CJSON::encode(CommonController::retMsg($module, $transMsg, $errorCode)));
+
+                                }
+                                else {
+    //                                $transMsg = 'Pending Redemption. Card has insufficient points.';
+    //                                $errorCode = 44;
+    //                                Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+    //                                $this->_sendResponse(200, CJSON::encode(CommonController::retMsg($module, $transMsg, $errorCode)));
+                                    $errMsg["Message"] = "Pending Redemption. Card may have insufficient points.";
+                                    $logger->log($logger->logdate, "[COUPON REDEMPTION ERROR] ", $errMsg["Message"]);
+                                }
+                                $errMsg["LastInsertedID"] = $lastInsertedID;
+                                $errMsg["IsSuccess"] = false;
+                                return $errMsg;
+                                }
+                            }
+                            else
+                            {
+                                $errMsg["Message"] = "Cannot access PCWS API.";
+                                $logger->log($logger->logdate, "[COUPON REDEMPTION ERROR] ", $errMsg["Message"]);
+                                $errMsg["IsSuccess"] = false;
+                                return $errMsg;
+                            }
+                        }
+                        else
+                        {
+                        
                         //get current points for validation
                         $playerPoints = $memberCardsModel->getMemberPointsAndStatus($cardNumber);
-  
                         
                         $oldCurrentPoints = $playerPoints['CurrentPoints'];
                         if($oldCurrentPoints >= $redeemedPoints) {
                             //update card points (deduct the total redeemed points)
-                            $isPointsUpdated = $memberCardsModel->updateCardPoints($MID, $redeemedPoints);
-                            
+                            $isPointsUpdated = $memberCardsModel->updateCardPoints($MID, $redeemedPoints);                            
                             $playerPoints = $memberCardsModel->getMemberPointsAndStatus($cardNumber);
                             
                             //check if points is greater than or equal to 0
@@ -55,6 +310,7 @@ class Processing
                                 if($isActive['Status'] == 'Active') {
                                     //update raffle coupons
                                     $raffleCouponResults = $raffleCouponsModel->updateRaffleCouponsStatus($quantity, $lastInsertedID, $rewardItemID, $AID);
+                                    //$raffleCouponResults = $raffleCouponsModel->lockRaffleCoupons();
                                     if($raffleCouponResults['IsSuccess'] === true) {
                              
                                         //get details for serial code and coupon series for this reward e-coupon
@@ -73,7 +329,7 @@ class Processing
                                         $securityCode = Utilities::mt_rand_str(8);
 
                                         $isStatusUpdated = $couponRedemptionLogsModel->updateLogsStatus($lastInsertedID, 1, $MID, $redeemedPoints, $serialCode, $securityCode);
-                     
+                                       // var_dump($isStatusUpdated);
                                         if($isStatusUpdated > 0) {
      
                                             //if redemption is successful, build sessions for needed data and return an array of response.
@@ -84,6 +340,14 @@ class Processing
                                             $session['RewardOfferCopy']['CheckSum'] = $securityCode;
                                             $session['RewardOfferCopy']['SerialNumber'] = $serialCode;
                                             
+                                            
+
+//                                                    $transMsg = 'No Error, Transaction successful.';
+//                                                    $errorCode = 0;
+//                                                    $this->_sendResponse(200, CJSON::encode(CommonController::retMsg($module, $transMsg, $errorCode, $lastInsertedID, $oldCurrentPoints)));
+
+//                                            $resultArray = array('LastInsertedID' => $lastInsertedID, 'OldCurrentPoints' => $oldCurrentPoints);
+//                                            return $resultArray;
                                             $errMsg["Message"] = "Player Redemption: Transaction Successful.";
                                             $errMsg["LastInsertedID"] = $lastInsertedID;
                                             $errMsg["IsSuccess"] = true;
@@ -107,6 +371,7 @@ class Processing
                                             $errMsg["LastInsertedID"] = $lastInsertedID;
                                             $errMsg["IsSuccess"] = false;
                                             return $errMsg;
+       
                                         }
                                     }
                                     else {
@@ -114,6 +379,10 @@ class Processing
                                         //update coupon redemption logs status to 2 - Failed
                                         $isStatusUpdated = $couponRedemptionLogsModel->updateLogsStatus($lastInsertedID, 2, $MID, 0);
                                         
+//                                        $transMsg = 'Error in Locking.';
+//                                        $errorCode = 27;
+//                                        Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+//                                        $this->_sendResponse(200, CJSON::encode(CommonController::retMsg($module, $transMsg, $errorCode)));
                                         if($isStatusUpdated > 0) {
                                             switch ($raffleCouponResults["StatusCode"]) {
                                                 case 1:
@@ -192,10 +461,34 @@ class Processing
                                 if($isStatusUpdated > 0) {
                                     $errMsg["Message"] = "Failed in updating Card points. Card may have insufficient points.";
                                     $logger->log($logger->logdate, "[COUPON REDEMPTION ERROR] ", $errMsg["Message"]);
+//                                    $transMsg = 'Transaction failed. Card has insufficient points.';
+//                                    $errorCode = 24;
+//                                    Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+//                                    $this->_sendResponse(200, CJSON::encode(CommonController::retMsg($module, $transMsg, $errorCode)));
+//                                    $logMessage = 'Transaction failed. Card has insufficient points.';
+//                                    $logger->log($logger->logdate, " [REDEEMITEMS ERROR] ", $logMessage);
+//                                    $apiDetails = 'REDEEMITEMS-Failed: Card has insufficient points. CurrentPoints = '.$playerPoints['CurrentPoints'];
+//                                    $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $apiMethod.'-'.$cardNumber.'-'.$logger->logdate, $apiDetails, $lastInsertedID, 2);
+//                                    if($isInserted == 0) {
+//                                        $logMessage = "Failed to insert to APILogs.";
+//                                        $logger->log($logger->logdate, " [REDEEMITEMS ERROR] ", $logMessage);
+//                                    }
                                 }
                                 else {
                                     $errMsg["Message"] = "Pending Redemption. Failed in updating Card points. Card may have insufficient points.";
                                     $logger->log($logger->logdate, "[COUPON REDEMPTION ERROR] ", $errMsg["Message"]);
+//                                    $transMsg = 'Pending Redemption. Card has insufficient points.';
+//                                    $errorCode = 44;
+//                                    Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+//                                    $this->_sendResponse(200, CJSON::encode(CommonController::retMsg($module, $transMsg, $errorCode)));
+//                                    $logMessage = 'Pending Redemption. Card has insufficient points';
+//                                    $logger->log($logger->logdate, " [REDEEMITEMS ERROR] ", $logMessage);
+//                                    $apiDetails = 'REDEEMITEMS-Failed: Pending Redemption. Card has insufficient points. CurrenPoints = '.$playerPoints['CurrentPoints'];
+//                                    $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $apiMethod.'-'.$cardNumber.'-'.$logger->logdate, $apiDetails, $lastInsertedID, 2);
+//                                    if($isInserted == 0) {
+//                                        $logMessage = "Failed to insert to APILogs.";
+//                                        $logger->log($logger->logdate, " [REDEEMITEMS ERROR] ", $logMessage);
+//                                    }
                                 }
                                 $apiDetails = 'REDEEMITEMS-Failed: Pending Redemption. Card has insufficient points. CurrenPoints = '.$playerPoints['CurrentPoints'];
                                 $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $apiMethod.'-'.$cardNumber.'-'.$logger->logdate, $apiDetails, $lastInsertedID, 2);
@@ -212,15 +505,25 @@ class Processing
                             if($isStatusUpdated > 0) {
                                 $errMsg["Message"] = "Transaction Failed. Card may have insufficient points.";
                                 $logger->log($logger->logdate, "[COUPON REDEMPTION ERROR] ", $errMsg["Message"]);
+//                                $transMsg = 'Transaction failed. Card has insufficient points.';
+//                                $errorCode = 24;
+//                                Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+//                                $this->_sendResponse(200, CJSON::encode(CommonController::retMsg($module, $transMsg, $errorCode)));
+                                
                             }
                             else {
+//                                $transMsg = 'Pending Redemption. Card has insufficient points.';
+//                                $errorCode = 44;
+//                                Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+//                                $this->_sendResponse(200, CJSON::encode(CommonController::retMsg($module, $transMsg, $errorCode)));
                                 $errMsg["Message"] = "Pending Redemption. Card may have insufficient points.";
                                 $logger->log($logger->logdate, "[COUPON REDEMPTION ERROR] ", $errMsg["Message"]);
                             }
                             $errMsg["LastInsertedID"] = $lastInsertedID;
                             $errMsg["IsSuccess"] = false;
                             return $errMsg;
-                        }   
+                        }
+                       }
                     }
                     else {
                         //update couponredemptionlog status to 2 - Failed
@@ -274,6 +577,7 @@ class Processing
         $itemRedemptionLogsModel = new ItemRedemptionLogsModel();
         $apiLogsModel = new APILogsModel();
         $helpers = new Helpers();
+        $membersModel = new MembersModel();
         
         $AID = $MID;
         $totalPoints = $redeemedPoints/$quantity;
@@ -291,11 +595,329 @@ class Processing
                     //check item serial code availability
                     $availableSerialCode = $itemSerialCodesModel->getAvailableSerialCodeCount($rewardItemID, 1);
                     if(count($availableSerialCode) == 1) {
+                        $resultIsEwallet = $membersModel->checkIfEwallet($MID);
+                        $isEwallet = $resultIsEwallet['IsEwallet'];
+ 
+                        if($isEwallet == 1)
+                        {
+                            $pcwsWrapper = new PcwsWrapper();
+                            $result = $pcwsWrapper->getCompPoints($cardNumber, 1);
+                            if($result)
+                            {
+                                $playerPoints = $result['GetCompPoints']['CompBalance'];
+                                $oldCurrentPoints = (int)$playerPoints;
+                                if($oldCurrentPoints >= $totalPoints) {
+                                $isPointsUpdated = $memberCardsModel->updateCardPoints($MID, $totalPoints);
+                                $amt = $totalPoints;
+    
+                                $isPointsDeducted = $pcwsWrapper->deductCompPoints($cardNumber, $amt, '', 0);
+                                //$playerPoints = $memberCardsModel->getMemberPointsAndStatus($cardNumber);
+                                $playerPoints = $pcwsWrapper->getCompPoints($cardNumber, 0);
+                                $playerPoints = $playerPoints['GetCompPoints']['CompBalance'];
+                                $oldCurrentPoints = $playerPoints;
+                                if($isPointsUpdated > 0 && $oldCurrentPoints > 0 && $isPointsDeducted) {
+                                    $currentItemCount = $rewardItemsModel->getAvailableItemCount($rewardItemID);
+                                    if($currentItemCount['AvailableItemCount'] >= $itemQtyItr && $currentItemCount['AvailableItemCount'] != 0) {
+                                        $isItemCountUpdated = $rewardItemsModel->updateAvailableItemCount($rewardItemID, $AID);
+                                        if($isItemCountUpdated > 0) {
+                                            $isActive = $rewardItemsModel->checkStatus($rewardItemID); 
+                                            if($isActive['Status'] == 'Active') {
+                                                $isSerialCodeUpdated = $itemSerialCodesModel->updateSerialCodeStatus($AID, $rewardItemID);
+
+                                                if($isSerialCodeUpdated['IsSuccess'] === true) {
+                                                    $serialCodeSuffix = $isSerialCodeUpdated['StatusCode'];
+                                                    $serial = $rewardItemsModel->getSerialCodePrefix($rewardItemID);
+                                                    $partnerID = $serial['PartnerID'];
+                                                    $partnerItemID = $serial['PartnerItemID'];
+                                                    $serialCode = str_pad($partnerID, 2, "0", STR_PAD_LEFT).str_pad($partnerItemID, 2, "0", STR_PAD_LEFT).$serialCodeSuffix;
+                                                    $securityCode = Utilities::mt_rand_str(8);
+
+                                                    //calculate validity end date of the reward item
+                                                    $date = new DateTime($redeemedDate);
+                                                    $date->add(new DateInterval('P6M'));
+                                                    $validTo = $date->format('Y-m-d H:i:s.u');
+
+                                                    $isStatusUpdated = $itemRedemptionLogsModel->updateLogsStatus($lastInsertedID, 1, $MID, $totalPoints, $serialCode, $securityCode, $redeemedDate, $validTo);
+                                                    if($isStatusUpdated > 0) {
+                                                        $session['PreviousRedemption'] = $lastInsertedID;
+
+                                                        $session['RewardOfferCopy']['Quantity'] = 1;
+                                                        $session['RewardOfferCopy']['RedemptionDate'] = $redeemedDate;
+                                                        $session['RewardOfferCopy']['SecurityCode'][$itr] = $securityCode;
+                                                        $session['RewardOfferCopy']['SerialNumber'][$itr] = $serialCode;
+
+                                                        //var_dump($session['RewardOfferCopy']['SerialNumber']);
+                                                        //exit;
+                                                        //format valid until date
+                                                        $validDate = new DateTime(date($validTo));
+                                                        $validityDate = $validDate->format("F j, Y");
+                                                        $session['RewardOfferCopy']['ValidUntil'][$itr] = $validityDate;
+                                                        $errMsg['LastInsertedID'][$itr] = $lastInsertedID;
+                                                        $itemQtyItr--;
+                                                        if($itr < (int)$quantity)
+                                                            continue;
+                                                    }
+                                                    else {
+                                                        $errMsg["Message"] = "Pending Redemption. Error in updating redemption log.";
+                                                        $errMsg["HiddenMessage"] = "Pending Redemption. Error in updating redemption log. Processed By: $AID, Request By:  $MID, RewardItemID: $rewardItemID. ";
+                                                        $logger->log($logger->logdate, "[ITEM REDEMPTION ERROR] ", $errMsg["HiddenMessage"]."(".$errMsg.")");
+                                                        $errMsg["LastInsertedID"] = $lastInsertedID;
+                                                        $errMsg["IsSuccess"] = false;
+    //                                                    $logMessage = 'Transaction failed. Raffle coupons is either insufficient or unavailable.';
+    //                                                    $logger->log($logger->logdate, " [REDEEMITEMS ERROR] ", $logMessage);
+                                                        $apiDetails = 'REDEEMITEMS-UpdateLogsStatus-Failed: Updating logs status of itemredemptionlogs.';
+                                                        $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $apiMethod.'-'.$cardNumber.'-'.$logger->logdate, $apiDetails, $lastInsertedID, 2);
+                                                        if($isInserted == 0) {
+                                                            $logMessage = "Failed to insert to APILogs.";
+                                                            $logger->log($logger->logdate, " [REDEEMITEMS ERROR] ", $logMessage);
+                                                        }
+                                                        return $errMsg;
+                                                    }
+
+                                                }
+                                                else {
+                                                    //update itemredemptionlog status to 2 - failed
+                                                    $isStatusUpdated = $itemRedemptionLogsModel->updateLogsStatus($lastInsertedID, 2, $MID);
+                                                    if($isStatusUpdated > 0) {
+                                                        switch($isSerialCodeUpdated['StatusCode']) {
+                                                            case 1:
+                                                                $errMsg["Message"] = "Transaction Failed. [Err: 0001] Error in transactional table.";
+                                                                $errMsg["HiddenMessage"] = "Transaction Failed. Error in locking Item Serial Code table. Processed By: $AID, Request By:  $MID, RewardItemID: $rewardItemID, ".
+                                                                                "Total Quantity Requested: $quantity, Total no. of Item successfully redeemed: $processedItemQty";
+                                                                break;
+                                                            case 2:
+                                                                $errMsg["Message"] = "Transaction Failed. [Err: 0002] Error in transactional table.";
+                                                                $errMsg["HiddenMessage"] = "Transaction Failed. Error in unlocking Item Serial Code table. Processed By: $AID, Request By:  $MID, RewardItemID: $rewardItemID, ".
+                                                                                "Total Quantity Requested: $quantity, Total no. of Item successfully redeemed: $processedItemQty";
+                                                                break;
+                                                            case 3:
+                                                                $errMsg["Message"] = "Transaction Failed. [Err: 0003] Error in transactional table.";
+                                                                $errMsg["HiddenMessage"] = "Transaction Failed. Error in updating Item Serial Code table. Processed By: $AID, Request By:  $MID, RewardItemID: $rewardItemID, ".
+                                                                                "Total Quantity Requested: $quantity, Total no. of Item successfully redeemed: $processedItemQty";
+                                                                break;
+                                                            case 4:
+                                                                $errMsg["Message"] = "Transaction Failed. Serial Code is unavailable.";
+                                                                $errMsg["HiddenMessage"] = "Transaction Failed. Serial Code is unavailable. Processed By: $AID, Request By:  $MID, RewardItemID: $rewardItemID, ".
+                                                                                "Total Quantity Requested: $quantity, Total no. of Item successfully redeemed: $processedItemQty";
+                                                                break;
+                                                        }
+                                                        $logger->log($logger->logdate, "[ITEM REDEMPTION ERROR] ", $errMsg["Message"]);
+    //                                                    $logMessage = 'Transaction failed. Raffle coupons is either insufficient or unavailable.';
+    //                                                    $logger->log($logger->logdate, " [REDEEMITEMS ERROR] ", $logMessage);
+                                                        $apiDetails = 'REDEEMITEMS-Failed: '.$errMsg["HiddenMessage"];
+                                                        $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $apiMethod.'-'.$cardNumber.'-'.$logger->logdate, $apiDetails, $lastInsertedID, 2);
+                                                        if($isInserted == 0) {
+                                                            $logMessage = "Failed to insert to APILogs.";
+                                                            $logger->log($logger->logdate, " [REDEEMITEMS ERROR] ", $logMessage);
+                                                        }
+                                                    }
+                                                    else {
+                                                        switch ($isSerialCodeUpdated["StatusCode"]) 
+                                                        {
+                                                            case 1:
+                                                                $errMsg["Message"] = "Pending Redemption. [Err: 0001] Error in transactional table.";
+                                                                $errMsg["HiddenMessage"] = "Pending Redemption. Error in locking Item Serial Code table. Processed By: $AID, Request By:  $MID, RewardItemID: $rewardItemID, ".
+                                                                                "Total Quantity Requested: $quantity, Total no. of Item successfully redeemed: $processedItemQty";
+                                                                break;
+                                                            case 2:
+                                                                $errMsg["Message"] = "Pending Redemption. [Err: 0002] Error in transactional table.";
+                                                                $errMsg["HiddenMessage"] = "Pending Redemption. Error in unlocking Item Serial Code table. Processed By: $AID, Request By:  $MID, RewardItemID: $rewardItemID, ".
+                                                                                "Total Quantity Requested: $quantity, Total no. of Item successfully redeemed: $processedItemQty";
+                                                                break;
+                                                            case 3:
+                                                                $errMsg["Message"] = "Pending Redemption. [Err: 0003] Error in transactional table.";
+                                                                $errMsg["HiddenMessage"] = "Pending Redemption. Error in updating Item Serial Code table. Processed By: $AID, Request By:  $MID, RewardItemID: $rewardItemID, ".
+                                                                                "Total Quantity Requested: $quantity, Total no. of Item successfully redeemed: $processedItemQty";
+                                                                break;
+                                                            case 4:
+                                                                $errMsg["Message"] = "Pending Redemption. Serial Code is unavailable.";
+                                                                $errMsg["HiddenMessage"] = "Pending Redemption. Serial Code is unavailable. Processed By: $AID, Request By:  $MID, RewardItemID: $rewardItemID, ".
+                                                                                "Total Quantity Requested: $quantity, Total no. of Item successfully redeemed: $processedItemQty";
+                                                                break;
+                                                        }
+                                                        $logger->log($logger->logdate, "[ITEM REDEMPTION ERROR] ", $errMsg["Message"]);
+                                                        $apiDetails = 'REDEEMITEMS-Failed: '.$errMsg["HiddenMessage"];
+                                                        $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $apiMethod.'-'.$cardNumber.'-'.$logger->logdate, $apiDetails, $lastInsertedID, 2);
+                                                        if($isInserted == 0) {
+                                                            $logMessage = "Failed to insert to APILogs.";
+                                                            $logger->log($logger->logdate, " [REDEEMITEMS ERROR] ", $logMessage);
+                                                        }
+                                                    }
+                                                    $errMsg["LastInsertedID"] = $lastInsertedID;
+                                                    $errMsg["IsSuccess"] = false;
+                                                    return $errMsg;
+                                                }
+                                            } else {
+                                                if($isActive['Status'] != 'Active' && $isActive['Status'] != 'Deleted') {
+                                                    $errMsg["Message"] = "Transaction Failed. The Item you try to redeem is currently ".$isActive["Status"].".";
+                                                    $errMsg["HiddenMessage"] = "Transaction Failed. The Item you try to redeem is currently ".$isActive["Status"]." Processed By: $AID, Request By:  $MID, RewardItemID: $rewardItemID, ".
+                                                                                "Total Quantity Requested: $quantity, Total no. of Item successfully redeemed: $processedItemQty";
+                                                    //$logger->log($logger->logdate, "[ITEM REDEMPTION ERROR] ", $errMsg["HiddenMessage"]);
+                                                    //App::ClearStatus();
+                                                    $errMsg["LastInsertedID"] = $lastInsertedID;
+                                                    $errMsg["IsSuccess"] = false;
+                                                    $logger->log($logger->logdate, "[ITEM REDEMPTION ERROR] ", $errMsg["Message"]);
+                                                    $apiDetails = 'REDEEMITEMS-Failed: '.$errMsg["HiddenMessage"];
+                                                    $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $apiMethod.'-'.$cardNumber.'-'.$logger->logdate, $apiDetails, $lastInsertedID, 2);
+                                                    if($isInserted == 0) {
+                                                        $logMessage = "Failed to insert to APILogs.";
+                                                        $logger->log($logger->logdate, " [REDEEMITEMS ERROR] ", $logMessage);
+                                                    }
+                                                    return $errMsg;
+                                                } else {
+                                                    $errMsg["Message"] = "Transaction Failed. This Reward Item  no longer exists.";
+                                                    $errMsg["HiddenMessage"] = "Transaction Failed. This Reward Item  no longer exists. Processed By: $AID, Request By:  $MID, RewardItemID: $rewardItemID, ".
+                                                                                "Total Quantity Requested: $quantity, Total no. of Item successfully redeemed: $processedItemQty";
+                                                    //$logger->log($logger->logdate, "[ITEM REDEMPTION ERROR] ", $errMsg["HiddenMessage"]);
+                                                    //App::ClearStatus();
+                                                    $errMsg["LastInsertedID"] = $lastInsertedID;
+                                                    $errMsg["IsSuccess"] = false;
+                                                    $logger->log($logger->logdate, "[ITEM REDEMPTION ERROR] ", $errMsg["Message"]);
+                                                    $apiDetails = 'REDEEMITEMS-Failed: '.$errMsg["HiddenMessage"];
+                                                    $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $apiMethod.'-'.$cardNumber.'-'.$logger->logdate, $apiDetails, $lastInsertedID, 2);
+                                                    if($isInserted == 0) {
+                                                        $logMessage = "Failed to insert to APILogs.";
+                                                        $logger->log($logger->logdate, " [REDEEMITEMS ERROR] ", $logMessage);
+                                                    }
+                                                    return $errMsg;
+                                                }
+                                            }
+                                        } else {
+                                            //update itemredemptionlog status to 2 - Failed
+                                            $isStatusUpdated = $itemRedemptionLogsModel->updateLogsStatus($lastInsertedID, 2, $MID);
+                                            if($isStatusUpdated > 0) {
+
+                                                $errMsg["Message"] = "Transaction Failed. Failed in updating item inventory.";
+                                                $errMsg["HiddenMessage"] = "Transaction Failed. Failed in updating item inventory. Processed By: $AID, Request By:  $MID, RewardItemID: $rewardItemID, ".
+                                                                                "Total Quantity Requested: $quantity, Total no. of Item successfully redeemed: $processedItemQty";
+                                                $logger->log($logger->logdate, "[ITEM REDEMPTION ERROR] ", $errMsg["Message"]);
+                                                $apiDetails = 'REDEEMITEMS-Failed: '.$errMsg["HiddenMessage"];
+                                                $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $apiMethod.'-'.$cardNumber.'-'.$logger->logdate, $apiDetails, $lastInsertedID, 2);
+                                                if($isInserted == 0) {
+                                                    $logMessage = "Failed to insert to APILogs.";
+                                                    $logger->log($logger->logdate, " [REDEEMITEMS ERROR] ", $logMessage);
+                                                }
+                                            } else {
+
+                                                $errMsg["Message"] = "Pending Redemption. Failed in updating item inventory.";
+                                                $errMsg["HiddenMessage"] = "Pending Redemption. Failed in updating item inventory. Processed By: $AID, Request By:  $MID, RewardItemID: $rewardItemID, ".
+                                                                                "Total Quantity Requested: $quantity, Total no. of Item successfully redeemed: $processedItemQty";
+                                                $logger->log($logger->logdate, "[ITEM REDEMPTION ERROR] ", $errMsg["Message"]);
+                                                $apiDetails = 'REDEEMITEMS-Failed: '.$errMsg["HiddenMessage"];
+                                                $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $apiMethod.'-'.$cardNumber.'-'.$logger->logdate, $apiDetails, $lastInsertedID, 2);
+                                                if($isInserted == 0) {
+                                                    $logMessage = "Failed to insert to APILogs.";
+                                                    $logger->log($logger->logdate, " [REDEEMITEMS ERROR] ", $logMessage);
+                                                }
+                                            }
+                                            $errMsg["LastInsertedID"] = $lastInsertedID;
+                                            $errMsg["IsSuccess"] = false;
+                                            return $errMsg;
+                                        }
+                                    } else {
+                                        //update itemredemptionlog status to 2 - Failed
+                                        $isStatusUpdated = $itemRedemptionLogsModel->updateLogsStatus($lastInsertedID, 2, $MID);
+                                        if($isStatusUpdated > 0) {
+                                            $errMsg["Message"] = "Transaction Failed. Number of available item is insufficient.";
+                                            $errMsg["HiddenMessage"] = "Transaction Failed. Number of available item is insufficient. Processed By: $AID, Request By:  $MID, RewardItemID: $rewardItemID, ".
+                                                                                "Total Quantity Requested: $quantity, Total no. of Item successfully redeemed: $processedItemQty";
+                                            $logger->log($logger->logdate, "[ITEM REDEMPTION ERROR] ", $errMsg["Message"]);
+                                            $apiDetails = 'REDEEMITEMS-Failed: '.$errMsg["HiddenMessage"];
+                                            $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $apiMethod.'-'.$cardNumber.'-'.$logger->logdate, $apiDetails, $lastInsertedID, 2);
+                                            if($isInserted == 0) {
+                                                $logMessage = "Failed to insert to APILogs.";
+                                                $logger->log($logger->logdate, " [REDEEMITEMS ERROR] ", $logMessage);
+                                            }
+                                        }
+                                        else {
+                                            if($quantity == $itemQtyItr){
+                                                $errMsg["Message"] = "Transaction Failed. Number of available item is insufficient.";
+                                                $errMsg["HiddenMessage"] = "Transaction Failed. Number of available item is insufficient. Processed By: $AID, Request By:  $MID, RewardItemID: $rewardItemID, ".
+                                                                                "Total Quantity Requested: $quantity, Total no. of Item successfully redeemed: $processedItemQty";
+                                            } else {
+                                                $errMsg["Message"] = "Pending Redemption. Number of available item is insufficient. Total no. of Item successfully redeemed: ".$processedItemQtyInWord." (".$processedItemQty.")";
+                                                $errMsg["HiddenMessage"] = "Pending Redemption. Number of available item is insufficient. Processed By: $AID, Request By:  $MID, RewardItemID: $rewardItemID, ".
+                                                                                "Total Quantity Requested: $quantity, Total no. of Item successfully redeemed: $processedItemQty";
+                                            }
+                                            $logger->log($logger->logdate, "[ITEM REDEMPTION ERROR] ", $errMsg["Message"]);
+                                            $apiDetails = 'REDEEMITEMS-Failed: '.$errMsg["HiddenMessage"];
+                                            $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $apiMethod.'-'.$cardNumber.'-'.$logger->logdate, $apiDetails, $lastInsertedID, 2);
+                                            if($isInserted == 0) {
+                                                $logMessage = "Failed to insert to APILogs.";
+                                                $logger->log($logger->logdate, " [REDEEMITEMS ERROR] ", $logMessage);
+                                            }
+                                        }
+                                        $errMsg["LastInsertedID"] = $lastInsertedID;
+                                        $errMsg["IsSuccess"] = false;
+                                        return $errMsg;
+                                        }
+                                    }
+                                    else {
+                                        //update itemredemptionlog status to 2 - Failed
+                                        $isStatusUpdated = $itemRedemptionLogsModel->updateLogsStatus($lastInsertedID, 2, $MID);
+                                        if($isStatusUpdated > 0) {
+                                            $errMsg["Message"] = "Failed in updating Card points. Card may have insufficient points.";
+                                            $errMsg["HiddenMessage"] = "Failed in updating Card points. Card may have insufficient points. Processed By: $AID, Request By:  $MID, RewardItemID: $rewardItemID, ".
+                                                                                    "Total Quantity Requested: $quantity, Total no. of Item successfully redeemed: $processedItemQty";
+                                            $logger->log($logger->logdate, "[ITEM REDEMPTION ERROR] ", $errMsg["Message"]);
+                                        } else {
+                                            $errMsg["Message"] = "Pending Redemption. Failed in updating Card points. Card may have insufficient points";
+                                            $errMsg["HiddenMessage"] = "Pending Redemption. Failed in updating Card points. Card may have insufficient points. Processed By: $AID, Request By:  $MID, RewardItemID: $rewardItemID, ".
+                                                                                    "Total Quantity Requested: $quantity, Total no. of Item successfully redeemed: $processedItemQty";
+                                            $logger->log($logger->logdate, "[ITEM REDEMPTION ERROR] ", $errMsg["Message"]);
+                                        }
+                                        $apiDetails = 'REDEEMITEMS-Failed: '.$errMsg["HiddenMessage"];
+                                        $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $apiMethod.'-'.$cardNumber.'-'.$logger->logdate, $apiDetails, $lastInsertedID, 2);
+                                        if($isInserted == 0) {
+                                            $logMessage = "Failed to insert to APILogs.";
+                                            $logger->log($logger->logdate, " [REDEEMITEMS ERROR] ", $logMessage);
+                                        }
+                                        $errMsg["LastInsertedID"] = $lastInsertedID;
+                                        $errMsg["IsSuccess"] = false;
+                                        return $errMsg;
+                                   }
+                                }
+                                else {
+                                   //update itemredemptionlog status to 2 - Failed
+                                   $isStatusUpdated = $itemRedemptionLogsModel->updateLogsStatus($lastInsertedID, 2, $MID);
+                                   if($isStatusUpdated > 0) {
+                                       $errMsg["Message"] = "Transaction Failed. Card may have insufficient points.";
+                                        $errMsg["HiddenMessage"] = "Transaction Failed. Card may have insufficient points. Processed By: $AID, Request By:  $MID, RewardItemID: $rewardItemID, ".
+                                                                                    "Total Quantity Requested: $quantity, Total no. of Item successfully redeemed: $processedItemQty";
+                                        $logger->log($logger->logdate, "[ITEM REDEMPTION ERROR] ", $errMsg["Message"]);
+                                    } else {
+                                        $errMsg["Message"] = "Pending Redemption. Card may have insufficient points.";
+                                        $errMsg["HiddenMessage"] = "Pending Redemption. Card may have insufficient points. Processed By: $AID, Request By:  $MID, RewardItemID: $rewardItemID, ".
+                                                                                    "Total Quantity Requested: $quantity, Total no. of Item successfully redeemed: $processedItemQty";
+                                        $logger->log($logger->logdate, "[ITEM REDEMPTION ERROR] ", $errMsg["Message"]);
+                                    }
+                                    $apiDetails = 'REDEEMITEMS-Failed: '.$errMsg["HiddenMessage"];
+                                    $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $apiMethod.'-'.$cardNumber.'-'.$logger->logdate, $apiDetails, $lastInsertedID, 2);
+                                    if($isInserted == 0) {
+                                        $logMessage = "Failed to insert to APILogs.";
+                                        $logger->log($logger->logdate, " [REDEEMITEMS ERROR] ", $logMessage);
+                                    }
+                                    $errMsg["LastInsertedID"] = $lastInsertedID;
+                                    $errMsg["IsSuccess"] = false;
+                                    return $errMsg;
+                                }
+                            }
+                            else
+                            {
+                                $errMsg["Message"] = "Cannot access PCWS API.";
+                                $logger->log($logger->logdate, "[ITEM REDEMPTION ERROR] ", $errMsg["Message"]);
+                                $errMsg["IsSuccess"] = false;
+                                return $errMsg;
+                            }
+                        }
+                        else
+                        {
                         $playerPoints = $memberCardsModel->getMemberPointsAndStatus($cardNumber);
                         $oldCurrentPoints = $playerPoints['CurrentPoints'];
                         if($playerPoints['CurrentPoints'] >= $totalPoints) {
                             $isPointsUpdated = $memberCardsModel->updateCardPoints($MID, $totalPoints);
                             $playerPoints = $memberCardsModel->getMemberPointsAndStatus($cardNumber);
+                            $oldCurrentPoints = $playerPoints['CurrentPoints'];
                             if($isPointsUpdated > 0 && $playerPoints['CurrentPoints'] > 0) {
                                 $currentItemCount = $rewardItemsModel->getAvailableItemCount($rewardItemID);
                                 if($currentItemCount['AvailableItemCount'] >= $itemQtyItr && $currentItemCount['AvailableItemCount'] != 0) {
@@ -327,6 +949,8 @@ class Processing
                                                     $session['RewardOfferCopy']['SecurityCode'][$itr] = $securityCode;
                                                     $session['RewardOfferCopy']['SerialNumber'][$itr] = $serialCode;
                                                     
+                                                    //var_dump($session['RewardOfferCopy']['SerialNumber']);
+                                                    //exit;
                                                     //format valid until date
                                                     $validDate = new DateTime(date($validTo));
                                                     $validityDate = $validDate->format("F j, Y");
@@ -342,6 +966,8 @@ class Processing
                                                     $logger->log($logger->logdate, "[ITEM REDEMPTION ERROR] ", $errMsg["HiddenMessage"]."(".$errMsg.")");
                                                     $errMsg["LastInsertedID"] = $lastInsertedID;
                                                     $errMsg["IsSuccess"] = false;
+//                                                    $logMessage = 'Transaction failed. Raffle coupons is either insufficient or unavailable.';
+//                                                    $logger->log($logger->logdate, " [REDEEMITEMS ERROR] ", $logMessage);
                                                     $apiDetails = 'REDEEMITEMS-UpdateLogsStatus-Failed: Updating logs status of itemredemptionlogs.';
                                                     $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $apiMethod.'-'.$cardNumber.'-'.$logger->logdate, $apiDetails, $lastInsertedID, 2);
                                                     if($isInserted == 0) {
@@ -379,6 +1005,8 @@ class Processing
                                                             break;
                                                     }
                                                     $logger->log($logger->logdate, "[ITEM REDEMPTION ERROR] ", $errMsg["Message"]);
+//                                                    $logMessage = 'Transaction failed. Raffle coupons is either insufficient or unavailable.';
+//                                                    $logger->log($logger->logdate, " [REDEEMITEMS ERROR] ", $logMessage);
                                                     $apiDetails = 'REDEEMITEMS-Failed: '.$errMsg["HiddenMessage"];
                                                     $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $apiMethod.'-'.$cardNumber.'-'.$logger->logdate, $apiDetails, $lastInsertedID, 2);
                                                     if($isInserted == 0) {
@@ -427,6 +1055,8 @@ class Processing
                                                 $errMsg["Message"] = "Transaction Failed. The Item you try to redeem is currently ".$isActive["Status"].".";
                                                 $errMsg["HiddenMessage"] = "Transaction Failed. The Item you try to redeem is currently ".$isActive["Status"]." Processed By: $AID, Request By:  $MID, RewardItemID: $rewardItemID, ".
                                                                             "Total Quantity Requested: $quantity, Total no. of Item successfully redeemed: $processedItemQty";
+                                                //$logger->log($logger->logdate, "[ITEM REDEMPTION ERROR] ", $errMsg["HiddenMessage"]);
+                                                //App::ClearStatus();
                                                 $errMsg["LastInsertedID"] = $lastInsertedID;
                                                 $errMsg["IsSuccess"] = false;
                                                 $logger->log($logger->logdate, "[ITEM REDEMPTION ERROR] ", $errMsg["Message"]);
@@ -441,6 +1071,8 @@ class Processing
                                                 $errMsg["Message"] = "Transaction Failed. This Reward Item  no longer exists.";
                                                 $errMsg["HiddenMessage"] = "Transaction Failed. This Reward Item  no longer exists. Processed By: $AID, Request By:  $MID, RewardItemID: $rewardItemID, ".
                                                                             "Total Quantity Requested: $quantity, Total no. of Item successfully redeemed: $processedItemQty";
+                                                //$logger->log($logger->logdate, "[ITEM REDEMPTION ERROR] ", $errMsg["HiddenMessage"]);
+                                                //App::ClearStatus();
                                                 $errMsg["LastInsertedID"] = $lastInsertedID;
                                                 $errMsg["IsSuccess"] = false;
                                                 $logger->log($logger->logdate, "[ITEM REDEMPTION ERROR] ", $errMsg["Message"]);
@@ -457,6 +1089,7 @@ class Processing
                                         //update itemredemptionlog status to 2 - Failed
                                         $isStatusUpdated = $itemRedemptionLogsModel->updateLogsStatus($lastInsertedID, 2, $MID);
                                         if($isStatusUpdated > 0) {
+                                           
                                             $errMsg["Message"] = "Transaction Failed. Failed in updating item inventory.";
                                             $errMsg["HiddenMessage"] = "Transaction Failed. Failed in updating item inventory. Processed By: $AID, Request By:  $MID, RewardItemID: $rewardItemID, ".
                                                                             "Total Quantity Requested: $quantity, Total no. of Item successfully redeemed: $processedItemQty";
@@ -468,6 +1101,7 @@ class Processing
                                                 $logger->log($logger->logdate, " [REDEEMITEMS ERROR] ", $logMessage);
                                             }
                                         } else {
+                               
                                             $errMsg["Message"] = "Pending Redemption. Failed in updating item inventory.";
                                             $errMsg["HiddenMessage"] = "Pending Redemption. Failed in updating item inventory. Processed By: $AID, Request By:  $MID, RewardItemID: $rewardItemID, ".
                                                                             "Total Quantity Requested: $quantity, Total no. of Item successfully redeemed: $processedItemQty";
@@ -569,7 +1203,9 @@ class Processing
                                 $errMsg["LastInsertedID"] = $lastInsertedID;
                                 $errMsg["IsSuccess"] = false;
                                 return $errMsg;
-                            }       
+                            }
+                            }
+                                
                         }
                         else {
                             //update itemredemptionlog status to 2 - failed
