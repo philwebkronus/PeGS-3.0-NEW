@@ -2710,92 +2710,203 @@ class MPapiController extends Controller {
                 //start of declaration of models to be used
                 $memberCardsModel = new MemberCardsModel();
                 $auditTrailModel = new AuditTrailModel();
-//                $pcwsWrapper = new PcwsWrapper();
-//
-//                $result = $pcwsWrapper->getCompPoints($cardNumber, 1);
-//                if ($result) {
-//                    $currentPoints = $result['GetCompPoints']['CompBalance'];
-//                } else {
-//                    $transMsg = "Cannot access PCWS API.";
-//                    $errorCode = 120;
-//                    Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
-//                    $data = CommonController::retMsgCheckPoints($module, '', '', $errorCode, $transMsg);
-//                    $message = "[" . $module . "] Output: " . CJSON::encode($data);
-//                    $appLogger->log($appLogger->logdate, "[response]", $message);
-//                    $this->_sendResponse(200, CJSON::encode($data));
-//                    $logMessage = 'Cannot access PCWS API.';
-//                    $logger->log($logger->logdate, "[CHECKPOINTS ERROR]: " . $cardNumber . " || ", $logMessage);
-//                    $apiDetails = 'CHECKPOINTS-Failed: Cannot access PCWS API. Card Number = ' . $cardNumber;
-//                    $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
-//                    if ($isInserted == 0) {
-//                        $logMessage = "Failed to insert to APILogs.";
-//                        $logger->log($logger->logdate, "[CHECKPOINTS ERROR]: " . $cardNumber . " || ", $logMessage);
-//                    }
-//
-//                    exit;
-//                }
+                $membersModel = new MembersModel();
+                
+                $resultMID = $memberCardsModel->getMIDUsingCard($cardNumber);
+                if($resultMID)
+                {
+                    $MID = $resultMID['MID'];
+                    $resultIsEwallet = $membersModel->checkIfEwallet($MID);
+                    $isEwallet = $resultIsEwallet['IsEwallet'];
+                    if($isEwallet == 1)
+                    {
+                        $pcwsWrapper = new PcwsWrapper();
 
-                $memberPoints = $memberCardsModel->getMemberPointsAndStatus($cardNumber);
-                $memberDetails = $memberCardsModel->getMemberDetailsByCard($cardNumber);
-                if (!empty($memberDetails))
-                    $MID = $memberDetails['MID'];
-                else
-                    $MID = 0;
-                if (!empty($memberDetails)) {
- 		    $currentPoints = $memberDetails['CurrentPoints'];
-                    $status = $memberDetails['Status'];
-                    switch ($status) {
-                        case 0: $message = 'Card is Inactive';
-                            break;
-                        case 1: $message = $currentPoints;
-                            break;
-                        case 5: $message = $currentPoints;
-                            break;
-                        case 2: $message = 'Card is Deactivated';
-                            break;
-                        case 7: $message = 'Card is Newly Migrated.';
-                            break;
-                        case 8: $message = 'Card is Temporarily Migrated';
-                            break;
-                        case 9: $message = 'Card is Banned';
-                            break;
-                        default: $message = 'Card is Invalid';
-                            break;
+                        $result = $pcwsWrapper->getCompPoints($cardNumber, 1);
+                        if ($result) {
+                            $currentPoints = $result['GetCompPoints']['CompBalance'];
+                            $memberPoints = $memberCardsModel->getMemberPointsAndStatus($cardNumber);
+                            $memberDetails = $memberCardsModel->getMemberDetailsByCard($cardNumber);
+//                            if (!empty($memberDetails))
+//                                $MID = $memberDetails['MID'];
+//                            else
+//                                $MID = 0;
+                            if (!empty($memberDetails)) {
+                                //$currentPoints = $memberDetails['CurrentPoints'];
+                                $status = $memberDetails['Status'];
+                                switch ($status) {
+                                    case 0: $message = 'Card is Inactive';
+                                        break;
+                                    case 1: $message = $currentPoints;
+                                        break;
+                                    case 5: $message = $currentPoints;
+                                        break;
+                                    case 2: $message = 'Card is Deactivated';
+                                        break;
+                                    case 7: $message = 'Card is Newly Migrated.';
+                                        break;
+                                    case 8: $message = 'Card is Temporarily Migrated';
+                                        break;
+                                    case 9: $message = 'Card is Banned';
+                                        break;
+                                    default: $message = 'Card is Invalid';
+                                        break;
+                                }
+                                $isSuccessful = $auditTrailModel->logEvent(AuditTrailModel::API_CHECK_POINTS, 'CardNumber: ' . $cardNumber, array('MID' => $MID, 'SessionID' => ''));
+                                if ($isSuccessful == 0) {
+                                    $logMessage = "Failed to insert to Audittrail.";
+                                    $logger->log($logger->logdate, "[CHECKPOINTS ERROR]: " . $cardNumber . " || ", $logMessage);
+                                }
+                                $transMsg = $message;
+                                if ($status == 1 || $status == 5)
+                                    $errorCode = 0;
+                                else if ($status == 0)
+                                    $errorCode = 6;
+                                else if ($status == 2)
+                                    $errorCode = 11;
+                                else if ($status == 7)
+                                    $errorCode = 7;
+                                else if ($status == 8)
+                                    $errorCode = 8;
+                                else if ($status == 9)
+                                    $errorCode = 9;
+                                else
+                                    $errorCode = 10;
+                                $data = CommonController::retMsgCheckPoints($module, $currentPoints, $cardNumber, $errorCode, $transMsg);
+                                $message = "[" . $module . "] Output: " . CJSON::encode($data);
+                                $appLogger->log($appLogger->logdate, "[response]", $message);
+                                $this->_sendResponse(200, CJSON::encode($data));
+                                $logMessage = 'Check Points is successful.';
+                                $logger->log($logger->logdate, "[CHECKPOINTS SUCCESSFUL]: " . $cardNumber . " || ", $logMessage);
+                                $apiDetails = 'CHECKPOINTS-Successful: MID = ' . $MID;
+                                $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
+                                if ($isInserted == 0) {
+                                    $logMessage = "Failed to insert to APILogs.";
+                                    $logger->log($logger->logdate, "[CHECKPOINTS ERROR]: " . $cardNumber . " || ", $logMessage);
+                                }
+                                exit;
+                            } else {
+                                $transMsg = "Card is Invalid.";
+                                $errorCode = 10;
+                                Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                                $data = CommonController::retMsgCheckPoints($module, '', '', $errorCode, $transMsg);
+                                $message = "[" . $module . "] Output: " . CJSON::encode($data);
+                                $appLogger->log($appLogger->logdate, "[response]", $message);
+                                $this->_sendResponse(200, CJSON::encode($data));
+                                $logMessage = 'Card is Invalid.';
+                                $logger->log($logger->logdate, "[CHECKPOINTS ERROR]: " . $cardNumber . " || ", $logMessage);
+                                $apiDetails = 'CHECKPOINTS-Failed: Membership card is invalid. Card Number = ' . $cardNumber;
+                                $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
+                                if ($isInserted == 0) {
+                                    $logMessage = "Failed to insert to APILogs.";
+                                    $logger->log($logger->logdate, "[CHECKPOINTS ERROR]: " . $cardNumber . " || ", $logMessage);
+                                }
+                                exit;
+                            }
+                        } else {
+                            $transMsg = "Cannot access PCWS API.";
+                            $errorCode = 120;
+                            Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                            $data = CommonController::retMsgCheckPoints($module, '', '', $errorCode, $transMsg);
+                            $message = "[" . $module . "] Output: " . CJSON::encode($data);
+                            $appLogger->log($appLogger->logdate, "[response]", $message);
+                            $this->_sendResponse(200, CJSON::encode($data));
+                            $logMessage = 'Cannot access PCWS API.';
+                            $logger->log($logger->logdate, "[CHECKPOINTS ERROR]: " . $cardNumber . " || ", $logMessage);
+                            $apiDetails = 'CHECKPOINTS-Failed: Cannot access PCWS API. Card Number = ' . $cardNumber;
+                            $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
+                            if ($isInserted == 0) {
+                                $logMessage = "Failed to insert to APILogs.";
+                                $logger->log($logger->logdate, "[CHECKPOINTS ERROR]: " . $cardNumber . " || ", $logMessage);
+                            }
+
+                            exit;
+                        }
                     }
-                    $isSuccessful = $auditTrailModel->logEvent(AuditTrailModel::API_CHECK_POINTS, 'CardNumber: ' . $cardNumber, array('MID' => $MID, 'SessionID' => ''));
-                    if ($isSuccessful == 0) {
-                        $logMessage = "Failed to insert to Audittrail.";
-                        $logger->log($logger->logdate, "[CHECKPOINTS ERROR]: " . $cardNumber . " || ", $logMessage);
-                    }
-                    $transMsg = $message;
-                    if ($status == 1 || $status == 5)
-                        $errorCode = 0;
-                    else if ($status == 0)
-                        $errorCode = 6;
-                    else if ($status == 2)
-                        $errorCode = 11;
-                    else if ($status == 7)
-                        $errorCode = 7;
-                    else if ($status == 8)
-                        $errorCode = 8;
-                    else if ($status == 9)
-                        $errorCode = 9;
                     else
-                        $errorCode = 10;
-                    $data = CommonController::retMsgCheckPoints($module, $currentPoints, $cardNumber, $errorCode, $transMsg);
-                    $message = "[" . $module . "] Output: " . CJSON::encode($data);
-                    $appLogger->log($appLogger->logdate, "[response]", $message);
-                    $this->_sendResponse(200, CJSON::encode($data));
-                    $logMessage = 'Check Points is successful.';
-                    $logger->log($logger->logdate, "[CHECKPOINTS SUCCESSFUL]: " . $cardNumber . " || ", $logMessage);
-                    $apiDetails = 'CHECKPOINTS-Successful: MID = ' . $MID;
-                    $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
-                    if ($isInserted == 0) {
-                        $logMessage = "Failed to insert to APILogs.";
-                        $logger->log($logger->logdate, "[CHECKPOINTS ERROR]: " . $cardNumber . " || ", $logMessage);
+                    {
+                        $memberPoints = $memberCardsModel->getMemberPointsAndStatus($cardNumber);
+                        $memberDetails = $memberCardsModel->getMemberDetailsByCard($cardNumber);
+//                        if (!empty($memberDetails))
+//                            $MID = $memberDetails['MID'];
+//                        else
+//                            $MID = 0;
+                        if (!empty($memberDetails)) {
+                            $currentPoints = $memberDetails['CurrentPoints'];
+                            $status = $memberDetails['Status'];
+                            switch ($status) {
+                                case 0: $message = 'Card is Inactive';
+                                    break;
+                                case 1: $message = $currentPoints;
+                                    break;
+                                case 5: $message = $currentPoints;
+                                    break;
+                                case 2: $message = 'Card is Deactivated';
+                                    break;
+                                case 7: $message = 'Card is Newly Migrated.';
+                                    break;
+                                case 8: $message = 'Card is Temporarily Migrated';
+                                    break;
+                                case 9: $message = 'Card is Banned';
+                                    break;
+                                default: $message = 'Card is Invalid';
+                                    break;
+                            }
+                            $isSuccessful = $auditTrailModel->logEvent(AuditTrailModel::API_CHECK_POINTS, 'CardNumber: ' . $cardNumber, array('MID' => $MID, 'SessionID' => ''));
+                            if ($isSuccessful == 0) {
+                                $logMessage = "Failed to insert to Audittrail.";
+                                $logger->log($logger->logdate, "[CHECKPOINTS ERROR]: " . $cardNumber . " || ", $logMessage);
+                            }
+                            $transMsg = $message;
+                            if ($status == 1 || $status == 5)
+                                $errorCode = 0;
+                            else if ($status == 0)
+                                $errorCode = 6;
+                            else if ($status == 2)
+                                $errorCode = 11;
+                            else if ($status == 7)
+                                $errorCode = 7;
+                            else if ($status == 8)
+                                $errorCode = 8;
+                            else if ($status == 9)
+                                $errorCode = 9;
+                            else
+                                $errorCode = 10;
+                            $data = CommonController::retMsgCheckPoints($module, $currentPoints, $cardNumber, $errorCode, $transMsg);
+                            $message = "[" . $module . "] Output: " . CJSON::encode($data);
+                            $appLogger->log($appLogger->logdate, "[response]", $message);
+                            $this->_sendResponse(200, CJSON::encode($data));
+                            $logMessage = 'Check Points is successful.';
+                            $logger->log($logger->logdate, "[CHECKPOINTS SUCCESSFUL]: " . $cardNumber . " || ", $logMessage);
+                            $apiDetails = 'CHECKPOINTS-Successful: MID = ' . $MID;
+                            $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
+                            if ($isInserted == 0) {
+                                $logMessage = "Failed to insert to APILogs.";
+                                $logger->log($logger->logdate, "[CHECKPOINTS ERROR]: " . $cardNumber . " || ", $logMessage);
+                            }
+                            exit;
+                        } else {
+                            $transMsg = "Card is Invalid.";
+                            $errorCode = 10;
+                            Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                            $data = CommonController::retMsgCheckPoints($module, '', '', $errorCode, $transMsg);
+                            $message = "[" . $module . "] Output: " . CJSON::encode($data);
+                            $appLogger->log($appLogger->logdate, "[response]", $message);
+                            $this->_sendResponse(200, CJSON::encode($data));
+                            $logMessage = 'Card is Invalid.';
+                            $logger->log($logger->logdate, "[CHECKPOINTS ERROR]: " . $cardNumber . " || ", $logMessage);
+                            $apiDetails = 'CHECKPOINTS-Failed: Membership card is invalid. Card Number = ' . $cardNumber;
+                            $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
+                            if ($isInserted == 0) {
+                                $logMessage = "Failed to insert to APILogs.";
+                                $logger->log($logger->logdate, "[CHECKPOINTS ERROR]: " . $cardNumber . " || ", $logMessage);
+                            }
+                            exit;
+                        }
                     }
-                    exit;
-                } else {
+                }
+                else 
+                {
                     $transMsg = "Card is Invalid.";
                     $errorCode = 10;
                     Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
@@ -3036,7 +3147,11 @@ class MPapiController extends Controller {
                     }
                     $transMsg = 'No Error, Transaction successful.';
                     $errorCode = 0;
-                    $this->_sendResponse(200, CJSON::encode(CommonController::retMsgListItems($module, $items, $errorCode, $transMsg)));
+                    $data = CommonController::retMsgListItems($module, $items, $errorCode, $transMsg);
+                    $message = "[" . $module . "] Output: " . CJSON::encode($data);
+                    $appLogger->log($appLogger->logdate, "[response]", $message);
+                    $this->_sendResponse(200, CJSON::encode($data));
+                    //$this->_sendResponse(200, CJSON::encode(CommonController::retMsgListItems($module, $items, $errorCode, $transMsg)));
                     $logMessage = 'List Items is successful.';
                     $logger->log($logger->logdate, "[LISTITEMS SUCCESSFUL]: MID " . $MID . " || ", $logMessage);
                     $apiDetails = 'LISTITEMS-Successful: MID = ' . $MID;
@@ -3208,6 +3323,7 @@ class MPapiController extends Controller {
                 $itemSerialCodesModel = new ItemSerialCodesModel();
                 $refPartnersModel = new Ref_PartnersModel();
                 $helpers = new Helpers();
+                $membersModel = new MembersModel();
                 //$pcwsWrapper = new PcwsWrapper();
 
                 if ($rewardID == 1) {
@@ -3285,30 +3401,40 @@ class MPapiController extends Controller {
                 if (count($isExist) > 0) {
                     $refID = $cardNumber . ';' . $rewardID . ';' . $rewardItemID . ';' . $quantity;
                     if ($source == 3) {
-                        //$result = $pcwsWrapper->getCompPoints($cardNumber, 1);
-                        $result = $memberCardsModel->getMemberPointsAndStatus($cardNumber);
-                        $currentPoints = $result['CurrentPoints'];
-//                        if ($result) {
-//                            $currentPoints = $result['GetCompPoints']['CompBalance'];
-//                        } else {
-//                            $transMsg = "Cannot access PCWS API.";
-//                            $errorCode = 120;
-//                            Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
-//                            $data = CommonController::retMsgRedemption($module, $redemption, $errorCode, $transMsg);
-//                            $message = "[" . $module . "] Output: " . CJSON::encode($data);
-//                            $appLogger->log($appLogger->logdate, "[response]", $message);
-//                            $this->_sendResponse(200, CJSON::encode($data));
-//                            $logMessage = 'Cannot access PCWS API.';
-//                            $logger->log($logger->logdate, "[REDEEMITEMS ERROR]: " . $cardNumber . " || ", $logMessage);
-//                            $apiDetails = 'REDEEMITEMS-Failed: Cannot access PCWS API. Card Number = ' . $cardNumber;
-//                            $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
-//                            if ($isInserted == 0) {
-//                                $logMessage = "Failed to insert to APILogs.";
-//                                $logger->log($logger->logdate, "[REDEEMITEMS ERROR]: " . $cardNumber . " || ", $logMessage);
-//                            }
-//
-//                            exit;
-//                        }
+                        $resultIsEwallet = $membersModel->checkIfEwallet($MID);
+                        $isEwallet = $resultIsEwallet['IsEwallet'];
+                        if($isEwallet == 1)
+                        {
+                            $pcwsWrapper = new PcwsWrapper();
+                            
+                            $result = $pcwsWrapper->getCompPoints($cardNumber, 1);
+                            if ($result) {
+                                $currentPoints = $result['GetCompPoints']['CompBalance'];
+                            } else {
+                                $transMsg = "Cannot access PCWS API.";
+                                $errorCode = 120;
+                                Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                                $data = CommonController::retMsgRedemption($module, $redemption, $errorCode, $transMsg);
+                                $message = "[" . $module . "] Output: " . CJSON::encode($data);
+                                $appLogger->log($appLogger->logdate, "[response]", $message);
+                                $this->_sendResponse(200, CJSON::encode($data));
+                                $logMessage = 'Cannot access PCWS API.';
+                                $logger->log($logger->logdate, "[REDEEMITEMS ERROR]: " . $cardNumber . " || ", $logMessage);
+                                $apiDetails = 'REDEEMITEMS-Failed: Cannot access PCWS API. Card Number = ' . $cardNumber;
+                                $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
+                                if ($isInserted == 0) {
+                                    $logMessage = "Failed to insert to APILogs.";
+                                    $logger->log($logger->logdate, "[REDEEMITEMS ERROR]: " . $cardNumber . " || ", $logMessage);
+                                }
+
+                                exit;
+                            }
+                        }
+                        else
+                        {
+                            $result = $memberCardsModel->getMemberPointsAndStatus($cardNumber);
+                            $currentPoints = $result['CurrentPoints'];
+                        }  
 //                        $result = $memberCardsModel->getMemberPointsAndStatus($cardNumber);
 //
 //                        $memberDetails = $memberInfoModel->getMemberInfoUsingMID($MID);
@@ -3647,18 +3773,22 @@ class MPapiController extends Controller {
                                                         $fBirthdate = date("F j, Y", strtotime($birthdate));
                                                         $siteCode = 'Website';
                                                         
-                                                        for($i=0;$i<$itemQty1;$i++){
-                                                            $raCheckSum[] = $resultArray['CheckSum'][$i];
-                                                            $serialNumber[] = $resultArray['SerialNumber'][$i];
-                                                        }
-                                                        $couponSeries = $resultArray['CouponSeries'][0];
-                                                        $raQuantity = $resultArray["Quantity"][0];
+                                                       // for($i=0;$i<$itemQty1;$i++){
+                                                            $raCheckSum = $resultArray['CheckSum'];
+                                                            $serialNumber = $resultArray['SerialNumber'];
+                                                        //}
+                                                        $couponSeries = $resultArray['CouponSeries'];
+                                                        $raQuantity = $resultArray["Quantity"];
                                                         $helpers->sendEmailCouponRedemption($playerName, $address, $siteCode, $cardNumber, $fBirthdate, $email, $contactNo, '', '', $newHeader, $newFooter, $itemImage, $couponSeries, $raQuantity, $raCheckSum, $serialNumber, $redemptionDate, $promoCode, $promoName, $promoPeriod, $drawDate, $about, $terms);
                                                     }
 
                                                     $couponRedemptionArray = array('ItemImage' => $itemImage, 'ItemName' => $itemName, 'PartnerName' => $partnerName, 'PlayerName' => $playerName, 'CardNumber' => $cardNumber, 'RedemptionDate' => $redemptionDate, 'SerialNumber' => $serialNumber, 'SecurityCode' => $couponSeries, 'ValidityDate' => $validUntil, 'CompanyAddress' => $companyAddress, 'CompanyPhone' => $companyPhone, 'CompanyWebsite' => $companyWebsite, 'Quantity' => $raQuantity, 'SiteCode' => $siteCode, 'PromoCode' => $promoCode, 'PromoTitle' => $promoName, 'PromoPeriod' => $promoPeriod, 'DrawDate' => $drawDate, 'Address' => $address, 'Birthdate' => $birthdate, 'EmailAddress' => $email, 'ContactNo' => $contactNo, 'CheckSum' => $raCheckSum, 'About' => $about, 'Terms' => $terms);
                                                     Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
-                                                    $this->_sendResponse(200, CJSON::encode(CommonController::retMsgCouponRedemptionSuccess($module, $couponRedemptionArray, $errorCode, $transMsg)));
+                                                    $data = CommonController::retMsgCouponRedemptionSuccess($module, $couponRedemptionArray, $errorCode, $transMsg);
+                                                    $message = "[" . $module . "] Output: " . CJSON::encode($data);
+                                                    $appLogger->log($appLogger->logdate, "[response]", $message);
+                                                    $this->_sendResponse(200, CJSON::encode($data));
+                                                    //$this->_sendResponse(200, CJSON::encode(CommonController::retMsgCouponRedemptionSuccess($module, $couponRedemptionArray, $errorCode, $transMsg)));
                                                     $logMessage = $transMsg;
                                                     $logger->log($logger->logdate, "[REDEEMITEMS SUCCESSFUL]: MID " . $MID . " || ", $logMessage);
                                                     $apiDetails = $transMsg;
@@ -3890,7 +4020,11 @@ $itemRedemptionArray = array('ItemImage' => $itemImage, 'ItemName' => $itemName,
 'PromoPeriod' => $promoPeriod, 'DrawDate' => $drawDate, 'Address' => $address, 'Birthdate' => $birthdate,  'EmailAddress' => $email, 'ContactNo' => $contactNo, 'CheckSum' => $checkSum, 'About' => $about, 'Terms' => $terms);
                                                         }
                                                         Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
-                                                        $this->_sendResponse(200, CJSON::encode(CommonController::retMsgItemRedemptionSuccess($module, $itemRedemptionArray, $errorCode, $transMsg)));
+                                                        $data = CommonController::retMsgItemRedemptionSuccess($module, $itemRedemptionArray, $errorCode, $transMsg);
+                                                        $message = "[" . $module . "] Output: " . CJSON::encode($data);
+                                                        $appLogger->log($appLogger->logdate, "[response]", $message);
+                                                        $this->_sendResponse(200, CJSON::encode($data));
+                                                        //$this->_sendResponse(200, CJSON::encode(CommonController::retMsgItemRedemptionSuccess($module, $itemRedemptionArray, $errorCode, $transMsg)));
                                                         $logMessage = $transMsg;
                                                         $logger->log($logger->logdate, "[REDEEMITEMS SUCCESSFUL]: MID " . $MID . " || ", $logMessage);
                                                         $apiDetails = $transMsg;
@@ -4213,6 +4347,7 @@ $itemRedemptionArray = array('ItemImage' => $itemImage, 'ItemName' => $itemName,
                 $memberSessionsModel = new MemberSessionsModel();
                 $cardsModel = new CardsModel();
                 $auditTrailModel = new AuditTrailModel();
+                $membersModel = new MembersModel();
                 //$pcwsWrapper = new PcwsWrapper();
 
                 $memberExist = $memberCardsModel->getMIDUsingCard($cardNumber);
@@ -4297,34 +4432,50 @@ $itemRedemptionArray = array('ItemImage' => $itemImage, 'ItemName' => $itemName,
                                 $isSmoker = '';
                             $birthDate = $memberInfo['Birthdate'];
                             $age = number_format((abs(strtotime($birthDate) - strtotime(date('Y-m-d'))) / 60 / 60 / 24 / 365), 0);
-                            $currentPoints = $memberPoints['CurrentPoints'];
-                            $bonusPoints = $memberPoints['BonusPoints'];
+                            
+                            
+                            
                             $redeemedPoints = $memberPoints['RedeemedPoints'];
                             $lifetimePoints = $memberPoints['LifetimePoints'];
+                            
+                            
+                            $resultIsEwallet = $membersModel->checkIfEwallet($MID);
+                            $isEwallet = $resultIsEwallet['IsEwallet'];
+                            if($isEwallet == 1)
+                            {
+                                $pcwsWrapper = new PcwsWrapper();
+                                
+                                $result = $pcwsWrapper->getCompPoints($cardNumber, 1);
+                                if ($result) {
+                                    $currentPoints = $result['GetCompPoints']['CompBalance'];
+                                    $bonusPoints = 0;
+                                } else {
+                                    $transMsg = "Cannot access PCWS API.";
+                                    $errorCode = 120;
+                                    Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                                    $data = CommonController::retMsgGetProfile($module, $profile, $errorCode, $transMsg);
+                                    $message = "[" . $module . "] Output: " . CJSON::encode($data);
+                                    $appLogger->log($appLogger->logdate, "[response]", $message);
+                                    $this->_sendResponse(200, CJSON::encode($data));
+                                    $logMessage = 'Cannot access PCWS API.';
+                                    $logger->log($logger->logdate, "[GETPROFILE ERROR]: MID " . $MID . " || ", $logMessage);
+                                    $apiDetails = 'GETPROFILE-Failed: Cannot access PCWS API. Card Number = ' . $cardNumber;
+                                    $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
+                                    if ($isInserted == 0) {
+                                        $logMessage = "Failed to insert to APILogs.";
+                                        $logger->log($logger->logdate, "[GETPROFILE ERROR]: MID " . $MID . " || ", $logMessage);
+                                    }
 
-//                            $result = $pcwsWrapper->getCompPoints($cardNumber, 1);
-//                            if ($result) {
-//                                $currentPoints = $result['GetCompPoints']['CompBalance'];
-//                                $bonusPoints = 0;
-//                            } else {
-//                                $transMsg = "Cannot access PCWS API.";
-//                                $errorCode = 120;
-//                                Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
-//                                $data = CommonController::retMsgGetProfile($module, $profile, $errorCode, $transMsg);
-//                                $message = "[" . $module . "] Output: " . CJSON::encode($data);
-//                                $appLogger->log($appLogger->logdate, "[response]", $message);
-//                                $this->_sendResponse(200, CJSON::encode($data));
-//                                $logMessage = 'Cannot access PCWS API.';
-//                                $logger->log($logger->logdate, "[GETPROFILE ERROR]: MID " . $MID . " || ", $logMessage);
-//                                $apiDetails = 'GETPROFILE-Failed: Cannot access PCWS API. Card Number = ' . $cardNumber;
-//                                $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
-//                                if ($isInserted == 0) {
-//                                    $logMessage = "Failed to insert to APILogs.";
-//                                    $logger->log($logger->logdate, "[GETPROFILE ERROR]: MID " . $MID . " || ", $logMessage);
-//                                }
-//
-//                                exit;
-//                            }
+                                    exit;
+                                }
+                            }
+                            else
+                            {
+                                $bonusPoints = $memberPoints['BonusPoints'];
+                                $currentPoints = $memberPoints['CurrentPoints'];
+                            }
+
+
                             $result = $auditTrailModel->logEvent(AuditTrailModel::API_GET_PROFILE, 'CardNumber: ' . $cardNumber, array('MID' => $MID, 'SessionID' => $mpSessionID));
                             if ($result == 0) {
                                 $logMessage = "Failed to insert to Audittrail.";
