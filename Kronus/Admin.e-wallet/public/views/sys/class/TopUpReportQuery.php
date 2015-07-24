@@ -1225,8 +1225,8 @@ class TopUpReportQuery extends DBHandler{
                                 INNER JOIN npos.transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
                                 INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
                                 INNER JOIN npos.accounts a ON tr.CreatedByAID = a.AID
-                                WHERE tr.SiteID = ?
-                                  AND tr.DateCreated >= ? AND tr.DateCreated < ?
+                                WHERE tr.DateCreated >= ? AND tr.DateCreated < ? 
+                                  AND tr.SiteID = ? 
                                   AND tr.Status IN(1,4)
                                 GROUP By tr.TransactionType, tr.TransactionSummaryID
                                 ORDER BY tr.TerminalID, tr.DateCreated DESC"; 
@@ -1411,9 +1411,9 @@ class TopUpReportQuery extends DBHandler{
                 //Total the Deposit and Reload Cash, Deposit and Reload Coupons, Deposit and Reload Tickets in EGM
                 //Total Redemption made by the cashier and the EGM
                 $this->prepare($query6);
-                $this->bindparameter(1, $zsiteid);
-                $this->bindparameter(2, $startdate);
-                $this->bindparameter(3, $enddate);
+                $this->bindparameter(1, $startdate);
+                $this->bindparameter(2, $enddate);
+                $this->bindparameter(3, $zsiteid);
                 $this->execute();  
                 $rows6 =  $this->fetchAllData();
                 
