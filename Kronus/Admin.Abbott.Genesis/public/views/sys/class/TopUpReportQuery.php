@@ -813,7 +813,8 @@ class TopUpReportQuery extends DBHandler{
                                 END As RedemptionGenesis,
 
                                 tr.DateCreated, tr.SiteID
-                                FROM npos.transactiondetails tr INNER JOIN npos.transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
+                                FROM npos.transactiondetails tr FORCE INDEX(IX_transactiondetails_DateCreated) 
+                                INNER JOIN npos.transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
                                 INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
                                 INNER JOIN npos.accounts a ON tr.CreatedByAID = a.AID
                                 WHERE tr.DateCreated >= ? AND tr.DateCreated < ?
@@ -823,7 +824,7 @@ class TopUpReportQuery extends DBHandler{
                 
                 //Query for Unused or Active Tickets of the Pick Date (per site/per cutoff)
                 $query7 = "SELECT SiteID, IFNULL(SUM(Amount), 0) AS UnusedTickets, DateCreated FROM
-                                            ((SELECT IFNULL(stckr.Withdrawal, 0) As Amount, stckr.TicketCode, tr.SiteID, tr.DateCreated FROM npos.transactiondetails tr  -- Printed Tickets through W
+                                            ((SELECT IFNULL(stckr.Withdrawal, 0) As Amount, stckr.TicketCode, tr.SiteID, tr.DateCreated FROM npos.transactiondetails tr  FORCE INDEX(IX_transactiondetails_DateCreated) -- Printed Tickets through W
                                               INNER JOIN npos.transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
                                               INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
                                               INNER JOIN npos.accounts a ON tr.CreatedByAID = a.AID
@@ -857,7 +858,7 @@ class TopUpReportQuery extends DBHandler{
                                                               WHERE stckrdtls.PaymentType = 2
                                                                     AND stckrdtls.StackerSummaryID IN
                                                                       (SELECT tr.StackerSummaryID
-                                                                            FROM npos.transactiondetails tr
+                                                                            FROM npos.transactiondetails tr FORCE INDEX(IX_transactiondetails_DateCreated) 
                                                                             INNER JOIN npos.transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
                                                                             INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
                                                                             INNER JOIN npos.accounts a ON tr.CreatedByAID = a.AID
@@ -874,7 +875,7 @@ class TopUpReportQuery extends DBHandler{
                                         GROUP BY SiteID";
                 
                 //Query for Printed Tickets of the pick date (per site/per cutoff)
-                $query8 = "SELECT tr.SiteID, IFNULL(SUM(stckr.Withdrawal), 0) AS PrintedTickets, tr.DateCreated FROM npos.transactiondetails tr  -- Printed Tickets through W
+                $query8 = "SELECT tr.SiteID, IFNULL(SUM(stckr.Withdrawal), 0) AS PrintedTickets, tr.DateCreated FROM npos.transactiondetails tr  FORCE INDEX(IX_transactiondetails_DateCreated) -- Printed Tickets through W
                                         INNER JOIN npos.transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
                                         INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
                                         INNER JOIN npos.accounts a ON ts.CreatedByAID = a.AID
@@ -1408,18 +1409,19 @@ class TopUpReportQuery extends DBHandler{
                                 END As RedemptionGenesis,
 
                                 tr.DateCreated, tr.SiteID
-                                FROM npos.transactiondetails tr INNER JOIN npos.transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
+                                FROM npos.transactiondetails tr FORCE INDEX(IX_transactiondetails_DateCreated) 
+                                INNER JOIN npos.transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
                                 INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
                                 INNER JOIN npos.accounts a ON tr.CreatedByAID = a.AID
-                                WHERE tr.SiteID = ?
-                                  AND tr.DateCreated >= ? AND tr.DateCreated < ?
+                                WHERE tr.DateCreated >= ? AND tr.DateCreated < ? 
+                                  AND tr.SiteID = ? 
                                   AND tr.Status IN(1,4)
                                 GROUP By tr.TransactionType, tr.TransactionSummaryID
                                 ORDER BY tr.TerminalID, tr.DateCreated DESC"; 
                 
                 //Query for Unused or Active Tickets of the Pick Date (per site/per cutoff)
                 $query7 = "SELECT SiteID, IFNULL(SUM(Amount), 0) AS UnusedTickets, DateCreated FROM
-                                            ((SELECT IFNULL(stckr.Withdrawal, 0) As Amount, stckr.TicketCode, tr.SiteID, tr.DateCreated FROM npos.transactiondetails tr  -- Printed Tickets through W
+                                            ((SELECT IFNULL(stckr.Withdrawal, 0) As Amount, stckr.TicketCode, tr.SiteID, tr.DateCreated FROM npos.transactiondetails tr FORCE INDEX(IX_transactiondetails_DateCreated) -- Printed Tickets through W
                                               INNER JOIN npos.transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
                                               INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
                                               INNER JOIN npos.accounts a ON tr.CreatedByAID = a.AID
@@ -1453,7 +1455,7 @@ class TopUpReportQuery extends DBHandler{
                                                               WHERE stckrdtls.PaymentType = 2
                                                                     AND stckrdtls.StackerSummaryID IN
                                                                       (SELECT tr.StackerSummaryID
-                                                                            FROM npos.transactiondetails tr
+                                                                            FROM npos.transactiondetails tr FORCE INDEX(IX_transactiondetails_DateCreated) 
                                                                             INNER JOIN npos.transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
                                                                             INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
                                                                             INNER JOIN npos.accounts a ON tr.CreatedByAID = a.AID
@@ -1470,7 +1472,7 @@ class TopUpReportQuery extends DBHandler{
                                         GROUP BY SiteID";
                 
                 //Query for Printed Tickets of the pick date (per site/per cutoff)
-                $query8 = "SELECT tr.SiteID, IFNULL(SUM(stckr.Withdrawal), 0) AS PrintedTickets, tr.DateCreated FROM npos.transactiondetails tr  -- Printed Tickets through W
+                $query8 = "SELECT tr.SiteID, IFNULL(SUM(stckr.Withdrawal), 0) AS PrintedTickets, tr.DateCreated FROM npos.transactiondetails tr FORCE INDEX(IX_transactiondetails_DateCreated) -- Printed Tickets through W
                                         INNER JOIN npos.transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
                                         INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
                                         INNER JOIN npos.accounts a ON ts.CreatedByAID = a.AID
@@ -1551,9 +1553,9 @@ class TopUpReportQuery extends DBHandler{
                 //Total the Deposit and Reload Cash, Deposit and Reload Coupons, Deposit and Reload Tickets in EGM
                 //Total Redemption made by the cashier and the EGM
                 $this->prepare($query6);
-                $this->bindparameter(1, $zsiteid);
-                $this->bindparameter(2, $startdate);
-                $this->bindparameter(3, $enddate);
+                $this->bindparameter(1, $startdate);
+                $this->bindparameter(2, $enddate);
+                $this->bindparameter(3, $zsiteid);
                 $this->execute();  
                 $rows6 =  $this->fetchAllData();
                 
