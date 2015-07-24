@@ -70,7 +70,50 @@ class SiteController extends VMSBaseIdentity {
             if (isset($_POST['LoginForm'])) {
                 $model->attributes = $_POST['LoginForm'];
 
-                if((Yii::app()->params['referrer'] != Yii::app()->request->urlReferrer) && (Yii::app()->params['referrer2'] != Yii::app()->request->urlReferrer)) {
+                //Implement anti-xss and referrer
+                $data =  Yii::app()->request->urlReferrer;
+                $referrer1 = Yii::app()->params['referrer'];
+                $referrer2 = Yii::app()->params['referrer2'];
+                $defaultcontroller = Yii::app()->defaultController;
+                $isValid = true;
+
+                $chunks1 = preg_split('/\/\//', $data);
+                $chunks2 = preg_split('/\/\//', $referrer1);
+                $chunks3 = preg_split('/\/\//', $referrer2);
+                $urlchunks1 = explode("/", $chunks1[1]);
+                $urlchunks2 = explode("/", $chunks2[1]);
+                $urlchunks3 = explode("/", $chunks3[1]);
+                $controllerchunks = explode("/", $defaultcontroller);
+
+                //Check if the url includes the default controller using "?r="
+                if(isset($urlchunks1[1]) && $urlchunks1 != ""){
+                    $checkchunk = preg_match('/\?r\=/', $urlchunks1[1]);
+                    if($checkchunk){
+                        $rechunk = preg_split('/\?r\=/', $urlchunks1[1]);
+                        $urlchunks1[1] = $rechunk[0];
+                        $urlchunks1[2] = $rechunk[1];
+                    }
+                }
+
+                if($chunks1[0] == $chunks2[0] || $chunks1[0] == $chunks3[0]){ 			//Check if http/http is same with referrer URL
+                    if($urlchunks1[0] == $urlchunks2[0] && $urlchunks1[0] == $urlchunks3[0]){ 		//Check Domain Name if same
+                            if(isset($urlchunks1[1]) && $urlchunks1[1] != ""){				//Check for index.php if exists
+                                    if($urlchunks1[1] == $urlchunks2[1] || $urlchunks1[1] == $urlchunks3[1]){ 		//Check if config referrer has index.php
+                                            if(isset($urlchunks1[2]) && $urlchunks1[2] != ""){			//Check if default controller is included in URL
+                                                    if(isset($urlchunks1[3]) && $urlchunks1[3] != ""){ 			//Check if default controller method is included in URL
+                                                            if($urlchunks1[3] == $controllerchunks[1]){
+                                                                    $isValid = true;
+                                                            } else { $isValid = false; }
+                                                    } else if($urlchunks1[2] == $controllerchunks[0]){
+                                                            $isValid = true;
+                                                    } else { $isValid = false; }
+                                            } else { $isValid = true; }
+                                    } else { $isValid = false; }
+                            } else { $isValid = true; }
+                    } else { $isValid = false; }
+                } else { $isValid = false; }    
+
+                if(!$isValid){
                     header('HTTP/1.0 403 Forbidden');
                     $this->showDialog = true;
                     $this->dialogMsg = "Forbidden";
