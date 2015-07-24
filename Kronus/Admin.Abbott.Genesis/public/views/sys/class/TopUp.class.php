@@ -801,9 +801,9 @@ class TopUp extends DBHandler
                 //Total the Deposit and Reload Cash, Deposit and Reload Coupons, Deposit and Reload Tickets in EGM
                 //Total Redemption made by the cashier and the EGM
                 $this->prepare($query6);
-                $this->bindparameter(1, $zsiteid);
-                $this->bindparameter(2, $startdate);
-                $this->bindparameter(3, $enddate);
+                $this->bindparameter(1, $startdate);
+                $this->bindparameter(2, $enddate);
+                $this->bindparameter(3, $zsiteid);
                 $this->execute();  
                 $rows6 =  $this->fetchAllData();
 
