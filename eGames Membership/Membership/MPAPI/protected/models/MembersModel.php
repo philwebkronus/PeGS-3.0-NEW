@@ -180,7 +180,7 @@ class MembersModel {
     }
     
     public function getMembersDetailsWithSP($userName) {
-        $sql = "CALL sp_select_data(1,0,4,'$userName','MID,Status,Password',@ReturnCode, @ReturnMessage, @ReturnFields)";
+        $sql = "CALL sp_select_data_mp(1,0,4,'$userName','MID,Status,Password',@ReturnCode, @ReturnMessage, @ReturnFields)";
         //$param = array(':userName' => $userName);
         $command = $this->_connection->createCommand($sql);
         $result = $command->queryRow(true);
@@ -275,7 +275,7 @@ class MembersModel {
     //@date 06-14-2015
     public function getUsernameByMIDWithSP($MID)
     {
-        $sql = "CALL sp_select_data(1,0,0,'$MID','UserName',@ReturnCode, @ReturnMessage, @ReturnFields)";
+        $sql = "CALL sp_select_data_mp(1,0,0,'$MID','UserName',@ReturnCode, @ReturnMessage, @ReturnFields)";
         //$param = array(':MID' => $MID, ':Email' => $email);
         $command = $this->_connection->createCommand($sql);
         $result = $command->queryRow(true);

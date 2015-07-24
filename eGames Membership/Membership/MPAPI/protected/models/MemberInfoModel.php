@@ -35,7 +35,7 @@ class MemberInfoModel {
     }
     
     public function getDetailsUsingEmailWithSP($email) {
-        $sql = "CALL sp_select_data(1,1,2,'$email','MID,FirstName,MiddleName,LastName,NickName,Email,AlternateEmail,MobileNumber,AlternateMobileNumber,Address1,IdentificationNumber',@ReturnCode, @ReturnMessage, @ReturnFields)";
+        $sql = "CALL sp_select_data_mp(1,1,2,'$email','MID,FirstName,MiddleName,LastName,NickName,Email,AlternateEmail,MobileNumber,AlternateMobileNumber,Address1,IdentificationNumber',@ReturnCode, @ReturnMessage, @ReturnFields)";
         //$param = array(':email' => $email);
         $command = $this->_connection->createCommand($sql);
         $result = $command->queryRow(true);
