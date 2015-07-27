@@ -33,7 +33,7 @@ class MemberInfoModel {
 
         return $result;
     }
-    
+
     public function getDetailsUsingEmailWithSP($email) {
         $sql = "CALL sp_select_data_mp(1,1,2,'$email','MID,FirstName,MiddleName,LastName,NickName,Email,AlternateEmail,MobileNumber,AlternateMobileNumber,Address1,IdentificationNumber',@ReturnCode, @ReturnMessage, @ReturnFields)";
         //$param = array(':email' => $email);
@@ -77,7 +77,7 @@ class MemberInfoModel {
 
         return $result;
     }
-    
+
     public function getEmailFNameUsingMIDWIthSP($MID) {
         $sql = "CALL sp_select_data(1,1,0,'$MID','Email,FirstName,MiddleName,LastName',@ReturnCode, @ReturnMessage, @ReturnFields)";
         //$param = array(':MID' => $MID);
@@ -97,7 +97,7 @@ class MemberInfoModel {
 
         return $result;
     }
-    
+
     public function checkIfEmailExistsWithMIDWithSP($MID,$email) {
         $sql = "CALL sp_select_data(1,1,3,'$MID,$email', 'Email', @OUTRetCode, @OUTRetMessage, @OUTfldListRet)"; //AND Status = 9';
         //$param = array(':MID' => $MID, ':Email' => $email);
@@ -156,10 +156,11 @@ class MemberInfoModel {
             return 0;
         }
     }
-    
+
     public function updateProfileWithSP($firstname, $middlename, $lastname, $nickname, $MID, $permanentAddress, $mobileNumber, $alternateMobileNumber, $emailAddress, $alternateEmail, $birthdate, $nationalityID, $occupationID, $idNumber, $idPresented, $gender, $isSmoker) {
         $startTrans = $this->_connection->beginTransaction();
 
+        $SFID = $this->_getSF($MID);
         if($gender == '')
             $gender = 1;
         if($nationalityID == '')
@@ -183,7 +184,39 @@ class MemberInfoModel {
 
             try {
                 $startTrans->commit();
-                return 1;
+                //start add - SF push 07272015 mcs
+                $instanceURL = Yii::app()->params['instanceURL'];
+                $apiVersion = Yii::app()->params['apiVersion'];
+                $cKey = Yii::app()->params['cKey'];
+                $cSecret = Yii::app()->params['cSecret'];
+                $sfLogin = Yii::app()->params['sfLogin'];
+                $sfPassword = Yii::app()->params['sfPassword'];
+                $secToken = Yii::app()->params['secToken'];
+
+                $sfapi = new SalesforceAPI($instanceURL, $apiVersion, $cKey, $cSecret);
+                $sfSuccessful = $sfapi->login($sfLogin, $sfPassword, $secToken);
+                if($sfSuccessful)
+                {
+                    $newBaseUrl = $sfSuccessful->instance_url;
+                    $accessToken = $sfSuccessful->access_token;
+
+                    $isUpdated = $sfapi->update_account($SFID, $firstname, $lastname, $birthdate, null, null, null, $newBaseUrl, $accessToken);
+                    return 1;
+                    //if($isUpdated)
+                    //{
+                    //    $startTrans->commit();
+                    //}
+                    //else
+                    //{
+                    //    $startTrans->rollback();
+                    //}
+                }
+                else
+                {
+                    //$startTrans->rollback();
+                    return 0;
+                }
+                //end add - SF push 07272015 mcs
             } catch (PDOException $e) {
                 $startTrans->rollback();
                 Utilities::log($e->getMessage());
@@ -197,8 +230,8 @@ class MemberInfoModel {
         }
     }
 
-    
-    
+
+
     public function updateProfileDateUpdated($MID, $mid) {
         $startTrans = $this->_connection->beginTransaction();
 
@@ -226,7 +259,7 @@ class MemberInfoModel {
             return 0;
         }
     }
-    
+
     public function updateProfileDateUpdatedWithSP($MID, $mid) {
         $startTrans = $this->_connection->beginTransaction();
 
@@ -311,10 +344,11 @@ class MemberInfoModel {
             return 0;
         }
     }
-    
+
     public function updateProfilev2WithSP($firstname, $middlename, $lastname, $nickname, $MID, $permanentAddress, $mobileNumber, $alternateMobileNumber, $emailAddress, $alternateEmail, $birthdate, $nationalityID, $occupationID, $gender, $isSmoker, $region, $city) {
         $startTrans = $this->_connection->beginTransaction();
 
+        $SFID = $this->_getSF($MID);
         if($gender == '')
             $gender = 1;
         if($nationalityID == '')
@@ -338,7 +372,39 @@ class MemberInfoModel {
 
             try {
                 $startTrans->commit();
-                return 1;
+                //start add - SF push 07272015 mcs
+                $instanceURL = Yii::app()->params['instanceURL'];
+                $apiVersion = Yii::app()->params['apiVersion'];
+                $cKey = Yii::app()->params['cKey'];
+                $cSecret = Yii::app()->params['cSecret'];
+                $sfLogin = Yii::app()->params['sfLogin'];
+                $sfPassword = Yii::app()->params['sfPassword'];
+                $secToken = Yii::app()->params['secToken'];
+
+                $sfapi = new SalesforceAPI($instanceURL, $apiVersion, $cKey, $cSecret);
+                $sfSuccessful = $sfapi->login($sfLogin, $sfPassword, $secToken);
+                if($sfSuccessful)
+                {
+                    $newBaseUrl = $sfSuccessful->instance_url;
+                    $accessToken = $sfSuccessful->access_token;
+
+                    $isUpdated = $sfapi->update_account($SFID, $firstname, $lastname, $birthdate, null, null, null, $newBaseUrl, $accessToken);
+                    return 1;
+                    //if($isUpdated)
+                    //{
+                    //    $startTrans->commit();
+                    //}
+                    //else
+                    //{
+                    //    $startTrans->rollback();
+                    //}
+                }
+                else
+                {
+                    //$startTrans->rollback();
+                    return 0;
+                }
+                //end add - SF push 07272015 mcs
             } catch (PDOException $e) {
                 $startTrans->rollback();
                 Utilities::log($e->getMessage());
@@ -398,10 +464,11 @@ class MemberInfoModel {
             return 0;
         }
     }
-    
+
     public function updateProfilev3WithSP($firstname, $middlename, $lastname, $nickname, $MID, $permanentAddress, $mobileNumber, $alternateMobileNumber, $emailAddress, $alternateEmail, $birthdate, $nationalityID, $occupationID, $idNumber, $idPresented, $gender, $isSmoker, $region, $city) {
         $startTrans = $this->_connection->beginTransaction();
 
+	$SFID = $this->_getSF($MID);
         if($gender == '')
             $gender = 1;
         if($nationalityID == '')
@@ -425,7 +492,39 @@ class MemberInfoModel {
 
             try {
                 $startTrans->commit();
-                return 1;
+                //start add - SF push 07272015 mcs
+                $instanceURL = Yii::app()->params['instanceURL'];
+                $apiVersion = Yii::app()->params['apiVersion'];
+                $cKey = Yii::app()->params['cKey'];
+                $cSecret = Yii::app()->params['cSecret'];
+                $sfLogin = Yii::app()->params['sfLogin'];
+                $sfPassword = Yii::app()->params['sfPassword'];
+                $secToken = Yii::app()->params['secToken'];
+
+                $sfapi = new SalesforceAPI($instanceURL, $apiVersion, $cKey, $cSecret);
+                $sfSuccessful = $sfapi->login($sfLogin, $sfPassword, $secToken);
+                if($sfSuccessful)
+                {
+                    $newBaseUrl = $sfSuccessful->instance_url;
+                    $accessToken = $sfSuccessful->access_token;
+
+                    $isUpdated = $sfapi->update_account($SFID, $firstname, $lastname, $birthdate, null, null, null, $newBaseUrl, $accessToken);
+                    return 1;
+                    //if($isUpdated)
+                    //{
+                    //    $startTrans->commit();
+                    //}
+                    //else
+                    //{
+                    //    $startTrans->rollback();
+                    //}
+                }
+                else
+                {
+                    //$startTrans->rollback();
+                    return 0;
+                }
+                //end add - SF push 07272015 mcs
             } catch (PDOException $e) {
                 $startTrans->rollback();
                 Utilities::log($e->getMessage());
@@ -437,6 +536,19 @@ class MemberInfoModel {
             Utilities::log($e->getMessage());
             return 0;
         }
+    }
+
+    //@date 06-11-2015
+    private function _getSF($MID)
+    {
+        $sql = "SELECT SFID as SFID
+                FROM memberinfo
+                WHERE MID = :MID";
+        $param = array(':MID' => $MID);
+        $command = $this->_connection->createCommand($sql);
+        $result = $command->queryRow(true, $param);
+
+        return $result['SFID'];
     }
 }
 
