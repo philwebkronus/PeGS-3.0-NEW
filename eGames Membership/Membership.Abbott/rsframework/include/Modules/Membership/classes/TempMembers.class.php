@@ -353,13 +353,16 @@ class TempMembers extends BaseEntity
      */
     public function getTempCodeOfVerifiedEmail($email)
     {
-        $query = "SELECT m.TemporaryAccountCode FROM members m
-                INNER JOIN memberinfo mi ON m.MID = mi.MID
-                WHERE m.IsVerified = 1 AND mi.Email = '$email'";
-        $result = parent::RunQuery($query);
-        return $result[0]['TemporaryAccountCode'];
+        $query1 = "CALL membership.sp_select_data(0,1,2,'$email', 'MID', @ReturnCode, @ReturnMessage, @ReturnFields)";
+        $query2 = "SELECT @ReturnCode, @ReturnMessage, @ReturnFields;";
+        parent::RunQuery($query1);
+        $result = parent::RunQuery($query2);
+        $MID = $result[0]['@ReturnFields'];
+        $query3 = "SELECT TemporaryCode FROM $this->TableName WHERE IsVerified = 1 AND MID = $MID";
+        $result2 = parent::RunQuery($query3);
+        return $result2[0]['TemporaryAccountCode'];
     }
             
 }
-
+    
 ?>
