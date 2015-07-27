@@ -414,7 +414,7 @@ class MembershipTempModel {
         try {
             $tempCode = 'eGames' . strtoupper(Utilities::generateAlphaNumeric(5));
 
-            $sql = "CALL membership.sp_insert_data(1,'$email','$firstname','$middlename','$lastname','$nickname','$email','$alternateEmail','$mobileNumber','$alternateMobileNumber','$permanentAddress',Null,'$idNumber','$password',1,'$tempCode',1,'$birthdate',$gender,$nationality,$occupation,$idPresented,$isSmoker,'$referrerCode',$emailSubscription,$smsSubscription,$referrerID,0,Null,Null,@OUT_ResultCode,@OUT_Result2,@OUT_MID)";
+            $sql = "CALL membership.sp_insert_data(1,'$email','$firstname','$middlename','$lastname','$nickname','$email','$alternateEmail','$mobileNumber','$alternateMobileNumber','$permanentAddress',Null,'$idNumber','$password',1,'$tempCode',1,'$birthdate',$gender,$nationality,$occupation,$idPresented,$isSmoker,'$referrerCode',$emailSubscription,$smsSubscription,$referrerID,0,Null,3,@OUT_ResultCode,@OUT_Result2,@OUT_MID)";
             //$param = array(':Email' => $email, ':Password' => $password, ':TempCode' => $tempCode);
             $command = $this->_connection->createCommand($sql);
             $result = $command->queryRow(true);
@@ -461,7 +461,7 @@ class MembershipTempModel {
                                 $recipient = $firstname . ' ' . $lastname;
                                 $helpers = new Helpers();
                                 $helpers->sendEmailVerification($email, $recipient, $tempCode);
-                                return $result['@OUT_MID'];
+                                return $MID;
                             } else {
                                 $startTrans->rollback();
                             }
@@ -691,18 +691,18 @@ class MembershipTempModel {
   '$tempCode',  -- TemporaryAccountCode
   1, -- Status
   '$birthdate', -- BirthDate
-  0, -- Gender
+  1, -- Gender
   1, -- NationalityID
   1, -- OccupationID
   1, -- IdentificationID
   0, -- IsSmoker
   '$referrerCode', -- Referrer Code
-  1, -- Email Subscription
-  1, -- SMS Subscription
-  2, -- Referrer ID
+  0, -- Email Subscription
+  0, -- SMS Subscription
+  1, -- Referrer ID
   0, -- IsCompleteInfo
   Null, -- DateVerified
-  Null, -- Registration Origin
+  4, -- Registration Origin
   @OUT_ResultCode, @OUT_Result, @OUT_MID);";
             //$param = array(':Email' => $email, ':Password' => $password, ':TempCode' => $tempCode);
             $command = $this->_connection->createCommand($sql);
@@ -755,7 +755,7 @@ class MembershipTempModel {
                                 $recipient = $firstname . ' ' . $lastname;
                                 $helpers = new Helpers();
                                 $helpers->sendEmailVerification($email, $recipient, $tempCode);
-                                return $result['@OUT_MID'];
+                                return $MID;
                             } else {
                                 $startTrans->rollback();
                             }
