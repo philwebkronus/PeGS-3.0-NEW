@@ -24,7 +24,8 @@ if(isset($_GET['email']) && isset($_GET['tempcode']))
 
     //check if email address already verified
     $isVerified = $_TempMembers->chkTmpVerifiedEmailAddressWithSP($email);
-    $verifiedCode = $isVerified[0]['TemporaryAccountCode'];
+    
+    //$verifiedCode = $isVerified[0]['TemporaryAccountCode'];
     if($isVerified[0]['ctrtemp'] == 0){
         $result = $_TempMembers->verifyEmailAccountSP($email, $tempcode);
 
@@ -50,6 +51,7 @@ if(isset($_GET['email']) && isset($_GET['tempcode']))
     }
     else
     {
+        $verifiedCode = $_TempMembers->getTempCodeOfVerifiedEmail($email);
         //Load status dialog box
         $isOpen = true;
         $isSuccess = false;
