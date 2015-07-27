@@ -12,28 +12,28 @@ class MemberInfoModel {
     public function __construct() {
         $this->_connection = Yii::app()->db;
     }
-    
+
     public static function model()
     {
         if(self::$_instance == null)
             self::$_instance = new MemberInfoModel();
         return self::$_instance;
     }
-    
+
     //@author Ralph Sison
     //@date 6-13-2014
     //@purpose get details using email
     public function getDetailsUsingEmail($email) {
         $sql = "SELECT MID, FirstName, LastName, Status
-                  FROM memberinfo 
+                  FROM memberinfo
                   WHERE Email = :email";
         $param = array(':email' => $email);
         $command = $this->_connection->createCommand($sql);
         $result = $command->queryRow(true, $param);
-        
+
         return $result;
     }
-    
+
     public function getDetailsUsingEmailWithSP($email) {
         $sql = "CALL sp_select_data_mp(1,1,2,'$email','MID,FirstName,MiddleName,LastName,NickName,Email, AlternateEmail,MobileNumber,AlternateMobileNumber,Address1,IdentificationNumber',@ReturnCode, @ReturnMessage, @ReturnFields)";
         //$param = array(':email' => $email);
@@ -61,10 +61,10 @@ class MemberInfoModel {
         $param = array(':MID' => $MID);
         $command = $this->_connection->createCommand($sql);
         $result = $command->queryRow(true, $param);
-        
+
         return $result;
     }
-    
+
     //@date 6-24-2014
     //@purpose get Email, name and status using MID
     public function getEmailFNameUsingMID($MID) {
@@ -74,10 +74,10 @@ class MemberInfoModel {
         $param = array(':MID' => $MID);
         $command = $this->_connection->createCommand($sql);
         $result = $command->queryRow(true, $param);
-        
+
         return $result;
     }
-    
+
     public function getEmailFNameUsingMIDWIthSP($MID) {
         $sql = "CALL sp_select_data(1,1,0,'$MID','Email,FirstName,MiddleName,LastName',@ReturnCode, @ReturnMessage, @ReturnFields)";
         //$param = array(':MID' => $MID);
@@ -94,10 +94,10 @@ class MemberInfoModel {
         $param = array(':MID' => $MID, ':Email' => $email);
         $command = $this->_connection->createCommand($sql);
         $result = $command->queryRow(true, $param);
-        
+
         return $result;
     }
-    
+
     public function checkIfEmailExistsWithMIDWithSP($MID,$email) {
         $sql = "CALL sp_select_data(1,1,3,'$MID,$email', 'Email', @OUTRetCode, @OUTRetMessage, @OUTfldListRet)"; //AND Status = 9';
         //$param = array(':MID' => $MID, ':Email' => $email);
@@ -112,7 +112,7 @@ class MemberInfoModel {
 
     public function updateProfile($firstname, $middlename, $lastname, $nickname, $MID, $permanentAddress, $mobileNumber, $alternateMobileNumber, $emailAddress, $alternateEmail, $birthdate, $nationalityID, $occupationID, $idNumber, $idPresented, $gender, $isSmoker) {
         $startTrans = $this->_connection->beginTransaction();
-        
+
         if($gender == '')
             $gender = 1;
         if($nationalityID == '')
@@ -121,7 +121,7 @@ class MemberInfoModel {
             $occupationID = 1;
         if($isSmoker == '')
             $isSmoker = 2;
-        
+
         try {
             $sql = "UPDATE memberinfo
                     SET FirstName = :FirstName, MiddleName = :MiddleName, LastName = :LastName,
@@ -137,10 +137,10 @@ class MemberInfoModel {
                            ':NationalityID' => $nationalityID,':OccupationID' => $occupationID, ':IdentificationNumber' => $idNumber, ':IdentificationID' => $idPresented,
                            ':Gender' => $gender, ':IsSmoker' => $isSmoker, ':MID' => $MID);
             $command = $this->_connection->createCommand($sql);
-            
+
             $command->bindValues($param);
             $command->execute();
-                      
+
             try {
                 $startTrans->commit();
                 return 1;
@@ -156,10 +156,11 @@ class MemberInfoModel {
             return 0;
         }
     }
-    
+
     public function updateProfileWithSP($firstname, $middlename, $lastname, $nickname, $MID, $permanentAddress, $mobileNumber, $alternateMobileNumber, $emailAddress, $alternateEmail, $birthdate, $nationalityID, $occupationID, $idNumber, $idPresented, $gender, $isSmoker) {
         $startTrans = $this->_connection->beginTransaction();
 
+        $SFID = $this->_getSF($MID);
         if($gender == '')
             $gender = 1;
         if($nationalityID == '')
@@ -183,6 +184,66 @@ class MemberInfoModel {
 
             try {
                 $startTrans->commit();
+                //start add - SF push 07272015 mcs
+                $instanceURL = Yii::app()->params['instanceURL'];
+                $apiVersion = Yii::app()->params['apiVersion'];
+                $cKey = Yii::app()->params['cKey'];
+                $cSecret = Yii::app()->params['cSecret'];
+                $sfLogin = Yii::app()->params['sfLogin'];
+                $sfPassword = Yii::app()->params['sfPassword'];
+                $secToken = Yii::app()->params['secToken'];
+
+                $sfapi = new SalesforceAPI($instanceURL, $apiVersion, $cKey, $cSecret);
+                $sfSuccessful = $sfapi->login($sfLogin, $sfPassword, $secToken);
+                if($sfSuccessful)
+                {
+                    $newBaseUrl = $sfSuccessful->instance_url;
+                    $accessToken = $sfSuccessful->access_token;
+
+                    $isUpdated = $sfapi->update_account($SFID, $firstname, $lastname, $birthdate, null, null, null, $newBaseUrl, $accessToken);
+                    return 1;
+                    //if($isUpdated)
+                    //{
+                    //    $startTrans->commit();
+                    //}
+                    //else
+                    //{
+                    //    $startTrans->rollback();
+                    //}
+                }
+                else
+                {
+                    //$startTrans->rollback();
+                    return 0;
+                }
+                //end add - SF push 07272015 mcs
+            } catch (PDOException $e) {
+                $startTrans->rollback();
+                Utilities::log($e->getMessage());
+                return 0;
+            }
+
+        } catch (Exception $e) {
+            $startTrans->rollback();
+            Utilities::log($e->getMessage());
+            return 0;
+        }
+    }
+
+    public function updateProfileDateUpdated($MID, $mid) {
+        $startTrans = $this->_connection->beginTransaction();
+
+        try {
+            $sql = 'UPDATE memberinfo
+                    SET DateUpdated = NOW(6), UpdatedByAID = :mid
+                    WHERE MID = :MID';
+            $param = array(':mid' => $mid, ':MID' => $MID);
+            $command = $this->_connection->createCommand($sql);
+            $command->bindValues($param);
+            $command->execute();
+
+            try {
+                $startTrans->commit();
                 return 1;
             } catch (PDOException $e) {
                 $startTrans->rollback();
@@ -196,35 +257,7 @@ class MemberInfoModel {
             return 0;
         }
     }
-    
-    public function updateProfileDateUpdated($MID, $mid) {
-        $startTrans = $this->_connection->beginTransaction();
-        
-        try {
-            $sql = 'UPDATE memberinfo
-                    SET DateUpdated = NOW(6), UpdatedByAID = :mid
-                    WHERE MID = :MID';
-            $param = array(':mid' => $mid, ':MID' => $MID);
-            $command = $this->_connection->createCommand($sql);
-            $command->bindValues($param);
-            $command->execute();
-                       
-            try {
-                $startTrans->commit();
-                return 1;
-            } catch (PDOException $e) {
-                $startTrans->rollback();
-                Utilities::log($e->getMessage());
-                return 0;
-            }
-            
-        } catch (Exception $e) {
-            $startTrans->rollback();
-            Utilities::log($e->getMessage());
-            return 0;
-        }
-    }
-    
+
     public function updateProfileDateUpdatedWithSP($MID, $mid) {
         $startTrans = $this->_connection->beginTransaction();
 
@@ -259,18 +292,18 @@ class MemberInfoModel {
         $param = array(':Email' => $email);
         $command = $this->_connection->createCommand($sql);
         $result = $command->queryRow(true, $param);
-        
-        return $result; 
-        
+
+        return $result;
+
     }
-    
+
     //@date 10-13-2014
     //@purpose initialize token to be used in redemption
     public function initializeToken($MID) {
         $startTrans = $this->_connection->beginTransaction();
-        
+
         $token = 1;
-        
+
         try {
             $sql = 'UPDATE memberinfo
                     SET Option1 = :token
@@ -279,7 +312,7 @@ class MemberInfoModel {
             $command = $this->_connection->createCommand($sql);
             $command->bindValues($param);
             $command->execute();
-                       
+
             try {
                 $startTrans->commit();
                 return 1;
@@ -288,21 +321,21 @@ class MemberInfoModel {
                 Utilities::log($e->getMessage());
                 return 0;
             }
-            
+
         } catch (Exception $e) {
             $startTrans->rollback();
             Utilities::log($e->getMessage());
             return 0;
         }
-        
+
     }
-    
+
     //@purpose update token when redemption is taking place
     public function updateToken($MID) {
         $startTrans = $this->_connection->beginTransaction();
-        
+
         $token = 0;
-        
+
         try {
             $sql = 'UPDATE memberinfo
                     SET Option1 = :token
@@ -311,7 +344,7 @@ class MemberInfoModel {
             $command = $this->_connection->createCommand($sql);
             $command->bindValues($param);
             $command->execute();
-                       
+
             try {
                 $startTrans->commit();
                 return 1;
@@ -320,25 +353,25 @@ class MemberInfoModel {
                 Utilities::log($e->getMessage());
                 return 0;
             }
-            
+
         } catch (Exception $e) {
             $startTrans->rollback();
             Utilities::log($e->getMessage());
             return 0;
         }
-        
+
     }
-    
+
     //@purpose check if token is valid for redemption
 //    public function checkToken($MID) {
 //        $sql = 'SELECT Option1 FROM memberinfo
 //                WHERE Option1 = 1 AND MID =:MID';
 //        $param = array('')
 //    }
-    
+
     public function updateProfilev2($firstname, $middlename, $lastname, $nickname, $MID, $permanentAddress, $mobileNumber, $alternateMobileNumber, $emailAddress, $alternateEmail, $birthdate, $nationalityID, $occupationID, $gender, $isSmoker, $region, $city) {
         $startTrans = $this->_connection->beginTransaction();
-        
+
         if($gender == '')
             $gender = 1;
         if($nationalityID == '')
@@ -347,7 +380,7 @@ class MemberInfoModel {
             $occupationID = 1;
         if($isSmoker == '')
             $isSmoker = 2;
-        
+
         try {
             $sql = "UPDATE memberinfo
                     SET FirstName = :FirstName, MiddleName = :MiddleName, LastName = :LastName,
@@ -362,10 +395,10 @@ class MemberInfoModel {
                            ':NationalityID' => $nationalityID,':OccupationID' => $occupationID,
                            ':Gender' => $gender, ':IsSmoker' => $isSmoker,':Region' => $region, ':City' => $city, ':MID' => $MID);
             $command = $this->_connection->createCommand($sql);
-            
+
             $command->bindValues($param);
             $command->execute();
-                      
+
             try {
                 $startTrans->commit();
                 return 1;
@@ -374,17 +407,18 @@ class MemberInfoModel {
                 Utilities::log($e->getMessage());
                 return 0;
             }
-        
+
         } catch (Exception $e) {
             $startTrans->rollback();
             Utilities::log($e->getMessage());
             return 0;
         }
     }
-    
+
     public function updateProfilev2WithSP($firstname, $middlename, $lastname, $nickname, $MID, $permanentAddress, $mobileNumber, $alternateMobileNumber, $emailAddress, $alternateEmail, $birthdate, $nationalityID, $occupationID, $gender, $isSmoker, $region, $city) {
         $startTrans = $this->_connection->beginTransaction();
-        
+
+        $SFID = $this->_getSF($MID);
         if($gender == '')
             $gender = 1;
         if($nationalityID == '')
@@ -408,7 +442,39 @@ class MemberInfoModel {
 
             try {
                 $startTrans->commit();
-                return 1;
+                //start add - SF push 07272015 mcs
+                $instanceURL = Yii::app()->params['instanceURL'];
+                $apiVersion = Yii::app()->params['apiVersion'];
+                $cKey = Yii::app()->params['cKey'];
+                $cSecret = Yii::app()->params['cSecret'];
+                $sfLogin = Yii::app()->params['sfLogin'];
+                $sfPassword = Yii::app()->params['sfPassword'];
+                $secToken = Yii::app()->params['secToken'];
+
+                $sfapi = new SalesforceAPI($instanceURL, $apiVersion, $cKey, $cSecret);
+                $sfSuccessful = $sfapi->login($sfLogin, $sfPassword, $secToken);
+                if($sfSuccessful)
+                {
+                    $newBaseUrl = $sfSuccessful->instance_url;
+                    $accessToken = $sfSuccessful->access_token;
+
+                    $isUpdated = $sfapi->update_account($SFID, $firstname, $lastname, $birthdate, null, null, null, $newBaseUrl, $accessToken);
+                    return 1;
+                    //if($isUpdated)
+                    //{
+                    //    $startTrans->commit();
+                    //}
+                    //else
+                    //{
+                    //    $startTrans->rollback();
+                    //}
+                }
+                else
+                {
+                    //$startTrans->rollback();
+                    return 0;
+                }
+                //end add - SF push 07272015 mcs
             } catch (PDOException $e) {
                 $startTrans->rollback();
                 Utilities::log($e->getMessage());
@@ -449,10 +515,10 @@ class MemberInfoModel {
                            ':NationalityID' => $nationalityID,':OccupationID' => $occupationID, ':IdentificationNumber' => $idNumber, ':IdentificationID' => $idPresented,
                            ':Gender' => $gender, ':IsSmoker' => $isSmoker,':Region' => $region, ':City' => $city, ':MID' => $MID);
             $command = $this->_connection->createCommand($sql);
-            
+
             $command->bindValues($param);
             $command->execute();
-                      
+
             try {
                 $startTrans->commit();
                 return 1;
@@ -468,10 +534,11 @@ class MemberInfoModel {
             return 0;
         }
     }
-    
+
     public function updateProfilev3WithSP($firstname, $middlename, $lastname, $nickname, $MID, $permanentAddress, $mobileNumber, $alternateMobileNumber, $emailAddress, $alternateEmail, $birthdate, $nationalityID, $occupationID, $idNumber, $idPresented, $gender, $isSmoker, $region, $city) {
         $startTrans = $this->_connection->beginTransaction();
 
+	$SFID = $this->_getSF($MID);
         if($gender == '')
             $gender = 1;
         if($nationalityID == '')
@@ -495,7 +562,39 @@ class MemberInfoModel {
 
             try {
                 $startTrans->commit();
-                return 1;
+                //start add - SF push 07272015 mcs
+                $instanceURL = Yii::app()->params['instanceURL'];
+                $apiVersion = Yii::app()->params['apiVersion'];
+                $cKey = Yii::app()->params['cKey'];
+                $cSecret = Yii::app()->params['cSecret'];
+                $sfLogin = Yii::app()->params['sfLogin'];
+                $sfPassword = Yii::app()->params['sfPassword'];
+                $secToken = Yii::app()->params['secToken'];
+
+                $sfapi = new SalesforceAPI($instanceURL, $apiVersion, $cKey, $cSecret);
+                $sfSuccessful = $sfapi->login($sfLogin, $sfPassword, $secToken);
+                if($sfSuccessful)
+                {
+                    $newBaseUrl = $sfSuccessful->instance_url;
+                    $accessToken = $sfSuccessful->access_token;
+
+                    $isUpdated = $sfapi->update_account($SFID, $firstname, $lastname, $birthdate, null, null, null, $newBaseUrl, $accessToken);
+                    return 1;
+                    //if($isUpdated)
+                    //{
+                    //    $startTrans->commit();
+                    //}
+                    //else
+                    //{
+                    //    $startTrans->rollback();
+                    //}
+                }
+                else
+                {
+                    //$startTrans->rollback();
+                    return 0;
+                }
+                //end add - SF push 07272015 mcs
             } catch (PDOException $e) {
                 $startTrans->rollback();
                 Utilities::log($e->getMessage());
@@ -507,6 +606,19 @@ class MemberInfoModel {
             Utilities::log($e->getMessage());
             return 0;
         }
+    }
+
+    //@date 06-11-2015
+    private function _getSF($MID)
+    {
+        $sql = "SELECT SFID as SFID
+                FROM memberinfo
+                WHERE MID = :MID";
+        $param = array(':MID' => $MID);
+        $command = $this->_connection->createCommand($sql);
+        $result = $command->queryRow(true, $param);
+
+        return $result['SFID'];
     }
 }
 
