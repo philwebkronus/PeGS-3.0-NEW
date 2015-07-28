@@ -67,7 +67,7 @@ class TempMembers extends BaseEntity
     {
         $this->StartTransaction();
         
-        $query = "CALL membership.sp_select_data(0, 0, 3, '$tempcode,$email', 'UserName', @RetCode, @RetMsg, @RetFields)";       
+        $query = "CALL membership.sp_select_data(0, 0, 16, '$tempcode,$email', 'UserName', @RetCode, @RetMsg, @RetFields)";       
         $result = parent::RunQuery($query);
         if ($result[0]['OUTfldListRet'] > 0) {
             $query2 = "CALL membership.sp_update_data(0, 0, 'UserName,TemporaryAccountCode','$email;$tempcode','DateVerified,IsVerified','NOW(6);1',@ResultCode,@Result)";
@@ -358,7 +358,7 @@ class TempMembers extends BaseEntity
         parent::RunQuery($query1);
         $result = parent::RunQuery($query2);
         $MID = $result[0]['@ReturnFields'];
-        $query3 = "SELECT TemporaryCode FROM $this->TableName WHERE IsVerified = 1 AND MID = $MID";
+        $query3 = "SELECT TemporaryAccountCode FROM membership_temp.members WHERE IsVerified = 1 AND MID = $MID";
         $result2 = parent::RunQuery($query3);
         return $result2[0]['TemporaryAccountCode'];
     }
