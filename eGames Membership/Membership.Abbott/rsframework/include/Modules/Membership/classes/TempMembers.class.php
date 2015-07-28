@@ -343,7 +343,7 @@ class TempMembers extends BaseEntity
         $query2 = "SELECT @ReturnCode, @ReturnMessage, @ReturnFields;";
         parent::RunQuery($query1);
         $result = parent::RunQuery($query2);
-        return $result[0]['@ReturnFields'];
+        return $result[0]['@ReturnCode'];
     }
     
     /*
