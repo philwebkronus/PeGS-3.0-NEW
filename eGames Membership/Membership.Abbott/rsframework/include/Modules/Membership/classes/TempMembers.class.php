@@ -67,7 +67,7 @@ class TempMembers extends BaseEntity
     {
         $this->StartTransaction();
         
-        $query = "CALL membership.sp_select_data(0, 0, 16, '$tempcode,$email', 'UserName', @RetCode, @RetMsg, @RetFields)";       
+        $query = "CALL membership.sp_select_data_mp(0, 0, 16, '$tempcode,$email', 'UserName', @RetCode, @RetMsg, @RetFields)";       
         $result = parent::RunQuery($query);
         if ($result[0]['OUTfldListRet'] > 0) {
             $query2 = "CALL membership.sp_update_data(0, 0, 'UserName,TemporaryAccountCode','$email;$tempcode','DateVerified,IsVerified','NOW(6);1',@ResultCode,@Result)";
