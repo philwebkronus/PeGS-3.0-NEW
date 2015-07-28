@@ -106,7 +106,8 @@ if($connected1 && $connected2 && $connected3)
                                         if($vuserMode == 1){
                                             $ubcredentials = $membership->getUBCredentials($vserviceID, $vMID);
                                             $login = $ubcredentials["ServiceUsername"];
-                                            $voperator = $ubcredentials["FirstName"]." ".$ubcredentials["LastName"];
+                                            $acctname = $membership->getPlayerName($vMID);
+                                            $voperator = $acctname[0]["FirstName"]." ".$acctname[0]["LastName"];
                                             $cardnumber = $loyaltydb->getCardNumber($vMID);
                                             $vterminalcode = $cardnumber["CardNumber"];
                                         } else {

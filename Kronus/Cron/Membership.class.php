@@ -110,6 +110,24 @@ class Membership {
             return array('ErrorCode' => 1, 'ErrorMsg' => $e->getMessage());
         }
     }
+    /**
+     * Get player name SP
+     * @param type $MID
+     * @return type
+     * @author mge
+     */
+    public function getPlayerName($MID) {
+        $query = "CALL membership.sp_select_data(1, 1, 0, $MID, 'FirstName,MiddleName,LastName,MID', @ResultCode, @ResultMsg, @ResultField)";
+        $sth = $this->_dbh->prepare($query);
+        $sth->execute();
+        $result = $sth->fetch(PDO::FETCH_LAZY);
+
+        $exp = explode(";", $result['OUTfldListRet']);
+        return array(0 => array('FirstName' => $exp[0], 
+                                'MiddleName' => $exp[1], 
+                                'LastName' => $exp[2], 
+                                'MID' => $exp[3]));
+    }
 }
 
 ?>
