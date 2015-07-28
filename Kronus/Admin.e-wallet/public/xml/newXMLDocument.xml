@@ -240,4 +240,12 @@
       <submenu id ="54" name='Audit Trail' path='rptaudittrail.php' pagename="19" group=' '/> 
    </menu>
 </right>
+<right id="19">   
+      <menu id ="15" name='Functions' path='blank.php' pagename="15"> 
+        <submenu id="42" name='Terminal Provider Assignment' path='serviceassignment.php' group='RTG Terminal Maintenance'  pagename="15" />
+        <submenu id="42" name='Terminal Provider Assignment' path='serviceassignment.php' group='RTG2 Terminal Maintenance'  pagename="15" />
+        <submenu id="42" name='Terminal Provider Assignment' path='serviceassignment.php' group='MG Terminal Maintenance'  pagename="15" />
+        <submenu id='62' name='Update Terminal Classification' path='updateterminaltype.php' group=' ' pagename="15" />
+      </menu>
+</right>
 </rights>

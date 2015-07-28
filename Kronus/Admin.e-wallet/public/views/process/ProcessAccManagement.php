@@ -85,7 +85,8 @@ if($connected)
            $accountypes=array_merge($accountypes,$oaccount->getallaccounttypes(12)); //Finance
            $accountypes=array_merge($accountypes,$oaccount->getallaccounttypes(13)); //Marketing
            $accountypes=array_merge($accountypes,$oaccount->getallaccounttypes(16)); //Audit
-           $accountypes=array_merge($accountypes,$oaccount->getallaccounttypes(18)); //Audit
+           $accountypes=array_merge($accountypes,$oaccount->getallaccounttypes(18)); //Customer Service - Supervisor
+           $accountypes=array_merge($accountypes,$oaccount->getallaccounttypes(19)); //SMG - Deployment
        break;
        case 2:
            //Operator
