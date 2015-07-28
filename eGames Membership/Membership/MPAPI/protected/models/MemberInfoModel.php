@@ -157,7 +157,7 @@ class MemberInfoModel {
         }
     }
 
-    public function updateProfileWithSP($firstname, $middlename, $lastname, $nickname, $MID, $permanentAddress, $mobileNumber, $alternateMobileNumber, $emailAddress, $alternateEmail, $birthdate, $nationalityID, $occupationID, $idNumber, $idPresented, $gender, $isSmoker) {
+    public function updateProfileWithSP($MID, $permanentAddress, $mobileNumber, $alternateMobileNumber, $emailAddress, $alternateEmail, $birthdate, $nationalityID, $occupationID, $idNumber, $idPresented, $gender, $isSmoker) {//$firstname, $middlename, $lastname, $nickname,
         $startTrans = $this->_connection->beginTransaction();
 
         $SFID = $this->_getSF($MID);
@@ -171,12 +171,8 @@ class MemberInfoModel {
             $isSmoker = 2;
 
         try {
-            $sql = "CALL sp_update_data(1,1,'MID',$MID,'FirstName,MiddleName,LastName,NickName,Address1,MobileNumber,AlternateMobileNumber,Email,AlternateEmail,BirthDate,NationalityID,OccupationID,IdentificationNumber,IdentificationID,Gender,IsSmoker','$firstname;$middlename;$lastname;$nickname;$permanentAddress;$mobileNumber;$alternateMobileNumber;$emailAddress;$alternateEmail;$birthdate;$nationalityID;$occupationID;$idNumber;$idPresented;$gender;$isSmoker',@OUT_intResultCode,@OUT_strResult);";
-//            $param = array(':FirstName' => $firstname,':MiddleName' => $middlename, ':LastName' => $lastname, ':NickName' => $nickname,
-//                           ':Address' => $permanentAddress,':MobileNumber' => $mobileNumber, ':AlternateMobileNumber' => $alternateMobileNumber,
-//                           ':Email' => $emailAddress,':AlternateEmail' => $alternateEmail, ':Birthdate' => $birthdate,
-//                           ':NationalityID' => $nationalityID,':OccupationID' => $occupationID, ':IdentificationNumber' => $idNumber, ':IdentificationID' => $idPresented,
-//                           ':Gender' => $gender, ':IsSmoker' => $isSmoker, ':MID' => $MID);
+            $sql = "CALL sp_update_data(1,1,'MID',$MID,'Address1,MobileNumber,AlternateMobileNumber,Email,AlternateEmail,BirthDate,NationalityID,OccupationID,IdentificationNumber,IdentificationID,Gender,IsSmoker','$permanentAddress;$mobileNumber;$alternateMobileNumber;$emailAddress;$alternateEmail;$birthdate;$nationalityID;$occupationID;$idNumber;$idPresented;$gender;$isSmoker',@OUT_intResultCode,@OUT_strResult);";
+            // FirstName,MiddleName,LastName,NickName, //$firstname;$middlename;$lastname;$nickname;
             $command = $this->_connection->createCommand($sql);
 
            // $command->bindValues($param);
@@ -200,7 +196,7 @@ class MemberInfoModel {
                     $newBaseUrl = $sfSuccessful->instance_url;
                     $accessToken = $sfSuccessful->access_token;
 
-                    $isUpdated = $sfapi->update_account($SFID, $firstname, $lastname, $birthdate, null, null, null, $newBaseUrl, $accessToken);
+                    $isUpdated = $sfapi->update_account($SFID, null, null, $birthdate, null, null, null, $newBaseUrl, $accessToken);//changed $firstname and $lastname to null 07282015 mcs
                     return 1;
                     //if($isUpdated)
                     //{
@@ -345,7 +341,7 @@ class MemberInfoModel {
         }
     }
 
-    public function updateProfilev2WithSP($firstname, $middlename, $lastname, $nickname, $MID, $permanentAddress, $mobileNumber, $alternateMobileNumber, $emailAddress, $alternateEmail, $birthdate, $nationalityID, $occupationID, $gender, $isSmoker, $region, $city) {
+    public function updateProfilev2WithSP($MID, $permanentAddress, $mobileNumber, $alternateMobileNumber, $emailAddress, $alternateEmail, $birthdate, $nationalityID, $occupationID, $gender, $isSmoker, $region, $city) {//$firstname, $middlename, $lastname, $nickname,
         $startTrans = $this->_connection->beginTransaction();
 
         $SFID = $this->_getSF($MID);
@@ -359,12 +355,8 @@ class MemberInfoModel {
             $isSmoker = 2;
 
         try {
-            $sql = "CALL sp_update_data(1,1,'MID',$MID,'FirstName,MiddleName,LastName,NickName,Address1,MobileNumber,AlternateMobileNumber,Email,AlternateEmail,BirthDate,NationalityID,OccupationID,Gender,IsSmoker,RegionID,CityID','$firstname;$middlename;$lastname;$nickname;$permanentAddress;$mobileNumber;$alternateMobileNumber;$emailAddress;$alternateEmail;$birthdate;$nationalityID;$occupationID;$gender;$isSmoker;$region;$city',@OUT_intResultCode,@OUT_strResult)";
-//            $param = array(':FirstName' => $firstname,':MiddleName' => $middlename, ':LastName' => $lastname, ':NickName' => $nickname,
-//                           ':Address' => $permanentAddress,':MobileNumber' => $mobileNumber, ':AlternateMobileNumber' => $alternateMobileNumber,
-//                           ':Email' => $emailAddress,':AlternateEmail' => $alternateEmail, ':Birthdate' => $birthdate,
-//                           ':NationalityID' => $nationalityID,':OccupationID' => $occupationID,
-//                           ':Gender' => $gender, ':IsSmoker' => $isSmoker,':Region' => $region, ':City' => $city, ':MID' => $MID);
+            $sql = "CALL sp_update_data(1,1,'MID',$MID,'Address1,MobileNumber,AlternateMobileNumber,Email,AlternateEmail,BirthDate,NationalityID,OccupationID,Gender,IsSmoker,RegionID,CityID','$permanentAddress;$mobileNumber;$alternateMobileNumber;$emailAddress;$alternateEmail;$birthdate;$nationalityID;$occupationID;$gender;$isSmoker;$region;$city',@OUT_intResultCode,@OUT_strResult)";
+              //FirstName,MiddleName,LastName,NickName, //$firstname;$middlename;$lastname;$nickname;
             $command = $this->_connection->createCommand($sql);
 
             //$command->bindValues($param);
@@ -388,7 +380,7 @@ class MemberInfoModel {
                     $newBaseUrl = $sfSuccessful->instance_url;
                     $accessToken = $sfSuccessful->access_token;
 
-                    $isUpdated = $sfapi->update_account($SFID, $firstname, $lastname, $birthdate, null, null, null, $newBaseUrl, $accessToken);
+                    $isUpdated = $sfapi->update_account($SFID, null, null, $birthdate, null, null, null, $newBaseUrl, $accessToken);//changed $firstname and $lastname to null 07282015 mcs
                     return 1;
                     //if($isUpdated)
                     //{
@@ -465,7 +457,7 @@ class MemberInfoModel {
         }
     }
 
-    public function updateProfilev3WithSP($firstname, $middlename, $lastname, $nickname, $MID, $permanentAddress, $mobileNumber, $alternateMobileNumber, $emailAddress, $alternateEmail, $birthdate, $nationalityID, $occupationID, $idNumber, $idPresented, $gender, $isSmoker, $region, $city) {
+    public function updateProfilev3WithSP($MID, $permanentAddress, $mobileNumber, $alternateMobileNumber, $emailAddress, $alternateEmail, $birthdate, $nationalityID, $occupationID, $idNumber, $idPresented, $gender, $isSmoker, $region, $city) {//$firstname, $middlename, $lastname, $nickname,
         $startTrans = $this->_connection->beginTransaction();
 
 	$SFID = $this->_getSF($MID);
@@ -479,7 +471,8 @@ class MemberInfoModel {
             $isSmoker = 2;
 
         try {
-            $sql = "CALL sp_update_data(1,1,'MID',$MID,'FirstName,MiddleName,LastName,NickName,Address1,MobileNumber,AlternateMobileNumber,Email,AlternateEmail,BirthDate,NationalityID,OccupationID,IdentificationNumber,IdentificationID,Gender,IsSmoker,RegionID,CityID','$firstname;$middlename;$lastname;$nickname;$permanentAddress;$mobileNumber;$alternateMobileNumber;$emailAddress;$alternateEmail;$birthdate;$nationalityID;$occupationID;$idNumber;$idPresented;$gender;$isSmoker;$region;$city',@OUT_intResultCode,@OUT_strResult);";
+            $sql = "CALL sp_update_data(1,1,'MID',$MID,'Address1,MobileNumber,AlternateMobileNumber,Email,AlternateEmail,BirthDate,NationalityID,OccupationID,IdentificationNumber,IdentificationID,Gender,IsSmoker,RegionID,CityID','$permanentAddress;$mobileNumber;$alternateMobileNumber;$emailAddress;$alternateEmail;$birthdate;$nationalityID;$occupationID;$idNumber;$idPresented;$gender;$isSmoker;$region;$city',@OUT_intResultCode,@OUT_strResult);";
+            //FirstName,MiddleName,LastName,NickName, //$firstname;$middlename;$lastname;$nickname;
 //            $param = array(':FirstName' => $firstname,':MiddleName' => $middlename, ':LastName' => $lastname, ':NickName' => $nickname,
 //                           ':Address' => $permanentAddress,':MobileNumber' => $mobileNumber, ':AlternateMobileNumber' => $alternateMobileNumber,
 //                           ':Email' => $emailAddress,':AlternateEmail' => $alternateEmail, ':Birthdate' => $birthdate,
@@ -508,7 +501,7 @@ class MemberInfoModel {
                     $newBaseUrl = $sfSuccessful->instance_url;
                     $accessToken = $sfSuccessful->access_token;
 
-                    $isUpdated = $sfapi->update_account($SFID, $firstname, $lastname, $birthdate, null, null, null, $newBaseUrl, $accessToken);
+                    $isUpdated = $sfapi->update_account($SFID, null, null, $birthdate, null, null, null, $newBaseUrl, $accessToken);//changed $firstname and $lastname to null 07282015 mcs
                     return 1;
                     //if($isUpdated)
                     //{

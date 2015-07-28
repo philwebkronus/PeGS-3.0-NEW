@@ -6,7 +6,7 @@
         <div class="row">
             <?php echo CHtml::label('MPSessionID','MPSessionID'); ?>
             <?php echo CHtml::textField('MPSessionID'); ?>
-        </div>
+        </div><!--
         <div class="row">
             <?php echo CHtml::label('FirstName','FirstName'); ?>
             <?php echo CHtml::textField('FirstName'); ?>
@@ -22,7 +22,7 @@
         <div class="row">
             <?php echo CHtml::label('NickName','NickName'); ?>
             <?php echo CHtml::textField('NickName'); ?>
-        </div>
+        </div>-->
         <div class="row">
             <?php echo CHtml::label('Password','Password'); ?>
             <?php echo CHtml::textField('Password'); ?>
@@ -86,7 +86,7 @@
         <div class="row" style="margin-left: 225px;">
             <?php echo CHtml::submitButton('Invoke'); ?>
         </div>
-    
+
     <?php echo CHtml::endForm(); ?>
 </div>
 

@@ -93,7 +93,7 @@ class MPapiController extends Controller {
 //            } else {
 //                $result = array();
 //            }
-            
+
 
             $refID = $username;
         }
@@ -403,7 +403,7 @@ class MPapiController extends Controller {
                         }
                     } else {
                         $logMessage = 'Member is not found in db.';
-                        $transMsg = 'Member not found';
+                        $transMsg = 'Invalid password.';
                         $errorCode = 3;
                         Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
                         $data = CommonController::retMsgLogin($module, '', '', '', '', $errorCode, $transMsg);
@@ -743,7 +743,7 @@ class MPapiController extends Controller {
                         $hashedUBCard = base64_encode($ubCard);
 
                         $result = $membersModel->updateForChangePasswordUsingMIDWithSP($MID, 1);
-                        
+
                         if ($result > 0) {
                             $helpers->sendEmailForgotPassword($emailCardNumber, $fullname, $hashedUBCard);
                             $isSuccessful = $auditTrailModel->logEvent(AuditTrailModel::API_FORGOT_PASSWORD, 'EmailCardNumber: ' . $emailCardNumber, array('MID' => $MID, 'SessionID' => ''));
@@ -2031,10 +2031,10 @@ class MPapiController extends Controller {
                 exit;
             }
         }
-        if (isset($request['FirstName']) && isset($request['LastName']) && isset($request['MobileNo'])
-                && isset($request['EmailAddress']) && ((isset($request['IDNumber']) && isset($request['IDPresented'])) || (isset($request['Region']) && isset($request['City']))) && isset($request['Birthdate']) && isset($request['MPSessionID'])) {
-            if (($request['FirstName'] == '') || ($request['LastName'] == '') || ($request['MobileNo'] == '') || ($request['EmailAddress'] == '')
-                    || ($request['Birthdate'] == '') || ($request['MPSessionID'] == '')) {
+        if (//isset($request['FirstName']) && isset($request['LastName']) &&
+                isset($request['MobileNo']) && isset($request['EmailAddress']) && ((isset($request['IDNumber']) && isset($request['IDPresented'])) || (isset($request['Region']) && isset($request['City']))) && isset($request['Birthdate']) && isset($request['MPSessionID'])) {
+            if (//($request['FirstName'] == '') || ($request['LastName'] == '') ||
+                    ($request['MobileNo'] == '') || ($request['EmailAddress'] == '') || ($request['Birthdate'] == '') || ($request['MPSessionID'] == '')) {
                 $transMsg = "One or more fields is not set or is blank.";
                 $errorCode = 1;
                 Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
@@ -2068,7 +2068,7 @@ class MPapiController extends Controller {
                     $logger->log($logger->logdate, "[UPDATEPROFILE ERROR]: MID " . $MID . " || ", $logMessage);
                 }
                 exit;
-            } else if (strlen($request['FirstName']) < 2 || ($request['MiddleName'] != '' && strlen($request['MiddleName']) < 2) || strlen($request['LastName']) < 2) {
+            /*} else if (strlen($request['FirstName']) < 2 || ($request['MiddleName'] != '' && strlen($request['MiddleName']) < 2) || strlen($request['LastName']) < 2) {
                 $transMsg = "Name should not be less than 2 characters long.";
                 $errorCode = 14;
                 Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
@@ -2101,7 +2101,7 @@ class MPapiController extends Controller {
                     $logMessage = "Failed to insert to APILogs.";
                     $logger->log($logger->logdate, "[UPDATEPROFILE ERROR]: MID " . $MID . " || ", $logMessage);
                 }
-                exit;
+                exit;*/
             } else if (($request['Password'] != '' && ctype_alnum($request['Password']) == FALSE) || ($request['IDNumber'] != '' && ctype_alnum($request['IDNumber']) == FALSE)) {
                 $transMsg = "Password and ID Number should consist of letters and numbers only.";
                 $errorCode = 18;
@@ -2365,10 +2365,10 @@ class MPapiController extends Controller {
                 $membersModel = new MembersModel();
                 $auditTrailModel = new AuditTrailModel();
                 $emailAddress = trim($request['EmailAddress']);
-                $firstname = trim($request['FirstName']);
-                $middlename = trim($request['MiddleName']);
-                $lastname = trim($request['LastName']);
-                $nickname = trim($request['NickName']);
+                //$firstname = trim($request['FirstName']);
+                //$middlename = trim($request['MiddleName']);
+                //$lastname = trim($request['LastName']);
+                //$nickname = trim($request['NickName']);
                 if (trim($request['Password']) != '')
                     $password = trim($request['Password']);
                 else
@@ -2460,7 +2460,7 @@ class MPapiController extends Controller {
                         }
                         exit;
                     } else {
-                        $refID = $firstname . ' ' . $lastname;
+                        $refID = $mid;// $firstname . ' ' . $lastname;
                         //$hasEmail = $membersModel->checkIfUsernameExistsWithMID($MID, $emailAddress);
                         $tempHasEmail = $membershipTempModel->checkIfUsernameExistsWithTACWithSP($emailAddress, $tempAcctCode);
 
@@ -2487,11 +2487,11 @@ class MPapiController extends Controller {
                         }
                         //proceed with the updating of member profile
                         if ($region != '' && $city != '' && $idNumber == '' && $idPresented == '')
-                            $result = $memberInfoModel->updateProfilev2WithSP($firstname, $middlename, $lastname, $nickname, $mid, $permanentAddress, $mobileNumber, $alternateMobileNumber, $emailAddress, $alternateEmail, $birthdate, $nationalityID, $occupationID, $gender, $isSmoker, $region, $city);
+                            $result = $memberInfoModel->updateProfilev2WithSP($mid, $permanentAddress, $mobileNumber, $alternateMobileNumber, $emailAddress, $alternateEmail, $birthdate, $nationalityID, $occupationID, $gender, $isSmoker, $region, $city);//$firstname, $middlename, $lastname, $nickname,
                         else if ($region == '' && $city == '' && $idNumber != '' && $idPresented != '')
-                            $result = $memberInfoModel->updateProfileWithSP($firstname, $middlename, $lastname, $nickname, $mid, $permanentAddress, $mobileNumber, $alternateMobileNumber, $emailAddress, $alternateEmail, $birthdate, $nationalityID, $occupationID, $idNumber, $idPresented, $gender, $isSmoker);
+                            $result = $memberInfoModel->updateProfileWithSP($mid, $permanentAddress, $mobileNumber, $alternateMobileNumber, $emailAddress, $alternateEmail, $birthdate, $nationalityID, $occupationID, $idNumber, $idPresented, $gender, $isSmoker);//$firstname, $middlename, $lastname, $nickname,
                         else if ($region != '' && $city != '' && $idNumber != '' && $idPresented != '')
-                            $result = $memberInfoModel->updateProfilev3WithSP($firstname, $middlename, $lastname, $nickname, $mid, $permanentAddress, $mobileNumber, $alternateMobileNumber, $emailAddress, $alternateEmail, $birthdate, $nationalityID, $occupationID, $idNumber, $idPresented, $gender, $isSmoker, $region, $city);
+                            $result = $memberInfoModel->updateProfilev3WithSP($mid, $permanentAddress, $mobileNumber, $alternateMobileNumber, $emailAddress, $alternateEmail, $birthdate, $nationalityID, $occupationID, $idNumber, $idPresented, $gender, $isSmoker, $region, $city);//$firstname, $middlename, $lastname, $nickname,
                         else {
                             $transMsg = 'One or more fields is not set or is blank.';
                             $errorCode = 1;
@@ -2514,7 +2514,7 @@ class MPapiController extends Controller {
 
                             if ($result2 > 0) {
                                 $result3 = $membershipTempModel->updateTempEmailWithSP($mid, $emailAddress);
-                                
+
                                 if ($result3 > 0) {
                                     $result4 = $membershipTempModel->updateTempMemberUsernameWithSP($tempAcctCode, $emailAddress, $password);
 
@@ -2711,7 +2711,7 @@ class MPapiController extends Controller {
                 $memberCardsModel = new MemberCardsModel();
                 $auditTrailModel = new AuditTrailModel();
                 $membersModel = new MembersModel();
-                
+
                 $resultMID = $memberCardsModel->getMIDUsingCard($cardNumber);
                 if($resultMID)
                 {
@@ -2905,7 +2905,7 @@ class MPapiController extends Controller {
                         }
                     }
                 }
-                else 
+                else
                 {
                     $transMsg = "Card is Invalid.";
                     $errorCode = 10;
@@ -3406,7 +3406,7 @@ class MPapiController extends Controller {
                         if($isEwallet == 1)
                         {
                             $pcwsWrapper = new PcwsWrapper();
-                            
+
                             $result = $pcwsWrapper->getCompPoints($cardNumber, 1);
                             if ($result) {
                                 $currentPoints = $result['GetCompPoints']['CompBalance'];
@@ -3434,7 +3434,7 @@ class MPapiController extends Controller {
                         {
                             $result = $memberCardsModel->getMemberPointsAndStatus($cardNumber);
                             $currentPoints = $result['CurrentPoints'];
-                        }  
+                        }
 //                        $result = $memberCardsModel->getMemberPointsAndStatus($cardNumber);
 //
 //                        $memberDetails = $memberInfoModel->getMemberInfoUsingMID($MID);
@@ -3772,7 +3772,7 @@ class MPapiController extends Controller {
                                                         $redemptionDate = $rDate->format("F j, Y, g:i a");
                                                         $fBirthdate = date("F j, Y", strtotime($birthdate));
                                                         $siteCode = 'Website';
-                                                        
+
                                                        // for($i=0;$i<$itemQty1;$i++){
                                                             $raCheckSum = $resultArray['CheckSum'];
                                                             $serialNumber = $resultArray['SerialNumber'];
@@ -4010,7 +4010,7 @@ class MPapiController extends Controller {
                                                             $about = $itemDetail['About'];
                                                             $terms = $itemDetail['Terms'];
                                                         }
-                                                        
+
                                                         $email = $memberDetails['Email'];
                                                         for($i=0;$i<$quantity;$i++){
                                                             $sessionSerialCode[] = $resultsArray['SessionSerialCode'][$i];
@@ -4395,7 +4395,7 @@ $itemRedemptionArray = array('ItemImage' => $itemImage, 'ItemName' => $itemName,
                         $result = $memberInfoModel->getEmailFNameUsingMIDWIthSP($MID);
                         $emailAddress = $result['Email'];
                         $memberDetails = $memberInfoModel->getDetailsUsingEmailWithSP($emailAddress);
-                        
+
                         if ($memberDetails) {
                             $memberInfo = $memberInfoModel->getMemberInfoUsingMID($MID);
                             $memberPoints = $cardsModel->getMemberInfoUsingCardNumber($cardNumber);
@@ -4432,19 +4432,19 @@ $itemRedemptionArray = array('ItemImage' => $itemImage, 'ItemName' => $itemName,
                                 $isSmoker = '';
                             $birthDate = $memberInfo['Birthdate'];
                             $age = number_format((abs(strtotime($birthDate) - strtotime(date('Y-m-d'))) / 60 / 60 / 24 / 365), 0);
-                            
-                            
-                            
+
+
+
                             $redeemedPoints = $memberPoints['RedeemedPoints'];
                             $lifetimePoints = $memberPoints['LifetimePoints'];
-                            
-                            
+
+
                             $resultIsEwallet = $membersModel->checkIfEwallet($MID);
                             $isEwallet = $resultIsEwallet['IsEwallet'];
                             if($isEwallet == 1)
                             {
                                 $pcwsWrapper = new PcwsWrapper();
-                                
+
                                 $result = $pcwsWrapper->getCompPoints($cardNumber, 1);
                                 if ($result) {
                                     $currentPoints = $result['GetCompPoints']['CompBalance'];

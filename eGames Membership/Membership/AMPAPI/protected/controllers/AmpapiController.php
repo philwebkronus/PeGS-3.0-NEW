@@ -517,7 +517,7 @@ class AmpapiController extends Controller {
         $paramval = CJSON::encode($request);
         $message = "[" . $module . "] " . $rand . " Input: " . $paramval;
         $appLogger->log($appLogger->logdate, "[request]", $message);
-        $fields = array('TPSessionID' => false, 'MPSessionID' => false, 'FirstName' => false, 'LastName' => false, 'MobileNo' => false, 'EmailAddress' => false, 'Birthdate' => false);
+        $fields = array('TPSessionID'=>false,'MPSessionID'=>false, 'MobileNo'=>false,'EmailAddress'=>false,'Birthdate'=>false);//'FirstName'=>false,'LastName'=>false,
 
         $validateRequiredFields = $this->validateRequiredFields($request, $module, $fields, $rand);
         if ($validateRequiredFields === true) {
@@ -529,12 +529,12 @@ class AmpapiController extends Controller {
                     if ($validateAlternateMobile === true) {
                         $validateAlternateMobile = $this->validateAlternateMobileLength($request, $module, array('AlternateMobileNo' => false), $rand);
                         if ($validateAlternateMobile === true) {
-                            $validateNames = $this->validateNames($request, $module, array('FirstName' => false, 'LastName' => false), $rand);
-                            if ($validateNames === true) {
-                                $validateMiddleName = $this->validateNotRequiredNames($request, $module, array('MiddleName' => false), 'MiddleName', $rand);
-                                if ($validateMiddleName === true) {
-                                    $validateNickName = $this->validateNotRequiredNames($request, $module, array('NickName' => false), 'NickName', $rand);
-                                    if ($validateNickName === true) {
+                            //$validateNames = $this->validateNames($request, $module, array('FirstName' => false, 'LastName' => false), $rand);
+                            //if ($validateNames === true) {
+                                //$validateMiddleName = $this->validateNotRequiredNames($request, $module, array('MiddleName' => false), 'MiddleName', $rand);
+                                //if ($validateMiddleName === true) {
+                                    //$validateNickName = $this->validateNotRequiredNames($request, $module, array('NickName' => false), 'NickName', $rand);
+                                    //if ($validateNickName === true) {
                                         $validateEmail = $this->validateEmail($request, $module, array('EmailAddress' => false), $rand);
                                         if ($validateEmail === true) {
                                             $validateEmail = $this->validateAlternateEmail($request, $module, array('AlternateEmail' => false), 'AlternateEmail', $rand);
@@ -551,9 +551,9 @@ class AmpapiController extends Controller {
                                                 }
                                             }
                                         }
-                                    }
-                                }
-                            }
+                                    //}
+                                //}
+                            //}
                         }
                     }
                 }
@@ -567,10 +567,10 @@ class AmpapiController extends Controller {
         $validateTPSessionID = $this->_validateTPSession($TPSessionID, '', $module, $randchars);
         if ($validateTPSessionID === true) {
             $MPSessionID = $request['MPSessionID'];
-            $FirstName = trim($request['FirstName']);
-            $MiddleName = trim($request['MiddleName']);
-            $LastName = trim($request['LastName']);
-            $NickName = trim($request['NickName']);
+            //$FirstName = trim($request['FirstName']);
+            //$MiddleName = trim($request['MiddleName']);
+            //$LastName = trim($request['LastName']);
+            //$NickName = trim($request['NickName']);
             $Password = trim($request['Password']);
             $PermanentAdd = trim($request['PermanentAdd']);
             $MobileNo = trim($request['MobileNo']);
@@ -591,10 +591,10 @@ class AmpapiController extends Controller {
             $url = $this->genMPAPIURL($moduleName);
             $postData = CJSON::encode(array(
                         'MPSessionID' => $MPSessionID,
-                        'FirstName' => $FirstName,
-                        'MiddleName' => $MiddleName,
-                        'LastName' => $LastName,
-                        'NickName' => $NickName,
+                        //'FirstName' => $FirstName,
+                        //'MiddleName' => $MiddleName,
+                        //'LastName' => $LastName,
+                        //'NickName' => $NickName,
                         'Password' => $Password,
                         'PermanentAdd' => $PermanentAdd,
                         'MobileNo' => $MobileNo,
