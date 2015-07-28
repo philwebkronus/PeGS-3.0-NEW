@@ -222,13 +222,13 @@ class AmpapiInvokerController extends Controller {
         $result='';
         $moduleName ='updateprofile';
 
-        if(isset($_POST['TPSessionID']) && isset($_POST['MPSessionID']) && isset($_POST['FirstName']) && isset($_POST['LastName']) && isset($_POST['MobileNo']) && isset($_POST['EmailAddress']) && isset($_POST['Birthdate'])){
+        if(isset($_POST['TPSessionID']) && isset($_POST['MPSessionID']) && isset($_POST['MobileNo']) && isset($_POST['EmailAddress']) && isset($_POST['Birthdate'])){//&& isset($_POST['FirstName']) && isset($_POST['LastName'])
             $TPSessionID = $_POST['TPSessionID'];
             $MPSessionID = $_POST['MPSessionID'];
-            $FirstName = $_POST['FirstName'];
-            $MiddleName= $_POST['MiddleName'];
-            $LastName = $_POST['LastName'];
-            $NickName = $_POST['NickName'];
+            //$FirstName = $_POST['FirstName'];
+            //$MiddleName= $_POST['MiddleName'];
+            //$LastName = $_POST['LastName'];
+            //$NickName = $_POST['NickName'];
             $Password = $_POST['Password'];
             $PermanentAdd = $_POST['PermanentAdd'];
             $MobileNo = $_POST['MobileNo'];
@@ -245,14 +245,14 @@ class AmpapiInvokerController extends Controller {
             $Region = $_POST['Region'];
             $City = $_POST['City'];
 
-            $result = $this->_UpdateProfile($TPSessionID,$MPSessionID ,$FirstName ,$MiddleName , $LastName,$NickName ,$Password ,$PermanentAdd ,$MobileNo , $AlternateMobileNo,$EmailAddress ,$AlternateEmail ,$Gender ,$IDPresented ,$IDNumber, $Nationality, $Occupation, $IsSmoker, $Birthdate, $Region, $City, $moduleName);
+            $result = $this->_UpdateProfile($TPSessionID, $MPSessionID, $Password, $PermanentAdd, $MobileNo, $AlternateMobileNo, $EmailAddress, $AlternateEmail, $Gender, $IDPresented, $IDNumber, $Nationality, $Occupation, $IsSmoker, $Birthdate, $Region, $City, $moduleName);//$FirstName ,$MiddleName , $LastName,$NickName ,
         }
 
         $this->render($moduleName, array('result'=>$result));
     }
-        private function _UpdateProfile($TPSessionID,$MPSessionID ,$FirstName ,$MiddleName , $LastName,$NickName ,$Password ,$PermanentAdd ,$MobileNo , $AlternateMobileNo,$EmailAddress ,$AlternateEmail ,$Gender ,$IDPresented ,$IDNumber, $Nationality, $Occupation, $IsSmoker, $Birthdate, $Region, $City, $moduleName){
+        private function _UpdateProfile($TPSessionID, $MPSessionID, $Password, $PermanentAdd, $MobileNo, $AlternateMobileNo, $EmailAddress, $AlternateEmail, $Gender, $IDPresented, $IDNumber, $Nationality, $Occupation, $IsSmoker, $Birthdate, $Region, $City, $moduleName){// ,$FirstName ,$MiddleName , $LastName,$NickName
             $url = $this->genURL($moduleName);
-            $postData = CJSON::encode(array('TPSessionID'=>$TPSessionID,'MPSessionID'=>$MPSessionID ,'FirstName'=>$FirstName ,'MiddleName'=>$MiddleName , 'LastName'=>$LastName,'NickName'=>$NickName ,'Password'=>$Password ,'PermanentAdd'=>$PermanentAdd ,'MobileNo'=>$MobileNo , 'AlternateMobileNo'=>$AlternateMobileNo,'EmailAddress'=>$EmailAddress ,'AlternateEmail'=>$AlternateEmail ,'Gender'=>$Gender ,'IDPresented'=>$IDPresented ,'IDNumber'=>$IDNumber, 'Nationality'=>$Nationality, 'Occupation'=>$Occupation, 'IsSmoker'=>$IsSmoker, 'Birthdate'=>$Birthdate, 'Region' => $Region, 'City' => $City));
+            $postData = CJSON::encode(array('TPSessionID'=>$TPSessionID,'MPSessionID'=>$MPSessionID, 'Password'=>$Password, 'PermanentAdd'=>$PermanentAdd, 'MobileNo'=>$MobileNo, 'AlternateMobileNo'=>$AlternateMobileNo, 'EmailAddress'=>$EmailAddress, 'AlternateEmail'=>$AlternateEmail, 'Gender'=>$Gender, 'IDPresented'=>$IDPresented, 'IDNumber'=>$IDNumber, 'Nationality'=>$Nationality, 'Occupation'=>$Occupation, 'IsSmoker'=>$IsSmoker, 'Birthdate'=>$Birthdate, 'Region' => $Region, 'City' => $City));//,'FirstName'=>$FirstName ,'MiddleName'=>$MiddleName , 'LastName'=>$LastName,'NickName'=>$NickName
             $result = $this->SubmitData($url, $postData);
 
             return $result[1];

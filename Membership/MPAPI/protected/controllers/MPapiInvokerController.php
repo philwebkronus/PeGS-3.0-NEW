@@ -128,13 +128,13 @@ class MPapiInvokerController extends Controller {
         $this->pageTitle = 'Membership Portal API - Update Profile';
         $result = '';
 
-        if (isset($_POST['FirstName']) || isset($_POST['LastName']) || isset($_POST['MobileNo']) || isset($_POST['EmailAddress'])
-                || isset($_POST['IDNumber']) || isset($_POST['Birthdate']) || isset($_POST['MPSessionID']) || isset($_POST['Region']) || isset($_POST['City'])) {
+        if(//isset($_POST['FirstName']) || isset($_POST['LastName']) ||
+                isset($_POST['MobileNo']) || isset($_POST['EmailAddress']) || isset($_POST['IDNumber']) || isset($_POST['Birthdate']) || isset($_POST['MPSessionID']) || isset($_POST['Region']) || isset($_POST['City'])) {
             $mpSessionID = $_POST['MPSessionID'];
-            $firstname = $_POST['FirstName'];
-            $middlename = $_POST['MiddleName'];
-            $nickname = $_POST['NickName'];
-            $lastname = $_POST['LastName'];
+            //$firstname = $_POST['FirstName'];
+            //$middlename = $_POST['MiddleName'];
+            //$nickname = $_POST['NickName'];
+            //$lastname = $_POST['LastName'];
             $mobileNumber = $_POST['MobileNo'];
             $alternateMobileNumber = $_POST['AlternateMobileNo'];
             $emailAddress = $_POST['EmailAddress'];
@@ -151,7 +151,7 @@ class MPapiInvokerController extends Controller {
             $region = $_POST['Region'];
             $city = $_POST['City'];
 
-            $result = $this->_updateProfile($mpSessionID, $firstname, $middlename, $lastname, $nickname, $mobileNumber, $alternateMobileNumber, $emailAddress, $alternateEmail, $gender, $idNumber, $birthdate, $password, $idPresented, $permanentAddress, $nationality, $occupation, $isSmoker, $region, $city);
+            $result = $this->_updateProfile($mpSessionID, $mobileNumber, $alternateMobileNumber, $emailAddress, $alternateEmail, $gender, $idNumber, $birthdate, $password, $idPresented, $permanentAddress, $nationality, $occupation, $isSmoker, $region, $city);// $firstname, $middlename, $lastname, $nickname,
         }
 
         $this->render('updateprofile', array('result' => $result));
@@ -428,10 +428,10 @@ class MPapiInvokerController extends Controller {
         return $result[1];
     }
 
-    private function _updateProfile($mpSessionID, $firstname, $middlename, $lastname, $nickname, $mobileNumber, $alternateMobileNumber, $emailAddress, $alternateEmail, $gender, $idNumber, $birthdate, $password, $idPresented, $permanentAddress, $nationality, $occupation, $isSmoker, $region, $city) {
-        $postdata = CJSON::encode(array('MPSessionID' => $mpSessionID, 'FirstName' => $firstname, 'MiddleName' => $middlename, 'LastName' => $lastname, 'NickName' => $nickname, 'MobileNo' => $mobileNumber, 'AlternateMobileNo' => $alternateMobileNumber, 'EmailAddress' => $emailAddress,
-                    'AlternateEmail' => $alternateEmail, 'Gender' => $gender, 'IDNumber' => $idNumber, 'Birthdate' => $birthdate, 'Password' => $password, 'IDPresented' => $idPresented, 'PermanentAdd' => $permanentAddress, 'Nationality' => $nationality, 'Occupation' => $occupation, 'IsSmoker' => $isSmoker, 'Region' => $region, 'City' => $city));
-        $result = $this->SubmitData(Yii::app()->params['urlMPAPI'] . 'updateprofile', $postdata);
+    private function _updateProfile($mpSessionID, $mobileNumber, $alternateMobileNumber, $emailAddress, $alternateEmail, $gender, $idNumber, $birthdate, $password, $idPresented, $permanentAddress, $nationality, $occupation, $isSmoker, $region, $city) {//$firstname, $middlename, $lastname, $nickname,
+        $postdata = CJSON::encode(array('MPSessionID' => $mpSessionID, 'MobileNo'=>$mobileNumber,'AlternateMobileNo' => $alternateMobileNumber, 'EmailAddress'=>$emailAddress,
+                                  'AlternateEmail' => $alternateEmail,'Gender' => $gender, 'IDNumber'=>$idNumber, 'Birthdate'=>$birthdate, 'Password' => $password, 'IDPresented' => $idPresented, 'PermanentAdd' => $permanentAddress, 'Nationality' => $nationality, 'Occupation' => $occupation, 'IsSmoker' => $isSmoker, 'Region' => $region, 'City' => $city));//'FirstName'=>$firstname,'MiddleName' => $middlename, 'LastName'=>$lastname, 'NickName' => $nickname, 
+        $result = $this->SubmitData(Yii::app()->params['urlMPAPI'].'updateprofile', $postdata);
 
         return $result[1];
     }

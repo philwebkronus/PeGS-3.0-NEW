@@ -2287,11 +2287,10 @@ class MPapiController extends Controller {
                 exit;
             }
         }
-
-        if (isset($request['FirstName']) && isset($request['LastName']) && isset($request['MobileNo'])
-                && isset($request['EmailAddress']) && ((isset($request['IDNumber']) && isset($request['IDPresented'])) || (isset($request['Region']) && isset($request['City']))) && isset($request['Birthdate']) && isset($request['MPSessionID'])) {
-            if (($request['FirstName'] == '') || ($request['LastName'] == '') || ($request['MobileNo'] == '') || ($request['EmailAddress'] == '')
-                    || ($request['Birthdate'] == '') || ($request['MPSessionID'] == '')) {
+        if (//isset($request['FirstName']) && isset($request['LastName']) &&
+                isset($request['MobileNo']) && isset($request['EmailAddress']) && ((isset($request['IDNumber']) && isset($request['IDPresented'])) || (isset($request['Region']) && isset($request['City']))) && isset($request['Birthdate']) && isset($request['MPSessionID'])) {
+            if (//($request['FirstName'] == '') || ($request['LastName'] == '') ||
+                    ($request['MobileNo'] == '') || ($request['EmailAddress'] == '') || ($request['Birthdate'] == '') || ($request['MPSessionID'] == '')) {
                 $transMsg = "One or more fields is not set or is blank.";
                 $errorCode = 1;
                 Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
@@ -2327,7 +2326,7 @@ class MPapiController extends Controller {
                 }
 
                 exit;
-            } else if (strlen($request['FirstName']) < 2 || ($request['MiddleName'] != '' && strlen($request['MiddleName']) < 2) || strlen($request['LastName']) < 2) {
+            /*} else if (strlen($request['FirstName']) < 2 || ($request['MiddleName'] != '' && strlen($request['MiddleName']) < 2) || strlen($request['LastName']) < 2) {
                 $transMsg = "Name should not be less than 2 characters long.";
                 $errorCode = 14;
                 Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
@@ -2343,7 +2342,6 @@ class MPapiController extends Controller {
                     $logMessage = "Failed to insert to APILogs.";
                     $logger->log($logger->logdate, "[UPDATEPROFILE ERROR]: MID " . $MID . " || ", $logMessage);
                 }
-
                 exit;
             } else if (preg_match("/^[A-Za-z\s]+$/", trim($request['FirstName'])) == 0 || (trim($request['MiddleName'] != '') && preg_match("/^[A-Za-z\s]+$/", trim($request['MiddleName'])) == 0) || preg_match("/^[A-Za-z\s]+$/", trim($request['LastName'])) == 0 || (trim($request['NickName'] != '') && preg_match("/^[A-Za-z\s]+$/", trim($request['NickName'])) == 0)) {
                 $transMsg = "Name should consist of letters and spaces only.";
@@ -2361,8 +2359,7 @@ class MPapiController extends Controller {
                     $logMessage = "Failed to insert to APILogs.";
                     $logger->log($logger->logdate, "[UPDATEPROFILE ERROR]: MID " . $MID . " || ", $logMessage);
                 }
-
-                exit;
+                exit;*/
             } else if (($request['Password'] != '' && ctype_alnum($request['Password']) == FALSE) || ($request['IDNumber'] != '' && ctype_alnum($request['IDNumber']) == FALSE)) {
                 $transMsg = "Password and ID Number should consist of letters and numbers only.";
                 $errorCode = 18;
@@ -2643,10 +2640,10 @@ class MPapiController extends Controller {
                 $auditTrailModel = new AuditTrailModel();
 
                 $emailAddress = trim($request['EmailAddress']);
-                $firstname = trim($request['FirstName']);
-                $middlename = trim($request['MiddleName']);
-                $lastname = trim($request['LastName']);
-                $nickname = trim($request['NickName']);
+                //$firstname = trim($request['FirstName']);
+                //$middlename = trim($request['MiddleName']);
+                //$lastname = trim($request['LastName']);
+                //$nickname = trim($request['NickName']);
                 if (trim($request['Password']) != '')
                     $password = trim($request['Password']);
                 else
@@ -2749,7 +2746,7 @@ class MPapiController extends Controller {
 
                         exit;
                     } else {
-                        $refID = $firstname . ' ' . $lastname;
+                        $refID = $mid;// $firstname . ' ' . $lastname;
 
                         $tempHasEmail = $membershipTempModel->checkIfUsernameExistsWithTACWithSP($emailAddress, $tempAcctCode);
 
@@ -2780,11 +2777,11 @@ class MPapiController extends Controller {
 
                         //proceed with the updating of member profile
                         if ($region != '' && $city != '' && $idNumber == '' && $idPresented == '')
-                            $result = $memberInfoModel->updateProfilev2WithSP($firstname, $middlename, $lastname, $nickname, $mid, $permanentAddress, $mobileNumber, $alternateMobileNumber, $emailAddress, $alternateEmail, $birthdate, $nationalityID, $occupationID, $gender, $isSmoker, $region, $city);
+                            $result = $memberInfoModel->updateProfilev2WithSP($mid, $permanentAddress, $mobileNumber, $alternateMobileNumber, $emailAddress, $alternateEmail, $birthdate, $nationalityID, $occupationID, $gender, $isSmoker, $region, $city);//$firstname, $middlename, $lastname, $nickname,
                         else if ($region == '' && $city == '' && $idNumber != '' && $idPresented != '')
-                            $result = $memberInfoModel->updateProfileWithSP($firstname, $middlename, $lastname, $nickname, $mid, $permanentAddress, $mobileNumber, $alternateMobileNumber, $emailAddress, $alternateEmail, $birthdate, $nationalityID, $occupationID, $idNumber, $idPresented, $gender, $isSmoker);
+                            $result = $memberInfoModel->updateProfileWithSP($mid, $permanentAddress, $mobileNumber, $alternateMobileNumber, $emailAddress, $alternateEmail, $birthdate, $nationalityID, $occupationID, $idNumber, $idPresented, $gender, $isSmoker);//$firstname, $middlename, $lastname, $nickname,
                         else if ($region != '' && $city != '' && $idNumber != '' && $idPresented != '')
-                            $result = $memberInfoModel->updateProfilev3WithSP($firstname, $middlename, $lastname, $nickname, $mid, $permanentAddress, $mobileNumber, $alternateMobileNumber, $emailAddress, $alternateEmail, $birthdate, $nationalityID, $occupationID, $idNumber, $idPresented, $gender, $isSmoker, $region, $city);
+                            $result = $memberInfoModel->updateProfilev3WithSP($mid, $permanentAddress, $mobileNumber, $alternateMobileNumber, $emailAddress, $alternateEmail, $birthdate, $nationalityID, $occupationID, $idNumber, $idPresented, $gender, $isSmoker, $region, $city);//$firstname, $middlename, $lastname, $nickname,
                         else {
                             $transMsg = 'One or more fields is not set or is blank.';
                             $errorCode = 1;
@@ -4218,7 +4215,7 @@ class MPapiController extends Controller {
 
                                                         $fBirthdate = date("F j, Y", strtotime($birthdate));
                                                         $siteCode = 'Website';
-                                                        
+
                                                        // for($i=0;$i<$itemQty1;$i++){
                                                             $raCheckSum = $resultArray['CheckSum'];
                                                             $serialNumber = $resultArray['SerialNumber'];
@@ -4474,7 +4471,7 @@ class MPapiController extends Controller {
                                                             $about = $itemDetail['About'];
                                                             $terms = $itemDetail['Terms'];
                                                         }
-                                                        
+
                                                         $email = $memberDetails['Email'];
                                                         for($i=0;$i<$quantity;$i++){
                                                             $sessionSerialCode[] = $resultsArray['SessionSerialCode'][$i];
