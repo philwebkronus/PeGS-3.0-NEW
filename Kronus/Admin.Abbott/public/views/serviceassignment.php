@@ -2,7 +2,7 @@
 $pagetitle = "Terminal Provider Assignment";  
 include 'process/ProcessTerminalMgmt.php';
 include "header.php";
-    $vaccesspages = array('8');
+    $vaccesspages = array('8','19');
     $vctr = 0;
     if(isset($_SESSION['acctype']))
     {

@@ -81,6 +81,7 @@ if($connected)
            $accountypes=array_merge($accountypes,$oaccount->getallaccounttypes(12)); //Finance
            $accountypes=array_merge($accountypes,$oaccount->getallaccounttypes(13)); //Marketing
            $accountypes=array_merge($accountypes,$oaccount->getallaccounttypes(16)); //Audit
+           $accountypes=array_merge($accountypes,$oaccount->getallaccounttypes(19)); //SMG - Deployment
        break;
        case 2:
            //Operator
@@ -628,7 +629,7 @@ if($connected)
                                             <br />
                                                 For further inquiries, please call our Customer Service hotline at telephone numbers (02) 3383388 or toll free from
                                                 PLDT lines 1800-10PHILWEB (1800-107445932)
-                                                or email us at <b>$csemail</b>.
+                                                or email us at <b>customerservice@philweb.com.ph</b>.
                                             <br/><br/>
                                                 Thank you and good day!
                                             <br/><br/>
@@ -649,7 +650,7 @@ if($connected)
                                             monitor email traffic.
                                         </body>
                                      </html>";
-                             $headers="From: $adminemailsender\r\nContent-type:text/html";
+                             $headers="From: poskronusadmin@philweb.com.ph\r\nContent-type:text/html";
                              $sentEmail = mail($to, $subject, $message, $headers);
                              // Check if email is sent or not
                              if($sentEmail == 1)
