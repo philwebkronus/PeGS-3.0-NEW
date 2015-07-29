@@ -4845,6 +4845,7 @@ $itemRedemptionArray = array('ItemImage' => $itemImage, 'ItemName' => $itemName,
                 $cardsModel = new CardsModel();
                 $auditTrailModel = new AuditTrailModel();
                 $pcwsWrapper = new PcwsWrapper();
+                $membersModel = new MembersModel();
 
                 $memberExist = $memberCardsModel->getMIDUsingCard($cardNumber);
                 if ($memberExist)
@@ -4893,34 +4894,35 @@ $itemRedemptionArray = array('ItemImage' => $itemImage, 'ItemName' => $itemName,
                         exit;
                     } else {
                         $result = $memberInfoModel->getEmailFNameUsingMIDWIthSP($MID);
-                        $emailAddress = $result['Email'];
-                        $memberDetails = $memberInfoModel->getDetailsUsingEmailWithSP($emailAddress);
+                        
+                        //$memberDetails = $memberInfoModel->getDetailsUsingEmailWithSP($emailAddress);
 
-                        if ($memberDetails) {
+                        if ($result) {
+                            $emailAddress = $result['Email'];
                             $memberInfo = $memberInfoModel->getMemberInfoUsingMID($MID);
                             $memberPoints = $cardsModel->getMemberInfoUsingCardNumber($cardNumber);
-                            $firstname = $memberDetails['FirstName'];
-                            $middlename = $memberDetails['MiddleName'];
+                            $firstname = $result['FirstName'];
+                            $middlename = $result['MiddleName'];
                             if ($middlename == null)
                                 $middlename = '';
-                            $lastname = $memberDetails['LastName'];
-                            $nickname = $memberDetails['NickName'];
+                            $lastname = $result['LastName'];
+                            $nickname = $result['NickName'];
                             if ($nickname == null)
                                 $nickname = '';
-                            $permanentAddress = $memberDetails['Address1'];
-                            $mobileNumber = $memberDetails['MobileNumber'];
-                            $alternateMobileNumber = $memberDetails['AlternateMobileNumber'];
+                            $permanentAddress = $result['Address1'];
+                            $mobileNumber = $result['MobileNumber'];
+                            $alternateMobileNumber = $result['AlternateMobileNumber'];
                             if ($alternateMobileNumber == null)
                                 $alternateMobileNumber = '';
                             //$emailAddress = $memberDetails['Email'];
-                            $alternateEmail = $memberDetails['AlternateEmail'];
+                            $alternateEmail = $result['AlternateEmail'];
                             if ($alternateEmail == null)
                                 $alternateEmail = '';
                             $gender = $memberInfo['Gender'];
                             if ($gender == null)
                                 $gender = '';
                             $idPresented = $memberInfo['IdentificationID'];
-                            $idNumber = $memberDetails['IdentificationNumber'];
+                            $idNumber = $result['IdentificationNumber'];
                             $nationality = $memberInfo['NationalityID'];
                             if ($nationality == null)
                                 $nationality = '';
