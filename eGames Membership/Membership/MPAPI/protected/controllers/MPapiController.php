@@ -4399,12 +4399,12 @@ $itemRedemptionArray = array('ItemImage' => $itemImage, 'ItemName' => $itemName,
                         if ($memberDetails) {
                             $memberInfo = $memberInfoModel->getMemberInfoUsingMID($MID);
                             $memberPoints = $cardsModel->getMemberInfoUsingCardNumber($cardNumber);
-                            $firstname = $memberDetails['FirstName'];
-                            $middlename = $memberDetails['MiddleName'];
+                            $firstname = $result['FirstName'];
+                            $middlename = $result['MiddleName'];
                             if ($middlename == null)
                                 $middlename = '';
-                            $lastname = $memberDetails['LastName'];
-                            $nickname = $memberDetails['NickName'];
+                            $lastname = $result['LastName'];
+                            $nickname = $result['NickName'];
                             if ($nickname == null)
                                 $nickname = '';
                             $permanentAddress = $memberDetails['Address1'];
