@@ -4393,10 +4393,11 @@ $itemRedemptionArray = array('ItemImage' => $itemImage, 'ItemName' => $itemName,
                         exit;
                     } else {
                         $result = $memberInfoModel->getEmailFNameUsingMIDWIthSP($MID);
-                        $emailAddress = $result['Email'];
-                        $memberDetails = $memberInfoModel->getDetailsUsingEmailWithSP($emailAddress);
+                        
+                        //$memberDetails = $memberInfoModel->getDetailsUsingEmailWithSP($emailAddress);
 
-                        if ($memberDetails) {
+                        if ($result) {
+                            $emailAddress = $result['Email'];
                             $memberInfo = $memberInfoModel->getMemberInfoUsingMID($MID);
                             $memberPoints = $cardsModel->getMemberInfoUsingCardNumber($cardNumber);
                             $firstname = $result['FirstName'];
@@ -4407,20 +4408,20 @@ $itemRedemptionArray = array('ItemImage' => $itemImage, 'ItemName' => $itemName,
                             $nickname = $result['NickName'];
                             if ($nickname == null)
                                 $nickname = '';
-                            $permanentAddress = $memberDetails['Address1'];
-                            $mobileNumber = $memberDetails['MobileNumber'];
-                            $alternateMobileNumber = $memberDetails['AlternateMobileNumber'];
+                            $permanentAddress = $result['Address1'];
+                            $mobileNumber = $result['MobileNumber'];
+                            $alternateMobileNumber = $result['AlternateMobileNumber'];
                             if ($alternateMobileNumber == null)
                                 $alternateMobileNumber = '';
                             //$emailAddress = $memberDetails['Email'];
-                            $alternateEmail = $memberDetails['AlternateEmail'];
+                            $alternateEmail = $result['AlternateEmail'];
                             if ($alternateEmail == null)
                                 $alternateEmail = '';
                             $gender = $memberInfo['Gender'];
                             if ($gender == null)
                                 $gender = '';
                             $idPresented = $memberInfo['IdentificationID'];
-                            $idNumber = $memberDetails['IdentificationNumber'];
+                            $idNumber = $result['IdentificationNumber'];
                             $nationality = $memberInfo['NationalityID'];
                             if ($nationality == null)
                                 $nationality = '';
