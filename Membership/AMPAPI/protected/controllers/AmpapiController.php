@@ -707,12 +707,12 @@ class AmpapiController extends Controller {
 
                 $ValidateResponse = $this->validateResponse($result[1], $module);
                 if ($ValidateResponse == true) {
-                    $this->_auditTrail(AuditTrailModel::UPDATE_PROFILE, 0, $AID, $TPSessionID, $module, $LastName . ', ' . $FirstName);
-                    $this->_apiLogs(APILogsModel::API_UPDATE_PROFILE, '', 0, '', 1, $module, $LastName . ', ' . $FirstName);
+                    $this->_auditTrail(AuditTrailModel::UPDATE_PROFILE, 0, $AID, $TPSessionID, $module, '');
+                    $this->_apiLogs(APILogsModel::API_UPDATE_PROFILE, '', 0, '', 1, $module, '');
                 }
             } else {
                 $this->_displayCustomMessages(73, $module, 'No response from Membership portal API.', $randchars);
-                $this->_apiLogs(APILogsModel::API_UPDATE_PROFILE, '', 73, '', 2, $module, $LastName . ', ' . $FirstName);
+                $this->_apiLogs(APILogsModel::API_UPDATE_PROFILE, '', 73, '', 2, $module, '');
             }
         }
     }
