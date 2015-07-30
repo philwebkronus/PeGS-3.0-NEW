@@ -138,10 +138,21 @@ class MemberCardsModel {
     //@purpose get newly migrated cards from membercards table
     public function getNewlyMigratedCards($dateCron)
     {
-        $query = "SELECT MID, CardNumber FROM membercards WHERE CardNumber NOT LIKE 'eGames%' AND Status = 1 AND MID IN (32,346)";
+        $query = "SELECT MID, CardNumber FROM membercards WHERE DateCreated >= '$dateCron' AND CardNumber NOT LIKE 'eGames%' AND Status = 1";
         //$param = array(':dateCron' => $dateCron);
         $command = $this->_connection->createCommand($query);
         $result = $command->queryAll();
+        return $result;
+    }
+
+    //07302015
+    public function getSFIDFromTempCode($MID) {
+        $sql = "SELECT CardNumber
+                FROM membercards
+                WHERE MID = :MID AND CardNumber LIKE 'eGames%'";
+        $param = array(':MID' => $MID);
+        $command = $this->_connection->createCommand($sql);
+        $result = $command->queryRow(true, $param);
         return $result;
     }
 }

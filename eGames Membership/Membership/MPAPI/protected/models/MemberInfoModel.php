@@ -547,6 +547,49 @@ class MemberInfoModel {
 
         return $result['SFID'];
     }
+/*
+    //@date 07-23-2015
+    public function getSF($MID)
+    {
+        $sql = "SELECT SFID as SFID
+                FROM memberinfo
+                WHERE MID = :MID";
+        $param = array(':MID' => $MID);
+        $command = $this->_connection->createCommand($sql);
+        $result = $command->queryRow(true, $param);
+
+        return $result['SFID'];
+    }
+*/
+    //07302015
+    public function updateSF($MID,$SFID) {
+        $startTrans = $this->_connection->beginTransaction();
+
+        try {
+            $sql = "UPDATE memberinfo
+                    SET SFID = '$SFID'
+                    WHERE MID = $MID";
+            //$param = array(':SFID' => $SFID, ':MID' => $MID);
+
+
+            $command = $this->_connection->createCommand($sql);
+            //$command->bindValues($param);
+            $command->execute();
+
+            try {
+                $startTrans->commit();
+                return;
+            } catch (PDOException $e) {
+                $startTrans->rollback();
+                Utilities::log($e->getMessage());
+                return 0;
+            }
+        } catch (Exception $e) {
+            $startTrans->rollback();
+            Utilities::log($e->getMessage());
+            return 0;
+        }
+    }
 }
 
 ?>

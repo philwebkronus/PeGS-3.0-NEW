@@ -858,6 +858,30 @@ class MembershipTempModel {
         }
     }
 
+    //07302015
+    public function getSFIDFromTemp($tempAcctCode) {
+        $sql = "SELECT MID
+                FROM members
+                WHERE TemporaryAccountCode = :TAC";
+        $param = array(':TAC' => $tempAcctCode);
+        $command = $this->_connection->createCommand($sql);
+        $result = $command->queryRow(true, $param);
+        return $result;
+    }
+
+    //07302015
+    public function getSF($MID)
+    {
+        $sql = "SELECT SFID
+                FROM memberinfo
+                WHERE MID = :MID";
+        $param = array(':MID' => $MID);
+        $command = $this->_connection->createCommand($sql);
+        $result = $command->queryRow(true, $param);
+
+        return $result;
+    }
+
 }
 
 ?>

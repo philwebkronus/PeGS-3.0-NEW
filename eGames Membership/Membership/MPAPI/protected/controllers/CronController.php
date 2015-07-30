@@ -63,6 +63,7 @@ class CronController extends Controller {
     public function actionGetNewlyMigratedCards() {
         $memberCardsModel = new MemberCardsModel();
         $memberInfoModel = new MemberInfoModel();
+        $memberInfoTempModel = new MembershipTempModel();
 
         $path = 'lastrundatetime.txt';
         $fp = fopen($path, "r+") or die("Unable to open file!");
@@ -86,10 +87,16 @@ class CronController extends Controller {
                 if ($sfSuccessful) {
                     for ($i = 0; $i < $countNewlyMigratedCards; $i++) {
                         $MID = $resultNewlyMigratedCards[$i]['MID'];
+                        //get temp code
+                        $tempCode = $memberCardsModel->getSFIDFromTempCode($MID);
+                        //get temp MID in temp members table
+                        $tempMID = $memberInfoTempModel->getSFIDFromTemp($tempCode['CardNumber']);
+                        //get tempSFID
+                        $SFID = $memberInfoTempModel->getSF($tempMID['MID']);
+                        //update SFID in membership.memberinfo table
+                        $sfUpdate = $memberInfoModel->updateSF($MID, $SFID['SFID']);
                         $cardNumber = $resultNewlyMigratedCards[$i]['CardNumber'];
-                        $SFID = $memberInfoModel->getSF($MID);
-
-                        $isUpdated = $sfapi->update_account($SFID, null, null, null, $cardNumber, null, null, $newBaseUrl, $accessToken);
+                        $isUpdated = $sfapi->update_account($SFID['SFID'], null, null, null, $cardNumber, null, null, $newBaseUrl, $accessToken);var_dump($isUpdated);exit;
                     }
                     return 1;
                 } else {
