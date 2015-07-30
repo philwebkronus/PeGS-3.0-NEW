@@ -147,7 +147,11 @@ else
     $resultMembershipTempSFID = $_MembershipTempInfo->checkIfSFIDExists($SFID);
     if (count($resultMembershipTempSFID) > 0)
     {
-        $MID = $_MemberInfo->getMIDUsingSFID($SFID);
+        $MID = $_MembershipTempInfo->getMIDUsingSFID($SFID);
+        $resultEnc = $_MembershipTempInfo->getEncPOCDetails($MID);
+        $resultNonEnc = $_MemberInfo->getGenericInfo($MID);
+        $rowEnc = $resultEnc[0]; //row1
+        $rowNonEnc = $resultNonEnc[0];
 //        $row['FirstName'] = $rowEnc['FirstName'];
 //        $row['MiddleName'] = $rowEnc['MiddleName'];
 //        $row['LastName'] = $rowEnc['LastName'];
