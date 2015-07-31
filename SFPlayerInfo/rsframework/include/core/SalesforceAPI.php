@@ -236,7 +236,7 @@ class SalesforceAPI extends APIAbstract {
 
    public function create_account($lname, $fname, $bdate, $salutation, $playertype, $cardnumber, $instance_url, $access_token) {
     $url = "$instance_url/services/data/v20.0/sobjects/Account/";
-    $content = json_encode(array("FirstName" => $fname, "LastName" => $lname, "Type_of_Player__c" => $playertype, "Birthdate__c" => $bdate, "Salutation" => $salutation, "Membership_Card_Number__c" => $cardnumber, "RecordTypeId" => '01228000000JV06AAG'));
+    $content = json_encode(array("FirstName" => $fname, "LastName" => $lname, "Type_of_Player__c" => $playertype, "Birthdate__c" => $bdate, "Salutation" => $salutation, "Membership_Card_Number__c" => $cardnumber, "RecordTypeId" => '012o0000000p8uHAAQ'));
     $curl = curl_init($url);
 
     //if production, uncomment the line below

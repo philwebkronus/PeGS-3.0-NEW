@@ -8,14 +8,14 @@ class ErrorLogger
 
     function log($date, $type, $message, $newLine = false, $trans = '')
     {
-        if (App::getParam("applicationtimezone") != '')
-        {
-            $date->setTimezone(new DateTimeZone(App::getParam("applicationtimezone")));
-        }
+        //if (App::getParam("applicationtimezone") != '')
+        //{
+        //    $date->setTimezone(new DateTimeZone(App::getParam("applicationtimezone")));
+        //}
 
         $logname = $this->uDateTime('Y_m_d') . '.log';
         $this->trans_logname = $logname; //Filename of the error log file
-        $this->logdate = $this->uDateTime(date($date->format("d-M-Y H:i:s")));
+        $this->logdate = $this->uDateTime(date("d-M-Y H:i:s"));
         //$this->logdate = $this->uDateTime("[d-M-Y H:i:s] "); //Line identity of the error log
 
         if ($newLine)
