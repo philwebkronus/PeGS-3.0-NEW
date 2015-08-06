@@ -426,6 +426,10 @@ class PDOHandler extends BaseObject
         {
             $hasfunction = true;
         }
+        if (strpos($strquery, "now_usec()") > -1)
+        {
+            $hasfunction = true;
+        }
         if (strpos($strquery, "NOW(6)") > -1)
         {
             $hasfunction = true;
@@ -447,6 +451,7 @@ class PDOHandler extends BaseObject
         $query = str_replace("'Now()'", "Now()", $query);
         $query = str_replace("'now()'", "now()", $query);
         $query = str_replace("'NOW(6)'", "NOW(6)", $query);
+        $query = str_replace("'now_usec()'", "NOW(6)", $query);
         $query = str_replace("'UUID()'", "UUID()", $query);
         $query = str_replace("'uuid()'", "uuid()", $query);
         
