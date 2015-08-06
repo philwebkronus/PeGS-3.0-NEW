@@ -364,7 +364,7 @@ class CouponModel extends CFormModel {
                          ValidFromDate,
                          ValidToDate
                   FROM coupons
-                  WHERE CouponBatchID = :batch
+                  WHERE CouponBatchID = :batch AND Status <> 3
                   LIMIT 0, 1";
         $command = $connection->createCommand($query);
         $command->bindParam(":batch", $batch);
