@@ -222,7 +222,6 @@ class AmpapiController extends Controller {
 
         $paramval = CJSON::encode($request);
         $message = "[" . $module . "] " . $rand . " Input: " . $paramval;
-        $appLogger->log($appLogger->logdate, "[request]", $message);
 
         $activeSession = false;
         $validateRequiredFields = $this->validateRequiredFields($request, $module, array('Username' => false), $rand);
@@ -1371,7 +1370,9 @@ class AmpapiController extends Controller {
 
         $data = CommonController::retMsg($module, $transMsg, $errorCode, '', '', $TPSessionID);
         $message = "[" . $module . "] " . $randchars . " Output: " . CJSON::encode($data);
-        $appLogger->log($appLogger->logdate, "[response]", $message);
+        if ($module != 'GetActiveSession') {
+            $appLogger->log($appLogger->logdate, "[response]", $message);
+        }
         $this->_sendResponse(200, CJSON::encode($data));
         Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
     }
@@ -1389,7 +1390,9 @@ class AmpapiController extends Controller {
         $eCode = floor($errorCode);
         $data = CommonController::retMsg($module, $transMsg, $eCode, '', '', '', '', '', '', '', '', '', $RewardID);
         $message = "[" . $module . "] " . $randchars . " Output: " . CJSON::encode($data);
-        $appLogger->log($appLogger->logdate, "[response]", $message);
+        if ($module != 'GetActiveSession') {
+            $appLogger->log($appLogger->logdate, "[response]", $message);
+        }
         $this->_sendResponse(200, CJSON::encode($data));
         Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
     }
@@ -1414,7 +1417,9 @@ class AmpapiController extends Controller {
         $eCode = floor($errorCode);
         $data = CommonController::retMsg($module, $transMsg, $eCode);
         $message = "[" . $module . "] " . $randchars . " Output: " . CJSON::encode($data);
-        $appLogger->log($appLogger->logdate, "[response]", $message);
+        if ($module != 'GetActiveSession') {
+            $appLogger->log($appLogger->logdate, "[response]", $message);
+        }
         $this->_sendResponse(200, CJSON::encode($data));
         Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $eCode);
     }
