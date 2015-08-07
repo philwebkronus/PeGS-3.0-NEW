@@ -544,7 +544,7 @@ class SiteManagement extends DBHandler{
          
          try
          {   
-             $stmt = "SELECT sa.AID FROM siteaccounts sa INNER JOIN accounts a ON sa.AID = a.AID WHERE sa.SiteID IN (".$site.") AND a.AccountTypeID IN (15,17)";
+             $stmt = "SELECT sa.AID FROM siteaccounts sa INNER JOIN accounts a ON sa.AID = a.AID WHERE sa.SiteID IN (".$site.")";
              $this->prepare($stmt);
              $this->execute();
              $rresult = $this->fetchAllData();
@@ -585,7 +585,7 @@ class SiteManagement extends DBHandler{
                         $this->execute();
                         $isupdated2 = $this->rowCount();
                     }
-                    
+                    /*
                     if($accstatus <> 1)
                         $accstatuz = 0; //status code in accounts if terminated
                     else 
@@ -597,7 +597,7 @@ class SiteManagement extends DBHandler{
                         $this->bindparameter(1, $accstatuz);
                         $this->execute();
                         $isupdated2 = $this->rowCount();
-                    } 
+                    } */
                 }
                 
                 try{
