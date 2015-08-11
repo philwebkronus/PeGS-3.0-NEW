@@ -312,17 +312,29 @@ if($openconn)
                        $result = $ologin->updatepwd($vusername,$voldpassword);
                        if(count($result) > 0)
                        {
-                           //update changepassword field  and password field          
-                           $updatedrow = $ologin->resetpassword($vhashpassword, $vusername, $vaid);
-                           if($updatedrow > 0)
+                           //get AID 
+                           $getAID = $ologin->getaid($vusername);
+                           //check if new password exist in recent passwords
+                           $inrecent = $ologin->checkRecentPasswords($vhashpassword, $getAID['AID']);
+                           if ($inrecent['Count'] <= 0)
                            {
-                               $msg = "Success in updating password";
-                               $transdetails = "Username ".$vusername;
-                               $ologin->logtoaudit($new_sessionid, $vaid, $transdetails, $date, $ipaddress,'3'); //insert in audittrail
+                                //update changepassword field  and password field          
+                                $updatedrow = $ologin->resetpassword($vhashpassword, $vusername, $vaid);
+                                if($updatedrow > 0)
+                                {
+                                    $msg = "Success in updating password";
+                                    $transdetails = "Username ".$vusername;
+                                    $ologin->logtoaudit($new_sessionid, $vaid, $transdetails, $date, $ipaddress,'3'); //insert in audittrail
+                                }
+                                else
+                                {
+                                    $msg = "Error in updating password";
+                                }   
                            }
                            else
                            {
-                               $msg = "Error in updating password";
+                               $msg = "Password cannot be used.";
+                               $show_update = true;
                            }
                        }
                        else
@@ -334,8 +346,13 @@ if($openconn)
                   {
                       $msg = "Update Password: Invalid Fields";
                   }
-                  $ologin->close();
-                  header("Location: ../login.php?mess=".$msg);
+                  $ologin->close();          
+                  if (isset($show_update)) {
+                    header("Location: ../UpdatePassword.php?username=".$vusername."&password=".$voldpassword."&aid=".$vaid."&mess=".$msg);   
+                  }
+                  else {
+                    header("Location: ../login.php?mess=".$msg);   
+                  }
               break;
               case 'ForgotPassword':
                   if(isset($_POST['txtemailforpass']))
