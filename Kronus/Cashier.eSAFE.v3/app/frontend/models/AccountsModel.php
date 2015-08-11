@@ -106,89 +106,93 @@ class AccountsModel extends MI_Model{
     }   
     
     //temporary change password: update accounts_>ForChangePassword and accounts->Password
-    public function temppassword($temppass, $zusername, $zemail){
-        $sql = "Update accounts a INNER JOIN accountdetails b ON a.AID = b.AID SET ForChangePassword = 0 , Password = :temppass WHERE a.UserName = :username and b.Email = :email";
-        $param = array(':username' => $zusername, ':temppass'=> $temppass,':email' => $zemail);
-        $this->exec($sql, $param);
-        return $this->rowCount();
-    }
-   
-//    public function getcurrentpassword($zaid) {
-//        $sql = "SELECT Password FROM accounts WHERE AID = :aid";
-//        $param = array(':aid'=>$zaid);
+//    public function temppassword($temppass, $zusername, $zemail){
+//        $sql = "Update accounts a INNER JOIN accountdetails b ON a.AID = b.AID SET ForChangePassword = 0 , Password = :temppass WHERE a.UserName = :username and b.Email = :email";
+//        $param = array(':username' => $zusername, ':temppass'=> $temppass,':email' => $zemail);
 //        $this->exec($sql, $param);
-//        $result = $this->find();
-//        if(!isset($result['Password']) && $result['Password'] == '') {
-//            return false;
-//        }
-//        return $result['Password'];
-//    }   
-//    
-//    public function countRecentPasswordsByAID($zaid) {
-//        $sql = "SELECT COUNT(AID) AS Count FROM accountsrecentpasswords WHERE AID = :aid";
-//        $param = array(':aid'=>$zaid);
-//        $this->exec($sql, $param);
-//        $result = $this->find();
-//        return $result['Count'];
-//    }   
-//    
-//    public function getOldestRecentPassword($zaid) {
-//        $sql = "SELECT Password FROM accountsrecentpasswords WHERE AID = :aid ORDER BY DateCreated ASC LIMIT 0, 1 ";
-//        $param = array(':aid'=>$zaid);
-//        $this->exec($sql, $param);
-//        $result = $this->find();
-//        return $result['Password'];
-//    }   
-//   
-//    //temporary change password: update accounts_>ForChangePassword and accounts->Password
-//    public function temppassword($temppass, $zaid, $zusername, $zemail){
-//        $currpassword = $this->getcurrentpassword($zaid);
-//       try {
-//           $this->dbh->beginTransaction();
-//           $smt = $this->dbh->prepare('INSERT INTO accountsrecentpasswords (AID, Password, DateCreated)  VALUES (?, ?, NOW(6))');
-//           $smt->bindValue(1, $zaid, PDO::PARAM_STR);
-//           $smt->bindValue(2, $currpassword, PDO::PARAM_STR);
-//           
-//           if(!$smt->execute()) {
-//               $this->dbh->rollBack();
-//               return false;
-//           }  
-//           
-//           $smt = $this->dbh->prepare('Update accounts a INNER JOIN accountdetails b ON a.AID = b.AID SET a.ForChangePassword = 0 , a.Password = :temppass WHERE a.UserName = :username and b.Email = :email');
-//           $smt->bindValue(':username', $zusername, PDO::PARAM_STR);
-//           $smt->bindValue(':temppass', $temppass, PDO::PARAM_STR);
-//           $smt->bindValue(':email', $zemail, PDO::PARAM_STR);
-//           if(!$smt->execute()) {
-//               $this->dbh->rollBack();
-//               return false;
-//           }
-//
-//            //count if recent passwords of user
-//            $countRecent = $this->countRecentPasswordsByAID($zaid);
-//            if ($countRecent['Count'] > 5) {
-//                //delete old recent password recorded
-//                //get the recent password
-//                $recentPassword = $this->getOldestRecentPassword($zaid);
-//                $stmt = "DELETE FROM accountsrecentpasswords 
-//                         WHERE Password = ?";
-//                $this->prepare($stmt);
-//                $this->bindparameter(1, $recentPassword['Password']);
-//                if ($this->execute()) {
-//                    $this->dbh->commit();
-//                    return true;
-//                } else {
-//                    $this->dbh->rollBack();
-//                    return false;
-//                }
-//            }
-//           
-//           $this->dbh->commit();
-//           return true;
-//       } catch(PDOException $e) {
-//           $this->dbh->rollBack();
-//       }
-//       return false;
+//        return $this->rowCount();
 //    }
+   
+    public function getcurrentpassword($zaid) {
+        $sql = "SELECT Password FROM accounts WHERE AID = :aid";
+        $param = array(':aid'=>$zaid);
+        $this->exec($sql, $param);
+        $result = $this->find();
+        if(!isset($result['Password']) && $result['Password'] == '') {
+            return false;
+        }
+        return $result['Password'];
+    }   
+    
+    public function countRecentPasswordsByAID($zaid) {
+        $sql = "SELECT COUNT(AID) AS Count FROM accountsrecentpasswords WHERE AID = :aid";
+        $param = array(':aid'=>$zaid);
+        $this->exec($sql, $param);
+        $result = $this->find();
+        return $result['Count'];
+    }   
+    
+    public function getOldestRecentPassword($zaid) {
+        $sql = "SELECT Password FROM accountsrecentpasswords WHERE AID = :aid ORDER BY DateCreated ASC LIMIT 0, 1 ";
+        $param = array(':aid'=>$zaid);
+        $this->exec($sql, $param);
+        $result = $this->find();
+        return $result['Password'];
+    }   
+   
+    //temporary change password: update accounts_>ForChangePassword and accounts->Password
+    /*
+     * 
+    public function temppassword($temppass, $zaid, $zusername, $zemail){
+        $currpassword = $this->getcurrentpassword($zaid);
+       try {
+           $this->dbh->beginTransaction();
+           $smt = $this->dbh->prepare('INSERT INTO accountsrecentpasswords (AID, Password, DateCreated)  VALUES (?, ?, NOW(6))');
+           $smt->bindValue(1, $zaid, PDO::PARAM_STR);
+           $smt->bindValue(2, $currpassword, PDO::PARAM_STR);
+           
+           if(!$smt->execute()) {
+               $this->dbh->rollBack();
+               return false;
+           }  
+           
+           $smt = $this->dbh->prepare('Update accounts a INNER JOIN accountdetails b ON a.AID = b.AID SET a.ForChangePassword = 0 , a.Password = :temppass WHERE a.UserName = :username and b.Email = :email');
+           $smt->bindValue(':username', $zusername, PDO::PARAM_STR);
+           $smt->bindValue(':temppass', $temppass, PDO::PARAM_STR);
+           $smt->bindValue(':email', $zemail, PDO::PARAM_STR);
+           if(!$smt->execute()) {
+               $this->dbh->rollBack();
+               return false;
+           }
+
+            //count if recent passwords of user
+            $countRecent = $this->countRecentPasswordsByAID($zaid);
+            if ($countRecent['Count'] > 5) {
+                //delete old recent password recorded
+                //get the recent password
+                $recentPassword = $this->getOldestRecentPassword($zaid);
+                $smt = $this->dbh->prepare("DELETE FROM accountsrecentpasswords WHERE Password = ? AND AID = ?");
+                $smt->bindValue(1, $recentPassword);
+                $smt->bindValue(2, $zaid);
+                if ($smt->execute()) {
+                    $this->dbh->commit();
+                    return true;
+                } else {
+                    logger("Failed to delete accountsrecentpasswords: ".$smt->execute());
+                    $this->dbh->rollBack();
+                    return false;
+                }
+            }
+           
+           $this->dbh->commit();
+           return true;
+       } catch(PDOException $e) {
+           $this->dbh->rollBack();
+       }
+       return false;
+    }
+     * 
+     */
    
     public function updatepwd($zusername, $zpassword ) {
         $sql = 'SELECT COUNT(*) FROM accounts WHERE UserName = :username AND Password =  :password';
@@ -273,21 +277,72 @@ class AccountsModel extends MI_Model{
     }
     
     //Check if the New Password is among the list of last 5 passwords of the account
-//    public function checkifrecentpassword($zaid, $znewpassword ) {
-//        $sql = "SELECT COUNT(AID) as Count 
-//                    FROM accountsrecentpasswords 
-//                    WHERE AID = :aid AND Password = :password";
-//        $param = array(':aid' =>$zaid, ':password' =>$znewpassword);
-//        $this->exec($sql, $param);
-//        return $this->find();
-//    }  
-//    
-//    public function checkAID($zusername, $zpassword ) {
-//        $sql = 'SELECT AID FROM accounts WHERE UserName = :username AND Password =  :password';
-//        $param = array(':username' =>$zusername, ':password' =>$zpassword);
-//        $this->exec($sql, $param);
-//        return $this->find();
-//    }  
+    public function checkifrecentpassword($zaid, $znewpassword ) {
+        $sql = "SELECT COUNT(AID) as Count 
+                    FROM accountsrecentpasswords 
+                    WHERE AID = :aid AND Password = :password";
+        $param = array(':aid' =>$zaid, ':password' =>$znewpassword);
+        $this->exec($sql, $param);
+        return $this->find();
+    }  
+    
+    public function checkAID($zusername, $zpassword ) {
+        $sql = 'SELECT AID FROM accounts WHERE UserName = :username AND Password =  :password';
+        $param = array(':username' =>$zusername, ':password' =>$zpassword);
+        $this->exec($sql, $param);
+        return $this->find();
+    }  
+     public function temppassword($temppass, $zaid){
+        $currpassword = $this->getcurrentpassword($zaid);
+       try {
+           $this->dbh->beginTransaction();
+           $smt = $this->dbh->prepare('INSERT INTO accountsrecentpasswords (AID, Password, DateCreated)  VALUES (?, ?, NOW(6))');
+           $smt->bindValue(1, $zaid);
+           $smt->bindValue(2, $currpassword);
+           
+           if(!$smt->execute()) {
+               logger("Failed to insert accountsrecentpasswords: ".$smt->execute());
+               $this->dbh->rollBack();
+               return false;
+           }  
+           
+           $smt = $this->dbh->prepare('UPDATE accounts SET ForChangePassword = 0 , Password = ? WHERE AID = ?');
+           $smt->bindValue(1, $temppass);
+           $smt->bindValue(2, $zaid);
+
+           if(!$smt->execute()) {
+               logger("Failed to update accounts: ".$smt->execute());
+               $this->dbh->rollBack();
+               return false;
+           }
+
+            //count if recent passwords of user
+            $countRecent = $this->countRecentPasswordsByAID($zaid);
+            if ($countRecent['Count'] > 5) {
+                //delete old recent password recorded
+                //get the recent password
+                $recentPassword = $this->getOldestRecentPassword($zaid);
+                $smt = $this->dbh->prepare("DELETE FROM accountsrecentpasswords WHERE Password = ? AND AID = ?");
+                $smt->bindValue(1, $recentPassword);
+                $smt->bindValue(2, $zaid);
+                if ($smt->execute()) {
+                    $this->dbh->commit();
+                    return true;
+                } else {
+                    logger("Failed to delete accountsrecentpasswords: ".$smt->execute());
+                    $this->dbh->rollBack();
+                    return false;
+                }
+            }
+           
+           $this->dbh->commit();
+           return true;
+       } catch(PDOException $e) {
+           logger("Error in inserting last password: ".$e);
+           $this->dbh->rollBack();
+       }
+       return false;
+    }
 }
 
 ?>

@@ -30,22 +30,22 @@
 $(document).ready(function(){
    var error_newpass = '<?php echo $loginForm->getAttributeErrorMessage('newpassword'); ?>'; 
    var error_confirm = '<?php echo $loginForm->getAttributeErrorMessage('confirmpassword'); ?>'; 
-//   var message_error = '<?php // echo $loginForm->getAttributeErrorMessage('message'); ?>';
+   var message_error = '<?php echo $loginForm->getAttributeErrorMessage('message'); ?>';
    if(error_newpass != '') {
-//       $("#LoginFormModel_newpassword").val('');
-//       $("#LoginFormModel_confirmpassword").val('');
+       $("#LoginFormModel_newpassword").val('');
+       $("#LoginFormModel_confirmpassword").val('');
        alert(error_newpass);
    }else if(error_confirm != '') {
-//       $("#LoginFormModel_newpassword").val('');
-//       $("#LoginFormModel_confirmpassword").val('');
+       $("#LoginFormModel_newpassword").val('');
+       $("#LoginFormModel_confirmpassword").val('');
        alert(error_confirm);
-//   }else if(message_error != '') {
-//       $("#LoginFormModel_newpassword").val('');
-//       $("#LoginFormModel_confirmpassword").val('');
-//       if(message_error != "Password cannot be used."){
-//           window.location = "<?php // echo Mirage::app()->createUrl('login') ?>";
-//       }
-//       alert(message_error);
+   }else if(message_error != '') {
+       $("#LoginFormModel_newpassword").val('');
+       $("#LoginFormModel_confirmpassword").val('');
+       if(message_error != "Password cannot be used."){
+           window.location = "<?php echo Mirage::app()->createUrl('login') ?>";
+       }
+       alert(message_error);
    }
     <?php if($error != ''): ?>
         alert('<?php echo $error; ?>');
