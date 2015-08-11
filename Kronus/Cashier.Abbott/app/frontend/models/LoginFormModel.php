@@ -623,7 +623,7 @@ class LoginFormModel extends MI_Model{
             $aid = $accountsModel->getaid($this->username); //get account ID
             $time = Date("m-d-y h:i:s");
             $newhashedpass = sha1("temppassword".$time);
-            $accountsModel->temppassword($newhashedpass, $this->username, $this->email);
+            $accountsModel->temppassword($newhashedpass, $aid);
             $ipaddress = gethostbyaddr($_SERVER['REMOTE_ADDR']);
             $date = $this->getDate();
             $sessionid = session_id();
@@ -695,8 +695,8 @@ class LoginFormModel extends MI_Model{
             $aid = $accountsModel->getaid($this->username);
             $time = Date("m-d-y h:i:s");
             $newhashedpass = sha1("temppassword".$time);
-            $accountsModel->temppassword($newhashedpass, $this->username, $this->password);
-
+            $accountsModel->temppassword($newhashedpass, $aid);
+            
             $subject = 'Change Password';
             $body = $this->_getChangePassEmailContent(
                     $time,
@@ -758,9 +758,16 @@ class LoginFormModel extends MI_Model{
         
         $vhashpassword= sha1($this->newpassword);
         //check if txtusername and txtoldpassword exists   
-        $result = $accountsModel->updatepwd($this->username, htmlentities($this->password));
+        $result = $accountsModel->checkAID($this->username, htmlentities($this->password));
         if(!$result) {
             $this->setAttributeErrorMessage('message', 'Username or password does not exist');
+            return false;
+        }
+        
+        //Check if the new password is among the list of last 5 passwords of the account
+        $count = $accountsModel->checkifrecentpassword($result['AID'],$vhashpassword);
+        if($count['Count'] > 0){
+            $this->setAttributeErrorMessage('message', 'Password cannot be used.');
             return false;
         }
         
