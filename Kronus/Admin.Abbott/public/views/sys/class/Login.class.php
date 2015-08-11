@@ -80,10 +80,65 @@ class Login extends DBHandler
 
    //temporary change password: update accounts_>ForChangePassword and accounts->Password
    public function temppassword($temppass, $zusername, $zemail){
-        $this->prepare("UPDATE accounts a INNER JOIN accountdetails b ON a.AID = b.AID SET ForChangePassword = 0 , Password = :temppass WHERE a.UserName = :username and b.Email = :email");
-        $xparams = array(':username' => $zusername, ':temppass'=> $temppass,':email' => $zemail);
-        $this->executewithparams($xparams);
-        return $this->rowCount();
+       $this->begintrans();
+       /**
+        * Added by: Mark Kenneth Esguerra
+        * @date January 12, 2015
+        * Log recent password
+        */
+       $credentials = $this->getAIDAndPassword($zusername);
+       $this->prepare("INSERT INTO accountsrecentpasswords (AID, Password, DateCreated) VALUES (?, ?, NOW(6))");
+       $this->bindparameter(1, $credentials['AID']);
+       $this->bindparameter(2, $credentials['Password']);  
+       if ($this->execute()) 
+       {
+           //update password after logging previous password
+           $this->prepare("UPDATE accounts a INNER JOIN accountdetails b ON a.AID = b.AID 
+                           SET ForChangePassword = 0, 
+                           Password = :temppass 
+                           WHERE a.UserName = :username AND 
+                           b.Email = :email");
+            $xparams = array(':username' => $zusername, ':temppass'=> $temppass,':email' => $zemail);
+            $this->executewithparams($xparams);
+            if ($this->execute())
+            {
+                //count if recent passwords of user
+                $countRecent = $this->countRecentPasswordsByAID($credentials['AID']);
+                if ($countRecent['Count'] > 5) 
+                {
+                    //delete old recent password recorded
+                    //get the recent password
+                    $recentPassword = $this->getOldestRecentPassword($credentials['AID']);
+                    $stmt = "DELETE FROM accountsrecentpasswords 
+                             WHERE Password = ? AND AID = ?";
+                    $this->prepare($stmt);
+                    $this->bindparameter(1, $recentPassword['Password']);
+                    $this->bindparameter(2, $credentials['AID']);
+                    if ($this->execute())
+                    {
+                        $this->committrans();
+                    }
+                    else
+                    {
+                        $this->rollbacktrans();
+                    }
+                }
+                //else commit 
+                else
+                {
+                    $this->committrans();
+                }
+            }
+            else
+            {
+                $this->rollbacktrans();
+            }
+       }
+       else
+       {
+           $this->rollbacktrans();
+       }
+       return $this->rowCount();
    }
 
     //update password from UpdatePassword.php
@@ -360,6 +415,77 @@ class Login extends DBHandler
        $this->prepare($stmt);
        $this->bindparameter(1, $uname);
        $this->execute();
+       return $this->fetchData();
+   }
+   /**
+    * Get AID and Password for Change Password
+    * @param type $username
+    * @return type
+    * @date January 12, 2015
+    */
+   private function getAIDAndPassword ($username) 
+   {
+       $stmt = "SELECT AID, Password FROM accounts WHERE UserName = ?";
+       $this->prepare($stmt);
+       $this->bindparameter(1, $username);
+       $this->execute();
+       return $this->fetchData();
+   }
+   /**
+    * Check if new password exists in recent passwords
+    * @param type $password
+    * @param type $username
+    * @return type
+    * @author Mark Kenneth Esguerra
+    * @date January 12, 2015
+    */
+   public function checkRecentPasswords ($password, $AID)
+   {
+       $stmt = "SELECT COUNT(AID) as Count 
+                FROM accountsrecentpasswords 
+                WHERE AID = ? AND Password = ?";
+       $this->prepare($stmt);
+       $this->bindparameter(1, $AID);
+       $this->bindparameter(2, $password);
+       $this->execute();
+       
+       return $this->fetchData();
+   }
+   /**
+    * Count the Recent Password of a User
+    * @param int $AID 
+    * @author Mark Kenneth Esguerra
+    * @date January 12, 2015
+    */
+   function countRecentPasswordsByAID ($AID)
+   {
+       $stmt = "SELECT COUNT(AID) AS Count 
+                FROM accountsrecentpasswords 
+                WHERE AID = ?";
+       $this->prepare($stmt);
+       $this->bindparameter(1, $AID);
+       $this->execute();
+       
+       return $this->fetchData();
+   }
+   /**
+    * Get the Recent Old Password
+    * @param type $AID
+    * @return type
+    * @author Mark Kenneth Esguerra
+    * @date January 12, 2015
+    */
+   private function getOldestRecentPassword ($AID) 
+   {
+       $stmt = "SELECT Password 
+                FROM accountsrecentpasswords 
+                WHERE AID = ? 
+                ORDER BY DateCreated ASC 
+                LIMIT 0, 1 ";
+       $this->prepare($stmt);
+       $this->bindparameter(1, $AID);
+       $this->execute();
+       
        return $this->fetchData();
    }
 }
