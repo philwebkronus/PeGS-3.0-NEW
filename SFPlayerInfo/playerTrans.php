@@ -38,16 +38,44 @@ include_once("playerTranscontroller.php");
                 <?php
                 $arrTotalLoad[] = '';
                 $arrTotalWithdrawal[] = '';
+                $arrTotalManualRedemption[] = '';
                 $arrTotalCasinoWinnings[] = '';
                 $casinoWinnings = 0;
+       
                 foreach ($PTS as $singlePtsResult)
                 {
                     $siteID = $singlePtsResult['SiteID'];
                     $siteIDResult = $_Sites->getSite($siteID);
                     $siteName = $siteIDResult[0]['SiteName'];
+                    foreach($PTS2 as $singlePts2Result)
+                    {
+                        $totalDeposit2 = $singlePts2Result['TotalDeposit'];
+                        $totalReload2 = $singlePts2Result['TotalReload'];
+                        $totalWithdrawal2 = $singlePts2Result['TotalWithdrawal'];
+                    }
+                    
                     $totalDeposit = $singlePtsResult['TotalDeposit'];
-                    $totalReload = $singlePtsResult['TotalReload'];
-                    $totalWithdrawal = $singlePtsResult['TotalWithdrawal'];
+                    $totalDeposit = $totalDeposit+$totalDeposit2;
+                    
+                    if($isEwallet == 1)
+                        $totalReload = 0.00;
+                    else
+                        $totalReload = $singlePtsResult['TotalReload'];
+                    
+                    $totalReload = $totalReload+$totalReload2;
+                    
+                    $resultTotalManualRedemption = $_ManualRedemptions->getManualRedemptions($MID,$siteID);
+                    foreach ($resultTotalManualRedemption as $singleTotalManualRedemption)
+                    {
+                        if($singleTotalManualRedemption['ActualAmount'] != NULL)
+                            $manualRedemption = $singleTotalManualRedemption['ActualAmount'];
+                        else
+                            $manualRedemption = 0.00;
+                    }
+                    $totalWithdrawal = $singlePtsResult['TotalWithdrawal']+$manualRedemption;
+                    $totalWithdrawal = $totalWithdrawal+$totalWithdrawal2;
+                    //$totalManualRedemption = $singlePtsResult['ActualAmount'];
+                    //var_dump($totalManualRedemption);
                     $totalLoad = $totalDeposit + $totalReload;
 
                     $casinoWinnings = (float) $totalLoad - (float) $totalWithdrawal;
@@ -72,7 +100,7 @@ include_once("playerTranscontroller.php");
                         <?php echo number_format((float) array_sum($arrTotalLoad), 2, '.', ','); ?>
                     </th>
                     <th>
-                        <?php echo number_format((float) array_sum($arrTotalWithdrawal), 2, '.', ','); ?>
+                        <?php echo number_format((float) array_sum($arrTotalWithdrawal)+array_sum($arrTotalManualRedemption), 2, '.', ','); ?>
                     </th>
                     <th>
                         <?php

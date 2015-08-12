@@ -85,26 +85,36 @@ if (count($resultMembershipSFID) > 0)
 
             $resultLastReloadTransaction = $_EwalletTrans->getLastReloadTransaction($cardNumber);
             $rowLastReloadTransaction = $resultLastReloadTransaction[0]; //row5
-
-            $pcws = new PcwsWrapper();
-            $resultBalance = $pcws->getBalance($cardNumber, 1); //row6
-            if ($resultBalance['GetBalance']['ErrorCode'] == 0)
-            {
-                $playableBalance = number_format($resultBalance['GetBalance']['PlayableBalance'], 2);
-            }
-            else
-            {
-                $playableBalance = $resultBalance['GetBalance']['TransactionMessage'];
-            }
             
-            $resultCompPoints = $pcws->getCompPoints($cardNumber, 1);
-            if ($resultCompPoints['GetCompPoints']['ErrorCode'] == 0)
+            $resultIsEwallet = $_Members->checkIfEwallet($MID);
+            $isEwallet = $resultIsEwallet['IsEwallet'];
+            if($isEwallet == 1)
             {
-                $currentPoints = number_format($resultCompPoints['GetCompPoints']['CompBalance'], 2);
+                $pcws = new PcwsWrapper();
+                $resultBalance = $pcws->getBalance($cardNumber, 1); //row6
+                if ($resultBalance['GetBalance']['ErrorCode'] == 0)
+                {
+                    $playableBalance = number_format($resultBalance['GetBalance']['PlayableBalance'], 2);
+                }
+                else
+                {
+                    $playableBalance = $resultBalance['GetBalance']['TransactionMessage'];
+                }
+
+                $resultCompPoints = $pcws->getCompPoints($cardNumber, 1);
+                if ($resultCompPoints['GetCompPoints']['ErrorCode'] == 0)
+                {
+                    $currentPoints = number_format($resultCompPoints['GetCompPoints']['CompBalance'], 2);
+                }
+                else
+                {
+                    $currentPoints = $resultCompPoints['GetCompPoints']['TransactionMessage'];
+                }
             }
             else
             {
-                $currentPoints = $resultCompPoints['GetCompPoints']['TransactionMessage'];
+                $playableBalance = 0;
+                $currentPoints = $resultCardNumberInfo['CurrentPoints'];
             }
         }
 

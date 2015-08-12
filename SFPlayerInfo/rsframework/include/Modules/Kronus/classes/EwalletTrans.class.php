@@ -38,6 +38,19 @@ class EwalletTrans extends BaseEntity
 
         return parent::RunQuery($query);
     }
+    
+    //@author fdlsison
+    //@date 08/10/2015
+    public function getEwalletTransPerSiteByMID($MID, $dateConverted)
+    {
+        $query = "SELECT a.EwalletTransID, a.StartDate, a.EndDate,
+                         a.SiteID,a.LoyaltyCardNumber, ROUND(IFNULL(SUM(CASE a.TransType WHEN 'D' THEN a.Amount ELSE 0 END), 0)) AS TotalDeposit,
+                         ROUND(IFNULL(SUM(CASE a.TransType WHEN 'W' THEN a.Amount ELSE 0 END), 0)) AS TotalWithdrawal
+                    FROM $this->TableName a WHERE a.MID = '$MID' AND a.StartDate >= '$dateConverted' GROUP BY SiteID";
+
+        $result = parent::RunQuery($query);
+        return $result;
+    }
 
 }
 

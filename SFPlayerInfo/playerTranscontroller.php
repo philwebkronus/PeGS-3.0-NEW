@@ -22,6 +22,9 @@ App::LoadModuleClass('Membership', 'Identifications');
 App::LoadModuleClass('Kronus', 'Sites');
 App::LoadModuleClass('Membership', 'PcwsWrapper');
 App::LoadModuleClass('Kronus', 'TransactionSummary');
+App::LoadModuleClass('Kronus', 'EwalletTrans');
+App::LoadModuleClass('Membership', 'Members');
+App::LoadModuleClass('Kronus', 'ManualRedemptions');
 
 $_MemberInfo = new MemberInfo();
 $_MemberCards = new MemberCards();
@@ -29,15 +32,49 @@ $_CardTransactions = new CardTransactions();
 $_Ref_Identifications = new Identifications();
 $_Sites = new Sites();
 $_TransactionSummary = new TransactionSummary();
+$_EwalletTrans = new EwalletTrans();
+$_Members = new Members();
+$_ManualRedemptions = new ManualRedemptions();
 
 $SFID = $_GET['SFDCID'];
 $un = $_GET['SFUser'];
 
-$PTS = $_TransactionSummary->getTransSummaryPerSiteByMID($SFID);
-$ptsResult = $PTS[0];
-$ptsCount = count($PTS);
-$fname = $PTS[0]['FirstName'];
-$lname = $PTS[0]['LastName'];
+$MID = $_MemberInfo->getMIDUsingSFID($SFID);
+if($MID)
+{
+    $resultIsEwallet = $_Members->checkIfEwallet($MID);
+    $isEwallet = $resultIsEwallet['IsEwallet'];
+    if($isEwallet == 1)
+    {
+        $resultDateConverted = $_Members->getDateConverted($MID);
+        $dateConverted = $resultDateConverted['DateMigrated'];
+        
+        $PTS = $_EwalletTrans->getEwalletTransPerSiteByMID($MID, $dateConverted);
+        $ptsResult = $PTS[0];
+        $ptsCount = count($PTS);
+        
+        $PTS2 = $_TransactionSummary->getTransSummaryOfEwalletPerSiteByMID($SFID, $dateConverted);
+        $ptsResult2 = $PTS2[0];
+        $ptsCount2 = count($PTS2);
+        $fname = $PTS2[0]['FirstName'];
+        $lname = $PTS2[0]['LastName'];
+    }
+    else
+    {
+        $PTS = $_TransactionSummary->getTransSummaryPerSiteByMID($SFID);
+        $ptsResult = $PTS[0];
+        $ptsCount = count($PTS);
+        $fname = $PTS[0]['FirstName'];
+        $lname = $PTS[0]['LastName'];
+    }
+}
+else
+{
+    echo 'No member found for that SFID';
+    exit;
+}
+
+
 
 $path = dirname(__FILE__) . '/rsframework/include/log/SFLogs/';
 $fn = $path . 'logs_' . date("Ymd") . '.txt';

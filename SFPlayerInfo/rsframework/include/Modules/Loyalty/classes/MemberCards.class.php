@@ -57,7 +57,7 @@ class MemberCards extends BaseEntity
     }
     
     public function getCardInfoUsingMID($MID) {
-        $query = "SELECT mc.CardNumber,mc.DateCreated,mc.LifetimePoints,mc.RedeemedPoints,mc.BonusPoints
+        $query = "SELECT mc.CardNumber,mc.DateCreated,mc.LifetimePoints,mc.CurrentPoints,mc.RedeemedPoints,mc.BonusPoints
                             FROM membercards mc
                             INNER JOIN cards c ON c.CardID = mc.CardID
                             WHERE mc.MID = $MID AND mc.Status IN(1,5)";

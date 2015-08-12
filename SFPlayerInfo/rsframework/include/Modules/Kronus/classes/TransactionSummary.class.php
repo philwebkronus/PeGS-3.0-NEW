@@ -22,6 +22,18 @@ class TransactionSummary extends BaseEntity
         $result = parent::RunQuery($query);
         return $result;
     }
+    
+    public function getTransSummaryOfEwalletPerSiteByMID($MID,$dateConverted)
+    {
+        $query = "SELECT a.TransactionsSummaryID, a.DateEnded, a.DateStarted,
+                         TIMEDIFF(a.DateEnded, a.DateStarted) AS PlayingTime,
+                         a.SiteID,a.LoyaltyCardNumber, ROUND(SUM(a.Deposit),2) AS TotalDeposit, ROUND(SUM(a.Reload),2) AS TotalReload,
+                         ROUND(SUM(a.Withdrawal),2) AS TotalWithdrawal, a.DateStarted, a.DateEnded, b.FirstName, b.LastName
+                    FROM $this->TableName a INNER JOIN membership_v1.memberinfo b ON a.MID = b.MID WHERE b.SFID = '$MID' AND a.DateStarted < '$dateConverted' GROUP BY SiteID";
+
+        $result = parent::RunQuery($query);
+        return $result;
+    }
 
 }
 

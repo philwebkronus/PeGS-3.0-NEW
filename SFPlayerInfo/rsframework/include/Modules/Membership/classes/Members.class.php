@@ -20,7 +20,7 @@ class Members extends BaseEntity
     public function getUpdatedRecords($date)
     {
         $query = "SELECT m.IsVIP, m.DateMigrated, mi.MID, mi.SFID FROM $this->TableName m INNER JOIN membership_v1.memberinfo mi ON
-                m.MID = mi.MID WHERE m.DateCreated > '$date'"; var_dump($query);exit;
+                m.MID = mi.MID WHERE m.DateCreated > '$date'";
         return parent::RunQuery($query);
     }
     
@@ -28,6 +28,20 @@ class Members extends BaseEntity
     {
         $query = "SELECT isVIP FROM $this->TableName where";
         return parent::RunQuery($query);
+    }
+    
+    public function checkIfEwallet($MID)
+    {
+        $query = "SELECT IsEwallet FROM $this->TableName WHERE MID = '$MID'";
+        $result = parent::RunQuery($query);
+        return $result[0];
+    }
+    
+    public function getDateConverted($MID)
+    {
+        $query = "SELECT DateMigrated FROM $this->TableName WHERE MID = '$MID'";
+        $result = parent::RunQuery($query);
+        return $result[0];
     }
 }
 
