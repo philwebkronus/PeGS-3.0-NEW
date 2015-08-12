@@ -87,12 +87,14 @@ if(isset($_SESSION['acctype']))
             $volddetails = array($vusername, $rname, $vemail, $vcountryLine, $vareaLine, $vnumLine, $vcountrymobile, $vareamobile, $vnummobile, $vaddress); //store old details on an array (for auditing)
             $oldetails = implode("-", $volddetails);
 
+            $voemail = '';
             //if administrator type, use corporate email
             if($_SESSION['acctype'] == 1)
             {
                    $vcorpemail = preg_replace("/([0-9]+)$/", "", $resultviews['Email']);
                    $vemail = explode("@philweb.com.ph", $resultviews['Email']);
                    $vappendnum = explode($vcorpemail, $resultviews['Email']);
+		   $voemail = $resultviews['Email'];
             }
         }
 ?>
@@ -218,12 +220,14 @@ if(isset($_SESSION['acctype']))
                                 echo '<input type="hidden" id="txtemail" name="txtemail" value="hidden"/>';  
                                 echo '<input type="hidden" id="txtappendnum" name="txtappendnum"  value="'.$vappendnum[1].'" />';  
                                 echo '<input type="hidden" id="txtemail2" name="txtemail2" value="'.$vcorpemail.'"/>';  
+				echo '<input type="hidden" id="txtemail3" name="txtemail3" value="'.$voemail.'"/>';
                           }
                           else
                           {
                                 echo '<input type="text" id="txtemail" name="txtemail" maxlength="100" size="80" value="'.$vemail.'" onblur="validateEmail();" onkeypress="return emailkeypress(event);" />';  
                                 echo '<input type="hidden" id="txtcorpemail" name="txtcorpemail" value="hidden"/>';
-                                echo '<input type="hidden" id="txtemail2" name="txtemail2" value="'.$vemail.'"/>';  
+                                echo '<input type="hidden" id="txtemail2" name="txtemail2" value="'.$vemail.'"/>'; 
+				echo '<input type="hidden" id="txtemail3" name="txtemail3" value="'.$voemail.'"/>'; 
                           }
                         ?>
                     </td>

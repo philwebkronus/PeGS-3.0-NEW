@@ -804,7 +804,8 @@ if($connected)
                         $emailforcheck = trim($_POST['txtemail2']);
                         $vdesignationID = null;
                      }
-                     
+                     $oEmail = trim($_POST['txtemail3']); 
+
                      //check if phone number with country and area code are filled up
                      if((strlen(trim($_POST['txtctrycode'])) > 0) && (strlen(trim($_POST['txtareacode'])) > 0) && (strlen($_POST['txtphone']) > 0))
                      {
@@ -823,6 +824,8 @@ if($connected)
                      
                      //$isuname = $oaccount->checkusername($vUserName);               
                      $ctremail = 0;
+                     $ctrexactemail = 0;
+
                      if($emailforcheck != $vEmail)
                      {
                          $isemail = $oaccount->checkemail($vEmail);
@@ -837,7 +840,19 @@ if($connected)
 //                     }
                      if($ctremail > 0)
                      {
-                        $vEmail = $vEmail.$ctremail; //if email exist append number to the last portion of string
+                        $vEmailTemp = $vEmail.$ctremail; //if email exist append number to the last portion of string
+                        $isemail2 = $oaccount->checkexactemail($vEmailTemp);
+                        if ($isemail2['emailcount'] > 0)
+                        {
+                            $maxEmail = $oaccount->getmaxemail($vEmail);
+                            $vnewappendnum = explode($vEmail, $maxEmail['maxEmail']);
+                            $ctremail = (int)$vnewappendnum[1] + 1;
+                            $vEmail = $vEmail.$ctremail;
+                        }
+                        else
+                        {
+                            $vEmail = $vEmail.$ctremail;
+                        }
                      }
 
                      $resultid = $oaccount->updateaccountdetails($vAID, $vAccountTypeID, $vName, $vAddress, $vEmail, $vLandline, $vMobileNumber, $vOption1, $vOption2, $vPasskey, $vdesignationID);

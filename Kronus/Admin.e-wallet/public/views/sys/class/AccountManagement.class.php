@@ -370,7 +370,23 @@ class AccountManagement extends DBHandler{
           $this->execute();
           return $this->fetchData();
       }
-      
+
+      function checkexactemail($zemail)
+      {
+          $stmt = "SELECT COUNT(AID) as emailcount FROM accountdetails WHERE Email = '".$zemail."'";
+          $this->prepare($stmt);
+          $this->execute();
+          return $this->fetchData();
+      }
+
+      function getmaxemail($zemail)
+      {
+          $stmt = "SELECT MAX(Email) AS maxEmail FROM accountdetails WHERE Email LIKE '".$zemail."%'";
+          $this->prepare($stmt);
+          $this->execute();
+          return $this->fetchData();
+      }
+
       //this will count accounts with GT 3 login attempts per account type selected
       function countloginattempts($zacctype, $zsites, $zowner)
       {
