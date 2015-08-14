@@ -93,7 +93,7 @@ if (isset($_POST['pager'])) {
                             $cardpoints = $_MemberCards->getPointsByCard($cardnumber);
 
                             $MemberInfoResult2 = $_MemberInfo->getMemberInfoByID($MIDResult[0]['MID']);
-                            $MemberInfoResult = $_MemberInfo->getPlayerName(1, 0, $MIDResult[0]['MID'], 'FirstName, MiddleName');
+                            $MemberInfoResult = $_MemberInfo->getPlayerName($MIDResult[0]['MID']);
                             $MemberInfoResult[0] = array_merge($MemberInfoResult[0], $MemberInfoResult2[0]);
                             if (isset($MemberInfoResult[0]['MID']) && $MemberInfoResult[0]['MID'] != '') {
                                 $count = $_TerminalSessions->isSessionExists($MemberInfoResult[0]['MID']);

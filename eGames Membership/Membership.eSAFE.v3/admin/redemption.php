@@ -254,6 +254,7 @@ $fproc->AddControl($txtSearch);
 $btnSearch = new Button('btnSearch', 'btnSearch', 'Search');
 $btnSearch->ShowCaption = true;
 $btnSearch->Enabled = false;
+$btnSearch->IsSubmit = true;
 $fproc->AddControl($btnSearch);
 
 $btnClear = new Button('btnClear', 'btnClear', 'Clear');
@@ -730,7 +731,8 @@ if($fproc->IsPostBack){
                     { edit:false,add:false,del:false, search:false, refresh: true });
         }
         
-        $('#btnSearch').live('click', function(){
+        $("#btnSearch").click(function(e){
+            e.preventDefault();
             var txtsearch = $("#txtSearch").val();
             if (txtsearch.substr(0,1) === " "){
                 alert("Trailing space/s is/are not allowed");
