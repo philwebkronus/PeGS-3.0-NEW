@@ -163,4 +163,14 @@ $_CONFIG['rr_URI']='https://cashier-dev.egamescasino-ss.ph';
 
 //Define Maximum Item Quantity that can be avail by the player.
 //$_CONFIG['item_maxquantity'] = 5
+//SalesForce API
+$_CONFIG['sfApi'] = '<FULL PATH HERE>/rsframework/include/core/SalesforceAPI.php';
+
+$_CONFIG['instanceURL'] = '';
+$_CONFIG['apiVersion'] = '';
+$_CONFIG['cKey'] = '';
+$_CONFIG['cSecret'] = '';
+$_CONFIG['sfLogin'] = '';
+$_CONFIG['sfPassword'] = '';
+$_CONFIG['secToken'] = '';
 ?>

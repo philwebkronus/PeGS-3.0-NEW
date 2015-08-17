@@ -177,4 +177,14 @@ $_CONFIG['checkpin'] = '172.16.102.174/PCWS/index.php/pcws/checkpin';
 
 $_CONFIG['referrer'] = 'http://172.16.102.174/membership.rewards/admin/login.php';
 
+//SalesForce API
+$_CONFIG['sfApi'] = '<FULL PATH HERE>/rsframework/include/core/SalesforceAPI.php';
+
+$_CONFIG['instanceURL'] = '';
+$_CONFIG['apiVersion'] = '';
+$_CONFIG['cKey'] = '';
+$_CONFIG['cSecret'] = '';
+$_CONFIG['sfLogin'] = '';
+$_CONFIG['sfPassword'] = '';
+$_CONFIG['secToken'] = '';
 ?>
