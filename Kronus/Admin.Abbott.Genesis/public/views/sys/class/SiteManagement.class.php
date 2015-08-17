@@ -584,10 +584,10 @@ class SiteManagement extends DBHandler{
                         $this->execute();
                         $isupdated2 = $this->rowCount();
                     }
-                    /*
+
                     if($accstatus <> 1)
                         $accstatuz = 0; //status code in accounts if terminated
-                    else 
+                    else
                         $accstatuz = 1;
 
                     //check if update siteaccounts was successsfull
@@ -596,7 +596,7 @@ class SiteManagement extends DBHandler{
                         $this->bindparameter(1, $accstatuz);
                         $this->execute();
                         $isupdated2 = $this->rowCount();
-                    } */
+                    }
                 }
 
                 try{

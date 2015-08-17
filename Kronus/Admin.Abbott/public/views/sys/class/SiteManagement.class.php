@@ -537,11 +537,16 @@ class SiteManagement extends DBHandler{
              $rresult = $this->fetchAllData();
              $listacct = array();
              
-             foreach ($rresult as $row){
-                 array_push($listacct, "'".$row['AID']."'");
+             if(empty($rresult)){
+                 $aid = '';
              }
-             
-             $aid = implode(',', $listacct);
+             else{
+                 foreach ($rresult as $row){
+                    array_push($listacct, "'".$row['AID']."'");
+                }
+
+                $aid = implode(',', $listacct);
+             }
              
              unset($listsite, $listacct);
              
@@ -556,13 +561,31 @@ class SiteManagement extends DBHandler{
                 $this->bindparameter(1, $zstatus);
                 $this->execute();          
                 $isupdated = $this->rowCount();
+
+                if($aid != ''){
+                    
+                    //check if update was successsfull
+                    if($isupdated > 0) {
+                        $this->prepare("UPDATE siteaccounts SET Status = ? WHERE SiteID IN (".$site.")");
+                        $this->bindparameter(1, $accstatus);
+                        $this->execute();
+                        $isupdated2 = $this->rowCount();
+                    }
+                    
+                    if($accstatus <> 1)
+                        $accstatuz = 0; //status code in accounts if terminated
+                    else 
+                        $accstatuz = 1;
                 
-                //check if update was successsfull
-                if($isupdated > 0) {
-                    $this->prepare("UPDATE siteaccounts SET Status = ? WHERE SiteID IN (".$site.")");
-                    $this->bindparameter(1, $accstatus);
-                    $this->execute();
-                } 
+                    //check if update siteaccounts was successsfull
+                    if($isupdated2 > 0) {
+                        $this->prepare("UPDATE accounts SET Status = ? WHERE AID IN (".$aid.")");
+                        $this->bindparameter(1, $accstatuz);
+                        $this->execute();
+                        $isupdated2 = $this->rowCount();
+                    }
+                }
+                
                 try{
                      $this->committrans();
                      return $isupdated;

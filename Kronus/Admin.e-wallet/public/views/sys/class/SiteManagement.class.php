@@ -11,28 +11,28 @@
 include "DbHandler.class.php";
 
 class SiteManagement extends DBHandler{
-     function __construct($sconectionstring) 
+     function __construct($sconectionstring)
       {
-          parent::__construct($sconectionstring);          
-      }     
+          parent::__construct($sconectionstring);
+      }
 
       // site creation: insert record in sites table
       function insertinsite($zSiteName,$zSiteCode,$zOwnerAID,$zStatus,
               $zSiteDescription,$zSiteAlias,$zIslandId,$zRegionID,$zProvinceID,
-              $zCityID,$zBarangayID,$zSiteAddress,$zCTO, $zpasscode, $zdatecreated, 
+              $zCityID,$zBarangayID,$zSiteAddress,$zCTO, $zpasscode, $zdatecreated,
               $zaid, $rdenomdefaults, $zistestsite, $zcontactno)
       {
           //INSERT RECORD IN SITE  TABLE; default value for SiteGroupID = 1; INSERT RECORD IN SITEDETAILS TABLE
                $this->begintrans();
                //$zSiteGroupID = 1;
-               $this->prepare("INSERT INTO sites(SiteName,SiteCode,OwnerAID,Status,isTestSite) VALUES(?,?,?,?,?)");         
+               $this->prepare("INSERT INTO sites(SiteName,SiteCode,OwnerAID,Status,isTestSite) VALUES(?,?,?,?,?)");
                $this->bindparameter(1, $zSiteName);
                $this->bindparameter(2, $zSiteCode);
                $this->bindparameter(3, $zOwnerAID);
                $this->bindparameter(4, $zStatus);
                $this->bindparameter(5, $zistestsite);
                //$this->bindparameter(5, $zSiteGroupID);
-               $this->execute();          
+               $this->execute();
                $siteid = $this->insertedid();
                $this->prepare("INSERT INTO sitedetails(SiteID,SiteDescription,SiteAlias,IslandId,RegionID,ProvinceID,CityID,BarangayID,SiteAddress,CTO, PassCode, ContactNumber)
                                VALUES(?,?,?,?,?,?,?,?,?,?,?,?)");
@@ -64,7 +64,7 @@ class SiteManagement extends DBHandler{
                              $zdenomname = $results['DenominationName'];
                              $zdenommin = $results['MinDenominationValue'];
                              $rdenommax = $results['MaxDenominationValue'];
-                             $zdenomtype = $results['DenominationType']; 
+                             $zdenomtype = $results['DenominationType'];
 
                              $this->bindparameter(1, $siteid);
                              $this->bindparameter(2, $zdenomname);
@@ -86,43 +86,43 @@ class SiteManagement extends DBHandler{
                            $this->committrans();
 
                          }catch(PDOException $e) {
-                             $this->rollbacktrans(); 
+                             $this->rollbacktrans();
                              var_dump($e->getMessage()); exit;
                          }
                          return $siteid;
                      }
-                     else 
+                     else
                      {
                          $this->rollbacktrans();
                          return 0;
                      }
                }
-               else       
+               else
                   $this->rollbacktrans();
                   return 0;
       }
-      
+
       //site update : update site and sitedetails and insert into siteaccounts
       function updatesitedetails($zSiteID,$zSiteName,$zSiteCode,$zOwnerAID,
               $zSiteGroupID, $zSiteDescription, $zSiteAlias,$zIslandId,$zRegionID,
               $zProvinceID,$zCityID,$zBarangayID,$zSiteAddress,$zCTO, $zpasscode, $zstatus, $zoldownerAID, $zistestsite, $zcontactno)
-      {                                                                
-         //update site table, sitedetails and insert in siteaccounts   
+      {
+         //update site table, sitedetails and insert in siteaccounts
          if($zOwnerAID > 0)
          {
               $zAID = $zOwnerAID;
          }
          else
               $zAID = null;
-         
+
          $this->begintrans();
          $this->prepare("UPDATE sites SET SiteName = ?, SiteCode = ?,OwnerAID = ? ,SiteGroupID = ?, isTestSite = ? WHERE SiteID = ?");
          $this->bindparameter(1, $zSiteName);
          $this->bindparameter(2, $zSiteCode);
-         $this->bindparameter(3, $zAID);         
-         $this->bindparameter(4, $zSiteGroupID);     
+         $this->bindparameter(3, $zAID);
+         $this->bindparameter(4, $zSiteGroupID);
          $this->bindparameter(5, $zistestsite);
-         $this->bindparameter(6, $zSiteID);   
+         $this->bindparameter(6, $zSiteID);
          $this->execute();
          $isexecute =$this->rowCount();
          if($zAID > 1)
@@ -132,10 +132,10 @@ class SiteManagement extends DBHandler{
              $this->bindparameter(1, $zSiteID);
              $this->bindparameter(2, $zAID);
              $this->execute();
-             
+
              //check if site has already assigned to its operator
              if($this->hasRows() == 0)
-             { 
+             {
                     $this->prepare("INSERT INTO siteaccounts(SiteID,AID,Status) VALUES (?,?,?)");
                     $this->bindparameter(1, $zSiteID);
                     $this->bindparameter(2, $zAID);
@@ -148,8 +148,8 @@ class SiteManagement extends DBHandler{
                         return 0;
                     }
              }
-             
-             $this->prepare("UPDATE sitedetails SET SiteDescription = ?, 
+
+             $this->prepare("UPDATE sitedetails SET SiteDescription = ?,
                    SiteAlias = ?,IslandID =? ,RegionID =? ,ProvinceID=?,CityID=?,
                    BarangayID=?,SiteAddress=?,CTO=?, PassCode = ?, ContactNumber = ? WHERE SiteID = ?");
              $this->bindparameter(1, $zSiteDescription);
@@ -164,43 +164,43 @@ class SiteManagement extends DBHandler{
              $this->bindparameter(10, $zpasscode);
              $this->bindparameter(11, $zcontactno);
              $this->bindparameter(12,$zSiteID);
-             
+
              $this->execute();
-             $ifdetexecute = $this->rowCount();      
+             $ifdetexecute = $this->rowCount();
              if(($isexecute > 0) or ( $ifdetexecute > 0))
              {
                  $this->committrans();
-                 return 1;          
+                 return 1;
              }
-             else  
-            {    
+             else
+            {
                $this->rollbacktrans();
                return 0;
              }
          }
-         else  
-         {    
+         else
+         {
            $this->rollbacktrans();
            return 0;
          }
       }
-      
+
       //site update: update site status
       function updatestatus($zSiteID,$zStatus)
       {
           $this->prepare("UPDATE sites SET Status = ?  WHERE SiteID = ?");
           $this->bindparameter(1, $zStatus);
           $this->bindparameter(2, $zSiteID);
-          $this->execute();          
+          $this->execute();
           return $this->rowCount();
       }
-      
+
       //display all islands
       function showislands()
       {
           $stmt = "SELECT IslandID, IslandName FROM ref_islands ";
           $this->executeQuery($stmt);
-          return $this->fetchAllData();   
+          return $this->fetchAllData();
       }
 
       //display all regions based on selected island
@@ -208,7 +208,7 @@ class SiteManagement extends DBHandler{
       {
           $stmt = "Select RegionID, RegionName from ref_regions where IslandID = '".$zislandID."'";
            $this->executeQuery($stmt);
-          return  $this->fetchAllData();         
+          return  $this->fetchAllData();
       }
 
       //display all provinces based on selected regions
@@ -216,7 +216,7 @@ class SiteManagement extends DBHandler{
       {
            $stmt = "Select ProvinceID, ProvinceName from ref_provinces where RegionID = '".$zregionID."' ORDER BY ProvinceName";
            $this->executeQuery($stmt);
-          return $this->fetchAllData();          
+          return $this->fetchAllData();
       }
 
       //display all cities based on selected provinces
@@ -224,7 +224,7 @@ class SiteManagement extends DBHandler{
       {
           $stmt = "SELECT CityID, CityName FROM ref_cities where ProvinceID = '".$zprovinceID."' ORDER BY CityName";
           $this->executeQuery($stmt);
-          return $this->fetchAllData();         
+          return $this->fetchAllData();
       }
 
       //display all barangay's based on selected city
@@ -232,17 +232,17 @@ class SiteManagement extends DBHandler{
       {
           $stmt = "SELECT BarangayID, BarangayName FROM ref_barangay where CityID = '".$zcityID."' ORDER BY BarangayName";
           $this->executeQuery($stmt);
-          return $this->fetchAllData();         
+          return $this->fetchAllData();
       }
-      
+
       //display all site groups
       function showsitegroups()
       {
           $stmt = "SELECT SiteGroupID, SiteGroupsName FROM sitegroups ORDER BY SiteGroupsName" ;
           $this->executeQuery($stmt);
-          return $this->fetchAllData();   
+          return $this->fetchAllData();
       }
-      
+
       //getallaccounts
       function selectallaccounts($zAcctTypeID)
       {
@@ -251,7 +251,7 @@ class SiteManagement extends DBHandler{
        $this->executeQuery($stmt);
        return $this->fetchAllData();
       }
-      
+
       function getOwnerStatus($zAID)
       {
        $this->prepare("SELECT Status FROM accounts WHERE AID = :aid");
@@ -259,7 +259,7 @@ class SiteManagement extends DBHandler{
        $this->executewithparams($xparams);
         return $this->fetchData();
       }
-   
+
       //display all sites
       function viewsitedetails($zsiteID)
       {
@@ -267,12 +267,12 @@ class SiteManagement extends DBHandler{
         {
               $stmt = "SELECT a.SiteID,a.SiteName,a.SiteCode,a.OwnerAID,a.Status, if(isnull(a.POSAccountNo), '0000000000', a.POSAccountNo) as POS, a.isTestSite, b.SiteDescription,b.SiteAlias,b.SiteAddress,b.IslandID,b.RegionID,b.ProvinceID,b.CityID,
                    b.BarangayID,b.CTO, b.PassCode, b.ContactNumber, c.IslandName,d.RegionName,e.ProvinceName,f.CityName,g.BarangayName,i.UserName FROM sites a
-                   INNER JOIN sitedetails b  on a.SiteID = b.SiteID 
-                   INNER JOIN ref_islands c on b.IslandID = c.IslandID 
-                   INNER JOIN ref_regions d on b.RegionID = d.RegionID 
-                   INNER JOIN ref_provinces e on b.ProvinceID = e.ProvinceID 
-                   INNER JOIN ref_cities f on b.CityID = f.CityID 
-                   INNER JOIN ref_barangay g on b.BarangayID = g.BarangayID 
+                   INNER JOIN sitedetails b  on a.SiteID = b.SiteID
+                   INNER JOIN ref_islands c on b.IslandID = c.IslandID
+                   INNER JOIN ref_regions d on b.RegionID = d.RegionID
+                   INNER JOIN ref_provinces e on b.ProvinceID = e.ProvinceID
+                   INNER JOIN ref_cities f on b.CityID = f.CityID
+                   INNER JOIN ref_barangay g on b.BarangayID = g.BarangayID
                    INNER JOIN accounts i on a.OwnerAID = i.AID AND a.SiteID =  '".$zsiteID."'ORDER BY a.SiteName";
               $this->executeQuery($stmt);
               $this->_row = $this->fetchAllData();
@@ -280,11 +280,11 @@ class SiteManagement extends DBHandler{
               {
                  $stmt = "SELECT a.SiteID,a.SiteName,a.SiteCode,a.OwnerAID,a.Status, a.isTestSite, if(isnull(a.POSAccountNo), '0000000000', a.POSAccountNo) as POS,b.SiteDescription,b.SiteAlias,b.SiteAddress,b.IslandID,b.RegionID,b.ProvinceID,b.CityID,
                    b.BarangayID,b.CTO, b.PassCode,  b.ContactNumber, c.IslandName,d.RegionName,e.ProvinceName,f.CityName,g.BarangayName FROM sites a
-                   INNER JOIN sitedetails b  on a.SiteID = b.SiteID 
-                   INNER JOIN ref_islands c on b.IslandID = c.IslandID 
+                   INNER JOIN sitedetails b  on a.SiteID = b.SiteID
+                   INNER JOIN ref_islands c on b.IslandID = c.IslandID
                    INNER JOIN ref_regions d on b.RegionID = d.RegionID
-                   INNER JOIN ref_provinces e on b.ProvinceID = e.ProvinceID 
-                   INNER JOIN ref_cities f on b.CityID = f.CityID 
+                   INNER JOIN ref_provinces e on b.ProvinceID = e.ProvinceID
+                   INNER JOIN ref_cities f on b.CityID = f.CityID
                    INNER JOIN ref_barangay g on b.BarangayID = g.BarangayID
                    WHERE a.SiteID =  '".$zsiteID."' ORDER BY a.SiteName";
                  $this->executeQuery($stmt);
@@ -294,13 +294,13 @@ class SiteManagement extends DBHandler{
         }
         else
         {
-            $stmt = "SELECT a.SiteID,a.SiteName,a.SiteCode,a.OwnerAID,a.Status, a.isTestSite, 
-                     if(isnull(a.POSAccountNo), '0000000000', a.POSAccountNo) as POS,b.SiteDescription, 
+            $stmt = "SELECT a.SiteID,a.SiteName,a.SiteCode,a.OwnerAID,a.Status, a.isTestSite,
+                     if(isnull(a.POSAccountNo), '0000000000', a.POSAccountNo) as POS,b.SiteDescription,
                      b.SiteAlias,b.SiteAddress,b.IslandID,b.RegionID,b.ProvinceID,b.CityID,b.BarangayID, b.ContactNumber
                      FROM sites a INNER JOIN sitedetails b WHERE a.SiteID = b.SiteID ORDER BY a.SiteCode" ;
             $this->executeQuery($stmt);
-            $this->_row = $this->fetchAllData();  
-        }                 
+            $this->_row = $this->fetchAllData();
+        }
         return $this->_row;
      }
 //count all site records for pagination
@@ -333,9 +333,9 @@ class SiteManagement extends DBHandler{
         $this->_row = $this->fetchAllData();
         return $this->_row;
      }
-     
+
     /* For Site DEnominations */
-     
+
     //get all default denominations
     function getdefaultdenoms()
     {
@@ -344,7 +344,7 @@ class SiteManagement extends DBHandler{
         $this->execute();
         return $this->fetchAllData();
     }
-    
+
     //get all default denomination amounts
     function getdenomamounts()
     {
@@ -353,7 +353,7 @@ class SiteManagement extends DBHandler{
         $this->execute();
         return $this->fetchAllData();
     }
-    
+
     //get site denominations
     function getsitedenoms($zsiteID)
     {
@@ -363,11 +363,11 @@ class SiteManagement extends DBHandler{
         $this->execute();
         return $this->fetchAllData();
     }
-    
+
     //update denomination
     function updatedenomination($zdenominationvalues, $zsiteID, $zaid)
-    {       
-        $this->begintrans();        
+    {
+        $this->begintrans();
         try
         {
           $this->prepare("UPDATE sitedenomination SET MinDenominationValue = ?, MaxDenominationValue = ?, UpdatedByAID = ?, DateUpdated = now_usec() WHERE DenominationName = ? AND SiteID = ?");
@@ -376,7 +376,7 @@ class SiteManagement extends DBHandler{
             $denomname = $results['DenominationName'];
             $mininitial = $results['MinInitialValue'];
             $maxinitial = $results['MaxInitialValue'];
-            
+
             $this->bindparameter(1, $mininitial);
             $this->bindparameter(2, $maxinitial);
             $this->bindparameter(3, $zaid);
@@ -386,8 +386,8 @@ class SiteManagement extends DBHandler{
             $xcount = $xcount + $this->rowCount();
           }
           if($xcount > 0)
-          { 
-            $this->committrans();  
+          {
+            $this->committrans();
             $xsaved = 1;
             return $xsaved;
           }
@@ -396,7 +396,7 @@ class SiteManagement extends DBHandler{
             $this->rollbacktrans();
             return 0;
           }
-                     
+
         }
         catch (PDOException $e)
         {
@@ -404,7 +404,7 @@ class SiteManagement extends DBHandler{
           return 0;
         }
     }
-    
+
     function getsitecode($zsiteID)
     {
         $stmt = "SELECT SiteCode from sites WHERE SiteID = ?";
@@ -413,12 +413,12 @@ class SiteManagement extends DBHandler{
         $this->execute();
         return $this->fetchData();
     }
-    
-    
+
+
     function checkVirtualCashier($zsiteID)
     {
-        $stmt = "SELECT DISTINCT(a.AccountTypeID) FROM siteaccounts sa 
-            INNER JOIN accounts a ON a.AID = sa.AID 
+        $stmt = "SELECT DISTINCT(a.AccountTypeID) FROM siteaccounts sa
+            INNER JOIN accounts a ON a.AID = sa.AID
             WHERE a.AccountTypeID IN (15,17) AND sa.SiteID = ?";
         $this->prepare($stmt);
         $this->bindparameter(1, $zsiteID);
@@ -426,7 +426,7 @@ class SiteManagement extends DBHandler{
         $result = $this->fetchAllData();
         return $result;
     }
-    
+
     //check if sitecode is exist
     function checksitecode($zsitecode)
     {
@@ -436,7 +436,7 @@ class SiteManagement extends DBHandler{
         $this->execute();
         return $this->fetchData();
     }
-    
+
     //update POSAccountNo upon successful of site creation
     function insertposaccno($zposaccountno, $zsiteID)
     {
@@ -455,15 +455,15 @@ class SiteManagement extends DBHandler{
             return 0;
         }
     }
-    
+
      //get all sites
     function getsites()
     {
       $stmt = "SELECT SiteID,SiteName,SiteCode, if(isnull(POSAccountNo), '0000000000', POSAccountNo) as POS from sites ORDER BY SiteCode ASC";
       $this->executeQuery($stmt);
-      return $this->fetchAllData();         
+      return $this->fetchAllData();
     }
-    
+
     /**
      * for displaying of account status name
      * @param int Status ID
@@ -479,7 +479,7 @@ class SiteManagement extends DBHandler{
             case 1:
                 $zstatusname = "Active";
             break;
-            case 2: 
+            case 2:
                 $zstatusname = "Suspended";
             break;
             case 3:
@@ -491,9 +491,9 @@ class SiteManagement extends DBHandler{
         }
         return $zstatusname;
     }
-    
+
     /**
-     * Get locations name 
+     * Get locations name
      */
     function getlocationname($zarrisland, $zarrregion, $zarrprovince, $zarrcity, $zarrbrgy)
     {
@@ -502,20 +502,20 @@ class SiteManagement extends DBHandler{
         $provinceID = implode(",", $zarrprovince);
         $cityID = implode(",", $zarrcity);
         $barangayID = implode(",", $zarrbrgy);
-        
-        $stmt = "SELECT i.IslandName, r.RegionName, p.ProvinceName, c.CityName, b.BarangayName FROM ref_islands i 
-                 INNER JOIN ref_regions r ON r.IslandID = i.IslandID 
+
+        $stmt = "SELECT i.IslandName, r.RegionName, p.ProvinceName, c.CityName, b.BarangayName FROM ref_islands i
+                 INNER JOIN ref_regions r ON r.IslandID = i.IslandID
                  INNER JOIN ref_provinces p ON p.RegionID = r.RegionID
                  INNER JOIN ref_cities c ON c.ProvinceID = p.ProvinceID
                  INNER JOIN ref_barangay b ON b.CityID = c.CityID
-                 WHERE i.IslandID IN (".$islandID.") AND r.RegionID IN (".$regionID.") 
+                 WHERE i.IslandID IN (".$islandID.") AND r.RegionID IN (".$regionID.")
                  AND p.ProvinceID IN(".$provinceID.") AND c.CityID IN (".$cityID.") AND b.BarangayID IN (".$barangayID.")
                  ORDER BY field(b.BarangayID, ".$barangayID.")";
         $this->prepare($stmt);
         $this->execute();
         return $this->fetchAllData();
     }
-    
+
     //view all accounts --> for sending email notifications for operator
       function viewallaccounts($zaid)
       {
@@ -525,12 +525,12 @@ class SiteManagement extends DBHandler{
           $this->executeQuery($stmt);
           return  $this->fetchAllData();
       }
-      
+
      /**
       * Updates status in sites and siteaccounts
       * @param array $zsiteID
       * @param int $zstatus
-      * @return boolean  
+      * @return boolean
       */
      function changestatus($zsiteID, $zstatus)
      {
@@ -541,15 +541,15 @@ class SiteManagement extends DBHandler{
            array_push($listsite, "'".$val1."'");
          }
          $site = implode(',',$listsite);
-         
+
          try
-         {   
+         {
              $stmt = "SELECT sa.AID FROM siteaccounts sa INNER JOIN accounts a ON sa.AID = a.AID WHERE sa.SiteID IN (".$site.")";
              $this->prepare($stmt);
              $this->execute();
              $rresult = $this->fetchAllData();
              $listacct = array();
-             
+
              if(empty($rresult)){
                  $aid = '';
              }
@@ -560,24 +560,24 @@ class SiteManagement extends DBHandler{
 
                 $aid = implode(',', $listacct);
              }
-             
-             
+
+
              unset($listsite, $listacct);
-             
+
              if($zstatus <> 1)
                  $accstatus = 2; //status code in siteaccounts if deactivated
-             else 
+             else
                  $accstatus = 1;
-             
+
              try
              {
                 $this->prepare("UPDATE sites SET Status = ? WHERE SiteID IN (".$site.")");
                 $this->bindparameter(1, $zstatus);
-                $this->execute();          
+                $this->execute();
                 $isupdated = $this->rowCount();
-                
+
                 if($aid != ''){
-                    
+
                     //check if update was successsfull
                     if($isupdated > 0) {
                         $this->prepare("UPDATE siteaccounts SET Status = ? WHERE SiteID IN (".$site.") AND AID IN (".$aid.")");
@@ -585,21 +585,21 @@ class SiteManagement extends DBHandler{
                         $this->execute();
                         $isupdated2 = $this->rowCount();
                     }
-                    /*
+
                     if($accstatus <> 1)
                         $accstatuz = 0; //status code in accounts if terminated
-                    else 
+                    else
                         $accstatuz = 1;
-                
+
                     //check if update siteaccounts was successsfull
                     if($isupdated2 > 0) {
                         $this->prepare("UPDATE accounts SET Status = ? WHERE AID IN (".$aid.")");
                         $this->bindparameter(1, $accstatuz);
                         $this->execute();
                         $isupdated2 = $this->rowCount();
-                    } */
+                    }
                 }
-                
+
                 try{
                      $this->committrans();
                      return $isupdated;
@@ -620,7 +620,7 @@ class SiteManagement extends DBHandler{
               return 0;
           }
      }
-     
+
      // account creation: insert record in account,accountdetails,siteaccounts table
       function insertaccount($zUserName,$zPassword,$zAccountTypeID,$zPasskey,$zStatus,$zAccountGroupID,$zDateLastLogin,$zLoginAttempts,
             $zSessionNoExpire,$zDateCreated,$zCreatedByAID,$zForChangePassword, $zWithPasskey,$vAID,$vName,$vAddress ,
@@ -661,21 +661,21 @@ class SiteManagement extends DBHandler{
               $this->bindparameter(9, $zdesignationID);
               if($this->execute())
               {
-                  $accountdetailsid = $this->insertedid();              
+                  $accountdetailsid = $this->insertedid();
                   $this->prepare("INSERT INTO siteaccounts(SiteID,AID,Status) VALUES (?,?,?)");
                   $this->bindparameter(1,$zSiteID);
                   $this->bindparameter(2,$accountid);
                   $this->bindparameter(3,$zStatus);
 
-                  if($this->execute()) 
+                  if($this->execute())
                   {
                      $this->committrans();
-                     return $accountid;     
+                     return $accountid;
                   }
                   else
                   {
                      $this->rollbacktrans ();
-                     return 0;                  
+                     return 0;
                   }
               }
               else
