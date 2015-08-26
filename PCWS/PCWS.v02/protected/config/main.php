@@ -128,15 +128,18 @@ return array(
                 'abbottplayerapi'=>'https://202.44.102.31/ECFDEMOFDGEFNPGEMFOQ/CasinoAPI/player.asmx',
                 'prefix' => 'ICSA-',
                 'onrequesttimeout' =>  false, //set false for testing
-                'maxrequestprocesstime' => '5', //by minutes
+                'maxrequestprocesstime' => '1', //by hour
                 'depositmethodid' => 503,
                 'withdrawmethodid' => 502,
                 'SystemCode'=>array('kadmin' => '4996816', 'kcashier' => '497912152', 'lliter' => '4881052', 'gkapi' => '439941', 'madmin' => '4896816', 'mportal' => '48452098','pcws' => '4761'),
-                'unlock'=>'172.16.102.174/PCWS.v02/index.php/pcws/unlock',
+                'unlock'=>'localhost/ForceT/PCWS.v02/index.php/pcws/unlock',
                 'forcelogout'=>'172.16.102.174/PCWS.v02/index.php/pcws/forcelogout',
                 'deductcomppoints' => '172.16.102.174/PCWS.v02/index.php/pcws/deductcomppoints',
-                'createsession'=>'172.16.102.174/PCWS.v02/index.php/pcws/createsession',
-                'changepin'=>'172.16.102.174/PCWS.v02/index.php/pcws/changepin',
-                'maxPinAttempts'=>3,
+                'createsession'=>'172.16.102.174/PCWS.v02/index.php/pcws/createsession', 
+                'removesession'=>'localhost/ForceT/PCWS.v02/index.php/pcws/removesession', 
+                'changepin'=>'172.16.102.174/PCWS.v02/index.php/pcws/changepin', 
+                'unlockgenesis' => 'localhost/ForceT/PCWS.v02/index.php/pcws/unlockgenesis', 
+                'forcelogoutgen' => 'localhost/ForceT/PCWS.v02/index.php/pcws/forcelogoutgen', 
+                'gettermsandcondition'=>'172.16.102.174/PCWS.v02/index.php/pcws/gettermsandcondition',
 	),
 );

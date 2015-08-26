@@ -197,7 +197,7 @@ class MembersModel extends CFormModel
         $startTrans = $this->connection->beginTransaction();
   
         try {
-            $sql = "UPDATE members SET IsEwallet = 1 WHERE MID = :mid";
+            $sql = "UPDATE members SET IsEwallet = 1, DateMigrated = NOW(6) WHERE MID = :mid";
             $param = array(':mid' => $mid);
             $command = $this->connection->createCommand($sql);
             $command->bindValues($param);

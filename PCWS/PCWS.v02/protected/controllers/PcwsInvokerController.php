@@ -124,7 +124,33 @@ class PcwsInvokerController extends CController{
         
         return $result[1];
     }
-    
+       public function actionGetTermsAndCondition(){
+        $this->pageTitle = 'PCWS - Get Terms And Condition';
+        $result = '';
+        if(isset($_POST['SystemUsername']) && isset($_POST['AccessDate']) && isset($_POST['Token'])){
+            $username = $_POST['SystemUsername'];
+            $syscode = empty(Yii::app()->params['SystemCode'][$username])?'':Yii::app()->params['SystemCode'][$username];
+            $accessdate = $_POST['AccessDate'];
+            //$accessdate = date('Y-m-d H:i:s');
+            $date1 = new DateTime($accessdate);
+            $dt = $date1->format('YmdHis');
+            $tkn = $_POST['Token'];
+            //$tkn = sha1($dt.$syscode);
+            
+            $result = $this->_getTermsAndCondition($username,$accessdate,$tkn);
+        }
+        
+        $this->render('gettermsandcondition', array('result'=>$result));
+    }
+        private function _getTermsAndCondition($username,$accessdate,$tkn){
+        $url = Yii::app()->params['gettermsandcondition'];
+        
+        $postdata = CJSON::encode(array('SystemUsername'=>$username, 'AccessDate'=>$accessdate, 'Token'=>$tkn));
+       
+        $result = $this->SubmitData($url, $postdata);
+        
+        return $result[1];
+    }
     public function actionGetbalance(){
         $this->pageTitle = 'PCWS - Get Balance';
         $result = '';

@@ -94,5 +94,46 @@ class MemberCardsModel extends CFormModel
         
         return $result;
     }
+        /**
+     * Mark Kenneth Esguerra
+     * @date July 14, 2015
+     * @param type $cardnumber
+     * @return type
+     */
+    public function updateLifetimePoints($cardnumber, $lifetimepoints) {
+         $pdo = $this->connection->beginTransaction();
+         try {
+             $sql = "UPDATE membercards 
+                     SET LifetimePoints = :LTpoints, 
+                         DateUpdated = NOW(6) 
+                     WHERE CardNumber = :cardnumber";
+             $command = $this->connection->createCommand($sql);
+             $command->bindValue(":cardnumber", $cardnumber);
+             $command->bindValue(":LTpoints", $lifetimepoints); 
+             $result = $command->execute();
+             if ($result > 0) {
+                 try {
+                    $pdo->commit();
+                    return array('TransCode' => 0, 
+                                 'TransMsg' => 'Lifetime points updated.');
+                 }
+                 catch (CDbException $e) {
+                     $pdo->rollback();
+                     return array('TransCode' => 1, 
+                                  'TransMsg' => 'Transaction failed.');
+                 }
+             }
+             else {
+                 $pdo->rollback();
+                 return array('TransCode' => 1, 
+                              'TransMsg' => 'Transaction failed.');
+             }
+         }
+         catch (CDbException $e) {
+             $pdo->rollback();
+             return array('TransCode' => 1, 
+                          'TransMsg' => 'Transaction failed.');
+         }
+    }
 }
 ?>

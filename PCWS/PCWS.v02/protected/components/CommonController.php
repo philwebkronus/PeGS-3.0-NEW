@@ -183,6 +183,16 @@ class CommonController {
     public function eSafeConversion($transMsg, $errCode){
         return CJSON::encode(array('eSafeConversion'=>(array('TransactionMessage'=>$transMsg, 'ErrorCode'=>(int)$errCode))));
     }
+    
+     /**
+     * Sends a json response
+     * @param String $transMsg
+     * @param int $errCode
+     * @return json response
+     */
+    public function gettermsandcondition($transMsg, $errCode, $terms){
+        return CJSON::encode(array('getTermsAndCondition'=>(array('TransactionMessage'=>$transMsg, 'ErrorCode'=>(int)$errCode, 'TermsAndCondition' => $terms))));
+    }
 }
 
 ?>

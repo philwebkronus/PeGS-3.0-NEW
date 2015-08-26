@@ -64,4 +64,8 @@
     <?php echo CHtml::link('e-SAFE Conversion', 'index.php/pcwsInvoker/esafeconversion', array('target'=>'_blank')); ?>
 
     <br /><br />
+    
+    <?php echo CHtml::link('Get Terms and Conditions', 'index.php/pcwsInvoker/gettermsandcondition', array('target'=>'_blank')); ?>
+
+    <br /><br />
 </div>

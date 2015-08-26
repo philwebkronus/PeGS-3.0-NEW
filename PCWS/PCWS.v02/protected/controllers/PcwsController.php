@@ -46,7 +46,6 @@ class PcwsController extends Controller{
         
         return $retval;
     }
-    
     public function actionDeposit(){
         Yii::import('application.components.CasinoController');
 
@@ -329,6 +328,47 @@ class PcwsController extends Controller{
         $this->_sendResponse(200, $data);
     }
     
+    //GetTermsAndCondition Method to Get read value of terms and conditions.txt
+    //mcatangan
+    public function actionGetTermsAndCondition(){
+         
+        $request = $this->_readJsonRequest();
+        $this->_un = trim(trim($request['SystemUsername']));
+        $this->_dt = trim(trim($request['AccessDate']));
+        $this->_tkn = trim(trim($request['Token']));
+        
+        $paramval = CJSON::encode($request);
+        $message = "[GetTermsAndCondition] Input: ".$paramval;
+        CLoggerModified::log($message, CLoggerModified::REQUEST);
+        $isconnvalid = $this->_authenticate();
+            if($isconnvalid == 0){
+               //$this->renderFile(Yii::app()->params['termsandconditionpath']);
+                $errCode = 0;
+                $transMsg = 'Success';
+                $terms = file_get_contents(Yii::app()->params['termsandconditionpath']);
+                $data = CommonController::gettermsandcondition($transMsg, $errCode, $terms);
+                $this->_sendResponse(200, $data);
+            }
+            else {
+            switch ($isconnvalid) {
+                case 1:
+                    $transMsg = 'Unauthorized Access! System does not have access right.'; 
+                    break;
+                case 2:
+                    $transMsg = 'Request time out.'; 
+                    break;
+                case 3:
+                    $transMsg = 'Incomplete/Invalid Request Data.'; 
+                    break;
+            }
+             $errCode = $isconnvalid;
+             $data = CommonController::authenticate($transMsg, $errCode);
+             $this->_sendResponse(200, $data);
+        }
+        $message = "[GetTermsAndCondition] Token: ".$this->_tkn.", Output: ".$data;
+        CLoggerModified::log($message, CLoggerModified::RESPONSE);
+           
+    }
     
     public function actionGetbalance(){
         Yii::import('application.components.CasinoController');
@@ -809,8 +849,20 @@ class PcwsController extends Controller{
                                         $resultMsg = $result['success'];
 
                                         if($resultMsg == 1) {
-                                            $transMsg = 'Success'; 
-                                            $errCode = 0;
+                                            //update lifetime points
+                                            $getLTpoints = $membercards->getCardPoints($cardnumber);
+                                            $totalLTpoints = $getLTpoints['LifetimePoints'] + $amount;
+                                            //update life time points
+                                            $result = $membercards->updateLifetimePoints($cardnumber, $totalLTpoints);
+                                            
+                                            if ($result['TransCode'] == 0) {
+                                                $transMsg = 'Success'; 
+                                                $errCode = 0;
+                                            }
+                                            else {
+                                                $transMsg = 'Failure'; 
+                                                $errCode = 8;
+                                            }
                                             $comppointslogs->logEvent($mid, $cardnumber, $terminalID, $siteID, $serviceID, $amount, 'D');
                                         }
                                         else {
