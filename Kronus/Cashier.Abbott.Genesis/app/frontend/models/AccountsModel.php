@@ -246,6 +246,15 @@ public function temppassword($temppass, $zaid){
         return $this->find();
     }
 
+    
+    public function getVirtualCashier($siteid){
+        $sql = 'SELECT acct.AID FROm accounts acct INNER JOIN siteaccounts sa ON acct.AID = sa.AID WHERE sa.SiteID = :site_id AND acct.AccountTypeiD = 15';
+        $param = array(':site_id'=>$siteid);
+        $this->exec($sql, $param);
+        return $this->find();
+        
+    }
+    
      //Check if the New Password is among the list of last 5 passwords of the account
     public function checkifrecentpassword($zaid, $znewpassword ) {
         $sql = 'SELECT COUNT(AID) as Count 
