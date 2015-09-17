@@ -2,7 +2,7 @@
 
 /**
  * @author fdlsison
- * 
+ *
  * @date 6-19-2014
  */
 
@@ -13,14 +13,14 @@ class MemberCardsModel {
     public function __construct() {
         $this->_connection = Yii::app()->db2;
     }
-    
+
     public static function model()
     {
         if(self::$_instance == null)
             self::$_instance = new MemberCardsModel();
         return self::$_instance;
     }
-    
+
     //@author Ralph Sison
     //@date 6-18-2014
     public function getMemberDetailsByCard($cardNumber) {
@@ -31,10 +31,10 @@ class MemberCardsModel {
         $param = array(':CardNumber' => $cardNumber);
         $command = $this->_connection->createCommand($sql);
         $result = $command->queryRow(true, $param);
-        
+
         return $result;
     }
-    
+
     public function getMemberPointsAndStatus($cardNumber) {
         $sql = 'SELECT Status, CurrentPoints, BonusPoints, RedeemedPoints, LifetimePoints
                 FROM membercards
@@ -43,22 +43,10 @@ class MemberCardsModel {
         $param = array(':CardNumber' => $cardNumber);
         $command = $this->_connection->createCommand($sql);
         $result = $command->queryRow(true, $param);
-        
-        return $result;            
+
+        return $result;
     }
-    
-    public function getMemberStatus($cardNumber) {
-        $sql = 'SELECT Status
-                FROM membercards
-                WHERE CardNumber = :CardNumber
-                GROUP BY MID';
-        $param = array(':CardNumber' => $cardNumber);
-        $command = $this->_connection->createCommand($sql);
-        $result = $command->queryRow(true, $param);
-        
-        return $result;            
-    }
-     
+
     public function getMIDUsingCard($cardNumber) {
         $sql = 'SELECT mc.MID, c.Status
                 FROM membercards mc
@@ -67,10 +55,10 @@ class MemberCardsModel {
         $param = array(':CardNumber' => $cardNumber);
         $command = $this->_connection->createCommand($sql);
         $result = $command->queryRow(true, $param);
-        
+
         return $result;
     }
-    
+
     //@date 6-18-2014
     public function getCardNumberUsingMID($MID) {
         $sql = 'SELECT a.CardNumber
@@ -80,10 +68,10 @@ class MemberCardsModel {
         $param = array(':MID' => $MID);
         $command = $this->_connection->createCommand($sql);
         $result = $command->queryRow(true, $param);
-        
+
         return $result['CardNumber'];
     }
-    
+
     //@date 6-24-2014
     //@purpose get active member card
     public function getActiveMemberCardInfo($MID) {
@@ -100,15 +88,15 @@ class MemberCardsModel {
         $param = array(':MID' => $MID);
         $command = $this->_connection->createCommand($sql);
         $result = $command->queryRow(true, $param);
-        
+
         return $result;
     }
-    
+
     //@date 07-01-2014
     //@purpose updating card points
     public function updateCardPoints($MID, $redeemTotalPoints) {
         $startTrans = $this->_connection->beginTransaction();
-        
+
         try {
             $sql = 'UPDATE membercards
                     SET RedeemedPoints = RedeemedPoints + :RedeemTotalPoints, CurrentPoints = CurrentPoints - :RedeemTotalPoints
@@ -117,7 +105,7 @@ class MemberCardsModel {
             $command = $this->_connection->createCommand($sql);
             $command->bindValues($param);
             $command->execute();
-            
+
             try {
                 $startTrans->commit();
                 return 1;
@@ -132,7 +120,7 @@ class MemberCardsModel {
             return 0;
         }
     }
-    
+
     //@date 04-27-2015
     //@purpose get temp migrated card
     public function getTempMigratedCardUsingMID($MID) {
@@ -142,7 +130,7 @@ class MemberCardsModel {
         $param = array(':MID' => $MID);
         $command = $this->_connection->createCommand($sql);
         $result = $command->queryRow(true, $param);
-        
+
         return $result['CardNumber'];
     }
 
