@@ -36,6 +36,8 @@ $_CONFIG["player_api"] = array(
     array('https://api18.valueactive.eu/philweb1_CAPI/CasinoAPI.aspx', 2238),
     'https://202.44.103.231/GPRIMESZNVJFROAPSERT/CasinoAPI/player.asmx',
     'https://202.44.102.31/ECFDEMOFDGEFNPGEMFOQ/RTG.Services/Player.svc?wsdl',
+    'https://125.5.1.20/ABBOTTRUVMANSYWPLMXI/RTG.Services/Player.svc?wsdl', //RTG2
+    'https://125.5.1.20/ABBOTTRUVMANSYWPLMXI/CasinoAPI/player.asmx', //RTG2
 );
 
 
@@ -60,6 +62,7 @@ $_CONFIG["service_api"] = array(
      array('https://api18.valueactive.eu/philweb1_CAPI/CasinoAPI.aspx', 2238),
      'https://202.44.103.231/GPRIMESZNVJFROAPSERT/processor/ProcessorAPI/Cashier.asmx',
      'https://202.44.102.31/ECFDEMOFDGEFNPGEMFOQ/processor/processorapi/cashier.asmx',
+     'https://125.5.1.20/ABBOTTRUVMANSYWPLMXI/processor/ProcessorAPI/Cashier.asmx' //RTG2
 );
 //Game API URL's
 $_CONFIG["game_api"] = array(
@@ -82,6 +85,7 @@ $_CONFIG["game_api"] = array(
     'https://202.44.102.31/ECFTESTFDGUFTUGEHVHF/CasinoAPI/Games.asmx',
     'https://202.44.103.231/GPRIMESZNVJFROAPSERT/CasinoAPI/Games.asmx',
     'https://202.44.102.31/ECFTESTFDGUFTUGEHVHF/CasinoAPI/Games.asmx',
+    'https://125.5.1.20/ABBOTTRUVMANSYWPLMXI/CasinoAPI/Games.asmx'	//RTG2
 );
 
 //Player API URL's
@@ -105,6 +109,7 @@ $_CONFIG["lobby_api"] = array(
     'https://202.44.102.31/ECFDEMOFDGEFNPGEMFOQ/CasinoAPI/lobby.asmx',
     'https://202.44.102.31/ECFDEMOFDGEFNPGEMFOQ/CasinoAPI/lobby.asmx',
     'https://202.44.102.31/ECFDEMOFDGEFNPGEMFOQ/CasinoAPI/lobby.asmx',
+    'https://125.5.1.20/ABBOTTRUVMANSYWPLMXI/CasinoAPI/lobby.asmx'	//RTG2
 );
 
 //PT Configuration Settings
@@ -146,7 +151,7 @@ $_CONFIG['revertbroken_api]']= array(
  // RTG
 $_CONFIG['deposit_method_id'] =503;
 $_CONFIG['withdrawal_method_id']=502;
-$_CONFIG['rtg_cert_dir']='/var/www/membership/membership.rewards/rsframework/include/RTGClientCerts/'; //local
+$_CONFIG['rtg_cert_dir']='/var/www/AbottAPITest/19.v15/'; //local
 
 
 //create account data
@@ -187,4 +192,6 @@ $_CONFIG['cSecret'] = '';
 $_CONFIG['sfLogin'] = '';
 $_CONFIG['sfPassword'] = '';
 $_CONFIG['secToken'] = '';
+//V15
+$_CONFIG['PointSystem'] = 1; //1 - loyalty points, 2 - comp points
 ?>

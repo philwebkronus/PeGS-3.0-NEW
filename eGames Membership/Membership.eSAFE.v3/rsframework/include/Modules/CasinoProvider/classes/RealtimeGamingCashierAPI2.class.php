@@ -111,9 +111,10 @@ class RealtimeGamingCashierAPI2
             $tracking3,
             $tracking4,
             $sessionID,
-            $userID = 0,
-            $skinID = 1 )
+            $skinID = 1,
+            $userID = 0)
     {
+
         $data = array( 'casinoID' => $casinoID,
             'PID' => $PID,
             'methodID' => $methodID,
@@ -184,6 +185,33 @@ class RealtimeGamingCashierAPI2
         return $this->_APIresponse;
     }
     
+
+    /*
+    ** @Description: Get the Skin ID for RTG V15
+    ** @Author: aqdepliyan
+    ** @Parameters: locatorName (Skin Name)
+    */
+    public function GetSkinID( $locatorName )
+    {
+        $data = array('locatorName' => $locatorName );
+
+        $response = $this->SubmitRequest( $this->_url . '/GetSkinID', http_build_query( $data ) );
+        
+        if ( $response[0] == 200 )
+        {
+            $this->_APIresponse = $this->XML2Array( $response[1] );
+
+            $this->_APIresponse = array( 'GetSkinIDResult' => $this->_APIresponse[0] );
+        }
+        else
+        {
+            $this->_error = "HTTP ". $response[0];
+        }
+
+        return $this->_APIresponse;
+    }
+
+
     public function GetPIDFromLogin( $login )
     {	
         $data = array( 'login' => $login );
@@ -247,8 +275,8 @@ class RealtimeGamingCashierAPI2
             $tracking3,
             $tracking4,
             $sessionID,
-            $userID = 0,
-            $skinID = 1 )
+            $skinID = 1,
+            $userID = 0 )
     {        
         $data = array( 'casinoID' => $casinoID,
             'PID' => $PID,
@@ -301,6 +329,31 @@ class RealtimeGamingCashierAPI2
 
         return $this->_APIresponse;
     }
+
+    public function AdjustComps($casinoID, $PID, $amount,$comment = 0) {
+        $comvalue = $comment == 0 ? 'AddPoints':'DeductPoints';
+        $data = array('casinoID' => $casinoID,
+            'PID' => $PID,
+            'amount' => $amount,
+            'Comment' => $comvalue);
+
+        $response = $this->SubmitRequest($this->_url . '/AdjustComps', http_build_query( $data ) );
+
+        if ( $response[0] == 200 )
+        {
+            $this->_APIresponse = $this->XML2Array( $response[1] );
+
+            $this->_APIresponse = array( 'AdjustCompsResult' => $this->_APIresponse );
+
+        }
+        else
+        {
+            $this->_error = "HTTP ". $response[0];
+        }
+
+        return $this->_APIresponse;
+    }
+
 
     private function SubmitRequest( $url, $data )
     {

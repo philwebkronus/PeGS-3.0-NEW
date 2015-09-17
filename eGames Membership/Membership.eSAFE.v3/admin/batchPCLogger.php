@@ -14,7 +14,7 @@
         if ($newLine)
             $message = "\n" . $message; //Determine the new line
        
-        $log_path = $_SERVER['DOCUMENT_ROOT'].'/membership.rewards/rsframework/include/log/'; //URL of the file where the error log should be stored
+        $log_path = $_SERVER['DOCUMENT_ROOT'].'/rsframework/include/log/'; //URL of the file where the error log should be stored
         //Check if the file already exists
         if (!file_exists($log_path . $logname)) {
             $create_file = fopen($log_path . $logname, "w+"); //create the new file

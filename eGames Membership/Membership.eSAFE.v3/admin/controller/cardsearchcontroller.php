@@ -3,6 +3,8 @@
 /* * ***************** 
  * Author: Roger Sanchez
  * Date Created: 2013-06-05
+ * Updated by: Ralph
+ * Date Updated: 09-02-2015
  * Company: Philweb
  * ***************** */
 require_once("../init.inc.php");
@@ -85,7 +87,6 @@ if ($fproc->IsPostBack)
         if ($validate->validateEmail($searchValue))
         {
             $result = $_MemberInfo->getMemberInfoByUsernameSP($searchValue);
-            var_dump($result);exit;
             if (count($result) > 0)
             {
                 $_SESSION['CardInfo']['Username'] = $searchValue;
@@ -147,22 +148,33 @@ if (isset($_SESSION['CardInfo']))
     $_SESSION['CardInfo']["CardTypeID"] = $CardTypeID;
     $loyaltyinfo = $_MemberCards->getActiveMemberCardInfo($MID);
     if(isset($loyaltyinfo[0]) && $loyaltyinfo[0] != ""){
-        // Add API call to PCWS for Get Current Points
-        $pcws = new PcwsWrapper();
-        $api = $pcws->getCompPoints($CardNumber,1);
-        if($api['GetCompPoints']['ErrorCode'] == 0)
+        $loyaltyinfo = $loyaltyinfo[0];
+        $pointsystem = App::getParam('PointSystem');
+        
+        if($pointsystem == 1)
         {
-            $currentPoints2 = number_format($api['GetCompPoints']['CompBalance'], 0);
-            $_Log->logEvent(AuditFunctions::GET_COMP_POINTS, 'MID:' . $MID .'CardNumber :'.$CardNumber. ': Successful', array('ID' => $_SESSION['userinfo']['AID'], 'SessionID' => $_SESSION['userinfo']['SessionID']));
-            
+            $currentPoints2 = $loyaltyinfo['CurrentPoints'];
         }
         else
         {
-            $currentPoints2 = $api['GetCompPoints']['TransactionMessage'];
-            $_Log->logEvent(AuditFunctions::GET_COMP_POINTS, 'MID:' . $MID .'CardNumber :'.$CardNumber.' Message: '.$currentPoints2.': Failed', array('ID' => $_SESSION['userinfo']['AID'], 'SessionID' => $_SESSION['userinfo']['SessionID']));
+            // Add API call to PCWS for Get Current Points
+            $pcws = new PcwsWrapper();
+            $api = $pcws->getCompPoints($CardNumber,1);
+            if($api['GetCompPoints']['ErrorCode'] == 0)
+            {
+                $currentPoints2 = number_format($api['GetCompPoints']['CompBalance'], 0);
+                $_Log->logEvent(AuditFunctions::GET_COMP_POINTS, 'MID:' . $MID .'CardNumber :'.$CardNumber. ': Successful', array('ID' => $_SESSION['userinfo']['AID'], 'SessionID' => $_SESSION['userinfo']['SessionID']));
+
+            }
+            else
+            {
+                $currentPoints2 = $api['GetCompPoints']['TransactionMessage'];
+                $_Log->logEvent(AuditFunctions::GET_COMP_POINTS, 'MID:' . $MID .'CardNumber :'.$CardNumber.' Message: '.$currentPoints2.': Failed', array('ID' => $_SESSION['userinfo']['AID'], 'SessionID' => $_SESSION['userinfo']['SessionID']));
+            }
         }
         
-        $loyaltyinfo = $loyaltyinfo[0];
+        
+        
         $cardType = $loyaltyinfo['CardType'];
         //$currentPoints = $loyaltyinfo['CurrentPoints'];
         $currentPoints = $currentPoints2;

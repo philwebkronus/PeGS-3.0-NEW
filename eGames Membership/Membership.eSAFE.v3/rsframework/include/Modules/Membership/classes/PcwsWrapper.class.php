@@ -125,6 +125,20 @@ Class PcwsWrapper extends BaseEntity
         
     }
     
+    public function esafeconversion($cardnumber, $password, $pin, $confirmPIN, $index)
+    {
+
+       $postdata = json_encode(array('CardNumber'=>$cardnumber,'Password'=>$password,'PIN'=>$pin, 'ConfirmPIN'=>$confirmPIN,
+           'SystemUsername'=>  $this->_username[$index], 'AccessDate'=>  $this->_accessdate,  'Token'=>  $this->_tkn[$this->_username[$index]]));
+       
+        $this->_logger->_logRequest("EsafeConversion", $postdata);
+        $result = $this->curlApi(App::getParam('esafeconversion'), $postdata);
+        $this->_logger->_logResponse("EsafeConversion", $result[1]);
+       
+       return json_decode($result[1], true);
+        
+    }
+    
     public function addCompPoints($cardnumber, $SiteID, $ServiceID, $Amount, $index)
     {
         $postdata = json_encode(array(

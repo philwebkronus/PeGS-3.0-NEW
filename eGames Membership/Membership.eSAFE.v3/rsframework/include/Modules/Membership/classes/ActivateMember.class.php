@@ -84,6 +84,7 @@ class ActivateMember extends BaseEntity
                         WHERE TemporaryAccountCode = '$this->CardNumber'";
         
         $result = $_TempMembers->RunQuery($queryMember);
+        $accountpassword = $result[0]['Password'];
         $neededfields = 'UserName,MID';
         $query1 = "CALL membership.sp_select_data(0,0,1,'$this->CardNumber', '$neededfields', @ReturnCode, @ReturnMessage, @ReturnFields);";
         $data = $_MemberServices->RunQuery($query1);
@@ -467,11 +468,11 @@ class ActivateMember extends BaseEntity
                                     $_GeneratedPasswordBatch->updatePasswordBatch($this->MID, $genpassbatchid);
 
                                     $this->CommitTransaction();
-                                    return array("MID"=>$this->MID,"status"=>'OK',"apierror"=>$apierror);
+                                    return array("MID"=>$this->MID,"status"=>'OK',"apierror"=>$apierror, "password"=>$accountpassword);
                                 }
                                 else
                                 {
-                                    return array("MID"=>$this->MID,"status"=>'error',"apierror"=>$apierror);
+                                    return array("MID"=>$this->MID,"status"=>'error',"apierror"=>$apierror, "password"=>$accountpassword);
                                 }
                             }
                             else

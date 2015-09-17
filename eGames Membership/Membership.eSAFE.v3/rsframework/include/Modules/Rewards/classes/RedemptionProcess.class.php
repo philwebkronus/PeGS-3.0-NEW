@@ -60,20 +60,32 @@ Class RedemptionProcess extends BaseEntity {
                     if(count($availableserialcode) == 1) 
                     { 
                         //$PlayerPoints = $_MemberCards->getCurrentPointsByCardNumber($CardNumber);
-                        $OldCP = $_PcwsWrapper->getCompPoints($CardNumber, 1);
-                        $OldCP = $OldCP['GetCompPoints']['CompBalance'];
+                        if(App::getParam('PointSystem') == 2) {
+                            $OldCP = $_PcwsWrapper->getCompPoints($CardNumber, 1);
+                            $OldCP = $OldCP['GetCompPoints']['CompBalance'];
+                        }
+                        else {
+                            $OldCP = $_MemberCards->getCurrentPointsByCardNumber($CardNumber);
+                            $OldCP = $OldCP[0]['CurrentPoints'];
+                        }
                         //if($PlayerPoints[0]['CurrentPoints'] >= $totalpoints)
                         if($OldCP >= $totalpoints)
                         {
                             $_MemberCards->StartTransaction();
                             $IsPointsUpdated = $_MemberCards->UpdateCardPoints($MID, $totalpoints);
                             $amt = $OldCP - $totalpoints;
-                            $isPointsDeducted = $_PcwsWrapper->deductCompPoints($CardNumber, $totalpoints, '', 1);
-                            //$PlayerPoints = $_MemberCards->getCurrentPointsByCardNumber($CardNumber);
-                            $OldCP = $_PcwsWrapper->getCompPoints($CardNumber, 1);
-                            $OldCP = $OldCP['GetCompPoints']['CompBalance'];
+                            if(App::getParam('PointSystem') == 2 ) {
+                                $isPointsDeducted = $_PcwsWrapper->deductCompPoints($CardNumber, $totalpoints, '', 1);
+                                //$PlayerPoints = $_MemberCards->getCurrentPointsByCardNumber($CardNumber);
+                                $OldCP = $_PcwsWrapper->getCompPoints($CardNumber, 1);
+                                $OldCP = $OldCP['GetCompPoints']['CompBalance'];
+                            }
+                            else {
+                                $OldCP = $_MemberCards->getCurrentPointsByCardNumber($CardNumber);
+                                $OldCP = $OldCP[0]['CurrentPoints'];
+                            }
                             //if($IsPointsUpdated > 0 && $PlayerPoints[0]['CurrentPoints'] > 0)
-                            if($IsPointsUpdated > 0 && $isPointsDeducted && $OldCP > 0)
+                            if($IsPointsUpdated > 0 && $OldCP > 0)
                             {
                                 $CurrentItemCount = $_RewardItems->getAvailableItemCount($RewardItemID);
                                 if($CurrentItemCount["AvailableItemCount"] >= $itemqtyitr && $CurrentItemCount["AvailableItemCount"] != 0)
@@ -447,8 +459,14 @@ Class RedemptionProcess extends BaseEntity {
                             //Get the Current Points for validation
 //                            $PlayerPoints = $_MemberCards->getCurrentPointsByCardNumber($CardNumber);
 //                            $OldCP = $PlayerPoints[0]['CurrentPoints'];
-                            $OldCP = $_PcwsWrapper->getCompPoints($CardNumber, 1);
-                            $OldCP = $OldCP['GetCompPoints']['CompBalance'];
+                            if(App::getParam('PointSystem') == 2 ) {
+                                $OldCP = $_PcwsWrapper->getCompPoints($CardNumber, 1);
+                                $OldCP = $OldCP['GetCompPoints']['CompBalance'];
+                            }
+                            else {
+                                $OldCP = $_MemberCards->getCurrentPointsByCardNumber($CardNumber);
+                                $OldCP = $OldCP[0]['CurrentPoints'];
+                            }
                             //if($PlayerPoints[0]['CurrentPoints'] >= $RedeemedPoints){
                             if($OldCP >= $RedeemedPoints){
                                 //Start transaction for membercards since it in a separate database.
@@ -456,13 +474,19 @@ Class RedemptionProcess extends BaseEntity {
                                 $_MemberCards->StartTransaction();
                                 $IsPointsUpdated = $_MemberCards->UpdateCardPoints($MID, $RedeemedPoints);
                                 $amt = $OldCP - $RedeemedPoints;
-                                $isPointsDeducted = $_PcwsWrapper->deductCompPoints($CardNumber, $RedeemedPoints, '', 1);
-                                //Check if the points is greater than or  equal to 0
-                                //$PlayerPoints = $_MemberCards->getCurrentPointsByCardNumber($CardNumber);
-                                $OldCP = $_PcwsWrapper->getCompPoints($CardNumber, 1);
-                                $OldCP = $OldCP['GetCompPoints']['CompBalance'];
+                                if(App::getParam('PointSystem') == 2) {
+                                    $isPointsDeducted = $_PcwsWrapper->deductCompPoints($CardNumber, $RedeemedPoints, '', 1);
+                                    //Check if the points is greater than or  equal to 0
+                                    //$PlayerPoints = $_MemberCards->getCurrentPointsByCardNumber($CardNumber);
+                                    $OldCP = $_PcwsWrapper->getCompPoints($CardNumber, 1);
+                                    $OldCP = $OldCP['GetCompPoints']['CompBalance'];
+                                }
+                                else {
+                                    $OldCP = $_MemberCards->getCurrentPointsByCardNumber($CardNumber);
+                                    $OldCP = $OldCP[0]['CurrentPoints'];
+                                }
                                 //if($IsPointsUpdated > 0 && $PlayerPoints[0]['CurrentPoints'] >= 0){
-                                if($IsPointsUpdated > 0 && $isPointsDeducted && $OldCP >= 0){
+                                if($IsPointsUpdated > 0 && $OldCP >= 0){
                                     $_RaffleCoupons->setPDOConnection($CommonPDO);
                                     
                                     //Get and Check Status of the Reward Item

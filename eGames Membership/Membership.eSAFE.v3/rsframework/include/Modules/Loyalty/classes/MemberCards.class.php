@@ -364,7 +364,7 @@ class MemberCards extends BaseEntity {
 //        return $this->AffectedRows;
 //    }
     public function UpdateCardPoints($MID, $redeemTotalPoints) {
-        $query = "UPDATE loyaltydb.membercards set RedeemedPoints = RedeemedPoints + $redeemTotalPoints
+        $query = "UPDATE loyaltydb.membercards set RedeemedPoints = RedeemedPoints + $redeemTotalPoints, CurrentPoints = CurrentPoints - $redeemTotalPoints
                   WHERE MID = $MID AND  Status IN (1,5)";
         parent::ExecuteQuery($query);
         return $this->AffectedRows;
@@ -690,6 +690,127 @@ class MemberCards extends BaseEntity {
         else {
             return array();
         }
+    }
+    public static function statusToStr($status){
+        switch ($status) {
+            case 0: 
+                $statustr = "Inactive";
+                break;
+            case 1: 
+                $statustr = "Active";
+                break;
+            case 2:
+                $statustr = "Deactivated";
+                break;
+            case 3: 
+                $statustr = "Active";
+                break;
+            case 5: 
+                $statustr = "Active Temporary";
+                break;
+            case 7:
+                $statustr = "New Migrated";
+                break;
+            case 8: 
+                $statustr = "Temporary Migrated";
+                break;
+            case 9:
+                $statustr = "Banned Card";
+                break;
+            default: 
+                $statustr = "";
+                break;
+        }
+        
+        return $statustr;
+    }
+    /**
+     * Fulfillment Migration process
+     * @param type $cardnumber
+     * @param type $tempcode
+     * @return type
+     */
+    public function fulfillMigration($cardnumber, $tempcode){
+        $this->StartTransaction();
+        //update membercards
+        try {
+            $query1 = "UPDATE membercards SET Status = 8 WHERE CardNumber = '$tempcode'";
+            $result1 = $this->ExecuteQuery($query1);
+            if ($result1) {
+                //update cards table
+                try {
+                    $query2 = "UPDATE cards SET Status = 1, CardTypeID = 2  
+                               WHERE CardNumber = '$cardnumber'";
+                    $result2 = $this->ExecuteQuery($query2);
+                    if ($result2) {
+                        try {
+                            $query3 = "UPDATE cards SET Status = 8 
+                                       WHERE CardNumber = '$tempcode'";  
+                            $result3 = parent::ExecuteQuery($query3);
+                            if ($result3) {
+                                try {
+                                    $this->CommitTransaction();
+                                    return array('TransCode' => 0, 
+                                                 'TransMsg' => "Card Migration successfully fulfilled.");
+                                }
+                                catch (Exception $e) {
+                                    $this->RollBackTransaction();
+                                    return array('TransCode' => 1, 
+                                                 'TransMsg' => "Oopps!! Something went wrong.");
+                                }
+                            }
+                            else {
+                                $this->RollBackTransaction();
+                                return array('TransCode' => 1, 
+                                             'TransMsg' => "Transaction Failed.");
+                            }
+                        }
+                        catch (Exception $e) {
+                            $this->RollBackTransaction();
+                            return array('TransCode' => 1, 
+                                         'TransMsg' => "Oopps!! Something went wrong.");
+                        }
+                    }
+                    else {
+                        $this->RollBackTransaction();
+                        return array('TransCode' => 1, 
+                                     'TransMsg' => "Transaction Failed.");
+                    }
+                }
+                catch (Exception $e) {
+                    $this->RollBackTransaction();
+                    return array('TransCode' => 1, 
+                                 'TransMsg' => "Oopps!! Something went wrong.");
+                }
+            }
+            else {
+                $this->RollBackTransaction();
+                return array('TransCode' => 1, 
+                             'TransMsg' => "Transaction Failed.");
+            }   
+        }
+        catch (Exception $e) {
+            $this->RollBackTransaction();
+            return array('TransCode' => 1, 
+                         'TransMsg' => "Oopps!! Something went wrong.");
+        }
+    }
+    public function isExistInMemberCards($cardnumber) {
+        $query = "SELECT COUNT(MemberCardID) as Count FROM membercards 
+                  WHERE CardNumber = '$cardnumber'";
+        $result = parent::RunQuery($query);
+        if ($result[0]['Count'] > 0) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+    public function getTempCardByMID($MID) {
+        $query = "SELECT CardNumber, Status FROM membercards 
+                  WHERE MID = $MID AND CardNumber LIKE 'eGames%'";
+        $result = parent::RunQuery($query);
+        return $result;
     }
 }
 

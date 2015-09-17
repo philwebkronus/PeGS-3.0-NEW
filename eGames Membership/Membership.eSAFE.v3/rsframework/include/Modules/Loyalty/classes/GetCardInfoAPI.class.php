@@ -273,7 +273,8 @@ class GetCardInfoAPI extends BaseEntity
                     if(count ( $activation ) > 0 )
                     {
                         $status = $activation['status'];
-                        
+                        $password = $activation['password'];
+
                         if($status == 'OK')
                         {
                             $MID = $activation['MID'];   
@@ -281,7 +282,15 @@ class GetCardInfoAPI extends BaseEntity
                             $members = $_Members->getVIP($MID);
                             
                             $ewallet = $_Members->checkEwalletStatus($MID);
-                        
+                            
+                            $confirmPIN = '000000';
+                            $pin = '000000';
+                            
+                           
+                            $this->converttoesafe($cardnumber, $password, $pin, $confirmPIN);
+  //  -------------------------------------------------------------------------------------------------------->>>
+                            
+                            
                             $casinoAccounts = $_MemberServices->getCasinoAccounts( $MID );                            
                             $memberInfo = $_MemberInfo->getMemInfoUsingSP( $MID );
                             $row = $memberInfo;
@@ -406,6 +415,7 @@ class GetCardInfoAPI extends BaseEntity
                         $members = $_Members->getVIP($MID);
                         
                         $ewallet = $_Members->checkEwalletStatus($MID);
+                        
                         
                         $casinoAccounts = $_MemberServices->getCasinoAccounts( $MID );
 
@@ -730,6 +740,40 @@ class GetCardInfoAPI extends BaseEntity
         else
         {
             $result = "";
+        }
+        return $result;
+    }
+    
+    /**
+     * Comvert To e-SAFE
+     * @author John Aaron Vida
+     * @date September 16, 2015
+     */
+    private function converttoesafe($cardnumber,$password , $PIN , $confirmPIN)
+    {
+        App::LoadModuleClass("Membership", "PcwsWrapper");
+        App::LoadCore("Logger.class.php");
+        $_PcwsWrapper = new PcwsWrapper();
+        
+        $logger = new ErrorLogger();
+        $logdate = $logger->logdate;
+        $logtype = "Error ";
+        
+        $result = $_PcwsWrapper->esafeconversion($cardnumber, $password , $PIN , $confirmPIN , 0);
+        
+        foreach ($result as $row)
+        {
+            $errorcode  = $row['ErrorCode'];
+            $TransMsg  = $row['TransactionMessage'];
+        }
+        if ($errorcode == 0) 
+        {
+            $result = $TransMsg;
+        }
+        else
+        {
+           $result = "";
+           $logger->logger($logdate, $logtype, $TransMsg);
         }
         return $result;
     }

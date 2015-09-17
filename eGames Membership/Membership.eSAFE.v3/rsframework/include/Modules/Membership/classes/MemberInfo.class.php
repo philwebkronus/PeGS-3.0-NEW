@@ -532,20 +532,6 @@ class MemberInfo extends BaseEntity {
      * @param type $arrMemberInfo
      */
     public function updateMemberProfileSP($HiddenMID, $arrMemberInfo, $forRedemption = null){
-        //Get SalesForce Credentials
-	include (App::getParam('sfApi'));
-
-        $instanceURL = App::getParam('instanceURL');
-        $apiVersion = App::getParam('apiVersion');
-        $cKey = App::getParam('cKey');
-        $cSecret = App::getParam('cSecret');
-        $sfLogin = App::getParam('sfLogin');
-        $sfPassword = App::getParam('sfPassword');
-        $secToken = App::getParam('secToken');
-        
-        // get SalesForce ID
-        $SFID = $this->_getSF($HiddenMID);
-        
         if (is_null($forRedemption)) {
             $FirstName = $arrMemberInfo['FirstName'];
             $MiddleName = $arrMemberInfo['MiddleName'];
@@ -580,22 +566,6 @@ class MemberInfo extends BaseEntity {
                     parent::ExecuteQuery($query2);
                 }
             }
-            
-            //Update to SalesForce
-            $sfapi = new SalesforceAPI($instanceURL, $apiVersion, $cKey, $cSecret);
-            $sfSuccessful = $sfapi->login($sfLogin, $sfPassword, $secToken);
-            if($sfSuccessful)
-            {
-                $newBaseUrl = $sfSuccessful->instance_url;
-                $accessToken = $sfSuccessful->access_token;
-
-                $isUpdated = $sfapi->update_account($SFID, $FirstName, $LastName, $Birthdate, null, null, null, $newBaseUrl, $accessToken);//changed $firstname and $lastname to null 07282015 mcs
-                return 1;
-            }
-            else
-            {
-                return 0;
-            }
         }
         else {
             $FirstName = $arrMemberInfo['FirstName'];
@@ -616,22 +586,6 @@ class MemberInfo extends BaseEntity {
                 }
             }
             
-            //Update to SalesForce
-            $sfapi = new SalesforceAPI($instanceURL, $apiVersion, $cKey, $cSecret);
-            $sfSuccessful = $sfapi->login($sfLogin, $sfPassword, $secToken);
-            if($sfSuccessful)
-            {
-                $newBaseUrl = $sfSuccessful->instance_url;
-                $accessToken = $sfSuccessful->access_token;
-
-                $isUpdated = $sfapi->update_account($SFID, $FirstName, $LastName, $Birthdate, null, null, null, $newBaseUrl, $accessToken);//changed $firstname and $lastname to null 07282015 mcs
-                return 1;
-            }
-            else
-            {
-                return 0;
-            }
-            
         }
     }
     private function getMIDByMemberInfoID ($MemInfoID) {
@@ -639,17 +593,6 @@ class MemberInfo extends BaseEntity {
         $result = parent::RunQuery($query);
         
         return $result[0]['MID'];
-    }
-    
-    //@date 08-13-2015
-    private function _getSF($HiddenMID)
-    {
-        $query = "SELECT SFID as SFID
-                FROM memberinfo
-                WHERE MID = $HiddenMID";
-        $result = parent::RunQuery($query);
-
-        return $result[0]['SFID'];
     }
 }
 

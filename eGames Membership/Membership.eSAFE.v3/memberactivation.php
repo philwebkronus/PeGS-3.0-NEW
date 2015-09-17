@@ -232,7 +232,17 @@ if ((isset($_GET["oldnumber"]) && (htmlentities($_GET["oldnumber"])))
                     $rdoGroupGender->SubmittedValue == 1 ? $MemberInfo['Gender'] = 1 : $MemberInfo['Gender'] = 2;
 
                     $result = $_Members->Migrate($Memberstable, $MemberInfo, $AID, $siteid, $LoyatyCardNumber, $NewMembershipCardNumber, $oldCardEmail, $isVIP, false);
-
+  
+  //  -------------------------------------------------------------------------------------------------------->>>       
+                    
+                    App::LoadModuleClass("Loyalty", "GetCardInfoAPI");
+                    $_GetCardInfoAPI = new GetCardInfoAPI();
+                    $confirmPIN = '000000';
+                    $pin = '000000';
+                    $_GetCardInfoAPI->converttoesafe($LoyatyCardNumber, $_Members->password, $pin, $confirmPIN);
+                            
+  //  -------------------------------------------------------------------------------------------------------->>>
+                    
                     $status = $result['status'];
 
                     if ($status == 'OK')

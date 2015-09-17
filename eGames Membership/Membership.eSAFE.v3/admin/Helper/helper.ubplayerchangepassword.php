@@ -188,7 +188,7 @@ if (isset($_POST['pager'])) {
                                             {
                                                  $vaccountExist = $vapiResult['AccountInfo']['UserExists'];
 
-                                                 //check if account exists for MG Casino
+                                                 //check if account exists for v15 casino
                                                  if($vaccountExist)
                                                  {
                                                      //Call API Change Password
@@ -215,13 +215,13 @@ if (isset($_POST['pager'])) {
                                 
                                 if($apisuccess > 0 ){
                                     $_Log->logAPI(AuditFunctions::CHANGE_PLAYER_PASSWORD, 
-                                           'UB Player Password was successfully changed for UB Card'.$cardnumber, $_SESSION['sessionID'],$_SESSION['aID']);
-                                       $profile->Msg = 'UB Player Password was successfully changed';
+                                           'UB Player Password is successfully changed for UB Card'.$cardnumber, $_SESSION['sessionID'],$_SESSION['aID']);
+                                       $profile->Msg = 'UB Player Password is successfully changed';
                                 }
                                 else{
                                     $_Log->logAPI(AuditFunctions::CHANGE_PLAYER_PASSWORD, 
-                                            'Failed to Create UserBased PT Account for UB Card'.$cardnumber, $_SESSION['sessionID'],$_SESSION['aID']);
-                                    $profile->Msg = 'Failed to Changed UB Player Password';   
+                                            'Failed to Create UserBased Account for UB Card'.$cardnumber, $_SESSION['sessionID'],$_SESSION['aID']);
+                                    $profile->Msg = 'Failed to Change UB Player Password';   
                                 }
                                 
                                 
@@ -232,14 +232,14 @@ if (isset($_POST['pager'])) {
                             //if card status is not temporary or active
                             switch($status)
                             {
-                                case 0: $vstatus = 'InActive';break;
-                                case 1: $vstatus = 'Active';    break;
-                                case 2: $vstatus = 'Card was deactivated';break;
-                                case 5: $vstatus = 'Active Temporary';break;
-                                case 7: $vstatus = 'Membership card was already migrated to another red card'; break;   
-                                case 8: $vstatus = 'Temporary account was already migrated to a red card';  break;
+                                case 0: $vstatus = 'Card is inactive.';break;
+                                case 1: $vstatus = 'Card is active.';    break;
+                                case 2: $vstatus = 'Card is deactivated.';break;
+                                case 5: $vstatus = 'Card is Active Temporary.';break;
+                                case 7: $vstatus = 'Membership card was already migrated to another red card.'; break;   
+                                case 8: $vstatus = 'Temporary account was already migrated to a red card.';  break;
                                 case 9: $vstatus = 'Card is banned.';  break;
-                                default: $vstatus = 'Card Not Found'; break;
+                                default: $vstatus = 'Card Not Found.'; break;
                             }
                             
                             $profile->Msg = $vstatus;

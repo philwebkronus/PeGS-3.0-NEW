@@ -71,9 +71,6 @@ $fproc->AddControl($classification_type);
 $fproc->AddControl($hdnProcess);
 $fproc->ProcessForms();
 
-$cardNumber = App::getParam("testcard");
-
-$type = '';
 if ($fproc->IsPostBack)
 {
     $CommonPDOConnection = $members->getPDOConnection();
@@ -83,35 +80,8 @@ if ($fproc->IsPostBack)
     {
         $vipLevelID   = $txtVipLevelID->SubmittedValue;
         $description   = formatName(mysql_escape_string($classification_type->SubmittedValue));
-        $arrCards = $loyaltyMemberCard->getMIDByCard($cardNumber);
-        if(!empty($arrCards)){
-            $mid = $arrCards[0]['MID'];
-            $abbottmemservice = $memberServices->CheckMemberService($mid, 19);
-
-            if(!empty($abbottmemservice))
-            {
-                $serviceusername = $abbottmemservice[0]['ServiceUsername'];
-                $serverID = $abbottmemservice[0]['ServiceID'];
-                $serviceapi = App::getParam('service_api');
-
-                $url = $serviceapi[$serverID - 1];
-                $certFilePath = App::getParam('rtg_cert_dir').$serverID.'/cert.pem';
-                $keyFilePath = App::getParam('rtg_cert_dir').$serverID.'/key.pem';
-
-                $_RTGCashierAPI = new RealtimeGamingCashierAPI2($url, $certFilePath, $keyFilePath, '');
-
-                $apiResult = $_RTGCashierAPI->GetPIDFromLogin($serviceusername);
-                $pid = $apiResult['GetPIDFromLoginResult'];
-
-                if(!empty($pid))
-                { 
-                    $userID = 0;
-                    $changeplayerclassresult = $casinoAPI->ChangePlayerClassification('RTG2', $pid, $vipLevelID, $userID, $serverID);
-                    header("Content-Type:text/html");
                     
                     // If success add to VIP Level
-                    if($changeplayerclassresult['IsSucceed'] == true)
-                    {
                         //Validate input if empty
                         if (($vipLevelID && $description) != "")
                         {
@@ -124,7 +94,7 @@ if ($fproc->IsPostBack)
                             else
                             {
                                 $showdialog = true;
-                                $msg = "Record already exist";
+                                $msg = "Record already exist.";
                                 $title = "ERROR MESSAGE";
                             }
                             //Check and show result
@@ -133,7 +103,7 @@ if ($fproc->IsPostBack)
                                 if ($result['TransCode'] == 1)
                                 {
                                     $auditTrail->setPDOConnection($CommonPDOConnection);
-                                    $auditTrail->logEvent(AuditFunctions::VIP_LEVEL_MANAGEMENT, "Add VIP Level " . $vipLevelID, array('ID' => $mid, 'SessionID' => $_SESSION["sessionID"]));
+                                    $auditTrail->logEvent(AuditFunctions::VIP_LEVEL_MANAGEMENT, "Add VIP Level " . $vipLevelID, array('ID' => '', 'SessionID' => $_SESSION["sessionID"]));
                                     $showdialog = true;
                                     $msg = $result['TransMsg'];
                                     $title = "MESSAGE";
@@ -149,29 +119,9 @@ if ($fproc->IsPostBack)
                         else
                         {
                             $showdialog = true;
-                            $msg = "Please fill up all fields";
+                            $msg = "Fill up all fields.";
                             $title = "ERROR MESSAGE";
                         }
-                    }
-                    else
-                    {
-                        $showdialog = true;
-                        $msg = "Failed to add new VIP Level";
-                        $title = "ERROR MESSAGE";
-                    }
-                }
-                else{
-                    $showdialog = true;
-                    $msg = "Player ID Empty, Can't Connect to RTG";
-                    $title = "ERROR MESSAGE";
-                }        
-            }
-        }
-        else{
-            $showdialog = true;
-            $msg = "Failed to add new VIP Level, Invalid Test Card";
-            $title = "ERROR MESSAGE";
-        } 
     }
     //Update VIP Level
     elseif($process == 2)
@@ -192,7 +142,7 @@ if ($fproc->IsPostBack)
                 $auditTrail->setPDOConnection($CommonPDOConnection);
                 $auditTrail->logEvent(AuditFunctions::VIP_LEVEL_MANAGEMENT, "Change VIP Level Status to" . $status, array('ID' => null, 'SessionID' => $_SESSION["sessionID"]));
                 $showdialog = true;
-                $msg = "Successfully updated VIP Level Status";
+                $msg = "Successfully updated VIP Level Status.";
                 $title = "MESSAGE";
             }
             else
@@ -207,7 +157,7 @@ if ($fproc->IsPostBack)
         else
         {
             $showdialog = true;
-            $msg = "Updating VIP Level Status Failed, VIP level is being used in a player account/s";
+            $msg = "Updating VIP Level Status Failed, VIP level is being used in a player account/s.";
             $title = "ERROR MESSAGE";
         }
 
