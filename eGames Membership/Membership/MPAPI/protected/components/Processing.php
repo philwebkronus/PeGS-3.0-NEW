@@ -14,7 +14,7 @@
 class Processing
 {
     //process the redeeming of coupons, updating tables connected to coupon redemption
-    public function processCouponRedemption($MID, $rewardItemID, $quantity, $redeemedPoints, $cardNumber, $source, $redeemedDate) {
+    public function processCouponRedemption($MID, $rewardItemID, $quantity, $redeemedPoints, $cardNumber, $source, $redeemedDate, $config) {
         $raffleCouponsModel = new RaffleCouponsModel();
         $memberCardsModel = new MemberCardsModel();
         $couponBatchesModel = new CouponBatchesModel();
@@ -46,7 +46,7 @@ class Processing
                     if(count($availableCoupon) == $quantity) {
                         $resultIsEwallet = $membersModel->checkIfEwallet($MID);
                         $isEwallet = $resultIsEwallet['IsEwallet'];
-                        if($isEwallet == 1)
+                        if($config == 2)
                         {
                             $pcwsWrapper = new PcwsWrapper();
                             $result = $pcwsWrapper->getCompPoints($cardNumber, 1);
@@ -574,7 +574,7 @@ class Processing
     }
     
     //process redeeming of items, updating tables connected to item redemption
-    public function processItemRedemption($MID, $rewardItemID, $quantity, $redeemedPoints, $cardNumber, $source, $redeemedDate) {
+    public function processItemRedemption($MID, $rewardItemID, $quantity, $redeemedPoints, $cardNumber, $source, $redeemedDate, $config) {
      
      //var_dump($MID, $rewardItemID, $quantity, $redeemedPoints, $cardNumber, $redeemedDate);
         $apiMethod = 8;
@@ -607,7 +607,7 @@ class Processing
                         $resultIsEwallet = $membersModel->checkIfEwallet($MID);
                         $isEwallet = $resultIsEwallet['IsEwallet'];
  
-                        if($isEwallet == 1)
+                        if($config == 2)
                         {
                             $pcwsWrapper = new PcwsWrapper();
                             $result = $pcwsWrapper->getCompPoints($cardNumber, 1);

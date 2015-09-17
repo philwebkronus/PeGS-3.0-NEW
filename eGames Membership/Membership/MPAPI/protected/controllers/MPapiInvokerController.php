@@ -67,7 +67,7 @@ class MPapiInvokerController extends Controller{
 
         $this->render('login', array('result'=>$result));
     }
-
+    
     public function actionChangePassword(){
         $this->pageTitle = 'Membership Portal API - Change Password';
         $result = '';
@@ -157,7 +157,7 @@ class MPapiInvokerController extends Controller{
             $region = $_POST['Region'];
             $city = $_POST['City'];
 
-            $result = $this->_updateProfile($mpSessionID, $mobileNumber, $alternateMobileNumber, $emailAddress, $alternateEmail, $gender, $idNumber, $birthdate, $password, $idPresented, $permanentAddress, $nationality, $occupation, $isSmoker, $region, $city);// $firstname, $middlename, $lastname, $nickname,
+            $result = $this->_updateProfile($mpSessionID, $mobileNumber, $alternateMobileNumber, $emailAddress, $alternateEmail, $gender, $idNumber, $birthdate, $password, $idPresented, $permanentAddress, $nationality, $occupation, $isSmoker, $region, $city);
         }
 
         $this->render('updateprofile', array('result'=>$result));
@@ -169,8 +169,9 @@ class MPapiInvokerController extends Controller{
 
         if(isset($_POST['CardNumber'])){
             $cardNumber = $_POST['CardNumber'];
+            $config = Yii::app()->params['config'];
 
-            $result = $this->_checkPoints($cardNumber);
+            $result = $this->_checkPoints($cardNumber, $config);
         }
 
         $this->render('checkpoints', array('result'=>$result));
@@ -203,8 +204,9 @@ class MPapiInvokerController extends Controller{
             $quantity = $_POST['Quantity'];
             //$itemQuantity = $_POST['ItemQuantity'];
             $source = $_POST['Source'];
+            $config = Yii::app()->params['config'];
 
-            $result = $this->_redeemItems($mpSessionID, $cardNumber, $rewardID, $rewardItemID, $quantity, $source);
+            $result = $this->_redeemItems($mpSessionID, $cardNumber, $rewardID, $rewardItemID, $quantity, $source, $config);
         }
 
         $this->render('redeemitems', array('result'=>$result));
@@ -217,8 +219,9 @@ class MPapiInvokerController extends Controller{
         if(isset($_POST['CardNumber']) || isset($_POST['MPSessionID'])) {
             $cardNumber = $_POST['CardNumber'];
             $mpSessionID = $_POST['MPSessionID'];
+            $config = Yii::app()->params['config'];
 
-            $result = $this->_getProfile($cardNumber, $mpSessionID);
+            $result = $this->_getProfile($cardNumber, $mpSessionID, $config);
         }
 
         $this->render('getprofile', array('result'=>$result));
@@ -344,7 +347,28 @@ class MPapiInvokerController extends Controller{
 
         $this->render('registermemberbt', array('result'=>$result));
     }
+    
+      /*
+       * Date Created  : August 10, 2015
+       * @javida
+       */
+    public function actionRegisterMemberBTNoEmail() {
+        $this->pageTitle = 'Membership Portal API - Register Member BT No Email';
+        $result = '';
 
+        if(isset($_POST['FirstName']) || isset($_POST['LastName']) || isset($_POST['MobileNo'])
+                || isset($_POST['Birthdate'])) {
+            $firstname = $_POST['FirstName'];
+            $lastname = $_POST['LastName'];
+            $mobileNumber = $_POST['MobileNo'];
+            $birthdate = $_POST['Birthdate'];
+
+            $result = $this->_registerMemberBTNoEmail($firstname, $lastname, $mobileNumber, $birthdate);
+        }
+
+        $this->render('registermemberbtnoemail', array('result'=>$result));
+    }
+    
     //@date 05-07-2015
     public function actionGetBalance(){
         $this->pageTitle = 'Membership Portal API - Get Balance';
@@ -366,7 +390,7 @@ class MPapiInvokerController extends Controller{
 
         return $result[1];
     }
-
+    
     private function _changePassword($cardNumber, $newPassword) {
         $postdata = CJSON::encode(array('CardNumber'=>$cardNumber, 'NewPassword' => $newPassword));
         $result = $this->SubmitData(Yii::app()->params['urlMPAPI'].'changepassword', $postdata);
@@ -397,8 +421,8 @@ class MPapiInvokerController extends Controller{
         return $result[1];
     }
 
-    private function _checkPoints($cardNumber) {
-        $postdata = CJSON::encode(array('CardNumber'=>$cardNumber));
+    private function _checkPoints($cardNumber, $config) {
+        $postdata = CJSON::encode(array('CardNumber'=>$cardNumber, 'Config' => $config));
         $result = $this->SubmitData(Yii::app()->params['urlMPAPI'].'checkpoints', $postdata);
 
         return $result[1];
@@ -412,16 +436,16 @@ class MPapiInvokerController extends Controller{
         return $result[1];
     }
 
-    private function _redeemItems($mpSessionID, $cardNumber, $rewardID, $rewardItemID, $quantity, $source) {
-        $postdata = CJSON::encode(array('MPSessionID' => $mpSessionID, 'CardNumber' => $cardNumber, 'RewardID' => $rewardID, 'RewardItemID' => $rewardItemID, 'Quantity' => $quantity, 'Source' => $source));
+    private function _redeemItems($mpSessionID, $cardNumber, $rewardID, $rewardItemID, $quantity, $source, $config) {
+        $postdata = CJSON::encode(array('MPSessionID' => $mpSessionID, 'CardNumber' => $cardNumber, 'RewardID' => $rewardID, 'RewardItemID' => $rewardItemID, 'Quantity' => $quantity, 'Source' => $source, 'Config' => $config));
 
         $result = $this->SubmitData(Yii::app()->params['urlMPAPI'].'redeemitems', $postdata);
 
         return $result[1];
     }
 
-    private function _getProfile($cardNumber, $mpSessionID){
-        $postdata = CJSON::encode(array('CardNumber' => $cardNumber, 'MPSessionID' => $mpSessionID));
+    private function _getProfile($cardNumber, $mpSessionID, $config){
+        $postdata = CJSON::encode(array('CardNumber' => $cardNumber, 'MPSessionID' => $mpSessionID, 'Config' => $config));
 
         $result = $this->SubmitData(Yii::app()->params['urlMPAPI'].'getprofile', $postdata);
 
@@ -517,7 +541,18 @@ class MPapiInvokerController extends Controller{
 
         return $result[1];
     }
+/*
+ * Date Created : August 10,2015
+ * @javida
+ */    
+        private function _registerMemberBTNoEmail($firstname, $lastname, $mobileNumber, $birthdate) {
+        $postdata = CJSON::encode(array('FirstName'=>$firstname, 'LastName'=>$lastname, 'MobileNo'=>$mobileNumber,
+                                   'Birthdate'=>$birthdate));
+        $result = $this->SubmitData(Yii::app()->params['urlMPAPI'].'registermemberbtnoemail', $postdata);
 
+        return $result[1];
+    }
+    
     private function _getBalance($cardNumber, $mpSessionID){
         $postdata = CJSON::encode(array('CardNumber' => $cardNumber, 'MPSessionID' => $mpSessionID));
 

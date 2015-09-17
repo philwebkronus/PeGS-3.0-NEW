@@ -267,14 +267,15 @@ class AmpapiInvokerController extends Controller {
         if(isset($_POST['TPSessionID']) && isset($_POST['CardNumber'])){
             $TPSessionID = trim($_POST['TPSessionID']);
             $CardNumber = trim($_POST['CardNumber']);
-            $result = $this->_checkPoints($TPSessionID,$CardNumber,$moduleName);
+            $config = Yii::app()->params['config'];
+            $result = $this->_checkPoints($TPSessionID,$CardNumber,$moduleName,$config);
         }
 
         $this->render($moduleName, array('result'=>$result));
     }
-        private function _checkPoints($TPSessionID,$CardNumber,$moduleName){
+        private function _checkPoints($TPSessionID,$CardNumber,$moduleName,$config){
             $url = $this->genURL($moduleName);
-            $postData = CJSON::encode(array('TPSessionID'=>$TPSessionID, 'CardNumber'=>$CardNumber));
+            $postData = CJSON::encode(array('TPSessionID'=>$TPSessionID, 'CardNumber'=>$CardNumber, 'Config' => $config));
             //print_r($postData);
             $result = $this->SubmitData($url, $postData);
 
@@ -319,14 +320,15 @@ class AmpapiInvokerController extends Controller {
             $RewardItemID = $_POST['RewardItemID'];
             $Quantity = $_POST['Quantity'];
             $Source = $_POST['Source'];
-            $result = $this->_redeemItems($TPSessionID,$MPSessionID,$CardNumber,$RewardID,$RewardItemID,$Quantity,$Source,$moduleName);
+            $config = Yii::app()->params['config'];
+            $result = $this->_redeemItems($TPSessionID,$MPSessionID,$CardNumber,$RewardID,$RewardItemID,$Quantity,$Source,$moduleName, $config);
         }
 
         $this->render($moduleName, array('result'=>$result));
     }
-        private function _redeemItems($TPSessionID,$MPSessionID,$CardNumber,$RewardID,$RewardItemID,$Quantity,$Source,$moduleName){
+        private function _redeemItems($TPSessionID,$MPSessionID,$CardNumber,$RewardID,$RewardItemID,$Quantity,$Source,$moduleName, $config){
             $url = $this->genURL($moduleName);
-            $postData = CJSON::encode(array('TPSessionID'=>$TPSessionID, 'MPSessionID'=>$MPSessionID, 'CardNumber'=>$CardNumber, 'RewardID'=>$RewardID, 'RewardItemID'=>$RewardItemID, 'Quantity'=>$Quantity, 'Source'=>$Source));
+            $postData = CJSON::encode(array('TPSessionID'=>$TPSessionID, 'MPSessionID'=>$MPSessionID, 'CardNumber'=>$CardNumber, 'RewardID'=>$RewardID, 'RewardItemID'=>$RewardItemID, 'Quantity'=>$Quantity, 'Source'=>$Source, 'Config'=>$config));
             $result = $this->SubmitData($url, $postData);
 
             return $result[1];
@@ -342,14 +344,15 @@ class AmpapiInvokerController extends Controller {
             $TPSessionID = $_POST['TPSessionID'];
             $MPSessionID = $_POST['MPSessionID'];
             $CardNumber = $_POST['CardNumber'];
-            $result = $this->_getProfile($TPSessionID,$MPSessionID,$CardNumber,$moduleName);
+            $config = Yii::app()->params['config'];
+            $result = $this->_getProfile($TPSessionID,$MPSessionID,$CardNumber,$moduleName,$config);
         }
 
         $this->render($moduleName, array('result'=>$result));
     }
-        private function _getProfile($TPSessionID,$MPSessionID,$CardNumber,$moduleName){
+        private function _getProfile($TPSessionID,$MPSessionID,$CardNumber,$moduleName,$config){
             $url = $this->genURL($moduleName);
-            $postData = CJSON::encode(array('TPSessionID'=>$TPSessionID, 'MPSessionID'=>$MPSessionID, 'CardNumber'=>$CardNumber));
+            $postData = CJSON::encode(array('TPSessionID'=>$TPSessionID, 'MPSessionID'=>$MPSessionID, 'CardNumber'=>$CardNumber, 'Config' => $config));
             $result = $this->SubmitData($url, $postData);
 
             return $result[1];
