@@ -169,6 +169,17 @@ class RewardItemsModel {
         
         return $result;
     }
+    
+    //@date 09-17-2015
+    //@purpose check item is coupon
+    public function checkItem($rewardID, $rewardItemID) {
+        $sql = 'SELECT * FROM rewardsdb.rewarditems WHERE RewardItemID = :rewardItemID and RewardID = :rewardID;';
+        $param = array(':rewardItemID' => $rewardItemID, ':rewardID' => $rewardID);
+        $command = $this->_connection->createCommand($sql);
+        $result = $command->queryRow(true, $param);
+        
+        return $result;
+    }
             
 }
 

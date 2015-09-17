@@ -3292,6 +3292,8 @@ class MPapiController extends Controller {
         $apiLogsModel = new APILogsModel();
         $memberSessionsModel = new MemberSessionsModel();
         $memberInfoModel = new MemberInfoModel();
+        $rewardItemsModel = new RewardItemsModel();
+
         $result = $memberSessionsModel->getMID($request['MPSessionID']);
         $MID = $result['MID'];
 
@@ -3947,6 +3949,37 @@ class MPapiController extends Controller {
                                     exit;
                                 }
                             } else {
+                                //check item is coupon
+                                $checkItem = $rewardItemsModel->checkItem($rewardID, $rewardItemID);
+                                if ($checkItem == false) {
+                                    $transMsg = "Transaction failed. RewardID mismatched.";
+                                    $isLogged = $auditTrailModel->logEvent(AuditTrailModel::API_REDEEM_ITEMS, 'ReturnMessage: ' . $transMsg, array('MID' => $MID, 'SessionID' => $mpSessionID));
+                                    if ($isLogged > 0) {
+                                        $quantity = '';
+                                        $totalItemPoints = '';
+                                    } else {
+                                        $logMessage = "Failed to log event on Audit Trail.";
+                                        $quantity = '';
+                                        $totalItemPoints = '';
+                                        $logger->log($logger->logdate, "[REDEEMITEMS ERROR]: MID " . $MID . " || ", $logMessage);
+                                    }
+                                    $errorCode = 99;
+                                    Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                                    $data = CommonController::retMsgRedemption($module, $redemption, $errorCode, $transMsg);
+                                    $message = "[" . $module . "] Output: " . CJSON::encode($data);
+                                    $appLogger->log($appLogger->logdate, "[response]", $message);
+                                    $this->_sendResponse(200, CJSON::encode($data));
+                                    $logMessage = 'Transaction failed. RewardID mismatched.';
+                                    $logger->log($logger->logdate, "[REDEEMITEMS ERROR]: MID " . $MID . " || ", $logMessage);
+                                    $apiDetails = $transMsg;
+                                    $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, $refID, $apiDetails, '', 2);
+                                    if ($isInserted == 0) {
+                                        $logMessage = "Failed to insert to APILogs.";
+                                        $logger->log($logger->logdate, "[REDEEMITEMS ERROR]: MID " . $MID . " || ", $logMessage);
+                                    }
+
+                                    exit;
+                                }
                                 //check if the available item is greater than or equal to the quantity availed by the player.
                                 $availableItemCount = $rewardItemsModel->getAvailableItemCount($rewardItemID);
                                 if ($availableItemCount['AvailableItemCount'] >= $quantity) {
