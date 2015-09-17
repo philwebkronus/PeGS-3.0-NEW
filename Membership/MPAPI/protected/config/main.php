@@ -172,6 +172,7 @@ return array(
             'cSecret' => '',
             'sfLogin' => '',
             'sfPassword' => '',
-            'secToken' => ''
+            'secToken' => '',
+            'config' => 1
             ),
 );
