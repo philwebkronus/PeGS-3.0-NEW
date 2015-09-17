@@ -369,6 +369,60 @@ class MPapiController extends Controller {
                     $members = $this->_authenticate($username, $password);
 
                     if ($members) {
+                        $result = $memberCardsModel->getMemberStatus($username);
+
+//                         check if status is not active
+                        if($result['Status'] != 1 && $result['Status'] != NULL) {
+                            switch ($result['Status']) {
+                                case 0:
+                                    $transMsg = 'Card is Inactive.';
+                                    $errorCode = 6;
+                                    break;
+
+                                case 2:
+                                    $transMsg = 'Card is Deactivated.';
+                                    $errorCode = 11;
+                                    break;
+
+                                case 7:
+                                    $transMsg = 'Card is Newly Migrated.';
+                                    $errorCode = 7;
+                                    break;
+
+                                case 8:
+                                    $transMsg = 'Card is Temporarily Migrated.';
+                                    $errorCode = 8;
+                                    break;
+
+                                case 9:
+                                    $transMsg = 'Card is Banned.';
+                                    $errorCode = 9;
+                                    break;
+
+                                default:
+                                    $transMsg = 'Card is Invalid';
+                                    $errorCode = 10;
+                                    break;
+                            }
+
+                            $logMessage = $transMsg;
+                            $transMsg = $transMsg;
+                            Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                            $data = CommonController::retMsgLogin($module, '', '', '', '', $errorCode, $transMsg, '');
+                            $message = "[Login] Output: " . CJSON::encode($data);
+                            $appLogger->log($appLogger->logdate, "[response]", $message);
+                            $this->_sendResponse(200, CJSON::encode($data));
+                            $logger->log($logger->logdate, "[LOGIN ERROR]: " . $request['Username'] . " || " . $request['AlterStr'] . " || ", $logMessage);
+                            $apiDetails = 'LOGIN-Failed: Invalid Login parameters.';
+                            $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
+                            if ($isInserted == 0) {
+                                $logMessage = "Failed to insert to APILogs.";
+                                $logger->log($logger->logdate, "[LOGIN ERROR]: " . $request['Username'] . " || " . $request['AlterStr'] . " || ", $logMessage);
+                            }
+
+                            exit;
+                        }
+
                         $MID = $members['MID'];
                         $isVIPResult = $membersModel->getIsVIPUsingMID($MID); //newly added
                         $isVIP = $isVIPResult['IsVIP'];
@@ -2243,16 +2297,16 @@ class MPapiController extends Controller {
 
         $isValid = $this->_validateMPSession($request['MPSessionID']);
         if (isset($isValid) && !$isValid) {
-            $transMsg = "MPSessionID is already expired. Please login again.";
-            $errorCode = 91;
+            $transMsg = "MPSessionID does not exist.";
+            $errorCode = 13;
             Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
             $data = CommonController::retMsgUpdateProfile($module, $errorCode, $transMsg);
             $message = "[" . $module . "] Output: " . CJSON::encode($data);
             $appLogger->log($appLogger->logdate, "[response]", $message);
             $this->_sendResponse(200, CJSON::encode($data));
-            $logMessage = 'MPSessionID is already expired. Please login again.';
+            $logMessage = 'MPSessionID does not exist.';
             $logger->log($logger->logdate, "[UPDATEPROFILE ERROR]: MID " . $MID . " || ", $logMessage);
-            $apiDetails = 'UPDATEPROFILE-Failed: MPSessionID is already expired. Please login again.. MID = ' . $MID;
+            $apiDetails = 'UPDATEPROFILE-Failed: MPSessionID does not exist.. MID = ' . $MID;
             $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
             if ($isInserted == 0) {
                 $logMessage = "Failed to insert to APILogs.";
@@ -2993,16 +3047,16 @@ class MPapiController extends Controller {
         $logger = new ErrorLogger();
         $apiLogsModel = new APILogsModel();
 
-        if (isset($request['CardNumber'])) {
+        if (isset($request['CardNumber']) && isset($request['Config'])) {
             if ($request['CardNumber'] == '') {
-                $transMsg = "One or more fields is not set or is blank.";
+                $transMsg = "One or more fields is not set or is blank. [CardNumber] ";
                 $errorCode = 1;
                 Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
                 $data = CommonController::retMsgCheckPoints($module, '', '', $errorCode, $transMsg);
                 $message = "[" . $module . "] Output: " . CJSON::encode($data);
                 $appLogger->log($appLogger->logdate, "[response]", $message);
                 $this->_sendResponse(200, CJSON::encode($data));
-                $logMessage = 'One or more fields is not set or is blank.';
+                $logMessage = "One or more fields is not set or is blank. CardNumber is blank.";
                 $logger->log($logger->logdate, "[CHECKPOINTS ERROR]: " . $request['CardNumber'] . " || ", $logMessage);
                 $apiDetails = 'CHECKPOINTS-Failed: Invalid input parameters.';
                 $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
@@ -3012,8 +3066,10 @@ class MPapiController extends Controller {
                 }
 
                 exit;
-            } else {
+            }
+            else {
                 $cardNumber = trim($request['CardNumber']);
+                $config = trim($request['Config']);
 
                 $refID = $cardNumber;
                 //start of declaration of models to be used
@@ -3027,7 +3083,7 @@ class MPapiController extends Controller {
                     $MID = $resultMID['MID'];
                     $resultIsEwallet = $membersModel->checkIfEwallet($MID);
                     $isEwallet = $resultIsEwallet['IsEwallet'];
-                    if($isEwallet == 1)
+                    if($config == 2)
                     {
                         $pcwsWrapper = new PcwsWrapper();
 
@@ -3309,16 +3365,16 @@ class MPapiController extends Controller {
 
         $isValid = $this->_validateMPSession($request['MPSessionID']);
         if (isset($isValid) && !$isValid) {
-            $transMsg = "MPSessionID is already expired. Please login again.";
-            $errorCode = 91;
+            $transMsg = "MPSessionID does not exist.";
+            $errorCode = 13;
             Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
             $data = CommonController::retMsgListItems($module, $itemsList, $errorCode, $transMsg);
             $message = "[" . $module . "] Output: " . CJSON::encode($data);
             $appLogger->log($appLogger->logdate, "[response]", $message);
             $this->_sendResponse(200, CJSON::encode($data));
-            $logMessage = 'MPSessionID is already expired. Please login again.';
+            $logMessage = 'MPSessionID does not exist.';
             $logger->log($logger->logdate, "[LISTITEMS ERROR]: MID " . $MID . " || ", $logMessage);
-            $apiDetails = 'LISTITEMS-Failed: MPSessionID is already expired. Please login again.. MID = ' . $MID;
+            $apiDetails = 'LISTITEMS-Failed: MPSessionID does not exist.. MID = ' . $MID;
             $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
             if ($isInserted == 0) {
                 $logMessage = "Failed to insert to APILogs.";
@@ -3593,27 +3649,6 @@ class MPapiController extends Controller {
         $result = $memberSessionsModel->getMID($request['MPSessionID']);
         $MID = $result['MID'];
 
-        $isValid = $this->_validateMPSession($request['MPSessionID']);
-        if (isset($isValid) && !$isValid) {
-            $transMsg = "MPSessionID is already expired. Please login again.";
-            $errorCode = 91;
-            Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
-            $data = CommonController::retMsgRedemption($module, $redemption, $errorCode, $transMsg);
-            $message = "[" . $module . "] Output: " . CJSON::encode($data);
-            $appLogger->log($appLogger->logdate, "[response]", $message);
-            $this->_sendResponse(200, CJSON::encode($data));
-            $logMessage = 'MPSessionID is already expired. Please login again.';
-            $logger->log($logger->logdate, "[REDEEMITEMS ERROR]: MID " . $MID . " || ", $logMessage);
-            $apiDetails = 'REDEEMITEMS-Failed: MPSessionID is already expired. Please login again.. MID = ' . $MID;
-            $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
-            if ($isInserted == 0) {
-                $logMessage = "Failed to insert to APILogs.";
-                $logger->log($logger->logdate, "[REDEEMITEMS ERROR]: MID " . $MID . " || ", $logMessage);
-            }
-
-            exit;
-        }
-
         if (isset($result)) {
             $isUpdated = $memberSessionsModel->updateTransactionDate($MID);
             if ($isUpdated == 0) {
@@ -3640,17 +3675,43 @@ class MPapiController extends Controller {
         $process = new Processing();
 
         if (isset($request['CardNumber']) && isset($request['RewardItemID']) && isset($request['Quantity'])
-                && isset($request['RewardID']) && isset($request['Source']) && isset($request['MPSessionID']) && isset($request['Tracking1']) && isset($request['Tracking2'])) {
-            if (($request['CardNumber'] == '') || ($request['RewardItemID'] == '') || ($request['RewardID'] == '') || ($request['Quantity'] == '')
-                    || ($request['Source'] == '') || ($request['MPSessionID'] == '') || ($request['Tracking1'] == '') || ($request['Tracking2'] == '')) {
-                $transMsg = "One or more fields is not set or is blank.";
+                && isset($request['RewardID']) && isset($request['Source']) && isset($request['MPSessionID'])
+                && isset($request['Tracking1']) && isset($request['Tracking2']) && isset($request['Config'])) {
+            if (($request['CardNumber'] == '') || ($request['RewardItemID'] == '') || ($request['RewardID'] == '')
+                    || ($request['Quantity'] == '') || ($request['Source'] == '') || ($request['MPSessionID'] == '')
+                    || ($request['Tracking1'] == '') || ($request['Tracking2'] == '')) {
+                if (($request['MPSessionID'] == '')) {
+                    $transMsg = $transMsg . "[MPSessionID] ";
+                }
+                if (($request['CardNumber'] == '')) {
+                    $transMsg = $transMsg . "[CardNumber] ";
+                }
+                if (($request['RewardID'] == '')) {
+                    $transMsg = $transMsg . "[RewardID] ";
+                }
+                if (($request['RewardItemID'] == '')) {
+                    $transMsg = $transMsg . "[RewardItemID] ";
+                }
+                if (($request['Quantity'] == '')) {
+                    $transMsg = $transMsg . "[Quantity] ";
+                }
+                if (($request['Source'] == '')) {
+                    $transMsg = $transMsg . "[Source] ";
+                }
+                if (($request['Tracking1'] == '')) {
+                    $transMsg = $transMsg . "[Tracking1] ";
+                }
+                if (($request['Tracking2'] == '')) {
+                    $transMsg = $transMsg . "[Tracking2] ";
+                }
+                $transMsg = "One or more fields is not set or is blank. " . $transMsg;
                 $errorCode = 1;
                 Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
                 $data = CommonController::retMsgRedemption($module, $redemption, $errorCode, $transMsg);
                 $message = "[" . $module . "] Output: " . CJSON::encode($data);
                 $appLogger->log($appLogger->logdate, "[response]", $message);
                 $this->_sendResponse(200, CJSON::encode($data));
-                $logMessage = 'One or more fields is not set or is blank.';
+                $logMessage = "One or more fields is not set or is blank. " . $transMsg;
                 $logger->log($logger->logdate, "[REDEEMITEMS ERROR]: MID " . $MID . " || ", $logMessage);
                 $apiDetails = 'REDEEMITEMS-Failed: Invalid input parameters.';
                 $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
@@ -3660,7 +3721,29 @@ class MPapiController extends Controller {
                 }
 
                 exit;
-            } else {
+            }
+
+            $isValid = $this->_validateMPSession($request['MPSessionID']);
+            if (isset($isValid) && !$isValid) {
+                $transMsg = "MPSessionID does not exist.";
+                $errorCode = 13;
+                Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                $data = CommonController::retMsgRedemption($module, $redemption, $errorCode, $transMsg);
+                $message = "[" . $module . "] Output: " . CJSON::encode($data);
+                $appLogger->log($appLogger->logdate, "[response]", $message);
+                $this->_sendResponse(200, CJSON::encode($data));
+                $logMessage = 'MPSessionID does not exist.';
+                $logger->log($logger->logdate, "[REDEEMITEMS ERROR]: MID " . $MID . " || ", $logMessage);
+                $apiDetails = 'REDEEMITEMS-Failed: MPSessionID does not exist.. MID = ' . $MID;
+                $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
+                if ($isInserted == 0) {
+                    $logMessage = "Failed to insert to APILogs.";
+                    $logger->log($logger->logdate, "[REDEEMITEMS ERROR]: MID " . $MID . " || ", $logMessage);
+                }
+
+                exit;
+            }
+            else {
                 $cardNumber = trim($request['CardNumber']);
                 $rewardItemID = trim($request['RewardItemID']);
                 $rewardID = trim($request['RewardID']);
@@ -3669,6 +3752,7 @@ class MPapiController extends Controller {
                 $mpSessionID = trim($request['MPSessionID']);
                 $tracking1 = trim($request['Tracking1']);
                 $tracking2 = stripslashes(trim($request['Tracking2']));
+                $config = trim($request['Config']);
 
                 $memberSessionsModel = new MemberSessionsModel();
                 $memberCardsModel = new MemberCardsModel();
@@ -3775,7 +3859,7 @@ class MPapiController extends Controller {
                     if ($source == 3) {
                         $resultIsEwallet = $membersModel->checkIfEwallet($MID);
                         $isEwallet = $resultIsEwallet['IsEwallet'];
-                        if($isEwallet == 1)
+                        if ($config == 2)
                         {
                             $pcwsWrapper = new PcwsWrapper();
 
@@ -4091,7 +4175,7 @@ class MPapiController extends Controller {
                                                 exit;
                                             } else {
                                                 //process coupon redemption
-                                                $resultArray = $process->processCouponRedemption($MID, $rewardItemID, $quantity, $totalItemPoints, $cardNumber, 3, $redeemedDate);
+                                                $resultArray = $process->processCouponRedemption($MID, $rewardItemID, $quantity, $totalItemPoints, $cardNumber, 3, $redeemedDate, $config);
 
                                                 if ($resultArray['IsSuccess']) {
                                                     $oldCurrentPoints = number_format($resultArray['OldCP']);
@@ -4129,15 +4213,18 @@ class MPapiController extends Controller {
                                                 } else {
                                                     $errorCode = 0;
                                                     $transMsg = 'Redemption successful.';
-
-                                                    //send SMS alert to player
-                                                    $smsResult = $this->_sendSMS(SMSRequestLogsModel::COUPON_REDEMPTION, $mobileNumber, $redeemedDate, $resultArray['SerialNumber'], $quantity, "SMSC", $resultArray['LastInsertedID'], '', $resultArray['CouponSeries']);
-                                                    if ($smsResult == 0) {
-                                                        $smsFailed = 'Invalid Mobile Number.';
-                                                        $errorCode = 97;
-                                                        Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
-                                                        $this->_sendResponse(200, CJSON::encode(CommonController::retMsgRedemption($module, $redemption, $errorCode, $smsFailed)));
+                                                    if ($Email == "") {
+                                                            $errorCode = 122;
+                                                            $transMsg = 'Redemption successful. Please update your email to receive notification.';
                                                     }
+                                                    //send SMS alert to player
+//                                                    $smsResult = $this->_sendSMS(SMSRequestLogsModel::COUPON_REDEMPTION, $mobileNumber, $redeemedDate, $resultArray['SerialNumber'], $quantity, "SMSC", $resultArray['LastInsertedID'], '', $resultArray['CouponSeries']);
+//                                                    if ($smsResult == 0) {
+//                                                        $smsFailed = 'Invalid Mobile Number.';
+//                                                        $errorCode = 97;
+//                                                        Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+//                                                        $this->_sendResponse(200, CJSON::encode(CommonController::retMsgRedemption($module, $redemption, $errorCode, $smsFailed)));
+//                                                    }
                                                     $showcouponredemptionwindow = true;
                                                     $showitemredemptionwindow = false;
 
@@ -4238,6 +4325,14 @@ class MPapiController extends Controller {
                                                     if ($isInserted == 0) {
                                                         $logMessage = "Failed to insert to APILogs.";
                                                         $logger->log($logger->logdate, "[REDEEMITEMS ERROR]: MID " . $MID . " || ", $logMessage);
+                                                    }
+                                                    //send SMS alert to player
+                                                    $smsResult = $this->_sendSMS(SMSRequestLogsModel::COUPON_REDEMPTION, $mobileNumber, $redeemedDate, $resultArray['SerialNumber'], $quantity, "SMSC", $resultArray['LastInsertedID'], '', $resultArray['CouponSeries']);
+                                                    if ($smsResult == 0) {
+                                                        $smsFailed = 'Invalid Mobile Number.';
+                                                        $errorCode = 97;
+                                                        Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                                                        $this->_sendResponse(200, CJSON::encode(CommonController::retMsgRedemption($module, $redemption, $errorCode, $smsFailed)));
                                                     }
                                                 }
                                             }
@@ -4387,7 +4482,7 @@ class MPapiController extends Controller {
                                                     exit;
                                                 } else {
                                                     //process item redemption
-                                                    $resultsArray = $process->processItemRedemption($MID, $rewardItemID, $quantity, $totalItemPoints, $cardNumber, 3, $redeemedDate);
+                                                    $resultsArray = $process->processItemRedemption($MID, $rewardItemID, $quantity, $totalItemPoints, $cardNumber, 3, $redeemedDate, $config);
 
                                                     if ($resultsArray['IsSuccess']) {
                                                         $oldCurrentPoints = number_format($resultsArray['OldCP']);
@@ -4440,6 +4535,10 @@ class MPapiController extends Controller {
                                                     } else {
                                                         $errorCode = 0;
                                                         $transMsg = 'Redemption successful.';
+                                                        if ($Email == "") {
+                                                            $errorCode = 122;
+                                                            $transMsg = 'Redemption successful. Please update your email to receive notification.';
+                                                        }
                                                         if ($itemDetail['IsMystery'] == 1)
                                                             $itemName = $itemDetail['MysteryName'];
 
@@ -4525,7 +4624,7 @@ $itemRedemptionArray = array('ItemImage' => $itemImage, 'ItemName' => $itemName,
                                                                 $redeemedDate = $rdDate->format('m-d-Y');
                                                                 $redeemedTime = $rdDate->format('G:i A');
                                                                 $sender = Yii::app()->params['MarketingEmail'];
-                                                                if ($itemDetail['IsVIP'] == 0)
+                                                                if ($itemDetail['PClassID'] == 1 || $itemDetail['PClassID'] == 2)
                                                                     $statusValue = 'Regular';
                                                                 else
                                                                     $statusValue = 'VIP';
@@ -4771,27 +4870,6 @@ $itemRedemptionArray = array('ItemImage' => $itemImage, 'ItemName' => $itemName,
             'BonusPoints' => $bonusPoints, 'RedeemedPoints' => $redeemedPoints, 'LifetimePoints' => $lifetimePoints, 'CardNumber' => $cardNumber,
             'RegionID' => $regionID, 'CityID' => $cityID);
 
-        $isValid = $this->_validateMPSession($request['MPSessionID']);
-        if (isset($isValid) && !$isValid) {
-            $transMsg = "MPSessionID is already expired. Please login again.";
-            $errorCode = 91;
-            Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
-            $data = CommonController::retMsgGetProfile($module, $profile, $errorCode, $transMsg);
-            $message = "[" . $module . "] Output: " . CJSON::encode($data);
-            $appLogger->log($appLogger->logdate, "[response]", $message);
-            $this->_sendResponse(200, CJSON::encode($data));
-            $logMessage = 'MPSessionID is already expired. Please login again.';
-            $logger->log($logger->logdate, "[GETPROFILE ERROR]: MID " . $MID . " || ", $logMessage);
-            $apiDetails = 'GETPROFILE-Failed: MPSessionID is already expired. Please login again.. MID = ' . $MID;
-            $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
-            if ($isInserted == 0) {
-                $logMessage = "Failed to insert to APILogs.";
-                $logger->log($logger->logdate, "[GETPROFILE ERROR]: MID " . $MID . " || ", $logMessage);
-            }
-
-            exit;
-        }
-
         if (isset($result)) {
             $isUpdated = $memberSessionsModel->updateTransactionDate($MID);
             if ($isUpdated == 0) {
@@ -4815,16 +4893,22 @@ $itemRedemptionArray = array('ItemImage' => $itemImage, 'ItemName' => $itemName,
             }
         }
 
-        if (isset($request['CardNumber']) && isset($request['MPSessionID'])) {
+        if (isset($request['CardNumber']) && isset($request['MPSessionID']) && isset($request['Config'])) {
             if ($request['CardNumber'] == '' || $request['MPSessionID'] == '') {
-                $transMsg = "One or more fields is not set or is blank.";
+                if($request['MPSessionID'] == '') {
+                    $transMsg = $transMsg . "[MPSessionID] ";
+                }
+                if($request['CardNumber'] == '') {
+                    $transMsg = $transMsg. "[CardNumber] ";
+                }
+                $transMsg = "One or more fields is not set or is blank. " . $transMsg;
                 $errorCode = 1;
                 Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
                 $data = CommonController::retMsgGetProfile($module, $profile, $errorCode, $transMsg);
                 $message = "[" . $module . "] Output: " . CJSON::encode($data);
                 $appLogger->log($appLogger->logdate, "[response]", $message);
                 $this->_sendResponse(200, CJSON::encode($data));
-                $logMessage = 'One or more fields is not set or is blank.';
+                $logMessage = "One or more fields is not set or is blank. " . $transMsg;
                 $logger->log($logger->logdate, "[GETPROFILE ERROR]: MID " . $MID . " || ", $logMessage);
                 $apiDetails = 'GETPROFILE-Failed: Invalid input parameters.';
                 $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
@@ -4834,9 +4918,31 @@ $itemRedemptionArray = array('ItemImage' => $itemImage, 'ItemName' => $itemName,
                 }
 
                 exit;
-            } else {
+            }
+            $isValid = $this->_validateMPSession($request['MPSessionID']);
+            if (isset($isValid) && !$isValid) {
+                $transMsg = "MPSessionID does not exist.";
+                $errorCode = 13;
+                Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                $data = CommonController::retMsgGetProfile($module, $profile, $errorCode, $transMsg);
+                $message = "[" . $module . "] Output: " . CJSON::encode($data);
+                $appLogger->log($appLogger->logdate, "[response]", $message);
+                $this->_sendResponse(200, CJSON::encode($data));
+                $logMessage = 'MPSessionID does not exist.';
+                $logger->log($logger->logdate, "[GETPROFILE ERROR]: MID " . $MID . " || ", $logMessage);
+                $apiDetails = 'GETPROFILE-Failed: MPSessionID does not exist.. MID = ' . $MID;
+                $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
+                if ($isInserted == 0) {
+                    $logMessage = "Failed to insert to APILogs.";
+                    $logger->log($logger->logdate, "[GETPROFILE ERROR]: MID " . $MID . " || ", $logMessage);
+                }
+
+                exit;
+            }
+            else {
                 $cardNumber = trim($request['CardNumber']);
                 $mpSessionID = trim($request['MPSessionID']);
+                $config = trim($request['Config']);
 
                 //start of declaration of models to be used
                 $memberCardsModel = new MemberCardsModel();
@@ -4845,7 +4951,6 @@ $itemRedemptionArray = array('ItemImage' => $itemImage, 'ItemName' => $itemName,
                 $cardsModel = new CardsModel();
                 $auditTrailModel = new AuditTrailModel();
                 $pcwsWrapper = new PcwsWrapper();
-                $membersModel = new MembersModel();
 
                 $memberExist = $memberCardsModel->getMIDUsingCard($cardNumber);
                 if ($memberExist)
@@ -4894,35 +4999,34 @@ $itemRedemptionArray = array('ItemImage' => $itemImage, 'ItemName' => $itemName,
                         exit;
                     } else {
                         $result = $memberInfoModel->getEmailFNameUsingMIDWIthSP($MID);
-                        
-                        //$memberDetails = $memberInfoModel->getDetailsUsingEmailWithSP($emailAddress);
+                        $emailAddress = $result['Email'];
+                        $memberDetails = $memberInfoModel->getDetailsUsingEmailWithSP($emailAddress);
 
-                        if ($result) {
-                            $emailAddress = $result['Email'];
+                        if ($memberDetails) {
                             $memberInfo = $memberInfoModel->getMemberInfoUsingMID($MID);
                             $memberPoints = $cardsModel->getMemberInfoUsingCardNumber($cardNumber);
-                            $firstname = $result['FirstName'];
-                            $middlename = $result['MiddleName'];
+                            $firstname = $memberDetails['FirstName'];
+                            $middlename = $memberDetails['MiddleName'];
                             if ($middlename == null)
                                 $middlename = '';
-                            $lastname = $result['LastName'];
-                            $nickname = $result['NickName'];
+                            $lastname = $memberDetails['LastName'];
+                            $nickname = $memberDetails['NickName'];
                             if ($nickname == null)
                                 $nickname = '';
-                            $permanentAddress = $result['Address1'];
-                            $mobileNumber = $result['MobileNumber'];
-                            $alternateMobileNumber = $result['AlternateMobileNumber'];
+                            $permanentAddress = $memberDetails['Address1'];
+                            $mobileNumber = $memberDetails['MobileNumber'];
+                            $alternateMobileNumber = $memberDetails['AlternateMobileNumber'];
                             if ($alternateMobileNumber == null)
                                 $alternateMobileNumber = '';
                             //$emailAddress = $memberDetails['Email'];
-                            $alternateEmail = $result['AlternateEmail'];
+                            $alternateEmail = $memberDetails['AlternateEmail'];
                             if ($alternateEmail == null)
                                 $alternateEmail = '';
                             $gender = $memberInfo['Gender'];
                             if ($gender == null)
                                 $gender = '';
                             $idPresented = $memberInfo['IdentificationID'];
-                            $idNumber = $result['IdentificationNumber'];
+                            $idNumber = $memberDetails['IdentificationNumber'];
                             $nationality = $memberInfo['NationalityID'];
                             if ($nationality == null)
                                 $nationality = '';
@@ -4947,7 +5051,7 @@ $itemRedemptionArray = array('ItemImage' => $itemImage, 'ItemName' => $itemName,
 
                             $resultIsEwallet = $membersModel->checkIfEwallet($MID);
                             $isEwallet = $resultIsEwallet['IsEwallet'];
-                            if($isEwallet == 1)
+                            if($config == 2)
                             {
                                 $pcwsWrapper = new PcwsWrapper();
 
@@ -6517,7 +6621,7 @@ $itemRedemptionArray = array('ItemImage' => $itemImage, 'ItemName' => $itemName,
                 $logger->log($logger->logdate, "[VALIDATEMPSESSION SUCCESSFUL]: MID " . $MID . " || ", $logMessage);
                 $valid = true;
             } else {
-                $logMessage = 'MPSessionID is already expired. Please login again.';
+                $logMessage = 'MPSessionID does not exist.';
                 $logger->log($logger->logdate, "[VALIDATEMPSESSION ERROR]: MID " . $MID . " || ", $logMessage);
                 $valid = false;
             }
@@ -6579,10 +6683,10 @@ $itemRedemptionArray = array('ItemImage' => $itemImage, 'ItemName' => $itemName,
 
                 exit;
             } else {
-                if ((Utilities::validateEmail($request['Username']) || ctype_alnum($request['Username'])) && ctype_alnum($request['Password']) && is_numeric($request['AlterStr'])) {
                     $username = trim($request['Username']);
                     $password = trim($request['Password']);
                     $alterStr = trim($request['AlterStr']);
+                if ((Utilities::validateEmail($request['Username']) || ctype_alnum($request['Username'])) && ctype_alnum($request['Password']) && is_numeric($request['AlterStr'])) {
 
                     //start of declaration of models to be used
                     $memberSessionsModel = new MemberSessionsModel();
@@ -6869,7 +6973,7 @@ $itemRedemptionArray = array('ItemImage' => $itemImage, 'ItemName' => $itemName,
         $cipher = new Cipher($remarks);
         $encR = $cipher->encryptR($tracking1 . $remarks);
         $transMsg = $encR;
-	$data = CommonController::retMsgVerifyTracking2($module,$errorCode,$transMsg);
+	$data = CommonController::retMsgVerifyTracking2($module,$tracking1,$remarks,$errorCode,$transMsg);
 	$this->_sendResponse(200, CJSON::encode($data));
 
        // $this->_sendResponse(200, CJSON::encode(CommonController::retMsgVerifyTracking2($module, $errorCode, $transMsg)));
@@ -6901,16 +7005,16 @@ $itemRedemptionArray = array('ItemImage' => $itemImage, 'ItemName' => $itemName,
 
         $isValid = $this->_validateMPSession($mpSessionID);
         if (isset($isValid) && !$isValid) {
-            $transMsg = "MPSessionID is already expired. Please login again.";
-            $errorCode = 91;
+            $transMsg = "MPSessionID does not exist.";
+            $errorCode = 13;
             Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
             $data = CommonController::retMsgGetBalance($module, '', '', '', '', $errorCode, $transMsg);
             $message = "[" . $module . "] Output: " . CJSON::encode($data);
             $appLogger->log($appLogger->logdate, "[response]", $message);
             $this->_sendResponse(200, CJSON::encode($data));
-            $logMessage = 'MPSessionID is already expired. Please login again.';
+            $logMessage = 'MPSessionID does not exist.';
             $logger->log($logger->logdate, "[GETBALANCE ERROR]: MID " . $MID . " || ", $logMessage);
-            $apiDetails = 'GETBALANCE-Failed: MPSessionID is already expired. Please login again.. MID = ' . $MID;
+            $apiDetails = 'GETBALANCE-Failed: MPSessionID does not exist.. MID = ' . $MID;
             $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
             if ($isInserted == 0) {
                 $logMessage = "Failed to insert to APILogs.";
