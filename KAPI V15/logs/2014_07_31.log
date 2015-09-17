@@ -1,0 +1,6 @@
+[2014-07-31 15:51:57] START SESSION; Error: Casino: Can't get balance; TerminalID:1625 | MID: 9 | SiteID: 213 | CasinoID: 19
+ 
+[2014-07-31 16:14:14] START SESSION; Error: Casino: Can't get balance; TerminalID:1625 | MID: 9 | SiteID: 213 | CasinoID: 19
+ 
+[2014-07-31 16:17:54] RELOAD SESSION; Error: Casino: Can't get balance; TerminalID:1625 | MID: 9 | SiteID: 213 | CasinoID: 19
+ 

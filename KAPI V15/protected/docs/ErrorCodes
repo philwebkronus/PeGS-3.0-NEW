@@ -1,0 +1,76 @@
+EGM Error Code References:
+
+Code    Message
+0   - Successful | Info: Session has been ended.
+1   - [MachineId] is not a valid gaming machine
+2   - MachineID contains invalid special characters
+3   - MachineID is not set or blank
+4   - Token has already been expired.
+5   - Token contains invalid special characters
+6   - Token is not set or blank
+7   - Failed to insert in egmsessions table
+8   - Token is invalid or expired
+9   - Parameters contains invalid special characters
+10  - Parameters contains blank values
+11  - Parameters are not set
+12  - Transaction Method is invalid
+13  - Invalid Transaction Type
+14  - Casino API Error
+15  - Failed to update egmsessions table
+16  - Session has been ended
+17  - Error: [TerminalCode] terminal already started 
+18  - Error: Can\'t get status.
+19  - Error: Terminal is already active.
+20  - Error: Please inform customer service for manual redemption.
+21  - Error: BCF is not enough.
+22  - Error: Failed to insert record in servicetransactionref
+23  - Error: Terminal has an existing session.
+24  - Error: Failed to insert in transactionrequestlogs
+25  - Can\'t connect to casino
+26  - Error: Failed to start session.
+27  - Error: Failed to insert records in transaction tables.
+28  - Error: Request denied. Please try again.
+29  - Can\'t get card info
+30  - Card is inactive or deactivated
+31  - Please enter your loyalty card number
+32  - Tracking ID must be unique.
+33  - Transaction Details has invalid parameters
+34  - Invalid Amount
+35  - Invalid Service ID
+36  - Tracking ID is not set
+37  - Invalid Transaction Type for Get Balance
+38  - Amount should be less than or equal to Php [MaxDenom]
+39  - Amount should be greater than or equal to Php [MinDenom]
+40  - Amount should be divisible by 100
+41  - Not enough BCF
+42  - Casino: Can't get balance
+43  - Error: Terminal has no active session.
+44  - Error: Failed to reload session.
+45  - Error: Terminal already has a pending transaction request.
+46  - Error: Redeemable amount is not equal.
+47  - Service ID does not match
+48  - Error: Failed to end session.
+50  - Error: Failed update records in transaction tables
+51  - Loyalty Card profile is not updated.
+52  - VMS Error Messages
+53  - Amount is not set
+54  - Tracking ID is not valid
+55  - Transaction Method is not set
+56  - Inactive Site.
+57  - Cannot connect to the VMS Host
+58  - Terminal partner already started.
+59  - isVip is not set or blank
+60  - Token has already been set
+61  - Cannot get POSAccountNo
+62  - Cannot get minimum and maximum denomination
+63  - Terminal Code is not set or blank
+65  - Failed to update machine token.
+66  - Machine ID and Terminal Code did not match
+67  - Inactive PEGS Terminal.
+68  - Inactive EGM Terminal.
+69  - TerminalCode is invalid
+70  - Token and TerminalCode did not match
+71  - Invalid isVip value
+72  - Amount should be greater than 0
+73  - Terminal is Disabled
+74  - Terminal has no mapped casino.

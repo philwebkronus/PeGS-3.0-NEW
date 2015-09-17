@@ -1,0 +1,73 @@
+EGM Error Code References:
+
+Code  Message
+0   - Success.
+1   - Terminal Name is not set or blank.
+2   - Card Number is not set or blank.
+3   - Terminal Name and Card Number are not set or blank.
+4   - Terminal Name may contain special characters.
+5   - Card Number may contain special characters.
+6   - Terminal Name and Card Number may contain special characters.
+7   - Cannot find Terminal.
+8   - Cannot find Card Number.
+9   - Terminal Name and Card Number did not match.
+10  - Terminal has no active session.
+11  - Tracking ID may contain special characters.
+12  - Terminal Name and Tracking ID may contain special characters.
+13  - Tracking ID is not set or blank.
+14  - Terminal Name and Tracking ID are not set or blank.
+15  - Terminal Name and Tracking ID did not match.
+16  - Casino ID may contain special characters.
+17  - Terminal Name and Casino ID may contain special characters.
+18  - Casino ID is not set or blank.
+19  - Terminal Name and Casino ID are not set or blank.
+20  - Terminal Name and Casino ID did not match.
+
+21    -   Parameters contains invalid special characters
+22    -   Amount should be numeric
+23    -   Invalid Terminal Name
+24    -   Invalid Membership Card Number
+25    -   Terminal already started
+26    -   Can't connect to RTG, MG, PT | Casino: Can't get balance 
+30    -   Error: Can't get status.
+31    -   Error: Terminal has no active session.
+32    -   Error: Terminal is already active.
+33    -   Error: Please inform customer service for manual redemption.
+34    -   Error: Terminal already started.
+35    -   Error: BCF is not enough.
+36    -   Error: Failed to insert record in servicetransactionref
+37    -   Error: Terminal already has an active session.
+38    -   Error: Failed to insert in transactionrequestlogs
+39    -   Info: Failed to unlock the terminal in Swinging Singapore.
+40    -   Tracking ID must be unique.
+41    -   Can't connect to casino
+42    -   Error: Failed to start session./ Error: Failed to reload session.
+43    -   Error: Failed to insert records in transaction tables.
+44    -   Error: Request denied. Please try again.
+45    -   Invalid Casino ID
+46    -   VMS Error Message
+47    -   Amount should be equal or greater than [MinimumDenom].
+48    -   Terminal is Inactive
+49    -   There are no mapped casino in this terminal
+50    -   Terminal has no active EGM session. 
+51    -   Invalid Stacker Batch ID.
+52    -   Membership Card Number, Terminal Name, and Casino ID is not set or blank.  
+53    -   Membership Card Number and Casino ID is not set or blank.
+54    -   Membership Card Number and Terminal Name is not set or blank.
+55    -   Terminal has no active EGM session.
+56    -   Site is Inactive
+57    -   Terminal type is not EGM
+58    -   Card number is already being used in a current active session.
+59    -   Invalid Player Mode
+60    -   Invalid Amount.
+61    -   Amount should be equal or less than [MaximumDenom].
+62    -   Casino is not supported.
+63    -   The casino is not mapped in this terminal.
+64    -   Failed to Remove EGM Session
+65    -   Failed to Remove EGM Session. There is an existing terminal session for this terminal. 
+66    -   Starting a gaming session on same casino is not allowed. 
+67    -   Failed to Remove EGM Session. Terminal has already a deposited amount.
+68    -   Site is not set or blank.
+69    -   Site code doesn't exist.
+70    -   Terminal has on-going session. Please ask the GA for assistance.
+71    -   Terminal has no virtual cashier.
