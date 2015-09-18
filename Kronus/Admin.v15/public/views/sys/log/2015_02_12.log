@@ -1,0 +1,4 @@
+[12-Feb-2015 10:24:20 Asia/Manila] PHP Notice:  A session had already been started - ignoring session_start() in C:\wamp\www\kronus\admin.ewallet\public\views\process\ProcessLogin.php on line 95
+[12-Feb-2015 10:24:20 Asia/Manila] PHP Stack trace:
+[12-Feb-2015 10:24:20 Asia/Manila] PHP   1. {main}() C:\wamp\www\kronus\admin.ewallet\public\views\process\ProcessLogin.php:0
+[12-Feb-2015 10:24:20 Asia/Manila] PHP   2. session_start() C:\wamp\www\kronus\admin.ewallet\public\views\process\ProcessLogin.php:95

@@ -1,0 +1,5 @@
+[18-Sep-2015 11:56:00] PHP Notice:  Undefined variable: new_sessionid in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessTopUp.php on line 52
+[18-Sep-2015 11:56:00] PHP Fatal error:  Call to a member function prepare() on a non-object in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\sys\class\DbHandler.class.php on line 91
+[18-Sep-2015 11:56:09] PHP Notice:  A session had already been started - ignoring session_start() in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessLogin.php on line 95
+[18-Sep-2015 11:56:25] PHP Notice:  A session had already been started - ignoring session_start() in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessLogin.php on line 95
+[18-Sep-2015 11:57:09] PHP Fatal error:  Call to undefined function var_dup() in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessTopUpPaginate.php on line 1101

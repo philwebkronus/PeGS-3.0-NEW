@@ -1,0 +1,1 @@
+[09-Sep-2015 13:54:17] PHP Notice:  A session had already been started - ignoring session_start() in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessLogin.php on line 95

@@ -1,0 +1,12 @@
+[14-Apr-2015 14:09:58] PHP Fatal error:  Call to a member function prepare() on a non-object in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\sys\class\DbHandler.class.php on line 91
+[14-Apr-2015 14:10:35] PHP Fatal error:  Class 'CSManagement' not found in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessEwalletManualAPIFulfillment.php on line 117
+[14-Apr-2015 14:11:16] PHP Fatal error:  Cannot redeclare class DBHandler in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\sys\class\DbHandler.class.php on line 13
+[14-Apr-2015 14:11:31] PHP Fatal error:  Cannot redeclare class DBHandler in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\sys\class\DbHandler.class.php on line 13
+[14-Apr-2015 14:11:32] PHP Fatal error:  Cannot redeclare class DBHandler in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\sys\class\DbHandler.class.php on line 13
+[14-Apr-2015 14:11:32] PHP Fatal error:  Cannot redeclare class DBHandler in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\sys\class\DbHandler.class.php on line 13
+[14-Apr-2015 14:11:33] PHP Fatal error:  Cannot redeclare class DBHandler in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\sys\class\DbHandler.class.php on line 13
+[14-Apr-2015 14:11:33] PHP Fatal error:  Cannot redeclare class DBHandler in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\sys\class\DbHandler.class.php on line 13
+[14-Apr-2015 14:11:33] PHP Fatal error:  Cannot redeclare class DBHandler in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\sys\class\DbHandler.class.php on line 13
+[14-Apr-2015 14:22:14] PHP Fatal error:  Class 'CSManagement' not found in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessEwalletManualAPIFulfillment.php on line 117
+[14-Apr-2015 14:24:35] PHP Fatal error:  Class 'CSManagement' not found in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessEwalletManualAPIFulfillment.php on line 117
+[14-Apr-2015 14:24:45] PHP Fatal error:  Class 'CSManagement' not found in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessEwalletManualAPIFulfillment.php on line 117

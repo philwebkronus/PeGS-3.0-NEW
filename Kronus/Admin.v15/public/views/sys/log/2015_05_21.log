@@ -1,0 +1,9 @@
+[21-May-2015 10:38:36] PHP Fatal error:  Call to a member function prepare() on a non-object in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\sys\class\DbHandler.class.php on line 91
+[21-May-2015 10:38:41] PHP Notice:  A session had already been started - ignoring session_start() in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessLogin.php on line 95
+[21-May-2015 13:17:07] PHP Notice:  A session had already been started - ignoring session_start() in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessLogin.php on line 95
+[21-May-2015 13:55:44] PHP Notice:  Undefined index: StackerBatchID in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessAppSupport.php on line 455
+[21-May-2015 13:55:44] PHP Notice:  Undefined index: Terminals in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessAppSupport.php on line 456
+[21-May-2015 13:56:00] PHP Notice:  Undefined index: StackerBatchID in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessAppSupport.php on line 455
+[21-May-2015 14:12:06] PHP Notice:  Undefined offset: 0 in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessAppSupport.php on line 439
+[21-May-2015 14:12:22] PHP Warning:  trim() expects parameter 1 to be string, array given in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessAppSupport.php on line 439
+[21-May-2015 14:13:18] PHP Warning:  trim() expects parameter 1 to be string, array given in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessAppSupport.php on line 439

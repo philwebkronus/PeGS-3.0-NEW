@@ -1,0 +1,2 @@
+[22-Jul-2015 12:40:18] PHP Notice:  Undefined variable: row5 in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\sys\class\TopUp.class.php on line 880
+[22-Jul-2015 18:21:02] PHP Notice:  A session had already been started - ignoring session_start() in C:\xampp\htdocs\Kronus_UB\admin.ewallet\public\views\process\ProcessLogin.php on line 95

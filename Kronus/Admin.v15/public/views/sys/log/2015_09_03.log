@@ -1,0 +1,22 @@
+[03-Sep-2015 11:20:15] PHP Fatal error:  Cannot redeclare class DBHandler in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\sys\class\DbHandler.class.php on line 13
+[03-Sep-2015 13:37:43] PHP Fatal error:  Cannot redeclare class DBHandler in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\sys\class\DbHandler.class.php on line 13
+[03-Sep-2015 13:38:02] PHP Notice:  A session had already been started - ignoring session_start() in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessLogin.php on line 95
+[03-Sep-2015 13:38:10] PHP Fatal error:  Cannot redeclare class DBHandler in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\sys\class\DbHandler.class.php on line 13
+[03-Sep-2015 13:38:51] PHP Fatal error:  Cannot redeclare class DBHandler in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\sys\class\DbHandler.class.php on line 13
+[03-Sep-2015 13:46:57] PHP Notice:  Undefined variable: sitemgmt in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessAppSupport.php on line 811
+[03-Sep-2015 13:46:57] PHP Notice:  Undefined variable: vdate in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessAppSupport.php on line 4073
+[03-Sep-2015 13:46:57] PHP Notice:  Undefined variable: vdate in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessAppSupport.php on line 4073
+[03-Sep-2015 13:46:58] PHP Notice:  Undefined variable: result in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessAppSupport.php on line 837
+[03-Sep-2015 13:47:15] PHP Notice:  Undefined variable: vdate in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessAppSupport.php on line 4073
+[03-Sep-2015 13:47:16] PHP Notice:  Undefined variable: vdate in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessAppSupport.php on line 4073
+[03-Sep-2015 13:47:16] PHP Notice:  Undefined variable: result in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessAppSupport.php on line 837
+[03-Sep-2015 14:32:43] PHP Fatal error:  Call to undefined function createVirtualCashier() in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessAppSupport.php on line 833
+[03-Sep-2015 14:38:44] PHP Fatal error:  Call to undefined function createVirtualCashier() in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessAppSupport.php on line 833
+[03-Sep-2015 14:42:51] PHP Warning:  Missing argument 4 for createVirtualCashier(), called in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessAppSupport.php on line 833 and defined in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessAppSupport.php on line 4056
+[03-Sep-2015 14:42:51] PHP Notice:  Undefined variable: vctype in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessAppSupport.php on line 4070
+[03-Sep-2015 14:42:51] PHP Notice:  Undefined variable: vctype in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessAppSupport.php on line 4086
+[03-Sep-2015 14:42:51] PHP Notice:  Undefined variable: vdate in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessAppSupport.php on line 4093
+[03-Sep-2015 14:42:51] PHP Fatal error:  Call to a member function insertaccount() on a non-object in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessAppSupport.php on line 4114
+[03-Sep-2015 14:43:34] PHP Notice:  Undefined variable: sitemgmt in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessAppSupport.php on line 4115
+[03-Sep-2015 14:43:34] PHP Fatal error:  Call to a member function insertaccount() on a non-object in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessAppSupport.php on line 4115
+[03-Sep-2015 16:20:41] PHP Notice:  Undefined variable: r in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessAppSupport.php on line 863

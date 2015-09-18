@@ -1,0 +1,9 @@
+[28-Aug-2015 13:54:17] PHP Notice:  A session had already been started - ignoring session_start() in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessLogin.php on line 95
+[28-Aug-2015 14:16:36] PHP Notice:  A session had already been started - ignoring session_start() in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessLogin.php on line 95
+[28-Aug-2015 15:22:44] PHP Warning:  session_destroy() [<a href='0function.session-destroy0'>function.session-destroy0</a>]: Session object destruction failed in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessLogout.php on line 34
+[28-Aug-2015 15:40:50] PHP Warning:  session_destroy() [<a href='0function.session-destroy0'>function.session-destroy0</a>]: Session object destruction failed in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessLogout.php on line 34
+[28-Aug-2015 15:40:54] PHP Notice:  A session had already been started - ignoring session_start() in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessLogin.php on line 95
+[28-Aug-2015 15:53:00] PHP Notice:  A session had already been started - ignoring session_start() in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessLogin.php on line 95
+[28-Aug-2015 15:54:10] PHP Notice:  A session had already been started - ignoring session_start() in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessLogin.php on line 95
+[28-Aug-2015 16:03:00] PHP Notice:  A session had already been started - ignoring session_start() in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessLogin.php on line 95
+[28-Aug-2015 17:11:34] PHP Notice:  A session had already been started - ignoring session_start() in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessLogin.php on line 95

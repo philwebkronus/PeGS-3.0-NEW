@@ -1,0 +1,41 @@
+[10-Feb-2015 09:44:12 Asia/Manila] PHP Fatal error:  Call to a member function prepare() on a non-object in C:\wamp\www\kronus\admin.ewallet\public\views\sys\class\DbHandler.class.php on line 91
+[10-Feb-2015 09:44:12 Asia/Manila] PHP Stack trace:
+[10-Feb-2015 09:44:12 Asia/Manila] PHP   1. {main}() C:\wamp\www\kronus\admin.ewallet\public\views\resetpin.php:0
+[10-Feb-2015 09:44:12 Asia/Manila] PHP   2. include() C:\wamp\www\kronus\admin.ewallet\public\views\resetpin.php:3
+[10-Feb-2015 09:44:12 Asia/Manila] PHP   3. DBHandler->checkifsessionexist() C:\wamp\www\kronus\admin.ewallet\public\views\process\ProcessSiteManagement.php:47
+[10-Feb-2015 09:44:12 Asia/Manila] PHP   4. DBHandler->prepare() C:\wamp\www\kronus\admin.ewallet\public\views\sys\class\DbHandler.class.php:145
+[10-Feb-2015 09:57:05 Asia/Manila] PHP Warning:  implode() [<a href='0function.implode0'>function.implode0</a>]: Invalid arguments passed in C:\wamp\www\kronus\admin.ewallet\public\views\sys\class\PcwsWrapper.class.php on line 120
+[10-Feb-2015 09:57:05 Asia/Manila] PHP Stack trace:
+[10-Feb-2015 09:57:05 Asia/Manila] PHP   1. {main}() C:\wamp\www\kronus\admin.ewallet\public\views\process\ProcessAccManagement.php:0
+[10-Feb-2015 09:57:05 Asia/Manila] PHP   2. PcwsWrapper->resetPin() C:\wamp\www\kronus\admin.ewallet\public\views\process\ProcessAccManagement.php:499
+[10-Feb-2015 09:57:05 Asia/Manila] PHP   3. PcwsLogger->pcwsLog() C:\wamp\www\kronus\admin.ewallet\public\views\sys\class\PcwsWrapper.class.php:76
+[10-Feb-2015 09:57:05 Asia/Manila] PHP   4. implode() C:\wamp\www\kronus\admin.ewallet\public\views\sys\class\PcwsWrapper.class.php:120
+[10-Feb-2015 10:30:34 Asia/Manila] PHP Warning:  Missing argument 5 for PcwsLogger::pcwsLog(), called in C:\wamp\www\kronus\admin.ewallet\public\views\sys\class\PcwsWrapper.class.php on line 76 and defined in C:\wamp\www\kronus\admin.ewallet\public\views\sys\class\PcwsLogger.class.php on line 33
+[10-Feb-2015 10:30:34 Asia/Manila] PHP Stack trace:
+[10-Feb-2015 10:30:34 Asia/Manila] PHP   1. {main}() C:\wamp\www\kronus\admin.ewallet\public\views\process\ProcessAccManagement.php:0
+[10-Feb-2015 10:30:34 Asia/Manila] PHP   2. PcwsWrapper->resetPin() C:\wamp\www\kronus\admin.ewallet\public\views\process\ProcessAccManagement.php:499
+[10-Feb-2015 10:30:34 Asia/Manila] PHP   3. PcwsLogger->pcwsLog() C:\wamp\www\kronus\admin.ewallet\public\views\sys\class\PcwsWrapper.class.php:76
+[10-Feb-2015 10:30:34 Asia/Manila] PHP Warning:  Missing argument 5 for PcwsLogger::pcwsLog(), called in C:\wamp\www\kronus\admin.ewallet\public\views\process\ProcessAccManagement.php on line 504 and defined in C:\wamp\www\kronus\admin.ewallet\public\views\sys\class\PcwsLogger.class.php on line 33
+[10-Feb-2015 10:30:34 Asia/Manila] PHP Stack trace:
+[10-Feb-2015 10:30:34 Asia/Manila] PHP   1. {main}() C:\wamp\www\kronus\admin.ewallet\public\views\process\ProcessAccManagement.php:0
+[10-Feb-2015 10:30:34 Asia/Manila] PHP   2. PcwsLogger->pcwsLog() C:\wamp\www\kronus\admin.ewallet\public\views\process\ProcessAccManagement.php:504
+[10-Feb-2015 10:30:34 Asia/Manila] PHP Notice:  Undefined variable: response in C:\wamp\www\kronus\admin.ewallet\public\views\sys\class\PcwsLogger.class.php on line 46
+[10-Feb-2015 10:30:34 Asia/Manila] PHP Stack trace:
+[10-Feb-2015 10:30:34 Asia/Manila] PHP   1. {main}() C:\wamp\www\kronus\admin.ewallet\public\views\process\ProcessAccManagement.php:0
+[10-Feb-2015 10:30:34 Asia/Manila] PHP   2. PcwsLogger->pcwsLog() C:\wamp\www\kronus\admin.ewallet\public\views\process\ProcessAccManagement.php:504
+[10-Feb-2015 10:30:54 Asia/Manila] PHP Warning:  Missing argument 5 for PcwsLogger::pcwsLog(), called in C:\wamp\www\kronus\admin.ewallet\public\views\sys\class\PcwsWrapper.class.php on line 76 and defined in C:\wamp\www\kronus\admin.ewallet\public\views\sys\class\PcwsLogger.class.php on line 33
+[10-Feb-2015 10:30:54 Asia/Manila] PHP Stack trace:
+[10-Feb-2015 10:30:54 Asia/Manila] PHP   1. {main}() C:\wamp\www\kronus\admin.ewallet\public\views\process\ProcessAccManagement.php:0
+[10-Feb-2015 10:30:54 Asia/Manila] PHP   2. PcwsWrapper->resetPin() C:\wamp\www\kronus\admin.ewallet\public\views\process\ProcessAccManagement.php:499
+[10-Feb-2015 10:30:54 Asia/Manila] PHP   3. PcwsLogger->pcwsLog() C:\wamp\www\kronus\admin.ewallet\public\views\sys\class\PcwsWrapper.class.php:76
+[10-Feb-2015 10:30:54 Asia/Manila] PHP Warning:  Missing argument 5 for PcwsLogger::pcwsLog(), called in C:\wamp\www\kronus\admin.ewallet\public\views\process\ProcessAccManagement.php on line 504 and defined in C:\wamp\www\kronus\admin.ewallet\public\views\sys\class\PcwsLogger.class.php on line 33
+[10-Feb-2015 10:30:54 Asia/Manila] PHP Stack trace:
+[10-Feb-2015 10:30:54 Asia/Manila] PHP   1. {main}() C:\wamp\www\kronus\admin.ewallet\public\views\process\ProcessAccManagement.php:0
+[10-Feb-2015 10:30:54 Asia/Manila] PHP   2. PcwsLogger->pcwsLog() C:\wamp\www\kronus\admin.ewallet\public\views\process\ProcessAccManagement.php:504
+[10-Feb-2015 10:30:54 Asia/Manila] PHP Notice:  Undefined variable: response in C:\wamp\www\kronus\admin.ewallet\public\views\sys\class\PcwsLogger.class.php on line 46
+[10-Feb-2015 10:30:54 Asia/Manila] PHP Stack trace:
+[10-Feb-2015 10:30:54 Asia/Manila] PHP   1. {main}() C:\wamp\www\kronus\admin.ewallet\public\views\process\ProcessAccManagement.php:0
+[10-Feb-2015 10:30:54 Asia/Manila] PHP   2. PcwsLogger->pcwsLog() C:\wamp\www\kronus\admin.ewallet\public\views\process\ProcessAccManagement.php:504
+[10-Feb-2015 10:39:42 Asia/Manila] PHP Notice:  Undefined index: changePin in C:\wamp\www\kronus\admin.ewallet\public\views\process\ProcessAccManagement.php on line 500
+[10-Feb-2015 10:39:42 Asia/Manila] PHP Stack trace:
+[10-Feb-2015 10:39:42 Asia/Manila] PHP   1. {main}() C:\wamp\www\kronus\admin.ewallet\public\views\process\ProcessAccManagement.php:0

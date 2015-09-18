@@ -1,0 +1,16 @@
+[16-Sep-2015 09:55:44] PHP Notice:  Undefined variable: new_sessionid in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessTopUp.php on line 52
+[16-Sep-2015 09:55:44] PHP Fatal error:  Call to a member function prepare() on a non-object in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\sys\class\DbHandler.class.php on line 91
+[16-Sep-2015 09:55:56] PHP Notice:  A session had already been started - ignoring session_start() in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessLogin.php on line 95
+[16-Sep-2015 10:03:29] PHP Notice:  Undefined variable: ServiceID in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessEwalletManualAPIFulfillment.php on line 167
+[16-Sep-2015 13:52:04] PHP Notice:  A session had already been started - ignoring session_start() in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessLogin.php on line 95
+[16-Sep-2015 14:01:11] PHP Notice:  Trying to get property of non-object in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessEwalletManualAPIFulfillment.php on line 94
+[16-Sep-2015 14:01:11] PHP Notice:  Trying to get property of non-object in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessEwalletManualAPIFulfillment.php on line 94
+[16-Sep-2015 14:02:05] PHP Notice:  Trying to get property of non-object in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessEwalletManualAPIFulfillment.php on line 94
+[16-Sep-2015 14:02:05] PHP Notice:  Trying to get property of non-object in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessEwalletManualAPIFulfillment.php on line 94
+[16-Sep-2015 14:34:58] PHP Notice:  Trying to get property of non-object in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessAppSupport.php on line 633
+[16-Sep-2015 14:34:58] PHP Notice:  Trying to get property of non-object in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessAppSupport.php on line 633
+[16-Sep-2015 14:35:25] PHP Notice:  Trying to get property of non-object in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessAppSupport.php on line 633
+[16-Sep-2015 14:35:25] PHP Notice:  Trying to get property of non-object in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessAppSupport.php on line 633
+[16-Sep-2015 14:36:47] PHP Notice:  Trying to get property of non-object in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessAppSupport.php on line 633
+[16-Sep-2015 14:36:47] PHP Notice:  Trying to get property of non-object in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessAppSupport.php on line 633
+[16-Sep-2015 18:05:15] PHP Notice:  A session had already been started - ignoring session_start() in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessLogin.php on line 95
