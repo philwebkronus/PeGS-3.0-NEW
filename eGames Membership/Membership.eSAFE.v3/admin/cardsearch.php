@@ -73,7 +73,7 @@ if (isset($MID) && $MID != "" && $showcardinfo && $loyaltyinfo != null)
             </tr>
             <tr>
                 <td>Current Points</td>
-                <td align="right"><?php echo number_format($currentPoints, 0); ?></td>
+                <td align="right"><?php echo $currentPoints; ?></td>
                 <td>Lifetime Points</td>
                 <td align="right"><?php echo number_format($lifetimePoints, 0); ?></td>
             </tr>

@@ -233,37 +233,5 @@ class Cards extends BaseEntity
         $query = "UPDATE cards SET Status = 1, CardTypeID = $cardType WHERE CardID = $cardID";
         return parent::ExecuteQuery($query);
     }
-    public static function statusToStr($status){
-        switch ($status) {
-            case 0: 
-                $statustr = "Inactive";
-                break;
-            case 1: 
-                $statustr = "Active";
-                break;
-            case 2:
-                $statustr = "Deactivated";
-                break;
-            case 3: 
-                $statustr = "Active";
-                break;
-            case 5: 
-                $statustr = "Active Temporary";
-                break;
-            case 7:
-                $statustr = "New Migrated";
-                break;
-            case 8: 
-                $statustr = "Temporary Migrated";
-                break;
-            case 9:
-                $statustr = "Banned Card";
-                break;
-            default: 
-                $statustr = "";
-                break;
-        }
-        
-        return $statustr;
-    }
+
 }?>

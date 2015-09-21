@@ -32,7 +32,7 @@ $_Log = new AuditTrail();
 $fproc = new FormsProcessor();
 
 $txtUsername = new TextBox("txtUsername", "txtUsername", "Username ");
-$txtUsername->Length = 20;
+$txtUsername->Length = 30;
 $txtUsername->Size = 30;
 $txtUsername->ShowCaption = false;
 $txtUsername->CssClass = "validate[required]";
@@ -41,7 +41,7 @@ $fproc->AddControl($txtUsername);
 
 $txtPassword = new TextBox("txtPassword", "txtPassword", "Password ");
 $txtPassword->Length = 12;
-$txtPassword->Size = 30;
+$txtPassword->Size = 12;
 $txtPassword->Password = true;
 $txtPassword->ShowCaption = false;
 $txtPassword->CssClass = "validate[required]";

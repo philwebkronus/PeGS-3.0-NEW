@@ -173,7 +173,6 @@ if (isset($_POST['pager'])) {
 
                                                     $apiResult = $_RTGCashierAPI->GetPIDFromLogin($userName);
 
-                                             
                                                     $pid = $apiResult['GetPIDFromLoginResult'];
 
                                                     if(!empty($pid)){
@@ -209,11 +208,7 @@ if (isset($_POST['pager'])) {
                                            }
                                            else
                                            {
-                                                if($serviceID == 19)
-                                                    $apierror = "No available plain and hashed password for RTG casino.";
-                                                else
-                                                    $apierror = "No available plain and hashed password for RTG2 casino.";
-                                                
+                                                $apierror = "No available plain and hashed password for RTG2 casino.";
                                                 $_Log->logAPI(AuditFunctions::MANUAL_CASINO_UB_ASSIGNMENT, $cardnumber.':Failed, '.$apierror);
                                                 $msresult = 'failed';
                                                 $msupdate = 'failed';    
@@ -375,10 +370,7 @@ if (isset($_POST['pager'])) {
                                 if(isset ($msupdate) && $msupdate == 'failed' ){
                                     
                                     if(strstr($serviceName, "RTG")){
-                                        if($serviceID == 19)
-                                            $addiMsg = 'Failed to Create UserBased RTG Account for UB Card';
-                                        else
-                                            $addiMsg = 'Failed to Create UserBased RTG2 Account for UB Card';
+                                        $addiMsg = 'Failed to Create UserBased RTG Account for UB Card';
                                     } else if(strstr($serviceName, "MG")){
                                         $addiMsg = 'Failed to Create UserBased MG Account for UB Card';
                                     } else {
@@ -400,10 +392,7 @@ if (isset($_POST['pager'])) {
                                         }
                                         
                                         if(strstr($serviceName, "RTG")){
-                                            if($serviceID == 19)
-                                                $addiMsg = 'UB RTG Account Successfully Created for UB Card';
-                                            else
-                                                $addiMsg = 'UB RTG2 Account Successfully Created for UB Card';
+                                            $addiMsg = 'UB RTG Account Successfully Created for UB Card';
                                         } else if(strstr($serviceName, "MG")){
                                             $addiMsg = 'UB MG Account Successfully Created for UB Card';
                                         } else {
@@ -414,39 +403,30 @@ if (isset($_POST['pager'])) {
                                         $getpoints = $_MemberCards->getMemberPoints($cardnumber);
                                         $currentpoints = $getpoints[0]['CurrentPoints'];
                                         $getcarddetails = $_MemberCards->getCardDetails($cardnumber);
-                                        $siteid = $getcarddetails[0]['SiteID'];                                      
+                                        $siteid = $getcarddetails[0]['SiteID'];
+                                        $addcomppoints = $_PcwsWrapper->addCompPoints($cardnumber, 1, 15, $currentpoints, 0);
                                         $modulename = "Manual Casino UB Assignment";
                                         
-                                        $pointsystem = App::getParam("PointSystem");
-                                        if($pointsystem == 2)
-                                        {
-                                            $addcomppoints = $_PcwsWrapper->addCompPoints($cardnumber, 1, 15, $currentpoints, 0);
-                                            if($addcomppoints){
-                                                $checkpoints = $_PcwsWrapper->getCompPoints($cardnumber,0);
-                                                $comppoints = $checkpoints['GetCompPoints']['CompBalance'];
-                                                if($comppoints == $currentpoints){
-                                                    //zero out points
-                                                    $updatepoints = $_MemberCards->updateMemberBalance($cardnumber);
-                                                    $getpoints = $_MemberCards->getMemberPoints($cardnumber);
-                                                    $currentpoints2 = $getpoints[0]['CurrentPoints'];
-
-                                                    if(!$updatepoints){
+                                        if($addcomppoints){
+                                            $checkpoints = $_PcwsWrapper->getCompPoints($cardnumber,0);
+                                            $comppoints = $checkpoints['GetCompPoints']['CompBalance'];
+                                            if($comppoints == $currentpoints){
+                                                //zero out points
+                                                $updatepoints = $_MemberCards->updateMemberBalance($cardnumber);
+                                                $getpoints = $_MemberCards->getMemberPoints($cardnumber);
+                                                $currentpoints2 = $getpoints[0]['CurrentPoints'];
+                                                
+                                                if(!$updatepoints){
+                                                    //log error zero out points
+                                                    $logmessage = $modulename . ": Failed to zero out current points. [CardNumber: " . $cardnumber . " CurrentPoints: " . $currentpoints2 . "]";
+                                                    $logger->logger($logdate, $logtype, $logmessage);
+                                                }
+                                                else{
+                                                    if($currentpoints2 != 0){
                                                         //log error zero out points
                                                         $logmessage = $modulename . ": Failed to zero out current points. [CardNumber: " . $cardnumber . " CurrentPoints: " . $currentpoints2 . "]";
                                                         $logger->logger($logdate, $logtype, $logmessage);
                                                     }
-                                                    else{
-                                                        if($currentpoints2 != 0){
-                                                            //log error zero out points
-                                                            $logmessage = $modulename . ": Failed to zero out current points. [CardNumber: " . $cardnumber . " CurrentPoints: " . $currentpoints2 . "]";
-                                                            $logger->logger($logdate, $logtype, $logmessage);
-                                                        }
-                                                    }
-                                                }
-                                                else{
-                                                    //log error add comppoints
-                                                    $logmessage = $modulename . ": Failed to add comp points. [CardNumber: " . $cardnumber . "]";
-                                                    $logger->logger($logdate, $logtype, $logmessage);
                                                 }
                                             }
                                             else{
@@ -454,6 +434,11 @@ if (isset($_POST['pager'])) {
                                                 $logmessage = $modulename . ": Failed to add comp points. [CardNumber: " . $cardnumber . "]";
                                                 $logger->logger($logdate, $logtype, $logmessage);
                                             }
+                                        }
+                                        else{
+                                            //log error add comppoints
+                                            $logmessage = $modulename . ": Failed to add comp points. [CardNumber: " . $cardnumber . "]";
+                                            $logger->logger($logdate, $logtype, $logmessage);
                                         }
                                         
                                         $_Log->logAPI(AuditFunctions::MANUAL_CASINO_UB_ASSIGNMENT, 

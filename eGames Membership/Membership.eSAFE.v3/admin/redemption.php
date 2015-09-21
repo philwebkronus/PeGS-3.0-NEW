@@ -495,7 +495,7 @@ if($fproc->IsPostBack){
                 }
             }
             else {
-                App::SetErrorMessage("Invalid Email Address.");
+                App::SetErrorMessage("Invalid Email Address. Please try again.");
             }
     }
     
@@ -742,16 +742,6 @@ if($fproc->IsPostBack){
             }    
         });
         
-//        $('#btnSearch').live('click', function(){
-//            var txtsearch = $("#txtSearch").val();
-//            if (txtsearch.substr(0,1) === " "){
-//                alert("Trailing space/s is/are not allowed");
-//            } else {
-//                jQuery('#rewardofferslist').GridUnload();
-//                getCardData($("#txtSearch").val());
-//            }    
-//        });
-        
         var localhost = location.host;
         
         <?php
@@ -969,7 +959,7 @@ if($fproc->IsPostBack){
                             //Check if the Reward Item is Mystery Type.
                             if(IsMystery == "1"){
                                 //Limit to only 1 redeemable quantity for the mystery item.
-                                $("#txtinputs").html('<?php echo "Enter quantity to be redeemed (max. 5 items). "; $txtItemQuantity->Text = "1"; 
+                                $("#txtinputs").html('<?php echo "Please enter quantity to be redeemed (max. 5 items). "; $txtItemQuantity->Text = "1"; 
                                                                                             $txtItemQuantity->Args = "readonly=readonly"; echo $txtItemQuantity;
                                                                                 ?>');
                                 var mysterypoints = parseInt($("#hdnItemPoints").val());
@@ -979,11 +969,11 @@ if($fproc->IsPostBack){
                                 $("#TotalItemPoints").html('');
                                 $("#hdnTotalItemPoints").val('');
                                 //Limit redeemable quantity to 5 items.
-                                $("#txtinputs").html('<?php echo "Enter quantity to be redeemed (max. 5 items). "; $txtItemQuantity->Text = ""; 
+                                $("#txtinputs").html('<?php echo "Please enter quantity to be redeemed (max. 5 items). "; $txtItemQuantity->Text = ""; 
                                                                                             $txtItemQuantity->Args = "placeholder=\"0\""; echo $txtItemQuantity; ?>');
                             }
                         } else {
-                            $("#txtinputs").html('<?php echo "Enter quantity to be redeemed. "; echo $txtQuantity; ?>');
+                            $("#txtinputs").html('<?php echo "Please enter quantity to be redeemed. "; echo $txtQuantity; ?>');
                         }
                         
                         //Check if the coupon batch is active, if not display error message.
@@ -1136,7 +1126,7 @@ if($fproc->IsPostBack){
                         <div id="pagerrewardofferslist"></div>
                         <span id="errorMessage"></span>
                     </div> 
-                    <p id="temp-msg" style='display: none; font-size: 14px;'>Migrate your Temporary Account to a Membership Card to activate Redemption.</p>
+                    <p id="temp-msg" style='display: none; font-size: 14px;'>Please migrate your Temporary Account to a Membership Card to activate Redemption.</p>
                     <div id="error-msg" style="display:none; font-size: 14px;"></div>
             </form>
             <?php include('template/itemredemptiontemplate.php'); ?>

@@ -23,7 +23,6 @@ App::LoadModuleClass("CasinoProvider", "CasinoAPI");
 App::LoadModuleClass("CasinoProvider", "RealtimeGamingCashierAPI2");
 App::LoadModuleClass("Kronus", "TerminalSessions");
 App::LoadModuleClass("Kronus", "EgmSessions");
-App::LoadModuleClass("Kronus", "CasinoServices");
 
 App::LoadControl("Button");
 App::LoadControl("TextBox");
@@ -42,21 +41,6 @@ $terminal_sessions = new TerminalSessions();
 $egm_sessions = new EgmSessions();
 
 $fproc = new FormsProcessor();
-$_CasinoServices = new CasinoServices();
-
-$casinoservice = new ComboBox("casinoservice","casinoservice","Casino Service: ");
-$casinoservice->ShowCaption = true;
-$casinoservices = $_CasinoServices->getUserBasedCasinoServices();
-$alftnlist = new ArrayList();
-$alftnlist->AddArray($casinoservices);
-$casinoservice->ClearItems();
-$litem = null;
-$litem[] = new ListItem("Select One", "-1", true);
-$casinoservice->Items = $litem;
-$casinoservice->DataSource = $alftnlist;
-$casinoservice->DataSourceText = "ServiceName";
-$casinoservice->DataSourceValue = "ServiceID";
-$casinoservice->DataBind();
 
 $classification_type = new ComboBox("classification_type","classification_type","Classification Type: ");
 $classification_type->ShowCaption = true;
@@ -128,37 +112,37 @@ if ($fproc->IsPostBack)
                 if($arrCards[0]['Status'] == 0)
                 {
                    $showdialog = true;
-                   $msg = "Cannot change classification. Card is Inactive.";
+                   $msg = "Cannot change classification. Card is Inactive";
                    $title = "Player Classification Assignment"; 
                 }
                 else if($arrCards[0]['Status'] == 2)
                 {
                    $showdialog = true;
-                   $msg = "Cannot change classification. Card is Deactivated. ";
+                   $msg = "Cannot change classification. Card is Deactivated ";
                    $title = "Player Classification Assignment"; 
                 }
                 else if($arrCards[0]['Status'] == 5)
                 {
                    $showdialog = true;
-                   $msg = "Cannot change classification. Temporary Cards are not allowed.";
+                   $msg = "Cannot change classification. Temporary Cards are not allowed";
                    $title = "Player Classification Assignment"; 
                 }
                 else if($arrCards[0]['Status'] == 7)
                 {
                    $showdialog = true;
-                   $msg = "Cannot change classification. Card is already Migrated to another red card.";
+                   $msg = "Cannot change classification. Card is already Migrated to another red card";
                    $title = "Player Classification Assignment"; 
                 }
                 else if($arrCards[0]['Status'] == 8)
                 {
                    $showdialog = true;
-                   $msg = "Cannot change classification. Temporary Card already Migrated. ";
+                   $msg = "Cannot change classification. Temporary Card already Migrated ";
                    $title = "Player Classification Assignment"; 
                 }
                 else if($arrCards[0]['Status'] == 9)
                 {
                    $showdialog = true;
-                   $msg = "Cannot change classification. Card is Banned.";
+                   $msg = "Cannot change classification. Card is Banned";
                    $title = "Player Classification Assignment"; 
                 }
             }
@@ -187,7 +171,7 @@ if ($fproc->IsPostBack)
         }
         else{
             $showdialog = true;
-            $msg = "Invalid Card Number.";
+            $msg = "Invalid Card Number";
             $title = "Player Classification Assignment";
         }
         
@@ -250,89 +234,78 @@ if ($fproc->IsPostBack)
                 $classid = 2;
                 $type = 0;
             }
-            
-            if (!empty($status) || !empty($classid)) {
-                $serviceid = $_POST['casinoservice'];
-                $mid = $hiddenMid->SubmittedValue;    
-                $abbottmemservice = $memberServices->CheckMemberService($mid, $serviceid);
 
-                if(!empty($abbottmemservice)){
+            $mid = $hiddenMid->SubmittedValue;    
+            $abbottmemservice = $memberServices->CheckMemberService($mid, 19);
 
-                    $serviceusername = $abbottmemservice[0]['ServiceUsername'];
-                    $serverID = $abbottmemservice[0]['ServiceID'];
-                    $serviceapi = App::getParam('service_api');
-                    $url = $serviceapi[$serverID - 1];
+            if(!empty($abbottmemservice)){
 
-                    $certFilePath = App::getParam('rtg_cert_dir').$serverID.'/cert.pem';
-                    $keyFilePath = App::getParam('rtg_cert_dir').$serverID.'/key.pem';
+                $serviceusername = $abbottmemservice[0]['ServiceUsername'];
+                $serverID = $abbottmemservice[0]['ServiceID'];
+                $serviceapi = App::getParam('service_api');
 
-                    $_RTGCashierAPI = new RealtimeGamingCashierAPI2($url, $certFilePath, $keyFilePath, '');
+                $url = $serviceapi[$serverID - 1];
+                $certFilePath = App::getParam('rtg_cert_dir').$serverID.'/cert.pem';
+                $keyFilePath = App::getParam('rtg_cert_dir').$serverID.'/key.pem';
 
-                    $apiResult = $_RTGCashierAPI->GetPIDFromLogin($serviceusername);
-                    $pid = $apiResult['GetPIDFromLoginResult'];
-                    if(!empty($pid)){
+                $_RTGCashierAPI = new RealtimeGamingCashierAPI2($url, $certFilePath, $keyFilePath, '');
 
-                        $userID = 0;
+                $apiResult = $_RTGCashierAPI->GetPIDFromLogin($serviceusername);
+                $pid = $apiResult['GetPIDFromLoginResult'];
 
-                        $changeplayerclassresult = $casinoAPI->ChangePlayerClassification('RTG2', $pid, $classid, $userID, $serverID);
-                        header("Content-Type:text/html");
+                if(!empty($pid)){
 
-                    } else {
-                         $changeplayerclassresult['IsSucceed'] = false;
-                    }
+                    $userID = 0;
 
-                    if($changeplayerclassresult['IsSucceed'] == true){
+                    $changeplayerclassresult = $casinoAPI->ChangePlayerClassification('RTG2', $pid, $classid, $userID, $serverID);
+                    header("Content-Type:text/html");
 
-                        $members->StartTransaction();
-                        $members->changeIsVipByMid($type, $mid);
+                }
+
+                if($changeplayerclassresult['IsSucceed'] == true){
+
+                    $members->StartTransaction();
+                    $members->changeIsVipByMid($type, $mid);
+                    if (!App::HasError())
+                    {
+                        $CommonPDOConnection = $members->getPDOConnection();
+                        $memberServices->setPDOConnection($CommonPDOConnection);            
+                        $memberServices->changeIsVipByMid($type, $get_type, $mid);
+
                         if (!App::HasError())
                         {
-                            $CommonPDOConnection = $members->getPDOConnection();
-                            $memberServices->setPDOConnection($CommonPDOConnection);            
-                            $memberServices->changeIsVipByMid($type, $get_type, $mid);
-
+                            $auditTrail->setPDOConnection($CommonPDOConnection);
+                            $auditTrail->logEvent(AuditFunctions::PLAYER_CLASSIFICATION_ASSIGNMENT, "Change Player Status to " . $status, array('ID' => $mid, 'SessionID' => $_SESSION["sessionID"]));
                             if (!App::HasError())
                             {
-                                $auditTrail->setPDOConnection($CommonPDOConnection);
-                                $auditTrail->logEvent(AuditFunctions::PLAYER_CLASSIFICATION_ASSIGNMENT, "Change Player Status to " . $status, array('ID' => $mid, 'SessionID' => $_SESSION["sessionID"]));
-                                if (!App::HasError())
-                                {
-                                    $members->CommitTransaction();
-                                    $success = "Player classification successfully updated.";
-                                    $hiddenMid->Text = "";
-                                    unset($mid);
-                                }
-                                else
-                                {
-                                    $members->RollBackTransaction();
-                                    $success = 'Failed to log event.';
-                                    App::ClearStatus();
-                                }
+                                $members->CommitTransaction();
+                                $success = "Player classification successfully updated";
+                                $hiddenMid->Text = "";
+                                unset($mid);
                             }
                             else
                             {
                                 $members->RollBackTransaction();
-                                $success = '1 - Failed to update player classification.';
+                                $success = 'Failed to log event.';
+                                App::ClearStatus();
                             }
                         }
                         else
                         {
                             $members->RollBackTransaction();
-                            $success =  '2 - Failed to update player classification.';
+                            $success = '1 - Failed to update player classification.';
                         }
                     }
-                    else{
-                        $success =  'Cannot connect to casino.';
+                    else
+                    {
+                        $members->RollBackTransaction();
+                        $success =  '2 - Failed to update player classification.';
                     }
                 }
                 else{
-                    $success =  'This membership account have no mapped casino.';
+                    $success =  '2 - Failed to update player classification.';
                 }
             }
-            else {
-                $success =  'Classification type is invalid.';
-            }
-            
         }
         
         
@@ -370,42 +343,36 @@ if ($fproc->IsPostBack)
         $('#btnSubmit').live('click', function(e){
         e.preventDefault();
         
-        var casinoservice = $("#casinoservice").val();
-           
-        if(casinoservice <= 0){
-            alert('Select a Casino Service.');
-        } else {
             
-            if($("#classification_type").val() == "")
-            {
-              $("#errormsg").text("Classification Type cannot be empty.");
-              $('#prompt').dialog( "open" );
-              return false;
-            }
-            else
-            {
-    //            if(ifSessionActive == 0 && ifEgmActive == 0)
-    //            {
-                    $('#c').show();
-                    $("#confirmMsg").dialog({
-                        modal : true,
-                        autoOpen : true,
-                        title : 'Player Classification Assignment',
-                        resizable : false,
-                        draggable :false,
-                        buttons : {
-                            'YES' : function(){
-
-                                $('#frmChange').submit();
-                            },
-                            'NO' : function(){
-                                $(this).dialog('close');
-                            }
-                        }
-                    });
-    //            }
-            } 
+        if($("#classification_type").val() == "")
+        {
+          $("#errormsg").text("Classification Type cannot be empty.");
+          $('#prompt').dialog( "open" );
+          return false;
         }
+        else
+        {
+//            if(ifSessionActive == 0 && ifEgmActive == 0)
+//            {
+                $('#c').show();
+                $("#confirmMsg").dialog({
+                    modal : true,
+                    autoOpen : true,
+                    title : 'Player Classification Assignment',
+                    resizable : false,
+                    draggable :false,
+                    buttons : {
+                        'YES' : function(){
+
+                            $('#frmChange').submit();
+                        },
+                        'NO' : function(){
+                            $(this).dialog('close');
+                        }
+                    }
+                });
+//            }
+        } 
         });
         
         <?php if ($success != ''): ?>
@@ -467,7 +434,6 @@ if ($fproc->IsPostBack)
                         <h2><u>Classification Type:</u></h2><br/>
                         
                         <div style="margin-left: 40px">
-                            <?php echo $casinoservice; ?>
                             <?php echo $classification_type; ?>
                             <?php echo $btnSubmit; echo $hiddenMid; echo $hiddenCard; ?>
                         </div>

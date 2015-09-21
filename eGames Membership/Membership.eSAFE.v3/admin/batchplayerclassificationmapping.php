@@ -34,11 +34,9 @@ App::LoadModuleClass("Admin", "AccessRights");
 App::LoadModuleClass("Admin", "AccountSessions");
 App::LoadModuleClass("Kronus", "Accounts");
 App::LoadModuleClass("Kronus", "AccountDetails");
-App::LoadModuleClass("Kronus", "CasinoServices");
 App::LoadCore("PHPMailer.class.php");
 
 App::LoadControl("Button");
-App::LoadCOntrol("ComboBox");
 
 $members = new Members();
 $memberCards = new MemberCards();
@@ -50,23 +48,8 @@ $terminalSessions = new TerminalSessions();
 $auditFunctions = new AuditFunctions();
 $egmSessions = new EgmSessions();
 $_AccountSessions = new AccountSessions();
-$_CasinoServices = new CasinoServices();
 $formCsvUpload = new FormsProcessor();
 
-$casinoservice = new ComboBox("casinoservice","casinoservice","Casino Service: ");
-$casinoservice->ShowCaption = true;
-$casinoservices = $_CasinoServices->getUserBasedCasinoServices();
-$alftnlist = new ArrayList();
-$alftnlist->AddArray($casinoservices);
-$casinoservice->ClearItems();
-$litem = null;
-$litem[] = new ListItem("Select One", "-1", true);
-$casinoservice->Items = $litem;
-$casinoservice->DataSource = $alftnlist;
-$casinoservice->DataSourceText = "ServiceName";
-$casinoservice->DataSourceValue = "ServiceID";
-$casinoservice->DataBind();
-$formCsvUpload->AddControl($casinoservice);
 
 $btnUpload = new Button('btnUpload', 'btnUpload', 'Upload');
 $btnUpload->ShowCaption = true;
@@ -254,14 +237,13 @@ function generateMessage($UBCard, $Message, $num){
     return "<br/>$num".'. UBCard: '.$UBCard.'- ErrorMessage: '.$Message;
 }
 
+
 if($formCsvUpload->IsPostBack) {
     if(isset($_POST['CheckSession'])){
         if($_POST['CheckSession']==true){
             echo checkSession();
         }
     }else{
-        $serviceID = $_POST['casinoservice'];
-        
         if($btnUpload->SubmittedValue == 'Upload') {
             if(isset($_SESSION['userinfo'])
                 && is_array($_SESSION['userinfo'])
@@ -396,15 +378,9 @@ if($formCsvUpload->IsPostBack) {
 
                                                                 $TerminalSessions=$ctrTerminalSessions[0]['ctrTerminalSessions']; 
                                                                 if($TerminalSessions==0){
-                                                                    //$memberServicesArr = $memberServices->getCasinoAccountsByMIDAndServiceID($MID, 19);
-                                                                    $memberServicesArr = $memberServices->getCasinoAccountsByMIDAndServiceID($MID, $serviceID);
-//                                                                    var_dump($memberServicesArr);exit;
-                                                                    if(!empty($memberServicesArr)) {
-                                                                        $serviceUsername = $memberServicesArr[0]['ServiceUsername'];
-                                                                        $serverID = $memberServicesArr[0]['ServiceID'];
-                                                                    } else {
-                                                                        $serviceUsername = '';
-                                                                    }
+                                                                    $memberServicesArr = $memberServices->getCasinoAccountsByMIDAndServiceID($MID, 19);
+                                                                    $serviceUsername = $memberServicesArr[0]['ServiceUsername'];
+                                                                    $serverID = $memberServicesArr[0]['ServiceID'];
                                                                     if($serviceUsername!=null || $serviceUsername!=''){
 
                                                                         $serviceAPI = App::getParam('service_api');
@@ -841,21 +817,8 @@ else{
         var CSVField = genArray(['UBCard','VIPLevel','ToBeEmailed']);
        
         var ObjectName = 'fileUpload1';
-//        $("#btnUpload").click(function(e){
-//            checkSession(ObjectName, 'csv');
-//        });
-       
-       $('#btnUpload').live('click', function() {
-
-           //var cardnumber = $("#txtCardNumber").val();
-           var casinoservice = $("#casinoservice").val();
-           
-           if(casinoservice <= 0){
-               alert('Please Select a Casino Service');
-           }
-           else{
-               checkSession(ObjectName, 'csv');
-           }
+        $("#btnUpload").click(function(e){
+            checkSession(ObjectName, 'csv');
         });
        
         function genArray(arr){
@@ -1008,9 +971,7 @@ else{
                     //isValid===true?showDialog(DialogTitle[0],ReturnMessage[0]):showDialog(DialogTitle[1],ReturnMessage[6]);
                     if(isValid===true){
                         var FormData = bindForm();
-                        var casinoservice = $("#casinoservice").val();
                         FormData.append('btnUpload', 'Upload');
-                        FormData.append('casinoservice', casinoservice);
                         console.log(FormData);
 //                     
                         ajaxPost(document.URL,FormData, "callBackContainer");
@@ -1126,7 +1087,6 @@ else{
 
                 <div class="searchbar formstyle">
                     <form name="frmSearch" id="frmSearch" method="POST" enctype="multipart/form-data">
-                        <?php echo $casinoservice; ?>
                         CSV File:
                         <input type="file" name="fileUpload1" id="fileUpload1" style="outline:1px solid #999;"/>
                         <?php echo $btnUpload; ?>

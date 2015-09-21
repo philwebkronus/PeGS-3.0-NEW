@@ -83,16 +83,8 @@ if(isset($_POST["functiontype"]) && $_POST["functiontype"] != ""){
                                         $IsMystery= $rewardoffers[$itr]['IsMystery'];
                                         $enabled = "";                
 //                                        $CurrentPoints = $_MemberCards->getCurrentPointsByCardNumber($_SESSION['CardRed']['CardNumber']);
-                                        
-                                        if(APP::getParam('PointSystem') == 2) {
-                                            $CurrentPoints = $_PcwsWrapper->getCompPoints($_SESSION['CardRed']['CardNumber'], 0);
-                                            $CurrentPoints = $CurrentPoints['GetCompPoints']['CompBalance'];
-                                        }
-                                        else {
-                                            $CurrentPoints = $_MemberCards->getCurrentPointsByCardNumber($_SESSION['CardRed']['CardNumber']);
-                                            $CurrentPoints = $CurrentPoints[0]['CurrentPoints'];
-                                        }
-                                        
+                                        $CurrentPoints = $_PcwsWrapper->getCompPoints($_SESSION['CardRed']['CardNumber'], 0);
+                                        $CurrentPoints = $CurrentPoints['GetCompPoints']['CompBalance'];
                                         if( $CurrentPoints < $RequiredPoints){
                                             $rewardoffers[$itr]["Action"] = "<input type='button' value='Redeem' id='csredeem-button' disabled='disabled' Email = '$EmailAddress' ProductName='$ProductName' RewardItemID='$RewardItemID' RewardID='$RewardID' RequiredPoints='$RequiredPoints' eCouponImage='$eCouponImage' PartnerName='$PartnerName' >";
                                         } else {
@@ -167,14 +159,8 @@ if(isset($_POST["functiontype"]) && $_POST["functiontype"] != ""){
                                                     $response["CityID"] = "";
                                                 }
                                                 
-                                                if(APP::getParam('PointSystem') == 2) {
-                                                    $CurrentPoints = $_PcwsWrapper->getCompPoints($CardNumber, 0);
-                                                    $CurrentPoints = $CurrentPoints['GetCompPoints']['CompBalance'];
-                                                }
-                                                else {
-                                                    $CurrentPoints = $_MemberCards->getCurrentPointsByCardNumber($CardNumber);
-                                                    $CurrentPoints = $CurrentPoints[0]['CurrentPoints'];
-                                                }
+                                                $CurrentPoints = $_PcwsWrapper->getCompPoints($CardNumber, 0);
+                                                $CurrentPoints = $CurrentPoints['GetCompPoints']['CompBalance'];
                                                 
                                                 //get player card details
                                                 $response["FirstName"] = $result[0]["FirstName"];
@@ -237,7 +223,7 @@ if(isset($_POST["functiontype"]) && $_POST["functiontype"] != ""){
                                             }
                                             else
                                             {
-                                                $response["Error"] = "Username not found.";
+                                                $response["Error"] = "Username not found";
                                                 $logger->logger($logdate, $logtype, $response["Error"]);
                                             }
                                         }
@@ -282,14 +268,8 @@ if(isset($_POST["functiontype"]) && $_POST["functiontype"] != ""){
                                                     $response["RegionID"] = $ArrMemberInfo["RegionID"];
                                                 }
                                                 
-                                                if(APP::getParam('PointSystem') == 2) {
-                                                    $CurrentPoints = $_PcwsWrapper->getCompPoints($CardNumber, 0);
-                                                    $CurrentPoints = $CurrentPoints['GetCompPoints']['CompBalance'];
-                                                }
-                                                else {
-                                                    $CurrentPoints = $_MemberCards->getCurrentPointsByCardNumber($CardNumber);
-                                                    $CurrentPoints = $CurrentPoints[0]['CurrentPoints'];
-                                                }
+                                                $CurrentPoints = $_PcwsWrapper->getCompPoints($CardNumber, 0);
+                                                $CurrentPoints = $CurrentPoints['GetCompPoints']['CompBalance'];
                                                 
                                                 //get player card details
                                                 $response["FirstName"] = $ArrMemberInfo["FirstName"];
@@ -353,7 +333,7 @@ if(isset($_POST["functiontype"]) && $_POST["functiontype"] != ""){
                                             }
                                             else
                                             {
-                                                $response["Error"] = "Invalid Card Number.";
+                                                $response["Error"] = "Invalid Card Number";
                                                 $logger->logger($logdate, $logtype, $response["Error"]);
                                             }
                                         }

@@ -45,7 +45,7 @@ class RealtimeGamingUBAPIWrapper
         $this->_withdrawMethodId = $id;
     }
     
-    public function Deposit( $login, $password, $amount, $tracking1 = '', $tracking2 = '', $tracking3 = '', $tracking4 = '', $locatorName = '' )
+    public function Deposit( $login, $password, $amount, $tracking1 = '', $tracking2 = '', $tracking3 = '', $tracking4 = '' )
     {
         $GetPIDFromLoginResult = $this->_GetPIDFromLogin( $login );
         
@@ -54,16 +54,12 @@ class RealtimeGamingUBAPIWrapper
             if ( $GetPIDFromLoginResult[ 'IsSucceed'] == true )
             {
                 $PID = $GetPIDFromLoginResult[ 'PID' ];
-                
-                if(!empty($locatorName)){
-                    $skinID = $this->_GetSkinID($locatorName);
-                } else { $skinID = 1; }
 
-                $sessionId = $this->Login( $login, $password, $skinID );
+                $sessionId = $this->Login( $login, $password );
 
                 if ( !is_null( $sessionId ) )
                 {
-                    $response = $this->_API->DepositGeneric( 1, $PID, $this->_depositMethodId, $amount, $tracking1, $tracking2, $tracking3, $tracking4, $sessionId, $skinID );
+                    $response = $this->_API->DepositGeneric( 1, $PID, $this->_depositMethodId, $amount, $tracking1, $tracking2, $tracking3, $tracking4, $sessionId );
 
                     if ( !$this->_API->GetError() )
                     {
@@ -181,7 +177,7 @@ class RealtimeGamingUBAPIWrapper
         }
     }
     
-    public function Withdraw( $login, $passwrod, $amount, $tracking1 = '', $tracking2 = '', $tracking3 = '', $tracking4 = '', $locatorName = '' )
+    public function Withdraw( $login, $passwrod, $amount, $tracking1 = '', $tracking2 = '', $tracking3 = '', $tracking4 = '' )
     {
         $GetPIDFromLoginResult = $this->_GetPIDFromLogin( $login );
 
@@ -192,18 +188,14 @@ class RealtimeGamingUBAPIWrapper
 
                 $PID = $GetPIDFromLoginResult[ 'PID' ];
 
-                if(!empty($locatorName)){
-                    $skinID = $this->_GetSkinID($locatorName);
-                } else { $skinID = 1; }
-                
-                $sessionId = $this->Login( $login, $passwrod, $skinID );
+                $sessionId = $this->Login( $login, $passwrod );
                 
                 $pendingGames = $this->_GetPendingGamesByPID($PID);
                 
                 if($pendingGames['IsSucceed'] != true){
                     if ( !is_null( $sessionId ) )
                     {
-                        $response = $this->_API->WithdrawGeneric( 1, $PID, $this->_withdrawMethodId, $amount, $tracking1, $tracking2, $tracking3, $tracking4, $sessionId, $skinID );
+                        $response = $this->_API->WithdrawGeneric( 1, $PID, $this->_withdrawMethodId, $amount, $tracking1, $tracking2, $tracking3, $tracking4, $sessionId );
 
                         if ( !$this->_API->GetError() )
                         {
@@ -452,31 +444,8 @@ class RealtimeGamingUBAPIWrapper
             return array( 'IsSucceed' => false, 'ErrorCode' => 31, 'ErrorMessage' => 'API Error: ' . $this->_API->GetError() );
         }
     }
-    
-    private function _GetSkinID( $locatorname )
-    {
-        
-        $response = $this->_API->GetSkinID( $locatorname );
-
-        if ( !$this->_API->GetError() )
-        {           
-            if ( $response[ 'GetSkinIDResult' ] )
-            {
-                
-                return array( 'IsSucceed' => true, 'ErrorCode' => 0, 'ErrorMessage' => null, 'SkinID' => $response[ 'GetSkinIDResult' ] );
-            }
-            else
-            {
-                return array( 'IsSucceed' => false, 'ErrorCode' => 30, 'ErrorMessage' => 'Response malformed' );
-            }
-        }
-        else
-        {            
-            return array( 'IsSucceed' => false, 'ErrorCode' => 31, 'ErrorMessage' => 'API Error: ' . $this->_API->GetError() );
-        }
-    }
        
-    private function Login( $login, $password = '', $skinID = 1  )
+    private function Login( $login, $password )
     {
         $response = $this->_GetPIDFromLogin( $login );
         
@@ -496,7 +465,7 @@ class RealtimeGamingUBAPIWrapper
 
                         $hashedPassword = $accountInfo[ 'GetAccountInfoByPIDResult' ][ 'password' ];
 
-                        $response = $this->_API->Login( 1, $PID, $hashedPassword, 1, $_SERVER[ 'HTTP_HOST' ], $skinID );
+                        $response = $this->_API->Login( 1, $PID, $hashedPassword, 1, $_SERVER[ 'HTTP_HOST' ] );
                         
                         if ( !$this->_API->GetError() )
                         {

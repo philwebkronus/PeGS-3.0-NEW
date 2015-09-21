@@ -93,18 +93,9 @@ if (isset($_POST['pager'])) {
                             $profile->Msg = $msg;
                         } else {
                             $cardpoints = $_MemberCards->getPointsByCard($cardnumber);
-                            
-                            $pointsystem = App::getParam('PointSystem');
-                            
-                            if($pointsystem == 1)
-                            {
-                                $currentpoints = $cardpoints['CurrentPoints'];
-                            }
-                            else 
-                            {
-                                $currentpoints = $_PcwsWrapper->getCompPoints($cardnumber, 0);
-                                $currentpoints = $currentpoints['GetCompPoints']['CompBalance'];
-                            }
+
+                            $currentpoints = $_PcwsWrapper->getCompPoints($cardnumber, 0);
+                            $currentpoints = $currentpoints['GetCompPoints']['CompBalance'];
                             
                             $MemberInfoResult2 = $_MemberInfo->getMemberInfoByID($MIDResult[0]['MID']);
                             $MemberInfoResult = $_MemberInfo->getPlayerName($MIDResult[0]['MID']);
@@ -256,19 +247,10 @@ if (isset($_POST['pager'])) {
                                 $profile->Msg = $msg;
                             } else {
                                 $cardpoints = $_MemberCards->getPointsByCard($oldcard);
-                                
-                                $pointsystem = App::getParam('PointSystem');
-                                
-                                if($pointsystem == 1)
-                                {
-                                    $currentpoints = $cardpoints['CurrentPoints'];
-                                }
-                                else 
-                                {
-                                    $currentpoints = $_PcwsWrapper->getCompPoints($oldcard, 0);
-                                    $currentpoints = $currentpoints['GetCompPoints']['CompBalance'];
-                                }
-                                      
+
+                                $currentpoints = $_PcwsWrapper->getCompPoints($oldcard, 0);
+                                $currentpoints = $currentpoints['GetCompPoints']['CompBalance'];
+                                        
                                 $MemberInfoResult2 = $_MemberInfo->getMemberInfoByID($MIDResult[0]['MID']);
                                 $MemberInfoResult = $_MemberInfo->getPlayerName($MIDResult[0]['MID']);
                                 $MemberInfoResult[0] = array_merge($MemberInfoResult[0], $MemberInfoResult2[0]);
@@ -427,21 +409,10 @@ if (isset($_POST['pager'])) {
                         $newcarddetailz = $newcarddetails[0];
                     }
                     $siteid = $carddetails['SiteID'];
-                    
                     //get comp points from RTG
-                    $pointsystem = App::getParam('PointSystem');
-                                
-                    if($pointsystem == 1)
-                    {
-                        $comp_points = $carddetails['CurrentPoints'];
-                    }
-                    else 
-                    {
-                        $comp_points = $_PcwsWrapper->getCompPoints($oldcard, 0);
-                        $comp_points = $comp_points['GetCompPoints']['CompBalance'];
-                        if ($comp_points == "") { $comp_points = 0; }
-                    }
-                    
+                    $comp_points = $_PcwsWrapper->getCompPoints($oldcard, 0);
+                    $comp_points = $comp_points['GetCompPoints']['CompBalance'];
+                    if ($comp_points == "") { $comp_points = 0; }
                     
                     $lifetimepoints = $carddetails['LifetimePoints'] + $newcarddetailz['LifetimePoints'];
                     //$currentpoints = $carddetails['CurrentPoints'] + $newcarddetailz['CurrentPoints'];
@@ -747,19 +718,9 @@ if (isset($_POST['pager'])) {
                         $msg = 'Migration failed. Card has negative current points.';
                         $profile->Msg = $msg;
                     } else {
-                        //get current points
-                        $pointsystem = App::getParam('PointSystem');
-                                
-                        if($pointsystem == 1)
-                        {
-                            $currentpoints = $carddetails[0]['CurrentPoints'];
-                        }
-                        else 
-                        {
-                            $currentpoints = $_PcwsWrapper->getCompPoints($oldcard, 0);
-                            $currentpoints = $currentpoints['GetCompPoints']['CompBalance'];
-                            if ($currentpoints == "") { $currentpoints = 0; }
-                        }
+                        //get comp points 
+                        $currentpoints = $_PcwsWrapper->getCompPoints($oldcard, 0);
+                        $currentpoints = $currentpoints['GetCompPoints']['CompBalance'];
                 
                         if ($lifetimepoints == '') {
                             $lifetimepoints = 0;

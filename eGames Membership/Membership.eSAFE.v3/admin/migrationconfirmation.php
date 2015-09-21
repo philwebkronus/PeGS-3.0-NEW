@@ -217,7 +217,7 @@ if(isset($_SESSION['CardRed'])){
             var cardnumber = jQuery("#txtCardNumber").val();
             hideAllDiv();
             if(cardnumber == ''){
-                alert('Enter Card Number.');
+                alert('Please Enter Card Number');
             }
             else{
                 if(cardtype == 1){
@@ -237,22 +237,14 @@ if(isset($_SESSION['CardRed'])){
         
         $('#btnSubmit2').live('click', function() {
             hideAllDiv();
-            var cardnumber = jQuery("#txtEmail").val();
+          var cardnumber = jQuery("#txtEmail").val();
             if(cardnumber == ''){
-                alert('Enter a Valid Email Address.');
+                alert('Please Enter a Valid Email Address');
             }   
             else{
-                var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;  
-                if(cardnumber.match(mailformat))  
-                {  
-                    getSearchData();
-                }  
-                else  
-                {   
-                    $('#txtEmail').val("");    
-                    alert("You Have Entered An Invalid Email Address."); 
-                }  
+                getSearchData();
             }
+           
         });
         
         
@@ -770,7 +762,7 @@ if(isset($_SESSION['CardRed'])){
                                 
                                 $('#SuccessDialog').dialog({
                                     modal: true,
-                                    width: '300',
+                                    width: '400',
                                     title: 'Confirmation of Migrated Cards',
                                     closeOnEscape: true,
                                     buttons: {
@@ -779,8 +771,7 @@ if(isset($_SESSION['CardRed'])){
                                         }
                                     }
                                 });
-//                                jQuery('.ui-dialog-content').html("<p><center><label>" + dataprofile.Msg + "</label></center></p>");
-                                jQuery('.ui-dialog-content').html("<p><center><label>Member Not Found.</label></center></p>");
+                                jQuery('.ui-dialog-content').html("<p><center><label>" + dataprofile.Msg + "</label></center></p>");
                             }
                         },
                         error: function(error)

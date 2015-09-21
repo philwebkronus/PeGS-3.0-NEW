@@ -62,7 +62,6 @@ class AuditFunctions extends BaseEntity
     CONST VIP_LEVEL_MANAGEMENT = 66;
     CONST CHECK_PLAYER_POINTS = 61;
     CONST GET_COMP_POINTS = 70;
-    CONST CARD_MIGRATION_FULFILLMENT = 73;
     
     public function AuditFunctions()
     {
