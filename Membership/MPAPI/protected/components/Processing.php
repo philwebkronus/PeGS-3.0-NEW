@@ -9,7 +9,7 @@
 class Processing
 {
     //process the redeeming of coupons, updating tables connected to coupon redemption
-    public function processCouponRedemption($MID, $rewardItemID, $quantity, $redeemedPoints, $cardNumber, $source, $redeemedDate, $config) {
+    public function processCouponRedemption($MID, $rewardItemID, $quantity, $redeemedPoints, $cardNumber, $source, $redeemedDate) {
         $raffleCouponsModel = new RaffleCouponsModel();
         $memberCardsModel = new MemberCardsModel();
         $couponBatchesModel = new CouponBatchesModel();
@@ -39,7 +39,7 @@ class Processing
                     if(count($availableCoupon) == $quantity) {
                         $resultIsEwallet = $membersModel->checkIfEwallet($MID);
                         $isEwallet = $resultIsEwallet['IsEwallet'];
-                        if($config == 2)
+                        if($isEwallet == 1)
                         {
                             $pcwsWrapper = new PcwsWrapper();
                             $result = $pcwsWrapper->getCompPoints($cardNumber, 1);
@@ -566,7 +566,7 @@ class Processing
     }
     
     //process redeeming of items, updating tables connected to item redemption
-    public function processItemRedemption($MID, $rewardItemID, $quantity, $redeemedPoints, $cardNumber, $source, $redeemedDate, $config) {
+    public function processItemRedemption($MID, $rewardItemID, $quantity, $redeemedPoints, $cardNumber, $source, $redeemedDate) {
         $apiMethod = 8;
         $oldCurrentPoints = 0;
         
@@ -598,7 +598,7 @@ class Processing
                         $resultIsEwallet = $membersModel->checkIfEwallet($MID);
                         $isEwallet = $resultIsEwallet['IsEwallet'];
  
-                        if($config == 2)
+                        if($isEwallet == 1)
                         {
                             $pcwsWrapper = new PcwsWrapper();
                             $result = $pcwsWrapper->getCompPoints($cardNumber, 1);

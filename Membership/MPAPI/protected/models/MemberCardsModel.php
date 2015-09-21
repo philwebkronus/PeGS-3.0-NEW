@@ -46,18 +46,6 @@ class MemberCardsModel {
         
         return $result;            
     }
-    
-    public function getMemberStatus($cardNumber) {
-        $sql = 'SELECT Status
-                FROM membercards
-                WHERE CardNumber = :CardNumber
-                GROUP BY MID';
-        $param = array(':CardNumber' => $cardNumber);
-        $command = $this->_connection->createCommand($sql);
-        $result = $command->queryRow(true, $param);
-        
-        return $result;            
-    }
      
     public function getMIDUsingCard($cardNumber) {
         $sql = 'SELECT mc.MID, c.Status

@@ -765,16 +765,15 @@ class AmpapiController extends Controller {
         $message = "[" . $module . "] " . $rand . " Input: " . $paramval;
         $appLogger->log($appLogger->logdate, "[request]", $message);
 
-        $validateRequiredField = $this->validateRequiredFields($request, $module, array('TPSessionID' => false, 'CardNumber' => false, 'Config' => false), $rand);
+        $validateRequiredField = $this->validateRequiredFields($request, $module, array('TPSessionID' => false, 'CardNumber' => false), $rand);
         if ($validateRequiredField === true) {
             $TPSessionID = $request['TPSessionID'];
             $validateTPSessionID = $this->_validateTPSession($TPSessionID, 'GetActiveSession', $module, $rand);
             if ($validateTPSessionID === true) {
                 $CardNumber = trim($request['CardNumber']);
-                $config = trim($request['Config']);
                 $moduleName = 'checkpoints';
                 $url = $this->genMPAPIURL($moduleName);
-                $postData = CJSON::encode(array('CardNumber'=>$CardNumber, 'Config'=>$config));
+                $postData = CJSON::encode(array('CardNumber' => $CardNumber));
                 $result = $this->SubmitData($url, $postData);
                 $AID = $this->currentAID;
 
@@ -849,7 +848,7 @@ class AmpapiController extends Controller {
         $message = "[" . $module . "] " . $rand . " Input: " . $paramval;
         $appLogger->log($appLogger->logdate, "[request]", $message);
 
-        $validateRequiredField = $this->validateRequiredFields($request, $module, array('TPSessionID' => false, 'MPSessionID' => false, 'CardNumber' => false, 'RewardID' => false, 'RewardItemID' => false, 'Quantity' => false, 'Source' => false, 'Tracking1' => false, 'Tracking2' => false, 'Config' => false), $rand);
+        $validateRequiredField = $this->validateRequiredFields($request, $module, array('TPSessionID' => false, 'MPSessionID' => false, 'CardNumber' => false, 'RewardID' => false, 'RewardItemID' => false, 'Quantity' => false, 'Source' => false, 'Tracking1' => false, 'Tracking2' => false), $rand);
         if ($validateRequiredField === true) {
             $TPSessionID = trim($request['TPSessionID']);
             $validateTPSessionID = $this->_validateTPSession($TPSessionID, 'GetActiveSession', $module, $rand);
@@ -863,11 +862,10 @@ class AmpapiController extends Controller {
                 $Source = trim($request['Source']);
                 $Tracking1 = trim($request['Tracking1']);
                 $Tracking2 = trim($request['Tracking2']);
-                $config = trim($request['Config']);
 
                 $moduleName = strtolower($module);
                 $url = $this->genMPAPIURL($moduleName);
-                $postData = CJSON::encode(array('MPSessionID'=>$MPSessionID,'CardNumber'=>$CardNumber, 'RewardID'=>$RewardID, 'RewardItemID'=>$RewardItemID, 'Quantity'=>$Quantity,'Source'=>$Source, 'Tracking1' => $Tracking1, 'Tracking2' => $Tracking2, 'Config' => $config));
+                $postData = CJSON::encode(array('MPSessionID' => $MPSessionID, 'CardNumber' => $CardNumber, 'RewardID' => $RewardID, 'RewardItemID' => $RewardItemID, 'Quantity' => $Quantity, 'Source' => $Source, 'Tracking1' => $Tracking1, 'Tracking2' => $Tracking2));
                 $result = $this->SubmitData($url, $postData);
                 $AID = $this->currentAID;
 
@@ -902,7 +900,7 @@ class AmpapiController extends Controller {
         $message = "[" . $module . "] " . $rand . " Input: " . $paramval;
         $appLogger->log($appLogger->logdate, "[request]", $message);
 
-        $validateRequiredField = $this->validateRequiredFields($request, $module, array('TPSessionID' => false, 'MPSessionID' => false, 'CardNumber' => false, 'Config' => false), $rand);
+        $validateRequiredField = $this->validateRequiredFields($request, $module, array('TPSessionID' => false, 'MPSessionID' => false, 'CardNumber' => false), $rand);
         if ($validateRequiredField === true) {
             $TPSessionID = trim($request['TPSessionID']);
             $validateTPSessionID = $this->_validateTPSession($TPSessionID, 'GetActiveSession', $module, $rand);
@@ -910,9 +908,8 @@ class AmpapiController extends Controller {
                 $moduleName = 'getprofile';
                 $MPSessionID = trim($request['MPSessionID']);
                 $CardNumber = trim($request['CardNumber']);
-                $config = trim($request['Config']);
                 $url = $this->genMPAPIURL($moduleName);
-                $postData = CJSON::encode(array('MPSessionID'=>$MPSessionID, 'CardNumber'=>$CardNumber, 'Config'=>$config));
+                $postData = CJSON::encode(array('MPSessionID' => $MPSessionID, 'CardNumber' => $CardNumber));
                 $result = $this->SubmitData($url, $postData);
                 $AID = $this->currentAID;
 
@@ -1388,7 +1385,7 @@ class AmpapiController extends Controller {
     //This function invokes necessary method in displaying error messages based on '$errorMessage' php variable declared in this class.
     private function _displayReturnMessage($errorCode, $module, $logErrorMessage, $randchars, $ApiLogsModel='', $RewardID='') {
         $appLogger = new AppLogger();
-        $transMsg = $logErrorMessage;
+        $transMsg = $this->errorMessage[$errorCode];
 
         $eCode = floor($errorCode);
         $data = CommonController::retMsg($module, $transMsg, $eCode, '', '', '', '', '', '', '', '', '', $RewardID);
@@ -1473,23 +1470,16 @@ class AmpapiController extends Controller {
 
     private function validateRequiredFields($request, $module, $fields, $randchars) {
         $validateSuccess = false;
-        $fieldValue = "";
         foreach ($fields as $key => $value) {
             if (isset($request[$key]) && $request[$key] != null) {
                 $fields[$key] = true;
             } else {
-                $fieldValue = $fieldValue . "[" . $key . "] ";
+                $module == 'GetActiveSession' ? $ErrorCode = 75 : $ErrorCode = 1;
+                $this->_displayReturnMessage($ErrorCode, $module, $key . ' is not set or is blank.', $randchars);
+                $ApiMethodID = $this->ApiMethodID;
+                $this->_apiLogs($ApiMethodID[$module], '', $ErrorCode, '', 2, $module, $key);
+                return false;
             }
-        }
-        if($fieldValue != "") {
-            $ErrorCode = 75;
-            if ($module != 'GetActiveSession') {
-                $this->_displayReturnMessage($ErrorCode, $module, 'One or more fields is not set or is blank. ' . $fieldValue , $randchars);
-                $ErrorCode = 1;
-            }
-            $ApiMethodID = $this->ApiMethodID;
-            $this->_apiLogs($ApiMethodID[$module],'' , $ErrorCode, '', 2, $module, $key);
-            return false;
         }
         $validateSuccess = $this->validateAllFields($fields);
         return $validateSuccess;

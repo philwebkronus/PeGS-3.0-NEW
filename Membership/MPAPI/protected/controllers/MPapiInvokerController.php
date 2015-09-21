@@ -163,9 +163,8 @@ class MPapiInvokerController extends Controller {
 
         if (isset($_POST['CardNumber'])) {
             $cardNumber = $_POST['CardNumber'];
-            $config = Yii::app()->params['config'];
 
-            $result = $this->_checkPoints($cardNumber, $config);
+            $result = $this->_checkPoints($cardNumber);
         }
 
         $this->render('checkpoints', array('result' => $result));
@@ -200,9 +199,8 @@ class MPapiInvokerController extends Controller {
             $source = $_POST['Source'];
             $tracking1 = $_POST['Tracking1'];
             $tracking2 = $_POST['Tracking2'];
-            $config = Yii::app()->params['config'];
 
-            $result = $this->_redeemItems($mpSessionID, $cardNumber, $rewardID, $rewardItemID, $quantity, $source, $tracking1, $tracking2, $config);
+            $result = $this->_redeemItems($mpSessionID, $cardNumber, $rewardID, $rewardItemID, $quantity, $source, $tracking1, $tracking2);
         }
 
         $this->render('redeemitems', array('result' => $result));
@@ -215,9 +213,8 @@ class MPapiInvokerController extends Controller {
         if (isset($_POST['CardNumber']) || isset($_POST['MPSessionID'])) {
             $cardNumber = $_POST['CardNumber'];
             $mpSessionID = $_POST['MPSessionID'];
-            $config = Yii::app()->params['config'];
 
-            $result = $this->_getProfile($cardNumber, $mpSessionID, $config);
+            $result = $this->_getProfile($cardNumber, $mpSessionID);
         }
 
         $this->render('getprofile', array('result' => $result));
@@ -324,7 +321,7 @@ class MPapiInvokerController extends Controller {
 
         $this->render('getcity', array('result' => $result));
     }
-    
+
     //@date 09-16-2014
     public function actionRegisterMemberBT() {
         $this->pageTitle = 'Membership Portal API - Register Member BT';
@@ -360,7 +357,7 @@ class MPapiInvokerController extends Controller {
         $this->render('createmobileinfo', array('result' => $result));
     }
 
-    public function actionVerifyTracking2() {
+    public function actionverifyTracking2() {
         $this->pageTitle = 'Membership Portal API - Verify Tracking2';
         $result = '';
 
@@ -439,8 +436,8 @@ class MPapiInvokerController extends Controller {
         return $result[1];
     }
 
-    private function _checkPoints($cardNumber, $config) {
-        $postdata = CJSON::encode(array('CardNumber' => $cardNumber, 'Config' => $config));
+    private function _checkPoints($cardNumber) {
+        $postdata = CJSON::encode(array('CardNumber' => $cardNumber));
         $result = $this->SubmitData(Yii::app()->params['urlMPAPI'] . 'checkpoints', $postdata);
 
         return $result[1];
@@ -454,16 +451,16 @@ class MPapiInvokerController extends Controller {
         return $result[1];
     }
 
-    private function _redeemItems($mpSessionID, $cardNumber, $rewardID, $rewardItemID, $quantity, $source, $tracking1, $tracking2, $config) {
-        $postdata = CJSON::encode(array('MPSessionID' => $mpSessionID, 'CardNumber' => $cardNumber, 'RewardID' => $rewardID, 'RewardItemID' => $rewardItemID, 'Quantity' => $quantity, 'Source' => $source, 'Tracking1' => $tracking1, 'Tracking2' => $tracking2, 'Config' => $config));
+    private function _redeemItems($mpSessionID, $cardNumber, $rewardID, $rewardItemID, $quantity, $source, $tracking1, $tracking2) {
+        $postdata = CJSON::encode(array('MPSessionID' => $mpSessionID, 'CardNumber' => $cardNumber, 'RewardID' => $rewardID, 'RewardItemID' => $rewardItemID, 'Quantity' => $quantity, 'Source' => $source, 'Tracking1' => $tracking1, 'Tracking2' => $tracking2));
 
         $result = $this->SubmitData(Yii::app()->params['urlMPAPI'] . 'redeemitems', $postdata);
 
         return $result[1];
     }
 
-    private function _getProfile($cardNumber, $mpSessionID, $config) {
-        $postdata = CJSON::encode(array('CardNumber' => $cardNumber, 'MPSessionID' => $mpSessionID, 'Config' => $config));
+    private function _getProfile($cardNumber, $mpSessionID) {
+        $postdata = CJSON::encode(array('CardNumber' => $cardNumber, 'MPSessionID' => $mpSessionID));
 
         $result = $this->SubmitData(Yii::app()->params['urlMPAPI'] . 'getprofile', $postdata);
 
