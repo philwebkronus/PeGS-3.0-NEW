@@ -160,8 +160,7 @@ class CouponModel extends CFormModel {
                 c.Status, c.TerminalID, c.Amount, c.DateCreated, c.ValidToDate, c.IsCreditable, st.SiteName,
                 c.DateUpdated
                 FROM coupons c
-                INNER JOIN $dbname.terminals t ON t.TerminalID = c.TerminalID
-                INNER JOIN $dbname.sites st ON st.SiteID = t.SiteID
+                INNER JOIN $dbname.sites st ON st.SiteID = c.SiteID
                 INNER JOIN siteaccounts sa ON sa.SiteID = st.SiteID
                 INNER JOIN accounts a ON a.AID = sa.AID
                 WHERE c.DateUpdated >= :transdate AND  c.DateUpdated < :vtransdate AND c.Status = 3
@@ -183,8 +182,7 @@ class CouponModel extends CFormModel {
                 c.Status, c.TerminalID, c.Amount, c.DateCreated, c.ValidToDate, c.IsCreditable, st.SiteName,
                 c.DateUpdated
                 FROM coupons c
-                INNER JOIN $dbname.terminals t ON t.TerminalID = c.TerminalID
-                INNER JOIN $dbname.sites st ON st.SiteID = t.SiteID
+                INNER JOIN $dbname.sites st ON st.SiteID = c.SiteID
                 WHERE c.DateUpdated >= :transdate AND  c.DateUpdated < :vtransdate AND c.Status = 3
                 ORDER BY c.DateUpdated DESC";
             $command = $this->_connection->createCommand($sql);
@@ -485,7 +483,7 @@ class CouponModel extends CFormModel {
         try {
             $pdo->commit();
 
-            AuditLog::logTransactions(31, " - Generate Coupons");
+            AuditLog::logTransactions(31, " - Batch ID: " . $couponbatch);
             return array('TransCode' => 1,
                 'TransMsg' => 'Coupons successfully generated');
         } catch (PDOException $e) {
@@ -794,27 +792,27 @@ class CouponModel extends CFormModel {
         {
             $pagination = "LIMIT $start, $limit";
         }
-        $sql = "SELECT c.CouponID, 
-                       c.CouponBatchID, 
-                       c.CouponCode, 
-                       c.Amount, 
-                       cb.DistributionTagID, 
-                       c.IsCreditable, 
-                       c.DateCreated, 
-                       c.DateUpdated, 
+        $sql = "SELECT c.CouponID,
+                       c.CouponBatchID,
+                       c.CouponCode,
+                       c.Amount,
+                       cb.DistributionTagID,
+                       c.IsCreditable,
+                       c.DateCreated,
+                       c.DateUpdated,
                        ad.Name  `CreatedBy`,
-                       cb.PromoName, 
-                       c.ValidFromDate, 
-                       c.ValidToDate, 
-                       c.SiteID, 
-                       c.TerminalID, 
-                       c.Status, 
-                       c.DateReimbursed, 
-                       c.ReimbursedByAID 
-                FROM coupons c 
-                INNER JOIN couponbatch cb ON cb.CouponBatchID = c.CouponBatchID 
+                       cb.PromoName,
+                       c.ValidFromDate,
+                       c.ValidToDate,
+                       c.SiteID,
+                       c.TerminalID,
+                       c.Status,
+                       c.DateReimbursed,
+                       c.ReimbursedByAID
+                FROM coupons c
+                INNER JOIN couponbatch cb ON cb.CouponBatchID = c.CouponBatchID
 		LEFT JOIN npos.accountdetails ad ON cb.CreatedByAID = ad.AID
-                $wherefx 
+                $wherefx
                 $pagination";
         $command = $this->_connection->createCommand($sql);
         //bind value of search fields
@@ -860,32 +858,32 @@ class CouponModel extends CFormModel {
      */
     public function getCouponsByCode($batchID, $couponcode)
     {
-        $sql = "SELECT c.CouponID, 
-                       c.CouponBatchID, 
-                       c.CouponCode, 
-                       c.Amount, 
-                       cb.DistributionTagID, 
-                       c.IsCreditable, 
-                       c.DateCreated, 
-                       c.DateUpdated, 
+        $sql = "SELECT c.CouponID,
+                       c.CouponBatchID,
+                       c.CouponCode,
+                       c.Amount,
+                       cb.DistributionTagID,
+                       c.IsCreditable,
+                       c.DateCreated,
+                       c.DateUpdated,
                        ad.Name  `CreatedBy`,
-                       c.ValidFromDate, 
-                       c.ValidToDate, 
-                       c.SiteID, 
-                       c.TerminalID, 
-                       c.Status, 
-                       cb.PromoName, 
-                       c.DateReimbursed, 
-                       c.ReimbursedByAID 
-                FROM coupons c 
-                INNER JOIN couponbatch cb ON cb.CouponBatchID = c.CouponBatchID 
+                       c.ValidFromDate,
+                       c.ValidToDate,
+                       c.SiteID,
+                       c.TerminalID,
+                       c.Status,
+                       cb.PromoName,
+                       c.DateReimbursed,
+                       c.ReimbursedByAID
+                FROM coupons c
+                INNER JOIN couponbatch cb ON cb.CouponBatchID = c.CouponBatchID
                 LEFT JOIN npos.accountdetails ad ON cb.CreatedByAID = ad.AID
                 WHERE c.CouponBatchID = :batchID AND CouponCode = :couponcode";
         $command = $this->_connection->createCommand($sql);
         $command->bindValue(":batchID", $batchID);
         $command->bindValue(":couponcode", $couponcode);
         $result = $command->queryAll();
-        
+
         return $result;
     }
     public function getValidityOfCoupon($batchID)

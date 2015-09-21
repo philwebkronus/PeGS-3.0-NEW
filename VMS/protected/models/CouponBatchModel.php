@@ -11,9 +11,9 @@
  * @author elperez
  */
 class CouponBatchModel {
-   
+
     public function getActiveCouponBatch($couponBatchTable, $voucherCode){
-        
+
         $query = "SELECT Status, Amount, DateCreated, LoyaltyCreditable FROM $couponBatchTable WHERE CouponCode = :couponcode";
         $sql = Yii::app()->db->createCommand($query);
         $sql->bindValues(array(
@@ -36,23 +36,23 @@ class CouponBatchModel {
         $model = new GenerationToolModel();
 
         $connection = Yii::app()->db;
-        
+
         $pdo = $connection->beginTransaction();
-        
+
         $firstquery = "INSERT INTO couponbatch (CouponCount,
                                                 Amount,
                                                 DistributionTagID,
-                                                Status, 
-                                                Promoname, 
+                                                Status,
+                                                Promoname,
                                                 DateCreated,
                                                 CreatedByAID
-                        ) 
+                        )
                         VALUES (:couponcount,
                                 :amount,
                                 :distributiontag,
-                                :status, 
-                                :promoname, 
-                                NOW(6), 
+                                :status,
+                                :promoname,
+                                NOW(6),
                                 :createdbyAID
                                )";
         $sql = $connection->createCommand($firstquery);
@@ -62,17 +62,17 @@ class CouponBatchModel {
         $sql->bindParam(":promoname", $promoname);
         $sql->bindParam(":createdbyAID", $user);
         $sql->bindParam(":status", $status);
-        
+
         $firstresult = $sql->execute();
         //Get Last Inserted ID
         $couponbatch = $connection->getLastInsertID();
         if ($firstresult > 0)
         {
             $ctrunique = 0;
-            
+
             //Start generation of coupons
             for ($i = 0; $count > $i; $i++)
-            { 
+            {
                 //Generate Coupon Code
                 $code = "";
                 $code = $model->mt_rand_str(6);
@@ -88,18 +88,18 @@ class CouponBatchModel {
                                                          Amount,
                                                          Status,
                                                          DateCreated,
-                                                         CreatedByAID, 
-                                                         ValidFromDate, 
-                                                         ValidToDate, 
+                                                         CreatedByAID,
+                                                         ValidFromDate,
+                                                         ValidToDate,
                                                          IsCreditable
                                     ) VALUES(:couponbatch,
                                              :couponcode,
                                              :amount,
                                              :status,
                                              NOW(6),
-                                             :aid, 
-                                             :validfrom, 
-                                             :validto, 
+                                             :aid,
+                                             :validfrom,
+                                             :validto,
                                              :iscreditable
                                     )";
                     $sql = $connection->createCommand($secondquery);
@@ -140,18 +140,18 @@ class CouponBatchModel {
                             $sql = $connection->createCommand($querycount);
                             $sql->bindParam(":couponbatch", $couponbatch);
                             $couponcount = $sql->queryAll();
-                            
+
                             $remainingcoupon = $count - $couponcount[0]['CouponCount'];
 
-                            return array('TransCode' => 2, 
-                                         'TransMsg' => 'Coupon already exist. There are '.$remainingcoupon.' remaining coupons 
+                            return array('TransCode' => 2,
+                                         'TransMsg' => 'Coupon already exist. There are '.$remainingcoupon.' remaining coupons
                                                 to generate. Click Continue.',
                                          'CouponBatchID' => $couponbatch,
                                          'RemainingCoupon' => $remainingcoupon,
                                          'Amount' =>$amount,
-                                         'IsCreditable' => $iscreditable, 
-                                         'Status' => $status, 
-                                         'ValidFrom' => $validfrom, 
+                                         'IsCreditable' => $iscreditable,
+                                         'Status' => $status,
+                                         'ValidFrom' => $validfrom,
                                          'ValidTo' => $validto);
                         }
                         catch(CDbException $e)
@@ -168,14 +168,14 @@ class CouponBatchModel {
                     }
                 }
             }
-            
+
             if($ctrunique == 0){
                 try
                 {
                     $pdo->commit();
 
-                    AuditLog::logTransactions(31, " - Generate Coupons");
-                    return array('TransCode' => 1, 
+                    AuditLog::logTransactions(31, " - Batch ID: " . $couponbatch);
+                    return array('TransCode' => 1,
                     'TransMsg' => 'Coupons successfully generated');
                 }
                 catch(PDOException $e)
@@ -185,7 +185,7 @@ class CouponBatchModel {
                                  'TransMsg' => 'An error occured while generating the coupons [0004]');
                 }
             }
-            
+
         }
         else
         {
@@ -193,7 +193,7 @@ class CouponBatchModel {
             return array("TransCode" => 0, "TransMsg" => "An error occured while generating the coupons [0005]");
         }
     }
-    
+
     /**
      * Get Coupon Batch/Batches
      * @param int $batchID Coupon Batch ID, can be NULL if all coupon batch list
@@ -201,21 +201,21 @@ class CouponBatchModel {
      * @date November 4, 2013
      * @return array Array of Coupon batches
      */
-    public function getCouponBatch($batchID = null, $amount = null, $distributiontag = null, $creditable = null, 
-                                   $generatedfrom = null, $generatedto = null, $generatedby = null, $validfrom = null, 
+    public function getCouponBatch($batchID = null, $amount = null, $distributiontag = null, $creditable = null,
+                                   $generatedfrom = null, $generatedto = null, $generatedby = null, $validfrom = null,
                                    $validto = null, $status = null, $promoname = null, $start = null, $limit = null)
     {
         $couponModel = new CouponModel();
-                
+
         $connection = Yii::app()->db;
-        
+
         $pagination = "";
         if (!is_null($start) && !is_null($limit))
         {
             $pagination = "LIMIT $start, $limit";
         }
-        
-        if (is_null($batchID) && is_null($amount) && is_null($distributiontag) && 
+
+        if (is_null($batchID) && is_null($amount) && is_null($distributiontag) &&
             is_null($creditable) && is_null($generatedfrom) && is_null($generatedto) &&
             is_null($generatedby) && is_null($validfrom) && is_null($validto) &&
             is_null($status) && is_null($promoname))
@@ -229,7 +229,7 @@ class CouponBatchModel {
                              ad1.Name `CreatedBy`,
                              cb.DateUpdated,
 			     ad2.Name `UpdatedBy`,
-                             cb.PromoName 
+                             cb.PromoName
 			FROM couponbatch cb
 			  LEFT JOIN npos.accountdetails ad1
 			    ON cb.CreatedByAID = ad1.AID
@@ -251,7 +251,7 @@ class CouponBatchModel {
                              ad1.Name `CreatedBy`,
                              cb.DateUpdated,
 			     ad2.Name `UpdatedBy`,
-                             cb.PromoName 
+                             cb.PromoName
 			FROM couponbatch cb
 			  LEFT JOIN npos.accountdetails ad1
 			    ON cb.CreatedByAID = ad1.AID
@@ -263,7 +263,7 @@ class CouponBatchModel {
             $command->bindValue(":batchID", $batchID);
             $result = $command->queryAll();
         }
-        
+
         return $result;
    }
    /**
@@ -276,12 +276,12 @@ class CouponBatchModel {
    public function getBatchStatus($batch)
    {
        $connection = Yii::app()->db;
-       
+
        $query = "SELECT Status FROM couponbatch WHERE CouponBatchID = :batch";
        $command = $connection->createCommand($query);
        $command->bindParam(":batch", $batch);
        $result = $command->queryRow();
-       
+
        return $result;
    }
    /**
@@ -301,20 +301,20 @@ class CouponBatchModel {
 
         $pdo = $connection->beginTransaction();
         //get current status
-        $getstat = "SELECT cb.Status, c.ValidFromDate, c.ValidToDate  
-                  FROM couponbatch cb 
-                  INNER JOIN coupons c ON c.CouponBatchID = cb.CouponBatchID 
-                  WHERE cb.CouponBatchID = :batch 
+        $getstat = "SELECT cb.Status, c.ValidFromDate, c.ValidToDate
+                  FROM couponbatch cb
+                  INNER JOIN coupons c ON c.CouponBatchID = cb.CouponBatchID
+                  WHERE cb.CouponBatchID = :batch
                   GROUP BY c.CouponBatchID";
         $sql = $connection->createCommand($getstat);
         $sql->bindParam(":batch", $batch);
         $currdetails = $sql->queryRow();
         //check if details are unchanged
-        if ($currdetails['Status'] != $status 
-          || $currdetails['ValidFromDate'] != $validfrom 
+        if ($currdetails['Status'] != $status
+          || $currdetails['ValidFromDate'] != $validfrom
           || $currdetails['ValidToDate'] != $validto)
         {
-            $firstquery = "UPDATE couponbatch SET Status = :status, 
+            $firstquery = "UPDATE couponbatch SET Status = :status,
                                              DateUpdated = NOW(6),
                                              UpdatedByAID = :AID
                       WHERE CouponBatchID = :batch";
@@ -346,9 +346,9 @@ class CouponBatchModel {
                         {
                             $pdo->commit();
 
-                            AuditLog::logTransactions(32, " - Update Coupon Status Batch ".$batch);
-                            return array('TransCode' => 1, 
-                                         'TransMsg' => 'Coupons status successfully updated', 
+                            AuditLog::logTransactions(32, " - Batch ID: ".$batch);
+                            return array('TransCode' => 1,
+                                         'TransMsg' => 'Coupons status successfully updated',
                                          'BatchID' => $batch);
                         }
                         catch(CDbException $e)
@@ -379,7 +379,7 @@ class CouponBatchModel {
         }
         else
         {
-            return array('TransCode' => 2, 
+            return array('TransCode' => 2,
                          'TransMsg' => 'Coupon details unchanged.');
         }
    }

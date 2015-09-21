@@ -1004,6 +1004,10 @@ class CouponGenerationController extends VMSBaseIdentity
             $this->validfrom = $validity['ValidFromDate'] == "" ? "" : date("M d, Y h:i A", strtotime($validity['ValidFromDate']));
             $this->validto = $validity['ValidToDate'] == "" ? "" : date("M d, Y h:i A", strtotime($validity['ValidToDate']));
         }
+
+        //log to audittrail
+        AuditLog::logTransactions(45, " - Batch ID: ".$batchID);
+
         $this->render('index', array('model' => $model, 'sitelist' => array()));
 
     }

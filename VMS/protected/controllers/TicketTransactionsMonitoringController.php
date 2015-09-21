@@ -115,7 +115,7 @@ class TicketTransactionsMonitoringController extends VMSBaseIdentity {
                         $dateNow = date("Y-m-d H:i:s");
                         if ($ticketdateexpiry < $dateNow) {
                             if ($ticketstatus == 2) {
-                                $ticketstatus = 'Cancelled';
+                                $ticketstatus = 'Expired';
                                 $ticketVoidCount = $ticketVoidCount + 1;
                                 $ticketVoidAmount = $ticketVoidAmount + $ticketamount;
                                 $dateupdated = $value['DateCreated'];
@@ -357,7 +357,12 @@ class TicketTransactionsMonitoringController extends VMSBaseIdentity {
             $params = array(
                 'arrayDataProvider' => $arrayDataProvider,
             );
-            
+
+             //Log to audit trail
+            $aid = Yii::app()->session['AID'];
+            $transDetails = ' by AID: ' . $aid;
+            AuditLog::logTransactions(39, $transDetails);
+
             if (!isset($_GET['ajax'])) {
                 $this->renderPartial('ticketTransactions', $params);
             } else {
@@ -406,6 +411,11 @@ class TicketTransactionsMonitoringController extends VMSBaseIdentity {
             }
             $table .= "</table>";
             $excel_obj->toHTML($table);
+
+            //Log to audit trail
+            $aid = Yii::app()->session['AID'];
+            $transDetails = ' by AID: ' . $aid;
+            AuditLog::logTransactions(40, $transDetails);
         }
     }
 
@@ -997,9 +1007,9 @@ class TicketTransactionsMonitoringController extends VMSBaseIdentity {
     {
         $dateFrom   = $_POST['dateFrom'];
         $dateTo     = $_POST['dateTo'];
-        
+
         $dateDiff = round(abs(strtotime($dateFrom) - strtotime($dateTo)) / 86000);
-       
+
         echo $dateDiff;
     }
 }

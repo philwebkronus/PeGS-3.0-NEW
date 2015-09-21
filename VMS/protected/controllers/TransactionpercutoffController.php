@@ -1,6 +1,6 @@
 <?php
 /**
- * Revised Transaction per cut off for Tickets 
+ * Revised Transaction per cut off for Tickets
  * @author Mark Kenneth Esguerra
  * @date May 22, 2014
  */
@@ -10,21 +10,21 @@ class TransactionpercutoffController extends VMSBaseIdentity
     public $message;
     public $showalert;
     public $messagealert;
-    
+
     CONST ACTIVE = 1;
     CONST USED = 3;
     CONST ENCASHED = 4;
-    
+
     CONST SITE_OPTR = 2;
     CONST SITE_SUP  = 3;
     CONST CASHIER   = 4;
-    
+
     public function actionTicket()
     {
         $model          = new TransactionpercutoffForm();
         $sites          = new SitesModel();
         $accessrights   = new AccessRights();
-        
+
         $submenuID  = 32;
         $hasRight   = $accessrights->checkSubMenuAccess(Yii::app()->session['AccountType'], $submenuID);
 
@@ -32,12 +32,12 @@ class TransactionpercutoffController extends VMSBaseIdentity
         if ($hasRight)
         {
             //If the user is either SiteSup, SiteOps or Cashier, get only the sites under them
-            if (Yii::app()->session['AccountType'] == self::SITE_OPTR || 
-                Yii::app()->session['AccountType'] == self::SITE_SUP || 
+            if (Yii::app()->session['AccountType'] == self::SITE_OPTR ||
+                Yii::app()->session['AccountType'] == self::SITE_SUP ||
                 Yii::app()->session['AccountType'] == self::CASHIER )
             {
                 $aid = Yii::app()->session['AID'];
-                
+
                 $siteIDs = $sites->getSiteIDs($aid);
                 $arrSiteID = array();
                 foreach($siteIDs as $s_id)
@@ -70,30 +70,30 @@ class TransactionpercutoffController extends VMSBaseIdentity
             $this->showalert = true;
             $this->messagealert = "User has no access right to this page";
         }
-        
+
         if (Yii::app()->session['AccountType'] != self::CASHIER &&
             Yii::app()->session['AccountType'] != self::SITE_SUP &&
             Yii::app()->session['AccountType'] != self::SITE_OPTR ) {
             array_unshift($arrsitecodes, array('SiteID' => 'All', 'SiteCode' => 'All'));
         }
-        
+
         if (Yii::app()->session['AccountType'] == self::SITE_OPTR && (count($sitecodes) > 1)) {
             array_unshift($arrsitecodes, array('SiteID' => 'All', 'SiteCode' => 'All'));
         }
         $sitecodelist = CHtml::listData($arrsitecodes, 'SiteID', 'SiteCode');
-        
+
         $this->render('ticket', array('model' => $model, 'sitecodes' => $sitecodelist));
     }
-    
+
     public function actionGetTicketCuOffSummary()
     {
         $ticketModel    = new TicketModel();
         $sitesModel     = new SitesModel();
-        
+
         $vouchertype        = $_POST['vouchertype'];
         $sitecode           = $_POST['sitecode'];
         $transactiondate    = $_POST['transactiondate'];
-            
+
         $response = array();
         //Check if site code is not blank
         if ($sitecode != "")
@@ -108,9 +108,9 @@ class TransactionpercutoffController extends VMSBaseIdentity
                 //for running active tickets, less 2 days in current transaction date (date today)
                 $less1day = date("Y-m-d", strtotime("-1 day", $currdate));
                 $less2days = date("Y-m-d", strtotime("-2 day", $currdate));
-                
-                if ((Yii::app()->session['AccountType'] == self::SITE_OPTR || 
-                     Yii::app()->session['AccountType'] == self::SITE_SUP || 
+
+                if ((Yii::app()->session['AccountType'] == self::SITE_OPTR ||
+                     Yii::app()->session['AccountType'] == self::SITE_SUP ||
                      Yii::app()->session['AccountType'] == self::CASHIER) && $sitecode == "All")
                 {
                     //get designated sitecodes\
@@ -125,18 +125,18 @@ class TransactionpercutoffController extends VMSBaseIdentity
                 $totalPrintedTickets    = $ticketModel->getNumberOfPrintedTickets($transactiondate, $dateTo, $sitecode); //select printed tickets within the cut off
                 $totalUsedTickets       = $ticketModel->getNumberOfUsedTickets($transactiondate, $dateTo, $sitecode);//select used tickets within the cutoff
                 $totalEncashedTickets   = $ticketModel->getNumberOfEncashedTickets($transactiondate, $dateTo, $sitecode);//select encashed tickets within the cutoff
-                
+
                 //get the total number of used tickets (UT = PT - UT - ET)
                 $unusedTickets      = $totalPrintedTickets['PrintedTickets'] - ($totalUsedTickets['UsedTickets'] + $totalEncashedTickets['EncashedTickets']);
                 $unusedTicketsVal   = $totalPrintedTickets['Value'] - ($totalUsedTickets['Value'] + $totalEncashedTickets['Value']);
-                
+
                 /******************************************************************/
-                
+
                 /**************************GET USED TICKET AND ENCASHED***************************************/
                 $_totalPrintedTickets    = $ticketModel->getNumberOfPrintedTickets($transactiondate, $dateTo, $sitecode); //select printed tickets within the cut off
                 $_totalUsedTickets       = $ticketModel->getNumberOfUsedTickets($transactiondate, $dateTo, $sitecode, 1);//select used tickets within the cutoff
                 $_totalEncashedTickets   = $ticketModel->getNumberOfEncashedTickets($transactiondate, $dateTo, $sitecode, 1);//select encashed tickets within the cutoff
-                /**************************************************************************************/                
+                /**************************************************************************************/
                 //get running active tickets
                 if ($transactiondate <= $less2days) //if date selected less than 2 days of current date
                 {
@@ -157,7 +157,7 @@ class TransactionpercutoffController extends VMSBaseIdentity
                     $runningactive1 = $this->getLess2DaysCutOff($less2days, $sitecode); //previuos 2 days (site grosshold)
                     $runningactive2 = $this->getDayCutOff($less1day, $sitecode); //previous day
                     $runningactive3 = $this->getDayCutOff($transactiondate, $sitecode); //date today
-                    
+
                     $totalrunningactive     = (int)$runningactive1['SumCount'] + $runningactive2['SumCount'] + $runningactive3['SumCount'];
                     $totalrunningactiveval  = $runningactive1['SumValue'] + $runningactive2['SumValue'] + $runningactive3['SumValue'];
                 }
@@ -178,21 +178,26 @@ class TransactionpercutoffController extends VMSBaseIdentity
                 $response['RunningActiveValue']     = number_format($totalrunningactiveval, 2, ".", ",");
 
                 $response['ErrorCode']              = 0;
-            }   
+            }
             else
             {
                 $response['ErrorCode']  = 1;
                 $response['Message']    = "Transaction date cannot be greater than date today.";
             }
         }
-        
+
+        //Log to audit trail
+        $aid = Yii::app()->session['AID'];
+        $transDetails = ' by AID: ' . $aid;
+        AuditLog::logTransactions(41, $transDetails);
+
         echo json_encode($response);
     }
     public function actionGetTicketRedemptions()
     {
         $ticketModel = new TicketModel();
         $sitesModel  = new SitesModel();
-        
+
         $transactiondate    = $_POST['_transdate'];
         $sitecode           = $_POST['_sitecode'];
         $page               = $_POST['page']; // get the requested page
@@ -201,8 +206,8 @@ class TransactionpercutoffController extends VMSBaseIdentity
         $date = strtotime($transactiondate);
         $dateTo = date("Y-m-d", strtotime("+1 day", $date));
         //check the logged-in user has designated sites if the selected sitecode is all
-        if ((Yii::app()->session['AccountType'] == self::SITE_OPTR || 
-             Yii::app()->session['AccountType'] == self::SITE_SUP || 
+        if ((Yii::app()->session['AccountType'] == self::SITE_OPTR ||
+             Yii::app()->session['AccountType'] == self::SITE_SUP ||
              Yii::app()->session['AccountType'] == self::CASHIER) && $sitecode == "All")
         {
             //get designated sitecodes\
@@ -213,7 +218,7 @@ class TransactionpercutoffController extends VMSBaseIdentity
                 $sitecode[] = $arrsitecode['SiteID']; //$sitecode value is the SiteID
             }
         }
-                
+
         //get all tickets transactions (used and encashed)
         $getTicketRedemptions = $ticketModel->getTicketRedemptions($transactiondate, $dateTo, $sitecode);
         $redemptioncounts = count($getTicketRedemptions);
@@ -259,16 +264,16 @@ class TransactionpercutoffController extends VMSBaseIdentity
                     {
                         $dateProcessed = $rows['DateEncashed'];
                     }
-                    
+
                     $response['rows'][$i]['id'] = $rows['TicketID'];
                     $response['rows'][$i]['cell'] = array(
-                        trim(str_replace(Yii::app()->params['sitePrefix'], "", $rows['SiteCode'])), 
-                        $rows['TerminalName'], 
-                        $rows['TicketCode'], 
-                        $rows['DateCreated'], 
-                        number_format($rows['Amount'], 2, ".", ","), 
-                        date("Y-m-d", strtotime($rows['ValidToDate'])), 
-                        $status, 
+                        trim(str_replace(Yii::app()->params['sitePrefix'], "", $rows['SiteCode'])),
+                        $rows['TerminalName'],
+                        $rows['TicketCode'],
+                        $rows['DateCreated'],
+                        number_format($rows['Amount'], 2, ".", ","),
+                        date("Y-m-d", strtotime($rows['ValidToDate'])),
+                        $status,
                         $dateProcessed
                     );
                     $i++;
@@ -278,7 +283,7 @@ class TransactionpercutoffController extends VMSBaseIdentity
             {
                 $start = 0;
                 $i = 0;
-                
+
                 $response["page"]     = $page;
                 $response["total"]    = $total_pages;
                 $response["records"]  = $redemptioncounts;
@@ -293,25 +298,25 @@ class TransactionpercutoffController extends VMSBaseIdentity
      */
     public function actionExporttoexcelticket()
     {
-        $ticketModel = new TicketModel(); 
+        $ticketModel = new TicketModel();
         $sitesModel  = new SitesModel();
         include_once("protected/extensions/ExportToExcel.php");
-                
+
         $sitecode   = $_POST['sitecode'];
         $transactiondate  = $_POST['transdate'];
-        
+
         //Transaction Summary
         $date = strtotime($transactiondate);
         $currdate = strtotime(date('Y-m-d'));
-        
+
         $dateTo = date("Y-m-d", strtotime("+1 day", $date));
         //for running active tickets, less 2 days in current transaction date (date today)
         $less1day = date("Y-m-d", strtotime("-1 day", $currdate));
         $less2days = date("Y-m-d", strtotime("-2 day", $currdate));
-        
+
                 //check the logged-in user has designated sites if the selected sitecode is all
-        if ((Yii::app()->session['AccountType'] == self::SITE_OPTR || 
-             Yii::app()->session['AccountType'] == self::SITE_SUP || 
+        if ((Yii::app()->session['AccountType'] == self::SITE_OPTR ||
+             Yii::app()->session['AccountType'] == self::SITE_SUP ||
              Yii::app()->session['AccountType'] == self::CASHIER) && $sitecode == "All")
         {
             //get designated sitecodes\
@@ -322,8 +327,8 @@ class TransactionpercutoffController extends VMSBaseIdentity
                 $sitecode[] = $arrsitecode['SiteID']; //$sitecode value is the SiteID
             }
         }
-             
-        
+
+
         //select printed tickets within the cut off
         $totalPrintedTickets = $ticketModel->getNumberOfPrintedTickets($transactiondate, $dateTo, $sitecode);
         //select used tickets within the cutoff
@@ -333,7 +338,7 @@ class TransactionpercutoffController extends VMSBaseIdentity
         //get the total number of used tickets (UT = PT - UT - ET)
         $unusedTickets      = $totalPrintedTickets['PrintedTickets'] - ($totalUsedTickets['UsedTickets'] + $totalEncashedTickets['EncashedTickets']);
         $unusedTicketsVal   = $totalPrintedTickets['Value'] - ($totalUsedTickets['Value'] + $totalEncashedTickets['Value']);
-                
+
         $printedTicketsCount    = $totalPrintedTickets['PrintedTickets'];
         $printedTicketsValue    = ($totalPrintedTickets['Value'] == "") ? '0.00' : $totalPrintedTickets['Value'];
 
@@ -345,7 +350,7 @@ class TransactionpercutoffController extends VMSBaseIdentity
 
         $unusedTicketsCount     = $unusedTickets;
         $unusedTicketsValue     = ($unusedTicketsVal == "") ? '0.00' : $unusedTicketsVal;
-    
+
         //get running active tickets
         if ($transactiondate <= $less2days)
         {
@@ -357,7 +362,7 @@ class TransactionpercutoffController extends VMSBaseIdentity
         {
             $runningactive1 = $this->getLess2DaysCutOff($less2days, $sitecode); //previuos 2 days
             $runningactive2 = $this->getDayCutOff($less1day, $sitecode); //previous day
-            
+
             $totalrunningactive     = (int)$runningactive1['SumCount'] + $runningactive2['SumCount'];
             $totalrunningactiveval  = $runningactive1['SumValue'] + $runningactive2['SumValue'];
         }
@@ -366,7 +371,7 @@ class TransactionpercutoffController extends VMSBaseIdentity
             $runningactive1 = $this->getLess2DaysCutOff($less2days, $sitecode); //previuos 2 days
             $runningactive2 = $this->getDayCutOff($less1day, $sitecode); //previous day
             $runningactive3 = $this->getDayCutOff($transactiondate, $sitecode); //date today
-            
+
             $totalrunningactive     = (int)$runningactive1['SumCount'] + $runningactive2['SumCount'] + $runningactive3['SumCount'];
             $totalrunningactiveval  = $runningactive1['SumValue'] + $runningactive2['SumValue'] + $runningactive3['SumValue'];
         }
@@ -374,75 +379,79 @@ class TransactionpercutoffController extends VMSBaseIdentity
         //Generate Excel
         $header = array("TRANSACTION PER CUT OFF FOR TICKETS", "");
         $arrValues = array();
-        
-        $arrspace = array(0 => "", 
+
+        $arrspace = array(0 => "",
                            1 => "");
         array_push($arrValues, $arrspace);
         //Title Cut-off summary
         $arrSummaryTitle = array(0 => 'TICKET TRANSACTION PER CUT OFF SUMMARY');
         array_push($arrValues, $arrSummaryTitle);
         //TicketTransactionSummaryHeader
-        $arrSummaryHeader = array(0 => " ", 
-                                  1 => 'NO. OF TICKETS', 
+        $arrSummaryHeader = array(0 => " ",
+                                  1 => 'NO. OF TICKETS',
                                   2 => 'VALUE');
         array_push($arrValues, $arrSummaryHeader);
         //Printed tickets
-        $arrPrintedTickets = array(0 => 'Printed Tickets Total', 
-                                   1 => $printedTicketsCount, 
+        $arrPrintedTickets = array(0 => 'Printed Tickets Total',
+                                   1 => $printedTicketsCount,
                                    2 => number_format($printedTicketsValue, 2, ".", ","));
         array_push($arrValues, $arrPrintedTickets);
         //Unused tickets
-        $arrUnusedTickets = array(0 => '    Active Tickets for the Day', 
-                                   1 => $unusedTicketsCount, 
+        $arrUnusedTickets = array(0 => '    Active Tickets for the Day',
+                                   1 => $unusedTicketsCount,
                                    2 => number_format($unusedTicketsValue, 2, ".", ","));
         array_push($arrValues, $arrUnusedTickets);
         //Running Active tickets
-        $arrRunningActive = array(0 => '    Running Active Tickets', 
-                                   1 => $totalrunningactive, 
+        $arrRunningActive = array(0 => '    Running Active Tickets',
+                                   1 => $totalrunningactive,
                                    2 => number_format($totalrunningactiveval, 2, ".", ","));
         array_push($arrValues, $arrRunningActive);
         //ticket redemptions title
-        $arrTicketRedemptions = array(0 => '    Ticket Redemptions', 
-                                   1 => " ", 
+        $arrTicketRedemptions = array(0 => '    Ticket Redemptions',
+                                   1 => " ",
                                    2 => " ");
         array_push($arrValues, $arrTicketRedemptions);
-        $arrUsedTickets = array(0 => '        Used (Deposit/Reload)', 
-                                   1 => $usedTicketsCount, 
+        $arrUsedTickets = array(0 => '        Used (Deposit/Reload)',
+                                   1 => $usedTicketsCount,
                                    2 => number_format($usedTicketsValue, 2, ".", ","));
         array_push($arrValues, $arrUsedTickets);
-        $arrEncashedTickets = array(0 => '        Encashed', 
-                                   1 => $encashedTicketsCount, 
+        $arrEncashedTickets = array(0 => '        Encashed',
+                                   1 => $encashedTicketsCount,
                                    2 => number_format($encashedTicketsValue, 2, ".", ","));
         array_push($arrValues, $arrEncashedTickets);
-        $arrspace = array(0 => " ", 
+        $arrspace = array(0 => " ",
                            1 => " ");
         array_push($arrValues, $arrspace);
-        $arrTicketDetailsHeader = array(0 => "Site/PeGS Code", 
-                                  1 => "Terminal Name", 
-                                  2 => "Ticket Code", 
-                                  3 => "Date and Time Created", 
-                                  4 => "Amount", 
-                                  5 => "Expiration Date", 
-                                  6 => "Status", 
+        $arrTicketDetailsHeader = array(0 => "Site/PeGS Code",
+                                  1 => "Terminal Name",
+                                  2 => "Ticket Code",
+                                  3 => "Date and Time Created",
+                                  4 => "Amount",
+                                  5 => "Expiration Date",
+                                  6 => "Status",
                                   7 => "Date and Time Processed"
         );
         array_push($arrValues, $arrTicketDetailsHeader);
         $arrTicketDetails = array();
         foreach($getTicketRedemptions as $ticketRedemptions)
         {
-            $arrTicketDetails = array(0 => $ticketRedemptions['SiteCode'], 
-                                      1 => $ticketRedemptions['TerminalName'], 
-                                      2 => "'".$ticketRedemptions['TicketCode']."'", 
-                                      3 => "'".$ticketRedemptions['DateCreated']."'", 
-                                      4 => number_format($ticketRedemptions['Amount'], "2", ".", ","), 
-                                      5 => "'".$ticketRedemptions['ValidToDate']."'", 
-                                      6 => ($ticketRedemptions['Status'] == 3) ? 'Used' : 'Encashed', 
+            $arrTicketDetails = array(0 => $ticketRedemptions['SiteCode'],
+                                      1 => $ticketRedemptions['TerminalName'],
+                                      2 => "'".$ticketRedemptions['TicketCode']."'",
+                                      3 => "'".$ticketRedemptions['DateCreated']."'",
+                                      4 => number_format($ticketRedemptions['Amount'], "2", ".", ","),
+                                      5 => "'".$ticketRedemptions['ValidToDate']."'",
+                                      6 => ($ticketRedemptions['Status'] == 3) ? 'Used' : 'Encashed',
                                       7 => ($ticketRedemptions['DateEncashed'] == NULL) ? "'".$ticketRedemptions['DateUpdated']."'" : "'".$ticketRedemptions['DateEncashed']."'"
             );
             array_push($arrValues, $arrTicketDetails);
         }
-        
-        
+
+        //Log to audit trail
+        $aid = Yii::app()->session['AID'];
+        $transDetails = ' by AID: ' . $aid;
+        AuditLog::logTransactions(42, $transDetails);
+
         //Force Download to Excel File
         $title = str_replace(" ", "_", date('Y-m-d'));
         $excel_obj = new ExportExcel("$title.xls");
@@ -450,7 +459,7 @@ class TransactionpercutoffController extends VMSBaseIdentity
         unset($header);
         unset($arrValues);
         $excel_obj->GenerateExcelFile(); //now generate the excel file with the data and headers set
-        
+
         exit();
     }
     /**
@@ -466,7 +475,7 @@ class TransactionpercutoffController extends VMSBaseIdentity
         //Cut Off Date To
         $date = strtotime($transdate);
         $dateTo = date("Y-m-d", strtotime("+1 day", $date));
-        
+
         $getRunningActive = $siteGHCutOff->getActiveTicketsByDate($transdate, $dateTo, $sitecode);
 
         $sumCount = 0;
@@ -490,11 +499,11 @@ class TransactionpercutoffController extends VMSBaseIdentity
     private function getDayCutOff($transdate, $sitecode)
     {
         $ticketModel = new TicketModel();
-           
+
         //Cut Off Date To
         $date = strtotime($transdate);
         $dateTo = date("Y-m-d", strtotime("+1 day", $date));
-        
+
         $getPrintedTickets  = $ticketModel->getNumberOfPrintedTickets($transdate, $dateTo, $sitecode);
         $getUsedTickets     = $ticketModel->getNumberOfUsedTickets($transdate, $dateTo, $sitecode, 1);
         $getEncashedTickets = $ticketModel->getNumberOfEncashedTickets($transdate, $dateTo, $sitecode, 1);
@@ -505,10 +514,10 @@ class TransactionpercutoffController extends VMSBaseIdentity
         //less expired tickets
         $_sumCount = $sumCount - $getExpiredTickets['ExpiredTickets'];
         $_sumValue = $sumValue - $getExpiredTickets['Value'];
-        
+
         return array("SumCount" => $_sumCount, "SumValue" => $_sumValue);
     }
-    
+
     public function actionCoupon()
     {
         $_AccountSessions = new SessionModel();
@@ -572,8 +581,13 @@ class TransactionpercutoffController extends VMSBaseIdentity
                         $couponvouchercode = $value['VoucherCode'];
                         $couponstatus = $value['Status'];
                         $couponterminalid = $value['TerminalID'];
-                        $terminalname = $_Terminals->getTerminalNamesUsingTerminalID($couponterminalid);
-                        $couponterminalname = $terminalname[0]['TerminalName'];
+                        if ($couponterminalid != 0){
+                            $terminalname = $_Terminals->getTerminalNamesUsingTerminalID($couponterminalid);
+                            $couponterminalname = $terminalname[0]['TerminalName'];
+                        }
+                        else{
+                            $couponterminalname = '';
+                        }
                         $couponamount = $value['Amount'];
                         $coupondatecreated = $value['DateCreated'];
                         $coupondateexpiry = $value['ValidToDate'];
@@ -675,8 +689,13 @@ class TransactionpercutoffController extends VMSBaseIdentity
                         $couponvouchercode = $value['VoucherCode'];
                         $couponstatus = $value['Status'];
                         $couponterminalid = $value['TerminalID'];
-                        $terminalname = $_Terminals->getTerminalNamesUsingTerminalID($couponterminalid);
-                        $couponterminalname = $terminalname[0]['TerminalName'];
+                        if ($couponterminalid != 0){
+                            $terminalname = $_Terminals->getTerminalNamesUsingTerminalID($couponterminalid);
+                            $couponterminalname = $terminalname[0]['TerminalName'];
+                        }
+                        else{
+                            $couponterminalname = '';
+                        }
                         $couponamount = $value['Amount'];
                         $coupondatecreated = $value['DateCreated'];
                         $coupondateupdated = $value['DateUpdated'];
@@ -756,9 +775,14 @@ class TransactionpercutoffController extends VMSBaseIdentity
             $display = 'block';
             Yii::app()->session['display'] = $display;
             $this->render('coupon', array('model' => $_TransPerCutOff));
+
+            //Log to audit trail
+            $aid = Yii::app()->session['AID'];
+            $transDetails = ' by AID: ' . $aid;
+            AuditLog::logTransactions(43, $transDetails);
         }
     }
-    
+
     public function actionExportToExcelCoupon() {
         $_AccountSessions = new SessionModel();
         $model = new TransactionpercutoffForm();
@@ -787,7 +811,7 @@ class TransactionpercutoffController extends VMSBaseIdentity
             $excel_obj = new ExportExcel("$fn");
             //setting the values of the headers and data of the excel file
             //and these values comes from the other file which file shows the data
-            
+
             $table = "<table>";
             $table .= "<tr><td></td></tr><tr><td>Code</td><td>Site</td><td width='100px;'>Terminal</td><td width='100px;'>Amount</td><td width='180px;'>Transaction Date</td><td width='180px;'>Date Expired</td><td width='100px;'>Source</td><td width='100px;'>Is Creditable</td><td width='100px;'>Status</td></tr>";
 
@@ -804,9 +828,14 @@ class TransactionpercutoffController extends VMSBaseIdentity
             }
             $table .= "</table>";
             $excel_obj->toHTML($table);
+
+            //Log to audit trail
+            $aid = Yii::app()->session['AID'];
+            $transDetails = ' by AID: ' . $aid;
+            AuditLog::logTransactions(44, $transDetails);
         }
     }
-    
+
     public function actionTransactionPerCutOffDataTable($rawData) {
         $_AccountSessions = new SessionModel();
 
