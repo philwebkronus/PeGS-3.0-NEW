@@ -12,44 +12,39 @@ global $_DBCONF;
 
 /****** Development ********/
 
-$membership["host"] = "172.16.102.157";
-//$membership["host"] = "localhost";
-$membership["username"] = "pegsconn";
-$membership["password"] = "pegsconnpass";
+$membership["host"] = "";
+$membership["username"] = "";
+$membership["password"] = "";
 $membership["dbname"] = "membership";
 $_DBCONF["membership"] = $membership;
 
-$membership["host"] = "172.16.102.158";
-$membership["username"] = "pegsconn";
-$membership["password"] = "pegsconnpass";
+$membership["host"] = "";
+$membership["username"] = "";
+$membership["password"] = "";
 $membership["dbname"] = "membership";
 $_DBCONF["membershipqa"] = $membership;
 
-$membership["host"] = "172.16.102.157";
-//$membership["host"] = "localhost";
-$membership["username"] = "pegsconn";
-$membership["password"] = "pegsconnpass";
+$membership["host"] = "";
+$membership["username"] = "";
+$membership["password"] = "";
 $membership["dbname"] = "membership_temp";
 $_DBCONF["tempmembership"] = $membership;
 
-$loyalty["host"] = "172.16.102.157";
-//$loyalty["host"] = "localhost";
-$loyalty["username"] = "pegsconn";
-$loyalty["password"] = "pegsconnpass";
+$loyalty["host"] = "";
+$loyalty["username"] = "";
+$loyalty["password"] = "";
 $loyalty["dbname"] = "loyaltydb";
 $_DBCONF["loyalty"] = $loyalty;
 
-$rewardsdb["host"] = "172.16.102.157";
-//$rewardsdb["host"] = "localhost";
-$rewardsdb["username"] = "pegsconn";
-$rewardsdb["password"] = "pegsconnpass";
+$rewardsdb["host"] = "";
+$rewardsdb["username"] = "";
+$rewardsdb["password"] = "";
 $rewardsdb["dbname"] = "rewardsdb";
 $_DBCONF["rewardsdb"] = $rewardsdb;
 
-$kronus["host"] = "172.16.102.157";
-//$kronus["host"] = "localhost";
-$kronus["username"] = "pegsconn";
-$kronus["password"] = "pegsconnpass";
+$kronus["host"] = "";
+$kronus["username"] = "";
+$kronus["password"] = "";
 $kronus["dbname"] = "npos";
 $_DBCONF["kronus"] = $kronus;
 

@@ -123,15 +123,15 @@ $_CONFIG["rtgreg"] = '0';
 $_CONFIG["rtgvip"] = '1';
 
 //Marketing Email
-$_CONFIG['MarketingEmail'] = "aqdepliyan@philweb.com.ph";
+$_CONFIG['MarketingEmail'] = "@philweb.com.ph";
 
 //Image Path For Reward items
-$_CONFIG['rewarditem_imagepath'] = "http://".$_SERVER["SERVER_NAME"]."/membership/rewards.management/images/rewarditems/";
-$_CONFIG['extra_imagepath'] = "http://".$_SERVER["SERVER_NAME"]."/membership/membership.rewards/images/rewarditems/";
+$_CONFIG['rewarditem_imagepath'] = "<MEMBERSHIP URL HERE>/images/rewarditems/";
+$_CONFIG['extra_imagepath'] = "<MEMBERSHIP URL HERE>/images/rewarditems/";
 
 //Url path for reward items voucher template
-$_CONFIG['coupontemplate'] = "http://membership.rewards.dev.local/admin/template/couponredemptiontemplate.php";
-$_CONFIG['itemtemplate'] = "http://membership.rewards.dev.local/admin/template/itemredemptiontemplate.php";
+$_CONFIG['coupontemplate'] = "<MEMBERSHIP URL HERE>/admin/template/couponredemptiontemplate.php";
+$_CONFIG['itemtemplate'] = "<MEMBERSHIP URL HERE>/admin/template/itemredemptiontemplate.php";
 
 $_CONFIG['pt_rpt_uri'] = 'https://devadmin.egamescasino-ss.ph';
 $_CONFIG['pt_rpt_casinoname'] = '19501';
@@ -174,24 +174,24 @@ $_CONFIG['rr_URI']='https://cashier-dev.egamescasino-ss.ph';
 //$_CONFIG['item_maxquantity'] = 5
 
 //PCWS APi
-$_CONFIG['getcomppoints'] = '172.16.102.174/PCWS.eSAFE.v15/index.php/pcws/getcomppoints';
-$_CONFIG['deductcomppoints'] = '172.16.102.174/PCWS.eSAFE.v15/index.php/pcws/deductcomppoints';
-$_CONFIG['changepin'] = '172.16.102.174/PCWS.eSAFE.v15/index.php/pcws/changepin';
-$_CONFIG['addcomppoints'] = '172.16.102.174/PCWS.eSAFE.v15/index.php/pcws/addcomppoints';
-$_CONFIG['checkpin'] = '172.16.102.174/PCWS.eSAFE.v15/index.php/pcws/checkpin';
+$_CONFIG['getcomppoints'] = '<PCWS URL>/index.php/pcws/getcomppoints';
+$_CONFIG['deductcomppoints'] = '<PCWS URL>/index.php/pcws/deductcomppoints';
+$_CONFIG['changepin'] = '<PCWS URL>/index.php/pcws/changepin';
+$_CONFIG['addcomppoints'] = '<PCWS URL>/index.php/pcws/addcomppoints';
+$_CONFIG['checkpin'] = '<PCWS URL>/index.php/pcws/checkpin';
 
 $_CONFIG['referrer'] = 'http://'.$_SERVER["SERVER_NAME"].'/admin/login.php';
 
 //SalesForce API
-$_CONFIG['sfApi'] = '/var/www/membership.eSAFE.v15/rsframework/include/core/SalesforceAPI.php';
+$_CONFIG['sfApi'] = '<FULL PATH OF rsframework>/rsframework/include/core/SalesforceAPI.php';
 
-$_CONFIG['instanceURL'] = 'https://test.salesforce.com';
-$_CONFIG['apiVersion'] = '20.0';
-$_CONFIG['cKey'] = '3MVG9e2mBbZnmM6lWH_OzLbjjAe5pxG_nZe3q5Kg7FtMr4F19VBL7z_jSS5PUk05ahojhTtCCGHJfbLgR12wh';
-$_CONFIG['cSecret'] = '2149471284885431637';
-$_CONFIG['sfLogin'] = 'integration_user@philweb.com.ph.uat';
-$_CONFIG['sfPassword'] = 'ThinkCl0ud2015';
-$_CONFIG['secToken'] = 'SQGHJ7a8dklcRiNEtDqzoXt3r';
+$_CONFIG['instanceURL'] = '';
+$_CONFIG['apiVersion'] = '';
+$_CONFIG['cKey'] = '';
+$_CONFIG['cSecret'] = '';
+$_CONFIG['sfLogin'] = '';
+$_CONFIG['sfPassword'] = '';
+$_CONFIG['secToken'] = '';
 
 //V15
 $_CONFIG['PointSystem'] = 1; //1 - loyalty points, 2 - comp points
