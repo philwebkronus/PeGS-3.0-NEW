@@ -1,0 +1,5 @@
+[2015-09-09 16:19:12.936599][NOTICE] "Undefined index: player_api" File: C:\xampp\htdocs\Kronus.UB.New\temp\app\frontend\components\CasinoApi.php Line: 74
+[2015-09-09 16:19:13.31309][NOTICE] "Undefined index: player_api" File: C:\xampp\htdocs\Kronus.UB.New\temp\app\frontend\components\CasinoApi.php Line: 37
+[2015-09-09 16:26:06.886058][NOTICE] "A session had already been started - ignoring session_start()" File: C:\xampp\htdocs\Kronus.UB.New\cashier.eSAFEv15\app\frontend\models\LoginFormModel.php Line: 527
+[2015-09-09 16:26:08.733483][NOTICE] "Undefined index: player_api" File: C:\xampp\htdocs\Kronus.UB.New\cashier.eSAFEv15\app\frontend\components\CasinoApi.php Line: 74
+[2015-09-09 16:26:08.818293][NOTICE] "Undefined index: player_api" File: C:\xampp\htdocs\Kronus.UB.New\cashier.eSAFEv15\app\frontend\components\CasinoApi.php Line: 37

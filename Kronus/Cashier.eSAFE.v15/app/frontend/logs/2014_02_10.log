@@ -1,0 +1,2 @@
+[2014-02-10 14:30:56.262285][ERROR] "Error: Only one active session for Magic Macau casino is allowed for this card. TerminalID=928 ServiceID=19" SiteID = 167 File: /var/www/Kronus_New/cashier.abbott.version/app/frontend/components/CommonUBStartSession.php LINE: 67
+[2014-02-10 14:31:56.486023][ERROR] "Error: Only one active session for Magic Macau casino is allowed for this card. TerminalID=928 ServiceID=19" SiteID = 167 File: /var/www/Kronus_New/cashier.abbott.version/app/frontend/components/CommonUBStartSession.php LINE: 67
