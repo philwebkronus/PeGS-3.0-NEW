@@ -1,0 +1,32 @@
+2015/09/14 13:43:16 [request] [application] [Deposit] Input: {"ServiceID":"20","CardNumber":"UBQH4SFS","Amount":"500","PaymentType":"1","SiteID":"167","AID":"45","SystemUsername":"pcws","AccessDate":"2015-09-14 13:36:26 ","Token":"fd9d359f64337c64760c20387fadd431289ed5a1","TraceNumber":"","ReferenceNumber":"","CouponCode":"","PaymentTrackingID":""}
+in C:\xampp\htdocs\PCWS.APIs\PCWS.eSAFE.v15\protected\components\CLoggerModified.php (17)
+in C:\xampp\htdocs\PCWS.APIs\PCWS.eSAFE.v15\protected\controllers\PcwsController.php (73)
+in C:\xampp\htdocs\PCWS.APIs\PCWS.eSAFE.v15\index.php (13)
+2015/09/14 13:43:16 [response] [application] [Deposit] Token: fd9d359f64337c64760c20387fadd431289ed5a1, Output: {"Deposit":{"TransactionMessage":"Cant connect to casino","ErrorCode":8}}
+in C:\xampp\htdocs\PCWS.APIs\PCWS.eSAFE.v15\protected\components\CLoggerModified.php (17)
+in C:\xampp\htdocs\PCWS.APIs\PCWS.eSAFE.v15\protected\controllers\PcwsController.php (403)
+in C:\xampp\htdocs\PCWS.APIs\PCWS.eSAFE.v15\index.php (13)
+2015/09/14 14:02:12 [request] [application] [Deposit] Input: {"ServiceID":"20","CardNumber":"UBQH4SFS","Amount":"500","PaymentType":"1","SiteID":"167","AID":"45","SystemUsername":"pcws","AccessDate":"2015-09-14 13:36:26 ","Token":"fd9d359f64337c64760c20387fadd431289ed5a1","TraceNumber":"","ReferenceNumber":"","CouponCode":"","PaymentTrackingID":""}
+in C:\xampp\htdocs\PCWS.APIs\PCWS.eSAFE.v15\protected\components\CLoggerModified.php (17)
+in C:\xampp\htdocs\PCWS.APIs\PCWS.eSAFE.v15\protected\controllers\PcwsController.php (73)
+in C:\xampp\htdocs\PCWS.APIs\PCWS.eSAFE.v15\index.php (13)
+2015/09/14 14:02:13 [response] [application] [Deposit] Token: fd9d359f64337c64760c20387fadd431289ed5a1, Output: {"Deposit":{"TransactionMessage":0,"ErrorCode":8}}
+in C:\xampp\htdocs\PCWS.APIs\PCWS.eSAFE.v15\protected\components\CLoggerModified.php (17)
+in C:\xampp\htdocs\PCWS.APIs\PCWS.eSAFE.v15\protected\controllers\PcwsController.php (403)
+in C:\xampp\htdocs\PCWS.APIs\PCWS.eSAFE.v15\index.php (13)
+2015/09/14 14:15:31 [request] [application] [Deposit] Input: {"ServiceID":"20","CardNumber":"UBQH4SFS","Amount":"500","PaymentType":"1","SiteID":"167","AID":"45","SystemUsername":"pcws","AccessDate":"2015-09-14 13:36:26 ","Token":"fd9d359f64337c64760c20387fadd431289ed5a1","TraceNumber":"","ReferenceNumber":"","CouponCode":"","PaymentTrackingID":""}
+in C:\xampp\htdocs\PCWS.APIs\PCWS.eSAFE.v15\protected\components\CLoggerModified.php (17)
+in C:\xampp\htdocs\PCWS.APIs\PCWS.eSAFE.v15\protected\controllers\PcwsController.php (73)
+in C:\xampp\htdocs\PCWS.APIs\PCWS.eSAFE.v15\index.php (13)
+2015/09/14 14:15:35 [response] [application] [Deposit] Token: fd9d359f64337c64760c20387fadd431289ed5a1, Output: {"Deposit":{"TransactionMessage":0,"ErrorCode":8}}
+in C:\xampp\htdocs\PCWS.APIs\PCWS.eSAFE.v15\protected\components\CLoggerModified.php (17)
+in C:\xampp\htdocs\PCWS.APIs\PCWS.eSAFE.v15\protected\controllers\PcwsController.php (403)
+in C:\xampp\htdocs\PCWS.APIs\PCWS.eSAFE.v15\index.php (13)
+2015/09/14 14:18:39 [request] [application] [Deposit] Input: {"ServiceID":"20","CardNumber":"UBQH4SFS","Amount":"500","PaymentType":"1","SiteID":"167","AID":"45","SystemUsername":"pcws","AccessDate":"2015-09-14 13:36:26 ","Token":"fd9d359f64337c64760c20387fadd431289ed5a1","TraceNumber":"","ReferenceNumber":"","CouponCode":"","PaymentTrackingID":""}
+in C:\xampp\htdocs\PCWS.APIs\PCWS.eSAFE.v15\protected\components\CLoggerModified.php (17)
+in C:\xampp\htdocs\PCWS.APIs\PCWS.eSAFE.v15\protected\controllers\PcwsController.php (73)
+in C:\xampp\htdocs\PCWS.APIs\PCWS.eSAFE.v15\index.php (13)
+2015/09/14 14:18:41 [response] [application] [Deposit] Token: fd9d359f64337c64760c20387fadd431289ed5a1, Output: {"Deposit":{"TransactionMessage":0,"ErrorCode":8}}
+in C:\xampp\htdocs\PCWS.APIs\PCWS.eSAFE.v15\protected\components\CLoggerModified.php (17)
+in C:\xampp\htdocs\PCWS.APIs\PCWS.eSAFE.v15\protected\controllers\PcwsController.php (403)
+in C:\xampp\htdocs\PCWS.APIs\PCWS.eSAFE.v15\index.php (13)
