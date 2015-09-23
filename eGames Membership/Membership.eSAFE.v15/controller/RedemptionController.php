@@ -27,6 +27,8 @@ if(isset($_SESSION['userinfo'])){
     App::LoadModuleClass("Admin", "AccessRights");
     App::LoadModuleClass("Admin", "AccountSessions");
     App::LoadModuleClass("Kronus", "Accounts");
+    App::LoadModuleClass("Membership", "MemberInfo");
+    $_MemberInfo = new MemberInfo();
     $sessioncount = $_AccountSessions->checkifsessionexist($aid, $sessionid);
     foreach ($sessioncount as $value) {
             foreach ($value as $value2) {

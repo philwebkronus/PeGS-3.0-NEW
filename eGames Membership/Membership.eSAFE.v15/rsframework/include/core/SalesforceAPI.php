@@ -110,7 +110,7 @@ class SalesforceAPI extends APIAbstract {
         curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type : application/x-www-form-urlencoded"));
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_SSLVERSION, 4);
-        $login = curl_exec($ch);//var_dump($this->base_url . '/services/oauth2/token');var_dump($login);exit;
+        $login = curl_exec($ch);
         $login = explode("\n", $login);
         $login = json_decode($login[count($login)-1]);
         //echo 'Auth response: '; print_r($data); echo '<br/>';
