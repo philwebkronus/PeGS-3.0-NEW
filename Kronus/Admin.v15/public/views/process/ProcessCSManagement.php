@@ -917,10 +917,14 @@ if($connected && $connected2)
                      $responce->total = $total_pages;
                      $responce->records = $count;                    
                      foreach($result as $vview)
-                     {                     
+                     {        
+                        //get terminal number in code
+                        $sitecode = $vview['SiteCode']; 
+                        unset($vview['SiteCode']);
+                        $terminal = preg_split("/$sitecode/", $vview['TerminalCode']);
                         $responce->rows[$i]['id']=$vview['TransactionsSummaryID'];
-                        $responce->rows[$i]['cell']=array($vview['TransactionsSummaryID'],
-                            $vview['POSAccountNo'], $vview['TerminalID'],  
+                        $responce->rows[$i]['cell']=array($vview['POSAccountNo'], 
+                            $terminal[1],  
                             number_format($vview['Deposit'], 2), 
                             number_format($vview['Reload'],2), 
                             number_format($vview['Withdrawal'], 2), 
@@ -1022,8 +1026,12 @@ if($connected && $connected2)
                         
                         $vsthistoryID = $vview['ServiceTransferHistoryID'];
                         $responce->rows[$i]['id']=$vview['TransactionRequestLogLPID'];
-                        $responce->rows[$i]['cell']=array($vview['TransactionRequestLogLPID'],$vview['TransactionReferenceID'], $vview['SiteID'], 
-                                                          $vview['TerminalID'], $vtranstype, $vview['ServiceTransactionID'], 
+                        $responce->rows[$i]['cell']=array($vview['TransactionRequestLogLPID'],
+                                                          $vview['TransactionReferenceID'], 
+                                                          $vview['SiteID'], 
+                                                          $vview['TerminalID'],
+                                                          $vtranstype, 
+                                                          $vview['ServiceTransactionID'], 
                                                           $vview['ServiceStatus'], number_format($vview['Amount'], 2), $serviceID, 
                                                           $vview['StartDate'], $vview['EndDate'], $vstatus);
                         $i++;

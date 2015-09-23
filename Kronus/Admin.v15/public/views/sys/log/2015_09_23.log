@@ -1,0 +1,52 @@
+[23-Sep-2015 09:12:48] PHP Notice:  A session had already been started - ignoring session_start() in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessLogin.php on line 95
+[23-Sep-2015 09:13:14] PHP Notice:  A session had already been started - ignoring session_start() in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessLogin.php on line 95
+[23-Sep-2015 09:13:25] PHP Notice:  A session had already been started - ignoring session_start() in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessLogin.php on line 95
+[23-Sep-2015 09:13:39] PHP Notice:  A session had already been started - ignoring session_start() in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessLogin.php on line 95
+[23-Sep-2015 09:14:06] PHP Notice:  A session had already been started - ignoring session_start() in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessLogin.php on line 95
+[23-Sep-2015 09:14:25] PHP Notice:  A session had already been started - ignoring session_start() in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessLogin.php on line 95
+[23-Sep-2015 09:16:24] PHP Notice:  A session had already been started - ignoring session_start() in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessLogin.php on line 95
+[23-Sep-2015 09:17:28] PHP Notice:  A session had already been started - ignoring session_start() in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessLogin.php on line 95
+[23-Sep-2015 09:17:38] PHP Notice:  Undefined index: siteid1 in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\rptsitetransaction.php on line 304
+[23-Sep-2015 09:17:38] PHP Notice:  Undefined index: siteid2 in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\rptsitetransaction.php on line 335
+[23-Sep-2015 09:30:12] PHP Notice:  A session had already been started - ignoring session_start() in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessLogin.php on line 95
+[23-Sep-2015 09:37:35] PHP Notice:  A session had already been started - ignoring session_start() in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessLogin.php on line 95
+[23-Sep-2015 09:37:40] PHP Notice:  Undefined index: siteid1 in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\rptsitetransaction.php on line 304
+[23-Sep-2015 09:37:40] PHP Notice:  Undefined index: siteid2 in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\rptsitetransaction.php on line 335
+[23-Sep-2015 10:43:27] PHP Notice:  A session had already been started - ignoring session_start() in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessLogin.php on line 95
+[23-Sep-2015 11:04:02] PHP Notice:  Undefined index: UserName in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessTopUpPaginate.php on line 1161
+[23-Sep-2015 11:04:02] PHP Notice:  Undefined index: UserName in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessTopUpPaginate.php on line 1161
+[23-Sep-2015 11:04:02] PHP Notice:  Undefined index: UserName in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessTopUpPaginate.php on line 1161
+[23-Sep-2015 11:04:02] PHP Notice:  Undefined index: UserName in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessTopUpPaginate.php on line 1161
+[23-Sep-2015 11:04:02] PHP Notice:  Undefined index: UserName in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessTopUpPaginate.php on line 1161
+[23-Sep-2015 11:04:02] PHP Notice:  Undefined index: UserName in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessTopUpPaginate.php on line 1161
+[23-Sep-2015 11:04:02] PHP Notice:  Undefined index: UserName in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessTopUpPaginate.php on line 1161
+[23-Sep-2015 11:04:02] PHP Notice:  Undefined index: UserName in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessTopUpPaginate.php on line 1161
+[23-Sep-2015 11:04:05] PHP Notice:  Undefined index: UserName in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessTopUpPaginate.php on line 1161
+[23-Sep-2015 11:04:05] PHP Notice:  Undefined index: UserName in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessTopUpPaginate.php on line 1161
+[23-Sep-2015 11:04:05] PHP Notice:  Undefined index: UserName in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessTopUpPaginate.php on line 1161
+[23-Sep-2015 11:04:05] PHP Notice:  Undefined index: UserName in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessTopUpPaginate.php on line 1161
+[23-Sep-2015 11:04:05] PHP Notice:  Undefined index: UserName in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessTopUpPaginate.php on line 1161
+[23-Sep-2015 11:04:05] PHP Notice:  Undefined index: UserName in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessTopUpPaginate.php on line 1161
+[23-Sep-2015 11:04:05] PHP Notice:  Undefined index: UserName in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessTopUpPaginate.php on line 1161
+[23-Sep-2015 11:04:05] PHP Notice:  Undefined index: UserName in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessTopUpPaginate.php on line 1161
+[23-Sep-2015 11:07:04] PHP Notice:  A session had already been started - ignoring session_start() in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessLogin.php on line 95
+[23-Sep-2015 11:38:08] PHP Notice:  A session had already been started - ignoring session_start() in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessLogin.php on line 95
+[23-Sep-2015 11:49:49] PHP Notice:  Undefined variable: ewallet in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessTopUpPaginate.php on line 1028
+[23-Sep-2015 11:51:00] PHP Notice:  Undefined variable: ewallet in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessTopUpPaginate.php on line 1028
+[23-Sep-2015 11:51:08] PHP Notice:  Undefined variable: ewallet in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessTopUpPaginate.php on line 1028
+[23-Sep-2015 11:51:25] PHP Notice:  Undefined variable: IsEwallet in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessTopUpPaginate.php on line 1028
+[23-Sep-2015 11:56:25] PHP Notice:  Undefined variable: new_sessionid in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessTopUp.php on line 52
+[23-Sep-2015 11:56:25] PHP Fatal error:  Call to a member function prepare() on a non-object in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\sys\class\DbHandler.class.php on line 91
+[23-Sep-2015 11:57:34] PHP Notice:  A session had already been started - ignoring session_start() in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessLogin.php on line 95
+[23-Sep-2015 12:03:12] PHP Fatal error:  Cannot use object of type stdClass as array in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\sys\class\RptOperator.class.php on line 612
+[23-Sep-2015 13:22:33] PHP Notice:  A session had already been started - ignoring session_start() in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessLogin.php on line 95
+[23-Sep-2015 13:40:11] PHP Notice:  A session had already been started - ignoring session_start() in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessLogin.php on line 95
+[23-Sep-2015 13:40:26] PHP Notice:  Undefined index: acctype in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessLogin.php on line 199
+[23-Sep-2015 13:40:33] PHP Notice:  A session had already been started - ignoring session_start() in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessLogin.php on line 95
+[23-Sep-2015 13:47:04] PHP Notice:  Undefined property: LoyaltyUBWrapper::$CardInfo in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\sys\class\RptOperator.class.php on line 701
+[23-Sep-2015 13:47:04] PHP Notice:  Trying to get property of non-object in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\sys\class\RptOperator.class.php on line 701
+[23-Sep-2015 13:51:42] PHP Notice:  A session had already been started - ignoring session_start() in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessLogin.php on line 95
+[23-Sep-2015 13:55:18] PHP Notice:  A session had already been started - ignoring session_start() in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessLogin.php on line 95
+[23-Sep-2015 13:56:59] PHP Notice:  A session had already been started - ignoring session_start() in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessLogin.php on line 95
+[23-Sep-2015 13:58:25] PHP Fatal error:  Call to a member function prepare() on a non-object in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\sys\class\DbHandler.class.php on line 91
+[23-Sep-2015 14:12:18] PHP Notice:  A session had already been started - ignoring session_start() in C:\xampp\htdocs\Kronus_UB\admin.v15\public\views\process\ProcessLogin.php on line 95

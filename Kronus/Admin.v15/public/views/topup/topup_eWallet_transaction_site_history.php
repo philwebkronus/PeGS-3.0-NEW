@@ -142,13 +142,13 @@ $vaccesspages = array('5','6','9','12','18');
             sortorder: "asc",
             caption: "e-SAFE Transaction History",
             colModel:[
-                {name:'LoyaltyCardNumber',index:'LoyaltyCardNumber',align: 'center', width:150},
+                {name:'LoyaltyCardNumber',index:'LoyaltyCardNumber',align: 'center', width:100},
                                     {name:'StartDate',index:'StartDate', align: 'center', width:185},
-                                    {name:'EndDate',index:'EndDate', align: 'left',width:185},
+                                    {name:'EndDate',index:'EndDate', align: 'center',width:185},
                                     {name:'Amount',index:'Amount', align: 'right', width:100},
                                     {name:'TransType',index:'TransType', align: 'center', width:150},
                                     {name:'Status',index:'Status', align: 'center', width:150},
-                                    {name:'Name',index:'Name', align: 'center', width:100}
+                                    {name:'Name',index:'Name', align: 'center', width:150}
             ],     
             resizable:true
         });

@@ -974,8 +974,7 @@ if($connected && $connected2 && $connected3)
                                 $results = preg_split("/$results2/", $vview['TerminalCode']);
                                 
                                 $responce->rows[$i]['id']=$vview['TransactionDetailsID'];
-                                $responce->rows[$i]['cell']=array($vview['TransactionDetailsID'], 
-                                                                  $results[1], 
+                                $responce->rows[$i]['cell']=array($results[1], 
                                                                   $vtranstype, 
                                                                   $vview['ServiceTransactionID'], 
                                                                   number_format($vview['Amount'],2), 
@@ -1443,7 +1442,7 @@ if($connected && $connected2 && $connected3)
                         $results = preg_split("/$results2/", $vview['TerminalCode']);
                         
                         $responce->rows[$i]['id']=$vview['TransactionReferenceID'];
-                        $responce->rows[$i]['cell']=array($vview['TransactionReferenceID'],$vview['TransactionSummaryID'],$vview['POSAccountNo'], $results[1],$vtranstype,$vview['ServiceName'], number_format($vview['Amount'],2),$vview['DateCreated'],$vview['Name'], $vstatus);
+                        $responce->rows[$i]['cell']=array($vview['POSAccountNo'], $results[1],$vtranstype,$vview['ServiceName'], number_format($vview['Amount'],2),$vview['DateCreated'],$vview['Name'], $vstatus);
                         $i++;
                      }
                 }
@@ -1509,7 +1508,7 @@ if($connected && $connected2 && $connected3)
                         $results2 = $results2['SiteCode'];
                         $results = preg_split("/$results2/", $vview['TerminalCode']); 
                         $responce->rows[$i]['id']=$vview['TransactionsSummaryID'];
-                        $responce->rows[$i]['cell']=array($vview['TransactionsSummaryID'],$vview['POSAccountNo'], $results[1],  number_format($vview['Deposit'], 2), number_format($vview['Reload'],2), number_format($vview['Withdrawal'], 2), $vview['DateStarted'], $vview['DateEnded'], $vview['Name']);
+                        $responce->rows[$i]['cell']=array($vview['POSAccountNo'], $results[1],  number_format($vview['Deposit'], 2), number_format($vview['Reload'],2), number_format($vview['Withdrawal'], 2), $vview['DateStarted'], $vview['DateEnded'], $vview['Name']);
                         $i++;
                      }
                 }

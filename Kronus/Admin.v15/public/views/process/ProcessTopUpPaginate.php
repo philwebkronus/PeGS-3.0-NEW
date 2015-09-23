@@ -576,12 +576,25 @@ class ProcessTopUpPaginate extends BaseProcess {
         if($siteID == 'all'){
             $siteID = $_POST['siteID'];
             $terminalID = 'all';
+            $vipTerminal = 'all';
         } else {
             $siteID = $topup->getSiteID($siteID);
             $terminalID = isset($_POST['terminalID']) ? $_POST['terminalID']:'all';
-        }
+                    $siteCode = $topup->getSiteCodes($siteID);
 
-        $count = $topup->getActiveSessionCount($siteID, $txtcardnumber = '', $terminalID);
+                    if ($terminalID=='all')
+                    {
+                       $vipTerminal= 'all'; 
+                    }
+                    else{
+                        $code = $_POST['siteID'];
+                        $terminalCode = $topup->getTerminalCode($code, $terminalID);
+                        $terminal=$terminalCode."VIP";
+                        $terminalVip = $topup->getVipTerminal($code,$terminal);
+                        $vipTerminal = $terminalVip;
+                    }
+        }                   
+        $count = $topup->getActiveSessionCount($siteID, $txtcardnumber = '', $terminalID, $vipTerminal);
         echo "$count";
         $topup->close();
         unset($count);
@@ -597,14 +610,28 @@ class ProcessTopUpPaginate extends BaseProcess {
         if($siteID == 'all'){
             $siteID = $_POST['siteID'];
             $terminalID = '';
+            $vipTerminal = '';
         } else {
             $siteID = $topup->getSiteID($siteID);
             $terminalID = isset($_POST['terminalID']) ? $_POST['terminalID']:'';
+            $siteCode = $topup->getSiteCodes($siteID);
+                    if ($terminalID=='all')
+                    {
+                       $vipTerminal= 'all'; 
+                    }
+                    else{
+                        $code = $_POST['siteID'];
+                        $terminalCode = $topup->getTerminalCode($code, $terminalID);
+                        $terminal=$terminalCode."VIP";
+                        $terminalVip = $topup->getVipTerminal($code,$terminal);
+                        $vipTerminal = $terminalVip;
+                    }
         }
-        $usermode = 0;
-        $count = $topup->getActiveSessionCountMod($siteID, $cardnumber = '', $usermode,$terminalID);
+             $usermode = 0;
+        $count = $topup->getActiveSessionCountMod($siteID, $cardnumber = '', $usermode,$terminalID, $vipTerminal);
         echo "$count";
         $topup->close();
+       
         unset($count);
     }
     
@@ -618,12 +645,26 @@ class ProcessTopUpPaginate extends BaseProcess {
         if($siteID == 'all'){
             $siteID = $_POST['siteID'];
             $terminalID = '';
+            $vipTerminal = '';
         } else {
             $siteID = $topup->getSiteID($siteID);
             $terminalID = isset($_POST['terminalID']) ? $_POST['terminalID']:'';
+                  $siteCode = $topup->getSiteCodes($siteID);
+                    if ($terminalID=='all')
+                    {
+                       $vipTerminal= 'all'; 
+                    }
+                    else{
+                        $code = $_POST['siteID'];
+                        $terminalCode = $topup->getTerminalCode($code, $terminalID);
+                        $terminal=$terminalCode."VIP";
+                        $terminalVip = $topup->getVipTerminal($code,$terminal);
+                        $vipTerminal = $terminalVip;
+                    }
         }
+   
         $usermode = 1;
-        $count = $topup->getActiveSessionCountMod($siteID, $cardnumber = '', $usermode, $terminalID);
+        $count = $topup->getActiveSessionCountMod($siteID, $cardnumber = '', $usermode, $terminalID, $vipTerminal);
         echo "$count";
         $topup->close();
         unset($count);
@@ -698,6 +739,9 @@ class ProcessTopUpPaginate extends BaseProcess {
                 array_push($terminals, $newvalue);
             }
         }
+            else {
+                    $terminals = array(0);
+            }
 
         echo json_encode($terminals);
         $topup->close();
@@ -815,7 +859,19 @@ class ProcessTopUpPaginate extends BaseProcess {
         $topup->open();   
         $sitecode = $_POST['sitecode'];
         $terminalID = isset($_POST['terminalID']) ? $_POST['terminalID']:'';
-        $rcount = $topup->countActiveTerminals2($sitecode,$terminalID);
+        if ($terminalID=='all')
+                    {
+                       $vipTerminal= 'all'; 
+                    }
+                    else{
+        $terminalCode = $topup->getTerminalCode($sitecode, $terminalID);
+        $terminal=$terminalCode."VIP";
+        $terminalVip = $topup->getVipTerminal($sitecode,$terminal);
+        $vipTerminal = $terminalVip;
+                    }
+ 
+        $rcount = $topup->countActiveTerminals2($sitecode,$terminalID,$vipTerminal);
+
         
         foreach ($rcount as $value) {
             $count = $value['rcount'];
@@ -838,7 +894,7 @@ class ProcessTopUpPaginate extends BaseProcess {
 
         $start = (int)(((int)$page * $limit) - $limit);
         $limit = (int)$limit;   
-        $rows = $topup->getActiveTerminals2($sitecode, $terminalID, $direction, $start, $limit);
+        $rows = $topup->getActiveTerminals2($sitecode, $terminalID, $vipTerminal, $direction, $start, $limit);
         
         if(count($rows) == 0){
             $jqgrid = array();
@@ -876,18 +932,10 @@ class ProcessTopUpPaginate extends BaseProcess {
                 }
                 
                 $loyalty_result = json_decode($loyalty->getCardInfo2($row['LoyaltyCardNumber'], $cardinfo, 1));
-                
-                $isEwallet = "No";
-                
-                if($row['UserMode'] == 0){
-                    $row['UserMode'] = "Terminal Based";
-                }
-                else{
-                    $row['UserMode'] = "User Based";
-                    if($loyalty_result->CardInfo->IsEwallet == 1){
-                        $isEwallet = "Yes";
-                    }
-                }
+
+                $loyalty_result->CardInfo->IsEwallet == 1 ? $isEwallet = "Yes" : $isEwallet = "No";
+                $row['UserMode'] == 0 ? $row['UserMode'] = "Terminal Based" : $row['UserMode'] = "User Based";
+
                 
                 $jqgrid->rows[] = array('id'=>$row['TerminalID'],'cell'=>array(
                     substr($row['SiteCode'], strlen(BaseProcess::$sitecode)),
@@ -966,17 +1014,9 @@ class ProcessTopUpPaginate extends BaseProcess {
                     $row['PlayingBalance'] = "N/A";
                 }
             }
+            $loyalty_result->CardInfo->IsEwallet == 1 ? $isEwallet = "Yes" : $isEwallet = "No";
+            $row['UserMode'] == 0 ? $row['UserMode'] = "Terminal Based" : $row['UserMode'] = "User Based";
             
-            $ewallet = 'No';
-            if($row['UserMode'] == 0){
-                $row['UserMode'] = "Terminal Based";
-            }
-            else{
-                $row['UserMode'] = "User Based";
-                if($loyalty_result->CardInfo->IsEwallet == 1){
-                    $ewallet = 'Yes';
-                }
-            }
             $jqgrid->rows[] = array('id'=>$row['TerminalID'],'cell'=>array(
                 substr($row['SiteCode'], strlen(BaseProcess::$sitecode)),
                 $row['SiteName'], 
@@ -985,7 +1025,7 @@ class ProcessTopUpPaginate extends BaseProcess {
                 $row['ServiceName'],
                 $row['UserMode'],
                 $row['TerminalType'],
-                $ewallet
+                $isEwallet
             ));
         }
         echo json_encode($jqgrid);
@@ -1105,7 +1145,7 @@ class ProcessTopUpPaginate extends BaseProcess {
                 $row['POSAccountNo'],
                 $row['TerminalCode'] != NULL ? substr($row['TerminalCode'], strlen($row['SiteCode'])) : "N/A",
                 number_format($row['ReportedAmount'],2),
-                $row['UserName'],
+                $row['Name'],
                 $row['TransDate'],
                 $row['TicketID'],
                 $row['TransactionID'],

@@ -578,7 +578,7 @@ class ProcessTopUpGenerateReports extends BaseProcess{
                 array('value'=>$row['POSAccountNo']),
                 array('value'=>substr($row['TerminalCode'], strlen($row['SiteCode']))),
                 array('value'=>number_format($row['ReportedAmount'],2),'align'=>'right'),
-                array('value'=>$row['UserName']),
+                array('value'=>$row['Name']),
                 array('value'=>$row['TransDate']),
                 array('value'=>$row['TicketID']),
                 array('value'=>$row['TransactionID']),
@@ -618,7 +618,7 @@ class ProcessTopUpGenerateReports extends BaseProcess{
                     $row['POSAccountNo'],
                     substr($row['TerminalCode'], strlen($row['SiteCode'])),
                     number_format($row['ReportedAmount'],2),
-                    $row['UserName'],
+                    $row['Name'],
                     $row['TransDate'],
                     $row['TicketID'],
                     $row['TransactionID'],
@@ -642,7 +642,17 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         $topreport->open();
         $vsitecode = $_POST['selsite'];
         $vterminalid = $_POST['selterminal'];
-        $rows = $topreport->getRptActiveTerminals($vsitecode,$vterminalid);
+        if ($vterminalid=='all')
+                    {
+                       $vipTerminal= 'all'; 
+                    }
+                    else{
+        $terminalCode = $topreport->getTerminalCode($vsitecode, $vterminalid);
+        $terminal=$terminalCode."VIP";
+        $terminalVip = $topreport->getVipTerminal($vsitecode,$terminal);
+        $vipTerminal = $terminalVip;
+                    }
+        $rows = $topreport->getRptActiveTerminals($vsitecode,$vterminalid,$vipTerminal);
 
         foreach($rows as $key => $row) {
             $balance = $this->getBalance($row);
@@ -806,7 +816,17 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         $topreport->open();
         $vsitecode = $_POST['selsite'];
         $vterminalid = $_POST['selterminal'];
-        $rows = $topreport->getRptActiveTerminals($vsitecode,$vterminalid);
+         if ($vterminalid=='all')
+                    {
+                       $vipTerminal= 'all'; 
+                    }
+                    else{
+        $terminalCode = $topreport->getTerminalCode($vsitecode, $vterminalid);
+        $terminal=$terminalCode."VIP";
+        $terminalVip = $topreport->getVipTerminal($vsitecode,$terminal);
+        $vipTerminal = $terminalVip;
+                    }
+        $rows = $topreport->getRptActiveTerminals($vsitecode,$vterminalid,$vipTerminal);
         
         foreach($rows as $key => $row) {
             $balance = $this->getBalance($row);

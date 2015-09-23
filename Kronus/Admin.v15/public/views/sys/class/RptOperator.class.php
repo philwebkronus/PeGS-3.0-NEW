@@ -430,17 +430,8 @@ class RptOperator extends DBHandler
             
             $loyalty_result = json_decode($loyalty->getCardInfo2($r['LoyaltyCardNumber'], $cardinfo, 1));
             
-            $isEwallet = "No";
-            
-            if($r["UserMode"]== 0){
-                $r["UserMode"] = "Terminal Based";
-            }
-            else{
-                $r["UserMode"] = "User Based";
-                if($loyalty_result->CardInfo->IsEwallet === 1){
-                    $isEwallet = "Yes";           
-                }
-            }
+            $loyalty_result->CardInfo->IsEwallet == 1 ? $isEwallet = "Yes" : $isEwallet = "No";
+            $r['UserMode'] == 0 ? $r['UserMode'] = "Terminal Based" : $r['UserMode'] = "User Based";
             
             if($r["PlayingBalance"] == 0){
                
@@ -608,16 +599,8 @@ class RptOperator extends DBHandler
             
             $loyalty_result = json_decode($loyalty->getCardInfo2($r['LoyaltyCardNumber'], $cardinfo, 1));
             
-            $isEwallet = "No";
-            if($r["UserMode"]== 0){
-                $r["UserMode"] = "Terminal Based";
-            }
-            else{
-                $r["UserMode"] = "User Based";
-                if($loyalty_result->CardInfo->IsEwallet === 1){
-                    $isEwallet = "Yes";
-                }
-            }
+            $loyalty_result->CardInfo->IsEwallet == 1 ? $isEwallet = "Yes" : $isEwallet = "No";
+            $r['UserMode'] == 0 ? $r['UserMode'] = "Terminal Based" : $r['UserMode'] = "User Based";
             
             if($r["PlayingBalance"] == 0){
                
@@ -713,7 +696,7 @@ class RptOperator extends DBHandler
         $newRecord = array();
         
         $ctr = 0;
-        
+
         foreach($record as $r) {
             
             if(preg_match("/RTG/", $r["ServiceName"])) {
@@ -724,7 +707,7 @@ class RptOperator extends DBHandler
                                     $r["ServiceID"]);
                 
                 $_CasinoAPIHandler = new CasinoCAPIHandler( CasinoCAPIHandler::RTG, $configuration );
-                
+
                 if($r["UserMode"] == 1){
                     $data = $_CasinoAPIHandler->GetBalance($r["UBServiceLogin"]);
                 } else {
@@ -785,15 +768,9 @@ class RptOperator extends DBHandler
             
             $loyalty_result = json_decode($loyalty->getCardInfo2($cardnumber, $cardinfo, 1));
             
-            //check if user mode is terminal or user based
-            if($r["UserMode"] == '0'){
-                $r["UserMode"] = "Terminal Based";
-                $isEwallet = 'No';
-            }
-            else{
-                $r["UserMode"] = "User Based";
-                $isEwallet = ($loyalty_result->CardInfo->IsEwallet)==1?'Yes':'No';
-            }
+            $loyalty_result->CardInfo->IsEwallet == 1 ? $isEwallet = "Yes" : $isEwallet = "No";
+            $r['UserMode'] == 0 ? $r['UserMode'] = "Terminal Based" : $r['UserMode'] = "User Based";
+                
 
             if($r["PlayingBalance"] ==  0){
 
@@ -960,17 +937,8 @@ class RptOperator extends DBHandler
 
             //check if user mode is terminal or user based
             
-            $isEwallet = "No";
-            
-            if($r["UserMode"] == '0'){
-                $r["UserMode"] = "Terminal Based";
-            }
-            else{
-                $r["UserMode"] = "User Based";
-                if($loyalty_result->CardInfo->IsEwallet == 1){
-                    $isEwallet = "Yes";
-                }
-            }
+            $loyalty_result->CardInfo->IsEwallet == 1 ? $isEwallet = "Yes" : $isEwallet = "No";
+            $r['UserMode'] == 0 ? $r['UserMode'] = "Terminal Based" : $r['UserMode'] = "User Based";
 
             if($r["PlayingBalance"] ==  0){
 

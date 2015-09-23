@@ -83,12 +83,12 @@ $vaccesspages = array('9');
                        if(data == "")
                        {
                            content = "No logs found";
-                           tblcont += "<tbody><tr><td>"+this.ERROR+"</td></tr></tbody>";
+                           tblcont += "<tbody><tr><td>"+content+"</td></tr></tbody>";
                        }
                        else
                        {
                            jQuery.each(data, function(str,content){
-                               tblcont += "<tbody><tr><td>"+content+"</td></tr></tbody>"; 
+                               tblcont += "<tbody><tr><td>"+this.ERROR+"</td></tr></tbody>"; 
                            });
                        }
                        jQuery("#logscontent").show();

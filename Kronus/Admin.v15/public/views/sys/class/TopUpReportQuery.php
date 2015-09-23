@@ -384,15 +384,16 @@ class TopUpReportQuery extends DBHandler{
                 st.SiteName,
                 st.SiteCode,
                 tm.TerminalCode,
-                at.UserName,
+                at.Name,
                 st.POSAccountNo,
                 rs.ServiceName
                 FROM manualredemptions mr 
                 INNER JOIN sites st ON mr.SiteID = st.SiteID 
-                INNER JOIN terminals tm ON mr.TerminalID = tm.TerminalID
-                INNER JOIN accounts at ON mr.ProcessedByAID = at.AID
+                LEFT JOIN terminals tm ON mr.TerminalID = tm.TerminalID
+                INNER JOIN accountdetails at ON mr.ProcessedByAID = at.AID
                 LEFT JOIN ref_services rs ON mr.ServiceID = rs.ServiceID
-                WHERE mr.TransactionDate BETWEEN '$startdate' AND '$enddate' ORDER BY mr.ManualRedemptionsID ASC";
+                WHERE mr.TransactionDate >= '$startdate' AND mr.TransactionDate < '$enddate'  
+                ORDER BY mr.ManualRedemptionsID ASC";
             $this->prepare($query);
             $this->execute();
             return $this->fetchAllData();         
@@ -1603,8 +1604,27 @@ class TopUpReportQuery extends DBHandler{
                 $qr3,$rows4,$rows5);
         return $qr1;
     }
-    
-     public function getRptActiveTerminals($zsitecode, $terminalid="all") 
+     public function getTerminalCode($sitecode, $terminalID)
+      {
+          $query = "SELECT TerminalCode FROM terminals t INNER JOIN sites as s ON t.SiteID = s.SiteID  WHERE s.siteCode = '$sitecode' AND t.terminalID = $terminalID";
+           $this->prepare($query);
+          $this->execute();
+          $code =  $this->fetchAllData();
+          $terminalCodes = $code[0]["TerminalCode"];
+            return $terminalCodes;
+          
+      }
+            public function getVipTerminal($sitecode, $terminalCode)
+      {
+          $query = "SELECT TerminalID FROM terminals t INNER JOIN sites as s ON t.SiteID = s.SiteID  WHERE s.siteCode = '$sitecode' AND t.terminalCode = '$terminalCode'";
+           $this->prepare($query);
+          $this->execute();
+          $code =  $this->fetchAllData();
+          $terminalCodes = $code[0]["TerminalID"];
+          return $terminalCodes;
+          
+      }
+     public function getRptActiveTerminals($zsitecode, $terminalid="all", $vipTerminal) 
     {
           //if site was selected All
           if($zsitecode == "all")
@@ -1621,7 +1641,7 @@ class TopUpReportQuery extends DBHandler{
           }
           else
           {
-              $terminalid != "all" ? $additionalcond = "AND ts.TerminalID = $terminalid ": $additionalcond = "";
+              $terminalid != "all"? $vipTerminal!= "all" ? $additioncond = "AND ts.TerminalID IN ($terminalid, $vipTerminal) ":$additioncond = "" :$additioncond = "";
               $query = "SELECT ts.TerminalID, t.TerminalName,s.SiteName, s.POSAccountNo, s.SiteCode,ts.ServiceID,
                         CASE t.TerminalType WHEN 0 THEN 'Regular' WHEN 1 THEN 'Genesis' ELSE 'e-SAFE' END AS TerminalType, 
                         t.TerminalCode, rs.ServiceName, ts.UserMode, m.IsEwallet FROM terminalsessions ts
@@ -1629,10 +1649,9 @@ class TopUpReportQuery extends DBHandler{
                         INNER JOIN sites as s ON t.SiteID = s.SiteID 
                         INNER JOIN ref_services rs ON ts.ServiceID = rs.ServiceID
                         INNER JOIN membership.members m ON m.MID = ts.MID
-                        WHERE s.SiteCode = '".$zsitecode." ".$additionalcond."'ORDER BY s.SiteCode, t.TerminalCode ASC";
+                        WHERE s.SiteCode = '".$zsitecode."' ".$additioncond."ORDER BY s.SiteCode, t.TerminalCode ASC";
               $this->prepare($query);
           }
-                   
           $this->execute();
           return $this->fetchAllData();
     }

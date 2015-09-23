@@ -154,17 +154,17 @@ $vaccesspages = array('9');
                                     paginate: function() {return $("#paginate").val();}
                                       },
                             datatype: "json",
-                            colNames:['Transaction Reference ID', 'Terminal Code', 'Transaction Type', 'Service Reference ID', 'Amount','Transaction Date','Status','Created By'],
+                            colNames:['Terminal Code', 'Transaction Type', 'Service Reference ID', 'Amount','Transaction Date','Status','Created By'],
                             colModel:[
                                     //{name:'LoyaltyCard',index:'LoyaltyCard', align: 'center', width:150},
-                                    {name:'TransactionReferenceID',index:'TransactionReferenceID',align: 'left', width:210},
-                                    {name:'TerminalID',index:'TerminalID', align: 'center', width:140},
-                                    {name:'TransactionType',index:'TransactionType', align: 'left'},
+                                    //{name:'TransactionReferenceID',index:'TransactionReferenceID',align: 'left', width:210},
+                                    {name:'TerminalID',index:'TerminalID', align: 'center', width:130},
+                                    {name:'TransactionType',index:'TransactionType', align: 'left', width: 115},
                                     {name:'ServiceTransactionID',index:'ServiceTransactionID', align: 'left', width:100},
-                                    {name:'Amount',index:'Amount', align: 'right', width:150},
+                                    {name:'Amount',index:'Amount', align: 'right', width:100},
                                     {name:'DateCreated',index:'DateCreated', align: 'center', width:210},
-                                    {name:'Status',index:'Status', align: 'center', width:100},
-                                    {name:'UserName', index:'UserName', align: 'center', width:150}
+                                    {name:'Status',index:'Status', align: 'center', width:90},
+                                    {name:'UserName', index:'UserName', align: 'center', width:220}
 //                                    {name:'button', index: 'button',align: 'center'}
                             ],
 

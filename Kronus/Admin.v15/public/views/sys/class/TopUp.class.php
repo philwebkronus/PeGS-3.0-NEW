@@ -2849,9 +2849,10 @@ class TopUp extends DBHandler
             $total_row = 0;
             $query = "SELECT count(mr.ManualRedemptionsID) AS totalrow 
                       FROM manualredemptions mr 
-                      JOIN sites st ON mr.SiteID = st.SiteID
-                      JOIN terminals tm ON mr.TerminalID = tm.TerminalID
-                      JOIN accounts at ON mr.ProcessedByAID = at.AID 
+                      INNER JOIN sites st ON mr.SiteID = st.SiteID 
+                      LEFT JOIN terminals tm ON mr.TerminalID = tm.TerminalID
+                      INNER JOIN accounts at ON mr.ProcessedByAID = at.AID 
+                      LEFT JOIN ref_services rs ON mr.ServiceID = rs.ServiceID 
                       WHERE mr.TransactionDate >= '$startdate 06:00:00' AND mr.TransactionDate < '$enddate 06:00:00'";
             $this->prepare($query);
             $this->execute();
@@ -2877,14 +2878,14 @@ class TopUp extends DBHandler
                 st.SiteCode,
                 tm.TerminalCode,
                 st.POSAccountNo,
-                at.UserName,
+                at.Name,
                 rs.ServiceName
                 FROM manualredemptions mr 
                 INNER JOIN sites st ON mr.SiteID = st.SiteID 
                 LEFT JOIN terminals tm ON mr.TerminalID = tm.TerminalID
-                INNER JOIN accounts at ON mr.ProcessedByAID = at.AID 
+                INNER JOIN accountdetails at ON mr.ProcessedByAID = at.AID 
                 LEFT JOIN ref_services rs ON mr.ServiceID = rs.ServiceID
-                WHERE mr.TransactionDate >= '$startdate' AND mr.TransactionDate < '$enddate' 
+                WHERE mr.TransactionDate >= '$startdate 06:00:00' AND mr.TransactionDate < '$enddate 06:00:00' 
                 ORDER BY $sort $dir LIMIT $start,$limit";
             $this->prepare($query);
             $this->execute();
@@ -2924,7 +2925,7 @@ class TopUp extends DBHandler
       * @return array
       * get active session count using siteid or cardnumber
       */
-      public final function getActiveSessionCount ($siteID, $cardnumber, $terminalID = 'all') {
+      public final function getActiveSessionCount ($siteID, $cardnumber, $terminalID = 'all', $vipTerminal='all') {
         if($cardnumber == ''){
             if($siteID == 'all') {
                 $query = "SELECT count(t.TerminalID) as ActiveSession
@@ -2933,7 +2934,7 @@ class TopUp extends DBHandler
         
                 $this->prepare($query);
             } else {
-                $terminalID != "all" ? $additioncond = "AND ts.TerminalID = :terminalID":$additioncond = "";
+                $terminalID != "all"? $vipTerminal!= "all" ? $additioncond = "AND ts.TerminalID IN (:terminalID, :vipTerminal) ":$additioncond = "" :$additioncond = "";
                 $query = " SELECT count(t.TerminalID) as ActiveSession
                                     FROM terminalsessions as ts, terminals as t
                                     WHERE t.TerminalID = ts.TerminalID AND t.SiteID = :siteID ".$additioncond;
@@ -2941,6 +2942,7 @@ class TopUp extends DBHandler
                 $this->prepare($query);
                 $this->bindParam(":siteID", $siteID);
                 $terminalID != "all" ? $this->bindParam(":terminalID", $terminalID):"";
+                $vipTerminal != "all" ? $this->bindParam(":vipTerminal", $vipTerminal):"";
             }
             
         } else {
@@ -2966,7 +2968,7 @@ class TopUp extends DBHandler
       * @return array
       * get active session count using siteid with user mode
       */
-    public final function getActiveSessionCountMod ($siteID, $cardnumber, $usermode, $terminalID = 'all') {
+    public final function getActiveSessionCountMod ($siteID, $cardnumber, $usermode, $terminalID = 'all', $vipTerminal='all') {
         if($cardnumber == '') {
             if($siteID == 'all') {
                 $query = "SELECT count(t.TerminalID) as ActiveSession
@@ -2977,7 +2979,7 @@ class TopUp extends DBHandler
                 $this->prepare($query);
                 $this->bindParam(":usermode", $usermode); 
             } else {
-                $terminalID != "all" ? $additioncond = "AND ts.TerminalID = :terminalID":$additioncond = "";
+                 $terminalID != "all"? $vipTerminal!= "all" ? $additioncond = "AND ts.TerminalID IN (:terminalID, :vipTerminal) ":$additioncond = "" :$additioncond = "";
                 $query = "SELECT count(t.TerminalID) as ActiveSession
                                     FROM terminalsessions as ts, terminals as t
                                     WHERE t.TerminalID = ts.TerminalID
@@ -2988,6 +2990,7 @@ class TopUp extends DBHandler
                 $this->bindParam(":siteID", $siteID);
                 $this->bindParam(":usermode", $usermode); 
                 $terminalID != "all" ? $this->bindParam(":terminalID", $terminalID):"";
+                 $vipTerminal != "all" ? $this->bindParam(":vipTerminal", $vipTerminal):"";
             }
         } else {
             $query = "SELECT count(t.TerminalID) as ActiveSession
@@ -3093,7 +3096,7 @@ class TopUp extends DBHandler
       }
       
       
-      public function getActiveTerminals2($sitecode, $terminalID, $dir, $start, $limit) {
+      public function getActiveTerminals2($sitecode, $terminalID, $vipTerminal, $dir, $start, $limit) {
           
           if($sitecode != "all"){
               $condition = " WHERE s.SiteCode = '$sitecode' ";
@@ -3102,7 +3105,7 @@ class TopUp extends DBHandler
           }
           
           if($terminalID != "all"){
-              $condition .= " AND ts.TerminalID = $terminalID ";
+              $condition .= " AND ts.TerminalID IN ($terminalID, $vipTerminal) ";
           }
 
           $query = "SELECT ts.TerminalID, t.TerminalName,  CASE t.TerminalType WHEN 0 THEN 'Regular' WHEN 1 THEN 'Genesis' ELSE 'e-SAFE' END AS TerminalType, 
@@ -3118,18 +3121,47 @@ class TopUp extends DBHandler
           return $this->fetchAllData();
       }
       
-      
-      public function countActiveTerminals2($sitecode,$terminalID) {
+       public function getSiteCodes($siteID)
+    {
+        $stmt = "SELECT SiteCode from sites WHERE SiteID = '$siteID'";
+        $this->prepare($stmt);
+        $this->execute();
+        $code =  $this->fetchAllData();
+        $siteCode = $code;
+            return $siteCode;
+   
+    }  
+      public function getTerminalCode($sitecode, $terminalID)
+      {
+          $query = "SELECT TerminalCode FROM terminals t INNER JOIN sites as s ON t.SiteID = s.SiteID  WHERE s.siteCode = '$sitecode' AND t.terminalID = $terminalID";
+           $this->prepare($query);
+          $this->execute();
+          $code =  $this->fetchAllData();
+          $terminalCodes = $code[0]["TerminalCode"];
+            return $terminalCodes;
           
+      }
+            public function getVipTerminal($sitecode, $terminalCode)
+      {
+          $query = "SELECT TerminalID FROM terminals t INNER JOIN sites as s ON t.SiteID = s.SiteID  WHERE s.siteCode = '$sitecode' AND t.terminalCode = '$terminalCode'";
+           $this->prepare($query);
+          $this->execute();
+          $code =  $this->fetchAllData();
+          $terminalCodes = $code[0]["TerminalID"];
+          return $terminalCodes;
+          
+      }
+      public function countActiveTerminals2($sitecode,$terminalID, $vipTerminal) {
           if($sitecode != "all"){
               $condition = " WHERE s.SiteCode = '$sitecode' ";
           } else {
               $condition = '';
           }
           
-          if($terminalID != "all"){
-              $condition .= " AND ts.TerminalID = $terminalID ";
+          if($terminalID != "all" and $vipTerminal!='all'){
+              $condition .= " AND ts.TerminalID IN ($terminalID, $vipTerminal)";
           }
+          
           
           
           $query = "SELECT COUNT(ts.TerminalID) AS rcount FROM terminalsessions ts

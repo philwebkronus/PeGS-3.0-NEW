@@ -120,17 +120,17 @@ if(isset($_SESSION['acctype']))
            datatype: "json",
            colNames:['Site / PEGS Code','Terminal Code', 'Deposit','Reload','Withdrawal','Date Started','Date Ended'],
            colModel:[
-                     {name:'SiteCode', index:'SiteCode', align:'center', sortable: false},
-                     {name:'TerminalCode',index:'TerminalCode', align: 'center', sortable: false},
-                     {name:'Deposit',index:'Deposit', align: 'right', sortable: false},
-                     {name:'Reload',index:'Reload', align: 'right', sortable: false},
-                     {name:'Withdrawal',index:'Withdrawal', align: 'right', sortable: false},
-                     {name:'DateStarted',index:'DateStarted', align: 'center', sortable: false},
-                     {name:'DateEnded', index:'DateEnded',align:'center', sortable: false}
+                     {name:'SiteCode', index:'SiteCode', align:'center', width: 130},
+                     {name:'TerminalCode',index:'TerminalCode', align: 'center', width: 120},
+                     {name:'Deposit',index:'Deposit', align: 'right', width: 175},
+                     {name:'Reload',index:'Reload', align: 'right', width: 175},
+                     {name:'Withdrawal',index:'Withdrawal', align: 'right', width: 200},
+                     {name:'DateStarted',index:'DateStarted', align: 'center', width: 200},
+                     {name:'DateEnded', index:'DateEnded',align:'center', width: 200}
                     ],
            rowNum:10,
            rowList:[10,20,30],
-           height: 150,
+           height: 240,
            width: 1200,
            pager: '#pager1',
            refresh: true,
@@ -165,14 +165,14 @@ if(isset($_SESSION['acctype']))
            colModel:[
                      {name:'SiteCode',index:'SiteCode',align: 'center', sortable: false},
                      {name:'CardNumber', index:'CardNumber', align:'center', sortable: false},
-                     {name:'EwalletLoads',index:'EwalletLoads', align: 'center', sortable: false},
+                     {name:'EwalletLoads',index:'EwalletLoads', align: 'right', sortable: false},
                      {name:'EwalletWithdrawals',index:'EwalletWithdrawals', align: 'right', sortable: false},
                      {name:'StartDate',index:'StartDate', align: 'center', sortable: false},
                      {name:'EndDate', index:'EndDate',align:'center', sortable: false}
                     ],
            rowNum:10,
            rowList:[10,20,30],
-           height: 150,
+           height: 240,
            width: 1200,
            pager: '#pager2',
            refresh: true,
@@ -302,7 +302,7 @@ if(isset($_SESSION['acctype']))
     <table border="1" id="userdata"></table>
     <input type="hidden" name="paginate" id="paginate" value="DailySiteTransaction" />
     <input type="hidden" name="siteid1" id="siteid1" value="<?php echo $_SESSION['siteid1'];?>" />
-    <div id="pager1" style="height: 100px;">
+    <div id="pager1">
 <!--        <table id="trans" style="background-color:#D6EB99; padding-left: 10px; display: none; font-size: 14px; height: 40% ">
             <tr>
                 <td>Grand Total</td>

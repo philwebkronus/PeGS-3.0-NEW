@@ -485,8 +485,18 @@ class CSManagement extends DBHandler{
         //E-City Transaction Summary, get details
         function gettransactionsummary($zsiteID, $zterminalID, $zdatefrom, $zdateto, $zstart, $zlimit, $zsort, $zdirection)
         {
-            $stmt = "SELECT ts.TransactionsSummaryID, ts.SiteID, ts.TerminalID, tm.TerminalCode, ts.Deposit, ts.Reload,
-                    ts.Withdrawal, ts.DateStarted, ts.DateEnded, acc.Name, s.POSAccountNo
+            $stmt = "SELECT ts.TransactionsSummaryID, 
+                            ts.SiteID, 
+                            s.SiteCode, 
+                            ts.TerminalID, 
+                            tm.TerminalCode, 
+                            ts.Deposit, 
+                            ts.Reload,
+                            ts.Withdrawal, 
+                            ts.DateStarted, 
+                            ts.DateEnded, 
+                            acc.Name, 
+                            s.POSAccountNo
                     FROM transactionsummary ts
                     INNER JOIN accountdetails acc ON ts.CreatedByAID = acc.AID
                     INNER JOIN terminals tm ON ts.TerminalID = tm.TerminalID
@@ -558,7 +568,7 @@ class CSManagement extends DBHandler{
                     EndDate, TransactionType, TerminalID, Status, SiteID, ServiceTransactionID, 
                     ServiceStatus, ServiceTransferHistoryID, ServiceID FROM transactionrequestlogslp 
                     WHERE SiteID = ? AND TerminalID = ? AND StartDate >= ? AND EndDate < ? 
-                    ORDER BY ".$zsort." ".$zdirection." LIMIT ".$zstart.",".$zlimit."";
+                         ORDER BY ".$zsort." ".$zdirection." LIMIT ".$zstart.",".$zlimit."";
                 $this->prepare($stmt);
                 $this->bindparameter(1, $zsiteID);
                 $this->bindparameter(2, $zterminalID);

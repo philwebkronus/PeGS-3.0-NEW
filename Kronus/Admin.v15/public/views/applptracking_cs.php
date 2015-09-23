@@ -302,23 +302,22 @@ $vaccesspages = array('6','18');
                                         paginate: function() {return 'LPTransactionSummary';}
                                         },
                                 datatype: "json",
-                                colNames:['Transaction Summary ID', 'POS Acct No.', 'Terminal Code', 'Deposit', 'Reload', 'Withdraw','Date Started', 'Date Ended', 'Created By'],
+                                colNames:['POS Acct No.', 'Terminal Code', 'Deposit', 'Reload', 'Withdraw','Date Started', 'Date Ended', 'Created By'],
                                 colModel:[
-                                        {name:'TransactionSummaryID',index:'TransactionsSummaryID',align:'center'},
-                                        {name:'SiteID',index:'SiteID',align:'center'},
-                                        {name:'TerminalCode',index:'TerminalCode', align: 'center'},
-                                        {name:'Deposit',index:'Deposit', align: 'right'},
-                                        {name:'Reload',index:'Reload', align: 'right'},
-                                        {name:'Withdraw',index:'Withdrawal', align: 'right'},
-                                        {name:'DateStarted',index:'DateStarted', align: 'center'},
-                                        {name:'DateEnded',index:'DateEnded', align: 'center'},
-                                        {name:'CreatedByAID',index:'AID',align:'center'}
+                                        {name:'POSAccountNo',index:'POSAccountNo',align:'center', width: 100},
+                                        {name:'TerminalCode',index:'TerminalCode', align: 'center', width: 60},
+                                        {name:'Deposit',index:'Deposit', align: 'right', width: 100},
+                                        {name:'Reload',index:'Reload', align: 'right', width: 100},
+                                        {name:'Withdraw',index:'Withdrawal', align: 'right', width: 100},
+                                        {name:'DateStarted',index:'DateStarted', align: 'center', width: 190},
+                                        {name:'DateEnded',index:'DateEnded', align: 'center', width: 190},
+                                        {name:'CreatedByAID',index:'AID',align:'center', width: 230}
                                 ],
 
                                 rowNum:10,
                                 rowList:[10,20,30],
                                 height: 220,
-                                width: 1100,
+                                width: 1200,
                                 pager: '#pager3',
                                 refresh: true,
                                 viewrecords: true,

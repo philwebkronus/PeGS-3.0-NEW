@@ -218,10 +218,12 @@ $vaccesspages = array('5','6', '18');
                                 var terminal = $("#selterminal");
                                 terminal.empty();
                                 terminal.append($("<option />").val("-1").text("Please Select"));
-                                terminal.append($("<option />").val("all").text("All"));
+                                if (data!='0'){
+                                    terminal.append($("<option />").val("all").text("All"));
                                 jQuery.each(data, function(){
                                     terminal.append($("<option terminalname='"+this.TerminalName+"' />").val(this.TerminalID).text(this.TerminalCode));
                                 });
+                            }
                           },
                           error: function(XMLHttpRequest, e){
                             alert(XMLHttpRequest.responseText);
