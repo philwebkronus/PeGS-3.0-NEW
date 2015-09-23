@@ -477,7 +477,7 @@ class Members extends BaseEntity {
 
                                if(count($arraycasinoservices) > 0)              
                                {
-                                    $serviceID = 15;
+                                    /*$serviceID = 15;
                                     foreach ($arraycasinoservices as $casinoservices){
                                         $this->InsertMultiple($casinoservices);
                                     }                                        
@@ -493,7 +493,7 @@ class Members extends BaseEntity {
                                     {
                                         //update current points of membercard
                                         $this->updateCurrentPoints($MID);
-                                    }
+                                    }*/
                                     return array('status' => 'OK', 'error' => '');
                                }
                                else

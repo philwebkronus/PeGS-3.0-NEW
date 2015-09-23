@@ -1,7 +1,7 @@
 <?php
 
 /*
- * GetCardInfo API 
+ * GetCardInfo API
  * @author : owliber
  * @date : 2013-04-18
  */
@@ -40,6 +40,7 @@ $_Helper = new Helper();
 $logger = new ErrorLogger();
 $logdate = $logger->logdate;
 $logtype = "Error ";
+$status = '';
 
 
 if(!isset($_GET['cardnumber']) || !isset( $_GET['isreg'])){
@@ -55,7 +56,7 @@ if(!isset($_GET['cardnumber']) || !isset( $_GET['isreg'])){
                                     "LifetimePoints"   => "",
                                     "RedeemedPoints"   => "",
                                     "IsCompleteInfo"   => "",
-                                    "MemberID"         => "",                                                                     
+                                    "MemberID"         => "",
                                     "CasinoArray"      => "",
                                     "CardStatus"       => CardStatus::NOT_EXIST,
                                     "DateVerified"     => "",
@@ -92,13 +93,13 @@ if((ctype_alnum( $cardNumber )) && (ctype_digit( $isReg ) ))
      * Check card version from OLD, UB and TEMPORARY
      */
     $version = $_Cards->getVersion( $cardNumber );
-        
+
     switch ($version)
     {
         case CardVersion::OLD: // Old version
             $cardNumber = strtoupper($cardNumber);
             $result = $_OldCards->getOldCardInfo( $cardNumber );
-        
+
             if(count($result) > 0)
             {
                 switch ($result[0]['CardStatus'])
@@ -116,13 +117,13 @@ if((ctype_alnum( $cardNumber )) && (ctype_digit( $isReg ) ))
                 $logger->logger($logdate, $logtype, "Card Not Found[000]: ".$cardNumber);
                 $status = CardStatus::NOT_EXIST;
             }
-            
+
             break;
-        
+
         case CardVersion::TEMPORARY: // Temporary
-            
+
             $result = $_TempMembers->getMembersByAccount( $cardNumber );
-            
+
             if(count($result) > 0)
             {
                 if( $result[0]['IsVerified'] == 1)
@@ -140,7 +141,7 @@ if((ctype_alnum( $cardNumber )) && (ctype_digit( $isReg ) ))
                     $hours = $diff / 60 / 60; //Get the total hours elapsed; $diff / 60 seconds / 60 minutes
 
                     $cardInfo = $_Cards->getCardInfo( $cardNumber );
-                    
+
                     if(count ($cardInfo) > 0)
                     {
                         $status = $cardInfo[0]['Status'];
@@ -148,11 +149,11 @@ if((ctype_alnum( $cardNumber )) && (ctype_digit( $isReg ) ))
                     else
                     {
                        // Check cooling period
-                        ( $hours > $_Helper->getParameterValue('COOLING_PERIOD') ) ?  $status = CardStatus::ACTIVE_TEMPORARY : $status = CardStatus::INACTIVE_TEMPORARY; 
+                        ( $hours > $_Helper->getParameterValue('COOLING_PERIOD') ) ?  $status = CardStatus::ACTIVE_TEMPORARY : $status = CardStatus::INACTIVE_TEMPORARY;
                     }
-                    
-                    
-                    
+
+
+
                 }
                 else
                 {
@@ -165,13 +166,13 @@ if((ctype_alnum( $cardNumber )) && (ctype_digit( $isReg ) ))
                 $logger->logger($logdate, $logtype, "Card Not Found[001]: ".$cardNumber);
                 $status = CardStatus::NOT_EXIST;
             }
-            
+
             break;
-            
+
         case CardVersion::USERBASED: // User-based
             $cardNumber = strtoupper($cardNumber);
             $result = $_Cards->getCardInfo( $cardNumber );
-            
+
             if(count( $result ) > 0)
             {
                 switch ( $result[0]['Status'] )
@@ -198,18 +199,18 @@ if((ctype_alnum( $cardNumber )) && (ctype_digit( $isReg ) ))
                 $status = CardStatus::NOT_EXIST;
                 $logger->logger($logdate, $logtype, "Card Not Found[002]: ".$cardNumber);
             }
-            
+
             break;
-        
+
         default :
             $logger->logger($logdate, $logtype, "Card Not Found[003]: ".$cardNumber);
             $status = CardStatus::NOT_EXIST;
             break;
     }
-            
+
     $result = $_GetCardInfoAPI->GetCardInfo($cardNumber, $status, $isReg, $siteID);
     $_JSONAPIResponse->_sendResponse(200,  json_encode($result));
-    
+
 }
 else
 {
@@ -225,7 +226,7 @@ else
                                     "LifetimePoints"   => "",
                                     "RedeemedPoints"   => "",
                                     "IsCompleteInfo"   => "",
-                                    "MemberID"         => "",                                                                     
+                                    "MemberID"         => "",
                                     "CasinoArray"      => "",
                                     "CardStatus"       => CardStatus::NOT_EXIST,
                                     "DateVerified"     => "",
