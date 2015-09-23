@@ -170,7 +170,7 @@ class MemberServices extends BaseEntity
      * @desc Update VIPLevel
      */
     public function getVIPLevel($mid){
-        $query = "SELECT VIPLevel FROM $this->TableName WHERE MID = '$mid' AND ServiceID = 19";       
+        $query = "SELECT VIPLevel, ServiceID FROM $this->TableName WHERE MID = '$mid'";       
         $result = parent::RunQuery($query);
         return $result;
     }

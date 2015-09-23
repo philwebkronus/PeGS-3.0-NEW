@@ -96,6 +96,7 @@ $btnSubmit->Style = 'height: 35px; width: 80px;';
 
 $hiddenMid = new Hidden("hiddenMid", "hiddenMid");
 $hiddenCard = new Hidden("hiddenCard", "hiddenCard");
+$hiddenServices = new Hidden("hiddenServices", "hiddenServices");
 
 $fproc->AddControl($txtSearch);
 $fproc->AddControl($btnSearch);
@@ -103,6 +104,7 @@ $fproc->AddControl($btnClear);
 $fproc->AddControl($btnSubmit);
 $fproc->AddControl($hiddenMid);
 $fproc->AddControl($hiddenCard);
+$fproc->AddControl($hiddenServices);
 $fproc->AddControl($classification_type);
 $fproc->ProcessForms();
 
@@ -166,24 +168,29 @@ if ($fproc->IsPostBack)
         }
         $hiddenMid->Text = $mid;
         $hiddenCard->Text = $cardNumber;
-        
+        $classtp ="";
         //$arrStatus = $members->getVIP($mid);
         //$isVip = $arrStatus[0]['isVIP'];
         $arrVIPLevel = $memberServices->getVIPLevel($mid);
+//        app::pr($arrVIPLevel);exit;
+        foreach($arrVIPLevel as $vip) {
+            $classtp = $classtp . $vip['ServiceID'] ."-". $vip['VIPLevel'] . ",";
+        }
+        $hiddenServices->Text = $classtp;
         if(isset($arrVIPLevel[0]['VIPLevel'])){
-        $isVIPLevel = $arrVIPLevel[0]['VIPLevel'];
+            $isVIPLevel = $arrVIPLevel[0]['VIPLevel'];
         }
         if(!empty($arrCards)){
             
-            if($isVIPLevel == 0){
-                $classification_type->SetSelectedValue('0');
-            } 
-            elseif ($isVIPLevel == 1) {
-                $classification_type->SetSelectedValue('1');
-            }
-            elseif ($isVIPLevel == 2) {
-                $classification_type->SetSelectedValue('2');
-            }
+//            if($isVIPLevel == 0){
+//                $classification_type->SetSelectedValue('0');
+//            } 
+//            elseif ($isVIPLevel == 1) {
+//                $classification_type->SetSelectedValue('1');
+//            }
+//            elseif ($isVIPLevel == 2) {
+//                $classification_type->SetSelectedValue('2');
+//            }
         }
         else{
             $showdialog = true;
@@ -408,6 +415,25 @@ if ($fproc->IsPostBack)
         }
         });
         
+        $('#casinoservice').change(function() {
+            var text = $('#hiddenServices').val();
+            var casinoservice = $('#casinoservice').val();
+            var id = text.split(",");
+            var text2;
+            var sid;
+            var ct;
+            
+            for (i = 0; i < id.length; i++) {
+                text2 = id[i].split("-");
+                if(text2[0] == casinoservice) {
+                    sid = text2[0];
+                    ct = text2[1];
+                    break;
+                }
+            }
+            $('#classification_type').val(ct);
+        });
+        
         <?php if ($success != ''): ?>
         $('#s').show();
         $("#successMsg").dialog({
@@ -469,7 +495,7 @@ if ($fproc->IsPostBack)
                         <div style="margin-left: 40px">
                             <?php echo $casinoservice; ?>
                             <?php echo $classification_type; ?>
-                            <?php echo $btnSubmit; echo $hiddenMid; echo $hiddenCard; ?>
+                            <?php echo $btnSubmit; echo $hiddenMid; echo $hiddenCard; echo $hiddenServices; ?>
                         </div>
                         
                     </div>

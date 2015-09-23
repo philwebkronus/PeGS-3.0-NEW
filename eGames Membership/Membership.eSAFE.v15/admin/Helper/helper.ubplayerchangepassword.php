@@ -46,6 +46,7 @@ $casinoAPI = new CasinoAPI();
 $profile = null;
 $resultmsg = null;
 $response = null;
+$apisuccess = 0;
 
 $logger = new ErrorLogger();
 $logdate = $logger->logdate;
@@ -129,7 +130,10 @@ if (isset($_POST['pager'])) {
                                                     $apisuccess = 0;
                                                  }
                                             }
-
+                                            else
+                                            {
+                                                $apisuccess = 0;
+                                            }
                                         }
                                         else{
 
