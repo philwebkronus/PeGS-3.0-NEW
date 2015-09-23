@@ -27,7 +27,9 @@ if(isset($_SESSION['userinfo'])){
     App::LoadModuleClass("Admin", "AccessRights");
     App::LoadModuleClass("Admin", "AccountSessions");
     App::LoadModuleClass("Kronus", "Accounts");
+    App::LoadModuleClass("Membership", "PcwsWrapper");
     App::LoadModuleClass("Membership", "MemberInfo");
+    
     $_MemberInfo = new MemberInfo();
     $sessioncount = $_AccountSessions->checkifsessionexist($aid, $sessionid);
     foreach ($sessioncount as $value) {
@@ -93,6 +95,8 @@ if(isset($_SESSION['MID'])){
 //Check if session is existing, if not destroy session and redirect to login page.
 if($sessioncount > 0)
 {
+        $_PcwsWrapper = new PcwsWrapper();
+        
         App::LoadCore('ErrorLogger.php');
         $logger = new ErrorLogger();
         
