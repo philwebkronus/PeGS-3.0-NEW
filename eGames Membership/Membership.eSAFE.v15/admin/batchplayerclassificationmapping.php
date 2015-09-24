@@ -302,7 +302,7 @@ if($formCsvUpload->IsPostBack) {
                         $fullPath = 'csv/'.$filename;
 
                         //sendEmail("jeremiahlachica@outlook.com",'Ogie Pogz');
-                        //showDialog(1,'Testing again!');
+                        //showDialog(1,'Testing again!');o
                         $retVal = move_uploaded_file($_FILES['fileUpload1']['tmp_name'][0], $fullPath);
                         //showDialog(1, 'error');
                         if(!$retVal) {
@@ -445,7 +445,7 @@ if($formCsvUpload->IsPostBack) {
                                                                                 $memberServices->updatePlayerClassificationByMIDAndServiceID($isVIP, $VIPLevel, $MID, $serverID);
 
                                                                                 if(!App::HasError()) {
-                                                                                    $memberServicesArr = $memberServices->getCasinoAccounts($MID);
+                                                                                    //$memberServicesArr = $memberServices->getCasinoAccounts($MID);
                                                                                     //app::pr($memberServicesArr);
                                                                                     $VIPLevel = $memberServicesArr[0]['VIPLevel'];
                                                                                     $getPlayerClassResult = $casinoAPI->GetPlayerClassification("RTG2", $PID, $serverID);
@@ -515,7 +515,7 @@ if($formCsvUpload->IsPostBack) {
                                                                                 }else{
                                                                                     $logMessage = "[ERROR] UB Card: $UBCard  Error Msg: Failed to update database.\r\n";
                                                                                     
-                                                                                    $memberServicesArr = $memberServices->getCasinoAccounts($MID);
+                                                                                    $memberServicesArr = $memberServices->getCasinoAccountsByMIDAndServiceID($MID, $serverID);
                                                                                     $VIPLevel = $memberServicesArr[0]['VIPLevel'];
                                                                                     $changePlayerClassResult = $casinoAPI->ChangePlayerClassification('RTG2', $PID, $VIPLevel, $userID, $serverID);
                                                                                     if($changePlayerClassResult['IsSucceed'] != true) {
@@ -549,7 +549,7 @@ if($formCsvUpload->IsPostBack) {
                                                                             }else{
                                                                                 $logMessage = "[ERROR] UB Card: $UBCard  Error Msg: Failed to update database.\r\n";
                                                                                 
-                                                                                $memberServicesArr = $memberServices->getCasinoAccounts($MID);
+                                                                                $memberServicesArr = $memberServices->getCasinoAccountsByMIDAndServiceID($MID, $serverID);
                                                                                 $VIPLevel = $memberServicesArr[0]['VIPLevel'];
                                                                                 $changePlayerClassResult = $casinoAPI->ChangePlayerClassification('RTG2', $PID, $VIPLevel, $userID, $serverID);
                                                                                 if($changePlayerClassResult['IsSucceed'] != true) {
