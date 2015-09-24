@@ -901,7 +901,9 @@ if($connected)
                                                       break;
                                                   case 0: $serviceStatus = "InActive";
                                               }  
-
+                                              if (is_double($balance) || is_numeric($balance)) {
+                                                  $balance = number_format($balance, 2, '.', '');
+                                              }
                                              $casino2 = array(
                                                           "UserName"  => "$rserviceuname",
                                                           "Password"  => $rservicepassword,
@@ -913,7 +915,7 @@ if($connected)
                                                           "IsVIP" => "$risvip",
                                                           "MemberID" => "$rmid",
                                                           "Status" => "$rstatus",
-                                                          "Balance" => number_format($balance, 2, '.', '')
+                                                          "Balance" => $balance
                                             );
                                             $_SESSION['ServicePassword'] = $rservicepassword;
                                             $_SESSION['ServiceUserName'] = $rserviceuname;

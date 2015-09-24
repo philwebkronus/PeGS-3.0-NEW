@@ -690,16 +690,8 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         $pdf->c_tableHeader2($header);
 
         foreach($rows as $row) {
-            $isEwallet = "No";
-            if($row['UserMode'] == 0){
-                $row['UserMode'] = "Terminal Based";
-            }
-            else{
-                $row['UserMode'] = "User Based";
-                if($row["IsEwallet"] == 1){
-                    $isEwallet = "Yes";
-                }
-            }
+            $row['IsEwallet'] == 1 ? $isEwallet = "Yes" : $isEwallet = "No";
+            $row['UserMode'] == 0 ? $row['UserMode'] = "Terminal Based" : $row['UserMode'] = "User Based";
             
             if($row['PlayingBalance'] == 0){
                     $row['PlayingBalance'] = "N/A";
@@ -769,17 +761,10 @@ class ProcessTopUpGenerateReports extends BaseProcess{
                 array('value'=>'e-SAFE?'),
              ));
         foreach($rows as $row) {
-            $isEwallet = "No";
-            if($row['UserMode'] == 0){
-                $row['UserMode'] = "Terminal Based";
-            }
-            else{
-                $row['UserMode'] = "User Based";
-                if($row['IsEwallet'] == 1){
-                    $isEwallet = "Yes";
-                }
-            }
             
+            $row['IsEwallet'] == 1 ? $isEwallet = "Yes" : $isEwallet = "No";
+            $row['UserMode'] == 0 ? $row['UserMode'] = "Terminal Based" : $row['UserMode'] = "User Based";
+
             if($row['PlayingBalance'] == 0){
                     $row['PlayingBalance'] = "N/A";
             }
@@ -846,16 +831,8 @@ class ProcessTopUpGenerateReports extends BaseProcess{
                 $actualBalance = $row['PlayingBalance'];
             }
             
-            $isEwallet = "No";
-            if($row['UserMode'] == 0){
-                $row['UserMode'] = "Terminal Based";
-            }
-            else{
-                $row['UserMode'] = "User Based";
-                if($row["IsEwallet"] == 1){
-                    $isEwallet = "Yes";
-                }
-            }
+            $row['IsEwallet'] == 1 ? $isEwallet = "Yes" : $isEwallet = "No";
+            $row['UserMode'] == 0 ? $row['UserMode'] = "Terminal Based" : $row['UserMode'] = "User Based";
             
             if($actualBalance == 0){
                     $actualBalance = "N/A";
@@ -931,16 +908,9 @@ class ProcessTopUpGenerateReports extends BaseProcess{
             } else {
                 $actualBalance = $row['PlayingBalance'];
             }
-            $isEwallet = "No";
-            if($row['UserMode'] == 0){
-                $row['UserMode'] = "Terminal Based";
-            }
-            else{
-                $row['UserMode'] = "User Based";
-                if($row['IsEwallet'] == 1){
-                    $isEwallet = "Yes";
-                }
-            }
+            
+            $row['IsEwallet'] == 1 ? $isEwallet = "Yes" : $isEwallet = "No";
+            $row['UserMode'] == 0 ? $row['UserMode'] = "Terminal Based" : $row['UserMode'] = "User Based";
             
             if($actualBalance == 0){
                     $actualBalance = "N/A";
