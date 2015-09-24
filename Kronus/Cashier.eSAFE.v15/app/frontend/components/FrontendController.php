@@ -1237,7 +1237,7 @@ class FrontendController extends MI_Controller {
             $this->throwError($message);
         }
         
-        $result = $result->Unlock->TransactionMessage;
+        $result = $result->CreateSession->TransactionMessage;
         
         if(preg_match('/\Successful\b/', $result)) {
             $result = array('message'=>$result,'Unlock'=>'1');
