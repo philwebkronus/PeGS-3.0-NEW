@@ -414,12 +414,15 @@ class CasinoGamingCAPI {
                 if (is_null($locatorName)) 
                     $locatorName = '';
                 
-                $withdraw = $casinoApiHandler->Withdraw( $login, $amount, $tracking1, $tracking2, $tracking3, $tracking4, $locatorName);
+                $withdraw = $casinoApiHandler->Withdraw( $login, $amount, $tracking1, $tracking2, $tracking3, $tracking4, $methodname, $locatorName );
                 break;
             case "RTG2":
                 $isplayerAPI = 0;
                 $casinoApiHandler = $this->configureRTG2($serviceID, $url, $isplayerAPI);
-                $withdraw = $casinoApiHandler->Withdraw( $login, $amount, $tracking1, $tracking2, $tracking3, $tracking4 );
+                if (is_null($locatorName)) 
+                    $locatorName = '';
+                
+                $withdraw = $casinoApiHandler->Withdraw( $login, $amount, $tracking1, $tracking2, $tracking3, $tracking4, $methodname, $locatorName );
                 break;
             case "MG":
                 $casinoApiHandler = $this->configureMG($serviceID, $url, $capiusername, 
