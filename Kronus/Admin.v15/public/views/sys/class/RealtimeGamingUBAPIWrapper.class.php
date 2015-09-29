@@ -56,7 +56,9 @@ class RealtimeGamingUBAPIWrapper
                 
                 if(!empty($locatorName)){
                     $skinID = $this->_GetSkinID($locatorName);
-                    $skinID = $skinID['SkinID'];
+                    if (isset($skinID['SkinID'])) {
+                        $skinID = $skinID['SkinID'];
+                    }
                 } else { $skinID = 1; }
 
                 $sessionId = $this->Login( $login );
@@ -194,7 +196,9 @@ class RealtimeGamingUBAPIWrapper
                 
                 if(!empty($locatorName)){
                     $skinID = $this->_GetSkinID($locatorName);
-                    $skinID = $skinID['SkinID'];
+                    if (isset($skinID['SkinID'])) {
+                        $skinID = $skinID['SkinID'];
+                    }
                 } else { $skinID = 1; }
                 
                 $sessionId = $this->Login( $login, '', $skinID );
