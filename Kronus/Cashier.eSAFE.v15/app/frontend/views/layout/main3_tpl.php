@@ -21,6 +21,7 @@
         <div id="container">
             <div id="header">
                 <div id="top-header">
+                    <div id="head-version"><?php echo Mirage::app()->param['sysversionname'] ?></div>
                     <div id="head-bcf" url="<?php echo $this->createUrl('terminal/sitebalance'); ?>"><div>BCF: PhP <span><?php echo $this->getSiteBalance(); ?></span></div></div>
                     <div id="head-date-time">
                         <div id="head-time"></div>

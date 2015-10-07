@@ -16,7 +16,8 @@ html,body,h1,h2,h3,h4,h5,h6, p{
 /*********************** header ***********************************************/
 #header{width: 100%;height: 50px;}
 #top-header{height: 35px;width: 100%; background-color: #267810}
-#head-bcf{cursor: pointer;line-height: 2em;background-color: #62AF35; width:250px; height: 100%; margin-left: 200px; float: left; color: #fff; font-size: 18px; font-weight: bold}
+#head-bcf{cursor: pointer;line-height: 2em;background-color: #62AF35; width:250px; height: 100%;  float: left; color: #fff; font-size: 18px; font-weight: bold}
+#head-version{cursor: pointer; text-align: right; line-height: 2em;width:185px; height: 100%; margin-right: 15px; float: left; color: #fff; font-size: 18px; font-weight: bold}
 #head-bcf div{margin-left: 5px;}
 #head-date-time{color: #fff; width: 300px; float: left;font-weight: bold;font-size: 1em; margin-left: 5px;margin-top: 2px;}
 #head-time{font-size: 14px;}
