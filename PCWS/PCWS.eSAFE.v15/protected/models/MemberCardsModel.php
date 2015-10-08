@@ -20,7 +20,7 @@ class MemberCardsModel extends CFormModel
     
     public function getMID($cardnumber)
     {
-        $sql = "SELECT MID FROM membercards WHERE CardNumber = :cardnumber";
+        $sql = "SELECT MID, Status FROM membercards WHERE CardNumber = :cardnumber";
         $command = $this->connection->createCommand($sql);
         $command->bindValue(":cardnumber", $cardnumber);
         $result = $command->queryRow();

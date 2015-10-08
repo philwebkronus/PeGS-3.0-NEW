@@ -105,253 +105,286 @@ class PcwsController extends Controller {
                 $mid = $membercards->getMID($cardnumber);
 
                 if (is_array($mid)) {
+                    
+                    $cardstatus = $mid['Status'];
+                    
+                    if($cardstatus == 1){
+                        $mid = $mid['MID'];
 
-                    $mid = $mid['MID'];
+                        $hasTerminalSession = $terminalsessions->checkSessionIDwithcard($cardnumber, $serviceid);
+                        if (is_array($hasTerminalSession)) {
+                            $terminalid = $hasTerminalSession['TerminalID'];
+                            $tID = $terminalid;
+                            $siteID = $terminalsmodel->getSiteID($terminalid);
 
-
-                    $hasTerminalSession = $terminalsessions->checkSessionIDwithcard($cardnumber, $serviceid);
-                    if (is_array($hasTerminalSession)) {
-                        $terminalid = $hasTerminalSession['TerminalID'];
-                        $tID = $terminalid;
-                        $siteID = $terminalsmodel->getSiteID($terminalid);
-
-                        if ($siteID['SiteID'] != $siteid) {
-                            $transMsg = 'Error: Deposit Failed, Player has an existing session on a different site.';
-                            $errCode = 24;
-
-                            $data = CommonController::deposit($transMsg, $errCode);
-                            $this->_sendResponse(200, $data);
-                            exit;
-                        }
-                    } else {
-                        $terminalid = $siteid;
-                        $tID = null;
-                    }
-
-                    $casinocredentials = $memberservices->getCasinoCredentialsAbbott($mid, $serviceid);
-
-                    if (!empty($casinocredentials) || !is_null($casinocredentials)) {
-                        $serviceUsername = $casinocredentials['ServiceUsername'];
-                        $servicePassword = $casinocredentials['ServicePassword'];
-
-                        $bcf = $sitebalancemodel->getSiteBalance($siteid);
-                        $bcf = $bcf['Balance'];
-
-                        if (($bcf - $amount) < 0) {
-                            $errCode = 7;
-                            $transMsg = 'Error: BCF is not enough.';
-
-                            $data = CommonController::deposit($transMsg, $errCode);
-                            $this->_sendResponse(200, $data);
-                            exit;
-                        }
-
-                        $balance = $casinocontroller->GetBalance($serviceid,$serviceUsername);
-
-                        if (is_array($balance)) {
-                            $playablebalance = $balance['balance'];
-
-                            $transsumid = $terminalsessions->getTransSummaryID($mid, $serviceid);
-
-                            if (is_array($transsumid)) {
-                                $transsumid = $transsumid['TransactionSummaryID'];
-                            } else {
-                                $transsumid = null;
-                            }
-
-                            $tracking1 = $ewallet->insertEwallet($cardnumber, $siteid, $mid, $amount, $playablebalance, 'D', $serviceid, 1, $paymenttype, $aid, $transsumid, $tID, $tracenumber, $referencenumber, $paymentTrackingID, $couponCode);
-                            $tracking2 = 'D';
-                            $tracking3 = $terminalid;
-                            $tracking4 = $siteid;
-
-                            if (!$tracking1) {
-                                $errCode = 11;
-                                $transMsg = 'Deposit Failed, There was a pending transaction for this card.';
+                            if ($siteID['SiteID'] != $siteid) {
+                                $transMsg = 'Error: Deposit Failed, Player has an existing session on a different site.';
+                                $errCode = 24;
 
                                 $data = CommonController::deposit($transMsg, $errCode);
                                 $this->_sendResponse(200, $data);
                                 exit;
                             }
-                            
-                            $siteclassification = $sites->getSitesClassification($siteid);
-                            if($serviceid == 20){ //RTG V15
-                                if($siteclassification['SitesClass'] == 1){ //1 - Non Platinum, 2 - Platinum
-                                    $locatorname = Yii::app()->params['SkinNameNonPlatinum'];
-                                } else {
-                                    $locatorname = Yii::app()->params['SkinNamePlatinum'];
-                                }
-                            } else { $locatorname = ''; }
+                        } else {
+                            $terminalid = $siteid;
+                            $tID = null;
+                        }
 
-                            $resultdeposit = $casinocontroller->Deposit($serviceid, $serviceUsername, $servicePassword, 1, $amount, $tracking1, $tracking2, $tracking3, $tracking4,$locatorname);
-     
-                            if (is_null($resultdeposit)) {
-                                $transSearchInfo = $casinocontroller->TransactionSerachInfo($serviceid, $serviceUsername, $tracking1, $tracking2, $tracking3, $tracking4);
+                        $casinocredentials = $memberservices->getCasinoCredentialsAbbott($mid, $serviceid);
 
-                                if (isset($transSearchInfo['TransactionInfo'])) {
-                                    //RTG / Magic Macau
-                                    if (isset($transSearchInfo['TransactionInfo']['TrackingInfoTransactionSearchResult'])) {
-                                        $initial_deposit = $transSearchInfo['TransactionInfo']['TrackingInfoTransactionSearchResult']['amount'];
-                                        $apiresult = $transSearchInfo['TransactionInfo']['TrackingInfoTransactionSearchResult']['transactionStatus'];
-                                        $transrefid = $transSearchInfo['TransactionInfo']['TrackingInfoTransactionSearchResult']['transactionID'];
-                                    }
-                                    //MG / Vibrant Vegas
-                                    elseif (isset($transSearchInfo['TransactionInfo']['MG'])) {
-                                        //$initial_deposit = $transSearchInfo['TransactionInfo']['MG']['Balance'];
-                                        $transrefid = $transSearchInfo['TransactionInfo']['MG']['TransactionId'];
-                                        $apiresult = $transSearchInfo['TransactionInfo']['MG']['TransactionStatus'];
-                                    }
-                                    //PT / PlayTech
-                                    elseif (isset($transSearchInfo['TransactionInfo']['PT'])) {
-                                        //$initial_deposit = $transSearchInfo['TransactionInfo']['PT']['']; //need to ask if reported amount will be passed from PT
-                                        $transrefid = $transSearchInfo['TransactionInfo']['PT']['id'];
-                                        $apiresult = $transSearchInfo['TransactionInfo']['PT']['status'];
-                                    }
-                                }
-                            } else {
-                                if (isset($resultdeposit['TransactionInfo'])) {
-                                    //RTG / Magic Macau
-                                    if (isset($resultdeposit['TransactionInfo']['DepositGenericResult'])) {
-                                        $transrefid = $resultdeposit['TransactionInfo']['DepositGenericResult']['transactionID'];
-                                        $apiresult = $resultdeposit['TransactionInfo']['DepositGenericResult']['transactionStatus'];
-                                        $apierrmsg = $resultdeposit['TransactionInfo']['DepositGenericResult']['errorMsg'];
-                                    }
-                                    //MG / Vibrant Vegas
-                                    else if (isset($resultdeposit['TransactionInfo']['MG'])) {
-                                        $transrefid = $resultdeposit['TransactionInfo']['MG']['TransactionId'];
-                                        $apiresult = $resultdeposit['TransactionInfo']['MG']['TransactionStatus'];
-                                        $apierrmsg = $resultdeposit['ErrorMessage'];
-                                    }
-                                    //Rockin Reno
-                                    else if (isset($resultdeposit['TransactionInfo']['PT'])) {
-                                        $transrefid = $resultdeposit['TransactionInfo']['PT']['TransactionId'];
-                                        $apiresult = $resultdeposit['TransactionInfo']['PT']['TransactionStatus'];
-                                        $apierrmsg = $resultdeposit['TransactionInfo']['PT']['TransactionStatus'];
-                                    }
-                                }
-                            }
+                        if (!empty($casinocredentials) || !is_null($casinocredentials)) {
+                            $serviceUsername = $casinocredentials['ServiceUsername'];
+                            $servicePassword = $casinocredentials['ServicePassword'];
 
-                            if ($apiresult == 'TRANSACTIONSTATUS_APPROVED' || $apiresult == 'true' || $apiresult == 'approved') {
-                                $transstatus = '1';
-                            } else {
-                                $transstatus = '2';
-                            }
+                            $bcf = $sitebalancemodel->getSiteBalance($siteid);
+                            $bcf = $bcf['Balance'];
 
-                            if ($apiresult == "true" || $apiresult == 'TRANSACTIONSTATUS_APPROVED' || $apiresult == 'approved') {
-
-                                $balance = $casinocontroller->GetBalance($serviceid,$serviceUsername);
-                                $playablebalance = $balance['balance'];
-
-                                if (!is_null($transsumid)) {
-                                    $totalamount = $transactionsummarymodel->getTotalReload($transsumid);
-                                    if (is_array($totalamount)) {
-                                        $totalamount = $totalamount['WalletReloads'] + $amount;
-                                    } else {
-                                        $totalamount = $amount;
-                                    }
-                                    $isupdatedtranssum = $transactionsummarymodel->updateTransSummary($totalamount, $transsumid);
-
-                                    if (!$isupdatedtranssum) {
-                                        $errCode = 9;
-                                        $transMsg = 'Failed to update Transaction Summary';
-
-                                        $data = CommonController::deposit($transMsg, $errCode);
-                                        $this->_sendResponse(200, $data);
-                                        exit;
-                                    }
-                                }
-
-                                $isupdatedewallet = $ewallet->updateEwallet($playablebalance, $transrefid, $apiresult, $aid, $transstatus, $tracking1);
-
-                                if ($isupdatedewallet) {
-                                    if ($transstatus == 1) {
-                                        $errCode = 0;
-                                        $transMsg = 'e-SAFE loading successful';
-                                        $newbal = $bcf - $amount;
-
-                                        $sitebalancemodel->updateBcf($newbal, $siteid, 'load');
-
-                                        $memberservices->UpdateBalances($playablebalance, "load-$tracking1", $mid, $serviceid);
-//------------------------------------------------------------------------------------------------->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>                      
-
-
-                                        $terminalSessionsModel = new TerminalSessionsModel();
-                                        $transdate = CommonController::udate('Y-m-d H:i:s.u');
-
-                                        //Get Terminal Name    
-                                        $terminalName = $terminalSessionsModel->getTerminalName($terminalid);
-
-                                        //eWalltetTransID
-                                        $eWalletTransID = $tracking1;
-
-                                        //Check if Loyalty
-                                        $isLoyalty = Yii::app()->params->Isloyaltypoints;
-
-                                        //Loyalty points
-                                        if ($isLoyalty == 1) {
-
-                                            $loyaltyrequestlogs = new LoyaltyRequestLogsModel();
-                                            $loyalty = new LoyaltyAPIWrapper();
-
-                                            //Insert to loyaltyrequestlogs
-                                            $loyaltyrequestlogsID = $loyaltyrequestlogs->insert($mid, 'D', $terminalid, $amount, $eWalletTransID, $paymenttype, 1);
-
-                                            //Insert to ewallettrans    
-                                            $isSuccessful = $loyalty->processPoints($cardnumber, $transdate, $paymenttype, 'R', $amount, $siteid, $eWalletTransID, $terminalName, 1, $couponCode, $serviceid, 1);
-                                            
-                                            // Update loyaltyrequestlogs
-                                            if ($isSuccessful) {
-
-                                                $success = $loyaltyrequestlogs->updateLoyaltyRequestLogs($loyaltyrequestlogsID, 1);
-                                            } else {
-                                                $loyaltyrequestlogs->updateLoyaltyRequestLogs($loyaltyrequestlogsID, 2);
-                                            }
-                                        } else {
-
-                                            $comppointslogs = new CompPointsLogsModel();
-                                            $comppoints = new ComppointsAPIWrapper();
-
-                                            $usermode = $comppointslogs->checkUserMode($serviceid);
-                                            if ($usermode == 0) {
-                                                //Insert to comppointslogs
-                                                $comppointslogs->insert($mid, $cardnumber, $terminalid, $siteid, $serviceid, $amount, $transdate, 'D');
-
-                                                //Insert to ewallettrans     
-                                                $comppoints->processPoints($cardnumber, $transdate, $paymenttype, 'R', $amount, $siteid, $eWalletTransID, $terminalName, 1, $couponCode, $serviceid, 1);
-                                            }
-                                        }
-
-
-//------------------------------------------------------------------------------------------------->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>                                 
-                                    } else {
-                                        $errCode = 8;
-                                        $transMsg = 'Deposit Transaction Failed';
-                                    }
-                                } else {
-                                    $errCode = 10;
-                                    $transMsg = 'Failed to update in transaction Table';
-                                }
+                            if (($bcf - $amount) < 0) {
+                                $errCode = 7;
+                                $transMsg = 'Error: BCF is not enough.';
 
                                 $data = CommonController::deposit($transMsg, $errCode);
+                                $this->_sendResponse(200, $data);
+                                exit;
+                            }
+
+                            $balance = $casinocontroller->GetBalance($serviceid,$serviceUsername);
+
+                            if (is_array($balance)) {
+                                $playablebalance = $balance['balance'];
+
+                                $transsumid = $terminalsessions->getTransSummaryID($mid, $serviceid);
+
+                                if (is_array($transsumid)) {
+                                    $transsumid = $transsumid['TransactionSummaryID'];
+                                } else {
+                                    $transsumid = null;
+                                }
+
+                                $tracking1 = $ewallet->insertEwallet($cardnumber, $siteid, $mid, $amount, $playablebalance, 'D', $serviceid, 1, $paymenttype, $aid, $transsumid, $tID, $tracenumber, $referencenumber, $paymentTrackingID, $couponCode);
+                                $tracking2 = 'D';
+                                $tracking3 = $terminalid;
+                                $tracking4 = $siteid;
+
+                                if (!$tracking1) {
+                                    $errCode = 11;
+                                    $transMsg = 'Deposit Failed, There was a pending transaction for this card.';
+
+                                    $data = CommonController::deposit($transMsg, $errCode);
+                                    $this->_sendResponse(200, $data);
+                                    exit;
+                                }
+
+                                $siteclassification = $sites->getSitesClassification($siteid);
+                                if($serviceid == 20){ //RTG V15
+                                    if($siteclassification['SitesClass'] == 1){ //1 - Non Platinum, 2 - Platinum
+                                        $locatorname = Yii::app()->params['SkinNameNonPlatinum'];
+                                    } else {
+                                        $locatorname = Yii::app()->params['SkinNamePlatinum'];
+                                    }
+                                } else { $locatorname = ''; }
+
+                                $resultdeposit = $casinocontroller->Deposit($serviceid, $serviceUsername, $servicePassword, 1, $amount, $tracking1, $tracking2, $tracking3, $tracking4,$locatorname);
+
+                                if (is_null($resultdeposit)) {
+                                    $transSearchInfo = $casinocontroller->TransactionSerachInfo($serviceid, $serviceUsername, $tracking1, $tracking2, $tracking3, $tracking4);
+
+                                    if (isset($transSearchInfo['TransactionInfo'])) {
+                                        //RTG / Magic Macau
+                                        if (isset($transSearchInfo['TransactionInfo']['TrackingInfoTransactionSearchResult'])) {
+                                            $initial_deposit = $transSearchInfo['TransactionInfo']['TrackingInfoTransactionSearchResult']['amount'];
+                                            $apiresult = $transSearchInfo['TransactionInfo']['TrackingInfoTransactionSearchResult']['transactionStatus'];
+                                            $transrefid = $transSearchInfo['TransactionInfo']['TrackingInfoTransactionSearchResult']['transactionID'];
+                                        }
+                                        //MG / Vibrant Vegas
+                                        elseif (isset($transSearchInfo['TransactionInfo']['MG'])) {
+                                            //$initial_deposit = $transSearchInfo['TransactionInfo']['MG']['Balance'];
+                                            $transrefid = $transSearchInfo['TransactionInfo']['MG']['TransactionId'];
+                                            $apiresult = $transSearchInfo['TransactionInfo']['MG']['TransactionStatus'];
+                                        }
+                                        //PT / PlayTech
+                                        elseif (isset($transSearchInfo['TransactionInfo']['PT'])) {
+                                            //$initial_deposit = $transSearchInfo['TransactionInfo']['PT']['']; //need to ask if reported amount will be passed from PT
+                                            $transrefid = $transSearchInfo['TransactionInfo']['PT']['id'];
+                                            $apiresult = $transSearchInfo['TransactionInfo']['PT']['status'];
+                                        }
+                                    }
+                                } else {
+                                    if (isset($resultdeposit['TransactionInfo'])) {
+                                        //RTG / Magic Macau
+                                        if (isset($resultdeposit['TransactionInfo']['DepositGenericResult'])) {
+                                            $transrefid = $resultdeposit['TransactionInfo']['DepositGenericResult']['transactionID'];
+                                            $apiresult = $resultdeposit['TransactionInfo']['DepositGenericResult']['transactionStatus'];
+                                            $apierrmsg = $resultdeposit['TransactionInfo']['DepositGenericResult']['errorMsg'];
+                                        }
+                                        //MG / Vibrant Vegas
+                                        else if (isset($resultdeposit['TransactionInfo']['MG'])) {
+                                            $transrefid = $resultdeposit['TransactionInfo']['MG']['TransactionId'];
+                                            $apiresult = $resultdeposit['TransactionInfo']['MG']['TransactionStatus'];
+                                            $apierrmsg = $resultdeposit['ErrorMessage'];
+                                        }
+                                        //Rockin Reno
+                                        else if (isset($resultdeposit['TransactionInfo']['PT'])) {
+                                            $transrefid = $resultdeposit['TransactionInfo']['PT']['TransactionId'];
+                                            $apiresult = $resultdeposit['TransactionInfo']['PT']['TransactionStatus'];
+                                            $apierrmsg = $resultdeposit['TransactionInfo']['PT']['TransactionStatus'];
+                                        }
+                                    }
+                                }
+
+                                if ($apiresult == 'TRANSACTIONSTATUS_APPROVED' || $apiresult == 'true' || $apiresult == 'approved') {
+                                    $transstatus = '1';
+                                } else {
+                                    $transstatus = '2';
+                                }
+
+                                if ($apiresult == "true" || $apiresult == 'TRANSACTIONSTATUS_APPROVED' || $apiresult == 'approved') {
+
+                                    $balance = $casinocontroller->GetBalance($serviceid,$serviceUsername);
+                                    $playablebalance = $balance['balance'];
+
+                                    if (!is_null($transsumid)) {
+                                        $totalamount = $transactionsummarymodel->getTotalReload($transsumid);
+                                        if (is_array($totalamount)) {
+                                            $totalamount = $totalamount['WalletReloads'] + $amount;
+                                        } else {
+                                            $totalamount = $amount;
+                                        }
+                                        $isupdatedtranssum = $transactionsummarymodel->updateTransSummary($totalamount, $transsumid);
+
+                                        if (!$isupdatedtranssum) {
+                                            $errCode = 9;
+                                            $transMsg = 'Failed to update Transaction Summary';
+
+                                            $data = CommonController::deposit($transMsg, $errCode);
+                                            $this->_sendResponse(200, $data);
+                                            exit;
+                                        }
+                                    }
+
+                                    $isupdatedewallet = $ewallet->updateEwallet($playablebalance, $transrefid, $apiresult, $aid, $transstatus, $tracking1);
+
+                                    if ($isupdatedewallet) {
+                                        if ($transstatus == 1) {
+                                            $errCode = 0;
+                                            $transMsg = 'e-SAFE loading successful';
+                                            $newbal = $bcf - $amount;
+
+                                            $sitebalancemodel->updateBcf($newbal, $siteid, 'load');
+
+                                            $memberservices->UpdateBalances($playablebalance, "load-$tracking1", $mid, $serviceid);
+    //------------------------------------------------------------------------------------------------->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>                      
+
+
+                                            $terminalSessionsModel = new TerminalSessionsModel();
+                                            $transdate = CommonController::udate('Y-m-d H:i:s.u');
+
+                                            //Get Terminal Name    
+                                            $terminalName = $terminalSessionsModel->getTerminalName($terminalid);
+
+                                            //eWalltetTransID
+                                            $eWalletTransID = $tracking1;
+
+                                            //Check if Loyalty
+                                            $isLoyalty = Yii::app()->params->Isloyaltypoints;
+
+                                            //Loyalty points
+                                            if ($isLoyalty == 1) {
+
+                                                $loyaltyrequestlogs = new LoyaltyRequestLogsModel();
+                                                $loyalty = new LoyaltyAPIWrapper();
+
+                                                //Insert to loyaltyrequestlogs
+                                                $loyaltyrequestlogsID = $loyaltyrequestlogs->insert($mid, 'D', $terminalid, $amount, $eWalletTransID, $paymenttype, 1);
+
+                                                //Insert to ewallettrans    
+                                                $isSuccessful = $loyalty->processPoints($cardnumber, $transdate, $paymenttype, 'R', $amount, $siteid, $eWalletTransID, $terminalName, 1, $couponCode, $serviceid, 1);
+
+                                                // Update loyaltyrequestlogs
+                                                if ($isSuccessful) {
+
+                                                    $success = $loyaltyrequestlogs->updateLoyaltyRequestLogs($loyaltyrequestlogsID, 1);
+                                                } else {
+                                                    $loyaltyrequestlogs->updateLoyaltyRequestLogs($loyaltyrequestlogsID, 2);
+                                                }
+                                            } else {
+
+                                                $comppointslogs = new CompPointsLogsModel();
+                                                $comppoints = new ComppointsAPIWrapper();
+
+                                                $usermode = $comppointslogs->checkUserMode($serviceid);
+                                                if ($usermode == 0) {
+                                                    //Insert to comppointslogs
+                                                    $comppointslogs->insert($mid, $cardnumber, $terminalid, $siteid, $serviceid, $amount, $transdate, 'D');
+
+                                                    //Insert to ewallettrans     
+                                                    $comppoints->processPoints($cardnumber, $transdate, $paymenttype, 'R', $amount, $siteid, $eWalletTransID, $terminalName, 1, $couponCode, $serviceid, 1);
+                                                }
+                                            }
+
+
+    //------------------------------------------------------------------------------------------------->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>                                 
+                                        } else {
+                                            $errCode = 8;
+                                            $transMsg = 'Deposit Transaction Failed';
+                                        }
+                                    } else {
+                                        $errCode = 10;
+                                        $transMsg = 'Failed to update in transaction Table';
+                                    }
+
+                                    $data = CommonController::deposit($transMsg, $errCode);
+                                } else {
+                                    $errCode = 8;
+                                    $tobalance = '0.00';
+                                    $ewallet->updateEwallet($tobalance, null, $apiresult, $aid, $transstatus, $tracking1);
+
+                                    $transMsg = 'Deposit Transaction Failed';
+
+                                    $data = CommonController::deposit($transMsg, 2);
+                                }
                             } else {
+                                $transMsg = $balance;
                                 $errCode = 8;
-                                $tobalance = '0.00';
-                                $ewallet->updateEwallet($tobalance, null, $apiresult, $aid, $transstatus, $tracking1);
 
-                                $transMsg = 'Deposit Transaction Failed';
-
-                                $data = CommonController::deposit($transMsg, 2);
+                                $data = CommonController::deposit($transMsg, $errCode);
                             }
                         } else {
-                            $transMsg = $balance;
-                            $errCode = 8;
+                            $transMsg = 'Card does not have existing casino account';
+                            $errCode = 6;
 
                             $data = CommonController::deposit($transMsg, $errCode);
                         }
                     } else {
-                        $transMsg = 'Card does not have existing casino account';
-                        $errCode = 6;
+                        $errCode = 25; //Invalid cardnumber
+                        switch ($cardstatus) {
+                            case 0:
+                                $transMsg = 'Card is inactive.';
+                                break;
+                            case 2:
+                                $transMsg = 'Card is deactivated.';
+                                break;
+                            case 5:
+                                $transMsg = 'Cannot load on temporary card.';
+                                break;
+                            case 7:
+                                $transMsg = 'Card is already migrated.';
+                                break;
+                            case 8:
+                                $transMsg = 'Card is already migrated.';
+                                break;
+                            case 9:
+                                $transMsg = 'Card is banned.';
+                                break;
+                            default:
+                                $errCode = 5;
+                                $transMsg = 'Card is invalid.';
+                                break;
+                        }
 
                         $data = CommonController::deposit($transMsg, $errCode);
+                        $this->_sendResponse(200, $data);
+                        exit;
                     }
                 } else {
                     $transMsg = 'Can\'t get card information';
@@ -591,153 +624,186 @@ class PcwsController extends Controller {
 
                 if (is_array($mid)) {
 
-                    $mid = $mid['MID'];
+                    $cardstatus = $mid['Status'];
+                    if($cardstatus == 1){
+                        $mid = $mid['MID'];
 
-                    $checkpinloginattempts = $members->checkPINLoginAttempts($mid);
+                        $checkpinloginattempts = $members->checkPINLoginAttempts($mid);
 
-                    if ($checkpinloginattempts['PINLoginAttemps'] > Yii::app()->params['maxPinAttempts']) {
-                        $transMsg = 'Withdraw Failed, PIN is locked.';
-                        $errCode = 13;
+                        if ($checkpinloginattempts['PINLoginAttemps'] > Yii::app()->params['maxPinAttempts']) {
+                            $transMsg = 'Withdraw Failed, PIN is locked.';
+                            $errCode = 13;
 
+                            $data = CommonController::withdraw($transMsg, $errCode);
+                            $this->_sendResponse(200, $data);
+                            exit;
+                        }
+
+                        $terminalid = $terminalsessions->checkSessionIDwithcard($cardnumber, $serviceid);
+                        if (is_array($terminalid)) {
+                            $terminalid = $terminalid['TerminalID'];
+                        } else {
+                            $terminalid = null;
+                        }
+
+                        $casinocredentials = $memberservices->getCasinoCredentialsAbbott($mid,$serviceid);
+
+                        if (!empty($casinocredentials) || !is_null($casinocredentials)) {
+                            $serviceUsername = $casinocredentials['ServiceUsername'];
+                            $servicePassword = $casinocredentials['ServicePassword'];
+
+                            $balance = $casinocontroller->GetBalance($serviceid,$serviceUsername);
+                            if (is_array($balance)) {
+                                $playablebalance = $balance['balance'];
+
+                                if ($amount > $playablebalance) {
+                                    $transMsg = 'Input amount is greater than existing balance.';
+                                    $errCode = 13;
+
+                                    $data = CommonController::withdraw($transMsg, $errCode);
+                                    $this->_sendResponse(200, $data);
+                                    exit;
+                                }
+
+                                $tracking1 = $ewallet->insertEwallet($cardnumber, $siteid, $mid, $amount, $playablebalance, 'W', $serviceid, 1, 1, $aid, null, $terminalid, null, null);
+                                $tracking2 = 'W';
+                                $tracking3 = $siteid;
+                                $tracking4 = $siteid;
+
+                                if (!$tracking1) {
+                                    $errCode = 11;
+                                    $transMsg = 'Withdraw Failed, There was a pending transaction for this card.';
+
+                                    $data = CommonController::withdraw($transMsg, $errCode);
+                                    $this->_sendResponse(200, $data);
+                                    exit;
+                                }
+
+                                $siteclassification = $sites->getSitesClassification($siteid);
+                                if($serviceid == 20){ //RTG V5
+                                    if($siteclassification['SitesClass'] == 1){ //1 - Non Platinum, 2 - Platinum
+                                        $locatorname = Yii::app()->params['SkinNameNonPlatinum'];
+                                    } else {
+                                        $locatorname = Yii::app()->params['SkinNamePlatinum'];
+                                    }
+                                } else { $locatorname = ''; }
+
+                                $resultwithdraw = $casinocontroller->Withdraw($serviceid,$serviceUsername, $servicePassword, 1, $amount, $tracking1, $tracking2, $tracking3, $tracking4,$locatorname);
+
+                                if (is_null($resultwithdraw)) {
+                                    $transSearchInfo = $casinocontroller->TransactionSerachInfo($serviceid,$serviceUsername, $tracking1, $tracking2, $tracking3, $tracking4);
+
+                                    if (isset($transSearchInfo['TransactionInfo'])) {
+                                        //RTG / Magic Macau
+                                        if (isset($transSearchInfo['TransactionInfo']['TrackingInfoTransactionSearchResult'])) {
+                                            $amount = abs($transSearchInfo['TransactionInfo']['TrackingInfoTransactionSearchResult']['amount']);
+                                            $apiresult = $transSearchInfo['TransactionInfo']['TrackingInfoTransactionSearchResult']['transactionStatus'];
+                                            $transrefid = $transSearchInfo['TransactionInfo']['TrackingInfoTransactionSearchResult']['transactionID'];
+                                        }
+                                        //MG / Vibrant Vegas
+                                        elseif (isset($transSearchInfo['TransactionInfo']['MG'])) {
+                                            //$amount = abs($transSearchInfo['TransactionInfo']['Balance']); //returns 0 value
+                                            $transrefid = $transSearchInfo['TransactionInfo']['MG']['TransactionId'];
+                                            $apiresult = $transSearchInfo['TransactionInfo']['MG']['TransactionStatus'];
+                                        }
+                                        //PT / PlayTech
+                                        if (isset($transSearchInfo['TransactionInfo']['PT'])) {
+                                            $transrefid = $transSearchInfo['TransactionInfo']['PT']['id'];
+                                            $apiresult = $transSearchInfo['TransactionInfo']['PT']['status'];
+                                        }
+                                    }
+                                } else {
+                                    //check Withdraw API Result
+                                    if (isset($resultwithdraw['TransactionInfo'])) {
+                                        //RTG / Magic Macau
+                                        if (isset($resultwithdraw['TransactionInfo']['WithdrawGenericResult'])) {
+                                            $transrefid = $resultwithdraw['TransactionInfo']['WithdrawGenericResult']['transactionID'];
+                                            $apiresult = $resultwithdraw['TransactionInfo']['WithdrawGenericResult']['transactionStatus'];
+                                        }
+                                        //MG / Vibrant Vegas
+                                        if (isset($resultwithdraw['TransactionInfo']['MG'])) {
+                                            $transrefid = $resultwithdraw['TransactionInfo']['MG']['TransactionId'];
+                                            $apiresult = $resultwithdraw['TransactionInfo']['MG']['TransactionStatus'];
+                                        }
+                                        //PT / Rocking Reno
+                                        if (isset($resultwithdraw['TransactionInfo']['PT'])) {
+                                            $transrefid = $resultwithdraw['TransactionInfo']['PT']['TransactionId'];
+                                            $apiresult = $resultwithdraw['TransactionInfo']['PT']['TransactionStatus'];
+                                        }
+                                    }
+                                }
+
+                                if ($apiresult == 'TRANSACTIONSTATUS_APPROVED' || $apiresult == 'true' || $apiresult == 'approved') {
+                                    $transstatus = '1';
+                                } else {
+                                    $transstatus = '2';
+                                }
+
+                                if ($apiresult == "true" || $apiresult == 'TRANSACTIONSTATUS_APPROVED' || $apiresult == 'approved') {
+
+                                    $balance = $casinocontroller->GetBalance($serviceid,$serviceUsername);
+                                    $playablebalance = $balance['balance'];
+
+                                    $ewallet->updateEwallet($playablebalance, $transrefid, $apiresult, $aid, $transstatus, $tracking1);
+                                    $errCode = 0;
+                                    $transMsg = 'e-SAFE withdraw successful';
+
+                                    $memberservices->UpdateBalances($playablebalance, "withdraw-$tracking1", $mid, $serviceid);
+
+                                    $data = CommonController::withdraw($transMsg, $errCode);
+                                } else {
+                                    $errCode = 8;
+                                    $tobalance = '0.00';
+                                    $ewallet->updateEwallet($tobalance, null, $apiresult, $aid, $transstatus, $tracking1);
+
+                                    $transMsg = 'Withdraw Transaction Failed';
+
+                                    $data = CommonController::withdraw($transMsg, $errCode);
+                                }
+                            } else {
+                                $transMsg = $balance;
+                                $errCode = 8;
+
+                                $data = CommonController::withdraw($transMsg, $errCode);
+                            }
+                        } else {
+                            if (empty($casinocredentials)) {
+                                $transMsg = 'Can\'t get casino information';
+                                $errCode = 4;
+                            }
+                            $data = CommonController::withdraw($transMsg, $errCode);
+                        }
+                    } else {
+                        $errCode = 25; //Invalid cardnumber
+                        switch ($cardstatus) {
+                            case 0:
+                                $transMsg = 'Card is inactive.';
+                                break;
+                            case 2:
+                                $transMsg = 'Card is deactivated.';
+                                break;
+                            case 5:
+                                $transMsg = 'Cannot withdraw on temporary card.';
+                                break;
+                            case 7:
+                                $transMsg = 'Card is already migrated.';
+                                break;
+                            case 8:
+                                $transMsg = 'Card is already migrated.';
+                                break;
+                            case 9:
+                                $transMsg = 'Card is banned.';
+                                break;
+                            default:
+                                $errCode = 5;
+                                $transMsg = 'Card is invalid.';
+                                break;
+                        }
                         $data = CommonController::withdraw($transMsg, $errCode);
                         $this->_sendResponse(200, $data);
                         exit;
                     }
 
-                    $terminalid = $terminalsessions->checkSessionIDwithcard($cardnumber, $serviceid);
-                    if (is_array($terminalid)) {
-                        $terminalid = $terminalid['TerminalID'];
-                    } else {
-                        $terminalid = null;
-                    }
-
-                    $casinocredentials = $memberservices->getCasinoCredentialsAbbott($mid,$serviceid);
-
-                    if (!empty($casinocredentials) || !is_null($casinocredentials)) {
-                        $serviceUsername = $casinocredentials['ServiceUsername'];
-                        $servicePassword = $casinocredentials['ServicePassword'];
-
-                        $balance = $casinocontroller->GetBalance($serviceid,$serviceUsername);
-                        if (is_array($balance)) {
-                            $playablebalance = $balance['balance'];
-
-                            if ($amount > $playablebalance) {
-                                $transMsg = 'Input amount is greater than existing balance.';
-                                $errCode = 13;
-
-                                $data = CommonController::withdraw($transMsg, $errCode);
-                                $this->_sendResponse(200, $data);
-                                exit;
-                            }
-
-                            $tracking1 = $ewallet->insertEwallet($cardnumber, $siteid, $mid, $amount, $playablebalance, 'W', $serviceid, 1, 1, $aid, null, $terminalid, null, null);
-                            $tracking2 = 'W';
-                            $tracking3 = $siteid;
-                            $tracking4 = $siteid;
-
-                            if (!$tracking1) {
-                                $errCode = 11;
-                                $transMsg = 'Withdraw Failed, There was a pending transaction for this card.';
-
-                                $data = CommonController::withdraw($transMsg, $errCode);
-                                $this->_sendResponse(200, $data);
-                                exit;
-                            }
-                            
-                            $siteclassification = $sites->getSitesClassification($siteid);
-                            if($serviceid == 20){ //RTG V5
-                                if($siteclassification['SitesClass'] == 1){ //1 - Non Platinum, 2 - Platinum
-                                    $locatorname = Yii::app()->params['SkinNameNonPlatinum'];
-                                } else {
-                                    $locatorname = Yii::app()->params['SkinNamePlatinum'];
-                                }
-                            } else { $locatorname = ''; }
-
-                            $resultwithdraw = $casinocontroller->Withdraw($serviceid,$serviceUsername, $servicePassword, 1, $amount, $tracking1, $tracking2, $tracking3, $tracking4,$locatorname);
-
-                            if (is_null($resultwithdraw)) {
-                                $transSearchInfo = $casinocontroller->TransactionSerachInfo($serviceid,$serviceUsername, $tracking1, $tracking2, $tracking3, $tracking4);
-
-                                if (isset($transSearchInfo['TransactionInfo'])) {
-                                    //RTG / Magic Macau
-                                    if (isset($transSearchInfo['TransactionInfo']['TrackingInfoTransactionSearchResult'])) {
-                                        $amount = abs($transSearchInfo['TransactionInfo']['TrackingInfoTransactionSearchResult']['amount']);
-                                        $apiresult = $transSearchInfo['TransactionInfo']['TrackingInfoTransactionSearchResult']['transactionStatus'];
-                                        $transrefid = $transSearchInfo['TransactionInfo']['TrackingInfoTransactionSearchResult']['transactionID'];
-                                    }
-                                    //MG / Vibrant Vegas
-                                    elseif (isset($transSearchInfo['TransactionInfo']['MG'])) {
-                                        //$amount = abs($transSearchInfo['TransactionInfo']['Balance']); //returns 0 value
-                                        $transrefid = $transSearchInfo['TransactionInfo']['MG']['TransactionId'];
-                                        $apiresult = $transSearchInfo['TransactionInfo']['MG']['TransactionStatus'];
-                                    }
-                                    //PT / PlayTech
-                                    if (isset($transSearchInfo['TransactionInfo']['PT'])) {
-                                        $transrefid = $transSearchInfo['TransactionInfo']['PT']['id'];
-                                        $apiresult = $transSearchInfo['TransactionInfo']['PT']['status'];
-                                    }
-                                }
-                            } else {
-                                //check Withdraw API Result
-                                if (isset($resultwithdraw['TransactionInfo'])) {
-                                    //RTG / Magic Macau
-                                    if (isset($resultwithdraw['TransactionInfo']['WithdrawGenericResult'])) {
-                                        $transrefid = $resultwithdraw['TransactionInfo']['WithdrawGenericResult']['transactionID'];
-                                        $apiresult = $resultwithdraw['TransactionInfo']['WithdrawGenericResult']['transactionStatus'];
-                                    }
-                                    //MG / Vibrant Vegas
-                                    if (isset($resultwithdraw['TransactionInfo']['MG'])) {
-                                        $transrefid = $resultwithdraw['TransactionInfo']['MG']['TransactionId'];
-                                        $apiresult = $resultwithdraw['TransactionInfo']['MG']['TransactionStatus'];
-                                    }
-                                    //PT / Rocking Reno
-                                    if (isset($resultwithdraw['TransactionInfo']['PT'])) {
-                                        $transrefid = $resultwithdraw['TransactionInfo']['PT']['TransactionId'];
-                                        $apiresult = $resultwithdraw['TransactionInfo']['PT']['TransactionStatus'];
-                                    }
-                                }
-                            }
-
-                            if ($apiresult == 'TRANSACTIONSTATUS_APPROVED' || $apiresult == 'true' || $apiresult == 'approved') {
-                                $transstatus = '1';
-                            } else {
-                                $transstatus = '2';
-                            }
-
-                            if ($apiresult == "true" || $apiresult == 'TRANSACTIONSTATUS_APPROVED' || $apiresult == 'approved') {
-
-                                $balance = $casinocontroller->GetBalance($serviceid,$serviceUsername);
-                                $playablebalance = $balance['balance'];
-
-                                $ewallet->updateEwallet($playablebalance, $transrefid, $apiresult, $aid, $transstatus, $tracking1);
-                                $errCode = 0;
-                                $transMsg = 'e-SAFE withdraw successful';
-
-                                $memberservices->UpdateBalances($playablebalance, "withdraw-$tracking1", $mid, $serviceid);
-
-                                $data = CommonController::withdraw($transMsg, $errCode);
-                            } else {
-                                $errCode = 8;
-                                $tobalance = '0.00';
-                                $ewallet->updateEwallet($tobalance, null, $apiresult, $aid, $transstatus, $tracking1);
-
-                                $transMsg = 'Withdraw Transaction Failed';
-
-                                $data = CommonController::withdraw($transMsg, $errCode);
-                            }
-                        } else {
-                            $transMsg = $balance;
-                            $errCode = 8;
-
-                            $data = CommonController::withdraw($transMsg, $errCode);
-                        }
-                    } else {
-                        if (empty($casinocredentials)) {
-                            $transMsg = 'Can\'t get casino information';
-                            $errCode = 4;
-                        }
-                        $data = CommonController::withdraw($transMsg, $errCode);
-                    }
                 } else {
                     $transMsg = 'Can\'t get card information.';
                     $errCode = 5;
