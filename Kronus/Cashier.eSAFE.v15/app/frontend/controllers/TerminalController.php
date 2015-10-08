@@ -707,6 +707,21 @@ class TerminalController extends FrontendController {
         
     }
     
+    public function checkExistingSessionAction(){
+        if(!$this->isAjaxRequest())
+            Mirage::app()->error404();
+        
+        if(isset($_POST['CardNumber'])){
+            Mirage::loadModels('TerminalSessionsModel');
+            $cardnumber = $_POST['CardNumber'];
+            $terminalSessionsModel = new TerminalSessionsModel();
+            
+            $result = $terminalSessionsModel->checkCardSession($cardnumber);
+            echo json_encode(array('IsActiveSession' => $result));
+        }
+        
+    }
+    
     public function isEwalletSessionAction(){
         if(!$this->isAjaxRequest())
             Mirage::app()->error404();

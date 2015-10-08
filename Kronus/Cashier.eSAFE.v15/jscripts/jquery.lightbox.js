@@ -170,11 +170,28 @@ function btnSubmit(){
         var memcard = $("#memcard").val();
         var url = $("#url").val();
         var url_tempactivate = $("#url_tempactivate").val();
+        var url_checkSession = $("#urlcheckSession").val();
         var aid = $("#aid").val();
         var sitecode = $("#sitecode").val();
         var servertime = $("#servertime").val();
         var data = 'card_number='+temp_card+'&isreg=1';
-        
+        var IsActiveSession = 0;
+
+        $.ajax({
+                type : 'post',
+                async: false,
+                url : url_checkSession,
+                data : {'CardNumber':temp_card},
+                success : function(data) {
+                    var obj = JSON.parse(data);
+                    IsActiveSession = obj.IsActiveSession;
+                },
+                error : function(e) {
+                    displayError(e);
+                }
+
+            });
+                
         $.ajax({
             type : 'post',
             url : url,
@@ -185,12 +202,21 @@ function btnSubmit(){
                     
                      //get status value
                     var StatusValue = getStatusValue(json.CardInfo.StatusCode);
-                    
+
                     if(StatusValue == "Active Temporary")
                     {
-                        hideLightbox();
-                        window.showModalDialog(url_tempactivate+'?tempnumber='+temp_card+'&newnumber='+memcard+
-                                                                '&mid='+json.CardInfo.MID+'&site='+sitecode+'&aid='+aid+'&isreg=1','MigrateAccount','scroll: no;resizable:no; dialogHeight:380px; dialogWidth:600px; ');
+                        if(IsActiveSession == 0) {   
+                            hideLightbox();
+                            window.showModalDialog(url_tempactivate+'?tempnumber='+temp_card+'&newnumber='+memcard+
+                                                                    '&mid='+json.CardInfo.MID+'&site='+sitecode+'&aid='+aid+'&isreg=1','MigrateAccount','scroll: no;resizable:no; dialogHeight:380px; dialogWidth:600px; ');
+                        } else {
+                            updateLightbox( '<center><label  style="font-size: 24px; color: red; font-weight: bold;">Cannot migrate card with an active session.</label>' + 
+                                                            '<br /><br /><label style="font-size: 20px;  font-weight: bold;">Please contact Philweb Customer</label>' + 
+                                                            '<br /><label style="font-size: 20px;  font-weight: bold;">Service Hotline 338-3388.</label></center>' + 
+                                                            '<br /><input type="button" style="float: right; width: 50px; height: 25px;"  value="Ok" class="btnClose" />',
+                                                            ''          
+                            ); 
+                        }
                     } else if(StatusValue == "Banned Card") {
                         updateLightbox( '<center><label  style="font-size: 24px; color: red; font-weight: bold;">Card is BANNED.</label>' + 
                                                         '<br /><br /><label style="font-size: 20px;  font-weight: bold;">Please contact Philweb Customer</label>' + 
@@ -201,9 +227,9 @@ function btnSubmit(){
                     } else {
                         showLightbox(function(){                            
                             if(StatusValue == "Inactive Temporary"){
-                                
+
                                 if(json.CardInfo.DateVerified != null && json.CardInfo.DateVerified != undefined && json.CardInfo.DateVerified != "") {
-                                    
+
                                         //formatting dateverified
                                         var dateStr= json.CardInfo.DateVerified;
                                         var a=dateStr.split(" ");

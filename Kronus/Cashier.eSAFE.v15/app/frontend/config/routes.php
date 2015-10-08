@@ -40,6 +40,7 @@ return array(
     'terminal/callUnlock'=>'Terminal/callUnlock',
     'terminal/getCasinoServices'=>'Terminal/getAndCountCasinoServices',
     'terminal/isEwallet'=>'Terminal/isEwalletSession',
+    'terminal/checkSession'=>'Terminal/checkExistingSession',
     
     // routes for (forceT) termin monitoring
     'fterminal/overview'=>'ForceTTerminal/overview',

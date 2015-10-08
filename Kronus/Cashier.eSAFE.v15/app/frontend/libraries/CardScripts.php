@@ -9,11 +9,13 @@
 <script type="text/javascript">
 var isEwalletSessionMode = false;
 var isValidated = false;
+
 function identifyCard()
 {
     
                 var url = '<?php echo Mirage::app()->createUrl('loyalty/cardinquiry') ?>';
                 var urlGetCasinoServices = '<?php echo Mirage::app()->createUrl('terminal/getCasinoServices') ?>';
+                var urlcheckSession = '<?php echo Mirage::app()->createUrl('terminal/checkSession') ?>';
                 var url_transfer = '<?php echo Mirage::app()->createUrl('loyalty/transferpoints') ?>'; 
                 var url_activate = '<?php echo Mirage::app()->param['member_activation']?>'; 
                 var url_tempactivate = '<?php echo Mirage::app()->param['temp_activation']?>'; 
@@ -52,7 +54,7 @@ function identifyCard()
                     }
                     
                 });
-
+                
                 $.ajax({
                     type : 'post',
                     async: false,
@@ -199,6 +201,7 @@ function identifyCard()
                                                                                 '<input type= "hidden" id="aid" value ="' + AID + '" />' +
                                                                                 '<input type= "hidden" id="servertime" value ="' + servertime + '" />' +
                                                                                 '<input type= "hidden" id="sitecode" value ="' + sitecode + '" />' +
+                                                                                '<input type= "hidden" id="urlcheckSession" value ="' + urlcheckSession + '" />' +
                                                                                 '<input type= "hidden" id="url_tempactivate" value ="' + url_tempactivate + '" />' +
                                                                                 '<br /><br /><input type="button" style="font-size: 14px; margin-left:80px; width: 80px; height: 27px;"  value="Clear" class="btnClear"/>' +
                                                                                 '<input type="button" style="font-size: 14px; margin-left:10px; width: 80px; height: 27px;"  value="Submit" onclick="javascript: btnSubmit();" class="btnSubmit"/></div>',

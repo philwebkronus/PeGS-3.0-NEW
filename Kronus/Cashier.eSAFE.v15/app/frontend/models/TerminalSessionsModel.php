@@ -182,6 +182,21 @@ class TerminalSessionsModel extends MI_Model {
         return $result['Count'];
     }
     
+    public function checkCardSession($ubcard){
+        
+        $sql = "SELECT COUNT(TerminalID) AS Count FROM terminalsessions
+                WHERE LoyaltyCardNumber = :loyaltycard ";
+        
+        $param = array(":loyaltycard"=>$ubcard);
+
+        $this->exec($sql, $param);
+        
+        $result = $this->find();
+        if(!isset($result['Count']))
+            return false;
+        return $result['Count'];
+    }
+    
     public function getCardNumberByTerminalID($terminalID){
         $sql = "SELECT LoyaltyCardNumber FROM terminalsessions WHERE TerminalID=:terminalID LIMIT 1";
         
