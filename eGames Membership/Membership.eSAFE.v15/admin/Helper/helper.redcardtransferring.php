@@ -15,7 +15,6 @@ App::LoadModuleClass("Membership", "MemberInfo");
 App::LoadModuleClass("Membership", "Members");
 App::LoadModuleClass("Kronus", "TransactionSummary");
 App::LoadModuleClass("Kronus", "Sites");
-App::LoadModuleClass("Kronus", "Sites");
 App::LoadModuleClass("Loyalty", "Cards");
 App::LoadModuleClass("Loyalty", "CardStatus");
 App::LoadModuleClass("Membership", "AuditTrail");
@@ -24,6 +23,7 @@ App::LoadModuleClass("Loyalty", "MemberPointsTransferLog");
 App::LoadModuleClass("Admin", "AccountSessions");
 App::LoadModuleClass("Kronus", "TerminalSessions");
 App::LoadModuleClass("Membership", "PcwsWrapper");
+App::LoadModuleClass("Kronus", "EgmSessions");
 
 //Load Needed Core Class.
 App::LoadCore('Validation.class.php');
@@ -40,6 +40,8 @@ $_MemberPointsTransferLog = new MemberPointsTransferLog();
 $_AccountSessions = new AccountSessions();
 $_TerminalSessions = new TerminalSessions();
 $_PcwsWrapper = new PcwsWrapper();
+$_EgmSessions = new EgmSessions();
+
 $profile = null;
 $response = null;
 
@@ -112,7 +114,8 @@ if (isset($_POST['pager'])) {
                             $MemberInfoResult[0] = array_merge($MemberInfoResult[0], $MemberInfoResult2[0]);
                             if (isset($MemberInfoResult[0]['MID']) && $MemberInfoResult[0]['MID'] != '') {
                                 $count = $_TerminalSessions->isSessionExists($MemberInfoResult[0]['MID']);
-                                if ($count[0]['ctrTerminalID'] == 0) {
+                                $count2 = $_EgmSessions->checkForEGMSession($MemberInfoResult[0]['MID']);
+                                if ($count[0]['ctrTerminalID'] == 0 && $count2[0]['ctrEGMSessions'] == 0) {
                                     $memberinfovalue['FirstName'] = $MemberInfoResult[0]['FirstName'];
                                     $memberinfovalue['LastName'] = $MemberInfoResult[0]['LastName'];
                                     $memberinfovalue['Birthdate'] = $MemberInfoResult[0]['Birthdate'];
@@ -275,7 +278,8 @@ if (isset($_POST['pager'])) {
 
                                 if (isset($MemberInfoResult[0]['MID']) && $MemberInfoResult[0]['MID'] != '') {
                                     $count = $_TerminalSessions->isSessionExists($MemberInfoResult[0]['MID']);
-                                    if ($count[0]['ctrTerminalID'] == 0) {
+                                    $count2 = $_EgmSessions->checkForEGMSession($MemberInfoResult[0]['MID']);
+                                    if ($count[0]['ctrTerminalID'] == 0 && $count2[0]['ctrEGMSessions'] == 0) {
                                         $memberinfovalue['FirstName'] = $MemberInfoResult[0]['FirstName'];
                                         $memberinfovalue['LastName'] = $MemberInfoResult[0]['LastName'];
                                         $memberinfovalue['Birthdate'] = $MemberInfoResult[0]['Birthdate'];
