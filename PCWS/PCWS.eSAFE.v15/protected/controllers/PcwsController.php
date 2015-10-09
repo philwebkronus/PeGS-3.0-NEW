@@ -106,11 +106,12 @@ class PcwsController extends Controller {
 
                 if (is_array($mid)) {
                     
-                    $cardstatus = $mid['Status'];
+                    $mid = $mid['MID'];
+                    $status = $membercards->getStatusByMID($mid);
+                    $cardstatus = $status['Status'];
                     
                     if($cardstatus == 1){
-                        $mid = $mid['MID'];
-
+                        
                         $hasTerminalSession = $terminalsessions->checkSessionIDwithcard($cardnumber, $serviceid);
                         if (is_array($hasTerminalSession)) {
                             $terminalid = $hasTerminalSession['TerminalID'];
@@ -624,9 +625,11 @@ class PcwsController extends Controller {
 
                 if (is_array($mid)) {
 
-                    $cardstatus = $mid['Status'];
+                    $mid = $mid['MID'];
+                    $status = $membercards->getStatusByMID($mid);
+                    $cardstatus = $status['Status'];
+                    
                     if($cardstatus == 1){
-                        $mid = $mid['MID'];
 
                         $checkpinloginattempts = $members->checkPINLoginAttempts($mid);
 
