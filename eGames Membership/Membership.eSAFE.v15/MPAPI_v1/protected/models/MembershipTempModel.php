@@ -414,7 +414,7 @@ class MembershipTempModel {
         try {
             $tempCode = 'eGames' . strtoupper(Utilities::generateAlphaNumeric(5));
 
-            $sql = "CALL membership.sp_insert_data(1,'$email','$firstname','$middlename','$lastname','$nickname','$email','$alternateEmail','$mobileNumber','$alternateMobileNumber','$permanentAddress',Null,'$idNumber','$password',1,'$tempCode',1,'$birthdate',$gender,$nationality,$occupation,$idPresented,$isSmoker,'$referrerCode',$emailSubscription,$smsSubscription,$referrerID,0,Null,3,@OUT_ResultCode,@OUT_Result2,@OUT_MID)";
+            $sql = "CALL membership.sp_insert_data(1,'$email','$firstname','$middlename','$lastname','$nickname','$email','$alternateEmail','$mobileNumber','$alternateMobileNumber','$permanentAddress',Null,'$idNumber','$password',1,'$tempCode',1,'$birthdate',$gender,$nationality,$occupation,$idPresented,$isSmoker,'$referrerCode',$emailSubscription,$smsSubscription,$referrerID,0,Null,1,@OUT_ResultCode,@OUT_Result2,@OUT_MID)";
             //$param = array(':Email' => $email, ':Password' => $password, ':TempCode' => $tempCode);
             $command = $this->_connection->createCommand($sql);
             $result = $command->queryRow(true);
@@ -674,36 +674,36 @@ class MembershipTempModel {
             $tempCode = 'eGames' . strtoupper(Utilities::generateAlphaNumeric(5));
 
             $sql = "CALL membership.sp_insert_data(1,
-  '$email', -- UserName
-  '$firstname', -- FirstName
-  '$middlename', -- MiddleName
-  '$lastname', -- LastName
-    '$nickname', -- NickName
-    '$email', -- Email
-    '$alternateEmail', -- AlterNate Email
-    '$mobileNumber', -- MobileNumber
-  '$alternateMobileNumber', -- AlterNate MobileNumber
-    '$permanentAddress', -- Address1
-    Null, -- Address2
-    '$idNumber', -- IdentificationNumber
-    '$password',  -- Password
-  1, -- ForChangePassword
-  '$tempCode',  -- TemporaryAccountCode
-  1, -- Status
-  '$birthdate', -- BirthDate
-  1, -- Gender
-  1, -- NationalityID
-  1, -- OccupationID
-  1, -- IdentificationID
-  0, -- IsSmoker
-  '$referrerCode', -- Referrer Code
-  0, -- Email Subscription
-  0, -- SMS Subscription
-  1, -- Referrer ID
-  0, -- IsCompleteInfo
-  Null, -- DateVerified
-  4, -- Registration Origin
-  @OUT_ResultCode, @OUT_Result, @OUT_MID);";
+            '$email', -- UserName
+            '$firstname', -- FirstName
+            '$middlename', -- MiddleName
+            '$lastname', -- LastName
+            '$nickname', -- NickName
+            '$email', -- Email
+            '$alternateEmail', -- AlterNate Email
+            '$mobileNumber', -- MobileNumber
+            '$alternateMobileNumber', -- AlterNate MobileNumber
+            '$permanentAddress', -- Address1
+            Null, -- Address2
+            '$idNumber', -- IdentificationNumber
+            '$password',  -- Password
+            1, -- ForChangePassword
+            '$tempCode',  -- TemporaryAccountCode
+            1, -- Status
+            '$birthdate', -- BirthDate
+            1, -- Gender
+            1, -- NationalityID
+            1, -- OccupationID
+            1, -- IdentificationID
+            0, -- IsSmoker
+            '$referrerCode', -- Referrer Code
+            0, -- Email Subscription
+            0, -- SMS Subscription
+            1, -- Referrer ID
+            0, -- IsCompleteInfo
+            Null, -- DateVerified
+            4, -- Registration Origin
+            @OUT_ResultCode, @OUT_Result, @OUT_MID);";
             //$param = array(':Email' => $email, ':Password' => $password, ':TempCode' => $tempCode);
             $command = $this->_connection->createCommand($sql);
 
