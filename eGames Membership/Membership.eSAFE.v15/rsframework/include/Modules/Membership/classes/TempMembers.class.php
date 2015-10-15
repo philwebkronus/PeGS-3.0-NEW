@@ -63,46 +63,11 @@ class TempMembers extends BaseEntity
         } else { return $result = ''; }
     }
     
-    public function verifyEmailAccount($email,$tempcode)
-    {
-        $this->StartTransaction();
-        
-        $query = "SELECT * FROM members
-                  WHERE UserName = '$email'
-                     AND TemporaryAccountCode = '$tempcode'
-                     AND IsVerified = 0";
-        
-        $result = parent::RunQuery($query);
-        
-        if(count($result) > 0) //Account exist
-        {
-            $query2 = "UPDATE members SET DateVerified = NOW(6), IsVerified = 1
-                       WHERE UserName = '$email'
-                        AND TemporaryAccountCode = '$tempcode'";
-            
-            $this->ExecuteQuery($query2);
-            //parent::ExecuteQuery($query2);
-            
-            if(!App::HasError())
-            {
-                $this->CommitTransaction();
-                return self::VERIFY_EMAIL_SUCCESS;
-            }
-            else
-            {
-                $this->RollBackTransaction();
-            }
-        }
-        else
-        {
-            return self::VERIFY_EMAIL_FAILED;
-        }
-    }
     public function verifyEmailAccountSP($email,$tempcode)
     {
         $this->StartTransaction();
         
-        $query = "CALL membership.sp_select_data(0, 0, 3, '$tempcode,$email', 'UserName', @RetCode, @RetMsg, @RetFields)";       
+        $query = "CALL membership.sp_select_data_mp(0, 0, 16, '$tempcode,$email', 'UserName', @RetCode, @RetMsg, @RetFields)";       
         $result = parent::RunQuery($query);
         if ($result[0]['OUTfldListRet'] > 0) {
             $query2 = "CALL membership.sp_update_data(0, 0, 'UserName,TemporaryAccountCode','$email;$tempcode','DateVerified,IsVerified','NOW(6);1',@ResultCode,@Result)";
@@ -120,6 +85,7 @@ class TempMembers extends BaseEntity
             return self::VERIFY_EMAIL_FAILED;
         }
     }
+    
     function Register($arrMembers,$arrMemberInfo)
     {
         $MID = '';
@@ -218,29 +184,13 @@ class TempMembers extends BaseEntity
      * @return int
      */
     public function chkTmpVerifiedEmailAddress($email){
-        $query = "SELECT COUNT(m.MID) ctrtemp FROM members m 
+        $query = "SELECT COUNT(m.MID) ctrtemp, m.TemporaryAccountCode  FROM members m
                 INNER JOIN memberinfo mi ON m.MID = mi.MID
                 WHERE m.IsVerified = 1 AND mi.Email = '$email'";
         
         $result = parent::RunQuery($query);
         
-        return $result[0]['ctrtemp'];
-    }
-    
-    /**
-     * Check if email was already verified in temp db using SP
-     * @author aqdepliyan
-     * @date 06/04/15
-     * @param str $email
-     * @return int
-     */
-    public function chkTmpVerifiedEmailAddressWithSP($email){
-        $this->ConnString = "membership";
-        $query1 = "CALL sp_select_data(0,1,2,'$email', 'FirstName', @ReturnCode, @ReturnMessage, @ReturnFields);";
-        $query2 = "SELECT @ReturnCode, @ReturnMessage, @ReturnFields;";
-        parent::RunQuery($query1);
-        $result = parent::RunQuery($query2);
-        return $result[0]['@ReturnFields'];
+        return $result;//$result[0]['ctrtemp'];
     }
     
     /**
@@ -333,7 +283,86 @@ class TempMembers extends BaseEntity
              return $errMsg;
          }
     }
-    
-}
+    /**
+     * @author Mark Kenneth Esguerra
+     * @param type $MID
+     * @param type $newemail
+     * @return string|boolean
+     */
+    public function TerminateTempAccountSP($MID,$newemail){
+        
+        $errorLogger = new ErrorLogger();
+         $this->StartTransaction();
+         try {
+                    //$query2 = "UPDATE membership_temp.memberinfo SET Status = 2, Email = '$newemail' WHERE MID = '$MID'";
+                    $query2 = "CALL membership.sp_update_data(0, 1, 'MID', $MID, 'Status,Email', '2;$newemail', @ResultCode, @ResultMsg)";
+                    $ismeminfotempupdated = parent::ExecuteQuery($query2);
 
+                    if($ismeminfotempupdated){
+                        //$query3 = "UPDATE membership_temp.members SET UserName = '$newemail' WHERE MID = '$MID'";
+                        $query3 = "CALL membership.sp_update_data(0, 1, 'MID', $MID, 'UserName', '$newemail', @ResultCode, @ResultMsg)";
+                        $ismemtempupdated = parent::ExecuteQuery($query3);
+
+                        if(!$ismemtempupdated){
+
+                            $this->RollBackTransaction();
+                            $errMsg = "Player Termination: Transaction Failed.";
+                            $errorLogger->log($errorLogger->logdate, "error", $errMsg);
+                            return $errMsg;
+                        }
+                        else{
+                            $this->CommitTransaction();
+                            return true;
+                        }
+                    }
+                    else{
+                        $this->RollBackTransaction();
+                        $errMsg = "Player Termination: Transaction Failed.";
+                        $errorLogger->log($errorLogger->logdate, "error", $errMsg);
+                        return $errMsg;
+                    }
+                
+                
+                }catch(Exception $e){
+             $this->RollBackTransaction();
+             $errorLogger->log($errorLogger->logdate, "error", $e->getMessage());
+             $errMsg = "Player Termination: Transaction Failed.";
+             return $errMsg;
+         }
+    }
+    
+    /**
+     * Check if email was already verified in temp db using SP
+     * @author aqdepliyan
+     * @date 06/04/15
+     * @param str $email
+     * @return int
+     */
+    public function chkTmpVerifiedEmailAddressWithSP($email){
+        $query1 = "CALL membership.sp_select_data(0,1,2,'$email', 'FirstName', @ReturnCode, @ReturnMessage, @ReturnFields);";
+        $query2 = "SELECT @ReturnCode, @ReturnMessage, @ReturnFields;";
+        parent::RunQuery($query1);
+        $result = parent::RunQuery($query2);
+        return $result[0]['@ReturnCode'];
+    }
+    
+    /*
+     * get temp code of already verified email
+     * @author fdlsison
+     * @date 07-27-2015 
+     */
+    public function getTempCodeOfVerifiedEmail($email)
+    {
+        $query1 = "CALL membership.sp_select_data(0,1,2,'$email', 'MID', @ReturnCode, @ReturnMessage, @ReturnFields)";
+        $query2 = "SELECT @ReturnCode, @ReturnMessage, @ReturnFields;";
+        parent::RunQuery($query1);
+        $result = parent::RunQuery($query2);
+        $MID = $result[0]['@ReturnFields'];
+        $query3 = "SELECT TemporaryAccountCode FROM membership_temp.members WHERE IsVerified = 1 AND MID = $MID";
+        $result2 = parent::RunQuery($query3);
+        return $result2[0]['TemporaryAccountCode'];
+    }
+            
+}
+    
 ?>
