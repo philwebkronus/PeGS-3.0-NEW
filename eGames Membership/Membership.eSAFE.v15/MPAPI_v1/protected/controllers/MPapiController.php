@@ -397,7 +397,7 @@ class MPapiController extends Controller {
                             $cards = $cardsModel->getCardInfo($cardNumber);
                             $cardTypeID = $cards['CardTypeID'];
                             $refID = $username;
-                            $isSuccessful = $auditTrailModel->logEvent(AuditTrailModel::API_LOGIN, 'Username: ' . $username, array('MID' => $MID, 'SessionID' => $mpSessionID, 'AID' => $MID));
+                            $isSuccessful = $auditTrailModel->logEvent(AuditTrailModel::API_LOGIN, 'Username: ' . $username . ':1', array('MID' => $MID, 'SessionID' => $mpSessionID, 'AID' => $MID));
                             if ($isSuccessful == 0) {
                                 $logMessage = 'Failed to log event on Audittrail.';
                                 $logger->log($logger->logdate, "[LOGIN ERROR]: " . $MID . " || ", $logMessage);
