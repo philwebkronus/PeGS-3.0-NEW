@@ -81,6 +81,33 @@ class PointsTransferAPI extends BaseEntity
             App::SetErrorMessage($e->getMessage());
         }
     }
+    
+    function ProcessCardCompPointsTransfer($arrCardPointsTransfer, $arrOldCards) {
+        $this->StartTransaction();
+        try {
+            $this->Insert($arrCardPointsTransfer);
+            if (!App::HasError()) {
+                App::LoadModuleClass("Loyalty", "OldCards");
+                $_OldCards = new OldCards();
+                $_OldCards->PDODB = $this->PDODB;
+
+                $arrOldCards["OldCardID"] = $arrCardPointsTransfer["FromOldCardID"];
+                $_OldCards->UpdateByArray($arrOldCards);
+
+                if (!App::HasError()) {
+                    $this->CommitTransaction();
+                } else {
+                    $this->RollBackTransaction();
+                }
+            } else {
+                $this->RollBackTransaction();
+            }
+        } catch (Exception $e) {
+            $this->RollBackTransaction();
+            App::SetErrorMessage($e->getMessage());
+        }
+    }
+
 }
 
 ?>
