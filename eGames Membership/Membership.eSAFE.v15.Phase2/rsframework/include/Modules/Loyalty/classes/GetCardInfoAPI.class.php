@@ -481,28 +481,28 @@ class GetCardInfoAPI extends BaseEntity
                            $cardinfo = $_MemberCards->getMemberCardInfoByCard( $cardnumber );
                            $points = $cardinfo[0];                   
                             
-                            if ($isLoyalty == 1) {
-                            if (!is_numeric($points['CurrentPoints'])) {
-                                $_Members->updatePoints(0, 0, 0, $cardnumber);
-                                $points['CurrentPoints'] = 0;
-                            } else if ($points['CurrentPoints'] == 0) {
-                                $points['CurrentPoints'] = $this->getCompPoints($cardnumber);
+                           if ($isLoyalty == 1) {
                                 if (!is_numeric($points['CurrentPoints'])) {
                                     $_Members->updatePoints(0, 0, 0, $cardnumber);
                                     $points['CurrentPoints'] = 0;
+                                } else if ($points['CurrentPoints'] == 0) {
+                                    $points['CurrentPoints'] = $this->getCompPoints($cardnumber);
+                                    if (!is_numeric($points['CurrentPoints'])) {
+                                        $_Members->updatePoints(0, 0, 0, $cardnumber);
+                                        $points['CurrentPoints'] = 0;
+                                    }
                                 }
+                            } else {
+                                    $points['CurrentPoints'] = $this->getCompPoints($cardnumber);
+                                  
+                                    if (!is_numeric($points['CurrentPoints'])) {
+                                        $_Members->updatePoints(0, 0, 0, $cardnumber);
+                                        $points['CurrentPoints'] = 0;
+                                    }
+                                    
+                                    $points['LifetimePoints'] = 0;
+                                    $points['RedeemedPoints'] = 0;
                             }
-                        } else {
-                            if ($points['CurrentPoints'] == 0) {
-                                $points['CurrentPoints'] = $this->getCompPoints($cardnumber);
-                                if (!is_numeric($points['CurrentPoints'])) {
-                                    $_Members->updatePoints(0, 0, 0, $cardnumber);
-                                    $points['CurrentPoints'] = 0;
-                                }
-                                $points['LifetimePoints'] = 0;
-                                $points['RedeemedPoints'] = 0;
-                            }
-                        }
 
                         $result = array("CardInfo"=>array(
                                          "MID"                      => $MID,
@@ -531,6 +531,8 @@ class GetCardInfoAPI extends BaseEntity
                                          "StatusMsg"                => 'Active Temporary Account',
                                          )
                            );
+                        
+                           
                     }else {
                          $result = array("CardInfo"=>array(
                                          "MID"                      => "",

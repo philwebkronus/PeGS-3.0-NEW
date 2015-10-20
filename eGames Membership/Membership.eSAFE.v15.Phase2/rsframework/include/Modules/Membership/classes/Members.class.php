@@ -115,6 +115,7 @@ class Members extends BaseEntity {
                 $this->password = $password;
                 $this->hashpassword = md5($password);
             }
+
             $r = $this->insertMembers($arrMembers, $arrMemberInfo);
   
             if ($r['TransCode'] == 0) {
@@ -154,7 +155,7 @@ class Members extends BaseEntity {
                 $arrMemberCards['CardID'] = $ArrayNewCardID['CardID'];
                 $arrMemberCards['SiteID'] = $siteid;
                 $arrMemberCards['CardNumber'] = $ArrayNewCardID['CardNumber'];
-                $arrMemberCards['LifetimePoints'] = $ArrayOldCardID['LifetimePoints'];
+                $arrMemberCards['LifetimePoints'] = 0;
                 $arrMemberCards['CurrentPoints'] = $ArrayOldCardID['CurrentPoints'];
                 $arrMemberCards['RedeemedPoints'] = $ArrayOldCardID['RedeemedPoints'];
                 $arrMemberCards['DateCreated'] = $datecreated;
@@ -486,21 +487,6 @@ class Members extends BaseEntity {
                                     $_GeneratedPasswordBatch->updatePasswordBatch($MID, $genpassbatchid);
                                     $this->CommitTransaction();
                                     
-//                                    //add comp points
-//                                    $addCompPoints = $_PcwsWrapper->addCompPoints($ArrayNewCardID['CardNumber'], $siteid, $serviceID, $ArrayOldCardID['CurrentPoints'], 0);
-//                                    
-//                          
-//                                    foreach ($addCompPoints as $row)
-//                                    {
-//                                        $errorCode = $row['ErrorCode'];
-//                                    }
-//                                    if ($errorCode == 0)
-//                                    {
-//                                        //update current points of membercard
-//                                        $this->updateCurrentPoints($MID);
-//                                    }
-                                   
-                                   
      //------------------------------------------------------------------------------------------------------------>>>>>>>>>>>>>
        
                                             /************************ FOR LOYALTY *************************/

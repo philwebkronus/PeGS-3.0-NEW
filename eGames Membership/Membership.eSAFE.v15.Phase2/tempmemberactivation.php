@@ -158,8 +158,19 @@ if((isset($_GET["tempnumber"]) && (htmlentities($_GET["tempnumber"]))) &&
         $cardinfo = $_MemberCards->getMemberCardInfo($MID);
 
         if(count($cardinfo) > 0)
-        {
-            $currentpoints = $cardinfo[0]["CurrentPoints"];
+        {         
+          //Check if Loyalty                                     
+            $isLoyalty = App::getParam('PointSystem');
+
+            if ($isLoyalty == 1) {
+                $currentpoints = $cardinfo[0]["CurrentPoints"];
+            } else {
+                App::LoadModuleClass("Loyalty", "GetCardInfoAPI");
+
+                $_GetCardInfoAPI = new GetCardInfoAPI();
+                $compPoints = $_GetCardInfoAPI->getCompPoints($tempAccountCode);
+                $currentpoints = $compPoints;
+            }
         }
         else
         {            
@@ -185,10 +196,30 @@ if((isset($_GET["tempnumber"]) && (htmlentities($_GET["tempnumber"]))) &&
                 
                 $tempcardresult2 = $_MemberCards->getMemberCardInfoByCard($tempAccountCode);
                 $tempcarddetails = $tempcardresult2[0];
-                $lifetimePoints = $tempcarddetails["LifetimePoints"];
-                $currentpoints = $tempcarddetails["CurrentPoints"];
-                $redeemedpoints = $tempcarddetails["RedeemedPoints"];
                 
+                
+                 //Check if Loyalty                                     
+                $isLoyalty = App::getParam('PointSystem');
+
+                if ($isLoyalty == 1) {
+
+                    $lifetimePoints = $tempcarddetails["LifetimePoints"];
+                    $currentpoints = $tempcarddetails["CurrentPoints"];
+                    $redeemedpoints = $tempcarddetails["RedeemedPoints"];
+                } else {
+                    App::LoadModuleClass("Loyalty", "GetCardInfoAPI");
+
+                    $_GetCardInfoAPI = new GetCardInfoAPI();
+
+                    $compPoints = $_GetCardInfoAPI->getCompPoints($tempAccountCode);
+
+                    //Add points from old loyalty card to lifetime and current points
+                    $lifetimePoints = $compPoints;
+                    $currentpoints = $compPoints;
+                    $redeemedpoints = 0;
+                 
+                }
+
                 $cardresult = $_Cards->getCardInfo($MembershipCardNumber); //getMemberCardInfoByCard($MembershipCardNumber);
                 $cardinfo = $cardresult[0];
                 $cardid = $cardinfo["CardID"];
@@ -274,97 +305,7 @@ if((isset($_GET["tempnumber"]) && (htmlentities($_GET["tempnumber"]))) &&
 
                         $r = $_Members->UpdateMemberProfile($arrMemberInfo); 
 
-                        if($r['TransCode'] == 0){
-
-   //------------------------------------------------------------------------------------------------------------>>>>>>>>>>>>>
-       
-                                            /************************ FOR LOYALTY *************************/
-                                        App::LoadModuleClass('Loyalty', "MemberCards");
-                                        App::LoadModuleClass('Loyalty', "GetCardInfoAPI");   
-                                        App::LoadModuleClass('CasinoProvider', "CasinoAPI"); 
-                                        
-                                        $_MemberCards = new MemberCards();   
-                                        $_cardinfoAPI = new GetCardInfoAPI(); 
-                                        
-                                        //Check if Loyalty                                     
-                                        $isLoyalty =  App::getParam('PointSystem'); 
-                                        
-                                        $_CasinoApi = new CasinoAPI();
-                                        
-                                        $transdate = $_CasinoApi->udate('Y-m-d H:i:s.u');
-                                                
-                                        //Loyalty points
-                                        if ($isLoyalty == 1) {
-                                            
-                                            App::LoadModuleClass("Kronus", "LoyaltyAPIWrapper");
-                                            App::LoadModuleClass("Kronus", "LoyaltyRequestLogsModel");
-
-                                            
-                                            
-                                            $loyalty = new LoyaltyAPIWrapper();
-                                            $loyaltyrequestlogs = new LoyaltyRequestLogsModel();
-
-
-                                            $cardinfo = $_MemberCards->getMemberCardInfoByCard($arrMemberCards['CardNumber']);
-                                            $points = $cardinfo[0];
-
-                                            if(!is_numeric($points['CurrentPoints'])){
-                                                 $this->updatePoints(0,0,0,$arrMemberCards['CardNumber']);
-                                                        $points['CurrentPoints'] = 0;
-                                            }
-                                            if($points['CurrentPoints'] == 0){
-                                                    $currentPoints = $_cardinfoAPI->getCompPoints($arrMemberCards['CardNumber']);
-                                                    if(!is_numeric($points['CurrentPoints'])){
-                                                        $this->updatePoints(0,0,0,$arrMemberCards['CardNumber']);
-                                                        $points['CurrentPoints'] = 0;
-                                                    }
-                                            }
-
-                                        //Insert to loyaltyrequestlogs
-                                            $loyaltyrequestlogsID = $loyaltyrequestlogs->insertLogs($arrMemberCards["MID"] , 'D',$transdate, $points['CurrentPoints'] , 1);
-
-                                            $isSuccessful = $loyalty->processPoints($arrMemberCards['CardNumber'], $transdate, 'D', $points['CurrentPoints']  ,$arrMemberCards["SiteID"], 
-                                                                          1, $serviceID , 1);
-                                            
-                                             //check if the loyaltydeposit is successful, if success insert to loyaltyrequestlogs and status = 1 else 2
-                                            if($isSuccessful){
-                                                $loyaltyrequestlogs->updateLoyaltyRequestLogs($loyaltyrequestlogsID,1);
-                                            } else {
-                                                $loyaltyrequestlogs->updateLoyaltyRequestLogs($loyaltyrequestlogsID,2);
-                                            }
-                                        }
-                                        else{
-       
-                                        App::LoadModuleClass("Membership", "PcwsWrapper");
-                                        App::LoadModuleClass("Kronus", "CompPointsLogsModel");
-                                        $comppointslogs = new CompPointsLogsModel();
-                                        $comppoints = new PcwsWrapper();
-
-                                        $cardinfo = $_MemberCards->getMemberCardInfoByCard($arrMemberCards['CardNumber']);
-                                        $points = $cardinfo[0];
-                                        
-                                        if(!is_numeric($points['CurrentPoints'])){
-                                             $this->updatePoints(0,0,0,$arrMemberCards['CardNumber']);
-                                                    $points['CurrentPoints'] = 0;
-                                        }
-                                        if($points['CurrentPoints'] == 0){
-                                                $currentPoints = $_cardinfoAPI->getCompPoints($arrMemberCards['CardNumber']);
-                                                if(!is_numeric($points['CurrentPoints'])){
-                                                    $this->updatePoints(0,0,0,$arrMemberCards['CardNumber']);
-                                                    $points['CurrentPoints'] = 0;
-                                                }
-                                        }
-
-                                        $serviceID = 18;   
-                                        $usermode = $comppointslogs->checkUserMode($serviceID);
-                                        if ($usermode == 0) {
-
-                                         //Insert to ewallettrans     
-                                          $test = $comppoints->addCompPoints($arrMemberCards['CardNumber'],  $arrMemberCards["SiteID"],  $serviceID, $points['CurrentPoints'], 0);
-                                        }
-                                    }
-                
-//------------------------------------------------------------------------------------------------------------>>>>>>>>>>>>>                                                        
+                        if($r['TransCode'] == 0){                                                     
                             
                             $isSuccess = true;
                             $_Log->logAPI(AuditFunctions::MIGRATE_TEMP, $tempAccountCode.':'.$MembershipCardNumber.':Success', $sitecode, $AID);

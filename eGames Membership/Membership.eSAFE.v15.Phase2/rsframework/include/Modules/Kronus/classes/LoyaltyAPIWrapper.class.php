@@ -126,15 +126,19 @@ Class LoyaltyAPIWrapper extends BaseEntity {
                 '&serviceid='  . $service_id  . '&terminallogin=' . $terminal_login . '&iscreditable=' . $iscreditable .
                 '&vouchercode=' . $vouchercode);
 
-        curl_setopt( $ch, CURLOPT_FRESH_CONNECT, FALSE );
-        curl_setopt( $ch, CURLOPT_CONNECTTIMEOUT, 10 );
-        curl_setopt( $ch, CURLOPT_TIMEOUT, 500 );
-        curl_setopt( $ch, CURLOPT_USERAGENT, 'PEGS Station Manager' );
-        curl_setopt( $ch, CURLOPT_SSL_VERIFYHOST, FALSE );
-        curl_setopt( $ch, CURLOPT_SSL_VERIFYPEER, FALSE );
-        curl_setopt( $ch, CURLOPT_HTTPHEADER, array( 'Content-Type: application/json' ) );
-        curl_setopt( $ch, CURLOPT_RETURNTRANSFER, $return_transfer );
-        curl_setopt( $ch, CURLOPT_SSLVERSION, 3 );
+//        
+//        curl_setopt( $ch, CURLOPT_FRESH_CONNECT, FALSE );
+//        curl_setopt( $ch, CURLOPT_CONNECTTIMEOUT, 10 );
+//        curl_setopt( $ch, CURLOPT_TIMEOUT, 500 );
+//        curl_setopt( $ch, CURLOPT_USERAGENT, 'PEGS Station Manager' );
+//        curl_setopt( $ch, CURLOPT_SSL_VERIFYHOST, FALSE );
+//        curl_setopt( $ch, CURLOPT_SSL_VERIFYPEER, FALSE );
+//        curl_setopt( $ch, CURLOPT_POST, TRUE);
+//        curl_setopt( $ch, CURLOPT_HTTPHEADER, array( 'Content-Type: application/json' ) );
+//        curl_setopt( $ch, CURLOPT_RETURNTRANSFER, TRUE);
+//        curl_setopt( $ch, CURLOPT_SSLVERSION, 3 );
+        
+        
         
         $result = curl_exec( $ch );
         $http_status = curl_getinfo( $ch, CURLINFO_HTTP_CODE );

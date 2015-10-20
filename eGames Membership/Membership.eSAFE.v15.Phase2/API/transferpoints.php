@@ -200,7 +200,6 @@ if((isset($_GET["oldnumber"]) && ctype_alnum($_GET["oldnumber"])) &&
                $membercardnewpoints = $_GetCardInfoAPI->getCompPoints($newcardnumber);
             }
 
-
             $_JSONAPIResponse->_sendResponse(200, json_encode(array("CardPoints"=>array("LoyaltyCardPoints"=>$loyaltyoldpoints, "MembershipCardPoints"=>$membercardnewpoints, "StatusCode"=>(int)1, "StatusMsg"=>"Successful"))));
             $_Log->logAPI(AuditFunctions::TRANSFER_POINTS, $newrow["MID"] . ':' . $oldcardnumber .':'. $newcardnumber .':Success',$AID);
         }
