@@ -1,0 +1,102 @@
+/* 
+    Document   : styles
+    Created on : Apr 8, 2013, 5:48:57 PM
+    Author     : USER
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+/* 
+   TODO customize this sample style
+   Syntax recommendation http://www.w3.org/TR/REC-CSS2/
+*/
+
+root { 
+    display: block;
+}
+
+body, table
+{
+    font: 10pt Arial;
+}
+
+.registrationtable td
+{
+    padding: 3px 3px 3px 3px;
+}
+
+.registrationtable
+{
+    width: 95%;
+}
+
+.registrationtable label
+{
+    display: inline;
+    margin-bottom: 0px;
+    vertical-align: middle;
+/*    line-height: inherit;
+    vertical-align: middle;*/
+}
+
+.pagesubtitle
+{
+    font-size: 12pt;
+    font-weight: bold;
+}
+
+#rightcol
+{
+/*    background-color: #fcefa1;*/
+    width: 300px;
+    /*height: 470px;*/
+    padding: 0 20px 0 20px;
+    /*border-left: 1px solid #d7c265;*/
+}
+
+#membersactivation{
+    background-color: #f2e2ae;
+    padding: 20px;
+    height: 380px;
+    width: 600px;
+    max-height: 380px;
+    max-width: 600px;
+}
+
+.login-error
+{
+    margin-bottom: 5px;
+    text-align: center;
+    font-weight: bold;
+    color: #FF0000;
+}
+
+.profile
+{
+    background-color: #7c0d08;
+    padding: 10px;
+    -moz-border-radius: 10px; 
+    border-radius: 10px;
+    
+}
+.profile-wrapper{
+    margin-top: -30%;
+}
+.profile-box
+{
+    margin-top: 30%;
+}
+
+#main td{
+    vertical-align: top;
+}
+
+.formlabel
+{
+    display: inline;
+}
+
+td.labelname {
+    font-size: 14px; 
+    /*font-weight: bold;*/
+}

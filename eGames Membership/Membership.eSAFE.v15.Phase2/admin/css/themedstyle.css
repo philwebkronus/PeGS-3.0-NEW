@@ -1,0 +1,161 @@
+html
+{
+    height: 100%;
+}
+
+body
+{
+    background-color: #F7F4EE;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+.maincontainer
+{
+    width: 1000px;
+    text-align: left;
+    background-color: #FFFFFF;
+    box-shadow: 5px 5px 5px 1px #CCCCCC;
+}
+
+.content
+{
+    padding: 5px 5px 5px 5px;
+    display: block;
+    min-height: 100%;
+    /*height: 100%;*/
+    height: 600px;
+}
+
+.content2
+{
+    padding: 5px 5px 5px 5px;
+    display: block;
+    min-height: 200%;
+    /*height: 100%;*/
+    height: 900px;
+}
+
+.header
+{
+    height: 70px;
+    font-size: 20pt;
+    color: #FFFFFF;
+    background-color: #1A597C;
+    vertical-align: middle;
+    padding: 30px 0 0 20px;
+}
+.mainmenu
+{
+    background-color: #000000;
+    background-image: url('../images/mainmenubg.jpg');
+    color: #000;
+    height: 35px;
+    width: 1000px;
+    vertical-align: middle;
+    position:relative;
+    z-index: 3;
+}
+
+/*.mainmenu li
+{
+    display: inline-block;
+    vertical-align: middle;
+    padding: 8px 5px 5px 5px;
+    white-space: nowrap;
+}
+
+.mainmenu li a 
+{
+    height: 32px;
+    width: auto;
+    color: #1A597C;
+    text-align: center;
+    display: inline-block;
+    font-weight: bold;
+    text-shadow: 0px 1px 0px #BBB;
+    text-shadow: 1px 1px 0 #DDDDDD;
+}
+
+.mainmenu li a:hover 
+{
+    height: 30px;
+    width: 100px;
+    color: #FFFFFF;
+    display: inline-block;
+    font-weight: bold;
+    background-color: #D7E7F2;
+    background-image: none;
+    text-shadow: 0px 1px 0px #BBB;
+    text-shadow: -1px -1px 0 #333333;
+}*/
+
+.mainmenu .selectedmenu
+{
+    /*color: #E6C52C;*/
+    /*color: #FFF36D;*/
+    /*text-shadow: -1px -1px 0 #FFF36D;*/
+    /*color: #1A597C;*/
+    /*background: #fbec88;*/
+    color: #ff0000;
+    z-index: -1001;
+}
+
+.searchbar
+{
+    padding: 5px 5px 5px 5px;
+}
+
+#btnSearch
+{
+    /* background-image: url('../images/mainmenubg.jpg'); */
+    cursor: pointer;
+}
+
+.defaulttable, .defaulttable td
+{
+    border: 1px solid #eee;
+    border-collapse: collapse;
+    padding: 4px;
+}
+
+.defaulttable tr:hover
+{
+	background: #ECFBD4;
+}
+
+.tableheader th
+{
+    background-color: #DEDEDE;
+    background-image: url('../images/tableheaderbg.jpg');
+    color: #FFFFFF;
+    font-weight: normal;
+    text-align: center;
+    padding: 2px 2px 2px 2px;
+}
+
+.alternatingcolor
+{
+    background-color: #EFEFEF;
+}
+
+.title
+{
+    font-size: 13pt;
+    font-weight: normal;
+}
+
+.bold
+{
+    font-weight: bold;
+}
+
+.redeemitem
+{
+    padding: 3px 3px 3px 3px;
+}
+
+.formstyle
+{
+    background-color: #EFEFEF;
+}

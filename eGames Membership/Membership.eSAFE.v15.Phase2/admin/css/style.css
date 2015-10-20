@@ -1,0 +1,366 @@
+* 									{ margin: 0; padding: 0; }
+body								{ font: 12px Helvetica, Sans-Serif; } 
+#page-wrap							{ width: 1000px; /*margin: 25px 0 0 0 ; */} 
+a									{ text-decoration: none; }
+ul									{ list-style: none; }
+p                                   { margin: 15px 0; }
+
+#errormessage{
+    position: absolute;
+    margin:0px;
+    width: 100%;
+    z-index: 1000;
+    opacity: 0.7;
+}
+
+#txtSearch
+{
+    font-size: 18px;
+    margin-left: 20px;
+    height: 30px;
+}
+
+#btnSearch
+{
+    height: 35px;
+    width: 80px;
+}
+
+#btnClear
+{
+    height: 35px;
+    width: 80px;
+}
+
+#login
+{
+    margin: 10% 0 0 40%;
+    border: 1px solid #69a8cd;
+    width: 250px;
+    height: 150px;
+    padding: 20px 40px;
+    background-color: #dbeffb;
+    position: absolute;
+}
+
+#login label
+{
+    padding: 4px;
+}
+
+#login .inputfield{
+    padding: 4px 4px;
+}
+
+.login-title{
+    width: 250px;
+    height: 20px;
+    background-color: #69a8cd;
+    border: 1px solid #1A597C;
+    padding: 4px;
+    position: relative;
+    top: -35px;
+    font-weight: bold;
+}
+
+.title{
+    font-size: 24px;
+    padding: 2px;
+}
+
+/*--------------------navigation css-----------------------*/
+
+div.nav {
+    position:  relative;
+    float: left;
+    text-align: left;
+}
+
+div.nav ul ul {
+    display: none;
+}
+
+div.nav ul li:hover > ul {
+    display: block;
+    visibility: visible; 
+}
+
+div.nav ul {
+    position:  relative;
+    text-align: left;
+    margin-left: 20px;
+    list-style: none;
+    display: inline-table;
+}
+
+div.nav ul:after {
+    content: "";
+    clear: both;
+    display: block;
+}
+
+div.nav ul li {
+    font-weight: bold;
+    float: left;
+    zoom: 1;
+    padding: 8px 14px;
+}
+
+div.nav ul li:hover {
+    background: #fbec88;  
+    height: 19px; 
+    position: relative;
+}
+
+div.nav ul li a {
+    display: block;
+    color: #fff;
+    text-decoration: none;
+}
+
+div.nav ul ul {
+    width: 180px; 
+    margin-left: auto;
+    visibility: hidden; 
+    position: absolute; 
+    top: 100%; 
+    left: 0; 
+    background: #c3d9ff; 
+    border: 1px solid #ccc;
+}
+
+div.nav ul ul li {
+    position: relative;
+    font-weight: normal; 
+    background: #c3d9ff; 
+    color: #1A597C; 
+    width: 175px; 
+}
+
+div.nav ul ul li:hover {
+    margin-left: auto;
+    height: auto; 
+    position: relative;
+}
+
+div.nav ul ul li a {
+    border-right: none; 
+    width: 100%; 
+    display: inline-block; 
+    color: #1A597C;
+}
+
+div.nav ul ul ul {
+    position: absolute;
+    left: 100%; top: 0;
+}
+
+/*--------------------------------------------------------------*/
+
+
+/* Menu */
+
+#menu_container {
+    width: 100%;
+    background:#FFFFFF;
+    /*padding: 4px 0;*/
+    border-bottom: 1px solid #ccc;
+    position: absolute;
+}
+
+#cardinfo {padding: 8px 0;}
+#cardinfo table { width: 100%; margin-top: 10px; }
+#cardinfo table, #cardinfo td
+{
+    border: 1px solid #eee;
+    border-collapse: collapse;
+    padding: 4px;
+}
+
+
+/*------------------List Of Banned Accounts Popup CSS for table---------------------*/
+
+#card-table {
+    float: left;
+    margin-left: 12px;
+    margin-top: 5px;
+    width: 200px;
+    border: 1px solid gray;
+}
+
+#card-table th {
+    border: 1px solid gray;
+    color:  white;
+    padding: 5px;
+    background-color: #1A597C;
+    text-align: left;
+}
+
+#card-table td {
+    /*border: 1px solid gray;*/
+    padding: 5px;
+    text-align: left;
+}
+
+#accountprofile {
+    float: left;
+    display: block;
+    margin-left: 12px;
+    margin-top: 10px;
+    width: 500px;
+    border: 1px solid gray;
+}
+
+#accountprofile th {
+    border: 1px solid gray;
+    color:  white;
+    padding: 5px;
+    width: 496px;
+    background-color: #1A597C;
+    text-align: left;
+}
+
+#accountprofile td {
+    /*border: 1px solid gray;*/
+    padding: 3px;
+    text-align: left;
+}
+
+#tblplayerdetails {
+    float: center;
+    display: block;
+    margin-left: 12px;
+    margin-top: 10px;
+    width: 255px;
+    border: 1px solid gray;
+}
+
+#tblplayerdetails2 {
+    float: center;
+    display: block;
+    margin-left: 12px;
+    margin-top: 10px;
+    width: 600px;
+    border: 1px solid gray;
+}
+
+#tblplayerdetails2 th {
+    border: 1px solid gray;
+    color:  white;
+    padding: 5px;
+    background-color: #1A597C;
+    text-align: left;
+}
+
+#tblplayerdetails2 td {
+    /*border: 1px solid gray;*/
+    padding: 3px;
+    text-align: left;
+}
+
+#tblplayerdetails th {
+    border: 1px solid gray;
+    color:  white;
+    padding: 5px;
+    background-color: #1A597C;
+    text-align: left;
+}
+
+#tblplayerdetails td {
+    /*border: 1px solid gray;*/
+    padding: 3px;
+    text-align: left;
+}
+
+/*-----------------------------------------------------------------------------------------------------*/
+
+/*--------Additional CSS Style for Add Promo------------------*/
+
+#tbladdpromo tr td #caption{
+    width: 100px;
+}
+#tbladdpromo tr td #field{
+    width: 200px;
+    vertical-align: top;
+}
+.radiostatus{
+    margin-left: 40px;
+    margin-bottom: 5px;
+}
+
+/*--------Additional CSS Style for Add Reward Items------------------*/
+
+img {
+    border:0;
+}
+form.profileForm{
+  float:left;
+  width:300px;
+  height:500px;
+  border:2px solid #AAAAAA;
+  padding:15px;
+}
+div.error{
+    color:red;
+    font-weight: bold;
+    font-family: Arial;
+    font-size:10px;
+    text-align:center;
+}
+div.success{
+    color:green;
+    font-weight: bold;
+    font-family: Arial;
+    font-size:10px;
+    text-align:center;
+}
+form.profileForm label{
+  display:block;
+  float:left;
+  width:170px;
+  font-family:Arial;
+}
+form.profileForm input{
+  display:block;
+  float:left;
+  width:250px;
+}
+form.profileForm input.submit{
+  margin-top:25px;
+  width:100px;
+}
+div.imageContainer input{
+  width:100px;
+  display:block;
+}
+.clear
+{
+  clear:both;
+}
+div.imageContainer{
+  float:left;
+  width:150px;
+  margin-right:25px;
+  text-align:center;
+  border:2px solid #CCCCCC;
+}
+a#delete{
+
+}
+div#addblacklist{
+    margin: 30px;
+    text-align: center;
+}
+#btnaddblacklist{
+    padding: 5px;
+}
+#tblblacklist td{
+    width: 100px;
+    padding-bottom: 10px;
+}
+#divlist{
+    width: 770px;
+    text-align: center;
+    margin-left: auto; 
+    margin-right: auto;
+}
