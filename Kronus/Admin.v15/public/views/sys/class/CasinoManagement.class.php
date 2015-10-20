@@ -307,7 +307,8 @@ class CasinoManagement extends DBHandler
       */
       function selectservice($zserviceID)
       {
-          $stmt = "SELECT ServiceID, ServiceName FROM ref_services WHERE ServiceGroupID = '".$zserviceID."' ORDER BY ServiceID ASC";
+          $stmt = "SELECT ServiceID, ServiceName FROM ref_services 
+                   WHERE ServiceGroupID = '".$zserviceID."' ORDER BY ServiceName ASC";
           $this->executeQuery($stmt);
           return $this->fetchAllData();
       }
@@ -377,7 +378,7 @@ class CasinoManagement extends DBHandler
       */
         function getrefservicegrpwithid()
       {
-         $stmt = "SELECT ServiceGroupID, ServiceGroupName FROM ref_servicegroups ORDER BY ServiceGroupID ASC";
+         $stmt = "SELECT ServiceGroupID, ServiceGroupName FROM ref_servicegroups ORDER BY ServiceGroupName ASC";
          $this->executeQuery($stmt);
          return $this->fetchAllData();
       }

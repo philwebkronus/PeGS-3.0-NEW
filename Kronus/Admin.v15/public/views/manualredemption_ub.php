@@ -411,7 +411,7 @@
        * basically hides card information lightbox and
        * shows withdraw form
        */
-      function RedeemUB(bal,id,terminalid)
+      function RedeemUB(bal,id,terminalid,isewallet)
       { 
             if(bal == 0){
               alert("Balance is zero");
@@ -445,7 +445,7 @@
               document.getElementById('txtterminalid').value = terminalid;
               document.getElementById('txtserviceid').value = id;
               document.getElementById('txtamount2').value = bal;
-              if (id == 20) { //if serviceID is 20, add button
+              if (isewallet == 1) { //if serviceID is 20, add button
                   $("#txtamtwithdraw").val('');
                   document.getElementById('loading').style.display='none';
                   document.getElementById('light1').style.display='none';
@@ -459,8 +459,9 @@
                   document.getElementById('fadeub').style.display='block';
               }
             }
-      }
-      
+
+            }   
+        
       //call method to display card and balance information
       function getMembershipAndCasinoInfo(url){
             //ajax call: Get membership information
@@ -469,13 +470,16 @@
                     type: 'post',
                     data: {page: function(){ return "GetLoyaltyCard";},
                            chkbalance: function() {return $("#chkbalance").val();},
-                             txtcardnumber: function(){return jQuery("#txtcardnumber").val();}
+                           txtcardnumber: function(){return jQuery("#txtcardnumber").val();}
                           },
-                    dataType : 'json',  
+                    dataType : 'json',
                     success : function(data)
                     {
+                        
                         $.each(data, function(i,user)
                         {
+                            var isewallet = this.IsEwallet;
+                            
                             if(this.StatusCode == 9){
                                 alert("Card is Banned");
                             }
@@ -532,7 +536,7 @@
                                                     +"<th>Action</th>"
                                                     +"</tr>"
                                                     +"</thead>";
-
+                                            
                                               $.each(data, function(i,user)
                                               {
                                                       $('#loading').hide();
@@ -540,8 +544,7 @@
                                                       document.getElementById('light3').style.display='block';
                                                       document.getElementById('fade3').style.display='block';
                                                       document.getElementById('txtmid').value = this.MemberID;
-                                                      document.getElementById('txtusermode').value = 1;
-                                                      
+                                                      document.getElementById('txtusermode').value = 1;                                                   
                                                       if(this.Balance == 0 || this.Balance == 'Error: Cannot get balance' || this.Balance == 'UserBased Manual Redemption: InActive Casino')
                                                       {
 
@@ -550,7 +553,7 @@
                                                                   +"<tr>"
                                                                   +"<td>"+this.ServiceName+"</td>"   
                                                                   +"<td align='right'>"+this.Balance+"</td>"
-                                                                  +"<td align='center' style='width: 100px;'><input type=\"button\" id=\"redeem\" name=\"redeem\" value=\"Redeem\" onclick=\" RedeemUB("+100+","+this.ServiceID+","+this.TerminalID+")\"disabled /></td>"
+                                                                  +"<td align='center' style='width: 100px;'><input type=\"button\" id=\"redeem\" name=\"redeem\" value=\"Redeem\" onclick=\" RedeemUB("+this.Balance+","+this.ServiceID+","+this.TerminalID+","+isewallet+")\"disabled /></td>"
                                                                   +"</tr>"
                                                                   +"</tbody>";
                                                                   $('#userdata3').html(tblRow);
@@ -563,7 +566,7 @@
                                                                   +"<tr>"
                                                                   +"<td>"+this.ServiceName+"</td>"   
                                                                   +"<td align='right'>"+balance+"</td>"
-                                                                  +"<td align='center' style='width: 100px;'><input type=\"button\" id=\"redeem\" name=\"redeem\" value=\"Redeem\" onclick=\" RedeemUB("+this.Balance+","+this.ServiceID+","+this.TerminalID+")\" /></td>"
+                                                                  +"<td align='center' style='width: 100px;'><input type=\"button\" id=\"redeem\" name=\"redeem\" value=\"Redeem\" onclick=\" RedeemUB("+this.Balance+","+this.ServiceID+","+this.TerminalID+","+isewallet+")\" /></td>"
                                                                   +"</tr>"
                                                                   +"</tbody>";
                                                                   $('#userdata3').html(tblRow);
@@ -599,7 +602,6 @@
                                                   document.getElementById('fade3').style.display='block';
                                                   document.getElementById('txtmid').value = this.MemberID;
                                                   document.getElementById('txtusermode').value = 1;
-
                                                   if(this.Balance == 0 || this.Balance == 'Error: Cannot get balance' || this.Balance == 'UserBased Manual Redemption: InActive Casino')
                                                   {
 

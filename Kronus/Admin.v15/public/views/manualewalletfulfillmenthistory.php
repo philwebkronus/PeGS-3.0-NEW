@@ -196,14 +196,14 @@ $vaccesspages = array('9');
                             colNames:['Site', 'Transaction Type', 'Amount','Service Name', 'Transaction Date','Status','User Mode', 'Fulfilled By'],
                             colModel:[
                                     //{name:'LoyaltyCard',index:'LoyaltyCard', align: 'center', width:150},
-                                    {name:'SiteCode',index:'SiteCode',align: 'center', width:100},
+                                    {name:'SiteCode',index:'SiteCode',align: 'center', width:90},
                                     {name:'TransactionType',index:'TransactionType', align: 'left', width:120},
                                     {name:'Amount',index:'Amount', align: 'right', width:120},
-                                    {name:'ServiceName',index:'ServiceName', align: 'left', width:150},
-                                    {name:'TransactionDate',index:'TransactionDate', align: 'center', width:240},
+                                    {name:'ServiceName',index:'ServiceName', align: 'left', width:140},
+                                    {name:'TransactionDate',index:'TransactionDate', align: 'center', width:230},
                                     {name:'Status',index:'Status', align: 'center', width:210},
                                     {name:'UserMode', index:'UserMode', align: 'center', width:150},
-                                    {name:'UpdatedByAID', index:'UpdatedByAID', align: 'center', width:150}
+                                    {name:'UpdatedByAID', index:'UpdatedByAID', align: 'center', width:180}
 //                                    {name:'button', index: 'button',align: 'center'}
                             ],
 

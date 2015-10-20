@@ -133,7 +133,9 @@ include "header.php";
                             page: function(){ return $("#txtprocess").val(); } ,
                             login: function(){ return $("#txtlogin").val(); }, 
                             terminal: function(){ return $("#txtterminal").val(); }, 
-                            cardnumber: function(){ return $("#txt-card-number").val(); }
+                            cardnumber: function(){ return $("#txt-card-number").val(); }, 
+                            serviceid: function() { return $("#txt-service-id").val(); }
+                    
                         }, 
                         success: function(data){
                             alert(data.Message);
@@ -165,7 +167,7 @@ include "header.php";
                             $("#txtlogin").val(data.Login);
                             $("#txtterminal").val(data.TerminalCode);
                             $("#txt-card-number").val(data.CardNumber);
-                            
+                            $("#txt-service-id").val(data.ServiceID);
                             var tblRow = "<thead>"
                                         +"<tr>"
                                         +"<th colspan='6' class='header'>Terminal Session Info </th>" 
@@ -255,6 +257,7 @@ include "header.php";
             <input type="hidden" name="loginusername" id="txtlogin" />
             <input type="hidden" name="terminal" id="txtterminal" />
             <input type="hidden" name="cardnumber" id="txt-card-number" />
+            <input type="hidden" name="serviceid" id="txt-service-id" />
             <table id="userdata2" class="tablesorter" align="center">
                 <tr>
                     <td>&nbsp;</td>

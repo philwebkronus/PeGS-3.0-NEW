@@ -170,7 +170,7 @@ if($connected)
                          $vreload = $vview['Reload'];
                          $vwithdraw = $vview['Withdrawal'];
                          $response->rows[$i]['id']=$vview['TransactionSummaryID'];
-                         $response->rows[$i]['cell']=array($vview['TransactionSummaryID'], $_POST['sitecode'], $rterminalCode, $vview['ServiceName'],
+                         $response->rows[$i]['cell']=array($_POST['sitecode'], $rterminalCode, $vview['ServiceName'],
                             number_format($vdeposit, 2), number_format($vreload, 2), number_format($vwithdraw, 2),
                             $vview['DateStarted'], $vview['DateEnded']);
                          $i++;

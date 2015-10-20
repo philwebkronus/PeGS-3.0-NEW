@@ -523,6 +523,7 @@ if($connected && $connected2 && $connected3)
                  $login = $_POST['login'];
                  $terminal = $_POST['terminal'];
                  $cardnumber = $_POST['cardnumber'];
+                 $serviceID = $_POST['serviceid'];
                  $call = 2;
                  //double check if session has TransSummaryID
                  $hasTransSumID = $oas->getTransactionSummaryViaLogin($login);
@@ -533,7 +534,7 @@ if($connected && $connected2 && $connected3)
                  while ($call > 0)
                  {
                      if ($apicall == 1) { //force logout
-                         $api_result = $pcwsWrapper->logoutLaunchPad($Pcws['forcelogout'], $login);
+                         $api_result = $pcwsWrapper->logoutLaunchPad($Pcws['forcelogout'], $login, $serviceID);
                      }
                      else { //remove session
                          $api_result = $pcwsWrapper->removeSession($Pcws['removesession'], $terminal, $cardnumber);
@@ -589,6 +590,7 @@ if($connected && $connected2 && $connected3)
                                                       'CardNumber' => $cardnumber, 
                                                       'SiteCode' => trim(str_replace('ICSA-', '', $getSiteCode['SiteCode'])), 
                                                       'TerminalCode' => trim(str_replace('ICSA-', '', $details['TerminalCode'])), 
+                                                      'ServiceID' => $hasTerminal['ServiceID']
                                              );
                                          }
                                 else 
@@ -1003,7 +1005,7 @@ if($connected && $connected2 && $connected3)
             
             //view transaction logs for user based transactions
             case 'ViewSupportUB':
-                
+
                 if(isset ($_POST['cmbsource']) && isset ($_POST['txtDate1'])
                  || isset($_POST['cmbstatus']))
                  {
@@ -1083,7 +1085,7 @@ if($connected && $connected2 && $connected3)
                                                list($sites, $sitecodez) = split("-", $vview['SiteCode']);
                                                $results = substr($vview['TerminalCode'], strlen($vview['SiteCode']));
                                                $responce->rows[$i]['id']=$vview['TransactionReferenceID'];
-                                               $responce->rows[$i]['cell']=array($sitecodez,$results,$vview['ServiceName'],$vtranstype,$vview['ServiceTransactionID'], 
+                                               $responce->rows[$i]['cell']=array($sitecodez,$results,$vview['ServiceName'], $vtranstype, 
                                                    number_format($vview['Amount'],2),$vview['StartDate'],$vview['EndDate'],$vstatus, $user);
                                                $i++;
 
@@ -1150,7 +1152,7 @@ if($connected && $connected2 && $connected3)
                                        preg_match("/\d.*/", $vview['TerminalCode'], $results);
                                        $results = substr($vview['TerminalCode'], strlen($vview['SiteCode']));
                                        $responce->rows[$i]['id']=$vview['TransactionReferenceID'];
-                                       $responce->rows[$i]['cell']=array($sitecode,$results,$vview['ServiceName'],$vtranstype,$vview['ServiceTransactionID'], 
+                                       $responce->rows[$i]['cell']=array($sitecode,$results,$vview['ServiceName'],
                                            number_format($vview['Amount'],2),$vview['StartDate'], $vview['EndDate'],$vstatus);
                                        $i++;
                                     }
@@ -1205,7 +1207,7 @@ if($connected && $connected2 && $connected3)
                                        list($site, $sitecode) = split("-", $vview['SiteCode']);
                                        $results = substr($vview['TerminalCode'], strlen($vview['SiteCode']));
                                        $responce->rows[$i]['id']=$vview['ManualRedemptionsID'];
-                                       $responce->rows[$i]['cell']=array($sitecode,$results,$vview['ServiceName'],$vview['TransactionID'], 
+                                       $responce->rows[$i]['cell']=array($sitecode,$results,$vview['ServiceName'], 
                                            number_format($vview['ReportedAmount'],2),$vview['TransactionDate'],$vstatus);
                                        $i++;
                                     }
@@ -1596,9 +1598,8 @@ if($connected && $connected2 && $connected3)
                         $results = preg_split("/$results2/", $vview['TerminalCode']);
                         $vsthistoryID = $vview['ServiceTransferHistoryID'];
                         $responce->rows[$i]['id']=$vview['TransactionRequestLogLPID'];
-                        $responce->rows[$i]['cell']=array($vview['TransactionRequestLogLPID'],$vview['TransactionReferenceID'], $vview['POSAccountNo'], 
-                                                          $results[1], $vtranstype, $vview['ServiceTransactionID'], 
-                                                          $vview['ServiceStatus'], number_format($vview['Amount'], 2), $vview['ServiceName'], 
+                        $responce->rows[$i]['cell']=array($vview['TransactionRequestLogLPID'], $vview['POSAccountNo'], 
+                                                          $results[1], $vtranstype, number_format($vview['Amount'], 2), $vview['ServiceName'], 
                                                           $vview['StartDate'], $vview['EndDate'], $vstatus);
                         $i++;
                      }
@@ -1654,7 +1655,7 @@ if($connected && $connected2 && $connected3)
                          $cshmacID = $vview['CashierMachineInfoId_PK'];
                          $sitecode = substr($vview['SiteCode'], strlen($terminalcode));
                          $responce->rows[$i]['id']=$cshmacID;
-                         $responce->rows[$i]['cell']=array($sitecode,$vview['ComputerName'], $vview['CPU_Id'], 
+                         $responce->rows[$i]['cell']=array($vview['ComputerName'], $vview['CPU_Id'], 
                                                           $vview['BIOS_SerialNumber'], $vview['MAC_Address'], 
                                                           $vview['Motherboard_SerialNumber'], $vview['OS_Id'], $vview['IPAddress'], 
                                                           "<input type=\"button\" value=\"Disable\" onclick=\"window.location.href='process/ProcessAppSupport.php?cshmacid=$cshmacID'+'&disable='+'DisableTerminal';\"/>");
@@ -2672,12 +2673,16 @@ if($connected && $connected2 && $connected3)
                     {
                         $msg = "Value for decreasing the number of cashier must not be greater than the current number of cashiers";
                     }
+                    else if($vaddcashier>127)
+                    {
+                      $msg = "Number of cashiers in a site must not be greater than 127";  
+                    }
                     else {
                     if ($vtotalcount==$vaddcashier)
                     {
-                        $msg = "Cashier Count Unchanged";
+                        $msg = "Cashier count unchanged";
                     }
-                            //validate if no record of cashier machine count; then insert records
+                     //validate if no record of cashier machine count; then insert records
                     else if($vtotalcount >= 0)
                     {
                         $rcashierterminal = $oas->updatecashiercount($vaddcashier, $vsiteID, $vaid);

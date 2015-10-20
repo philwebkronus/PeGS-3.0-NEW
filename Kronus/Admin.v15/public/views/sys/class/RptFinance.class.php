@@ -35,17 +35,16 @@ class RptFinance extends DBHandler{
     {
         if($zsiteID > 0)
         {
-            $stmt = "SELECT DISTINCT a.TerminalID, b.TerminalCode FROM transactiondetails a 
-                INNER JOIN terminals b ON a.TerminalID = b.TerminalID 
-                WHERE a.SiteID = '".$zsiteID."' ORDER BY TerminalID ASC";
+            $stmt = "SELECT TerminalID, TerminalCode FROM terminals
+                     WHERE SiteID = '".$zsiteID."' ORDER BY TerminalCode ASC";
         }
         else
         {
-            $stmt = "SELECT DISTINCT a.TerminalID, b.TerminalCode FROM transactiondetails a 
-                INNER JOIN terminals b ON a.TerminalID = b.TerminalID ORDER BY TerminalID ASC";
+            $stmt = "SELECT DISTINCT TerminalID, TerminalCode FROM terminals 
+                     ORDER BY TerminalCode ASC";
         }
-        $this->executeQuery($stmt);
-        return $this->fetchAllData();
+      $this->executeQuery($stmt);
+      return $this->fetchAllData();
     }
     
     /**

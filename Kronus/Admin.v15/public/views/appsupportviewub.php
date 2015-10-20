@@ -350,24 +350,23 @@ $flag = false;
                                     paginate: function() {return $("#paginate").val();}
                                       },
                             datatype: "json",
-                            colNames:['Site','Terminal', 'Service Name', 'Transaction Type', 'Service Ref. ID', 'Amount', 'Start Date', 'End Date','Status','Created by'],
+                            colNames:['Site','Terminal', 'Service Name', 'Transaction Type', 'Amount', 'Start Date', 'End Date','Status','Created by'],
                             colModel:[
-                                    {name:'SiteCode',index:'SiteCode', align: 'center', width:150},
-                                    {name:'TerminalCode',index:'TerminalCode',align: 'center', width:120},
-                                    {name:'ServiceName',index:'ServiceName',align: 'center', width:120},
-                                    {name:'TransactionType',index:'TransactionType', align: 'center', width:150},
-                                    {name:'ServiceTransactionID',index:'ServiceTransactionID', align: 'center'},
+                                    {name:'SiteCode',index:'SiteCode', align: 'center', width:90},
+                                    {name:'TerminalCode',index:'TerminalCode',align: 'center', width:70},
+                                    {name:'ServiceName',index:'ServiceName',align: 'center', width:140},
+                                    {name:'TransactionType',index:'TransactionType', align: 'center', width:130},
                                     {name:'Amount',index:'Amount', align: 'center', width:100, align: 'right'},
                                     {name:'DateCreated',index:'DateCreated', align: 'right', width:210},
-                                    {name:'DateEnded',index:'DateEnded', align: 'right', width:150},
-                                    {name:'Status',index:'Status', align: 'center', width:150},
-                                    {name:'UserName',index:'UserName', align: 'center', width:100}
+                                    {name:'DateEnded',index:'DateEnded', align: 'right', width:210},
+                                    {name:'Status',index:'Status', align: 'center', width:100},
+                                    {name:'UserName',index:'UserName', align: 'center', width:220}
                                     ],
 
                             rowNum:10,
                             rowList:[10,20,30],
                             height: 220,
-                            width: 1100,
+                            width: 1200,
                             pager: '#pager2',
                             refresh: true,
                             viewrecords: true,
@@ -392,13 +391,12 @@ $flag = false;
                                     paginate: function() {return $("#paginate").val();}
                                       },
                             datatype: "json",
-                            colNames:['Site','Terminal', 'Service Name', 'Transaction Type', 'Service Ref. ID', 'Amount', 'DateStarted','DateEnded','Status'],
+                            colNames:['Site','Terminal', 'Service Name', 'Transaction Type', 'Amount', 'DateStarted','DateEnded','Status'],
                             colModel:[
                                     {name:'SiteID',index:'SiteID', align: 'center', width:150},
                                     {name:'TerminalID',index:'TerminalID',align: 'center', width:120},
                                     {name:'ServiceName',index:'ServiceName',align: 'center', width:120},
                                     {name:'TransactionType',index:'TransactionType', align: 'center', width:150},
-                                    {name:'ServiceTransactionID',index:'ServiceTransactionID', align: 'center'},
                                     {name:'Amount',index:'Amount', align: 'right', width:100},
                                     {name:'DateStarted',index:'DateStarted', align: 'right', width:210},
                                     {name:'DateEnded',index:'DateEnded', align: 'right', width:150},
@@ -434,12 +432,11 @@ $flag = false;
                                     paginate: function() {return $("#paginate").val();}
                                       },
                             datatype: "json",
-                            colNames:['Site','Terminal', 'Service Name','Service Ref. ID', 'Amount', 'Transaction Date','Status'],
+                            colNames:['Site','Terminal', 'Service Name', 'Amount', 'Transaction Date','Status'],
                             colModel:[
                                     {name:'SiteCode',index:'SiteCode', align: 'center', width:150},
                                     {name:'TerminalCode',index:'TerminalCode',align: 'center', width:120},
                                     {name:'ServiceName',index:'ServiceName',align: 'center', width:120},
-                                    {name:'TransactionID',index:'TransactionID', align: 'center'},
                                     {name:'ReportedAmount',index:'ReportedAmount', align: 'right', width:100},
                                     {name:'TransactionDate',index:'TransactionDate', align: 'right', width:210},
                                     {name:'Status',index:'Status', align: 'center', width:150}
@@ -474,7 +471,7 @@ $flag = false;
                             datatype: "json",
                             colNames:['Site', 'Terminal','Service Name','Starting Balance', 'Total e-SAFE Loads<br/>(with session)', 'EndingBalance','StartDate','EndDate'],
                             colModel:[
-                                    {name:'SiteCode',index:'SiteCode', align: 'left', width:100},
+                                    {name:'SiteCode',index:'SiteCode', align: 'center', width:100},
                                     {name:'TerminalCode',index:'TerminalCode',align: 'center', width:90},
                                     {name:'ServiceName',index:'ServiceName',align: 'left', width:120},
                                     {name:'StartingBalance',index:'StartingBalance', align: 'right',width:120},

@@ -310,6 +310,7 @@ if($connected)
                                                  'Birthdate' => $obj_result->CardInfo->Birthdate,
                                                  'Casino' => $obj_result->CardInfo->CasinoArray[$ctr]->ServiceID,
                                                  'CardNumber' => $obj_result->CardInfo->CardNumber,
+                                                 'IsEwallet' => $obj_result->CardInfo->IsEwallet,
                                                  'StatusCode' => $obj_result->CardInfo->StatusCode,
                                              ),
                                        );
@@ -384,7 +385,7 @@ if($connected)
 
               if(!isset($siteID) || $siteID == "-1"){
                 if(isset($usermode)){
-                    $login = $_SESSION['ServiceUserName'];
+                    $login = $otopup->getServiceUserName($ubserviceID, $mid);
                     $transid = $otopup->getMaxTransreqlogid($loyaltycardnumber, $ubserviceID);
                     $sitester = $otopup->getSiteTer($transid);
                     foreach ($sitester as $row) {
@@ -407,7 +408,6 @@ if($connected)
               }
               else{
                   $ubterminalID = null;
-                  $transsummaryid = null;
                   
                   $login = $_SESSION['ServiceUserName'];
               }
@@ -419,12 +419,17 @@ if($connected)
               }
               
               $servicegrp = $otopup->getServiceGrpName($ubserviceID);
-
               $servername = $servicegrp;
+              //check if card is ewallet
+              $isEwallet = $otopup->checkIsEwallet($mid);
               
-              $ramount = ereg_replace(",", "", $amountToRedeem); //format number replace (,)
+              
+              if ($isEwallet == 1) 
+                $ramount = ereg_replace(",", "", $amountToRedeem); //format number replace (,)
+              else 
+                $ramount = ereg_replace(",", "", $vserviceBalance); //format number replace (,)
+                  
               $_maxRedeem = ereg_replace(",", "", $_maxRedeem); //format number replace (,)
-
               if($ramount > $_maxRedeem)
               {  
                   $balance = $ramount - $_maxRedeem;
@@ -451,7 +456,8 @@ if($connected)
               $cmbServerID = $ubserviceID; #Added on July 2, 2012
                                     
               $vtransStatus = '';
-              
+              $transsummaryid = $otopup->getLastSummaryID($vterminalID);
+              $transsummaryid = $transsummaryid['summaryID'];
               
               $trans_req_log_last_id = $otopup->getMaxTransreqlogid($loyaltycardnumber, $ubserviceID);
               
@@ -465,43 +471,62 @@ if($connected)
               {
                 switch (true){
                     case strstr($servername, "RTG"): //if provider is RTG, then
-                        if ($amountToRedeem != "") {
-                            if ($amountToRedeem <= $ramount) {
-                                //if 20 is the UB ServiceID get the locator name
-                                if ($ubserviceID == 20) {
-                                    //get siteclassificationID
-                                    $siteClass = $otopup->getSiteClassByTerminal($vterminalID);
-                                    if ($siteClass == 1) 
-                                      $locatorname = $_SkinNamePlatinum;
-                                    else 
-                                      $locatorname = $_SkinNameNonPlatinum;
-                                }
-                                else {
-                                    $locatorname = null;
-                                }
-                                if (is_null($trans_req_log_last_id)) { $trans_req_log_last_id = ""; }
-                                if (is_null($vterminalID)) { $vterminalID = ""; }
-                                
-                                $url = $_ServiceAPI[$ubserviceID-1];
-                                $capiusername = $_CAPIUsername;
-                                $capipassword = $_CAPIPassword;
-                                $capiplayername = $_CAPIPlayerName;
-                                $capiserverID = '';
-                                $tracking1 = $trans_req_log_last_id;
-                                $tracking2 = "MR"."$lastmrid";
-                                $tracking3 = $vterminalID;
-                                $withdraw = array();
-                                //withdraw rtg casino
-                                $withdraw = $CasinoGamingCAPI->Withdraw($servername, $ubserviceID, $url, $login, $capiusername, $capipassword, 
+                        if (is_null($trans_req_log_last_id)) { $trans_req_log_last_id = ""; }
+                        if (is_null($vterminalID)) { $vterminalID = ""; }
+
+                        $url = $_ServiceAPI[$ubserviceID-1];
+                        $capiusername = $_CAPIUsername;
+                        $capipassword = $_CAPIPassword;
+                        $capiplayername = $_CAPIPlayerName;
+                        $capiserverID = '';
+                        $tracking1 = $trans_req_log_last_id;
+                        $tracking2 = "MR"."$lastmrid";
+                        $tracking3 = $vterminalID;
+                        $withdraw = array();
+                        //get siteclassificationID
+                        $siteClass = $otopup->getSiteClassByTerminal($vterminalID);
+                        if ($siteClass == 1) 
+                          $locatorname = $_SkinNamePlatinum;
+                        else 
+                          $locatorname = $_SkinNameNonPlatinum;
+                        //if 20 is the UB ServiceID get the locator name
+                        $isEwallet = $otopup->checkIsEwallet($mid);
+                        if ($isEwallet == 1) {
+                            if ($amountToRedeem != "") {
+                                if ($amountToRedeem <= $vserviceBalance) {
+                                    if ($ubserviceID != 20) {
+                                        $locatorname = null;
+                                        //withdraw rtg casino
+                                        $withdraw = $CasinoGamingCAPI->Withdraw($servername, $ubserviceID, $url, $login, $capiusername, $capipassword, 
                                         $capiplayername, $capiserverID, $ramount, $tracking1, $tracking2, $tracking3, $tracking4 = '', $methodname = '', $usermode, $locatorname);   
-                            }     
+                                    }
+                                    else {
+                                        $withdraw = $CasinoGamingCAPI->Withdraw($servername, $ubserviceID, $url, $login, $capiusername, $capipassword, 
+                                        $capiplayername, $capiserverID, $ramount, $tracking1, $tracking2, $tracking3, $tracking4 = '', $methodname = '', $usermode, $locatorname);   
+                                    }
+                                }     
+                                else {
+                                    $msg = "Amount to redeem should be less than or equal to Casino balance.";
+                                    //error message
+                                }   
+                            }
                             else {
-                                $msg = "Amount to redeem should be less than or equal to Casino balance.";
-                                //error message
+                                $msg = "Invalid amount to withdraw.";
                             }   
                         }
                         else {
-                            $msg = "Invalid amount to withdraw.";
+                            //UBcard should be casino 19 which doesn't requires locator name.
+                            if ($ubserviceID != 20) {
+                                $locatorname = null;
+                                //withdraw rtg casino
+                                $withdraw = $CasinoGamingCAPI->Withdraw($servername, $ubserviceID, $url, $login, $capiusername, $capipassword, 
+                                        $capiplayername, $capiserverID, $ramount, $tracking1, $tracking2, $tracking3, $tracking4 = '', $methodname = '', $usermode, $locatorname);   
+                            }
+                            else {
+                                //withdraw rtg casino
+                                $withdraw = $CasinoGamingCAPI->Withdraw($servername, $ubserviceID, $url, $login, $capiusername, $capipassword, 
+                                        $capiplayername, $capiserverID, $ramount, $tracking1, $tracking2, $tracking3, $tracking4 = '', $methodname = '', $usermode, $locatorname);   
+                            }
                         }
                         break;
                     case strstr($servername, "MG"): //if provider is MG, then

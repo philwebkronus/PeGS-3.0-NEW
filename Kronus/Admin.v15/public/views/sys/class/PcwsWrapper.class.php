@@ -104,9 +104,10 @@ Class PcwsWrapper
         return json_decode($result[1], true);
     }
     
-    public function logoutLaunchPad($url, $Login)
+    public function logoutLaunchPad($url, $Login, $serviceID)
     {
-        $postdata = json_encode(array('Login'=>$Login, 
+        $postdata = json_encode(array('Login'=>$Login,
+            'ServiceID' => $serviceID, 
             'SystemUsername'=> $this->_username, 
             'AccessDate'=>  $this->_accessdate, 
             'Token'=> $this->_tkn));

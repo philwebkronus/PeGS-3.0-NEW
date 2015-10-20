@@ -20,11 +20,11 @@ class CSManagement extends DBHandler{
       {
           if($zsiteID > 0)
           {
-              $stmt = "SELECT TerminalID, TerminalCode FROM terminals where SiteID = '".$zsiteID."' AND (Status = 0 OR 1) ORDER BY TerminalID ASC";
+              $stmt = "SELECT TerminalID, TerminalCode FROM terminals where SiteID = '".$zsiteID."' AND (Status = 0 OR 1) ORDER BY TerminalCode ASC";
           }
           else
 	  {
-              $stmt = "SELECT TerminalID, TerminalCode FROM terminals WHERE (Status = 0 OR 1) ORDER BY TerminalID ASC";
+              $stmt = "SELECT TerminalID, TerminalCode FROM terminals WHERE (Status = 0 OR 1) ORDER BY TerminalCode ASC";
           }
           $this->executeQuery($stmt);
           return $this->fetchAllData();
@@ -99,7 +99,8 @@ class CSManagement extends DBHandler{
       {
           $stmt = "SELECT a.AID,b.UserName from siteaccounts a 
                    INNER JOIN accounts b on a.AID = b.AID 
-                   WHERE a.SiteID = ? AND b.AccountTypeID = 4 AND b.Status = 1";
+                   WHERE a.SiteID = ? AND b.AccountTypeID = 4 AND b.Status = 1 
+                   ORDER BY b.UserName ASC";
           $this->prepare($stmt);
           $this->bindparameter(1,$zsiteID);
           $this->execute();

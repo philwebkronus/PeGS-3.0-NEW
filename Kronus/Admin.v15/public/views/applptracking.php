@@ -298,20 +298,17 @@ $vaccesspages = array('9');
                             summaryID: function() {return summaryid;}
                               },
                     datatype: "json",
-                    colNames:['Transaction Logs ID', 'Transaction Reference ID', 'POSAccountNo', 'Terminal Code', 'Transaction Type', 'Service Transaction ID', 'Service Status','Amount','Service Name','Date Started', 'Date Ended', 'Status'],
+                    colNames:['Transaction Logs ID', 'POSAccountNo', 'Terminal Code', 'Transaction Type', 'Amount','Service Name','Date Started', 'Date Ended', 'Status'],
                     colModel:[
-                            {name:'TransactionRequestLogLPID',index:'TransactionRequestLogLPID',align:'center'},
-                            {name:'TransactionReferenceID',index:'TransactionReferenceID',align:'center'},
-                            {name:'POSAccountNo',index:'POSAccountNo',align:'center'},
-                            {name:'TerminalCode',index:'TerminalCode', align: 'center'},
-                            {name:'TransactionType',index:'TransactionType', align: 'left'},
-                            {name:'ServiceTransactionID',index:'ServiceTransactionID', align: 'left'},
-                            {name:'ServiceStatus',index:'ServiceStatus', align: 'center'},
-                            {name:'Amount',index:'Amount',align:'right'},
-                            {name:'ServiceName',index:'ServiceName',align:'center'},
-                            {name:'Date Started',index:'StartDate', align: 'center'},
-                            {name:'Date Ended',index:'EndDate', align: 'center'},
-                            {name:'Status',index:'Status',align:'left'}
+                            {name:'TransactionRequestLogLPID',index:'TransactionRequestLogLPID',align:'center', width: 120},
+                            {name:'POSAccountNo',index:'POSAccountNo',align:'center', width: 100},
+                            {name:'TerminalCode',index:'TerminalCode', align: 'center', width: 80},
+                            {name:'TransactionType',index:'TransactionType', align: 'center', width: 100},
+                            {name:'Amount',index:'Amount',align:'right', width: 110},
+                            {name:'ServiceName',index:'ServiceName',align:'center', width: 120},
+                            {name:'Date Started',index:'StartDate', align: 'center', width: 185},
+                            {name:'Date Ended',index:'EndDate', align: 'center', width: 185},
+                            {name:'Status',index:'Status',align:'center', width: 80}
                     ],
 
                     rowNum:10,

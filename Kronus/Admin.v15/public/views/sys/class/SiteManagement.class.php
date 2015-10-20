@@ -235,7 +235,8 @@ class SiteManagement extends DBHandler{
       //display all regions based on selected island
       function showregions($zislandID)
       {
-          $stmt = "Select RegionID, RegionName from ref_regions where IslandID = '".$zislandID."'";
+          $stmt = "Select RegionID, RegionName from ref_regions where IslandID = '".$zislandID."' 
+                   ORDER BY RegionName ASC";
            $this->executeQuery($stmt);
           return  $this->fetchAllData();
       }

@@ -330,14 +330,13 @@ class ApplicationSupport extends DBHandler
       {
           if($zsiteID > 0)
           {
-              $stmt = "SELECT DISTINCT a.TerminalID, b.TerminalCode FROM transactiondetails
-                  a INNER JOIN terminals b ON a.TerminalID = b.TerminalID
-                  WHERE a.SiteID = '".$zsiteID."' ORDER BY TerminalID ASC";
+              $stmt = "SELECT TerminalID, TerminalCode FROM terminals
+                       WHERE SiteID = '".$zsiteID."' ORDER BY TerminalCode ASC";
           }
           else
           {
-              $stmt = "SELECT DISTINCT a.TerminalID, b.TerminalCode FROM transactiondetails a 
-                  INNER JOIN terminals b ON a.TerminalID = b.TerminalID ORDER BY TerminalID ASC";
+              $stmt = "SELECT DISTINCT TerminalID, TerminalCode FROM terminals 
+                       ORDER BY TerminalCode ASC";
           }
           $this->executeQuery($stmt);
           return $this->fetchAllData();
@@ -456,7 +455,9 @@ class ApplicationSupport extends DBHandler
       function getcashierpersite($zsiteID)
       {
           $stmt = "SELECT a.AID,b.UserName from siteaccounts a 
-                   INNER JOIN accounts b on a.AID = b.AID WHERE a.SiteID = ? AND b.AccountTypeID = 4 AND b.Status = 1";
+                   INNER JOIN accounts b on a.AID = b.AID 
+                   WHERE a.SiteID = ? AND b.AccountTypeID = 4 AND b.Status = 1 
+                   ORDER BY b.UserName ASC";
           $this->prepare($stmt);
           $this->bindparameter(1,$zsiteID);
           $this->execute();

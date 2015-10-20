@@ -249,7 +249,7 @@ if($connected)
                 
                 foreach ($vpowner as $row)
                 {
-                    $siteowner = $row['UserName'];
+                    $siteowner = $row['Name'];
                 }
   
                 //validate if no owner
@@ -295,10 +295,25 @@ if($connected)
 
                            foreach($results as $row)
                            {
+                              switch ($row['TerminalType']) {
+                                  case 0: 
+                                      $ttype = "Regular";
+                                      break;
+                                  case 1: 
+                                      $ttype = "Genesis";
+                                      break;
+                                  case 2: 
+                                      $ttype = "e-SAFE";
+                                      break;
+                                  default: 
+                                      $ttype = "N/A";
+                                      break;
+                              }
                               $rterminalID = $row['tid']; 
                               $rterminalCode = $row['tcode'];
                               $vorigstatus = $row['tstat'];
                               $vprovider = $row['ServiceName'];
+                              $terminalType = $ttype;
                               $vocaccount = $row['ServiceTerminalAcct'];
                               //remove the "icsa-[SiteCode]"
                                 $rterminalCode = substr($rterminalCode, strlen($rsitecode['SiteCode']));
@@ -321,7 +336,7 @@ if($connected)
                                 $vstatus = "Inactive";
                               }
                               $response->rows[$i]['id'] = $rterminalID;
-                              $response->rows[$i]['cell'] = array($rterminalCode, $vstatus, $vprovider, $siteowner);                     
+                              $response->rows[$i]['cell'] = array($rterminalCode, $vstatus, $vprovider, $terminalType, $siteowner);                     
                               $i++;
                             }
                       }
@@ -566,7 +581,7 @@ if($connected)
                 
                 foreach ($vpowner as $row)
                 {
-                    $siteowner = $row['UserName'];
+                    $siteowner = $row['Name'];
                 }
                 
                 if(count($vpowner) > 0)
@@ -578,17 +593,33 @@ if($connected)
                         $vsitecode = substr($val['SiteCode'], strlen($terminalcode));
                         $vpos = $val['POS'];
                     }
-                    $rheaders = array('Site / PEGS Code','POS Account','Terminal Code','Status', 'Service Name','Owner');
+                    $rheaders = array('Site / PEGS Code','POS Account','Terminal Code','Status', 'Service Name','Terminal Type','Owner');
                     $result = $orptpegs->getterminalbysite($vsiteID, $start = null, $limit=null, $sort=null, $direction = null);
                     $completeexcelvalues = array();
                     if(count($result) > 0)
                     {                
                        foreach($result as $vview)
                        {
+                           switch ($vview['TerminalType']) {
+                               case 0: 
+                                   $ttype = "Regular";
+                                   break;
+                               case 1: 
+                                   $ttype = "Genesis";
+                                   break;
+                               case 2: 
+                                   $ttype = "e-SAFE";
+                                   break;
+                               default: 
+                                   $ttype = "N/A";
+                                   break;
+                            }
+                              
                             $rterminalID = $vview['tid']; 
                             $rterminalCode = $vview['tcode'];
                             $vorigstatus = $vview['tstat'];
                             $vprovider = $vview['ServiceName'];
+                            $terminalType = $ttype;
                             $vocaccount = $vview['ServiceTerminalAcct'];
 
                             //remove the "icsa-[SiteCode]"
@@ -613,7 +644,7 @@ if($connected)
                                $vstatus = "Inactive";
                             }
 
-                            $excelvalues = array($vsitecode, $vpos, $rterminalCode, $vstatus, $vprovider, $siteowner);                     
+                            $excelvalues = array($vsitecode, $vpos, $rterminalCode, $vstatus, $vprovider, $terminalType, $siteowner);                     
                             array_push($completeexcelvalues, $excelvalues);
                        }
                     }
@@ -965,14 +996,14 @@ if($connected)
                 $pdf->c_setHeader('Terminal Listing');
                 $pdf->html.='<div style="text-align:center;">As of ' . date('l') . ', ' .date('F d, Y') . ' ' . date('h:i:s A') .'</div>';
                 $pdf->SetFontSize(10);
-                $pdf->c_tableHeader(array('Site / PEGS Code','POS Account','Terminal Code','Status', 'Service Name','Owner'));
+                $pdf->c_tableHeader(array('Site / PEGS Code','POS Account','Terminal Code','Status', 'Service Name','Terminal Type','Owner'));
                 
                 $vpowner = $orptpegs->getownerbysite($vsiteID); //get the owner
                 $rsitecode = $orptpegs->getsitecode($vsiteID); //get the sitecode first
                 
                 foreach ($vpowner as $row)
                 {
-                    $siteowner = $row['UserName'];
+                    $siteowner = $row['Name'];
                 }
                 
                 if(count($vpowner) > 0)
@@ -991,10 +1022,26 @@ if($connected)
                     {                
                        foreach($result as $vview)
                        {
+                           switch ($vview['TerminalType']) {
+                               case 0: 
+                                   $ttype = "Regular";
+                                   break;
+                               case 1: 
+                                   $ttype = "Genesis";
+                                   break;
+                               case 2: 
+                                   $ttype = "e-SAFE";
+                                   break;
+                               default: 
+                                   $ttype = "N/A";
+                                   break;
+                            }
+                            
                             $rterminalID = $vview['tid']; 
                             $rterminalCode = $vview['tcode'];
                             $vorigstatus = $vview['tstat'];
                             $vprovider = $vview['ServiceName'];
+                            $terminalType = $ttype;
                             $vocaccount = $vview['ServiceTerminalAcct'];
 
                             //remove the "icsa-[SiteCode]"
@@ -1019,7 +1066,7 @@ if($connected)
                                $vstatus = "Inactive";
                             }
 
-                            $pdfvalues = array($vsitecode, $vpos, $rterminalCode, $vstatus, $vprovider, $siteowner);                     
+                            $pdfvalues = array($vsitecode, $vpos, $rterminalCode, $vstatus, $vprovider, $terminalType, $siteowner);                     
                             $pdf->c_tableRow($pdfvalues);
                        }
                     }

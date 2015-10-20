@@ -57,11 +57,12 @@ $vaccesspages = array('8');
                             siteID: function() {return $("#siteID").val();}
                           },
                 datatype: "json",
-                colNames:['Terminal Code','Status', 'Service Name','Owner'],
+                colNames:['Terminal Code','Status', 'Service Name','Terminal Type', 'Owner'],
                 colModel:[
                            {name:'TerminalCode',index:'tcode', align: 'left'},
                            {name:'Status',index:'tstat', align: 'left'},
                            {name:'ServiceName', index:'ServiceName', align: 'left'},
+                           {name:'TerminalType', index:'TerminalType', align: 'left'},
                            {name: 'Owner', index:'Owner',align:'left', sortable:false}
                          ],
                 rowNum:10,

@@ -69,7 +69,7 @@ if($connected)
           exit;
       }
    }
-   
+
     if(isset($_POST['rptpage']))
     {
         $vrptpage = $_POST['rptpage'];
@@ -91,8 +91,16 @@ if($connected)
                 else {
                     //count the cashier node logins for pagination and record count
                  $rctraudit = $orptothers->countCashierNodeLogins($vdatefrom, $vdateto);
-                $count = $rctraudit['cashierLoginCount'];
-                
+            $count = $rctraudit['cashierLoginCount'];
+                if($_POST['sidx'] != "")
+                {
+                   $sort = $_POST['sidx'];
+                }
+                else
+                {
+                    $sort = "SiteCode";
+                }
+   
                 if($count > 0 ) {
                       $total_pages = ceil($count/$limit);
                 } else {
@@ -114,7 +122,7 @@ if($connected)
                 }
                 $limit = (int)$limit;
                
-                $result = $orptothers->viewCashierNodeLogins($vdatefrom, $vdateto, $start, $limit, $direction);
+                $result = $orptothers->viewCashierNodeLogins($vdatefrom, $vdateto, $start, $limit, $sort, $direction);
                 if(count($result) > 0)
                 {
                    $i = 0;
@@ -123,7 +131,7 @@ if($connected)
                    $response->records = $count;
                    foreach($result as $vview) 
                    {
-                      $response->rows[$i]['cell']=array($vview['SiteCode'],$vview['TransDetails']);  
+                       $response->rows[$i]['cell']=array($vview['SiteCode'],$vview['TransDetails']);  
                       $i++;
                    }
         $vauditfuncID = 106; //Viewing of Report
@@ -165,7 +173,7 @@ if($connected)
         $vdatefrom = $_GET['DateFrom'];
         $vdateto = $_GET['DateTo'];
         $direction = $_GET['sord'];
-        $result = $orptothers->viewCashierNodeLogins($vdatefrom, $vdateto, $start=null, $limit=null, $direction);
+        $result = $orptothers->viewCashierNodeLogins($vdatefrom, $vdateto, $start=null, $limit=null, $sort, $direction);
         if(count($result) > 0)
         {                
            foreach($result as $vview)
@@ -188,7 +196,7 @@ if($connected)
       $vdatefrom = $_GET['DateFrom'];
       $vdateto = $_GET['DateTo'];
       $direction = $_GET['sord'];
-      $queries = $orptothers->viewCashierNodeLogins($vdatefrom, $vdateto, $start=null, $limit=null, $direction);
+      $queries = $orptothers->viewCashierNodeLogins($vdatefrom, $vdateto, $start=null, $limit=null, $sort, $direction);
       $pdf = CTCPDF::c_getInstance();
       $pdf->c_commonReportFormat();
       $pdf->c_setHeader('Cashier Node Login');

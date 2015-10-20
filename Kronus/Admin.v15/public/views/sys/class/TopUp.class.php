@@ -3743,7 +3743,7 @@ class TopUp extends DBHandler
         $this->bindparameter(5,$transstatus);
         $this->bindparameter(6,$manid);
         $this->execute();
-        return $this->rowCount();
+        return $manid;
       }
       
       
@@ -3826,12 +3826,14 @@ class TopUp extends DBHandler
          * @return array 
          * get service name and status of a certain service provider using its id
          */
-        public function getCasinoName($serviceid)
+        public function getCasinoName($serviceid, $mid = null)
         {
-            $stmt = "SELECT ServiceName, Status, UserMode FROM ref_services WHERE ServiceID = ?";
-            $this->prepare($stmt);
-            $this->bindparameter(1, $serviceid);
-            $this->execute();
+
+           $stmt = "SELECT ServiceName, Status, UserMode FROM ref_services WHERE ServiceID = ?";
+           $this->prepare($stmt);
+           $this->bindparameter(1, $serviceid);
+           $this->execute(); 
+
             return $this->fetchAllData();
         }
         
@@ -4581,6 +4583,50 @@ class TopUp extends DBHandler
         $result = $this->fetchData();
         
         return $result['SiteClassificationID'];
+    }
+    function getServiceUserName($serviceID, $mid) {
+        $sql = "SELECT ServiceUsername FROM membership.memberservices 
+                WHERE MID = ? AND ServiceID = ?";
+        $this->prepare($sql);
+        $this->bindparameter(1, $mid);
+        $this->bindparameter(2, $serviceID);
+        $this->execute();
+        $result = $this->fetchData();
+        
+        return $result['ServiceUsername'];
+    }
+    function checkIsEwallet($mid) {
+        $sql = "SELECT IsEwallet FROM membership.members 
+                WHERE MID = ?";
+        $this->prepare($sql);
+        $this->bindparameter(1, $mid);
+        $this->execute();
+        $result = $this->fetchData();
+        
+        return $result['IsEwallet'];
+    }
+    
+    function checkIfHasEGMSession($mid) {
+        $sql = "SELECT COUNT(EGMSessionID) as EGMCount 
+                FROM npos.egmsessions 
+                WHERE MID = ?";
+        $this->prepare($sql);
+        $this->bindparameter(1, $mid);
+        $this->execute();
+        $result = $this->fetchData();
+        
+        return $result['EGMCount'];
+    }
+    function checkIfHasTermalSession($mid) {
+        $sql = "SELECT Count(MID) as TSCount 
+                FROM npos.terminalsessions 
+                WHERE MID =?";
+        $this->prepare($sql);
+        $this->bindparameter(1, $mid);
+        $this->execute();
+        $result = $this->fetchData();
+        
+        return $result['TSCount'];
     }
  }
 ?>

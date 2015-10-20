@@ -2131,6 +2131,11 @@ function validatedate(txtdate)
       var curr_month = date.getMonth();
       curr_month = curr_month + 1;
       var curr_year = date.getFullYear();
+      var arr = txtdate.split("-");
+      var year = (arr[0]);
+      var month = (arr[1]);
+      var day = (arr[2]);
+      
       if(curr_month < 10)
       {
             curr_month = "0" + curr_month;
@@ -2138,11 +2143,29 @@ function validatedate(txtdate)
                  curr_date = "0" + curr_date;
       }
       var datenow = curr_year + '-'+ curr_month + '-'+ curr_date;
-     
       if((datenow) < (txtdate))
       {
-          alert("Queried date must not be greater than today");
+           alert("Queried date must not be greater than today");
           return false;
+      }
+      else if (curr_year>=year)
+      {
+           if ((curr_year<=year) && (curr_month>=month))
+           {
+                    if((curr_month<=month) && (curr_date < day))
+                    {
+                    alert("Queried date must not be greater than today");
+                   return false;
+                    }
+                    else
+                    {
+                     return true;
+                    }
+            }
+            else
+            {
+             return true;
+            }
       }
       else
       {

@@ -144,7 +144,9 @@ class ManualAPIFulfillment extends DBHandler
       //this selects all terminals by site id
       function selectterminals($zsiteID)
       {
-          $stmt = "SELECT TerminalID, TerminalName, TerminalCode FROM terminals WHERE SiteID = '".$zsiteID."' AND TerminalType IN (0,2) ORDER BY TerminalID ASC";
+          $stmt = "SELECT TerminalID, TerminalName, TerminalCode FROM terminals 
+                   WHERE SiteID = '".$zsiteID."' AND TerminalType IN (0,2) 
+                   ORDER BY TerminalCode ASC";
           $this->executeQuery($stmt);
           return $this->fetchAllData();
       }

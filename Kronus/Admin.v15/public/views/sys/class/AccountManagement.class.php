@@ -341,7 +341,8 @@ class AccountManagement extends DBHandler{
          $stmt = "Select DISTINCT b.SiteID, c.SiteCode,c.SiteName from accounts as a
                   INNER JOIN siteaccounts as b ON a.AID = b.AID
                   INNER JOIN sites as c ON b.SiteID = c.SiteID
-                  WHERE a.AID = '".$zaid."' AND b.Status = 1";
+                  WHERE a.AID = '".$zaid."' AND b.Status = 1 
+                  ORDER BY c.SiteCode ASC";
          $this->executeQuery($stmt);
          return $this->fetchAllData();
       }

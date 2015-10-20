@@ -28,7 +28,8 @@ class RptPegsOps extends DBHandler{
           //display all regions based on selected island
       function showregions($zislandID)
       {
-          $stmt = "Select RegionID, RegionName from ref_regions where IslandID = '".$zislandID."'";
+          $stmt = "Select RegionID, RegionName from ref_regions where IslandID = '".$zislandID."' 
+                   ORDER BY RegionName ASC";
            $this->executeQuery($stmt);
           return  $this->fetchAllData();         
       }
@@ -36,7 +37,8 @@ class RptPegsOps extends DBHandler{
       //display all provinces based on selected regions
       function showprovinces($zregionID)
       {
-           $stmt = "Select ProvinceID, ProvinceName from ref_provinces where RegionID = '".$zregionID."' ORDER BY ProvinceName";
+           $stmt = "Select ProvinceID, ProvinceName from ref_provinces where RegionID = '".$zregionID."' 
+                    ORDER BY ProvinceName ASC";
            $this->executeQuery($stmt);
           return $this->fetchAllData();          
       }
@@ -244,9 +246,10 @@ class RptPegsOps extends DBHandler{
       //get operator per site selected
       function getownerbysite($zsiteID)
       {
-          $stmt = "SELECT c.UserName FROM sites a
+          $stmt = "SELECT ad.Name FROM sites a
                     INNER JOIN siteaccounts as b ON a.SiteID = b.SiteID 
                     INNER JOIN accounts c ON b.AID = c.AID
+                    INNER JOIN accountdetails ad ON c.AID = ad.AID
                     WHERE a.SiteID = ? AND AccountTypeID = 2";
           $this->prepare($stmt);
           $this->bindparameter(1, $zsiteID);
@@ -282,8 +285,8 @@ class RptPegsOps extends DBHandler{
           //check if exporting (excel / pdf)
           if($zstart == null && $zlimit == null)
           {
-              $stmt = "select distinct tid, tcode, tstat, c.ServiceName, ServiceTerminalAcct from
-                    (((select TerminalID as tid,TerminalName as tname,TerminalCode as tcode,SiteID as tsiteid, Status as tstat from terminals) as t 
+              $stmt = "select distinct tid, tcode, tstat, c.ServiceName, ServiceTerminalAcct,TerminalType from
+                    (((select TerminalID as tid,TerminalName as tname,TerminalCode as tcode,SiteID as tsiteid, Status as tstat, TerminalType as TerminalType from terminals) as t 
                     inner join terminalservices ts on t.tid = ts.TerminalID ) 
                     left join (select ts.TerminalId as termid,ts.ServiceID as Service,ts.Status as stat,IF(ts.ServiceID = 9,tm.ServiceTerminalID,null) as ServiceTerminalID,IF(ts.ServiceID = 9,st.ServiceTerminalAccount,null) as ServiceTerminalAcct from terminalservices ts 
                     left join terminalmapping tm on ts.TerminalID = tm.TerminalID 
@@ -294,8 +297,8 @@ class RptPegsOps extends DBHandler{
           //jqgrid pagination
           else
           {
-              $stmt = "select distinct tid, tcode, tstat, c.ServiceName, ServiceTerminalAcct from
-                    (((select TerminalID as tid,TerminalName as tname,TerminalCode as tcode,SiteID as tsiteid, Status as tstat from terminals) as t 
+              $stmt = "select distinct tid, tcode, tstat, c.ServiceName, ServiceTerminalAcct, TerminalType from
+                    (((select TerminalID as tid,TerminalName as tname,TerminalCode as tcode,SiteID as tsiteid, Status as tstat, TerminalType as TerminalType from terminals) as t 
                     inner join terminalservices ts on t.tid = ts.TerminalID ) 
                     left join (select ts.TerminalId as termid,ts.ServiceID as Service,ts.Status as stat,IF(ts.ServiceID = 9,tm.ServiceTerminalID,null) as ServiceTerminalID,IF(ts.ServiceID = 9,st.ServiceTerminalAccount,null) as ServiceTerminalAcct from terminalservices ts 
                     left join terminalmapping tm on ts.TerminalID = tm.TerminalID 

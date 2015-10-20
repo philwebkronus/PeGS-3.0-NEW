@@ -161,10 +161,9 @@ $vaccesspages = array('9');
                             siteid : function() {return siteid}
                           },
                 datatype: "json",
-                colNames:['Site Code', 'Computer Name', 'CPU ID', 'BIOS Serial Number', 'MAC Address', 
+                colNames:['Computer Name', 'CPU ID', 'BIOS Serial Number', 'MAC Address', 
                           'Motherboard Serial Number', 'OS ID','IP Address','Action'],
                 colModel:[
-                        {name:'SiteCode',index:'SiteCode',align: 'center', width: 100},
                         {name:'ComputerName',index:'ComputerName', align: 'center'},
                         {name:'CPUID',index:'CPUID', align: 'left'},
                         {name:'BiosSerial',index:'BiosSerial', align: 'left'},

@@ -566,7 +566,6 @@ class ProcessTopUpGenerateReports extends BaseProcess{
                 array('value'=>'Requested By'),
                 array('value'=>'Transaction Date'),
                 array('value'=>'Ticket ID'),
-                array('value'=>'Transaction ID'),
                 array('value'=>'Remarks'),
                 array('value'=>'Status'),
                 array('value'=>'Service Name'),
@@ -581,7 +580,6 @@ class ProcessTopUpGenerateReports extends BaseProcess{
                 array('value'=>$row['Name']),
                 array('value'=>$row['TransDate']),
                 array('value'=>$row['TicketID']),
-                array('value'=>$row['TransactionID']),
                 array('value'=> strtolower($row['Remarks'])), //lowers string for proper rendering on PDF
                 array('value'=>$this->redemptionstatus($row['Status'])),
                 array('value'=> $row["ServiceName"]),
@@ -595,7 +593,7 @@ class ProcessTopUpGenerateReports extends BaseProcess{
     //Manual Redemption History Report (Excel)
     public function manualRedemptionExcel() {
         $_SESSION['report_header'] = array('Site / PEGS Code','Site / PEGS Name', 'POS Account','Terminal Code','Reported Amount',
-            'Requested By','Transaction Date','Ticket ID','Transaction ID','Remarks','Status', 'Service Name');
+            'Requested By','Transaction Date','Ticket ID','Remarks','Status', 'Service Name');
         $topreport = new TopUpReportQuery($this->getConnection());
         $topreport->open();
 
@@ -621,7 +619,6 @@ class ProcessTopUpGenerateReports extends BaseProcess{
                     $row['Name'],
                     $row['TransDate'],
                     $row['TicketID'],
-                    $row['TransactionID'],
                     $row['Remarks'],
                     $this->redemptionstatus($row['Status']),
                     $row["ServiceName"]

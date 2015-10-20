@@ -103,7 +103,8 @@ if($openconn)
                                    $_SESSION['designation'] = $vdesignation;
                                    $_SESSION['acctype'] = $racctype;
                                    $_SESSION['accname'] = $raccountname['Name'];
-                                   $_SESSION['mid']  = "";                
+                                   $_SESSION['mid']  = "";   
+                                   $_SESSION['adminVersion'] = $adminVersion;
                                    //$_SESSION['browser'] = $browser;
                                    //$_SESSION['version'] = $version;
                                    //$_SESSION['chrome'] = $chrome;

@@ -1148,7 +1148,6 @@ class ProcessTopUpPaginate extends BaseProcess {
                 $row['Name'],
                 $row['TransDate'],
                 $row['TicketID'],
-                $row['TransactionID'],
                 $row['Remarks'],
                 $this->redemptionstatus($row['Status']),
                 $row["ServiceName"]

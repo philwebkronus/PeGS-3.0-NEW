@@ -20,9 +20,11 @@
     }
 </script>
 <script language="javascript" type="text/javascript" src="jscripts/helper.js"></script>
-
 <ul id="loginuser">
     <li>
+        <span style='top:0;left:0;position:absolute;font-size: 15px;'>
+            <b><?php echo $_SESSION['adminVersion']; ?></b>
+        </span> 
         <p style="margin: 0 35px;  float: right;">
             <label style="color:white; font-size: 13px;" id="lblDate"></label>,
             <label style="color:white; font-size: 13px;" id="lblTime"></label>

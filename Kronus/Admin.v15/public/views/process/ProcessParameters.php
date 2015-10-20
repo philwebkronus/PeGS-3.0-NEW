@@ -93,7 +93,7 @@ if ($connected) {
                 $value = $value['ParamValue'];
                 $description = $paramData[$i]['ParamDesc'];
                 $responce->rows[$i]['id'] = $paramID;
-                $responce->rows[$i]['cell'] = array($paramName, $value, $description, "<input type=\"button\" value=\"Update Details\" onclick=\"window.location.href='../views/parametersupdate.php?pid=$paramID';\"/>");
+                $responce->rows[$i]['cell'] = array($paramName, $value, $description, "<input type=\"button\" value=\"Update Details\" onclick=\"window.location.href='parametersupdate.php?pid=$paramID';\"/>");
                 $i++;
             }
         } else {

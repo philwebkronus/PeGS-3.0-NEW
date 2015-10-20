@@ -19,13 +19,12 @@ class RptCashierNodeLogins extends DBHandler
     //count for audit trailfor selected date range
     function countCashierNodeLogins($zdatefrom, $zdateto)
     {
-     $stmt = "SELECT COUNT(ID) as cashierLoginCount
+     $stmt = "SELECT Count(DISTINCT (adt.TransDetails), (s.SiteID)) as cashierLoginCount
                     FROM npos.audittrail adt INNER JOIN npos.siteaccounts sa ON adt.AID = sa.AID
                         INNER JOIN npos.sites s ON sa.SiteID = s.SiteID
                     WHERE adt.TransDateTime >= '".$zdatefrom."' AND adt.TransDateTime <= '".$zdateto."' AND sa.Status
                         AND adt.AID IN (SELECT AID FROM npos.accounts WHERE AccountTypeID = 4) 
-                        AND adt.AuditTrailFunctionID IN (1)";           
-        
+                        AND adt.AuditTrailFunctionID IN (1)"; 
         $this->prepare($stmt);
         $this->bindparameter(1, $zdatefrom);
         $this->bindparameter(2, $zdateto);
@@ -36,7 +35,7 @@ class RptCashierNodeLogins extends DBHandler
         return $this->fetchData();
     } 
     //select all audit trail for selected date range
-    function viewCashierNodeLogins($zdatefrom, $zdateto, $zstart, $zlimit,$zdirection)
+    function viewCashierNodeLogins($zdatefrom, $zdateto, $zstart, $zlimit, $zsort ,$zdirection)
     {
          if($zstart == null && $zlimit == null)
         {
@@ -45,7 +44,7 @@ class RptCashierNodeLogins extends DBHandler
                         INNER JOIN npos.sites s ON sa.SiteID = s.SiteID
                     WHERE adt.TransDateTime >= '".$zdatefrom."' AND adt.TransDateTime <= '".$zdateto."' AND sa.Status
                         AND adt.AID IN (SELECT AID FROM npos.accounts WHERE AccountTypeID = 4) 
-                        AND adt.AuditTrailFunctionID IN (1) ORDER BY SiteCode ".$zdirection."";   
+                        AND adt.AuditTrailFunctionID IN (1) GROUP By adt.TransDetails, s.SiteCode";   
         }
         else
         {
@@ -56,7 +55,8 @@ class RptCashierNodeLogins extends DBHandler
                     WHERE adt.TransDateTime >= '".$zdatefrom."' AND adt.TransDateTime <= '".$zdateto."' 
                         AND sa.Status AND adt.AID IN 
                         (SELECT AID FROM npos.accounts WHERE AccountTypeID = 4) AND adt.AuditTrailFunctionID IN (1)
-                    ORDER BY SiteCode ".$zdirection." "
+                    GROUP By adt.TransDetails, s.SiteCode
+                    ORDER BY ".$zsort." ".$zdirection." "
                     . "LIMIT ".$zstart.",".$zlimit."";
         }
         //validate export to pdf/excel      

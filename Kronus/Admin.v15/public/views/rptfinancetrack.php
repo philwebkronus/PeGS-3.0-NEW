@@ -305,9 +305,8 @@ $vaccesspages = array('12');
                             sitecode : function(){return jQuery("#cmbsite").find("option:selected").text();}
                          },
                datatype: "json",
-               colNames:['Transaction Summary ID', 'Site Code','Terminal Code','Service Name','Deposit','Reload','Withdrawal','Date Started','Date Ended'],
+               colNames:['Site Code','Terminal Code','Service Name','Deposit','Reload','Withdrawal','Date Started','Date Ended'],
                colModel:[
-                         {name:'TransactionSummaryID',index:'TransactionsSummaryID',align: 'center', sortable: false},
                          {name:'SiteCode', index:'SiteCode', align:'center', sortable: false},
                          {name:'TerminalCode',index:'TerminalCode', align: 'center', sortable: false},
                          {name:'ServiceName',index:'ServiceName', align: 'center', sortable: false},
