@@ -1,0 +1,37 @@
+2015/02/17 08:15:10 [error] [php] Missing argument 8 for CommonController::getMembershipInfo(), called in C:\xampp\htdocs\kronus-egm-ws-abbott\protected\controllers\WsKapiController.php on line 709 and defined (C:\xampp\htdocs\kronus-egm-ws-abbott\protected\controllers\CommonController.php:383)
+Stack trace:
+#0 C:\xampp\htdocs\yii\framework\web\CController.php(308): CInlineAction->runWithParams()
+#1 C:\xampp\htdocs\yii\framework\web\CController.php(286): WsKapiController->runAction()
+#2 C:\xampp\htdocs\yii\framework\web\CController.php(265): WsKapiController->runActionWithFilters()
+#3 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(282): WsKapiController->run()
+#4 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController()
+#5 C:\xampp\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#6 C:\xampp\htdocs\kronus-egm-ws-abbott\index.php(13): CWebApplication->run()
+REQUEST_URI=/kronus-egm-ws-abbott/index.php/wsKapi/getmembershipinfo
+in C:\xampp\htdocs\kronus-egm-ws-abbott\protected\controllers\CommonController.php (383)
+in C:\xampp\htdocs\kronus-egm-ws-abbott\protected\controllers\WsKapiController.php (709)
+in C:\xampp\htdocs\kronus-egm-ws-abbott\index.php (13)
+2015/02/17 08:15:40 [error] [php] Missing argument 8 for CommonController::getMembershipInfo(), called in C:\xampp\htdocs\kronus-egm-ws-abbott\protected\controllers\WsKapiController.php on line 709 and defined (C:\xampp\htdocs\kronus-egm-ws-abbott\protected\controllers\CommonController.php:383)
+Stack trace:
+#0 C:\xampp\htdocs\yii\framework\web\CController.php(308): CInlineAction->runWithParams()
+#1 C:\xampp\htdocs\yii\framework\web\CController.php(286): WsKapiController->runAction()
+#2 C:\xampp\htdocs\yii\framework\web\CController.php(265): WsKapiController->runActionWithFilters()
+#3 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(282): WsKapiController->run()
+#4 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController()
+#5 C:\xampp\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#6 C:\xampp\htdocs\kronus-egm-ws-abbott\index.php(13): CWebApplication->run()
+REQUEST_URI=/kronus-egm-ws-abbott/index.php/wsKapi/getmembershipinfo
+in C:\xampp\htdocs\kronus-egm-ws-abbott\protected\controllers\CommonController.php (383)
+in C:\xampp\htdocs\kronus-egm-ws-abbott\protected\controllers\WsKapiController.php (709)
+in C:\xampp\htdocs\kronus-egm-ws-abbott\index.php (13)
+2015/02/17 08:15:52 [error] [php] Undefined variable: isEwallet (C:\xampp\htdocs\kronus-egm-ws-abbott\protected\controllers\WsKapiController.php:709)
+Stack trace:
+#0 C:\xampp\htdocs\yii\framework\web\CController.php(286): WsKapiController->runAction()
+#1 C:\xampp\htdocs\yii\framework\web\CController.php(265): WsKapiController->runActionWithFilters()
+#2 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(282): WsKapiController->run()
+#3 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController()
+#4 C:\xampp\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#5 C:\xampp\htdocs\kronus-egm-ws-abbott\index.php(13): CWebApplication->run()
+REQUEST_URI=/kronus-egm-ws-abbott/index.php/wsKapi/getmembershipinfo
+in C:\xampp\htdocs\kronus-egm-ws-abbott\protected\controllers\WsKapiController.php (709)
+in C:\xampp\htdocs\kronus-egm-ws-abbott\index.php (13)

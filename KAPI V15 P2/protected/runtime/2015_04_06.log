@@ -1,0 +1,44 @@
+2015/04/06 08:49:41 [error] [php] Undefined offset: 0 (C:\xampp\htdocs\kronus-egm-ws-abbott\protected\controllers\WsKapiController.php:1195)
+Stack trace:
+#0 C:\xampp\htdocs\yii\framework\web\CController.php(286): WsKapiController->runAction()
+#1 C:\xampp\htdocs\yii\framework\web\CController.php(265): WsKapiController->runActionWithFilters()
+#2 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(282): WsKapiController->run()
+#3 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController()
+#4 C:\xampp\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#5 C:\xampp\htdocs\kronus-egm-ws-abbott\index.php(13): CWebApplication->run()
+REQUEST_URI=/kronus-egm-ws-abbott/index.php/wsKapi/createegmsession
+in C:\xampp\htdocs\kronus-egm-ws-abbott\protected\controllers\WsKapiController.php (1195)
+in C:\xampp\htdocs\kronus-egm-ws-abbott\index.php (13)
+2015/04/06 09:03:55 [error] [php] Undefined offset: 1 (C:\xampp\htdocs\kronus-egm-ws-abbott\protected\controllers\WsKapiController.php:1196)
+Stack trace:
+#0 C:\xampp\htdocs\yii\framework\web\CController.php(286): WsKapiController->runAction()
+#1 C:\xampp\htdocs\yii\framework\web\CController.php(265): WsKapiController->runActionWithFilters()
+#2 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(282): WsKapiController->run()
+#3 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController()
+#4 C:\xampp\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#5 C:\xampp\htdocs\kronus-egm-ws-abbott\index.php(13): CWebApplication->run()
+REQUEST_URI=/kronus-egm-ws-abbott/index.php/wsKapi/createegmsession
+in C:\xampp\htdocs\kronus-egm-ws-abbott\protected\controllers\WsKapiController.php (1196)
+in C:\xampp\htdocs\kronus-egm-ws-abbott\index.php (13)
+2015/04/06 09:09:07 [error] [php] Undefined offset: 1 (C:\xampp\htdocs\kronus-egm-ws-abbott\protected\controllers\WsKapiController.php:1196)
+Stack trace:
+#0 C:\xampp\htdocs\yii\framework\web\CController.php(286): WsKapiController->runAction()
+#1 C:\xampp\htdocs\yii\framework\web\CController.php(265): WsKapiController->runActionWithFilters()
+#2 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(282): WsKapiController->run()
+#3 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController()
+#4 C:\xampp\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#5 C:\xampp\htdocs\kronus-egm-ws-abbott\index.php(13): CWebApplication->run()
+REQUEST_URI=/kronus-egm-ws-abbott/index.php/wsKapi/createegmsession
+in C:\xampp\htdocs\kronus-egm-ws-abbott\protected\controllers\WsKapiController.php (1196)
+in C:\xampp\htdocs\kronus-egm-ws-abbott\index.php (13)
+2015/04/06 09:11:09 [error] [php] Undefined offset: 1 (C:\xampp\htdocs\kronus-egm-ws-abbott\protected\controllers\WsKapiController.php:1196)
+Stack trace:
+#0 C:\xampp\htdocs\yii\framework\web\CController.php(286): WsKapiController->runAction()
+#1 C:\xampp\htdocs\yii\framework\web\CController.php(265): WsKapiController->runActionWithFilters()
+#2 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(282): WsKapiController->run()
+#3 C:\xampp\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController()
+#4 C:\xampp\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#5 C:\xampp\htdocs\kronus-egm-ws-abbott\index.php(13): CWebApplication->run()
+REQUEST_URI=/kronus-egm-ws-abbott/index.php/wsKapi/createegmsession
+in C:\xampp\htdocs\kronus-egm-ws-abbott\protected\controllers\WsKapiController.php (1196)
+in C:\xampp\htdocs\kronus-egm-ws-abbott\index.php (13)

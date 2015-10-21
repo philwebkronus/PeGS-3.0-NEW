@@ -1,0 +1,57 @@
+2014/06/30 10:48:14 [error] [php] Array to string conversion (C:\Apache2.2\htdocs\yii\framework\db\CDbCommand.php:274)
+Stack trace:
+#0 C:\Apache2.2\htdocs\kronus-egm-ws-abbott\protected\controllers\WsKapiController.php(2140): GamingSessionsModel->isTerminalAndBatchIDMatched()
+#1 C:\Apache2.2\htdocs\yii\framework\web\actions\CInlineAction.php(49): WsKapiController->actionRedeemSession()
+#2 C:\Apache2.2\htdocs\yii\framework\web\CController.php(308): CInlineAction->runWithParams()
+#3 C:\Apache2.2\htdocs\yii\framework\web\CController.php(286): WsKapiController->runAction()
+#4 C:\Apache2.2\htdocs\yii\framework\web\CController.php(265): WsKapiController->runActionWithFilters()
+#5 C:\Apache2.2\htdocs\yii\framework\web\CWebApplication.php(282): WsKapiController->run()
+#6 C:\Apache2.2\htdocs\yii\framework\web\CWebApplication.php(141): CWebApplication->runController()
+#7 C:\Apache2.2\htdocs\yii\framework\base\CApplication.php(169): CWebApplication->processRequest()
+#8 C:\Apache2.2\htdocs\kronus-egm-ws-abbott\index.php(13): CWebApplication->run()
+REQUEST_URI=/kronus-egm-ws-abbott/index.php/wsKapi/redeemsession
+in C:\Apache2.2\htdocs\kronus-egm-ws-abbott\protected\models\GamingSessionsModel.php (305)
+in C:\Apache2.2\htdocs\kronus-egm-ws-abbott\protected\controllers\WsKapiController.php (2140)
+in C:\Apache2.2\htdocs\kronus-egm-ws-abbott\index.php (13)
+2014/06/30 10:49:19 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'TWERGDS3426476' for key 'UK_egmrequestlogs_TrackingID'. The SQL statement executed was: INSERT INTO egmrequestlogs(TrackingID, ReportedAmount, Status, 
+                    TransactionType, SiteID, TerminalID, ServiceID, LoyaltyCardNumber, MID, DateLastUpdated) 
+                    VALUES(:tracking_id, :amount, :status, :trans_type, :site_id,
+                    :terminal_id, :service_id, :card_number, :mid, NOW(6)).
+in C:\Apache2.2\htdocs\kronus-egm-ws-abbott\protected\models\GamingRequestLogs.php (53)
+in C:\Apache2.2\htdocs\kronus-egm-ws-abbott\protected\controllers\WsKapiController.php (2156)
+in C:\Apache2.2\htdocs\kronus-egm-ws-abbott\index.php (13)
+2014/06/30 10:49:19 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'TWERGDS3426476' for key 'UK_egmrequestlogs_TrackingID'. The SQL statement executed was: INSERT INTO egmrequestlogs(TrackingID, ReportedAmount, Status, 
+                    TransactionType, SiteID, TerminalID, ServiceID, LoyaltyCardNumber, MID, DateLastUpdated) 
+                    VALUES(:tracking_id, :amount, :status, :trans_type, :site_id,
+                    :terminal_id, :service_id, :card_number, :mid, NOW(6))
+in C:\Apache2.2\htdocs\kronus-egm-ws-abbott\protected\components\Utilities.php (12)
+in C:\Apache2.2\htdocs\kronus-egm-ws-abbott\protected\models\GamingRequestLogs.php (70)
+in C:\Apache2.2\htdocs\kronus-egm-ws-abbott\protected\controllers\WsKapiController.php (2156)
+2014/06/30 10:52:20 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'TWERGDS3426479' for key 'UK_egmrequestlogs_TrackingID'. The SQL statement executed was: INSERT INTO egmrequestlogs(TrackingID, ReportedAmount, Status, 
+                    TransactionType, SiteID, TerminalID, ServiceID, LoyaltyCardNumber, MID, DateLastUpdated) 
+                    VALUES(:tracking_id, :amount, :status, :trans_type, :site_id,
+                    :terminal_id, :service_id, :card_number, :mid, NOW(6)).
+in C:\Apache2.2\htdocs\kronus-egm-ws-abbott\protected\models\GamingRequestLogs.php (53)
+in C:\Apache2.2\htdocs\kronus-egm-ws-abbott\protected\controllers\WsKapiController.php (2156)
+in C:\Apache2.2\htdocs\kronus-egm-ws-abbott\index.php (13)
+2014/06/30 10:52:20 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'TWERGDS3426479' for key 'UK_egmrequestlogs_TrackingID'. The SQL statement executed was: INSERT INTO egmrequestlogs(TrackingID, ReportedAmount, Status, 
+                    TransactionType, SiteID, TerminalID, ServiceID, LoyaltyCardNumber, MID, DateLastUpdated) 
+                    VALUES(:tracking_id, :amount, :status, :trans_type, :site_id,
+                    :terminal_id, :service_id, :card_number, :mid, NOW(6))
+in C:\Apache2.2\htdocs\kronus-egm-ws-abbott\protected\components\Utilities.php (12)
+in C:\Apache2.2\htdocs\kronus-egm-ws-abbott\protected\models\GamingRequestLogs.php (70)
+in C:\Apache2.2\htdocs\kronus-egm-ws-abbott\protected\controllers\WsKapiController.php (2156)
+2014/06/30 10:53:19 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'TWERGDS3426470' for key 'UK_egmrequestlogs_TrackingID'. The SQL statement executed was: INSERT INTO egmrequestlogs(TrackingID, ReportedAmount, Status, 
+                    TransactionType, SiteID, TerminalID, ServiceID, LoyaltyCardNumber, MID, DateLastUpdated) 
+                    VALUES(:tracking_id, :amount, :status, :trans_type, :site_id,
+                    :terminal_id, :service_id, :card_number, :mid, NOW(6)).
+in C:\Apache2.2\htdocs\kronus-egm-ws-abbott\protected\models\GamingRequestLogs.php (53)
+in C:\Apache2.2\htdocs\kronus-egm-ws-abbott\protected\controllers\WsKapiController.php (2156)
+in C:\Apache2.2\htdocs\kronus-egm-ws-abbott\index.php (13)
+2014/06/30 10:53:19 [error] [application] CDbCommand failed to execute the SQL statement: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'TWERGDS3426470' for key 'UK_egmrequestlogs_TrackingID'. The SQL statement executed was: INSERT INTO egmrequestlogs(TrackingID, ReportedAmount, Status, 
+                    TransactionType, SiteID, TerminalID, ServiceID, LoyaltyCardNumber, MID, DateLastUpdated) 
+                    VALUES(:tracking_id, :amount, :status, :trans_type, :site_id,
+                    :terminal_id, :service_id, :card_number, :mid, NOW(6))
+in C:\Apache2.2\htdocs\kronus-egm-ws-abbott\protected\components\Utilities.php (12)
+in C:\Apache2.2\htdocs\kronus-egm-ws-abbott\protected\models\GamingRequestLogs.php (70)
+in C:\Apache2.2\htdocs\kronus-egm-ws-abbott\protected\controllers\WsKapiController.php (2156)
