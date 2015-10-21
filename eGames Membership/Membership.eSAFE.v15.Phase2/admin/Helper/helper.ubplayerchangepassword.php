@@ -46,7 +46,7 @@ $casinoAPI = new CasinoAPI();
 $profile = null;
 $resultmsg = null;
 $response = null;
-$flag = 1;
+//$flag = 1;
 
 $logger = new ErrorLogger();
 $logdate = $logger->logdate;
@@ -97,14 +97,14 @@ if (isset($_POST['pager'])) {
                                 $serviceName = $value['ServiceGroupName'];
                             }
 
-                            $genpassbatchid = $_GeneratedPasswordBatch->getExistingPasswordBatch($MID);
-                            if (empty($genpassbatchid)) {
-                                $genpassbatchid = $_GeneratedPasswordBatch->getInactivePasswordBatch();
-                                $flag = 2;
-                            }
-
+//                            $genpassbatchid = $_GeneratedPasswordBatch->getExistingPasswordBatch2($MID);
+//                            if (empty($genpassbatchid)) {
+//                                $genpassbatchid = $_GeneratedPasswordBatch->getInactivePasswordBatch2();
+//                                $flag = 2;
+//                            }
                             
                             $genpassresult = $_GeneratedPasswordBatch->getInactivePasswordBatchInfo();
+                            $genpassbatchid = $genpassresult[0]['GeneratedPasswordBatchID'];
                             $newpassword = $genpassresult[0]['PlainPassword'];
                             $hashednewpassword = $genpassresult[0]['EncryptedPassword'];
                                switch( true )
@@ -126,7 +126,7 @@ if (isset($_POST['pager'])) {
                                                 $vapiResult = $casinoAPI->ChangePassword($serviceName, $userName, $password, $newpassword, $serviceID);
                                                  if(isset($vapiResult['IsSucceed']) && $vapiResult['IsSucceed'] == true)
                                                  {
-                                                        $isMemberServicesUpdated = $_MemberServices->updateMemberServicesUBPassword($newpassword, $hashednewpassword, $MID, $serviceID, $genpassbatchid, $flag);
+                                                        $isMemberServicesUpdated = $_MemberServices->updateMemberServicesUBPassword($newpassword, $hashednewpassword, $MID, $serviceID, $genpassbatchid);
                                                         if($isMemberServicesUpdated)
                                                             $apisuccess = 1;
                                                         else

@@ -203,7 +203,7 @@ class MemberServices extends BaseEntity
      * @author Ralph Sison
      * @dateadded Oct. 14, 2015
      */
-    public function updateMemberServicesUBPassword($servicePassword, $hashedServicePassword, $MID, $serviceID, $genpassbatchid, $flag)
+    public function updateMemberServicesUBPassword($servicePassword, $hashedServicePassword, $MID, $serviceID, $genpassbatchid)
     {
         $this->StartTransaction();
         
@@ -215,10 +215,7 @@ class MemberServices extends BaseEntity
             $this->ExecuteQuery($query);
             
             if (!App::HasError()) {
-                if($flag == 1)
-                    $query2 = "UPDATE generatedpasswordbatch SET DateUsed = NOW(6), MID = $MID, Status = 2 WHERE GeneratedPasswordBatchID = $genpassbatchid";
-                else
-                    $query2 = "UPDATE generatedpasswordbatch SET DateUsed = NOW(6), MID = $MID, Status = 1 WHERE GeneratedPasswordBatchID = $genpassbatchid";
+                $query2 = "UPDATE generatedpasswordbatch SET DateUsed = NOW(6), MID = $MID, Status = 1 WHERE GeneratedPasswordBatchID = $genpassbatchid";
                 
                 $this->ExecuteQuery($query2);
                 
