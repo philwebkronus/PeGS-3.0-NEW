@@ -1360,7 +1360,7 @@ class FrontendController extends MI_Controller {
        list($is_loyalty, $card_number,$loyalty, $casinos, $mid, $casinoarray_count, $isewallet,$statuscode) = 
                                             $this->getCardInfo($startSessionFormModel->loyalty_card, $this->site_id, $terminaltype);
        
-       if($ref_service['ServiceID'] == 20 && $statuscode == 5 && $isewallet > 0){
+       if(($ref_service['ServiceID'] == 19 || $ref_service['ServiceID'] == 20) && $statuscode == 5 && $isewallet > 0){
            $message = 'Active temporary card cannot start a session on this terminal.';
             logger($message);
             $this->throwError($message);
