@@ -10,7 +10,7 @@
     <?php echo CHtml::link('RegisterMemberBT',  Yii::app()->createUrl('bTAmpapiInvoker/registermemberbt'), array('target'=>'_blank')); ?>
     <br />
     <br />
-    <?php echo CHtml::link('RegisterMemberBTNoEmail',  Yii::app()->createUrl('bTAmpapiInvoker/registermemberbtnoemail'), array('target'=>'_blank')); ?>
+    <?php //echo CHtml::link('RegisterMemberBTNoEmail',  Yii::app()->createUrl('bTAmpapiInvoker/registermemberbtnoemail'), array('target'=>'_blank')); ?>
     <br />
     <br />
 </div>
