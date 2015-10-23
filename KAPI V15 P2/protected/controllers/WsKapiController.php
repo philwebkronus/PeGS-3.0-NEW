@@ -1676,9 +1676,8 @@ class WsKapiController extends Controller {
             }
             
             $terminalName = Yii::app()->params['SitePrefix'] . $terminalName;
-            
             if ($isVIP == 1) {
-                $terminalName = Yii::app()->params['SitePrefix'] . $terminalName . 'VIP';
+                $terminalName = $terminalName . 'VIP';
             }
 
             $terminalID = $terminals->getTerminalSiteIDSolo($terminalName);
