@@ -181,7 +181,7 @@ class EWalletTransModel extends MI_Model {
         $sql = "SELECT SUM(Amount) as Amount FROM ewallettrans 
                     WHERE StartDate>=:startDate AND EndDate<=:endDate 
                     AND Status IN (1,3) AND SiteID=:siteID AND TransType='D'
-                    AND PaymentType = 0";
+                    AND PaymentType = 1";
         
         $param = array(
             ':startDate'=>$startDate.' '.$cutoff_time,
@@ -198,7 +198,7 @@ class EWalletTransModel extends MI_Model {
         $sql = "SELECT SUM(Amount) as Amount FROM ewallettrans 
                     WHERE StartDate>=:startDate AND EndDate<=:endDate 
                     AND Status IN (1,3) AND SiteID=:siteID AND TransType='D'
-                    AND PaymentType = 1";
+                    AND PaymentType = 2";
         
         $param = array(
             ':startDate'=>$startDate.' '.$cutoff_time,
@@ -215,7 +215,7 @@ class EWalletTransModel extends MI_Model {
         $sql = "SELECT SUM(Amount) as Amount FROM ewallettrans 
                     WHERE StartDate>=:startDate AND EndDate<=:endDate 
                     AND Status IN (1,3) AND SiteID=:siteID AND TransType='D'
-                    AND PaymentType = 2";
+                    AND PaymentType = 3";
         
         $param = array(
             ':startDate'=>$startDate.' '.$cutoff_time,
