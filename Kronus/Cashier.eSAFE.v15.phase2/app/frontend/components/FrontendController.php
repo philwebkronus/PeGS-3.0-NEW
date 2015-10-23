@@ -1366,7 +1366,7 @@ class FrontendController extends MI_Controller {
             $this->throwError($message);
        }
        
-       if(Mirage::app()->param['IsALLeSAFE'] && $isewallet == 0){
+       if(Mirage::app()->param['IsALLeSAFE'] && $isewallet == 0  && ($ref_service['ServiceID'] == 19 || $ref_service['ServiceID'] == 20)){
            $message = 'Non e-SAFE card cannot start a session on this terminal.';
             logger($message);
             $this->throwError($message);
