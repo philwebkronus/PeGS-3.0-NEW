@@ -973,17 +973,6 @@ class FrontendController extends MI_Controller {
         $systemusername = Mirage::app()->param['pcwssysusername'];
         $service_id = Mirage::app()->param['UBCasinoServiceID'];
         
-        $hassession = $terminalSessionsModel->checkSession($loyaltycard, $service_id);
-        
-        if($hassession > 0){
-            $message = 'Error: Please end session first.';
-            logger($message);
-            
-            $result = array('message'=>$message);
-            echo json_encode($result);
-            Mirage::app()->end();  
-        }
-        
         list($is_loyalty, $card_number,$loyalty, $casinos, $mid, $casinoarray_count, $isewallet,$statuscode) = 
                 $this->getCardInfo($loyaltycard, $this->site_id, 2);
         
@@ -1007,6 +996,17 @@ class FrontendController extends MI_Controller {
             Mirage::app()->end(); 
         }
         
+        $hassession = $terminalSessionsModel->checkSession($loyaltycard, $service_id);
+        
+        if($hassession > 0){
+            $message = 'Error: Please end session first.';
+            logger($message);
+            
+            $result = array('message'=>$message);
+            echo json_encode($result);
+            Mirage::app()->end();  
+        }
+
         $checkpinresult = $pcws->CheckPin($loyaltycard, $pin, $systemusername);
         
         if($checkpinresult[0] == 200){
