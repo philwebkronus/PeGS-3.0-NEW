@@ -122,11 +122,11 @@ if(isset($_SESSION['acctype']))
                             datatype: "json",
                             colNames:['User Name','Name', 'Email', 'Address', 'Status', 'Action'],
                             colModel:[
-                                    {name:'UserName',index:'UserName', width:150, align: 'left'},
-                                    {name:'Name',index:'Name', width:200, align: 'left'},
-                                    {name:'Email',index:'Email', width:250, align: 'left'},
-                                    {name:'Address',index:'Address', width:250, align: 'left'},
-                                    {name:'Status',index:'Status', width:70, align: 'center'},
+                                    {name:'a.UserName',index:'UserName', width:150, align: 'left'},
+                                    {name:'a.Name',index:'Name', width:200, align: 'left'},
+                                    {name:'a.Email',index:'Email', width:250, align: 'left'},
+                                    {name:'a.Address',index:'Address', width:250, align: 'left'},
+                                    {name:'a.Status',index:'Status', width:70, align: 'center'},
                                     {name:'button', index: 'button', width:120, align: 'center'}
                             ],
 
@@ -136,6 +136,7 @@ if(isset($_SESSION['acctype']))
                             width: 1200,
                             pager: '#pager2',
                             viewrecords: true,
+                            sortname: "a.UserName", 
                             sortorder: "asc",
                             caption:"Accounts"
                     });

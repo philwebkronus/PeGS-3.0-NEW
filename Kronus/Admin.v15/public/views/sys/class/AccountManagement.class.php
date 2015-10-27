@@ -284,12 +284,12 @@ class AccountManagement extends DBHandler{
       }
 
       //display all accounts based on start and limit (for pagination)
-      function viewlimitaccounts($zaccID, $zAcctType, $zStart, $zLimit, $zpegs)
+      function viewlimitaccounts($zaccID, $zAcctType, $zStart, $zLimit, $zpegs, $sidx, $sord)
       {
          if($zaccID > 1)
          {
              $stmt = "Select a.AID, a.Status, a.UserName,a.AccountTypeID, b.Name, b.Email, b.Address from accounts as a INNER JOIN accountdetails as b ON a.AID = b.AID AND a.AID = '".$zaccID."'
-                  ORDER BY a.UserName ASC LIMIT ".$zStart.", ".$zLimit."";
+                  ORDER BY $sidx $sord LIMIT ".$zStart.", ".$zLimit."";
          }
          else
          {
@@ -298,7 +298,7 @@ class AccountManagement extends DBHandler{
             if($zpegs == 0)
             {
                $stmt = "Select a.AID, a.Status, a.UserName,a.AccountTypeID, b.Name, b.Email, b.Address from accounts as a INNER JOIN accountdetails as b ON a.AID = b.AID WHERE a.AccountTypeID = '".$zAcctType."'
-                     ORDER BY a.UserName ASC LIMIT ".$zStart.", ".$zLimit."";
+                     ORDER BY $sidx $sord  LIMIT ".$zStart.", ".$zLimit."";
             }
             elseif($zAcctType > 0 && count($zpegs) > 0)
             {
@@ -312,12 +312,12 @@ class AccountManagement extends DBHandler{
 
                 $pegs = implode(',',$listpegs);
                 $stmt = "Select a.AID, a.Status, a.UserName,a.AccountTypeID, b.Name, b.Email, b.Address from accounts as a INNER JOIN accountdetails as b ON a.AID = b.AID
-                      INNER JOIN siteaccounts c on c.AID = a.AID WHERE a.AccountTypeID = '".$zAcctType."' AND c.SiteID IN(".$pegs.") ORDER BY a.UserName ASC LIMIT ".$zStart.", ".$zLimit."";
+                      INNER JOIN siteaccounts c on c.AID = a.AID WHERE a.AccountTypeID = '".$zAcctType."' AND c.SiteID IN(".$pegs.") ORDER BY $sidx $sord  LIMIT ".$zStart.", ".$zLimit."";
             }
             else
             {
                  $stmt = "Select a.AID, a.Status, a.UserName,a.AccountTypeID, b.Name, b.Email, b.Address from accounts as a INNER JOIN accountdetails as b ON a.AID = b.AID
-                     ORDER BY a.UserName ASC LIMIT ".$zStart.", ".$zLimit."";
+                     ORDER BY $sidx $sord LIMIT ".$zStart.", ".$zLimit."";
             }
          }
          $this->executeQuery($stmt);
