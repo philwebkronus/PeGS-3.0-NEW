@@ -1920,6 +1920,12 @@ class PcwsController extends Controller {
                                                                                         $message = "[Unlock] Token: " . $this->_tkn . ", Output: CardNumber: $cardNumber, TransSumID: $transactionResult, ErrorMessage: Failed to insert card transactions";
                                                                                         CLoggerModified::log($message, CLoggerModified::WARNING);
                                                                                     }
+                                                                                    
+                                                                                    $Isupdated = $membersModel->resetPinLoginAttempts($mid);
+                                                                                    if (!$Isupdated) {
+                                                                                        $message = "[Unlock] Token: " . $this->_tkn . ", Output: CardNumber: $cardNumber, TransSumID: $transactionResult, ErrorMessage: Failed to reset pin attempts.";
+                                                                                        CLoggerModified::log($message, CLoggerModified::WARNING);
+                                                                                    }
 
                                                                                     $eCode = 0;
                                                                                     $transMsg = 'Transaction successful, Terminal is now unlocked.';
@@ -2349,7 +2355,7 @@ class PcwsController extends Controller {
         $transMessage = null;
 
         $paramval = CJSON::encode($data);
-        $message = "[Unlock] Input: " . $paramval;
+        $message = "[CreateSession] Input: " . $paramval;
         CLoggerModified::log($message, CLoggerModified::REQUEST);
 
         $systemUsername = trim($data['SystemUsername']);
@@ -2375,7 +2381,10 @@ class PcwsController extends Controller {
                 $memberServicesModel = new MemberServicesModel();
                 $eWalletModel = new CommonEWalletTransactionsModel();
                 $membersModel = new MembersModel();
-
+                
+                if(strpos($terminalCode, 'ICSA-') !== false) {
+                    $rawterminalCode = $terminalCode;
+                } else { $rawterminalCode = "ICSA-".$terminalCode; }
 
                 if ($validate->isAllNotEmpty(array($terminalCode, $serviceID, $cardNumber, $systemUsername))) {
                     if (ctype_alnum($cardNumber)) {
@@ -2397,65 +2406,69 @@ class PcwsController extends Controller {
                                                 if ($siteID) {
 
                                                     if (!Utilities::fetchFirstValue($terminalSessionsModel->isTerminalHasActiveUBSession($terminalID))) {
+                                                        if (Utilities::fetchFirstValue($terminalSessionsModel->checkActiveSession($rawterminalCode)) == 0) {
+                                                                $userMode = Utilities::fetchFirstValue($servicesModel->getUserMode($serviceID));
+                                                                if ($userMode) {
+                                                                    if (!Utilities::fetchFirstValue($terminalSessionsModel->isCardHasActiveUBSession($cardNumber))) {
+                                                                        //get service credentials
+                                                                        $credentials = $memberServicesModel->getCasinoCredentialsAbbott($mid, $serviceID);
+                                                                        if (isset($credentials['ServiceUsername']) && isset($credentials['ServicePassword']) && isset($credentials['HashedServicePassword'])) {
 
-                                                        $userMode = Utilities::fetchFirstValue($servicesModel->getUserMode($serviceID));
-                                                        if ($userMode) {
-                                                            if (!Utilities::fetchFirstValue($terminalSessionsModel->isCardHasActiveUBSession($cardNumber))) {
-                                                                //get service credentials
-                                                                $credentials = $memberServicesModel->getCasinoCredentialsAbbott($mid, $serviceID);
-                                                                if (isset($credentials['ServiceUsername']) && isset($credentials['ServicePassword']) && isset($credentials['HashedServicePassword'])) {
+                                                                            $serviceUsername = $credentials['ServiceUsername'];
+                                                                            $servicePassword = $credentials['ServicePassword'];
+                                                                            $hashedServicePassword = $credentials['HashedServicePassword'];
 
-                                                                    $serviceUsername = $credentials['ServiceUsername'];
-                                                                    $servicePassword = $credentials['ServicePassword'];
-                                                                    $hashedServicePassword = $credentials['HashedServicePassword'];
-
-                                                                    $balance = $this->retrieveBalance($serviceID, $serviceUsername);
+                                                                            $balance = $this->retrieveBalance($serviceID, $serviceUsername);
 
 
-                                                                    if ($balance) {
+                                                                            if ($balance) {
 
-                                                                        $transactionReferenceID = Utilities::generateUDate('YmdHisu');
-                                                                        $amount = '0';
-                                                                        $transactionType = 'D';
+                                                                                $transactionReferenceID = Utilities::generateUDate('YmdHisu');
+                                                                                $amount = '0';
+                                                                                $transactionType = 'D';
 
-                                                                        $trackingID = '';
-                                                                        $voucherCode = '';
-                                                                        $paymentType = 1;
-                                                                        $serviceTransactionID = '';
-                                                                        $deposit = '0';
+                                                                                $trackingID = '';
+                                                                                $voucherCode = '';
+                                                                                $paymentType = 1;
+                                                                                $serviceTransactionID = '';
+                                                                                $deposit = '0';
 
-                                                                        $accountsModel = new AccountsModel();
-                                                                        $AID = Utilities::fetchFirstValue($accountsModel->getAIDBySiteID($siteID));
-                                                                        if ($AID) {
+                                                                                $accountsModel = new AccountsModel();
+                                                                                $AID = Utilities::fetchFirstValue($accountsModel->getAIDBySiteID($siteID));
+                                                                                if ($AID) {
 
-                                                                            $transactionResult = $eWalletModel->insert2($mid, $terminalID, $serviceID, $cardNumber, $userMode, $serviceUsername, $servicePassword, $hashedServicePassword, $balance);
+                                                                                    $transactionResult = $eWalletModel->insert2($mid, $terminalID, $serviceID, $cardNumber, $userMode, $serviceUsername, $servicePassword, $hashedServicePassword, $balance);
 
-                                                                            if ($transactionResult) {
-                                                                                $eCode = 0;
-                                                                                $transMsg = 'Successful';
+                                                                                    if ($transactionResult) {
+                                                                                        $eCode = 0;
+                                                                                        $transMsg = 'Successful';
+                                                                                    } else {
+                                                                                        $eCode = 18; //Failed to start session
+                                                                                        $transMsg = 'Failed to start session';
+                                                                                    }
+                                                                                } else {
+                                                                                    $eCode = 4;
+                                                                                    $transMsg = 'Virtual Cashier is required.';
+                                                                                }
                                                                             } else {
-                                                                                $eCode = 18; //Failed to start session
-                                                                                $transMsg = 'Failed to start session';
+                                                                                $eCode = 8; //Can't get balance
+                                                                                $transMsg = 'Can\'t get balance.';
                                                                             }
                                                                         } else {
-                                                                            $eCode = 4;
-                                                                            $transMsg = 'Virtual Cashier is required.';
+                                                                            $eCode = 6; //Card does not have existing casino account
+                                                                            $transMsg = 'Card does not have existing casino account.';
                                                                         }
                                                                     } else {
-                                                                        $eCode = 8; //Can't get balance
-                                                                        $transMsg = 'Can\'t get balance.';
+                                                                        $eCode = 17; //Card has an existing active session
+                                                                        $transMsg = 'Card has an existing active session.';
                                                                     }
                                                                 } else {
-                                                                    $eCode = 6; //Card does not have existing casino account
-                                                                    $transMsg = 'Card does not have existing casino account.';
+                                                                    $eCode = 12; //Invalid Usercode
+                                                                    $transMsg = 'Can\'t get casino information.';
                                                                 }
-                                                            } else {
-                                                                $eCode = 17; //Card has an existing active session
-                                                                $transMsg = 'Card has an existing active session.';
-                                                            }
                                                         } else {
-                                                            $eCode = 12; //Invalid Usercode
-                                                            $transMsg = 'Can\'t get casino information.';
+                                                            $eCode = 17; // Terminal has an existing active session
+                                                            $transMsg = 'Only one active session for Magic Macau casino is allowed for this terminal.';
                                                         }
                                                     } else {
                                                         $eCode = 17; // Terminal has an existing active session
@@ -2693,7 +2706,7 @@ class PcwsController extends Controller {
         $transMessage = null;
 
         $paramval = CJSON::encode($data);
-        $message = "[Unlock] Input: " . $paramval;
+        $message = "[UnlockGenesis] Input: " . $paramval;
         CLoggerModified::log($message, CLoggerModified::REQUEST);
 
         $systemUsername = trim($data['SystemUsername']);
@@ -2775,6 +2788,13 @@ class PcwsController extends Controller {
                                                                             $transactionResult = $eWalletModel->insertWithTerminalSession($mid, $terminalID, $serviceID, $cardNumber, $userMode, $serviceUsername, $servicePassword, $hashedServicePassword, $transactionReferenceID, $amount, $transactionType, $siteID, $trackingID, $voucherCode, $paymentType, $serviceTransactionID, $deposit, $AID, $balance);
 
                                                                             if ($transactionResult) {
+                                                                                
+                                                                                $Isupdated = $membersModel->resetPinLoginAttempts($mid);
+                                                                                if (!$Isupdated) {
+                                                                                    $message = "[UnlockGenesis] Token: " . $this->_tkn . ", Output: CardNumber: $cardNumber, TransSumID: $transactionResult, ErrorMessage: Failed to reset pin attempts.";
+                                                                                    CLoggerModified::log($message, CLoggerModified::WARNING);
+                                                                                }
+                                                                                
                                                                                 $eCode = 0;
                                                                                 $transMsg = 'Transaction successful, Terminal is now unlocked.';
                                                                             } else {
@@ -2890,7 +2910,7 @@ class PcwsController extends Controller {
             $data = CommonController::authenticate($transMsg, $errCode);
         }
 
-        $message = "[Unlock] Token: " . $this->_tkn . ", Output: " . $data;
+        $message = "[UnlockGenesis] Token: " . $this->_tkn . ", Output: " . $data;
         CLoggerModified::log($message, CLoggerModified::RESPONSE);
 
         $this->_sendResponse(200, $data);

@@ -167,6 +167,16 @@ class TerminalSessionsModel extends CFormModel {
 
         return $result;
     }
+    
+    public function checkActiveSession($terminalCode) {
+        $sql = "SELECT COUNT(ts.TerminalID) AS Cnt FROM terminalsessions ts 
+                    INNER JOIN terminals t ON ts.TerminalID = t.TerminalID
+                    WHERE t.TerminalCode IN ('".$terminalCode."', '".$terminalCode."VIP')";
+        $command = $this->connection->createCommand($sql);
+        $result = $command->queryRow();
+
+        return $result;
+    }
 
     public function isCardHasActiveUBSession($cardNumber) {
         $sql = "SELECT COUNT(tss.TerminalID) AS Cnt FROM terminalsessions tss INNER JOIN ref_services rs ON tss.ServiceID=rs.ServiceID WHERE tss.LoyaltyCardNumber=:cardNumber AND rs.UserMode=1";
