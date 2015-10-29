@@ -141,7 +141,7 @@ class CommonController {
      * @return json response
      */
     public static function unlockgenesis($transMsg, $errCode){
-        return CJSON::encode(array('Unlock'=>(array('TransactionMessage'=>$transMsg, 'ErrorCode'=>(int)$errCode))));
+        return CJSON::encode(array('UnlockGenesis'=>(array('TransactionMessage'=>$transMsg, 'ErrorCode'=>(int)$errCode))));
     }
     
     /**
