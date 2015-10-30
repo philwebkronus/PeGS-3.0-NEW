@@ -1396,6 +1396,16 @@ class FrontendController extends MI_Controller {
                      $this->throwError($message);
                 }
            }
+           
+           //Check if Regular or VIP terminal has active session.
+           $terminalcode = $_POST['sitecode'].$_POST['tcode'];
+           $cntactivesession = $terminalSessionsModel->checkActiveSession($terminalcode);
+
+            if($cntactivesession > 0){
+                $message = 'Error: Terminal has an existing session.';
+                logger($message . ' TerminalID='.$terminal_id . ' ServiceID='.$ref_service['ServiceID']);
+                $this->throwError($message);
+            }
 
            //        //check if voucher
                 if(isset($startSessionFormModel->voucher_code) && $startSessionFormModel->voucher_code !='')

@@ -1138,12 +1138,60 @@ class TransactionSummaryModel extends MI_Model{
                 ':end_date4'=>$end_date . ' ' . $cutoff_time,
                 ':end_date5'=>$end_date . ' ' . $cutoff_time,
                 ':end_date6'=>$end_date . ' ' . $cutoff_time,
-                ':end_date7'=>$end_date . ' ' . $cutoff_time,
+                ':end_date7'=>$end_date . ' ' . $cutoff_time
             );
         $this->exec($sql,$param);
         $result = $this->findAll();
         
         return $result;
+    }
+    
+    public function getActiveTicketsForTheDay($site_id, $date, $end_date){
+
+        $cutoff_time = Mirage::app()->param['cut_off'];
+        $totalactiveticketsfortheday = 0;
+        $getprintedtickets = "SELECT Amount, TicketCode FROM vouchermanagement.tickets WHERE DateCreated >= :start_date               -- Get Printed Tickets for the day 
+                                                AND DateCreated < :end_date AND SiteID = :siteid";
+        $getcancelledtickets = "SELECT IFNULL(stckr.Withdrawal, 0) As Amount, stckr.TicketCode FROM stackermanagement.stackersummary stckr -- Cancelled Tickets in Stacker 
+                                                    INNER JOIN npos.accounts acct ON stckr.CreatedByAID = acct.AID
+                                                    INNER JOIN npos.siteaccounts sa ON acct.AID = sa.AID
+                                                    WHERE stckr.Status IN (1, 2)
+                                                    AND stckr.DateCancelledOn >= :start_date AND stckr.DateCancelledOn < :end_date
+                                                    AND acct.AccountTypeID IN (4, 15)
+                                                    AND sa.SiteID = :siteid";
+        $getusedtickets = "SELECT Amount,TicketCode FROM vouchermanagement.tickets WHERE DateCreated >= :start_date 
+                                            AND DateCreated < :end_date AND Status = 3 AND DateEncashed IS NULL AND SiteID = :siteid";
+        $param = array(
+                ':siteid'=>$site_id,
+                ':start_date'=>$date . ' ' . $cutoff_time,
+                ':end_date'=>$end_date . ' ' . $cutoff_time );
+        $this->exec($getprintedtickets,$param);
+        $printedTicketsresults = $this->findAll();
+        
+        $this->exec($getcancelledtickets,$param);
+        $cancelledTicketsresults = $this->findAll();
+        
+        $this->exec($getusedtickets,$param);
+        $usedTicketsresults = $this->findAll();
+        
+        foreach ($printedTicketsresults as $key => $value1) {
+            foreach ($cancelledTicketsresults as $value2) {
+                if($value1['TicketCode'] == $value2['TicketCode']){
+                    unset($printedTicketsresults[$key]);
+                }
+            }
+            foreach ($usedTicketsresults as $value3) {
+                if($value1['TicketCode'] == $value3['TicketCode']){
+                    unset($printedTicketsresults[$key]);
+                }
+            }
+        }
+        
+        foreach ($printedTicketsresults as $value) {
+            $totalactiveticketsfortheday += $value['Amount'];
+        }
+        
+        return $totalactiveticketsfortheday;
     }
     
     public function getTicketListperCashier($site_id, $date, $end_date, $aid){
@@ -1249,9 +1297,300 @@ class TransactionSummaryModel extends MI_Model{
         
         return $result;
     }
-
-
     
+    /**
+     * @Description: Get the total printed tickets with an active status for the day per site.
+     * @DateCreated: 2015-10-26
+     * @Author: aqdepliyan
+     * @param int $site_id
+     * @param string $date
+     * @param string $end_date
+     * @param int aid
+     * @return float
+     */
+    public function getActiveTicketsForTheDayPerCashier($site_id, $date, $end_date, $aid){
+
+        $cutoff_time = Mirage::app()->param['cut_off'];
+        $totalactiveticketsfortheday = 0;
+        $getprintedtickets = "SELECT Amount, TicketCode FROM vouchermanagement.tickets WHERE DateCreated >= :start_date               -- Get Printed Tickets for the day 
+                                                AND DateCreated < :end_date AND SiteID = :siteid AND CreatedByAID = :aid";
+        $getcancelledtickets = "SELECT IFNULL(stckr.Withdrawal, 0) As Amount, stckr.TicketCode FROM stackermanagement.stackersummary stckr -- Cancelled Tickets in Stacker 
+                                                    INNER JOIN npos.accounts acct ON stckr.CreatedByAID = acct.AID
+                                                    INNER JOIN npos.siteaccounts sa ON acct.AID = sa.AID
+                                                    WHERE stckr.Status IN (1, 2)
+                                                    AND stckr.DateCancelledOn >= :start_date AND stckr.DateCancelledOn < :end_date
+                                                    AND acct.AccountTypeID IN (4, 15)
+                                                    AND acct.AID = :aid
+                                                    AND sa.SiteID = :siteid";
+        $getusedtickets = "SELECT Amount,TicketCode FROM vouchermanagement.tickets WHERE DateCreated >= :start_date 
+                                            AND DateCreated < :end_date AND CreatedByAID = :aid AND Status = 3 AND DateEncashed IS NULL AND SiteID = :siteid";
+        $param = array(
+                ':siteid'=>$site_id,
+                ':aid'=>$aid,
+                ':start_date'=>$date . ' ' . $cutoff_time,
+                ':end_date'=>$end_date . ' ' . $cutoff_time );
+        $this->exec($getprintedtickets,$param);
+        $printedTicketsresults = $this->findAll();
+        
+        $this->exec($getcancelledtickets,$param);
+        $cancelledTicketsresults = $this->findAll();
+        
+        $this->exec($getusedtickets,$param);
+        $usedTicketsresults = $this->findAll();
+        
+        foreach ($printedTicketsresults as $key => $value1) {
+            foreach ($cancelledTicketsresults as $value2) {
+                if($value1['TicketCode'] == $value2['TicketCode']){
+                    unset($printedTicketsresults[$key]);
+                }
+            }
+            foreach ($usedTicketsresults as $value3) {
+                if($value1['TicketCode'] == $value3['TicketCode']){
+                    unset($printedTicketsresults[$key]);
+                }
+            }
+        }
+        
+        foreach ($printedTicketsresults as $value) {
+            $totalactiveticketsfortheday += (float)$value['Amount'];
+        }
+        
+        return $totalactiveticketsfortheday;
+    }
+    
+    /**
+     * @Description: For Site Cash On Hand Reports in Cashier. Function to get encashed tickets per site per cutoff
+     * @DateCreated: 2015-10-28
+     * @Author: aqdepliyan
+     * @param string $startdate
+     * @param string $enddate
+     * @param int $siteid
+     * @return array
+     */
+    public function getEncashedTickets($startdate,$enddate,$siteid){
+        $cutoff_time = Mirage::app()->param['cut_off'];
+        $sql = "SELECT IFNULL(SUM(tckt.Amount), 0) as EncashedTickets FROM vouchermanagement.tickets tckt  -- Encashed Tickets
+            WHERE tckt.DateEncashed >= :startdate AND tckt.DateEncashed < :enddate
+            AND tckt.EncashedByAID In (SELECT acct.AID FROM npos.accounts acct WHERE acct.AccountTypeID = 4
+            AND acct.AID IN (SELECT sacct.AID FROM npos.siteaccounts sacct WHERE sacct.SiteID = :siteid))";
+        
+        $param = array(
+            ':startdate'=>$startdate.' '.$cutoff_time,
+            ':enddate'=>$enddate.' '.$cutoff_time,
+            ':siteid'=>$siteid
+        );
+        
+        $this->exec($sql, $param);
+        $result = $this->find();
+        return isset($result['EncashedTickets'])?$result['EncashedTickets']:0;
+    }
+
+    /**
+     * @Description: For Site Cash On Hand Reports in Cashier. Function to get transactions grouped into Load Cash( Deposit,Reload), Load Coupon( Deposit,Reload), Load Bancnet( Deposit,Reload),
+     * Load Ticket( Deposit,Reload), WCash(Cashier Redemption) and WTicket (Genesis Redemption).
+     * @DateCreated: 2015-10-28
+     * @Author: aqdepliyan
+     * @param string $startdate
+     * @param string $enddate
+     * @param int $siteid
+     * @return array
+     */
+    public function getTransactionDetailsForCOH($startdate,$enddate,$siteid){
+        $cutoff_time = Mirage::app()->param['cut_off'];
+        $result = array();
+        $sql = "SELECT tdtls.ServiceID,
+
+                -- LOAD CASH --
+                SUM(CASE tdtls.TransactionType
+                    WHEN 'D' THEN
+                            CASE tdtls.PaymentType
+                               WHEN 2 THEN 0 -- Coupon
+                               ELSE -- Not Coupon
+                                     CASE IFNULL(tdtls.StackerSummaryID, '')
+                                       WHEN '' THEN 
+                                            CASE -- Check if bancnet transaction
+                                                    WHEN (SELECT COUNT(*) FROM npos.banktransactionlogs btls
+                                                            WHERE btls.TransactionRequestLogID = trl.TransactionRequestLogID) > 0
+                                                    THEN 0 ELSE tdtls.Amount -- Cash
+                                            END
+                                       ELSE  -- Check transtype in stackermanagement to find out if ticket or cash, from EGM
+                                             (SELECT IFNULL(SUM(sdtls.Amount), 0)
+                                             FROM stackermanagement.stackerdetails sdtls
+                                             WHERE sdtls.stackersummaryID = tdtls.StackerSummaryID
+                                                       AND sdtls.TransactionType = 1
+                                                       AND sdtls.PaymentType = 0)  -- Cash
+
+                                     END
+                            END
+                    WHEN 'R' THEN
+                            CASE tdtls.PaymentType
+                               WHEN 2 THEN 0 -- Coupon
+                               ELSE -- Not Coupon
+                                     CASE IFNULL(tdtls.StackerSummaryID, '')
+                                       WHEN '' THEN 
+                                            CASE -- Check if bancnet transaction
+                                                    WHEN (SELECT COUNT(*) FROM npos.banktransactionlogs btls
+                                                            WHERE btls.TransactionRequestLogID = trl.TransactionRequestLogID) > 0
+                                                    THEN 0 ELSE tdtls.Amount -- Cash
+                                            END
+                                       ELSE  -- Check transtype in stackermanagement to find out if ticket or cash, from EGM
+                                             (SELECT IFNULL(SUM(sdtls.Amount), 0)
+                                             FROM stackermanagement.stackerdetails sdtls
+                                             WHERE sdtls.stackersummaryID = tdtls.StackerSummaryID
+                                                       AND sdtls.TransactionDetailsID = tdtls.TransactionDetailsID
+                                                       AND sdtls.TransactionType = 2
+                                                       AND sdtls.PaymentType = 0)  -- Cash
+                                     END
+                            END
+                    ELSE 0
+                END) As LoadCash,
+
+
+
+                -- LOAD COUPON --
+                SUM(CASE tdtls.TransactionType
+                    WHEN 'D' THEN
+                            CASE tdtls.PaymentType
+                               WHEN 2 THEN tdtls.Amount -- Coupon
+                               ELSE 0 -- Not Coupon
+                            END
+                    WHEN 'R' THEN
+                            CASE tdtls.PaymentType
+                               WHEN 2 THEN tdtls.Amount -- Coupon
+                               ELSE 0 -- Not Coupon
+                            END
+                ELSE 0
+                END) As LoadCoupon,
+
+                -- LOAD BANCNET --
+                SUM(CASE tdtls.TransactionType
+                    WHEN 'D' THEN
+                            CASE tdtls.PaymentType
+                               WHEN 2 THEN 0 -- Coupon
+                               ELSE -- Not Coupon
+                                     CASE IFNULL(tdtls.StackerSummaryID, '')
+                                       WHEN '' THEN 
+                                            CASE -- Check if bancnet transaction
+                                                    WHEN (SELECT COUNT(*) FROM npos.banktransactionlogs btls
+                                                            WHERE btls.TransactionRequestLogID = trl.TransactionRequestLogID) > 0
+                                                    THEN tdtls.Amount -- Bancnet
+                                                    ELSE 0 -- Not Bancnet
+                                            END
+                                       ELSE 0 -- Not Bancnet
+                                     END
+                            END
+                    WHEN 'R' THEN
+                            CASE tdtls.PaymentType
+                               WHEN 2 THEN 0 -- Coupon
+                               ELSE -- Not Coupon
+                                     CASE IFNULL(tdtls.StackerSummaryID, '')
+                                       WHEN '' THEN 
+                                            CASE -- Check if bancnet transaction
+                                                    WHEN (SELECT COUNT(*) FROM npos.banktransactionlogs btls
+                                                            WHERE btls.TransactionRequestLogID = trl.TransactionRequestLogID) > 0
+                                                    THEN tdtls.Amount -- Bancnet
+                                                    ELSE 0 -- Not Bancnet
+                                            END
+                                       ELSE 0 -- Not Bancnet
+                                     END
+                            END
+                    ELSE 0
+                END) As LoadBancnet,
+
+                -- LOAD TICKET --
+                SUM(CASE tdtls.TransactionType
+                    WHEN 'D' THEN
+                            CASE tdtls.PaymentType
+                              WHEN 2 THEN 0 -- Coupon
+                              ELSE -- Not Coupon
+                                    CASE IFNULL(tdtls.StackerSummaryID, '')
+                                      WHEN '' THEN 0 -- Cash
+                                      ELSE  -- Check transtype in stackermanagement to find out if ticket or cash, from EGM
+                                            (SELECT IFNULL(SUM(sdtls.Amount), 0)
+                                            FROM stackermanagement.stackerdetails sdtls
+                                            WHERE sdtls.stackersummaryID = tdtls.StackerSummaryID
+                                                      AND sdtls.TransactionDetailsID = tdtls.TransactionDetailsID
+                                                      AND sdtls.TransactionType = 1
+                                                      AND sdtls.PaymentType = 2)  -- Deposit, Ticket
+                                    END
+                            END
+                    WHEN 'R' THEN
+                            CASE tdtls.PaymentType
+                              WHEN 2 THEN 0 -- Coupon
+                              ELSE -- Not Coupon
+                                    CASE IFNULL(tdtls.StackerSummaryID, '')
+                                      WHEN '' THEN 0 -- Cash
+                                      ELSE  -- Check transtype in stackermanagement to find out if ticket or cash, from EGM
+                                            (SELECT IFNULL(SUM(sdtls.Amount), 0)
+                                            FROM stackermanagement.stackerdetails sdtls
+                                            WHERE sdtls.stackersummaryID = tdtls.StackerSummaryID
+                                                      AND sdtls.TransactionDetailsID = tdtls.TransactionDetailsID
+                                                      AND sdtls.TransactionType = 2
+                                                      AND sdtls.PaymentType = 2)  -- Deposit, Ticket
+                                    END
+                            END
+                    ELSE 0 
+                END) As LoadTicket,
+
+                -- REDEMPTION CASHIER --
+                SUM(CASE tdtls.TransactionType
+                  WHEN 'W' THEN
+                        CASE a.AccountTypeID
+                          WHEN 4 THEN tdtls.Amount -- Cashier
+                          ELSE 0
+                        END -- Genesis
+                  ELSE 0 --  Not Redemption
+                END) As WCash,
+
+                -- REDEMPTION GENESIS --
+                SUM(CASE tdtls.TransactionType
+                  WHEN 'W' THEN
+                        CASE a.AccountTypeID
+                          WHEN 15 THEN tdtls.Amount -- Genesis
+                          WHEN 17 THEN tdtls.Amount -- Genesis
+                          ELSE 0
+                        END -- Cashier
+                  ELSE 0 -- Not Redemption
+                END) As WTicket
+        FROM npos.transactiondetails tdtls  FORCE INDEX(IX_transactiondetails_DateCreated) 
+        INNER JOIN npos.transactionrequestlogs trl ON tdtls.TransactionReferenceID = trl.TransactionReferenceID
+        INNER JOIN npos.accounts a ON tdtls.CreatedByAID = a.AID
+        WHERE tdtls.DateCreated >= :startdate AND tdtls.DateCreated < :enddate
+        AND tdtls.Status IN (1,4) AND tdtls.SiteID = :siteid 
+        GROUP BY tdtls.ServiceID";
+        
+        $param = array(
+                ':startdate'=>$startdate . ' ' . $cutoff_time,
+                ':enddate'=>$enddate . ' ' . $cutoff_time,
+                ':siteid'=>$siteid
+            );
+        $this->exec($sql,$param);
+        $transdetails = $this->findAll();
+        
+        foreach($transdetails as $value){
+            if(!isset($result['LoadCash'])){
+                $result['LoadCash'] = (float)$value['LoadCash'];
+            }else{ $result['LoadCash'] += (float)$value['LoadCash']; }
+            if(!isset($result['LoadCoupon'])){
+                $result['LoadCoupon'] = (float)$value['LoadCoupon'];
+            }else{ $result['LoadCoupon'] += (float)$value['LoadCoupon']; }
+            if(!isset($result['LoadTicket'])){
+                $result['LoadTicket'] = (float)$value['LoadTicket'];
+            }else{ $result['LoadTicket'] += (float)$value['LoadTicket']; }
+            if(!isset($result['LoadBancnet'])){
+                $result['LoadBancnet'] = (float)$value['LoadBancnet'];
+            }else{ $result['LoadBancnet'] += (float)$value['LoadBancnet']; }
+            if(!isset($result['WCash'])){
+                $result['WCash'] = (float)$value['WCash'];
+            }else{ $result['WCash'] += (float)$value['WCash']; }
+            if(!isset($result['WTicket'])){
+                $result['WTicket'] = (float)$value['WTicket'];
+            }else{ $result['WTicket'] += (float)$value['WTicket']; }
+        }
+        
+        return $result;
+    }
+
     public function getTransSummaryStackersummaryW($site_id,$site_code,$date,$enddate,$start,$limit) {
         $len = strlen($site_code) + 1;
 

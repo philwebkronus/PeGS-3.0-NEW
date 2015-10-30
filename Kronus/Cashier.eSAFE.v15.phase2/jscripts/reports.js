@@ -295,18 +295,15 @@ $(document).ready(function(){
                             if(i == 0){
                                 if(json.ticketlist > 1){
                                     TotalPrintedTickets = parseFloat(json.ticketlist[i].PrintedRedemptionTickets) ;
-                                    TotalActiveTicketsForTheDay = parseFloat(json.ticketlist[i].UnusedTickets) ;
                                     TotalEncashedTickets = parseFloat(json.ticketlist[i].EncashedTickets);
                                     SubEncashedTickets = parseFloat(json.ticketlist[i].EncashedTickets);
                                 } else {
-                                    TotalPrintedTickets = toMoney(json.ticketlist[i].PrintedRedemptionTickets,'no');
-                                    TotalActiveTicketsForTheDay = toMoney(json.ticketlist[i].UnusedTickets,'no');
+                                    TotalPrintedTickets = parseFloat(json.ticketlist[i].PrintedRedemptionTickets);
                                     TotalEncashedTickets = toMoney(json.ticketlist[i].EncashedTickets,'no');
                                     SubEncashedTickets = parseFloat(json.ticketlist[i].EncashedTickets,'no');
                                 }
                             } else {
                                 TotalPrintedTickets += parseFloat(json.ticketlist[i].PrintedRedemptionTickets) ;
-                                TotalActiveTicketsForTheDay += parseFloat(json.ticketlist[i].UnusedTickets) ;
                                 TotalEncashedTickets += parseFloat(json.ticketlist[i].EncashedTickets);
                                 SubEncashedTickets += parseFloat(json.ticketlist[i].EncashedTickets);
                             }
@@ -322,17 +319,20 @@ $(document).ready(function(){
                         Sales = RegCash + RegTicket + RegCoupon + eSAFECash + eSAFETickets + eSAFECoupon;
                         TotalSales = toMoney(Sales,'no');
                         TotalActiveRunningTickets = toMoney(json.runningactivetickets,'no');
+                        TotalActiveTicketsForTheDay = toMoney(json.ActiveTickets,'no');
+                        TotalPrintedTickets += parseFloat(json.eWalletTicketWithdrawals);
+                        TotalPrintedTickets = toMoney(TotalPrintedTickets,'no');
 
                         //Compute Cash On Hand [ Formula: (((Total Cash from Cashier & Genesis + eSAFE Cash Load) - (Total Cashier Redemption + eSAFE Withdraw)) - Total Encashed Tickets) - Total Manual Redemption ]
                         CompCashOnHand = ((RegCash + eSAFECash) - (CashierRedemption + parseFloat(json.eWalletWithdrawals)) - SubEncashedTickets) - parseFloat(json.manualredemptions);
                         CashOnHand = toMoney(CompCashOnHand,'no');
 
-                        updateLightbox( '<div style="margin-bottom: 10px; font-weight: bold;"> Sales </div><table id="salestranssumm" ><tr><td style="text-align: center"><b>Non e-SAFE Cash</b></td><td style="text-align: right;">'+TotalRegCash+'</td>' +
-                                                    '</tr><tr><td style="text-align: center"><b>Non e-SAFE Tickets</b></td><td style="text-align: right;">' + TotalRegTicket+ '</td>' +
-                                                    '</tr><tr><td style="text-align: center"><b>Non e-SAFE Coupons</b></td><td style="text-align: right;">' + TotalRegCoupon+ '</td>' +
-                                                    '</tr><tr><td style="text-align: center"><b>e-SAFE Cash Deposits</b></td><td style="text-align: right;">' + TotaleSAFECash+ '</td>' +
-                                                    '</tr><tr><td style="text-align: center"><b>e-SAFE Ticket Deposits</b></td><td style="text-align: right;">' + TotaleSAFETickets+ '</td>' +
-                                                    '</tr><tr><td style="text-align: center"><b>e-SAFE Coupon Deposits</b></td><td style="text-align: right;">' + TotaleSAFECoupon+ '</td>' +
+                        updateLightbox( '<div style="margin-bottom: 10px; font-weight: bold;"> Sales </div><table id="salestranssumm" ><tr><td style="padding-left: 30px;"><b>Non e-SAFE Cash</b></td><td style="text-align: right;">'+TotalRegCash+'</td>' +
+                                                    '</tr><tr><td style="padding-left: 30px;"><b>Non e-SAFE Tickets</b></td><td style="text-align: right;">' + TotalRegTicket+ '</td>' +
+                                                    '</tr><tr><td style="padding-left: 30px;"><b>Non e-SAFE Coupons</b></td><td style="text-align: right;">' + TotalRegCoupon+ '</td>' +
+                                                    '</tr><tr><td style="padding-left: 30px;"><b>e-SAFE Cash Deposits</b></td><td style="text-align: right;">' + TotaleSAFECash+ '</td>' +
+                                                    '</tr><tr><td style="padding-left: 30px;"><b>e-SAFE Ticket Deposits</b></td><td style="text-align: right;">' + TotaleSAFETickets+ '</td>' +
+                                                    '</tr><tr><td style="padding-left: 30px;"><b>e-SAFE Coupon Deposits</b></td><td style="text-align: right;">' + TotaleSAFECoupon+ '</td>' +
                                                     '</tr><tr><td style="padding-left:5px;"><b>Total Sales</b></td><td style="text-align: right;">' + TotalSales+ '</td>' +
                                                     '</tr><tr><td colspan="2" style="padding-top: 10px;padding-bottom:10px;"></td>' +
                                                     '</tr><tr><td style="padding-left:5px;"><b>Total Printed Tickets</b></td><td style="text-align: right;">' + TotalPrintedTickets+ '</td>' +
@@ -886,12 +886,12 @@ $(document).ready(function(){
                         CompCashOnHand = ((RegCash + eSAFECash) - (CashierRedemption + parseFloat(json.eWalletWithdrawals)) - SubEncashedTickets);
                         CashOnHand = toMoney(CompCashOnHand,'no');
 
-                        updateLightbox( '<div style="margin-bottom: 10px; font-weight: bold;"> Sales </div><table id="salesctranssumm" ><tr><td style="text-align: center"><b>Non e-SAFE Cash</b></td><td style="text-align: right;">'+TotalRegCash+'</td>' +
-                                                    '</tr><tr><td style="text-align: center"><b>Non e-SAFE Tickets</b></td><td style="text-align: right;">' + TotalRegTicket+ '</td>' +
-                                                    '</tr><tr><td style="text-align: center"><b>Non e-SAFE Coupons</b></td><td style="text-align: right;">' + TotalRegCoupon+ '</td>' +
-                                                    '</tr><tr><td style="text-align: center"><b>e-SAFE Cash Deposits</b></td><td style="text-align: right;">' + TotaleSAFECash+ '</td>' +
-                                                    '</tr><tr><td style="text-align: center"><b>e-SAFE Ticket Deposits</b></td><td style="text-align: right;">' + TotaleSAFETickets+ '</td>' +
-                                                    '</tr><tr><td style="text-align: center"><b>e-SAFE Coupon Deposits</b></td><td style="text-align: right;">' + TotaleSAFECoupon+ '</td>' +
+                        updateLightbox( '<div style="margin-bottom: 10px; font-weight: bold;"> Sales </div><table id="salesctranssumm" ><tr><td style="padding-left: 30px;"><b>Non e-SAFE Cash</b></td><td style="text-align: right;">'+TotalRegCash+'</td>' +
+                                                    '</tr><tr><td style="padding-left: 30px;"><b>Non e-SAFE Tickets</b></td><td style="text-align: right;">' + TotalRegTicket+ '</td>' +
+                                                    '</tr><tr><td style="padding-left: 30px;"><b>Non e-SAFE Coupons</b></td><td style="text-align: right;">' + TotalRegCoupon+ '</td>' +
+                                                    '</tr><tr><td style="padding-left: 30px;"><b>e-SAFE Cash Deposits</b></td><td style="text-align: right;">' + TotaleSAFECash+ '</td>' +
+                                                    '</tr><tr><td style="padding-left: 30px;"><b>e-SAFE Ticket Deposits</b></td><td style="text-align: right;">' + TotaleSAFETickets+ '</td>' +
+                                                    '</tr><tr><td style="padding-left: 30px;"><b>e-SAFE Coupon Deposits</b></td><td style="text-align: right;">' + TotaleSAFECoupon+ '</td>' +
                                                     '</tr><tr><td style="padding-left:5px;"><b>Total Sales</b></td><td style="text-align: right;">' + TotalSales+ '</td>' +
                                                     '</tr><tr><td colspan="2" style="padding-top: 10px;padding-bottom:10px;"></td>' +
                                                     '</tr><tr><td style="padding-left:5px;"><b>Total Encashed Tickets</b></td><td style="text-align: right;">' + TotalEncashedTickets+ '</td>' +
@@ -1276,14 +1276,11 @@ $(document).ready(function(){
                             if(i == 0){
                                 if(json.ticketlist > 1){
                                     TotalPrintedTickets = parseFloat(json.ticketlist[i].PrintedRedemptionTickets) ;
-                                    TotalActiveTicketsForTheDay = parseFloat(json.ticketlist[i].UnusedTickets) ;
                                 } else {
-                                    TotalPrintedTickets = toMoney(json.ticketlist[i].PrintedRedemptionTickets,'no');
-                                    TotalActiveTicketsForTheDay = toMoney(json.ticketlist[i].UnusedTickets,'no');
+                                    TotalPrintedTickets = parseFloat(json.ticketlist[i].PrintedRedemptionTickets) ;
                                 }
                             } else {
                                 TotalPrintedTickets += parseFloat(json.ticketlist[i].PrintedRedemptionTickets) ;
-                                TotalActiveTicketsForTheDay += parseFloat(json.ticketlist[i].UnusedTickets) ;
                             }
                         }
 
@@ -1295,22 +1292,25 @@ $(document).ready(function(){
                         Sales = RegCash + RegTicket + eSAFECash + eSAFETickets;
                         TotalSales = toMoney(Sales,'no');
                         TotalActiveRunningTickets = toMoney(json.runningactivetickets,'no');
+                        TotalActiveTicketsForTheDay = toMoney(json.ActiveTickets,'no');
+                        TotalPrintedTickets += parseFloat(json.eWalletWithdrawals);
+                        TotalPrintedTickets = toMoney(TotalPrintedTickets,'no');
 
                         //Compute Cash On Hand [ Formula: (((Total Cash from Cashier & Genesis + eSAFE Cash Load) - (Total Cashier Redemption + eSAFE Withdraw)) - Total Encashed Tickets) - Total Manual Redemption ]
                         CompCashOnHand = (RegCash + eSAFECash) - (CashierRedemption + parseFloat(json.eWalletWithdrawals)) - parseFloat(json.manualredemptions);
                         CashOnHand = toMoney(CompCashOnHand,'no');
 
-                        updateLightbox( '<div style="margin-bottom: 10px; font-weight: bold;"> Sales </div><table id="salesvctranssumm" ><tr><td style="text-align: center"><b>Non e-SAFE Cash</b></td><td style="text-align: right;">'+TotalRegCash+'</td>' +
-                                                    '</tr><tr><td style="text-align: center"><b>Non e-SAFE Tickets</b></td><td style="text-align: right;">' + TotalRegTicket+ '</td>' +
-                                                    '</tr><tr><td style="text-align: center"><b>e-SAFE Cash Deposits</b></td><td style="text-align: right;">' + TotaleSAFECash+ '</td>' +
-                                                    '</tr><tr><td style="text-align: center"><b>e-SAFE Ticket Deposits</b></td><td style="text-align: right;">' + TotaleSAFETickets+ '</td>' +
+                        updateLightbox( '<div style="margin-bottom: 10px; font-weight: bold;"> Sales </div><table id="salesvctranssumm" ><tr><td style="padding-left: 30px;"><b>Non e-SAFE Cash</b></td><td style="text-align: right;">'+TotalRegCash+'</td>' +
+                                                    '</tr><tr><td style="padding-left: 30px;"><b>Non e-SAFE Tickets</b></td><td style="text-align: right;">' + TotalRegTicket+ '</td>' +
+                                                    '</tr><tr><td style="padding-left: 30px;"><b>e-SAFE Cash Deposits</b></td><td style="text-align: right;">' + TotaleSAFECash+ '</td>' +
+                                                    '</tr><tr><td style="padding-left: 30px;"><b>e-SAFE Ticket Deposits</b></td><td style="text-align: right;">' + TotaleSAFETickets+ '</td>' +
                                                     '</tr><tr><td style="padding-left:5px;"><b>Total Sales</b></td><td style="text-align: right;">' + TotalSales+ '</td>' +
                                                     '</tr><tr><td colspan="2" style="padding-top: 10px;padding-bottom:10px;"></td>' +
                                                     '</tr><tr><td style="padding-left:5px;"><b>Total Printed Tickets</b></td><td style="text-align: right;">' + TotalPrintedTickets+ '</td>' +
                                                     '</tr><tr><td style="padding-left:5px;"><b>Total Active Tickets For The Day</b></td><td style="text-align: right;">' + TotalActiveTicketsForTheDay+ '</td>' +
                                                     '</tr><tr><td style="padding-left:5px;"><b>Total Active Running Tickets</b></td><td style="text-align: right;">' + TotalActiveRunningTickets+ '</td>' +
                                                     '</tr><tr><td colspan="2" style="padding-top: 10px;padding-bottom:10px;"></td>' +
-                                                    '</tr><tr><td style="padding-left:5px;"><b>Cash On Hand</b></td><td style="text-align: right;">' + CashOnHand+ '</td>' +
+//                                                    '</tr><tr><td style="padding-left:5px;"><b>Cash On Hand</b></td><td style="text-align: right;">' + CashOnHand+ '</td>' +
                                                     '</tr></table>' +
                                                     '<br /><center><input type="button" style="width: 60px; height: 25px;"  value="Close" class="btnClose" /></center>',
                                                     ''          
@@ -1433,9 +1433,9 @@ $(document).ready(function(){
                         TotalDeposit = toMoney(TDeposit,'no');
                         TotalWithdrawal = toMoney(TWithdrawal,'no');
 
-                        updateLightbox( '<table id="esafesummtable" ><tr><td>Total Deposits</td><td style="text-align:right;"> ' + TotalDeposit +
-                                                        '</td></tr><tr><td>Total Withdrawals</td><td style="text-align:right;"> ' + TotalWithdrawal + '</td>' +
-                                                        '</tr><tr><td>Cash On Hand</td><td style="text-align:right;"> ' + toMoney(json.cashOnHand,'no') + '</td>' +
+                        updateLightbox( '<table id="esafesummtable" ><tr><td>Total e-SAFE Deposits</td><td style="text-align:right;"> ' + TotalDeposit +
+                                                        '</td></tr><tr><td>Total e-SAFE Withdrawals</td><td style="text-align:right;"> ' + TotalWithdrawal + '</td>' +
+//                                                        '</tr><tr><td>Cash On Hand</td><td style="text-align:right;"> ' + toMoney(json.cashOnHand,'no') + '</td>' +
                                                         '</tr></table>' +
                                                         '<br /><center><input type="button" style="width: 50px; height: 25px;"  value="Close" class="btnClose" /></center>',
                                                         ''          
@@ -1485,9 +1485,9 @@ $(document).ready(function(){
                         TotalDeposit = toMoney(TDeposit,'no');
                         TotalWithdrawal = toMoney(TWithdrawal,'no');
 
-                        updateLightbox( '<table id="esafesummtable" ><tr><td>Total Deposits</td><td style="text-align:right;"> ' + TotalDeposit +
-                                                        '</td></tr><tr><td>Total Withdrawals</td><td style="text-align:right;"> ' + TotalWithdrawal + '</td>' +
-                                                        '</tr><tr><td>Cash On Hand</td><td style="text-align:right;"> ' + toMoney(json.cashOnHand,'no') + '</td>' +
+                        updateLightbox( '<table id="esafesummtable" ><tr><td>Total e-SAFE Deposits</td><td style="text-align:right;"> ' + TotalDeposit +
+                                                        '</td></tr><tr><td>Total e-SAFE Withdrawals</td><td style="text-align:right;"> ' + TotalWithdrawal + '</td>' +
+//                                                        '</tr><tr><td>Cash On Hand</td><td style="text-align:right;"> ' + toMoney(json.cashOnHand,'no') + '</td>' +
                                                         '</tr></table>' +
                                                         '<br /><center><input type="button" style="width: 50px; height: 25px;"  value="Close" class="btnClose" /></center>',
                                                         ''          
@@ -1547,6 +1547,118 @@ $(document).ready(function(){
                         $("#tbltranshistorybody").html(tbody);
                         $("#coverage").html(coverage);
                         
+                    } catch(e) {
+                        alert('Oops! Something went wrong');
+                    }
+                    hideLightbox();
+                },
+                error : function(e) {
+                    displayError(e);
+                }
+            });
+        });
+    });
+    
+    
+    $('#btncashonhandsumm').live('click',function(){
+        var url = $('#ReportsFormModel_reports_type').val();
+        var data = $('#frmtranshist').serialize();
+
+        /*--- TOTAL ---*/
+
+        var totaldcash = 0;
+        var totaldcoupon = 0;
+        var totaldbancnet = 0;
+        var totaldticket = 0;
+        var totalwcash = 0;
+        var totalwticket = 0;
+        var totalwencashedtickets = 0;
+        var grandtotaldeposit = 0;
+        var grandtotalwithdraw = 0;
+        var grandtotalcashonhand = 0;
+        
+        showLightbox(function(){
+            $.ajax({
+                url : url,
+                type : 'post',
+                data : data,
+                success : function(data) {
+                    try {
+                        var tbody = '';
+                        var json = $.parseJSON(data);
+
+                            tbody+='<tr>';
+                            tbody+='<th></th>';
+                            tbody+='<th style=" width: 15%"></th>';
+                            tbody+='<th style=" width: 15%"></th>';
+                            tbody+='<th style=" width: 15%"></th>';
+                            tbody+='<th style=" width: 15%"></th>';
+                            tbody+='<th></th>';
+                            tbody+='</tr>';
+
+                        for(i=0;i<json.transdetails.length;i++) {
+                            var rsubdtotal = 0;
+                            var rsubwtotal = 0;
+                            var rcashonhand = 0;
+
+                            rsubdtotal += (parseFloat(json.transdetails[i].LoadCash) + parseFloat(json.transdetails[i].LoadCoupon) + parseFloat(json.transdetails[i].LoadBancnet) + parseFloat(json.transdetails[i].LoadTicket));
+                            rsubwtotal += (parseFloat(json.transdetails[i].WCash) + parseFloat(json.transdetails[i].WTicket) + (parseFloat(json.transdetails[i].EncashedTickets) - parseFloat(json.transdetails[i].eSAFEGenesisRedemption)));
+                            rcashonhand = rsubdtotal - rsubwtotal;
+
+                            totaldcash = parseFloat(json.transdetails[i].LoadCash);
+                            totaldcoupon = parseFloat(json.transdetails[i].LoadCoupon);
+                            totaldbancnet = parseFloat(json.transdetails[i].LoadBancnet);
+                            totaldticket = parseFloat(json.transdetails[i].LoadTicket);
+                            totalwcash = parseFloat(json.transdetails[i].WCash);
+                            totalwticket = parseFloat(json.transdetails[i].WTicket);
+                            totalwencashedtickets = parseFloat(json.transdetails[i].EncashedTickets) - parseFloat(json.transdetails[i].eSAFEGenesisRedemption);
+                            grandtotalcashonhand = rcashonhand;
+
+                        }
+
+                        /*--- TOTAL ---*/
+                        grandtotaldeposit = (totaldcash + totaldcoupon + totaldbancnet + totaldticket);
+                        grandtotalwithdraw = (totalwcash + totalwticket + totalwencashedtickets);
+
+                        tbody+='<tr><th rowspan="5" align="center"><b>Total</b></th>';
+                        tbody+='<th style="text-align:left; padding-left:20px;">Cash</th>';
+                        tbody+='<td style="text-align:right">'+toMoney(totaldcash,'no')+'</td>';
+                        tbody+='<th style="text-align:left; padding-left:20px;">Cash</th>';
+                        tbody+='<td style="text-align:right">'+toMoney(totalwcash,'no')+'</td>';
+                        tbody+='<td></td>';
+                        tbody+='</tr>';
+                        tbody+='<tr>';
+                        tbody+='<th style="text-align:left; padding-left:20px;">Coupon</th>';
+                        tbody+='<td style="text-align:right">'+toMoney(totaldcoupon,'no')+'</td>';
+                        tbody+='<th style="text-align:left; padding-left:20px;">Ticket</th>';
+                        tbody+='<td style="text-align:right">'+toMoney(totalwticket,'no')+'</td>';
+                        tbody+='<td></td>';
+                        tbody+='</tr>';
+                        tbody+='<tr>';
+                        tbody+='<th style="text-align:left; padding-left:20px;">Bancnet</th>';
+                        tbody+='<td style="text-align:right">'+toMoney(totaldbancnet,'no')+'</td>';
+                        tbody+='<th style="text-align:left; padding-left:20px;">Encashed Tickets</th>';
+                        tbody+='<td style="text-align:right">'+toMoney(totalwencashedtickets,'no')+'</td>';
+                        tbody+='<td></td>';
+                        tbody+='</tr>';
+                        tbody+='<tr>';
+                        tbody+='<th style="text-align:left; padding-left:20px;">Ticket</th>';
+                        tbody+='<td style="text-align:right">'+toMoney(totaldticket,'no')+'</td>';
+                        tbody+='<th style="text-align:left; padding-left:20px;"></th>';
+                        tbody+='<td></td>';
+                        tbody+='<td></td>';
+                        tbody+='</tr>';
+                        
+                        tbody+='<tr>';
+                        tbody+='<th style="text-align:left; padding-left:20px;"><b>Grand Total</b></th>';
+                        tbody+='<td style="text-align:right;"><b>'+toMoney(grandtotaldeposit,'no')+'</b></td>';
+                        tbody+='<th style="text-align:left; padding-left:20px;"><b>Grand Total</b></th>';
+                        tbody+='<td style="text-align:right"><b>'+toMoney(grandtotalwithdraw,'no')+'</b></td>';
+                        tbody+='<td style="text-align:right"><b>'+toMoney(grandtotalcashonhand,'no')+'</b></td>';
+                        tbody+='<tr>';
+
+                        $('#tbltranshistorybody').html('');
+                        $('#tbltranshistorybody').html(tbody);
                     } catch(e) {
                         alert('Oops! Something went wrong');
                     }

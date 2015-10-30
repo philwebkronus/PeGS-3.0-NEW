@@ -69,6 +69,19 @@ class TerminalSessionsModel extends MI_Model {
         return $result['Cnt'];
     }
     
+    public function checkActiveSession($terminalcode) {
+        $terminalcodevip = $terminalcode."VIP";
+        $sql = 'SELECT COUNT(ts.TerminalID) AS Cnt FROM terminalsessions ts 
+                    INNER JOIN terminals t ON ts.TerminalID = t.TerminalID
+                    WHERE t.TerminalCode IN (:terminalcode, :terminalcodevip)';
+        $param = array(':terminalcode'=>$terminalcode,':terminalcodevip'=>$terminalcodevip);
+        $this->exec($sql,$param);
+        $result = $this->find();
+        if(!isset($result['Cnt']))
+            return false;
+        return $result['Cnt'];
+    }
+    
     /**
      * Inserts record in terminalsessions table
      * handles the ff. rules / constraints : 

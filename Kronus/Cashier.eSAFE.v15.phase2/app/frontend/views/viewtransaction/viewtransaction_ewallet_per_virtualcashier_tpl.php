@@ -82,7 +82,6 @@ function displayData(data){
         html+='<td>'+obj.LoyaltyCardNumber+'</td>';
         html+='<td>'+transType+'</td>';
         html+='<td class="right">'+toMoney(obj.Amount)+'</td>';
-        html+='<td class="right">'+obj.Source+'</td>';
         html+='</tr>';
     }
     $('#tbodyviewtrans').html(html);
@@ -114,7 +113,6 @@ displayData(transactionHistory);
             <th style="width: 200px">Card Number</th>
             <th style="width: 200px">Transaction Type</th>
             <th style="width: 200px">Amount</th>
-            <th style="width: 200px">Source</th>
         </tr>
     </thead>
     <tbody id="tbodyviewtrans">

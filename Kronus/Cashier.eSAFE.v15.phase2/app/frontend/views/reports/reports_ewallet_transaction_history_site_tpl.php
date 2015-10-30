@@ -29,13 +29,13 @@ $(document).ready(function(){
 <div class="clear"></div>
 
 <div style="height:550px;
-                    overflow:auto;">
-<table id="tbltranshistory" border="1">
+                    overflow:auto; width: 1070px">
+<table id="tbltranshistory" border="1" style="width: 1050px">
    <thead>
-        <th style=" width: 25%">Card Number</th>
-        <th style=" width: 25%">Date</th>
-        <th style=" width: 25%">Amount</th> 
-        <th style=" width: 25%">Transaction Type</th>
+        <th style="width: 300px">Card Number</th>
+        <th style="width: 250px">Date</th>
+        <th style="width: 250px">Amount</th> 
+        <th style="width: 250px">Transaction Type</th>
    </thead>
    <tbody id="tbltranshistorybody">
        <?php 
