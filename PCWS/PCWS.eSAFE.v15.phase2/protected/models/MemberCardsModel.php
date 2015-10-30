@@ -104,6 +104,17 @@ class MemberCardsModel extends CFormModel
         
         return $result;
     }
+    
+    public function getDateUpdated($cardnumber)
+    {
+        $sql = "SELECT DateUpdated FROM membercards WHERE CardNumber = :cardnumber";
+        $command = $this->connection->createCommand($sql);
+        $command->bindValue(":cardnumber", $cardnumber);
+        $result = $command->queryRow();
+        
+        return $result;
+    }
+    
         /**
      * Mark Kenneth Esguerra
      * @date July 14, 2015

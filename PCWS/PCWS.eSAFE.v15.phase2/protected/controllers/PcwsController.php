@@ -1066,6 +1066,18 @@ class PcwsController extends Controller {
                                     $result = $membercards->updateLifetimePoints($cardnumber, $totalLTpoints);
 
                                     if ($result['TransCode'] == 0) {
+                                        
+                                        $cardid = $membercards->getCardID($cardnumber);
+                                        $getDateUpdated = $membercards->getDateUpdated($cardnumber);
+                                        $processdate = $getDateUpdated['DateUpdated'];
+                                        
+                                        //Insert cardtransactions for Last Played Site and Date (fire and forget)
+                                        $IsSuccess = $membercards->insertcardtrans($serviceID, $siteID, $cardid['CardID'], $mid, 'D', $serviceUsername, $processdate);
+                                        if (!$IsSuccess) {
+                                            $message = "[AddCompPoints] Token: " . $this->_tkn . ", Output: CardNumber: $cardnumber, ServiceID: $serviceID, ProcessDate: $processdate, ErrorMessage: Failed to insert card transactions";
+                                            CLoggerModified::log($message, CLoggerModified::WARNING);
+                                        }
+                                        
                                         $transMsg = 'Success';
                                         $errCode = 0;
                                     } else {
@@ -2468,7 +2480,7 @@ class PcwsController extends Controller {
                                                                 }
                                                         } else {
                                                             $eCode = 17; // Terminal has an existing active session
-                                                            $transMsg = 'Only one active session for Magic Macau casino is allowed for this terminal.';
+                                                            $transMsg = 'Terminal has an existing active session.';
                                                         }
                                                     } else {
                                                         $eCode = 17; // Terminal has an existing active session
@@ -2859,19 +2871,18 @@ class PcwsController extends Controller {
                     }
                 } else {
                     $eCode = 4; //Invalid data
-//                    if (empty($terminalCode)) {
-//                        $transMsg = 'Terminal Code must not be blank';
-//                    }
-//                    if (empty($serviceID)) {
-//                        $transMsg = 'ServiceID must not be blank';
-//                    }
-//                    if (empty($cardNumber)) {
-//                        $transMsg = 'Card Number must not be blank';
-//                    }
-//                    if (empty($systemUsername)) {
-//                        $transMsg = 'System Username must not be blank';
-//                    }
-                    $transMsg = 'All Fields Are Required';
+                    if (empty($terminalCode)) {
+                        $transMsg = 'Terminal Code must not be blank';
+                    }
+                    if (empty($serviceID)) {
+                        $transMsg = 'ServiceID must not be blank';
+                    }
+                    if (empty($cardNumber)) {
+                        $transMsg = 'Card Number must not be blank';
+                    }
+                    if (empty($systemUsername)) {
+                        $transMsg = 'System Username must not be blank';
+                    }
                 }
              $data = CommonController::unlockgenesis($transMsg, $eCode);
             } else {
