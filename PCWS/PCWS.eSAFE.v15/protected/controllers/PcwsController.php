@@ -1286,7 +1286,7 @@ class PcwsController extends Controller {
                             $data = CommonController::checkPin($transMsg, $errCode);
                     }
                 } else {
-                    $transMsg = 'PIN must be numeric and exactly 6 digits.';
+                    $transMsg = 'PIN must be exactly 6 digits.';
                     $errCode = 9;
                     $data = CommonController::checkPin($transMsg, $errCode);
                 }
