@@ -96,6 +96,7 @@
                 return false;
             }
             
+            $('#btnWithdraw2').attr('disabled','disabled'); //added 11-04-2015 2:14 PM
             
             showLightbox(function(){
                 var url = '<?php echo Mirage::app()->createUrl('redeem/redeemForcet') ?>';
@@ -113,6 +114,7 @@
                             var msg = json.message;
                                 if (msg.indexOf('successful') !== -1) { 
                                     alert(json.message);
+                                    $('#btnWithdraw2').removeAttr('disabled'); //added 11-04-2015 2:14 PM
                                     location.reload(true);
                                 }
                                 else{
@@ -121,9 +123,11 @@
                                                                     '<br /><input type="button" style="float: right; width: 50px; height: 25px;"  value="Ok" class="btnClr" />',
                                                                     ''          
                                     );
+                                    $('#btnWithdraw2').removeAttr('disabled');
                                 }
                         }catch(e) {
                             alert('Oops! Something went wrong');
+                            $('#btnWithdraw2').removeAttr('disabled');
                             location.reload(true);
                         }
                         

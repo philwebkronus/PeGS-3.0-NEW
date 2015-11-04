@@ -427,45 +427,50 @@
                 }
             }
             
-                    showLightbox(function(){
-                    var url = '<?php echo Mirage::app()->createUrl('reload/ubaccount') ?>';
-                    $('#ForceTFormModel_loyalty_card').removeAttr('disabled');
-                    var data = $('#frmreloadsa').serialize();
-                    $.ajax({
-                        type : 'post',
-                        url : url,
-                        data :data,
-                        success : function(data) {
-                            try {
-                                var json = $.parseJSON(data);
-                                var msg = json.message;
-                                
-                                if (msg.indexOf('successful') !== -1) { 
-                                    alert(json.message);
-                                    location.reload(true);
-                                }
-                                else{
-                                    var val = $('input[name=loadVia]:checked').val();
-                                    if(val=="Terminal"){
-                                        $('#ForceTFormModel_loyalty_card').attr('disabled','disabled');
-                                    }
-                                    updateLightbox( '<center><label  style="font-size: 24px; color: red; font-weight: bold;">'+ json.message +'</label>' + 
-                                                                    '<br /></center>' + 
-                                                                    '<br /><input type="button" style="float: right; width: 50px; height: 25px;"  value="Ok" class="btnClr" />',
-                                                                    ''          
-                                    );
-                                }
-                                
-                            }catch(e) {
-                                alert('Oops! Something went wrong');
-                                location.reload(true);
-                            }
-                        },
-                        error : function(e) {
-                            displayError(e);
+            $('#btnLoad').attr('disabled','disabled'); //added 11-04-2015 2:14 PM
+            
+            showLightbox(function(){
+            var url = '<?php echo Mirage::app()->createUrl('reload/ubaccount') ?>';
+            $('#ForceTFormModel_loyalty_card').removeAttr('disabled');
+            var data = $('#frmreloadsa').serialize();
+            $.ajax({
+                type : 'post',
+                url : url,
+                data :data,
+                success : function(data) {
+                    try {
+                        var json = $.parseJSON(data);
+                        var msg = json.message;
+
+                        if (msg.indexOf('successful') !== -1) { 
+                            alert(json.message);
+                            $('#btnLoad').removeAttr('disabled'); //added 11-04-2015 2:14 PM
+                            location.reload(true);
                         }
-                    });
-                });
+                        else{
+                            var val = $('input[name=loadVia]:checked').val();
+                            if(val=="Terminal"){
+                                $('#ForceTFormModel_loyalty_card').attr('disabled','disabled');
+                            }
+                            updateLightbox( '<center><label  style="font-size: 24px; color: red; font-weight: bold;">'+ json.message +'</label>' + 
+                                                            '<br /></center>' + 
+                                                            '<br /><input type="button" style="float: right; width: 50px; height: 25px;"  value="Ok" class="btnClr" />',
+                                                            ''          
+                            );
+                            $('#btnLoad').removeAttr('disabled');
+                        }
+
+                    }catch(e) {
+                        alert('Oops! Something went wrong');
+                        $('#btnLoad').removeAttr('disabled');
+                        location.reload(true);
+                    }
+                },
+                error : function(e) {
+                    displayError(e);
+                }
+            });
+        });
             }
             return false;
         });
