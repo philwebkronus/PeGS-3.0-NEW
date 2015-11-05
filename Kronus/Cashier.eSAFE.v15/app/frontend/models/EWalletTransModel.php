@@ -29,7 +29,8 @@ class EWalletTransModel extends MI_Model {
     
     public function getEWalletTransactionPerCashier($startDate, $endDate, $siteID, $aid, $limit=null){
         $cutoff_time = Mirage::app()->param['cut_off'];
-        $sql = "SELECT StartDate, LoyaltyCardNumber, Amount, TransType FROM ewallettrans WHERE StartDate>=:startDate AND EndDate<=:endDate AND Status=1 AND SiteID=:siteID AND CreatedByAID=:aid".(!empty($limit)?" LIMIT $limit":"");
+        $sql = "SELECT StartDate, LoyaltyCardNumber, Amount, TransType FROM ewallettrans WHERE StartDate>=:startDate AND EndDate<=:endDate 
+                    AND Status=1 AND SiteID=:siteID AND CreatedByAID=:aid ORDER BY StartDate DESC".(!empty($limit)?" LIMIT $limit":"");
         
         $param = array(
             ':startDate'=>$startDate.' '.$cutoff_time,
