@@ -551,6 +551,47 @@ class MPapiController extends Controller {
                 $helpers = new Helpers();
                 $cardsModel = new CardsModel();
                 $auditTrailModel = new AuditTrailModel();
+                $result = $memberCardsModel->getMemberStatus($cardNumber);
+                if($result['Status'] != 1 && $result['Status'] != 5 && $result['Status'] != 7 && $result['Status'] != 8) {
+                    switch ($result['Status']) {
+                        case 0:
+                            $transMsg = 'Card is Inactive.';
+                            $errorCode = 6;
+                            break;
+
+                        case 2:
+                            $transMsg = 'Card is Deactivated.';
+                            $errorCode = 11;
+                            break;
+
+                        case 9:
+                            $transMsg = 'Card is Banned.';
+                            $errorCode = 9;
+                            break;
+
+                        default:
+                            $transMsg = 'Card is Invalid';
+                            $errorCode = 10;
+                            break;
+                    }
+
+                    $logMessage = $transMsg;
+                    $transMsg = $transMsg;
+                    Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                    $data = CommonController::retMsgChangePassword($module, $errorCode, $transMsg);
+                    $message = "[" . $module . "] Output: " . CJSON::encode($data);
+                    $appLogger->log($appLogger->logdate, "[response]", $message);
+                    $this->_sendResponse(200, CJSON::encode($data));
+                    $logger->log($logger->logdate, "[CHANGEPASSWORD ERROR]: " . $cardNumber . " || ", $logMessage);
+                    $apiDetails = 'CHANGEPASSWORD-Failed: Invalid input parameter.';
+                    $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
+                    if ($isInserted == 0) {
+                        $logMessage = "Failed to insert to APILogs.";
+                        $logger->log($logger->logdate, "[CHANGEPASSWORD ERROR]: " . $cardNumber . " || ", $logMessage);
+                    }
+
+                    exit;
+                }
                 if (ctype_alnum($cardNumber) == FALSE || ctype_alnum($newPassword) == FALSE) {
                     $transMsg = "Card number and new password must consist of letters and numbers only.";
                     $errorCode = 92;
@@ -2505,7 +2546,8 @@ class MPapiController extends Controller {
                         $this->_sendResponse(200, CJSON::encode($data));
                         $logMessage = 'Must be at least 21 years old to register.';
                         $logger->log($logger->logdate, "[UPDATEPROFILE ERROR]: MID " . $MID . " || ", $logMessage);
-                        $apiDetails = 'UPDATEPROFILE-Failed: Player is under 21. Name = ' . $firstname . ' ' . $lastname . ', Birthdate = ' . $birthdate;
+                        //$apiDetails = 'UPDATEPROFILE-Failed: Player is under 21. Name = ' . $firstname . ' ' . $lastname . ', Birthdate = ' . $birthdate;
+                        $apiDetails = 'UPDATEPROFILE-Failed: Player is under 21. Birthdate = ' . $birthdate;
                         $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
                         if ($isInserted == 0) {
                             $logMessage = "Failed to insert to APILogs.";
@@ -2740,7 +2782,7 @@ class MPapiController extends Controller {
         $logger = new ErrorLogger();
         $apiLogsModel = new APILogsModel();
 
-        if (isset($request['CardNumber']) && isset($request['Config'])) {
+        if (isset($request['CardNumber'])) {
             if ($request['CardNumber'] == '') {
                 $transMsg = "One or more fields is not set or is blank. [CardNumber] ";
                 $errorCode = 1;
@@ -2760,7 +2802,7 @@ class MPapiController extends Controller {
                 exit;
             } else {
                 $cardNumber = trim($request['CardNumber']);
-                $config = trim($request['Config']);
+                $config = Yii::app()->params['Config'];
 
                 $refID = $cardNumber;
                 //start of declaration of models to be used
@@ -3320,8 +3362,7 @@ class MPapiController extends Controller {
         }
         $process = new Processing();
         if (isset($request['CardNumber']) && isset($request['RewardItemID']) && isset($request['Quantity'])
-                && isset($request['RewardID']) && isset($request['Source']) && isset($request['MPSessionID'])
-                && isset($request['Config'])) {
+                && isset($request['RewardID']) && isset($request['Source']) && isset($request['MPSessionID'])) {
             if (($request['CardNumber'] == '') || ($request['RewardItemID'] == '') || ($request['RewardID'] == '') || ($request['Quantity'] == '')
                     || ($request['Source'] == '') || ($request['MPSessionID'] == '')) {
                 if (($request['MPSessionID'] == '')) {
@@ -3387,7 +3428,7 @@ class MPapiController extends Controller {
                 $quantity = trim($request['Quantity']);
                 $source = trim($request['Source']);
                 $mpSessionID = trim($request['MPSessionID']);
-                $config = trim($request['Config']);
+                $config = Yii::app()->params['Config'];
 
                 $memberSessionsModel = new MemberSessionsModel();
                 $memberCardsModel = new MemberCardsModel();
@@ -4423,7 +4464,7 @@ $itemRedemptionArray = array('ItemImage' => $itemImage, 'ItemName' => $itemName,
             }
         }
 
-        if (isset($request['CardNumber']) && isset($request['MPSessionID']) && isset($request['Config'])) {
+        if (isset($request['CardNumber']) && isset($request['MPSessionID'])) {
             if ($request['CardNumber'] == '' || $request['MPSessionID'] == '') {
                 if($request['MPSessionID'] == '') {
                     $transMsg = $transMsg . "[MPSessionID] ";
@@ -4471,7 +4512,7 @@ $itemRedemptionArray = array('ItemImage' => $itemImage, 'ItemName' => $itemName,
             else {
                 $cardNumber = trim($request['CardNumber']);
                 $mpSessionID = trim($request['MPSessionID']);
-                $config = trim($request['Config']);
+                $config = Yii::app()->params['Config'];
 
                 //start of declaration of models to be used
                 $memberCardsModel = new MemberCardsModel();

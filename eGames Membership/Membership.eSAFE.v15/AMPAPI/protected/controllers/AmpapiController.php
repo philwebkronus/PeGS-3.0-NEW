@@ -139,8 +139,11 @@ class AmpapiController extends Controller {
         $module = 'AuthenticateSession';
         $rand = $this->random_string();
         $appLogger = new AppLogger();
+        
+        $request2['Username'] = trim($request['Username']);
+        $request2['Password'] = sha1(trim($request['Password']));
 
-        $paramval = CJSON::encode($request);
+        $paramval = CJSON::encode($request2);
         $message = "[" . $module . "] " . $rand . " Input: " . $paramval;
         $appLogger->log($appLogger->logdate, "[request]", $message);
 
@@ -397,7 +400,12 @@ class AmpapiController extends Controller {
         $rand = $this->random_string();
         $appLogger = new AppLogger();
 
-        $paramval = CJSON::encode($request);
+        $request2['TPSessionID'] = $request['TPSessionID'];
+        $request2['Username'] = trim($request['Username']);
+        $request2['Password'] = sha1(trim($request['Password']));
+        $request2['AlterStr'] = trim($request['AlterStr']);
+        
+        $paramval = CJSON::encode($request2);
         $message = "[" . $module . "] " . $rand . " Input: " . $paramval;
         $appLogger->log($appLogger->logdate, "[request]", $message);
         $validateRequiredField = $this->validateRequiredFields($request, $module, array('TPSessionID' => false, 'Username' => false, 'Password' => false, 'AlterStr' => false), $rand);
@@ -523,7 +531,30 @@ class AmpapiController extends Controller {
         $rand = $this->random_string();
         $appLogger = new AppLogger();
 
-        $paramval = CJSON::encode($request);
+        $request2['TPSessionID'] = trim($request['TPSessionID']);
+        $request2['FirstName'] = trim($request['FirstName']);
+        $request2['MiddleName'] = trim($request['MiddleName']);
+        $request2['LastName'] = trim($request['LastName']);
+        $request2['NickName'] = trim($request['NickName']);
+        $request2['Password'] = sha1(trim($request['Password']));
+        $request2['PermanentAdd'] = trim($request['PermanentAdd']);
+        $request2['MobileNo'] = trim($request['MobileNo']);
+        $request2['AlternateMobileNo'] = trim($request['AlternateMobileNo']);
+        $request2['EmailAddress'] = trim($request['EmailAddress']);
+        $request2['AlternateEmail'] = trim($request['AlternateEmail']);
+        $request2['Gender'] = trim($request['Gender']);
+        $request2['IDPresented'] = trim($request['IDPresented']);
+        $request2['IDNumber'] = trim($request['IDNumber']);
+        $request2['Nationality'] = trim($request['Nationality']);
+        $request2['Birthdate'] = trim($request['Birthdate']);
+        $request2['Occupation'] = trim($request['Occupation']);
+        $request2['IsSmoker'] = trim($request['IsSmoker']);
+        $request2['ReferralCode'] = trim($request['ReferralCode']);
+        $request2['ReferrerID'] = trim($request['ReferrerID']);
+        $request2['EmailSubscription'] = trim($request['EmailSubscription']);
+        $request2['SMSSubscription'] = trim($request['SMSSubscription']);
+        
+        $paramval = CJSON::encode($request2);
         $message = "[" . $module . "] " . $rand . " Input: " . $paramval;
         $appLogger->log($appLogger->logdate, "[request]", $message);
 
@@ -618,7 +649,25 @@ class AmpapiController extends Controller {
         $rand = $this->random_string();
         $appLogger = new AppLogger();
 
-        $paramval = CJSON::encode($request);
+        $request2['TPSessionID'] = trim($request['TPSessionID']);
+        $request2['MPSessionID'] = $request['MPSessionID'];
+        $request2['Password'] = sha1(trim($request['Password']));
+        $request2['PermanentAdd'] = trim($request['PermanentAdd']);
+        $request2['MobileNo'] = trim($request['MobileNo']);
+        $request2['AlternateMobileNo'] = trim($request['AlternateMobileNo']);
+        $request2['EmailAddress'] = trim($request['EmailAddress']);
+        $request2['AlternateEmail'] = trim($request['AlternateEmail']);
+        $request2['Gender'] = trim($request['Gender']);
+        $request2['IDPresented'] = trim($request['IDPresented']);
+        $request2['IDNumber'] = trim($request['IDNumber']);
+        $request2['Nationality'] = trim($request['Nationality']);
+        $request2['Birthdate'] = trim($request['Birthdate']);
+        $request2['Occupation'] = trim($request['Occupation']);
+        $request2['IsSmoker'] = trim($request['IsSmoker']);
+        $request2['Region'] = trim($request['Region']);
+        $request2['City'] = trim($request['City']);
+        
+        $paramval = CJSON::encode($request2);
         $message = "[" . $module . "] " . $rand . " Input: " . $paramval;
         $appLogger->log($appLogger->logdate, "[request]", $message);
         $fields = array('TPSessionID'=>false,'MPSessionID'=>false, 'MobileNo'=>false,'EmailAddress'=>false,'Birthdate'=>false);//'FirstName'=>false,'LastName'=>false,
@@ -787,16 +836,16 @@ class AmpapiController extends Controller {
         $message = "[" . $module . "] " . $rand . " Input: " . $paramval;
         $appLogger->log($appLogger->logdate, "[request]", $message);
 
-        $validateRequiredField = $this->validateRequiredFields($request, $module, array('TPSessionID' => false, 'CardNumber' => false, 'Config' => false), $rand);
+        $validateRequiredField = $this->validateRequiredFields($request, $module, array('TPSessionID' => false, 'CardNumber' => false), $rand);
         if ($validateRequiredField === true) {
             $TPSessionID = $request['TPSessionID'];
             $validateTPSessionID = $this->_validateTPSession($TPSessionID, 'GetActiveSession', $module, $rand);
             if ($validateTPSessionID === true) {
                 $CardNumber = trim($request['CardNumber']);
-                $config = trim($request['Config']);
+                //$config = trim($request['Config']);
                 $moduleName = 'checkpoints';
                 $url = $this->genMPAPIURL($moduleName);
-                $postData = CJSON::encode(array('CardNumber'=>$CardNumber, 'Config'=>$config));
+                $postData = CJSON::encode(array('CardNumber'=>$CardNumber));
                 $result = $this->SubmitData($url, $postData);
                 $AID = $this->currentAID;
 
@@ -871,7 +920,7 @@ class AmpapiController extends Controller {
         $message = "[" . $module . "] " . $rand . " Input: " . $paramval;
         $appLogger->log($appLogger->logdate, "[request]", $message);
 
-        $validateRequiredField = $this->validateRequiredFields($request, $module, array('TPSessionID' => false, 'MPSessionID' => false, 'CardNumber' => false, 'RewardID' => false, 'RewardItemID' => false, 'Quantity' => false, 'Source' => false, 'Tracking1' => false, 'Tracking2' => false, 'Config' => false), $rand);
+        $validateRequiredField = $this->validateRequiredFields($request, $module, array('TPSessionID' => false, 'MPSessionID' => false, 'CardNumber' => false, 'RewardID' => false, 'RewardItemID' => false, 'Quantity' => false, 'Source' => false, 'Tracking1' => false, 'Tracking2' => false), $rand);
         if ($validateRequiredField === true) {
             $TPSessionID = trim($request['TPSessionID']);
             $validateTPSessionID = $this->_validateTPSession($TPSessionID, 'GetActiveSession', $module, $rand);
@@ -885,11 +934,11 @@ class AmpapiController extends Controller {
                 $Source=trim($request['Source']);
                 $Tracking1 = trim($request['Tracking1']);
                 $Tracking2 = trim($request['Tracking2']);
-                $config = trim($request['Config']);
+                //$config = trim($request['Config']);
 
                 $moduleName =  strtolower($module);
                 $url = $this->genMPAPIURL($moduleName);
-                $postData = CJSON::encode(array('MPSessionID'=>$MPSessionID,'CardNumber'=>$CardNumber, 'RewardID'=>$RewardID, 'RewardItemID'=>$RewardItemID, 'Quantity'=>$Quantity,'Source'=>$Source, 'Tracking1' => $Tracking1, 'Tracking2' => $Tracking2, 'Config' => $config));
+                $postData = CJSON::encode(array('MPSessionID'=>$MPSessionID,'CardNumber'=>$CardNumber, 'RewardID'=>$RewardID, 'RewardItemID'=>$RewardItemID, 'Quantity'=>$Quantity,'Source'=>$Source, 'Tracking1' => $Tracking1, 'Tracking2' => $Tracking2));
                 $result = $this->SubmitData($url, $postData);
                 $AID = $this->currentAID;
 
@@ -924,7 +973,7 @@ class AmpapiController extends Controller {
         $message = "[" . $module . "] " . $rand . " Input: " . $paramval;
         $appLogger->log($appLogger->logdate, "[request]", $message);
 
-        $validateRequiredField = $this->validateRequiredFields($request, $module, array('TPSessionID' => false, 'MPSessionID' => false, 'CardNumber' => false, 'Config' => false), $rand);
+        $validateRequiredField = $this->validateRequiredFields($request, $module, array('TPSessionID' => false, 'MPSessionID' => false, 'CardNumber' => false), $rand);
         if ($validateRequiredField === true) {
             $TPSessionID = trim($request['TPSessionID']);
             $validateTPSessionID = $this->_validateTPSession($TPSessionID, 'GetActiveSession', $module, $rand);
@@ -932,9 +981,9 @@ class AmpapiController extends Controller {
                 $moduleName = 'getprofile';
                 $MPSessionID = trim($request['MPSessionID']);
                 $CardNumber = trim($request['CardNumber']);
-                $config = trim($request['Config']);
+                //$config = trim($request['Config']);
                 $url = $this->genMPAPIURL($moduleName);
-                $postData = CJSON::encode(array('MPSessionID'=>$MPSessionID, 'CardNumber'=>$CardNumber, 'Config'=>$config));
+                $postData = CJSON::encode(array('MPSessionID'=>$MPSessionID, 'CardNumber'=>$CardNumber));
                 $result = $this->SubmitData($url, $postData);
                 $AID = $this->currentAID;
 
@@ -1206,8 +1255,13 @@ class AmpapiController extends Controller {
         $module = 'CreateMobileInfo';
         $rand = $this->random_string();
         $appLogger = new AppLogger();
-
-        $paramval = CJSON::encode($request);
+        
+        $request2['TPSessionID'] = $request['TPSessionID'];
+        $request2['Username'] = trim($request['Username']);
+        $request2['Password'] = sha1(trim($request['Password']));
+        $request2['AlterStr'] = trim($request['AlterStr']);
+        
+        $paramval = CJSON::encode($request2);
         $message = "[" . $module . "] " . $rand . " Input: " . $paramval;
         $appLogger->log($appLogger->logdate, "[request]", $message);
 
@@ -1589,10 +1643,10 @@ class AmpapiController extends Controller {
         }
         if($fieldValue != "") {
             $ErrorCode = 75;
-            if ($module != 'GetActiveSession') {
+//            if ($module != 'GetActiveSession') {
                 $this->_displayReturnMessage($ErrorCode, $module, 'One or more fields is not set or is blank. ' . $fieldValue , $randchars);
                 $ErrorCode = 1;
-            }
+//            }
             $ApiMethodID = $this->ApiMethodID;
             $this->_apiLogs($ApiMethodID[$module],'' , $ErrorCode, '', 2, $module, $key);
             return false;

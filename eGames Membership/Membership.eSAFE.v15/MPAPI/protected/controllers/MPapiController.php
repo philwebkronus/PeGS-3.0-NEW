@@ -716,6 +716,48 @@ class MPapiController extends Controller {
                 $cardsModel = new CardsModel();
                 $auditTrailModel = new AuditTrailModel();
 
+                $result = $memberCardsModel->getMemberStatus($cardNumber);
+                if($result['Status'] != 1 && $result['Status'] != 5 && $result['Status'] != 7 && $result['Status'] != 8) {
+                    switch ($result['Status']) {
+                        case 0:
+                            $transMsg = 'Card is Inactive.';
+                            $errorCode = 6;
+                            break;
+
+                        case 2:
+                            $transMsg = 'Card is Deactivated.';
+                            $errorCode = 11;
+                            break;
+
+                        case 9:
+                            $transMsg = 'Card is Banned.';
+                            $errorCode = 9;
+                            break;
+
+                        default:
+                            $transMsg = 'Card is Invalid';
+                            $errorCode = 10;
+                            break;
+                    }
+
+                    $logMessage = $transMsg;
+                    $transMsg = $transMsg;
+                    Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                    $data = CommonController::retMsgChangePassword($module, $errorCode, $transMsg);
+                    $message = "[" . $module . "] Output: " . CJSON::encode($data);
+                    $appLogger->log($appLogger->logdate, "[response]", $message);
+                    $this->_sendResponse(200, CJSON::encode($data));
+                    $logger->log($logger->logdate, "[CHANGEPASSWORD ERROR]: " . $cardNumber . " || ", $logMessage);
+                    $apiDetails = 'CHANGEPASSWORD-Failed: Invalid input parameter.';
+                    $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
+                    if ($isInserted == 0) {
+                        $logMessage = "Failed to insert to APILogs.";
+                        $logger->log($logger->logdate, "[CHANGEPASSWORD ERROR]: " . $cardNumber . " || ", $logMessage);
+                    }
+
+                    exit;
+                }
+
                 if (ctype_alnum($cardNumber) == FALSE || ctype_alnum($newPassword) == FALSE) {
                     $transMsg = "Card number and new password must consist of letters and numbers only.";
                     $errorCode = 92;
@@ -2793,7 +2835,8 @@ class MPapiController extends Controller {
                         $this->_sendResponse(200, CJSON::encode($data));
                         $logMessage = 'Must be at least 21 years old to register.';
                         $logger->log($logger->logdate, "[UPDATEPROFILE ERROR]: MID " . $MID . " || ", $logMessage);
-                        $apiDetails = 'UPDATEPROFILE-Failed: Player is under 21. Name = ' . $firstname . ' ' . $lastname . ', Birthdate = ' . $birthdate;
+                        //$apiDetails = 'UPDATEPROFILE-Failed: Player is under 21. Name = ' . $firstname . ' ' . $lastname . ', Birthdate = ' . $birthdate;
+                        $apiDetails = 'UPDATEPROFILE-Failed: Player is under 21. Birthdate = ' . $birthdate;
                         $isInserted = $apiLogsModel->insertAPIlogs($apiMethod, '', $apiDetails, '', 2);
                         if ($isInserted == 0) {
                             $logMessage = "Failed to insert to APILogs.";
@@ -3049,7 +3092,7 @@ class MPapiController extends Controller {
         $logger = new ErrorLogger();
         $apiLogsModel = new APILogsModel();
 
-        if (isset($request['CardNumber']) && isset($request['Config'])) {
+        if (isset($request['CardNumber'])) {
             if ($request['CardNumber'] == '') {
                 $transMsg = "One or more fields is not set or is blank. [CardNumber] ";
                 $errorCode = 1;
@@ -3071,7 +3114,7 @@ class MPapiController extends Controller {
             }
             else {
                 $cardNumber = trim($request['CardNumber']);
-                $config = trim($request['Config']);
+                $config = Yii::app()->params['Config'];
 
                 $refID = $cardNumber;
                 //start of declaration of models to be used
@@ -3679,7 +3722,7 @@ class MPapiController extends Controller {
 
         if (isset($request['CardNumber']) && isset($request['RewardItemID']) && isset($request['Quantity'])
                 && isset($request['RewardID']) && isset($request['Source']) && isset($request['MPSessionID'])
-                && isset($request['Tracking1']) && isset($request['Tracking2']) && isset($request['Config'])) {
+                && isset($request['Tracking1']) && isset($request['Tracking2'])) {
             if (($request['CardNumber'] == '') || ($request['RewardItemID'] == '') || ($request['RewardID'] == '')
                     || ($request['Quantity'] == '') || ($request['Source'] == '') || ($request['MPSessionID'] == '')
                     || ($request['Tracking1'] == '') || ($request['Tracking2'] == '')) {
@@ -3755,7 +3798,7 @@ class MPapiController extends Controller {
                 $mpSessionID = trim($request['MPSessionID']);
                 $tracking1 = trim($request['Tracking1']);
                 $tracking2 = stripslashes(trim($request['Tracking2']));
-                $config = trim($request['Config']);
+                $config = Yii::app()->params['Config'];
 
                 $memberSessionsModel = new MemberSessionsModel();
                 $memberCardsModel = new MemberCardsModel();
@@ -4927,7 +4970,7 @@ $itemRedemptionArray = array('ItemImage' => $itemImage, 'ItemName' => $itemName,
             }
         }
 
-        if (isset($request['CardNumber']) && isset($request['MPSessionID']) && isset($request['Config'])) {
+        if (isset($request['CardNumber']) && isset($request['MPSessionID'])) {
             if ($request['CardNumber'] == '' || $request['MPSessionID'] == '') {
                 if($request['MPSessionID'] == '') {
                     $transMsg = $transMsg . "[MPSessionID] ";
@@ -4976,7 +5019,7 @@ $itemRedemptionArray = array('ItemImage' => $itemImage, 'ItemName' => $itemName,
             else {
                 $cardNumber = trim($request['CardNumber']);
                 $mpSessionID = trim($request['MPSessionID']);
-                $config = trim($request['Config']);
+                $config = Yii::app()->params['Config'];
 
                 //start of declaration of models to be used
                 $memberCardsModel = new MemberCardsModel();
@@ -5506,7 +5549,9 @@ $itemRedemptionArray = array('ItemImage' => $itemImage, 'ItemName' => $itemName,
         $endDate = '';
         $drawDate = '';
         $promoThumbnail = '';
+        $promoThumbnailPath = Yii::app()->params['promothumbnailpath'];
         $promoPoster = '';
+        $promoPosterPath = Yii::app()->params['promoposterpath'];
         $status = '';
         $siteID = '';
         $siteName = '';
@@ -5680,15 +5725,15 @@ $itemRedemptionArray = array('ItemImage' => $itemImage, 'ItemName' => $itemName,
                         $startDate[$itr] = new DateTime($promoOffers[$itr]['fldStartDate']);
                         $endDate[$itr] = new DateTime($promoOffers[$itr]['fldEndDate']);
                         $drawDate[$itr] = new DateTime($promoOffers[$itr]['fldDrawDate']);
-                        $promoThumbnail[$itr] = $promoOffers[$itr]['fldPromoThumbnail'];
-                        $promoPoster[$itr] = $promoOffers[$itr]['fldPromoPoster'];
+                        $promoThumbnail[$itr] = $promoThumbnailPath . $promoOffers[$itr]['fldPromoThumbnail'];
+                        $promoPoster[$itr] = $promoPosterPath . $promoOffers[$itr]['fldPromoPoster'];
                         $status[$itr] = $promoOffers[$itr]['fldStatus'];
                         if($promoOffers[$itr]['fldSiteID'] != null)
                             $siteID[$itr] = $promoOffers[$itr]['SiteName'];
                         else
                             $siteID[$itr] = '';
 
-                        $promosList[$itr] = array('SiteName' => $siteID[$itr], 'PromoName' => $promoName[$itr], 'PromoDetails' => $promoDetails[$itr], 'StartDate' => $startDate[$itr]->format('m/d/Y'), 'EndDate' => $endDate[$itr]->format('m/d/Y'), 'DrawDate' => $drawDate[$itr]->format('m/d/Y'), 'Status' => $status[$itr], 'PromoThumbnail' => $promoThumbnail[$itr], 'PromoPoster' => $promoPoster[$itr]);
+                        $promosList[$itr] = array('SiteName' => $siteID[$itr], 'PromoName' => $promoName[$itr], 'PromoDetails' => $promoDetails[$itr], 'StartDate' => $startDate[$itr]->format('Y-m-d'), 'EndDate' => $endDate[$itr]->format('Y-m-d'), 'DrawDate' => $drawDate[$itr]->format('Y-m-d'), 'Status' => $status[$itr], 'PromoThumbnail' => $promoThumbnail[$itr], 'PromoPoster' => $promoPoster[$itr]);
                         //$promos[$itr] = array('PromoName' => $promoName, 'PromoDetails' => $promoDetails, 'StartDate' => $startDate, 'EndDate' => $endDate, 'PromoThumbnail' => $promoThumbnail);
                         //$promosList[$itr] = array_merge($promosList[$itr], $promos[$itr]);
                         $promos[$itr] = $promosList[$itr];
@@ -5782,6 +5827,7 @@ $itemRedemptionArray = array('ItemImage' => $itemImage, 'ItemName' => $itemName,
         $operatingHours = '';
         $latitude = 0.000000;
         $longitude = 0.000000;
+        $categoryID = '';
         $siteName = '';
         $module = 'ListLocations';
         $mobileApiMethod = 2;
@@ -5801,7 +5847,7 @@ $itemRedemptionArray = array('ItemImage' => $itemImage, 'ItemName' => $itemName,
         $result = $memberSessionsModel->getMID($request['MPSessionID']);
         $MID = $result['MID'];
 
-        $locationsList = array('SiteName' => '','Address' => $address, 'TelephoneNumber' => $telephoneNumber, 'OperatingHours' => $operatingHours, 'Latitude' => $latitude, 'Longitude' => $longitude);
+        $locationsList = array('SiteName' => '','Address' => $address, 'TelephoneNumber' => $telephoneNumber, 'OperatingHours' => $operatingHours, 'Latitude' => $latitude, 'Longitude' => $longitude, 'CategoryID' => $categoryID);
         $isValid = $this->_validateMPSession($request['MPSessionID']);
         if (isset($isValid) && !$isValid) {
             $transMsg = "MPSessionID does not exist.";
@@ -5961,7 +6007,8 @@ $itemRedemptionArray = array('ItemImage' => $itemImage, 'ItemName' => $itemName,
                         $operatingHours = $singlePGSL['fldOperatingHours'];
                         $latitude = $singlePGSL['fldLatitude'];
                         $longitude = $singlePGSL['fldLongitude'];
-                        $pegsSiteLocationsList[] = array('SiteName' => $siteName, 'Address' => $completeAddress, 'TelephoneNumber' => $contactNumber, 'OperatingHours' => $operatingHours, 'Latitude' => $latitude, 'Longitude' => $longitude);
+                        $categoryID = $singlePGSL['fldCategoryID'];
+                        $pegsSiteLocationsList[] = array('SiteName' => 'e-Games ' . $siteName, 'Address' => $completeAddress, 'TelephoneNumber' => $contactNumber, 'OperatingHours' => $operatingHours, 'Latitude' => $latitude, 'Longitude' => $longitude, 'CategoryID' => $categoryID);
 //                        foreach($nonPegsSiteLocationsList as $singleNonPegsSiteLocationsList)
 //                        {
 //                            $nonPegsSiteLocations2[] = $singleNonPegsSiteLocationsList;
@@ -6008,7 +6055,8 @@ $itemRedemptionArray = array('ItemImage' => $itemImage, 'ItemName' => $itemName,
                         $operatingHours = $singleNPGSL['fldOperatingHours'];
                         $latitude = $singleNPGSL['fldLatitude'];
                         $longitude = $singleNPGSL['fldLongitude'];
-                        $nonPegsSiteLocationsList[] = array('SiteName' => $siteName, 'Address' => $completeAddress, 'TelephoneNumber' => $contactNumber, 'OperatingHours' => $operatingHours, 'Latitude' => $latitude, 'Longitude' => $longitude);
+                        $categoryID = $singleNPGSL['fldCategoryID'];
+                        $nonPegsSiteLocationsList[] = array('SiteName' => $siteName, 'Address' => $completeAddress, 'TelephoneNumber' => $contactNumber, 'OperatingHours' => $operatingHours, 'Latitude' => $latitude, 'Longitude' => $longitude, 'CategoryID' => $categoryID);
 //                        foreach($nonPegsSiteLocationsList as $singleNonPegsSiteLocationsList)
 //                        {
 //                            $nonPegsSiteLocations2[] = $singleNonPegsSiteLocationsList;
