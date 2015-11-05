@@ -752,6 +752,12 @@ class PcwsController extends Controller {
                                     $transMsg = 'e-SAFE withdraw successful';
 
                                     $memberservices->UpdateBalances($playablebalance, "withdraw-$tracking1", $mid, $serviceid);
+                                    
+                                    $Isupdated = $members->resetPinLoginAttempts($mid);
+                                    if (!$Isupdated) {
+                                        $message = "[Withdraw] Token: " . $this->_tkn . ", Output: CardNumber: $cardnumber, EwalletTransID: $tracking1, ErrorMessage: Failed to reset pin attempts.";
+                                        CLoggerModified::log($message, CLoggerModified::WARNING);
+                                    }
 
                                     $data = CommonController::withdraw($transMsg, $errCode);
                                 } else {
@@ -1824,6 +1830,12 @@ class PcwsController extends Controller {
                                                                                         $message = "[Unlock] Token: " . $this->_tkn . ", Output: CardNumber: $cardNumber, TransSumID: $transactionResult, ErrorMessage: Failed to insert card transactions";
                                                                                         CLoggerModified::log($message, CLoggerModified::WARNING);
                                                                                     }
+                                                                                    
+                                                                                    $Isupdated = $membersModel->resetPinLoginAttempts($mid);
+                                                                                    if (!$Isupdated) {
+                                                                                        $message = "[Unlock] Token: " . $this->_tkn . ", Output: CardNumber: $cardNumber, EwalletTransID: $transactionResult, ErrorMessage: Failed to reset pin attempts.";
+                                                                                        CLoggerModified::log($message, CLoggerModified::WARNING);
+                                                                                    }
 
                                                                                     $eCode = 0;
                                                                                     $transMsg = 'Transaction successful, Terminal is now unlocked.';
@@ -2569,7 +2581,7 @@ class PcwsController extends Controller {
         $transMessage = null;
 
         $paramval = CJSON::encode($data);
-        $message = "[Unlock] Input: " . $paramval;
+        $message = "[UnlockGenesis] Input: " . $paramval;
         CLoggerModified::log($message, CLoggerModified::REQUEST);
 
         $systemUsername = trim($data['SystemUsername']);
@@ -2651,6 +2663,13 @@ class PcwsController extends Controller {
                                                                             $transactionResult = $eWalletModel->insertWithTerminalSession($mid, $terminalID, $serviceID, $cardNumber, $userMode, $serviceUsername, $servicePassword, $hashedServicePassword, $transactionReferenceID, $amount, $transactionType, $siteID, $trackingID, $voucherCode, $paymentType, $serviceTransactionID, $deposit, $AID, $balance);
 
                                                                             if ($transactionResult) {
+                                                                                
+                                                                                $Isupdated = $membersModel->resetPinLoginAttempts($mid);
+                                                                                if (!$Isupdated) {
+                                                                                    $message = "[UnlockGenesis] Token: " . $this->_tkn . ", Output: CardNumber: $cardNumber, EwalletTransID: $transactionResult, ErrorMessage: Failed to reset pin attempts.";
+                                                                                    CLoggerModified::log($message, CLoggerModified::WARNING);
+                                                                                }
+                                                                                
                                                                                 $eCode = 0;
                                                                                 $transMsg = 'Transaction successful, Terminal is now unlocked.';
                                                                             } else {
@@ -2764,7 +2783,7 @@ class PcwsController extends Controller {
             $data = CommonController::authenticate($transMsg, $errCode);
         }
 
-        $message = "[Unlock] Token: " . $this->_tkn . ", Output: " . $data;
+        $message = "[UnlockGenesis] Token: " . $this->_tkn . ", Output: " . $data;
         CLoggerModified::log($message, CLoggerModified::RESPONSE);
 
         $this->_sendResponse(200, $data);
