@@ -285,8 +285,7 @@ class MemberCards extends BaseEntity {
 
 //            if (!App::HasError()) {
                 $query2 = "UPDATE membercards SET DateUpdated = '$dateupdated',
-                    Status = '$status2', UpdatedByAID = '$aid', 
-                    CurrentPoints = $currentpoints, LifetimePoints = $lifetimepoints  
+                    Status = '$status2', UpdatedByAID = '$aid'
                     WHERE CardNumber = '$oldubcardnumber'";
 
                 $this->ExecuteQuery($query2);
@@ -294,7 +293,7 @@ class MemberCards extends BaseEntity {
                 if (!App::HasError()) {
                     $query3 = "INSERT INTO membercards SET MID = '$mid', CardID = '$cardid', CardNumber = '$newcardnumber',
                                                            SiteID = '$siteid', LifetimePoints = '$lifetimepoints',
-                                                           CurrentPoints = 0, RedeemedPoints = '$redeemedpoints',
+                                                           CurrentPoints = '$currentpoints', RedeemedPoints = '$redeemedpoints',
                                                            DateCreated = '$dateupdated' , Status = '$status1'";
 
                     $this->ExecuteQuery($query3);
