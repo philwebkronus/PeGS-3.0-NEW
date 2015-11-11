@@ -262,9 +262,10 @@ class TerminalSessionsModel extends CFormModel {
         $command->bindValues(array(':terminal_id' => $terminalID));
         $result = $command->queryRow();
 
-        foreach ($result as $row) {
-            $TerminalName = $row['TerminalName'];
-        }
+//        foreach ($result as $row) {
+            $TerminalName = $result['TerminalName'];
+//        }
+         
         return $TerminalName;
     }
 

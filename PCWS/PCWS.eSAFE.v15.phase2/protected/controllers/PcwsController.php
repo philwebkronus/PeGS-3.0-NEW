@@ -785,6 +785,12 @@ class PcwsController extends Controller {
                                     $transMsg = 'e-SAFE withdraw successful';
 
                                     $memberservices->UpdateBalances($playablebalance, "withdraw-$tracking1", $mid, $serviceid);
+                                    
+                                    $Isupdated = $members->resetPinLoginAttempts($mid);
+                                    if (!$Isupdated) {
+                                        $message = "[Withdraw] Token: " . $this->_tkn . ", Output: CardNumber: $cardnumber, EwalletTransID: $tracking1, ErrorMessage: Failed to reset pin attempts.";
+                                        CLoggerModified::log($message, CLoggerModified::WARNING);
+                                    }
 
                                     $data = CommonController::withdraw($transMsg, $errCode);
                                 } else {
@@ -1394,7 +1400,7 @@ class PcwsController extends Controller {
                             $data = CommonController::checkPin($transMsg, $errCode);
                     }
                 } else {
-                    $transMsg = 'PIN must be numeric and exactly 6 digits.';
+                    $transMsg = 'PIN must be exactly 6 digits.';
                     $errCode = 9;
                     $data = CommonController::checkPin($transMsg, $errCode);
                 }
@@ -1935,7 +1941,7 @@ class PcwsController extends Controller {
                                                                                     
                                                                                     $Isupdated = $membersModel->resetPinLoginAttempts($mid);
                                                                                     if (!$Isupdated) {
-                                                                                        $message = "[Unlock] Token: " . $this->_tkn . ", Output: CardNumber: $cardNumber, TransSumID: $transactionResult, ErrorMessage: Failed to reset pin attempts.";
+                                                                                        $message = "[Unlock] Token: " . $this->_tkn . ", Output: CardNumber: $cardNumber, EwalletTransID: $transactionResult, ErrorMessage: Failed to reset pin attempts.";
                                                                                         CLoggerModified::log($message, CLoggerModified::WARNING);
                                                                                     }
 
@@ -2803,7 +2809,7 @@ class PcwsController extends Controller {
                                                                                 
                                                                                 $Isupdated = $membersModel->resetPinLoginAttempts($mid);
                                                                                 if (!$Isupdated) {
-                                                                                    $message = "[UnlockGenesis] Token: " . $this->_tkn . ", Output: CardNumber: $cardNumber, TransSumID: $transactionResult, ErrorMessage: Failed to reset pin attempts.";
+                                                                                    $message = "[UnlockGenesis] Token: " . $this->_tkn . ", Output: CardNumber: $cardNumber, EwalletTransID: $transactionResult, ErrorMessage: Failed to reset pin attempts.";
                                                                                     CLoggerModified::log($message, CLoggerModified::WARNING);
                                                                                 }
                                                                                 
