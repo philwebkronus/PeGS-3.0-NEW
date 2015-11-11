@@ -1127,11 +1127,11 @@ $(document).ready(function(){
                         updateLightbox( '<div style="margin-bottom: 10px; font-weight: bold;">Terminal #: '+ tcode +'</div><table id="terminalvctranssumm" ><tr><td><b>Deposit</b></td><td></td><td></td>' +
                                                     '</tr><tr><td></td><td>Cash</td><td style="text-align: right;">' + TotalDepCash+ '</td>' +
                                                     '</tr><tr><td></td><td>Ticket</td><td style="text-align: right;">' + TotalDepTicket+ '</td>' +
-                                                    '</tr><tr><td></td><td>Coupon</td><td style="text-align: right;">' + DepCoupon+ '</td>' +
+                                                    //'</tr><tr><td></td><td>Coupon</td><td style="text-align: right;">' + DepCoupon+ '</td>' +
                                                     '</tr><tr><td><b>Reload</b></td><td></td><td></td>' +
                                                     '</tr><tr><td></td><td>Cash</td><td style="text-align: right;">' + RelCash+ '</td>' +
                                                     '</tr><tr><td></td><td>Ticket</td><td style="text-align: right;">' + RelTicket+ '</td>' +
-                                                    '</tr><tr><td></td><td>Coupon</td><td style="text-align: right;">' + RelCoupon+ '</td>' +
+                                                    //'</tr><tr><td></td><td>Coupon</td><td style="text-align: right;">' + RelCoupon+ '</td>' +
                                                     '</tr><tr><td><b>Redemption</b></td><td></td><td></td>' +
                                                     '</tr><tr><td></td><td>Cashier</td><td style="text-align: right;">' + RedCashier+ '</td>' +
                                                     '</tr><tr><td></td><td>Genesis</td><td style="text-align: right;">' + TotalGenRedemption+ '</td>' +
@@ -1205,11 +1205,11 @@ $(document).ready(function(){
                         updateLightbox( '<div style="margin-bottom: 10px; font-weight: bold;">Total: </div><table id="totalvctranssumm" ><tr><td><b>Deposit</b></td><td></td><td></td>' +
                                                     '</tr><tr><td></td><td>Cash</td><td style="text-align: right;">' + toMoney(SubDepCash,'no')+ '</td>' +
                                                     '</tr><tr><td></td><td>Ticket</td><td style="text-align: right;">' + toMoney(SubDepTicket,'no')+ '</td>' +
-                                                    '</tr><tr><td></td><td>Coupon</td><td style="text-align: right;">' + toMoney(SubDepCoupon,'no')+ '</td>' +
+                                                    //'</tr><tr><td></td><td>Coupon</td><td style="text-align: right;">' + toMoney(SubDepCoupon,'no')+ '</td>' +
                                                     '</tr><tr><td><b>Reload</b></td><td></td><td></td>' +
                                                     '</tr><tr><td></td><td>Cash</td><td style="text-align: right;">' + toMoney(SubRelCash,'no')+ '</td>' +
                                                     '</tr><tr><td></td><td>Ticket</td><td style="text-align: right;">' + toMoney(SubRelTicket,'no')+ '</td>' +
-                                                    '</tr><tr><td></td><td>Coupon</td><td style="text-align: right;">' + toMoney(SubRelCoupon,'no')+ '</td>' +
+                                                    //'</tr><tr><td></td><td>Coupon</td><td style="text-align: right;">' + toMoney(SubRelCoupon,'no')+ '</td>' +
                                                     '</tr><tr><td><b>Redemption</b></td><td></td><td></td>' +
                                                     '</tr><tr><td></td><td>Cashier</td><td style="text-align: right;">' + toMoney(SubRedCashier,'no')+ '</td>' +
                                                     '</tr><tr><td></td><td>Genesis</td><td style="text-align: right;">' + toMoney(SubRedGenesis,'no')+ '</td>' +
@@ -1353,6 +1353,14 @@ $(document).ready(function(){
                                 var transactionDetails = {'':'', 'D':'Deposit', 'W':'Withdraw'};
                                 var values = data[i];
                                 var cardNumber = values['LoyaltyCardNumber'];
+                                var tCode = '';
+                                
+                                if(values['Source'] == "Genesis"){
+                                    tCode = values['TerminalCode'] == null ? '':'G'+values['TerminalCode'];
+                                } else {
+                                    tCode = values['TerminalCode'] == null ? '':values['TerminalCode'];
+                                }
+                                
                                 var date = values['StartDate'];
                                 var amount = parseFloat(values['Amount']);
                                 var transType = values['TransType'];
@@ -1363,8 +1371,9 @@ $(document).ready(function(){
                                
 
                                 tbody+='<tr>';
-                                tbody+='<td style="text-align: center;">'+cardNumber+'</td>';
                                 tbody+='<td style="text-align: center;">'+formatDateAMPM(removeMillisec(date))+'</td>';
+                                tbody+='<td style="text-align: center;">'+tCode+'</td>';
+                                tbody+='<td style="text-align: center;">'+cardNumber+'</td>';
                                 tbody+='<td style="text-align:right;">'+toMoney(amount, 'no')+'</td>';
                                 tbody+='<td style="text-align:right;">'+transactionType+'</td>';
                                 tbody+='</tr>';
@@ -1526,14 +1535,22 @@ $(document).ready(function(){
                                 var transactionDetails = {'':'', 'D':'Deposit', 'W':'Withdraw'};
                                 var values = data[i];
                                 var cardNumber = values['LoyaltyCardNumber'];
+                                var tCode = '';
+                                
+                                if(values['Source'] == "Genesis"){
+                                    tCode = values['TerminalCode'] == null ? '':'G'+values['TerminalCode'];
+                                } else {
+                                    tCode = values['TerminalCode'] == null ? '':values['TerminalCode'];
+                                }
                                 var date = values['StartDate'];
                                 var amount = parseFloat(values['Amount']);
                                 var transType = values['TransType'];
                                 var transactionType = transactionDetails[transType];
 
                                 tbody+='<tr>';
-                                tbody+='<td style="text-align: center;">'+cardNumber+'</td>';
                                 tbody+='<td style="text-align: center;">'+formatDateAMPM(removeMillisec(date))+'</td>';
+                                tbody+='<td style="text-align: center;">'+tCode+'</td>';
+                                tbody+='<td style="text-align: center;">'+cardNumber+'</td>';
                                 tbody+='<td style="text-align:right;">'+toMoney(amount,'no')+'</td>';
                                 tbody+='<td style="text-align:right;">'+transactionType+'</td>';
                                 tbody+='</tr>';
@@ -1602,7 +1619,7 @@ $(document).ready(function(){
                             var rcashonhand = 0;
 
                             rsubdtotal += (parseFloat(json.transdetails[i].LoadCash) + parseFloat(json.transdetails[i].LoadCoupon) + parseFloat(json.transdetails[i].LoadBancnet) + parseFloat(json.transdetails[i].LoadTicket));
-                            rsubwtotal += (parseFloat(json.transdetails[i].WCash) + parseFloat(json.transdetails[i].WTicket) + (parseFloat(json.transdetails[i].EncashedTickets) - parseFloat(json.transdetails[i].eSAFEGenesisRedemption)));
+                            rsubwtotal += (parseFloat(json.transdetails[i].WCash) + parseFloat(json.transdetails[i].WTicket) + parseFloat(json.transdetails[i].EncashedTickets));
                             rcashonhand = rsubdtotal - rsubwtotal;
 
                             totaldcash = parseFloat(json.transdetails[i].LoadCash);
@@ -1611,7 +1628,7 @@ $(document).ready(function(){
                             totaldticket = parseFloat(json.transdetails[i].LoadTicket);
                             totalwcash = parseFloat(json.transdetails[i].WCash);
                             totalwticket = parseFloat(json.transdetails[i].WTicket);
-                            totalwencashedtickets = parseFloat(json.transdetails[i].EncashedTickets) - parseFloat(json.transdetails[i].eSAFEGenesisRedemption);
+                            totalwencashedtickets = parseFloat(json.transdetails[i].EncashedTickets);
                             grandtotalcashonhand = rcashonhand;
 
                         }

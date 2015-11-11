@@ -250,6 +250,8 @@ return array(
         'Isloyaltypoints' => 1,
         
         'UBCasinoServiceID' => 20,
+        'IsALLeSAFE' => false,
+        'eSAFEStartDate' => '2015-10-01',
 
     ),
 );

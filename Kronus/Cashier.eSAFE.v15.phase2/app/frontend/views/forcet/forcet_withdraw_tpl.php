@@ -14,7 +14,11 @@
         <tr>
             <th><?php echo MI_HTML::label($FTModel, 'loyalty_card', 'Membership Card') ?></th>
             <td><?php echo MI_HTML::inputPassword($FTModel, 'loyalty_card') ?></td>
-            <td><a href="javascript:void(0);" id="get_info_card3">Get Card Info</a><a style="display: none;" href="javascript:void(0);" id="register">Register</a></td>
+            <!--<td><a href="javascript:void(0);" id="get_info_card3">Get Card Info</a><a style="display: none;" href="javascript:void(0);" id="register">Register</a></td>-->
+        </tr>
+        <tr>
+            <th>Current Playing Balance </th>
+            <td id="cur_playing_bal_ub"></td>
         </tr>
         <tr>
             <th><?php echo MI_HTML::label($FTModel, 'pin', 'PIN :') ?></th>
@@ -96,6 +100,7 @@
                 return false;
             }
             
+            $('#btnWithdraw2').attr('disabled','disabled'); //added 11-05-2015 2:40 PM
             
             showLightbox(function(){
                 var url = '<?php echo Mirage::app()->createUrl('redeem/redeemForcet') ?>';
@@ -113,6 +118,7 @@
                             var msg = json.message;
                                 if (msg.indexOf('successful') !== -1) { 
                                     alert(json.message);
+                                    $('#btnWithdraw2').removeAttr('disabled'); //added 11-05-2015 2:40 PM
                                     location.reload(true);
                                 }
                                 else{
@@ -121,9 +127,11 @@
                                                                     '<br /><input type="button" style="float: right; width: 50px; height: 25px;"  value="Ok" class="btnClr" />',
                                                                     ''          
                                     );
+                                    $('#btnWithdraw2').removeAttr('disabled'); //added 11-05-2015 2:40 PM
                                 }
                         }catch(e) {
                             alert('Oops! Something went wrong');
+                            $('#btnWithdraw2').removeAttr('disabled'); //added 11-05-2015 2:40 PM
                             location.reload(true);
                         }
                         
@@ -154,6 +162,27 @@
          
             $('#ForceTFormModel_loyalty_card').bind("enterKey",function(e){
                 var issuccess = identifyCard3();
+
+                var url = '<?php echo Mirage::app()->createUrl('forcet/getbalance') ?>';
+                var data =  {loyalty_card: function(){return $("#ForceTFormModel_loyalty_card").val();}};
+                $.ajax({
+                    url : url,
+                    type: 'post',
+                    data : data,
+                    success : function(data) {
+                        try {
+                            $('#cur_playing_bal_ub').html("");
+                            $('#cur_playing_bal_ub').html(data);
+                        }catch(e) {
+                            alert('Oops! Something went wrong');
+                            location.reload(true);
+                        }
+
+                    },
+                    error : function(e) {
+                        displayError(e);
+                    }
+                });
                 
 //                if(issuccess == 'false'){
 //                    var url = '<?php //echo Mirage::app()->createUrl('redeem/getbalance') ?>';
@@ -187,6 +216,8 @@
                 if(e.keyCode == 13)
             {
                 $(this).trigger("enterKey");
+            } else {
+                $('#cur_playing_bal_ub').html("");
             }
             });
         

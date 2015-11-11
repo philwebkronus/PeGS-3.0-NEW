@@ -2414,6 +2414,55 @@ class FrontendController extends MI_Controller {
         Mirage::app()->end();
     }
     
+    
+    /**
+     * @Description: This will get the current playing balance of the card from the casino
+     * @Author: aqdepliyan
+     * @DateCreated: 2015-11-06 10:20AM
+     */
+    public function forceTGetBalanceAction() {
+        if(!$this->isAjaxRequest() || !$this->isPostRequest())
+            Mirage::app()->error404();
+        
+        Mirage::loadComponents(array('CasinoApi','LoyaltyAPIWrapper.class'));
+        $casinoApi = new CasinoApi();
+        $site_id = $this->site_id;
+        $aid = $this->acc_id;
+        $loyaltycard = $_POST['loyalty_card'];
+        
+        list($is_loyalty, $card_number,$loyalty, $casinos, $mid, $casinoarray_count) = 
+                $this->getCardInfo($loyaltycard, $site_id, 2);
+        
+        $serviceid = Mirage::app()->param['UBCasinoServiceID'];
+        
+        $casinos = $this->loopAndFindCasinoService($casinos, 'ServiceID', $serviceid);
+        
+        if(empty($casinos)){
+            $message = 'Please use appropriate membership/temporary card for this casino';
+            logger($message);
+            $this->throwError($message); 
+        }
+        
+        $casinoarray_count = count($casinos);
+
+        for($ctr = 0; $ctr < $casinoarray_count; $ctr++)
+        {
+                    $casinoUsername = $casinos[$ctr]['ServiceUsername'];
+                    $casinoPassword = $casinos[$ctr]['ServicePassword'];
+                    $casinoHashedPassword = $casinos[$ctr]['HashedServicePassword'];
+                    $casinoServiceID = $casinos[$ctr]['ServiceID'];
+                    $casinoStatus = $casinos[$ctr]['Status'];
+                    $casinoIsVIP = $casinos[$ctr]['isVIP'];
+                
+        }
+        
+            list ($terminal_balance) = $casinoApi->getBalanceForceT(0, $site_id, 'W', 
+                        $serviceid, $aid, $casinoUsername);
+
+        echo toMoney($terminal_balance);
+        Mirage::app()->end();
+    }
+    
     /**
      * Get card info and validate its status
      * @param type $barCode 
@@ -2517,8 +2566,7 @@ class FrontendController extends MI_Controller {
         return array($is_loyalty, $card_number, $loyalty, $casinos, $mid, $casinoarray_count, $isewallet,$statuscode);
     }
     
-        
-    
+
     /**
      * @author Gerardo V. Jagolino Jr.
      * @param $array, $index, $search

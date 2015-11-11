@@ -81,6 +81,7 @@ return array(
     'reports/eWalletPerSiteTotal'=>'Reports/eWalletTransactionHistoryPerSiteTotal',
     'reports/eWalletPerCashier'=>'Reports/eWalletTransactionHistoryPerCashier',
     'reports/eWalletPerCashierTotal'=>'Reports/eWalletTransactionHistoryPerCashierTotal',
+    'reports/siteCashOnHand'=>'Reports/cashOnHandSiteReport',
     
     // routes for view transaction
     'viewtrans/overview'=>'ViewTransaction/overview',
@@ -103,6 +104,7 @@ return array(
     'forcet'=>'ForceT/overview',
     'forcet/load'=>'ForceT/load',
     'forcet/withdraw'=>'ForceT/withdraw',
+    'forcet/getbalance'=>'ForceT/forceTGetBalance',
     
     // routes for Force T - Load
     'load/getamount'=>'Load/getRedeemableAmountAndDetails3',

@@ -1161,6 +1161,10 @@ class TransactionSummaryModel extends MI_Model{
                                                     AND sa.SiteID = :siteid";
         $getusedtickets = "SELECT Amount,TicketCode FROM vouchermanagement.tickets WHERE DateCreated >= :start_date 
                                             AND DateCreated < :end_date AND Status = 3 AND DateEncashed IS NULL AND SiteID = :siteid";
+        $getencashedtickets = "SELECT Amount,TicketCode FROM vouchermanagement.tickets tckt  -- Encashed Tickets
+                                            WHERE tckt.DateEncashed >= :start_date AND tckt.DateEncashed < :end_date 
+                                            AND tckt.EncashedByAID IN (SELECT acct.AID FROM npos.accounts acct WHERE acct.AccountTypeID = 4
+                                            AND acct.AID IN (SELECT sacct.AID FROM npos.siteaccounts sacct WHERE sacct.SiteID = :siteid))";
         $param = array(
                 ':siteid'=>$site_id,
                 ':start_date'=>$date . ' ' . $cutoff_time,
@@ -1174,6 +1178,9 @@ class TransactionSummaryModel extends MI_Model{
         $this->exec($getusedtickets,$param);
         $usedTicketsresults = $this->findAll();
         
+        $this->exec($getencashedtickets,$param);
+        $encashedTicketsresults = $this->findAll();
+        
         foreach ($printedTicketsresults as $key => $value1) {
             foreach ($cancelledTicketsresults as $value2) {
                 if($value1['TicketCode'] == $value2['TicketCode']){
@@ -1182,6 +1189,11 @@ class TransactionSummaryModel extends MI_Model{
             }
             foreach ($usedTicketsresults as $value3) {
                 if($value1['TicketCode'] == $value3['TicketCode']){
+                    unset($printedTicketsresults[$key]);
+                }
+            }
+            foreach ($encashedTicketsresults as $value4) {
+                if($value1['TicketCode'] == $value4['TicketCode']){
                     unset($printedTicketsresults[$key]);
                 }
             }
@@ -1370,14 +1382,18 @@ class TransactionSummaryModel extends MI_Model{
     public function getEncashedTickets($startdate,$enddate,$siteid){
         $cutoff_time = Mirage::app()->param['cut_off'];
         $sql = "SELECT IFNULL(SUM(tckt.Amount), 0) as EncashedTickets FROM vouchermanagement.tickets tckt  -- Encashed Tickets
-            WHERE tckt.DateEncashed >= :startdate AND tckt.DateEncashed < :enddate
-            AND tckt.EncashedByAID In (SELECT acct.AID FROM npos.accounts acct WHERE acct.AccountTypeID = 4
-            AND acct.AID IN (SELECT sacct.AID FROM npos.siteaccounts sacct WHERE sacct.SiteID = :siteid))";
+                    WHERE tckt.DateEncashed >= :startdate AND tckt.DateEncashed < :enddate 
+                    AND tckt.EncashedByAID IN (SELECT acct.AID FROM npos.accounts acct WHERE acct.AccountTypeID = 4
+                    AND acct.AID IN (SELECT sacct.AID FROM npos.siteaccounts sacct WHERE sacct.SiteID = :siteid1))
+                    AND tckt.TicketCode NOT IN (SELECT IFNULL(stsum.TicketCode,'') FROM stackermanagement.stackersummary stsum 
+                    WHERE stsum.UpdatedByAID IN (SELECT acct.AID FROM npos.accounts acct WHERE acct.AccountTypeID IN (15,17)
+                    AND acct.AID IN (SELECT sacct.AID FROM npos.siteaccounts sacct WHERE sacct.SiteID = :siteid2)) AND stsum.EwalletTransID IS NOT NULL)";
         
         $param = array(
             ':startdate'=>$startdate.' '.$cutoff_time,
             ':enddate'=>$enddate.' '.$cutoff_time,
-            ':siteid'=>$siteid
+            ':siteid1'=>$siteid,
+            ':siteid2'=>$siteid
         );
         
         $this->exec($sql, $param);

@@ -81,7 +81,7 @@ function emptyForm(){
                 <th><?php echo MI_HTML::label($startSession, 'loyalty_card', 'Membership Card') ?></th><td><?php echo MI_HTML::inputPassword($startSession, 'loyalty_card',  array('class'=>'width200')); ?></td>
             </tr>
             <tr>
-                <th colspan="2"><center><a href="javascript:void(0);" id="get_info_card">Get Card Info</a></center></th>
+                <!--<th colspan="2"><center><a href="javascript:void(0);" id="get_info_card">Get Card Info</a></center></th>-->
                 <!--<td><b><a style="display: none;" href="javascript:void(0);" id="register">Register</a></b></td>-->
             </tr>  
             <tr class='hideControls'>

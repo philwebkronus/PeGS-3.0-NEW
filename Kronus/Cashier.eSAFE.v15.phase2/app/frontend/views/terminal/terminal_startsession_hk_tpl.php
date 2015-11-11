@@ -61,7 +61,7 @@ $(document).ready(function(){
             </tr>
             
             <tr>
-                <th colspan ="2"><center><a href="javascript:void(0);" id="get_info_card">Get Card Info</a></center></th>
+                <!--<th colspan ="2"><center><a href="javascript:void(0);" id="get_info_card">Get Card Info</a></center></th>-->
                 <!--<td><b><a href="javascript:void(0);" id="register">Register</a></b></td>-->
             </tr>
             

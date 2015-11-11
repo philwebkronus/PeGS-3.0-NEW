@@ -62,7 +62,7 @@
             <td>
                 <?php echo MI_HTML::inputPassword($FTModel, 'loyalty_card') ?>
             </td>
-            <td><a href="javascript:void(0);" id="get_info_card3">Get Card Info</a><a style="display: none;" href="javascript:void(0);" id="register">Register</a></td>
+            <!--<td><a href="javascript:void(0);" id="get_info_card3">Get Card Info</a><a style="display: none;" href="javascript:void(0);" id="register">Register</a></td>-->
         </tr>
         <tr>
             <th><?php echo MI_HTML::label($FTModel, 'sel_amount', 'Amount'); ?></th>
@@ -427,6 +427,8 @@
                 }
             }
             
+            $('#btnLoad').attr('disabled','disabled'); //added 11-05-2015 2:40 PM
+            
                     showLightbox(function(){
                     var url = '<?php echo Mirage::app()->createUrl('reload/ubaccount') ?>';
                     $('#ForceTFormModel_loyalty_card').removeAttr('disabled');
@@ -442,6 +444,7 @@
                                 
                                 if (msg.indexOf('successful') !== -1) { 
                                     alert(json.message);
+                                    $('#btnLoad').removeAttr('disabled'); //added 11-05-2015 2:40 PM
                                     location.reload(true);
                                 }
                                 else{
@@ -454,10 +457,12 @@
                                                                     '<br /><input type="button" style="float: right; width: 50px; height: 25px;"  value="Ok" class="btnClr" />',
                                                                     ''          
                                     );
+                                    $('#btnLoad').removeAttr('disabled'); //added 11-05-2015 2:40 PM
                                 }
                                 
                             }catch(e) {
                                 alert('Oops! Something went wrong');
+                                $('#btnLoad').removeAttr('disabled'); //added 11-05-2015 2:40 PM
                                 location.reload(true);
                             }
                         },

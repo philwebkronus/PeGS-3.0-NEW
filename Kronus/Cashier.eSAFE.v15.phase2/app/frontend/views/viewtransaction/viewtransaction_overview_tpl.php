@@ -31,6 +31,7 @@ function displayData(data){
         html+='</tr>';
     }
     $('#tbodyviewtrans').html(html);
+    $('#coverage').html(data.coverage);
 }
 
 displayData(transactionHistory);
@@ -53,10 +54,14 @@ displayData(transactionHistory);
     <option value="40">40</option>
     <option selected="selected">50</option>
 </select>
+<br/>
+<table style="width: 100%">
+<tr><td><h3 id="coverage"></h3></td></tr>
+</table>
 <table id="tblTransView">
     <thead>
         <tr>
-            <th style="width: 300px">Datetime</th>
+            <th style="width: 300px">Date and Time</th>
             <th style="width: 200px">Terminal</th>
             <th style="width: 200px">Transaction Type</th>
             <th style="width: 200px">Amount</th>

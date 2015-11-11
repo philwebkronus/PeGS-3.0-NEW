@@ -112,6 +112,8 @@
                 }
             }
             
+            $('#btnreloadsa').attr('disabled','disabled'); //added 11-05-2015 2:40 PM
+            
             showLightbox(function(){
                 var url = '<?php echo Mirage::app()->createUrl('reload') ?>';
                 var data = $('#frmreloadsa').serialize();
@@ -123,8 +125,10 @@
                         try {
                             var json = $.parseJSON(data);
                             alert(json.message);
+                            $('#btnreloadsa').removeAttr('disabled'); //added 11-05-2015 2:40 PM
                         }catch(e) {
                             alert('Oops! Something went wrong');
+                            $('#btnreloadsa').removeAttr('disabled'); //added 11-05-2015 2:40 PM
                         }
                         location.reload(true);
                     },

@@ -17,7 +17,7 @@
         <tr>
             <th><?php echo MI_HTML::label($startSessionFormModel, 'loyalty_card', 'Membership Card') ?></th>
             <td><?php echo MI_HTML::inputPassword($startSessionFormModel, 'loyalty_card', array('class'=>'width200')) ?></td>
-            <td><a href="javascript:void(0);" id="get_info_card">Get Card Info</a><a style="display: none;" href="javascript:void(0);" id="register">Register</a></td>
+            <!--<td><a href="javascript:void(0);" id="get_info_card">Get Card Info</a><a style="display: none;" href="javascript:void(0);" id="register">Register</a></td>-->
         </tr>
         <tr class='hideControls'>
             <th><?php echo MI_HTML::label($startSessionFormModel, 'casino', 'Casino'); ?></th>

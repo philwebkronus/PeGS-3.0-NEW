@@ -32,8 +32,9 @@ $(document).ready(function(){
                     overflow:auto; width: 1070px">
 <table id="tbltranshistory" border="1" style="width: 1050px">
    <thead>
-        <th style="width: 300px">Card Number</th>
-        <th style="width: 250px">Date</th>
+       <th style="width: 300px">Date and Time</th>
+        <th style="width: 250px">Terminal</th>
+        <th style="width: 250px">Card Number</th>
         <th style="width: 250px">Amount</th> 
         <th style="width: 250px">Transaction Type</th>
    </thead>
@@ -43,14 +44,20 @@ $(document).ready(function(){
         foreach($data as $key=>$value){ 
            
            $cardNumber = $value['LoyaltyCardNumber'];
+            if($value['Source'] == "Genesis"){
+                 $tCode = $value['TerminalCode'] == null ? '':'G'.$value['TerminalCode'];
+             } else {
+                 $tCode = $value['TerminalCode'] == null ? '':$value['TerminalCode'];
+             }
            $date = $value['StartDate'];
            $amount = $value['Amount'];
            $transType = trim($value['TransType']);
            $transactionType = $transaction[$transType];
        ?>
        <tr>
-           <td style="text-align: center;"><?php echo $cardNumber;?></td>
            <td style="text-align: center;"><?php echo date('Y-m-d h:i:s A',  strtotime($date));?></td>
+           <td style="text-align: center;"><?php echo $tCode;?></td>
+           <td style="text-align: center;"><?php echo $cardNumber;?></td>
            <td style="text-align: right;"><?php echo number_format($amount,2);?></td>
            <td style="text-align: right;"><?php echo $transactionType?></td>
        </tr>

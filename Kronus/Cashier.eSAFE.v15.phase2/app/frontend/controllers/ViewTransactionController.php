@@ -36,7 +36,9 @@ class ViewTransactionController extends FrontendController {
         }
         $end_date = addOneDay($start_date);
         $rows = $transactionDetailsModel->getTransactionDetails($createdBy, $limit,$start_date,$end_date);
-        $transactionHistory = json_encode(array('trans_details'=>$rows,'site_code'=>$_SESSION['site_code']));
+        
+        $coverage = 'Coverage ' . date('l , F d, Y ',strtotime($start_date)) . ' ' .$cutoff.' AM to ' . date('l , F d, Y ',strtotime($end_date)) . ' ' .$cutoff.' AM';
+        $transactionHistory = json_encode(array('trans_details'=>$rows,'site_code'=>$_SESSION['site_code'],'coverage'=>$coverage));
         
         $this->renderPartial('viewtransaction_overview', array('transactionHistory'=>$transactionHistory));
     }
@@ -73,8 +75,9 @@ class ViewTransactionController extends FrontendController {
         }
         $end_date = addOneDay($start_date);
         $rows = $transactionDetailsModel->getTransactionDetails($createdBy, $limit,$start_date,$end_date);
-        $transactionHistory = json_encode(array('trans_details'=>$rows,'site_code'=>$_SESSION['site_code']));
         
+        $coverage = 'Coverage ' . date('l , F d, Y ',strtotime($start_date)) . ' ' .$cutoff.' AM to ' . date('l , F d, Y ',strtotime($end_date)) . ' ' .$cutoff.' AM';
+        $transactionHistory = json_encode(array('trans_details'=>$rows,'site_code'=>$_SESSION['site_code'],'coverage'=>$coverage));    
         
         $this->renderPartial('viewtransaction_overview2', array('transactionHistory'=>$transactionHistory));
     }
@@ -106,7 +109,9 @@ class ViewTransactionController extends FrontendController {
         }
         $end_date = addOneDay($start_date);
         $rows = $transactionDetailsModel->getTransactionDetails($createdBy, $limit,$start_date,$end_date);
-        echo json_encode(array('trans_details'=>$rows,'site_code'=>$_SESSION['site_code']));
+        $coverage = 'Coverage ' . date('l , F d, Y ',strtotime($start_date)) . ' ' .$cutoff.' AM to ' . date('l , F d, Y ',strtotime($end_date)) . ' ' .$cutoff.' AM';
+        
+        echo json_encode(array('trans_details'=>$rows,'site_code'=>$_SESSION['site_code'], 'coverage'=>$coverage));
         Mirage::app()->end();
     }
     
@@ -139,7 +144,9 @@ class ViewTransactionController extends FrontendController {
         }
         $end_date = addOneDay($start_date);
         $rows = $transactionDetailsModel->getTransactionDetails($createdBy, $limit,$start_date,$end_date);
-        echo json_encode(array('trans_details'=>$rows,'site_code'=>$_SESSION['site_code']));
+        $coverage = 'Coverage ' . date('l , F d, Y ',strtotime($start_date)) . ' ' .$cutoff.' AM to ' . date('l , F d, Y ',strtotime($end_date)) . ' ' .$cutoff.' AM';
+        
+        echo json_encode(array('trans_details'=>$rows,'site_code'=>$_SESSION['site_code'], 'coverage'=>$coverage));
         Mirage::app()->end();
     }
     
@@ -195,7 +202,9 @@ class ViewTransactionController extends FrontendController {
         }
         $end_date = addOneDay($start_date);
         $rows = $eWalletModel->getEWalletTransactionPerCashierWithOrder($start_date, $end_date, $this->site_id, $this->acc_id, $limit);
-        $transactionHistory = json_encode(array('trans_details'=>$rows,'site_code'=>$_SESSION['site_code']));
+        $coverage = 'Coverage ' . date('l , F d, Y ',strtotime($start_date)) . ' ' .$cutoff.' AM to ' . date('l , F d, Y ',strtotime($end_date)) . ' ' .$cutoff.' AM';
+        
+        $transactionHistory = json_encode(array('trans_details'=>$rows,'site_code'=>$_SESSION['site_code'], 'coverage'=>$coverage));
         if($jsonMode){
             echo $transactionHistory;
         }else{
@@ -243,7 +252,9 @@ class ViewTransactionController extends FrontendController {
         }
         $end_date = addOneDay($start_date);
         $rows = $eWalletModel->getEWalletTransactionPerCashierWithOrder($start_date, $end_date, $this->site_id, $createdBy, $limit);
-        $transactionHistory = json_encode(array('trans_details'=>$rows,'site_code'=>$_SESSION['site_code']));
+        $coverage = 'Coverage ' . date('l , F d, Y ',strtotime($start_date)) . ' ' .$cutoff.' AM to ' . date('l , F d, Y ',strtotime($end_date)) . ' ' .$cutoff.' AM';
+        
+        $transactionHistory = json_encode(array('trans_details'=>$rows,'site_code'=>$_SESSION['site_code'], 'coverage'=>$coverage));
         if($jsonMode){
             echo $transactionHistory;
         }else{
@@ -286,8 +297,9 @@ class ViewTransactionController extends FrontendController {
         }
         $end_date = addOneDay($start_date);
         $rows = $eWalletModel->getEWalletTransactionPerSiteWithOrder($start_date, $end_date, $this->site_id, $limit);
+        $coverage = 'Coverage ' . date('l , F d, Y ',strtotime($start_date)) . ' ' .$cutoff.' AM to ' . date('l , F d, Y ',strtotime($end_date)) . ' ' .$cutoff.' AM';
         
-        $transactionHistory = json_encode(array('trans_details'=>$rows,'site_code'=>$_SESSION['site_code']));
+        $transactionHistory = json_encode(array('trans_details'=>$rows,'site_code'=>$_SESSION['site_code'], 'coverage'=>$coverage));
         if($jsonMode){
             echo $transactionHistory;
         }else{
