@@ -7,6 +7,9 @@ $(document).ready(function(){
         dateFormat: 'yy-mm-dd',
         maxDate : '<?php echo date('Y-m-d') ?>'
     });
+    $('#ReportsFormModel_date').live('change',function(){
+        $("#tbltranshistorybody").html('');
+    });
 })
 </script>
 <h1>e-SAFE Transaction History Per Cashier</h1>
@@ -39,6 +42,7 @@ $(document).ready(function(){
         <th style="width: 250px">Transaction Type</th>
    </thead>
    <tbody id="tbltranshistorybody">
+       <?php if($data): ?>
       <?php 
         $transaction = array(''=>'','D'=>'Deposit', 'W'=>'Withdraw');
         foreach($data as $key=>$value){ 
@@ -63,11 +67,12 @@ $(document).ready(function(){
        </tr>
        <?php }?>
       <tr style="height:30px;">
-           <td colspan="4"></td>
+           <td colspan="5"></td>
        </tr>
        <tr>
-           <td colspan="4"><b><a id="eSAFETransCashierSumm" href="#" style="text-decoration: underline ;color: black;">Click here to view the summary breakdown</a></b></td>
+           <td colspan="5"><b><a id="eSAFETransCashierSumm" href="#" style="text-decoration: underline ;color: black;">Click here to view the summary breakdown</a></b></td>
        </tr>
+       <?php endif; ?>
    </tbody>
 </table>
     </div>

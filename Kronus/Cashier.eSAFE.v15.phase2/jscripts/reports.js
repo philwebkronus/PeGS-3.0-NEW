@@ -1380,8 +1380,8 @@ $(document).ready(function(){
                             }
                         }catch(e){}
                         
-                        tbody+='<tr style="height:30px;"> <td colspan="4"></td></tr>';
-                        tbody+='<tr style="height:30px;"><td colspan="4"><b><a id="eSAFETransSiteSumm" href="#" style="text-decoration: underline ;color: black;">Click here to view the summary breakdown</a></b></td></tr>';
+                        tbody+='<tr style="height:30px;"> <td colspan="5"></td></tr>';
+                        tbody+='<tr style="height:30px;"><td colspan="5"><b><a id="eSAFETransSiteSumm" href="#" style="text-decoration: underline ;color: black;">Click here to view the summary breakdown</a></b></td></tr>';
 //                        tbody+='<tr><td><b>Total Deposits</b></td>';
 //                        tbody+='<td colspan="3">'+toMoney(totalDeposit)+'</td>';
 //                        tbody+='</tr>';
@@ -1558,8 +1558,8 @@ $(document).ready(function(){
                             }
                         }catch(e){}
                         
-                        tbody+='<tr style="height:30px;"> <td colspan="4"></td></tr>';
-                        tbody+='<tr style="height:30px;"><td colspan="4"><b><a id="eSAFETransCashierSumm" href="#" style="text-decoration: underline ;color: black;">Click here to view the summary breakdown</a></b></td></tr>';
+                        tbody+='<tr style="height:30px;"> <td colspan="5"></td></tr>';
+                        tbody+='<tr style="height:30px;"><td colspan="5"><b><a id="eSAFETransCashierSumm" href="#" style="text-decoration: underline ;color: black;">Click here to view the summary breakdown</a></b></td></tr>';
                         
                         $("#tbltranshistorybody").html(tbody);
                         $("#coverage").html(coverage);
