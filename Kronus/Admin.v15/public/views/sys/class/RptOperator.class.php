@@ -1169,7 +1169,7 @@ class RptOperator extends DBHandler
                                         END) AS EwalletRedemption
 
                                     FROM ewallettrans WHERE StartDate >= ? AND StartDate < ?
-                                    AND SiteID IN (".$site.") AND Status IN (1,4) GROUP BY SiteID";
+                                    AND SiteID IN (".$site.") AND Status IN (1,3) GROUP BY SiteID";
         
         $query3 = "SELECT SiteID, SUM(ActualAmount) AS ManualRedemption FROM manualredemptions
                             WHERE TransactionDate >= ? AND TransactionDate < ?
@@ -1236,7 +1236,7 @@ class RptOperator extends DBHandler
                   IFNULL(CASE WHEN TransType = 'W' THEN Amount END,0) AS EWWithdrawals
                   FROM ewallettrans
                   WHERE SiteID IN(".$site.") AND
-                  StartDate >= ? AND StartDate < ? AND Status IN(1,4)";
+                  StartDate >= ? AND StartDate < ? AND Status IN(1,3)";
         
         $this->prepare($stmt1);
         $this->bindparameter(1, $zdateFROM);
