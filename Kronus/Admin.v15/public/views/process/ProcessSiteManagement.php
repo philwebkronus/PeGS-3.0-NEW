@@ -467,22 +467,56 @@ if($connected)
                     $msg = "Site/PEGS Creation : Site/PEGS Code exist";
                }
                $terminalSession = $osite->checkifterminalsessionexist($vSiteID);
-               $terminalSessionCount = $terminalSession['count'];
-               if ($terminalSessionCount>0)
-               {
-                    $msg = "Site profile cannot be updated. There is an existing session on this site.";
-               } 
-               
-               else
-               {
-                   $siteid = $osite->updatesitedetails($vSiteID,$vSiteName,$vSiteCode,$vOwnerAID,$vSiteGroupID ,$vSiteDescription,$vSiteAlias,$vIslandId,$vRegionID,$vProvinceID,$vCityID,$vBarangayID,$vSiteAddress,$vCTO, $vpasscode, $vstatus, $voldownerAID, $istestsite, $vcontactno, $siteClassification);
-                   if($siteid == 0)
+//               $terminalSessionCount = $terminalSession['count'];
+//               if ($terminalSessionCount>0)
+//               {
+//                    $msg = "Site profile cannot be updated. There is an existing session on this site.";
+//               } 
+//               
+//               else
+//               {
+                    $terminalSessionCount = $terminalSession['count'];
+                    $classificationID = $osite->selectsiteclassification($vSiteID);
+
+               if ($terminalSessionCount==0)
+               {    
+                   if($classificationID==$siteClassification)
                    {
-                     $msg = "Site/PEGS Update : Site/PEGS Accounts Profile unchanged";
+                       $siteid = $osite->updatesitedetails($vSiteID,$vSiteName,$vSiteCode,$vOwnerAID,$vSiteGroupID ,$vSiteDescription,$vSiteAlias,$vIslandId,$vRegionID,$vProvinceID,$vCityID,$vBarangayID,$vSiteAddress,$vCTO, $vpasscode, $vstatus, $voldownerAID, $istestsite, $vcontactno);
+                   
+                   }
+                   else 
+                   {
+                   $siteid = $osite->updatesitedetails2($vSiteID,$vSiteName,$vSiteCode,$vOwnerAID,$vSiteGroupID ,$vSiteDescription,$vSiteAlias,$vIslandId,$vRegionID,$vProvinceID,$vCityID,$vBarangayID,$vSiteAddress,$vCTO, $vpasscode, $vstatus, $voldownerAID, $istestsite, $vcontactno, $siteClassification);
+                   }
+               }
+               else 
+               {
+                   if ($classificationID==$siteClassification)
+                   {
+                      $siteid = $osite->updatesitedetails($vSiteID,$vSiteName,$vSiteCode,$vOwnerAID,$vSiteGroupID ,$vSiteDescription,$vSiteAlias,$vIslandId,$vRegionID,$vProvinceID,$vCityID,$vBarangayID,$vSiteAddress,$vCTO, $vpasscode, $vstatus, $voldownerAID, $istestsite, $vcontactno);
                    }
                    else
                    {
-                     $msg = "Site/PEGS Update : Site/PEGS profile updated";
+                      $siteid = $osite->updatesitedetails($vSiteID,$vSiteName,$vSiteCode,$vOwnerAID,$vSiteGroupID ,$vSiteDescription,$vSiteAlias,$vIslandId,$vRegionID,$vProvinceID,$vCityID,$vBarangayID,$vSiteAddress,$vCTO, $vpasscode, $vstatus, $voldownerAID, $istestsite, $vcontactno);
+                   }
+               }
+                   if($siteid == 0)
+                   {
+                            $msg = "Site/PEGS Update : Site/PEGS Accounts Profile unchanged";
+                     
+                   }
+                   
+                   else
+                   {
+                       if ($terminalSessionCount==0)
+                        {    
+                           $msg = "Site/PEGS Update : Site/PEGS profile updated";
+                        }
+                       else 
+                        {
+                           $msg = "Site/PEGS Update : Site/PEGS profile Updated site classification Unchanged";
+                        } 
                      $arrnewdetails = array($vOwnerAID, $vIslandId, $vRegionID, $vProvinceID, $vCityID, $vBarangayID, $vSiteName, $vSiteCode, $vSiteDescription, $vCTO, $vSiteAddress, $vpasscode, $vcontactno, $istestsite, $siteClassification);
                      $newdetails = implode(",", $arrnewdetails);
                      //insert into audit trail
@@ -698,7 +732,7 @@ if($connected)
                          $osite->emailalerts($vtitle, $arremail, $vmessage);
                      }
                    }
-               }
+//               }
                
                $nopage = 1;
 

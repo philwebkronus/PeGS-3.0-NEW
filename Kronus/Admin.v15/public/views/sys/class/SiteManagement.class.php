@@ -121,17 +121,23 @@ class SiteManagement extends DBHandler{
         $this->execute();
         return $this->fetchData();
       }
-//         function updatesiteclassification($zsiteclassification, $zsiteID)
-//      {
-//          $this->prepare("UPDATE sites SET SiteClassificationID = ?  WHERE SiteID = ?");
-//          $this->bindparameter(1, $zsiteclassification);
-//          $this->bindparameter(2, $zsiteID);
-//          $this->execute();
-//          return $this->rowCount();
-//      }
-      
-      //site update : update site and sitedetails and insert into siteaccounts
-      function updatesitedetails($zSiteID,$zSiteName,$zSiteCode,$zOwnerAID,
+         function updatesiteclassification($zsiteclassification, $zsiteID)
+      {
+          $this->prepare("UPDATE sites SET SiteClassificationID = ?  WHERE SiteID = ?");
+          $this->bindparameter(1, $zsiteclassification);
+          $this->bindparameter(2, $zsiteID);
+          $this->execute();
+          return $this->rowCount();
+      }
+        function selectsiteclassification($zsiteID)
+      {
+        $stmt = "SELECT SiteClassificationID FROM sites WHERE SiteID=?" ;
+        $this->prepare($stmt);
+        $this->bindparameter(1, $zsiteID);
+        $this->execute();
+        return $this->fetchData();
+      }
+       function updatesitedetails2($zSiteID,$zSiteName,$zSiteCode,$zOwnerAID,
               $zSiteGroupID, $zSiteDescription, $zSiteAlias,$zIslandId,$zRegionID,
               $zProvinceID,$zCityID,$zBarangayID,$zSiteAddress,$zCTO, $zpasscode, $zstatus, $zoldownerAID, $zistestsite, $zcontactno, $zSiteClassification)
       {
@@ -152,6 +158,90 @@ class SiteManagement extends DBHandler{
          $this->bindparameter(5, $zistestsite);
          $this->bindparameter(6, $zSiteClassification);
          $this->bindparameter(7, $zSiteID);
+         $this->execute();
+         $isexecute =$this->rowCount();
+         if($zAID > 1)
+         {
+             //count if operator has assigned site and is active
+             $this->prepare("SELECT COUNT(*) FROM siteaccounts WHERE SiteID = ? AND AID = ? AND Status = 1");
+             $this->bindparameter(1, $zSiteID);
+             $this->bindparameter(2, $zAID);
+             $this->execute();
+
+             //check if site has already assigned to its operator
+             if($this->hasRows() == 0)
+             {
+                    $this->prepare("INSERT INTO siteaccounts(SiteID,AID,Status) VALUES (?,?,?)");
+                    $this->bindparameter(1, $zSiteID);
+                    $this->bindparameter(2, $zAID);
+                    $this->bindparameter(3, $zstatus);
+
+                    try {
+                        $this->execute();
+                    } catch (PDOException $e) {
+                        $this->rollbacktrans();
+                        return 0;
+                    }
+             }
+
+             $this->prepare("UPDATE sitedetails SET SiteDescription = ?,
+                   SiteAlias = ?,IslandID =? ,RegionID =? ,ProvinceID=?,CityID=?,
+                   BarangayID=?,SiteAddress=?,CTO=?, PassCode = ?, ContactNumber = ? WHERE SiteID = ?");
+             $this->bindparameter(1, $zSiteDescription);
+             $this->bindparameter(2, $zSiteAlias);
+             $this->bindparameter(3, $zIslandId);
+             $this->bindparameter(4, $zRegionID);
+             $this->bindparameter(5, $zProvinceID);
+             $this->bindparameter(6, $zCityID);
+             $this->bindparameter(7, $zBarangayID);
+             $this->bindparameter(8, $zSiteAddress);
+             $this->bindparameter(9, $zCTO);
+             $this->bindparameter(10, $zpasscode);
+             $this->bindparameter(11, $zcontactno);
+             $this->bindparameter(12,$zSiteID);
+
+             $this->execute();
+             $ifdetexecute = $this->rowCount();
+             if(($isexecute > 0) or ( $ifdetexecute > 0))
+             {
+                 $this->committrans();
+                 return 1;
+             }
+             else
+            {
+               $this->rollbacktrans();
+               return 0;
+             }
+         }
+         else
+         {
+           $this->rollbacktrans();
+           return 0;
+         }
+      }
+      
+      
+      //site update : update site and sitedetails and insert into siteaccounts
+      function updatesitedetails($zSiteID,$zSiteName,$zSiteCode,$zOwnerAID,
+              $zSiteGroupID, $zSiteDescription, $zSiteAlias,$zIslandId,$zRegionID,
+              $zProvinceID,$zCityID,$zBarangayID,$zSiteAddress,$zCTO, $zpasscode, $zstatus, $zoldownerAID, $zistestsite, $zcontactno)
+      {
+         //update site table, sitedetails and insert in siteaccounts
+         if($zOwnerAID > 0)
+         {
+              $zAID = $zOwnerAID;
+         }
+         else
+              $zAID = null;
+
+         $this->begintrans();
+         $this->prepare("UPDATE sites SET SiteName = ?, SiteCode = ?,OwnerAID = ? ,SiteGroupID = ?, isTestSite = ? WHERE SiteID = ?");
+         $this->bindparameter(1, $zSiteName);
+         $this->bindparameter(2, $zSiteCode);
+         $this->bindparameter(3, $zAID);
+         $this->bindparameter(4, $zSiteGroupID);
+         $this->bindparameter(5, $zistestsite);
+         $this->bindparameter(6, $zSiteID);
          $this->execute();
          $isexecute =$this->rowCount();
          if($zAID > 1)
