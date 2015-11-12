@@ -238,7 +238,7 @@ if($connected)
               $accID = $vview['AID'];
               $vstatname = $oaccount->showstatusname($rstatus);
               $responce->rows[$i]['id']=$vview['AID'];
-              $responce->rows[$i]['cell']=array($vview['UserName'],$vview['Name'],$vview['Email'],$vview['Address'],$vstatname, "<input type=\"button\" value=\"Update Details\" onclick=\"window.location.href='process/ProcessAccManagement.php?accid=$accID'+'&page='+'ViewAccount';\"/>");
+              $responce->rows[$i]['cell']=array($vview['UserName'],$vview['Name'],$vview['Email'],$vview['Address'],$rstatus, "<input type=\"button\" value=\"Update Details\" onclick=\"window.location.href='process/ProcessAccManagement.php?accid=$accID'+'&page='+'ViewAccount';\"/>");
               $i++;
          }
        }
