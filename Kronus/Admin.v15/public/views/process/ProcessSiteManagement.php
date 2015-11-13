@@ -511,11 +511,11 @@ if($connected)
                    {
                        if ($terminalSessionCount==0)
                         {    
-                           $msg = "Site/PEGS Update : Site/PEGS profile updated";
+                           $msg = "Site/PEGS Update : Site/PEGS profile updated.";
                         }
                        else 
                         {
-                           $msg = "Site/PEGS Update : Site/PEGS profile Updated site classification Unchanged";
+                           $msg = "Site/PEGS Update : Site/PEGS profile updated.";
                         } 
                      $arrnewdetails = array($vOwnerAID, $vIslandId, $vRegionID, $vProvinceID, $vCityID, $vBarangayID, $vSiteName, $vSiteCode, $vSiteDescription, $vCTO, $vSiteAddress, $vpasscode, $vcontactno, $istestsite, $siteClassification);
                      $newdetails = implode(",", $arrnewdetails);
