@@ -1666,7 +1666,7 @@ class UserBasedTrans {
 
             // check if casino's reply is busy, added 05/17/12
             if (!(bool)$casinoApiHandler->IsAPIServerOK()) {
-                $ewalletTransModel->updateEwalletTrans($ewallet_trans_id, $stackerDetailID, 2, "", "", $acct_id);
+                $ewalletTransModel->updateEwalletTrans($ewallet_trans_id, "", 2, "", "", $acct_id);
                 $message = 'Can\'t connect to casino';
                 Utilities::errorLogger($message, "Redeem Session", 
                                 "TerminalID:".$terminal_id." | ".
@@ -1692,7 +1692,7 @@ class UserBasedTrans {
 
                 // check again if Casino Server is busy
                 if (!(bool)$casinoApiHandler->IsAPIServerOK()) {
-                    $ewalletTransModel->updateEwalletTrans($ewallet_trans_id, $stackerDetailID, 2, "", "", $acct_id);
+                    $ewalletTransModel->updateEwalletTrans($ewallet_trans_id, "", 2, "", "", $acct_id);
                     $message = 'Can\'t connect to casino';
                     Utilities::errorLogger($message, "Redeem Session", 
                                 "TerminalID:".$terminal_id." | ".
@@ -1711,7 +1711,7 @@ class UserBasedTrans {
                 //check if TransactionSearchInfo API is not successful
                 if(isset($transSearchInfo['IsSucceed']) && $transSearchInfo['IsSucceed'] == false)
                 {
-                    $ewalletTransModel->updateEwalletTrans($ewallet_trans_id, $stackerDetailID, 2, "", "", $acct_id);
+                    $ewalletTransModel->updateEwalletTrans($ewallet_trans_id, "", 2, "", "", $acct_id);
                     $gamingSessionsModel->deleteGamingSessions($terminal_id, $stackerbatchid);
                     $terminalSessionsModel->deleteTerminalSessionById($terminal_id);
                     $message = 'Failed to start session.';
@@ -1752,7 +1752,7 @@ class UserBasedTrans {
 
                 //check if TransactionSearchInfo API is not successful
                 if(isset($resultwithdraw['IsSucceed']) && $resultwithdraw['IsSucceed'] == false) {
-                    $ewalletTransModel->updateEwalletTrans($ewallet_trans_id, $stackerDetailID, 2, "", "", $acct_id);
+                    $ewalletTransModel->updateEwalletTrans($ewallet_trans_id, "", 2, "", "", $acct_id);
                     $message = 'Request denied. Please try again.';
                     Utilities::errorLogger($message, "Redeem Session", 
                                 "TerminalID:".$terminal_id." | ".
@@ -1843,7 +1843,7 @@ class UserBasedTrans {
                 }
                 /****************************************************/
                 if($isredeemed['TransCode'] != 0){
-                    $ewalletTransModel->updateEwalletTrans($ewallet_trans_id, $stackerDetailID, 2, "", "", $acct_id);
+                    $ewalletTransModel->updateEwalletTrans($ewallet_trans_id, "", 2, "", "", $acct_id);
                     $message = 'Failed update records in transaction tables';
                     Utilities::errorLogger($message, "Redeem Session", 
                                 "TerminalID:".$terminal_id." | ".
@@ -1866,7 +1866,7 @@ class UserBasedTrans {
 
             } else {
 
-                $ewalletTransModel->updateEwalletTrans($ewallet_trans_id, $stackerDetailID, 2, "", "", $acct_id);
+                $ewalletTransModel->updateEwalletTrans($ewallet_trans_id, "", 2, "", "", $acct_id);
                 $message = 'Requests denied. Please try again.';
                 Utilities::errorLogger($message, "Redeem Session", 
                                 "TerminalID:".$terminal_id." | ".
