@@ -14,6 +14,7 @@ include __DIR__.'/../sys/class/CasinoGamingCAPI.class.php';
 include __DIR__.'/../sys/class/CasinoGamingCAPIUB.class.php';
 include __DIR__.'/../sys/class/helper.class.php';
 include __DIR__.'/../sys/class/PcwsWrapper.class.php';
+include __DIR__.'/../sys/class/SAPIWrapper.class.php';
 //include __DIR__.'/../sys/class/RealtimeGamingPlayerAPI.class.php';
 
 $aid = 0;
@@ -520,11 +521,19 @@ if($connected && $connected2 && $connected3)
              break;
              case "RemoveTerminal":
                  $pcwsWrapper = new PcwsWrapper($Pcws['systemusername'],$Pcws['systemcode']);
+                 $sapiWrapper = new SAPIWrapper();
                  $login = $_POST['login'];
                  $terminal = $_POST['terminal'];
                  $cardnumber = $_POST['cardnumber'];
                  $serviceID = $_POST['serviceid'];
                  $call = 2;
+                 $isEGM = 0;
+                 
+                 $MID = $oas->getMIDByUBCard($cardnumber);
+                 $hasEGM = $oas->checkIfHasEGMSession($MID['MID']);
+                 if ($hasEGM['EGMCount'] > 0) { 
+                     $isEGM = 1; 
+                 }
                  //double check if session has TransSummaryID
                  $hasTransSumID = $oas->getTransactionSummaryViaLogin($login);
                  $apicall = 1; //force logout
@@ -534,7 +543,12 @@ if($connected && $connected2 && $connected3)
                  while ($call > 0)
                  {
                      if ($apicall == 1) { //force logout
-                         $api_result = $pcwsWrapper->logoutLaunchPad($Pcws['forcelogout'], $login, $serviceID);
+                         if ($isEGM > 0) {
+                            $api_result = $pcwsWrapper->logoutLaunchPad($Pcws['forcelogoutgen'], $login);   
+                         }
+                         else {
+                             $api_result = $pcwsWrapper->logoutLaunchPad($Pcws['forcelogout'], $login);
+                         }
                      }
                      else { //remove session
                          $api_result = $pcwsWrapper->removeSession($Pcws['removesession'], $terminal, $cardnumber);
@@ -542,7 +556,11 @@ if($connected && $connected2 && $connected3)
                      foreach ($api_result as $result)
                      {
                          if ($result['ErrorCode'] == 0)
-                         {
+                         {  
+                             if ($isEGM > 0) {
+                                $sapiURL = $SAPI['endsession'];
+                                $sapiWrapper->endSession($terminal, $sapiURL); //call sapi endsession
+                             }
                              $call = 0;
                              $response = array('ErrorCode' => 0, 
                                                'Message' => 'Terminal session succesfully removed.');
@@ -801,6 +819,74 @@ if($connected && $connected2 && $connected3)
                                    'Message' => 'Please enter Card Number.');
                }
                echo json_encode($result);
+               break;
+               case "CheckLastTrans":
+               $ubcard = trim($_POST['ubcard']);
+               //check if ub card is blank
+               if (strlen($ubcard) > 0)
+               {
+                   //get MID of the card
+                   $getMID = $oas3->getMIDByUBCard($ubcard);
+                   if ($getMID != false)
+                   {
+                       $MID = $getMID['MID'];
+                       $hasSession = $oas->checkLastSessionByMID($MID);
+                               foreach ($hasSession as $row)
+                               {
+                                   
+                               $result[] = array('Site' => $row['SiteCode'], 
+                                                         'Terminal' => $row['TerminalCode'], 
+                                                         'Service' => $row['ServiceName'], 
+                                                         'DateAndTime' => $row['TransactionDate'], 
+                                                         'TerminalType' => $row['TerminalType'],
+                                                         'CardNumber' => $row['LoyaltyCardNumber'],
+                                                         'ErrorCode' => 0); 
+                               }
+                               
+                       
+                   }
+               }
+               else
+               {
+                   $result = array('ErrorCode' => 1, 
+                                   'Message' => 'Please enter Card Number.');
+               }
+                echo json_encode($result);
+               break;
+               case "GetLastDepositAndWithdraw":
+               $ubcard = trim($_POST['ubcard']);
+               //check if ub card is blank
+               if (strlen($ubcard) > 0)
+               {
+                   //get MID of the card
+                   $getMID = $oas3->getMIDByUBCard($ubcard);
+                   if ($getMID != false)
+                   {
+                       $MID = $getMID['MID'];
+                       //check if ub card exist in egmsessions, else, not started in egm terminal
+                       $lastTransaction = $oas->getLastTransactionByMID($MID);
+                            $withdrawAmount= number_format($lastTransaction['AmountW'],2,'.',',');
+                            $depositAmount = number_format($lastTransaction['Amount'],2,'.',',');
+                            
+                               $result[] = array('Site' => $lastTransaction['SiteCode'], 
+                                                         'DateAndTime' => $lastTransaction['StartDate'], 
+                                                         'Amount' => $depositAmount, 
+                                                         'Status' => $lastTransaction['Status'], 
+                                                         'ServiceName' => $lastTransaction['ServiceName'],
+                                                         'SiteWithdraw' => $lastTransaction['SiteCodeW'], 
+                                                         'DateAndTimeWithdraw' => $lastTransaction['StartDateW'], 
+                                                         'AmountWithdraw' => $withdrawAmount, 
+                                                         'StatusWithdraw' => $lastTransaction['StatusW'], 
+                                                         'ServiceNameWithdraw' => $lastTransaction['ServiceNameW'],
+                                                         'ErrorCode' => 0);                               
+                    }
+               }
+               else
+               {
+                   $result = array('ErrorCode' => 1, 
+                                   'Message' => 'Please enter Card Number.');
+               }
+                echo json_encode($result);
                break;
                case "CreateVirtualCashier": 
                    $siteID      = $_POST['siteID'];
