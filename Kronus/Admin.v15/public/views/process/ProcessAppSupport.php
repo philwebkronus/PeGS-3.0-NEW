@@ -14,7 +14,7 @@ include __DIR__.'/../sys/class/CasinoGamingCAPI.class.php';
 include __DIR__.'/../sys/class/CasinoGamingCAPIUB.class.php';
 include __DIR__.'/../sys/class/helper.class.php';
 include __DIR__.'/../sys/class/PcwsWrapper.class.php';
-include __DIR__.'/../sys/class/SAPIWrapper.class.php';
+//include __DIR__.'/../sys/class/SAPIWrapper.class.php';
 //include __DIR__.'/../sys/class/RealtimeGamingPlayerAPI.class.php';
 
 $aid = 0;
@@ -521,7 +521,7 @@ if($connected && $connected2 && $connected3)
              break;
              case "RemoveTerminal":
                  $pcwsWrapper = new PcwsWrapper($Pcws['systemusername'],$Pcws['systemcode']);
-                 $sapiWrapper = new SAPIWrapper();
+                 //$sapiWrapper = new SAPIWrapper();
                  $login = $_POST['login'];
                  $terminal = $_POST['terminal'];
                  $cardnumber = $_POST['cardnumber'];
@@ -557,10 +557,10 @@ if($connected && $connected2 && $connected3)
                      {
                          if ($result['ErrorCode'] == 0)
                          {  
-                             if ($isEGM > 0) {
-                                $sapiURL = $SAPI['endsession'];
-                                $sapiWrapper->endSession($terminal, $sapiURL); //call sapi endsession
-                             }
+                             //if ($isEGM > 0) {
+                                //$sapiURL = $SAPI['endsession'];
+                                //$sapiWrapper->endSession($terminal, $sapiURL); //call sapi endsession
+                             //}
                              $call = 0;
                              $response = array('ErrorCode' => 0, 
                                                'Message' => 'Terminal session succesfully removed.');
