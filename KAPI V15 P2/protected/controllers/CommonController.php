@@ -467,7 +467,7 @@ class CommonController {
      * @date March 4, 2015
      */
     public static function getSiteBalanceResponse($BCF, $transMsg, $errCode){
-        return CJSON::encode(array('RemoveEgmSession'=>(array('BCF' => $BCF, 
+        return CJSON::encode(array('GetSiteBalance'=>(array('BCF' => $BCF, 
                                                               'TransactionMessage'=>$transMsg, 
                                                               'ErrorCode'=>(int)$errCode))));
     }
