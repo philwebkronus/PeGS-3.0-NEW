@@ -90,6 +90,7 @@ return array(
     'forcet'=>'ForceT/overview',
     'forcet/load'=>'ForceT/load',
     'forcet/withdraw'=>'ForceT/withdraw',
+    'forcet/getbalance'=>'ForceT/forceTGetBalance',
     
     // routes for Force T - Load
     'load/getamount'=>'Load/getRedeemableAmountAndDetails3',
