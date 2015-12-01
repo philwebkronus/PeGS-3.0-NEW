@@ -59,13 +59,14 @@ class LoyaltyAPIWrapper {
 
   
         $isSuccessful = json_decode($result);
-        
-        if($isSuccessful->AddPoints->StatusCode == 1){
-//            return true;
-            return  true;
+        if(is_object($isSuccessful)){
+            if($isSuccessful->AddPoints->StatusCode == 1){
+                return true;
+            } else {
+                return false;
+            }
         } else {
-//            return false;
-           return false; 
+            return true;
         }
     }
 }
