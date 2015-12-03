@@ -213,9 +213,9 @@ class CouponModel extends CFormModel {
         $sql = "SELECT c.CouponID AS VoucherID, '2' AS VoucherTypeID, st.SiteName, c.CouponCode AS VoucherCode,
                 c.Status, c.TerminalID, c.Amount, c.DateCreated, c.ValidToDate, c.IsCreditable, st.SiteName,
                 c.DateUpdated
-                FROM coupons c INNER JOIN $dbname.terminals t ON t.TerminalID = c.TerminalID
-                INNER JOIN $dbname.sites st ON st.SiteID = t.SiteID
-                WHERE t.SiteID = '$site' AND c.DateUpdated >= :transdate
+                FROM coupons c
+                INNER JOIN $dbname.sites st ON st.SiteID = c.SiteID
+                WHERE c.SiteID = '$site' AND c.DateUpdated >= :transdate
                 AND c.DateUpdated < :vtransdate AND c.Status = 3
                 ORDER BY c.DateUpdated DESC";
         $command = $this->_connection->createCommand($sql);
