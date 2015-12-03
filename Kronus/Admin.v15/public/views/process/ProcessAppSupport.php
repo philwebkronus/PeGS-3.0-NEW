@@ -14,7 +14,7 @@ include __DIR__.'/../sys/class/CasinoGamingCAPI.class.php';
 include __DIR__.'/../sys/class/CasinoGamingCAPIUB.class.php';
 include __DIR__.'/../sys/class/helper.class.php';
 include __DIR__.'/../sys/class/PcwsWrapper.class.php';
-//include __DIR__.'/../sys/class/SAPIWrapper.class.php';
+include __DIR__.'/../sys/class/SAPIWrapper.class.php';
 //include __DIR__.'/../sys/class/RealtimeGamingPlayerAPI.class.php';
 
 $aid = 0;
@@ -521,7 +521,7 @@ if($connected && $connected2 && $connected3)
              break;
              case "RemoveTerminal":
                  $pcwsWrapper = new PcwsWrapper($Pcws['systemusername'],$Pcws['systemcode']);
-                 //$sapiWrapper = new SAPIWrapper();
+                 $sapiWrapper = new SAPIWrapper();
                  $login = $_POST['login'];
                  $terminal = $_POST['terminal'];
                  $cardnumber = $_POST['cardnumber'];
@@ -544,10 +544,10 @@ if($connected && $connected2 && $connected3)
                  {
                      if ($apicall == 1) { //force logout
                          if ($isEGM > 0) {
-                            $api_result = $pcwsWrapper->logoutLaunchPad($Pcws['forcelogoutgen'], $login);   
+                            $api_result = $pcwsWrapper->logoutLaunchPad($Pcws['forcelogoutgen'], $login, $serviceID);   
                          }
                          else {
-                             $api_result = $pcwsWrapper->logoutLaunchPad($Pcws['forcelogout'], $login);
+                             $api_result = $pcwsWrapper->logoutLaunchPad($Pcws['forcelogout'], $login, $serviceID);
                          }
                      }
                      else { //remove session
@@ -557,10 +557,10 @@ if($connected && $connected2 && $connected3)
                      {
                          if ($result['ErrorCode'] == 0)
                          {  
-                             //if ($isEGM > 0) {
-                                //$sapiURL = $SAPI['endsession'];
-                                //$sapiWrapper->endSession($terminal, $sapiURL); //call sapi endsession
-                             //}
+                             if ($isEGM > 0) {
+                                $sapiURL = $SAPI['endsession'];
+                                $sapiWrapper->endSession($terminal, $sapiURL); //call sapi endsession
+                             }
                              $call = 0;
                              $response = array('ErrorCode' => 0, 
                                                'Message' => 'Terminal session succesfully removed.');
@@ -820,6 +820,13 @@ if($connected && $connected2 && $connected3)
                }
                echo json_encode($result);
                break;
+                /**
+                * Check Get Last Session Information of UB
+                * @author Mark Nicolas Atangan
+                * @date 11/12/2015
+                * @Modified 11/25/2015
+                * @added Terminal Session Information for Cashier and Genesis start terminal Session
+                */
                case "CheckLastTrans":
                $ubcard = trim($_POST['ubcard']);
                //check if ub card is blank
@@ -831,19 +838,24 @@ if($connected && $connected2 && $connected3)
                    {
                        $MID = $getMID['MID'];
                        $hasSession = $oas->checkLastSessionByMID($MID);
-                               foreach ($hasSession as $row)
-                               {
                                    
-                               $result[] = array('Site' => $row['SiteCode'], 
-                                                         'Terminal' => $row['TerminalCode'], 
-                                                         'Service' => $row['ServiceName'], 
-                                                         'DateAndTime' => $row['TransactionDate'], 
-                                                         'TerminalType' => $row['TerminalType'],
-                                                         'CardNumber' => $row['LoyaltyCardNumber'],
+                               $result[] = array('Site' => $hasSession['SiteCode'], 
+                                                         'Terminal' => $hasSession['TerminalCode'], 
+                                                         'Service' => $hasSession['ServiceName'], 
+                                                         'DateAndTime' => $hasSession['TransactionDate'], 
+                                                         'TerminalType' => $hasSession['TerminalType'],
+                                                         'CardNumber' => $hasSession['LoyaltyCardNumber'],
+                                                         'SiteTS' => $hasSession['SiteCodeTS'], 
+                                                         'TerminalTS' => $hasSession['TerminalCodeTS'], 
+                                                         'ServiceTS' => $hasSession['ServiceNameTS'], 
+                                                         'DateAndTimeTS' => $hasSession['DateStartedTS'], 
+                                                         'TerminalTypeTS' => $hasSession['TerminalTypeTS'],
+                                                         'CardNumberTS' => $hasSession['LoyaltyCardNumberTS'],
                                                          'ErrorCode' => 0); 
-                               }
                                
-                       
+                    $vtransdetails = "UB last transaction report generated";
+                    $vauditfuncID = 107;             
+                    $oas->logtoaudit($new_sessionid, $aid, $vtransdetails, $vdate, $vipaddress, $vauditfuncID); //insert in audittrail
                    }
                }
                else
@@ -878,7 +890,8 @@ if($connected && $connected2 && $connected3)
                                                          'AmountWithdraw' => $withdrawAmount, 
                                                          'StatusWithdraw' => $lastTransaction['StatusW'], 
                                                          'ServiceNameWithdraw' => $lastTransaction['ServiceNameW'],
-                                                         'ErrorCode' => 0);                               
+                                                         'ErrorCode' => 0);       
+                    
                     }
                }
                else

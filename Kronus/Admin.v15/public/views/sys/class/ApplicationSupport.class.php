@@ -764,11 +764,11 @@ class ApplicationSupport extends DBHandler
       {
           if($zsiteID > 0)
           {
-              $stmt = "Select TerminalID, TerminalCode from terminals where SiteID = '".$zsiteID."' AND Status = 1 AND isVIP = 0 ORDER BY TerminalID ASC";
+              $stmt = "Select TerminalID, TerminalCode from terminals where SiteID = '".$zsiteID."' AND Status = 1 AND isVIP = 0 ORDER BY TerminalCode ASC";
           }
           else
 	  {
-              $stmt = "Select TerminalID, TerminalCode from terminals WHERE Status = 1 AND isVIP = 0 ORDER BY TerminalID ASC";
+              $stmt = "Select TerminalID, TerminalCode from terminals WHERE Status = 1 AND isVIP = 0 ORDER BY TerminalCode ASC";
           }
           $this->executeQuery($stmt);
           return $this->fetchAllData();
@@ -2304,7 +2304,7 @@ class ApplicationSupport extends DBHandler
      */
     public function checkIfHasTerminalSession($cardnumber)
     {
-        $stmt = "SELECT TerminalID, UserMode, UBServiceLogin, ServiceID    
+        $stmt = "SELECT TerminalID, UserMode, MID, UBServiceLogin, ServiceID    
                  FROM terminalsessions 
                  WHERE LoyaltyCardNumber = ? AND UserMode = 1";
         $this->prepare($stmt);
@@ -2314,6 +2314,21 @@ class ApplicationSupport extends DBHandler
         
         return $result;
     }
+    /**
+     * Check If has EGM
+     * @param type $MID
+     * @return type
+     */
+    public function checkIfHasEGMSession($MID) {
+        $stmt = "SELECT COUNT(EGMSessionID) as EGMCount, EGMSessionID FROM egmsessions 
+                 WHERE MID = ?";
+        $this->prepare($stmt);
+        $this->bindparameter(1, $MID);
+        $this->execute();
+        $result = $this->fetchData();
+        
+        return $result;
+    } 
     public function getSiteCode ($siteID)
     {
         $stmt = "SELECT SiteCode 
@@ -2391,6 +2406,207 @@ class ApplicationSupport extends DBHandler
         
         return $result;
     }
+     /**
+     * Check Get Last Session Information of UB
+     * @author Mark Nicolas Atangan
+     * @date 011/12/2015
+     */
+    public function checkLastSessionByMID($MID)
+    {
+        //---------------  Get Session From Launchpad or Genesis Session -----------------//
+        $stmt1 = "SELECT s.SiteCode, t.TerminalCode, ss.ServiceName, tr.TransactionDate,
+                        (CASE t.TerminalType WHEN '0' THEN 'Regular' 
+                                             WHEN '1' THEN 'EGM' 
+                                             WHEN '2' THEN 'eSAFE' 
+                         END) as TerminalType, tr.LoyaltyCardNumber
+                    FROM transactionrequestlogs  tr 
+                        INNER JOIN sites s ON tr.SiteID = s.SiteID 
+                        INNER JOIN terminals t ON tr.TerminalID=t.TerminalID
+                        INNER JOIN ref_services ss ON tr.ServiceID= ss.ServiceID
+                    WHERE MID=?
+                    ORDER BY TransactionRequestLogID DESC LIMIT 1"; 
+        
+        $this->prepare($stmt1);
+        $this->bindparameter(1, $MID);
+        $this->execute();
+        $result1 = $this->fetchAllData();
+        //------------------ Get Active Terminal Session --------------------------------//
+        $stmt2 = "SELECT s.SiteCode, t.TerminalCode, ss.ServiceName, tr.DateStarted,
+                        (CASE t.TerminalType WHEN '0' THEN 'Regular' 
+                                             WHEN '1' THEN 'EGM' 
+                                             WHEN '2' THEN 'eSAFE' 
+                         END) as TerminalType, tr.LoyaltyCardNumber
+                    FROM terminalsessions  tr 
+                        INNER JOIN terminals t ON tr.TerminalID=t.TerminalID
+                        INNER JOIN sites s ON t.SiteID = s.SiteID 
+                        INNER JOIN ref_services ss ON tr.ServiceID= ss.ServiceID
+                    WHERE MID=?
+                    ORDER BY DateStarted DESC LIMIT 1"; 
+        
+        $this->prepare($stmt2);
+        $this->bindparameter(1, $MID);
+        $this->execute();
+        $result2 = $this->fetchAllData();
+        
+       foreach($result1 as $value)
+       {
+                        $results['SiteCode'] = $value['SiteCode'];
+                        $results['TerminalCode'] = $value['TerminalCode'];
+                        $results['ServiceName'] = $value['ServiceName'];
+                        $results['TransactionDate'] = $value['TransactionDate'];
+                        $results['TerminalType'] = $value['TerminalType'];
+                        $results['LoyaltyCardNumber'] = $value['LoyaltyCardNumber'];
+        }
+        if($result2)
+        {
+                    foreach($result2 as $value)
+                        {
+                        $results['SiteCodeTS'] = $value['SiteCode'];
+                        $results['TerminalCodeTS'] = $value['TerminalCode'];
+                        $results['ServiceNameTS'] = $value['ServiceName'];
+                        $results['DateStartedTS'] = $value['DateStarted'];
+                        $results['TerminalTypeTS'] = $value['TerminalType'];
+                        $results['LoyaltyCardNumberTS'] = $value['LoyaltyCardNumber'];
+                        } 
+        }
+        else
+        {
+                        $results['SiteCodeTS'] = ' ' ;
+                        $results['TerminalCodeTS'] = ' ';
+                        $results['ServiceNameTS'] = ' ' ;
+                        $results['DateStartedTS'] = ' ' ;
+                        $results['TerminalTypeTS'] = ' ' ;
+                        $results['LoyaltyCardNumberTS'] = ' ';
+        }  
+        return $results;
+    }
+     /**
+     * Check Get Last Transaction of UB
+     * @author Mark Nicolas Atangan
+     * @date 11/13/2015
+     */
+    public function getLastTransactionByMID($MID)
+    {
+    //--------Get Last Deposit From ewallettrans -------//
+        
+        $query1 = "SELECT s.SiteCode, ew.StartDate, ew.Amount, 
+                        (CASE ew.Status WHEN '0' THEN 'Pending'
+					WHEN '1' THEN 'Successful'
+					WHEN '2' THEN 'FAILED'
+					WHEN '3' THEN 'Timed Out'
+					WHEN '4' THEN 'Transaction Approved(late)'
+					WHEN '5' THEN 'Transaction Denied(late)' 
+                        END) as Status, rs.ServiceName 
+                  FROM ewallettrans ew
+                        INNER JOIN sites s ON ew.SiteID=s.SiteID
+                        INNER JOIN ref_services rs ON ew.ServiceID=rs.ServiceID 
+                  WHERE TransType='D' AND MID=? ORDER BY StartDate DESC LIMIT 1"; 
+        $this->prepare($query1);
+        $this->bindparameter(1, $MID);
+        $this->execute();
+        $result1 = $this->fetchAllData();
+        //--------Last Get Withdraw From ewallettrans -------//
+        $query2 = "SELECT s.SiteCode, ew.StartDate, ew.Amount, 
+                        (CASE ew.Status WHEN '0' THEN 'Pending'
+					WHEN '1' THEN 'Successful'
+					WHEN '2' THEN 'FAILED'
+					WHEN '3' THEN 'Timed Out'
+					WHEN '4' THEN 'Transaction Approved(late)'
+					WHEN '5' THEN 'Transaction Denied(late)' 
+                        END) as Status, rs.ServiceName
+                  FROM ewallettrans ew
+                        INNER JOIN sites s ON ew.SiteID=s.SiteID
+                        INNER JOIN ref_services rs ON ew.ServiceID=rs.ServiceID 
+                  WHERE TransType='W' AND MID=? ORDER BY StartDate DESC LIMIT 1"; 
+        $this->prepare($query2);
+        $this->bindparameter(1, $MID);
+        $this->execute();
+        $result2 = $this->fetchAllData();
+        //--------Get Last Deposit OR Reload From transactionsummary for non-esafe terminals -------//
+//        $query3 = "SELECT s.SiteCode, td.TransactionDate, td.Amount, 
+//                        (CASE td.Status WHEN '0' THEN 'Pending'
+//					WHEN '1' THEN 'Successful'
+//					WHEN '2' THEN 'FAILED'
+//					WHEN '3' THEN 'Timed Out'
+//					WHEN '4' THEN 'Transaction Approved(late)'
+//					WHEN '5' THEN 'Transaction Denied(late)' 
+//                        END) as Status, rs.ServiceName
+//                  FROM transactiondetails td
+//                        INNER JOIN sites s ON td.SiteID=s.SiteID
+//                        INNER JOIN ref_services rs ON td.ServiceID=rs.ServiceID 
+//                  WHERE td.TransactionType IN('D','R') AND td.MID=? ORDER BY TransactionDate DESC LIMIT 1"; 
+//        $this->prepare($query3);
+//        $this->bindparameter(1, $MID);
+//        $this->execute();
+//        $result3 = $this->fetchAllData();
+//        //--------Get LAST Withdraw From transactionsummary for non-esafe terminals -------//
+//        $query4 = "SELECT s.SiteCode, td.TransactionDate, td.Amount, 
+//                        (CASE td.Status WHEN '0' THEN 'Pending'
+//					WHEN '1' THEN 'Successful'
+//					WHEN '2' THEN 'FAILED'
+//					WHEN '3' THEN 'Timed Out'
+//					WHEN '4' THEN 'Transaction Approved(late)'
+//					WHEN '5' THEN 'Transaction Denied(late)' 
+//                        END) as Status, rs.ServiceName
+//                  FROM transactiondetails td
+//                        INNER JOIN sites s ON td.SiteID=s.SiteID
+//                        INNER JOIN ref_services rs ON td.ServiceID=rs.ServiceID 
+//                  WHERE td.TransactionType='W' AND td.MID=? ORDER BY TransactionDate DESC LIMIT 1"; 
+//        $this->prepare($query4);
+//        $this->bindparameter(1, $MID);
+//        $this->execute();
+//        $result4 = $this->fetchAllData();
+                
+            //Compare Last Load from ewallettrans and transactiondetails
+//                if($result1[0]['StartDate']>$result3[0]['TransactionDate'])
+//                {
+                    foreach($result1 as $value)
+                    {
+                        $results['SiteCode'] = $value['SiteCode'];
+                        $results['StartDate'] = $value['StartDate'];
+                        $results['Amount'] = $value['Amount'];
+                        $results['Status'] = $value['Status'];
+                        $results['ServiceName'] = $value['ServiceName'];
+                    }
+//                }
+//                else 
+////                {   
+//                    foreach($result3 as $value)
+//                    {
+//                        $results['SiteCode'] = $value['SiteCode'];
+//                        $results['StartDate'] = $value['TransactionDate'];
+//                        $results['Amount'] = $value['Amount'];
+//                        $results['Status'] = $value['Status'];
+//                        $results['ServiceName'] = $value['ServiceName'];
+//                    }
+//                }
+//            //Compare Last Withdraw from ewallettrans and transactiondetails
+//                if($result2[0]['StartDate']>$result4[0]['TransactionDate'])
+//                {    
+                    foreach($result2 as $value)
+                    {
+                        $results['SiteCodeW'] = $value['SiteCode'];
+                        $results['StartDateW'] = $value['StartDate'];
+                        $results['AmountW'] = $value['Amount'];
+                        $results['StatusW'] = $value['Status'];
+                        $results['ServiceNameW'] = $value['ServiceName'];
+                    }
+//                }
+//                else
+//                {
+//                    foreach($result4 as $value)
+//                    {
+//                        $results['SiteCodeW'] = $value['SiteCode'];
+//                        $results['StartDateW'] = $value['TransactionDate'];
+//                        $results['AmountW'] = $value['Amount'];
+//                        $results['StatusW'] = $value['Status'];
+//                        $results['ServiceNameW'] = $value['ServiceName'];
+//                    }
+
+        
+        return $results;
+    }
+    
     /**
      * Check if Ewallet
      * @param type $MID

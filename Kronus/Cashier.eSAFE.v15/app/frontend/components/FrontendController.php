@@ -2365,7 +2365,7 @@ class FrontendController extends MI_Controller {
         list($is_loyalty, $card_number,$loyalty, $casinos, $mid, $casinoarray_count) = 
                 $this->getCardInfo($loyaltycard, $site_id, 2);
         
-        $serviceid = Mirage::app()->param['UBCasinoServiceID'];
+        $serviceid = 20;
         
         $casinos = $this->loopAndFindCasinoService($casinos, 'ServiceID', $serviceid);
         
