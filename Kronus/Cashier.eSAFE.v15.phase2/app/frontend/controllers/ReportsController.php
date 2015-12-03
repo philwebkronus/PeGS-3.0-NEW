@@ -19,7 +19,7 @@ class ReportsController extends FrontendController{
             $this->createUrl('reports/transactionhistorypervirtualcashier')=>'Transaction History Per Virtual Cashier',
             $this->createUrl('reports/eWalletPerSite')=>'e-SAFE Transaction History Per Site',
             $this->createUrl('reports/eWalletPerCashier')=>'e-SAFE Transaction History Per Cashier',
-            $this->createUrl('reports/siteCashOnHand')=>'Site Cash On Hand'
+            //$this->createUrl('reports/siteCashOnHand')=>'Site Cash On Hand'
         );
         $this->render('reports_overview',array('reportsFormModel'=>$reportsFormModel,'reports_type'=>$reports_type));
     }
