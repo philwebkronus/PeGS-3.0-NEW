@@ -79,13 +79,19 @@ class MemberInfoModel {
     }
 
     public function getEmailFNameUsingMIDWIthSP($MID) {
-        $sql = "CALL sp_select_data(1,1,0,'$MID','Email,FirstName,MiddleName,LastName',@ReturnCode, @ReturnMessage, @ReturnFields)";
+        $sql = "CALL sp_select_data(1,1,0,'$MID','Email,FirstName,MiddleName,LastName,NickName,AlternateEmail,MobileNumber,AlternateMobileNumber,Address1,IdentificationNumber',@ReturnCode, @ReturnMessage, @ReturnFields)";
         //$param = array(':MID' => $MID);
         $command = $this->_connection->createCommand($sql);
         $result = $command->queryRow(true);
-        $result = explode(";", $result['OUTfldListRet']);
-
-        return array('Email' => $result[0], 'FirstName' => $result[1], 'MiddleName' => $result[2], 'LastName' => $result[3]);
+        if($result['OUTfldListRet'] == '')
+            return array();
+        else
+        {
+            $result = explode(";", $result['OUTfldListRet']);
+            return array('Email' => $result[0], 'FirstName' => $result[1], 'MiddleName' => $result[2], 'LastName' => $result[3], 'NickName' => $result[4], 'AlternateEmail' => $result[5],
+                         'MobileNumber' => $result[6], 'AlternateMobileNumber' => $result[7], 'Address1' => $result[8],
+                         'IdentificationNumber' => $result[9]);
+        }
     }
 
     //@date 6-25-2014
