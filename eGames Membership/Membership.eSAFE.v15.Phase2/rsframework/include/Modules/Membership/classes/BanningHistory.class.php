@@ -92,7 +92,7 @@ class BanningHistory extends BaseEntity
             if(!App::HasError()){
                 $this->CommitTransaction();
                 if($entries['Status'] == "5"){
-                    $message = "Player Banning/Unbanning: Transaction Successful.";
+                    $message = "MID: ".$MID." ,Transaction Successful.";
                     $_AuditTrail = new AuditTrail();
                     $_AuditTrail->StartTransaction();
                     $_AuditTrail->logEvent(AuditFunctions::BAN_PLAYER, $message, array('ID'=>$_SESSION['userinfo']['AID'], 'SessionID'=>$_SESSION['userinfo']['SessionID']));
@@ -105,7 +105,7 @@ class BanningHistory extends BaseEntity
                         return $message;
                     }
                 } else {
-                    $message = "Player Banning/Unbanning: Transaction Successful.";
+                    $message = "MID: ".$MID." ,Transaction Successful.";
                     $_AuditTrail = new AuditTrail();
                     $_AuditTrail->StartTransaction();
                     $_AuditTrail->logEvent(AuditFunctions::UNBAN_PLAYER, $message, array('ID'=>$_SESSION['userinfo']['AID'], 'SessionID'=>$_SESSION['userinfo']['SessionID']));
@@ -121,7 +121,7 @@ class BanningHistory extends BaseEntity
 
             } else {
                 $_BanningHistory->RollBackTransaction();
-                $message = "Player Banning/Unbanning: Transaction Failed.";
+                $message = "MID: ".$MID." ,Transaction Failed.";
                 return $message;
             } 
         }

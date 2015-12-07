@@ -52,8 +52,8 @@ Class PlayerTerminationWrapper {
             $message = $message;
         }
         else{
-            $message = 'Player Termination: Transaction Successful.';
-            $details = $message.";".$entries['CardNumber'];
+            $message = 'Transaction Successful.';
+            $details = "Card Number: ".$entries['CardNumber'].";".$message;
             $_AuditTrail->logEvent(AuditFunctions::TERMINATE, $details, array('ID'=>$_SESSION['userinfo']['AID'], 'SessionID'=>$_SESSION['userinfo']['SessionID']));
         }
         
