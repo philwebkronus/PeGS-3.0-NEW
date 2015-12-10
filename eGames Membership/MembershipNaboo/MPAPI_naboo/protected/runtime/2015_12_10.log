@@ -1,0 +1,28 @@
+2015/12/10 10:06:53 [error] [php] fopen(logs/AppLogs/20151210.log): failed to open stream: Permission denied (/var/www/membership.mobile.naboo/MPAPI_naboo/protected/components/AppLogger.php:20)
+Stack trace:
+#0 /var/www/yii/framework/web/actions/CInlineAction.php(50): MPapiController->actionRegisterMemberNaboo()
+#1 /var/www/yii/framework/web/CController.php(309): CInlineAction->runWithParams()
+#2 /var/www/yii/framework/web/CController.php(287): MPapiController->runAction()
+#3 /var/www/yii/framework/web/CController.php(266): MPapiController->runActionWithFilters()
+#4 /var/www/yii/framework/web/CWebApplication.php(276): MPapiController->run()
+#5 /var/www/yii/framework/web/CWebApplication.php(135): CWebApplication->runController()
+#6 /var/www/yii/framework/base/CApplication.php(162): CWebApplication->processRequest()
+#7 /var/www/membership.mobile.naboo/MPAPI_naboo/index.php(13): CWebApplication->run()
+REQUEST_URI=/membership.mobile.naboo/MPAPI_naboo/index.php/MPapi/registermembernaboo
+in /var/www/membership.mobile.naboo/MPAPI_naboo/protected/components/AppLogger.php (20)
+in /var/www/membership.mobile.naboo/MPAPI_naboo/protected/controllers/MPapiController.php (41)
+in /var/www/membership.mobile.naboo/MPAPI_naboo/index.php (13)
+2015/12/10 10:06:57 [error] [php] fopen(logs/AppLogs/20151210.log): failed to open stream: Permission denied (/var/www/membership.mobile.naboo/MPAPI_naboo/protected/components/AppLogger.php:20)
+Stack trace:
+#0 /var/www/yii/framework/web/actions/CInlineAction.php(50): MPapiController->actionRegisterMemberNaboo()
+#1 /var/www/yii/framework/web/CController.php(309): CInlineAction->runWithParams()
+#2 /var/www/yii/framework/web/CController.php(287): MPapiController->runAction()
+#3 /var/www/yii/framework/web/CController.php(266): MPapiController->runActionWithFilters()
+#4 /var/www/yii/framework/web/CWebApplication.php(276): MPapiController->run()
+#5 /var/www/yii/framework/web/CWebApplication.php(135): CWebApplication->runController()
+#6 /var/www/yii/framework/base/CApplication.php(162): CWebApplication->processRequest()
+#7 /var/www/membership.mobile.naboo/MPAPI_naboo/index.php(13): CWebApplication->run()
+REQUEST_URI=/membership.mobile.naboo/MPAPI_naboo/index.php/MPapi/registermembernaboo
+in /var/www/membership.mobile.naboo/MPAPI_naboo/protected/components/AppLogger.php (20)
+in /var/www/membership.mobile.naboo/MPAPI_naboo/protected/controllers/MPapiController.php (41)
+in /var/www/membership.mobile.naboo/MPAPI_naboo/index.php (13)

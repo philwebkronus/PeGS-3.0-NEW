@@ -1,0 +1,167 @@
+K 25
+svn:wc:ra_dav:version-url
+V 104
+/e-games-membership/!svn/ver/2379/trunk/membership.mobile.naboo/MPAPI_naboo/protected/views/mPapiInvoker
+END
+reloadnaboo.php
+K 25
+svn:wc:ra_dav:version-url
+V 120
+/e-games-membership/!svn/ver/2373/trunk/membership.mobile.naboo/MPAPI_naboo/protected/views/mPapiInvoker/reloadnaboo.php
+END
+getgender.php
+K 25
+svn:wc:ra_dav:version-url
+V 118
+/e-games-membership/!svn/ver/2371/trunk/membership.mobile.naboo/MPAPI_naboo/protected/views/mPapiInvoker/getgender.php
+END
+overview.php
+K 25
+svn:wc:ra_dav:version-url
+V 117
+/e-games-membership/!svn/ver/2373/trunk/membership.mobile.naboo/MPAPI_naboo/protected/views/mPapiInvoker/overview.php
+END
+reload.php
+K 25
+svn:wc:ra_dav:version-url
+V 115
+/e-games-membership/!svn/ver/2372/trunk/membership.mobile.naboo/MPAPI_naboo/protected/views/mPapiInvoker/reload.php
+END
+getactivesession.php
+K 25
+svn:wc:ra_dav:version-url
+V 125
+/e-games-membership/!svn/ver/2371/trunk/membership.mobile.naboo/MPAPI_naboo/protected/views/mPapiInvoker/getactivesession.php
+END
+registermember.php
+K 25
+svn:wc:ra_dav:version-url
+V 123
+/e-games-membership/!svn/ver/2371/trunk/membership.mobile.naboo/MPAPI_naboo/protected/views/mPapiInvoker/registermember.php
+END
+forgotpassword.php
+K 25
+svn:wc:ra_dav:version-url
+V 123
+/e-games-membership/!svn/ver/2371/trunk/membership.mobile.naboo/MPAPI_naboo/protected/views/mPapiInvoker/forgotpassword.php
+END
+updateprofile.php
+K 25
+svn:wc:ra_dav:version-url
+V 122
+/e-games-membership/!svn/ver/2371/trunk/membership.mobile.naboo/MPAPI_naboo/protected/views/mPapiInvoker/updateprofile.php
+END
+getoccupation.php
+K 25
+svn:wc:ra_dav:version-url
+V 122
+/e-games-membership/!svn/ver/2371/trunk/membership.mobile.naboo/MPAPI_naboo/protected/views/mPapiInvoker/getoccupation.php
+END
+getcity.php
+K 25
+svn:wc:ra_dav:version-url
+V 116
+/e-games-membership/!svn/ver/2371/trunk/membership.mobile.naboo/MPAPI_naboo/protected/views/mPapiInvoker/getcity.php
+END
+authenticatesession.php
+K 25
+svn:wc:ra_dav:version-url
+V 128
+/e-games-membership/!svn/ver/2371/trunk/membership.mobile.naboo/MPAPI_naboo/protected/views/mPapiInvoker/authenticatesession.php
+END
+listitems.php
+K 25
+svn:wc:ra_dav:version-url
+V 118
+/e-games-membership/!svn/ver/2371/trunk/membership.mobile.naboo/MPAPI_naboo/protected/views/mPapiInvoker/listitems.php
+END
+getissmoker.php
+K 25
+svn:wc:ra_dav:version-url
+V 120
+/e-games-membership/!svn/ver/2371/trunk/membership.mobile.naboo/MPAPI_naboo/protected/views/mPapiInvoker/getissmoker.php
+END
+getnationality.php
+K 25
+svn:wc:ra_dav:version-url
+V 123
+/e-games-membership/!svn/ver/2371/trunk/membership.mobile.naboo/MPAPI_naboo/protected/views/mPapiInvoker/getnationality.php
+END
+getbalance.php
+K 25
+svn:wc:ra_dav:version-url
+V 119
+/e-games-membership/!svn/ver/2371/trunk/membership.mobile.naboo/MPAPI_naboo/protected/views/mPapiInvoker/getbalance.php
+END
+getidpresented.php
+K 25
+svn:wc:ra_dav:version-url
+V 123
+/e-games-membership/!svn/ver/2371/trunk/membership.mobile.naboo/MPAPI_naboo/protected/views/mPapiInvoker/getidpresented.php
+END
+login.php
+K 25
+svn:wc:ra_dav:version-url
+V 114
+/e-games-membership/!svn/ver/2371/trunk/membership.mobile.naboo/MPAPI_naboo/protected/views/mPapiInvoker/login.php
+END
+logout.php
+K 25
+svn:wc:ra_dav:version-url
+V 115
+/e-games-membership/!svn/ver/2371/trunk/membership.mobile.naboo/MPAPI_naboo/protected/views/mPapiInvoker/logout.php
+END
+getregion.php
+K 25
+svn:wc:ra_dav:version-url
+V 118
+/e-games-membership/!svn/ver/2371/trunk/membership.mobile.naboo/MPAPI_naboo/protected/views/mPapiInvoker/getregion.php
+END
+deletesession.php
+K 25
+svn:wc:ra_dav:version-url
+V 122
+/e-games-membership/!svn/ver/2371/trunk/membership.mobile.naboo/MPAPI_naboo/protected/views/mPapiInvoker/deletesession.php
+END
+changepassword.php
+K 25
+svn:wc:ra_dav:version-url
+V 123
+/e-games-membership/!svn/ver/2371/trunk/membership.mobile.naboo/MPAPI_naboo/protected/views/mPapiInvoker/changepassword.php
+END
+checkpoints.php
+K 25
+svn:wc:ra_dav:version-url
+V 120
+/e-games-membership/!svn/ver/2371/trunk/membership.mobile.naboo/MPAPI_naboo/protected/views/mPapiInvoker/checkpoints.php
+END
+registermemberbtnoemail.php
+K 25
+svn:wc:ra_dav:version-url
+V 132
+/e-games-membership/!svn/ver/2371/trunk/membership.mobile.naboo/MPAPI_naboo/protected/views/mPapiInvoker/registermemberbtnoemail.php
+END
+registermemberbt.php
+K 25
+svn:wc:ra_dav:version-url
+V 125
+/e-games-membership/!svn/ver/2371/trunk/membership.mobile.naboo/MPAPI_naboo/protected/views/mPapiInvoker/registermemberbt.php
+END
+registermembernaboo.php
+K 25
+svn:wc:ra_dav:version-url
+V 128
+/e-games-membership/!svn/ver/2379/trunk/membership.mobile.naboo/MPAPI_naboo/protected/views/mPapiInvoker/registermembernaboo.php
+END
+getprofile.php
+K 25
+svn:wc:ra_dav:version-url
+V 119
+/e-games-membership/!svn/ver/2371/trunk/membership.mobile.naboo/MPAPI_naboo/protected/views/mPapiInvoker/getprofile.php
+END
+getreferrer.php
+K 25
+svn:wc:ra_dav:version-url
+V 120
+/e-games-membership/!svn/ver/2371/trunk/membership.mobile.naboo/MPAPI_naboo/protected/views/mPapiInvoker/getreferrer.php
+END

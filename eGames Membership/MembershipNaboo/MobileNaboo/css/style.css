@@ -1,0 +1,19 @@
+/*
+Theme Name: E-Games 1
+Description: Optimind 
+Version: 1.0
+Author: J. Martino Olvido - Optimind
+Tags: Optimind Theme
+
+	This theme was designed and built by Optimind
+
+*/
+
+/*CSS*/
+@import 'css/normalize.css' ;
+@import 'css/base.css' ;
+@import 'css/slicknav.css' ;
+@import 'css/tinyscrollbar.css';
+@import 'css/featherlight.css';
+
+

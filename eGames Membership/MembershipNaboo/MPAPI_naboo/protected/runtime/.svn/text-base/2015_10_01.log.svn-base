@@ -1,0 +1,64 @@
+2015/10/01 11:23:47 [error] [application] ReturnMessage: Card is Inactive. ErrorCode: 6
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\controllers\MPapiController.php (592)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\index.php (13)
+2015/10/01 11:23:55 [error] [application] ReturnMessage: Password cannot be the same as the previous passwords. ErrorCode: 96
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\controllers\MPapiController.php (740)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\index.php (13)
+2015/10/01 11:23:58 [error] [application] ReturnMessage: Change password successful. ErrorCode: 0
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\controllers\MPapiController.php (700)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\index.php (13)
+2015/10/01 11:24:07 [error] [application] ReturnMessage: Card is Deactivated. ErrorCode: 11
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\controllers\MPapiController.php (592)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\index.php (13)
+2015/10/01 11:24:12 [error] [application] ReturnMessage: Card is Invalid ErrorCode: 10
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\controllers\MPapiController.php (592)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\index.php (13)
+2015/10/01 11:24:18 [error] [application] ReturnMessage: Card is Newly Migrated. ErrorCode: 7
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\controllers\MPapiController.php (592)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\index.php (13)
+2015/10/01 11:24:23 [error] [application] ReturnMessage: Card is Temporarily Migrated. ErrorCode: 8
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\controllers\MPapiController.php (592)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\index.php (13)
+2015/10/01 11:24:28 [error] [application] ReturnMessage: Card is Banned. ErrorCode: 9
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\controllers\MPapiController.php (592)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\index.php (13)
+2015/10/01 13:38:12 [error] [application] ReturnMessage: Card is Invalid ErrorCode: 10
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\controllers\MPapiController.php (582)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\index.php (13)
+2015/10/01 13:38:27 [error] [application] ReturnMessage: Card is Invalid ErrorCode: 10
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\controllers\MPapiController.php (582)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\index.php (13)
+2015/10/01 13:39:48 [error] [application] ReturnMessage: Password cannot be the same as the previous passwords. ErrorCode: 96
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\controllers\MPapiController.php (730)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\index.php (13)
+2015/10/01 13:39:54 [error] [application] ReturnMessage: Change password successful. ErrorCode: 0
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\controllers\MPapiController.php (690)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\index.php (13)
+2015/10/01 13:40:04 [error] [application] ReturnMessage: Change password successful. ErrorCode: 0
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\controllers\MPapiController.php (690)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\index.php (13)
+2015/10/01 13:40:10 [error] [application] ReturnMessage: Change password successful. ErrorCode: 0
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\controllers\MPapiController.php (690)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\index.php (13)
+2015/10/01 13:40:18 [error] [application] ReturnMessage: Card is Banned. ErrorCode: 9
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\controllers\MPapiController.php (582)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\index.php (13)
+2015/10/01 13:41:20 [error] [application] ReturnMessage: Change password successful. ErrorCode: 0
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\controllers\MPapiController.php (690)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\index.php (13)

@@ -1,0 +1,44 @@
+2015/12/10 10:04:28 [error] [php] Undefined offset: 2 (/var/www/membership.mobile.naboo/MobileNaboo/protected/controllers/InterfaceController.php:39)
+Stack trace:
+#0 /var/www/yii/framework/web/CController.php(287): InterfaceController->runAction()
+#1 /var/www/yii/framework/web/CController.php(266): InterfaceController->runActionWithFilters()
+#2 /var/www/yii/framework/web/CWebApplication.php(276): InterfaceController->run()
+#3 /var/www/yii/framework/web/CWebApplication.php(135): CWebApplication->runController()
+#4 /var/www/yii/framework/base/CApplication.php(162): CWebApplication->processRequest()
+#5 /var/www/membership.mobile.naboo/MobileNaboo/index.php(13): CWebApplication->run()
+REQUEST_URI=/membership.mobile.naboo/MobileNaboo/?page_id=156
+in /var/www/membership.mobile.naboo/MobileNaboo/protected/controllers/InterfaceController.php (39)
+in /var/www/membership.mobile.naboo/MobileNaboo/index.php (13)
+2015/12/10 10:04:41 [error] [php] Undefined offset: 2 (/var/www/membership.mobile.naboo/MobileNaboo/protected/controllers/InterfaceController.php:39)
+Stack trace:
+#0 /var/www/yii/framework/web/CController.php(287): InterfaceController->runAction()
+#1 /var/www/yii/framework/web/CController.php(266): InterfaceController->runActionWithFilters()
+#2 /var/www/yii/framework/web/CWebApplication.php(276): InterfaceController->run()
+#3 /var/www/yii/framework/web/CWebApplication.php(135): CWebApplication->runController()
+#4 /var/www/yii/framework/base/CApplication.php(162): CWebApplication->processRequest()
+#5 /var/www/membership.mobile.naboo/MobileNaboo/index.php(13): CWebApplication->run()
+REQUEST_URI=/membership.mobile.naboo/MobileNaboo/?page_id=156
+in /var/www/membership.mobile.naboo/MobileNaboo/protected/controllers/InterfaceController.php (39)
+in /var/www/membership.mobile.naboo/MobileNaboo/index.php (13)
+2015/12/10 10:05:27 [error] [php] Undefined offset: 2 (/var/www/membership.mobile.naboo/MobileNaboo/protected/controllers/InterfaceController.php:39)
+Stack trace:
+#0 /var/www/yii/framework/web/CController.php(287): InterfaceController->runAction()
+#1 /var/www/yii/framework/web/CController.php(266): InterfaceController->runActionWithFilters()
+#2 /var/www/yii/framework/web/CWebApplication.php(276): InterfaceController->run()
+#3 /var/www/yii/framework/web/CWebApplication.php(135): CWebApplication->runController()
+#4 /var/www/yii/framework/base/CApplication.php(162): CWebApplication->processRequest()
+#5 /var/www/membership.mobile.naboo/MobileNaboo/index.php(13): CWebApplication->run()
+REQUEST_URI=/membership.mobile.naboo/MobileNaboo/?page_id=156
+in /var/www/membership.mobile.naboo/MobileNaboo/protected/controllers/InterfaceController.php (39)
+in /var/www/membership.mobile.naboo/MobileNaboo/index.php (13)
+2015/12/10 10:06:53 [error] [php] Undefined offset: 2 (/var/www/membership.mobile.naboo/MobileNaboo/protected/controllers/InterfaceController.php:39)
+Stack trace:
+#0 /var/www/yii/framework/web/CController.php(287): InterfaceController->runAction()
+#1 /var/www/yii/framework/web/CController.php(266): InterfaceController->runActionWithFilters()
+#2 /var/www/yii/framework/web/CWebApplication.php(276): InterfaceController->run()
+#3 /var/www/yii/framework/web/CWebApplication.php(135): CWebApplication->runController()
+#4 /var/www/yii/framework/base/CApplication.php(162): CWebApplication->processRequest()
+#5 /var/www/membership.mobile.naboo/MobileNaboo/index.php(13): CWebApplication->run()
+REQUEST_URI=/membership.mobile.naboo/MobileNaboo/?page_id=156
+in /var/www/membership.mobile.naboo/MobileNaboo/protected/controllers/InterfaceController.php (39)
+in /var/www/membership.mobile.naboo/MobileNaboo/index.php (13)

@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/e-games-membership/!svn/ver/2393/trunk/membership.mobile.naboo/MobileNaboo/protected/config
+END
+console.php
+K 25
+svn:wc:ra_dav:version-url
+V 104
+/e-games-membership/!svn/ver/2388/trunk/membership.mobile.naboo/MobileNaboo/protected/config/console.php
+END
+main.php
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/e-games-membership/!svn/ver/2393/trunk/membership.mobile.naboo/MobileNaboo/protected/config/main.php
+END
+test.php
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/e-games-membership/!svn/ver/2388/trunk/membership.mobile.naboo/MobileNaboo/protected/config/test.php
+END

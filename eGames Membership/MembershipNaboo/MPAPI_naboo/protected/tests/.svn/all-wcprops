@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/e-games-membership/!svn/ver/2371/trunk/membership.mobile.naboo/MPAPI_naboo/protected/tests
+END
+WebTestCase.php
+K 25
+svn:wc:ra_dav:version-url
+V 107
+/e-games-membership/!svn/ver/2371/trunk/membership.mobile.naboo/MPAPI_naboo/protected/tests/WebTestCase.php
+END
+phpunit.xml
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/e-games-membership/!svn/ver/2371/trunk/membership.mobile.naboo/MPAPI_naboo/protected/tests/phpunit.xml
+END
+bootstrap.php
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/e-games-membership/!svn/ver/2371/trunk/membership.mobile.naboo/MPAPI_naboo/protected/tests/bootstrap.php
+END

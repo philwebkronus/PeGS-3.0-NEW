@@ -1,0 +1,8 @@
+2015/09/15 11:30:09 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\controllers\MPapiController.php (597)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\index.php (13)
+2015/09/15 11:30:17 [error] [application] ReturnMessage: Change password successful. ErrorCode: 0
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\controllers\MPapiController.php (723)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\index.php (13)

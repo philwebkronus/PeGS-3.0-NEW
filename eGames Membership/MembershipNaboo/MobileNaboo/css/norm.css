@@ -1,0 +1,291 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Dec 10, 2015, 9:26:18 AM
+    Author     : javida
+*/
+
+
+
+body {
+    /*background: url("../images/main-bg.jpg") no-repeat top center;*/
+    /*added*/
+    background: url("../images/main-bg.jpg");
+    background-repeat:none-repeat; 
+    background-position:center;
+
+    background-size: cover;
+    background-attachment: fixed;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 300;
+    line-height: 20px;
+}
+
+#header {
+    background: #761313;
+    float: left;
+    padding-bottom: 10px;
+    width: 100%;
+    z-index: 100000000;
+}
+h2{line-height: 30px;}
+h2 {
+    font-weight: 300;	
+}
+#main-content p, #main-content h2, #main-content h3, #main-content h4, #main-content h5, #main-content ul {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+#main-content p {
+    color: #d1cbca;
+}
+#logo {
+    margin-top: 0px;
+    height: 42px;
+    margin: 0 auto;
+    padding-top: 16px;
+    width: 234px;
+    overflow: hidden;
+}
+
+#logo a {
+    background: url("../images/logo.png") no-repeat;
+    display: block;
+    height: 42px;
+    width: 234px;
+    text-indent: -9999px;
+    overflow: hidden;
+}
+#main-content {
+    top : 0;
+    color: #d1cbca;
+    margin-bottom: 30px;
+}
+
+.container {
+    padding-right: 0;
+    padding-left: 0;
+    margin-right: auto;
+    margin-left: auto;
+
+}
+
+.ui-dialog-titlebar-close {
+  visibility: hidden;
+}
+@media (min-width: 270px) {
+    .container {
+        width: 240px;
+    }
+}
+@media (min-width: 370px) {
+    .container {
+        width: 340px;
+    }
+}
+@media (min-width: 490px) {
+    .container {
+        width: 470px;
+    }
+}
+@media (min-width: 768px) {
+    .container {
+        width: 560px;
+    }
+}
+@media (min-width: 992px) {
+    .container {
+        width: 646px;
+    }
+}
+@media (min-width: 1200px) {
+    .container {
+        width: 666px;
+    }
+}
+
+.page-heading-wrapper {
+    background:  #660000;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    /*height: 128px;*/
+    min-height: 60px;
+    height: auto;
+    opacity: 50;
+}
+
+.membership-content {
+    margin-top:  100px;
+    background: rgba(67, 59, 66, 0.6);
+    padding-left: 40px;
+    padding-right: 40px;
+    padding-bottom: 25px;
+    border: 2px solid transparent;
+    border-radius: 10px;
+}
+.membership-content h5 {
+    font-size: 18px;
+}
+
+.registration-form{
+    margin-bottom : 20px;
+}
+
+.registration-form form p label {
+    display: block;
+    float: left;
+    font-size: 18px;
+    padding-top: 5px;
+    width: 200px;
+}	
+.registration-form form input[type=text] {
+    padding:5px; 
+    border:2px solid #fff; 
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    width : 100%;
+}
+.registration-form form input[type=text]:focus {
+    border-color:#fff;
+}
+
+.registration-form form input[type=submit] {
+    -webkit-border-radius: 15px;
+    -moz-border-radius: 10px;
+    border-radius: 5px;
+    float: right;
+    height: 32px;
+    width: 100px;
+}
+.registration-form form input[type="submit"]:hover{
+    background-color : #D4D4D4;
+    cursor: pointer;
+}
+.registration-form form input[type=button] {
+    -webkit-border-radius: 15px;
+    -moz-border-radius: 10px;
+    border-radius: 5px;
+    float: right;
+    height: 32px;
+    width: 100px;
+}
+.registration-form form input[type="button"]:hover{
+    background-color : #D4D4D4;
+    cursor: pointer;
+}
+.registration-form form button{
+    -webkit-border-radius: 15px;
+    -moz-border-radius: 10px;
+    border-radius: 5px;
+    float: right;
+    height: 32px;
+    width: 100px;
+}
+.registration-form form button:hover{
+    background-color : #D4D4D4;
+    cursor: pointer;
+}
+.registration-form form input[type=submit]:hover {
+    background-position: bottom left;
+}
+
+.registration-form form .gender .radio-options span, .registration-form form .gender .radio-options input  {
+    display: block;
+    float: left ;
+}
+.registration-form form .gender .radio-options {
+    float: left;
+    display: block;
+    overflow: hidden;
+}
+.registration-form form .gender .radio-options input {
+    width: 29px;
+}
+.registration-form form .gender .radio-options span {
+    font-size: 18px;
+    margin-right: 20px;
+}	
+.registration-form form .birthday span {
+    /*background: url("../images/date-picker.gif") no-repeat;*/
+    float: left;
+    display: block;
+    height: 15px;
+    margin-top: 5px;
+    margin-left: 5px;
+    width: 16px;
+}
+.registration-form form .birthday input {
+    width: 140px;
+}
+.registration-form form .age input {
+    width: 40px;
+}
+.registration-form form select {
+    height: 38px;
+    width: 665px;
+}
+
+/* =Main Content
+-----------------------------------------------------------------------------*/
+.page-header {
+    height: auto;
+    margin: 0 auto;
+    position: relative;
+    width: 100%;
+}
+.page-header img {
+    display: block;
+    width: 100% \9;
+    max-width: 100%;
+    height: auto;
+}
+
+.page-heading-wrapper {
+    background:  #660000;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    /*height: 128px;*/
+    min-height: 60px;
+    height: auto;
+    opacity: 50;
+}
+
+#main-content {
+    color: #d1cbca;
+    margin-bottom: 30px;
+}
+.inner-page #main-content .container p  {
+    /*font-size: 18px;*/
+    font-size: 14px;
+}
+
+.inner-page #main-content .container p a{
+    /*font-size: 15px;*/
+    font-size: 14px;
+}
+
+#main-content p, #main-content h2, #main-content h3, #main-content h4, #main-content h5, #main-content ul {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+#main-content p {
+    color: #d1cbca;
+}
+
+.inner-page-content {
+    /*background: rgba(67, 59, 66, 0.6);*/
+    padding-top: 33px;
+    padding-bottom: 33px;
+}
+#main-content .inner-page-content p {
+    padding-left: 40px;
+    padding-right: 40px;
+}

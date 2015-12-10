@@ -1,0 +1,172 @@
+2015/09/10 09:52:14 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\controllers\MPapiController.php (341)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\index.php (13)
+2015/09/10 09:52:27 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\controllers\MPapiController.php (341)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\index.php (13)
+2015/09/10 09:52:29 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\controllers\MPapiController.php (341)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\index.php (13)
+2015/09/10 09:54:22 [error] [application] ReturnMessage: Card number does not exist. ErrorCode: 61
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\controllers\MPapiController.php (72)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\controllers\MPapiController.php (367)
+2015/09/10 09:56:07 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\controllers\MPapiController.php (341)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\index.php (13)
+2015/09/10 09:56:16 [error] [application] ReturnMessage: Card number does not exist. ErrorCode: 61
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\controllers\MPapiController.php (72)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\controllers\MPapiController.php (367)
+2015/09/10 09:56:35 [error] [application] ReturnMessage: Card number does not exist. ErrorCode: 61
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\controllers\MPapiController.php (72)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\controllers\MPapiController.php (367)
+2015/09/10 09:56:36 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\controllers\MPapiController.php (341)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\index.php (13)
+2015/09/10 09:56:43 [error] [application] ReturnMessage: Card number does not exist. ErrorCode: 61
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\controllers\MPapiController.php (72)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\controllers\MPapiController.php (367)
+2015/09/10 10:04:33 [error] [application] ReturnMessage: Card number does not exist. ErrorCode: 61
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\controllers\MPapiController.php (72)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\controllers\MPapiController.php (367)
+2015/09/10 10:04:35 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\controllers\MPapiController.php (341)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\index.php (13)
+2015/09/10 10:04:39 [error] [application] ReturnMessage: One or more fields is not set or is blank. ErrorCode: 1
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\controllers\MPapiController.php (341)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\index.php (13)
+2015/09/10 10:04:47 [error] [application] ReturnMessage: Card number does not exist. ErrorCode: 61
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\controllers\MPapiController.php (72)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\controllers\MPapiController.php (367)
+2015/09/10 10:06:10 [error] [application] ReturnMessage: Card number does not exist. ErrorCode: 61
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\controllers\MPapiController.php (72)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\controllers\MPapiController.php (367)
+2015/09/10 10:08:37 [error] [application] ReturnMessage: Card number does not exist. ErrorCode: 61
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\controllers\MPapiController.php (72)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\controllers\MPapiController.php (367)
+2015/09/10 10:08:43 [error] [application] ReturnMessage: Card is Inactive. ErrorCode: 6
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\controllers\MPapiController.php (408)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\index.php (13)
+2015/09/10 10:09:34 [error] [application] ReturnMessage: Invalid password. ErrorCode: 3
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\controllers\MPapiController.php (520)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\index.php (13)
+2015/09/10 10:10:18 [error] [application] ReturnMessage: Card is Inactive. ErrorCode: 6
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\controllers\MPapiController.php (408)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\index.php (13)
+2015/09/10 10:12:14 [error] [application] ReturnMessage: Invalid password. ErrorCode: 3
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\controllers\MPapiController.php (520)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\index.php (13)
+2015/09/10 10:41:02 [error] [application] ReturnMessage: One or more fields is not set or is blank. [CardNumber]  ErrorCode: 1
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\controllers\MPapiController.php (4736)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\index.php (13)
+2015/09/10 10:47:12 [error] [application] ReturnMessage: Card is Inactive. ErrorCode: 6
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\controllers\MPapiController.php (408)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\index.php (13)
+2015/09/10 10:49:26 [error] [application] ReturnMessage: Card is Inactive. ErrorCode: 6
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\controllers\MPapiController.php (408)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\index.php (13)
+2015/09/10 10:49:59 [error] [application] ReturnMessage: Card is Inactive. ErrorCode: 6
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\controllers\MPapiController.php (408)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\index.php (13)
+2015/09/10 10:51:19 [error] [application] ReturnMessage: Member not found. ErrorCode: 3
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\controllers\MPapiController.php (51)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\controllers\MPapiController.php (367)
+2015/09/10 13:41:34 [error] [application] ReturnMessage: Card number does not exist. ErrorCode: 61
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\controllers\MPapiController.php (72)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\controllers\MPapiController.php (367)
+2015/09/10 14:16:27 [error] [application] ReturnMessage: Name should not be less than 2 characters long. ErrorCode: 14
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\controllers\MPapiController.php (1242)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\index.php (13)
+2015/09/10 14:24:20 [error] [application] ReturnMessage: Card is Inactive. ErrorCode: 6
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\controllers\MPapiController.php (408)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\index.php (13)
+2015/09/10 14:32:22 [error] [application] ReturnMessage: Member not found. ErrorCode: 3
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\controllers\MPapiController.php (51)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\controllers\MPapiController.php (367)
+2015/09/10 14:35:40 [error] [application] ReturnMessage: Invalid password. ErrorCode: 3
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\controllers\MPapiController.php (520)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\index.php (13)
+2015/09/10 14:35:49 [error] [application] ReturnMessage: Card is Inactive. ErrorCode: 6
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\controllers\MPapiController.php (408)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\index.php (13)
+2015/09/10 14:36:45 [error] [application] ReturnMessage: Card is Inactive. ErrorCode: 6
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\controllers\MPapiController.php (408)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\index.php (13)
+2015/09/10 14:36:50 [error] [application] ReturnMessage: Card is Inactive. ErrorCode: 6
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\controllers\MPapiController.php (408)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\index.php (13)
+2015/09/10 14:39:10 [error] [application] ReturnMessage: Invalid password. ErrorCode: 3
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\controllers\MPapiController.php (520)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\index.php (13)
+2015/09/10 14:39:15 [error] [application] ReturnMessage: Card is Inactive. ErrorCode: 6
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\controllers\MPapiController.php (408)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\index.php (13)
+2015/09/10 14:39:22 [error] [application] ReturnMessage: Card is Inactive. ErrorCode: 6
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\controllers\MPapiController.php (408)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\index.php (13)
+2015/09/10 14:41:00 [error] [application] ReturnMessage: Card is Inactive. ErrorCode: 6
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\controllers\MPapiController.php (408)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\index.php (13)
+2015/09/10 14:42:48 [error] [application] ReturnMessage: Card is Inactive. ErrorCode: 6
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\controllers\MPapiController.php (408)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\index.php (13)
+2015/09/10 14:44:19 [error] [application] ReturnMessage: Card is Inactive. ErrorCode: 6
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\controllers\MPapiController.php (408)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\index.php (13)
+2015/09/10 14:44:52 [error] [application] ReturnMessage: Card is Inactive. ErrorCode: 6
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\controllers\MPapiController.php (408)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\index.php (13)
+2015/09/10 14:44:56 [error] [application] ReturnMessage: Card is Inactive. ErrorCode: 6
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\controllers\MPapiController.php (408)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\index.php (13)
+2015/09/10 14:45:04 [error] [application] ReturnMessage: Card is Inactive. ErrorCode: 6
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\controllers\MPapiController.php (408)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\index.php (13)
+2015/09/10 14:46:24 [error] [application] ReturnMessage: Card is Inactive. ErrorCode: 6
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\controllers\MPapiController.php (409)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\index.php (13)
+2015/09/10 14:55:32 [error] [application] ReturnMessage: Card is Invalid ErrorCode: 10
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\components\Utilities.php (11)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\protected\controllers\MPapiController.php (409)
+in C:\xampp\htdocs\membership.eSAFE.v15\MPAPI_v1\index.php (13)
