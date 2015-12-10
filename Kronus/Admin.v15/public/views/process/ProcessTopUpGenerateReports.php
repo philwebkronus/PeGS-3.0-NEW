@@ -1176,7 +1176,16 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         if(count($rows) > 0){
             foreach($rows as $row) {
                 $grosshold = (($row['InitialDeposit'] + $row['Reload']) - $row['Redemption']) - $row['ManualRedemption'];
-                $cashonhand = (((($row['DepositCash'] + $row['EwalletCashLoads'] + $row['ReloadCash']) - $row['RedemptionCashier']) - $row['EwalletWithdrawals']) - $row['ManualRedemption']) - $row['EncashedTickets'];
+//                var_dump($row['DepositCash'] + $row['EwalletCashLoads'] + $row['ReloadCash']);
+//                var_dump($row['DepositCash'] + $row['EwalletCashLoads'] + $row['ReloadCash'] + $row['DepositTicket'] + $row['ReloadTicket']);
+//                var_dump($row['RedemptionCashier'] + $row['EwalletWithdrawals'] + $row['ManualRedemption']);
+//                var_dump($row['EncashedTickets']);exit;
+                if ($startdate < BaseProcess::$deploymentdate) {
+                    $cashonhand = ((((($row['DepositCash'] + $row['EwalletCashLoads'] + $row['ReloadCash']) - $row['RedemptionCashier']) - $row['RedemptionGenesis']) - $row['EwalletWithdrawals']) - $row['ManualRedemption']) - $row['EncashedTickets'];
+                }
+                else {
+                    $cashonhand = ((((($row['DepositCash'] + $row['EwalletCashLoads'] + $row['ReloadCash'] + $row['DepositTicket'] + $row['ReloadTicket'] + $row['EwalletTicketDeposit'] + $row['Coupon']) - $row['RedemptionCashier']) - $row['RedemptionGenesis']) - $row['EwalletWithdrawals']) - $row['ManualRedemption']) - $row['EncashedTicketsV15'];
+                }
                 $endbal = $cashonhand + $row['Replenishment'] - $row['Collection'];
                 $pdf->c_tableRow2(array(
                     array('value'=>substr($row['SiteCode'], strlen(BaseProcess::$sitecode))),
@@ -1346,7 +1355,12 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         if(count($rows) > 0){
             foreach($rows as $row) {
                 $grosshold = (($row['InitialDeposit'] + $row['Reload']) - $row['Redemption']) - $row['ManualRedemption'];
-                $cashonhand = (((($row['DepositCash'] + $row['EwalletCashLoads'] + $row['ReloadCash']) - $row['RedemptionCashier']) - $row['EwalletWithdrawals']) - $row['ManualRedemption']) - $row['EncashedTickets'];
+                if ($startdate < BaseProcess::$deploymentdate) {
+                    $cashonhand = ((((($row['DepositCash'] + $row['EwalletCashLoads'] + $row['ReloadCash']) - $row['RedemptionCashier']) - $row['RedemptionGenesis']) - $row['EwalletWithdrawals']) - $row['ManualRedemption']) - $row['EncashedTickets'];
+                }
+                else {
+                    $cashonhand = ((((($row['DepositCash'] + $row['EwalletCashLoads'] + $row['ReloadCash'] + $row['DepositTicket'] + $row['ReloadTicket'] + $row['EwalletTicketDeposit'] + $row['Coupon']) - $row['RedemptionCashier']) - $row['RedemptionGenesis']) - $row['EwalletWithdrawals']) - $row['ManualRedemption']) - $row['EncashedTicketsV15'];
+                }
                 $endbal = $cashonhand + $row['Replenishment'] - $row['Collection'];
                 $new_rows[] = array(
                                 substr($row['SiteCode'], strlen(BaseProcess::$sitecode)),

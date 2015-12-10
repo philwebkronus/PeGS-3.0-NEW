@@ -172,10 +172,19 @@ class ProcessTopUpPaginate extends BaseProcess {
         ini_set('memory_limit', '-1'); 
         ini_set('max_execution_time', '220');
         $arrdetails = array();
+
         foreach($rows as $id => $row) {
             $gross_hold = ((($row['Deposit'] + $row['Reload'] + $row['EwalletLoads']) - ($row['Redemption'] - $row['EwalletWithdrawal'])) - $row['ActualAmount']);
-            $cashonhand =((($row['DepositCash'] + $row['ReloadCash'] + $row['EwalletCashLoads']) - $row['RedemptionCashier']) - $row['ActualAmount']) - $row["EncashedTickets"] - $row['EwalletWithdrawal'];
-            $endingbalance = ($cashonhand+$row['Replenishment']) - $row['Collection'];
+            /****************Grosshold Monitoring V1 Computation***********************/
+            if ($startdate < BaseProcess::$deploymentdate) {
+                $cashonhand = (((($row['DepositCash'] + $row['ReloadCash'] + $row['EwalletCashLoads'] + $row['Coupon']) - $row['RedemptionCashier']) - $row['RedemptionGenesis']) - $row['ActualAmount']) - $row["EncashedTickets"] - $row['EwalletWithdrawal'];
+                $endingbalance = ($cashonhand + $row['Replenishment']) - $row['Collection'];    
+            }
+            /****************Grosshold Monitoring V2 Computation***********************/
+            else {
+                $cashonhand = (((($row['DepositCash'] + $row['ReloadCash'] + $row['EwalletCashLoads'] + $row['Coupon'] + $row['LoadTickets']) - $row['RedemptionCashier']) - $row['RedemptionGenesis']) - $row['ActualAmount']) - $row["EncashedTicketsV2"] - $row['EwalletWithdrawal'];
+                $endingbalance = ($cashonhand + $row['Replenishment'] ) - $row['Collection'];
+            }
 //            if($row['SiteID'] == 167){
 //                var_dump($row['Replenishment'],$row['Collection'],$endingbalance, $cashonhand, $row['DepositCash'],$row['ReloadCash'],$row['EwalletCashLoads'],$row['RedemptionCashier'],$row['ActualAmount'],$row["EncashedTickets"], $row['EwalletWithdrawal']);exit;
 //            }
@@ -1487,7 +1496,6 @@ class ProcessTopUpPaginate extends BaseProcess {
 //        {
             $rows = $topup->getoldGHBalance($sort, $dir, $startdate, $enddate,$siteID); //get gross hold balance, (past)
         }
-        
         $page = $_GET['page']; // get the requested page
         $limit = $_GET['rows']; // get how many rows we want to have into the grid
         $count = count($rows); //count total rows
@@ -1517,8 +1525,20 @@ class ProcessTopUpPaginate extends BaseProcess {
         $jqgrid = $params['jqgrid'];
         foreach($rresult as $row) {
             $grosshold = (($row['InitialDeposit'] + $row['Reload']) - $row['Redemption']) - $row['ManualRedemption'];
-            $cashonhand = (((($row['DepositCash'] + $row['EwalletCashLoads'] + $row['ReloadCash']) - $row['RedemptionCashier']) - $row['EwalletWithdrawals']) - $row['ManualRedemption']) - $row['EncashedTickets'];
-            $endbal = $cashonhand + $row['Replenishment'] - $row['Collection'];
+//            var_dump($row['DepositCash'] + $row['EwalletCashLoads'] + $row['ReloadCash']);
+//            var_dump($row['DepositCash'] + $row['EwalletCashLoads'] + $row['ReloadCash'] + $row['DepositTicket'] + $row['ReloadTicket']);
+//            var_dump($row['RedemptionCashier'] + $row['EwalletWithdrawals'] + $row['ManualRedemption']);
+//            var_dump($row['EncashedTickets']);exit;
+            /*************Cash on Hand V1 computation******************/
+            if ($startdate < BaseProcess::$deploymentdate) {
+                $cashonhand = ((((($row['DepositCash'] + $row['EwalletCashLoads'] + $row['ReloadCash']) - $row['RedemptionCashier']) - $row['RedemptionGenesis']) - $row['EwalletWithdrawals']) - $row['ManualRedemption']) - $row['EncashedTickets'];
+            }
+            /*************Cash on Hand V2 computation******************/
+            else {
+                $cashonhand = ((((($row['DepositCash'] + $row['EwalletCashLoads'] + $row['ReloadCash'] + $row['DepositTicket'] + $row['ReloadTicket'] + $row['EwalletTicketDeposit'] + $row['Coupon']) - $row['RedemptionCashier']) - $row['RedemptionGenesis']) - $row['EwalletWithdrawals']) - $row['ManualRedemption']) - $row['EncashedTicketsV15'];
+            }
+            
+            $endbal = ($cashonhand + $row['Replenishment']) - $row['Collection'];
 //            $viewdetails = "<input type='button' id='btnviewdetails' value='View Details' SiteID='".$row['SiteID']."' StartDate='".$row['ReportDate']." ".BaseProcess::$cutoff."' EndDate='".$row['CutOff']."'".
 //                                           " onClick = '$(\"#hdnsiteid\").val($(this).attr(\"SiteID\")); $(\"#hdnstartdate\").val($(this).attr(\"StartDate\")); $(\"#hdnenddate\").val($(this).attr(\"EndDate\"));".
 //                                           "jQuery( \"#frmexport\").attr(\"action\",\"\"); jQuery(\"#frmexport\").attr(\"action\",\"GrossHoldBalanceViewDetails.php\");  document.getElementById(\"frmexport\").submit();'/>";

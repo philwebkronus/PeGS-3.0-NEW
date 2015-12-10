@@ -25,6 +25,7 @@ class BaseProcess {
    public static $ptSecretKey;
    public static $ptcasinoname;
    public static $cardinfo;
+   public static $deploymentdate;
    public $conn;
    
    public function getConnection() {
@@ -84,7 +85,7 @@ class BaseProcess {
     public static function setConfig($_ServiceAPI,$_PlayerAPI,$_ServiceAPICaching,
                                      $_MicrogamingCurrency, $terminalcode, $cutoff_time,
                                      $gaddeddate, $_CAPIUsername, $_CAPIPassword, 
-                                     $_CAPIPlayerName, $_ptsecretkey, $_ptcasinoname, $cardinfo) {
+                                     $_CAPIPlayerName, $_ptsecretkey, $_ptcasinoname, $cardinfo, $deploymentDate) {
         self::$service_api = $_ServiceAPI;
         self::$player_api = $_PlayerAPI;
         self::$service_api_caching = $_ServiceAPICaching;
@@ -99,6 +100,7 @@ class BaseProcess {
         self::$ptSecretKey = $_ptsecretkey;
         self::$ptcasinoname = $_ptcasinoname;
         self::$cardinfo = $cardinfo;
+        self::$deploymentdate = $deploymentDate;
     }
 }
 
@@ -113,4 +115,4 @@ BaseProcess::setMasterConnection($_DBConnectionString[0]); //connect to master D
 BaseProcess::setConnection($_DBConnectionString[1]); //connect to report/Slave db
 BaseProcess::setConfig($_ServiceAPI,$_PlayerAPI,$_ServiceAPICaching,$_MicrogamingCurrency, 
                        $terminalcode, $cutoff_time, $gaddeddate, $_CAPIUsername, $_CAPIPassword, 
-                       $_CAPIPlayerName,$_ptsecretkey,$_ptcasinoname, $cardinfo);
+                       $_CAPIPlayerName,$_ptsecretkey,$_ptcasinoname, $cardinfo, $deploymentDate);

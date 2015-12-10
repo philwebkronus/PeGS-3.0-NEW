@@ -34,16 +34,27 @@ class RptOperator extends DBHandler
             array_push($listsite,$row);
         }
         $site = implode(',', $listsite);
-        $stmt = "select tr.TransactionSummaryID,ts.DateStarted,ts.DateEnded,tr.DateCreated, ts.LoyaltyCardNumber, tr.TerminalID,tr.SiteID,
-        t.TerminalCode as TerminalCode, tr.TransactionType, sum(tr.Amount) AS amount,a.UserName from transactiondetails tr
-        inner join transactionrequestlogs trl on tr.TransactionReferenceID = trl.TransactionReferenceID
-        inner join transactionsummary ts on ts.TransactionsSummaryID = tr.TransactionSummaryID
-        inner join terminals t on t.TerminalID = tr.TerminalID
-        inner join accounts a on a.AID = tr.CreatedByAID
-        where tr.SiteID IN(".$site.") AND
-        ts.DateStarted >= ? and ts.DateStarted < ? AND tr.Status IN(1,4)
-        and trl.Status IN(1,3) and (tr.StackerSummaryID IS NULL OR trim(tr.StackerSummaryID) <> '')
-        group by tr.TransactionType,tr.TransactionSummaryID order by t.TerminalCode,ts.DateStarted Desc ";
+        $stmt = "select tr.TransactionSummaryID,
+                        ts.DateStarted,
+                        ts.DateEnded,
+                        tr.DateCreated, 
+                        ts.LoyaltyCardNumber, 
+                        tr.TerminalID,
+                        tr.SiteID,
+                        t.TerminalCode as TerminalCode, 
+                        tr.TransactionType, 
+                        sum(tr.Amount) AS amount,
+                        a.UserName 
+                from transactiondetails tr
+                inner join transactionrequestlogs trl on tr.TransactionReferenceID = trl.TransactionReferenceID
+                inner join transactionsummary ts on ts.TransactionsSummaryID = tr.TransactionSummaryID
+                inner join terminals t on t.TerminalID = tr.TerminalID
+                inner join accounts a on a.AID = tr.CreatedByAID
+                where tr.SiteID IN(".$site.") AND
+                ts.DateStarted >= ? and ts.DateStarted < ? AND tr.Status IN(1,4)
+                and trl.Status IN(1,3) and (tr.StackerSummaryID IS NULL OR trim(tr.StackerSummaryID) <> '')
+                group by tr.TransactionType,tr.TransactionSummaryID 
+                order by t.TerminalCode,ts.DateStarted Desc ";
         $this->prepare($stmt);
         $this->bindparameter(1, $zdateFROM);
         $this->bindparameter(2, $zdateto);
@@ -1067,7 +1078,9 @@ class RptOperator extends DBHandler
     
     function getCashOnHandDetails($datefrom, $dateto, $siteid) {
         $listsite = array();
-        $cohdata = array('TotalCashLoad' => 0, 'TotalCashRedemption' => 0, 'TotalMR' => 0);
+        $cohdata = array('TotalCashLoad' => 0, 
+                         'TotalCashRedemption' => 0, 
+                         'TotalMR' => 0);
         foreach ($siteid as $row){ array_push($listsite, "".$row.""); }
         $site = implode(',', $listsite);
 
@@ -1080,7 +1093,12 @@ class RptOperator extends DBHandler
                                        WHEN 2 THEN 0 -- Coupon
                                        ELSE -- Not Coupon
                                          CASE IFNULL(tr.StackerSummaryID, '')
-                                           WHEN '' THEN tr.Amount -- Cash
+                                           WHEN '' THEN 
+                                                CASE (SELECT COUNT(*) as IsBancnet FROM npos.banktransactionlogs btl
+                                                            INNER JOIN npos.transactionrequestlogs trl ON btl.TransactionRequestLogID = trl.TransactionRequestLogID
+                                                      WHERE trl.TransactionReferenceID = tr.TransactionReferenceID)
+                                                WHEN 0 THEN tr.Amount -- Cash
+                                                ELSE 0 END 
                                            ELSE  -- Check transtype in stackermanagement to find out if ticket or cash, from EGM
                                              (SELECT IFNULL(SUM(Amount), 0)
                                              FROM stackermanagement.stackerdetails sdtls
@@ -1099,7 +1117,12 @@ class RptOperator extends DBHandler
                                        WHEN 2 THEN 0 -- Coupon
                                        ELSE -- Not Coupon
                                          CASE IFNULL(tr.StackerSummaryID, '')
-                                           WHEN '' THEN tr.Amount -- Reload, Cash
+                                           WHEN '' THEN 
+                                                CASE (SELECT COUNT(*) as IsBancnet FROM npos.banktransactionlogs btl
+                                                            INNER JOIN npos.transactionrequestlogs trl ON btl.TransactionRequestLogID = trl.TransactionRequestLogID
+                                                      WHERE trl.TransactionReferenceID = tr.TransactionReferenceID)
+                                                WHEN 0 THEN tr.Amount -- Reload, Cash
+                                                ELSE 0 END 
                                            ELSE  -- Check transtype in stackermanagement to find out if ticket or cash, from EGM
                                               (SELECT IFNULL(SUM(Amount), 0)
                                 --              (SELECT IFNULL(Amount, 0)
@@ -1111,7 +1134,100 @@ class RptOperator extends DBHandler
                                          END
                                      END
                                    ELSE 0 -- Not Reload
-                                END) As ReloadCash,
+                                END) As ReloadCash, 
+                                
+                                -- DEPOSIT TICKET --
+                                SUM(CASE tr.TransactionType
+                                  WHEN 'D' THEN
+                                    CASE tr.PaymentType
+                                      WHEN 2 THEN 0 -- Coupon
+                                      ELSE -- Not Coupon
+                                        CASE IFNULL(tr.StackerSummaryID, '')
+                                          WHEN '' THEN 0 -- Cash
+                                          ELSE  -- Check transtype in stackermanagement to find out if ticket or cash, from EGM
+                                            (SELECT IFNULL(SUM(Amount), 0)
+                                            FROM stackermanagement.stackerdetails sdtls
+                                            WHERE sdtls.stackersummaryID = tr.StackerSummaryID
+                                                  AND sdtls.TransactionType = 1
+                                                  AND sdtls.PaymentType = 2)  -- Deposit, Ticket
+                                        END
+                                    END
+                                  ELSE 0 -- Not Deposit
+                                END) As DepositTicket,
+                                
+                                -- RELOAD TICKET --
+                                SUM(CASE tr.TransactionType
+                                  WHEN 'R' THEN
+                                    CASE tr.PaymentType
+                                      WHEN 2 THEN 0 -- Coupon
+                                      ELSE -- Not Coupon
+                                        CASE IFNULL(tr.StackerSummaryID, '')
+                                          WHEN '' THEN 0 -- Cash
+                                          ELSE  -- Check transtype in stackermanagement to find out if ticket or cash, from EGM
+                                            (SELECT IFNULL(SUM(Amount), 0)
+                                            FROM stackermanagement.stackerdetails sdtls
+                                            WHERE sdtls.stackersummaryID = tr.StackerSummaryID
+                                                   AND tr.TransactionDetailsID = sdtls.TransactionDetailsID
+                                                  AND sdtls.TransactionType = 2
+                                                  AND sdtls.PaymentType = 2)  -- Reload, Ticket
+                                        END
+                                    END
+                                  ELSE 0 -- Not Reload
+                                END) As ReloadTicket, 
+                                
+                                -- DEPOSIT COUPON --
+                                SUM(CASE tr.TransactionType
+                                  WHEN 'D' THEN
+                                    CASE tr.PaymentType
+                                      WHEN 2 THEN tr.Amount
+                                      ELSE 0
+                                     END
+                                  ELSE 0 END) As DepositCoupon,
+                                  
+                                -- RELOAD COUPON --
+                                SUM(CASE tr.TransactionType
+                                  WHEN 'R' THEN
+                                    CASE tr.PaymentType
+                                      WHEN 2 THEN tr.Amount
+                                      ELSE 0
+                                     END
+                                  ELSE 0 END) As ReloadCoupon,
+                                
+                                -- DEPOSIT Bancnet --
+                                SUM(CASE tr.TransactionType
+                                   WHEN 'D' THEN
+                                     CASE tr.PaymentType
+                                       WHEN 2 THEN 0 -- Coupon
+                                       ELSE -- Not Coupon
+                                         CASE IFNULL(tr.StackerSummaryID, '')
+                                            WHEN '' THEN 
+                                                CASE (SELECT COUNT(*) as IsBancnet FROM npos.banktransactionlogs btl
+                                                            INNER JOIN npos.transactionrequestlogs trl ON btl.TransactionRequestLogID = trl.TransactionRequestLogID
+                                                      WHERE trl.TransactionReferenceID = tr.TransactionReferenceID)
+                                                WHEN 1 THEN tr.Amount -- Bancnet
+                                                ELSE 0 END 
+                                            ELSE 0 END
+                                    END
+                                   ELSE 0 -- Not Deposit
+                                END) As DepositBancnet,
+                                
+                                -- RELOAD BANCNET --
+                                SUM(CASE tr.TransactionType
+                                   WHEN 'R' THEN
+                                     CASE tr.PaymentType
+                                       WHEN 2 THEN 0 -- Coupon
+                                       ELSE -- Not Coupon
+                                         CASE IFNULL(tr.StackerSummaryID, '')
+                                            WHEN '' THEN 
+                                                CASE (SELECT COUNT(*) as IsBancnet FROM npos.banktransactionlogs btl
+                                                            INNER JOIN npos.transactionrequestlogs trl ON btl.TransactionRequestLogID = trl.TransactionRequestLogID
+                                        WHERE trl.TransactionReferenceID = tr.TransactionReferenceID)
+                                                WHEN 1 THEN tr.Amount -- Reload, Bancnet
+                                                ELSE 0 END 
+                                            ELSE 0 END
+                                     END
+                                   ELSE 0 -- Not Reload
+                                END) As ReloadBancnet,
                                 
                                 -- REDEMPTION CASHIER --
                                 SUM(CASE tr.TransactionType
@@ -1121,7 +1237,19 @@ class RptOperator extends DBHandler
                                           ELSE 0
                                         END -- Genesis
                                   ELSE 0 --  Not Redemption
-                                END) As RedemptionCashier,
+                                END) As RedemptionCashier, 
+                                
+                                -- REDEMPTION GENESIS --
+                                SUM(CASE tr.TransactionType
+                                  WHEN 'W' THEN
+                                        CASE a.AccountTypeID
+                                          WHEN 15 THEN tr.
+                                          Amount -- Cashier
+                                          ELSE 0
+                                        END -- Genesis
+                                  ELSE 0 --  Not Redemption
+                                END) As RedemptionGenesis, 
+
 
                                 tr.DateCreated
                                 FROM transactiondetails tr INNER JOIN transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
@@ -1134,42 +1262,84 @@ class RptOperator extends DBHandler
                                 GROUP By tr.SiteID";
         
         $query2 = "SELECT SiteID, 
-                                        SUM(CASE IFNULL(TraceNumber,'')
-                                                WHEN '' THEN  
-                                                        CASE IFNULL(ReferenceNumber, '')
-                                                        WHEN '' THEN -- if not bancnet
-                                                                CASE TransType
-                                                                WHEN 'D' THEN -- if deposit
-                                                                        CASE PaymentType 
-                                                                        WHEN 1 THEN Amount -- if Cash
-                                                                        ELSE 0 -- if not Cash
-                                                                        END
-                                                                ELSE 0 -- if not deposit
-                                                                END
-                                                        ELSE 0 -- if bancnet
-                                                        END
-                                                ELSE 0
-                                        END) AS EwalletCashDeposit,
+                        -- Ewallet Cash Deposits -- 
+                        SUM(CASE IFNULL(TraceNumber,'')
+                            WHEN '' THEN  
+                                    CASE IFNULL(ReferenceNumber, '')
+                                    WHEN '' THEN -- if not bancnet
+                                            CASE TransType
+                                            WHEN 'D' THEN -- if deposit
+                                                    CASE PaymentType 
+                                                        WHEN 1 THEN Amount -- if Cash
+                                                        ELSE 0 -- if not Cash
+                                                    END
+                                            ELSE 0 -- if not deposit
+                                            END
+                                    ELSE 0 -- if bancnet
+                                    END
+                            ELSE 0
+                        END) AS EwalletCashDeposit,
 
-                                        SUM(CASE IFNULL(TraceNumber,'')
-                                                WHEN '' THEN 0
-                                                ELSE CASE IFNULL(ReferenceNumber, '')
-                                                        WHEN '' THEN 0 -- if not bancnet
-                                                        ELSE CASE TransType -- if bancnet
-                                                                WHEN 'D' THEN Amount -- if deposit
-                                                                ELSE 0 -- if not deposit
-                                                                END
-                                                        END
-                                        END) AS EwalletBancnetDeposit,
-                                        
-                                        -- Total e-SAFE Withdrawal
-                                        SUM(CASE TransType
-                                                WHEN 'W' THEN Amount -- if redemption
-                                                ELSE 0 -- if not redemption
-                                        END) AS EwalletRedemption
+                        -- Ewallet Bancnet Deposits -- 
+                        SUM(CASE IFNULL(TraceNumber,'')
+                                WHEN '' THEN 0
+                                ELSE CASE IFNULL(ReferenceNumber, '')
+                                        WHEN '' THEN 0 -- if not bancnet
+                                        ELSE CASE TransType -- if bancnet
+                                                WHEN 'D' THEN Amount -- if deposit
+                                                ELSE 0 -- if not deposit
+                                                END
+                                        END
+                        END) AS EwalletBancnetDeposit, 
+                        
+                        -- Ewallet Coupon Deposits -- 
+                        SUM(CASE TransType  
+                            WHEN 'D' THEN 
+                                CASE PaymentType 
+                                    WHEN 2 THEN Amount 
+                                    ELSE 0
+                                END 
+                            ELSE 0 
+                        END) AS EwalletVoucherDeposit, 
+                        
+                        -- Ewallet Ticket Loads -- 
+                        SUM(CASE TransType
+                                WHEN 'D' THEN -- if deposit
+                                        CASE PaymentType
+                                            WHEN 3 THEN Amount -- if voucher
+                                            ELSE 0 -- if not voucher
+                                        END
+                                ELSE 0 -- if not deposit
+                        END) AS EwalletTicketLoad, 
 
-                                    FROM ewallettrans WHERE StartDate >= ? AND StartDate < ?
-                                    AND SiteID IN (".$site.") AND Status IN (1,3) GROUP BY SiteID";
+                        -- Total e-SAFE Withdrawal -- 
+                        SUM(CASE TransType
+                                WHEN 'W' THEN Amount 
+                                ELSE 0 -- if not redemption
+                        END) AS EwalletRedemption, 
+                        
+                        -- Total e-SAFE Cash Withdrawal -- 
+                        SUM(CASE TransType
+                                WHEN 'W' THEN 
+                                    CASE PaymentType -- redemption in genesis not included
+                                        WHEN 1 THEN Amount 
+                                        ELSE 0
+                                    END
+                                ELSE 0 -- if not redemption
+                        END) AS EwalletCashRedemption, 
+                        
+                        -- Total e-SAFE Genesis Withdrawal -- 
+                        SUM(CASE TransType
+                                WHEN 'W' THEN 
+                                    CASE PaymentType -- redemption in genesis not included
+                                        WHEN 3 THEN Amount 
+                                        ELSE 0
+                                    END
+                                ELSE 0 -- if not redemption
+                        END) AS EwalletGenRedemption 
+
+                    FROM ewallettrans WHERE StartDate >= ? AND StartDate < ?
+                    AND SiteID IN (".$site.") AND Status IN (1,3) GROUP BY SiteID";
         
         $query3 = "SELECT SiteID, SUM(ActualAmount) AS ManualRedemption FROM manualredemptions
                             WHERE TransactionDate >= ? AND TransactionDate < ?
@@ -1186,7 +1356,14 @@ class RptOperator extends DBHandler
         foreach ($rows1 as $value) {
             $cohdata['TotalCashLoad'] += (float)$value['DepositCash'];
             $cohdata['TotalCashLoad'] += (float)$value['ReloadCash'];
+            $cohdata['TotalCashLoad'] += (float)$value['DepositTicket'];
+            $cohdata['TotalCashLoad'] += (float)$value['ReloadTicket'];
+            $cohdata['TotalCashLoad'] += (float)$value['ReloadBancnet'];
+            $cohdata['TotalCashLoad'] += (float)$value['DepositBancnet'];
+            $cohdata['TotalCashLoad'] += (float)$value['DepositCoupon'];
+            $cohdata['TotalCashLoad'] += (float)$value['ReloadCoupon'];
             $cohdata['TotalCashRedemption'] += (float)$value['RedemptionCashier'];
+            $cohdata['TotalCashRedemption'] += (float)$value['RedemptionGenesis'];
         }
        
         //Get total e-SAFE loaded cash (with bancnet transaction included)
@@ -1200,6 +1377,8 @@ class RptOperator extends DBHandler
         foreach ($rows2 as $value) {
             $cohdata['TotalCashLoad'] += (float)$value['EwalletCashDeposit'];
             $cohdata['TotalCashLoad'] += (float)$value['EwalletBancnetDeposit'];
+            $cohdata['TotalCashLoad'] += (float)$value['EwalletTicketLoad'];
+            $cohdata['TotalCashLoad'] += (float)$value['EwalletVoucherDeposit'];
             $cohdata['TotalCashRedemption'] += (float)$value['EwalletRedemption'];
         }
 
@@ -1272,7 +1451,134 @@ class RptOperator extends DBHandler
         
         return $totalencashedtickets;
     }
+    public function getSiteByAID($aid) {
+        $sql = "SELECT DISTINCT s.SiteID, s.SiteCode FROM npos.siteaccounts sa 
+                INNER JOIN npos.accounts a ON a.AID = sa.AID 
+                INNER JOIN npos.sites s ON s.SiteID = sa.SiteID 
+                WHERE a.AID = ? AND sa.Status = 1 AND s.Status = 1";
+        $this->prepare($sql);
+        $this->bindparameter(1, $aid);
+        $this->execute();
+        $result = $this->fetchAllData();
+        
+        return $result;
+    }
     
+    public function getGrossHoldTB($siteID, $serviceGroupIDs, $transtype, $datefrom, $dateto) {
+        if ($transtype == "DR") {
+            $sql = "SELECT IFNULL(SUM(td.Amount), 0) as Amount 
+                    FROM transactiondetails td 
+                    INNER JOIN ref_services rs ON rs.ServiceID = td.ServiceID 
+                    WHERE td.SiteID = ? AND 
+                    rs.ServiceGroupID IN (".implode(",", $serviceGroupIDs).") AND 
+                    td.TransactionType IN ('D', 'R') AND 
+                    td.Status IN (1, 4) AND 
+                    td.DateCreated >= ? AND td.DateCreated < ?"; 
+        }
+        else if ($transtype == "W"){
+            $sql = "SELECT IFNULL(SUM(td.Amount), 0) as Amount FROM transactiondetails td 
+                    INNER JOIN ref_services rs ON rs.ServiceID = td.ServiceID 
+                    WHERE td.SiteID = ? AND 
+                    rs.ServiceGroupID IN (".implode(",", $serviceGroupIDs).") AND 
+                    td.TransactionType IN ('W') AND 
+                    td.Status IN (1, 4) AND 
+                    td.DateCreated >= ? AND td.DateCreated < ?"; 
+        }
+        $datefrom = $datefrom." 06:00:00";
+        $dateto = $dateto." 06:00:00";
+        
+        $this->prepare($sql);
+        $this->bindparameter(1, $siteID);
+        $this->bindparameter(2, $datefrom);
+        $this->bindparameter(3, $dateto);
+        $this->execute();
+        $result = $this->fetchData();
+        
+        return $result;
+    }
+    /**
+     * 
+     * @param type $siteID
+     * @param type $serviceIDs
+     * @param type $datefrom
+     * @param type $dateto
+     * @return type
+     */
+    public function getManualRedemptionTrans($siteID, $serviceGroupIDs, $datefrom, $dateto) {
+        $sql = "SELECT IFNULL(SUM(ActualAmount), 0) as Amount FROM manualredemptions mr 
+                INNER JOIN ref_services rs ON rs.ServiceID = mr.ServiceID 
+                WHERE rs.ServiceGroupID IN (".implode(",", $serviceGroupIDs).") AND mr.Status = 1 
+                AND mr.SiteID = ?  
+                AND mr.TransactionDate >= ? AND mr.TransactionDate < ? 
+                ORDER BY mr.ManualRedemptionsID DESC";
+        
+        $datefrom = $datefrom." 06:00:00";
+        $dateto = $dateto." 06:00:00";
+        
+        $this->prepare($sql);
+        $this->bindparameter(1, $siteID);
+        $this->bindparameter(2, $datefrom);
+        $this->bindparameter(3, $dateto);
+        $this->execute();
+        $result = $this->fetchData();
+        
+        return $result;
+    }
+    public function getGrossHoldeSAFE($siteID, $datefrom, $dateto) {
+        $sql = "SELECT TransactionDate, s.SiteCode Login, SUM(ts.StartBalance)
+                StartBalance,
+                SUM(ts.WalletReloads) WalletReloads, SUM(ts.EndBalance) EndBalance,
+                SUM(ts.StartBalance) + SUM(ts.WalletReloads) - SUM(ts.EndBalance) GrossHold
+                FROM transactionsummary ts
+                INNER JOIN sites s
+                ON ts.SiteID = s.SiteID
+                WHERE ts.SiteID = ? AND 
+                ts.DateEnded >= ?
+                AND ts.DateEnded < ?";
+        
+        $datefrom = $datefrom." 06:00:00";
+        $dateto = $dateto." 06:00:00";
+        
+        $this->prepare($sql);
+        $this->bindparameter(1, $siteID);
+        $this->bindparameter(2, $datefrom);
+        $this->bindparameter(3, $dateto);
+        $this->execute();
+        $result = $this->fetchData();
+        
+        return $result;
+        
+    }
+    function getEncashedTicketsV15($zsiteID, $zdatefrom, $zdateto) {
+        $listsite = array();
+        $totalencashedtickets = 0.00;
+        foreach ($zsiteID as $row)
+        {
+            array_push($listsite, "'".$row."'");
+        }
+        for ($i = 0; $i < count($listsite); $i++) {
+            $query = "SELECT IFNULL(SUM(Amount), 0) AS EncashedTicketsV2, t.UpdatedByAID, t.SiteID, ad.Name   
+                        FROM vouchermanagement.tickets t 
+                        LEFT JOIN npos.accountdetails ad ON t.UpdatedByAID = ad.AID 
+                        WHERE t.DateEncashed >= :startdate AND t.DateEncashed < :enddate AND t.SiteID = ".$listsite[$i]."
+                        AND TicketCode NOT IN (
+                                SELECT IFNULL(ss.TicketCode, '') FROM stackermanagement.stackersummary ss 
+                                INNER JOIN npos.ewallettrans ewt ON ewt.StackerSummaryID = ss.StackerSummaryID 
+                                WHERE ewt.SiteID = ".$listsite[$i]." AND ewt.TransType = 'W' 
+                                ORDER BY ss.StackerSummaryID DESC
+                        )";
+            
+             $this->prepare($query);
+             $this->bindparameter(":startdate", $zdatefrom);
+             $this->bindparameter(":enddate", $zdateto);
+             $this->execute();
+             $rows = $this->fetchAllData();
+             
+             if (count($rows) > 0) {
+                $totalencashedtickets += (float)$rows[0]['EncashedTicketsV2'];
+             }
+        }
+        return $totalencashedtickets;
+    }
 }
-
 ?>

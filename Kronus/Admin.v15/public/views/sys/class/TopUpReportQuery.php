@@ -526,18 +526,17 @@ class TopUpReportQuery extends DBHandler{
     public function getoldGHCutoff($startdate, $enddate, $zsiteid) 
     {       
        switch ($zsiteid)
-                           {
+       {
            case 'All':
                //Query for the generated site gross hold per cutoff (this is only up to the last Cut off)
-                $query1 = "SELECT sgc.SiteID, sgc.BeginningBalance, sgc.EndingBalance, ad.Name, sd.SiteDescription, sgc.Coupon,
-                            s.SiteCode, s.POSAccountNo,sgc.DateFirstTransaction,sgc.DateLastTransaction,sgc.ReportDate,
+                $query1 = "SELECT sgc.SiteID, sgc.BeginningBalance, ad.Name, sd.SiteDescription, sgc.Coupon,
+                            s.SiteCode, s.POSAccountNo,sgc.ReportDate,
                             sgc.DateCutOff,sgc.Deposit AS InitialDeposit, sgc.Reload AS Reload , sgc.Withdrawal AS Redemption, sgc.EwalletDeposits,  sgc.EwalletWithdrawals
                             FROM sitegrossholdcutoff sgc
                             INNER JOIN sites s ON s.SiteID = sgc.SiteID
                             INNER JOIN accountdetails ad ON ad.AID = s.OwnerAID
                             INNER JOIN sitedetails sd ON sd.SiteID = sgc.SiteID
-                            WHERE sgc.DateCutOff > ?
-                            AND sgc.DateCutOff <= ?
+                            WHERE sgc.DateCutOff > ? AND sgc.DateCutOff <= ?
                             ORDER BY s.SiteCode, sgc.DateCutOff";          
 
                //Query for Replenishments
@@ -547,13 +546,13 @@ class TopUpReportQuery extends DBHandler{
                 //Query for Collection
                 $query3 = "SELECT SiteID, Amount, DateCreated FROM siteremittance
                                     WHERE Status = 3 AND DateCreated >= ? AND DateCreated < ? ";
-
+                
                 //Query for Manual Redemption (per site/per cut off)
                 $query5 = "SELECT SiteID, ActualAmount AS ActualAmount,TransactionDate FROM manualredemptions " . 
                         "WHERE TransactionDate >= ? AND TransactionDate < ? ";   
-                
+
                 //Query for Deposit (Cash,Coupon,Ticket),  Reload (Cash,Coupon,Ticket) and Redemption (Cashier,Genesis)
-                $query6 = "SELECT tr.TransactionSummaryID AS TransSummID, SUBSTR(t.TerminalCode,11) AS TerminalCode, tr.TransactionType AS TransType,
+                $query6 = "SELECT  tr.TransactionType AS TransType,
 
                                 -- TOTAL DEPOSIT --
                                 CASE tr.TransactionType
@@ -691,7 +690,7 @@ class TopUpReportQuery extends DBHandler{
                                 END As RedemptionGenesis,
 
                                 tr.DateCreated, tr.SiteID
-                                FROM npos.transactiondetails tr FORCE INDEX(IX_transactiondetails_DateCreated) 
+                                FROM npos.transactiondetails tr FORCE INDEX(IX_transactiondetails_DateCreated)
                                 INNER JOIN npos.transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
                                 INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
                                 INNER JOIN npos.accounts a ON tr.CreatedByAID = a.AID
@@ -707,8 +706,8 @@ class TopUpReportQuery extends DBHandler{
                                               INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
                                               INNER JOIN npos.accounts a ON tr.CreatedByAID = a.AID
                                               LEFT JOIN stackermanagement.stackersummary stckr ON stckr.StackerSummaryID = tr.StackerSummaryID
-                                              WHERE tr.SiteID = :siteid
-                                                AND tr.DateCreated >= :startdate AND tr.DateCreated < :enddate
+                                              WHERE tr.DateCreated >= :startdate AND tr.DateCreated < :enddate
+                                                AND tr.SiteID = :siteid
                                                 AND tr.Status IN(1,4)
                                                 AND tr.TransactionType = 'W'
                                                 AND tr.StackerSummaryID IS NOT NULL
@@ -741,8 +740,8 @@ class TopUpReportQuery extends DBHandler{
                                                                             INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
                                                                             INNER JOIN npos.accounts a ON tr.CreatedByAID = a.AID
                                                                             LEFT JOIN stackermanagement.stackersummary stckr ON stckr.StackerSummaryID = tr.StackerSummaryID
-                                                                            WHERE tr.SiteID = :siteid
-                                                                              AND tr.DateCreated >= :startdate AND tr.DateCreated < :enddate
+                                                                            WHERE tr.DateCreated >= :startdate AND tr.DateCreated < :enddate
+                                                                              AND tr.SiteID = :siteid
                                                                               AND tr.Status IN(1,4)
                                                                               AND tr.TransactionType In ('D', 'R')
                                                                                     AND tr.StackerSummaryID IS NOT NULL
@@ -753,17 +752,20 @@ class TopUpReportQuery extends DBHandler{
                                         GROUP BY SiteID";
                 
                 //Query for Printed Tickets of the pick date (per site/per cutoff)
-                $query8 = "SELECT tr.SiteID, IFNULL(SUM(stckr.Withdrawal), 0) AS PrintedTickets, tr.DateCreated FROM npos.transactiondetails tr FORCE INDEX(IX_transactiondetails_DateCreated)  -- Printed Tickets through W
-                                        INNER JOIN npos.transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
-                                        INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
-                                        INNER JOIN npos.accounts a ON ts.CreatedByAID = a.AID
-                                        LEFT JOIN stackermanagement.stackersummary stckr ON stckr.StackerSummaryID = tr.StackerSummaryID
-                                        WHERE tr.DateCreated >= ? AND tr.DateCreated < ?
-                                          AND tr.Status IN(1,4)
-                                          AND tr.SiteID = ?
-                                          AND tr.TransactionType = 'W'
-                                          AND tr.StackerSummaryID IS NOT NULL
-                                          GROUP BY tr.SiteID";
+                $query8 = "SELECT SiteID, SUM(PrintedTickets) AS PrintedTickets, DateCreated FROM (SELECT tr.SiteID, IFNULL(SUM(stckr.Withdrawal), 0) AS PrintedTickets FROM npos.transactiondetails tr FORCE INDEX(IX_transactiondetails_DateCreated)  -- Printed Tickets through W
+                            INNER JOIN npos.transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
+                            INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
+                            INNER JOIN npos.accounts a ON ts.CreatedByAID = a.AID
+                            LEFT JOIN stackermanagement.stackersummary stckr ON stckr.StackerSummaryID = tr.StackerSummaryID
+                            WHERE tr.DateCreated >= :startdate AND tr.DateCreated < :enddate 
+                              AND tr.Status IN(1,4)
+                              AND tr.TransactionType = 'W'
+                              AND tr.StackerSummaryID IS NOT NULL
+                              GROUP BY tr.SiteID 
+                        UNION ALL
+                        SELECT SiteID, SUM(Amount) as PrintedTickets FROM ewallettrans WHERE StartDate >= :startdate
+                            AND StartDate < :enddate AND Status IN (1,3) AND TransType='W' AND Source = 1 GROUP BY SiteID) 
+                        AS sum GROUP BY SiteID";
                 
                 //Query for Encashed Tickets of the pick date (per site/per cutoff)
                 $query9 = "SELECT tckt.SiteID, IFNULL(SUM(tckt.Amount), 0) AS EncashedTickets, tckt.DateEncashed as DateCreated FROM vouchermanagement.tickets tckt  -- Encashed Tickets
@@ -772,49 +774,65 @@ class TopUpReportQuery extends DBHandler{
                                         GROUP BY tckt.SiteID";
                 
                 //Query for Encashed Tickets of the pick date (per site/per cutoff)
-                $query10 = "SELECT et.SiteID, et.CreatedByAID, ad.Name,
-                                        SUM(CASE IFNULL(et.TraceNumber,'')
-                                                WHEN '' THEN  
-                                                        CASE IFNULL(et.ReferenceNumber, '')
-                                                        WHEN '' THEN -- if not bancnet
-                                                                CASE et.TransType
-                                                                WHEN 'D' THEN -- if deposit
-                                                                        CASE et.PaymentType 
-                                                                        WHEN 1 THEN et.Amount -- if Cash
-                                                                        ELSE 0 -- if not Cash
-                                                                        END
-                                                                ELSE 0 -- if not deposit
-                                                                END
-                                                        ELSE 0 -- if bancnet
-                                                        END
-                                                ELSE 0
-                                        END) AS EwalletCashDeposit,
+                $query10 = "SELECT SiteID,
+                                        CASE
+                                          WHEN (substr(StartDate, 12, 2) < '06') THEN substr(date_add(StartDate, INTERVAL -1 DAY), 1, 10)
+                                          ELSE substr(StartDate, 1, 10)
+                                        END AS ReportDate,
 
-                                        SUM(CASE IFNULL(et.TraceNumber,'')
-                                                WHEN '' THEN 0
-                                                ELSE CASE IFNULL(et.ReferenceNumber, '')
-                                                        WHEN '' THEN 0 -- if not bancnet
-                                                        ELSE CASE et.TransType -- if bancnet
-                                                                WHEN 'D' THEN et.Amount -- if deposit
-                                                                ELSE 0 -- if not deposit
-                                                                END
-                                                        END
-                                        END) AS EwalletBancnetDeposit,
+                                        SUM(CASE PaymentType -- Coupon
+                                            WHEN 2 THEN Amount
+                                            ELSE 0 END)
+                                        AS EwalletVoucherDeposit,
                                         
-                                        SUM(CASE et.TransType
-                                                WHEN 'D' THEN -- if deposit
-                                                        CASE et.PaymentType
-                                                        WHEN 2 THEN et.Amount -- if voucher
-                                                        ELSE 0 -- if not voucher
-                                                        END
-                                                ELSE 0 -- if not deposit
-                                        END) AS EwalletVoucherDeposit
+                                        SUM(CASE PaymentType -- Coupon
+                                            WHEN 3 THEN Amount
+                                            ELSE 0 END)
+                                        AS EwalletTicketDeposit,
+                                        
+                                        -- Total e-SAFE Withdrawal Genesis --
+                                        SUM(CASE TransType
+                                                WHEN 'W' THEN 
+                                                    CASE StackerSummaryID 
+                                                        WHEN NOT NULL THEN Amount -- if redemption
+                                                        ELSE 0
+                                                    END 
+                                                ELSE 0 -- if not redemption
+                                        END) AS EwalletRedemptionGenesis, 
+                                        
+                                        SUM(CASE PaymentType -- Bancnet
+                                            WHEN 1 THEN
+                                              CASE IFNULL(TraceNumber, '')
+                                                 WHEN '' THEN 0
+                                                  ELSE Amount -- Bancnet
+                                                    END
+                                            ELSE 0 END)
+                                        AS EwalletBancnetDeposit,
 
-                                    FROM npos.ewallettrans et
-                                    LEFT JOIN npos.accountdetails ad ON et.CreatedByAID = ad.AID
-                                    WHERE et.StartDate >= ? AND et.StartDate < ?
-                                    AND et.Status IN (1,3) 
-                                    GROUP BY et.CreatedByAID";
+                                        SUM(CASE PaymentType -- Cash
+                                            WHEN 1 THEN
+                                              CASE IFNULL(TraceNumber, '')
+                                              WHEN '' THEN Amount -- Cash
+                                              ELSE 0 END
+                                            ELSE 0 END)
+                                        AS EwalletCashDeposit
+                                  FROM npos.ewallettrans
+                                  WHERE TransType = 'D' AND Status IN (1,3)
+                                  AND StartDate >= ? AND StartDate < ?
+                                  GROUP BY SiteID, ReportDate";
+                
+                $query11 = "SELECT IFNULL(SUM(Amount), 0) AS EncashedTicketsV2, t.DateEncashed, t.UpdatedByAID, t.SiteID, ad.Name   
+                   FROM vouchermanagement.tickets t 
+                   LEFT JOIN npos.accountdetails ad ON t.UpdatedByAID = ad.AID
+                   WHERE t.DateEncashed >= ? AND t.DateEncashed < ?  
+                   AND TicketCode NOT IN (
+                           SELECT IFNULL(ss.TicketCode, '') FROM stackermanagement.stackersummary ss 
+                           INNER JOIN npos.ewallettrans ewt ON ewt.StackerSummaryID = ss.StackerSummaryID 
+                           WHERE ewt.TransType = 'W' 
+                           GROUP BY ewt.SiteID 
+                           ORDER BY ss.StackerSummaryID DESC
+                   )
+                   GROUP BY t.SiteID";
 
                 // to get beginning balance, sitecode, sitename
                 $this->prepare($query1);
@@ -824,15 +842,16 @@ class TopUpReportQuery extends DBHandler{
                 $rows1 = $this->fetchAllData();        
                 $qr1 = array();
                 foreach($rows1 as $row1) {
-                    $qr1[] = array('SiteID'=>$row1['SiteID'],'BegBal'=>$row1['BeginningBalance'],'EndBal'=>$row1['EndingBalance'], 
+                    $qr1[] = array('SiteID'=>$row1['SiteID'],'BegBal'=>$row1['BeginningBalance'],
                         'POSAccountNo' => $row1['POSAccountNo'],'SiteName' => $row1['Name'],'SiteCode'=>$row1['SiteCode'], 
                         'InitialDeposit'=>'0.00','Reload'=>'0.00','Redemption'=> '0.00',
-                        'DateStart'=>$row1['DateFirstTransaction'],'DateLast'=>$row1['DateLastTransaction'],
                         'ReportDate'=>$row1['ReportDate'],'CutOff'=>$row1['DateCutOff'],'ManualRedemption'=>0,'Coupon'=>'0.00',
                         'PrintedTickets'=>'0.00','EncashedTickets'=>'0.00', 'RedemptionCashier'=>'0.00',
                         'RedemptionGenesis'=>'0.00','DepositCash'=>'0.00','ReloadCash'=>'0.00','UnusedTickets'=>'0.00','DepositTicket'=>'0.00',
                         'ReloadTicket'=>'0.00','DepositCoupon'=>'0.00','ReloadCoupon'=>'0.00', 'Replenishment'=>0,'Collection'=>0,
-                        'EwalletDeposits' => $row1['EwalletDeposits'], 'EwalletWithdrawals' => $row1['EwalletWithdrawals'], 'EwalletCashLoads' => 0
+                        'EwalletDeposits' => $row1['EwalletDeposits'], 'EwalletWithdrawals' => $row1['EwalletWithdrawals'], 
+                        'EwalletCashLoads' => 0, 'EwalletRedemptionGenesis' => 0, 
+                        'EncashedTicketsV15' => 0, 'EwalletTicketDeposit' => 0 
                         );
                 }
                 
@@ -879,7 +898,7 @@ class TopUpReportQuery extends DBHandler{
                 $this->bindparameter(1, $startdate);
                 $this->bindparameter(2, $enddate);
                 $this->execute();  
-                $rows6 =  $this->fetchAllData();
+                $rows6 =  $this->fetchAllData();                
                 foreach ($rows6 as $row6) {
                     foreach ($qr1 as $keys => $value1) {
                         if($row6["SiteID"] == $value1["SiteID"]){
@@ -926,9 +945,9 @@ class TopUpReportQuery extends DBHandler{
                 foreach ($qr1 as $keys => $value2) {
                     //Get the total Unused Tickets per site
                     $this->prepare($query7);
-                    $this->bindparameter(":siteid", $value2["SiteID"]);
                     $this->bindparameter(":startdate", $value2["ReportDate"]." ".BaseProcess::$cutoff);
                     $this->bindparameter(":enddate", $value2["CutOff"]);
+                    $this->bindparameter(":siteid", $value2["SiteID"]);
                     $this->execute();  
                     $rows7 =  $this->fetchAllData();
                     foreach ($rows7 as $row7) {
@@ -941,9 +960,8 @@ class TopUpReportQuery extends DBHandler{
                     
                     //Get the total Printed Tickets per site
                     $this->prepare($query8);
-                    $this->bindparameter(1, $value2["ReportDate"]." ".BaseProcess::$cutoff);
-                    $this->bindparameter(2, $value2["CutOff"]);
-                    $this->bindparameter(3, $value2["SiteID"]);
+                    $this->bindparameter(":startdate", $value2["ReportDate"]." ".BaseProcess::$cutoff);
+                    $this->bindparameter(":enddate", $value2["CutOff"]);
                     $this->execute();  
                     $rows8 =  $this->fetchAllData();
                     
@@ -971,8 +989,8 @@ class TopUpReportQuery extends DBHandler{
                             }
                             break;
                         }
-                    }
-                }
+                    }  
+                } 
                 
                 //Get the total Encashed Tickets per site
                 $this->prepare($query10);
@@ -984,14 +1002,37 @@ class TopUpReportQuery extends DBHandler{
                 foreach ($rows10 as $value1) {
                     foreach ($qr1 as $keys => $value2) {
                         if($value1["SiteID"] == $value2["SiteID"]){
-                                $qr1[$keys]["EwalletCashLoads"] += (float)$value1["EwalletCashDeposit"];
-                                $qr1[$keys]["EwalletCashLoads"] += (float)$value1["EwalletBancnetDeposit"];
-                                $qr1[$keys]["Coupon"] += (float)$value1["EwalletVoucherDeposit"];
+                                if($value1['ReportDate'] == $value2['ReportDate']){
+                                    $qr1[$keys]["EwalletCashLoads"] += (float)$value1["EwalletCashDeposit"];
+                                    $qr1[$keys]["EwalletCashLoads"] += (float)$value1["EwalletBancnetDeposit"];
+                                    $qr1[$keys]["EwalletRedemptionGenesis"] += (float)$value1["EwalletRedemptionGenesis"];
+                                    $qr1[$keys]["Coupon"] += (float)$value1["EwalletVoucherDeposit"];
+                                    $qr1[$keys]["EwalletTicketDeposit"] += (float)$value1["EwalletTicketDeposit"];
+                                }
                             break;
                         }
                     }  
                 }
-
+                
+                /****************Get Encashed Tickets for V15******************************/
+                $this->prepare($query11);
+                $this->bindparameter(1, $startdate);
+                $this->bindparameter(2, $enddate);
+                $this->execute();  
+                $rows11 =  $this->fetchAllData();
+                
+                foreach ($rows11 as $value1) {
+                    foreach ($qr1 as $keys => $value2) {
+                        if($value1["SiteID"] == $value2["SiteID"]){
+                            if(($value1['DateEncashed'] >= $value2['ReportDate']." ".BaseProcess::$cutoff) && ($value1['DateEncashed'] < $value2['CutOff'])){
+                                $qr1[$keys]["EncashedTicketsV15"] = (float)$value1["EncashedTicketsV2"];
+                            }
+                            break;
+                        }
+                    }  
+                }
+                
+                
                 $ctr = 0;
                 while($ctr < count($qr1))
                 {
@@ -1013,7 +1054,7 @@ class TopUpReportQuery extends DBHandler{
                             }
                         }
                         $ctr2 = $ctr2 + 1;
-                    }            
+                    }           
 
                     $ctr3 = 0; //counter for grossholdconfirmation array
                     while($ctr3 < count($qr2))
@@ -1044,24 +1085,24 @@ class TopUpReportQuery extends DBHandler{
                             {
                                 if($qr1[$ctr]['Collection'] == 0) 
                                 {
-                                    $qr1[$ctr]['Collection'] = $qr3[$ctr4]['Amount'];             
+                                    $qr1[$ctr]['Collection'] = $qr3[$ctr4]['Amount'];         
                                 }      
                                 else
                                 {
                                     $amount = $qr1[$ctr]['Collection'];
-                                    $qr1[$ctr]['Collection'] = $amount + $qr3[$ctr4]['Amount'];                                      
+                                    $qr1[$ctr]['Collection'] = $amount + $qr3[$ctr4]['Amount'];                                
                                 }                           
                             }                    
                         }
                         $ctr4 = $ctr4 + 1;
                     }            
                     $ctr = $ctr + 1;
-                }                 
+                }
                break;
            case $zsiteid > 0 :
                //Query for the generated site gross hold per cutoff (this is only up to the last Cut off)
-                $query1 = "SELECT sgc.SiteID, sgc.BeginningBalance, sgc.EndingBalance, ad.Name, sd.SiteDescription, sgc.Coupon,
-                            s.SiteCode, s.POSAccountNo,sgc.DateFirstTransaction,sgc.DateLastTransaction,sgc.ReportDate,
+                $query1 = "SELECT sgc.SiteID, sgc.BeginningBalance, ad.Name, sgc.Coupon,
+                            s.SiteCode, s.POSAccountNo,sgc.ReportDate,
                             sgc.DateCutOff,sgc.Deposit AS InitialDeposit, sgc.Reload AS Reload , sgc.Withdrawal AS Redemption, sgc.EwalletDeposits,  sgc.EwalletWithdrawals
                             FROM sitegrossholdcutoff sgc
                             INNER JOIN sites s ON s.SiteID = sgc.SiteID
@@ -1073,18 +1114,18 @@ class TopUpReportQuery extends DBHandler{
 
                //Query for Replenishments
                 $query2 = "SELECT SiteID, Amount, DateCreated FROM replenishments
-                                    WHERE DateCreated >= ? AND DateCreated < ? AND SiteID = ? ";
+                                    WHERE DateCreated >= ? AND DateCreated < ? AND SiteID = ?";
 
                 //Query for Collection
                 $query3 = "SELECT SiteID, Amount, DateCreated FROM siteremittance
                                     WHERE Status = 3 AND DateCreated >= ? AND DateCreated < ? AND SiteID = ? ";
 
                 //Query for Manual Redemption (per site/per cut off)
-                $query5 = "SELECT SiteID, ActualAmount AS ActualAmount,TransactionDate FROM manualredemptions " . 
-                        "WHERE TransactionDate >= ? AND TransactionDate < ? AND SiteID = ? ";   
+                $query5 = "SELECT SiteID, ActualAmount AS ActualAmount, TransactionDate FROM manualredemptions " . 
+                        "WHERE TransactionDate >= ? AND TransactionDate < ? AND SiteID = ? ";  
                 
                 //Query for Deposit (Cash,Coupon,Ticket),  Reload (Cash,Coupon,Ticket) and Redemption (Cashier,Genesis)
-                $query6 = "SELECT tr.TransactionSummaryID AS TransSummID, SUBSTR(t.TerminalCode,11) AS TerminalCode, tr.TransactionType AS TransType,
+                $query6 = "SELECT tr.TransactionType AS TransType,
 
                                 -- TOTAL DEPOSIT --
                                 CASE tr.TransactionType
@@ -1221,13 +1262,13 @@ class TopUpReportQuery extends DBHandler{
                                   ELSE 0 -- Not Redemption
                                 END As RedemptionGenesis,
 
-                                tr.DateCreated, tr.SiteID
-                                FROM npos.transactiondetails tr FORCE INDEX(IX_transactiondetails_DateCreated) 
+                                tr.DateCreated,  tr.SiteID
+                                FROM npos.transactiondetails tr FORCE INDEX(IX_transactiondetails_DateCreated)
                                 INNER JOIN npos.transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
                                 INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
                                 INNER JOIN npos.accounts a ON tr.CreatedByAID = a.AID
-                                WHERE tr.DateCreated >= ? AND tr.DateCreated < ? 
-                                  AND tr.SiteID = ? 
+                                WHERE tr.DateCreated >= ? AND tr.DateCreated < ?
+                                  AND tr.SiteID = ?
                                   AND tr.Status IN(1,4)
                                 GROUP By tr.TransactionType, tr.TransactionSummaryID
                                 ORDER BY tr.TerminalID, tr.DateCreated DESC"; 
@@ -1239,8 +1280,8 @@ class TopUpReportQuery extends DBHandler{
                                               INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
                                               INNER JOIN npos.accounts a ON tr.CreatedByAID = a.AID
                                               LEFT JOIN stackermanagement.stackersummary stckr ON stckr.StackerSummaryID = tr.StackerSummaryID
-                                              WHERE tr.SiteID = :siteid
-                                                AND tr.DateCreated >= :startdate AND tr.DateCreated < :enddate
+                                              WHERE tr.DateCreated >= :startdate AND tr.DateCreated < :enddate
+                                                AND tr.SiteID = :siteid
                                                 AND tr.Status IN(1,4)
                                                 AND tr.TransactionType = 'W'
                                                 AND tr.StackerSummaryID IS NOT NULL
@@ -1273,8 +1314,8 @@ class TopUpReportQuery extends DBHandler{
                                                                             INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
                                                                             INNER JOIN npos.accounts a ON tr.CreatedByAID = a.AID
                                                                             LEFT JOIN stackermanagement.stackersummary stckr ON stckr.StackerSummaryID = tr.StackerSummaryID
-                                                                            WHERE tr.SiteID = :siteid
-                                                                              AND tr.DateCreated >= :startdate AND tr.DateCreated < :enddate
+                                                                            WHERE tr.DateCreated >= :startdate AND tr.DateCreated < :enddate
+                                                                              AND tr.SiteID = :siteid
                                                                               AND tr.Status IN(1,4)
                                                                               AND tr.TransactionType In ('D', 'R')
                                                                                     AND tr.StackerSummaryID IS NOT NULL
@@ -1285,17 +1326,21 @@ class TopUpReportQuery extends DBHandler{
                                         GROUP BY SiteID";
                 
                 //Query for Printed Tickets of the pick date (per site/per cutoff)
-                $query8 = "SELECT tr.SiteID, IFNULL(SUM(stckr.Withdrawal), 0) AS PrintedTickets, tr.DateCreated FROM npos.transactiondetails tr FORCE INDEX(IX_transactiondetails_DateCreated)  -- Printed Tickets through W
-                                        INNER JOIN npos.transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
-                                        INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
-                                        INNER JOIN npos.accounts a ON ts.CreatedByAID = a.AID
-                                        LEFT JOIN stackermanagement.stackersummary stckr ON stckr.StackerSummaryID = tr.StackerSummaryID
-                                        WHERE tr.DateCreated >= ? AND tr.DateCreated < ?
-                                          AND tr.Status IN(1,4)
-                                          AND tr.SiteID = ?
-                                          AND tr.TransactionType = 'W'
-                                          AND tr.StackerSummaryID IS NOT NULL
-                                          GROUP BY tr.SiteID";
+                $query8 = "SELECT SiteID, SUM(PrintedTickets) AS PrintedTickets, DateCreated FROM (SELECT tr.SiteID, IFNULL(SUM(stckr.Withdrawal), 0) AS PrintedTickets FROM npos.transactiondetails tr FORCE INDEX(IX_transactiondetails_DateCreated)  -- Printed Tickets through W
+                            INNER JOIN npos.transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
+                            INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
+                            INNER JOIN npos.accounts a ON ts.CreatedByAID = a.AID
+                            LEFT JOIN stackermanagement.stackersummary stckr ON stckr.StackerSummaryID = tr.StackerSummaryID
+                            WHERE tr.DateCreated >= :startdate AND tr.DateCreated < :enddate 
+                              AND tr.SiteID = :siteid 
+                              AND tr.Status IN(1,4)
+                              AND tr.TransactionType = 'W'
+                              AND tr.StackerSummaryID IS NOT NULL
+                              GROUP BY tr.SiteID 
+                        UNION ALL
+                        SELECT SiteID, SUM(Amount) as PrintedTickets FROM ewallettrans WHERE StartDate >= :startdate
+                            AND StartDate < :enddate AND Status IN (1,3) AND SiteID = :siteid AND TransType='W' AND Source = 1 GROUP BY SiteID) 
+                        AS sum GROUP BY SiteID";
                 
                 //Query for Encashed Tickets of the pick date (per site/per cutoff)
                 $query9 = "SELECT tckt.SiteID, IFNULL(SUM(tckt.Amount), 0) AS EncashedTickets, tckt.DateEncashed as DateCreated FROM vouchermanagement.tickets tckt  -- Encashed Tickets
@@ -1304,50 +1349,69 @@ class TopUpReportQuery extends DBHandler{
                                         GROUP BY tckt.SiteID";
                 
                 //Query for Encashed Tickets of the pick date (per site/per cutoff)
-                $query10 = "SELECT et.SiteID, et.CreatedByAID, ad.Name,
-                                        SUM(CASE IFNULL(et.TraceNumber,'')
-                                                WHEN '' THEN  
-                                                        CASE IFNULL(et.ReferenceNumber, '')
-                                                        WHEN '' THEN -- if not bancnet
-                                                                CASE et.TransType
-                                                                WHEN 'D' THEN -- if deposit
-                                                                        CASE et.PaymentType 
-                                                                        WHEN 1 THEN et.Amount -- if Cash
-                                                                        ELSE 0 -- if not Cash
-                                                                        END
-                                                                ELSE 0 -- if not deposit
-                                                                END
-                                                        ELSE 0 -- if bancnet
-                                                        END
-                                                ELSE 0
-                                        END) AS EwalletCashDeposit,
+                $query10 = "SELECT SiteID,
+                                        CASE
+                                          WHEN (substr(StartDate, 12, 2) < '06') THEN substr(date_add(StartDate, INTERVAL -1 DAY), 1, 10)
+                                          ELSE substr(StartDate, 1, 10)
+                                        END AS ReportDate,
 
-                                        SUM(CASE IFNULL(et.TraceNumber,'')
-                                                WHEN '' THEN 0
-                                                ELSE CASE IFNULL(et.ReferenceNumber, '')
-                                                        WHEN '' THEN 0 -- if not bancnet
-                                                        ELSE CASE et.TransType -- if bancnet
-                                                                WHEN 'D' THEN et.Amount -- if deposit
-                                                                ELSE 0 -- if not deposit
-                                                                END
-                                                        END
-                                        END) AS EwalletBancnetDeposit,
+                                        SUM(CASE PaymentType -- Coupon
+                                            WHEN 2 THEN Amount
+                                            ELSE 0 END)
+                                        AS EwalletVoucherDeposit, 
                                         
-                                        SUM(CASE et.TransType
-                                                WHEN 'D' THEN -- if deposit
-                                                        CASE et.PaymentType
-                                                        WHEN 2 THEN et.Amount -- if voucher
-                                                        ELSE 0 -- if not voucher
-                                                        END
-                                                ELSE 0 -- if not deposit
-                                        END) AS EwalletVoucherDeposit
+                                        SUM(CASE PaymentType -- Ticket
+                                            WHEN 3 THEN Amount
+                                            ELSE 0 END)
+                                        AS EwalletTicketDeposit, 
+                                        
+                                        -- Total e-SAFE Withdrawal Genesis --
+                                        SUM(CASE TransType
+                                                WHEN 'W' THEN 
+                                                    CASE StackerSummaryID 
+                                                        WHEN NOT NULL THEN Amount -- if redemption
+                                                        ELSE 0
+                                                    END
+                                                ELSE 0 -- if not redemption
+                                        END) AS EwalletRedemptionGenesis, 
 
-                                    FROM npos.ewallettrans et
-                                    LEFT JOIN npos.accountdetails ad ON et.CreatedByAID = ad.AID
-                                    WHERE et.StartDate >= ? AND et.StartDate < ?
-                                    AND et.Status IN (1,3) AND et.SiteID = ?
-                                    GROUP BY et.CreatedByAID";
+                                        SUM(CASE PaymentType -- Bancnet
+                                            WHEN 1 THEN
+                                              CASE IFNULL(TraceNumber, '')
+                                                 WHEN '' THEN 0
+                                                  ELSE Amount -- Bancnet
+                                                    END
+                                            ELSE 0 END)
+                                        AS EwalletBancnetDeposit,
 
+                                        SUM(CASE PaymentType -- Cash
+                                            WHEN 1 THEN
+                                              CASE IFNULL(TraceNumber, '')
+                                              WHEN '' THEN Amount -- Cash
+                                              ELSE 0 END
+                                            ELSE 0 END)
+                                        AS EwalletCashDeposit
+                                  FROM npos.ewallettrans
+                                  WHERE TransType = 'D' AND Status IN (1,3)
+                                  AND StartDate >= ? AND StartDate < ?
+                                  AND SiteID = ?
+                                  GROUP BY SiteID, ReportDate";
+
+                $query11 = "SELECT IFNULL(SUM(Amount), 0) AS EncashedTicketsV2, t.DateEncashed, t.UpdatedByAID, t.SiteID, ad.Name   
+                   FROM vouchermanagement.tickets t 
+                   LEFT JOIN npos.accountdetails ad ON t.UpdatedByAID = ad.AID
+                   WHERE t.DateEncashed >= ? AND t.DateEncashed < ? 
+                   AND t.SiteID = ?
+                   AND TicketCode NOT IN (
+                           SELECT IFNULL(ss.TicketCode, '') FROM stackermanagement.stackersummary ss 
+                           INNER JOIN npos.ewallettrans ewt ON ewt.StackerSummaryID = ss.StackerSummaryID 
+                           WHERE ewt.TransType = 'W' 
+                           GROUP BY ewt.SiteID 
+                           ORDER BY ss.StackerSummaryID DESC
+                   )
+                   GROUP BY t.SiteID";
+
+                
                 // to get beginning balance, sitecode, sitename
                 $this->prepare($query1);
                 $this->bindparameter(1, $startdate);
@@ -1357,15 +1421,16 @@ class TopUpReportQuery extends DBHandler{
                 $rows1 = $this->fetchAllData();        
                 $qr1 = array();
                 foreach($rows1 as $row1) {
-                    $qr1[] = array('SiteID'=>$row1['SiteID'],'BegBal'=>$row1['BeginningBalance'],'EndBal'=>$row1['EndingBalance'],
+                    $qr1[] = array('SiteID'=>$row1['SiteID'],'BegBal'=>$row1['BeginningBalance'],
                             'POSAccountNo' => $row1['POSAccountNo'],'SiteName' => $row1['Name'],'SiteCode'=>$row1['SiteCode'], 
                             'InitialDeposit'=>'0.00','Reload'=>'0.00','Redemption'=>'0.00',
-                            'DateStart'=>$row1['DateFirstTransaction'],'DateLast'=>$row1['DateLastTransaction'],
                             'ReportDate'=>$row1['ReportDate'],'CutOff'=>$row1['DateCutOff'],'ManualRedemption'=>0,'Coupon'=>'0.00',
                             'PrintedTickets'=>'0.00','EncashedTickets'=>'0.00', 'RedemptionCashier'=>'0.00',
                             'RedemptionGenesis'=>'0.00','DepositCash'=>'0.00','ReloadCash'=>'0.00','UnusedTickets'=>'0.00','DepositTicket'=>'0.00',
                             'ReloadTicket'=>'0.00','DepositCoupon'=>'0.00','ReloadCoupon'=>'0.00', 'Replenishment'=>0,'Collection'=>0,
-                            'EwalletDeposits' => $row1['EwalletDeposits'], 'EwalletWithdrawals' => $row1['EwalletWithdrawals'], 'EwalletCashLoads' => 0
+                            'EwalletDeposits' => $row1['EwalletDeposits'], 'EwalletWithdrawals' => $row1['EwalletWithdrawals'],
+                            'EwalletCashLoads' => 0, 'EwalletRedemptionGenesis' => 0.00, 
+                            'EncashedTicketsV15' => 0, 'EwalletTicketDeposit' => 0
                         );
                 }
 
@@ -1417,7 +1482,7 @@ class TopUpReportQuery extends DBHandler{
                 $this->bindparameter(3, $zsiteid);
                 $this->execute();  
                 $rows6 =  $this->fetchAllData();
-                
+
                 foreach ($rows6 as $row6) {
                     foreach ($qr1 as $keys => $value1) {
                         if($row6["SiteID"] == $value1["SiteID"]){
@@ -1433,11 +1498,11 @@ class TopUpReportQuery extends DBHandler{
                                 if($row6["RedemptionCashier"] != '0.00'){
                                     $qr1[$keys]["RedemptionCashier"] = (float)$qr1[$keys]["RedemptionCashier"] + (float)$row6["RedemptionCashier"];
                                     $qr1[$keys]["Redemption"] = (float)$qr1[$keys]["Redemption"] + (float)$row6["RedemptionCashier"];
-                                }
+                                    }
                                 if($row6["RedemptionGenesis"] != '0.00'){
                                     $qr1[$keys]["RedemptionGenesis"] = (float)$qr1[$keys]["RedemptionGenesis"] + (float)$row6["RedemptionGenesis"];
                                     $qr1[$keys]["Redemption"] = (float)$qr1[$keys]["Redemption"] + (float)$row6["RedemptionGenesis"];
-                                }
+                                    }
                                 if($row6["DepositCoupon"] != '0.00'){
                                     $qr1[$keys]["DepositCoupon"] = (float)$qr1[$keys]["DepositCoupon"] + (float)$row6["DepositCoupon"];
                                     $qr1[$keys]["Coupon"] = (float)$qr1[$keys]["Coupon"] + (float)$row6["DepositCoupon"];
@@ -1460,7 +1525,7 @@ class TopUpReportQuery extends DBHandler{
                         }
                     }     
                 }
-                
+
                 foreach ($qr1 as $keys => $value2) {
                     //Get the total Unused Tickets per site
                     $this->prepare($query7);
@@ -1479,9 +1544,12 @@ class TopUpReportQuery extends DBHandler{
                     
                     //Get the total Printed Tickets per site
                     $this->prepare($query8);
-                    $this->bindparameter(1, $value2["ReportDate"]." ".BaseProcess::$cutoff);
-                    $this->bindparameter(2, $value2["CutOff"]);
-                    $this->bindparameter(3, $value2["SiteID"]);
+                    $this->bindparameter(":startdate", $value2["ReportDate"]." ".BaseProcess::$cutoff);
+                    $this->bindparameter(":enddate", $value2["CutOff"]);
+                    $this->bindparameter(":siteid", $value2["SiteID"]);
+                    $this->bindparameter(":startdate", $value2["ReportDate"]." ".BaseProcess::$cutoff);
+                    $this->bindparameter(":enddate", $value2["CutOff"]);
+                    $this->bindparameter(":siteid", $value2["SiteID"]);
                     $this->execute();  
                     $rows8 =  $this->fetchAllData();
                     
@@ -1510,7 +1578,8 @@ class TopUpReportQuery extends DBHandler{
                             break;
                         }
                     }
-                }
+                    
+                }  
                 
                 //Get the total Encashed Tickets per site
                 $this->prepare($query10);
@@ -1523,15 +1592,39 @@ class TopUpReportQuery extends DBHandler{
                 foreach ($rows10 as $value1) {
                     foreach ($qr1 as $keys => $value2) {
                         if($value1["SiteID"] == $value2["SiteID"]){
-                                $qr1[$keys]["EwalletCashLoads"] += (float)$value1["EwalletCashDeposit"];
-                                $qr1[$keys]["EwalletCashLoads"] += (float)$value1["EwalletBancnetDeposit"];
-                                $qr1[$keys]["Coupon"] += (float)$value1["EwalletVoucherDeposit"];
+                                if($value1['ReportDate'] == $value2['ReportDate']){
+                                    $qr1[$keys]["EwalletCashLoads"] += (float)$value1["EwalletCashDeposit"];
+                                    $qr1[$keys]["EwalletCashLoads"] += (float)$value1["EwalletBancnetDeposit"];
+                                    $qr1[$keys]["EwalletRedemptionGenesis"] += (float)$value1["EwalletRedemptionGenesis"];
+                                    $qr1[$keys]["Coupon"] += (float)$value1["EwalletVoucherDeposit"];
+                                    $qr1[$keys]["EwalletTicketDeposit"] += (float)$value1["EwalletTicketDeposit"];
+                                }
                             break;
                         }
                     }  
                 }
                 
+                /****************Get Encashed Tickets for V15******************************/
+                $this->prepare($query11);
+                $this->bindparameter(1, $startdate);
+                $this->bindparameter(2, $enddate);
+                $this->bindparameter(3, $zsiteid);
+                $this->execute();  
+                $rows11 =  $this->fetchAllData();
                 
+                foreach ($rows11 as $value1) {
+                    foreach ($qr1 as $keys => $value2) {
+                        if($value1["SiteID"] == $value2["SiteID"]){
+                            if(($value1['DateEncashed'] >= $value2['ReportDate']." ".BaseProcess::$cutoff) && ($value1['DateEncashed'] < $value2['CutOff'])){
+                                $qr1[$keys]["EncashedTicketsV15"] = (float)$value1["EncashedTicketsV2"];
+                            }
+                            break;
+                        }
+                    }  
+                }
+                
+//                print_r($qr1);
+//                print_r($qr5);
                 $ctr = 0;
                 while($ctr < count($qr1))
                 {
@@ -1550,7 +1643,16 @@ class TopUpReportQuery extends DBHandler{
                                      $amount = $qr1[$ctr]['ManualRedemption'];
                                      $qr1[$ctr]['ManualRedemption'] = $amount + $qr5[$ctr2]['ManualRedemption'];
                                  }
+                                 
+//                                 echo $ctr."==>".$qr5[$ctr2]['mrtransdate']." >= ".$qr1[$ctr]['reportdate']."==>".
+//                                         $qr5[$ctr2]['mrtransdate']." < ".$qr1[$ctr]['cutoff']."==>".$qr1[$ctr]['manualredemption']."<br />";
+//                                 
                             }
+//                            else {
+//                                
+//                                echo "NOT IN ".$qr5[$ctr2]['mrtransdate'].">=".$qr1[$ctr]['reportdate']."<br />";
+//                                
+//                            }
                         }
                         $ctr2 = $ctr2 + 1;
                     }            
@@ -1584,12 +1686,12 @@ class TopUpReportQuery extends DBHandler{
                             {
                                 if($qr1[$ctr]['Collection'] == 0) 
                                 {
-                                    $qr1[$ctr]['Collection'] = $qr3[$ctr4]['Amount'];           
+                                    $qr1[$ctr]['Collection'] = $qr3[$ctr4]['Amount'];         
                                 }      
                                 else
                                 {
                                     $amount = $qr1[$ctr]['Collection'];
-                                    $qr1[$ctr]['Collection'] = $amount + $qr3[$ctr4]['Amount'];                                 
+                                    $qr1[$ctr]['Collection'] = $amount + $qr3[$ctr4]['Amount'];                                
                                 }                           
                             }                    
                         }
