@@ -95,10 +95,11 @@ Code    Message
 97  -   No Available Vouchers.
 98  -   Mobile number should begin with '09'.
 99  -   Player name should not be less than 2 characters long.
-100  -  Player name should consist of letters and spaces only.
+100  -  Player name should consist of letters, periods and spaces only.
 101  -  An error has occurred when connecting to RTG. Please try again.
 102  -  Successfully registered.
 103  -  An error has occurred when inserted to member services. Registration failed.
 104  -  Registration failed.
 105  -  This mobile number was already registered.
+106  -  Player name should not be greater than 60 characters long.
 121 -   Please input 1 for loyalty points or 2 for comp points.

@@ -55,10 +55,10 @@ class MPapiController extends Controller
                 $logger->log($logger->logdate, "[REGISTERMEMBERNABOO ERROR]: " . $request['MobileNo'] . " || " . $request['PlayerName'], $logMessage);
                 exit;
             }
-            else if ((substr($request['MobileNo'], 0, 2) == "09" && strlen($request['MobileNo']) != 11))
+            else if ((substr($request['MobileNo'], 0, 3) == "639" && strlen($request['MobileNo']) != 12) || (substr($request['MobileNo'], 0, 2) == "09" && strlen($request['MobileNo']) != 11))
             {
                 $transMsg = "Invalid mobile number.";
-                $errorCode = 95;
+                $errorCode = 97;
                 Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
                 $data = CommonController::retMsgRegisterMemberNaboo($module, $errorCode, $transMsg);
                 $message = "[" . $module . "] Output: " . CJSON::encode($data);
@@ -68,10 +68,10 @@ class MPapiController extends Controller
                 $logger->log($logger->logdate, "[REGISTERMEMBERNABOO ERROR]: " . $request['MobileNo'] . " || " . $request['PlayerName'], $logMessage);
                 exit;
             }
-            else if ((substr($request['MobileNo'], 0, 2) != '09'))
+            else if ((substr($request['MobileNo'], 0, 2) != '09' && substr($request['MobileNo'], 0, 3) != '639'))
             {
-                $transMsg = "Mobile number should begin with '09'.";
-                $errorCode = 98;
+                $transMsg = "Mobile number should begin with either '09' or '639'.";
+                $errorCode = 69;
                 Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
                 $data = CommonController::retMsgRegisterMemberNaboo($module, $errorCode, $transMsg);
                 $message = "[" . $module . "] Output: " . CJSON::encode($data);
@@ -107,9 +107,22 @@ class MPapiController extends Controller
                 $logger->log($logger->logdate, "[REGISTERMEMBERNABOO ERROR]: " . $request['MobileNo'] . " || " . $request['PlayerName'], $logMessage);
                 exit;
             }
-            else if (preg_match("/^[A-Za-z\s]+$/", trim($request['PlayerName'])) == 0)
+            else if (strlen($request['PlayerName']) > 60)
             {
-                $transMsg = "Player name should consist of letters and spaces only.";
+                $transMsg = "Player name should not be greater than 60 characters long.";
+                $errorCode = 106;
+                Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                $data = CommonController::retMsgRegisterMemberNaboo($module, $errorCode, $transMsg);
+                $message = "[" . $module . "] Output: " . CJSON::encode($data);
+                $appLogger->log($appLogger->logdate, "[response]", $message);
+                $this->_sendResponse(200, CJSON::encode($data));
+                $logMessage = 'Player name should not be less than 2 characters long.';
+                $logger->log($logger->logdate, "[REGISTERMEMBERNABOO ERROR]: " . $request['MobileNo'] . " || " . $request['PlayerName'], $logMessage);
+                exit;
+            }
+            else if (preg_match("/^[A-Za-z\s.]+$/", trim($request['PlayerName'])) == 0)
+            {
+                $transMsg = "Player name should consist of letters, periods and spaces only.";
                 $errorCode = 100;
                 Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
                 $data = CommonController::retMsgRegisterMemberNaboo($module, $errorCode, $transMsg);
@@ -129,6 +142,33 @@ class MPapiController extends Controller
 
                 $mobileNo = trim($request['MobileNo']);
                 $playerName = trim($request['PlayerName']);
+                $sameNo = substr($mobileNo, 1);
+
+                $match = substr($mobileNo, 0, 3);
+                if ($match == "639")
+                {
+                    $sameNo = substr($mobileNo, 2);
+                }
+                $match = substr($mobileNo, 0, 2);
+                if ($match == "09")
+                {
+                    $sameNo = substr($mobileNo, 1);
+                }
+
+                $msresult = $memberServices->checkMobileNumberIfExist($sameNo);
+                if ($msresult != 0 || $msresult != false)
+                {
+                    $transMsg = "This mobile number was already registered.";
+                    $errorCode = 105;
+                    Utilities::log("ReturnMessage: " . $transMsg . " ErrorCode: " . $errorCode);
+                    $data = CommonController::retMsgRegisterMemberNaboo($module, $errorCode, $transMsg);
+                    $message = "[" . $module . "] Output: " . CJSON::encode($data);
+                    $appLogger->log($appLogger->logdate, "[response]", $message);
+                    $this->_sendResponse(200, CJSON::encode($data));
+                    $logMessage = 'Exisitng mobile number.';
+                    $logger->log($logger->logdate, "[REGISTERMEMBERNABOO ERROR]: " . $request['MobileNo'] . " || " . $request['PlayerName'], $logMessage);
+                    exit;
+                }
 
                 $lastSpacePosition = strrpos($playerName, ' ');
                 $split = explode(" ", $playerName);

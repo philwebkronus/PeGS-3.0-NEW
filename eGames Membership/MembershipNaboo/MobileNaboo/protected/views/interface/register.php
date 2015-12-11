@@ -41,7 +41,7 @@
                 });
             });
             $(document).on('keypress', '#pname', function(event) {
-                var regex = new RegExp("^[a-zA-Z ]+$");
+                var regex = new RegExp("^[a-zA-Z .\b]+$");
                 var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
                 if (!regex.test(key)) {
                     event.preventDefault();
@@ -80,8 +80,8 @@
                     <div class="registration-form">
                         <h2>Registration</h2>
                         <form method="post">
-                            <p><label>Mobile Number*</label><input required type="text" name="mobileNo" id="mobilenum" maxlength="11" placeholder="09XXXXXXXXX" onkeypress="javascript:return isNumber(event)"></p>
-                            <p><label>Player Name*</label><input required type="text"  placeholder="Player Name" name="Name" id="pname" ></p>
+                            <p><label>Mobile Number*</label><input required type="text" name="mobileNo" id="mobilenum" maxlength="12" placeholder="09XXXXXXXXX/ 639XXXXXXXXX" onkeypress="javascript:return isNumber(event)"></p>
+                            <p><label>Player Name*</label><input required type="text"  placeholder="Player Name" maxlength="60"  name="Name" id="pname" ></p>
                             <p><input type="button" value="Clear" id="clear">
                                 <input type="submit" name="submit" value="Submit" id="submit"></p>
                             <div class="clearfix"></div>
@@ -92,16 +92,20 @@
             </div>
         </div>
 
-        <?php if ($return == null) {
+        <?php
+        if ($return == null)
+        {
             
-        } else {
+        }
+        else
+        {
             ?>
             <div id="dialog">
                 <center><?php echo $return; ?></center>
             </div>
-            <?php
-        }
-        ?>
+    <?php
+}
+?>
 
     </body>
 </html>
