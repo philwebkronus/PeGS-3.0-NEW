@@ -77,7 +77,7 @@ class CronController extends Controller
             $secToken = Yii::app()->params['secToken'];
 
             $countNewlyMigratedCards = count($resultNewlyMigratedCards);
-            if ($countNewlyMigratedCards > 0) {//var_dump($countNewlyMigratedCards);exit;
+            if ($countNewlyMigratedCards > 0) {
                 $sfapi = new SalesforceAPI($instanceURL, $apiVersion, $cKey, $cSecret);
                 $sfSuccessful = $sfapi->login($sfLogin, $sfPassword, $secToken);
                 $newBaseUrl = $sfSuccessful->instance_url;
@@ -94,11 +94,11 @@ class CronController extends Controller
                         //update SFID in membership.memberinfo table
                         $sfUpdate = $memberInfoModel->updateSF($MID, $SFID['SFID']);
                         $cardNumber = $resultNewlyMigratedCards[$i]['CardNumber'];
-                        $isUpdated = $sfapi->update_account($SFID['SFID'], null, null, null, $cardNumber, null, null, $newBaseUrl, $accessToken);var_dump($isUpdated);exit;
+                        $isUpdated = $sfapi->update_account($SFID['SFID'], null, null, null, $cardNumber, null, null, $newBaseUrl, $accessToken);
                     }
-                    //return 1;
+                    echo 'successful!';//return 1;
                 } else {
-                    //return 0;
+                    echo 'failed!';//return 0;
                 }
             }
         }
@@ -107,6 +107,52 @@ class CronController extends Controller
         fclose($fp);
     }
 
+    //@date 11-03-2015
+    //@purpose get migrated card in membercards table
+    public function actionMigrateByMID() {
+        $memberCardsModel = new MemberCardsModel();
+        $memberInfoModel = new MemberInfoModel();
+        $memberInfoTempModel = new MembershipTempModel();
+        $request = $this->_readJsonRequest();
+	$card = $request['CardNumber'];
+
+        $resultMigratedCardByMID = $memberCardsModel->getMIDUsingCard($card);
+        if ($resultMigratedCardByMID) {
+            $instanceURL = Yii::app()->params['instanceURL'];
+            $apiVersion = Yii::app()->params['apiVersion'];
+            $cKey = Yii::app()->params['cKey'];
+            $cSecret = Yii::app()->params['cSecret'];
+            $sfLogin = Yii::app()->params['sfLogin'];
+            $sfPassword = Yii::app()->params['sfPassword'];
+            $secToken = Yii::app()->params['secToken'];
+            $sRecordType = Yii::app()->params['sRecordType'];
+
+            $sfapi = new SalesforceAPI($instanceURL, $apiVersion, $cKey, $cSecret, $sRecordType);
+            $sfSuccessful = $sfapi->login($sfLogin, $sfPassword, $secToken);
+            $newBaseUrl = $sfSuccessful->instance_url;
+            $accessToken = $sfSuccessful->access_token;
+
+            $MID = $resultMigratedCardByMID['MID'];
+            //get temp code
+            $tempCode = $memberCardsModel->getSFIDFromTempCode($MID);
+            //get temp MID in temp members table
+            $tempMID = $memberInfoTempModel->getSFIDFromTemp($tempCode['CardNumber']);
+            //get tempSFID
+            $SFID = $memberInfoTempModel->getSF($tempMID['MID']);
+            //update SFID in membership.memberinfo table
+            $sfUpdate = $memberInfoModel->updateSF($MID, $SFID['SFID']);
+            $isUpdated = $sfapi->update_account($SFID['SFID'], null, null, null, $card, null, null, $newBaseUrl, $accessToken);
+	    echo $isUpdated;
+        }
+    }
+
+private function _readJsonRequest() {
+        //read the post input (use this technique if you have no post variable name):
+        $post = file_get_contents("php://input");
+        //decode json post input as php array:
+        $data = CJSON::decode($post, true);
+        return $data;
+    }
 }
 
 ?>
