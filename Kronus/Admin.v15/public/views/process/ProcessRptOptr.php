@@ -384,27 +384,27 @@ if($connected)
                  $arrdeposit = array();
                  $result = $orptoptr->viewtransactionperday($dateFrom, $dateTo, $arrsiteID);
                  $ctr2 = 0;
-       while($ctr2 < count($result))
-       {
-                $trans = array();
-                switch ($result[$ctr2]['TransactionType']) 
-                {
-                    case 'W':
-                        $trans = array('Withdrawal'=>$result[$ctr2]['amount']);
-                        array_push($arrwithdraw, $trans);
-                        break;
-                    case 'D':
-                        $trans = array('Deposit'=>$result[$ctr2]['amount']);
-                        array_push($arrdeposit, $trans);
-                        break;
-                    case 'R':
-                        $trans = array('Reload'=>$result[$ctr2]['amount']);
-                        array_push($arrreload, $trans);
-                        break;
-                }
-                $ctr2++;
-                 
-       }
+                 while($ctr2 < count($result))
+                 {
+                    $trans = array();
+                    switch ($result[$ctr2]['TransactionType']) 
+                    {
+                        case 'W':
+                            $trans = array('Withdrawal'=>$result[$ctr2]['amount']);
+                            array_push($arrwithdraw, $trans);
+                            break;
+                        case 'D':
+                            $trans = array('Deposit'=>$result[$ctr2]['amount']);
+                            array_push($arrdeposit, $trans);
+                            break;
+                        case 'R':
+                            $trans = array('Reload'=>$result[$ctr2]['amount']);
+                            array_push($arrreload, $trans);
+                            break;
+                    }
+                    $ctr2++;
+
+                 }
                                    
 //                 // Get the sum of all  transaction types
                    $sales = array_sum($arrdeposit)+array_sum($arrreload)+array_sum($arrewloadsamt);
@@ -564,6 +564,157 @@ if($connected)
                $orptoptr->close();
                exit;
           break;
+          case "RptGrossHold":
+              $page = $_POST['page']; // get the requested page
+              $limit = $_POST['rows']; // get how many rows we want to have into the grid
+              $sidx = $_POST['sidx']; // get index row - i.e. user click to sort
+              $sord = $_POST['sord']; // get the direction
+              
+              $datefrom = $_POST['date'];
+              $dateto = date ( 'Y-m-d' , strtotime ('+1 day' , strtotime($datefrom)));
+              //get site operator's sites
+              $aid = $_SESSION['accID'];
+              $siteIDs = $orptoptr->getSiteByAID($aid);
+              //get site grossholds
+              $result = array();
+              $total = 0;
+              $subtotal = 0;
+              $MG_total = 0;
+              $costello_total = 0;
+              $abbott_total = 0;
+              if (count($siteIDs) > 0) {
+                   foreach ($siteIDs as $siteID) {
+                       //get D, R, W and MR of respective casinos
+                       $siteCode = $orptoptr->getsitecode($siteID['SiteID']);
+                       //for MG
+                       $serviceID_MG             = array(2);
+                       $deposit_reload_MG        = $orptoptr->getGrossHoldTB($siteID['SiteID'], $serviceID_MG, "DR", $datefrom, $dateto);
+                       $withdraw_MG              = $orptoptr->getGrossHoldTB($siteID['SiteID'], $serviceID_MG, "W", $datefrom, $dateto);
+                       $mr_MG                    = $orptoptr->getManualRedemptionTrans($siteID['SiteID'], $serviceID_MG, $datefrom, $dateto);
+                       $grosshold_MG             = $deposit_reload_MG['Amount'] - ($withdraw_MG['Amount'] + $mr_MG['Amount']);
+                       //for Costello
+                       $serviceID_COSTELLO       = array(1);
+                       $deposit_reload_COSTELLO  = $orptoptr->getGrossHoldTB($siteID['SiteID'], $serviceID_COSTELLO, "DR", $datefrom, $dateto);
+                       $withdraw_COSTELLO        = $orptoptr->getGrossHoldTB($siteID['SiteID'], $serviceID_COSTELLO, "W", $datefrom, $dateto);
+                       $mr_COSTELLO              = $orptoptr->getManualRedemptionTrans($siteID['SiteID'], $serviceID_COSTELLO, $datefrom, $dateto);
+                       $grosshold_COSTELLO       = $deposit_reload_COSTELLO['Amount'] - ($withdraw_COSTELLO['Amount'] + $mr_COSTELLO['Amount']);
+                       //for abbott
+                       $loads = $orptoptr->getGrossHoldeSAFE($siteID['SiteID'], $datefrom, $dateto);
+
+                       $subtotal = $grosshold_MG + $grosshold_COSTELLO + $loads['GrossHold'];
+                       $results[] = array(
+                             'SubTotal' => number_format($subtotal, 2, ".", ","), 
+                             'SiteCode' => trim(str_replace("ICSA-", "", $siteCode['SiteCode']))
+                       );
+                       $total += $subtotal;
+//                       $results[] = array(
+//                             'MG' => array(
+//                                 'DepositReloadValue' => number_format($deposit_reload_MG['Amount'], 2, ".", ","),
+//                                 'Withdraw' => number_format($withdraw_MG['Amount'], 2, ".", ","), 
+//                                 'ManualRedemption' => number_format($mr_MG['Amount'], 2, ".", ","), 
+//                                 'GrossHold' => number_format($grosshold_MG, 2, ".", ",")
+//                             ), 
+//                             'COSTELLO' => array(
+//                                 'DepositReloadValue' => number_format($deposit_reload_COSTELLO['Amount'], 2, ".", ","), 
+//                                 'Withdraw' => number_format($withdraw_COSTELLO['Amount'], 2, ".", ","),
+//                                 'ManualRedemption' => number_format($mr_COSTELLO['Amount'], 2, ".", ","),
+//                                 'GrossHold' => number_format($grosshold_COSTELLO, 2, ".", ",")
+//                             ), 
+//                             'ABBOTT' => array(
+//                                 'StartBalance' => number_format($loads['StartBalance'], 2, ".", ","), 
+//                                 'WalletReloads' => number_format($loads['WalletReloads'], 2, ".", ","), 
+//                                 'EndBalance' => number_format($loads['EndBalance'], 2, ".", ",") ,
+//                                 'GrossHold' => number_format($loads['GrossHold'], 2, ".", ",")
+//                             ), 
+//                             'SubTotal' => number_format(($grosshold_MG + $grosshold_COSTELLO + $loads['GrossHold']), 2, ".", ","), 
+//                             'SiteCode' => trim(str_replace("ICSA-", "", $siteCode['SiteCode']))
+//                         );
+                         
+//                       $MG_total += $grosshold_MG;
+//                       $costello_total += $grosshold_COSTELLO;
+//                       $abbott_total += $loads['GrossHold'];
+                   }
+//                   $grand_totals = array('Total' => 
+//                       array(
+//                         'Mg' => array('Total' => number_format($MG_total, 2, ".", ",")), 
+//                         'Costello' => array('Total' => number_format($costello_total, 2, ".", ",")), 
+//                         'Abbott' => array('Total' => number_format($abbott_total, 2, ".", ",")), 
+//                         'Grand Total' => array('Total' => number_format(($MG_total + $costello_total + $abbott_total), 2, ".", ","))
+//                   ));
+                   
+//                   $arr_r = array_merge($results, array('GrossHold' => array(
+//                                                        'Total' => number_format($total, 2, ".", ","))));
+                   $count = 0;
+                   $count = count($results);
+                   if ($count > 0) {
+                        $results[] = array('SiteCode' => '<b>Total</b>', 
+                                           'SubTotal' => "<b>".number_format($total, 2, ".", ",")."</b>");
+                     if($count > 0 ) {
+                        $total_pages = ceil($count/$limit);
+                        } else {
+                                 $total_pages = 0;
+                        }
+
+                        if ($page > $total_pages)
+                        {
+                           $page = $total_pages;
+                           $start = $limit * $page - $limit;           
+                        }
+
+                        if($page == 0)
+                        {
+                           $start = 0;
+                        }
+                        else{
+                           $start = $limit * $page - $limit;   
+                        }
+                        $limit = (int)$limit;
+                         //paginate array
+                        $trans_details2 = $orptoptr->paginatetransaction($results, $start, $limit);
+                        $arrewloadsamt = array();
+                        $arrewwithdrawalsamt = array();
+                        $j = 0;
+                        $response = new stdClass();
+                        $response->page = $page;
+                        $response->total = $total_pages;
+                        $response->records = $count; 
+                        //display to jqgrid
+                        foreach($trans_details2 as $vview2)
+                        {
+                           $response->rows[$j]['id']=$vview2['SiteCode'];
+                           //$response2->rows[$j]['cell']=array($vview2['SiteID'], $_POST['sitecode'], $rterminalCode, 
+                           $response->rows[$j]['cell']=array($vview2['SiteCode'], $vview2['SubTotal']);
+                           $j++;
+                        }
+                   }
+                   else {
+                       $j = 0;
+                       $response->page = $page;
+                       $response->total = $total_pages;
+                       $response->records = $count;
+                       $msg = "Gross Hold: No returned result";
+                       $response->msg = $msg;
+                   }
+                   
+                   echo json_encode($response);
+                   $orptoptr->close();
+                   exit;
+            }
+            else {
+                $arr_r = array('ErrorCode' => 1, 
+                               'Message' => 'The operator has no site.');
+            }
+          break;
+          //disable or halt process if backtracks to less or equal to set date 
+          case "CheckGrossHoldDate":
+              $date = $_POST['date'];
+              if (strtotime($date) > strtotime($deploymentDate)) {
+                  echo 0;
+              }
+              else {
+                  echo 1;
+              }
+              break;
       }
    }
    elseif(isset($_POST['page2']))
@@ -632,7 +783,7 @@ if($connected)
        }
        
        $result2 = $orptoptr->viewtransactionperday($dateFrom, $dateTo, $arrsiteID);
-       
+
        if($result2) {
        $ctr2 = 0;
        while($ctr2 < count($result2))
@@ -731,7 +882,7 @@ if($connected)
            else {
                $arrewwithdrawalssum = 0.00;
            }
-           
+
            $grandsales = $arrewloadssum+array_sum($arrdepositsum)+array_sum($arrreloadsum);
            $grandredemption = $arrewwithdrawalssum+array_sum($arrwithdrawsum);
        }
@@ -794,9 +945,13 @@ if($connected)
 
        //Compute for total Cash On Hand of the sites under the current operator
        $cohdata = $orptoptr->getCashOnHandDetails($dateFrom, $dateTo, $arrsiteID);
-       $grandticketencashment = $orptoptr->getTotalTicketEncashment($dateFrom, $dateTo, $arrsiteID);
-       
-       $grandcashonhand = (($cohdata['TotalCashLoad']-$cohdata['TotalCashRedemption']) - $cohdata['TotalMR'])-$grandticketencashment;
+       if ($dateFrom < $deploymentDate) {
+            $grandticketencashment = $orptoptr->getTotalTicketEncashment($dateFrom, $dateTo, $arrsiteID);
+       }
+       else {
+            $grandticketencashment = $orptoptr->getEncashedTicketsV15($arrsiteID, $dateFrom, $dateTo);
+       }
+       $grandcashonhand = $cohdata['TotalCashLoad'] - ($cohdata['TotalCashRedemption'] + $cohdata['TotalMR'] +  + $grandticketencashment);
        $grandredemption += $cohdata['TotalMR'];
        // store the grand total of transaction types into an array 
        $arrgrand = array("GrandSales" => $grandsales, "GrandRedemption" => $grandredemption,
@@ -1297,8 +1452,13 @@ if($connected)
 
             //Compute for total Cash On Hand of the sites under the current operator
             $cohdata = $orptoptr->getCashOnHandDetails($dateFrom, $dateTo, $arrsiteID);
-            $grandticketencashment = $orptoptr->getTotalTicketEncashment($dateFrom, $dateTo, $arrsiteID);
-
+            if ($dateFrom < $deploymentDate) {
+                $grandticketencashment = $orptoptr->getTotalTicketEncashment($dateFrom, $dateTo, $arrsiteID);
+            }
+            else {
+                $grandticketencashment = $orptoptr->getEncashedTicketsV15($arrsiteID, $dateFrom, $dateTo);
+            }
+            
             $grandcashonhand = (($cohdata['TotalCashLoad'] - $cohdata['TotalCashRedemption']) - $cohdata['TotalMR']) - $grandticketencashment;
             $grandredemption += $cohdata['TotalMR'];
             $arrspace = array('', '', '', '', '', '', '', '');
@@ -1936,7 +2096,13 @@ if($connected)
 
             //Compute for total Cash On Hand of the sites under the current operator
             $cohdata = $orptoptr->getCashOnHandDetails($dateFrom, $dateTo, $arrsiteID);
-            $grandticketencashment = $orptoptr->getTotalTicketEncashment($dateFrom, $dateTo, $arrsiteID);
+            if ($dateFrom < $deploymentDate) {
+                $grandticketencashment = $orptoptr->getTotalTicketEncashment($dateFrom, $dateTo, $arrsiteID);
+            }
+            else {
+                $grandticketencashment = $orptoptr->getEncashedTicketsV15($arrsiteID, $dateFrom, $dateTo);
+            }
+            
             $grandredemption += $cohdata['TotalMR'];
             $grandcashonhand = (($cohdata['TotalCashLoad'] - $cohdata['TotalCashRedemption']) - $cohdata['TotalMR']) - $grandticketencashment;
 
@@ -2221,8 +2387,128 @@ if($connected)
        $orptoptr->logtoaudit($new_sessionid, $aid, $vtransdetails, $vdate, $vipaddress, $vauditfuncID);
        $pdf->c_generatePDF('BCF Per Site.pdf'); 
    }
-   else{
+   else if(isset($_GET['excel3']) == "grossholdexcel") {
+       $datefrom = $_GET['date'];
+       $dateto = date ( 'Y-m-d' , strtotime ('+1 day' , strtotime($datefrom)));
        
+       $fn = "Gross_Hold_".date('Y_m_d').".xls";
+       //setting up excel
+       $excel_obj = new ExportExcel("$fn");
+       $array_headers = array('Site', 'Gross Hold');
+       $completeexcelvalues = array();
+       //get site operator's sites
+       $aid = $_SESSION['accID'];
+       $siteIDs = $orptoptr->getSiteByAID($aid);
+       //get site grossholds
+       $result = array();
+       $total = 0;
+       $subtotal = 0;
+       $MG_total = 0;
+       $costello_total = 0;
+       $abbott_total = 0;
+       if (count($siteIDs) > 0) {
+           foreach ($siteIDs as $siteID) {
+                //get D, R, W and MR of respective casinos
+                $siteCode = $orptoptr->getsitecode($siteID['SiteID']);
+                //for MG
+                $serviceID_MG             = array(2); //service group id
+                $deposit_reload_MG        = $orptoptr->getGrossHoldTB($siteID['SiteID'], $serviceID_MG, "DR", $datefrom, $dateto);
+                $withdraw_MG              = $orptoptr->getGrossHoldTB($siteID['SiteID'], $serviceID_MG, "W", $datefrom, $dateto);
+                $mr_MG                    = $orptoptr->getManualRedemptionTrans($siteID['SiteID'], $serviceID_MG, $datefrom, $dateto);
+                $grosshold_MG             = $deposit_reload_MG['Amount'] - ($withdraw_MG['Amount'] + $mr_MG['Amount']);
+                //for Costello
+                $serviceID_COSTELLO       = array(1); //service group id
+                $deposit_reload_COSTELLO  = $orptoptr->getGrossHoldTB($siteID['SiteID'], $serviceID_COSTELLO, "DR", $datefrom, $dateto);
+                $withdraw_COSTELLO        = $orptoptr->getGrossHoldTB($siteID['SiteID'], $serviceID_COSTELLO, "W", $datefrom, $dateto);
+                $mr_COSTELLO              = $orptoptr->getManualRedemptionTrans($siteID['SiteID'], $serviceID_COSTELLO, $datefrom, $dateto);
+                $grosshold_COSTELLO       = $deposit_reload_COSTELLO['Amount'] - ($withdraw_COSTELLO['Amount'] + $mr_COSTELLO['Amount']);
+                //for abbott
+                
+                $loads = $orptoptr->getGrossHoldeSAFE($siteID['SiteID'], $datefrom, $dateto);
+                $subtotal += ($grosshold_MG + $grosshold_COSTELLO + $loads['GrossHold']);
+                $arr_grosshold[] = array( 'SiteCode' => $siteCode['SiteCode'], 
+                                          'SubTotal' => $subtotal);
+                $total += $subtotal;
+                $subtotal = 0; //reset to 0 once assigned
+            }
+            for ($i = 0; $i < count($arr_grosshold); $i++) {
+                $rrecord = array(0 => trim(str_replace("ICSA-", "", $arr_grosshold[$i]['SiteCode'])), 
+                                 1 => number_format($arr_grosshold[$i]['SubTotal'], 2, ".", ","));
+
+                array_push($completeexcelvalues, $rrecord); 
+            }
+            $rrecordtotal = array(0 => 'Total', 
+                             1 => number_format($total, 2, ".", ","));
+
+            array_push($completeexcelvalues, $rrecordtotal); 
+        }
+        else {
+            $rrecord = array(0 => 'The operator has no site. No records found');
+        }
+        $excel_obj->setHeadersAndValues($array_headers, $completeexcelvalues);
+        $excel_obj->GenerateExcelFile();
+        unset($completeexcelvalues);
+   }
+   else if(isset($_GET['pdf3']) == "grossholdpdf") {
+       $datefrom = $_GET['date'];
+       $dateto = date ( 'Y-m-d' , strtotime ('+1 day' , strtotime($datefrom)));
+       
+       $pdf = CTCPDF::c_getInstance(); //call method of tcpdf
+       $pdf->c_commonReportFormat();
+       $pdf->c_setHeader('Gross Hold'); //filename
+       $pdf->html.='<div style="text-align:center;">As of ' . date('l') . ', ' .
+              date('F d, Y') . ' ' . date('H:i:s A') .'</div>';
+       $pdf->SetFontSize(10);
+       $pdf->c_tableHeader2(array(
+                      array('value'=>'Site'),
+                      array('value'=>'Gross Hold'),
+                   ));
+       //get site operator's sites
+       $aid = $_SESSION['accID'];
+       $siteIDs = $orptoptr->getSiteByAID($aid);
+       //get site grossholds
+       $result = array();
+       $total = 0;
+       $subtotal = 0;
+       $MG_total = 0;
+       $costello_total = 0;
+       $abbott_total = 0;
+       if (count($siteIDs) > 0) {
+           foreach ($siteIDs as $siteID) {
+                  //get D, R, W and MR of respective casinos
+                  $siteCode = $orptoptr->getsitecode($siteID['SiteID']);
+                  //for MG
+                  $serviceID_MG             = array(2); //service group id
+                  $deposit_reload_MG        = $orptoptr->getGrossHoldTB($siteID['SiteID'], $serviceID_MG, "DR", $datefrom, $dateto);
+                  $withdraw_MG              = $orptoptr->getGrossHoldTB($siteID['SiteID'], $serviceID_MG, "W", $datefrom, $dateto);
+                  $mr_MG                    = $orptoptr->getManualRedemptionTrans($siteID['SiteID'], $serviceID_MG, $datefrom, $dateto);
+                  $grosshold_MG             = $deposit_reload_MG['Amount'] - ($withdraw_MG['Amount'] + $mr_MG['Amount']);
+                  //for Costello
+                  $serviceID_COSTELLO       = array(1); //service group id
+                  $deposit_reload_COSTELLO  = $orptoptr->getGrossHoldTB($siteID['SiteID'], $serviceID_COSTELLO, "DR", $datefrom, $dateto);
+                  $withdraw_COSTELLO        = $orptoptr->getGrossHoldTB($siteID['SiteID'], $serviceID_COSTELLO, "W", $datefrom, $dateto);
+                  $mr_COSTELLO              = $orptoptr->getManualRedemptionTrans($siteID['SiteID'], $serviceID_COSTELLO, $datefrom, $dateto);
+                  $grosshold_COSTELLO       = $deposit_reload_COSTELLO['Amount'] - ($withdraw_COSTELLO['Amount'] + $mr_COSTELLO['Amount']);
+                  //for abbott
+                  $loads = $orptoptr->getGrossHoldeSAFE($siteID['SiteID'], $datefrom, $dateto);
+                  
+                  //appending results
+                  $subtotal += ($grosshold_MG + $grosshold_COSTELLO + $loads['GrossHold']);
+                  
+                  $arr_grosshold[] = array( 'SiteCode' => str_replace("ICSA-", "", $siteCode['SiteCode']), 'SubTotal' => $subtotal);
+                  
+                  $total += $subtotal;
+                  $subtotal = 0; //reset to 0
+           }
+           for ($i = 0; $i < count($arr_grosshold); $i++) {
+                $pdf->c_tableRow2(array(array('value' => str_replace("ICSA-", "", $arr_grosshold[$i]['SiteCode'])),
+                                        array('value' => number_format($arr_grosshold[$i]['SubTotal'], 2, ".", ","))));
+           } 
+           $pdf->c_tableRow2(array(array('value' => '<b>Total</b>'),
+                                   array('value' => '<b>'.number_format($total, 2, ".", ",").'</b>')));
+       }
+       $pdf->c_tableEnd();
+       $pdf->c_generatePDF("Gross_Hold_".date('Y_m_d').".pdf");
    }
 }
 else
