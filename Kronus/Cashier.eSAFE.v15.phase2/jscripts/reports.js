@@ -213,7 +213,7 @@ $(document).ready(function(){
 
                         }
                         
-                        updateLightbox( '<div style="margin-bottom: 10px; font-weight: bold;">Terminal #: '+ tcode +'</div><table id="terminaltranssumm" ><tr><td><b>Deposit</b></td><td></td><td></td>' +
+                        updateLightbox( '<div style="margin-bottom: 10px; font-weight: bold;">Transaction History per Site:<br/>Terminal #: '+ tcode +'</div><table id="terminaltranssumm" ><tr><td><b>Deposit</b></td><td></td><td></td>' +
                                                     '</tr><tr><td></td><td>Cash</td><td style="text-align: right;">' + DepCash+ '</td>' +
                                                     '</tr><tr><td></td><td>Ticket</td><td style="text-align: right;">' + DepTicket+ '</td>' +
                                                     '</tr><tr><td></td><td>Coupon</td><td style="text-align: right;">' + DepCoupon+ '</td>' +
@@ -324,10 +324,11 @@ $(document).ready(function(){
                         TotalPrintedTickets = toMoney(TotalPrintedTickets,'no');
 
                         //Compute Cash On Hand [ Formula: (((Total Cash from Cashier & Genesis + eSAFE Cash Load) - (Total Cashier Redemption + eSAFE Withdraw)) - Total Encashed Tickets) - Total Manual Redemption ]
-                        CompCashOnHand = ((RegCash + eSAFECash) - (CashierRedemption + parseFloat(json.eWalletWithdrawals)) - SubEncashedTickets) - parseFloat(json.manualredemptions);
+                        //CompCashOnHand = ((RegCash + eSAFECash) - (CashierRedemption + parseFloat(json.eWalletWithdrawals)) - SubEncashedTickets) - parseFloat(json.manualredemptions);
+                        CompCashOnHand = ((RegCash + eSAFECash) - (CashierRedemption + parseFloat(json.eWalletWithdrawals))) - parseFloat(json.manualredemptions);
                         CashOnHand = toMoney(CompCashOnHand,'no');
 
-                        updateLightbox( '<div style="margin-bottom: 10px; font-weight: bold;"> Sales </div><table id="salestranssumm" ><tr><td style="padding-left: 30px;"><b>Non e-SAFE Cash</b></td><td style="text-align: right;">'+TotalRegCash+'</td>' +
+                        updateLightbox( '<div style="margin-bottom: 10px; font-weight: bold;"> Transaction History per Site:<br/>Sales </div><table id="salestranssumm" ><tr><td style="padding-left: 30px;"><b>Non e-SAFE Cash</b></td><td style="text-align: right;">'+TotalRegCash+'</td>' +
                                                     '</tr><tr><td style="padding-left: 30px;"><b>Non e-SAFE Tickets</b></td><td style="text-align: right;">' + TotalRegTicket+ '</td>' +
                                                     '</tr><tr><td style="padding-left: 30px;"><b>Non e-SAFE Coupons</b></td><td style="text-align: right;">' + TotalRegCoupon+ '</td>' +
                                                     '</tr><tr><td style="padding-left: 30px;"><b>e-SAFE Cash Deposits</b></td><td style="text-align: right;">' + TotaleSAFECash+ '</td>' +
@@ -469,7 +470,7 @@ $(document).ready(function(){
 
                         TotalGrosshold = SubGrosshold;
                         
-                        updateLightbox( '<div style="margin-bottom: 10px; font-weight: bold;">Total: </div><table id="totaltranssumm" ><thead> <th colspan="2" style=" width: 20%"></th>'+
+                        updateLightbox( '<div style="margin-bottom: 10px; font-weight: bold;">Transaction History per Site:<br/>Total: </div><table id="totaltranssumm" ><thead> <th colspan="2" style=" width: 20%"></th>'+
                                                     '<th colspan="3" style="width: 22%;">Deposit</th>'+
                                                     '<th colspan="3" style="width: 21%;">Reload</th>'+
                                                     '<th colspan="2" style="width: 22%;">Redemption</th>'+
@@ -707,7 +708,7 @@ $(document).ready(function(){
 
                         }
                         
-                        updateLightbox( '<div style="margin-bottom: 10px; font-weight: bold;">Terminal #: '+ tcode +'</div><table id="terminalctranssumm" ><tr><td><b>Deposit</b></td><td></td><td></td>' +
+                        updateLightbox( '<div style="margin-bottom: 10px; font-weight: bold;">Transaction History per Cashier:<br/>Terminal #: '+ tcode +'</div><table id="terminalctranssumm" ><tr><td><b>Deposit</b></td><td></td><td></td>' +
                                                     '</tr><tr><td></td><td>Cash</td><td style="text-align: right;">' + DepCash+ '</td>' +
                                                     '</tr><tr><td></td><td>Ticket</td><td style="text-align: right;">' + DepTicket+ '</td>' +
                                                     '</tr><tr><td></td><td>Coupon</td><td style="text-align: right;">' + DepCoupon+ '</td>' +
@@ -781,7 +782,7 @@ $(document).ready(function(){
 
                         SubGrosshold = ((SubDepCash + SubDepTicket + SubDepCoupon)+(SubRelCash + SubRelTicket + SubRelCoupon))-(SubRedCashier + SubRedGenesis);
                         
-                        updateLightbox( '<div style="margin-bottom: 10px; font-weight: bold;">Total: </div><table id="totalctranssumm" ><tr><td><b>Deposit</b></td><td></td><td></td>' +
+                        updateLightbox( '<div style="margin-bottom: 10px; font-weight: bold;">Transaction History per Cashier:<br/>Total: </div><table id="totalctranssumm" ><tr><td><b>Deposit</b></td><td></td><td></td>' +
                                                     '</tr><tr><td></td><td>Cash</td><td style="text-align: right;">' + toMoney(SubDepCash,'no')+ '</td>' +
                                                     '</tr><tr><td></td><td>Ticket</td><td style="text-align: right;">' + toMoney(SubDepTicket,'no')+ '</td>' +
                                                     '</tr><tr><td></td><td>Coupon</td><td style="text-align: right;">' + toMoney(SubDepCoupon,'no')+ '</td>' +
@@ -883,10 +884,11 @@ $(document).ready(function(){
                         TotalSales = toMoney(Sales,'no');
 
                         //Compute Cash On Hand [ Formula: (((Total Cash from Cashier & Genesis + eSAFE Cash Load) - (Total Cashier Redemption + eSAFE Withdraw)) - Total Encashed Tickets) - Total Manual Redemption ]
-                        CompCashOnHand = ((RegCash + eSAFECash) - (CashierRedemption + parseFloat(json.eWalletWithdrawals)) - SubEncashedTickets);
+                        //CompCashOnHand = ((RegCash + eSAFECash) - (CashierRedemption + parseFloat(json.eWalletWithdrawals)) - SubEncashedTickets);
+                        CompCashOnHand = ((RegCash + eSAFECash) - (CashierRedemption + parseFloat(json.eWalletWithdrawals)));
                         CashOnHand = toMoney(CompCashOnHand,'no');
 
-                        updateLightbox( '<div style="margin-bottom: 10px; font-weight: bold;"> Sales </div><table id="salesctranssumm" ><tr><td style="padding-left: 30px;"><b>Non e-SAFE Cash</b></td><td style="text-align: right;">'+TotalRegCash+'</td>' +
+                        updateLightbox( '<div style="margin-bottom: 10px; font-weight: bold;"> Transaction History per Cashier:<br/>Sales </div><table id="salesctranssumm" ><tr><td style="padding-left: 30px;"><b>Non e-SAFE Cash</b></td><td style="text-align: right;">'+TotalRegCash+'</td>' +
                                                     '</tr><tr><td style="padding-left: 30px;"><b>Non e-SAFE Tickets</b></td><td style="text-align: right;">' + TotalRegTicket+ '</td>' +
                                                     '</tr><tr><td style="padding-left: 30px;"><b>Non e-SAFE Coupons</b></td><td style="text-align: right;">' + TotalRegCoupon+ '</td>' +
                                                     '</tr><tr><td style="padding-left: 30px;"><b>e-SAFE Cash Deposits</b></td><td style="text-align: right;">' + TotaleSAFECash+ '</td>' +
@@ -1124,7 +1126,7 @@ $(document).ready(function(){
                         TotalDepTicket = toMoney((DepTicket + parseFloat(json.eWalletTicketDeposits)),'no') ;
                         TotalGenRedemption = toMoney((RedGenesis + parseFloat(json.eWalletWithdrawals)),'no') ;
                         
-                        updateLightbox( '<div style="margin-bottom: 10px; font-weight: bold;">Terminal #: '+ tcode +'</div><table id="terminalvctranssumm" ><tr><td><b>Deposit</b></td><td></td><td></td>' +
+                        updateLightbox( '<div style="margin-bottom: 10px; font-weight: bold;">Transaction History per Virtual Cashier:<br/>Terminal #: '+ tcode +'</div><table id="terminalvctranssumm" ><tr><td><b>Deposit</b></td><td></td><td></td>' +
                                                     '</tr><tr><td></td><td>Cash</td><td style="text-align: right;">' + TotalDepCash+ '</td>' +
                                                     '</tr><tr><td></td><td>Ticket</td><td style="text-align: right;">' + TotalDepTicket+ '</td>' +
                                                     //'</tr><tr><td></td><td>Coupon</td><td style="text-align: right;">' + DepCoupon+ '</td>' +
@@ -1202,7 +1204,7 @@ $(document).ready(function(){
 
                         SubGrosshold = ((SubDepCash + SubDepTicket + SubDepCoupon)+(SubRelCash + SubRelTicket + SubRelCoupon))-(SubRedCashier + SubRedGenesis);
                         
-                        updateLightbox( '<div style="margin-bottom: 10px; font-weight: bold;">Total: </div><table id="totalvctranssumm" ><tr><td><b>Deposit</b></td><td></td><td></td>' +
+                        updateLightbox( '<div style="margin-bottom: 10px; font-weight: bold;">Transaction History per Virtual Cashier:<br/>Total: </div><table id="totalvctranssumm" ><tr><td><b>Deposit</b></td><td></td><td></td>' +
                                                     '</tr><tr><td></td><td>Cash</td><td style="text-align: right;">' + toMoney(SubDepCash,'no')+ '</td>' +
                                                     '</tr><tr><td></td><td>Ticket</td><td style="text-align: right;">' + toMoney(SubDepTicket,'no')+ '</td>' +
                                                     //'</tr><tr><td></td><td>Coupon</td><td style="text-align: right;">' + toMoney(SubDepCoupon,'no')+ '</td>' +
@@ -1300,7 +1302,7 @@ $(document).ready(function(){
                         CompCashOnHand = (RegCash + eSAFECash) - (CashierRedemption + parseFloat(json.eWalletWithdrawals)) - parseFloat(json.manualredemptions);
                         CashOnHand = toMoney(CompCashOnHand,'no');
 
-                        updateLightbox( '<div style="margin-bottom: 10px; font-weight: bold;"> Sales </div><table id="salesvctranssumm" ><tr><td style="padding-left: 30px;"><b>Non e-SAFE Cash</b></td><td style="text-align: right;">'+TotalRegCash+'</td>' +
+                        updateLightbox( '<div style="margin-bottom: 10px; font-weight: bold;"> Transaction History per Virtual Cashier:<br/>Sales </div><table id="salesvctranssumm" ><tr><td style="padding-left: 30px;"><b>Non e-SAFE Cash</b></td><td style="text-align: right;">'+TotalRegCash+'</td>' +
                                                     '</tr><tr><td style="padding-left: 30px;"><b>Non e-SAFE Tickets</b></td><td style="text-align: right;">' + TotalRegTicket+ '</td>' +
                                                     '</tr><tr><td style="padding-left: 30px;"><b>e-SAFE Cash Deposits</b></td><td style="text-align: right;">' + TotaleSAFECash+ '</td>' +
                                                     '</tr><tr><td style="padding-left: 30px;"><b>e-SAFE Ticket Deposits</b></td><td style="text-align: right;">' + TotaleSAFETickets+ '</td>' +
@@ -1442,7 +1444,7 @@ $(document).ready(function(){
                         TotalDeposit = toMoney(TDeposit,'no');
                         TotalWithdrawal = toMoney(TWithdrawal,'no');
 
-                        updateLightbox( '<table id="esafesummtable" ><tr><td>Total e-SAFE Deposits</td><td style="text-align:right;"> ' + TotalDeposit +
+                        updateLightbox( '<table id="esafesummtable" ><tr><td colspan="2">e-SAFE Transaction History per Cashier</td></tr><tr><td>Total e-SAFE Deposits</td><td style="text-align:right;"> ' + TotalDeposit +
                                                         '</td></tr><tr><td>Total e-SAFE Withdrawals</td><td style="text-align:right;"> ' + TotalWithdrawal + '</td>' +
 //                                                        '</tr><tr><td>Cash On Hand</td><td style="text-align:right;"> ' + toMoney(json.cashOnHand,'no') + '</td>' +
                                                         '</tr></table>' +
@@ -1494,7 +1496,7 @@ $(document).ready(function(){
                         TotalDeposit = toMoney(TDeposit,'no');
                         TotalWithdrawal = toMoney(TWithdrawal,'no');
 
-                        updateLightbox( '<table id="esafesummtable" ><tr><td>Total e-SAFE Deposits</td><td style="text-align:right;"> ' + TotalDeposit +
+                        updateLightbox( '<table id="esafesummtable" ><tr><td colspan="2">e-SAFE Transaction History per Site</td></tr><tr><td>Total e-SAFE Deposits</td><td style="text-align:right;"> ' + TotalDeposit +
                                                         '</td></tr><tr><td>Total e-SAFE Withdrawals</td><td style="text-align:right;"> ' + TotalWithdrawal + '</td>' +
 //                                                        '</tr><tr><td>Cash On Hand</td><td style="text-align:right;"> ' + toMoney(json.cashOnHand,'no') + '</td>' +
                                                         '</tr></table>' +
