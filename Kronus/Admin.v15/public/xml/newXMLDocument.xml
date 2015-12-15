@@ -224,6 +224,7 @@
         <submenu id="99" name='e-SAFE Transaction History Per Membership Card' path='TopUpeWalletTransactionCardNumberHistory.php' group="e-SAFE Transaction History" pagename="19" /> 
         <submenu id ='82' name='Transaction Tracking' path='rptfinancetrack.php' group=" " pagename='19' />
         <submenu id ='76' name='E-City Report' path='pagcorecityreport.php' group=" " pagename='19' />
+        <submenu id ='89' name='UB Transaction Tracking' path='rptfinancetrackUB.php' group=" " pagename='19' />
         <submenu id="54" name='Audit Trail' path='rptaudittrail.php' group=" " pagename="19" />
      </menu>
 </right>
@@ -241,7 +242,8 @@
       <submenu id="51" name='Playing Balance Per Site' path='PlayingBalance.php' pagename="19" group='Playing Balance' />
       <submenu id="52" name='Playing Balance Per Membership Card' path='PlayingBalanceub.php' group= "Playing Balance" pagename="19" />
       <submenu id="98" name='e-SAFE Transaction History Per Site' path='TopUpeWalletTransactionSiteHistory.php' group="e-SAFE Transaction History" pagename="19" />
-        <submenu id="99" name='e-SAFE Transaction History Per Membership Card' path='TopUpeWalletTransactionCardNumberHistory.php' group="e-SAFE Transaction History" pagename="19" /> 
+      <submenu id="99" name='e-SAFE Transaction History Per Membership Card' path='TopUpeWalletTransactionCardNumberHistory.php' group="e-SAFE Transaction History" pagename="19" /> 
+      <submenu id ="82" name='UB Last Transaction' group=" " path='LastTransactionub.php'  pagename="19" />
       <submenu id ="54" name='Audit Trail' path='rptaudittrail.php' pagename="19" group=' '/> 
    </menu>
 </right>

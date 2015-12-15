@@ -30,7 +30,7 @@ class ApplicationSupport extends DBHandler
               $stmt = "SELECT mr.ManualRedemptionsID, s.SiteCode, tm.TerminalCode, rf.ServiceName, mr.TransactionID, mr.TransactionDate, mr.ReportedAmount, mr.Status 
                     FROM manualredemptions mr
                     INNER JOIN sites s ON mr.SiteID = s.SiteID
-                    INNER JOIN terminals tm ON mr.TerminalID = tm.TerminalID
+                    LEFT JOIN terminals tm ON mr.TerminalID = tm.TerminalID
                     LEFT JOIN ref_services rf ON mr.ServiceID = rf.ServiceID
                     WHERE mr.LoyaltyCardNumber = ? AND mr.TransactionDate >=? 
                     AND mr.TransactionDate < ? ORDER BY mr.TransactionDate LIMIT ".$zStart.", ".$zLimit."";
@@ -45,7 +45,7 @@ class ApplicationSupport extends DBHandler
               $stmt = "SELECT mr.ManualRedemptionsID, s.SiteCode, tm.TerminalCode, rf.ServiceName, mr.TransactionID, mr.TransactionDate, mr.ReportedAmount, mr.Status 
                     FROM manualredemptions mr
                     INNER JOIN sites s ON mr.SiteID = s.SiteID
-                    INNER JOIN terminals tm ON mr.TerminalID = tm.TerminalID
+                    LEFT JOIN terminals tm ON mr.TerminalID = tm.TerminalID
                     LEFT JOIN ref_services rf ON mr.ServiceID = rf.ServiceID
                     WHERE mr.LoyaltyCardNumber = ? AND mr.Status = ? AND mr.TransactionDate >=? 
                     AND mr.TransactionDate < ? ORDER BY mr.TransactionDate LIMIT ".$zStart.", ".$zLimit."";
@@ -2414,7 +2414,7 @@ class ApplicationSupport extends DBHandler
     public function checkLastSessionByMID($MID)
     {
         //---------------  Get Session From Launchpad or Genesis Session -----------------//
-        $stmt1 = "SELECT s.SiteCode, t.TerminalCode, ss.ServiceName, tr.TransactionDate,
+        $stmt1 = "SELECT s.SiteCode, t.TerminalCode, ss.ServiceName, tr.EndDate,
                         (CASE t.TerminalType WHEN '0' THEN 'Regular' 
                                              WHEN '1' THEN 'EGM' 
                                              WHEN '2' THEN 'eSAFE' 
@@ -2453,7 +2453,7 @@ class ApplicationSupport extends DBHandler
                         $results['SiteCode'] = $value['SiteCode'];
                         $results['TerminalCode'] = $value['TerminalCode'];
                         $results['ServiceName'] = $value['ServiceName'];
-                        $results['TransactionDate'] = $value['TransactionDate'];
+                        $results['TransactionDate'] = $value['EndDate'];
                         $results['TerminalType'] = $value['TerminalType'];
                         $results['LoyaltyCardNumber'] = $value['LoyaltyCardNumber'];
         }

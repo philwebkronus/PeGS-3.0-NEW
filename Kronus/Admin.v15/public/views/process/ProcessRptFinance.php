@@ -152,7 +152,6 @@ if($connected)
                      
                      //paginate array
                      $ofindetails = $orptfinance->paginatetransaction($transdetails, $start, $limit);
-                     
                      $i = 0;
                      $response->page = $page;
                      $response->total = $total_pages;
@@ -206,11 +205,11 @@ if($connected)
                 unset($result);
                 $orptfinance->close();
                 exit;
-            break;
-            
+            break;   
        }
+       //page post for transaction details tracking
    }
-   //displaying of total, grandtotal on jqgrid pagination 
+   //displaying of total, grandtotal on jqgrid pagination
    elseif(isset($_POST['gettotal']) == "GetTotals")
    {
        $arrtotal = 0;
@@ -293,6 +292,411 @@ if($connected)
        $orptfinance->close();
        exit;
    }
+    //For finance UB transaction Tracking
+      else if(isset($_POST['financetrackUB']))
+   {
+       $vpaginate = $_POST['financetrackUB'];
+       $page = $_POST['page']; // get the requested page
+       $limit = $_POST['rows']; // get how many rows we want to have into the grid
+       $sidx = $_POST['sidx']; // get index row - i.e. user click to sort
+       $direction = $_POST['sord']; // get the direction
+       switch($vpaginate)
+       {
+           //page post for UB transaction details tracking
+             case 'TransactionDetailsUB':
+                $vSiteID = $_POST['cmbsite'];
+                $vTerminalID = $_POST['cmbterminal'];
+                $vdate1 = $_POST['txtDate1'];
+                //$vdate2 = $_POST['txtDate2'];
+                $vFrom = $vdate1." ".$cutoff_time;
+                $vTo = date ('Y-m-d' , strtotime ('+1 day' , strtotime($vdate1)))." ".$cutoff_time;
+                $vsitecode = $terminalcode.$_POST['sitecode'];
+                $result = $orptfinance->showtranstrackingUB($type="paginate",$vSiteID, $vTerminalID, $vFrom, $vTo);
+
+                if(count($result) > 0)
+                {
+                    
+                     $transdetails = array();
+                     foreach($result as $value) 
+                     {                
+                             $transdetails[$value['TransactionsSummaryID']] = array(
+                                'TransactionsSummaryID' =>$value['TransactionsSummaryID'],
+                                'SiteCode'=>$value['SiteCode'],
+                                'TerminalCode'=>$value['TerminalCode'],
+                                'ServiceName'=>$value['ServiceName'],
+                                'StartBalance'=>$value['StartBalance'],
+                                'EndBalance'=>$value['EndBalance'],
+                                'WalletReloads'=>$value['WalletReloads'],
+                                'DateStarted'=>$value['DateStarted'],
+                                'DateEnded'=>$value['DateEnded'],
+                                'ServiceName'=>$value['ServiceName']
+                             ); 
+                        
+                       }
+                     $count = count($transdetails);
+                     if($count > 0 ) {
+                        $total_pages = ceil($count/$limit);
+                     } else {
+                        $total_pages = 0;
+                     }
+                     if ($page > $total_pages)
+                     {
+                        $page = $total_pages;
+                     }
+                     
+                     $start = $limit * $page - $limit;
+                     $limit = (int)$limit;   
+                     
+                     //paginate array
+                     $ofindetails = $orptfinance->paginatetransaction($transdetails, $start, $limit);   
+                     $i = 0;
+                     $response->page = $page;
+                     $response->total = $total_pages;
+                     $response->records = $count; 
+                     $arrstartbal = array();
+                     $arresafeloads = array();
+                     $arrendbal = array();
+                     foreach($ofindetails as $vview)
+                     {                 
+                         $rterminalCode = $vview['TerminalCode'];
+                         //remove the "icsa-[SiteCode]"
+                         $rterminalCode = substr($rterminalCode, strlen($vsitecode));
+                         $vStartingBalance = $vview['StartBalance'];
+                         $vEsafeLoads = $vview['WalletReloads'];
+                         $vEndingBalance = $vview['EndBalance'];
+                         $response->rows[$i]['id']=$vview['TransactionsSummaryID'];
+                         $response->rows[$i]['cell']=array($_POST['sitecode'], $rterminalCode, $vview['ServiceName'],
+                            number_format($vStartingBalance, 2), number_format($vEsafeLoads, 2), number_format($vEndingBalance, 2),
+                            $vview['DateStarted'], $vview['DateEnded']);
+                         $i++;
+
+                        //store the 3 transaction types in an array
+                        array_push($arrstartbal, $vStartingBalance);
+                        array_push($arresafeloads, $vEsafeLoads);
+                        array_push($arrendbal, $vEndingBalance);
+                     }
+                     
+                      // Get the sum of all  transaction types
+                        $totalstartbal = array_sum($arrstartbal); 
+                        $totalesafeloads = array_sum($arresafeloads); 
+                        $totalendbal = array_sum($arrendbal);
+
+                        unset($arrstartbal, $arresafeloads, $arrendbal, $transdetails, $ofindetails);
+                        
+                        //session variable to store transaction types in an array; to used on ajax call later on this program
+                        $_SESSION['total'] = array("TotalStartBal" => $totalstartbal, 
+                                         "TotaleSAFELoads" => $totalesafeloads, "TotalEndBal" => $totalendbal);
+                }
+                else
+                {
+                     $i = 0;
+                     $response->page = 0;
+                     $response->total = 0;
+                     $response->records = 0;
+                     $msg = "Finance: No returned result";
+                     $response->msg = $msg;
+                }
+                
+                echo json_encode($response);
+                unset($result);
+                $orptfinance->close();
+                exit;
+            break;
+            
+       }
+       //page post for UB transaction details tracking
+   } 
+    elseif(isset($_POST['gettotalUB']) == "GetTotalsUB")
+   {
+       $arrtotal = 0;
+       $granddeposit = 0;
+       $grandreload = 0;
+       $grandwithdraw = 0;
+       $arrstartbal = array();
+       $arresafeloads = array();
+       $arrendbal = array();
+       
+       if(isset($_SESSION['total']))
+       {
+          $arrtotal = $_SESSION['total'];
+       }
+       
+       $vSiteID = $_POST['cmbsite'];
+       $vTerminalID = $_POST['cmbterminal'];
+       $vdate1 = $_POST['txtDate1'];
+       //$vdate2 = $_POST['txtDate2'];
+       $vFrom = $vdate1." ".$cutoff_time;
+       $vTo = date ('Y-m-d' , strtotime ('+1 day' , strtotime($vdate1)))." ".$cutoff_time;
+     
+       //used this method to get the grand total of all tranction types
+       $result = $orptfinance->showtranstrackingUB($ztype="paginate", $vSiteID, $vTerminalID, $vFrom, $vTo);
+       $ctr1 = 0;
+        foreach($result as $vview)
+                     {                 
+                         $vStartingBalance = $vview['StartBalance'];
+                         $vEsafeLoads = $vview['WalletReloads'];
+                         $vEndingBalance = $vview['EndBalance'];
+
+                        //store the 3 transaction types in an array
+                        array_push($arrstartbal, $vStartingBalance);
+                        array_push($arresafeloads, $vEsafeLoads);
+                        array_push($arrendbal, $vEndingBalance);
+                     }
+
+       
+       /**** GET Total Summary *****/
+       $grandstartbal = array_sum($arrstartbal);
+       $grandesafeloads = array_sum($arresafeloads);
+       $grandendbal = array_sum($arrendbal);
+                        
+       unset($arrdeposit, $arrreload, $arrwithdraw);
+       
+       // store the grand total of transaction types into an array 
+       $arrgrand = array("GrandStartBal" => $grandstartbal, 
+                            "GrandeSAFELoads" => $grandesafeloads, "GrandEndBal" => $grandendbal);
+       
+       //results will be fetch here:
+       if((count($arrtotal) > 0) && (count($arrgrand) > 0))
+       {
+           /**** Get Total Per Page  *****/
+           $vtotal->deposit = number_format($arrtotal["TotalStartBal"], 2, '.', ',');
+           $vtotal->reload = number_format($arrtotal["TotaleSAFELoads"], 2, '.', ',');
+           $vtotal->withdraw = number_format($arrtotal["TotalEndBal"], 2, '.', ',');
+           $vtotal->sales = number_format($arrtotal["TotalStartBal"] + $arrtotal["TotaleSAFELoads"], 2, '.', ',');
+           /**** GET Total Page Summary ******/
+           $vtotal->granddeposit = number_format($arrgrand['GrandStartBal'], 2, '.', ',');
+           $vtotal->grandreload = number_format($arrgrand['GrandeSAFELoads'], 2, '.', ',');
+           $vtotal->grandwithdraw = number_format($arrgrand["GrandEndBal"], 2, '.', ',');
+           $vtotal->grandsales = number_format($arrgrand["GrandStartBal"] + $arrgrand["GrandeSAFELoads"], 2, '.', ',');
+           
+           // count site grosshold
+           $vgrossholdamt = $arrgrand["GrandStartBal"] + $arrgrand["GrandeSAFELoads"] - $arrgrand["GrandEndBal"];
+           $vtotal->grosshold = number_format($vgrossholdamt, 2, '.', ',');
+           echo json_encode($vtotal); 
+       }
+       else 
+       {
+           echo "No Results Found";
+       }
+       unset($arrgrand, $arrtotal, $_SESSION['total']);
+       //unset($_SESSION['total']);
+       $orptfinance->close();
+       exit;
+   }
+   
+       //exporting excel and PDF
+    elseif(isset($_GET['exportUBtrans']))
+    {
+        $vgetpage = $_GET['exportUBtrans'];
+        $vdate1 = $_POST['txtDate1'];
+        //$vdate2 = $_POST['txtDate2'];
+        $vdatefrom = $vdate1." ".$cutoff_time;
+        $vdateto = date ('Y-m-d' , strtotime ('+1 day' , strtotime($vdate1)))." ".$cutoff_time;
+        $vSiteID = $_POST['cmbsite'];
+        $vTerminalID = $_POST['cmbterminal'];
+        $vsitecode = $terminalcode.$_GET['sitecode'];
+        switch($vgetpage)
+        {
+            case 'UBtrack':
+                $fn = $_GET['fn'].".xls"; //this will be the filename of the excel file
+                //create the instance of the exportexcel format
+                $excel_obj = new ExportExcel("$fn");
+
+                $header = array('Transaction Summary ID', 'Site Code','Terminal Code','Service Name',
+                    'Deposit','Reload','Withdrawal','Date Started','Date Ended');
+                
+                $result = $orptfinance->showtranstrackingUB($type="export",$vSiteID, $vTerminalID, $vdatefrom, $vdateto);
+                $completeexcelvalues = array();
+                if(count($result) > 0)
+                {
+                    $transdetails = array();
+                    foreach($result as $value) 
+                    {                
+                             $transdetails[$value['TransactionsSummaryID']] = array(
+                                'TransactionsSummaryID' =>$value['TransactionsSummaryID'],
+                                'SiteCode'=>$value['SiteCode'],
+                                'TerminalCode'=>$value['TerminalCode'],
+                                'ServiceName'=>$value['ServiceName'],
+                                'StartBalance'=>$value['StartBalance'],
+                                'EndBalance'=>$value['EndBalance'],
+                                'WalletReloads'=>$value['WalletReloads'],
+                                'DateStarted'=>$value['DateStarted'],
+                                'DateEnded'=>$value['DateEnded'],
+                                'ServiceName'=>$value['ServiceName']
+                             ); 
+                    }
+
+                    $grandstartbal = 0;
+                    $grandesafeloads = 0;
+                    $grandendbal = 0;
+                     $arrstartbal = array();
+                     $arresafeloads = array();
+                     $arrendbal = array();
+                    
+                    $sitecode = substr($vsitecode, strlen($terminalcode));
+                    foreach($transdetails as $vview)
+                    {    
+                      //remove the "icsa-[SiteCode]"
+                      $rterminalCode = substr($vview['TerminalCode'], strlen($vsitecode));
+                      $vstartbal = $vview['StartBalance'];
+                      $vesafeloads = $vview['WalletReloads'];
+                      $vendbal = $vview['EndBalance'];
+                      $excelvalues = array(0 => $vview['TransactionsSummaryID'],
+                                           1 => $sitecode,
+                                           2 => $rterminalCode,
+                                           3 => $vview['ServiceName'],
+                                           4 => number_format($vstartbal, 2, '.', ','), 
+                                           5 => number_format($vesafeloads, 2, '.', ','), 
+                                           6 => number_format($vendbal, 2, '.', ','), 
+                                           7 => $vview['DateStarted'],
+                                           8 => $vview['DateEnded']
+                                         );
+                      array_push($completeexcelvalues,$excelvalues); //push the values for site transactions per day
+                      array_push($arrstartbal, $vstartbal);
+                      array_push($arresafeloads, $vesafeloads);
+                      array_push($arrendbal, $vendbal);
+                   }
+
+                    //get the total withdraw, deposit and reload
+                    $grandstartbal = array_sum($arrstartbal);
+                    $grandesafeloads = array_sum($arresafeloads);
+                    $grandendbal = array_sum($arrendbal);
+
+                    unset($arrstartbal, $arresafeloads, $arrendbal);
+                    //$vsales = $granddeposit + $grandreload;
+                    $vgrossholdamt = ($grandstartbal + $grandesafeloads) - $grandendbal; 
+
+                    //array for displaying total deposit on excel file
+                    $totalstartbal = array(0 => 'Total Start Balance',
+                                        1 => number_format($grandstartbal, 2, '.',',')
+                    );
+                    array_push($completeexcelvalues, $totalstartbal); //push the total sales for the site transaction
+
+                    //array for displaying total reload on excel file
+                    $totalesafeloads = array(0 => 'Total e-SAFE Loads',
+                                         1 => number_format($grandesafeloads, 2, '.', ','));
+                    array_push($completeexcelvalues, $totalesafeloads);
+
+                    //array for displaying total redeemed on excel file
+                    $totalendbal = array(0 => 'Total End Balance',
+                                        1 => number_format($grandendbal, 2, '.', ',')
+                     );
+                    array_push($completeexcelvalues, $totalendbal); //push the total withdraw for the site transaction
+
+                     //array for displaying total grosshold on excel file
+                    $grosshold = array(0 => 'Total Grosshold',
+                                       1 => number_format($vgrossholdamt, 2, '.', ',')
+                    );
+                    array_push($completeexcelvalues, $grosshold);
+                }
+                else
+                {
+                    array_push($completeexcelvalues, array(0=>'No Results Found'));
+                }
+                
+                                
+                /**** PREPARING TO WRITE IN EXCEL *****/
+                $excel_obj->setHeadersAndValues($header, $completeexcelvalues);
+                $excel_obj->GenerateExcelFile(); //now generate the excel file with the data and headers set
+                
+                //unsetting array values
+                unset($header, $completeexcelvalues, $grosshold, $totalendbal, $totalesafeloads, $totalstartbal);
+                    
+                //Log to audit trail
+                $vauditfuncID = 41; //export to excel
+                $vtransdetails = "UB Transaction Tracking";
+                $orptfinance->logtoaudit($new_sessionid, $aid, $vtransdetails, $vdate, $vipaddress, $vauditfuncID);
+            break;
+            case 'ExportToPDF':
+                $pdf = CTCPDF::c_getInstance();
+                $pdf->c_commonReportFormat();
+                $pdf->c_setHeader('Transaction Tracking');
+                $pdf->html.='<div style="text-align:center;">As of ' . $vdatefrom . '</div>';
+                $pdf->SetFontSize(10);
+                $pdf->c_tableHeader(array('Transaction Summary ID', 'Site Code','Terminal Code','Service Name',
+                    'Deposit','Reload','Withdrawal','Date Started','Date Ended'));
+
+                $result = $orptfinance->showtranstrackingUB($type="export",$vSiteID, $vTerminalID, $vdatefrom, $vdateto);
+                
+                if(count($result) > 0)
+                {
+                    $transdetails = array();
+                     foreach($result as $value) 
+                    {                
+                             $transdetails[$value['TransactionsSummaryID']] = array(
+                                'TransactionsSummaryID' =>$value['TransactionsSummaryID'],
+                                'SiteCode'=>$value['SiteCode'],
+                                'TerminalCode'=>$value['TerminalCode'],
+                                'ServiceName'=>$value['ServiceName'],
+                                'StartBalance'=>$value['StartBalance'],
+                                'EndBalance'=>$value['EndBalance'],
+                                'WalletReloads'=>$value['WalletReloads'],
+                                'DateStarted'=>$value['DateStarted'],
+                                'DateEnded'=>$value['DateEnded'],
+                                'ServiceName'=>$value['ServiceName']
+                             ); 
+                    }
+
+                    $grandstartbal = 0;
+                    $grandesafeloads = 0;
+                    $grandendbal = 0;
+                     $arrstartbal = array();
+                     $arresafeloads = array();
+                     $arrendbal = array();
+                    
+                    $sitecode = substr($vsitecode, strlen($terminalcode));
+                    foreach($transdetails as $vview)
+                    {    
+                      //remove the "icsa-[SiteCode]"
+                      $rterminalCode = substr($vview['TerminalCode'], strlen($vsitecode));
+                      $vstartbal = $vview['StartBalance'];
+                      $vesafeloads = $vview['WalletReloads'];
+                      $vendbal = $vview['EndBalance'];
+                       $pdf->c_tableRow(array(0 => $vview['TransactionsSummaryID'],
+                                           1 => $sitecode,
+                                           2 => $rterminalCode,
+                                           3 => $vview['ServiceName'],
+                                           4 => number_format($vstartbal, 2, '.', ','), 
+                                           5 => number_format($vesafeloads, 2, '.', ','), 
+                                           6 => number_format($vendbal, 2, '.', ','), 
+                                           7 => $vview['DateStarted'],
+                                           8 => $vview['DateEnded']
+                                         ));
+                      array_push($arrstartbal, $vstartbal);
+                      array_push($arresafeloads, $vesafeloads);
+                      array_push($arrendbal, $vendbal);
+                   }
+
+                    //get the total start balance, eSAFE loads and end balance
+                    $grandstartbal = array_sum($arrstartbal);
+                    $grandesafeloads = array_sum($arresafeloads);
+                    $grandendbal = array_sum($arrendbal);
+
+                    unset($arrstartbal, $arresafeloads, $arrendbal, $transdetails);
+                    //$vsales = $granddeposit + $grandreload;
+                    $vgrossholdamt = ($grandstartbal + $grandesafeloads) - $grandendbal; 
+
+                    $pdf->html.= '<div style="text-align: center;">';
+                    $pdf->html.= ' Total Start Balance '.number_format($grandstartbal, 2, '.', ',');
+                    $pdf->html.= ' Total e-SAFE Loads '.number_format($grandesafeloads, 2, '.', ',');
+                    $pdf->html.= ' Total End Balance '.number_format($grandendbal, 2, '.', ',');  
+                    $pdf->html.= ' Total Grosshold '.number_format($vgrossholdamt, 2, '.', ',');
+                    $pdf->html.= '</div>';
+                }
+                else
+                {
+                    $pdf->c_tableRow(array(0 => 'No Results Found'));
+                }
+                $pdf->c_tableEnd();
+                $vauditfuncID = 40; //export to pdf
+                $vtransdetails = "UB Transaction Tracking PDF";
+                $orptfinance->logtoaudit($new_sessionid, $aid, $vtransdetails, $vdate, $vipaddress, $vauditfuncID);
+                $pdf->c_generatePDF('UBTransactionTracking.pdf');
+            break;
+        }
+    }
+   
+   
    elseif(isset ($_POST['page2']))
    {
        $vpage  = $_POST['page2'];

@@ -1113,7 +1113,8 @@ if($connected && $connected2 && $connected3)
                         $vdate1 = $_POST['txtDate1'];
                         //$vdate2 = $_POST['txtDate2'];
                         $vFrom = $vdate1;
-                        $vTo = date ('Y-m-d', strtotime ('+1 day' , strtotime($vdate1)));
+                        $vTo = date ('Y-m-d H:i:s', strtotime ('+1 day' , strtotime($vdate1)));
+                        
                         if(isset($_POST['cmbstatus']) && isset($_POST['cmbtranstype']))
                         {
                             $vtransstatus = $_POST['cmbstatus'];
@@ -1270,7 +1271,6 @@ if($connected && $connected2 && $connected3)
                             case 3:
                                 //get total number of transactions for manual redemptions source
                                 $rcount = $oas->countmanualredemptionsub($vCardNum, $vtransstatus, $vFrom,$vTo); 
-
                                 $count = $rcount['count'];
 
                                 if($count > 0 ) {
@@ -1286,7 +1286,7 @@ if($connected && $connected2 && $connected3)
                                 $limit = (int)$limit;   
                                 //select manualredemptions transaction for manual redemption source
                                 $result = $oas->selectmanualredemptionsub($vCardNum, $vtransstatus, $vFrom,$vTo, $start, $limit);
-
+ 
                                 if(count($result) > 0)
                                 {
                                 $i = 0;
@@ -1304,7 +1304,7 @@ if($connected && $connected2 && $connected3)
                                        } 
 
                                        list($site, $sitecode) = split("-", $vview['SiteCode']);
-                                       $results = substr($vview['TerminalCode'], strlen($vview['SiteCode']));
+                                       $results = $vview['TerminalCode'] != null ? substr($vview['TerminalCode'], strlen($vview['SiteCode'])) : "N/A";
                                        $responce->rows[$i]['id']=$vview['ManualRedemptionsID'];
                                        $responce->rows[$i]['cell']=array($sitecode,$results,$vview['ServiceName'], 
                                            number_format($vview['ReportedAmount'],2),$vview['TransactionDate'],$vstatus);

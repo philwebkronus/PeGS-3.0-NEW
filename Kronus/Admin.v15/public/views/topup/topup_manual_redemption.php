@@ -76,7 +76,7 @@ $vaccesspages = array('5');
                 {name:'POSAccountNo',index:'POSAccountNo',align:'center', width: 120},
                 {name:'Terminal',index:'TerminalName',align:'left', width: 70},
                 {name:'ReportedAmount',index:'ReportedAmount',align:'right', width: 120},
-                {name:'RequestedBy',index:'UserName',align:'left', width: 150},
+                {name:'RequestedBy',index:'Name',align:'left', width: 150},
                 {name:'TransDate',index:'TransDate',align:'left', width: 220},
                 {name:'TicketID',index:'TicketID',align:'left', width: 100},
                 {name:'Remarks',index:'Remarks',align:'left', width: 120},

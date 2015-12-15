@@ -214,6 +214,96 @@ class RptFinance extends DBHandler{
         return $this->fetchAllData();
     }
     
+    function showtranstrackingUB($ztype,$zsiteID, $zterminalID, $zdatefrom, $zdateto)
+    {
+        //if exported to excel or pdf
+        if($ztype == "export")
+        {
+            //if terminal was selected all
+            if($zterminalID == "All")
+            {
+                    $stmt = "SELECT ts.TransactionsSummaryID, s.SiteCode, t.TerminalCode, rs.ServiceName, ts.StartBalance, ts.EndBalance, ts.WalletReloads, ts.DateStarted, ts.DateEnded
+                                FROM transactionsummary ts
+                                    INNER JOIN sites s ON s.SiteID=ts.SiteID
+                                    INNER JOIN terminals t ON t.TerminalID=ts.TerminalID
+                                    INNER JOIN terminalservices tss ON tss.TerminalID=ts.TerminalID
+                                    INNER JOIN ref_services rs ON rs.ServiceID=tss.ServiceID 
+                                WHERE ts.SiteID IN(".$zsiteID.")
+                                    AND ts.DateEnded >= ? 
+                                    AND ts.DateEnded < ?
+                                    AND tss.Status=1
+                                ";
+                    $this->prepare($stmt);
+                    $this->bindparameter(1, $zdatefrom);
+                    $this->bindparameter(2, $zdateto);
+            }
+            else
+            {
+                    $stmt = "SELECT ts.TransactionsSummaryID, s.SiteCode, t.TerminalCode, rs.ServiceName, ts.StartBalance, ts.EndBalance, ts.WalletReloads, ts.DateStarted, ts.DateEnded
+                                FROM transactionsummary ts
+                                    INNER JOIN sites s ON s.SiteID=ts.SiteID
+                                    INNER JOIN terminals t ON t.TerminalID=ts.TerminalID
+                                    INNER JOIN terminalservices tss ON tss.TerminalID=ts.TerminalID
+                                    INNER JOIN ref_services rs ON rs.ServiceID=tss.ServiceID 
+                                WHERE ts.SiteID IN(".$zsiteID.") 
+                                    AND ts.DateEnded >= ?
+                                    AND ts.DateEnded < ?
+                                    AND ts.TerminalID = ?
+                                    AND tss.Status=1
+                                ";
+                    $this->prepare($stmt);
+                    $this->bindparameter(1, $zdatefrom);
+                    $this->bindparameter(2, $zdateto);
+                    $this->bindparameter(3, $zterminalID);
+                }
+ }
+        //for jqgrid pagination
+        else
+        {
+            //check if terminal was selected all
+            if($zterminalID == "All")
+            {
+                   $stmt = "SELECT ts.TransactionsSummaryID, s.SiteCode, t.TerminalCode, rs.ServiceName, ts.StartBalance, ts.EndBalance, ts.WalletReloads, ts.DateStarted, ts.DateEnded
+                                FROM transactionsummary ts
+                                    INNER JOIN sites s ON s.SiteID=ts.SiteID
+                                    INNER JOIN terminals t ON t.TerminalID=ts.TerminalID
+                                    INNER JOIN terminalservices tss ON tss.TerminalID=ts.TerminalID
+                                    INNER JOIN ref_services rs ON rs.ServiceID=tss.ServiceID 
+                                WHERE ts.SiteID IN(".$zsiteID.")
+                                    AND ts.DateEnded >= ? 
+                                    AND ts.DateEnded < ?
+                                    AND tss.Status=1
+                                ";
+                    $this->prepare($stmt);
+                    $this->bindparameter(1, $zdatefrom);
+                    $this->bindparameter(2, $zdateto);
+                
+            }
+            else
+            {
+                    $stmt = "SELECT ts.TransactionsSummaryID, s.SiteCode, t.TerminalCode, rs.ServiceName, ts.StartBalance, ts.EndBalance, ts.WalletReloads, ts.DateStarted, ts.DateEnded
+                                FROM transactionsummary ts
+                                    INNER JOIN sites s ON s.SiteID=ts.SiteID
+                                    INNER JOIN terminals t ON t.TerminalID=ts.TerminalID
+                                    INNER JOIN terminalservices tss ON tss.TerminalID=ts.TerminalID
+                                    INNER JOIN ref_services rs ON rs.ServiceID=tss.ServiceID 
+                                WHERE ts.SiteID IN(".$zsiteID.") 
+                                    AND ts.DateEnded >= ?
+                                    AND ts.DateEnded < ?
+                                    AND ts.TerminalID = ?
+                                    AND tss.Status=1
+                                ";
+                    $this->prepare($stmt);
+                    $this->bindparameter(1, $zdatefrom);
+                    $this->bindparameter(2, $zdateto);
+                    $this->bindparameter(3, $zterminalID);
+            }
+        }
+        
+        $this->execute();
+        return $this->fetchAllData();
+    }
+    
     //paginate site transactions
     function paginatetransaction($zdetails, $zstart, $zlimit)
     {
