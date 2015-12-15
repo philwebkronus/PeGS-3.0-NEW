@@ -65,7 +65,7 @@ $(document).ready(function(){
             $rcashonhand = 0;
 
             $rsubdtotal += ($r['LoadCash'] + $r['LoadCoupon'] + $r['LoadBancnet'] + $r['LoadTicket']);
-            $rsubwtotal += ($r['WCash'] + $r['WTicket'] + $r['EncashedTickets']);
+            $rsubwtotal += ($r['WCash'] + $r['WTicket'] + $r['EncashedTickets'] + $r['ManualRedemption']);
             $rcashonhand = $rsubdtotal - $rsubwtotal;
             
             $totaldcash += $r['LoadCash'];
@@ -75,6 +75,7 @@ $(document).ready(function(){
             $totalwcash += $r['WCash'];
             $totalwticket += $r['WTicket'];
             $totalwencashedtickets += $r['EncashedTickets'];
+            $totalwcash += $r['ManualRedemption'];
             $grandtotalcashonhand += $rcashonhand;
         } ?>
             <tr><th rowspan="5" align="center"><b>Total</b></th>

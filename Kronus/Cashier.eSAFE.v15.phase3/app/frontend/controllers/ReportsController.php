@@ -1337,6 +1337,7 @@ class ReportsController extends FrontendController{
             $transdetails = $transactionSummaryModel->getTransactionDetailsForCOH($startdate, $enddate, $this->site_id);
             $encashedtickets = $transactionSummaryModel->getEncashedTickets($startdate, $enddate, $this->site_id);
             $esafeloads = $eWalletTransModel->geteSAFELoadsAndWithdrawals($startdate, $enddate, $this->site_id);
+            $manualredemptions = $this->getmanualRedemptions($startdate, $enddate);
 
             $transdetails['LoadCash'] += (float)$esafeloads['eSAFELoadCash'];
             $transdetails['LoadCoupon'] += (float)$esafeloads['eSAFELoadCoupon'];
@@ -1345,8 +1346,9 @@ class ReportsController extends FrontendController{
             $transdetails['WCash'] += (float)$esafeloads['eSAFECashierRedemption'];
             $transdetails['WTicket'] += (float)$esafeloads['eSAFEGenesisRedemption'];
             
-            !isset($transdetails['EncashedTickets']) ? $transdetails['EncashedTickets']=(float)$encashedtickets:'';
-            !isset($transdetails['eSAFEGenesisRedemption']) ? $transdetails['eSAFEGenesisRedemption']=(float)$esafeloads['eSAFEGenesisRedemption']:'';
+            !isset($transdetails['ManualRedemption']) ? $transdetails['ManualRedemption']=(float)$manualredemptions:$transdetails['ManualRedemption'] = 0.00;
+            !isset($transdetails['EncashedTickets']) ? $transdetails['EncashedTickets']=(float)$encashedtickets:$transdetails['EncashedTickets'] = 0.00;
+            !isset($transdetails['eSAFEGenesisRedemption']) ? $transdetails['eSAFEGenesisRedemption']=(float)$esafeloads['eSAFEGenesisRedemption']:$transdetails['eSAFEGenesisRedemption'] = 0.00;
             return array($transdetails);
 
     }
