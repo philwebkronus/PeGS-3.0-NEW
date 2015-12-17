@@ -2509,9 +2509,8 @@ class ApplicationSupport extends DBHandler
                         (CASE ew.Status WHEN '0' THEN 'Pending'
 					WHEN '1' THEN 'Successful'
 					WHEN '2' THEN 'FAILED'
-					WHEN '3' THEN 'Timed Out'
-					WHEN '4' THEN 'Transaction Approved(late)'
-					WHEN '5' THEN 'Transaction Denied(late)' 
+					WHEN '3' THEN 'Fulfillment Approved'
+					WHEN '4' THEN 'fulfillment Denied' 
                         END) as Status, rs.ServiceName
                   FROM ewallettrans ew
                         INNER JOIN sites s ON ew.SiteID=s.SiteID
