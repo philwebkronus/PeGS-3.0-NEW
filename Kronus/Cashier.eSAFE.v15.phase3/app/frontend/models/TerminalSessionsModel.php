@@ -243,6 +243,16 @@ class TerminalSessionsModel extends MI_Model {
         return isset($result['IsEwallet'])?$result['IsEwallet']:false;
     }
     
+    public function iseSAFESessionByCardNumber($cardNumber){
+        $sql = "SELECT COUNT(ts.LoyaltyCardNumber) as IsEwallet FROM npos.terminalsessions ts INNER JOIN membership.members m ON ts.MID=m.MID WHERE ts.LoyaltyCardNumber=:cardNumber AND m.IsEwallet=1";
+        
+        $param = array(":cardNumber"=>$cardNumber);
+        $this->exec($sql, $param);
+        $result =  $this->find();
+        
+        return isset($result['IsEwallet'])?$result['IsEwallet']:false;
+    }
+    
     public function getUBCardNumberByTerminalID($terminalID){
         $sql = "SELECT LoyaltyCardNumber FROM terminalsessions WHERE TerminalID=:terminalID AND ServiceID=19 LIMIT 1";
         
@@ -255,6 +265,28 @@ class TerminalSessionsModel extends MI_Model {
         return $result['LoyaltyCardNumber'];
     }
     
+    public function geteSAFECardNumberByTerminalID($terminalID){
+        
+        $sql = "SELECT LoyaltyCardNumber FROM terminalsessions WHERE TerminalID=:terminalID LIMIT 1";
+        
+        $param = array(":terminalID"=>$terminalID);
+
+        $this->exec($sql, $param);
+        
+        $result =  $this->find();
+        
+        return $result['LoyaltyCardNumber'];
+    }
+    
+    public function checkNumberOfServiceID($terminalID){
+        $checksql = "SELECT COUNT(DISTINCT ServiceID) as cnt FROM terminalsessions WHERE TerminalID=:terminalID LIMIT 1";
+        $param1 = array(":terminalID"=>$terminalID);
+        $this->exec($checksql, $param1);
+        $result1 =  $this->find();
+        return $result1['cnt'];
+    }
+
+
     public function getEwalletTerminal($siteID,$serviceID){
         $sql = "SELECT t.TerminalID, t.TerminalCode, ts.LoyaltyCardNumber FROM npos.terminalsessions ts INNER JOIN membership.members m ON ts.MID=m.MID INNER JOIN npos.terminals t ON t.TerminalID=ts.TerminalID WHERE ts.ServiceID=:serviceID AND m.IsEwallet=1 AND t.SiteID=:siteID ORDER BY t.TerminalCode";
         

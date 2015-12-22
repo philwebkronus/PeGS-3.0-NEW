@@ -731,8 +731,12 @@ class TerminalController extends FrontendController {
             $tid = $_POST['tid'];
             $terminalSessionsModel = new TerminalSessionsModel();
             
-            $cardNumber = $terminalSessionsModel->getUBCardNumberByTerminalID($tid);
-            $isEwallet = $terminalSessionsModel->isEWalletSessionByCardNumber($cardNumber);
+            $cnt = $terminalSessionsModel->checkNumberOfServiceID($tid);
+            if($cnt > 1){
+                $this->throwError('Terminal has more than one (1) active session.');
+            }
+            $cardNumber = $terminalSessionsModel->geteSAFECardNumberByTerminalID($tid);
+            $isEwallet = $terminalSessionsModel->iseSAFESessionByCardNumber($cardNumber);
             
             echo json_encode(array('IsEWallet'=>$isEwallet==1?true:false));
         }

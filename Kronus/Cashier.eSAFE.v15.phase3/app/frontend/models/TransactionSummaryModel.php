@@ -217,15 +217,15 @@ class TransactionSummaryModel extends MI_Model{
             INNER JOIN npos.transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
             INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
             INNER JOIN npos.accounts a ON ts.CreatedByAID = a.AID
-            WHERE tr.SiteID = :site_id
-              AND tr.DateCreated >= :start_date AND tr.DateCreated < :end_date
+            WHERE tr.DateCreated >= :start_date AND tr.DateCreated < :end_date
+              AND tr.SiteID = :site_id
               AND tr.Status IN(1,4)
             GROUP By tr.TransactionType, tr.TransactionSummaryID
             ORDER BY tr.TerminalID, tr.DateCreated DESC;";
         $param = array(
-                ':site_id'=>$site_id,
                 ':start_date'=>$date . ' ' . $cutoff_time,
                 ':end_date'=>$enddate . ' ' . $cutoff_time,
+                ':site_id'=>$site_id,
             );
         $this->exec($sql,$param);
         $result = $this->findAll();
@@ -339,15 +339,15 @@ class TransactionSummaryModel extends MI_Model{
             INNER JOIN npos.transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
             INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
             INNER JOIN npos.accounts a ON ts.CreatedByAID = a.AID
-            WHERE tr.SiteID = :site_id
-              AND tr.DateCreated >= :start_date AND tr.DateCreated < :end_date
+            WHERE tr.DateCreated >= :start_date AND tr.DateCreated < :end_date
+              AND tr.SiteID = :site_id
               AND tr.Status IN(1,4)
             GROUP By tr.TransactionType, tr.TransactionSummaryID
             ORDER BY tr.TerminalID, tr.DateCreated DESC;";
         $param = array(
-                ':site_id'=>$site_id,
                 ':start_date'=>$date . ' ' . $cutoff_time,
                 ':end_date'=>$enddate . ' ' . $cutoff_time,
+                ':site_id'=>$site_id,
             );
         $this->exec($sql,$param);
         $result = $this->findAll();
@@ -522,17 +522,17 @@ class TransactionSummaryModel extends MI_Model{
             INNER JOIN npos.transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
             INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
             INNER JOIN npos.accounts a ON ts.CreatedByAID = a.AID
-            WHERE tr.SiteID = :site_id
-              AND tr.DateCreated >= :start_date AND tr.DateCreated < :end_date
+            WHERE tr.DateCreated >= :start_date AND tr.DateCreated < :end_date
+              AND tr.SiteID = :site_id
               AND tr.Status IN(1,4)
               AND tr.TerminalID = :terminal_id
               AND tr.TransactionSummaryID = :trans_sum_id
             GROUP By tr.TransactionType, tr.TransactionSummaryID
             ORDER BY tr.TerminalID, tr.DateCreated DESC;";
         $param = array(
-                ':site_id'=>$site_id,
                 ':start_date'=>$date . ' ' . $cutoff_time,
                 ':end_date'=>$enddate . ' ' . $cutoff_time,
+                ':site_id'=>$site_id,
                 ':terminal_id'=>$terminal_id,
                 ':trans_sum_id'=>$trans_sum_id,
             );
@@ -624,14 +624,14 @@ class TransactionSummaryModel extends MI_Model{
                     INNER JOIN terminals t ON t.TerminalID = tr.TerminalID 
                     INNER JOIN npos.accounts a ON ts.CreatedByAID = a.AID
                     LEFT JOIN ewallettrans ew ON ew.TransactionSummaryID = ts.TransactionsSummaryID
-                    WHERE tr.SiteID = :site_id AND tr.DateCreated >= :start_date 
-                    AND tr.DateCreated < :end_date AND tr.Status IN(1,4) 
+                    WHERE tr.DateCreated >= :start_date AND tr.DateCreated < :end_date 
+                    AND tr.SiteID = :site_id AND tr.Status IN(1,4) 
                     GROUP BY tr.TransactionType,tr.TransactionSummaryID,tr.PaymentType 
                     ORDER BY tr.TerminalID,tr.DateCreated DESC";
         $param = array(
-                ':site_id'=>$site_id,
                 ':start_date'=>$date . ' ' . $cutoff_time,
                 ':end_date'=>$enddate . ' ' . $cutoff_time,
+                ':site_id'=>$site_id,
             );
         $this->exec($sql,$param);
         $result = $this->findAll();
@@ -850,16 +850,16 @@ class TransactionSummaryModel extends MI_Model{
         $len = strlen($site_code) + 1;
 
         $cutoff_time = Mirage::app()->param['cut_off'];
-        $sql = "select tr.TransactionSummaryID,ts.DateStarted,ts.DateEnded,tr.DateCreated, tr.TerminalID,tr.SiteID, tr.StackerSummaryID, tr.PaymentType, t.TerminalType,
-            SUBSTR(t.TerminalCode,$len) as TerminalCode,tr.TransactionType,sum(tr.Amount) AS amount, ts.Option1  from transactiondetails  tr FORCE INDEX(IX_transactiondetails_DateCreated) 
-            inner join transactionsummary ts on ts.TransactionsSummaryID = tr.TransactionSummaryID 
-            inner join terminals t on t.TerminalID = tr.TerminalID  where tr.SiteID = :site_id AND 
-            tr.DateCreated >= :start_date and tr.DateCreated < :end_date and tr.Status IN(1,4) 
-            group by tr.TransactionType,tr.TransactionSummaryID,tr.PaymentType order by tr.TerminalID,tr.DateCreated Desc";
+        $sql = "SELECT tr.TransactionSummaryID,ts.DateStarted,ts.DateEnded,tr.DateCreated, tr.TerminalID,tr.SiteID, tr.StackerSummaryID, tr.PaymentType, t.TerminalType,
+            SUBSTR(t.TerminalCode,$len) as TerminalCode,tr.TransactionType,sum(tr.Amount) AS amount, ts.Option1  FROM transactiondetails  tr FORCE INDEX(IX_transactiondetails_DateCreated) 
+            INNER JOIN transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID 
+            INNER JOIN terminals t ON t.TerminalID = tr.TerminalID  WHERE tr.DateCreated >= :start_date 
+            AND tr.DateCreated < :end_date AND tr.SiteID = :site_id AND tr.Status IN(1,4) 
+            GROUP BY tr.TransactionType,tr.TransactionSummaryID,tr.PaymentType ORDER BY tr.TerminalID,tr.DateCreated DESC";
         $param = array(
-                ':site_id'=>$site_id,
                 ':start_date'=>$date . ' ' . $cutoff_time,
                 ':end_date'=>$enddate . ' ' . $cutoff_time,
+                ':site_id'=>$site_id,
             );
         $this->exec($sql,$param);
         $result = $this->findAll();
@@ -890,16 +890,16 @@ class TransactionSummaryModel extends MI_Model{
         $len = strlen($site_code) + 1;
 
         $cutoff_time = Mirage::app()->param['cut_off'];
-        $sql = "select tr.TransactionSummaryID,ts.DateStarted,ts.DateEnded,tr.DateCreated, tr.TerminalID,tr.SiteID, tr.StackerSummaryID, tr.PaymentType, t.TerminalType,
-            SUBSTR(t.TerminalCode,$len) as TerminalCode,tr.TransactionType,sum(tr.Amount) AS amount, ts.Option1  from transactiondetails  tr FORCE INDEX(IX_transactiondetails_DateCreated) 
-            inner join transactionsummary ts on ts.TransactionsSummaryID = tr.TransactionSummaryID 
-            inner join terminals t on t.TerminalID = tr.TerminalID  where tr.SiteID = :site_id AND 
-            tr.DateCreated >= :start_date and tr.DateCreated < :end_date and tr.Status IN(1,4) and tr.TerminalID = :terminal_id and tr.TransactionSummaryID = :trans_sum_id
-            group by tr.TransactionType,tr.TransactionSummaryID,tr.PaymentType order by tr.TerminalID,tr.DateCreated Desc";
+        $sql = "SELECT tr.TransactionSummaryID,ts.DateStarted,ts.DateEnded,tr.DateCreated, tr.TerminalID,tr.SiteID, tr.StackerSummaryID, tr.PaymentType, t.TerminalType,
+            SUBSTR(t.TerminalCode,$len) as TerminalCode,tr.TransactionType,sum(tr.Amount) AS amount, ts.Option1  FROM transactiondetails  tr FORCE INDEX(IX_transactiondetails_DateCreated) 
+            INNER JOIN transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID 
+            INNER JOIN terminals t ON t.TerminalID = tr.TerminalID  WHERE tr.DateCreated >= :start_date 
+            AND tr.DateCreated < :end_date AND tr.SiteID = :site_id AND tr.Status IN(1,4) AND tr.TerminalID = :terminal_id AND tr.TransactionSummaryID = :trans_sum_id
+            GROUP BY tr.TransactionType,tr.TransactionSummaryID,tr.PaymentType ORDER BY tr.TerminalID,tr.DateCreated DESC";
         $param = array(
-                ':site_id'=>$site_id,
                 ':start_date'=>$date . ' ' . $cutoff_time,
                 ':end_date'=>$enddate . ' ' . $cutoff_time,
+                ':site_id'=>$site_id,
                 ':terminal_id'=>$terminal_id,
                 ':trans_sum_id'=>$trans_sum_id,
             );
@@ -1103,8 +1103,8 @@ class TransactionSummaryModel extends MI_Model{
             INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
             INNER JOIN npos.accounts a ON tr.CreatedByAID = a.AID
             LEFT JOIN stackermanagement.stackersummary stckr ON stckr.StackerSummaryID = tr.StackerSummaryID
-            WHERE tr.SiteID = :site_id0
-              AND tr.DateCreated >= :start_date1 AND tr.DateCreated < :end_date1
+            WHERE tr.DateCreated >= :start_date1 AND tr.DateCreated < :end_date1 
+              AND tr.SiteID = :site_id0 
               AND tr.Status IN(1,4)
               AND tr.TransactionType = 'W'
               AND tr.StackerSummaryID IS NOT NULL
@@ -1118,8 +1118,8 @@ class TransactionSummaryModel extends MI_Model{
               INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
               INNER JOIN npos.accounts a ON tr.CreatedByAID = a.AID
               LEFT JOIN stackermanagement.stackersummary stckr ON stckr.StackerSummaryID = tr.StackerSummaryID
-              WHERE tr.SiteID = :site_id2
-                AND tr.DateCreated >= :start_date2 AND tr.DateCreated < :end_date2
+              WHERE tr.DateCreated >= :start_date2 AND tr.DateCreated < :end_date2 
+                AND tr.SiteID = :site_id2 
                 AND tr.Status IN(1,4)
                 AND tr.TransactionType = 'W'
                 AND tr.StackerSummaryID IS NOT NULL
@@ -1149,8 +1149,8 @@ class TransactionSummaryModel extends MI_Model{
                         INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
                         INNER JOIN npos.accounts a ON tr.CreatedByAID = a.AID
                         LEFT JOIN stackermanagement.stackersummary stckr ON stckr.StackerSummaryID = tr.StackerSummaryID
-                        WHERE tr.SiteID = :site_id6
-                          AND tr.DateCreated >= :start_date5 AND tr.DateCreated < :end_date5
+                        WHERE tr.DateCreated >= :start_date5 AND tr.DateCreated < :end_date5 
+                          AND tr.SiteID = :site_id6 
                           AND tr.Status IN(1,4)
                           AND tr.TransactionType In ('D', 'R')
                             AND tr.StackerSummaryID IS NOT NULL
@@ -1269,8 +1269,8 @@ class TransactionSummaryModel extends MI_Model{
             INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
             INNER JOIN npos.accounts a ON tr.CreatedByAID = a.AID
             LEFT JOIN stackermanagement.stackersummary stckr ON stckr.StackerSummaryID = tr.StackerSummaryID
-            WHERE tr.SiteID = :site_id0
-              AND tr.DateCreated >= :start_date1 AND tr.DateCreated < :end_date1
+            WHERE tr.DateCreated >= :start_date1 AND tr.DateCreated < :end_date1 
+              AND tr.SiteID = :site_id0 
               AND tr.Status IN(1,4)
               AND tr.TransactionType = 'W'
               AND tr.StackerSummaryID IS NOT NULL
@@ -1284,8 +1284,8 @@ class TransactionSummaryModel extends MI_Model{
               INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
               INNER JOIN npos.accounts a ON tr.CreatedByAID = a.AID
               LEFT JOIN stackermanagement.stackersummary stckr ON stckr.StackerSummaryID = tr.StackerSummaryID
-              WHERE tr.SiteID = :site_id1
-                AND tr.DateCreated >= :start_date2 AND tr.DateCreated < :end_date2
+              WHERE tr.DateCreated >= :start_date2 AND tr.DateCreated < :end_date2 
+                AND tr.SiteID = :site_id1 
                 AND tr.Status IN(1,4)
                 AND tr.TransactionType = 'W'
                 AND tr.StackerSummaryID IS NOT NULL
@@ -1314,8 +1314,8 @@ class TransactionSummaryModel extends MI_Model{
                         INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
                         INNER JOIN npos.accounts a ON tr.CreatedByAID = a.AID
                         LEFT JOIN stackermanagement.stackersummary stckr ON stckr.StackerSummaryID = tr.StackerSummaryID
-                        WHERE tr.SiteID = :site_id2
-                          AND tr.DateCreated >= :start_date5 AND tr.DateCreated < :end_date5
+                        WHERE tr.DateCreated >= :start_date5 AND tr.DateCreated < :end_date5 
+                          AND tr.SiteID = :site_id2 
                           AND tr.Status IN(1,4)
                           AND tr.TransactionType In ('D', 'R')
                             AND tr.StackerSummaryID IS NOT NULL
@@ -1770,8 +1770,8 @@ class TransactionSummaryModel extends MI_Model{
                  "if(ts.DateStarted < '$start_date $cutoff_time', ts.Deposit = 0,ts.Deposit) as Deposit," . 
                  "ts.Reload,ts.Withdrawal,tr.DateCreated from transactiondetails tr FORCE INDEX(IX_transactiondetails_DateCreated) left join transactionsummary ts " . 
                  "on ts.TransactionsSummaryID = tr.TransactionSummaryID inner join terminals t on t.TerminalID = tr.TerminalID " . 
-                 "where tr.CreatedByAID = :account_id AND tr.DateCreated >= :start_date and tr.DateCreated < :end_date AND tr.Status IN (1,4) " . 
-                 "group by ts.TransactionsSummaryID order by tr.TerminalID,tr.DateCreated Desc) AS total";
+                 "WHERE tr.DateCreated >= :start_date AND tr.DateCreated < :end_date AND tr.CreatedByAID = :account_id AND tr.Status IN (1,4) " . 
+                 "GROUP BY ts.TransactionsSummaryID ORDER BY tr.TerminalID,tr.DateCreated DESC) AS total";
         
         $param = array(
             ':account_id'=>$account_id,
@@ -1953,8 +1953,8 @@ class TransactionSummaryModel extends MI_Model{
             INNER JOIN npos.transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
             INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
             INNER JOIN npos.accounts a ON ts.CreatedByAID = a.AID
-            WHERE  tr.CreatedByAID = :account_id AND tr.SiteID = :site_id
-              AND tr.DateCreated >= :start_date AND tr.DateCreated < :end_date
+            WHERE tr.DateCreated >= :start_date AND tr.DateCreated < :end_date AND tr.SiteID = :site_id
+              AND tr.CreatedByAID = :account_id 
               AND tr.Status IN(1,4)
             GROUP By tr.TransactionType, tr.TransactionSummaryID
             ORDER BY tr.TerminalID, tr.DateCreated DESC;";
@@ -2059,8 +2059,8 @@ class TransactionSummaryModel extends MI_Model{
             INNER JOIN npos.transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
             INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
             INNER JOIN npos.accounts a ON ts.CreatedByAID = a.AID
-            WHERE  tr.CreatedByAID = :account_id AND tr.SiteID = :site_id
-              AND tr.DateCreated >= :start_date AND tr.DateCreated < :end_date
+            WHERE tr.DateCreated >= :start_date AND tr.DateCreated < :end_date AND tr.SiteID = :site_id
+              AND tr.CreatedByAID = :account_id 
               AND tr.Status IN(1,4)
             GROUP By tr.TransactionType, tr.TransactionSummaryID
             ORDER BY tr.TerminalID, tr.DateCreated DESC;";
@@ -2167,8 +2167,8 @@ class TransactionSummaryModel extends MI_Model{
             INNER JOIN npos.transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
             INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
             INNER JOIN npos.accounts a ON ts.CreatedByAID = a.AID
-            WHERE  tr.CreatedByAID = :account_id AND tr.SiteID = :site_id
-              AND tr.DateCreated >= :start_date AND tr.DateCreated < :end_date
+            WHERE tr.DateCreated >= :start_date AND tr.DateCreated < :end_date AND tr.SiteID = :site_id
+              AND tr.CreatedByAID = :account_id 
               AND tr.Status IN(1,4)
             GROUP By tr.TransactionType, tr.TransactionSummaryID
             ORDER BY tr.TerminalID, tr.DateCreated DESC;";
@@ -2379,8 +2379,8 @@ class TransactionSummaryModel extends MI_Model{
             INNER JOIN npos.transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
             INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
             INNER JOIN npos.accounts a ON ts.CreatedByAID = a.AID
-            WHERE  tr.CreatedByAID = :account_id AND tr.SiteID = :site_id
-              AND tr.DateCreated >= :start_date AND tr.DateCreated < :end_date
+            WHERE tr.DateCreated >= :start_date AND tr.DateCreated < :end_date 
+              AND tr.CreatedByAID = :account_id AND tr.SiteID = :site_id 
               AND tr.Status IN(1,4) AND tr.TerminalID=:terminal_id AND tr.TransactionSummaryID=:trans_sum_id
             GROUP By tr.TransactionType, tr.TransactionSummaryID
             ORDER BY tr.TerminalID, tr.DateCreated DESC;";
@@ -2466,10 +2466,10 @@ class TransactionSummaryModel extends MI_Model{
         $cutoff_time = Mirage::app()->param['cut_off'];
         $sql = "select tr.TransactionSummaryID,ts.DateStarted,ts.DateEnded,tr.DateCreated, tr.TerminalID,tr.SiteID, tr.StackerSummaryID, tr.PaymentType, t.TerminalType,
             SUBSTR(t.TerminalCode,$len) as TerminalCode,tr.TransactionType,sum(tr.Amount) AS amount, ts.Option1  from transactiondetails  tr FORCE INDEX(IX_transactiondetails_DateCreated) 
-            inner join transactionsummary ts on ts.TransactionsSummaryID = tr.TransactionSummaryID 
-            inner join terminals t on t.TerminalID = tr.TerminalID  where tr.SiteID = :site_id AND tr.CreatedByAID = :account_id AND
-            tr.DateCreated >= :start_date and tr.DateCreated < :end_date and tr.Status IN(1,4) 
-            group by tr.TransactionType,tr.TransactionSummaryID order by tr.TerminalID,tr.DateCreated Desc";
+            INNER JOIN transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID 
+            INNER JOIN terminals t ON t.TerminalID = tr.TerminalID  WHERE tr.DateCreated >= :start_date AND tr.DateCreated < :end_date AND 
+            tr.SiteID = :site_id AND tr.CreatedByAID = :account_id AND tr.Status IN(1,4) 
+            group by tr.TransactionType,tr.TransactionSummaryID order by tr.TerminalID,tr.DateCreated DESC";
         $param = array(
                 ':account_id'=>$account_id,
                 ':site_id'=>$site_id,
@@ -2631,8 +2631,8 @@ class TransactionSummaryModel extends MI_Model{
             FROM transactiondetails  tr FORCE INDEX(IX_transactiondetails_DateCreated) 
             INNER JOIN transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID 
             INNER JOIN terminals t ON t.TerminalID = tr.TerminalID 
-            WHERE tr.SiteID = :site_id AND tr.CreatedByAID = :account_id AND
-            tr.DateCreated >= :start_date AND tr.DateCreated < :end_date AND tr.Status IN(1,4) 
+            WHERE tr.DateCreated >= :start_date AND tr.DateCreated < :end_date AND 
+            tr.SiteID = :site_id AND tr.CreatedByAID = :account_id AND tr.Status IN(1,4) 
             GROUP BY tr.TransactionType,tr.TransactionSummaryID ORDER BY tr.TerminalID,tr.DateCreated DESC";
         $param = array(
                 ':account_id'=>$account_id,
@@ -2797,12 +2797,12 @@ class TransactionSummaryModel extends MI_Model{
         $len = strlen($site_code) + 1;
 
         $cutoff_time = Mirage::app()->param['cut_off'];
-        $sql = "select tr.TransactionSummaryID,ts.DateStarted,ts.DateEnded,tr.DateCreated, tr.TerminalID,tr.SiteID, tr.StackerSummaryID, tr.PaymentType, t.TerminalType,
-            SUBSTR(t.TerminalCode,$len) as TerminalCode,tr.TransactionType,sum(tr.Amount) AS amount, ts.Option1  from transactiondetails  tr FORCE INDEX(IX_transactiondetails_DateCreated) 
-            inner join transactionsummary ts on ts.TransactionsSummaryID = tr.TransactionSummaryID 
-            inner join terminals t on t.TerminalID = tr.TerminalID  where tr.SiteID = :site_id AND tr.CreatedByAID = :account_id AND
-            tr.DateCreated >= :start_date and tr.DateCreated < :end_date and tr.Status IN(1,4) and tr.TerminalID=:terminal_id and tr.TransactionSummaryID=:trans_sum_id 
-            group by tr.TransactionType,tr.TransactionSummaryID order by tr.TerminalID,tr.DateCreated Desc";
+        $sql = "SELECT tr.TransactionSummaryID,ts.DateStarted,ts.DateEnded,tr.DateCreated, tr.TerminalID,tr.SiteID, tr.StackerSummaryID, tr.PaymentType, t.TerminalType,
+            SUBSTR(t.TerminalCode,$len) as TerminalCode,tr.TransactionType,sum(tr.Amount) AS amount, ts.Option1  FROM transactiondetails  tr FORCE INDEX(IX_transactiondetails_DateCreated) 
+            INNER JOIN transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID 
+            INNER JOIN terminals t ON t.TerminalID = tr.TerminalID  WHERE tr.DateCreated >= :start_date AND tr.DateCreated < :end_date AND 
+            tr.SiteID = :site_id AND tr.CreatedByAID = :account_id AND tr.Status IN(1,4) AND tr.TerminalID=:terminal_id AND tr.TransactionSummaryID=:trans_sum_id 
+            GROUP BY tr.TransactionType,tr.TransactionSummaryID ORDER BY tr.TerminalID,tr.DateCreated DESC";
         $param = array(
                 ':account_id'=>$account_id,
                 ':site_id'=>$site_id,

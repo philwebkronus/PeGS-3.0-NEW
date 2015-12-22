@@ -62,7 +62,9 @@ class CommonUBRedeem {
           }  
         }
         
-        if($terminalType == 2 && $isewallet == 1 && ($service_id == 19 || $service_id == 20)){
+        //Get Last Transaction Summary ID from terminalsessions
+        $trans_summary_id = $terminalSessionsModel->getLastSessSummaryID($terminal_id);
+        if($terminalType == 2 && $isewallet == 1 && ($service_id == 19 || $service_id == 20) && $trans_summary_id){
           if($redeemable_amount > 0){
             $message = 'Error: You are not allowed to end a session for an e-SAFE account.';
             logger($message);
@@ -135,8 +137,7 @@ class CommonUBRedeem {
             $casinoApi->LogoutPlayer($terminal_id, $service_id,$PID);    
         }
         
-        //Get Last Transaction Summary ID from terminalsessions
-        $trans_summary_id = $terminalSessionsModel->getLastSessSummaryID($terminal_id);
+        //Check if terminal has an existing valid session
         if(!$trans_summary_id){
             $terminalSessionsModel->deleteTerminalSessionById($terminal_id);
             $egmSessionsModel->deleteEgmSessionById($terminal_id);
