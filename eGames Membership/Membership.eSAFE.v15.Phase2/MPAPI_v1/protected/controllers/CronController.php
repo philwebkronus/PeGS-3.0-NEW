@@ -1,11 +1,12 @@
 <?php
+
 /**
  * Description of CronController
  *
  * @author fdlsison
  */
-class CronController extends Controller
-{
+class CronController extends Controller {
+
     public function actionDeleteSession() {
 
         $memberSessionsModel = new MemberSessionsModel();
@@ -14,9 +15,9 @@ class CronController extends Controller
         $allMemberSessions = $memberSessionsModel->getAllMemberSessions();
 
         $cntMemberSessions = count($allMemberSessions);
-        if($cntMemberSessions > 0) {
+        if ($cntMemberSessions > 0) {
             $ctr = 0;
-            while($ctr < $cntMemberSessions) {
+            while ($ctr < $cntMemberSessions) {
                 $lastTransDate = $allMemberSessions[$ctr]['TransactionDate'];
                 $MID = $allMemberSessions[$ctr]['MID'];
                 $sessionID = $allMemberSessions[$ctr]['SessionID'];
@@ -24,33 +25,29 @@ class CronController extends Controller
                 date_default_timezone_set('Asia/Manila');
                 //compute last transdate in minutes
                 $dateNow = date("Y-m-d H:i:s.u");
-                $diffMins = (int)strtotime($dateNow) - (int)strtotime($lastTransDate);
+                $diffMins = (int) strtotime($dateNow) - (int) strtotime($lastTransDate);
 
 
                 //$years = floor($diffMins / (365*60*60*24));
                 //$months = floor(($diffMins - $years * 365*60*60*24) / (30*60*60*24));
                 //$days = floor(($diffMins - $years * 365*60*60*24 - $months*30*60*60*24)/ (60*60*24)); //actual day difference
-                $noOfMins = round(abs($diffMins)/60,2); //actual minute difference
+                $noOfMins = round(abs($diffMins) / 60, 2); //actual minute difference
 
-                if($noOfMins >= $setMinutes) {
+                if ($noOfMins >= $setMinutes) {
                     $isDeleted = $memberSessionsModel->deleteExpiredMemberSession($MID, $sessionID);
-                    if($isDeleted == 1) {
+                    if ($isDeleted == 1) {
                         echo "Expired member session is successfully deleted.";
-                    }
-                    else {
+                    } else {
                         echo "Failed to delete member session.";
                     }
-                }
-                else {
+                } else {
                     echo "Member session is still active.";
                 }
                 $ctr++;
             }
 
             unset($allMemberSessions, $cntMemberSessions, $ctr);
-
-        }
-        else {
+        } else {
             echo "There are no existing member sessions.";
             exit;
         }
@@ -75,10 +72,11 @@ class CronController extends Controller
             $sfLogin = Yii::app()->params['sfLogin'];
             $sfPassword = Yii::app()->params['sfPassword'];
             $secToken = Yii::app()->params['secToken'];
+            $sRecordType = Yii::app()->params['sRecordType'];
 
             $countNewlyMigratedCards = count($resultNewlyMigratedCards);
             if ($countNewlyMigratedCards > 0) {
-                $sfapi = new SalesforceAPI($instanceURL, $apiVersion, $cKey, $cSecret);
+                $sfapi = new SalesforceAPI($instanceURL, $apiVersion, $cKey, $cSecret, $sRecordType);
                 $sfSuccessful = $sfapi->login($sfLogin, $sfPassword, $secToken);
                 $newBaseUrl = $sfSuccessful->instance_url;
                 $accessToken = $sfSuccessful->access_token;
@@ -96,9 +94,9 @@ class CronController extends Controller
                         $cardNumber = $resultNewlyMigratedCards[$i]['CardNumber'];
                         $isUpdated = $sfapi->update_account($SFID['SFID'], null, null, null, $cardNumber, null, null, $newBaseUrl, $accessToken);
                     }
-                    echo 'successful!';//return 1;
+                    echo 'successful!'; //return 1;
                 } else {
-                    echo 'failed!';//return 0;
+                    echo 'failed!'; //return 0;
                 }
             }
         }
@@ -114,7 +112,7 @@ class CronController extends Controller
         $memberInfoModel = new MemberInfoModel();
         $memberInfoTempModel = new MembershipTempModel();
         $request = $this->_readJsonRequest();
-	$card = $request['CardNumber'];
+        $card = $request['CardNumber'];
 
         $resultMigratedCardByMID = $memberCardsModel->getMIDUsingCard($card);
         if ($resultMigratedCardByMID) {
@@ -142,17 +140,72 @@ class CronController extends Controller
             //update SFID in membership.memberinfo table
             $sfUpdate = $memberInfoModel->updateSF($MID, $SFID['SFID']);
             $isUpdated = $sfapi->update_account($SFID['SFID'], null, null, null, $card, null, null, $newBaseUrl, $accessToken);
-	    echo $isUpdated;
+            echo $isUpdated;
         }
     }
 
-private function _readJsonRequest() {
+    //@date 12-22-2015
+    //@purpose
+    public function actionMigrateByBatch() {
+        $memberCardsModel = new MemberCardsModel();
+        $memberInfoModel = new MemberInfoModel();
+        $memberInfoTempModel = new MembershipTempModel();
+        $request = $this->_readJsonRequest();
+        $cards = $request['CardNumbers'];
+        //$cards = $_GET['CardNumbers'];
+
+        $instanceURL = Yii::app()->params['instanceURL'];
+        $apiVersion = Yii::app()->params['apiVersion'];
+        $cKey = Yii::app()->params['cKey'];
+        $cSecret = Yii::app()->params['cSecret'];
+        $sfLogin = Yii::app()->params['sfLogin'];
+        $sfPassword = Yii::app()->params['sfPassword'];
+        $secToken = Yii::app()->params['secToken'];
+        $sRecordType = Yii::app()->params['sRecordType'];
+
+        $sfapi = new SalesforceAPI($instanceURL, $apiVersion, $cKey, $cSecret, $sRecordType);
+        $sfSuccessful = $sfapi->login($sfLogin, $sfPassword, $secToken);
+        $newBaseUrl = $sfSuccessful->instance_url;
+        $accessToken = $sfSuccessful->access_token;
+
+        $arrCards = explode(",", $cards);
+        $arrCntCards = count($arrCards);
+
+        $path = 'failedcards.txt';
+        $fp = fopen($path, "a") or die("Unable to open file!");
+        foreach ($arrCards as $newcard) {
+            $resultMigratedCardByMID = $memberCardsModel->getMIDUsingCard($newcard);
+            if ($resultMigratedCardByMID) {
+                $MID = $resultMigratedCardByMID['MID'];
+                //get temp code
+                $tempCode = $memberCardsModel->getSFIDFromTempCode($MID);
+                //get temp MID in temp members table
+                $tempMID = $memberInfoTempModel->getSFIDFromTemp($tempCode['CardNumber']);
+                //get tempSFID
+                $SFID = $memberInfoTempModel->getSF($tempMID['MID']);
+                //update SFID in membership.memberinfo table
+                $sfUpdate = $memberInfoModel->updateSF($MID, $SFID['SFID']);
+                $isUpdated = $sfapi->update_account($SFID['SFID'], null, null, null, $newcard, null, null, $newBaseUrl, $accessToken);
+                if ($isUpdated != '204') {
+                    fwrite($fp, $newcard . ', ');
+                }
+            }
+            else
+            {
+                echo 'Card does not exist.';
+            }
+        }
+        fclose($fp);
+    }
+
+    private function _readJsonRequest() {
         //read the post input (use this technique if you have no post variable name):
         $post = file_get_contents("php://input");
         //decode json post input as php array:
         $data = CJSON::decode($post, true);
         return $data;
     }
+
 }
 
 ?>
