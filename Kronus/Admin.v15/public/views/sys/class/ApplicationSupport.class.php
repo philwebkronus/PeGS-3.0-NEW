@@ -2414,7 +2414,7 @@ class ApplicationSupport extends DBHandler
     public function checkLastSessionByMID($MID)
     {
         //---------------  Get Session From Launchpad or Genesis Session -----------------//
-        $stmt1 = "SELECT s.SiteCode, t.TerminalCode, ss.ServiceName, tr.EndDate,
+        $stmt1 = "SELECT s.SiteCode, t.TerminalCode, ss.ServiceName, tr.StartDate,
                         (CASE t.TerminalType WHEN '0' THEN 'Regular' 
                                              WHEN '1' THEN 'EGM' 
                                              WHEN '2' THEN 'eSAFE' 
@@ -2424,6 +2424,7 @@ class ApplicationSupport extends DBHandler
                         INNER JOIN terminals t ON tr.TerminalID=t.TerminalID
                         INNER JOIN ref_services ss ON tr.ServiceID= ss.ServiceID
                     WHERE MID=?
+                    AND tr.TransactionType='D' AND tr.Status IN (1,3)
                     ORDER BY TransactionRequestLogID DESC LIMIT 1"; 
         
         $this->prepare($stmt1);
@@ -2453,7 +2454,7 @@ class ApplicationSupport extends DBHandler
                         $results['SiteCode'] = $value['SiteCode'];
                         $results['TerminalCode'] = $value['TerminalCode'];
                         $results['ServiceName'] = $value['ServiceName'];
-                        $results['TransactionDate'] = $value['EndDate'];
+                        $results['TransactionDate'] = $value['StartDate'];
                         $results['TerminalType'] = $value['TerminalType'];
                         $results['LoyaltyCardNumber'] = $value['LoyaltyCardNumber'];
         }

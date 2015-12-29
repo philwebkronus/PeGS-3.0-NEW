@@ -156,7 +156,6 @@
                     $('#cmbterminal').append($("<option />").val("-1").text("Please Select"));
                     jQuery("#txtsitename").text(" ");
                     jQuery("#txtposaccno").text(" ");
-                    jQuery("#txtcardnumber").val("");
                 }
                 else{
                     jQuery("#txttermname").text(" ");
@@ -165,7 +164,6 @@
                     // this clears out sites data on combo boxes upon change of combo box
                     $('#cmbterminal').empty();
                     $('#cmbterminal').append($("<option />").val("-1").text("Please Select"));
-                    jQuery("#txtcardnumber").val("");
                     //for displaying of site name
                     jQuery.ajax({
                           url: url,
@@ -285,12 +283,11 @@
                 }
                 else
                 {
-                        document.getElementById('loading').style.display='block';
-                        document.getElementById('fade3').style.display='block';
                         $('#light1').hide();
                         $('#lightub').hide();
                         $('#fadeub').hide();
-                        
+                        document.getElementById('loading').style.display='block';
+                        document.getElementById('fade3').style.display='block';
                         jQuery.ajax(
                         {
                         url: url,
@@ -318,6 +315,11 @@
                         {
                             document.getElementById('loading').style.display='none';
                             document.getElementById('fade3').style.display='none';
+                            if (data == "Please select Site ID") {
+                                $('#light1').show();
+                                $('#lightub').show();
+                                $('#fadeub').show();
+                            }
                             jQuery("#txttermname").text(" ");
                             $('#cmbterminal').empty();
                             $('#cmbterminal').append($("<option />").val("-1").text("Please Select"));
@@ -327,7 +329,7 @@
                             jQuery("#txtcardnumber").val("");
                             jQuery("#txtticketub").val("");
                             jQuery("#txtremarksub").val("");
-                             alert(data);
+                            alert(data);
                         },
                         error : function(XMLHttpRequest, e)
                         {
@@ -425,6 +427,7 @@
               jQuery.ajax({
                   url: url,
                   type: 'post',
+                  dataType: 'json', 
                   data: {
                       page: function(){ return "CheckSiteID";},
                       txtcardnumber: function(){ return $("#txtcardnumber").val();},
@@ -432,32 +435,38 @@
                       txtusermode: function(){ return $("#txtusermode").val();}
                   },
                   success: function(data){
-                    if(data > 0){
-                        $('#cmbsiteiddata').hide();
-                        return false;
+                    if (data.TransCode == 1) {
+                        alert(data.TransMsg);
+                    }
+                    else {
+                        $('#loading').hide();
+                        $('#light3').hide();
+                        $('#fade3').hide();
+
+                        document.getElementById('txtterminalid').value = terminalid;
+                        document.getElementById('txtserviceid').value = id;
+                        document.getElementById('txtamount2').value = bal;
+                        if (isewallet == 1) { //if serviceID is 20, add button
+                            $("#txtamtwithdraw").val('');
+                            document.getElementById('loading').style.display='none';
+                            document.getElementById('light1').style.display='none';
+                            document.getElementById('lightamt').style.display='block';
+                            document.getElementById('fade3').style.display='block';
+                        }
+                        else {
+                            document.getElementById('loading').style.display='none';
+                            document.getElementById('light1').style.display='none';
+                            document.getElementById('lightub').style.display='block';
+                            document.getElementById('fadeub').style.display='block';
+                        }
+//                        if(data.TransRequestLogID > 0){
+//                            $('#cmbsiteiddata').hide();
+//                            return false;
+//                        }
                     }
                   }
               });
-              $('#loading').hide();
-              $('#light3').hide();
-              $('#fade3').hide();
               
-              document.getElementById('txtterminalid').value = terminalid;
-              document.getElementById('txtserviceid').value = id;
-              document.getElementById('txtamount2').value = bal;
-              if (isewallet == 1) { //if serviceID is 20, add button
-                  $("#txtamtwithdraw").val('');
-                  document.getElementById('loading').style.display='none';
-                  document.getElementById('light1').style.display='none';
-                  document.getElementById('lightamt').style.display='block';
-                  document.getElementById('fade3').style.display='block';
-              }
-              else {
-                  document.getElementById('loading').style.display='none';
-                  document.getElementById('light1').style.display='none';
-                  document.getElementById('lightub').style.display='block';
-                  document.getElementById('fadeub').style.display='block';
-              }
             }
 
             }   

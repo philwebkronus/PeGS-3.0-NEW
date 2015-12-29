@@ -110,6 +110,8 @@ document.getElementById('blockf').style.display='block';</script>";
                     }
               }
            });
+           $("#showsessiontbl").hide();
+           $("#showsessiontb2").hide();
         });
         $("#btnSubmit2").live("click", function(){
                 $.ajax({

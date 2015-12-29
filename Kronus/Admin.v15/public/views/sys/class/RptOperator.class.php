@@ -504,7 +504,13 @@ class RptOperator extends DBHandler
         $query = "
                 SELECT  
                 t.TerminalID, 
-                t.TerminalCode, 
+                t.TerminalCode,
+                CASE t.TerminalType WHEN 0
+                        THEN 'Regular'
+                        WHEN 1
+                        THEN 'Genesis'
+                        ELSE 'e-SAFE'
+                    END AS TerminalType,
                 rs.ServiceID,
                 rs.ServiceName,
                 ts.UBServiceLogin,
@@ -625,6 +631,7 @@ class RptOperator extends DBHandler
             $row->rows[$ctr]["id"] = $r["TerminalID"];
             
             $row->rows[$ctr]["cell"] = array(
+                $r["TerminalType"],
                 $r["TerminalCode"],
                 $r["PlayingBalance"],
                 $r["UserMode"],
@@ -843,7 +850,13 @@ class RptOperator extends DBHandler
         $query = "
                   SELECT  
                     t.TerminalID, 
-                    t.TerminalCode, 
+                    t.TerminalCode,
+                    CASE t.TerminalType WHEN 0
+                        THEN 'Regular'
+                        WHEN 1
+                        THEN 'Genesis'
+                        ELSE 'e-SAFE'
+                    END AS TerminalType, 
                     rs.ServiceID,
                     rs.ServiceName,
                     ts.UBServiceLogin,
@@ -963,6 +976,7 @@ class RptOperator extends DBHandler
             $row->rows[$ctr]["id"] = $r["TerminalID"];
             
             $row->rows[$ctr]["cell"] = array(
+                $r["TerminalType"],
                 $r["TerminalCode"],
                 $r["PlayingBalance"],
                 $r["UserMode"],

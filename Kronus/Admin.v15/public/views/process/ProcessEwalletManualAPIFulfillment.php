@@ -527,7 +527,10 @@ if($connected && $connected2)
                 if ($txttransstatus == 1)
                 {
                     //add the Amount and FromBalance
-                    $toBalance = $amount + $getBalance['FromBalance']; 
+                    if ($txttranstype == "Deposit")
+                        $toBalance = $amount + $getBalance['FromBalance']; 
+                    else 
+                        $toBalance = $getBalance['FromBalance'] - $amount; 
                     
                     if($txtsource == 'Cashier')
                     {
@@ -549,8 +552,10 @@ if($connected && $connected2)
                           if (!is_null($getTransSumID['TransactionSummaryID']))
                           {
                               //get wallet reloads
-                              $getWalletReloads = $maf->getWalletReloads($transsummaryid);
-                              $totalWalletReloads = $getWalletReloads['WalletReloads'] + $amount;
+                              if ($txttranstype == "D") {
+                                $getWalletReloads = $maf->getWalletReloads($transsummaryid);
+                                $totalWalletReloads = $getWalletReloads['WalletReloads'] + $amount;   
+                              }
                           }
                           $updatetrans = $maf->updateEwalletTransStat($txtewallettransid, $status, $toBalance, $converted_res, $transrefid, $transsummaryid, $totalWalletReloads, $aid);
                           //$uptrans = $maf->uptransactionreqlogs($status, $txttransrefid, $transrefid, $apiresult);

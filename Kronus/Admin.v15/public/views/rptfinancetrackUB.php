@@ -272,21 +272,21 @@ $vaccesspages = array('12');
                             sitecode : function(){return jQuery("#cmbsite").find("option:selected").text();}
                          },
                datatype: "json",
-               colNames:['Site Code','Terminal Code','Service Name','Starting Balance','Total eSAFE loads(with session)','Ending Balance','Date Started','Date Ended'],
+               colNames:['Site Code','Terminal','Service Name','Starting Balance','Total eSAFE loads<br>(with session)','Ending Balance','Date Started','Date Ended'],
                colModel:[
-                         {name:'SiteCode', index:'SiteCode', align:'center', sortable: false},
-                         {name:'TerminalCode',index:'TerminalCode', align: 'center', sortable: false},
+                         {name:'SiteCode', index:'SiteCode', align:'center', sortable: false, width: 90},
+                         {name:'TerminalCode',index:'TerminalCode', align: 'center', sortable: false, width: 80},
                          {name:'ServiceName',index:'ServiceName', align: 'center', sortable: false},
                          {name:'StartBalance',index:'Deposit', align: 'right', sortable: false},
                          {name:'WalletReloads',index:'Reload', align: 'right', sortable: false},
                          {name:'EndBalance',index:'Withdrawal', align: 'right', sortable: false},
-                         {name:'DateStarted',index:'DateStarted', align: 'center', sortable: false},
-                         {name:'DateEnded', index:'DateEnded',align:'center', sortable: false}
+                         {name:'DateStarted',index:'DateStarted', align: 'center', sortable: false, width: 250},
+                         {name:'DateEnded', index:'DateEnded',align:'center', sortable: false, width: 270}
                         ],
                rowNum:10,
                rowList:[10,20,30],
                height: 220,
-               width: 1100,
+               width: 1200,
                pager: '#pager3',
                refresh: true,
                viewrecords: true,

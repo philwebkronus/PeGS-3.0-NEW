@@ -288,10 +288,18 @@ class AccountManagement extends DBHandler{
       {
          if($zaccID > 1)
          {
-             $stmt = "Select a.AID, (CASE a.Status WHEN '0' THEN 'Inactive' WHEN '1' THEN 'Active' WHEN '2' THEN 'Suspended' 
-              WHEN '3' THEN 'Locked(Attempts)' WHEN '4' THEN 'Locked(Admin)' WHEN '6' THEN 'Password Expired' 
-              WHEN '5' THEN 'Terminated' END) as Status, a.UserName,a.AccountTypeID, b.Name, b.Email, b.Address from accounts as a INNER JOIN accountdetails as b ON a.AID = b.AID AND a.AID = '".$zaccID."'
-                  ORDER BY $sidx $sord LIMIT ".$zStart.", ".$zLimit."";
+             $stmt = "Select a.AID, (CASE a.Status WHEN '0' THEN 'Inactive' 
+                                                   WHEN '1' THEN 'Active' 
+                                                   WHEN '2' THEN 'Suspended' 
+                                                   WHEN '3' THEN 'Locked(Attempts)' 
+                                                   WHEN '4' THEN 'Locked(Admin)' 
+                                                   WHEN '6' THEN 'Password Expired' 
+                                                   WHEN '5' THEN 'Terminated' 
+                                      END) as Status, 
+                                      a.UserName,a.AccountTypeID, b.Name, b.Email, b.Address 
+                    from accounts as a 
+                        INNER JOIN accountdetails as b ON a.AID = b.AID AND a.AID = '".$zaccID."'
+                            ORDER BY $sidx $sord LIMIT ".$zStart.", ".$zLimit."";
          }
          else
          {
@@ -299,10 +307,19 @@ class AccountManagement extends DBHandler{
             $listpegs = array();
             if($zpegs == 0)
             {
-               $stmt = "Select a.AID, (CASE a.Status WHEN '0' THEN 'Inactive' WHEN '1' THEN 'Active' WHEN '2' THEN 'Suspended' 
-              WHEN '3' THEN 'Locked(Attempts)' WHEN '4' THEN 'Locked(Admin)' WHEN '6' THEN 'Password Expired' 
-              WHEN '5' THEN 'Terminated' END) as Status, a.UserName,a.AccountTypeID, b.Name, b.Email, b.Address from accounts as a INNER JOIN accountdetails as b ON a.AID = b.AID WHERE a.AccountTypeID = '".$zAcctType."'
-                     ORDER BY $sidx $sord  LIMIT ".$zStart.", ".$zLimit."";
+               $stmt = "Select a.AID, (CASE a.Status WHEN '0' THEN 'Inactive' 
+                                                    WHEN '1' THEN 'Active' 
+                                                    WHEN '2' THEN 'Suspended' 
+                                                    WHEN '3' THEN 'Locked(Attempts)' 
+                                                    WHEN '4' THEN 'Locked(Admin)' 
+                                                    WHEN '6' THEN 'Password Expired' 
+                                                    WHEN '5' THEN 'Terminated' 
+                                      END) as Status,  
+                                      a.UserName,a.AccountTypeID, b.Name, b.Email, b.Address 
+                         from accounts as a 
+                         INNER JOIN accountdetails as b ON a.AID = b.AID 
+                            WHERE a.AccountTypeID = '".$zAcctType."'
+                                ORDER BY $sidx $sord  LIMIT ".$zStart.", ".$zLimit."";
             }
             elseif($zAcctType > 0 && count($zpegs) > 0)
             {
@@ -315,17 +332,33 @@ class AccountManagement extends DBHandler{
                 }
 
                 $pegs = implode(',',$listpegs);
-                $stmt = "Select a.AID, (CASE a.Status WHEN '0' THEN 'Inactive' WHEN '1' THEN 'Active' WHEN '2' THEN 'Suspended' 
-              WHEN '3' THEN 'Locked(Attempts)' WHEN '4' THEN 'Locked(Admin)' WHEN '6' THEN 'Password Expired' 
-              WHEN '5' THEN 'Terminated' END) as Status, a.UserName,a.AccountTypeID, b.Name, b.Email, b.Address from accounts as a INNER JOIN accountdetails as b ON a.AID = b.AID
-                      INNER JOIN siteaccounts c on c.AID = a.AID WHERE a.AccountTypeID = '".$zAcctType."' AND c.SiteID IN(".$pegs.") ORDER BY $sidx $sord  LIMIT ".$zStart.", ".$zLimit."";
+                $stmt = "Select a.AID, (CASE a.Status WHEN '0' THEN 'Inactive' 
+                                                    WHEN '1' THEN 'Active' 
+                                                    WHEN '2' THEN 'Suspended' 
+                                                    WHEN '3' THEN 'Locked(Attempts)' 
+                                                    WHEN '4' THEN 'Locked(Admin)' 
+                                                    WHEN '6' THEN 'Password Expired' 
+                                                    WHEN '5' THEN 'Terminated' 
+                                      END) as Status,
+                                      a.UserName,a.AccountTypeID, b.Name, b.Email, b.Address 
+                                from accounts as a 
+                                    INNER JOIN accountdetails as b ON a.AID = b.AID
+                                    INNER JOIN siteaccounts c on c.AID = a.AID 
+                          WHERE a.AccountTypeID = '".$zAcctType."' AND c.SiteID IN(".$pegs.") ORDER BY $sidx $sord  LIMIT ".$zStart.", ".$zLimit."";
             }
             else
             {
-                 $stmt = "Select a.AID, (CASE a.Status WHEN '0' THEN 'Inactive' WHEN '1' THEN 'Active' WHEN '2' THEN 'Suspended' 
-              WHEN '3' THEN 'Locked(Attempts)' WHEN '4' THEN 'Locked(Admin)' WHEN '6' THEN 'Password Expired' 
-              WHEN '5' THEN 'Terminated' END) as Status, a.UserName,a.AccountTypeID, b.Name, b.Email, b.Address from accounts as a INNER JOIN accountdetails as b ON a.AID = b.AID
-                     ORDER BY $sidx $sord LIMIT ".$zStart.", ".$zLimit."";
+                 $stmt = "Select a.AID, (CASE a.Status WHEN '0' THEN 'Inactive' 
+                                                    WHEN '1' THEN 'Active' 
+                                                    WHEN '2' THEN 'Suspended' 
+                                                    WHEN '3' THEN 'Locked(Attempts)' 
+                                                    WHEN '4' THEN 'Locked(Admin)' 
+                                                    WHEN '6' THEN 'Password Expired' 
+                                                    WHEN '5' THEN 'Terminated' 
+                                      END) as Status, a.UserName,a.AccountTypeID, b.Name, b.Email, b.Address 
+                            from accounts as a 
+                                INNER JOIN accountdetails as b ON a.AID = b.AID
+                                    ORDER BY $sidx $sord LIMIT ".$zStart.", ".$zLimit."";
             }
          }
          $this->executeQuery($stmt);
@@ -609,7 +642,9 @@ class AccountManagement extends DBHandler{
 
      //get active / password expired status of operator/s
      function getActiveOperator($zacctypeid){
-         $stmt = "SELECT UserName, AID FROM accounts WHERE AccountTypeID = ? AND Status IN (1,6)";
+         $stmt = "SELECT UserName, AID FROM accounts WHERE AccountTypeID = ? 
+                  AND Status IN (1,6) 
+                  ORDER BY UserName ASC";
          $this->prepare($stmt);
          $this->bindparameter(1, $zacctypeid);
          $this->execute();
