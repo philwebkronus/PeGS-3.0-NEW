@@ -250,7 +250,8 @@ class TopUp extends DBHandler
                                         GROUP BY SiteID";
                 
                 //Query for Printed Tickets of the pick date (per site/per cutoff)
-                $query8 = "SELECT SiteID, SUM(PrintedTickets) AS PrintedTickets, DateCreated FROM (SELECT tr.SiteID, IFNULL(SUM(stckr.Withdrawal), 0) AS PrintedTickets FROM npos.transactiondetails tr FORCE INDEX(IX_transactiondetails_DateCreated)  -- Printed Tickets through W
+                $query8 = "SELECT SiteID, SUM(PrintedTickets) AS PrintedTickets, DateCreated FROM (
+                    SELECT tr.SiteID, IFNULL(SUM(stckr.Withdrawal), 0) AS PrintedTickets, tr.DateCreated FROM npos.transactiondetails tr FORCE INDEX(IX_transactiondetails_DateCreated)  -- Printed Tickets through W
                             INNER JOIN npos.transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
                             INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
                             INNER JOIN npos.accounts a ON ts.CreatedByAID = a.AID
@@ -261,7 +262,7 @@ class TopUp extends DBHandler
                               AND tr.StackerSummaryID IS NOT NULL
                               GROUP BY tr.SiteID 
                         UNION ALL
-                        SELECT SiteID, SUM(Amount) as PrintedTickets FROM ewallettrans WHERE StartDate >= :startdate
+                        SELECT SiteID, SUM(Amount) as PrintedTickets, StartDate FROM ewallettrans WHERE StartDate >= :startdate
                             AND StartDate < :enddate AND Status IN (1,3) AND TransType='W' AND Source = 1 GROUP BY SiteID) 
                         AS sum GROUP BY SiteID";
                 
@@ -824,7 +825,8 @@ class TopUp extends DBHandler
                                         GROUP BY SiteID";
                 
                 //Query for Printed Tickets of the pick date (per site/per cutoff)
-                $query8 = "SELECT SiteID, SUM(PrintedTickets) AS PrintedTickets, DateCreated FROM (SELECT tr.SiteID, IFNULL(SUM(stckr.Withdrawal), 0) AS PrintedTickets FROM npos.transactiondetails tr FORCE INDEX(IX_transactiondetails_DateCreated)  -- Printed Tickets through W
+                $query8 = "SELECT SiteID, SUM(PrintedTickets) AS PrintedTickets, DateCreated FROM (
+                    SELECT tr.SiteID, IFNULL(SUM(stckr.Withdrawal), 0) AS PrintedTickets, tr.DateCreated FROM npos.transactiondetails tr FORCE INDEX(IX_transactiondetails_DateCreated)  -- Printed Tickets through W
                             INNER JOIN npos.transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
                             INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
                             INNER JOIN npos.accounts a ON ts.CreatedByAID = a.AID
@@ -836,7 +838,7 @@ class TopUp extends DBHandler
                               AND tr.StackerSummaryID IS NOT NULL
                               GROUP BY tr.SiteID 
                         UNION ALL
-                        SELECT SiteID, SUM(Amount) as PrintedTickets FROM ewallettrans WHERE StartDate >= :startdate
+                        SELECT SiteID, SUM(Amount) as PrintedTickets, StartDate FROM ewallettrans WHERE StartDate >= :startdate
                             AND StartDate < :enddate AND Status IN (1,3) AND SiteID = :siteid AND TransType='W' AND Source = 1 GROUP BY SiteID) 
                         AS sum GROUP BY SiteID";
                 
@@ -1050,13 +1052,12 @@ class TopUp extends DBHandler
                     $this->bindparameter(":siteid", $value2["SiteID"]);
                     $this->execute();  
                     $rows8 =  $this->fetchAllData();
-                    
+
                     foreach ($rows8 as $row8) {
                         if($row8["SiteID"] == $value2["SiteID"]){
                             if(($row8['DateCreated'] >= $value2['ReportDate']." ".BaseProcess::$cutoff) && ($row8['DateCreated'] < $value2['CutOff'])){
                                 $qr1[$keys]["PrintedTickets"] = (float)$row8["PrintedTickets"];
                             }
-                            break;
                         }
                     }
                     
@@ -2316,8 +2317,7 @@ class TopUp extends DBHandler
                                 INNER JOIN npos.siteaccounts sa ON acct.AID = sa.AID
                                 WHERE stckr.Status IN (1, 2)
                                 AND stckr.DateCancelledOn >= :startdate AND stckr.DateCancelledOn < :enddate
-                                AND acct.AccountTypeID IN (4, 15)
-                                AND sa.SiteID = 222)
+                                AND acct.AccountTypeID IN (4, 15))
                        UNION
                             (SELECT TicketCode FROM vouchermanagement.tickets WHERE DateCreated >= :startdate  
                             AND DateCreated < :enddate AND Status = 3 AND DateEncashed IS NULL)

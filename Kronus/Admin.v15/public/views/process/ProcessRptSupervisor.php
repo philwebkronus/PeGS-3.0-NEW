@@ -809,7 +809,8 @@ if($connected)
                 $manualredemption = 0.00;
                 $bancnet = '0.00';
                 $ewalletwithdrawal  = '0.00';
-
+                $redemptiongenesis = '0.00';
+                
                  $vtotal = array();
                  $vdeposit = array();
                  $vreload = array();
@@ -1269,7 +1270,7 @@ if($connected)
               $manualredemption = 0.00;
               $bancnet = '0.00';
               $ewalletwithdrawal  = '0.00';
-
+              $redemptiongenesis = '0.00';
                //Sum up the total redemption made by the cashier
               if(count($result) > 0){
                  while($ctr1 < count($result)) {
