@@ -821,7 +821,7 @@ class ReportsController extends FrontendController{
             $vcaid = $vcaid['AID'];
             
             $ticketlist = $this->getTicketListperCashier($start_date, $end_date, $vcaid);
-            $getActiveTicketsForTheDay = $this->getActiveTicketsForTheDayPerCashier($start_date, $end_date, $vcaid);
+            $getActiveTicketsForTheDay = $this->getActiveTicketsForTheDay($start_date, $end_date);
             $manualredemptions = $this->getmanualRedemptions($start_date, $end_date);
             
             $runningactivetickets = $this->getrunningactivetickets($start_date, $end_date);

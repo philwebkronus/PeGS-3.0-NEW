@@ -1210,12 +1210,11 @@ class TransactionSummaryModel extends MI_Model{
         $getcancelledtickets = "SELECT IFNULL(stckr.Withdrawal, 0) As Amount, stckr.TicketCode FROM stackermanagement.stackersummary stckr -- Cancelled Tickets in Stacker 
                                                     INNER JOIN npos.accounts acct ON stckr.CreatedByAID = acct.AID
                                                     INNER JOIN npos.siteaccounts sa ON acct.AID = sa.AID
-                                                    WHERE stckr.Status IN (1, 2)
-                                                    AND stckr.DateCancelledOn >= :start_date AND stckr.DateCancelledOn < :end_date
+                                                    WHERE stckr.DateCancelledOn >= :start_date AND stckr.DateCancelledOn < :end_date
                                                     AND acct.AccountTypeID IN (4, 15)
                                                     AND sa.SiteID = :siteid";
-        $getusedtickets = "SELECT Amount,TicketCode FROM vouchermanagement.tickets WHERE DateCreated >= :start_date 
-                                            AND DateCreated < :end_date AND Status = 3 AND DateEncashed IS NULL AND SiteID = :siteid";
+        $getusedtickets = "SELECT Amount,TicketCode FROM vouchermanagement.tickets WHERE DateUpdated >= :start_date 
+                                            AND DateUpdated < :end_date AND DateEncashed IS NULL AND SiteID = :siteid";
         $getencashedtickets = "SELECT Amount,TicketCode FROM vouchermanagement.tickets tckt  -- Encashed Tickets
                                             WHERE tckt.DateEncashed >= :start_date AND tckt.DateEncashed < :end_date 
                                             AND tckt.EncashedByAID IN (SELECT acct.AID FROM npos.accounts acct WHERE acct.AccountTypeID = 4
