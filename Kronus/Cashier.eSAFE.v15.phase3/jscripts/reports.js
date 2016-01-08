@@ -526,7 +526,7 @@ $(document).ready(function(){
                 success : function(data) {
                     try {
                         var json = $.parseJSON(data);
-                        
+
                         if(pickdate < compareddate){
                             TotalRegCash = toMoney(json.total_rows.TotalRegCash,'no');
                             TotalRegTicket = toMoney(json.total_rows.TotalRegTicket,'no');
@@ -541,20 +541,21 @@ $(document).ready(function(){
                                 if(i == 0){
                                     if(json.ticketlist > 1){
                                         TotalPrintedTickets = parseFloat(json.ticketlist[i].PrintedRedemptionTickets) ;
-                                        TotalEncashedTickets = parseFloat(json.ticketlist[i].EncashedTickets);
-                                        SubEncashedTickets = parseFloat(json.ticketlist[i].EncashedTickets);
+
                                     } else {
                                         TotalPrintedTickets = parseFloat(json.ticketlist[i].PrintedRedemptionTickets);
-                                        TotalEncashedTickets = toMoney(json.ticketlist[i].EncashedTickets,'no');
-                                        SubEncashedTickets = parseFloat(json.ticketlist[i].EncashedTickets,'no');
+
                                     }
                                 } else {
                                     TotalPrintedTickets += parseFloat(json.ticketlist[i].PrintedRedemptionTickets) ;
-                                    TotalEncashedTickets += parseFloat(json.ticketlist[i].EncashedTickets);
-                                    SubEncashedTickets += parseFloat(json.ticketlist[i].EncashedTickets);
+
                                 }
                             }
 
+                            TotalEncashedTickets = parseFloat(json.EncashedTickets);
+                            TotalEncashedTickets = toMoney(json.EncashedTickets,'no');
+                            SubEncashedTickets = parseFloat(json.EncashedTickets);
+                            
                             eSAFECash = parseFloat(json.eWalletCashDeposits);
                             eSAFETickets = parseFloat(json.eWalletTicketDeposits);
                             eSAFECoupon = parseFloat(json.eWalletCouponDeposits);
@@ -605,19 +606,18 @@ $(document).ready(function(){
                                 if(i == 0){
                                     if(json.ticketlist > 1){
                                         TotalPrintedTickets = parseFloat(json.ticketlist[i].PrintedRedemptionTickets) ;
-                                        TotalEncashedTickets = parseFloat(json.ticketlist[i].EncashedTickets);
-                                        SubEncashedTickets = parseFloat(json.ticketlist[i].EncashedTickets);
                                     } else {
                                         TotalPrintedTickets = parseFloat(json.ticketlist[i].PrintedRedemptionTickets);
-                                        TotalEncashedTickets = toMoney(json.ticketlist[i].EncashedTickets,'no');
-                                        SubEncashedTickets = parseFloat(json.ticketlist[i].EncashedTickets,'no');
                                     }
                                 } else {
                                     TotalPrintedTickets += parseFloat(json.ticketlist[i].PrintedRedemptionTickets) ;
-                                    TotalEncashedTickets += parseFloat(json.ticketlist[i].EncashedTickets);
-                                    SubEncashedTickets += parseFloat(json.ticketlist[i].EncashedTickets);
+
                                 }
                             }
+
+                            TotalEncashedTickets = parseFloat(json.EncashedTickets);
+                            TotalEncashedTickets = toMoney(json.EncashedTickets,'no');
+                            SubEncashedTickets = parseFloat(json.EncashedTickets);
 
                             eSAFECash = parseFloat(json.eWalletCashDeposits);
                             eSAFETickets = parseFloat(json.eWalletTicketDeposits);
@@ -1640,20 +1640,9 @@ $(document).ready(function(){
                             RegCoupon = parseFloat(json.total_rows.TotalRegCoupon);
                             CashierRedemption = parseFloat(json.total_rows.TotalCashierRedemption);
 
-                            for(i=0;i<json.ticketlist.length;i++) {
-                                if(i == 0){
-                                    if(json.ticketlist > 1){
-                                        TotalEncashedTickets = parseFloat(json.ticketlist[i].EncashedTickets);
-                                        SubEncashedTickets = parseFloat(json.ticketlist[i].EncashedTickets);
-                                    } else {
-                                        TotalEncashedTickets = toMoney(json.ticketlist[i].EncashedTickets,'no');
-                                        SubEncashedTickets = parseFloat(json.ticketlist[i].EncashedTickets,'no');
-                                    }
-                                } else {
-                                    TotalEncashedTickets += parseFloat(json.ticketlist[i].EncashedTickets);
-                                    SubEncashedTickets += parseFloat(json.ticketlist[i].EncashedTickets);
-                                }
-                            }
+                            TotalEncashedTickets = parseFloat(json.EncashedTickets);
+                            TotalEncashedTickets = toMoney(json.EncashedTickets,'no');
+                            SubEncashedTickets = parseFloat(json.EncashedTickets);
 
                             eSAFECash = parseFloat(json.eWalletCashDeposits);
                             eSAFETickets = parseFloat(json.eWalletTicketDeposits);
@@ -1696,20 +1685,9 @@ $(document).ready(function(){
                             RegCoupon = parseFloat(json.total_rows.TotalRegCoupon);
                             CashierRedemption = parseFloat(json.total_rows.TotalCashierRedemption);
 
-                            for(i=0;i<json.ticketlist.length;i++) {
-                                if(i == 0){
-                                    if(json.ticketlist > 1){
-                                        TotalEncashedTickets = parseFloat(json.ticketlist[i].EncashedTickets);
-                                        SubEncashedTickets = parseFloat(json.ticketlist[i].EncashedTickets);
-                                    } else {
-                                        TotalEncashedTickets = toMoney(json.ticketlist[i].EncashedTickets,'no');
-                                        SubEncashedTickets = parseFloat(json.ticketlist[i].EncashedTickets,'no');
-                                    }
-                                } else {
-                                    TotalEncashedTickets += parseFloat(json.ticketlist[i].EncashedTickets);
-                                    SubEncashedTickets += parseFloat(json.ticketlist[i].EncashedTickets);
-                                }
-                            }
+                            TotalEncashedTickets = parseFloat(json.EncashedTickets);
+                            TotalEncashedTickets = toMoney(json.EncashedTickets,'no');
+                            SubEncashedTickets = parseFloat(json.EncashedTickets);
 
                             eSAFECash = parseFloat(json.eWalletCashDeposits);
                             eSAFETickets = parseFloat(json.eWalletTicketDeposits);

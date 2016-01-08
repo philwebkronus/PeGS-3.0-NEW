@@ -1454,6 +1454,39 @@ class TransactionSummaryModel extends MI_Model{
         $result = $this->find();
         return isset($result['EncashedTickets'])?$result['EncashedTickets']:0;
     }
+    
+    /**
+     * @Description: For Transaction History per Cashier. Function to get encashed tickets per site per cutoff
+     * @DateCreated: 2015-10-28
+     * @Author: aqdepliyan
+     * @param string $startdate
+     * @param string $enddate
+     * @param int $siteid
+     * @return array
+     */
+    public function getEncashedTicketsPerCashier($startdate,$enddate,$siteid,$aid){
+        $cutoff_time = Mirage::app()->param['cut_off'];
+        $sql = "SELECT IFNULL(SUM(tckt.Amount), 0) as EncashedTickets FROM vouchermanagement.tickets tckt  -- Encashed Tickets
+                    WHERE tckt.DateEncashed >= :startdate AND tckt.DateEncashed < :enddate 
+                    AND tckt.EncashedByAID = :aid
+                    AND tckt.EncashedByAID IN (SELECT acct.AID FROM npos.accounts acct WHERE acct.AccountTypeID = 4
+                    AND acct.AID IN (SELECT sacct.AID FROM npos.siteaccounts sacct WHERE sacct.SiteID = :siteid1))
+                    AND tckt.TicketCode NOT IN (SELECT IFNULL(stsum.TicketCode,'') FROM stackermanagement.stackersummary stsum 
+                    WHERE stsum.UpdatedByAID IN (SELECT acct.AID FROM npos.accounts acct WHERE acct.AccountTypeID IN (15,17)
+                    AND acct.AID IN (SELECT sacct.AID FROM npos.siteaccounts sacct WHERE sacct.SiteID = :siteid2)) AND stsum.EwalletTransID IS NOT NULL)";
+        
+        $param = array(
+            ':startdate'=>$startdate.' '.$cutoff_time,
+            ':enddate'=>$enddate.' '.$cutoff_time,
+            ':aid'=>$aid,
+            ':siteid1'=>$siteid,
+            ':siteid2'=>$siteid
+        );
+        
+        $this->exec($sql, $param);
+        $result = $this->find();
+        return isset($result['EncashedTickets'])?$result['EncashedTickets']:0;
+    }
 
     /**
      * @Description: For Site Cash On Hand Reports in Cashier. Function to get transactions grouped into Load Cash( Deposit,Reload), Load Coupon( Deposit,Reload), Load Bancnet( Deposit,Reload),

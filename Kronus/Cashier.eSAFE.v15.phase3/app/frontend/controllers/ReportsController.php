@@ -87,7 +87,7 @@ class ReportsController extends FrontendController{
     public function transactionHistorySalesAction() {
         if(!$this->isAjaxRequest() || !$this->isPostRequest())
             Mirage::app()->error404();
-        
+
         $reportsFormModel = new ReportsFormModel();
         
         $start = 1;
@@ -129,7 +129,7 @@ class ReportsController extends FrontendController{
             
             $enddate = addOneDay($date);
             list($rows,$total_rows,$page_count,$displayingpageof,$eWalletDeposits, $eWalletWithdrawals, $eWalletCashDeposits,
-                    $eWalletCouponDeposits,$eWalletTicketDeposits,$eWalletTicketWithdrawals)=  $this->_getTransHistory($date, $enddate, $start, $limit,$tID,$transSummID,$IsTotal,$IsSales);    
+                    $eWalletCouponDeposits,$eWalletTicketDeposits,$eWalletTicketWithdrawals,$encashedtickets)=  $this->_getTransHistory($date, $enddate, $start, $limit,$tID,$transSummID,$IsTotal,$IsSales);    
                        
             foreach($total_rows as $value){
                 $arrdata['TotalRegCash'] += $value['RegDCash'];
@@ -158,7 +158,7 @@ class ReportsController extends FrontendController{
 
             echo json_encode(array('total_rows'=>$arrdata,'page_count'=>$page_count,
                 'displayingpageof'=>$displayingpageof,'coverage'=>$coverage, 'ticketlist'=>$ticketlist, 'ActiveTickets' => $getActiveTicketsForTheDay, 'manualredemptions'=>$manualredemptions, 
-                'runningactivetickets'=>$runningactivetickets,'eWalletDeposits'=>$eWalletDeposits, 'eWalletWithdrawals'=>$eWalletWithdrawals,
+                'runningactivetickets'=>$runningactivetickets,'eWalletDeposits'=>$eWalletDeposits, 'eWalletWithdrawals'=>$eWalletWithdrawals,'EncashedTickets'=>$encashedtickets,
                 'eWalletCashDeposits'=>$eWalletCashDeposits,'eWalletCouponDeposits'=>$eWalletCouponDeposits,'eWalletTicketDeposits'=>$eWalletTicketDeposits,'eWalletTicketWithdrawals'=>$eWalletTicketWithdrawals));
             Mirage::app()->end();
         }
@@ -396,6 +396,14 @@ class ReportsController extends FrontendController{
         
         return $getActiveTicketsForTheDay;
     }
+    
+    public function _getEncashedTickets($date, $enddate){
+        $transactionSummaryModel = new TransactionSummaryModel();
+        
+        $encashedtickets = $transactionSummaryModel->getEncashedTickets($date, $enddate, $this->site_id);
+        
+        return $encashedtickets;
+    }
 
     protected function _getTransHistory($date,$enddate,$start,$limit,$terminalID='',$transSumID='',$IsTotal = 0,$IsSales = 0) {
         Mirage::loadModels(array('TransactionSummaryModel', 'EWalletTransModel'));
@@ -421,6 +429,7 @@ class ReportsController extends FrontendController{
         $eWalletTicketDeposits = 0;
         $eWalletWithdrawals = 0;
         $eWalletTicketWithdrawals = 0;
+        $encashedtickets = 0;
         
         if(empty($terminalID) && empty($transSumID) && !$IsTotal && !$IsSales){ //For Transaction History Per Site Grid
             $rows = $transactionSummaryModel->_getTransSummaryPaging($this->site_id,  $this->site_code, $date, $enddate, $startlimit, $limit);
@@ -437,6 +446,7 @@ class ReportsController extends FrontendController{
             $eWalletTicketDeposits = $eWalletTransModel->getTicketDepositSumPerSite($date, $enddate, $this->site_id);
             $eWalletWithdrawals = $eWalletTransModel->getWithdrawalSumPerSite($date,$enddate, $this->site_id);
             $eWalletTicketWithdrawals = $eWalletTransModel->getWithdrawalTicketSumPerSite($date,$enddate, $this->site_id);
+            $encashedtickets = $transactionSummaryModel->getEncashedTickets($date, $enddate, $this->site_id);
         } else if(!empty($terminalID) && !empty($transSumID)){ //For Terminal Code Link PopUp
             $rows = $transactionSummaryModel->getTransSummaryPagingWithTerminalID($this->site_id,  $this->site_code, $terminalID, $transSumID, $date, $enddate, $startlimit, $limit);
             $total_rows = 0;
@@ -447,7 +457,7 @@ class ReportsController extends FrontendController{
         if(isset($_POST['startlimit'])) 
             $displayingpageof = 'Displaying page ' . (($start)? $start : '0') . ' of ' . $page_count;
         
-        return array($rows,$total_rows,$page_count,$displayingpageof, $eWalletDeposits, $eWalletWithdrawals, $eWalletCashDeposits,$eWalletCouponDeposits,$eWalletTicketDeposits,$eWalletTicketWithdrawals);
+        return array($rows,$total_rows,$page_count,$displayingpageof, $eWalletDeposits, $eWalletWithdrawals, $eWalletCashDeposits,$eWalletCouponDeposits,$eWalletTicketDeposits,$eWalletTicketWithdrawals,$encashedtickets);
     }
     
     public function transactionHistoryPerCashierAction() {
@@ -506,8 +516,9 @@ class ReportsController extends FrontendController{
     
     public function transactionHistoryPerCashierSalesAction() {
         if(!$this->isAjaxRequest() || !$this->isPostRequest())
-            Mirage::app()->error404();        
+            Mirage::app()->error404();      
         
+
         Mirage::loadModels('ManualRedemptionsModel');
         $start = 1;
         $limit = 10;
@@ -548,7 +559,7 @@ class ReportsController extends FrontendController{
             $IsSales = 1;
             
             list($rows,$total_rows,$page_count,$displayingpageof,$eWalletDeposits, $eWalletWithdrawals, 
-                    $eWalletCashDeposits,$eWalletCouponDeposits,$eWalletTicketDeposits)=  $this->_getTransHistoryPerCashier($start_date, $end_date, $start, $limit,$tID,$transSummID,$IsTotal,$IsSales); 
+                    $eWalletCashDeposits,$eWalletCouponDeposits,$eWalletTicketDeposits,$encashedtickets)=  $this->_getTransHistoryPerCashier($start_date, $end_date, $start, $limit,$tID,$transSummID,$IsTotal,$IsSales); 
             $coverage = 'Coverage ' . date('l , F d, Y ',strtotime($start_date)) . ' ' .Mirage::app()->param['cut_off'].' AM to ' . date('l , F d, Y ',strtotime($end_date)) . ' ' .Mirage::app()->param['cut_off'].' AM';
             $ticketlist = $this->getTicketListperCashier($start_date, $end_date, $this->acc_id);
             
@@ -562,7 +573,7 @@ class ReportsController extends FrontendController{
                 $arrdata['TotalCashierRedemption'] += $value['WCashier'];
             }
             
-            echo json_encode(array('rows'=>$rows,'total_rows'=>$arrdata,'page_count'=>$page_count,
+            echo json_encode(array('rows'=>$rows,'total_rows'=>$arrdata,'page_count'=>$page_count,'EncashedTickets'=>$encashedtickets,
                 'displayingpageof'=>$displayingpageof, 'coverage'=>$coverage,'ticketlist'=>$ticketlist, 'eWalletDeposits'=>$eWalletDeposits, 'eWalletWithdrawals'=>$eWalletWithdrawals,
                 'eWalletCashDeposits'=>$eWalletCashDeposits, 'eWalletCouponDeposits' => $eWalletCouponDeposits, 'eWalletTicketDeposits' => $eWalletTicketDeposits));
             Mirage::app()->end();            
@@ -692,6 +703,7 @@ class ReportsController extends FrontendController{
         $eWalletCouponDeposits = 0;
         $eWalletTicketDeposits = 0;
         $eWalletWithdrawals = 0;
+        $encashedtickets = 0;
 
         if(empty($terminalID) && empty($transSumID) && !$IsTotal && !$IsSales){ //For Transaction History Per Site Grid
             $rows = $transactionSummaryModel->_getTransactionSummaryPerCashier($this->site_id,$this->acc_id,$this->site_code, $start_date, $end_date, $startlimit, $limit);      
@@ -707,6 +719,7 @@ class ReportsController extends FrontendController{
             $eWalletCouponDeposits = $eWalletTransModel->getCouponDepositSumPerCashier($start_date, $end_date, $this->site_id, $this->acc_id);
             $eWalletTicketDeposits = $eWalletTransModel->getTicketDepositSumPerCashier($start_date, $end_date, $this->site_id, $this->acc_id);
             $eWalletWithdrawals = $eWalletTransModel->getWithdrawalSumPerCashier($start_date,$end_date, $this->site_id, $this->acc_id);
+            $encashedtickets = $transactionSummaryModel->getEncashedTicketsPerCashier($date, $enddate, $this->site_id, $this->acc_id);
         } else if(!empty($terminalID) && !empty($transSumID)){ //For Terminal Code Link PopUp
             $rows = $transactionSummaryModel->getTransactionSummaryPerCashierWithTerminalID($this->site_id,$this->acc_id,$this->site_code,$terminalID,$transSumID,$start_date, $end_date, $startlimit, $limit);
             $total_rows = 0;
@@ -714,7 +727,7 @@ class ReportsController extends FrontendController{
         
         $displayingpageof = 'Displaying page ' . (($page_count)? '1' : '0') . ' of ' . $page_count;
 
-        return array($rows,$total_rows,$page_count,$displayingpageof, $eWalletDeposits, $eWalletWithdrawals, $eWalletCashDeposits,$eWalletCouponDeposits,$eWalletTicketDeposits);
+        return array($rows,$total_rows,$page_count,$displayingpageof, $eWalletDeposits, $eWalletWithdrawals, $eWalletCashDeposits,$eWalletCouponDeposits,$eWalletTicketDeposits,$encashedtickets);
     }
     
     
