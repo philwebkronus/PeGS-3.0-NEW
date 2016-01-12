@@ -2810,11 +2810,10 @@ $(document).ready(function(){
                             totaldcoupon = parseFloat(json.transdetails[i].LoadCoupon);
                             totaldbancnet = parseFloat(json.transdetails[i].LoadBancnet);
                             totaldticket = parseFloat(json.transdetails[i].LoadTicket);
-                            totalwcash = parseFloat(json.transdetails[i].WCash);
+                            totalwcash += parseFloat(json.transdetails[i].WCash);
                             totalwticket = parseFloat(json.transdetails[i].WTicket);
-                            totalwencashedtickets = parseFloat(json.transdetails[i].EncashedTickets);
+                            totalwcash += parseFloat(json.transdetails[i].ManualRedemption);
                             grandtotalcashonhand = rcashonhand;
-
                         }
 
                         /*--- TOTAL ---*/
