@@ -2803,7 +2803,7 @@ $(document).ready(function(){
                             var rcashonhand = 0;
 
                             rsubdtotal += (parseFloat(json.transdetails[i].LoadCash) + parseFloat(json.transdetails[i].LoadCoupon) + parseFloat(json.transdetails[i].LoadBancnet) + parseFloat(json.transdetails[i].LoadTicket));
-                            rsubwtotal += (parseFloat(json.transdetails[i].WCash) + parseFloat(json.transdetails[i].WTicket) + parseFloat(json.transdetails[i].EncashedTickets));
+                            rsubwtotal += (parseFloat(json.transdetails[i].WCash) + parseFloat(json.transdetails[i].WTicket) + parseFloat(json.transdetails[i].EncashedTickets) + parseFloat(json.transdetails[i].ManualRedemption));
                             rcashonhand = rsubdtotal - rsubwtotal;
 
                             totaldcash = parseFloat(json.transdetails[i].LoadCash);
