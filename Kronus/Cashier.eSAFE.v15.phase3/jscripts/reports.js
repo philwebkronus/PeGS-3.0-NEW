@@ -635,7 +635,7 @@ $(document).ready(function(){
                             TotaleSAFEWithdrawals = toMoney(json.eWalletWithdrawals,'no');
 
                             //Compute Cash On Hand [ Formula: (((Total Cash from Cashier & Genesis + eSAFE Cash Load) - (Total Cashier Redemption + eSAFE Withdraw)) - Total Encashed Tickets) - Total Manual Redemption ]
-                            CompCashOnHand = ((RegCash + RegCoupon + eSAFECash + eSAFECoupon) - (CashierRedemption + parseFloat(json.eWalletWithdrawals)) - SubEncashedTickets) - parseFloat(json.manualredemptions);
+                            CompCashOnHand = ((RegCash + RegTicket + RegCoupon + eSAFECash + eSAFETickets + eSAFECoupon) - (CashierRedemption + parseFloat(json.eWalletWithdrawals)) - SubEncashedTickets) - parseFloat(json.manualredemptions);
                             CashOnHand = toMoney(CompCashOnHand,'no');
 
                             updateLightbox( '<div style="margin-bottom: 10px; font-weight: bold;"> Transaction History per Site:<br/>Sales </div><table id="salestranssumm" ><tr><td style="padding-left: 30px;"><b>Non e-SAFE Cash</b></td><td style="text-align: right;">'+TotalRegCash+'</td>' +
