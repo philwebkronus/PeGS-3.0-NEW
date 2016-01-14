@@ -2665,7 +2665,7 @@ class TransactionSummaryModel extends MI_Model{
             INNER JOIN terminals t ON t.TerminalID = tr.TerminalID 
             WHERE tr.DateCreated >= :start_date AND tr.DateCreated < :end_date AND 
             tr.SiteID = :site_id AND tr.CreatedByAID = :account_id AND tr.Status IN(1,4) 
-            GROUP BY tr.TransactionType,tr.TransactionSummaryID ORDER BY tr.TerminalID,tr.DateCreated DESC";
+            GROUP BY tr.PaymentType, tr.TransactionType,tr.TransactionSummaryID ORDER BY tr.TerminalID,tr.DateCreated DESC";
         $param = array(
                 ':account_id'=>$account_id,
                 ':site_id'=>$site_id,
