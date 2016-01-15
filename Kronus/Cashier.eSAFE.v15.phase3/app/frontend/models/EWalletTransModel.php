@@ -431,6 +431,21 @@ class EWalletTransModel extends MI_Model {
         return isset($result['Amount'])?$result['Amount']:0;
     }
     
+        public function getWithdrawalCashSumPerSite($startDate, $endDate, $siteID){
+        $cutoff_time = Mirage::app()->param['cut_off'];
+        $sql = "SELECT SUM(Amount) as Amount FROM ewallettrans WHERE StartDate >= :startDate 
+                    AND StartDate < :endDate AND Status IN (1,3) AND SiteID=:siteID AND TransType='W' AND Source = 0";
+        
+        $param = array(
+            ':startDate'=>$startDate.' '.$cutoff_time,
+            ':endDate'=>$endDate.' '.$cutoff_time,
+            ':siteID'=>$siteID
+        );
+        $this->exec($sql, $param);
+        $result = $this->find();
+        return isset($result['Amount'])?$result['Amount']:0;
+    }
+    
     public function getWithdrawalSumPerCashier($startDate, $endDate, $siteID, $aid){
         $cutoff_time = Mirage::app()->param['cut_off'];
         $sql = "SELECT SUM(Amount) as Amount FROM ewallettrans WHERE StartDate >= :startDate AND StartDate < :endDate 
