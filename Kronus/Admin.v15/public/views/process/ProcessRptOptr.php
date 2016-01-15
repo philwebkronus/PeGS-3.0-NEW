@@ -946,12 +946,15 @@ if($connected)
        //Compute for total Cash On Hand of the sites under the current operator
        $cohdata = $orptoptr->getCashOnHandDetails($dateFrom, $dateTo, $arrsiteID);
        if ($dateFrom < $deploymentDate) {
-            $grandticketencashment = $orptoptr->getTotalTicketEncashment($dateFrom, $dateTo, $arrsiteID);
+            $grandticketencashment = $orptoptr->getEncashedTicketsV15($arrsiteID, $dateFrom, $dateTo);
+            $grandcashonhand = $cohdata['TotalCashLoad'] - ($cohdata['TotalCashRedemption'] + $cohdata['TotalMR'] + $grandticketencashment);
        }
        else {
             $grandticketencashment = $orptoptr->getEncashedTicketsV15($arrsiteID, $dateFrom, $dateTo);
+            $grandcashonhand = $cohdata['TotalCashLoad'] - ($cohdata['TotalCashRedemption'] + $cohdata['TotalGenesisRedemption'] + $cohdata['TotalMR'] + $grandticketencashment);
+            $grandredemption += $grandticketencashment;
        }
-       $grandcashonhand = $cohdata['TotalCashLoad'] - ($cohdata['TotalCashRedemption'] + $cohdata['TotalMR'] +  + $grandticketencashment);
+       
        $grandredemption += $cohdata['TotalMR'];
        // store the grand total of transaction types into an array 
        $arrgrand = array("GrandSales" => $grandsales, "GrandRedemption" => $grandredemption,

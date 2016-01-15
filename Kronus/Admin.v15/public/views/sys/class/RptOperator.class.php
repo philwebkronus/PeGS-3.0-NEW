@@ -1093,7 +1093,8 @@ class RptOperator extends DBHandler
     function getCashOnHandDetails($datefrom, $dateto, $siteid) {
         $listsite = array();
         $cohdata = array('TotalCashLoad' => 0, 
-                         'TotalCashRedemption' => 0, 
+                         'TotalCashRedemption' => 0,
+                         'TotalGenesisRedemption' => 0,
                          'TotalMR' => 0);
         foreach ($siteid as $row){ array_push($listsite, "".$row.""); }
         $site = implode(',', $listsite);
@@ -1365,7 +1366,6 @@ class RptOperator extends DBHandler
         $this->bindparameter(2, $dateto);
         $this->execute();
         $rows1 = $this->fetchAllData();
-        
         //Get the summation of total cash load and cash redemption
         foreach ($rows1 as $value) {
             $cohdata['TotalCashLoad'] += (float)$value['DepositCash'];
@@ -1377,7 +1377,7 @@ class RptOperator extends DBHandler
             $cohdata['TotalCashLoad'] += (float)$value['DepositCoupon'];
             $cohdata['TotalCashLoad'] += (float)$value['ReloadCoupon'];
             $cohdata['TotalCashRedemption'] += (float)$value['RedemptionCashier'];
-            $cohdata['TotalCashRedemption'] += (float)$value['RedemptionGenesis'];
+            $cohdata['TotalGenesisRedemption'] += (float)$value['RedemptionGenesis']; //Non e-SAFE
         }
        
         //Get total e-SAFE loaded cash (with bancnet transaction included)
@@ -1393,7 +1393,8 @@ class RptOperator extends DBHandler
             $cohdata['TotalCashLoad'] += (float)$value['EwalletBancnetDeposit'];
             $cohdata['TotalCashLoad'] += (float)$value['EwalletTicketLoad'];
             $cohdata['TotalCashLoad'] += (float)$value['EwalletVoucherDeposit'];
-            $cohdata['TotalCashRedemption'] += (float)$value['EwalletRedemption'];
+            $cohdata['TotalCashRedemption'] += (float)$value['EwalletCashRedemption'];
+            $cohdata['TotalGenesisRedemption'] += (float)$value['EwalletGenRedemption']; //e-SAFE
         }
 
         //Get total manual redemption per site

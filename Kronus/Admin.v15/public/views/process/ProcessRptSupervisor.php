@@ -117,6 +117,7 @@ if($connected)
                                  $supdetails[$value['CreatedByAID']]['LoadCash'] += (float)$value['LoadCash'];
                                  $supdetails[$value['CreatedByAID']]['EncashedTickets'] += (float)$value['EncashedTickets'];
                                  $supdetails[$value['CreatedByAID']]['RedemptionCashier'] += (float)$value['RedemptionCashier'];
+                                 $supdetails[$value['CreatedByAID']]['RedemptionGenesis'] += (float)$value['RedemptionGenesis'];
                                  $supdetails[$value['CreatedByAID']]['EwalletRedemption'] += (float)$value['EwalletRedemption'];
                                  $supdetails[$value['CreatedByAID']]['EwalletDeposits'] += (float)$value['EwalletDeposits'];
                              }else{
@@ -128,6 +129,7 @@ if($connected)
                                                                             'LoadCash'=>$value['LoadCash'],
                                                                             'EncashedTickets'=>$value['EncashedTickets'],
                                                                             'RedemptionCashier'=>$value['RedemptionCashier'],
+                                                                            'RedemptionGenesis'=>$value['RedemptionGenesis'],
                                                                             'EwalletRedemption'=>$value['EwalletRedemption'], 
                                                                             'EwalletDeposits'=>$value['EwalletDeposits']
                                                                          ); 
@@ -174,7 +176,7 @@ if($connected)
                               $vAID = $vview['CreatedByAID'];
                               $depositamt = (float)$vview['Deposits'] + (float)$vview['EwalletDeposits'];
                               $reloadamt = (float)$vview['Reloads'];
-                              $withdrawamt = (float)$vview['Redemptions'];
+                              $withdrawamt = (float)$vview['Redemptions'] + (float)$vview['RedemptionGenesis'] + $vview['EwalletRedemption'];
                               $loadcash = (float)$vview['LoadCash'];
                               $encashtickets = (float)$vview['EncashedTickets'];
                               $cashierredemption = (float)$vview['RedemptionCashier'];
@@ -300,7 +302,7 @@ if($connected)
                               $vAID = $vview['CreatedByAID'];
                               $depositamt = (float)$vview['Deposits'] + (float)$vview['EwalletDeposits'];
                               $reloadamt = (float)$vview['Reloads'];
-                              $withdrawamt = (float)$vview['RedemptionCashier'] + (float)$vview['RedemptionGenesis'] + $vview['EwalletRedemption'];
+                              $withdrawamt = (float)$vview['RedemptionCashier'] + (float)$vview['RedemptionGenesis'] + $vview['EwalletRedemption'] + (float)$vview['EncashedTicketsV2'] ;
                               $loadcash = (float)$vview['LoadCash'];
                               $encashtickets = (float)$vview['EncashedTicketsV2'];
                               $cashierredemption = (float)$vview['RedemptionCashier'];
@@ -310,7 +312,7 @@ if($connected)
                               
                               $grossholdamt = $depositamt + $reloadamt - $withdrawamt;
                               //$cashonhand = (($loadcash - $cashierredemption) - $ewalletredemption) - $encashtickets;
-                              $cashonhand = ($depositamt + $reloadamt + $genesisticketloads) - ($withdrawamt + $encashtickets);
+                              $cashonhand = ($depositamt + $reloadamt) - ($withdrawamt);
                               $response->rows[$i]['id']= $vAID;
                               $response->rows[$i]['cell'] = array($vview['Name'], number_format($depositamt, 2), 
                                    number_format($reloadamt, 2), number_format($withdrawamt,2), 
@@ -439,7 +441,7 @@ if($connected)
                 //results will be fetch here:
                 if((count($arrtotal) > 0) && (count($arrgrand) > 0))
                 {
-                    $cashonhand = ((((($loadcash + $bancnet + $loadcoupon) - $redemptioncashier) - $redemptiongenesis) - $ewalletwithdrawal) - $manualredemption) - $encashedtickets;
+                    $cashonhand = (((($loadcash + $bancnet + $loadcoupon) - $redemptioncashier) - $ewalletwithdrawal) - $manualredemption) - $encashedtickets;
      //               var_dump($loadcash,$bancnet,$redemptioncashier,$ewalletwithdrawal,$manualredemption,$encashedtickets);exit;
 
                     /**** Get Total Per Page  *****/
@@ -575,7 +577,7 @@ if($connected)
                     $vtotal = new stdClass();
                     $vtotal->deposit = number_format($arrtotal["TotalDeposit"], 2, '.', ',');
                     $vtotal->reload = number_format($arrtotal["TotalReload"], 2, '.', ',');
-                    $vtotal->withdraw = number_format($arrtotal["TotalWithdraw"], 2, '.', ',');
+                    $vtotal->withdraw = number_format($manualredemption + $arrtotal["TotalWithdraw"], 2, '.', ',');
                     $vtotal->sales = number_format($arrtotal["TotalDeposit"] + $arrtotal["TotalReload"], 2, '.', ',');
                     $xgrossamt = $arrtotal["TotalDeposit"] + $arrtotal["TotalReload"] - $arrtotal["TotalWithdraw"];
                     $vtotal->grosstotal = number_format($xgrossamt, 2, '.', ',');

@@ -342,7 +342,8 @@ class RptSupervisor extends DBHandler
         $query6 = "SELECT IFNULL(SUM(Amount), 0) AS EncashedTicketsV2, t.UpdatedByAID, t.SiteID, ad.Name   
                    FROM vouchermanagement.tickets t 
                    LEFT JOIN npos.accountdetails ad ON t.UpdatedByAID = ad.AID
-                   WHERE t.DateEncashed >= ? AND t.DateEncashed < ?  
+                   WHERE t.DateEncashed >= ? AND t.DateEncashed < ?
+                   AND t.UpdatedByAID IN (SELECT sacct.AID FROM npos.siteaccounts sacct WHERE sacct.SiteID IN (".$zsiteID."))
                    AND TicketCode NOT IN (
                            SELECT IFNULL(ss.TicketCode, '') FROM stackermanagement.stackersummary ss 
                            INNER JOIN npos.ewallettrans ewt ON ewt.StackerSummaryID = ss.StackerSummaryID 
@@ -744,7 +745,8 @@ class RptSupervisor extends DBHandler
         $query6 = "SELECT IFNULL(SUM(Amount), 0) AS EncashedTicketsV2, t.UpdatedByAID, t.SiteID, ad.Name   
                    FROM vouchermanagement.tickets t 
                    LEFT JOIN npos.accountdetails ad ON t.UpdatedByAID = ad.AID
-                   WHERE t.DateEncashed >= ? AND t.DateEncashed < ? 
+                   WHERE t.DateEncashed >= ? AND t.DateEncashed < ?
+                   AND t.UpdatedByAID IN (SELECT sacct.AID FROM npos.siteaccounts sacct WHERE sacct.SiteID IN (".$zsiteID."))
                    AND TicketCode NOT IN (
                            SELECT IFNULL(ss.TicketCode, '') FROM stackermanagement.stackersummary ss 
                            INNER JOIN npos.ewallettrans ewt ON ewt.StackerSummaryID = ss.StackerSummaryID 
@@ -856,7 +858,7 @@ class RptSupervisor extends DBHandler
         $this->execute();
         $rows6 = $this->fetchAllData();
         foreach($rows6 as $row6) {
-            foreach ($qr1 as $keys => $value2) {
+            foreach ($qr1 as $keys => $value2) {  
                 if($row6["SiteID"] == $value2["SiteID"]){
                     if($row6["EncashedTicketsV2"] != '0.00')
                         $qr1[$keys]["EncashedTicketsV2"] += (float)$row6["EncashedTicketsV2"];
