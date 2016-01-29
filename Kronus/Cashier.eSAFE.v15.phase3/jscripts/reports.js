@@ -527,6 +527,8 @@ $(document).ready(function(){
         
         var CompCashOnHand = 0;
         var CashOnHand = 0;
+        
+        var TotCashierRedemption= 0;
 
         showLightbox(function(){
             $.ajax({
@@ -546,6 +548,7 @@ $(document).ready(function(){
                             RegTicket = parseFloat(json.total_rows.TotalRegTicket);
                             RegCoupon = parseFloat(json.total_rows.TotalRegCoupon);
                             CashierRedemption = parseFloat(json.total_rows.TotalCashierRedemption);
+                            TotCashierRedemption = CashierRedemption;
 
                             for(i=0;i<json.ticketlist.length;i++) {
                                 if(i == 0){
@@ -592,6 +595,7 @@ $(document).ready(function(){
                                                         '</tr><tr><td style="padding-left: 30px;"><b>e-SAFE Coupon Deposits</b></td><td style="text-align: right;">' + TotaleSAFECoupon+ '</td>' +
                                                         '</tr><tr><td style="padding-left:5px;"><b>Total Sales</b></td><td style="text-align: right;">' + TotalSales+ '</td>' +
                                                         '</tr><tr><td colspan="2" style="padding-top: 10px;padding-bottom:10px;"></td>' +
+                                                        '</tr><tr><td style="padding-left:5px;"><b>Total Redemption</b></td><td style="text-align: right;">' + toMoney(TotCashierRedemption,'no')  + '</td>' +
                                                         '</tr><tr><td style="padding-left:5px;"><b>Total Printed Tickets</b></td><td style="text-align: right;">' + TotalPrintedTickets+ '</td>' +
                                                         '</tr><tr><td style="padding-left:5px;"><b>Total Active Tickets For The Day</b></td><td style="text-align: right;">' + TotalActiveTicketsForTheDay+ '</td>' +
                                                         '</tr><tr><td style="padding-left:5px;"><b>Total Encashed Tickets</b></td><td style="text-align: right;">' + TotalEncashedTickets+ '</td>' +
@@ -656,6 +660,7 @@ $(document).ready(function(){
                                                         '</tr><tr><td style="padding-left: 30px;"><b>e-SAFE Coupon Deposits</b></td><td style="text-align: right;">' + TotaleSAFECoupon+ '</td>' +
                                                         '</tr><tr><td style="padding-left:5px;"><b>Total Sales</b></td><td style="text-align: right;">' + TotalSales+ '</td>' +
                                                         '</tr><tr><td colspan="2" style="padding-top: 10px;padding-bottom:10px;"></td>' +
+                                                        '</tr><tr><td style="padding-left:5px;"><b>Total Redemption</b></td><td style="text-align: right;">' + TotalCashierRedemption + '</td>' +
                                                         '</tr><tr><td style="padding-left:5px;"><b>Total e-SAFE Withdrawals</b></td><td style="text-align: right;">' + TotaleSAFEWithdrawals + '</td>' +
                                                         '</tr><tr><td style="padding-left:5px;"><b>Total Printed Tickets</b></td><td style="text-align: right;">' + TotalPrintedTickets+ '</td>' +
                                                         '</tr><tr><td style="padding-left:5px;"><b>Total Active Tickets For The Day</b></td><td style="text-align: right;">' + TotalActiveTicketsForTheDay+ '</td>' +
@@ -1644,6 +1649,8 @@ $(document).ready(function(){
         
         var CompCashOnHand = 0;
         var CashOnHand = 0;
+        
+        var TotCashierRedemption = 0;
 
         showLightbox(function(){
             $.ajax({
@@ -1663,7 +1670,8 @@ $(document).ready(function(){
                             RegTicket = parseFloat(json.total_rows.TotalRegTicket);
                             RegCoupon = parseFloat(json.total_rows.TotalRegCoupon);
                             CashierRedemption = parseFloat(json.total_rows.TotalCashierRedemption);
-
+                            TotCashierRedemption = CashierRedemption + parseFloat(json.eWalletWithdrawals);
+                            
                             TotalEncashedTickets = parseFloat(json.EncashedTickets);
                             TotalEncashedTickets = toMoney(json.EncashedTickets,'no');
                             SubEncashedTickets = parseFloat(json.EncashedTickets);
@@ -1691,6 +1699,7 @@ $(document).ready(function(){
                                                         '</tr><tr><td style="padding-left: 30px;"><b>e-SAFE Coupon Deposits</b></td><td style="text-align: right;">' + TotaleSAFECoupon+ '</td>' +
                                                         '</tr><tr><td style="padding-left:5px;"><b>Total Sales</b></td><td style="text-align: right;">' + TotalSales+ '</td>' +
                                                         '</tr><tr><td colspan="2" style="padding-top: 10px;padding-bottom:10px;"></td>' +
+                                                        '</tr><tr><td style="padding-left:5px;"><b>Total Redemption</b></td><td style="text-align: right;">' + toMoney(TotCashierRedemption,'no') + '</td>' +
                                                          '</tr><tr><td style="padding-left:5px;"><b>Total e-SAFE Withdrawals</b></td><td style="text-align: right;">' + toMoney(json.eWalletWithdrawals,'no')+ '</td>' +
                                                         '</tr><tr><td style="padding-left:5px;"><b>Total Encashed Tickets</b></td><td style="text-align: right;">' + TotalEncashedTickets+ '</td>' +
                                                         //'</tr><tr><td colspan="2" style="padding-top: 10px;padding-bottom:10px;"></td>' +
@@ -1708,6 +1717,7 @@ $(document).ready(function(){
                             RegTicket = parseFloat(json.total_rows.TotalRegTicket);
                             RegCoupon = parseFloat(json.total_rows.TotalRegCoupon);
                             CashierRedemption = parseFloat(json.total_rows.TotalCashierRedemption);
+                            TotCashierRedemption = CashierRedemption + parseFloat(json.eWalletWithdrawals);
 
                             TotalEncashedTickets = parseFloat(json.EncashedTickets);
                             TotalEncashedTickets = toMoney(json.EncashedTickets,'no');
@@ -1736,6 +1746,7 @@ $(document).ready(function(){
                                                         '</tr><tr><td style="padding-left: 30px;"><b>e-SAFE Coupon Deposits</b></td><td style="text-align: right;">' + TotaleSAFECoupon+ '</td>' +
                                                         '</tr><tr><td style="padding-left:5px;"><b>Total Sales</b></td><td style="text-align: right;">' + TotalSales+ '</td>' +
                                                         '</tr><tr><td colspan="2" style="padding-top: 10px;padding-bottom:10px;"></td>' +
+                                                        '</tr><tr><td style="padding-left:5px;"><b>Total Redemption</b></td><td style="text-align: right;">' + toMoney(TotCashierRedemption,'no') + '</td>' +
                                                         '</tr><tr><td style="padding-left:5px;"><b>Total e-SAFE Withdrawals</b></td><td style="text-align: right;">' + toMoney(json.eWalletWithdrawals,'no')+ '</td>' +
                                                         '</tr><tr><td style="padding-left:5px;"><b>Total Encashed Tickets</b></td><td style="text-align: right;">' + TotalEncashedTickets+ '</td>' +
                                                         //'</tr><tr><td colspan="2" style="padding-top: 10px;padding-bottom:10px;"></td>' +
