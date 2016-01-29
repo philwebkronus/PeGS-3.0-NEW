@@ -4058,13 +4058,13 @@ class TopUp extends DBHandler
                      . " AND a.StartDate < '$endDate' "; 
          }
          
-        
+         
           $stmt = "SELECT a.EwalletTransID,a.LoyaltyCardNumber, a.StartDate ,"
-                  ." a.EndDate , a.Amount, a.TransType,a.Status,b.Name"
+                  ." a.EndDate , a.Amount, a.TransType,a.Status,b.Name, c.TerminalCode"
                   ." FROM npos.ewallettrans a"
-                  ." INNER JOIN npos.accountdetails b ON b.AID = a.CreatedByAID ".$where
+                  ." INNER JOIN npos.accountdetails b ON b.AID = a.CreatedByAID "
+                  ."LEFT JOIN terminals c ON c.TerminalID=a.TerminalID ".$where
                   ."ORDER BY $sort $dir LIMIT $start,$limit";     
-          
           $this->prepare($stmt);
           $this->execute();
           return $this->fetchAllData();

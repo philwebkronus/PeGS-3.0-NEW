@@ -1720,13 +1720,14 @@ class ProcessTopUpPaginate extends BaseProcess {
             if($row['Status']==4){$row['Status']="Fulfillment Denied";};
             $jqgrid->rows[] = array('id'=>$row['EwalletTransID'],'cell'=>array(
                 $row['LoyaltyCardNumber'], 
+                str_replace('ICSA-', '', $row['TerminalCode']),
                 $row['StartDate'],
                 $row['EndDate'],
                 number_format($row['Amount'],2),
                 $trans_type,
                 $row['Status'],
                 $row['Name']
-            ));
+             ));
         }  
         echo json_encode($jqgrid);
         $topup->close();

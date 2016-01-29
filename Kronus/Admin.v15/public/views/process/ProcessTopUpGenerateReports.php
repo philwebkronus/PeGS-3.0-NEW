@@ -1532,6 +1532,7 @@ class ProcessTopUpGenerateReports extends BaseProcess{
         $pdf->SetFontSize(8);
         $pdf->c_tableHeader2(array(
                 array('value'=>'Card Number'),
+                array('value'=>'Terminal Code'),
                 array('value'=>'Start Date'),
                 array('value'=>'End Date'),
                 array('value'=>'Amount'),
@@ -1546,6 +1547,7 @@ class ProcessTopUpGenerateReports extends BaseProcess{
             }
             $pdf->c_tableRow2(array(
                 array('value'=>$row['LoyaltyCardNumber']),
+                array('value'=>trim(str_replace('ICSA-', '',$row['TerminalCode']))),
                 array('value'=>$row['StartDate']),
                 array('value'=>$row['EndDate']),
                 array('value'=>number_format($row['Amount'],2),'align'=>'right'),
@@ -1570,7 +1572,7 @@ class ProcessTopUpGenerateReports extends BaseProcess{
     
      //e-SAFE Transaction History Report per site (Excel)
     public function ewalletTransactionsitehistoryExcel($site, $transType, $transStatus, $startDate, $endDate) {
-        $_SESSION['report_header'] = array('Card Number','Start Date', 'End Date','Amount','Transaction Type',
+        $_SESSION['report_header'] = array('Card Number','Terminal Code','Start Date', 'End Date','Amount','Transaction Type',
             'Status','Created By');
         
         $aid = 0;
@@ -1596,6 +1598,7 @@ class ProcessTopUpGenerateReports extends BaseProcess{
             }
             $new_rows[] = array(
                     $row['LoyaltyCardNumber'],
+                    str_replace('ICSA-', '', $row['TerminalCode']),
                     $row['StartDate'],
                     $row['EndDate'],
                     number_format($row['Amount'],2),

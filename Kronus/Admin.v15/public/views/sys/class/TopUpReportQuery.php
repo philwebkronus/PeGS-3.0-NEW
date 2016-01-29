@@ -1973,9 +1973,10 @@ class TopUpReportQuery extends DBHandler{
                                   WHEN 2 THEN 'Failed'
                                   WHEN 3 THEN 'Fulfillment Approved'
                                   WHEN 4 THEN 'Fulfillment Denied'
-                            END AS Status, b.Name"
+                            END AS Status, b.Name, c.TerminalCode"
                         ." FROM npos.ewallettrans a"
-                        ." INNER JOIN npos.accountdetails b ON b.AID = a.CreatedByAID ".$where;     
+                        ." INNER JOIN npos.accountdetails b ON b.AID = a.CreatedByAID"
+                        ." LEFT JOIN terminals c ON c.TerminalID=a.TerminalID ".$where;     
           
           $this->prepare($stmt);
           $this->execute();

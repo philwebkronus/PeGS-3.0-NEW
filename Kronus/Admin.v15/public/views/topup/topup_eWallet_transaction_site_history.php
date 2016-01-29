@@ -132,7 +132,7 @@ $vaccesspages = array('5','6','9','12','18');
         jQuery("#ewalletThistory").jqGrid({
             url : 'process/ProcessTopUpPaginate.php?action=getewalletsitehistory',
             datatype: "json",
-            colNames:['Card Number','Start Date','End Date', 'Amount', 'Transaction Type', 'Status','Created By'],
+            colNames:['Card Number','Terminal Code','Start Date','End Date', 'Amount', 'Transaction Type', 'Status','Created By'],
             rowNum:10,
             height: 280,
             width: 1200,
@@ -143,6 +143,7 @@ $vaccesspages = array('5','6','9','12','18');
             caption: "e-SAFE Transaction History",
             colModel:[
                 {name:'LoyaltyCardNumber',index:'LoyaltyCardNumber',align: 'center', width:100},
+                                    {name:'TerminalCode',index:'TerminalCode', align: 'center', width:175},
                                     {name:'StartDate',index:'StartDate', align: 'center', width:175},
                                     {name:'EndDate',index:'EndDate', align: 'center',width:175},
                                     {name:'Amount',index:'Amount', align: 'right', width:100},
