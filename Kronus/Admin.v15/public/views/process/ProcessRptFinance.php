@@ -327,6 +327,7 @@ if($connected)
                                 'StartBalance'=>$value['StartBalance'],
                                 'EndBalance'=>$value['EndBalance'],
                                 'WalletReloads'=>$value['WalletReloads'],
+                                'GenesisWithdraw'=>$value['GenesisWithdrawal'],
                                 'DateStarted'=>$value['DateStarted'],
                                 'DateEnded'=>$value['DateEnded'],
                                 'ServiceName'=>$value['ServiceName']
@@ -356,6 +357,7 @@ if($connected)
                      $arrstartbal = array();
                      $arresafeloads = array();
                      $arrendbal = array();
+                     $arrgenesiswithdrawal = array();
                      foreach($ofindetails as $vview)
                      {                 
                          $rterminalCode = $vview['TerminalCode'];
@@ -364,28 +366,31 @@ if($connected)
                          $vStartingBalance = $vview['StartBalance'];
                          $vEsafeLoads = $vview['WalletReloads'];
                          $vEndingBalance = $vview['EndBalance'];
+                         $vGenesisWithdrawal = $vview['GenesisWithdraw'];
                          $response->rows[$i]['id']=$vview['TransactionsSummaryID'];
                          $response->rows[$i]['cell']=array($_POST['sitecode'], $rterminalCode, $vview['ServiceName'],
-                            number_format($vStartingBalance, 2), number_format($vEsafeLoads, 2), number_format($vEndingBalance, 2),
-                            $vview['DateStarted'], $vview['DateEnded']);
+                            number_format($vStartingBalance, 2), number_format($vEsafeLoads, 2), number_format($vEndingBalance, 2), 
+                             number_format($vGenesisWithdrawal, 2), $vview['DateStarted'], $vview['DateEnded']);
                          $i++;
 
                         //store the 3 transaction types in an array
                         array_push($arrstartbal, $vStartingBalance);
                         array_push($arresafeloads, $vEsafeLoads);
                         array_push($arrendbal, $vEndingBalance);
+                        array_push($arrgenesiswithdrawal, $vGenesisWithdrawal);
                      }
                      
                       // Get the sum of all  transaction types
                         $totalstartbal = array_sum($arrstartbal); 
                         $totalesafeloads = array_sum($arresafeloads); 
                         $totalendbal = array_sum($arrendbal);
+                        $totalgenesiswithdrawal = array_sum($arrgenesiswithdrawal);
 
-                        unset($arrstartbal, $arresafeloads, $arrendbal, $transdetails, $ofindetails);
+                        unset($arrstartbal, $arresafeloads, $arrendbal, $arrgenesiswithdrawal, $transdetails, $ofindetails);
                         
                         //session variable to store transaction types in an array; to used on ajax call later on this program
                         $_SESSION['total'] = array("TotalStartBal" => $totalstartbal, 
-                                         "TotaleSAFELoads" => $totalesafeloads, "TotalEndBal" => $totalendbal);
+                                         "TotaleSAFELoads" => $totalesafeloads, "TotalEndBal" => $totalendbal, "TotalGenesisWithdrawal"=>$totalgenesiswithdrawal);
                 }
                 else
                 {
@@ -406,83 +411,88 @@ if($connected)
        }
        //page post for UB transaction details tracking
    } 
-    elseif(isset($_POST['gettotalUB']) == "GetTotalsUB")
-   {
-       $arrtotal = 0;
-       $granddeposit = 0;
-       $grandreload = 0;
-       $grandwithdraw = 0;
-       $arrstartbal = array();
-       $arresafeloads = array();
-       $arrendbal = array();
-       
-       if(isset($_SESSION['total']))
-       {
-          $arrtotal = $_SESSION['total'];
-       }
-       
-       $vSiteID = $_POST['cmbsite'];
-       $vTerminalID = $_POST['cmbterminal'];
-       $vdate1 = $_POST['txtDate1'];
-       //$vdate2 = $_POST['txtDate2'];
-       $vFrom = $vdate1." ".$cutoff_time;
-       $vTo = date ('Y-m-d' , strtotime ('+1 day' , strtotime($vdate1)))." ".$cutoff_time;
-     
-       //used this method to get the grand total of all tranction types
-       $result = $orptfinance->showtranstrackingUB($ztype="paginate", $vSiteID, $vTerminalID, $vFrom, $vTo);
-       $ctr1 = 0;
-        foreach($result as $vview)
-                     {                 
-                         $vStartingBalance = $vview['StartBalance'];
-                         $vEsafeLoads = $vview['WalletReloads'];
-                         $vEndingBalance = $vview['EndBalance'];
-
-                        //store the 3 transaction types in an array
-                        array_push($arrstartbal, $vStartingBalance);
-                        array_push($arresafeloads, $vEsafeLoads);
-                        array_push($arrendbal, $vEndingBalance);
-                     }
-
-       
-       /**** GET Total Summary *****/
-       $grandstartbal = array_sum($arrstartbal);
-       $grandesafeloads = array_sum($arresafeloads);
-       $grandendbal = array_sum($arrendbal);
-                        
-       unset($arrdeposit, $arrreload, $arrwithdraw);
-       
-       // store the grand total of transaction types into an array 
-       $arrgrand = array("GrandStartBal" => $grandstartbal, 
-                            "GrandeSAFELoads" => $grandesafeloads, "GrandEndBal" => $grandendbal);
-       
-       //results will be fetch here:
-       if((count($arrtotal) > 0) && (count($arrgrand) > 0))
-       {
-           /**** Get Total Per Page  *****/
-           $vtotal->deposit = number_format($arrtotal["TotalStartBal"], 2, '.', ',');
-           $vtotal->reload = number_format($arrtotal["TotaleSAFELoads"], 2, '.', ',');
-           $vtotal->withdraw = number_format($arrtotal["TotalEndBal"], 2, '.', ',');
-           $vtotal->sales = number_format($arrtotal["TotalStartBal"] + $arrtotal["TotaleSAFELoads"], 2, '.', ',');
-           /**** GET Total Page Summary ******/
-           $vtotal->granddeposit = number_format($arrgrand['GrandStartBal'], 2, '.', ',');
-           $vtotal->grandreload = number_format($arrgrand['GrandeSAFELoads'], 2, '.', ',');
-           $vtotal->grandwithdraw = number_format($arrgrand["GrandEndBal"], 2, '.', ',');
-           $vtotal->grandsales = number_format($arrgrand["GrandStartBal"] + $arrgrand["GrandeSAFELoads"], 2, '.', ',');
-           
-           // count site grosshold
-           $vgrossholdamt = $arrgrand["GrandStartBal"] + $arrgrand["GrandeSAFELoads"] - $arrgrand["GrandEndBal"];
-           $vtotal->grosshold = number_format($vgrossholdamt, 2, '.', ',');
-           echo json_encode($vtotal); 
-       }
-       else 
-       {
-           echo "No Results Found";
-       }
-       unset($arrgrand, $arrtotal, $_SESSION['total']);
-       //unset($_SESSION['total']);
-       $orptfinance->close();
-       exit;
-   }
+//    elseif(isset($_POST['gettotalUB']) == "GetTotalsUB")
+//   {
+//       $arrtotal = 0;
+//       $granddeposit = 0;
+//       $grandreload = 0;
+//       $grandwithdraw = 0;
+//       $arrstartbal = array();
+//       $arresafeloads = array();
+//       $arrendbal = array();
+//       $arrendgenesiswithdraw = array();
+//       
+//       if(isset($_SESSION['total']))
+//       {
+//          $arrtotal = $_SESSION['total'];
+//       }
+//       
+//       $vSiteID = $_POST['cmbsite'];
+//       $vTerminalID = $_POST['cmbterminal'];
+//       $vdate1 = $_POST['txtDate1'];
+//       //$vdate2 = $_POST['txtDate2'];
+//       $vFrom = $vdate1." ".$cutoff_time;
+//       $vTo = date ('Y-m-d' , strtotime ('+1 day' , strtotime($vdate1)))." ".$cutoff_time;
+//     
+//       //used this method to get the grand total of all tranction types
+//       $result = $orptfinance->showtranstrackingUB($ztype="paginate", $vSiteID, $vTerminalID, $vFrom, $vTo);
+//       $ctr1 = 0;
+//        foreach($result as $vview)
+//                     {                 
+//                         $vStartingBalance = $vview['StartBalance'];
+//                         $vEsafeLoads = $vview['WalletReloads'];
+//                         $vEndingBalance = $vview['EndBalance'];
+//                         $vGenesisWithdrawal = $vview['GenesisWithdrawal'];
+//                          //store the 3 transaction types in an array
+//                        array_push($arrstartbal, $vStartingBalance);
+//                        array_push($arresafeloads, $vEsafeLoads);
+//                        array_push($arrendbal, $vEndingBalance);
+//                        array_push($arrendgenesiswithdraw, $vGenesisWithdrawal);
+//                     }
+//
+//       
+//       /**** GET Total Summary *****/
+//       $grandstartbal = array_sum($arrstartbal);
+//       $grandesafeloads = array_sum($arresafeloads);
+//       $grandendbal = array_sum($arrendbal);
+//       $grandgenesiswithdraw = array_sum($arrendgenesiswithdraw);
+//                        
+//       unset($arrdeposit, $arrreload, $arrwithdraw,$arrendgenesiswithdraw);
+//       
+//       // store the grand total of transaction types into an array 
+//       $arrgrand = array("GrandStartBal" => $grandstartbal, 
+//                            "GrandeSAFELoads" => $grandesafeloads, "GrandEndBal" => $grandendbal, "GrandGenesisWithdraw"=>$grandgenesiswithdraw);
+//       
+//       //results will be fetch here:
+//       if((count($arrtotal) > 0) && (count($arrgrand) > 0))
+//       {
+//           /**** Get Total Per Page  *****/
+//           $vtotal->deposit = number_format($arrtotal["TotalStartBal"], 2, '.', ',');
+//           $vtotal->reload = number_format($arrtotal["TotaleSAFELoads"], 2, '.', ',');
+//           $vtotal->withdraw = number_format($arrtotal["TotalEndBal"], 2, '.', ',');
+//           $vtotal->genesiswithdraw = number_format($arrtotal["TotalGenesisWithdrawal"], 2, '.', ',');
+//           $vtotal->sales = number_format($arrtotal["TotalStartBal"] + $arrtotal["TotaleSAFELoads"], 2, '.', ',');
+//           /**** GET Total Page Summary ******/
+//           $vtotal->granddeposit = number_format($arrgrand['GrandStartBal'], 2, '.', ',');
+//           $vtotal->grandreload = number_format($arrgrand['GrandeSAFELoads'], 2, '.', ',');
+//           $vtotal->grandwithdraw = number_format($arrgrand["GrandEndBal"], 2, '.', ',');
+//           $vtotal->grandgenesiswithdraw = number_format($arrgrand["GrandGenesisWithdraw"], 2, '.', ',');
+//           $vtotal->grandsales = number_format($arrgrand["GrandStartBal"] + $arrgrand["GrandeSAFELoads"], 2, '.', ',');
+//           
+//           // count site grosshold
+//           $vgrossholdamt = $arrgrand["GrandStartBal"] + $arrgrand["GrandeSAFELoads"] - $arrgrand["GrandEndBal"] - $arrgrand["GrandGenesisWithdraw"];
+//           $vtotal->grosshold = number_format($vgrossholdamt, 2, '.', ',');
+//           echo json_encode($vtotal); 
+//       }
+//       else 
+//       {
+//           echo "No Results Found";
+//       }
+//       unset($arrgrand, $arrtotal, $_SESSION['total']);
+//       //unset($_SESSION['total']);
+//       $orptfinance->close();
+//       exit;
+//   }
    
        //exporting excel and PDF
     elseif(isset($_GET['exportUBtrans']))
@@ -498,14 +508,13 @@ if($connected)
         switch($vgetpage)
         {
             case 'UBtrack':
-                $fn = $_GET['fn']."_".$vdatefrom.".xls"; //this will be the filename of the excel file
+                $fn = $_GET['fn'].$vdate1.".xls"; //this will be the filename of the excel file
                 //create the instance of the exportexcel format
                 $excel_obj = new ExportExcel("$fn");
-
                 $header = array('Site Code','Terminal Code','Service Name',
-                    'Starting Balance','Total eSAFE Loads(With Session)','Ending Balance','Date Started','Date Ended');
-                
+                    'Starting Balance','Total eSAFE Loads(With Session)','Ending Balance', 'Genesis Withdrawal','Date Started','Date Ended');
                 $result = $orptfinance->showtranstrackingUB($type="export",$vSiteID, $vTerminalID, $vdatefrom, $vdateto);
+                
                 $completeexcelvalues = array();
                 if(count($result) > 0)
                 {
@@ -518,6 +527,7 @@ if($connected)
                                 'ServiceName'=>$value['ServiceName'],
                                 'StartBalance'=>$value['StartBalance'],
                                 'EndBalance'=>$value['EndBalance'],
+                                'GenesisWithdrawal'=>$value['GenesisWithdrawal'],
                                 'WalletReloads'=>$value['WalletReloads'],
                                 'DateStarted'=>$value['DateStarted'],
                                 'DateEnded'=>$value['DateEnded'],
@@ -531,6 +541,7 @@ if($connected)
                      $arrstartbal = array();
                      $arresafeloads = array();
                      $arrendbal = array();
+                     $arrendgenwithdrawal = array();
                     
                     $sitecode = substr($vsitecode, strlen($terminalcode));
                     foreach($transdetails as $vview)
@@ -540,52 +551,62 @@ if($connected)
                       $vstartbal = $vview['StartBalance'];
                       $vesafeloads = $vview['WalletReloads'];
                       $vendbal = $vview['EndBalance'];
+                      $vGenesisWithdrawal = $vview['GenesisWithdrawal'];
                       $excelvalues = array(0 => $sitecode,
                                            1 => $rterminalCode,
                                            2 => $vview['ServiceName'],
                                            3 => number_format($vstartbal, 2, '.', ','), 
                                            4 => number_format($vesafeloads, 2, '.', ','), 
-                                           5 => number_format($vendbal, 2, '.', ','), 
-                                           6 => $vview['DateStarted'],
-                                           7 => $vview['DateEnded']
+                                           5 => number_format($vendbal, 2, '.', ','),
+                                           6 => number_format($vGenesisWithdrawal, 2, '.', ','),
+                                           7 => $vview['DateStarted'],
+                                           8 => $vview['DateEnded']
                                          );
                       array_push($completeexcelvalues,$excelvalues); //push the values for site transactions per day
                       array_push($arrstartbal, $vstartbal);
                       array_push($arresafeloads, $vesafeloads);
                       array_push($arrendbal, $vendbal);
+                      array_push($arrendgenwithdrawal, $vGenesisWithdrawal);
                    }
-
-                    //get the total withdraw, deposit and reload
-                    $grandstartbal = array_sum($arrstartbal);
-                    $grandesafeloads = array_sum($arresafeloads);
-                    $grandendbal = array_sum($arrendbal);
-
-                    unset($arrstartbal, $arresafeloads, $arrendbal);
-                    //$vsales = $granddeposit + $grandreload;
-                    $vgrossholdamt = ($grandstartbal + $grandesafeloads) - $grandendbal; 
-
-                    //array for displaying total deposit on excel file
-                    $totalstartbal = array(0 => 'Grand Starting Balance',
-                                        1 => number_format($grandstartbal, 2, '.',',')
-                    );
-                    array_push($completeexcelvalues, $totalstartbal); //push the total sales for the site transaction
-
-                    //array for displaying total reload on excel file
-                    $totalesafeloads = array(0 => 'Grand e-SAFE Loads',
-                                         1 => number_format($grandesafeloads, 2, '.', ','));
-                    array_push($completeexcelvalues, $totalesafeloads);
-
-                    //array for displaying total redeemed on excel file
-                    $totalendbal = array(0 => 'Grand Ending Balance',
-                                        1 => number_format($grandendbal, 2, '.', ',')
-                     );
-                    array_push($completeexcelvalues, $totalendbal); //push the total withdraw for the site transaction
-
-                     //array for displaying total grosshold on excel file
-                    $grosshold = array(0 => 'Total Grosshold',
-                                       1 => number_format($vgrossholdamt, 2, '.', ',')
-                    );
-                    array_push($completeexcelvalues, $grosshold);
+//
+//                    //get the total withdraw, deposit and reload
+//                    $grandstartbal = array_sum($arrstartbal);
+//                    $grandesafeloads = array_sum($arresafeloads);
+//                    $grandendbal = array_sum($arrendbal);
+//                    $grandgenesiswithdraw = array_sum($arrendgenwithdrawal);
+//                    
+//                    unset($arrstartbal, $arresafeloads, $arrendbal, $arrendgenwithdrawal);
+//                    //$vsales = $granddeposit + $grandreload;
+//                    $vgrossholdamt = ($grandstartbal + $grandesafeloads) - $grandendbal - $grandgenesiswithdraw; 
+//
+//                    //array for displaying total deposit on excel file
+//                    $totalstartbal = array(0 => 'Grand Starting Balance',
+//                                        1 => number_format($grandstartbal, 2, '.',',')
+//                    );
+//                    array_push($completeexcelvalues, $totalstartbal); //push the total sales for the site transaction
+//
+//                    //array for displaying total reload on excel file
+//                    $totalesafeloads = array(0 => 'Grand e-SAFE Loads',
+//                                         1 => number_format($grandesafeloads, 2, '.', ','));
+//                    array_push($completeexcelvalues, $totalesafeloads);
+//
+//                    //array for displaying total redeemed on excel file
+//                    $totalendbal = array(0 => 'Grand Ending Balance',
+//                                        1 => number_format($grandendbal, 2, '.', ',')
+//                     );
+//                    array_push($completeexcelvalues, $totalendbal); //push the total withdraw for the site transaction
+//                    
+//                    //array for displaying total Genesis Withdrawal on excel file
+//                    $totalGenesisWithdraw = array(0 => 'Grand Genesis Withdraw',
+//                                        1 => number_format($grandgenesiswithdraw, 2, '.', ',')
+//                     );
+//                    array_push($completeexcelvalues, $totalGenesisWithdraw); //push the total withdraw for the site transaction
+//  
+//                     //array for displaying total grosshold on excel file
+//                    $grosshold = array(0 => 'Total Grosshold',
+//                                       1 => number_format($vgrossholdamt, 2, '.', ',')
+//                    );
+//                    array_push($completeexcelvalues, $grosshold);
                 }
                 else
                 {
@@ -598,7 +619,7 @@ if($connected)
                 $excel_obj->GenerateExcelFile(); //now generate the excel file with the data and headers set
                 
                 //unsetting array values
-                unset($header, $completeexcelvalues, $grosshold, $totalendbal, $totalesafeloads, $totalstartbal);
+                unset($header, $completeexcelvalues, $grosshold, $totalendbal, $totalesafeloads, $totalstartbal, $totalgenesiswithdrawal);
                     
                 //Log to audit trail
                 $vauditfuncID = 41; //export to excel
@@ -612,7 +633,7 @@ if($connected)
                 $pdf->html.='<div style="text-align:center;">As of ' . $vdatefrom . '</div>';
                 $pdf->SetFontSize(10);
                 $pdf->c_tableHeader(array('Site Code','Terminal Code','Service Name',
-                    'Starting Balance','Total eSAFE Loads(With Session)','Ending Balance','Date Started','Date Ended'));
+                    'Starting Balance','Total eSAFE Loads(With Session)','Ending Balance','Genesis Withdrawal','Date Started','Date Ended'));
 
                 $result = $orptfinance->showtranstrackingUB($type="export",$vSiteID, $vTerminalID, $vdatefrom, $vdateto);
                 
@@ -628,6 +649,7 @@ if($connected)
                                 'StartBalance'=>$value['StartBalance'],
                                 'EndBalance'=>$value['EndBalance'],
                                 'WalletReloads'=>$value['WalletReloads'],
+                                'GenesisWithdrawal'=>$value['GenesisWithdrawal'],
                                 'DateStarted'=>$value['DateStarted'],
                                 'DateEnded'=>$value['DateEnded'],
                                 'ServiceName'=>$value['ServiceName']
@@ -640,6 +662,7 @@ if($connected)
                      $arrstartbal = array();
                      $arresafeloads = array();
                      $arrendbal = array();
+                     $arrgenesiswithdrawal = array();
                     
                     $sitecode = substr($vsitecode, strlen($terminalcode));
                     foreach($transdetails as $vview)
@@ -649,36 +672,41 @@ if($connected)
                       $vstartbal = $vview['StartBalance'];
                       $vesafeloads = $vview['WalletReloads'];
                       $vendbal = $vview['EndBalance'];
+                      $vgenesiswithdrawal = $vview['GenesisWithdrawal'];
                        $pdf->c_tableRow(array(
                                            0 => $sitecode,
                                            1 => $rterminalCode,
                                            2 => $vview['ServiceName'],
                                            3 => number_format($vstartbal, 2, '.', ','), 
                                            4 => number_format($vesafeloads, 2, '.', ','), 
-                                           5 => number_format($vendbal, 2, '.', ','), 
-                                           6 => $vview['DateStarted'],
-                                           7 => $vview['DateEnded']
+                                           5 => number_format($vendbal, 2, '.', ','),
+                                           6 => number_format($vgenesiswithdrawal, 2, '.', ','),
+                                           7 => $vview['DateStarted'],
+                                           8 => $vview['DateEnded']
                                          ));
                       array_push($arrstartbal, $vstartbal);
                       array_push($arresafeloads, $vesafeloads);
                       array_push($arrendbal, $vendbal);
+                      array_push($arrgenesiswithdrawal, $vgenesiswithdrawal);
                    }
 
-                    //get the total start balance, eSAFE loads and end balance
-                    $grandstartbal = array_sum($arrstartbal);
-                    $grandesafeloads = array_sum($arresafeloads);
-                    $grandendbal = array_sum($arrendbal);
-
-                    unset($arrstartbal, $arresafeloads, $arrendbal, $transdetails);
-                    //$vsales = $granddeposit + $grandreload;
-                    $vgrossholdamt = ($grandstartbal + $grandesafeloads) - $grandendbal; 
-
-                    $pdf->html.= '<div style="text-align: center;">';
-                    $pdf->html.= ' Grand Starting Balance '.number_format($grandstartbal, 2, '.', ',');
-                    $pdf->html.= ' Grand e-SAFE Loads '.number_format($grandesafeloads, 2, '.', ',');
-                    $pdf->html.= ' Grand End Balance '.number_format($grandendbal, 2, '.', ',');  
-                    $pdf->html.= ' Total Grosshold '.number_format($vgrossholdamt, 2, '.', ',');
-                    $pdf->html.= '</div>';
+//                    //get the total start balance, eSAFE loads and end balance
+//                    $grandstartbal = array_sum($arrstartbal);
+//                    $grandesafeloads = array_sum($arresafeloads);
+//                    $grandendbal = array_sum($arrendbal);
+//                    $grandgenesiswithdraw = array_sum($arrgenesiswithdrawal);
+//
+//                    unset($arrstartbal, $arresafeloads, $arrendbal, $transdetails, $arrgenesiswithdrawal);
+//                    //$vsales = $granddeposit + $grandreload;
+//                    $vgrossholdamt = ($grandstartbal + $grandesafeloads) - $grandendbal - $grandgenesiswithdraw; 
+//
+//                    $pdf->html.= '<div style="text-align: center;">';
+//                    $pdf->html.= ' Grand Starting Balance '.number_format($grandstartbal, 2, '.', ',');
+//                    $pdf->html.= ' Grand e-SAFE Loads '.number_format($grandesafeloads, 2, '.', ',');
+//                    $pdf->html.= ' Grand End Balance '.number_format($grandendbal, 2, '.', ',');
+//                    $pdf->html.= ' Grand Genesis Withdraw '.number_format($grandgenesiswithdraw, 2, '.', ',');
+//                    $pdf->html.= ' Total Grosshold '.number_format($vgrossholdamt, 2, '.', ',');
+//                    $pdf->html.= '</div>';
                 }
                 else
                 {
@@ -908,18 +936,18 @@ if($connected)
                     $vgrossholdamt = ($granddeposit + $grandreload) - $grandwithdraw; 
 
                     //array for displaying total deposit on excel file
-                    $totaldeposit = array(0 => 'Total Deposit',
+                    $totaldeposit = array(0 => 'Grand Deposit',
                                         1 => number_format($granddeposit, 2, '.',',')
                     );
                     array_push($completeexcelvalues, $totaldeposit); //push the total sales for the site transaction
 
                     //array for displaying total reload on excel file
-                    $totalreload = array(0 => 'Total Reload',
+                    $totalreload = array(0 => 'Grand Reload',
                                          1 => number_format($grandreload, 2, '.', ','));
                     array_push($completeexcelvalues, $totalreload);
 
                     //array for displaying total redeemed on excel file
-                    $totalredeem = array(0 => 'Total Withdrawal',
+                    $totalredeem = array(0 => 'Grand Withdrawal',
                                         1 => number_format($grandwithdraw, 2, '.', ',')
                      );
                     array_push($completeexcelvalues, $totalredeem); //push the total withdraw for the site transaction
@@ -1038,9 +1066,9 @@ if($connected)
                     $vgrossholdamt = ($granddeposit + $grandreload) - $grandwithdraw; 
 
                     $pdf->html.= '<div style="text-align: center;">';
-                    $pdf->html.= ' Total Deposit '.number_format($granddeposit, 2, '.', ',');
-                    $pdf->html.= ' Total Reload '.number_format($grandreload, 2, '.', ',');
-                    $pdf->html.= ' Total Withdrawal '.number_format($grandwithdraw, 2, '.', ',');  
+                    $pdf->html.= ' Grand Deposit '.number_format($granddeposit, 2, '.', ',');
+                    $pdf->html.= ' Grand Reload '.number_format($grandreload, 2, '.', ',');
+                    $pdf->html.= ' Grand Withdrawal '.number_format($grandwithdraw, 2, '.', ',');  
                     $pdf->html.= ' Total Grosshold '.number_format($vgrossholdamt, 2, '.', ',');
                     $pdf->html.= '</div>';
                 }

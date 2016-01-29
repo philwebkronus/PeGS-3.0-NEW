@@ -621,7 +621,7 @@ class RptOperator extends DBHandler
             
             if($r["PlayingBalance"] == 0){
                
-                $r["PlayingBalance"] = "N/A";
+                $r["PlayingBalance"] = 0;
             }
             else{
                 $r["PlayingBalance"] = number_format($r['PlayingBalance'], 2);

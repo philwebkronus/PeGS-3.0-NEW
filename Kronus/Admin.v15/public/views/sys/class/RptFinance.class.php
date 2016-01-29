@@ -222,12 +222,13 @@ class RptFinance extends DBHandler{
             //if terminal was selected all
             if($zterminalID == "All")
             {
-                    $stmt = "SELECT ts.TransactionsSummaryID, s.SiteCode, t.TerminalCode, rs.ServiceName, ts.StartBalance, ts.EndBalance, ts.WalletReloads, ts.DateStarted, ts.DateEnded
+                    $stmt = "SELECT ts.TransactionsSummaryID, s.SiteCode, t.TerminalCode, rs.ServiceName, ts.StartBalance, ts.EndBalance, ts.WalletReloads, IFNULL(tl.GenesisWithdrawal,0) as GenesisWithdrawal, ts.DateStarted, ts.DateEnded
                                 FROM transactionsummary ts
                                     INNER JOIN sites s ON s.SiteID=ts.SiteID
                                     INNER JOIN terminals t ON t.TerminalID=ts.TerminalID
                                     INNER JOIN terminalservices tss ON tss.TerminalID=ts.TerminalID
-                                    INNER JOIN ref_services rs ON rs.ServiceID=tss.ServiceID 
+                                    INNER JOIN ref_services rs ON rs.ServiceID=tss.ServiceID
+                                    LEFT JOIN transactionsummarylogs tl ON tl.TransactionSummaryID = ts.TransactionsSummaryID
                                 WHERE ts.SiteID IN(".$zsiteID.")
                                     AND ts.DateEnded >= ? 
                                     AND ts.DateEnded < ?
@@ -239,12 +240,13 @@ class RptFinance extends DBHandler{
             }
             else
             {
-                    $stmt = "SELECT ts.TransactionsSummaryID, s.SiteCode, t.TerminalCode, rs.ServiceName, ts.StartBalance, ts.EndBalance, ts.WalletReloads, ts.DateStarted, ts.DateEnded
+                    $stmt = "SELECT ts.TransactionsSummaryID, s.SiteCode, t.TerminalCode, rs.ServiceName, ts.StartBalance, ts.EndBalance, ts.WalletReloads, IFNULL(tl.GenesisWithdrawal,0) as GenesisWithdrawal, ts.DateStarted, ts.DateEnded
                                 FROM transactionsummary ts
                                     INNER JOIN sites s ON s.SiteID=ts.SiteID
                                     INNER JOIN terminals t ON t.TerminalID=ts.TerminalID
                                     INNER JOIN terminalservices tss ON tss.TerminalID=ts.TerminalID
                                     INNER JOIN ref_services rs ON rs.ServiceID=tss.ServiceID 
+                                    LEFT JOIN transactionsummarylogs tl ON tl.TransactionSummaryID = ts.TransactionsSummaryID
                                 WHERE ts.SiteID IN(".$zsiteID.") 
                                     AND ts.DateEnded >= ?
                                     AND ts.DateEnded < ?
@@ -263,12 +265,13 @@ class RptFinance extends DBHandler{
             //check if terminal was selected all
             if($zterminalID == "All")
             {
-                   $stmt = "SELECT ts.TransactionsSummaryID, s.SiteCode, t.TerminalCode, rs.ServiceName, ts.StartBalance, ts.EndBalance, ts.WalletReloads, ts.DateStarted, ts.DateEnded
+                   $stmt = "SELECT ts.TransactionsSummaryID, s.SiteCode, t.TerminalCode, rs.ServiceName, ts.StartBalance, ts.EndBalance, ts.WalletReloads, IFNULL(tl.GenesisWithdrawal,0) as GenesisWithdrawal, ts.DateStarted, ts.DateEnded
                                 FROM transactionsummary ts
                                     INNER JOIN sites s ON s.SiteID=ts.SiteID
                                     INNER JOIN terminals t ON t.TerminalID=ts.TerminalID
                                     INNER JOIN terminalservices tss ON tss.TerminalID=ts.TerminalID
-                                    INNER JOIN ref_services rs ON rs.ServiceID=tss.ServiceID 
+                                    INNER JOIN ref_services rs ON rs.ServiceID=tss.ServiceID
+                                    LEFT JOIN transactionsummarylogs tl ON tl.TransactionSummaryID = ts.TransactionsSummaryID
                                 WHERE ts.SiteID IN(".$zsiteID.")
                                     AND ts.DateEnded >= ? 
                                     AND ts.DateEnded < ?
@@ -281,12 +284,13 @@ class RptFinance extends DBHandler{
             }
             else
             {
-                    $stmt = "SELECT ts.TransactionsSummaryID, s.SiteCode, t.TerminalCode, rs.ServiceName, ts.StartBalance, ts.EndBalance, ts.WalletReloads, ts.DateStarted, ts.DateEnded
+                    $stmt = "SELECT ts.TransactionsSummaryID, s.SiteCode, t.TerminalCode, rs.ServiceName, ts.StartBalance, ts.EndBalance, ts.WalletReloads, IFNULL(tl.GenesisWithdrawal,0) as GenesisWithdrawal, ts.DateStarted, ts.DateEnded
                                 FROM transactionsummary ts
                                     INNER JOIN sites s ON s.SiteID=ts.SiteID
                                     INNER JOIN terminals t ON t.TerminalID=ts.TerminalID
                                     INNER JOIN terminalservices tss ON tss.TerminalID=ts.TerminalID
                                     INNER JOIN ref_services rs ON rs.ServiceID=tss.ServiceID 
+                                    LEFT JOIN transactionsummarylogs tl ON tl.TransactionSummaryID = ts.TransactionsSummaryID
                                 WHERE ts.SiteID IN(".$zsiteID.") 
                                     AND ts.DateEnded >= ?
                                     AND ts.DateEnded < ?
