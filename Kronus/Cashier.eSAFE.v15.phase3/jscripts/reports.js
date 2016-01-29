@@ -127,6 +127,11 @@ $(document).ready(function(){
 
                                 $('#tbltranshistorybody').html(tbody);
                             }
+                            else{
+                                tbody+='<tr><td colspan="12"><b><a id="transSiteSumm" href="#" style="text-decoration: underline ;color: black;">Click here to view the summary breakdown</a></b></td></tr> ';
+
+                                $('#tbltranshistorybody').html(tbody);
+                            }
                         } else {
                             tbody+='<tr>';
 //                            tbody+='<th style=" width: 10%">Terminal#</th>';
@@ -218,6 +223,11 @@ $(document).ready(function(){
 
                                 tbody+='<tr><td colspan="12"><b><a id="transSiteSumm" href="#" style="text-decoration: underline ;color: black;">Click here to view the summary breakdown</a></b></td></tr> ';
 //                                tbody+='<tr><td colspan="18"><b><a id="transSiteSumm" href="#" style="text-decoration: underline ;color: black;">Click here to view the summary breakdown</a></b></td></tr> ';
+
+                                $('#tbltranshistorybody').html(tbody);
+                            }
+                            else{
+                                tbody+='<tr><td colspan="12"><b><a id="transSiteSumm" href="#" style="text-decoration: underline ;color: black;">Click here to view the summary breakdown</a></b></td></tr> ';
 
                                 $('#tbltranshistorybody').html(tbody);
                             }
@@ -1059,18 +1069,21 @@ $(document).ready(function(){
                         var json = $.parseJSON(data);
                         
                         if(pickdate < compareddate){
-                            tbody+='<tr>';
-                            tbody+='<th style=" width: 12%">Terminal#</th>';
-                            tbody+='<th style=" width: 14%">Login</th>';
-                            tbody+='<th style=" width: 14%">Logout</th>';
-                            
-                            tbody+='<th colspan="3"></th>';
-                            tbody+='<th colspan="3"></th>';
-                            tbody+='<th colspan="2"></th>';
-                            
-                            tbody+='<th></th>';
-                            tbody+='</tr>';
-                            tbody+='<tr>';
+                            if(json.rows.length > 0) 
+                            {
+                                tbody+='<tr>';
+                                tbody+='<th style=" width: 12%">Terminal#</th>';
+                                tbody+='<th style=" width: 14%">Login</th>';
+                                tbody+='<th style=" width: 14%">Logout</th>';
+
+                                tbody+='<th colspan="3"></th>';
+                                tbody+='<th colspan="3"></th>';
+                                tbody+='<th colspan="2"></th>';
+
+                                tbody+='<th></th>';
+                                tbody+='</tr>';
+                                tbody+='<tr>';
+                            }
                             
                             for(i=0;i<json.rows.length;i++) {
 
@@ -1115,32 +1128,38 @@ $(document).ready(function(){
 
                                 $('#tbltranshistorybody').html(tbody);
                             }
+                            else{
+                                tbody+='<tr style="height:30px;"> <td colspan="5"></td></tr>';
+                                tbody+='<tr><td colspan="12"><b><a id="transCSiteSumm" href="#" style="text-decoration: underline ;color: black;">Click here to view the summary breakdown</a></b></td></tr> ';  
+                                $('#tbltranshistorybody').html(tbody);
+                            }
                         } else {
-                            tbody+='<tr>';
-//                            tbody+='<th style=" width: 10%">Terminal#</th>';
-//                            tbody+='<th style=" width: 10%">Login</th>';
-//                            tbody+='<th style=" width: 10%">Logout</th>';
-//                            
-//                            tbody+='<th colspan="3"></th>';
-//                            tbody+='<th colspan="3"></th>';
-//                            tbody+='<th colspan="2"></th>';
-//                            tbody+='<th colspan="2"></th>';
-//                            tbody+='<th colspan="2"></th>';
-//                            tbody+='<th colspan="2"></th>';
-//                            
-//                            tbody+='<th></th>';
-                            
-                            tbody+='<th style=" width: 12%">Terminal#</th>';
-                            tbody+='<th style=" width: 14%">Login</th>';
-                            tbody+='<th style=" width: 14%">Logout</th>';
-                            
-                            tbody+='<th colspan="3"></th>';
-                            tbody+='<th colspan="3"></th>';
-                            tbody+='<th colspan="2"></th>';
-                            
-                            tbody+='</tr>';
-                            tbody+='<tr>';
-                            
+                            if(json.rows.length > 0) {
+                                tbody+='<tr>';
+    //                            tbody+='<th style=" width: 10%">Terminal#</th>';
+    //                            tbody+='<th style=" width: 10%">Login</th>';
+    //                            tbody+='<th style=" width: 10%">Logout</th>';
+    //                            
+    //                            tbody+='<th colspan="3"></th>';
+    //                            tbody+='<th colspan="3"></th>';
+    //                            tbody+='<th colspan="2"></th>';
+    //                            tbody+='<th colspan="2"></th>';
+    //                            tbody+='<th colspan="2"></th>';
+    //                            tbody+='<th colspan="2"></th>';
+    //                            
+    //                            tbody+='<th></th>';
+
+                                tbody+='<th style=" width: 12%">Terminal#</th>';
+                                tbody+='<th style=" width: 14%">Login</th>';
+                                tbody+='<th style=" width: 14%">Logout</th>';
+
+                                tbody+='<th colspan="3"></th>';
+                                tbody+='<th colspan="3"></th>';
+                                tbody+='<th colspan="2"></th>';
+
+                                tbody+='</tr>';
+                                tbody+='<tr>';
+                            }
                             for(i=0;i<json.rows.length;i++) {
 
                                 totaldeposit += parseFloat(json.rows[i].TotalCTransDeposit);
@@ -1208,6 +1227,11 @@ $(document).ready(function(){
                                 tbody+='<tr><td colspan="12"><b><a id="transCSiteSumm" href="#" style="text-decoration: underline ;color: black;">Click here to view the summary breakdown</a></b></td></tr> ';
 //                                tbody+='<tr><td colspan="18"><b><a id="transCSiteSumm" href="#" style="text-decoration: underline ;color: black;">Click here to view the summary breakdown</a></b></td></tr> ';
 
+                                $('#tbltranshistorybody').html(tbody);
+                            }
+                            else{
+                                tbody+='<tr style="height:30px;"> <td colspan="5"></td></tr>';
+                                tbody+='<tr><td colspan="12"><b><a id="transCSiteSumm" href="#" style="text-decoration: underline ;color: black;">Click here to view the summary breakdown</a></b></td></tr> ';
                                 $('#tbltranshistorybody').html(tbody);
                             }
                         }
