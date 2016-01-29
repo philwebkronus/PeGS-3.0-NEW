@@ -1,9 +1,4 @@
 <?php
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 /**
  * Description of WsKapiController
  *
@@ -3627,6 +3622,7 @@ class WsKapiController extends Controller {
         $siteaccounts = new SiteAccountsModel();
         $egmsessions = new GamingSessionsModel();
         $tickets = new TicketsModel();
+        $transactionSummaryLogs = new TransactionSummaryLogsModel();
         
         $casinoApi = new CasinoApiUB();
         
@@ -3852,6 +3848,17 @@ class WsKapiController extends Controller {
                         if (isset($result['trans_summary_id'])) {
                             $this->status = $result['transStatus'];
                             
+                            //added 01-15-2016
+                            //insert genesis withdrawal into transactionsummarylogs
+                            $genesisWithdrawal = 0.0;
+                            $mswWithdrawal = 0.0;
+                            $genWithdrawAmount = str_replace( ',','',$result['amount']);
+                            if($result['amount'] > 0)
+                                $genesisWithdrawal = $genWithdrawAmount;
+                            else
+                                $genesisWithdrawal = 0.0;
+                            $transactionSummaryLogs->insertGenesisWithdrawal($result['trans_summary_id'],$genesisWithdrawal,$mswWithdrawal);
+                            
                             $gamingRequestLogsModel->updateGamingLogsStatus($trans_id, $this->status, $result['udate'], $result['VoucherTicketBarcode'], $result['ExpirationDate']);
                             $this->_sendResponse(200, CommonController::eSafeRedemptionGenResponse(1, $result['amount'], $result['VoucherTicketBarcode'], $result['TransactionDate'], $result['ExpirationDate'], $sitecode, $loyaltyCardNo, $result['ewallet_trans_id'], $result['TransMessage'], 1, 0));
                         } else {
@@ -3890,5 +3897,3 @@ class WsKapiController extends Controller {
         }
     }
 }
-
-?>
