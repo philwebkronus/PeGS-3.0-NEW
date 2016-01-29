@@ -86,6 +86,7 @@ $vaccesspages = array('8');
 <script type="text/javascript">
     jQuery(document).ready(function(){
         var url = 'process/ProcessRptPegs.php';
+        var siteID = jQuery("#cmbsite").val();
         //ajax call: loading of sites
         jQuery('#cmbsite').live('change', function()
         {
@@ -134,7 +135,7 @@ $vaccesspages = array('8');
                                {name:'SiteName',index:'SiteName', align: 'left'},                           
                                {name:'Name', index:'Name', align:'left'},
                                {name:'UserGroup', index:'Name', align: 'left'},
-                               {name:'DateCreated', index:'DateCreated', align:'left'},
+                               {name:'DateCreated', index:'DateCreated', align:'left',  width:180},
                                {name:'Status',index:'Status', align: 'center'},
                              ],
                     rowNum:10,
@@ -158,7 +159,7 @@ $vaccesspages = array('8');
        
        //event :  onclick of export to pdf button
        jQuery("#btnpdf").click(function(){
-           jQuery('#frmusers').attr('action', 'process/ProcessRptPegs.php?getpage=UserListingPDF');
+           jQuery("#frmusers").attr('action', 'process/ProcessRptPegs.php?getpage=UserListingPDF&cmbsite='+siteID);
            jQuery('#frmusers').submit();
        });
        

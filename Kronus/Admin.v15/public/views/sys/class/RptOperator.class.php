@@ -1542,11 +1542,13 @@ class RptOperator extends DBHandler
     public function getGrossHoldeSAFE($siteID, $datefrom, $dateto) {
         $sql = "SELECT TransactionDate, s.SiteCode Login, SUM(ts.StartBalance)
                 StartBalance,
-                SUM(ts.WalletReloads) WalletReloads, SUM(ts.EndBalance) EndBalance,
-                SUM(ts.StartBalance) + SUM(ts.WalletReloads) - SUM(ts.EndBalance) GrossHold
+                SUM(ts.WalletReloads) WalletReloads, SUM(ts.EndBalance) EndBalance, SUM(IFNULL(tl.GenesisWithdrawal,0)) GenesisWithdrawal,
+                SUM(ts.StartBalance) + SUM(ts.WalletReloads) - SUM(ts.EndBalance) - SUM(IFNULL(tl.GenesisWithdrawal,0)) GrossHold
                 FROM transactionsummary ts
-                INNER JOIN sites s
+                INNER JOIN sites s		
                 ON ts.SiteID = s.SiteID
+				LEFT JOIN transactionsummarylogs tl
+				ON tl.TransactionSummaryID = ts.TransactionsSummaryID
                 WHERE ts.SiteID = ? AND 
                 ts.DateEnded >= ?
                 AND ts.DateEnded < ?";

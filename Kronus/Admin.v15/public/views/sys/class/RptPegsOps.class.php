@@ -326,27 +326,43 @@ class RptPegsOps extends DBHandler{
               //if choses site
               if($zsiteID > 0)
               {
-                 $stmt = "SELECT DISTINCT a.AID, s.SiteName as 'Site Name',s.SiteCode as 'Site Code',
-                          s.POSAccountNo as 'POS Account No.',a.UserName as 'User Name',at.Name as 'User Group', ad.Name,
-                          a.DateCreated as  'Date Created',a.Status,sa.SiteID FROM siteaccounts sa 
-                          INNER JOIN accounts a ON a.AID = sa.AID
-                          INNER JOIN accountdetails ad ON ad.AID = sa.AID
-                          INNER JOIN sites s ON s.SiteID = sa.SiteID
-                          INNER JOIN ref_accounttypes at ON at.AccountTypeID = a.AccountTypeID   
-                          WHERE sa.Status = 1 AND s.SiteID = ? AND s.SiteID <>1 AND a.AccountTypeID NOT IN (15,17)"; 
+                 $stmt = "SELECT DISTINCT s.SiteName as 'Site Name',s.SiteCode as 'Site Code', s.POSAccountNo as 'POS Account No.',
+                        a.UserName as 'User Name',at.Name as 'User Group', ad.Name, a.DateCreated as  'Date Created',
+                        CASE a.Status
+                        WHEN 0 THEN 'Inactive'
+                        WHEN 1 THEN 'Active'
+                        WHEN 2 THEN 'Suspended'
+                        WHEN 3 THEN 'Locked (Attempts)'
+                        WHEN 4 THEN 'Locked (Admin)'
+                        WHEN 5 THEN 'Terminated'
+                        WHEN 6 THEN 'Password Expired'
+                        ELSE 'Invalid Status' END AS Status, sa.SiteID
+                        FROM siteaccounts sa INNER JOIN accounts a ON a.AID = sa.AID
+                        INNER JOIN accountdetails ad ON ad.AID = sa.AID
+                        INNER JOIN sites s ON s.SiteID = sa.SiteID
+                        INNER JOIN ref_accounttypes at ON at.AccountTypeID = a.AccountTypeID
+                        WHERE sa.Status = 1 AND s.SiteID = ? AND s.SiteID <>1 AND a.AccountTypeID NOT IN (15,17)"; 
                  $this->prepare($stmt);
                  $this->bindparameter(1, $zsiteID);
               }
               else
               {
-                 $stmt = "SELECT DISTINCT s.SiteName as 'Site Name',s.SiteCode as 'Site Code',
-                          s.POSAccountNo as 'POS Account No.',a.UserName as 'User Name',at.Name as 'User Group', ad.Name,
-                          a.DateCreated as  'Date Created',a.Status,sa.SiteID FROM siteaccounts sa 
-                          INNER JOIN accounts a ON a.AID = sa.AID
-                          INNER JOIN accountdetails ad ON ad.AID = sa.AID
-                          INNER JOIN sites s ON s.SiteID = sa.SiteID
-                          INNER JOIN ref_accounttypes at ON at.AccountTypeID = a.AccountTypeID   
-                          WHERE sa.Status = 1 AND s.SiteID <>1 AND a.AccountTypeID NOT IN (15,17)"; 
+                 $stmt = "SELECT DISTINCT s.SiteName as 'Site Name',s.SiteCode as 'Site Code', s.POSAccountNo as 'POS Account No.',
+                        a.UserName as 'User Name',at.Name as 'User Group', ad.Name, a.DateCreated as  'Date Created',
+                        CASE a.Status
+                        WHEN 0 THEN 'Inactive'
+                        WHEN 1 THEN 'Active'
+                        WHEN 2 THEN 'Suspended'
+                        WHEN 3 THEN 'Locked (Attempts)'
+                        WHEN 4 THEN 'Locked (Admin)'
+                        WHEN 5 THEN 'Terminated'
+                        WHEN 6 THEN 'Password Expired'
+                        ELSE 'Invalid Status' END AS Status, sa.SiteID
+                        FROM siteaccounts sa INNER JOIN accounts a ON a.AID = sa.AID
+                        INNER JOIN accountdetails ad ON ad.AID = sa.AID
+                        INNER JOIN sites s ON s.SiteID = sa.SiteID
+                        INNER JOIN ref_accounttypes at ON at.AccountTypeID = a.AccountTypeID
+                        WHERE sa.Status = 1 AND s.SiteID <>1 AND a.AccountTypeID NOT IN (15,17)"; 
                  $this->prepare($stmt); 
               }
           }

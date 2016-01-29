@@ -338,13 +338,12 @@ class RptSupervisor extends DBHandler
                             WHERE et.StartDate >= ? AND et.StartDate < ?
                             AND et.SiteID IN (".$zsiteID.") AND et.Status IN (1,3)
                             GROUP BY et.CreatedByAID";
-
-        //query for encashed tickets non-esafe
+        
         $query6 = "SELECT IFNULL(SUM(Amount), 0) AS EncashedTicketsV2, t.UpdatedByAID, t.SiteID, ad.Name   
                    FROM vouchermanagement.tickets t 
                    LEFT JOIN npos.accountdetails ad ON t.UpdatedByAID = ad.AID
                    WHERE t.DateEncashed >= ? AND t.DateEncashed < ?
-                   AND t.UpdatedByAID IN (SELECT sacct.AID FROM npos.siteaccounts sacct WHERE sacct.SiteID IN (".$zsiteID.")) 
+                   AND t.UpdatedByAID IN (SELECT sacct.AID FROM npos.siteaccounts sacct WHERE sacct.SiteID IN (".$zsiteID."))
                    AND TicketCode NOT IN (
                            SELECT IFNULL(ss.TicketCode, '') FROM stackermanagement.stackersummary ss 
                            INNER JOIN npos.ewallettrans ewt ON ewt.StackerSummaryID = ss.StackerSummaryID 
@@ -352,6 +351,7 @@ class RptSupervisor extends DBHandler
                            ORDER BY ss.StackerSummaryID DESC
                    )
                    GROUP BY t.UpdatedByAID";
+        
         $this->prepare($query2);
         $this->bindparameter(1, $zdatefrom);
         $this->bindparameter(2, $zdateto);

@@ -897,8 +897,7 @@ if($connected)
                       1 => '',
                       2 => '',
                       3 => '',
-                      4 => '',
-                      5 => ''
+                      4 => ''
                      );
 //             $totals2 = array(0 => 'Summary per Page',
 //                        1 => '',
@@ -908,39 +907,34 @@ if($connected)
 //                        5 => number_format($arrtotal["TotalWithdraw"], 2, '.', ',')
 //                       );
              $totals3 = array(0 => 'Grand Total',
-                        1 => '',
-                        2 => 'Total Sales',
-                        3 => number_format($arrtotal["TotalDeposit"] + $arrtotal["TotalReload"], 2, '.', ','),
-                        4 => 'Total Redemption',
-                        5 => number_format($arrtotal["TotalWithdraw"], 2, '.', ',')
+                        1 => 'Total Sales',
+                        2 => number_format($arrtotal["TotalDeposit"] + $arrtotal["TotalReload"], 2, '.', ','),
+                        3 => 'Total Redemption',
+                        4 => number_format($arrtotal["TotalWithdraw"], 2, '.', ',')
                        );
              $totals4 = array(0 => '       ',
-                        1 => '',
-                        2 => '     Cash',
-                        3 => number_format($loadcash, 2, '.', ','),
-                        4 => 'Manual Redemption',
-                        5 => number_format($manualredemption, 2, '.', ',')
+                        1 => '     Cash',
+                        2 => number_format($loadcash, 2, '.', ','),
+                        3 => 'Manual Redemption',
+                        4 => number_format($manualredemption, 2, '.', ',')
                        );
              $totals5 = array(0 => '       ',
-                        1 => '',
-                        2 => '     Bancnet',
-                        3 => number_format($bancnet, 2, '.', ','),
-                        4 => 'Printed Tickets',
-                        5 => number_format($printedtickets, 2, '.', ',')
+                        1 => '     Bancnet',
+                        2 => number_format($bancnet, 2, '.', ','),
+                        3 => 'Printed Tickets',
+                        4 => number_format($printedtickets, 2, '.', ',')
                        );
              $totals6 = array(0 => '       ',
-                        1 => '     ',
-                        2 => '     Tickets',
-                        3 => number_format($loadticket, 2, '.', ','),
-                        4 => 'Encashed Tickets',
-                        5 => number_format($encashedtickets, 2, '.', ',')
+                        1 => '     Tickets',
+                        2 => number_format($loadticket, 2, '.', ','),
+                        3 => 'Encashed Tickets',
+                        4 => number_format($encashedtickets, 2, '.', ',')
                        );
              $totals7 = array(0 => '       ',
-                        1 => '     ',
-                        2 => '     Coupons',
-                        3 => number_format($loadcoupon, 2, '.', ','),
-                        4 => 'Cash On Hand',
-                        5 => number_format($vcashonhandamt, 2, '.', ',')
+                        1 => '     Coupons',
+                        2 => number_format($loadcoupon, 2, '.', ','),
+                        3 => 'Cash On Hand',
+                        4 => number_format($vcashonhandamt, 2, '.', ',')
                        );
              array_push($combined, $totals1);
 //             array_push($combined, $totals2);

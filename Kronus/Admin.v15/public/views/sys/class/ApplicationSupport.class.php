@@ -2665,12 +2665,13 @@ class ApplicationSupport extends DBHandler
       function selectUBTransactionEwallet($cardnumber,  $zFrom,$zTo, $zStart, $zLimit)
       { 
               $stmt = "SELECT ts.TransactionsSummaryID, t.TerminalCode, s.SiteCode, rs.ServiceName, ts.StartBalance as StartingBalance, 
-                            ts.WalletReloads as TotalEwalletload, ts.EndBalance as EndingBalance, ts.DateStarted as StartDate, ts.DateEnded as EndDate
+                            ts.WalletReloads as TotalEwalletload, ts.EndBalance as EndingBalance, ts.DateStarted as StartDate, ts.DateEnded as EndDate, IFNULL(tl.GenesisWithdrawal,0) as GenesisWithdrawal
                             FROM transactionsummary ts 
                             LEFT JOIN npos.transactiondetails tdls ON ts.TransactionsSummaryID = tdls.TransactionSummaryID
                             LEFT JOIN npos.ref_services rs ON tdls.ServiceID = rs.ServiceID
                             LEFT JOIN npos.terminals t ON ts.TerminalID = t.TerminalID
                             LEFT JOIN npos.sites s ON s.SiteID = ts.SiteID 
+                            LEFT JOIN transactionsummarylogs tl ON tl.TransactionSummaryID = ts.TransactionsSummaryID        
                             WHERE ts.LoyaltyCardNumber = ? AND ts.DateStarted >= ? AND ts.DateStarted < ?
                             GROUP BY ts.TransactionsSummaryID
                             ORDER BY ts.DateStarted LIMIT ".$zStart.", ".$zLimit."";

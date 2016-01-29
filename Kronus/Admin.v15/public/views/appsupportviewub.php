@@ -97,6 +97,7 @@ $flag = false;
                     $("#cmbstatus option[value='3']").attr('disabled',false);
                     $("#cmbstatus option[value='4']").attr('disabled',false);
                     document.getElementById('cmbtranstype').disabled=false;
+                    document.getElementById('cmbstatus').disabled=false;
                 }
             });
               
@@ -128,13 +129,13 @@ $flag = false;
                 {
                  alert("Please Input Membership Card Number");
                 }
-                else if((status == -1) && source != '4')
-                {
-                 alert("Please Choose a Transaction Status");   
-                }
                 else if((source == -1))
                 {
                  alert("Please Choose a Transaction Source");   
+                }
+                else if(source != 4 && status == -1)
+                {
+                 alert("Please Choose a Transaction Status");   
                 }
                 //if source is Manual Redemption (MR)
                 else if((source != 3))
@@ -469,14 +470,15 @@ $flag = false;
                                     paginate: function() {return $("#paginate").val();}
                                       },
                             datatype: "json",
-                            colNames:['Site', 'Terminal','Service Name','Starting Balance', 'Total e-SAFE Loads<br/>(with session)', 'EndingBalance','StartDate','EndDate'],
+                            colNames:['Site', 'Terminal','Service Name','Starting Balance', 'Total e-SAFE Loads<br/>(with session)', 'EndingBalance', 'GenesisWithdrawal','StartDate','EndDate'],
                             colModel:[
                                     {name:'SiteCode',index:'SiteCode', align: 'center', width:100},
                                     {name:'TerminalCode',index:'TerminalCode',align: 'center', width:90},
-                                    {name:'ServiceName',index:'ServiceName',align: 'left', width:120},
+                                    {name:'ServiceName',index:'ServiceName',align: 'left', width:160},
                                     {name:'StartingBalance',index:'StartingBalance', align: 'right',width:120},
-                                    {name:'TotalEwalletload',index:'TotalEwalletReload', align: 'right', width:140},
+                                    {name:'TotalEwalletload',index:'TotalEwalletReload', align: 'right', width:120},
                                     {name:'EndingBalance',index:'EndingBalance', align: 'right', width:120},
+                                    {name:'GenesisWithdrawal',index:'GenesisWithdrawal', align: 'right', width:120},
                                     {name:'StartDate',index:'StartDate', align: 'left', width:150},
                                     {name:'EndDate',index:'EndDate', align: 'left', width:150}
                                     ],

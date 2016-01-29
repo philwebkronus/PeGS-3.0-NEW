@@ -1,7 +1,7 @@
 <?php 
 $pagetitle = "GH Balance Per Cut-off"; 
 include "header.php";
-$vaccesspages = array('5');
+$vaccesspages = array('5','11');
     $vctr = 0;
     if(isset($_SESSION['acctype']))
     {

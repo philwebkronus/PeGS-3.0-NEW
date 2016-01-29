@@ -1355,7 +1355,7 @@ if($connected && $connected2 && $connected3)
                                        $enddate = $vview['EndDate'] == 0 ? "Still playing ...":date('Y-m-d H:i:s', strtotime($vview['EndDate']));
                                        $responce->rows[$i]['id']=$vview['TransactionsSummaryID'];
                                        $responce->rows[$i]['cell']=array($sitecode,$terminalcode,$vview['ServiceName'],number_format($vview['StartingBalance'],2), 
-                                           number_format($vview['TotalEwalletload'],2),number_format($vview['EndingBalance'],2),date('Y-m-d H:i:s', strtotime($vview['StartDate'])),$enddate);
+                                           number_format($vview['TotalEwalletload'],2),number_format($vview['EndingBalance'],2),number_format($vview['GenesisWithdrawal'],2),date('Y-m-d H:i:s', strtotime($vview['StartDate'])),$enddate);
                                        $i++;
                                     }
                                 }

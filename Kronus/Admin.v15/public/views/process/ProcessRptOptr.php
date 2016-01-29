@@ -649,6 +649,7 @@ if($connected)
                    if ($count > 0) {
                         $results[] = array('SiteCode' => '<b>Total</b>', 
                                            'SubTotal' => "<b>".number_format($total, 2, ".", ",")."</b>");
+                        $count=$count+1;
                      if($count > 0 ) {
                         $total_pages = ceil($count/$limit);
                         } else {
@@ -2397,6 +2398,7 @@ if($connected)
        $fn = "Gross_Hold_".date('Y_m_d').".xls";
        //setting up excel
        $excel_obj = new ExportExcel("$fn");
+       $footer = array('Gross Hold report from '.$datefrom.' to '.$dateto,"" );
        $array_headers = array('Site', 'Gross Hold');
        $completeexcelvalues = array();
        //get site operator's sites
@@ -2448,6 +2450,7 @@ if($connected)
         else {
             $rrecord = array(0 => 'The operator has no site. No records found');
         }
+               array_push($completeexcelvalues, $footer);
         $excel_obj->setHeadersAndValues($array_headers, $completeexcelvalues);
         $excel_obj->GenerateExcelFile();
         unset($completeexcelvalues);

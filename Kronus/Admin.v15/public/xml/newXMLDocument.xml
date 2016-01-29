@@ -210,10 +210,12 @@
      </menu>
 </right>
 <right id="11">
-     <menu id ="27" name='Gross Hold Monitoring' path='pagcorGHMonitoring.php' pagename="27"></menu>
+     <menu id ="10" name='Gross Hold Monitoring' path='GHMonitoring.php' pagename="10"></menu>
+     <!--<menu id ="27" name='Gross Hold Monitoring' path='pagcorGHMonitoring.php' pagename="27"></menu>-->
      <menu id="19" name='Reports' path='blank.php' pagename="19">
         <submenu id ='76' name='E-City Report' path='pagcorecityreport.php' pagename='19' />
-        <submenu id ='83' name='GH Balance Per Cut-off' path='pagcorghbal.php' pagename='19' />
+        <!--<submenu id ='83' name='GH Balance Per Cut-off' path='pagcorghbal.php' pagename='19' />-->
+         <submenu id="72" name="GH Balance Per Cut-off" path="GrossHoldBalance.php" pagename="19" />
         <submenu id="54" name='Audit Trail' path='rptaudittrail.php' pagename="19" />
         <submenu id="84" name='Casino Gross Hold' path='casinogrosshold.php' pagename="19" />
      </menu>
