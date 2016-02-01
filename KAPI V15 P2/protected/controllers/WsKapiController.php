@@ -3849,7 +3849,7 @@ class WsKapiController extends Controller {
                             $this->status = $result['transStatus'];
                             
                             //added 01-15-2016
-                            //insert genesis withdrawal into transactionsummarylogs
+                            //insert genesis withdrawal into transactionsummarylogs for GH computation
                             $genesisWithdrawal = 0.0;
                             $mswWithdrawal = 0.0;
                             $genWithdrawAmount = str_replace( ',','',$result['amount']);

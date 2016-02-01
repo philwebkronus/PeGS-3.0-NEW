@@ -1,7 +1,7 @@
 <?php
 /**
  * Description of TransactionSummaryLogsModel
- *
+ * Added Insert of Genesis Withdrawal
  * @author fdlsison
  */
 class TransactionSummaryLogsModel {
