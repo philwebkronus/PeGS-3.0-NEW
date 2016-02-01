@@ -1,0 +1,242 @@
+/* 
+    Document   : default
+    Created on : 10 27, 11, 10:40:21 AM
+    Author     : Bryan Salazar
+    Description:
+        Purpose of the stylesheet follows.
+*/
+html,body,h1,h2,h3,h4,h5,h6, p{
+    margin: 0; padding: 0;border:0;
+    font-family: Calibri,Arial,Helvatica;
+}
+.clear{clear: both}
+
+#container{min-height: 500px; min-width: 1050px;}
+
+/*********************** header ***********************************************/
+#header{width: 100%;height: 50px;}
+#top-header{height: 35px;width: 100%; background-color: #267810}
+#head-bcf{cursor: pointer;line-height: 2em;background-color: #62AF35; width:250px; height: 100%;  float: left; color: #fff; font-size: 18px; font-weight: bold}
+#head-version{cursor: pointer; text-align: right; line-height: 2em;width:185px; height: 100%; margin-right: 15px; float: left; color: #fff; font-size: 18px; font-weight: bold}
+#head-bcf div{margin-left: 5px;}
+#head-date-time{color: #fff; width: 300px; float: left;font-weight: bold;font-size: 1em; margin-left: 5px;margin-top: 2px;}
+#head-time{font-size: 14px;}
+#head-spacer{
+    background-image: url("../images/header_spacer.jpg");
+    background-repeat: no-repeat;
+    height: 20px;
+}
+#head-spacer div{margin-left: 70%;font-size: 18px; font-weight: bold  }
+#logout{width: 100%; text-align: right;}
+#logout input{
+    background: url("../images/bg-btn-signup.png") repeat scroll 0 0;
+	-moz-border-radius: 6px;
+	-webkit-border-radius: 6px;
+	border-radius: 6px;
+    border: 1px solid #000000;
+    color: #000000;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 5px;
+    margin-right: 26px;
+    margin-top: 2px;
+}
+#main-menu{margin-top: 0px;height: 50px;background-color: #267810; }
+#main-menu a{
+    background-color: #267810;
+    background-image: none;
+    border-left: 1px solid #62AF35;
+    border-right: 1px solid #62AF35;
+    border-top: 1px solid #62AF35;
+    color: #FFFFFF;
+    display: block;
+    float: left;
+    font-size: 16px;
+    font-weight: bold;
+    height: 45px;
+    line-height: 2em;
+    margin-right: 0;
+    margin-top: 10px;
+    padding: 0 20px;
+    text-decoration: none;
+}
+#main-menu a:hover, #main-menu a.active{
+    -moz-border-radius: 7px 7px 7px 7px;
+    background: url("../images/top_menu_gradient.gif") repeat-x scroll 0 0 transparent;
+    height: 55px;
+    line-height: 3em;
+    margin-top: 0;
+}
+
+#menu-description{background-color: #62AF35; height: 15px;width: 100%; z-index: 1000; float: left; margin-top: -14px; color: #ffffff;}
+
+#user-details{color: #fff; font-weight: bold;font-size: 1em; display: table; padding-left: 5%;}
+
+/************************** table of terminal monitoring **********************/
+#tblterminalmonitoring{width: 100%; border-collapse: collapse; height: 100%}
+#tblterminalmonitoring tr td{color: white;text-align: left;font-size: 20px;border: 1px solid black;height: 100px !important;}
+#tblterminalmonitoring tr td.notactive{background-color: #006600;}
+#tblterminalmonitoring tr td.notactive input[type="button"]{width: 100%;background-color: #006600; color: #fff; font-weight: bold; font-family: Arial Black,sans-serif; font-size: 14px;}
+#tblterminalmonitoring tr td.active{background-color: #800000;}
+#tblterminalmonitoring tr td.active input[type="button"]{margin-bottom: 0px; width: 50%;background-color: #800000;color: #fff;font-weight: bold; font-family: Arial Black,sans-serif;font-size: 14px;}
+
+#tblterminalmonitoring tr td.disable{background-color: #A0A0A0; color: #000}
+#tblterminalmonitoring tr td div.box{float: left; height: 45px; width: 100px;}
+#tblterminalmonitoring tr td div p{line-height: 2em;text-align: center}
+#tblterminalmonitoring tr td .lastbalance span{font-size: 12px; font-weight: bold}
+/*#tblterminalmonitoring tr td h1{float: left}*/
+#tblterminalmonitoring tr td p{font-weight: bold;}
+#tblterminalmonitoring tr td.notactive .startsession, #tblterminalmonitoring tr td.notactive .unlock{margin-top: 23px;}
+
+/*************************** start session popup ******************************/
+#tblstartsession tbody tr th{text-align: right;width:150px;}
+#tblstartsession tbody tr td{text-align: left}
+
+#temrinalmonitoring-pager .current-page{color: red;font-weight: bold}
+
+/***************************** reload session popup ***************************/
+#tm-reload-form div{float: left;width: 320px;}
+#tm-reload-form div.details{width: 500px;}
+#tm-reload-form div.details table tbody tr td.amount{text-align: right}
+#tm-reload-form div #frmreload table tr th{text-align: left;width:150px;}
+#tm-reload-form div #frmhotkey table tr th{text-align: left;width:150px;}
+
+.standalonetbl tbody tr th{text-align: left}
+
+
+#tbltranshistory{border-collapse: collapse}
+#coverage, #displayingpageof{font-size: 16px;}
+#coverage div{float: left;}
+#tbltranshistory{width: 100%}
+#tbltranshistory thead tr{background-color: #BCBCBA}
+#tbltranshistoryhead{background-color: #BCBCBA}
+.right{text-align: right}
+.left{text-align: left}
+
+#tblpercas{width: 100%}
+#tblpercas thead tr{background-color: #BCBCBA}
+
+
+::-ms-clear{ display: none; }
+::-ms-reveal{ display: none; }
+
+
+/***************************/
+.center{margin:0 auto;position:relative;}
+.floatLeft{float:left;}
+.floatLeftChild>div{float:left;}
+.childtableCell>div{display:table-cell;}
+.overflowAuto{overflow: auto;}
+.clear{clear: both;}
+.width150{width:150px;}
+.width154{width:154px;}
+.width200{width:200px;}
+.width204{width:204px;}
+.pad2point5{padding:2.5px;}
+
+#esafesummtable {
+    width: 500px;
+    /*background-color: lightgray;*/
+    background-color: #BCBCBA
+}
+
+#esafesummtable tr td{
+    /*border: 1px solid black;*/
+    background-color: white;
+}
+
+#terminaltranssumm {
+    width: 300px;
+    /*background-color: lightgray;*/
+    background-color: #BCBCBA
+}
+
+#terminaltranssumm tr td{
+    /*border: 1px solid black;*/
+    background-color: white;
+}
+
+#terminalctranssumm {
+    width: 300px;
+    /*background-color: lightgray;*/
+    background-color: #BCBCBA
+}
+
+#terminalctranssumm tr td{
+    /*border: 1px solid black;*/
+    background-color: white;
+}
+
+#terminalvctranssumm {
+    width: 300px;
+    /*background-color: lightgray;*/
+    background-color: #BCBCBA
+}
+
+#terminalvctranssumm tr td{
+    /*border: 1px solid black;*/
+    background-color: white;
+}
+
+#totaltranssumm {
+    width: 1400px;
+    background-color: #BCBCBA;
+}
+
+#totaltranssumm thead th {
+    background-color: white;
+}
+
+#totalctranssumm  {
+    width: 300px;
+    /*background-color: lightgray;*/
+    background-color: #BCBCBA
+}
+
+#totalctranssumm tr td{
+    /*border: 1px solid black;*/
+    background-color: white;
+}
+
+#totalvctranssumm  {
+    width: 300px;
+    /*background-color: lightgray;*/
+    background-color: #BCBCBA
+}
+
+#totalvctranssumm tr td{
+    /*border: 1px solid black;*/
+    background-color: white;
+}
+
+#salestranssumm {
+    width: 500px;
+    /*background-color: lightgray;*/
+    background-color: #BCBCBA
+}
+
+#salestranssumm tr td{
+    /*border: 1px solid black;*/
+    background-color: white;
+}
+
+#salesctranssumm {
+    width: 500px;
+    /*background-color: lightgray;*/
+    background-color: #BCBCBA
+}
+
+#salesctranssumm tr td{
+    /*border: 1px solid black;*/
+    background-color: white;
+}
+#salesvctranssumm {
+    width: 500px;
+    /*background-color: lightgray;*/
+    background-color: #BCBCBA
+}
+
+#salesvctranssumm tr td{
+    /*border: 1px solid black;*/
+    background-color: white;
+}

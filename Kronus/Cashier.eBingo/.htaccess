@@ -1,0 +1,9 @@
+RewriteEngine On
+
+# force HTTPS
+# RewriteCond %{SERVER_PORT} 80 
+# RewriteRule ^(.*)$ https://cashier2.pagcoregames.com/$1 [R,L]
+
+# redirect to primary domain name
+# RewriteCond %{HTTP_HOST} ^cashier2.philwebinc.com [NC]
+# RewriteRule ^(.*)$ https://cashier2.pagcoregames.com/$1 [R=301,L]
