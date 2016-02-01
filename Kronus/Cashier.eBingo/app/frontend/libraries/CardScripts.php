@@ -445,8 +445,8 @@ function identifyCard3()
                 var data = 'card_number='+card_number+'&isreg=0'+'&siteid='+siteid;
                 var response = '';
                 
-                $('#btnLoad').attr('disabled','disabled'); //added 11-13-2015 10:30 AM
-                $('#btnWithdraw2').attr('disabled','disabled'); //added 11-13-2015 10:30 AM
+                //$('#btnLoad').attr('disabled','disabled'); //added 11-13-2015 10:30 AM
+                //$('#btnWithdraw2').attr('disabled','disabled'); //added 11-13-2015 10:30 AM
 
                 $.ajax({
                     type : 'post',
