@@ -56,7 +56,7 @@ class MicrogamingCAPI
      * Maximum number of seconds to wait while trying to connect
      * @var integer
      */
-    private $_connectionTimeout = 10;
+    private $_connectionTimeout = 30;
 
     /**
      * Maximum number of seconds before a call timeouts
