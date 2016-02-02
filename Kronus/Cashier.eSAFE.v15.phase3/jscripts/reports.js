@@ -548,8 +548,8 @@ $(document).ready(function(){
                             RegTicket = parseFloat(json.total_rows.TotalRegTicket);
                             RegCoupon = parseFloat(json.total_rows.TotalRegCoupon);
                             CashierRedemption = parseFloat(json.total_rows.TotalCashierRedemption);
-                            TotCashierRedemption = CashierRedemption;
-
+                            //TotCashierRedemption = CashierRedemption;
+                           
                             for(i=0;i<json.ticketlist.length;i++) {
                                 if(i == 0){
                                     if(json.ticketlist > 1){
@@ -568,6 +568,7 @@ $(document).ready(function(){
                             TotalEncashedTickets = parseFloat(json.EncashedTickets);
                             TotalEncashedTickets = toMoney(json.EncashedTickets,'no');
                             SubEncashedTickets = parseFloat(json.EncashedTickets);
+                            TotCashierRedemption = CashierRedemption + SubEncashedTickets;
                             
                             eSAFECash = parseFloat(json.eWalletCashDeposits);
                             eSAFETickets = parseFloat(json.eWalletTicketDeposits);
@@ -595,6 +596,7 @@ $(document).ready(function(){
                                                         '</tr><tr><td style="padding-left: 30px;"><b>e-SAFE Coupon Deposits</b></td><td style="text-align: right;">' + TotaleSAFECoupon+ '</td>' +
                                                         '</tr><tr><td style="padding-left:5px;"><b>Total Sales</b></td><td style="text-align: right;">' + TotalSales+ '</td>' +
                                                         '</tr><tr><td colspan="2" style="padding-top: 10px;padding-bottom:10px;"></td>' +
+                                                        //'</tr><tr><td style="padding-left:5px;"><b>Total Redemption</b></td><td style="text-align: right;">' + toMoney(TotCashierRedemption,'no')  + '</td>' +
                                                         '</tr><tr><td style="padding-left:5px;"><b>Total Redemption</b></td><td style="text-align: right;">' + toMoney(TotCashierRedemption,'no')  + '</td>' +
                                                         '</tr><tr><td style="padding-left:5px;"><b>Total Printed Tickets</b></td><td style="text-align: right;">' + TotalPrintedTickets+ '</td>' +
                                                         '</tr><tr><td style="padding-left:5px;"><b>Total Active Tickets For The Day</b></td><td style="text-align: right;">' + TotalActiveTicketsForTheDay+ '</td>' +
@@ -1670,11 +1672,12 @@ $(document).ready(function(){
                             RegTicket = parseFloat(json.total_rows.TotalRegTicket);
                             RegCoupon = parseFloat(json.total_rows.TotalRegCoupon);
                             CashierRedemption = parseFloat(json.total_rows.TotalCashierRedemption);
-                            TotCashierRedemption = CashierRedemption + parseFloat(json.eWalletWithdrawals);
+                            //TotCashierRedemption = CashierRedemption + parseFloat(json.eWalletWithdrawals);
                             
                             TotalEncashedTickets = parseFloat(json.EncashedTickets);
                             TotalEncashedTickets = toMoney(json.EncashedTickets,'no');
                             SubEncashedTickets = parseFloat(json.EncashedTickets);
+                            TotCashierRedemption = (CashierRedemption + parseFloat(json.eWalletWithdrawals)) - SubEncashedTickets;
 
                             eSAFECash = parseFloat(json.eWalletCashDeposits);
                             eSAFETickets = parseFloat(json.eWalletTicketDeposits);
