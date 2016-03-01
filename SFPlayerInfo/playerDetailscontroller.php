@@ -159,31 +159,20 @@ else
     {
         $MID = $_MembershipTempInfo->getMIDUsingSFID($SFID);
         $resultEnc = $_MembershipTempInfo->getEncPOCDetails($MID);
-        $resultNonEnc = $_MemberInfo->getGenericInfo($MID);
-        $rowEnc = $resultEnc[0]; //row1
+        $resultNonEnc = $_MembershipTempInfo->getGenericInfo($MID);
+        $rowEnc = $resultEnc[0]; //row13
         $rowNonEnc = $resultNonEnc[0];
-//        $row['FirstName'] = $rowEnc['FirstName'];
-//        $row['MiddleName'] = $rowEnc['MiddleName'];
-//        $row['LastName'] = $rowEnc['LastName'];
-//        $row['Birthdate'] = $rowNonEnc['Birthdate'];
-//        $row['Address1'] = $rowEnc['Address1'];
-//        $row['MobileNumber'] = $res2[0]['MobileNumber'];
-//        $row['Email'] = $res2[0]['Email'];
-//        $row['IdentificationID'] = $res2[0]['IdentificationID'];
-//        $row['IdentificationNumber'] = $res2[0]['IdentificationNumber'];
-//        $mid = $res2[0]['MID'];
 
         if ($rowNonEnc['IdentificationID'] != '')
         {
             $resultIDPresented = $_Ref_Identifications->getIDPresented($rowNonEnc['IdentificationID']);
-            $rowIDPresented = $resultIDPresented[0];
+            $rowIDPresented = $resultIDPresented[0]['IdentificationName'];
         }
         else
         {
             $rowIDPresented = '';
         }
 
-        //$row3['TransactionDate'] = '';
         $rowLastTransaction['TransactionDate'] = '';
 
         $resultTempCode = $_MembersTemp->getTempCode($MID);
