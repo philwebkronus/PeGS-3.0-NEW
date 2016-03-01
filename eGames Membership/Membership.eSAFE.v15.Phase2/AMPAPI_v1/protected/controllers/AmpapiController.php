@@ -1666,13 +1666,13 @@ class AmpapiController extends Controller {
                 }
             } else {
                 $valid = false;
-                $moduleNameAMPAPI == 'GetCity' ? $eCode = 1650 : $eCode = 76;
+                $moduleNameAMPAPI == 'GetCity' ? $eCode = 1650 : $eCode = 55;
                 $this->_displayReturnMessage($eCode, $moduleNameAMPAPI, $moduleNameAMPAPI . ' contains expired SessionID.', $randchars);
                 $this->_apiLogs($ApiMethodID[$moduleNameAMPAPI], '', $eCode, '', 2, $moduleNameAMPAPI, $TPSessionID);
             }
         } else {
             $valid = false;
-            $moduleNameAMPAPI == 'GetCity' ? $eCode = 1648 : $eCode = 71;
+            $moduleNameAMPAPI == 'GetCity' ? $eCode = 1648 : $eCode = 55;
             $this->_displayReturnMessage($eCode, $moduleNameAMPAPI, $moduleNameAMPAPI . ' has invalid Session ID.', $randchars); //ErrorMesssage:One or more fields is not set or is blank, ErrorCode:1
             $this->_apiLogs($ApiMethodID[$moduleNameAMPAPI], '', $eCode, '', 2, $moduleNameAMPAPI, $TPSessionID);
         }
