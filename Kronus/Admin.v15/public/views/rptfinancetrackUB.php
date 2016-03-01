@@ -93,43 +93,49 @@ $vaccesspages = array('12');
         
         <!-- Transaction Details Grid -->
         <div align="center" style="float: left;">
-          <table border="1" id="transdetails">
+            <table border="1" id="transdetails">
           </table>
           <div id="pager3" style="height: 150px;">
-              <table id="trans" style="background-color:#D6EB99; padding-left: 10px; display: none; font-size: 12px; height: 40% ">
+              
+              <table id="trans" style="background-color:#D6EB99; padding-left: 5px; display: none; font-size: 11.5px; height: 10% ">
                 <tr>
                     <td>Summary per Page</td>
-                    <td style="padding-left: 10px;"></td>
+                    <td style="padding-left: 5px;"></td>
                     <td>Total Starting Balance</td>
                     <td id="totdeposit" style="font-weight: bold;"></td>
-                    <td style="padding-left: 50px;"></td>
+                    <td style="padding-left: 10px;"></td>
                     <td>Total e-SAFE Loads</td>
                     <td id="totreload" style="font-weight: bold;"></td>
-                    <td style="padding-left: 50px;"></td>
+                    <td style="padding-left: 10px;"></td>
                     <td>Total Ending Balance</td>
                     <td id="totwithdraw" style="font-weight: bold;"></td>
+                    <td style="padding-left: 20px;"></td>
+                    <td>Total Genesis Withdrawal</td>
+                    <td id="totgenesiswithdraw" style="font-weight: bold;"></td>
                 </tr>
                 <tr>
                     <td>Grand Total</td>
-                    <td style="padding-left: 80px;"></td>
+                    <td style="padding-left: 50px;"></td>
                     <td>Grand Starting Balance</td>
                     <td id="grdeposit" style="font-weight: bold;"></td>
-                    <td style="padding-left: 50px;"></td>
+                    <td style="padding-left: 10px;"></td>
                     <td>Grand e-SAFE Loads</td>
                     <td id="grreload" style="font-weight: bold;"></td>
-                    <td style="padding-left: 50px;"></td>
+                    <td style="padding-left: 10px;"></td>
                     <td>Grand Ending Balance</td>
                     <td id="withdraw" style="font-weight: bold;"></td>
-                    <td style="padding-left: 20px;"></td>
+                    <td style="padding-left: 10px;"></td>
+                    <td>Grand Genesis Withdrawal</td>
+                    <td id="genesiswithdraw" style="font-weight: bold;"></td>
+                    <td style="padding-left: 10px;"></td>
                     <td>Grosshold</td>
                     <td id="grosshold" style="font-weight: bold;"></td>
                 </tr>
-              </table>
+              </table>   
           </div>
         </div>
-        
         <!-- Export to file -->
-        <div id="senchaexport1" style="background-color: #6A6A6A; display: none;float: left; margin-top: auto;width: 1100px;padding-bottom: 20px;">           
+        <div id="senchaexport1" style="background-color: #6A6A6A; display: none;float: left; margin-top: auto;width: 1201px;padding-bottom: 20px;">           
             <br />
             <input type="button" id="btnpdf" value="Export to PDF" style="float: right;margin-right: 20px;"/>
             <input type="button" id="btnexcel" value="Export to Excel" style="float: right;" />
@@ -272,25 +278,27 @@ $vaccesspages = array('12');
                             sitecode : function(){return jQuery("#cmbsite").find("option:selected").text();}
                          },
                datatype: "json",
-               colNames:['Site Code','Terminal Code','Service Name','Starting Balance','Total eSAFE loads(with session)','Ending Balance','Date Started','Date Ended'],
+               colNames:['Site Code','Terminal','Service Name','Starting<br> Balance','Total eSAFE loads<br>(with session)','Ending<br> Balance','Genesis<br> Withdrawal','Date Started','Date Ended'],
                colModel:[
-                         {name:'SiteCode', index:'SiteCode', align:'center', sortable: false},
-                         {name:'TerminalCode',index:'TerminalCode', align: 'center', sortable: false},
+                         {name:'SiteCode', index:'SiteCode', align:'center', sortable: false, width: 100},
+                         {name:'TerminalCode',index:'TerminalCode', align: 'center', sortable: false, width: 80},
                          {name:'ServiceName',index:'ServiceName', align: 'center', sortable: false},
                          {name:'StartBalance',index:'Deposit', align: 'right', sortable: false},
                          {name:'WalletReloads',index:'Reload', align: 'right', sortable: false},
                          {name:'EndBalance',index:'Withdrawal', align: 'right', sortable: false},
-                         {name:'DateStarted',index:'DateStarted', align: 'center', sortable: false},
-                         {name:'DateEnded', index:'DateEnded',align:'center', sortable: false}
+                         {name:'GenesisWithdraw',index:'GenesisWithdraw', align: 'right', sortable: false},
+                         {name:'DateStarted',index:'DateStarted', align: 'center', sortable: false, width: 250},
+                         {name:'DateEnded', index:'DateEnded',align:'center', sortable: false, width: 270}
                         ],
                rowNum:10,
                rowList:[10,20,30],
                height: 220,
-               width: 1100,
+               width: 1200,
                pager: '#pager3',
                refresh: true,
                viewrecords: true,
                sortorder: "asc",
+               //NOTE: uncomment if computation will be shown
                loadComplete: function (){ gettotal(url,siteid, terminal, datefrom);},
                
                caption:"Transaction Tracking"
@@ -298,7 +306,8 @@ $vaccesspages = array('12');
          jQuery("#transdetails").jqGrid('navGrid','#pager3',{edit:false,add:false,del:false, search:false, refresh: true});
     }
     
-    //function for getting the sum of each transaction type
+    //NOTE: uncomment if computation will be shown
+    //function for getting the sum of each transaction type per page and grand total
     function gettotal(url, siteid, terminal, datefrom)
     {
                 jQuery.ajax({
@@ -316,9 +325,11 @@ $vaccesspages = array('12');
                        var withdraw = data.withdraw;
                        var deposit = data.deposit;
                        var reload = data.reload;
+                       var genesiswithdraw = data.genesiswithdraw;
                        var granddeposit = data.granddeposit;
                        var grandreload = data.grandreload;
                        var grandwithdraw = data.grandwithdraw;
+                       var grandgenesiswithdraw = data.grandgenesiswithdraw;
                        var sales = data.sales;
                        var grandsales = data.grandsales;
                        
@@ -327,9 +338,11 @@ $vaccesspages = array('12');
                        jQuery("#totdeposit").html(deposit);
                        jQuery("#totreload").html(reload);
                        jQuery("#totwithdraw").html(withdraw);
+                       jQuery("#totgenesiswithdraw").html(genesiswithdraw);
                        jQuery("#grdeposit").html(granddeposit);
                        jQuery("#grreload").html(grandreload);
                        jQuery("#withdraw").html(grandwithdraw);
+                       jQuery("#genesiswithdraw").html(grandgenesiswithdraw);
                        jQuery("#grosshold").html(data.grosshold);
                    },
                    error: function(e)
@@ -363,28 +376,34 @@ $vaccesspages = array('12');
             content += '<table id=\"trans\" style=\"background-color:#D6EB99; padding-left: 10px;display: none; font-size: 12px; height: 40%; \">';
             content += '<tr>';
             content += '<td>Summary per Page</td>'
-            content += '<td style="padding-left: 10px;"></td>';
+            content += '<td style="padding-left: 5px;"></td>';
             content += '<td>Total Starting Balance</td>';
             content += '<td id="totdeposit" style="font-weight: bold;"></td>';
-            content += '<td style="padding-left: 50px;"></td>';
+            content += '<td style="padding-left: 20px;"></td>';
             content += '<td>Total e-SAFE Loads</td>';
             content += '<td id="totreload" style="font-weight: bold;"></td>';
-            content += '<td style="padding-left: 50px;"></td>';
+            content += '<td style="padding-left: 20px;"></td>';
             content += '<td>Total Ending Balance</td>';
             content += '<td id="totwithdraw" style="font-weight: bold;"></td>';
+            content += '<td style="padding-left: 20px;"></td>';
+            content += '<td>Total Genesis Withdrawal</td>';
+            content += '<td id="totgenesiswithdraw" style="font-weight: bold;"></td>';
             content += '</tr>';
             content += '<tr>';
             content += '<td>Grand Total</td>';
-            content += '<td style="padding-left: 80px;"></td>';
+            content += '<td style="padding-left: 60px;"></td>';
             content += '<td>Grand Starting Balance</td>';
             content += '<td id="grdeposit" style="font-weight: bold;"></td>';
-            content += '<td style="padding-left: 50px;"></td>';
+            content += '<td style="padding-left: 20px;"></td>';
             content += '<td>Grand e-SAFE Loads</td>';
             content += '<td id="grreload" style="font-weight: bold;"></td>';
-            content += '<td style="padding-left: 50px;"></td>';
+            content += '<td style="padding-left: 20px;"></td>';
             content += '<td>Grand Ending Balance</td>';
             content += '<td id="withdraw" style="font-weight: bold;"></td>';
             content += '<td style="padding-left: 20px;"></td>';
+            content += '<td>Grand Genesis Withdrawal</td>';
+            content += '<td id="genesiswithdraw" style="font-weight: bold;"></td>';
+            content += '<td style="padding-left: 10px;"></td>';
             content += '<td>Grosshold</td>';
             content += '<td id="grosshold" style="font-weight: bold;"></td>';
             content += '</tr>';

@@ -117,6 +117,7 @@ if($connected)
                                  $supdetails[$value['CreatedByAID']]['LoadCash'] += (float)$value['LoadCash'];
                                  $supdetails[$value['CreatedByAID']]['EncashedTickets'] += (float)$value['EncashedTickets'];
                                  $supdetails[$value['CreatedByAID']]['RedemptionCashier'] += (float)$value['RedemptionCashier'];
+                                 $supdetails[$value['CreatedByAID']]['RedemptionGenesis'] += (float)$value['RedemptionGenesis'];
                                  $supdetails[$value['CreatedByAID']]['EwalletRedemption'] += (float)$value['EwalletRedemption'];
                                  $supdetails[$value['CreatedByAID']]['EwalletDeposits'] += (float)$value['EwalletDeposits'];
                              }else{
@@ -128,6 +129,7 @@ if($connected)
                                                                             'LoadCash'=>$value['LoadCash'],
                                                                             'EncashedTickets'=>$value['EncashedTickets'],
                                                                             'RedemptionCashier'=>$value['RedemptionCashier'],
+                                                                            'RedemptionGenesis'=>$value['RedemptionGenesis'],
                                                                             'EwalletRedemption'=>$value['EwalletRedemption'], 
                                                                             'EwalletDeposits'=>$value['EwalletDeposits']
                                                                          ); 
@@ -174,7 +176,7 @@ if($connected)
                               $vAID = $vview['CreatedByAID'];
                               $depositamt = (float)$vview['Deposits'] + (float)$vview['EwalletDeposits'];
                               $reloadamt = (float)$vview['Reloads'];
-                              $withdrawamt = (float)$vview['Redemptions'];
+                              $withdrawamt = (float)$vview['Redemptions'] + (float)$vview['RedemptionGenesis'] + $vview['EwalletRedemption'];
                               $loadcash = (float)$vview['LoadCash'];
                               $encashtickets = (float)$vview['EncashedTickets'];
                               $cashierredemption = (float)$vview['RedemptionCashier'];
@@ -300,7 +302,7 @@ if($connected)
                               $vAID = $vview['CreatedByAID'];
                               $depositamt = (float)$vview['Deposits'] + (float)$vview['EwalletDeposits'];
                               $reloadamt = (float)$vview['Reloads'];
-                              $withdrawamt = (float)$vview['RedemptionCashier'] + (float)$vview['RedemptionGenesis'] + $vview['EwalletRedemption'];
+                              $withdrawamt = (float)$vview['RedemptionCashier'] + (float)$vview['RedemptionGenesis'] + $vview['EwalletRedemption'] + (float)$vview['EncashedTicketsV2'] ;
                               $loadcash = (float)$vview['LoadCash'];
                               $encashtickets = (float)$vview['EncashedTicketsV2'];
                               $cashierredemption = (float)$vview['RedemptionCashier'];
@@ -310,10 +312,10 @@ if($connected)
                               
                               $grossholdamt = $depositamt + $reloadamt - $withdrawamt;
                               //$cashonhand = (($loadcash - $cashierredemption) - $ewalletredemption) - $encashtickets;
-                              $cashonhand = ($depositamt + $reloadamt + $genesisticketloads) - ($cashierredemption + $ewalletredemption + $encashtickets);
+                              $cashonhand = ($depositamt + $reloadamt) - ($withdrawamt);
                               $response->rows[$i]['id']= $vAID;
                               $response->rows[$i]['cell'] = array($vview['Name'], number_format($depositamt, 2), 
-                                   number_format($reloadamt, 2), number_format(($ewalletredemption + $cashierredemption + $genredemption),2), 
+                                   number_format($reloadamt, 2), number_format($withdrawamt,2), 
                                    number_format($cashonhand, 2));
                               $i++;
                               //store the 3 transaction types in an array
@@ -439,7 +441,7 @@ if($connected)
                 //results will be fetch here:
                 if((count($arrtotal) > 0) && (count($arrgrand) > 0))
                 {
-                    $cashonhand = ((((($loadcash + $bancnet + $loadcoupon) - $redemptioncashier) - $redemptiongenesis) - $ewalletwithdrawal) - $manualredemption) - $encashedtickets;
+                    $cashonhand = (((($loadcash + $bancnet + $loadcoupon) - $redemptioncashier) - $ewalletwithdrawal) - $manualredemption) - $encashedtickets;
      //               var_dump($loadcash,$bancnet,$redemptioncashier,$ewalletwithdrawal,$manualredemption,$encashedtickets);exit;
 
                     /**** Get Total Per Page  *****/
@@ -554,7 +556,6 @@ if($connected)
                          $ctr2++;
                      }
                 }
-
                 /**** GET Total Summary *****/
                 $granddeposit = "0.00";
                 $grandreload ="0.00";
@@ -576,7 +577,7 @@ if($connected)
                     $vtotal = new stdClass();
                     $vtotal->deposit = number_format($arrtotal["TotalDeposit"], 2, '.', ',');
                     $vtotal->reload = number_format($arrtotal["TotalReload"], 2, '.', ',');
-                    $vtotal->withdraw = number_format($arrtotal["TotalWithdraw"], 2, '.', ',');
+                    $vtotal->withdraw = number_format($manualredemption + $arrtotal["TotalWithdraw"], 2, '.', ',');
                     $vtotal->sales = number_format($arrtotal["TotalDeposit"] + $arrtotal["TotalReload"], 2, '.', ',');
                     $xgrossamt = $arrtotal["TotalDeposit"] + $arrtotal["TotalReload"] - $arrtotal["TotalWithdraw"];
                     $vtotal->grosstotal = number_format($xgrossamt, 2, '.', ',');
@@ -662,24 +663,26 @@ if($connected)
                 $supdetails = array();
                 foreach ($result as $value) {                     
                     if(isset($supdetails[$value['CreatedByAID']])){
-                        $supdetails[$value['CreatedByAID']]['Deposits'] += (float)$value['Deposits'];
-                        $supdetails[$value['CreatedByAID']]['Reloads'] += (float)$value['Reloads'];
-                        $supdetails[$value['CreatedByAID']]['Redemptions'] += (float)$value['Redemptions'];
-                        $supdetails[$value['CreatedByAID']]['LoadCash'] += (float)$value['LoadCash'];
-                        $supdetails[$value['CreatedByAID']]['EncashedTickets'] += (float)$value['EncashedTickets'];
-                        $supdetails[$value['CreatedByAID']]['RedemptionCashier'] += (float)$value['RedemptionCashier'];
-                        $supdetails[$value['CreatedByAID']]['EwalletRedemption'] += (float)$value['EwalletRedemption'];
+                        $supdetails[$value['CreatedByAID']]['Deposits'] += (float)$value['Deposits']; //SUM(D.tdtl) + SUM(D.ewt)
+                                 $supdetails[$value['CreatedByAID']]['Reloads'] += (float)$value['Reloads'];
+                                 $supdetails[$value['CreatedByAID']]['Redemptions'] += (float)$value['Redemptions'];
+                                 $supdetails[$value['CreatedByAID']]['LoadCash'] += (float)$value['LoadCash'];
+                                 $supdetails[$value['CreatedByAID']]['EncashedTickets'] += (float)$value['EncashedTickets'];
+                                 $supdetails[$value['CreatedByAID']]['RedemptionCashier'] += (float)$value['RedemptionCashier'];
+                                 $supdetails[$value['CreatedByAID']]['EwalletRedemption'] += (float)$value['EwalletRedemption'];
+                                 $supdetails[$value['CreatedByAID']]['EwalletDeposits'] += (float)$value['EwalletDeposits'];
                     }else{
                         $supdetails[$value['CreatedByAID']] = array('CreatedByAID'=>$value['CreatedByAID'],
-                                                                                                       'Name'=>$value['Name'],
-                                                                                                       'Deposits'=>$value['Deposits'],
-                                                                                                       'Reloads'=>$value['Reloads'],
-                                                                                                       'Redemptions'=>$value['Redemptions'],
-                                                                                                       'LoadCash'=>$value['LoadCash'],
-                                                                                                       'EncashedTickets'=>$value['EncashedTickets'],
-                                                                                                       'RedemptionCashier'=>$value['RedemptionCashier'],
-                                                                                                       'EwalletRedemption'=>$value['EwalletRedemption']
-                                                                                                    ); 
+                                                                            'Name'=>$value['Name'],
+                                                                            'Deposits'=>$value['Deposits'],
+                                                                            'Reloads'=>$value['Reloads'],
+                                                                            'Redemptions'=>$value['Redemptions'],
+                                                                            'LoadCash'=>$value['LoadCash'],
+                                                                            'EncashedTickets'=>$value['EncashedTickets'],
+                                                                            'RedemptionCashier'=>$value['RedemptionCashier'],
+                                                                            'EwalletRedemption'=>$value['EwalletRedemption'], 
+                                                                            'EwalletDeposits'=>$value['EwalletDeposits']
+                                                                         ); 
                     }
                 }
 
@@ -702,14 +705,15 @@ if($connected)
                  foreach($supdetails as $vview)
                  {
                     $vAID = $vview['CreatedByAID'];
-                    $depositamt = (float)$vview['Deposits'];
+                    $depositamt = (float)$vview['Deposits'] + (float)$vview['EwalletDeposits'];
                     $reloadamt = (float)$vview['Reloads'];
                     $withdrawamt = (float)$vview['Redemptions'];
                     $loadcash = (float)$vview['LoadCash'];
                     $encashtickets = (float)$vview['EncashedTickets'];
                     $cashierredemption = (float)$vview['RedemptionCashier'];
                     $ewalletredemption = (float)$vview['EwalletRedemption'];
-                    $cashonhand = (($loadcash - $cashierredemption) - $ewalletredemption) - $encashtickets;
+                    
+                    $cashonhand = (($depositamt + $reloadamt) - $cashierredemption - $ewalletredemption) - $encashtickets;
 
                     array_push($combined, array($vview['Name'], number_format($depositamt, 2, '.', ','), 
                     number_format($reloadamt, 2, '.', ','), number_format($withdrawamt, 2, '.', ','), 
@@ -735,27 +739,31 @@ if($connected)
                    while($ctr2 < count($result2))
                     {
                         if($result2[$ctr2]['LoadCash'] != '0.00')
-                            $loadcash = $result2[$ctr2]['LoadCash'];
-                        if($result2[$ctr2]['LoadTicket'] != '0.00')
-                            $loadticket = $result2[$ctr2]['LoadTicket'];
-                        if($result2[$ctr2]['LoadCoupon'] != '0.00')
-                            $loadcoupon = $result2[$ctr2]['LoadCoupon'];
-                        if($result2[$ctr2]['PrintedTickets'] != '0.00')
-                            $printedtickets = $result2[$ctr2]['PrintedTickets'];
-                        if($result2[$ctr2]['EncashedTickets'] != '0.00')
-                            $encashedtickets = $result2[$ctr2]['EncashedTickets'];
-                        if($result2[$ctr2]['ManualRedemption'] != '0.00')
-                            $manualredemption = (float)$result2[$ctr2]['ManualRedemption'];
-                        if($result2[$ctr2]['Bancnet'] != '0.00')
-                            $bancnet = (float)$result2[$ctr2]['Bancnet'];
-                        if($result2[$ctr2]['EwalletWithdrawal'] != '0.00')
-                            $ewalletwithdrawal = (float)$result2[$ctr2]['EwalletWithdrawal'];
+                             $loadcash = $result2[$ctr2]['LoadCash'];
+                         if($result2[$ctr2]['LoadTicket'] != '0.00')
+                             $loadticket = $result2[$ctr2]['LoadTicket'];
+                         if($result2[$ctr2]['LoadCoupon'] != '0.00')
+                             $loadcoupon = $result2[$ctr2]['LoadCoupon'];
+                         if($result2[$ctr2]['PrintedTickets'] != '0.00')
+                             $printedtickets = $result2[$ctr2]['PrintedTickets'];
+                         if($result2[$ctr2]['EncashedTickets'] != '0.00')
+                             $encashedtickets = $result2[$ctr2]['EncashedTickets'];
+                         if($result2[$ctr2]['ManualRedemption'] != '0.00')
+                             $manualredemption = (float)$result2[$ctr2]['ManualRedemption'];
+                         if($result2[$ctr2]['Bancnet'] != '0.00')
+                             $bancnet = (float)$result2[$ctr2]['Bancnet'];
+                         if($result2[$ctr2]['EwalletWithdrawal'] != '0.00')
+                             $ewalletwithdrawal = (float)$result2[$ctr2]['EwalletWithdrawal'];
+                         if($result2[$ctr2]['RedemptionCashier'] != '0.00')
+                             $redemptioncashier = (float)$result2[$ctr2]['RedemptionCashier'];
+                         if($result2[$ctr2]['RedemptionGenesis'] != '0.00')
+                             $redemptiongenesis = (float)$result2[$ctr2]['RedemptionGenesis'];
                         $ctr2++;
                     }
                }
 
                 // count site cash on hand
-                $vcashonhandamt = (((($loadcash + $bancnet) - $redemptioncashier) - $ewalletwithdrawal) - $manualredemption) - $encashedtickets;
+                $vcashonhandamt = ((((($loadcash + $bancnet + $loadcoupon) - $redemptioncashier) - $redemptiongenesis) - $ewalletwithdrawal) - $manualredemption) - $encashedtickets;
 
             }
             /*****************V2 Computation******************/
@@ -763,27 +771,31 @@ if($connected)
                 $supdetails = array();
                 foreach ($result as $value) {                     
                     if(isset($supdetails[$value['CreatedByAID']])){
-                        $supdetails[$value['CreatedByAID']]['Deposits'] += (float)$value['Deposits'];
+                        $supdetails[$value['CreatedByAID']]['GenesisDeposits'] += (float)$value['GenesisDeposits'];
+                        $supdetails[$value['CreatedByAID']]['GenesisReloads'] += (float)$value['GenesisReloads'];
+                        $supdetails[$value['CreatedByAID']]['Deposits'] += (float)$value['Deposits']; //SUM(D.tdtl) + SUM(D.ewt)
                         $supdetails[$value['CreatedByAID']]['Reloads'] += (float)$value['Reloads'];
                         $supdetails[$value['CreatedByAID']]['Redemptions'] += (float)$value['Redemptions'];
                         $supdetails[$value['CreatedByAID']]['LoadCash'] += (float)$value['LoadCash'];
-                        $supdetails[$value['CreatedByAID']]['EncashedTickets'] += (float)$value['EncashedTickets'];
                         $supdetails[$value['CreatedByAID']]['EncashedTicketsV2'] += (float)$value['EncashedTicketsV2'];
                         $supdetails[$value['CreatedByAID']]['RedemptionCashier'] += (float)$value['RedemptionCashier'];
+                        $supdetails[$value['CreatedByAID']]['RedemptionGenesis'] += (float)$value['RedemptionGenesis'];
                         $supdetails[$value['CreatedByAID']]['EwalletRedemption'] += (float)$value['EwalletRedemption'];
+                        $supdetails[$value['CreatedByAID']]['EwalletDeposits'] += (float)$value['EwalletDeposits'];
                     }else{
                         $supdetails[$value['CreatedByAID']] = array('CreatedByAID'=>$value['CreatedByAID'],
-                                                                                                       'Name'=>$value['Name'],
                                                                                                        'GenesisDeposits' => $value['GenesisDeposits'], 
                                                                                                        'GenesisReloads' => $value['GenesisReloads'], 
+                                                                                                       'Name'=>$value['Name'],
                                                                                                        'Deposits'=>$value['Deposits'],
                                                                                                        'Reloads'=>$value['Reloads'],
                                                                                                        'Redemptions'=>$value['Redemptions'],
                                                                                                        'LoadCash'=>$value['LoadCash'],
-                                                                                                       'EncashedTickets'=>$value['EncashedTickets'],
                                                                                                        'EncashedTicketsV2'=>$value['EncashedTicketsV2'],
                                                                                                        'RedemptionCashier'=>$value['RedemptionCashier'],
-                                                                                                       'EwalletRedemption'=>$value['EwalletRedemption']
+                                                                                                       'RedemptionGenesis'=>$value['RedemptionGenesis'], 
+                                                                                                       'EwalletRedemption'=>$value['EwalletRedemption'], 
+                                                                                                       'EwalletDeposits'=>$value['EwalletDeposits']
                                                                                                     ); 
                     }
                 }
@@ -799,7 +811,8 @@ if($connected)
                 $manualredemption = 0.00;
                 $bancnet = '0.00';
                 $ewalletwithdrawal  = '0.00';
-
+                $redemptiongenesis = '0.00';
+                
                  $vtotal = array();
                  $vdeposit = array();
                  $vreload = array();
@@ -807,16 +820,17 @@ if($connected)
                  foreach($supdetails as $vview)
                  {
                     $vAID = $vview['CreatedByAID'];
-                    $depositamt = (float)$vview['Deposits'];
+                    $depositamt = (float)$vview['Deposits'] + (float)$vview['EwalletDeposits'];
                     $reloadamt = (float)$vview['Reloads'];
-                    $withdrawamt = (float)$vview['Redemptions'];
+                    $withdrawamt = (float)$vview['RedemptionCashier'] + (float)$vview['RedemptionGenesis'] + $vview['EwalletRedemption'];
                     $loadcash = (float)$vview['LoadCash'];
                     $encashtickets = (float)$vview['EncashedTicketsV2'];
                     $cashierredemption = (float)$vview['RedemptionCashier'];
+                    $genredemption = (float)$vview['RedemptionGenesis'];
                     $ewalletredemption = (float)$vview['EwalletRedemption'];
                     $genesisticketloads = (float)$vview['GenesisDeposits'] + (float)$vview['GenesisReloads'];
                     
-                    $cashonhand = ($depositamt + $reloadamt + $genesisticketloads) - ($cashierredemption + $ewalletredemption + $encashtickets);
+                    $cashonhand = ($depositamt + $reloadamt + $genesisticketloads) - ($withdrawamt + $encashtickets);
 
                     array_push($combined, array($vview['Name'], number_format($depositamt, 2, '.', ','), 
                     number_format($reloadamt, 2, '.', ','), number_format($withdrawamt, 2, '.', ','), 
@@ -830,39 +844,42 @@ if($connected)
                  }
 
                  //Sum up the total redemption made by the cashier
-                if(count($result) > 0){
-                   while($ctr1 < count($result)) {
-                        if($result[$ctr1]['RedemptionCashier'] != '0.00')
-                            $redemptioncashier += $result[$ctr1]['RedemptionCashier'];
-                        $ctr1++;
-                    }
-               }
+//                if(count($result) > 0){
+//                   while($ctr1 < count($result)) {
+//                        if($result[$ctr1]['RedemptionCashier'] != '0.00')
+//                            $redemptioncashier += $result[$ctr1]['RedemptionCashier'];
+//                        $ctr1++;
+//                    }
+//               }
 
                if(count($result2) > 0){
                    while($ctr2 < count($result2))
                     {
-                        if($result2[$ctr2]['LoadCash'] != '0.00')
-                            $loadcash = $result2[$ctr2]['LoadCash'];
-                        if($result2[$ctr2]['LoadTicket'] != '0.00')
-                            $loadticket = $result2[$ctr2]['LoadTicket'];
-                        if($result2[$ctr2]['LoadCoupon'] != '0.00')
-                            $loadcoupon = $result2[$ctr2]['LoadCoupon'];
-                        if($result2[$ctr2]['PrintedTickets'] != '0.00')
-                            $printedtickets = $result2[$ctr2]['PrintedTickets'];
-                        if($result2[$ctr2]['EncashedTicketsV2'] != '0.00')
-                            $encashedtickets = $result2[$ctr2]['EncashedTicketsV2'];
-                        if($result2[$ctr2]['ManualRedemption'] != '0.00')
-                            $manualredemption = (float)$result2[$ctr2]['ManualRedemption'];
-                        if($result2[$ctr2]['Bancnet'] != '0.00')
-                            $bancnet = (float)$result2[$ctr2]['Bancnet'];
-                        if($result2[$ctr2]['EwalletWithdrawal'] != '0.00')
-                            $ewalletwithdrawal = (float)$result2[$ctr2]['EwalletWithdrawal'];
+                         if($result2[$ctr2]['LoadCash'] != '0.00')
+                             $loadcash = $result2[$ctr2]['LoadCash'];
+                         if($result2[$ctr2]['LoadTicket'] != '0.00')
+                             $loadticket = $result2[$ctr2]['LoadTicket'];
+                         if($result2[$ctr2]['LoadCoupon'] != '0.00')
+                             $loadcoupon = $result2[$ctr2]['LoadCoupon'];
+                         if($result2[$ctr2]['PrintedTickets'] != '0.00')
+                             $printedtickets = $result2[$ctr2]['PrintedTickets'];
+                         if($result2[$ctr2]['EncashedTicketsV2'] != '0.00')
+                             $encashedtickets = $result2[$ctr2]['EncashedTicketsV2'];
+                         if($result2[$ctr2]['ManualRedemption'] != '0.00')
+                             $manualredemption = (float)$result2[$ctr2]['ManualRedemption'];
+                         if($result2[$ctr2]['Bancnet'] != '0.00')
+                             $bancnet = (float)$result2[$ctr2]['Bancnet'];
+                         if($result2[$ctr2]['EwalletWithdrawal'] != '0.00')
+                             $ewalletwithdrawal = (float)$result2[$ctr2]['EwalletWithdrawal'];
+                         if($result2[$ctr2]['RedemptionCashier'] != '0.00')
+                             $redemptioncashier = (float)$result2[$ctr2]['RedemptionCashier'];
+                         if($result2[$ctr2]['RedemptionGenesis'] != '0.00')
+                             $redemptiongenesis = (float)$result2[$ctr2]['RedemptionGenesis'];
                         $ctr2++;
                     }
                }
                 // count site cash on hand
-                $vcashonhandamt = (((($loadcash + $bancnet + $loadcoupon) - $redemptioncashier + $loadticket) - $ewalletwithdrawal) - $manualredemption) - $encashedtickets;
-
+                $vcashonhandamt = ((((($loadcash + $bancnet + $loadcoupon + $loadticket) - $redemptioncashier) - $redemptiongenesis) - $ewalletwithdrawal) - $manualredemption) - $encashedtickets;
             }
            unset($supdetails);
            /*** Get the Total sum of transaction types and gross hold***/
@@ -880,8 +897,7 @@ if($connected)
                       1 => '',
                       2 => '',
                       3 => '',
-                      4 => '',
-                      5 => ''
+                      4 => ''
                      );
 //             $totals2 = array(0 => 'Summary per Page',
 //                        1 => '',
@@ -891,39 +907,34 @@ if($connected)
 //                        5 => number_format($arrtotal["TotalWithdraw"], 2, '.', ',')
 //                       );
              $totals3 = array(0 => 'Grand Total',
-                        1 => '',
-                        2 => 'Total Sales',
-                        3 => number_format($arrtotal["TotalDeposit"] + $arrtotal["TotalReload"], 2, '.', ','),
-                        4 => 'Total Redemption',
-                        5 => number_format($arrtotal["TotalWithdraw"], 2, '.', ',')
+                        1 => 'Total Sales',
+                        2 => number_format($arrtotal["TotalDeposit"] + $arrtotal["TotalReload"], 2, '.', ','),
+                        3 => 'Total Redemption',
+                        4 => number_format($arrtotal["TotalWithdraw"], 2, '.', ',')
                        );
              $totals4 = array(0 => '       ',
-                        1 => '',
-                        2 => '     Cash',
-                        3 => number_format($loadcash, 2, '.', ','),
-                        4 => 'Manual Redemption',
-                        5 => number_format($manualredemption, 2, '.', ',')
+                        1 => '     Cash',
+                        2 => number_format($loadcash, 2, '.', ','),
+                        3 => 'Manual Redemption',
+                        4 => number_format($manualredemption, 2, '.', ',')
                        );
              $totals5 = array(0 => '       ',
-                        1 => '',
-                        2 => '     Bancnet',
-                        3 => number_format($bancnet, 2, '.', ','),
-                        4 => 'Printed Tickets',
-                        5 => number_format($printedtickets, 2, '.', ',')
+                        1 => '     Bancnet',
+                        2 => number_format($bancnet, 2, '.', ','),
+                        3 => 'Printed Tickets',
+                        4 => number_format($printedtickets, 2, '.', ',')
                        );
              $totals6 = array(0 => '       ',
-                        1 => '     ',
-                        2 => '     Tickets',
-                        3 => number_format($loadticket, 2, '.', ','),
-                        4 => 'Encashed Tickets',
-                        5 => number_format($encashedtickets, 2, '.', ',')
+                        1 => '     Tickets',
+                        2 => number_format($loadticket, 2, '.', ','),
+                        3 => 'Encashed Tickets',
+                        4 => number_format($encashedtickets, 2, '.', ',')
                        );
              $totals7 = array(0 => '       ',
-                        1 => '     ',
-                        2 => '     Coupons',
-                        3 => number_format($loadcoupon, 2, '.', ','),
-                        4 => 'Cash On Hand',
-                        5 => number_format($vcashonhandamt, 2, '.', ',')
+                        1 => '     Coupons',
+                        2 => number_format($loadcoupon, 2, '.', ','),
+                        3 => 'Cash On Hand',
+                        4 => number_format($vcashonhandamt, 2, '.', ',')
                        );
              array_push($combined, $totals1);
 //             array_push($combined, $totals2);
@@ -1000,16 +1011,20 @@ if($connected)
                       $supdetails[$value['CreatedByAID']]['RedemptionCashier'] += (float)$value['RedemptionCashier'];
                       $supdetails[$value['CreatedByAID']]['EwalletRedemption'] += (float)$value['EwalletRedemption'];
                   }else{
-                      $supdetails[$value['CreatedByAID']] = array('CreatedByAID'=>$value['CreatedByAID'],
-                                                                                                     'Name'=>$value['Name'],
-                                                                                                     'Deposits'=>$value['Deposits'],
-                                                                                                     'Reloads'=>$value['Reloads'],
-                                                                                                     'Redemptions'=>$value['Redemptions'],
-                                                                                                     'LoadCash'=>$value['LoadCash'],
-                                                                                                     'EncashedTickets'=>$value['EncashedTickets'],
-                                                                                                     'RedemptionCashier'=>$value['RedemptionCashier'],
-                                                                                                     'EwalletRedemption'=>$value['EwalletRedemption']
-                                                                                                  ); 
+                     $supdetails[$value['CreatedByAID']] = array('CreatedByAID'=>$value['CreatedByAID'],
+                                                                                                       'GenesisDeposits' => $value['GenesisDeposits'], 
+                                                                                                       'GenesisReloads' => $value['GenesisReloads'], 
+                                                                                                       'Name'=>$value['Name'],
+                                                                                                       'Deposits'=>$value['Deposits'],
+                                                                                                       'Reloads'=>$value['Reloads'],
+                                                                                                       'Redemptions'=>$value['Redemptions'],
+                                                                                                       'LoadCash'=>$value['LoadCash'],
+                                                                                                       'EncashedTicketsV2'=>$value['EncashedTicketsV2'],
+                                                                                                       'RedemptionCashier'=>$value['RedemptionCashier'],
+                                                                                                       'RedemptionGenesis'=>$value['RedemptionGenesis'], 
+                                                                                                       'EwalletRedemption'=>$value['EwalletRedemption'], 
+                                                                                                       'EwalletDeposits'=>$value['EwalletDeposits']
+                                                                                                    ); 
                   }
               }
 
@@ -1069,27 +1084,31 @@ if($connected)
                  while($ctr2 < count($result2))
                   {
                       if($result2[$ctr2]['LoadCash'] != '0.00')
-                          $loadcash = $result2[$ctr2]['LoadCash'];
+                             $loadcash = $result2[$ctr2]['LoadCash'];
                       if($result2[$ctr2]['LoadTicket'] != '0.00')
-                          $loadticket = $result2[$ctr2]['LoadTicket'];
+                         $loadticket = $result2[$ctr2]['LoadTicket'];
                       if($result2[$ctr2]['LoadCoupon'] != '0.00')
-                          $loadcoupon = $result2[$ctr2]['LoadCoupon'];
+                         $loadcoupon = $result2[$ctr2]['LoadCoupon'];
                       if($result2[$ctr2]['PrintedTickets'] != '0.00')
-                          $printedtickets = $result2[$ctr2]['PrintedTickets'];
+                         $printedtickets = $result2[$ctr2]['PrintedTickets'];
                       if($result2[$ctr2]['EncashedTickets'] != '0.00')
-                          $encashedtickets = $result2[$ctr2]['EncashedTickets'];
+                         $encashedtickets = $result2[$ctr2]['EncashedTickets'];
                       if($result2[$ctr2]['ManualRedemption'] != '0.00')
-                          $manualredemption = (float)$result2[$ctr2]['ManualRedemption'];
+                         $manualredemption = (float)$result2[$ctr2]['ManualRedemption'];
                       if($result2[$ctr2]['Bancnet'] != '0.00')
-                          $bancnet = (float)$result2[$ctr2]['Bancnet'];
+                         $bancnet = (float)$result2[$ctr2]['Bancnet'];
                       if($result2[$ctr2]['EwalletWithdrawal'] != '0.00')
-                          $ewalletwithdrawal = (float)$result2[$ctr2]['EwalletWithdrawal'];
+                         $ewalletwithdrawal = (float)$result2[$ctr2]['EwalletWithdrawal'];
+                      if($result2[$ctr2]['RedemptionCashier'] != '0.00')
+                         $redemptioncashier = (float)$result2[$ctr2]['RedemptionCashier'];
+                      if($result2[$ctr2]['RedemptionGenesis'] != '0.00')
+                         $redemptiongenesis = (float)$result2[$ctr2]['RedemptionGenesis'];
                       $ctr2++;
                   }
              }
 
               // count site cash on hand
-              $vcashonhandamt = (((($loadcash + $bancnet) - $redemptioncashier) - $ewalletwithdrawal) - $manualredemption) - $encashedtickets;
+              $vcashonhandamt = ((((($loadcash + $bancnet + $loadcoupon) - $redemptioncashier) - $redemptiongenesis) - $ewalletwithdrawal) - $manualredemption) - $encashedtickets;
 
                /*** Get the Total sum of transaction types and gross hold***/
                 $totalgh = array_sum($vtotal);
@@ -1170,31 +1189,35 @@ if($connected)
       else {
           if(count($result) > 0)
           {   
-               $supdetails = array();
+              $supdetails = array();
               foreach ($result as $value) {                     
                   if(isset($supdetails[$value['CreatedByAID']])){
                       $supdetails[$value['CreatedByAID']]['GenesisDeposits'] += (float)$value['GenesisDeposits'];
-                      $supdetails[$value['CreatedByAID']]['GenesisReloads'] += (float)$value['GenesisReloads'];
-                      $supdetails[$value['CreatedByAID']]['Deposits'] += (float)$value['Deposits'];
-                      $supdetails[$value['CreatedByAID']]['Reloads'] += (float)$value['Reloads'];
-                      $supdetails[$value['CreatedByAID']]['Redemptions'] += (float)$value['Redemptions'];
-                      $supdetails[$value['CreatedByAID']]['LoadCash'] += (float)$value['LoadCash'];
-                      $supdetails[$value['CreatedByAID']]['EncashedTickets'] += (float)$value['EncashedTickets'];
-                      $supdetails[$value['CreatedByAID']]['EncashedTicketsV2'] += (float)$value['EncashedTicketsV2'];
-                      $supdetails[$value['CreatedByAID']]['RedemptionCashier'] += (float)$value['RedemptionCashier'];
-                      $supdetails[$value['CreatedByAID']]['EwalletRedemption'] += (float)$value['EwalletRedemption'];
+                        $supdetails[$value['CreatedByAID']]['GenesisReloads'] += (float)$value['GenesisReloads'];
+                        $supdetails[$value['CreatedByAID']]['Deposits'] += (float)$value['Deposits']; //SUM(D.tdtl) + SUM(D.ewt)
+                        $supdetails[$value['CreatedByAID']]['Reloads'] += (float)$value['Reloads'];
+                        $supdetails[$value['CreatedByAID']]['Redemptions'] += (float)$value['Redemptions'];
+                        $supdetails[$value['CreatedByAID']]['LoadCash'] += (float)$value['LoadCash'];
+                        $supdetails[$value['CreatedByAID']]['EncashedTicketsV2'] += (float)$value['EncashedTicketsV2'];
+                        $supdetails[$value['CreatedByAID']]['RedemptionCashier'] += (float)$value['RedemptionCashier'];
+                        $supdetails[$value['CreatedByAID']]['RedemptionGenesis'] += (float)$value['RedemptionGenesis'];
+                        $supdetails[$value['CreatedByAID']]['EwalletRedemption'] += (float)$value['EwalletRedemption'];
+                        $supdetails[$value['CreatedByAID']]['EwalletDeposits'] += (float)$value['EwalletDeposits'];
                   }else{
                       $supdetails[$value['CreatedByAID']] = array('CreatedByAID'=>$value['CreatedByAID'],
-                                                                                                     'Name'=>$value['Name'],
-                                                                                                     'Deposits'=>$value['Deposits'],
-                                                                                                     'Reloads'=>$value['Reloads'],
-                                                                                                     'Redemptions'=>$value['Redemptions'],
-                                                                                                     'LoadCash'=>$value['LoadCash'],
-                                                                                                     'EncashedTickets'=>$value['EncashedTickets'],
-                                                                                                     'EncashedTicketsV2'=>$value['EncashedTicketsV2'],
-                                                                                                     'RedemptionCashier'=>$value['RedemptionCashier'],
-                                                                                                     'EwalletRedemption'=>$value['EwalletRedemption']
-                                                                                                  ); 
+                                                                                                       'GenesisDeposits' => $value['GenesisDeposits'], 
+                                                                                                       'GenesisReloads' => $value['GenesisReloads'], 
+                                                                                                       'Name'=>$value['Name'],
+                                                                                                       'Deposits'=>$value['Deposits'],
+                                                                                                       'Reloads'=>$value['Reloads'],
+                                                                                                       'Redemptions'=>$value['Redemptions'],
+                                                                                                       'LoadCash'=>$value['LoadCash'],
+                                                                                                       'EncashedTicketsV2'=>$value['EncashedTicketsV2'],
+                                                                                                       'RedemptionCashier'=>$value['RedemptionCashier'],
+                                                                                                       'RedemptionGenesis'=>$value['RedemptionGenesis'], 
+                                                                                                       'EwalletRedemption'=>$value['EwalletRedemption'], 
+                                                                                                       'EwalletDeposits'=>$value['EwalletDeposits']
+                                                                                                    ); 
                   }
               }
 
@@ -1203,18 +1226,19 @@ if($connected)
                $vreload = array();
                $vwithdraw = array();
                foreach($supdetails as $vview)
-               {
-                  $vAID = $vview['CreatedByAID'];
-                  $depositamt = (float)$vview['Deposits'];
-                  $reloadamt = (float)$vview['Reloads'];
-                  $withdrawamt = (float)$vview['Redemptions'];
-                  $loadcash = (float)$vview['LoadCash'];
-                  $encashtickets = (float)$vview['EncashedTicketsV2'];
-                  $cashierredemption = (float)$vview['RedemptionCashier'];
-                  $ewalletredemption = (float)$vview['EwalletRedemption'];
-                  $genesisticketloads = (float)$vview['GenesisDeposits'] + (float)$vview['GenesisReloads'];
-                  
-                  $cashonhand = ($depositamt + $reloadamt + $genesisticketloads) - ($cashierredemption + $ewalletredemption + $encashtickets);
+                 {
+                    $vAID = $vview['CreatedByAID'];
+                    $depositamt = (float)$vview['Deposits'] + (float)$vview['EwalletDeposits'];
+                    $reloadamt = (float)$vview['Reloads'];
+                    $withdrawamt = (float)$vview['RedemptionCashier'] + (float)$vview['RedemptionGenesis'] + $vview['EwalletRedemption'];
+                    $loadcash = (float)$vview['LoadCash'];
+                    $encashtickets = (float)$vview['EncashedTicketsV2'];
+                    $cashierredemption = (float)$vview['RedemptionCashier'];
+                    $genredemption = (float)$vview['RedemptionGenesis'];
+                    $ewalletredemption = (float)$vview['EwalletRedemption'];
+                    $genesisticketloads = (float)$vview['GenesisDeposits'] + (float)$vview['GenesisReloads'];
+                    
+                    $cashonhand = ($depositamt + $reloadamt + $genesisticketloads) - ($withdrawamt + $encashtickets);
 
                   $combined = array($vview['Name'], '<span style="text-align: right;">'.number_format($depositamt, 2, '.', ',').'</span>', 
                         '<span style="text-align: right;">'.number_format($reloadamt, 2, '.', ',').'</span>', 
@@ -1222,12 +1246,12 @@ if($connected)
                         '<span style="text-align: right;">'.number_format($cashonhand, 2, '.', ',').'</span>','');
 
                    $pdf->c_tableRow($combined);
-                   /**** GET Total per page, stores in an array *****/
-                      array_push($vtotal, $grossholdamt);
-                      array_push($vdeposit, $depositamt);
-                      array_push($vreload, $reloadamt);
-                      array_push($vwithdraw, $withdrawamt);
-               }
+                     /**** GET Total per page, stores in an array *****/
+                    array_push($vtotal, $cashonhand);
+                    array_push($vdeposit, $depositamt);
+                    array_push($vreload, $reloadamt);
+                    array_push($vwithdraw, $withdrawamt);
+                 }
 
                unset($supdetails);
 
@@ -1242,7 +1266,7 @@ if($connected)
               $manualredemption = 0.00;
               $bancnet = '0.00';
               $ewalletwithdrawal  = '0.00';
-
+              $redemptiongenesis = '0.00';
                //Sum up the total redemption made by the cashier
               if(count($result) > 0){
                  while($ctr1 < count($result)) {
@@ -1254,29 +1278,33 @@ if($connected)
 
              if(count($result2) > 0){
                  while($ctr2 < count($result2))
-                  {
-                      if($result2[$ctr2]['LoadCash'] != '0.00')
-                          $loadcash = $result2[$ctr2]['LoadCash'];
-                      if($result2[$ctr2]['LoadTicket'] != '0.00')
-                          $loadticket = $result2[$ctr2]['LoadTicket'];
-                      if($result2[$ctr2]['LoadCoupon'] != '0.00')
-                          $loadcoupon = $result2[$ctr2]['LoadCoupon'];
-                      if($result2[$ctr2]['PrintedTickets'] != '0.00')
-                          $printedtickets = $result2[$ctr2]['PrintedTickets'];
-                      if($result2[$ctr2]['EncashedTicketsV2'] != '0.00')
-                          $encashedtickets = $result2[$ctr2]['EncashedTicketsV2'];
-                      if($result2[$ctr2]['ManualRedemption'] != '0.00')
-                          $manualredemption = (float)$result2[$ctr2]['ManualRedemption'];
-                      if($result2[$ctr2]['Bancnet'] != '0.00')
-                          $bancnet = (float)$result2[$ctr2]['Bancnet'];
-                      if($result2[$ctr2]['EwalletWithdrawal'] != '0.00')
-                          $ewalletwithdrawal = (float)$result2[$ctr2]['EwalletWithdrawal'];
-                      $ctr2++;
-                  }
+                     {
+                         if($result2[$ctr2]['LoadCash'] != '0.00')
+                             $loadcash = $result2[$ctr2]['LoadCash'];
+                         if($result2[$ctr2]['LoadTicket'] != '0.00')
+                             $loadticket = $result2[$ctr2]['LoadTicket'];
+                         if($result2[$ctr2]['LoadCoupon'] != '0.00')
+                             $loadcoupon = $result2[$ctr2]['LoadCoupon'];
+                         if($result2[$ctr2]['PrintedTickets'] != '0.00')
+                             $printedtickets = $result2[$ctr2]['PrintedTickets'];
+                         if($result2[$ctr2]['EncashedTicketsV2'] != '0.00')
+                             $encashedtickets = $result2[$ctr2]['EncashedTicketsV2'];
+                         if($result2[$ctr2]['ManualRedemption'] != '0.00')
+                             $manualredemption = (float)$result2[$ctr2]['ManualRedemption'];
+                         if($result2[$ctr2]['Bancnet'] != '0.00')
+                             $bancnet = (float)$result2[$ctr2]['Bancnet'];
+                         if($result2[$ctr2]['EwalletWithdrawal'] != '0.00')
+                             $ewalletwithdrawal = (float)$result2[$ctr2]['EwalletWithdrawal'];
+                         if($result2[$ctr2]['RedemptionCashier'] != '0.00')
+                             $redemptioncashier = (float)$result2[$ctr2]['RedemptionCashier'];
+                         if($result2[$ctr2]['RedemptionGenesis'] != '0.00')
+                             $redemptiongenesis = (float)$result2[$ctr2]['RedemptionGenesis'];
+                         $ctr2++;
+                     }
              }
 
               // count site cash on hand
-              $vcashonhandamt = (((($loadcash + $bancnet + $loadcoupon) - $redemptioncashier) - $ewalletwithdrawal) - $manualredemption) - $encashedtickets;
+              $vcashonhandamt = ((((($loadcash + $bancnet + $loadcoupon + $loadticket) - $redemptioncashier) - $redemptiongenesis) - $ewalletwithdrawal) - $manualredemption) - $encashedtickets;
 
                /*** Get the Total sum of transaction types and gross hold***/
                 $totalgh = array_sum($vtotal);

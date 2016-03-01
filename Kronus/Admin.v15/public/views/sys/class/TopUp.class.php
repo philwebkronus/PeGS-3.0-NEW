@@ -198,59 +198,29 @@ class TopUp extends DBHandler
                                 ORDER BY tr.TerminalID, tr.DateCreated DESC"; 
                 
                 //Query for Unused or Active Tickets of the Pick Date (per site/per cutoff)
-                $query7 = "SELECT SiteID, IFNULL(SUM(Amount), 0) AS UnusedTickets, DateCreated FROM
-                                            ((SELECT IFNULL(stckr.Withdrawal, 0) As Amount, stckr.TicketCode, tr.SiteID, tr.DateCreated FROM npos.transactiondetails tr FORCE INDEX(IX_transactiondetails_DateCreated)  -- Printed Tickets through W
-                                              INNER JOIN npos.transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
-                                              INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
-                                              INNER JOIN npos.accounts a ON tr.CreatedByAID = a.AID
-                                              LEFT JOIN stackermanagement.stackersummary stckr ON stckr.StackerSummaryID = tr.StackerSummaryID
-                                              WHERE tr.DateCreated >= :startdate AND tr.DateCreated < :enddate
-                                                AND tr.SiteID = :siteid
-                                                AND tr.Status IN(1,4)
-                                                AND tr.TransactionType = 'W'
-                                                AND tr.StackerSummaryID IS NOT NULL
-                                                AND stckr.CreatedByAID In (SELECT acct.AID FROM npos.accounts acct WHERE acct.AccountTypeID IN (4,15)
-                                                AND acct.AID IN (SELECT sacct.AID FROM npos.siteaccounts sacct WHERE sacct.SiteID =  :siteid))
-                                                    )
-                                            UNION ALL
-                                            (SELECT IFNULL(stckr.Withdrawal, 0) As Amount, stckr.TicketCode, sa.SiteID, stckr.DateCancelledOn as DateCreated FROM stackermanagement.stackersummary stckr -- Cancelled Tickets in Stacker
-                                              INNER JOIN npos.siteaccounts sa ON stckr.CreatedByAID = sa.AID
-                                              WHERE stckr.Status IN (1, 2)
-                                              AND stckr.DateCancelledOn >= :startdate AND stckr.DateCancelledOn < :enddate
-                                              AND stckr.CreatedByAID In (SELECT acct.AID FROM npos.accounts acct WHERE acct.AccountTypeID IN (4, 15))
-                                              AND sa.SiteID =  :siteid
-                                              )) AS UnionPrintedTickets
-                                            WHERE TicketCode NOT IN  
-                                                    (SELECT tckt.TicketCode FROM vouchermanagement.tickets tckt -- Less: Encashed Tickets
-                                                            INNER JOIN npos.accounts acct ON  tckt.EncashedByAID = acct.AID
-                                                            INNER JOIN npos.siteaccounts sa ON tckt.EncashedByAID = sa.AID
-                                                            WHERE tckt.DateEncashed >=  :startdate AND tckt.DateEncashed < :enddate
-                                                              AND acct.AccountTypeID = 4 AND sa.SiteID = :siteid
-                                                            UNION ALL
-                                                            (SELECT stckrdtls.VoucherCode AS TicketCode
-                                                              FROM stackermanagement.stackersummary stckr
-                                                              INNER JOIN stackermanagement.stackerdetails stckrdtls ON stckr.StackerSummaryID = stckrdtls.StackerSummaryID
-                                                              WHERE stckrdtls.PaymentType = 2
-                                                                    AND stckrdtls.StackerSummaryID IN
-                                                                      (SELECT tr.StackerSummaryID
-                                                                            FROM npos.transactiondetails tr FORCE INDEX(IX_transactiondetails_DateCreated)
-                                                                            INNER JOIN npos.transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
-                                                                            INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
-                                                                            INNER JOIN npos.accounts a ON tr.CreatedByAID = a.AID
-                                                                            LEFT JOIN stackermanagement.stackersummary stckr ON stckr.StackerSummaryID = tr.StackerSummaryID
-                                                                            WHERE tr.DateCreated >= :startdate AND tr.DateCreated < :enddate
-                                                                              AND tr.SiteID = :siteid
-                                                                              AND tr.Status IN(1,4)
-                                                                              AND tr.TransactionType In ('D', 'R')
-                                                                                    AND tr.StackerSummaryID IS NOT NULL
-                                                                              AND stckr.CreatedByAID In (SELECT acct.AID FROM npos.accounts acct WHERE acct.AccountTypeID IN (4,15)
-                                                                              AND acct.AID IN (SELECT sacct.AID FROM npos.siteaccounts sacct WHERE sacct.SiteID =  :siteid)))
-                                                            )
-                                                    ) 
-                                        GROUP BY SiteID";
+                $query7 = "SELECT SUM(Amount) AS UnusedTickets, SiteID, DateCreated  
+                       FROM vouchermanagement.tickets 
+                       WHERE DateCreated >= :startdate               -- Get Printed Tickets for the day 
+                       AND DateCreated < :enddate  
+                       AND TicketCode NOT IN (SELECT TicketCode FROM ((SELECT stckr.TicketCode FROM stackermanagement.stackersummary stckr -- Cancelled Tickets in Stacker 
+                                INNER JOIN npos.accounts acct ON stckr.CreatedByAID = acct.AID
+                                INNER JOIN npos.siteaccounts sa ON acct.AID = sa.AID
+                                WHERE stckr.DateCancelledOn >= :startdate AND stckr.DateCancelledOn < :enddate
+                                AND acct.AccountTypeID IN (4, 15))
+                       UNION
+                            (SELECT TicketCode FROM vouchermanagement.tickets WHERE DateUpdated >= :startdate  
+                            AND DateUpdated < :enddate AND DateEncashed IS NULL)
+                            UNION
+                            (SELECT TicketCode FROM vouchermanagement.tickets tckt  -- Encashed Tickets
+                            WHERE tckt.DateEncashed >= :startdate AND tckt.DateEncashed < :enddate 
+                            AND tckt.EncashedByAID IN (SELECT acct.AID FROM npos.accounts acct WHERE acct.AccountTypeID = 4
+                            AND acct.AID IN (SELECT sacct.AID FROM npos.siteaccounts sacct))))
+                            AS GetLessTicketCode
+                            ) GROUP BY SiteID";
                 
                 //Query for Printed Tickets of the pick date (per site/per cutoff)
-                $query8 = "SELECT SiteID, SUM(PrintedTickets) AS PrintedTickets, DateCreated FROM (SELECT tr.SiteID, IFNULL(SUM(stckr.Withdrawal), 0) AS PrintedTickets FROM npos.transactiondetails tr FORCE INDEX(IX_transactiondetails_DateCreated)  -- Printed Tickets through W
+                $query8 = "SELECT SiteID, SUM(PrintedTickets) AS PrintedTickets, DateCreated FROM (
+                    SELECT tr.SiteID, IFNULL(SUM(stckr.Withdrawal), 0) AS PrintedTickets, tr.DateCreated FROM npos.transactiondetails tr FORCE INDEX(IX_transactiondetails_DateCreated)  -- Printed Tickets through W
                             INNER JOIN npos.transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
                             INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
                             INNER JOIN npos.accounts a ON ts.CreatedByAID = a.AID
@@ -261,7 +231,7 @@ class TopUp extends DBHandler
                               AND tr.StackerSummaryID IS NOT NULL
                               GROUP BY tr.SiteID 
                         UNION ALL
-                        SELECT SiteID, SUM(Amount) as PrintedTickets FROM ewallettrans WHERE StartDate >= :startdate
+                        SELECT SiteID, SUM(Amount) as PrintedTickets, StartDate FROM ewallettrans WHERE StartDate >= :startdate
                             AND StartDate < :enddate AND Status IN (1,3) AND TransType='W' AND Source = 1 GROUP BY SiteID) 
                         AS sum GROUP BY SiteID";
                 
@@ -772,59 +742,30 @@ class TopUp extends DBHandler
                                 ORDER BY tr.TerminalID, tr.DateCreated DESC"; 
                 
                 //Query for Unused or Active Tickets of the Pick Date (per site/per cutoff)
-                $query7 = "SELECT SiteID, IFNULL(SUM(Amount), 0) AS UnusedTickets, DateCreated FROM
-                                            ((SELECT IFNULL(stckr.Withdrawal, 0) As Amount, stckr.TicketCode, tr.SiteID, tr.DateCreated FROM npos.transactiondetails tr FORCE INDEX(IX_transactiondetails_DateCreated)  -- Printed Tickets through W
-                                              INNER JOIN npos.transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
-                                              INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
-                                              INNER JOIN npos.accounts a ON tr.CreatedByAID = a.AID
-                                              LEFT JOIN stackermanagement.stackersummary stckr ON stckr.StackerSummaryID = tr.StackerSummaryID
-                                              WHERE tr.DateCreated >= :startdate AND tr.DateCreated < :enddate
-                                                AND tr.SiteID = :siteid
-                                                AND tr.Status IN(1,4)
-                                                AND tr.TransactionType = 'W'
-                                                AND tr.StackerSummaryID IS NOT NULL
-                                                AND stckr.CreatedByAID In (SELECT acct.AID FROM npos.accounts acct WHERE acct.AccountTypeID IN (4,15)
-                                                AND acct.AID IN (SELECT sacct.AID FROM npos.siteaccounts sacct WHERE sacct.SiteID =  :siteid))
-                                                    )
-                                            UNION ALL
-                                            (SELECT IFNULL(stckr.Withdrawal, 0) As Amount, stckr.TicketCode, sa.SiteID, stckr.DateCancelledOn as DateCreated FROM stackermanagement.stackersummary stckr -- Cancelled Tickets in Stacker
-                                              INNER JOIN npos.siteaccounts sa ON stckr.CreatedByAID = sa.AID
-                                              WHERE stckr.Status IN (1, 2)
-                                              AND stckr.DateCancelledOn >= :startdate AND stckr.DateCancelledOn < :enddate
-                                              AND stckr.CreatedByAID In (SELECT acct.AID FROM npos.accounts acct WHERE acct.AccountTypeID IN (4, 15))
-                                              AND sa.SiteID =  :siteid
-                                              )) AS UnionPrintedTickets
-                                            WHERE TicketCode NOT IN  
-                                                    (SELECT tckt.TicketCode FROM vouchermanagement.tickets tckt -- Less: Encashed Tickets
-                                                            INNER JOIN npos.accounts acct ON  tckt.EncashedByAID = acct.AID
-                                                            INNER JOIN npos.siteaccounts sa ON tckt.EncashedByAID = sa.AID
-                                                            WHERE tckt.DateEncashed >=  :startdate AND tckt.DateEncashed < :enddate
-                                                              AND acct.AccountTypeID = 4 AND sa.SiteID = :siteid
-                                                            UNION ALL
-                                                            (SELECT stckrdtls.VoucherCode AS TicketCode
-                                                              FROM stackermanagement.stackersummary stckr
-                                                              INNER JOIN stackermanagement.stackerdetails stckrdtls ON stckr.StackerSummaryID = stckrdtls.StackerSummaryID
-                                                              WHERE stckrdtls.PaymentType = 2
-                                                                    AND stckrdtls.StackerSummaryID IN
-                                                                      (SELECT tr.StackerSummaryID
-                                                                            FROM npos.transactiondetails tr FORCE INDEX(IX_transactiondetails_DateCreated)
-                                                                            INNER JOIN npos.transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
-                                                                            INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
-                                                                            INNER JOIN npos.accounts a ON tr.CreatedByAID = a.AID
-                                                                            LEFT JOIN stackermanagement.stackersummary stckr ON stckr.StackerSummaryID = tr.StackerSummaryID
-                                                                            WHERE tr.DateCreated >= :startdate AND tr.DateCreated < :enddate
-                                                                              AND tr.SiteID = :siteid
-                                                                              AND tr.Status IN(1,4)
-                                                                              AND tr.TransactionType In ('D', 'R')
-                                                                                    AND tr.StackerSummaryID IS NOT NULL
-                                                                              AND stckr.CreatedByAID In (SELECT acct.AID FROM npos.accounts acct WHERE acct.AccountTypeID IN (4,15)
-                                                                              AND acct.AID IN (SELECT sacct.AID FROM npos.siteaccounts sacct WHERE sacct.SiteID =  :siteid)))
-                                                            )
-                                                    ) 
-                                        GROUP BY SiteID";
+                $query7 = "SELECT SUM(Amount) AS UnusedTickets, SiteID, DateCreated  
+                            FROM vouchermanagement.tickets 
+                            WHERE DateCreated >= :startdate               -- Get Printed Tickets for the day 
+                            AND DateCreated < :enddate  
+                            AND SiteID = :siteid
+                            AND TicketCode NOT IN (SELECT TicketCode FROM ((SELECT stckr.TicketCode FROM stackermanagement.stackersummary stckr -- Cancelled Tickets in Stacker 
+                                     INNER JOIN npos.accounts acct ON stckr.CreatedByAID = acct.AID
+                                     INNER JOIN npos.siteaccounts sa ON acct.AID = sa.AID
+                                     WHERE stckr.DateCancelledOn >= :startdate AND stckr.DateCancelledOn < :enddate
+                                     AND acct.AccountTypeID IN (4, 15))
+                            UNION
+                                 (SELECT TicketCode FROM vouchermanagement.tickets WHERE DateUpdated >= :startdate  
+                                 AND DateUpdated < :enddate AND DateEncashed IS NULL)
+                                 UNION
+                                 (SELECT TicketCode FROM vouchermanagement.tickets tckt  -- Encashed Tickets
+                                 WHERE tckt.DateEncashed >= :startdate AND tckt.DateEncashed < :enddate 
+                                 AND tckt.EncashedByAID IN (SELECT acct.AID FROM npos.accounts acct WHERE acct.AccountTypeID = 4
+                                 AND acct.AID IN (SELECT sacct.AID FROM npos.siteaccounts sacct))))
+                                 AS GetLessTicketCode
+                                 ) GROUP BY SiteID";
                 
                 //Query for Printed Tickets of the pick date (per site/per cutoff)
-                $query8 = "SELECT SiteID, SUM(PrintedTickets) AS PrintedTickets, DateCreated FROM (SELECT tr.SiteID, IFNULL(SUM(stckr.Withdrawal), 0) AS PrintedTickets FROM npos.transactiondetails tr FORCE INDEX(IX_transactiondetails_DateCreated)  -- Printed Tickets through W
+                $query8 = "SELECT SiteID, SUM(PrintedTickets) AS PrintedTickets, DateCreated FROM (
+                    SELECT tr.SiteID, IFNULL(SUM(stckr.Withdrawal), 0) AS PrintedTickets, tr.DateCreated FROM npos.transactiondetails tr FORCE INDEX(IX_transactiondetails_DateCreated)  -- Printed Tickets through W
                             INNER JOIN npos.transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
                             INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
                             INNER JOIN npos.accounts a ON ts.CreatedByAID = a.AID
@@ -836,7 +777,7 @@ class TopUp extends DBHandler
                               AND tr.StackerSummaryID IS NOT NULL
                               GROUP BY tr.SiteID 
                         UNION ALL
-                        SELECT SiteID, SUM(Amount) as PrintedTickets FROM ewallettrans WHERE StartDate >= :startdate
+                        SELECT SiteID, SUM(Amount) as PrintedTickets, StartDate FROM ewallettrans WHERE StartDate >= :startdate
                             AND StartDate < :enddate AND Status IN (1,3) AND SiteID = :siteid AND TransType='W' AND Source = 1 GROUP BY SiteID) 
                         AS sum GROUP BY SiteID";
                 
@@ -1050,13 +991,12 @@ class TopUp extends DBHandler
                     $this->bindparameter(":siteid", $value2["SiteID"]);
                     $this->execute();  
                     $rows8 =  $this->fetchAllData();
-                    
+
                     foreach ($rows8 as $row8) {
                         if($row8["SiteID"] == $value2["SiteID"]){
                             if(($row8['DateCreated'] >= $value2['ReportDate']." ".BaseProcess::$cutoff) && ($row8['DateCreated'] < $value2['CutOff'])){
                                 $qr1[$keys]["PrintedTickets"] = (float)$row8["PrintedTickets"];
                             }
-                            break;
                         }
                     }
                     
@@ -2314,13 +2254,11 @@ class TopUp extends DBHandler
                        AND TicketCode NOT IN (SELECT TicketCode FROM ((SELECT stckr.TicketCode FROM stackermanagement.stackersummary stckr -- Cancelled Tickets in Stacker 
                                 INNER JOIN npos.accounts acct ON stckr.CreatedByAID = acct.AID
                                 INNER JOIN npos.siteaccounts sa ON acct.AID = sa.AID
-                                WHERE stckr.Status IN (1, 2)
-                                AND stckr.DateCancelledOn >= :startdate AND stckr.DateCancelledOn < :enddate
-                                AND acct.AccountTypeID IN (4, 15)
-                                AND sa.SiteID = 222)
+                                WHERE stckr.DateCancelledOn >= :startdate AND stckr.DateCancelledOn < :enddate
+                                AND acct.AccountTypeID IN (4, 15))
                        UNION
-                            (SELECT TicketCode FROM vouchermanagement.tickets WHERE DateCreated >= :startdate  
-                            AND DateCreated < :enddate AND Status = 3 AND DateEncashed IS NULL)
+                            (SELECT TicketCode FROM vouchermanagement.tickets WHERE DateUpdated >= :startdate  
+                            AND DateUpdated < :enddate AND DateEncashed IS NULL)
                             UNION
                             (SELECT TicketCode FROM vouchermanagement.tickets tckt  -- Encashed Tickets
                             WHERE tckt.DateEncashed >= :startdate AND tckt.DateEncashed < :enddate 
@@ -4120,13 +4058,13 @@ class TopUp extends DBHandler
                      . " AND a.StartDate < '$endDate' "; 
          }
          
-        
+         
           $stmt = "SELECT a.EwalletTransID,a.LoyaltyCardNumber, a.StartDate ,"
-                  ." a.EndDate , a.Amount, a.TransType,a.Status,b.Name"
+                  ." a.EndDate , a.Amount, a.TransType,a.Status,b.Name, c.TerminalCode"
                   ." FROM npos.ewallettrans a"
-                  ." INNER JOIN npos.accountdetails b ON b.AID = a.CreatedByAID ".$where
+                  ." INNER JOIN npos.accountdetails b ON b.AID = a.CreatedByAID "
+                  ."LEFT JOIN terminals c ON c.TerminalID=a.TerminalID ".$where
                   ."ORDER BY $sort $dir LIMIT $start,$limit";     
-          
           $this->prepare($stmt);
           $this->execute();
           return $this->fetchAllData();

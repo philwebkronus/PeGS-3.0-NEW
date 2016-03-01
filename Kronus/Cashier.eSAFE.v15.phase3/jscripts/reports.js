@@ -127,6 +127,11 @@ $(document).ready(function(){
 
                                 $('#tbltranshistorybody').html(tbody);
                             }
+                            else{
+                                tbody+='<tr><td colspan="12"><b><a id="transSiteSumm" href="#" style="text-decoration: underline ;color: black;">Click here to view the summary breakdown</a></b></td></tr> ';
+
+                                $('#tbltranshistorybody').html(tbody);
+                            }
                         } else {
                             tbody+='<tr>';
 //                            tbody+='<th style=" width: 10%">Terminal#</th>';
@@ -218,6 +223,11 @@ $(document).ready(function(){
 
                                 tbody+='<tr><td colspan="12"><b><a id="transSiteSumm" href="#" style="text-decoration: underline ;color: black;">Click here to view the summary breakdown</a></b></td></tr> ';
 //                                tbody+='<tr><td colspan="18"><b><a id="transSiteSumm" href="#" style="text-decoration: underline ;color: black;">Click here to view the summary breakdown</a></b></td></tr> ';
+
+                                $('#tbltranshistorybody').html(tbody);
+                            }
+                            else{
+                                tbody+='<tr><td colspan="12"><b><a id="transSiteSumm" href="#" style="text-decoration: underline ;color: black;">Click here to view the summary breakdown</a></b></td></tr> ';
 
                                 $('#tbltranshistorybody').html(tbody);
                             }
@@ -517,6 +527,8 @@ $(document).ready(function(){
         
         var CompCashOnHand = 0;
         var CashOnHand = 0;
+        
+        var TotCashierRedemption= 0;
 
         showLightbox(function(){
             $.ajax({
@@ -526,7 +538,7 @@ $(document).ready(function(){
                 success : function(data) {
                     try {
                         var json = $.parseJSON(data);
-                        
+
                         if(pickdate < compareddate){
                             TotalRegCash = toMoney(json.total_rows.TotalRegCash,'no');
                             TotalRegTicket = toMoney(json.total_rows.TotalRegTicket,'no');
@@ -536,25 +548,28 @@ $(document).ready(function(){
                             RegTicket = parseFloat(json.total_rows.TotalRegTicket);
                             RegCoupon = parseFloat(json.total_rows.TotalRegCoupon);
                             CashierRedemption = parseFloat(json.total_rows.TotalCashierRedemption);
-
+                            //TotCashierRedemption = CashierRedemption;
+                           
                             for(i=0;i<json.ticketlist.length;i++) {
                                 if(i == 0){
                                     if(json.ticketlist > 1){
                                         TotalPrintedTickets = parseFloat(json.ticketlist[i].PrintedRedemptionTickets) ;
-                                        TotalEncashedTickets = parseFloat(json.ticketlist[i].EncashedTickets);
-                                        SubEncashedTickets = parseFloat(json.ticketlist[i].EncashedTickets);
+
                                     } else {
                                         TotalPrintedTickets = parseFloat(json.ticketlist[i].PrintedRedemptionTickets);
-                                        TotalEncashedTickets = toMoney(json.ticketlist[i].EncashedTickets,'no');
-                                        SubEncashedTickets = parseFloat(json.ticketlist[i].EncashedTickets,'no');
+
                                     }
                                 } else {
                                     TotalPrintedTickets += parseFloat(json.ticketlist[i].PrintedRedemptionTickets) ;
-                                    TotalEncashedTickets += parseFloat(json.ticketlist[i].EncashedTickets);
-                                    SubEncashedTickets += parseFloat(json.ticketlist[i].EncashedTickets);
+
                                 }
                             }
 
+                            TotalEncashedTickets = parseFloat(json.EncashedTickets);
+                            TotalEncashedTickets = toMoney(json.EncashedTickets,'no');
+                            SubEncashedTickets = parseFloat(json.EncashedTickets);
+                            TotCashierRedemption = CashierRedemption + SubEncashedTickets;
+                            
                             eSAFECash = parseFloat(json.eWalletCashDeposits);
                             eSAFETickets = parseFloat(json.eWalletTicketDeposits);
                             eSAFECoupon = parseFloat(json.eWalletCouponDeposits);
@@ -570,7 +585,7 @@ $(document).ready(function(){
                             TotalPrintedTickets = toMoney(TotalPrintedTickets,'no');
 
                             //Compute Cash On Hand [ Formula: (((Total Cash from Cashier & Genesis + eSAFE Cash Load) - (Total Cashier Redemption + eSAFE Withdraw)) - Total Encashed Tickets) - Total Manual Redemption ]
-                            CompCashOnHand = ((RegCash + eSAFECash) - (CashierRedemption + parseFloat(json.eWalletWithdrawals)) - SubEncashedTickets) - parseFloat(json.manualredemptions);
+                            CompCashOnHand = ((RegCash + RegCoupon + eSAFECash + eSAFECoupon) - (CashierRedemption + parseFloat(json.eWalletCashWithdrawals)) - SubEncashedTickets) - parseFloat(json.manualredemptions);
                             CashOnHand = toMoney(CompCashOnHand,'no');
 
                             updateLightbox( '<div style="margin-bottom: 10px; font-weight: bold;"> Transaction History per Site:<br/>Sales </div><table id="salestranssumm" ><tr><td style="padding-left: 30px;"><b>Non e-SAFE Cash</b></td><td style="text-align: right;">'+TotalRegCash+'</td>' +
@@ -581,6 +596,8 @@ $(document).ready(function(){
                                                         '</tr><tr><td style="padding-left: 30px;"><b>e-SAFE Coupon Deposits</b></td><td style="text-align: right;">' + TotaleSAFECoupon+ '</td>' +
                                                         '</tr><tr><td style="padding-left:5px;"><b>Total Sales</b></td><td style="text-align: right;">' + TotalSales+ '</td>' +
                                                         '</tr><tr><td colspan="2" style="padding-top: 10px;padding-bottom:10px;"></td>' +
+                                                        //'</tr><tr><td style="padding-left:5px;"><b>Total Redemption</b></td><td style="text-align: right;">' + toMoney(TotCashierRedemption,'no')  + '</td>' +
+                                                        '</tr><tr><td style="padding-left:5px;"><b>Total Redemption</b></td><td style="text-align: right;">' + toMoney(TotCashierRedemption,'no')  + '</td>' +
                                                         '</tr><tr><td style="padding-left:5px;"><b>Total Printed Tickets</b></td><td style="text-align: right;">' + TotalPrintedTickets+ '</td>' +
                                                         '</tr><tr><td style="padding-left:5px;"><b>Total Active Tickets For The Day</b></td><td style="text-align: right;">' + TotalActiveTicketsForTheDay+ '</td>' +
                                                         '</tr><tr><td style="padding-left:5px;"><b>Total Encashed Tickets</b></td><td style="text-align: right;">' + TotalEncashedTickets+ '</td>' +
@@ -605,19 +622,18 @@ $(document).ready(function(){
                                 if(i == 0){
                                     if(json.ticketlist > 1){
                                         TotalPrintedTickets = parseFloat(json.ticketlist[i].PrintedRedemptionTickets) ;
-                                        TotalEncashedTickets = parseFloat(json.ticketlist[i].EncashedTickets);
-                                        SubEncashedTickets = parseFloat(json.ticketlist[i].EncashedTickets);
                                     } else {
                                         TotalPrintedTickets = parseFloat(json.ticketlist[i].PrintedRedemptionTickets);
-                                        TotalEncashedTickets = toMoney(json.ticketlist[i].EncashedTickets,'no');
-                                        SubEncashedTickets = parseFloat(json.ticketlist[i].EncashedTickets,'no');
                                     }
                                 } else {
                                     TotalPrintedTickets += parseFloat(json.ticketlist[i].PrintedRedemptionTickets) ;
-                                    TotalEncashedTickets += parseFloat(json.ticketlist[i].EncashedTickets);
-                                    SubEncashedTickets += parseFloat(json.ticketlist[i].EncashedTickets);
+
                                 }
                             }
+
+                            TotalEncashedTickets = parseFloat(json.EncashedTickets);
+                            TotalEncashedTickets = toMoney(json.EncashedTickets,'no');
+                            SubEncashedTickets = parseFloat(json.EncashedTickets);
 
                             eSAFECash = parseFloat(json.eWalletCashDeposits);
                             eSAFETickets = parseFloat(json.eWalletTicketDeposits);
@@ -635,7 +651,7 @@ $(document).ready(function(){
                             TotaleSAFEWithdrawals = toMoney(json.eWalletWithdrawals,'no');
 
                             //Compute Cash On Hand [ Formula: (((Total Cash from Cashier & Genesis + eSAFE Cash Load) - (Total Cashier Redemption + eSAFE Withdraw)) - Total Encashed Tickets) - Total Manual Redemption ]
-                            CompCashOnHand = ((RegCash + RegCoupon + eSAFECash + eSAFECoupon) - (CashierRedemption + parseFloat(json.eWalletWithdrawals)) - SubEncashedTickets) - parseFloat(json.manualredemptions);
+                            CompCashOnHand = ((RegCash + RegTicket + RegCoupon + eSAFECash + eSAFETickets + eSAFECoupon) - (CashierRedemption + parseFloat(json.eWalletWithdrawals)) - SubEncashedTickets) - parseFloat(json.manualredemptions);
                             CashOnHand = toMoney(CompCashOnHand,'no');
 
                             updateLightbox( '<div style="margin-bottom: 10px; font-weight: bold;"> Transaction History per Site:<br/>Sales </div><table id="salestranssumm" ><tr><td style="padding-left: 30px;"><b>Non e-SAFE Cash</b></td><td style="text-align: right;">'+TotalRegCash+'</td>' +
@@ -646,6 +662,7 @@ $(document).ready(function(){
                                                         '</tr><tr><td style="padding-left: 30px;"><b>e-SAFE Coupon Deposits</b></td><td style="text-align: right;">' + TotaleSAFECoupon+ '</td>' +
                                                         '</tr><tr><td style="padding-left:5px;"><b>Total Sales</b></td><td style="text-align: right;">' + TotalSales+ '</td>' +
                                                         '</tr><tr><td colspan="2" style="padding-top: 10px;padding-bottom:10px;"></td>' +
+                                                        '</tr><tr><td style="padding-left:5px;"><b>Total Redemption</b></td><td style="text-align: right;">' + TotalCashierRedemption + '</td>' +
                                                         '</tr><tr><td style="padding-left:5px;"><b>Total e-SAFE Withdrawals</b></td><td style="text-align: right;">' + TotaleSAFEWithdrawals + '</td>' +
                                                         '</tr><tr><td style="padding-left:5px;"><b>Total Printed Tickets</b></td><td style="text-align: right;">' + TotalPrintedTickets+ '</td>' +
                                                         '</tr><tr><td style="padding-left:5px;"><b>Total Active Tickets For The Day</b></td><td style="text-align: right;">' + TotalActiveTicketsForTheDay+ '</td>' +
@@ -1059,18 +1076,21 @@ $(document).ready(function(){
                         var json = $.parseJSON(data);
                         
                         if(pickdate < compareddate){
-                            tbody+='<tr>';
-                            tbody+='<th style=" width: 12%">Terminal#</th>';
-                            tbody+='<th style=" width: 14%">Login</th>';
-                            tbody+='<th style=" width: 14%">Logout</th>';
-                            
-                            tbody+='<th colspan="3"></th>';
-                            tbody+='<th colspan="3"></th>';
-                            tbody+='<th colspan="2"></th>';
-                            
-                            tbody+='<th></th>';
-                            tbody+='</tr>';
-                            tbody+='<tr>';
+                            if(json.rows.length > 0) 
+                            {
+                                tbody+='<tr>';
+                                tbody+='<th style=" width: 12%">Terminal#</th>';
+                                tbody+='<th style=" width: 14%">Login</th>';
+                                tbody+='<th style=" width: 14%">Logout</th>';
+
+                                tbody+='<th colspan="3"></th>';
+                                tbody+='<th colspan="3"></th>';
+                                tbody+='<th colspan="2"></th>';
+
+                                tbody+='<th></th>';
+                                tbody+='</tr>';
+                                tbody+='<tr>';
+                            }
                             
                             for(i=0;i<json.rows.length;i++) {
 
@@ -1115,32 +1135,38 @@ $(document).ready(function(){
 
                                 $('#tbltranshistorybody').html(tbody);
                             }
+                            else{
+                                tbody+='<tr style="height:30px;"> <td colspan="5"></td></tr>';
+                                tbody+='<tr><td colspan="12"><b><a id="transCSiteSumm" href="#" style="text-decoration: underline ;color: black;">Click here to view the summary breakdown</a></b></td></tr> ';  
+                                $('#tbltranshistorybody').html(tbody);
+                            }
                         } else {
-                            tbody+='<tr>';
-//                            tbody+='<th style=" width: 10%">Terminal#</th>';
-//                            tbody+='<th style=" width: 10%">Login</th>';
-//                            tbody+='<th style=" width: 10%">Logout</th>';
-//                            
-//                            tbody+='<th colspan="3"></th>';
-//                            tbody+='<th colspan="3"></th>';
-//                            tbody+='<th colspan="2"></th>';
-//                            tbody+='<th colspan="2"></th>';
-//                            tbody+='<th colspan="2"></th>';
-//                            tbody+='<th colspan="2"></th>';
-//                            
-//                            tbody+='<th></th>';
-                            
-                            tbody+='<th style=" width: 12%">Terminal#</th>';
-                            tbody+='<th style=" width: 14%">Login</th>';
-                            tbody+='<th style=" width: 14%">Logout</th>';
-                            
-                            tbody+='<th colspan="3"></th>';
-                            tbody+='<th colspan="3"></th>';
-                            tbody+='<th colspan="2"></th>';
-                            
-                            tbody+='</tr>';
-                            tbody+='<tr>';
-                            
+                            if(json.rows.length > 0) {
+                                tbody+='<tr>';
+    //                            tbody+='<th style=" width: 10%">Terminal#</th>';
+    //                            tbody+='<th style=" width: 10%">Login</th>';
+    //                            tbody+='<th style=" width: 10%">Logout</th>';
+    //                            
+    //                            tbody+='<th colspan="3"></th>';
+    //                            tbody+='<th colspan="3"></th>';
+    //                            tbody+='<th colspan="2"></th>';
+    //                            tbody+='<th colspan="2"></th>';
+    //                            tbody+='<th colspan="2"></th>';
+    //                            tbody+='<th colspan="2"></th>';
+    //                            
+    //                            tbody+='<th></th>';
+
+                                tbody+='<th style=" width: 12%">Terminal#</th>';
+                                tbody+='<th style=" width: 14%">Login</th>';
+                                tbody+='<th style=" width: 14%">Logout</th>';
+
+                                tbody+='<th colspan="3"></th>';
+                                tbody+='<th colspan="3"></th>';
+                                tbody+='<th colspan="2"></th>';
+
+                                tbody+='</tr>';
+                                tbody+='<tr>';
+                            }
                             for(i=0;i<json.rows.length;i++) {
 
                                 totaldeposit += parseFloat(json.rows[i].TotalCTransDeposit);
@@ -1208,6 +1234,11 @@ $(document).ready(function(){
                                 tbody+='<tr><td colspan="12"><b><a id="transCSiteSumm" href="#" style="text-decoration: underline ;color: black;">Click here to view the summary breakdown</a></b></td></tr> ';
 //                                tbody+='<tr><td colspan="18"><b><a id="transCSiteSumm" href="#" style="text-decoration: underline ;color: black;">Click here to view the summary breakdown</a></b></td></tr> ';
 
+                                $('#tbltranshistorybody').html(tbody);
+                            }
+                            else{
+                                tbody+='<tr style="height:30px;"> <td colspan="5"></td></tr>';
+                                tbody+='<tr><td colspan="12"><b><a id="transCSiteSumm" href="#" style="text-decoration: underline ;color: black;">Click here to view the summary breakdown</a></b></td></tr> ';
                                 $('#tbltranshistorybody').html(tbody);
                             }
                         }
@@ -1620,6 +1651,8 @@ $(document).ready(function(){
         
         var CompCashOnHand = 0;
         var CashOnHand = 0;
+        
+        var TotCashierRedemption = 0;
 
         showLightbox(function(){
             $.ajax({
@@ -1639,21 +1672,12 @@ $(document).ready(function(){
                             RegTicket = parseFloat(json.total_rows.TotalRegTicket);
                             RegCoupon = parseFloat(json.total_rows.TotalRegCoupon);
                             CashierRedemption = parseFloat(json.total_rows.TotalCashierRedemption);
-
-                            for(i=0;i<json.ticketlist.length;i++) {
-                                if(i == 0){
-                                    if(json.ticketlist > 1){
-                                        TotalEncashedTickets = parseFloat(json.ticketlist[i].EncashedTickets);
-                                        SubEncashedTickets = parseFloat(json.ticketlist[i].EncashedTickets);
-                                    } else {
-                                        TotalEncashedTickets = toMoney(json.ticketlist[i].EncashedTickets,'no');
-                                        SubEncashedTickets = parseFloat(json.ticketlist[i].EncashedTickets,'no');
-                                    }
-                                } else {
-                                    TotalEncashedTickets += parseFloat(json.ticketlist[i].EncashedTickets);
-                                    SubEncashedTickets += parseFloat(json.ticketlist[i].EncashedTickets);
-                                }
-                            }
+                            //TotCashierRedemption = CashierRedemption + parseFloat(json.eWalletWithdrawals);
+                            
+                            TotalEncashedTickets = parseFloat(json.EncashedTickets);
+                            TotalEncashedTickets = toMoney(json.EncashedTickets,'no');
+                            SubEncashedTickets = parseFloat(json.EncashedTickets);
+                            TotCashierRedemption = (CashierRedemption + parseFloat(json.eWalletWithdrawals)) - SubEncashedTickets;
 
                             eSAFECash = parseFloat(json.eWalletCashDeposits);
                             eSAFETickets = parseFloat(json.eWalletTicketDeposits);
@@ -1678,6 +1702,7 @@ $(document).ready(function(){
                                                         '</tr><tr><td style="padding-left: 30px;"><b>e-SAFE Coupon Deposits</b></td><td style="text-align: right;">' + TotaleSAFECoupon+ '</td>' +
                                                         '</tr><tr><td style="padding-left:5px;"><b>Total Sales</b></td><td style="text-align: right;">' + TotalSales+ '</td>' +
                                                         '</tr><tr><td colspan="2" style="padding-top: 10px;padding-bottom:10px;"></td>' +
+                                                        '</tr><tr><td style="padding-left:5px;"><b>Total Redemption</b></td><td style="text-align: right;">' + toMoney(TotCashierRedemption,'no') + '</td>' +
                                                          '</tr><tr><td style="padding-left:5px;"><b>Total e-SAFE Withdrawals</b></td><td style="text-align: right;">' + toMoney(json.eWalletWithdrawals,'no')+ '</td>' +
                                                         '</tr><tr><td style="padding-left:5px;"><b>Total Encashed Tickets</b></td><td style="text-align: right;">' + TotalEncashedTickets+ '</td>' +
                                                         //'</tr><tr><td colspan="2" style="padding-top: 10px;padding-bottom:10px;"></td>' +
@@ -1695,21 +1720,11 @@ $(document).ready(function(){
                             RegTicket = parseFloat(json.total_rows.TotalRegTicket);
                             RegCoupon = parseFloat(json.total_rows.TotalRegCoupon);
                             CashierRedemption = parseFloat(json.total_rows.TotalCashierRedemption);
+                            TotCashierRedemption = CashierRedemption + parseFloat(json.eWalletWithdrawals);
 
-                            for(i=0;i<json.ticketlist.length;i++) {
-                                if(i == 0){
-                                    if(json.ticketlist > 1){
-                                        TotalEncashedTickets = parseFloat(json.ticketlist[i].EncashedTickets);
-                                        SubEncashedTickets = parseFloat(json.ticketlist[i].EncashedTickets);
-                                    } else {
-                                        TotalEncashedTickets = toMoney(json.ticketlist[i].EncashedTickets,'no');
-                                        SubEncashedTickets = parseFloat(json.ticketlist[i].EncashedTickets,'no');
-                                    }
-                                } else {
-                                    TotalEncashedTickets += parseFloat(json.ticketlist[i].EncashedTickets);
-                                    SubEncashedTickets += parseFloat(json.ticketlist[i].EncashedTickets);
-                                }
-                            }
+                            TotalEncashedTickets = parseFloat(json.EncashedTickets);
+                            TotalEncashedTickets = toMoney(json.EncashedTickets,'no');
+                            SubEncashedTickets = parseFloat(json.EncashedTickets);
 
                             eSAFECash = parseFloat(json.eWalletCashDeposits);
                             eSAFETickets = parseFloat(json.eWalletTicketDeposits);
@@ -1734,6 +1749,7 @@ $(document).ready(function(){
                                                         '</tr><tr><td style="padding-left: 30px;"><b>e-SAFE Coupon Deposits</b></td><td style="text-align: right;">' + TotaleSAFECoupon+ '</td>' +
                                                         '</tr><tr><td style="padding-left:5px;"><b>Total Sales</b></td><td style="text-align: right;">' + TotalSales+ '</td>' +
                                                         '</tr><tr><td colspan="2" style="padding-top: 10px;padding-bottom:10px;"></td>' +
+                                                        '</tr><tr><td style="padding-left:5px;"><b>Total Redemption</b></td><td style="text-align: right;">' + toMoney(TotCashierRedemption,'no') + '</td>' +
                                                         '</tr><tr><td style="padding-left:5px;"><b>Total e-SAFE Withdrawals</b></td><td style="text-align: right;">' + toMoney(json.eWalletWithdrawals,'no')+ '</td>' +
                                                         '</tr><tr><td style="padding-left:5px;"><b>Total Encashed Tickets</b></td><td style="text-align: right;">' + TotalEncashedTickets+ '</td>' +
                                                         //'</tr><tr><td colspan="2" style="padding-top: 10px;padding-bottom:10px;"></td>' +
@@ -2825,18 +2841,17 @@ $(document).ready(function(){
                             var rcashonhand = 0;
 
                             rsubdtotal += (parseFloat(json.transdetails[i].LoadCash) + parseFloat(json.transdetails[i].LoadCoupon) + parseFloat(json.transdetails[i].LoadBancnet) + parseFloat(json.transdetails[i].LoadTicket));
-                            rsubwtotal += (parseFloat(json.transdetails[i].WCash) + parseFloat(json.transdetails[i].WTicket) + parseFloat(json.transdetails[i].EncashedTickets));
+                            rsubwtotal += (parseFloat(json.transdetails[i].WCash) + parseFloat(json.transdetails[i].WTicket) + parseFloat(json.transdetails[i].EncashedTickets) + parseFloat(json.transdetails[i].ManualRedemption));
                             rcashonhand = rsubdtotal - rsubwtotal;
 
                             totaldcash = parseFloat(json.transdetails[i].LoadCash);
                             totaldcoupon = parseFloat(json.transdetails[i].LoadCoupon);
                             totaldbancnet = parseFloat(json.transdetails[i].LoadBancnet);
                             totaldticket = parseFloat(json.transdetails[i].LoadTicket);
-                            totalwcash = parseFloat(json.transdetails[i].WCash);
+                            totalwcash += parseFloat(json.transdetails[i].WCash);
                             totalwticket = parseFloat(json.transdetails[i].WTicket);
-                            totalwencashedtickets = parseFloat(json.transdetails[i].EncashedTickets);
+                            totalwcash += parseFloat(json.transdetails[i].ManualRedemption);
                             grandtotalcashonhand = rcashonhand;
-
                         }
 
                         /*--- TOTAL ---*/

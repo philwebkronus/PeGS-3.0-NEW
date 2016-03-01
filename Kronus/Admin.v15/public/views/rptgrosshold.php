@@ -35,7 +35,7 @@ if(isset($_SESSION['acctype']))
        
        
        $("#btnquery").live('click', function(){
-          var rptdate = $("#rptDate").val();
+          var rptdate =  function() {return $("#rptDate").val();}
           var page = $("#sitepage").val();
           var tbl = "";
           $("#hdntransdate").val(rptdate);

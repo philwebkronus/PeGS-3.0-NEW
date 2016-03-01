@@ -2414,7 +2414,7 @@ class ApplicationSupport extends DBHandler
     public function checkLastSessionByMID($MID)
     {
         //---------------  Get Session From Launchpad or Genesis Session -----------------//
-        $stmt1 = "SELECT s.SiteCode, t.TerminalCode, ss.ServiceName, tr.EndDate,
+        $stmt1 = "SELECT s.SiteCode, t.TerminalCode, ss.ServiceName, tr.StartDate,
                         (CASE t.TerminalType WHEN '0' THEN 'Regular' 
                                              WHEN '1' THEN 'EGM' 
                                              WHEN '2' THEN 'eSAFE' 
@@ -2424,6 +2424,7 @@ class ApplicationSupport extends DBHandler
                         INNER JOIN terminals t ON tr.TerminalID=t.TerminalID
                         INNER JOIN ref_services ss ON tr.ServiceID= ss.ServiceID
                     WHERE MID=?
+                    AND tr.TransactionType='D' AND tr.Status IN (1,3)
                     ORDER BY TransactionRequestLogID DESC LIMIT 1"; 
         
         $this->prepare($stmt1);
@@ -2453,7 +2454,7 @@ class ApplicationSupport extends DBHandler
                         $results['SiteCode'] = $value['SiteCode'];
                         $results['TerminalCode'] = $value['TerminalCode'];
                         $results['ServiceName'] = $value['ServiceName'];
-                        $results['TransactionDate'] = $value['EndDate'];
+                        $results['TransactionDate'] = $value['StartDate'];
                         $results['TerminalType'] = $value['TerminalType'];
                         $results['LoyaltyCardNumber'] = $value['LoyaltyCardNumber'];
         }
@@ -2664,12 +2665,13 @@ class ApplicationSupport extends DBHandler
       function selectUBTransactionEwallet($cardnumber,  $zFrom,$zTo, $zStart, $zLimit)
       { 
               $stmt = "SELECT ts.TransactionsSummaryID, t.TerminalCode, s.SiteCode, rs.ServiceName, ts.StartBalance as StartingBalance, 
-                            ts.WalletReloads as TotalEwalletload, ts.EndBalance as EndingBalance, ts.DateStarted as StartDate, ts.DateEnded as EndDate
+                            ts.WalletReloads as TotalEwalletload, ts.EndBalance as EndingBalance, ts.DateStarted as StartDate, ts.DateEnded as EndDate, IFNULL(tl.GenesisWithdrawal,0) as GenesisWithdrawal
                             FROM transactionsummary ts 
                             LEFT JOIN npos.transactiondetails tdls ON ts.TransactionsSummaryID = tdls.TransactionSummaryID
                             LEFT JOIN npos.ref_services rs ON tdls.ServiceID = rs.ServiceID
                             LEFT JOIN npos.terminals t ON ts.TerminalID = t.TerminalID
                             LEFT JOIN npos.sites s ON s.SiteID = ts.SiteID 
+                            LEFT JOIN transactionsummarylogs tl ON tl.TransactionSummaryID = ts.TransactionsSummaryID        
                             WHERE ts.LoyaltyCardNumber = ? AND ts.DateStarted >= ? AND ts.DateStarted < ?
                             GROUP BY ts.TransactionsSummaryID
                             ORDER BY ts.DateStarted LIMIT ".$zStart.", ".$zLimit."";

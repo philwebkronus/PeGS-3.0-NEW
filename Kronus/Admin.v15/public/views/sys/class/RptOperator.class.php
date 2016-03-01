@@ -504,7 +504,13 @@ class RptOperator extends DBHandler
         $query = "
                 SELECT  
                 t.TerminalID, 
-                t.TerminalCode, 
+                t.TerminalCode,
+                CASE t.TerminalType WHEN 0
+                        THEN 'Regular'
+                        WHEN 1
+                        THEN 'Genesis'
+                        ELSE 'e-SAFE'
+                    END AS TerminalType,
                 rs.ServiceID,
                 rs.ServiceName,
                 ts.UBServiceLogin,
@@ -615,7 +621,7 @@ class RptOperator extends DBHandler
             
             if($r["PlayingBalance"] == 0){
                
-                $r["PlayingBalance"] = "N/A";
+                $r["PlayingBalance"] = 0;
             }
             else{
                 $r["PlayingBalance"] = number_format($r['PlayingBalance'], 2);
@@ -625,6 +631,7 @@ class RptOperator extends DBHandler
             $row->rows[$ctr]["id"] = $r["TerminalID"];
             
             $row->rows[$ctr]["cell"] = array(
+                $r["TerminalType"],
                 $r["TerminalCode"],
                 $r["PlayingBalance"],
                 $r["UserMode"],
@@ -843,7 +850,13 @@ class RptOperator extends DBHandler
         $query = "
                   SELECT  
                     t.TerminalID, 
-                    t.TerminalCode, 
+                    t.TerminalCode,
+                    CASE t.TerminalType WHEN 0
+                        THEN 'Regular'
+                        WHEN 1
+                        THEN 'Genesis'
+                        ELSE 'e-SAFE'
+                    END AS TerminalType, 
                     rs.ServiceID,
                     rs.ServiceName,
                     ts.UBServiceLogin,
@@ -963,6 +976,7 @@ class RptOperator extends DBHandler
             $row->rows[$ctr]["id"] = $r["TerminalID"];
             
             $row->rows[$ctr]["cell"] = array(
+                $r["TerminalType"],
                 $r["TerminalCode"],
                 $r["PlayingBalance"],
                 $r["UserMode"],
@@ -1079,7 +1093,8 @@ class RptOperator extends DBHandler
     function getCashOnHandDetails($datefrom, $dateto, $siteid) {
         $listsite = array();
         $cohdata = array('TotalCashLoad' => 0, 
-                         'TotalCashRedemption' => 0, 
+                         'TotalCashRedemption' => 0,
+                         'TotalGenesisRedemption' => 0,
                          'TotalMR' => 0);
         foreach ($siteid as $row){ array_push($listsite, "".$row.""); }
         $site = implode(',', $listsite);
@@ -1351,7 +1366,6 @@ class RptOperator extends DBHandler
         $this->bindparameter(2, $dateto);
         $this->execute();
         $rows1 = $this->fetchAllData();
-        
         //Get the summation of total cash load and cash redemption
         foreach ($rows1 as $value) {
             $cohdata['TotalCashLoad'] += (float)$value['DepositCash'];
@@ -1363,7 +1377,7 @@ class RptOperator extends DBHandler
             $cohdata['TotalCashLoad'] += (float)$value['DepositCoupon'];
             $cohdata['TotalCashLoad'] += (float)$value['ReloadCoupon'];
             $cohdata['TotalCashRedemption'] += (float)$value['RedemptionCashier'];
-            $cohdata['TotalCashRedemption'] += (float)$value['RedemptionGenesis'];
+            $cohdata['TotalGenesisRedemption'] += (float)$value['RedemptionGenesis']; //Non e-SAFE
         }
        
         //Get total e-SAFE loaded cash (with bancnet transaction included)
@@ -1379,7 +1393,8 @@ class RptOperator extends DBHandler
             $cohdata['TotalCashLoad'] += (float)$value['EwalletBancnetDeposit'];
             $cohdata['TotalCashLoad'] += (float)$value['EwalletTicketLoad'];
             $cohdata['TotalCashLoad'] += (float)$value['EwalletVoucherDeposit'];
-            $cohdata['TotalCashRedemption'] += (float)$value['EwalletRedemption'];
+            $cohdata['TotalCashRedemption'] += (float)$value['EwalletCashRedemption'];
+            $cohdata['TotalGenesisRedemption'] += (float)$value['EwalletGenRedemption']; //e-SAFE
         }
 
         //Get total manual redemption per site
@@ -1527,11 +1542,13 @@ class RptOperator extends DBHandler
     public function getGrossHoldeSAFE($siteID, $datefrom, $dateto) {
         $sql = "SELECT TransactionDate, s.SiteCode Login, SUM(ts.StartBalance)
                 StartBalance,
-                SUM(ts.WalletReloads) WalletReloads, SUM(ts.EndBalance) EndBalance,
-                SUM(ts.StartBalance) + SUM(ts.WalletReloads) - SUM(ts.EndBalance) GrossHold
+                SUM(ts.WalletReloads) WalletReloads, SUM(ts.EndBalance) EndBalance, SUM(IFNULL(tl.GenesisWithdrawal,0)) GenesisWithdrawal,
+                SUM(ts.StartBalance) + SUM(ts.WalletReloads) - SUM(ts.EndBalance) - SUM(IFNULL(tl.GenesisWithdrawal,0)) GrossHold
                 FROM transactionsummary ts
-                INNER JOIN sites s
+                INNER JOIN sites s		
                 ON ts.SiteID = s.SiteID
+				LEFT JOIN transactionsummarylogs tl
+				ON tl.TransactionSummaryID = ts.TransactionsSummaryID
                 WHERE ts.SiteID = ? AND 
                 ts.DateEnded >= ?
                 AND ts.DateEnded < ?";

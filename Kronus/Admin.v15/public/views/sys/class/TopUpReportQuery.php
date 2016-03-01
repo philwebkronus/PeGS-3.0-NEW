@@ -752,7 +752,8 @@ class TopUpReportQuery extends DBHandler{
                                         GROUP BY SiteID";
                 
                 //Query for Printed Tickets of the pick date (per site/per cutoff)
-                $query8 = "SELECT SiteID, SUM(PrintedTickets) AS PrintedTickets, DateCreated FROM (SELECT tr.SiteID, IFNULL(SUM(stckr.Withdrawal), 0) AS PrintedTickets FROM npos.transactiondetails tr FORCE INDEX(IX_transactiondetails_DateCreated)  -- Printed Tickets through W
+                $query8 = "SELECT SiteID, SUM(PrintedTickets) AS PrintedTickets, DateCreated FROM (
+                    SELECT tr.SiteID, IFNULL(SUM(stckr.Withdrawal), 0) AS PrintedTickets, tr.DateCreated FROM npos.transactiondetails tr FORCE INDEX(IX_transactiondetails_DateCreated)  -- Printed Tickets through W
                             INNER JOIN npos.transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
                             INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
                             INNER JOIN npos.accounts a ON ts.CreatedByAID = a.AID
@@ -763,7 +764,7 @@ class TopUpReportQuery extends DBHandler{
                               AND tr.StackerSummaryID IS NOT NULL
                               GROUP BY tr.SiteID 
                         UNION ALL
-                        SELECT SiteID, SUM(Amount) as PrintedTickets FROM ewallettrans WHERE StartDate >= :startdate
+                        SELECT SiteID, SUM(Amount) as PrintedTickets, StartDate FROM ewallettrans WHERE StartDate >= :startdate
                             AND StartDate < :enddate AND Status IN (1,3) AND TransType='W' AND Source = 1 GROUP BY SiteID) 
                         AS sum GROUP BY SiteID";
                 
@@ -1326,7 +1327,8 @@ class TopUpReportQuery extends DBHandler{
                                         GROUP BY SiteID";
                 
                 //Query for Printed Tickets of the pick date (per site/per cutoff)
-                $query8 = "SELECT SiteID, SUM(PrintedTickets) AS PrintedTickets, DateCreated FROM (SELECT tr.SiteID, IFNULL(SUM(stckr.Withdrawal), 0) AS PrintedTickets FROM npos.transactiondetails tr FORCE INDEX(IX_transactiondetails_DateCreated)  -- Printed Tickets through W
+                $query8 = "SELECT SiteID, SUM(PrintedTickets) AS PrintedTickets, DateCreated FROM (
+                    SELECT tr.SiteID, IFNULL(SUM(stckr.Withdrawal), 0) AS PrintedTickets, tr.DateCreated FROM npos.transactiondetails tr FORCE INDEX(IX_transactiondetails_DateCreated)  -- Printed Tickets through W
                             INNER JOIN npos.transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
                             INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
                             INNER JOIN npos.accounts a ON ts.CreatedByAID = a.AID
@@ -1338,7 +1340,7 @@ class TopUpReportQuery extends DBHandler{
                               AND tr.StackerSummaryID IS NOT NULL
                               GROUP BY tr.SiteID 
                         UNION ALL
-                        SELECT SiteID, SUM(Amount) as PrintedTickets FROM ewallettrans WHERE StartDate >= :startdate
+                        SELECT SiteID, SUM(Amount) as PrintedTickets, StartDate FROM ewallettrans WHERE StartDate >= :startdate
                             AND StartDate < :enddate AND Status IN (1,3) AND SiteID = :siteid AND TransType='W' AND Source = 1 GROUP BY SiteID) 
                         AS sum GROUP BY SiteID";
                 
@@ -1971,9 +1973,10 @@ class TopUpReportQuery extends DBHandler{
                                   WHEN 2 THEN 'Failed'
                                   WHEN 3 THEN 'Fulfillment Approved'
                                   WHEN 4 THEN 'Fulfillment Denied'
-                            END AS Status, b.Name"
+                            END AS Status, b.Name, c.TerminalCode"
                         ." FROM npos.ewallettrans a"
-                        ." INNER JOIN npos.accountdetails b ON b.AID = a.CreatedByAID ".$where;     
+                        ." INNER JOIN npos.accountdetails b ON b.AID = a.CreatedByAID"
+                        ." LEFT JOIN terminals c ON c.TerminalID=a.TerminalID ".$where;     
           
           $this->prepare($stmt);
           $this->execute();

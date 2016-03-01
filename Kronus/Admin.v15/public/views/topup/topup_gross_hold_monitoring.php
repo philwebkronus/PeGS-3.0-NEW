@@ -13,7 +13,7 @@ function createSelect($id)
     return $html;
 }
 
-$vaccesspages = array('5');
+$vaccesspages = array('5','11');
     $vctr = 0;
 if(isset($_SESSION['acctype']))
 {

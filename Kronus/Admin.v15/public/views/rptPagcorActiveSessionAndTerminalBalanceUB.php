@@ -63,9 +63,9 @@ if(isset($_SESSION['acctype']))
                             ActiveSession : true,
                             ActiveSessionAction : "pagcorsessionrecordub"
                         },
-                        colNames : ["Terminal Code", "Playing Balance","User Mode","e-SAFE?"],
+                        colNames : ["TerminalType","Terminal Code", "Playing Balance","User Mode","e-SAFE?"],
                         colModel : [
-                           
+                            {name:'TerminalType',index:'TerminalType', width: 300, sortable:false},
                             {name:'TerminalCode',index:'TerminalCode', width: 300, sortable:false},
                             {name:'PlayingBalance',index:'PlayingBalance', width: 400, align: 'right', sortable:false},
                             {name:'UserMode',index:'UserMode', width: 400, align: 'center', sortable:false},

@@ -1083,7 +1083,8 @@ if($connected)
                 }
             break;
             case 'UserListingPDF':
-                $vsiteID = $_POST['cmbsite'];
+                //get Site ID
+                $vsiteID = $_GET['cmbsite'];
                 $pdf = CTCPDF::c_getInstance();
                 $pdf->c_commonReportFormat();
                 $pdf->c_setHeader('User Listing');
@@ -1091,28 +1092,27 @@ if($connected)
                 $pdf->SetFontSize(10);
                 $pdf->c_tableHeader(array('POS Account','Site / PEGS Code','Site / PEGS Name','Name','User Group','Date Created','Status'));
                 $result = $orptpegs->viewuserlist($vsiteID, $start = null, $limit = null, $sort=null, $direction=null);
+
                 if(count($result) > 0)
                 {                
                    foreach($result as $vview)
                    {
                         $rsiteID = $vview['SiteID'];
-                        $vstatname = $orptpegs->showstatusname($vview['Status']);
                         $vcode = substr($vview['Site Code'], strlen($terminalcode)); //removes ICSA-
-                        $pdfvalues = array($vview['POS Account No.'], $vcode, $vview['Site Name'], 
+                        $pdf->c_tableRow(array($vview['POS Account No.'], $vcode, $vview['Site Name'], 
                                                           $vview['Name'], $vview['User Group'], 
-                                                          $vview['Date Created'], $vstatname);
-                        $pdf->c_tableRow($pdfvalues);
+                                                          $vview['Date Created'],  $vview['Date Created']));    
                    }
                 }
                 else
                 {
                     $pdf->html.='<div style="text-align:center;">No Results Found</div>';
                 }
-
                 $pdf->c_tableEnd();
                 $vauditfuncID = 40; //export to pdf
                 $vtransdetails = "";
                 $orptpegs->logtoaudit($new_sessionid, $aid, $vtransdetails, $vdate, $vipaddress, $vauditfuncID);
+                set_time_limit(0); 
                 $pdf->c_generatePDF('UserListing.pdf'); 
             break;
         }

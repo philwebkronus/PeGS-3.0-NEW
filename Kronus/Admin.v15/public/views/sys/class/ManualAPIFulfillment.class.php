@@ -1225,38 +1225,39 @@ class ManualAPIFulfillment extends DBHandler
             $this->bindparameter(6, $ewallettransid);
             if ($this->execute() > 0)
             {
-                try
-                {
-                    //if WalletReloads is not null, update.
-                    if (!is_null($totalWalletReloads))
-                    {
-                        $stmt = "UPDATE transactionsummary 
-                                 SET WalletReloads = ? 
-                                 WHERE TransactionsSummaryID = ?";
-                        $this->prepare($stmt);
-                        $this->bindparameter(1, $totalWalletReloads);
-                        $this->bindparameter(2, $transsummaryid);
-                        if ($this->execute())
-                        {
-                            try
-                            {
-                                $this->committrans();
-                                return true;
-                            }
-                            catch (PDOException $e)
-                            {
-                                $this->rollbacktrans();
-                                return false;
-                            }
-                        }
-                        else
-                        {
-                            $this->rollbacktrans();
-                            return false;
-                        }
-                    }
+                try {
                     $this->committrans();
                     return true;
+                    //if WalletReloads is not null, update.
+//                    if (!is_null($totalWalletReloads))
+//                    {
+//                        $stmt = "UPDATE transactionsummary 
+//                                 SET WalletReloads = ? 
+//                                 WHERE TransactionsSummaryID = ?";
+//                        $this->prepare($stmt);
+//                        $this->bindparameter(1, $totalWalletReloads);
+//                        $this->bindparameter(2, $transsummaryid);
+//                        if ($this->execute())
+//                        {
+//                            try
+//                            {
+//                                $this->committrans();
+//                                return true;
+//                            }
+//                            catch (PDOException $e)
+//                            {
+//                                $this->rollbacktrans();
+//                                return false;
+//                            }
+//                        }
+//                        else
+//                        {
+//                            $this->rollbacktrans();
+//                            return false;
+//                        }
+//                    }
+//                    $this->committrans();
+//                    return true;
                 }
                 catch (PDOException $e)
                 {

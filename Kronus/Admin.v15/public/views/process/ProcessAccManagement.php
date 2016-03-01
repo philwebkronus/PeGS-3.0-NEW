@@ -334,6 +334,15 @@ if($connected)
        $page = $_POST['page']; // get the requested page
        $limit = $_POST['rows']; // get how many rows we want to have into the grid
        $vacctype = $_POST['cmbacctype'];
+       $sord = $_POST['sord'];
+       if($_POST['sidx'] != "")
+                {
+                   $sort = $_POST['sidx'];
+                }
+                else
+                {
+                    $sort = "UserName";
+                }
        //session variable for viewing of all accounts (counts)
        $rcount = array();
        switch($vacctype)
@@ -395,15 +404,15 @@ if($connected)
        {
          case 1:
                //admin
-               $allaccs = $oaccount->viewlimitaccounts(0, $vacctype, $start, $limit, 0);
+               $allaccs = $oaccount->viewlimitaccounts(0, $vacctype, $start, $limit, 0, $sort, $sord);
          break;
          case 2:
                //Operator
-              $allaccs = $oaccount->viewlimitaccounts(0, $vacctype, $start, $limit, $_SESSION['pegsowned']);
+              $allaccs = $oaccount->viewlimitaccounts(0, $vacctype, $start, $limit, $_SESSION['pegsowned'], $sort, $sord);
          break;
          case 8:
                //PEGS Ops
-              $allaccs = $oaccount->viewlimitaccounts(0, $vacctype, $start, $limit, 0);
+              $allaccs = $oaccount->viewlimitaccounts(0, $vacctype, $start, $limit, 0, $sort, $sord);
          break;
          /* disabled 02-08-12
          case 10:
@@ -413,7 +422,7 @@ if($connected)
           *
           */
          default:
-               $allaccs = $oaccount->viewlimitaccounts(0, 0, $start, $limit, 0);
+               $allaccs = $oaccount->viewlimitaccounts(0, 0, $start, $limit, 0, $sort, $sord);
        }
        if(count($allaccs) > 0)
        {

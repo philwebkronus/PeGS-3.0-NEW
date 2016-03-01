@@ -649,6 +649,7 @@ if($connected)
                    if ($count > 0) {
                         $results[] = array('SiteCode' => '<b>Total</b>', 
                                            'SubTotal' => "<b>".number_format($total, 2, ".", ",")."</b>");
+                        $count=$count+1;
                      if($count > 0 ) {
                         $total_pages = ceil($count/$limit);
                         } else {
@@ -946,12 +947,15 @@ if($connected)
        //Compute for total Cash On Hand of the sites under the current operator
        $cohdata = $orptoptr->getCashOnHandDetails($dateFrom, $dateTo, $arrsiteID);
        if ($dateFrom < $deploymentDate) {
-            $grandticketencashment = $orptoptr->getTotalTicketEncashment($dateFrom, $dateTo, $arrsiteID);
+            $grandticketencashment = $orptoptr->getEncashedTicketsV15($arrsiteID, $dateFrom, $dateTo);
+            $grandcashonhand = $cohdata['TotalCashLoad'] - ($cohdata['TotalCashRedemption'] + $cohdata['TotalMR'] + $grandticketencashment);
        }
        else {
             $grandticketencashment = $orptoptr->getEncashedTicketsV15($arrsiteID, $dateFrom, $dateTo);
+            $grandcashonhand = $cohdata['TotalCashLoad'] - ($cohdata['TotalCashRedemption'] + $cohdata['TotalGenesisRedemption'] + $cohdata['TotalMR'] + $grandticketencashment);
+            $grandredemption += $grandticketencashment;
        }
-       $grandcashonhand = $cohdata['TotalCashLoad'] - ($cohdata['TotalCashRedemption'] + $cohdata['TotalMR'] +  + $grandticketencashment);
+       
        $grandredemption += $cohdata['TotalMR'];
        // store the grand total of transaction types into an array 
        $arrgrand = array("GrandSales" => $grandsales, "GrandRedemption" => $grandredemption,
@@ -2394,6 +2398,7 @@ if($connected)
        $fn = "Gross_Hold_".date('Y_m_d').".xls";
        //setting up excel
        $excel_obj = new ExportExcel("$fn");
+       $footer = array('Gross Hold report from '.$datefrom.' to '.$dateto,"" );
        $array_headers = array('Site', 'Gross Hold');
        $completeexcelvalues = array();
        //get site operator's sites
@@ -2445,6 +2450,7 @@ if($connected)
         else {
             $rrecord = array(0 => 'The operator has no site. No records found');
         }
+               array_push($completeexcelvalues, $footer);
         $excel_obj->setHeadersAndValues($array_headers, $completeexcelvalues);
         $excel_obj->GenerateExcelFile();
         unset($completeexcelvalues);
