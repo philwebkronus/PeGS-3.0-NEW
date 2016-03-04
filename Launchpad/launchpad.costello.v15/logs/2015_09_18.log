@@ -1,0 +1,12 @@
+[2015-09-18 15:25:14.256433][ERROR]File: launchpad.models.LPMemberCards, Message: Can't get UB Card MID and Status
+[2015-09-18 15:25:14.559379][ERROR]File: launchpad.models.LPMembers, Message: Can't check UB Card
+[2015-09-18 15:48:40.494952][ERROR]File: launchpad.models.LPServiceTerminals, Message: Can't get terminal service ID
+[2015-09-18 15:49:00.844864][ERROR]File: launchpad.models.LPServiceTerminals, Message: Can't get terminal service ID
+[2015-09-18 15:49:03.787378][ERROR]File: launchpad.models.LPServiceTerminals, Message: Can't get terminal service ID
+[2015-09-18 15:49:15.599941][ERROR]File: launchpad.models.LPServiceTerminals, Message: Can't get terminal service ID
+[2015-09-18 15:50:45.93130][ERROR]File: launchpad.models.LPServiceTerminals, Message: Can't get terminal service ID
+[2015-09-18 15:52:36.745574][ERROR]File: launchpad.models.LPServiceTerminals, Message: Can't get terminal service ID
+[2015-09-18 15:52:39.952619][ERROR]File: launchpad.models.LPServiceTerminals, Message: Can't get terminal service ID
+[2015-09-18 15:52:44.201540][ERROR]File: launchpad.models.LPServiceTerminals, Message: Can't get terminal service ID
+[2015-09-18 15:53:20.532510][ERROR]File: launchpad.models.LPServiceTerminals, Message: Can't get terminal service ID
+[2015-09-18 15:53:26.817869][ERROR]File: launchpad.models.LPServiceTerminals, Message: Can't get terminal service ID
