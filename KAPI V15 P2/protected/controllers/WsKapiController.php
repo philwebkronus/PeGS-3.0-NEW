@@ -3258,7 +3258,9 @@ class WsKapiController extends Controller {
                     $spyderReqLogsModel     = new SpyderRequestLogsModel();
                     $asynchronousRequest    = new AsynchronousRequest();
                     $voucherManagement      = new VoucherManagement();
-                            
+                    $autoemail              = new AutoemailLogsModel();
+                    $services               = new RefServicesModel();
+                    $transSummary           = new TransactionSummaryModel();
                     $terminalName = Yii::app()->params['SitePrefix'] . $terminalName;
                     $terminalID = $terminalsModel->getTerminalSiteID($terminalName);
 
@@ -3294,6 +3296,7 @@ class WsKapiController extends Controller {
                         $casinoUserMode = $lastsessiondetails['UserMode'];
                         $casinoServiceID = $lastsessiondetails['ServiceID'];
                         $hashedpw = $lastsessiondetails['UBHashedServicePassword'];
+                        $transactionSummaryID=$lastsessiondetails['TransactionSummaryID'];
                     } else {
                         $message = "Please start a session first";
                         $this->_sendResponse(200, CommonController::eSafeReloadGenResponse(2, $DateTime, '', $message, 23));
@@ -3452,6 +3455,29 @@ class WsKapiController extends Controller {
                                             //check if the useVoucher is successful, if success insert to vmsrequestlogs and status = 1 else 2
                                             $vmsrequestlogs->updateVMSRequestLogs($vmsrequestlogsID, 1);
                                         }
+                                                /* Autoemail update in eSAFE loads
+                     * Added on 03/01/2016
+                     * Added by mcatangan
+                     */
+                    $totalamount = $transSummary->getWalletReloads($transactionSummaryID); 
+                    $autoemailamnt = Yii::app()->params['autoemailreload'];     
+                                        if ($amount>= $autoemailamnt){
+                                            $tracking2 = 'D';
+                                            $service = $services->getServiceNameById($casinoServiceID);
+                                            $servicename = $service['ServiceName'];
+                                            $details = $autoemail->getdetails($mid, $tracking2);                      
+                                            $terminalcode = $details['TerminalCode'];
+                                            $sitename = $details['SiteName'];
+                                            $POS = $details['POSAccountNo'];
+                                            $accname = $details['Name'] .' '. $details['SiteName'];
+                                            $lastgameplayed = null;
+                                            $timein = $details['DateStarted'];
+                                            $TransDateTime = $details['StartDate'];
+                                            $timeout = null;   
+                                            $autoemail->insert(1,1,1,$casinoServiceID, 0, 0, $totalamount, 0, $amount, 
+                                                        0 ,0, $sitename,$terminalcode, $POS, $loyaltyCardNo, $accname, 
+                                                        $service, $transactionSummaryID,$timein, $timeout, $TransDateTime);
+                                        }
                                     }
                                 } else {
                                     $message = 'Amount is not set';
@@ -3537,6 +3563,30 @@ class WsKapiController extends Controller {
 
 
                             $this->_sendResponse(200, CommonController::eSafeReloadGenResponse(1, $result['TransactionDate'], $result['ewallet_trans_id'], $result['TransMessage'], 0));
+                        
+                                    /* Autoemail update in eSAFE loads
+                     * Added on 03/01/2016
+                     * Added by mcatangan
+                     */
+                    $totalamount = $transSummary->getWalletReloads($transactionSummaryID); 
+                    $autoemailamnt = Yii::app()->params['autoemailreload'];     
+                                        if ($amount>= $autoemailamnt){
+                                            $tracking2 = 'D';
+                                            $service = $services->getServiceNameById($casinoServiceID);
+                                            $servicename = $service['ServiceName'];
+                                            $details = $autoemail->getdetails($mid, $tracking2);                      
+                                            $terminalcode = $details['TerminalCode'];
+                                            $sitename = $details['SiteName'];
+                                            $POS = $details['POSAccountNo'];
+                                            $accname = $details['Name'] .' '. $details['SiteName'];
+                                            $lastgameplayed = null;  
+                                            $timein = $details['DateStarted'];
+                                            $TransDateTime = $details['StartDate'];
+                                            $timeout = null;    
+                                            $autoemail->insert(1,1,1,$casinoServiceID, 0, 0, $totalamount, 0, $amount, 
+                                                        0 ,0, $sitename,$terminalcode, $POS, $loyaltyCardNo, $accname, 
+                                                        $service, $transactionSummaryID,$timein, $timeout,$TransDateTime);
+                                        }
                         } else {
                             $this->status = 2;
 
@@ -3574,6 +3624,7 @@ class WsKapiController extends Controller {
                         }
                     }
                     }
+                    // -------------------------------------------------------------------------------------
                     else {
                         $message = 'Tracking ID must be unique.';
                         $this->_sendResponse(200, CommonController::eSafeReloadGenResponse(2, $DateTime, '', $message, 40));
@@ -3604,25 +3655,28 @@ class WsKapiController extends Controller {
         Yii::import('application.components.CasinoApiUB');
         Yii::import('application.components.PcwsWrapper');
         
-        $voucherticket = new VoucherTicketAPIWrapper();
-        $loyalty = new LoyaltyAPIWrapper();
+        $voucherticket          = new VoucherTicketAPIWrapper();
+        $loyalty                = new LoyaltyAPIWrapper();
 
-        $terminals = new TerminalsModel();
-        $sitebalanceModel = new SiteBalanceModel();
-        $sitesModel = new SitesModel();
-        $loyaltyrequestlogs = new LoyaltyRequestLogsModel();
-        $terminalsessions = new TerminalSessionsModel();
+        $terminals              = new TerminalsModel();
+        $sitebalanceModel       = new SiteBalanceModel();
+        $sitesModel             = new SitesModel();
+        $loyaltyrequestlogs     = new LoyaltyRequestLogsModel();
+        $terminalsessions       = new TerminalSessionsModel();
         $gamingRequestLogsModel = new GamingRequestLogs();
-        $membersModel = new MembersModel();
+        $membersModel           = new MembersModel();
         
-        $terminalBasedTrans = new TerminalBasedTrans();
-        $userBasedTrans = new UserBasedTrans();
-        $spyderReqLogsModel = new SpyderRequestLogsModel();
-        $asynchronousRequest = new AsynchronousRequest();
-        $siteaccounts = new SiteAccountsModel();
-        $egmsessions = new GamingSessionsModel();
-        $tickets = new TicketsModel();
+        $terminalBasedTrans     = new TerminalBasedTrans();
+        $userBasedTrans         = new UserBasedTrans();
+        $spyderReqLogsModel     = new SpyderRequestLogsModel();
+        $asynchronousRequest    = new AsynchronousRequest();
+        $siteaccounts           = new SiteAccountsModel();
+        $egmsessions            = new GamingSessionsModel();
+        $tickets                = new TicketsModel();
         $transactionSummaryLogs = new TransactionSummaryLogsModel();
+        $autoemail              = new AutoemailLogsModel();
+        $services               = new RefServicesModel();
+        $transSummary           = new TransactionSummaryModel();
         
         $casinoApi = new CasinoApiUB();
         
@@ -3696,7 +3750,7 @@ class WsKapiController extends Controller {
                 $casinoUserMode = $lastsessiondetails['UserMode'];
                 $casinoServiceID = $lastsessiondetails['ServiceID'];
                 $hashedpw = $lastsessiondetails['UBHashedServicePassword'];
-
+                $transactionSummaryID=$lastsessiondetails['TransactionSummaryID'];
                 /********************Call GetBalanceUB to get the amount in Casino**********/
                 $getBalance = $casinoApi->getBalanceUB($terminalid, $siteid, 'W', 
                                 $casinoServiceID, $this->acc_id, $casinoUsername, $casinoPassword);
@@ -3849,7 +3903,7 @@ class WsKapiController extends Controller {
                             $this->status = $result['transStatus'];
                             
                             //added 01-15-2016
-                            //insert genesis withdrawal into transactionsummarylogs for GH computation
+                            //insert genesis withdrawal into transactionsummarylogs
                             $genesisWithdrawal = 0.0;
                             $mswWithdrawal = 0.0;
                             $genWithdrawAmount = str_replace( ',','',$result['amount']);
@@ -3860,6 +3914,28 @@ class WsKapiController extends Controller {
                             $transactionSummaryLogs->insertGenesisWithdrawal($result['trans_summary_id'],$genesisWithdrawal,$mswWithdrawal);
                             
                             $gamingRequestLogsModel->updateGamingLogsStatus($trans_id, $this->status, $result['udate'], $result['VoucherTicketBarcode'], $result['ExpirationDate']);
+                                                /* Autoemail update in eSAFE loads
+                     * Added on 03/01/2016
+                     * Added by mcatangan
+                     */
+                    $autoemailamnt = Yii::app()->params['autoemailwithdraw'];     
+                                        if ($genesisWithdrawal>= $autoemailamnt){
+                                            $tracking2 = 'W';
+                                            $service = $services->getServiceNameById($casinoServiceID);
+                                            $servicename = $service['ServiceName'];
+                                            $details = $autoemail->getdetails($mid, $tracking2);                      
+                                            $terminalcode = $details['TerminalCode'];
+                                            $sitename = $details['SiteName'];
+                                            $POS = $details['POSAccountNo'];
+                                            $accname = $details['Name'] .' '. $details['SiteName'];
+                                            $lastgameplayed = null;  
+                                            $timein = null;
+                                            $timeout = null;
+                                            $TransDateTime = $details['StartDate'];
+                                            $autoemail->insert(2,1,2,$casinoServiceID, 0, 0, 0, 0, 0, 
+                                                        $genesisWithdrawal ,0, $sitename,$terminalcode, $POS, $loyaltyCardNo, $accname, 
+                                                        $service, $transactionSummaryID,$timein, $timeout,$TransDateTime);
+                                        }
                             $this->_sendResponse(200, CommonController::eSafeRedemptionGenResponse(1, $result['amount'], $result['VoucherTicketBarcode'], $result['TransactionDate'], $result['ExpirationDate'], $sitecode, $loyaltyCardNo, $result['ewallet_trans_id'], $result['TransMessage'], 1, 0));
                         } else {
                             $this->status = 2;
