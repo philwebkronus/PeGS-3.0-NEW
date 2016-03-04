@@ -1,0 +1,47 @@
+ErrorCodes:
+0 - Transaction successful (all transaction) / valid / Ewallet loading successful / Ewallet withdraw successful
+1 - Unauthorized Access.
+2 - Empty Sytem Username, Invalid Sytem Username, Empty DateTime
+3 - Expired Request/Request time out
+4 - Incomplete data / Invalid data(Card is Inactive or Banned, Invalid PIN character and length) / Please enter Current PIN and New PIN. / All fields are required / 
+    ServiceID must not be blank / Card Number must not be blank / Amount must not be blank / Payment type must not be blank / 
+    SiteID must not be blank / AccountID must not be blank / Can\'t get casino information / Invalid Casino / Inactive Casino Service. / 
+    Card is Invalid. / Action Code must not be blank. / Can\'t get account information / Can\'t get site information. / Can\'t get terminal information / 
+    Terminal Code must not be empty. / Can\'t get service information / Invalid terminal name. / Virtual Cashier is required. / Password is invalid./
+    Pin is different from confirm pin. / Card must be active. / Checking of PIN is not allowed for Deactivated Card. / Checking of PIN is not allowed for Active Temporary Card. / 
+    Checking of PIN is not allowed for New Migrated Card. / Checking of PIN is not allowed for Temporary Migrated Card. / Checking of PIN is not allowed for Banned Card. / 
+    Failed to End Session. Invalid Casino.
+5 - Card not found / Can\'t get card information / Card is invalid.
+6 - Card does not have existing casino account
+7 - Insufficient site BCF
+8 - Can't connect to casino / Failed to deposit in casino backend / Failed to withdraw in casino backend / Failed to process comp points / Can't get balance / 
+    Withdraw Transaction Failed / Failure / 
+9 - Failed to process data in transaction summary / PIN must be numeric and exactly 6 digits
+10 - Failed to update e-wallet transaction table
+11 - Pending transaction exists.
+12 - Invalid User Mode / Can\'t get site information. / Can\'t get account information. / Can\'t get casino information.
+13 - Account does not have sufficient comp points / Input amount is greater than existing balance / Withdraw failed, PIN is locked
+14 - Mismatch Card Number and PIN Code / Invalid PIN Code
+15 - Failed to process PIN (reset, change)
+16 - New PIN and Current PIN is the same
+17 - Card/Terminal has an existing active session / Card has an existing EGM session / Card has an existing terminal session
+18 - Failed to start session
+19 - Failed to end session
+20 - Failed to lock terminal
+21 - Terminal has no active session / Card does not have an existing session / Card does not have an existing terminal session on this casino. / Failed to lock. Terminal has no valid session.
+22 - Cannot retrieve VIP Level / Can\'t get terminal information. / Can\'t get player\'s account information. / Player must be an e-SAFE account.
+23 - Terminal is unlocked already /
+24 - Deposit Failed, Player has an existing session on a different site / This process is not applicable for sessions that has transactions
+25 - Not allowed to use temporary card number / PIN is locked. / Card is inactive. / Card is deactivated. / Card is already migrated. / 
+     Card is banned. / Card is invalid. 
+26 - Player's account must be e-SAFE / Player has no EGM session. / Terminal Based transaction is not allowed on this casino
+27 - Player has no EGM session
+28 - Failed to convert to e-SAFE
+29 - Card must be white listed
+30 - Account is already e-SAFE
+
+
+Authentication:
+1 - Pass token parameters did not match token process by API / Unauthorized Access.
+2 - Incomplete Data: Empty Token/Empty System Username, Empty DateTime
+3 - Expired Request/Request time out
