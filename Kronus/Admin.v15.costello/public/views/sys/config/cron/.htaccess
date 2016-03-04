@@ -1,0 +1,7 @@
+AddDefaultCharset utf-8
+<limit GET POST PUT>
+order deny,allow
+deny from all
+allow from 172.16.109.16
+allow from 202.44.102.245
+</limit>
