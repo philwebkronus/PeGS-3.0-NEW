@@ -528,6 +528,10 @@ if ($connected) {
 
                         $_CasinoGamingPlayerAPI = new CasinoGamingCAPI();
                         $_CasinoGamingPlayerAPIUB = new CasinoGamingCAPIUB();
+                        $url = $_ServiceAPI[$serverId - 1];
+                        $certpath = RTGCerts_DIR . $serverId . '/cert.pem';
+                        $keypath = RTGCerts_DIR . $serverId . '/key.pem';
+                        $_RealtimeGamingCashierAPI = new RealtimeGamingCashierAPI($url, $certpath, $keypath, '');
 
                         $login = $vlogin;
                         $country = 'PH';
@@ -700,9 +704,19 @@ if ($connected) {
                             }
 
                             if ($usermode == 0) {
-                                $vapiResult = $_CasinoGamingPlayerAPI->createTerminalAccount($vprovidername, $serverId, $url, $login, $password, $aid, $currency, $email, $fname, $lname, $dayphone, $evephone, $addr1, $addr2, $city, $country, $state, $zip, $userID, $birthdate, $fax, $occupation, $sex, $alias, $casinoID, $ip, $mac, $downloadID, $clientID, $putInAffPID, $calledFromCasino, $hashedPassword, $agentID, $currentPosition, $thirdPartyPID, $capiusername, $capipassword, $capiplayername, $capiserverID, $isVIP, $usermode);
-                                if($vapiResult == NULL) { // proceeed if certificate does not match
-                                    $vapiResult = $_CasinoGamingPlayerAPI->createTerminalAccount($vprovidername, $serverId, $url, $login, $password, $aid, $currency, $email, $fname, $lname, $dayphone, $evephone, $addr1, $addr2, $city, $country, $state, $zip, $userID, $birthdate, $fax, $occupation, $sex, $alias, $casinoID, $ip, $mac, $downloadID, $clientID, $putInAffPID, $calledFromCasino, $hashedPassword, $agentID, $currentPosition, $thirdPartyPID, $capiusername, $capipassword, $capiplayername, $capiserverID, $isVIP);
+                                $PID = $_RealtimeGamingCashierAPI->GetPIDFromLogin($login);
+                                if ($PID==NULL)
+                                    {
+                                    $vapiResult = $_CasinoGamingPlayerAPI->createTerminalAccount($vprovidername, $serverId, $url, $login, $password, $aid, $currency, $email, $fname, $lname, $dayphone, $evephone, $addr1, $addr2, $city, $country, $state, $zip, $userID, $birthdate, $fax, $occupation, $sex, $alias, $casinoID, $ip, $mac, $downloadID, $clientID, $putInAffPID, $calledFromCasino, $hashedPassword, $agentID, $currentPosition, $thirdPartyPID, $capiusername, $capipassword, $capiplayername, $capiserverID, $isVIP, $usermode);
+                                    if($vapiResult == NULL) { // proceeed if certificate does not match
+                                        $vapiResult = $_CasinoGamingPlayerAPI->createTerminalAccount($vprovidername, $serverId, $url, $login, $password, $aid, $currency, $email, $fname, $lname, $dayphone, $evephone, $addr1, $addr2, $city, $country, $state, $zip, $userID, $birthdate, $fax, $occupation, $sex, $alias, $casinoID, $ip, $mac, $downloadID, $clientID, $putInAffPID, $calledFromCasino, $hashedPassword, $agentID, $currentPosition, $thirdPartyPID, $capiusername, $capipassword, $capiplayername, $capiserverID, $isVIP);
+                                    }
+                                }
+                                else
+                                {
+                                  //bypass trapping for casino account creation proceed to change terminal password
+                                  $vapiResult['IsSucceed']=false; 
+                                  $vapiResult['ErrorCode']=200;
                                 }
                             }
 
@@ -726,7 +740,7 @@ if ($connected) {
                             } else {
                                 //if account does not created in casino's RTG / MG, check the errorcode is exists
                                 if ($vapiResult['ErrorCode'] == 5 || $vapiResult['ErrorCode'] == 1 || $vapiResult['ErrorCode'] == 3 || $vapiResult['ErrorID'] == 5 ||
-                                        $vapiResult['ErrorID'] == 5 || $vapiResult['ErrorID'] == 1 || $vapiResult['ErrorID'] == 3 || $vapiResult['ErrorID'] == 5) {
+                                        $vapiResult['ErrorID'] == 5 || $vapiResult['ErrorID'] == 1 || $vapiResult['ErrorID'] == 3 || $vapiResult['ErrorID'] == 5|| $vapiResult['ErrorCode'] == 200 ) {
                                     //if provider is RTG, then
                                     if (strstr($vprovidername, "RTG") == true) {
                                         //Call API to get Account Info

@@ -211,12 +211,12 @@ class ApplicationSupport extends DBHandler
           {
               if (!is_null($cardNumber))
               {
-                  $stmt = "SELECT ewl.EwalletTransID, ewl.SiteID, ewl.TerminalID, ewl.TransType, 
+                  $stmt = "SELECT ewl.EwalletTransID, ewl.TerminalID, ewl.TransType, 
                       rs.ServiceName, s.SiteCode, ewl.SiteID, ewl.StartDate, ewl.UserMode, ewl.ServiceTransactionID, 
                       ewl.Amount, ewl.Status, ewl.TransType, ewl.UpdatedByAID  
-                      FROM npos.ewallettrans ewl 
-                      INNER JOIN npos.sites s ON s.SiteID = ewl.SiteID 
-                      INNER JOIN npos.ref_services rs ON ewl.ServiceID = rs.ServiceID 
+                      FROM ewallettrans ewl 
+                      INNER JOIN sites s ON s.SiteID = ewl.SiteID 
+                      INNER JOIN ref_services rs ON ewl.ServiceID = rs.ServiceID 
                       WHERE ewl.LoyaltyCardNumber = ? 
                       AND ewl.Status IN (3, 4) AND ewl.StartDate >= ?
                       AND ewl.StartDate < ?
@@ -224,12 +224,12 @@ class ApplicationSupport extends DBHandler
               }
               else
               {
-                  $stmt = "SELECT ewl.EwalletTransID, ewl.SiteID, ewl.TerminalID, ewl.TransType, 
+                  $stmt = "SELECT ewl.EwalletTransID, ewl.TerminalID, ewl.TransType, 
                       rs.ServiceName, s.SiteCode, ewl.SiteID, ewl.StartDate, ewl.UserMode, ewl.ServiceTransactionID, 
                       ewl.Amount, ewl.Status, ewl.TransType, ewl.UpdatedByAID  
-                      FROM npos.ewallettrans ewl 
-                      INNER JOIN npos.sites s ON s.SiteID = ewl.SiteID 
-                      INNER JOIN npos.ref_services rs ON ewl.ServiceID = rs.ServiceID 
+                      FROM ewallettrans ewl 
+                      INNER JOIN sites s ON s.SiteID = ewl.SiteID 
+                      INNER JOIN ref_services rs ON ewl.ServiceID = rs.ServiceID 
                       WHERE ewl.SiteID = ? 
                       AND ewl.Status IN (3, 4) AND ewl.StartDate >= ?
                       AND ewl.StartDate < ?
@@ -247,9 +247,9 @@ class ApplicationSupport extends DBHandler
                   $stmt = "SELECT ewl.EwalletTransID, ewl.SiteID, ewl.TerminalID, ewl.TransType, 
                       rs.ServiceName, s.SiteCode, ewl.StartDate, ewl.UserMode, ewl.ServiceTransactionID, 
                       ewl.Amount, ewl.Status, ewl.TransType, ewl.UpdatedByAID  
-                      FROM npos.ewallettrans ewl 
-                      INNER JOIN npos.sites s ON s.SiteID = ewl.SiteID 
-                      INNER JOIN npos.ref_services rs ON ewl.ServiceID = rs.ServiceID 
+                      FROM ewallettrans ewl 
+                      INNER JOIN sites s ON s.SiteID = ewl.SiteID 
+                      INNER JOIN ref_services rs ON ewl.ServiceID = rs.ServiceID 
                       WHERE ewl.LoyaltyCardNumber = ? 
                       AND ewl.Status = ? AND ewl.StartDate >= ?
                       AND ewl.StartDate < ?
@@ -260,9 +260,9 @@ class ApplicationSupport extends DBHandler
                   $stmt = "SELECT ewl.EwalletTransID, ewl.SiteID, ewl.TerminalID, ewl.TransType, 
                       rs.ServiceName, s.SiteCode, ewl.StartDate, ewl.UserMode, ewl.ServiceTransactionID, 
                       ewl.Amount, ewl.Status, ewl.TransType, ewl.UpdatedByAID  
-                      FROM npos.ewallettrans ewl 
-                      INNER JOIN npos.sites s ON s.SiteID = ewl.SiteID 
-                      INNER JOIN npos.ref_services rs ON ewl.ServiceID = rs.ServiceID 
+                      FROM ewallettrans ewl 
+                      INNER JOIN sites s ON s.SiteID = ewl.SiteID 
+                      INNER JOIN ref_services rs ON ewl.ServiceID = rs.ServiceID 
                       WHERE ewl.SiteID = ? 
                       AND ewl.Status = ? AND ewl.StartDate >= ?
                       AND ewl.StartDate < ?
@@ -303,24 +303,22 @@ class ApplicationSupport extends DBHandler
               if (!is_null($cardNumber))
               {
                   $stmt = "SELECT COUNT(ewl.EwalletTransID) AS count 
-                           FROM npos.ewallettrans ewl 
-                           INNER JOIN npos.sites s ON s.SiteID = ewl.SiteID 
-                           INNER JOIN npos.ref_services rs ON ewl.ServiceID = rs.ServiceID 
+                           FROM ewallettrans ewl 
+                           INNER JOIN sites s ON s.SiteID = ewl.SiteID 
+                           INNER JOIN ref_services rs ON ewl.ServiceID = rs.ServiceID 
                            WHERE ewl.LoyaltyCardNumber = ? 
                            AND ewl.Status IN (3, 4) AND ewl.StartDate >= ? 
-                           AND ewl.StartDate < ? 
-                           ORDER BY ewl.StartDate";
+                           AND ewl.StartDate < ?";
               }
               else //SITE
               {
                   $stmt = "SELECT COUNT(ewl.EwalletTransID) AS count 
-                           FROM npos.ewallettrans ewl 
-                           INNER JOIN npos.sites s ON s.SiteID = ewl.SiteID 
-                           INNER JOIN npos.ref_services rs ON ewl.ServiceID = rs.ServiceID 
+                           FROM ewallettrans ewl 
+                           INNER JOIN sites s ON s.SiteID = ewl.SiteID 
+                           INNER JOIN ref_services rs ON ewl.ServiceID = rs.ServiceID 
                            WHERE ewl.SiteID = ? 
                            AND ewl.Status IN (3, 4) AND ewl.StartDate >= ? 
-                           AND ewl.StartDate < ? 
-                           ORDER BY ewl.StartDate";
+                           AND ewl.StartDate < ?";
               }
               $this->prepare($stmt);
               (!is_null($cardNumber)) ? $this->bindparameter(1, $cardNumber) : $this->bindparameter(1, $site);
@@ -332,24 +330,22 @@ class ApplicationSupport extends DBHandler
               if (!is_null($cardNumber))
               {
                   $stmt = "SELECT COUNT(ewl.EwalletTransID) AS count 
-                      FROM npos.ewallettrans ewl 
-                      INNER JOIN npos.sites s ON s.SiteID = ewl.SiteID 
-                      INNER JOIN npos.ref_services rs ON ewl.ServiceID = rs.ServiceID 
+                      FROM ewallettrans ewl 
+                      INNER JOIN sites s ON s.SiteID = ewl.SiteID 
+                      INNER JOIN ref_services rs ON ewl.ServiceID = rs.ServiceID 
                       WHERE ewl.LoyaltyCardNumber = ? 
                       AND ewl.Status = ? AND ewl.StartDate >= ? 
-                      AND ewl.StartDate < ? 
-                      ORDER BY ewl.StartDate";
+                      AND ewl.StartDate < ?";
               }
               else
               {
                   $stmt = "SELECT COUNT(ewl.EwalletTransID) AS count 
-                      FROM npos.ewallettrans ewl 
-                      INNER JOIN npos.sites s ON s.SiteID = ewl.SiteID 
-                      INNER JOIN npos.ref_services rs ON ewl.ServiceID = rs.ServiceID 
+                      FROM ewallettrans ewl 
+                      INNER JOIN sites s ON s.SiteID = ewl.SiteID 
+                      INNER JOIN ref_services rs ON ewl.ServiceID = rs.ServiceID 
                       WHERE ewl.SiteID = ? 
                       AND ewl.Status = ? AND ewl.StartDate >= ? 
-                      AND ewl.StartDate < ? 
-                      ORDER BY ewl.StartDate";
+                      AND ewl.StartDate < ?";
               }
               $this->prepare($stmt);
               (!is_null($cardNumber)) ? $this->bindparameter(1,$cardNumber) : $this->bindparameter(1, $site); 
@@ -395,7 +391,7 @@ class ApplicationSupport extends DBHandler
           //validate if combo boxes of transaction status and transaction type are selected ALL 
           if($ztransstatus[0] == 'All' && $ztranstype == 'All')
           {
-              $stmt = "SELECT COUNT(*) as count FROM transactiondetails td 
+              $stmt = "SELECT COUNT(td.TransactionDetailsID) as count FROM transactiondetails td 
                   INNER JOIN transactionrequestlogs trl ON td.TransactionReferenceID = trl.TransactionReferenceID 
                   WHERE td.SiteID =? AND td.TerminalID =? AND Date(td.DateCreated) >=? 
                   AND Date(td.DateCreated) < ?";
@@ -408,7 +404,7 @@ class ApplicationSupport extends DBHandler
           //then if Transaction Status was selected any of its choices (Success, Failed) AND Transaction Type was selected all
           elseif($ztransstatus[0] <> 'All' && $ztranstype == 'All')
           {
-              $stmt = "SELECT COUNT(*) as count FROM transactiondetails td 
+              $stmt = "SELECT COUNT(td.TransactionDetailsID) as count FROM transactiondetails td 
                   INNER JOIN transactionrequestlogs trl ON td.TransactionReferenceID = trl.TransactionReferenceID 
                   WHERE td.SiteID =? AND td.TerminalID =? AND td.Status IN (".$status.") AND Date(td.DateCreated) >=? 
                   AND Date(td.DateCreated) < ?";
@@ -421,7 +417,7 @@ class ApplicationSupport extends DBHandler
           //then if Transaction Status was selected all AND Transaction Type was selected ano of its choices (Deposit, Reload, Withdraw)
           elseif($ztransstatus[0] == 'All' && $ztranstype <> 'All')
           {
-              $stmt = "SELECT COUNT(*) as count FROM transactiondetails td 
+              $stmt = "SELECT COUNT(td.TransactionDetailsID) as count FROM transactiondetails td 
                   INNER JOIN transactionrequestlogs trl ON td.TransactionReferenceID = trl.TransactionReferenceID 
                   WHERE td.SiteID =? AND td.TerminalID =? AND td.TransactionType = ? AND Date(td.DateCreated) >=? 
                   AND Date(td.DateCreated) < ?";
@@ -435,7 +431,7 @@ class ApplicationSupport extends DBHandler
           //then if both Transaction Status and Transaction type was selected of its choices, execute:
           else
           {
-              $stmt = "SELECT COUNT(*) as count FROM transactiondetails td 
+              $stmt = "SELECT COUNT(td.TransactionDetailsID) as count FROM transactiondetails td 
                   INNER JOIN transactionrequestlogs trl ON td.TransactionReferenceID = trl.TransactionReferenceID 
                   WHERE td.SiteID =? AND td.TerminalID =? AND td.Status IN (".$status.") AND td.TransactionType = ? AND Date(td.DateCreated) >=? 
                   AND Date(td.DateCreated) < ?";
@@ -495,7 +491,7 @@ class ApplicationSupport extends DBHandler
       {
           $stmt = "SELECT a.AID,b.UserName from siteaccounts a 
                    INNER JOIN accounts b on a.AID = b.AID 
-                   WHERE a.SiteID = ? AND b.AccountTypeID = 4 AND b.Status = 1 
+                   WHERE a.SiteID = ? AND b.AccountTypeID = 4 AND b.Status = 1 AND a.Status = 1
                    ORDER BY b.UserName ASC";
           $this->prepare($stmt);
           $this->bindparameter(1,$zsiteID);
@@ -817,11 +813,11 @@ class ApplicationSupport extends DBHandler
       {
           if($zsiteID > 0)
           {
-              $stmt = "Select DISTINCT(t.TerminalID), t.TerminalCode from terminals t INNER JOIN terminalservices ts ON  t.TerminalID = ts.TerminalID INNER JOIN ref_services rs ON ts.ServiceID = rs.ServiceID where t.SiteID = '".$zsiteID."' AND t.Status = 1 AND t.isVIP = 0 AND (rs.UserMode = 0 || rs.UserMode = 2) ORDER BY TerminalID ASC";
+              $stmt = "Select DISTINCT(t.TerminalID), t.TerminalCode from terminals t INNER JOIN terminalservices ts ON  t.TerminalID = ts.TerminalID INNER JOIN ref_services rs ON ts.ServiceID = rs.ServiceID where t.SiteID = '".$zsiteID."' AND t.Status = 1 AND t.isVIP = 0 AND rs.UserMode IN (0,2) AND rs.Status=1 ORDER BY TerminalID ASC";
           }
           else
 	  {
-              $stmt = "Select DISTINCT(t.TerminalID), t.TerminalCode from terminals t INNER JOIN terminalservices ts ON  t.TerminalID = ts.TerminalID INNER JOIN ref_services rs ON ts.ServiceID = rs.ServiceID WHERE t.Status = 1 AND t.isVIP = 0 AND (rs.UserMode = 0 || rs.UserMode = 2) ORDER BY TerminalID ASC";
+              $stmt = "Select DISTINCT(t.TerminalID), t.TerminalCode from terminals t INNER JOIN terminalservices ts ON  t.TerminalID = ts.TerminalID INNER JOIN ref_services rs ON ts.ServiceID = rs.ServiceID WHERE t.Status = 1 AND t.isVIP = 0 AND rs.UserMode IN(0,2) AND rs.Status=1 ORDER BY TerminalID ASC";
           }
           $this->executeQuery($stmt);
           return $this->fetchAllData();
@@ -879,24 +875,24 @@ class ApplicationSupport extends DBHandler
            return $this->fetchData();
      }
      
-    /**
+    /** FOR REMOVAL
     * @author Gerardo V. Jagolino Jr.
     * @param $zsiteID
     * @return int
     * check the number of cashier sessions enable in a certain site
     */ 
-     function checkAccountSessions($zsiteID)
-     {
-           $stmt = "SELECT COUNT(AtS.SessionID) count FROM accountsessions AtS
-                INNER JOIN siteaccounts SA ON AtS.AID = SA.AID
-                INNER JOIN accounts AC ON AC.AID = AtS.AID 
-                WHERE SA.SiteID = ? AND AC.Status = 1";
-           $this->prepare($stmt);
-           $this->bindparameter(1, $zsiteID);
-           $this->execute($stmt);
-           $count =  $this->fetchData();
-           return $count['count'];
-     }
+//     function checkAccountSessions($zsiteID)
+//     {
+//           $stmt = "SELECT COUNT(AtS.SessionID) count FROM accountsessions AtS
+//                INNER JOIN siteaccounts SA ON AtS.AID = SA.AID
+//                INNER JOIN accounts AC ON AC.AID = AtS.AID 
+//                WHERE SA.SiteID = ? AND AC.Status = 1";
+//           $this->prepare($stmt);
+//           $this->bindparameter(1, $zsiteID);
+//           $this->execute($stmt);
+//           $count =  $this->fetchData();
+//           return $count['count'];
+//     }
      
     /**
     * @author Gerardo V. Jagolino Jr.
@@ -1047,7 +1043,7 @@ class ApplicationSupport extends DBHandler
         //if summary ID was selected on the grid, execute;
         if($zsummaryID > 0)
         {
-            $stmt = "SELECT COUNT(*) ctrtdetails 
+            $stmt = "SELECT COUNT(TransactionDetailsID) ctrtdetails 
                  FROM transactiondetails WHERE SiteID = ? AND TerminalID = ? 
                  AND DateCreated >= ? AND DateCreated < ? AND TransactionSummaryID = ?";
             $this->prepare($stmt);
@@ -1059,7 +1055,7 @@ class ApplicationSupport extends DBHandler
         }
         else
         {
-            $stmt = "SELECT COUNT(*) ctrtdetails 
+            $stmt = "SELECT COUNT(TransactionDetailsID) ctrtdetails 
                  FROM transactiondetails WHERE SiteID = ? AND TerminalID = ? 
                  AND DateCreated >= ? AND DateCreated < ?";
             $this->prepare($stmt);
@@ -1097,7 +1093,7 @@ class ApplicationSupport extends DBHandler
     //E-City Transaction Summary, count transactions summary
     function counttranssummary($zsiteID, $zterminalID, $zdatefrom, $zdateto)
     {
-        $stmt = "SELECT COUNT(*) ctrtsum
+        $stmt = "SELECT COUNT(ts.TransactionsSummaryID) ctrtsum
                  FROM transactionsummary ts 
                  INNER JOIN accounts acc ON ts.CreatedByAID = acc.AID
                  WHERE SiteID = ? AND TerminalID = ? AND DateStarted >= ?
@@ -1159,9 +1155,9 @@ class ApplicationSupport extends DBHandler
         //if summaryID was selected 
         if($zsummaryID > 0)
         {
-            $stmt = "SELECT COUNT(*) ctrlogs FROM transactionrequestlogslp 
+            $stmt = "SELECT COUNT(TransactionRequestLogLPID) ctrlogs FROM transactionrequestlogslp 
                      WHERE SiteID = ? AND TerminalID = ? AND StartDate >= ? 
-                     AND EndDate < ? AND TransactionSummaryID = ?";
+                     AND StartDate < ? AND TransactionSummaryID = ?";
             $this->prepare($stmt);
             $this->bindparameter(1, $zsiteID);
             $this->bindparameter(2, $zterminalID);
@@ -1171,9 +1167,9 @@ class ApplicationSupport extends DBHandler
         }
         else
         {
-            $stmt = "SELECT COUNT(*) ctrlogs FROM transactionrequestlogslp 
+            $stmt = "SELECT COUNT(TransactionRequestLogLPID) ctrlogs FROM transactionrequestlogslp 
                      WHERE SiteID = ? AND TerminalID = ? AND DATE(StartDate) >= ? 
-                     AND DATE(EndDate) < ?";
+                     AND DATE(StartDate) < ?";
             $this->prepare($stmt);
             $this->bindparameter(1, $zsiteID);
             $this->bindparameter(2, $zterminalID);
@@ -1435,16 +1431,16 @@ class ApplicationSupport extends DBHandler
      * @param type $zserviceID
      * @return type 
      */
-    function getterminalcredentials2($zterminalID, $zserviceID)
-    {
-        $stmt = "SELECT ServicePassword FROM terminalservices 
-                     WHERE ServiceID = ? AND TerminalID = ?";
-        $this->prepare($stmt);
-        $this->bindparameter(1, $zserviceID);
-        $this->bindparameter(2, $zterminalID);
-        $this->execute();
-        return $this->fetchData();
-    }
+//    function getterminalcredentials2($zterminalID, $zserviceID)
+//    {
+//        $stmt = "SELECT ServicePassword FROM terminalservices 
+//                     WHERE ServiceID = ? AND TerminalID = ?";
+//        $this->prepare($stmt);
+//        $this->bindparameter(1, $zserviceID);
+//        $this->bindparameter(2, $zterminalID);
+//        $this->execute();
+//        return $this->fetchData();
+//    }
     
     function viewTerminalID($zterminalcode)
     {
@@ -1775,8 +1771,8 @@ class ApplicationSupport extends DBHandler
         * get cashier username that is responsible for the transactions made
         */
       function getCashierUsername($zFrom, $zTo, $transRefID, $cardnumber){
-           $stmt = "SELECT a.Name FROM npos.transactiondetails td USE INDEX (IX_transactiondetails_DateCreated)
-                    INNER JOIN npos.accountdetails a ON td.CreatedByAID = a.AID
+           $stmt = "SELECT a.Name FROM transactiondetails td USE INDEX (IX_transactiondetails_DateCreated)
+                    INNER JOIN accountdetails a ON td.CreatedByAID = a.AID
                     WHERE td.DateCreated >= ? AND td.DateCreated < ? AND 
                     TransactionReferenceID = ? AND LoyaltyCardNumber = ?";
               $this->prepare($stmt);
@@ -2071,18 +2067,18 @@ class ApplicationSupport extends DBHandler
            return $result['UserMode'];
      }
      
-     
-     function getTerminalServicePassword($terminalid, $serviceID)
-     {
-           $stmt = "SELECT ServicePassword FROM terminalservices 
-                WHERE TerminalID = ? AND ServiceID = ?";
-           $this->prepare($stmt);
-           $this->bindparameter(1, $terminalid);
-           $this->bindparameter(2, $serviceID);
-           $this->execute($stmt);
-           $result =  $this->fetchData();
-           return $result['ServicePassword'];
-     }
+      //**************** FOR REMOVAL *******************//        
+//     function getTerminalServicePassword($terminalid, $serviceID)
+//     {
+//           $stmt = "SELECT ServicePassword FROM terminalservices 
+//                WHERE TerminalID = ? AND ServiceID = ?";
+//           $this->prepare($stmt);
+//           $this->bindparameter(1, $terminalid);
+//           $this->bindparameter(2, $serviceID);
+//           $this->execute($stmt);
+//           $result =  $this->fetchData();
+//           return $result['ServicePassword'];
+//     }
       //**************** FOR REMOVAL *******************//     
 //     function checkTerminalServices($terminalid, $serviceID)
 //     {
@@ -2688,12 +2684,11 @@ class ApplicationSupport extends DBHandler
       {     
               $stmt = "SELECT COUNT(DISTINCT(ts.TransactionsSummaryID)) as count
                                 FROM transactionsummary ts 
-                                LEFT JOIN npos.transactiondetails tdls ON ts.TransactionsSummaryID = tdls.TransactionSummaryID
-                                LEFT JOIN npos.ref_services rs ON tdls.ServiceID = rs.ServiceID
-                                LEFT JOIN npos.terminals t ON ts.TerminalID = t.TerminalID
-                                LEFT JOIN npos.sites s ON s.SiteID = ts.SiteID 
-                                WHERE ts.LoyaltyCardNumber = ? AND ts.DateStarted >= ? AND ts.DateStarted < ?
-                                ORDER BY ts.DateStarted";
+                                LEFT JOIN transactiondetails tdls ON ts.TransactionsSummaryID = tdls.TransactionSummaryID
+                                LEFT JOIN ref_services rs ON tdls.ServiceID = rs.ServiceID
+                                LEFT JOIN terminals t ON ts.TerminalID = t.TerminalID
+                                LEFT JOIN sites s ON s.SiteID = ts.SiteID 
+                                WHERE ts.LoyaltyCardNumber = ? AND ts.DateStarted >= ? AND ts.DateStarted < ?";
               $this->prepare($stmt);
               $this->bindparameter(1,$cardnumber);
               $this->bindparameter(2,$zFrom);
@@ -2708,10 +2703,10 @@ class ApplicationSupport extends DBHandler
               $stmt = "SELECT ts.TransactionsSummaryID, t.TerminalCode, s.SiteCode, rs.ServiceName, ts.StartBalance as StartingBalance, 
                             ts.WalletReloads as TotalEwalletload, ts.EndBalance as EndingBalance, ts.DateStarted as StartDate, ts.DateEnded as EndDate, IFNULL(tl.GenesisWithdrawal,0) as GenesisWithdrawal
                             FROM transactionsummary ts 
-                            LEFT JOIN npos.transactiondetails tdls ON ts.TransactionsSummaryID = tdls.TransactionSummaryID
-                            LEFT JOIN npos.ref_services rs ON tdls.ServiceID = rs.ServiceID
-                            LEFT JOIN npos.terminals t ON ts.TerminalID = t.TerminalID
-                            LEFT JOIN npos.sites s ON s.SiteID = ts.SiteID 
+                            LEFT JOIN transactiondetails tdls ON ts.TransactionsSummaryID = tdls.TransactionSummaryID
+                            LEFT JOIN ref_services rs ON tdls.ServiceID = rs.ServiceID
+                            LEFT JOIN terminals t ON ts.TerminalID = t.TerminalID
+                            LEFT JOIN sites s ON s.SiteID = ts.SiteID 
                             LEFT JOIN transactionsummarylogs tl ON tl.TransactionSummaryID = ts.TransactionsSummaryID        
                             WHERE ts.LoyaltyCardNumber = ? AND ts.DateStarted >= ? AND ts.DateStarted < ?
                             GROUP BY ts.TransactionsSummaryID
@@ -2752,12 +2747,58 @@ class ApplicationSupport extends DBHandler
           if ($vctype == 1) {//genesis virtual cashier 
             $stmt = "SELECT COUNT(sa.AID) as Count FROM siteaccounts sa 
                      INNER JOIN accounts a ON a.AID = sa.AID
+                     WHERE sa.SiteID = ? AND a.AccountTypeID = 15 AND a.Status = 1 AND sa.Status = 1";
+          }
+          else {
+             $stmt = "SELECT COUNT(sa.AID)as Count FROM siteaccounts sa 
+                      INNER JOIN accounts a ON a.AID = sa.AID
+                      WHERE sa.SiteID = ? AND a.AccountTypeID = 17 AND a.Status = 1 AND sa.Status = 1";  
+          }
+          $this->prepare($stmt);
+          $this->bindparameter(1, $siteID);
+          $this->execute();
+          $result = $this->fetchData();
+          
+          return $result['Count'];
+      }
+            /**
+       * 
+       * @param type $siteID
+       * @param type $vctype
+       */
+      public function checkIfHasInactiveVC($siteID, $vctype) {
+          if ($vctype == 1) {//genesis virtual cashier 
+            $stmt = "SELECT COUNT(sa.AID) as Count FROM siteaccounts sa 
+                     INNER JOIN accounts a ON a.AID = sa.AID
                      WHERE sa.SiteID = ? AND a.AccountTypeID = 15";
           }
           else {
              $stmt = "SELECT COUNT(sa.AID)as Count FROM siteaccounts sa 
                       INNER JOIN accounts a ON a.AID = sa.AID
                       WHERE sa.SiteID = ? AND a.AccountTypeID = 17";  
+          }
+          $this->prepare($stmt);
+          $this->bindparameter(1, $siteID);
+          $this->execute();
+          $result = $this->fetchData();
+          
+          return $result['Count'];
+      }
+                  /**
+       * 
+       * @param type $siteID
+       * @param type $vctype
+       */
+      public function UpdateInactiveVC($siteID, $vctype) {
+          if ($vctype == 1) {//genesis virtual cashier 
+            $stmt = "UPDATE accounts a INNER JOIN siteaccounts sa ON sa.AID = a.AID 
+                        SET a.Status=1, sa.Status=1 
+                        WHERE sa. SiteID=? AND a.AccountTypeID = 15";
+          }
+          else {
+             $stmt = "UPDATE accounts a INNER JOIN siteaccounts sa ON sa.AID = a.AID 
+                        SET a.Status=1, sa.Status=1 
+                        WHERE sa. SiteID=? AND a.AccountTypeID = 17";  
           }
           $this->prepare($stmt);
           $this->bindparameter(1, $siteID);

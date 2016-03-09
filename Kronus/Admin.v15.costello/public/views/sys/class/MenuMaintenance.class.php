@@ -444,19 +444,19 @@ class MenuMaintenance extends DBHandler
     {
         if($zaccounttypeID > 0)
         {
-            $stmt = "SELECT COUNT(*) as ctraccess FROM accessrights ar
+            $stmt = "SELECT COUNT(ar.ID) as ctraccess FROM accessrights ar
                      INNER JOIN ref_accounttypes ra ON ar.AccountTypeID = ra.AccountTypeID
                      INNER JOIN menus m ON ar.MenuID = m.MenuID
-                     LEFT JOIN submenus sm ON ar.SubMenuID = sm.SubMenuID WHERE ar.AccountTypeID = ? ORDER BY ar.AccountTypeID ASC";
+                     LEFT JOIN submenus sm ON ar.SubMenuID = sm.SubMenuID WHERE ar.AccountTypeID = ?";
             $this->prepare($stmt);
             $this->bindparameter(1, $zaccounttypeID);
         }
         else
         {
-            $stmt = "SELECT COUNT(*) as ctraccess FROM accessrights ar
+            $stmt = "SELECT COUNT(ar.ID) as ctraccess FROM accessrights ar
                      INNER JOIN ref_accounttypes ra ON ar.AccountTypeID = ra.AccountTypeID
                      INNER JOIN menus m ON ar.MenuID = m.MenuID
-                     LEFT JOIN submenus sm ON ar.SubMenuID = sm.SubMenuID ORDER BY ar.AccountTypeID ASC";
+                     LEFT JOIN submenus sm ON ar.SubMenuID = sm.SubMenuID";
             $this->prepare($stmt);
         }
         $this->execute();
@@ -492,9 +492,8 @@ class MenuMaintenance extends DBHandler
      */
     function countaccounts()
     {
-        $stmt = "Select COUNT(*) ctracc from accounts as a 
-                 INNER JOIN accountdetails as b ON a.AID = b.AID 
-                 ORDER BY a.UserName ASC";
+        $stmt = "Select COUNT(a.AID) ctracc from accounts as a 
+                 INNER JOIN accountdetails as b ON a.AID = b.AID";
         $this->prepare($stmt);
         $this->execute();
         return $this->fetchData();

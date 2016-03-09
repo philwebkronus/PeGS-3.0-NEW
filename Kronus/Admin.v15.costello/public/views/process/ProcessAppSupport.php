@@ -765,6 +765,12 @@ if ($connected && $connected2 && $connected3) {
                 }
                 echo json_encode($result);
                 break;
+                /*
+                 * Updated Creation of Virutal Cashier
+                 * Update Status if there is an existing inactive Virtual Cashier
+                 * mcatangan
+                 * 03/08/2016
+                 */
             case "CreateVirtualCashier":
                 $siteID = $_POST['siteID'];
                 $vctypegen = $_POST['vctypegen'];
@@ -774,48 +780,94 @@ if ($connected && $connected2 && $connected3) {
                 if (($vctypegen == "true" || $vctypeesafe == "true") && ($siteID != "-1")) {
                     if ($vctypegen == "true") { //EGM
                         $vctype = 1;
-                        //check if the site has already a virtual cashier for EGM
+                        //check if the site has already an active virtual cashier for EGM
                         $hasVC = $oas->checkIfHasVirtualCashier($siteID, 1);
                         if ($hasVC == 0) {
-                            $r = createVirtualCashier($oas, $siteID, $vctype);
-                            if ($r['ErrorCode'] == 0) {
-                                $result[] = array('ErrorCode' => 0,
-                                    'VCType' => 'Genesis Virtual Cashier',
-                                    'Message' => 'Genesis Virtual Cashier successfully created.');
+                                //check for inactive virtual cashier
+                                $hasInactiveVC = $oas->checkIfHasInactiveVC($siteID, 1);
+                                if ($hasInactiveVC == 0) {       
+                                    $r = createVirtualCashier($oas, $siteID, $vctype);
+                                    if ($r['ErrorCode'] == 0) {
+                                        $result[] = array('ErrorCode' => 0,
+                                            'VCType' => 'Genesis Virtual Cashier',
+                                            'Message' => 'Genesis Virtual Cashier successfully created.');
 
-                                $transdetails += "EGM: Created;";
-                            } else {
+                                        $transdetails += "EGM: Created;";
+                                    } 
+                                    else {
+                                        $result[] = array('ErrorCode' => 1,
+                                            'VCType' => 'Genesis Virtual Cashier',
+                                            'Message' => 'Genesis Virtual Cashier creation failed.');
+
+                                        $transdetails += "EGM: Failed;";
+                                        }   
+                                }
+                                else
+                                {
+                                     $r = $oas->UpdateInactiveVC($siteID, 1);  
+                                        if ($r == 0) {
+                                          $result[] = array('ErrorCode' => 3,
+                                          'VCType' => 'Genesis Virtual Cashier',
+                                          'Message' => 'Genesis Virtual Cashier successfully Activated.');
+                                          $transdetails += "EGM: Activated;";
+                                  } else {
+                                      $result[] = array('ErrorCode' => 1,
+                                          'VCType' => 'Genesis Virtual Cashier',
+                                          'Message' => 'Genesis Virtual Cashier Activation failed.');
+
+                                      $transdetails += "EGM: Failed;";
+                                  }
+                                }
+                        } else {
+
                                 $result[] = array('ErrorCode' => 1,
                                     'VCType' => 'Genesis Virtual Cashier',
-                                    'Message' => 'Genesis Virtual Cashier creation failed.');
-
-                                $transdetails += "EGM: Failed;";
-                            }
-                        } else {
-                            $result[] = array('ErrorCode' => 1,
-                                'VCType' => 'Genesis Virtual Cashier',
-                                'Message' => 'Site has already a Genesis virtual cashier.');
-                            $transdetails += "EGM: Site has already a Genesis virtual cashier;";
+                                    'Message' => 'Site has already a Genesis virtual cashier.');
+                                $transdetails += "EGM: Site has already a Genesis virtual cashier;";
+                                
                         }
                     }
                     if ($vctypeesafe == "true") { //e-SAFE
                         $vctype = 2;
                         $hasVC = $oas->checkIfHasVirtualCashier($siteID, 2); //e-SAFE
                         if ($hasVC == 0) {
-                            $r = createVirtualCashier($oas, $siteID, $vctype);
-                            if ($r['ErrorCode'] == 0) {
-                                $result[] = array('ErrorCode' => 0,
-                                    'VCType' => 'e-SAFE Virtual Cashier',
-                                    'Message' => 'e-SAFE Virtual Cashier successfully created.');
+                            $hasInactiveVC = $oas->checkIfHasInactiveVC($siteID, 2);
+                                if ($hasInactiveVC == 0) {   
+                                    $r = createVirtualCashier($oas, $siteID, $vctype);
+                                    if ($r['ErrorCode'] == 0) {
+                                        $result[] = array('ErrorCode' => 0,
+                                            'VCType' => 'e-SAFE Virtual Cashier',
+                                            'Message' => 'e-SAFE Virtual Cashier successfully created.');
 
-                                $transdetails .= "e-SAFE: Created;";
-                            } else {
-                                $result[] = array('ErrorCode' => 1,
-                                    'VCType' => 'e-SAFE Virtual Cashier',
-                                    'Message' => 'e-SAFE Virtual Cashier creation failed.');
+                                        $transdetails .= "e-SAFE: Created;";
+                                    } else {
+                                        $result[] = array('ErrorCode' => 1,
+                                            'VCType' => 'e-SAFE Virtual Cashier',
+                                            'Message' => 'e-SAFE Virtual Cashier creation failed.');
 
-                                $transdetails .= "e-SAFE: Failed;";
-                            }
+                                        $transdetails .= "e-SAFE: Failed;";
+                                    }
+                                }
+                                else
+                                {
+                                        $r = $oas->UpdateInactiveVC($siteID, 2);  
+                                        if ($r == 0) 
+                                        {
+                                          $result[] = array('ErrorCode' => 3,
+                                          'VCType' => 'e-SAFE Virtual Cashier',
+                                          'Message' => 'e-SAFE Virtual Cashier successfully Activated.');
+                                          $transdetails += "e-SAFE: Activated;";
+                                        } 
+                                        else 
+                                        {
+                                          $result[] = array('ErrorCode' => 1,
+                                          'VCType' => 'e-SAFE Virtual Cashier',
+                                          'Message' => 'e-SAFE Virtual Cashier Activation failed.');
+
+                                          $transdetails += "e-SAFE: Failed;";
+                                        }
+                                    
+                                }
                         } else {
                             $result[] = array('ErrorCode' => 1,
                                 'VCType' => 'e-SAFE Virtual Cashier',
@@ -2809,6 +2861,7 @@ if ($connected && $connected2 && $connected3) {
                                         $isVIP = 0;
                                     }
 
+                                    
                                     //Call API to get Account Info, for RTG casino
                                     if ($usermode == 0) {
                                         $vapiResult = $_CasinoGamingPlayerAPI->getCasinoAccountInfo($login, $vserviceID, $cashierurl, '', $vprovidername, $usermode);

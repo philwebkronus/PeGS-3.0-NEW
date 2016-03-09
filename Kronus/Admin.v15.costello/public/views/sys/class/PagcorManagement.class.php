@@ -163,7 +163,7 @@ class PagcorManagement extends DBHandler
             //if summary ID was SELECTed on the grid, execute;
             if($zsummaryID > 0)
             {
-                $stmt = "SELECT COUNT(*) ctrtdetails 
+                $stmt = "SELECT COUNT(TransactionDetailsID) ctrtdetails 
                      FROM transactiondetails WHERE SiteID = ? AND TerminalID = ? 
                      AND DateCreated >= ? AND DateCreated < ? 
                      AND TransactionSummaryID = ? AND TransactionType = ?";
@@ -177,7 +177,7 @@ class PagcorManagement extends DBHandler
             }
             else
             {
-                $stmt = "SELECT COUNT(*) ctrtdetails 
+                $stmt = "SELECT COUNT(TransactionDetailsID) ctrtdetails 
                      FROM transactiondetails WHERE SiteID = ? AND TerminalID = ? 
                      AND DateCreated >= ? AND DateCreated < ? AND TransactionType = ?";
                 $this->prepare($stmt);
@@ -193,7 +193,7 @@ class PagcorManagement extends DBHandler
             //if summary ID was SELECTed on the grid, execute;
             if($zsummaryID > 0)
             {
-                $stmt = "SELECT COUNT(*) ctrtdetails 
+                $stmt = "SELECT COUNT(TransactionDetailsID) ctrtdetails 
                      FROM transactiondetails WHERE SiteID = ? AND TerminalID = ? 
                      AND DateCreated >= ? AND DateCreated < ? AND TransactionSummaryID = ?";
                 $this->prepare($stmt);
@@ -205,7 +205,7 @@ class PagcorManagement extends DBHandler
             }
             else
             {
-                $stmt = "SELECT COUNT(*) ctrtdetails 
+                $stmt = "SELECT COUNT(TransactionDetailsID) ctrtdetails 
                      FROM transactiondetails WHERE SiteID = ? AND TerminalID = ? 
                      AND DateCreated >= ? AND DateCreated < ?";
                 $this->prepare($stmt);
@@ -339,7 +339,7 @@ class PagcorManagement extends DBHandler
     {
         if($zsiteID > 0)
         {
-            $stmt = "SELECT COUNT(*) ctrtsum
+            $stmt = "SELECT COUNT(ts.TransactionsSummaryID) ctrtsum
                  FROM transactionsummary ts 
                  INNER JOIN accounts acc ON ts.CreatedByAID = acc.AID
                  WHERE SiteID = ? AND TerminalID = ? AND ts.DateStarted >= ?
@@ -370,7 +370,7 @@ class PagcorManagement extends DBHandler
                              t.EndDate, t.TransactionType, t.TerminalID, t.Status, t.SiteID, t.ServiceTransactionID, t.Option1 AS LoyaltyCard,
                              t.ServiceStatus, t.ServiceTransferHistoryID, t.ServiceID, r.ServiceName FROM transactionrequestlogslp t
                              INNER JOIN ref_services r ON t.ServiceID = r.ServiceID
-                             WHERE t.SiteID = ? AND t.StartDate >= ? AND t.EndDate < ? AND t.TransactionType = ?";
+                             WHERE t.SiteID = ? AND t.StartDate >= ? AND t.StartDate < ? AND t.TransactionType = ?";
                     $this->prepare($stmt);
                     $this->bindparameter(1, $zsiteID);
                     //$this->bindparameter(2, $zterminalID);
@@ -388,7 +388,7 @@ class PagcorManagement extends DBHandler
                              t.EndDate, t.TransactionType, t.TerminalID, t.Status, t.SiteID, t.ServiceTransactionID, t.Option1 AS LoyaltyCard,
                              t.ServiceStatus, t.ServiceTransferHistoryID, t.ServiceID, r.ServiceName FROM transactionrequestlogslp t
                              INNER JOIN ref_services r ON t.ServiceID = r.ServiceID
-                             WHERE t.SiteID = ? AND t.StartDate >= ? AND t.EndDate < ?";
+                             WHERE t.SiteID = ? AND t.StartDate >= ? AND t.StartDate < ?";
                     $this->prepare($stmt);
                     $this->bindparameter(1, $zsiteID);
                     //$this->bindparameter(2, $zterminalID);
@@ -414,7 +414,7 @@ class PagcorManagement extends DBHandler
                          WHERE SiteID = ? 
                          AND TerminalID = ? 
                          AND StartDate >= ? 
-                         AND EndDate < ? 
+                         AND StartDate < ? 
                          AND TransactionType = ? 
                          AND TransactionSummaryID = ?
                          ORDER BY ".$zsort." ".$zdirection." LIMIT ".$zstart.",".$zlimit."";
@@ -436,7 +436,7 @@ class PagcorManagement extends DBHandler
                          WHERE SiteID = ? 
                          AND TerminalID = ? 
                          AND StartDate >= ? 
-                         AND t.EndDate < ? 
+                         AND t.StartDate < ? 
                          AND TransactionType = ?
                          ORDER BY ".$zsort." ".$zdirection." LIMIT ".$zstart.",".$zlimit."";
                     $this->prepare($stmt);
@@ -460,7 +460,7 @@ class PagcorManagement extends DBHandler
                          WHERE SiteID = ? 
                          AND TerminalID = ? 
                          AND StartDate >= ? 
-                         AND EndDate < ? 
+                         AND StartDate < ? 
                          AND TransactionSummaryID = ?
                          ORDER BY ".$zsort." ".$zdirection." LIMIT ".$zstart.",".$zlimit."";
                     $this->prepare($stmt);
@@ -480,7 +480,7 @@ class PagcorManagement extends DBHandler
                          WHERE SiteID = ? 
                          AND TerminalID = ? 
                          AND StartDate >= ? 
-                         AND EndDate < ? 
+                         AND StartDate < ? 
                          ORDER BY ".$zsort." ".$zdirection." LIMIT ".$zstart.",".$zlimit."";
                     $this->prepare($stmt);
                     $this->bindparameter(1, $zsiteID);
@@ -503,9 +503,9 @@ class PagcorManagement extends DBHandler
             //if summary ID was SELECTed
             if($zsummaryID > 0)
             {
-                $stmt = "SELECT COUNT(*) ctrlogs FROM transactionrequestlogslp 
+                $stmt = "SELECT COUNT(TransactionRequestLogLPID) ctrlogs FROM transactionrequestlogslp 
                          WHERE SiteID = ? AND TerminalID = ? AND StartDate >= ? 
-                         AND EndDate < ? AND TransactionType = ? AND TransactionSummaryID = ?";
+                         AND StartDate < ? AND TransactionType = ? AND TransactionSummaryID = ?";
                 $this->prepare($stmt);
                 $this->bindparameter(1, $zsiteID);
                 $this->bindparameter(2, $zterminalID);
@@ -516,9 +516,9 @@ class PagcorManagement extends DBHandler
             }
             else
             {
-                $stmt = "SELECT COUNT(*) ctrlogs FROM transactionrequestlogslp 
+                $stmt = "SELECT COUNT(TransactionRequestLogLPID) ctrlogs FROM transactionrequestlogslp 
                          WHERE SiteID = ? AND TerminalID = ? AND StartDate >= ? 
-                         AND EndDate < ? AND TransactionType = ?";
+                         AND StartDate < ? AND TransactionType = ?";
                 $this->prepare($stmt);
                 $this->bindparameter(1, $zsiteID);
                 $this->bindparameter(2, $zterminalID);
@@ -531,8 +531,8 @@ class PagcorManagement extends DBHandler
         {
             if($zsummaryID > 0)
             {
-                $stmt = "SELECT COUNT(*) ctrlogs FROM transactionrequestlogslp 
-                         WHERE SiteID = ? AND TerminalID = ? AND StartDate >= ? AND EndDate < ? AND TransactionSummaryID = ?";
+                $stmt = "SELECT COUNT(TransactionRequestLogLPID) ctrlogs FROM transactionrequestlogslp 
+                         WHERE SiteID = ? AND TerminalID = ? AND StartDate >= ? AND StartDate < ? AND TransactionSummaryID = ?";
                 $this->prepare($stmt);
                 $this->bindparameter(1, $zsiteID);
                 $this->bindparameter(2, $zterminalID);
@@ -542,8 +542,8 @@ class PagcorManagement extends DBHandler
             }
             else
             {
-                $stmt = "SELECT COUNT(*) ctrlogs FROM transactionrequestlogslp 
-                         WHERE SiteID = ? AND TerminalID = ? AND DATE(StartDate) >= ? AND DATE(EndDate) <= ?";
+                $stmt = "SELECT COUNT(TransactionRequestLogLPID) ctrlogs FROM transactionrequestlogslp 
+                         WHERE SiteID = ? AND TerminalID = ? AND DATE(StartDate) >= ? AND DATE(StartDate) <= ?";
                 $this->prepare($stmt);
                 $this->bindparameter(1, $zsiteID);
                 $this->bindparameter(2, $zterminalID);
@@ -564,17 +564,17 @@ class PagcorManagement extends DBHandler
     }
     
     //SELECT all terminal based from sites to populate combo box
-    function viewterminals($zsiteID)
-    {
-        if($zsiteID > 0)
-        {
-            $stmt = "SELECT DISTINCT a.TerminalID, b.TerminalCode FROM transactiondetails a 
-                INNER JOIN terminals b ON a.TerminalID = b.TerminalID 
-                WHERE a.SiteID = '".$zsiteID."' ORDER BY TerminalID ASC";
-        }
-        $this->executeQuery($stmt);
-        return $this->fetchAllData();
-    }
+//    function viewterminals($zsiteID)
+//    {
+//        if($zsiteID > 0)
+//        {
+//            $stmt = "SELECT DISTINCT a.TerminalID, b.TerminalCode FROM transactiondetails a 
+//                INNER JOIN terminals b ON a.TerminalID = b.TerminalID 
+//                WHERE a.SiteID = '".$zsiteID."' ORDER BY TerminalID ASC";
+//        }
+//        $this->executeQuery($stmt);
+//        return $this->fetchAllData();
+//    }
     
     //get terminal name
     function getterminalname($zterminalID)
@@ -595,41 +595,41 @@ class PagcorManagement extends DBHandler
     }
     
     //Extraction of Transaction Details, Note: change site's
-    function getTransDet($cdatefrom,$cdateto,$cserviceid)
-    {
-        $stmt = 'SELECT t.TerminalCode,td.TransactionType,td.DateCreated,td.Amount,td.TransactionReferenceID,
-            a.UserName,concat(tr.TransactionRequestLogID,",",t.TerminalID) as TrackingInfo,tr.ServiceTransactionID,
-            tr.SiteID,tr.TerminalID FROM transactiondetails td        
-            INNER JOIN transactionrequestlogs tr ON tr.TransactionReferenceID = td.TransactionReferenceID     
-            INNER JOIN terminals t ON t.TerminalID = td.TerminalID
-            INNER JOIN accounts a ON a.AID = td.CreatedByAID
-            WHERE td.DateCreated >= ? AND td.DateCreated < ? 
-            AND td.ServiceID IN(?) AND td.SiteID IN(145,146,147) ORDER BY td.DateCreated DESC';
-        $this->prepare($stmt);
-        $this->bindparameter(1,$cdatefrom);
-        $this->bindparameter(2,$cdateto);
-        $this->bindparameter(3,$cserviceid);
-        $this->execute();
-        return $this->fetchAllData();
-    }
+//    function getTransDet($cdatefrom,$cdateto,$cserviceid)
+//    {
+//        $stmt = 'SELECT t.TerminalCode,td.TransactionType,td.DateCreated,td.Amount,td.TransactionReferenceID,
+//            a.UserName,concat(tr.TransactionRequestLogID,",",t.TerminalID) as TrackingInfo,tr.ServiceTransactionID,
+//            tr.SiteID,tr.TerminalID FROM transactiondetails td        
+//            INNER JOIN transactionrequestlogs tr ON tr.TransactionReferenceID = td.TransactionReferenceID     
+//            INNER JOIN terminals t ON t.TerminalID = td.TerminalID
+//            INNER JOIN accounts a ON a.AID = td.CreatedByAID
+//            WHERE td.DateCreated >= ? AND td.DateCreated < ? 
+//            AND td.ServiceID IN(?) AND td.SiteID IN(145,146,147) ORDER BY td.DateCreated DESC';
+//        $this->prepare($stmt);
+//        $this->bindparameter(1,$cdatefrom);
+//        $this->bindparameter(2,$cdateto);
+//        $this->bindparameter(3,$cserviceid);
+//        $this->execute();
+//        return $this->fetchAllData();
+//    }
     
     //Extraction Transaction Logs of LP only,  Note: change site's
-    function getLPTrans($cdatefrom,$cdateto)
-    {
-        $stmt = "SELECT tlp.TransactionRequestLogLPID,t.TerminalCode ,
-            tlp.TransactionType,tlp.Amount,rs.ServiceDescription ,rs.Code,
-            tlp.StartDate,tlp.ServiceStatus ,
-            tlp.ServiceTransactionID ,tlp.SiteID,tlp.TerminalID  FROM transactionrequestlogslp  tlp
-            INNER JOIN terminals t ON t.TerminalID = tlp.TerminalID
-            INNER JOIN ref_services rs ON rs.ServiceID = tlp.ServiceID
-            WHERE tlp.StartDate >= ? AND tlp.StartDate < ? AND tlp.SiteID IN(145,146,147) 
-            ORDER BY tlp.TransactionRequestLogLPID ";
-        $this->prepare($stmt);
-        $this->bindparameter(1, $cdatefrom);
-        $this->bindparameter(2, $cdateto);
-        $this->execute();
-        return $this->fetchAllData();
-    }
+//    function getLPTrans($cdatefrom,$cdateto)
+//    {
+//        $stmt = "SELECT tlp.TransactionRequestLogLPID,t.TerminalCode ,
+//            tlp.TransactionType,tlp.Amount,rs.ServiceDescription ,rs.Code,
+//            tlp.StartDate,tlp.ServiceStatus ,
+//            tlp.ServiceTransactionID ,tlp.SiteID,tlp.TerminalID  FROM transactionrequestlogslp  tlp
+//            INNER JOIN terminals t ON t.TerminalID = tlp.TerminalID
+//            INNER JOIN ref_services rs ON rs.ServiceID = tlp.ServiceID
+//            WHERE tlp.StartDate >= ? AND tlp.StartDate < ? AND tlp.SiteID IN(145,146,147) 
+//            ORDER BY tlp.TransactionRequestLogLPID ";
+//        $this->prepare($stmt);
+//        $this->bindparameter(1, $cdatefrom);
+//        $this->bindparameter(2, $cdateto);
+//        $this->execute();
+//        return $this->fetchAllData();
+//    }
 
     //method for jqgrid plugin: parameters
     public function getJqgrid($total_row,$default_field) {

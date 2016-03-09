@@ -20,11 +20,11 @@ class CSManagement extends DBHandler{
       {
           if($zsiteID > 0)
           {
-              $stmt = "SELECT TerminalID, TerminalCode FROM terminals where SiteID = '".$zsiteID."' AND (Status = 0 OR 1) ORDER BY TerminalCode ASC";
+              $stmt = "SELECT TerminalID, TerminalCode FROM terminals where SiteID = '".$zsiteID."' AND Status IN (0, 1) ORDER BY TerminalCode ASC";
           }
           else
 	  {
-              $stmt = "SELECT TerminalID, TerminalCode FROM terminals WHERE (Status = 0 OR 1) ORDER BY TerminalCode ASC";
+              $stmt = "SELECT TerminalID, TerminalCode FROM terminals WHERE Status IN (0,1) ORDER BY TerminalCode ASC";
           }
           $this->executeQuery($stmt);
           return $this->fetchAllData();
@@ -43,14 +43,14 @@ class CSManagement extends DBHandler{
           {
               $stmt = "SELECT DISTINCT a.ServiceID, b.ServiceName FROM terminalservices AS a 
                   INNER JOIN ref_services AS b ON a.ServiceID = b.ServiceID 
-                  WHERE a.TerminalID = '".$zTerminalID."' AND a.Status = 1 AND (b.UserMode = 0 OR b.UserMode = 2)
+                  WHERE a.TerminalID = '".$zTerminalID."' AND a.Status = 1 AND b.UserMode IN (0,2)
                   ORDER BY ServiceName ASC";
           }
           else
           {
               $stmt = "SELECT DISTINCT a.ServiceID, b.ServiceName FROM terminalservices AS a 
                        INNER JOIN ref_services AS b ON a.ServiceID = b.ServiceID 
-                       WHERE (b.UserMode = 0 OR b.UserMode = 2) ORDER BY ServiceName ASC";
+                       WHERE b.UserMode IN (0,2) AND a.Status = 1 ORDER BY ServiceName ASC";
           }
           $this->executeQuery($stmt);
           return $this->fetchAllData();
@@ -99,7 +99,7 @@ class CSManagement extends DBHandler{
       {
           $stmt = "SELECT a.AID,b.UserName from siteaccounts a 
                    INNER JOIN accounts b on a.AID = b.AID 
-                   WHERE a.SiteID = ? AND b.AccountTypeID = 4 AND b.Status = 1 
+                   WHERE a.SiteID = ? AND b.AccountTypeID = 4 AND b.Status = 1 AND a.Status =1
                    ORDER BY b.UserName ASC";
           $this->prepare($stmt);
           $this->bindparameter(1,$zsiteID);
@@ -254,7 +254,7 @@ class CSManagement extends DBHandler{
             //validate if combo boxes of transaction status and transaction type are selected ALL 
             if($ztransstatus[0] == 'All' && $ztranstype == 'All')
             {
-                $stmt = "SELECT COUNT(*) as count FROM transactiondetails td 
+                $stmt = "SELECT COUNT(td.TransactionDetailsID) as count FROM transactiondetails td 
                     INNER JOIN transactionrequestlogs trl ON td.TransactionReferenceID = trl.TransactionReferenceID 
                     WHERE td.SiteID =? AND td.TerminalID =? AND td.DateCreated >=? 
                     AND td.DateCreated < ?";
@@ -267,7 +267,7 @@ class CSManagement extends DBHandler{
             //then if Transaction Status was selected any of its choices (Success, Failed) AND Transaction Type was selected all
             elseif($ztransstatus[0] <> 'All' && $ztranstype == 'All')
             {
-                $stmt = "SELECT COUNT(*) as count FROM transactiondetails td 
+                $stmt = "SELECT COUNT(td.TransactionDetailsID) as count FROM transactiondetails td 
                     INNER JOIN transactionrequestlogs trl ON td.TransactionReferenceID = trl.TransactionReferenceID 
                     WHERE td.SiteID =? AND td.TerminalID =? AND td.Status IN (".$status.") AND td.DateCreated >=? 
                     AND td.DateCreated < ?";
@@ -280,7 +280,7 @@ class CSManagement extends DBHandler{
             //then if Transaction Status was selected all AND Transaction Type was selected ano of its choices (Deposit, Reload, Withdraw)
             elseif($ztransstatus[0] == 'All' && $ztranstype <> 'All')
             {
-                $stmt = "SELECT COUNT(*) as count FROM transactiondetails td 
+                $stmt = "SELECT COUNT(td.TransactionDetailsID) as count FROM transactiondetails td 
                     INNER JOIN transactionrequestlogs trl ON td.TransactionReferenceID = trl.TransactionReferenceID 
                     WHERE td.SiteID =? AND td.TerminalID =? AND td.TransactionType = ? AND td.DateCreated >=? 
                     AND td.DateCreated < ?";
@@ -294,7 +294,7 @@ class CSManagement extends DBHandler{
             //then if both Transaction Status and Transaction type was selected of its choices, execute:
             else
             {
-                $stmt = "SELECT COUNT(*) as count FROM transactiondetails td 
+                $stmt = "SELECT COUNT(td.TransactionDetailsID) as count FROM transactiondetails td 
                     INNER JOIN transactionrequestlogs trl ON td.TransactionReferenceID = trl.TransactionReferenceID 
                     WHERE td.SiteID =? AND td.TerminalID =? AND td.Status IN (".$status.") AND td.TransactionType = ? AND td.DateCreated >=? 
                     AND td.DateCreated < ?";
@@ -330,7 +330,7 @@ class CSManagement extends DBHandler{
                     INNER JOIN transactionrequestlogs trl ON td.TransactionReferenceID = trl.TransactionReferenceID 
                     INNER JOIN accounts a ON td.CreatedByAID = a.AID
                     WHERE td.SiteID =? AND td.TerminalID =? AND td.DateCreated >= ? 
-                    AND td.DateCreated <= ? ORDER BY td.DateCreated LIMIT ".$zStart.", ".$zLimit."";
+                    AND td.DateCreated < ? ORDER BY td.DateCreated LIMIT ".$zStart.", ".$zLimit."";
                 $this->prepare($stmt);
                 $this->bindparameter(1,$zSiteID);
                 $this->bindparameter(2,$zTerminalID);
@@ -345,7 +345,7 @@ class CSManagement extends DBHandler{
                     INNER JOIN transactionrequestlogs trl ON td.TransactionReferenceID = trl.TransactionReferenceID 
                     INNER JOIN accounts a ON td.CreatedByAID = a.AID
                     WHERE td.SiteID =? AND td.TerminalID =? AND td.Status IN (".$status.") AND td.DateCreated >= ? 
-                    AND td.DateCreated <= ? ORDER BY td.DateCreated LIMIT ".$zStart.", ".$zLimit."";
+                    AND td.DateCreated < ? ORDER BY td.DateCreated LIMIT ".$zStart.", ".$zLimit."";
                 $this->prepare($stmt);
                 $this->bindparameter(1,$zSiteID);
                 $this->bindparameter(2,$zTerminalID);
@@ -360,7 +360,7 @@ class CSManagement extends DBHandler{
                     INNER JOIN transactionrequestlogs trl ON td.TransactionReferenceID = trl.TransactionReferenceID 
                     INNER JOIN accounts a ON td.CreatedByAID = a.AID
                     WHERE td.SiteID =? AND td.TerminalID =? AND td.TransactionType = ? AND td.DateCreated >=? 
-                    AND td.DateCreated <= ? ORDER BY td.DateCreated LIMIT ".$zStart.", ".$zLimit."";
+                    AND td.DateCreated < ? ORDER BY td.DateCreated LIMIT ".$zStart.", ".$zLimit."";
                 $this->prepare($stmt);
                 $this->bindparameter(1,$zSiteID);
                 $this->bindparameter(2,$zTerminalID);
@@ -376,7 +376,7 @@ class CSManagement extends DBHandler{
                     INNER JOIN transactionrequestlogs trl ON td.TransactionReferenceID = trl.TransactionReferenceID 
                     INNER JOIN accounts a ON td.CreatedByAID = a.AID
                     WHERE td.SiteID =? AND td.TerminalID =? AND td.Status IN (".$status.") AND td.TransactionType = ? AND td.DateCreated >=? 
-                    AND td.DateCreated <= ? ORDER BY td.DateCreated LIMIT ".$zStart.", ".$zLimit."";
+                    AND td.DateCreated < ? ORDER BY td.DateCreated LIMIT ".$zStart.", ".$zLimit."";
                 $this->prepare($stmt);
                 $this->bindparameter(1,$zSiteID);
                 $this->bindparameter(2,$zTerminalID);
@@ -400,7 +400,7 @@ class CSManagement extends DBHandler{
             //if summary ID was selected on the grid, execute;
             if($zsummaryID > 0)
             {
-                $stmt = "SELECT COUNT(*) ctrtdetails 
+                $stmt = "SELECT COUNT(TransactionDetailsID) ctrtdetails 
                     FROM transactiondetails WHERE SiteID = ? AND TerminalID = ? 
                     AND DateCreated >= ? AND DateCreated < ? AND TransactionSummaryID = ?";
                 $this->prepare($stmt);
@@ -412,7 +412,7 @@ class CSManagement extends DBHandler{
             }
             else
             {
-                $stmt = "SELECT COUNT(*) ctrtdetails 
+                $stmt = "SELECT COUNT(TransactionDetailsID) ctrtdetails 
                     FROM transactiondetails WHERE SiteID = ? AND TerminalID = ? 
                     AND DateCreated >= ? AND DateCreated < ?";
                 $this->prepare($stmt);
@@ -469,7 +469,7 @@ class CSManagement extends DBHandler{
         //E-City Transaction Summary, count transactions summary
         function counttranssummary($zsiteID, $zterminalID, $zdatefrom, $zdateto)
         {
-            $stmt = "SELECT COUNT(*) ctrtsum
+            $stmt = "SELECT COUNT(TransactionsSummaryID) ctrtsum
                     FROM transactionsummary ts 
                     INNER JOIN accounts acc ON ts.CreatedByAID = acc.AID
                     WHERE ts.SiteID = ? AND ts.TerminalID = ? AND ts.DateStarted >= ?
@@ -519,9 +519,9 @@ class CSManagement extends DBHandler{
             //if summaryID was selected 
             if($zsummaryID > 0)
             {
-                $stmt = "SELECT COUNT(*) ctrlogs FROM transactionrequestlogslp 
+                $stmt = "SELECT COUNT(TransactionRequestLogLPID) ctrlogs FROM transactionrequestlogslp 
                         WHERE SiteID = ? AND TerminalID = ? AND StartDate >= ? 
-                        AND EndDate < ? AND TransactionSummaryID = ?";
+                        AND StartDate < ? AND TransactionSummaryID = ?";
                 $this->prepare($stmt);
                 $this->bindparameter(1, $zsiteID);
                 $this->bindparameter(2, $zterminalID);
@@ -531,9 +531,9 @@ class CSManagement extends DBHandler{
             }
             else
             {
-                $stmt = "SELECT COUNT(*) ctrlogs FROM transactionrequestlogslp 
+                $stmt = "SELECT COUNT(TransactionRequestLogLPID) ctrlogs FROM transactionrequestlogslp 
                         WHERE SiteID = ? AND TerminalID = ? AND StartDate >= ? 
-                        AND EndDate < ?";
+                        AND StartDate < ?";
                 $this->prepare($stmt);
                 $this->bindparameter(1, $zsiteID);
                 $this->bindparameter(2, $zterminalID);

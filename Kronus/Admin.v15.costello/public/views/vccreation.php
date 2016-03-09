@@ -57,10 +57,16 @@ include "header.php";
                    success: function(data){
                        $.each(data, function(i, user) {
                            if (data[i].ErrorCode != 2) {
-                               if (data[i].ErrorCode != 1) {
+                               if (data[i].ErrorCode == 0) {
                                    prompt_result += "<tr>"+
                                                         "<td style='text-align:left'>" + data[i].VCType + "</td>" + 
                                                         "<td><b style='color:green'>Created</b></td>"
+                                                    "</tr>";
+                               }
+                               else if (data[i].ErrorCode == 3) {
+                                   prompt_result += "<tr>"+
+                                                        "<td style='text-align:left'>" + data[i].VCType + "</td>" + 
+                                                        "<td><b style='color:green'>Updated</b></td>"
                                                     "</tr>";
                                }
                                else {
