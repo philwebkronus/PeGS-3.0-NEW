@@ -705,7 +705,7 @@ if ($connected) {
 
                             if ($usermode == 0) {
                                 $PID = $_RealtimeGamingCashierAPI->GetPIDFromLogin($login);
-                                if ($PID==NULL)
+                                if (count($PID['GetPIDFromLoginResult'])<=0)
                                     {
                                     $vapiResult = $_CasinoGamingPlayerAPI->createTerminalAccount($vprovidername, $serverId, $url, $login, $password, $aid, $currency, $email, $fname, $lname, $dayphone, $evephone, $addr1, $addr2, $city, $country, $state, $zip, $userID, $birthdate, $fax, $occupation, $sex, $alias, $casinoID, $ip, $mac, $downloadID, $clientID, $putInAffPID, $calledFromCasino, $hashedPassword, $agentID, $currentPosition, $thirdPartyPID, $capiusername, $capipassword, $capiplayername, $capiserverID, $isVIP, $usermode);
                                     if($vapiResult == NULL) { // proceeed if certificate does not match
