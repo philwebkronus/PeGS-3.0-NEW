@@ -36,10 +36,10 @@ class RptOthers extends DBHandler
         //validate if has child accounts
         if(count($zacctypes) > 1)
         {
-            $stmt = "SELECT COUNT(*) as ctraudit FROM audittrail audit
+            $stmt = "SELECT COUNT(audit.ID) as ctraudit FROM audittrail audit
                     INNER JOIN accounts acc ON audit.AID = acc.AID
                     LEFT JOIN ref_auditfunctions ra ON audit.AuditTrailFunctionID = ra.AuditTrailFunctionID
-                    WHERE audit.TransDateTime > ? AND audit.TransDateTime <= ? AND acc.AccountTypeID IN (".$acctypes.") 
+                    WHERE audit.TransDateTime >= ? AND audit.TransDateTime < ? AND acc.AccountTypeID IN (".$acctypes.") 
                     AND audit.AID IN (".$childaccs.")";
         }
         else
@@ -48,17 +48,17 @@ class RptOthers extends DBHandler
             //if account type is liason display only its account
             if($stracc == 10)
             {
-                $stmt = "SELECT COUNT(*) as ctraudit FROM audittrail audit
+                $stmt = "SELECT COUNT(audit.ID) as ctraudit FROM audittrail audit
                  INNER JOIN accounts acc ON audit.AID = acc.AID
                  LEFT JOIN ref_auditfunctions ra ON audit.AuditTrailFunctionID = ra.AuditTrailFunctionID
-                 WHERE audit.TransDateTime > ? AND audit.TransDateTime <= ? AND acc.AccountTypeID IN (".$acctypes.") AND audit.AID IN (".$childaccs.")";
+                 WHERE audit.TransDateTime >= ? AND audit.TransDateTime < ? AND acc.AccountTypeID IN (".$acctypes.") AND audit.AID IN (".$childaccs.")";
             }
             else
             {
-                $stmt = "SELECT COUNT(*) as ctraudit FROM audittrail audit
+                $stmt = "SELECT COUNT(audit.ID) as ctraudit FROM audittrail audit
                  INNER JOIN accounts acc ON audit.AID = acc.AID
                  LEFT JOIN ref_auditfunctions ra ON audit.AuditTrailFunctionID = ra.AuditTrailFunctionID
-                 WHERE audit.TransDateTime > ? AND audit.TransDateTime <= ? AND acc.AccountTypeID IN (".$acctypes.")";
+                 WHERE audit.TransDateTime >= ? AND audit.TransDateTime < ? AND acc.AccountTypeID IN (".$acctypes.")";
             }
         }
         $this->prepare($stmt);
@@ -66,6 +66,7 @@ class RptOthers extends DBHandler
         $this->bindparameter(2, $zdateto);
         //$this->bindparameter(3, $zacctype);
         $this->execute();
+        var_dump($stmt,$zdatefrom,$zdateto);exit;
         unset($listacctypes);
         unset($listchildaccs);
         return $this->fetchData();
@@ -94,7 +95,7 @@ class RptOthers extends DBHandler
                 $stmt = "SELECT audit.AID, audit.TransDetails, audit.TransDateTime, audit.RemoteIP, acc.UserName, ra.AuditFunctionName FROM audittrail audit
                      INNER JOIN accounts acc ON audit.AID = acc.AID
                      LEFT JOIN ref_auditfunctions ra ON audit.AuditTrailFunctionID = ra.AuditTrailFunctionID
-                     WHERE audit.TransDateTime > ? AND audit.TransDateTime <= ? AND acc.AccountTypeID IN (".$acctypes.") 
+                     WHERE audit.TransDateTime >= ? AND audit.TransDateTime < ? AND acc.AccountTypeID IN (".$acctypes.") 
                          AND audit.AID IN (".$childaccs.") ORDER BY TransDateTime ASC";
             }   
             else
@@ -106,14 +107,14 @@ class RptOthers extends DBHandler
                     $stmt = "SELECT audit.AID, audit.TransDetails, audit.TransDateTime, audit.RemoteIP, acc.UserName, ra.AuditFunctionName FROM audittrail audit
                      INNER JOIN accounts acc ON audit.AID = acc.AID
                      LEFT JOIN ref_auditfunctions ra ON audit.AuditTrailFunctionID = ra.AuditTrailFunctionID
-                     WHERE audit.TransDateTime > ? AND audit.TransDateTime <= ? AND acc.AccountTypeID IN (".$acctypes.") AND audit.AID IN (".$childaccs.") ORDER BY TransDateTime ASC";
+                     WHERE audit.TransDateTime >= ? AND audit.TransDateTime < ? AND acc.AccountTypeID IN (".$acctypes.") AND audit.AID IN (".$childaccs.") ORDER BY TransDateTime ASC";
                 }
                 else
                 {
                     $stmt = "SELECT audit.AID, audit.TransDetails, audit.TransDateTime, audit.RemoteIP, acc.UserName, ra.AuditFunctionName FROM audittrail audit
                      INNER JOIN accounts acc ON audit.AID = acc.AID
                      LEFT JOIN ref_auditfunctions ra ON audit.AuditTrailFunctionID = ra.AuditTrailFunctionID
-                     WHERE audit.TransDateTime > ? AND audit.TransDateTime <= ? AND acc.AccountTypeID IN (".$acctypes.") ORDER BY TransDateTime ASC";
+                     WHERE audit.TransDateTime >= ? AND audit.TransDateTime < ? AND acc.AccountTypeID IN (".$acctypes.") ORDER BY TransDateTime ASC";
                 }
             }
         }
@@ -124,7 +125,7 @@ class RptOthers extends DBHandler
                 $stmt = "SELECT audit.AID, audit.TransDetails, audit.TransDateTime, audit.RemoteIP, acc.UserName, ra.AuditFunctionName FROM audittrail audit
                      INNER JOIN accounts acc ON audit.AID = acc.AID
                      LEFT JOIN ref_auditfunctions ra ON audit.AuditTrailFunctionID = ra.AuditTrailFunctionID
-                     WHERE audit.TransDateTime > ? AND audit.TransDateTime <= ? AND acc.AccountTypeID IN (".$acctypes.") 
+                     WHERE audit.TransDateTime >= ? AND audit.TransDateTime < ? AND acc.AccountTypeID IN (".$acctypes.") 
                      AND audit.AID IN (".$childaccs.") ORDER BY ".$zsort." ".$zdirection." LIMIT ".$zstart.",".$zlimit."";
             }  
             else
@@ -136,7 +137,7 @@ class RptOthers extends DBHandler
                     $stmt = "SELECT audit.AID, audit.TransDetails, audit.TransDateTime, audit.RemoteIP, acc.UserName, ra.AuditFunctionName FROM audittrail audit
                      INNER JOIN accounts acc ON audit.AID = acc.AID
                      LEFT JOIN ref_auditfunctions ra ON audit.AuditTrailFunctionID = ra.AuditTrailFunctionID
-                     WHERE audit.TransDateTime > ? AND audit.TransDateTime <= ? AND acc.AccountTypeID IN (".$acctypes.") 
+                     WHERE audit.TransDateTime >= ? AND audit.TransDateTime < ? AND acc.AccountTypeID IN (".$acctypes.") 
                      AND audit.AID IN (".$childaccs.") ORDER BY ".$zsort." ".$zdirection." LIMIT ".$zstart.",".$zlimit."";
                 }
                 else
@@ -144,7 +145,7 @@ class RptOthers extends DBHandler
                     $stmt = "SELECT audit.AID, audit.TransDetails, audit.TransDateTime, audit.RemoteIP, acc.UserName, ra.AuditFunctionName FROM audittrail audit
                      INNER JOIN accounts acc ON audit.AID = acc.AID
                      LEFT JOIN ref_auditfunctions ra ON audit.AuditTrailFunctionID = ra.AuditTrailFunctionID
-                     WHERE audit.TransDateTime > ? AND audit.TransDateTime <= ? AND acc.AccountTypeID IN (".$acctypes.") 
+                     WHERE audit.TransDateTime >= ? AND audit.TransDateTime < ? AND acc.AccountTypeID IN (".$acctypes.") 
                      ORDER BY ".$zsort." ".$zdirection." LIMIT ".$zstart.",".$zlimit."";
                 }
             }

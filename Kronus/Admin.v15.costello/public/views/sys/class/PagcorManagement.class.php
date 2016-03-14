@@ -662,7 +662,7 @@ class PagcorManagement extends DBHandler
                             INNER JOIN sites s ON s.SiteID = sgc.SiteID
                             INNER JOIN accountdetails ad ON ad.AID = s.OwnerAID
                             INNER JOIN sitedetails sd ON sd.SiteID = sgc.SiteID
-                            WHERE sgc.DateCutOff > ? AND sgc.DateCutOff <= ?
+                            WHERE sgc.DateCutOff >= ? AND sgc.DateCutOff < ?
                             ORDER BY s.SiteCode, sgc.DateFirstTransaction";          
 
                 $query2 = "SELECT SiteID,DateCredited,AmountConfirmed FROM grossholdconfirmation 
@@ -795,10 +795,10 @@ class PagcorManagement extends DBHandler
                                 END As RedemptionGenesis,
 
                                 ts.DateStarted, ts.DateEnded, tr.SiteID
-                                FROM npos.transactiondetails tr INNER JOIN npos.transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
-                                INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
-                                INNER JOIN npos.accounts a ON ts.CreatedByAID = a.AID
-                                INNER JOIN npos.sites s ON tr.SiteID = s.SiteID
+                                FROM transactiondetails tr FORCE INDEX (IX_transactiondetails_DateCreated)INNER JOIN npos.transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
+                                INNER JOIN terminals t ON t.TerminalID = tr.TerminalID
+                                INNER JOIN accounts a ON ts.CreatedByAID = a.AID
+                                INNER JOIN sites s ON tr.SiteID = s.SiteID
                                 WHERE tr.DateCreated >= ? AND tr.DateCreated < ?
                                   AND tr.Status IN(1,4)
                                 GROUP By tr.TransactionType, tr.TransactionSummaryID
@@ -964,7 +964,7 @@ class PagcorManagement extends DBHandler
                             INNER JOIN sites s ON s.SiteID = sgc.SiteID
                             INNER JOIN accountdetails ad ON ad.AID = s.OwnerAID
                             INNER JOIN sitedetails sd ON sd.SiteID = sgc.SiteID
-                            WHERE sgc.DateCutOff > ? AND sgc.DateCutOff <= ?
+                            WHERE sgc.DateCutOff >= ? AND sgc.DateCutOff < ?
                             AND sgc.SiteID = ?
                             ORDER BY s.SiteCode, sgc.DateFirstTransaction";          
 
@@ -1098,10 +1098,10 @@ class PagcorManagement extends DBHandler
                                 END As RedemptionGenesis,
 
                                 ts.DateStarted, ts.DateEnded, tr.SiteID
-                                FROM npos.transactiondetails tr INNER JOIN npos.transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
-                                INNER JOIN npos.terminals t ON t.TerminalID = tr.TerminalID
-                                INNER JOIN npos.accounts a ON ts.CreatedByAID = a.AID
-                                INNER JOIN npos.sites s ON tr.SiteID = s.SiteID
+                                FROM transactiondetails tr FORCE INDEX (IX_transactiondetails_DateCreated) INNER JOIN npos.transactionsummary ts ON ts.TransactionsSummaryID = tr.TransactionSummaryID
+                                INNER JOIN terminals t ON t.TerminalID = tr.TerminalID
+                                INNER JOIN accounts a ON ts.CreatedByAID = a.AID
+                                INNER JOIN sites s ON tr.SiteID = s.SiteID
                                 WHERE tr.SiteID = ?
                                   AND tr.DateCreated >= ? AND tr.DateCreated < ?
                                   AND tr.Status IN(1,4)
@@ -1290,6 +1290,7 @@ class PagcorManagement extends DBHandler
         if(isset($_GET['site']) && $_GET['site'] == '') {
             // to get beginning balance
             $query1 = "SELECT srb.SiteID, srb.PrevBalance, ad.Name, sd.SiteDescription, s.SiteCode, s.POSAccountNo FROM siterunningbalance srb " . 
+                    "FORCE INDEX (IX_siterunningbalance_TransactionDate)" .
                     "INNER JOIN sites s ON s.SiteID = srb.SiteID " . 
                     "INNER JOIN accountdetails ad ON ad.AID = s.OwnerAID " .
                     "INNER JOIN sitedetails sd ON sd.SiteID = srb.SiteID  where TransactionDate >= '$startdate' and " . 
@@ -1314,6 +1315,7 @@ class PagcorManagement extends DBHandler
         } else {
             // to get beginning balance
             $query1 = "SELECT srb.SiteID, srb.PrevBalance, ad.Name, sd.SiteDescription, s.SiteCode, s.POSAccountNo FROM siterunningbalance srb " . 
+                    "FORCE INDEX (IX_siterunningbalance_TransactionDate)" .
                     "INNER JOIN sites s ON s.SiteID = srb.SiteID " . 
                     "INNER JOIN accountdetails ad ON ad.AID = s.OwnerAID " .
                     "INNER JOIN sitedetails sd ON sd.SiteID = srb.SiteID  where TransactionDate >= '$startdate' and " . 

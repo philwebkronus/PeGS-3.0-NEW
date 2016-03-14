@@ -61,6 +61,22 @@ $vaccesspages = array('8');
                         }
                 });
             });
+            $('#cmbsite').live('change', function()
+            {
+                var site = document.getElementById('cmbsite').value;
+                var data = $('#frmsites').serialize();
+                
+                //this part is for displaying site name
+                jQuery.ajax({
+                        url: url,
+                        type: 'post',
+                        data: {siteamt: function(){return jQuery("#cmbsite").val();}},
+                        dataType: 'json',
+                        success:function(data){
+                            jQuery('#txtloadamt').val(data.LoadAmt);
+                        }
+                });
+            });
          });
     </script>
         

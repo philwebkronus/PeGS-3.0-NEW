@@ -218,6 +218,14 @@ class DBHandler
         $this->execute();
         return $this->fetchAllData();
     }
+        function getsiteamt($zsiteID)
+    {
+        $stmt = "SELECT LoadAmountDivisible FROM siteamountinfo WHERE SiteID=? AND Status=1";
+        $this->prepare($stmt);
+        $this->bindparameter(1, $zsiteID);
+        $this->execute();
+        return $this->fetchAllData();
+    }
     
     function getsitecode($zsiteID)
     {

@@ -390,7 +390,8 @@ if ($connected) {
                                 //Check if assigned casino provider is RTG
                                 if (isset($rtgvprovider) && $rtgvprovider == "RTG") {
                                     $rtgUsedServer = 1;
-
+                                    $certpath = RTGCerts_DIR . $rtgvserviceID . '/cert.pem';
+                                    $keypath = RTGCerts_DIR . $rtgvserviceID . '/key.pem';
                                     //get password and encrypted password for RTG
                                     $vretrievepwd = $obatch->getgeneratedpassword($vgenpwdid, $rtggrpid);
                                     $vgenpassword = $vretrievepwd['PlainPassword'];
@@ -414,16 +415,72 @@ if ($connected) {
                                     $capipassword = '';
                                     $capiplayername = '';
                                     $capiserverID = '';
-
+                                    
+                                    $_RealtimeGamingCashierAPI = new RealtimeGamingCashierAPI($cashierurl, $certpath, $keypath, '');
                                     if ($usermode == 1) {
                                         $vplayerResult = array('IsSucceed' => true);
                                     }
 
                                     if ($usermode == 0) {
-                                        //Creates regular terminal account in RTG
-                                        $vplayerResult = $_CasinoGamingPlayerAPI->createTerminalAccount($rtgvprovider, $rtgvserviceID, $rtgurl, $login, $password, $aid, $currency, $email, $fname, $lname, $dayphone, $evephone, $addr1, $addr2, $city, $country, $state, $zip, $userID, $birthdate, $fax, $occupation, $sex, $alias, $casinoID, $ip, $mac, $downloadID, $clientID, $putInAffPID, $calledFromCasino, $hashedPassword, $agentID, $currentPosition, $thirdPartyPID, $capiusername, $capipassword, $capiplayername, $capiserverID, 0, $usermode);
-                                        if ($vplayerResult == NULL) { // proceeed if certificate does not match
-                                            $vplayerResult = $_CasinoGamingPlayerAPI->createTerminalAccount($rtgvprovider, $rtgvserviceID, $rtgurl, $login, $password, $aid, $currency, $email, $fname, $lname, $dayphone, $evephone, $addr1, $addr2, $city, $country, $state, $zip, $userID, $birthdate, $fax, $occupation, $sex, $alias, $casinoID, $ip, $mac, $downloadID, $clientID, $putInAffPID, $calledFromCasino, $hashedPassword, $agentID, $currentPosition, $thirdPartyPID, $capiusername, $capipassword, $capiplayername, $capiserverID, 0);
+                                        $PID = $_RealtimeGamingCashierAPI->GetPIDFromLogin($login);
+                                            if (count($PID['GetPIDFromLoginResult'])<=0)
+                                        {
+                                            //Creates regular terminal account in RTG
+                                            $vplayerResult = $_CasinoGamingPlayerAPI->createTerminalAccount($rtgvprovider, $rtgvserviceID, $rtgurl, $login, $password, $aid, $currency, $email, $fname, $lname, $dayphone, $evephone, $addr1, $addr2, $city, $country, $state, $zip, $userID, $birthdate, $fax, $occupation, $sex, $alias, $casinoID, $ip, $mac, $downloadID, $clientID, $putInAffPID, $calledFromCasino, $hashedPassword, $agentID, $currentPosition, $thirdPartyPID, $capiusername, $capipassword, $capiplayername, $capiserverID, 0, $usermode);
+                                            if ($vplayerResult == NULL) { // proceeed if certificate does not match
+                                                $vplayerResult = $_CasinoGamingPlayerAPI->createTerminalAccount($rtgvprovider, $rtgvserviceID, $rtgurl, $login, $password, $aid, $currency, $email, $fname, $lname, $dayphone, $evephone, $addr1, $addr2, $city, $country, $state, $zip, $userID, $birthdate, $fax, $occupation, $sex, $alias, $casinoID, $ip, $mac, $downloadID, $clientID, $putInAffPID, $calledFromCasino, $hashedPassword, $agentID, $currentPosition, $thirdPartyPID, $capiusername, $capipassword, $capiplayername, $capiserverID, 0);
+                                            }
+                                        }
+                                        else
+                                        {                                           
+                                            //Call API to get Account Info
+                                            if ($usermode == 0) {
+                                                $vplayerResult = $_CasinoGamingPlayerAPI->getCasinoAccountInfo($login, $rtgvserviceID, $cashierurl, $password, $rtgvprovider, $usermode);
+                                                if ($vplayerResult == NULL) { // proceeed if certificate does not match
+                                                    $vplayerResult = $_CasinoGamingPlayerAPI->getCasinoAccountInfo($login, $rtgvserviceID, $cashierurl,$rtgvprovider, $password);
+                                                }
+                                            }
+                                            if ($usermode == 2) {
+                                                $vplayerResult = $_CasinoGamingPlayerAPI->getCasinoAccountInfo($login, $rtgvserviceID, $cashierurl, $password, $rtgvprovider, $usermode);
+                                            }
+
+                                            //check if exists in RTG
+                                            if (isset($vplayerResult['AccountInfo']['password']) &&
+                                                    $vplayerResult['AccountInfo']['password'] <> null) {
+
+                                                $vrtgoldpwd = $vplayerResult['AccountInfo']['password'];
+
+                                                if ($usermode == 1) {
+                                                    $vplayerResult = array('IsSucceed' => true);
+                                                }
+
+                                                if ($usermode == 0) {
+                                                    //Call API Change Password
+                                                    $vplayerResult = $_CasinoGamingPlayerAPI->changeTerminalPassword($rtgvprovider, $rtgvserviceID, $rtgurl, $casinoID, $login, $vrtgoldpwd, $password, $capiusername, $capipassword, $capiplayername, $capiserverID, $usermode);
+                                                    if ($vplayerResult == NULL) { // proceeed if certificate does not match
+                                                        $vplayerResult = $_CasinoGamingPlayerAPI->changeTerminalPassword($rtgvprovider, $rtgvserviceID, $rtgurl, $casinoID, $login, $vrtgoldpwd, $password, $capiusername, $capipassword, $capiplayername, $capiserverID);
+                                                    }
+                                                }
+
+                                                if ($usermode == 2) {
+                                                    $vplayerResult = $_CasinoGamingPlayerAPI->changeTerminalPassword($rtgvprovider, $rtgvserviceID, $rtgurl, $casinoID, $login, $vrtgoldpwd, $password, $capiusername, $capipassword, $capiplayername, $capiserverID, $usermode);
+                                                }
+
+                                                //verify if API for change password (RTG) and reset password (MG) is successfull
+                                                if (isset($vplayerResult['IsSucceed']) && $vplayerResult['IsSucceed'] == true) {
+                                                    $isapisuccess = 1;
+                                                    $isrecorded = $obatch->createbatchterminals($isapisuccess, $vterminalName, $vterminalCode, $vsiteID, 1, $vCreatedByAID, $visVIP, $rtgvserviceID, 1, $vgenpassword, $vgenhashed);
+                                                    array_push($arrterminalID, $isrecorded);
+                                                } else {
+                                                    $isapisuccess = 0;
+                                                    $errmsg = "RTG " . $vplayerResult['ErrorMessage'];
+                                                }
+                                            } else {
+                                                $isapisuccess = 0;
+                                                $errmsg = "RTG " . $vplayerResult['ErrorMessage'];
+                                           }
+                                        $vplayerResult['IsSucceed'] == true;
+                                        $vplayerResult['Added'] == true;
                                         }
                                     }
 
@@ -434,11 +491,13 @@ if ($connected) {
 
                                     //check if regular terminal account was successfully created in RTG
                                     if (isset($vplayerResult['IsSucceed']) && $vplayerResult['IsSucceed'] == true) {
+                                        if (isset($vplayerResult['Added']) && $vplayerResult['Added'] == true) {
                                         $isapisuccess = 1;
 
                                         $isrecorded = $obatch->createbatchterminals($isapisuccess, $vterminalName, $vterminalCode, $vsiteID, 1, $vCreatedByAID, $visVIP, $rtgvserviceID, 1, $vgenpassword, $vgenhashed);
 
                                         array_push($arrterminalID, $isrecorded);
+                                        }
 
                                         /*                                         * ************************* CREATE VIP ********************************** */
                                         $vterminalName = "TERMINAL" . $vstartcode . "VIP";
@@ -452,10 +511,19 @@ if ($connected) {
                                         }
 
                                         if ($usermode == 0) {
-                                            //creates vip terminal account in RTG
-                                            $vplayerResult = $_CasinoGamingPlayerAPI->createTerminalAccount($rtgvprovider, $rtgvserviceID, $rtgurl, $login, $password, $aid, $currency, $email, $fname, $lname, $dayphone, $evephone, $addr1, $addr2, $city, $country, $state, $zip, $userID, $birthdate, $fax, $occupation, $sex, $alias, $casinoID, $ip, $mac, $downloadID, $clientID, $putInAffPID, $calledFromCasino, $hashedPassword, $agentID, $currentPosition, $thirdPartyPID, $capiusername, $capipassword, $capiplayername, $capiserverID, 1, $usermode);
-                                            if ($vplayerResult == NULL) { // proceeed if certificate does not match
-                                                $vplayerResult = $_CasinoGamingPlayerAPI->createTerminalAccount($rtgvprovider, $rtgvserviceID, $rtgurl, $login, $password, $aid, $currency, $email, $fname, $lname, $dayphone, $evephone, $addr1, $addr2, $city, $country, $state, $zip, $userID, $birthdate, $fax, $occupation, $sex, $alias, $casinoID, $ip, $mac, $downloadID, $clientID, $putInAffPID, $calledFromCasino, $hashedPassword, $agentID, $currentPosition, $thirdPartyPID, $capiusername, $capipassword, $capiplayername, $capiserverID, 1);
+                                            $PID = $_RealtimeGamingCashierAPI->GetPIDFromLogin($login);
+                                             if (count($PID['GetPIDFromLoginResult'])<=0)
+                                            {
+                                                //creates vip terminal account in RTG
+                                                $vplayerResult = $_CasinoGamingPlayerAPI->createTerminalAccount($rtgvprovider, $rtgvserviceID, $rtgurl, $login, $password, $aid, $currency, $email, $fname, $lname, $dayphone, $evephone, $addr1, $addr2, $city, $country, $state, $zip, $userID, $birthdate, $fax, $occupation, $sex, $alias, $casinoID, $ip, $mac, $downloadID, $clientID, $putInAffPID, $calledFromCasino, $hashedPassword, $agentID, $currentPosition, $thirdPartyPID, $capiusername, $capipassword, $capiplayername, $capiserverID, 1, $usermode);
+                                                if ($vplayerResult == NULL) { // proceeed if certificate does not match
+                                                    $vplayerResult = $_CasinoGamingPlayerAPI->createTerminalAccount($rtgvprovider, $rtgvserviceID, $rtgurl, $login, $password, $aid, $currency, $email, $fname, $lname, $dayphone, $evephone, $addr1, $addr2, $city, $country, $state, $zip, $userID, $birthdate, $fax, $occupation, $sex, $alias, $casinoID, $ip, $mac, $downloadID, $clientID, $putInAffPID, $calledFromCasino, $hashedPassword, $agentID, $currentPosition, $thirdPartyPID, $capiusername, $capipassword, $capiplayername, $capiserverID, 1);
+                                                }
+                                            }
+                                            else
+                                            {
+                                             $vplayerResult['IsSucceed']=false; 
+                                             $vplayerResult['ErrorCode']= 10;
                                             }
                                         }
 
@@ -473,17 +541,18 @@ if ($connected) {
                                         } else {
 
                                             //if account does not created in casino's RTG, check the errorcode is exists
-                                            if ($vplayerResult['ErrorCode'] == 5 || $vplayerResult['ErrorID'] == 5) {
+                                            if ($vplayerResult['ErrorCode'] == 5 || $vplayerResult['ErrorID'] == 5 
+                                                    || $vplayerResult['ErrorCode']==10) {
 
                                                 //Call API to get Account Info
                                                 if ($usermode == 0) {
-                                                    $vplayerResult = $_CasinoGamingPlayerAPI->getCasinoAccountInfo($login, $rtgvserviceID, $cashierurl, $password, $usermode);
+                                                    $vplayerResult = $_CasinoGamingPlayerAPI->getCasinoAccountInfo($login, $rtgvserviceID, $cashierurl, $password, $rtgvprovider, $usermode);
                                                     if ($vplayerResult == NULL) { // proceeed if certificate does not match
-                                                        $vplayerResult = $_CasinoGamingPlayerAPI->getCasinoAccountInfo($login, $rtgvserviceID, $cashierurl, $password);
+                                                        $vplayerResult = $_CasinoGamingPlayerAPI->getCasinoAccountInfo($login, $rtgvserviceID, $cashierurl, $password, $rtgvprovider);
                                                     }
                                                 }
                                                 if ($usermode == 2) {
-                                                    $vplayerResult = $_CasinoGamingPlayerAPI->getCasinoAccountInfo($login, $rtgvserviceID, $cashierurl, $password, $usermode);
+                                                    $vplayerResult = $_CasinoGamingPlayerAPI->getCasinoAccountInfo($login, $rtgvserviceID, $cashierurl, $password, $rtgvprovider, $usermode);
                                                 }
 
                                                 //check if exists in RTG
