@@ -349,12 +349,12 @@ class FrontendController extends MI_Controller {
                                          }
                                 $CPV = (!empty($CPV) ? $CPV : "");
                                 if ($CPV != NULL || $CPV != '') {
-                                     if($CPV == 'v15'){
-                                        $skinCount = (!empty(Mirage::app()->param['SkinCount'][$casinoServiceID]) ? Mirage::app()->param['SkinCount'][$casinoServiceID] : "");
-                                     }
-                                     else{
-                                         $skinCount = 0;
-                                     }                          
+//                                     if($CPV == 'v15'){
+//                                        $skinCount = (!empty(Mirage::app()->param['SkinCount'][$casinoServiceID]) ? Mirage::app()->param['SkinCount'][$casinoServiceID] : "");
+//                                     }
+//                                     else{
+//                                         $skinCount = 0;
+//                                     }                          
                                      $terminalname = $terminalsmodel->getTerminalName($startSessionFormModel->terminal_id);
                                         //checking if casino is terminal based
                                             if(($casinoUserMode == 0 || $casinoUserMode == 2) && $CPV == 'v12'){
@@ -381,21 +381,21 @@ class FrontendController extends MI_Controller {
                                                 $terminal_pwd = $terminalsmodel->getTerminalPassword($terminal_id, $startSessionFormModel->casino);
                                                 $login_pwd = $terminal_pwd['HashedServicePassword'];
                                                 $skinCount = Mirage::app()->param['SkinCount'][$casinoServiceID];
-                                                    if ($skinCount > 1) {
-                                                        $siteclassification = $sitesModel->getSiteClassification($siteid);
-                                                        if ($siteclassification == 1) { //1 - Non Platinum, 2 - Platinum
-                                                            $locatorname = Mirage::app()->param['SkinName'][$casinoServiceID][$siteclassification - 1];
+                                                    if (Mirage::app()->param['SkinCount'][$casinoServiceID] > 1) {
+                                                            $siteclassification = $sitesModel->getSiteClassification($siteid);
+                                                            if ($siteclassification == 1) { //1 - Non Platinum, 2 - Platinum
+                                                                $locatorname = Mirage::app()->param['SkinName'][$casinoServiceID][$siteclassification - 1];
+                                                            } else {
+                                                                $locatorname = Mirage::app()->param['SkinName'][$casinoServiceID][$siteclassification - 1];
+                                                            }
                                                         } else {
-                                                            $locatorname = Mirage::app()->param['SkinName'][$casinoServiceID][$siteclassification - 1];
+                                                            if (Mirage::app()->param['SkinCount'][$casinoServiceID] == 0 || Mirage::app()->param['SkinCount'][$casinoServiceID] = ''){
+                                                                $locatorname = '';
+                                                            }
+                                                            else{
+                                                                $locatorname = Mirage::app()->param['SkinName'][$casinoServiceID];
+                                                            }   
                                                         }
-                                                    } else {
-                                                        if ($skinCount == 0 || $skinCount == '' ){
-                                                            $locatorname = '';
-                                                        }
-                                                        else{
-                                                            $locatorname = Mirage::app()->param['SkinName'][$casinoServiceID];
-                                                        }   
-                                                    }
                                               $result = $commonReload->reload(toInt($this->getSiteBalance()),$amount, $paymentType,
                                                             $terminal_id,$siteid,$cid,$accid,$loyaltyCardNo,$vouchercode,$trackingId, 
                                                             $mid, $casinoUserMode,$casinoUsername,$casinoPassword, $casinoServiceID,$locatorname, $CPV);
@@ -425,7 +425,7 @@ class FrontendController extends MI_Controller {
                                             $mid, $casinoUserMode,$casinoUsername,$casinoPassword, $casinoServiceID,'','',$locatorname, $CPV);
                                    
                               } else{
-                               $message = 'Error : Failed to Reload.';
+                               $message = 'Error : Failed Reloading a Session.';
                                 logger($message);
                                 $this->throwError($message);                               
                             }
@@ -588,12 +588,12 @@ class FrontendController extends MI_Controller {
                                  }
                                 $CPV = (!empty($CPV) ? $CPV : "");
                                 if ($CPV != NULL || $CPV != '') {
-                                     if($CPV == 'v15'){
-                                        $skinCount = (!empty(Mirage::app()->param['SkinCount'][$casinoServiceID]) ? Mirage::app()->param['SkinCount'][$casinoServiceID] : "");
-                                     }
-                                     else{
-                                         $skinCount = 0;
-                                     }
+//                                     if($CPV == 'v15'){
+//                                        $skinCount = (!empty(Mirage::app()->param['SkinCount'][$casinoServiceID]) ? Mirage::app()->param['SkinCount'][$casinoServiceID] : "");
+//                                     }
+//                                     else{
+//                                         $skinCount = 0;
+//                                     }
                                      $terminalname = $terminalsmodel->getTerminalName($startSessionFormModel->terminal_id);
                                         //checking if casino is terminal based
                                             if(($casinoUserMode == 0 || $casinoUserMode == 2) && $CPV == 'v12'){
@@ -620,21 +620,21 @@ class FrontendController extends MI_Controller {
                                                 $terminal_pwd = $terminalsmodel->getTerminalPassword($terminal_id, $startSessionFormModel->casino);
                                                 $login_pwd = $terminal_pwd['HashedServicePassword'];
                                                 $skinCount = Mirage::app()->param['SkinCount'][$casinoServiceID];
-                                                    if ($skinCount > 1) {
-                                                        $siteclassification = $sitesModel->getSiteClassification($siteid);
-                                                        if ($siteclassification == 1) { //1 - Non Platinum, 2 - Platinum
-                                                            $locatorname = Mirage::app()->param['SkinName'][$casinoServiceID][$siteclassification - 1];
+                                                    if (Mirage::app()->param['SkinCount'][$casinoServiceID] > 1) {
+                                                            $siteclassification = $sitesModel->getSiteClassification($siteid);
+                                                            if ($siteclassification == 1) { //1 - Non Platinum, 2 - Platinum
+                                                                $locatorname = Mirage::app()->param['SkinName'][$casinoServiceID][$siteclassification - 1];
+                                                            } else {
+                                                                $locatorname = Mirage::app()->param['SkinName'][$casinoServiceID][$siteclassification - 1];
+                                                            }
                                                         } else {
-                                                            $locatorname = Mirage::app()->param['SkinName'][$casinoServiceID][$siteclassification - 1];
+                                                            if (Mirage::app()->param['SkinCount'][$casinoServiceID] == 0 || Mirage::app()->param['SkinCount'][$casinoServiceID] = ''){
+                                                                $locatorname = '';
+                                                            }
+                                                            else{
+                                                                $locatorname = Mirage::app()->param['SkinName'][$casinoServiceID];
+                                                            }   
                                                         }
-                                                    } else {
-                                                        if ($skinCount == 0 || $skinCount == '' ){
-                                                            $locatorname = '';
-                                                        }
-                                                        else{
-                                                            $locatorname = Mirage::app()->param['SkinName'][$casinoServiceID];
-                                                        }   
-                                                    }
                                               $result = $commonReload->reload(toInt($this->getSiteBalance()),$amount, $paymentType,
                                                             $terminal_id,$siteid,$cid,$accid,$loyaltyCardNo,$vouchercode,$trackingId, 
                                                             $mid, $casinoUserMode,$casinoUsername,$casinoPassword, $casinoServiceID,$locatorname, $CPV);
@@ -662,7 +662,7 @@ class FrontendController extends MI_Controller {
                                             $terminal_id,$siteid,$cid,$accid,$loyaltyCardNo,$vouchercode,$trackingId, 
                                             $mid, $casinoUserMode,$casinoUsername,$casinoPassword, $casinoServiceID,'','',$locatorname, $CPV);         
                               } else{
-                               $message = 'Error : Failed to Reload.';
+                               $message = 'Error : Failed Reloading a Session.';
                                 logger($message);
                                 $this->throwError($message);                               
                             }
@@ -1090,11 +1090,11 @@ class FrontendController extends MI_Controller {
                                  }
                         $CPV = (!empty($CPV) ? $CPV : "");
                         if ($CPV != NULL || $CPV != '') {
-                           if ($CPV == 'v15') {
-                               $skinCount = (!empty(Mirage::app()->param['SkinCount'][$casinoServiceID]) ? Mirage::app()->param['SkinCount'][$casinoServiceID] : "");
-                           } else {
-                               $skinCount = 0;
-                           }
+//                           if ($CPV == 'v15') {
+//                               $skinCount = (!empty(Mirage::app()->param['SkinCount'][$casinoServiceID]) ? Mirage::app()->param['SkinCount'][$casinoServiceID] : "");
+//                           } else {
+//                               $skinCount = 0;
+//                           }
                            // e-BINGO v15
                            $terminalname = $terminalsmodel->getTerminalName($startSessionFormModel->terminal_id);
                             if (($ref_service['UserMode'] == 0 || $ref_service['UserMode'] == 2) && $CPV == 'v15') {
@@ -1107,21 +1107,21 @@ class FrontendController extends MI_Controller {
                                 $terminal_pwd = $terminalsmodel->getTerminalPassword($startSessionFormModel->terminal_id, $startSessionFormModel->casino);
                                 $login_pwd = $terminal_pwd['HashedServicePassword'];
                                 
-                                if ($skinCount > 1) {
-                                    $siteclassification = $sitesModel->getSiteClassification($this->site_id);
-                                    if ($siteclassification == 1) { //1 - Non Platinum, 2 - Platinum
-                                        $locatorname = Mirage::app()->param['SkinName'][$casinoServiceID][$siteclassification - 1];
-                                    } else {
-                                        $locatorname = Mirage::app()->param['SkinName'][$casinoServiceID][$siteclassification - 1];
-                                    }
-                                } else {
-                                    if ($skinCount == 0 || $skinCount == '' ){
-                                        $locatorname = '';
-                                    }
-                                    else{
-                                        $locatorname = Mirage::app()->param['SkinName'][$casinoServiceID];
-                                    }   
-                                }
+                                                    if (Mirage::app()->param['SkinCount'][$casinoServiceID] > 1) {
+                                                            $siteclassification = $sitesModel->getSiteClassification($siteid);
+                                                            if ($siteclassification == 1) { //1 - Non Platinum, 2 - Platinum
+                                                                $locatorname = Mirage::app()->param['SkinName'][$casinoServiceID][$siteclassification - 1];
+                                                            } else {
+                                                                $locatorname = Mirage::app()->param['SkinName'][$casinoServiceID][$siteclassification - 1];
+                                                            }
+                                                        } else {
+                                                            if (Mirage::app()->param['SkinCount'][$casinoServiceID] == 0 || Mirage::app()->param['SkinCount'][$casinoServiceID] = ''){
+                                                                $locatorname = '';
+                                                            }
+                                                            else{
+                                                                $locatorname = Mirage::app()->param['SkinName'][$casinoServiceID];
+                                                            }   
+                                                        }
                                 $result = $commonRedeem->redeem($login_pwd, $startSessionFormModel->terminal_id, $this->site_id, 
                                         $bcf, $service_id, $startSessionFormModel->amount, $paymentType, 
                                         $this->acc_id, $loyaltyCardNo, $mid, $ref_service['UserMode'], $locatorname, 
@@ -1144,21 +1144,21 @@ class FrontendController extends MI_Controller {
                                 
                             //checking if casino is user based
                              } else if ($ref_service['UserMode'] == 1 && $CPV == 'v15') {
-                                if ($skinCount > 1) {
-                                    $siteclassification = $sitesModel->getSiteClassification($this->site_id);
-                                    if ($siteclassification == 1) { //1 - Non Platinum, 2 - Platinum
-                                        $locatorname = Mirage::app()->param['SkinName'][$casinoServiceID][$siteclassification - 1];
-                                    } else {
-                                        $locatorname = Mirage::app()->param['SkinName'][$casinoServiceID][$siteclassification - 1];
-                                    }
-                                } else {
-                                    if ($skinCount == 0 || $skinCount == '' ){
-                                        $locatorname = '';
-                                    }
-                                    else{
-                                        $locatorname = Mirage::app()->param['SkinName'][$casinoServiceID];
-                                    }   
-                                }
+                                                    if (Mirage::app()->param['SkinCount'][$casinoServiceID] > 1) {
+                                                            $siteclassification = $sitesModel->getSiteClassification($siteid);
+                                                            if ($siteclassification == 1) { //1 - Non Platinum, 2 - Platinum
+                                                                $locatorname = Mirage::app()->param['SkinName'][$casinoServiceID][$siteclassification - 1];
+                                                            } else {
+                                                                $locatorname = Mirage::app()->param['SkinName'][$casinoServiceID][$siteclassification - 1];
+                                                            }
+                                                        } else {
+                                                            if (Mirage::app()->param['SkinCount'][$casinoServiceID] == 0 || Mirage::app()->param['SkinCount'][$casinoServiceID] = ''){
+                                                                $locatorname = '';
+                                                            }
+                                                            else{
+                                                                $locatorname = Mirage::app()->param['SkinName'][$casinoServiceID];
+                                                            }   
+                                                        }
 
                                 $login_acct = $casinoUsername;
                                 $login_pwd = $casinoHashedPwd;
@@ -1168,7 +1168,7 @@ class FrontendController extends MI_Controller {
                                         $casinoUsername, $casinoPassword, $casinoServiceID, $isewallet, $locatorname, $CPV);
                             }
                             else{
-                               $message = 'Error : Failed to Redeem.';
+                               $message = 'Error : Failed Redeeming a Session.';
                                 logger($message);
                                 $this->throwError($message);                               
                             }
@@ -1771,12 +1771,12 @@ class FrontendController extends MI_Controller {
                                          }
                                 $CPV = (!empty($CPV) ? $CPV : "");
                                 if ($CPV != NULL || $CPV != '') {    
-                                     if($CPV == 'v15'){
-                                        $skinCount = (!empty(Mirage::app()->param['SkinCount'][$casinoServiceID]) ? Mirage::app()->param['SkinCount'][$casinoServiceID] : "");
-                                     }
-                                     else{
-                                         $skinCount = 0;
-                                     }
+//                                     if($CPV == 'v15'){
+//                                        $skinCount = (!empty(Mirage::app()->param['SkinCount'][$casinoServiceID]) ? Mirage::app()->param['SkinCount'][$casinoServiceID] : "");
+//                                     }
+//                                     else{
+//                                         $skinCount = 0;
+//                                     }
                                             // e-BINGO v15
                                             $terminalname = $terminalsmodel->getTerminalName($startSessionFormModel->terminal_id);
                                             if(($ref_service['UserMode'] == 0 || $ref_service['UserMode'] == 2) && $CPV == 'v15'){
@@ -1789,7 +1789,7 @@ class FrontendController extends MI_Controller {
                                                 $terminal_pwd = $terminalsmodel->getTerminalPassword($startSessionFormModel->terminal_id, $startSessionFormModel->casino);
                                                 $login_pwd = $terminal_pwd['HashedServicePassword'];
                                                 
-                                                    if ($skinCount > 1) {
+                                                    if (Mirage::app()->param['SkinCount'][$casinoServiceID] > 1) {
                                                             $siteclassification = $sitesModel->getSiteClassification($siteid);
                                                             if ($siteclassification == 1) { //1 - Non Platinum, 2 - Platinum
                                                                 $locatorname = Mirage::app()->param['SkinName'][$casinoServiceID][$siteclassification - 1];
@@ -1797,7 +1797,7 @@ class FrontendController extends MI_Controller {
                                                                 $locatorname = Mirage::app()->param['SkinName'][$casinoServiceID][$siteclassification - 1];
                                                             }
                                                         } else {
-                                                            if ($skinCount == 0 || $skinCount == '' ){
+                                                            if (Mirage::app()->param['SkinCount'][$casinoServiceID] == 0 || Mirage::app()->param['SkinCount'][$casinoServiceID] = ''){
                                                                 $locatorname = '';
                                                             }
                                                             else{
@@ -1855,7 +1855,7 @@ class FrontendController extends MI_Controller {
                                                 }
                                                 //RTG V15
                                                 //Set locator name based on Site Classification 
-                                                    if ($skinCount > 1) {
+                                                    if (Mirage::app()->param['SkinCount'][$casinoServiceID] > 1) {
                                                             $siteclassification = $sitesModel->getSiteClassification($siteid);
                                                             if ($siteclassification == 1) { //1 - Non Platinum, 2 - Platinum
                                                                 $locatorname = Mirage::app()->param['SkinName'][$casinoServiceID][$siteclassification - 1];
@@ -1863,13 +1863,13 @@ class FrontendController extends MI_Controller {
                                                                 $locatorname = Mirage::app()->param['SkinName'][$casinoServiceID][$siteclassification - 1];
                                                             }
                                                         } else {
-                                                            if ($skinCount == 0 || $skinCount == '' ){
+                                                            if (Mirage::app()->param['SkinCount'][$casinoServiceID] == 0 || Mirage::app()->param['SkinCount'][$casinoServiceID] = ''){
                                                                 $locatorname = '';
                                                             }
                                                             else{
                                                                 $locatorname = Mirage::app()->param['SkinName'][$casinoServiceID];
                                                             }   
-                                                        }  
+                                                        } 
 
                                                 $result = $commonUBStartSession->start($terminal_id, $siteid, 'D', $paymentType, $startSessionFormModel->casino,
                                                                    toInt($this->getSiteBalance()),toInt($amount),$accid,$loyaltyCardNo, 
@@ -1877,7 +1877,7 @@ class FrontendController extends MI_Controller {
                                                                    $casinoPassword, $casinoHashedPassword, $casinoServiceID, $mid, $ref_service['UserMode'],'','',$locatorname,$CPV);
                                            
                                     } else{
-                                        $message = 'Error : Failed to Start Session.';
+                                        $message = 'Error : Failed Starting a Session.';
                                          logger($message);
                                          $this->throwError($message);                               
                                      }
@@ -2081,13 +2081,14 @@ class FrontendController extends MI_Controller {
                                              }
                                          }
                                  if ($CPV != NULL || $CPV != '') {    
-                                     if($CPV == 'v15'){
-                                        $skinCount = (!empty(Mirage::app()->param['SkinCount'][$casinoServiceID]) ? Mirage::app()->param['SkinCount'][$casinoServiceID] : "");
-                                     }
-                                     else{
-                                         $skinCount = 0;
-                                     }
-                                            // e-BINGO v15
+//                                     if($CPV == 'v15'){
+//                                        $skinCount = (!empty(Mirage::app()->param['SkinCount'][$casinoServiceID]) ? Mirage::app()->param['SkinCount'][$casinoServiceID] : 0);
+//                                       $skinCount = Mirage::app()->param['SkinCount'][$casinoServiceID];
+//			              }
+//                                     else{
+//                                         $skinCount = 0;
+//                                     }                                            
+					  // e-BINGO v15
                                             $terminalname = $terminalsmodel->getTerminalName($startSessionFormModel->terminal_id);
                                             if(($ref_service['UserMode'] == 0 || $ref_service['UserMode'] == 2) && $CPV == 'v15'){
                                                 if($ref_service['UserMode'] == 2){
@@ -2099,7 +2100,7 @@ class FrontendController extends MI_Controller {
                                                 $terminal_pwd = $terminalsmodel->getTerminalPassword($startSessionFormModel->terminal_id, $startSessionFormModel->casino);
                                                 $login_pwd = $terminal_pwd['HashedServicePassword'];
                                                 
-                                                    if ($skinCount > 1) {
+                                                    if (Mirage::app()->param['SkinCount'][$casinoServiceID] > 1) {
                                                             $siteclassification = $sitesModel->getSiteClassification($siteid);
                                                             if ($siteclassification == 1) { //1 - Non Platinum, 2 - Platinum
                                                                 $locatorname = Mirage::app()->param['SkinName'][$casinoServiceID][$siteclassification - 1];
@@ -2107,7 +2108,7 @@ class FrontendController extends MI_Controller {
                                                                 $locatorname = Mirage::app()->param['SkinName'][$casinoServiceID][$siteclassification - 1];
                                                             }
                                                         } else {
-                                                            if ($skinCount == 0 || $skinCount = ''){
+                                                            if (Mirage::app()->param['SkinCount'][$casinoServiceID] == 0 || Mirage::app()->param['SkinCount'][$casinoServiceID] = ''){
                                                                 $locatorname = '';
                                                             }
                                                             else{
@@ -2167,7 +2168,7 @@ class FrontendController extends MI_Controller {
                                                 }
                                                 //RTG V15
                                                 //Set locator name based on Site Classification 
-                                                    if ($skinCount > 1) {
+                                                    if (Mirage::app()->param['SkinCount'][$casinoServiceID] > 1) {
                                                             $siteclassification = $sitesModel->getSiteClassification($siteid);
                                                             if ($siteclassification == 1) { //1 - Non Platinum, 2 - Platinum
                                                                 $locatorname = Mirage::app()->param['SkinName'][$casinoServiceID][$siteclassification - 1];
@@ -2175,13 +2176,13 @@ class FrontendController extends MI_Controller {
                                                                 $locatorname = Mirage::app()->param['SkinName'][$casinoServiceID][$siteclassification - 1];
                                                             }
                                                         } else {
-                                                            if ($skinCount == 0 || $skinCount == '' ){
+                                                            if (Mirage::app()->param['SkinCount'][$casinoServiceID] == 0 || Mirage::app()->param['SkinCount'][$casinoServiceID] = ''){
                                                                 $locatorname = '';
                                                             }
                                                             else{
                                                                 $locatorname = Mirage::app()->param['SkinName'][$casinoServiceID];
                                                             }   
-                                                        }  
+                                                        }
 
                                                 $result = $commonUBStartSession->start($terminal_id, $siteid, 'D', $paymentType, $startSessionFormModel->casino,
                                                                    toInt($this->getSiteBalance()),toInt($amount),$accid,$loyaltyCardNo, 
@@ -2189,7 +2190,7 @@ class FrontendController extends MI_Controller {
                                                                    $casinoPassword, $casinoHashedPassword, $casinoServiceID, $mid, $ref_service['UserMode'],'','',$locatorname,$CPV);
                                             }
                             else{
-                               $message = 'Error : Failed to Start Session.';
+                               $message = 'Error : Failed Starting a Session.';
                                 logger($message);
                                 $this->throwError($message);                               
                             }
