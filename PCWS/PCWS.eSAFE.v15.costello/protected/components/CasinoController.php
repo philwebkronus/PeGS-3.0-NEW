@@ -2,7 +2,7 @@
 
 class CasinoController{
     
-    /* public function EncryptCredentials($username, $password){
+    public function EncryptCredentials($username, $password){
         Yii::import('application.components.CasinoAPI.RealtimeGamingWCFRemoteAPI');
         
         $url = Yii::app()->params->forcetapi;
@@ -25,7 +25,7 @@ class CasinoController{
         }
         return $result;
     }
-    */
+    
     public function GetBalance($serviceid,$username){
         Yii::import('application.components.CasinoAPI.RealtimeGamingCashierAPI2');
         
@@ -354,16 +354,16 @@ class CasinoController{
         Yii::import('application.components.CasinoAPI.RealtimeGamingCashierAPI2');
 
         $url = Yii::app()->params->cashierapi[$serviceid-1];
-        $certpath = Yii::app()->params->rtg_certkey_dir.$serviceid.'/cert-key.pem';
-        $keypath = Yii::app()->params->rtg_certkey_dir.$serviceid.'/cert-key.pem';
-        $rtgplayer = new RealtimeGamingPlayerAPI($url, $certpath, $keypath, '');
+        $url2 = Yii::app()->params->playerapi[$serviceid-1];
+        $certpath = Yii::app()->params->rtg_certkey_dir.$serviceid.'/cert.pem';
+        $keypath = Yii::app()->params->rtg_certkey_dir.$serviceid.'/key.pem';
+        $rtgplayer = new RealtimeGamingPlayerAPI($url2, $certpath, $keypath, '');
         $rtgcashier = new RealtimeGamingCashierAPI2($url, $certpath, $keypath, '');
-        
+       
         $PID = $rtgcashier->GetPIDFromLogin($username);
-        
         if($PID != NULL){
-            $result = $rtgplayer->logoutPlayer($PID);
-        
+            $result = $rtgplayer->logoutPlayer($PID['GetPIDFromLoginResult']);
+
             if(!empty($result)){
                 if(!empty($result['LogoutPlayerResult']) && $result['LogoutPlayerResult'] !== null){
 
