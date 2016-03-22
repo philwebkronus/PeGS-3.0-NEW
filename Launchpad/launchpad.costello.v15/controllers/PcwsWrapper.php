@@ -79,10 +79,27 @@ Class PcwsWrapper
         
         $logger = new Logger($this->_logpath);
         $data = print_r($response,true);
-        $message = "[$methodname] Token: $this->_tkn, Output: $data";
+        
+        $result = $this->checkResponse($data);
+        
+        $message = "[$methodname] Token: $this->_tkn, Output: $result";
         $logger->apirequestlog($message, "Response");
         
         return array( $http_status, $response );
+    }
+    
+    public function checkResponse($data){
+        try{
+            $obj = json_decode($data);
+            if($obj === null) {
+                $pattern = "/<p class=\"message\">([\w\W]*?)<\/p>/";
+                preg_match($pattern, $data, $matches);
+                $result=$matches[1];
+                return trim($result);
+            }
+        }  catch (Exception $e){
+            return $data;
+        }
     }
     
 
@@ -158,7 +175,7 @@ Class PcwsWrapper
         
         return json_decode($result[1], true);
     }
-     
+    
     
 }
 ?>
