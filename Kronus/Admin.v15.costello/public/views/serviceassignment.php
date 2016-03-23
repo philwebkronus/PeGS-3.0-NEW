@@ -33,6 +33,10 @@ if (isset($_SESSION['acctype']))
                 {
                     var url = 'process/ProcessTerminalMgmt.php';
                     $('#cmbsitename').live('change', function() {
+                        jQuery("#submit").attr("disabled", true);
+                        document.getElementById('loading').style.display='block';
+                        document.getElementById('fade2').style.display='block';
+                        
                         jQuery("#txttermname").text(" ");
                         sendSiteID1($(this).val());
                         jQuery("#cmbterminals").empty();
@@ -57,12 +61,18 @@ if (isset($_SESSION['acctype']))
                                     jQuery("#txtsitename").text(" ");
                                     jQuery("#txtposaccno").text(" ");
                                 }
+                                    $('#loading').hide();
+                                    document.getElementById('loading').style.display='none';
+                                    document.getElementById('fade2').style.display='none';
                             }
                         });
                     });
 
                     jQuery("#cmbterminals").live('change', function()
                     {
+                        document.getElementById('loading').style.display='block';
+                        document.getElementById('fade2').style.display='block';
+                        
                         //to get the site code and passcode
                         jQuery.ajax({
                             url: url,
@@ -96,6 +106,9 @@ if (isset($_SESSION['acctype']))
                             dataType: 'json',
                             success: function(data) {
                                 jQuery("#txttermname").text(data.TerminalName);
+                                $('#loading').hide();
+                                    document.getElementById('loading').style.display='none';
+                                    document.getElementById('fade2').style.display='none';
                             },
                             error: function(XMLHttpRequest, e) {
                                 alert(XMLHttpRequest.responseText);
@@ -111,6 +124,8 @@ if (isset($_SESSION['acctype']))
                         var url = 'process/ProcessTerminalMgmt.php';
                         var servicename = ($(this).find("option:selected").text());
                         jQuery("#txtprovider").val(servicename);
+                        document.getElementById('loading').style.display='block';
+                        document.getElementById('fade2').style.display='block';
                         $.ajax({
                             url: url,
                             type: 'post',
@@ -126,6 +141,9 @@ if (isset($_SESSION['acctype']))
                                 $.each(data, function() {
                                     $('#txtservicegrp').val(this.ServiceGroupID);
                                 });
+                                document.getElementById('loading').style.display='none';
+                                document.getElementById('fade2').style.display='none';
+                                jQuery("#submit").attr("disabled", false);
                             },
                             error: function(XMLHttpRequest, e) {
                                 alert(XMLHttpRequest.responseText);
@@ -247,8 +265,10 @@ if (isset($_SESSION['acctype']))
                 <input type="hidden" name="txttermcode" id="termcode"/>
                 <input type="hidden" name="txtpasscode" id="passcode" />
                 <div id="submitarea">
-                    <input type="submit" value="Add Provider" onclick="return chkserviceass();"/>
+                    <input id="submit" type="submit" value="Add Provider" onclick="return chkserviceass();"/>
                 </div>
+            <div id="loading" style="position: fixed; z-index: 5000; background: url('images/Please_wait.gif') no-repeat; height: 162px; width: 260px; margin: 50px 0 0 400px; display: none;"></div>
+            <div id="fade2" class="black_overlay" oncontextmenu="return false"></div>
             </form>
         </div>
         <?php

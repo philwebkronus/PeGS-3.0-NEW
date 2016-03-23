@@ -32,11 +32,15 @@ document.getElementById('blockf').style.display='block';</script>";
 
         jQuery("#cmbsitename").live('change', function()
         { 
+            
+            jQuery("#btngenerate").attr("disabled", true);
                 if(jQuery("#cmbsitename").val() < 1){
                     jQuery("#txtsitename").text("");
                     jQuery("#txtposaccno").text("");
                 }
                 else{
+                    document.getElementById('loading').style.display='block';
+                    document.getElementById('fade2').style.display='block';
                      //for displaying site name
                     jQuery.ajax({
                             url: url,
@@ -51,6 +55,9 @@ document.getElementById('blockf').style.display='block';</script>";
                                     jQuery('#txtsitecode').val(data.sitecode);
                                     jQuery('#txtpasscode').val(data.passcode);
                                     jQuery('#txtlastterm').val(data.lastterminal);
+                $('#loading').hide();
+                document.getElementById('loading').style.display='none';
+                document.getElementById('fade2').style.display='none';
                             },
                             error: function(XMLHttpRequest, e){
                                     alert(XMLHttpRequest.responseText);
@@ -61,6 +68,7 @@ document.getElementById('blockf').style.display='block';</script>";
                             }
                     });
                 }
+                jQuery("#btngenerate").attr("disabled", false);
         });
 
         jQuery("#btngenerate").click(function(){
@@ -183,7 +191,6 @@ document.getElementById('blockf').style.display='block';</script>";
                         });	
                 }
         });
-
     });
 </script>
 
@@ -191,7 +198,7 @@ document.getElementById('blockf').style.display='block';</script>";
 <div id="pagetitle"><?php echo $pagetitle; ?></div>
 <br />
 <input type="hidden" name="lastterminal" id="lastterminal" value="GetLastTerminal" />
-<form method="post" action="process/processbatchterminals.php" name="frmbatch">
+<form method="post" action="process/processbatchterminals.php" name="frmbatch" id="frmbatch">
 <input type="hidden" name="page" type="page" value="BatchTerminalCreation" />
 <input type="hidden" name="txtlastterm" id="txtlastterm" />
 <input type="hidden" name="txtpasscode" id="txtpasscode" />
@@ -245,8 +252,9 @@ document.getElementById('blockf').style.display='block';</script>";
 </td>
 </tr>
 </table>
+<div id="loading" style="position: fixed; z-index: 5000; background: url('images/Please_wait.gif') no-repeat; height: 162px; width: 260px; margin: 50px 0 0 400px; display: none;"></div>
 <div id="submitarea">
-<input type="button" value="Generate" id="btngenerate"/>
+<input type="button" value="Generate" id="btngenerate" disabled="true"/>
 </div>
 <div id="light" class="white_page" oncontextmenu="return false" style="margin-left: -90px; width: 900px;">
 <div class="close_popup" id="btnClose" onclick="document.getElementById('light').style.display='none';document.getElementById('fade').style.display='none';"></div>
@@ -260,6 +268,7 @@ document.getElementById('blockf').style.display='block';</script>";
 </div>
 </div>
 <div id="fade" class="black_overlay" oncontextmenu="return false"></div>
+<div id="fade2" class="black_overlay" oncontextmenu="return false"></div>
 </form>
 </div>
 
