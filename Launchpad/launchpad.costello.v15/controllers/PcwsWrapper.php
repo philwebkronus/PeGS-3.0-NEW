@@ -89,17 +89,14 @@ Class PcwsWrapper
     }
     
     public function checkResponse($data){
-        try{
-            $obj = json_decode($data);
-            if($obj === null) {
-                $pattern = "/<p class=\"message\">([\w\W]*?)<\/p>/";
-                preg_match($pattern, $data, $matches);
-                $result=$matches[1];
-                return trim($result);
-            }
-        }  catch (Exception $e){
-            return $data;
+        $obj = json_decode($data);
+        if($obj === null) {
+            $pattern = "/<p class=\"message\">([\w\W]*?)<\/p>/";
+            preg_match($pattern, $data, $matches);
+            $result=$matches[1];
+            return trim($result);
         }
+        return $data;
     }
     
 
