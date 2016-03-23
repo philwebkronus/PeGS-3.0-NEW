@@ -1,0 +1,68 @@
+/* 
+    Document   : login
+    Created on : 01 25, 12, 9:38:49 AM
+    Author     : bryan
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+html,body{background-color: #D9D9D9; margin: 0; padding: 0; font-family: Arial,Helvetica,sans-serif;}
+#login-container{width: 380px;height: 250px; margin: 150px auto;color: #000000}
+#login-container fieldset{border: 2px solid #205623;background-color: #EAF0E0;height: 250px;display: block;position: relative;
+    margin-top:1em;
+    padding-top:.75em;}
+#login-container fieldset legend{
+    background: none repeat scroll 0 0 #D5E5A3;
+    border: 1px solid #205623;
+    font-weight: bold;  
+    text-align: center;
+    padding: 0 7px;
+    position:absolute;
+    top: -.5em;
+    left: .5em;
+}
+
+#login-container fieldset input[type="text"],input[type="password"]{
+    border: 1px solid Gray;
+    padding: 0.2em 0;
+    font-weight: bold;
+    color: #011373;
+    text-align: center;
+}
+
+#login-container a:hover{background-color: #fdcf57}
+
+.row{margin-left: 5px;text-align: right;}
+.row1{margin-left: 30px; text-align: right}
+
+.row input{margin-right: 5px;}
+.input1{margin-left: 140px;}
+.row label{margin-right: 5px;}
+
+.push-down10{margin-top: 10px;}
+.push-down20{margin-top: 20px;}
+.label2{margin-left: 50px;text-align: left;}
+.push-down50{margin-top: 50px;}
+.append20{padding-right: 20px;}
+
+#login-button{margin-top: 10px; text-align: center}
+#login-button input{border: 1px solid #000000; color: #000; padding-top: 5px}
+#login-button input:hover{background-color: #fdcf57}
+
+.center{text-align: center}
+
+.left{text-align: left}
+.push40{margin-left: 40px;}
+
+.btnAnchor{padding: 4px 10px;
+          background-color: #eaf0e0; 
+          line-height: 2px; 
+          margin-top: -5px; 
+          color: #000; 
+          border: solid 1px #000; 
+          text-decoration: none;
+          cursor: pointer;
+}
+
+::-ms-clear{ display: none; }
+::-ms-reveal{ display: none; }
