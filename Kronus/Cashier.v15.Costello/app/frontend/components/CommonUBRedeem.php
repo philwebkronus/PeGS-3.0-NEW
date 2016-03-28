@@ -33,7 +33,7 @@ class CommonUBRedeem {
                            $mid = '', $userMode = '',$casinoUsername = '',
                            $casinoPassword = '', $casinoServiceID = '', $isewallet = 0, $locatorname = '') 
     {
-        Mirage::loadComponents('CasinoApiUB');
+        Mirage::loadComponents(array('CasinoApiUB','PCWSAPI.class'));
         Mirage::loadModels(array('TerminalsModel', 'EgmSessionsModel', 'CommonTransactionsModel','StackerSummaryModel',
                                  'PendingUserTransactionCountModel'));
         
@@ -43,6 +43,7 @@ class CommonUBRedeem {
         $stackerSummaryModel = new StackerSummaryModel();
         $commonTransactionsModel = new CommonTransactionsModel();
         $pendingUserTransCountModel = new PendingUserTransactionCountModel();
+        $pcwsAPI = new PCWSAPI();
         
         //check terminal type if Genesis = 1
         $terminalType = $terminalsModel->checkTerminalType($terminal_id);
@@ -134,7 +135,10 @@ class CommonUBRedeem {
         //logout player
         if(strpos($service_name, 'RTG') !== false) {
             $PID = $casinoApiHandler->GetPIDLogin($casinoUsername);
-            $casinoApi->LogoutPlayer($terminal_id, $service_id,$PID);    
+            //$casinoApi->LogoutPlayer($terminal_id, $service_id,$PID); 
+            $systemusername = Mirage::app()->param['pcwssysusername'];
+            $pcwsAPI->Lock($systemusername, $casinoUsername, $service_id);
+            
         }
         
         //Check if terminal has an existing valid session

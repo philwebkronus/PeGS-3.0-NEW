@@ -71,7 +71,7 @@ class PCWSAPI{
         return $result;
     }
     
-    public function Lock($systemusername, $login){
+    public function Lock($systemusername, $login,$serviceid){
         $url = Mirage::app()->param['pcwsforcelogout'];
         
         $syscode = empty(Mirage::app()->param['SystemCode'][$systemusername])?'':Mirage::app()->param['SystemCode'][$systemusername];
@@ -79,7 +79,7 @@ class PCWSAPI{
         $dt = date('YmdHis');
         $tkn = sha1($dt.$syscode);
         
-        $postdata = json_encode(array('Login'=>$login,'SystemUsername'=>$systemusername, 'AccessDate'=>$accessdate, 'Token'=>$tkn));
+        $postdata = json_encode(array('Login'=>$login,'SystemUsername'=>$systemusername,'ServiceID'=>$serviceid, 'AccessDate'=>$accessdate, 'Token'=>$tkn));
        
         $methodname = "Lock";
         $data = print_r($postdata,true);
@@ -193,7 +193,9 @@ class PCWSAPI{
             curl_setopt( $curl, CURLOPT_POST, TRUE );
             curl_setopt( $curl, CURLOPT_HTTPHEADER, array( 'Content-Type: application/json' ) );
             curl_setopt( $curl, CURLOPT_RETURNTRANSFER, TRUE );
-            curl_setopt( $curl, CURLOPT_SSLVERSION, 3 );
+            //curl_setopt( $curl, CURLOPT_SSLVERSION, 3 );
+            curl_setopt( $curl, CURLOPT_SSL_CIPHER_LIST, 'TLSv1' );
+            
             // Data+Files to be posted
             curl_setopt($curl, CURLOPT_POSTFIELDS, $postdata);
             $response = curl_exec( $curl );

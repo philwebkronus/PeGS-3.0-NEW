@@ -430,12 +430,12 @@ class FrontendController extends MI_Controller {
                                 $this->throwError($message);                               
                             }
                         }else{
-                              $message = 'Error : Failed to Reload. Invalid Casino Version.';
+                              $message = 'Error : Failed to Reload Session. Invalid Casino Version.';
                                 logger($message);
                                 $this->throwError($message);
                         }
                     }else{
-                              $message = 'Error : Failed to Reload. Invalid Casino Service.';
+                              $message = 'Error : Failed to Reload Session. Invalid Casino Service.';
                                 logger($message);
                                 $this->throwError($message);                        
                     }
@@ -1108,7 +1108,7 @@ class FrontendController extends MI_Controller {
                                 $login_pwd = $terminal_pwd['HashedServicePassword'];
                                 
                                                     if (Mirage::app()->param['SkinCount'][$casinoServiceID] > 1) {
-                                                            $siteclassification = $sitesModel->getSiteClassification($siteid);
+                                                            $siteclassification = $sitesModel->getSiteClassification($this->site_id);
                                                             if ($siteclassification == 1) { //1 - Non Platinum, 2 - Platinum
                                                                 $locatorname = Mirage::app()->param['SkinName'][$casinoServiceID][$siteclassification - 1];
                                                             } else {
@@ -1145,7 +1145,7 @@ class FrontendController extends MI_Controller {
                             //checking if casino is user based
                              } else if ($ref_service['UserMode'] == 1 && $CPV == 'v15') {
                                                     if (Mirage::app()->param['SkinCount'][$casinoServiceID] > 1) {
-                                                            $siteclassification = $sitesModel->getSiteClassification($siteid);
+                                                            $siteclassification = $sitesModel->getSiteClassification($this->site_id);
                                                             if ($siteclassification == 1) { //1 - Non Platinum, 2 - Platinum
                                                                 $locatorname = Mirage::app()->param['SkinName'][$casinoServiceID][$siteclassification - 1];
                                                             } else {
@@ -1173,12 +1173,12 @@ class FrontendController extends MI_Controller {
                                 $this->throwError($message);                               
                             }
                         }else{
-                              $message = 'Error : Failed to Redeem. Invalid Casino Version.';
+                              $message = 'Error : Failed to Redeem Session. Invalid Casino Version.';
                                 logger($message);
                                 $this->throwError($message);
                         }
                     }else{
-                              $message = 'Error : Failed to Redeem. Invalid Casino Service.';
+                              $message = 'Error : Failed to Redeem Session. Invalid Casino Service.';
                                 logger($message);
                                 $this->throwError($message);                        
                     }
@@ -1451,7 +1451,7 @@ class FrontendController extends MI_Controller {
             $casinoApi->callSpyderAPI($commandId = 1, $terminalID, $casinoUsername, $login_pwd, $casinoServiceID);
         }
         
-        $result = $pcwsAPI->Lock($systemusername, $casinoUsername);
+        $result = $pcwsAPI->Lock($systemusername, $casinoUsername, $casinoServiceID);
       
         if($result[0] == 200){
             $result = json_decode($result[1]);
